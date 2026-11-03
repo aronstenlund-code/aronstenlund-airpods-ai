@@ -32,30 +32,41 @@ struct SentenceSplitter: Sendable {
         return rest.isEmpty ? nil : rest
     }
 
-    /// Index just after the first sentence terminator that really ends a sentence, or nil.
+    private static func isTerminator(_ character: Character) -> Bool {
+        character == "." || character == "!" || character == "?" || character == "…"
+    }
+
+    private static func isClosing(_ character: Character) -> Bool {
+        "\"')»”’".contains(character)
+    }
+
+    /// Index just after the first sentence terminator (plus trailing terminators / closing quotes) that really
+    /// ends a sentence, or nil when the text ends before we can tell.
     private static func sentenceEnd(in text: String) -> String.Index? {
         var index = text.startIndex
         while index < text.endIndex {
             let character = text[index]
-            if character == "." || character == "!" || character == "?" || character == "…" {
-                let next = text.index(after: index)
-                // Need whitespace (or more terminators) after it; end of text means "wait for more".
-                guard next < text.endIndex else { return nil }
-                if text[next] == "." || text[next] == "!" || text[next] == "?" || text[next] == "…" || text[next] == "\"" || text[next] == ")" {
-                    index = next
-                    continue
-                }
-                guard text[next].isWhitespace else {
-                    index = next // "3.14", "e.g" — keep going
-                    continue
-                }
-                if character == "." && isAbbreviationOrInitial(before: index, in: text) {
-                    index = next
-                    continue
-                }
-                return next
+            guard isTerminator(character) else {
+                index = text.index(after: index)
+                continue
             }
-            index = text.index(after: index)
+            var end = text.index(after: index)
+            var extraTerminators = 0
+            while end < text.endIndex, isTerminator(text[end]) || isClosing(text[end]) {
+                if isTerminator(text[end]) { extraTerminators += 1 }
+                end = text.index(after: end)
+            }
+            // End of text: the sentence may continue ("3." + "14") — wait for more.
+            guard end < text.endIndex else { return nil }
+            guard text[end].isWhitespace else {
+                index = end // "3.14", "e.g" — keep going
+                continue
+            }
+            if character == ".", extraTerminators == 0, isAbbreviationOrInitial(before: index, in: text) {
+                index = end
+                continue
+            }
+            return end
         }
         return nil
     }

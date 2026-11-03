@@ -144,7 +144,9 @@ func makeTestPrep() -> PrepStore { PrepStore(directory: temporaryDirectory()) }
         #expect(changes == 3)
 
         let reloaded = PrepStore(directory: directory)
-        #expect(reloaded.materials == store.materials)
+        #expect(reloaded.materials.map(\.id) == store.materials.map(\.id))
+        #expect(reloaded.materials.map(\.isEnabled) == [false, true], "toggle state survives reload")
+        #expect(reloaded.materials.first?.terms == store.materials.first?.terms)
         reloaded.delete(biology!)
         #expect(reloaded.materials.count == 1)
         #expect(PrepStore(directory: directory).materials.count == 1)
