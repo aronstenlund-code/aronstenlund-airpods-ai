@@ -111,3 +111,16 @@ Deno.test("markdown/TTS-hostile characters are stripped from the answer", () => 
   const { ev } = run("push_to_talk", [HEADER + "\n**Sju.**"]);
   assertEquals(text(ev), "Sju.");
 });
+
+Deno.test("direct mode: preset meta, no header expected, plain text becomes deltas", () => {
+  const p = new ResponseParser("push_to_talk", "roten ur hundra", 0.6, true);
+  assertEquals(p.presetMeta, {
+    reconstructed_question: "roten ur hundra",
+    confidence: 1,
+    is_question: true,
+    needs_confirmation: false,
+  });
+  const ev = [...p.push("  Tio"), ...p.push("."), ...p.finish()];
+  assertEquals(ev.map((e) => e.type), ["delta", "delta"]);
+  assertEquals(new ResponseParser("auto", "x", 0.6).presetMeta, null);
+});

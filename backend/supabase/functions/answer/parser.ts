@@ -30,12 +30,35 @@ export class ResponseParser {
   private skipLeading = true; // trim whitespace at the start of the answer
   private _meta: Meta | null = null;
   headerFailed = false;
+  private isDirect = false;
 
+  /**
+   * `direct`: the model answers without a JSON header (explicit modes, lowest latency). The meta is
+   * synthesised up front: the user asked on purpose, so is_question=true; the question is the
+   * fragment as heard; a model-side confirmation question is just the answer text.
+   */
   constructor(
     private mode: Mode,
     private fragment: string,
     private threshold: number,
-  ) {}
+    direct = false,
+  ) {
+    this.isDirect = direct;
+    if (direct) {
+      this.metaDone = true;
+      this._meta = {
+        reconstructed_question: fragment,
+        confidence: 1,
+        is_question: true,
+        needs_confirmation: false,
+      };
+    }
+  }
+
+  /** The synthesised meta in direct mode (to be sent before any delta), else null. */
+  get presetMeta(): Meta | null {
+    return this.isDirect ? this._meta : null;
+  }
 
   get meta(): Meta | null {
     return this._meta;

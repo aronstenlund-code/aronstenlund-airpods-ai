@@ -1,12 +1,18 @@
 // POST /functions/v1/tts  - streams ElevenLabs audio (TTS only; never ElevenLabs Agents).
 import { createJwtAuthenticator } from "../_shared/auth.ts";
-import { serviceClient, SupabaseRateLimiter } from "../_shared/ratelimit.ts";
+import { MemoryRateLimiter, SupabaseRateLimiter } from "../_shared/ratelimit.ts";
+import { restDbFromEnv } from "../_shared/restdb.ts";
 import { envInt, supabaseUsageSink } from "../_shared/usage.ts";
 import { createTtsHandler, DEFAULT_TTS_CONFIG } from "./handler.ts";
 import { parseVoices } from "./voices.ts";
 
 const env = Deno.env;
-const db = serviceClient();
+
+// Open the TLS connection to ElevenLabs while the isolate boots (unauthenticated GET; no credits used).
+const warmUpstream = () =>
+  void fetch("https://api.elevenlabs.io/v1/models").then((r) => r.body?.cancel()).catch(() => {});
+warmUpstream();
+const db = restDbFromEnv();
 const { voices, errors: voiceErrors } = parseVoices(env.get("ELEVENLABS_VOICES"));
 if (voiceErrors.length) console.error("ELEVENLABS_VOICES problems:", voiceErrors.join("; "));
 
@@ -16,6 +22,8 @@ Deno.serve(createTtsHandler({
     hs256Secret: env.get("SUPABASE_JWT_SECRET"),
   }),
   rateLimiter: new SupabaseRateLimiter(db),
+  localLimiter: new MemoryRateLimiter(),
+  warm: warmUpstream,
   apiKey: env.get("ELEVENLABS_API_KEY") ?? null,
   recordUsage: supabaseUsageSink(db),
   config: {

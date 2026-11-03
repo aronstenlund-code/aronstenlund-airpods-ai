@@ -43,3 +43,20 @@ Deno.test("a failing limiter denies (fail closed)", async () => {
   });
   assertEquals(r.allowed, false);
 });
+
+Deno.test("enforceLimits uses a single checkMany round trip when the limiter supports it", async () => {
+  let many = 0, single = 0;
+  const rl: RateLimiter = {
+    check: () => {
+      single++;
+      return Promise.resolve({ allowed: true, retryAfterSec: 0 });
+    },
+    checkMany: (checks) => {
+      many++;
+      assertEquals(checks.length, 3);
+      return Promise.resolve({ allowed: false, retryAfterSec: 9 });
+    },
+  };
+  const r = await enforceLimits(rl, "answer", "u", { perMinute: 1, perDay: 1, globalPerDay: 1 });
+  assertEquals([many, single, r.allowed, r.retryAfterSec], [1, 0, false, 9]);
+});

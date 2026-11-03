@@ -64,8 +64,9 @@ Deno.test("unconfigured key/voice fails closed with fallback", async () => {
   }
 });
 
-Deno.test("character budget stops requests before they reach ElevenLabs", async () => {
+Deno.test("character budget: the local guard stops a user before ElevenLabs is called", async () => {
   const { handler, calls } = setup({
+    localLimiter: new MemoryRateLimiter(),
     config: {
       ...DEFAULT_TTS_CONFIG,
       voiceId: VOICE,
@@ -77,6 +78,51 @@ Deno.test("character budget stops requests before they reach ElevenLabs", async 
   const res = await handler(post({ text: "123456" }));
   assertEquals(res.status, 429);
   assertEquals(calls.length, 1);
+});
+
+Deno.test("character budget: shared limiter runs in parallel with ElevenLabs; denial aborts and returns no audio", async () => {
+  let signal: AbortSignal | undefined;
+  const fetchImpl = ((_u: unknown, init: RequestInit) => {
+    signal = init.signal as AbortSignal;
+    return Promise.resolve(new Response(new Uint8Array([9, 9]), { status: 200 }));
+  }) as typeof fetch;
+  const denying = { check: () => Promise.resolve({ allowed: false, retryAfterSec: 11 }) };
+  const { handler } = setup({ rateLimiter: denying }, fetchImpl);
+  const res = await handler(post({ text: "abc" }));
+  assertEquals(res.status, 429);
+  assertEquals(res.headers.get("retry-after"), "11");
+  assertEquals(signal?.aborted, true);
+  assertEquals((await res.json()).error.code, "rate_limited");
+});
+
+Deno.test("limiter and ElevenLabs overlap (total ~ max, not sum)", async () => {
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const ok = async () => {
+    await sleep(60);
+    return { allowed: true, retryAfterSec: 0 };
+  };
+  const fetchImpl = (async () => {
+    await sleep(60);
+    return new Response(new Uint8Array([1]), { status: 200 });
+  }) as typeof fetch;
+  const { handler } = setup({ rateLimiter: { check: ok, checkMany: ok } }, fetchImpl);
+  const t = performance.now();
+  const res = await handler(post({ text: "abc" }));
+  const dt = performance.now() - t;
+  assertEquals(res.status, 200);
+  assert(dt < 105, `expected overlap (<105 ms), got ${dt.toFixed(0)} ms`);
+});
+
+Deno.test("GET x-warm:1 -> 204 and triggers warm-up without auth", async () => {
+  let warmed = 0;
+  const { handler } = setup({
+    warm: () => {
+      warmed++;
+    },
+    authenticate: () => Promise.reject(new Error("must not authenticate")),
+  });
+  const res = await handler(new Request("http://x", { method: "GET", headers: { "x-warm": "1" } }));
+  assertEquals([res.status, warmed], [204, 1]);
 });
 
 Deno.test("ElevenLabs quota / auth / rate errors map to fallback errors", async () => {

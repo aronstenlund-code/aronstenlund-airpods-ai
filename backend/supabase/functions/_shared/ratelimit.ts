@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.45.4";
+import { RestDb } from "./restdb.ts";
 
 export interface RateResult {
   allowed: boolean;
@@ -9,6 +9,11 @@ export interface RateResult {
  *  thrown error as "denied". */
 export interface RateLimiter {
   check(key: string, limit: number, windowSec: number, cost?: number): Promise<RateResult>;
+  /** Several windows in ONE round trip (all-or-nothing). Optional; enforceLimits falls back to check(). */
+  checkMany?(
+    checks: { key: string; limit: number; windowSec: number }[],
+    cost?: number,
+  ): Promise<RateResult>;
 }
 
 export class MemoryRateLimiter implements RateLimiter {
@@ -35,26 +40,36 @@ export class MemoryRateLimiter implements RateLimiter {
 /** Postgres-backed (atomic upsert in `check_rate_limit`, see migrations). Survives cold starts and
  *  is shared by all function instances. */
 export class SupabaseRateLimiter implements RateLimiter {
-  constructor(private db: SupabaseClient) {}
+  constructor(private db: RestDb) {}
 
   async check(key: string, limit: number, windowSec: number, cost = 1): Promise<RateResult> {
-    const { data, error } = await this.db.rpc("check_rate_limit", {
+    const data = await this.db.rpc("check_rate_limit", {
       p_key: key,
       p_limit: limit,
       p_window_seconds: windowSec,
       p_cost: cost,
     });
-    if (error) throw new Error(`rate limiter failed: ${error.message}`);
-    const row = Array.isArray(data) ? data[0] : data;
+    const row = (Array.isArray(data) ? data[0] : data) as
+      | { allowed?: boolean; retry_after?: number }
+      | null;
     return { allowed: !!row?.allowed, retryAfterSec: Number(row?.retry_after ?? windowSec) };
   }
-}
 
-export function serviceClient(): SupabaseClient {
-  const url = Deno.env.get("SUPABASE_URL");
-  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!url || !key) throw new Error("SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY not set");
-  return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+  async checkMany(
+    checks: { key: string; limit: number; windowSec: number }[],
+    cost = 1,
+  ): Promise<RateResult> {
+    const data = await this.db.rpc("check_rate_limits", {
+      p_keys: checks.map((c) => c.key),
+      p_limits: checks.map((c) => c.limit),
+      p_windows: checks.map((c) => c.windowSec),
+      p_cost: cost,
+    });
+    const row = (Array.isArray(data) ? data[0] : data) as
+      | { allowed?: boolean; retry_after?: number }
+      | null;
+    return { allowed: !!row?.allowed, retryAfterSec: Number(row?.retry_after ?? 60) };
+  }
 }
 
 export interface Limits {
@@ -73,13 +88,14 @@ export async function enforceLimits(
   cost = 1,
 ): Promise<RateResult> {
   try {
-    const checks: [string, number, number][] = [
-      [`${scope}:u:${userId}:m`, limits.perMinute, 60],
-      [`${scope}:u:${userId}:d`, limits.perDay, 86400],
-      [`${scope}:global:d`, limits.globalPerDay, 86400],
+    const checks = [
+      { key: `${scope}:u:${userId}:m`, limit: limits.perMinute, windowSec: 60 },
+      { key: `${scope}:u:${userId}:d`, limit: limits.perDay, windowSec: 86400 },
+      { key: `${scope}:global:d`, limit: limits.globalPerDay, windowSec: 86400 },
     ];
-    for (const [key, limit, win] of checks) {
-      const r = await rl.check(key, limit, win, cost);
+    if (rl.checkMany) return await rl.checkMany(checks, cost);
+    for (const c of checks) {
+      const r = await rl.check(c.key, c.limit, c.windowSec, cost);
       if (!r.allowed) return r;
     }
     return { allowed: true, retryAfterSec: 0 };

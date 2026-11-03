@@ -2,12 +2,20 @@ export interface LLMRequest {
   system: string;
   user: string;
   maxTokens: number;
+  /** Mark the (static) system prompt cacheable (prompt caching; ignored by providers without it). */
+  cacheSystem?: boolean;
   signal?: AbortSignal;
 }
 
 export type LLMChunk =
   | { type: "text"; text: string }
-  | { type: "usage"; inputTokens?: number; outputTokens?: number };
+  | {
+    type: "usage";
+    inputTokens?: number;
+    outputTokens?: number;
+    cacheReadTokens?: number;
+    cacheWriteTokens?: number;
+  };
 
 /** Provider-agnostic streaming LLM. Implementations must yield `text` chunks as they arrive and a
  *  `usage` chunk (possibly several, last wins per field) so cost per answer can be measured. */

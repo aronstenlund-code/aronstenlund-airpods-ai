@@ -52,12 +52,20 @@ Deno.test("streams meta, deltas, done in order and logs usage", async () => {
   assertEquals(ev[0].event, "meta");
   assertEquals(ev[0].data.is_question, true);
   assertEquals(ev[0].data.reconstructed_question, "fem plus två");
+  assertEquals(ev[0].data.confidence, 1, "direct mode synthesises the meta");
   assert(ev.slice(1, -1).length > 0 && ev.slice(1, -1).every((e) => e.event === "delta"));
   const answer = ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
   assertEquals(answer, "Mocksvar på: fem plus två.");
   const done = ev.at(-1)!;
   assertEquals(done.event, "done");
   assertEquals(done.data.answered, true);
+  const bd = done.data.breakdown as Record<string, unknown>;
+  assertEquals(bd.direct, true);
+  assertEquals(bd.cold, true);
+  assert(
+    typeof bd.auth_ms === "number" && typeof bd.limits_ms === "number" &&
+      typeof bd.llm_first_chunk_ms === "number",
+  );
   const timing = done.data.timing as Record<string, number>;
   assert(timing.meta_ms <= timing.ttft_ms && timing.ttft_ms <= timing.total_ms);
   assertEquals(usage.length, 1);
@@ -77,8 +85,8 @@ Deno.test("auto mode: non-question gets meta(is_question=false) and nothing else
   assertEquals(usage[0].status, "not_question");
 });
 
-Deno.test("low confidence is flagged for a confirmation question", async () => {
-  const { handler } = setup();
+Deno.test("header mode (auto, or directModes off): low confidence is flagged for a confirmation question", async () => {
+  const { handler } = setup({ config: { ...DEFAULT_CONFIG, directModes: false } });
   const ev = await readSse(await handler(post(body({ fragment: "ro" }))));
   assertEquals(ev[0].data.needs_confirmation, true);
   assertEquals(
@@ -205,7 +213,7 @@ Deno.test("empty answer for a real question is reported, not silently dropped", 
       })(),
   };
   const { handler } = setup({ provider });
-  const ev = await readSse(await handler(post(body())));
+  const ev = await readSse(await handler(post(body({ mode: "auto", fragment: "vad är pi" }))));
   assertEquals(ev.map((e) => e.event), ["meta", "error", "done"]);
   assertEquals(ev[1].data.code, "empty_answer");
 });
@@ -262,4 +270,118 @@ Deno.test("client disconnect aborts the provider", async () => {
   await reader.cancel();
   await new Promise((r) => setTimeout(r, 50));
   assertEquals(signal?.aborted, true);
+});
+
+Deno.test("direct mode: a model-side confirmation question is just the answer text, no meta change", async () => {
+  const { handler } = setup();
+  const ev = await readSse(await handler(post(body({ fragment: "ro" }))));
+  assertEquals(ev[0].data.needs_confirmation, false);
+  assertEquals(
+    ev.filter((e) => e.event === "delta").map((e) => e.data.text).join(""),
+    "Menar du det?",
+  );
+});
+
+Deno.test("direct mode sends meta before the first delta and never waits for a JSON header", async () => {
+  const provider: LLMProvider = {
+    name: "m",
+    model: "m",
+    stream: () =>
+      (async function* (): AsyncGenerator<LLMChunk> {
+        yield { type: "text", text: "  Sju" };
+        yield { type: "text", text: "." };
+      })(),
+  };
+  const { handler } = setup({ provider });
+  const ev = await readSse(await handler(post(body())));
+  assertEquals(ev.map((e) => e.event), ["meta", "delta", "delta", "done"]);
+  assertEquals(ev[1].data.text, "Sju", "leading whitespace trimmed");
+});
+
+Deno.test("shared limiter runs in parallel with the LLM start; a denial aborts the LLM and sends nothing", async () => {
+  let started = false;
+  let signal: AbortSignal | undefined;
+  const provider: LLMProvider = {
+    name: "m",
+    model: "m",
+    stream: (r) => {
+      signal = r.signal;
+      started = true;
+      return (async function* (): AsyncGenerator<LLMChunk> {
+        await new Promise((res) => setTimeout(res, 20));
+        yield { type: "text", text: "Svar." };
+      })();
+    },
+  };
+  const denying = { check: () => Promise.resolve({ allowed: false, retryAfterSec: 7 }) };
+  const { handler } = setup({ provider, rateLimiter: denying });
+  const res = await handler(post(body()));
+  assertEquals(res.status, 429);
+  assertEquals(res.headers.get("retry-after"), "7");
+  assertEquals(started, true, "LLM was started speculatively");
+  assertEquals(signal?.aborted, true, "and aborted on denial");
+  assert(!(await res.text()).includes("Svar"));
+});
+
+Deno.test("limiter and LLM really overlap (total ~ max, not sum)", async () => {
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const ok = async () => {
+    await sleep(60);
+    return { allowed: true, retryAfterSec: 0 };
+  };
+  const slowLimiter = { check: ok, checkMany: ok };
+  const provider: LLMProvider = {
+    name: "m",
+    model: "m",
+    stream: () =>
+      (async function* (): AsyncGenerator<LLMChunk> {
+        await sleep(60);
+        yield { type: "text", text: "Ja." };
+      })(),
+  };
+  const { handler } = setup({ provider, rateLimiter: slowLimiter });
+  const t = performance.now();
+  const res = await handler(post(body()));
+  const dt = performance.now() - t;
+  await res.text();
+  assertEquals(res.status, 200);
+  assert(dt < 105, `expected overlap (<105 ms), got ${dt.toFixed(0)} ms`);
+});
+
+Deno.test("local per-isolate guard stops a user before the LLM is ever called", async () => {
+  let calls = 0;
+  const provider: LLMProvider = {
+    name: "m",
+    model: "m",
+    stream: () => {
+      calls++;
+      return new MockProvider().stream({
+        system: "",
+        user: "<fragment>x</fragment>",
+        maxTokens: 10,
+      });
+    },
+  };
+  const { handler } = setup({
+    provider,
+    localLimiter: new MemoryRateLimiter(),
+    config: { ...DEFAULT_CONFIG, limits: { perMinute: 2, perDay: 100, globalPerDay: 100 } },
+  });
+  for (let i = 0; i < 2; i++) await (await handler(post(body()))).text();
+  const res = await handler(post(body()));
+  assertEquals(res.status, 429);
+  assertEquals(calls, 2);
+});
+
+Deno.test("GET with x-warm:1 triggers the upstream warm-up and answers 204 without auth", async () => {
+  let warmed = 0;
+  const { handler } = setup({
+    warm: () => {
+      warmed++;
+    },
+    authenticate: () => Promise.reject(new HttpError(401, "unauthorized", "no")),
+  });
+  const res = await handler(new Request("http://x", { method: "GET", headers: { "x-warm": "1" } }));
+  assertEquals([res.status, warmed], [204, 1]);
+  assertEquals((await handler(new Request("http://x", { method: "GET" }))).status, 405);
 });

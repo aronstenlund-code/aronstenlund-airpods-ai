@@ -26,10 +26,14 @@ export const DEFAULT_TTS_CONFIG: Omit<TtsConfig, "voiceId" | "voices"> = {
 export interface TtsDeps {
   authenticate: Authenticator;
   rateLimiter: RateLimiter;
+  /** Cheap per-isolate guard (characters/minute) checked before ElevenLabs is called. */
+  localLimiter?: RateLimiter;
   apiKey: string | null;
   config: TtsConfig;
   recordUsage: (rec: Record<string, unknown>) => void | Promise<void>;
   fetchImpl?: typeof fetch;
+  /** Called for `GET` + `x-warm: 1`: open the upstream connection ahead of time. */
+  warm?: () => void;
 }
 
 export function classifyElevenLabs(status: number, body: string): HttpError {
@@ -61,6 +65,10 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
   const doFetch = deps.fetchImpl ?? fetch;
   return async (req) => {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
+    if (req.method === "GET" && req.headers.get("x-warm") === "1") {
+      deps.warm?.();
+      return new Response(null, { status: 204 });
+    }
     const t0 = performance.now();
     try {
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use POST");
@@ -99,15 +107,51 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         throw new HttpError(503, "provider_unconfigured", "TTS not configured", { fallback: true });
       }
 
-      // Charge characters before calling ElevenLabs (fail closed on our own budget).
-      const rl = await enforceLimits(
+      // Local guard first (0 ms), then the shared character budget IN PARALLEL with the ElevenLabs
+      // request: the audio response is only released once the budget check has passed, so a denied
+      // request never returns audio (it costs at most the aborted upstream start).
+      if (deps.localLimiter) {
+        const lr = await deps.localLimiter.check(
+          `tts:u:${user.id}:m`,
+          deps.config.limits.perMinute,
+          60,
+          text.length,
+        );
+        if (!lr.allowed) {
+          throw new HttpError(429, "rate_limited", "TTS budget reached", {
+            fallback: true,
+            retryAfterSec: lr.retryAfterSec,
+          });
+        }
+      }
+      const ac = new AbortController();
+      req.signal.addEventListener("abort", () => ac.abort());
+      const limitsP = enforceLimits(
         deps.rateLimiter,
         "tts",
         user.id,
         deps.config.limits,
         text.length,
       );
+      const upstreamP = doFetch(
+        `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream?output_format=${format}`,
+        {
+          method: "POST",
+          headers: {
+            "xi-api-key": deps.apiKey,
+            "content-type": "application/json",
+            accept: "audio/*",
+          },
+          body: JSON.stringify({ text, model_id: deps.config.modelId, language_code: language }),
+          signal: ac.signal,
+        },
+      );
+      upstreamP.catch(() => {}); // handled below, or deliberately dropped when the budget denies
+
+      const rl = await limitsP;
       if (!rl.allowed) {
+        ac.abort();
+        upstreamP.then((r) => r.body?.cancel()).catch(() => {});
         throw new HttpError(429, "rate_limited", "TTS budget reached", {
           fallback: true,
           retryAfterSec: rl.retryAfterSec,
@@ -116,19 +160,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
 
       let upstream: Response;
       try {
-        upstream = await doFetch(
-          `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream?output_format=${format}`,
-          {
-            method: "POST",
-            headers: {
-              "xi-api-key": deps.apiKey,
-              "content-type": "application/json",
-              accept: "audio/*",
-            },
-            body: JSON.stringify({ text, model_id: deps.config.modelId, language_code: language }),
-            signal: req.signal,
-          },
-        );
+        upstream = await upstreamP;
       } catch (_e) {
         throw new HttpError(502, "provider_unavailable", "TTS provider unreachable", {
           fallback: true,

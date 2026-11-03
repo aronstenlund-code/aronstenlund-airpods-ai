@@ -166,7 +166,22 @@ deno task ttft -- --url $SUPABASE_URL/functions/v1/answer --mode push_to_talk --
 ```
 Prints per-prompt meta/TTFT/total, flags style violations (more than two sentences, digits or symbols in the answer, empty answer) and p50/p90. Run once cold and once warm; report both.
 
+## Latency design (D28/D31)
+Measured from a client inside Supabase (eu-central-1), 30 Swedish prompts, `push_to_talk`:
+
+| | first answer text p50 / p90 | server-side p50 | input / output tokens |
+|---|---|---|---|
+| v1 (header JSON, long prompt, 3 sequential limit RPCs, SDKs) | 1 590 / 2 005 ms (max 4 353 cold) | 1 277 ms | 1 447 / 78 |
+| v2 (direct mode, short prompt, one limit RPC in parallel with the LLM call) | 980 / 1 079 ms (max 2 326 cold) | 630 ms | 512 / 38 |
+| v3 (no SDK / supabase-js, warm-up; **deployed, not yet measured**) | - | - | - |
+
+What the numbers showed: DB round trips from the function cost 150-240 ms each (functions run in Frankfurt, the database in Stockholm); Anthropic is ~120-150 ms away; 29 of 30 requests ran in a fresh isolate, so import weight is paid per request. The `done` event carries a `breakdown` (`auth_ms`, `body_ms`, `limits_ms`, `llm_first_chunk_ms`, `direct`, `cold`) so every future measurement shows where time goes.
+- `meta.confidence` is `1` in direct mode (`push_to_talk`/`text`); the confirmation behaviour is in the answer text ("Menar du roten ur hundra?"). Set `DIRECT_MODES=0` to get the JSON-header protocol for all modes.
+- **Keep-alive (app side, no cost):** when the listening screen opens, call `GET /functions/v1/answer` (and `/tts`) with headers `x-warm: 1` and `apikey: <publishable key>`; it answers 204 and opens the upstream connection, so the first real question does not pay a cold start.
+- **TTS:** the character budget is checked in parallel with the ElevenLabs request (no audio before it passes). Start `/tts` on the first finished sentence of the streamed answer instead of waiting for the whole text.
+
 ## Design notes
 - **Wire protocol with the model:** first line is a JSON header (`is_question`, `reconstructed_question`, `confidence`), then the answer text. The server parses it incrementally, emits `meta` as soon as the header closes, and streams the rest as `delta`. Chosen over tool-use/structured output because it keeps a single streaming call with the lowest time-to-first-token; a bad header fails safe (auto mode: no answer).
+- Runtime dependencies: only `jose` (JWT). The Anthropic SDK and supabase-js were replaced by `fetch` clients for boot time (D31).
 - `LLMProvider` (`answer/llm/types.ts`) is the swap point; add a class and a branch in `llm/factory.ts`.
 - Haiku 5.5 request: no `temperature`/`top_p`/`top_k` (rejected by the model), `thinking: disabled` + `output_config.effort: low` for latency (documented as accepted at effort <= high).

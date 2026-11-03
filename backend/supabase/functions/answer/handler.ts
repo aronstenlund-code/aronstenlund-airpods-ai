@@ -4,7 +4,12 @@ import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelim
 import { SSE_HEADERS, sseFrame } from "../_shared/sse.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
-import { buildUserMessage, SYSTEM_PROMPT } from "./prompt.ts";
+import {
+  buildDirectUserMessage,
+  buildUserMessage,
+  SYSTEM_PROMPT,
+  SYSTEM_PROMPT_DIRECT,
+} from "./prompt.ts";
 import { LIMITS, readLimitedJson, validateAnswerRequest } from "./validate.ts";
 
 export interface UsageRecord {
@@ -29,6 +34,8 @@ export interface HandlerConfig {
   maxTokens: number;
   maxAnswerChars: number;
   limits: Limits;
+  /** push_to_talk/text: headerless prompt, meta synthesised up front (lowest latency). */
+  directModes: boolean;
   /** USD per million tokens, for the cost estimate only (prices as stated in the assignment). */
   priceInPerMTok: number;
   priceOutPerMTok: number;
@@ -39,18 +46,27 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   maxTokens: 256,
   maxAnswerChars: 600,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
+  directModes: true,
   priceInPerMTok: 0.10,
   priceOutPerMTok: 0.50,
 };
 
 export interface Deps {
   authenticate: Authenticator;
+  /** Authoritative (shared, Postgres) limiter. Checked IN PARALLEL with the LLM call. */
   rateLimiter: RateLimiter;
+  /**
+   * Cheap per-isolate guard checked BEFORE the LLM call starts (0 ms). Bounds how many speculative
+   * LLM starts one user can trigger while the shared limiter is still answering.
+   */
+  localLimiter?: RateLimiter;
   /** null = no provider configured -> 503 provider_unconfigured (fail closed). */
   provider: LLMProvider | null;
   recordUsage: (rec: UsageRecord) => void | Promise<void>;
   config: HandlerConfig;
   now?: () => number;
+  /** Called for `GET` + `x-warm: 1` (keep-alive ping): open the upstream connection ahead of time. */
+  warm?: () => void;
 }
 
 export function providerErrorToHttp(e: unknown): HttpError {
@@ -85,10 +101,16 @@ export function providerErrorToHttp(e: unknown): HttpError {
 export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
   const now = deps.now ?? (() => performance.now());
   const cfg = deps.config;
+  let served = 0; // requests served by this isolate (0 => the first one is "cold")
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
+    if (req.method === "GET" && req.headers.get("x-warm") === "1") {
+      deps.warm?.();
+      return new Response(null, { status: 204 });
+    }
     const t0 = now();
+    const cold = served++ === 0;
     try {
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use POST");
       const declared = Number(req.headers.get("content-length") ?? "0");
@@ -97,16 +119,20 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
 
       const user = await deps.authenticate(req);
+      const tAuth = now() - t0;
 
-      const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits);
-      if (!rl.allowed) {
-        throw new HttpError(429, "rate_limited", "Too many requests", {
-          fallback: true,
-          retryAfterSec: rl.retryAfterSec,
-        });
+      if (deps.localLimiter) {
+        const lr = await deps.localLimiter.check(`answer:u:${user.id}:m`, cfg.limits.perMinute, 60);
+        if (!lr.allowed) {
+          throw new HttpError(429, "rate_limited", "Too many requests", {
+            fallback: true,
+            retryAfterSec: lr.retryAfterSec,
+          });
+        }
       }
 
       const body = validateAnswerRequest(await readLimitedJson(req, LIMITS.bodyBytes));
+      const tBody = now() - t0;
       const provider = deps.provider;
       if (!provider) {
         throw new HttpError(503, "provider_unconfigured", "LLM provider not configured", {
@@ -114,21 +140,27 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         });
       }
 
-      const parser = new ResponseParser(body.mode, body.fragment, cfg.confidenceThreshold);
+      const direct = cfg.directModes && body.mode !== "auto";
+      const parser = new ResponseParser(body.mode, body.fragment, cfg.confidenceThreshold, direct);
       let inputTokens: number | null = null;
       let outputTokens: number | null = null;
+      let cacheRead = 0;
+      let cacheWrite = 0;
       let llmFirstTokenMs: number | null = null;
       let metaMs: number | null = null;
       let ttftMs: number | null = null;
+      let limitsMs: number | null = null;
       let answerChars = 0;
       let closed = false;
       let status = "ok";
 
       function usage(s: string): UsageRecord {
         const m = parser.meta;
+        const total = inputTokens ?? 0;
+        const plain = Math.max(0, total - cacheRead - cacheWrite);
         const cost = inputTokens !== null || outputTokens !== null
-          ? ((inputTokens ?? 0) * cfg.priceInPerMTok + (outputTokens ?? 0) * cfg.priceOutPerMTok) /
-            1e6
+          ? ((plain + cacheRead * 0.1 + cacheWrite * 1.25) * cfg.priceInPerMTok +
+            (outputTokens ?? 0) * cfg.priceOutPerMTok) / 1e6
           : null;
         return {
           user_id: user.id,
@@ -148,20 +180,45 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         };
       }
 
+      // Start the shared-limit check and the LLM call at the same time. No byte is sent to the client
+      // before BOTH have succeeded, so a denied request never leaks an answer; it only costs the
+      // aborted LLM start (bounded by the local guard above).
       const ac = new AbortController();
       req.signal.addEventListener("abort", () => ac.abort());
+      const limitsP = enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits).then((r) => {
+        limitsMs = now() - t0;
+        return r;
+      });
       const iterator = provider
         .stream({
-          system: SYSTEM_PROMPT,
-          user: buildUserMessage(body, cfg.confidenceThreshold),
+          system: direct ? SYSTEM_PROMPT_DIRECT : SYSTEM_PROMPT,
+          user: direct
+            ? buildDirectUserMessage(body)
+            : buildUserMessage(body, cfg.confidenceThreshold),
           maxTokens: cfg.maxTokens,
+          cacheSystem: true,
           signal: ac.signal,
         })[Symbol.asyncIterator]();
+      const firstP = iterator.next().then((r) => {
+        llmFirstTokenMs = now() - t0;
+        return r;
+      });
+      firstP.catch(() => {}); // handled below, or deliberately dropped when the limiter denies
+
+      const rl = await limitsP;
+      if (!rl.allowed) {
+        ac.abort();
+        iterator.return?.()?.catch?.(() => {});
+        throw new HttpError(429, "rate_limited", "Too many requests", {
+          fallback: true,
+          retryAfterSec: rl.retryAfterSec,
+        });
+      }
 
       // Wait for the first chunk before committing to a 200: quota/auth errors become real HTTP errors.
       let first: IteratorResult<LLMChunk>;
       try {
-        first = await iterator.next();
+        first = await firstP;
       } catch (e) {
         ac.abort();
         try {
@@ -211,13 +268,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             if (chunk.type === "usage") {
               if (chunk.inputTokens !== undefined) inputTokens = chunk.inputTokens;
               if (chunk.outputTokens !== undefined) outputTokens = chunk.outputTokens;
+              if (chunk.cacheReadTokens !== undefined) cacheRead = chunk.cacheReadTokens;
+              if (chunk.cacheWriteTokens !== undefined) cacheWrite = chunk.cacheWriteTokens;
               return;
             }
-            if (llmFirstTokenMs === null) llmFirstTokenMs = now() - t0;
             for (const ev of parser.push(chunk.text)) emit(ev);
           };
 
           try {
+            if (parser.presetMeta) emit({ type: "meta", meta: parser.presetMeta });
             let r = first;
             while (!r.done && !stop && !closed) {
               handle(r.value);
@@ -246,9 +305,18 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 llm_first_token_ms: r2(llmFirstTokenMs),
                 total_ms: Math.round(now() - t0),
               },
+              breakdown: {
+                auth_ms: r2(tAuth),
+                body_ms: r2(tBody),
+                limits_ms: r2(limitsMs),
+                llm_first_chunk_ms: r2(llmFirstTokenMs),
+                direct,
+                cold,
+              },
               usage: {
                 input_tokens: inputTokens,
                 output_tokens: outputTokens,
+                cache_read_tokens: cacheRead,
                 model: provider.model,
               },
             });
@@ -264,7 +332,17 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               await iterator.return?.();
             } catch { /* provider already failed */ }
             const rec = usage(status);
-            console.log(JSON.stringify({ evt: "answer", ...rec, user_id: undefined }));
+            console.log(JSON.stringify({
+              evt: "answer",
+              ...rec,
+              user_id: undefined,
+              auth_ms: Math.round(tAuth),
+              limits_ms: limitsMs === null ? null : Math.round(limitsMs),
+              llm_first_chunk_ms: llmFirstTokenMs === null ? null : Math.round(llmFirstTokenMs),
+              cache_read: cacheRead,
+              direct,
+              cold,
+            }));
             try {
               await deps.recordUsage(rec);
             } catch (e) {

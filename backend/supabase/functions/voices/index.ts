@@ -1,6 +1,7 @@
 // GET /functions/v1/voices - the Swedish voices the app may offer (from secret ELEVENLABS_VOICES).
 import { createJwtAuthenticator } from "../_shared/auth.ts";
-import { serviceClient, SupabaseRateLimiter } from "../_shared/ratelimit.ts";
+import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
+import { restDbFromEnv } from "../_shared/restdb.ts";
 import { parseVoices } from "../tts/voices.ts";
 import { createVoicesHandler } from "./handler.ts";
 
@@ -13,7 +14,7 @@ Deno.serve(createVoicesHandler({
     supabaseUrl: env.get("SUPABASE_URL")!,
     hs256Secret: env.get("SUPABASE_JWT_SECRET"),
   }),
-  rateLimiter: new SupabaseRateLimiter(serviceClient()),
+  rateLimiter: new SupabaseRateLimiter(restDbFromEnv()),
   voices,
   defaultVoiceId: env.get("ELEVENLABS_VOICE_ID") ?? null,
 }));

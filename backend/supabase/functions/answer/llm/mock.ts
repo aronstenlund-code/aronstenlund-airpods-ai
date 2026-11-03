@@ -34,7 +34,9 @@ export class MockProvider implements LLMProvider {
       ? (lang === "en" ? "Did you mean that?" : "Menar du det?")
       : (lang === "en" ? `Mock answer to: ${fragment}.` : `Mocksvar på: ${fragment}.`);
 
-    const text = answer ? `${header}\n${answer}` : header;
+    // Direct prompts carry no <mode> tag and expect plain text without a JSON header.
+    const direct = !req.user.includes("<mode>");
+    const text = direct ? answer : answer ? `${header}\n${answer}` : header;
     const size = this.opts.chunkSize ?? 6;
     yield { type: "usage", inputTokens: Math.ceil(req.user.length / 4) + 400, outputTokens: 0 };
     for (let i = 0; i < text.length; i += size) {
