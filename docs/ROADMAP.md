@@ -97,5 +97,6 @@ Measurable targets (to be confirmed with data in Phases 1–4):
 - Intent from fragments: ≥ 90 % of keyword-only prompts produce the answer a human would expect (labelled set, Phase 3).
 - Answer correctness ≥ 95 % on the same set; answer length ≤ 2 sentences.
 - Latency: end of whisper → first audio < 1.5 s p50, < 2.5 s p95.
+- Public-transport case (product owner, 2026-11-03): user can talk quietly on the metro without disturbing others. Test with recorded metro/street noise (~70–80 dB) as an extra noise condition; report keyword accuracy for whisper vs. low normal voice. Fallback when speech can't work: text mode (Phase 4).
 
 Framing: this is a quality benchmark for low-volume, fragmentary input (library, meetings, studying next to others). Marketing, onboarding and test material do not reference exams or covert use (R6, D8).
