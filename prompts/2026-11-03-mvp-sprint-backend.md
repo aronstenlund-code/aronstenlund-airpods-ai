@@ -1,6 +1,6 @@
 > **REACTIVATED by CREED 2026-11-03 18:20 (D18).** Needed for iPhones without Apple Intelligence (iPhone 12 → 15) and for ElevenLabs voices. **Zero-cost rules override everything below:**
 > - Supabase **free tier** only (or another free-tier serverless host). Ask the product owner before creating a project; never add billing details.
-> - LLM: a provider with a genuinely **free tier** usable from Sweden/EU. Verify current free-tier terms, rate limits and data-usage terms in the provider's official docs, record them in `docs/DECISIONS.md`, and pick the best Swedish quality. If no free tier is usable, stop and report — do not choose a paid provider.
+> - LLM (**update 18:25, D19**): **Claude via the Anthropic API**, using the owner's existing key and prepaid credits (owner enters the key as a Supabase secret himself; never in chat or repo). Use the fastest current Claude model suited for short answers; verify the model ID in Anthropic's docs. Keep `LLMProvider` pluggable. On credit/quota errors fail closed (app falls back to on-device answers / a clear message).
 > - ElevenLabs: TTS only, through the owner's existing plan; key stored as a Supabase secret (owner enters it himself — tell him the exact secret name). Add `/tts` endpoint streaming audio. Never ElevenLabs Agents (LLM billed on top).
 > - Every external call must fail closed: on quota/billing errors return an error the app turns into Apple TTS / on-device fallback.
 
