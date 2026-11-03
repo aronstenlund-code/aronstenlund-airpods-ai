@@ -1,7 +1,7 @@
 # Project status — Lumen (codename)
 
 Single overview page. Update it at the end of every session.
-Last updated: 2026-11-03 17:00 by CREED (project supervisor).
+Last updated: 2026-11-03 19:00 by Kevin Malone (backend).
 
 ## Completed
 - Phase 0: initial analysis, architecture, roadmap, MVP definition, first coding assignment. → `reports/2026-11-03-1600-architect-initial-analysis.md`
@@ -11,6 +11,8 @@ Last updated: 2026-11-03 17:00 by CREED (project supervisor).
 ## In progress
 - Phase 1 — Audio foundation. Assignment: `prompts/2026-11-03-phase1-audio-foundation.md`. **Blocked:** Angela's session runs on Windows (no Xcode, no Swift, no reachable Mac), so §3.1–3.7 cannot be built or run; see `reports/2026-11-03-1645-angela-phase1-blocked-no-mac.md` for options. Done so far: test material §3.8 in `testdata/` (noise file not yet chosen). Then OSS-1 + OSS-3 from `prompts/2026-11-03-oss-integration.md`.
 - **Phase 1a — CI build (unblocks Phase 1 code this week).** Assignment: `prompts/2026-11-03-phase1a-ci-build.md`. GitHub Actions macOS runner is the compiler until the product owner has a Mac with Xcode 26 (planned next week). Device tests wait for that Mac.
+
+- **MVP backend (Kevin).** `/answer` (SSE) + `/tts` built and tested offline (46 Deno tests, mock LLM); **not deployed**. Blocked on: owner approval to create a Supabase project, and the owner entering `ANTHROPIC_API_KEY` / `ELEVENLABS_API_KEY` / `ELEVENLABS_VOICE_ID` as Supabase secrets himself. TTFT on the 30 prompts not yet measured. → `reports/2026-11-03-1900-kevin-backend.md`, `backend/README.md`, D20.
 
 ## Next
 - Phase 2 — Transcription (after the Phase 1 report is reviewed).

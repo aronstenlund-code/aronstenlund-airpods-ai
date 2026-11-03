@@ -1,0 +1,137 @@
+# Lumen backend (Kevin Malone's area)
+
+Supabase Edge Functions (Deno/TypeScript). **No provider key ever reaches the app** (D2). Zero-cost rules (D18/D19): Supabase free tier, Claude Haiku 5.5 on the owner's prepaid credits, ElevenLabs TTS on the owner's existing plan. Every external failure *fails closed* and returns an error the app turns into Apple TTS / on-device answers.
+
+| Endpoint | What | Status |
+|---|---|---|
+| `POST /functions/v1/answer` | SSE: `meta` -> `delta`* -> `done` (or `error`) | built, unit + local end-to-end tested with a mock LLM; **not deployed, not tested against real Claude** |
+| `POST /functions/v1/tts` | Streams ElevenLabs audio (TTS only, never Agents) | built, unit tested against a fake upstream; **not deployed, not tested against ElevenLabs** |
+
+## Layout
+```
+backend/
+  deno.json                    tasks: test, check, dev, ttft
+  supabase/
+    config.toml                anonymous sign-ins on, verify_jwt on
+    migrations/                rate_limits + check_rate_limit() + answer_usage
+    functions/
+      _shared/                 auth (JWT), rate limit, errors, SSE, usage log
+      answer/                  handler, prompt, parser, validate, llm/{anthropic,mock,factory}
+      tts/                     handler (ElevenLabs proxy)
+  dev/local.ts                 local server, mock LLM, fixed dev token (no Supabase needed)
+  scripts/ttft.ts              runs the 30 Swedish prompts, prints time-to-first-token
+```
+
+## Run locally (costs nothing)
+```bash
+npm i -g deno            # or any Deno >= 2.1
+cd backend
+deno task test           # 46 unit/handler tests, no network
+deno task check          # type-check everything
+deno task dev            # mock LLM on http://127.0.0.1:8787/functions/v1/answer
+deno task ttft -- --url http://127.0.0.1:8787/functions/v1/answer --token dev-token
+```
+
+## API: `POST /answer`
+Headers: `Authorization: Bearer <Supabase user JWT>` (anonymous sign-in), `Content-Type: application/json`.
+```json
+{ "fragment": "roten ur hundra", "mode": "push_to_talk", "language": "sv",
+  "context": { "transcript": "", "recent_qa": [{"q":"...","a":"..."}], "prep_terms": ["mitokondrie"] } }
+```
+`mode`: `push_to_talk` | `auto` | `text`; `language`: `sv` | `en`. `context` and its members are optional.
+Limits: body 16 KB, fragment 1000 chars, transcript 6000, `recent_qa` 6 x 400, `prep_terms` 30 x 60 (413 otherwise).
+
+Response `200 text/event-stream`:
+```
+event: meta
+data: {"reconstructed_question":"Vad är roten ur hundra?","confidence":0.96,"is_question":true,"needs_confirmation":false}
+
+event: delta
+data: {"text":"Roten ur hundra "}
+...
+event: done
+data: {"answered":true,"timing":{"meta_ms":380,"ttft_ms":410,"llm_first_token_ms":300,"total_ms":620},"usage":{"input_tokens":1010,"output_tokens":38,"model":"claude-haiku-5-5"}}
+```
+- `auto` mode, not addressed to the assistant: `meta` with `is_question:false`, then `done` (`answered:false`); the upstream request is aborted immediately.
+- `push_to_talk` / `text`: `is_question` is always `true` (the user asked on purpose).
+- `needs_confirmation:true` (confidence below `CONFIDENCE_THRESHOLD`, default 0.6): the streamed text is a 2-4 word confirmation question ("Menar du roten ur hundra?"), not an answer.
+- `ttft_ms` is measured from request arrival at the function to the first `delta`; `meta_ms` to `meta`. Client-side TTFT adds network + cold start; the app should log its own.
+- Failure after the stream started: `event: error` with `{code, message, fallback:true}`.
+
+Errors before the stream starts are JSON `{"error":{"code","message","fallback"}}`:
+
+| HTTP | code | meaning / app action |
+|---|---|---|
+| 400 / 413 | `invalid_request` / `payload_too_large` | bug in the app |
+| 401 | `unauthorized` | refresh anonymous session |
+| 429 | `rate_limited` (+`Retry-After`) | back off; use on-device meanwhile |
+| 503 | `provider_quota` | **credits exhausted** -> on-device answers / Apple TTS (`fallback:true`) |
+| 503 | `provider_unconfigured` / `provider_misconfigured` / `provider_busy` | fallback |
+| 502 | `provider_unavailable` / `provider_error` | fallback |
+
+`fallback:true` means: use Apple TTS / on-device answer engine for this request.
+
+## API: `POST /tts`
+> **Untested assumptions:** ElevenLabs endpoint path/params (`/v1/text-to-speech/{voice}/stream`, `model_id: eleven_flash_v2_5`, `language_code`, `output_format` values, quota error shape) are written from memory of their API - docs.elevenlabs.io was not reachable from the build session. Verify with one real call before relying on it.
+
+`{ "text": "Roten ur hundra är tio.", "language": "sv", "output_format": "mp3_44100_64", "voice_id": "<optional>" }` -> streamed `audio/mpeg` (or PCM for `pcm_16000` / `pcm_24000`). Text <= 500 chars. Model `eleven_flash_v2_5`. Limits are in **characters** (ElevenLabs bills per character).
+
+## Auth and abuse protection
+- Supabase anonymous sign-in; the function verifies the JWT itself (JWKS, or `SUPABASE_JWT_SECRET` for legacy HS256 projects) and requires `role=authenticated` + `sub`. The project anon/publishable key alone is rejected. The gateway also enforces `verify_jwt`.
+- Rate limits (Postgres, atomic, shared across instances), all configurable by env, all **fail closed** (a limiter error denies the request):
+
+| Env | Default | Meaning |
+|---|---|---|
+| `ANSWER_PER_MINUTE` | 20 | per user |
+| `ANSWER_PER_DAY` | 400 | per user |
+| `ANSWER_GLOBAL_PER_DAY` | 5000 | **global kill switch** for all users |
+| `TTS_CHARS_PER_MINUTE` / `TTS_CHARS_PER_DAY` / `TTS_GLOBAL_CHARS_PER_DAY` | 1500 / 15000 / 100000 | characters; **tune to the owner's ElevenLabs plan** |
+
+- Privacy: transcripts/fragments/answers are **never logged or stored**. `answer_usage` keeps only metadata (user id, mode, tokens, timings, estimated cost, status).
+
+## Deploy (needs the owner's go-ahead for the Supabase project)
+Do **not** enter billing details anywhere. Stay on the Supabase free plan.
+```bash
+npm i -g supabase                     # or use the Supabase MCP / dashboard
+cd backend
+supabase link --project-ref <ref>     # after the owner has approved creating/choosing the project
+supabase db push                      # applies migrations/ (rate_limits, check_rate_limit, answer_usage)
+supabase functions deploy answer
+supabase functions deploy tts
+```
+Dashboard: Authentication -> Sign In / Providers -> enable **Anonymous sign-ins**. Supabase limits anonymous sign-ins to 30/hour per IP and recommends enabling CAPTCHA/Turnstile against abuse (verified in Supabase docs); decide with the owner before launch.
+
+### Secrets (names only; the owner enters the values himself - never in chat or in the repo)
+```bash
+supabase secrets set ANTHROPIC_API_KEY=...        # the owner's Anthropic key (prepaid credits, auto-reload OFF)
+supabase secrets set ELEVENLABS_API_KEY=...       # existing ElevenLabs plan
+supabase secrets set ELEVENLABS_VOICE_ID=...      # the voice to use
+```
+`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` are injected by Supabase. Optional: `LLM_MODEL` (default `claude-haiku-5-5`), `LLM_EFFORT` (`low`|`medium`|`high`, default `low`), `LLM_DISABLE_THINKING` (`0` to allow adaptive thinking), `CONFIDENCE_THRESHOLD`, `PRICE_IN_PER_MTOK` / `PRICE_OUT_PER_MTOK` (cost estimate only; defaults 0.10 / 0.50), `SUPABASE_JWT_SECRET` (legacy HS256 projects only).
+
+With no `ANTHROPIC_API_KEY` the function answers `503 provider_unconfigured` (fail closed). The mock provider only runs when `LLM_PROVIDER=mock` is set explicitly - never set it in production.
+
+**Cost guard rails the owner should also set on the provider side:** Anthropic Console - keep auto-reload off and set a low monthly spend limit; ElevenLabs - disable usage-based/overage billing so the plan stops instead of charging.
+
+## curl
+```bash
+SUPABASE_URL=https://<ref>.supabase.co
+ANON=<publishable/anon key>
+# (anonymous sign-in via POST /auth/v1/signup with an empty JSON body is how supabase-js does it - not yet run against a real project)
+TOKEN=$(curl -s -X POST "$SUPABASE_URL/auth/v1/signup" -H "apikey: $ANON" -H 'content-type: application/json' -d '{}' | jq -r .access_token)
+curl -sN -X POST "$SUPABASE_URL/functions/v1/answer" \
+  -H "Authorization: Bearer $TOKEN" -H "apikey: $ANON" -H 'content-type: application/json' \
+  -d '{"fragment":"roten ur hundra","mode":"push_to_talk","language":"sv","context":{}}'
+```
+
+## Measuring time-to-first-token
+```bash
+export SUPABASE_URL=https://<ref>.supabase.co SUPABASE_ANON_KEY=<publishable key>
+deno task ttft -- --url $SUPABASE_URL/functions/v1/answer --mode push_to_talk --out results/prod-$(date +%F).json
+```
+Prints per-prompt meta/TTFT/total, flags style violations (more than two sentences, digits or symbols in the answer, empty answer) and p50/p90. Run once cold and once warm; report both.
+
+## Design notes
+- **Wire protocol with the model:** first line is a JSON header (`is_question`, `reconstructed_question`, `confidence`), then the answer text. The server parses it incrementally, emits `meta` as soon as the header closes, and streams the rest as `delta`. Chosen over tool-use/structured output because it keeps a single streaming call with the lowest time-to-first-token; a bad header fails safe (auto mode: no answer).
+- `LLMProvider` (`answer/llm/types.ts`) is the swap point; add a class and a branch in `llm/factory.ts`.
+- Haiku 5.5 request: no `temperature`/`top_p`/`top_k` (rejected by the model), `thinking: disabled` + `output_config.effort: low` for latency (documented as accepted at effort <= high).

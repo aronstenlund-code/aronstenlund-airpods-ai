@@ -1,0 +1,11 @@
+# Minimal Supabase CLI config for the Lumen backend (free tier). `project_id` is a local label only.
+project_id = "lumen-backend"
+
+[auth]
+enable_anonymous_sign_ins = true   # also enable in Dashboard > Authentication > Sign In / Providers
+
+[functions.answer]
+verify_jwt = true                  # gateway rejects calls without a valid user/anon JWT; code re-verifies
+
+[functions.tts]
+verify_jwt = true
