@@ -13,6 +13,7 @@ struct ListeningView: View {
             answersSection
         }
         .listStyle(.insetGrouped)
+        .overlay(alignment: .topTrailing) { latencyOverlay }
         .safeAreaInset(edge: .bottom) { controls }
         .navigationTitle("Lumen")
         .toolbar {
@@ -30,6 +31,23 @@ struct ListeningView: View {
                     Label("Privacy & consent", systemImage: "hand.raised")
                 }
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    model.isShowingSettings = true
+                } label: {
+                    Label("Settings", systemImage: "gearshape")
+                }
+            }
+        }
+        .sheet(isPresented: $model.isShowingSettings) {
+            NavigationStack {
+                SettingsView(model: model)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button("Done") { model.isShowingSettings = false }
+                        }
+                    }
+            }
         }
         .sheet(isPresented: $model.isShowingPrivacy) {
             NavigationStack {
@@ -44,6 +62,35 @@ struct ListeningView: View {
                 }
             }
         }
+    }
+
+    // MARK: Latency overlay (item 7, Debug builds)
+
+    @AppStorage("debug.latencyOverlay") private var showsLatencyOverlay = false
+
+    @ViewBuilder
+    private var latencyOverlay: some View {
+        #if DEBUG
+        if showsLatencyOverlay {
+            VStack(alignment: .trailing, spacing: 2) {
+                if let latest = model.latency.latest {
+                    Text(verbatim: latest.summary)
+                }
+                if let p50 = model.latency.firstSpeechP50, let p95 = model.latency.firstSpeechP95 {
+                    Text(verbatim: "voice p50 \(Int(p50)) · p95 \(Int(p95)) · n=\(model.latency.records.count)")
+                } else if let p50 = model.latency.firstTextP50 {
+                    Text(verbatim: "text p50 \(Int(p50)) · n=\(model.latency.records.count)")
+                } else {
+                    Text(verbatim: "latency: no answers yet")
+                }
+            }
+            .font(.caption2.monospacedDigit())
+            .padding(6)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 6))
+            .padding(8)
+            .allowsHitTesting(false)
+        }
+        #endif
     }
 
     // MARK: Sections
@@ -75,43 +122,26 @@ struct ListeningView: View {
                     .foregroundStyle(.red)
             }
             transcriptionStatusRow
-            Picker("Language", selection: languageBinding) {
-                ForEach(TranscriptionLanguage.allCases) { language in
-                    Text(language.nativeName).tag(language)
-                }
-            }
-            .pickerStyle(.segmented)
-            activationSettingsRows
+            speakerRow
         }
     }
 
     @ViewBuilder
-    private var activationSettingsRows: some View {
-        @Bindable var settings = model.activation.settings
-        Picker("Activation", selection: $settings.mode) {
-            Text("Hold to ask").tag(ActivationMode.pushToTalk)
-            Text("Auto").tag(ActivationMode.auto)
-        }
-        .pickerStyle(.segmented)
-        if settings.mode == .auto {
-            Picker("Sensitivity", selection: $settings.sensitivity) {
-                Text("Low").tag(GateSensitivity.low)
-                Text("Medium").tag(GateSensitivity.medium)
-                Text("High").tag(GateSensitivity.high)
-            }
-            Text("Auto listens for questions in the room. Hold to ask gives the fewest false answers.")
+    private var speakerRow: some View {
+        if model.speaker.status != .idle {
+            Label("Speaking…", systemImage: "speaker.wave.2.fill")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        } else if !model.speaker.settings.speakAnswers {
+            Label("Silent mode: answers are shown, not spoken.", systemImage: "speaker.slash")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
-        #if DEBUG
-        Toggle("Mock answers (debug, no network)", isOn: $model.useMockAnswers)
-            .font(.footnote)
-        #endif
-    }
-
-    private var languageBinding: Binding<TranscriptionLanguage> {
-        Binding(get: { model.transcription.language.selected },
-                set: { newValue in Task { await model.transcription.setLanguage(newValue) } })
+        if let notice = model.speaker.notice {
+            Label(notice, systemImage: "exclamationmark.triangle")
+                .font(.footnote)
+                .foregroundStyle(.orange)
+        }
     }
 
     @ViewBuilder
@@ -264,6 +294,7 @@ struct ListeningView: View {
 
     private var controls: some View {
         VStack(spacing: 10) {
+            textQuestionRow
             if model.isListening {
                 holdToAskButton
                 Button {
@@ -300,6 +331,25 @@ struct ListeningView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
         .background(.bar)
+    }
+
+    /// Text mode (item 6): type a question; the answer is spoken, or only shown in silent mode. No microphone needed.
+    private var textQuestionRow: some View {
+        HStack(spacing: 8) {
+            TextField("Type a question", text: $model.draftQuestion)
+                .textFieldStyle(.roundedBorder)
+                .submitLabel(.send)
+                .onSubmit { model.sendDraft() }
+            Button {
+                model.sendDraft()
+            } label: {
+                Image(systemName: "paperplane.fill")
+                    .padding(.vertical, 4)
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(!model.canSendDraft)
+            .accessibilityLabel("Send")
+        }
     }
 
     /// Press-and-hold: the words said while holding become the question (push-to-talk, the default trigger).

@@ -8,6 +8,9 @@ final class FakeHTTP: HTTPStreaming, @unchecked Sendable {
         var status: Int
         var body: String
         var error: (any Error)?
+        /// Binary body for `bytes(for:)`, delivered in `chunkSize` pieces (default: whole body at once).
+        var bodyData: Data?
+        var chunkSize: Int = 0
     }
 
     private(set) var requests: [URLRequest] = []
@@ -35,6 +38,22 @@ final class FakeHTTP: HTTPStreaming, @unchecked Sendable {
         let lines = response.body.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
         let stream = AsyncThrowingStream<String, any Error> { continuation in
             for line in lines { continuation.yield(line) }
+            continuation.finish()
+        }
+        return (Self.http(request, response.status), stream)
+    }
+
+    func bytes(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<Data, any Error>) {
+        let response = try next(request)
+        let data = response.bodyData ?? Data(response.body.utf8)
+        let size = response.chunkSize > 0 ? response.chunkSize : max(1, data.count)
+        let stream = AsyncThrowingStream<Data, any Error> { continuation in
+            var offset = 0
+            while offset < data.count {
+                let end = min(data.count, offset + size)
+                continuation.yield(data.subdata(in: offset..<end))
+                offset = end
+            }
             continuation.finish()
         }
         return (Self.http(request, response.status), stream)

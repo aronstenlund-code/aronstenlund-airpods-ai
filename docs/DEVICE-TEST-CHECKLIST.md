@@ -150,7 +150,7 @@ sprintsteg; här testas bara skärmen, indikatorn och samtycket.
    texter som dyker upp där svenska borde stå.
 
 ### 3j. Transkription live (MVP-del 2, 10 min)
-1. På lyssnarskärmen: välj **Svenska** i språkväljaren och tryck *Börja lyssna*. Under statusraden ska det stå
+1. På lyssnarskärmen: välj **Svenska** under Inställningar (kugghjulet uppe till höger → Språk), stäng och tryck *Börja lyssna*. Under statusraden ska det stå
    *Förbereder talmodellen …* (första gången laddas Apples svenska modell ner – kräver internet, kan ta en
    minut) och sedan *Transkriberar på den här telefonen · SpeechTranscriber* (eller *DictationTranscriber*).
    **Skriv ner vilket av de två som står** – det avgör vilken Apple-motor som finns för svenska.
@@ -158,8 +158,8 @@ sprintsteg; här testas bara skärmen, indikatorn och samtycket.
    svart när meningen är klar. Säg tre av de korta meningarna i `testdata/scripts/sv-short-prompts.md` och
    skriv ner vad som faktiskt kom ut (bokstavligt).
 3. Låt en annan person säga tre meningar på 2 m avstånd. Skriv ner resultatet på samma sätt.
-4. Byt till **English** medan den lyssnar. Statusraden ska gå via *Förbereder …* till *Transkriberar …* igen.
-   Säg två meningar på engelska. Byt tillbaka till Svenska.
+4. Byt språk till **English** i Inställningar medan den lyssnar. Statusraden ska gå via *Förbereder …* till *Transkriberar …* igen.
+   Säg två meningar på engelska. Byt tillbaka till Svenska i Inställningar.
 5. Står det *Svenska finns inte för taligenkänning på den här telefonen*: det är ett viktigt resultat (R2).
    Tryck på diagnostikskärmen → *Check SpeechTranscriber locales* och kopiera texten.
 6. Ta ut AirPods (paus) och sätt i dem igen → *Fortsätt lyssna*. Transkriptionen ska starta om själv
@@ -167,17 +167,58 @@ sprintsteg; här testas bara skärmen, indikatorn och samtycket.
 
 ### 3k. Aktivering: håll för att fråga och auto (MVP-del 3, 10 min)
 Svarsmotorn kommer i nästa steg – här testas bara att rätt mening fångas som fråga.
-1. *Börja lyssna*, Svenska. Lämna *Aktivering* på **Håll för att fråga**. Håll in den stora knappen
+1. *Börja lyssna*, Svenska. I Inställningar: lämna *Aktivering* på **Håll för att fråga**. Håll in den stora knappen
    *Håll för att fråga* (den blir orange: *Lyssnar på dig … släpp för att fråga*), säg "vad är fotosyntes",
    släpp. Inom ca 2 s ska kortet **Upptäckt fråga** visa exakt det du sa. Skriv ner om något ord fattades
    (särskilt det sista) – det styr hur lång väntetiden efter släpp ska vara.
 2. Säg något lågt (nästan viskande) medan du håller. Fångades det?
 3. Låt någon annan säga en mening, tryck *Fråga om det senast sagda*: kortet ska visa den meningen.
-4. Byt *Aktivering* till **Auto**, känslighet *Mellan*. Låt någon läsa tre vanliga påståenden
+4. I Inställningar: byt *Aktivering* till **Auto**, känslighet *Mellan*. Låt någon läsa tre vanliga påståenden
    ("idag ska vi prata om …") och sedan tre frågor ur `testdata/scripts/sv-short-prompts.md` (t.ex. 5, 12, 29).
    Skriv ner vilka som gav *Upptäckt fråga* och vilka som inte gjorde det (både falska träffar och missar).
 5. Ställ två frågor inom 5 sekunder: bara den första ska fångas (8 s väntetid mellan automatiska svar).
-6. Sätt känslighet *Hög* och säg bara "fotosyntes": nu ska det fångas. På *Mellan* ska det inte fångas.
+6. Sätt känslighet *Hög* (Inställningar) och säg bara "fotosyntes": nu ska det fångas. På *Mellan* ska det inte fångas.
+
+### 3l. Riktiga svar från servern (MVP-del 4, 10 min) – kräver att backend är "live" i STATUS
+Förutsättningar (ägaren, en gång, klickvägar i `backend/README.md`): *Anonymous sign-ins* påslaget i Supabase-projektet
+Lumen och hemligheten `ANTHROPIC_API_KEY` inlagd. Telefonen behöver internet.
+1. *Börja lyssna*, Svenska, *Håll för att fråga* (Inställningar). Håll, säg "roten ur hundra", släpp. Under *Svar* ska det
+   först stå *Tänker …* och sedan strömma in text. När svaret är klart visas det i listan med tid, källan
+   `cloud` och latens i ms (från släpp till första ord). **Skriv ner latensen** för fem frågor
+   (t.ex. nr 1, 5, 12, 23, 29 i `testdata/scripts/sv-short-prompts.md`) och om svaren är korrekta och korta.
+2. Står det en orange rad under svaren i stället, skriv ner texten exakt. Vanliga fall:
+   `anonymous_provider_disabled` = anonym inloggning är inte påslagen; `provider_unconfigured` = nyckeln saknas;
+   *Answers need an internet connection* = telefonen är offline.
+3. Byt *Aktivering* till **Auto** i Inställningar. Låt någon säga ett påstående och sedan en fråga: påståendet ska ge raden
+   *Not a question — no answer (auto mode)* eller inget alls, frågan ska ge ett svar.
+4. Ställ en ny fråga medan ett svar strömmar: det gamla svaret ska försvinna och det nya börja direkt.
+5. Slå på flygplansläge, ställ en fråga: raden *Answers need an internet connection* ska visas. Slå av igen.
+6. (Debug-bygge) Slå på *Låtsassvar (debug, utan nätverk)* under Inställningar → Felsökning och ställ en fråga: ett låtsassvar ska strömma in
+   utan nätverk. Slå av igen.
+
+### 3m. Röst i AirPods (MVP-del 5, 10 min)
+1. Inställningar → *Röst*: *Läs upp svaren* på, röst **Apple-röst (på telefonen)**. Tryck *Provlyssna*: en svensk
+   provmening ska höras **i AirPods** (inte i telefonens högtalare), även medan den lyssnar. Skriv ner
+   kvaliteten (bra / sämre / telefonkvalitet) – över HFP förväntas telefonkvalitet.
+2. Ställ en fråga med *Håll för att fråga*. Svaret ska läsas upp **mening för mening medan texten strömmar in**,
+   inte först när hela svaret är klart. Skriv ner tiden från släpp till första ordet (ungefär, sekundvisare).
+3. Ställ en ny fråga mitt i ett uppläst svar: uppläsningen ska tystna direkt och det nya svaret börja.
+4. Dra *Hastighet* till 1,5× och provlyssna: snabbare utan att rösten blir ljusare.
+5. Om rösttjänsten är igång (STATUS: backend live, hemligheterna `ELEVENLABS_API_KEY`/`ELEVENLABS_VOICES` inlagda):
+   välj en av de tre premiumrösterna, *Provlyssna*, och jämför kvalitet och fördröjning med Apple-rösten. Slå på
+   flygplansläge och ställ en fråga: raden *Premium voice unavailable — using Apple's voice …* ska visas och
+   svaret ändå läsas upp med Apple-rösten.
+6. Stäng av *Läs upp svaren*: svaret ska bara visas som text (tyst läge, MVP-del 6).
+
+### 3n. Textläge (MVP-del 6, 3 min)
+1. Utan att lyssna (mikrofonen av): skriv "vad är pi" i fältet *Skriv en fråga* längst ner och tryck
+   pappersflygplanet (eller retur). Svaret ska strömma in under *Svar* och läsas upp i AirPods.
+2. Stäng av *Läs upp svaren* i Inställningar och skicka en ny fråga: bara text, inget ljud (tyst läge).
+
+### 3o. Latensrutan (MVP-del 7, 2 min, debug-bygge)
+Inställningar → Felsökning → *Latensruta* på. En liten ruta uppe till höger visar för senaste svaret
+*text N ms · voice N ms* (från släpp/fråga till första textordet respektive första upplästa meningen) och
+p50/p95 över sessionen. Ställ fem frågor och **skriv ner raden** – det är R4-mätningen (mål < 1,5 s p50).
 
 ## Del 4 — Skicka in resultaten (5 min)
 
@@ -187,7 +228,7 @@ Svarsmotorn kommer i nästa steg – här testas bara att rätt mening fångas s
    - den inklistrade texten (en per AirPods-modell, eller en lång),
    - iPhone-modell och iOS-version (står högst upp i texten),
    - AirPods-modell + firmware (från steg 11),
-   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i, 3j (bokstavliga transkriptioner) och 3k (fångade/missade frågor),
+   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i, 3j (bokstavliga transkriptioner), 3k (fångade/missade frågor), 3l (latenser, feltexter), 3m (röstkvalitet), 3n (textläge) och 3o (latensraden),
    - noise-uppgifterna från `testdata/noise/README.md`.
 3. **WAV-filerna**: anslut iPhone till Macen → Finder → iPhone → *Filer* → *Lumen* → dra alla
    `lumen-*.wav` till en mapp, t.ex. `~/Lumen-recordings/<datum>/`. **Lägg dem inte i git.** Skriv

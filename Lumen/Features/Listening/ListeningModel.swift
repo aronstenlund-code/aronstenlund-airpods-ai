@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// Drives the Listening screen (MVP items 1–4). No business logic in views.
+/// Drives the Listening screen (MVP items 1–5). No business logic in views.
 @MainActor
 @Observable
 final class ListeningModel: TranscriptSink, AnswerSink {
@@ -10,12 +10,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let transcription: TranscriptionCoordinator
     let activation: ActivationController
     let answers: AnswerEngine
+    let speaker: Speaker
+    let voices: VoiceCatalog
+    /// Per-answer latency budget (item 7), shown in the debug overlay.
+    let latency = LatencyLog()
     private(set) var conversation = Conversation()
     /// The most recent question handed to the answer engine.
     private(set) var pendingQuestion: ActivationRequest?
     /// One-line notice under the answers: "not a question", failures, offline.
     private(set) var answerNotice: String?
     var isShowingPrivacy = false
+    var isShowingSettings = false
+    /// Text mode (item 6): the question being typed. Works without the microphone.
+    var draftQuestion = ""
     private var flushTask: Task<Void, Never>?
 
     var state: SessionState { controller.state }
@@ -34,6 +41,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         get { answers.useMock }
         set { answers.useMock = newValue }
     }
+    /// Installed Apple voices for the selected language (settings picker).
+    var appleVoices: [VoiceChoice] { AppleTTSProvider.installedVoices(for: language) }
 
     /// "AirPods Pro · HFP" — which microphone is live, from the session snapshot.
     var routeSummary: String? {
@@ -42,14 +51,18 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     init(controller: SessionController, consent: any ConsentStoring,
-         transcription: TranscriptionCoordinator, activation: ActivationController, answers: AnswerEngine) {
+         transcription: TranscriptionCoordinator, activation: ActivationController,
+         answers: AnswerEngine, speaker: Speaker, voices: VoiceCatalog) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
         self.activation = activation
         self.answers = answers
+        self.speaker = speaker
+        self.voices = voices
         activation.onActivate = { [weak self] request in self?.activated(request) }
         answers.sink = self
+        speaker.onSentenceStarted = { [weak self] provider in self?.latency.markFirstSpeech(provider: provider) }
     }
 
     // MARK: - User actions
@@ -75,6 +88,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func stopListening() async {
         flushTask?.cancel()
         answers.cancel()
+        speaker.interrupt()
         conversation.cancelAnswer()
         await controller.stop()
     }
@@ -95,9 +109,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func clearHistory() {
         answers.cancel()
+        speaker.interrupt()
+        latency.clear()
         conversation.clear()
         pendingQuestion = nil
         answerNotice = nil
+    }
+
+    func previewVoice() {
+        speaker.preview(speaker.settings.voice, language: language)
     }
 
     // MARK: - Activation (item 3)
@@ -126,14 +146,26 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
-    /// Text mode (item 6) enters here as well.
+    /// Text mode (item 6): typed questions take the same path as spoken ones (`mode: text` to the backend).
     func submitText(_ text: String) {
         activation.submitText(text, language: language)
+    }
+
+    var canSendDraft: Bool { !draftQuestion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
+    func sendDraft() {
+        guard canSendDraft else { return }
+        let text = draftQuestion
+        draftQuestion = ""
+        submitText(text)
     }
 
     private func activated(_ request: ActivationRequest) {
         pendingQuestion = request
         answerNotice = nil
+        // A new question interrupts the current answer and its speech (assignment item 5).
+        speaker.interrupt()
+        latency.begin(request)
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
         let context = AnswerContext(transcript: conversation.recentText(seconds: 60),
                                     recentQA: conversation.recentQA(limit: 3),
@@ -152,12 +184,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerDelta(_ text: String) {
+        latency.markFirstText(provider: answers.activeProvider.name)
         conversation.appendAnswerText(text)
     }
 
     func answerSentence(_ sentence: String) {
-        // Item 5: hand the sentence to TTS. Logged for now.
-        Log.answer.debug("sentence: \(sentence, privacy: .private)")
+        speaker.enqueue(sentence, language: pendingQuestion?.language ?? language)
     }
 
     func answerCompleted(latencyMs: Double?, done: AnswerDone?) {
@@ -168,12 +200,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerSkipped(_ request: ActivationRequest) {
+        latency.end()
         conversation.cancelAnswer()
         answerNotice = "Not a question — no answer (auto mode)"
         controller.log("Auto: backend says not a question: \(request.query)")
     }
 
     func answerFailed(_ message: String, wantsFallback: Bool) {
+        latency.end()
         conversation.cancelAnswer()
         answerNotice = message
         controller.log("Answer failed: \(message)" + (wantsFallback ? " · fallback requested (on-device engine not available on this iPhone)" : ""))

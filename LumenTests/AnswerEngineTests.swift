@@ -148,7 +148,7 @@ import Testing
         let h = ControllerHarness()
         let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true),
                                    transcription: makeTestCoordinator(h.controller), activation: makeTestActivation(),
-                                   answers: makeTestAnswerEngine(provider))
+                                   answers: makeTestAnswerEngine(provider), speaker: makeTestSpeaker(h.playback), voices: makeTestVoiceCatalog())
         return (h, model)
     }
 
@@ -192,6 +192,32 @@ import Testing
         model.submitText("idag pratar vi om celler")
         #expect(await waitUntil { model.answerNotice != nil })
         #expect(model.answerNotice == "Not a question — no answer (auto mode)")
+    }
+
+    @Test func typedQuestionWorksWithoutTheMicrophone() async {
+        let provider = FakeAnswerProvider(name: "cloud", events: [
+            .meta(AnswerMeta(reconstructedQuestion: "Vad är pi?", isQuestion: true)),
+            .delta("Ungefär 3,14."), .done(AnswerDone(answered: true)),
+        ])
+        let (h, model) = makeModel(provider: provider)
+        #expect(!model.isListening)
+
+        model.draftQuestion = "   "
+        #expect(!model.canSendDraft)
+        model.sendDraft()
+        #expect(model.pendingQuestion == nil)
+
+        model.draftQuestion = " vad är pi "
+        #expect(model.canSendDraft)
+        model.sendDraft()
+
+        #expect(model.draftQuestion.isEmpty, "the field is cleared on send")
+        #expect(model.pendingQuestion?.trigger == .text)
+        #expect(model.pendingQuestion?.query == "vad är pi")
+        #expect(await waitUntil { model.conversation.answers.count == 1 })
+        #expect(model.conversation.answers[0].answer == "Ungefär 3,14.")
+        #expect(provider.requests.first?.mode == "text")
+        #expect(h.session.permissionRequests == 0, "no microphone involved")
     }
 
     @Test func stopListeningCancelsTheAnswer() async {

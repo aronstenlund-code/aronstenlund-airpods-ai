@@ -102,11 +102,22 @@ final class FakePlaybackService: PlaybackServicing {
     var isSpeaking = false
     var stopCalls = 0
     var spoken: [String] = []
+    var spokenVoices: [String?] = []
+    var played: [[Int16]] = []
+    var playedSampleRates: [Double] = []
+    var speakError: AudioError?
 
     func playTestTone(frequency: Double, duration: Double) throws(AudioError) {}
 
-    func speak(_ text: String, language: String) async throws(AudioError) {
+    func speak(_ text: String, language: String, voiceIdentifier: String?) async throws(AudioError) {
+        if let speakError { throw speakError }
         spoken.append(text)
+        spokenVoices.append(voiceIdentifier)
+    }
+
+    func play(samples: [Int16], sampleRate: Double) throws(AudioError) {
+        played.append(samples)
+        playedSampleRates.append(sampleRate)
     }
 
     func stop() {

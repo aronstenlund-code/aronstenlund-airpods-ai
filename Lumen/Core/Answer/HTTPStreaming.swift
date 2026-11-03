@@ -6,6 +6,8 @@ protocol HTTPStreaming: Sendable {
     func data(for request: URLRequest) async throws -> (HTTPURLResponse, Data)
     /// Line-by-line body for `text/event-stream`. The stream ends when the server closes the response.
     func lines(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<String, any Error>)
+    /// Binary body in chunks as they arrive (streamed audio).
+    func bytes(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<Data, any Error>)
 }
 
 struct URLSessionHTTP: HTTPStreaming {
@@ -34,6 +36,35 @@ struct URLSessionHTTP: HTTPStreaming {
                     for try await line in bytes.lines {
                         continuation.yield(line)
                     }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
+        return (http, stream)
+    }
+
+    func bytes(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<Data, any Error>) {
+        let (bytes, response) = try await session.bytes(for: request)
+        guard let http = response as? HTTPURLResponse else {
+            throw AnswerError.transport(detail: "not an HTTP response")
+        }
+        let stream = AsyncThrowingStream<Data, any Error> { continuation in
+            let task = Task {
+                do {
+                    var chunk = Data()
+                    chunk.reserveCapacity(4_800)
+                    for try await byte in bytes {
+                        chunk.append(byte)
+                        if chunk.count >= 4_800 {
+                            continuation.yield(chunk)
+                            chunk = Data()
+                            chunk.reserveCapacity(4_800)
+                        }
+                    }
+                    if !chunk.isEmpty { continuation.yield(chunk) }
                     continuation.finish()
                 } catch {
                     continuation.finish(throwing: error)

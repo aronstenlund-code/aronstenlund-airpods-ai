@@ -78,6 +78,17 @@
         }
       }
     },
+    "Apple voice (on device)": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple-röst (på telefonen)"
+          }
+        }
+      }
+    },
     "Ask about the last sentence": {
       "extractionState": "manual",
       "localizations": {
@@ -177,6 +188,17 @@
         }
       }
     },
+    "Could not load premium voices: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kunde inte hämta premiumröster: %@"
+          }
+        }
+      }
+    },
     "Could not start": {
       "extractionState": "manual",
       "localizations": {
@@ -184,6 +206,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kunde inte starta"
+          }
+        }
+      }
+    },
+    "Debug": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Felsökning"
           }
         }
       }
@@ -287,6 +320,17 @@
         }
       }
     },
+    "Latency overlay": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Latensruta"
+          }
+        }
+      }
+    },
     "Listening": {
       "extractionState": "manual",
       "localizations": {
@@ -338,6 +382,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Transkription live"
+          }
+        }
+      }
+    },
+    "Loading voices…": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hämtar röster …"
           }
         }
       }
@@ -463,6 +518,17 @@
         }
       }
     },
+    "Premium voices appear here when the voice service is live.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premiumröster visas här när rösttjänsten är igång."
+          }
+        }
+      }
+    },
     "Preparing the speech model (%@) — the first time this downloads it.": {
       "extractionState": "manual",
       "localizations": {
@@ -470,6 +536,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Förbereder talmodellen (%@) – första gången laddas den ner."
+          }
+        }
+      }
+    },
+    "Preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Provlyssna"
           }
         }
       }
@@ -518,6 +595,17 @@
         }
       }
     },
+    "Send": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skicka"
+          }
+        }
+      }
+    },
     "Sensitivity": {
       "extractionState": "manual",
       "localizations": {
@@ -525,6 +613,50 @@
           "stringUnit": {
             "state": "translated",
             "value": "Känslighet"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inställningar"
+          }
+        }
+      }
+    },
+    "Silent mode: answers are shown, not spoken.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tyst läge: svaren visas men läses inte upp."
+          }
+        }
+      }
+    },
+    "Speak answers": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läs upp svaren"
+          }
+        }
+      }
+    },
+    "Speaking…": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talar …"
           }
         }
       }
@@ -558,6 +690,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Taligenkänningen misslyckades: %@"
+          }
+        }
+      }
+    },
+    "Speed": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hastighet"
           }
         }
       }
@@ -720,6 +863,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Transkriberar på den här telefonen · %@"
+          }
+        }
+      }
+    },
+    "Type a question": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skriv en fråga"
+          }
+        }
+      }
+    },
+    "Voice": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Röst"
           }
         }
       }

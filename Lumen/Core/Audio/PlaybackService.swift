@@ -13,9 +13,18 @@ protocol PlaybackServicing: AnyObject {
 
     func playTestTone(frequency: Double, duration: Double) throws(AudioError)
     /// Speaks `text` through our engine (not the system's) using `AVSpeechSynthesizer.write`.
-    func speak(_ text: String, language: String) async throws(AudioError)
+    /// `voiceIdentifier` picks a specific `AVSpeechSynthesisVoice`; nil = the default voice for `language`.
+    func speak(_ text: String, language: String, voiceIdentifier: String?) async throws(AudioError)
+    /// Schedules raw 16-bit mono PCM (streamed cloud TTS, item 5) into the playback graph.
+    func play(samples: [Int16], sampleRate: Double) throws(AudioError)
     func stop()
     func clearLatencySamples()
+}
+
+extension PlaybackServicing {
+    func speak(_ text: String, language: String) async throws(AudioError) {
+        try await speak(text, language: language, voiceIdentifier: nil)
+    }
 }
 
 /// Measures the time from a play request to the first non-silent buffer leaving the time-pitch node.
@@ -67,6 +76,16 @@ struct TTSChunk: Sendable {
     let samples: [Float]
     let sampleRate: Double
 
+    init(samples: [Float], sampleRate: Double) {
+        self.samples = samples
+        self.sampleRate = sampleRate
+    }
+
+    init(pcm16 samples: [Int16], sampleRate: Double) {
+        self.samples = samples.map { Float($0) / 32768 }
+        self.sampleRate = sampleRate
+    }
+
     init?(_ buffer: AVAudioPCMBuffer) {
         let frames = Int(buffer.frameLength)
         guard frames > 0 else { return nil }
@@ -99,7 +118,12 @@ final class PlaybackService: PlaybackServicing {
         }
     }
     private(set) var latencySamplesMs: [Double] = []
+    /// True while speech is being scheduled or scheduled buffers are still playing (self-playback suppression, §4.3).
     private(set) var isSpeaking = false
+    private var activeStreams = 0
+    private var pendingBuffers = 0
+    /// Bumped by `stop()` so completion callbacks of discarded buffers are ignored.
+    private var scheduleGeneration = 0
 
     private let graph: AudioGraph
     /// Fixed graph format for the playback branch (D16); the mixer converts to the hardware rate.
@@ -160,8 +184,9 @@ final class PlaybackService: PlaybackServicing {
 
     // MARK: - TTS through our engine
 
-    func speak(_ text: String, language: String) async throws(AudioError) {
-        guard let voice = AVSpeechSynthesisVoice(language: language) else {
+    func speak(_ text: String, language: String, voiceIdentifier: String?) async throws(AudioError) {
+        let chosen = voiceIdentifier.flatMap { AVSpeechSynthesisVoice(identifier: $0) }
+        guard let voice = chosen ?? AVSpeechSynthesisVoice(language: language) else {
             throw .ttsFailed(detail: "no voice for \(language)")
         }
         try graph.ensureRunning()
@@ -169,7 +194,7 @@ final class PlaybackService: PlaybackServicing {
         utterance.voice = voice
 
         let (stream, continuation) = AsyncStream<TTSChunk>.makeStream(bufferingPolicy: .unbounded)
-        isSpeaking = true
+        beginStream()
         requestPlayback()
         Log.playback.info("Speak (\(language, privacy: .public)): \(text, privacy: .public)")
 
@@ -184,13 +209,42 @@ final class PlaybackService: PlaybackServicing {
             }
         }
 
-        defer { isSpeaking = false }
+        defer { endStream() }
         var chunkCount = 0
         for await chunk in stream {
             try schedule(chunk)
             chunkCount += 1
         }
         Log.playback.info("TTS finished scheduling \(chunkCount) buffers")
+    }
+
+    /// Streamed cloud TTS (item 5): each call schedules one buffer; `isSpeaking` stays true until it has played.
+    func play(samples: [Int16], sampleRate: Double) throws(AudioError) {
+        guard !samples.isEmpty else { return }
+        try graph.ensureRunning()
+        if pendingBuffers == 0 { requestPlayback() }
+        try schedule(TTSChunk(pcm16: samples, sampleRate: sampleRate))
+    }
+
+    private func beginStream() {
+        activeStreams += 1
+        updateSpeaking()
+    }
+
+    private func endStream() {
+        activeStreams = max(0, activeStreams - 1)
+        updateSpeaking()
+    }
+
+    private func bufferFinished(generation: Int) {
+        guard generation == scheduleGeneration else { return }
+        pendingBuffers = max(0, pendingBuffers - 1)
+        updateSpeaking()
+    }
+
+    private func updateSpeaking() {
+        let speaking = activeStreams > 0 || pendingBuffers > 0
+        if speaking != isSpeaking { isSpeaking = speaking }
     }
 
     private func schedule(_ chunk: TTSChunk) throws(AudioError) {
@@ -216,14 +270,22 @@ final class PlaybackService: PlaybackServicing {
         }
         try converter.convert(input, into: output)
         guard output.frameLength > 0 else { return }
-        player.scheduleBuffer(output, completionHandler: nil)
+        pendingBuffers += 1
+        updateSpeaking()
+        let generation = scheduleGeneration
+        player.scheduleBuffer(output, completionCallbackType: .dataPlayedBack) { [weak self] _ in
+            Task { @MainActor in self?.bufferFinished(generation: generation) }
+        }
         if !player.isPlaying { player.play() }
     }
 
     func stop() {
         synthesizer.stopSpeaking(at: .immediate)
+        scheduleGeneration += 1
         player.stop()
-        isSpeaking = false
+        pendingBuffers = 0
+        activeStreams = 0
+        updateSpeaking()
     }
 
     func clearLatencySamples() {

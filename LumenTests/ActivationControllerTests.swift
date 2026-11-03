@@ -232,7 +232,7 @@ private extension ActivationRequest {
     private func makeModel() -> (ControllerHarness, ListeningModel) {
         let h = ControllerHarness()
         let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true),
-                                   transcription: makeTestCoordinator(h.controller), activation: makeTestActivation(), answers: makeTestAnswerEngine())
+                                   transcription: makeTestCoordinator(h.controller), activation: makeTestActivation(), answers: makeTestAnswerEngine(), speaker: makeTestSpeaker(h.playback), voices: makeTestVoiceCatalog())
         return (h, model)
     }
 
@@ -275,7 +275,7 @@ private extension ActivationRequest {
         let h = ControllerHarness()
         let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true),
                                    transcription: makeTestCoordinator(h.controller),
-                                   activation: makeTestActivation(mode: .auto), answers: makeTestAnswerEngine())
+                                   activation: makeTestActivation(mode: .auto), answers: makeTestAnswerEngine(), speaker: makeTestSpeaker(h.playback), voices: makeTestVoiceCatalog())
         await model.startListening()
         model.receiveFinalTranscript("idag pratar vi om celler")
         #expect(model.pendingQuestion == nil)
