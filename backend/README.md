@@ -4,8 +4,21 @@ Supabase Edge Functions (Deno/TypeScript). **No provider key ever reaches the ap
 
 | Endpoint | What | Status |
 |---|---|---|
-| `POST /functions/v1/answer` | SSE: `meta` -> `delta`* -> `done` (or `error`) | built, unit + local end-to-end tested with a mock LLM; **not deployed, not tested against real Claude** |
-| `POST /functions/v1/tts` | Streams ElevenLabs audio (TTS only, never Agents) | built, unit tested against a fake upstream; **not deployed, not tested against ElevenLabs** |
+| `POST /functions/v1/answer` | SSE: `meta` -> `delta`* -> `done` (or `error`) | **deployed** (v1) · unit + local end-to-end tested with a mock LLM · **not yet run against real Claude** (waiting for `ANTHROPIC_API_KEY`) |
+| `POST /functions/v1/tts` | Streams ElevenLabs audio (TTS only, never Agents) | **deployed** (v1) · unit tested against a fake upstream · **not yet run against ElevenLabs** |
+
+## Connect the app (Angela)
+| | |
+|---|---|
+| Project | **Lumen**, ref `xjczbzfkmbjdebwlccki`, region eu-north-1, Supabase **free plan** |
+| Project URL | `https://xjczbzfkmbjdebwlccki.supabase.co` |
+| Publishable key | `sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8` (public by design; the app may embed it. It is **not** a secret and grants nothing without a user JWT) |
+| Answer endpoint | `POST https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/answer` |
+| TTS endpoint | `POST https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/tts` |
+
+Flow: (1) `POST {url}/auth/v1/signup` with header `apikey: <publishable key>` and body `{}` (or `supabase.auth.signInAnonymously()` in supabase-swift) -> `access_token` (JWT, refresh via the SDK); (2) call the functions with `Authorization: Bearer <access_token>` and `apikey: <publishable key>`. Never send the publishable key as the bearer token: it is rejected (verified: 401). Contract, SSE format, errors and `fallback:true` handling are in the sections below.
+
+**State on 2026-11-03:** both functions are deployed and reject missing/invalid tokens (**verified live**, 401). Anonymous sign-ins are **off** in the project (verified live: 422 `anonymous_provider_disabled`) until the owner flips the switch, and `ANTHROPIC_API_KEY` is not set yet, so `/answer` returns `503 provider_unconfigured` until then. Do not wire the app to expect answers before STATUS says "backend live".
 
 ## Layout
 ```
@@ -89,24 +102,37 @@ Errors before the stream starts are JSON `{"error":{"code","message","fallback"}
 
 - Privacy: transcripts/fragments/answers are **never logged or stored**. `answer_usage` keeps only metadata (user id, mode, tokens, timings, estimated cost, status).
 
-## Deploy (needs the owner's go-ahead for the Supabase project)
-Do **not** enter billing details anywhere. Stay on the Supabase free plan.
-```bash
-npm i -g supabase                     # or use the Supabase MCP / dashboard
-cd backend
-supabase link --project-ref <ref>     # after the owner has approved creating/choosing the project
-supabase db push                      # applies migrations/ (rate_limits, check_rate_limit, answer_usage)
-supabase functions deploy answer
-supabase functions deploy tts
-```
-Dashboard: Authentication -> Sign In / Providers -> enable **Anonymous sign-ins**. Supabase limits anonymous sign-ins to 30/hour per IP and recommends enabling CAPTCHA/Turnstile against abuse (verified in Supabase docs); decide with the owner before launch.
+## Deploy
+Done by the agent (the owner never runs SQL/CLI by hand). Free plan only; never enter billing details.
 
-### Secrets (names only; the owner enters the values himself - never in chat or in the repo)
-```bash
-supabase secrets set ANTHROPIC_API_KEY=...        # the owner's Anthropic key (prepaid credits, auto-reload OFF)
-supabase secrets set ELEVENLABS_API_KEY=...       # existing ElevenLabs plan
-supabase secrets set ELEVENLABS_VOICE_ID=...      # the voice to use
-```
+**Via Supabase MCP (what was used for v1, because the container cannot reach the Supabase CLI login):**
+1. Migration: `apply_migration` with `supabase/migrations/*.sql`.
+2. Each function is bundled into one file, because MCP deploy takes flat files and our code shares `_shared/`:
+   ```bash
+   cd backend
+   deno bundle --platform deno --format esm --no-check --minify --keep-names \
+     --external "npm:*" --external "jsr:*" -o /tmp/answer.js supabase/functions/answer/index.ts
+   deno bundle ... -o /tmp/tts.js supabase/functions/tts/index.ts
+   ```
+   then `deploy_edge_function` with `name`, `entrypoint_path: index.ts`, `verify_jwt: true` and the bundle as `index.ts`. npm packages stay external (resolved by Supabase at runtime).
+3. Re-deploy a function after setting secrets if the first request still sees old values (new isolates pick up secrets).
+
+**Via CLI (alternative):** `supabase link --project-ref xjczbzfkmbjdebwlccki && supabase db push && supabase functions deploy answer && supabase functions deploy tts`.
+
+**Owner-only click-paths (no tool can do these):**
+- Anonymous sign-ins: https://supabase.com/dashboard/project/xjczbzfkmbjdebwlccki/auth/providers -> *Sign In / Providers* -> scroll to **Anonymous Sign-Ins** (or *Allow anonymous sign-ins*) -> switch **on** -> *Save*. Supabase limits this to 30 sign-ins/hour/IP and recommends CAPTCHA/Turnstile (verified in Supabase docs).
+- Secrets: see below.
+
+### Secrets (the owner enters the values himself - never in chat or in the repo)
+Dashboard -> https://supabase.com/dashboard/project/xjczbzfkmbjdebwlccki/functions/secrets -> **Add new secret** (name, value) -> *Save*. Names, exactly:
+
+| Name | Value |
+|---|---|
+| `ANTHROPIC_API_KEY` | the owner's Anthropic key (`sk-ant-...`) |
+| `ELEVENLABS_API_KEY` | the owner's ElevenLabs key |
+| `ELEVENLABS_VOICE_ID` | the ElevenLabs voice id (Voices -> the voice -> *ID*) |
+
+(CLI equivalent for agents: `supabase secrets set NAME=value`.)
 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` are injected by Supabase. Optional: `LLM_MODEL` (default `claude-haiku-5-5`), `LLM_EFFORT` (`low`|`medium`|`high`, default `low`), `LLM_DISABLE_THINKING` (`0` to allow adaptive thinking), `CONFIDENCE_THRESHOLD`, `PRICE_IN_PER_MTOK` / `PRICE_OUT_PER_MTOK` (cost estimate only; defaults 0.10 / 0.50), `SUPABASE_JWT_SECRET` (legacy HS256 projects only).
 
 With no `ANTHROPIC_API_KEY` the function answers `503 provider_unconfigured` (fail closed). The mock provider only runs when `LLM_PROVIDER=mock` is set explicitly - never set it in production.

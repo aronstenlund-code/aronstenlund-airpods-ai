@@ -38,6 +38,7 @@ begin
     update public.rate_limits set count = count - p_cost where key = p_key and window_start = v_start;
     return query select false, v_count - p_cost,
       greatest(1, ceil(extract(epoch from (v_start + make_interval(secs => p_window_seconds) - v_now)))::integer);
+    return;
   end if;
   return query select true, v_count, 0;
 end;
