@@ -1,16 +1,17 @@
 # Project status — Lumen (codename)
 
 Single overview page. Update it at the end of every session.
-Last updated: 2026-11-03 19:00 by Kevin Malone (backend).
+Last updated: 2026-11-03 19:05 by Angela (builder).
 
 ## Completed
 - Phase 0: initial analysis, architecture, roadmap, MVP definition, first coding assignment. → `reports/2026-11-03-1600-architect-initial-analysis.md`
 - EU restriction on AirPods high-quality recording verified in Apple docs; Phase 1 plan updated. → `reports/2026-11-03-1615-architect-eu-hq-restriction.md`
 - Open-source code audit: reusable components and licences. → `reports/open-source-code-audit.md`; assignments for Angela in `prompts/2026-11-03-oss-integration.md`
+- **Phase 1a — CI build (Angela):** Phase 1 §3.1–3.7 implemented and green on `main` (device build, warnings as errors, 21 + 41 unit tests, SDK API-name check 24/24). **Verified in CI only, nothing on device.** → `reports/2026-11-03-1905-angela-phase1a-ci.md`, `docs/DEVICE-TEST-CHECKLIST.md`, D13–D17.
 
 ## In progress
-- Phase 1 — Audio foundation. Assignment: `prompts/2026-11-03-phase1-audio-foundation.md`. **Blocked:** Angela's session runs on Windows (no Xcode, no Swift, no reachable Mac), so §3.1–3.7 cannot be built or run; see `reports/2026-11-03-1645-angela-phase1-blocked-no-mac.md` for options. Done so far: test material §3.8 in `testdata/` (noise file not yet chosen). Then OSS-1 + OSS-3 from `prompts/2026-11-03-oss-integration.md`.
-- **Phase 1a — CI build (unblocks Phase 1 code this week).** Assignment: `prompts/2026-11-03-phase1a-ci-build.md`. GitHub Actions macOS runner is the compiler until the product owner has a Mac with Xcode 26 (planned next week). Device tests wait for that Mac.
+- Phase 1 — Audio foundation. Code done (Phase 1a); **device measurements (§3.5–3.6, §3.9–3.12) wait for the owner's Mac** next week — run `docs/DEVICE-TEST-CHECKLIST.md`. Then OSS-1 + OSS-3.
+- **MVP sprint (Angela):** `prompts/2026-11-03-mvp-sprint-app.md` — step 0 done (CI green, Phase 1a report pushed); next: item 1 listening screen + consent.
 
 - **MVP backend (Kevin).** `/answer` (SSE) + `/tts` built and tested offline (46 Deno tests, mock LLM); **not deployed**. Blocked on: owner approval to create a Supabase project, and the owner entering `ANTHROPIC_API_KEY` / `ELEVENLABS_API_KEY` / `ELEVENLABS_VOICE_ID` as Supabase secrets himself. TTFT on the 30 prompts not yet measured. → `reports/2026-11-03-1900-kevin-backend.md`, `backend/README.md`, D20.
 
@@ -18,7 +19,7 @@ Last updated: 2026-11-03 19:00 by Kevin Malone (backend).
 - Phase 2 — Transcription (after the Phase 1 report is reviewed).
 
 ## Known bugs
-- None yet (no code).
+- None confirmed (no device run yet). Known limitations of the Phase 1 code are listed in `reports/2026-11-03-1905-angela-phase1a-ci.md` §5.
 
 ## Open decisions for the product owner
 0. **Build environment:** decided 2026-11-03 — code is compiled in GitHub Actions (Phase 1a) this week; product owner gets a Mac with Xcode 26 next week for on-device runs (free Apple ID first; paid Developer Program only when TestFlight is needed). The current Mac cannot install software.
