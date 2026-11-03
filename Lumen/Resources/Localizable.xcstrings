@@ -1,36 +1,564 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "Start capture" : {
-      "localizations" : {
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starta inspelning"
+  "sourceLanguage": "en",
+  "strings": {
+    "A call or another app interrupted the session.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ett samtal eller en annan app avbröt sessionen."
           }
         }
       }
     },
-    "Stop capture" : {
-      "localizations" : {
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stoppa inspelning"
+    "AirPods disconnected. Put them back in and tap Resume.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPods frånkopplade. Sätt i dem igen och tryck på Fortsätt."
           }
         }
       }
     },
-    "Tap to resume" : {
-      "localizations" : {
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tryck för att fortsätta"
+    "Answers": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svar"
+          }
+        }
+      }
+    },
+    "Answers come from the internet": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svaren kommer från internet"
+          }
+        }
+      }
+    },
+    "Answers to questions appear here and are spoken in your AirPods.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svar på frågor visas här och läses upp i dina AirPods."
+          }
+        }
+      }
+    },
+    "Audio is not stored": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ljudet sparas inte"
+          }
+        }
+      }
+    },
+    "Before you start": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Innan du börjar"
+          }
+        }
+      }
+    },
+    "By continuing you confirm that you have read the points above.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Genom att fortsätta bekräftar du att du har läst punkterna ovan."
+          }
+        }
+      }
+    },
+    "Clear": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rensa"
+          }
+        }
+      }
+    },
+    "Consent given %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Samtycke lämnat %@"
+          }
+        }
+      }
+    },
+    "Could not start": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kunde inte starta"
+          }
+        }
+      }
+    },
+    "Diagnostics": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diagnostik"
+          }
+        }
+      }
+    },
+    "Done": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klar"
+          }
+        }
+      }
+    },
+    "I understand — start using Lumen": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jag förstår – börja använda Lumen"
+          }
+        }
+      }
+    },
+    "Input level": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingångsnivå"
+          }
+        }
+      }
+    },
+    "It listens only while a session is on": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyssnar bara när du har startat en session"
+          }
+        }
+      }
+    },
+    "Listening": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyssnar"
+          }
+        }
+      }
+    },
+    "Listening stops, this session's transcript is cleared and the consent screen is shown again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyssningen stoppas, sessionens transkription raderas och samtyckesskärmen visas igen."
+          }
+        }
+      }
+    },
+    "Listening… recognised speech appears here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyssnar … igenkänt tal visas här."
+          }
+        }
+      }
+    },
+    "Live transcript": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transkription live"
+          }
+        }
+      }
+    },
+    "Lumen is a listening companion for lectures, meetings and studying. This is exactly what it does with sound and text.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumen är en lyssnarkompis för föreläsningar, möten och studier. Så här gör appen med ljud och text."
+          }
+        }
+      }
+    },
+    "Not listening": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyssnar inte"
+          }
+        }
+      }
+    },
+    "Nothing transcribed yet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inget transkriberat än."
+          }
+        }
+      }
+    },
+    "One tap stops the microphone. You can withdraw this consent later under Privacy & consent; the consent screen then returns.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ett tryck stänger av mikrofonen. Du kan ta tillbaka ditt samtycke senare under Integritet och samtycke; då visas den här skärmen igen."
+          }
+        }
+      }
+    },
+    "Paused": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausad"
+          }
+        }
+      }
+    },
+    "Paused — AirPods disconnected": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausad – AirPods frånkopplade"
+          }
+        }
+      }
+    },
+    "Paused — audio system reset": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausad – ljudsystemet startades om"
+          }
+        }
+      }
+    },
+    "Paused — interrupted": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausad – avbruten"
+          }
+        }
+      }
+    },
+    "Privacy & consent": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Integritet och samtycke"
+          }
+        }
+      }
+    },
+    "Resume": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fortsätt"
+          }
+        }
+      }
+    },
+    "Resume listening": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fortsätt lyssna"
+          }
+        }
+      }
+    },
+    "See the message below and try again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läs meddelandet nedan och försök igen."
+          }
+        }
+      }
+    },
+    "Speech is transcribed on this iPhone.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talet transkriberas på den här telefonen."
+          }
+        }
+      }
+    },
+    "Speech is transcribed on your iPhone and the audio is discarded immediately. Transcripts stay on the phone.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talet transkriberas på din iPhone och ljudet kastas direkt. Transkriptionerna stannar i telefonen."
+          }
+        }
+      }
+    },
+    "Start capture": {
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starta inspelning"
+          }
+        }
+      }
+    },
+    "Start listening": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Börja lyssna"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stopp"
+          }
+        }
+      }
+    },
+    "Stop capture": {
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stoppa inspelning"
+          }
+        }
+      }
+    },
+    "Stop listening": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sluta lyssna"
+          }
+        }
+      }
+    },
+    "Stop listening and withdraw": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sluta lyssna och ta tillbaka"
+          }
+        }
+      }
+    },
+    "Tap Resume to continue.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tryck på Fortsätt för att gå vidare."
+          }
+        }
+      }
+    },
+    "Tap Start listening. The microphone is only on while you listen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tryck på Börja lyssna. Mikrofonen är bara på medan du lyssnar."
+          }
+        }
+      }
+    },
+    "Tap to resume": {
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tryck för att fortsätta"
+          }
+        }
+      }
+    },
+    "Tell the people around you": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berätta för personerna runt dig"
+          }
+        }
+      }
+    },
+    "The audio system was reset. Tap Resume to continue.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ljudsystemet startades om. Tryck på Fortsätt för att gå vidare."
+          }
+        }
+      }
+    },
+    "To answer a question, the transcribed text (never audio) is sent to Lumen's server, which asks Claude by Anthropic. Without a connection there are no answers.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "För att svara på en fråga skickas den transkriberade texten (aldrig ljud) till Lumens server, som frågar Claude från Anthropic. Utan uppkoppling ges inga svar."
+          }
+        }
+      }
+    },
+    "Withdraw consent": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta tillbaka samtycke"
+          }
+        }
+      }
+    },
+    "Withdraw consent?": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta tillbaka samtycket?"
+          }
+        }
+      }
+    },
+    "You are responsible for informing anyone whose speech is transcribed. Do not use Lumen where recording is not allowed, for example during exams.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du ansvarar för att informera alla vars tal transkriberas. Använd inte Lumen där inspelning inte är tillåten, till exempel under prov."
+          }
+        }
+      }
+    },
+    "You can stop at any time": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du kan sluta när du vill"
+          }
+        }
+      }
+    },
+    "You start and stop listening yourself. While the microphone is live, a red indicator is shown in the app and iOS shows its own microphone indicator.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du startar och stoppar lyssningen själv. När mikrofonen är på visas en röd indikator i appen, och iOS visar sin egen mikrofonindikator."
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

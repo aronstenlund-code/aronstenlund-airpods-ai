@@ -46,8 +46,12 @@ testad i GitHub Actions (CI), inte på en iPhone.
 8. I Xcode, högst upp i mitten: välj din iPhone som destination (inte en simulator).
 9. Tryck **▶ (Run)**. Första gången: på iPhone *Inställningar → Allmänt → VPN och enhetshantering* →
    lita på ditt utvecklarcertifikat. Tryck ▶ igen.
-10. Appen öppnar skärmen *Lumen diagnostics*. Tryck *Start capture* en gång och **tillåt mikrofonen**.
-    Tryck *Stop capture*.
+10. Appen öppnar först **samtyckesskärmen** (*Innan du börjar*). Läs igenom punkterna och tryck
+    *Jag förstår – börja använda Lumen*. Du landar på lyssnarskärmen *Lumen*. Tryck **Börja lyssna** en gång
+    och **tillåt mikrofonen**. En röd rad *Lyssnar* ska visas högst upp (den följer med på alla skärmar).
+    Tryck *Sluta lyssna*.
+    Diagnostikskärmen (alla mätningar i Del 3) öppnas med vågform-ikonen uppe till höger; *Start capture*
+    där och *Börja lyssna* på lyssnarskärmen styr **samma** mikrofon.
 11. **Koppla ihop AirPods** med iPhone (ha dem i öronen). Kontrollera i *Inställningar → Bluetooth → (i)
     bredvid AirPods → Om* och skriv ner **modell** och **firmware-version**. Gör detta för varje
     AirPods-modell du testar.
@@ -128,6 +132,23 @@ Detta är **inte** vår app utan Apples systemfunktion, och rapporteras separat:
 2. Öppna *Röstmemon*, spela in 10 s med AirPods i. Lät det som telefonkvalitet eller "riktig" kvalitet?
 Skriv ner svaren.
 
+### 3i. Lyssnarskärmen och samtycket (MVP-del 1, 5 min, en gång)
+Gå tillbaka till lyssnarskärmen (pilen uppe till vänster). Transkription och svar kommer i nästa
+sprintsteg; här testas bara skärmen, indikatorn och samtycket.
+1. Tryck **Börja lyssna**. Kontrollera: röd rad *Lyssnar* högst upp, mikrofonikonen röd, en nivåmätare som
+   rör sig när du pratar, raden under rubriken visar vilken mikrofon som används (t.ex. *AirPods Pro · HFP*).
+   Jämför med gröna raden på diagnostikskärmen – det ska vara samma mick.
+2. Gå in på diagnostikskärmen medan den lyssnar: står den röda raden kvar högst upp? Tryck *Stopp* **i den
+   röda raden** – lyssningen ska sluta direkt och raden försvinna.
+3. Tryck *Börja lyssna* igen, ta ut AirPods: skärmen ska visa *Pausad* och knappen *Fortsätt lyssna*.
+   Sätt i AirPods, tryck *Fortsätt lyssna*.
+4. Tryck på handikonen uppe till höger (*Integritet och samtycke*). Längst ner står när samtycket lämnades.
+   Tryck *Ta tillbaka samtycke* → *Sluta lyssna och ta tillbaka*. Lyssningen ska sluta och samtyckesskärmen
+   visas igen. Tryck *Jag förstår …* på nytt.
+5. Avsluta appen helt (svep upp) och öppna igen: den ska **inte** fråga om samtycke igen.
+6. Kolla språket: är telefonen på svenska ska knappar och texter vara på svenska. Skriv ner engelska
+   texter som dyker upp där svenska borde stå.
+
 ## Del 4 — Skicka in resultaten (5 min)
 
 1. I appen: tryck **Copy results as Markdown**. Öppna Anteckningar på iPhone, klistra in, dela till
@@ -136,7 +157,7 @@ Skriv ner svaren.
    - den inklistrade texten (en per AirPods-modell, eller en lång),
    - iPhone-modell och iOS-version (står högst upp i texten),
    - AirPods-modell + firmware (från steg 11),
-   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f och 3h,
+   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h och 3i,
    - noise-uppgifterna från `testdata/noise/README.md`.
 3. **WAV-filerna**: anslut iPhone till Macen → Finder → iPhone → *Filer* → *Lumen* → dra alla
    `lumen-*.wav` till en mapp, t.ex. `~/Lumen-recordings/<datum>/`. **Lägg dem inte i git.** Skriv

@@ -6,9 +6,7 @@ struct LumenApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                DiagnosticsView(model: container.diagnostics)
-            }
+            RootView(container: container)
         }
     }
 }
