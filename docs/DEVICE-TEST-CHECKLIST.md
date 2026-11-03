@@ -149,6 +149,22 @@ sprintsteg; här testas bara skärmen, indikatorn och samtycket.
 6. Kolla språket: är telefonen på svenska ska knappar och texter vara på svenska. Skriv ner engelska
    texter som dyker upp där svenska borde stå.
 
+### 3j. Transkription live (MVP-del 2, 10 min)
+1. På lyssnarskärmen: välj **Svenska** i språkväljaren och tryck *Börja lyssna*. Under statusraden ska det stå
+   *Förbereder talmodellen …* (första gången laddas Apples svenska modell ner – kräver internet, kan ta en
+   minut) och sedan *Transkriberar på den här telefonen · SpeechTranscriber* (eller *DictationTranscriber*).
+   **Skriv ner vilket av de två som står** – det avgör vilken Apple-motor som finns för svenska.
+2. Prata normalt i rummet. Under *Transkription live* ska grå kursiv text dyka upp medan du pratar och bli
+   svart när meningen är klar. Säg tre av de korta meningarna i `testdata/scripts/sv-short-prompts.md` och
+   skriv ner vad som faktiskt kom ut (bokstavligt).
+3. Låt en annan person säga tre meningar på 2 m avstånd. Skriv ner resultatet på samma sätt.
+4. Byt till **English** medan den lyssnar. Statusraden ska gå via *Förbereder …* till *Transkriberar …* igen.
+   Säg två meningar på engelska. Byt tillbaka till Svenska.
+5. Står det *Svenska finns inte för taligenkänning på den här telefonen*: det är ett viktigt resultat (R2).
+   Tryck på diagnostikskärmen → *Check SpeechTranscriber locales* och kopiera texten.
+6. Ta ut AirPods (paus) och sätt i dem igen → *Fortsätt lyssna*. Transkriptionen ska starta om själv
+   (statusraden visar *Transkriberar …* igen).
+
 ## Del 4 — Skicka in resultaten (5 min)
 
 1. I appen: tryck **Copy results as Markdown**. Öppna Anteckningar på iPhone, klistra in, dela till
@@ -157,7 +173,7 @@ sprintsteg; här testas bara skärmen, indikatorn och samtycket.
    - den inklistrade texten (en per AirPods-modell, eller en lång),
    - iPhone-modell och iOS-version (står högst upp i texten),
    - AirPods-modell + firmware (från steg 11),
-   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h och 3i,
+   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i och 3j (bokstavliga transkriptioner),
    - noise-uppgifterna från `testdata/noise/README.md`.
 3. **WAV-filerna**: anslut iPhone till Macen → Finder → iPhone → *Filer* → *Lumen* → dra alla
    `lumen-*.wav` till en mapp, t.ex. `~/Lumen-recordings/<datum>/`. **Lägg dem inte i git.** Skriv

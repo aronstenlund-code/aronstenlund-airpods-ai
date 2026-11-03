@@ -24,3 +24,16 @@ Speech|DictationTranscriber
 Speech|supportedLocales
 Speech|installedLocales
 Speech|isAvailable
+# MVP item 2 — SpeechAnalyzer pipeline and the on-device SFSpeechRecognizer fallback (D18, D22)
+Speech|AnalyzerInput
+Speech|AssetInventory
+Speech|assetInstallationRequest
+Speech|downloadAndInstall
+Speech|bestAvailableAudioFormat
+Speech|finalizeAndFinishThroughEndOfInput
+Speech|volatileResults
+Speech|AnalysisContext
+Speech|contextualStrings
+Speech|SFSpeechRecognizer
+Speech|supportsOnDeviceRecognition
+Speech|requiresOnDeviceRecognition

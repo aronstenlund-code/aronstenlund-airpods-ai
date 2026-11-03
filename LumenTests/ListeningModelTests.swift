@@ -6,7 +6,7 @@ import Testing
 @Suite struct ListeningModelTests {
     @Test func startIsRefusedWithoutConsent() async {
         let h = ControllerHarness()
-        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: false))
+        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: false), transcription: makeTestCoordinator(h.controller))
 
         await model.startListening()
 
@@ -18,7 +18,7 @@ import Testing
 
     @Test func toggleStartsThenStops() async {
         let h = ControllerHarness()
-        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true))
+        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true), transcription: makeTestCoordinator(h.controller))
 
         await model.toggleListening()
         #expect(model.isListening)
@@ -33,7 +33,7 @@ import Testing
 
     @Test func toggleWhilePausedStops() async {
         let h = ControllerHarness()
-        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true))
+        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true), transcription: makeTestCoordinator(h.controller))
         await model.startListening()
         await h.controller.apply(.outputDeviceLost)
         #expect(model.canResume, "AirPods removed: the user may tap Resume")
@@ -46,7 +46,7 @@ import Testing
     @Test func withdrawConsentStopsClearsAndRevokes() async {
         let h = ControllerHarness()
         let consent = FakeConsentStore(granted: true)
-        let model = ListeningModel(controller: h.controller, consent: consent)
+        let model = ListeningModel(controller: h.controller, consent: consent, transcription: makeTestCoordinator(h.controller))
         await model.startListening()
         model.receiveFinalTranscript("Vad är fotosyntes?")
         model.receiveAnswer(question: "Vad är fotosyntes?", answer: "Växternas sätt att …", source: "mock")
@@ -65,7 +65,7 @@ import Testing
 
     @Test func transcriptFeedBuildsSegments() {
         let h = ControllerHarness()
-        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true))
+        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true), transcription: makeTestCoordinator(h.controller))
 
         model.receivePartialTranscript("vad är")
         model.receivePartialTranscript("vad är foto")
@@ -80,7 +80,7 @@ import Testing
 
     @Test func speechDuringOurPlaybackIsTagged() {
         let h = ControllerHarness()
-        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true))
+        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true), transcription: makeTestCoordinator(h.controller))
 
         h.playback.isSpeaking = true
         model.receivePartialTranscript("växternas sätt")
@@ -93,7 +93,7 @@ import Testing
 
     @Test func answersAppendAndClearHistory() {
         let h = ControllerHarness()
-        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true))
+        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true), transcription: makeTestCoordinator(h.controller))
 
         model.receiveAnswer(question: "Q1", answer: "A1", latencyMs: 812, source: "cloud")
         model.receiveAnswer(question: "Q2", answer: "A2", source: "cloud")

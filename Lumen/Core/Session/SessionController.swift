@@ -31,6 +31,13 @@ final class SessionController {
     /// Injected so unit tests can run without a foreground UIApplication.
     private let isForeground: @MainActor () -> Bool
     private var chunkTask: Task<Void, Never>?
+    /// Fan-out of the capture stream (`AsyncStream` has one consumer): STT and later the question gate subscribe here.
+    private var chunkSinks: [UUID: AsyncStream<AudioChunk>.Continuation] = [:]
+
+    /// Called after capture (re)starts — the microphone is live and chunks flow.
+    var onCaptureStarted: (@MainActor () -> Void)?
+    /// Called whenever capture stops, pauses or the engine is rebuilt.
+    var onCaptureStopped: (@MainActor () -> Void)?
 
     var snapshot: SessionSnapshot? { session.snapshot }
     var banner: String { session.snapshot?.banner ?? "No active session" }
@@ -96,17 +103,20 @@ final class SessionController {
             chunkTask?.cancel()
             capture.stop()
             playback.stop()
+            onCaptureStopped?()
         case .stopCapture:
             chunkTask?.cancel()
             capture.stop()
             playback.stop()
             session.deactivate()
+            onCaptureStopped?()
         case .rebuildAudioGraph:
             chunkTask?.cancel()
             capture.stop()
             playback.stop()
             graph.rebuild()
             log("Audio engine rebuilt after media services reset")
+            onCaptureStopped?()
         }
     }
 
@@ -128,6 +138,7 @@ final class SessionController {
             _ = session.refreshSnapshot(engineInputFormat: capture.inputFormatDescription)
             startChunkCounter()
             log("Capture started · engine input \(capture.inputFormatDescription ?? "?")")
+            onCaptureStarted?()
             await apply(.captureStarted)
         } catch {
             await apply(.failed(error.localizedDescription))
@@ -141,6 +152,7 @@ final class SessionController {
             _ = session.refreshSnapshot(engineInputFormat: capture.inputFormatDescription)
             startChunkCounter()
             log("Capture resumed: \(banner)")
+            onCaptureStarted?()
         } catch {
             fail(error)
             Task { await apply(.failed(error.localizedDescription)) }
@@ -157,8 +169,25 @@ final class SessionController {
                 guard let self else { return }
                 self.chunkCount += 1
                 self.lastChunkFrames = chunk.frameCount
+                for sink in self.chunkSinks.values {
+                    sink.yield(chunk)
+                }
             }
         }
+    }
+
+    // MARK: - Chunk subscribers
+
+    /// A copy of every chunk from now on, across pauses and restarts, until `unsubscribeFromChunks`.
+    func subscribeToChunks() -> (id: UUID, stream: AsyncStream<AudioChunk>) {
+        let (stream, continuation) = AsyncStream<AudioChunk>.makeStream(bufferingPolicy: .bufferingNewest(256))
+        let id = UUID()
+        chunkSinks[id] = continuation
+        return (id, stream)
+    }
+
+    func unsubscribeFromChunks(_ id: UUID) {
+        chunkSinks.removeValue(forKey: id)?.finish()
     }
 
     // MARK: - Session events

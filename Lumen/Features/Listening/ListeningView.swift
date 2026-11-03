@@ -74,6 +74,46 @@ struct ListeningView: View {
                     .font(.footnote)
                     .foregroundStyle(.red)
             }
+            transcriptionStatusRow
+            Picker("Language", selection: languageBinding) {
+                ForEach(TranscriptionLanguage.allCases) { language in
+                    Text(language.nativeName).tag(language)
+                }
+            }
+            .pickerStyle(.segmented)
+        }
+    }
+
+    private var languageBinding: Binding<TranscriptionLanguage> {
+        Binding(get: { model.transcription.language.selected },
+                set: { newValue in Task { await model.transcription.setLanguage(newValue) } })
+    }
+
+    @ViewBuilder
+    private var transcriptionStatusRow: some View {
+        switch model.transcription.status {
+        case .idle:
+            EmptyView()
+        case .probing:
+            Label("Checking speech recognition…", systemImage: "ellipsis.circle")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        case .preparing(let engine):
+            Label("Preparing the speech model (\(engine.displayName)) — the first time this downloads it.", systemImage: "arrow.down.circle")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        case .running(let engine):
+            Label("Transcribing on this iPhone · \(engine.displayName)", systemImage: "text.bubble")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        case .unavailable(let language):
+            Label("\(language.nativeName) is not available for on-device speech recognition on this iPhone. Switch language below.", systemImage: "exclamationmark.triangle")
+                .font(.footnote)
+                .foregroundStyle(.orange)
+        case .failed(let message):
+            Label("Speech recognition failed: \(message)", systemImage: "exclamationmark.triangle")
+                .font(.footnote)
+                .foregroundStyle(.red)
         }
     }
 

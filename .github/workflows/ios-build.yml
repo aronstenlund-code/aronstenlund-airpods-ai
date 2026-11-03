@@ -49,6 +49,9 @@ jobs:
       - name: API-name check against the iOS SDK (replaces the local header check)
         run: bash tools/ci/check-sdk-symbols.sh
 
+      - name: Dump Speech (SpeechAnalyzer) API from the SDK (reading aid, item 2)
+        run: bash tools/ci/dump-speech-api.sh
+
       - name: Install XcodeGen and generate project
         run: |
           set -euo pipefail

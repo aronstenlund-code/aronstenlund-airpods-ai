@@ -4,9 +4,10 @@ import Observation
 /// Drives the Listening screen (MVP item 1). No business logic in views.
 @MainActor
 @Observable
-final class ListeningModel {
+final class ListeningModel: TranscriptSink {
     let controller: SessionController
     let consent: any ConsentStoring
+    let transcription: TranscriptionCoordinator
     private(set) var conversation = Conversation()
     var isShowingPrivacy = false
 
@@ -23,9 +24,10 @@ final class ListeningModel {
         return "\(input.portName) · \(snapshot.transport)"
     }
 
-    init(controller: SessionController, consent: any ConsentStoring) {
+    init(controller: SessionController, consent: any ConsentStoring, transcription: TranscriptionCoordinator) {
         self.controller = controller
         self.consent = consent
+        self.transcription = transcription
     }
 
     // MARK: - User actions
@@ -68,7 +70,7 @@ final class ListeningModel {
         conversation.clear()
     }
 
-    // MARK: - Feed (called by the STT provider in item 2 and the answer engine in item 4)
+    // MARK: - TranscriptSink (fed by TranscriptionCoordinator) and answers (item 4)
 
     func receivePartialTranscript(_ text: String, at date: Date = Date()) {
         conversation.updatePartial(text, at: date, overlapsPlayback: controller.playback.isSpeaking)

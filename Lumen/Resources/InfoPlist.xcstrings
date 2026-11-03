@@ -1,40 +1,57 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "CFBundleDisplayName" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lumen"
+  "sourceLanguage": "en",
+  "strings": {
+    "CFBundleDisplayName": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumen"
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lumen"
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumen"
           }
         }
       }
     },
-    "NSMicrophoneUsageDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lumen listens to the room through your microphone (iPhone or AirPods) to transcribe speech and answer questions in your AirPods. Audio is processed live and is not stored unless you export a test recording."
+    "NSMicrophoneUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumen listens to the room through your microphone (iPhone or AirPods) to transcribe speech and answer questions in your AirPods. Audio is processed live and is not stored unless you export a test recording."
           }
         },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lumen lyssnar på rummet via din mikrofon (iPhone eller AirPods) för att transkribera tal och svara på frågor i dina AirPods. Ljudet behandlas direkt och sparas inte, om du inte själv exporterar en testinspelning."
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumen lyssnar på rummet via din mikrofon (iPhone eller AirPods) för att transkribera tal och svara på frågor i dina AirPods. Ljudet behandlas direkt och sparas inte, om du inte själv exporterar en testinspelning."
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumen uses on-device speech recognition to transcribe what is said. Audio is processed on your iPhone and never uploaded."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumen använder taligenkänning på telefonen för att transkribera det som sägs. Ljudet behandlas på din iPhone och laddas aldrig upp."
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

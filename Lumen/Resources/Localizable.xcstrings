@@ -1,6 +1,17 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ is not available for on-device speech recognition on this iPhone. Switch language below.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ finns inte för taligenkänning på den här telefonen. Byt språk nedan."
+          }
+        }
+      }
+    },
     "A call or another app interrupted the session.": {
       "extractionState": "manual",
       "localizations": {
@@ -89,6 +100,17 @@
         }
       }
     },
+    "Checking speech recognition…": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontrollerar taligenkänning …"
+          }
+        }
+      }
+    },
     "Clear": {
       "extractionState": "manual",
       "localizations": {
@@ -173,6 +195,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lyssnar bara när du har startat en session"
+          }
+        }
+      }
+    },
+    "Language": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Språk"
           }
         }
       }
@@ -309,6 +342,17 @@
         }
       }
     },
+    "Preparing the speech model (%@) — the first time this downloads it.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förbereder talmodellen (%@) – första gången laddas den ner."
+          }
+        }
+      }
+    },
     "Privacy & consent": {
       "extractionState": "manual",
       "localizations": {
@@ -371,6 +415,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Talet transkriberas på din iPhone och ljudet kastas direkt. Transkriptionerna stannar i telefonen."
+          }
+        }
+      }
+    },
+    "Speech recognition failed: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taligenkänningen misslyckades: %@"
           }
         }
       }
@@ -500,6 +555,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "För att svara på en fråga skickas den transkriberade texten (aldrig ljud) till Lumens server, som frågar Claude från Anthropic. Utan uppkoppling ges inga svar."
+          }
+        }
+      }
+    },
+    "Transcribing on this iPhone · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transkriberar på den här telefonen · %@"
           }
         }
       }
