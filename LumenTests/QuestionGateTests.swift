@@ -47,8 +47,8 @@ import Testing
 
     @Test(arguments: bareFragments)
     func bareFragmentsFireOnlyAtHigh(_ text: String) {
-        #expect(!QuestionGate(sensitivity: .medium).evaluate(text).fires, text)
-        #expect(QuestionGate(sensitivity: .high).evaluate(text).fires, text)
+        #expect(!QuestionGate(sensitivity: .medium).evaluate(text).fires, "\(text) must not fire at medium")
+        #expect(QuestionGate(sensitivity: .high).evaluate(text).fires, "\(text) must fire at high")
         #expect(QuestionGate(sensitivity: .medium).evaluate(text).signals.contains(.shortFragment))
     }
 
