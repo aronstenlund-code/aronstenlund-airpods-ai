@@ -76,7 +76,7 @@ func makeTestPrep() -> PrepStore { PrepStore(directory: temporaryDirectory()) }
     @Test func dropsStopwordsAndShortOrNumericTokens() {
         let terms = KeyTermExtractor().extract(from: paragraph).map { $0.lowercased() }
         for stop in ["är", "där", "till", "som", "och", "i", "från", "deras"] {
-            #expect(!terms.contains(stop), "stopword leaked: (stop)")
+            #expect(!terms.contains(stop), "stopword leaked: \(stop)")
         }
         #expect(!terms.contains("1523"))
         #expect(terms.contains("fotosyntes"))
