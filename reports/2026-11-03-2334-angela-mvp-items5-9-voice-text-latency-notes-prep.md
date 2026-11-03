@@ -1,6 +1,6 @@
 # Report: MVP items 5–9 — Voice output, text mode, latency log, notes, prep material
 
-Date: REPORT_DATE · Session: Angela (builder) · Assignment: `prompts/2026-11-03-mvp-sprint-app.md` items 5–9 + D23 (three ElevenLabs voices, preview) · Decisions D26, D27
+Date: 2026-11-03 23:34 · Session: Angela (builder) · Assignment: `prompts/2026-11-03-mvp-sprint-app.md` items 5–9 + D23 (three ElevenLabs voices, preview) · Decisions D26, D27
 
 Evidence labels: **verified in CI** (compiles with zero warnings / tests pass on the GitHub macOS runner against fakes), **verified in docs** (`backend/README.md`), **untested against the live backend**, **untested on device** (no audio has been heard by anyone yet).
 
@@ -10,7 +10,7 @@ Evidence labels: **verified in CI** (compiles with zero warnings / tests pass on
 - **Item 7 — latency.** Per answer: activation (≈ end of speech) → first streamed text → first speech scheduled, with p50/p95, in a Debug overlay and the log.
 - **Item 8 — notes.** "Save note" stores transcript + answers locally (Application Support, file-protected) and exports Markdown through the share sheet.
 - **Item 9 — prep material.** Paste text or import PDF/text; key terms are extracted on the phone and fed to the recogniser (`contextualStrings`, ≤100) and to `/answer` (`prep_terms`, ≤30).
-- CI_RESULT_LINE
+- Commits `556d457` (items 5–7), `5789b99` (fix), `0313b8f` (items 8–9) — **green in [run 41729913430](https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/41729913430)** (Xcode 26.6, iOS 26.5 SDK, zero compiler warnings, 36/36 SDK symbols, 21 scoring tests + 193 app tests in 37 suites on the iPhone 17 Pro simulator) — the run that built items 3–9 together.
 - **Nothing heard or seen on device.** Voice quality over HFP, time-to-first-word, `.dataPlayedBack` timing, PDF import and the file-importer flow are what checklist §3m–3p measure. `GET /voices` does not exist in the backend yet (Kevin's item from D23), so the premium picker is empty until then — the app says so.
 
 ## 2. What was implemented
@@ -31,19 +31,19 @@ Evidence labels: **verified in CI** (compiles with zero warnings / tests pass on
 ## 3. Test results
 | Suite (iPhone 17 Pro simulator, iOS 26.5) | Tests | Result | Basis |
 |---|---|---|---|
-| `SpeakerTests` — order + chosen voice, Apple direct, fallback on quota, non-network failure, interrupt/recover, silent mode, preview, rate | 8 | TEST_RESULT | **verified in CI** |
-| `VoiceSettingsTests`, `PCM16AssemblerTests` | 3 | TEST_RESULT | **verified in CI** |
-| `ElevenLabsTTSProviderTests` — headers/body, PCM across chunk boundaries, quota → fallback, 401 invalidates, split, body shape | 5 | TEST_RESULT | **verified in CI** (fakes) |
-| `VoiceCatalogTests` | 2 | TEST_RESULT | **verified in CI** (fakes) |
-| Text mode (`ListeningAnswerTests.typedQuestionWorksWithoutTheMicrophone`) | 1 | TEST_RESULT | **verified in CI** |
-| `LatencyLogTests` — marks once, end/cap/clear, percentiles | 3 | TEST_RESULT | **verified in CI** |
-| `NotesStoreTests`, `KeyTermExtractorTests`, `PrepStoreTests`, `ListeningNotesAndPrepTests` | 10 | TEST_RESULT | **verified in CI** |
-| Items 1–4 + Phase 1 suites | 173 | TEST_RESULT | **verified in CI** |
-| `LumenScoring` (macOS host) | 21 | TEST_RESULT | **verified in CI** |
+| `SpeakerTests` — order + chosen voice, Apple direct, fallback on quota, non-network failure, interrupt/recover, silent mode, preview, rate | 8 | pass | **verified in CI** |
+| `VoiceSettingsTests`, `PCM16AssemblerTests` | 3 | pass | **verified in CI** |
+| `ElevenLabsTTSProviderTests` — headers/body, PCM across chunk boundaries, quota → fallback, 401 invalidates, split, body shape | 5 | pass | **verified in CI** (fakes) |
+| `VoiceCatalogTests` | 2 | pass | **verified in CI** (fakes) |
+| Text mode (`ListeningAnswerTests.typedQuestionWorksWithoutTheMicrophone`, counted in the item 4 suite) | (1) | pass | **verified in CI** |
+| `LatencyLogTests` — marks once, end/cap/clear, percentiles | 3 | pass | **verified in CI** |
+| `NotesStoreTests`, `KeyTermExtractorTests`, `PrepStoreTests`, `ListeningNotesAndPrepTests` | 10 | pass | **verified in CI** |
+| Items 1–4 + Phase 1 suites | 162 | pass | **verified in CI** |
+| `LumenScoring` (macOS host) | 21 | pass | **verified in CI** |
 | Hearing anything; HFP voice quality; PDF import; file importer; share sheet | — | not run | checklist §3m–3p |
 
 ## 4. CI iterations
-CI_ITERATIONS
+Three fixes over four runs: `LatencyLog` logged inside the `inout` update closure ("escaping autoclosure captures 'inout' parameter", `5789b99`); a KeyTermExtractor test passed a `String` where `#expect` wants a `Comment` (`f244792`); the sentence splitter did not close a sentence that ends in a quote (`"Hej." Okej.` stayed one sentence — fixed to swallow closing quotes, `e163e9b`) and the PrepStore reload test compared whole structs although ISO 8601 drops sub-second dates (`e163e9b`). Two runs were also cancelled by GitHub before any step ran. See the item 3 report for the full run list.
 
 ## 5. Known limitations, risks
 - `GET /voices` is not deployed yet; the decoder accepts `{voices:[{name,id}]}`, `{voices:[{name,voice_id}]}` and a bare list — adjust when Kevin documents it (**untested assumption**). The `/tts` ElevenLabs parameters are themselves "untested assumptions" in Kevin's README; failures surface as the fallback notice and Apple speaks.

@@ -1,12 +1,12 @@
 # Report: MVP item 4 — Answer engine (Claude via the backend)
 
-Date: 2026-11-03 REPORT_TIME · Session: Angela (builder) · Assignment: `prompts/2026-11-03-mvp-sprint-app.md` item 4, as amended by D18/D19 (cloud default, Foundation Models later)
+Date: 2026-11-03 23:34 · Session: Angela (builder) · Assignment: `prompts/2026-11-03-mvp-sprint-app.md` item 4, as amended by D18/D19 (cloud default, Foundation Models later)
 
 Evidence labels: **verified in CI** (compiles with zero warnings / tests pass on the GitHub macOS runner against fakes), **verified in docs** (Kevin's `backend/README.md`), **untested against the live backend**, **untested on device**.
 
 ## 1. Summary
 - The core loop is now wired end to end in code: a detected question (item 3) → `AnswerEngine` → `CloudAnswerProvider` → Kevin's deployed `POST /functions/v1/answer` (SSE `meta → delta* → done`) → the answer streams into the Listening screen's history, with the backend's reconstructed question shown as the question. Sentences are split as they stream, ready for TTS (item 5).
-- CI_RESULT_LINE
+- Commit `16feaf6` — **green in [run 41729913430](https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/41729913430)** (Xcode 26.6, iOS 26.5 SDK, zero compiler warnings, 36/36 SDK symbols, 21 scoring tests + 193 app tests in 37 suites on the iPhone 17 Pro simulator) — the run that built items 3–9 together.
 - **The app has not talked to the live backend yet.** The whole client side is tested against scripted HTTP fakes that replay the exact bodies in `backend/README.md`. The backend itself **is live**: Deangelo's test at 22:38 (secrets set, anonymous sign-in on) got correct Swedish answers from `/answer` and audio from `/tts`, but slow (`ttft_ms` 1.8–2.8 s; Kevin has a latency task). So the first device session can exercise the real loop; if sign-in or secrets regress, the app shows the exact code ("anonymous_provider_disabled", "provider_unconfigured") as a notice.
 
 ## 2. What was implemented
@@ -25,19 +25,19 @@ Not in this item: Foundation Models provider (guarded optional, after the loop w
 ## 3. Test results
 | Suite (iPhone 17 Pro simulator, iOS 26.5) | Tests | Result | Basis |
 |---|---|---|---|
-| `SSELineParserTests`, `AnswerSSEDecoderTests` — README example, CRLF/multi-line, not-a-question, mid-stream error, unknown events, error bodies | 8 | TEST_RESULT | **verified in CI** |
-| `SentenceSplitterTests` | 4 | TEST_RESULT | **verified in CI** |
-| `ConversationAnswerTests` — streaming → history, empty dropped, interruption, recent Q/A, request clamping, mode/language mapping | 5 | TEST_RESULT | **verified in CI** |
-| `SupabaseAuthTests` — sign-up + Keychain-shaped store, cached token reuse, refresh, refresh failure → new user, anonymous sign-ins disabled (422), offline | 5 | TEST_RESULT | **verified in CI** (fakes) |
-| `CloudAnswerProviderTests` — sign-up then stream, body shape, 401 retry once, double 401, 503 `provider_quota` → fallback, mid-stream error, auto not-a-question, offline | 8 | TEST_RESULT | **verified in CI** (fakes) |
-| `AnswerEngineTests` — deltas/sentences/completion + latency, skipped, confirmation, failure with fallback flag, offline message, interruption cancels the first request, cancel, mock switch | 8 | TEST_RESULT | **verified in CI** |
-| `ListeningAnswerTests` — hold-to-ask ends with an answer in the history (context carries the transcript), failure notice, not-a-question notice, stop cancels | 4 | TEST_RESULT | **verified in CI** |
-| Items 1–3 + Phase 1 suites | 173 | TEST_RESULT | **verified in CI** |
-| `LumenScoring` (macOS host) | 21 | TEST_RESULT | **verified in CI** |
+| `SSELineParserTests`, `AnswerSSEDecoderTests` — README example, CRLF/multi-line, not-a-question, mid-stream error, unknown events, error bodies | 7 | pass | **verified in CI** |
+| `SentenceSplitterTests` | 4 | pass | **verified in CI** |
+| `ConversationAnswerTests` — streaming → history, empty dropped, interruption, recent Q/A, request clamping, mode/language mapping | 5 | pass | **verified in CI** |
+| `SupabaseAuthTests` — sign-up + Keychain-shaped store, cached token reuse, refresh, refresh failure → new user, anonymous sign-ins disabled (422), offline | 5 | pass | **verified in CI** (fakes) |
+| `CloudAnswerProviderTests` — sign-up then stream, body shape, 401 retry once, double 401, 503 `provider_quota` → fallback, mid-stream error, auto not-a-question, offline | 8 | pass | **verified in CI** (fakes) |
+| `AnswerEngineTests` — deltas/sentences/completion + latency, skipped, confirmation, failure with fallback flag, offline message, interruption cancels the first request, cancel, mock switch | 8 | pass | **verified in CI** |
+| `ListeningAnswerTests` — hold-to-ask ends with an answer in the history (context carries the transcript), failure notice, not-a-question notice, stop cancels, typed question (item 6) | 5 | pass | **verified in CI** |
+| Items 1–3 + Phase 1 suites | 120 | pass | **verified in CI** |
+| `LumenScoring` (macOS host) | 21 | pass | **verified in CI** |
 | Live backend from the app (sign-in, real Claude answer, TTFT), device | — | not run | backend is live since 22:38 (Deangelo); needs the Mac + iPhone |
 
 ## 4. CI iterations
-CI_ITERATIONS
+No compile or test failures in item 4's own code. Its first run was cancelled by GitHub before any step ran; it was then built in the combined runs (see the item 3 report for the two fixes in items 3 and 7).
 
 ## 5. Known limitations, risks
 - **Live contract unverified.** The README's SSE/JSON shapes are mirrored exactly, but one real call will tell. First thing in the device session: hold-to-ask → watch the notice line. The error texts are precise on purpose (`code` + HTTP status).
