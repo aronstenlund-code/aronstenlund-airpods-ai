@@ -85,3 +85,17 @@ Goal: prove which capture strategy works and build the reusable audio core.
 | 12 | M3 | Classifier endpoint + sensitivity |
 | 13 | M4 | Streaming answer endpoint + AnswerClient |
 | 14 | M4 | TTS providers + sentence streaming + latency report |
+
+---
+
+## Quality bar Q1 — whispered keywords (set by product owner, 2026-11-03)
+
+The product is good enough when the **wearer whispers 1–5 keywords** (e.g. "roten ur hundra", "fotosyntes formel") in a quiet room and gets a correct, short spoken answer in AirPods.
+
+Measurable targets (to be confirmed with data in Phases 1–4):
+- Whisper capture: wearer's whisper via AirPods mic transcribed with keyword accuracy ≥ 90 % (sv) — measured in Phase 1/2 with a whispered version of `testdata/scripts/sv-short-prompts.md`.
+- Intent from fragments: ≥ 90 % of keyword-only prompts produce the answer a human would expect (labelled set, Phase 3).
+- Answer correctness ≥ 95 % on the same set; answer length ≤ 2 sentences.
+- Latency: end of whisper → first audio < 1.5 s p50, < 2.5 s p95.
+
+Framing: this is a quality benchmark for low-volume, fragmentary input (library, meetings, studying next to others). Marketing, onboarding and test material do not reference exams or covert use (R6, D8).
