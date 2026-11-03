@@ -103,6 +103,10 @@ struct ListeningView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
+        #if DEBUG
+        Toggle("Mock answers (debug, no network)", isOn: $model.useMockAnswers)
+            .font(.footnote)
+        #endif
     }
 
     private var languageBinding: Binding<TranscriptionLanguage> {
@@ -179,25 +183,37 @@ struct ListeningView: View {
 
     private var answersSection: some View {
         Section {
-            if let question = model.pendingQuestion {
+            if let streaming = model.conversation.streamingAnswer {
                 VStack(alignment: .leading, spacing: 4) {
-                    Label("Detected question", systemImage: "questionmark.bubble")
-                        .font(.subheadline.weight(.semibold))
-                    Text(question.query)
+                    Text(streaming.question)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    if streaming.answer.isEmpty {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                            Text("Thinking…").foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Text(streaming.answer)
+                    }
                     HStack(spacing: 4) {
-                        Text(triggerLabel(question.trigger))
-                        Text(verbatim: "·")
-                        Text(question.createdAt, style: .time)
+                        if let question = model.pendingQuestion {
+                            Text(triggerLabel(question.trigger))
+                            Text(verbatim: "·")
+                        }
+                        Text(streaming.source)
                     }
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
-                    Text("Answer engine not connected yet (next step).")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 2)
             }
-            if model.conversation.answers.isEmpty && model.pendingQuestion == nil {
+            if let notice = model.answerNotice {
+                Label(notice, systemImage: "info.circle")
+                    .font(.footnote)
+                    .foregroundStyle(.orange)
+            }
+            if model.conversation.answers.isEmpty && model.conversation.streamingAnswer == nil && model.answerNotice == nil {
                 Text("Answers to questions appear here and are spoken in your AirPods.")
                     .foregroundStyle(.secondary)
             } else {

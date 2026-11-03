@@ -13,6 +13,8 @@ final class AppContainer {
     let sessionController: SessionController
     let transcription: TranscriptionCoordinator
     let activation: ActivationController
+    let auth: SupabaseAuth
+    let answers: AnswerEngine
     let listening: ListeningModel
     let diagnostics: DiagnosticsModel
 
@@ -27,8 +29,12 @@ final class AppContainer {
         let controller = SessionController(session: session, capture: capture, playback: playback, graph: graph)
         let transcription = TranscriptionCoordinator(controller: controller, language: language)
         let activation = ActivationController(settings: activationSettings)
+        let http = URLSessionHTTP()
+        let auth = SupabaseAuth(config: .lumen, store: KeychainSessionStore(), http: http)
+        let cloud = CloudAnswerProvider(config: .lumen, auth: auth, http: http)
+        let answers = AnswerEngine(provider: cloud)
         let listening = ListeningModel(controller: controller, consent: consent,
-                                       transcription: transcription, activation: activation)
+                                       transcription: transcription, activation: activation, answers: answers)
         transcription.sink = listening
         self.graph = graph
         self.session = session
@@ -40,6 +46,8 @@ final class AppContainer {
         self.sessionController = controller
         self.transcription = transcription
         self.activation = activation
+        self.auth = auth
+        self.answers = answers
         self.listening = listening
         self.diagnostics = DiagnosticsModel(controller: controller)
     }

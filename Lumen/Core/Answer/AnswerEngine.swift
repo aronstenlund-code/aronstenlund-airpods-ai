@@ -1,0 +1,121 @@
+import Foundation
+import Observation
+
+/// Receives the answer as it streams (the Listening screen's model; TTS joins in item 5).
+@MainActor
+protocol AnswerSink: AnyObject {
+    func answerStarted(_ request: ActivationRequest, source: String)
+    func answerQuestionReconstructed(_ question: String)
+    func answerDelta(_ text: String)
+    /// A whole sentence is ready (sentence-level TTS).
+    func answerSentence(_ sentence: String)
+    func answerCompleted(latencyMs: Double?, done: AnswerDone?)
+    /// Auto mode: the backend decided it was not a question.
+    func answerSkipped(_ request: ActivationRequest)
+    func answerFailed(_ message: String, wantsFallback: Bool)
+}
+
+/// Runs one answer at a time: a new question interrupts the current answer (assignment item 5), streams
+/// deltas and sentences to the sink, measures activation → first delta.
+@MainActor
+@Observable
+final class AnswerEngine {
+    enum Status: Equatable, Sendable {
+        case idle
+        case answering(query: String)
+        case failed(String)
+    }
+
+    private(set) var status: Status = .idle
+    /// Activation → first streamed text, for the last answer (item 7 adds the full overlay).
+    private(set) var lastLatencyMs: Double?
+    private(set) var answersCompleted = 0
+    weak var sink: (any AnswerSink)?
+    /// Debug switch: deterministic local answers instead of the backend (no network, no cost).
+    var useMock = false
+
+    private let cloud: any AnswerProvider
+    private let mock: any AnswerProvider
+    private var task: Task<Void, Never>?
+
+    var activeProvider: any AnswerProvider { useMock ? mock : cloud }
+
+    init(provider: any AnswerProvider, mock: any AnswerProvider = MockAnswerProvider()) {
+        self.cloud = provider
+        self.mock = mock
+    }
+
+    func answer(_ request: ActivationRequest, context: AnswerContext) {
+        task?.cancel()
+        let provider = activeProvider
+        status = .answering(query: request.query)
+        Log.signposter.emitEvent("answer.requested")
+        task = Task { await run(request, context: context, provider: provider) }
+    }
+
+    func cancel() {
+        task?.cancel()
+        task = nil
+        if case .answering = status { status = .idle }
+    }
+
+    private func run(_ request: ActivationRequest, context: AnswerContext, provider: any AnswerProvider) async {
+        let start = ContinuousClock.now
+        sink?.answerStarted(request, source: provider.name)
+        var splitter = SentenceSplitter()
+        var firstDeltaMs: Double?
+        var done: AnswerDone?
+        do {
+            for try await event in provider.answer(AnswerRequest(activation: request, context: context)) {
+                if Task.isCancelled { return }
+                switch event {
+                case .meta(let meta):
+                    if !meta.isQuestion {
+                        Log.answer.info("auto: not a question (confidence \(meta.confidence ?? -1, privacy: .public))")
+                        status = .idle
+                        sink?.answerSkipped(request)
+                        return
+                    }
+                    if let question = meta.reconstructedQuestion, !meta.needsConfirmation, !question.isEmpty {
+                        sink?.answerQuestionReconstructed(question)
+                    }
+                case .delta(let text):
+                    if firstDeltaMs == nil {
+                        firstDeltaMs = Self.milliseconds(since: start)
+                        Log.signposter.emitEvent("answer.firstDelta")
+                    }
+                    sink?.answerDelta(text)
+                    for sentence in splitter.feed(text) {
+                        sink?.answerSentence(sentence)
+                    }
+                case .done(let finished):
+                    done = finished
+                case .error:
+                    break // the provider throws right after yielding this
+                }
+            }
+            if Task.isCancelled { return }
+            if let rest = splitter.flush() {
+                sink?.answerSentence(rest)
+            }
+            lastLatencyMs = firstDeltaMs
+            answersCompleted += 1
+            status = .idle
+            Log.answer.info("answer done · first delta \(firstDeltaMs ?? -1, privacy: .public) ms · provider \(provider.name, privacy: .public)")
+            sink?.answerCompleted(latencyMs: firstDeltaMs, done: done)
+        } catch {
+            if Task.isCancelled { return }
+            let answerError = AnswerError.from(error)
+            if answerError == .cancelled { return }
+            Log.answer.error("answer failed: \(answerError.localizedDescription, privacy: .public)")
+            status = .failed(answerError.localizedDescription)
+            sink?.answerFailed(answerError.localizedDescription, wantsFallback: answerError.wantsFallback)
+        }
+    }
+
+    private static func milliseconds(since start: ContinuousClock.Instant) -> Double {
+        let elapsed = start.duration(to: .now)
+        let components = elapsed.components
+        return Double(components.seconds) * 1000 + Double(components.attoseconds) / 1e15
+    }
+}

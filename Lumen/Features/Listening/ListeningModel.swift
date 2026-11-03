@@ -1,17 +1,20 @@
 import Foundation
 import Observation
 
-/// Drives the Listening screen (MVP items 1–3). No business logic in views.
+/// Drives the Listening screen (MVP items 1–4). No business logic in views.
 @MainActor
 @Observable
-final class ListeningModel: TranscriptSink {
+final class ListeningModel: TranscriptSink, AnswerSink {
     let controller: SessionController
     let consent: any ConsentStoring
     let transcription: TranscriptionCoordinator
     let activation: ActivationController
+    let answers: AnswerEngine
     private(set) var conversation = Conversation()
-    /// The most recent question handed to the answer engine (item 4 replaces this with the answer flow).
+    /// The most recent question handed to the answer engine.
     private(set) var pendingQuestion: ActivationRequest?
+    /// One-line notice under the answers: "not a question", failures, offline.
+    private(set) var answerNotice: String?
     var isShowingPrivacy = false
     private var flushTask: Task<Void, Never>?
 
@@ -23,6 +26,14 @@ final class ListeningModel: TranscriptSink {
     var level: AudioLevel.Reading { controller.level }
     var isHolding: Bool { activation.isHolding }
     var language: TranscriptionLanguage { transcription.language.selected }
+    var isAnswering: Bool {
+        if case .answering = answers.status { return true }
+        return false
+    }
+    var useMockAnswers: Bool {
+        get { answers.useMock }
+        set { answers.useMock = newValue }
+    }
 
     /// "AirPods Pro · HFP" — which microphone is live, from the session snapshot.
     var routeSummary: String? {
@@ -31,12 +42,14 @@ final class ListeningModel: TranscriptSink {
     }
 
     init(controller: SessionController, consent: any ConsentStoring,
-         transcription: TranscriptionCoordinator, activation: ActivationController) {
+         transcription: TranscriptionCoordinator, activation: ActivationController, answers: AnswerEngine) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
         self.activation = activation
+        self.answers = answers
         activation.onActivate = { [weak self] request in self?.activated(request) }
+        answers.sink = self
     }
 
     // MARK: - User actions
@@ -61,6 +74,8 @@ final class ListeningModel: TranscriptSink {
 
     func stopListening() async {
         flushTask?.cancel()
+        answers.cancel()
+        conversation.cancelAnswer()
         await controller.stop()
     }
 
@@ -71,15 +86,18 @@ final class ListeningModel: TranscriptSink {
     /// Stops the microphone, forgets the session's transcript and clears the consent record; the consent
     /// screen is shown again by `RootView`.
     func withdrawConsent() async {
-        await controller.stop()
+        await stopListening()
         conversation.clear()
         pendingQuestion = nil
+        answerNotice = nil
         consent.revoke()
     }
 
     func clearHistory() {
+        answers.cancel()
         conversation.clear()
         pendingQuestion = nil
+        answerNotice = nil
     }
 
     // MARK: - Activation (item 3)
@@ -108,12 +126,60 @@ final class ListeningModel: TranscriptSink {
         }
     }
 
-    private func activated(_ request: ActivationRequest) {
-        pendingQuestion = request
-        controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
+    /// Text mode (item 6) enters here as well.
+    func submitText(_ text: String) {
+        activation.submitText(text, language: language)
     }
 
-    // MARK: - TranscriptSink (fed by TranscriptionCoordinator) and answers (item 4)
+    private func activated(_ request: ActivationRequest) {
+        pendingQuestion = request
+        answerNotice = nil
+        controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
+        let context = AnswerContext(transcript: conversation.recentText(seconds: 60),
+                                    recentQA: conversation.recentQA(limit: 3),
+                                    prepTerms: [])
+        answers.answer(request, context: context)
+    }
+
+    // MARK: - AnswerSink (item 4)
+
+    func answerStarted(_ request: ActivationRequest, source: String) {
+        conversation.beginAnswer(question: request.query, source: source, at: request.createdAt)
+    }
+
+    func answerQuestionReconstructed(_ question: String) {
+        conversation.setAnswerQuestion(question)
+    }
+
+    func answerDelta(_ text: String) {
+        conversation.appendAnswerText(text)
+    }
+
+    func answerSentence(_ sentence: String) {
+        // Item 5: hand the sentence to TTS. Logged for now.
+        Log.answer.debug("sentence: \(sentence, privacy: .private)")
+    }
+
+    func answerCompleted(latencyMs: Double?, done: AnswerDone?) {
+        conversation.completeAnswer(latencyMs: latencyMs)
+        if let latencyMs {
+            controller.log("Answer · first text after \(Int(latencyMs)) ms" + (done?.usage?.model.map { " · \($0)" } ?? ""))
+        }
+    }
+
+    func answerSkipped(_ request: ActivationRequest) {
+        conversation.cancelAnswer()
+        answerNotice = "Not a question — no answer (auto mode)"
+        controller.log("Auto: backend says not a question: \(request.query)")
+    }
+
+    func answerFailed(_ message: String, wantsFallback: Bool) {
+        conversation.cancelAnswer()
+        answerNotice = message
+        controller.log("Answer failed: \(message)" + (wantsFallback ? " · fallback requested (on-device engine not available on this iPhone)" : ""))
+    }
+
+    // MARK: - TranscriptSink (fed by TranscriptionCoordinator)
 
     func receivePartialTranscript(_ text: String, at date: Date = Date()) {
         conversation.updatePartial(text, at: date, overlapsPlayback: controller.playback.isSpeaking)

@@ -40,6 +40,8 @@ struct Conversation: Equatable, Sendable {
     private(set) var finalSegments: [TranscriptSegment] = []
     private(set) var partial: TranscriptSegment?
     private(set) var answers: [AnswerTurn] = []
+    /// The answer currently being streamed (item 4); moves into `answers` when complete.
+    private(set) var streamingAnswer: AnswerTurn?
 
     /// Final segments followed by the current partial, for display.
     var segments: [TranscriptSegment] {
@@ -47,7 +49,42 @@ struct Conversation: Equatable, Sendable {
         return finalSegments
     }
 
-    var isEmpty: Bool { finalSegments.isEmpty && partial == nil && answers.isEmpty }
+    var isEmpty: Bool { finalSegments.isEmpty && partial == nil && answers.isEmpty && streamingAnswer == nil }
+
+    // MARK: Answers
+
+    /// Starts a new streaming answer (replacing any unfinished one — a new question interrupts the current answer).
+    mutating func beginAnswer(question: String, source: String, at date: Date = Date()) {
+        streamingAnswer = AnswerTurn(question: question, answer: "", createdAt: date, source: source)
+    }
+
+    mutating func appendAnswerText(_ text: String) {
+        streamingAnswer?.answer += text
+    }
+
+    /// Replaces the question shown for the streaming answer (the backend's reconstructed question).
+    mutating func setAnswerQuestion(_ question: String) {
+        streamingAnswer?.question = question
+    }
+
+    /// Moves the streaming answer into the history. Empty answers are dropped.
+    mutating func completeAnswer(latencyMs: Double? = nil) {
+        guard var turn = streamingAnswer else { return }
+        streamingAnswer = nil
+        turn.answer = turn.answer.trimmingCharacters(in: .whitespacesAndNewlines)
+        turn.latencyMs = latencyMs
+        guard !turn.answer.isEmpty else { return }
+        append(turn)
+    }
+
+    mutating func cancelAnswer() {
+        streamingAnswer = nil
+    }
+
+    /// Last `limit` answered turns as the backend's `recent_qa`, oldest first.
+    func recentQA(limit: Int = 3) -> [AnswerContext.QA] {
+        answers.suffix(limit).map { AnswerContext.QA(q: $0.question, a: $0.answer) }
+    }
 
     /// Replaces the current partial result (or creates one). Empty text clears the partial.
     mutating func updatePartial(_ text: String, at date: Date = Date(), overlapsPlayback: Bool = false) {
@@ -90,6 +127,7 @@ struct Conversation: Equatable, Sendable {
         finalSegments.removeAll()
         partial = nil
         answers.removeAll()
+        streamingAnswer = nil
     }
 
     /// Final transcript from the last `seconds`, excluding words spoken over our own playback

@@ -45,17 +45,6 @@
         }
       }
     },
-    "Answer engine not connected yet (next step).": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Svarsmotorn är inte inkopplad än (nästa steg)."
-          }
-        }
-      }
-    },
     "Answers": {
       "extractionState": "manual",
       "localizations": {
@@ -195,17 +184,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kunde inte starta"
-          }
-        }
-      }
-    },
-    "Detected question": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Upptäckt fråga"
           }
         }
       }
@@ -393,6 +371,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mellan"
+          }
+        }
+      }
+    },
+    "Mock answers (debug, no network)": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Låtsassvar (debug, utan nätverk)"
           }
         }
       }
@@ -698,6 +687,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ljudsystemet startades om. Tryck på Fortsätt för att gå vidare."
+          }
+        }
+      }
+    },
+    "Thinking…": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tänker …"
           }
         }
       }
