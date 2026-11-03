@@ -148,7 +148,7 @@ import Testing
         let h = ControllerHarness()
         let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true),
                                    transcription: makeTestCoordinator(h.controller), activation: makeTestActivation(),
-                                   answers: makeTestAnswerEngine(provider), speaker: makeTestSpeaker(h.playback), voices: makeTestVoiceCatalog())
+                                   answers: makeTestAnswerEngine(provider), speaker: makeTestSpeaker(h.playback), voices: makeTestVoiceCatalog(), notes: makeTestNotes(), prep: makeTestPrep())
         return (h, model)
     }
 

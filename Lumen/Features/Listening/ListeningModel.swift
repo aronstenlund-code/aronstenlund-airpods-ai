@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// Drives the Listening screen (MVP items 1–5). No business logic in views.
+/// Drives the Listening screen (MVP items 1–9). No business logic in views.
 @MainActor
 @Observable
 final class ListeningModel: TranscriptSink, AnswerSink {
@@ -12,6 +12,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let answers: AnswerEngine
     let speaker: Speaker
     let voices: VoiceCatalog
+    let notes: NotesStore
+    let prep: PrepStore
     /// Per-answer latency budget (item 7), shown in the debug overlay.
     let latency = LatencyLog()
     private(set) var conversation = Conversation()
@@ -19,8 +21,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private(set) var pendingQuestion: ActivationRequest?
     /// One-line notice under the answers: "not a question", failures, offline.
     private(set) var answerNotice: String?
+    /// When the session was last saved as a note (item 8).
+    private(set) var noteSavedAt: Date?
     var isShowingPrivacy = false
     var isShowingSettings = false
+    var isShowingNotes = false
+    var isShowingPrep = false
+    var isShowingDiagnostics = false
     /// Text mode (item 6): the question being typed. Works without the microphone.
     var draftQuestion = ""
     private var flushTask: Task<Void, Never>?
@@ -43,6 +50,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
     /// Installed Apple voices for the selected language (settings picker).
     var appleVoices: [VoiceChoice] { AppleTTSProvider.installedVoices(for: language) }
+    var canSaveNote: Bool { !conversation.finalSegments.isEmpty || !conversation.answers.isEmpty }
 
     /// "AirPods Pro · HFP" — which microphone is live, from the session snapshot.
     var routeSummary: String? {
@@ -52,7 +60,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     init(controller: SessionController, consent: any ConsentStoring,
          transcription: TranscriptionCoordinator, activation: ActivationController,
-         answers: AnswerEngine, speaker: Speaker, voices: VoiceCatalog) {
+         answers: AnswerEngine, speaker: Speaker, voices: VoiceCatalog,
+         notes: NotesStore, prep: PrepStore) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -60,9 +69,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.answers = answers
         self.speaker = speaker
         self.voices = voices
+        self.notes = notes
+        self.prep = prep
         activation.onActivate = { [weak self] request in self?.activated(request) }
         answers.sink = self
         speaker.onSentenceStarted = { [weak self] provider in self?.latency.markFirstSpeech(provider: provider) }
+        transcription.setContextualStrings(prep.sttTerms)
+        prep.onChange = { [weak self] in
+            guard let self else { return }
+            self.transcription.setContextualStrings(self.prep.sttTerms)
+        }
     }
 
     // MARK: - User actions
@@ -114,10 +130,23 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         conversation.clear()
         pendingQuestion = nil
         answerNotice = nil
+        noteSavedAt = nil
     }
 
     func previewVoice() {
         speaker.preview(speaker.settings.voice, language: language)
+    }
+
+    /// Item 8: saves transcript + answers as a local note.
+    @discardableResult
+    func saveNote() -> Note? {
+        guard let note = notes.save(conversation, language: language) else {
+            controller.log("Save note: nothing to save")
+            return nil
+        }
+        noteSavedAt = note.createdAt
+        controller.log("Note saved: \(note.title)")
+        return note
     }
 
     // MARK: - Activation (item 3)
@@ -169,7 +198,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
         let context = AnswerContext(transcript: conversation.recentText(seconds: 60),
                                     recentQA: conversation.recentQA(limit: 3),
-                                    prepTerms: [])
+                                    prepTerms: prep.backendTerms)
         answers.answer(request, context: context)
     }
 

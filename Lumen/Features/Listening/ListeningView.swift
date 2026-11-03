@@ -18,17 +18,13 @@ struct ListeningView: View {
         .navigationTitle("Lumen")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink {
-                    DiagnosticsView(model: diagnostics)
+                Menu {
+                    Button { model.isShowingNotes = true } label: { Label("Notes", systemImage: "note.text") }
+                    Button { model.isShowingPrep = true } label: { Label("Prep material", systemImage: "books.vertical") }
+                    Button { model.isShowingDiagnostics = true } label: { Label("Diagnostics", systemImage: "waveform.badge.magnifyingglass") }
+                    Button { model.isShowingPrivacy = true } label: { Label("Privacy & consent", systemImage: "hand.raised") }
                 } label: {
-                    Label("Diagnostics", systemImage: "waveform.badge.magnifyingglass")
-                }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    model.isShowingPrivacy = true
-                } label: {
-                    Label("Privacy & consent", systemImage: "hand.raised")
+                    Label("More", systemImage: "ellipsis.circle")
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -37,6 +33,29 @@ struct ListeningView: View {
                 } label: {
                     Label("Settings", systemImage: "gearshape")
                 }
+            }
+        }
+        .navigationDestination(isPresented: $model.isShowingDiagnostics) {
+            DiagnosticsView(model: diagnostics)
+        }
+        .sheet(isPresented: $model.isShowingNotes) {
+            NavigationStack {
+                NotesView(store: model.notes)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button("Done") { model.isShowingNotes = false }
+                        }
+                    }
+            }
+        }
+        .sheet(isPresented: $model.isShowingPrep) {
+            NavigationStack {
+                PrepView(store: model.prep)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button("Done") { model.isShowingPrep = false }
+                        }
+                    }
             }
         }
         .sheet(isPresented: $model.isShowingSettings) {
@@ -243,6 +262,11 @@ struct ListeningView: View {
                     .font(.footnote)
                     .foregroundStyle(.orange)
             }
+            if let savedAt = model.noteSavedAt {
+                Label("Saved as a note \(savedAt.formatted(date: .omitted, time: .shortened))", systemImage: "checkmark.circle")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
             if model.conversation.answers.isEmpty && model.conversation.streamingAnswer == nil && model.answerNotice == nil {
                 Text("Answers to questions appear here and are spoken in your AirPods.")
                     .foregroundStyle(.secondary)
@@ -264,6 +288,11 @@ struct ListeningView: View {
             HStack {
                 Text("Answers")
                 Spacer()
+                if model.canSaveNote {
+                    Button("Save note") { model.saveNote() }
+                        .font(.footnote)
+                        .textCase(nil)
+                }
                 if !model.conversation.isEmpty {
                     Button("Clear") { model.clearHistory() }
                         .font(.footnote)

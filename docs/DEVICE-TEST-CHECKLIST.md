@@ -50,7 +50,7 @@ testad i GitHub Actions (CI), inte på en iPhone.
     *Jag förstår – börja använda Lumen*. Du landar på lyssnarskärmen *Lumen*. Tryck **Börja lyssna** en gång
     och **tillåt mikrofonen**. En röd rad *Lyssnar* ska visas högst upp (den följer med på alla skärmar).
     Tryck *Sluta lyssna*.
-    Diagnostikskärmen (alla mätningar i Del 3) öppnas med vågform-ikonen uppe till höger; *Start capture*
+    Diagnostikskärmen (alla mätningar i Del 3) öppnas via menyn (⋯) uppe till höger → *Diagnostik*; *Start capture*
     där och *Börja lyssna* på lyssnarskärmen styr **samma** mikrofon.
 11. **Koppla ihop AirPods** med iPhone (ha dem i öronen). Kontrollera i *Inställningar → Bluetooth → (i)
     bredvid AirPods → Om* och skriv ner **modell** och **firmware-version**. Gör detta för varje
@@ -138,11 +138,11 @@ sprintsteg; här testas bara skärmen, indikatorn och samtycket.
 1. Tryck **Börja lyssna**. Kontrollera: röd rad *Lyssnar* högst upp, mikrofonikonen röd, en nivåmätare som
    rör sig när du pratar, raden under rubriken visar vilken mikrofon som används (t.ex. *AirPods Pro · HFP*).
    Jämför med gröna raden på diagnostikskärmen – det ska vara samma mick.
-2. Gå in på diagnostikskärmen medan den lyssnar: står den röda raden kvar högst upp? Tryck *Stopp* **i den
+2. Gå in på diagnostikskärmen (meny ⋯ → Diagnostik) medan den lyssnar: står den röda raden kvar högst upp? Tryck *Stopp* **i den
    röda raden** – lyssningen ska sluta direkt och raden försvinna.
 3. Tryck *Börja lyssna* igen, ta ut AirPods: skärmen ska visa *Pausad* och knappen *Fortsätt lyssna*.
    Sätt i AirPods, tryck *Fortsätt lyssna*.
-4. Tryck på handikonen uppe till höger (*Integritet och samtycke*). Längst ner står när samtycket lämnades.
+4. Meny ⋯ → *Integritet och samtycke*. Längst ner står när samtycket lämnades.
    Tryck *Ta tillbaka samtycke* → *Sluta lyssna och ta tillbaka*. Lyssningen ska sluta och samtyckesskärmen
    visas igen. Tryck *Jag förstår …* på nytt.
 5. Avsluta appen helt (svep upp) och öppna igen: den ska **inte** fråga om samtycke igen.
@@ -220,6 +220,16 @@ Inställningar → Felsökning → *Latensruta* på. En liten ruta uppe till hö
 *text N ms · voice N ms* (från släpp/fråga till första textordet respektive första upplästa meningen) och
 p50/p95 över sessionen. Ställ fem frågor och **skriv ner raden** – det är R4-mätningen (mål < 1,5 s p50).
 
+### 3p. Anteckningar och förberedelsematerial (MVP-del 8–9, 5 min)
+1. Efter ett par frågor: tryck *Spara anteckning* (rubriken *Svar*). Meny ⋯ → *Anteckningar*: anteckningen ska
+   finnas med frågor, svar och transkriptionsrader. Öppna den, tryck dela-ikonen och skicka Markdown-texten
+   till dig själv. Radera den sedan (papperskorgen).
+2. Meny ⋯ → *Förberedelsematerial*: klistra in ett stycke ur `testdata/scripts/sv-paragraphs.md`, tryck
+   *Lägg till text*. Under *Aktiva termer* ska rimliga ämnesord stå (inga småord som "och", "att").
+   Importera också en PDF från Filer och kontrollera att termer kommer ut.
+3. Börja lyssna och säg en mening med ett ovanligt ord ur materialet: blev det rätt stavat oftare än utan
+   material? (Jämför med materialet avstängt.) Skriv ner intrycket – det är Track D-prioritet 3.
+
 ## Del 4 — Skicka in resultaten (5 min)
 
 1. I appen: tryck **Copy results as Markdown**. Öppna Anteckningar på iPhone, klistra in, dela till
@@ -228,7 +238,7 @@ p50/p95 över sessionen. Ställ fem frågor och **skriv ner raden** – det är 
    - den inklistrade texten (en per AirPods-modell, eller en lång),
    - iPhone-modell och iOS-version (står högst upp i texten),
    - AirPods-modell + firmware (från steg 11),
-   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i, 3j (bokstavliga transkriptioner), 3k (fångade/missade frågor), 3l (latenser, feltexter), 3m (röstkvalitet), 3n (textläge) och 3o (latensraden),
+   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i, 3j (bokstavliga transkriptioner), 3k (fångade/missade frågor), 3l (latenser, feltexter), 3m (röstkvalitet), 3n (textläge), 3o (latensraden) och 3p (anteckningar/material),
    - noise-uppgifterna från `testdata/noise/README.md`.
 3. **WAV-filerna**: anslut iPhone till Macen → Finder → iPhone → *Filer* → *Lumen* → dra alla
    `lumen-*.wav` till en mapp, t.ex. `~/Lumen-recordings/<datum>/`. **Lägg dem inte i git.** Skriv

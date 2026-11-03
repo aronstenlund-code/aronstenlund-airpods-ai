@@ -33,6 +33,8 @@ final class TranscriptionCoordinator {
     private let probe: AvailabilityProbe
     private let makeProvider: ProviderFactory
     private var provider: (any STTProvider)?
+    /// Prep topics (item 9), applied to the current provider and every later one.
+    private(set) var contextualStrings: [String] = []
     private var resultsTask: Task<Void, Never>?
     private var lifecycleTask: Task<Void, Never>?
     private var chunkSubscription: UUID?
@@ -87,6 +89,7 @@ final class TranscriptionCoordinator {
         }
 
         let provider = makeProvider(locale, engine)
+        provider.setContextualStrings(contextualStrings)
         status = .preparing(engine)
         do {
             try await provider.prepare()
@@ -162,6 +165,7 @@ final class TranscriptionCoordinator {
 
     /// Prep topics (item 9) for the current and future providers.
     func setContextualStrings(_ strings: [String]) {
-        provider?.setContextualStrings(strings)
+        contextualStrings = Array(strings.prefix(100))
+        provider?.setContextualStrings(contextualStrings)
     }
 }

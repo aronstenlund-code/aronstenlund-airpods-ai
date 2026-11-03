@@ -1,0 +1,113 @@
+import SwiftUI
+import UniformTypeIdentifiers
+
+/// Prep mode (item 9): paste text or import a PDF/text file; the extracted terms help recognition and answers.
+struct PrepView: View {
+    let store: PrepStore
+    @State private var pastedText = ""
+    @State private var pastedTitle = ""
+    @State private var isImporting = false
+    @State private var importError: String?
+
+    var body: some View {
+        Form {
+            Section {
+                TextField("Title (optional)", text: $pastedTitle)
+                TextEditor(text: $pastedText)
+                    .frame(minHeight: 120)
+                    .font(.body)
+                HStack {
+                    Button("Add text") { addPasted() }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(pastedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    Spacer()
+                    Button {
+                        isImporting = true
+                    } label: {
+                        Label("Import PDF or text file", systemImage: "doc.badge.plus")
+                    }
+                    .buttonStyle(.bordered)
+                }
+                if let importError {
+                    Text(importError).font(.footnote).foregroundStyle(.red)
+                }
+            } header: {
+                Text("Add material")
+            } footer: {
+                Text("Key terms are extracted on this iPhone and help speech recognition and answers. The text itself never leaves the phone; only the terms (max 30) are sent with a question.")
+            }
+
+            Section("Material") {
+                if store.materials.isEmpty {
+                    Text("No material yet.").foregroundStyle(.secondary)
+                }
+                ForEach(store.materials) { material in
+                    VStack(alignment: .leading, spacing: 4) {
+                        Toggle(isOn: Binding(get: { material.isEnabled }, set: { store.setEnabled(material, $0) })) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(material.title)
+                                Text("\(material.terms.count) terms · \(material.text.count) characters")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Text(material.terms.prefix(12).joined(separator: " · "))
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                            .lineLimit(2)
+                    }
+                }
+                .onDelete { offsets in
+                    let doomed = offsets.map { store.materials[$0] }
+                    for material in doomed { store.delete(material) }
+                }
+            }
+
+            Section("Active terms") {
+                let terms = store.sttTerms
+                if terms.isEmpty {
+                    Text("None").foregroundStyle(.secondary)
+                } else {
+                    Text(terms.joined(separator: ", "))
+                        .font(.footnote)
+                        .textSelection(.enabled)
+                }
+            }
+            if let error = store.lastError {
+                Text(error).font(.footnote).foregroundStyle(.red)
+            }
+        }
+        .navigationTitle("Prep material")
+        .navigationBarTitleDisplayMode(.inline)
+        .fileImporter(isPresented: $isImporting, allowedContentTypes: [.pdf, .plainText, .text]) { result in
+            switch result {
+            case .success(let url):
+                importFile(url)
+            case .failure(let error):
+                importError = error.localizedDescription
+            }
+        }
+    }
+
+    private func addPasted() {
+        importError = nil
+        if store.add(title: pastedTitle, text: pastedText) == nil {
+            importError = "No usable terms found in that text."
+            return
+        }
+        pastedText = ""
+        pastedTitle = ""
+    }
+
+    private func importFile(_ url: URL) {
+        importError = nil
+        do {
+            let text = try DocumentText.read(url)
+            if store.add(title: url.deletingPathExtension().lastPathComponent, text: text) == nil {
+                importError = "No usable terms found in that file."
+            }
+        } catch {
+            importError = error.localizedDescription
+        }
+    }
+}

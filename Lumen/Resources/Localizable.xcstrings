@@ -12,6 +12,28 @@
         }
       }
     },
+    "%@ · %lld answers · %lld lines": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld svar · %lld rader"
+          }
+        }
+      }
+    },
+    "%lld terms · %lld characters": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld termer · %lld tecken"
+          }
+        }
+      }
+    },
     "A call or another app interrupted the session.": {
       "extractionState": "manual",
       "localizations": {
@@ -30,6 +52,39 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktivering"
+          }
+        }
+      }
+    },
+    "Active terms": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktiva termer"
+          }
+        }
+      }
+    },
+    "Add material": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lägg till material"
+          }
+        }
+      }
+    },
+    "Add text": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lägg till text"
           }
         }
       }
@@ -221,6 +276,17 @@
         }
       }
     },
+    "Delete": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radera"
+          }
+        }
+      }
+    },
     "Diagnostics": {
       "extractionState": "manual",
       "localizations": {
@@ -276,6 +342,17 @@
         }
       }
     },
+    "Import PDF or text file": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importera PDF eller textfil"
+          }
+        }
+      }
+    },
     "Input level": {
       "extractionState": "manual",
       "localizations": {
@@ -294,6 +371,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lyssnar bara när du har startat en session"
+          }
+        }
+      }
+    },
+    "Key terms are extracted on this iPhone and help speech recognition and answers. The text itself never leaves the phone; only the terms (max 30) are sent with a question.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nyckeltermer tas fram på den här telefonen och hjälper taligenkänningen och svaren. Själva texten lämnar aldrig telefonen; bara termerna (max 30) skickas med en fråga."
           }
         }
       }
@@ -419,6 +507,17 @@
         }
       }
     },
+    "Material": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Material"
+          }
+        }
+      }
+    },
     "Medium": {
       "extractionState": "manual",
       "localizations": {
@@ -441,6 +540,72 @@
         }
       }
     },
+    "More": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mer"
+          }
+        }
+      }
+    },
+    "No material yet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inget material än."
+          }
+        }
+      }
+    },
+    "No notes yet. Save a session from the Listening screen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inga anteckningar än. Spara en session från lyssnarskärmen."
+          }
+        }
+      }
+    },
+    "No usable terms found in that file.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inga användbara termer hittades i filen."
+          }
+        }
+      }
+    },
+    "No usable terms found in that text.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inga användbara termer hittades i texten."
+          }
+        }
+      }
+    },
+    "None": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inga"
+          }
+        }
+      }
+    },
     "Not listening": {
       "extractionState": "manual",
       "localizations": {
@@ -448,6 +613,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lyssnar inte"
+          }
+        }
+      }
+    },
+    "Notes": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anteckningar"
           }
         }
       }
@@ -529,6 +705,17 @@
         }
       }
     },
+    "Prep material": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förberedelsematerial"
+          }
+        }
+      }
+    },
     "Preparing the speech model (%@) — the first time this downloads it.": {
       "extractionState": "manual",
       "localizations": {
@@ -584,6 +771,28 @@
         }
       }
     },
+    "Save note": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spara anteckning"
+          }
+        }
+      }
+    },
+    "Saved as a note %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sparad som anteckning %@"
+          }
+        }
+      }
+    },
     "See the message below and try again.": {
       "extractionState": "manual",
       "localizations": {
@@ -624,6 +833,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inställningar"
+          }
+        }
+      }
+    },
+    "Share": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dela"
           }
         }
       }
@@ -841,6 +1061,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tänker …"
+          }
+        }
+      }
+    },
+    "Title (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rubrik (valfri)"
           }
         }
       }

@@ -11,7 +11,7 @@ struct TranscriptSegment: Identifiable, Equatable, Sendable {
 }
 
 /// One answered question, shown in the history list.
-struct AnswerTurn: Identifiable, Equatable, Sendable {
+struct AnswerTurn: Identifiable, Equatable, Sendable, Codable {
     let id: UUID
     var question: String
     var answer: String

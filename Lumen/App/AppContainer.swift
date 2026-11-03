@@ -18,6 +18,8 @@ final class AppContainer {
     let answers: AnswerEngine
     let speaker: Speaker
     let voices: VoiceCatalog
+    let notes: NotesStore
+    let prep: PrepStore
     let listening: ListeningModel
     let diagnostics: DiagnosticsModel
 
@@ -42,9 +44,12 @@ final class AppContainer {
                               premium: ElevenLabsTTSProvider(config: .lumen, auth: auth, http: http, playback: playback),
                               playback: playback)
         let voices = VoiceCatalog(config: .lumen, auth: auth, http: http)
+        let notes = NotesStore()
+        let prep = PrepStore()
         let listening = ListeningModel(controller: controller, consent: consent,
                                        transcription: transcription, activation: activation,
-                                       answers: answers, speaker: speaker, voices: voices)
+                                       answers: answers, speaker: speaker, voices: voices,
+                                       notes: notes, prep: prep)
         transcription.sink = listening
         self.graph = graph
         self.session = session
@@ -61,6 +66,8 @@ final class AppContainer {
         self.answers = answers
         self.speaker = speaker
         self.voices = voices
+        self.notes = notes
+        self.prep = prep
         self.listening = listening
         self.diagnostics = DiagnosticsModel(controller: controller)
     }
