@@ -1,0 +1,36 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Start capture" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starta inspelning"
+          }
+        }
+      }
+    },
+    "Stop capture" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stoppa inspelning"
+          }
+        }
+      }
+    },
+    "Tap to resume" : {
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck för att fortsätta"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

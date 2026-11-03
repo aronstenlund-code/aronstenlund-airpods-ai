@@ -46,6 +46,6 @@ Notes:
 - Items 1–8 exercise spoken arithmetic and maths vocabulary (the "roten ur" / "plus" family from the
   product spec). Items 9–16 are bare terms and short science questions. Items 17–22 are history,
   23–28 language and geography, 29–30 imperative/colloquial forms that the question gate must catch.
-- Item 16: the reference keeps the hyphen in "ph-värde"; the normaliser strips punctuation, so
-  "ph värde" and "phvärde" score differently (documented rule — see `Scoring`).
+- Item 16: the reference keeps the hyphen in "ph-värde"; the normaliser treats a hyphen as a word
+  boundary, so "pH-värde" and "ph värde" both match while "phvärde" does not (rule in `LumenScoring/TextNormalizer`).
 - Item 25 is deliberately ungrammatical ("hur stavas man") because that is how students actually ask.

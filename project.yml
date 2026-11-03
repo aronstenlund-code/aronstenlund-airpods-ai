@@ -1,0 +1,84 @@
+# XcodeGen spec (D9). Generate with: xcodegen generate
+# Lumen.xcodeproj is NOT committed (D13); CI regenerates it and uploads it as an artifact.
+name: Lumen
+options:
+  bundleIdPrefix: com.rsolutions
+  developmentLanguage: en
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+
+packages:
+  LumenScoring:
+    path: Packages/LumenScoring
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    IPHONEOS_DEPLOYMENT_TARGET: "26.0"
+    TARGETED_DEVICE_FAMILY: "1"
+    SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+    SUPPORTS_MACCATALYST: NO
+    # Signing: leave the team empty in the repo. Set it locally in Xcode
+    # (target Lumen -> Signing & Capabilities -> Team); see docs/DEVICE-TEST-CHECKLIST.md.
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    GCC_TREAT_WARNINGS_AS_ERRORS: YES
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
+
+targets:
+  Lumen:
+    type: application
+    platform: iOS
+    sources:
+      - path: Lumen
+        excludes:
+          - "Resources/Info.plist"
+    dependencies:
+      - package: LumenScoring
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen
+        PRODUCT_NAME: Lumen
+        INFOPLIST_FILE: Lumen/Resources/Info.plist
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        ENABLE_PREVIEWS: YES
+      configs:
+        Debug:
+          # Debug only (Phase 1 assignment 3.3): exposes exported WAV files in the Files app / Finder.
+          INFOPLIST_KEY_UIFileSharingEnabled: YES
+          INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace: YES
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+
+  LumenTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: LumenTests
+    dependencies:
+      - target: Lumen
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  Lumen:
+    build:
+      targets:
+        Lumen: all
+        LumenTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: false
+      targets:
+        - LumenTests

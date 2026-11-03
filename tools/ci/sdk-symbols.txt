@@ -1,0 +1,26 @@
+# framework|symbol  - every AVFoundation/Speech symbol the app relies on (Phase 1a 3.1 step 2).
+# Matching is case-insensitive and covers Headers/*.h, Modules/*.swiftinterface and *.apinotes.
+AVFAudio|bluetoothHighQualityRecording
+AVFAudio|allowBluetoothHFP
+AVFAudio|allowBluetoothA2DP
+AVFAudio|bluetoothMicrophoneExtension
+AVFAudio|highQualityRecording
+AVFAudio|AVAudioSessionCapability
+AVFAudio|AVAudioSessionPortExtensionBluetoothMicrophone
+AVFAudio|requestRecordPermission
+AVFAudio|setVoiceProcessingEnabled
+AVFAudio|AVAudioSessionInterruptionOptionShouldResume
+AVFAudio|AVAudioSessionRouteChangeReasonOldDeviceUnavailable
+AVFAudio|AVAudioSessionMediaServicesWereResetNotification
+AVFAudio|AVAudioEngineConfigurationChangeNotification
+AVFAudio|writeUtterance
+AVFAudio|AVAudioUnitTimePitch
+AVFAudio|secondsForHostTime
+AVFAudio|AVAudioSessionModeMeasurement
+AVFAudio|AVAudioSessionModeVoiceChat
+Speech|SpeechAnalyzer
+Speech|SpeechTranscriber
+Speech|DictationTranscriber
+Speech|supportedLocales
+Speech|installedLocales
+Speech|isAvailable

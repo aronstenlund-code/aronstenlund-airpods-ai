@@ -1,0 +1,118 @@
+name: iOS build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build (iOS 26) + unit tests
+    # Phase 1a 3.1: macOS 26 image with Xcode 26.x (actions/runner-images "macos-26").
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26 and print toolchain
+        run: |
+          set -euo pipefail
+          # Newest Xcode 26.x present on the image (path taken from the image, not guessed).
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          echo "Selecting: $XCODE_APP"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          echo "::group::sw_vers"; sw_vers; echo "::endgroup::"
+          echo "::group::xcodebuild -version"; xcodebuild -version; echo "::endgroup::"
+          echo "::group::swift --version"; swift --version; echo "::endgroup::"
+          echo "::group::xcodebuild -showsdks"; xcodebuild -showsdks; echo "::endgroup::"
+
+      - name: API-name check against the iOS SDK (replaces the local header check)
+        run: bash tools/ci/check-sdk-symbols.sh
+
+      - name: Install XcodeGen and generate project
+        run: |
+          set -euo pipefail
+          brew install xcodegen
+          xcodegen --version
+          xcodegen generate
+          ls -la Lumen.xcodeproj
+
+      - name: Scoring package tests (macOS host, swift test)
+        run: |
+          set -euo pipefail
+          mkdir -p build-logs
+          swift test --package-path Packages/LumenScoring 2>&1 | tee build-logs/scoring-tests.log
+
+      - name: Build app for iOS device (unsigned, warnings are errors)
+        run: |
+          set -euo pipefail
+          mkdir -p build-logs
+          xcodebuild build \
+            -project Lumen.xcodeproj \
+            -scheme Lumen \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
+            GCC_TREAT_WARNINGS_AS_ERRORS=YES \
+            2>&1 | tee build-logs/xcodebuild-build.log | xcbeautify --renderer github-actions
+
+      - name: Pick an iOS 26 iPhone simulator
+        id: sim
+        run: |
+          set -euo pipefail
+          echo "::group::Available simulators"; xcrun simctl list devices available; echo "::endgroup::"
+          JSON="$(xcrun simctl list devices available -j)"
+          # Newest iOS 26 runtime, then prefer iPhone 17 / 17 Pro / Air, else any iPhone.
+          RUNTIME="$(echo "$JSON" | jq -r '.devices | keys[] | select(test("iOS-26"))' | sort -V | tail -n 1)"
+          echo "Runtime: $RUNTIME"
+          UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name | test("^iPhone 17$|^iPhone 17 Pro$|^iPhone Air$")) | .udid' | head -n 1)"
+          if [ -z "$UDID" ]; then
+            UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name | test("^iPhone")) | .udid' | head -n 1)"
+          fi
+          test -n "$UDID" || { echo "No iOS 26 iPhone simulator found"; exit 1; }
+          NAME="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" --arg id "$UDID" '.devices[$rt][] | select(.udid == $id) | .name')"
+          echo "Using simulator: $NAME ($UDID) on $RUNTIME"
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID" || true
+
+      - name: Unit tests (LumenTests on iOS 26 Simulator)
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -project Lumen.xcodeproj \
+            -scheme Lumen \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath DerivedData \
+            -resultBundlePath build-logs/LumenTests.xcresult \
+            -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
+            GCC_TREAT_WARNINGS_AS_ERRORS=YES \
+            2>&1 | tee build-logs/xcodebuild-test.log | xcbeautify --renderer github-actions
+
+      - name: Upload generated project (for the device session, D13)
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: Lumen.xcodeproj
+          path: Lumen.xcodeproj
+          if-no-files-found: ignore
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: build-logs
+          path: build-logs
+          if-no-files-found: ignore
