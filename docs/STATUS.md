@@ -1,7 +1,7 @@
 # Project status — Lumen (codename)
 
 Single overview page. Update it at the end of every session.
-Last updated: 2026-11-03 19:05 by Angela (builder).
+Last updated: 2026-11-03 21:15 by Angela (builder).
 
 ## Completed
 - Phase 0: initial analysis, architecture, roadmap, MVP definition, first coding assignment. → `reports/2026-11-03-1600-architect-initial-analysis.md`
@@ -11,7 +11,7 @@ Last updated: 2026-11-03 19:05 by Angela (builder).
 
 ## In progress
 - Phase 1 — Audio foundation. Code done (Phase 1a); **device measurements (§3.5–3.6, §3.9–3.12) wait for the owner's Mac** next week — run `docs/DEVICE-TEST-CHECKLIST.md`. Then OSS-1 + OSS-3.
-- **MVP sprint (Angela):** `prompts/2026-11-03-mvp-sprint-app.md` — step 0 done (CI green, Phase 1a report pushed); next: item 1 listening screen + consent.
+- **MVP sprint (Angela):** `prompts/2026-11-03-mvp-sprint-app.md` — step 0 and **item 1 (consent screen, listening screen, always-visible indicator, shared `SessionController`) done in CI** (run 41708665338, 74 app tests; D21) — **untested on device**, so not marked done. → `reports/2026-11-03-2115-angela-mvp-item1-listening-consent.md`. Next: item 2 STT provider.
 
 - **MVP backend (Kevin).** `/answer` (SSE) + `/tts` built and tested offline (46 Deno tests, mock LLM); **not deployed**. Blocked on: owner approval to create a Supabase project, and the owner entering `ANTHROPIC_API_KEY` / `ELEVENLABS_API_KEY` / `ELEVENLABS_VOICE_ID` as Supabase secrets himself. TTFT on the 30 prompts not yet measured. → `reports/2026-11-03-1900-kevin-backend.md`, `backend/README.md`, D20.
 
