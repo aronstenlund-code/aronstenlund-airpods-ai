@@ -2,7 +2,20 @@ name: iOS build
 
 on:
   push:
+    # Docs-only pushes (Architect/CREED) must not trigger or cancel a build.
+    paths-ignore:
+      - "docs/**"
+      - "reports/**"
+      - "prompts/**"
+      - "testdata/**"
+      - "**/*.md"
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "reports/**"
+      - "prompts/**"
+      - "testdata/**"
+      - "**/*.md"
   workflow_dispatch:
 
 concurrency:
