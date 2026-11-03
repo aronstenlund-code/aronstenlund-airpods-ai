@@ -100,3 +100,13 @@ Measurable targets (to be confirmed with data in Phases 1–4):
 - Public-transport case (product owner, 2026-11-03): user can talk quietly on the metro without disturbing others. Test with recorded metro/street noise (~70–80 dB) as an extra noise condition; report keyword accuracy for whisper vs. low normal voice. Fallback when speech can't work: text mode (Phase 4).
 
 Framing: this is a quality benchmark for low-volume, fragmentary input (library, meetings, studying next to others). Marketing, onboarding and test material do not reference exams or covert use (R6, D8).
+
+## Track D — Discreet interaction (product owner, 2026-11-03)
+Goal: natural, quiet use in public without disturbing others. Each item is a measurement or prototype, labelled by evidence status.
+- D1 Low-voice capture: whisper vs. low voice vs. normal voice, quiet / office / metro noise, per AirPods model and mic mode (Phase 1).
+- D2 Personal vocabulary: keyterm boosting from prep-mode topics to lift accuracy on quiet, fragmentary input (Phase 2 bake-off).
+- D3 Fragment understanding: keyword-only prompts with conversation context (Phase 3 eval set).
+- D4 Non-voice triggers: AirPods stem press via `MPRemoteCommandCenter` (possible with limitations — app must own Now Playing; untested), head nod/shake via `CMHeadphoneMotionManager` (API exists; gesture reliability untested), Lock Screen / Live Activity quick actions.
+- D5 Silent fallback: text input with fast suggestions (Phase 4).
+- D6 Output comfort: short answers, adjustable voice volume and speed, answer interrupted instantly by a new question.
+Guardrails unchanged: visible listening indicator, consent, no concealment features.
