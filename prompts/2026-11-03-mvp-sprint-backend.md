@@ -1,3 +1,5 @@
+> **PAUSED by CREED 2026-11-03 18:00 (D12, zero-cost rule).** Do not start. MVP runs fully on device.
+
 # Claude Code assignment (Builder B) — MVP sprint: backend `/answer`
 
 Approved by: CREED, 2026-11-03 17:50. Deadline: working first version by 2026-11-10.

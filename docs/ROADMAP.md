@@ -3,9 +3,9 @@
 ## ⏱ Deadline: first working version of the whole app by 2026-11-10 (set by product owner 2026-11-03)
 Deadline, not a day plan: work continuously, start the next priority as soon as one is done.
 - **Angela (app):** `prompts/2026-11-03-mvp-sprint-app.md` — core loop first (listening UI → on-device STT → push-to-talk/auto → answer stream → TTS in AirPods), then text mode, notes, prep mode, Track D.
-- **Builder B (backend, parallel session, `backend/` only):** `prompts/2026-11-03-mvp-sprint-backend.md` — Supabase `/answer` SSE endpoint.
+- **Zero cost (D12):** everything on device — SpeechAnalyzer → Foundation Models → AVSpeechSynthesizer. Backend assignment paused.
 - **Architect:** `prompts/2026-11-03-architect-trackD-verification.md`.
-- **Critical path / bottlenecks:** (1) on-device testing needs either the Mac (Xcode + free Apple ID) or TestFlight from CI (paid Apple Developer Program + App Store Connect API key — automatic signing from CI is untested); (2) an LLM API key stored as a Supabase secret.
+- **Critical path / bottlenecks:** (1) on-device testing needs the owner's Mac with Xcode + free Apple ID (next week); until then CI is the only verification; (2) the iPhone must support Apple Intelligence for the on-device LLM.
 - Phase 2–4 below are now built in parallel inside the sprint; Phase 1 device measurements run in the same device session as the first end-to-end test.
 
 Last updated: 2026-11-03 by the Architect session.
