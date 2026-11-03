@@ -101,7 +101,7 @@ jobs:
             GCC_TREAT_WARNINGS_AS_ERRORS=YES \
             2>&1 | tee build-logs/xcodebuild-test.log | xcbeautify --renderer github-actions
 
-      - name: Upload generated project (for the device session, D13)
+      - name: Upload generated project (for the device session, D14)
         if: always()
         uses: actions/upload-artifact@v5
         with:

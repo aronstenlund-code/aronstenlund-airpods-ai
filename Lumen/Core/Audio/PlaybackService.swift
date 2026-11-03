@@ -102,7 +102,7 @@ final class PlaybackService: PlaybackServicing {
     private(set) var isSpeaking = false
 
     private let graph: AudioGraph
-    /// Fixed graph format for the playback branch (D15); the mixer converts to the hardware rate.
+    /// Fixed graph format for the playback branch (D16); the mixer converts to the hardware rate.
     private let playbackFormat: AVAudioFormat
     private var player = AVAudioPlayerNode()
     private var timePitch = AVAudioUnitTimePitch()
