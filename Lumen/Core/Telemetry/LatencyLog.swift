@@ -51,20 +51,30 @@ final class LatencyLog {
     }
 
     func markFirstText(provider: String, at instant: ContinuousClock.Instant = .now) {
+        let ms = milliseconds(to: instant)
+        var marked = false
         update { record in
             guard record.firstTextMs == nil else { return }
-            record.firstTextMs = self.milliseconds(to: instant)
+            record.firstTextMs = ms
             record.answerProvider = provider
-            Log.answer.info("latency: first text after \(Int(record.firstTextMs ?? -1), privacy: .public) ms (\(provider, privacy: .public))")
+            marked = true
+        }
+        if marked {
+            Log.answer.info("latency: first text after \(Int(ms), privacy: .public) ms (\(provider, privacy: .public))")
         }
     }
 
     func markFirstSpeech(provider: String, at instant: ContinuousClock.Instant = .now) {
+        let ms = milliseconds(to: instant)
+        var marked = false
         update { record in
             guard record.firstSpeechMs == nil else { return }
-            record.firstSpeechMs = self.milliseconds(to: instant)
+            record.firstSpeechMs = ms
             record.voiceProvider = provider
-            Log.playback.info("latency: first speech after \(Int(record.firstSpeechMs ?? -1), privacy: .public) ms (\(provider, privacy: .public))")
+            marked = true
+        }
+        if marked {
+            Log.playback.info("latency: first speech after \(Int(ms), privacy: .public) ms (\(provider, privacy: .public))")
             Log.signposter.emitEvent("latency.firstSpeech")
         }
     }
