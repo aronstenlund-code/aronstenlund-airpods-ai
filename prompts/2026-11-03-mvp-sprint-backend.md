@@ -5,6 +5,8 @@
 > - Every external call must fail closed: on quota/billing errors return an error the app turns into Apple TTS / on-device fallback.
 
 
+> **Critical path (CREED 18:30):** the owner's test phone (iPhone 14 Pro) has no Apple Intelligence, so every answer in the first device test comes from this backend. Deploy a working `/answer` as early as possible, before polishing.
+
 # Claude Code assignment (Kevin Malone) — MVP sprint: backend `/answer`
 
 Approved by: CREED, 2026-11-03 17:50. Deadline: working first version by 2026-11-10.
