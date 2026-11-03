@@ -1,3 +1,4 @@
+// (--set auto: runs backend/testdata/auto-gate.json in auto mode and reports gate accuracy.)
 // Runs the 30 Swedish short prompts (testdata/scripts/sv-short-prompts.md) against /answer and
 // prints time-to-first-token (first SSE `delta`), time-to-meta and totals, plus answer-style checks.
 //
@@ -7,7 +8,7 @@
 import { parseArgs } from "jsr:@std/cli@1.0.9/parse-args";
 
 const args = parseArgs(Deno.args, {
-  string: ["url", "token", "mode", "out", "prompts", "language"],
+  string: ["url", "token", "mode", "out", "prompts", "language", "set"],
   default: {
     mode: "push_to_talk",
     language: "sv",
@@ -54,6 +55,7 @@ const pct = (xs: number[], p: number) => {
 
 interface Row {
   n: number;
+  is_question?: boolean;
   prompt: string;
   status: number;
   headers_ms: number;
@@ -131,7 +133,8 @@ async function runOne(token: string, n: number, prompt: string): Promise<Row> {
           row.meta_ms = now;
           row.question = data.reconstructed_question;
           row.confidence = data.confidence;
-          if (!data.is_question) row.issues.push("is_question=false");
+          row.is_question = data.is_question;
+          if (!data.is_question && !autoSet) row.issues.push("is_question=false");
         } else if (ev === "delta") {
           if (row.ttft_ms === null) row.ttft_ms = now;
           row.answer += data.text;
@@ -144,7 +147,7 @@ async function runOne(token: string, n: number, prompt: string): Promise<Row> {
     if (sentences > 2) row.issues.push(`${sentences} sentences`);
     if (/\d/.test(row.answer)) row.issues.push("digits in answer (TTS)");
     if (/[*#_`()\[\]]/.test(row.answer)) row.issues.push("symbols in answer");
-    if (!row.answer) row.issues.push("empty answer");
+    if (!row.answer && row.is_question !== false) row.issues.push("empty answer");
     return row;
   }
   return {
@@ -164,7 +167,15 @@ async function runOne(token: string, n: number, prompt: string): Promise<Row> {
 }
 
 const token = await getToken();
-const prompts = loadPrompts(args.prompts!);
+const autoSet: { text: string; is_question: boolean }[] | null = args.set === "auto"
+  ? JSON.parse(
+    Deno.readTextFileSync(new URL("../testdata/auto-gate.json", import.meta.url).pathname),
+  )
+  : null;
+if (autoSet) args.mode = "auto";
+const prompts = autoSet
+  ? autoSet.map((x, i) => ({ n: i + 1, text: x.text }))
+  : loadPrompts(args.prompts!);
 console.log(
   `url=${args.url} mode=${args.mode} language=${args.language} prompts=${prompts.length}\n`,
 );
@@ -185,8 +196,32 @@ const ok = rows.filter((r) => r.status === 200 && r.ttft_ms !== null);
 const ttft = ok.map((r) => r.ttft_ms!),
   meta = ok.filter((r) => r.meta_ms !== null).map((r) => r.meta_ms!),
   tot = ok.map((r) => r.total_ms);
+const bd = (r: Row) => (r.server?.breakdown as { cold?: boolean } | undefined)?.cold;
+const gate = autoSet
+  ? (() => {
+    let tp = 0, tn = 0, fp = 0, fn = 0;
+    rows.forEach((r, i) => {
+      const exp = autoSet[i].is_question;
+      if (exp && r.is_question) tp++;
+      else if (!exp && !r.is_question) tn++;
+      else if (!exp && r.is_question) fp++;
+      else fn++;
+    });
+    return {
+      questions_detected: tp,
+      non_questions_ignored: tn,
+      false_positives: fp,
+      false_negatives: fn,
+      accuracy: +((tp + tn) / rows.length).toFixed(2),
+    };
+  })()
+  : undefined;
 const summary = {
   url: args.url,
+  gate,
+  cold_calls: rows.filter((r) => bd(r) === true).length,
+  ttft_ms_cold_p50: pct(ok.filter((r) => bd(r) === true).map((r) => r.ttft_ms!), 50),
+  ttft_ms_warm_p50: pct(ok.filter((r) => bd(r) === false).map((r) => r.ttft_ms!), 50),
   mode: args.mode,
   n: rows.length,
   ok: ok.length,

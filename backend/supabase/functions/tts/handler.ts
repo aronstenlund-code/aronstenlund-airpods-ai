@@ -13,6 +13,8 @@ export interface TtsConfig {
   voiceId: string | null;
   /** Allowlist (secret ELEVENLABS_VOICES). A requested voice_id must be one of these or the default. */
   voices: Voice[];
+  /** Override for tests/proxies; default https://api.elevenlabs.io */
+  baseUrl?: string;
   modelId: string; // eleven_flash_v2_5: low latency, supports Swedish [docs]
   /** Limits are in CHARACTERS (ElevenLabs bills credits per character). */
   limits: Limits;
@@ -134,7 +136,9 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         text.length,
       );
       const upstreamP = doFetch(
-        `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream?output_format=${format}`,
+        `${
+          deps.config.baseUrl ?? "https://api.elevenlabs.io"
+        }/v1/text-to-speech/${voiceId}/stream?output_format=${format}`,
         {
           method: "POST",
           headers: {

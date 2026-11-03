@@ -17,6 +17,7 @@ export function providerFromEnv(env: { get(k: string): string | undefined }): LL
     return new AnthropicProvider({
       apiKey,
       model: env.get("LLM_MODEL") ?? DEFAULT_MODEL,
+      baseUrl: env.get("ANTHROPIC_BASE_URL") || undefined,
       effort,
       disableThinking: (env.get("LLM_DISABLE_THINKING") ?? "1") !== "0",
     });

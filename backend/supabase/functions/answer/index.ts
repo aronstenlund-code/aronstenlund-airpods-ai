@@ -11,7 +11,9 @@ const env = Deno.env;
 // Open the TLS connection to Anthropic while the isolate boots (unauthenticated GET -> 401, free and
 // not billed). The connection pool then reuses it for the first real request.
 const warmUpstream = () =>
-  void fetch("https://api.anthropic.com/v1/models").then((r) => r.body?.cancel()).catch(() => {});
+  void fetch(`${env.get("ANTHROPIC_BASE_URL") || "https://api.anthropic.com"}/v1/models`).then((
+    r,
+  ) => r.body?.cancel()).catch(() => {});
 warmUpstream();
 const supabaseUrl = env.get("SUPABASE_URL")!;
 const db = restDbFromEnv();

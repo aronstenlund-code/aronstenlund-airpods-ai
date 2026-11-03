@@ -1,0 +1,22 @@
+[
+  {"text": "roten ur hundra", "is_question": true},
+  {"text": "vad är fotosyntes", "is_question": true},
+  {"text": "när började andra världskriget", "is_question": true},
+  {"text": "fotosyntes", "is_question": true},
+  {"text": "tjugofem procent av tvåhundra", "is_question": true},
+  {"text": "kan någon förklara skillnaden mellan mitos och meios", "is_question": true},
+  {"text": "vad betyder ambivalent", "is_question": true},
+  {"text": "vem var gustav vasa", "is_question": true},
+  {"text": "hur många kromosomer har en människa", "is_question": true},
+  {"text": "förklara växthuseffekten", "is_question": true},
+  {"text": "ja men det var ju roligt igår", "is_question": false},
+  {"text": "okej nu tar vi rast i tio minuter", "is_question": false},
+  {"text": "öppna boken på sidan tolv", "is_question": false},
+  {"text": "jag glömde mina anteckningar hemma", "is_question": false},
+  {"text": "hörni lite tystare där bak", "is_question": false},
+  {"text": "det var en gång en kung som hade tre söner", "is_question": false},
+  {"text": "tack för idag vi ses på måndag", "is_question": false},
+  {"text": "mm precis så är det", "is_question": false},
+  {"text": "vi har prov nästa vecka", "is_question": false},
+  {"text": "kul att se er alla här idag", "is_question": false}
+]

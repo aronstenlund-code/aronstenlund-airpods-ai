@@ -5,6 +5,8 @@ export interface AnthropicConfig {
   model: string; // default claude-haiku-5-5
   effort: "low" | "medium" | "high";
   disableThinking: boolean;
+  /** Override for tests/proxies; default https://api.anthropic.com */
+  baseUrl?: string;
 }
 
 /** Classifies an SDK error. Credit exhaustion arrives as 402 billing_error or as a 400
@@ -96,7 +98,8 @@ export async function* sseJson(
   }
 }
 
-export const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
+export const ANTHROPIC_BASE = "https://api.anthropic.com";
+export const ANTHROPIC_URL = `${ANTHROPIC_BASE}/v1/messages`;
 /** Same API version the official SDK 1.3.0 sends (read from its source). */
 export const ANTHROPIC_VERSION = "2026-10-21";
 
@@ -119,27 +122,30 @@ export class AnthropicProvider implements LLMProvider {
       ? AbortSignal.any([req.signal, AbortSignal.timeout(20_000)])
       : AbortSignal.timeout(20_000);
     try {
-      const res = await this.fetchImpl(ANTHROPIC_URL, {
-        method: "POST",
-        headers: {
-          "x-api-key": this.cfg.apiKey,
-          "anthropic-version": ANTHROPIC_VERSION,
-          "content-type": "application/json",
+      const res = await this.fetchImpl(
+        this.cfg.baseUrl ? `${this.cfg.baseUrl}/v1/messages` : ANTHROPIC_URL,
+        {
+          method: "POST",
+          headers: {
+            "x-api-key": this.cfg.apiKey,
+            "anthropic-version": ANTHROPIC_VERSION,
+            "content-type": "application/json",
+          },
+          // Haiku 5.5: temperature/top_p/top_k must be omitted. Thinking off + low effort = lowest latency.
+          body: JSON.stringify({
+            model: this.cfg.model,
+            max_tokens: req.maxTokens,
+            stream: true,
+            system: req.cacheSystem
+              ? [{ type: "text", text: req.system, cache_control: { type: "ephemeral" } }]
+              : req.system,
+            messages: [{ role: "user", content: req.user }],
+            output_config: { effort: this.cfg.effort },
+            ...(this.cfg.disableThinking ? { thinking: { type: "disabled" } } : {}),
+          }),
+          signal,
         },
-        // Haiku 5.5: temperature/top_p/top_k must be omitted. Thinking off + low effort = lowest latency.
-        body: JSON.stringify({
-          model: this.cfg.model,
-          max_tokens: req.maxTokens,
-          stream: true,
-          system: req.cacheSystem
-            ? [{ type: "text", text: req.system, cache_control: { type: "ephemeral" } }]
-            : req.system,
-          messages: [{ role: "user", content: req.user }],
-          output_config: { effort: this.cfg.effort },
-          ...(this.cfg.disableThinking ? { thinking: { type: "disabled" } } : {}),
-        }),
-        signal,
-      });
+      );
       if (!res.ok || !res.body) {
         let message = "";
         try {

@@ -10,7 +10,9 @@ const env = Deno.env;
 
 // Open the TLS connection to ElevenLabs while the isolate boots (unauthenticated GET; no credits used).
 const warmUpstream = () =>
-  void fetch("https://api.elevenlabs.io/v1/models").then((r) => r.body?.cancel()).catch(() => {});
+  void fetch(`${env.get("ELEVENLABS_BASE_URL") || "https://api.elevenlabs.io"}/v1/models`).then((
+    r,
+  ) => r.body?.cancel()).catch(() => {});
 warmUpstream();
 const db = restDbFromEnv();
 const { voices, errors: voiceErrors } = parseVoices(env.get("ELEVENLABS_VOICES"));
@@ -29,6 +31,7 @@ Deno.serve(createTtsHandler({
   config: {
     voiceId: env.get("ELEVENLABS_VOICE_ID") ?? null,
     voices,
+    baseUrl: env.get("ELEVENLABS_BASE_URL") || undefined,
     modelId: env.get("ELEVENLABS_MODEL_ID") ?? DEFAULT_TTS_CONFIG.modelId,
     limits: {
       perMinute: envInt(env, "TTS_CHARS_PER_MINUTE", DEFAULT_TTS_CONFIG.limits.perMinute),

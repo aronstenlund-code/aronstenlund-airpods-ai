@@ -45,7 +45,8 @@ backend/
 ```bash
 npm i -g deno            # or any Deno >= 2.1
 cd backend
-deno task test           # 46 unit/handler tests, no network
+deno task test           # unit/handler tests (75), no network
+deno task e2e            # starts the REAL answer/tts/voices entry points against local fake Anthropic/ElevenLabs/Supabase (JWKS, PostgREST): request shape, auth, limiter, abort, fallbacks
 deno task check          # type-check everything
 deno task dev            # mock LLM on http://127.0.0.1:8787/functions/v1/answer
 deno task ttft -- --url http://127.0.0.1:8787/functions/v1/answer --token dev-token
@@ -168,7 +169,7 @@ curl -sN -X POST "$SUPABASE_URL/functions/v1/answer" \
 export SUPABASE_URL=https://<ref>.supabase.co SUPABASE_ANON_KEY=<publishable key>
 deno task ttft -- --url $SUPABASE_URL/functions/v1/answer --mode push_to_talk --out results/prod-$(date +%F).json
 ```
-Prints per-prompt meta/TTFT/total, flags style violations (more than two sentences, digits or symbols in the answer, empty answer) and p50/p90. Run once cold and once warm; report both.
+`--set auto` instead runs `testdata/auto-gate.json` (10 questions, 10 non-questions) in `auto` mode and reports gate accuracy (false positives = answers nobody asked for). Prints per-prompt meta/TTFT/total, cold vs warm TTFT, flags style violations (more than two sentences, digits or symbols in the answer, empty answer) and p50/p90. Run once cold and once warm; report both.
 
 ## Latency design (D28/D31)
 Measured from a client inside Supabase (eu-central-1), 30 Swedish prompts, `push_to_talk`:
