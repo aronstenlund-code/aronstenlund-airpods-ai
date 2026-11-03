@@ -179,9 +179,9 @@ Svarsmotorn kommer i nästa steg – här testas bara att rätt mening fångas s
 5. Ställ två frågor inom 5 sekunder: bara den första ska fångas (8 s väntetid mellan automatiska svar).
 6. Sätt känslighet *Hög* (Inställningar) och säg bara "fotosyntes": nu ska det fångas. På *Mellan* ska det inte fångas.
 
-### 3l. Riktiga svar från servern (MVP-del 4, 10 min) – kräver att backend är "live" i STATUS
-Förutsättningar (ägaren, en gång, klickvägar i `backend/README.md`): *Anonymous sign-ins* påslaget i Supabase-projektet
-Lumen och hemligheten `ANTHROPIC_API_KEY` inlagd. Telefonen behöver internet.
+### 3l. Riktiga svar från servern (MVP-del 4, 10 min)
+Backend är igång sedan 2026-11-03 22:38 (Deangelos test: svenska svar fungerar, men långsamt – 2–3 s till första
+ljud; Kevin jobbar på det). Telefonen behöver internet. Om något ändrats i Supabase: klickvägar i `backend/README.md`.
 1. *Börja lyssna*, Svenska, *Håll för att fråga* (Inställningar). Håll, säg "roten ur hundra", släpp. Under *Svar* ska det
    först stå *Tänker …* och sedan strömma in text. När svaret är klart visas det i listan med tid, källan
    `cloud` och latens i ms (från släpp till första ord). **Skriv ner latensen** för fem frågor

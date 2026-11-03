@@ -7,7 +7,7 @@ Evidence labels: **verified in CI** (compiles with zero warnings / tests pass on
 ## 1. Summary
 - The core loop is now wired end to end in code: a detected question (item 3) → `AnswerEngine` → `CloudAnswerProvider` → Kevin's deployed `POST /functions/v1/answer` (SSE `meta → delta* → done`) → the answer streams into the Listening screen's history, with the backend's reconstructed question shown as the question. Sentences are split as they stream, ready for TTS (item 5).
 - CI_RESULT_LINE
-- **Nothing has talked to the live backend yet.** The whole client side is tested against scripted HTTP fakes that replay the exact bodies in `backend/README.md`. Kevin's STATUS line says the backend is deployed but not usable until the owner switches on anonymous sign-ins and enters the secrets; the app shows those states as clear notices ("Could not sign in to the answer service: anonymous_provider_disabled …", "Answer service: provider_unconfigured …").
+- **The app has not talked to the live backend yet.** The whole client side is tested against scripted HTTP fakes that replay the exact bodies in `backend/README.md`. The backend itself **is live**: Deangelo's test at 22:38 (secrets set, anonymous sign-in on) got correct Swedish answers from `/answer` and audio from `/tts`, but slow (`ttft_ms` 1.8–2.8 s; Kevin has a latency task). So the first device session can exercise the real loop; if sign-in or secrets regress, the app shows the exact code ("anonymous_provider_disabled", "provider_unconfigured") as a notice.
 
 ## 2. What was implemented
 | Piece | Files | Notes |
@@ -34,7 +34,7 @@ Not in this item: Foundation Models provider (guarded optional, after the loop w
 | `ListeningAnswerTests` — hold-to-ask ends with an answer in the history (context carries the transcript), failure notice, not-a-question notice, stop cancels | 4 | TEST_RESULT | **verified in CI** |
 | Items 1–3 + Phase 1 suites | 173 | TEST_RESULT | **verified in CI** |
 | `LumenScoring` (macOS host) | 21 | TEST_RESULT | **verified in CI** |
-| Live backend (sign-in, real Claude answer, TTFT), device | — | not run | needs the owner's switches (anonymous sign-ins, secrets) and the Mac |
+| Live backend from the app (sign-in, real Claude answer, TTFT), device | — | not run | backend is live since 22:38 (Deangelo); needs the Mac + iPhone |
 
 ## 4. CI iterations
 CI_ITERATIONS
