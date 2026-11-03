@@ -165,6 +165,20 @@ sprintsteg; här testas bara skärmen, indikatorn och samtycket.
 6. Ta ut AirPods (paus) och sätt i dem igen → *Fortsätt lyssna*. Transkriptionen ska starta om själv
    (statusraden visar *Transkriberar …* igen).
 
+### 3k. Aktivering: håll för att fråga och auto (MVP-del 3, 10 min)
+Svarsmotorn kommer i nästa steg – här testas bara att rätt mening fångas som fråga.
+1. *Börja lyssna*, Svenska. Lämna *Aktivering* på **Håll för att fråga**. Håll in den stora knappen
+   *Håll för att fråga* (den blir orange: *Lyssnar på dig … släpp för att fråga*), säg "vad är fotosyntes",
+   släpp. Inom ca 2 s ska kortet **Upptäckt fråga** visa exakt det du sa. Skriv ner om något ord fattades
+   (särskilt det sista) – det styr hur lång väntetiden efter släpp ska vara.
+2. Säg något lågt (nästan viskande) medan du håller. Fångades det?
+3. Låt någon annan säga en mening, tryck *Fråga om det senast sagda*: kortet ska visa den meningen.
+4. Byt *Aktivering* till **Auto**, känslighet *Mellan*. Låt någon läsa tre vanliga påståenden
+   ("idag ska vi prata om …") och sedan tre frågor ur `testdata/scripts/sv-short-prompts.md` (t.ex. 5, 12, 29).
+   Skriv ner vilka som gav *Upptäckt fråga* och vilka som inte gjorde det (både falska träffar och missar).
+5. Ställ två frågor inom 5 sekunder: bara den första ska fångas (8 s väntetid mellan automatiska svar).
+6. Sätt känslighet *Hög* och säg bara "fotosyntes": nu ska det fångas. På *Mellan* ska det inte fångas.
+
 ## Del 4 — Skicka in resultaten (5 min)
 
 1. I appen: tryck **Copy results as Markdown**. Öppna Anteckningar på iPhone, klistra in, dela till
@@ -173,7 +187,7 @@ sprintsteg; här testas bara skärmen, indikatorn och samtycket.
    - den inklistrade texten (en per AirPods-modell, eller en lång),
    - iPhone-modell och iOS-version (står högst upp i texten),
    - AirPods-modell + firmware (från steg 11),
-   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i och 3j (bokstavliga transkriptioner),
+   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i, 3j (bokstavliga transkriptioner) och 3k (fångade/missade frågor),
    - noise-uppgifterna från `testdata/noise/README.md`.
 3. **WAV-filerna**: anslut iPhone till Macen → Finder → iPhone → *Filer* → *Lumen* → dra alla
    `lumen-*.wav` till en mapp, t.ex. `~/Lumen-recordings/<datum>/`. **Lägg dem inte i git.** Skriv

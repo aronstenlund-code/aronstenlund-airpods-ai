@@ -23,6 +23,17 @@
         }
       }
     },
+    "Activation": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktivering"
+          }
+        }
+      }
+    },
     "AirPods disconnected. Put them back in and tap Resume.": {
       "extractionState": "manual",
       "localizations": {
@@ -30,6 +41,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "AirPods frånkopplade. Sätt i dem igen och tryck på Fortsätt."
+          }
+        }
+      }
+    },
+    "Answer engine not connected yet (next step).": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svarsmotorn är inte inkopplad än (nästa steg)."
           }
         }
       }
@@ -67,6 +89,17 @@
         }
       }
     },
+    "Ask about the last sentence": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fråga om det senast sagda"
+          }
+        }
+      }
+    },
     "Audio is not stored": {
       "extractionState": "manual",
       "localizations": {
@@ -74,6 +107,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ljudet sparas inte"
+          }
+        }
+      }
+    },
+    "Auto": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto"
+          }
+        }
+      }
+    },
+    "Auto listens for questions in the room. Hold to ask gives the fewest false answers.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto lyssnar efter frågor i rummet. Håll för att fråga ger minst felaktiga svar."
           }
         }
       }
@@ -144,6 +199,17 @@
         }
       }
     },
+    "Detected question": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upptäckt fråga"
+          }
+        }
+      }
+    },
     "Diagnostics": {
       "extractionState": "manual",
       "localizations": {
@@ -162,6 +228,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klar"
+          }
+        }
+      }
+    },
+    "High": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hög"
+          }
+        }
+      }
+    },
+    "Hold to ask": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Håll för att fråga"
           }
         }
       }
@@ -210,6 +298,17 @@
         }
       }
     },
+    "Last sentence": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senaste meningen"
+          }
+        }
+      }
+    },
     "Listening": {
       "extractionState": "manual",
       "localizations": {
@@ -228,6 +327,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lyssningen stoppas, sessionens transkription raderas och samtyckesskärmen visas igen."
+          }
+        }
+      }
+    },
+    "Listening to you… release to ask": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyssnar på dig … släpp för att fråga"
           }
         }
       }
@@ -254,6 +364,17 @@
         }
       }
     },
+    "Low": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Låg"
+          }
+        }
+      }
+    },
     "Lumen is a listening companion for lectures, meetings and studying. This is exactly what it does with sound and text.": {
       "extractionState": "manual",
       "localizations": {
@@ -261,6 +382,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lumen är en lyssnarkompis för föreläsningar, möten och studier. Så här gör appen med ljud och text."
+          }
+        }
+      }
+    },
+    "Medium": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mellan"
           }
         }
       }
@@ -393,6 +525,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Läs meddelandet nedan och försök igen."
+          }
+        }
+      }
+    },
+    "Sensitivity": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Känslighet"
           }
         }
       }
@@ -533,6 +676,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Berätta för personerna runt dig"
+          }
+        }
+      }
+    },
+    "Text": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text"
           }
         }
       }

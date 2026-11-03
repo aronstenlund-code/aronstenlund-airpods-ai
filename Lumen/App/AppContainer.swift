@@ -9,8 +9,10 @@ final class AppContainer {
     let playback: PlaybackService
     let consent: ConsentStore
     let language: LanguageSettings
+    let activationSettings: ActivationSettings
     let sessionController: SessionController
     let transcription: TranscriptionCoordinator
+    let activation: ActivationController
     let listening: ListeningModel
     let diagnostics: DiagnosticsModel
 
@@ -21,9 +23,12 @@ final class AppContainer {
         let playback = PlaybackService(graph: graph)
         let consent = ConsentStore()
         let language = LanguageSettings()
+        let activationSettings = ActivationSettings()
         let controller = SessionController(session: session, capture: capture, playback: playback, graph: graph)
         let transcription = TranscriptionCoordinator(controller: controller, language: language)
-        let listening = ListeningModel(controller: controller, consent: consent, transcription: transcription)
+        let activation = ActivationController(settings: activationSettings)
+        let listening = ListeningModel(controller: controller, consent: consent,
+                                       transcription: transcription, activation: activation)
         transcription.sink = listening
         self.graph = graph
         self.session = session
@@ -31,8 +36,10 @@ final class AppContainer {
         self.playback = playback
         self.consent = consent
         self.language = language
+        self.activationSettings = activationSettings
         self.sessionController = controller
         self.transcription = transcription
+        self.activation = activation
         self.listening = listening
         self.diagnostics = DiagnosticsModel(controller: controller)
     }

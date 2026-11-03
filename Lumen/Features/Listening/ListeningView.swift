@@ -81,6 +81,27 @@ struct ListeningView: View {
                 }
             }
             .pickerStyle(.segmented)
+            activationSettingsRows
+        }
+    }
+
+    @ViewBuilder
+    private var activationSettingsRows: some View {
+        @Bindable var settings = model.activation.settings
+        Picker("Activation", selection: $settings.mode) {
+            Text("Hold to ask").tag(ActivationMode.pushToTalk)
+            Text("Auto").tag(ActivationMode.auto)
+        }
+        .pickerStyle(.segmented)
+        if settings.mode == .auto {
+            Picker("Sensitivity", selection: $settings.sensitivity) {
+                Text("Low").tag(GateSensitivity.low)
+                Text("Medium").tag(GateSensitivity.medium)
+                Text("High").tag(GateSensitivity.high)
+            }
+            Text("Auto listens for questions in the room. Hold to ask gives the fewest false answers.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -158,7 +179,25 @@ struct ListeningView: View {
 
     private var answersSection: some View {
         Section {
-            if model.conversation.answers.isEmpty {
+            if let question = model.pendingQuestion {
+                VStack(alignment: .leading, spacing: 4) {
+                    Label("Detected question", systemImage: "questionmark.bubble")
+                        .font(.subheadline.weight(.semibold))
+                    Text(question.query)
+                    HStack(spacing: 4) {
+                        Text(triggerLabel(question.trigger))
+                        Text(verbatim: "·")
+                        Text(question.createdAt, style: .time)
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    Text("Answer engine not connected yet (next step).")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 2)
+            }
+            if model.conversation.answers.isEmpty && model.pendingQuestion == nil {
                 Text("Answers to questions appear here and are spoken in your AirPods.")
                     .foregroundStyle(.secondary)
             } else {
@@ -188,6 +227,15 @@ struct ListeningView: View {
         }
     }
 
+    private func triggerLabel(_ trigger: ActivationTrigger) -> LocalizedStringKey {
+        switch trigger {
+        case .pushToTalk: "Hold to ask"
+        case .auto: "Auto"
+        case .answerLast: "Last sentence"
+        case .text: "Text"
+        }
+    }
+
     private func answerCaption(_ turn: AnswerTurn) -> String {
         var parts = [turn.createdAt.formatted(date: .omitted, time: .shortened), turn.source]
         if let latency = turn.latencyMs {
@@ -200,6 +248,17 @@ struct ListeningView: View {
 
     private var controls: some View {
         VStack(spacing: 10) {
+            if model.isListening {
+                holdToAskButton
+                Button {
+                    model.askAboutLast()
+                } label: {
+                    Label("Ask about the last sentence", systemImage: "arrow.uturn.backward.circle")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .disabled(model.conversation.finalSegments.isEmpty)
+            }
             Button {
                 Task { await model.toggleListening() }
             } label: {
@@ -225,5 +284,27 @@ struct ListeningView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
         .background(.bar)
+    }
+
+    /// Press-and-hold: the words said while holding become the question (push-to-talk, the default trigger).
+    private var holdToAskButton: some View {
+        Label(model.isHolding ? "Listening to you… release to ask" : "Hold to ask",
+              systemImage: model.isHolding ? "waveform.circle.fill" : "hand.tap")
+            .font(.title3.weight(.semibold))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .background(model.isHolding ? Color.orange.opacity(0.9) : Color.accentColor.opacity(0.15),
+                        in: RoundedRectangle(cornerRadius: 12))
+            .foregroundStyle(model.isHolding ? Color.white : Color.accentColor)
+            .contentShape(RoundedRectangle(cornerRadius: 12))
+            .onLongPressGesture(minimumDuration: 3600, maximumDistance: 60, pressing: { pressing in
+                if pressing {
+                    model.pressPushToTalk()
+                } else {
+                    model.releasePushToTalk()
+                }
+            }, perform: {})
+            .accessibilityLabel("Hold to ask")
+            .accessibilityAddTraits(.isButton)
     }
 }
