@@ -5,7 +5,7 @@
 > - Every external call must fail closed: on quota/billing errors return an error the app turns into Apple TTS / on-device fallback.
 
 
-# Claude Code assignment (Builder B) — MVP sprint: backend `/answer`
+# Claude Code assignment (Kevin Malone) — MVP sprint: backend `/answer`
 
 Approved by: CREED, 2026-11-03 17:50. Deadline: working first version by 2026-11-10.
 Runs **in parallel with Angela** in a separate Claude Code session. Work only inside `backend/` (and `docs/` for your report/STATUS lines) so you never edit the same files as Angela. Read `CLAUDE.md`, `docs/ARCHITECTURE.md` §7 and §10, `docs/DECISIONS.md` (D2, D5, D6) first.
@@ -29,4 +29,4 @@ A deployed, streaming answer endpoint the app can call without any provider key 
 
 ## Acceptance
 - [ ] Deployed endpoint returns streamed Swedish answers to the 30 short prompts (`testdata/scripts/sv-short-prompts.md`); time-to-first-token p50 measured and reported.
-- [ ] Report `reports/YYYY-MM-DD-HHMM-builderB-backend.md`, STATUS line updated.
+- [ ] Report `reports/YYYY-MM-DD-HHMM-kevin-backend.md`, STATUS line updated.
