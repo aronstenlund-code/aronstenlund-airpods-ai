@@ -21,6 +21,9 @@ Last updated: 2026-11-03 21:40 by Angela (builder).
 ## Known bugs
 - None confirmed (no device run yet). Known limitations of the Phase 1 code are listed in `reports/2026-11-03-1905-angela-phase1a-ci.md` §5.
 
+## Reminders
+- **Anthropic API key expires 2026-12-03** (created 2026-11-03 with 30-day expiry). Before then: create a new key in console.anthropic.com and replace the Supabase secret `ANTHROPIC_API_KEY` in project Lumen. The backend fails closed (`provider_unconfigured`/auth error) if it expires.
+
 ## Open decisions for the product owner
 0. **Build environment:** decided 2026-11-03 — code is compiled in GitHub Actions (Phase 1a) this week; product owner gets a Mac with Xcode 26 next week for on-device runs (free Apple ID first; paid Developer Program only when TestFlight is needed). The current Mac cannot install software.
 1. Product name + bundle identifier (placeholder: Lumen, `com.rsolutions.lumen`).
