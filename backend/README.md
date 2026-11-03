@@ -22,6 +22,10 @@ Flow: (1) `POST {url}/auth/v1/signup` with header `apikey: <publishable key>` an
 
 **State on 2026-11-03:** both functions are deployed and reject missing/invalid tokens (**verified live**, 401). Anonymous sign-ins are **off** in the project (verified live: 422 `anonymous_provider_disabled`) until the owner flips the switch, and `ANTHROPIC_API_KEY` is not set yet, so `/answer` returns `503 provider_unconfigured` until then. Do not wire the app to expect answers before STATUS says "backend live".
 
+## Database changes (working rule from the owner)
+Rarely and in bulk: collect all schema changes into **one larger migration** (a file in `supabase/migrations/`), apply it myself with `apply_migration`, and ask the owner only when the Supabase server itself asks for confirmation of a destructive statement (`drop ...`). No ad-hoc `execute_sql`; measurements and logic stay in Edge Function code. Only project Lumen (`xjczbzfkmbjdebwlccki`) is ever touched.
+- **Pending (waiting for Supabase's confirmation prompt):** `drop extension pg_net;` - `supabase/pending/drop_pg_net.sql`. Move it into `migrations/` once applied.
+
 ## Layout
 ```
 backend/
