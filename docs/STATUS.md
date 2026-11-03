@@ -1,7 +1,7 @@
 # Project status — Lumen (codename)
 
 Single overview page. Update it at the end of every session.
-Last updated: 2026-11-03 21:15 by Angela (builder).
+Last updated: 2026-11-03 21:40 by Angela (builder).
 
 ## Completed
 - Phase 0: initial analysis, architecture, roadmap, MVP definition, first coding assignment. → `reports/2026-11-03-1600-architect-initial-analysis.md`
@@ -11,7 +11,7 @@ Last updated: 2026-11-03 21:15 by Angela (builder).
 
 ## In progress
 - Phase 1 — Audio foundation. Code done (Phase 1a); **device measurements (§3.5–3.6, §3.9–3.12) wait for the owner's Mac** next week — run `docs/DEVICE-TEST-CHECKLIST.md`. Then OSS-1 + OSS-3.
-- **MVP sprint (Angela):** `prompts/2026-11-03-mvp-sprint-app.md` — step 0 and **item 1 (consent screen, listening screen, always-visible indicator, shared `SessionController`) done in CI** (run 41708665338, 74 app tests; D21) — **untested on device**, so not marked done. → `reports/2026-11-03-2115-angela-mvp-item1-listening-consent.md`. Next: item 2 STT provider.
+- **MVP sprint (Angela):** `prompts/2026-11-03-mvp-sprint-app.md` — step 0, **item 1** (consent + listening screen + indicator, D21) and **item 2** (on-device STT chain SpeechTranscriber → DictationTranscriber → on-device SFSpeechRecognizer, sv/en setting, live transcript, D22) done in CI (run 41712601522, 96 app tests) — **untested on device**, so not marked done. → `reports/2026-11-03-2115-angela-mvp-item1-listening-consent.md`, `reports/2026-11-03-2140-angela-mvp-item2-stt.md`. Next: item 3 activation (push-to-talk + QuestionGate).
 
 - **MVP backend (Kevin).** Supabase project **Lumen** (`xjczbzfkmbjdebwlccki`, eu-north-1, free plan) created; migration applied (rate limiter verified in DB); `/answer` and `/tts` **deployed** and reject bad tokens (verified live). **Not yet usable by the app:** owner must (1) switch on *Anonymous sign-ins* and (2) add secrets `ANTHROPIC_API_KEY`, `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` (click paths in `backend/README.md`); (3) the build container must allow `*.supabase.co` before Kevin can run the TTFT test. **For Angela:** project URL + publishable key + flow are in `backend/README.md` > *Connect the app*; wire `AnswerClient` to it but expect `503 provider_unconfigured` until STATUS says "backend live". Report: `reports/2026-11-03-1900-kevin-backend.md`, D20.
 
