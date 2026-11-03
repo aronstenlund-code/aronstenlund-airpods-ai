@@ -7,6 +7,8 @@
 
 > **Update 21:40 (D23): three Swedish voices.** Add secret `ELEVENLABS_VOICES` (`Name:voiceId,...`, 3 entries) as allowlist for `/tts`, add `GET /voices` (names + ids), tests, deploy, document in README. Tell the owner the exact secret format.
 
+> **Live test by Deangelo, 2026-11-03 22:38 (all secrets set, anonymous sign-in on):** `/answer` works end to end with correct Swedish answers (Haiku 5.5, ~1450 input / ~60 output tokens). `/tts` returns 200 audio/mpeg with Adam's voice. **Too slow:** `llm_first_token_ms` 1.7–2.5 s, `ttft_ms` 1.8–2.8 s, client total 2.7–3.0 s before any audio, versus the 1.5 s end-to-end target. **Next task (priority):** cut time to first answer text below ~700 ms warm. Ideas to measure, not assume: in `push_to_talk`/`text` mode skip the JSON header and stream the answer immediately (reconstruction is not needed when the user asked on purpose); shorten the system prompt and use prompt caching for it; check region/latency between the Edge Function and the Anthropic API; keep the function warm. Report before/after numbers on the 30 prompts.
+
 > **Critical path (CREED 18:30):** the owner's test phone (iPhone 14 Pro) has no Apple Intelligence, so every answer in the first device test comes from this backend. Deploy a working `/answer` as early as possible, before polishing.
 
 # Claude Code assignment (Kevin Malone) — MVP sprint: backend `/answer`
