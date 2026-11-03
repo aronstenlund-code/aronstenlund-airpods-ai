@@ -20,6 +20,7 @@ This repo is the single source of truth for the Lumen (codename) iOS app: an AI 
 - Swift 6, strict concurrency, iOS 26 minimum, SwiftUI + Observation.
 - No third-party runtime dependencies without an entry in `docs/DECISIONS.md`.
 - Never put API keys, tokens or secrets in the app or in the repo.
+- The product owner never runs SQL or CLI commands by hand. Agents apply database migrations and deploy functions themselves (Supabase MCP or CLI). The owner only does what must be him: approving costs/projects, entering secret values in the dashboard, flipping settings agents cannot reach — give him exact click paths.
 - Audio, speech and AirPods behaviour must be tested on a real iPhone + AirPods. The Simulator does not count as verification.
 - Mark every claim in reports as **verified on device**, **verified in docs**, or **untested assumption**.
 
