@@ -42,12 +42,31 @@ struct AudioChunk: Sendable, Equatable {
     var duration: TimeInterval { Double(samples.count) / LumenAudioFormat.sampleRate }
 }
 
+/// Hands exactly one buffer to `AVAudioConverter`'s `@Sendable` input block.
+///
+/// `@unchecked Sendable` justification: the converter calls the input block synchronously on the thread
+/// that called `convert`, and `PCMConverter` itself is single-owner, so `set`/`take` never race.
+/// The block must not capture the (non-Sendable) buffer or a mutable local, hence this hand-off object.
+private final class OneShotInputFeed: @unchecked Sendable {
+    private var buffer: AVAudioPCMBuffer?
+
+    func set(_ buffer: AVAudioPCMBuffer) {
+        self.buffer = buffer
+    }
+
+    func take() -> AVAudioPCMBuffer? {
+        defer { buffer = nil }
+        return buffer
+    }
+}
+
 /// Wraps `AVAudioConverter` for one fixed input → output format pair.
 /// Not thread-safe: owned by exactly one caller (the capture tap context, or the main actor for TTS).
 final class PCMConverter {
     let inputFormat: AVAudioFormat
     let outputFormat: AVAudioFormat
     private let converter: AVAudioConverter
+    private let feed = OneShotInputFeed()
 
     init(from input: AVAudioFormat, to output: AVAudioFormat) throws(AudioError) {
         guard let converter = AVAudioConverter(from: input, to: output) else {
@@ -69,16 +88,16 @@ final class PCMConverter {
     @discardableResult
     func convert(_ input: AVAudioPCMBuffer, into output: AVAudioPCMBuffer) throws(AudioError) -> Int {
         output.frameLength = 0
-        var consumed = false
+        feed.set(input)
+        let feed = self.feed
         var conversionError: NSError?
         let status = converter.convert(to: output, error: &conversionError) { _, outStatus in
-            if consumed {
-                outStatus.pointee = .noDataNow
-                return nil
+            if let buffer = feed.take() {
+                outStatus.pointee = .haveData
+                return buffer
             }
-            consumed = true
-            outStatus.pointee = .haveData
-            return input
+            outStatus.pointee = .noDataNow
+            return nil
         }
         if let conversionError {
             throw .conversionFailed(detail: conversionError.localizedDescription)
