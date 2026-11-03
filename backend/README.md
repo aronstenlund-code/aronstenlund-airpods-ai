@@ -5,6 +5,7 @@ Supabase Edge Functions (Deno/TypeScript). **No provider key ever reaches the ap
 | Endpoint | What | Status |
 |---|---|---|
 | `POST /functions/v1/answer` | SSE: `meta` -> `delta`* -> `done` (or `error`) | **deployed** (v1) · unit + local end-to-end tested with a mock LLM · **not yet run against real Claude** (waiting for `ANTHROPIC_API_KEY`) |
+| `GET /functions/v1/voices` | The allowed Swedish voices (names + ids) | **deployed** (v1), unit tested |
 | `POST /functions/v1/tts` | Streams ElevenLabs audio (TTS only, never Agents) | **deployed** (v1) · unit tested against a fake upstream · **not yet run against ElevenLabs** |
 
 ## Connect the app (Angela)
@@ -15,6 +16,7 @@ Supabase Edge Functions (Deno/TypeScript). **No provider key ever reaches the ap
 | Publishable key | `sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8` (public by design; the app may embed it. It is **not** a secret and grants nothing without a user JWT) |
 | Answer endpoint | `POST https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/answer` |
 | TTS endpoint | `POST https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/tts` |
+| Voices endpoint | `GET https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/voices` |
 
 Flow: (1) `POST {url}/auth/v1/signup` with header `apikey: <publishable key>` and body `{}` (or `supabase.auth.signInAnonymously()` in supabase-swift) -> `access_token` (JWT, refresh via the SDK); (2) call the functions with `Authorization: Bearer <access_token>` and `apikey: <publishable key>`. Never send the publishable key as the bearer token: it is rejected (verified: 401). Contract, SSE format, errors and `fallback:true` handling are in the sections below.
 
@@ -84,7 +86,11 @@ Errors before the stream starts are JSON `{"error":{"code","message","fallback"}
 
 `fallback:true` means: use Apple TTS / on-device answer engine for this request.
 
+## API: `GET /voices`
+`GET https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/voices` with the same headers as `/answer` -> `200 {"voices":[{"name":"Astrid","id":"..."},...],"default_id":"..."}` (names + ids from `ELEVENLABS_VOICES`; no secrets, no ElevenLabs call; cacheable 5 min). `voices` may be empty if the secret is not set yet; the app should then offer only Apple's voice. Same errors as the other endpoints (401/405/429).
+
 ## API: `POST /tts`
+**`voice_id` (D23):** optional; must be one of the ids from `GET /voices` (or the default voice), otherwise `400 invalid_voice` and nothing is sent to ElevenLabs. Omitted -> default voice.
 > **Untested assumptions:** ElevenLabs endpoint path/params (`/v1/text-to-speech/{voice}/stream`, `model_id: eleven_flash_v2_5`, `language_code`, `output_format` values, quota error shape) are written from memory of their API - docs.elevenlabs.io was not reachable from the build session. Verify with one real call before relying on it.
 
 `{ "text": "Roten ur hundra är tio.", "language": "sv", "output_format": "mp3_44100_64", "voice_id": "<optional>" }` -> streamed `audio/mpeg` (or PCM for `pcm_16000` / `pcm_24000`). Text <= 500 chars. Model `eleven_flash_v2_5`. Limits are in **characters** (ElevenLabs bills per character).
@@ -130,7 +136,10 @@ Dashboard -> https://supabase.com/dashboard/project/xjczbzfkmbjdebwlccki/functio
 |---|---|
 | `ANTHROPIC_API_KEY` | the owner's Anthropic key (`sk-ant-...`) |
 | `ELEVENLABS_API_KEY` | the owner's ElevenLabs key |
-| `ELEVENLABS_VOICE_ID` | the ElevenLabs voice id (Voices -> the voice -> *ID*) |
+| `ELEVENLABS_VOICES` | the three Swedish voices, **one line, format `Name:voiceId,Name:voiceId,Name:voiceId`** (see below) |
+| `ELEVENLABS_VOICE_ID` | optional default voice id; if absent the first voice in `ELEVENLABS_VOICES` is the default |
+
+**`ELEVENLABS_VOICES` format (D23):** exactly `Name1:voiceId1,Name2:voiceId2,Name3:voiceId3`, e.g. `Astrid:21m00Tcm4TlvDq8ikWAM,Elin:AZnzlk1XvdvUeBnXmlld,Oskar:EXAVITQu4vr4xnSDxMaL` (illustrative ids). Rules: entries separated by commas; name and id separated by one colon; names are what the app shows (letters incl. å ä ö, digits, spaces, `_ . ' -`, max 40, no commas/colons); ids are the 20-character ElevenLabs voice ids (letters+digits only); spaces/line breaks around entries are ignored; at most 10 entries. Invalid or duplicate entries are skipped and logged by name only. Find an id in ElevenLabs: Voices -> the voice -> *ID* (copy icon). After changing the secret, the agent redeploys `tts` and `voices` (new isolates read it).
 
 (CLI equivalent for agents: `supabase secrets set NAME=value`.)
 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` are injected by Supabase. Optional: `LLM_MODEL` (default `claude-haiku-5-5`), `LLM_EFFORT` (`low`|`medium`|`high`, default `low`), `LLM_DISABLE_THINKING` (`0` to allow adaptive thinking), `CONFIDENCE_THRESHOLD`, `PRICE_IN_PER_MTOK` / `PRICE_OUT_PER_MTOK` (cost estimate only; defaults 0.10 / 0.50), `SUPABASE_JWT_SECRET` (legacy HS256 projects only).

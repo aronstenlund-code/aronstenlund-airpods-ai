@@ -3,9 +3,12 @@ import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { serviceClient, SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { envInt, supabaseUsageSink } from "../_shared/usage.ts";
 import { createTtsHandler, DEFAULT_TTS_CONFIG } from "./handler.ts";
+import { parseVoices } from "./voices.ts";
 
 const env = Deno.env;
 const db = serviceClient();
+const { voices, errors: voiceErrors } = parseVoices(env.get("ELEVENLABS_VOICES"));
+if (voiceErrors.length) console.error("ELEVENLABS_VOICES problems:", voiceErrors.join("; "));
 
 Deno.serve(createTtsHandler({
   authenticate: createJwtAuthenticator({
@@ -17,6 +20,7 @@ Deno.serve(createTtsHandler({
   recordUsage: supabaseUsageSink(db),
   config: {
     voiceId: env.get("ELEVENLABS_VOICE_ID") ?? null,
+    voices,
     modelId: env.get("ELEVENLABS_MODEL_ID") ?? DEFAULT_TTS_CONFIG.modelId,
     limits: {
       perMinute: envInt(env, "TTS_CHARS_PER_MINUTE", DEFAULT_TTS_CONFIG.limits.perMinute),

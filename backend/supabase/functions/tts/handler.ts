@@ -2,19 +2,23 @@ import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { readLimitedJson } from "../answer/validate.ts";
+import { type Voice, VOICE_ID_RE } from "./voices.ts";
 
 export const TTS_LIMITS = { bodyBytes: 4 * 1024, text: 500 } as const;
 const OUTPUT_FORMATS = new Set(["mp3_22050_32", "mp3_44100_64", "pcm_16000", "pcm_24000"]);
 const CONTENT_TYPES: Record<string, string> = { mp3: "audio/mpeg", pcm: "audio/L16" };
 
 export interface TtsConfig {
+  /** Default voice (secret ELEVENLABS_VOICE_ID). Falls back to the first allowlisted voice. */
   voiceId: string | null;
+  /** Allowlist (secret ELEVENLABS_VOICES). A requested voice_id must be one of these or the default. */
+  voices: Voice[];
   modelId: string; // eleven_flash_v2_5: low latency, supports Swedish [docs]
   /** Limits are in CHARACTERS (ElevenLabs bills credits per character). */
   limits: Limits;
 }
 
-export const DEFAULT_TTS_CONFIG: Omit<TtsConfig, "voiceId"> = {
+export const DEFAULT_TTS_CONFIG: Omit<TtsConfig, "voiceId" | "voices"> = {
   modelId: "eleven_flash_v2_5",
   limits: { perMinute: 1500, perDay: 15000, globalPerDay: 100000 },
 };
@@ -72,8 +76,21 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
       if (!OUTPUT_FORMATS.has(format)) {
         throw new HttpError(400, "invalid_request", "unsupported output_format");
       }
-      const voiceId = typeof raw.voice_id === "string" ? raw.voice_id : deps.config.voiceId;
-      if (!voiceId || !/^[A-Za-z0-9]{10,40}$/.test(voiceId)) {
+      const requested = raw.voice_id === undefined || raw.voice_id === null ? null : raw.voice_id;
+      if (requested !== null) {
+        const allowed = typeof requested === "string" &&
+          (deps.config.voices.some((v) => v.id === requested) || requested === deps.config.voiceId);
+        if (!allowed) {
+          throw new HttpError(
+            400,
+            "invalid_voice",
+            "voice_id is not one of the allowed voices (see GET /voices)",
+          );
+        }
+      }
+      const voiceId = (requested as string | null) ?? deps.config.voiceId ??
+        deps.config.voices[0]?.id ?? null;
+      if (!voiceId || !VOICE_ID_RE.test(voiceId)) {
         throw new HttpError(503, "provider_unconfigured", "No TTS voice configured", {
           fallback: true,
         });

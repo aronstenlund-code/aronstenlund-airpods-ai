@@ -15,7 +15,7 @@ function setup(over: Partial<TtsDeps> = {}, fetchImpl?: typeof fetch) {
     authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
     rateLimiter: new MemoryRateLimiter(),
     apiKey: "xi-test",
-    config: { ...DEFAULT_TTS_CONFIG, voiceId: VOICE },
+    config: { ...DEFAULT_TTS_CONFIG, voiceId: VOICE, voices: [] },
     recordUsage: (r) => void recs.push(r),
     fetchImpl: fetchImpl ?? ((url, init) => {
       calls.push({ url: String(url), init: init! });
@@ -50,11 +50,13 @@ Deno.test("validation: empty, too long, bad format, bad voice", async () => {
   assertEquals((await handler(post({ text: " " }))).status, 400);
   assertEquals((await handler(post({ text: "a".repeat(501) }))).status, 413);
   assertEquals((await handler(post({ text: "a", output_format: "mp3_44100_192" }))).status, 400);
-  assertEquals((await handler(post({ text: "a", voice_id: "../../evil" }))).status, 503);
+  assertEquals((await handler(post({ text: "a", voice_id: "../../evil" }))).status, 400);
 });
 
 Deno.test("unconfigured key/voice fails closed with fallback", async () => {
-  for (const o of [{ apiKey: null }, { config: { ...DEFAULT_TTS_CONFIG, voiceId: null } }]) {
+  for (
+    const o of [{ apiKey: null }, { config: { ...DEFAULT_TTS_CONFIG, voiceId: null, voices: [] } }]
+  ) {
     const { handler } = setup(o);
     const res = await handler(post({ text: "a" }));
     assertEquals(res.status, 503);
@@ -67,6 +69,7 @@ Deno.test("character budget stops requests before they reach ElevenLabs", async 
     config: {
       ...DEFAULT_TTS_CONFIG,
       voiceId: VOICE,
+      voices: [],
       limits: { perMinute: 10, perDay: 100, globalPerDay: 100 },
     },
   });
@@ -94,4 +97,37 @@ Deno.test("ElevenLabs quota / auth / rate errors map to fallback errors", async 
   const res = await handler(post({ text: "a" }));
   assertEquals(res.status, 503);
   assertEquals((await res.json()).error.code, "provider_quota");
+});
+
+const V1 = "Astrid00000000000001", V2 = "Elin0000000000000002", V3 = "Oskar000000000000003";
+const voices = [{ name: "Astrid", id: V1 }, { name: "Elin", id: V2 }, { name: "Oskar", id: V3 }];
+
+Deno.test("allowlist: listed voices work, anything else is 400 invalid_voice (never reaches ElevenLabs)", async () => {
+  const { handler, calls } = setup({ config: { ...DEFAULT_TTS_CONFIG, voiceId: null, voices } });
+  for (const id of [V1, V2, V3]) {
+    assertEquals((await handler(post({ text: "a", voice_id: id }))).status, 200);
+  }
+  assert(calls[1].url.includes(`/text-to-speech/${V2}/stream`));
+  for (const bad of ["AnotherVoice00000000", "../x", 5, V1.toLowerCase()]) {
+    const res = await handler(post({ text: "a", voice_id: bad }));
+    assertEquals(res.status, 400);
+    assertEquals((await res.json()).error.code, "invalid_voice");
+  }
+  assertEquals(calls.length, 3);
+});
+
+Deno.test("voice default: ELEVENLABS_VOICE_ID, else first allowlisted voice; default id is accepted even if unlisted", async () => {
+  const a = setup({ config: { ...DEFAULT_TTS_CONFIG, voiceId: VOICE, voices } });
+  await a.handler(post({ text: "a" }));
+  assert(a.calls[0].url.includes(`/text-to-speech/${VOICE}/stream`));
+  assertEquals((await a.handler(post({ text: "a", voice_id: VOICE }))).status, 200);
+  const b = setup({ config: { ...DEFAULT_TTS_CONFIG, voiceId: null, voices } });
+  await b.handler(post({ text: "a" }));
+  assert(b.calls[0].url.includes(`/text-to-speech/${V1}/stream`));
+});
+
+Deno.test("with no allowlist and no default, any requested voice is refused (fail closed)", async () => {
+  const { handler } = setup({ config: { ...DEFAULT_TTS_CONFIG, voiceId: null, voices: [] } });
+  assertEquals((await handler(post({ text: "a", voice_id: V1 }))).status, 400);
+  assertEquals((await handler(post({ text: "a" }))).status, 503);
 });
