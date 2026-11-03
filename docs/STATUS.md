@@ -1,7 +1,7 @@
 # Project status — Lumen (codename)
 
 Single overview page. Update it at the end of every session.
-Last updated: 2026-11-03 by the Architect session.
+Last updated: 2026-11-03 16:45 by Angela (builder session).
 
 ## Completed
 - Phase 0: initial analysis, architecture, roadmap, MVP definition, first coding assignment. → `reports/2026-11-03-1600-architect-initial-analysis.md`
@@ -9,7 +9,7 @@ Last updated: 2026-11-03 by the Architect session.
 - Open-source code audit: reusable components and licences. → `reports/open-source-code-audit.md`; assignments for Angela in `prompts/2026-11-03-oss-integration.md`
 
 ## In progress
-- Phase 1 — Audio foundation. Assignment: `prompts/2026-11-03-phase1-audio-foundation.md` (not yet started by Angela). Then OSS-1 + OSS-3 from `prompts/2026-11-03-oss-integration.md`.
+- Phase 1 — Audio foundation. Assignment: `prompts/2026-11-03-phase1-audio-foundation.md`. **Blocked:** Angela's session runs on Windows (no Xcode, no Swift, no reachable Mac), so §3.1–3.7 cannot be built or run; see `reports/2026-11-03-1645-angela-phase1-blocked-no-mac.md` for options. Done so far: test material §3.8 in `testdata/` (noise file not yet chosen). Then OSS-1 + OSS-3 from `prompts/2026-11-03-oss-integration.md`.
 
 ## Next
 - Phase 2 — Transcription (after the Phase 1 report is reviewed).
@@ -18,6 +18,7 @@ Last updated: 2026-11-03 by the Architect session.
 - None yet (no code).
 
 ## Open decisions for the product owner
+0. **Build environment for Angela:** a Mac with Xcode 26 (run the session there, or add an SSH connection to one). Phase 1 cannot start without it.
 1. Product name + bundle identifier (placeholder: Lumen, `com.rsolutions.lumen`).
 2. Primary launch language(s): proposed Swedish + English.
 3. Positioning: lecture/study companion with consent (recommended) vs. "answers the teacher's questions in class" (high App Store/commercial risk, see R6).
