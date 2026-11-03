@@ -5,6 +5,8 @@
 > - Every external call must fail closed: on quota/billing errors return an error the app turns into Apple TTS / on-device fallback.
 
 
+> **Update 21:40 (D23): three Swedish voices.** Add secret `ELEVENLABS_VOICES` (`Name:voiceId,...`, 3 entries) as allowlist for `/tts`, add `GET /voices` (names + ids), tests, deploy, document in README. Tell the owner the exact secret format.
+
 > **Critical path (CREED 18:30):** the owner's test phone (iPhone 14 Pro) has no Apple Intelligence, so every answer in the first device test comes from this backend. Deploy a working `/answer` as early as possible, before polishing.
 
 # Claude Code assignment (Kevin Malone) — MVP sprint: backend `/answer`
