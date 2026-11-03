@@ -1,5 +1,5 @@
 # XcodeGen spec (D9). Generate with: xcodegen generate
-# Lumen.xcodeproj is NOT committed (D13); CI regenerates it and uploads it as an artifact.
+# Lumen.xcodeproj is NOT committed (D14); CI regenerates it and uploads it as an artifact.
 name: Lumen
 options:
   bundleIdPrefix: com.rsolutions

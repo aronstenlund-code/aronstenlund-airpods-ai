@@ -3,14 +3,27 @@ import Foundation
 enum NoiseCondition: String, CaseIterable, Identifiable, Sendable {
     case quiet
     case noisy
+    /// Roadmap Q1 / Track D1: recorded metro or street noise at ~70–80 dB.
+    case metro
     var id: String { rawValue }
 }
 
 enum SpeakerRole: String, CaseIterable, Identifiable, Sendable {
     case otherPerson = "other person"
     case wearer
+    /// Track D1: the wearer whispering 1–5 keywords.
+    case wearerWhisper = "wearer whisper"
+    /// Track D1: the wearer speaking quietly (library voice).
+    case wearerLowVoice = "wearer low voice"
     var id: String { rawValue }
-    var fileTag: String { self == .wearer ? "wearer" : "other" }
+    var fileTag: String {
+        switch self {
+        case .otherPerson: "other"
+        case .wearer: "wearer"
+        case .wearerWhisper: "wearer-whisper"
+        case .wearerLowVoice: "wearer-low"
+        }
+    }
 }
 
 /// A distance-test recording that is in progress (ring-buffer position mark at start).

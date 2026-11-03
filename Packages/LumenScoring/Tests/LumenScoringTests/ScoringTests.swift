@@ -35,9 +35,10 @@ import Testing
     }
 
     @Test func cerHandComputed() {
-        // normalised: "fem plus 2" (10 chars) vs "fem plus 3": one substitution -> 0.1
+        // normalised: "5 plus 2" (8 chars) vs "5 plus 3": one substitution -> 1/8
         let r = scorer.score(reference: "fem plus två", hypothesis: "fem plus tre")
-        #expect(r.cer == 0.1)
+        #expect(r.referenceCharacterCount == 8)
+        #expect(r.cer == 0.125)
         #expect(r.wer == 1.0 / 3.0)
     }
 

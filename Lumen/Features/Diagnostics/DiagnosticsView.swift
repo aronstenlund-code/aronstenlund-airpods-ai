@@ -135,7 +135,7 @@ struct DiagnosticsView: View {
 
     private var distanceSection: some View {
         Section("Speaker-distance test") {
-            Text("Another person reads a paragraph from testdata/scripts/sv-paragraphs.md at the chosen distance. Run every config × 1/2/4 m × quiet/noisy. Also record the wearer reading.")
+            Text("Another person reads a paragraph from testdata/scripts/sv-paragraphs.md at the chosen distance. Run every config × 1/2/4 m × quiet/noisy. Also record the wearer reading, whispering and speaking quietly (Track D1).")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             Picker("Distance", selection: $model.distanceMeters) {
@@ -151,7 +151,6 @@ struct DiagnosticsView: View {
             Picker("Speaker", selection: $model.speakerRole) {
                 ForEach(SpeakerRole.allCases) { Text($0.rawValue).tag($0) }
             }
-            .pickerStyle(.segmented)
 
             if model.distanceRecording != nil {
                 Button("Stop run and save", role: .destructive) { model.stopDistanceRecording() }

@@ -87,7 +87,11 @@ För varje config och varje avstånd:
    En rad med SNR dyker upp och en WAV-fil sparas i appens dokumentmapp.
 4. Upprepa för 2 m och 4 m.
 5. Byt **Speaker** till *wearer* och läs själv P1 på plats (du som har AirPods). Tryck Start/Stop run.
-6. *Stop capture.*
+6. **Viskning och låg röst (Track D1):** byt Speaker till *wearer whisper* och **viska** de första 10
+   korta fraserna i `testdata/scripts/sv-short-prompts.md` med 2 sekunders paus mellan varje; Start/Stop
+   run. Gör sedan samma sak med *wearer low voice* (tyst "biblioteksröst"). Detta behöver bara göras
+   för B-HQ, C-HFP-default och C-HFP-measurement, i tyst rum.
+7. *Stop capture.*
 Gör sedan om allt med **Noise = noisy**: starta bakgrundsljudet från en högtalare (se
 `testdata/noise/README.md` — fyll i vilken fil, var högtalaren står och ljudnivån med en dB-mätarapp).
 Configs att köra, i ordning: **B-HQ, C-HFP-default, C-HFP-measurement, C-HFP-voiceChat, A-ref-default,

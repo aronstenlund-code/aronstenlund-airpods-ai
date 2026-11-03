@@ -41,6 +41,7 @@ import Testing
     }
 
     @Test func normalizedString() {
-        #expect(n.normalizedString("Fem  plus två.") == "fem plus 2")
+        #expect(n.normalizedString("Fem  plus två.") == "5 plus 2")
+        #expect(n.normalizedString("Vad  är  en atom?") == "vad är en atom")
     }
 }
