@@ -36,8 +36,12 @@ import Testing
         let output = try #require(AVAudioPCMBuffer(pcmFormat: converter.outputFormat,
                                                    frameCapacity: converter.outputCapacity(forInputFrames: 48_000)))
         let written = try converter.convert(buffer, into: output)
-        // 1 s in → ~1 s out at 16 kHz (the resampler may hold back a few frames until flushed)
-        #expect(written >= 15_800 && written <= 16_064, "frames=\(written)")
+        // 1 s in → 1 s out at 16 kHz. The sample-rate converter holds back a few hundred frames until
+        // flushed (they arrive with the next call in live use), so the total is what must match.
+        let tail = try #require(AVAudioPCMBuffer(pcmFormat: converter.outputFormat, frameCapacity: 4_096))
+        let flushed = try converter.flush(into: tail)
+        #expect(written >= 12_000, "written=\(written)")
+        #expect(written + flushed >= 15_900 && written + flushed <= 16_064, "written=\(written) flushed=\(flushed)")
 
         let stats = try int16Stats(output)
         let expectedRMS = 0.5 / 2.0.squareRoot() * 32_768
@@ -56,7 +60,9 @@ import Testing
         let output = try #require(AVAudioPCMBuffer(pcmFormat: converter.outputFormat,
                                                    frameCapacity: converter.outputCapacity(forInputFrames: 24_000)))
         let written = try converter.convert(buffer, into: output)
-        #expect(written >= 15_800 && written <= 16_064, "frames=\(written)")
+        let tail = try #require(AVAudioPCMBuffer(pcmFormat: converter.outputFormat, frameCapacity: 4_096))
+        let flushed = try converter.flush(into: tail)
+        #expect(written + flushed >= 15_900 && written + flushed <= 16_064, "written=\(written) flushed=\(flushed)")
         let stats = try int16Stats(output)
         let expectedRMS = 0.25 / 2.0.squareRoot() * 32_768
         #expect(abs(stats.rms - expectedRMS) / expectedRMS < 0.05, "rms=\(stats.rms)")
@@ -90,9 +96,12 @@ import Testing
         let first = try converter.convert(buffer, into: output)
         let flushed = try converter.flush(into: output)
         #expect(first + flushed >= 1_590 && first + flushed <= 1_610, "first=\(first) flushed=\(flushed)")
-        // reusable after flush
+        // reusable after flush: same total again (the converter primes again after reset, so the
+        // first call alone returns fewer frames — ~1360 of 1600 was observed in CI)
         let again = try converter.convert(buffer, into: output)
-        #expect(again > 1_500)
+        let flushedAgain = try converter.flush(into: output)
+        #expect(again > 1_000, "again=\(again)")
+        #expect(again + flushedAgain >= 1_590 && again + flushedAgain <= 1_610, "again=\(again) flushed=\(flushedAgain)")
     }
 
     @Test func chunkDurationMatchesFormat() {

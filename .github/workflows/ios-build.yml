@@ -2,12 +2,13 @@ name: iOS build
 
 on:
   push:
-    # Docs-only pushes (Architect/CREED) must not trigger or cancel a build.
+    # Docs-only and backend-only pushes (Architect/CREED/Kevin) must not trigger or cancel an iOS build.
     paths-ignore:
       - "docs/**"
       - "reports/**"
       - "prompts/**"
       - "testdata/**"
+      - "backend/**"
       - "**/*.md"
   pull_request:
     paths-ignore:
@@ -15,6 +16,7 @@ on:
       - "reports/**"
       - "prompts/**"
       - "testdata/**"
+      - "backend/**"
       - "**/*.md"
   workflow_dispatch:
 
