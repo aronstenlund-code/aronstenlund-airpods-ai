@@ -230,6 +230,18 @@ p50/p95 över sessionen. Ställ fem frågor och **skriv ner raden** – det är 
 3. Börja lyssna och säg en mening med ett ovanligt ord ur materialet: blev det rätt stavat oftare än utan
    material? (Jämför med materialet avstängt.) Skriv ner intrycket – det är Track D-prioritet 3.
 
+### 3q. Växla till musik (D33, 10 min)
+
+Signering: **båda** targets (`Lumen` och `LumenControls`) behöver ditt team i Xcode. Skriv ner om gratis-Apple-ID:t klarar tillägget.
+
+1. Börja lyssna, starta Spotify och spela något. Tryck **Pausa för musik** i Lumen. Fortsätter musiken i full kvalitet utan att du gör något mer i Spotify? Skriv ner vad du hör.
+2. Tryck **Fortsätt lyssna**. Stannar musiken och lyssnar Lumen igen?
+3. Börja lyssna och starta musik direkt i Spotify, utan att pausa. Visas "Pausad – tryck för att lyssna igen"? Stoppa musiken: Lumen ska **inte** starta av sig själv.
+4. Ring ett samtal till telefonen medan du lyssnar och avsluta det. Lumen ska stå kvar som pausad tills du trycker.
+5. Lås telefonen medan du lyssnar. Syns Lumen på låsskärmen? Tryck Pausa och sedan Fortsätt där. Skriv ner om Fortsätt fungerar utan att låsa upp.
+6. Lägg till kontrollen *Lumen lyssnar* i Kontrollcenter (eller på Åtgärdsknappen). Händer något när du trycker? Händer inget alls är det ett viktigt resultat.
+7. Ställ en skriven fråga medan du är pausad: svaret ska synas men inte läsas upp, och musiken ska inte störas.
+
 ## Del 4 — Skicka in resultaten (5 min)
 
 1. I appen: tryck **Copy results as Markdown**. Öppna Anteckningar på iPhone, klistra in, dela till
@@ -238,7 +250,7 @@ p50/p95 över sessionen. Ställ fem frågor och **skriv ner raden** – det är 
    - den inklistrade texten (en per AirPods-modell, eller en lång),
    - iPhone-modell och iOS-version (står högst upp i texten),
    - AirPods-modell + firmware (från steg 11),
-   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i, 3j (bokstavliga transkriptioner), 3k (fångade/missade frågor), 3l (latenser, feltexter), 3m (röstkvalitet), 3n (textläge), 3o (latensraden) och 3p (anteckningar/material),
+   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i, 3j (bokstavliga transkriptioner), 3k (fångade/missade frågor), 3l (latenser, feltexter), 3m (röstkvalitet), 3n (textläge), 3o (latensraden), 3q (musik) och 3p (anteckningar/material),
    - noise-uppgifterna från `testdata/noise/README.md`.
 3. **WAV-filerna**: anslut iPhone till Macen → Finder → iPhone → *Filer* → *Lumen* → dra alla
    `lumen-*.wav` till en mapp, t.ex. `~/Lumen-recordings/<datum>/`. **Lägg dem inte i git.** Skriv
