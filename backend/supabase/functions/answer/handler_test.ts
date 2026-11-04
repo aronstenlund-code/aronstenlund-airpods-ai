@@ -537,3 +537,105 @@ Deno.test("D35: a confirmation in the middle of the history is dropped, a traili
   assert(seen[1].user.includes("<last_assistant_turn>confirmation</last_assistant_turn>"));
   assert(seen[1].user.includes("A: Menar du kofaktorer?"));
 });
+
+// ---- D42 personas ----
+Deno.test("D42 interview: question -> outline prompt with the role, 500 tokens; answer -> feedback; klar -> summary", async () => {
+  const { provider, seen } = recordingProvider();
+  const { handler } = setup({ provider });
+  const common = {
+    mode: "tutor",
+    persona: "interview",
+    persona_setup: "Lagerarbetare, truckkort krävs",
+  };
+  const ev = await readSse(
+    await handler(post(body({ ...common, fragment: "berätta om en gång du löste ett problem" }))),
+  );
+  assertEquals(ev[0].data.is_question, true);
+  assertEquals(ev[0].data.needs_confirmation, false);
+  assert(seen[0].system.includes("interview coach") && seen[0].system.includes("STAR"));
+  assert(seen[0].user.includes("<task>interview_question</task>"));
+  assert(seen[0].user.includes("Lagerarbetare, truckkort krävs"));
+  assertEquals(seen[0].maxTokens, 500);
+  await (await handler(
+    post(
+      body({
+        ...common,
+        turn: "user_answer",
+        fragment: "Jag packade om en pall som var fel märkt.",
+        context: {
+          recent_qa: [{ q: "berätta om en gång du löste ett problem", a: "Struktur: STAR." }],
+        },
+      }),
+    ),
+  )).text();
+  assert(seen[1].user.includes("<task>interview_feedback</task>"));
+  assertEquals(seen[1].maxTokens, 300);
+  await (await handler(post(body({ ...common, fragment: "klar" })))).text();
+  assert(seen[2].user.includes("<task>interview_summary</task>"));
+  assertEquals(seen[2].maxTokens, 450);
+});
+
+Deno.test("D42 social: one short suggestion, tiny budget, scenario passed, no history confirmation logic", async () => {
+  const { provider, seen } = recordingProvider("Låter kul, vilken låt gillade du mest?");
+  const { handler } = setup({ provider });
+  const ev = await readSse(
+    await handler(
+      post(
+        body({
+          mode: "tutor",
+          persona: "social",
+          persona_setup: "Fika med en kompis efter skolan",
+          fragment: "jag var på en konsert i helgen",
+        }),
+      ),
+    ),
+  );
+  assertEquals(
+    ev.filter((e) => e.event === "delta").map((e) => e.data.text).join(""),
+    "Låter kul, vilken låt gillade du mest?",
+  );
+  assert(seen[0].system.includes("knows that the app listens"));
+  assert(seen[0].user.includes("<task>social_suggestion</task>"));
+  assert(seen[0].user.includes("Fika med en kompis efter skolan"));
+  assertEquals(seen[0].maxTokens, 160);
+});
+
+Deno.test("D42 interview_prep: needs persona_setup, five-question prompt, big budget and cap", async () => {
+  const { provider, seen } = recordingProvider("Fråga ett: Varför söker du?\nSvar: Jag ...");
+  const { handler } = setup({ provider });
+  assertEquals(
+    (await handler(post(body({ mode: "interview_prep", fragment: "förbered mig" })))).status,
+    400,
+  );
+  const ev = await readSse(
+    await handler(
+      post(
+        body({
+          mode: "interview_prep",
+          fragment: "förbered mig",
+          persona_setup: "Kundtjänst, deltid, kvällar",
+        }),
+      ),
+    ),
+  );
+  assertEquals(ev[0].data.answer_type, "study");
+  assert(seen[0].system.includes("exactly five likely interview questions"));
+  assert(
+    seen[0].user.includes("<task>interview_prep</task>") &&
+      seen[0].user.includes("Kundtjänst, deltid, kvällar"),
+  );
+  assertEquals(seen[0].maxTokens, 1200);
+});
+
+Deno.test("D42: persona never applies in auto mode; ordinary tutor flow untouched", async () => {
+  const a = recordingProvider();
+  await (await setup({ provider: a.provider }).handler(
+    post(body({ mode: "auto", persona: "social", fragment: "vad är en enzym" })),
+  )).text();
+  assert(a.seen[0].system.includes("OUTPUT (strict)"), "header protocol");
+  const b = recordingProvider();
+  await (await setup({ provider: b.provider }).handler(
+    post(body({ mode: "tutor", fragment: "enzym" })),
+  )).text();
+  assert(b.seen[0].system.includes("tutoring in a spoken conversation"));
+});

@@ -19,6 +19,9 @@ const base: AnswerRequest = {
   language: "sv",
   length: "adaptive",
   goals: "",
+  persona: "tutor",
+  personaSetup: "",
+  turn: "question",
   commands: [],
   context: { transcript: "", recent_qa: [], prep_terms: [] },
 };

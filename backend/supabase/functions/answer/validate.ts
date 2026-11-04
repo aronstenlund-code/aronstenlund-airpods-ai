@@ -1,6 +1,8 @@
 import { HttpError } from "../_shared/errors.ts";
 
-export type Mode = "push_to_talk" | "auto" | "text" | "tutor";
+export type Mode = "push_to_talk" | "auto" | "text" | "tutor" | "interview_prep";
+export type Persona = "tutor" | "interview" | "social";
+export type Turn = "question" | "user_answer";
 export type Language = "sv" | "en";
 export type LengthSetting = "short" | "adaptive" | "long";
 
@@ -12,6 +14,12 @@ export interface AnswerRequest {
   length: LengthSetting;
   /** The student's course goals (D37), user data, <= 1 500 chars. */
   goals: string;
+  /** D42: behaviour of the hands-free loop (default tutor). */
+  persona: Persona;
+  /** Role / pasted job ad / scenario for interview and social personas and interview_prep (user data). */
+  personaSetup: string;
+  /** Interview persona: is the fragment the interviewer's question or the user's own answer? */
+  turn: Turn;
   /** The student's own matched keyword commands (D37), <= 10. */
   commands: { keyword: string; instruction: string }[];
   context: {
@@ -31,6 +39,7 @@ export const LIMITS = {
   prepTerms: 30,
   prepTerm: 60,
   goals: 1500,
+  personaSetup: 1500,
   commands: 10,
   commandKeyword: 60,
   commandInstruction: 300,
@@ -59,8 +68,11 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
   }
   const o = raw as Record<string, unknown>;
   const mode = o.mode;
-  if (mode !== "push_to_talk" && mode !== "auto" && mode !== "text" && mode !== "tutor") {
-    throw bad('mode must be "push_to_talk", "auto", "text" or "tutor"');
+  if (
+    mode !== "push_to_talk" && mode !== "auto" && mode !== "text" && mode !== "tutor" &&
+    mode !== "interview_prep"
+  ) {
+    throw bad('mode must be "push_to_talk", "auto", "text", "tutor" or "interview_prep"');
   }
   const language = o.language;
   if (language !== "sv" && language !== "en") throw bad('language must be "sv" or "en"');
@@ -120,6 +132,19 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     };
   });
 
+  const persona = o.persona === undefined || o.persona === null ? "tutor" : o.persona;
+  if (persona !== "tutor" && persona !== "interview" && persona !== "social") {
+    throw bad('persona must be "tutor", "interview" or "social"');
+  }
+  const personaSetup = str(o.persona_setup, "persona_setup", LIMITS.personaSetup);
+  if (mode === "interview_prep" && !personaSetup) {
+    throw bad("persona_setup (the role or job ad) is required for interview_prep");
+  }
+  const turn = o.turn === undefined || o.turn === null ? "question" : o.turn;
+  if (turn !== "question" && turn !== "user_answer") {
+    throw bad('turn must be "question" or "user_answer"');
+  }
+
   const length = o.length === undefined || o.length === null ? "adaptive" : o.length;
   if (length !== "short" && length !== "adaptive" && length !== "long") {
     throw bad('length must be "short", "adaptive" or "long"');
@@ -130,6 +155,9 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     language,
     length,
     goals,
+    persona,
+    personaSetup,
+    turn,
     commands,
     context: { transcript, recent_qa, prep_terms },
   };

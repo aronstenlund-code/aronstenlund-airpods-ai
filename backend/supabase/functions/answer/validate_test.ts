@@ -136,3 +136,45 @@ Deno.test("D37: the largest legal request still fits the body limit", () => {
   };
   assert(new TextEncoder().encode(JSON.stringify(big)).length < LIMITS.bodyBytes);
 });
+
+Deno.test("D42: persona / persona_setup / turn / interview_prep", () => {
+  const d = validateAnswerRequest(ok);
+  assertEquals([d.persona, d.personaSetup, d.turn], ["tutor", "", "question"]);
+  const r = validateAnswerRequest({
+    ...ok,
+    mode: "tutor",
+    persona: "social",
+    persona_setup: "  Fika med en klasskompis  ",
+    turn: "user_answer",
+  });
+  assertEquals([r.persona, r.personaSetup, r.turn], [
+    "social",
+    "Fika med en klasskompis",
+    "user_answer",
+  ]);
+  const p = validateAnswerRequest({
+    ...ok,
+    mode: "interview_prep",
+    persona_setup: "Kundtjänst, deltid",
+  });
+  assertEquals(p.mode, "interview_prep");
+  assertEquals(
+    assertThrows(() => validateAnswerRequest({ ...ok, mode: "interview_prep" }), HttpError).status,
+    400,
+  );
+  assertEquals(
+    assertThrows(() => validateAnswerRequest({ ...ok, persona: "coach" }), HttpError).status,
+    400,
+  );
+  assertEquals(
+    assertThrows(() => validateAnswerRequest({ ...ok, turn: "later" }), HttpError).status,
+    400,
+  );
+  assertEquals(
+    assertThrows(
+      () => validateAnswerRequest({ ...ok, persona_setup: "a".repeat(LIMITS.personaSetup + 1) }),
+      HttpError,
+    ).status,
+    413,
+  );
+});

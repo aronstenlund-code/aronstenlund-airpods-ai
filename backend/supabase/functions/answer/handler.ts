@@ -5,6 +5,7 @@ import { SSE_HEADERS, sseFrame } from "../_shared/sse.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
+import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import {
   buildDirectUserMessage,
   buildUserMessage,
@@ -146,15 +147,20 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         });
       }
 
-      const direct = cfg.directModes && body.mode !== "auto";
+      const direct = (cfg.directModes && body.mode !== "auto") || !!personaPlan(body);
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
-      const continuation = body.context.recent_qa.length ? detectContinuation(body.fragment) : null;
+      const plan = personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
+      const continuation = !plan && body.context.recent_qa.length
+        ? detectContinuation(body.fragment)
+        : null;
       const tutor = body.mode === "tutor";
-      const answerType = classifyAnswerType(body.fragment, body.length, continuation, {
-        tutor,
-        commands: body.commands.length > 0,
-      });
-      const maxChars = answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars;
+      const answerType = plan?.answerType ??
+        classifyAnswerType(body.fragment, body.length, continuation, {
+          tutor,
+          commands: body.commands.length > 0,
+        });
+      const maxChars = plan?.maxChars ??
+        (answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars);
       const parser = new ResponseParser(
         body.mode,
         body.fragment,
@@ -211,11 +217,18 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       });
       const iterator = provider
         .stream({
-          system: direct ? systemPromptFor(answerType, tutor) : SYSTEM_PROMPT,
-          user: direct
+          system: plan
+            ? personaSystemPrompt(plan.kind)
+            : direct
+            ? systemPromptFor(answerType, tutor)
+            : SYSTEM_PROMPT,
+          user: plan
+            ? buildPersonaUserMessage(body, plan.task)
+            : direct
             ? buildDirectUserMessage(body, continuation)
             : buildUserMessage(body, cfg.confidenceThreshold, answerType, continuation),
-          maxTokens: answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens,
+          maxTokens: plan?.maxTokens ??
+            (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens),
           cacheSystem: true,
           signal: ac.signal,
         })[Symbol.asyncIterator]();
