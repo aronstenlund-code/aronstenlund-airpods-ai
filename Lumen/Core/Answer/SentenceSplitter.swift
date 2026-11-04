@@ -20,7 +20,8 @@ struct SentenceSplitter: Sendable {
         while let end = Self.sentenceEnd(in: buffer) {
             let sentence = String(buffer[..<end]).trimmingCharacters(in: .whitespacesAndNewlines)
             buffer = String(buffer[end...])
-            if !sentence.isEmpty { sentences.append(sentence) }
+            // "?" + "!" across two deltas leaves a lone "!": nothing to speak.
+            if sentence.contains(where: { $0.isLetter || $0.isNumber }) { sentences.append(sentence) }
         }
         return sentences
     }
@@ -56,8 +57,11 @@ struct SentenceSplitter: Sendable {
                 if isTerminator(text[end]) { extraTerminators += 1 }
                 end = text.index(after: end)
             }
-            // End of text: the sentence may continue ("3." + "14") — wait for more.
-            guard end < text.endIndex else { return nil }
+            // End of text: release it now so the first sentence reaches TTS at once, unless it may continue
+            // ("3." + "14", "bl." + "a.") — then wait for more.
+            guard end < text.endIndex else {
+                return canEndStream(terminator: character, at: index, in: text) ? end : nil
+            }
             guard text[end].isWhitespace else {
                 index = end // "3.14", "e.g" — keep going
                 continue
@@ -71,14 +75,26 @@ struct SentenceSplitter: Sendable {
         return nil
     }
 
-    private static func isAbbreviationOrInitial(before dot: String.Index, in text: String) -> Bool {
+    /// A terminator at the very end of the streamed text so far. "?", "!" and "…" end the sentence; "." only
+    /// after a real word of three letters or more (Swedish abbreviations stream as "bl." + "a.", "t." + "ex.").
+    private static func canEndStream(terminator: Character, at index: String.Index, in text: String) -> Bool {
+        guard terminator == "." else { return true }
+        let word = lastWord(before: index, in: text)
+        return word.count >= 3 && word.allSatisfy(\.isLetter) && !abbreviations.contains(word)
+    }
+
+    private static func lastWord(before dot: String.Index, in text: String) -> String {
         var start = dot
         while start > text.startIndex {
             let previous = text.index(before: start)
             if text[previous].isWhitespace { break }
             start = previous
         }
-        let word = text[start..<dot].lowercased()
+        return text[start..<dot].lowercased()
+    }
+
+    private static func isAbbreviationOrInitial(before dot: String.Index, in text: String) -> Bool {
+        let word = lastWord(before: dot, in: text)
         if word.count == 1, word.first?.isLetter == true { return true } // "J. Smith"
         if word.allSatisfy(\.isNumber) { return false } // "år 1939."
         return abbreviations.contains(word)

@@ -10,6 +10,8 @@ protocol PlaybackServicing: AnyObject {
     /// "play requested → first non-silent buffer rendered" measurements, ms, newest last.
     var latencySamplesMs: [Double] { get }
     var isSpeaking: Bool { get }
+    /// Every buffer of speech handed to the player (Apple or streamed): first-audio latency.
+    var onAudioScheduled: (@MainActor () -> Void)? { get set }
 
     func playTestTone(frequency: Double, duration: Double) throws(AudioError)
     /// Speaks `text` through our engine (not the system's) using `AVSpeechSynthesizer.write`.
@@ -120,6 +122,7 @@ final class PlaybackService: PlaybackServicing {
     private(set) var latencySamplesMs: [Double] = []
     /// True while speech is being scheduled or scheduled buffers are still playing (self-playback suppression, §4.3).
     private(set) var isSpeaking = false
+    var onAudioScheduled: (@MainActor () -> Void)?
     private var activeStreams = 0
     private var pendingBuffers = 0
     /// Bumped by `stop()` so completion callbacks of discarded buffers are ignored.
@@ -277,6 +280,7 @@ final class PlaybackService: PlaybackServicing {
             Task { @MainActor in self?.bufferFinished(generation: generation) }
         }
         if !player.isPlaying { player.play() }
+        onAudioScheduled?()
     }
 
     func stop() {

@@ -73,6 +73,7 @@ final class ElevenLabsTTSProvider: TTSProvider {
                     scheduled += samples.count
                 }
             }
+            try Task.checkCancellation() // a cancelled stream just ends: no stray tail after `playback.stop()`
             if let rest = assembler.flush() {
                 try playback.play(samples: rest, sampleRate: Self.sampleRate)
                 scheduled += rest.count

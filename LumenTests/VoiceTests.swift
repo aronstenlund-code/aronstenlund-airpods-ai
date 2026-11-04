@@ -307,11 +307,11 @@ func makeTestVoiceCatalog() -> VoiceCatalog {
 
 @MainActor
 @Suite struct VoiceCatalogTests {
-    @Test func decodesBothLikelyShapes() throws {
-        let wrapped = try VoiceCatalog.decode(Data("{\"voices\":[{\"name\":\"Astrid\",\"id\":\"a1\"},{\"name\":\"Erik\",\"voice_id\":\"e1\"}],\"default\":\"a1\"}".utf8))
-        #expect(wrapped == [VoiceChoice(kind: .elevenLabs, voiceID: "a1", name: "Astrid"), VoiceChoice(kind: .elevenLabs, voiceID: "e1", name: "Erik")])
-        let list = try VoiceCatalog.decode(Data("[{\"name\":\"Maja\",\"voiceId\":\"m1\"},{\"name\":\"NoID\"}]".utf8))
-        #expect(list == [VoiceChoice(kind: .elevenLabs, voiceID: "m1", name: "Maja")])
+    @Test func decodesTheLiveShape() throws {
+        let listing = try VoiceCatalog.decode(Data("{\"voices\":[{\"name\":\"Adam\",\"id\":\"a1\"}],\"default_id\":\"a1\"}".utf8))
+        #expect(listing.voices == [VoiceChoice(kind: .elevenLabs, voiceID: "a1", name: "Adam")])
+        #expect(listing.defaultID == "a1")
+        #expect(try VoiceCatalog.decode(Data("{\"voices\":[],\"default_id\":null}".utf8)).voices.isEmpty)
         #expect(throws: AnswerError.self) { try VoiceCatalog.decode(Data("nope".utf8)) }
     }
 

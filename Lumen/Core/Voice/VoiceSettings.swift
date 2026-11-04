@@ -35,10 +35,20 @@ final class VoiceSettings {
         self.rate = Float(storedRate ?? 1.0)
         self.speakAnswers = defaults.object(forKey: Self.speakKey) as? Bool ?? true
     }
+
+    /// Brings the choice in line with `GET /voices`: the server's default until the user has picked a voice
+    /// (D32), and never a voice the backend no longer allows (`/tts` would answer `400 invalid_voice`).
+    func reconcile(with voices: [VoiceChoice], defaultID: String?) {
+        let fallback = voices.first { $0.voiceID == defaultID } ?? voices.first
+        if voice.kind == .elevenLabs {
+            voice = voices.first { $0.voiceID == voice.voiceID } ?? fallback ?? .appleDefault
+        } else if defaults.data(forKey: Self.voiceKey) == nil, let fallback {
+            voice = fallback
+        }
+    }
 }
 
-/// The three allowlisted ElevenLabs voices from `GET /voices` (D23). Tolerant of the exact JSON shape
-/// (`{voices:[{name,id}]}` or `{voices:[{name,voice_id}]}`), because the endpoint is being built by Kevin.
+/// The allowlisted ElevenLabs voices from `GET /voices` (D23): `{voices:[{name,id}],default_id}`.
 @MainActor
 @Observable
 final class VoiceCatalog {
@@ -50,7 +60,10 @@ final class VoiceCatalog {
     }
 
     private(set) var voices: [VoiceChoice] = []
+    private(set) var defaultID: String?
     private(set) var status: Status = .idle
+    /// Called after every successful load.
+    var onLoaded: (@MainActor ([VoiceChoice], String?) -> Void)?
     private let config: BackendConfig
     private let auth: SupabaseAuth
     private let http: any HTTPStreaming
@@ -80,35 +93,32 @@ final class VoiceCatalog {
             request.timeoutInterval = 15
             let (response, data) = try await http.data(for: request)
             guard response.statusCode == 200 else {
+                if response.statusCode == 401 { auth.invalidate() }
                 let failure = AnswerSSEDecoder.decodeErrorBody(data, status: response.statusCode)
                 throw AnswerError.backend(status: response.statusCode, failure: failure)
             }
-            voices = try Self.decode(data)
+            (voices, defaultID) = try Self.decode(data)
             status = .loaded
+            onLoaded?(voices, defaultID)
         } catch {
             status = .failed(AnswerError.from(error).localizedDescription)
         }
     }
 
-    static func decode(_ data: Data) throws(AnswerError) -> [VoiceChoice] {
-        struct Entry: Decodable {
-            var name: String
-            var id: String?
-            var voice_id: String?
-            var voiceId: String?
+    static func decode(_ data: Data) throws(AnswerError) -> (voices: [VoiceChoice], defaultID: String?) {
+        struct Listing: Decodable {
+            struct Entry: Decodable {
+                var name: String
+                var id: String
+            }
+            var voices: [Entry]
+            var default_id: String?
         }
-        struct Wrapped: Decodable { var voices: [Entry] }
-        let entries: [Entry]
-        if let wrapped = try? JSONDecoder().decode(Wrapped.self, from: data) {
-            entries = wrapped.voices
-        } else if let list = try? JSONDecoder().decode([Entry].self, from: data) {
-            entries = list
-        } else {
-            throw AnswerError.decoding(detail: "voices: unexpected JSON")
-        }
-        return entries.compactMap { entry in
-            guard let id = entry.id ?? entry.voice_id ?? entry.voiceId, !id.isEmpty else { return nil }
-            return VoiceChoice(kind: .elevenLabs, voiceID: id, name: entry.name)
+        do {
+            let listing = try JSONDecoder().decode(Listing.self, from: data)
+            return (listing.voices.map { VoiceChoice(kind: .elevenLabs, voiceID: $0.id, name: $0.name) }, listing.default_id)
+        } catch {
+            throw AnswerError.decoding(detail: "voices: \(error.localizedDescription)")
         }
     }
 }

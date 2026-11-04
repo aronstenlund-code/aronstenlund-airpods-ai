@@ -75,6 +75,8 @@ final class SupabaseAuth {
     private let http: any HTTPStreaming
     private let now: @Sendable () -> Date
     private var session: SupabaseSession?
+    /// The running sign-in or refresh, shared by everyone who needs a token meanwhile.
+    private var renewal: Task<String, any Error>?
 
     init(config: BackendConfig, store: any SessionStore, http: any HTTPStreaming, now: @escaping @Sendable () -> Date = { Date() }) {
         self.config = config
@@ -91,11 +93,31 @@ final class SupabaseAuth {
         if let session, session.isValid(at: now()) {
             return session.accessToken
         }
+        // The voices and the warm-up run together at launch: one sign-in, not one anonymous user per caller.
+        let task: Task<String, any Error>
+        if let renewal {
+            task = renewal
+        } else {
+            task = Task { [self] in
+                defer { renewal = nil }
+                return try await renewToken()
+            }
+            renewal = task
+        }
+        do {
+            return try await task.value
+        } catch {
+            throw AnswerError.from(error)
+        }
+    }
+
+    private func renewToken() async throws(AnswerError) -> String {
         if let session, !session.refreshToken.isEmpty {
             do {
                 return try await refresh(session).accessToken
             } catch {
-                // Refresh token rejected → start over with a new anonymous user.
+                // Refresh token rejected → start over with a new anonymous user. Offline keeps the session.
+                guard case .unauthorized = AnswerError.from(error) else { throw AnswerError.from(error) }
                 invalidate()
             }
         }

@@ -5,6 +5,7 @@ import SwiftUI
 struct ListeningView: View {
     @Bindable var model: ListeningModel
     let diagnostics: DiagnosticsModel
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         List {
@@ -16,6 +17,10 @@ struct ListeningView: View {
         .overlay(alignment: .topTrailing) { latencyOverlay }
         .safeAreaInset(edge: .bottom) { controls }
         .navigationTitle("Lumen")
+        .task { await model.prepareBackend() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { Task { await model.prepareBackend() } }
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {

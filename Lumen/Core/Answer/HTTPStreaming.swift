@@ -4,7 +4,8 @@ import Foundation
 protocol HTTPStreaming: Sendable {
     /// Whole-body request (auth calls, error bodies).
     func data(for request: URLRequest) async throws -> (HTTPURLResponse, Data)
-    /// Line-by-line body for `text/event-stream`. The stream ends when the server closes the response.
+    /// Line-by-line body for `text/event-stream`, **blank lines included** (they end an SSE event).
+    /// The stream ends when the server closes the response.
     func lines(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<String, any Error>)
     /// Binary body in chunks as they arrive (streamed audio).
     func bytes(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<Data, any Error>)
@@ -33,9 +34,17 @@ struct URLSessionHTTP: HTTPStreaming {
         let stream = AsyncThrowingStream<String, any Error> { continuation in
             let task = Task {
                 do {
-                    for try await line in bytes.lines {
-                        continuation.yield(line)
+                    // Not `bytes.lines`: it skips empty lines, and SSELineParser needs them.
+                    var line: [UInt8] = []
+                    for try await byte in bytes {
+                        if byte == UInt8(ascii: "\n") {
+                            continuation.yield(String(decoding: line, as: UTF8.self))
+                            line.removeAll(keepingCapacity: true)
+                        } else {
+                            line.append(byte)
+                        }
                     }
+                    if !line.isEmpty { continuation.yield(String(decoding: line, as: UTF8.self)) }
                     continuation.finish()
                 } catch {
                     continuation.finish(throwing: error)

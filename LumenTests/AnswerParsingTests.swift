@@ -110,10 +110,31 @@ import Testing
 
     @Test func waitsForWhitespaceAfterTerminatorAndFlushesTheRest() {
         var splitter = SentenceSplitter()
-        #expect(splitter.feed("Vad är pi?").isEmpty, "a terminator at the very end may be followed by more text")
-        #expect(splitter.feed(" Ungefär tre.") == ["Vad är pi?"])
-        #expect(splitter.flush() == "Ungefär tre.")
+        #expect(splitter.feed("Vad är pi?") == ["Vad är pi?"], "a finished sentence goes to TTS at once")
+        #expect(splitter.feed(" Ungefär 3.").isEmpty, "a decimal may continue in the next delta")
+        #expect(splitter.feed("14.").isEmpty)
+        #expect(splitter.flush() == "Ungefär 3.14.")
         #expect(splitter.flush() == nil)
+    }
+
+    @Test func releasesTheFirstSentenceOnTheDeltaThatEndsIt() {
+        var splitter = SentenceSplitter()
+        #expect(splitter.feed("Ro").isEmpty)
+        #expect(splitter.feed("ten ur hundra är t").isEmpty)
+        #expect(splitter.feed("io.") == ["Roten ur hundra är tio."], "deltas as the live backend sent them")
+        #expect(splitter.flush() == nil)
+    }
+
+    @Test func abbreviationsStreamedInPiecesStayTogether() {
+        var splitter = SentenceSplitter()
+        #expect(splitter.feed("Djur bl.").isEmpty)
+        #expect(splitter.feed("a. katter. ") == ["Djur bl.a. katter."])
+    }
+
+    @Test func aStrayTerminatorInTheNextDeltaIsNotSpoken() {
+        var splitter = SentenceSplitter()
+        #expect(splitter.feed("Vad?") == ["Vad?"])
+        #expect(splitter.feed("! Okej. ") == ["Okej."])
     }
 
     @Test func multipleTerminatorsAndQuotes() {

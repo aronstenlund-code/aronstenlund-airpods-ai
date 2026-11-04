@@ -14,6 +14,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let voices: VoiceCatalog
     let notes: NotesStore
     let prep: PrepStore
+    private let warmer: BackendWarmer?
     /// Per-answer latency budget (item 7), shown in the debug overlay.
     let latency = LatencyLog()
     private(set) var conversation = Conversation()
@@ -61,7 +62,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     init(controller: SessionController, consent: any ConsentStoring,
          transcription: TranscriptionCoordinator, activation: ActivationController,
          answers: AnswerEngine, speaker: Speaker, voices: VoiceCatalog,
-         notes: NotesStore, prep: PrepStore) {
+         notes: NotesStore, prep: PrepStore, warmer: BackendWarmer? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -71,6 +72,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.voices = voices
         self.notes = notes
         self.prep = prep
+        self.warmer = warmer
+        voices.onLoaded = { [weak speaker] voices, defaultID in
+            speaker?.settings.reconcile(with: voices, defaultID: defaultID)
+        }
         activation.onActivate = { [weak self] request in self?.activated(request) }
         answers.sink = self
         speaker.onSentenceStarted = { [weak self] provider in self?.latency.markFirstSpeech(provider: provider) }
@@ -82,6 +87,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     // MARK: - User actions
+
+    /// The Listening screen opened, the app came back, or listening starts: wake the backend (D31) and load the
+    /// voices (D23), which also signs in ahead of the first question. Quiet when offline; retried next time.
+    func prepareBackend() async {
+        guard !answers.useMock else { return }
+        Task { await warmer?.warm() }
+        await voices.refreshIfNeeded()
+    }
 
     /// Primary button: start when idle/error, stop when listening or paused.
     func toggleListening() async {
@@ -98,6 +111,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.log("Start refused: no consent")
             return
         }
+        Task { await prepareBackend() }
         await controller.start()
     }
 

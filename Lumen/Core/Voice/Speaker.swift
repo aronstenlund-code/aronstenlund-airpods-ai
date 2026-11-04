@@ -21,7 +21,7 @@ final class Speaker {
     private(set) var status: Status = .idle
     /// Last problem worth showing ("ElevenLabs unavailable — using Apple's voice").
     private(set) var notice: String?
-    /// Called when a provider starts speaking a sentence (latency instrumentation, item 7).
+    /// Called when the first audio of a sentence is scheduled, so a slow `/tts` counts (latency, item 7 / D28).
     var onSentenceStarted: (@MainActor (_ provider: String) -> Void)?
     private(set) var spokenCount = 0
     private(set) var fallbackCount = 0
@@ -31,6 +31,8 @@ final class Speaker {
     private let playback: any PlaybackServicing
     private var queue: [Request] = []
     private var drainTask: Task<Void, Never>?
+    /// The provider whose first audio for the current sentence has not been scheduled yet.
+    private var awaitingFirstAudio: String?
     /// Bumped by `interrupt()` so a cancelled drain cannot reset the state of the drain that replaced it.
     private var drainGeneration = 0
 
@@ -40,6 +42,11 @@ final class Speaker {
         self.premium = premium
         self.playback = playback
         playback.rate = settings.rate
+        playback.onAudioScheduled = { [weak self] in
+            guard let self, let provider = self.awaitingFirstAudio else { return }
+            self.awaitingFirstAudio = nil
+            self.onSentenceStarted?(provider)
+        }
     }
 
     var isSpeaking: Bool { status != .idle || playback.isSpeaking }
@@ -69,6 +76,7 @@ final class Speaker {
         drainTask?.cancel()
         drainTask = nil
         queue.removeAll()
+        awaitingFirstAudio = nil
         playback.stop()
         status = .idle
     }
@@ -102,7 +110,7 @@ final class Speaker {
     private func speak(_ request: Request) async {
         let provider: any TTSProvider = (request.voice.kind == .elevenLabs ? premium : nil) ?? apple
         status = .speaking(provider: provider.name)
-        onSentenceStarted?(provider.name)
+        awaitingFirstAudio = provider.name
         do {
             try await provider.speak(request.text, language: request.language, voice: request.voice)
             spokenCount += 1
@@ -114,7 +122,7 @@ final class Speaker {
                 fallbackCount += 1
                 notice = "Premium voice unavailable — using Apple's voice (\(error.localizedDescription))"
                 status = .speaking(provider: apple.name)
-                onSentenceStarted?(apple.name)
+                awaitingFirstAudio = apple.name
                 do {
                     try await apple.speak(request.text, language: request.language, voice: .appleDefault)
                     spokenCount += 1
