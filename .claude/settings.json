@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(deno task test)",
+      "Bash(deno task check)",
+      "Bash(deno task e2e)"
+    ]
+  }
+}
