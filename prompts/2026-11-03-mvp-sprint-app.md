@@ -1,6 +1,7 @@
 # Claude Code assignment (Angela) — MVP sprint: full core loop in the app
 
 Approved by: CREED, 2026-11-03 17:50. **Deadline: working first version of the whole app by 2026-11-10.** This assignment has priority over `prompts/2026-11-03-trackD-spike.md` (Track D items not listed here come after the core loop works).
+**Update 2026-11-04 10:10 (D33, priority after the core flow): easy switch to music.** Pause/Resume button that fully releases the audio session (`notifyOthersOnDeactivation`), interruption from other apps → paused state with one-tap resume, never steal audio back. Lock Screen/Control Center control in the same item. Unit-test the state machine; device behaviour is untested until a device run.
 **Update 21:40 (D23): voice picker with three Swedish ElevenLabs voices** (names from backend `GET /voices`, preview button, saved choice) + Apple voice as fallback/option — part of item 5.
 **Test device (product owner, 18:30):** iPhone 14 Pro, iOS 26.5 — **no Apple Intelligence**, so the Foundation Models path cannot be tested on our device. Priority: the cloud path (Kevin's backend) is the critical path for the first device test; build Foundation Models as a guarded optional provider only after the core loop works. Without network the app must say clearly that answers need internet.
 **Update 18:25 (D19):** when the backend is reachable, `CloudAnswerProvider` (Claude via backend) is the default on **all** devices for best answer quality; Foundation Models is the offline/fallback path on Apple Intelligence devices.
