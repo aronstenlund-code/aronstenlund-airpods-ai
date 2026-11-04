@@ -74,12 +74,26 @@ async function api(path, init, retry = true) {
 async function errText(r) { try { const e = (await r.json()).error; return e.code + (e.fallback ? " (reserv)" : "") + ": " + e.message; } catch { return "HTTP " + r.status; } }
 
 // ---------- audio ----------
+// iOS: Web Audio is muted by the ring/silent switch and is often left "interrupted" after the mic
+// (speech recognition) was used, so playback goes through one <audio> element instead (D-webtest fix).
+const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=";
+let player = null;
+function setSession(type) { try { if (navigator.audioSession) navigator.audioSession.type = type; } catch {} }
 function unlockAudio() {
-  const AC = window.AudioContext || window.webkitAudioContext;
-  if (!ctx) ctx = new AC();
-  if (ctx.state !== "running") ctx.resume();
-  const b = ctx.createBuffer(1, 1, 22050), s = ctx.createBufferSource(); s.buffer = b; s.connect(ctx.destination); s.start(0);
+  if (!player) { player = new Audio(); player.playsInline = true; player.preload = "auto"; }
+  try { player.src = SILENT; const p = player.play(); if (p) p.catch(() => {}); } catch {}
   try { speechSynthesis.speak(new SpeechSynthesisUtterance("")); } catch {}   // unlocks the Apple-voice fallback
+}
+function playBlob(blob) {
+  return new Promise((resolve, reject) => {
+    setSession("playback");
+    const url = URL.createObjectURL(blob);
+    player.onended = () => { URL.revokeObjectURL(url); resolve(); };
+    player.onerror = () => { URL.revokeObjectURL(url); reject(new Error("uppspelning misslyckades")); };
+    player.src = url;
+    const p = player.play();
+    if (p) p.catch((e) => { URL.revokeObjectURL(url); reject(e); });
+  });
 }
 async function fetchAudio(text, r) {
   const t0 = now();
@@ -92,9 +106,7 @@ async function fetchAudio(text, r) {
     if (r.ttsFirstByte == null) { r.ttsFirstByte = now(); r.ttsReq = t0; }
     chunks.push(value);
   }
-  const buf = new Uint8Array(chunks.reduce((n, c) => n + c.length, 0)); let o = 0;
-  for (const c of chunks) { buf.set(c, o); o += c.length; }
-  return await ctx.decodeAudioData(buf.buffer);
+  return new Blob(chunks, { type: res.headers.get("content-type") || "audio/mpeg" });
 }
 function speak(sentence, r) {
   r.spoken += sentence + " ";
@@ -102,11 +114,11 @@ function speak(sentence, r) {
   dec.catch(() => {});
   r.chain = r.chain.then(async () => {
     try {
-      const audio = await dec, startAt = Math.max(ctx.currentTime + 0.02, r.nextAt || 0);
-      const src = ctx.createBufferSource(); src.buffer = audio; src.connect(ctx.destination); src.start(startAt);
-      r.nextAt = startAt + audio.duration;
-      if (r.firstAudio == null) r.firstAudio = now() + (startAt - ctx.currentTime) * 1000 + (ctx.outputLatency || 0) * 1000;
+      const blob = await dec;
+      const done = playBlob(blob);
+      if (r.firstAudio == null) r.firstAudio = now();
       render(r);
+      await done;
     } catch (e) {
       r.err = "Röst: " + e.message + " — använder Apples röst som reserv";
       try { const u = new SpeechSynthesisUtterance(sentence); u.lang = "sv-SE"; speechSynthesis.speak(u); if (r.firstAudio == null) r.firstAudio = now(); } catch {}
@@ -181,6 +193,7 @@ function startListening() {
   if (!SR) { $("status").className = "small err"; $("status").textContent = "Den här webbläsaren saknar taligenkänning. Använd Safari på iPhone, eller skriv."; return; }
   if (run && run.busy) return;
   unlockAudio();
+  setSession("play-and-record");
   const st = { startedAt: now(), released: false, final: "", interim: "", done: false };
   rec = new SR(); rec.lang = "sv-SE"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
   const finish = () => {
