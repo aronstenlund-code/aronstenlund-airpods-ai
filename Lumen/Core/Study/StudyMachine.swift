@@ -202,11 +202,13 @@ struct StudyMachine: Equatable, Sendable {
             lastFloorUpdate = now
             return
         }
-        let elapsed = max(0, now.timeIntervalSince(previous))
+        // Gaps between readings (paused capture) must not let the floor jump: at most one second per update.
+        let elapsed = min(1.0, max(0, now.timeIntervalSince(previous)))
         lastFloorUpdate = now
         if rmsDBFS < floor {
             noiseFloorDBFS = rmsDBFS
-        } else {
+        } else if rmsDBFS <= floor + tuning.speechThresholdDB / 2 {
+            // Only clearly-not-speech frames pull the floor up, so a long question never becomes "noise".
             noiseFloorDBFS = min(rmsDBFS, floor + tuning.floorRiseDBPerSecond * elapsed)
         }
     }

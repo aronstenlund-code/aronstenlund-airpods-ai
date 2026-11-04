@@ -142,8 +142,12 @@ import Testing
         #expect(machine.noiseFloorDBFS == -40)
         _ = machine.level(-65, at: t0.addingTimeInterval(0.04))
         #expect(machine.noiseFloorDBFS == -65, "quieter input is the new floor at once")
-        _ = machine.level(-20, at: t0.addingTimeInterval(1.04))
-        #expect(machine.noiseFloorDBFS.map { abs($0 - (-64)) < 0.01 } == true, "1 dB per second upwards: speech never becomes the floor")
+        _ = machine.level(-62, at: t0.addingTimeInterval(1.04))
+        #expect(machine.noiseFloorDBFS.map { abs($0 - (-64)) < 0.01 } == true, "quiet frames pull the floor up 1 dB per second")
+        _ = machine.level(-20, at: t0.addingTimeInterval(2.04))
+        #expect(machine.noiseFloorDBFS.map { abs($0 - (-64)) < 0.01 } == true, "speech never becomes the floor")
+        _ = machine.level(-62, at: t0.addingTimeInterval(500))
+        #expect(machine.noiseFloorDBFS.map { abs($0 - (-63)) < 0.01 } == true, "a long gap counts as one second at most")
     }
 
     @Test func absoluteMinimumKeepsSilenceFromCountingAsSpeech() {
