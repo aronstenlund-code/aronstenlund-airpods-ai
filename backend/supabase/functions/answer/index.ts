@@ -41,6 +41,12 @@ const handler = createHandler({
       perDay: envInt(env, "ANSWER_PER_DAY", DEFAULT_CONFIG.limits.perDay),
       globalPerDay: envInt(env, "ANSWER_GLOBAL_PER_DAY", DEFAULT_CONFIG.limits.globalPerDay),
     },
+    // Web search costs $0.01 per search (owner's Claude credits): hard daily caps.
+    webLimits: {
+      perMinute: envInt(env, "WEB_PER_MINUTE", DEFAULT_CONFIG.webLimits!.perMinute),
+      perDay: envInt(env, "WEB_PER_DAY", DEFAULT_CONFIG.webLimits!.perDay),
+      globalPerDay: envInt(env, "WEB_GLOBAL_PER_DAY", DEFAULT_CONFIG.webLimits!.globalPerDay),
+    },
   },
 });
 

@@ -61,7 +61,13 @@ export function mapAnthropicEvent(ev: {
       return null;
     case "message_delta":
       // Input tokens come from message_start only (message_delta may report a cache-exclusive count).
-      return { type: "usage", outputTokens: ev.usage?.output_tokens };
+      return {
+        type: "usage",
+        outputTokens: ev.usage?.output_tokens,
+        ...(ev.usage?.server_tool_use?.web_search_requests === undefined ? {} : {
+          webSearches: ev.usage.server_tool_use.web_search_requests,
+        }),
+      };
     default:
       return null;
   }
@@ -98,6 +104,41 @@ export async function* sseJson(
   }
 }
 
+/**
+ * With web tools on, the model may write a sentence BEFORE it searches ("Jag söker ..."). Text that comes
+ * before the first tool block is therefore held back and dropped if a tool call follows; text after a tool
+ * result streams live. Without any tool call the held text is released when the message ends.
+ */
+export class WebTextGate {
+  private toolUsed = false;
+  private held = "";
+
+  /** Returns the chunks to pass on for this event. */
+  filter(ev: { type: string; [k: string]: unknown }, mapped: LLMChunk | null): LLMChunk[] {
+    if (ev.type === "content_block_start") {
+      const t = (ev.content_block as { type?: string } | undefined)?.type;
+      if (
+        t === "server_tool_use" || t === "web_search_tool_result" || t === "web_fetch_tool_result"
+      ) {
+        this.toolUsed = true;
+        this.held = "";
+      }
+      return [];
+    }
+    if (ev.type === "message_stop") {
+      const h = this.held;
+      this.held = "";
+      return h ? [{ type: "text", text: h }] : [];
+    }
+    if (mapped?.type === "text") {
+      if (this.toolUsed) return [mapped];
+      this.held += mapped.text;
+      return [];
+    }
+    return mapped ? [mapped] : [];
+  }
+}
+
 export const ANTHROPIC_BASE = "https://api.anthropic.com";
 export const ANTHROPIC_URL = `${ANTHROPIC_BASE}/v1/messages`;
 /** Same API version the official SDK 1.3.0 sends (read from its source). */
@@ -118,9 +159,12 @@ export class AnthropicProvider implements LLMProvider {
 
   async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
     // maxRetries 0: a retry would double latency; the app has its own fallback.
+    const timeoutMs = req.tools?.length ? 45_000 : 20_000; // a web search turn takes several seconds
     const signal = req.signal
-      ? AbortSignal.any([req.signal, AbortSignal.timeout(20_000)])
-      : AbortSignal.timeout(20_000);
+      ? AbortSignal.any([req.signal, AbortSignal.timeout(timeoutMs)])
+      : AbortSignal.timeout(timeoutMs);
+    const gate = req.tools?.length ? new WebTextGate() : null;
+    let emitted = false;
     try {
       const res = await this.fetchImpl(
         this.cfg.baseUrl ? `${this.cfg.baseUrl}/v1/messages` : ANTHROPIC_URL,
@@ -142,6 +186,7 @@ export class AnthropicProvider implements LLMProvider {
             messages: [{ role: "user", content: req.user }],
             output_config: { effort: this.cfg.effort },
             ...(this.cfg.disableThinking ? { thinking: { type: "disabled" } } : {}),
+            ...(req.tools?.length ? { tools: req.tools } : {}),
           }),
           signal,
         },
@@ -161,14 +206,22 @@ export class AnthropicProvider implements LLMProvider {
             err?.message ?? "stream error",
           );
         }
-        if (
-          ev.type === "message_delta" &&
-          (ev.delta as { stop_reason?: string } | undefined)?.stop_reason === "refusal"
-        ) {
+        const stop = ev.type === "message_delta"
+          ? (ev.delta as { stop_reason?: string } | undefined)?.stop_reason
+          : undefined;
+        if (stop === "refusal") {
           throw new LLMProviderError("bad_request", "Provider refused the request");
         }
+        if (stop === "pause_turn" && !emitted) {
+          // A long search turn the API paused; continuing needs the encrypted blocks back. Fail closed.
+          throw new LLMProviderError("unavailable", "Search turn paused", 529);
+        }
         const chunk = mapAnthropicEvent(ev);
-        if (chunk) yield chunk;
+        const out = gate ? gate.filter(ev, chunk) : chunk ? [chunk] : [];
+        for (const c of out) {
+          if (c.type === "text") emitted = true;
+          yield c;
+        }
       }
     } catch (e) {
       if (e instanceof LLMProviderError) throw e;

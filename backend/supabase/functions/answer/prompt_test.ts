@@ -85,7 +85,7 @@ Deno.test("all prompts carry the general principles and the no-filler rule", () 
       SYSTEM_PROMPT_DIRECT_TUTOR,
     ]
   ) {
-    assertStringIncludes(p, "text-to-speech");
+    assertStringIncludes(p, "DIGITS");
     assertStringIncludes(p, "Answer the most likely meaning");
     assertStringIncludes(p, "Conversation continuity");
     assertStringIncludes(p, "last_assistant_turn");

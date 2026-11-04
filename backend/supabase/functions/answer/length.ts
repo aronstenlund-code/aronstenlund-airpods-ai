@@ -48,6 +48,13 @@ const STUDY_CUES = re(
     "vad ledde till",
     "vad hände",
     "betydelse(?:n)?",
+    "recept",
+    "hur lagar (?:man|jag)",
+    "hur gör (?:man|jag)",
+    "steg för steg",
+    "instruktion(?:er|erna)?",
+    "plan för",
+    "hur lång tid",
   ].join("|"),
 );
 

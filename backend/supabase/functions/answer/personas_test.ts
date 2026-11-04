@@ -95,7 +95,7 @@ Deno.test("persona prompts: structure, STAR, no invented experience, consent and
   assertStringIncludes(SYSTEM_PROMPT_SOCIAL, "ONE short, natural thing");
   for (const p of [SYSTEM_PROMPT_INTERVIEW, SYSTEM_PROMPT_SOCIAL, SYSTEM_PROMPT_PREP]) {
     assertStringIncludes(p, "Every sentence must carry content");
-    assertStringIncludes(p, "text-to-speech");
+    assertStringIncludes(p, "DIGITS");
   }
   assertEquals(personaSystemPrompt("prep"), SYSTEM_PROMPT_PREP);
 });

@@ -4,6 +4,8 @@ export interface LLMRequest {
   maxTokens: number;
   /** Mark the (static) system prompt cacheable (prompt caching; ignored by providers without it). */
   cacheSystem?: boolean;
+  /** Anthropic server tools (web search / fetch). Only set for requests that need the web. */
+  tools?: unknown[];
   signal?: AbortSignal;
 }
 
@@ -15,6 +17,8 @@ export type LLMChunk =
     outputTokens?: number;
     cacheReadTokens?: number;
     cacheWriteTokens?: number;
+    /** web_search requests billed for this answer (server_tool_use.web_search_requests). */
+    webSearches?: number;
   };
 
 /** Provider-agnostic streaming LLM. Implementations must yield `text` chunks as they arrive and a

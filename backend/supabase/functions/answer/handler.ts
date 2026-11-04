@@ -6,14 +6,19 @@ import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.t
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
+import { computeFragment } from "./calc.ts";
+import { needsWeb, WEB_PROMPT, WEB_SEARCH_USD, WEB_UNAVAILABLE_NOTE, webTools } from "./web.ts";
+import { AnswerPost } from "./speech.ts";
+import { numbersToSpeech } from "./svnum.ts";
 import { detectDecline, FALLBACK_DECLINE, FALLBACK_SUGGESTIONS, parseSuggestions } from "./rizz.ts";
 import {
   buildDirectUserMessage,
   buildUserMessage,
+  type PromptExtras,
   SYSTEM_PROMPT,
   systemPromptFor,
 } from "./prompt.ts";
-import { LIMITS, readLimitedJson, validateAnswerRequest } from "./validate.ts";
+import { type AnswerRequest, LIMITS, readLimitedJson, validateAnswerRequest } from "./validate.ts";
 
 export interface UsageRecord {
   user_id: string;
@@ -40,6 +45,8 @@ export interface HandlerConfig {
   maxAnswerChars: number;
   maxAnswerCharsStudy: number;
   limits: Limits;
+  /** D46 item 8: caps for requests that use web search/fetch (they cost real money per search). */
+  webLimits?: Limits;
   /** push_to_talk/text: headerless prompt, meta synthesised up front (lowest latency). */
   directModes: boolean;
   /** USD per million tokens, for the cost estimate only (prices as stated in the assignment). */
@@ -54,6 +61,7 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   maxAnswerChars: 600,
   maxAnswerCharsStudy: 1800,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
+  webLimits: { perMinute: 3, perDay: 20, globalPerDay: 150 },
   directModes: true,
   priceInPerMTok: 0.10,
   priceOutPerMTok: 0.50,
@@ -155,12 +163,33 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? detectContinuation(body.fragment)
         : null;
       const tutor = body.mode === "tutor";
-      const answerType = plan?.answerType ??
+      const answerTypeBase = plan?.answerType ??
         classifyAnswerType(body.fragment, body.length, continuation, {
           tutor,
           commands: body.commands.length > 0,
         });
-      const maxChars = plan?.maxChars ??
+      // D46: arithmetic / percentages / unit conversions are computed in code, not by the model.
+      const computed = plan || body.mode === "interview_prep"
+        ? null
+        : computeFragment(body.fragment);
+      // D46 item 8: web search/fetch only when the question needs it, and only within the caps.
+      const need = !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"
+        ? needsWeb(body.fragment)
+        : null;
+      let webOn = false;
+      let webNote: string | undefined;
+      if (need) {
+        const wl = await enforceLimits(
+          deps.rateLimiter,
+          "answer-web",
+          user.id,
+          cfg.webLimits ?? DEFAULT_CONFIG.webLimits!,
+        );
+        webOn = wl.allowed;
+        if (!webOn) webNote = WEB_UNAVAILABLE_NOTE;
+      }
+      const answerType = (computed || webOn) && !tutor ? "fact" : answerTypeBase;
+      const maxChars = plan?.maxChars ?? (webOn ? 800 : undefined) ??
         (answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars);
       const parser = new ResponseParser(
         body.mode,
@@ -179,15 +208,21 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let limitsMs: number | null = null;
       let answerChars = 0;
       let closed = false;
+      let retries = 0;
+      let webSearches = 0;
       let status = "ok";
+      const carry = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }; // tokens of discarded attempts
 
       function usage(s: string): UsageRecord {
         const m = parser.meta;
-        const total = inputTokens ?? 0;
-        const plain = Math.max(0, total - cacheRead - cacheWrite);
-        const cost = inputTokens !== null || outputTokens !== null
-          ? ((plain + cacheRead * 0.1 + cacheWrite * 1.25) * cfg.priceInPerMTok +
-            (outputTokens ?? 0) * cfg.priceOutPerMTok) / 1e6
+        const inTok = inputTokens === null ? (carry.input || null) : inputTokens + carry.input;
+        const outTok = outputTokens === null ? (carry.output || null) : outputTokens + carry.output;
+        const cr = cacheRead + carry.cacheRead, cw = cacheWrite + carry.cacheWrite;
+        const total = inTok ?? 0;
+        const plain = Math.max(0, total - cr - cw);
+        const cost = inTok !== null || outTok !== null
+          ? ((plain + cr * 0.1 + cw * 1.25) * cfg.priceInPerMTok +
+                (outTok ?? 0) * cfg.priceOutPerMTok) / 1e6 + webSearches * WEB_SEARCH_USD
           : null;
         return {
           user_id: user.id,
@@ -198,8 +233,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           model: provider!.model,
           is_question: m?.is_question ?? null,
           confidence: m?.confidence ?? null,
-          input_tokens: inputTokens,
-          output_tokens: outputTokens,
+          input_tokens: inTok,
+          output_tokens: outTok,
           ttft_ms: ttftMs === null ? null : Math.round(ttftMs),
           total_ms: Math.round(now() - t0),
           est_cost_usd: cost,
@@ -211,26 +246,38 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // before BOTH have succeeded, so a denied request never leaks an answer; it only costs the
       // aborted LLM start (bounded by the local guard above).
       const ac = new AbortController();
-      req.signal.addEventListener("abort", () => ac.abort());
+      const acs = [ac]; // one controller per LLM attempt (a retry starts a new one)
+      const abortAll = () => acs.forEach((a) => a.abort());
+      req.signal.addEventListener("abort", abortAll);
       const limitsP = enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits).then((r) => {
         limitsMs = now() - t0;
         return r;
       });
+      const systemPrompt = (plan
+        ? personaSystemPrompt(plan.kind)
+        : direct
+        ? systemPromptFor(answerType, tutor)
+        : SYSTEM_PROMPT) + (webOn ? WEB_PROMPT : "");
+      const maxTokens = plan?.maxTokens ?? (webOn ? 600 : undefined) ??
+        (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
+      const tools = webOn && need ? webTools(need) : undefined;
+      const userFor = (b: AnswerRequest, extras: PromptExtras = {}) =>
+        plan
+          ? buildPersonaUserMessage(b, plan.task)
+          : direct
+          ? buildDirectUserMessage(b, continuation, extras)
+          : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, extras);
+      const baseExtras: PromptExtras = {
+        ...(computed ? { computed: computed.text } : {}),
+        ...(webNote ? { note: webNote } : {}),
+      };
       const iterator = provider
         .stream({
-          system: plan
-            ? personaSystemPrompt(plan.kind)
-            : direct
-            ? systemPromptFor(answerType, tutor)
-            : SYSTEM_PROMPT,
-          user: plan
-            ? buildPersonaUserMessage(body, plan.task)
-            : direct
-            ? buildDirectUserMessage(body, continuation)
-            : buildUserMessage(body, cfg.confidenceThreshold, answerType, continuation),
-          maxTokens: plan?.maxTokens ??
-            (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens),
+          system: systemPrompt,
+          user: userFor(body, baseExtras),
+          maxTokens,
           cacheSystem: true,
+          tools,
           signal: ac.signal,
         })[Symbol.asyncIterator]();
       const firstP = iterator.next().then((r) => {
@@ -266,15 +313,42 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const stream = new ReadableStream<Uint8Array>({
         async start(controller) {
           const send = (event: string, data: unknown) => {
-            if (closed) return;
+            if (closed) {
+              return;
+            }
             try {
               controller.enqueue(sseFrame(event, data));
             } catch {
               closed = true;
-              ac.abort();
+              abortAll();
             }
           };
           let stop = false;
+          let it = iterator;
+          // D46 post-processing: digits -> words, drop a closing question, stop a repeated answer.
+          const qnorm = (x: string) =>
+            x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+          const guardOn = direct && !plan && !continuation && body.context.recent_qa.length > 0 &&
+            body.fragment.trim().split(/\s+/).length >= 2;
+          const prevAnswers = guardOn
+            ? body.context.recent_qa.filter((x) => qnorm(x.q) !== qnorm(body.fragment)).map((x) =>
+              x.a
+            )
+            : [];
+          let post = new AnswerPost({
+            previousAnswers: prevAnswers,
+            trimQuestion: direct && !plan && !tutor,
+          });
+          const deliver = (t: string) => {
+            if (!t || closed) return;
+            if (ttftMs === null) ttftMs = now() - t0;
+            answerChars += t.length;
+            send("delta", { text: t });
+            if (answerChars >= maxChars) {
+              status = "truncated";
+              stop = true;
+            }
+          };
           const rizz = plan?.kind === "rizz";
           let rizzBuf = "";
           const emit = (ev: ParserEvent) => {
@@ -292,13 +366,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 stop = true;
               }
             } else {
-              if (ttftMs === null) ttftMs = now() - t0;
-              answerChars += ev.text.length;
-              send("delta", { text: ev.text });
-              if (answerChars >= maxChars) {
-                status = "truncated";
-                stop = true;
-              }
+              if (!stop) deliver(post.push(ev.text));
             }
           };
           const handle = (chunk: LLMChunk) => {
@@ -307,6 +375,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (chunk.outputTokens !== undefined) outputTokens = chunk.outputTokens;
               if (chunk.cacheReadTokens !== undefined) cacheRead = chunk.cacheReadTokens;
               if (chunk.cacheWriteTokens !== undefined) cacheWrite = chunk.cacheWriteTokens;
+              if (chunk.webSearches !== undefined) webSearches = chunk.webSearches;
               return;
             }
             if (rizz) {
@@ -320,10 +389,57 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           try {
             if (parser.presetMeta && !rizz) emit({ type: "meta", meta: parser.presetMeta });
             let r = first;
-            while (!r.done && !stop && !closed) {
-              handle(r.value);
-              if (stop || closed) break;
-              r = await iterator.next();
+            for (let attempt = 0;; attempt++) {
+              while (!r.done && !stop && !closed) {
+                handle(r.value);
+                if (stop || closed || post.duplicate) break;
+                r = await it.next();
+              }
+              if (rizz || closed) break;
+              let note: string | null = null;
+              let history = body.context.recent_qa;
+              if (post.duplicate) {
+                note =
+                  "Your previous reply repeated an earlier answer. The fragment is a new request: answer only the fragment.";
+                const m = post.dup.matched;
+                if (m) history = history.filter((x) => x.a !== m);
+              } else {
+                if (!stop) { for (const ev of parser.finish()) emit(ev); }
+                deliver(post.finish());
+                if (post.questionOnly && !stop) {
+                  note =
+                    "Your previous reply only asked the user a question. Answer directly with the most likely interpretation and do not ask anything back.";
+                }
+              }
+              if (!note || attempt > 0) break;
+              // regenerate once (nothing of the first attempt was sent to the client)
+              status = "ok";
+              carry.input += inputTokens ?? 0;
+              carry.output += outputTokens ?? 0;
+              carry.cacheRead += cacheRead;
+              carry.cacheWrite += cacheWrite;
+              inputTokens = outputTokens = null;
+              cacheRead = cacheWrite = 0;
+              acs[attempt].abort();
+              try {
+                await it.return?.();
+              } catch { /* already finished */ }
+              const ac2 = new AbortController();
+              acs.push(ac2);
+              retries++;
+              it = provider.stream({
+                system: systemPrompt,
+                user: userFor({ ...body, context: { ...body.context, recent_qa: history } }, {
+                  ...baseExtras,
+                  note,
+                }),
+                maxTokens,
+                cacheSystem: true,
+                tools,
+                signal: ac2.signal,
+              })[Symbol.asyncIterator]();
+              post = new AnswerPost({ previousAnswers: [], trimQuestion: false });
+              r = await it.next();
             }
             if (rizz) {
               // D43: one `suggestions` event (2-3 options, best first), nothing else.
@@ -337,11 +453,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               }
               ttftMs = now() - t0;
               metaMs = ttftMs;
-              send("suggestions", options);
-            } else if (!stop) {
-              for (const ev of parser.finish()) emit(ev);
+              send("suggestions", options.map(numbersToSpeech));
+            } else if (stop && !closed && status !== "ok") {
+              deliver(post.finish()); // truncated: speak the tail that was held back
             }
-            if (stop) ac.abort();
+            if (stop) abortAll();
             if (parser.headerFailed) {
               console.warn(JSON.stringify({ evt: "header_parse_failed", mode: body.mode }));
             }
@@ -376,6 +492,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 input_tokens: inputTokens,
                 output_tokens: outputTokens,
                 cache_read_tokens: cacheRead,
+                web_searches: webSearches,
                 model: provider.model,
               },
             });
@@ -386,9 +503,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               send("error", { code: he.code, message: he.message, fallback: true });
             }
           } finally {
-            ac.abort(); // no-op if already finished; releases the upstream connection otherwise
+            abortAll(); // no-op if already finished; releases the upstream connection otherwise
             try {
-              await iterator.return?.();
+              await it.return?.();
             } catch { /* provider already failed */ }
             const rec = usage(status);
             console.log(JSON.stringify({
@@ -419,7 +536,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         },
         cancel() {
           closed = true;
-          ac.abort();
+          abortAll();
         },
       });
 

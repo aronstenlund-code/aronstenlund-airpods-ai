@@ -2,19 +2,26 @@ import { COMMON, contextParts, INTRO, sanitizeTagged } from "./prompt.ts";
 import type { AnswerType } from "./length.ts";
 import type { AnswerRequest } from "./validate.ts";
 import { buildRizzUserMessage, SYSTEM_PROMPT_RIZZ } from "./rizz.ts";
+import {
+  buildSocialLineUserMessage,
+  type SocialTask,
+  socialTask,
+  SYSTEM_PROMPT_SOCIALLINE,
+} from "./socialroute.ts";
 
 /**
  * D42 personas on the hands-free loop (+ interview preparation). General principles only; the
  * examples are my own. Consent is part of the design: social suggestions are for a voluntary test
  * where the friend knows the app listens; nothing here hides the app or helps covert use.
  */
-export type PlanKind = "interview" | "social" | "prep" | "rizz";
+export type PlanKind = "interview" | "social" | "prep" | "rizz" | "socialline";
 export type PersonaTask =
   | "interview_question"
   | "interview_feedback"
   | "interview_summary"
   | "social_suggestion"
   | "rizz_suggestions"
+  | SocialTask
   | "interview_prep";
 
 export interface Plan {
@@ -90,6 +97,11 @@ export function personaPlan(req: AnswerRequest): Plan | null {
       maxChars: 400,
     };
   }
+  // D46 (10/11): a social-situation fragment gets a ready-to-say line in every explicit mode.
+  const st = socialTask(req);
+  if (st) {
+    return { kind: "socialline", task: st, answerType: "fact", maxTokens: 140, maxChars: 500 };
+  }
   return null;
 }
 
@@ -135,6 +147,7 @@ Never invent experience, employers or numbers for the student: where a personal 
 
 export function personaSystemPrompt(kind: PlanKind): string {
   if (kind === "rizz") return SYSTEM_PROMPT_RIZZ;
+  if (kind === "socialline") return SYSTEM_PROMPT_SOCIALLINE;
   return kind === "interview"
     ? SYSTEM_PROMPT_INTERVIEW
     : kind === "social"
@@ -144,6 +157,9 @@ export function personaSystemPrompt(kind: PlanKind): string {
 
 export function buildPersonaUserMessage(req: AnswerRequest, task: PersonaTask): string {
   if (task === "rizz_suggestions") return buildRizzUserMessage(req);
+  if (task === "social_line" || task === "social_rewrite") {
+    return buildSocialLineUserMessage(req, task);
+  }
   const parts = [`<language>${req.language}</language>`, `<task>${task}</task>`];
   if (req.personaSetup) {
     parts.push(`<persona_setup>\n${sanitizeTagged(req.personaSetup)}\n</persona_setup>`);

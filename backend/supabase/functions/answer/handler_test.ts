@@ -1,4 +1,4 @@
-import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
+import { assert, assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.8";
 import { HttpError } from "../_shared/errors.ts";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import { createHandler, DEFAULT_CONFIG, type Deps, type UsageRecord } from "./handler.ts";
@@ -188,7 +188,7 @@ Deno.test("error after the first chunk arrives as an SSE error event with fallba
       (async function* (): AsyncGenerator<LLMChunk> {
         yield {
           type: "text",
-          text: '{"is_question":true,"reconstructed_question":"q","confidence":0.9}\nHal',
+          text: '{"is_question":true,"reconstructed_question":"q","confidence":0.9}\nHej då. Hal',
         };
         throw new LLMProviderError("unavailable", "dropped");
       })(),
@@ -228,7 +228,7 @@ Deno.test("overlong answers are cut off at maxAnswerChars", async () => {
           type: "text",
           text: '{"is_question":true,"reconstructed_question":"q","confidence":0.9}\n',
         };
-        for (let i = 0; i < 100; i++) yield { type: "text", text: "x".repeat(50) };
+        for (let i = 0; i < 100; i++) yield { type: "text", text: "abcde ".repeat(8) };
       })(),
   };
   const { handler, usage } = setup({
@@ -294,8 +294,8 @@ Deno.test("direct mode sends meta before the first delta and never waits for a J
   };
   const { handler } = setup({ provider });
   const ev = await readSse(await handler(post(body())));
-  assertEquals(ev.map((e) => e.event), ["meta", "delta", "delta", "done"]);
-  assertEquals(ev[1].data.text, "Sju", "leading whitespace trimmed");
+  assertEquals(ev.map((e) => e.event), ["meta", "delta", "done"]);
+  assertEquals(ev[1].data.text, "Sju.", "leading whitespace trimmed");
 });
 
 Deno.test("shared limiter runs in parallel with the LLM start; a denial aborts the LLM and sends nothing", async () => {
@@ -357,7 +357,7 @@ Deno.test("local per-isolate guard stops a user before the LLM is ever called", 
       calls++;
       return new MockProvider().stream({
         system: "",
-        user: "<fragment>x</fragment>",
+        user: "<fragment>vad är pi</fragment>",
         maxTokens: 10,
       });
     },
@@ -367,8 +367,9 @@ Deno.test("local per-isolate guard stops a user before the LLM is ever called", 
     localLimiter: new MemoryRateLimiter(),
     config: { ...DEFAULT_CONFIG, limits: { perMinute: 2, perDay: 100, globalPerDay: 100 } },
   });
-  for (let i = 0; i < 2; i++) await (await handler(post(body()))).text();
-  const res = await handler(post(body()));
+  const q = () => post(body({ fragment: "vad är roten ur hundra" }));
+  for (let i = 0; i < 2; i++) await (await handler(q())).text();
+  const res = await handler(q());
   assertEquals(res.status, 429);
   assertEquals(calls, 2);
 });
@@ -757,4 +758,133 @@ Deno.test("D43: two clean lines end the stream early; over-eight-word lines are 
   const ev = await readSse(await handler(post(socialBody())));
   assertEquals(ev[0].data as unknown, ["Vilket lopp?", "Hoppas det blir sol!"]);
   assertEquals(ev.map((e) => e.event), ["suggestions", "done"]);
+});
+
+// ---- D46 answer quality ----
+function scripted(...texts: string[]) {
+  const seen: { user: string }[] = [];
+  const provider: LLMProvider = {
+    name: "s",
+    model: "s",
+    stream: (r) => {
+      const text = texts[Math.min(seen.length, texts.length - 1)];
+      seen.push({ user: r.user });
+      return (async function* (): AsyncGenerator<LLMChunk> {
+        for (let k = 0; k < text.length; k += 9) yield { type: "text", text: text.slice(k, k + 9) };
+        yield { type: "usage", inputTokens: 100, outputTokens: 10 };
+      })();
+    },
+  };
+  return { provider, seen };
+}
+const textOf = (ev: { event: string; data: Record<string, unknown> }[]) =>
+  ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
+
+Deno.test("D46: arithmetic is computed in code, handed over as <computed>, digits spoken as words", async () => {
+  const { provider, seen } = scripted("17 gånger 24 är 408.");
+  const { handler } = setup({ provider });
+  const ev = await readSse(await handler(post(body({ fragment: "17 gånger 24" }))));
+  assertStringIncludes(seen[0].user, "<computed>17 × 24 = 408</computed>");
+  assertEquals(textOf(ev), "sjutton gånger tjugofyra är fyrahundraåtta.");
+  assertEquals(ev[0].data.answer_type, "fact");
+});
+
+Deno.test("D46: a closing question to the user is removed; tutor mode keeps its check question", async () => {
+  const { provider } = scripted("Det är fyra. Vill du att jag räknar mer?");
+  const { handler } = setup({ provider });
+  assertEquals(
+    textOf(await readSse(await handler(post(body({ fragment: "två plus två" }))))).trim(),
+    "Det är fyra.",
+  );
+  const t = await readSse(
+    await setup({ provider }).handler(post(body({ mode: "tutor", fragment: "förklara addition" }))),
+  );
+  assertStringIncludes(textOf(t), "Vill du att jag räknar mer?");
+});
+
+Deno.test("D46: an answer that is only a question is regenerated once with a note", async () => {
+  const { provider, seen } = scripted("Vad har du i tankarna?", "Koka pastan i åtta minuter.");
+  const { handler, usage } = setup({ provider });
+  const ev = await readSse(await handler(post(body({ fragment: "hungrig ägg pasta" }))));
+  assertEquals(seen.length, 2);
+  assertStringIncludes(seen[1].user, "<note>");
+  assertEquals(textOf(ev), "Koka pastan i åtta minuter.");
+  assertEquals(usage[0].input_tokens, 200, "tokens of both attempts are counted");
+});
+
+Deno.test("D46: a repeat of an earlier answer for another fragment is regenerated once, history entry dropped", async () => {
+  const old = "Garantin gäller felet i produkten och reklamationsrätten ger dig skydd i tre år.";
+  const { provider, seen } = scripted(old, "Spärra kortet direkt hos banken.");
+  const { handler } = setup({ provider });
+  const ev = await readSse(
+    await handler(post(body({
+      fragment: "mitt bankkort borta",
+      context: { recent_qa: [{ q: "skillnad garanti reklamationsrätt", a: old }] },
+    }))),
+  );
+  assertEquals(seen.length, 2);
+  assertEquals(textOf(ev), "Spärra kortet direkt hos banken.");
+  assertStringIncludes(
+    seen[0].user,
+    "<active_topic>skillnad garanti reklamationsrätt</active_topic>",
+  );
+  assert(!seen[1].user.includes("<recent_qa>"), "the repeated entry is not sent again");
+  assertStringIncludes(seen[1].user, "<note>");
+});
+
+Deno.test("D46: a normal answer with history is not delayed or retried", async () => {
+  const { provider, seen } = scripted(
+    "Det beror på vilken sorts ägg du har och hur du vill ha dem.",
+  );
+  const { handler } = setup({ provider });
+  const ev = await readSse(
+    await handler(post(body({
+      fragment: "varför då",
+      context: {
+        recent_qa: [{ q: "hungrig", a: "Koka pasta och stek ägg i fem minuter, sedan äter du." }],
+      },
+    }))),
+  );
+  assertEquals(seen.length, 1);
+  assertStringIncludes(textOf(ev), "Det beror på");
+});
+
+Deno.test("D46 web: a fragment that needs the web enables the tools within caps; over the cap it answers without them", async () => {
+  const seenTools: unknown[] = [];
+  const provider: LLMProvider = {
+    name: "w",
+    model: "w",
+    stream: (r) => {
+      seenTools.push({ tools: r.tools, system: r.system, user: r.user, maxTokens: r.maxTokens });
+      return (async function* (): AsyncGenerator<LLMChunk> {
+        yield { type: "text", text: "Det kostar 9 990 kr. Källa: apple.com" };
+        yield { type: "usage", inputTokens: 1000, outputTokens: 40, webSearches: 2 };
+      })();
+    },
+  };
+  const { handler, usage } = setup({ provider });
+  const ev = await readSse(await handler(post(body({ fragment: "vad kostar en iphone just nu" }))));
+  const first = seenTools[0] as { tools: { type: string }[]; system: string; maxTokens: number };
+  assertEquals(first.tools.map((t) => t.type), ["web_search_20250305"]);
+  assertStringIncludes(first.system, "WEB:");
+  assertEquals(first.maxTokens, 600);
+  assertStringIncludes(
+    textOf(ev),
+    "nio tusen nio hundra nittio kronor".replace(" ", " ").slice(0, 3),
+  );
+  assertEquals((ev.at(-1)!.data.usage as { web_searches: number }).web_searches, 2);
+  assert((usage[0].est_cost_usd ?? 0) >= 0.02, "two searches are in the cost estimate");
+  // no web need -> no tools
+  await (await handler(post(body({ fragment: "fotosyntes" })))).text();
+  assertEquals((seenTools[1] as { tools?: unknown }).tools, undefined);
+  // cap: 4th web request within the minute is answered without tools + note
+  const { handler: h2 } = setup({
+    provider,
+    config: { ...DEFAULT_CONFIG, webLimits: { perMinute: 1, perDay: 5, globalPerDay: 5 } },
+  });
+  await (await h2(post(body({ fragment: "vad kostar en iphone just nu" })))).text();
+  await (await h2(post(body({ fragment: "vad kostar en iphone just nu" })))).text();
+  const last = seenTools[seenTools.length - 1] as { tools?: unknown; user: string };
+  assertEquals(last.tools, undefined);
+  assertStringIncludes(last.user, "<note>Web search is not available right now");
 });
