@@ -2,7 +2,7 @@
 
 Date: 2026-11-04 · Assignment: Aron, chat (Track D skipped, economy mode) · Commit: `de6014e` · Device: **none** (no Mac yet)
 
-**Result:** the flow hold button → STT → `/answer` → `/tts` → playback was reviewed against Kevin's contract and the live server. The app could not have read a single answer on a real iPhone; that is fixed. x-warm, first sentence at once and `GET /voices` are in. Build and 179 app tests green in CI (run 41789799523, warnings are errors). **Nothing has run on device.**
+**Result:** the flow hold button → STT → `/answer` → `/tts` → playback was reviewed against Kevin's contract and the live server. The app could not have read a single answer on a real iPhone; that is fixed. x-warm, first sentence at once and `GET /voices` are in. Build and all app tests green in CI (run 41789799523, warnings are errors). **Nothing has run on device.**
 
 ## What changed
 | Change | Why | Status |
