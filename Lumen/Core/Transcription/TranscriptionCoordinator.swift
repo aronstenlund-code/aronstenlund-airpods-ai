@@ -35,6 +35,15 @@ final class TranscriptionCoordinator {
     private var provider: (any STTProvider)?
     /// Prep topics (item 9), applied to the current provider and every later one.
     private(set) var contextualStrings: [String] = []
+    /// True while our own speech plays in Pluggläge: capture chunks are dropped before the recogniser (D36).
+    private(set) var isInputGated = false
+    private var gateTask: Task<Void, Never>?
+
+    func setInputGated(_ gated: Bool) {
+        guard gated != isInputGated else { return }
+        isInputGated = gated
+        controller.log(gated ? "STT input gated (own speech)" : "STT input open")
+    }
     private var resultsTask: Task<Void, Never>?
     private var lifecycleTask: Task<Void, Never>?
     private var chunkSubscription: UUID?
@@ -107,6 +116,16 @@ final class TranscriptionCoordinator {
         self.provider = provider
         let subscription = controller.subscribeToChunks()
         chunkSubscription = subscription.id
+        // Gate (D36): while the assistant speaks, its own voice must not reach the recogniser.
+        let (gatedStream, gatedContinuation) = AsyncStream<AudioChunk>.makeStream(bufferingPolicy: .bufferingNewest(256))
+        gateTask?.cancel()
+        gateTask = Task { [weak self] in
+            for await chunk in subscription.stream {
+                guard let self else { break }
+                if !self.isInputGated { gatedContinuation.yield(chunk) }
+            }
+            gatedContinuation.finish()
+        }
         resultsTask = Task { [weak self] in
             for await result in provider.results {
                 guard let self else { return }
@@ -118,7 +137,7 @@ final class TranscriptionCoordinator {
             }
         }
         do {
-            try await provider.start(audio: subscription.stream)
+            try await provider.start(audio: gatedStream)
             guard myGeneration == generation else { return }
             status = .running(engine)
             controller.log("STT running: \(engine.displayName) · \(locale.identifier(.bcp47))")
@@ -140,6 +159,8 @@ final class TranscriptionCoordinator {
             controller.unsubscribeFromChunks(id)
             chunkSubscription = nil
         }
+        gateTask?.cancel()
+        gateTask = nil
         resultsTask?.cancel()
         resultsTask = nil
         switch status {

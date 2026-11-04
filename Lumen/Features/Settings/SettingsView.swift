@@ -9,6 +9,7 @@ struct SettingsView: View {
         Form {
             languageSection
             activationSection
+            studySection
             voiceSection
             #if DEBUG
             Section("Debug") {
@@ -60,6 +61,27 @@ struct SettingsView: View {
                 }
             }
             Text("Auto listens for questions in the room. Hold to ask gives the fewest false answers.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private var studySection: some View {
+        @Bindable var study = model.study.settings
+        Section("Pluggläge") {
+            HStack {
+                Text("Silence that ends your turn")
+                Slider(value: $study.endpointSilence, in: 0.5...1.5, step: 0.1)
+                Text(String(format: "%.1f s", study.endpointSilence))
+                    .font(.footnote.monospacedDigit())
+                    .frame(width: 44, alignment: .trailing)
+            }
+            Stepper(value: $study.autoEndMinutes, in: 1...60) {
+                Text("Auto-end after \(study.autoEndMinutes) min of silence")
+            }
+            Toggle("Echo cancellation (voiceChat) in Pluggläge", isOn: $study.useVoiceChatMode)
+            Text("Hands-free: speak, pause, get a tutor-style answer, continue. Talking while it speaks interrupts it. Tuned on device.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }

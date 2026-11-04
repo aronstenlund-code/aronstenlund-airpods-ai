@@ -199,6 +199,17 @@
         }
       }
     },
+    "Auto-end after %lld min of silence": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avsluta automatiskt efter %lld min tystnad"
+          }
+        }
+      }
+    },
     "Before you start": {
       "extractionState": "manual",
       "localizations": {
@@ -316,6 +327,39 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klar"
+          }
+        }
+      }
+    },
+    "Echo cancellation (voiceChat) in Pluggläge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ekodämpning (voiceChat) i pluggläge"
+          }
+        }
+      }
+    },
+    "End Pluggläge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avsluta pluggläge"
+          }
+        }
+      }
+    },
+    "Hands-free: speak, pause, get a tutor-style answer, continue. Talking while it speaks interrupts it. Tuned on device.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Handsfree: prata, pausa, få ett lärarsvar, fortsätt. Pratar du medan den talar avbryts den. Finjusteras på enhet."
           }
         }
       }
@@ -738,6 +782,72 @@
         }
       }
     },
+    "Pluggläge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pluggläge"
+          }
+        }
+      }
+    },
+    "Pluggläge ended after %lld min of silence; the microphone was switched off.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pluggläget avslutades efter %lld min tystnad; mikrofonen stängdes av."
+          }
+        }
+      }
+    },
+    "Pluggläge · I hear you…": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pluggläge · jag hör dig …"
+          }
+        }
+      }
+    },
+    "Pluggläge · speaking — talk to interrupt": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pluggläge · talar – prata för att avbryta"
+          }
+        }
+      }
+    },
+    "Pluggläge · thinking…": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pluggläge · tänker …"
+          }
+        }
+      }
+    },
+    "Pluggläge · your turn — just speak": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pluggläge · din tur – prata bara"
+          }
+        }
+      }
+    },
     "Premium voices appear here when the voice service is live.": {
       "extractionState": "manual",
       "localizations": {
@@ -888,6 +998,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dela"
+          }
+        }
+      }
+    },
+    "Silence that ends your turn": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tystnad som avslutar din tur"
           }
         }
       }

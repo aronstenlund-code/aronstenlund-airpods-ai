@@ -16,6 +16,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let prep: PrepStore
     private let warmer: BackendWarmer?
     private let activity: (any ListeningActivityPresenting)?
+    /// Pluggläge (D36): hands-free tutor session.
+    let study: StudySessionController
+    /// Why Pluggläge ended, shown once.
+    private(set) var studyNotice: String?
     /// Per-answer latency budget (item 7), shown in the debug overlay.
     let latency = LatencyLog()
     private(set) var conversation = Conversation()
@@ -64,7 +68,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          transcription: TranscriptionCoordinator, activation: ActivationController,
          answers: AnswerEngine, speaker: Speaker, voices: VoiceCatalog,
          notes: NotesStore, prep: PrepStore, warmer: BackendWarmer? = nil,
-         activity: (any ListeningActivityPresenting)? = nil) {
+         activity: (any ListeningActivityPresenting)? = nil, study: StudySessionController? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -76,13 +80,24 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.prep = prep
         self.warmer = warmer
         self.activity = activity
+        self.study = study ?? StudySessionController(settings: StudySettings(), session: controller)
+        self.study.onEvent = { [weak self] event in self?.studyEvent(event) }
         controller.onStateChanged = { [weak self] state in self?.sessionStateChanged(state) }
         voices.onLoaded = { [weak speaker] voices, defaultID in
             speaker?.settings.reconcile(with: voices, defaultID: defaultID)
         }
         activation.onActivate = { [weak self] request in self?.activated(request) }
         answers.sink = self
-        speaker.onSentenceStarted = { [weak self] provider in self?.latency.markFirstSpeech(provider: provider) }
+        speaker.onSentenceStarted = { [weak self] provider in
+            guard let self else { return }
+            self.latency.markFirstSpeech(provider: provider)
+            if self.study.isActive {
+                // Our own voice is playing: gate the recogniser, watch the level for a barge-in (D36).
+                self.study.speechStarted()
+                self.transcription.setInputGated(true)
+            }
+        }
+        speaker.onFinished = { [weak self] in self?.speechFinished() }
         transcription.setContextualStrings(prep.sttTerms)
         prep.onChange = { [weak self] in
             guard let self else { return }
@@ -142,6 +157,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     private func sessionStateChanged(_ state: SessionState) {
+        if state != .listening, study.isActive {
+            // Paused, stopped or failed: the hands-free session cannot continue without the microphone.
+            study.stop()
+            transcription.setInputGated(false)
+        }
         switch state {
         case .listening:
             activity?.show(isPaused: false)
@@ -179,6 +199,83 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func previewVoice() {
         speaker.preview(speaker.settings.voice, language: language)
+    }
+
+    // MARK: - Pluggläge (D36)
+
+    /// One tap starts the hands-free session (starting the microphone if needed), one tap ends it.
+    func toggleStudyMode() async {
+        if study.isActive {
+            endStudy(bySilence: false)
+        } else {
+            await startStudy()
+        }
+    }
+
+    func startStudy() async {
+        guard consent.isGranted else {
+            controller.log("Pluggläge refused: no consent")
+            return
+        }
+        studyNotice = nil
+        if !isActiveSession, study.settings.useVoiceChatMode {
+            controller.config = .cHFPVoiceChat // echo cancellation while we talk — to measure (D36)
+        }
+        if !isListening {
+            if canResume { await resume() } else { await startListening() }
+            guard isListening else { return }
+        }
+        answers.cancel()
+        speaker.interrupt()
+        conversation.cancelAnswer()
+        study.start()
+        controller.log("Pluggläge started")
+    }
+
+    /// Ends the session. After the silence timeout the microphone is released too ("sparläge").
+    func endStudy(bySilence: Bool) {
+        guard study.isActive || bySilence else { return }
+        study.stop()
+        transcription.setInputGated(false)
+        if bySilence {
+            studyNotice = "Pluggläge ended after \(study.settings.autoEndMinutes) min of silence; the microphone was switched off."
+            controller.log("Pluggläge auto-ended after silence")
+            Task { await stopListening() }
+        } else {
+            controller.log("Pluggläge ended by the user")
+        }
+    }
+
+    private func studyEvent(_ event: StudyEvent) {
+        switch event {
+        case .turnStarted:
+            break
+        case .endOfTurn(let text):
+            let request = ActivationRequest(query: text, trigger: .tutor, language: language)
+            activated(request)
+        case .bargeIn:
+            controller.log("Pluggläge: barge-in — stopping the answer")
+            answers.cancel()
+            speaker.interrupt()
+            conversation.cancelAnswer()
+            latency.end()
+            transcription.setInputGated(false)
+        case .autoEnded:
+            endStudy(bySilence: true)
+        }
+    }
+
+    private func speechFinished() {
+        guard study.isActive else { return }
+        transcription.setInputGated(false)
+        study.resumeListening()
+    }
+
+    /// The answer produced no speech (silent mode, empty answer): back to listening right away.
+    private func studyAnswerEnded() {
+        guard study.isActive, !speaker.hasPendingSpeech else { return }
+        transcription.setInputGated(false)
+        study.resumeListening()
     }
 
     /// Item 8: saves transcript + answers as a local note.
@@ -240,8 +337,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.interrupt()
         latency.begin(request)
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
+        // Pluggläge sends the whole session's memory (the backend keeps the last 6 pairs).
+        let qaLimit = request.trigger == .tutor ? AnswerContext.qaLimit : 3
         let context = AnswerContext(transcript: conversation.recentText(seconds: 60),
-                                    recentQA: conversation.recentQA(limit: 3),
+                                    recentQA: conversation.recentQA(limit: qaLimit),
                                     prepTerms: prep.backendTerms)
         answers.answer(request, context: context)
     }
@@ -250,6 +349,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func answerStarted(_ request: ActivationRequest, source: String) {
         conversation.beginAnswer(question: request.query, source: source, at: request.createdAt)
+        if study.isActive { study.answerStarted() }
     }
 
     func answerQuestionReconstructed(_ question: String) {
@@ -271,6 +371,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let latencyMs {
             controller.log("Answer · first text after \(Int(latencyMs)) ms" + (done?.usage?.model.map { " · \($0)" } ?? ""))
         }
+        studyAnswerEnded()
     }
 
     func answerSkipped(_ request: ActivationRequest) {
@@ -278,6 +379,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         conversation.cancelAnswer()
         answerNotice = "Not a question — no answer (auto mode)"
         controller.log("Auto: backend says not a question: \(request.query)")
+        studyAnswerEnded()
     }
 
     func answerFailed(_ message: String, wantsFallback: Bool) {
@@ -285,18 +387,25 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         conversation.cancelAnswer()
         answerNotice = message
         controller.log("Answer failed: \(message)" + (wantsFallback ? " · fallback requested (on-device engine not available on this iPhone)" : ""))
+        studyAnswerEnded()
     }
 
     // MARK: - TranscriptSink (fed by TranscriptionCoordinator)
 
     func receivePartialTranscript(_ text: String, at date: Date = Date()) {
         conversation.updatePartial(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
+        if study.isActive { study.transcriptPartial(text) }
     }
 
     func receiveFinalTranscript(_ text: String, at date: Date = Date()) {
         let before = conversation.finalSegments.count
         conversation.finalize(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
+        if study.isActive {
+            // Pluggläge decides turns by silence, not by the question gate.
+            study.transcriptFinal(segment.text, at: date)
+            return
+        }
         activation.segmentFinalized(segment, conversation: conversation, language: language,
                                     isPlaybackSpeaking: controller.playback.isSpeaking, now: date)
     }

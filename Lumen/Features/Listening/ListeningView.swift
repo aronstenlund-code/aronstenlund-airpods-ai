@@ -147,6 +147,30 @@ struct ListeningView: View {
             }
             transcriptionStatusRow
             speakerRow
+            studyRow
+        }
+    }
+
+    @ViewBuilder
+    private var studyRow: some View {
+        if model.study.isActive {
+            Label(studyPhaseText, systemImage: "graduationcap.fill")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.purple)
+        }
+        if let notice = model.studyNotice {
+            Label(notice, systemImage: "moon.zzz")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private var studyPhaseText: LocalizedStringKey {
+        switch model.study.phase {
+        case .off: ""
+        case .listening: model.study.isUserSpeaking ? "Pluggläge · I hear you…" : "Pluggläge · your turn — just speak"
+        case .thinking: "Pluggläge · thinking…"
+        case .speaking: "Pluggläge · speaking — talk to interrupt"
         }
     }
 
@@ -314,6 +338,7 @@ struct ListeningView: View {
         case .auto: "Auto"
         case .answerLast: "Last sentence"
         case .text: "Text"
+        case .tutor: "Pluggläge"
         }
     }
 
@@ -330,7 +355,18 @@ struct ListeningView: View {
     private var controls: some View {
         VStack(spacing: 10) {
             textQuestionRow
-            if model.isListening {
+            Button {
+                Task { await model.toggleStudyMode() }
+            } label: {
+                Label(model.study.isActive ? "End Pluggläge" : "Pluggläge",
+                      systemImage: model.study.isActive ? "graduationcap.fill" : "graduationcap")
+                    .font(.title3.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+            }
+            .buttonStyle(.bordered)
+            .tint(.purple)
+            if model.isListening, !model.study.isActive {
                 holdToAskButton
                 Button {
                     model.askAboutLast()

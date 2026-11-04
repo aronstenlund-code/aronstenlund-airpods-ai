@@ -92,12 +92,19 @@ final class Speaker {
         }
     }
 
+    /// Nothing queued and nothing being spoken (Pluggläge goes back to listening).
+    var hasPendingSpeech: Bool { !queue.isEmpty || drainTask != nil }
+
+    /// Called when the queue has been spoken to the end (not on interrupt).
+    var onFinished: (@MainActor () -> Void)?
+
     private func drain() async {
         let generation = drainGeneration
         defer {
             if generation == drainGeneration {
                 drainTask = nil
                 status = .idle
+                onFinished?()
             }
         }
         while !queue.isEmpty {

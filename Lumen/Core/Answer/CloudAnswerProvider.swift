@@ -29,8 +29,14 @@ final class CloudAnswerProvider: AnswerProvider {
         }
     }
 
-    private func run(_ request: AnswerRequest, into continuation: AsyncThrowingStream<AnswerEvent, any Error>.Continuation) async throws(AnswerError) {
+    /// Until Kevin's `/answer` accepts `mode: "tutor"` (D36), a 400 for a tutor request is retried once as
+    /// `push_to_talk` so Pluggläge keeps working; the fallback is logged.
+    static let tutorFallbackMode = "push_to_talk"
+
+    private func run(_ original: AnswerRequest, into continuation: AsyncThrowingStream<AnswerEvent, any Error>.Continuation) async throws(AnswerError) {
+        var request = original
         var attempt = 0
+        var modeFallbackUsed = false
         while true {
             attempt += 1
             let token = try await auth.accessToken()
@@ -51,6 +57,12 @@ final class CloudAnswerProvider: AnswerProvider {
                 let body = await Self.collect(lines)
                 let failure = AnswerSSEDecoder.decodeErrorBody(body, status: response.statusCode)
                 if response.statusCode == 401 { throw AnswerError.unauthorized(detail: failure.code) }
+                if response.statusCode == 400, request.mode == "tutor", !modeFallbackUsed {
+                    modeFallbackUsed = true
+                    request.mode = Self.tutorFallbackMode
+                    Log.answer.info("backend rejected mode tutor (\(failure.message ?? failure.code, privacy: .public)) — retrying as \(Self.tutorFallbackMode, privacy: .public)")
+                    continue
+                }
                 throw AnswerError.backend(status: response.statusCode, failure: failure)
             }
 
