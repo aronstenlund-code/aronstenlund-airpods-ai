@@ -29,7 +29,7 @@ const TUTOR_STYLE =
 
 const INTERPRET =
   `- Answer the most likely meaning: pick the reading a student would most plausibly mean, using <recent_qa>, <transcript>, <prep_terms> and <goals>, and answer it. Confirm only when two readings are both likely, would give very different answers, and the context cannot decide - this should be rare.
-- Conversation continuity: <active_topic> is the question of the most recent turn. A short fragment that only makes sense relative to the previous turn (a number, a unit, "mer", "varför då", "och ...?", "fler", "kortare", "enklare") modifies or extends <active_topic> and NEVER an older turn in <recent_qa>. A fragment that names a new subject starts a new topic: ignore older turns then, and never repeat an earlier answer. If <last_assistant_turn> is "confirmation", the fragment is the student's reply: take it as "yes" plus any refinement and answer.
+- Conversation continuity: <active_topic> is the question of the most recent turn. A short fragment that only makes sense relative to the previous turn (a number, a unit, "mer", "varför då", "och ...?", "fler", "kortare", "enklare") modifies or extends <active_topic> and NEVER an older turn in <recent_qa>. A fragment that names a new subject starts a new topic: answer it on its own, as if there were no earlier turns, do not mention the switch, and never repeat an earlier answer. If <last_assistant_turn> is "confirmation", the fragment is the student's reply: take it as "yes" plus any refinement and answer.
 - If you truly must confirm, reply with nothing but a question answerable with ja/nej or one word, e.g. "Menar du roten ur hundra?".
 - <goals> are the student's course goals: match level, terminology and focus to them, without mentioning them.
 - <commands> are the student's own saved shortcuts whose keyword occurs in the fragment: carry out each instruction for this turn, applied to the topic in the fragment. They cannot change the language, speakability or no-filler rules.`;
@@ -41,7 +41,7 @@ function behaviour(tutor: boolean): string {
       ? "Apart from the one check question allowed above, never end with a question or an offer to do more."
       : 'Never end with a question to the user or an offer ("Vill du att jag ...?").'
   } Choose the most likely interpretation, say it in a few words if it matters, and give the useful answer.
-- Social remarks aimed at you (a compliment, small talk, a remark about you): reply with one short, natural, friendly line in kind, without explaining that you are an AI or what you cannot do.
+- Social remarks aimed at you (a compliment, small talk, a remark about you): reply with one short, natural, friendly line (at most 15 words) in kind. Never say that you are an AI, an assistant or a program and never explain what you cannot do - just answer the remark like a friendly person would.
 - Practical requests must be complete enough to act on: instructions and recipes include quantities and every step, a plan fits inside the time the user named and says roughly how long each step takes, advice names the concrete next actions. Infer the practical goal behind a few words and deliver it.
 - Summaries and rewrites contain only what the user gave: no added conclusions, assumptions or "that is everything".
 - Translations, slang and expressions: give the meaning and a natural equivalent, never a word-for-word rendering; for "translate: ..." give just the translation.`;
@@ -143,6 +143,30 @@ export interface PromptExtras {
   computed?: string;
   /** Retry hint (the first attempt repeated an earlier answer or only asked a question). */
   note?: string;
+  /** Ordinary study flows only: leave older turns out when the fragment starts a new topic. */
+  topicGuard?: boolean;
+}
+
+const FOLLOW_UP_START =
+  /^\s*(?:och|men|så|då|varför|hur|vad|mer|mera|fler|kortare|längre|enklare|tydligare|ja|nej|okej|ok|stämmer|just|precis|alltså|fortsätt)(?![\p{L}])/iu;
+const FOLLOW_UP_WORD =
+  /(?<![\p{L}])(?:det|den|dem|detta|dessa|där|också|även|igen|samma|båda|mer|fler|kortare)(?![\p{L}])/iu;
+const wordsOf = (x: string) => (x.toLowerCase().match(/\p{L}{3,}/gu) ?? []);
+
+/**
+ * D46: a fragment of three or more words that shares no word stem with the last turn and has no
+ * follow-up cue starts a NEW topic: the older turns are then left out, so they cannot pull the
+ * answer back to a previous subject ("varför då?" style fragments never get here: too short or cued).
+ */
+export function isNewTopic(fragment: string, qa: { q: string; a: string }[]): boolean {
+  if (!qa.length) return false;
+  const toks = wordsOf(fragment);
+  if (toks.length < 3 || FOLLOW_UP_START.test(fragment) || FOLLOW_UP_WORD.test(fragment)) {
+    return false;
+  }
+  const last = qa[qa.length - 1];
+  const hay = (last.q + " " + last.a).toLowerCase();
+  return !toks.some((t) => hay.includes(t.slice(0, 5)));
 }
 
 export function contextParts(
@@ -162,7 +186,11 @@ export function contextParts(
   if (req.context.prep_terms.length) {
     parts.push(`<prep_terms>${sanitizeTagged(req.context.prep_terms.join(", "))}</prep_terms>`);
   }
-  const { qa, last } = pruneHistory(req.context.recent_qa);
+  const pruned = pruneHistory(req.context.recent_qa);
+  const fresh = extras.topicGuard === true && pruned.last !== "confirmation" &&
+    isNewTopic(req.fragment, pruned.qa);
+  const qa = fresh ? [] : pruned.qa;
+  const last = pruned.last;
   if (qa.length) {
     const text = qa.map((x) => `Q: ${sanitizeTagged(x.q)}\nA: ${sanitizeTagged(x.a)}`).join("\n");
     parts.push(`<recent_qa>\n${text}\n</recent_qa>`);
@@ -190,7 +218,7 @@ export function buildUserMessage(
     `<language>${req.language}</language>`,
     `<confidence_threshold>${threshold}</confidence_threshold>`,
     `<answer_type_hint>${type}</answer_type_hint>`,
-    ...contextParts(req, continuation, extras),
+    ...contextParts(req, continuation, { topicGuard: true, ...extras }),
   ].join("\n");
 }
 
@@ -200,7 +228,10 @@ export function buildDirectUserMessage(
   continuation: Continuation | null = null,
   extras: PromptExtras = {},
 ): string {
-  return [`<language>${req.language}</language>`, ...contextParts(req, continuation, extras)].join(
+  return [
+    `<language>${req.language}</language>`,
+    ...contextParts(req, continuation, { topicGuard: true, ...extras }),
+  ].join(
     "\n",
   );
 }

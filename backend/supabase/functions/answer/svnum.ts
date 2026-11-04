@@ -176,8 +176,8 @@ export function numbersToSpeech(text: string): string {
   let s = text;
   // thousands separators: "1 500", "12 500 000" (nbsp / thin space always, plain space only for 1-3 digit lead)
   s = s.replace(
-    /(?<![\d.,])(\d{1,3})((?:[   ]\d{3})+)(?![\d])/g,
-    (_m, a: string, b: string) => a + b.replace(/[   ]/g, ""),
+    /(?<![\d.,])(\d{1,3})((?:[\u00a0\u202f ]\d{3})+)(?![\d])/g,
+    (_m, a: string, b: string) => a + b.replace(/[\u00a0\u202f ]/g, ""),
   );
   // decades / centuries: "1800-talet" -> "artonhundratalet", "90-talet" -> "nittiotalet"
   s = s.replace(

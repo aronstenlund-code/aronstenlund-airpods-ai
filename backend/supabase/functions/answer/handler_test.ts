@@ -818,7 +818,7 @@ Deno.test("D46: a repeat of an earlier answer for another fragment is regenerate
   const { handler } = setup({ provider });
   const ev = await readSse(
     await handler(post(body({
-      fragment: "mitt bankkort borta",
+      fragment: "vad gäller för mitt bankkort borta",
       context: { recent_qa: [{ q: "skillnad garanti reklamationsrätt", a: old }] },
     }))),
   );

@@ -12,7 +12,7 @@ export type ParserEvent = { type: "meta"; meta: Meta } | { type: "delta"; text: 
 
 /** Strips characters that TTS would read out loud or that signal markdown. */
 export function sanitizeForSpeech(s: string): string {
-  return s.replace(/[*#`~_]/g, "").replace(/ /g, " ");
+  return s.replace(/[*#`~_]/g, "").replace(/\u00a0/g, " ");
 }
 
 function clamp01(n: unknown, dflt: number): number {

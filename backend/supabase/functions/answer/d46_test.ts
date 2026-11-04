@@ -362,3 +362,34 @@ Deno.test("web text gate: preface before a tool call is dropped, answer after th
   );
   assertEquals(run([text("Svar "), text("direkt."), { type: "message_stop" }]), "Svar direkt.");
 });
+
+import { isNewTopic } from "./prompt.ts";
+Deno.test("context: an unrelated multi-word fragment starts a new topic; follow-ups keep the thread", () => {
+  const qa = [{
+    q: "franska revolutionen",
+    a: "Den började 1789 när ståndsriksdagen kallades samman i Versailles.",
+  }];
+  assertEquals(isNewTopic("hungrig, ägg, pasta", qa), true);
+  assertEquals(isNewTopic("mitt bankkort borta", qa), true);
+  for (
+    const f of [
+      "varför då?",
+      "kortare",
+      "mer om ståndsriksdagen",
+      "vad hände sedan i Versailles",
+      "hur påverkade det Europa",
+      "och efter det",
+    ]
+  ) {
+    assertEquals(isNewTopic(f, qa), false, f);
+  }
+  assertEquals(isNewTopic("hungrig, ägg, pasta", []), false);
+  const req = validateAnswerRequest({
+    fragment: "hungrig, ägg, pasta",
+    mode: "push_to_talk",
+    language: "sv",
+    context: { recent_qa: qa },
+  });
+  const m = buildDirectUserMessage(req);
+  assert(!m.includes("<recent_qa>") && !m.includes("<active_topic>"));
+});

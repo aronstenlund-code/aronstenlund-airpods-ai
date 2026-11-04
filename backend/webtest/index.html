@@ -35,7 +35,7 @@
 <body>
 <main>
   <h1>Lumen webtest</h1>
-  <div class="sub">Håll in knappen, ställ en fråga på svenska, släpp. <span id="voiceinfo"></span></div>
+  <div class="sub">Håll in knappen, ställ en fråga på svenska, släpp. <span id="voiceinfo"></span> Rösttyp: <select id="ttsmodel"><option value="">standard (flash)</option><option value="eleven_turbo_v2_5">turbo</option><option value="eleven_multilingual_v2">multilingual (dyrare)</option></select></div>
   <button id="btn" type="button">Håll in för att fråga</button>
   <div class="card"><div class="lbl">Du sa</div><div id="heard">–</div></div>
   <div class="card"><div class="lbl">Svar</div><div id="answer">–</div></div>
@@ -117,7 +117,7 @@ function playBlob(blob) {
 }
 async function fetchAudio(text, r) {
   const t0 = now();
-  const res = await api("tts", { method: "POST", body: JSON.stringify({ text, language: "sv", ...(voiceId ? { voice_id: voiceId } : {}) }) });
+  const res = await api("tts", { method: "POST", body: JSON.stringify({ text, language: "sv", ...(voiceId ? { voice_id: voiceId } : {}), ...($("ttsmodel").value ? { model: $("ttsmodel").value } : {}) }) });
   if (!res.ok) throw new Error(await errText(res));
   const reader = res.body.getReader(), chunks = [];
   for (;;) {

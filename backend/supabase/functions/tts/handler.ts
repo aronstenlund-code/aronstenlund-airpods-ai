@@ -4,6 +4,12 @@ import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelim
 import { readLimitedJson } from "../answer/validate.ts";
 import { type Voice, VOICE_ID_RE } from "./voices.ts";
 
+/** D46 item 9: models the app/webtest may ask for (A/B by ear). multilingual costs 2 credits per character. */
+export const TTS_MODELS: Record<string, number> = {
+  eleven_flash_v2_5: 1,
+  eleven_turbo_v2_5: 1,
+  eleven_multilingual_v2: 2,
+};
 export const TTS_LIMITS = { bodyBytes: 4 * 1024, text: 500 } as const;
 const OUTPUT_FORMATS = new Set(["mp3_22050_32", "mp3_44100_64", "pcm_16000", "pcm_24000"]);
 const CONTENT_TYPES: Record<string, string> = { mp3: "audio/mpeg", pcm: "audio/L16" };
@@ -82,6 +88,14 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         throw new HttpError(413, "payload_too_large", `text exceeds ${TTS_LIMITS.text} characters`);
       }
       const language = raw.language === "en" ? "en" : "sv";
+      const modelId = raw.model === undefined || raw.model === null
+        ? deps.config.modelId
+        : typeof raw.model === "string" && raw.model in TTS_MODELS
+        ? raw.model
+        : null;
+      if (modelId === null) throw new HttpError(400, "invalid_request", "unsupported model");
+      const weight = TTS_MODELS[modelId] ?? 1;
+      const cost = text.length * weight;
       const format = typeof raw.output_format === "string" ? raw.output_format : "mp3_44100_64";
       if (!OUTPUT_FORMATS.has(format)) {
         throw new HttpError(400, "invalid_request", "unsupported output_format");
@@ -117,7 +131,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
           `tts:u:${user.id}:m`,
           deps.config.limits.perMinute,
           60,
-          text.length,
+          cost,
         );
         if (!lr.allowed) {
           throw new HttpError(429, "rate_limited", "TTS budget reached", {
@@ -133,7 +147,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         "tts",
         user.id,
         deps.config.limits,
-        text.length,
+        cost,
       );
       const upstreamP = doFetch(
         `${
@@ -146,7 +160,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
             "content-type": "application/json",
             accept: "audio/*",
           },
-          body: JSON.stringify({ text, model_id: deps.config.modelId, language_code: language }),
+          body: JSON.stringify({ text, model_id: modelId, language_code: language }),
           signal: ac.signal,
         },
       );
@@ -193,7 +207,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
           endpoint: "tts",
           language,
           provider: "elevenlabs",
-          model: deps.config.modelId,
+          model: modelId,
           chars: text.length,
           total_ms: Math.round(performance.now() - t0),
           status,

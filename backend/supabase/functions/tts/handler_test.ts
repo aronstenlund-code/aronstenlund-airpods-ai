@@ -177,3 +177,27 @@ Deno.test("with no allowlist and no default, any requested voice is refused (fai
   assertEquals((await handler(post({ text: "a", voice_id: V1 }))).status, 400);
   assertEquals((await handler(post({ text: "a" }))).status, 503);
 });
+
+Deno.test("D46: optional allowlisted model; multilingual is metered at double weight", async () => {
+  const { handler, calls, recs } = setup();
+  const res = await handler(post({ text: "Sju.", model: "eleven_multilingual_v2" }));
+  assertEquals(res.status, 200);
+  await res.arrayBuffer();
+  assertEquals(JSON.parse(calls[0].init.body as string).model_id, "eleven_multilingual_v2");
+  assertEquals(recs[0].model, "eleven_multilingual_v2");
+  assertEquals((await handler(post({ text: "Sju.", model: "eleven_v3" }))).status, 400);
+  // metering: 4 chars cost 8 on multilingual, so a 6-char/minute budget denies it but allows flash
+  const cfg = {
+    ...DEFAULT_TTS_CONFIG,
+    voiceId: VOICE,
+    voices: [],
+    limits: { perMinute: 6, perDay: 100, globalPerDay: 100 },
+  };
+  const t1 = setup({ config: cfg, localLimiter: new MemoryRateLimiter() });
+  assertEquals(
+    (await t1.handler(post({ text: "Sju.", model: "eleven_multilingual_v2" }))).status,
+    429,
+  );
+  const t2 = setup({ config: cfg, localLimiter: new MemoryRateLimiter() });
+  assertEquals((await t2.handler(post({ text: "Sju." }))).status, 200);
+});
