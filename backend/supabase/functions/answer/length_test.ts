@@ -7,8 +7,8 @@ const kind = (f: string, len: "short" | "adaptive" | "long" = "adaptive") =>
 Deno.test("study cues -> study; plain facts/maths/terms -> fact (adaptive)", () => {
   for (
     const f of [
-      "kärnkraftverk procons",
-      "för- och nackdelar med kärnkraft",
+      "elbilar procons",
+      "för- och nackdelar med solenergi",
       "förklara växthuseffekten",
       "varför föll romarriket",
       "jämför mitos och meios",
@@ -67,4 +67,12 @@ Deno.test("continuations: mer / fortsätt / förklara enklare", () => {
   }
   assertEquals(classifyAnswerType("mer", "adaptive", "more"), "study");
   assertEquals(classifyAnswerType("mer", "short", "more"), "fact");
+});
+
+Deno.test("D36/D37: tutor is always study; personal commands make a developed answer", () => {
+  assertEquals(classifyAnswerType("vad är pi", "adaptive", null, { tutor: true }), "study");
+  assertEquals(classifyAnswerType("vad är pi", "short", null, { tutor: true }), "study");
+  assertEquals(classifyAnswerType("enzym", "adaptive", null, { commands: true }), "study");
+  assertEquals(classifyAnswerType("enzym", "short", null, { commands: true }), "fact");
+  assertEquals(classifyAnswerType("enzym", "adaptive", null), "fact");
 });

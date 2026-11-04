@@ -416,7 +416,7 @@ Deno.test("D35: fact request -> short prompt, 256 tokens, answer_type fact in me
 Deno.test("D35: study request -> developed prompt, 800 tokens, answer_type study", async () => {
   const { provider, seen } = recordingProvider();
   const { handler } = setup({ provider });
-  const ev = await readSse(await handler(post(body({ fragment: "kärnkraftverk procons" }))));
+  const ev = await readSse(await handler(post(body({ fragment: "elbilar procons" }))));
   assertEquals(ev[0].data.answer_type, "study");
   assertEquals(ev[0].data.needs_confirmation, false);
   assertEquals(seen[0].maxTokens, 800);
@@ -441,7 +441,7 @@ Deno.test("D35: length setting short/long overrides, invalid value -> 400", asyn
 Deno.test("D35: 'mer' / 'förklara enklare' continue the last answer when history exists", async () => {
   const { provider, seen } = recordingProvider();
   const { handler } = setup({ provider });
-  const ctx = { recent_qa: [{ q: "kärnkraftverk procons", a: "Fördelarna är låga utsläpp." }] };
+  const ctx = { recent_qa: [{ q: "elbilar procons", a: "Fördelarna är låga utsläpp." }] };
   await (await handler(post(body({ fragment: "mer", context: ctx })))).text();
   assert(seen[0].user.includes("<task>continue_more</task>"));
   assert(seen[0].user.includes("A: Fördelarna är låga utsläpp."));
@@ -470,4 +470,70 @@ Deno.test("D35: study answers may be long (1 800 chars) while fact answers are s
     0,
   );
   assert(nF <= 700 && nF >= 590, `fact kept ${nF}`);
+});
+
+Deno.test("D36: mode tutor -> tutor prompt, study budget, no header, always a question, history sent", async () => {
+  const { provider, seen } = recordingProvider();
+  const { handler, usage } = setup({ provider });
+  const ctx = {
+    recent_qa: [{ q: "vad är en enzym", a: "Enzymer är proteiner som påskyndar reaktioner." }],
+  };
+  const ev = await readSse(
+    await handler(
+      post(body({ mode: "tutor", fragment: "och hur påverkas de av temperatur", context: ctx })),
+    ),
+  );
+  assertEquals(ev[0].data.answer_type, "study");
+  assertEquals(ev[0].data.is_question, true);
+  assertEquals(ev[0].data.needs_confirmation, false);
+  assertEquals(seen[0].maxTokens, 800);
+  assert(seen[0].system.includes("tutoring in a spoken conversation"));
+  assert(!seen[0].system.includes("is_question"), "tutor is headerless");
+  assert(seen[0].user.includes("A: Enzymer är proteiner som påskyndar reaktioner."));
+  assertEquals(usage[0].mode, "tutor");
+});
+
+Deno.test("D37: goals and commands reach the prompt; commands force a developed answer", async () => {
+  const { provider, seen } = recordingProvider();
+  const { handler } = setup({ provider });
+  const ev = await readSse(
+    await handler(post(body({
+      fragment: "mitos",
+      goals: "Kursen ska ge förståelse för cellbiologi på gymnasienivå.",
+      commands: [{ keyword: "mitos", instruction: "förklara mitos och jämför med meios" }],
+    }))),
+  );
+  assertEquals(ev[0].data.answer_type, "study");
+  assertEquals(seen[0].maxTokens, 800);
+  assert(
+    seen[0].user.includes(
+      "<goals>\nKursen ska ge förståelse för cellbiologi på gymnasienivå.\n</goals>",
+    ),
+  );
+  assert(seen[0].user.includes("- mitos: förklara mitos och jämför med meios"));
+  const none = recordingProvider();
+  await (await setup({ provider: none.provider }).handler(post(body({ fragment: "enzym" }))))
+    .text();
+  assertEquals(none.seen[0].maxTokens, 256);
+  assert(!none.seen[0].user.includes("<goals>") && !none.seen[0].user.includes("<commands>"));
+});
+
+Deno.test("D35: a confirmation in the middle of the history is dropped, a trailing one is flagged", async () => {
+  const { provider, seen } = recordingProvider();
+  const { handler } = setup({ provider });
+  const ctx = {
+    recent_qa: [
+      { q: "enzym", a: "Enzymer påskyndar reaktioner." },
+      { q: "x", a: "Menar du något annat?" },
+      { q: "kofaktor", a: "En kofaktor hjälper enzymet." },
+    ],
+  };
+  await (await handler(post(body({ fragment: "mer om det", context: ctx })))).text();
+  assert(!seen[0].user.includes("Menar du något annat"));
+  assert(seen[0].user.includes("<last_assistant_turn>answer</last_assistant_turn>"));
+  await (await handler(
+    post(body({ fragment: "ja", context: { recent_qa: [{ q: "k", a: "Menar du kofaktorer?" }] } })),
+  )).text();
+  assert(seen[1].user.includes("<last_assistant_turn>confirmation</last_assistant_turn>"));
+  assert(seen[1].user.includes("A: Menar du kofaktorer?"));
 });

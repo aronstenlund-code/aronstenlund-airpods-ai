@@ -8,8 +8,8 @@ Format matches `sv-short-prompts.md` (4th column is the text sent).
 
 | # | Category | Spoken | Reference |
 |---|---|---|---|
-| 1 | pro/con | kärnkraftverk procons | kärnkraftverk procons |
-| 2 | pro/con | för- och nackdelar med elbilar | för- och nackdelar med elbilar |
+| 1 | pro/con | elbilar procons | elbilar procons |
+| 2 | pro/con | för- och nackdelar med kollektivtrafik | för- och nackdelar med kollektivtrafik |
 | 3 | explain | förklara hur ett vaccin fungerar | förklara hur ett vaccin fungerar |
 | 4 | why | varför föll romarriket | varför föll romarriket |
 | 5 | compare | jämför mitos och meios | jämför mitos och meios |

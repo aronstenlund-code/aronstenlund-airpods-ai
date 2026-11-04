@@ -74,9 +74,12 @@ export function classifyAnswerType(
   fragment: string,
   length: LengthPref,
   continuation: Continuation | null,
+  opts: { tutor?: boolean; commands?: boolean } = {},
 ): AnswerType {
-  if (continuation) return length === "short" ? "fact" : "study";
+  // Tutor mode (D36) is always the pedagogical study style; a matched personal command (D37)
+  // asks for a developed answer too. 'short' only wins for commands/continuations, not for tutor.
+  if (opts.tutor) return "study";
   if (length === "short") return "fact";
-  if (length === "long") return "study";
+  if (continuation || opts.commands || length === "long") return "study";
   return STUDY_CUES.test(fragment) ? "study" : "fact";
 }

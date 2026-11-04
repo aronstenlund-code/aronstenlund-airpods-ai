@@ -1,6 +1,6 @@
 import { HttpError } from "../_shared/errors.ts";
 
-export type Mode = "push_to_talk" | "auto" | "text";
+export type Mode = "push_to_talk" | "auto" | "text" | "tutor";
 export type Language = "sv" | "en";
 export type LengthSetting = "short" | "adaptive" | "long";
 
@@ -10,6 +10,10 @@ export interface AnswerRequest {
   language: Language;
   /** Answer length preference; default "adaptive" (fact vs study decided server-side). */
   length: LengthSetting;
+  /** The student's course goals (D37), user data, <= 1 500 chars. */
+  goals: string;
+  /** The student's own matched keyword commands (D37), <= 10. */
+  commands: { keyword: string; instruction: string }[];
   context: {
     transcript: string;
     recent_qa: { q: string; a: string }[];
@@ -18,7 +22,7 @@ export interface AnswerRequest {
 }
 
 export const LIMITS = {
-  bodyBytes: 16 * 1024,
+  bodyBytes: 64 * 1024,
   fragment: 1000,
   transcript: 6000,
   recentQa: 6,
@@ -26,6 +30,10 @@ export const LIMITS = {
   qaAnswer: 1500,
   prepTerms: 30,
   prepTerm: 60,
+  goals: 1500,
+  commands: 10,
+  commandKeyword: 60,
+  commandInstruction: 300,
 } as const;
 
 const bad = (msg: string) => new HttpError(400, "invalid_request", msg);
@@ -51,8 +59,8 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
   }
   const o = raw as Record<string, unknown>;
   const mode = o.mode;
-  if (mode !== "push_to_talk" && mode !== "auto" && mode !== "text") {
-    throw bad('mode must be "push_to_talk", "auto" or "text"');
+  if (mode !== "push_to_talk" && mode !== "auto" && mode !== "text" && mode !== "tutor") {
+    throw bad('mode must be "push_to_talk", "auto", "text" or "tutor"');
   }
   const language = o.language;
   if (language !== "sv" && language !== "en") throw bad('language must be "sv" or "en"');
@@ -92,11 +100,39 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
   }
   const prep_terms = termsRaw.map((t, i) => str(t, `prep_terms[${i}]`, LIMITS.prepTerm));
 
+  const goals = str(o.goals, "goals", LIMITS.goals);
+
+  const cmdRaw = o.commands ?? [];
+  if (!Array.isArray(cmdRaw)) throw bad("commands must be an array");
+  if (cmdRaw.length > LIMITS.commands) {
+    throw new HttpError(413, "payload_too_large", `commands exceeds ${LIMITS.commands} items`);
+  }
+  const commands = cmdRaw.map((x, i) => {
+    const e = (x ?? {}) as Record<string, unknown>;
+    return {
+      keyword: str(e.keyword, `commands[${i}].keyword`, LIMITS.commandKeyword, true),
+      instruction: str(
+        e.instruction,
+        `commands[${i}].instruction`,
+        LIMITS.commandInstruction,
+        true,
+      ),
+    };
+  });
+
   const length = o.length === undefined || o.length === null ? "adaptive" : o.length;
   if (length !== "short" && length !== "adaptive" && length !== "long") {
     throw bad('length must be "short", "adaptive" or "long"');
   }
-  return { fragment, mode, language, length, context: { transcript, recent_qa, prep_terms } };
+  return {
+    fragment,
+    mode,
+    language,
+    length,
+    goals,
+    commands,
+    context: { transcript, recent_qa, prep_terms },
+  };
 }
 
 /** Reads the request body with a hard byte cap (does not trust Content-Length alone). */

@@ -91,6 +91,16 @@ Errors before the stream starts are JSON `{"error":{"code","message","fallback"}
 
 `fallback:true` means: use Apple TTS / on-device answer engine for this request.
 
+## Request fields added by D35/D36/D37
+| Field | Meaning |
+|---|---|
+| `mode: "tutor"` | Hands-free tutoring session (D36): always a developed, pedagogical answer (5-8 sentences), builds on `context.recent_qa` (send the whole session, max 6), may end with ONE useful ja/nej-or-one-word check question. Explicit mode: `is_question` always true. |
+| `length: "short"\|"adaptive"\|"long"` | Default `adaptive`: server picks `fact` (1-2 sentences) or `study` (5-8 sentences) from intent words (förklara, varför, jämför, för- och nackdelar, orsaker, procons ...). `short`/`long` force one. |
+| `goals` (<=1 500 chars) | The student's course goals; the answer matches level and focus (D37). |
+| `commands: [{keyword, instruction}]` (<=10; keyword <=60, instruction <=300) | The student's own saved shortcuts **already matched by the app**; the instruction is carried out for this turn. A matched command makes the answer developed. |
+
+`meta` now also carries `answer_type: "fact"\|"study"`. 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer when `recent_qa` is present. Confirmation questions are rare by design (target < 5 %); a confirmation the assistant did ask last is passed to the model as `<last_assistant_turn>confirmation` so the next fragment is read as the reply. Limits: body 64 KB, `recent_qa` answers up to 1 500 chars each.
+
 ## API: `GET /voices`
 `GET https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/voices` with the same headers as `/answer` -> `200 {"voices":[{"name":"Astrid","id":"..."},...],"default_id":"..."}` (names + ids from `ELEVENLABS_VOICES`; no secrets, no ElevenLabs call; cacheable 5 min). `voices` may be empty if the secret is not set yet; the app should then offer only Apple's voice. Same errors as the other endpoints (401/405/429).
 

@@ -301,7 +301,7 @@ Deno.test("e2e: answer, tts and voices as deployed (real entry points, fake upst
       "answer study request (D35): developed prompt, bigger budget, answer_type in meta",
       async () => {
         reset();
-        const ev = await readSse(await ask("push_to_talk", "kärnkraftverk procons", await token()));
+        const ev = await readSse(await ask("push_to_talk", "elbilar procons", await token()));
         assertEquals(ev[0].data.answer_type, "study");
         assertEquals(ev[0].data.needs_confirmation, false);
         const rq = state.anthropicRequests[0];

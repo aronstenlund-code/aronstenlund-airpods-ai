@@ -149,7 +149,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const direct = cfg.directModes && body.mode !== "auto";
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
       const continuation = body.context.recent_qa.length ? detectContinuation(body.fragment) : null;
-      const answerType = classifyAnswerType(body.fragment, body.length, continuation);
+      const tutor = body.mode === "tutor";
+      const answerType = classifyAnswerType(body.fragment, body.length, continuation, {
+        tutor,
+        commands: body.commands.length > 0,
+      });
       const maxChars = answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars;
       const parser = new ResponseParser(
         body.mode,
@@ -207,7 +211,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       });
       const iterator = provider
         .stream({
-          system: direct ? systemPromptFor(answerType) : SYSTEM_PROMPT,
+          system: direct ? systemPromptFor(answerType, tutor) : SYSTEM_PROMPT,
           user: direct
             ? buildDirectUserMessage(body, continuation)
             : buildUserMessage(body, cfg.confidenceThreshold, answerType, continuation),
