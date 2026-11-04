@@ -24,6 +24,8 @@
 	<string>Lumen listens to the room through your microphone (iPhone or AirPods) to transcribe speech and answer questions in your AirPods. Audio is processed live and is not stored unless you export a test recording.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Lumen uses on-device speech recognition to transcribe what is said. Audio is processed on your iPhone and never uploaded.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

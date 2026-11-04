@@ -10,11 +10,10 @@ import Testing
         #expect(SessionReducer.reduce(.error("x"), .userStart) == (.listening, .startCapture))
     }
 
-    @Test func interruptionWithResume() {
+    @Test func interruptionPauses() {
         let (paused, effect) = SessionReducer.reduce(.listening, .interruptionBegan)
         #expect(paused == .paused(.interruption))
         #expect(effect == .pauseCapture)
-        #expect(SessionReducer.reduce(paused, .interruptionEnded(shouldResume: true)) == (.listening, .resumeCapture))
     }
 
     @Test func interruptionWithoutResumeWaitsForUser() {

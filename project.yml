@@ -37,8 +37,10 @@ targets:
       - path: Lumen
         excludes:
           - "Resources/Info.plist"
+      - path: Shared
     dependencies:
       - package: LumenScoring
+      - target: LumenControls
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen
@@ -56,6 +58,23 @@ targets:
           INFOPLIST_KEY_UIFileSharingEnabled: YES
           INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace: YES
           SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+
+  # Live Activity + Control (D33). Shared/ is compiled into both targets.
+  LumenControls:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: LumenControls
+        excludes:
+          - "Info.plist"
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen.controls
+        PRODUCT_NAME: LumenControls
+        INFOPLIST_FILE: LumenControls/Info.plist
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
 
   LumenTests:
     type: bundle.unit-test

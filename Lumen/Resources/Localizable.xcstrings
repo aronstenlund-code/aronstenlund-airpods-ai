@@ -45,6 +45,17 @@
         }
       }
     },
+    "A call or another app took the audio. Tap Resume to listen again.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ett samtal eller en annan app tog över ljudet. Tryck på Fortsätt för att lyssna igen."
+          }
+        }
+      }
+    },
     "Activation": {
       "extractionState": "manual",
       "localizations": {
@@ -650,6 +661,28 @@
         }
       }
     },
+    "Pause for music": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa för musik"
+          }
+        }
+      }
+    },
+    "Pause or resume Lumen": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa eller fortsätt Lumen"
+          }
+        }
+      }
+    },
     "Paused": {
       "extractionState": "manual",
       "localizations": {
@@ -690,6 +723,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pausad – avbruten"
+          }
+        }
+      }
+    },
+    "Paused — tap to listen again": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausad – tryck för att lyssna igen"
           }
         }
       }
@@ -1171,6 +1215,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Du startar och stoppar lyssningen själv. När mikrofonen är på visas en röd indikator i appen, och iOS visar sin egen mikrofonindikator."
+          }
+        }
+      }
+    },
+    "Your music can play now. Answers are shown, not spoken, until you resume.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nu kan din musik spelas. Svar visas men läses inte upp förrän du fortsätter."
           }
         }
       }

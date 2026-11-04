@@ -12,10 +12,7 @@ struct ListeningIndicatorBar: View {
         case .listening:
             bar(title: "Listening", symbolActive: true, action: "Stop", role: .destructive, perform: onStop)
         case .paused(let reason):
-            bar(title: pausedTitle(reason), symbolActive: false,
-                action: reason == .interruption ? "Stop" : "Resume",
-                role: reason == .interruption ? .destructive : nil,
-                perform: reason == .interruption ? onStop : onResume)
+            bar(title: pausedTitle(reason), symbolActive: false, action: "Resume", role: nil, perform: onResume)
         case .idle, .error:
             EmptyView()
         }
@@ -23,8 +20,8 @@ struct ListeningIndicatorBar: View {
 
     private func pausedTitle(_ reason: PauseReason) -> LocalizedStringKey {
         switch reason {
-        case .interruption: "Paused — interrupted"
-        case .awaitingUserResume: "Paused"
+        case .user: "Paused"
+        case .interruption, .awaitingUserResume: "Paused — tap to listen again"
         case .outputDeviceLost: "Paused — AirPods disconnected"
         case .mediaServicesReset: "Paused — audio system reset"
         }

@@ -38,6 +38,8 @@ final class SessionController {
     var onCaptureStarted: (@MainActor () -> Void)?
     /// Called whenever capture stops, pauses or the engine is rebuilt.
     var onCaptureStopped: (@MainActor () -> Void)?
+    /// Called on every state transition.
+    var onStateChanged: (@MainActor (SessionState) -> Void)?
 
     var snapshot: SessionSnapshot? { session.snapshot }
     var banner: String { session.snapshot?.banner ?? "No active session" }
@@ -50,8 +52,9 @@ final class SessionController {
         case .idle, .error: false
         }
     }
+    /// Always while paused: a music app's interruption may never end, and the user decides (D33).
     var canResume: Bool {
-        if case .paused(let reason) = state { return reason != .interruption }
+        if case .paused = state { return true }
         return false
     }
 
@@ -79,6 +82,7 @@ final class SessionController {
     func start() async { await apply(.userStart) }
     func stop() async { await apply(.userStop) }
     func resume() async { await apply(.userResume) }
+    func pause() async { await apply(.userPause) }
 
     // MARK: - State machine
 
@@ -87,6 +91,7 @@ final class SessionController {
         if newState != state {
             log("State \(state.label) → \(newState.label)")
             state = newState
+            onStateChanged?(newState)
         }
         if let effect {
             await perform(effect)
@@ -98,7 +103,7 @@ final class SessionController {
         case .startCapture:
             await beginCapture()
         case .resumeCapture:
-            resumeCapture()
+            await resumeCapture()
         case .pauseCapture:
             chunkTask?.cancel()
             capture.stop()
@@ -145,9 +150,15 @@ final class SessionController {
         }
     }
 
-    private func resumeCapture() {
+    private func resumeCapture() async {
+        lastError = nil
         do {
-            try session.reactivate()
+            // A user pause released the session; after an interruption it only needs reactivating.
+            if session.activeConfig == nil {
+                _ = try await session.activate(config)
+            } else {
+                try session.reactivate()
+            }
             try capture.start()
             _ = session.refreshSnapshot(engineInputFormat: capture.inputFormatDescription)
             startChunkCounter()
@@ -155,7 +166,7 @@ final class SessionController {
             onCaptureStarted?()
         } catch {
             fail(error)
-            Task { await apply(.failed(error.localizedDescription)) }
+            await apply(.resumeFailed)
         }
     }
 

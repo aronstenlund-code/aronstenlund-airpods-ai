@@ -211,7 +211,8 @@ struct ListeningView: View {
         case .listening: "Speech is transcribed on this iPhone."
         case .paused(let reason):
             switch reason {
-            case .interruption: "A call or another app interrupted the session."
+            case .user: "Your music can play now. Answers are shown, not spoken, until you resume."
+            case .interruption: "A call or another app took the audio. Tap Resume to listen again."
             case .awaitingUserResume: "Tap Resume to continue."
             case .outputDeviceLost: "AirPods disconnected. Put them back in and tap Resume."
             case .mediaServicesReset: "The audio system was reset. Tap Resume to continue."
@@ -352,12 +353,15 @@ struct ListeningView: View {
             .buttonStyle(.borderedProminent)
             .tint(model.isActiveSession ? .red : .accentColor)
 
-            if model.canResume {
+            if model.isActiveSession {
                 Button {
-                    Task { await model.resume() }
+                    Task { await model.togglePause() }
                 } label: {
-                    Label("Resume listening", systemImage: "play.fill")
+                    Label(model.isListening ? "Pause for music" : "Resume listening",
+                          systemImage: model.isListening ? "pause.fill" : "play.fill")
+                        .font(.title3.weight(.semibold))
                         .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
                 }
                 .buttonStyle(.bordered)
             }

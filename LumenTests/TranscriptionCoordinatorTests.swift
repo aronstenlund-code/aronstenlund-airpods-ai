@@ -99,7 +99,7 @@ import Testing
         await h.session.controller.apply(.interruptionBegan)
         #expect(await waitUntil { h.recorder.created[0].stopCalls == 1 })
 
-        await h.session.controller.apply(.interruptionEnded(shouldResume: true))
+        await h.session.controller.resume()
         #expect(await waitUntil { h.recorder.created.count == 2 && h.coordinator.status.isRunning })
         #expect(h.recorder.created[1].startCalls == 1)
     }

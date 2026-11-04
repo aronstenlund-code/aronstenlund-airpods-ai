@@ -91,7 +91,7 @@ import Testing
         #expect(h.session.activeConfig == nil)
     }
 
-    @Test func interruptionPausesAndSystemResumeRestartsCapture() async {
+    @Test func interruptionPausesAndKeepsTheSession() async {
         let h = ControllerHarness()
         await h.controller.start()
 
@@ -99,9 +99,8 @@ import Testing
         #expect(h.controller.state == .paused(.interruption))
         #expect(!h.capture.isCapturing)
         #expect(h.session.deactivateCalls == 0, "pause keeps the session, only the engine stops")
-        #expect(!h.controller.canResume, "no manual resume while the interruption is ongoing")
 
-        await h.controller.apply(.interruptionEnded(shouldResume: true))
+        await h.controller.resume()
         #expect(h.controller.state == .listening)
         #expect(h.session.reactivateCalls == 1)
         #expect(h.capture.startCalls == 2)

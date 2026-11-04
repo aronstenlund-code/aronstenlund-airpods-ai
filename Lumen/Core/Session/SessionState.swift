@@ -20,9 +20,11 @@ enum SessionState: Equatable, Sendable {
 }
 
 enum PauseReason: Equatable, Sendable {
-    /// System interruption in progress (call, Siri, alarm).
+    /// The user paused, e.g. to play music (D33). The audio session is released; only the user resumes.
+    case user
+    /// Another app or the system took the audio (call, Siri, alarm, Spotify). May never end for a music app.
     case interruption
-    /// Interruption ended but the system did not ask us to resume → "tap to resume".
+    /// Interruption ended, or a resume was refused → "tap to resume". We never take audio back by ourselves (D33).
     case awaitingUserResume
     /// AirPods / headphones were removed or disconnected.
     case outputDeviceLost
@@ -31,7 +33,8 @@ enum PauseReason: Equatable, Sendable {
 
     var label: String {
         switch self {
-        case .interruption: "interrupted"
+        case .user: "by you"
+        case .interruption: "interrupted — tap to resume"
         case .awaitingUserResume: "tap to resume"
         case .outputDeviceLost: "AirPods disconnected — tap to resume"
         case .mediaServicesReset: "audio system reset — tap to resume"
@@ -44,6 +47,9 @@ enum SessionEvent: Equatable, Sendable {
     case userStart
     case userStop
     case userResume
+    case userPause
+    /// A resume could not get the audio back (a call is running, background rules).
+    case resumeFailed
     case captureStarted
     case interruptionBegan
     case interruptionEnded(shouldResume: Bool)
@@ -77,14 +83,22 @@ enum SessionReducer {
 
         case (.listening, .interruptionBegan):
             return (.paused(.interruption), .pauseCapture)
-        case (.paused(.interruption), .interruptionEnded(let shouldResume)):
-            return shouldResume ? (.listening, .resumeCapture) : (.paused(.awaitingUserResume), nil)
+        case (.paused(.interruption), .interruptionEnded):
+            // Even with `shouldResume`: taking audio back could cut off what the user is listening to (D33).
+            return (.paused(.awaitingUserResume), nil)
         case (.paused(let reason), .interruptionEnded):
             // We were already paused for another reason; stay there.
             return (.paused(reason), nil)
         case (.paused, .userResume):
             return (.listening, .resumeCapture)
+        case (.listening, .userPause):
+            // Same effect as stopping: engine off, session released so the other app resumes in full quality.
+            return (.paused(.user), .stopCapture)
+        case (.listening, .resumeFailed):
+            return (.paused(.awaitingUserResume), .pauseCapture)
 
+        case (.paused(.user), .outputDeviceLost):
+            return (.paused(.user), nil)
         case (.listening, .outputDeviceLost), (.paused, .outputDeviceLost):
             return (.paused(.outputDeviceLost), .pauseCapture)
         case (.paused(.outputDeviceLost), .outputDeviceRestored):

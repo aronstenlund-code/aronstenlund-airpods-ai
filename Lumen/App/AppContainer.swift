@@ -50,7 +50,9 @@ final class AppContainer {
                                        transcription: transcription, activation: activation,
                                        answers: answers, speaker: speaker, voices: voices,
                                        notes: notes, prep: prep,
-                                       warmer: BackendWarmer(config: .lumen, http: http))
+                                       warmer: BackendWarmer(config: .lumen, http: http),
+                                       activity: ListeningActivityPresenter())
+        ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
         transcription.sink = listening
         self.graph = graph
         self.session = session

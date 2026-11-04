@@ -15,6 +15,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let notes: NotesStore
     let prep: PrepStore
     private let warmer: BackendWarmer?
+    private let activity: (any ListeningActivityPresenting)?
     /// Per-answer latency budget (item 7), shown in the debug overlay.
     let latency = LatencyLog()
     private(set) var conversation = Conversation()
@@ -62,7 +63,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     init(controller: SessionController, consent: any ConsentStoring,
          transcription: TranscriptionCoordinator, activation: ActivationController,
          answers: AnswerEngine, speaker: Speaker, voices: VoiceCatalog,
-         notes: NotesStore, prep: PrepStore, warmer: BackendWarmer? = nil) {
+         notes: NotesStore, prep: PrepStore, warmer: BackendWarmer? = nil,
+         activity: (any ListeningActivityPresenting)? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -73,6 +75,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.notes = notes
         self.prep = prep
         self.warmer = warmer
+        self.activity = activity
+        controller.onStateChanged = { [weak self] state in self?.sessionStateChanged(state) }
         voices.onLoaded = { [weak speaker] voices, defaultID in
             speaker?.settings.reconcile(with: voices, defaultID: defaultID)
         }
@@ -125,6 +129,32 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func resume() async {
         await controller.resume()
+    }
+
+    /// One tap to switch to music and back (D33): screen button, Live Activity and Control. Never starts a
+    /// session: the microphone is only switched on from the app.
+    func togglePause() async {
+        if isListening {
+            await controller.pause()
+        } else if canResume {
+            await controller.resume()
+        }
+    }
+
+    private func sessionStateChanged(_ state: SessionState) {
+        switch state {
+        case .listening:
+            activity?.show(isPaused: false)
+        case .paused:
+            // Whoever has the audio now keeps it: no speech may restart the engine behind their back.
+            flushTask?.cancel()
+            answers.cancel()
+            speaker.interrupt()
+            conversation.cancelAnswer()
+            activity?.show(isPaused: true)
+        case .idle, .error:
+            activity?.end()
+        }
     }
 
     /// Stops the microphone, forgets the session's transcript and clears the consent record; the consent
@@ -232,6 +262,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerSentence(_ sentence: String) {
+        if case .paused = state { return } // a typed question while paused is shown, not spoken over the music
         speaker.enqueue(sentence, language: pendingQuestion?.language ?? language)
     }
 
