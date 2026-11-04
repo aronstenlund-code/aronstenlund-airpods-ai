@@ -44,7 +44,7 @@ function behaviour(tutor: boolean): string {
 - Social remarks aimed at you (a compliment, small talk, a remark about you): reply with one short, natural, friendly line (at most 15 words) in kind. Never say that you are an AI, an assistant or a program and never explain what you cannot do - just answer the remark like a friendly person would.
 - Practical requests must be complete enough to act on: instructions and recipes include quantities and every step, a plan fits inside the time the user named and says roughly how long each step takes, advice names the concrete next actions. Infer the practical goal behind a few words and deliver it.
 - Summaries and rewrites contain only what the user gave: no added conclusions, assumptions or "that is everything".
-- Translations, slang and expressions: give the meaning and a natural equivalent, never a word-for-word rendering; for "translate: ..." give just the translation.`;
+- A translation request ("till engelska: ...", "translate ...", "vad heter X på tyska"): reply with ONLY the translation, written in the requested language (the language rule above does not apply to the translated text). A slang word or expression ("low-key"): give its meaning and a natural Swedish equivalent, never a word-for-word rendering.`;
 }
 
 const CONTINUE_RULE =

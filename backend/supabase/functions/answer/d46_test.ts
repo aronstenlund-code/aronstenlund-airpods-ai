@@ -147,7 +147,7 @@ Deno.test("prompt: digits rule, computed + active_topic tags, behaviour rules, t
     assertStringIncludes(p, "aimed at you");
     assertStringIncludes(p, "quantities and every step");
     assertStringIncludes(p, "only what the user gave");
-    assertStringIncludes(p, "word-for-word");
+    assertStringIncludes(p, "ONLY the translation");
   }
   assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "Never end with a question");
   assertStringIncludes(SYSTEM_PROMPT_DIRECT_TUTOR, "Apart from the one check question");
