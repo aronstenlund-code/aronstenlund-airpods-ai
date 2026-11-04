@@ -2,11 +2,14 @@ import { HttpError } from "../_shared/errors.ts";
 
 export type Mode = "push_to_talk" | "auto" | "text";
 export type Language = "sv" | "en";
+export type LengthSetting = "short" | "adaptive" | "long";
 
 export interface AnswerRequest {
   fragment: string;
   mode: Mode;
   language: Language;
+  /** Answer length preference; default "adaptive" (fact vs study decided server-side). */
+  length: LengthSetting;
   context: {
     transcript: string;
     recent_qa: { q: string; a: string }[];
@@ -20,6 +23,7 @@ export const LIMITS = {
   transcript: 6000,
   recentQa: 6,
   qaText: 400,
+  qaAnswer: 1500,
   prepTerms: 30,
   prepTerm: 60,
 } as const;
@@ -73,7 +77,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     const e = (x ?? {}) as Record<string, unknown>;
     return {
       q: str(e.q, `recent_qa[${i}].q`, LIMITS.qaText),
-      a: str(e.a, `recent_qa[${i}].a`, LIMITS.qaText),
+      a: str(e.a, `recent_qa[${i}].a`, LIMITS.qaAnswer),
     };
   });
 
@@ -88,7 +92,11 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
   }
   const prep_terms = termsRaw.map((t, i) => str(t, `prep_terms[${i}]`, LIMITS.prepTerm));
 
-  return { fragment, mode, language, context: { transcript, recent_qa, prep_terms } };
+  const length = o.length === undefined || o.length === null ? "adaptive" : o.length;
+  if (length !== "short" && length !== "adaptive" && length !== "long") {
+    throw bad('length must be "short", "adaptive" or "long"');
+  }
+  return { fragment, mode, language, length, context: { transcript, recent_qa, prep_terms } };
 }
 
 /** Reads the request body with a hard byte cap (does not trust Content-Length alone). */

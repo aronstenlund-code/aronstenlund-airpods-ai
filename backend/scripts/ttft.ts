@@ -144,7 +144,9 @@ async function runOne(token: string, n: number, prompt: string): Promise<Row> {
     }
     row.total_ms = performance.now() - t0;
     const sentences = row.answer.split(/(?<=[.!?])\s+/).filter(Boolean).length;
-    if (sentences > 2) row.issues.push(`${sentences} sentences`);
+    if (sentences > 2 && !String(args.prompts).includes("study")) {
+      row.issues.push(`${sentences} sentences`);
+    }
     if (/\d/.test(row.answer)) row.issues.push("digits in answer (TTS)");
     if (/[*#_`()\[\]]/.test(row.answer)) row.issues.push("symbols in answer");
     if (!row.answer && row.is_question !== false) row.issues.push("empty answer");
@@ -216,8 +218,21 @@ const gate = autoSet
     };
   })()
   : undefined;
+const sentencesOf = (a: string) => a.split(/(?<=[.!?])\s+/).filter(Boolean).length;
+const answered = rows.filter((r) => r.answer);
+const sent = answered.map((r) => sentencesOf(r.answer));
+const confirmations =
+  answered.filter((r) => /\?\s*$/.test(r.answer) && r.answer.split(/\s+/).length <= 8).length;
 const summary = {
   url: args.url,
+  answers: {
+    n: answered.length,
+    sentences_avg: sent.length ? +(sent.reduce((a, b) => a + b, 0) / sent.length).toFixed(1) : null,
+    sentences_min: sent.length ? Math.min(...sent) : null,
+    sentences_max: sent.length ? Math.max(...sent) : null,
+    confirmation_questions: confirmations,
+    confirmation_rate: answered.length ? +(confirmations / answered.length).toFixed(2) : null,
+  },
   gate,
   cold_calls: rows.filter((r) => bd(r) === true).length,
   ttft_ms_cold_p50: pct(ok.filter((r) => bd(r) === true).map((r) => r.ttft_ms!), 50),

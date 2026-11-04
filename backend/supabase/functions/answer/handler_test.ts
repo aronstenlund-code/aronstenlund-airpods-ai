@@ -385,3 +385,89 @@ Deno.test("GET with x-warm:1 triggers the upstream warm-up and answers 204 witho
   assertEquals([res.status, warmed], [204, 1]);
   assertEquals((await handler(new Request("http://x", { method: "GET" }))).status, 405);
 });
+
+// ---- D35: adaptive length, fewer confirmations ----
+function recordingProvider(text = "Svar.") {
+  const seen: { system: string; user: string; maxTokens: number }[] = [];
+  const provider: LLMProvider = {
+    name: "rec",
+    model: "rec",
+    stream: (r) => {
+      seen.push({ system: r.system, user: r.user, maxTokens: r.maxTokens });
+      return (async function* (): AsyncGenerator<LLMChunk> {
+        for (let k = 0; k < text.length; k += 23) {
+          yield { type: "text", text: text.slice(k, k + 23) };
+        }
+      })();
+    },
+  };
+  return { provider, seen };
+}
+
+Deno.test("D35: fact request -> short prompt, 256 tokens, answer_type fact in meta", async () => {
+  const { provider, seen } = recordingProvider();
+  const { handler } = setup({ provider });
+  const ev = await readSse(await handler(post(body({ fragment: "när föll berlinmuren" }))));
+  assertEquals(ev[0].data.answer_type, "fact");
+  assertEquals(seen[0].maxTokens, 256);
+  assert(seen[0].system.includes("at most two short sentences"));
+});
+
+Deno.test("D35: study request -> developed prompt, 800 tokens, answer_type study", async () => {
+  const { provider, seen } = recordingProvider();
+  const { handler } = setup({ provider });
+  const ev = await readSse(await handler(post(body({ fragment: "kärnkraftverk procons" }))));
+  assertEquals(ev[0].data.answer_type, "study");
+  assertEquals(ev[0].data.needs_confirmation, false);
+  assertEquals(seen[0].maxTokens, 800);
+  assert(seen[0].system.includes("five to eight short sentences"));
+  const done = ev.at(-1)!.data.breakdown as Record<string, unknown>;
+  assertEquals(done.answer_type, "study");
+});
+
+Deno.test("D35: length setting short/long overrides, invalid value -> 400", async () => {
+  const a = recordingProvider();
+  const h1 = setup({ provider: a.provider }).handler;
+  await (await h1(post(body({ fragment: "förklara växthuseffekten", length: "short" })))).text();
+  assertEquals(a.seen[0].maxTokens, 256);
+  const b = recordingProvider();
+  const h2 = setup({ provider: b.provider }).handler;
+  await (await h2(post(body({ fragment: "vad är pi", length: "long" })))).text();
+  assertEquals(b.seen[0].maxTokens, 800);
+  const h3 = setup().handler;
+  assertEquals((await h3(post(body({ length: "enormous" })))).status, 400);
+});
+
+Deno.test("D35: 'mer' / 'förklara enklare' continue the last answer when history exists", async () => {
+  const { provider, seen } = recordingProvider();
+  const { handler } = setup({ provider });
+  const ctx = { recent_qa: [{ q: "kärnkraftverk procons", a: "Fördelarna är låga utsläpp." }] };
+  await (await handler(post(body({ fragment: "mer", context: ctx })))).text();
+  assert(seen[0].user.includes("<task>continue_more</task>"));
+  assert(seen[0].user.includes("A: Fördelarna är låga utsläpp."));
+  assertEquals(seen[0].maxTokens, 800);
+  await (await handler(post(body({ fragment: "förklara det enklare", context: ctx })))).text();
+  assert(seen[1].user.includes("<task>continue_simpler</task>"));
+  await (await handler(post(body({ fragment: "mer" })))).text();
+  assert(!seen[2].user.includes("<task>"), "no history -> not a continuation");
+});
+
+Deno.test("D35: study answers may be long (1 800 chars) while fact answers are still cut at 600", async () => {
+  const long = "Ett mycket långt svar. ".repeat(60); // ~1 400 chars
+  const study = recordingProvider(long);
+  const hs = setup({ provider: study.provider }).handler;
+  const evS = await readSse(await hs(post(body({ fragment: "förklara växthuseffekten" }))));
+  const nS = evS.filter((e) => e.event === "delta").reduce(
+    (a, e) => a + (e.data.text as string).length,
+    0,
+  );
+  assert(nS > 1300, `study kept ${nS}`);
+  const fact = recordingProvider(long);
+  const hf = setup({ provider: fact.provider }).handler;
+  const evF = await readSse(await hf(post(body({ fragment: "vad är pi" }))));
+  const nF = evF.filter((e) => e.event === "delta").reduce(
+    (a, e) => a + (e.data.text as string).length,
+    0,
+  );
+  assert(nF <= 700 && nF >= 590, `fact kept ${nF}`);
+});

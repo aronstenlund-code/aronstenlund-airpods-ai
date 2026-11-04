@@ -35,6 +35,7 @@ Deno.test("meta fields are parsed and confidence clamped", () => {
     confidence: 1,
     is_question: true,
     needs_confirmation: false,
+    answer_type: "fact",
   });
 });
 
@@ -119,8 +120,27 @@ Deno.test("direct mode: preset meta, no header expected, plain text becomes delt
     confidence: 1,
     is_question: true,
     needs_confirmation: false,
+    answer_type: "fact",
   });
   const ev = [...p.push("  Tio"), ...p.push("."), ...p.finish()];
   assertEquals(ev.map((e) => e.type), ["delta", "delta"]);
   assertEquals(new ResponseParser("auto", "x", 0.6).presetMeta, null);
+});
+
+Deno.test("header mode: answer_type from the header wins, falls back to the server's guess", () => {
+  const withHeader = new ResponseParser("auto", "x", 0.45, false, "fact");
+  const ev = withHeader.push(
+    '{"is_question":true,"answer_type":"study","reconstructed_question":"q","confidence":0.9}\nSvar.',
+  );
+  assertEquals((ev[0] as unknown as { meta: { answer_type: string } }).meta.answer_type, "study");
+  const noType = new ResponseParser("auto", "x", 0.45, false, "study");
+  const ev2 = noType.push(
+    '{"is_question":true,"reconstructed_question":"q","confidence":0.9}\nSvar.',
+  );
+  assertEquals((ev2[0] as unknown as { meta: { answer_type: string } }).meta.answer_type, "study");
+  const bad = new ResponseParser("auto", "x", 0.45, false, "fact");
+  const ev3 = bad.push(
+    '{"is_question":true,"answer_type":"novel","reconstructed_question":"q","confidence":0.9}\nSvar.',
+  );
+  assertEquals((ev3[0] as unknown as { meta: { answer_type: string } }).meta.answer_type, "fact");
 });

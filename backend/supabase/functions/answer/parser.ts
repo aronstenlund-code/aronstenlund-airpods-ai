@@ -5,6 +5,7 @@ export interface Meta {
   confidence: number;
   is_question: boolean;
   needs_confirmation: boolean;
+  answer_type: "fact" | "study";
 }
 
 export type ParserEvent = { type: "meta"; meta: Meta } | { type: "delta"; text: string };
@@ -42,6 +43,7 @@ export class ResponseParser {
     private fragment: string,
     private threshold: number,
     direct = false,
+    private answerType: "fact" | "study" = "fact",
   ) {
     this.isDirect = direct;
     if (direct) {
@@ -51,6 +53,7 @@ export class ResponseParser {
         confidence: 1,
         is_question: true,
         needs_confirmation: false,
+        answer_type: answerType,
       };
     }
   }
@@ -118,6 +121,9 @@ export class ResponseParser {
       confidence,
       is_question,
       needs_confirmation: is_question && confidence < this.threshold,
+      answer_type: h?.answer_type === "study" || h?.answer_type === "fact"
+        ? h.answer_type
+        : this.answerType,
     };
     const out: ParserEvent[] = [{ type: "meta", meta: this._meta }];
     if (rest) out.push(...this.delta(rest));

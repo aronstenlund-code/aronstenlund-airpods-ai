@@ -4,11 +4,12 @@ import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelim
 import { SSE_HEADERS, sseFrame } from "../_shared/sse.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
+import { classifyAnswerType, detectContinuation } from "./length.ts";
 import {
   buildDirectUserMessage,
   buildUserMessage,
   SYSTEM_PROMPT,
-  SYSTEM_PROMPT_DIRECT,
+  systemPromptFor,
 } from "./prompt.ts";
 import { LIMITS, readLimitedJson, validateAnswerRequest } from "./validate.ts";
 
@@ -32,7 +33,10 @@ export interface UsageRecord {
 export interface HandlerConfig {
   confidenceThreshold: number;
   maxTokens: number;
+  /** Token budget / spoken-length cap for developed "study" answers (D35). */
+  maxTokensStudy: number;
   maxAnswerChars: number;
+  maxAnswerCharsStudy: number;
   limits: Limits;
   /** push_to_talk/text: headerless prompt, meta synthesised up front (lowest latency). */
   directModes: boolean;
@@ -42,9 +46,11 @@ export interface HandlerConfig {
 }
 
 export const DEFAULT_CONFIG: HandlerConfig = {
-  confidenceThreshold: 0.6,
+  confidenceThreshold: 0.45,
   maxTokens: 256,
+  maxTokensStudy: 800,
   maxAnswerChars: 600,
+  maxAnswerCharsStudy: 1800,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
   directModes: true,
   priceInPerMTok: 0.10,
@@ -141,7 +147,17 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
 
       const direct = cfg.directModes && body.mode !== "auto";
-      const parser = new ResponseParser(body.mode, body.fragment, cfg.confidenceThreshold, direct);
+      // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
+      const continuation = body.context.recent_qa.length ? detectContinuation(body.fragment) : null;
+      const answerType = classifyAnswerType(body.fragment, body.length, continuation);
+      const maxChars = answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars;
+      const parser = new ResponseParser(
+        body.mode,
+        body.fragment,
+        cfg.confidenceThreshold,
+        direct,
+        answerType,
+      );
       let inputTokens: number | null = null;
       let outputTokens: number | null = null;
       let cacheRead = 0;
@@ -191,11 +207,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       });
       const iterator = provider
         .stream({
-          system: direct ? SYSTEM_PROMPT_DIRECT : SYSTEM_PROMPT,
+          system: direct ? systemPromptFor(answerType) : SYSTEM_PROMPT,
           user: direct
-            ? buildDirectUserMessage(body)
-            : buildUserMessage(body, cfg.confidenceThreshold),
-          maxTokens: cfg.maxTokens,
+            ? buildDirectUserMessage(body, continuation)
+            : buildUserMessage(body, cfg.confidenceThreshold, answerType, continuation),
+          maxTokens: answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens,
           cacheSystem: true,
           signal: ac.signal,
         })[Symbol.asyncIterator]();
@@ -249,6 +265,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 confidence: ev.meta.confidence,
                 is_question: ev.meta.is_question,
                 needs_confirmation: ev.meta.needs_confirmation,
+                answer_type: ev.meta.answer_type,
               });
               if (!ev.meta.is_question) {
                 status = "not_question";
@@ -258,7 +275,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (ttftMs === null) ttftMs = now() - t0;
               answerChars += ev.text.length;
               send("delta", { text: ev.text });
-              if (answerChars >= cfg.maxAnswerChars) {
+              if (answerChars >= maxChars) {
                 status = "truncated";
                 stop = true;
               }
@@ -312,6 +329,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 llm_first_chunk_ms: r2(llmFirstTokenMs),
                 direct,
                 cold,
+                answer_type: answerType,
+                continuation,
               },
               usage: {
                 input_tokens: inputTokens,
@@ -342,6 +361,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               cache_read: cacheRead,
               direct,
               cold,
+              answer_type: answerType,
+              continuation,
             }));
             try {
               await deps.recordUsage(rec);

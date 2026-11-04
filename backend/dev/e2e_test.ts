@@ -278,6 +278,7 @@ Deno.test("e2e: answer, tts and voices as deployed (real entry points, fake upst
         assertEquals(rq.headers["anthropic-version"], "2026-10-21");
         assertEquals(rq.body.model, "claude-haiku-5-5");
         assertEquals(rq.body.stream, true);
+        assertEquals(rq.body.max_tokens, 256, "fact-sized token budget");
         assertEquals(rq.body.thinking, { type: "disabled" });
         assertEquals(rq.body.output_config, { effort: "low" });
         assert(!("temperature" in rq.body));
@@ -293,6 +294,19 @@ Deno.test("e2e: answer, tts and voices as deployed (real entry points, fake upst
         assertEquals(state.usage[0].input_tokens, 500);
         assert((state.usage[0].est_cost_usd as number) > 0);
         assertEquals(state.rpcCalls, ["check_rate_limits"], "one limiter round trip");
+      },
+    );
+
+    await t.step(
+      "answer study request (D35): developed prompt, bigger budget, answer_type in meta",
+      async () => {
+        reset();
+        const ev = await readSse(await ask("push_to_talk", "kärnkraftverk procons", await token()));
+        assertEquals(ev[0].data.answer_type, "study");
+        assertEquals(ev[0].data.needs_confirmation, false);
+        const rq = state.anthropicRequests[0];
+        assertEquals(rq.body.max_tokens, 800);
+        assert(JSON.stringify(rq.body.system).includes("five to eight short sentences"));
       },
     );
 
