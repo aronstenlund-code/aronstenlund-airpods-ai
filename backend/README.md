@@ -101,6 +101,29 @@ Errors before the stream starts are JSON `{"error":{"code","message","fallback"}
 
 `meta` now also carries `answer_type: "fact"\|"study"`. 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer when `recent_qa` is present. Confirmation questions are rare by design (target < 5 %); a confirmation the assistant did ask last is passed to the model as `<last_assistant_turn>confirmation` so the next fragment is read as the reply. Limits: body 64 KB, `recent_qa` answers up to 1 500 chars each.
 
+## Rizzläge: `persona: "social"` + `social` (D43/D45)
+Fast path for the live wingman. Send `persona: "social"` **and** a `social` object (`mode` any explicit mode, `"tutor"` recommended; `fragment` may be empty):
+```json
+{ "fragment": "", "mode": "tutor", "language": "sv", "persona": "social",
+  "social": { "style": "flirtig|rolig|självsäker|avslappnad|uppriktig", "trigger": "other_spoke|stall|opener",
+              "transcript": [{"speaker":"other","text":"..."},{"speaker":"user","text":"..."}],
+              "interests": ["löpning"], "profile": "" } }
+```
+Defaults: `style` rolig, `trigger` other_spoke. A non-empty `fragment` with `trigger: other_spoke` is appended as the other person's latest line. Limits: `transcript` 40 lines x 300 chars (send the last ~2 min), `interests` 10 x 60, `profile` 1000 (413 otherwise); `social` requires `persona: "social"`. Without `social`, `persona: "social"` keeps the older D42 single-line suggestion.
+
+Response: **no `meta`, no `delta`**. One event, then `done`:
+```
+event: suggestions
+data: ["Chili? Då vet jag vem som bjuder.","Hur stark, är du modig eller galen?"]
+
+event: done
+data: {"answered":true,"timing":{"ttft_ms":1010,...},"usage":{...}}
+```
+- Array of 2-3 strings, **best first**, each <= 8 words (dropped otherwise), Swedish, written to be spoken. The app speaks `[0]` in a pause and shows the rest.
+- It is sent as soon as two clean lines have streamed (the model writes three; the third is not waited for).
+- Filter: lines with sexual or pressuring wording are dropped. If nothing survives (or the model returns nothing) a safe fallback is sent (`["Berätta mer om det.","Hur har din dag varit?"]`; if the other person's latest line is a no/leaving/discomfort -> `["Okej, helt lugnt.","Vi tar det en annan gång."]`) and the usage row has `status: "filtered"`.
+- Decline handling: a no/leaving/discomfort in the other person's latest words is flagged to the model (`<signal>decline`), so every option accepts it kindly or ends the conversation warmly. Nothing is stored: the transcript lives only in the request; usage rows hold counts and timings.
+
 ## API: `GET /voices`
 `GET https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/voices` with the same headers as `/answer` -> `200 {"voices":[{"name":"Astrid","id":"..."},...],"default_id":"..."}` (names + ids from `ELEVENLABS_VOICES`; no secrets, no ElevenLabs call; cacheable 5 min). `voices` may be empty if the secret is not set yet; the app should then offer only Apple's voice. Same errors as the other endpoints (401/405/429).
 

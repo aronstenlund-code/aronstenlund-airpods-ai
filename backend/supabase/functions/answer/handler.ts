@@ -6,6 +6,7 @@ import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.t
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
+import { detectDecline, FALLBACK_DECLINE, FALLBACK_SUGGESTIONS, parseSuggestions } from "./rizz.ts";
 import {
   buildDirectUserMessage,
   buildUserMessage,
@@ -274,6 +275,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             }
           };
           let stop = false;
+          const rizz = plan?.kind === "rizz";
+          let rizzBuf = "";
           const emit = (ev: ParserEvent) => {
             if (ev.type === "meta") {
               metaMs = now() - t0;
@@ -306,18 +309,38 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (chunk.cacheWriteTokens !== undefined) cacheWrite = chunk.cacheWriteTokens;
               return;
             }
-            for (const ev of parser.push(chunk.text)) emit(ev);
+            if (rizz) {
+              rizzBuf += chunk.text;
+              // Two clean lines are enough (best first): answer now instead of waiting for the stream to end.
+              const done = rizzBuf.slice(0, rizzBuf.lastIndexOf("\n") + 1);
+              if (done && parseSuggestions(done).length >= 2) stop = true;
+            } else for (const ev of parser.push(chunk.text)) emit(ev);
           };
 
           try {
-            if (parser.presetMeta) emit({ type: "meta", meta: parser.presetMeta });
+            if (parser.presetMeta && !rizz) emit({ type: "meta", meta: parser.presetMeta });
             let r = first;
             while (!r.done && !stop && !closed) {
               handle(r.value);
               if (stop || closed) break;
               r = await iterator.next();
             }
-            if (!stop) { for (const ev of parser.finish()) emit(ev); }
+            if (rizz) {
+              // D43: one `suggestions` event (2-3 options, best first), nothing else.
+              // After an early stop the last line may be cut mid-sentence: only complete lines count.
+              let options = parseSuggestions(
+                stop ? rizzBuf.slice(0, rizzBuf.lastIndexOf("\n") + 1) : rizzBuf,
+              );
+              if (!options.length) {
+                options = detectDecline(body) ? FALLBACK_DECLINE : FALLBACK_SUGGESTIONS;
+                status = "filtered";
+              }
+              ttftMs = now() - t0;
+              metaMs = ttftMs;
+              send("suggestions", options);
+            } else if (!stop) {
+              for (const ev of parser.finish()) emit(ev);
+            }
             if (stop) ac.abort();
             if (parser.headerFailed) {
               console.warn(JSON.stringify({ evt: "header_parse_failed", mode: body.mode }));
@@ -332,7 +355,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             }
             const r2 = (n: number | null) => (n === null ? null : Math.round(n));
             send("done", {
-              answered: status === "ok" || status === "truncated",
+              answered: status === "ok" || status === "truncated" || status === "filtered",
               timing: {
                 meta_ms: r2(metaMs),
                 ttft_ms: r2(ttftMs),

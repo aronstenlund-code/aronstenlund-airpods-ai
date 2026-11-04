@@ -19,6 +19,7 @@ const base: AnswerRequest = {
   persona: "interview",
   personaSetup: "Lagerarbetare, dagtid, truckkort krävs, teamarbete.",
   turn: "question",
+  social: null,
   commands: [],
   context: { transcript: "", recent_qa: [], prep_terms: [] },
 };
@@ -90,7 +91,7 @@ Deno.test("persona prompts: structure, STAR, no invented experience, consent and
   assertStringIncludes(SYSTEM_PROMPT_SOCIAL, "knows that the app listens");
   assertStringIncludes(SYSTEM_PROMPT_SOCIAL, "No manipulation, pressure");
   assertStringIncludes(SYSTEM_PROMPT_SOCIAL, "Age-appropriate");
-  assertStringIncludes(SYSTEM_PROMPT_SOCIAL, "respecting that");
+  assertStringIncludes(SYSTEM_PROMPT_SOCIAL, "accept that kindly");
   assertStringIncludes(SYSTEM_PROMPT_SOCIAL, "ONE short, natural thing");
   for (const p of [SYSTEM_PROMPT_INTERVIEW, SYSTEM_PROMPT_SOCIAL, SYSTEM_PROMPT_PREP]) {
     assertStringIncludes(p, "Every sentence must carry content");

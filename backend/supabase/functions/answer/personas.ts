@@ -1,18 +1,20 @@
 import { COMMON, contextParts, INTRO, sanitizeTagged } from "./prompt.ts";
 import type { AnswerType } from "./length.ts";
 import type { AnswerRequest } from "./validate.ts";
+import { buildRizzUserMessage, SYSTEM_PROMPT_RIZZ } from "./rizz.ts";
 
 /**
  * D42 personas on the hands-free loop (+ interview preparation). General principles only; the
  * examples are my own. Consent is part of the design: social suggestions are for a voluntary test
  * where the friend knows the app listens; nothing here hides the app or helps covert use.
  */
-export type PlanKind = "interview" | "social" | "prep";
+export type PlanKind = "interview" | "social" | "prep" | "rizz";
 export type PersonaTask =
   | "interview_question"
   | "interview_feedback"
   | "interview_summary"
   | "social_suggestion"
+  | "rizz_suggestions"
   | "interview_prep";
 
 export interface Plan {
@@ -69,6 +71,16 @@ export function personaPlan(req: AnswerRequest): Plan | null {
       maxChars: 1300,
     };
   }
+  if (req.persona === "social" && req.social) {
+    // D43 fast path: 2-3 ultra-short options as one `suggestions` event.
+    return {
+      kind: "rizz",
+      task: "rizz_suggestions",
+      answerType: "fact",
+      maxTokens: 100,
+      maxChars: 600,
+    };
+  }
   if (req.persona === "social") {
     return {
       kind: "social",
@@ -122,6 +134,7 @@ ${COMMON}
 Never invent experience, employers or numbers for the student: where a personal example belongs write a short sentence such as "Här lägger du ett konkret exempel från dig." (first person elsewhere, never mixing "jag" and "du" in one sentence).`;
 
 export function personaSystemPrompt(kind: PlanKind): string {
+  if (kind === "rizz") return SYSTEM_PROMPT_RIZZ;
   return kind === "interview"
     ? SYSTEM_PROMPT_INTERVIEW
     : kind === "social"
@@ -130,6 +143,7 @@ export function personaSystemPrompt(kind: PlanKind): string {
 }
 
 export function buildPersonaUserMessage(req: AnswerRequest, task: PersonaTask): string {
+  if (task === "rizz_suggestions") return buildRizzUserMessage(req);
   const parts = [`<language>${req.language}</language>`, `<task>${task}</task>`];
   if (req.personaSetup) {
     parts.push(`<persona_setup>\n${sanitizeTagged(req.personaSetup)}\n</persona_setup>`);

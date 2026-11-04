@@ -3,6 +3,18 @@ import { HttpError } from "../_shared/errors.ts";
 export type Mode = "push_to_talk" | "auto" | "text" | "tutor" | "interview_prep";
 export type Persona = "tutor" | "interview" | "social";
 export type Turn = "question" | "user_answer";
+export type SocialStyle = "flirtig" | "rolig" | "självsäker" | "avslappnad" | "uppriktig";
+export type SocialTrigger = "other_spoke" | "stall" | "opener";
+/** D43 Rizzläge input: rolling conversation + style + trigger. Held in memory by the client only. */
+export interface SocialInput {
+  style: SocialStyle;
+  trigger: SocialTrigger;
+  transcript: { speaker: "user" | "other"; text: string }[];
+  interests: string[];
+  profile: string;
+}
+const STYLES: SocialStyle[] = ["flirtig", "rolig", "självsäker", "avslappnad", "uppriktig"];
+const TRIGGERS: SocialTrigger[] = ["other_spoke", "stall", "opener"];
 export type Language = "sv" | "en";
 export type LengthSetting = "short" | "adaptive" | "long";
 
@@ -20,6 +32,8 @@ export interface AnswerRequest {
   personaSetup: string;
   /** Interview persona: is the fragment the interviewer's question or the user's own answer? */
   turn: Turn;
+  /** D43: present => Rizzläge fast path (persona social): returns a `suggestions` event. */
+  social: SocialInput | null;
   /** The student's own matched keyword commands (D37), <= 10. */
   commands: { keyword: string; instruction: string }[];
   context: {
@@ -40,6 +54,11 @@ export const LIMITS = {
   prepTerm: 60,
   goals: 1500,
   personaSetup: 1500,
+  socialLines: 40,
+  socialLine: 300,
+  socialInterests: 10,
+  socialInterest: 60,
+  socialProfile: 1000,
   commands: 10,
   commandKeyword: 60,
   commandInstruction: 300,
@@ -76,7 +95,9 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
   }
   const language = o.language;
   if (language !== "sv" && language !== "en") throw bad('language must be "sv" or "en"');
-  const fragment = str(o.fragment, "fragment", LIMITS.fragment, true);
+  // Rizzläge (D43) may be triggered by silence or an opener: then there is no fragment.
+  const hasSocial = o.social !== undefined && o.social !== null;
+  const fragment = str(o.fragment, "fragment", LIMITS.fragment, !hasSocial);
 
   const c = (o.context ?? {}) as Record<string, unknown>;
   if (typeof c !== "object" || c === null || Array.isArray(c)) {
@@ -145,6 +166,58 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     throw bad('turn must be "question" or "user_answer"');
   }
 
+  let social: SocialInput | null = null;
+  if (hasSocial) {
+    const x = o.social as Record<string, unknown>;
+    if (typeof x !== "object" || Array.isArray(x)) throw bad("social must be an object");
+    if (persona !== "social") throw bad('social requires persona "social"');
+    const style = x.style === undefined || x.style === null ? "rolig" : x.style;
+    if (!STYLES.includes(style as SocialStyle)) {
+      throw bad(`social.style must be one of ${STYLES.join(", ")}`);
+    }
+    const trigger = x.trigger === undefined || x.trigger === null ? "other_spoke" : x.trigger;
+    if (!TRIGGERS.includes(trigger as SocialTrigger)) {
+      throw bad(`social.trigger must be one of ${TRIGGERS.join(", ")}`);
+    }
+    const trRaw = x.transcript ?? [];
+    if (!Array.isArray(trRaw)) throw bad("social.transcript must be an array");
+    if (trRaw.length > LIMITS.socialLines) {
+      throw new HttpError(
+        413,
+        "payload_too_large",
+        `social.transcript exceeds ${LIMITS.socialLines} lines`,
+      );
+    }
+    const transcript = trRaw.map((l, i) => {
+      const e = (l ?? {}) as Record<string, unknown>;
+      if (e.speaker !== "user" && e.speaker !== "other") {
+        throw bad(`social.transcript[${i}].speaker must be "user" or "other"`);
+      }
+      return {
+        speaker: e.speaker as "user" | "other",
+        text: str(e.text, `social.transcript[${i}].text`, LIMITS.socialLine),
+      };
+    }).filter((l) => l.text);
+    const inRaw = x.interests ?? [];
+    if (!Array.isArray(inRaw)) throw bad("social.interests must be an array");
+    if (inRaw.length > LIMITS.socialInterests) {
+      throw new HttpError(
+        413,
+        "payload_too_large",
+        `social.interests exceeds ${LIMITS.socialInterests} items`,
+      );
+    }
+    const interests = inRaw.map((t, i) => str(t, `social.interests[${i}]`, LIMITS.socialInterest))
+      .filter(Boolean);
+    social = {
+      style: style as SocialStyle,
+      trigger: trigger as SocialTrigger,
+      transcript,
+      interests,
+      profile: str(x.profile, "social.profile", LIMITS.socialProfile),
+    };
+  }
+
   const length = o.length === undefined || o.length === null ? "adaptive" : o.length;
   if (length !== "short" && length !== "adaptive" && length !== "long") {
     throw bad('length must be "short", "adaptive" or "long"');
@@ -158,6 +231,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     persona,
     personaSetup,
     turn,
+    social,
     commands,
     context: { transcript, recent_qa, prep_terms },
   };

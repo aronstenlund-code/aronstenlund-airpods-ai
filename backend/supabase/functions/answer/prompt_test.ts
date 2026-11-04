@@ -22,6 +22,7 @@ const base: AnswerRequest = {
   persona: "tutor",
   personaSetup: "",
   turn: "question",
+  social: null,
   commands: [],
   context: { transcript: "", recent_qa: [], prep_terms: [] },
 };

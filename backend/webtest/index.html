@@ -21,6 +21,15 @@
   tr.key td { color:var(--ok); font-size:17px; } .err { color:var(--bad); } .small { font-size:12px; color:var(--mut); }
   form { display:flex; gap:8px; } input { flex:1; min-width:0; padding:10px; border-radius:8px; border:1px solid #2b3442; background:#0b0e13; color:var(--fg); font-size:16px; }
   form button { padding:10px 14px; border-radius:8px; border:0; background:#2b3442; color:var(--fg); font-size:16px; }
+  .rz { border:1px solid #2b3442; } .chips { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0; }
+  .chip { padding:7px 12px; border-radius:999px; border:1px solid #2b3442; background:#0b0e13; color:var(--fg); font-size:14px; }
+  .chip.on { background:var(--acc); color:#04121f; border-color:var(--acc); font-weight:700; }
+  .rzrow { display:flex; gap:8px; margin:6px 0; } .rzrow input { flex:1; min-width:0; }
+  .rzrow button, .rzbtn { padding:10px 12px; border-radius:8px; border:0; background:#2b3442; color:var(--fg); font-size:15px; }
+  .rzbtn.rec { background:var(--bad); color:#fff; }
+  .opt { display:block; width:100%; text-align:left; margin:6px 0; padding:11px 12px; border-radius:10px; border:1px solid #2b3442; background:#0b0e13; color:var(--fg); font-size:18px; }
+  .opt.best { border-color:var(--ok); } .opt .n { color:var(--mut); font-size:12px; margin-right:6px; }
+  .conv div { font-size:13px; color:var(--mut); } .conv .me { color:var(--acc); }
 </style>
 </head>
 <body>
@@ -36,6 +45,17 @@
   </div>
   <div class="card"><div class="lbl">Eller skriv</div>
     <form id="form"><input id="txt" placeholder="t.ex. roten ur hundra" autocomplete="off"><button>Skicka</button></form>
+  </div>
+  <div class="card rz"><div class="lbl">Rizzläge</div>
+    <div class="small">Välj stil. Skriv eller säg vad den andra sa – bästa förslaget läses upp, tryck på ett förslag för att säga det. Inget ljud sparas; samtalet finns bara i sidan.</div>
+    <div class="chips" id="styles"></div>
+    <div class="rzrow"><input id="rzother" placeholder="Den andra sa …" autocomplete="off"><button id="rzmic" class="rzbtn" type="button">Mick</button><button id="rzsend" type="button">Skicka</button></div>
+    <div class="rzrow"><button id="rzstall" type="button" class="rzbtn">Tystnad (4 s)</button><button id="rzopen" type="button" class="rzbtn">Öppningsrad</button><button id="rzreset" type="button" class="rzbtn">Nytt samtal</button></div>
+    <div class="rzrow"><input id="rzint" placeholder="Intressen, kommaseparerade (valfritt)" autocomplete="off"></div>
+    <div class="rzrow"><input id="rzprof" placeholder="Om den andra (valfritt, för öppningsrad)" autocomplete="off"></div>
+    <div id="rzopts"></div>
+    <div class="small" id="rztime"></div>
+    <div class="conv" id="rzconv"></div>
   </div>
   <div class="small" id="status">Startar …</div>
 </main>
@@ -229,6 +249,74 @@ btn.addEventListener("pointerup", stopListening);
 btn.addEventListener("pointercancel", stopListening);
 btn.addEventListener("contextmenu", (e) => e.preventDefault());
 $("form").addEventListener("submit", (e) => { e.preventDefault(); const v = $("txt").value.trim(); if (!v) return; unlockAudio(); $("txt").value = ""; ask(v, "text", now()); });
+
+// ---------- Rizzläge (D43): live wingman panel ----------
+const STYLES = ["flirtig", "rolig", "självsäker", "avslappnad", "uppriktig"];
+const rz = { style: "rolig", lines: [], busy: false, rec: null };
+function rzChips() {
+  $("styles").innerHTML = "";
+  for (const st of STYLES) { const b = document.createElement("button"); b.type = "button"; b.className = "chip" + (st === rz.style ? " on" : ""); b.textContent = st; b.onclick = () => { rz.style = st; rzChips(); }; $("styles").appendChild(b); }
+}
+function rzConv() { $("rzconv").innerHTML = rz.lines.slice(-8).map((l) => '<div class="' + (l.speaker === "user" ? "me" : "") + '">' + (l.speaker === "user" ? "Jag: " : "Den andra: ") + l.text.replace(/</g, "&lt;") + "</div>").join(""); }
+async function rzAsk(trigger) {
+  if (rz.busy) return;
+  rz.busy = true; unlockAudio();
+  const social = { style: rz.style, trigger, transcript: rz.lines.slice(-12), interests: $("rzint").value.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 10), profile: $("rzprof").value.trim().slice(0, 1000) };
+  const r = { chain: Promise.resolve(), spoken: "", ttsFirstByte: null, ttsReq: null, firstAudio: null };
+  const t0 = now(); let tSug = null, options = null, srv = null;
+  $("rzopts").textContent = "…"; $("rztime").textContent = "";
+  try {
+    const res = await api("answer", { method: "POST", body: JSON.stringify({ fragment: "", mode: "tutor", language: "sv", persona: "social", context: {}, social }) });
+    if (!res.ok) throw new Error(await errText(res));
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+    let buf = "";
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += value; let i;
+      while ((i = buf.indexOf("\n\n")) !== -1) {
+        const frame = buf.slice(0, i); buf = buf.slice(i + 2);
+        const ev = /^event: (.*)$/m.exec(frame)?.[1], data = JSON.parse(/^data: (.*)$/m.exec(frame)?.[1] ?? "null");
+        if (ev === "suggestions" && Array.isArray(data)) {
+          tSug = now(); options = data; rzShow(options);
+          speak(options[0], r);                       // the best option is spoken at once
+        } else if (ev === "done") srv = data; else if (ev === "error") throw new Error((data.code || "fel") + ": " + data.message);
+      }
+    }
+    await r.chain;
+    $("rztime").textContent = "Förslag efter " + Math.round(tSug - t0) + " ms" + (r.firstAudio ? ", första ljud efter " + Math.round(r.firstAudio - t0) + " ms" : "") + (srv ? " (server " + srv.timing.ttft_ms + " ms, " + (srv.breakdown.cold ? "kall" : "varm") + " start)" : "");
+  } catch (e) { $("rzopts").textContent = ""; $("status").className = "small err"; $("status").textContent = "Rizzläge: " + e.message; }
+  rz.busy = false;
+}
+function rzShow(opts) {
+  $("rzopts").innerHTML = "";
+  opts.forEach((o, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "opt" + (i === 0 ? " best" : "");
+    b.innerHTML = '<span class="n">' + (i === 0 ? "bäst" : i + 1) + "</span>"; b.appendChild(document.createTextNode(o));
+    b.onclick = () => {                                 // "I said this": speak it again and add it to the conversation
+      unlockAudio(); const r = { chain: Promise.resolve(), spoken: "", ttsFirstByte: null, ttsReq: null, firstAudio: null };
+      speak(o, r); rz.lines.push({ speaker: "user", text: o }); rzConv();
+    };
+    $("rzopts").appendChild(b);
+  });
+}
+function rzOther(text) { const t = text.trim(); if (!t) return; rz.lines.push({ speaker: "other", text: t.slice(0, 300) }); rzConv(); $("rzother").value = ""; rzAsk("other_spoke"); }
+$("rzsend").onclick = () => rzOther($("rzother").value);
+$("rzother").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); rzOther($("rzother").value); } });
+$("rzstall").onclick = () => rzAsk("stall");
+$("rzopen").onclick = () => rzAsk("opener");
+$("rzreset").onclick = () => { rz.lines = []; rzConv(); $("rzopts").innerHTML = ""; $("rztime").textContent = ""; };
+$("rzmic").onclick = () => {
+  if (!SR) { $("status").className = "small err"; $("status").textContent = "Ingen taligenkänning här – skriv i stället."; return; }
+  if (rz.rec) { try { rz.rec.stop(); } catch {} return; }
+  setSession("play-and-record");
+  const rc = rz.rec = new SR(); rc.lang = "sv-SE"; rc.continuous = false; rc.interimResults = true; let text = "";
+  rc.onresult = (e) => { text = ""; for (let i = 0; i < e.results.length; i++) text += " " + e.results[i][0].transcript; $("rzother").value = text.trim(); };
+  rc.onerror = () => {}; rc.onend = () => { rz.rec = null; $("rzmic").classList.remove("rec"); $("rzmic").textContent = "Mick"; if (text.trim()) rzOther(text); };
+  $("rzmic").classList.add("rec"); $("rzmic").textContent = "Lyssnar – tryck igen";
+  try { rc.start(); } catch { rz.rec = null; }
+};
+rzChips();
 
 // ---------- boot: sign in, find the voice, warm the functions ----------
 (async function boot() {

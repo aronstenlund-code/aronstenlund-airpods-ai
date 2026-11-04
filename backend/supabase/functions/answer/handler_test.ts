@@ -639,3 +639,122 @@ Deno.test("D42: persona never applies in auto mode; ordinary tutor flow untouche
   )).text();
   assert(b.seen[0].system.includes("tutoring in a spoken conversation"));
 });
+
+// ---- D43 Rizzläge ----
+const socialBody = (o: Record<string, unknown> = {}) => ({
+  fragment: "",
+  mode: "tutor",
+  language: "sv",
+  persona: "social",
+  context: {},
+  social: {
+    style: "rolig",
+    trigger: "other_spoke",
+    transcript: [{ speaker: "other", text: "Jag har tränat inför ett lopp i helgen." }],
+    interests: ["löpning"],
+    profile: "",
+  },
+  ...o,
+});
+
+Deno.test("D43: social + social{} -> ONE suggestions event (array of 2-3), no meta/delta, tiny budget", async () => {
+  const { provider, seen } = recordingProvider(
+    "Vilket lopp är det?\nHoppas det blir sol!\nVad springer du helst?\nEn fjärde?",
+  );
+  const { handler, usage } = setup({ provider });
+  const ev = await readSse(await handler(post(socialBody())));
+  assertEquals(ev.map((e) => e.event), ["suggestions", "done"]);
+  // streamed in 23-char chunks: the answer goes out as soon as two clean lines are complete
+  assertEquals(ev[0].data as unknown, ["Vilket lopp är det?", "Hoppas det blir sol!"]);
+  assertEquals(ev[1].data.answered, true);
+  assertEquals(seen[0].maxTokens, 100);
+  assert(seen[0].system.includes("conversation wingman"));
+  assert(
+    seen[0].user.includes("<style>rolig</style>") &&
+      seen[0].user.includes("Den andra: Jag har tränat inför ett lopp i helgen."),
+  );
+  assertEquals(usage[0].mode, "tutor");
+  assert(usage[0].ttft_ms !== null);
+});
+
+Deno.test("D43: unsafe or over-long output is filtered; if nothing is left, a safe fallback is sent", async () => {
+  const { provider } = recordingProvider("Du har så sexig kropp\nVill du ligga med mig?");
+  const { handler, usage } = setup({ provider });
+  const ev = await readSse(await handler(post(socialBody())));
+  assertEquals(ev[0].event, "suggestions");
+  assertEquals(ev[0].data as unknown, ["Berätta mer om det.", "Hur har din dag varit?"]);
+  assertEquals(usage[0].status, "filtered");
+  const d = await readSse(
+    await setup({ provider }).handler(
+      post(
+        socialBody({
+          social: {
+            ...socialBody().social,
+            transcript: [{ speaker: "other", text: "Nej tack, sluta." }],
+          },
+        }),
+      ),
+    ),
+  );
+  assertEquals(d[0].data as unknown, ["Okej, helt lugnt.", "Vi tar det en annan gång."]);
+});
+
+Deno.test("D43: decline signal and stall/opener triggers (no fragment) reach the prompt", async () => {
+  const { provider, seen } = recordingProvider("Okej, ingen fara.");
+  const { handler } = setup({ provider });
+  await (await handler(
+    post(
+      socialBody({
+        social: {
+          ...socialBody().social,
+          transcript: [{ speaker: "other", text: "Jag måste gå nu." }],
+        },
+      }),
+    ),
+  )).text();
+  assert(seen[0].user.includes("<signal>decline</signal>"));
+  await (await handler(post(socialBody({ social: { ...socialBody().social, trigger: "stall" } }))))
+    .text();
+  assert(seen[1].user.includes("<trigger>stall</trigger>"));
+  await (await handler(
+    post(
+      socialBody({
+        social: {
+          style: "uppriktig",
+          trigger: "opener",
+          transcript: [],
+          interests: ["bergsklättring"],
+          profile: "Gillar indisk mat.",
+        },
+      }),
+    ),
+  )).text();
+  assert(
+    seen[2].user.includes("<trigger>opener</trigger>") &&
+      seen[2].user.includes("Gillar indisk mat.") && seen[2].user.includes("(inget sagt ännu)"),
+  );
+});
+
+Deno.test("D43: empty model output -> fallback suggestions (never an empty array); old D42 social path unchanged", async () => {
+  const { handler } = setup({ provider: recordingProvider("").provider });
+  const ev = await readSse(await handler(post(socialBody())));
+  assertEquals(ev[0].event, "suggestions");
+  assert((ev[0].data as unknown as string[]).length >= 2);
+  const old = recordingProvider("Låter kul!");
+  const e2 = await readSse(
+    await setup({ provider: old.provider }).handler(
+      post(body({ mode: "tutor", persona: "social", fragment: "jag var på konsert" })),
+    ),
+  );
+  assertEquals(e2.map((e) => e.event).slice(0, 2), ["meta", "delta"]);
+});
+
+Deno.test("D43: two clean lines end the stream early; over-eight-word lines are dropped", async () => {
+  const { provider } = recordingProvider(
+    "Ett två tre fyra fem sex sju åtta nio\nVilket lopp?\nHoppas det blir sol!\nVad springer du helst?\nFjärde raden här",
+  );
+  const { handler } = setup({ provider });
+  const ev = await readSse(await handler(post(socialBody())));
+  assertEquals(ev[0].data as unknown, ["Vilket lopp?", "Hoppas det blir sol!"]);
+  assertEquals(ev.map((e) => e.event), ["suggestions", "done"]);
+});
