@@ -12,3 +12,6 @@ verify_jwt = true
 
 [functions.tts]
 verify_jwt = true
+
+[functions.stt-token]
+verify_jwt = true

@@ -35,7 +35,7 @@
 <body>
 <main>
   <h1>Lumen webtest</h1>
-  <div class="sub">Håll in knappen, ställ en fråga på svenska, släpp. <span id="voiceinfo"></span> Rösttyp: <select id="ttsmodel"><option value="">standard (flash)</option><option value="eleven_turbo_v2_5">turbo</option><option value="eleven_multilingual_v2">multilingual (dyrare)</option></select></div>
+  <div class="sub">Håll in knappen, ställ en fråga på svenska, släpp. <span id="voiceinfo"></span> <span id="sttinfo">Taligenkänning: kontrollerar Scribe …</span> <input id="keyterms" placeholder="nyckelord för Scribe (valfritt, kommaseparerade)" autocomplete="off" style="width:100%;margin-top:6px;font-size:13px"> Rösttyp: <select id="ttsmodel"><option value="">standard (flash)</option><option value="eleven_turbo_v2_5">turbo</option><option value="eleven_multilingual_v2">multilingual (dyrare)</option></select></div>
   <button id="btn" type="button">Håll in för att fråga</button>
   <div class="card"><div class="lbl">Du sa</div><div id="heard">–</div></div>
   <div class="card"><div class="lbl">Svar</div><div id="answer">–</div></div>
@@ -196,7 +196,7 @@ function render(r) {
   const rel = (x) => (x == null || r.release == null ? null : x - r.release);
   const d = (a, b) => (a == null || b == null ? null : a - b);
   let h = "";
-  if (r.mode === "push_to_talk") h += row("Släppte knappen → transkript klart", d(r.stt, r.release));
+  if (r.mode === "push_to_talk") h += row("Släppte knappen → transkript klart (" + (r.recog || "?") + ")", d(r.stt, r.release));
   h += row("Frågan skickad → första svarstext (backend)", d(r.firstText, r.req));
   h += row("Släppte → första svarstext", rel(r.firstText));
   h += row("Röst begärd → första ljudbyte", d(r.ttsFirstByte, r.ttsReq));
@@ -221,7 +221,7 @@ function startListening() {
     const text = (st.final + " " + st.interim).trim();
     st.done = true;
     if (!text) { $("status").className = "small"; $("status").textContent = "Hörde ingenting – försök igen."; return; }
-    const t = now(); ask(text, "push_to_talk", st.releasedAt); run.stt = t; render(run);
+    const t = now(); ask(text, "push_to_talk", st.releasedAt); run.stt = t; run.recog = scribeOff ? "Safari (reserv)" : "Safari"; render(run);
   };
   rec.onresult = (e) => {
     st.final = ""; st.interim = "";
@@ -244,9 +244,9 @@ function stopListening() {
   current && current.stop();
 }
 const btn = $("btn");
-btn.addEventListener("pointerdown", (e) => { e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch {} startListening(); });
-btn.addEventListener("pointerup", stopListening);
-btn.addEventListener("pointercancel", stopListening);
+btn.addEventListener("pointerdown", (e) => { e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch {} (sttTok && !scribeOff && navigator.mediaDevices ? startScribe : startListening)(); });
+btn.addEventListener("pointerup", () => (current && current.kind === "scribe" ? stopScribe : stopListening)());
+btn.addEventListener("pointercancel", () => (current && current.kind === "scribe" ? stopScribe : stopListening)());
 btn.addEventListener("contextmenu", (e) => e.preventDefault());
 $("form").addEventListener("submit", (e) => { e.preventDefault(); const v = $("txt").value.trim(); if (!v) return; unlockAudio(); $("txt").value = ""; ask(v, "text", now()); });
 
@@ -318,12 +318,106 @@ $("rzmic").onclick = () => {
 };
 rzChips();
 
+
+// ---------- Scribe v2 Realtime (D44): default recogniser, Safari is the fallback ----------
+// Protocol notes (ElevenLabs API reference): wss .../v1/speech-to-text/realtime, single-use `token` query
+// param from our /stt-token, JSON messages `input_audio_chunk`, replies `partial_transcript` /
+// `committed_transcript`. The exact audio field names are an UNTESTED ASSUMPTION until the key has the
+// speech_to_text permission; any failure falls back to Safari for the rest of the page session.
+let sttTok = null, scribeOff = false;
+async function prefetchStt() {
+  if (scribeOff) return;
+  try {
+    const r = await api("stt-token", { method: "GET" });
+    if (!r.ok) throw new Error(await errText(r));
+    sttTok = await r.json();
+    $("sttinfo").textContent = "Taligenkänning: Scribe v2 (redo)";
+  } catch (e) {
+    sttTok = null; scribeOff = true;
+    $("sttinfo").textContent = "Taligenkänning: Safari (Scribe ej tillgänglig: " + e.message + ")";
+  }
+}
+function pcm16b64(f32, inRate) {
+  const ratio = inRate / 16000, n = Math.floor(f32.length / ratio), out = new Int16Array(n);
+  for (let i = 0; i < n; i++) {
+    const a = Math.floor(i * ratio), b = Math.min(f32.length, Math.floor((i + 1) * ratio));
+    let sum = 0; for (let k = a; k < b; k++) sum += f32[k];
+    const v = Math.max(-1, Math.min(1, sum / Math.max(1, b - a)));
+    out[i] = v < 0 ? v * 32768 : v * 32767;
+  }
+  const bytes = new Uint8Array(out.buffer); let bin = "";
+  for (let i = 0; i < bytes.length; i += 8192) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+  return { b64: btoa(bin), samples: n };
+}
+async function startScribe() {
+  if (run && run.busy) return;
+  const tok = sttTok; sttTok = null;
+  unlockAudio(); setSession("play-and-record");
+  const st = { kind: "scribe", startedAt: now(), released: false, queue: [], ws: null, open: false, final: "", partial: "", samples: 0, failed: null, waiter: null, done: false };
+  current = st;
+  $("btn").classList.add("rec"); $("btn").textContent = "Lyssnar …"; $("status").className = "small"; $("status").textContent = "";
+  $("heard").textContent = "…"; $("heard").className = ""; $("answer").textContent = "–"; $("times").innerHTML = "";
+  const q = new URLSearchParams({ model_id: tok.model_id, token: tok.token, language_code: tok.language_code || "swe", audio_format: "pcm_16000", commit_strategy: "manual" });
+  const kt = $("keyterms").value.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 20);
+  for (const k of kt) q.append("keyterms", k);
+  try {
+    const ws = st.ws = new WebSocket(tok.ws_url + "?" + q.toString());
+    ws.onopen = () => { st.open = true; for (const m of st.queue) ws.send(m); st.queue = []; };
+    ws.onmessage = (ev) => {
+      let m; try { m = JSON.parse(ev.data); } catch { return; }
+      const t = m.message_type || m.type || "";
+      if (t === "partial_transcript") { st.partial = m.text || ""; $("heard").textContent = (st.final + " " + st.partial).trim() || "…"; }
+      else if (t === "committed_transcript" || t === "committed_transcript_with_timestamps") { st.final = (st.final + " " + (m.text || "")).trim(); st.partial = ""; $("heard").textContent = st.final; if (st.waiter) st.waiter(); }
+      else if (/error|quota|limit/i.test(t)) { st.failed = t + (m.error ? ": " + m.error : ""); if (st.waiter) st.waiter(); }
+    };
+    ws.onerror = () => { st.failed = st.failed || "websocket-fel"; if (st.waiter) st.waiter(); };
+    ws.onclose = () => { if (!st.done && !st.final && !st.failed) st.failed = "websocket stängdes"; if (st.waiter) st.waiter(); };
+  } catch (e) { st.failed = e.message; }
+  try {
+    const stream = st.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
+    const ac = st.ac = new (window.AudioContext || window.webkitAudioContext)();
+    const src = ac.createMediaStreamSource(stream), proc = st.proc = ac.createScriptProcessor(4096, 1, 1);
+    proc.onaudioprocess = (e) => {
+      if (st.released) return;
+      const { b64, samples } = pcm16b64(e.inputBuffer.getChannelData(0), ac.sampleRate);
+      st.samples += samples;
+      const msg = JSON.stringify({ message_type: "input_audio_chunk", audio_base_64: b64, commit: false, sample_rate: 16000 });
+      if (st.open) st.ws.send(msg); else st.queue.push(msg);
+    };
+    src.connect(proc); proc.connect(ac.destination);
+  } catch (e) { st.failed = "mikrofon: " + e.message; }
+}
+async function stopScribe() {
+  const st = current; if (!st || st.released) return;
+  $("btn").classList.remove("rec"); $("btn").textContent = "Håll in för att fråga";
+  st.released = true; st.releasedAt = now();
+  try { st.proc && st.proc.disconnect(); st.stream && st.stream.getTracks().forEach((t) => t.stop()); st.ac && st.ac.close(); } catch {}
+  if (st.releasedAt - st.startedAt < 350) { st.done = true; try { st.ws.close(); } catch {} $("status").textContent = "För kort – håll in medan du pratar."; prefetchStt(); return; }
+  // commit what we sent (a short silence tail makes sure the last word is flushed)
+  const tail = JSON.stringify({ message_type: "input_audio_chunk", audio_base_64: pcm16b64(new Float32Array(3200), 16000).b64, commit: true, sample_rate: 16000 });
+  try { if (st.open) st.ws.send(tail); else st.queue.push(tail); } catch {}
+  await new Promise((res) => { st.waiter = res; setTimeout(res, 2800); });
+  st.done = true;
+  const text = (st.final + " " + st.partial).trim();
+  try { st.ws.close(); } catch {}
+  const secs = Math.max(1, Math.round(st.samples / 16000));
+  api("stt-token", { method: "POST", body: JSON.stringify({ seconds: secs }) }).catch(() => {});
+  if (!text) {
+    scribeOff = true;
+    $("sttinfo").textContent = "Taligenkänning: Safari (Scribe misslyckades: " + (st.failed || "ingen text") + ")";
+    $("status").className = "small err"; $("status").textContent = "Scribe gav ingen text (" + (st.failed || "tom") + ") – byter till Safari. Försök igen.";
+    return;
+  }
+  const t = now(); ask(text, "push_to_talk", st.releasedAt); run.stt = t; run.recog = "Scribe v2"; render(run);
+  prefetchStt();
+}
+
 // ---------- boot: sign in, find the voice, warm the functions ----------
 (async function boot() {
   try {
     await getToken();
     const warm = (p) => fetch(SB + "/functions/v1/" + p, { headers: { authorization: "Bearer " + token, apikey: KEY, "x-client-info": "warm" } }).catch(() => {});
-    warm("answer"); warm("tts");   // preflight + request boot the isolates (a 405 reply is fine)
+    warm("answer"); warm("tts"); prefetchStt();   // preflight + request boot the isolates (a 405 reply is fine)
     const v = await api("voices", { method: "GET" });
     if (v.ok) {
       const j = await v.json(), adam = (j.voices || []).find((x) => /adam/i.test(x.name));
