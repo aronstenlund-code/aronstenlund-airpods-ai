@@ -4,8 +4,11 @@ import UniformTypeIdentifiers
 /// Prep mode (item 9): paste text or import a PDF/text file; the extracted terms help recognition and answers.
 struct PrepView: View {
     let store: PrepStore
+    let goals: GoalsStore
     @State private var pastedText = ""
     @State private var pastedTitle = ""
+    @State private var goalsDraft = ""
+    @State private var isImportingGoals = false
     @State private var isImporting = false
     @State private var importError: String?
 
@@ -63,6 +66,44 @@ struct PrepView: View {
                 }
             }
 
+            Section {
+                TextEditor(text: $goalsDraft)
+                    .frame(minHeight: 90)
+                    .font(.body)
+                HStack {
+                    Button("Save goals") {
+                        goals.set(text: goalsDraft)
+                        goalsDraft = ""
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(goalsDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    Button {
+                        isImportingGoals = true
+                    } label: {
+                        Label("Import", systemImage: "doc.badge.plus")
+                    }
+                    .buttonStyle(.bordered)
+                    Spacer()
+                    if goals.stored != nil {
+                        Button("Clear", role: .destructive) { goals.clear() }
+                    }
+                }
+                if goals.stored != nil {
+                    Toggle("Use the goals in answers", isOn: Binding(get: { goals.isEnabled }, set: { goals.setEnabled($0) }))
+                    Text("\(goals.text.count) characters · sent compact (\(goals.compact?.count ?? 0) characters): \(goals.terms.prefix(8).joined(separator: ", "))")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .lineLimit(3)
+                }
+                if let error = goals.lastError {
+                    Text(error).font(.footnote).foregroundStyle(.red)
+                }
+            } header: {
+                Text("Course goals")
+            } footer: {
+                Text("Paste the course's goals (målbeskrivning). A compact version is sent with each question so answers match the course level.")
+            }
+
             Section("Active terms") {
                 let terms = store.sttTerms
                 if terms.isEmpty {
@@ -79,6 +120,18 @@ struct PrepView: View {
         }
         .navigationTitle("Prep material")
         .navigationBarTitleDisplayMode(.inline)
+        .fileImporter(isPresented: $isImportingGoals, allowedContentTypes: [.pdf, .plainText, .text]) { result in
+            switch result {
+            case .success(let url):
+                do {
+                    goals.set(text: try DocumentText.read(url))
+                } catch {
+                    importError = error.localizedDescription
+                }
+            case .failure(let error):
+                importError = error.localizedDescription
+            }
+        }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.pdf, .plainText, .text]) { result in
             switch result {
             case .success(let url):

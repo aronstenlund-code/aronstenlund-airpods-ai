@@ -13,12 +13,24 @@ struct AnswerContext: Equatable, Sendable {
     var recentQA: [QA] = []
     /// Prep topics (item 9), ≤30.
     var prepTerms: [String] = []
+    /// Course goals, compact (D37), ≤1 500 chars.
+    var goals: String?
+    /// Personal commands triggered by this question (D37), ≤10 × 300 chars.
+    var commands: [Command] = []
+
+    struct Command: Equatable, Sendable, Codable {
+        var keyword: String
+        var instruction: String
+    }
 
     static let transcriptLimit = 6000
     static let qaLimit = 6
     static let qaFieldLimit = 400
     static let prepTermLimit = 30
     static let prepTermLength = 60
+    static let goalsLimit = 1_500
+    static let commandLimit = 10
+    static let commandFieldLimit = 300
 
     /// Trimmed to the backend's limits (413 otherwise).
     var clamped: AnswerContext {
@@ -26,7 +38,12 @@ struct AnswerContext: Equatable, Sendable {
                       recentQA: recentQA.suffix(Self.qaLimit).map {
                           QA(q: String($0.q.prefix(Self.qaFieldLimit)), a: String($0.a.prefix(Self.qaFieldLimit)))
                       },
-                      prepTerms: prepTerms.prefix(Self.prepTermLimit).map { String($0.prefix(Self.prepTermLength)) })
+                      prepTerms: prepTerms.prefix(Self.prepTermLimit).map { String($0.prefix(Self.prepTermLength)) },
+                      goals: goals.flatMap { $0.isEmpty ? nil : String($0.prefix(Self.goalsLimit)) },
+                      commands: commands.prefix(Self.commandLimit).map {
+                          Command(keyword: String($0.keyword.prefix(Self.commandFieldLimit)),
+                                  instruction: String($0.instruction.prefix(Self.commandFieldLimit)))
+                      })
     }
 }
 

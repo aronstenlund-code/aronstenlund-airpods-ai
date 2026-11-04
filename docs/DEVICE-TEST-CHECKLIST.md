@@ -257,6 +257,15 @@ Signering: **båda** targets (`Lumen` och `LumenControls`) behöver ditt team i 
    efter 1 min tystnad; mikrofonen stängdes av* visas och den röda *Lyssnar*-raden försvinna. Ställ tillbaka till 10.
 6. Tryck *Avsluta pluggläge* mitt i en session: vanlig lyssning ska fortsätta (röda raden kvar).
 
+### 3s. Kursmål och egna kommandon (D37, 5 min)
+1. Meny ⋯ → *Förberedelsematerial* → *Kursmål*: klistra in en målbeskrivning (gärna lång), *Spara mål*. Raden under
+   visar hur många tecken som skickas komprimerat (max 1 500). Ställ en fråga inom ämnet: blev svaret på kursens nivå?
+2. Meny ⋯ → *Kommandon*: lägg till nyckelord `fusion` med en instruktion (t.ex. "förklara och jämför med fission").
+   Säg sedan bara "fusion" med *Håll för att fråga*: svaret ska följa instruktionen. Säg det lite otydligt
+   ("fusjon") – matchas det ändå? Skriv ner.
+3. Säg "spara kommando fotosyntes: förklara steg för steg": raden *Sparade kommandot "fotosyntes"* ska visas, en kort
+   bekräftelse höras i AirPods, och kommandot finnas i listan. Ingen fråga ska ha skickats.
+
 ## Del 4 — Skicka in resultaten (5 min)
 
 1. I appen: tryck **Copy results as Markdown**. Öppna Anteckningar på iPhone, klistra in, dela till

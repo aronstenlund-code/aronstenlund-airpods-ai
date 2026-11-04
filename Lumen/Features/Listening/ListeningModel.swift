@@ -14,6 +14,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let voices: VoiceCatalog
     let notes: NotesStore
     let prep: PrepStore
+    /// Course goals and personal keyword commands (D37).
+    let goals: GoalsStore
+    let commands: CommandStore
+    /// "Sparade kommandot …" after a spoken save, shown once.
+    private(set) var commandNotice: String?
     private let warmer: BackendWarmer?
     private let activity: (any ListeningActivityPresenting)?
     /// Pluggläge (D36): hands-free tutor session.
@@ -33,6 +38,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var isShowingSettings = false
     var isShowingNotes = false
     var isShowingPrep = false
+    var isShowingCommands = false
     var isShowingDiagnostics = false
     /// Text mode (item 6): the question being typed. Works without the microphone.
     var draftQuestion = ""
@@ -68,7 +74,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          transcription: TranscriptionCoordinator, activation: ActivationController,
          answers: AnswerEngine, speaker: Speaker, voices: VoiceCatalog,
          notes: NotesStore, prep: PrepStore, warmer: BackendWarmer? = nil,
-         activity: (any ListeningActivityPresenting)? = nil, study: StudySessionController? = nil) {
+         activity: (any ListeningActivityPresenting)? = nil, study: StudySessionController? = nil,
+         goals: GoalsStore? = nil, commands: CommandStore? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -78,6 +85,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.voices = voices
         self.notes = notes
         self.prep = prep
+        self.goals = goals ?? GoalsStore()
+        self.commands = commands ?? CommandStore()
         self.warmer = warmer
         self.activity = activity
         self.study = study ?? StudySessionController(settings: StudySettings(), session: controller)
@@ -195,6 +204,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         pendingQuestion = nil
         answerNotice = nil
         noteSavedAt = nil
+        commandNotice = nil
     }
 
     func previewVoice() {
@@ -339,9 +349,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
         // Pluggläge sends the whole session's memory (the backend keeps the last 6 pairs).
         let qaLimit = request.trigger == .tutor ? AnswerContext.qaLimit : 3
+        let matched = commands.matches(in: request.query)
+        if !matched.isEmpty {
+            controller.log("Commands matched: \(matched.map(\.keyword).joined(separator: ", "))")
+        }
         let context = AnswerContext(transcript: conversation.recentText(seconds: 60),
                                     recentQA: conversation.recentQA(limit: qaLimit),
-                                    prepTerms: prep.backendTerms)
+                                    prepTerms: prep.backendTerms,
+                                    goals: goals.compact,
+                                    commands: matched.map { AnswerContext.Command(keyword: $0.keyword, instruction: $0.instruction) })
         answers.answer(request, context: context)
     }
 
@@ -401,6 +417,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let before = conversation.finalSegments.count
         conversation.finalize(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
+        if !segment.overlapsPlayback, saveSpokenCommand(segment.text) {
+            return // "spara kommando …" is handled on the phone, never sent as a question
+        }
         if study.isActive {
             // Pluggläge decides turns by silence, not by the question gate.
             study.transcriptFinal(segment.text, at: date)
@@ -408,6 +427,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         activation.segmentFinalized(segment, conversation: conversation, language: language,
                                     isPlaybackSpeaking: controller.playback.isSpeaking, now: date)
+    }
+
+    /// Voice-created command (D37): "spara kommando <ord>: <instruktion>". Confirms by voice.
+    @discardableResult
+    func saveSpokenCommand(_ text: String) -> Bool {
+        guard let parsed = CommandMatcher.parseSaveCommand(text),
+              let command = commands.save(keyword: parsed.keyword, instruction: parsed.instruction) else { return false }
+        commandNotice = "Saved command \"\(command.keyword)\""
+        controller.log("Command saved by voice: \(command.keyword) → \(command.instruction)")
+        let confirmation = language == .swedish ? "Sparade kommandot \(command.keyword)." : "Saved the command \(command.keyword)."
+        if case .paused = state { return true }
+        speaker.enqueue(confirmation, language: language)
+        return true
     }
 
     func receiveAnswer(question: String, answer: String, latencyMs: Double? = nil, source: String) {

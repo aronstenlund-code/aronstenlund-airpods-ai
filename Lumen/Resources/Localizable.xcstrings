@@ -23,6 +23,17 @@
         }
       }
     },
+    "%lld characters · sent compact (%lld characters): %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld tecken · skickas komprimerat (%lld tecken): %@"
+          }
+        }
+      }
+    },
     "%lld terms · %lld characters": {
       "extractionState": "manual",
       "localizations": {
@@ -74,6 +85,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aktiva termer"
+          }
+        }
+      }
+    },
+    "Add command": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lägg till kommando"
           }
         }
       }
@@ -254,6 +276,17 @@
         }
       }
     },
+    "Commands": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kommandon"
+          }
+        }
+      }
+    },
     "Consent given %@": {
       "extractionState": "manual",
       "localizations": {
@@ -283,6 +316,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kunde inte starta"
+          }
+        }
+      }
+    },
+    "Course goals": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kursmål"
           }
         }
       }
@@ -397,6 +441,17 @@
         }
       }
     },
+    "Import": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importera"
+          }
+        }
+      }
+    },
     "Import PDF or text file": {
       "extractionState": "manual",
       "localizations": {
@@ -419,6 +474,17 @@
         }
       }
     },
+    "Instruction (what Lumen should do)": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instruktion (vad Lumen ska göra)"
+          }
+        }
+      }
+    },
     "It listens only while a session is on": {
       "extractionState": "manual",
       "localizations": {
@@ -437,6 +503,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nyckeltermer tas fram på den här telefonen och hjälper taligenkänningen och svaren. Själva texten lämnar aldrig telefonen; bara termerna (max 30) skickas med en fråga."
+          }
+        }
+      }
+    },
+    "Keyword (what you say)": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nyckelord (det du säger)"
           }
         }
       }
@@ -606,6 +683,28 @@
         }
       }
     },
+    "New command": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nytt kommando"
+          }
+        }
+      }
+    },
+    "No commands yet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inga kommandon än."
+          }
+        }
+      }
+    },
     "No material yet.": {
       "extractionState": "manual",
       "localizations": {
@@ -701,6 +800,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ett tryck stänger av mikrofonen. Du kan ta tillbaka ditt samtycke senare under Integritet och samtycke; då visas den här skärmen igen."
+          }
+        }
+      }
+    },
+    "Paste the course's goals (målbeskrivning). A compact version is sent with each question so answers match the course level.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klistra in kursens målbeskrivning. En komprimerad version skickas med varje fråga så att svaren matchar kursens nivå."
           }
         }
       }
@@ -903,6 +1013,17 @@
         }
       }
     },
+    "Replace command": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ersätt kommando"
+          }
+        }
+      }
+    },
     "Resume": {
       "extractionState": "manual",
       "localizations": {
@@ -925,6 +1046,17 @@
         }
       }
     },
+    "Save goals": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spara mål"
+          }
+        }
+      }
+    },
     "Save note": {
       "extractionState": "manual",
       "localizations": {
@@ -943,6 +1075,39 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sparad som anteckning %@"
+          }
+        }
+      }
+    },
+    "Saved command \"%@\"": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sparade kommandot \"%@\""
+          }
+        }
+      }
+    },
+    "Saved commands": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sparade kommandon"
+          }
+        }
+      }
+    },
+    "Say the keyword in a question and Lumen follows the instruction for that answer. You can also say: \"spara kommando fission: förklara fission och jämför med fusion\".": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Säg nyckelordet i en fråga så följer Lumen instruktionen i det svaret. Du kan också säga: \"spara kommando fission: förklara fission och jämför med fusion\"."
           }
         }
       }
@@ -1270,6 +1435,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skriv en fråga"
+          }
+        }
+      }
+    },
+    "Use the goals in answers": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Använd målen i svaren"
           }
         }
       }

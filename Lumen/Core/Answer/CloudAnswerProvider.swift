@@ -106,6 +106,8 @@ final class CloudAnswerProvider: AnswerProvider {
                 var transcript: String?
                 var recent_qa: [AnswerContext.QA]?
                 var prep_terms: [String]?
+                var goals: String?
+                var commands: [AnswerContext.Command]?
             }
             var fragment: String
             var mode: String
@@ -114,7 +116,9 @@ final class CloudAnswerProvider: AnswerProvider {
         }
         let context = Body.Context(transcript: request.context.transcript.isEmpty ? nil : request.context.transcript,
                                    recent_qa: request.context.recentQA.isEmpty ? nil : request.context.recentQA,
-                                   prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms)
+                                   prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms,
+                                   goals: request.context.goals,
+                                   commands: request.context.commands.isEmpty ? nil : request.context.commands)
         let body = Body(fragment: request.fragment, mode: request.mode, language: request.language, context: context)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]

@@ -26,6 +26,7 @@ struct ListeningView: View {
                 Menu {
                     Button { model.isShowingNotes = true } label: { Label("Notes", systemImage: "note.text") }
                     Button { model.isShowingPrep = true } label: { Label("Prep material", systemImage: "books.vertical") }
+                    Button { model.isShowingCommands = true } label: { Label("Commands", systemImage: "command") }
                     Button { model.isShowingDiagnostics = true } label: { Label("Diagnostics", systemImage: "waveform.badge.magnifyingglass") }
                     Button { model.isShowingPrivacy = true } label: { Label("Privacy & consent", systemImage: "hand.raised") }
                 } label: {
@@ -53,9 +54,19 @@ struct ListeningView: View {
                     }
             }
         }
+        .sheet(isPresented: $model.isShowingCommands) {
+            NavigationStack {
+                CommandsView(store: model.commands)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button("Done") { model.isShowingCommands = false }
+                        }
+                    }
+            }
+        }
         .sheet(isPresented: $model.isShowingPrep) {
             NavigationStack {
-                PrepView(store: model.prep)
+                PrepView(store: model.prep, goals: model.goals)
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
                             Button("Done") { model.isShowingPrep = false }
@@ -291,6 +302,11 @@ struct ListeningView: View {
                 Label(notice, systemImage: "info.circle")
                     .font(.footnote)
                     .foregroundStyle(.orange)
+            }
+            if let notice = model.commandNotice {
+                Label(notice, systemImage: "command")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
             if let savedAt = model.noteSavedAt {
                 Label("Saved as a note \(savedAt.formatted(date: .omitted, time: .shortened))", systemImage: "checkmark.circle")
