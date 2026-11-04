@@ -11,6 +11,7 @@ struct SettingsView: View {
             activationSection
             studySection
             voiceSection
+            answerSection
             #if DEBUG
             Section("Debug") {
                 Toggle("Mock answers (debug, no network)", isOn: $model.useMockAnswers)
@@ -61,6 +62,22 @@ struct SettingsView: View {
                 }
             }
             Text("Auto listens for questions in the room. Hold to ask gives the fewest false answers.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private var answerSection: some View {
+        @Bindable var answer = model.answers.settings
+        Section("Answers") {
+            Picker("Answer length", selection: $answer.length) {
+                Text("Short").tag(AnswerLength.short)
+                Text("Adaptive").tag(AnswerLength.adaptive)
+                Text("Detailed").tag(AnswerLength.long)
+            }
+            .pickerStyle(.segmented)
+            Text("Adaptive: one or two sentences for a fact, a developed spoken answer for a topic to understand.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }

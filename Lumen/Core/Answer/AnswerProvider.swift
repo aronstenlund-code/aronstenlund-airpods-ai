@@ -56,19 +56,23 @@ struct AnswerRequest: Equatable, Sendable {
     /// `sv` | `en`.
     var language: String
     var context: AnswerContext
+    /// `short` | `adaptive` | `long` (D35, Svarslängd).
+    var length: String
 
-    init(fragment: String, mode: String, language: String, context: AnswerContext = AnswerContext()) {
+    init(fragment: String, mode: String, language: String, context: AnswerContext = AnswerContext(), length: AnswerLength = .adaptive) {
         self.fragment = String(fragment.prefix(Self.fragmentLimit))
         self.mode = mode
         self.language = language
         self.context = context.clamped
+        self.length = length.rawValue
     }
 
-    init(activation: ActivationRequest, context: AnswerContext = AnswerContext()) {
+    init(activation: ActivationRequest, context: AnswerContext = AnswerContext(), length: AnswerLength = .adaptive) {
         self.init(fragment: activation.query,
                   mode: activation.trigger.backendMode,
                   language: activation.language == .swedish ? "sv" : "en",
-                  context: context)
+                  context: context,
+                  length: length)
     }
 }
 

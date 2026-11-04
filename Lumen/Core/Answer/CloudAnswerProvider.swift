@@ -113,13 +113,14 @@ final class CloudAnswerProvider: AnswerProvider {
             var mode: String
             var language: String
             var context: Context
+            var length: String
         }
         let context = Body.Context(transcript: request.context.transcript.isEmpty ? nil : request.context.transcript,
                                    recent_qa: request.context.recentQA.isEmpty ? nil : request.context.recentQA,
                                    prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms,
                                    goals: request.context.goals,
                                    commands: request.context.commands.isEmpty ? nil : request.context.commands)
-        let body = Body(fragment: request.fragment, mode: request.mode, language: request.language, context: context)
+        let body = Body(fragment: request.fragment, mode: request.mode, language: request.language, context: context, length: request.length)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return (try? encoder.encode(body)) ?? Data("{}".utf8)

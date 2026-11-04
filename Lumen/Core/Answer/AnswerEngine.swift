@@ -36,11 +36,14 @@ final class AnswerEngine {
 
     private let cloud: any AnswerProvider
     private let mock: any AnswerProvider
+    /// Svarslängd (D35).
+    let settings: AnswerSettings
     private var task: Task<Void, Never>?
 
     var activeProvider: any AnswerProvider { useMock ? mock : cloud }
 
-    init(provider: any AnswerProvider, mock: any AnswerProvider = MockAnswerProvider()) {
+    init(provider: any AnswerProvider, mock: any AnswerProvider = MockAnswerProvider(), settings: AnswerSettings = AnswerSettings()) {
+        self.settings = settings
         self.cloud = provider
         self.mock = mock
     }
@@ -66,7 +69,7 @@ final class AnswerEngine {
         var firstDeltaMs: Double?
         var done: AnswerDone?
         do {
-            for try await event in provider.answer(AnswerRequest(activation: request, context: context)) {
+            for try await event in provider.answer(AnswerRequest(activation: request, context: context, length: settings.length)) {
                 if Task.isCancelled { return }
                 switch event {
                 case .meta(let meta):

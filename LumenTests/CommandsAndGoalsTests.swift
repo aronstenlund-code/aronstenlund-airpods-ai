@@ -126,6 +126,27 @@ import Testing
 }
 
 @MainActor
+@Suite struct AnswerLengthTests {
+    @Test func settingPersistsAndTravelsWithTheRequest() async {
+        let suite = "lumen.tests.answerlength.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.removePersistentDomain(forName: suite)
+        let settings = AnswerSettings(defaults: defaults)
+        #expect(settings.length == .adaptive, "Anpassad is the default (D35)")
+        settings.length = .short
+        #expect(AnswerSettings(defaults: defaults).length == .short)
+
+        let provider = FakeAnswerProvider(events: [.delta("Sju."), .done(AnswerDone(answered: true))])
+        let engine = AnswerEngine(provider: provider, mock: MockAnswerProvider(), settings: settings)
+        let sink = FakeAnswerSink()
+        engine.sink = sink
+        engine.answer(ActivationRequest(query: "fem plus två", trigger: .text, language: .swedish), context: AnswerContext())
+        #expect(await waitUntil { sink.completed.count == 1 })
+        #expect(provider.requests.first?.length == "short")
+    }
+}
+
+@MainActor
 @Suite struct ListeningCommandsAndGoalsTests {
     private func makeModel(provider: FakeAnswerProvider) -> (ControllerHarness, ListeningModel) {
         let h = ControllerHarness()
@@ -178,7 +199,9 @@ import Testing
                                     commands: [AnswerContext.Command(keyword: "fission", instruction: "jämför")])
         let data = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "fission", mode: "push_to_talk", language: "sv", context: context))
         let json = String(decoding: data, as: UTF8.self)
-        #expect(json == "{\"context\":{\"commands\":[{\"instruction\":\"jämför\",\"keyword\":\"fission\"}],\"goals\":\"Kursmål\"},\"fragment\":\"fission\",\"language\":\"sv\",\"mode\":\"push_to_talk\"}")
+        #expect(json == "{\"context\":{\"commands\":[{\"instruction\":\"jämför\",\"keyword\":\"fission\"}],\"goals\":\"Kursmål\"},\"fragment\":\"fission\",\"language\":\"sv\",\"length\":\"adaptive\",\"mode\":\"push_to_talk\"}")
+        let long = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "x", mode: "text", language: "sv", length: .long))
+        #expect(String(decoding: long, as: UTF8.self).contains("\"length\":\"long\""))
 
         let clamped = AnswerContext(goals: String(repeating: "g", count: 2_000),
                                     commands: (0..<12).map { AnswerContext.Command(keyword: "k\($0)", instruction: String(repeating: "i", count: 400)) }).clamped

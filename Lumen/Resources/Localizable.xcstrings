@@ -89,6 +89,28 @@
         }
       }
     },
+    "Adaptive": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anpassad"
+          }
+        }
+      }
+    },
+    "Adaptive: one or two sentences for a fact, a developed spoken answer for a topic to understand.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anpassad: en–två meningar för ett faktum, ett utvecklat talat svar för ett ämne att förstå."
+          }
+        }
+      }
+    },
     "Add command": {
       "extractionState": "manual",
       "localizations": {
@@ -129,6 +151,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "AirPods frånkopplade. Sätt i dem igen och tryck på Fortsätt."
+          }
+        }
+      }
+    },
+    "Answer length": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svarslängd"
           }
         }
       }
@@ -349,6 +382,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Radera"
+          }
+        }
+      }
+    },
+    "Detailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Utförlig"
           }
         }
       }
@@ -1163,6 +1207,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dela"
+          }
+        }
+      }
+    },
+    "Short": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kort"
           }
         }
       }
