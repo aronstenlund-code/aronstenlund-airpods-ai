@@ -1,13 +1,13 @@
 # Report: Målbeskrivning and Egna kommandon (D37, D39)
 
-Date: REPORT_DATE · Session: Angela (builder) · Assignment: "ALSO QUEUED" at the top of `prompts/2026-11-03-mvp-sprint-app.md` (Deangelo 2026-11-04 11:50)
+Date: 2026-11-04 12:14 · Session: Angela (builder) · Assignment: "ALSO QUEUED" at the top of `prompts/2026-11-03-mvp-sprint-app.md` (Deangelo 2026-11-04 11:50)
 
 Evidence labels: **verified in CI** (compiles with zero warnings / tests pass on the GitHub macOS runner against fakes), **untested on device**, **untested against the live backend** (Kevin's side of D37 — accepting `goals` and `commands` — is queued; until then the fields are sent and, per the README's validation style, may be rejected or ignored).
 
 ## 1. Summary
 - **Kursmål:** the user pastes or imports (PDF/text) the course's goal description under Prep material. It is stored on the phone (file-protected JSON, on/off switch) and a compact form (≤ 1 500 chars: the whole text when it fits, else the first sentences plus "Nyckelord: …" from the key-term extractor) goes with every question as `goals`.
 - **Egna kommandon:** keyword → instruction pairs, created in a list editor or by voice ("spara kommando fission: förklara fission och jämför med fusion"). Keywords are matched in the spoken question tolerant to STT spelling (edit distance 0 for words under 5 letters, 1 for 5–8, 2 for 9+; multi-word keywords in sequence) and the matched pairs (≤ 10) go as `commands`. A spoken save is stored, confirmed in the AirPods ("Sparade kommandot fission.") and never sent as a question.
-- CI_RESULT_LINE
+- Commits `95626ee` (Pluggläge), `5dbc908` (floor fix) and `b0d0ec6` (D37) — **green in [run 41817986402](https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/41817986402)** (Xcode 26.6, iOS 26.5 SDK, zero compiler warnings, 36/36 SDK symbols, 21 scoring tests + 249 app tests in 54 suites on the iPhone 17 Pro simulator).
 - **Untested on device**: the voice path (does the recogniser hear "spara kommando" cleanly?), the tolerance against real STT output, and the answer effect (needs Kevin's prompt work). Checklist §3s.
 
 ## 2. What was implemented
@@ -22,14 +22,14 @@ Evidence labels: **verified in CI** (compiles with zero warnings / tests pass on
 ## 3. Test results
 | Suite (iPhone 17 Pro simulator, iOS 26.5) | Tests | Result | Basis |
 |---|---|---|---|
-| `CommandMatcherTests` — exact/normalised, STT tolerance by length, multi-word order, spoken save parsing (sv/en, colon/comma/bare, rejects) | 4 | TEST_RESULT | **verified in CI** |
-| `CommandStoreTests` — save/replace/delete/persist/limits, cap at 10 matches | 2 | TEST_RESULT | **verified in CI** |
-| `GoalsStoreTests` — store/compact/toggle/persist, long text cut at sentences within 1 500 | 2 | TEST_RESULT | **verified in CI** |
-| `ListeningCommandsAndGoalsTests` — matched command + goals travel with the question (and not when disabled), spoken save stored/confirmed/not sent, request body + clamping | 3 | TEST_RESULT | **verified in CI** |
-| Everything before this task | 237 | TEST_RESULT | **verified in CI** |
+| `CommandMatcherTests` — exact/normalised, STT tolerance by length, multi-word order, spoken save parsing (sv/en, colon/comma/bare, rejects) | 4 | pass | **verified in CI** |
+| `CommandStoreTests` — save/replace/delete/persist/limits, cap at 10 matches | 2 | pass | **verified in CI** |
+| `GoalsStoreTests` — store/compact/toggle/persist, long text cut at sentences within 1 500 | 2 | pass | **verified in CI** |
+| `ListeningCommandsAndGoalsTests` — matched command + goals travel with the question (and not when disabled), spoken save stored/confirmed/not sent, request body + clamping | 3 | pass | **verified in CI** |
+| Everything before this task | 237 | pass | **verified in CI** |
 
 ## 4. CI iterations
-CI_ITERATIONS
+First run green (built together with the Pluggläge floor fix).
 
 ## 5. Known limitations, risks
 - The backend does not yet validate/accept `goals` and `commands` (Kevin's queued task); the client sends them already. If Kevin's validator rejects unknown fields with 400, questions would fail until his deploy — the README's validator so far ignores unknown fields, but this is **untested against the live backend**.
