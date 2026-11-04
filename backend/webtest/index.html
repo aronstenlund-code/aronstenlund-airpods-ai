@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Lumen webtest</title>
+<style>
+  :root { --bg:#0e1116; --fg:#e8ecf1; --mut:#8b95a3; --acc:#4da3ff; --ok:#3ecf8e; --bad:#ff6b6b; --card:#171c24; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.4 -apple-system,system-ui,sans-serif; }
+  main { max-width:560px; margin:0 auto; padding:16px 16px calc(24px + env(safe-area-inset-bottom)); }
+  h1 { font-size:18px; margin:4px 0 2px; } .sub { color:var(--mut); font-size:13px; margin-bottom:14px; }
+  #btn { display:block; margin:18px auto; width:210px; height:210px; border-radius:50%; border:0; background:var(--acc); color:#04121f;
+         font-size:20px; font-weight:700; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+  #btn.rec { background:var(--bad); color:#fff; transform:scale(1.04); } #btn.busy { background:#33405a; color:var(--mut); }
+  .card { background:var(--card); border-radius:12px; padding:12px 14px; margin:10px 0; }
+  .lbl { color:var(--mut); font-size:12px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+  #heard { color:var(--mut); } #heard.final { color:var(--fg); } #answer { font-size:19px; min-height:1.4em; }
+  table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; } td { padding:4px 0; } td:last-child { text-align:right; font-weight:600; }
+  tr.key td { color:var(--ok); font-size:17px; } .err { color:var(--bad); } .small { font-size:12px; color:var(--mut); }
+  form { display:flex; gap:8px; } input { flex:1; min-width:0; padding:10px; border-radius:8px; border:1px solid #2b3442; background:#0b0e13; color:var(--fg); font-size:16px; }
+  form button { padding:10px 14px; border-radius:8px; border:0; background:#2b3442; color:var(--fg); font-size:16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Lumen webtest</h1>
+  <div class="sub">Håll in knappen, ställ en fråga på svenska, släpp. <span id="voiceinfo"></span></div>
+  <button id="btn" type="button">Håll in för att fråga</button>
+  <div class="card"><div class="lbl">Du sa</div><div id="heard">–</div></div>
+  <div class="card"><div class="lbl">Svar</div><div id="answer">–</div></div>
+  <div class="card"><div class="lbl">Tid (ms)</div>
+    <table id="times"></table>
+    <div class="small" id="server"></div>
+  </div>
+  <div class="card"><div class="lbl">Eller skriv</div>
+    <form id="form"><input id="txt" placeholder="t.ex. roten ur hundra" autocomplete="off"><button>Skicka</button></form>
+  </div>
+  <div class="small" id="status">Startar …</div>
+</main>
+<script>
+"use strict";
+// Public by design: the publishable key grants nothing without a user JWT (anonymous sign-in below).
+const SB = "https://xjczbzfkmbjdebwlccki.supabase.co";
+const KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8";
+const $ = (id) => document.getElementById(id);
+const now = () => performance.now();
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let token = null, voiceId = null, voiceName = null, ctx = null, rec = null;
+let history = [];   // recent Q/A sent as context
+let run = null;     // state of the current question
+
+// ---------- auth (anonymous Supabase user, reused between visits) ----------
+function jwtExp(t) { try { return JSON.parse(atob(t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))).exp * 1000; } catch { return 0; } }
+async function getToken(force) {
+  if (!force) {
+    if (token && jwtExp(token) > Date.now() + 60000) return token;
+    try { const t = localStorage.getItem("lumen_tok"); if (t && jwtExp(t) > Date.now() + 60000) return (token = t); } catch {}
+  }
+  const r = await fetch(SB + "/auth/v1/signup", { method: "POST", headers: { apikey: KEY, "content-type": "application/json" }, body: "{}" });
+  if (!r.ok) throw new Error("Anonym inloggning misslyckades (" + r.status + "). Är 'Anonymous sign-ins' på?");
+  token = (await r.json()).access_token;
+  try { localStorage.setItem("lumen_tok", token); } catch {}
+  return token;
+}
+async function api(path, init, retry = true) {
+  const t = await getToken();
+  const r = await fetch(SB + "/functions/v1/" + path, { ...init, headers: { ...(init.headers || {}), authorization: "Bearer " + t, apikey: KEY, "content-type": "application/json" } });
+  if (r.status === 401 && retry) { await getToken(true); return api(path, init, false); }
+  return r;
+}
+async function errText(r) { try { const e = (await r.json()).error; return e.code + (e.fallback ? " (reserv)" : "") + ": " + e.message; } catch { return "HTTP " + r.status; } }
+
+// ---------- audio ----------
+function unlockAudio() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!ctx) ctx = new AC();
+  if (ctx.state !== "running") ctx.resume();
+  const b = ctx.createBuffer(1, 1, 22050), s = ctx.createBufferSource(); s.buffer = b; s.connect(ctx.destination); s.start(0);
+  try { speechSynthesis.speak(new SpeechSynthesisUtterance("")); } catch {}   // unlocks the Apple-voice fallback
+}
+async function fetchAudio(text, r) {
+  const t0 = now();
+  const res = await api("tts", { method: "POST", body: JSON.stringify({ text, language: "sv", ...(voiceId ? { voice_id: voiceId } : {}) }) });
+  if (!res.ok) throw new Error(await errText(res));
+  const reader = res.body.getReader(), chunks = [];
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (r.ttsFirstByte == null) { r.ttsFirstByte = now(); r.ttsReq = t0; }
+    chunks.push(value);
+  }
+  const buf = new Uint8Array(chunks.reduce((n, c) => n + c.length, 0)); let o = 0;
+  for (const c of chunks) { buf.set(c, o); o += c.length; }
+  return await ctx.decodeAudioData(buf.buffer);
+}
+function speak(sentence, r) {
+  r.spoken += sentence + " ";
+  const dec = fetchAudio(sentence, r);
+  dec.catch(() => {});
+  r.chain = r.chain.then(async () => {
+    try {
+      const audio = await dec, startAt = Math.max(ctx.currentTime + 0.02, r.nextAt || 0);
+      const src = ctx.createBufferSource(); src.buffer = audio; src.connect(ctx.destination); src.start(startAt);
+      r.nextAt = startAt + audio.duration;
+      if (r.firstAudio == null) r.firstAudio = now() + (startAt - ctx.currentTime) * 1000 + (ctx.outputLatency || 0) * 1000;
+      render(r);
+    } catch (e) {
+      r.err = "Röst: " + e.message + " — använder Apples röst som reserv";
+      try { const u = new SpeechSynthesisUtterance(sentence); u.lang = "sv-SE"; speechSynthesis.speak(u); if (r.firstAudio == null) r.firstAudio = now(); } catch {}
+      render(r);
+    }
+  });
+}
+
+// ---------- ask ----------
+async function ask(text, mode, t0) {
+  if (run && run.busy) return;
+  const r = run = { busy: true, text, mode, release: t0, req: null, firstText: null, firstAudio: null, ttsReq: null, ttsFirstByte: null,
+                    stt: null, answer: "", buf: "", spoken: "", chain: Promise.resolve(), nextAt: 0, server: null, err: null };
+  $("heard").textContent = text; $("heard").className = "final"; $("answer").textContent = "…"; render(r); setBusy(true);
+  try {
+    r.req = now();
+    const res = await api("answer", { method: "POST", body: JSON.stringify({ fragment: text, mode, language: "sv", context: { transcript: "", recent_qa: history.slice(-3), prep_terms: [] } }) });
+    if (!res.ok) throw new Error(await errText(res));
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+    let buf = "";
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += value;
+      let i;
+      while ((i = buf.indexOf("\n\n")) !== -1) {
+        const frame = buf.slice(0, i); buf = buf.slice(i + 2);
+        const ev = /^event: (.*)$/m.exec(frame)?.[1], data = JSON.parse(/^data: (.*)$/m.exec(frame)?.[1] ?? "null");
+        if (ev === "delta") {
+          if (r.firstText == null) r.firstText = now();
+          r.answer += data.text; r.buf += data.text; $("answer").textContent = r.answer; feedSentences(r, false); render(r);
+        } else if (ev === "done") { r.server = data; }
+        else if (ev === "error") { r.err = (data.code || "fel") + ": " + data.message + (data.fallback ? " (reserv)" : ""); }
+      }
+    }
+    feedSentences(r, true);
+    await r.chain;
+    history.push({ q: text, a: r.answer.slice(0, 380) });
+  } catch (e) { r.err = e.message; }
+  r.busy = false; setBusy(false); render(r);
+}
+// Start TTS as soon as a sentence is complete (and long enough to be worth a request).
+function feedSentences(r, final) {
+  for (;;) {
+    const m = /^(.{6,}?[.!?])(\s|$)/s.exec(r.buf);
+    if (!m) break;
+    speak(m[1].trim(), r); r.buf = r.buf.slice(m[0].length);
+  }
+  if (final && r.buf.trim()) { speak(r.buf.trim(), r); r.buf = ""; }
+}
+
+// ---------- render ----------
+function row(label, v, key) { return "<tr" + (key ? ' class="key"' : "") + "><td>" + label + "</td><td>" + (v == null ? "–" : Math.round(v)) + "</td></tr>"; }
+function render(r) {
+  const rel = (x) => (x == null || r.release == null ? null : x - r.release);
+  const d = (a, b) => (a == null || b == null ? null : a - b);
+  let h = "";
+  if (r.mode === "push_to_talk") h += row("Släppte knappen → transkript klart", d(r.stt, r.release));
+  h += row("Frågan skickad → första svarstext (backend)", d(r.firstText, r.req));
+  h += row("Släppte → första svarstext", rel(r.firstText));
+  h += row("Röst begärd → första ljudbyte", d(r.ttsFirstByte, r.ttsReq));
+  h += row("Släppte → första ljud", rel(r.firstAudio), true);
+  $("times").innerHTML = h;
+  const s = r.server, b = s && s.breakdown;
+  $("server").textContent = b ? "Server: första text " + s.timing.ttft_ms + " ms, LLM " + s.timing.llm_first_token_ms + " ms, gränser " + b.limits_ms + " ms, " + (b.cold ? "kall" : "varm") + " start" : "";
+  if (r.err) { $("status").className = "small err"; $("status").textContent = r.err; }
+}
+function setBusy(b) { $("btn").classList.toggle("busy", b); $("btn").textContent = b ? "Svarar …" : "Håll in för att fråga"; }
+
+// ---------- push to talk ----------
+function startListening() {
+  if (!SR) { $("status").className = "small err"; $("status").textContent = "Den här webbläsaren saknar taligenkänning. Använd Safari på iPhone, eller skriv."; return; }
+  if (run && run.busy) return;
+  unlockAudio();
+  const st = { startedAt: now(), released: false, final: "", interim: "", done: false };
+  rec = new SR(); rec.lang = "sv-SE"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+  const finish = () => {
+    if (st.done || !st.released) return;
+    const text = (st.final + " " + st.interim).trim();
+    st.done = true;
+    if (!text) { $("status").className = "small"; $("status").textContent = "Hörde ingenting – försök igen."; return; }
+    const t = now(); ask(text, "push_to_talk", st.releasedAt); run.stt = t; render(run);
+  };
+  rec.onresult = (e) => {
+    st.final = ""; st.interim = "";
+    for (let i = 0; i < e.results.length; i++) { (e.results[i].isFinal ? (st.final += " " + e.results[i][0].transcript) : (st.interim += " " + e.results[i][0].transcript)); }
+    $("heard").textContent = (st.final + " " + st.interim).trim() || "…"; $("heard").className = "";
+    if (st.released && e.results[e.results.length - 1].isFinal) finish();
+  };
+  rec.onerror = (e) => { if (e.error !== "no-speech" && e.error !== "aborted") { $("status").className = "small err"; $("status").textContent = "Taligenkänning: " + e.error + (e.error === "not-allowed" ? " (tillåt mikrofon och Siri/Diktering)" : ""); } };
+  rec.onend = () => { st.released ? finish() : 0; };
+  st.stop = () => { if (st.released) return; st.released = true; st.releasedAt = now(); try { rec.stop(); } catch {} setTimeout(finish, 1500); };
+  $("btn").classList.add("rec"); $("btn").textContent = "Lyssnar …"; $("status").className = "small"; $("status").textContent = "";
+  $("heard").textContent = "…"; $("heard").className = ""; $("answer").textContent = "–"; $("times").innerHTML = "";
+  try { rec.start(); } catch (e) { $("status").textContent = e.message; }
+  current = st;
+}
+let current = null;
+function stopListening() {
+  $("btn").classList.remove("rec"); if (!(run && run.busy)) $("btn").textContent = "Håll in för att fråga";
+  if (current && now() - current.startedAt < 350) { current.released = true; current.done = true; try { rec.abort(); } catch {} $("status").textContent = "För kort – håll in medan du pratar."; return; }
+  current && current.stop();
+}
+const btn = $("btn");
+btn.addEventListener("pointerdown", (e) => { e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch {} startListening(); });
+btn.addEventListener("pointerup", stopListening);
+btn.addEventListener("pointercancel", stopListening);
+btn.addEventListener("contextmenu", (e) => e.preventDefault());
+$("form").addEventListener("submit", (e) => { e.preventDefault(); const v = $("txt").value.trim(); if (!v) return; unlockAudio(); $("txt").value = ""; ask(v, "text", now()); });
+
+// ---------- boot: sign in, find the voice, warm the functions ----------
+(async function boot() {
+  try {
+    await getToken();
+    const warm = (p) => fetch(SB + "/functions/v1/" + p, { headers: { authorization: "Bearer " + token, apikey: KEY, "x-client-info": "warm" } }).catch(() => {});
+    warm("answer"); warm("tts");   // preflight + request boot the isolates (a 405 reply is fine)
+    const v = await api("voices", { method: "GET" });
+    if (v.ok) {
+      const j = await v.json(), adam = (j.voices || []).find((x) => /adam/i.test(x.name));
+      if (adam) { voiceId = adam.id; voiceName = adam.name; } else if (j.default_id) { voiceId = j.default_id; voiceName = "standardröst"; }
+    }
+    $("voiceinfo").textContent = voiceName ? "Röst: " + voiceName + "." : "Röst: serverns standard.";
+    $("status").textContent = SR ? "Redo." : "Ingen taligenkänning här – skriv i stället.";
+  } catch (e) { $("status").className = "small err"; $("status").textContent = e.message; }
+})();
+</script>
+</body>
+</html>
