@@ -1,3 +1,5 @@
+**NEXT TASK (Deangelo 2026-11-04 11:35, D36): Pluggläge — hands-free tutor session.** Toggle button on the listening screen (+ Live Activity/Control) starts/ends a session. Loop: listen → VAD end-of-turn (~800 ms, setting) → send `mode: "tutor"` + full session `recent_qa` to /answer → stream TTS → resume listening automatically. Barge-in: user speech during TTS stops playback and starts a new turn. Suppress own playback from STT (gate input while speaking; evaluate `.voiceChat` AEC config). Auto-end after 10 min silence. Indicator always visible. State machine fully unit-tested; device behaviour untested. Coordinate with Kevin: backend must accept `mode: "tutor"` (pedagogical D35 study style, may end with one short check question). Sparläge, CI green, short report.
+
 # Claude Code assignment (Angela) — MVP sprint: full core loop in the app
 
 Approved by: CREED, 2026-11-03 17:50. **Deadline: working first version of the whole app by 2026-11-10.** This assignment has priority over `prompts/2026-11-03-trackD-spike.md` (Track D items not listed here come after the core loop works).
