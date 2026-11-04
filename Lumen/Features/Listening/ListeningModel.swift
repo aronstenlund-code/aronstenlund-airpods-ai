@@ -21,9 +21,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private(set) var commandNotice: String?
     private let warmer: BackendWarmer?
     private let activity: (any ListeningActivityPresenting)?
-    /// Pluggläge (D36): hands-free tutor session.
+    /// Provläge (D36): hands-free tutor session.
     let study: StudySessionController
-    /// Why Pluggläge ended, shown once.
+    /// Why Provläge ended, shown once.
     private(set) var studyNotice: String?
     /// Per-answer latency budget (item 7), shown in the debug overlay.
     let latency = LatencyLog()
@@ -211,7 +211,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.preview(speaker.settings.voice, language: language)
     }
 
-    // MARK: - Pluggläge (D36)
+    // MARK: - Provläge (D36)
 
     /// One tap starts the hands-free session (starting the microphone if needed), one tap ends it.
     func toggleStudyMode() async {
@@ -224,7 +224,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func startStudy() async {
         guard consent.isGranted else {
-            controller.log("Pluggläge refused: no consent")
+            controller.log("Provläge refused: no consent")
             return
         }
         studyNotice = nil
@@ -239,7 +239,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.interrupt()
         conversation.cancelAnswer()
         study.start()
-        controller.log("Pluggläge started")
+        controller.log("Provläge started")
     }
 
     /// Ends the session. After the silence timeout the microphone is released too ("sparläge").
@@ -248,11 +248,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         study.stop()
         transcription.setInputGated(false)
         if bySilence {
-            studyNotice = "Pluggläge ended after \(study.settings.autoEndMinutes) min of silence; the microphone was switched off."
-            controller.log("Pluggläge auto-ended after silence")
+            studyNotice = "Provläge ended after \(study.settings.autoEndMinutes) min of silence; the microphone was switched off."
+            controller.log("Provläge auto-ended after silence")
             Task { await stopListening() }
         } else {
-            controller.log("Pluggläge ended by the user")
+            controller.log("Provläge ended by the user")
         }
     }
 
@@ -264,7 +264,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             let request = ActivationRequest(query: text, trigger: .tutor, language: language)
             activated(request)
         case .bargeIn:
-            controller.log("Pluggläge: barge-in — stopping the answer")
+            controller.log("Provläge: barge-in — stopping the answer")
             answers.cancel()
             speaker.interrupt()
             conversation.cancelAnswer()
@@ -347,7 +347,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.interrupt()
         latency.begin(request)
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
-        // Pluggläge sends the whole session's memory (the backend keeps the last 6 pairs).
+        // Provläge sends the whole session's memory (the backend keeps the last 6 pairs).
         let qaLimit = request.trigger == .tutor ? AnswerContext.qaLimit : 3
         let matched = commands.matches(in: request.query)
         if !matched.isEmpty {
@@ -421,7 +421,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return // "spara kommando …" is handled on the phone, never sent as a question
         }
         if study.isActive {
-            // Pluggläge decides turns by silence, not by the question gate.
+            // Provläge decides turns by silence, not by the question gate.
             study.transcriptFinal(segment.text, at: date)
             return
         }

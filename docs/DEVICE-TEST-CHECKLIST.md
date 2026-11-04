@@ -242,20 +242,20 @@ Signering: **båda** targets (`Lumen` och `LumenControls`) behöver ditt team i 
 6. Lägg till kontrollen *Lumen lyssnar* i Kontrollcenter (eller på Åtgärdsknappen). Händer något när du trycker? Händer inget alls är det ett viktigt resultat.
 7. Ställ en skriven fråga medan du är pausad: svaret ska synas men inte läsas upp, och musiken ska inte störas.
 
-### 3r. Pluggläge – handsfree lärarsession (D36, 10 min)
-1. Tryck **Pluggläge** (lila knappen). Raden *Pluggläge · din tur – prata bara* ska visas (mikrofonen startar om den
-   var av). Säg "förklara fotosyntes" och **var tyst**. Efter ca 1 s ska *Pluggläge · tänker …* visas, sedan
-   *Pluggläge · talar – prata för att avbryta* medan svaret läses upp, och sedan tillbaka till *din tur* utan att du
+### 3r. Provläge – handsfree lärarsession (D36, 10 min)
+1. Tryck **Provläge** (lila knappen). Raden *Provläge · din tur – prata bara* ska visas (mikrofonen startar om den
+   var av). Säg "förklara fotosyntes" och **var tyst**. Efter ca 1 s ska *Provläge · tänker …* visas, sedan
+   *Provläge · talar – prata för att avbryta* medan svaret läses upp, och sedan tillbaka till *din tur* utan att du
    trycker något. Skriv ner: fångades hela frågan (eller klipptes början/slutet)? Hur lång tyst paus krävdes?
 2. Ställ en följdfråga ("och varför är det viktigt?"): svaret ska bygga på det förra (sessionens minne).
 3. Börja prata mitt i ett svar (minst en halv sekund): uppläsningen ska tystna och din nya fråga tas emot.
    Skriv ner om första ordet i din fråga saknas i transkriptionen (väntat: ja, ca 0,4 s).
 4. Lyssna efter eko: står det egna svarets ord i transkriptionen medan den talar? (Ska inte hända – ingången stängs.)
-   Prova sedan Inställningar → Pluggläge → *Ekodämpning (voiceChat)* på, avsluta och starta Pluggläge igen och
+   Prova sedan Inställningar → Provläge → *Ekodämpning (voiceChat)* på, avsluta och starta Provläge igen och
    jämför ljudkvalitet i AirPods och fångade frågor.
-5. Var tyst (ställ ner *Avsluta automatiskt* till 1 min för testet): efter en minut ska raden *Pluggläget avslutades
+5. Var tyst (ställ ner *Avsluta automatiskt* till 1 min för testet): efter en minut ska raden *Provläget avslutades
    efter 1 min tystnad; mikrofonen stängdes av* visas och den röda *Lyssnar*-raden försvinna. Ställ tillbaka till 10.
-6. Tryck *Avsluta pluggläge* mitt i en session: vanlig lyssning ska fortsätta (röda raden kvar).
+6. Tryck *Avsluta provläge* mitt i en session: vanlig lyssning ska fortsätta (röda raden kvar).
 
 ### 3s. Kursmål och egna kommandon (D37, 5 min)
 1. Meny ⋯ → *Förberedelsematerial* → *Kursmål*: klistra in en målbeskrivning (gärna lång), *Spara mål*. Raden under

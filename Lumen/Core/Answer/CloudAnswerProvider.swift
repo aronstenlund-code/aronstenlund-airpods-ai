@@ -30,7 +30,7 @@ final class CloudAnswerProvider: AnswerProvider {
     }
 
     /// Until Kevin's `/answer` accepts `mode: "tutor"` (D36), a 400 for a tutor request is retried once as
-    /// `push_to_talk` so Pluggläge keeps working; the fallback is logged.
+    /// `push_to_talk` so Provläge keeps working; the fallback is logged.
     static let tutorFallbackMode = "push_to_talk"
 
     private func run(_ original: AnswerRequest, into continuation: AsyncThrowingStream<AnswerEvent, any Error>.Continuation) async throws(AnswerError) {

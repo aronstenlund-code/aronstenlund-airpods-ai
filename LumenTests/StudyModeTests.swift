@@ -184,7 +184,7 @@ import Testing
     }
 }
 
-/// Pluggläge end to end against fakes: microphone, recogniser, answers and voice.
+/// Provläge end to end against fakes: microphone, recogniser, answers and voice.
 @MainActor
 @Suite struct StudyModeTests {
     private let t0 = Date(timeIntervalSince1970: 3_100_000)

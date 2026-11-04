@@ -35,7 +35,7 @@ final class TranscriptionCoordinator {
     private var provider: (any STTProvider)?
     /// Prep topics (item 9), applied to the current provider and every later one.
     private(set) var contextualStrings: [String] = []
-    /// True while our own speech plays in Pluggläge: capture chunks are dropped before the recogniser (D36).
+    /// True while our own speech plays in Provläge: capture chunks are dropped before the recogniser (D36).
     private(set) var isInputGated = false
     private var gateTask: Task<Void, Never>?
 

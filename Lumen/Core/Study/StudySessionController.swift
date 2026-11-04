@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// Runs the Pluggläge machine on the live capture: one level reading per 40 ms chunk (silence included), the
+/// Runs the Provläge machine on the live capture: one level reading per 40 ms chunk (silence included), the
 /// transcript from the recogniser, and the answer/speech lifecycle from `ListeningModel`.
 @MainActor
 @Observable
@@ -32,13 +32,13 @@ final class StudySessionController {
         endedBySilence = false
         machine.start(at: now)
         subscribeToLevels()
-        Log.session.info("Pluggläge started · endpoint \(self.machine.tuning.endpointSilence, privacy: .public) s · auto-end \(Int(self.machine.tuning.autoEndSilence), privacy: .public) s")
+        Log.session.info("Provläge started · endpoint \(self.machine.tuning.endpointSilence, privacy: .public) s · auto-end \(Int(self.machine.tuning.autoEndSilence), privacy: .public) s")
     }
 
     func stop() {
         machine.stop()
         unsubscribeFromLevels()
-        Log.session.info("Pluggläge ended")
+        Log.session.info("Provläge ended")
     }
 
     // MARK: Inputs

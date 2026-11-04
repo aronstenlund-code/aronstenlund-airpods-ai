@@ -179,9 +179,9 @@ struct ListeningView: View {
     private var studyPhaseText: LocalizedStringKey {
         switch model.study.phase {
         case .off: ""
-        case .listening: model.study.isUserSpeaking ? "Pluggläge · I hear you…" : "Pluggläge · your turn — just speak"
-        case .thinking: "Pluggläge · thinking…"
-        case .speaking: "Pluggläge · speaking — talk to interrupt"
+        case .listening: model.study.isUserSpeaking ? "Provläge · I hear you…" : "Provläge · your turn — just speak"
+        case .thinking: "Provläge · thinking…"
+        case .speaking: "Provläge · speaking — talk to interrupt"
         }
     }
 
@@ -354,7 +354,7 @@ struct ListeningView: View {
         case .auto: "Auto"
         case .answerLast: "Last sentence"
         case .text: "Text"
-        case .tutor: "Pluggläge"
+        case .tutor: "Provläge"
         }
     }
 
@@ -374,7 +374,7 @@ struct ListeningView: View {
             Button {
                 Task { await model.toggleStudyMode() }
             } label: {
-                Label(model.study.isActive ? "End Pluggläge" : "Pluggläge",
+                Label(model.study.isActive ? "End Provläge" : "Provläge",
                       systemImage: model.study.isActive ? "graduationcap.fill" : "graduationcap")
                     .font(.title3.weight(.semibold))
                     .frame(maxWidth: .infinity)

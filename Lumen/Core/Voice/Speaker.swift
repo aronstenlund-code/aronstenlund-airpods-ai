@@ -92,7 +92,7 @@ final class Speaker {
         }
     }
 
-    /// Nothing queued and nothing being spoken (Pluggläge goes back to listening).
+    /// Nothing queued and nothing being spoken (Provläge goes back to listening).
     var hasPendingSpeech: Bool { !queue.isEmpty || drainTask != nil }
 
     /// Called when the queue has been spoken to the end (not on interrupt).

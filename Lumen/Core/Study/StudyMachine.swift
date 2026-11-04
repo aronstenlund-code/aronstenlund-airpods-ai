@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 
-/// Tunables for Pluggläge (D36). Defaults are the decision's numbers; the device session tunes them.
+/// Tunables for Provläge (D36). Defaults are the decision's numbers; the device session tunes them.
 struct StudyTuning: Equatable, Sendable {
     /// Silence after the user's speech that ends the turn.
     var endpointSilence: TimeInterval = 0.8
@@ -17,7 +17,7 @@ struct StudyTuning: Equatable, Sendable {
     var minimumSpeechDBFS: Double = -50
     /// The floor follows quieter input at once and rises slowly (dB per second) so speech never becomes the floor.
     var floorRiseDBPerSecond: Double = 1.0
-    /// No user speech for this long ends the session (and, in Pluggläge, releases the microphone: "sparläge").
+    /// No user speech for this long ends the session (and, in Provläge, releases the microphone: "sparläge").
     var autoEndSilence: TimeInterval = 600
 }
 
@@ -214,7 +214,7 @@ struct StudyMachine: Equatable, Sendable {
     }
 }
 
-/// Persisted Pluggläge settings (UserDefaults).
+/// Persisted Provläge settings (UserDefaults).
 @MainActor
 @Observable
 final class StudySettings {
@@ -230,7 +230,7 @@ final class StudySettings {
     var autoEndMinutes: Int {
         didSet { defaults.set(autoEndMinutes, forKey: Self.autoEndKey) }
     }
-    /// Use the C-HFP-voiceChat capture config (echo cancellation) while in Pluggläge — to measure (D36).
+    /// Use the C-HFP-voiceChat capture config (echo cancellation) while in Provläge — to measure (D36).
     var useVoiceChatMode: Bool {
         didSet { defaults.set(useVoiceChatMode, forKey: Self.voiceChatKey) }
     }

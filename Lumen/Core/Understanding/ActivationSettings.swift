@@ -14,7 +14,7 @@ enum ActivationTrigger: String, Sendable, Equatable {
     case auto
     case answerLast
     case text
-    /// A hands-free Pluggläge turn (D36): tutor style, whole-session memory.
+    /// A hands-free Provläge turn (D36): tutor style, whole-session memory.
     case tutor
 
     /// The backend's `mode` field (`backend/README.md`): manual triggers are deliberate questions.

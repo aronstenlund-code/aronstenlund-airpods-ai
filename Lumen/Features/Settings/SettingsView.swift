@@ -86,7 +86,7 @@ struct SettingsView: View {
     @ViewBuilder
     private var studySection: some View {
         @Bindable var study = model.study.settings
-        Section("Pluggläge") {
+        Section("Provläge") {
             HStack {
                 Text("Silence that ends your turn")
                 Slider(value: $study.endpointSilence, in: 0.5...1.5, step: 0.1)
@@ -97,7 +97,7 @@ struct SettingsView: View {
             Stepper(value: $study.autoEndMinutes, in: 1...60) {
                 Text("Auto-end after \(study.autoEndMinutes) min of silence")
             }
-            Toggle("Echo cancellation (voiceChat) in Pluggläge", isOn: $study.useVoiceChatMode)
+            Toggle("Echo cancellation (voiceChat) in Provläge", isOn: $study.useVoiceChatMode)
             Text("Hands-free: speak, pause, get a tutor-style answer, continue. Talking while it speaks interrupts it. Tuned on device.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)

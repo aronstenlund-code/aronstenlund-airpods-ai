@@ -419,24 +419,24 @@
         }
       }
     },
-    "Echo cancellation (voiceChat) in Pluggläge": {
+    "Echo cancellation (voiceChat) in Provläge": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ekodämpning (voiceChat) i pluggläge"
+            "value": "Ekodämpning (voiceChat) i provläge"
           }
         }
       }
     },
-    "End Pluggläge": {
+    "End Provläge": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avsluta pluggläge"
+            "value": "Avsluta provläge"
           }
         }
       }
@@ -936,68 +936,68 @@
         }
       }
     },
-    "Pluggläge": {
+    "Provläge": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pluggläge"
+            "value": "Provläge"
           }
         }
       }
     },
-    "Pluggläge ended after %lld min of silence; the microphone was switched off.": {
+    "Provläge ended after %lld min of silence; the microphone was switched off.": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pluggläget avslutades efter %lld min tystnad; mikrofonen stängdes av."
+            "value": "Provläget avslutades efter %lld min tystnad; mikrofonen stängdes av."
           }
         }
       }
     },
-    "Pluggläge · I hear you…": {
+    "Provläge · I hear you…": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pluggläge · jag hör dig …"
+            "value": "Provläge · jag hör dig …"
           }
         }
       }
     },
-    "Pluggläge · speaking — talk to interrupt": {
+    "Provläge · speaking — talk to interrupt": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pluggläge · talar – prata för att avbryta"
+            "value": "Provläge · talar – prata för att avbryta"
           }
         }
       }
     },
-    "Pluggläge · thinking…": {
+    "Provläge · thinking…": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pluggläge · tänker …"
+            "value": "Provläge · tänker …"
           }
         }
       }
     },
-    "Pluggläge · your turn — just speak": {
+    "Provläge · your turn — just speak": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pluggläge · din tur – prata bara"
+            "value": "Provläge · din tur – prata bara"
           }
         }
       }
