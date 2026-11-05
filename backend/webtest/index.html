@@ -55,6 +55,7 @@
     <div class="rzrow"><button id="rzstall" type="button" class="rzbtn">Tystnad (4 s)</button><button id="rzopen" type="button" class="rzbtn">Öppningsrad</button><button id="rzreset" type="button" class="rzbtn">Nytt samtal</button></div>
     <div class="rzrow"><input id="rzint" placeholder="Intressen, kommaseparerade (valfritt)" autocomplete="off"></div>
     <div class="rzrow"><input id="rzprof" placeholder="Om den andra (valfritt, för öppningsrad)" autocomplete="off"></div>
+    <label class="small" style="display:block;margin:4px 0"><input type="checkbox" id="rzspicy" style="width:auto"> Djärvare flirt (bara stilen flirtig)</label>
     <div id="rzopts"></div>
     <div class="small" id="rztime"></div>
     <div class="conv" id="rzconv"></div>
@@ -304,7 +305,7 @@ function rzConv() { $("rzconv").innerHTML = rz.lines.slice(-8).map((l) => '<div 
 async function rzAsk(trigger) {
   if (rz.busy) return;
   rz.busy = true; unlockAudio();
-  const social = { style: rz.style, trigger, transcript: rz.lines.slice(-12), interests: $("rzint").value.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 10), profile: $("rzprof").value.trim().slice(0, 1000) };
+  const social = { style: rz.style, trigger, transcript: rz.lines.slice(-10), interests: $("rzint").value.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 10), profile: $("rzprof").value.trim().slice(0, 1000), spicy: $("rzspicy").checked };
   const r = { chain: Promise.resolve(), spoken: "", ttsFirstByte: null, ttsReq: null, firstAudio: null };
   const ac = rz.ac = new AbortController(); r.abort = false; ac.signal.addEventListener("abort", () => { r.abort = true; });
   $("stopbtn").style.display = "block";
@@ -329,7 +330,7 @@ async function rzAsk(trigger) {
       }
     }
     await r.chain;
-    $("rztime").textContent = "Förslag efter " + Math.round(tSug - t0) + " ms" + (r.firstAudio ? ", första ljud efter " + Math.round(r.firstAudio - t0) + " ms" : "") + (srv ? " (server " + srv.timing.ttft_ms + " ms, " + (srv.breakdown.cold ? "kall" : "varm") + " start)" : "");
+    $("rztime").textContent = "Förslag efter " + Math.round(tSug - t0) + " ms" + (r.firstAudio ? ", första ljud efter " + Math.round(r.firstAudio - t0) + " ms" : "") + (srv ? " (server " + srv.timing.ttft_ms + " ms, " + (srv.breakdown.cold ? "kall" : "varm") + " start, " + (srv.usage.model || "") + (srv.usage.est_cost_usd != null ? ", " + (srv.usage.est_cost_usd * 100).toFixed(3) + " US-cent" : "") + ")" : "");
   } catch (e) { if (!r.abort) { $("rzopts").textContent = ""; $("status").className = "small err"; $("status").textContent = "Rizzläge: " + e.message; } }
   rz.busy = false; rz.ac = null; if (!(run && run.busy)) $("stopbtn").style.display = "none";
 }
