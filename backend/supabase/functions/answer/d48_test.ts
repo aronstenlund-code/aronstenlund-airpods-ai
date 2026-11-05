@@ -197,3 +197,22 @@ Deno.test("D51: a social line is ONE line - tips and context questions after it 
   assertStringIncludes(seen[0].system, "ONLY the ready-to-say line");
   assertEquals(seen.length, 1, "a question as the line is fine: no regeneration");
 });
+
+Deno.test("D51: a question about the user is routed to the line route with the memories, line only", async () => {
+  const { provider, seen } = scripted(
+    `Jag åkte skidor i Åre, du då?\nSäg att du älskar snö.\n${SUMMARY_MARK} Användaren fick en replik om sommaren.`,
+  );
+  const { handler } = setup(provider);
+  const ev = await sse(
+    await handler(
+      post(
+        body({ fragment: "vad har du gjort i sommar", memories: ["Åkte skidor i Åre i somras"] }),
+      ),
+    ),
+  );
+  const spoken = ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
+  assertEquals(spoken, "Jag åkte skidor i Åre, du då?");
+  assertStringIncludes(seen[0].user, "<task>social_line</task>");
+  assertStringIncludes(seen[0].user, "- Åkte skidor i Åre i somras");
+  assertStringIncludes(seen[0].system, "turns it around");
+});

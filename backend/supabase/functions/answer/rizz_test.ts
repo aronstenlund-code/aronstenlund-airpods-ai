@@ -205,6 +205,8 @@ Deno.test("prompt: styles, triggers, guardrails; hold-out clean", () => {
     assertStringIncludes(SYSTEM_PROMPT_RIZZ, g);
   }
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "Every sentence must carry content");
+  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "answers as the user from <memories>");
+  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "never invent a fact about the user");
   const low = SYSTEM_PROMPT_RIZZ.toLowerCase();
   for (
     const banned of ["pi-talet", "decimal", "fission", "fusion", "kärnkraft", "10st", "deciliter"]
