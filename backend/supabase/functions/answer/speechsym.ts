@@ -156,6 +156,8 @@ const UNIT_SPOKEN: Record<string, string> = {
 /** After digits became words. */
 export function afterNumbers(text: string): string {
   let s = text;
+  // "mol" is an en-word ("en mol"), a recurring slip in the model's Swedish
+  s = s.replace(/(?<![\p{L}])([Ee])tt mol(?![\p{L}])/gu, (_m, e: string) => `${e}n mol`);
   // squared / cubed units: "meter²" -> "kvadratmeter"
   s = s.replace(
     /(kilometer|meter|centimeter|millimeter|decimeter)([²³])/g,

@@ -51,7 +51,7 @@ function tokenize(input: string): Tok[] | null {
     .replace(/\bi kubik\b|\bcubed\b/g, " ³ ")
     .replace(/\b(?:kvadratroten|roten) (?:ur|av)\b|\bsquare root of\b|√/g, " √ ")
     .replace(/\bmultiplicerat med\b|\bgånger\b|\btimes\b|\bmultiplied by\b|[×*·]/g, " * ")
-    .replace(/\bdividerat med\b|\bdelat med\b|\bdelat på\b|\bdivided by\b|[÷/:]/g, " / ")
+    .replace(/\bdividerat med\b|\bdelat med\b|\bdelat på\b|\bgenom\b|\bdivided by\b|[÷/:]/g, " / ")
     .replace(/\bplus\b|\+/g, " + ")
     .replace(/\bminus\b|\bsubtraherat med\b|(?<=[\d\p{L}])\s*[−–-]\s*(?=[\d\p{L}])/gu, " - ")
     .replace(/\s+x\s+/g, " * ")

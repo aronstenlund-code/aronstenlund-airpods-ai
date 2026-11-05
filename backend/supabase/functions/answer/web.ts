@@ -72,13 +72,92 @@ export function needsWeb(fragment: string): WebNeed | null {
   return fetch || search ? { search: search || fetch, fetch } : null;
 }
 
+/**
+ * D54: web search is restricted to reliable sources (public authorities, universities, established
+ * encyclopedias and news organisations, official sports/standards bodies). Anthropic's web_search tool
+ * takes `allowed_domains`; extend this list instead of loosening the prompt.
+ */
+export const RELIABLE_DOMAINS = [
+  "wikipedia.org",
+  "britannica.com",
+  "ne.se",
+  "scb.se",
+  "riksdagen.se",
+  "regeringen.se",
+  "riksbanken.se",
+  "skatteverket.se",
+  "forsakringskassan.se",
+  "polisen.se",
+  "smhi.se",
+  "trafikverket.se",
+  "krisinformation.se",
+  "konsumentverket.se",
+  "folkhalsomyndigheten.se",
+  "socialstyrelsen.se",
+  "naturvardsverket.se",
+  "1177.se",
+  "kungahuset.se",
+  "svenska.se",
+  "isof.se",
+  "svt.se",
+  "sverigesradio.se",
+  "dn.se",
+  "svd.se",
+  "gp.se",
+  "aftonbladet.se",
+  "expressen.se",
+  "tt.se",
+  "uu.se",
+  "su.se",
+  "kth.se",
+  "lu.se",
+  "gu.se",
+  "ki.se",
+  "chalmers.se",
+  "bbc.com",
+  "bbc.co.uk",
+  "reuters.com",
+  "apnews.com",
+  "theguardian.com",
+  "nytimes.com",
+  "wsj.com",
+  "ft.com",
+  "bloomberg.com",
+  "cnn.com",
+  "nature.com",
+  "science.org",
+  "nasa.gov",
+  "who.int",
+  "un.org",
+  "europa.eu",
+  "worldbank.org",
+  "imf.org",
+  "oecd.org",
+  "nih.gov",
+  "cdc.gov",
+  "mayoclinic.org",
+  "gov.uk",
+  "fifa.com",
+  "uefa.com",
+  "olympics.com",
+  "espn.com",
+  "imdb.com",
+  "khanacademy.org",
+  "developer.mozilla.org",
+];
+
 export const MAX_SEARCHES = 3;
 export const MAX_FETCHES = 2;
 
 export function webTools(need: WebNeed): unknown[] {
   const tools: unknown[] = [];
   if (need.search) {
-    tools.push({ type: "web_search_20250305", name: "web_search", max_uses: MAX_SEARCHES });
+    tools.push({
+      type: "web_search_20250305",
+      name: "web_search",
+      max_uses: MAX_SEARCHES,
+      allowed_domains: RELIABLE_DOMAINS,
+    });
   }
   if (need.fetch) {
     tools.push({ type: "web_fetch_20250910", name: "web_fetch", max_uses: MAX_FETCHES });

@@ -289,7 +289,7 @@ Deno.test("social prompt: line first, no mind reading, respects no, refuses mani
   }
 });
 
-import { needsWeb, WEB_PROMPT, webTools } from "./web.ts";
+import { needsWeb, RELIABLE_DOMAINS, WEB_PROMPT, webTools } from "./web.ts";
 import { mapAnthropicEvent, WebTextGate } from "./llm/anthropic.ts";
 
 Deno.test("web router: only fragments that need current/external facts enable the tools", () => {
@@ -321,7 +321,12 @@ Deno.test("web router: only fragments that need current/external facts enable th
   assertEquals(needsWeb("kolla example.se")?.fetch, true);
   assertEquals(needsWeb("vad kostar det idag")?.fetch, false);
   assertEquals(webTools({ search: true, fetch: true }), [
-    { type: "web_search_20250305", name: "web_search", max_uses: 3 },
+    {
+      type: "web_search_20250305",
+      name: "web_search",
+      max_uses: 3,
+      allowed_domains: RELIABLE_DOMAINS,
+    },
     { type: "web_fetch_20250910", name: "web_fetch", max_uses: 2 },
   ]);
   for (
@@ -471,4 +476,13 @@ Deno.test("D54: an answer always starts with a capital letter, in any chunking",
   }
   const p = new AnswerPost({ previousAnswers: [], trimQuestion: false });
   assertEquals(p.push("iPhone är en telefon.") + p.finish(), "iPhone är en telefon.");
+});
+
+Deno.test("D54: web search is limited to reliable domains; 'genom' divides; ett mol -> en mol", () => {
+  const t = webTools({ search: true, fetch: false })[0] as { allowed_domains: string[] };
+  assertEquals(t.allowed_domains, RELIABLE_DOMAINS);
+  assert(RELIABLE_DOMAINS.includes("scb.se") && !RELIABLE_DOMAINS.includes("masterskapssidan.se"));
+  assertEquals(computeFragment("tiotusen genom fyra hundra")?.value, 25);
+  assertEquals(computeFragment("10000 genom 400")?.value, 25);
+  assertEquals(toSpeech("Ett mol kol väger tolv gram."), "En mol kol väger tolv gram.");
 });
