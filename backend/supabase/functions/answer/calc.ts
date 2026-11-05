@@ -1,4 +1,5 @@
 import { wordsToNumber } from "./svnum.ts";
+import { zoneClock } from "./timezone.ts";
 
 /**
  * D46: plain arithmetic, percentages and unit conversions are computed here, never by the LLM
@@ -228,9 +229,11 @@ function convert(input: string): Computed | null {
   return { value: v, text: `${fmtNumber(a)} ${from.name} = ${fmtNumber(v)} ${to.name}` };
 }
 
-export function computeFragment(fragment: string): Computed | null {
+export function computeFragment(fragment: string, now: Date = new Date()): Computed | null {
   const f = fragment.trim();
   if (!f || f.length > 120) return null;
+  const z = zoneClock(f, now);
+  if (z) return z;
   const p = percent(f);
   if (p) return p;
   const c = convert(f);

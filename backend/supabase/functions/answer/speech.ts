@@ -1,4 +1,8 @@
 import { numbersToSpeech } from "./svnum.ts";
+import { afterNumbers, beforeNumbers } from "./speechsym.ts";
+
+/** Digits, symbols, formulas and abbreviations -> speakable Swedish (D46/D54). */
+export const toSpeech = (t: string): string => afterNumbers(numbersToSpeech(beforeNumbers(t)));
 
 /**
  * D46 post-processing of the streamed answer text, in code instead of more prompt text:
@@ -309,21 +313,21 @@ export class NumberStream {
     const lastWs = Math.max(this.buf.lastIndexOf(" "), this.buf.lastIndexOf("\n"));
     if (lastWs === -1) {
       if (this.buf.length <= 60) return "";
-      const out = numbersToSpeech(this.buf); // a very long token without spaces: do not hold it forever
+      const out = toSpeech(this.buf); // a very long token without spaces: do not hold it forever
       this.buf = "";
       return out;
     }
     let cut = lastWs + 1;
     const head = this.buf.slice(0, cut);
-    const m = /((?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*)\s+$/.exec(head); // incl. "1 " of "1 789"
+    const m = /((?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*|[=≈≠]|\S*\^\S*)\s+$/.exec(head); // incl. "1 " of "1 789"
     if (m && this.buf.length - cut < 160) cut = head.length - m[0].length;
-    const out = numbersToSpeech(this.buf.slice(0, cut));
+    const out = toSpeech(this.buf.slice(0, cut));
     this.buf = this.buf.slice(cut);
     return out;
   }
 
   finish(): string {
-    const out = numbersToSpeech(this.buf);
+    const out = toSpeech(this.buf);
     this.buf = "";
     return out;
   }
@@ -374,10 +378,21 @@ export class AnswerPost {
     return this.tap.summary;
   }
 
+  private capitalised = false;
+  /** The answer starts with a capital letter (digits-to-words and the model can leave it lower case). */
+  private cap(t: string): string {
+    if (this.capitalised || !t.trim()) return t;
+    this.capitalised = true;
+    return t.replace(
+      /^(\s*)(\p{Ll})(?![\p{L}]*\p{Lu})/u,
+      (_m, ws: string, c: string) => ws + c.toUpperCase(),
+    );
+  }
+
   push(raw: string): string {
     const a = this.dup.push(this.gate.push(this.tap.push(this.rel.push(raw))));
     if (!a) return "";
-    return this.nums.push(this.trim.push(a));
+    return this.cap(this.nums.push(this.trim.push(a)));
   }
 
   finish(): string {
@@ -386,6 +401,6 @@ export class AnswerPost {
         this.dup.finish(),
     ) +
       this.trim.finish();
-    return this.nums.push(rest) + this.nums.finish();
+    return this.cap(this.nums.push(rest) + this.nums.finish());
   }
 }

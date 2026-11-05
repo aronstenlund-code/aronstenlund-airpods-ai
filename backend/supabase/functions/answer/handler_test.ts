@@ -796,7 +796,7 @@ Deno.test("D46: arithmetic is computed in code, handed over as <computed>, digit
   const { handler } = setup({ provider });
   const ev = await readSse(await handler(post(body({ fragment: "17 gånger 24" }))));
   assertStringIncludes(seen[0].user, "<computed>17 × 24 = 408</computed>");
-  assertEquals(textOf(ev), "sjutton gånger tjugofyra är fyrahundraåtta.");
+  assertEquals(textOf(ev), "Sjutton gånger tjugofyra är fyrahundraåtta.");
   assertEquals(ev[0].data.answer_type, "fact");
 });
 

@@ -128,6 +128,10 @@ const ORDINALS: Record<number, string> = {
 };
 export function ordinal(n: number): string {
   if (ORDINALS[n]) return ORDINALS[n];
+  if (n >= 100 && n % 100 !== 0) {
+    // 106 -> "hundrasjätte", 121 -> "hundratjugoförsta": the last two digits are the ordinal part
+    return cardinal(n - (n % 100)).replace(/ /g, "") + ordinal(n % 100);
+  }
   if (n > 20 && n < 100 && n % 10 !== 0) return cardinal(n - (n % 10)) + ORDINALS[n % 10];
   return cardinal(n) + (n % 10 === 0 && n < 100 ? "nde" : "de");
 }
@@ -162,7 +166,7 @@ const EN_NOUNS = new Set(
   (
     "liter deciliter centiliter milliliter meter centimeter millimeter kilometer mil minut timme sekund krona " +
     "procent gång person dag vecka månad kopp tesked matsked kvart halvtimme natt kväll morgon sida bit " +
-    "personer gånger minuter timmar sekunder dagar veckor månader kronor koppar skedar bitar sidor mil"
+    "personer gånger minuter timmar sekunder dagar veckor månader kronor koppar skedar bitar sidor mil mol"
   ).split(" "),
 );
 
@@ -204,7 +208,7 @@ export function numbersToSpeech(text: string): string {
     return cardinal(Number(h)) + (mm === 0 ? "" : " " + (mm < 10 ? "noll " : "") + cardinal(mm));
   });
   // ordinals 1:a 2:a 3:e ...
-  s = s.replace(/(?<![\d])(\d{1,2}):(?:a|e)(?![\p{L}\d])/gu, (_m, n: string) => ordinal(Number(n)));
+  s = s.replace(/(?<![\d])(\d{1,4}):(?:a|e)(?![\p{L}\d])/gu, (_m, n: string) => ordinal(Number(n)));
   // ranges 5-10 / 5–10 (not dates 2026-11-04)
   s = s.replace(/(?<![\d-])(\d+(?:[.,]\d+)?)\s*[–-]\s*(\d+(?:[.,]\d+)?)(?![\d-])/g, "$1 till $2");
   // negative numbers

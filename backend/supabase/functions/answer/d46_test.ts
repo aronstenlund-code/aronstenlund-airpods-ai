@@ -84,7 +84,7 @@ Deno.test("speech: digits become words regardless of chunking; closing question 
   for (const chunk of [1, 3, 7, 100]) {
     assertEquals(
       run("17 gånger 24 är 408. Vill du ha mer?", chunk).out,
-      "sjutton gånger tjugofyra är fyrahundraåtta. ",
+      "Sjutton gånger tjugofyra är fyrahundraåtta. ",
     );
     assertEquals(
       run("Ta 2,5 dl havregryn. Koka 5 minuter.", chunk).out,
@@ -414,4 +414,61 @@ Deno.test("D53: text without a tag passes through untouched; disabled tap is a n
   assertEquals(parseRelation("Refines"), "refines");
   assertEquals(parseRelation("nonsense"), null);
   assertStringIncludes(RELATION_RULE, "[[REL new_topic]]");
+});
+
+import { zoneClock } from "./timezone.ts";
+import { toSpeech } from "./speech.ts";
+Deno.test("D54: time zones are computed in code with daylight saving for the date", () => {
+  const winter = new Date("2026-11-05T10:00:00Z");
+  const summer = new Date("2026-07-05T10:00:00Z");
+  const q = "vad är klockan i tokyo när den är tolv här";
+  assertStringIncludes(zoneClock(q, winter)!.text, "klockan 20:00 i Tokyo");
+  assertStringIncludes(zoneClock(q, summer)!.text, "klockan 19:00 i Tokyo");
+  assertStringIncludes(
+    zoneClock("vad är klockan i New York när den är 15:30 här", winter)!.text,
+    "09:30 i New York",
+  );
+  assertStringIncludes(
+    zoneClock("vad är klockan i delhi när den är 23 här", winter)!.text,
+    "03:30 i Delhi, nästa dag",
+  );
+  assertStringIncludes(
+    zoneClock("vad är tidsskillnaden mellan sverige och los angeles", winter)!.text,
+    "9 timmar efter Sverige",
+  );
+  assertEquals(zoneClock("vad är klockan i Atlantis", winter), null);
+  assertEquals(zoneClock("hur gör man pannkakor", winter), null);
+  assertEquals(computeFragment(q, winter)?.value, 20 * 60);
+});
+
+Deno.test("D54: symbols, formulas, abbreviations and ordinals are spoken, not read literally", () => {
+  assertEquals(toSpeech("10^23 partiklar"), "tio upphöjt till tjugotre partiklar");
+  assertEquals(toSpeech("E=mc2"), "E är lika med m c i kvadrat");
+  assertEquals(toSpeech("300000 kilometer/s"), "trehundratusen kilometer per sekund");
+  assertEquals(toSpeech("a² + b² = c²"), "a i kvadrat plus b i kvadrat är lika med c i kvadrat");
+  assertEquals(toSpeech("50 m²"), "femtio kvadratmeter");
+  assertEquals(toSpeech("C12H22O11"), "se tolv ha tjugotvå o elva");
+  assertEquals(toSpeech("NaCl och H2O"), "enn a se ell och ha två o");
+  assertEquals(toSpeech("PIN och Hon"), "PIN och Hon"); // ordinary words are left alone
+  assertEquals(
+    toSpeech("år 476 e.Kr. och 300 f.Kr."),
+    "år fyrahundrasjuttiosex efter Kristus och trehundra före Kristus",
+  );
+  assertEquals(toSpeech("106:e minuten"), "hundrasjätte minuten");
+  assertEquals(ordinal(121), "hundratjugoförsta");
+  assertEquals(ordinal(100), "hundrade");
+  assertEquals(toSpeech("t.ex. 1 mol kol"), "till exempel en mol kol");
+});
+
+Deno.test("D54: an answer always starts with a capital letter, in any chunking", () => {
+  for (const k of [1, 3, 50]) {
+    const p = new AnswerPost({ previousAnswers: [], trimQuestion: false });
+    const t = "15 procent av 80 är 12.";
+    let out = "";
+    for (let i = 0; i < t.length; i += k) out += p.push(t.slice(i, i + k));
+    out += p.finish();
+    assertEquals(out, "Femton procent av åttio är tolv.", `chunk ${k}`);
+  }
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false });
+  assertEquals(p.push("iPhone är en telefon.") + p.finish(), "iPhone är en telefon.");
 });
