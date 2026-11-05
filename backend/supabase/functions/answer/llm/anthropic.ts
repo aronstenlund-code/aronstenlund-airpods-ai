@@ -149,6 +149,16 @@ export const ANTHROPIC_VERSION = "2026-10-21";
  * costs ~70 ms of isolate boot, and every request here may run in a fresh isolate (measured: 29 of 30
  * calls were "cold"). Request shape = what the SDK sent (verified live with SDK 1.3.0).
  */
+/** Removes domains from every web_search `allowed_domains` list. */
+export function withoutDomains(tools: unknown[], drop: Set<string>): unknown[] {
+  return tools.map((t) => {
+    const o = t as { allowed_domains?: string[] };
+    return Array.isArray(o.allowed_domains)
+      ? { ...o, allowed_domains: o.allowed_domains.filter((d) => !drop.has(d)) }
+      : t;
+  });
+}
+
 export class AnthropicProvider implements LLMProvider {
   readonly name = "anthropic";
   readonly model: string;
@@ -167,6 +177,7 @@ export class AnthropicProvider implements LLMProvider {
     let emitted = false;
     try {
       const model = req.model ?? this.cfg.model;
+      let tools = req.tools;
       // Only Haiku is known to take thinking:disabled; other models (Sonnet/Opus 5.5) reject it with a 400,
       // so it is sent for Haiku only and dropped on a "thinking" 400 (effort stays low either way).
       const send = (withThinking: boolean) =>
@@ -190,7 +201,7 @@ export class AnthropicProvider implements LLMProvider {
               messages: [{ role: "user", content: req.user }],
               output_config: { effort: this.cfg.effort },
               ...(withThinking ? { thinking: { type: "disabled" } } : {}),
-              ...(req.tools?.length ? { tools: req.tools } : {}),
+              ...(tools?.length ? { tools } : {}),
             }),
             signal,
           },
@@ -200,6 +211,16 @@ export class AnthropicProvider implements LLMProvider {
       if (res.status === 400 && wantThinkingOff) {
         const peek = await res.clone().text().catch(() => "");
         if (/thinking/i.test(peek)) res = await send(false);
+      }
+      if (res.status === 400 && tools?.length) {
+        // A domain on the allow-list started blocking Anthropic's crawler: drop it and retry once.
+        const peek = await res.clone().text().catch(() => "");
+        const bad = /not accessible to our user agent: \[([^\]]*)\]/.exec(peek)?.[1];
+        if (bad) {
+          const drop = new Set(bad.match(/[a-z0-9][a-z0-9.-]*\.[a-z]{2,}/gi) ?? []);
+          tools = withoutDomains(tools, drop);
+          res = await send(wantThinkingOff);
+        }
       }
       if (!res.ok || !res.body) {
         let message = "";

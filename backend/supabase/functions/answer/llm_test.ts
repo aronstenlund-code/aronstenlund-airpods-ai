@@ -235,3 +235,58 @@ Deno.test("D52: thinking:disabled only for Haiku; a 'thinking' 400 is retried wi
   assertEquals(bodies.length, 2);
   assertEquals(bodies[1].thinking, undefined);
 });
+
+import { withoutDomains } from "./llm/anthropic.ts";
+Deno.test("D54: blocked domains are removed from the web_search allow-list for the retry", () => {
+  const tools = [{ type: "web_search_20250305", allowed_domains: ["a.se", "b.com", "c.org"] }, {
+    type: "web_fetch_20250910",
+  }];
+  assertEquals(withoutDomains(tools, new Set(["b.com"])), [
+    { type: "web_search_20250305", allowed_domains: ["a.se", "c.org"] },
+    { type: "web_fetch_20250910" },
+  ]);
+});
+
+Deno.test("D54: a 400 'not accessible to our user agent' retries once without the blocked domain", async () => {
+  const bodies: { tools?: { allowed_domains?: string[] }[] }[] = [];
+  const f = ((_u: string, init: RequestInit) => {
+    bodies.push(JSON.parse(init.body as string));
+    if (bodies.length === 1) {
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            error: {
+              type: "invalid_request_error",
+              message:
+                "The following domains are not accessible to our user agent: ['b.com']. Read more: x",
+            },
+          }),
+          { status: 400 },
+        ),
+      );
+    }
+    return Promise.resolve(sse([
+      { type: "content_block_start", index: 0, content_block: { type: "text", text: "" } },
+      { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: "Ok." } },
+      { type: "message_delta", delta: { stop_reason: "end_turn" }, usage: { output_tokens: 2 } },
+      { type: "message_stop" },
+    ]));
+  }) as typeof fetch;
+  const out = [];
+  for await (
+    const c of new AnthropicProvider(cfg, f).stream({
+      system: "S",
+      user: "U",
+      maxTokens: 9,
+      tools: [{
+        type: "web_search_20250305",
+        name: "web_search",
+        allowed_domains: ["a.se", "b.com"],
+      }],
+    })
+  ) out.push(c);
+  assertEquals(bodies.length, 2);
+  assertEquals(bodies[0].tools![0].allowed_domains, ["a.se", "b.com"]);
+  assertEquals(bodies[1].tools![0].allowed_domains, ["a.se"]);
+  assertEquals(out.some((c) => c.type === "text"), true);
+});

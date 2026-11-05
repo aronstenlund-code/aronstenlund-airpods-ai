@@ -75,7 +75,10 @@ export function needsWeb(fragment: string): WebNeed | null {
 /**
  * D54: web search is restricted to reliable sources (public authorities, universities, established
  * encyclopedias and news organisations, official sports/standards bodies). Anthropic's web_search tool
- * takes `allowed_domains`; extend this list instead of loosening the prompt.
+ * takes `allowed_domains`; extend this list instead of loosening the prompt. The API answers 400 for
+ * domains that block its crawler (checked live 2026-11-05: aftonbladet.se, apnews.com, bbc.co.uk, bbc.com,
+ * dn.se, expressen.se, ft.com, nytimes.com, reuters.com, svd.se, theguardian.com, wsj.com), so they are not
+ * listed; the provider drops such a domain and retries once if one starts blocking later.
  */
 export const RELIABLE_DOMAINS = [
   "wikipedia.org",
@@ -101,11 +104,7 @@ export const RELIABLE_DOMAINS = [
   "isof.se",
   "svt.se",
   "sverigesradio.se",
-  "dn.se",
-  "svd.se",
   "gp.se",
-  "aftonbladet.se",
-  "expressen.se",
   "tt.se",
   "uu.se",
   "su.se",
@@ -114,14 +113,6 @@ export const RELIABLE_DOMAINS = [
   "gu.se",
   "ki.se",
   "chalmers.se",
-  "bbc.com",
-  "bbc.co.uk",
-  "reuters.com",
-  "apnews.com",
-  "theguardian.com",
-  "nytimes.com",
-  "wsj.com",
-  "ft.com",
   "bloomberg.com",
   "cnn.com",
   "nature.com",
