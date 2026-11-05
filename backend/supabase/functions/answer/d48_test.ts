@@ -216,3 +216,18 @@ Deno.test("D51: a question about the user is routed to the line route with the m
   assertStringIncludes(seen[0].user, "- Åkte skidor i Åre i somras");
   assertStringIncludes(seen[0].system, "turns it around");
 });
+
+Deno.test("D51: no memory + a question about the user -> explicit no_memory signal; with a memory -> none", async () => {
+  const { provider, seen } = scripted(
+    `Jag är mer intresserad av vad du har gjort.\n${SUMMARY_MARK} Användaren fick en replik som vänder på frågan.`,
+  );
+  const { handler } = setup(provider);
+  await (await handler(post(body({ fragment: "vad har du gjort i sommar" })))).text();
+  assertStringIncludes(seen[0].user, "<signal>no_memory");
+  await (await handler(
+    post(body({ fragment: "vad har du gjort i sommar", memories: ["Åkte skidor"] })),
+  )).text();
+  assert(!seen[1].user.includes("no_memory"));
+  await (await handler(post(body({ fragment: "hon skrev hej" })))).text();
+  assert(!seen[2].user.includes("no_memory"), "only for questions about the user");
+});
