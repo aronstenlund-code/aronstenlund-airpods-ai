@@ -6,6 +6,8 @@ export interface LLMRequest {
   cacheSystem?: boolean;
   /** Anthropic server tools (web search / fetch). Only set for requests that need the web. */
   tools?: unknown[];
+  /** Overrides the provider's default model for this request (D52: Rizz uses a stronger model). */
+  model?: string;
   signal?: AbortSignal;
 }
 

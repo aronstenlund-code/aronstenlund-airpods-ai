@@ -84,7 +84,7 @@ export function personaPlan(req: AnswerRequest): Plan | null {
       kind: "rizz",
       task: "rizz_suggestions",
       answerType: "fact",
-      maxTokens: 100,
+      maxTokens: 300,
       maxChars: 600,
     };
   }

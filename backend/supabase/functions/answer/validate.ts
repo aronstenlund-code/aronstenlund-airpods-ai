@@ -12,6 +12,8 @@ export interface SocialInput {
   transcript: { speaker: "user" | "other"; text: string }[];
   interests: string[];
   profile: string;
+  /** Opt-in per request (default false): bolder, suggestive flirt in style `flirtig`. The app decides when to send it. */
+  spicy: boolean;
 }
 const STYLES: SocialStyle[] = ["flirtig", "rolig", "självsäker", "avslappnad", "uppriktig"];
 const TRIGGERS: SocialTrigger[] = ["other_spoke", "stall", "opener"];
@@ -225,6 +227,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       transcript,
       interests,
       profile: str(x.profile, "social.profile", LIMITS.socialProfile),
+      spicy: x.spicy === true,
     };
   }
 

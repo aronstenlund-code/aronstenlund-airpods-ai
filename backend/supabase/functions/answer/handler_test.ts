@@ -390,12 +390,12 @@ Deno.test("GET with x-warm:1 triggers the upstream warm-up and answers 204 witho
 
 // ---- D35: adaptive length, fewer confirmations ----
 function recordingProvider(text = "Svar.") {
-  const seen: { system: string; user: string; maxTokens: number }[] = [];
+  const seen: { system: string; user: string; maxTokens: number; model?: string }[] = [];
   const provider: LLMProvider = {
     name: "rec",
     model: "rec",
     stream: (r) => {
-      seen.push({ system: r.system, user: r.user, maxTokens: r.maxTokens });
+      seen.push({ system: r.system, user: r.user, maxTokens: r.maxTokens, model: r.model });
       return (async function* (): AsyncGenerator<LLMChunk> {
         for (let k = 0; k < text.length; k += 23) {
           yield { type: "text", text: text.slice(k, k + 23) };
@@ -659,23 +659,29 @@ const socialBody = (o: Record<string, unknown> = {}) => ({
   ...o,
 });
 
-Deno.test("D43: social + social{} -> ONE suggestions event (array of 2-3), no meta/delta, tiny budget", async () => {
-  const { provider, seen } = recordingProvider(
-    "Vilket lopp är det?\nHoppas det blir sol!\nVad springer du helst?\nEn fjärde?",
-  );
+const CANDS =
+  "1|lopp|Vilket lopp är det?\n2|sol|Hoppas det blir sol!\n3|springa|Vad springer du helst?\n4|x|En fjärde?\n5|y|Ännu en?\nTOP: 2,1,3\n";
+Deno.test("D52: Rizz = 5 candidates + TOP -> ONE suggestions event with the 3 picked, best first; Sonnet model + cost", async () => {
+  const { provider, seen } = recordingProvider(CANDS);
   const { handler, usage } = setup({ provider });
   const ev = await readSse(await handler(post(socialBody())));
   assertEquals(ev.map((e) => e.event), ["suggestions", "done"]);
-  // streamed in 23-char chunks: the answer goes out as soon as two clean lines are complete
-  assertEquals(ev[0].data as unknown, ["Vilket lopp är det?", "Hoppas det blir sol!"]);
+  assertEquals(ev[0].data as unknown, [
+    "Hoppas det blir sol!",
+    "Vilket lopp är det?",
+    "Vad springer du helst?",
+  ]);
   assertEquals(ev[1].data.answered, true);
-  assertEquals(seen[0].maxTokens, 100);
+  assertEquals(seen[0].maxTokens, 300);
+  assertEquals(seen[0].model, "claude-sonnet-5-5");
   assert(seen[0].system.includes("conversation wingman"));
   assert(
     seen[0].user.includes("<style>rolig</style>") &&
+      seen[0].user.includes("<stage>middle</stage>") &&
       seen[0].user.includes("Den andra: Jag har tränat inför ett lopp i helgen."),
   );
   assertEquals(usage[0].mode, "tutor");
+  assertEquals(usage[0].model, "claude-sonnet-5-5");
   assert(usage[0].ttft_ms !== null);
 });
 
@@ -751,13 +757,17 @@ Deno.test("D43: empty model output -> fallback suggestions (never an empty array
   assertEquals(e2.map((e) => e.event).slice(0, 2), ["meta", "delta"]);
 });
 
-Deno.test("D43: two clean lines end the stream early; over-eight-word lines are dropped", async () => {
+Deno.test("D52: candidates over 10 words or unsafe are dropped and the pick is topped up; stream ends at the TOP line", async () => {
   const { provider } = recordingProvider(
-    "Ett två tre fyra fem sex sju åtta nio\nVilket lopp?\nHoppas det blir sol!\nVad springer du helst?\nFjärde raden här",
+    "1|a|Ett två tre fyra fem sex sju åtta nio tio elva\n2|b|Vilket lopp?\n3|c|Hoppas det blir sol!\n4|d|Vill du ligga med mig?\n5|e|Vad springer du helst?\nTOP: 1,4,3\nEftersnack som aldrig ska läsas",
   );
   const { handler } = setup({ provider });
   const ev = await readSse(await handler(post(socialBody())));
-  assertEquals(ev[0].data as unknown, ["Vilket lopp?", "Hoppas det blir sol!"]);
+  assertEquals(ev[0].data as unknown, [
+    "Hoppas det blir sol!",
+    "Vilket lopp?",
+    "Vad springer du helst?",
+  ]);
   assertEquals(ev.map((e) => e.event), ["suggestions", "done"]);
 });
 

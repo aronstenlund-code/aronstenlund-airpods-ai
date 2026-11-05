@@ -1,0 +1,563 @@
+[
+ {
+  "id": "P1",
+  "place": "fest",
+  "style": "flirtig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Hur känner du värden?"
+   },
+   {
+    "speaker": "other",
+    "text": "Vi pluggade ihop i ettan, hon bjöd in halva klassen och nu finns det typ ingen mat kvar."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "P2",
+  "place": "fest",
+  "style": "rolig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Jag vet inte varför jag tackade ja till karaoke, jag kan inte sjunga alls."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "P3",
+  "place": "fest",
+  "style": "självsäker",
+  "trigger": "opener",
+  "transcript": [],
+  "interests": [
+   "musik",
+   "dans"
+  ],
+  "profile": "Står vid DJ-bordet och nickar i takt med låten."
+ },
+ {
+  "id": "P4",
+  "place": "fest",
+  "style": "avslappnad",
+  "trigger": "stall",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Jag kom hit med min kompis men hon försvann för en timme sen."
+   },
+   {
+    "speaker": "user",
+    "text": "Ska vi leta efter henne?"
+   },
+   {
+    "speaker": "other",
+    "text": "Nä, hon klarar sig. Det är bara lite tyst här nu."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "P5",
+  "place": "fest",
+  "style": "uppriktig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Det här är första festen jag går på sen jag flyttade hit, så jag känner nästan ingen."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "S1",
+  "place": "skola",
+  "style": "rolig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Läraren gav oss tio sidor att läsa till i morgon, och jag har inte ens börjat på förra kapitlet."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "S2",
+  "place": "skola",
+  "style": "flirtig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Har du gjort matteuppgifterna?"
+   },
+   {
+    "speaker": "other",
+    "text": "Nej, men jag har gjort en perfekt kopia av din anteckning från förra veckan."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "S3",
+  "place": "skola",
+  "style": "avslappnad",
+  "trigger": "opener",
+  "transcript": [],
+  "interests": [
+   "fotboll",
+   "serier"
+  ],
+  "profile": "Sitter bredvid dig i matsalen och har ett fotbollsförbundsmärke på jackan."
+ },
+ {
+  "id": "S4",
+  "place": "skola",
+  "style": "självsäker",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Vi har grupparbete i NO ihop, va? Jag hoppas vi får bra betyg."
+   },
+   {
+    "speaker": "user",
+    "text": "Låter bra."
+   },
+   {
+    "speaker": "other",
+    "text": "Okej, men jag är rätt kass på att presentera inför klassen."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "S5",
+  "place": "skola",
+  "style": "uppriktig",
+  "trigger": "stall",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Hur gick provet?"
+   },
+   {
+    "speaker": "other",
+    "text": "Ganska bra tror jag."
+   },
+   {
+    "speaker": "user",
+    "text": "Skönt."
+   },
+   {
+    "speaker": "other",
+    "text": "Ja."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "G1",
+  "place": "gym",
+  "style": "självsäker",
+  "trigger": "opener",
+  "transcript": [],
+  "interests": [
+   "styrketräning"
+  ],
+  "profile": "Står vid skivstången och kollar på sitt träningsschema i mobilen."
+ },
+ {
+  "id": "G2",
+  "place": "gym",
+  "style": "rolig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Jag har tränat ben i tre veckor nu och kan fortfarande inte gå i trappor."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "G3",
+  "place": "gym",
+  "style": "flirtig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Är det din första gång här?"
+   },
+   {
+    "speaker": "other",
+    "text": "Ja, jag trodde man fick hjälp av någon personlig tränare gratis."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "G4",
+  "place": "gym",
+  "style": "avslappnad",
+  "trigger": "stall",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Jag brukar bara köra en timme på morgonen innan jobbet."
+   },
+   {
+    "speaker": "user",
+    "text": "Respekt, jag orkar aldrig gå upp."
+   },
+   {
+    "speaker": "other",
+    "text": "Haha, jag har tre väckarklockor."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "C1",
+  "place": "café",
+  "style": "avslappnad",
+  "trigger": "opener",
+  "transcript": [],
+  "interests": [
+   "böcker"
+  ],
+  "profile": "Läser en tjock fantasybok vid fönstret med en kaffe bredvid sig."
+ },
+ {
+  "id": "C2",
+  "place": "café",
+  "style": "flirtig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Jag beställde en kanelbulle men fick en kardemummabulle, så jag vet inte om jag ska ta det som ett tecken."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "C3",
+  "place": "café",
+  "style": "uppriktig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Vad pluggar du?"
+   },
+   {
+    "speaker": "other",
+    "text": "Psykologi, men jag vet inte om jag vill jobba med det sen. Alla frågar vad jag ska bli och jag har inget svar."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "C4",
+  "place": "café",
+  "style": "rolig",
+  "trigger": "stall",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Jag sitter här varje onsdag eftersom wifi:t hemma är hopplöst."
+   },
+   {
+    "speaker": "user",
+    "text": "Då är du stamgäst."
+   },
+   {
+    "speaker": "other",
+    "text": "Ja, de vet redan min beställning."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "T1",
+  "place": "chatt",
+  "style": "flirtig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Såg din story från konserten! Jag var också där men längst bak."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "T2",
+  "place": "chatt",
+  "style": "rolig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Min hund åt upp mitt kvitto, så nu kan jag inte lämna tillbaka tröjan."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "T3",
+  "place": "chatt",
+  "style": "självsäker",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Ska vi ses i helgen?"
+   },
+   {
+    "speaker": "other",
+    "text": "Kanske, jag vet inte än vad jag har på lördag."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "T4",
+  "place": "chatt",
+  "style": "avslappnad",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Vad gör du?"
+   },
+   {
+    "speaker": "user",
+    "text": "Lagar pasta, du?"
+   },
+   {
+    "speaker": "other",
+    "text": "Tittar på en serie om en bageritävling. Helt hopplöst beroende."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "A1",
+  "place": "avstannat",
+  "style": "uppriktig",
+  "trigger": "stall",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Hur var din helg?"
+   },
+   {
+    "speaker": "other",
+    "text": "Bra."
+   },
+   {
+    "speaker": "user",
+    "text": "Vad gjorde du?"
+   },
+   {
+    "speaker": "other",
+    "text": "Inget särskilt."
+   },
+   {
+    "speaker": "user",
+    "text": "Okej."
+   },
+   {
+    "speaker": "other",
+    "text": "Ja."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "A2",
+  "place": "avstannat",
+  "style": "rolig",
+  "trigger": "stall",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Jag älskar att baka."
+   },
+   {
+    "speaker": "user",
+    "text": "Vad bakar du helst?"
+   },
+   {
+    "speaker": "other",
+    "text": "Mest kanelbullar."
+   },
+   {
+    "speaker": "user",
+    "text": "Mums."
+   },
+   {
+    "speaker": "other",
+    "text": "Haha ja."
+   }
+  ],
+  "interests": [
+   "bakning",
+   "resor"
+  ],
+  "profile": ""
+ },
+ {
+  "id": "A3",
+  "place": "avstannat",
+  "style": "flirtig",
+  "trigger": "stall",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Gillar du det här stället?"
+   },
+   {
+    "speaker": "other",
+    "text": "Ja, det är mysigt."
+   },
+   {
+    "speaker": "user",
+    "text": "Samma."
+   },
+   {
+    "speaker": "other",
+    "text": "Mm."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "A4",
+  "place": "avstannat",
+  "style": "självsäker",
+  "trigger": "stall",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Jag har precis flyttat hit från Umeå."
+   },
+   {
+    "speaker": "user",
+    "text": "Hur gillar du Stockholm?"
+   },
+   {
+    "speaker": "other",
+    "text": "Det är stort. Jag vet inte riktigt än."
+   },
+   {
+    "speaker": "user",
+    "text": "Det tar tid."
+   },
+   {
+    "speaker": "other",
+    "text": "Ja, antar det."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "N1",
+  "place": "nej",
+  "style": "flirtig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Ska vi byta nummer?"
+   },
+   {
+    "speaker": "other",
+    "text": "Nej tack, jag vill inte det."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "N2",
+  "place": "obekväm",
+  "style": "rolig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Du är väldigt söt, vill du följa med mig hem?"
+   },
+   {
+    "speaker": "other",
+    "text": "Okej det där känns lite obekvämt, jag vill inte prata om det."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "N3",
+  "place": "nej",
+  "style": "självsäker",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "other",
+    "text": "Jag har pojkvän, så jag är inte intresserad, förlåt."
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ },
+ {
+  "id": "N4",
+  "place": "obekväm",
+  "style": "uppriktig",
+  "trigger": "other_spoke",
+  "transcript": [
+   {
+    "speaker": "user",
+    "text": "Varför svarar du aldrig på mina meddelanden?"
+   },
+   {
+    "speaker": "other",
+    "text": "Jag behöver faktiskt lugn och ro nu, kan du sluta skriva?"
+   }
+  ],
+  "interests": [],
+  "profile": ""
+ }
+]

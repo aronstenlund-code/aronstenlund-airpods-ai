@@ -12,7 +12,13 @@ import { detectMemoryAdd, MEMORY_ACK, MEMORY_SUMMARY } from "./memory.ts";
 import { needsWeb, WEB_PROMPT, WEB_SEARCH_USD, WEB_UNAVAILABLE_NOTE, webTools } from "./web.ts";
 import { AnswerPost } from "./speech.ts";
 import { numbersToSpeech } from "./svnum.ts";
-import { detectDecline, FALLBACK_DECLINE, FALLBACK_SUGGESTIONS, parseSuggestions } from "./rizz.ts";
+import {
+  detectDecline,
+  FALLBACK_DECLINE,
+  FALLBACK_SUGGESTIONS,
+  pickSuggestions,
+  rizzReady,
+} from "./rizz.ts";
 import {
   buildDirectUserMessage,
   buildUserMessage,
@@ -53,6 +59,10 @@ export interface HandlerConfig {
   limits: Limits;
   /** D46 item 8: caps for requests that use web search/fetch (they cost real money per search). */
   webLimits?: Limits;
+  /** D52: model + prices (USD / MTok) for Rizz suggestions (Sonnet 5.5 by default; Haiku for the rest). */
+  rizzModel?: string;
+  rizzPriceInPerMTok?: number;
+  rizzPriceOutPerMTok?: number;
   /** push_to_talk/text: headerless prompt, meta synthesised up front (lowest latency). */
   directModes: boolean;
   /** USD per million tokens, for the cost estimate only (prices as stated in the assignment). */
@@ -68,6 +78,9 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   maxAnswerCharsStudy: 1800,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
   webLimits: { perMinute: 3, perDay: 20, globalPerDay: 150 },
+  rizzModel: "claude-sonnet-5-5",
+  rizzPriceInPerMTok: 2,
+  rizzPriceOutPerMTok: 10,
   directModes: true,
   priceInPerMTok: 0.10,
   priceOutPerMTok: 0.50,
@@ -290,6 +303,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let status = "ok";
       const carry = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }; // tokens of discarded attempts
 
+      const isRizz = plan?.kind === "rizz";
+      const modelUsed = isRizz ? (cfg.rizzModel ?? provider.model) : provider.model;
+      const priceIn = isRizz ? (cfg.rizzPriceInPerMTok ?? cfg.priceInPerMTok) : cfg.priceInPerMTok;
+      const priceOut = isRizz
+        ? (cfg.rizzPriceOutPerMTok ?? cfg.priceOutPerMTok)
+        : cfg.priceOutPerMTok;
+      const cacheReadMult = isRizz ? 0.05 : 0.1; // cache hits: 0.05x on Sonnet 5.5, 0.1x on Haiku 5.5
+
       function usage(s: string): UsageRecord {
         const m = parser.meta;
         const inTok = inputTokens === null ? (carry.input || null) : inputTokens + carry.input;
@@ -298,8 +319,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         const total = inTok ?? 0;
         const plain = Math.max(0, total - cr - cw);
         const cost = inTok !== null || outTok !== null
-          ? ((plain + cr * 0.1 + cw * 1.25) * cfg.priceInPerMTok +
-                (outTok ?? 0) * cfg.priceOutPerMTok) / 1e6 + webSearches * WEB_SEARCH_USD
+          ? ((plain + cr * cacheReadMult + cw * 1.25) * priceIn +
+                (outTok ?? 0) * priceOut) / 1e6 + webSearches * WEB_SEARCH_USD
           : null;
         return {
           user_id: user.id,
@@ -307,7 +328,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           mode: body.mode,
           language: body.language,
           provider: provider!.name,
-          model: provider!.model,
+          model: modelUsed,
           is_question: m?.is_question ?? null,
           confidence: m?.confidence ?? null,
           input_tokens: inTok,
@@ -366,6 +387,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           maxTokens,
           cacheSystem: true,
           tools,
+          ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
           signal: ac.signal,
         })[Symbol.asyncIterator]();
       const firstP = iterator.next().then((r) => {
@@ -469,9 +491,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             }
             if (rizz) {
               rizzBuf += chunk.text;
-              // Two clean lines are enough (best first): answer now instead of waiting for the stream to end.
+              // The model finished its pick (complete TOP line): answer now instead of waiting for the stream to end.
               const done = rizzBuf.slice(0, rizzBuf.lastIndexOf("\n") + 1);
-              if (done && parseSuggestions(done).length >= 2) stop = true;
+              if (done && rizzReady(done)) stop = true;
             } else for (const ev of parser.push(chunk.text)) emit(ev);
           };
 
@@ -525,6 +547,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 maxTokens,
                 cacheSystem: true,
                 tools,
+                ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
                 signal: ac2.signal,
               })[Symbol.asyncIterator]();
               post = new AnswerPost({
@@ -537,8 +560,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             if (rizz) {
               // D43: one `suggestions` event (2-3 options, best first), nothing else.
               // After an early stop the last line may be cut mid-sentence: only complete lines count.
-              let options = parseSuggestions(
+              let options = pickSuggestions(
                 stop ? rizzBuf.slice(0, rizzBuf.lastIndexOf("\n") + 1) : rizzBuf,
+                true,
+                body.social?.spicy === true,
               );
               if (!options.length) {
                 options = detectDecline(body) ? FALLBACK_DECLINE : FALLBACK_SUGGESTIONS;
@@ -586,7 +611,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 output_tokens: outputTokens,
                 cache_read_tokens: cacheRead,
                 web_searches: webSearches,
-                model: provider.model,
+                model: modelUsed,
+                est_cost_usd: usage("ok").est_cost_usd,
               },
               summary: noSummary ? null : post.summary,
               memory_add: null,

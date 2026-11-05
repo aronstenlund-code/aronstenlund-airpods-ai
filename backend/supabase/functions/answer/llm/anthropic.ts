@@ -166,31 +166,41 @@ export class AnthropicProvider implements LLMProvider {
     const gate = req.tools?.length ? new WebTextGate() : null;
     let emitted = false;
     try {
-      const res = await this.fetchImpl(
-        this.cfg.baseUrl ? `${this.cfg.baseUrl}/v1/messages` : ANTHROPIC_URL,
-        {
-          method: "POST",
-          headers: {
-            "x-api-key": this.cfg.apiKey,
-            "anthropic-version": ANTHROPIC_VERSION,
-            "content-type": "application/json",
+      const model = req.model ?? this.cfg.model;
+      // Only Haiku is known to take thinking:disabled; other models (Sonnet/Opus 5.5) reject it with a 400,
+      // so it is sent for Haiku only and dropped on a "thinking" 400 (effort stays low either way).
+      const send = (withThinking: boolean) =>
+        this.fetchImpl(
+          this.cfg.baseUrl ? `${this.cfg.baseUrl}/v1/messages` : ANTHROPIC_URL,
+          {
+            method: "POST",
+            headers: {
+              "x-api-key": this.cfg.apiKey,
+              "anthropic-version": ANTHROPIC_VERSION,
+              "content-type": "application/json",
+            },
+            // Haiku 5.5: temperature/top_p/top_k must be omitted. Thinking off + low effort = lowest latency.
+            body: JSON.stringify({
+              model,
+              max_tokens: req.maxTokens,
+              stream: true,
+              system: req.cacheSystem
+                ? [{ type: "text", text: req.system, cache_control: { type: "ephemeral" } }]
+                : req.system,
+              messages: [{ role: "user", content: req.user }],
+              output_config: { effort: this.cfg.effort },
+              ...(withThinking ? { thinking: { type: "disabled" } } : {}),
+              ...(req.tools?.length ? { tools: req.tools } : {}),
+            }),
+            signal,
           },
-          // Haiku 5.5: temperature/top_p/top_k must be omitted. Thinking off + low effort = lowest latency.
-          body: JSON.stringify({
-            model: this.cfg.model,
-            max_tokens: req.maxTokens,
-            stream: true,
-            system: req.cacheSystem
-              ? [{ type: "text", text: req.system, cache_control: { type: "ephemeral" } }]
-              : req.system,
-            messages: [{ role: "user", content: req.user }],
-            output_config: { effort: this.cfg.effort },
-            ...(this.cfg.disableThinking ? { thinking: { type: "disabled" } } : {}),
-            ...(req.tools?.length ? { tools: req.tools } : {}),
-          }),
-          signal,
-        },
-      );
+        );
+      const wantThinkingOff = this.cfg.disableThinking && /haiku/i.test(model);
+      let res = await send(wantThinkingOff);
+      if (res.status === 400 && wantThinkingOff) {
+        const peek = await res.clone().text().catch(() => "");
+        if (/thinking/i.test(peek)) res = await send(false);
+      }
       if (!res.ok || !res.body) {
         let message = "";
         try {

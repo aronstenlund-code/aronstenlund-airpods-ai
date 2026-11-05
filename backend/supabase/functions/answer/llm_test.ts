@@ -197,3 +197,41 @@ Deno.test("sseJson handles frames split across chunks and ignores junk", async (
   for await (const ev of sseJson(body)) out.push(ev);
   assertEquals(out, [{ type: "a", n: 1 }, { type: "b" }]);
 });
+
+Deno.test("D52: thinking:disabled only for Haiku; a 'thinking' 400 is retried without it; per-request model", async () => {
+  const bodies: Record<string, unknown>[] = [];
+  const sse =
+    'event: message_start\ndata: {"type":"message_start","message":{"usage":{"input_tokens":5}}}\n\nevent: message_stop\ndata: {"type":"message_stop"}\n\n';
+  let reject = false;
+  const fake = ((_u: unknown, init: RequestInit) => {
+    const b = JSON.parse(init.body as string);
+    bodies.push(b);
+    if (reject && b.thinking) {
+      return Promise.resolve(
+        new Response(
+          '{"error":{"message":"\\"thinking.type.disabled\\" is not supported for this model"}}',
+          { status: 400 },
+        ),
+      );
+    }
+    return Promise.resolve(new Response(sse, { status: 200 }));
+  }) as typeof fetch;
+  const p = new AnthropicProvider({
+    apiKey: "k",
+    model: "claude-haiku-5-5",
+    effort: "low",
+    disableThinking: true,
+  }, fake);
+  for await (const _ of p.stream({ system: "s", user: "u", maxTokens: 10 })) { /* drain */ }
+  for await (
+    const _ of p.stream({ system: "s", user: "u", maxTokens: 10, model: "claude-sonnet-5-5" })
+  ) { /* drain */ }
+  assertEquals([bodies[0].model, bodies[0].thinking], ["claude-haiku-5-5", { type: "disabled" }]);
+  assertEquals([bodies[1].model, bodies[1].thinking], ["claude-sonnet-5-5", undefined]);
+  assertEquals((bodies[1].output_config as { effort: string }).effort, "low");
+  reject = true;
+  bodies.length = 0;
+  for await (const _ of p.stream({ system: "s", user: "u", maxTokens: 10 })) { /* drain */ }
+  assertEquals(bodies.length, 2);
+  assertEquals(bodies[1].thinking, undefined);
+});

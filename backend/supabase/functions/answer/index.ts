@@ -41,6 +41,14 @@ const handler = createHandler({
       perDay: envInt(env, "ANSWER_PER_DAY", DEFAULT_CONFIG.limits.perDay),
       globalPerDay: envInt(env, "ANSWER_GLOBAL_PER_DAY", DEFAULT_CONFIG.limits.globalPerDay),
     },
+    // D52: Rizz suggestions run on a stronger model (Sonnet 5.5: $2 in / $10 out per MTok, docs 2026-11-05).
+    rizzModel: env.get("RIZZ_MODEL") || DEFAULT_CONFIG.rizzModel,
+    rizzPriceInPerMTok: Number(
+      env.get("RIZZ_PRICE_IN_PER_MTOK") ?? DEFAULT_CONFIG.rizzPriceInPerMTok,
+    ),
+    rizzPriceOutPerMTok: Number(
+      env.get("RIZZ_PRICE_OUT_PER_MTOK") ?? DEFAULT_CONFIG.rizzPriceOutPerMTok,
+    ),
     // Web search costs $0.01 per search (owner's Claude credits): hard daily caps.
     webLimits: {
       perMinute: envInt(env, "WEB_PER_MINUTE", DEFAULT_CONFIG.webLimits!.perMinute),

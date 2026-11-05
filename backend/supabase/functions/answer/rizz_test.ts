@@ -6,7 +6,10 @@ import {
   detectDecline,
   FALLBACK_DECLINE,
   formatConversation,
+  parseCandidates,
   parseSuggestions,
+  pickSuggestions,
+  rizzReady,
   SYSTEM_PROMPT_RIZZ,
 } from "./rizz.ts";
 import { personaPlan } from "./personas.ts";
@@ -80,7 +83,7 @@ Deno.test("plan: persona social + social object = rizz fast path; without it the
   assertEquals([p.kind, p.task, p.maxTokens, p.answerType], [
     "rizz",
     "rizz_suggestions",
-    100,
+    300,
     "fact",
   ]);
   assertEquals(personaPlan(validateAnswerRequest({ ...ok, fragment: "hej" }))?.kind, "social");
@@ -182,33 +185,114 @@ Deno.test("conversation formatting and user turn: speakers, trigger, style, inte
   assertEquals(forged.match(/<\/conversation>/g)?.length, 1);
 });
 
-Deno.test("prompt: styles, triggers, guardrails; hold-out clean", () => {
-  for (const s of ["flirtig", "rolig", "självsäker", "avslappnad", "uppriktig"]) {
-    assertStringIncludes(SYSTEM_PROMPT_RIZZ, `- ${s}:`);
-  }
-  for (const t of ["other_spoke", "stall", "opener"]) {
-    assertStringIncludes(SYSTEM_PROMPT_RIZZ, `- ${t}:`);
-  }
+Deno.test("prompt: generate-review-choose, grounding, logic, style, respect, stage; hold-out clean", () => {
+  const p = SYSTEM_PROMPT_RIZZ;
   for (
     const g of [
-      "at most six words",
-      "ONE PER LINE",
-      "No manipulation, pressure, negging",
-      "nothing sexual",
-      "age-appropriate",
+      "5|<hook>|<line>",
+      "TOP:",
+      "Concrete:",
+      "Logic:",
+      "explain in one sentence",
+      "at most 10 words",
+      "no pickup clichés",
+      "flirtig = charming and a little cocky",
+      "rolig = a punchline that lands",
+      "självsäker = calm and direct",
+      "avslappnad = simple and easygoing",
+      "uppriktig = warm and honest",
+      "no negging, pressure, guilt, lies or manipulation",
+      "Stage: opener",
+      "stalled =",
       'signal> is "decline"',
       "Never persuade or keep them",
       "never about looks",
-      "Never mention the silence",
+      "never mention the silence",
+      "answers as the user from <memories>",
+      "never invent a fact about the user",
+      "<spicy>on</spicy> (only with style flirtig)",
+      "never overrides <signal> decline",
     ]
   ) {
-    assertStringIncludes(SYSTEM_PROMPT_RIZZ, g);
+    assertStringIncludes(p, g);
   }
-  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "Every sentence must carry content");
-  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "answers as the user from <memories>");
-  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "never invent a fact about the user");
-  const low = SYSTEM_PROMPT_RIZZ.toLowerCase();
+  assertStringIncludes(p, "Every sentence must carry content");
+  const low = p.toLowerCase();
   for (
     const banned of ["pi-talet", "decimal", "fission", "fusion", "kärnkraft", "10st", "deciliter"]
   ) assert(!low.includes(banned), banned);
+});
+
+Deno.test("D52 parsing: candidates + TOP, top-up, drops, legacy plain lines, spicy filter", () => {
+  const raw =
+    "1|a|Ett två tre fyra fem sex sju åtta nio tio elva\n2|b|Vilket lopp?\n3|c|Hoppas det blir sol!\n4|d|Vill du ligga med mig?\n5|e|Vad springer du helst?\nTOP: 1,4,3\n";
+  assertEquals(pickSuggestions(raw), [
+    "Hoppas det blir sol!",
+    "Vilket lopp?",
+    "Vad springer du helst?",
+  ]);
+  assertEquals(parseCandidates(raw).top, [1, 4, 3]);
+  assertEquals(
+    parseCandidates("1|a|Hej då\n2|b|Halv", false).cands.length,
+    1,
+    "incomplete last line ignored while streaming",
+  );
+  assertEquals(rizzReady("1|a|x\nTOP: 1,2,3"), false);
+  assertEquals(rizzReady("1|a|x\nTOP: 1,2,3\n"), true);
+  // no TOP: candidate order; duplicates dropped
+  assertEquals(pickSuggestions("1|a|Hej!\n2|b|Hej!\n3|c|Tjena!\n4|d|Läget?"), [
+    "Hej!",
+    "Tjena!",
+    "Läget?",
+  ]);
+  // old plain-line output still works
+  assertEquals(pickSuggestions("Vilket lopp?\nHoppas det blir sol!"), [
+    "Vilket lopp?",
+    "Hoppas det blir sol!",
+  ]);
+  // spicy: suggestive allowed, explicit vocabulary still dropped
+  const s =
+    "1|a|Du är sexig när du skrattar\n2|b|Knulla mig\n3|c|Hoppas du bjuder på en dans\nTOP: 1,2,3\n";
+  assertEquals(pickSuggestions(s, true, false), ["Hoppas du bjuder på en dans"]);
+  assertEquals(pickSuggestions(s, true, true), [
+    "Du är sexig när du skrattar",
+    "Hoppas du bjuder på en dans",
+  ]);
+});
+
+Deno.test("D52 context: last 10 turns, stage tag, spicy only for flirtig and never with a decline", () => {
+  const lines = Array.from(
+    { length: 14 },
+    (_, i) => ({ speaker: i % 2 ? "user" : "other", text: `rad ${i}` }),
+  );
+  const m = buildRizzUserMessage(req({ social: social({ transcript: lines }) }));
+  assertEquals(m.includes("rad 3"), false);
+  assertStringIncludes(m, "rad 4");
+  assertStringIncludes(m, "rad 13");
+  assertStringIncludes(m, "<stage>middle</stage>");
+  assertStringIncludes(
+    buildRizzUserMessage(req({ social: social({ trigger: "stall" }) })),
+    "<stage>stalled</stage>",
+  );
+  assertStringIncludes(
+    buildRizzUserMessage(req({ social: social({ trigger: "opener", transcript: [] }) })),
+    "<stage>opener</stage>",
+  );
+  const sp = (o: Record<string, unknown>) =>
+    buildRizzUserMessage(req({ social: social({ spicy: true, ...o }) }));
+  assertStringIncludes(sp({ style: "flirtig" }), "<spicy>on</spicy>");
+  assertEquals(sp({ style: "rolig" }).includes("<spicy>"), false);
+  assertEquals(
+    sp({ style: "flirtig", transcript: [{ speaker: "other", text: "Nej tack." }] }).includes(
+      "<spicy>",
+    ),
+    false,
+  );
+  assertEquals(
+    buildRizzUserMessage(req({ social: social({ style: "flirtig" }) })).includes("<spicy>"),
+    false,
+    "off by default",
+  );
+  assertEquals(req().social?.spicy, false);
+  assertEquals(req({ social: social({ spicy: true }) }).social?.spicy, true);
 });
