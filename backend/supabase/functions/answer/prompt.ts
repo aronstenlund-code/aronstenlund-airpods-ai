@@ -228,4 +228,4 @@ SUMMARY: after the spoken answer, add ONE new last line that starts exactly with
  */
 export const RELATION_RULE = `
 
-RELATION: <recent_qa> is present, so your reply starts with ONE first line holding only the relation tag [[REL continues]], [[REL refines]] or [[REL new_topic]] (see Conversation continuity), then a line break, then the spoken answer. Decide the relation first and answer accordingly. The tag is never read aloud.`;
+RELATION (mandatory): <recent_qa> is present, so your reply ALWAYS starts with ONE first line holding only the relation tag [[REL continues]], [[REL refines]] or [[REL new_topic]] (see Conversation continuity), then a line break, then the spoken answer. This holds for every kind of reply - a new topic, a translation, a recipe, a short or a developed answer - and comes before anything the style rules say about the first sentence. Decide the relation first and answer accordingly. The tag is never read aloud.`;
