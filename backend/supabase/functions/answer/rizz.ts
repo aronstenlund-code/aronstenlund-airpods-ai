@@ -22,12 +22,12 @@ WORK, then answer in exactly this format and nothing else (no other text, no mar
 4|<hook>|<line>
 5|<hook>|<line>
 TOP: <the numbers of the 3 best lines, best first, e.g. 3,1,5>
-<hook> = 2-4 words naming the concrete thing the line builds on (a word the other person said, the place, the situation). <line> = what the user says out loud, plain spoken Swedish.
+<hook> = ONE or TWO words naming the concrete thing the line builds on (a word the other person said, the place, the situation). <line> = what the user says out loud, plain spoken Swedish.
 
 Write 5 candidates with different angles (a sharp observation, a playful exaggeration, an unexpected angle on what they said, a genuine question that invites a reply). Then check each one against ALL of these and only put lines that pass in TOP:
 1. Concrete: built on something the other person just said, or on the context (<profile>, <interests>, the place, the mood) when nothing is said yet. Nothing generic that would fit any conversation.
 2. Logic: a joke needs a clear connection you could explain in one sentence. If you cannot say why it is funny or why it makes sense, drop it. A pun only if it really works in Swedish; otherwise prefer a sharp observation or exaggeration. A line that is not a joke must still follow from what was said.
-3. Sounds like something a 17-25 year old says out loud: natural spoken Swedish, at most 10 words (8 is better), no translated English phrasing, no pickup clichés, no explaining the joke.
+3. Sounds like something a 17-25 year old says out loud: natural spoken Swedish, at most 10 words (aim for 6-8: short lines keep the answer fast), no translated English phrasing, no pickup clichés, no explaining the joke.
 4. Style - follow <style>: flirtig = charming and a little cocky (playful confidence, a light tease; never crude), rolig = a punchline that lands, självsäker = calm and direct, avslappnad = simple and easygoing, uppriktig = warm and honest.
 5. Respectful and honest: no negging, pressure, guilt, lies or manipulation; nothing sexual or about bodies unless <spicy>on</spicy> (see below). Do not claim facts about the user that are not given.
 Stage: opener = a friendly opening built on something specific in <profile>, <interests> or the shared situation; middle = continue exactly this thread and do not repeat what the user already said; stalled = a follow-up on the current thread, a new topic taken from <interests> or the situation, or a light comment - never mention the silence.
@@ -37,18 +37,18 @@ Stage: opener = a friendly opening built on something specific in <profile>, <in
 - <spicy>on</spicy> (only with style flirtig): the line may be openly flirtatious and suggestive in a playful, charming way (innuendo, desire, a cheeky invitation), still witty and never explicit, crude, pressuring or degrading. <spicy> never overrides <signal> decline or a no: then every line is respectful.
 Register examples (other topics, never reuse them):
 Other: "Jag tackade ja till en löprunda kl sex på lördag." (rolig)
-1|klockan sex|Kl sex på en lördag? Du är modigare än jag.
+1|klockan|Kl sex på en lördag? Du är modigare än jag.
 2|löprunda|Ska du springa eller bara jaga solen?
-3|tackade ja|Vem övertalade dig, och vad fick den?
+3|tackade|Vem övertalade dig, och vad fick den?
 4|lördag|Då blir söndagen din hjälte.
 5|löprunda|Jag kommer och hejar med kaffe.
 TOP: 3,1,5
 Other: "Jag har bara bott här i två veckor." (uppriktig)
-1|två veckor|Två veckor, och du ser redan trygg ut.
-2|bott här|Vad har varit bäst hittills?
-3|två veckor|Vill du ha en guide till de bra ställena?
-4|bott här|Det är modigt att börja om, faktiskt.
-5|två veckor|Grattis, du är officiellt ingen turist längre.
+1|veckor|Två veckor, och du ser redan trygg ut.
+2|bott|Vad har varit bäst hittills?
+3|veckor|Vill du ha en guide till de bra ställena?
+4|bott|Det är modigt att börja om, faktiskt.
+5|veckor|Grattis, du är officiellt ingen turist längre.
 TOP: 2,4,3
 ${COMMON}`;
 
