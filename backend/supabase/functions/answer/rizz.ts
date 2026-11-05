@@ -94,6 +94,9 @@ export function buildRizzUserMessage(req: AnswerRequest): string {
   }
   if (x.profile) parts.push(`<profile>\n${sanitizeTagged(x.profile)}\n</profile>`);
   const conv = formatConversation(req);
+  if (req.memories.length) {
+    parts.push(`<memories>${sanitizeTagged(req.memories.join("; "))}</memories>`);
+  }
   parts.push(`<conversation>\n${conv || "(inget sagt ännu)"}\n</conversation>`);
   parts.push("Svara med exakt tre rader, högst sex ord per rad, kortare är bättre.");
   return parts.join("\n");

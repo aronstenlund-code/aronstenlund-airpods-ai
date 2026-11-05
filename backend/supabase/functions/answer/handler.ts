@@ -7,6 +7,8 @@ import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFragment } from "./calc.ts";
+import { categorize } from "./category.ts";
+import { detectMemoryAdd, MEMORY_ACK, MEMORY_SUMMARY } from "./memory.ts";
 import { needsWeb, WEB_PROMPT, WEB_SEARCH_USD, WEB_UNAVAILABLE_NOTE, webTools } from "./web.ts";
 import { AnswerPost } from "./speech.ts";
 import { numbersToSpeech } from "./svnum.ts";
@@ -15,6 +17,7 @@ import {
   buildDirectUserMessage,
   buildUserMessage,
   type PromptExtras,
+  SUMMARY_RULE,
   SYSTEM_PROMPT,
   systemPromptFor,
 } from "./prompt.ts";
@@ -35,6 +38,9 @@ export interface UsageRecord {
   total_ms: number;
   est_cost_usd: number | null;
   status: string;
+  /** D49: fixed-list category and persona only, never any text. */
+  category?: string | null;
+  persona?: string | null;
 }
 
 export interface HandlerConfig {
@@ -156,6 +162,77 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         });
       }
 
+      // D49: an explicit "kom ihåg ..." is answered locally (no model call) and returned as `memory_add`.
+      const memoryFact = body.mode !== "auto" && body.mode !== "interview_prep"
+        ? detectMemoryAdd(body.fragment)
+        : null;
+      if (memoryFact) {
+        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits);
+        if (!rl.allowed) {
+          throw new HttpError(429, "rate_limited", "Too many requests", {
+            fallback: true,
+            retryAfterSec: rl.retryAfterSec,
+          });
+        }
+        const totalMs = Math.round(now() - t0);
+        try {
+          await deps.recordUsage({
+            user_id: user.id,
+            endpoint: "answer",
+            mode: body.mode,
+            language: body.language,
+            provider: "local",
+            model: "memory",
+            is_question: true,
+            confidence: 1,
+            input_tokens: null,
+            output_tokens: null,
+            ttft_ms: 0,
+            total_ms: totalMs,
+            est_cost_usd: 0,
+            status: "ok",
+            category: "övrigt",
+            persona: body.persona,
+          });
+        } catch (e) {
+          console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+        }
+        const ack = body.language === "en" ? MEMORY_ACK.en : MEMORY_ACK.sv;
+        const frames = [
+          sseFrame("meta", {
+            reconstructed_question: body.fragment,
+            confidence: 1,
+            is_question: true,
+            needs_confirmation: false,
+            answer_type: "fact",
+          }),
+          sseFrame("delta", { text: ack }),
+          sseFrame("done", {
+            answered: true,
+            timing: { meta_ms: 0, ttft_ms: 0, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: {
+              input_tokens: 0,
+              output_tokens: 0,
+              cache_read_tokens: 0,
+              web_searches: 0,
+              model: "memory",
+            },
+            summary: MEMORY_SUMMARY,
+            memory_add: memoryFact,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
+
       const direct = (cfg.directModes && body.mode !== "auto") || !!personaPlan(body);
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
       const plan = personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
@@ -239,6 +316,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           total_ms: Math.round(now() - t0),
           est_cost_usd: cost,
           status: s,
+          category,
+          persona: body.persona,
         };
       }
 
@@ -253,13 +332,22 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         limitsMs = now() - t0;
         return r;
       });
+      const category = categorize({
+        mode: body.mode,
+        persona: body.persona,
+        fragment: body.fragment,
+        planKind: plan?.kind ?? null,
+        web: webOn,
+        computed: !!computed,
+      });
+      const noSummary = plan?.kind === "rizz";
       const systemPrompt = (plan
         ? personaSystemPrompt(plan.kind)
         : direct
         ? systemPromptFor(answerType, tutor)
-        : SYSTEM_PROMPT) + (webOn ? WEB_PROMPT : "");
-      const maxTokens = plan?.maxTokens ?? (webOn ? 600 : undefined) ??
-        (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
+        : SYSTEM_PROMPT) + (noSummary ? "" : SUMMARY_RULE) + (webOn ? WEB_PROMPT : "");
+      const maxTokens = (plan?.maxTokens ?? (webOn ? 600 : undefined) ??
+        (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens)) + (noSummary ? 0 : 80);
       const tools = webOn && need ? webTools(need) : undefined;
       const userFor = (b: AnswerRequest, extras: PromptExtras = {}) =>
         plan
@@ -495,6 +583,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 web_searches: webSearches,
                 model: provider.model,
               },
+              summary: noSummary ? null : post.summary,
+              memory_add: null,
             });
           } catch (e) {
             if (!closed) {

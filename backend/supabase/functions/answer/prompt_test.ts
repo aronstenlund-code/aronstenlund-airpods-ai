@@ -24,6 +24,7 @@ const base: AnswerRequest = {
   turn: "question",
   social: null,
   commands: [],
+  memories: [],
   context: { transcript: "", recent_qa: [], prep_terms: [] },
 };
 const req = (o: Partial<AnswerRequest> = {}): AnswerRequest => ({ ...base, ...o });

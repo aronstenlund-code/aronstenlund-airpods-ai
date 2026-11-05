@@ -10,6 +10,15 @@ export const TTS_MODELS: Record<string, number> = {
   eleven_turbo_v2_5: 1,
   eleven_multilingual_v2: 2,
 };
+/**
+ * D48: ask ElevenLabs for zero retention (`enable_logging=false`). Verified live 2026-11-05: the parameter is
+ * accepted (HTTP 200) on the current plan; the STT socket answers with a warning that zero retention is only
+ * applied for enterprise/trial plans. If a plan ever REJECTS the parameter we drop it silently (once).
+ */
+let zeroRetention = true;
+export function _resetZeroRetention(v = true) {
+  zeroRetention = v;
+}
 export const TTS_LIMITS = { bodyBytes: 4 * 1024, text: 500 } as const;
 const OUTPUT_FORMATS = new Set(["mp3_22050_32", "mp3_44100_64", "pcm_16000", "pcm_24000"]);
 const CONTENT_TYPES: Record<string, string> = { mp3: "audio/mpeg", pcm: "audio/L16" };
@@ -149,21 +158,26 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         deps.config.limits,
         cost,
       );
-      const upstreamP = doFetch(
-        `${
-          deps.config.baseUrl ?? "https://api.elevenlabs.io"
-        }/v1/text-to-speech/${voiceId}/stream?output_format=${format}`,
-        {
-          method: "POST",
-          headers: {
-            "xi-api-key": deps.apiKey,
-            "content-type": "application/json",
-            accept: "audio/*",
+      const callUpstream = (zr: boolean) =>
+        doFetch(
+          `${
+            deps.config.baseUrl ?? "https://api.elevenlabs.io"
+          }/v1/text-to-speech/${voiceId}/stream?output_format=${format}${
+            zr ? "&enable_logging=false" : ""
+          }`,
+          {
+            method: "POST",
+            headers: {
+              "xi-api-key": deps.apiKey!,
+              "content-type": "application/json",
+              accept: "audio/*",
+            },
+            body: JSON.stringify({ text, model_id: modelId, language_code: language }),
+            signal: ac.signal,
           },
-          body: JSON.stringify({ text, model_id: modelId, language_code: language }),
-          signal: ac.signal,
-        },
-      );
+        );
+      const usedZr = zeroRetention;
+      const upstreamP = callUpstream(usedZr);
       upstreamP.catch(() => {}); // handled below, or deliberately dropped when the budget denies
 
       const rl = await limitsP;
@@ -183,6 +197,15 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         throw new HttpError(502, "provider_unavailable", "TTS provider unreachable", {
           fallback: true,
         });
+      }
+      if (!upstream.ok && usedZr && upstream.status >= 400 && upstream.status < 500) {
+        const peek = await upstream.text().catch(() => "");
+        if (/logging|retention/i.test(peek)) {
+          zeroRetention = false; // the plan rejects it: continue without, silently
+          upstream = await callUpstream(false);
+        } else {
+          upstream = new Response(peek, { status: upstream.status });
+        }
       }
       if (!upstream.ok) {
         const body = await upstream.text().catch(() => "");

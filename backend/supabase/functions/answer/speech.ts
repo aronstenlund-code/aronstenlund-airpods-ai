@@ -11,6 +11,60 @@ import { numbersToSpeech } from "./svnum.ts";
 
 const norm = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
 
+// ---------- 0. summary trailer (D48) ----------
+export const SUMMARY_MARK = "[[SAMMANFATTNING]]";
+
+/**
+ * The model ends every answer with a line `[[SAMMANFATTNING]] <1-2 sentence summary>` (same call, no extra
+ * request). Everything before the marker is spoken; everything after is the summary and never reaches TTS.
+ * A partial marker at the end of a chunk is held back so it is never spoken.
+ */
+export class SummaryTap {
+  private buf = "";
+  private sum = "";
+  private inSummary = false;
+
+  push(text: string): string {
+    if (this.inSummary) {
+      this.sum += text;
+      return "";
+    }
+    this.buf += text;
+    const i = this.buf.indexOf(SUMMARY_MARK);
+    if (i !== -1) {
+      const spoken = this.buf.slice(0, i).replace(/\s+$/, "");
+      this.sum = this.buf.slice(i + SUMMARY_MARK.length);
+      this.buf = "";
+      this.inSummary = true;
+      return spoken;
+    }
+    let hold = 0; // chars kept back: a partial marker plus the whitespace in front of it
+    for (let k = Math.min(SUMMARY_MARK.length - 1, this.buf.length); k > 0; k--) {
+      if (SUMMARY_MARK.startsWith(this.buf.slice(-k))) {
+        hold = k;
+        break;
+      }
+    }
+    while (hold < this.buf.length && /\s/.test(this.buf[this.buf.length - hold - 1])) hold++;
+    const out = this.buf.slice(0, this.buf.length - hold);
+    this.buf = this.buf.slice(this.buf.length - hold);
+    return out;
+  }
+
+  finish(): string {
+    if (this.inSummary) return "";
+    const out = this.buf;
+    this.buf = "";
+    return out;
+  }
+
+  /** Cleaned summary (no quotes, one line, <= 300 chars) or null. */
+  get summary(): string | null {
+    const t = this.sum.replace(/["“”«»]/g, "").replace(/\s+/g, " ").trim().slice(0, 300);
+    return t.length >= 5 ? t : null;
+  }
+}
+
 // ---------- 1. duplicate guard ----------
 const DUP_PREFIX = 40;
 const DUP_PROBE = 12;
@@ -204,6 +258,7 @@ export interface PostOptions {
 export class AnswerPost {
   readonly dup: DupGuard;
   readonly trim: QuestionTrim;
+  private readonly tap = new SummaryTap();
   private readonly nums = new NumberStream();
 
   constructor(opts: PostOptions) {
@@ -219,14 +274,20 @@ export class AnswerPost {
     return this.trim.droppedOnly;
   }
 
+  /** D48 summary of this exchange (from the trailer line), or null. */
+  get summary(): string | null {
+    return this.tap.summary;
+  }
+
   push(raw: string): string {
-    const a = this.dup.push(raw);
+    const a = this.dup.push(this.tap.push(raw));
     if (!a) return "";
     return this.nums.push(this.trim.push(a));
   }
 
   finish(): string {
-    const rest = this.trim.push(this.dup.finish()) + this.trim.finish();
+    const rest = this.trim.push(this.dup.push(this.tap.finish()) + this.dup.finish()) +
+      this.trim.finish();
     return this.nums.push(rest) + this.nums.finish();
   }
 }

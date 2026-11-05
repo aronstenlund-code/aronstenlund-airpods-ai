@@ -3,6 +3,7 @@ import { HttpError } from "../_shared/errors.ts";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import { createHandler, DEFAULT_CONFIG, type Deps, type UsageRecord } from "./handler.ts";
 import { MockProvider } from "./llm/mock.ts";
+const SUMMARY_TOKENS = 80; // D48 trailer budget
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
 
 interface Sse {
@@ -410,7 +411,7 @@ Deno.test("D35: fact request -> short prompt, 256 tokens, answer_type fact in me
   const { handler } = setup({ provider });
   const ev = await readSse(await handler(post(body({ fragment: "när föll berlinmuren" }))));
   assertEquals(ev[0].data.answer_type, "fact");
-  assertEquals(seen[0].maxTokens, 256);
+  assertEquals(seen[0].maxTokens, 256 + SUMMARY_TOKENS);
   assert(seen[0].system.includes("at most two short sentences"));
 });
 
@@ -420,7 +421,7 @@ Deno.test("D35: study request -> developed prompt, 800 tokens, answer_type study
   const ev = await readSse(await handler(post(body({ fragment: "elbilar procons" }))));
   assertEquals(ev[0].data.answer_type, "study");
   assertEquals(ev[0].data.needs_confirmation, false);
-  assertEquals(seen[0].maxTokens, 800);
+  assertEquals(seen[0].maxTokens, 800 + SUMMARY_TOKENS);
   assert(seen[0].system.includes("five to eight short sentences"));
   const done = ev.at(-1)!.data.breakdown as Record<string, unknown>;
   assertEquals(done.answer_type, "study");
@@ -430,11 +431,11 @@ Deno.test("D35: length setting short/long overrides, invalid value -> 400", asyn
   const a = recordingProvider();
   const h1 = setup({ provider: a.provider }).handler;
   await (await h1(post(body({ fragment: "förklara växthuseffekten", length: "short" })))).text();
-  assertEquals(a.seen[0].maxTokens, 256);
+  assertEquals(a.seen[0].maxTokens, 256 + SUMMARY_TOKENS);
   const b = recordingProvider();
   const h2 = setup({ provider: b.provider }).handler;
   await (await h2(post(body({ fragment: "vad är pi", length: "long" })))).text();
-  assertEquals(b.seen[0].maxTokens, 800);
+  assertEquals(b.seen[0].maxTokens, 800 + SUMMARY_TOKENS);
   const h3 = setup().handler;
   assertEquals((await h3(post(body({ length: "enormous" })))).status, 400);
 });
@@ -446,7 +447,7 @@ Deno.test("D35: 'mer' / 'förklara enklare' continue the last answer when histor
   await (await handler(post(body({ fragment: "mer", context: ctx })))).text();
   assert(seen[0].user.includes("<task>continue_more</task>"));
   assert(seen[0].user.includes("A: Fördelarna är låga utsläpp."));
-  assertEquals(seen[0].maxTokens, 800);
+  assertEquals(seen[0].maxTokens, 800 + SUMMARY_TOKENS);
   await (await handler(post(body({ fragment: "förklara det enklare", context: ctx })))).text();
   assert(seen[1].user.includes("<task>continue_simpler</task>"));
   await (await handler(post(body({ fragment: "mer" })))).text();
@@ -487,7 +488,7 @@ Deno.test("D36: mode tutor -> tutor prompt, study budget, no header, always a qu
   assertEquals(ev[0].data.answer_type, "study");
   assertEquals(ev[0].data.is_question, true);
   assertEquals(ev[0].data.needs_confirmation, false);
-  assertEquals(seen[0].maxTokens, 800);
+  assertEquals(seen[0].maxTokens, 800 + SUMMARY_TOKENS);
   assert(seen[0].system.includes("tutoring in a spoken conversation"));
   assert(!seen[0].system.includes("is_question"), "tutor is headerless");
   assert(seen[0].user.includes("A: Enzymer är proteiner som påskyndar reaktioner."));
@@ -505,7 +506,7 @@ Deno.test("D37: goals and commands reach the prompt; commands force a developed 
     }))),
   );
   assertEquals(ev[0].data.answer_type, "study");
-  assertEquals(seen[0].maxTokens, 800);
+  assertEquals(seen[0].maxTokens, 800 + SUMMARY_TOKENS);
   assert(
     seen[0].user.includes(
       "<goals>\nKursen ska ge förståelse för cellbiologi på gymnasienivå.\n</goals>",
@@ -515,7 +516,7 @@ Deno.test("D37: goals and commands reach the prompt; commands force a developed 
   const none = recordingProvider();
   await (await setup({ provider: none.provider }).handler(post(body({ fragment: "enzym" }))))
     .text();
-  assertEquals(none.seen[0].maxTokens, 256);
+  assertEquals(none.seen[0].maxTokens, 256 + SUMMARY_TOKENS);
   assert(!none.seen[0].user.includes("<goals>") && !none.seen[0].user.includes("<commands>"));
 });
 
@@ -556,7 +557,7 @@ Deno.test("D42 interview: question -> outline prompt with the role, 500 tokens; 
   assert(seen[0].system.includes("interview coach") && seen[0].system.includes("STAR"));
   assert(seen[0].user.includes("<task>interview_question</task>"));
   assert(seen[0].user.includes("Lagerarbetare, truckkort krävs"));
-  assertEquals(seen[0].maxTokens, 500);
+  assertEquals(seen[0].maxTokens, 500 + SUMMARY_TOKENS);
   await (await handler(
     post(
       body({
@@ -570,10 +571,10 @@ Deno.test("D42 interview: question -> outline prompt with the role, 500 tokens; 
     ),
   )).text();
   assert(seen[1].user.includes("<task>interview_feedback</task>"));
-  assertEquals(seen[1].maxTokens, 300);
+  assertEquals(seen[1].maxTokens, 300 + SUMMARY_TOKENS);
   await (await handler(post(body({ ...common, fragment: "klar" })))).text();
   assert(seen[2].user.includes("<task>interview_summary</task>"));
-  assertEquals(seen[2].maxTokens, 450);
+  assertEquals(seen[2].maxTokens, 450 + SUMMARY_TOKENS);
 });
 
 Deno.test("D42 social: one short suggestion, tiny budget, scenario passed, no history confirmation logic", async () => {
@@ -598,7 +599,7 @@ Deno.test("D42 social: one short suggestion, tiny budget, scenario passed, no hi
   assert(seen[0].system.includes("knows that the app listens"));
   assert(seen[0].user.includes("<task>social_suggestion</task>"));
   assert(seen[0].user.includes("Fika med en kompis efter skolan"));
-  assertEquals(seen[0].maxTokens, 160);
+  assertEquals(seen[0].maxTokens, 160 + SUMMARY_TOKENS);
 });
 
 Deno.test("D42 interview_prep: needs persona_setup, five-question prompt, big budget and cap", async () => {
@@ -625,7 +626,7 @@ Deno.test("D42 interview_prep: needs persona_setup, five-question prompt, big bu
     seen[0].user.includes("<task>interview_prep</task>") &&
       seen[0].user.includes("Kundtjänst, deltid, kvällar"),
   );
-  assertEquals(seen[0].maxTokens, 1200);
+  assertEquals(seen[0].maxTokens, 1200 + SUMMARY_TOKENS);
 });
 
 Deno.test("D42: persona never applies in auto mode; ordinary tutor flow untouched", async () => {
@@ -867,7 +868,7 @@ Deno.test("D46 web: a fragment that needs the web enables the tools within caps;
   const first = seenTools[0] as { tools: { type: string }[]; system: string; maxTokens: number };
   assertEquals(first.tools.map((t) => t.type), ["web_search_20250305"]);
   assertStringIncludes(first.system, "WEB:");
-  assertEquals(first.maxTokens, 600);
+  assertEquals(first.maxTokens, 600 + SUMMARY_TOKENS);
   assertStringIncludes(
     textOf(ev),
     "nio tusen nio hundra nittio kronor".replace(" ", " ").slice(0, 3),

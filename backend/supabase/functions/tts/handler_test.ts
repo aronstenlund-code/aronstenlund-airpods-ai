@@ -1,6 +1,7 @@
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import {
+  _resetZeroRetention,
   classifyElevenLabs,
   createTtsHandler,
   DEFAULT_TTS_CONFIG,
@@ -200,4 +201,30 @@ Deno.test("D46: optional allowlisted model; multilingual is metered at double we
   );
   const t2 = setup({ config: cfg, localLimiter: new MemoryRateLimiter() });
   assertEquals((await t2.handler(post({ text: "Sju." }))).status, 200);
+});
+
+Deno.test("D48: zero retention is requested; a plan that rejects it is retried once without it", async () => {
+  const urls: string[] = [];
+  const impl = (url: string | URL | Request) => {
+    urls.push(String(url));
+    return Promise.resolve(
+      String(url).includes("enable_logging")
+        ? new Response('{"detail":"zero retention mode is enterprise only"}', { status: 400 })
+        : new Response(new Uint8Array([1]), {
+          status: 200,
+          headers: { "content-type": "audio/mpeg" },
+        }),
+    );
+  };
+  _resetZeroRetention(true);
+  const { handler } = setup({}, impl as typeof fetch);
+  assertEquals((await handler(post({ text: "Sju." }))).status, 200);
+  assertEquals(urls.length, 2);
+  assert(urls[0].includes("enable_logging=false") && !urls[1].includes("enable_logging"));
+  assertEquals((await handler(post({ text: "Sju." }))).status, 200);
+  assert(!urls[2].includes("enable_logging"), "remembered: no more attempts with the parameter");
+  _resetZeroRetention(true);
+  const ok = setup();
+  await (await ok.handler(post({ text: "Sju." }))).arrayBuffer();
+  assert(ok.calls[0].url.includes("enable_logging=false"));
 });

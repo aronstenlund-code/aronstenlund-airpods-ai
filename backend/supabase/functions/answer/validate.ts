@@ -36,6 +36,8 @@ export interface AnswerRequest {
   social: SocialInput | null;
   /** The student's own matched keyword commands (D37), <= 10. */
   commands: { keyword: string; instruction: string }[];
+  /** D49: facts the user asked the app to remember (<= 30 x 200 chars), used as user facts. */
+  memories: string[];
   context: {
     transcript: string;
     recent_qa: { q: string; a: string }[];
@@ -60,6 +62,8 @@ export const LIMITS = {
   socialInterest: 60,
   socialProfile: 1000,
   commands: 10,
+  memories: 30,
+  memory: 200,
   commandKeyword: 60,
   commandInstruction: 300,
 } as const;
@@ -135,6 +139,12 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
 
   const goals = str(o.goals, "goals", LIMITS.goals);
 
+  const memRaw = o.memories ?? [];
+  if (!Array.isArray(memRaw)) throw bad("memories must be an array");
+  if (memRaw.length > LIMITS.memories) {
+    throw new HttpError(413, "payload_too_large", `memories exceeds ${LIMITS.memories} items`);
+  }
+  const memories = memRaw.map((x, i) => str(x, `memories[${i}]`, LIMITS.memory)).filter(Boolean);
   const cmdRaw = o.commands ?? [];
   if (!Array.isArray(cmdRaw)) throw bad("commands must be an array");
   if (cmdRaw.length > LIMITS.commands) {
@@ -233,6 +243,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     turn,
     social,
     commands,
+    memories,
     context: { transcript, recent_qa, prep_terms },
   };
 }

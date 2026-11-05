@@ -39,6 +39,7 @@
   <button id="btn" type="button">Håll in för att fråga</button>
   <div class="card"><div class="lbl">Du sa</div><div id="heard">–</div></div>
   <div class="card"><div class="lbl">Svar</div><div id="answer">–</div></div>
+  <div class="card"><div class="lbl">Sammanfattning (det enda som sparas)</div><div id="summary">–</div><div class="small" id="memnote"></div></div>
   <div class="card"><div class="lbl">Tid (ms)</div>
     <table id="times"></table>
     <div class="small" id="server"></div>
@@ -56,6 +57,13 @@
     <div id="rzopts"></div>
     <div class="small" id="rztime"></div>
     <div class="conv" id="rzconv"></div>
+  </div>
+  <div class="card"><div class="lbl">Historik (bara sammanfattningar, på den här enheten)</div>
+    <div id="hist" class="small">–</div>
+    <div class="rzrow"><button id="histdel" type="button" class="rzbtn">Radera all historik</button></div>
+    <div class="lbl" style="margin-top:10px">Minne (sparas bara när du säger "kom ihåg …")</div>
+    <div id="mem" class="small">–</div>
+    <div class="rzrow"><button id="memdel" type="button" class="rzbtn">Radera allt minne</button></div>
   </div>
   <div class="small" id="status">Startar …</div>
 </main>
@@ -147,15 +155,35 @@ function speak(sentence, r) {
   });
 }
 
+// ---------- D48/D49: summaries as the only history, explicit memories ----------
+const TWO_YEARS = 2 * 365 * 24 * 3600 * 1000;
+function load(key) { try { const a = JSON.parse(localStorage.getItem(key) || "[]"); return Array.isArray(a) ? a.filter((x) => x && Date.now() - x.t < TWO_YEARS) : []; } catch { return []; } }
+function save(key, a) { try { localStorage.setItem(key, JSON.stringify(a)); } catch {} }
+function renderStore() {
+  const h = load("lumen_hist"), m = load("lumen_mem");
+  $("hist").textContent = h.length ? "" : "–"; $("mem").textContent = m.length ? "" : "–";
+  for (const x of h.slice(-8).reverse()) { const d = document.createElement("div"); d.textContent = new Date(x.t).toLocaleString("sv-SE") + " – " + x.s; $("hist").appendChild(d); }
+  m.forEach((x, i) => { const d = document.createElement("div"); d.textContent = "• " + x.s + " "; const b = document.createElement("button"); b.type = "button"; b.textContent = "ta bort"; b.onclick = () => { const a = load("lumen_mem"); a.splice(i, 1); save("lumen_mem", a); renderStore(); }; d.appendChild(b); $("mem").appendChild(d); });
+}
+function memories() { return load("lumen_mem").map((x) => x.s).slice(-30); }
+function onDoneStore(data) {
+  if (data && data.summary) { $("summary").textContent = data.summary; const a = load("lumen_hist"); a.push({ t: Date.now(), s: data.summary }); save("lumen_hist", a.slice(-500)); }
+  if (data && data.memory_add) { const a = load("lumen_mem"); a.push({ t: Date.now(), s: String(data.memory_add).slice(0, 200) }); save("lumen_mem", a.slice(-30)); $("memnote").textContent = "Sparade i minnet: " + data.memory_add; }
+  renderStore();
+}
+$("histdel").onclick = () => { if (confirm("Radera ALL historik på den här enheten?")) { save("lumen_hist", []); renderStore(); } };
+$("memdel").onclick = () => { if (confirm("Radera ALLT minne på den här enheten?")) { save("lumen_mem", []); renderStore(); } };
+renderStore();
+
 // ---------- ask ----------
 async function ask(text, mode, t0) {
   if (run && run.busy) return;
   const r = run = { busy: true, text, mode, release: t0, req: null, firstText: null, firstAudio: null, ttsReq: null, ttsFirstByte: null,
                     stt: null, answer: "", buf: "", spoken: "", chain: Promise.resolve(), nextAt: 0, server: null, err: null };
-  $("heard").textContent = text; $("heard").className = "final"; $("answer").textContent = "…"; render(r); setBusy(true);
+  $("heard").textContent = text; $("heard").className = "final"; $("answer").textContent = "…"; $("summary").textContent = "–"; $("memnote").textContent = ""; render(r); setBusy(true);
   try {
     r.req = now();
-    const res = await api("answer", { method: "POST", body: JSON.stringify({ fragment: text, mode, language: "sv", context: { transcript: "", recent_qa: history.slice(-3), prep_terms: [] } }) });
+    const res = await api("answer", { method: "POST", body: JSON.stringify({ fragment: text, mode, language: "sv", memories: memories(), context: { transcript: "", recent_qa: history.slice(-3), prep_terms: [] } }) });
     if (!res.ok) throw new Error(await errText(res));
     const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
     let buf = "";
@@ -170,7 +198,7 @@ async function ask(text, mode, t0) {
         if (ev === "delta") {
           if (r.firstText == null) r.firstText = now();
           r.answer += data.text; r.buf += data.text; $("answer").textContent = r.answer; feedSentences(r, false); render(r);
-        } else if (ev === "done") { r.server = data; }
+        } else if (ev === "done") { r.server = data; onDoneStore(data); }
         else if (ev === "error") { r.err = (data.code || "fel") + ": " + data.message + (data.fallback ? " (reserv)" : ""); }
       }
     }
@@ -360,6 +388,7 @@ async function startScribe() {
   const q = new URLSearchParams({ model_id: tok.model_id, token: tok.token, language_code: tok.language_code || "swe", audio_format: "pcm_16000", commit_strategy: "manual" });
   const kt = $("keyterms").value.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 20);
   for (const k of kt) q.append("keyterms", k);
+  for (const [k, v] of new URLSearchParams(tok.extra_query || "")) q.set(k, v);
   try {
     const ws = st.ws = new WebSocket(tok.ws_url + "?" + q.toString());
     ws.onopen = () => { st.open = true; for (const m of st.queue) ws.send(m); st.queue = []; };

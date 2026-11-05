@@ -163,6 +163,9 @@ export function createSttHandler(deps: SttDeps) {
           model_id: STT_MODEL,
           ws_url: "wss://api.elevenlabs.io/v1/speech-to-text/realtime",
           language_code: "swe",
+          // D48/D44: privacy + noise params verified to be accepted (zero retention itself needs an
+          // enterprise/trial plan: the socket then answers with a warning and carries on).
+          extra_query: "enable_logging=false&filter_background_audio=true",
         }),
         {
           status: 200,
