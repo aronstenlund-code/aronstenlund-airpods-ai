@@ -447,7 +447,7 @@ Deno.test("D35: 'mer' / 'förklara enklare' continue the last answer when histor
   await (await handler(post(body({ fragment: "mer", context: ctx })))).text();
   assert(seen[0].user.includes("<task>continue_more</task>"));
   assert(seen[0].user.includes("A: Fördelarna är låga utsläpp."));
-  assertEquals(seen[0].maxTokens, 800 + SUMMARY_TOKENS);
+  assertEquals(seen[0].maxTokens, 800 + SUMMARY_TOKENS + 12);
   await (await handler(post(body({ fragment: "förklara det enklare", context: ctx })))).text();
   assert(seen[1].user.includes("<task>continue_simpler</task>"));
   await (await handler(post(body({ fragment: "mer" })))).text();
@@ -488,7 +488,7 @@ Deno.test("D36: mode tutor -> tutor prompt, study budget, no header, always a qu
   assertEquals(ev[0].data.answer_type, "study");
   assertEquals(ev[0].data.is_question, true);
   assertEquals(ev[0].data.needs_confirmation, false);
-  assertEquals(seen[0].maxTokens, 800 + SUMMARY_TOKENS);
+  assertEquals(seen[0].maxTokens, 800 + SUMMARY_TOKENS + 12);
   assert(seen[0].system.includes("tutoring in a spoken conversation"));
   assert(!seen[0].system.includes("is_question"), "tutor is headerless");
   assert(seen[0].user.includes("A: Enzymer är proteiner som påskyndar reaktioner."));

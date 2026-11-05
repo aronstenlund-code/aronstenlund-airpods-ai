@@ -65,6 +65,62 @@ export class SummaryTap {
   }
 }
 
+// ---------- 0a. relation tag (D53) ----------
+export type Relation = "continues" | "refines" | "new_topic";
+export const RELATIONS: readonly Relation[] = ["continues", "refines", "new_topic"];
+export function parseRelation(v: unknown): Relation | null {
+  const t = typeof v === "string" ? v.toLowerCase().replace(/[^a-z_]/g, "") : "";
+  return RELATIONS.find((r) => r === t) ?? null;
+}
+
+/**
+ * The model's first line is `[[REL <relation>]]` (decided before the answer). It is split off here and
+ * never spoken. If the text does not start with the tag the stream is passed on unchanged.
+ */
+export class RelationTap {
+  relation: Relation | null = null;
+  private buf = "";
+  private strip = false; // drop the whitespace between the tag and the answer, across chunks
+  private decided: boolean;
+  constructor(enabled: boolean) {
+    this.decided = !enabled;
+  }
+  push(text: string): string {
+    if (this.decided) {
+      if (!this.strip) return text;
+      const r = text.replace(/^\s+/, "");
+      if (r) this.strip = false;
+      return r;
+    }
+    this.buf += text;
+    const t = this.buf.trimStart();
+    const open = "[[REL";
+    if (t.length < open.length) {
+      if (open.startsWith(t.toUpperCase())) return ""; // could still become the tag
+      return this.release();
+    }
+    if (!t.toUpperCase().startsWith(open)) return this.release();
+    const end = t.indexOf("]]");
+    if (end === -1) return t.length > 40 ? this.release() : "";
+    this.relation = parseRelation(t.slice(open.length, end));
+    this.decided = true;
+    this.strip = true;
+    this.buf = "";
+    const r = t.slice(end + 2).replace(/^\s+/, "");
+    if (r) this.strip = false;
+    return r;
+  }
+  finish(): string {
+    return this.decided ? "" : this.release();
+  }
+  private release(): string {
+    this.decided = true;
+    const b = this.buf;
+    this.buf = "";
+    return b;
+  }
+}
+
 // ---------- 0b. first line only (social lines) ----------
 /** The social line is ONE line: whatever the model adds after the first line break (tips, requests for
  *  more context) is dropped in code, whatever the prompt said. */
@@ -281,12 +337,15 @@ export interface PostOptions {
   trimQuestion: boolean;
   /** Social lines: keep only the first line (D51: no tips, no questions about context). */
   firstLineOnly?: boolean;
+  /** D53: the stream starts with a `[[REL ...]]` relation tag that is split off. */
+  relationTag?: boolean;
 }
 
 export class AnswerPost {
   readonly dup: DupGuard;
   readonly trim: QuestionTrim;
   private readonly tap = new SummaryTap();
+  private readonly rel: RelationTap;
   private readonly gate: FirstLineGate;
   private readonly nums = new NumberStream();
 
@@ -294,6 +353,12 @@ export class AnswerPost {
     this.dup = new DupGuard(opts.previousAnswers);
     this.trim = new QuestionTrim(opts.trimQuestion);
     this.gate = new FirstLineGate(opts.firstLineOnly === true);
+    this.rel = new RelationTap(opts.relationTag === true);
+  }
+
+  /** D53 relation reported by the model (tag), or null. */
+  get relation(): Relation | null {
+    return this.rel.relation;
   }
 
   get duplicate(): boolean {
@@ -310,14 +375,16 @@ export class AnswerPost {
   }
 
   push(raw: string): string {
-    const a = this.dup.push(this.gate.push(this.tap.push(raw)));
+    const a = this.dup.push(this.gate.push(this.tap.push(this.rel.push(raw))));
     if (!a) return "";
     return this.nums.push(this.trim.push(a));
   }
 
   finish(): string {
-    const rest =
-      this.trim.push(this.dup.push(this.gate.push(this.tap.finish())) + this.dup.finish()) +
+    const rest = this.trim.push(
+      this.dup.push(this.gate.push(this.tap.push(this.rel.finish()) + this.tap.finish())) +
+        this.dup.finish(),
+    ) +
       this.trim.finish();
     return this.nums.push(rest) + this.nums.finish();
   }

@@ -98,8 +98,8 @@ Deno.test("all prompts carry the general principles and the no-filler rule", () 
     assertStringIncludes(p, "<commands>");
     assertStringIncludes(p, "continue_more");
   }
-  assert(SYSTEM_PROMPT.length < 9000);
-  assert(SYSTEM_PROMPT_DIRECT.length < 6000);
+  assert(SYSTEM_PROMPT.length < 9400);
+  assert(SYSTEM_PROMPT_DIRECT.length < 6600);
 });
 
 Deno.test("prompts contain no examples about the owner's secret test questions (hold-out rule)", () => {

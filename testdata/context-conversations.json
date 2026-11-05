@@ -1,0 +1,340 @@
+[
+ {
+  "id": "K1",
+  "topic": "strålning",
+  "turns": [
+   {
+    "f": "vad är joniserande strålning",
+    "exp": "new_topic"
+   },
+   {
+    "f": "alfa, beta och gamma",
+    "exp": "refines"
+   },
+   {
+    "f": "enklare",
+    "exp": "continues"
+   },
+   {
+    "f": "hur skyddar man sig?",
+    "exp": "continues"
+   },
+   {
+    "f": "fotosyntes",
+    "exp": "new_topic"
+   },
+   {
+    "f": "varför då?",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K2",
+  "topic": "filosofi",
+  "turns": [
+   {
+    "f": "grekiska filosofer",
+    "exp": "new_topic"
+   },
+   {
+    "f": "Platon",
+    "exp": "refines"
+   },
+   {
+    "f": "mer detaljer",
+    "exp": "continues"
+   },
+   {
+    "f": "Newtons rörelselagar",
+    "exp": "new_topic"
+   },
+   {
+    "f": "kortare",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K3",
+  "topic": "energi",
+  "turns": [
+   {
+    "f": "vad är energi",
+    "exp": "new_topic"
+   },
+   {
+    "f": "joule",
+    "exp": "refines"
+   },
+   {
+    "f": "och watt?",
+    "exp": "continues"
+   },
+   {
+    "f": "ge ett exempel",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K4",
+  "topic": "växt",
+  "turns": [
+   {
+    "f": "hur fungerar fotosyntes",
+    "exp": "new_topic"
+   },
+   {
+    "f": "vad behöver växten?",
+    "exp": "continues"
+   },
+   {
+    "f": "ljus, vatten och koldioxid?",
+    "exp": "refines"
+   },
+   {
+    "f": "recept på pannkakor",
+    "exp": "new_topic"
+   },
+   {
+    "f": "hur länge ska de stekas?",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K5",
+  "topic": "historia",
+  "turns": [
+   {
+    "f": "franska revolutionen",
+    "exp": "new_topic"
+   },
+   {
+    "f": "Bastiljen",
+    "exp": "refines"
+   },
+   {
+    "f": "vad hände 1792?",
+    "exp": "continues"
+   },
+   {
+    "f": "hur räknar man ut procent?",
+    "exp": "new_topic"
+   },
+   {
+    "f": "varför då?",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K6",
+  "topic": "språk",
+  "turns": [
+   {
+    "f": "vad betyder ambivalent",
+    "exp": "new_topic"
+   },
+   {
+    "f": "synonymer",
+    "exp": "refines"
+   },
+   {
+    "f": "ge ett exempel",
+    "exp": "continues"
+   },
+   {
+    "f": "till engelska: jag blir sen",
+    "exp": "new_topic"
+   },
+   {
+    "f": "mer formellt",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K7",
+  "topic": "socialt",
+  "turns": [
+   {
+    "f": "hon skrev hej",
+    "exp": "new_topic"
+   },
+   {
+    "f": "mer självsäkert",
+    "exp": "continues"
+   },
+   {
+    "f": "kortare",
+    "exp": "continues"
+   },
+   {
+    "f": "roligare",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K8",
+  "topic": "samhälle",
+  "turns": [
+   {
+    "f": "riksdagens uppgift",
+    "exp": "new_topic"
+   },
+   {
+    "f": "budgeten, lagarna och kontrollen av regeringen",
+    "exp": "refines"
+   },
+   {
+    "f": "förklara det enklare",
+    "exp": "continues"
+   },
+   {
+    "f": "hur lång är en mandatperiod i kommunen?",
+    "exp": "refines"
+   }
+  ]
+ },
+ {
+  "id": "K9",
+  "topic": "konsument (ägarens testdata)",
+  "turns": [
+   {
+    "f": "skillnaden mellan garanti och reklamationsrätt",
+    "exp": "new_topic"
+   },
+   {
+    "f": "mitt bankkort är borta",
+    "exp": "new_topic"
+   },
+   {
+    "f": "kortare",
+    "exp": "continues"
+   },
+   {
+    "f": "varför då?",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K10",
+  "topic": "konst",
+  "turns": [
+   {
+    "f": "vad var impressionismen",
+    "exp": "new_topic"
+   },
+   {
+    "f": "Monet, Manet och Renoir",
+    "exp": "refines"
+   },
+   {
+    "f": "mer detaljer",
+    "exp": "continues"
+   },
+   {
+    "f": "vem målade näckrosorna",
+    "exp": "refines"
+   },
+   {
+    "f": "hur gör man pannkakor",
+    "exp": "new_topic"
+   },
+   {
+    "f": "varför då?",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K11",
+  "topic": "batteri",
+  "turns": [
+   {
+    "f": "hur fungerar ett batteri",
+    "exp": "new_topic"
+   },
+   {
+    "f": "anod, katod och elektrolyt",
+    "exp": "refines"
+   },
+   {
+    "f": "enklare",
+    "exp": "continues"
+   },
+   {
+    "f": "hur många volt har ett vanligt AA batteri",
+    "exp": "refines"
+   },
+   {
+    "f": "kortare",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K12",
+  "topic": "ekonomi",
+  "turns": [
+   {
+    "f": "vad är inflation",
+    "exp": "new_topic"
+   },
+   {
+    "f": "räntan och priserna",
+    "exp": "refines"
+   },
+   {
+    "f": "kortare",
+    "exp": "continues"
+   },
+   {
+    "f": "vad är en primtal",
+    "exp": "new_topic"
+   },
+   {
+    "f": "2, 3, 5 och 7",
+    "exp": "refines"
+   },
+   {
+    "f": "ge fler exempel",
+    "exp": "continues"
+   }
+  ]
+ },
+ {
+  "id": "K13",
+  "topic": "ljud",
+  "turns": [
+   {
+    "f": "vad är ljud",
+    "exp": "new_topic"
+   },
+   {
+    "f": "Hertz och decibel",
+    "exp": "refines"
+   },
+   {
+    "f": "enklare",
+    "exp": "continues"
+   },
+   {
+    "f": "vad behöver ljudet för att färdas",
+    "exp": "continues"
+   },
+   {
+    "f": "översätt jag är sen till tyska",
+    "exp": "new_topic"
+   },
+   {
+    "f": "mer formellt",
+    "exp": "continues"
+   }
+  ]
+ }
+]

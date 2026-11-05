@@ -1,4 +1,5 @@
 import type { Mode } from "./validate.ts";
+import { parseRelation, type Relation } from "./speech.ts";
 
 export interface Meta {
   reconstructed_question: string;
@@ -6,6 +7,8 @@ export interface Meta {
   is_question: boolean;
   needs_confirmation: boolean;
   answer_type: "fact" | "study";
+  /** D53: relation of the fragment to the active topic (header mode), else null. */
+  relation?: Relation | null;
 }
 
 export type ParserEvent = { type: "meta"; meta: Meta } | { type: "delta"; text: string };
@@ -125,6 +128,8 @@ export class ResponseParser {
         ? h.answer_type
         : this.answerType,
     };
+    const rel = parseRelation(h?.relation);
+    if (rel) this._meta.relation = rel;
     const out: ParserEvent[] = [{ type: "meta", meta: this._meta }];
     if (rest) out.push(...this.delta(rest));
     return out;

@@ -142,7 +142,7 @@ Deno.test("prompt: digits rule, computed + active_topic tags, behaviour rules, t
   for (const p of [SYSTEM_PROMPT_DIRECT_FACT, SYSTEM_PROMPT_DIRECT_TUTOR]) {
     assertStringIncludes(p, "as DIGITS");
     assertStringIncludes(p, "Never correct yourself");
-    assertStringIncludes(p, "NEVER an older turn");
+    assertStringIncludes(p, "never to an older turn");
     assertStringIncludes(p, "<computed>");
     assertStringIncludes(p, "aimed at you");
     assertStringIncludes(p, "quantities and every step");
@@ -363,33 +363,55 @@ Deno.test("web text gate: preface before a tool call is dropped, answer after th
   assertEquals(run([text("Svar "), text("direkt."), { type: "message_stop" }]), "Svar direkt.");
 });
 
-import { isNewTopic } from "./prompt.ts";
-Deno.test("context: an unrelated multi-word fragment starts a new topic; follow-ups keep the thread", () => {
-  const qa = [{
-    q: "franska revolutionen",
-    a: "Den började 1789 när ståndsriksdagen kallades samman i Versailles.",
-  }];
-  assertEquals(isNewTopic("hungrig, ägg, pasta", qa), true);
-  assertEquals(isNewTopic("mitt bankkort borta", qa), true);
-  for (
-    const f of [
-      "varför då?",
-      "kortare",
-      "mer om ståndsriksdagen",
-      "vad hände sedan i Versailles",
-      "hur påverkade det Europa",
-      "och efter det",
-    ]
-  ) {
-    assertEquals(isNewTopic(f, qa), false, f);
+import { RELATION_RULE } from "./prompt.ts";
+import { parseRelation, RelationTap } from "./speech.ts";
+Deno.test("D53: context is never dropped in advance (all turns + active topic are sent)", () => {
+  const qa = [
+    { q: "vad är joniserande strålning", a: "Strålning som kan slita loss elektroner." },
+    { q: "hur skyddar man sig", a: "Genom avstånd, skärmning och kort tid." },
+  ];
+  for (const f of ["alfa, beta och gamma", "hungrig, ägg, pasta", "Platon"]) {
+    const req = validateAnswerRequest({
+      fragment: f,
+      mode: "push_to_talk",
+      language: "sv",
+      context: { recent_qa: qa },
+    });
+    const m = buildDirectUserMessage(req);
+    assertStringIncludes(m, "<recent_qa>");
+    assertStringIncludes(m, "vad är joniserande strålning");
+    assertStringIncludes(m, "<active_topic>hur skyddar man sig</active_topic>");
   }
-  assertEquals(isNewTopic("hungrig, ägg, pasta", []), false);
-  const req = validateAnswerRequest({
-    fragment: "hungrig, ägg, pasta",
-    mode: "push_to_talk",
-    language: "sv",
-    context: { recent_qa: qa },
-  });
-  const m = buildDirectUserMessage(req);
-  assert(!m.includes("<recent_qa>") && !m.includes("<active_topic>"));
+});
+
+Deno.test("D53: relation tag is split off, never spoken, in any chunking", () => {
+  const full = "[[REL refines]]\nAlfa är heliumkärnor.";
+  for (let k = 1; k <= full.length; k++) {
+    const t = new RelationTap(true);
+    let out = "";
+    for (let i = 0; i < full.length; i += k) out += t.push(full.slice(i, i + k));
+    out += t.finish();
+    assertEquals(out, "Alfa är heliumkärnor.", `chunk ${k}`);
+    assertEquals(t.relation, "refines");
+  }
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, relationTag: true });
+  const sp = p.push("[[REL new_topic]]\nFotosyntes är växters ") +
+    p.push("sätt att göra socker.\n") +
+    p.push("[[SAMMANFATTNING]] Om fotosyntes.") + p.finish();
+  assertEquals(sp, "Fotosyntes är växters sätt att göra socker.");
+  assertEquals(p.relation, "new_topic");
+  assertEquals(p.summary, "Om fotosyntes.");
+});
+
+Deno.test("D53: text without a tag passes through untouched; disabled tap is a no-op", () => {
+  const t = new RelationTap(true);
+  assertEquals(t.push("Hej, så är det.") + t.finish(), "Hej, så är det.");
+  assertEquals(t.relation, null);
+  const t2 = new RelationTap(true);
+  assertEquals(t2.push("[[") + t2.finish(), "[[");
+  const off = new RelationTap(false);
+  assertEquals(off.push("[[REL continues]] x"), "[[REL continues]] x");
+  assertEquals(parseRelation("Refines"), "refines");
+  assertEquals(parseRelation("nonsense"), null);
+  assertStringIncludes(RELATION_RULE, "[[REL new_topic]]");
 });

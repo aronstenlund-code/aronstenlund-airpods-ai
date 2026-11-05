@@ -23,6 +23,7 @@ import {
   buildDirectUserMessage,
   buildUserMessage,
   type PromptExtras,
+  RELATION_RULE,
   SUMMARY_RULE,
   SYSTEM_PROMPT,
   systemPromptFor,
@@ -362,13 +363,17 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         computed: !!computed,
       });
       const noSummary = plan?.kind === "rizz";
+      const relationTag = direct && !plan && body.context.recent_qa.length > 0;
       const systemPrompt = (plan
         ? personaSystemPrompt(plan.kind)
         : direct
         ? systemPromptFor(answerType, tutor)
-        : SYSTEM_PROMPT) + (noSummary ? "" : SUMMARY_RULE) + (webOn ? WEB_PROMPT : "");
+        : SYSTEM_PROMPT) +
+        (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
+        (webOn ? WEB_PROMPT : "");
       const maxTokens = (plan?.maxTokens ?? (webOn ? 600 : undefined) ??
-        (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens)) + (noSummary ? 0 : 80);
+        (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens)) +
+        (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
       const tools = webOn && need ? webTools(need) : undefined;
       const userFor = (b: AnswerRequest, extras: PromptExtras = {}) =>
         plan
@@ -449,6 +454,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             previousAnswers: prevAnswers,
             trimQuestion: direct && !plan && !tutor,
             firstLineOnly: plan?.kind === "socialline",
+            relationTag,
           });
           const deliver = (t: string) => {
             if (!t || closed) return;
@@ -471,6 +477,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 is_question: ev.meta.is_question,
                 needs_confirmation: ev.meta.needs_confirmation,
                 answer_type: ev.meta.answer_type,
+                relation: ev.meta.relation ?? null,
               });
               if (!ev.meta.is_question) {
                 status = "not_question";
@@ -554,6 +561,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 previousAnswers: [],
                 trimQuestion: false,
                 firstLineOnly: plan?.kind === "socialline",
+                relationTag,
               });
               r = await it.next();
             }
@@ -615,6 +623,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 est_cost_usd: usage("ok").est_cost_usd,
               },
               summary: noSummary ? null : post.summary,
+              relation: post.relation ?? parser.meta?.relation ?? null,
               memory_add: null,
             });
           } catch (e) {
