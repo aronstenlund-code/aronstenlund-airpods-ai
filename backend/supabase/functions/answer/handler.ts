@@ -426,6 +426,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let post = new AnswerPost({
             previousAnswers: prevAnswers,
             trimQuestion: direct && !plan && !tutor,
+            firstLineOnly: plan?.kind === "socialline",
           });
           const deliver = (t: string) => {
             if (!t || closed) return;
@@ -526,7 +527,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 tools,
                 signal: ac2.signal,
               })[Symbol.asyncIterator]();
-              post = new AnswerPost({ previousAnswers: [], trimQuestion: false });
+              post = new AnswerPost({
+                previousAnswers: [],
+                trimQuestion: false,
+                firstLineOnly: plan?.kind === "socialline",
+              });
               r = await it.next();
             }
             if (rizz) {

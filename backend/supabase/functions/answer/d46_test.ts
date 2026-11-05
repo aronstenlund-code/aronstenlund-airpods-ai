@@ -273,9 +273,9 @@ Deno.test("social prompt: line first, no mind reading, respects no, refuses mani
   const p = SYSTEM_PROMPT_SOCIALLINE;
   for (
     const g of [
-      "FIRST the ready-to-say line",
+      "ONLY the ready-to-say line",
       "at most 12 words",
-      "no questions back",
+      "never a request for more context",
       "Do not read minds",
       "neither a good nor a bad sign",
       "Respect a no",

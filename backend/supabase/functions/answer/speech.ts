@@ -65,6 +65,32 @@ export class SummaryTap {
   }
 }
 
+// ---------- 0b. first line only (social lines) ----------
+/** The social line is ONE line: whatever the model adds after the first line break (tips, requests for
+ *  more context) is dropped in code, whatever the prompt said. */
+export class FirstLineGate {
+  private started = false;
+  private closed = false;
+  constructor(private readonly enabled: boolean) {}
+  push(text: string): string {
+    if (!this.enabled) return text;
+    if (this.closed) return "";
+    let out = "";
+    for (const ch of text) {
+      if (ch === "\n") {
+        if (this.started) {
+          this.closed = true;
+          break;
+        }
+        continue; // leading blank lines
+      }
+      if (!/\s/.test(ch)) this.started = true;
+      out += ch;
+    }
+    return out;
+  }
+}
+
 // ---------- 1. duplicate guard ----------
 const DUP_PREFIX = 40;
 const DUP_PROBE = 12;
@@ -253,17 +279,21 @@ export interface PostOptions {
   previousAnswers: string[];
   /** Drop a closing question to the user (false in tutoring, personas, confirmations). */
   trimQuestion: boolean;
+  /** Social lines: keep only the first line (D51: no tips, no questions about context). */
+  firstLineOnly?: boolean;
 }
 
 export class AnswerPost {
   readonly dup: DupGuard;
   readonly trim: QuestionTrim;
   private readonly tap = new SummaryTap();
+  private readonly gate: FirstLineGate;
   private readonly nums = new NumberStream();
 
   constructor(opts: PostOptions) {
     this.dup = new DupGuard(opts.previousAnswers);
     this.trim = new QuestionTrim(opts.trimQuestion);
+    this.gate = new FirstLineGate(opts.firstLineOnly === true);
   }
 
   get duplicate(): boolean {
@@ -280,13 +310,14 @@ export class AnswerPost {
   }
 
   push(raw: string): string {
-    const a = this.dup.push(this.tap.push(raw));
+    const a = this.dup.push(this.gate.push(this.tap.push(raw)));
     if (!a) return "";
     return this.nums.push(this.trim.push(a));
   }
 
   finish(): string {
-    const rest = this.trim.push(this.dup.push(this.tap.finish()) + this.dup.finish()) +
+    const rest =
+      this.trim.push(this.dup.push(this.gate.push(this.tap.finish())) + this.dup.finish()) +
       this.trim.finish();
     return this.nums.push(rest) + this.nums.finish();
   }

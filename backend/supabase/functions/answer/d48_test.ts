@@ -170,3 +170,30 @@ Deno.test("D49 categories: fixed list, decided in code from route and topic word
   assertEquals(c("fotosyntes"), "naturvetenskap");
   assertEquals(c("qwerty"), "övrigt");
 });
+
+import { FirstLineGate } from "./speech.ts";
+Deno.test("D51: a social line is ONE line - tips and context questions after it never reach speech", async () => {
+  const g = new FirstLineGate(true);
+  let out = "";
+  for (
+    const c of [
+      "\n",
+      "Hur gick det ",
+      "på hennes prov?",
+      "\nTips: fråga mer.",
+      " Vill du ge mer kontext?",
+    ]
+  ) out += g.push(c);
+  assertEquals(out, "Hur gick det på hennes prov?");
+  assertEquals(new FirstLineGate(false).push("a\nb"), "a\nb");
+  const { provider, seen } = scripted(
+    `Hur gick det på hennes prov?\nTips: håll tonen lätt. Vill du ge mer kontext?\n${SUMMARY_MARK} Användaren ville ha en replik.`,
+  );
+  const { handler } = setup(provider);
+  const ev = await sse(await handler(post(body({ fragment: "vad ska jag säga till henne" }))));
+  const spoken = ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
+  assertEquals(spoken, "Hur gick det på hennes prov?");
+  assertEquals(ev.at(-1)!.data.summary, "Användaren ville ha en replik.");
+  assertStringIncludes(seen[0].system, "ONLY the ready-to-say line");
+  assertEquals(seen.length, 1, "a question as the line is fine: no regeneration");
+});

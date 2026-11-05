@@ -54,7 +54,7 @@ const TOPICS: [Category, RegExp][] = [
   [
     "praktiskt",
     pat(
-      "recept|laga|packa|plan(?:era)?|hur gör (?:man|jag)|steg för steg|bank\\p{L}*|kort|plånbok\\p{L}*|reklamation\\p{L}*|garanti\\p{L}*|resa|boka|tvätta|städa|hungrig|mat",
+      "recept|laga|packa|plan(?:era)?|hur gör (?:man|jag)|steg för steg|bank\\p{L}*|bankkort|plånbok\\p{L}*|reklamation\\p{L}*|garanti\\p{L}*|resa|boka|tvätta|städa|hungrig|mat",
     ),
   ],
 ];

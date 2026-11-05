@@ -37,6 +37,7 @@
   <h1>Lumen webtest</h1>
   <div class="sub">Håll in knappen, ställ en fråga på svenska, släpp. <span id="voiceinfo"></span> <span id="sttinfo">Taligenkänning: kontrollerar Scribe …</span> <input id="keyterms" placeholder="nyckelord för Scribe (valfritt, kommaseparerade)" autocomplete="off" style="width:100%;margin-top:6px;font-size:13px"> Rösttyp: <select id="ttsmodel"><option value="">standard (flash)</option><option value="eleven_turbo_v2_5">turbo</option><option value="eleven_multilingual_v2">multilingual (dyrare)</option></select></div>
   <button id="btn" type="button">Håll in för att fråga</button>
+  <button id="stopbtn" type="button" style="display:none;margin:0 auto 6px;padding:12px 28px;border-radius:999px;border:0;background:var(--bad);color:#fff;font-size:17px;font-weight:700">Avbryt</button>
   <div class="card"><div class="lbl">Du sa</div><div id="heard">–</div></div>
   <div class="card"><div class="lbl">Svar</div><div id="answer">–</div></div>
   <div class="card"><div class="lbl">Sammanfattning (det enda som sparas)</div><div id="summary">–</div><div class="small" id="memnote"></div></div>
@@ -93,6 +94,16 @@ async function getToken(force) {
   try { localStorage.setItem("lumen_tok", token); } catch {}
   return token;
 }
+// D51: one tap stops everything - the request (the backend then stops the model), the audio and the queue.
+function cancelAll() {
+  const r = run;
+  if (r && r.busy) { r.cancelled = true; try { r.ac && r.ac.abort(); } catch {} r.busy = false; setBusy(false); }
+  if (rz.ac) { try { rz.ac.abort(); } catch {} rz.ac = null; rz.busy = false; }
+  try { player && player.pause(); } catch {}
+  try { speechSynthesis.cancel(); } catch {}
+  $("stopbtn").style.display = "none";
+  $("status").className = "small"; $("status").textContent = "Avbrutet.";
+}
 async function api(path, init, retry = true) {
   const t = await getToken();
   const r = await fetch(SB + "/functions/v1/" + path, { ...init, headers: { ...(init.headers || {}), authorization: "Bearer " + t, apikey: KEY, "content-type": "application/json" } });
@@ -141,8 +152,10 @@ function speak(sentence, r) {
   const dec = fetchAudio(sentence, r);
   dec.catch(() => {});
   r.chain = r.chain.then(async () => {
+    if (r.cancelled || r.abort) return;
     try {
       const blob = await dec;
+      if (r.cancelled || r.abort) return;
       const done = playBlob(blob);
       if (r.firstAudio == null) r.firstAudio = now();
       render(r);
@@ -183,7 +196,8 @@ async function ask(text, mode, t0) {
   $("heard").textContent = text; $("heard").className = "final"; $("answer").textContent = "…"; $("summary").textContent = "–"; $("memnote").textContent = ""; render(r); setBusy(true);
   try {
     r.req = now();
-    const res = await api("answer", { method: "POST", body: JSON.stringify({ fragment: text, mode, language: "sv", memories: memories(), context: { transcript: "", recent_qa: history.slice(-3), prep_terms: [] } }) });
+    r.ac = new AbortController();
+    const res = await api("answer", { signal: r.ac.signal, method: "POST", body: JSON.stringify({ fragment: text, mode, language: "sv", memories: memories(), context: { transcript: "", recent_qa: history.slice(-3), prep_terms: [] } }) });
     if (!res.ok) throw new Error(await errText(res));
     const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
     let buf = "";
@@ -205,8 +219,8 @@ async function ask(text, mode, t0) {
     feedSentences(r, true);
     await r.chain;
     history.push({ q: text, a: r.answer.slice(0, 380) });
-  } catch (e) { r.err = e.message; }
-  r.busy = false; setBusy(false); render(r);
+  } catch (e) { if (!r.cancelled) r.err = e.message; }
+  r.busy = false; if (!r.cancelled) setBusy(false); render(r);
 }
 // Start TTS as soon as a sentence is complete (and long enough to be worth a request).
 function feedSentences(r, final) {
@@ -234,7 +248,7 @@ function render(r) {
   $("server").textContent = b ? "Server: första text " + s.timing.ttft_ms + " ms, LLM " + s.timing.llm_first_token_ms + " ms, gränser " + b.limits_ms + " ms, " + (b.cold ? "kall" : "varm") + " start" : "";
   if (r.err) { $("status").className = "small err"; $("status").textContent = r.err; }
 }
-function setBusy(b) { $("btn").classList.toggle("busy", b); $("btn").textContent = b ? "Svarar …" : "Håll in för att fråga"; }
+function setBusy(b) { $("stopbtn").style.display = b ? "block" : "none"; $("btn").classList.toggle("busy", b); $("btn").textContent = b ? "Svarar …" : "Håll in för att fråga"; }
 
 // ---------- push to talk ----------
 function startListening() {
@@ -272,7 +286,8 @@ function stopListening() {
   current && current.stop();
 }
 const btn = $("btn");
-btn.addEventListener("pointerdown", (e) => { e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch {} (sttTok && !scribeOff && navigator.mediaDevices ? startScribe : startListening)(); });
+$("stopbtn").addEventListener("click", cancelAll);
+btn.addEventListener("pointerdown", (e) => { e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch {} if (run && run.busy) cancelAll(); (sttTok && !scribeOff && navigator.mediaDevices ? startScribe : startListening)(); });
 btn.addEventListener("pointerup", () => (current && current.kind === "scribe" ? stopScribe : stopListening)());
 btn.addEventListener("pointercancel", () => (current && current.kind === "scribe" ? stopScribe : stopListening)());
 btn.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -291,10 +306,12 @@ async function rzAsk(trigger) {
   rz.busy = true; unlockAudio();
   const social = { style: rz.style, trigger, transcript: rz.lines.slice(-12), interests: $("rzint").value.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 10), profile: $("rzprof").value.trim().slice(0, 1000) };
   const r = { chain: Promise.resolve(), spoken: "", ttsFirstByte: null, ttsReq: null, firstAudio: null };
+  const ac = rz.ac = new AbortController(); r.abort = false; ac.signal.addEventListener("abort", () => { r.abort = true; });
+  $("stopbtn").style.display = "block";
   const t0 = now(); let tSug = null, options = null, srv = null;
   $("rzopts").textContent = "…"; $("rztime").textContent = "";
   try {
-    const res = await api("answer", { method: "POST", body: JSON.stringify({ fragment: "", mode: "tutor", language: "sv", persona: "social", context: {}, social }) });
+    const res = await api("answer", { signal: ac.signal, method: "POST", body: JSON.stringify({ fragment: "", mode: "tutor", language: "sv", persona: "social", memories: memories(), context: {}, social }) });
     if (!res.ok) throw new Error(await errText(res));
     const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
     let buf = "";
@@ -313,8 +330,8 @@ async function rzAsk(trigger) {
     }
     await r.chain;
     $("rztime").textContent = "Förslag efter " + Math.round(tSug - t0) + " ms" + (r.firstAudio ? ", första ljud efter " + Math.round(r.firstAudio - t0) + " ms" : "") + (srv ? " (server " + srv.timing.ttft_ms + " ms, " + (srv.breakdown.cold ? "kall" : "varm") + " start)" : "");
-  } catch (e) { $("rzopts").textContent = ""; $("status").className = "small err"; $("status").textContent = "Rizzläge: " + e.message; }
-  rz.busy = false;
+  } catch (e) { if (!r.abort) { $("rzopts").textContent = ""; $("status").className = "small err"; $("status").textContent = "Rizzläge: " + e.message; } }
+  rz.busy = false; rz.ac = null; if (!(run && run.busy)) $("stopbtn").style.display = "none";
 }
 function rzShow(opts) {
   $("rzopts").innerHTML = "";
