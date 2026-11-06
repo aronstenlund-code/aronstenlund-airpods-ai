@@ -371,6 +371,14 @@ const Q_WORDS = new Set(
   ).split(" "),
 );
 
+/** Tutor check questions: short, one question, answerable in a word (no "..., och vilken ...?" pairs). */
+export function tutorQuestionOk(sentence: string): boolean {
+  const t = sentence.trim();
+  if ((t.match(/\?/g) ?? []).length > 1) return false;
+  if (t.split(/\s+/).length > 14) return false;
+  return !/,?\s+och\s+(?:vilken|vilket|vilka|vad|hur|varför|när|var|vem)\s/i.test(t);
+}
+
 export class QuestionTrim {
   /** True when a trailing question was dropped and nothing else of the answer was passed on. */
   droppedOnly = false;
@@ -381,10 +389,10 @@ export class QuestionTrim {
   private heldQuestion = ""; // a finished question sentence waiting to see if more text follows
   private prev = ""; // previous char
 
-  constructor(private readonly enabled: boolean) {}
+  constructor(private readonly enabled: boolean, private readonly tutor = false) {}
 
   push(text: string): string {
-    if (!this.enabled) {
+    if (!this.enabled && !this.tutor) {
       if (text.trim()) this.emitted = true;
       return text;
     }
@@ -436,14 +444,17 @@ export class QuestionTrim {
       const sent = this.cur;
       this.cur = "";
       this.mode = "undecided";
-      if (sent.trimEnd().endsWith("?")) this.heldQuestion = sent;
+      if (this.tutor) {
+        if (sent.trimEnd().endsWith("?") && !tutorQuestionOk(sent)) this.dropped = sent.trim();
+        else out += sent;
+      } else if (sent.trimEnd().endsWith("?")) this.heldQuestion = sent;
       else out += sent;
     }
     return out;
   }
 
   finish(): string {
-    if (!this.enabled) return "";
+    if (!this.enabled && !this.tutor) return "";
     let out = "";
     if (this.heldQuestion) {
       this.dropped = this.heldQuestion.trim();
@@ -451,7 +462,10 @@ export class QuestionTrim {
       this.heldQuestion = "";
     }
     if (this.cur) {
-      if (this.mode === "hold" && this.cur.trimEnd().endsWith("?")) {
+      if (
+        this.mode === "hold" && this.cur.trimEnd().endsWith("?") &&
+        (!this.tutor || !tutorQuestionOk(this.cur))
+      ) {
         this.dropped = this.cur.trim();
         this.droppedOnly = !this.emitted && !out.trim();
       } else out += this.cur;
@@ -508,6 +522,8 @@ export interface PostOptions {
   trimQuestion: boolean;
   /** Social lines: keep only the first line (D51: no tips, no questions about context). */
   firstLineOnly?: boolean;
+  /** D65: tutor mode: check questions must be short single questions (others are dropped). */
+  tutor?: boolean;
   /** D53: the stream starts with a `[[REL ...]]` relation tag that is split off. */
   relationTag?: boolean;
   /** D65: web answer: `källa:` line to `source`, English sentences dropped. */
@@ -526,7 +542,7 @@ export class AnswerPost {
 
   constructor(opts: PostOptions) {
     this.dup = new DupGuard(opts.previousAnswers);
-    this.trim = new QuestionTrim(opts.trimQuestion);
+    this.trim = new QuestionTrim(opts.trimQuestion, opts.tutor === true);
     this.gate = new FirstLineGate(opts.firstLineOnly === true);
     this.rel = new RelationTap(opts.relationTag === true);
     this.src = new SourceTap(opts.web === true);

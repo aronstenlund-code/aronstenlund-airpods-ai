@@ -99,8 +99,8 @@ Deno.test("all prompts carry the general principles and the no-filler rule", () 
     assertStringIncludes(p, "<commands>");
     assertStringIncludes(p, "continue_more");
   }
-  assert(SYSTEM_PROMPT.length < 10400);
-  assert(SYSTEM_PROMPT_DIRECT.length < 7800);
+  assert(SYSTEM_PROMPT.length < 11200);
+  assert(SYSTEM_PROMPT_DIRECT.length < 8600);
 });
 
 Deno.test("prompts contain no examples about the owner's secret test questions (hold-out rule)", () => {
@@ -212,6 +212,6 @@ Deno.test("confirmation questions are not memory, except when they were the last
 Deno.test("tutor check question must be useful, answerable with ja/nej or one word, and optional", () => {
   const t = SYSTEM_PROMPT_DIRECT_TUTOR;
   assertStringIncludes(t, "genuinely useful");
-  assertStringIncludes(t, "test a key point you just taught");
-  assertStringIncludes(t, "at most every second answer");
+  assertStringIncludes(t, "tests a key point of THIS answer");
+  assertStringIncludes(t, "At most every second answer");
 });

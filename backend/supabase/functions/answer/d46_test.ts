@@ -766,3 +766,71 @@ Deno.test("D65: a bare unit in a follow-up is converted in code from the previou
     "different kind of quantity",
   );
 });
+
+import { lastQuestion, SYSTEM_PROMPT_DIRECT_STUDY } from "./prompt.ts";
+import { tutorQuestionOk } from "./speech.ts";
+Deno.test("D65 tutor: one short check question; two-part questions are dropped; asked questions are listed", () => {
+  assert(tutorQuestionOk("Vad kallas organellen som bildar ATP?"));
+  assert(
+    !tutorQuestionOk(
+      "Vad kallas den organell som bildar ATP, och vilken ordning har de två delarna i cellandningen?",
+    ),
+  );
+  assert(!tutorQuestionOk("Vad är en cell? Vad är en kärna?"));
+  const run = (text: string, k: number) => {
+    const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true });
+    let o = "";
+    for (let i = 0; i < text.length; i += k) o += p.push(text.slice(i, i + k));
+    return o + p.finish();
+  };
+  for (const k of [1, 4, 500]) {
+    assertEquals(
+      run("Mitokondrien bildar ATP. Vad heter organellen? Svara gärna med ett ord.", k),
+      "Mitokondrien bildar ATP. Vad heter organellen? Svara gärna med ett ord.",
+    );
+    assertEquals(
+      run(
+        "Mitokondrien bildar ATP. Vad kallas organellen, och vilken ordning har delarna i cellandningen? Svara med ett ord.",
+        k,
+      ),
+      "Mitokondrien bildar ATP. Svara med ett ord.",
+    );
+    assertEquals(
+      run(
+        "Mitokondrien bildar ATP. Vad kallas organellen, och vilken ordning har delarna i cellandningen?",
+        k,
+      ),
+      "Mitokondrien bildar ATP. ",
+    );
+  }
+  assertEquals(
+    lastQuestion("Proteinerna byggs i ribosomerna. Vad heter organellen som bygger proteinerna?"),
+    "Vad heter organellen som bygger proteinerna?",
+  );
+  assertEquals(lastQuestion("Inget frågetecken här."), null);
+  const req = validateAnswerRequest({
+    fragment: "nästa fråga",
+    mode: "tutor",
+    language: "sv",
+    context: {
+      recent_qa: [{
+        q: "vet inte",
+        a: "Proteinerna byggs i ribosomerna. Vad heter organellen som bygger proteinerna?",
+      }],
+    },
+  });
+  const m = buildDirectUserMessage(req);
+  assertStringIncludes(m, "<already_asked>\n- Vad heter organellen som bygger proteinerna?");
+  const plain = validateAnswerRequest({
+    ...{ fragment: "x", mode: "push_to_talk", language: "sv" },
+  });
+  assert(!buildDirectUserMessage(plain).includes("<already_asked>"));
+  assertStringIncludes(SYSTEM_PROMPT_DIRECT_TUTOR, "<already_asked>");
+  assertStringIncludes(
+    SYSTEM_PROMPT_DIRECT_TUTOR,
+    "Never ask about something you have just explained",
+  );
+  assertStringIncludes(SYSTEM_PROMPT_DIRECT_STUDY, "use no fixed stock phrases");
+  assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "koffeinets halveringstid");
+  assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "put the whole list in order");
+});

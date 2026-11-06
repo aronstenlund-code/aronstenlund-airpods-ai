@@ -561,6 +561,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             firstLineOnly: plan?.kind === "socialline",
             relationTag,
             web: webOn,
+            tutor,
           });
           const deliver = (t: string) => {
             if (!t || closed) return;
@@ -669,6 +670,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 firstLineOnly: plan?.kind === "socialline",
                 relationTag,
                 web: webOn,
+                tutor,
               });
               r = await it.next();
             }
