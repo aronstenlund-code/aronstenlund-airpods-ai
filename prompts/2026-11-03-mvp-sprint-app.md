@@ -1,3 +1,5 @@
+**QUEUED (Deangelo 17:30, D58): hands-free start + music hand-off.** App Intents/App Shortcuts with Swedish phrases (Starta Lumen, Fråga Lumen, Starta provläge med Lumen, Pausa Lumen), Control Center/Lock Screen control, spoken 'pausa'/'spela musik' → stop + deactivate with notifyOthersOnDeactivation. Unit-test intents where possible; device behaviour untested.
+
 **QUEUED (Deangelo 17:25, D57): feedback.** 'Rapportera' on every answer + voice command in hands-free modes (backend returns `report: true`) → send previous turn verbatim to `/feedback`, speak 'Skickat'. Settings → 'Feedback & förslag' (free text). Onboarding + Settings opt-in 'Dela historik för att förbättra appen' (off by default; off → delete shared rows). Never include other people's speech.
 
 **QUEUED (Deangelo 2026-11-06, D55): microphone source setting** — AirPods vs iPhone mic (A2DP output to AirPods), per-mode defaults, route logged, Diagnostics comparison run (same 5 sentences, own voice + other person at 1.5 m, record Scribe transcript for WER). Unit-test the session-config builder. Sparläge not required (budget reset), but keep commits small.
