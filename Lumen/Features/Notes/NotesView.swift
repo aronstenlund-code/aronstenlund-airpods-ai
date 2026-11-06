@@ -16,7 +16,7 @@ struct NotesView: View {
                 } label: {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(note.title)
-                        Text("\(note.createdAt.formatted(date: .abbreviated, time: .shortened)) · \(note.answers.count) answers · \(note.transcript.count) lines")
+                        Text("\(note.createdAt.formatted(date: .abbreviated, time: .shortened)) · \(note.answers.count) answers")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

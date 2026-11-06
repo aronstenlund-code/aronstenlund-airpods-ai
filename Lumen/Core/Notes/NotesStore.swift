@@ -1,30 +1,25 @@
 import Foundation
 import Observation
 
-/// A saved session: transcript lines + answers, local only (item 8). Exported as Markdown.
+/// A saved session: the answers and the user's own questions, local only (item 8). Exported as Markdown.
+/// The transcript is not saved: it holds other people's speech (D56).
 struct Note: Identifiable, Codable, Equatable, Sendable {
-    struct Line: Codable, Equatable, Sendable {
-        var time: Date
-        var text: String
-    }
-
     let id: UUID
     var createdAt: Date
     var language: String
-    var transcript: [Line]
     var answers: [AnswerTurn]
 
-    init(id: UUID = UUID(), createdAt: Date, language: String, transcript: [Line], answers: [AnswerTurn]) {
+    init(id: UUID = UUID(), createdAt: Date, language: String, answers: [AnswerTurn]) {
         self.id = id
         self.createdAt = createdAt
         self.language = language
-        self.transcript = transcript
         self.answers = answers
     }
 
-    /// First question, else first transcript line, else the date.
+    /// First question, else first answer, else the date.
     var title: String {
-        let source = answers.first?.question ?? transcript.first?.text ?? ""
+        let turn = answers.first
+        let source = turn.flatMap { $0.question.isEmpty ? $0.answer : $0.question } ?? ""
         let trimmed = source.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty { return createdAt.formatted(date: .abbreviated, time: .shortened) }
         return trimmed.count > 60 ? String(trimmed.prefix(57)) + "…" : trimmed
@@ -38,19 +33,13 @@ struct Note: Identifiable, Codable, Equatable, Sendable {
             out.append("## Questions and answers")
             out.append("")
             for turn in answers {
-                out.append("**\(turn.question)**")
-                out.append("")
+                if !turn.question.isEmpty {
+                    out.append("**\(turn.question)**")
+                    out.append("")
+                }
                 out.append(turn.answer)
                 out.append("")
             }
-        }
-        if !transcript.isEmpty {
-            out.append("## Transcript")
-            out.append("")
-            for line in transcript {
-                out.append("- \(line.time.formatted(date: .omitted, time: .standard)) \(line.text)")
-            }
-            out.append("")
         }
         return out.joined(separator: "\n")
     }
@@ -81,9 +70,13 @@ final class NotesStore {
     /// Saves the conversation as a note; nil when there is nothing to save.
     @discardableResult
     func save(_ conversation: Conversation, language: TranscriptionLanguage, at date: Date = Date()) -> Note? {
-        let lines = conversation.finalSegments.filter { !$0.overlapsPlayback }.map { Note.Line(time: $0.startedAt, text: $0.text) }
-        guard !lines.isEmpty || !conversation.answers.isEmpty else { return nil }
-        let note = Note(createdAt: date, language: language.rawValue, transcript: lines, answers: conversation.answers)
+        guard !conversation.answers.isEmpty else { return nil }
+        let answers = conversation.answers.map { turn in
+            var kept = turn
+            if !turn.isOwnQuestion { kept.question = "" }
+            return kept
+        }
+        let note = Note(createdAt: date, language: language.rawValue, answers: answers)
         notes.insert(note, at: 0)
         persist()
         return note

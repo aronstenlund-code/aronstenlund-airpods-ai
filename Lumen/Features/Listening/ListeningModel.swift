@@ -14,6 +14,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let voices: VoiceCatalog
     let notes: NotesStore
     let prep: PrepStore
+    /// Historik and Minne (D49/D56), on this phone only.
+    let history: HistoryStore
+    let memory: MemoryStore
     /// Course goals and personal keyword commands (D37).
     let goals: GoalsStore
     let commands: CommandStore
@@ -62,7 +65,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
     /// Installed Apple voices for the selected language (settings picker).
     var appleVoices: [VoiceChoice] { AppleTTSProvider.installedVoices(for: language) }
-    var canSaveNote: Bool { !conversation.finalSegments.isEmpty || !conversation.answers.isEmpty }
+    var canSaveNote: Bool { !conversation.answers.isEmpty }
 
     /// "AirPods Pro · HFP" — which microphone is live, from the session snapshot.
     var routeSummary: String? {
@@ -75,7 +78,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          answers: AnswerEngine, speaker: Speaker, voices: VoiceCatalog,
          notes: NotesStore, prep: PrepStore, warmer: BackendWarmer? = nil,
          activity: (any ListeningActivityPresenting)? = nil, study: StudySessionController? = nil,
-         goals: GoalsStore? = nil, commands: CommandStore? = nil) {
+         goals: GoalsStore? = nil, commands: CommandStore? = nil,
+         history: HistoryStore? = nil, memory: MemoryStore? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -85,6 +89,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.voices = voices
         self.notes = notes
         self.prep = prep
+        self.history = history ?? HistoryStore()
+        self.memory = memory ?? MemoryStore()
         self.goals = goals ?? GoalsStore()
         self.commands = commands ?? CommandStore()
         self.warmer = warmer
@@ -119,6 +125,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// The Listening screen opened, the app came back, or listening starts: wake the backend (D31) and load the
     /// voices (D23), which also signs in ahead of the first question. Quiet when offline; retried next time.
     func prepareBackend() async {
+        history.purgeExpired()
+        memory.purgeExpired()
         guard !answers.useMock else { return }
         Task { await warmer?.warm() }
         await voices.refreshIfNeeded()
@@ -288,7 +296,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         study.resumeListening()
     }
 
-    /// Item 8: saves transcript + answers as a local note.
+    /// Item 8: saves the session's answers as a local note.
     @discardableResult
     func saveNote() -> Note? {
         guard let note = notes.save(conversation, language: language) else {
@@ -357,14 +365,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                     recentQA: conversation.recentQA(limit: qaLimit),
                                     prepTerms: prep.backendTerms,
                                     goals: goals.compact,
-                                    commands: matched.map { AnswerContext.Command(keyword: $0.keyword, instruction: $0.instruction) })
+                                    commands: matched.map { AnswerContext.Command(keyword: $0.keyword, instruction: $0.instruction) },
+                                    memories: memory.backendItems())
         answers.answer(request, context: context)
     }
 
     // MARK: - AnswerSink (item 4)
 
     func answerStarted(_ request: ActivationRequest, source: String) {
-        conversation.beginAnswer(question: request.query, source: source, at: request.createdAt)
+        conversation.beginAnswer(question: request.query, source: source, at: request.createdAt,
+                                 isOwnQuestion: request.trigger.isUsersOwnWords)
         if study.isActive { study.answerStarted() }
     }
 
@@ -383,7 +393,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerCompleted(latencyMs: Double?, done: AnswerDone?) {
-        conversation.completeAnswer(latencyMs: latencyMs)
+        if let turn = conversation.completeAnswer(latencyMs: latencyMs) {
+            history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
+                                        answer: turn.answer, summary: done?.summary))
+        }
+        if let fact = done?.memoryAdd {
+            memory.add(fact)
+        }
         if let latencyMs {
             controller.log("Answer · first text after \(Int(latencyMs)) ms" + (done?.usage?.model.map { " · \($0)" } ?? ""))
         }

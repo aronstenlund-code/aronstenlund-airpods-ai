@@ -12,6 +12,17 @@
         }
       }
     },
+    "%@ · %lld answers": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld svar"
+          }
+        }
+      }
+    },
     "%@ · %lld answers · %lld lines": {
       "extractionState": "manual",
       "localizations": {
@@ -111,6 +122,17 @@
         }
       }
     },
+    "Add": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lägg till"
+          }
+        }
+      }
+    },
     "Add command": {
       "extractionState": "manual",
       "localizations": {
@@ -129,6 +151,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lägg till material"
+          }
+        }
+      }
+    },
+    "Add something to remember": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lägg till något att komma ihåg"
           }
         }
       }
@@ -287,6 +320,17 @@
         }
       }
     },
+    "Cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avbryt"
+          }
+        }
+      }
+    },
     "Checking speech recognition…": {
       "extractionState": "manual",
       "localizations": {
@@ -386,6 +430,50 @@
         }
       }
     },
+    "Delete all history": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radera all historik"
+          }
+        }
+      }
+    },
+    "Delete all history?": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radera all historik?"
+          }
+        }
+      }
+    },
+    "Delete all memories": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radera allt minne"
+          }
+        }
+      }
+    },
+    "Delete all memories?": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radera allt minne?"
+          }
+        }
+      }
+    },
     "Detailed": {
       "extractionState": "manual",
       "localizations": {
@@ -430,6 +518,17 @@
         }
       }
     },
+    "Edit memory": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ändra minne"
+          }
+        }
+      }
+    },
     "End Provläge": {
       "extractionState": "manual",
       "localizations": {
@@ -459,6 +558,39 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hög"
+          }
+        }
+      }
+    },
+    "History": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historik"
+          }
+        }
+      }
+    },
+    "History and memory": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historik och minne"
+          }
+        }
+      }
+    },
+    "History and memory stay on your iPhone": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historik och minne stannar på din iPhone"
           }
         }
       }
@@ -672,6 +804,17 @@
         }
       }
     },
+    "Lumen": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumen"
+          }
+        }
+      }
+    },
     "Lumen is a listening companion for lectures, meetings and studying. This is exactly what it does with sound and text.": {
       "extractionState": "manual",
       "localizations": {
@@ -701,6 +844,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mellan"
+          }
+        }
+      }
+    },
+    "Memory": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minne"
           }
         }
       }
@@ -745,6 +899,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inga kommandon än."
+          }
+        }
+      }
+    },
+    "No history yet. Your questions and Lumen's answers appear here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ingen historik än. Dina frågor och Lumens svar visas här."
           }
         }
       }
@@ -822,6 +987,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anteckningar"
+          }
+        }
+      }
+    },
+    "Nothing saved yet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inget sparat än."
           }
         }
       }
@@ -936,6 +1112,61 @@
         }
       }
     },
+    "Premium voices appear here when the voice service is live.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premiumröster visas här när rösttjänsten är igång."
+          }
+        }
+      }
+    },
+    "Prep material": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förberedelsematerial"
+          }
+        }
+      }
+    },
+    "Preparing the speech model (%@) — the first time this downloads it.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förbereder talmodellen (%@) – första gången laddas den ner."
+          }
+        }
+      }
+    },
+    "Preview": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Provlyssna"
+          }
+        }
+      }
+    },
+    "Privacy & consent": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Integritet och samtycke"
+          }
+        }
+      }
+    },
     "Provläge": {
       "extractionState": "manual",
       "localizations": {
@@ -1002,61 +1233,6 @@
         }
       }
     },
-    "Premium voices appear here when the voice service is live.": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Premiumröster visas här när rösttjänsten är igång."
-          }
-        }
-      }
-    },
-    "Prep material": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Förberedelsematerial"
-          }
-        }
-      }
-    },
-    "Preparing the speech model (%@) — the first time this downloads it.": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Förbereder talmodellen (%@) – första gången laddas den ner."
-          }
-        }
-      }
-    },
-    "Preview": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Provlyssna"
-          }
-        }
-      }
-    },
-    "Privacy & consent": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Integritet och samtycke"
-          }
-        }
-      }
-    },
     "Replace command": {
       "extractionState": "manual",
       "localizations": {
@@ -1086,6 +1262,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fortsätt lyssna"
+          }
+        }
+      }
+    },
+    "Save": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spara"
           }
         }
       }
@@ -1141,6 +1328,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sparade kommandon"
+          }
+        }
+      }
+    },
+    "Saved only on this iPhone and deleted automatically after 2 years. Other people's speech is not saved.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sparas bara på den här iPhonen och raderas automatiskt efter 2 år. Andra personers tal sparas inte."
           }
         }
       }
@@ -1277,6 +1475,17 @@
         }
       }
     },
+    "Speech is transcribed on your iPhone and the audio is discarded immediately. The live transcript is forgotten when the session ends.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tal skrivs ut på din iPhone och ljudet slängs direkt. Den löpande utskriften glöms när sessionen slutar."
+          }
+        }
+      }
+    },
     "Speech is transcribed on your iPhone and the audio is discarded immediately. Transcripts stay on the phone.": {
       "extractionState": "manual",
       "localizations": {
@@ -1374,6 +1583,28 @@
         }
       }
     },
+    "Suggestions": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förslag"
+          }
+        }
+      }
+    },
+    "Summary": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sammanfattning"
+          }
+        }
+      }
+    },
     "Tap Resume to continue.": {
       "extractionState": "manual",
       "localizations": {
@@ -1446,6 +1677,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tänker …"
+          }
+        }
+      }
+    },
+    "This cannot be undone.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Det går inte att ångra."
           }
         }
       }
@@ -1538,6 +1780,17 @@
         }
       }
     },
+    "You": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du"
+          }
+        }
+      }
+    },
     "You are responsible for informing anyone whose speech is transcribed. Do not use Lumen where recording is not allowed, for example during exams.": {
       "extractionState": "manual",
       "localizations": {
@@ -1545,6 +1798,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Du ansvarar för att informera alla vars tal transkriberas. Använd inte Lumen där inspelning inte är tillåten, till exempel under prov."
+          }
+        }
+      }
+    },
+    "You can also say \"kom ihåg …\". Lumen never saves anything you did not ask it to remember. Saved on this iPhone and sent with your questions. Memories expire 2 years after you last confirmed them.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du kan också säga ”kom ihåg …”. Lumen sparar aldrig något du inte bett om. Sparas på den här iPhonen och skickas med dina frågor. Minnen försvinner 2 år efter att du senast bekräftade dem."
           }
         }
       }
@@ -1578,6 +1842,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nu kan din musik spelas. Svar visas men läses inte upp förrän du fortsätter."
+          }
+        }
+      }
+    },
+    "Your own questions and Lumen's answers are saved word for word with a short summary, and memories only when you ask for it. Other people's speech is not saved. Delete it in Settings at any time; it is deleted automatically after 2 years.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dina egna frågor och Lumens svar sparas ordagrant med en kort sammanfattning, och minnen bara när du ber om det. Andra personers tal sparas inte. Radera när du vill i Inställningar; det raderas automatiskt efter 2 år."
           }
         }
       }

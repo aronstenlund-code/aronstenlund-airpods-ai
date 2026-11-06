@@ -199,7 +199,7 @@ import Testing
                                     commands: [AnswerContext.Command(keyword: "fission", instruction: "jämför")])
         let data = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "fission", mode: "push_to_talk", language: "sv", context: context))
         let json = String(decoding: data, as: UTF8.self)
-        #expect(json == "{\"context\":{\"commands\":[{\"instruction\":\"jämför\",\"keyword\":\"fission\"}],\"goals\":\"Kursmål\"},\"fragment\":\"fission\",\"language\":\"sv\",\"length\":\"adaptive\",\"mode\":\"push_to_talk\"}")
+        #expect(json == "{\"commands\":[{\"instruction\":\"jämför\",\"keyword\":\"fission\"}],\"context\":{},\"fragment\":\"fission\",\"goals\":\"Kursmål\",\"language\":\"sv\",\"length\":\"adaptive\",\"mode\":\"push_to_talk\"}", "top level, where the backend reads them")
         let long = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "x", mode: "text", language: "sv", length: .long))
         #expect(String(decoding: long, as: UTF8.self).contains("\"length\":\"long\""))
 

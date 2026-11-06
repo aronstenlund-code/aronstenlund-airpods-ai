@@ -38,7 +38,6 @@ func makeTestPrep() -> PrepStore { PrepStore(directory: temporaryDirectory()) }
         #expect(note != nil)
         #expect(store.notes.count == 1)
         #expect(note?.title == "Vad är fotosyntes?")
-        #expect(note?.transcript.map(\.text) == ["Idag pratar vi om fotosyntes.", "Vad är fotosyntes?"], "playback echo is left out")
         #expect(note?.answers.count == 1)
         #expect(note?.language == "sv-SE")
 
@@ -51,18 +50,17 @@ func makeTestPrep() -> PrepStore { PrepStore(directory: temporaryDirectory()) }
         #expect(NotesStore(directory: directory).notes.isEmpty)
     }
 
-    @Test func markdownHasAnswersThenTranscript() {
+    @Test func markdownHasTheAnswers() {
         let note = Note(createdAt: t0, language: "sv-SE",
-                        transcript: [Note.Line(time: t0, text: "rad ett")],
                         answers: [AnswerTurn(question: "Q?", answer: "A.", createdAt: t0, source: "cloud")])
         let markdown = note.markdown
         #expect(markdown.hasPrefix("# Lumen — "))
         #expect(markdown.contains("## Questions and answers\n\n**Q?**\n\nA.\n"))
-        #expect(markdown.contains("## Transcript\n\n- "))
-        #expect(markdown.contains(" rad ett"))
-        let titleOnlyTranscript = Note(createdAt: t0, language: "sv-SE", transcript: [Note.Line(time: t0, text: String(repeating: "x", count: 80))], answers: [])
-        #expect(titleOnlyTranscript.title.count == 58)
-        #expect(Note(createdAt: t0, language: "sv-SE", transcript: [], answers: []).title == t0.formatted(date: .abbreviated, time: .shortened))
+        let longAnswerOnly = Note(createdAt: t0, language: "sv-SE",
+                                  answers: [AnswerTurn(question: "", answer: String(repeating: "x", count: 80), createdAt: t0, source: "cloud")])
+        #expect(longAnswerOnly.title.count == 58)
+        #expect(!longAnswerOnly.markdown.contains("****"), "no empty question line")
+        #expect(Note(createdAt: t0, language: "sv-SE", answers: []).title == t0.formatted(date: .abbreviated, time: .shortened))
     }
 }
 

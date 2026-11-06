@@ -17,6 +17,8 @@ struct AnswerContext: Equatable, Sendable {
     var goals: String?
     /// Personal commands triggered by this question (D37), ≤10 × 300 chars.
     var commands: [Command] = []
+    /// What the user asked Lumen to remember (D49), ≤30 × 200 chars.
+    var memories: [String] = []
 
     struct Command: Equatable, Sendable, Codable {
         var keyword: String
@@ -31,6 +33,8 @@ struct AnswerContext: Equatable, Sendable {
     static let goalsLimit = 1_500
     static let commandLimit = 10
     static let commandFieldLimit = 300
+    static let memoryLimit = 30
+    static let memoryFieldLimit = 200
 
     /// Trimmed to the backend's limits (413 otherwise).
     var clamped: AnswerContext {
@@ -43,7 +47,8 @@ struct AnswerContext: Equatable, Sendable {
                       commands: commands.prefix(Self.commandLimit).map {
                           Command(keyword: String($0.keyword.prefix(Self.commandFieldLimit)),
                                   instruction: String($0.instruction.prefix(Self.commandFieldLimit)))
-                      })
+                      },
+                      memories: memories.prefix(Self.memoryLimit).map { String($0.prefix(Self.memoryFieldLimit)) })
     }
 }
 
@@ -120,6 +125,10 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var answered: Bool
     var timing: Timing?
     var usage: Usage?
+    /// One or two sentences for Historik, written in the same call (D48/D50). Null for Rizz and truncated answers.
+    var summary: String?
+    /// "kom ihåg …": the fact to store on the phone (D50). Never inferred by the server.
+    var memoryAdd: String?
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.

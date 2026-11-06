@@ -51,7 +51,8 @@ final class AppContainer {
                                        answers: answers, speaker: speaker, voices: voices,
                                        notes: notes, prep: prep,
                                        warmer: BackendWarmer(config: .lumen, http: http),
-                                       activity: ListeningActivityPresenter())
+                                       activity: ListeningActivityPresenter(),
+                                       history: HistoryStore(), memory: MemoryStore())
         ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
         transcription.sink = listening
         self.graph = graph

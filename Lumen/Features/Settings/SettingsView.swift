@@ -12,6 +12,10 @@ struct SettingsView: View {
             studySection
             voiceSection
             answerSection
+            Section("History and memory") {
+                NavigationLink("History") { HistoryView(store: model.history) }
+                NavigationLink("Memory") { MemoryView(store: model.memory) }
+            }
             #if DEBUG
             Section("Debug") {
                 Toggle("Mock answers (debug, no network)", isOn: $model.useMockAnswers)

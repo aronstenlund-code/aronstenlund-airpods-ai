@@ -106,21 +106,23 @@ final class CloudAnswerProvider: AnswerProvider {
                 var transcript: String?
                 var recent_qa: [AnswerContext.QA]?
                 var prep_terms: [String]?
-                var goals: String?
-                var commands: [AnswerContext.Command]?
             }
             var fragment: String
             var mode: String
             var language: String
             var context: Context
             var length: String
+            var goals: String?
+            var commands: [AnswerContext.Command]?
+            var memories: [String]?
         }
         let context = Body.Context(transcript: request.context.transcript.isEmpty ? nil : request.context.transcript,
                                    recent_qa: request.context.recentQA.isEmpty ? nil : request.context.recentQA,
-                                   prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms,
-                                   goals: request.context.goals,
-                                   commands: request.context.commands.isEmpty ? nil : request.context.commands)
-        let body = Body(fragment: request.fragment, mode: request.mode, language: request.language, context: context, length: request.length)
+                                   prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms)
+        let body = Body(fragment: request.fragment, mode: request.mode, language: request.language, context: context, length: request.length,
+                        goals: request.context.goals,
+                        commands: request.context.commands.isEmpty ? nil : request.context.commands,
+                        memories: request.context.memories.isEmpty ? nil : request.context.memories)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return (try? encoder.encode(body)) ?? Data("{}".utf8)

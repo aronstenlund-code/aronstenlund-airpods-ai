@@ -20,14 +20,18 @@ struct AnswerTurn: Identifiable, Equatable, Sendable, Codable {
     var latencyMs: Double?
     /// Which engine answered: "cloud" (Claude via the backend, D19), "on-device", "mock".
     var source: String
+    /// False when `question` is someone else's speech (auto mode, "last sentence"): never saved word for word (D56).
+    var isOwnQuestion: Bool
 
-    init(id: UUID = UUID(), question: String, answer: String, createdAt: Date = Date(), latencyMs: Double? = nil, source: String) {
+    init(id: UUID = UUID(), question: String, answer: String, createdAt: Date = Date(), latencyMs: Double? = nil, source: String,
+         isOwnQuestion: Bool = true) {
         self.id = id
         self.question = question
         self.answer = answer
         self.createdAt = createdAt
         self.latencyMs = latencyMs
         self.source = source
+        self.isOwnQuestion = isOwnQuestion
     }
 }
 
@@ -54,8 +58,8 @@ struct Conversation: Equatable, Sendable {
     // MARK: Answers
 
     /// Starts a new streaming answer (replacing any unfinished one — a new question interrupts the current answer).
-    mutating func beginAnswer(question: String, source: String, at date: Date = Date()) {
-        streamingAnswer = AnswerTurn(question: question, answer: "", createdAt: date, source: source)
+    mutating func beginAnswer(question: String, source: String, at date: Date = Date(), isOwnQuestion: Bool = true) {
+        streamingAnswer = AnswerTurn(question: question, answer: "", createdAt: date, source: source, isOwnQuestion: isOwnQuestion)
     }
 
     mutating func appendAnswerText(_ text: String) {
@@ -67,14 +71,16 @@ struct Conversation: Equatable, Sendable {
         streamingAnswer?.question = question
     }
 
-    /// Moves the streaming answer into the history. Empty answers are dropped.
-    mutating func completeAnswer(latencyMs: Double? = nil) {
-        guard var turn = streamingAnswer else { return }
+    /// Moves the streaming answer into the session's answers and returns it. Empty answers are dropped.
+    @discardableResult
+    mutating func completeAnswer(latencyMs: Double? = nil) -> AnswerTurn? {
+        guard var turn = streamingAnswer else { return nil }
         streamingAnswer = nil
         turn.answer = turn.answer.trimmingCharacters(in: .whitespacesAndNewlines)
         turn.latencyMs = latencyMs
-        guard !turn.answer.isEmpty else { return }
+        guard !turn.answer.isEmpty else { return nil }
         append(turn)
+        return turn
     }
 
     mutating func cancelAnswer() {

@@ -199,7 +199,7 @@ final class PlaybackService: PlaybackServicing {
         let (stream, continuation) = AsyncStream<TTSChunk>.makeStream(bufferingPolicy: .unbounded)
         beginStream()
         requestPlayback()
-        Log.playback.info("Speak (\(language, privacy: .public)): \(text, privacy: .public)")
+        Log.playback.info("Speak (\(language, privacy: .public)): \(text.count, privacy: .public) chars")
 
         synthesizer.write(utterance) { buffer in
             guard let pcm = buffer as? AVAudioPCMBuffer else { return }

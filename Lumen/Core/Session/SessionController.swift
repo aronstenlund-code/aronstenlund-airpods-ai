@@ -246,7 +246,7 @@ final class SessionController {
     func log(_ text: String) {
         eventLog.insert(LogEntry(time: Date(), text: text), at: 0)
         if eventLog.count > 500 { eventLog.removeLast(eventLog.count - 500) }
-        Log.diagnostics.info("\(text, privacy: .public)")
+        Log.diagnostics.info("\(text, privacy: .private)")
     }
 
     func fail(_ error: AudioError) {

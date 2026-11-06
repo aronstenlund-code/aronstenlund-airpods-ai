@@ -17,6 +17,14 @@ enum ActivationTrigger: String, Sendable, Equatable {
     /// A hands-free Provläge turn (D36): tutor style, whole-session memory.
     case tutor
 
+    /// Whether the query is the user's own words. Auto mode and "last sentence" pick up the room (D56).
+    var isUsersOwnWords: Bool {
+        switch self {
+        case .pushToTalk, .text, .tutor: true
+        case .auto, .answerLast: false
+        }
+    }
+
     /// The backend's `mode` field (`backend/README.md`): manual triggers are deliberate questions.
     var backendMode: String {
         switch self {
