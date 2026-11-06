@@ -21,9 +21,9 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Lumen listens to the room through your microphone (iPhone or AirPods) to transcribe speech and answer questions in your AirPods. Audio is processed live and is not stored unless you export a test recording.</string>
+	<string>Lumen listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Lumen uses on-device speech recognition to transcribe what is said. Audio is processed on your iPhone and never uploaded.</string>
+	<string>Lumen can use the iPhone's own speech recognition, as a fallback or when you switch off cloud recognition in Settings.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>UIBackgroundModes</key>

@@ -41,7 +41,21 @@ struct SettingsView: View {
                 }
             }
             .pickerStyle(.segmented)
+            Toggle("Cloud speech recognition (Scribe)", isOn: cloudBinding)
+            if let failure = model.transcription.cloudFailure {
+                Text("Using the iPhone's speech recognition: \(failure)")
+                    .font(.footnote)
+                    .foregroundStyle(.orange)
+            }
+            Text("On: audio goes to ElevenLabs for the best recognition. Off: everything stays on this iPhone, with weaker recognition.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
+    }
+
+    private var cloudBinding: Binding<Bool> {
+        Binding(get: { model.transcription.settings?.useCloud ?? false },
+                set: { newValue in Task { await model.transcription.setUseCloud(newValue) } })
     }
 
     private var languageBinding: Binding<TranscriptionLanguage> {

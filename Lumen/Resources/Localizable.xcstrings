@@ -353,6 +353,17 @@
         }
       }
     },
+    "Cloud speech recognition (Scribe)": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taligenkänning i molnet (Scribe)"
+          }
+        }
+      }
+    },
     "Commands": {
       "extractionState": "manual",
       "localizations": {
@@ -892,6 +903,17 @@
         }
       }
     },
+    "No audio is saved.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inget ljud sparas."
+          }
+        }
+      }
+    },
     "No commands yet.": {
       "extractionState": "manual",
       "localizations": {
@@ -1009,6 +1031,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inget transkriberat än."
+          }
+        }
+      }
+    },
+    "On: audio goes to ElevenLabs for the best recognition. Off: everything stays on this iPhone, with weaker recognition.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "På: ljudet går till ElevenLabs för bäst igenkänning. Av: allt stannar på den här iPhonen, med sämre igenkänning."
           }
         }
       }
@@ -1464,6 +1497,17 @@
         }
       }
     },
+    "Speech goes to ElevenLabs": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talet går till ElevenLabs"
+          }
+        }
+      }
+    },
     "Speech is transcribed on this iPhone.": {
       "extractionState": "manual",
       "localizations": {
@@ -1714,6 +1758,17 @@
         }
       }
     },
+    "To answer a question, the transcribed text is sent to Lumen's server, which asks Claude by Anthropic. Without a connection there are no answers.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "För att svara på en fråga skickas den utskrivna texten till Lumens server, som frågar Claude från Anthropic. Utan uppkoppling kommer inga svar."
+          }
+        }
+      }
+    },
     "Transcribing on this iPhone · %@": {
       "extractionState": "manual",
       "localizations": {
@@ -1721,6 +1776,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Transkriberar på den här telefonen · %@"
+          }
+        }
+      }
+    },
+    "Transcribing with Scribe in the cloud": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skriver ut med Scribe i molnet"
           }
         }
       }
@@ -1747,6 +1813,17 @@
         }
       }
     },
+    "Using the iPhone's speech recognition: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Använder iPhonens taligenkänning: %@"
+          }
+        }
+      }
+    },
     "Voice": {
       "extractionState": "manual",
       "localizations": {
@@ -1754,6 +1831,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Röst"
+          }
+        }
+      }
+    },
+    "While you listen, the audio is streamed to ElevenLabs, which writes it out. ElevenLabs handles it under its own terms. Lumen saves no audio, and the live transcript is forgotten when the session ends. You can keep everything on the iPhone instead under Settings, with weaker recognition.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medan du lyssnar strömmas ljudet till ElevenLabs, som skriver ut det. ElevenLabs hanterar det enligt sina egna villkor. Lumen sparar inget ljud, och den löpande utskriften glöms när sessionen slutar. Under Inställningar kan du i stället låta allt stanna på iPhonen, med sämre igenkänning."
           }
         }
       }

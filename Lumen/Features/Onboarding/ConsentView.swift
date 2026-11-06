@@ -26,14 +26,14 @@ struct ConsentView: View {
                           title: "It listens only while a session is on",
                           text: "You start and stop listening yourself. While the microphone is live, a red indicator is shown in the app and iOS shows its own microphone indicator.")
                     point(symbol: "waveform",
-                          title: "Audio is not stored",
-                          text: "Speech is transcribed on your iPhone and the audio is discarded immediately. The live transcript is forgotten when the session ends.")
+                          title: "Speech goes to ElevenLabs",
+                          text: "While you listen, the audio is streamed to ElevenLabs, which writes it out. ElevenLabs handles it under its own terms. Lumen saves no audio, and the live transcript is forgotten when the session ends. You can keep everything on the iPhone instead under Settings, with weaker recognition.")
                     point(symbol: "clock.arrow.circlepath",
                           title: "History and memory stay on your iPhone",
                           text: "Your own questions and Lumen's answers are saved word for word with a short summary, and memories only when you ask for it. Other people's speech is not saved. Delete it in Settings at any time; it is deleted automatically after 2 years.")
                     point(symbol: "cloud",
                           title: "Answers come from the internet",
-                          text: "To answer a question, the transcribed text (never audio) is sent to Lumen's server, which asks Claude by Anthropic. Without a connection there are no answers.")
+                          text: "To answer a question, the transcribed text is sent to Lumen's server, which asks Claude by Anthropic. Without a connection there are no answers.")
                     point(symbol: "person.2",
                           title: "Tell the people around you",
                           text: "You are responsible for informing anyone whose speech is transcribed. Do not use Lumen where recording is not allowed, for example during exams.")

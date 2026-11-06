@@ -1,8 +1,9 @@
 import Foundation
 
-/// Which speech-to-text engine is in use (D18 chain, on-device only — the consent text promises that audio
-/// never leaves the phone).
+/// Which speech-to-text engine is in use: Scribe in the cloud (D44), else the on-device chain (D18).
 enum STTEngine: String, Sendable, Equatable, CaseIterable {
+    /// ElevenLabs Scribe v2 Realtime: audio goes to ElevenLabs. The consent text says so.
+    case scribe
     /// `SpeechAnalyzer` + `SpeechTranscriber` (iOS 26, best quality, limited locales).
     case speechTranscriber
     /// `SpeechAnalyzer` + `DictationTranscriber` (keyboard-dictation locales).
@@ -10,8 +11,12 @@ enum STTEngine: String, Sendable, Equatable, CaseIterable {
     /// `SFSpeechRecognizer` with `requiresOnDeviceRecognition = true`.
     case legacyOnDevice
 
+    /// Audio stays on the phone.
+    var isOnDevice: Bool { self != .scribe }
+
     var displayName: String {
         switch self {
+        case .scribe: "Scribe"
         case .speechTranscriber: "SpeechTranscriber"
         case .dictationTranscriber: "DictationTranscriber"
         case .legacyOnDevice: "on-device SFSpeechRecognizer"
@@ -70,6 +75,12 @@ protocol STTProvider: AnyObject {
     func stop() async
     /// Up to 100 short phrases (1–2 words) that bias recognition — prep topics (item 9). Applied at the next start.
     func setContextualStrings(_ strings: [String])
+    /// Ask for the final result now (hold-to-ask released). Only Scribe has anything to do here.
+    func commit()
+}
+
+extension STTProvider {
+    func commit() {}
 }
 
 /// Where transcripts go (the Listening screen's model).

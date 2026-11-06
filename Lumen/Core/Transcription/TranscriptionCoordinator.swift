@@ -1,8 +1,9 @@
 import Foundation
 import Observation
 
-/// Connects the capture session to a speech-to-text provider: picks the engine for the chosen language (D18
-/// chain), follows the session (start/stop/resume), and forwards results to the Listening screen.
+/// Connects the capture session to a speech-to-text provider: Scribe when allowed (D44), else the best on-device
+/// engine for the chosen language (D18 chain). Follows the session (start/stop/resume) and forwards results to the
+/// Listening screen. A Scribe failure falls back to the phone for the rest of the listening run.
 @MainActor
 @Observable
 final class TranscriptionCoordinator {
@@ -27,6 +28,10 @@ final class TranscriptionCoordinator {
     private(set) var status: Status = .idle
     private(set) var availability: SpeechEngineAvailability?
     let language: LanguageSettings
+    /// Nil: on-device only.
+    let settings: STTSettings?
+    /// Why Scribe is not in use although it is switched on, shown with the status.
+    private(set) var cloudFailure: String?
     weak var sink: (any TranscriptSink)?
 
     private let controller: SessionController
@@ -51,12 +56,14 @@ final class TranscriptionCoordinator {
 
     init(controller: SessionController,
          language: LanguageSettings,
+         settings: STTSettings? = nil,
          probe: @escaping AvailabilityProbe = { candidates in await SpeechAvailabilityProbe.current(candidates: candidates) },
          makeProvider: @escaping ProviderFactory = { locale, engine in
              engine == .legacyOnDevice ? LegacySpeechProvider(locale: locale) : AppleSpeechProvider(locale: locale, engine: engine)
          }) {
         self.controller = controller
         self.language = language
+        self.settings = settings
         self.probe = probe
         self.makeProvider = makeProvider
         controller.onCaptureStarted = { [weak self] in self?.captureStarted() }
@@ -66,6 +73,7 @@ final class TranscriptionCoordinator {
     // MARK: - Session hooks
 
     func captureStarted() {
+        cloudFailure = nil
         lifecycleTask?.cancel()
         lifecycleTask = Task { await startTranscribing() }
     }
@@ -86,15 +94,21 @@ final class TranscriptionCoordinator {
         let selectedLanguage = language.selected
         let locale = selectedLanguage.locale
 
-        status = .probing
-        let availability = await probe(TranscriptionLanguage.allCases.map(\.locale))
-        guard myGeneration == generation else { return }
-        self.availability = availability
+        let engine: STTEngine
+        if settings?.useCloud == true, cloudFailure == nil {
+            engine = .scribe
+        } else {
+            status = .probing
+            let availability = await probe(TranscriptionLanguage.allCases.map(\.locale))
+            guard myGeneration == generation else { return }
+            self.availability = availability
 
-        guard let engine = SpeechEngineSelector.choose(for: locale, availability: availability) else {
-            status = .unavailable(selectedLanguage)
-            controller.log("STT: no on-device engine for \(locale.identifier(.bcp47))")
-            return
+            guard let chosen = SpeechEngineSelector.choose(for: locale, availability: availability) else {
+                status = .unavailable(selectedLanguage)
+                controller.log("STT: no on-device engine for \(locale.identifier(.bcp47))")
+                return
+            }
+            engine = chosen
         }
 
         let provider = makeProvider(locale, engine)
@@ -104,6 +118,10 @@ final class TranscriptionCoordinator {
             try await provider.prepare()
         } catch {
             guard myGeneration == generation else { return }
+            if engine == .scribe {
+                await fallBackToDevice(error.localizedDescription)
+                return
+            }
             status = .failed(error.localizedDescription)
             controller.log("STT prepare failed: \(error.localizedDescription)")
             return
@@ -135,6 +153,9 @@ final class TranscriptionCoordinator {
                     self.sink?.receivePartialTranscript(result.text, at: Date())
                 }
             }
+            // Stopping changes the generation first, so reaching this with the same one means the socket died.
+            guard let self, myGeneration == self.generation, engine == .scribe else { return }
+            self.lifecycleTask = Task { await self.fallBackToDevice("connection lost") }
         }
         do {
             try await provider.start(audio: gatedStream)
@@ -143,9 +164,33 @@ final class TranscriptionCoordinator {
             controller.log("STT running: \(engine.displayName) · \(locale.identifier(.bcp47))")
         } catch {
             guard myGeneration == generation else { return }
+            if engine == .scribe {
+                await fallBackToDevice(error.localizedDescription)
+                return
+            }
             status = .failed(error.localizedDescription)
             controller.log("STT start failed: \(error.localizedDescription)")
             await stopTranscribing()
+        }
+    }
+
+    private func fallBackToDevice(_ reason: String) async {
+        cloudFailure = reason
+        controller.log("Scribe unavailable (\(reason)): using the iPhone's speech recognition")
+        await startTranscribing()
+    }
+
+    /// Hold-to-ask released.
+    func commit() {
+        provider?.commit()
+    }
+
+    /// Switches between Scribe and the phone; a live session changes over at once.
+    func setUseCloud(_ useCloud: Bool) async {
+        settings?.useCloud = useCloud
+        cloudFailure = nil
+        if controller.isCapturing {
+            await startTranscribing()
         }
     }
 

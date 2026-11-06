@@ -217,7 +217,7 @@ struct ListeningView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         case .running(let engine):
-            Label("Transcribing on this iPhone · \(engine.displayName)", systemImage: "text.bubble")
+            Label(engine.isOnDevice ? "Transcribing on this iPhone · \(engine.displayName)" : "Transcribing with Scribe in the cloud", systemImage: "text.bubble")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         case .unavailable(let language):
@@ -243,7 +243,7 @@ struct ListeningView: View {
     private var statusDetail: LocalizedStringKey {
         switch model.state {
         case .idle: "Tap Start listening. The microphone is only on while you listen."
-        case .listening: "Speech is transcribed on this iPhone."
+        case .listening: "No audio is saved."
         case .paused(let reason):
             switch reason {
             case .user: "Your music can play now. Answers are shown, not spoken, until you resume."

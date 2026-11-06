@@ -33,10 +33,20 @@ final class AppContainer {
         let activationSettings = ActivationSettings()
         let voiceSettings = VoiceSettings()
         let controller = SessionController(session: session, capture: capture, playback: playback, graph: graph)
-        let transcription = TranscriptionCoordinator(controller: controller, language: language)
         let activation = ActivationController(settings: activationSettings)
         let http = URLSessionHTTP()
         let auth = SupabaseAuth(config: .lumen, store: KeychainSessionStore(), http: http)
+        let transcription = TranscriptionCoordinator(controller: controller, language: language, settings: STTSettings(),
+                                                     makeProvider: { locale, engine in
+            switch engine {
+            case .scribe:
+                ScribeProvider(locale: locale, language: language.selected, config: .lumen, auth: auth, http: http)
+            case .legacyOnDevice:
+                LegacySpeechProvider(locale: locale)
+            case .speechTranscriber, .dictationTranscriber:
+                AppleSpeechProvider(locale: locale, engine: engine)
+            }
+        })
         let cloud = CloudAnswerProvider(config: .lumen, auth: auth, http: http)
         let answers = AnswerEngine(provider: cloud)
         let speaker = Speaker(settings: voiceSettings,

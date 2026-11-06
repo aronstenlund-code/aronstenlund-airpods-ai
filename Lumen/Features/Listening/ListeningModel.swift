@@ -113,11 +113,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             }
         }
         speaker.onFinished = { [weak self] in self?.speechFinished() }
-        transcription.setContextualStrings(prep.sttTerms)
-        prep.onChange = { [weak self] in
-            guard let self else { return }
-            self.transcription.setContextualStrings(self.prep.sttTerms)
-        }
+        refreshKeyterms()
+        prep.onChange = { [weak self] in self?.refreshKeyterms() }
     }
 
     // MARK: - User actions
@@ -148,7 +145,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         Task { await prepareBackend() }
+        refreshKeyterms()
         await controller.start()
+    }
+
+    /// Command keywords first: they decide what happens, and Scribe takes a limited number of keyterms (D44).
+    private func refreshKeyterms() {
+        transcription.setContextualStrings(commands.commands.map(\.keyword) + prep.sttTerms)
     }
 
     func stopListening() async {
@@ -317,6 +320,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func releasePushToTalk() {
+        transcription.commit()
         let fired = activation.endPushToTalk(conversation: conversation, language: language)
         guard !fired, activation.isAwaitingFinal else { return }
         let grace = activation.settings.releaseGrace
