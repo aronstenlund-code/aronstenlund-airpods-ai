@@ -21,8 +21,52 @@ export const SUMMARY_MARK = "[[SAMMANFATTNING]]";
 /**
  * The model ends every answer with a line `[[SAMMANFATTNING]] <1-2 sentence summary>` (same call, no extra
  * request). Everything before the marker is spoken; everything after is the summary and never reaches TTS.
- * A partial marker at the end of a chunk is held back so it is never spoken.
+ * D63: the marker is recognised in every variant the model produces - `[[SAMMANFATTNING]]`, `[SAMMANFATTNING]`,
+ * `SAMMANFATTNING:`, a line `Sammanfattning:` (any case, optional **bold**) - anywhere in the text, also when
+ * no summary follows. A partial marker at the end of a chunk is held back so it is never spoken.
  */
+const MARKERS: RegExp[] = [
+  /\[{1,2}\s*sammanfattning\s*\]{1,2}\s*:?/i,
+  /(?:^|\n)[ \t]*(?:\*\*)?sammanfattning(?:\*\*)?[ \t]*[:\-–—]/i,
+  /(?<!\[[ \t]*)SAMMANFATTNING\b[ \t]*:?/,
+];
+
+/** First marker in `s`: [index where the spoken text ends, index where the summary starts]. */
+export function findSummaryMarker(s: string): [number, number] | null {
+  let best: [number, number] | null = null;
+  for (const re of MARKERS) {
+    const m = re.exec(s);
+    if (!m) continue;
+    const start = m.index + (m[0].startsWith("\n") ? 1 : 0);
+    if (!best || start < best[0]) best = [start, m.index + m[0].length];
+  }
+  return best;
+}
+
+/** Length of the tail of `buf` that may still turn into a marker (held back, not spoken yet). */
+function markerHold(buf: string): number {
+  let hold = 0;
+  const tail = buf.slice(-24);
+  for (let br = tail.indexOf("["); br !== -1; br = tail.indexOf("[", br + 1)) {
+    const t = tail.slice(br).toLowerCase().replace(/\s+/g, "");
+    if ("[[sammanfattning]]:".startsWith(t) || "[sammanfattning]:".startsWith(t)) {
+      hold = tail.length - br;
+      break;
+    }
+  }
+  const caps = /[A-ZÅÄÖ]+$/.exec(buf)?.[0] ?? "";
+  if (caps && ("SAMMANFATTNING".startsWith(caps) || caps === "SAMMANFATTNING")) {
+    hold = Math.max(hold, caps.length);
+  }
+  const line = buf.slice(buf.lastIndexOf("\n") + 1);
+  const l = line.replace(/^[ \t]*(?:\*\*)?/, "").toLowerCase();
+  if (l && ("sammanfattning**".startsWith(l) || l === "sammanfattning")) {
+    hold = Math.max(hold, line.length);
+  }
+  if (/^[ \t]*\*{1,2}$/.test(line)) hold = Math.max(hold, line.length);
+  return hold;
+}
+
 export class SummaryTap {
   private buf = "";
   private sum = "";
@@ -34,21 +78,15 @@ export class SummaryTap {
       return "";
     }
     this.buf += text;
-    const i = this.buf.indexOf(SUMMARY_MARK);
-    if (i !== -1) {
-      const spoken = this.buf.slice(0, i).replace(/\s+$/, "");
-      this.sum = this.buf.slice(i + SUMMARY_MARK.length);
+    const f = findSummaryMarker(this.buf);
+    if (f) {
+      const spoken = this.buf.slice(0, f[0]).replace(/\s+$/, "");
+      this.sum = this.buf.slice(f[1]);
       this.buf = "";
       this.inSummary = true;
       return spoken;
     }
-    let hold = 0; // chars kept back: a partial marker plus the whitespace in front of it
-    for (let k = Math.min(SUMMARY_MARK.length - 1, this.buf.length); k > 0; k--) {
-      if (SUMMARY_MARK.startsWith(this.buf.slice(-k))) {
-        hold = k;
-        break;
-      }
-    }
+    let hold = markerHold(this.buf);
     while (hold < this.buf.length && /\s/.test(this.buf[this.buf.length - hold - 1])) hold++;
     const out = this.buf.slice(0, this.buf.length - hold);
     this.buf = this.buf.slice(this.buf.length - hold);
@@ -64,7 +102,9 @@ export class SummaryTap {
 
   /** Cleaned summary (no quotes, one line, <= 300 chars) or null. */
   get summary(): string | null {
-    const t = this.sum.replace(/["“”«»]/g, "").replace(/\s+/g, " ").trim().slice(0, 300);
+    const t = this.sum.replace(/^[\s:\]\-–—*]+/, "").replace(/["“”«»]/g, "").replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 300);
     return t.length >= 5 ? t : null;
   }
 }

@@ -140,6 +140,13 @@ export function ordinal(n: number): string {
 // noun (matters for "en"/"ett").
 const UNIT_WORDS: Record<string, { one: string; many: string; g: Gender }> = {
   "%": { one: "procent", many: "procent", g: "en" },
+  GHz: { one: "gigahertz", many: "gigahertz", g: "ett" },
+  MHz: { one: "megahertz", many: "megahertz", g: "ett" },
+  kHz: { one: "kilohertz", many: "kilohertz", g: "ett" },
+  Hz: { one: "hertz", many: "hertz", g: "ett" },
+  kWh: { one: "kilowattimme", many: "kilowattimmar", g: "en" },
+  kW: { one: "kilowatt", many: "kilowatt", g: "ett" },
+  MW: { one: "megawatt", many: "megawatt", g: "ett" },
   "°C": { one: "grad celsius", many: "grader celsius", g: "en" },
   "°F": { one: "grad fahrenheit", many: "grader fahrenheit", g: "en" },
   "°": { one: "grad", many: "grader", g: "en" },
@@ -205,7 +212,8 @@ export function numbersToSpeech(text: string): string {
   // clock times 14:30
   s = s.replace(/(?<![\d:])([01]?\d|2[0-3]):([0-5]\d)(?![\d:])/g, (_m, h: string, m: string) => {
     const mm = Number(m);
-    return cardinal(Number(h)) + (mm === 0 ? "" : " " + (mm < 10 ? "noll " : "") + cardinal(mm));
+    return cardinal(Number(h)) +
+      (mm === 0 ? "" : mm < 10 ? " noll " + cardinal(mm) : " och " + cardinal(mm));
   });
   // ordinals 1:a 2:a 3:e ...
   s = s.replace(/(?<![\d])(\d{1,4}):(?:a|e)(?![\p{L}\d])/gu, (_m, n: string) => ordinal(Number(n)));
@@ -214,7 +222,7 @@ export function numbersToSpeech(text: string): string {
   // negative numbers
   s = s.replace(/(?<![\p{L}\d)])-(?=\d)/gu, "minus ");
   const re =
-    /(?<![\p{L}\d.,])(\d+)(?:[.,](\d+))?(?:\s*(%|°C|°F|°|km\/h|m\/s)|\s?(ml|cl|dl|kg|mg|cm|mm|km|kr|min|st|l|g|m)(?![\p{L}\d]))?/gu;
+    /(?<![\p{L}\d.,])(\d+)(?:[.,](\d+))?(?:\s*(%|°C|°F|°|km\/h|m\/s)|\s?(GHz|MHz|kHz|Hz|kWh|kW|MW|ml|cl|dl|kg|mg|cm|mm|km|kr|min|st|l|g|m)(?![\p{L}\d]))?/gu;
   s = s.replace(
     re,
     (

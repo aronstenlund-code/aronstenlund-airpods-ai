@@ -81,6 +81,57 @@ export function spellFormula(tok: string): string | null {
     .join(" ");
 }
 
+const ROMAN: Record<string, number> = {
+  I: 1,
+  II: 2,
+  III: 3,
+  IV: 4,
+  V: 5,
+  VI: 6,
+  VII: 7,
+  VIII: 8,
+  IX: 9,
+  X: 10,
+  XI: 11,
+  XII: 12,
+  XIII: 13,
+  XIV: 14,
+  XV: 15,
+  XVI: 16,
+  XVII: 17,
+  XVIII: 18,
+  XIX: 19,
+  XX: 20,
+};
+export function romanToInt(r: string): number | null {
+  return ROMAN[r] ?? null;
+}
+const REGNAL = [
+  "",
+  "förste",
+  "andre",
+  "tredje",
+  "fjärde",
+  "femte",
+  "sjätte",
+  "sjunde",
+  "åttonde",
+  "nionde",
+  "tionde",
+  "elfte",
+  "tolfte",
+  "trettonde",
+  "fjortonde",
+  "femtonde",
+  "sextonde",
+  "sjuttonde",
+  "artonde",
+  "nittonde",
+  "tjugonde",
+];
+/** "den förste", "den andre", "den tredje" ... (masculine, as for kings and popes). */
+export const regnal = (n: number) => REGNAL[n] ?? String(n);
+
 const ABBREVIATIONS: [RegExp, string][] = [
   [/(?<![\p{L}])f\.\s?Kr\.?/gu, "före Kristus"],
   [/(?<![\p{L}])e\.\s?Kr\.?/gu, "efter Kristus"],
@@ -99,8 +150,34 @@ const ABBREVIATIONS: [RegExp, string][] = [
 
 /** Before digits become words. */
 export function beforeNumbers(text: string): string {
-  // subscript digits (C₁₂H₂₂O₁₁) -> plain digits, so the formula rules see them
-  let s = text.replace(/[\u2080-\u2089]/g, (c) => String(c.charCodeAt(0) - 0x2080));
+  // invisible characters (soft hyphen, zero-width) away; subscript digits (C₁₂H₂₂O₁₁) -> plain digits
+  let s = text.replace(/[\u00ad\u200b-\u200d\u2060\ufeff]/g, "").replace(
+    /[\u2080-\u2089]/g,
+    (c) => String(c.charCodeAt(0) - 0x2080),
+  );
+  // D63: clock times written with a dot after "klockan"/"kl": 17.40 -> "17:40" (read by the clock rule)
+  s = s.replace(
+    /((?:klockan|kl\.?|vid|runt|före|efter)\s+)([01]?\d|2[0-3])\.([0-5]\d)(?![\d])/giu,
+    (_m, pre: string, h: string, m: string) => `${pre}${h}:${m}`,
+  );
+  // D63: roman numerals after a name are regnal numbers: "Oscar I" -> "Oscar den förste"
+  s = s.replace(
+    /(?<![\p{L}\d])(\p{Lu}[\p{L}]+) (XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)(?![\p{L}\d])(?!\s\p{Lu})/gu,
+    (m: string, name: string, roman: string) => {
+      const n = romanToInt(roman);
+      return n === null ? m : `${name} den ${regnal(n)}`;
+    },
+  );
+  s = s.replace(
+    /(?<![\p{L}\d])(\p{Lu}[\p{L}]+) (XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X)(?= \p{Lu})/gu,
+    (m: string, name: string, roman: string) => {
+      const n = romanToInt(roman);
+      return n === null ? m : `${name} den ${regnal(n)}`;
+    },
+  );
+  // "2x" is "two times"; "5G"/"3D": a number directly before capital letters is read as number + letters
+  s = s.replace(/(?<![\p{L}\d.,])(\d+)\s?x(?![\p{L}\d])/giu, "$1 gånger");
+  s = s.replace(/(?<![\p{L}\d.,])(\d+)([A-Z]{1,2})(?![\p{L}\d])/gu, "$1 $2");
   for (const [re, to] of ABBREVIATIONS) s = s.replace(re, to);
   // powers: 10^23, x^2, 10^{-3}
   s = s.replace(
@@ -129,6 +206,13 @@ export function beforeNumbers(text: string): string {
 const UNIT_SPOKEN: Record<string, string> = {
   km: "kilometer",
   m: "meter",
+  ghz: "gigahertz",
+  mhz: "megahertz",
+  khz: "kilohertz",
+  hz: "hertz",
+  kw: "kilowatt",
+  kwh: "kilowattimmar",
+  mw: "megawatt",
   cm: "centimeter",
   mm: "millimeter",
   kg: "kilogram",

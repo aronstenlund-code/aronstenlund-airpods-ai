@@ -21,7 +21,7 @@ Deno.test("numbers: cardinals, years, decimals, percent, units, times, dates", (
     t("50 km/h och 37,5 °C"),
     "femtio kilometer i timmen och trettiosju komma fem grader celsius",
   );
-  assertEquals(t("Klockan 14:30, den 3:e."), "Klockan fjorton trettio, den tredje.");
+  assertEquals(t("Klockan 14:30, den 3:e."), "Klockan fjorton och trettio, den tredje.");
   assertEquals(
     t("1 liter och 21 personer och 1 barn"),
     "en liter och tjugoen personer och ett barn",
@@ -486,4 +486,78 @@ Deno.test("D54: web search is limited to reliable domains; 'genom' divides; ett 
   assertEquals(computeFragment("tiotusen genom fyra hundra")?.value, 25);
   assertEquals(computeFragment("10000 genom 400")?.value, 25);
   assertEquals(toSpeech("Ett mol kol väger tolv gram."), "En mol kol väger tolv gram.");
+});
+
+import { findSummaryMarker, SummaryTap } from "./speech.ts";
+Deno.test("D63: the summary marker is cut in every variant, anywhere, in any chunking; a missing summary is still removed", () => {
+  const variants = [
+    "[[SAMMANFATTNING]] Om fotosyntes och ljus.",
+    "SAMMANFATTNING: Om fotosyntes och ljus.",
+    "[SAMMANFATTNING] Om fotosyntes och ljus.",
+    "[[sammanfattning]]: Om fotosyntes och ljus.",
+    "Sammanfattning: Om fotosyntes och ljus.",
+    "**Sammanfattning:** Om fotosyntes och ljus.",
+    "SAMMANFATTNING Om fotosyntes och ljus.",
+  ];
+  for (const v of variants) {
+    for (const k of [1, 2, 5, 400]) {
+      const t = new SummaryTap();
+      const text = `Svaret kommer här. Det är kort.\n${v}`;
+      let out = "";
+      for (let i = 0; i < text.length; i += k) out += t.push(text.slice(i, i + k));
+      out += t.finish();
+      assertEquals(out, "Svaret kommer här. Det är kort.", `${v} / chunk ${k}`);
+      assertEquals(t.summary, "Om fotosyntes och ljus.", `${v} / chunk ${k}`);
+    }
+  }
+  // mid-text, on the same line as the answer
+  const t = new SummaryTap();
+  assertEquals(
+    t.push("Här lägger du ett exempel. SAMMANFATTNING: Intervju om butik.") + t.finish(),
+    "Här lägger du ett exempel.",
+  );
+  assertEquals(t.summary, "Intervju om butik.");
+  // marker without any summary: the line is still removed from the speech
+  const e = new SummaryTap();
+  assertEquals(e.push("Svar.\n[[SAMMANFATTNING]]") + e.finish(), "Svar.");
+  assertEquals(e.summary, null);
+  const e2 = new SummaryTap();
+  assertEquals(e2.push("Svar.\nSAMMANFATTNING:") + e2.finish(), "Svar.");
+  // ordinary speech that merely contains the word is untouched
+  for (
+    const ok of [
+      "Här är en sammanfattning av läget.",
+      "Samma sak, Samtidigt och Svenska ord.",
+      "Sammanfattningsvis är det klart.",
+    ]
+  ) {
+    const n = new SummaryTap();
+    assertEquals(n.push(ok) + n.finish(), ok);
+    assertEquals(n.summary, null);
+  }
+  assertEquals(findSummaryMarker("inget här"), null);
+});
+
+Deno.test("D63: clock times with a dot, regnal numbers, 2x, 5G and hertz are spoken", () => {
+  assertEquals(toSpeech("Tåget går klockan 17.40."), "Tåget går klockan sjutton och fyrtio.");
+  assertEquals(
+    toSpeech("Möte kl 9.05 och 14:30."),
+    "Möte kl nio noll fem och fjorton och trettio.",
+  );
+  assertEquals(toSpeech("Pi är 3.14 ungefär."), "Pi är tre komma ett fyra ungefär.");
+  assertEquals(
+    toSpeech("Oscar I regerade 1844."),
+    "Oscar den förste regerade artonhundrafyrtiofyra.",
+  );
+  assertEquals(
+    toSpeech("Karl XII och Karl XV, Gustav II Adolf."),
+    "Karl den tolfte och Karl den femtonde, Gustav den andre Adolf.",
+  );
+  assertEquals(toSpeech("Karl IV I Sverige"), "Karl den fjärde I Sverige"); // lone I before a name is the preposition
+  assertEquals(toSpeech("Det går 2x snabbare och 5G."), "Det går två gånger snabbare och fem G.");
+  assertEquals(
+    toSpeech("En processor på 3,5 GHz och 50 Hz."),
+    "En processor på tre komma fem gigahertz och femtio hertz.",
+  );
+  assertEquals(toSpeech("kof­fein​et"), "koffeinet");
 });
