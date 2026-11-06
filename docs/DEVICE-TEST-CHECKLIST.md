@@ -300,11 +300,14 @@ Välj **Prov**, tryck *Starta Provläge*. Ställ en fråga, pausa, lyssna, stäl
 3. Appen växlar fråga/svar i tur och ordning. Skriv ner om den kommer i otakt.
 
 ### 3x. Rizzläge (10 min, med en kompis som vet om det)
-1. Välj **Rizz**, tryck *Förbered Rizzläge*. Startskärmen med samtycket ska komma först. Välj stil och starta.
+1. Välj **Rizzläge (18+)**. Första gången ska rutan "Rizzläge är bara för dig som är 18 år eller äldre" komma. Tryck *Avbryt*: du ska vara tillbaka i väljaren. Välj igen och tryck *Jag är 18 år eller äldre*. Välj sedan *Förbered Rizzläge*: startskärmen med samtycket ska komma först. Starta.
 2. Prata med kompisen. Skriv ner tiden från att kompisen slutat tala till att förslaget hörs. Hörs det någonsin över någon som pratar? Det får inte hända.
 3. Lås telefonen: syns alla förslag på låsskärmen? Tryck *Nästa*, och säg sedan "nästa".
 4. Var tyst i 4 sekunder: kommer ett förslag? Är ljudnivån lagom låg?
 5. Justera *Din röst är starkare än* i Inställningar → Rizzläge. Loggen i Diagnostik visar nivå och vem appen trodde pratade. Hur ofta blir det rätt, med telefonen på bordet och med AirPods?
+
+### 3x2. Socialt läge (5 min, med samma kompis)
+Välj **Socialt läge**, tryck *Förbered Socialt läge*. Ingen åldersfråga ska komma, men startskärmen med samtycket ska göra det. Gör samma test som i 3x steg 2–4. Förslagen ska vara skämt, repliker, småprat och följdfrågor, aldrig flirt.
 
 ### 3y. Historik och minne (5 min)
 1. Inställningar → *Historik*: dina egna frågor ska stå ordagrant med svar och sammanfattning. Rizz-passet ska ha förslag men **inget** av det kompisen sa.

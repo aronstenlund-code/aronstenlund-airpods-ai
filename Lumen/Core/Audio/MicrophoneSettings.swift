@@ -7,9 +7,23 @@ enum ConversationMode: String, CaseIterable, Identifiable, Sendable {
     case standard
     case prov
     case interview
+    /// Flirting, 18+ (D63).
     case rizz
+    /// Jokes, comebacks, small talk, for everyone (D63).
+    case social
 
     var id: String { rawValue }
+
+    /// The live suggestion loop (D43): its backend style, nil for the other modes.
+    var liveStyle: LiveStyle? {
+        switch self {
+        case .rizz: .flirt
+        case .social: .social
+        case .standard, .prov, .interview: nil
+        }
+    }
+
+    var isLive: Bool { liveStyle != nil }
 }
 
 /// Mikrofon (D55): the wearer's AirPods, or the iPhone for hearing other people.
@@ -24,7 +38,7 @@ enum MicrophoneSource: String, CaseIterable, Identifiable, Sendable {
     static func defaultSource(for mode: ConversationMode) -> MicrophoneSource {
         switch mode {
         case .standard, .prov: .airPods
-        case .interview, .rizz: .iPhone
+        case .interview, .rizz, .social: .iPhone
         }
     }
 

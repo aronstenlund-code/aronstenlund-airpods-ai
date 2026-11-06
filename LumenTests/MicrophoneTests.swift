@@ -9,6 +9,7 @@ import Testing
         #expect(MicrophoneSource.defaultSource(for: .prov) == .airPods)
         #expect(MicrophoneSource.defaultSource(for: .interview) == .iPhone)
         #expect(MicrophoneSource.defaultSource(for: .rizz) == .iPhone)
+        #expect(MicrophoneSource.defaultSource(for: .social) == .iPhone)
     }
 
     @Test func theIPhoneConfigKeepsMusicQualityInTheAirPods() {

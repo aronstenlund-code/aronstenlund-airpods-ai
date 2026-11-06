@@ -31,12 +31,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var selectedMode: ConversationMode = .standard
     /// Intervjuläge and Rizzläge setup.
     let modeSettings: ModeSettings
-    /// The running Rizzläge session. Gone when it ends, and the words with it.
+    /// The running live session, Rizzläge or Socialt läge. Gone when it ends, and the words with it.
     private(set) var rizz: RizzSession?
     /// Intervjuläge alternates: the interviewer asks, then the user answers.
     private var interviewerSpeaksNext = true
     var isShowingInterviewSetup = false
-    var isShowingRizzStart = false
+    var isShowingLiveStart = false
+    var isShowingAgeGate = false
     /// A microphone comparison is running: what is said is a test sentence, never a question.
     private var isComparing = false
     /// Course goals and personal keyword commands (D37).
@@ -331,7 +332,23 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .standard: await toggleListening()
         case .prov: await startStudy()
         case .interview: isShowingInterviewSetup = true
-        case .rizz: isShowingRizzStart = true
+        case .rizz:
+            if modeSettings.isAdultConfirmed { isShowingLiveStart = true } else { isShowingAgeGate = true }
+        case .social: isShowingLiveStart = true
+        }
+    }
+
+    /// The picker moved: Rizzläge asks for the age the first time it is opened (D63).
+    func modeSelected() {
+        if selectedMode == .rizz, !modeSettings.isAdultConfirmed { isShowingAgeGate = true }
+    }
+
+    func answerAgeGate(confirmed: Bool) {
+        isShowingAgeGate = false
+        if confirmed {
+            modeSettings.confirmAdult()
+        } else {
+            selectedMode = .standard
         }
     }
 
@@ -342,6 +359,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func startHandsFree(_ newMode: ConversationMode) async {
         guard consent.isGranted else {
             controller.log("Hands-free \(newMode.rawValue) refused: no consent")
+            return
+        }
+        if newMode == .rizz, !modeSettings.isAdultConfirmed {
+            controller.log("Rizzläge refused: no age confirmation")
+            isShowingAgeGate = true
             return
         }
         studyNotice = nil
@@ -355,8 +377,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.interrupt()
         conversation.cancelAnswer()
         interviewerSpeaksNext = true
-        if newMode == .rizz {
-            rizz = RizzSession(style: modeSettings.rizzStyle)
+        if let style = newMode.liveStyle {
+            rizz = RizzSession(style: style)
             study.stallSilence = Self.stallSilence
             controller.playback.speechVolume = Self.rizzVolume
         } else {
@@ -409,7 +431,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let session = rizz, !session.offered.isEmpty {
             let lines = ownLinesAreReliable ? session.ownLines.joined(separator: "\n") : ""
             history.record(HistoryEntry(question: lines.isEmpty ? nil : lines, answer: "",
-                                        summary: "Rizzläge, stil \(session.style.rawValue): \(session.offered.count) förslag.",
+                                        summary: "\(mode == .rizz ? "Rizzläge" : "Socialt läge"): \(session.offered.count) förslag.",
                                         suggestions: session.offered))
         }
         rizz = nil
@@ -440,7 +462,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .endOfTurn(let text):
             switch mode {
             case .interview: interviewTurn(text)
-            case .rizz: rizzTurn(text)
+            case .rizz, .social: rizzTurn(text)
             case .standard, .prov: activated(ActivationRequest(query: text, trigger: .tutor, language: language))
             }
         case .stalled:
@@ -496,13 +518,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func requestSuggestions(trigger: String) {
         guard let session = rizz else { return }
+        let flirts = session.style == .flirt
+        guard !flirts || modeSettings.isAdultConfirmed else { return }
         let request = ActivationRequest(query: "", trigger: .rizz, language: language)
         let social = SocialRequest(style: session.style.rawValue, trigger: trigger, transcript: session.transcript,
                                    interests: modeSettings.interests, profile: modeSettings.rizzProfile)
         pendingQuestion = request
         latency.begin(request)
         answers.answer(request, context: AnswerContext(memories: memory.backendItems()),
-                       persona: PersonaRequest(persona: "social", social: social))
+                       persona: PersonaRequest(persona: "social", social: social, adultConfirmed: flirts ? true : nil))
     }
 
     func answerSuggestions(_ options: [String]) {
@@ -533,7 +557,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// The answer produced no speech (silent mode, empty answer): back to listening right away.
     private func studyAnswerEnded() {
-        guard study.isActive, mode != .rizz, !speaker.hasPendingSpeech, !finishSingleTurn() else { return }
+        guard study.isActive, !mode.isLive, !speaker.hasPendingSpeech, !finishSingleTurn() else { return }
         transcription.setInputGated(false)
         study.resumeListening()
     }
@@ -666,7 +690,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard let feedback else { return false }
         do {
             try await feedback.send(type: "report", fragment: turn.isOwnQuestion ? turn.question : nil, answer: turn.answer,
-                                    comment: comment, mode: mode.rawValue, persona: mode == .rizz ? "social" : nil,
+                                    comment: comment, mode: mode.rawValue, persona: mode.isLive ? "social" : nil,
                                     timings: turn.latencyMs.map { ["first_text_ms": $0] })
             reportNotice = language == .swedish ? "Skickat" : "Sent"
             return true

@@ -58,11 +58,15 @@ struct ListeningView: View {
                 InterviewSetupView(model: model, settings: model.modeSettings)
             }
         }
-        .sheet(isPresented: $model.isShowingRizzStart) {
+        .sheet(isPresented: $model.isShowingLiveStart) {
             NavigationStack {
-                RizzStartView(model: model, settings: model.modeSettings)
+                LiveStartView(model: model, settings: model.modeSettings, mode: model.selectedMode)
             }
         }
+        .sheet(isPresented: $model.isShowingAgeGate) {
+            AgeGateView { model.answerAgeGate(confirmed: $0) }
+        }
+        .onChange(of: model.selectedMode) { model.modeSelected() }
         .sheet(isPresented: $model.isShowingNotes) {
             NavigationStack {
                 NotesView(store: model.notes)
@@ -420,6 +424,7 @@ struct ListeningView: View {
         case .prov: return "Start Provläge"
         case .interview: return "Set up Intervjuläge"
         case .rizz: return "Set up Rizzläge"
+        case .social: return "Set up Socialt läge"
         }
     }
 
@@ -428,11 +433,12 @@ struct ListeningView: View {
             textQuestionRow
             Picker("Mode", selection: $model.selectedMode) {
                 Text("Questions").tag(ConversationMode.standard)
-                Text("Prov").tag(ConversationMode.prov)
-                Text("Intervju").tag(ConversationMode.interview)
-                Text("Rizz").tag(ConversationMode.rizz)
+                Text("Provläge").tag(ConversationMode.prov)
+                Text("Intervjuläge").tag(ConversationMode.interview)
+                Text("Rizzläge (18+)").tag(ConversationMode.rizz)
+                Text("Socialt läge").tag(ConversationMode.social)
             }
-            .pickerStyle(.segmented)
+            .pickerStyle(.menu)
             .disabled(model.study.isActive)
             if model.selectedMode != .standard || model.study.isActive {
                 Button {

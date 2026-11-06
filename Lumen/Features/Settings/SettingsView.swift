@@ -85,6 +85,7 @@ struct SettingsView: View {
         case .prov: "Provläge"
         case .interview: "Intervjuläge"
         case .rizz: "Rizzläge"
+        case .social: "Socialt läge"
         }
     }
 
@@ -151,7 +152,7 @@ struct SettingsView: View {
                 .foregroundStyle(.secondary)
         }
         @Bindable var modes = model.modeSettings
-        Section("Rizzläge") {
+        Section("Rizzläge and Socialt läge") {
             HStack {
                 Text("Your voice is louder than")
                 Slider(value: $modes.speakerThresholdDBFS, in: -60 ... -10, step: 1)

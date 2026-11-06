@@ -31,10 +31,39 @@ struct InterviewSetupView: View {
     }
 }
 
-/// Start screen for Rizzläge (D42/D43): consent first, then the style and what the suggestions may build on.
-struct RizzStartView: View {
+/// Rizzläge is for adults (D63): asked the first time, remembered on this phone.
+struct AgeGateView: View {
+    let onAnswer: (Bool) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Rizzläge is only for people aged 18 or older")
+                .font(.title2.bold())
+            Spacer()
+            Button {
+                onAnswer(true)
+            } label: {
+                Text("I am 18 or older").frame(maxWidth: .infinity).padding(.vertical, 8)
+            }
+            .buttonStyle(.borderedProminent)
+            Button {
+                onAnswer(false)
+            } label: {
+                Text("Cancel").frame(maxWidth: .infinity).padding(.vertical, 8)
+            }
+            .buttonStyle(.bordered)
+        }
+        .padding(24)
+        .presentationDetents([.medium])
+        .interactiveDismissDisabled()
+    }
+}
+
+/// Start screen for the live modes (D42/D43/D63): consent first, then what the suggestions may build on.
+struct LiveStartView: View {
     @Bindable var model: ListeningModel
     @Bindable var settings: ModeSettings
+    let mode: ConversationMode
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -45,14 +74,6 @@ struct RizzStartView: View {
                 Text("Tell them the app is listening. What you both say goes to ElevenLabs and Anthropic to create suggestions. The words are forgotten when the session ends.")
                     .font(.subheadline)
             }
-            Section("Style") {
-                Picker("Style", selection: $settings.rizzStyle) {
-                    ForEach(RizzStyle.allCases) { style in
-                        Text(verbatim: style.rawValue.capitalized).tag(style)
-                    }
-                }
-                .pickerStyle(.menu)
-            }
             Section("About you") {
                 TextField("Interests, separated by commas", text: $settings.rizzInterests)
                 TextField("Profile or bio", text: $settings.rizzProfile, axis: .vertical)
@@ -61,14 +82,14 @@ struct RizzStartView: View {
             Section {
                 Button("They know the app is listening. Start") {
                     dismiss()
-                    Task { await model.startHandsFree(.rizz) }
+                    Task { await model.startHandsFree(mode) }
                 }
                 .font(.headline)
             } footer: {
                 Text("Suggestions are shown on the Lock Screen and the best one is spoken in a pause. Say \"nästa\" for the next one.")
             }
         }
-        .navigationTitle("Rizzläge")
+        .navigationTitle(mode == .rizz ? "Rizzläge" : "Socialt läge")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

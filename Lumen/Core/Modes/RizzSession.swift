@@ -1,7 +1,7 @@
 import Foundation
 import LumenScoring
 
-/// One Rizzläge session (D43): the rolling transcript and the current suggestions. Lives in memory and is gone when
+/// One live session, Rizzläge or Socialt läge (D43/D63): the rolling transcript and the current suggestions. Lives in memory and is gone when
 /// the session ends. Pure; unit-tested.
 struct RizzSession: Equatable, Sendable {
     struct Line: Equatable, Sendable {
@@ -17,7 +17,7 @@ struct RizzSession: Equatable, Sendable {
     /// How close the user's words must be to a suggestion to count as using it.
     static let usedWER = 0.5
 
-    let style: RizzStyle
+    let style: LiveStyle
     private(set) var lines: [Line] = []
     private(set) var suggestions: [String] = []
     private(set) var index = 0
@@ -26,7 +26,7 @@ struct RizzSession: Equatable, Sendable {
     /// The wearer's own lines, for Historik.
     private(set) var ownLines: [String] = []
 
-    init(style: RizzStyle) {
+    init(style: LiveStyle) {
         self.style = style
     }
 

@@ -119,6 +119,7 @@ final class CloudAnswerProvider: AnswerProvider {
             var persona_setup: String?
             var turn: String?
             var social: SocialRequest?
+            var adult_confirmed: Bool?
         }
         let context = Body.Context(transcript: request.context.transcript.isEmpty ? nil : request.context.transcript,
                                    recent_qa: request.context.recentQA.isEmpty ? nil : request.context.recentQA,
@@ -128,7 +129,8 @@ final class CloudAnswerProvider: AnswerProvider {
                         commands: request.context.commands.isEmpty ? nil : request.context.commands,
                         memories: request.context.memories.isEmpty ? nil : request.context.memories,
                         persona: request.persona?.persona, persona_setup: request.persona?.setup,
-                        turn: request.persona?.turn, social: request.persona?.social)
+                        turn: request.persona?.turn, social: request.persona?.social,
+                        adult_confirmed: request.persona?.adultConfirmed)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return (try? encoder.encode(body)) ?? Data("{}".utf8)

@@ -65,7 +65,7 @@ import Testing
     private let t0 = Date(timeIntervalSince1970: 1_000)
 
     @Test func theWindowIsTwoMinutes() {
-        var session = RizzSession(style: .rolig)
+        var session = RizzSession(style: .flirt)
         session.add(.other, text: "gammalt", at: t0)
         session.add(.user, text: "nyare", at: t0.addingTimeInterval(100))
         session.add(.other, text: "nytt", at: t0.addingTimeInterval(130))
@@ -73,7 +73,7 @@ import Testing
     }
 
     @Test func stayWithinTheBackendLimits() {
-        var session = RizzSession(style: .rolig)
+        var session = RizzSession(style: .flirt)
         for index in 0..<60 {
             session.add(.other, text: String(repeating: "x", count: 400), at: t0.addingTimeInterval(TimeInterval(index)))
         }
@@ -82,7 +82,7 @@ import Testing
     }
 
     @Test func nextWrapsAround() {
-        var session = RizzSession(style: .rolig)
+        var session = RizzSession(style: .flirt)
         #expect(session.next() == nil)
         session.offer(["Ett", "Två"])
         #expect(session.current == "Ett")
@@ -94,7 +94,7 @@ import Testing
     }
 
     @Test func recognisesAUsedSuggestionLoosely() {
-        var session = RizzSession(style: .rolig)
+        var session = RizzSession(style: .flirt)
         session.offer(["Hur stark är du egentligen"])
         #expect(session.usesSuggestion("hur stark är du"))
         #expect(!session.usesSuggestion("ska vi gå hem nu"))
@@ -131,7 +131,7 @@ import Testing
         return defaults
     }
 
-    private func makeRig(events: [AnswerEvent], microphone: MicrophoneSource? = nil) -> Rig {
+    private func makeRig(events: [AnswerEvent], microphone: MicrophoneSource? = nil, adult: Bool = true) -> Rig {
         let h = ControllerHarness()
         let provider = FakeAnswerProvider(name: "cloud", events: events)
         let apple = FakeTTSProvider(name: "apple")
@@ -139,6 +139,7 @@ import Testing
         let activity = FakeActivityPresenter()
         let settings = ModeSettings(defaults: freshDefaults())
         settings.interviewSetup = "Säljare på Volvo"
+        if adult { settings.confirmAdult() }
         let microphones = MicrophoneSettings(defaults: freshDefaults())
         if let microphone {
             for mode in ConversationMode.allCases { microphones.setSource(microphone, for: mode) }
@@ -192,7 +193,7 @@ import Testing
     }
 
     @Test func theRequestBodyCarriesPersonaAndSocial() throws {
-        let persona = PersonaRequest(persona: "social", social: SocialRequest(style: "rolig", trigger: "stall", transcript: [SocialRequest.Line(speaker: "other", text: "hej")], interests: ["löpning"], profile: ""))
+        let persona = PersonaRequest(persona: "social", social: SocialRequest(style: "flirt", trigger: "stall", transcript: [SocialRequest.Line(speaker: "other", text: "hej")], interests: ["löpning"], profile: ""))
         let data = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "", mode: "tutor", language: "sv", persona: persona))
         let json = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
         #expect(json["persona"] as? String == "social")
@@ -278,7 +279,7 @@ import Testing
 
         speak("hur stark är du", level: -20, rig: rig)
 
-        #expect(await waitUntil { rig.settings.styleCounts["rolig"] == 1 })
+        #expect(await waitUntil { rig.settings.styleCounts["flirt"] == 1 })
     }
 
     @Test func theTranscriptEndsWithAnOrdinarySessionToo() async {
@@ -289,12 +290,92 @@ import Testing
         #expect(rig.model.conversation.finalSegments.isEmpty)
     }
 
+    @Test func withoutAgeConfirmationNoRizzRequestIsSent() async {
+        let rig = makeRig(events: [.suggestions(["Bästa"]), .done(AnswerDone(answered: true))], microphone: .iPhone, adult: false)
+
+        await rig.model.startHandsFree(.rizz)
+        rig.model.study.level(-70, at: Date())
+        speak("Jag älskar chili", level: -40, rig: rig)
+        try? await Task.sleep(for: .milliseconds(30))
+
+        #expect(!rig.model.study.isActive)
+        #expect(!rig.model.isListening, "the microphone stays off")
+        #expect(rig.model.isShowingAgeGate)
+        #expect(rig.provider.requests.isEmpty)
+    }
+
+    @Test func theGateComesTheFirstTimeAndCancelGoesBack() {
+        let rig = makeRig(events: [], adult: false)
+        rig.model.selectedMode = .rizz
+        rig.model.modeSelected()
+        #expect(rig.model.isShowingAgeGate)
+
+        rig.model.answerAgeGate(confirmed: false)
+
+        #expect(rig.model.selectedMode == .standard)
+        #expect(!rig.settings.isAdultConfirmed)
+    }
+
+    @Test func theAnswerIsRememberedOnThisPhone() {
+        let defaults = freshDefaults()
+        ModeSettings(defaults: defaults).confirmAdult()
+        #expect(ModeSettings(defaults: defaults).isAdultConfirmed)
+
+        let rig = makeRig(events: [], adult: false)
+        rig.model.selectedMode = .rizz
+        rig.model.modeSelected()
+        rig.model.answerAgeGate(confirmed: true)
+        rig.model.modeSelected()
+        #expect(!rig.model.isShowingAgeGate)
+        #expect(rig.model.selectedMode == .rizz)
+    }
+
+    @Test func rizzFlirtsAndSaysTheUserIsAnAdult() async throws {
+        let rig = makeRig(events: [.suggestions(["Bästa"]), .done(AnswerDone(answered: true))], microphone: .iPhone)
+        await rig.model.startHandsFree(.rizz)
+        rig.model.study.level(-70, at: Date())
+        speak("Jag älskar chili", level: -40, rig: rig)
+        #expect(await waitUntil { rig.provider.requests.count == 1 })
+
+        let persona = rig.provider.requests[0].persona
+        #expect(persona?.social?.style == "flirt")
+        #expect(persona?.adultConfirmed == true)
+        let body = CloudAnswerProvider.encodeBody(rig.provider.requests[0])
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        #expect(json["adult_confirmed"] as? Bool == true)
+    }
+
+    @Test func socialLageNeedsNoAgeAndNeverSendsTheFlag() async throws {
+        let rig = makeRig(events: [.suggestions(["Bästa"]), .done(AnswerDone(answered: true))], microphone: .iPhone, adult: false)
+        rig.model.selectedMode = .social
+        rig.model.modeSelected()
+        #expect(!rig.model.isShowingAgeGate)
+
+        await rig.model.startHandsFree(.social)
+        #expect(rig.model.study.isActive)
+        rig.model.study.level(-70, at: Date())
+        speak("Jag älskar chili", level: -40, rig: rig)
+        #expect(await waitUntil { rig.apple.calls.count == 1 })
+
+        let persona = rig.provider.requests[0].persona
+        #expect(persona?.persona == "social")
+        #expect(persona?.social?.style == "social")
+        #expect(persona?.adultConfirmed == nil)
+        let body = CloudAnswerProvider.encodeBody(rig.provider.requests[0])
+        let json = try #require(try JSONSerialization.jsonObject(with: body) as? [String: Any])
+        #expect(json["adult_confirmed"] == nil)
+    }
+
     @Test func theModeButtonOpensTheStartScreensAndDoesNotStartTheMicrophone() async {
         let rig = makeRig(events: [])
         rig.model.selectedMode = .rizz
         await rig.model.toggleSelectedMode()
-        #expect(rig.model.isShowingRizzStart)
+        #expect(rig.model.isShowingLiveStart)
         #expect(!rig.model.isListening, "the consent screen comes first")
+        rig.model.isShowingLiveStart = false
+        rig.model.selectedMode = .social
+        await rig.model.toggleSelectedMode()
+        #expect(rig.model.isShowingLiveStart)
         rig.model.selectedMode = .interview
         await rig.model.toggleSelectedMode()
         #expect(rig.model.isShowingInterviewSetup)

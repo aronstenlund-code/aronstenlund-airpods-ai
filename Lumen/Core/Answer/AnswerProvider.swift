@@ -74,6 +74,8 @@ struct PersonaRequest: Equatable, Sendable {
     /// Intervjuläge: `question` | `user_answer`.
     var turn: String?
     var social: SocialRequest?
+    /// Rizzläge only: the backend refuses `flirt` without it (D63).
+    var adultConfirmed: Bool?
 }
 
 struct AnswerRequest: Equatable, Sendable {

@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The in-app listening indicator (ARCHITECTURE §12). Shown by `RootView` above every screen while the
-/// microphone is live or paused, with one-tap stop. Hidden when the session is idle or in error.
+/// The in-app listening indicator (ARCHITECTURE §12, D65). A slim line above every screen while the microphone is
+/// live or paused: it says what is happening and stops with one tap. Hidden when the session is idle or in error.
 struct ListeningIndicatorBar: View {
     let state: SessionState
     let onStop: () -> Void
@@ -29,23 +29,23 @@ struct ListeningIndicatorBar: View {
 
     private func bar(title: LocalizedStringKey, symbolActive: Bool, action: LocalizedStringKey,
                      role: ButtonRole?, perform: @escaping () -> Void) -> some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 6) {
             Image(systemName: "circle.fill")
-                .font(.caption)
+                .font(.system(size: 7))
                 .foregroundStyle(symbolActive ? .red : .orange)
                 .symbolEffect(.pulse, isActive: symbolActive)
                 .accessibilityHidden(true)
             Text(title)
-                .font(.subheadline.weight(.semibold))
+                .font(.caption.weight(.medium))
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
             Spacer()
             Button(action, role: role, action: perform)
-                .font(.subheadline.weight(.semibold))
-                .buttonStyle(.bordered)
-                .controlSize(.small)
+                .font(.caption.weight(.semibold))
+                .buttonStyle(.borderless)
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, minHeight: 26)
         .background(.thinMaterial)
         .overlay(alignment: .bottom) { Divider() }
         .accessibilityElement(children: .combine)

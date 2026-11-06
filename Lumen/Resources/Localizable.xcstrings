@@ -738,6 +738,17 @@
         }
       }
     },
+    "I am 18 or older": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jag är 18 år eller äldre"
+          }
+        }
+      }
+    },
     "I understand — start using Lumen": {
       "extractionState": "manual",
       "localizations": {
@@ -811,6 +822,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Intervju"
+          }
+        }
+      }
+    },
+    "Intervjuläge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervjuläge"
           }
         }
       }
@@ -1651,6 +1673,39 @@
         }
       }
     },
+    "Rizzläge (18+)": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rizzläge (18+)"
+          }
+        }
+      }
+    },
+    "Rizzläge and Socialt läge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rizzläge och Socialt läge"
+          }
+        }
+      }
+    },
+    "Rizzläge is only for people aged 18 or older": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rizzläge är bara för dig som är 18 år eller äldre"
+          }
+        }
+      }
+    },
     "Role or job ad": {
       "extractionState": "manual",
       "localizations": {
@@ -1816,6 +1871,17 @@
         }
       }
     },
+    "Set up Socialt läge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förbered Socialt läge"
+          }
+        }
+      }
+    },
     "Settings": {
       "extractionState": "manual",
       "localizations": {
@@ -1889,6 +1955,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tyst läge: svaren visas men läses inte upp."
+          }
+        }
+      }
+    },
+    "Socialt läge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Socialt läge"
           }
         }
       }

@@ -1,15 +1,10 @@
 import Foundation
 import Observation
 
-/// The five Rizzläge styles (D43). Raw values are the backend's `social.style`.
-enum RizzStyle: String, CaseIterable, Identifiable, Sendable {
-    case flirtig
-    case rolig
-    case självsäker
-    case avslappnad
-    case uppriktig
-
-    var id: String { rawValue }
+/// `social.style` (D63): Rizzläge flirts, Socialt läge never does.
+enum LiveStyle: String, Sendable {
+    case flirt
+    case social
 }
 
 /// Who said a line in Rizzläge. Raw values are the backend's `speaker`.
@@ -29,7 +24,7 @@ enum RizzSpeaker: String, Sendable, Equatable {
 @Observable
 final class ModeSettings {
     static let interviewKey = "mode.interviewSetup"
-    static let styleKey = "mode.rizzStyle"
+    static let adultKey = "mode.adultConfirmed"
     static let interestsKey = "mode.rizzInterests"
     static let profileKey = "mode.rizzProfile"
     static let thresholdKey = "mode.speakerThresholdDBFS"
@@ -39,9 +34,8 @@ final class ModeSettings {
     var interviewSetup: String {
         didSet { defaults.set(interviewSetup, forKey: Self.interviewKey) }
     }
-    var rizzStyle: RizzStyle {
-        didSet { defaults.set(rizzStyle.rawValue, forKey: Self.styleKey) }
-    }
+    /// "Jag är 18 år eller äldre": asked once, stored on this phone (D63).
+    private(set) var isAdultConfirmed: Bool
     /// Comma separated, as typed.
     var rizzInterests: String {
         didSet { defaults.set(rizzInterests, forKey: Self.interestsKey) }
@@ -60,7 +54,7 @@ final class ModeSettings {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.interviewSetup = defaults.string(forKey: Self.interviewKey) ?? ""
-        self.rizzStyle = defaults.string(forKey: Self.styleKey).flatMap(RizzStyle.init(rawValue:)) ?? .rolig
+        self.isAdultConfirmed = defaults.bool(forKey: Self.adultKey)
         self.rizzInterests = defaults.string(forKey: Self.interestsKey) ?? ""
         self.rizzProfile = defaults.string(forKey: Self.profileKey) ?? ""
         self.speakerThresholdDBFS = defaults.object(forKey: Self.thresholdKey) as? Double ?? -30
@@ -71,7 +65,12 @@ final class ModeSettings {
         rizzInterests.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
     }
 
-    func countUse(of style: RizzStyle) {
+    func confirmAdult() {
+        isAdultConfirmed = true
+        defaults.set(true, forKey: Self.adultKey)
+    }
+
+    func countUse(of style: LiveStyle) {
         styleCounts[style.rawValue, default: 0] += 1
         defaults.set(styleCounts, forKey: Self.countsKey)
     }
