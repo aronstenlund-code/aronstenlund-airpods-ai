@@ -46,6 +46,10 @@ enum ResultsMarkdown {
         out.append("")
         out.append(model.micSourceResult?.summary ?? "_not run_")
         out.append("")
+        out.append("## Microphone comparison (D55)")
+        out.append("")
+        out.append(model.micComparison?.markdown ?? "_not run_")
+        out.append("")
 
         out.append("## Playback")
         out.append("")

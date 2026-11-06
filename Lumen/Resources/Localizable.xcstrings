@@ -188,6 +188,17 @@
         }
       }
     },
+    "AirPods hear your own voice best, but answers play in call quality. iPhone hears other people better and keeps music quality in the AirPods; put it on the table.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPods hör din egen röst bäst, men svaren spelas i samtalskvalitet. iPhone hör andra bättre och behåller musikkvalitet i AirPods; lägg den på bordet."
+          }
+        }
+      }
+    },
     "Answer length": {
       "extractionState": "manual",
       "localizations": {
@@ -514,6 +525,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klar"
+          }
+        }
+      }
+    },
+    "Done, next sentence": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klar, nästa mening"
           }
         }
       }
@@ -870,6 +892,28 @@
         }
       }
     },
+    "Microphone": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mikrofon"
+          }
+        }
+      }
+    },
+    "Microphone comparison": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mikrofonjämförelse"
+          }
+        }
+      }
+    },
     "Mock answers (debug, no network)": {
       "extractionState": "manual",
       "localizations": {
@@ -1053,6 +1097,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ett tryck stänger av mikrofonen. Du kan ta tillbaka ditt samtycke senare under Integritet och samtycke; då visas den här skärmen igen."
+          }
+        }
+      }
+    },
+    "Other person at 1.5 m": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annan person på 1,5 m"
+          }
+        }
+      }
+    },
+    "Own voice": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Din egen röst"
           }
         }
       }
@@ -1262,6 +1328,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Provläge · din tur – prata bara"
+          }
+        }
+      }
+    },
+    "Put the phone on the table, close to the person talking.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lägg telefonen på bordet, nära den som pratar."
+          }
+        }
+      }
+    },
+    "Questions": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frågor"
           }
         }
       }
@@ -1486,6 +1574,17 @@
         }
       }
     },
+    "Speaker": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talare"
+          }
+        }
+      }
+    },
     "Speaking…": {
       "extractionState": "manual",
       "localizations": {
@@ -1580,6 +1679,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Börja lyssna"
+          }
+        }
+      }
+    },
+    "Start reading": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Börja läsa"
           }
         }
       }

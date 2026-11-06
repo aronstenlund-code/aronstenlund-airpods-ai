@@ -38,6 +38,8 @@ final class DiagnosticsModel {
     private(set) var distanceRuns: [DistanceTestRun] = []
 
     private(set) var micSourceResult: MicSourceTest.Result?
+    /// Needs the transcript, so the app container sets it.
+    var micComparison: MicComparisonModel?
     private(set) var micSourceRunning = false
     private(set) var localeReport: String?
     private(set) var localeCheckRunning = false

@@ -84,5 +84,6 @@ final class AppContainer {
         self.prep = prep
         self.listening = listening
         self.diagnostics = DiagnosticsModel(controller: controller)
+        diagnostics.micComparison = MicComparisonModel(listening: listening)
     }
 }

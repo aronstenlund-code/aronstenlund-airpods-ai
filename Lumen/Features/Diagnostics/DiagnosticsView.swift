@@ -1,6 +1,34 @@
 import SwiftUI
 
 /// Functional diagnostics screen (Phase 1 §3.6). Not pretty on purpose.
+/// Mikrofonjämförelsen (D55): read the sentence, tap Done, the word error rate is added to the results.
+private struct MicComparisonSection: View {
+    @Bindable var model: MicComparisonModel
+
+    var body: some View {
+        Section("Microphone comparison") {
+            Picker("Microphone", selection: $model.source) {
+                Text("AirPods").tag(MicrophoneSource.airPods)
+                Text("iPhone").tag(MicrophoneSource.iPhone)
+            }
+            Picker("Speaker", selection: $model.speaker) {
+                Text("Own voice").tag(MicComparisonModel.Speaker.wearer)
+                Text("Other person at 1.5 m").tag(MicComparisonModel.Speaker.otherPerson)
+            }
+            Text(verbatim: model.sentence).font(.headline)
+            Button(model.isRecording ? "Done, next sentence" : "Start reading") {
+                Task {
+                    if model.isRecording { await model.finish() } else { await model.start() }
+                }
+            }
+            .disabled(!model.canRecord)
+            ForEach(model.summaryLines, id: \.self) { line in
+                Text(verbatim: line).font(.caption.monospaced())
+            }
+        }
+    }
+}
+
 struct DiagnosticsView: View {
     @Bindable var model: DiagnosticsModel
 
@@ -11,6 +39,9 @@ struct DiagnosticsView: View {
             playbackSection
             distanceSection
             micSourceSection
+            if let comparison = model.micComparison {
+                MicComparisonSection(model: comparison)
+            }
             speechSection
             resultsSection
             eventLogSection

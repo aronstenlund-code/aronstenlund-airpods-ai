@@ -17,6 +17,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Historik and Minne (D49/D56), on this phone only.
     let history: HistoryStore
     let memory: MemoryStore
+    /// Mikrofon per mode (D55).
+    let microphone: MicrophoneSettings
+    /// What the session is for: decides the microphone.
+    private(set) var mode: ConversationMode = .standard
+    /// A microphone comparison is running: what is said is a test sentence, never a question.
+    private var isComparing = false
     /// Course goals and personal keyword commands (D37).
     let goals: GoalsStore
     let commands: CommandStore
@@ -79,7 +85,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          notes: NotesStore, prep: PrepStore, warmer: BackendWarmer? = nil,
          activity: (any ListeningActivityPresenting)? = nil, study: StudySessionController? = nil,
          goals: GoalsStore? = nil, commands: CommandStore? = nil,
-         history: HistoryStore? = nil, memory: MemoryStore? = nil) {
+         history: HistoryStore? = nil, memory: MemoryStore? = nil, microphone: MicrophoneSettings? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -91,6 +97,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.prep = prep
         self.history = history ?? HistoryStore()
         self.memory = memory ?? MemoryStore()
+        self.microphone = microphone ?? MicrophoneSettings()
         self.goals = goals ?? GoalsStore()
         self.commands = commands ?? CommandStore()
         self.warmer = warmer
@@ -146,7 +153,61 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         Task { await prepareBackend() }
         refreshKeyterms()
+        await useMicrophone(for: mode)
         await controller.start()
+        logMicrophone()
+    }
+
+    /// Selects the microphone for `mode`. A running session moves to the new route at once (D55).
+    private func useMicrophone(for mode: ConversationMode) async {
+        await use(config: microphone.source(for: mode).captureConfig(echoCancellation: mode == .prov && study.settings.useVoiceChatMode))
+    }
+
+    private func use(config: CaptureConfig) async {
+        guard config != controller.config else { return }
+        let wasActive = isActiveSession
+        if wasActive { await controller.stop() }
+        controller.config = config
+        if wasActive {
+            await controller.start()
+            logMicrophone()
+        }
+    }
+
+    private func logMicrophone() {
+        controller.log("Microphone \(microphone.source(for: mode).rawValue) for \(mode.rawValue) · \(controller.config.rawValue) · \(routeSummary ?? "no route")")
+    }
+
+    /// The phone listens to other people best from a table, not from a pocket (D55).
+    var usesPhoneMicrophone: Bool { controller.config.inputPreference == .builtInMic }
+    var recognizerName: String {
+        if case .running(let engine) = transcription.status { return engine.displayName }
+        return "none"
+    }
+
+    // MARK: - Microphone comparison (D55)
+
+    /// Starts listening on `source`; returns where the run begins in the transcript. Nil without consent.
+    func startComparison(_ source: MicrophoneSource) async -> Int? {
+        guard consent.isGranted else { return nil }
+        isComparing = true
+        await use(config: source.captureConfig())
+        if !isListening {
+            if canResume { await resume() } else { await controller.start() }
+        }
+        guard isListening else {
+            isComparing = false
+            return nil
+        }
+        return conversation.finalSegments.count
+    }
+
+    /// Everything heard since `mark`, including words the recogniser has not finalised.
+    func finishComparison(from mark: Int) -> String {
+        isComparing = false
+        var parts = conversation.finalSegments.dropFirst(mark).map(\.text)
+        if let partial = conversation.partial { parts.append(partial.text) }
+        return parts.joined(separator: " ")
     }
 
     /// Command keywords first: they decide what happens, and Scribe takes a limited number of keyterms (D44).
@@ -239,9 +300,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         studyNotice = nil
-        if !isActiveSession, study.settings.useVoiceChatMode {
-            controller.config = .cHFPVoiceChat // echo cancellation while we talk — to measure (D36)
-        }
+        mode = .prov
+        await useMicrophone(for: .prov)
         if !isListening {
             if canResume { await resume() } else { await startListening() }
             guard isListening else { return }
@@ -257,6 +317,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func endStudy(bySilence: Bool) {
         guard study.isActive || bySilence else { return }
         study.stop()
+        mode = .standard
         transcription.setInputGated(false)
         if bySilence {
             studyNotice = "Provläge ended after \(study.settings.autoEndMinutes) min of silence; the microphone was switched off."
@@ -437,6 +498,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let before = conversation.finalSegments.count
         conversation.finalize(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
+        if isComparing { return }
         if !segment.overlapsPlayback, saveSpokenCommand(segment.text) {
             return // "spara kommando …" is handled on the phone, never sent as a question
         }

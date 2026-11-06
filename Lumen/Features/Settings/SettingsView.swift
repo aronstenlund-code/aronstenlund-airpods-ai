@@ -8,6 +8,7 @@ struct SettingsView: View {
     var body: some View {
         Form {
             languageSection
+            microphoneSection
             activationSection
             studySection
             voiceSection
@@ -61,6 +62,34 @@ struct SettingsView: View {
     private var languageBinding: Binding<TranscriptionLanguage> {
         Binding(get: { model.transcription.language.selected },
                 set: { newValue in Task { await model.transcription.setLanguage(newValue) } })
+    }
+
+    private var microphoneSection: some View {
+        Section("Microphone") {
+            ForEach(ConversationMode.allCases) { mode in
+                Picker(modeTitle(mode), selection: microphoneBinding(for: mode)) {
+                    Text("AirPods").tag(MicrophoneSource.airPods)
+                    Text("iPhone").tag(MicrophoneSource.iPhone)
+                }
+            }
+            Text("AirPods hear your own voice best, but answers play in call quality. iPhone hears other people better and keeps music quality in the AirPods; put it on the table.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func modeTitle(_ mode: ConversationMode) -> LocalizedStringKey {
+        switch mode {
+        case .standard: "Questions"
+        case .prov: "Provläge"
+        case .interview: "Intervjuläge"
+        case .rizz: "Rizzläge"
+        }
+    }
+
+    private func microphoneBinding(for mode: ConversationMode) -> Binding<MicrophoneSource> {
+        Binding(get: { model.microphone.source(for: mode) },
+                set: { model.microphone.setSource($0, for: mode) })
     }
 
     @ViewBuilder

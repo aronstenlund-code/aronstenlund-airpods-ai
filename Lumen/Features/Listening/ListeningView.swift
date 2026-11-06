@@ -157,6 +157,11 @@ struct ListeningView: View {
                     .foregroundStyle(.red)
             }
             transcriptionStatusRow
+            if model.usesPhoneMicrophone, model.isActiveSession {
+                Label("Put the phone on the table, close to the person talking.", systemImage: "iphone.gen3")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
             speakerRow
             studyRow
         }
