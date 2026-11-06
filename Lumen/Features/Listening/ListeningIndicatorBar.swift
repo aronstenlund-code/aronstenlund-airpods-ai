@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The in-app listening indicator (ARCHITECTURE §12, D65). A slim line above every screen while the microphone is
+/// The in-app listening indicator (ARCHITECTURE §12, D68). A slim line above every screen while the microphone is
 /// live or paused: it says what is happening and stops with one tap. Hidden when the session is idle or in error.
 struct ListeningIndicatorBar: View {
     let state: SessionState
