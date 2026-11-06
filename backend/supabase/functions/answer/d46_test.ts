@@ -755,7 +755,7 @@ Deno.test("D65: a bare unit in a follow-up is converted in code from the previou
     Math.round(
       computeFollowUp("och i meter", "Tornet är tusen åttahundrafyrtiotvå fot högt.")!.value,
     ),
-    562,
+    561,
   );
   assertEquals(computeFollowUp("och i fot", "Det blir bra väder i morgon."), null);
   assertEquals(computeFollowUp("och i fot", undefined), null);
