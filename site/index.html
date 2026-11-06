@@ -1,0 +1,1090 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<script>
+  // Byt namn här, och bara här. Sidan hämtar namnet från den här variabeln.
+  const APP_NAME = "Lumen";
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<title>Svaret i ditt öra</title>
+<meta name="description" content="AI i dina AirPods. Ställ en fråga här och hör svaret direkt.">
+<meta property="og:title" content="Svaret i ditt öra">
+<meta property="og:description" content="AI i dina AirPods. Ställ en fråga här och hör svaret direkt.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFD02E">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#12163A">
+<meta name="color-scheme" content="light dark">
+<link rel="preload" href="fonts/familjen-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://xjczbzfkmbjdebwlccki.supabase.co" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2312163A'/%3E%3Ccircle cx='16' cy='16' r='10' fill='%23FFD02E'/%3E%3C/svg%3E">
+<style>
+  @font-face {
+    font-family: "Familjen Grotesk";
+    src: url("fonts/familjen-grotesk.woff2") format("woff2");
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* Två färger som byter plats: ljust läge är en gul sida med en mörk skiva, mörkt läge tvärtom. */
+  :root {
+    --sun: #FFD02E;
+    --night: #12163A;
+    --bg: var(--sun);
+    --fg: var(--night);
+    --mut: #3F3B35;
+    --disc: var(--night);
+    --on-disc: var(--sun);
+    --field: #FFF3BF;
+    --line: rgba(18, 22, 58, .55);
+    --bad: #8F1420;
+    --ease-out: cubic-bezier(.23, 1, .32, 1);
+    --gut: 20px;
+    color-scheme: light;
+  }
+  .invert {
+    --bg: var(--night);
+    --fg: #FFF6D6;
+    --mut: #C9C7D8;
+    --disc: var(--sun);
+    --on-disc: var(--night);
+    --field: rgba(255, 255, 255, .08);
+    --line: rgba(255, 255, 255, .42);
+    --bad: #FFB4AE;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: var(--night);
+      --fg: #FFF6D6;
+      --mut: #C9C7D8;
+      --disc: var(--sun);
+      --on-disc: var(--night);
+      --field: rgba(255, 255, 255, .08);
+      --line: rgba(255, 255, 255, .42);
+      --bad: #FFB4AE;
+      color-scheme: dark;
+    }
+    .invert {
+      --bg: var(--sun);
+      --fg: var(--night);
+      --mut: #3F3B35;
+      --disc: var(--night);
+      --on-disc: var(--sun);
+      --field: #FFF3BF;
+      --line: rgba(18, 22, 58, .55);
+      --bad: #8F1420;
+      color-scheme: light;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    background: var(--bg);
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 1.0625rem/1.5 "Familjen Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  h1, h2, h3, p, ul { margin: 0; padding: 0; }
+  ul { list-style: none; }
+  a { color: inherit; text-underline-offset: .18em; }
+  button, input { font: inherit; color: inherit; }
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  :focus-visible { outline: 3px solid var(--fg); outline-offset: 3px; }
+  [hidden] { display: none !important; }
+  .sr {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- Första skärmen ---------- */
+  .hero {
+    min-height: 100svh;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    gap: 14px;
+    padding: calc(14px + env(safe-area-inset-top)) var(--gut) calc(18px + env(safe-area-inset-bottom));
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .name {
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: -.01em;
+    text-decoration: none;
+    justify-self: start;
+    padding: 4px 0;
+  }
+
+  /* Intro och samtal ligger i samma ruta, så att skivan står still när texten byts. */
+  .stage { display: grid; min-width: 0; }
+  .stage > * { grid-area: 1 / 1; min-width: 0; }
+  .intro { transition: opacity 180ms ease; }
+  body:not([data-view="idle"]) .intro { opacity: 0; visibility: hidden; }
+
+  h1 {
+    font-weight: 700;
+    font-size: clamp(3.25rem, min(17.2vw, 11svh), 8.25rem);
+    line-height: .93;
+    letter-spacing: -.035em;
+    text-wrap: balance;
+  }
+  h1 span { display: block; }
+  .pitch {
+    margin-top: 12px;
+    max-width: 34ch;
+    font-size: 1.125rem;
+    line-height: 1.34;
+    letter-spacing: -.005em;
+  }
+
+  /* ---------- Samtalet ---------- */
+  .convo { display: flex; flex-direction: column; }
+  .q {
+    color: var(--mut);
+    font-size: 1.125rem;
+    line-height: 1.3;
+    letter-spacing: -.005em;
+    min-height: 1.3em;
+  }
+  body[data-view="listening"] .q {
+    color: var(--fg);
+    font-size: clamp(1.75rem, 8vw, 3rem);
+    line-height: 1.12;
+    font-weight: 600;
+    letter-spacing: -.02em;
+  }
+  .a {
+    margin-top: 10px;
+    font-size: clamp(1.5rem, 6.4vw, 2.25rem);
+    line-height: 1.22;
+    font-weight: 500;
+    letter-spacing: -.018em;
+    max-width: 34ch;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  .a span { animation: word 260ms var(--ease-out) both; }
+  @keyframes word {
+    from { opacity: 0; filter: blur(3px); }
+    to { opacity: 1; filter: blur(0); }
+  }
+  .a.err { font-size: 1.375rem; color: var(--bad); }
+  .thinking { display: inline-flex; gap: 7px; padding: 14px 0; }
+  .thinking i {
+    width: 11px; height: 11px; border-radius: 50%; background: var(--fg);
+    animation: dot 900ms ease-in-out infinite;
+  }
+  .thinking i:nth-child(2) { animation-delay: 120ms; }
+  .thinking i:nth-child(3) { animation-delay: 240ms; }
+  @keyframes dot {
+    0%, 70%, 100% { opacity: .25; transform: translateY(0); }
+    35% { opacity: 1; transform: translateY(-5px); }
+  }
+  .nudge { margin-top: 20px; max-width: 34ch; }
+  .nudge a { font-weight: 600; }
+
+  .dock {
+    position: sticky;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    margin-top: auto;
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 2;
+  }
+  .pill {
+    min-height: 50px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--disc);
+    color: var(--on-disc);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 140ms var(--ease-out);
+  }
+  .pill:active { transform: scale(.97); }
+  .bars { display: inline-flex; align-items: center; gap: 3px; height: 16px; }
+  .bars i {
+    width: 3px; height: 100%; border-radius: 2px; background: currentColor;
+    transform-origin: center;
+    animation: bar 800ms ease-in-out infinite alternate;
+  }
+  .bars i:nth-child(2) { animation-delay: -300ms; }
+  .bars i:nth-child(3) { animation-delay: -550ms; }
+  @keyframes bar { from { transform: scaleY(.3); } to { transform: scaleY(1); } }
+  .left { color: var(--mut); font-size: .9375rem; background: var(--bg); padding: 2px 8px; border-radius: 8px; }
+  .left:empty { display: none; }
+
+  /* ---------- Kontroller ---------- */
+  .controls { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; min-width: 0; }
+  body[data-view="answer"] .controls { display: none; }
+  .try { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    min-height: 44px;
+    padding: 0 15px;
+    background: transparent;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    font-size: 1rem;
+    letter-spacing: -.005em;
+    transition: transform 140ms var(--ease-out), background-color 140ms ease;
+  }
+  .chip:active { transform: scale(.97); background: var(--field); }
+  body[data-view="listening"] .try { visibility: hidden; }
+
+  .pad { display: grid; justify-items: center; }
+  .disc-wrap {
+    --d: clamp(150px, min(50vw, 26svh), 270px);
+    position: relative;
+    width: var(--d);
+    height: var(--d);
+    margin: 4px 0;
+  }
+  .halo, .ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    pointer-events: none;
+    background: var(--disc);
+    opacity: 0;
+  }
+  .halo { transition: transform 130ms linear, opacity 160ms ease; }
+  body[data-view="listening"] .halo { opacity: .16; }
+  .ring { border: 2px solid var(--disc); background: none; }
+  body[data-view="listening"] .ring { animation: ring 1500ms var(--ease-out) infinite; }
+  body[data-view="listening"] .ring + .ring { animation-delay: 500ms; }
+  @keyframes ring {
+    from { opacity: .55; transform: scale(1); }
+    to { opacity: 0; transform: scale(1.24); }
+  }
+  .disc {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 50%;
+    background: var(--disc);
+    color: var(--on-disc);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 18px;
+    font-size: clamp(1.125rem, 5.2vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -.015em;
+    touch-action: none;
+    transition: transform 160ms var(--ease-out);
+    animation: arrive 520ms var(--ease-out) backwards;
+  }
+  .disc svg { width: 26px; height: 26px; flex: none; }
+  .disc:active, .disc.held { transform: scale(1.05); }
+  @keyframes arrive { from { opacity: 0; transform: scale(.92); } }
+
+  .ask { display: flex; gap: 8px; width: 100%; max-width: 520px; }
+  .ask input {
+    flex: 1;
+    min-width: 0;
+    min-height: 52px;
+    padding: 0 18px;
+    background: var(--field);
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    font-size: 1.0625rem;
+  }
+  .ask input::placeholder { color: var(--mut); opacity: 1; }
+  .send {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--disc);
+    color: var(--on-disc);
+    display: grid;
+    place-items: center;
+    transition: transform 140ms var(--ease-out);
+  }
+  .send:active { transform: scale(.94); }
+  .send svg { width: 22px; height: 22px; }
+  .hint {
+    min-height: 1.4em;
+    text-align: center;
+    color: var(--mut);
+    font-size: .9375rem;
+    line-height: 1.4;
+    margin-top: 8px;
+  }
+  .hint.err { color: var(--bad); font-weight: 600; }
+
+  /* ---------- Sektioner under vecket ---------- */
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gut); }
+  .modes { padding-top: 72px; padding-bottom: 72px; }
+  h2 {
+    font-weight: 700;
+    font-size: clamp(2.25rem, 10.5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -.03em;
+    text-wrap: balance;
+  }
+  .modes h3 {
+    font-weight: 700;
+    font-size: 1.625rem;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+  .modes ul { display: grid; gap: 26px; margin-top: 32px; }
+  .modes li p { margin-top: 5px; max-width: 42ch; }
+
+  .join { background: var(--bg); color: var(--fg); }
+  .join .wrap { padding-top: 64px; padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
+  .join h2 { max-width: 15em; font-size: clamp(2rem, 8.6vw, 3.75rem); line-height: 1.04; }
+  .join .lead { margin-top: 14px; max-width: 44ch; }
+  form.wait { margin-top: 28px; max-width: 520px; display: grid; gap: 14px; }
+  .wait label.field { display: grid; gap: 6px; font-weight: 600; }
+  .wait input[type=email] {
+    min-height: 52px;
+    padding: 0 16px;
+    background: var(--field);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    font-size: 1.0625rem;
+    font-weight: 400;
+    width: 100%;
+  }
+  .consent { display: flex; gap: 12px; align-items: flex-start; min-height: 44px; padding-top: 2px; cursor: pointer; }
+  .consent input { width: 24px; height: 24px; margin: 0; flex: none; accent-color: var(--disc); }
+  .wait .pill { justify-content: center; width: 100%; min-height: 54px; font-size: 1.0625rem; }
+  .wait .pill[disabled] { opacity: .6; cursor: progress; }
+  .fieldmsg { color: var(--bad); font-weight: 600; font-size: .9375rem; min-height: 0; }
+  .fieldmsg:empty { display: none; }
+  .formmsg { font-weight: 600; }
+  .formmsg.err { color: var(--bad); }
+  .fine { color: var(--mut); font-size: .9375rem; line-height: 1.45; max-width: 60ch; margin-top: 28px; }
+  .fine + .fine { margin-top: 10px; }
+
+  /* Endast ett musstyrt hovertillstånd, så att det inte fastnar på touch. */
+  @media (hover: hover) and (pointer: fine) {
+    .chip:hover { background: var(--field); }
+    .pill:hover, .send:hover { transform: scale(1.03); }
+    .pill:active, .send:active { transform: scale(.97); }
+  }
+
+  /* Korta telefoner: skivan och textrutan ska rymmas på första skärmen. */
+  @media (max-height: 720px) and (max-width: 959px) {
+    .hero { gap: 10px; padding-top: calc(8px + env(safe-area-inset-top)); padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
+    h1 { font-size: clamp(2.75rem, 13.4vw, 3.5rem); }
+    .pitch { font-size: 1rem; margin-top: 8px; }
+    .controls { gap: 10px; }
+    .try { gap: 6px; }
+    .chip { font-size: .9375rem; padding: 0 12px; }
+    .disc-wrap { --d: clamp(122px, 21svh, 170px); margin: 0; }
+    .disc { font-size: 1.0625rem; gap: 3px; }
+    .disc svg { width: 22px; height: 22px; }
+    .hint { margin-top: 4px; font-size: .875rem; }
+    .ask input, .send { min-height: 48px; height: 48px; }
+    .send { width: 48px; }
+  }
+
+  @media (min-width: 720px) {
+    .modes ul { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+    .try { justify-content: center; }
+    .ask { margin: 0 auto; }
+  }
+
+  @media (min-width: 960px) {
+    :root { --gut: 48px; }
+    .hero {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+      grid-template-rows: auto 1fr;
+      column-gap: 64px;
+      padding-top: 24px;
+      padding-bottom: 32px;
+    }
+    .name { grid-column: 1 / -1; }
+    .stage { align-self: center; }
+    .controls { align-self: center; position: sticky; top: 24px; gap: 20px; }
+    body[data-view="answer"] .controls { display: grid; }
+    h1 { font-size: clamp(5rem, min(9.2vw, 19svh), 8.25rem); }
+    .pitch { font-size: 1.375rem; margin-top: 20px; }
+    .disc-wrap { --d: clamp(210px, 34svh, 300px); }
+    .a { font-size: 2rem; }
+    .again-only { display: none; }
+    .modes { padding-top: 96px; padding-bottom: 104px; }
+    .join .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); column-gap: 64px; padding-top: 88px; padding-bottom: 72px; }
+    .join .side { grid-column: 2; grid-row: 1 / span 2; }
+    form.wait { margin-top: 0; }
+    .first-note { grid-column: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .disc, .thinking i, .bars i { animation: none; }
+    .a span { animation: fade 160ms ease both; }
+    @keyframes fade { from { opacity: 0; } }
+    body[data-view="listening"] .ring { animation: none; opacity: .4; transform: scale(1.1); }
+    .halo { transition: opacity 160ms ease; }
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  }
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 180ms; }
+</style>
+</head>
+<body data-view="idle">
+<main>
+  <section class="hero">
+    <a class="name" href="#" data-app></a>
+
+    <div class="stage">
+      <div class="intro">
+        <h1><span>Svaret</span><span>i ditt öra.</span></h1>
+        <p class="pitch"><span data-app></span> är AI i dina AirPods: till plugget, intervjun, matlagningen och sociala situationer. Prova här, svaret läses upp.</p>
+      </div>
+      <div class="convo" id="convo" hidden>
+        <p class="q" id="q"></p>
+        <div class="a" id="a" aria-live="polite"></div>
+        <p class="nudge" id="nudge" hidden><a href="#vantelista">Ladda ner appen för att använda den med låst skärm och i alla lägen</a></p>
+        <div class="dock" id="dock" hidden>
+          <button class="pill" id="stop" type="button"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Stoppa</button>
+          <button class="pill again-only" id="again" type="button" hidden>Ställ en ny fråga</button>
+          <span class="left" id="left"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="try" role="group" aria-label="Exempelfrågor">
+        <button class="chip" type="button">Orsaker till första världskriget</button>
+        <button class="chip" type="button">Hungrig, ägg, pasta</button>
+        <button class="chip" type="button">Vad betyder low-key?</button>
+      </div>
+      <div class="pad">
+        <div class="disc-wrap">
+          <span class="ring"></span><span class="ring"></span><span class="halo" id="halo"></span>
+          <button class="disc" id="disc" type="button" aria-describedby="hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5"/></svg>
+            <span id="disclabel">Håll in och fråga</span>
+          </button>
+        </div>
+        <p class="hint" id="hint" role="status">Bäst med hörlurarna i.</p>
+      </div>
+      <form class="ask" id="ask">
+        <label class="sr" for="txt">Skriv din fråga</label>
+        <input id="txt" type="text" placeholder="Eller skriv din fråga" autocomplete="off" enterkeyhint="send" maxlength="1000">
+        <button class="send" type="submit" aria-label="Skicka frågan">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <section class="modes wrap" aria-labelledby="modes-h">
+    <h2 id="modes-h">Kommer i appen</h2>
+    <ul>
+      <li><h3>Provläge</h3><p>Plugga handsfree. Du frågar, får en pedagogisk förklaring och kan få en kontrollfråga på vägen.</p></li>
+      <li><h3>Intervjuläge</h3><p>Träna inför intervjun. Du övar på frågor till jobbet du söker och får kort återkoppling på dina svar.</p></li>
+      <li><h3>Rizzläge</h3><p>Få förslag på vad du kan säga i vardagssamtal, i den stil du väljer.</p></li>
+    </ul>
+  </section>
+
+  <section class="join invert" id="vantelista" aria-labelledby="join-h">
+    <div class="wrap">
+      <div>
+        <h2 id="join-h">Ladda ner appen för att använda den med låst skärm och i alla lägen</h2>
+        <p class="lead">Appen är inte ute än. Skriv upp dig så mejlar vi när den finns.</p>
+      </div>
+      <div class="side">
+        <form class="wait" id="wait" novalidate>
+          <label class="field">E-post
+            <input id="email" type="email" name="email" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="done" required aria-describedby="emailmsg">
+          </label>
+          <p class="fieldmsg" id="emailmsg"></p>
+          <label class="consent">
+            <input id="consent" type="checkbox" required aria-describedby="consentmsg">
+            <span>Ja, mejla mig när appen finns. Jag har läst integritetstexten här under.</span>
+          </label>
+          <p class="fieldmsg" id="consentmsg"></p>
+          <button class="pill" id="waitbtn" type="submit">Skriv upp mig</button>
+          <p class="formmsg" id="waitmsg" role="status"></p>
+        </form>
+      </div>
+      <div class="first-note">
+        <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns och sparar den inte längre än så. Vill du bli borttagen räcker det att svara på vårt mejl.</p>
+        <p class="fine">Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. Din webbläsare minns en anonym inloggning och hur många frågor du ställt. Svar från AI kan vara fel.</p>
+      </div>
+    </div>
+  </section>
+</main>
+<noscript><p style="padding:20px">Demon behöver JavaScript. Väntelistan också.</p></noscript>
+
+<script>
+"use strict";
+// Offentlig med flit: nyckeln ger ingenting utan en användar-JWT (anonym inloggning nedan).
+const SB = "https://xjczbzfkmbjdebwlccki.supabase.co";
+const KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8";
+const DEMO_LIMIT = 5;   // D62: 5 frågor per besökare och dag. Här bara en vänlig spärr; den riktiga måste ligga i backend.
+
+const $ = (id) => document.getElementById(id);
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+};
+
+document.title = APP_NAME + ": svaret i ditt öra";
+document.querySelectorAll("[data-app]").forEach((el) => { el.textContent = APP_NAME; });
+
+// ---------- vyer ----------
+function setView(view, animate) {
+  const apply = () => {
+    document.body.dataset.view = view;
+    $("convo").hidden = view === "idle";
+  };
+  if (animate && !reduced && document.startViewTransition) document.startViewTransition(apply);
+  else apply();
+}
+function hint(text, isErr) { $("hint").textContent = text; $("hint").classList.toggle("err", !!isErr); }
+function discLabel(text) { $("disclabel").textContent = text; }
+const HOLD = "Håll in och fråga";
+
+// ---------- D62: frågor per dag (bara i webbläsaren) ----------
+const dayKey = () => "demo_used_" + new Date().toISOString().slice(0, 10);
+const used = () => parseInt(store.get(dayKey()) || "0", 10) || 0;
+function markUsed() { store.set(dayKey(), String(used() + 1)); showLeft(); }
+function showLeft() {
+  const n = Math.max(0, DEMO_LIMIT - used());
+  $("left").textContent = used() === 0 ? "" : n === 1 ? "1 fråga kvar idag" : n + " frågor kvar idag";
+}
+function limitReached() {
+  if (used() < DEMO_LIMIT) return false;
+  setView("answer");
+  $("q").textContent = "";
+  answerError("Du har ställt dagens " + DEMO_LIMIT + " frågor i demon. Välkommen tillbaka i morgon.");
+  $("nudge").hidden = false; $("dock").hidden = false; $("stop").hidden = true; $("again").hidden = false; $("left").textContent = "";
+  return true;
+}
+
+// ---------- inloggning (anonym Supabase-användare, återanvänds mellan besök) ----------
+let token = null;
+function jwtExp(t) { try { return JSON.parse(atob(t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))).exp * 1000; } catch { return 0; } }
+async function getToken(force) {
+  if (!force) {
+    if (token && jwtExp(token) > Date.now() + 60000) return token;
+    const t = store.get("demo_tok");
+    if (t && jwtExp(t) > Date.now() + 60000) return (token = t);
+  }
+  const r = await fetch(SB + "/auth/v1/signup", { method: "POST", headers: { apikey: KEY, "content-type": "application/json" }, body: "{}" });
+  if (!r.ok) { const e = new Error("signup"); e.status = r.status; throw e; }
+  token = (await r.json()).access_token;
+  store.set("demo_tok", token);
+  return token;
+}
+async function api(path, init, retry = true) {
+  const t = await getToken();
+  const r = await fetch(SB + "/functions/v1/" + path, { ...init, headers: { ...(init.headers || {}), authorization: "Bearer " + t, apikey: KEY, "content-type": "application/json" } });
+  if (r.status === 401 && retry) { await getToken(true); return api(path, init, false); }
+  return r;
+}
+function friendlyError(e, status, code) {
+  if (status === 429 || code === "rate_limited") return "Det är många som frågar just nu. Vänta en stund och försök igen.";
+  if (status) return "Svaret kunde inte hämtas just nu. Försök igen om en stund.";
+  if (e && e.status) return "Demon kan inte starta just nu. Försök igen om en stund.";
+  return "Ingen kontakt med servern. Kolla uppkopplingen och försök igen.";
+}
+
+// ---------- ljud ----------
+// iOS: Web Audio tystas av ringknappen och fastnar ofta efter mikrofonen, så allt spelas via ett <audio>-element.
+const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=";
+let player = null, voiceId = null;
+function setSession(type) { try { if (navigator.audioSession) navigator.audioSession.type = type; } catch {} }
+function unlockAudio() {
+  if (!player) { player = new Audio(); player.playsInline = true; player.preload = "auto"; }
+  try { player.src = SILENT; const p = player.play(); if (p) p.catch(() => {}); } catch {}
+  try { speechSynthesis.speak(new SpeechSynthesisUtterance("")); } catch {}
+}
+function playBlob(blob) {
+  return new Promise((resolve, reject) => {
+    setSession("playback");
+    const url = URL.createObjectURL(blob);
+    const end = (fn) => (arg) => { URL.revokeObjectURL(url); fn(arg); };
+    player.onended = end(resolve);
+    player.onerror = end(() => reject(new Error("uppspelning")));
+    player.src = url;
+    const p = player.play();
+    if (p) p.catch(end(reject));
+  });
+}
+async function fetchAudio(text) {
+  const res = await api("tts", { method: "POST", body: JSON.stringify({ text, language: "sv", ...(voiceId ? { voice_id: voiceId } : {}) }) });
+  if (!res.ok) throw new Error("tts " + res.status);
+  return res.blob();
+}
+function speakFallback(text) {
+  return new Promise((resolve) => {
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "sv-SE"; u.onend = resolve; u.onerror = resolve;
+      speechSynthesis.speak(u);
+    } catch { resolve(); }
+  });
+}
+function speak(sentence, r) {
+  const audio = fetchAudio(sentence);
+  audio.catch(() => {});
+  r.chain = r.chain.then(async () => {
+    if (r.cancelled) return;
+    try {
+      const blob = await audio;
+      if (!r.cancelled) await playBlob(blob);
+    } catch { if (!r.cancelled) await speakFallback(sentence); }
+  });
+}
+// Starta rösten så fort en mening är klar.
+function feedSentences(r, final) {
+  for (;;) {
+    const m = /^(.{6,}?[.!?])(\s|$)/s.exec(r.buf);
+    if (!m) break;
+    speak(m[1].trim(), r);
+    r.buf = r.buf.slice(m[0].length);
+  }
+  if (final && r.buf.trim()) { speak(r.buf.trim(), r); r.buf = ""; }
+}
+
+// ---------- fråga ----------
+let run = null;
+const recent = [], sessionMemories = [];
+
+function answerError(text) { const a = $("a"); a.className = "a err"; a.textContent = text; }
+function showThinking() {
+  const a = $("a");
+  a.className = "a";
+  a.replaceChildren();
+  const t = document.createElement("span");
+  t.className = "thinking"; t.setAttribute("aria-label", "Tänker");
+  t.style.animation = "none";
+  t.append(document.createElement("i"), document.createElement("i"), document.createElement("i"));
+  a.append(t);
+}
+function resetDock(busy) {
+  $("dock").hidden = false;
+  $("stop").hidden = !busy;
+  $("again").hidden = busy;
+  $("nudge").hidden = true;
+}
+function finish(r) {
+  r.busy = false;
+  if (run !== r) return;
+  $("stop").hidden = true;
+  $("again").hidden = false;
+  $("nudge").hidden = !r.answer;
+}
+function cancelRun() {
+  const r = run;
+  if (r && r.busy) { r.cancelled = true; r.busy = false; try { r.ac.abort(); } catch {} }
+  try { if (player) player.pause(); } catch {}
+  try { speechSynthesis.cancel(); } catch {}
+}
+
+async function ask(text, mode) {
+  cancelRun();
+  if (limitReached()) return;
+  const r = run = { busy: true, text, answer: "", buf: "", chain: Promise.resolve(), cancelled: false, ac: new AbortController() };
+  setView("answer", document.body.dataset.view === "idle");
+  $("q").textContent = text;
+  showThinking();
+  resetDock(true);
+  showLeft();
+  try {
+    const body = { fragment: text, mode, language: "sv", memories: sessionMemories.slice(-30), context: { transcript: "", recent_qa: recent.slice(-3), prep_terms: [] } };
+    const res = await api("answer", { signal: r.ac.signal, method: "POST", body: JSON.stringify(body) });
+    if (!res.ok) {
+      let code = null; try { code = (await res.json()).error.code; } catch {}
+      answerError(friendlyError(null, res.status, code));
+      return finish(r);
+    }
+    markUsed();
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+    let buf = "", first = true;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += value;
+      let i;
+      while ((i = buf.indexOf("\n\n")) !== -1) {
+        const frame = buf.slice(0, i); buf = buf.slice(i + 2);
+        const ev = /^event: (.*)$/m.exec(frame)?.[1];
+        const data = JSON.parse(/^data: (.*)$/m.exec(frame)?.[1] ?? "null");
+        if (ev === "delta") {
+          if (first) { $("a").replaceChildren(); first = false; }
+          const s = document.createElement("span");
+          s.textContent = data.text;
+          $("a").append(s);
+          r.answer += data.text; r.buf += data.text;
+          feedSentences(r, false);
+        } else if (ev === "done") {
+          if (data && data.memory_add) sessionMemories.push(String(data.memory_add).slice(0, 200));
+        } else if (ev === "error") {
+          r.failed = true;
+        }
+      }
+    }
+    if (!r.answer) answerError(r.failed ? "Svaret kunde inte hämtas just nu. Försök igen om en stund." : "Det där går inte att göra i demon. Prova en annan fråga.");
+    feedSentences(r, true);
+    if (r.answer) $("nudge").hidden = false;
+    await r.chain;
+    if (r.answer) recent.push({ q: text, a: r.answer.slice(0, 380) });
+  } catch (e) {
+    if (!r.cancelled) answerError(friendlyError(e));
+  }
+  finish(r);
+}
+
+function backToIdle() {
+  cancelRun();
+  setView("idle", true);
+  hint("Bäst med hörlurarna i.");
+  discLabel(HOLD);
+  $("disc").classList.remove("held");
+  scrollTo({ top: 0 });
+}
+$("stop").addEventListener("click", () => {
+  const r = run;
+  cancelRun();
+  if (r) { r.cancelled = true; if (!r.answer) $("a").replaceChildren(); finish(r); }
+  if (!r || !r.answer) { backToIdle(); }
+});
+$("again").addEventListener("click", backToIdle);
+
+document.querySelectorAll(".chip").forEach((chip) => chip.addEventListener("click", () => {
+  unlockAudio();
+  ask(chip.textContent, "text");
+}));
+$("ask").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const v = $("txt").value.trim();
+  if (!v) { $("txt").focus(); return; }
+  unlockAudio();
+  $("txt").value = "";
+  $("txt").blur();
+  ask(v, "text");
+});
+
+// ---------- håll in och prata ----------
+let current = null, sttTok = null, scribeOff = false, sttWarmed = false;
+const MIN_HOLD = 350;
+
+async function fetchStt() {
+  const r = await api("stt-token", { method: "GET" });
+  if (!r.ok) throw new Error("stt " + r.status);
+  return r.json();
+}
+async function prefetchStt() {
+  if (scribeOff || sttTok || !navigator.mediaDevices) return;
+  try { sttTok = await fetchStt(); } catch { sttTok = null; scribeOff = true; }
+}
+function heard(text) { $("q").textContent = text; }
+function level(v) { if (!reduced) $("halo").style.transform = "scale(" + (1.04 + Math.min(1, v * 7) * .2).toFixed(3) + ")"; }
+
+function beginListening() {
+  $("disc").classList.add("held");
+  setView("listening");
+  discLabel("Lyssnar. Släpp när du är klar");
+  hint("Mikrofonen är på medan du håller in.");
+  heard("");
+  $("a").replaceChildren();
+  $("a").className = "a";
+  $("dock").hidden = true; $("nudge").hidden = true;
+}
+function endListening(message, isErr) {
+  $("disc").classList.remove("held");
+  $("halo").style.transform = "";
+  discLabel(HOLD);
+  setView("idle");
+  if (message) hint(message, isErr);
+}
+function micError(e) {
+  const denied = e && (e.name === "NotAllowedError" || e === "not-allowed" || e === "service-not-allowed");
+  return denied ? "Mikrofonen är blockerad. Tillåt den i webbläsaren, eller skriv din fråga." : "Mikrofonen gick inte att starta. Skriv din fråga i stället.";
+}
+function submitHeard(text, st) {
+  if (!text) { endListening(st.failed ? "Hörde inte frågan. Försök igen." : "Hörde ingenting. Försök igen."); return; }
+  $("disc").classList.remove("held");
+  $("halo").style.transform = "";
+  discLabel(HOLD);
+  hint("Bäst med hörlurarna i.");
+  setView("answer");
+  ask(text, "push_to_talk");
+}
+
+// Safari-igenkänning: reserv när Scribe saknas.
+function startSafari() {
+  if (!SR) { endListening("Röst fungerar inte i den här webbläsaren. Skriv din fråga i stället.", true); return; }
+  setSession("play-and-record");
+  const st = current = { kind: "safari", startedAt: performance.now(), released: false, final: "", interim: "", done: false };
+  const rec = st.rec = new SR();
+  rec.lang = "sv-SE"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+  const done = () => {
+    if (st.done || !st.released) return;
+    st.done = true;
+    submitHeard((st.final + " " + st.interim).trim(), st);
+  };
+  rec.onresult = (e) => {
+    st.final = ""; st.interim = "";
+    for (let i = 0; i < e.results.length; i++) {
+      if (e.results[i].isFinal) st.final += " " + e.results[i][0].transcript; else st.interim += " " + e.results[i][0].transcript;
+    }
+    if (!st.done) heard((st.final + " " + st.interim).trim());
+    if (st.released && e.results[e.results.length - 1].isFinal) done();
+  };
+  rec.onerror = (e) => {
+    if (e.error === "no-speech" || e.error === "aborted") return;
+    st.done = true; st.released = true;
+    if (current === st) current = null;
+    endListening(e.error === "not-allowed" || e.error === "service-not-allowed" ? "Röst är blockerad. Tillåt mikrofon och diktering, eller skriv din fråga." : "Taligenkänningen stannade. Försök igen eller skriv din fråga.", true);
+  };
+  rec.onend = () => { if (st.released) done(); };
+  st.stop = () => { st.released = true; try { rec.stop(); } catch {} setTimeout(done, 1500); };
+  st.abort = () => { st.released = true; st.done = true; try { rec.abort(); } catch {} };
+  try { rec.start(); } catch { endListening("Taligenkänningen gick inte att starta. Skriv din fråga i stället.", true); }
+}
+
+// Scribe v2 Realtime: PCM16 mono 16 kHz som base64 över WebSocket.
+function pcm16b64(f32, inRate) {
+  const ratio = inRate / 16000, n = Math.floor(f32.length / ratio), out = new Int16Array(n);
+  for (let i = 0; i < n; i++) {
+    const a = Math.floor(i * ratio), b = Math.min(f32.length, Math.floor((i + 1) * ratio));
+    let sum = 0;
+    for (let k = a; k < b; k++) sum += f32[k];
+    const v = Math.max(-1, Math.min(1, sum / Math.max(1, b - a)));
+    out[i] = v < 0 ? v * 32768 : v * 32767;
+  }
+  const bytes = new Uint8Array(out.buffer);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 8192) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+  return { b64: btoa(bin), samples: n };
+}
+function chunk(b64, commit) { return JSON.stringify({ message_type: "input_audio_chunk", audio_base_64: b64, commit, sample_rate: 16000 }); }
+function closeMic(st) {
+  try {
+    if (st.proc) st.proc.disconnect();
+    if (st.stream) st.stream.getTracks().forEach((t) => t.stop());
+    if (st.ctx) st.ctx.close();
+  } catch {}
+}
+function openSocket(st, tok) {
+  const q = new URLSearchParams({ model_id: tok.model_id, token: tok.token, language_code: tok.language_code || "swe", audio_format: "pcm_16000", commit_strategy: "manual" });
+  for (const [k, v] of new URLSearchParams(tok.extra_query || "")) q.set(k, v);
+  try {
+    const ws = st.ws = new WebSocket(tok.ws_url + "?" + q.toString());
+    ws.onopen = () => { st.open = true; for (const m of st.queue) ws.send(m); st.queue = []; };
+    ws.onmessage = (ev) => {
+      let m;
+      try { m = JSON.parse(ev.data); } catch { return; }
+      const t = m.message_type || m.type || "";
+      if (t === "partial_transcript") { st.partial = m.text || ""; if (!st.released) heard((st.final + " " + st.partial).trim()); }
+      else if (t === "committed_transcript" || t === "committed_transcript_with_timestamps") { st.final = (st.final + " " + (m.text || "")).trim(); st.partial = ""; heard(st.final); if (st.waiter) st.waiter(); }
+      else if (/error|quota|limit/i.test(t)) { st.failed = t; if (st.waiter) st.waiter(); }
+    };
+    ws.onerror = () => { st.failed = st.failed || "ws"; if (st.waiter) st.waiter(); };
+    ws.onclose = () => { if (!st.done && !st.final && !st.failed) st.failed = "ws"; if (st.waiter) st.waiter(); };
+  } catch { st.failed = "ws"; }
+}
+async function startScribe() {
+  const st = current = { kind: "scribe", startedAt: performance.now(), released: false, queue: [], open: false, final: "", partial: "", samples: 0, failed: null, waiter: null, done: false };
+  setSession("play-and-record");
+  const mic = navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
+  mic.catch(() => {});
+  // Rösten ska aldrig vänta på token: ljudet köas tills uttaget är öppet.
+  (async () => {
+    let tok = sttTok; sttTok = null;
+    if (!tok) {
+      try { tok = await fetchStt(); }
+      catch {
+        scribeOff = true; st.failed = "token";
+        if (!st.released && SR) { closeMic(st); st.done = true; st.released = true; startSafari(); }
+        return;
+      }
+    }
+    if (!st.done) openSocket(st, tok);
+  })();
+  try {
+    const stream = await mic;
+    // Första gången frågar telefonen om lov. Släpper man under tiden är det inget att lyssna på.
+    if (st.released) {
+      stream.getTracks().forEach((t) => t.stop());
+      if (st.permissionRace) hint("Mikrofonen är på. Håll in och prata nu.");
+      return;
+    }
+    st.stream = stream;
+    const ctx = st.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = ctx.createMediaStreamSource(stream), proc = st.proc = ctx.createScriptProcessor(4096, 1, 1);
+    proc.onaudioprocess = (e) => {
+      if (st.released) return;
+      const input = e.inputBuffer.getChannelData(0);
+      let sum = 0;
+      for (let i = 0; i < input.length; i += 16) sum += input[i] * input[i];
+      level(Math.sqrt(sum / (input.length / 16)));
+      const { b64, samples } = pcm16b64(input, ctx.sampleRate);
+      st.samples += samples;
+      const msg = chunk(b64, false);
+      if (st.open) st.ws.send(msg); else st.queue.push(msg);
+    };
+    src.connect(proc); proc.connect(ctx.destination);
+  } catch (e) {
+    st.done = true; st.released = true;
+    try { if (st.ws) st.ws.close(); } catch {}
+    if (current === st) current = null;
+    endListening(micError(e), true);
+  }
+}
+async function stopScribe(st) {
+  st.released = true;
+  const held = performance.now() - st.startedAt;
+  closeMic(st);
+  if (!st.stream) {           // släppte innan mikrofonen hann starta, ofta tillståndsrutan
+    st.permissionRace = true; st.done = true;
+    try { if (st.ws) st.ws.close(); } catch {}
+    endListening(held < MIN_HOLD ? "Håll in medan du pratar." : "Tillåt mikrofonen och håll in igen.");
+    prefetchStt();
+    return;
+  }
+  if (held < MIN_HOLD) {
+    st.done = true;
+    try { if (st.ws) st.ws.close(); } catch {}
+    endListening("Håll in medan du pratar.");
+    prefetchStt();
+    return;
+  }
+  // Direkt svar på släppet: frågan står kvar och prickarna visar att något händer.
+  setView("answer"); showThinking(); $("disc").classList.remove("held");
+  const tail = chunk(pcm16b64(new Float32Array(3200), 16000).b64, true);
+  try { if (st.open) st.ws.send(tail); else st.queue.push(tail); } catch {}
+  await new Promise((res) => { st.waiter = res; setTimeout(res, 2800); });
+  st.done = true;
+  const text = (st.final + " " + st.partial).trim();
+  try { if (st.ws) st.ws.close(); } catch {}
+  const secs = Math.max(1, Math.round(st.samples / 16000));
+  api("stt-token", { method: "POST", body: JSON.stringify({ seconds: secs }) }).catch(() => {});
+  if (!text) scribeOff = true;
+  submitHeard(text, st);
+  prefetchStt();
+}
+
+const disc = $("disc");
+function press() {
+  if (current && !current.released) return;
+  cancelRun();
+  unlockAudio();
+  if (navigator.vibrate) navigator.vibrate(8);
+  if (limitReached()) return;
+  beginListening();
+  if (!scribeOff && navigator.mediaDevices && window.WebSocket) startScribe();
+  else startSafari();
+}
+function release() {
+  const st = current;
+  if (!st || st.released) return;
+  current = null;
+  if (st.kind === "scribe") { stopScribe(st); return; }
+  if (performance.now() - st.startedAt < MIN_HOLD) { st.abort(); endListening("Håll in medan du pratar."); return; }
+  st.stop();
+}
+disc.addEventListener("pointerdown", (e) => {
+  if (e.button !== 0) return;
+  e.preventDefault();
+  try { disc.setPointerCapture(e.pointerId); } catch {}
+  press();
+});
+disc.addEventListener("pointerup", release);
+disc.addEventListener("pointercancel", release);
+disc.addEventListener("contextmenu", (e) => e.preventDefault());
+disc.addEventListener("keydown", (e) => {
+  if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); press(); }
+});
+disc.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); release(); } });
+disc.addEventListener("blur", release);
+
+// ---------- väntelista ----------
+function waitMsg(text, isErr) { $("waitmsg").textContent = text; $("waitmsg").classList.toggle("err", !!isErr); }
+const NOT_OPEN = "Väntelistan har inte öppnat än, så din adress är inte sparad. Försök igen om några dagar.";
+$("email").addEventListener("input", () => { $("emailmsg").textContent = ""; });
+$("consent").addEventListener("change", () => { $("consentmsg").textContent = ""; });
+$("wait").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = $("email").value.trim();
+  const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+  $("emailmsg").textContent = okEmail ? "" : "Skriv en hel e-postadress, till exempel namn@exempel.se.";
+  $("consentmsg").textContent = $("consent").checked ? "" : "Kryssa i rutan så att vi får mejla dig.";
+  waitMsg("");
+  if (!okEmail) { $("email").focus(); return; }
+  if (!$("consent").checked) { $("consent").focus(); return; }
+  const btn = $("waitbtn");
+  btn.disabled = true; btn.textContent = "Skickar";
+  try {
+    const r = await api("waitlist", { method: "POST", body: JSON.stringify({ email, consent: true, source: "demo-site" }) });
+    if (r.ok || r.status === 409) {
+      $("wait").reset();
+      waitMsg("Klart. Vi mejlar när appen finns.");
+    } else if (r.status === 404) waitMsg(NOT_OPEN, true);
+    else if (r.status === 429) waitMsg("För många försök just nu. Vänta en stund och försök igen.", true);
+    else if (r.status === 400 || r.status === 422) waitMsg("Adressen gick inte att spara. Kontrollera den och försök igen.", true);
+    else waitMsg("Det gick inte att spara adressen just nu. Försök igen om en stund.", true);
+  } catch (err) {
+    // /waitlist finns inte än: gatewayn svarar 404 på preflight, och då ser webbläsaren bara ett nätverksfel.
+    waitMsg(navigator.onLine === false ? "Ingen uppkoppling. Din adress är inte sparad." : NOT_OPEN, true);
+  }
+  btn.disabled = false; btn.textContent = "Skriv upp mig";
+});
+
+// ---------- uppstart ----------
+showLeft();
+// Scribe-tokens är begränsade per dag, så en hämtas först när besökaren faktiskt rör sidan.
+function warmStt() {
+  if (sttWarmed) return;
+  sttWarmed = true;
+  removeEventListener("pointerdown", warmStt, true);
+  removeEventListener("scroll", warmStt, true);
+  removeEventListener("keydown", warmStt, true);
+  prefetchStt();
+}
+addEventListener("pointerdown", warmStt, { capture: true, passive: true });
+addEventListener("scroll", warmStt, { capture: true, passive: true });
+addEventListener("keydown", warmStt, { capture: true, passive: true });
+
+(async function boot() {
+  try {
+    await getToken();
+    // Väcker funktionerna så att första frågan slipper kallstart. OPTIONS går igenom gatewayn och kostar ingenting.
+    const warm = (p) => fetch(SB + "/functions/v1/" + p, { method: "OPTIONS" }).catch(() => {});
+    warm("answer"); warm("tts");
+    const v = await api("voices", { method: "GET" });
+    if (v.ok) {
+      const j = await v.json(), adam = (j.voices || []).find((x) => /adam/i.test(x.name));
+      voiceId = adam ? adam.id : j.default_id || null;
+    }
+  } catch {}   // Felet visas när någon faktiskt frågar.
+})();
+</script>
+</body>
+</html>
