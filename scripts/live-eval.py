@@ -197,6 +197,8 @@ class Backend:
                                 if res["ttft_ms"] is None:
                                     res["ttft_ms"] = int((time.time() - t0) * 1000)
                                 res["text"] += d.get("text", "")
+                            elif ev == "suggestion_preview":
+                                res["preview_ms"] = int((time.time() - t0) * 1000)
                             elif ev == "suggestions":
                                 res["options"] = d
                                 if res["ttft_ms"] is None:
@@ -244,18 +246,28 @@ def run(cases, rizz, domains, only, now):
             if turn.get("rizz_ref"):
                 sc = rizz[turn["rizz_ref"]]
                 body.update(mode="tutor", persona="social",
-                            social={k: sc[k] for k in ("place", "style", "trigger", "transcript", "interests", "profile")})
+                            social={k: sc[k] for k in ("place", "trigger", "transcript", "interests", "profile")})
+                body["social"]["style"] = turn.get("style", "social")
+                if turn.get("style") == "flirt" and not turn.get("no_adult"):
+                    body["adult_confirmed"] = True  # D63: flirt needs the age confirmation
                 body["context"] = {}
             r = be.ask(u, body)
             problems = []
             text = r["text"]
-            if r["error"]:
+            if turn.get("expect_error"):
+                code = ((r["error"] or {}).get("error") or {}).get("code") if r["error"] else None
+                if r["error"] and r["error"].get("http") == 403 and (code in (None, turn["expect_error"])):
+                    pass
+                else:
+                    problems.append(f"väntade 403 {turn['expect_error']}, fick {json.dumps(r['error'], ensure_ascii=False)[:80] if r['error'] else 'svar'}")
+            elif r["error"]:
                 problems.append(f"fel: {json.dumps(r['error'], ensure_ascii=False)[:100]}")
             elif turn.get("rizz_ref"):
                 problems += rizz_checks(r["options"])
                 text = " | ".join(r["options"]) if isinstance(r["options"], list) else ""
-                if (r["ttft_ms"] or 0) > 5000:
-                    problems.append(f"långsamt: {r['ttft_ms']} ms")
+                first = r.get("preview_ms") or r["ttft_ms"] or 0  # time to the first suggestion
+                if first > 2500:
+                    problems.append(f"långsamt: första förslaget efter {first} ms (mål 2500)")
             else:
                 problems += generic_checks(text, answers, turn, r["ttft_ms"])
                 problems += case_checks(text, answers[-1] if answers else None, turn, now)

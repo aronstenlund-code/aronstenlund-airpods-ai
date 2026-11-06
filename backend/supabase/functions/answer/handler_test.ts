@@ -660,23 +660,25 @@ const socialBody = (o: Record<string, unknown> = {}) => ({
 });
 
 const CANDS =
-  "1|lopp|Vilket lopp är det?\n2|sol|Hoppas det blir sol!\n3|springa|Vad springer du helst?\n4|x|En fjärde?\n5|y|Ännu en?\nTOP: 2,1,3\n";
+  "1|Vilket lopp är det?\n2|Hoppas det blir sol!\n3|Vad springer du helst?\n4|En fjärde?\nTOP: 1,2,3\n";
 Deno.test("D52: Rizz = 5 candidates + TOP -> ONE suggestions event with the 3 picked, best first; Sonnet model + cost", async () => {
   const { provider, seen } = recordingProvider(CANDS);
   const { handler, usage } = setup({ provider });
   const ev = await readSse(await handler(post(socialBody())));
-  assertEquals(ev.map((e) => e.event), ["suggestions", "done"]);
-  assertEquals(ev[0].data as unknown, [
-    "Hoppas det blir sol!",
+  // D63: the strongest line (candidate 1) is previewed at once, the full list follows
+  assertEquals(ev.map((e) => e.event), ["suggestion_preview", "suggestions", "done"]);
+  assertEquals(ev[0].data.text, "Vilket lopp är det?");
+  assertEquals(ev[1].data as unknown, [
     "Vilket lopp är det?",
+    "Hoppas det blir sol!",
     "Vad springer du helst?",
   ]);
-  assertEquals(ev[1].data.answered, true);
-  assertEquals(seen[0].maxTokens, 300);
+  assertEquals(ev[2].data.answered, true);
+  assertEquals(seen[0].maxTokens, 170);
   assertEquals(seen[0].model, "claude-sonnet-5-5");
   assert(seen[0].system.includes("conversation wingman"));
   assert(
-    seen[0].user.includes("<style>rolig</style>") &&
+    seen[0].user.includes("<style>social</style>") &&
       seen[0].user.includes("<stage>middle</stage>") &&
       seen[0].user.includes("Den andra: Jag har tränat inför ett lopp i helgen."),
   );

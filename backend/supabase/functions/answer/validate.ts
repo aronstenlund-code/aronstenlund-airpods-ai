@@ -3,7 +3,8 @@ import { HttpError } from "../_shared/errors.ts";
 export type Mode = "push_to_talk" | "auto" | "text" | "tutor" | "interview_prep";
 export type Persona = "tutor" | "interview" | "social";
 export type Turn = "question" | "user_answer";
-export type SocialStyle = "flirtig" | "rolig" | "självsäker" | "avslappnad" | "uppriktig";
+/** D63: "flirt" (adults only, needs adult_confirmed) or "social" (everyday conversation, all ages). Unknown = "social". */
+export type SocialStyle = "flirt" | "social";
 export type SocialTrigger = "other_spoke" | "stall" | "opener";
 /** D43 Rizzläge input: rolling conversation + style + trigger. Held in memory by the client only. */
 export interface SocialInput {
@@ -12,10 +13,7 @@ export interface SocialInput {
   transcript: { speaker: "user" | "other"; text: string }[];
   interests: string[];
   profile: string;
-  /** Opt-in per request (default false): bolder, suggestive flirt in style `flirtig`. The app decides when to send it. */
-  spicy: boolean;
 }
-const STYLES: SocialStyle[] = ["flirtig", "rolig", "självsäker", "avslappnad", "uppriktig"];
 const TRIGGERS: SocialTrigger[] = ["other_spoke", "stall", "opener"];
 export type Language = "sv" | "en";
 export type LengthSetting = "short" | "adaptive" | "long";
@@ -185,9 +183,13 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     const x = o.social as Record<string, unknown>;
     if (typeof x !== "object" || Array.isArray(x)) throw bad("social must be an object");
     if (persona !== "social") throw bad('social requires persona "social"');
-    const style = x.style === undefined || x.style === null ? "rolig" : x.style;
-    if (!STYLES.includes(style as SocialStyle)) {
-      throw bad(`social.style must be one of ${STYLES.join(", ")}`);
+    const style: SocialStyle = x.style === "flirt" ? "flirt" : "social"; // missing / unknown / old styles -> social
+    if (style === "flirt" && o.adult_confirmed !== true && x.adult_confirmed !== true) {
+      throw new HttpError(
+        403,
+        "adult_confirmation_required",
+        "Flirt kräver att användaren bekräftat att hen är 18 år eller äldre (adult_confirmed: true).",
+      );
     }
     const trigger = x.trigger === undefined || x.trigger === null ? "other_spoke" : x.trigger;
     if (!TRIGGERS.includes(trigger as SocialTrigger)) {
@@ -224,12 +226,11 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     const interests = inRaw.map((t, i) => str(t, `social.interests[${i}]`, LIMITS.socialInterest))
       .filter(Boolean);
     social = {
-      style: style as SocialStyle,
+      style,
       trigger: trigger as SocialTrigger,
       transcript,
       interests,
       profile: str(x.profile, "social.profile", LIMITS.socialProfile),
-      spicy: x.spicy === true,
     };
   }
 

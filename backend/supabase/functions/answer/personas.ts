@@ -1,7 +1,7 @@
 import { COMMON, contextParts, INTRO, sanitizeTagged } from "./prompt.ts";
 import type { AnswerType } from "./length.ts";
 import type { AnswerRequest } from "./validate.ts";
-import { buildRizzUserMessage, SYSTEM_PROMPT_RIZZ } from "./rizz.ts";
+import { buildRizzUserMessage, rizzSystemPrompt } from "./rizz.ts";
 import {
   buildSocialLineUserMessage,
   type SocialTask,
@@ -84,7 +84,7 @@ export function personaPlan(req: AnswerRequest): Plan | null {
       kind: "rizz",
       task: "rizz_suggestions",
       answerType: "fact",
-      maxTokens: 300,
+      maxTokens: 170,
       maxChars: 600,
     };
   }
@@ -145,8 +145,8 @@ Reply with plain text only. Produce exactly five likely interview questions for 
 ${COMMON}
 Never invent experience, employers or numbers for the student: where a personal example belongs write a short sentence such as "Här lägger du ett konkret exempel från dig." (first person elsewhere, never mixing "jag" and "du" in one sentence).`;
 
-export function personaSystemPrompt(kind: PlanKind): string {
-  if (kind === "rizz") return SYSTEM_PROMPT_RIZZ;
+export function personaSystemPrompt(kind: PlanKind, req?: AnswerRequest): string {
+  if (kind === "rizz") return rizzSystemPrompt(req?.social?.style ?? "social");
   if (kind === "socialline") return SYSTEM_PROMPT_SOCIALLINE;
   return kind === "interview"
     ? SYSTEM_PROMPT_INTERVIEW

@@ -26,6 +26,7 @@ import {
   FALLBACK_DECLINE,
   FALLBACK_SUGGESTIONS,
   pickSuggestions,
+  previewSuggestion,
   rizzReady,
 } from "./rizz.ts";
 import {
@@ -412,7 +413,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const priceOut = isRizz
         ? (cfg.rizzPriceOutPerMTok ?? cfg.priceOutPerMTok)
         : cfg.priceOutPerMTok;
-      const cacheReadMult = isRizz ? 0.05 : 0.1; // cache hits: 0.05x on Sonnet 5.5, 0.1x on Haiku 5.5
+      const cacheReadMult = 0.1; // cache hits cost 0.1x of the input price (Sonnet 5.5 and Haiku 5.5; claude-api skill 2026-10-06)
 
       function usage(s: string): UsageRecord {
         const m = parser.meta;
@@ -467,7 +468,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const noSummary = plan?.kind === "rizz" || demo;
       const relationTag = direct && !plan && body.context.recent_qa.length > 0;
       const systemPrompt = (plan
-        ? personaSystemPrompt(plan.kind)
+        ? personaSystemPrompt(plan.kind, body)
         : direct
         ? systemPromptFor(answerType, tutor)
         : SYSTEM_PROMPT) +
@@ -575,6 +576,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           };
           const rizz = plan?.kind === "rizz";
           let rizzBuf = "";
+          let previewSent = false;
+          let previewText: string | null = null;
           const emit = (ev: ParserEvent) => {
             if (ev.type === "meta") {
               metaMs = now() - t0;
@@ -608,6 +611,16 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               // The model finished its pick (complete TOP line): answer now instead of waiting for the stream to end.
               const done = rizzBuf.slice(0, rizzBuf.lastIndexOf("\n") + 1);
               if (done && rizzReady(done)) stop = true;
+              // D63: the first line is the model's strongest: show it at once, the full list follows.
+              if (!previewSent) {
+                const first = previewSuggestion(done);
+                if (first) {
+                  previewSent = true;
+                  previewText = first;
+                  if (ttftMs === null) ttftMs = now() - t0;
+                  send("suggestion_preview", { text: numbersToSpeech(first) });
+                }
+              }
             } else for (const ev of parser.push(chunk.text)) emit(ev);
           };
 
@@ -680,13 +693,16 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               let options = pickSuggestions(
                 stop ? rizzBuf.slice(0, rizzBuf.lastIndexOf("\n") + 1) : rizzBuf,
                 true,
-                body.social?.spicy === true,
               );
+              // the preview was shown first: the final list keeps it first
+              if (previewText && options.length) {
+                options = [previewText, ...options.filter((o) => o !== previewText)].slice(0, 3);
+              }
               if (!options.length) {
                 options = detectDecline(body) ? FALLBACK_DECLINE : FALLBACK_SUGGESTIONS;
                 status = "filtered";
               }
-              ttftMs = now() - t0;
+              if (ttftMs === null) ttftMs = now() - t0;
               metaMs = ttftMs;
               send("suggestions", options.map(numbersToSpeech));
             } else if (stop && !closed && status !== "ok") {

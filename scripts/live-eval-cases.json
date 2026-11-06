@@ -1334,7 +1334,8 @@
 "turns": [
 {
 "q": "",
-"rizz_ref": "P1"
+"rizz_ref": "P1",
+"style": "flirt"
 }
 ]
 },
@@ -1344,7 +1345,8 @@
 "turns": [
 {
 "q": "",
-"rizz_ref": "P3"
+"rizz_ref": "P3",
+"style": "social"
 }
 ]
 },
@@ -1354,7 +1356,8 @@
 "turns": [
 {
 "q": "",
-"rizz_ref": "S1"
+"rizz_ref": "S1",
+"style": "flirt"
 }
 ]
 },
@@ -1364,7 +1367,8 @@
 "turns": [
 {
 "q": "",
-"rizz_ref": "G1"
+"rizz_ref": "G1",
+"style": "social"
 }
 ]
 },
@@ -1374,7 +1378,8 @@
 "turns": [
 {
 "q": "",
-"rizz_ref": "C1"
+"rizz_ref": "C1",
+"style": "flirt"
 }
 ]
 },
@@ -1384,7 +1389,8 @@
 "turns": [
 {
 "q": "",
-"rizz_ref": "T1"
+"rizz_ref": "T1",
+"style": "social"
 }
 ]
 },
@@ -1394,7 +1400,8 @@
 "turns": [
 {
 "q": "",
-"rizz_ref": "A1"
+"rizz_ref": "A1",
+"style": "flirt"
 }
 ]
 },
@@ -1404,7 +1411,8 @@
 "turns": [
 {
 "q": "",
-"rizz_ref": "N1"
+"rizz_ref": "N1",
+"style": "social"
 }
 ]
 },
@@ -1553,6 +1561,19 @@
 {
 "q": "kolla scb.se hur många bor i Sverige",
 "web": true
+}
+]
+},
+{
+"id": "rizz-09",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "P1",
+"style": "flirt",
+"no_adult": true,
+"expect_error": "adult_confirmation_required"
 }
 ]
 }

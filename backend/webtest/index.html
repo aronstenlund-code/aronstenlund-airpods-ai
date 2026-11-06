@@ -48,14 +48,14 @@
   <div class="card"><div class="lbl">Eller skriv</div>
     <form id="form"><input id="txt" placeholder="t.ex. roten ur hundra" autocomplete="off"><button>Skicka</button></form>
   </div>
-  <div class="card rz"><div class="lbl">Rizzläge</div>
-    <div class="small">Välj stil. Skriv eller säg vad den andra sa – bästa förslaget läses upp, tryck på ett förslag för att säga det. Inget ljud sparas; samtalet finns bara i sidan.</div>
-    <div class="chips" id="styles"></div>
+  <div class="card rz"><div class="lbl">Rizzläge / Socialt läge</div>
+    <div class="small">Välj läge. Skriv eller säg vad den andra sa – bästa förslaget läses upp, tryck på ett förslag för att säga det. Inget ljud sparas; samtalet finns bara i sidan.</div>
+    <div class="rzrow"><select id="rzmode"><option value="social">Socialt läge (skämt, svar, smalltalk)</option><option value="flirt">Rizzläge (flirt, 18+)</option></select></div>
+    <label class="small" id="rzadultbox" style="display:none;margin:4px 0"><input type="checkbox" id="rzadult" style="width:auto"> Jag är 18 år eller äldre (krävs för Rizzläge)</label>
     <div class="rzrow"><input id="rzother" placeholder="Den andra sa …" autocomplete="off"><button id="rzmic" class="rzbtn" type="button">Mick</button><button id="rzsend" type="button">Skicka</button></div>
     <div class="rzrow"><button id="rzstall" type="button" class="rzbtn">Tystnad (4 s)</button><button id="rzopen" type="button" class="rzbtn">Öppningsrad</button><button id="rzreset" type="button" class="rzbtn">Nytt samtal</button></div>
     <div class="rzrow"><input id="rzint" placeholder="Intressen, kommaseparerade (valfritt)" autocomplete="off"></div>
     <div class="rzrow"><input id="rzprof" placeholder="Om den andra (valfritt, för öppningsrad)" autocomplete="off"></div>
-    <label class="small" style="display:block;margin:4px 0"><input type="checkbox" id="rzspicy" style="width:auto"> Djärvare flirt (bara stilen flirtig)</label>
     <div id="rzopts"></div>
     <div class="small" id="rztime"></div>
     <div class="conv" id="rzconv"></div>
@@ -295,24 +295,26 @@ btn.addEventListener("contextmenu", (e) => e.preventDefault());
 $("form").addEventListener("submit", (e) => { e.preventDefault(); const v = $("txt").value.trim(); if (!v) return; unlockAudio(); $("txt").value = ""; ask(v, "text", now()); });
 
 // ---------- Rizzläge (D43): live wingman panel ----------
-const STYLES = ["flirtig", "rolig", "självsäker", "avslappnad", "uppriktig"];
-const rz = { style: "rolig", lines: [], busy: false, rec: null };
+const rz = { style: "social", lines: [], busy: false, rec: null };
+// D63: two modes. "flirt" (Rizzläge) is for adults and needs the age confirmation; "social" is for everybody.
 function rzChips() {
-  $("styles").innerHTML = "";
-  for (const st of STYLES) { const b = document.createElement("button"); b.type = "button"; b.className = "chip" + (st === rz.style ? " on" : ""); b.textContent = st; b.onclick = () => { rz.style = st; rzChips(); }; $("styles").appendChild(b); }
+  const flirt = $("rzmode").value === "flirt";
+  rz.style = flirt ? "flirt" : "social";
+  $("rzadultbox").style.display = flirt ? "block" : "none";
 }
 function rzConv() { $("rzconv").innerHTML = rz.lines.slice(-8).map((l) => '<div class="' + (l.speaker === "user" ? "me" : "") + '">' + (l.speaker === "user" ? "Jag: " : "Den andra: ") + l.text.replace(/</g, "&lt;") + "</div>").join(""); }
 async function rzAsk(trigger) {
   if (rz.busy) return;
   rz.busy = true; unlockAudio();
-  const social = { style: rz.style, trigger, transcript: rz.lines.slice(-10), interests: $("rzint").value.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 10), profile: $("rzprof").value.trim().slice(0, 1000), spicy: $("rzspicy").checked };
+  const social = { style: rz.style, trigger, transcript: rz.lines.slice(-10), interests: $("rzint").value.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 10), profile: $("rzprof").value.trim().slice(0, 1000) };
+  if (rz.style === "flirt" && !$("rzadult").checked) { rz.busy = false; $("status").className = "small err"; $("status").textContent = "Rizzläge kräver att du bekräftar att du är 18 år eller äldre."; return; }
   const r = { chain: Promise.resolve(), spoken: "", ttsFirstByte: null, ttsReq: null, firstAudio: null };
   const ac = rz.ac = new AbortController(); r.abort = false; ac.signal.addEventListener("abort", () => { r.abort = true; });
   $("stopbtn").style.display = "block";
-  const t0 = now(); let tSug = null, options = null, srv = null;
+  const t0 = now(); let tSug = null, options = null, srv = null, preview = null;
   $("rzopts").textContent = "…"; $("rztime").textContent = "";
   try {
-    const res = await api("answer", { signal: ac.signal, method: "POST", body: JSON.stringify({ fragment: "", mode: "tutor", language: "sv", persona: "social", memories: memories(), context: {}, social }) });
+    const res = await api("answer", { signal: ac.signal, method: "POST", body: JSON.stringify({ fragment: "", mode: "tutor", language: "sv", persona: "social", memories: memories(), context: {}, social, adult_confirmed: rz.style === "flirt" && $("rzadult").checked }) });
     if (!res.ok) throw new Error(await errText(res));
     const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
     let buf = "";
@@ -323,9 +325,13 @@ async function rzAsk(trigger) {
       while ((i = buf.indexOf("\n\n")) !== -1) {
         const frame = buf.slice(0, i); buf = buf.slice(i + 2);
         const ev = /^event: (.*)$/m.exec(frame)?.[1], data = JSON.parse(/^data: (.*)$/m.exec(frame)?.[1] ?? "null");
-        if (ev === "suggestions" && Array.isArray(data)) {
-          tSug = now(); options = data; rzShow(options);
-          speak(options[0], r);                       // the best option is spoken at once
+        if (ev === "suggestion_preview" && data && data.text) {
+          // D63: the strongest line arrives first (~1-2 s): show and speak it at once, the rest follows
+          tSug = now(); preview = data.text; rzShow([preview]); speak(preview, r);
+        } else if (ev === "suggestions" && Array.isArray(data)) {
+          if (tSug === null) tSug = now();
+          options = data; rzShow(options);
+          if (!preview || options[0] !== preview) speak(options[0], r);   // the best option is spoken at once
         } else if (ev === "done") srv = data; else if (ev === "error") throw new Error((data.code || "fel") + ": " + data.message);
       }
     }
@@ -362,7 +368,7 @@ $("rzmic").onclick = () => {
   $("rzmic").classList.add("rec"); $("rzmic").textContent = "Lyssnar – tryck igen";
   try { rc.start(); } catch { rz.rec = null; }
 };
-rzChips();
+rzChips(); $("rzmode").onchange = rzChips;
 
 
 // ---------- Scribe v2 Realtime (D44): default recogniser, Safari is the fallback ----------
