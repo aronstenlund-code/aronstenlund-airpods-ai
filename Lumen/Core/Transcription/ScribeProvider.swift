@@ -117,7 +117,7 @@ final class URLSessionScribeSocket: ScribeSocket, @unchecked Sendable {
 /// `TranscriptionCoordinator` falls back to the on-device chain.
 @MainActor
 final class ScribeProvider: STTProvider {
-    static let keytermLimit = 20
+    nonisolated static let keytermLimit = 20
     /// 200 ms of silence behind a commit flushes the last word (same as the web test).
     private static let commitTail = [Int16](repeating: 0, count: 3_200)
 
