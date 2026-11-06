@@ -35,7 +35,10 @@
 <body>
 <main>
   <h1>Lumen webtest</h1>
-  <div class="sub">Håll in knappen, ställ en fråga på svenska, släpp. <span id="voiceinfo"></span> <span id="sttinfo">Taligenkänning: kontrollerar Scribe …</span> <input id="keyterms" placeholder="nyckelord för Scribe (valfritt, kommaseparerade)" autocomplete="off" style="width:100%;margin-top:6px;font-size:13px"> Rösttyp: <select id="ttsmodel"><option value="">standard (flash)</option><option value="eleven_turbo_v2_5">turbo</option><option value="eleven_multilingual_v2">multilingual (dyrare)</option></select></div>
+  <div class="sub">Håll in knappen, ställ en fråga på svenska, släpp. <span id="voiceinfo"></span> <span id="sttinfo">Taligenkänning: kontrollerar Scribe …</span> <input id="keyterms" placeholder="nyckelord för Scribe (valfritt, kommaseparerade)" autocomplete="off" style="width:100%;margin-top:6px;font-size:13px"> Rösttyp: <select id="ttsmodel"><option value="">standard (flash)</option><option value="eleven_turbo_v2_5">turbo</option><option value="eleven_multilingual_v2">multilingual (dyrare)</option></select>
+    <select id="audiomode" title="Uppspelning"><option value="pcm">Ljud: ström (PCM, glappfritt)</option><option value="mp3">Ljud: klipp (mp3, gamla)</option></select>
+    <select id="vstab" title="Stabilitet"><option value="">stabilitet: standard</option><option>0.3</option><option>0.5</option><option>0.7</option><option>0.85</option></select>
+    <select id="vsim" title="Likhet"><option value="">likhet: standard</option><option>0.5</option><option>0.75</option><option>0.9</option></select></div>
   <button id="btn" type="button">Håll in för att fråga</button>
   <button id="stopbtn" type="button" style="display:none;margin:0 auto 6px;padding:12px 28px;border-radius:999px;border:0;background:var(--bad);color:#fff;font-size:17px;font-weight:700">Avbryt</button>
   <div class="card"><div class="lbl">Du sa</div><div id="heard">–</div></div>
@@ -59,6 +62,11 @@
     <div id="rzopts"></div>
     <div class="small" id="rztime"></div>
     <div class="conv" id="rzconv"></div>
+  </div>
+  <div class="card"><div class="lbl">Röstlabb (D66)</div>
+    <div class="small">Läser 10 meningar med långa svenska ord med varje modell och mäter tiden till första ljud (använder dina val av stabilitet/likhet ovan). Kostar ca 3 200 tecken-krediter per körning. Tryck på en modell för att lyssna på hela provet efteråt.</div>
+    <div class="rzrow"><button id="vlab" type="button">Kör röstlabb</button></div>
+    <div id="vlabout" class="small"></div>
   </div>
   <div class="card"><div class="lbl">Historik (bara sammanfattningar, på den här enheten)</div>
     <div id="hist" class="small">–</div>
@@ -101,6 +109,7 @@ function cancelAll() {
   if (r && r.busy) { r.cancelled = true; try { r.ac && r.ac.abort(); } catch {} r.busy = false; setBusy(false); }
   if (rz.ac) { try { rz.ac.abort(); } catch {} rz.ac = null; rz.busy = false; }
   try { player && player.pause(); } catch {}
+  stopPcm();
   try { speechSynthesis.cancel(); } catch {}
   $("stopbtn").style.display = "none";
   $("status").className = "small"; $("status").textContent = "Avbrutet.";
@@ -120,6 +129,7 @@ const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAA
 let player = null;
 function setSession(type) { try { if (navigator.audioSession) navigator.audioSession.type = type; } catch {} }
 function unlockAudio() {
+  try { if (window.AudioContext || window.webkitAudioContext) { const c = pcmCtx(); c.resume(); const b = c.createBuffer(1, 1, PCM_RATE), x = c.createBufferSource(); x.buffer = b; x.connect(c.destination); x.start(); } } catch {}
   if (!player) { player = new Audio(); player.playsInline = true; player.preload = "auto"; }
   try { player.src = SILENT; const p = player.play(); if (p) p.catch(() => {}); } catch {}
   try { speechSynthesis.speak(new SpeechSynthesisUtterance("")); } catch {}   // unlocks the Apple-voice fallback
@@ -148,7 +158,95 @@ async function fetchAudio(text, r) {
   }
   return new Blob(chunks, { type: res.headers.get("content-type") || "audio/mpeg" });
 }
+// D66: ONE continuous PCM stream through Web Audio instead of one <audio> clip per sentence.
+// Cause of the stutter (found by reading the old path): (1) a separate mp3 clip per sentence, each downloaded in
+// full before it started, so a gap opened whenever the next clip was not ready when the previous one ended (short
+// sentences!); (2) mp3 encoder padding at the start/end of every clip (clicks, "stretched" sounds at the seams);
+// (3) playback ran in the call audio session left over from the microphone ("play-and-record"). Now: raw PCM
+// (no codec), chunks are scheduled sample-accurately back to back as they arrive, the next sentence is fetched
+// while the previous one plays, short sentences are merged, the audio session is "playback" and the
+// microphone is fully stopped before the first sample.
+const PCM_RATE = 24000, LEAD_S = 0.25;
+let actx = null, nextAt = 0;
+const pcmSrcs = new Set();
+const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+function pcmOK() { return !!(window.AudioContext || window.webkitAudioContext) && $("audiomode").value !== "mp3"; }
+function pcmCtx() {
+  if (!actx || actx.state === "closed") { actx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: PCM_RATE, latencyHint: "playback" }); nextAt = 0; }
+  return actx;
+}
+function stopMicNow() {   // every mic track stopped, recogniser aborted, before any answer is played
+  try { rec && rec.abort(); } catch {}
+  const s = current;
+  if (s && s.kind === "scribe") { try { s.proc && s.proc.disconnect(); s.stream && s.stream.getTracks().forEach((t) => t.stop()); s.ac && s.ac.state !== "closed" && s.ac.close(); } catch {} }
+}
+function stopPcm() { for (const s of pcmSrcs) { try { s.stop(); } catch {} } pcmSrcs.clear(); nextAt = 0; }
+function startPcm(text, r) {
+  const req = { q: [], samples: 0, done: false, err: null, wake: null };
+  const poke = () => { const w = req.wake; req.wake = null; if (w) w(); };
+  (async () => {
+    const t0 = now();
+    try {
+      const res = await api("tts", { method: "POST", body: JSON.stringify({ text, language: "sv", output_format: "pcm_24000", ...(voiceId ? { voice_id: voiceId } : {}), ...($("ttsmodel").value ? { model: $("ttsmodel").value } : {}), ...voiceSettings() }) });
+      if (!res.ok) throw new Error(await errText(res));
+      const reader = res.body.getReader(); let odd = null;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (r.ttsFirstByte == null) { r.ttsFirstByte = now(); r.ttsReq = t0; }
+        let bytes = value;
+        if (odd !== null) { const m = new Uint8Array(bytes.length + 1); m[0] = odd; m.set(bytes, 1); bytes = m; odd = null; }
+        if (bytes.length & 1) { odd = bytes[bytes.length - 1]; bytes = bytes.subarray(0, bytes.length - 1); }
+        const n = bytes.length >> 1, f = new Float32Array(n), dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length);
+        for (let i = 0; i < n; i++) f[i] = dv.getInt16(i * 2, true) / 32768;
+        req.q.push(f); req.samples += n; poke();
+      }
+    } catch (e) { req.err = e; }
+    req.done = true; poke();
+  })();
+  return req;
+}
+// Schedules the chunks of one sentence right behind the previous one (gapless). Resolves when everything of it is scheduled.
+async function schedulePcm(req, r) {
+  const c = pcmCtx(); await c.resume();
+  let any = false;
+  for (;;) {
+    if (r.cancelled || r.abort) return any;
+    if (!req.q.length) { if (req.done) break; await new Promise((res) => (req.wake = res)); continue; }
+    const fresh = nextAt < c.currentTime + 0.02;   // nothing queued behind: a new stream after silence
+    if (fresh && !any && !req.done && req.samples < PCM_RATE * LEAD_S) { await new Promise((res) => { req.wake = res; setTimeout(res, 400); }); continue; }   // small jitter buffer
+    const f = req.q.shift();
+    const b = c.createBuffer(1, f.length, PCM_RATE); b.copyToChannel(f, 0);
+    const src = c.createBufferSource(); src.buffer = b; src.connect(c.destination);
+    const at = Math.max(nextAt, c.currentTime + 0.03);
+    src.start(at); nextAt = at + b.duration; pcmSrcs.add(src); src.onended = () => pcmSrcs.delete(src);
+    if (!any) { any = true; if (r.firstAudio == null) r.firstAudio = now() + (at - c.currentTime) * 1000; render(r); }
+  }
+  if (req.err && !any) throw req.err;
+  return any;
+}
 function speak(sentence, r) {
+  if (!pcmOK()) return speakBlob(sentence, r);
+  r.spoken += sentence + " ";
+  const req = startPcm(sentence, r);                        // fetched now, while the previous sentence is still playing
+  r.sched = (r.sched || Promise.resolve()).then(async () => {
+    if (r.cancelled || r.abort) return;
+    try {
+      if (!r.began) { r.began = true; stopMicNow(); setSession("playback"); }
+      await schedulePcm(req, r);
+    } catch (e) {
+      r.err = "Röst: " + e.message + " — använder Apples röst som reserv";
+      try { const u = new SpeechSynthesisUtterance(sentence); u.lang = "sv-SE"; speechSynthesis.speak(u); if (r.firstAudio == null) r.firstAudio = now(); } catch {}
+      render(r);
+    }
+  });
+  r.chain = r.sched.then(async () => { const c = actx; if (c && !r.cancelled && !r.abort) await sleep(Math.max(0, (nextAt - c.currentTime) * 1000) + 40); });
+}
+function voiceSettings() {   // D66: optional ElevenLabs voice settings from the page
+  const st = parseFloat($("vstab").value), sim = parseFloat($("vsim").value);
+  return Number.isFinite(st) && Number.isFinite(sim) ? { voice_settings: { stability: st, similarity_boost: sim } } : {};
+}
+function speakBlob(sentence, r) {
   r.spoken += sentence + " ";
   const dec = fetchAudio(sentence, r);
   dec.catch(() => {});
@@ -223,14 +321,23 @@ async function ask(text, mode, t0) {
   } catch (e) { if (!r.cancelled) r.err = e.message; }
   r.busy = false; if (!r.cancelled) setBusy(false); render(r);
 }
-// Start TTS as soon as a sentence is complete (and long enough to be worth a request).
+// D66: the first sentence goes to TTS at once (first sound as early as possible); the rest are merged into clips of at
+// least MERGE_MIN characters (at most MERGE_MAX, the /tts limit is 500) so there are fewer, smoother clips.
+const MERGE_MIN = 90, MERGE_MAX = 440;
 function feedSentences(r, final) {
   for (;;) {
     const m = /^(.{6,}?[.!?])(\s|$)/s.exec(r.buf);
     if (!m) break;
-    speak(m[1].trim(), r); r.buf = r.buf.slice(m[0].length);
+    const sent = m[1].trim(); r.buf = r.buf.slice(m[0].length);
+    if (!r.pending && !r.sentFirst) { r.sentFirst = true; speak(sent, r); continue; }
+    r.pending = (r.pending ? r.pending + " " : "") + sent;
+    if (r.pending.length >= MERGE_MIN || r.pending.length + 60 > MERGE_MAX) { speak(r.pending, r); r.pending = ""; }
   }
-  if (final && r.buf.trim()) { speak(r.buf.trim(), r); r.buf = ""; }
+  if (final) {
+    const rest = ((r.pending ? r.pending + " " : "") + r.buf.trim()).trim();
+    r.pending = ""; r.buf = "";
+    for (let i = 0; i < rest.length;) { let j = Math.min(rest.length, i + MERGE_MAX); if (j < rest.length) { const k = rest.lastIndexOf(" ", j); if (k > i) j = k; } speak(rest.slice(i, j).trim(), r); i = j; }
+  }
 }
 
 // ---------- render ----------
@@ -426,6 +533,7 @@ async function startScribe() {
     ws.onerror = () => { st.failed = st.failed || "websocket-fel"; if (st.waiter) st.waiter(); };
     ws.onclose = () => { if (!st.done && !st.final && !st.failed) st.failed = "websocket stängdes"; if (st.waiter) st.waiter(); };
   } catch (e) { st.failed = e.message; }
+  setSession("play-and-record");
   try {
     const stream = st.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
     const ac = st.ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -464,6 +572,49 @@ async function stopScribe() {
   const t = now(); ask(text, "push_to_talk", st.releasedAt); run.stt = t; run.recog = "Scribe v2"; render(run);
   prefetchStt();
 }
+
+
+// ---------- D66 voice lab: first-sound time per model on sentences with long Swedish words ----------
+const LAB_SENTENCES = [
+  "Högskolebehörigheten förutsätter grundläggande kunskaper i matematik.",
+  "Arbetsmiljöverkets föreskrifter gäller för samtliga verksamhetsutövare.",
+  "Kärnkraftverkens säkerhetsbestämmelser skärptes efter olyckan.",
+  "Sjukvårdsrådgivningen rekommenderar att du kontaktar vårdcentralen.",
+  "Försäkringskassans handläggningstider varierar mellan myndighetens kontor.",
+  "Riksdagsledamöternas utskottsarbete granskas regelbundet av revisorerna.",
+  "Fotosyntesens ljusberoende reaktioner äger rum i kloroplasternas tylakoidmembran.",
+  "Studiemedelsberättigade kursdeltagare ansöker om bidrag hos Centrala studiestödsnämnden.",
+  "Tvärvetenskapliga forskningsprojekt kräver omfattande samordningsinsatser.",
+  "Nederbördsmängderna överskred medelvärdena i sydvästra Götalandsregionen."
+];
+async function labOnce(text, model) {
+  const t0 = now();
+  const res = await api("tts", { method: "POST", body: JSON.stringify({ text, language: "sv", output_format: "pcm_24000", ...(voiceId ? { voice_id: voiceId } : {}), ...(model ? { model } : {}), ...voiceSettings() }) });
+  if (!res.ok) throw new Error(await errText(res));
+  const reader = res.body.getReader(); let first = null; const chunks = [];
+  for (;;) { const { done, value } = await reader.read(); if (done) break; if (first == null) first = now() - t0; chunks.push(value); }
+  return { first, chunks };
+}
+const labClips = {};
+$("vlab").onclick = async () => {
+  if (!confirm("Kör röstlabb? Det använder ca 3 200 tecken-krediter hos ElevenLabs.")) return;
+  unlockAudio(); $("vlab").disabled = true; $("vlabout").textContent = "Kör …";
+  const rows = [];
+  try {
+    for (const [name, model] of [["flash", "eleven_flash_v2_5"], ["turbo", "eleven_turbo_v2_5"], ["multilingual", "eleven_multilingual_v2"]]) {
+      const ms = []; labClips[name] = [];
+      for (const sent of LAB_SENTENCES) { const r = await labOnce(sent, model); ms.push(r.first); labClips[name].push(r.chunks); }
+      ms.sort((a, b) => a - b);
+      rows.push({ name, med: ms[Math.floor(ms.length / 2)], max: ms[ms.length - 1], ok: ms[Math.floor(ms.length * 0.9)] < 3000 });
+    }
+    $("vlabout").innerHTML = "<table>" + rows.map((x) => "<tr><td><button type='button' data-m='" + x.name + "'>spela " + x.name + "</button></td><td>median " + Math.round(x.med) + " ms</td><td>max " + Math.round(x.max) + " ms</td><td>" + (x.ok ? "under 3 s" : "över 3 s") + "</td></tr>").join("") + "</table>";
+    for (const btn of $("vlabout").querySelectorAll("button[data-m]")) btn.onclick = async () => {
+      const r = { cancelled: false, abort: false, spoken: "", firstAudio: null }; const c = pcmCtx(); await c.resume(); stopMicNow(); setSession("playback");
+      for (const chunks of labClips[btn.dataset.m]) { const req = { q: [], samples: 0, done: true, err: null, wake: null }; let odd = null; for (let v of chunks) { if (odd !== null) { const m = new Uint8Array(v.length + 1); m[0] = odd; m.set(v, 1); v = m; odd = null; } if (v.length & 1) { odd = v[v.length - 1]; v = v.subarray(0, v.length - 1); } const n = v.length >> 1, f = new Float32Array(n), dv = new DataView(v.buffer, v.byteOffset, v.length); for (let i = 0; i < n; i++) f[i] = dv.getInt16(i * 2, true) / 32768; req.q.push(f); req.samples += n; } await schedulePcm(req, r); nextAt += 0.35; }
+    };
+  } catch (e) { $("vlabout").textContent = "Röstlabb: " + e.message; }
+  $("vlab").disabled = false;
+};
 
 // ---------- boot: sign in, find the voice, warm the functions ----------
 (async function boot() {

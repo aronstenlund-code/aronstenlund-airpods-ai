@@ -228,3 +228,39 @@ Deno.test("D48: zero retention is requested; a plan that rejects it is retried o
   await (await ok.handler(post({ text: "Sju." }))).arrayBuffer();
   assert(ok.calls[0].url.includes("enable_logging=false"));
 });
+
+Deno.test("D66: voice_settings are validated and forwarded; the demo ignores them", async () => {
+  const { handler, calls } = setup();
+  const ok = await handler(
+    post({ text: "Hej.", voice_settings: { stability: 0.7, similarity_boost: 0.8, speed: 1.0 } }),
+  );
+  assertEquals(ok.status, 200);
+  assertEquals(JSON.parse(calls[0].init.body as string).voice_settings, {
+    stability: 0.7,
+    similarity_boost: 0.8,
+    speed: 1,
+  });
+  for (
+    const v of [{ stability: 1.5 }, { stability: "hög" }, { speed: 2 }, { evil: 1 }, "x", [], {
+      use_speaker_boost: 1,
+    }]
+  ) {
+    assertEquals(
+      (await handler(post({ text: "Hej.", voice_settings: v }))).status,
+      400,
+      JSON.stringify(v),
+    );
+  }
+  assertEquals((await handler(post({ text: "Hej.", voice_settings: {} }))).status, 200);
+  assertEquals(
+    "voice_settings" in JSON.parse(calls[1].init.body as string),
+    false,
+    "empty settings are not sent",
+  );
+  await handler(post({ text: "Hej.", source: "demo", voice_settings: { stability: 0.1 } }));
+  assertEquals(
+    "voice_settings" in JSON.parse(calls[2].init.body as string),
+    false,
+    "demo: default settings only",
+  );
+});

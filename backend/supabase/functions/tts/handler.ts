@@ -20,6 +20,47 @@ let zeroRetention = true;
 export function _resetZeroRetention(v = true) {
   zeroRetention = v;
 }
+/**
+ * D66: optional ElevenLabs `voice_settings` (all numbers, validated): stability 0-1 (lower = more varied, can
+ * stretch or slur long words; higher = steadier), similarity_boost 0-1, style 0-1, speed 0.7-1.2.
+ * Not available in the demo (default settings only).
+ */
+export function parseVoiceSettings(v: unknown): Record<string, number | boolean> | null {
+  if (v === undefined || v === null) return null;
+  if (typeof v !== "object" || Array.isArray(v)) {
+    throw new HttpError(400, "invalid_request", "voice_settings must be an object");
+  }
+  const o = v as Record<string, unknown>;
+  const out: Record<string, number | boolean> = {};
+  const ranges: Record<string, [number, number]> = {
+    stability: [0, 1],
+    similarity_boost: [0, 1],
+    style: [0, 1],
+    speed: [0.7, 1.2],
+  };
+  for (const [k, val] of Object.entries(o)) {
+    if (k === "use_speaker_boost") {
+      if (typeof val !== "boolean") {
+        throw new HttpError(400, "invalid_request", "use_speaker_boost must be a boolean");
+      }
+      out[k] = val;
+    } else if (k in ranges) {
+      const [lo, hi] = ranges[k];
+      if (typeof val !== "number" || !Number.isFinite(val) || val < lo || val > hi) {
+        throw new HttpError(
+          400,
+          "invalid_request",
+          `voice_settings.${k} must be a number between ${lo} and ${hi}`,
+        );
+      }
+      out[k] = val;
+    } else {
+      throw new HttpError(400, "invalid_request", `unsupported voice_settings field: ${k}`);
+    }
+  }
+  return Object.keys(out).length ? out : null;
+}
+
 export const TTS_LIMITS = { bodyBytes: 4 * 1024, text: 500 } as const;
 const OUTPUT_FORMATS = new Set(["mp3_22050_32", "mp3_44100_64", "pcm_16000", "pcm_24000"]);
 const CONTENT_TYPES: Record<string, string> = { mp3: "audio/mpeg", pcm: "audio/L16" };
@@ -128,6 +169,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
       if (modelId === null) throw new HttpError(400, "invalid_request", "unsupported model");
       const weight = TTS_MODELS[modelId] ?? 1;
       const cost = text.length * weight;
+      const voiceSettings = demo ? null : parseVoiceSettings(raw.voice_settings);
       const format = !demo && typeof raw.output_format === "string"
         ? raw.output_format
         : "mp3_44100_64";
@@ -199,7 +241,12 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
               "content-type": "application/json",
               accept: "audio/*",
             },
-            body: JSON.stringify({ text, model_id: modelId, language_code: language }),
+            body: JSON.stringify({
+              text,
+              model_id: modelId,
+              language_code: language,
+              ...(voiceSettings ? { voice_settings: voiceSettings } : {}),
+            }),
             signal: ac.signal,
           },
         );
