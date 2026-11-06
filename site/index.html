@@ -377,6 +377,7 @@
   .consent input { width: 24px; height: 24px; margin: 0; flex: none; accent-color: var(--disc); }
   .wait .pill { justify-content: center; width: 100%; min-height: 54px; font-size: 1.0625rem; }
   .wait .pill[disabled] { opacity: .6; cursor: progress; }
+  .hp { position: absolute; left: -9999px; }
   .fieldmsg { color: var(--bad); font-weight: 600; font-size: .9375rem; min-height: 0; }
   .fieldmsg:empty { display: none; }
   .formmsg { font-weight: 600; }
@@ -408,7 +409,7 @@
   }
 
   @media (min-width: 720px) {
-    .modes ul { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+    .modes ul { grid-template-columns: repeat(2, 1fr); gap: 36px; }
     .try { justify-content: center; }
     .ask { margin: 0 auto; }
   }
@@ -432,6 +433,7 @@
     .a { font-size: 2rem; }
     .again-only { display: none; }
     .modes { padding-top: 96px; padding-bottom: 104px; }
+    .modes ul { grid-template-columns: repeat(4, 1fr); }
     .join .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); column-gap: 64px; padding-top: 88px; padding-bottom: 72px; }
     .join .side { grid-column: 2; grid-row: 1 / span 2; }
     form.wait { margin-top: 0; }
@@ -503,7 +505,8 @@
     <ul>
       <li><h3>Provläge</h3><p>Plugga handsfree. Du frågar, får en pedagogisk förklaring och kan få en kontrollfråga på vägen.</p></li>
       <li><h3>Intervjuläge</h3><p>Träna inför intervjun. Du övar på frågor till jobbet du söker och får kort återkoppling på dina svar.</p></li>
-      <li><h3>Rizzläge</h3><p>Få förslag på vad du kan säga i vardagssamtal, i den stil du väljer.</p></li>
+      <li><h3>Socialt läge</h3><p>Förslag på skämt, svar och följdfrågor när samtalet går trögt.</p></li>
+      <li><h3>Rizzläge</h3><p>Charmiga förslag när du flirtar. Bara för dig som är 18 år eller äldre.</p></li>
     </ul>
   </section>
 
@@ -524,13 +527,14 @@
             <span>Ja, mejla mig när appen finns. Jag har läst integritetstexten här under.</span>
           </label>
           <p class="fieldmsg" id="consentmsg"></p>
+          <div class="hp" aria-hidden="true"><label>Webbplats <input id="website" type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
           <button class="pill" id="waitbtn" type="submit">Skriv upp mig</button>
           <p class="formmsg" id="waitmsg" role="status"></p>
         </form>
       </div>
       <div class="first-note">
-        <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns och sparar den inte längre än så. Vill du bli borttagen räcker det att svara på vårt mejl.</p>
-        <p class="fine">Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. Din webbläsare minns en anonym inloggning och hur många frågor du ställt. Svar från AI kan vara fel.</p>
+        <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns. Vi sparar adressen och när du gav ditt samtycke. Vill du bli borttagen räcker det att svara på vårt mejl.</p>
+        <p class="fine">Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel.</p>
       </div>
     </div>
   </section>
@@ -542,7 +546,8 @@
 // Offentlig med flit: nyckeln ger ingenting utan en användar-JWT (anonym inloggning nedan).
 const SB = "https://xjczbzfkmbjdebwlccki.supabase.co";
 const KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8";
-const DEMO_LIMIT = 5;   // D62: 5 frågor per besökare och dag. Här bara en vänlig spärr; den riktiga måste ligga i backend.
+const DEMO_LIMIT = 5;   // D62: 5 frågor per dag. Servern avgör (backend/README.md); här räknas bara det som visas.
+const CONSENT_VERSION = "2026-11-06";   // Höj när samtyckes- eller integritetstexten ändras.
 
 const $ = (id) => document.getElementById(id);
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -576,12 +581,15 @@ function showLeft() {
   const n = Math.max(0, DEMO_LIMIT - used());
   $("left").textContent = used() === 0 ? "" : n === 1 ? "1 fråga kvar idag" : n + " frågor kvar idag";
 }
+function showLimit(message) {
+  setView("answer");
+  answerError(message);
+  $("nudge").hidden = false; $("dock").hidden = false; $("stop").hidden = true; $("again").hidden = false; $("left").textContent = "";
+}
 function limitReached() {
   if (used() < DEMO_LIMIT) return false;
-  setView("answer");
   $("q").textContent = "";
-  answerError("Du har ställt dagens " + DEMO_LIMIT + " frågor i demon. Välkommen tillbaka i morgon.");
-  $("nudge").hidden = false; $("dock").hidden = false; $("stop").hidden = true; $("again").hidden = false; $("left").textContent = "";
+  showLimit("Du har ställt dagens " + DEMO_LIMIT + " frågor i demon. Välkommen tillbaka i morgon.");
   return true;
 }
 
@@ -616,7 +624,7 @@ function friendlyError(e, status, code) {
 // ---------- ljud ----------
 // iOS: Web Audio tystas av ringknappen och fastnar ofta efter mikrofonen, så allt spelas via ett <audio>-element.
 const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=";
-let player = null, voiceId = null;
+let player = null;
 function setSession(type) { try { if (navigator.audioSession) navigator.audioSession.type = type; } catch {} }
 function unlockAudio() {
   if (!player) { player = new Audio(); player.playsInline = true; player.preload = "auto"; }
@@ -636,7 +644,7 @@ function playBlob(blob) {
   });
 }
 async function fetchAudio(text) {
-  const res = await api("tts", { method: "POST", body: JSON.stringify({ text, language: "sv", ...(voiceId ? { voice_id: voiceId } : {}) }) });
+  const res = await api("tts", { method: "POST", body: JSON.stringify({ text: text.slice(0, 400), source: "demo" }) });
   if (!res.ok) throw new Error("tts " + res.status);
   return res.blob();
 }
@@ -673,7 +681,7 @@ function feedSentences(r, final) {
 
 // ---------- fråga ----------
 let run = null;
-const recent = [], sessionMemories = [];
+const recent = [];
 
 function answerError(text) { const a = $("a"); a.className = "a err"; a.textContent = text; }
 function showThinking() {
@@ -716,11 +724,19 @@ async function ask(text, mode) {
   resetDock(true);
   showLeft();
   try {
-    const body = { fragment: text, mode, language: "sv", memories: sessionMemories.slice(-30), context: { transcript: "", recent_qa: recent.slice(-3), prep_terms: [] } };
+    const body = { fragment: text, mode, language: "sv", source: "demo", context: { recent_qa: recent.slice(-3) } };
     const res = await api("answer", { signal: r.ac.signal, method: "POST", body: JSON.stringify(body) });
     if (!res.ok) {
-      let code = null; try { code = (await res.json()).error.code; } catch {}
-      answerError(friendlyError(null, res.status, code));
+      let err = {};
+      try { err = (await res.json()).error || {}; } catch {}
+      const code = String(err.code || "");
+      if (code.startsWith("demo_limit") && err.message) {
+        if (code === "demo_limit_visitor") store.set(dayKey(), String(DEMO_LIMIT));
+        showLimit(err.message);
+        r.busy = false;
+        return;
+      }
+      answerError(code === "demo_unavailable" && err.message ? err.message : friendlyError(null, res.status, code));
       return finish(r);
     }
     markUsed();
@@ -742,12 +758,15 @@ async function ask(text, mode) {
           $("a").append(s);
           r.answer += data.text; r.buf += data.text;
           feedSentences(r, false);
-        } else if (ev === "done") {
-          if (data && data.memory_add) sessionMemories.push(String(data.memory_add).slice(0, 200));
         } else if (ev === "error") {
           r.failed = true;
         }
       }
+    }
+    // Demon kapar svaret vid 400 tecken. Då slutar vi på senaste hela meningen, i både text och röst.
+    if (r.buf.trim() && r.answer.length >= 340) {
+      const end = r.answer.length - r.buf.length;
+      if (end > 0) { r.answer = r.answer.slice(0, end).trimEnd(); r.buf = ""; $("a").textContent = r.answer; }
     }
     if (!r.answer) answerError(r.failed ? "Svaret kunde inte hämtas just nu. Försök igen om en stund." : "Det där går inte att göra i demon. Prova en annan fråga.");
     feedSentences(r, true);
@@ -791,17 +810,13 @@ $("ask").addEventListener("submit", (e) => {
 });
 
 // ---------- håll in och prata ----------
-let current = null, sttTok = null, scribeOff = false, sttWarmed = false;
+let current = null, scribeOff = false;
 const MIN_HOLD = 350;
 
 async function fetchStt() {
-  const r = await api("stt-token", { method: "GET" });
+  const r = await api("stt-token?source=demo", { method: "GET" });
   if (!r.ok) throw new Error("stt " + r.status);
   return r.json();
-}
-async function prefetchStt() {
-  if (scribeOff || sttTok || !navigator.mediaDevices) return;
-  try { sttTok = await fetchStt(); } catch { sttTok = null; scribeOff = true; }
 }
 function heard(text) { $("q").textContent = text; }
 function level(v) { if (!reduced) $("halo").style.transform = "scale(" + (1.04 + Math.min(1, v * 7) * .2).toFixed(3) + ")"; }
@@ -915,16 +930,14 @@ async function startScribe() {
   setSession("play-and-record");
   const mic = navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
   mic.catch(() => {});
-  // Rösten ska aldrig vänta på token: ljudet köas tills uttaget är öppet.
+  // Token är begränsade per dag, så en hämtas först när någon håller in. Ljudet köas tills uttaget är öppet.
   (async () => {
-    let tok = sttTok; sttTok = null;
-    if (!tok) {
-      try { tok = await fetchStt(); }
-      catch {
-        scribeOff = true; st.failed = "token";
-        if (!st.released && SR) { closeMic(st); st.done = true; st.released = true; startSafari(); }
-        return;
-      }
+    let tok;
+    try { tok = await fetchStt(); }
+    catch {
+      scribeOff = true; st.failed = "token";
+      if (!st.released && SR) { closeMic(st); st.done = true; st.released = true; startSafari(); }
+      return;
     }
     if (!st.done) openSocket(st, tok);
   })();
@@ -966,14 +979,12 @@ async function stopScribe(st) {
     st.permissionRace = true; st.done = true;
     try { if (st.ws) st.ws.close(); } catch {}
     endListening(held < MIN_HOLD ? "Håll in medan du pratar." : "Tillåt mikrofonen och håll in igen.");
-    prefetchStt();
     return;
   }
   if (held < MIN_HOLD) {
     st.done = true;
     try { if (st.ws) st.ws.close(); } catch {}
     endListening("Håll in medan du pratar.");
-    prefetchStt();
     return;
   }
   // Direkt svar på släppet: frågan står kvar och prickarna visar att något händer.
@@ -988,7 +999,6 @@ async function stopScribe(st) {
   api("stt-token", { method: "POST", body: JSON.stringify({ seconds: secs }) }).catch(() => {});
   if (!text) scribeOff = true;
   submitHeard(text, st);
-  prefetchStt();
 }
 
 const disc = $("disc");
@@ -1042,16 +1052,17 @@ $("wait").addEventListener("submit", async (e) => {
   const btn = $("waitbtn");
   btn.disabled = true; btn.textContent = "Skickar";
   try {
-    const r = await api("waitlist", { method: "POST", body: JSON.stringify({ email, consent: true, source: "demo-site" }) });
-    if (r.ok || r.status === 409) {
+    const payload = { email, consent: true, consent_version: CONSENT_VERSION, source: "demo", website: $("website").value };
+    const r = await fetch(SB + "/functions/v1/waitlist", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
+    if (r.ok) {
       $("wait").reset();
       waitMsg("Klart. Vi mejlar när appen finns.");
     } else if (r.status === 404) waitMsg(NOT_OPEN, true);
     else if (r.status === 429) waitMsg("För många försök just nu. Vänta en stund och försök igen.", true);
-    else if (r.status === 400 || r.status === 422) waitMsg("Adressen gick inte att spara. Kontrollera den och försök igen.", true);
+    else if (r.status === 400) waitMsg("Adressen gick inte att spara. Kontrollera den och försök igen.", true);
     else waitMsg("Det gick inte att spara adressen just nu. Försök igen om en stund.", true);
   } catch (err) {
-    // /waitlist finns inte än: gatewayn svarar 404 på preflight, och då ser webbläsaren bara ett nätverksfel.
+    // Tills /waitlist är driftsatt svarar gatewayn 404 på preflight, och då ser webbläsaren bara ett nätverksfel.
     waitMsg(navigator.onLine === false ? "Ingen uppkoppling. Din adress är inte sparad." : NOT_OPEN, true);
   }
   btn.disabled = false; btn.textContent = "Skriv upp mig";
@@ -1059,32 +1070,9 @@ $("wait").addEventListener("submit", async (e) => {
 
 // ---------- uppstart ----------
 showLeft();
-// Scribe-tokens är begränsade per dag, så en hämtas först när besökaren faktiskt rör sidan.
-function warmStt() {
-  if (sttWarmed) return;
-  sttWarmed = true;
-  removeEventListener("pointerdown", warmStt, true);
-  removeEventListener("scroll", warmStt, true);
-  removeEventListener("keydown", warmStt, true);
-  prefetchStt();
-}
-addEventListener("pointerdown", warmStt, { capture: true, passive: true });
-addEventListener("scroll", warmStt, { capture: true, passive: true });
-addEventListener("keydown", warmStt, { capture: true, passive: true });
-
-(async function boot() {
-  try {
-    await getToken();
-    // Väcker funktionerna så att första frågan slipper kallstart. OPTIONS går igenom gatewayn och kostar ingenting.
-    const warm = (p) => fetch(SB + "/functions/v1/" + p, { method: "OPTIONS" }).catch(() => {});
-    warm("answer"); warm("tts");
-    const v = await api("voices", { method: "GET" });
-    if (v.ok) {
-      const j = await v.json(), adam = (j.voices || []).find((x) => /adam/i.test(x.name));
-      voiceId = adam ? adam.id : j.default_id || null;
-    }
-  } catch {}   // Felet visas när någon faktiskt frågar.
-})();
+// Väcker funktionerna så att första frågan slipper kallstart. OPTIONS går igenom gatewayn och kostar ingenting.
+for (const fn of ["answer", "tts"]) fetch(SB + "/functions/v1/" + fn, { method: "OPTIONS" }).catch(() => {});
+getToken().catch(() => {});   // Felet visas när någon faktiskt frågar.
 </script>
 </body>
 </html>
