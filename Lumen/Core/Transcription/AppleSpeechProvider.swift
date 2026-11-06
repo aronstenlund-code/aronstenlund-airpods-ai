@@ -51,7 +51,7 @@ final class AppleSpeechProvider: STTProvider {
                                             transcriptionOptions: [],
                                             reportingOptions: [.volatileResults],
                                             attributeOptions: [.audioTimeRange]))
-        case .speechTranscriber, .legacyOnDevice:
+        case .speechTranscriber, .legacyOnDevice, .scribe:
             .transcriber(SpeechTranscriber(locale: locale,
                                            transcriptionOptions: [],
                                            reportingOptions: [.volatileResults],
