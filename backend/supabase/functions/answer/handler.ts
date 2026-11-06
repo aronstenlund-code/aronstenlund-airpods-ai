@@ -559,6 +559,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             trimQuestion: direct && !plan && !tutor,
             firstLineOnly: plan?.kind === "socialline",
             relationTag,
+            web: webOn,
           });
           const deliver = (t: string) => {
             if (!t || closed) return;
@@ -666,6 +667,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 trimQuestion: false,
                 firstLineOnly: plan?.kind === "socialline",
                 relationTag,
+                web: webOn,
               });
               r = await it.next();
             }
@@ -728,6 +730,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               },
               summary: noSummary ? null : post.summary,
               relation: post.relation ?? parser.meta?.relation ?? null,
+              source: post.source,
               memory_add: null,
             });
           } catch (e) {

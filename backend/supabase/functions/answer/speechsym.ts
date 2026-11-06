@@ -148,10 +148,67 @@ const ABBREVIATIONS: [RegExp, string][] = [
   [/(?<![\p{L}])resp\.?(?=\s)/gu, "respektive"],
 ];
 
+// ---------- phone numbers (D65) ----------
+// The model must never state a phone number from memory. Only 112 (emergency), 1177 (healthcare advice) and
+// 114 14 (police, non-emergency; only when the context is the police) pass; any other number written like a
+// phone number next to a phone cue is replaced. The prompt says the same; this is the safety net.
+const PHONE_CUE =
+  /(?:ring|ringa|ringer|nummer|numret|telefon|tel\b|växel|jour|spärr|larm|hjälplinje|support|kundtjänst|sms)/i;
+const PHONE_RE =
+  /(?<![\p{L}\d.,:+/-])(?:\+\d[\d -]{6,14}\d|0\d{1,3}[ -]?\d{2,3}(?:[ -]?\d{2,4}){1,3}|\d{2,5}(?:[ -]\d{2,4}){1,4})(?![\p{L}\d]|[.,]\d)/gu;
+export const PHONE_PLACEHOLDER = "numret som står på deras webbplats";
+
+/** The three numbers the assistant may give are spoken the way people say them. */
+function speakKnownNumbers(text: string, ctx: string): string {
+  const full = ctx + text;
+  let out = text;
+  const cue = (i: number, re: RegExp) => re.test(full.slice(Math.max(0, i - 60), i));
+  const swap = (re: RegExp, words: string, cueRe: RegExp, extra?: (b: string) => boolean) => {
+    out = out.replace(re, (m, off: number) => {
+      const before = full.slice(Math.max(0, ctx.length + off - 80), ctx.length + off);
+      return cue(ctx.length + off, cueRe) && (!extra || extra(before)) ? words : m;
+    });
+  };
+  swap(/(?<![\d.,:\-+/])112(?![\d]|[.,]\d)/g, "ett ett två", PHONE_CUE);
+  swap(
+    /(?<![\d.,:\-+/])1177(?![\d]|[.,]\d)/g,
+    "elva sjuttiosju",
+    /(?:ring|nummer|vårdguiden|sjukvård|rådgivning|1177)/i,
+  );
+  swap(
+    /(?<![\d.,:\-+/])114 14(?![\d])/g,
+    "ett ett fyra, ett fyra",
+    PHONE_CUE,
+    (b) => /polis/i.test(b),
+  );
+  return out;
+}
+
+export function guardPhoneNumbers(text: string, ctx = ""): string {
+  if (!/\d/.test(text)) return text;
+  text = speakKnownNumbers(text, ctx);
+  if (!/\d/.test(text)) return text;
+  const full = ctx + text;
+  let out = "";
+  let last = 0;
+  for (const m of full.matchAll(PHONE_RE)) {
+    const start = m.index!;
+    if (start < ctx.length) continue; // belongs to text already spoken
+    const digits = m[0].replace(/\D/g, "");
+    const before = full.slice(Math.max(0, start - 80), start);
+    const national = /^0\d{6,}$/.test(digits) || /^\+/.test(m[0]);
+    const cued = PHONE_CUE.test(before) || national;
+    if (!cued || digits.length < 5) continue;
+    out += full.slice(Math.max(last, ctx.length), start) + PHONE_PLACEHOLDER;
+    last = start + m[0].length;
+  }
+  return out ? out + full.slice(last) : text;
+}
+
 /** Before digits become words. */
-export function beforeNumbers(text: string): string {
+export function beforeNumbers(text: string, ctx = ""): string {
   // invisible characters (soft hyphen, zero-width) away; subscript digits (C₁₂H₂₂O₁₁) -> plain digits
-  let s = text.replace(/[\u00ad\u200b-\u200d\u2060\ufeff]/g, "").replace(
+  let s = guardPhoneNumbers(text, ctx).replace(/[\u00ad\u200b-\u200d\u2060\ufeff]/g, "").replace(
     /[\u2080-\u2089]/g,
     (c) => String(c.charCodeAt(0) - 0x2080),
   );

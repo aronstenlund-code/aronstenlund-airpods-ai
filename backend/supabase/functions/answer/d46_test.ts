@@ -603,3 +603,126 @@ Deno.test("D65: every request carries <now>; the prompt forbids 'I have no acces
   assertStringIncludes(m, "<now>fredag 6 november 2026, vecka 45");
   assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "never say that you have no access to the date");
 });
+
+import { guardPhoneNumbers, PHONE_PLACEHOLDER } from "./speechsym.ts";
+Deno.test("D65 safety: phone numbers are never read out unless 112, 1177 or 114 14 for the police", () => {
+  assertEquals(toSpeech("Ring 112 vid nödläge."), "Ring ett ett två vid nödläge.");
+  assertEquals(
+    toSpeech("Ring 1177 för sjukvårdsrådgivning."),
+    "Ring elva sjuttiosju för sjukvårdsrådgivning.",
+  );
+  assertEquals(
+    toSpeech("Spärra kortet: ring 114 14 eller bankens nummer."),
+    `Spärra kortet: ring ${PHONE_PLACEHOLDER} eller bankens nummer.`,
+  );
+  assertStringIncludes(
+    toSpeech("Polisen når du på 114 14 när det inte är akut."),
+    "hundrafjorton fjorton",
+  );
+  assertEquals(
+    toSpeech("Ring kundtjänst på 020-123 456."),
+    `Ring kundtjänst på ${PHONE_PLACEHOLDER}.`,
+  );
+  assertEquals(toSpeech("Ring 08-123 45 67 direkt."), `Ring ${PHONE_PLACEHOLDER} direkt.`);
+  assertEquals(toSpeech("Ring +46 70 123 45 67."), `Ring ${PHONE_PLACEHOLDER}.`);
+  // ordinary numbers next to no phone cue are untouched
+  assertEquals(
+    toSpeech("Det kostar 10 000 kr och tar 25 minuter."),
+    "Det kostar tiotusen kronor och tar tjugofem minuter.",
+  );
+  assertEquals(
+    toSpeech("Året var 1789 och 2026."),
+    "Året var sjuttonhundraåttionio och tvåtusen tjugosex.",
+  );
+  // the cue may sit in an earlier chunk (the stream passes its raw tail as context)
+  assertEquals(
+    guardPhoneNumbers("020 123 456 direkt", "Ring spärrjouren på "),
+    PHONE_PLACEHOLDER + " direkt",
+  );
+  assertEquals(guardPhoneNumbers("hej 112"), "hej 112");
+  // streaming: split anywhere
+  const txt = "För att spärra kortet ring 020 123 456 eller använd appen.";
+  for (const k of [1, 3, 7, 80]) {
+    const p = new AnswerPost({ previousAnswers: [], trimQuestion: false });
+    let o = "";
+    for (let i = 0; i < txt.length; i += k) o += p.push(txt.slice(i, i + k));
+    o += p.finish();
+    assert(!/\d/.test(o) && o.includes(PHONE_PLACEHOLDER), `chunk ${k}: ${o}`);
+  }
+});
+
+Deno.test("D65 safety: allergy / health memories add a binding <safety> rule; the prompt names the only allowed numbers", () => {
+  const mk = (memories: string[]) =>
+    validateAnswerRequest({
+      fragment: "vilken godis kan jag köpa",
+      mode: "push_to_talk",
+      language: "sv",
+      memories,
+    });
+  assertStringIncludes(buildDirectUserMessage(mk(["jag är allergisk mot nötter"])), "<safety>");
+  assertStringIncludes(
+    buildDirectUserMessage(mk(["Jag har celiaki"])),
+    "never say that something is safe",
+  );
+  assert(!buildDirectUserMessage(mk(["jag gillar skidor"])).includes("<safety>"));
+  assert(!buildDirectUserMessage(mk([])).includes("<safety>"));
+  for (const p of [SYSTEM_PROMPT_DIRECT_FACT, SYSTEM_PROMPT_DIRECT_TUTOR]) {
+    assertStringIncludes(p, "112 (emergency), 1177 (healthcare advice) and 114 14 (police");
+    assertStringIncludes(p, "<safety>");
+  }
+});
+
+import { EnglishGate, isEnglishSentence, SourceTap, spokenSource } from "./speech.ts";
+Deno.test("D65 web: source line is spoken as a name, English sentences are dropped, wikis are not allowed", () => {
+  const raw =
+    "Riksbankschef är Erik Thedéen, som tillträdde 1 januari 2023. Since 1 January 2023 he serves as the Governor of Sveriges Riksbank, the central bank of Sweden.\n\nkälla: en.wikipedia.org";
+  for (const k of [1, 4, 9, 400]) {
+    const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, web: true });
+    let o = "";
+    for (let i = 0; i < raw.length; i += k) o += p.push(raw.slice(i, i + k));
+    o += p.finish();
+    assert(!/Since|serves|Governor/.test(o), `chunk ${k}: ${o}`);
+    assert(!/punkt|\.org|\.se/i.test(o), `chunk ${k}: ${o}`);
+    assert(o.endsWith("Källa: Wikipedia."), `chunk ${k}: ${o}`);
+    assertEquals(p.source, "en.wikipedia.org");
+  }
+  assertEquals(spokenSource("scb.se"), "SCB");
+  assertEquals(spokenSource("www.riksdagen.se"), "Riksdagen");
+  assertEquals(spokenSource("developer.mozilla.org"), "Mozilla");
+  assertEquals(spokenSource("bbc.co.uk"), "BBC");
+  assert(isEnglishSentence("He serves as the Governor of the central bank of Sweden."));
+  assert(!isEnglishSentence("Han är riksbankschef och har varit det sedan 2023."));
+  assert(!isEnglishSentence("Staden Washington D.C. ligger i USA."));
+  const t = new SourceTap(true);
+  assertEquals(t.push("Svar. Källa: scb.se") + t.finish(), "Svar. Källa: SCB.");
+  const off = new SourceTap(false);
+  assertEquals(off.push("källa: x.se") + off.finish(), "källa: x.se");
+  const g = new EnglishGate(false);
+  assertEquals(g.push("The cat is on the mat and it is."), "The cat is on the mat and it is.");
+  assert(!RELIABLE_DOMAINS.some((d) => d.includes("wikipedia")), "no wikis");
+  assert(RELIABLE_DOMAINS.includes("riksbank.se") && !RELIABLE_DOMAINS.includes("riksbanken.se"));
+});
+
+Deno.test("D65 web: narrower search rules; ordinal list facts search", () => {
+  for (
+    const q of [
+      "vem vann slaget vid Lützen",
+      "vad är skillnaden mellan väder och klimat",
+      "vad heter idag på engelska",
+      "vad är senaste istiden",
+      "vad betyder öppet hav",
+      "hur kommer man ut ur en återvändsgränd",
+      "vilken veckodag är det idag",
+    ]
+  ) assertEquals(needsWeb(q), null, q);
+  for (
+    const q of [
+      "vem vann senaste fotbolls VM",
+      "vad är vädret i Stockholm idag",
+      "senaste nyheterna",
+      "vilken var den tredje kungen av ätten Bernadotte",
+      "sök på nätet vem som är riksbankschef",
+      "när kommer nya iPhone ut",
+    ]
+  ) assertEquals(needsWeb(q)?.search, true, q);
+});

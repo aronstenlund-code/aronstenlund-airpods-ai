@@ -2,7 +2,8 @@ import { numbersToSpeech } from "./svnum.ts";
 import { afterNumbers, beforeNumbers } from "./speechsym.ts";
 
 /** Digits, symbols, formulas and abbreviations -> speakable Swedish (D46/D54). */
-export const toSpeech = (t: string): string => afterNumbers(numbersToSpeech(beforeNumbers(t)));
+export const toSpeech = (t: string, ctx = ""): string =>
+  afterNumbers(numbersToSpeech(beforeNumbers(t, ctx)));
 
 /**
  * D46 post-processing of the streamed answer text, in code instead of more prompt text:
@@ -162,6 +163,125 @@ export class RelationTap {
     const b = this.buf;
     this.buf = "";
     return b;
+  }
+}
+
+// ---------- 0a2. web answers: source line + English sentences (D65) ----------
+/** Spoken name of a domain: "scb.se" -> "SCB", "riksdagen.se" -> "Riksdagen", "developer.mozilla.org" -> "Mozilla". */
+export function spokenSource(domain: string): string {
+  const labels = domain.toLowerCase().replace(/^www\./, "").split(".").filter(Boolean);
+  const sld = new Set(["co", "com", "org", "gov", "ac"]);
+  let i = labels.length - 2;
+  if (
+    labels.length >= 3 && labels[labels.length - 1].length === 2 &&
+    sld.has(labels[labels.length - 2])
+  ) i--;
+  const name = labels[Math.max(0, i)] ?? domain;
+  return name.length <= 4 ? name.toUpperCase() : name[0].toUpperCase() + name.slice(1);
+}
+
+/**
+ * Web answers end with `källa: <domain>`. That line is never read out as written ("scb punkt se"): it is cut
+ * from the stream, exposed as `source` (for the screen) and spoken as "Källa: SCB.".
+ */
+export class SourceTap {
+  source: string | null = null;
+  private buf = "";
+  private inSource = false;
+  private src = "";
+  constructor(private readonly enabled: boolean) {}
+  private static readonly RE = /(?:^|\n|\s)källa\s*:/i;
+
+  push(text: string): string {
+    if (!this.enabled) return text;
+    if (this.inSource) {
+      this.src += text;
+      return "";
+    }
+    this.buf += text;
+    const m = SourceTap.RE.exec(this.buf);
+    if (m) {
+      const at = m.index + (/^\s/.test(m[0]) ? 1 : 0);
+      const spoken = this.buf.slice(0, at).replace(/\s+$/, "");
+      this.src = this.buf.slice(m.index + m[0].length);
+      this.buf = "";
+      this.inSource = true;
+      return spoken;
+    }
+    // hold back a tail that may still become "källa:"
+    const tail = this.buf.slice(-8).toLowerCase();
+    let hold = 0;
+    for (let k = Math.min(6, tail.length); k > 0; k--) {
+      if ("källa:".startsWith(tail.slice(-k))) {
+        hold = k;
+        break;
+      }
+    }
+    while (hold < this.buf.length && /\s/.test(this.buf[this.buf.length - hold - 1])) hold++;
+    const out = this.buf.slice(0, this.buf.length - hold);
+    this.buf = this.buf.slice(this.buf.length - hold);
+    return out;
+  }
+
+  finish(): string {
+    if (!this.enabled) return "";
+    if (!this.inSource) {
+      const out = this.buf;
+      this.buf = "";
+      return out;
+    }
+    const d = /([a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.[a-z]{2,})/i.exec(this.src)?.[1] ?? null;
+    this.source = d ? d.toLowerCase().replace(/^www\./, "") : null;
+    this.inSource = false;
+    return this.source ? ` Källa: ${spokenSource(this.source)}.` : "";
+  }
+}
+
+const EN = new Set(
+  "the of and is are was were he she it they to in since as with for by that this has have had been who which serves served from at on be an or his her their its not but also"
+    .split(" "),
+);
+const SV = new Set(
+  "och att är som det en ett på av för med har till den i inte var de hon han vi du man om vid från efter under över sedan blev blir kan ska sig sin sitt dess"
+    .split(" "),
+);
+/** True for a sentence that is clearly English (web answers must be Swedish; a copied source sentence is dropped). */
+export function isEnglishSentence(sentence: string): boolean {
+  const w = sentence.toLowerCase().match(/\p{L}+/gu) ?? [];
+  if (w.length < 5) return false;
+  let en = 0, sv = 0;
+  for (const x of w) {
+    if (EN.has(x)) en++;
+    else if (SV.has(x)) sv++;
+  }
+  return en >= 3 && en > 1.5 * sv;
+}
+
+/** Drops whole English sentences (web mode only, unless the user asked for a translation). */
+export class EnglishGate {
+  private buf = "";
+  constructor(private readonly enabled: boolean) {}
+  push(text: string): string {
+    if (!this.enabled) return text;
+    this.buf += text;
+    let out = "";
+    for (;;) {
+      const m = /[.!?](?:\s+|$)|\n/.exec(this.buf);
+      if (!m || m.index + m[0].length >= this.buf.length && !/\s$/.test(m[0]) && m[0] !== "\n") {
+        break;
+      }
+      const end = m.index + m[0].length;
+      const sentence = this.buf.slice(0, end);
+      this.buf = this.buf.slice(end);
+      if (!isEnglishSentence(sentence)) out += sentence;
+    }
+    return out;
+  }
+  finish(): string {
+    if (!this.enabled) return "";
+    const r = isEnglishSentence(this.buf) ? "" : this.buf;
+    this.buf = "";
+    return r;
   }
 }
 
@@ -345,6 +465,13 @@ export class QuestionTrim {
 // ---------- 3. digits -> words across chunk boundaries ----------
 export class NumberStream {
   private buf = "";
+  private tail = ""; // last raw text already passed on (context for the phone-number guard)
+
+  private say(raw: string): string {
+    const out = toSpeech(raw, this.tail);
+    this.tail = (this.tail + raw).slice(-120);
+    return out;
+  }
 
   push(text: string): string {
     this.buf += text;
@@ -353,7 +480,7 @@ export class NumberStream {
     const lastWs = Math.max(this.buf.lastIndexOf(" "), this.buf.lastIndexOf("\n"));
     if (lastWs === -1) {
       if (this.buf.length <= 60) return "";
-      const out = toSpeech(this.buf); // a very long token without spaces: do not hold it forever
+      const out = this.say(this.buf); // a very long token without spaces: do not hold it forever
       this.buf = "";
       return out;
     }
@@ -361,13 +488,13 @@ export class NumberStream {
     const head = this.buf.slice(0, cut);
     const m = /((?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*|[=≈≠]|\S*\^\S*)\s+$/.exec(head); // incl. "1 " of "1 789"
     if (m && this.buf.length - cut < 160) cut = head.length - m[0].length;
-    const out = toSpeech(this.buf.slice(0, cut));
+    const out = this.say(this.buf.slice(0, cut));
     this.buf = this.buf.slice(cut);
     return out;
   }
 
   finish(): string {
-    const out = toSpeech(this.buf);
+    const out = this.say(this.buf);
     this.buf = "";
     return out;
   }
@@ -383,6 +510,8 @@ export interface PostOptions {
   firstLineOnly?: boolean;
   /** D53: the stream starts with a `[[REL ...]]` relation tag that is split off. */
   relationTag?: boolean;
+  /** D65: web answer: `källa:` line to `source`, English sentences dropped. */
+  web?: boolean;
 }
 
 export class AnswerPost {
@@ -390,6 +519,8 @@ export class AnswerPost {
   readonly trim: QuestionTrim;
   private readonly tap = new SummaryTap();
   private readonly rel: RelationTap;
+  private readonly src: SourceTap;
+  private readonly en: EnglishGate;
   private readonly gate: FirstLineGate;
   private readonly nums = new NumberStream();
 
@@ -398,6 +529,13 @@ export class AnswerPost {
     this.trim = new QuestionTrim(opts.trimQuestion);
     this.gate = new FirstLineGate(opts.firstLineOnly === true);
     this.rel = new RelationTap(opts.relationTag === true);
+    this.src = new SourceTap(opts.web === true);
+    this.en = new EnglishGate(opts.web === true);
+  }
+
+  /** Domain of the web source (from the `källa:` line), or null. */
+  get source(): string | null {
+    return this.src.source;
   }
 
   /** D53 relation reported by the model (tag), or null. */
@@ -430,16 +568,18 @@ export class AnswerPost {
   }
 
   push(raw: string): string {
-    const a = this.dup.push(this.gate.push(this.tap.push(this.rel.push(raw))));
+    const a = this.dup.push(
+      this.gate.push(this.en.push(this.src.push(this.tap.push(this.rel.push(raw))))),
+    );
     if (!a) return "";
     return this.cap(this.nums.push(this.trim.push(a)));
   }
 
   finish(): string {
-    const rest = this.trim.push(
-      this.dup.push(this.gate.push(this.tap.push(this.rel.finish()) + this.tap.finish())) +
-        this.dup.finish(),
-    ) +
+    const t = this.tap.push(this.rel.finish()) + this.tap.finish();
+    const s = this.src.push(t) + this.src.finish();
+    const e = this.en.push(s) + this.en.finish();
+    const rest = this.trim.push(this.dup.push(this.gate.push(e)) + this.dup.finish()) +
       this.trim.finish();
     return this.cap(this.nums.push(rest) + this.nums.finish());
   }
