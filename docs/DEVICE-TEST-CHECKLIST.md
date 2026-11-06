@@ -266,6 +266,58 @@ Signering: **båda** targets (`Lumen` och `LumenControls`) behöver ditt team i 
 3. Säg "spara kommando fotosyntes: förklara steg för steg": raden *Sparade kommandot "fotosyntes"* ska visas, en kort
    bekräftelse höras i AirPods, och kommandot finnas i listan. Ingen fråga ska ha skickats.
 
+### Första testet: gör i den här ordningen (ca 90 min)
+
+Punkterna 3t–3z är det viktigaste. Har du ont om tid: hoppa över 3c–3h och börja här. Du behöver en annan person i rummet.
+
+Signering: **båda** targets (`Lumen` och `LumenControls`) behöver ditt team i Xcode.
+
+### 3t. Kärnflödet från början till slut (10 min)
+1. Radera appen och installera om. Godkänn samtycket och läs texten: den ska säga att talet går till ElevenLabs. Svara *Dela inte* på frågan om historik.
+2. Tryck *Börja lyssna*. I statusraden ska det stå **Skriver ut med Scribe i molnet**. Står det *iPhone*: gå till Inställningar → Språk och läs den orange raden, och skriv ner den exakt.
+3. Håll knappen, säg "roten ur hundra", släpp. Skriv ner tiden från släpp till första ljud, fem gånger. Hörs svaret i AirPods?
+4. Säg "kom ihåg att jag går trean". Ställ sedan en fråga och kontrollera att svaret tar hänsyn till det.
+5. Slå på flygplansläge medan du lyssnar. Byter appen till iPhonens taligenkänning? Slå av igen.
+
+### 3u. Mikrofonjämförelsen (20 min)
+Diagnostik → *Mikrofonjämförelse*. Fem meningar, fyra omgångar:
+| Omgång | Mikrofon | Talare |
+|---|---|---|
+| 1 | AirPods | Din egen röst |
+| 2 | AirPods | Annan person på 1,5 m |
+| 3 | iPhone (på bordet) | Din egen röst |
+| 4 | iPhone (på bordet) | Annan person på 1,5 m |
+
+Tryck *Börja läsa*, läs meningen som visas, tryck *Klar, nästa mening*. Fel-andelen (WER) per omgång visas i rutan. Den följer med i *Copy results as Markdown*.
+Lyssna också: låter svaret bättre i AirPods med iPhone-mikrofonen än med AirPods-mikrofonen? Då fungerar A2DP-uppspelningen. Skriv ner vad du hör.
+
+### 3v. Provläge (5 min)
+Välj **Prov**, tryck *Starta Provläge*. Ställ en fråga, pausa, lyssna, ställ en följdfråga. Prata medan svaret spelas: svaret ska avbrytas. Säg "rapportera": du ska höra "Skickat" (kräver att Kevins `/feedback` är driftsatt).
+
+### 3w. Intervjuläge (10 min)
+1. Välj **Intervju**, skriv en roll, tryck *Förbered frågor och svar*: texten ska visas, inte läsas upp.
+2. Starta *övningsintervju* med kompisen som ställer frågorna, telefonen på bordet. Efter en fråga ska du höra ett upplägg, efter ditt svar en kort återkoppling. Säg "klar" när ni är färdiga: du ska få en sammanfattning.
+3. Appen växlar fråga/svar i tur och ordning. Skriv ner om den kommer i otakt.
+
+### 3x. Rizzläge (10 min, med en kompis som vet om det)
+1. Välj **Rizz**, tryck *Förbered Rizzläge*. Startskärmen med samtycket ska komma först. Välj stil och starta.
+2. Prata med kompisen. Skriv ner tiden från att kompisen slutat tala till att förslaget hörs. Hörs det någonsin över någon som pratar? Det får inte hända.
+3. Lås telefonen: syns alla förslag på låsskärmen? Tryck *Nästa*, och säg sedan "nästa".
+4. Var tyst i 4 sekunder: kommer ett förslag? Är ljudnivån lagom låg?
+5. Justera *Din röst är starkare än* i Inställningar → Rizzläge. Loggen i Diagnostik visar nivå och vem appen trodde pratade. Hur ofta blir det rätt, med telefonen på bordet och med AirPods?
+
+### 3y. Historik och minne (5 min)
+1. Inställningar → *Historik*: dina egna frågor ska stå ordagrant med svar och sammanfattning. Rizz-passet ska ha förslag men **inget** av det kompisen sa.
+2. Radera en rad. Tryck *Radera all historik*: appen ska fråga först.
+3. Inställningar → *Minne*: minnet från 3t ska finnas. Ändra det, lägg till ett, radera ett, tryck *Radera allt minne*.
+4. Stäng av och starta appen: det raderade ska vara borta.
+
+### 3z. Siri, kontroller och musik (10 min)
+1. Säg "Hej Siri, starta Lumen". Prova också "Fråga Lumen", "Starta provläge med Lumen" och "Pausa Lumen". Svarar inte Siri på svenska? Testa fraserna på engelska ("Start Lumen") och skriv ner vad som fungerar.
+2. Lägg till kontrollerna *Start Lumen* och *Lumen lyssnar* i Kontrollcenter och på låsskärmen. Händer något när du trycker?
+3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
+4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
+
 ## Del 4 — Skicka in resultaten (5 min)
 
 1. I appen: tryck **Copy results as Markdown**. Öppna Anteckningar på iPhone, klistra in, dela till
@@ -274,7 +326,7 @@ Signering: **båda** targets (`Lumen` och `LumenControls`) behöver ditt team i 
    - den inklistrade texten (en per AirPods-modell, eller en lång),
    - iPhone-modell och iOS-version (står högst upp i texten),
    - AirPods-modell + firmware (från steg 11),
-   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i, 3j (bokstavliga transkriptioner), 3k (fångade/missade frågor), 3l (latenser, feltexter), 3m (röstkvalitet), 3n (textläge), 3o (latensraden), 3q (musik) och 3p (anteckningar/material),
+   - dina anteckningar från 3b (ljudkvalitet), 3d, 3e, 3f, 3h, 3i, 3j (bokstavliga transkriptioner), 3k (fångade/missade frågor), 3l (latenser, feltexter), 3m (röstkvalitet), 3n (textläge), 3o (latensraden), 3q (musik), 3t–3z (första testet) och 3p (anteckningar/material),
    - noise-uppgifterna från `testdata/noise/README.md`.
 3. **WAV-filerna**: anslut iPhone till Macen → Finder → iPhone → *Filer* → *Lumen* → dra alla
    `lumen-*.wav` till en mapp, t.ex. `~/Lumen-recordings/<datum>/`. **Lägg dem inte i git.** Skriv
