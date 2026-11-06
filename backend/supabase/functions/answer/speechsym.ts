@@ -99,7 +99,8 @@ const ABBREVIATIONS: [RegExp, string][] = [
 
 /** Before digits become words. */
 export function beforeNumbers(text: string): string {
-  let s = text;
+  // subscript digits (C₁₂H₂₂O₁₁) -> plain digits, so the formula rules see them
+  let s = text.replace(/[\u2080-\u2089]/g, (c) => String(c.charCodeAt(0) - 0x2080));
   for (const [re, to] of ABBREVIATIONS) s = s.replace(re, to);
   // powers: 10^23, x^2, 10^{-3}
   s = s.replace(

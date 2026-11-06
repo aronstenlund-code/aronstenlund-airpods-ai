@@ -1,0 +1,49 @@
+"""Offline tests of the live-eval checks: python3 -I scripts/test_live_eval.py"""
+import datetime, importlib.util, os, sys
+
+spec = importlib.util.spec_from_file_location("le", os.path.join(os.path.dirname(os.path.abspath(__file__)), "live-eval.py"))
+le = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(le)
+
+def probs(text, prev=(), turn=None, ttft=500):
+    return le.generic_checks(text, list(prev), turn or {}, ttft)
+
+ok = []
+def check(name, cond):
+    ok.append(cond)
+    print(("ok   " if cond else "FAIL ") + name)
+
+check("clean answer", probs("Tjugo i Tokyo, åtta timmar före.") == [])
+check("digit flagged", any("tecken" in p for p in probs("Det är 408.")))
+check("symbol flagged", any("tecken" in p for p in probs("E = mc i kvadrat.")))
+check("abbrev flagged", any("förkortning" in p for p in probs("Rom föll 476 e.Kr.".replace("476", "fyra"))))
+check("question back", "fråga tillbaka" in probs("Det är tolv. Vill du veta mer?"))
+check("question allowed", probs("Vill du?", turn={"allow_question": True}) == [])
+check("lowercase start", "börjar med gemen" in probs("femton procent är tolv."))
+check("iPhone ok", "börjar med gemen" not in probs("iPhone är en telefon."))
+check("copy of earlier", "kopia av tidigare svar" in probs("Fotosyntes är processen där växter gör socker av ljus och vatten.", prev=["Fotosyntes är processen där växter gör socker av ljus och vatten och mer."]))
+check("hedge", any("brasklapp" in p for p in probs("Det här är något jag inte kan hjälpa till med direkt.")))
+check("leak", any("läckt" in p for p in probs("<computed>tio</computed> is provided? Tio.")))
+check("empty", probs("") == ["tomt svar"] and probs("null") == ["tomt svar"])
+check("slow", any("långsamt" in p for p in probs("Tolv.", ttft=3000)))
+check("web budget higher", probs("Spanien. \n\nkälla: fifa.com", turn={"web": True}, ttft=4000) == [])
+now = datetime.datetime(2026, 11, 6, 12, 0, tzinfo=datetime.timezone.utc)
+tz = {"tz": {"zone": "Asia/Tokyo", "hour": 12}}
+check("tz winter ok", le.case_checks("Klockan är tjugo i Tokyo.", None, tz, now) == [])
+check("tz 12h ok", le.case_checks("Åtta på kvällen i Tokyo.", None, tz, now) == [])
+check("tz wrong", le.case_checks("Klockan är nitton i Tokyo.", None, tz, now) != [])
+summer = datetime.datetime(2026, 7, 6, 12, 0, tzinfo=datetime.timezone.utc)
+check("tz summer ok", le.case_checks("Nitton i Tokyo.", None, tz, summer) == [])
+check("expect_any spaced", le.case_checks("Det blir fyrahundra åtta.", None, {"expect_any": ["fyrahundraåtta"]}, now) == [])
+check("expect_any missing", le.case_checks("Det blir fyrahundra.", None, {"expect_any": ["fyrahundraåtta"]}, now) != [])
+check("forbid", le.case_checks("Strålning är farligt.", None, {"forbid_any": ["strålning"]}, now) != [])
+check("shorter", le.case_checks("Lång lång lång.", "Kort.", {"shorter": True}, now) != [])
+check("web source ok", le.web_checks("Spanien vann.\n\nkälla: fifa.com", ["fifa.com"]) == [])
+check("web source bad", le.web_checks("Spanien vann.\n\nkälla: masterskapssidan.se", ["fifa.com"]) != [])
+check("web source missing", le.web_checks("Spanien vann.", ["fifa.com"]) == ["källrad saknas"])
+check("rizz ok", le.rizz_checks(["Vad hände sen?", "Berätta mer"]) == [])
+check("rizz count", le.rizz_checks(["Bara en"]) != [])
+check("rizz long", any("för långt" in p for p in le.rizz_checks(["a b c d e f g h i j k l m n", "Kort"])))
+check("sv numbers", le.sv(20) == "tjugo" and le.sv(8) == "åtta" and le.sv(0) == "noll")
+check("domains parsed", "scb.se" in le.reliable_domains() and "bbc.com" not in le.reliable_domains())
+sys.exit(0 if all(ok) else 1)

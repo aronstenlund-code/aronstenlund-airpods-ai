@@ -46,6 +46,48 @@ export class RestDb {
     }
     await r.body?.cancel();
   }
+
+  /** POST /rest/v1/<table> with an array of rows (no representation back). Throws on non-2xx. */
+  async insertMany(table: string, rows: object[]): Promise<void> {
+    if (!rows.length) return;
+    const r = await this.fetchImpl(`${this.baseUrl}/rest/v1/${table}`, {
+      method: "POST",
+      headers: this.headers({ prefer: "return=minimal" }),
+      body: JSON.stringify(rows),
+    });
+    if (!r.ok) {
+      await r.body?.cancel();
+      throw new Error(`insert ${table} failed: HTTP ${r.status}`);
+    }
+    await r.body?.cancel();
+  }
+
+  /** DELETE /rest/v1/<table>?<filter>; returns the number of deleted rows. `filter` is a PostgREST query. */
+  async deleteWhere(table: string, filter: string): Promise<number> {
+    const r = await this.fetchImpl(`${this.baseUrl}/rest/v1/${table}?${filter}`, {
+      method: "DELETE",
+      headers: this.headers({ prefer: "return=minimal,count=exact" }),
+    });
+    if (!r.ok) {
+      await r.body?.cancel();
+      throw new Error(`delete ${table} failed: HTTP ${r.status}`);
+    }
+    await r.body?.cancel();
+    const m = /\/(\d+)$/.exec(r.headers.get("content-range") ?? "");
+    return m ? Number(m[1]) : 0;
+  }
+
+  /** GET /rest/v1/<table>?<query>; returns the parsed rows. */
+  async select(table: string, query: string): Promise<unknown[]> {
+    const r = await this.fetchImpl(`${this.baseUrl}/rest/v1/${table}?${query}`, {
+      headers: this.headers(),
+    });
+    if (!r.ok) {
+      await r.body?.cancel();
+      throw new Error(`select ${table} failed: HTTP ${r.status}`);
+    }
+    return await r.json();
+  }
 }
 
 export function restDbFromEnv(env: { get(k: string): string | undefined } = Deno.env): RestDb {

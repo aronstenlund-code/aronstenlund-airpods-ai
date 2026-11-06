@@ -249,3 +249,21 @@ What the numbers showed: DB round trips from the function cost 150-240 ms each (
 - Runtime dependencies: only `jose` (JWT). The Anthropic SDK and supabase-js were replaced by `fetch` clients for boot time (D31).
 - `LLMProvider` (`answer/llm/types.ts`) is the swap point; add a class and a branch in `llm/factory.ts`.
 - Haiku 5.5 request: no `temperature`/`top_p`/`top_k` (rejected by the model), `thinking: disabled` + `output_config.effort: low` for latency (documented as accepted at effort <= high).
+
+## Feedback and opt-in shared history (D57)
+
+Migration `supabase/migrations/20261106120000_feedback_and_shared_history.sql` (one migration): tables `feedback` and `shared_history` (RLS on, insert-own-only policy, no client select/update/delete, service role does the writes), owner view `feedback_admin`, `purge_shared_history()` and a daily `pg_cron` job that deletes shared history older than 12 months. Not mixed with `answer_usage` (D49 category stats, no text).
+
+| Endpoint | What |
+|---|---|
+| `POST /feedback` | `{install_id, type?: "report"\|"app"\|"suggestion", fragment?, answer?, comment?, mode?, persona?, timings?, app_version?}` (at least one of fragment/answer/comment). `install_id` = random id of the install (8-64 chars `A-Za-z0-9_-`). Limits: body 16 KB, fragment 1000, answer 4000, comment 2000; 6/min and 100/day per user. `user_id` comes from the verified JWT, never from the body. Returns `{ok:true}`. |
+| `POST /shared-history` | `{install_id, items:[{fragment, answer, summary?, mode?, persona?}]}`, max 50 items, body 256 KB; 12/min and 400/day per user. Only the user's own question and the assistant's answer (never other people's speech). Returns `{ok, stored}`. |
+| `DELETE /shared-history` | Opt-out: deletes every row of the caller (verified user id; and the given `install_id` when sent as `{"install_id": "..."}` so history survives a lost anonymous session). Returns `{ok, deleted}`. |
+| `GET /feedback-admin?limit=50&type=report&format=html` | Owner view, **service role key as bearer only**. Shared history is deliberately not exposed there (query it with SQL). |
+| `POST /answer` | A spoken report command ("rapportera", "rapportera det där", "det där var fel", "skicka till utvecklarna", "report this") in `auto` / `push_to_talk` / `tutor` is recognised in code: no model call, no spoken answer; SSE `meta` (`is_question:false`) then `done` with `report:true`, `answered:false`. The app then sends the previous turn to `POST /feedback` and plays its own confirmation. |
+
+Tests: `supabase/functions/feedback/handler_test.ts`, `answer/d48_test.ts`.
+
+## Nightly live eval (D59)
+
+`python3 scripts/live-eval.py [--only CAT] [--dry]` runs ~100 conversations from `scripts/live-eval-cases.json` against the deployed backend (anonymous session, public key; no secrets) and writes `reports/eval/<date>.md`, `latest.json` and `history.csv`. Checks are pure functions covered by `python3 -I scripts/test_live_eval.py`. `.github/workflows/nightly-eval.yml` runs it at 02:17 UTC (and on demand: Actions -> Nightly live eval -> Run workflow) and commits the result (docs-only paths, so no iOS build).

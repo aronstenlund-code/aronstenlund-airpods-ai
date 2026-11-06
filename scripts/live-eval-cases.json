@@ -1,0 +1,1559 @@
+[
+{
+"id": "fakta-01",
+"cat": "fakta",
+"turns": [
+{
+"q": "vad är huvudstaden i Australien",
+"expect_any": [
+"canberra"
+]
+}
+]
+},
+{
+"id": "fakta-02",
+"cat": "fakta",
+"turns": [
+{
+"q": "vem skrev Pippi Långstrump",
+"expect_any": [
+"lindgren"
+]
+}
+]
+},
+{
+"id": "fakta-03",
+"cat": "fakta",
+"turns": [
+{
+"q": "hur många planeter finns i solsystemet",
+"expect_any": [
+"åtta"
+]
+}
+]
+},
+{
+"id": "fakta-04",
+"cat": "fakta",
+"turns": [
+{
+"q": "när började andra världskriget",
+"expect_any": [
+"nittonhundratrettionio"
+]
+}
+]
+},
+{
+"id": "fakta-05",
+"cat": "fakta",
+"turns": [
+{
+"q": "vilken är världens längsta flod",
+"expect_any": [
+"nilen",
+"amazonas"
+]
+}
+]
+},
+{
+"id": "fakta-06",
+"cat": "fakta",
+"turns": [
+{
+"q": "vad är en mitokondrie",
+"expect_any": [
+"cell"
+]
+}
+]
+},
+{
+"id": "fakta-07",
+"cat": "fakta",
+"turns": [
+{
+"q": "vad är BNP",
+"expect_any": [
+"brutto"
+]
+}
+]
+},
+{
+"id": "fakta-08",
+"cat": "fakta",
+"turns": [
+{
+"q": "vem var Gustav Vasa",
+"expect_any": [
+"femtonhundra"
+]
+}
+]
+},
+{
+"id": "fakta-09",
+"cat": "fakta",
+"turns": [
+{
+"q": "hur många ledamöter har riksdagen",
+"expect_any": [
+"trehundrafyrtionio"
+]
+}
+]
+},
+{
+"id": "fakta-10",
+"cat": "fakta",
+"turns": [
+{
+"q": "vad är fotosyntes",
+"expect_any": [
+"ljus"
+]
+}
+]
+},
+{
+"id": "fakta-11",
+"cat": "fakta",
+"turns": [
+{
+"q": "vad betyder ambivalent",
+"expect_any": [
+"motstridig",
+"tvehågsen",
+"blandade"
+]
+}
+]
+},
+{
+"id": "fakta-12",
+"cat": "fakta",
+"turns": [
+{
+"q": "vad är pi",
+"expect_any": [
+"tre komma ett fyra"
+]
+}
+]
+},
+{
+"id": "fakta-13",
+"cat": "fakta",
+"turns": [
+{
+"q": "vem målade Mona Lisa",
+"expect_any": [
+"leonardo"
+]
+}
+]
+},
+{
+"id": "fakta-14",
+"cat": "fakta",
+"turns": [
+{
+"q": "vad är skillnaden mellan virus och bakterie",
+"expect_any": [
+"värdcell",
+"levande",
+"antibiotika"
+]
+}
+]
+},
+{
+"id": "följdfråga-01",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "andra världskriget"
+},
+{
+"q": "varför började det",
+"shorter": false,
+"follow": true
+},
+{
+"q": "kortare",
+"shorter": true,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-02",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "vad är inflation"
+},
+{
+"q": "enklare",
+"shorter": false,
+"follow": true
+},
+{
+"q": "ge ett exempel",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-03",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "hur fungerar ett batteri"
+},
+{
+"q": "anod, katod och elektrolyt",
+"shorter": false,
+"follow": true
+},
+{
+"q": "mer detaljer",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-04",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "vad är fotosyntes"
+},
+{
+"q": "vad behöver växten?",
+"shorter": false,
+"follow": true
+},
+{
+"q": "varför då?",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-05",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "franska revolutionen"
+},
+{
+"q": "Bastiljen",
+"shorter": false,
+"follow": true
+},
+{
+"q": "vad hände 1792?",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-06",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "vad är en mol"
+},
+{
+"q": "och vad är avogadros tal",
+"shorter": false,
+"follow": true
+},
+{
+"q": "förklara enklare",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-07",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "vad är demokrati"
+},
+{
+"q": "fördelar och nackdelar",
+"shorter": false,
+"follow": true
+},
+{
+"q": "kortare",
+"shorter": true,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-08",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "pythagoras sats"
+},
+{
+"q": "exempel",
+"shorter": false,
+"follow": true
+},
+{
+"q": "och i en annan triangel",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-09",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "mitokondrien"
+},
+{
+"q": "vad gör den",
+"shorter": false,
+"follow": true
+},
+{
+"q": "mer",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-10",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "vad är energi"
+},
+{
+"q": "joule, kalori och kilowattimme",
+"shorter": false,
+"follow": true
+},
+{
+"q": "enklare",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-11",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "skillnad virus bakterie"
+},
+{
+"q": "hur behandlas de",
+"shorter": false,
+"follow": true
+},
+{
+"q": "kortare",
+"shorter": true,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-12",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "vad är aktier"
+},
+{
+"q": "vad är utdelning",
+"shorter": false,
+"follow": true
+},
+{
+"q": "ge ett exempel",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-13",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "Gustav Vasa"
+},
+{
+"q": "vad hände 1523",
+"shorter": false,
+"follow": true
+},
+{
+"q": "varför då?",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "följdfråga-14",
+"cat": "följdfråga",
+"turns": [
+{
+"q": "riksdagens uppgift"
+},
+{
+"q": "budgeten, lagarna och kontrollen av regeringen",
+"shorter": false,
+"follow": true
+},
+{
+"q": "förklara det enklare",
+"shorter": false,
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-01",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "vad är joniserande strålning"
+},
+{
+"q": "hur gör man pannkakor",
+"forbid_any": [
+"strålning"
+],
+"expect_any": [
+"mjöl",
+"ägg",
+"smet"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"strålning"
+],
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-02",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "grekiska filosofer"
+},
+{
+"q": "vad är inflation",
+"forbid_any": [
+"filosof",
+"platon"
+],
+"expect_any": [
+"pris",
+"pengar"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"filosof",
+"platon"
+],
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-03",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "hur fungerar ett batteri"
+},
+{
+"q": "vem var Gustav Vasa",
+"forbid_any": [
+"batteri",
+"anod"
+],
+"expect_any": [
+"vasa",
+"kung"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"batteri",
+"anod"
+],
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-04",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "vad är demokrati"
+},
+{
+"q": "hur räknar man ut procent",
+"forbid_any": [
+"demokrati"
+],
+"expect_any": [
+"procent",
+"hundra"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"demokrati"
+],
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-05",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "vad är fotosyntes"
+},
+{
+"q": "vad är huvudstaden i Frankrike",
+"forbid_any": [
+"fotosyntes",
+"växt"
+],
+"expect_any": [
+"paris"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"fotosyntes",
+"växt"
+],
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-06",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "andra världskriget"
+},
+{
+"q": "hur byter man däck",
+"forbid_any": [
+"krig"
+],
+"expect_any": [
+"däck",
+"domkraft"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"krig"
+],
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-07",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "vad är energi"
+},
+{
+"q": "till engelska: jag blir sen",
+"forbid_any": [
+"energi"
+],
+"expect_any": [
+"late"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"energi"
+],
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-08",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "vad är en mol"
+},
+{
+"q": "vem skrev Pippi Långstrump",
+"forbid_any": [
+"mol"
+],
+"expect_any": [
+"lindgren"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"mol"
+],
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-09",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "vad är aktier"
+},
+{
+"q": "hur lagar man ris",
+"forbid_any": [
+"aktie"
+],
+"expect_any": [
+"ris",
+"vatten"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"aktie"
+],
+"follow": true
+}
+]
+},
+{
+"id": "ämnesbyte-10",
+"cat": "ämnesbyte",
+"turns": [
+{
+"q": "franska revolutionen"
+},
+{
+"q": "vad är skillnaden mellan virus och bakterie",
+"forbid_any": [
+"revolution"
+],
+"expect_any": [
+"virus",
+"bakter"
+]
+},
+{
+"q": "varför då?",
+"forbid_any": [
+"revolution"
+],
+"follow": true
+}
+]
+},
+{
+"id": "beräkning-01",
+"cat": "beräkning",
+"turns": [
+{
+"q": "17 gånger 24",
+"expect_any": [
+"fyrahundraåtta"
+]
+}
+]
+},
+{
+"id": "beräkning-02",
+"cat": "beräkning",
+"turns": [
+{
+"q": "vad är 15 procent av 80",
+"expect_any": [
+"tolv"
+]
+}
+]
+},
+{
+"id": "beräkning-03",
+"cat": "beräkning",
+"turns": [
+{
+"q": "hur mycket är 250 delat med 4",
+"expect_any": [
+"sextiotvå komma fem"
+]
+}
+]
+},
+{
+"id": "beräkning-04",
+"cat": "beräkning",
+"turns": [
+{
+"q": "roten ur 144",
+"expect_any": [
+"tolv"
+]
+}
+]
+},
+{
+"id": "beräkning-05",
+"cat": "beräkning",
+"turns": [
+{
+"q": "3 upphöjt till 5",
+"expect_any": [
+"tvåhundrafyrtiotre"
+]
+}
+]
+},
+{
+"id": "beräkning-06",
+"cat": "beräkning",
+"turns": [
+{
+"q": "vad är 1250 plus 3475",
+"expect_any": [
+"fyratusensjuhundratjugofem"
+]
+}
+]
+},
+{
+"id": "beräkning-07",
+"cat": "beräkning",
+"turns": [
+{
+"q": "2 liter i deciliter",
+"expect_any": [
+"tjugo"
+]
+}
+]
+},
+{
+"id": "beräkning-08",
+"cat": "beräkning",
+"turns": [
+{
+"q": "hur många gram är 3 kilo",
+"expect_any": [
+"tretusen"
+]
+}
+]
+},
+{
+"id": "beräkning-09",
+"cat": "beräkning",
+"turns": [
+{
+"q": "20 grader celsius i fahrenheit",
+"expect_any": [
+"sextioåtta"
+]
+}
+]
+},
+{
+"id": "beräkning-10",
+"cat": "beräkning",
+"turns": [
+{
+"q": "99 minus 57",
+"expect_any": [
+"fyrtiotvå"
+]
+}
+]
+},
+{
+"id": "beräkning-11",
+"cat": "beräkning",
+"turns": [
+{
+"q": "tiotusen genom fyra hundra",
+"expect_any": [
+"tjugofem"
+]
+}
+]
+},
+{
+"id": "beräkning-12",
+"cat": "beräkning",
+"turns": [
+{
+"q": "8 gånger 7",
+"expect_any": [
+"femtiosex"
+]
+}
+]
+},
+{
+"id": "beräkning-13",
+"cat": "beräkning",
+"turns": [
+{
+"q": "vad är 20 procent av 350",
+"expect_any": [
+"sjuttio"
+]
+}
+]
+},
+{
+"id": "beräkning-14",
+"cat": "beräkning",
+"turns": [
+{
+"q": "1000 genom 8",
+"expect_any": [
+"hundratjugofem"
+]
+}
+]
+},
+{
+"id": "beräkning-15",
+"cat": "beräkning",
+"turns": [
+{
+"q": "hur långt är 5 mil i kilometer",
+"expect_any": [
+"femtio"
+]
+}
+]
+},
+{
+"id": "beräkning-16",
+"cat": "beräkning",
+"turns": [
+{
+"q": "36 delat med 9 plus 2",
+"expect_any": [
+"sex"
+]
+}
+]
+},
+{
+"id": "beräkning-17",
+"cat": "beräkning",
+"turns": [
+{
+"q": "vad är 0,5 gånger 18",
+"expect_any": [
+"nio"
+]
+}
+]
+},
+{
+"id": "tid-01",
+"cat": "tid",
+"turns": [
+{
+"q": "vad är klockan i tokyo när den är 12 här",
+"tz": {
+"zone": "Asia/Tokyo",
+"hour": 12
+},
+"forbid_any": [
+"det beror på"
+]
+}
+]
+},
+{
+"id": "tid-02",
+"cat": "tid",
+"turns": [
+{
+"q": "vad är klockan i new york när den är 15 här",
+"tz": {
+"zone": "America/New_York",
+"hour": 15
+},
+"forbid_any": [
+"det beror på"
+]
+}
+]
+},
+{
+"id": "tid-03",
+"cat": "tid",
+"turns": [
+{
+"q": "vad är klockan i london när den är 18 här",
+"tz": {
+"zone": "Europe/London",
+"hour": 18
+},
+"forbid_any": [
+"det beror på"
+]
+}
+]
+},
+{
+"id": "tid-04",
+"cat": "tid",
+"turns": [
+{
+"q": "vad är klockan i sydney när den är 8 här",
+"tz": {
+"zone": "Australia/Sydney",
+"hour": 8
+},
+"forbid_any": [
+"det beror på"
+]
+}
+]
+},
+{
+"id": "tid-05",
+"cat": "tid",
+"turns": [
+{
+"q": "vad är klockan i los angeles när den är 12 här",
+"tz": {
+"zone": "America/Los_Angeles",
+"hour": 12
+},
+"forbid_any": [
+"det beror på"
+]
+}
+]
+},
+{
+"id": "tid-06",
+"cat": "tid",
+"turns": [
+{
+"q": "vad är klockan i dubai när den är 9 här",
+"tz": {
+"zone": "Asia/Dubai",
+"hour": 9
+},
+"forbid_any": [
+"det beror på"
+]
+}
+]
+},
+{
+"id": "tid-07",
+"cat": "tid",
+"turns": [
+{
+"q": "vad är klockan i bangkok när den är 22 här",
+"tz": {
+"zone": "Asia/Bangkok",
+"hour": 22
+},
+"forbid_any": [
+"det beror på"
+]
+}
+]
+},
+{
+"id": "tid-08",
+"cat": "tid",
+"turns": [
+{
+"q": "vad är klockan i delhi när den är 14 här",
+"tz": {
+"zone": "Asia/Kolkata",
+"hour": 14
+},
+"forbid_any": [
+"det beror på"
+]
+}
+]
+},
+{
+"id": "symboler-01",
+"cat": "symboler",
+"turns": [
+{
+"q": "e=mc2",
+"expect_any": [
+"i kvadrat"
+]
+}
+]
+},
+{
+"id": "symboler-02",
+"cat": "symboler",
+"turns": [
+{
+"q": "kemisk formel för koksalt",
+"expect_any": [
+"natriumklorid",
+"enn a se ell"
+]
+}
+]
+},
+{
+"id": "symboler-03",
+"cat": "symboler",
+"turns": [
+{
+"q": "kemisk formel för vatten",
+"expect_any": [
+"ha två o",
+"vatten"
+]
+}
+]
+},
+{
+"id": "symboler-04",
+"cat": "symboler",
+"turns": [
+{
+"q": "vad är ljusets hastighet",
+"expect_any": [
+"kilometer per sekund",
+"meter per sekund"
+]
+}
+]
+},
+{
+"id": "symboler-05",
+"cat": "symboler",
+"turns": [
+{
+"q": "vad är avogadros tal",
+"expect_any": [
+"upphöjt till"
+]
+}
+]
+},
+{
+"id": "symboler-06",
+"cat": "symboler",
+"turns": [
+{
+"q": "vad säger pythagoras sats",
+"expect_any": [
+"i kvadrat"
+]
+}
+]
+},
+{
+"id": "symboler-07",
+"cat": "symboler",
+"turns": [
+{
+"q": "när föll västromerska riket",
+"expect_any": [
+"efter kristus",
+"fyrahundra"
+]
+}
+]
+},
+{
+"id": "symboler-08",
+"cat": "symboler",
+"turns": [
+{
+"q": "hur lyder andragradsformeln",
+"expect_any": [
+"roten ur",
+"i kvadrat"
+]
+}
+]
+},
+{
+"id": "symboler-09",
+"cat": "symboler",
+"turns": [
+{
+"q": "ohms lag",
+"expect_any": [
+"gånger",
+"delat",
+"är lika med"
+]
+}
+]
+},
+{
+"id": "symboler-10",
+"cat": "symboler",
+"turns": [
+{
+"q": "kemisk formel för socker",
+"expect_any": [
+"se tolv ha tjugotvå o elva"
+]
+}
+]
+},
+{
+"id": "praktiskt-01",
+"cat": "praktiskt",
+"turns": [
+{
+"q": "hur gör man pannkakor",
+"expect_any": [
+"mjöl",
+"ägg"
+],
+"forbid_any": [
+"jag kan inte hjälpa",
+"jag är inte läkare",
+"som ai"
+]
+}
+]
+},
+{
+"id": "praktiskt-02",
+"cat": "praktiskt",
+"turns": [
+{
+"q": "jag har tappat nycklarna",
+"expect_any": [],
+"forbid_any": [
+"jag kan inte hjälpa",
+"jag är inte läkare",
+"som ai"
+]
+}
+]
+},
+{
+"id": "praktiskt-03",
+"cat": "praktiskt",
+"turns": [
+{
+"q": "hur byter man däck",
+"expect_any": [
+"domkraft"
+],
+"forbid_any": [
+"jag kan inte hjälpa",
+"jag är inte läkare",
+"som ai"
+]
+}
+]
+},
+{
+"id": "praktiskt-04",
+"cat": "praktiskt",
+"turns": [
+{
+"q": "recept på köttbullar",
+"expect_any": [
+"köttfärs"
+],
+"forbid_any": [
+"jag kan inte hjälpa",
+"jag är inte läkare",
+"som ai"
+]
+}
+]
+},
+{
+"id": "praktiskt-05",
+"cat": "praktiskt",
+"turns": [
+{
+"q": "hur lagar man ris",
+"expect_any": [
+"vatten"
+],
+"forbid_any": [
+"jag kan inte hjälpa",
+"jag är inte läkare",
+"som ai"
+]
+}
+]
+},
+{
+"id": "praktiskt-06",
+"cat": "praktiskt",
+"turns": [
+{
+"q": "jag har ont i halsen",
+"expect_any": [],
+"forbid_any": [
+"jag kan inte hjälpa",
+"jag är inte läkare",
+"som ai"
+]
+}
+]
+},
+{
+"id": "praktiskt-07",
+"cat": "praktiskt",
+"turns": [
+{
+"q": "hur skriver jag ett cv",
+"expect_any": [
+"erfarenhet",
+"utbildning"
+],
+"forbid_any": [
+"jag kan inte hjälpa",
+"jag är inte läkare",
+"som ai"
+]
+}
+]
+},
+{
+"id": "praktiskt-08",
+"cat": "praktiskt",
+"turns": [
+{
+"q": "hur tvättar jag en ylletröja",
+"expect_any": [
+"handtvätt",
+"kallt",
+"ylle",
+"tvätt"
+],
+"forbid_any": [
+"jag kan inte hjälpa",
+"jag är inte läkare",
+"som ai"
+]
+}
+]
+},
+{
+"id": "socialt-01",
+"cat": "socialt",
+"turns": [
+{
+"q": "Kalle sa att jag är tråkig vad säger jag",
+"max_words": 16
+}
+]
+},
+{
+"id": "socialt-02",
+"cat": "socialt",
+"turns": [
+{
+"q": "hon skrev hej vad svarar jag",
+"max_words": 16
+}
+]
+},
+{
+"id": "socialt-03",
+"cat": "socialt",
+"turns": [
+{
+"q": "min kompis frågade om jag vill hänga ikväll vad säger jag",
+"max_words": 16
+}
+]
+},
+{
+"id": "rizz-01",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "P1"
+}
+]
+},
+{
+"id": "rizz-02",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "P3"
+}
+]
+},
+{
+"id": "rizz-03",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "S1"
+}
+]
+},
+{
+"id": "rizz-04",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "G1"
+}
+]
+},
+{
+"id": "rizz-05",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "C1"
+}
+]
+},
+{
+"id": "rizz-06",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "T1"
+}
+]
+},
+{
+"id": "rizz-07",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "A1"
+}
+]
+},
+{
+"id": "rizz-08",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "N1"
+}
+]
+},
+{
+"id": "minne-01",
+"cat": "minne",
+"turns": [
+{
+"q": "vad har du gjort i sommar",
+"memories": [
+"Jag har varit och åkt skidor"
+],
+"expect_any": [
+"skidor"
+],
+"forbid_any": [
+"berätta för mig först"
+]
+}
+]
+},
+{
+"id": "minne-02",
+"cat": "minne",
+"turns": [
+{
+"q": "vad tycker jag om för mat",
+"memories": [
+"Jag älskar italiensk mat"
+],
+"expect_any": [
+"italiensk"
+],
+"forbid_any": []
+}
+]
+},
+{
+"id": "minne-03",
+"cat": "minne",
+"turns": [
+{
+"q": "var bor jag",
+"memories": [
+"Jag bor i Göteborg"
+],
+"expect_any": [
+"göteborg"
+],
+"forbid_any": []
+}
+]
+},
+{
+"id": "minne-04",
+"cat": "minne",
+"turns": [
+{
+"q": "föreslå en present till min syster",
+"memories": [
+"Min syster gillar att baka"
+],
+"expect_any": [
+"bak"
+],
+"forbid_any": []
+}
+]
+},
+{
+"id": "minne-05",
+"cat": "minne",
+"turns": [
+{
+"q": "vad heter min hund",
+"memories": [
+"Min hund heter Bella"
+],
+"expect_any": [
+"bella"
+],
+"forbid_any": []
+}
+]
+},
+{
+"id": "minne-06",
+"cat": "minne",
+"turns": [
+{
+"q": "hur gammal är min hund",
+"memories": [
+"Min hund Bella är 4 år"
+],
+"expect_any": [
+"fyra"
+],
+"forbid_any": []
+}
+]
+},
+{
+"id": "webb-01",
+"cat": "webb",
+"turns": [
+{
+"q": "vem vann senaste fotbolls VM",
+"web": true
+}
+]
+},
+{
+"id": "webb-02",
+"cat": "webb",
+"turns": [
+{
+"q": "vad är vädret idag i Stockholm",
+"web": true
+}
+]
+},
+{
+"id": "webb-03",
+"cat": "webb",
+"turns": [
+{
+"q": "vem är Sveriges statsminister just nu",
+"web": true
+}
+]
+},
+{
+"id": "webb-04",
+"cat": "webb",
+"turns": [
+{
+"q": "nyheter om Sverige idag",
+"web": true
+}
+]
+},
+{
+"id": "webb-05",
+"cat": "webb",
+"turns": [
+{
+"q": "kolla scb.se hur många bor i Sverige",
+"web": true
+}
+]
+}
+]

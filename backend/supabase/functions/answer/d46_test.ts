@@ -454,6 +454,7 @@ Deno.test("D54: symbols, formulas, abbreviations and ordinals are spoken, not re
   assertEquals(toSpeech("50 m²"), "femtio kvadratmeter");
   assertEquals(toSpeech("C12H22O11"), "se tolv ha tjugotvå o elva");
   assertEquals(toSpeech("NaCl och H2O"), "enn a se ell och ha två o");
+  assertEquals(toSpeech("C\u2081\u2082H\u2082\u2082O\u2081\u2081"), "se tolv ha tjugotvå o elva");
   assertEquals(toSpeech("PIN och Hon"), "PIN och Hon"); // ordinary words are left alone
   assertEquals(
     toSpeech("år 476 e.Kr. och 300 f.Kr."),

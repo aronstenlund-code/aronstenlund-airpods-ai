@@ -231,3 +231,39 @@ Deno.test("D51: no memory + a question about the user -> explicit no_memory sign
   await (await handler(post(body({ fragment: "hon skrev hej" })))).text();
   assert(!seen[2].user.includes("no_memory"), "only for questions about the user");
 });
+
+import { detectReport } from "./report.ts";
+Deno.test("D57: the spoken report command is recognised locally: done.report, no answer, no model call", async () => {
+  const { provider, seen } = scripted("Svar.");
+  const { handler, usage } = setup(provider);
+  for (
+    const f of [
+      "rapportera",
+      "Rapportera det där!",
+      "det där var fel",
+      "skicka till utvecklarna",
+      "report this",
+    ]
+  ) {
+    const ev = await sse(await handler(post(body({ fragment: f, mode: "push_to_talk" }))));
+    assertEquals(ev.map((e) => e.event), ["meta", "done"], f);
+    assertEquals(ev[1].data.report, true, f);
+    assertEquals(ev[1].data.answered, false, f);
+  }
+  assertEquals(seen.length, 0, "no model call");
+  assertEquals(usage[0].status, "report");
+  assert(!JSON.stringify(usage[0]).includes("rapportera"), "no text in the usage row");
+  // not a command: a question about the word, a longer sentence, typed text mode
+  for (
+    const f of [
+      "vad betyder rapportera",
+      "rapportera till skatteverket hur gör man",
+      "varför blev det fel i går",
+    ]
+  ) {
+    assertEquals(detectReport(f), false, f);
+  }
+  const ev = await sse(await handler(post(body({ fragment: "rapportera", mode: "text" }))));
+  assertEquals(ev.at(-1)!.data.report, undefined);
+  assertEquals(seen.length, 1, "text mode goes to the model");
+});

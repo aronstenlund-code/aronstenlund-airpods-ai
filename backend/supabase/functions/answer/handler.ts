@@ -8,6 +8,7 @@ import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFragment } from "./calc.ts";
 import { categorize } from "./category.ts";
+import { detectReport } from "./report.ts";
 import { detectMemoryAdd, MEMORY_ACK, MEMORY_SUMMARY } from "./memory.ts";
 import { needsWeb, WEB_PROMPT, WEB_SEARCH_USD, WEB_UNAVAILABLE_NOTE, webTools } from "./web.ts";
 import { AnswerPost } from "./speech.ts";
@@ -174,6 +175,77 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         throw new HttpError(503, "provider_unconfigured", "LLM provider not configured", {
           fallback: true,
         });
+      }
+
+      // D57: the spoken report command is recognised here (no model call, nothing spoken): the app sends
+      // the previous turn to POST /feedback and plays its own confirmation.
+      if (
+        (body.mode === "auto" || body.mode === "push_to_talk" || body.mode === "tutor") &&
+        detectReport(body.fragment)
+      ) {
+        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits);
+        if (!rl.allowed) {
+          throw new HttpError(429, "rate_limited", "Too many requests", {
+            fallback: true,
+            retryAfterSec: rl.retryAfterSec,
+          });
+        }
+        const totalMs = Math.round(now() - t0);
+        try {
+          await deps.recordUsage({
+            user_id: user.id,
+            endpoint: "answer",
+            mode: body.mode,
+            language: body.language,
+            provider: "local",
+            model: "report",
+            is_question: false,
+            confidence: 1,
+            input_tokens: null,
+            output_tokens: null,
+            ttft_ms: 0,
+            total_ms: totalMs,
+            est_cost_usd: 0,
+            status: "report",
+            category: "övrigt",
+            persona: body.persona,
+          });
+        } catch (e) {
+          console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+        }
+        const frames = [
+          sseFrame("meta", {
+            reconstructed_question: body.fragment,
+            confidence: 1,
+            is_question: false,
+            needs_confirmation: false,
+            answer_type: "fact",
+          }),
+          sseFrame("done", {
+            answered: false,
+            report: true,
+            timing: { meta_ms: 0, ttft_ms: null, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: {
+              input_tokens: 0,
+              output_tokens: 0,
+              cache_read_tokens: 0,
+              web_searches: 0,
+              model: "report",
+            },
+            summary: null,
+            memory_add: null,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
       }
 
       // D49: an explicit "kom ihåg ..." is answered locally (no model call) and returned as `memory_add`.

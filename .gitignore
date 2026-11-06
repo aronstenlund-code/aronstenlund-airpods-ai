@@ -19,3 +19,6 @@ testdata/noise/*.mp3
 
 # Local signing overrides
 Config/Local.xcconfig
+
+# Local Claude Code permissions (never committed)
+.claude/settings.local.json

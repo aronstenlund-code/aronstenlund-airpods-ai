@@ -1,0 +1,39 @@
+name: Nightly live eval
+
+# Runs scripts/live-eval.py against the DEPLOYED backend with an anonymous Supabase session and the PUBLIC
+# publishable key (both public by design: no secrets in this repo or in this workflow). The report is committed
+# to reports/eval/ (docs-only path: it does not trigger the iOS build).
+on:
+  schedule:
+    - cron: "17 2 * * *" # every night 02:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write # push the report with the built-in GITHUB_TOKEN
+
+concurrency:
+  group: nightly-eval
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests of the checks
+        run: python3 -I scripts/test_live_eval.py
+      - name: Run live eval
+        run: python3 scripts/live-eval.py
+      - name: Commit report
+        run: |
+          git config user.name "lumen-eval"
+          git config user.email "lumen-eval@users.noreply.github.com"
+          git add reports/eval
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "Nightly live eval $(date -u +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep $((i*5)); done
+          exit 1
