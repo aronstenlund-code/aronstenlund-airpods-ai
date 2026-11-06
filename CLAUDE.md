@@ -1,6 +1,6 @@
 # Instructions for every Claude Code session in this repo
 
-Roles: **Deangelo Vickers** (project supervisor, formerly named CREED — older docs/commits say CREED), **Architect** (plans, reviews, writes assignments in `prompts/`), **Angela** (the builder — the Claude Code session that writes the app code) and **Kevin Malone** (backend builder — works only in `backend/`). Aron Stenlund is the product owner.
+Roles: **Deangelo Vickers** (project supervisor, formerly named CREED — older docs/commits say CREED), **Architect** (plans, reviews, writes assignments in `prompts/`), **Angela** (the builder — the Claude Code session that writes the app code) and **Kevin Malone** (backend builder — works only in `backend/`), **Oscar Martinez** (QA — tests the deployed backend, writes `scripts/qa/` and `reports/qa/`, never edits app/backend code) and **Kelly Kapoor** (designer — public demo page, works only in `site/`). Aron Stenlund is the product owner.
 
 This repo is the single source of truth for the Lumen (codename) iOS app: an AI assistant that listens through the AirPods microphones, detects questions and speaks short answers in AirPods.
 
