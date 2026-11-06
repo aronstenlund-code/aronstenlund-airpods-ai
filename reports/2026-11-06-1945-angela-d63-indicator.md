@@ -21,9 +21,9 @@ Date: 2026-11-06 · Assignment: Aron (chat), prompt D63 · Device: **none**
 - D57 (`/feedback`) is still waiting for Kevin's deploy; see the previous report.
 
 ## Concerns
-- **Indicator, conflicting instructions.** Aron answered "Smalare med text" in chat. The prompt pasted just after says "stays discreet with no text", and Deangelo's handoff calls that an owner decision. I followed the direct answer, which also matches CLAUDE.md. A no-text version stays unbuilt until CLAUDE.md's guardrail is changed by the owner or the Architect has answered this concern.
+- **Indicator, settled.** The prompt pasted after "Smalare med text" said "stays discreet with no text". Aron then answered "Behåll texten" in chat: the indicator keeps its text and the no-text wording no longer applies (D68).
 - **The ad script in the handoff** goes "classroom WW1 question with nod" to "grade paper A+". That shows use in class, against D41 ("never use during an exam") and R6, and the consent screen tells users not to use Lumen during exams. Worth a decision before any ad is made.
 - **For Kevin:** the Rizz prompt describes "a 17-25 year old" (`backend/README.md`). With D63 flirting is 18+, so that wording should go.
 
 ## Next session
-Kevin: deploy D63 and D57, which needs `supabase-lumen` connected. Aron: settle the indicator text and look at the ad script. First phone session: checklist §3t–3z.
+Kevin: deploy D63 and D57, which needs `supabase-lumen` connected. Aron: look at the ad script. First phone session: checklist §3t–3z.
