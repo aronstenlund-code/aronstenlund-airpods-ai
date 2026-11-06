@@ -1,4 +1,4 @@
-**QUEUED (Deangelo 2026-11-06, D54): microphone source setting** — AirPods vs iPhone mic (A2DP output to AirPods), per-mode defaults, route logged, Diagnostics comparison run (same 5 sentences, own voice + other person at 1.5 m, record Scribe transcript for WER). Unit-test the session-config builder. Sparläge not required (budget reset), but keep commits small.
+**QUEUED (Deangelo 2026-11-06, D55): microphone source setting** — AirPods vs iPhone mic (A2DP output to AirPods), per-mode defaults, route logged, Diagnostics comparison run (same 5 sentences, own voice + other person at 1.5 m, record Scribe transcript for WER). Unit-test the session-config builder. Sparläge not required (budget reset), but keep commits small.
 
 **QUEUED (D49):** Settings → Historik (list, delete one, 'Radera all historik' with in-app confirm, 2-year auto-delete) and Settings → Minne (list/edit/delete, 'Radera allt minne', save from `memory_add`, send `memories` with each request, 2-year expiry). Privacy text update. Sparläge.
 
