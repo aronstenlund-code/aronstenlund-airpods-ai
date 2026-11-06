@@ -1,3 +1,5 @@
+**QUEUED (Deangelo 18:05, D60): nod to expand.** Head-nod detection on AirPods motion (classifier from Track D spike, nod vs shake, ~4 s window after a short answer that ends with the offer) → request the A-level answer for the same turn; 'mer' as voice fallback; setting to turn off. Unit-test the classifier on synthetic motion data; device behaviour untested.
+
 **QUEUED (Deangelo 17:30, D58): hands-free start + music hand-off.** App Intents/App Shortcuts with Swedish phrases (Starta Lumen, Fråga Lumen, Starta provläge med Lumen, Pausa Lumen), Control Center/Lock Screen control, spoken 'pausa'/'spela musik' → stop + deactivate with notifyOthersOnDeactivation. Unit-test intents where possible; device behaviour untested.
 
 **QUEUED (Deangelo 17:25, D57): feedback.** 'Rapportera' on every answer + voice command in hands-free modes (backend returns `report: true`) → send previous turn verbatim to `/feedback`, speak 'Skickat'. Settings → 'Feedback & förslag' (free text). Onboarding + Settings opt-in 'Dela historik för att förbättra appen' (off by default; off → delete shared rows). Never include other people's speech.
