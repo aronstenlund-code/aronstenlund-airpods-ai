@@ -15,10 +15,13 @@ struct LumenControlsBundle: WidgetBundle {
 struct ListeningLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: ListeningActivityAttributes.self) { context in
-            HStack(spacing: 12) {
-                ListeningStatus(isPaused: context.state.isPaused)
-                Spacer()
-                ToggleButton(isPaused: context.state.isPaused)
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 12) {
+                    ListeningStatus(isPaused: context.state.isPaused)
+                    Spacer()
+                    ToggleButton(isPaused: context.state.isPaused)
+                }
+                SuggestionList(state: context.state)
             }
             .padding()
         } dynamicIsland: { context in
@@ -28,6 +31,9 @@ struct ListeningLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     ToggleButton(isPaused: context.state.isPaused)
+                }
+                DynamicIslandExpandedRegion(.bottom) {
+                    SuggestionList(state: context.state)
                 }
             } compactLeading: {
                 StatusSymbol(isPaused: context.state.isPaused)
@@ -72,6 +78,29 @@ private struct ListeningStatus: View {
                 .font(.headline)
         } icon: {
             StatusSymbol(isPaused: isPaused)
+        }
+    }
+}
+
+/// Rizzläge: every option, the one being spoken marked, and the button for the next.
+private struct SuggestionList: View {
+    let state: ListeningActivityAttributes.ContentState
+
+    var body: some View {
+        if !state.suggestions.isEmpty {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 2) {
+                    ForEach(Array(state.suggestions.enumerated()), id: \.offset) { index, line in
+                        Text(verbatim: line)
+                            .font(.footnote.weight(index == state.currentSuggestion ? .semibold : .regular))
+                            .foregroundStyle(index == state.currentSuggestion ? .primary : .secondary)
+                    }
+                }
+                Spacer()
+                Button(intent: NextSuggestionIntent()) {
+                    Label("Next", systemImage: "forward.fill")
+                }
+            }
         }
     }
 }

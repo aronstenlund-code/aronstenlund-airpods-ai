@@ -3,7 +3,7 @@ import Foundation
 
 @MainActor
 protocol ListeningActivityPresenting: AnyObject {
-    func show(isPaused: Bool)
+    func show(_ state: ListeningActivityAttributes.ContentState)
     func end()
 }
 
@@ -20,8 +20,8 @@ final class ListeningActivityPresenter: ListeningActivityPresenting {
         Task { await Self.endActivities(id: nil) }
     }
 
-    func show(isPaused: Bool) {
-        let content = Content(state: ListeningActivityAttributes.ContentState(isPaused: isPaused), staleDate: nil)
+    func show(_ state: ListeningActivityAttributes.ContentState) {
+        let content = Content(state: state, staleDate: nil)
         if let activityID {
             Task { await Self.update(id: activityID, content: content) }
             return

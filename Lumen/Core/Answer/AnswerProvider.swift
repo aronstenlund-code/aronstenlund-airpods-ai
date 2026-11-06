@@ -52,6 +52,30 @@ struct AnswerContext: Equatable, Sendable {
     }
 }
 
+/// `social` in the request (D43): what Rizzläge sends instead of a question.
+struct SocialRequest: Equatable, Sendable, Encodable {
+    struct Line: Equatable, Sendable, Encodable {
+        var speaker: String
+        var text: String
+    }
+
+    var style: String
+    /// `other_spoke` | `stall` | `opener`.
+    var trigger: String
+    var transcript: [Line]
+    var interests: [String]
+    var profile: String
+}
+
+/// Who the assistant is in a mode (D42): `persona` + `persona_setup`, and for interviews whose turn it is.
+struct PersonaRequest: Equatable, Sendable {
+    var persona: String
+    var setup: String?
+    /// Intervjuläge: `question` | `user_answer`.
+    var turn: String?
+    var social: SocialRequest?
+}
+
 struct AnswerRequest: Equatable, Sendable {
     static let fragmentLimit = 1000
 
@@ -63,21 +87,26 @@ struct AnswerRequest: Equatable, Sendable {
     var context: AnswerContext
     /// `short` | `adaptive` | `long` (D35, Svarslängd).
     var length: String
+    var persona: PersonaRequest?
 
-    init(fragment: String, mode: String, language: String, context: AnswerContext = AnswerContext(), length: AnswerLength = .adaptive) {
+    init(fragment: String, mode: String, language: String, context: AnswerContext = AnswerContext(), length: AnswerLength = .adaptive,
+         persona: PersonaRequest? = nil) {
         self.fragment = String(fragment.prefix(Self.fragmentLimit))
         self.mode = mode
         self.language = language
         self.context = context.clamped
         self.length = length.rawValue
+        self.persona = persona
     }
 
-    init(activation: ActivationRequest, context: AnswerContext = AnswerContext(), length: AnswerLength = .adaptive) {
+    init(activation: ActivationRequest, context: AnswerContext = AnswerContext(), length: AnswerLength = .adaptive,
+         persona: PersonaRequest? = nil) {
         self.init(fragment: activation.query,
                   mode: activation.trigger.backendMode,
                   language: activation.language == .swedish ? "sv" : "en",
                   context: context,
-                  length: length)
+                  length: length,
+                  persona: persona)
     }
 }
 
@@ -142,6 +171,8 @@ struct AnswerFailure: Equatable, Sendable, Codable, Error {
 enum AnswerEvent: Equatable, Sendable {
     case meta(AnswerMeta)
     case delta(String)
+    /// Rizzläge: 2–3 options, best first (D45).
+    case suggestions([String])
     case done(AnswerDone)
     case error(AnswerFailure)
 }

@@ -149,6 +149,19 @@ struct SettingsView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
+        @Bindable var modes = model.modeSettings
+        Section("Rizzläge") {
+            HStack {
+                Text("Your voice is louder than")
+                Slider(value: $modes.speakerThresholdDBFS, in: -60 ... -10, step: 1)
+                Text(verbatim: "\(Int(modes.speakerThresholdDBFS)) dB")
+                    .font(.footnote.monospacedDigit())
+                    .frame(width: 52, alignment: .trailing)
+            }
+            Text("Lumen tells you from the other person by input level. Tuned on device.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
     }
 
     @ViewBuilder

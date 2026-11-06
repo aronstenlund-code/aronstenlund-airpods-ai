@@ -23,6 +23,28 @@
         }
       }
     },
+    "Next": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nästa"
+          }
+        }
+      }
+    },
+    "Next suggestion": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nästa förslag"
+          }
+        }
+      }
+    },
     "Pause": {
       "extractionState": "manual",
       "localizations": {

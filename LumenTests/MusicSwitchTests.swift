@@ -7,7 +7,12 @@ final class FakeActivityPresenter: ListeningActivityPresenting {
     var shown: [Bool] = []
     var endCalls = 0
 
-    func show(isPaused: Bool) { shown.append(isPaused) }
+    var lastState: ListeningActivityAttributes.ContentState?
+
+    func show(_ state: ListeningActivityAttributes.ContentState) {
+        shown.append(state.isPaused)
+        lastState = state
+    }
     func end() { endCalls += 1 }
 }
 

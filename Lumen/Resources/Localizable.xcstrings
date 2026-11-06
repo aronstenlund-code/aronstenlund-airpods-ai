@@ -78,6 +78,17 @@
         }
       }
     },
+    "About you": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Om dig"
+          }
+        }
+      }
+    },
     "Activation": {
       "extractionState": "manual",
       "localizations": {
@@ -573,6 +584,28 @@
         }
       }
     },
+    "End session": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avsluta"
+          }
+        }
+      }
+    },
+    "Ended after %lld min of silence; the microphone was switched off.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avslutades efter %lld min tystnad; mikrofonen stängdes av."
+          }
+        }
+      }
+    },
     "Hands-free: speak, pause, get a tutor-style answer, continue. Talking while it speaks interrupts it. Tuned on device.": {
       "extractionState": "manual",
       "localizations": {
@@ -690,6 +723,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Instruktion (vad Lumen ska göra)"
+          }
+        }
+      }
+    },
+    "Interests, separated by commas": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intressen, åtskilda med komma"
+          }
+        }
+      }
+    },
+    "Intervju": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intervju"
           }
         }
       }
@@ -859,6 +914,17 @@
         }
       }
     },
+    "Lumen tells you from the other person by input level. Tuned on device.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lumen skiljer dig från den andra personen på ljudnivån. Justeras på telefonen."
+          }
+        }
+      }
+    },
     "Material": {
       "extractionState": "manual",
       "localizations": {
@@ -925,6 +991,17 @@
         }
       }
     },
+    "Mode": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läge"
+          }
+        }
+      }
+    },
     "More": {
       "extractionState": "manual",
       "localizations": {
@@ -943,6 +1020,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nytt kommando"
+          }
+        }
+      }
+    },
+    "Next suggestion": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nästa förslag"
           }
         }
       }
@@ -1211,6 +1299,17 @@
         }
       }
     },
+    "Practice: a friend asks, you get the outline of an answer, then feedback on yours. Use live support only where it is allowed and the others know, for example a mock interview.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Övning: en kompis frågar, du får ett upplägg till svar och sedan återkoppling på ditt svar. Använd stöd live bara där det är tillåtet och de andra vet om det, till exempel vid en övningsintervju."
+          }
+        }
+      }
+    },
     "Premium voices appear here when the voice service is live.": {
       "extractionState": "manual",
       "localizations": {
@@ -1229,6 +1328,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Förberedelsematerial"
+          }
+        }
+      }
+    },
+    "Prepare questions and answers": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förbered frågor och svar"
           }
         }
       }
@@ -1262,6 +1372,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Integritet och samtycke"
+          }
+        }
+      }
+    },
+    "Profile or bio": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profil eller bio"
+          }
+        }
+      }
+    },
+    "Prov": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prov"
           }
         }
       }
@@ -1387,6 +1519,28 @@
         }
       }
     },
+    "Rizz": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rizz"
+          }
+        }
+      }
+    },
+    "Role or job ad": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roll eller jobbannons"
+          }
+        }
+      }
+    },
     "Save": {
       "extractionState": "manual",
       "localizations": {
@@ -1504,6 +1658,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Känslighet"
+          }
+        }
+      }
+    },
+    "Set up Intervjuläge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förbered Intervjuläge"
+          }
+        }
+      }
+    },
+    "Set up Rizzläge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förbered Rizzläge"
           }
         }
       }
@@ -1662,6 +1838,17 @@
         }
       }
     },
+    "Start Provläge": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starta Provläge"
+          }
+        }
+      }
+    },
     "Start capture": {
       "localizations": {
         "sv": {
@@ -1679,6 +1866,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Börja lyssna"
+          }
+        }
+      }
+    },
+    "Start practice interview": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starta övningsintervju"
           }
         }
       }
@@ -1737,6 +1935,17 @@
         }
       }
     },
+    "Style": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stil"
+          }
+        }
+      }
+    },
     "Suggestions": {
       "extractionState": "manual",
       "localizations": {
@@ -1744,6 +1953,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Förslag"
+          }
+        }
+      }
+    },
+    "Suggestions are shown on the Lock Screen and the best one is spoken in a pause. Say \"nästa\" for the next one.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förslagen visas på låsskärmen och det bästa läses upp i en paus. Säg ”nästa” för nästa förslag."
           }
         }
       }
@@ -1802,6 +2022,17 @@
         }
       }
     },
+    "Tell them the app is listening. What you both say goes to ElevenLabs and Anthropic to create suggestions. The words are forgotten when the session ends.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berätta att appen lyssnar. Det ni säger går till ElevenLabs och Anthropic för att skapa förslag. Orden glöms när sessionen slutar."
+          }
+        }
+      }
+    },
     "Text": {
       "extractionState": "manual",
       "localizations": {
@@ -1820,6 +2051,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ljudsystemet startades om. Tryck på Fortsätt för att gå vidare."
+          }
+        }
+      }
+    },
+    "They know the app is listening. Start": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De vet att appen lyssnar. Starta"
           }
         }
       }
@@ -1897,6 +2139,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skriver ut med Scribe i molnet"
+          }
+        }
+      }
+    },
+    "Try it with a friend": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Testa med en kompis"
           }
         }
       }
@@ -2051,6 +2304,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dina egna frågor och Lumens svar sparas ordagrant med en kort sammanfattning, och minnen bara när du ber om det. Andra personers tal sparas inte. Radera när du vill i Inställningar; det raderas automatiskt efter 2 år."
+          }
+        }
+      }
+    },
+    "Your voice is louder than": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Din röst är starkare än"
           }
         }
       }

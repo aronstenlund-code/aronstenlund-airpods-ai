@@ -129,6 +129,12 @@ struct Conversation: Equatable, Sendable {
         }
     }
 
+    /// The session ended: the words heard go, the answers on screen stay until cleared (D48).
+    mutating func clearTranscript() {
+        finalSegments.removeAll()
+        partial = nil
+    }
+
     mutating func clear() {
         finalSegments.removeAll()
         partial = nil

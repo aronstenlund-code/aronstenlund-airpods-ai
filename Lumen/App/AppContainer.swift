@@ -64,6 +64,7 @@ final class AppContainer {
                                        activity: ListeningActivityPresenter(),
                                        history: HistoryStore(), memory: MemoryStore())
         ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
+        ListeningRemote.nextSuggestion = { [weak listening] in listening?.nextSuggestion() }
         transcription.sink = listening
         self.graph = graph
         self.session = session

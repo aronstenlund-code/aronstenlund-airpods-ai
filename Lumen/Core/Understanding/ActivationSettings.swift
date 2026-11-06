@@ -16,12 +16,18 @@ enum ActivationTrigger: String, Sendable, Equatable {
     case text
     /// A hands-free Provläge turn (D36): tutor style, whole-session memory.
     case tutor
+    /// A hands-free turn in someone else's words: the interviewer's question.
+    case overheard
+    /// Rizzläge suggestions (D43): sent from the rolling transcript, no question of its own.
+    case rizz
+    /// Intervjuläge preparation from the role or job ad.
+    case interviewPrep
 
     /// Whether the query is the user's own words. Auto mode and "last sentence" pick up the room (D56).
     var isUsersOwnWords: Bool {
         switch self {
-        case .pushToTalk, .text, .tutor: true
-        case .auto, .answerLast: false
+        case .pushToTalk, .text, .tutor, .interviewPrep: true
+        case .auto, .answerLast, .overheard, .rizz: false
         }
     }
 
@@ -31,7 +37,8 @@ enum ActivationTrigger: String, Sendable, Equatable {
         case .pushToTalk, .answerLast: "push_to_talk"
         case .auto: "auto"
         case .text: "text"
-        case .tutor: "tutor"
+        case .tutor, .overheard, .rizz: "tutor"
+        case .interviewPrep: "interview_prep"
         }
     }
 }

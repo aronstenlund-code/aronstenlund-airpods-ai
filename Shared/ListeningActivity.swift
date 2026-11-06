@@ -5,6 +5,9 @@ import AppIntents
 struct ListeningActivityAttributes: ActivityAttributes {
     struct ContentState: Codable, Hashable {
         var isPaused: Bool
+        /// Rizzläge: all options, best first (D43).
+        var suggestions: [String] = []
+        var currentSuggestion = 0
     }
 }
 
@@ -12,6 +15,20 @@ struct ListeningActivityAttributes: ActivityAttributes {
 @MainActor
 enum ListeningRemote {
     static var toggle: (@MainActor () async -> Void)?
+    static var nextSuggestion: (@MainActor () -> Void)?
+}
+
+/// "Nästa" on the Live Activity: speak the next Rizzläge suggestion.
+struct NextSuggestionIntent: LiveActivityIntent {
+    static let title: LocalizedStringResource = "Next suggestion"
+
+    init() {}
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        ListeningRemote.nextSuggestion?()
+        return .result()
+    }
 }
 
 /// Pause/Resume from the Live Activity or a Control (D33). `LiveActivityIntent` runs in the app's process;

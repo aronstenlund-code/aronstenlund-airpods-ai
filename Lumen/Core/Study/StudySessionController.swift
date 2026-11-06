@@ -12,6 +12,8 @@ final class StudySessionController {
     private(set) var endedBySilence = false
     var onEvent: (@MainActor (StudyEvent) -> Void)?
 
+    /// Set before `start` for a mode that reacts to silence (Rizzläge).
+    var stallSilence: TimeInterval?
     private let session: SessionController
     private var levelSubscription: UUID?
     private var levelTask: Task<Void, Never>?
@@ -26,9 +28,13 @@ final class StudySessionController {
     var isActive: Bool { machine.phase != .off }
     var isUserSpeaking: Bool { machine.isUserSpeaking }
     var noiseFloorDBFS: Double? { machine.noiseFloorDBFS }
+    var lastTurnLevelDBFS: Double? { machine.lastTurnLevelDBFS }
+
+    func someoneIsTalking(at now: Date = Date()) -> Bool { machine.someoneIsTalking(at: now) }
 
     func start(at now: Date = Date()) {
         machine.tuning = settings.tuning
+        machine.tuning.stallSilence = stallSilence
         endedBySilence = false
         machine.start(at: now)
         subscribeToLevels()

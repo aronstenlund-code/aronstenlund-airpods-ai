@@ -12,6 +12,8 @@ protocol PlaybackServicing: AnyObject {
     var isSpeaking: Bool { get }
     /// Every buffer of speech handed to the player (Apple or streamed): first-audio latency.
     var onAudioScheduled: (@MainActor () -> Void)? { get set }
+    /// 0…1. Rizzläge speaks quietly (D43).
+    var speechVolume: Float { get set }
 
     func playTestTone(frequency: Double, duration: Double) throws(AudioError)
     /// Speaks `text` through our engine (not the system's) using `AVSpeechSynthesizer.write`.
@@ -123,6 +125,9 @@ final class PlaybackService: PlaybackServicing {
     /// True while speech is being scheduled or scheduled buffers are still playing (self-playback suppression, §4.3).
     private(set) var isSpeaking = false
     var onAudioScheduled: (@MainActor () -> Void)?
+    var speechVolume: Float = 1 {
+        didSet { player.volume = speechVolume }
+    }
     private var activeStreams = 0
     private var pendingBuffers = 0
     /// Bumped by `stop()` so completion callbacks of discarded buffers are ignored.
@@ -156,6 +161,7 @@ final class PlaybackService: PlaybackServicing {
         engine.connect(player, to: timePitch, format: playbackFormat)
         engine.connect(timePitch, to: engine.mainMixerNode, format: playbackFormat)
         timePitch.rate = rate
+        player.volume = speechVolume
         let probe = self.probe
         timePitch.installTap(onBus: 0, bufferSize: 256, format: playbackFormat) { buffer, time in
             probe.observe(buffer, at: time)

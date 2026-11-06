@@ -64,6 +64,8 @@ enum AnswerSSEDecoder {
             case "delta":
                 struct Delta: Decodable { var text: String }
                 return .delta(try decoder.decode(Delta.self, from: data).text)
+            case "suggestions":
+                return .suggestions(try decoder.decode([String].self, from: data))
             case "done":
                 return .done(try decoder.decode(AnswerDone.self, from: data))
             case "error":

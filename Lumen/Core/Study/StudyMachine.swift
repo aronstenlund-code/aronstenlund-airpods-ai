@@ -19,6 +19,10 @@ struct StudyTuning: Equatable, Sendable {
     var floorRiseDBPerSecond: Double = 1.0
     /// No user speech for this long ends the session (and, in Provläge, releases the microphone: "sparläge").
     var autoEndSilence: TimeInterval = 600
+    /// Rizzläge: nobody has spoken for this long (D43). Nil: off.
+    var stallSilence: TimeInterval?
+    /// Input this recent means someone is talking: suggestions wait for a pause.
+    var talkingWindow: TimeInterval = 0.4
 }
 
 enum StudyPhase: Equatable, Sendable {
@@ -36,6 +40,7 @@ enum StudyEvent: Equatable, Sendable {
     case endOfTurn(String)
     case bargeIn
     case autoEnded
+    case stalled
 }
 
 /// Pure state machine for the hands-free tutor session: VAD on the 40 ms level readings, end-of-turn detection,
@@ -51,6 +56,12 @@ struct StudyMachine: Equatable, Sendable {
     private var lastActivityAt: Date?
     private var turnFinals: [String] = []
     private var turnPartial: String?
+    private var lastLoudAt: Date?
+    private var stallFired = false
+    private var turnLevelSum = 0.0
+    private var turnLevelCount = 0
+    /// Average level of the last finished turn (who spoke, D43).
+    private(set) var lastTurnLevelDBFS: Double?
 
     init(tuning: StudyTuning = StudyTuning()) {
         self.tuning = tuning
@@ -67,7 +78,15 @@ struct StudyMachine: Equatable, Sendable {
     mutating func start(at now: Date) {
         phase = .listening
         lastActivityAt = now
+        stallFired = false
+        lastLoudAt = nil
         resetTurn()
+    }
+
+    /// Anyone in the room, in any phase.
+    func someoneIsTalking(at now: Date) -> Bool {
+        guard let lastLoudAt else { return false }
+        return now.timeIntervalSince(lastLoudAt) < tuning.talkingWindow
     }
 
     mutating func stop() {
@@ -82,6 +101,7 @@ struct StudyMachine: Equatable, Sendable {
         updateFloor(rmsDBFS, at: now)
         let threshold = max(tuning.minimumSpeechDBFS, (noiseFloorDBFS ?? -60) + tuning.speechThresholdDB)
         let loud = rmsDBFS > threshold
+        if loud { lastLoudAt = now }
 
         switch phase {
         case .listening:
@@ -91,9 +111,16 @@ struct StudyMachine: Equatable, Sendable {
                 if !isUserSpeaking, let start = loudRunStart, now.timeIntervalSince(start) >= tuning.speechOnsetHold {
                     isUserSpeaking = true
                     lastSpeechAt = now
+                    stallFired = false
+                    turnLevelSum = rmsDBFS
+                    turnLevelCount = 1
                     return .turnStarted
                 }
-                if isUserSpeaking { lastSpeechAt = now }
+                if isUserSpeaking {
+                    lastSpeechAt = now
+                    turnLevelSum += rmsDBFS
+                    turnLevelCount += 1
+                }
             } else {
                 loudRunStart = nil
                 if isUserSpeaking, let last = lastSpeechAt {
@@ -110,6 +137,11 @@ struct StudyMachine: Equatable, Sendable {
                 resetTurn()
                 return .autoEnded
             }
+            if let stall = tuning.stallSilence, !stallFired, !isUserSpeaking, !loud,
+               let activity = lastActivityAt, now.timeIntervalSince(activity) >= stall {
+                stallFired = true
+                return .stalled
+            }
         case .speaking:
             if loud {
                 if loudRunStart == nil { loudRunStart = now }
@@ -119,6 +151,9 @@ struct StudyMachine: Equatable, Sendable {
                     isUserSpeaking = true
                     lastSpeechAt = now
                     lastActivityAt = now
+                    stallFired = false
+                    turnLevelSum = rmsDBFS
+                    turnLevelCount = 1
                     return .bargeIn
                 }
             } else {
@@ -174,6 +209,7 @@ struct StudyMachine: Equatable, Sendable {
 
     private mutating func endTurnIfPossible(now: Date) -> StudyEvent? {
         let text = turnText
+        lastTurnLevelDBFS = turnLevelCount > 0 ? turnLevelSum / Double(turnLevelCount) : nil
         isUserSpeaking = false
         lastSpeechAt = nil
         loudRunStart = nil

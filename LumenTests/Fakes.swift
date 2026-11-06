@@ -107,6 +107,7 @@ final class FakePlaybackService: PlaybackServicing {
     var playedSampleRates: [Double] = []
     var speakError: AudioError?
     var onAudioScheduled: (@MainActor () -> Void)?
+    var speechVolume: Float = 1
 
     func playTestTone(frequency: Double, duration: Double) throws(AudioError) {}
 

@@ -9,6 +9,8 @@ protocol AnswerSink: AnyObject {
     func answerDelta(_ text: String)
     /// A whole sentence is ready (sentence-level TTS).
     func answerSentence(_ sentence: String)
+    /// Rizzläge: the options, best first.
+    func answerSuggestions(_ options: [String])
     func answerCompleted(latencyMs: Double?, done: AnswerDone?)
     /// Auto mode: the backend decided it was not a question.
     func answerSkipped(_ request: ActivationRequest)
@@ -48,12 +50,12 @@ final class AnswerEngine {
         self.mock = mock
     }
 
-    func answer(_ request: ActivationRequest, context: AnswerContext) {
+    func answer(_ request: ActivationRequest, context: AnswerContext, persona: PersonaRequest? = nil) {
         task?.cancel()
         let provider = activeProvider
         status = .answering(query: request.query)
         Log.signposter.emitEvent("answer.requested")
-        task = Task { await run(request, context: context, provider: provider) }
+        task = Task { await run(request, context: context, persona: persona, provider: provider) }
     }
 
     func cancel() {
@@ -62,14 +64,14 @@ final class AnswerEngine {
         if case .answering = status { status = .idle }
     }
 
-    private func run(_ request: ActivationRequest, context: AnswerContext, provider: any AnswerProvider) async {
+    private func run(_ request: ActivationRequest, context: AnswerContext, persona: PersonaRequest?, provider: any AnswerProvider) async {
         let start = ContinuousClock.now
         sink?.answerStarted(request, source: provider.name)
         var splitter = SentenceSplitter()
         var firstDeltaMs: Double?
         var done: AnswerDone?
         do {
-            for try await event in provider.answer(AnswerRequest(activation: request, context: context, length: settings.length)) {
+            for try await event in provider.answer(AnswerRequest(activation: request, context: context, length: settings.length, persona: persona)) {
                 if Task.isCancelled { return }
                 switch event {
                 case .meta(let meta):
@@ -91,6 +93,8 @@ final class AnswerEngine {
                     for sentence in splitter.feed(text) {
                         sink?.answerSentence(sentence)
                     }
+                case .suggestions(let options):
+                    sink?.answerSuggestions(options)
                 case .done(let finished):
                     done = finished
                 case .error:

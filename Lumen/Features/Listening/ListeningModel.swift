@@ -21,6 +21,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let microphone: MicrophoneSettings
     /// What the session is for: decides the microphone.
     private(set) var mode: ConversationMode = .standard
+    /// The mode picker on the Listening screen.
+    var selectedMode: ConversationMode = .standard
+    /// Intervjuläge and Rizzläge setup.
+    let modeSettings: ModeSettings
+    /// The running Rizzläge session. Gone when it ends, and the words with it.
+    private(set) var rizz: RizzSession?
+    /// Intervjuläge alternates: the interviewer asks, then the user answers.
+    private var interviewerSpeaksNext = true
+    var isShowingInterviewSetup = false
+    var isShowingRizzStart = false
     /// A microphone comparison is running: what is said is a test sentence, never a question.
     private var isComparing = false
     /// Course goals and personal keyword commands (D37).
@@ -85,7 +95,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          notes: NotesStore, prep: PrepStore, warmer: BackendWarmer? = nil,
          activity: (any ListeningActivityPresenting)? = nil, study: StudySessionController? = nil,
          goals: GoalsStore? = nil, commands: CommandStore? = nil,
-         history: HistoryStore? = nil, memory: MemoryStore? = nil, microphone: MicrophoneSettings? = nil) {
+         history: HistoryStore? = nil, memory: MemoryStore? = nil, microphone: MicrophoneSettings? = nil,
+         modeSettings: ModeSettings? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -98,6 +109,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.history = history ?? HistoryStore()
         self.memory = memory ?? MemoryStore()
         self.microphone = microphone ?? MicrophoneSettings()
+        self.modeSettings = modeSettings ?? ModeSettings()
         self.goals = goals ?? GoalsStore()
         self.commands = commands ?? CommandStore()
         self.warmer = warmer
@@ -242,20 +254,27 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             // Paused, stopped or failed: the hands-free session cannot continue without the microphone.
             study.stop()
             transcription.setInputGated(false)
+            handsFreeEnded()
         }
         switch state {
         case .listening:
-            activity?.show(isPaused: false)
+            showActivity()
         case .paused:
             // Whoever has the audio now keeps it: no speech may restart the engine behind their back.
             flushTask?.cancel()
             answers.cancel()
             speaker.interrupt()
             conversation.cancelAnswer()
-            activity?.show(isPaused: true)
+            showActivity()
         case .idle, .error:
+            conversation.clearTranscript()
             activity?.end()
         }
+    }
+
+    private func showActivity() {
+        activity?.show(ListeningActivityAttributes.ContentState(isPaused: !isListening, suggestions: rizz?.suggestions ?? [],
+                                                                currentSuggestion: rizz?.index ?? 0))
     }
 
     /// Stops the microphone, forgets the session's transcript and clears the consent record; the consent
@@ -294,14 +313,32 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
+    /// The Listening screen's mode button. Intervjuläge and Rizzläge go through their start screens first.
+    func toggleSelectedMode() async {
+        if study.isActive {
+            endStudy(bySilence: false)
+            return
+        }
+        switch selectedMode {
+        case .standard: await toggleListening()
+        case .prov: await startStudy()
+        case .interview: isShowingInterviewSetup = true
+        case .rizz: isShowingRizzStart = true
+        }
+    }
+
     func startStudy() async {
+        await startHandsFree(.prov)
+    }
+
+    func startHandsFree(_ newMode: ConversationMode) async {
         guard consent.isGranted else {
-            controller.log("Provläge refused: no consent")
+            controller.log("Hands-free \(newMode.rawValue) refused: no consent")
             return
         }
         studyNotice = nil
-        mode = .prov
-        await useMicrophone(for: .prov)
+        mode = newMode
+        await useMicrophone(for: newMode)
         if !isListening {
             if canResume { await resume() } else { await startListening() }
             guard isListening else { return }
@@ -309,19 +346,49 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         answers.cancel()
         speaker.interrupt()
         conversation.cancelAnswer()
+        interviewerSpeaksNext = true
+        if newMode == .rizz {
+            rizz = RizzSession(style: modeSettings.rizzStyle)
+            study.stallSilence = Self.stallSilence
+            controller.playback.speechVolume = Self.rizzVolume
+        } else {
+            study.stallSilence = nil
+        }
         study.start()
-        controller.log("Provläge started")
+        controller.log("Hands-free \(newMode.rawValue) started")
+    }
+
+    /// ~4 s of silence asks for a way to carry on (D43).
+    static let stallSilence: TimeInterval = 4
+    /// Quiet enough to say under one's breath, not loud enough to carry (D43). Tuned on device.
+    static let rizzVolume: Float = 0.6
+
+    /// Own lines reach Historik only from the AirPods mic: on the iPhone the level tag cannot tell the people on
+    /// either side of the table apart, and other people's words are never saved (D56).
+    private var ownLinesAreReliable: Bool { microphone.source(for: mode) == .airPods }
+
+    private func handsFreeEnded() {
+        if let session = rizz, !session.offered.isEmpty {
+            let lines = ownLinesAreReliable ? session.ownLines.joined(separator: "\n") : ""
+            history.record(HistoryEntry(question: lines.isEmpty ? nil : lines, answer: "",
+                                        summary: "Rizzläge, stil \(session.style.rawValue): \(session.offered.count) förslag.",
+                                        suggestions: session.offered))
+        }
+        rizz = nil
+        controller.playback.speechVolume = 1
+        mode = .standard
     }
 
     /// Ends the session. After the silence timeout the microphone is released too ("sparläge").
     func endStudy(bySilence: Bool) {
         guard study.isActive || bySilence else { return }
         study.stop()
-        mode = .standard
+        handsFreeEnded()
+        showActivity()
         transcription.setInputGated(false)
         if bySilence {
-            studyNotice = "Provläge ended after \(study.settings.autoEndMinutes) min of silence; the microphone was switched off."
-            controller.log("Provläge auto-ended after silence")
+            studyNotice = "Ended after \(study.settings.autoEndMinutes) min of silence; the microphone was switched off."
+            controller.log("Hands-free session auto-ended after silence")
             Task { await stopListening() }
         } else {
             controller.log("Provläge ended by the user")
@@ -333,8 +400,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .turnStarted:
             break
         case .endOfTurn(let text):
-            let request = ActivationRequest(query: text, trigger: .tutor, language: language)
-            activated(request)
+            switch mode {
+            case .interview: interviewTurn(text)
+            case .rizz: rizzTurn(text)
+            case .standard, .prov: activated(ActivationRequest(query: text, trigger: .tutor, language: language))
+            }
+        case .stalled:
+            if let session = rizz { requestSuggestions(trigger: session.hasConversation ? "stall" : "opener") }
         case .bargeIn:
             controller.log("Provläge: barge-in — stopping the answer")
             answers.cancel()
@@ -347,6 +419,74 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
+    // MARK: - Intervjuläge (D42)
+
+    private func interviewTurn(_ text: String) {
+        // "klar" asks the backend for the summary, which only happens on a question turn.
+        let isDone = text.lowercased().trimmingCharacters(in: .punctuationCharacters) == "klar"
+        let isQuestion = interviewerSpeaksNext || isDone
+        interviewerSpeaksNext.toggle()
+        let trigger: ActivationTrigger = !isQuestion && ownLinesAreReliable ? .tutor : .overheard
+        activated(ActivationRequest(query: text, trigger: trigger, language: language),
+                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup,
+                                          turn: isQuestion ? "question" : "user_answer"))
+    }
+
+    /// Likely questions and model answers from the role or job ad. Long, so it is shown, not spoken.
+    func prepareInterview() {
+        activated(ActivationRequest(query: language == .swedish ? "Förbered mig inför intervjun" : "Prepare me for the interview",
+                                    trigger: .interviewPrep, language: language),
+                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup))
+    }
+
+    // MARK: - Rizzläge (D43)
+
+    private func rizzTurn(_ text: String) {
+        let speaker = RizzSpeaker.tag(levelDBFS: study.lastTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)
+        controller.log("Rizzläge: turn tagged \(speaker.rawValue) · level \(study.lastTurnLevelDBFS ?? -99) dBFS · threshold \(modeSettings.speakerThresholdDBFS)")
+        study.resumeListening() // the room goes on while the suggestions are being made
+        guard var session = rizz else { return }
+        if speaker == .user, session.usesSuggestion(text) {
+            modeSettings.countUse(of: session.style)
+        }
+        session.add(speaker, text: text, at: Date())
+        rizz = session
+        if speaker == .other {
+            requestSuggestions(trigger: "other_spoke")
+        }
+    }
+
+    private func requestSuggestions(trigger: String) {
+        guard let session = rizz else { return }
+        let request = ActivationRequest(query: "", trigger: .rizz, language: language)
+        let social = SocialRequest(style: session.style.rawValue, trigger: trigger, transcript: session.transcript,
+                                   interests: modeSettings.interests, profile: modeSettings.rizzProfile)
+        pendingQuestion = request
+        latency.begin(request)
+        answers.answer(request, context: AnswerContext(memories: memory.backendItems()),
+                       persona: PersonaRequest(persona: "social", social: social))
+    }
+
+    func answerSuggestions(_ options: [String]) {
+        latency.markFirstText(provider: answers.activeProvider.name)
+        rizz?.offer(options)
+        showActivity()
+        speakSuggestion()
+    }
+
+    /// "nästa", or the button on the Live Activity.
+    func nextSuggestion() {
+        rizz?.next()
+        showActivity()
+        speakSuggestion()
+    }
+
+    /// Only in a pause, never over anyone. A missed moment stays on the Live Activity.
+    private func speakSuggestion() {
+        guard let line = rizz?.current, !study.someoneIsTalking(), !speaker.isSpeaking else { return }
+        speaker.enqueue(line, language: language)
+    }
+
     private func speechFinished() {
         guard study.isActive else { return }
         transcription.setInputGated(false)
@@ -355,7 +495,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// The answer produced no speech (silent mode, empty answer): back to listening right away.
     private func studyAnswerEnded() {
-        guard study.isActive, !speaker.hasPendingSpeech else { return }
+        guard study.isActive, mode != .rizz, !speaker.hasPendingSpeech else { return }
         transcription.setInputGated(false)
         study.resumeListening()
     }
@@ -413,7 +553,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         submitText(text)
     }
 
-    private func activated(_ request: ActivationRequest) {
+    private func activated(_ request: ActivationRequest, persona: PersonaRequest? = nil) {
         pendingQuestion = request
         answerNotice = nil
         // A new question interrupts the current answer and its speech (assignment item 5).
@@ -421,7 +561,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         latency.begin(request)
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
         // Provläge sends the whole session's memory (the backend keeps the last 6 pairs).
-        let qaLimit = request.trigger == .tutor ? AnswerContext.qaLimit : 3
+        let qaLimit = study.isActive ? AnswerContext.qaLimit : 3
         let matched = commands.matches(in: request.query)
         if !matched.isEmpty {
             controller.log("Commands matched: \(matched.map(\.keyword).joined(separator: ", "))")
@@ -432,12 +572,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                     goals: goals.compact,
                                     commands: matched.map { AnswerContext.Command(keyword: $0.keyword, instruction: $0.instruction) },
                                     memories: memory.backendItems())
-        answers.answer(request, context: context)
+        answers.answer(request, context: context, persona: persona)
     }
 
     // MARK: - AnswerSink (item 4)
 
     func answerStarted(_ request: ActivationRequest, source: String) {
+        if request.trigger == .rizz { return } // suggestions have no answer of their own
         conversation.beginAnswer(question: request.query, source: source, at: request.createdAt,
                                  isOwnQuestion: request.trigger.isUsersOwnWords)
         if study.isActive { study.answerStarted() }
@@ -454,6 +595,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func answerSentence(_ sentence: String) {
         if case .paused = state { return } // a typed question while paused is shown, not spoken over the music
+        if pendingQuestion?.trigger == .interviewPrep { return }
         speaker.enqueue(sentence, language: pendingQuestion?.language ?? language)
     }
 
@@ -499,6 +641,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         conversation.finalize(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
         if isComparing { return }
+        if rizz != nil, RizzCommand.isNext(segment.text) {
+            study.resumeListening()
+            nextSuggestion()
+            return
+        }
         if !segment.overlapsPlayback, saveSpokenCommand(segment.text) {
             return // "spara kommando …" is handled on the phone, never sent as a question
         }

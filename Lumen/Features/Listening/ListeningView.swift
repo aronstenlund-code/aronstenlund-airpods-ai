@@ -44,6 +44,16 @@ struct ListeningView: View {
         .navigationDestination(isPresented: $model.isShowingDiagnostics) {
             DiagnosticsView(model: diagnostics)
         }
+        .sheet(isPresented: $model.isShowingInterviewSetup) {
+            NavigationStack {
+                InterviewSetupView(model: model, settings: model.modeSettings)
+            }
+        }
+        .sheet(isPresented: $model.isShowingRizzStart) {
+            NavigationStack {
+                RizzStartView(model: model, settings: model.modeSettings)
+            }
+        }
         .sheet(isPresented: $model.isShowingNotes) {
             NavigationStack {
                 NotesView(store: model.notes)
@@ -358,6 +368,9 @@ struct ListeningView: View {
         case .pushToTalk: "Hold to ask"
         case .auto: "Auto"
         case .answerLast: "Last sentence"
+        case .overheard: "Intervjuläge"
+        case .rizz: "Rizzläge"
+        case .interviewPrep: "Intervjuläge"
         case .text: "Text"
         case .tutor: "Provläge"
         }
@@ -373,20 +386,48 @@ struct ListeningView: View {
 
     // MARK: Controls
 
+    private var modeButtonTitle: LocalizedStringKey {
+        if model.study.isActive { return "End session" }
+        switch model.selectedMode {
+        case .standard: return ""
+        case .prov: return "Start Provläge"
+        case .interview: return "Set up Intervjuläge"
+        case .rizz: return "Set up Rizzläge"
+        }
+    }
+
     private var controls: some View {
         VStack(spacing: 10) {
             textQuestionRow
-            Button {
-                Task { await model.toggleStudyMode() }
-            } label: {
-                Label(model.study.isActive ? "End Provläge" : "Provläge",
-                      systemImage: model.study.isActive ? "graduationcap.fill" : "graduationcap")
-                    .font(.title3.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
+            Picker("Mode", selection: $model.selectedMode) {
+                Text("Questions").tag(ConversationMode.standard)
+                Text("Prov").tag(ConversationMode.prov)
+                Text("Intervju").tag(ConversationMode.interview)
+                Text("Rizz").tag(ConversationMode.rizz)
             }
-            .buttonStyle(.bordered)
-            .tint(.purple)
+            .pickerStyle(.segmented)
+            .disabled(model.study.isActive)
+            if model.selectedMode != .standard || model.study.isActive {
+                Button {
+                    Task { await model.toggleSelectedMode() }
+                } label: {
+                    Label(modeButtonTitle, systemImage: model.study.isActive ? "stop.circle" : "play.circle")
+                        .font(.title3.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                }
+                .buttonStyle(.bordered)
+                .tint(.purple)
+            }
+            if let session = model.rizz, let line = session.current {
+                Button {
+                    model.nextSuggestion()
+                } label: {
+                    Label(line, systemImage: "forward.fill")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+            }
             if model.isListening, !model.study.isActive {
                 holdToAskButton
                 Button {

@@ -159,6 +159,7 @@ final class FakeAnswerProvider: AnswerProvider {
 
 @MainActor
 final class FakeAnswerSink: AnswerSink {
+    func answerSuggestions(_ options: [String]) {}
     private(set) var started: [ActivationRequest] = []
     private(set) var sources: [String] = []
     private(set) var reconstructed: [String] = []
