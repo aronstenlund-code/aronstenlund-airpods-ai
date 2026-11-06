@@ -726,3 +726,43 @@ Deno.test("D65 web: narrower search rules; ordinal list facts search", () => {
     ]
   ) assertEquals(needsWeb(q)?.search, true, q);
 });
+
+import { computeFollowUp } from "./calc.ts";
+Deno.test("D65: a bare unit in a follow-up is converted in code from the previous answer's value", () => {
+  const r = computeFollowUp(
+    "och i fot",
+    "Eiffeltornet är cirka trehundratrettio meter högt, inklusive antenner.",
+  )!;
+  assertEquals(Math.round(r.value), 1083);
+  assertStringIncludes(r.text, "330 meter = 1082,6772 fot");
+  assertEquals(Math.round(computeFollowUp("i kilometer", "Det är tre mil dit.")!.value), 30);
+  assertEquals(Math.round(computeFollowUp("och i pund", "Paketet väger två kilo.")!.value), 4);
+  assertEquals(
+    Math.round(computeFollowUp("och i fahrenheit", "Det är tjugo grader celsius ute.")!.value),
+    68,
+  );
+  assertEquals(
+    Math.round(computeFollowUp("och i celsius", "Det är sjuttiotvå grader fahrenheit.")!.value),
+    22,
+  );
+  assertEquals(
+    Math.round(
+      computeFollowUp("hur mycket är det i tum", "Linjalen är trettio centimeter lång.")!.value,
+    ),
+    12,
+  );
+  assertEquals(
+    Math.round(
+      computeFollowUp("och i meter", "Tornet är tusen åttahundrafyrtiotvå fot högt.")!.value,
+    ),
+    562,
+  );
+  assertEquals(computeFollowUp("och i fot", "Det blir bra väder i morgon."), null);
+  assertEquals(computeFollowUp("och i fot", undefined), null);
+  assertEquals(computeFollowUp("vad är fotosyntes", "Tornet är tre meter högt."), null);
+  assertEquals(
+    computeFollowUp("och i liter", "Tornet är tre meter högt."),
+    null,
+    "different kind of quantity",
+  );
+});

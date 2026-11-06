@@ -6,7 +6,7 @@ import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.t
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
-import { computeFragment } from "./calc.ts";
+import { computeFollowUp, computeFragment } from "./calc.ts";
 import { nowContext } from "./datecalc.ts";
 import { categorize } from "./category.ts";
 import {
@@ -361,7 +361,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D46: arithmetic / percentages / unit conversions are computed in code, not by the model.
       const computed = plan || body.mode === "interview_prep"
         ? null
-        : computeFragment(body.fragment, (deps.clock ?? (() => new Date()))());
+        : computeFragment(body.fragment, (deps.clock ?? (() => new Date()))()) ??
+          computeFollowUp(body.fragment, body.context.recent_qa.at(-1)?.a);
       // D46 item 8: web search/fetch only when the question needs it, and only within the caps.
       const need =
         !demo && !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"

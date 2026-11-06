@@ -192,6 +192,24 @@ const UNITS: Record<string, { dim: Dim; f: number; name: string }> = {
   sekunder: { dim: "time", f: 1, name: "sekunder" },
   s: { dim: "time", f: 1, name: "sekunder" },
   dygn: { dim: "time", f: 86400, name: "dygn" },
+  // imperial units (D65, for follow-ups such as "och i fot")
+  fot: { dim: "length", f: 0.3048, name: "fot" },
+  fötter: { dim: "length", f: 0.3048, name: "fot" },
+  feet: { dim: "length", f: 0.3048, name: "fot" },
+  ft: { dim: "length", f: 0.3048, name: "fot" },
+  tum: { dim: "length", f: 0.0254, name: "tum" },
+  inch: { dim: "length", f: 0.0254, name: "tum" },
+  inches: { dim: "length", f: 0.0254, name: "tum" },
+  yard: { dim: "length", f: 0.9144, name: "yard" },
+  yards: { dim: "length", f: 0.9144, name: "yard" },
+  mile: { dim: "length", f: 1609.344, name: "engelska mil" },
+  miles: { dim: "length", f: 1609.344, name: "engelska mil" },
+  pund: { dim: "mass", f: 453.59237, name: "pund" },
+  lb: { dim: "mass", f: 453.59237, name: "pund" },
+  lbs: { dim: "mass", f: 453.59237, name: "pund" },
+  uns: { dim: "mass", f: 28.349523, name: "uns" },
+  ounce: { dim: "mass", f: 28.349523, name: "uns" },
+  oz: { dim: "mass", f: 28.349523, name: "uns" },
 };
 const CONV =
   /^(?:vad är |hur många |hur mycket är |omvandla |konvertera |räkna om )*([\d.,]+|[a-zåäö ]+?)\s*(\p{L}+)\s+(?:i|till|to|in|är hur många|blir)\s+(\p{L}+)[?.!]*$/iu;
@@ -228,6 +246,61 @@ function convert(input: string): Computed | null {
   if (a === null || !from || !to || from.dim !== to.dim) return null;
   const v = (a * from.f) / to.f;
   return { value: v, text: `${fmtNumber(a)} ${from.name} = ${fmtNumber(v)} ${to.name}` };
+}
+
+const FOLLOW_UNIT =
+  /^(?:och |men |då |så )?(?:hur mycket är det |vad är det |hur många )?(?:i|till|på|som)?\s*(\p{L}+)\??$/u;
+
+/**
+ * D65: "och i fot" after an answer that stated a length/mass/temperature: the value comes from the previous
+ * ANSWER (spoken numbers or digits), the conversion is done here. Returns null when the fragment is not a bare
+ * unit or the previous answer holds no quantity of the same kind.
+ */
+export function computeFollowUp(fragment: string, lastAnswer: string | undefined): Computed | null {
+  if (!lastAnswer) return null;
+  const f = fragment.trim().toLowerCase().replace(/[?!.]+$/g, "");
+  if (f.split(/\s+/).length > 6) return null;
+  const m = FOLLOW_UNIT.exec(f);
+  const key = m?.[1];
+  if (!key) return null;
+  const tokens = lastAnswer.toLowerCase().replace(/[.,;:!?()"]/g, " ").split(/\s+/).filter(Boolean);
+  // temperature: "tjugo grader celsius" -> fahrenheit and back
+  if (["fahrenheit", "celsius"].includes(key)) {
+    for (let i = 0; i < tokens.length; i++) {
+      if (tokens[i] !== (key === "fahrenheit" ? "celsius" : "fahrenheit")) continue;
+      for (let len = 6; len >= 1; len--) {
+        const nums = tokens.slice(Math.max(0, i - len - 1), i).filter((t) =>
+          t !== "grader" && t !== "grad"
+        );
+        const v = nums.length ? parseNum(nums.slice(-len)) : null;
+        if (v !== null) {
+          const r = key === "fahrenheit" ? v * 9 / 5 + 32 : (v - 32) * 5 / 9;
+          return {
+            value: r,
+            text: `${fmtNumber(v)} °${key === "fahrenheit" ? "C" : "F"} = ${fmtNumber(r)} °${
+              key === "fahrenheit" ? "F" : "C"
+            }`,
+          };
+        }
+      }
+    }
+    return null;
+  }
+  const to = UNITS[key];
+  if (!to) return null;
+  for (let i = 0; i < tokens.length; i++) {
+    const from = UNITS[tokens[i]];
+    if (!from || from.dim !== to.dim || from.name === to.name) continue;
+    for (let len = 5; len >= 1; len--) {
+      if (i - len < 0) continue;
+      const v = parseNum(tokens.slice(i - len, i));
+      if (v !== null) {
+        const r = (v * from.f) / to.f;
+        return { value: r, text: `${fmtNumber(v)} ${from.name} = ${fmtNumber(r)} ${to.name}` };
+      }
+    }
+  }
+  return null;
 }
 
 export function computeFragment(fragment: string, now: Date = new Date()): Computed | null {
