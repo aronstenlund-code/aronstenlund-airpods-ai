@@ -47,6 +47,23 @@ export class RestDb {
     await r.body?.cancel();
   }
 
+  /** Insert one row, silently ignoring a duplicate of the unique column `onConflict` (nothing is overwritten). */
+  async insertIgnoreDuplicate(table: string, row: object, onConflict: string): Promise<void> {
+    const r = await this.fetchImpl(
+      `${this.baseUrl}/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`,
+      {
+        method: "POST",
+        headers: this.headers({ prefer: "resolution=ignore-duplicates,return=minimal" }),
+        body: JSON.stringify(row),
+      },
+    );
+    if (!r.ok) {
+      await r.body?.cancel();
+      throw new Error(`insert ${table} failed: HTTP ${r.status}`);
+    }
+    await r.body?.cancel();
+  }
+
   /** POST /rest/v1/<table> with an array of rows (no representation back). Throws on non-2xx. */
   async insertMany(table: string, rows: object[]): Promise<void> {
     if (!rows.length) return;

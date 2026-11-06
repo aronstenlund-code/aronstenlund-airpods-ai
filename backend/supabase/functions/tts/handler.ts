@@ -2,6 +2,7 @@ import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { readLimitedJson } from "../answer/validate.ts";
+import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
 import { type Voice, VOICE_ID_RE } from "./voices.ts";
 
 /** D46 item 9: models the app/webtest may ask for (A/B by ear). multilingual costs 2 credits per character. */
@@ -51,6 +52,8 @@ export interface TtsDeps {
   fetchImpl?: typeof fetch;
   /** Called for `GET` + `x-warm: 1`: open the upstream connection ahead of time. */
   warm?: () => void;
+  /** D62 demo caps (defaults in _shared/demo.ts). */
+  demo?: DemoCaps;
 }
 
 export function classifyElevenLabs(status: number, body: string): HttpError {
@@ -96,8 +99,28 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
       if (text.length > TTS_LIMITS.text) {
         throw new HttpError(413, "payload_too_large", `text exceeds ${TTS_LIMITS.text} characters`);
       }
+      // D62: the public demo gets the default voice and model only, short text, and its own daily caps.
+      const demo = raw.source === "demo";
+      if (demo) {
+        const caps = deps.demo ?? DEFAULT_DEMO_CAPS;
+        if (text.length > caps.ttsCharsPerRequest) {
+          throw new HttpError(
+            413,
+            "demo_text_too_long",
+            `Demon läser högst ${caps.ttsCharsPerRequest} tecken åt gången.`,
+          );
+        }
+        await enforceDemo(
+          deps.rateLimiter,
+          "tts",
+          user.id,
+          await networkKey(req),
+          caps,
+          text.length,
+        );
+      }
       const language = raw.language === "en" ? "en" : "sv";
-      const modelId = raw.model === undefined || raw.model === null
+      const modelId = demo || raw.model === undefined || raw.model === null
         ? deps.config.modelId
         : typeof raw.model === "string" && raw.model in TTS_MODELS
         ? raw.model
@@ -105,11 +128,15 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
       if (modelId === null) throw new HttpError(400, "invalid_request", "unsupported model");
       const weight = TTS_MODELS[modelId] ?? 1;
       const cost = text.length * weight;
-      const format = typeof raw.output_format === "string" ? raw.output_format : "mp3_44100_64";
+      const format = !demo && typeof raw.output_format === "string"
+        ? raw.output_format
+        : "mp3_44100_64";
       if (!OUTPUT_FORMATS.has(format)) {
         throw new HttpError(400, "invalid_request", "unsupported output_format");
       }
-      const requested = raw.voice_id === undefined || raw.voice_id === null ? null : raw.voice_id;
+      const requested = demo || raw.voice_id === undefined || raw.voice_id === null
+        ? null
+        : raw.voice_id;
       if (requested !== null) {
         const allowed = typeof requested === "string" &&
           (deps.config.voices.some((v) => v.id === requested) || requested === deps.config.voiceId);

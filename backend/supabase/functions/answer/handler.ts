@@ -8,6 +8,13 @@ import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFragment } from "./calc.ts";
 import { categorize } from "./category.ts";
+import {
+  DEFAULT_DEMO_CAPS,
+  DEMO_MESSAGES,
+  type DemoCaps,
+  enforceDemo,
+  networkKey,
+} from "../_shared/demo.ts";
 import { detectReport } from "./report.ts";
 import { detectMemoryAdd, MEMORY_ACK, MEMORY_SUMMARY } from "./memory.ts";
 import { needsWeb, WEB_PROMPT, WEB_SEARCH_USD, WEB_UNAVAILABLE_NOTE, webTools } from "./web.ts";
@@ -67,6 +74,8 @@ export interface HandlerConfig {
   rizzPriceOutPerMTok?: number;
   /** push_to_talk/text: headerless prompt, meta synthesised up front (lowest latency). */
   directModes: boolean;
+  /** D62 demo caps (defaults in _shared/demo.ts). */
+  demo?: DemoCaps;
   /** USD per million tokens, for the cost estimate only (prices as stated in the assignment). */
   priceInPerMTok: number;
   priceOutPerMTok: number;
@@ -168,7 +177,22 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         }
       }
 
-      const body = validateAnswerRequest(await readLimitedJson(req, LIMITS.bodyBytes));
+      const parsed = validateAnswerRequest(await readLimitedJson(req, LIMITS.bodyBytes));
+      // D62: the public demo gets a restricted request: no Rizz / interview / auto / tutor mode, no memories,
+      // no commands; web search and the report/memory shortcuts are off further down.
+      const demo = parsed.source === "demo";
+      const demoCaps = cfg.demo ?? DEFAULT_DEMO_CAPS;
+      if (
+        demo &&
+        (parsed.persona !== "tutor" || parsed.social ||
+          !["text", "push_to_talk"].includes(parsed.mode))
+      ) {
+        throw new HttpError(403, "demo_unavailable", DEMO_MESSAGES.unavailable);
+      }
+      const body = demo ? { ...parsed, memories: [], commands: [], goals: "" } : parsed;
+      if (demo) {
+        await enforceDemo(deps.rateLimiter, "answer", user.id, await networkKey(req), demoCaps);
+      }
       const tBody = now() - t0;
       const provider = deps.provider;
       if (!provider) {
@@ -180,7 +204,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D57: the spoken report command is recognised here (no model call, nothing spoken): the app sends
       // the previous turn to POST /feedback and plays its own confirmation.
       if (
-        (body.mode === "auto" || body.mode === "push_to_talk" || body.mode === "tutor") &&
+        !demo && (body.mode === "auto" || body.mode === "push_to_talk" || body.mode === "tutor") &&
         detectReport(body.fragment)
       ) {
         const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits);
@@ -249,7 +273,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
 
       // D49: an explicit "kom ihåg ..." is answered locally (no model call) and returned as `memory_add`.
-      const memoryFact = body.mode !== "auto" && body.mode !== "interview_prep"
+      const memoryFact = !demo && body.mode !== "auto" && body.mode !== "interview_prep"
         ? detectMemoryAdd(body.fragment)
         : null;
       if (memoryFact) {
@@ -336,9 +360,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? null
         : computeFragment(body.fragment);
       // D46 item 8: web search/fetch only when the question needs it, and only within the caps.
-      const need = !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"
-        ? needsWeb(body.fragment)
-        : null;
+      const need =
+        !demo && !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"
+          ? needsWeb(body.fragment)
+          : null;
       let webOn = false;
       let webNote: string | undefined;
       if (need) {
@@ -351,8 +376,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         webOn = wl.allowed;
         if (!webOn) webNote = WEB_UNAVAILABLE_NOTE;
       }
-      const answerType = (computed || webOn) && !tutor ? "fact" : answerTypeBase;
-      const maxChars = plan?.maxChars ?? (webOn ? 800 : undefined) ??
+      const answerType = (computed || webOn || demo) && !tutor ? "fact" : answerTypeBase;
+      const maxChars = (demo ? demoCaps.answerMaxChars : undefined) ?? plan?.maxChars ??
+        (webOn ? 800 : undefined) ??
         (answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars);
       const parser = new ResponseParser(
         body.mode,
@@ -426,7 +452,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         limitsMs = now() - t0;
         return r;
       });
-      const category = categorize({
+      const category = demo ? "demo" : categorize({
         mode: body.mode,
         persona: body.persona,
         fragment: body.fragment,
@@ -434,7 +460,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         web: webOn,
         computed: !!computed,
       });
-      const noSummary = plan?.kind === "rizz";
+      const noSummary = plan?.kind === "rizz" || demo;
       const relationTag = direct && !plan && body.context.recent_qa.length > 0;
       const systemPrompt = (plan
         ? personaSystemPrompt(plan.kind)
@@ -443,9 +469,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
         (webOn ? WEB_PROMPT : "");
-      const maxTokens = (plan?.maxTokens ?? (webOn ? 600 : undefined) ??
-        (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens)) +
-        (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
+      const baseTokens = plan?.maxTokens ?? (webOn ? 600 : undefined) ??
+        (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
+      const maxTokens = demo
+        ? demoCaps.answerMaxTokens + (relationTag ? 12 : 0)
+        : baseTokens + (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
       const tools = webOn && need ? webTools(need) : undefined;
       const userFor = (b: AnswerRequest, extras: PromptExtras = {}) =>
         plan

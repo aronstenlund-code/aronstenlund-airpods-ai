@@ -40,6 +40,8 @@ export interface AnswerRequest {
   commands: { keyword: string; instruction: string }[];
   /** D49: facts the user asked the app to remember (<= 30 x 200 chars), used as user facts. */
   memories: string[];
+  /** D62: "demo" = the public demo page (hard caps, Haiku only, no web, no Rizz). */
+  source: "app" | "demo";
   context: {
     transcript: string;
     recent_qa: { q: string; a: string }[];
@@ -235,11 +237,14 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
   if (length !== "short" && length !== "adaptive" && length !== "long") {
     throw bad('length must be "short", "adaptive" or "long"');
   }
+  const source = o.source === undefined || o.source === null ? "app" : o.source;
+  if (source !== "app" && source !== "demo") throw bad('source must be "app" or "demo"');
   return {
     fragment,
     mode,
     language,
     length,
+    source,
     goals,
     persona,
     personaSetup,

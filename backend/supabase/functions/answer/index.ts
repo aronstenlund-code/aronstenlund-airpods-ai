@@ -1,4 +1,6 @@
 // POST /functions/v1/answer  - streamed (SSE) answer for the Lumen app. See backend/README.md.
+import { demoCapsFromEnv } from "../_shared/demo.ts";
+import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { MemoryRateLimiter, SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
@@ -29,6 +31,7 @@ const handler = createHandler({
   provider: providerFromEnv(env),
   recordUsage: supabaseUsageSink(db),
   config: {
+    demo: demoCapsFromEnv(env),
     ...DEFAULT_CONFIG,
     directModes: env.get("DIRECT_MODES") !== "0",
     confidenceThreshold: Number(
@@ -58,4 +61,4 @@ const handler = createHandler({
   },
 });
 
-Deno.serve(handler);
+Deno.serve(withCors(handler, extraOriginsFromEnv()));

@@ -25,6 +25,7 @@ const base: AnswerRequest = {
   social: null,
   commands: [],
   memories: [],
+  source: "app",
   context: { transcript: "", recent_qa: [], prep_terms: [] },
 };
 const req = (o: Partial<AnswerRequest> = {}): AnswerRequest => ({ ...base, ...o });

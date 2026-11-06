@@ -267,3 +267,101 @@ Deno.test("D57: the spoken report command is recognised locally: done.report, no
   assertEquals(ev.at(-1)!.data.report, undefined);
   assertEquals(seen.length, 1, "text mode goes to the model");
 });
+
+Deno.test("D62 demo: 5 questions per visitor and day, Haiku-style small budget, no web / Rizz / modes, category demo", async () => {
+  const { provider, seen } = scripted("Fotosyntes gör socker av ljus.");
+  const { handler, usage } = setup(provider);
+  const demo = (o: Record<string, unknown> = {}) =>
+    post(body({ source: "demo", mode: "text", ...o }));
+  for (let i = 0; i < 5; i++) {
+    const ev = await sse(await handler(demo()));
+    assertEquals(ev.at(-1)!.event, "done");
+  }
+  assertEquals(seen[0].maxTokens, 160);
+  assert(!seen[0].system.includes("[[SAMMANFATTNING]]"), "no summary trailer in the demo");
+  assertEquals(usage[0].category, "demo");
+  const sixth = await handler(demo());
+  assertEquals(sixth.status, 429);
+  const err = (await sixth.json()).error;
+  assertEquals(err.code, "demo_limit_visitor");
+  assert(err.message.includes("5 demofrågor"), "clear Swedish message for the page");
+  assert(sixth.headers.get("retry-after"));
+  assertEquals(seen.length, 5, "the capped request never reaches the model");
+  // another visitor on another network still works; the same network is capped separately
+  const other = setup(provider, {
+    authenticate: () => Promise.resolve({ id: "u2", isAnonymous: true }),
+  });
+  assertEquals((await other.handler(demo())).status, 200);
+});
+
+Deno.test("D62 demo: restricted request shapes and stripped fields", async () => {
+  const { provider, seen } = scripted("Svar.");
+  const { handler } = setup(provider);
+  const demo = (o: Record<string, unknown>) => post(body({ source: "demo", mode: "text", ...o }));
+  for (
+    const o of [
+      {
+        persona: "social",
+        social: {
+          place: "fest",
+          style: "rolig",
+          trigger: "opener",
+          transcript: [],
+          interests: [],
+          profile: "",
+        },
+      },
+      { persona: "interview" },
+      { mode: "tutor" },
+      { mode: "auto" },
+    ]
+  ) {
+    const r = await handler(demo(o));
+    assertEquals(r.status, 403, JSON.stringify(o).slice(0, 40));
+    assertEquals((await r.json()).error.code, "demo_unavailable");
+  }
+  assertEquals(seen.length, 0);
+  // memories / commands are dropped, web is off even for a current-events question, "kom ihåg" is just a question
+  await (await handler(demo({
+    fragment: "vem vann senaste fotbolls VM idag",
+    memories: ["Jag heter Hemligt"],
+    commands: [{ keyword: "x", instruction: "y" }],
+  }))).text();
+  assert(!seen[0].user.includes("Hemligt"), "memories are not sent in the demo");
+  assertEquals(
+    (await (await handler(demo({ fragment: "x", source: "nope" }))).json()).error.code,
+    "invalid_request",
+  );
+});
+
+Deno.test("D62 demo: a global daily cap and a per-network cap stop everybody", async () => {
+  const { provider } = scripted("Svar.");
+  const caps = {
+    ...DEFAULT_CONFIG,
+    demo: {
+      ...(DEFAULT_CONFIG.demo ?? (await import("../_shared/demo.ts")).DEFAULT_DEMO_CAPS),
+      questionsGlobal: 2,
+      questionsPerIp: 50,
+    },
+  };
+  let n = 0;
+  const { handler } = setup(provider, {
+    config: caps,
+    authenticate: () => Promise.resolve({ id: `v${n++}`, isAnonymous: true }),
+  });
+  const demo = () => post(body({ source: "demo", mode: "text" }));
+  assertEquals((await handler(demo())).status, 200);
+  assertEquals((await handler(demo())).status, 200);
+  const third = await handler(demo());
+  assertEquals(third.status, 429);
+  assertEquals((await third.json()).error.code, "demo_limit_global");
+  const ip = setup(provider, {
+    config: {
+      ...DEFAULT_CONFIG,
+      demo: { ...(await import("../_shared/demo.ts")).DEFAULT_DEMO_CAPS, questionsPerIp: 1 },
+    },
+    authenticate: () => Promise.resolve({ id: `w${n++}`, isAnonymous: true }),
+  }).handler;
+  assertEquals((await ip(demo())).status, 200);
+  assertEquals((await (await ip(demo())).json()).error.code, "demo_limit_ip");
+});

@@ -1,6 +1,7 @@
 import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
+import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
 import { readLimitedJson } from "../answer/validate.ts";
 
 /**
@@ -31,6 +32,8 @@ export interface SttDeps {
   config: SttConfig;
   recordUsage: (rec: Record<string, unknown>) => void | Promise<void>;
   fetchImpl?: typeof fetch;
+  /** D62 demo caps (defaults in _shared/demo.ts). */
+  demo?: DemoCaps;
 }
 
 export function classifySttMint(status: number, body: string): HttpError {
@@ -101,6 +104,16 @@ export function createSttHandler(deps: SttDeps) {
           status: 200,
           headers: { "content-type": "application/json", ...CORS_HEADERS },
         });
+      }
+      // D62: `GET /stt-token?source=demo` is the public demo page: its own small daily caps.
+      if (new URL(req.url).searchParams.get("source") === "demo") {
+        await enforceDemo(
+          deps.rateLimiter,
+          "stt",
+          user.id,
+          await networkKey(req),
+          deps.demo ?? DEFAULT_DEMO_CAPS,
+        );
       }
       if (!deps.apiKey) {
         throw new HttpError(503, "provider_unconfigured", "STT provider not configured", {
