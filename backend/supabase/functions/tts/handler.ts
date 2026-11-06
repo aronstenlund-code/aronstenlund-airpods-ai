@@ -21,7 +21,7 @@ export function _resetZeroRetention(v = true) {
   zeroRetention = v;
 }
 /**
- * D66: optional ElevenLabs `voice_settings` (all numbers, validated): stability 0-1 (lower = more varied, can
+ * D67: optional ElevenLabs `voice_settings` (all numbers, validated): stability 0-1 (lower = more varied, can
  * stretch or slur long words; higher = steadier), similarity_boost 0-1, style 0-1, speed 0.7-1.2.
  * Not available in the demo (default settings only).
  */

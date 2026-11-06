@@ -285,3 +285,11 @@ Tests: `supabase/functions/_shared/demo_test.ts`, `answer/d48_test.ts`.
 
 
 **Rizz timing (D63).** The first suggestion is streamed at once: SSE event `suggestion_preview` `{"text": "..."}` as soon as candidate 1 is a complete line (the model's strongest line; same safety filter), then the usual `suggestions` event with the final 2-3 options, the preview always first. Four candidates and a shorter prompt cut the output to about 70 tokens. `done.timing.ttft_ms` is the time to the first of them. Cache reads are priced at 0.1x the input price (was 0.05x).
+## Quality fixes from QA round 1 (D65)
+
+- **Data in every request:** `<now>` (date, weekday, ISO week, Swedish time) and, when the memories mention an allergy or a health condition, a binding `<safety>` rule. Date, weekday, week, clock and "how many days until X" are answered from code (`datecalc.ts`); time zones from the tz database (`timezone.ts`); a bare unit in a follow-up ("och i fot") is converted from the previous answer's value (`calc.ts`).
+- **Speech:** the model never has to spell symbols: `speechsym.ts` handles formulas, powers, clock times (`17.40` -> "sjutton och fyrtio"), regnal numbers ("Oscar I" -> "Oscar den förste"), `2x`, GHz/Hz, soft hyphens, and replaces any phone number except 112 / 1177 / 114 14 (police) with "numret som står på deras webbplats".
+- **Never spoken:** the summary line in any variant (`[[SAMMANFATTNING]]`, `SAMMANFATTNING:`, `Sammanfattning:` line); the `[[REL ...]]` tag; the `källa:` line as written.
+- **Web answers:** Swedish only, own words (English sentences are dropped), reliable domains only (no wikis), spoken source "Källa: SCB." and `done.source` = the domain for the screen.
+- **Tutor mode:** `<already_asked count=N>` is built from the session's earlier answers; one short check question (two-part and long ones are dropped).
+- **`done` fields:** `relation` (D53), `summary` (D48), `memory_add` (D49), `source` (web), `report` (spoken report command, D57).

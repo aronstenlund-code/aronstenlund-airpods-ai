@@ -820,7 +820,10 @@ Deno.test("D65 tutor: one short check question; two-part questions are dropped; 
     },
   });
   const m = buildDirectUserMessage(req);
-  assertStringIncludes(m, "<already_asked>\n- Vad heter organellen som bygger proteinerna?");
+  assertStringIncludes(
+    m,
+    '<already_asked count="1">\n- Vad heter organellen som bygger proteinerna?',
+  );
   const plain = validateAnswerRequest({
     ...{ fragment: "x", mode: "push_to_talk", language: "sv" },
   });

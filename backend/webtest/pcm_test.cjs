@@ -1,4 +1,4 @@
-// D66 test of the continuous PCM player: `node pcm_test.cjs` (needs Playwright + Chromium, no network).
+// D67 test of the continuous PCM player: `node pcm_test.cjs` (needs Playwright + Chromium, no network).
 // Stubs the backend: /answer streams 4 short sentences, /tts streams raw PCM (24 kHz) in chunks with delays.
 // Asserts: (1) the audio of ALL sentences is scheduled back to back without a gap (sample-accurate),
 // (2) short sentences are merged (first sentence alone, the rest in one request), (3) the audio session is

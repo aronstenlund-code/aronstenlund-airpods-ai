@@ -63,7 +63,7 @@
     <div class="small" id="rztime"></div>
     <div class="conv" id="rzconv"></div>
   </div>
-  <div class="card"><div class="lbl">Röstlabb (D66)</div>
+  <div class="card"><div class="lbl">Röstlabb (D67)</div>
     <div class="small">Läser 10 meningar med långa svenska ord med varje modell och mäter tiden till första ljud (använder dina val av stabilitet/likhet ovan). Kostar ca 3 200 tecken-krediter per körning. Tryck på en modell för att lyssna på hela provet efteråt.</div>
     <div class="rzrow"><button id="vlab" type="button">Kör röstlabb</button></div>
     <div id="vlabout" class="small"></div>
@@ -158,7 +158,7 @@ async function fetchAudio(text, r) {
   }
   return new Blob(chunks, { type: res.headers.get("content-type") || "audio/mpeg" });
 }
-// D66: ONE continuous PCM stream through Web Audio instead of one <audio> clip per sentence.
+// D67: ONE continuous PCM stream through Web Audio instead of one <audio> clip per sentence.
 // Cause of the stutter (found by reading the old path): (1) a separate mp3 clip per sentence, each downloaded in
 // full before it started, so a gap opened whenever the next clip was not ready when the previous one ended (short
 // sentences!); (2) mp3 encoder padding at the start/end of every clip (clicks, "stretched" sounds at the seams);
@@ -242,7 +242,7 @@ function speak(sentence, r) {
   });
   r.chain = r.sched.then(async () => { const c = actx; if (c && !r.cancelled && !r.abort) await sleep(Math.max(0, (nextAt - c.currentTime) * 1000) + 40); });
 }
-function voiceSettings() {   // D66: optional ElevenLabs voice settings from the page
+function voiceSettings() {   // D67: optional ElevenLabs voice settings from the page
   const st = parseFloat($("vstab").value), sim = parseFloat($("vsim").value);
   return Number.isFinite(st) && Number.isFinite(sim) ? { voice_settings: { stability: st, similarity_boost: sim } } : {};
 }
@@ -321,7 +321,7 @@ async function ask(text, mode, t0) {
   } catch (e) { if (!r.cancelled) r.err = e.message; }
   r.busy = false; if (!r.cancelled) setBusy(false); render(r);
 }
-// D66: the first sentence goes to TTS at once (first sound as early as possible); the rest are merged into clips of at
+// D67: the first sentence goes to TTS at once (first sound as early as possible); the rest are merged into clips of at
 // least MERGE_MIN characters (at most MERGE_MAX, the /tts limit is 500) so there are fewer, smoother clips.
 const MERGE_MIN = 90, MERGE_MAX = 440;
 function feedSentences(r, final) {
@@ -574,7 +574,7 @@ async function stopScribe() {
 }
 
 
-// ---------- D66 voice lab: first-sound time per model on sentences with long Swedish words ----------
+// ---------- D67 voice lab: first-sound time per model on sentences with long Swedish words ----------
 const LAB_SENTENCES = [
   "Högskolebehörigheten förutsätter grundläggande kunskaper i matematik.",
   "Arbetsmiljöverkets föreskrifter gäller för samtliga verksamhetsutövare.",

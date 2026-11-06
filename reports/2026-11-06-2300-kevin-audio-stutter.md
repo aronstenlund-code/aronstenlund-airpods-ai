@@ -1,4 +1,4 @@
-# Kevin – Ljudhack i testsidan och /tts (D66)
+# Kevin – Ljudhack i testsidan och /tts (D67)
 
 ## Orsak (verified in code, ej i öronen: jag har ingen enhet)
 Testsidan spelade ett **separat mp3-klipp per mening** i ett enda `<audio>`-element. Tre saker ger "drar ut" och hackar:

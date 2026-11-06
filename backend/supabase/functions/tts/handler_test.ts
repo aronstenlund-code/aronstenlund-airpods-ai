@@ -229,7 +229,7 @@ Deno.test("D48: zero retention is requested; a plan that rejects it is retried o
   assert(ok.calls[0].url.includes("enable_logging=false"));
 });
 
-Deno.test("D66: voice_settings are validated and forwarded; the demo ignores them", async () => {
+Deno.test("D67: voice_settings are validated and forwarded; the demo ignores them", async () => {
   const { handler, calls } = setup();
   const ok = await handler(
     post({ text: "Hej.", voice_settings: { stability: 0.7, similarity_boost: 0.8, speed: 1.0 } }),
