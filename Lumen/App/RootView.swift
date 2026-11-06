@@ -4,11 +4,19 @@ import SwiftUI
 struct RootView: View {
     let container: AppContainer
 
+    private var asksAboutSharing: Binding<Bool> {
+        let asking = !container.share.hasAsked // read here, in `body`, so the view follows it
+        return Binding(get: { asking }, set: { _ in })
+    }
+
     var body: some View {
         Group {
             if container.consent.isGranted {
                 NavigationStack {
                     ListeningView(model: container.listening, diagnostics: container.diagnostics)
+                }
+                .sheet(isPresented: asksAboutSharing) {
+                    ShareHistoryPromptView { container.listening.setSharing($0) }
                 }
                 .safeAreaInset(edge: .top, spacing: 0) {
                     ListeningIndicatorBar(state: container.sessionController.state,

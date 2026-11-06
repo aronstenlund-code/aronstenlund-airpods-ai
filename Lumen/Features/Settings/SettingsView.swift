@@ -16,6 +16,7 @@ struct SettingsView: View {
             Section("History and memory") {
                 NavigationLink("History") { HistoryView(store: model.history) }
                 NavigationLink("Memory") { MemoryView(store: model.memory) }
+                NavigationLink("Feedback & suggestions") { FeedbackView(model: model) }
             }
             #if DEBUG
             Section("Debug") {

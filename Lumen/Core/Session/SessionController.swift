@@ -84,6 +84,13 @@ final class SessionController {
     func resume() async { await apply(.userResume) }
     func pause() async { await apply(.userPause) }
 
+    /// A Siri phrase or Control opens the app and runs at once: capture needs the app to be active first.
+    func waitForForeground() async {
+        for _ in 0..<40 where !isForeground() {
+            try? await Task.sleep(for: .milliseconds(50))
+        }
+    }
+
     // MARK: - State machine
 
     func apply(_ event: SessionEvent) async {

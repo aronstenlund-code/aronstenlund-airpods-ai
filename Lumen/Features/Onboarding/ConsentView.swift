@@ -34,6 +34,9 @@ struct ConsentView: View {
                     point(symbol: "cloud",
                           title: "Answers come from the internet",
                           text: "To answer a question, the transcribed text is sent to Lumen's server, which asks Claude by Anthropic. Without a connection there are no answers.")
+                    point(symbol: "paperplane",
+                          title: "Reports and sharing are your choice",
+                          text: "When you report an answer, your question and that answer go to the developers word for word. Sharing your history to improve the app is off unless you turn it on. Other people's speech is never sent this way.")
                     point(symbol: "person.2",
                           title: "Tell the people around you",
                           text: "You are responsible for informing anyone whose speech is transcribed. Do not use Lumen where recording is not allowed, for example during exams.")

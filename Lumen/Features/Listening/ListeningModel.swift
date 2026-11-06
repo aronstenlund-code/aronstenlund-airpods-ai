@@ -17,6 +17,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Historik and Minne (D49/D56), on this phone only.
     let history: HistoryStore
     let memory: MemoryStore
+    /// Reports and shared history (D57). Nil: nothing leaves the phone this way.
+    let feedback: FeedbackClient?
+    /// "Skickat", or why not.
+    private(set) var reportNotice: String?
+    /// "Fråga Lumen": the hands-free session ends after one answer.
+    private var isSingleTurn = false
     /// Mikrofon per mode (D55).
     let microphone: MicrophoneSettings
     /// What the session is for: decides the microphone.
@@ -96,7 +102,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          activity: (any ListeningActivityPresenting)? = nil, study: StudySessionController? = nil,
          goals: GoalsStore? = nil, commands: CommandStore? = nil,
          history: HistoryStore? = nil, memory: MemoryStore? = nil, microphone: MicrophoneSettings? = nil,
-         modeSettings: ModeSettings? = nil) {
+         modeSettings: ModeSettings? = nil, feedback: FeedbackClient? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -110,6 +116,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.memory = memory ?? MemoryStore()
         self.microphone = microphone ?? MicrophoneSettings()
         self.modeSettings = modeSettings ?? ModeSettings()
+        self.feedback = feedback
         self.goals = goals ?? GoalsStore()
         self.commands = commands ?? CommandStore()
         self.warmer = warmer
@@ -144,6 +151,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         history.purgeExpired()
         memory.purgeExpired()
         guard !answers.useMock else { return }
+        Task { await feedback?.sync(history.entries) }
         Task { await warmer?.warm() }
         await voices.refreshIfNeeded()
     }
@@ -367,7 +375,37 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// either side of the table apart, and other people's words are never saved (D56).
     private var ownLinesAreReliable: Bool { microphone.source(for: mode) == .airPods }
 
+    /// One hands-free question for "Fråga Lumen", then the microphone goes off.
+    func askFromShortcut() async {
+        await controller.waitForForeground()
+        isSingleTurn = true
+        await startStudy()
+    }
+
+    func startFromShortcut() async {
+        await controller.waitForForeground()
+        if !isListening { await startListening() }
+    }
+
+    func startStudyFromShortcut() async {
+        await controller.waitForForeground()
+        if !study.isActive { await startStudy() }
+    }
+
+    func pauseFromShortcut() async {
+        if isListening { await controller.pause() }
+    }
+
+    /// True when "Fråga Lumen" has had its answer and the session was closed.
+    private func finishSingleTurn() -> Bool {
+        guard isSingleTurn else { return false }
+        endStudy(bySilence: false)
+        Task { await stopListening() }
+        return true
+    }
+
     private func handsFreeEnded() {
+        isSingleTurn = false
         if let session = rizz, !session.offered.isEmpty {
             let lines = ownLinesAreReliable ? session.ownLines.joined(separator: "\n") : ""
             history.record(HistoryEntry(question: lines.isEmpty ? nil : lines, answer: "",
@@ -488,14 +526,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     private func speechFinished() {
-        guard study.isActive else { return }
+        guard study.isActive, !finishSingleTurn() else { return }
         transcription.setInputGated(false)
         study.resumeListening()
     }
 
     /// The answer produced no speech (silent mode, empty answer): back to listening right away.
     private func studyAnswerEnded() {
-        guard study.isActive, mode != .rizz, !speaker.hasPendingSpeech else { return }
+        guard study.isActive, mode != .rizz, !speaker.hasPendingSpeech, !finishSingleTurn() else { return }
         transcription.setInputGated(false)
         study.resumeListening()
     }
@@ -554,6 +592,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     private func activated(_ request: ActivationRequest, persona: PersonaRequest? = nil) {
+        if VoiceCommand.isMusicHandOff(request.query) { return } // the final result already paused the session
         pendingQuestion = request
         answerNotice = nil
         // A new question interrupts the current answer and its speech (assignment item 5).
@@ -603,6 +642,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let turn = conversation.completeAnswer(latencyMs: latencyMs) {
             history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
                                         answer: turn.answer, summary: done?.summary))
+            Task { await feedback?.sync(history.entries) }
         }
         if let fact = done?.memoryAdd {
             memory.add(fact)
@@ -611,6 +651,60 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.log("Answer · first text after \(Int(latencyMs)) ms" + (done?.usage?.model.map { " · \($0)" } ?? ""))
         }
         studyAnswerEnded()
+    }
+
+    func answerReportRequested() {
+        latency.end()
+        conversation.cancelAnswer()
+        Task { await reportPreviousTurn() }
+        studyAnswerEnded()
+    }
+
+    /// "Rapportera" on an answer (D57). The question goes along only if it was the user's own.
+    @discardableResult
+    func report(_ turn: AnswerTurn, comment: String? = nil) async -> Bool {
+        guard let feedback else { return false }
+        do {
+            try await feedback.send(type: "report", fragment: turn.isOwnQuestion ? turn.question : nil, answer: turn.answer,
+                                    comment: comment, mode: mode.rawValue, persona: mode == .rizz ? "social" : nil,
+                                    timings: turn.latencyMs.map { ["first_text_ms": $0] })
+            reportNotice = language == .swedish ? "Skickat" : "Sent"
+            return true
+        } catch {
+            reportNotice = error.localizedDescription
+            controller.log("Report failed: \(error.localizedDescription)")
+            return false
+        }
+    }
+
+    /// The spoken command: the last answer, or the suggestion on screen in Rizzläge. Confirms by voice.
+    private func reportPreviousTurn() async {
+        let suggestion = rizz?.current.map { AnswerTurn(question: "", answer: $0, source: "rizz", isOwnQuestion: false) }
+        guard let turn = suggestion ?? conversation.answers.last else {
+            reportNotice = language == .swedish ? "Inget svar att rapportera" : "No answer to report"
+            return
+        }
+        if await report(turn), let notice = reportNotice {
+            if case .paused = state { return }
+            speaker.enqueue(notice, language: language)
+        }
+    }
+
+    /// Settings → Feedback & suggestions.
+    func sendFeedback(type: String, text: String) async -> Bool {
+        guard let feedback else { return false }
+        do {
+            try await feedback.send(type: type, comment: text)
+            return true
+        } catch {
+            controller.log("Feedback failed: \(error.localizedDescription)")
+            return false
+        }
+    }
+
+    func setSharing(_ sharing: Bool) {
+        feedback?.settings.setSharing(sharing)
+        Task { await feedback?.sync(history.entries) }
     }
 
     func answerSkipped(_ request: ActivationRequest) {
@@ -641,9 +735,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         conversation.finalize(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
         if isComparing { return }
+        if !segment.overlapsPlayback, VoiceCommand.isMusicHandOff(segment.text) {
+            controller.log("Spoken pause: handing the audio back")
+            Task { await controller.pause() }
+            return
+        }
         if rizz != nil, RizzCommand.isNext(segment.text) {
             study.resumeListening()
             nextSuggestion()
+            return
+        }
+        if rizz != nil, VoiceCommand.isReport(segment.text) {
+            study.resumeListening()
+            Task { await reportPreviousTurn() }
             return
         }
         if !segment.overlapsPlayback, saveSpokenCommand(segment.text) {

@@ -16,6 +16,25 @@ struct ListeningActivityAttributes: ActivityAttributes {
 enum ListeningRemote {
     static var toggle: (@MainActor () async -> Void)?
     static var nextSuggestion: (@MainActor () -> Void)?
+    static var start: (@MainActor () async -> Void)?
+    static var ask: (@MainActor () async -> Void)?
+    static var startStudy: (@MainActor () async -> Void)?
+    static var pause: (@MainActor () async -> Void)?
+}
+
+/// "Starta Lumen" from Siri or a Control (D58). Runs with the app open: the microphone only starts from the app,
+/// after consent, and the listening state is on screen from the first second.
+struct StartListeningIntent: AppIntent {
+    static let title: LocalizedStringResource = "Start Lumen"
+    static let supportedModes: IntentModes = .foreground
+
+    init() {}
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        await ListeningRemote.start?()
+        return .result()
+    }
 }
 
 /// "Nästa" on the Live Activity: speak the next Rizzläge suggestion.

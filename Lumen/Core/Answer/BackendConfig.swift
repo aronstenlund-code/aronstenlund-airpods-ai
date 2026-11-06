@@ -10,6 +10,8 @@ struct BackendConfig: Sendable, Equatable {
     var ttsURL: URL { projectURL.appending(path: "functions/v1/tts") }
     var voicesURL: URL { projectURL.appending(path: "functions/v1/voices") }
     var sttTokenURL: URL { projectURL.appending(path: "functions/v1/stt-token") }
+    var feedbackURL: URL { projectURL.appending(path: "functions/v1/feedback") }
+    var sharedHistoryURL: URL { projectURL.appending(path: "functions/v1/shared-history") }
     var signUpURL: URL { projectURL.appending(path: "auth/v1/signup") }
     var refreshURL: URL {
         projectURL.appending(path: "auth/v1/token").appending(queryItems: [URLQueryItem(name: "grant_type", value: "refresh_token")])

@@ -6,6 +6,8 @@ struct ListeningView: View {
     @Bindable var model: ListeningModel
     let diagnostics: DiagnosticsModel
     @Environment(\.scenePhase) private var scenePhase
+    @State private var reportingTurn: AnswerTurn?
+    @State private var reportComment = ""
 
     var body: some View {
         List {
@@ -43,6 +45,13 @@ struct ListeningView: View {
         }
         .navigationDestination(isPresented: $model.isShowingDiagnostics) {
             DiagnosticsView(model: diagnostics)
+        }
+        .alert("Report this answer", isPresented: isReporting, presenting: reportingTurn) { turn in
+            TextField("What was wrong? (optional)", text: $reportComment)
+            Button("Send") { Task { await model.report(turn, comment: reportComment) } }
+            Button("Cancel", role: .cancel) {}
+        } message: { _ in
+            Text("Your question and this answer go to the developers word for word.")
         }
         .sheet(isPresented: $model.isShowingInterviewSetup) {
             NavigationStack {
@@ -323,6 +332,11 @@ struct ListeningView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+            if let notice = model.reportNotice {
+                Label(notice, systemImage: "paperplane")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
             if let savedAt = model.noteSavedAt {
                 Label("Saved as a note \(savedAt.formatted(date: .omitted, time: .shortened))", systemImage: "checkmark.circle")
                     .font(.footnote)
@@ -338,9 +352,18 @@ struct ListeningView: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                         Text(turn.answer)
-                        Text(answerCaption(turn))
+                        HStack {
+                            Text(answerCaption(turn))
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                            Spacer()
+                            Button("Report") {
+                                reportComment = ""
+                                reportingTurn = turn
+                            }
                             .font(.caption2)
-                            .foregroundStyle(.tertiary)
+                            .buttonStyle(.borderless)
+                        }
                     }
                     .padding(.vertical, 2)
                 }
@@ -385,6 +408,10 @@ struct ListeningView: View {
     }
 
     // MARK: Controls
+
+    private var isReporting: Binding<Bool> {
+        Binding(get: { reportingTurn != nil }, set: { if !$0 { reportingTurn = nil } })
+    }
 
     private var modeButtonTitle: LocalizedStringKey {
         if model.study.isActive { return "End session" }

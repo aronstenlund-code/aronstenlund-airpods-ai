@@ -14,6 +14,8 @@ protocol AnswerSink: AnyObject {
     func answerCompleted(latencyMs: Double?, done: AnswerDone?)
     /// Auto mode: the backend decided it was not a question.
     func answerSkipped(_ request: ActivationRequest)
+    /// The spoken report command (D57): the previous turn should go to the developers.
+    func answerReportRequested()
     func answerFailed(_ message: String, wantsFallback: Bool)
 }
 
@@ -70,21 +72,19 @@ final class AnswerEngine {
         var splitter = SentenceSplitter()
         var firstDeltaMs: Double?
         var done: AnswerDone?
+        var notAQuestion = false
         do {
             for try await event in provider.answer(AnswerRequest(activation: request, context: context, length: settings.length, persona: persona)) {
                 if Task.isCancelled { return }
                 switch event {
                 case .meta(let meta):
-                    if !meta.isQuestion {
-                        Log.answer.info("auto: not a question (confidence \(meta.confidence ?? -1, privacy: .public))")
-                        status = .idle
-                        sink?.answerSkipped(request)
-                        return
-                    }
+                    // `done` follows at once and says whether this was the report command.
+                    notAQuestion = !meta.isQuestion
                     if let question = meta.reconstructedQuestion, !meta.needsConfirmation, !question.isEmpty {
                         sink?.answerQuestionReconstructed(question)
                     }
                 case .delta(let text):
+                    if notAQuestion { break }
                     if firstDeltaMs == nil {
                         firstDeltaMs = Self.milliseconds(since: start)
                         Log.signposter.emitEvent("answer.firstDelta")
@@ -102,6 +102,16 @@ final class AnswerEngine {
                 }
             }
             if Task.isCancelled { return }
+            if notAQuestion {
+                status = .idle
+                if done?.report == true {
+                    sink?.answerReportRequested()
+                } else {
+                    Log.answer.info("auto: not a question")
+                    sink?.answerSkipped(request)
+                }
+                return
+            }
             if let rest = splitter.flush() {
                 sink?.answerSentence(rest)
             }

@@ -18,6 +18,7 @@ final class AppContainer {
     let answers: AnswerEngine
     let speaker: Speaker
     let voices: VoiceCatalog
+    let share: ShareSettings
     let notes: NotesStore
     let prep: PrepStore
     let listening: ListeningModel
@@ -54,6 +55,7 @@ final class AppContainer {
                               premium: ElevenLabsTTSProvider(config: .lumen, auth: auth, http: http, playback: playback),
                               playback: playback)
         let voices = VoiceCatalog(config: .lumen, auth: auth, http: http)
+        let share = ShareSettings()
         let notes = NotesStore()
         let prep = PrepStore()
         let listening = ListeningModel(controller: controller, consent: consent,
@@ -62,9 +64,14 @@ final class AppContainer {
                                        notes: notes, prep: prep,
                                        warmer: BackendWarmer(config: .lumen, http: http),
                                        activity: ListeningActivityPresenter(),
-                                       history: HistoryStore(), memory: MemoryStore())
+                                       history: HistoryStore(), memory: MemoryStore(),
+                                       feedback: FeedbackClient(config: .lumen, auth: auth, http: http, settings: share))
         ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
         ListeningRemote.nextSuggestion = { [weak listening] in listening?.nextSuggestion() }
+        ListeningRemote.start = { [weak listening] in await listening?.startFromShortcut() }
+        ListeningRemote.ask = { [weak listening] in await listening?.askFromShortcut() }
+        ListeningRemote.startStudy = { [weak listening] in await listening?.startStudyFromShortcut() }
+        ListeningRemote.pause = { [weak listening] in await listening?.pauseFromShortcut() }
         transcription.sink = listening
         self.graph = graph
         self.session = session
@@ -81,6 +88,7 @@ final class AppContainer {
         self.answers = answers
         self.speaker = speaker
         self.voices = voices
+        self.share = share
         self.notes = notes
         self.prep = prep
         self.listening = listening

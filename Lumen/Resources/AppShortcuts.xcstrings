@@ -1,0 +1,46 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Starta ${applicationName}": {
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starta ${applicationName}"
+          }
+        }
+      }
+    },
+    "Fråga ${applicationName}": {
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fråga ${applicationName}"
+          }
+        }
+      }
+    },
+    "Starta provläge med ${applicationName}": {
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starta provläge med ${applicationName}"
+          }
+        }
+      }
+    },
+    "Pausa ${applicationName}": {
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa ${applicationName}"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

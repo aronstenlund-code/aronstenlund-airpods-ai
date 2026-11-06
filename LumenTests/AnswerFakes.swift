@@ -160,6 +160,8 @@ final class FakeAnswerProvider: AnswerProvider {
 @MainActor
 final class FakeAnswerSink: AnswerSink {
     func answerSuggestions(_ options: [String]) {}
+    private(set) var reportRequests = 0
+    func answerReportRequested() { reportRequests += 1 }
     private(set) var started: [ActivationRequest] = []
     private(set) var sources: [String] = []
     private(set) var reconstructed: [String] = []

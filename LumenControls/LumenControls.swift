@@ -9,6 +9,20 @@ struct LumenControlsBundle: WidgetBundle {
     var body: some Widget {
         ListeningLiveActivity()
         ListeningControl()
+        StartListeningControl()
+    }
+}
+
+/// Opens the app and starts listening (D58).
+struct StartListeningControl: ControlWidget {
+    var body: some ControlWidgetConfiguration {
+        StaticControlConfiguration(kind: "com.rsolutions.lumen.controls.start") {
+            ControlWidgetButton(action: StartListeningIntent()) {
+                Label("Start Lumen", systemImage: "mic.fill")
+            }
+        }
+        .displayName("Start Lumen")
+        .description("Opens Lumen and starts listening.")
     }
 }
 

@@ -158,6 +158,8 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var summary: String?
     /// "kom ihåg …": the fact to store on the phone (D50). Never inferred by the server.
     var memoryAdd: String?
+    /// The user said "rapportera" (D57): send the previous turn to `/feedback`. Nothing was answered.
+    var report: Bool?
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.

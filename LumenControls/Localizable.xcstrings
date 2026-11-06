@@ -45,6 +45,17 @@
         }
       }
     },
+    "Opens Lumen and starts listening.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öppnar Lumen och börjar lyssna."
+          }
+        }
+      }
+    },
     "Pause": {
       "extractionState": "manual",
       "localizations": {
@@ -107,6 +118,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fortsätt"
+          }
+        }
+      }
+    },
+    "Start Lumen": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starta Lumen"
           }
         }
       }

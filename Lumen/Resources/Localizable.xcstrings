@@ -78,6 +78,17 @@
         }
       }
     },
+    "About the app": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Om appen"
+          }
+        }
+      }
+    },
     "About you": {
       "extractionState": "manual",
       "localizations": {
@@ -265,6 +276,17 @@
         }
       }
     },
+    "Ask Lumen": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fråga Lumen"
+          }
+        }
+      }
+    },
     "Ask about the last sentence": {
       "extractionState": "manual",
       "localizations": {
@@ -419,6 +441,17 @@
         }
       }
     },
+    "Could not send. Try again later.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kunde inte skicka. Försök igen senare."
+          }
+        }
+      }
+    },
     "Could not start": {
       "extractionState": "manual",
       "localizations": {
@@ -529,6 +562,17 @@
         }
       }
     },
+    "Don't share": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dela inte"
+          }
+        }
+      }
+    },
     "Done": {
       "extractionState": "manual",
       "localizations": {
@@ -606,6 +650,17 @@
         }
       }
     },
+    "Feedback & suggestions": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feedback & förslag"
+          }
+        }
+      }
+    },
     "Hands-free: speak, pause, get a tutor-style answer, continue. Talking while it speaks interrupts it. Tuned on device.": {
       "extractionState": "manual",
       "localizations": {
@@ -613,6 +668,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Handsfree: prata, pausa, få ett lärarsvar, fortsätt. Pratar du medan den talar avbryts den. Finjusteras på enhet."
+          }
+        }
+      }
+    },
+    "Help improve Lumen?": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vill du hjälpa till att förbättra Lumen?"
           }
         }
       }
@@ -1167,6 +1233,17 @@
         }
       }
     },
+    "Off by default. When on, your own questions and Lumen's answers are uploaded without your name and kept for at most 12 months. Other people's speech is never sent. Turning it off deletes what was shared.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avstängt från början. När det är på laddas dina egna frågor och Lumens svar upp utan ditt namn och sparas högst 12 månader. Andra personers tal skickas aldrig. Stänger du av raderas det som delats."
+          }
+        }
+      }
+    },
     "On: audio goes to ElevenLabs for the best recognition. Off: everything stays on this iPhone, with weaker recognition.": {
       "extractionState": "manual",
       "localizations": {
@@ -1218,6 +1295,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klistra in kursens målbeskrivning. En komprimerad version skickas med varje fråga så att svaren matchar kursens nivå."
+          }
+        }
+      }
+    },
+    "Pause Lumen": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa Lumen"
           }
         }
       }
@@ -1497,6 +1585,39 @@
         }
       }
     },
+    "Report": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rapportera"
+          }
+        }
+      }
+    },
+    "Report this answer": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rapportera svaret"
+          }
+        }
+      }
+    },
+    "Reports and sharing are your choice": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rapporter och delning är ditt val"
+          }
+        }
+      }
+    },
     "Resume": {
       "extractionState": "manual",
       "localizations": {
@@ -1662,6 +1783,17 @@
         }
       }
     },
+    "Sent": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skickat"
+          }
+        }
+      }
+    },
     "Set up Intervjuläge": {
       "extractionState": "manual",
       "localizations": {
@@ -1702,6 +1834,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dela"
+          }
+        }
+      }
+    },
+    "Share history": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dela historik"
+          }
+        }
+      }
+    },
+    "Share history to improve the app": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dela historik för att förbättra appen"
           }
         }
       }
@@ -1838,6 +1992,17 @@
         }
       }
     },
+    "Start Lumen": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starta Lumen"
+          }
+        }
+      }
+    },
     "Start Provläge": {
       "extractionState": "manual",
       "localizations": {
@@ -1946,6 +2111,17 @@
         }
       }
     },
+    "Suggestion": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Förslag"
+          }
+        }
+      }
+    },
     "Suggestions": {
       "extractionState": "manual",
       "localizations": {
@@ -2007,6 +2183,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tryck för att fortsätta"
+          }
+        }
+      }
+    },
+    "Tell the developers": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berätta för utvecklarna"
           }
         }
       }
@@ -2154,6 +2341,17 @@
         }
       }
     },
+    "Type": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typ"
+          }
+        }
+      }
+    },
     "Type a question": {
       "extractionState": "manual",
       "localizations": {
@@ -2194,6 +2392,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Röst"
+          }
+        }
+      }
+    },
+    "What was wrong? (optional)": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vad blev fel? (valfritt)"
+          }
+        }
+      }
+    },
+    "When you report an answer, your question and that answer go to the developers word for word. Sharing your history to improve the app is off unless you turn it on. Other people's speech is never sent this way.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "När du rapporterar ett svar går din fråga och det svaret ordagrant till utvecklarna. Att dela historik för att förbättra appen är avstängt om du inte slår på det. Andra personers tal skickas aldrig den vägen."
           }
         }
       }
@@ -2264,6 +2484,17 @@
         }
       }
     },
+    "You can share your own questions and Lumen's answers with the developers, without your name, for at most 12 months. Other people's speech is never sent. You can change your mind at any time in Settings, and what was shared is then deleted.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du kan dela dina egna frågor och Lumens svar med utvecklarna, utan ditt namn, i högst 12 månader. Andra personers tal skickas aldrig. Du kan ändra dig när som helst i Inställningar, och då raderas det som delats."
+          }
+        }
+      }
+    },
     "You can stop at any time": {
       "extractionState": "manual",
       "localizations": {
@@ -2304,6 +2535,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dina egna frågor och Lumens svar sparas ordagrant med en kort sammanfattning, och minnen bara när du ber om det. Andra personers tal sparas inte. Radera när du vill i Inställningar; det raderas automatiskt efter 2 år."
+          }
+        }
+      }
+    },
+    "Your question and this answer go to the developers word for word.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Din fråga och det här svaret går ordagrant till utvecklarna."
           }
         }
       }
