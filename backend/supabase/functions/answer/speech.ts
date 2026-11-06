@@ -21,7 +21,7 @@ export const SUMMARY_MARK = "[[SAMMANFATTNING]]";
 /**
  * The model ends every answer with a line `[[SAMMANFATTNING]] <1-2 sentence summary>` (same call, no extra
  * request). Everything before the marker is spoken; everything after is the summary and never reaches TTS.
- * D63: the marker is recognised in every variant the model produces - `[[SAMMANFATTNING]]`, `[SAMMANFATTNING]`,
+ * D65: the marker is recognised in every variant the model produces - `[[SAMMANFATTNING]]`, `[SAMMANFATTNING]`,
  * `SAMMANFATTNING:`, a line `Sammanfattning:` (any case, optional **bold**) - anywhere in the text, also when
  * no summary follows. A partial marker at the end of a chunk is held back so it is never spoken.
  */

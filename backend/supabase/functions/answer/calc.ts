@@ -1,4 +1,5 @@
 import { wordsToNumber } from "./svnum.ts";
+import { dateCalc } from "./datecalc.ts";
 import { zoneClock } from "./timezone.ts";
 
 /**
@@ -232,7 +233,7 @@ function convert(input: string): Computed | null {
 export function computeFragment(fragment: string, now: Date = new Date()): Computed | null {
   const f = fragment.trim();
   if (!f || f.length > 120) return null;
-  const z = zoneClock(f, now);
+  const z = zoneClock(f, now) ?? dateCalc(f, now);
   if (z) return z;
   const p = percent(f);
   if (p) return p;

@@ -268,7 +268,7 @@ Tests: `supabase/functions/feedback/handler_test.ts`, `answer/d48_test.ts`.
 
 `python3 scripts/live-eval.py [--only CAT] [--dry]` runs ~100 conversations from `scripts/live-eval-cases.json` against the deployed backend (anonymous session, public key; no secrets) and writes `reports/eval/<date>.md`, `latest.json` and `history.csv`. Checks are pure functions covered by `python3 -I scripts/test_live_eval.py`. `.github/workflows/nightly-eval.yml` runs it at 02:17 UTC (and on demand: Actions -> Nightly live eval -> Run workflow) and commits the result (docs-only paths, so no iOS build).
 
-## Public demo page: contract for the site (D62)
+## Public demo page: contract for the site (D62/D64)
 
 Everything the page (`site/`, GitHub Pages) needs. All calls go to `https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/...` with the public publishable key; the page signs in anonymously exactly like the app.
 

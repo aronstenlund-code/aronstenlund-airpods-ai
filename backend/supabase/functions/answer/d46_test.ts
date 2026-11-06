@@ -489,7 +489,7 @@ Deno.test("D54: web search is limited to reliable domains; 'genom' divides; ett 
 });
 
 import { findSummaryMarker, SummaryTap } from "./speech.ts";
-Deno.test("D63: the summary marker is cut in every variant, anywhere, in any chunking; a missing summary is still removed", () => {
+Deno.test("D65: the summary marker is cut in every variant, anywhere, in any chunking; a missing summary is still removed", () => {
   const variants = [
     "[[SAMMANFATTNING]] Om fotosyntes och ljus.",
     "SAMMANFATTNING: Om fotosyntes och ljus.",
@@ -538,7 +538,7 @@ Deno.test("D63: the summary marker is cut in every variant, anywhere, in any chu
   assertEquals(findSummaryMarker("inget här"), null);
 });
 
-Deno.test("D63: clock times with a dot, regnal numbers, 2x, 5G and hertz are spoken", () => {
+Deno.test("D65: clock times with a dot, regnal numbers, 2x, 5G and hertz are spoken", () => {
   assertEquals(toSpeech("Tåget går klockan 17.40."), "Tåget går klockan sjutton och fyrtio.");
   assertEquals(
     toSpeech("Möte kl 9.05 och 14:30."),
@@ -560,4 +560,46 @@ Deno.test("D63: clock times with a dot, regnal numbers, 2x, 5G and hertz are spo
     "En processor på tre komma fem gigahertz och femtio hertz.",
   );
   assertEquals(toSpeech("kof­fein​et"), "koffeinet");
+});
+
+import { dateCalc, isoWeek, nowContext } from "./datecalc.ts";
+Deno.test("D65: date, weekday, week, clock and days-until are computed in code (Swedish time)", () => {
+  const at = new Date("2026-11-06T16:40:00Z"); // fredag 17:40 svensk tid
+  assertEquals(
+    nowContext(at),
+    "fredag 6 november 2026, vecka 45, klockan 17:40 (svensk tid, Europe/Stockholm)",
+  );
+  assertStringIncludes(dateCalc("vilket datum är det", at)!.text, "fredag 6 november 2026");
+  assertStringIncludes(dateCalc("vilken veckodag är det idag", at)!.text, "fredag");
+  assertEquals(dateCalc("vilken vecka är det", at)!.value, 45);
+  assertEquals(dateCalc("vad är klockan", at)!.text.slice(0, 18), "Klockan är 17:40 s");
+  const jul = dateCalc("hur många dagar är det kvar till julafton", at)!;
+  assertEquals(jul.value, 48);
+  assertStringIncludes(jul.text, "om 48 dagar (6 veckor och 6 dagar)");
+  assertEquals(dateCalc("hur många dagar är det till nyår", at)!.value, 56);
+  assertEquals(dateCalc("hur många dagar till midsommar", at)!.value, 231); // 2027-06-25
+  assertEquals(dateCalc("hur många dagar till påsk", at)!.value, 142); // 2027-03-28
+  assertEquals(dateCalc("hur många dagar till 3 mars", at)!.value, 117);
+  assertEquals(dateCalc("hur många dagar tills 24 december 2026", at)!.value, 48);
+  assertEquals(dateCalc("hur många dagar till idag", at), null);
+  assertEquals(dateCalc("vem är kung", at), null);
+  assertEquals(isoWeek(2026, 12, 31), 53);
+  assertEquals(computeFragment("hur många dagar är det kvar till julafton", at)?.value, 48);
+  assertStringIncludes(
+    computeFragment("vad är klockan i kapstaden när den är tolv här", at)!.text,
+    "Kapstaden",
+  );
+});
+
+Deno.test("D65: every request carries <now>; the prompt forbids 'I have no access to the date'", () => {
+  const req = validateAnswerRequest({
+    fragment: "vilket datum är det",
+    mode: "push_to_talk",
+    language: "sv",
+  });
+  const m = buildDirectUserMessage(req, null, {
+    now: nowContext(new Date("2026-11-06T16:40:00Z")),
+  });
+  assertStringIncludes(m, "<now>fredag 6 november 2026, vecka 45");
+  assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "never say that you have no access to the date");
 });

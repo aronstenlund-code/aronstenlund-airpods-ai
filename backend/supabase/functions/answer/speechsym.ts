@@ -155,12 +155,12 @@ export function beforeNumbers(text: string): string {
     /[\u2080-\u2089]/g,
     (c) => String(c.charCodeAt(0) - 0x2080),
   );
-  // D63: clock times written with a dot after "klockan"/"kl": 17.40 -> "17:40" (read by the clock rule)
+  // D65: clock times written with a dot after "klockan"/"kl": 17.40 -> "17:40" (read by the clock rule)
   s = s.replace(
     /((?:klockan|kl\.?|vid|runt|före|efter)\s+)([01]?\d|2[0-3])\.([0-5]\d)(?![\d])/giu,
     (_m, pre: string, h: string, m: string) => `${pre}${h}:${m}`,
   );
-  // D63: roman numerals after a name are regnal numbers: "Oscar I" -> "Oscar den förste"
+  // D65: roman numerals after a name are regnal numbers: "Oscar I" -> "Oscar den förste"
   s = s.replace(
     /(?<![\p{L}\d])(\p{Lu}[\p{L}]+) (XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)(?![\p{L}\d])(?!\s\p{Lu})/gu,
     (m: string, name: string, roman: string) => {

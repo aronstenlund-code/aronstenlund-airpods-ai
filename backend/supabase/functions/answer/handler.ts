@@ -7,6 +7,7 @@ import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFragment } from "./calc.ts";
+import { nowContext } from "./datecalc.ts";
 import { categorize } from "./category.ts";
 import {
   DEFAULT_DEMO_CAPS,
@@ -106,6 +107,8 @@ export interface Deps {
    * LLM starts one user can trigger while the shared limiter is still answering.
    */
   localLimiter?: RateLimiter;
+  /** Wall clock (tests); default `new Date()`. */
+  clock?: () => Date;
   /** null = no provider configured -> 503 provider_unconfigured (fail closed). */
   provider: LLMProvider | null;
   recordUsage: (rec: UsageRecord) => void | Promise<void>;
@@ -358,7 +361,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D46: arithmetic / percentages / unit conversions are computed in code, not by the model.
       const computed = plan || body.mode === "interview_prep"
         ? null
-        : computeFragment(body.fragment);
+        : computeFragment(body.fragment, (deps.clock ?? (() => new Date()))());
       // D46 item 8: web search/fetch only when the question needs it, and only within the caps.
       const need =
         !demo && !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"
@@ -482,6 +485,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ? buildDirectUserMessage(b, continuation, extras)
           : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, extras);
       const baseExtras: PromptExtras = {
+        now: nowContext((deps.clock ?? (() =>
+          new Date()))()),
         ...(computed ? { computed: computed.text } : {}),
         ...(webNote ? { note: webNote } : {}),
       };
@@ -541,8 +546,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let stop = false;
           let it = iterator;
           // D46 post-processing: digits -> words, drop a closing question, stop a repeated answer.
-          const qnorm = (x: string) =>
-            x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+          const qnorm = (x: string) => x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
           const guardOn = direct && !plan && !continuation && body.context.recent_qa.length > 0 &&
             body.fragment.trim().split(/\s+/).length >= 2;
           const prevAnswers = guardOn
