@@ -87,7 +87,7 @@ struct LiveStartView: View {
                 }
                 .font(.headline)
             } footer: {
-                Text("Suggestions are shown on the Lock Screen and the best one is spoken in a pause. Say \"nästa\" for the next one.")
+                Text("Ett förslag visas på låsskärmen och läses upp i en paus. Säg \"nästa\" för ett nytt, \"\(WakeWord.name), mer skämt\" för att styra tonen och \"\(WakeWord.name), ge mig tre\" för fler.")
             }
         }
         .navigationTitle(mode == .rizz ? "Rizzläge" : "Socialt läge")

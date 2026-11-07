@@ -31,6 +31,7 @@ final class ModeSettings {
     static let countsKey = "mode.rizzStyleCounts"
     static let lastModeKey = "mode.lastSelected"
     static let liveStartKey = "mode.liveStartConfirmed"
+    static let calibrationsKey = "mode.calibrations"
 
     /// The role or the pasted job ad.
     var interviewSetup: String {
@@ -58,6 +59,9 @@ final class ModeSettings {
     /// Live modes whose start screen ("They know the app is listening") was confirmed on this phone. Switching to one
     /// by voice needs it (D74): the start screen is the guardrail, the voice only saves taking out the phone later.
     private(set) var liveStartConfirmed: Set<String>
+    /// What the wearer has told the AI in each live mode, as the backend merged it (D69). On this phone only,
+    /// reset in Settings.
+    private(set) var calibrations: [String: String]
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
@@ -70,10 +74,27 @@ final class ModeSettings {
         self.styleCounts = defaults.dictionary(forKey: Self.countsKey) as? [String: Int] ?? [:]
         self.lastMode = defaults.string(forKey: Self.lastModeKey).flatMap(ConversationMode.init(rawValue:)) ?? .standard
         self.liveStartConfirmed = Set(defaults.stringArray(forKey: Self.liveStartKey) ?? [])
+        self.calibrations = defaults.dictionary(forKey: Self.calibrationsKey) as? [String: String] ?? [:]
     }
 
     var interests: [String] {
         rizzInterests.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+    }
+
+    func calibration(for mode: ConversationMode) -> String? {
+        calibrations[mode.rawValue]
+    }
+
+    /// Stores `done.calibration`; empty removes it (the backend sends "" after "återställ").
+    func setCalibration(_ text: String?, for mode: ConversationMode) {
+        let trimmed = String((text ?? "").trimmingCharacters(in: .whitespacesAndNewlines).prefix(VoiceChannel.instructionLimit))
+        calibrations[mode.rawValue] = trimmed.isEmpty ? nil : trimmed
+        defaults.set(calibrations, forKey: Self.calibrationsKey)
+    }
+
+    /// "Återställ" in Settings.
+    func resetCalibration(for mode: ConversationMode) {
+        setCalibration(nil, for: mode)
     }
 
     func hasConfirmedLiveStart(_ mode: ConversationMode) -> Bool {

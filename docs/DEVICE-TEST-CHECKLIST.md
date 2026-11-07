@@ -310,6 +310,13 @@ Lyssna också: låter svaret bättre i AirPods med iPhone-mikrofonen än med Air
 ### 3x2. Socialt läge (5 min, med samma kompis)
 Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt läge, Rizzläge), tryck *Förbered Socialt läge*. Ingen åldersfråga ska komma, men startskärmen med samtycket ska göra det. Gör samma test som i 3x steg 2–4: exakt ett förslag åt gången. Förslagen ska vara skämt, repliker, småprat och följdfrågor, aldrig flirt.
 
+### 3x3. Kalibrering och fler förslag (D69, 10 min, med kompisen)
+1. I Socialt läge, säg "Lumen, mer skämt". Du ska höra "Okej", och **inget** förslag ska komma på just det. Blir nästa förslag roligare? Mät tiden till "Okej".
+2. Säg en mening till kompisen som slutar med "… Lumen, hon gillar fotboll". Början ska räknas som samtal och slutet som instruktion: syns fotbollen i nästa förslag?
+3. Säg "Lumen, ge mig tre pickup lines" i Rizzläge. Alla tre ska visas och läsas upp, **bara den gången**. Nästa förslag ska vara ett igen. Prova också "Lumen, fler förslag".
+4. Inställningar → *Kalibrering*: står det du sa under rätt läge? Tryck *Återställ*. Säg sedan "Lumen, återställ" i ett läge: kalibreringen ska försvinna där också.
+5. Säger kompisen ordet "Lumen" i en vanlig mening: blir det felaktigt en instruktion? Skriv ner hur ofta det händer.
+
 ### 3y. Historik och minne (5 min)
 1. Inställningar → *Historik*: dina egna frågor ska stå ordagrant med svar och sammanfattning. Rizz-passet ska ha förslag men **inget** av det kompisen sa.
 2. Radera en rad. Tryck *Radera all historik*: appen ska fråga först.

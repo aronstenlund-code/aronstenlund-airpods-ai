@@ -65,6 +65,11 @@ struct SocialRequest: Equatable, Sendable, Encodable {
     var transcript: [Line]
     var interests: [String]
     var profile: String
+    /// The wearer's instruction after "Lumen, …" (D69): merged into the calibration, or "ge mig tre" (D72). Never in
+    /// `transcript`.
+    var calibrate: String? = nil
+    /// The stored calibration for this mode, sent with every request (D69).
+    var calibration: String? = nil
 }
 
 /// Who the assistant is in a mode (D42): `persona` + `persona_setup`, and for interviews whose turn it is.
@@ -162,6 +167,8 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var memoryAdd: String?
     /// The user said "rapportera" (D57): send the previous turn to `/feedback`. Nothing was answered.
     var report: Bool?
+    /// After `social.calibrate`: the merged calibration to store for this mode, "" after a reset. Null otherwise (D69).
+    var calibration: String?
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.

@@ -25,6 +25,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private var resumeMode: ConversationMode?
     /// The last voice command and when, so a command seen both as a final result and as a turn runs once.
     private var lastVoice: (intent: VoiceIntent, at: Date)?
+    /// An instruction is on its way to the backend for this mode (D69): what comes back is a calibration, or the
+    /// suggestions the wearer asked for ("ge mig tre", D72).
+    private var instructing: ConversationMode?
+    /// The suggestion trigger that waits until the instruction is back.
+    private var deferredTrigger: String?
+    /// The trigger of the suggestions being made, so an instruction that cancels them can ask again.
+    private var inFlightTrigger: String?
+    /// The instruction was a request for more and its suggestions are on screen: nothing replaces them at once.
+    private var instructionSuggested = false
     /// "Skickat", or why not.
     private(set) var reportNotice: String?
     /// "Fråga Lumen": the hands-free session ends after one answer.
@@ -470,6 +479,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                         suggestions: session.offered))
         }
         rizz = nil
+        instructing = nil
+        deferredTrigger = nil
+        inFlightTrigger = nil
         controller.playback.speechVolume = 1
         mode = .standard
     }
@@ -660,10 +672,42 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
-    /// D69 plugs in here (calibration, "ge mig tre"). Until then the instruction is heard and dropped, and never
-    /// becomes a line of the conversation.
-    private func liveInstruction(_ text: String) {
-        controller.log("\(mode.rawValue): instruction heard, sent once D69 is in")
+    /// D69/D72: "Lumen, lite mindre kaxig" or "Lumen, ge mig tre pickup lines" in Socialt läge or Rizzläge. Sent
+    /// as `social.calibrate` with the stored calibration, never as a line of the conversation. The backend answers a
+    /// calibration with `done.calibration` and a request for more with that many suggestions.
+    func liveInstruction(_ text: String) {
+        guard let session = rizz,
+              let persona = LiveRequest.instruction(text, for: session, interests: modeSettings.interests,
+                                                    profile: modeSettings.rizzProfile,
+                                                    calibration: modeSettings.calibration(for: mode),
+                                                    adultConfirmed: modeSettings.isAdultConfirmed) else { return }
+        if let trigger = inFlightTrigger { deferredTrigger = trigger } // the suggestions being made are cancelled
+        inFlightTrigger = nil
+        instructing = mode
+        instructionSuggested = false
+        controller.log("\(mode.rawValue): instruction sent") // the words stay out of the log
+        let request = ActivationRequest(query: "", trigger: .rizz, language: language)
+        pendingQuestion = request
+        latency.begin(request)
+        answers.answer(request, context: AnswerContext(memories: memory.backendItems()), persona: persona)
+    }
+
+    /// The instruction came back: store a calibration, then ask for the suggestions that waited.
+    private func instructionEnded(_ calibration: String?, answered: Bool) {
+        guard let instructed = instructing else { return }
+        instructing = nil
+        if let calibration {
+            modeSettings.setCalibration(calibration, for: instructed)
+            controller.log("\(instructed.rawValue): calibration stored (\(calibration.count) characters)")
+            say(language == .swedish ? "Okej." : "Okay.")
+        }
+        let suggested = instructionSuggested
+        instructionSuggested = false
+        if let trigger = deferredTrigger, answered, !suggested {
+            deferredTrigger = nil
+            requestSuggestions(trigger: trigger)
+        }
+        deferredTrigger = nil
     }
 
     /// A short confirmation in the AirPods. Not while paused: the audio belongs to someone else then.
@@ -685,22 +729,40 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func requestSuggestions(trigger: String) {
         guard let session = rizz else { return }
-        let flirts = session.style == .flirt
-        guard !flirts || modeSettings.isAdultConfirmed else { return }
+        if instructing != nil {
+            deferredTrigger = trigger // the instruction goes first, the suggestions follow it
+            return
+        }
+        guard let persona = LiveRequest.suggestions(for: session, trigger: trigger, interests: modeSettings.interests,
+                                                    profile: modeSettings.rizzProfile,
+                                                    calibration: modeSettings.calibration(for: mode),
+                                                    adultConfirmed: modeSettings.isAdultConfirmed) else { return }
         let request = ActivationRequest(query: "", trigger: .rizz, language: language)
-        let social = SocialRequest(style: session.style.rawValue, trigger: trigger, transcript: session.transcript,
-                                   interests: modeSettings.interests, profile: modeSettings.rizzProfile)
         pendingQuestion = request
+        inFlightTrigger = trigger
         latency.begin(request)
-        answers.answer(request, context: AnswerContext(memories: memory.backendItems()),
-                       persona: PersonaRequest(persona: "social", social: social, adultConfirmed: flirts ? true : nil))
+        answers.answer(request, context: AnswerContext(memories: memory.backendItems()), persona: persona)
     }
 
     func answerSuggestions(_ options: [String]) {
         latency.markFirstText(provider: answers.activeProvider.name)
+        if instructing != nil {
+            // The wearer asked for more ("ge mig tre", D72): all of them, shown and spoken, this time only.
+            instructionSuggested = true
+            rizz?.offer(options)
+            showActivity()
+            speakAllSuggestions()
+            return
+        }
+        inFlightTrigger = nil
         rizz?.offer(Array(options.prefix(Self.suggestionsShown))) // D72: one suggestion, shown and spoken
         showActivity()
         speakSuggestion()
+    }
+
+    private func speakAllSuggestions() {
+        guard let options = rizz?.suggestions, !study.someoneIsTalking() else { return }
+        for line in options { speaker.enqueue(line, language: language) }
     }
 
     /// "nästa", or the button on the Live Activity. With one suggestion on screen (D72) it asks for a fresh one.
@@ -818,6 +880,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerCompleted(latencyMs: Double?, done: AnswerDone?) {
+        if instructing != nil {
+            latency.end()
+            instructionEnded(done?.calibration, answered: true)
+            return
+        }
+        inFlightTrigger = nil
         if let turn = conversation.completeAnswer(latencyMs: latencyMs) {
             history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
                                         answer: turn.answer, summary: done?.summary))
@@ -887,6 +955,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerSkipped(_ request: ActivationRequest) {
+        if instructing != nil {
+            latency.end()
+            instructionEnded(nil, answered: true)
+            return
+        }
         latency.end()
         conversation.cancelAnswer()
         answerNotice = "Not a question — no answer (auto mode)"
@@ -895,6 +968,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerFailed(_ message: String, wantsFallback: Bool) {
+        if instructing != nil {
+            latency.end()
+            answerNotice = message
+            controller.log("Instruction failed: \(message)")
+            instructionEnded(nil, answered: false)
+            return
+        }
+        inFlightTrigger = nil
         latency.end()
         conversation.cancelAnswer()
         answerNotice = message

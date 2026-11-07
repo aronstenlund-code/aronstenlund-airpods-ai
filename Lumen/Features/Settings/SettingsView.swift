@@ -161,6 +161,32 @@ struct SettingsView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
+        Section {
+            ForEach([ConversationMode.social, .rizz]) { mode in
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(mode == .rizz ? "Rizzläge" : "Socialt läge")
+                        .font(.subheadline.weight(.semibold))
+                    if let calibration = modes.calibration(for: mode) {
+                        Text(calibration)
+                            .font(.footnote)
+                            .textSelection(.enabled)
+                        Button("Återställ", role: .destructive) {
+                            modes.resetCalibration(for: mode)
+                        }
+                        .font(.footnote)
+                    } else {
+                        Text("Inget ännu")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+        } header: {
+            Text("Kalibrering")
+        } footer: {
+            Text("Under en session: säg \"\(WakeWord.name), lite mindre kaxig\" eller \"\(WakeWord.name), mer skämt\". Lumen kommer ihåg det här på telefonen och skickar det med varje förslag. \"\(WakeWord.name), ge mig tre\" ger fler förslag en gång.")
+        }
     }
 
     @ViewBuilder

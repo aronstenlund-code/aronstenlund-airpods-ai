@@ -65,6 +65,40 @@ struct RizzSession: Equatable, Sendable {
     }
 }
 
+/// What a live session sends (D63/D69). Nil means nothing may be sent: Rizzläge without the 18+ confirmation. Pure;
+/// unit-tested.
+enum LiveRequest {
+    /// Suggestions for the conversation so far: every line from everyone in the last two minutes, several other
+    /// speakers included (the wearer is "user", everyone else "other"), plus the stored calibration.
+    static func suggestions(for session: RizzSession, trigger: String, interests: [String], profile: String,
+                            calibration: String?, adultConfirmed: Bool) -> PersonaRequest? {
+        persona(session.style, adultConfirmed: adultConfirmed,
+                social: SocialRequest(style: session.style.rawValue, trigger: trigger, transcript: session.transcript,
+                                      interests: interests, profile: profile, calibration: calibration))
+    }
+
+    /// The wearer's instruction ("lite mindre kaxig", "ge mig tre pickup lines"). It goes in `calibrate` only; the
+    /// transcript carries the conversation so far, so "ge mig tre" has something to build on, but never the
+    /// instruction itself.
+    static func instruction(_ text: String, for session: RizzSession, interests: [String], profile: String,
+                            calibration: String?, adultConfirmed: Bool) -> PersonaRequest? {
+        let instruction = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !instruction.isEmpty else { return nil }
+        let trigger = session.hasConversation ? "stall" : "opener"
+        return persona(session.style, adultConfirmed: adultConfirmed,
+                       social: SocialRequest(style: session.style.rawValue, trigger: trigger, transcript: session.transcript,
+                                             interests: interests, profile: profile,
+                                             calibrate: String(instruction.prefix(VoiceChannel.instructionLimit)),
+                                             calibration: calibration))
+    }
+
+    private static func persona(_ style: LiveStyle, adultConfirmed: Bool, social: SocialRequest) -> PersonaRequest? {
+        let flirts = style == .flirt
+        guard !flirts || adultConfirmed else { return nil }
+        return PersonaRequest(persona: "social", social: social, adultConfirmed: flirts ? true : nil)
+    }
+}
+
 /// "nästa" alone as a voice command (D43).
 enum RizzCommand {
     static func isNext(_ text: String) -> Bool {
