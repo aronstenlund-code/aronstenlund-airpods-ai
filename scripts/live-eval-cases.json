@@ -1754,7 +1754,8 @@
 "no_person_check": true,
 "allow": [
 "sammanfattningsvis",
-"lycka till"
+"lycka till",
+"struktur"
 ],
 "max_words": 120
 }

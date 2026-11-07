@@ -1,18 +1,14 @@
 name: Auth rate limit
 
-# D76: sets ONE Supabase Auth setting on the Lumen project (xjczbzfkmbjdebwlccki): how many anonymous
+# D77: sets ONE Supabase Auth setting on the Lumen project (xjczbzfkmbjdebwlccki): how many anonymous
 # sign-ins one IP address may make per hour (`rate_limit_anonymous_users`). Nothing else is changed.
 # Every app install and every demo visitor signs in anonymously once and then keeps its session, so a real user
 # needs one sign-in; the cap stops a script from minting a new anonymous user (= a fresh daily allowance) per call.
-# Runs when this file changes (value below) or by hand (Actions > Auth rate limit > Run workflow).
-# Uses the repo secret SUPABASE_ACCESS_TOKEN. If the token may not write auth settings the job fails with 401/403
-# and the owner sets the value by hand: Supabase Dashboard > Authentication > Rate Limits >
-# "Rate limit for anonymous users" (requests per hour per IP).
+# Runs only by hand (Actions > Auth rate limit > Run workflow). Uses the repo secret SUPABASE_ACCESS_TOKEN.
+# 2026-11-07 run 42403156192: GET auth config -> 403, the token is scoped to Edge Functions + Project Settings read.
+# So the owner sets the value in the dashboard: Supabase Dashboard > Authentication > Rate Limits >
+# "Rate limit for anonymous users" (requests per hour per IP). This workflow works only if the token gets auth write.
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/auth-rate-limit.yml"
   workflow_dispatch:
     inputs:
       per_hour:

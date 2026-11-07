@@ -57,7 +57,7 @@ Deno.test("D62 tts demo: max 400 characters, default voice/model/format only, da
   assertEquals(denied.status, 429);
   const dj = (await denied.json()).error;
   assertEquals(dj.code, "demo_limit_visitor");
-  // D76: the read-aloud cap says so, not "demofrågor"
+  // D77: the read-aloud cap says so, not "demofrågor"
   assert(dj.message.includes("uppläsning") && !dj.message.includes("demofrågor"), dj.message);
   // the app (no source) keeps its full feature set
   assertEquals((await handler(post({ text: "a".repeat(450) }))).status, 200);
@@ -83,7 +83,7 @@ Deno.test("D62 stt-token demo: ?source=demo is capped per visitor", async () => 
   assertEquals(third.status, 429);
   const tj = (await third.json()).error;
   assertEquals(tj.code, "demo_limit_visitor");
-  // D76: the speech cap has its own text and number (was "Du har använt dagens 5 demofrågor")
+  // D77: the speech cap has its own text and number (was "Du har använt dagens 5 demofrågor")
   assertEquals(
     tj.message,
     "Du har använt dagens 2 röstfrågor i demon. Skriv frågan i stället, eller kom tillbaka i morgon.",

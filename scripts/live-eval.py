@@ -187,7 +187,7 @@ INTERVIEW_BAD = ["här lägger du", "ditt exempel", "ett bra svar", "du kan svar
                  "star", "bra fråga", "sammanfattningsvis", "lycka till"]
 
 
-# D76: concrete personal facts that the interview answer may not state unless the case gave them
+# D77: concrete personal facts that the interview answer may not state unless the case gave them
 # (Oscar 2026-11-07: "Jag är sjutton år och går tredje året på gymnasiet", "Jag har handlat i den här butiken länge").
 INVENTED_FACT = re.compile(
     r"\bjag är (?:\d+|tretton|fjorton|femton|sexton|sjutton|arton|nitton|tjugo\w*) år"
@@ -198,8 +198,14 @@ INVENTED_FACT = re.compile(
     r"|\b(?:på|i) mitt (?:förra|tidigare|senaste|nuvarande) (?:jobb|arbete|sommarjobb|extrajobb)"
     r"|\bnär jag (?:jobbade|arbetade|var anställd|praktiserade)\b"
     r"|\bmin (?:förra|tidigare|nuvarande) (?:chef|arbetsgivare|kollega)"
-    r"|\b(?:en gång|en kväll|en dag) (?:när|då|så) (?:jag|vi)\b",
+    r"|\b(?:en gång|en kväll|en dag) (?:när|då|så) (?:jag|vi)\b"
+    r"|\bjag har (?:inte|aldrig) (?:arbetat|jobbat|haft|någon erfarenhet)"
+    r"|\bnär (?:två|en|ett|kunden|barnen|hen|han|hon)\b[^.]{0,40}\b(?:började|blev|kom|sa)\b",
     re.I)
+# D77: said aloud in every interview answer: no remark about missing facts, no empty name
+INTERVIEW_META = re.compile(
+    r"\bjag heter (?:och|inte|att)\b|\bså jag svarar\b|\bi den här konversationen\b"
+    r"|\bjag har (?:inte|ingen) (?:någon |något )?(?:konkret|egen|specifik)", re.I)
 
 
 def interview_checks(text, turn):
@@ -213,6 +219,9 @@ def interview_checks(text, turn):
         if b in low and b not in turn.get("allow", []):
             out.append(f"intervjusvar innehåller {b!r}")
             break
+    m = INTERVIEW_META.search(text)
+    if m:
+        out.append(f"metaformulering i intervjusvar: {m.group(0)!r}")
     if turn.get("no_invented_facts"):
         m = INVENTED_FACT.search(text)
         if m:

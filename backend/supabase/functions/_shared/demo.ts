@@ -63,7 +63,7 @@ export const DEMO_MESSAGES = {
   global:
     "Demon har nått dagens tak. Kom tillbaka i morgon, gå med i väntelistan eller ladda ner appen.",
   unavailable: "Det här läget finns bara i appen.",
-  // D76: the speech (STT) and read-aloud (TTS) caps have their own wording; only the question cap counts questions.
+  // D77: the speech (STT) and read-aloud (TTS) caps have their own wording; only the question cap counts questions.
   sttVisitor: (n: number) =>
     `Du har använt dagens ${n} röstfrågor i demon. Skriv frågan i stället, eller kom tillbaka i morgon.`,
   sttIp:
