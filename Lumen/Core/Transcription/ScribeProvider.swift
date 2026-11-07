@@ -6,15 +6,21 @@ import Observation
 @Observable
 final class STTSettings {
     static let cloudKey = "stt.useCloud"
+    static let localVADKey = "stt.localVAD"
 
     var useCloud: Bool {
         didSet { defaults.set(useCloud, forKey: Self.cloudKey) }
+    }
+    /// Silero on the phone decides what is speech before anything goes to Scribe (D78). On by default.
+    var useLocalVAD: Bool {
+        didSet { defaults.set(useLocalVAD, forKey: Self.localVADKey) }
     }
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.useCloud = defaults.object(forKey: Self.cloudKey) as? Bool ?? true
+        self.useLocalVAD = defaults.object(forKey: Self.localVADKey) as? Bool ?? true
     }
 }
 
@@ -28,13 +34,14 @@ struct ScribeToken: Decodable, Equatable, Sendable {
 
     /// `commit_strategy=vad`: finals follow the speaker's pauses during continuous listening (the web test commits
     /// by hand on release). The token sits in the URL: never log it.
-    func url(language: TranscriptionLanguage, keyterms: [String]) -> URL? {
+    func url(language: TranscriptionLanguage, keyterms: [String], tuning: ScribeTuning = .standard) -> URL? {
         guard var components = URLComponents(string: ws_url) else { return nil }
         var items = [URLQueryItem(name: "model_id", value: model_id),
                      URLQueryItem(name: "token", value: token),
                      URLQueryItem(name: "language_code", value: language == .swedish ? "swe" : "eng"),
                      URLQueryItem(name: "audio_format", value: "pcm_16000"),
                      URLQueryItem(name: "commit_strategy", value: "vad")]
+        items += tuning.queryItems // D78: pause detection per mode
         items += keyterms.prefix(ScribeProvider.keytermLimit).map { URLQueryItem(name: "keyterms", value: $0) }
         items += URLComponents(string: "?" + (extra_query ?? ""))?.queryItems ?? []
         components.queryItems = items
@@ -132,6 +139,7 @@ final class ScribeProvider: STTProvider {
     private let makeSocket: @Sendable (URL) -> any ScribeSocket
     private let resultsContinuation: AsyncStream<STTResult>.Continuation
     private var keyterms: [String] = []
+    private var tuning = ScribeTuning.standard
     private var token: ScribeToken?
     private var socket: (any ScribeSocket)?
     private var feedTask: Task<Void, Never>?
@@ -170,7 +178,7 @@ final class ScribeProvider: STTProvider {
     }
 
     func start(audio: AsyncStream<AudioChunk>) async throws(STTError) {
-        guard let url = token?.url(language: language, keyterms: keyterms) else {
+        guard let url = token?.url(language: language, keyterms: keyterms, tuning: tuning) else {
             throw .startFailed(detail: "no token")
         }
         token = nil // single use
@@ -213,6 +221,10 @@ final class ScribeProvider: STTProvider {
 
     func setContextualStrings(_ strings: [String]) {
         keyterms = strings
+    }
+
+    func setScribeTuning(_ tuning: ScribeTuning) {
+        self.tuning = tuning
     }
 
     private func receiveLoop(_ socket: any ScribeSocket) async {

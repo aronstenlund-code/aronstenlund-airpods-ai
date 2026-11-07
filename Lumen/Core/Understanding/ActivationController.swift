@@ -13,6 +13,10 @@ final class ActivationController {
     let settings: ActivationSettings
     private(set) var lastAutoFiredAt: Date?
     private(set) var lastDecision: GateDecision?
+    /// A question waiting for the speaker to finish (D78).
+    private(set) var pending: PendingQuestion?
+    /// When the waiting question is due; the listening model sets a timer for it.
+    var pendingDueAt: Date? { pending?.dueAt }
     private(set) var history: [ActivationRequest] = []
     /// The answer engine (item 4) subscribes here.
     var onActivate: (@MainActor (ActivationRequest) -> Void)?
@@ -21,18 +25,66 @@ final class ActivationController {
         self.settings = settings
     }
 
+    struct PendingQuestion: Equatable, Sendable {
+        var text: String
+        var gate: GateDecision
+        var dueAt: Date
+        var language: TranscriptionLanguage
+    }
+
     // MARK: - Final segments (Frågor, auto)
 
+    /// Trigger design after Parrot v0.11.3 (MIT; the design, not its code): a question waits `questionDebounce`
+    /// so the speaker can finish; more speech in that window joins it and the whole is judged again, so half a
+    /// sentence never fires on its own; and answers are at least `cooldown` apart (Parrot's minimum interval).
     func segmentFinalized(_ segment: TranscriptSegment, conversation: Conversation, language: TranscriptionLanguage,
                           isPlaybackSpeaking: Bool, now: Date = Date()) {
         guard !isPlaybackSpeaking else { return } // our own answer is playing (§4.3)
+        let gate = QuestionGate(sensitivity: settings.sensitivity)
 
-        let decision = QuestionGate(sensitivity: settings.sensitivity).evaluate(segment.text, overlapsPlayback: segment.overlapsPlayback)
+        if var held = pending {
+            // The speaker went on: the question was not finished. Judge the whole thing.
+            held.text += " " + segment.text
+            let decision = gate.evaluate(held.text, overlapsPlayback: segment.overlapsPlayback)
+            lastDecision = decision
+            if decision.fires {
+                held.gate = decision
+                held.dueAt = now.addingTimeInterval(settings.questionDebounce)
+                pending = held
+            } else {
+                pending = nil
+            }
+            return
+        }
+
+        let decision = gate.evaluate(segment.text, overlapsPlayback: segment.overlapsPlayback)
         lastDecision = decision
         guard decision.fires else { return }
         if let last = lastAutoFiredAt, now.timeIntervalSince(last) < settings.cooldown { return }
+        let held = PendingQuestion(text: segment.text, gate: decision, dueAt: now.addingTimeInterval(settings.questionDebounce),
+                                   language: language)
+        if settings.questionDebounce <= 0 {
+            pending = held
+            fireDue(now: now)
+        } else {
+            pending = held
+        }
+    }
+
+    /// The waiting question is due: fire it, unless the last answer is too recent.
+    @discardableResult
+    func fireDue(now: Date = Date()) -> Bool {
+        guard let held = pending, now >= held.dueAt else { return false }
+        pending = nil
+        if let last = lastAutoFiredAt, now.timeIntervalSince(last) < settings.cooldown { return false }
         lastAutoFiredAt = now
-        fire(query: segment.text, trigger: .auto, language: language, gate: decision, now: now)
+        fire(query: held.text, trigger: .auto, language: held.language, gate: held.gate, now: now)
+        return true
+    }
+
+    /// Our own answer started, or the session stopped: a waiting question is dropped.
+    func cancelPending() {
+        pending = nil
     }
 
     // MARK: - Manual paths

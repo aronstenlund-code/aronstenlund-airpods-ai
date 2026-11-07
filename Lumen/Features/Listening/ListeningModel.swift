@@ -25,6 +25,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private var resumeMode: ConversationMode?
     /// The last voice command and when, so a command seen both as a final result and as a turn runs once.
     private var lastVoice: (intent: VoiceIntent, at: Date)?
+    private var questionTimer: Task<Void, Never>?
+    /// The Diagnostics recording (D78) sees every final as it arrives.
+    var finalObserver: (@MainActor (String) -> Void)?
     /// An instruction is on its way to the backend for this mode (D69): what comes back is a calibration, or the
     /// suggestions the wearer asked for ("ge mig tre", D72).
     private var instructing: ConversationMode?
@@ -40,8 +43,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private var isSingleTurn = false
     /// Mikrofon per mode (D55).
     let microphone: MicrophoneSettings
-    /// What the session is for: decides the microphone.
-    private(set) var mode: ConversationMode = .standard
+    /// What the session is for: decides the microphone and Scribe's pause detection (D78).
+    private(set) var mode: ConversationMode = .standard {
+        didSet {
+            guard mode != oldValue else { return }
+            let tuning = ScribeTuning.forMode(mode)
+            Task { await transcription.setScribeTuning(tuning) }
+        }
+    }
     /// The mode picker on the Listening screen, remembered between launches (D72).
     var selectedMode: ConversationMode = .standard {
         didSet { modeSettings.lastMode = selectedMode }
@@ -262,7 +271,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         transcription.setContextualStrings(commands.commands.map(\.keyword) + prep.sttTerms)
     }
 
+    /// Raw capture for the Diagnostics recording (D78), the same audio the recogniser gets before any gate.
+    func subscribeToAudio() -> (id: UUID, stream: AsyncStream<AudioChunk>) {
+        controller.subscribeToChunks()
+    }
+
+    func unsubscribeFromAudio(_ id: UUID) {
+        controller.unsubscribeFromChunks(id)
+    }
+
     func stopListening() async {
+        activation.cancelPending()
         answers.cancel()
         speaker.interrupt()
         conversation.cancelAnswer()
@@ -580,6 +599,22 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     // MARK: - Voice (D74)
+
+    /// The question gate holds a question until the speaker is done (D78): fire it when it is due.
+    private func scheduleQuestionTimer() {
+        guard let due = activation.pendingDueAt else { return }
+        questionTimer?.cancel()
+        questionTimer = Task { [weak self] in
+            let wait = due.timeIntervalSinceNow
+            if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
+            guard let self, !Task.isCancelled else { return }
+            if self.controller.playback.isSpeaking {
+                self.activation.cancelPending()
+                return
+            }
+            self.activation.fireDue(now: Date())
+        }
+    }
 
     /// "Lumen, …" in every mode. True when the words were for Lumen: they are never conversation.
     @discardableResult
@@ -994,6 +1029,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let before = conversation.finalSegments.count
         conversation.finalize(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
+        finalObserver?(segment.text)
         if isComparing { return }
         if !segment.overlapsPlayback, VoiceCommand.isMusicHandOff(segment.text) {
             controller.log("Spoken pause: handing the audio back")
@@ -1023,6 +1059,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         activation.segmentFinalized(segment, conversation: conversation, language: language,
                                     isPlaybackSpeaking: controller.playback.isSpeaking, now: date)
+        scheduleQuestionTimer()
     }
 
     /// Voice-created command (D37): "spara kommando <ord>: <instruktion>". Confirms by voice.

@@ -66,7 +66,7 @@ jobs:
           mkdir -p build-logs
           swift test --package-path Packages/LumenScoring 2>&1 | tee build-logs/scoring-tests.log
 
-      - name: Build app for iOS device (unsigned, warnings are errors)
+      - name: Build app for iOS device (unsigned; warnings are errors in our targets via project.yml)
         run: |
           set -euo pipefail
           mkdir -p build-logs
@@ -79,9 +79,16 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
-            GCC_TREAT_WARNINGS_AS_ERRORS=YES \
             2>&1 | tee build-logs/xcodebuild-build.log | xcbeautify --renderer github-actions
+          # D78: FluidAudio's TTS data is GPL-3.0 / CC-BY-SA. LumenVAD switches those traits off; prove nothing slipped in.
+          APP="DerivedData/Build/Products/Debug-iphoneos/Lumen.app"
+          FOUND="$(find "$APP" \( -iname "*luxtts*" -o -iname "*NemoTextProcessing*" -o -iname "*kokoro*" -o -iname "*lexicon*" \) || true)"
+          if [ -n "$FOUND" ]; then
+            echo "$FOUND"
+            echo "::error::FluidAudio TTS/Nemo resources are in the app bundle (licence rule, D78)"
+            exit 1
+          fi
+          echo "Licence check: no FluidAudio TTS or Nemo resources in the bundle"
 
       - name: Pick an iOS 26 iPhone simulator
         id: sim
@@ -115,8 +122,6 @@ jobs:
             -parallel-testing-enabled NO \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
-            GCC_TREAT_WARNINGS_AS_ERRORS=YES \
             2>&1 | tee build-logs/xcodebuild-test.log | xcbeautify --renderer github-actions
 
       # D70: an unsigned .ipa the owner installs with Sideloadly (Windows, free Apple ID). Only after every step above

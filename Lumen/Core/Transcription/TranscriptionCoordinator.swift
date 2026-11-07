@@ -51,12 +51,26 @@ final class TranscriptionCoordinator {
     }
     private var resultsTask: Task<Void, Never>?
     private var lifecycleTask: Task<Void, Never>?
+    /// Scribe's pause detection for the current mode (D78).
+    private(set) var scribeTuning = ScribeTuning.standard
+    /// Finals are joined into whole utterances; after this long with no new speech the pending words are passed on.
+    /// Zero passes every final straight through (unit tests of other parts).
+    let utteranceHold: TimeInterval
+    private var assembler = UtteranceAssembler()
+    private var flushTask: Task<Void, Never>?
+    /// Silero before Scribe (D78). Nil: everything goes to the recogniser.
+    let vad: VoiceActivityLoader?
+    /// Local VAD statistics for the Diagnostics export: seconds sent to Scribe and seconds held back.
+    private(set) var vadSentSeconds: Double = 0
+    private(set) var vadHeldSeconds: Double = 0
     private var chunkSubscription: UUID?
     private var generation = 0
 
     init(controller: SessionController,
          language: LanguageSettings,
          settings: STTSettings? = nil,
+         utteranceHold: TimeInterval = 0.7,
+         vad: VoiceActivityLoader? = nil,
          probe: @escaping AvailabilityProbe = { candidates in await SpeechAvailabilityProbe.current(candidates: candidates) },
          makeProvider: @escaping ProviderFactory = { locale, engine in
              engine == .legacyOnDevice ? LegacySpeechProvider(locale: locale) : AppleSpeechProvider(locale: locale, engine: engine)
@@ -64,6 +78,8 @@ final class TranscriptionCoordinator {
         self.controller = controller
         self.language = language
         self.settings = settings
+        self.utteranceHold = utteranceHold
+        self.vad = vad
         self.probe = probe
         self.makeProvider = makeProvider
         controller.onCaptureStarted = { [weak self] in self?.captureStarted() }
@@ -113,6 +129,7 @@ final class TranscriptionCoordinator {
 
         let provider = makeProvider(locale, engine)
         provider.setContextualStrings(contextualStrings)
+        provider.setScribeTuning(scribeTuning)
         status = .preparing(engine)
         do {
             try await provider.prepare()
@@ -136,11 +153,37 @@ final class TranscriptionCoordinator {
         chunkSubscription = subscription.id
         // Gate (D36): while the assistant speaks, its own voice must not reach the recogniser.
         let (gatedStream, gatedContinuation) = AsyncStream<AudioChunk>.makeStream(bufferingPolicy: .bufferingNewest(256))
+        // D78: in front of Scribe, Silero lets only speech through. Not ready or switched off: everything goes.
+        let usesGate = engine == .scribe && settings?.useLocalVAD == true
+        if usesGate { vad?.loadIfNeeded() }
+        let detector = usesGate ? vad?.detector : nil
+        if usesGate {
+            controller.log(detector == nil ? "Local VAD not ready: all audio goes to Scribe" : "Local VAD in front of Scribe")
+        }
+        let silence = scribeTuning.silenceSeconds
         gateTask?.cancel()
         gateTask = Task { [weak self] in
+            var gate = SpeechGate(scribeSilence: silence)
+            await detector?.reset()
             for await chunk in subscription.stream {
                 guard let self else { break }
-                if !self.isInputGated { gatedContinuation.yield(chunk) }
+                if self.isInputGated { continue }
+                guard let detector else {
+                    gatedContinuation.yield(chunk)
+                    continue
+                }
+                for window in gate.collect(chunk.samples) {
+                    // A detector error lets the window through: VAD must never cost words.
+                    let probability = (try? await detector.speechProbability(SpeechGate.floats(window))) ?? 1
+                    let out = gate.decide(window, probability: probability)
+                    let windowSeconds = Double(window.count) / LumenAudioFormat.sampleRate
+                    if out.isEmpty {
+                        self.vadHeldSeconds += windowSeconds
+                    } else {
+                        self.vadSentSeconds += Double(out.count) / LumenAudioFormat.sampleRate
+                        gatedContinuation.yield(AudioChunk(samples: out, hostTime: chunk.hostTime, firstSampleIndex: chunk.firstSampleIndex))
+                    }
+                }
             }
             gatedContinuation.finish()
         }
@@ -148,11 +191,7 @@ final class TranscriptionCoordinator {
         resultsTask = Task { [weak self] in
             for await result in provider.results {
                 guard let self else { return }
-                if result.isFinal {
-                    self.sink?.receiveFinalTranscript(result.text, at: Date())
-                } else {
-                    self.sink?.receivePartialTranscript(result.text, at: Date())
-                }
+                self.deliver(result)
             }
             // Stopping changes the generation first, so reaching this with the same one means the recogniser ended
             // by itself. D74: listening never stops by itself, so it starts again.
@@ -192,6 +231,117 @@ final class TranscriptionCoordinator {
         }
     }
 
+    /// D78: finals become whole utterances before the question gate and the backend see them.
+    private func deliver(_ result: STTResult) {
+        guard utteranceHold > 0 else {
+            if result.isFinal {
+                sink?.receiveFinalTranscript(result.text, at: Date())
+            } else {
+                sink?.receivePartialTranscript(result.text, at: Date())
+            }
+            return
+        }
+        if result.isFinal {
+            for utterance in assembler.final(result.text) {
+                sink?.receiveFinalTranscript(utterance, at: Date())
+            }
+            if let pending = assembler.pending {
+                sink?.receivePartialTranscript(pending, at: Date())
+            }
+        } else {
+            sink?.receivePartialTranscript(assembler.display(partial: result.text), at: Date())
+        }
+        scheduleFlush()
+    }
+
+    /// No new words for `utteranceHold`: the speaker is done, so what is pending is one utterance.
+    private func scheduleFlush() {
+        flushTask?.cancel()
+        guard assembler.pending != nil else { return }
+        let hold = utteranceHold
+        flushTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(hold))
+            guard let self, !Task.isCancelled else { return }
+            self.flushPending()
+        }
+    }
+
+    private func flushPending() {
+        flushTask?.cancel()
+        flushTask = nil
+        if let utterance = assembler.flush() {
+            sink?.receiveFinalTranscript(utterance, at: Date())
+        }
+    }
+
+    struct OnDeviceFailure: Error, Equatable {
+        var message: String
+    }
+
+    /// Diagnostics (D78): runs the phone's best on-device recogniser on a recording, so it can be compared with what
+    /// Scribe heard live on the same audio. Returns the engine's name and its final results.
+    func transcribeOnDevice(_ samples: [Int16]) async -> Result<(String, [String]), OnDeviceFailure> {
+        let locale = language.selected.locale
+        let availability = await probe(TranscriptionLanguage.allCases.map(\.locale))
+        guard let engine = SpeechEngineSelector.choose(for: locale, availability: availability) else {
+            return .failure(OnDeviceFailure(message: "no on-device engine for \(locale.identifier(.bcp47))"))
+        }
+        let provider = makeProvider(locale, engine)
+        do {
+            try await provider.prepare()
+        } catch {
+            return .failure(OnDeviceFailure(message: error.localizedDescription))
+        }
+        let results = provider.results
+        let collector = Task { () -> [String] in
+            var finals: [String] = []
+            for await result in results where result.isFinal {
+                finals.append(result.text)
+            }
+            return finals
+        }
+        let (audio, input) = AsyncStream<AudioChunk>.makeStream(bufferingPolicy: .unbounded)
+        do {
+            try await provider.start(audio: audio)
+        } catch {
+            collector.cancel()
+            return .failure(OnDeviceFailure(message: error.localizedDescription))
+        }
+        let step = Int(LumenAudioFormat.sampleRate * LumenAudioFormat.chunkDuration)
+        var index = 0
+        while index < samples.count {
+            let end = min(samples.count, index + step)
+            input.yield(AudioChunk(samples: Array(samples[index..<end]), hostTime: 0, firstSampleIndex: Int64(index)))
+            index = end
+            if index % (step * 25) == 0 { await Task.yield() }
+        }
+        input.finish()
+        // Let the recogniser finish the last words, then stop it; stopping ends `results`.
+        try? await Task.sleep(for: .seconds(4))
+        await provider.stop()
+        let finals = await collector.value
+        controller.log("On-device pass on a recording: \(engine.displayName), \(finals.count) results")
+        return .success((engine.displayName, finals))
+    }
+
+    /// The mode changed (D78): a running Scribe session reconnects with that mode's pause detection.
+    func setScribeTuning(_ tuning: ScribeTuning) async {
+        guard tuning != scribeTuning else { return }
+        scribeTuning = tuning
+        if case .running(.scribe) = status, controller.isCapturing {
+            controller.log("Scribe pause detection \(tuning.silenceSeconds) s: reconnecting")
+            await startTranscribing()
+        }
+    }
+
+    /// Switches the local VAD on or off; a running Scribe session changes over at once.
+    func setUseLocalVAD(_ on: Bool) async {
+        settings?.useLocalVAD = on
+        if case .running(.scribe) = status, controller.isCapturing {
+            await startTranscribing()
+        }
+    }
+
     /// A recogniser that ran at least this long and then ended is started again (D74); one that ends at once is a
     /// failure, not a session limit, and is not retried in a loop.
     static let reconnectAfter: TimeInterval = 20
@@ -219,6 +369,8 @@ final class TranscriptionCoordinator {
     /// All state changes happen before the first suspension, so a `startTranscribing()` that begins while an
     /// older stop is still finalising its provider is never invalidated by it.
     func stopTranscribing() async {
+        flushPending() // words heard before the stop are not lost
+        assembler.reset()
         generation += 1
         let stopping = provider
         provider = nil

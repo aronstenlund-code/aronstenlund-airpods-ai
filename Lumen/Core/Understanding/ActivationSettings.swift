@@ -64,8 +64,10 @@ final class ActivationSettings {
     var sensitivity: GateSensitivity {
         didSet { defaults.set(sensitivity.rawValue, forKey: Self.sensitivityKey) }
     }
-    /// Minimum gap between two automatic answers (R5: false positives).
-    var cooldown: TimeInterval = 8
+    /// Minimum gap between two automatic answers (R5: false positives). Parrot v0.11.3's minimum interval (D78).
+    var cooldown: TimeInterval = 5
+    /// A question waits this long for the speaker to finish (Parrot v0.11.3: 1 s). Zero fires at once.
+    var questionDebounce: TimeInterval = 1.0
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {

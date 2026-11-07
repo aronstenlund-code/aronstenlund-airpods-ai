@@ -3,12 +3,13 @@ import Testing
 @testable import Lumen
 
 @MainActor
-func makeTestActivation(sensitivity: GateSensitivity = .medium) -> ActivationController {
+func makeTestActivation(sensitivity: GateSensitivity = .medium, debounce: TimeInterval = 0) -> ActivationController {
     let suite = "lumen.tests.activation.\(UUID().uuidString)"
     let defaults = UserDefaults(suiteName: suite)!
     defaults.removePersistentDomain(forName: suite)
     let settings = ActivationSettings(defaults: defaults)
     settings.sensitivity = sensitivity
+    settings.questionDebounce = debounce
     return ActivationController(settings: settings)
 }
 
@@ -44,10 +45,49 @@ func makeTestActivation(sensitivity: GateSensitivity = .medium) -> ActivationCon
         #expect(fired().first?.gate?.fires == true)
 
         say("hur många kromosomer har en människa", at: 8)
-        #expect(fired().count == 1, "second question inside the 8 s cooldown is skipped")
+        #expect(fired().count == 1, "second question inside the 5 s minimum interval is skipped")
 
         say("hur många kromosomer har en människa", at: 14)
         #expect(fired().count == 2)
+    }
+
+    @Test func aQuestionWaitsForTheSpeakerToFinish() {
+        let controller = makeTestActivation(debounce: 1.0)
+        let fired = recording(controller)
+        var conversation = Conversation()
+        func say(_ text: String, at seconds: TimeInterval) {
+            conversation.finalize(text, at: t0.addingTimeInterval(seconds))
+            controller.segmentFinalized(conversation.finalSegments.last!, conversation: conversation, language: .swedish,
+                                        isPlaybackSpeaking: false, now: t0.addingTimeInterval(seconds))
+        }
+
+        say("vad är skillnaden mellan mitos", at: 0)
+        #expect(fired().isEmpty, "Parrot design: a question waits one second")
+        #expect(!controller.fireDue(now: t0.addingTimeInterval(0.5)))
+        say("och meios?", at: 0.6)
+        #expect(controller.fireDue(now: t0.addingTimeInterval(1.7)))
+        #expect(fired().map(\.query) == ["vad är skillnaden mellan mitos och meios?"], "one question, not two halves")
+    }
+
+    @Test func halfASentenceNeverFires() {
+        let gate = QuestionGate(sensitivity: .medium)
+        #expect(!gate.evaluate("vad finns det i").fires)
+        #expect(gate.evaluate("vad finns det i cellen").fires)
+        #expect(gate.evaluate("vad tycker du om?").fires, "a question mark ends it")
+    }
+
+    @Test func aQuestionThatTurnsIntoAStatementIsDropped() {
+        let controller = makeTestActivation(debounce: 1.0)
+        let fired = recording(controller)
+        var conversation = Conversation()
+        conversation.finalize("vem vet", at: t0)
+        controller.segmentFinalized(conversation.finalSegments.last!, conversation: conversation, language: .swedish,
+                                    isPlaybackSpeaking: false, now: t0)
+        conversation.finalize("idag ska vi prata om celler och om hur de delar sig och växer i kroppen hos alla djur", at: t0.addingTimeInterval(0.5))
+        controller.segmentFinalized(conversation.finalSegments.last!, conversation: conversation, language: .swedish,
+                                    isPlaybackSpeaking: false, now: t0.addingTimeInterval(0.5))
+        #expect(!controller.fireDue(now: t0.addingTimeInterval(3)))
+        #expect(fired().isEmpty)
     }
 
     @Test func autoModeIgnoresOurOwnPlayback() {

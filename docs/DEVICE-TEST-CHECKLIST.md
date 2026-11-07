@@ -171,7 +171,7 @@ Det finns ingen "håll in"-knapp längre: alla lägen lyssnar själva.
 2. Tryck *Börja lyssna*, Svenska, känslighet *Mellan* (Inställningar → *Questions*). Låt någon läsa tre vanliga påståenden
    ("idag ska vi prata om …") och sedan tre frågor ur `testdata/scripts/sv-short-prompts.md` (t.ex. 5, 12, 29).
    Skriv ner vilka som besvarades och vilka som inte gjorde det, både falska träffar och missar.
-3. Ställ två frågor inom 5 sekunder: bara den första ska besvaras (8 s väntetid mellan automatiska svar).
+3. Ställ två frågor inom 3 sekunder: bara den första ska besvaras (minst 5 s mellan automatiska svar, D78). Säg en fråga i två delar med en kort paus ("Vad är skillnaden mellan mitos … och meios?"): den ska besvaras **en** gång, som hel fråga.
 4. Sätt känslighet *Hög* och säg bara "fotosyntes": nu ska det besvaras. På *Mellan* ska det inte besvaras.
 5. Låt någon annan säga en mening och tryck *Fråga om det senast sagda*: den meningen ska besvaras.
 6. Skriv en fråga i skrivrutan: den ska besvaras även utan mikrofon.
@@ -328,6 +328,13 @@ Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt l
 2. Lägg till kontrollerna *Start Lumen* och *Lumen lyssnar* i Kontrollcenter och på låsskärmen. Händer något när du trycker?
 3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
 4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
+
+### 3z3. Taluppfattning före och efter (D78, 15 min)
+Det här är mätningen. Gör samma sak två gånger med samma text och samma avstånd. Läs till exempel tio meningar ur `testdata/scripts/sv-short-prompts.md` med pauser mitt i några av dem.
+1. **Före:** Inställningar → Språk → slå av *Lokal röstdetektor före Scribe*. Börja lyssna i läget Frågor. Diagnostik → *Jämför taligenkänning* → *Spela in 2 minuter* och läs. Tryck sedan *Kör iPhone-igenkänning på inspelningen* och *Dela WAV + transkript*.
+2. **Efter:** slå på *Lokal röstdetektor*. Första gången står det "Hämtar röstdetektorn…" en stund. Gör om steg 1 med samma meningar.
+3. Gör samma sak i Provläge (din egen röst) och Intervjuläge (kompisen läser).
+4. Titta i transkriptfilerna: klipps meningar fortfarande ("Det är en annan . Ja, obrutet.")? Hur många sekunder står det att röstdetektorn höll tillbaka? Skicka alla filer.
 
 ### 3z2. Röststyrning, AirPods-knappen och avbrott (D74, 20 min)
 Målet: du ska aldrig behöva ta upp telefonen efter att du har startat.

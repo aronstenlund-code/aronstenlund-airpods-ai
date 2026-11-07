@@ -52,6 +52,27 @@ struct SettingsView: View {
             Text("On: audio goes to ElevenLabs for the best recognition. Off: everything stays on this iPhone, with weaker recognition.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
+            if model.transcription.settings?.useCloud == true {
+                Toggle("Lokal röstdetektor före Scribe", isOn: vadBinding)
+                Text(vadStatusText)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var vadBinding: Binding<Bool> {
+        Binding(get: { model.transcription.settings?.useLocalVAD ?? false },
+                set: { newValue in Task { await model.transcription.setUseLocalVAD(newValue) } })
+    }
+
+    /// D78: what the local detector is doing, including the one-time model download.
+    private var vadStatusText: String {
+        switch model.transcription.vad?.status {
+        case .loading: "Hämtar röstdetektorn (Silero, några MB, en gång)…"
+        case .ready: "Bara tal skickas till Scribe; tystnad och brus stannar på telefonen."
+        case .unavailable(let reason): "Röstdetektorn kunde inte laddas (\(reason)). Allt ljud går till Scribe."
+        case .idle, nil: "Laddas när du börjar lyssna."
         }
     }
 

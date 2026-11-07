@@ -40,6 +40,8 @@ final class DiagnosticsModel {
     private(set) var micSourceResult: MicSourceTest.Result?
     /// Needs the transcript, so the app container sets it.
     var micComparison: MicComparisonModel?
+    /// D78: two minutes of audio + transcript for comparing recognisers.
+    var speechRecording: SpeechRecordingModel?
     private(set) var micSourceRunning = false
     private(set) var localeReport: String?
     private(set) var localeCheckRunning = false

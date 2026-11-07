@@ -115,6 +115,7 @@ func makeTestCoordinator(_ controller: SessionController) -> TranscriptionCoordi
     defaults.removePersistentDomain(forName: suite)
     return TranscriptionCoordinator(controller: controller,
                                     language: LanguageSettings(defaults: defaults, systemLocale: Locale(identifier: "sv_SE")),
+                                    utteranceHold: 0,
                                     probe: { _ in .nothing },
                                     makeProvider: { locale, engine in FakeSTTProvider(locale: locale, engine: engine) })
 }

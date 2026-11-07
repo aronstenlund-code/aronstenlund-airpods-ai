@@ -38,6 +38,7 @@ final class AppContainer {
         let http = URLSessionHTTP()
         let auth = SupabaseAuth(config: .lumen, store: KeychainSessionStore(), http: http)
         let transcription = TranscriptionCoordinator(controller: controller, language: language, settings: STTSettings(),
+                                                     vad: VoiceActivityLoader(),
                                                      makeProvider: { locale, engine in
             switch engine {
             case .scribe:
@@ -95,5 +96,6 @@ final class AppContainer {
         self.listening = listening
         self.diagnostics = DiagnosticsModel(controller: controller)
         diagnostics.micComparison = MicComparisonModel(listening: listening)
+        diagnostics.speechRecording = SpeechRecordingModel(listening: listening)
     }
 }

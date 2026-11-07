@@ -75,12 +75,15 @@ protocol STTProvider: AnyObject {
     func stop() async
     /// Up to 100 short phrases (1–2 words) that bias recognition — prep topics (item 9). Applied at the next start.
     func setContextualStrings(_ strings: [String])
-    /// Ask for the final result now (hold-to-ask released). Only Scribe has anything to do here.
+    /// Ask for the final result now. Only Scribe has anything to do here.
     func commit()
+    /// Scribe's pause detection for the mode (D78), applied at the next start. Only Scribe uses it.
+    func setScribeTuning(_ tuning: ScribeTuning)
 }
 
 extension STTProvider {
     func commit() {}
+    func setScribeTuning(_ tuning: ScribeTuning) {}
 }
 
 /// Where transcripts go (the Listening screen's model).

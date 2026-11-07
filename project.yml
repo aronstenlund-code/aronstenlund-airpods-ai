@@ -12,6 +12,9 @@ options:
 packages:
   LumenScoring:
     path: Packages/LumenScoring
+  # D78 / OSS-2: Silero VAD. The local package pins FluidAudio and switches its TTS/diarizer/Nemo traits off.
+  LumenVAD:
+    path: Packages/LumenVAD
 
 settings:
   base:
@@ -40,6 +43,7 @@ targets:
       - path: Shared
     dependencies:
       - package: LumenScoring
+      - package: LumenVAD
       - target: LumenControls
     settings:
       base:

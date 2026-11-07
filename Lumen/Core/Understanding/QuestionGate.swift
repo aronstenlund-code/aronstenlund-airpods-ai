@@ -19,7 +19,7 @@ enum GateSensitivity: String, CaseIterable, Identifiable, Sendable {
 struct GateDecision: Equatable, Sendable {
     enum Signal: String, Sendable, Equatable {
         case questionMark, interrogativeStart, interrogativeInside, imperativeCue, mathPattern, shortFragment
-        case statementCue, tooLong, overlapsPlayback, empty
+        case statementCue, tooLong, unfinished, overlapsPlayback, empty
     }
 
     var score: Double
@@ -75,6 +75,11 @@ struct QuestionGate: Sendable {
         "i", "we", "today", "now", "so", "then", "also", "but", "and", "let", "lets", "you", "he", "she", "they",
     ]
     static let maxComfortableTokens = 14
+    /// A sentence that ends on one of these is not finished ("vad finns det i", "kan du förklara och"): no trigger.
+    static let unfinishedEndings: Set<String> = [
+        "och", "eller", "men", "att", "som", "om", "för", "till", "med", "på", "i", "av", "från", "så", "när", "eftersom",
+        "and", "or", "but", "to", "of", "the", "a", "an", "that", "if", "with", "because",
+    ]
 
     func evaluate(_ text: String, overlapsPlayback: Bool = false) -> GateDecision {
         let threshold = sensitivity.threshold
@@ -114,6 +119,7 @@ struct QuestionGate: Sendable {
         if tokens.count <= 3 && !statement { add(.shortFragment, 0.35) }
         if statement && !questionMark { add(.statementCue, -0.3) }
         if tokens.count > Self.maxComfortableTokens { add(.tooLong, -0.25) }
+        if !questionMark, let last = tokens.last, Self.unfinishedEndings.contains(last) { add(.unfinished, -0.6) }
 
         return GateDecision(score: min(1, max(0, score)), signals: signals, threshold: threshold)
     }

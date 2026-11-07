@@ -29,6 +29,40 @@ private struct MicComparisonSection: View {
     }
 }
 
+/// D78: two minutes of audio + what was heard, to compare Scribe and the iPhone on the same sound.
+private struct SpeechRecordingSection: View {
+    let model: SpeechRecordingModel
+
+    var body: some View {
+        Section("Jämför taligenkänning (2 min)") {
+            Text("Lyssna i det läge du vill testa, tryck Spela in och prata som vanligt. Skicka sedan båda filerna till oss.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            Button(model.isRecording ? "Stoppa inspelningen" : "Spela in 2 minuter") {
+                if model.isRecording { model.stop() } else { model.start() }
+            }
+            .disabled(!model.isRecording && !model.canRecord)
+            if model.isRecording {
+                ProgressView(value: min(1, model.elapsed / SpeechRecordingModel.seconds)) {
+                    Text(verbatim: String(format: "%.0f / %.0f s", model.elapsed, SpeechRecordingModel.seconds))
+                }
+            }
+            if !model.files.isEmpty {
+                ShareLink(items: model.files) {
+                    Label("Dela WAV + transkript", systemImage: "square.and.arrow.up")
+                }
+                Button(model.isTranscribingOnDevice ? "iPhone-igenkänningen arbetar…" : "Kör iPhone-igenkänning på inspelningen") {
+                    Task { await model.transcribeOnDevice() }
+                }
+                .disabled(model.isTranscribingOnDevice)
+            }
+            if let notice = model.notice {
+                Text(verbatim: notice).font(.caption)
+            }
+        }
+    }
+}
+
 struct DiagnosticsView: View {
     @Bindable var model: DiagnosticsModel
 
@@ -41,6 +75,9 @@ struct DiagnosticsView: View {
             micSourceSection
             if let comparison = model.micComparison {
                 MicComparisonSection(model: comparison)
+            }
+            if let recording = model.speechRecording {
+                SpeechRecordingSection(model: recording)
             }
             speechSection
             resultsSection
