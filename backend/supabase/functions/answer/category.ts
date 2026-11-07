@@ -63,7 +63,7 @@ export interface CategoryInput {
   mode: string;
   persona: string;
   fragment: string;
-  planKind: string | null; // interview | prep | rizz | social | socialline | null
+  planKind: string | null; // interview | prep | rizz | social | socialline | calibrate | null
   web: boolean;
   computed: boolean;
 }
@@ -72,7 +72,8 @@ export function categorize(i: CategoryInput): Category {
   if (i.mode === "interview_prep" || i.planKind === "interview" || i.planKind === "prep") {
     return "intervju";
   }
-  if (i.planKind === "rizz" || i.planKind === "social" || i.planKind === "socialline") {
+  if (i.planKind === "rizz" || i.planKind === "social" || i.planKind === "socialline" ||
+    i.planKind === "calibrate") {
     return "socialt/rizz";
   }
   if (i.web) return "webbsökning";

@@ -668,10 +668,11 @@ Deno.test("D52: Rizz = 5 candidates + TOP -> ONE suggestions event with the 3 pi
   // D63: the strongest line (candidate 1) is previewed at once, the full list follows
   assertEquals(ev.map((e) => e.event), ["suggestion_preview", "suggestions", "done"]);
   assertEquals(ev[0].data.text, "Vilket lopp är det?");
+  // D69: Socialt läge always shows the comeback (candidate 4) among the three
   assertEquals(ev[1].data as unknown, [
     "Vilket lopp är det?",
     "Hoppas det blir sol!",
-    "Vad springer du helst?",
+    "En fjärde?",
   ]);
   assertEquals(ev[2].data.answered, true);
   assertEquals(seen[0].maxTokens, 170);
@@ -900,4 +901,50 @@ Deno.test("D46 web: a fragment that needs the web enables the tools within caps;
   const last = seenTools[seenTools.length - 1] as { tools?: unknown; user: string };
   assertEquals(last.tools, undefined);
   assertStringIncludes(last.user, "<note>Web search is not available right now");
+});
+
+Deno.test("D69: social.calibrate -> merged calibration in done, no suggestions, default (Haiku) model; calibration sent on", async () => {
+  const { provider, seen } = recordingProvider("mindre kaxig; hon gillar fotboll\n");
+  const { handler, usage } = setup({ provider });
+  const ev = await readSse(
+    await handler(post(socialBody({
+      social: {
+        ...socialBody().social,
+        style: "flirt",
+        calibration: "kaxigare",
+        calibrate: "lite mindre kaxig, hon gillar fotboll",
+      },
+      adult_confirmed: true,
+    }))),
+  );
+  assertEquals(ev.map((e) => e.event), ["done"]);
+  assertEquals(ev[0].data.calibration, "mindre kaxig; hon gillar fotboll");
+  assertEquals(ev[0].data.answered, true);
+  assertEquals(ev[0].data.summary, null);
+  assertEquals(seen[0].model, undefined, "calibration runs on the default model");
+  assert(seen[0].system.includes("You keep a short calibration"));
+  assert(seen[0].user.includes("<instruction>lite mindre kaxig, hon gillar fotboll</instruction>"));
+  assertEquals(usage[0].category, "socialt/rizz");
+  // RESET clears it
+  const r2 = await readSse(
+    await setup({ provider: recordingProvider("RESET").provider }).handler(
+      post(socialBody({ social: { ...socialBody().social, calibration: "x", calibrate: "återställ" } })),
+    ),
+  );
+  assertEquals(r2[0].data.calibration, "");
+  // flirt calibration still needs the 18+ confirmation
+  const r3 = await setup({ provider: recordingProvider("x").provider }).handler(
+    post(socialBody({ social: { ...socialBody().social, style: "flirt", calibrate: "mer skämt" } })),
+  );
+  assertEquals(r3.status, 403);
+  await r3.body?.cancel();
+  // an ordinary suggestion request carries the calibration and reports no new one
+  const s = recordingProvider(CANDS);
+  const ev4 = await readSse(
+    await setup({ provider: s.provider }).handler(
+      post(socialBody({ social: { ...socialBody().social, calibration: "fler skämt" } })),
+    ),
+  );
+  assert(s.seen[0].user.includes("<calibration>fler skämt</calibration>"));
+  assertEquals(ev4.at(-1)?.data.calibration, null);
 });

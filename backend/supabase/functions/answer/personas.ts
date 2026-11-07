@@ -1,7 +1,12 @@
 import { COMMON, contextParts, INTRO, sanitizeTagged } from "./prompt.ts";
 import type { AnswerType } from "./length.ts";
 import type { AnswerRequest } from "./validate.ts";
-import { buildRizzUserMessage, rizzSystemPrompt } from "./rizz.ts";
+import {
+  buildCalibrateUserMessage,
+  buildRizzUserMessage,
+  rizzSystemPrompt,
+  SYSTEM_PROMPT_CALIBRATE,
+} from "./rizz.ts";
 import {
   buildSocialLineUserMessage,
   type SocialTask,
@@ -14,13 +19,14 @@ import {
  * examples are my own. Consent is part of the design: social suggestions are for a voluntary test
  * where the friend knows the app listens; nothing here hides the app or helps covert use.
  */
-export type PlanKind = "interview" | "social" | "prep" | "rizz" | "socialline";
+export type PlanKind = "interview" | "social" | "prep" | "rizz" | "socialline" | "calibrate";
 export type PersonaTask =
   | "interview_question"
   | "interview_feedback"
   | "interview_summary"
   | "social_suggestion"
   | "rizz_suggestions"
+  | "social_calibrate"
   | SocialTask
   | "interview_prep";
 
@@ -76,6 +82,16 @@ export function personaPlan(req: AnswerRequest): Plan | null {
       answerType: "study",
       maxTokens: 500,
       maxChars: 1300,
+    };
+  }
+  if (req.persona === "social" && req.social?.calibrate) {
+    // D69: a spoken calibration instruction is never conversation: merge it, no suggestions.
+    return {
+      kind: "calibrate",
+      task: "social_calibrate",
+      answerType: "fact",
+      maxTokens: 140,
+      maxChars: 600,
     };
   }
   if (req.persona === "social" && req.social) {
@@ -147,6 +163,7 @@ Never invent experience, employers or numbers for the student: where a personal 
 
 export function personaSystemPrompt(kind: PlanKind, req?: AnswerRequest): string {
   if (kind === "rizz") return rizzSystemPrompt(req?.social?.style ?? "social");
+  if (kind === "calibrate") return SYSTEM_PROMPT_CALIBRATE;
   if (kind === "socialline") return SYSTEM_PROMPT_SOCIALLINE;
   return kind === "interview"
     ? SYSTEM_PROMPT_INTERVIEW
@@ -157,6 +174,7 @@ export function personaSystemPrompt(kind: PlanKind, req?: AnswerRequest): string
 
 export function buildPersonaUserMessage(req: AnswerRequest, task: PersonaTask): string {
   if (task === "rizz_suggestions") return buildRizzUserMessage(req);
+  if (task === "social_calibrate") return buildCalibrateUserMessage(req);
   if (task === "social_line" || task === "social_rewrite") {
     return buildSocialLineUserMessage(req, task);
   }

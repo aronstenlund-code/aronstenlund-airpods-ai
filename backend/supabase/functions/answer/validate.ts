@@ -13,6 +13,10 @@ export interface SocialInput {
   transcript: { speaker: "user" | "other"; text: string }[];
   interests: string[];
   profile: string;
+  /** D69: the stored calibration (the user's own tone wishes / facts), applied to every suggestion. */
+  calibration: string;
+  /** D69: a spoken calibration instruction; present => merge it, return done.calibration, no suggestions. */
+  calibrate: string;
 }
 const TRIGGERS: SocialTrigger[] = ["other_spoke", "stall", "opener"];
 export type Language = "sv" | "en";
@@ -63,6 +67,8 @@ export const LIMITS = {
   socialInterests: 10,
   socialInterest: 60,
   socialProfile: 1000,
+  socialCalibration: 300,
+  socialCalibrate: 300,
   commands: 10,
   memories: 30,
   memory: 200,
@@ -231,6 +237,11 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       transcript,
       interests,
       profile: str(x.profile, "social.profile", LIMITS.socialProfile),
+      // A stored calibration longer than the cap is cut, not rejected (it would block every request).
+      calibration: typeof x.calibration === "string"
+        ? x.calibration.trim().slice(0, LIMITS.socialCalibration)
+        : str(x.calibration, "social.calibration", LIMITS.socialCalibration),
+      calibrate: str(x.calibrate, "social.calibrate", LIMITS.socialCalibrate),
     };
   }
 

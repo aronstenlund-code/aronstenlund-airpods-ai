@@ -27,7 +27,9 @@ import {
   FALLBACK_SUGGESTIONS,
   pickSuggestions,
   previewSuggestion,
+  finalizeCalibration,
   rizzReady,
+  SOCIAL_COMEBACK,
 } from "./rizz.ts";
 import {
   buildDirectUserMessage,
@@ -465,7 +467,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         web: webOn,
         computed: !!computed,
       });
-      const noSummary = plan?.kind === "rizz" || demo;
+      const noSummary = plan?.kind === "rizz" || plan?.kind === "calibrate" || demo;
       const relationTag = direct && !plan && body.context.recent_qa.length > 0;
       const systemPrompt = (plan
         ? personaSystemPrompt(plan.kind, body)
@@ -575,6 +577,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             }
           };
           const rizz = plan?.kind === "rizz";
+          const calib = plan?.kind === "calibrate"; // D69: collect the merged calibration, send nothing else
+          let calibBuf = "";
+          let calibration: string | null = null;
           let rizzBuf = "";
           let previewSent = false;
           let previewText: string | null = null;
@@ -606,6 +611,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (chunk.webSearches !== undefined) webSearches = chunk.webSearches;
               return;
             }
+            if (calib) {
+              calibBuf += chunk.text;
+              return;
+            }
             if (rizz) {
               rizzBuf += chunk.text;
               // The model finished its pick (complete TOP line): answer now instead of waiting for the stream to end.
@@ -625,7 +634,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           };
 
           try {
-            if (parser.presetMeta && !rizz) emit({ type: "meta", meta: parser.presetMeta });
+            if (parser.presetMeta && !rizz && !calib) emit({ type: "meta", meta: parser.presetMeta });
             let r = first;
             for (let attempt = 0;; attempt++) {
               while (!r.done && !stop && !closed) {
@@ -633,7 +642,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 if (stop || closed || post.duplicate) break;
                 r = await it.next();
               }
-              if (rizz || closed) break;
+              if (rizz || calib || closed) break;
               let note: string | null = null;
               let history = body.context.recent_qa;
               if (post.duplicate) {
@@ -693,6 +702,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               let options = pickSuggestions(
                 stop ? rizzBuf.slice(0, rizzBuf.lastIndexOf("\n") + 1) : rizzBuf,
                 true,
+                body.social?.style === "social" ? SOCIAL_COMEBACK : undefined,
               );
               // the preview was shown first: the final list keeps it first
               if (previewText && options.length) {
@@ -705,6 +715,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (ttftMs === null) ttftMs = now() - t0;
               metaMs = ttftMs;
               send("suggestions", options.map(numbersToSpeech));
+            } else if (calib) {
+              calibration = finalizeCalibration(calibBuf, body.social?.calibration ?? "");
+              if (ttftMs === null) ttftMs = now() - t0;
+              metaMs = ttftMs;
             } else if (stop && !closed && status !== "ok") {
               deliver(post.finish()); // truncated: speak the tail that was held back
             }
@@ -743,6 +757,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 input_tokens: inputTokens,
                 output_tokens: outputTokens,
                 cache_read_tokens: cacheRead,
+                cache_write_tokens: cacheWrite,
                 web_searches: webSearches,
                 model: modelUsed,
                 est_cost_usd: usage("ok").est_cost_usd,
@@ -751,6 +766,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               relation: post.relation ?? parser.meta?.relation ?? null,
               source: post.source,
               memory_add: null,
+              calibration,
             });
           } catch (e) {
             if (!closed) {

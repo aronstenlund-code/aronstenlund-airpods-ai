@@ -1576,5 +1576,74 @@
 "expect_error": "adult_confirmation_required"
 }
 ]
+},
+{
+"id": "rizz-10",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "C2",
+"style": "flirt",
+"calibrate": "lite mindre kaxig, och hon gillar fotboll",
+"expect_all": [
+"fotboll"
+]
+},
+{
+"q": "",
+"rizz_ref": "C2",
+"style": "flirt"
+}
+]
+},
+{
+"id": "rizz-11",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "S2",
+"style": "social",
+"calibrate": "mer skämt, vi är på jobbet",
+"expect_all": [
+"jobb"
+]
+},
+{
+"q": "",
+"rizz_ref": "S2",
+"style": "social",
+"calibrate": "glöm allt och börja om",
+"expect_empty": true
+},
+{
+"q": "",
+"rizz_ref": "S2",
+"style": "social"
+}
+]
+},
+{
+"id": "rizz-12",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "A1",
+"style": "social"
+}
+]
+},
+{
+"id": "rizz-13",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "P4",
+"style": "flirt"
+}
+]
 }
 ]

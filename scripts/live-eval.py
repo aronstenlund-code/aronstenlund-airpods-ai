@@ -157,6 +157,24 @@ def rizz_checks(options):
     return out
 
 
+def calibration_checks(new, options, turn):
+    """D69: a calibrate turn returns done.calibration (<= 300 chars), never suggestions."""
+    out = []
+    if options:
+        out.append("kalibrering gav förslag")
+    if not isinstance(new, str):
+        return out + ["done.calibration saknas"]
+    if len(new) > 300:
+        out.append(f"kalibrering för lång ({len(new)} tecken)")
+    low = new.lower()
+    for w in turn.get("expect_all", []):
+        if w.lower() not in low:
+            out.append(f"kalibrering saknar {w!r}")
+    if turn.get("expect_empty") and new:
+        out.append("kalibrering inte nollställd")
+    return out
+
+
 # ---------------------------------------------------------------- transport
 class Backend:
     def __init__(self):
@@ -238,6 +256,7 @@ def run(cases, rizz, domains, only, now):
         u = be.user(n_conv)
         n_conv += 1
         hist, answers = [], []
+        cal = ""  # D69: calibration returned by a calibrate turn, sent on with the next turns
         for ti, turn in enumerate(case["turns"]):
             body = {"fragment": turn["q"], "mode": "text", "language": "sv",
                     "context": {"recent_qa": hist[-3:]}}
@@ -250,6 +269,10 @@ def run(cases, rizz, domains, only, now):
                 body["social"]["style"] = turn.get("style", "social")
                 if turn.get("style") == "flirt" and not turn.get("no_adult"):
                     body["adult_confirmed"] = True  # D63: flirt needs the age confirmation
+                if cal:
+                    body["social"]["calibration"] = cal
+                if turn.get("calibrate"):
+                    body["social"]["calibrate"] = turn["calibrate"]
                 body["context"] = {}
             r = be.ask(u, body)
             problems = []
@@ -262,6 +285,12 @@ def run(cases, rizz, domains, only, now):
                     problems.append(f"väntade 403 {turn['expect_error']}, fick {json.dumps(r['error'], ensure_ascii=False)[:80] if r['error'] else 'svar'}")
             elif r["error"]:
                 problems.append(f"fel: {json.dumps(r['error'], ensure_ascii=False)[:100]}")
+            elif turn.get("calibrate"):
+                new = (r["done"] or {}).get("calibration")
+                problems += calibration_checks(new, r["options"], turn)
+                text = f"kalibrering: {new!r}"
+                if isinstance(new, str):
+                    cal = new
             elif turn.get("rizz_ref"):
                 problems += rizz_checks(r["options"])
                 text = " | ".join(r["options"]) if isinstance(r["options"], list) else ""

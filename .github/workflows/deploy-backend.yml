@@ -59,6 +59,10 @@ jobs:
           for f in usage-stats feedback-admin waitlist; do
             supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes --no-verify-jwt
           done
+          # Retired lab functions: 410 stubs that do nothing (no keys, no model calls).
+          for f in evallab anthtest; do
+            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes --no-verify-jwt
+          done
       - name: Smoke test
         run: |
           U=https://$PROJECT_REF.supabase.co
@@ -68,3 +72,8 @@ jobs:
             -d '{"fragment":"hej","mode":"auto","language":"sv","persona":"social","social":{"style":"flirt"},"context":{"transcript":"Hej"}}')
           echo "flirt without adult_confirmed -> $code (expected 403)"
           [ "$code" = "403" ]
+          for f in evallab anthtest; do
+            g=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$U/functions/v1/$f" -H "content-type: application/json" -d '{}')
+            echo "$f -> $g (expected 410)"
+            [ "$g" = "410" ]
+          done
