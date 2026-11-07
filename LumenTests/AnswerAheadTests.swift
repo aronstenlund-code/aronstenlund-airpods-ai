@@ -102,10 +102,12 @@ import Testing
     }
 
     @Test func memoriesSavedBeforeD80StillLoad() throws {
+        struct OldItem: Codable { var id: UUID; var text: String; var createdAt: Date; var confirmedAt: Date }
         let directory = FileManager.default.temporaryDirectory.appending(path: "lumen-d80-old-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        let old = #"[{"id":"0F0E0D0C-0B0A-0908-0706-050403020100","text":"Går i trean","createdAt":800000000,"confirmedAt":\#(Date().timeIntervalSinceReferenceDate)}]"#
-        try Data(old.utf8).write(to: directory.appending(path: MemoryStore.fileName))
+        // Written with the app's own file helper, in the shape memories had before D80 (no kind, no source).
+        try LocalJSONFile(url: directory.appending(path: MemoryStore.fileName))
+            .save([OldItem(id: UUID(), text: "Går i trean", createdAt: Date(), confirmedAt: Date())])
         let store = MemoryStore(directory: directory)
         #expect(store.facts.map(\.text) == ["Går i trean"])
         #expect(store.facts.first?.source == .manual)
