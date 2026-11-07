@@ -541,7 +541,7 @@ Deno.test("D35: a confirmation in the middle of the history is dropped, a traili
 });
 
 // ---- D42 personas ----
-Deno.test("D42 interview: question -> outline prompt with the role, 500 tokens; answer -> feedback; klar -> summary", async () => {
+Deno.test("D42/D72 interview: question -> perfect answer prompt with the role, 500 tokens; own answer -> improved version; klar -> end", async () => {
   const { provider, seen } = recordingProvider();
   const { handler } = setup({ provider });
   const common = {
@@ -570,11 +570,13 @@ Deno.test("D42 interview: question -> outline prompt with the role, 500 tokens; 
       }),
     ),
   )).text();
-  assert(seen[1].user.includes("<task>interview_feedback</task>"));
-  assertEquals(seen[1].maxTokens, 300 + SUMMARY_TOKENS);
+  assert(seen[1].user.includes("<task>interview_improve</task>"));
+  assertEquals(seen[1].maxTokens, 500 + SUMMARY_TOKENS);
   await (await handler(post(body({ ...common, fragment: "klar" })))).text();
-  assert(seen[2].user.includes("<task>interview_summary</task>"));
-  assertEquals(seen[2].maxTokens, 450 + SUMMARY_TOKENS);
+  assert(seen[2].user.includes("<task>interview_end</task>"));
+  await (await handler(post(body({ ...common, fragment: "sammanfatta" })))).text();
+  assert(seen[3].user.includes("<task>interview_summary</task>"));
+  assertEquals(seen[3].maxTokens, 450 + SUMMARY_TOKENS);
 });
 
 Deno.test("D42 social: one short suggestion, tiny budget, scenario passed, no history confirmation logic", async () => {
@@ -668,14 +670,10 @@ Deno.test("D52: Rizz = 5 candidates + TOP -> ONE suggestions event with the 3 pi
   // D63: the strongest line (candidate 1) is previewed at once, the full list follows
   assertEquals(ev.map((e) => e.event), ["suggestion_preview", "suggestions", "done"]);
   assertEquals(ev[0].data.text, "Vilket lopp är det?");
-  // D69: Socialt läge always shows the comeback (candidate 4) among the three
-  assertEquals(ev[1].data as unknown, [
-    "Vilket lopp är det?",
-    "Hoppas det blir sol!",
-    "En fjärde?",
-  ]);
+  // D72: exactly one suggestion, the best (the model's line 1)
+  assertEquals(ev[1].data as unknown, ["Vilket lopp är det?"]);
   assertEquals(ev[2].data.answered, true);
-  assertEquals(seen[0].maxTokens, 170);
+  assertEquals(seen[0].maxTokens, 100);
   assertEquals(seen[0].model, "claude-sonnet-5-5");
   assert(seen[0].system.includes("conversation wingman"));
   assert(
@@ -693,7 +691,7 @@ Deno.test("D43: unsafe or over-long output is filtered; if nothing is left, a sa
   const { handler, usage } = setup({ provider });
   const ev = await readSse(await handler(post(socialBody())));
   assertEquals(ev[0].event, "suggestions");
-  assertEquals(ev[0].data as unknown, ["Berätta mer om det.", "Hur har din dag varit?"]);
+  assertEquals(ev[0].data as unknown, ["Berätta mer om det."]);
   assertEquals(usage[0].status, "filtered");
   const d = await readSse(
     await setup({ provider }).handler(
@@ -707,7 +705,7 @@ Deno.test("D43: unsafe or over-long output is filtered; if nothing is left, a sa
       ),
     ),
   );
-  assertEquals(d[0].data as unknown, ["Okej, helt lugnt.", "Vi tar det en annan gång."]);
+  assertEquals(d[0].data as unknown, ["Okej, helt lugnt."]);
 });
 
 Deno.test("D43: decline signal and stall/opener triggers (no fragment) reach the prompt", async () => {
@@ -750,7 +748,7 @@ Deno.test("D43: empty model output -> fallback suggestions (never an empty array
   const { handler } = setup({ provider: recordingProvider("").provider });
   const ev = await readSse(await handler(post(socialBody())));
   assertEquals(ev[0].event, "suggestions");
-  assert((ev[0].data as unknown as string[]).length >= 2);
+  assertEquals((ev[0].data as unknown as string[]).length, 1);
   const old = recordingProvider("Låter kul!");
   const e2 = await readSse(
     await setup({ provider: old.provider }).handler(
@@ -765,7 +763,10 @@ Deno.test("D52: candidates over 10 words or unsafe are dropped and the pick is t
     "1|a|Ett två tre fyra fem sex sju åtta nio tio elva\n2|b|Vilket lopp?\n3|c|Hoppas det blir sol!\n4|d|Vill du ligga med mig?\n5|e|Vad springer du helst?\nTOP: 1,4,3\nEftersnack som aldrig ska läsas",
   );
   const { handler } = setup({ provider });
-  const ev = await readSse(await handler(post(socialBody())));
+  const ev = await readSse(
+    await handler(post(socialBody({ social: { ...socialBody().social, calibrate: "ge mig tre" } }))),
+  );
+  // D72 with a count of 3: dropped lines do not count; a legacy TOP line still sets the order
   assertEquals(ev[0].data as unknown, [
     "Hoppas det blir sol!",
     "Vilket lopp?",
@@ -947,4 +948,32 @@ Deno.test("D69: social.calibrate -> merged calibration in done, no suggestions, 
   );
   assert(s.seen[0].user.includes("<calibration>fler skämt</calibration>"));
   assertEquals(ev4.at(-1)?.data.calibration, null);
+});
+
+
+Deno.test("D72: 'ge mig tre pickup lines' -> three suggestions on the suggestion model, calibration untouched; default stops after line 1", async () => {
+  const three = recordingProvider("1|Första raden här.\n2|Andra raden här.\n3|Tredje raden här.\n4|Fjärde.\n");
+  const ev = await readSse(
+    await setup({ provider: three.provider }).handler(
+      post(socialBody({
+        social: { ...socialBody().social, calibration: "fler skämt", calibrate: "ge mig tre pickup lines" },
+      })),
+    ),
+  );
+  assertEquals(ev.find((e) => e.event === "suggestions")?.data as unknown, [
+    "Första raden här.",
+    "Andra raden här.",
+    "Tredje raden här.",
+  ]);
+  assertEquals(ev.at(-1)?.data.calibration, null, "a count request never changes the calibration");
+  assertEquals(three.seen[0].model, "claude-sonnet-5-5");
+  assert(three.seen[0].user.includes("<count>3</count>"));
+  assert(three.seen[0].user.includes("<request>ge mig tre pickup lines</request>"));
+  assert(three.seen[0].user.includes("<calibration>fler skämt</calibration>"));
+  assertEquals(three.seen[0].maxTokens, 130);
+  const one = recordingProvider("1|Bara den här.\n2|Ska aldrig visas.\n");
+  const e1 = await readSse(await setup({ provider: one.provider }).handler(post(socialBody())));
+  assertEquals(e1.map((e) => e.event), ["suggestion_preview", "suggestions", "done"]);
+  assertEquals(e1[1].data as unknown, ["Bara den här."]);
+  assert(one.seen[0].user.includes("<count>1</count>"));
 });

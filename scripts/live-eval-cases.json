@@ -1645,5 +1645,107 @@
 "style": "flirt"
 }
 ]
+},
+{
+"id": "rizz-14",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "C1",
+"style": "flirt",
+"calibrate": "ge mig tre pickup lines",
+"expect_count": 3
+},
+{
+"q": "",
+"rizz_ref": "C1",
+"style": "flirt"
+}
+]
+},
+{
+"id": "rizz-15",
+"cat": "rizz",
+"turns": [
+{
+"q": "",
+"rizz_ref": "S2",
+"style": "social",
+"calibrate": "ge mig fem skämt",
+"expect_count": 5
+},
+{
+"q": "",
+"rizz_ref": "S2",
+"style": "social",
+"calibrate": "ge mig en till",
+"expect_count": 1
+}
+]
+},
+{
+"id": "intervju-01",
+"cat": "intervju",
+"setup": "Kassapersonal i livsmedelsbutik, kvällar och helger, kundservice, noggrannhet.",
+"turns": [
+{
+"q": "berätta lite om dig själv",
+"interview": true,
+"ttft_budget_ms": 3000
+}
+]
+},
+{
+"id": "intervju-02",
+"cat": "intervju",
+"setup": "Barnskötare på förskola, heltid.",
+"turns": [
+{
+"q": "berätta om en gång du löste en konflikt",
+"interview": true,
+"ttft_budget_ms": 3000
+}
+]
+},
+{
+"id": "intervju-03",
+"cat": "intervju",
+"setup": "Junior utvecklare, React och TypeScript, agilt team.",
+"turns": [
+{
+"q": "vad är din största svaghet",
+"interview": true,
+"ttft_budget_ms": 3000
+},
+{
+"q": "jag är ibland för noggrann och blir inte klar i tid",
+"interview": true,
+"user_answer": true,
+"ttft_budget_ms": 3000
+}
+]
+},
+{
+"id": "intervju-04",
+"cat": "intervju",
+"setup": "Lagerarbetare, truckkort.",
+"turns": [
+{
+"q": "har du några frågor till oss",
+"interview": true,
+"allow_question": true,
+"no_person_check": true,
+"ttft_budget_ms": 3000
+},
+{
+"q": "klar",
+"interview": true,
+"expect_end": true,
+"allow": [
+"lycka till"
+]
+}
+]
 }
 ]

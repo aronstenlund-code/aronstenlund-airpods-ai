@@ -4,7 +4,9 @@ import type { AnswerRequest } from "./validate.ts";
 import {
   buildCalibrateUserMessage,
   buildRizzUserMessage,
+  requestedCount,
   rizzSystemPrompt,
+  suggestionCount,
   SYSTEM_PROMPT_CALIBRATE,
 } from "./rizz.ts";
 import {
@@ -24,6 +26,8 @@ export type PersonaTask =
   | "interview_question"
   | "interview_feedback"
   | "interview_summary"
+  | "interview_improve"
+  | "interview_end"
   | "social_suggestion"
   | "rizz_suggestions"
   | "social_calibrate"
@@ -45,6 +49,20 @@ export function isDone(fragment: string): boolean {
   return DONE.test(fragment.trim());
 }
 
+/** D72: a summary only when the user explicitly asks for one ("sammanfatta", "ge mig en sammanfattning"). */
+const SUMMARY_ASK =
+  /(?:^|[^\p{L}])(?:sammanfatta|summera)(?:\s|[.!?,]|$)|ge (?:mig|oss) en sammanfattning|kan du sammanfatta/iu;
+export function asksSummary(fragment: string): boolean {
+  return SUMMARY_ASK.test(fragment.trim());
+}
+
+/** D72: feedback only when the user explicitly asks for it. */
+const FEEDBACK_ASK =
+  /(?:^|[^\p{L}])(?:feedback|återkoppling|ge mig tips|betygsätt|vad tyck(?:er|te) du om (?:mitt|det|svaret)|hur var (?:mitt )?svar(?:et)?|hur lät (?:det|mitt svar)|vad kan jag (?:göra )?bättre|hur kan jag förbättra)(?![\p{L}])/iu;
+export function asksFeedback(fragment: string): boolean {
+  return FEEDBACK_ASK.test(fragment.trim());
+}
+
 /** Decides the persona behaviour for a request, or null for the ordinary flows. */
 export function personaPlan(req: AnswerRequest): Plan | null {
   if (req.mode === "interview_prep") {
@@ -58,7 +76,17 @@ export function personaPlan(req: AnswerRequest): Plan | null {
   }
   if (req.mode === "auto") return null;
   if (req.persona === "interview") {
-    if (req.turn === "user_answer") {
+    // D72: the default is the perfect answer in first person; feedback and summary only when asked for.
+    if (asksSummary(req.fragment)) {
+      return {
+        kind: "interview",
+        task: "interview_summary",
+        answerType: "study",
+        maxTokens: 450,
+        maxChars: 1100,
+      };
+    }
+    if (asksFeedback(req.fragment)) {
       return {
         kind: "interview",
         task: "interview_feedback",
@@ -70,10 +98,19 @@ export function personaPlan(req: AnswerRequest): Plan | null {
     if (isDone(req.fragment)) {
       return {
         kind: "interview",
-        task: "interview_summary",
+        task: "interview_end",
+        answerType: "fact",
+        maxTokens: 60,
+        maxChars: 200,
+      };
+    }
+    if (req.turn === "user_answer") {
+      return {
+        kind: "interview",
+        task: "interview_improve",
         answerType: "study",
-        maxTokens: 450,
-        maxChars: 1100,
+        maxTokens: 500,
+        maxChars: 1300,
       };
     }
     return {
@@ -84,7 +121,7 @@ export function personaPlan(req: AnswerRequest): Plan | null {
       maxChars: 1300,
     };
   }
-  if (req.persona === "social" && req.social?.calibrate) {
+  if (req.persona === "social" && req.social?.calibrate && requestedCount(req.social.calibrate) === null) {
     // D69: a spoken calibration instruction is never conversation: merge it, no suggestions.
     return {
       kind: "calibrate",
@@ -95,13 +132,14 @@ export function personaPlan(req: AnswerRequest): Plan | null {
     };
   }
   if (req.persona === "social" && req.social) {
-    // D43 fast path: 2-3 ultra-short options as one `suggestions` event.
+    // D43/D72 fast path: one suggestion (or what the user asked for, max 5) as one `suggestions` event.
+    const n = suggestionCount(req);
     return {
       kind: "rizz",
       task: "rizz_suggestions",
       answerType: "fact",
-      maxTokens: 170,
-      maxChars: 600,
+      maxTokens: Math.max(100, 40 + 30 * n),
+      maxChars: 200 + 150 * n,
     };
   }
   if (req.persona === "social") {
@@ -133,10 +171,12 @@ ${TAGS} <persona_setup> is the role or a pasted job ad.
 Reply with plain spoken text only - no JSON, no labels.
 ${COMMON}
 Depending on <task>:
-- interview_question: <fragment> is the interviewer's question. Give a compact spoken answer outline the student can say: one sentence naming the structure, then two to three key points tailored to the role or ad in <persona_setup>. For a behavioural question (about a past situation) use STAR: situation, task, action, result, one short sentence each. Four to six short sentences in total.
-- interview_feedback: <fragment> is the student's own answer to the interviewer's last question in <recent_qa>. Give one or two sentences of concrete feedback: what worked, and the single most useful improvement, pointing at something they actually said. Start with the substance, never with praise such as "Bra" or "Det är bra att".
-- interview_summary: the student is done. Summarise the session in at most five sentences: the main strengths, two things to practise, and one tip for the real interview. Start with the substance, never with praise or a sign-off.
-Never invent experience, employers or numbers for the student: where a personal example belongs write a short sentence such as "Här lägger du ett konkret exempel från dig." (first person elsewhere, never mixing "jag" and "du" in one sentence).`;
+- interview_question: <fragment> is the interviewer's question. Reply with the perfect answer, exactly as the user says it out loud in the interview: first person ("jag"), natural spoken Swedish, calm and confident, concrete and tailored to the role or ad in <persona_setup>. The first word is already part of the answer: no preamble, no naming of a structure, no advice, no feedback, no question back to the user, no closing summary. A behavioural question (about a past situation) is answered as a short story in the order situation, task, action, result, without naming those steps (STAR, never said aloud). If the interviewer asks whether the user has questions, the answer is one or two good questions to the interviewer. Usually four to seven short sentences; a simple factual question gets one or two.
+- interview_improve: <fragment> is the user's own answer to the interviewer's last question (the last Q in <recent_qa>). Reply with the perfect version of that answer in first person: keep what the user actually said and make it clearer and stronger; same rules as interview_question. Never comment on the user's answer.
+- interview_feedback (only when the user explicitly asked for it): one or two sentences of concrete feedback on the user's last answer: what worked, and the single most useful improvement, pointing at something they actually said. Start with the substance, never with praise such as "Bra" or "Det är bra att".
+- interview_summary (only when the user explicitly asked for it): summarise the session in at most five sentences: the main strengths, two things to practise, and one tip for the real interview. Start with the substance, never with praise or a sign-off.
+- interview_end: the user is done. Reply with one short sentence wishing them luck in the interview, nothing else.
+Never invent employers, schools, titles or numbers: facts about the user come only from <memories>, <persona_setup>, <goals> and what the user said in <recent_qa>. When the question needs a personal example and none is given, tell a believable, general example in first person without names or exact numbers. Never placeholders or instructions to the user ("här lägger du ...", "berätta om"), never mixing "jag" and "du" about the user.`;
 
 export const SYSTEM_PROMPT_SOCIAL = `${
   INTRO.replace("study assistant", "conversation helper")

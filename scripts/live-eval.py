@@ -143,10 +143,11 @@ def web_checks(text, domains):
     return []
 
 
-def rizz_checks(options):
+def rizz_checks(options, expected=1):
+    """D72: exactly one suggestion by default, or the number the user asked for (max 5)."""
     out = []
-    if not isinstance(options, list) or not (2 <= len(options) <= 3):
-        return [f"fel antal förslag: {len(options) if isinstance(options, list) else options!r}"]
+    if not isinstance(options, list) or len(options) != expected:
+        return [f"fel antal förslag: {len(options) if isinstance(options, list) else options!r} (väntat {expected})"]
     if len({norm(o) for o in options}) < len(options):
         out.append("dubbletter bland förslagen")
     for o in options:
@@ -154,6 +155,24 @@ def rizz_checks(options):
             out.append(f"förslag för långt: {o!r}")
         if BAD_CHARS.search(o):
             out.append(f"förbjudet tecken i förslag: {o!r}")
+    return out
+
+
+INTERVIEW_BAD = ["här lägger du", "ditt exempel", "ett bra svar", "du kan svara", "du kan säga", "struktur", "börja med att",
+                 "star", "bra fråga", "sammanfattningsvis", "lycka till"]
+
+
+def interview_checks(text, turn):
+    """D72: the perfect answer in first person, ready to say aloud: no preamble, placeholders or feedback."""
+    out = []
+    low = text.lower()
+    words = re.findall(r"[a-zåäöé]+", low)
+    if not (turn.get("expect_end") or turn.get("no_person_check")) and not any(w in ("jag", "mig", "min", "mitt", "mina", "vi") for w in words):
+        out.append("inte i jag-form")
+    for b in INTERVIEW_BAD:
+        if b in low and b not in turn.get("allow", []):
+            out.append(f"intervjusvar innehåller {b!r}")
+            break
     return out
 
 
@@ -262,6 +281,10 @@ def run(cases, rizz, domains, only, now):
                     "context": {"recent_qa": hist[-3:]}}
             if turn.get("memories"):
                 body["memories"] = turn["memories"]
+            if turn.get("interview"):
+                body.update(mode="tutor", persona="interview", persona_setup=case.get("setup", ""))
+                if turn.get("user_answer"):
+                    body["turn"] = "user_answer"
             if turn.get("rizz_ref"):
                 sc = rizz[turn["rizz_ref"]]
                 body.update(mode="tutor", persona="social",
@@ -285,20 +308,22 @@ def run(cases, rizz, domains, only, now):
                     problems.append(f"väntade 403 {turn['expect_error']}, fick {json.dumps(r['error'], ensure_ascii=False)[:80] if r['error'] else 'svar'}")
             elif r["error"]:
                 problems.append(f"fel: {json.dumps(r['error'], ensure_ascii=False)[:100]}")
-            elif turn.get("calibrate"):
+            elif turn.get("calibrate") and "expect_count" not in turn:
                 new = (r["done"] or {}).get("calibration")
                 problems += calibration_checks(new, r["options"], turn)
                 text = f"kalibrering: {new!r}"
                 if isinstance(new, str):
                     cal = new
             elif turn.get("rizz_ref"):
-                problems += rizz_checks(r["options"])
+                problems += rizz_checks(r["options"], turn.get("expect_count", 1))
                 text = " | ".join(r["options"]) if isinstance(r["options"], list) else ""
                 first = r.get("preview_ms") or r["ttft_ms"] or 0  # time to the first suggestion
                 if first > 2500:
                     problems.append(f"långsamt: första förslaget efter {first} ms (mål 2500)")
             else:
                 problems += generic_checks(text, answers, turn, r["ttft_ms"])
+                if turn.get("interview"):
+                    problems += interview_checks(text, turn)
                 problems += case_checks(text, answers[-1] if answers else None, turn, now)
                 if turn.get("web"):
                     problems += web_checks(text, domains)

@@ -29,7 +29,7 @@ import {
   previewSuggestion,
   finalizeCalibration,
   rizzReady,
-  SOCIAL_COMEBACK,
+  suggestionCount,
 } from "./rizz.ts";
 import {
   buildDirectUserMessage,
@@ -581,6 +581,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let calibBuf = "";
           let calibration: string | null = null;
           let rizzBuf = "";
+          const rizzCount = rizz ? suggestionCount(body) : 0; // D72: 1 by default, max 5 when asked
           let previewSent = false;
           let previewText: string | null = null;
           const emit = (ev: ParserEvent) => {
@@ -619,7 +620,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               rizzBuf += chunk.text;
               // The model finished its pick (complete TOP line): answer now instead of waiting for the stream to end.
               const done = rizzBuf.slice(0, rizzBuf.lastIndexOf("\n") + 1);
-              if (done && rizzReady(done)) stop = true;
+              if (done && rizzReady(done, rizzCount)) stop = true;
               // D63: the first line is the model's strongest: show it at once, the full list follows.
               if (!previewSent) {
                 const first = previewSuggestion(done);
@@ -702,14 +703,21 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               let options = pickSuggestions(
                 stop ? rizzBuf.slice(0, rizzBuf.lastIndexOf("\n") + 1) : rizzBuf,
                 true,
-                body.social?.style === "social" ? SOCIAL_COMEBACK : undefined,
+                undefined,
+                rizzCount,
               );
               // the preview was shown first: the final list keeps it first
               if (previewText && options.length) {
-                options = [previewText, ...options.filter((o) => o !== previewText)].slice(0, 3);
+                options = [previewText, ...options.filter((o) => o !== previewText)].slice(
+                  0,
+                  rizzCount,
+                );
               }
               if (!options.length) {
-                options = detectDecline(body) ? FALLBACK_DECLINE : FALLBACK_SUGGESTIONS;
+                options = (detectDecline(body) ? FALLBACK_DECLINE : FALLBACK_SUGGESTIONS).slice(
+                  0,
+                  rizzCount,
+                );
                 status = "filtered";
               }
               if (ttftMs === null) ttftMs = now() - t0;

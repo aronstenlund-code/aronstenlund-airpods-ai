@@ -15,8 +15,11 @@ import {
   pickSuggestions,
   previewSuggestion,
   rizzReady,
+  MAX_SUGGESTIONS,
+  requestedCount,
   rizzSystemPrompt,
   SOCIAL_COMEBACK,
+  suggestionCount,
   SYSTEM_PROMPT_CALIBRATE,
   SYSTEM_PROMPT_RIZZ,
   SYSTEM_PROMPT_RIZZ_FLIRT,
@@ -123,7 +126,7 @@ Deno.test("plan: persona social + social object = rizz fast path; without it the
   assertEquals([p.kind, p.task, p.maxTokens, p.answerType], [
     "rizz",
     "rizz_suggestions",
-    170,
+    100, // D72: one suggestion by default
     "fact",
   ]);
   assertEquals(personaPlan(validateAnswerRequest({ ...ok, fragment: "hej" }))?.kind, "social");
@@ -227,8 +230,8 @@ Deno.test("conversation formatting and user turn: speakers, trigger, style, inte
 
 Deno.test("prompt: format, grounding, logic, respect, stage, two styles; hold-out clean", () => {
   const common = [
-    "4|<line>",
-    "TOP:",
+    "1|<line>",
+    "exactly <count> lines (usually 1)",
     "Line 1 is your strongest line",
     "must be concrete",
     "explain in one sentence",
@@ -256,13 +259,14 @@ Deno.test("prompt: format, grounding, logic, respect, stage, two styles; hold-ou
   assertStringIncludes(SYSTEM_PROMPT_RIZZ_FLIRT, "flirty, funny and confident at the same time");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ_FLIRT, "clearly flirtier than ordinary small talk");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ_FLIRT, "never about looks");
-  assertEquals(SYSTEM_PROMPT_RIZZ_FLIRT.includes("Line 4 is a quick comeback"), false);
+  assertEquals(SYSTEM_PROMPT_RIZZ_FLIRT.includes("a quick comeback"), false);
   // D69: social = jokes that make people laugh, built on what others said, + one comeback
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "Style social");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "people actually laugh");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "a callback to something said earlier");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "light self-irony");
-  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "Line 4 is a quick comeback");
+  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "a quick comeback");
+  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "with three or more, make the last one a comeback");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "never flirting");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "never mocking anyone present");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "several different people");
@@ -272,12 +276,15 @@ Deno.test("prompt: format, grounding, logic, respect, stage, two styles; hold-ou
     assertStringIncludes(p, "never overrides the respect rules");
   }
   assertEquals(rizzSystemPrompt("flirt"), SYSTEM_PROMPT_RIZZ_FLIRT);
-  assert(SYSTEM_PROMPT_RIZZ.length < 7000, `prompt stays short: ${SYSTEM_PROMPT_RIZZ.length}`);
+  assert(SYSTEM_PROMPT_RIZZ.length < 7500, `prompt stays short: ${SYSTEM_PROMPT_RIZZ.length}`);
   // the examples in the prompts pass the same filters as real output
+  // D72: no TOP pick any more; the examples show <count>1 and <count>3 and pass the same filters
   for (const p of [SYSTEM_PROMPT_RIZZ, SYSTEM_PROMPT_RIZZ_FLIRT]) {
+    assertEquals(p.includes("TOP"), false);
     const ex = p.split("\n").filter((l) => /^\d\|[^<]/.test(l));
     assertEquals(ex.length, 4);
-    assertEquals(pickSuggestions(ex.join("\n") + "\nTOP: 1,2,3,4\n").length, 3);
+    assertEquals(pickSuggestions(ex.join("\n") + "\n", true, undefined, 4).length, 3);
+    assertStringIncludes(p, "<request>");
   }
 });
 
@@ -409,4 +416,51 @@ Deno.test("D69 calibration: fields validated, own plan, merged reply cleaned and
   assertEquals(finalizeCalibration("var mer sexig", "lugn"), "lugn", "unsafe reply keeps the old one");
   const cut = capCalibration(Array.from({ length: 40 }, (_, i) => `punkt ${i} här`).join("; "));
   assert(cut.length <= MAX_CALIBRATION && !/[;,]$/.test(cut), cut);
+});
+
+
+Deno.test("D72: one suggestion by default; an explicit 'ge mig tre' asks for more (max 5) for that call", () => {
+  for (
+    const [t, n] of [
+      ["ge mig tre pickup lines", 3],
+      ["Ge mig 5 förslag", 5],
+      ["visa fler", 3],
+      ["ge mig tio", 5],
+      ["ge mig ett par till", 2],
+      ["ge mig en till", 1],
+      ["tre nya repliker", 3],
+      ["kom med några roliga", 3],
+      ["ge mig fler skämt", 3],
+      ["två saker att säga", 2],
+    ] as const
+  ) assertEquals(requestedCount(t), n, t);
+  for (
+    const t of [
+      "fler skämt",
+      "mer skämt",
+      "lite mindre kaxig",
+      "hon gillar fotboll",
+      "glöm allt och börja om",
+      "ge mig lite mer kaxigt",
+    ]
+  ) assertEquals(requestedCount(t), null, t);
+  assertEquals(MAX_SUGGESTIONS, 5);
+  const one = req();
+  assertEquals(suggestionCount(one), 1);
+  assertEquals([personaPlan(one)?.kind, personaPlan(one)?.maxTokens], ["rizz", 100]);
+  assertStringIncludes(buildRizzUserMessage(one), "<count>1</count>");
+  assertEquals(buildRizzUserMessage(one).includes("<request>"), false);
+  const three = req({ social: social({ calibrate: "ge mig tre pickup lines" }) });
+  assertEquals(personaPlan(three)?.kind, "rizz", "a count request is a suggestion call, not a calibration");
+  const m = buildRizzUserMessage(three);
+  assertStringIncludes(m, "<count>3</count>");
+  assertStringIncludes(m, "<request>ge mig tre pickup lines</request>");
+  assertEquals(personaPlan(req({ social: social({ calibrate: "mer skämt" }) }))?.kind, "calibrate");
+  // early stop after `count` complete lines; the older TOP format still ends the stream
+  assert(rizzReady("1|En rad här.\n", 1));
+  assert(!rizzReady("1|En rad här.\n", 3));
+  assert(!rizzReady("1|En rad h", 1), "line not complete yet");
+  assert(rizzReady("1|a\nTOP: 1\n"));
+  assertEquals(pickSuggestions("1|A a.\n2|B b.\n", true, undefined, 1), ["A a."]);
+  assertEquals(pickSuggestions("1|A.\n2|B.\n3|C.\n4|D.\n5|E.\n", true, undefined, 5).length, 5);
 });

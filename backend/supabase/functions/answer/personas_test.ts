@@ -35,12 +35,16 @@ Deno.test("plans: interview question / feedback / summary, social, prep, and non
     "study",
     500,
   ]);
+  // D72: the user's own answer gets the perfect version back; feedback / summary only when asked for
   const f = personaPlan(
     req({ turn: "user_answer", fragment: "Jag har jobbat på lager i två år." }),
   )!;
-  assertEquals([f.task, f.answerType, f.maxTokens], ["interview_feedback", "fact", 300]);
-  const s = personaPlan(req({ fragment: "klar" }))!;
+  assertEquals([f.task, f.answerType, f.maxTokens], ["interview_improve", "study", 500]);
+  const fb = personaPlan(req({ turn: "user_answer", fragment: "vad tycker du om mitt svar" }))!;
+  assertEquals([fb.task, fb.answerType, fb.maxTokens], ["interview_feedback", "fact", 300]);
+  const s = personaPlan(req({ fragment: "sammanfatta" }))!;
   assertEquals([s.task, s.maxTokens], ["interview_summary", 450]);
+  assertEquals(personaPlan(req({ fragment: "klar" }))?.task, "interview_end");
   const so = personaPlan(req({ persona: "social", fragment: "jag var på en konsert i helgen" }))!;
   assertEquals([so.kind, so.task, so.answerType, so.maxTokens], [
     "social",
@@ -77,9 +81,20 @@ Deno.test("'klar' variants end an interview; ordinary answers containing 'klar' 
   }
   assertEquals(
     personaPlan(req({ turn: "user_answer", fragment: "klar" }))?.task,
-    "interview_feedback",
-    "turn wins",
+    "interview_end",
+    "done wins over the turn",
   );
+  assertEquals(
+    personaPlan(req({ turn: "user_answer", fragment: "Sammanfattningsvis är jag noggrann." }))?.task,
+    "interview_improve",
+    "'sammanfattningsvis' in an answer is not a summary request",
+  );
+  for (const f of ["ge mig feedback", "hur var mitt svar", "vad kan jag göra bättre"]) {
+    assertEquals(personaPlan(req({ fragment: f }))?.task, "interview_feedback", f);
+  }
+  for (const f of ["kan du sammanfatta intervjun", "ge mig en sammanfattning"]) {
+    assertEquals(personaPlan(req({ fragment: f }))?.task, "interview_summary", f);
+  }
 });
 
 Deno.test("persona prompts: structure, STAR, no invented experience, consent and guardrails for social", () => {
@@ -87,7 +102,17 @@ Deno.test("persona prompts: structure, STAR, no invented experience, consent and
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "interview_feedback");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "interview_summary");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "not live support in a real interview");
-  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "Never invent experience");
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "Never invent employers");
+  // D72: the perfect answer in first person, ready to say aloud; no outline, placeholders or feedback
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "Reply with the perfect answer");
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, 'first person ("jag")');
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "no preamble");
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "no question back to the user");
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "only when the user explicitly asked for it");
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "interview_improve");
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "interview_end");
+  assertEquals(SYSTEM_PROMPT_INTERVIEW.includes("answer outline"), false);
+  assertEquals(SYSTEM_PROMPT_INTERVIEW.includes("Här lägger du ett konkret exempel"), false);
   assertStringIncludes(SYSTEM_PROMPT_PREP, "exactly five likely interview questions");
   assertStringIncludes(SYSTEM_PROMPT_PREP, "Fråga ett");
   assertStringIncludes(SYSTEM_PROMPT_SOCIAL, "knows that the app listens");
