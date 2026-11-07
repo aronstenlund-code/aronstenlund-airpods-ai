@@ -23,10 +23,12 @@ Deno.test("accepts an anonymous-user token", async () => {
     sub: "11111111-1111-1111-1111-111111111111",
     role: "authenticated",
     is_anonymous: true,
+    amr: [{ method: "anonymous", timestamp: 1794083239 }],
   });
   assertEquals(await auth(req(t)), {
     id: "11111111-1111-1111-1111-111111111111",
     isAnonymous: true,
+    sessionStartSec: 1794083239, // D79: from amr, unchanged by refreshes
   });
 });
 
