@@ -156,7 +156,8 @@ func makeTestActivation(sensitivity: GateSensitivity = .medium) -> ActivationCon
         model.receiveFinalTranscript("hur många kromosomer har en människa?")
         #expect(model.pendingQuestion?.trigger == .auto)
         #expect(model.pendingQuestion?.query == "hur många kromosomer har en människa?")
-        #expect(h.controller.eventLog.first?.text.hasPrefix("Activation (auto)") == true)
+        #expect(h.controller.eventLog.contains { $0.text.hasPrefix("Activation (auto)") })
+        #expect(h.controller.eventLog.contains { $0.text.hasPrefix("Turn · standard · STT") }, "D74: recogniser and microphone per turn")
     }
 
     @Test func theLastChosenModeIsRemembered() {
