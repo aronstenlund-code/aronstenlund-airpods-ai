@@ -103,7 +103,7 @@ def generic_checks(text, prev_answers, turn, ttft_ms):
 # D75: Provläge / Auto never comment on what the speaker seems to mean or ask for clarification.
 META_BAD = re.compile(
     r"^(?:det (?:låter|verkar|känns) som (?:att|om) (?:du|ni)|berätta gärna|kan du (?:förtydliga|upprepa|utveckla|säga mer|berätta mer)"
-    r"|menar du|vad menar du|tänker du på|jag (?:förstår|uppfattade|hörde) (?:inte|tyvärr inte)|du verkar (?:tänka|mena))",
+    r"|(?:det|det där|det här) (?:låter|verkar) som [\"'„”»«]?[A-ZÅÄÖ]|menar du|vad menar du|tänker du på|jag (?:förstår|uppfattade|hörde) (?:inte|tyvärr inte)|du verkar (?:tänka|mena))",
     re.I)
 
 

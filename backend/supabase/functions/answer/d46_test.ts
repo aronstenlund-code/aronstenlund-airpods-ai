@@ -1065,3 +1065,11 @@ Deno.test("D79 interview: stand-ins for a missing fact are cut, the rest is kept
   ];
   for (const [inp, want] of cases) assertEquals(stripInterviewMeta(inp), want, inp);
 });
+
+Deno.test("D80 the interpretation of a misheard term is never named", async () => {
+  const { isMetaReply } = await import("./speech.ts");
+  assert(isMetaReply('Det där låter som "Pythagoras sats".'));
+  assert(isMetaReply("Det låter som Pythagoras sats."));
+  assert(!isMetaReply("Det låter som en bra plan att börja med formeln."), "lower-case: not a named term");
+  assert(!isMetaReply("Pythagoras sats säger att kvadraten på hypotenusan är summan av kateternas kvadrater."));
+});

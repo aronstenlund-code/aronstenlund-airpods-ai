@@ -374,8 +374,11 @@ const META_REPLY = new RegExp(
   ].join("|"),
   "iu",
 );
+/** D80: naming the interpretation ("Det där låter som 'Pythagoras sats'."): case-sensitive on the term. */
+const NAMED_READING = /^[Dd]e(?:t|t där|tta|t här) (?:låter|verkar) som ["'„”»«]?\p{Lu}/u;
 export function isMetaReply(sentence: string): boolean {
-  return META_REPLY.test(sentence.trim().replace(/^[\s"'„”»«-]+/, ""));
+  const s = sentence.trim().replace(/^[\s"'„”»«-]+/, "");
+  return META_REPLY.test(s) || NAMED_READING.test(s);
 }
 
 /**

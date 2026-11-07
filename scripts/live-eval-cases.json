@@ -2350,5 +2350,33 @@
 ]
 }
 ]
+},
+{
+"id": "felhor-11",
+"cat": "felhörning",
+"turns": [
+{
+"q": "klo ro plast",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"kloroplast"
+]
+}
+]
+},
+{
+"id": "felhor-12",
+"cat": "felhörning",
+"turns": [
+{
+"q": "ni tons lagar",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"newton"
+]
+}
+]
 }
 ]
