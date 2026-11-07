@@ -238,7 +238,7 @@ export class SourceTap {
 }
 
 const EN = new Set(
-  "the of and is are was were he she it they to in since as with for by that this has have had been who which serves served from at on be an or his her their its not but also"
+  "the of and is are was were he she it they to in since as with for by that this has have had been who which serves served from at on be an or his her their its not but also king queen ruler rulers reigned ruled succeeded succeeding became born died during until years"
     .split(" "),
 );
 const SV = new Set(
@@ -254,7 +254,15 @@ export function isEnglishSentence(sentence: string): boolean {
     if (EN.has(x)) en++;
     else if (SV.has(x)) sv++;
   }
-  return en >= 3 && en > 1.5 * sv;
+  if (en >= 3 && en > 1.5 * sv) return true;
+  // Oscar round 2 / D72 live test: an English source fragment inside a Swedish sentence
+  // ("Ordningen stämmer också med Succeeding rulers were his son ..."): 3+ English and no Swedish
+  // function words within 5 consecutive words.
+  for (let i = 0; i + 5 <= w.length; i++) {
+    const win = w.slice(i, i + 5);
+    if (win.filter((x) => EN.has(x)).length >= 3 && !win.some((x) => SV.has(x))) return true;
+  }
+  return false;
 }
 
 /**

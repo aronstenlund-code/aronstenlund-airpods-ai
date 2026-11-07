@@ -174,6 +174,8 @@ const PRESSURE =
   /(?:^|[^\p{L}])(?:var inte så blyg|du måste|kom igen då|du är skyldig|ångra dig inte|stanna kvar)(?![\p{L}])/iu;
 
 export const MAX_WORDS = 10;
+/** Lines up to this length are used only when nothing within MAX_WORDS is left (D72). */
+export const SOFT_MAX_WORDS = 14;
 export function wordCount(s: string): number {
   return s.trim().split(/\s+/).filter(Boolean).length;
 }
@@ -266,6 +268,18 @@ export function pickSuggestions(
     seen.add(key);
     out.push(c.text);
     if (out.length === count) break;
+  }
+  // D72 live test: a single best line of 11-14 words beats the generic fallback ("Berätta mer om det."):
+  // top up with safe lines up to SOFT_MAX_WORDS when the strict cap left too few.
+  for (const c of cands) {
+    if (out.length >= count) break;
+    const key = c.text.toLowerCase();
+    if (
+      !c.text || seen.has(key) || wordCount(c.text) > SOFT_MAX_WORDS || SEXUAL.test(c.text) ||
+      PRESSURE.test(c.text)
+    ) continue;
+    seen.add(key);
+    out.push(c.text);
   }
   // A required candidate (`mustInclude`) is always one of the `count`, last.
   const must = mustInclude === undefined ? undefined : byN.get(mustInclude);

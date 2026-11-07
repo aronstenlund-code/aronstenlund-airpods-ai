@@ -464,3 +464,22 @@ Deno.test("D72: one suggestion by default; an explicit 'ge mig tre' asks for mor
   assertEquals(pickSuggestions("1|A a.\n2|B b.\n", true, undefined, 1), ["A a."]);
   assertEquals(pickSuggestions("1|A.\n2|B.\n3|C.\n4|D.\n5|E.\n", true, undefined, 5).length, 5);
 });
+
+Deno.test("D72: a safe line of 11-14 words is used before the generic fallback; unsafe or very long never", () => {
+  const twelve = "Jag peppar dig från sidan och du bjuder på kaffe efteråt sen.";
+  assertEquals(pickSuggestions(`1|${twelve}\n`, true, undefined, 1), [twelve]);
+  assertEquals(pickSuggestions(`1|Kort och bra.\n2|${twelve}\n`, true, undefined, 1), ["Kort och bra."]);
+  assertEquals(
+    pickSuggestions(
+      "1|ett två tre fyra fem sex sju åtta nio tio elva tolv tretton fjorton femton\n",
+      true,
+      undefined,
+      1,
+    ),
+    [],
+  );
+  assertEquals(
+    pickSuggestions("1|Vill du ligga med mig efter festen ikväll hos mig?\n", true, undefined, 1),
+    [],
+  );
+});

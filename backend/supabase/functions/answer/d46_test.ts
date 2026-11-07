@@ -870,5 +870,10 @@ Deno.test("Oscar round 2 F16: web-mode sentences that narrate the search decisio
     assert(!isSearchMeta(s), s);
   }
   assertStringIncludes(WEB_PROMPT, "Never mention searching");
-  assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "never read the list aloud");
+  // D72 live test: counting silently gave the wrong king; the model may name the list first again
+  assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "you may name the items in order in one short sentence first");
+  assert(isEnglishSentence("Ordningen stämmer också med Succeeding rulers were his son Oscar den förste."));
+  for (const sv of ["Karl den femtonde var kung från 1859.", "Han blev kung efter sin far."]) {
+    assert(!isEnglishSentence(sv), sv);
+  }
 });
