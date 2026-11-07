@@ -18,7 +18,15 @@ import {
 } from "../_shared/demo.ts";
 import { detectReport } from "./report.ts";
 import { detectMemoryAdd, MEMORY_ACK, MEMORY_SUMMARY } from "./memory.ts";
-import { needsWeb, WEB_PROMPT, WEB_SEARCH_USD, WEB_UNAVAILABLE_NOTE, webTools } from "./web.ts";
+import {
+  isOrdinalFact,
+  needsWeb,
+  ORDINAL_NOTE,
+  WEB_PROMPT,
+  WEB_SEARCH_USD,
+  WEB_UNAVAILABLE_NOTE,
+  webTools,
+} from "./web.ts";
 import { AnswerPost } from "./speech.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import {
@@ -488,11 +496,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           : direct
           ? buildDirectUserMessage(b, continuation, extras)
           : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, extras);
+      // D72 live test: "the Nth king" was answered wrong without listing first; ask for the list in code.
+      const ordinal = !plan && isOrdinalFact(body.fragment);
       const baseExtras: PromptExtras = {
         now: nowContext((deps.clock ?? (() =>
           new Date()))()),
         ...(computed ? { computed: computed.text } : {}),
-        ...(webNote ? { note: webNote } : {}),
+        ...(webNote || ordinal
+          ? { note: [webNote, ordinal ? ORDINAL_NOTE : ""].filter(Boolean).join(" ") }
+          : {}),
       };
       const iterator = provider
         .stream({
@@ -563,7 +575,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             trimQuestion: direct && !plan && !tutor,
             firstLineOnly: plan?.kind === "socialline",
             relationTag,
-            web: webOn,
+            web: webOn || !!need, // web filters also when the web cap turned search off
             tutor,
           });
           const deliver = (t: string) => {
@@ -692,7 +704,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 trimQuestion: false,
                 firstLineOnly: plan?.kind === "socialline",
                 relationTag,
-                web: webOn,
+                web: webOn || !!need,
                 tutor,
               });
               r = await it.next();

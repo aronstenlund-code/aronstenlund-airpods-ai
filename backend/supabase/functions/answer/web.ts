@@ -78,6 +78,13 @@ const ORDINAL_FACT = pat(
   "den (?:\\d{1,2}:?[ae]|första|andra|tredje|fjärde|femte|sjätte|sjunde|åttonde|nionde|tionde|elfte|tolfte|trettonde|fjortonde|femtonde)\\s+(?:kungen|drottningen|presidenten|statsministern|monarken|påven|kejsaren|regenten|ledaren|ordföranden|generalsekreteraren|vinnaren)",
 );
 
+/** "den tredje kungen av ..." and similar ordinal list facts. */
+export function isOrdinalFact(fragment: string): boolean {
+  return ORDINAL_FACT.test(fragment.trim());
+}
+export const ORDINAL_NOTE =
+  "This asks for the Nth item of a list: begin with the items in order up to the Nth in one short sentence, then say which one is the Nth. Count carefully.";
+
 export interface WebNeed {
   search: boolean;
   fetch: boolean;

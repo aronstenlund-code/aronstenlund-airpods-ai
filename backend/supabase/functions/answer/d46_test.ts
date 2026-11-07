@@ -892,3 +892,17 @@ Deno.test("D72 live test: a regnal number split from its name by the stream is s
     );
   }
 });
+
+Deno.test("D72 live test F16: ordinal facts get a list-first note; more search narration is caught", async () => {
+  const { isOrdinalFact, ORDINAL_NOTE } = await import("./web.ts");
+  assert(isOrdinalFact("vilken var den tredje kungen av ätten Vasa"));
+  assert(!isOrdinalFact("vem är kung i Sverige"));
+  assertStringIncludes(ORDINAL_NOTE, "items in order up to the Nth");
+  for (
+    const s of [
+      "Jag är säker på detta utan att behöva söka, men Källa: Wikipedia.",
+      "Det här kan jag svara på utan att söka.",
+    ]
+  ) assert(isSearchMeta(s), s);
+  assert(!isSearchMeta("Jag är säker på att du klarar provet."), "not about searching");
+});
