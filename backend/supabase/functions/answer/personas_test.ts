@@ -102,7 +102,11 @@ Deno.test("persona prompts: structure, STAR, no invented experience, consent and
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "interview_feedback");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "interview_summary");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "not live support in a real interview");
-  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "Never invent employers");
+  // D76: no invented personal facts (Oscar: "Jag är sjutton år och går tredje året", "Jag har handlat i den här butiken länge")
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "Never state a concrete personal fact that is not there");
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "no age, school, school year");
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "never an invented story or background");
+  assertEquals(SYSTEM_PROMPT_INTERVIEW.includes("believable, general example"), false);
   // D72: the perfect answer in first person, ready to say aloud; no outline, placeholders or feedback
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "Reply with the perfect answer");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, 'first person ("jag")');

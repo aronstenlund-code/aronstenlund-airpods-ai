@@ -187,6 +187,21 @@ INTERVIEW_BAD = ["här lägger du", "ditt exempel", "ett bra svar", "du kan svar
                  "star", "bra fråga", "sammanfattningsvis", "lycka till"]
 
 
+# D76: concrete personal facts that the interview answer may not state unless the case gave them
+# (Oscar 2026-11-07: "Jag är sjutton år och går tredje året på gymnasiet", "Jag har handlat i den här butiken länge").
+INVENTED_FACT = re.compile(
+    r"\bjag är (?:\d+|tretton|fjorton|femton|sexton|sjutton|arton|nitton|tjugo\w*) år"
+    r"|\bgår (?:första|andra|tredje|fjärde|sista|ettan|tvåan|trean|nian|åttan) ?(?:året|på)?"
+    r"|\bjag går (?:på|i) (?:gymnasiet|högstadiet|universitetet|\w+programmet|\w+linjen)"
+    r"|\bjag (?:har|har ju) (?:handlat|jobbat|arbetat|pluggat|studerat|bott|tränat|extrajobbat|sommarjobbat)\b"
+    r"|\b(?:i somras|förra sommaren|förra året|i våras|i höstas|i vintras)\b"
+    r"|\b(?:på|i) mitt (?:förra|tidigare|senaste|nuvarande) (?:jobb|arbete|sommarjobb|extrajobb)"
+    r"|\bnär jag (?:jobbade|arbetade|var anställd|praktiserade)\b"
+    r"|\bmin (?:förra|tidigare|nuvarande) (?:chef|arbetsgivare|kollega)"
+    r"|\b(?:en gång|en kväll|en dag) (?:när|då|så) (?:jag|vi)\b",
+    re.I)
+
+
 def interview_checks(text, turn):
     """D72: the perfect answer in first person, ready to say aloud: no preamble, placeholders or feedback."""
     out = []
@@ -198,6 +213,10 @@ def interview_checks(text, turn):
         if b in low and b not in turn.get("allow", []):
             out.append(f"intervjusvar innehåller {b!r}")
             break
+    if turn.get("no_invented_facts"):
+        m = INVENTED_FACT.search(text)
+        if m:
+            out.append(f"påhittad personuppgift: {m.group(0)!r}")
     return out
 
 

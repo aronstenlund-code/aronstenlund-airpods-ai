@@ -63,6 +63,18 @@ export const DEMO_MESSAGES = {
   global:
     "Demon har nått dagens tak. Kom tillbaka i morgon, gå med i väntelistan eller ladda ner appen.",
   unavailable: "Det här läget finns bara i appen.",
+  // D76: the speech (STT) and read-aloud (TTS) caps have their own wording; only the question cap counts questions.
+  sttVisitor: (n: number) =>
+    `Du har använt dagens ${n} röstfrågor i demon. Skriv frågan i stället, eller kom tillbaka i morgon.`,
+  sttIp:
+    "Det har talats in många frågor i demon från ditt nätverk i dag. Skriv frågan i stället, eller kom tillbaka i morgon.",
+  sttGlobal:
+    "Röstinmatningen i demon har nått dagens tak. Skriv frågan i stället, eller kom tillbaka i morgon.",
+  ttsVisitor:
+    "Du har använt dagens uppläsning i demon. Svaren visas som text, och i morgon läses de upp igen.",
+  ttsIp:
+    "Demon har läst upp många svar till ditt nätverk i dag. Svaren visas som text, och i morgon läses de upp igen.",
+  ttsGlobal: "Uppläsningen i demon har nått dagens tak. Svaren visas som text, och i morgon läses de upp igen.",
 };
 
 /** SHA-256 of the client IP (first 16 hex chars): rate-limit keys never hold a raw address. */
@@ -90,18 +102,16 @@ export async function enforceDemo(
     : kind === "tts"
     ? [caps.ttsCharsPerVisitor, caps.ttsCharsPerIp, caps.ttsCharsGlobal]
     : [caps.sttPerVisitor, caps.sttPerIp, caps.sttGlobal];
+  const M = DEMO_MESSAGES;
+  const msg = kind === "answer"
+    ? [M.visitor(caps.questionsPerVisitor), M.ip, M.global]
+    : kind === "tts"
+    ? [M.ttsVisitor, M.ttsIp, M.ttsGlobal]
+    : [M.sttVisitor(caps.sttPerVisitor), M.sttIp, M.sttGlobal];
   const steps: [string, number, HttpError][] = [
-    [
-      `demo:${kind}:u:${userId}:d`,
-      lim[0],
-      new HttpError(429, "demo_limit_visitor", DEMO_MESSAGES.visitor(caps.questionsPerVisitor)),
-    ],
-    [`demo:${kind}:ip:${net}:d`, lim[1], new HttpError(429, "demo_limit_ip", DEMO_MESSAGES.ip)],
-    [
-      `demo:${kind}:global:d`,
-      lim[2],
-      new HttpError(429, "demo_limit_global", DEMO_MESSAGES.global),
-    ],
+    [`demo:${kind}:u:${userId}:d`, lim[0], new HttpError(429, "demo_limit_visitor", msg[0])],
+    [`demo:${kind}:ip:${net}:d`, lim[1], new HttpError(429, "demo_limit_ip", msg[1])],
+    [`demo:${kind}:global:d`, lim[2], new HttpError(429, "demo_limit_global", msg[2])],
   ];
   for (const [key, limit, err] of steps) {
     let r;

@@ -1699,7 +1699,8 @@
 {
 "q": "berätta lite om dig själv",
 "interview": true,
-"ttft_budget_ms": 3000
+"ttft_budget_ms": 3000,
+"no_invented_facts": true
 }
 ]
 },
@@ -1711,7 +1712,8 @@
 {
 "q": "berätta om en gång du löste en konflikt",
 "interview": true,
-"ttft_budget_ms": 3000
+"ttft_budget_ms": 3000,
+"no_invented_facts": true
 }
 ]
 },
@@ -1723,7 +1725,8 @@
 {
 "q": "vad är din största svaghet",
 "interview": true,
-"ttft_budget_ms": 3000
+"ttft_budget_ms": 3000,
+"no_invented_facts": true
 },
 {
 "q": "jag är ibland för noggrann och blir inte klar i tid",
@@ -2103,6 +2106,107 @@
 "expect": "answer",
 "expect_any": [
 "åtta"
+]
+}
+]
+},
+{
+"id": "intervju-05",
+"cat": "intervju",
+"setup": "Sommarjobb som butiksbiträde i en matbutik",
+"turns": [
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"no_invented_facts": true,
+"q": "berätta om dig själv"
+},
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"no_invented_facts": true,
+"q": "varför vill du jobba här"
+},
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"no_invented_facts": true,
+"q": "hur hanterar du en arg kund"
+},
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"no_invented_facts": true,
+"q": "vad är din största svaghet"
+}
+]
+},
+{
+"id": "intervju-06",
+"cat": "intervju",
+"setup": "Extrajobb som vårdbiträde på ett äldreboende, helger.",
+"turns": [
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"no_invented_facts": true,
+"q": "berätta om en gång du hjälpte någon som var ledsen"
+},
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"no_invented_facts": true,
+"q": "vad har du för erfarenhet av vård"
+}
+]
+},
+{
+"id": "intervju-07",
+"cat": "intervju",
+"setup": "Sommarjobb på ett lager, plock och packning.",
+"turns": [
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"no_invented_facts": true,
+"q": "hur gammal är du och vad pluggar du"
+}
+]
+},
+{
+"id": "intervju-08",
+"cat": "intervju",
+"setup": "Sommarjobb som cafébiträde. Om mig: 16 år, går naturvetenskapsprogrammet, tränar ett fotbollslag för barn.",
+"turns": [
+{
+"q": "berätta om dig själv",
+"interview": true,
+"ttft_budget_ms": 3000,
+"expect_any": [
+"16",
+"sexton",
+"natur",
+"fotboll"
+]
+}
+]
+},
+{
+"id": "intervju-09",
+"cat": "intervju",
+"setup": "Butiksbiträde i en klädbutik.",
+"turns": [
+{
+"q": "vad har du för erfarenhet av butik",
+"interview": true,
+"ttft_budget_ms": 3000,
+"memories": [
+"Jag har jobbat två somrar i min mosters klädbutik."
+],
+"expect_any": [
+"klädbutik",
+"två somrar",
+"moster"
 ]
 }
 ]

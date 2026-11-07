@@ -1,0 +1,60 @@
+name: Auth rate limit
+
+# D76: sets ONE Supabase Auth setting on the Lumen project (xjczbzfkmbjdebwlccki): how many anonymous
+# sign-ins one IP address may make per hour (`rate_limit_anonymous_users`). Nothing else is changed.
+# Every app install and every demo visitor signs in anonymously once and then keeps its session, so a real user
+# needs one sign-in; the cap stops a script from minting a new anonymous user (= a fresh daily allowance) per call.
+# Runs when this file changes (value below) or by hand (Actions > Auth rate limit > Run workflow).
+# Uses the repo secret SUPABASE_ACCESS_TOKEN. If the token may not write auth settings the job fails with 401/403
+# and the owner sets the value by hand: Supabase Dashboard > Authentication > Rate Limits >
+# "Rate limit for anonymous users" (requests per hour per IP).
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/auth-rate-limit.yml"
+  workflow_dispatch:
+    inputs:
+      per_hour:
+        description: "Anonymous sign-ins per hour per IP"
+        required: true
+        default: "15"
+
+permissions:
+  contents: read
+
+env:
+  PROJECT_REF: xjczbzfkmbjdebwlccki
+  DEFAULT_PER_HOUR: "15"
+
+jobs:
+  set:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Set anonymous sign-in rate limit
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PER_HOUR: ${{ github.event.inputs.per_hour }}
+        run: |
+          set -euo pipefail
+          N="${PER_HOUR:-$DEFAULT_PER_HOUR}"
+          case "$N" in ''|*[!0-9]*) echo "::error::per_hour must be a whole number"; exit 1;; esac
+          if [ "$N" -lt 5 ] || [ "$N" -gt 1000 ]; then echo "::error::per_hour must be 5-1000"; exit 1; fi
+          API="https://api.supabase.com/v1/projects/$PROJECT_REF/config/auth"
+          H=(-H "authorization: Bearer $SUPABASE_ACCESS_TOKEN" -H "content-type: application/json")
+          code=$(curl -s -o before.json -w "%{http_code}" "${H[@]}" "$API")
+          echo "GET -> $code"
+          [ "$code" = "200" ] || { echo "::error::cannot read auth config ($code)"; exit 1; }
+          echo "before: $(python3 -c "import json;d=json.load(open('before.json'));print({k:d.get(k) for k in ('external_anonymous_users_enabled','rate_limit_anonymous_users')})")"
+          code=$(curl -s -o patch.json -w "%{http_code}" -X PATCH "${H[@]}" "$API" -d "{\"rate_limit_anonymous_users\": $N}")
+          echo "PATCH rate_limit_anonymous_users=$N -> $code"
+          if [ "$code" != "200" ]; then
+            head -c 300 patch.json; echo
+            echo "::error::token may not write auth settings ($code). Owner: Supabase Dashboard > Authentication > Rate Limits > Rate limit for anonymous users = $N"
+            exit 1
+          fi
+          curl -s "${H[@]}" "$API" -o after.json
+          after=$(python3 -c "import json;print(json.load(open('after.json')).get('rate_limit_anonymous_users'))")
+          echo "after: rate_limit_anonymous_users=$after"
+          [ "$after" = "$N" ]
