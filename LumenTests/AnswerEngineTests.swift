@@ -32,7 +32,7 @@ import Testing
         #expect(engine.status == .idle)
         #expect(engine.answersCompleted == 1)
         #expect(provider.requests.first?.context.transcript == "ctx")
-        #expect(provider.requests.first?.mode == "push_to_talk")
+        #expect(provider.requests.first?.mode == "text")
     }
 
     @Test func notAQuestionIsSkipped() async {
