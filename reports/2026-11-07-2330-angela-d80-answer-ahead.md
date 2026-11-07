@@ -91,6 +91,20 @@ Updated: the Scribe values in `SpeechPipelineTests` now follow the pause.
 - **The 0.3 s target** is only reachable when the answer is ready and its first sentence was fetched ahead. Whether
   the backend's ~0.7–1 s to first token fits inside the 0.4 s lead plus the pause is what §3z4 measures.
 
+## CI
+CI failed three times before it went green. The first two were compile errors, the last a test:
+
+| Run on | What failed | Fixed in |
+|---|---|---|
+| `09b3c50` | A tuple property broke `StudyMachine`'s `Equatable` | `dde5d62` |
+| the next push | A closure in the TTS stream was inferred as `throws(any Error)` instead of `throws(AudioError)` | `718bbc1` |
+| `718bbc1` | The test for memories saved before D80 wrote its dates in the wrong format; the app uses ISO 8601 | `762d510` |
+
+- **Green:** run 42414791995 on `762d510`. Build, unit tests, licence check and the unsigned archive all passed.
+- New ipa: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42414791995/artifacts/13591820533
+  (available until 2026-11-21).
+- **Not tested on device.**
+
 ## Next session
 - Kevin: build `/memory` as described above.
 - Aron: install the new ipa, run §3z4 and send the Diagnostics log.
