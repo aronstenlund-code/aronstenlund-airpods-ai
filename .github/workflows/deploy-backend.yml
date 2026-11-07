@@ -1,0 +1,69 @@
+name: Deploy backend
+
+# Deploys the Edge Functions in backend/supabase/functions to the Lumen project (xjczbzfkmbjdebwlccki) ONLY.
+# Runs the backend unit tests first; nothing is deployed if a test fails.
+# Needs one repo secret entered by the owner: SUPABASE_ACCESS_TOKEN (Supabase > Account > Access Tokens).
+# Without the secret the job stops with a clear message. Migrations are NOT run here (agents apply them via MCP).
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/supabase/functions/**"
+      - ".github/workflows/deploy-backend.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
+env:
+  PROJECT_REF: xjczbzfkmbjdebwlccki
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check secret
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "::error::Repo secret SUPABASE_ACCESS_TOKEN is missing. Owner: GitHub repo > Settings > Secrets and variables > Actions > New repository secret."
+            exit 1
+          fi
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Backend unit tests
+        working-directory: backend
+        run: deno task test
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Deploy functions
+        working-directory: backend
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          set -e
+          for f in answer tts stt-token voices feedback shared-history; do
+            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api
+          done
+          # These do their own auth (service key / public endpoint with caps), as documented in backend/README.md.
+          for f in usage-stats feedback-admin waitlist; do
+            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --no-verify-jwt
+          done
+      - name: Smoke test
+        run: |
+          U=https://$PROJECT_REF.supabase.co
+          K=sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8
+          T=$(curl -s -X POST "$U/auth/v1/signup" -H "apikey: $K" -H "content-type: application/json" -d '{}' | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$U/functions/v1/answer" -H "apikey: $K" -H "authorization: Bearer $T" -H "content-type: application/json" \
+            -d '{"fragment":"hej","mode":"auto","language":"sv","persona":"social","social":{"style":"flirt"},"context":{"transcript":"Hej"}}')
+          echo "flirt without adult_confirmed -> $code (expected 403)"
+          [ "$code" = "403" ]
