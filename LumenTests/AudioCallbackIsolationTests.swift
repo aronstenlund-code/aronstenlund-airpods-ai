@@ -33,7 +33,7 @@ import Testing
         let context = try CaptureTapContext(inputFormat: format, ring: ring, continuation: continuation, maxInputFrames: 4_800)
         nonisolated(unsafe) let block = CaptureService.tapBlock(for: context)
         nonisolated(unsafe) let input = try Self.buffer(format, frames: 1_920)
-        nonisolated(unsafe) let time = AVAudioTime(hostTime: mach_absolute_time())
+        let time = AVAudioTime(hostTime: mach_absolute_time())
 
         await Self.onBackgroundQueue {
             for _ in 0..<3 { block(input, time) }
@@ -51,7 +51,7 @@ import Testing
         probe.markRequested()
         nonisolated(unsafe) let block = PlaybackService.probeTapBlock(probe)
         nonisolated(unsafe) let input = try Self.buffer(format, frames: 256)
-        nonisolated(unsafe) let time = AVAudioTime(hostTime: mach_absolute_time())
+        let time = AVAudioTime(hostTime: mach_absolute_time())
 
         await Self.onBackgroundQueue { block(input, time) }
     }
