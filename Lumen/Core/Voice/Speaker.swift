@@ -35,6 +35,8 @@ final class Speaker {
     private var awaitingFirstAudio: String?
     /// Bumped by `interrupt()` so a cancelled drain cannot reset the state of the drain that replaced it.
     private var drainGeneration = 0
+    /// D80: audio for a sentence fetched before the pause was over, by its text.
+    private var prepared: [String: Task<(samples: [Int16], sampleRate: Double)?, Never>] = [:]
 
     init(settings: VoiceSettings, apple: any TTSProvider, premium: (any TTSProvider)?, playback: any PlaybackServicing) {
         self.settings = settings
@@ -60,6 +62,24 @@ final class Speaker {
         startDrainingIfNeeded()
     }
 
+    /// D80: fetches the voice for `text` now, to play it the moment it is queued. Premium voice only.
+    @discardableResult
+    func prepare(_ text: String, language: TranscriptionLanguage) -> Bool {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let voice = settings.voice
+        guard settings.speakAnswers, voice.kind == .elevenLabs, let premium, !trimmed.isEmpty, prepared[trimmed] == nil else {
+            return false
+        }
+        prepared[trimmed] = Task { try? await premium.synthesize(trimmed, language: language, voice: voice) }
+        return true
+    }
+
+    /// The answer it was fetched for was thrown away.
+    func discardPrepared() {
+        for task in prepared.values { task.cancel() }
+        prepared.removeAll()
+    }
+
     /// Speaks a short sample with `voice` (voice picker preview); interrupts anything playing.
     func preview(_ voice: VoiceChoice, language: TranscriptionLanguage) {
         interrupt()
@@ -77,6 +97,7 @@ final class Speaker {
         drainTask = nil
         queue.removeAll()
         awaitingFirstAudio = nil
+        discardPrepared()
         playback.stop()
         status = .idle
     }
@@ -116,6 +137,19 @@ final class Speaker {
 
     private func speak(_ request: Request) async {
         let provider: any TTSProvider = (request.voice.kind == .elevenLabs ? premium : nil) ?? apple
+        if let task = prepared.removeValue(forKey: request.text), let audio = await task.value, !audio.samples.isEmpty {
+            // Fetched while the user was still pausing (D80): it plays at once.
+            status = .speaking(provider: provider.name)
+            awaitingFirstAudio = provider.name
+            do {
+                try playback.play(samples: audio.samples, sampleRate: audio.sampleRate)
+                spokenCount += 1
+                notice = nil
+                return
+            } catch {
+                Log.playback.error("prepared audio failed: \(error.localizedDescription, privacy: .public)")
+            }
+        }
         status = .speaking(provider: provider.name)
         awaitingFirstAudio = provider.name
         do {

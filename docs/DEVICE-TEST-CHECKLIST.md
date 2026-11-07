@@ -329,6 +329,23 @@ Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt l
 3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
 4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
 
+### 3z4. Svarstid, minne och feedback med rösten (D80, 25 min)
+**Latens per läge.** Diagnostik-loggen skriver för varje tur: *Turn timing · heard→call · call→first token · call→done · heard→pause over · pause over→first sound*, samt hur många anrop som kastades per minut. Målet är **under 0,3 s från att pausen gått till första ljud** när svaret redan är klart.
+1. Frågor: ställ fem korta frågor med normal paus. Skriv ner *pause over→first sound* för var och en. Gör samma sak i Provläge, Intervjuläge (kompisen frågar) och Socialt läge.
+2. **Lägg till en mening innan pausen:** säg "Vad är roten ur hundra …", vänta en halv sekund och fortsätt "… delat med fem?". Svaret ska gälla **hela** frågan, och svaret på bara första halvan får aldrig läsas upp. I loggen ska det stå "Answer ahead discarded (the words went on)".
+3. Inställningar → *Paus innan Lumen svarar*: sätt Frågor till 0,6 s och sedan 2,0 s. Märks skillnaden? Skriv ner vad som känns naturligt i ett samtal.
+4. Socialt läge med en kompis som pratar länge utan paus: ett förslag ska finnas på låsskärmen redan när kompisen tystnar. Under en lång replik ska förslaget uppdateras högst var tredje sekund.
+
+**Minne.**
+5. Säg "Lumen, kom ihåg att jag har biologiprov fredag 14 nov". Du ska höra "Sparat.", och under Inställningar → *Minne* → *Om dig* ska det stå med datum och "sagt".
+6. Säg "Lumen, regel: svara alltid kort". Den ska synas under *Regler*, och nästa svar ska vara kort. Säg "Lumen, glöm biologiprov": den raden ska försvinna.
+7. I Provläge: säg något om dig själv i en fråga ("Jag går i trean, vad är fotosyntes?"). Hamnar "Går i trean" i Minne av sig självt (markerat "hittat av Lumen")? Det kräver att Kevins minnesextraktion är driftsatt. Säg något känsligt om dig själv: det får **inte** sparas av sig självt.
+8. Hörs ämnesord rätt? Fråga om "fotosyntes" tre gånger i rad. Står det "fotosyntes" i transkriptet och inte "få tes"?
+
+**Feedback med rösten.**
+9. Direkt efter ett svar: säg "Det där var inte riktigt rätt". Du ska höra "Skickat", och inget nytt svar ska komma. Prova också "det var fel", "dåligt svar" och "det stämmer inte".
+10. Säg mitt i ett samtal "jag tror att det var fel tåg vi tog": det får **inte** skickas.
+
 ### 3z3. Taluppfattning före och efter (D78, 15 min)
 Det här är mätningen. Gör samma sak två gånger med samma text och samma avstånd. Läs till exempel tio meningar ur `testdata/scripts/sv-short-prompts.md` med pauser mitt i några av dem.
 1. **Före:** Inställningar → Språk → slå av *Lokal röstdetektor före Scribe*. Börja lyssna i läget Frågor. Diagnostik → *Jämför taligenkänning* → *Spela in 2 minuter* och läs. Tryck sedan *Kör iPhone-igenkänning på inspelningen* och *Dela WAV + transkript*.

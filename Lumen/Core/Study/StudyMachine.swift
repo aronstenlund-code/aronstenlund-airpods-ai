@@ -62,6 +62,11 @@ struct StudyMachine: Equatable, Sendable {
     private var turnLevelCount = 0
     /// Average level of the last finished turn (who spoke, D43).
     private(set) var lastTurnLevelDBFS: Double?
+    /// The turn that just ended and when, so its own late final (D80: finals arrive at the pause) is not a new turn.
+    private var lastTurn: (text: String, at: Date)?
+
+    /// The average level of the turn being spoken right now, to tell the wearer from others before it ends (D80).
+    var currentTurnLevelDBFS: Double? { turnLevelCount > 0 ? turnLevelSum / Double(turnLevelCount) : nil }
 
     init(tuning: StudyTuning = StudyTuning()) {
         self.tuning = tuning
@@ -175,8 +180,12 @@ struct StudyMachine: Equatable, Sendable {
     /// A final result closes the turn at once if the user has already fallen silent long enough.
     mutating func transcriptFinal(_ text: String, at now: Date) -> StudyEvent? {
         guard phase == .listening else { return nil }
-        turnPartial = nil
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if turnFinals.isEmpty, let last = lastTurn, now.timeIntervalSince(last.at) < 4,
+           Self.key(last.text).contains(Self.key(trimmed)) {
+            return nil // the final of the turn that already ended
+        }
+        turnPartial = nil
         if !trimmed.isEmpty { turnFinals.append(trimmed) }
         if isUserSpeaking, let last = lastSpeechAt, now.timeIntervalSince(last) >= tuning.endpointSilence {
             return endTurnIfPossible(now: now)
@@ -221,7 +230,12 @@ struct StudyMachine: Equatable, Sendable {
         phase = .thinking
         resetTurn()
         lastActivityAt = now
+        lastTurn = (text, now)
         return .endOfTurn(text)
+    }
+
+    static func key(_ text: String) -> String {
+        text.lowercased().filter { $0.isLetter || $0.isNumber }
     }
 
     /// A voice command took the words: they are not part of the next turn (D74).

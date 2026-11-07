@@ -49,4 +49,13 @@ enum TTSError: Error, Equatable, Sendable, LocalizedError {
 protocol TTSProvider: AnyObject {
     var name: String { get }
     func speak(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice) async throws(TTSError)
+    /// D80: the whole audio of a short sentence without playing it, so it can start the moment the pause is over.
+    /// Nil: this provider cannot (Apple's voice is fast enough on the phone).
+    func synthesize(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice) async throws(TTSError) -> (samples: [Int16], sampleRate: Double)?
+}
+
+extension TTSProvider {
+    func synthesize(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice) async throws(TTSError) -> (samples: [Int16], sampleRate: Double)? {
+        nil
+    }
 }

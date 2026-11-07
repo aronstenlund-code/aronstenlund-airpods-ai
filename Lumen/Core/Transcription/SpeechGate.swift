@@ -10,13 +10,15 @@ struct ScribeTuning: Equatable, Sendable {
     var minSpeechMs = 100
     var minSilenceMs = 100
 
-    static func forMode(_ mode: ConversationMode) -> ScribeTuning {
-        switch mode {
-        case .standard: ScribeTuning(silenceSeconds: 1.0, threshold: 0.15)
-        case .prov: ScribeTuning(silenceSeconds: 1.2, threshold: 0.3) // the wearer's own voice, close to the mic
-        case .interview: ScribeTuning(silenceSeconds: 1.5, threshold: 0.15)
-        case .social, .rizz: ScribeTuning(silenceSeconds: 0.8, threshold: 0.15)
-        }
+    /// D80: Scribe commits `lead` seconds before the user's pause is over, so the answer to a finished sentence is
+    /// already being made when the pause ends. The pause itself is the user's setting per mode.
+    static let lead: TimeInterval = 0.4
+
+    static func forMode(_ mode: ConversationMode, pause: Double? = nil) -> ScribeTuning {
+        let pause = pause ?? ModeSettings.defaultPause(for: mode)
+        let silence = max(0.3, pause - lead)
+        let threshold = mode == .prov ? 0.3 : 0.15 // Provläge: the wearer's own voice, close to the mic
+        return ScribeTuning(silenceSeconds: silence, threshold: threshold)
     }
 
     static let standard = forMode(.standard)

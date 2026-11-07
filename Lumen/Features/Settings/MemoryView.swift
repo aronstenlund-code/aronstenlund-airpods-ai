@@ -1,8 +1,10 @@
 import SwiftUI
 
-/// Settings → Memory (D49): what Lumen remembers about the user, sent with each question.
+/// Settings → Minne (D49/D80): what Lumen remembers about the user, the rules for how it answers, and the user's own
+/// commands (D37). Everything can be seen, changed and deleted; items Lumen found by itself are marked.
 struct MemoryView: View {
     let store: MemoryStore
+    let commands: CommandStore
     @State private var newMemory = ""
     @State private var editing: MemoryItem?
     @State private var editedText = ""
@@ -19,23 +21,41 @@ struct MemoryView: View {
                         .disabled(newMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             } footer: {
-                Text("You can also say \"kom ihåg …\". Lumen never saves anything you did not ask it to remember. Saved on this iPhone and sent with your questions. Memories expire 2 years after you last confirmed them.")
+                Text("Säg \"Lumen, kom ihåg …\", \"Lumen, glöm …\" eller \"Lumen, regel: …\". Efter varje tur sparar Lumen också viktiga saker du säger om dig själv, med datum. Känsliga uppgifter (hälsa, tro, politik och liknande) sparas aldrig av sig själva. Allt ligger på den här iPhonen, skickas med dina frågor och går ut efter 2 år.")
             }
-            Section {
-                if store.items.isEmpty {
-                    Text("Nothing saved yet.").foregroundStyle(.secondary)
+            Section("Regler") {
+                if store.rules.isEmpty {
+                    Text("Inga regler. Säg till exempel \"Lumen, regel: svara alltid kort\".").foregroundStyle(.secondary)
                 }
-                ForEach(store.items) { item in
-                    Button {
-                        editedText = item.text
-                        editing = item
-                    } label: {
-                        Text(item.text).foregroundStyle(.primary)
+                ForEach(store.rules) { item in row(item) }
+                    .onDelete { offsets in
+                        let doomed = offsets.map { store.rules[$0] }
+                        for item in doomed { store.delete(item) }
+                    }
+            }
+            Section("Om dig") {
+                if store.facts.isEmpty {
+                    Text("Inget sparat ännu.").foregroundStyle(.secondary)
+                }
+                ForEach(store.facts) { item in row(item) }
+                    .onDelete { offsets in
+                        let doomed = offsets.map { store.facts[$0] }
+                        for item in doomed { store.delete(item) }
+                    }
+            }
+            Section("Egna kommandon") {
+                if commands.commands.isEmpty {
+                    Text("Inga kommandon. Säg \"spara kommando ord: instruktion\".").foregroundStyle(.secondary)
+                }
+                ForEach(commands.commands) { command in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(command.keyword).font(.subheadline.weight(.semibold))
+                        Text(command.instruction).font(.footnote).foregroundStyle(.secondary)
                     }
                 }
                 .onDelete { offsets in
-                    let doomed = offsets.map { store.items[$0] }
-                    for item in doomed { store.delete(item) }
+                    let doomed = offsets.map { commands.commands[$0] }
+                    for command in doomed { commands.delete(command) }
                 }
             }
             if !store.items.isEmpty {
@@ -59,6 +79,27 @@ struct MemoryView: View {
         } message: {
             Text("This cannot be undone.")
         }
+    }
+
+    private func row(_ item: MemoryItem) -> some View {
+        Button {
+            editedText = item.text
+            editing = item
+        } label: {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.text).foregroundStyle(.primary)
+                Text(caption(item)).font(.caption).foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func caption(_ item: MemoryItem) -> String {
+        let source = switch item.source {
+        case .voice: "sagt"
+        case .manual: "skrivet"
+        case .automatic: "hittat av Lumen"
+        }
+        return "\(item.createdAt.formatted(date: .abbreviated, time: .omitted)) · \(source)"
     }
 
     private var isEditing: Binding<Bool> {

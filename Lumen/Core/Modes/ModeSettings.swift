@@ -32,6 +32,9 @@ final class ModeSettings {
     static let lastModeKey = "mode.lastSelected"
     static let liveStartKey = "mode.liveStartConfirmed"
     static let calibrationsKey = "mode.calibrations"
+    static let pausesKey = "mode.pauseSeconds"
+    /// Settings range for the pause (D80).
+    static let pauseRange: ClosedRange<Double> = 0.5...3.0
 
     /// The role or the pasted job ad.
     var interviewSetup: String {
@@ -62,6 +65,8 @@ final class ModeSettings {
     /// What the wearer has told the AI in each live mode, as the backend merged it (D69). On this phone only,
     /// reset in Settings.
     private(set) var calibrations: [String: String]
+    /// How long the speaker must be quiet before Lumen answers, per mode (D80). Replaces D78's fixed waits.
+    private(set) var pauses: [String: Double]
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
@@ -75,10 +80,30 @@ final class ModeSettings {
         self.lastMode = defaults.string(forKey: Self.lastModeKey).flatMap(ConversationMode.init(rawValue:)) ?? .standard
         self.liveStartConfirmed = Set(defaults.stringArray(forKey: Self.liveStartKey) ?? [])
         self.calibrations = defaults.dictionary(forKey: Self.calibrationsKey) as? [String: String] ?? [:]
+        self.pauses = defaults.dictionary(forKey: Self.pausesKey) as? [String: Double] ?? [:]
     }
 
     var interests: [String] {
         rizzInterests.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+    }
+
+    /// D80 defaults: Frågor 1.0 s, Provläge 1.2 s, Intervju 1.5 s, Socialt/Rizz 0.8 s.
+    nonisolated static func defaultPause(for mode: ConversationMode) -> Double {
+        switch mode {
+        case .standard: 1.0
+        case .prov: 1.2
+        case .interview: 1.5
+        case .social, .rizz: 0.8
+        }
+    }
+
+    func pause(for mode: ConversationMode) -> Double {
+        pauses[mode.rawValue] ?? Self.defaultPause(for: mode)
+    }
+
+    func setPause(_ seconds: Double, for mode: ConversationMode) {
+        pauses[mode.rawValue] = min(Self.pauseRange.upperBound, max(Self.pauseRange.lowerBound, seconds))
+        defaults.set(pauses, forKey: Self.pausesKey)
     }
 
     func calibration(for mode: ConversationMode) -> String? {

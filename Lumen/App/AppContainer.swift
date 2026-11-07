@@ -67,7 +67,8 @@ final class AppContainer {
                                        activity: ListeningActivityPresenter(),
                                        history: HistoryStore(), memory: MemoryStore(),
                                        feedback: FeedbackClient(config: .lumen, auth: auth, http: http, settings: share),
-                                       remote: RemoteCommandHub())
+                                       remote: RemoteCommandHub(),
+                                       memoryExtractor: MemoryExtractor(config: .lumen, auth: auth, http: http))
         ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
         ListeningRemote.nextSuggestion = { [weak listening] in listening?.nextSuggestion() }
         ListeningRemote.start = { [weak listening] in await listening?.startFromShortcut() }

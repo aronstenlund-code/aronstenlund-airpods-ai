@@ -66,8 +66,8 @@ final class ActivationSettings {
     }
     /// Minimum gap between two automatic answers (R5: false positives). Parrot v0.11.3's minimum interval (D78).
     var cooldown: TimeInterval = 5
-    /// A question waits this long for the speaker to finish (Parrot v0.11.3: 1 s). Zero fires at once.
-    var questionDebounce: TimeInterval = 1.0
+    /// Extra wait after a question. D80: zero; the user's pause per mode (when the final arrives) replaces D78's 1 s.
+    var questionDebounce: TimeInterval = 0
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {

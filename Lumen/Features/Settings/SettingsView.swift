@@ -15,7 +15,7 @@ struct SettingsView: View {
             answerSection
             Section("History and memory") {
                 NavigationLink("History") { HistoryView(store: model.history) }
-                NavigationLink("Memory") { MemoryView(store: model.memory) }
+                NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands) }
                 NavigationLink("Feedback & suggestions") { FeedbackView(model: model) }
             }
             #if DEBUG
@@ -58,6 +58,21 @@ struct SettingsView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+        }
+    }
+
+    private func pauseBinding(_ target: ConversationMode) -> Binding<Double> {
+        Binding(get: { model.modeSettings.pause(for: target) },
+                set: { model.setPause($0, for: target) })
+    }
+
+    static func modeName(_ mode: ConversationMode) -> String {
+        switch mode {
+        case .standard: "Frågor"
+        case .prov: "Provläge"
+        case .interview: "Intervju"
+        case .social: "Socialt"
+        case .rizz: "Rizz"
         }
     }
 
@@ -149,14 +164,22 @@ struct SettingsView: View {
     @ViewBuilder
     private var studySection: some View {
         @Bindable var study = model.study.settings
-        Section("Provläge") {
-            HStack {
-                Text("Silence that ends your turn")
-                Slider(value: $study.endpointSilence, in: 0.5...1.5, step: 0.1)
-                Text(String(format: "%.1f s", study.endpointSilence))
-                    .font(.footnote.monospacedDigit())
-                    .frame(width: 44, alignment: .trailing)
+        Section {
+            ForEach(ConversationMode.allCases) { target in
+                HStack {
+                    Text(Self.modeName(target))
+                    Slider(value: pauseBinding(target), in: ModeSettings.pauseRange, step: 0.1)
+                    Text(String(format: "%.1f s", model.modeSettings.pause(for: target)))
+                        .font(.footnote.monospacedDigit())
+                        .frame(width: 44, alignment: .trailing)
+                }
             }
+        } header: {
+            Text("Paus innan Lumen svarar")
+        } footer: {
+            Text("Hur länge du ska vara tyst innan svaret läses upp. Lumen börjar arbeta på svaret redan när meningen är hörd, så kortare paus ger snabbare svar men fler avbrutna försök.")
+        }
+        Section("Provläge") {
             Stepper(value: $study.autoEndMinutes, in: 0...60) {
                 if study.autoEndMinutes == 0 {
                     Text("Auto-end after silence: never")

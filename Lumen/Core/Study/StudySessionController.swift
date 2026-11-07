@@ -14,6 +14,8 @@ final class StudySessionController {
 
     /// Set before `start` for a mode that reacts to silence (Rizzläge).
     var stallSilence: TimeInterval?
+    /// The user's pause for the mode (D80); nil keeps the Provläge setting.
+    var endpointSilence: TimeInterval?
     private let session: SessionController
     private var levelSubscription: UUID?
     private var levelTask: Task<Void, Never>?
@@ -29,12 +31,15 @@ final class StudySessionController {
     var isUserSpeaking: Bool { machine.isUserSpeaking }
     var noiseFloorDBFS: Double? { machine.noiseFloorDBFS }
     var lastTurnLevelDBFS: Double? { machine.lastTurnLevelDBFS }
+    var currentTurnLevelDBFS: Double? { machine.currentTurnLevelDBFS }
+    var turnText: String { machine.turnText }
 
     func someoneIsTalking(at now: Date = Date()) -> Bool { machine.someoneIsTalking(at: now) }
 
     func start(at now: Date = Date()) {
         machine.tuning = settings.tuning
         machine.tuning.stallSilence = stallSilence
+        if let endpointSilence { machine.tuning.endpointSilence = endpointSilence }
         endedBySilence = false
         machine.start(at: now)
         subscribeToLevels()

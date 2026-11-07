@@ -53,10 +53,21 @@ final class TranscriptionCoordinator {
     private var lifecycleTask: Task<Void, Never>?
     /// Scribe's pause detection for the current mode (D78).
     private(set) var scribeTuning = ScribeTuning.standard
-    /// Finals are joined into whole utterances; after this long with no new speech the pending words are passed on.
-    /// Zero passes every final straight through (unit tests of other parts).
-    let utteranceHold: TimeInterval
+    /// Finals are joined into whole utterances (D78). False passes every final straight through (unit tests).
+    let joinsUtterances: Bool
+    /// The user's pause for the current mode (D80): the pending words are passed on when it is over.
+    private(set) var pauseSeconds: TimeInterval = ModeSettings.defaultPause(for: .standard)
+    /// After Scribe's own commit the rest of the pause; other engines wait the whole pause after their last result.
+    var utteranceHold: TimeInterval {
+        if case .running(.scribe) = status { return max(0.05, pauseSeconds - scribeTuning.silenceSeconds) }
+        return pauseSeconds
+    }
     private var assembler = UtteranceAssembler()
+    /// The keyterms the running Scribe session was opened with, and when (D80).
+    private var connectedKeyterms: [String] = []
+    private var scribeStartedAt: Date?
+    /// A Scribe session is reopened for new keyterms at most this often, and only in a quiet moment.
+    static let keytermReconnectInterval: TimeInterval = 120
     private var flushTask: Task<Void, Never>?
     /// Silero before Scribe (D78). Nil: everything goes to the recogniser.
     let vad: VoiceActivityLoader?
@@ -69,7 +80,7 @@ final class TranscriptionCoordinator {
     init(controller: SessionController,
          language: LanguageSettings,
          settings: STTSettings? = nil,
-         utteranceHold: TimeInterval = 0.7,
+         joinsUtterances: Bool = true,
          vad: VoiceActivityLoader? = nil,
          probe: @escaping AvailabilityProbe = { candidates in await SpeechAvailabilityProbe.current(candidates: candidates) },
          makeProvider: @escaping ProviderFactory = { locale, engine in
@@ -78,7 +89,7 @@ final class TranscriptionCoordinator {
         self.controller = controller
         self.language = language
         self.settings = settings
-        self.utteranceHold = utteranceHold
+        self.joinsUtterances = joinsUtterances
         self.vad = vad
         self.probe = probe
         self.makeProvider = makeProvider
@@ -218,6 +229,10 @@ final class TranscriptionCoordinator {
             try await provider.start(audio: gatedStream)
             guard myGeneration == generation else { return }
             status = .running(engine)
+            if engine == .scribe {
+                connectedKeyterms = Array(contextualStrings.prefix(ScribeProvider.keytermLimit))
+                scribeStartedAt = Date()
+            }
             controller.log("STT running: \(engine.displayName) · \(locale.identifier(.bcp47))")
         } catch {
             guard myGeneration == generation else { return }
@@ -233,7 +248,7 @@ final class TranscriptionCoordinator {
 
     /// D78: finals become whole utterances before the question gate and the backend see them.
     private func deliver(_ result: STTResult) {
-        guard utteranceHold > 0 else {
+        guard joinsUtterances else {
             if result.isFinal {
                 sink?.receiveFinalTranscript(result.text, at: Date())
             } else {
@@ -247,6 +262,7 @@ final class TranscriptionCoordinator {
             }
             if let pending = assembler.pending {
                 sink?.receivePartialTranscript(pending, at: Date())
+                sink?.receiveSentenceHeard(pending, at: Date())
             }
         } else {
             sink?.receivePartialTranscript(assembler.display(partial: result.text), at: Date())
@@ -322,6 +338,23 @@ final class TranscriptionCoordinator {
         let finals = await collector.value
         controller.log("On-device pass on a recording: \(engine.displayName), \(finals.count) results")
         return .success((engine.displayName, finals))
+    }
+
+    /// D80: the topic changed the keyterms; Scribe only takes them when a session opens, so in a quiet moment (the
+    /// caller checks) and at most every two minutes the session is reopened with them.
+    func applyKeytermsIfQuiet() async {
+        guard case .running(.scribe) = status, controller.isCapturing,
+              Array(contextualStrings.prefix(ScribeProvider.keytermLimit)) != connectedKeyterms,
+              let started = scribeStartedAt, Date().timeIntervalSince(started) >= Self.keytermReconnectInterval else { return }
+        controller.log("Scribe keyterms changed: reconnecting in a pause")
+        await startTranscribing()
+    }
+
+    /// The mode or its pause changed (D80): Scribe commits a little before the pause is over, and a running Scribe
+    /// session reconnects with the new values.
+    func setPause(_ seconds: TimeInterval, mode: ConversationMode) async {
+        pauseSeconds = seconds
+        await setScribeTuning(.forMode(mode, pause: seconds))
     }
 
     /// The mode changed (D78): a running Scribe session reconnects with that mode's pause detection.

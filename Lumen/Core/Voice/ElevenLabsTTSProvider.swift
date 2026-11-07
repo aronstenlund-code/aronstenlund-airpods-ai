@@ -28,7 +28,29 @@ final class ElevenLabsTTSProvider: TTSProvider {
         }
     }
 
+    /// D80: fetched ahead of the pause. One piece only (a first sentence is short); longer text is spoken normally.
+    func synthesize(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice) async throws(TTSError) -> (samples: [Int16], sampleRate: Double)? {
+        let pieces = Self.pieces(text)
+        guard pieces.count == 1, let piece = pieces.first else { return nil }
+        var samples: [Int16] = []
+        try await stream(piece, language: language, voice: voice) { samples += $0 }
+        return (samples, Self.sampleRate)
+    }
+
     private func speakPiece(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice) async throws(TTSError) {
+        var scheduled = 0
+        do {
+            try await stream(text, language: language, voice: voice) { samples in
+                try playback.play(samples: samples, sampleRate: Self.sampleRate)
+                scheduled += samples.count
+            }
+        }
+        Log.playback.info("ElevenLabs: \(text.count, privacy: .public) chars → \(scheduled, privacy: .public) samples scheduled")
+    }
+
+    /// The `/tts` request; every 100 ms of PCM goes to `handle` as it arrives.
+    private func stream(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice,
+                        handle: ([Int16]) throws(AudioError) -> Void) async throws(TTSError) {
         let token: String
         do {
             token = try await auth.accessToken()
@@ -64,19 +86,16 @@ final class ElevenLabsTTSProvider: TTSProvider {
         }
 
         var assembler = PCM16Assembler()
-        var scheduled = 0
         do {
             for try await chunk in bytes {
                 try Task.checkCancellation()
                 for samples in assembler.feed(chunk, minimumBytes: Self.bufferBytes) {
-                    try playback.play(samples: samples, sampleRate: Self.sampleRate)
-                    scheduled += samples.count
+                    try handle(samples)
                 }
             }
             try Task.checkCancellation() // a cancelled stream just ends: no stray tail after `playback.stop()`
             if let rest = assembler.flush() {
-                try playback.play(samples: rest, sampleRate: Self.sampleRate)
-                scheduled += rest.count
+                try handle(rest)
             }
         } catch let error as AudioError {
             throw TTSError.audio(detail: error.localizedDescription)
@@ -84,7 +103,6 @@ final class ElevenLabsTTSProvider: TTSProvider {
             if error is CancellationError { throw TTSError.cancelled }
             throw TTSError.network(AnswerError.from(error))
         }
-        Log.playback.info("ElevenLabs: \(text.count, privacy: .public) chars → \(scheduled, privacy: .public) samples scheduled")
     }
 
     static func encodeBody(text: String, language: TranscriptionLanguage, voiceID: String?) -> Data {

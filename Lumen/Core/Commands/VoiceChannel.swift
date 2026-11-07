@@ -12,6 +12,10 @@ enum VoiceIntent: Equatable, Sendable {
     case pause
     /// "sluta lyssna": stop completely.
     case stopListening
+    /// "kom ihåg …", "glöm …", "regel: …" (D80): straight into Minne, never sent as a question.
+    case remember(String)
+    case forget(String)
+    case rule(String)
     /// Anything else. In Socialt läge and Rizzläge an instruction to the AI (D69 calibration, "ge mig tre"),
     /// in the other modes a question to Lumen. Never a line of the conversation.
     case instruction(String)
@@ -55,6 +59,11 @@ enum VoiceChannel {
     /// The words after the name.
     static func intent(for command: String) -> VoiceIntent {
         let words = normalized(command)
+        let original = command.trimmingCharacters(in: .whitespacesAndNewlines)
+        for (prefix, make) in memoryPrefixes where words.hasPrefix(prefix) {
+            let rest = stripPrefix(original, words: prefix.split(separator: " ").count)
+            if !rest.isEmpty { return make(String(rest.prefix(instructionLimit))) }
+        }
         if pausePhrases.contains(words) { return .pause }
         if stopPhrases.contains(words) { return .stopListening }
         let target = switchPrefixes.first(where: { words.hasPrefix($0) }).map { String(words.dropFirst($0.count)) } ?? words
@@ -63,6 +72,22 @@ enum VoiceChannel {
             return .switchTo(mode)
         }
         return .instruction(String(command.trimmingCharacters(in: .whitespacesAndNewlines).prefix(instructionLimit)))
+    }
+
+    private static let memoryPrefixes: [(String, @Sendable (String) -> VoiceIntent)] = [
+        ("kom ihåg att ", { .remember($0) }), ("kom ihåg ", { .remember($0) }), ("remember that ", { .remember($0) }),
+        ("glöm att ", { .forget($0) }), ("glöm ", { .forget($0) }), ("forget ", { .forget($0) }),
+        ("regel ", { .rule($0) }), ("ny regel ", { .rule($0) }), ("rule ", { .rule($0) }),
+    ]
+
+    /// The original words after the first `count` words (keeps case and punctuation of the rest).
+    private static func stripPrefix(_ text: String, words count: Int) -> String {
+        var rest = Substring(text)
+        for _ in 0..<count {
+            rest = rest.drop(while: { !$0.isLetter && !$0.isNumber })
+            rest = rest.drop(while: { $0.isLetter || $0.isNumber })
+        }
+        return rest.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
     }
 
     /// What a mode is called out loud, for the confirmation in the AirPods.

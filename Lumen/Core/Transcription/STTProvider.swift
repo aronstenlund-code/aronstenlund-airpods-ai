@@ -91,4 +91,10 @@ extension STTProvider {
 protocol TranscriptSink: AnyObject {
     func receivePartialTranscript(_ text: String, at date: Date)
     func receiveFinalTranscript(_ text: String, at date: Date)
+    /// The recogniser committed words before the pause is over (D80): the text so far, to start an answer early.
+    func receiveSentenceHeard(_ text: String, at date: Date)
+}
+
+extension TranscriptSink {
+    func receiveSentenceHeard(_ text: String, at date: Date) {}
 }

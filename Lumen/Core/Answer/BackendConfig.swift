@@ -11,6 +11,8 @@ struct BackendConfig: Sendable, Equatable {
     var voicesURL: URL { projectURL.appending(path: "functions/v1/voices") }
     var sttTokenURL: URL { projectURL.appending(path: "functions/v1/stt-token") }
     var feedbackURL: URL { projectURL.appending(path: "functions/v1/feedback") }
+    /// D80: memory extraction after a turn (Kevin builds it).
+    var memoryURL: URL { projectURL.appending(path: "functions/v1/memory") }
     var sharedHistoryURL: URL { projectURL.appending(path: "functions/v1/shared-history") }
     var signUpURL: URL { projectURL.appending(path: "auth/v1/signup") }
     var refreshURL: URL {

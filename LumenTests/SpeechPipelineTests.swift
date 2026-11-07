@@ -68,12 +68,14 @@ import Testing
 }
 
 @Suite struct ScribeTuningTests {
-    @Test func pauseDetectionPerMode() {
-        #expect(ScribeTuning.forMode(.standard).silenceSeconds == 1.0)
-        #expect(ScribeTuning.forMode(.prov).silenceSeconds == 1.2)
-        #expect(ScribeTuning.forMode(.interview).silenceSeconds == 1.5)
-        #expect(ScribeTuning.forMode(.social).silenceSeconds == 0.8)
-        #expect(ScribeTuning.forMode(.rizz).silenceSeconds == 0.8)
+    @Test func scribeCommitsBeforeTheUsersPauseIsOver() {
+        // D80: the pause per mode (1.0 / 1.2 / 1.5 / 0.8 s) minus the 0.4 s lead, never below 0.3 s.
+        #expect(abs(ScribeTuning.forMode(.standard).silenceSeconds - 0.6) < 0.001)
+        #expect(abs(ScribeTuning.forMode(.prov).silenceSeconds - 0.8) < 0.001)
+        #expect(abs(ScribeTuning.forMode(.interview).silenceSeconds - 1.1) < 0.001)
+        #expect(abs(ScribeTuning.forMode(.social).silenceSeconds - 0.4) < 0.001)
+        #expect(abs(ScribeTuning.forMode(.prov, pause: 2.0).silenceSeconds - 1.6) < 0.001, "follows the user's setting")
+        #expect(ScribeTuning.forMode(.rizz, pause: 0.5).silenceSeconds == 0.3)
     }
 
     @Test func theSocketURLCarriesThemExplicitlyAndNoTimestamps() throws {
@@ -82,7 +84,7 @@ import Testing
         let url = try #require(token.url(language: .swedish, keyterms: [], tuning: .forMode(.interview)))
         let items = try #require(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
         func value(_ name: String) -> String? { items.first { $0.name == name }?.value }
-        #expect(value("vad_silence_threshold_secs") == "1.50")
+        #expect(value("vad_silence_threshold_secs") == "1.10")
         #expect(value("vad_threshold") == "0.15")
         #expect(value("min_speech_duration_ms") == "100")
         #expect(value("filter_background_audio") == "true")
