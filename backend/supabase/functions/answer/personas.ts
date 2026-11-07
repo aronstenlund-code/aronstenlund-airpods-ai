@@ -27,7 +27,6 @@ export type PersonaTask =
   | "interview_feedback"
   | "interview_summary"
   | "interview_improve"
-  | "interview_end"
   | "social_suggestion"
   | "rizz_suggestions"
   | "social_calibrate"
@@ -77,7 +76,8 @@ export function personaPlan(req: AnswerRequest): Plan | null {
   if (req.mode === "auto") return null;
   if (req.persona === "interview") {
     // D72: the default is the perfect answer in first person; feedback and summary only when asked for.
-    if (asksSummary(req.fragment)) {
+    // DECISIONS D72 (4): "klar" (and "sammanfatta") is the user's explicit request for the summary.
+    if (asksSummary(req.fragment) || isDone(req.fragment)) {
       return {
         kind: "interview",
         task: "interview_summary",
@@ -93,15 +93,6 @@ export function personaPlan(req: AnswerRequest): Plan | null {
         answerType: "fact",
         maxTokens: 300,
         maxChars: 800,
-      };
-    }
-    if (isDone(req.fragment)) {
-      return {
-        kind: "interview",
-        task: "interview_end",
-        answerType: "fact",
-        maxTokens: 60,
-        maxChars: 200,
       };
     }
     if (req.turn === "user_answer") {
@@ -174,8 +165,7 @@ Depending on <task>:
 - interview_question: <fragment> is the interviewer's question. Reply with the perfect answer, exactly as the user says it out loud in the interview: first person ("jag"), natural spoken Swedish, calm and confident, concrete and tailored to the role or ad in <persona_setup>. The first word is already part of the answer: no preamble, no naming of a structure, no advice, no feedback, no question back to the user, no closing summary. A behavioural question (about a past situation) is answered as a short story in the order situation, task, action, result, without naming those steps (STAR, never said aloud). If the interviewer asks whether the user has questions, the answer is one or two good questions to the interviewer. Usually four to seven short sentences; a simple factual question gets one or two.
 - interview_improve: <fragment> is the user's own answer to the interviewer's last question (the last Q in <recent_qa>). Reply with the perfect version of that answer in first person: keep what the user actually said and make it clearer and stronger; same rules as interview_question. Never comment on the user's answer.
 - interview_feedback (only when the user explicitly asked for it): one or two sentences of concrete feedback on the user's last answer: what worked, and the single most useful improvement, pointing at something they actually said. Start with the substance, never with praise such as "Bra" or "Det är bra att".
-- interview_summary (only when the user explicitly asked for it): summarise the session in at most five sentences: the main strengths, two things to practise, and one tip for the real interview. Start with the substance, never with praise or a sign-off.
-- interview_end: the user is done. Reply with one short sentence wishing them luck in the interview, nothing else.
+- interview_summary (only when the user said "klar" or explicitly asked for it): summarise the session in at most five sentences: the main strengths, two things to practise, and one tip for the real interview. Start with the substance, never with praise or a sign-off.
 Never invent employers, schools, titles or numbers: facts about the user come only from <memories>, <persona_setup>, <goals> and what the user said in <recent_qa>. When the question needs a personal example and none is given, tell a believable, general example in first person without names or exact numbers. Never placeholders or instructions to the user ("här lägger du ...", "berätta om"), never mixing "jag" and "du" about the user.`;
 
 export const SYSTEM_PROMPT_SOCIAL = `${

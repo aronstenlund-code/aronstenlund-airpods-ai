@@ -1681,6 +1681,13 @@
 "style": "social",
 "calibrate": "ge mig en till",
 "expect_count": 1
+},
+{
+"q": "",
+"rizz_ref": "S2",
+"style": "social",
+"calibrate": "nästa",
+"expect_count": 1
 }
 ]
 },
@@ -1741,10 +1748,12 @@
 {
 "q": "klar",
 "interview": true,
-"expect_end": true,
+"no_person_check": true,
 "allow": [
+"sammanfattningsvis",
 "lycka till"
-]
+],
+"max_words": 120
 }
 ]
 }

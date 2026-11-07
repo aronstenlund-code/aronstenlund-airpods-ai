@@ -44,7 +44,7 @@ Deno.test("plans: interview question / feedback / summary, social, prep, and non
   assertEquals([fb.task, fb.answerType, fb.maxTokens], ["interview_feedback", "fact", 300]);
   const s = personaPlan(req({ fragment: "sammanfatta" }))!;
   assertEquals([s.task, s.maxTokens], ["interview_summary", 450]);
-  assertEquals(personaPlan(req({ fragment: "klar" }))?.task, "interview_end");
+  assertEquals(personaPlan(req({ fragment: "klar" }))?.task, "interview_summary", "DECISIONS D72: klar = summary");
   const so = personaPlan(req({ persona: "social", fragment: "jag var på en konsert i helgen" }))!;
   assertEquals([so.kind, so.task, so.answerType, so.maxTokens], [
     "social",
@@ -81,7 +81,7 @@ Deno.test("'klar' variants end an interview; ordinary answers containing 'klar' 
   }
   assertEquals(
     personaPlan(req({ turn: "user_answer", fragment: "klar" }))?.task,
-    "interview_end",
+    "interview_summary",
     "done wins over the turn",
   );
   assertEquals(
@@ -110,7 +110,6 @@ Deno.test("persona prompts: structure, STAR, no invented experience, consent and
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "no question back to the user");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "only when the user explicitly asked for it");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "interview_improve");
-  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "interview_end");
   assertEquals(SYSTEM_PROMPT_INTERVIEW.includes("answer outline"), false);
   assertEquals(SYSTEM_PROMPT_INTERVIEW.includes("Här lägger du ett konkret exempel"), false);
   assertStringIncludes(SYSTEM_PROMPT_PREP, "exactly five likely interview questions");

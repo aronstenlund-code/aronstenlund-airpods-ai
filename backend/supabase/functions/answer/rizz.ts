@@ -98,9 +98,12 @@ const MORE_NOUN = new RegExp(
 );
 
 /** How many suggestions an instruction asks for (1-5), or null when it is not a request for suggestions. */
+const NEXT = /^\s*(?:nästa|en (?:till|annan|ny)|ny|annan|byt|något annat|en ny replik)\s*[.!]?\s*$/iu;
+
 export function requestedCount(instruction: string): number | null {
   const t = instruction.trim();
   if (!t) return null;
+  if (NEXT.test(t)) return 1; // DECISIONS D72 (5): "nästa" asks for a fresh suggestion
   const m = MORE_VERB.exec(t) ?? MORE_NOUN.exec(t);
   if (!m) return null;
   const w = (m[1] ?? m[2] ?? "").toLowerCase();

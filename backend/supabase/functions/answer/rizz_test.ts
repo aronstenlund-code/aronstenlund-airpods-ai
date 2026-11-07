@@ -432,6 +432,9 @@ Deno.test("D72: one suggestion by default; an explicit 'ge mig tre' asks for mor
       ["kom med några roliga", 3],
       ["ge mig fler skämt", 3],
       ["två saker att säga", 2],
+      ["nästa", 1],
+      ["Nästa.", 1],
+      ["en annan", 1],
     ] as const
   ) assertEquals(requestedCount(t), n, t);
   for (

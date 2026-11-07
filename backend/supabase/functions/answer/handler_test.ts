@@ -541,7 +541,7 @@ Deno.test("D35: a confirmation in the middle of the history is dropped, a traili
 });
 
 // ---- D42 personas ----
-Deno.test("D42/D72 interview: question -> perfect answer prompt with the role, 500 tokens; own answer -> improved version; klar -> end", async () => {
+Deno.test("D42/D72 interview: question -> perfect answer prompt with the role, 500 tokens; own answer -> improved version; klar -> summary", async () => {
   const { provider, seen } = recordingProvider();
   const { handler } = setup({ provider });
   const common = {
@@ -573,7 +573,7 @@ Deno.test("D42/D72 interview: question -> perfect answer prompt with the role, 5
   assert(seen[1].user.includes("<task>interview_improve</task>"));
   assertEquals(seen[1].maxTokens, 500 + SUMMARY_TOKENS);
   await (await handler(post(body({ ...common, fragment: "klar" })))).text();
-  assert(seen[2].user.includes("<task>interview_end</task>"));
+  assert(seen[2].user.includes("<task>interview_summary</task>"), "DECISIONS D72: klar = summary");
   await (await handler(post(body({ ...common, fragment: "sammanfatta" })))).text();
   assert(seen[3].user.includes("<task>interview_summary</task>"));
   assertEquals(seen[3].maxTokens, 450 + SUMMARY_TOKENS);
