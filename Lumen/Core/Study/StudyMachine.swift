@@ -63,7 +63,8 @@ struct StudyMachine: Equatable, Sendable {
     /// Average level of the last finished turn (who spoke, D43).
     private(set) var lastTurnLevelDBFS: Double?
     /// The turn that just ended and when, so its own late final (D80: finals arrive at the pause) is not a new turn.
-    private var lastTurn: (text: String, at: Date)?
+    private var lastTurnText: String?
+    private var lastTurnAt: Date?
 
     /// The average level of the turn being spoken right now, to tell the wearer from others before it ends (D80).
     var currentTurnLevelDBFS: Double? { turnLevelCount > 0 ? turnLevelSum / Double(turnLevelCount) : nil }
@@ -181,8 +182,8 @@ struct StudyMachine: Equatable, Sendable {
     mutating func transcriptFinal(_ text: String, at now: Date) -> StudyEvent? {
         guard phase == .listening else { return nil }
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        if turnFinals.isEmpty, let last = lastTurn, now.timeIntervalSince(last.at) < 4,
-           Self.key(last.text).contains(Self.key(trimmed)) {
+        if turnFinals.isEmpty, let lastText = lastTurnText, let lastAt = lastTurnAt, now.timeIntervalSince(lastAt) < 4,
+           Self.key(lastText).contains(Self.key(trimmed)) {
             return nil // the final of the turn that already ended
         }
         turnPartial = nil
@@ -230,7 +231,8 @@ struct StudyMachine: Equatable, Sendable {
         phase = .thinking
         resetTurn()
         lastActivityAt = now
-        lastTurn = (text, now)
+        lastTurnText = text
+        lastTurnAt = now
         return .endOfTurn(text)
     }
 
