@@ -3,6 +3,7 @@ name: Deploy backend
 # Deploys the Edge Functions in backend/supabase/functions to the Lumen project (xjczbzfkmbjdebwlccki) ONLY.
 # Runs the backend unit tests first; nothing is deployed if a test fails.
 # Needs one repo secret entered by the owner: SUPABASE_ACCESS_TOKEN (Supabase > Account > Access Tokens).
+# Token: scoped to project Lumen, Edge Functions read-write + Project Settings read.
 # Without the secret the job stops with a clear message. Migrations are NOT run here (agents apply them via MCP).
 on:
   push:
