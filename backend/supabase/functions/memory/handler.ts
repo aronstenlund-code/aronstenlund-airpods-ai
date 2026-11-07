@@ -49,7 +49,8 @@ export interface MemoryResult {
 }
 
 /** Words that show the wearer speaks about themselves; without one the model is not called at all. */
-const SELF = /(?<!\p{L})(jag|mig|min|mitt|mina|vi|oss|vår|vårt|våra|me|my|mine|we|our)(?!\p{L})/iu;
+const SELF =
+  /(?<!\p{L})(jag|mig|min|mitt|mina|vi|oss|vår|vårt|våra|me|my|mine|we|our|alltid|aldrig|i fortsättningen|från och med nu|framöver|kortare|längre)(?!\p{L})/iu;
 
 /** Never kept even if the model returns it (GDPR art. 9 categories and similar). */
 const SENSITIVE =
