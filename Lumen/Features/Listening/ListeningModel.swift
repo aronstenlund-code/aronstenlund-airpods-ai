@@ -19,6 +19,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let memory: MemoryStore
     /// Reports and shared history (D57). Nil: nothing leaves the phone this way.
     let feedback: FeedbackClient?
+    /// The AirPods press (D74).
+    private let remote: RemoteCommandHub?
+    /// The hands-free mode to go back to when listening returns after a pause or an interruption (D74).
+    private var resumeMode: ConversationMode?
+    /// The last voice command and when, so a command seen both as a final result and as a turn runs once.
+    private var lastVoice: (intent: VoiceIntent, at: Date)?
     /// "Skickat", or why not.
     private(set) var reportNotice: String?
     /// "Fråga Lumen": the hands-free session ends after one answer.
@@ -101,7 +107,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          activity: (any ListeningActivityPresenting)? = nil, study: StudySessionController? = nil,
          goals: GoalsStore? = nil, commands: CommandStore? = nil,
          history: HistoryStore? = nil, memory: MemoryStore? = nil, microphone: MicrophoneSettings? = nil,
-         modeSettings: ModeSettings? = nil, feedback: FeedbackClient? = nil) {
+         modeSettings: ModeSettings? = nil, feedback: FeedbackClient? = nil, remote: RemoteCommandHub? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -119,6 +125,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         // The remembered mode. Rizzläge only if the 18+ question was answered; the gate is never skipped.
         self.selectedMode = modes.lastMode == .rizz && !modes.isAdultConfirmed ? .standard : modes.lastMode
         self.feedback = feedback
+        self.remote = remote
         self.goals = goals ?? GoalsStore()
         self.commands = commands ?? CommandStore()
         self.warmer = warmer
@@ -143,6 +150,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.onFinished = { [weak self] in self?.speechFinished() }
         refreshKeyterms()
         prep.onChange = { [weak self] in self?.refreshKeyterms() }
+        remote?.onToggle = { [weak self] in await self?.togglePause() }
+        remote?.onPlay = { [weak self] in
+            guard let self, !self.isListening else { return }
+            await self.togglePause()
+        }
+        remote?.onPause = { [weak self] in
+            guard let self, self.isListening else { return }
+            await self.togglePause()
+        }
     }
 
     // MARK: - User actions
@@ -260,7 +276,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func sessionStateChanged(_ state: SessionState) {
         if state != .listening, study.isActive {
-            // Paused, stopped or failed: the hands-free session cannot continue without the microphone.
+            // Paused, stopped or failed: the hands-free session cannot continue without the microphone. After a
+            // pause or an interruption it comes back in the same mode (D74).
+            if case .paused = state { resumeMode = mode }
             study.stop()
             transcription.setInputGated(false)
             handsFreeEnded()
@@ -268,6 +286,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         switch state {
         case .listening:
             showActivity()
+            if let again = resumeMode {
+                resumeMode = nil
+                controller.log("Listening again: back to \(again.rawValue)")
+                Task { await startHandsFree(again) }
+            }
         case .paused:
             // Whoever has the audio now keeps it: no speech may restart the engine behind their back.
             answers.cancel()
@@ -275,8 +298,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             conversation.cancelAnswer()
             showActivity()
         case .idle, .error:
+            resumeMode = nil
             conversation.clearTranscript()
             activity?.end()
+        }
+        switch state {
+        case .listening, .paused: remote?.show(listening: state.isListening, mode: VoiceChannel.spokenName(resumeMode ?? mode))
+        case .idle, .error: remote?.clear()
         }
     }
 
@@ -466,7 +494,20 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         switch event {
         case .turnStarted:
             break
-        case .endOfTurn(let text):
+        case .endOfTurn(let raw):
+            // "Lumen, …" can close a turn before its final result arrives (D74).
+            let utterance = VoiceChannel.parse(raw)
+            if let intent = utterance.intent { perform(intent) }
+            guard let text = utterance.before else {
+                study.resumeListening()
+                return
+            }
+            logTurn()
+            if !mode.isLive, FillerFilter.isOnlyFiller(text) {
+                controller.log("\(mode.rawValue): filler only, not sent")
+                study.resumeListening()
+                return
+            }
             switch mode {
             case .interview: interviewTurn(text)
             case .rizz, .social: rizzTurn(text)
@@ -521,9 +562,125 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         session.add(speaker, text: text, at: Date())
         rizz = session
-        if speaker == .other {
+        if speaker == .other, !FillerFilter.isOnlyFiller(text) {
             requestSuggestions(trigger: "other_spoke")
         }
+    }
+
+    // MARK: - Voice (D74)
+
+    /// "Lumen, …" in every mode. True when the words were for Lumen: they are never conversation.
+    @discardableResult
+    private func handleVoice(in text: String, at date: Date) -> Bool {
+        let utterance = VoiceChannel.parse(text)
+        guard let intent = utterance.intent else { return false }
+        study.discardTurnText()
+        if let before = utterance.before, study.isActive { study.transcriptFinal(before, at: date) }
+        perform(intent)
+        return true
+    }
+
+    private func perform(_ intent: VoiceIntent) {
+        let now = Date()
+        if let last = lastVoice, last.intent == intent, now.timeIntervalSince(last.at) < 5 { return }
+        lastVoice = (intent, now)
+        switch intent {
+        case .switchTo(let target):
+            controller.log("Voice: switch to \(target.rawValue)")
+            Task { await switchByVoice(to: target) }
+        case .pause:
+            controller.log("Voice: pause")
+            Task { await pauseByVoice() }
+        case .stopListening:
+            controller.log("Voice: stop listening")
+            Task { await stopByVoice() }
+        case .instruction(let text):
+            controller.log("Voice: instruction (\(text.count) characters)") // the words stay out of the log
+            instruct(text)
+        }
+    }
+
+    /// "Lumen, byt till provläge" (D74). The same checks as the screen: Rizzläge needs the 18+ answer, a live mode
+    /// its start screen once, Intervjuläge a role.
+    func switchByVoice(to target: ConversationMode) async {
+        if target == .rizz, !modeSettings.isAdultConfirmed {
+            say("Rizzläge kräver att du bekräftar 18 år i appen.")
+            return
+        }
+        if target.isLive, !modeSettings.hasConfirmedLiveStart(target) {
+            say("\(VoiceChannel.spokenName(target).dropLast()) startas i appen första gången.")
+            return
+        }
+        if target == .interview, modeSettings.interviewSetup.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            say("Intervjuläge behöver en roll i appen först.")
+            return
+        }
+        let current: ConversationMode? = study.isActive ? mode : (isListening ? .standard : nil)
+        if current == target {
+            say(VoiceChannel.spokenName(target))
+            return
+        }
+        if study.isActive { endStudy(bySilence: false) }
+        selectedMode = target
+        if target == .standard {
+            if !isListening {
+                if canResume { await resume() } else { await startListening() }
+            }
+        } else {
+            await startHandsFree(target)
+        }
+        say(VoiceChannel.spokenName(target))
+    }
+
+    private func pauseByVoice() async {
+        guard isListening else { return }
+        say(language == .swedish ? "Pausar." : "Pausing.")
+        await speechDone()
+        await controller.pause()
+    }
+
+    private func stopByVoice() async {
+        say(language == .swedish ? "Slutar lyssna." : "Stopping.")
+        await speechDone()
+        await stopListening()
+    }
+
+    /// What follows the name when it is not a command. Socialt läge and Rizzläge: the D69 instruction path.
+    /// The other modes: a question to Lumen.
+    private func instruct(_ text: String) {
+        if rizz != nil {
+            liveInstruction(text)
+        } else if study.isActive, mode == .interview {
+            activated(ActivationRequest(query: text, trigger: .overheard, language: language),
+                      persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup, turn: "question"))
+        } else if study.isActive {
+            activated(ActivationRequest(query: text, trigger: .tutor, language: language))
+        } else {
+            activated(ActivationRequest(query: text, trigger: .text, language: language))
+        }
+    }
+
+    /// D69 plugs in here (calibration, "ge mig tre"). Until then the instruction is heard and dropped, and never
+    /// becomes a line of the conversation.
+    private func liveInstruction(_ text: String) {
+        controller.log("\(mode.rawValue): instruction heard, sent once D69 is in")
+    }
+
+    /// A short confirmation in the AirPods. Not while paused: the audio belongs to someone else then.
+    private func say(_ line: String) {
+        if case .paused = state { return }
+        speaker.enqueue(line, language: language)
+    }
+
+    private func speechDone() async {
+        for _ in 0..<60 where speaker.isSpeaking || speaker.hasPendingSpeech {
+            try? await Task.sleep(for: .milliseconds(50))
+        }
+    }
+
+    /// Which recogniser and microphone heard the turn (D74): cut sentences are traced to one of them.
+    private func logTurn() {
+        controller.log("Turn · \(mode.rawValue) · STT \(recognizerName) · mic \(microphone.source(for: mode).rawValue) · \(controller.config.rawValue)")
     }
 
     private func requestSuggestions(trigger: String) {
@@ -613,12 +770,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func activated(_ request: ActivationRequest, persona: PersonaRequest? = nil) {
         if VoiceCommand.isMusicHandOff(request.query) { return } // the final result already paused the session
+        if request.trigger == .auto, FillerFilter.isOnlyFiller(request.query) { return } // D74
         pendingQuestion = request
         answerNotice = nil
         // A new question interrupts the current answer and its speech (assignment item 5).
         speaker.interrupt()
         latency.begin(request)
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
+        if !study.isActive { logTurn() }
         // Provläge sends the whole session's memory (the backend keeps the last 6 pairs).
         let qaLimit = study.isActive ? AnswerContext.qaLimit : 3
         let matched = commands.matches(in: request.query)
@@ -758,6 +917,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if !segment.overlapsPlayback, VoiceCommand.isMusicHandOff(segment.text) {
             controller.log("Spoken pause: handing the audio back")
             Task { await controller.pause() }
+            return
+        }
+        if !segment.overlapsPlayback, handleVoice(in: segment.text, at: date) {
             return
         }
         if rizz != nil, RizzCommand.isNext(segment.text) {

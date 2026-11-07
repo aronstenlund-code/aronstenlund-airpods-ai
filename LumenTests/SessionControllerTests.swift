@@ -107,22 +107,17 @@ import Testing
         #expect(h.capture.isCapturing)
     }
 
-    @Test func interruptionWithoutResumeHintWaitsForTheUser() async {
+    @Test func interruptionWithoutResumeHintStillListensAgain() async {
         let h = ControllerHarness()
         await h.controller.start()
 
         await h.controller.apply(.interruptionBegan)
         await h.controller.apply(.interruptionEnded(shouldResume: false))
-        #expect(h.controller.state == .paused(.awaitingUserResume))
-        #expect(h.controller.canResume)
-        #expect(h.capture.startCalls == 1)
-
-        await h.controller.resume()
-        #expect(h.controller.state == .listening)
+        #expect(h.controller.state == .listening, "D74: listening comes back without a tap")
         #expect(h.capture.startCalls == 2)
     }
 
-    @Test func airPodsRemovedPausesAndNeverAutoResumes() async {
+    @Test func airPodsRemovedPausesAndResumesWhenTheyAreBack() async {
         let h = ControllerHarness()
         await h.controller.start()
 
@@ -131,9 +126,8 @@ import Testing
         #expect(!h.capture.isCapturing)
 
         await h.controller.apply(.outputDeviceRestored)
-        #expect(h.controller.state == .paused(.awaitingUserResume))
-        #expect(h.capture.startCalls == 1, "capture must not restart on its own")
-        #expect(h.controller.canResume)
+        #expect(h.controller.state == .listening, "D74: the AirPods are back, Lumen listens again")
+        #expect(h.capture.startCalls == 2)
     }
 
     @Test func stopWhilePausedReturnsToIdle() async {

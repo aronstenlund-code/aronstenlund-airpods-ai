@@ -178,19 +178,19 @@ import Testing
         let defaults = UserDefaults(suiteName: suite)!
         defaults.removePersistentDomain(forName: suite)
         let settings = StudySettings(defaults: defaults)
-        #expect(settings.endpointSilence == 0.8)
+        #expect(settings.endpointSilence == 1.2, "D74")
         #expect(settings.autoEndMinutes == 0, "never, D71")
         #expect(!settings.useVoiceChatMode)
         #expect(settings.tuning.autoEndSilence == nil)
 
-        settings.endpointSilence = 1.2
+        settings.endpointSilence = 1.0
         settings.autoEndMinutes = 3
         settings.useVoiceChatMode = true
         let reloaded = StudySettings(defaults: defaults)
-        #expect(reloaded.endpointSilence == 1.2)
+        #expect(reloaded.endpointSilence == 1.0)
         #expect(reloaded.autoEndMinutes == 3)
         #expect(reloaded.useVoiceChatMode)
-        #expect(reloaded.tuning.endpointSilence == 1.2)
+        #expect(reloaded.tuning.endpointSilence == 1.0)
         #expect(reloaded.tuning.autoEndSilence == 180)
     }
 }
@@ -237,7 +237,7 @@ import Testing
         let speechStart = start + 1.0
         for i in 0..<15 { rig.study.level(-28, at: t0.addingTimeInterval(speechStart + Double(i) * 0.04)) }
         rig.model.receiveFinalTranscript(text, at: t0.addingTimeInterval(speechStart + 0.6))
-        for i in 0..<30 { rig.study.level(-62, at: t0.addingTimeInterval(speechStart + 0.6 + Double(i) * 0.04)) }
+        for i in 0..<45 { rig.study.level(-62, at: t0.addingTimeInterval(speechStart + 0.6 + Double(i) * 0.04)) }
     }
 
     @Test func startingStudyStartsTheMicrophoneAndListensForATurn() async {

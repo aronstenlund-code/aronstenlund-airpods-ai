@@ -65,7 +65,8 @@ final class AppContainer {
                                        warmer: BackendWarmer(config: .lumen, http: http),
                                        activity: ListeningActivityPresenter(),
                                        history: HistoryStore(), memory: MemoryStore(),
-                                       feedback: FeedbackClient(config: .lumen, auth: auth, http: http, settings: share))
+                                       feedback: FeedbackClient(config: .lumen, auth: auth, http: http, settings: share),
+                                       remote: RemoteCommandHub())
         ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
         ListeningRemote.nextSuggestion = { [weak listening] in listening?.nextSuggestion() }
         ListeningRemote.start = { [weak listening] in await listening?.startFromShortcut() }

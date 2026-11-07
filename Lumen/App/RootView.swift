@@ -12,16 +12,17 @@ struct RootView: View {
     var body: some View {
         Group {
             if container.consent.isGranted {
-                NavigationStack {
-                    ListeningView(model: container.listening, diagnostics: container.diagnostics)
-                }
-                .sheet(isPresented: asksAboutSharing) {
-                    ShareHistoryPromptView { container.listening.setSharing($0) }
-                }
-                .safeAreaInset(edge: .top, spacing: 0) {
+                // D74: the indicator sits above the navigation bar, not on top of the title.
+                VStack(spacing: 0) {
                     ListeningIndicatorBar(state: container.sessionController.state,
                                           onStop: { Task { await container.listening.stopListening() } },
                                           onResume: { Task { await container.listening.resume() } })
+                    NavigationStack {
+                        ListeningView(model: container.listening, diagnostics: container.diagnostics)
+                    }
+                }
+                .sheet(isPresented: asksAboutSharing) {
+                    ShareHistoryPromptView { container.listening.setSharing($0) }
                 }
             } else {
                 ConsentView(mode: .onboarding { container.consent.grant() })

@@ -144,6 +144,7 @@ final class TranscriptionCoordinator {
             }
             gatedContinuation.finish()
         }
+        let startedAt = Date()
         resultsTask = Task { [weak self] in
             for await result in provider.results {
                 guard let self else { return }
@@ -153,9 +154,26 @@ final class TranscriptionCoordinator {
                     self.sink?.receivePartialTranscript(result.text, at: Date())
                 }
             }
-            // Stopping changes the generation first, so reaching this with the same one means the socket died.
-            guard let self, myGeneration == self.generation, engine == .scribe else { return }
-            self.lifecycleTask = Task { await self.fallBackToDevice("connection lost") }
+            // Stopping changes the generation first, so reaching this with the same one means the recogniser ended
+            // by itself. D74: listening never stops by itself, so it starts again.
+            guard let self, myGeneration == self.generation, self.controller.isCapturing else { return }
+            let ranFor = Date().timeIntervalSince(startedAt)
+            if engine == .scribe, ranFor >= Self.reconnectAfter {
+                // A session limit or a dropped connection after a while: a new Scribe session, not the phone.
+                self.controller.log("Scribe session ended after \(Int(ranFor)) s: reconnecting")
+                self.lifecycleTask = Task { await self.startTranscribing() }
+            } else if engine == .scribe {
+                self.lifecycleTask = Task { await self.fallBackToDevice("connection lost") }
+            } else if ranFor >= Self.reconnectAfter {
+                self.controller.log("\(engine.displayName) ended after \(Int(ranFor)) s: restarting")
+                self.lifecycleTask = Task {
+                    try? await Task.sleep(for: .seconds(1))
+                    await self.startTranscribing()
+                }
+            } else {
+                self.status = .failed("\(engine.displayName) stopped")
+                self.controller.log("\(engine.displayName) stopped after \(Int(ranFor)) s")
+            }
         }
         do {
             try await provider.start(audio: gatedStream)
@@ -173,6 +191,10 @@ final class TranscriptionCoordinator {
             await stopTranscribing()
         }
     }
+
+    /// A recogniser that ran at least this long and then ended is started again (D74); one that ends at once is a
+    /// failure, not a session limit, and is not retried in a loop.
+    static let reconnectAfter: TimeInterval = 20
 
     private func fallBackToDevice(_ reason: String) async {
         cloudFailure = reason

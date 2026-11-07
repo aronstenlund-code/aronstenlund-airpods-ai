@@ -257,6 +257,8 @@ final class StudySettings {
     static let endpointKey = "study.endpointSilence"
     static let autoEndKey = "study.autoEndMinutes"
     static let voiceChatKey = "study.voiceChatMode"
+    /// D74: 0.8 s cut sentences in two on the iPhone ("Det är en annan . Ja, obrutet").
+    static let defaultEndpointSilence = 1.2
 
     /// 0.5…1.5 s.
     var endpointSilence: Double {
@@ -275,7 +277,7 @@ final class StudySettings {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         let stored = defaults.object(forKey: Self.endpointKey) as? Double
-        self.endpointSilence = stored ?? 0.8
+        self.endpointSilence = stored ?? Self.defaultEndpointSilence
         self.autoEndMinutes = defaults.object(forKey: Self.autoEndKey) as? Int ?? 0
         self.useVoiceChatMode = defaults.object(forKey: Self.voiceChatKey) as? Bool ?? false
     }

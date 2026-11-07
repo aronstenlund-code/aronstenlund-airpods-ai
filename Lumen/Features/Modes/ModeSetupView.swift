@@ -81,6 +81,7 @@ struct LiveStartView: View {
             }
             Section {
                 Button("They know the app is listening. Start") {
+                    settings.confirmLiveStart(mode)
                     dismiss()
                     Task { await model.startHandsFree(mode) }
                 }

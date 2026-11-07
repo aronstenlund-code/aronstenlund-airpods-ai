@@ -114,7 +114,7 @@ resultatet.
 1. *Start capture*. Be någon ringa dig. Svara, prata 10 s, lägg på.
 2. Titta på *State* och eventloggen: står det *Paused — interrupted* under samtalet och går den tillbaka
    till *Listening* själv efteråt (shouldResume=true), eller står det *tap to resume*? Skriv ner det.
-3. Gör samma sak med Siri (håll in sidoknappen, fråga något).
+3. Gör samma sak med Siri (håll in sidoknappen, fråga något). D74: efter samtalet och efter Siri ska Lumen lyssna igen av sig självt, i samma läge. Om du har pausat själv innan ska Lumen förbli pausad.
 
 ### 3f. AirPods av och på (3 min)
 1. *Start capture*. Ta ut **båda** AirPods ur öronen / lägg dem i etuiet.
@@ -234,8 +234,8 @@ Signering: **båda** targets (`Lumen` och `LumenControls`) behöver ditt team i 
 
 1. Börja lyssna, starta Spotify och spela något. Tryck **Pausa för musik** i Lumen. Fortsätter musiken i full kvalitet utan att du gör något mer i Spotify? Skriv ner vad du hör.
 2. Tryck **Fortsätt lyssna**. Stannar musiken och lyssnar Lumen igen?
-3. Börja lyssna och starta musik direkt i Spotify, utan att pausa. Visas "Pausad – tryck för att lyssna igen"? Stoppa musiken: Lumen ska **inte** starta av sig själv.
-4. Ring ett samtal till telefonen medan du lyssnar och avsluta det. Lumen ska stå kvar som pausad tills du trycker.
+3. Börja lyssna och starta musik direkt i Spotify, utan att pausa. Visas "Pausad"? Stoppa musiken och skriv ner om Lumen börjar lyssna igen av sig själv (D74: det ska den göra när avbrottet tar slut, men en musikapp avslutar kanske aldrig sitt avbrott).
+4. Ring ett samtal till telefonen medan du lyssnar och avsluta det. D74: Lumen ska börja lyssna igen **av sig själv**, i samma läge som förut (prova i Provläge).
 5. Lås telefonen medan du lyssnar. Syns Lumen på låsskärmen? Tryck Pausa och sedan Fortsätt där. Skriv ner om Fortsätt fungerar utan att låsa upp.
 6. Lägg till kontrollen *Lumen lyssnar* i Kontrollcenter (eller på Åtgärdsknappen). Händer något när du trycker? Händer inget alls är det ett viktigt resultat.
 7. Ställ en skriven fråga medan du är pausad: svaret ska synas men inte läsas upp, och musiken ska inte störas.
@@ -321,6 +321,19 @@ Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt l
 2. Lägg till kontrollerna *Start Lumen* och *Lumen lyssnar* i Kontrollcenter och på låsskärmen. Händer något när du trycker?
 3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
 4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
+
+### 3z2. Röststyrning, AirPods-knappen och avbrott (D74, 20 min)
+Målet: du ska aldrig behöva ta upp telefonen efter att du har startat.
+1. Under lägesväljaren ska det stå "Säg 'Lumen, byt till provläge' för att byta utan att ta upp telefonen." Lägg telefonen i fickan.
+2. Säg "Lumen, byt till provläge". Du ska höra "Provläge." i AirPods och Provläge ska vara igång. Säg sedan "Lumen, byt till frågor", "Lumen, byt till intervjuläge" och "Lumen, byt till socialt läge". Skriv ner vad du hör efter varje kommando och hur lång tid det tar.
+3. Socialt läge och Rizzläge startas med rösten först när deras startskärm har bekräftats en gång i appen. Innan dess ska du höra "Socialt läge startas i appen första gången." Rizzläge utan 18-årsbekräftelse ska svara "Rizzläge kräver att du bekräftar 18 år i appen."
+4. Säg "Lumen, pausa": du ska höra "Pausar.", och sedan ska mikrofonen släppas. Säg "Lumen, sluta lyssna" i ett annat test: då ska lyssnandet sluta helt.
+5. Säg "Lumen, vad är fotosyntes?" i läget Frågor: det ska besvaras som en fråga.
+6. **AirPods-knappen:** tryck en gång på AirPods (eller klämma på skaftet) medan Lumen lyssnar. Pausar Lumen? Tryck igen: lyssnar Lumen igen, i samma läge? Skriv ner exakt vad som händer.
+7. Pausa Lumen, starta musik i Spotify och tryck sedan på AirPods. Troligen styr trycket nu Spotify och inte Lumen, eftersom Spotify har tagit över "Spelas nu". Skriv ner vad som händer. Reserven är "Hej Siri, starta Lumen".
+8. Låt telefonen ligga med Provläge, Socialt läge och Frågor igång i 20 minuter vardera med låst skärm. Inget läge får sluta av sig självt. Titta i Diagnostik-loggen efteråt: står det "Scribe session ended … reconnecting" någon gång, och fortsatte det fungera?
+9. Diagnostik-loggen visar för varje tur vilken taligenkänning som användes (Scribe eller iPhone) och vilken mikrofon. Klipps meningar fortfarande i Provläge, nu med 1,2 s väntan efter att du slutat prata? Säg "äh" eller "ja": det ska inte skickas.
+10. Indikatorn ska ligga ovanför rubriken "Lumen", inte över den. Under en session ska det bara finnas en stoppknapp (*Stop listening*).
 
 ## Del 4 — Skicka in resultaten (5 min)
 

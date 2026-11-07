@@ -30,6 +30,7 @@ final class ModeSettings {
     static let thresholdKey = "mode.speakerThresholdDBFS"
     static let countsKey = "mode.rizzStyleCounts"
     static let lastModeKey = "mode.lastSelected"
+    static let liveStartKey = "mode.liveStartConfirmed"
 
     /// The role or the pasted job ad.
     var interviewSetup: String {
@@ -54,6 +55,9 @@ final class ModeSettings {
     var lastMode: ConversationMode {
         didSet { defaults.set(lastMode.rawValue, forKey: Self.lastModeKey) }
     }
+    /// Live modes whose start screen ("They know the app is listening") was confirmed on this phone. Switching to one
+    /// by voice needs it (D74): the start screen is the guardrail, the voice only saves taking out the phone later.
+    private(set) var liveStartConfirmed: Set<String>
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
@@ -65,10 +69,20 @@ final class ModeSettings {
         self.speakerThresholdDBFS = defaults.object(forKey: Self.thresholdKey) as? Double ?? -30
         self.styleCounts = defaults.dictionary(forKey: Self.countsKey) as? [String: Int] ?? [:]
         self.lastMode = defaults.string(forKey: Self.lastModeKey).flatMap(ConversationMode.init(rawValue:)) ?? .standard
+        self.liveStartConfirmed = Set(defaults.stringArray(forKey: Self.liveStartKey) ?? [])
     }
 
     var interests: [String] {
         rizzInterests.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+    }
+
+    func hasConfirmedLiveStart(_ mode: ConversationMode) -> Bool {
+        liveStartConfirmed.contains(mode.rawValue)
+    }
+
+    func confirmLiveStart(_ mode: ConversationMode) {
+        liveStartConfirmed.insert(mode.rawValue)
+        defaults.set(Array(liveStartConfirmed).sorted(), forKey: Self.liveStartKey)
     }
 
     func confirmAdult() {

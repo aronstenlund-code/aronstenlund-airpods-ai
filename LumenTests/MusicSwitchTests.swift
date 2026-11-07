@@ -25,9 +25,11 @@ final class FakeActivityPresenter: ListeningActivityPresenting {
         #expect(SessionReducer.reduce(.paused(.interruption), .userPause) == (.paused(.interruption), nil))
     }
 
-    @Test func anInterruptionNeverResumesByItself() {
-        #expect(SessionReducer.reduce(.paused(.interruption), .interruptionEnded(shouldResume: true)) == (.paused(.awaitingUserResume), nil))
-        #expect(SessionReducer.reduce(.paused(.interruption), .interruptionEnded(shouldResume: false)) == (.paused(.awaitingUserResume), nil))
+    @Test func anInterruptionResumesByItselfButTheUsersPauseNever() {
+        // D74 replaces "never auto-resume" (D33): after a call or Siri, Lumen listens again.
+        #expect(SessionReducer.reduce(.paused(.interruption), .interruptionEnded(shouldResume: true)) == (.listening, .resumeCapture))
+        #expect(SessionReducer.reduce(.paused(.interruption), .interruptionEnded(shouldResume: false)) == (.listening, .resumeCapture))
+        #expect(SessionReducer.reduce(.paused(.awaitingUserResume), .interruptionEnded(shouldResume: false)) == (.listening, .resumeCapture))
         #expect(SessionReducer.reduce(.paused(.user), .interruptionEnded(shouldResume: true)) == (.paused(.user), nil))
     }
 
@@ -89,16 +91,27 @@ final class FakeActivityPresenter: ListeningActivityPresenting {
         #expect(h.controller.lastError == nil)
     }
 
-    @Test func aFinishedInterruptionDoesNotTakeAudioBack() async {
+    @Test func aFinishedInterruptionListensAgain() async {
         let h = ControllerHarness()
         await h.controller.start()
         await h.controller.apply(.interruptionBegan)
         #expect(h.controller.canResume, "Spotify may never end its interruption: the user can always resume")
 
+        await h.controller.apply(.interruptionEnded(shouldResume: false))
+
+        #expect(h.controller.state == .listening, "D74: after a call or Siri, Lumen listens again")
+        #expect(h.session.reactivateCalls == 1)
+        #expect(h.capture.startCalls == 2)
+    }
+
+    @Test func theUsersPauseIsKeptWhenAnInterruptionEnds() async {
+        let h = ControllerHarness()
+        await h.controller.start()
+        await h.controller.pause()
+
         await h.controller.apply(.interruptionEnded(shouldResume: true))
 
-        #expect(h.controller.state == .paused(.awaitingUserResume))
-        #expect(h.session.reactivateCalls == 0)
+        #expect(h.controller.state == .paused(.user))
         #expect(h.capture.startCalls == 1)
     }
 }

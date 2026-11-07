@@ -160,7 +160,7 @@ import Testing
             time = time.addingTimeInterval(0.04)
         }
         rig.model.receiveFinalTranscript(text, at: time)
-        for _ in 0..<30 {
+        for _ in 0..<45 {
             rig.model.study.level(-70, at: time)
             time = time.addingTimeInterval(0.04)
         }

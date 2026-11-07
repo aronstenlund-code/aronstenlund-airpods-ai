@@ -207,7 +207,7 @@ import Testing
             time = time.addingTimeInterval(0.04)
         }
         model.receiveFinalTranscript("Vad är pi", at: time)
-        for _ in 0..<30 {
+        for _ in 0..<45 {
             model.study.level(-70, at: time)
             time = time.addingTimeInterval(0.04)
         }

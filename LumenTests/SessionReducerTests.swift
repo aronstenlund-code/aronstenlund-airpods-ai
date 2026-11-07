@@ -16,23 +16,19 @@ import Testing
         #expect(effect == .pauseCapture)
     }
 
-    @Test func interruptionWithoutResumeWaitsForUser() {
+    @Test func interruptionEndListensAgain() {
         let (paused, _) = SessionReducer.reduce(.listening, .interruptionBegan)
-        let (waiting, effect) = SessionReducer.reduce(paused, .interruptionEnded(shouldResume: false))
-        #expect(waiting == .paused(.awaitingUserResume))
-        #expect(effect == nil)
+        #expect(SessionReducer.reduce(paused, .interruptionEnded(shouldResume: false)) == (.listening, .resumeCapture), "D74")
+        let waiting = SessionState.paused(.awaitingUserResume)
         #expect(SessionReducer.reduce(waiting, .userResume) == (.listening, .resumeCapture))
         #expect(SessionReducer.reduce(waiting, .userStop) == (.idle, .stopCapture))
     }
 
-    @Test func airPodsRemovedPausesAndNeverAutoResumes() {
+    @Test func airPodsRemovedPausesAndResumesWhenTheyAreBack() {
         let (paused, effect) = SessionReducer.reduce(.listening, .outputDeviceLost)
         #expect(paused == .paused(.outputDeviceLost))
         #expect(effect == .pauseCapture)
-        let (restored, effect2) = SessionReducer.reduce(paused, .outputDeviceRestored)
-        #expect(restored == .paused(.awaitingUserResume))
-        #expect(effect2 == nil)
-        #expect(SessionReducer.reduce(restored, .userResume) == (.listening, .resumeCapture))
+        #expect(SessionReducer.reduce(paused, .outputDeviceRestored) == (.listening, .resumeCapture), "D74")
         // interruption end while paused for another reason does not resume
         #expect(SessionReducer.reduce(paused, .interruptionEnded(shouldResume: true)) == (.paused(.outputDeviceLost), nil))
     }

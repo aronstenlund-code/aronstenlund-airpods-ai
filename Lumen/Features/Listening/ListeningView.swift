@@ -440,7 +440,12 @@ struct ListeningView: View {
             }
             .pickerStyle(.menu)
             .disabled(model.study.isActive)
-            if model.selectedMode != .standard || model.study.isActive {
+            Text("Säg \"\(WakeWord.name), byt till provläge\" för att byta utan att ta upp telefonen.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            // D74: one stop button. While a session runs, "Stop listening" below ends it and the microphone.
+            if model.selectedMode != .standard, !model.study.isActive {
                 Button {
                     Task { await model.toggleSelectedMode() }
                 } label: {

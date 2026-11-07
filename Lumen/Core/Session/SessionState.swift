@@ -22,9 +22,10 @@ enum SessionState: Equatable, Sendable {
 enum PauseReason: Equatable, Sendable {
     /// The user paused, e.g. to play music (D33). The audio session is released; only the user resumes.
     case user
-    /// Another app or the system took the audio (call, Siri, alarm, Spotify). May never end for a music app.
+    /// Another app or the system took the audio (call, Siri, alarm, Spotify). Listening comes back by itself when
+    /// the interruption ends (D74, replaces "never auto-resume" in D33). May never end for a music app.
     case interruption
-    /// Interruption ended, or a resume was refused → "tap to resume". We never take audio back by ourselves (D33).
+    /// A resume was refused (a call is still running) → "tap to resume".
     case awaitingUserResume
     /// AirPods / headphones were removed or disconnected.
     case outputDeviceLost
@@ -34,7 +35,7 @@ enum PauseReason: Equatable, Sendable {
     var label: String {
         switch self {
         case .user: "by you"
-        case .interruption: "interrupted — tap to resume"
+        case .interruption: "interrupted — listens again when it ends"
         case .awaitingUserResume: "tap to resume"
         case .outputDeviceLost: "AirPods disconnected — tap to resume"
         case .mediaServicesReset: "audio system reset — tap to resume"
@@ -84,8 +85,12 @@ enum SessionReducer {
         case (.listening, .interruptionBegan):
             return (.paused(.interruption), .pauseCapture)
         case (.paused(.interruption), .interruptionEnded):
-            // Even with `shouldResume`: taking audio back could cut off what the user is listening to (D33).
-            return (.paused(.awaitingUserResume), nil)
+            // D74: the call or Siri is over, so Lumen listens again, with or without `shouldResume`. A refused
+            // resume becomes "tap to resume" (`resumeFailed`).
+            return (.listening, .resumeCapture)
+        case (.paused(.awaitingUserResume), .interruptionEnded):
+            // A resume was refused while a call ran; the call is over now: try again.
+            return (.listening, .resumeCapture)
         case (.paused(let reason), .interruptionEnded):
             // We were already paused for another reason; stay there.
             return (.paused(reason), nil)
@@ -102,8 +107,8 @@ enum SessionReducer {
         case (.listening, .outputDeviceLost), (.paused, .outputDeviceLost):
             return (.paused(.outputDeviceLost), .pauseCapture)
         case (.paused(.outputDeviceLost), .outputDeviceRestored):
-            // Do not auto-resume capture when the AirPods come back; the user taps to resume.
-            return (.paused(.awaitingUserResume), nil)
+            // D74: the AirPods are back in, so Lumen listens again.
+            return (.listening, .resumeCapture)
 
         case (.listening, .mediaServicesReset), (.paused, .mediaServicesReset):
             return (.paused(.mediaServicesReset), .rebuildAudioGraph)
