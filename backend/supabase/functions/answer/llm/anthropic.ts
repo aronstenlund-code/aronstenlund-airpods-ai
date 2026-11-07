@@ -178,6 +178,7 @@ export class AnthropicProvider implements LLMProvider {
     try {
       const model = req.model ?? this.cfg.model;
       let tools = req.tools;
+      let toolChoice = req.tools?.length ? req.toolChoice : undefined;
       // Only Haiku is known to take thinking:disabled; other models (Sonnet/Opus 5.5) reject it with a 400,
       // so it is sent for Haiku only and dropped on a "thinking" 400 (effort stays low either way).
       const send = (withThinking: boolean) =>
@@ -202,6 +203,7 @@ export class AnthropicProvider implements LLMProvider {
               output_config: { effort: this.cfg.effort },
               ...(withThinking ? { thinking: { type: "disabled" } } : {}),
               ...(tools?.length ? { tools } : {}),
+              ...(tools?.length && toolChoice ? { tool_choice: toolChoice } : {}),
             }),
             signal,
           },
@@ -211,6 +213,14 @@ export class AnthropicProvider implements LLMProvider {
       if (res.status === 400 && wantThinkingOff) {
         const peek = await res.clone().text().catch(() => "");
         if (/thinking/i.test(peek)) res = await send(false);
+      }
+      if (res.status === 400 && toolChoice) {
+        // A model that does not take a forced tool choice: send the same request without it (D72).
+        const peek = await res.clone().text().catch(() => "");
+        if (/tool_choice/i.test(peek)) {
+          toolChoice = undefined;
+          res = await send(wantThinkingOff);
+        }
       }
       if (res.status === 400 && tools?.length) {
         // A domain on the allow-list started blocking Anthropic's crawler: drop it and retry once.

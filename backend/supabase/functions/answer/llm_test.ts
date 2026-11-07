@@ -290,3 +290,44 @@ Deno.test("D54: a 400 'not accessible to our user agent' retries once without th
   assertEquals(bodies[1].tools![0].allowed_domains, ["a.se"]);
   assertEquals(out.some((c) => c.type === "text"), true);
 });
+
+Deno.test("D72: tool_choice is sent only with tools; a 'tool_choice' 400 is retried without it", async () => {
+  const bodies: Record<string, unknown>[] = [];
+  const sse =
+    'event: message_start\ndata: {"type":"message_start","message":{"usage":{"input_tokens":5}}}\n\nevent: message_stop\ndata: {"type":"message_stop"}\n\n';
+  let reject = false;
+  const fake = ((_u: unknown, init: RequestInit) => {
+    const b = JSON.parse(init.body as string);
+    bodies.push(b);
+    if (reject && b.tool_choice) {
+      return Promise.resolve(
+        new Response('{"error":{"message":"tool_choice any is not supported for this model"}}', {
+          status: 400,
+        }),
+      );
+    }
+    return Promise.resolve(new Response(sse, { status: 200 }));
+  }) as typeof fetch;
+  const p = new AnthropicProvider({
+    apiKey: "k",
+    model: "claude-haiku-5-5",
+    effort: "low",
+    disableThinking: true,
+  }, fake);
+  const tools = [{ type: "web_search_20250305", name: "web_search" }];
+  for await (
+    const _ of p.stream({ system: "s", user: "u", maxTokens: 10, tools, toolChoice: { type: "any" } })
+  ) { /* drain */ }
+  for await (
+    const _ of p.stream({ system: "s", user: "u", maxTokens: 10, toolChoice: { type: "any" } })
+  ) { /* drain */ }
+  assertEquals(bodies[0].tool_choice, { type: "any" });
+  assertEquals(bodies[1].tool_choice, undefined, "never without tools");
+  reject = true;
+  bodies.length = 0;
+  for await (
+    const _ of p.stream({ system: "s", user: "u", maxTokens: 10, tools, toolChoice: { type: "any" } })
+  ) { /* drain */ }
+  assertEquals(bodies.length, 2);
+  assertEquals(bodies[1].tool_choice, undefined);
+});

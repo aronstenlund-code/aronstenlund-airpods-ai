@@ -6,6 +6,8 @@ export interface LLMRequest {
   cacheSystem?: boolean;
   /** Anthropic server tools (web search / fetch). Only set for requests that need the web. */
   tools?: unknown[];
+  /** Forces a tool call (Anthropic `tool_choice`), e.g. `{type: "any"}` for an ordinal fact (D72). */
+  toolChoice?: unknown;
   /** Overrides the provider's default model for this request (D52: Rizz uses a stronger model). */
   model?: string;
   signal?: AbortSignal;

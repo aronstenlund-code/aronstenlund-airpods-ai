@@ -513,6 +513,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           maxTokens,
           cacheSystem: true,
           tools,
+          // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
+          ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
           signal: ac.signal,
         })[Symbol.asyncIterator]();

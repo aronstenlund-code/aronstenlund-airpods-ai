@@ -906,3 +906,13 @@ Deno.test("D72 live test F16: ordinal facts get a list-first note; more search n
   ) assert(isSearchMeta(s), s);
   assert(!isSearchMeta("Jag är säker på att du klarar provet."), "not about searching");
 });
+
+Deno.test("D72 live test: more self-narration about not searching is caught", () => {
+  for (
+    const s of [
+      "Ordningen är välkänd, men jag har inte sökt den här.",
+      "Om du vill vara helt säker kan du kontrollera på kungahuset.se.",
+      "Hmm, jag är inte helt säker på ordningen.",
+    ]
+  ) assert(isSearchMeta(s), s);
+});
