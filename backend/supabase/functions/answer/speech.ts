@@ -378,10 +378,32 @@ export function isMetaReply(sentence: string): boolean {
   return META_REPLY.test(sentence.trim().replace(/^[\s"'„”»«-]+/, ""));
 }
 
+/**
+ * D77 (Oscar's D72 run + live eval): with no personal facts given, the interview answer said so out loud
+ * ("Jag har inte någon konkret upplevelse att utgå från, så jag svarar med …", "… i den här övningen").
+ * The user reads the answer aloud in the interview, so such a sentence is dropped; the rest is the answer.
+ */
+const INTERVIEW_META = new RegExp(
+  [
+    String.raw`\b(?:jag har|det finns) (?:inte|ingen|inga) (?:någon |något |en |ett |några )?(?:konkret|egen|specifik|faktisk|verklig)\w* (?:\w+ )?(?:upplevelse|händelse|situation|erfarenhet|exempel|uppgift|uppgifter|information)`,
+    String.raw`\bjag har (?:inte|inga) (?:några )?uppgifter om\b`,
+    String.raw`\bså (?:jag|då) svarar (?:jag )?(?:med|utifrån|genom)\b`,
+    String.raw`\b(?:i|under|för) (?:den här|denna|detta|det här) (?:konversationen|övningen|sessionen|samtalet|scenariot)\b`,
+    String.raw`\b(?:eftersom|då) (?:jag inte vet|det inte framgår|inget (?:är|finns) (?:angivet|givet))`,
+  ].join("|"),
+  "iu",
+);
+export function isInterviewMeta(sentence: string): boolean {
+  return INTERVIEW_META.test(sentence);
+}
+
 export class MetaGate {
   dropped = 0;
   private buf = "";
-  constructor(private readonly enabled: boolean) {}
+  constructor(
+    private readonly enabled: boolean,
+    private readonly isMeta: (sentence: string) => boolean = isMetaReply,
+  ) {}
   push(text: string): string {
     if (!this.enabled) return text;
     this.buf += text;
@@ -404,7 +426,7 @@ export class MetaGate {
     return r;
   }
   private keep(sentence: string): string {
-    if (sentence.trim() && isMetaReply(sentence)) {
+    if (sentence.trim() && this.isMeta(sentence)) {
       this.dropped++;
       return "";
     }
@@ -661,6 +683,8 @@ export interface PostOptions {
   web?: boolean;
   /** D75: Provläge / Auto: the `[[TYST]]` marker and meta comments mean "say nothing". */
   silence?: boolean;
+  /** D77: interview answer: sentences that say facts are missing are dropped. */
+  interview?: boolean;
 }
 
 export class AnswerPost {
@@ -670,6 +694,7 @@ export class AnswerPost {
   private readonly rel: RelationTap;
   private readonly sil: SilenceTap;
   private readonly meta: MetaGate;
+  private readonly imeta: MetaGate;
   private readonly src: SourceTap;
   private spoke = false;
   private readonly en: EnglishGate;
@@ -683,6 +708,7 @@ export class AnswerPost {
     this.rel = new RelationTap(opts.relationTag === true);
     this.sil = new SilenceTap(opts.silence === true);
     this.meta = new MetaGate(opts.silence === true);
+    this.imeta = new MetaGate(opts.interview === true, isInterviewMeta);
     this.src = new SourceTap(opts.web === true);
     this.en = new EnglishGate(opts.web === true);
   }
@@ -734,7 +760,9 @@ export class AnswerPost {
   push(raw: string): string {
     const a = this.dup.push(
       this.gate.push(
-        this.meta.push(this.en.push(this.src.push(this.tap.push(this.sil.push(this.rel.push(raw)))))),
+        this.imeta.push(
+          this.meta.push(this.en.push(this.src.push(this.tap.push(this.sil.push(this.rel.push(raw)))))),
+        ),
       ),
     );
     if (!a) return "";
@@ -747,7 +775,8 @@ export class AnswerPost {
     const t = this.tap.push(this.sil.push(this.rel.finish()) + this.sil.finish()) + this.tap.finish();
     const s = this.src.push(t) + this.src.finish();
     const e0 = this.en.push(s) + this.en.finish();
-    const e = this.meta.push(e0) + this.meta.finish();
+    const e1 = this.meta.push(e0) + this.meta.finish();
+    const e = this.imeta.push(e1) + this.imeta.finish();
     const rest = this.trim.push(this.dup.push(this.gate.push(e)) + this.dup.finish()) +
       this.trim.finish();
     const out = this.cap(this.nums.push(rest) + this.nums.finish());

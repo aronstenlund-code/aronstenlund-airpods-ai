@@ -967,3 +967,37 @@ Deno.test("D75: AnswerPost silence marker and meta gate", () => {
   const one = new AnswerPost({ previousAnswers: [], trimQuestion: false, silence: true });
   assertEquals(one.push("[") + one.finish(), "");
 });
+
+Deno.test("D77 interview: a sentence saying facts are missing is dropped, the answer and questions stay", async () => {
+  const { isInterviewMeta } = await import("./speech.ts");
+  for (
+    const s of [
+      "Jag har inte någon konkret upplevelse att utgå från, så jag svarar med hur jag brukar göra.",
+      "Jag har inte en konkret händelse att berätta om, så jag svarar med hur jag brukar gå tillväga.",
+      "Jag vill gärna svara på det, men jag har inte uppgifter om min ålder eller vad jag studerar i den här övningen.",
+    ]
+  ) assert(isInterviewMeta(s), s);
+  for (
+    const s of [
+      "Jag är noggrann, så jag dubbelkollar priser och växel innan jag lämnar kassan.",
+      "Kan ni berätta mer om hur introduktionen ser ut de första veckorna?",
+      "Jag har jobbat två somrar i min mosters klädbutik.",
+      "När en kund är arg lyssnar jag först klart utan att avbryta.",
+    ]
+  ) assert(!isInterviewMeta(s), s);
+  const post = new AnswerPost({ previousAnswers: [], trimQuestion: false, interview: true });
+  let out = "";
+  for (
+    const c of [
+      "Jag har inte en konkret händelse att berätta om, så jag svarar med hur jag ",
+      "brukar gå tillväga. Först sätter jag mig på deras nivå. ",
+      "Sedan lyssnar jag på båda.",
+    ]
+  ) out += post.push(c);
+  out += post.finish();
+  assertEquals(out.trim(), "Först sätter jag mig på deras nivå. Sedan lyssnar jag på båda.");
+  // other modes are untouched
+  const plain = new AnswerPost({ previousAnswers: [], trimQuestion: false });
+  const t = "Jag har inte en konkret händelse att berätta om. Först lyssnar jag.";
+  assertEquals((plain.push(t) + plain.finish()).trim(), t);
+});

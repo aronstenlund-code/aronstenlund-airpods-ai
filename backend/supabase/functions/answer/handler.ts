@@ -584,6 +584,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             web: webOn || !!need, // web filters also when the web cap turned search off
             tutor,
             silence: silenceOn,
+            interview: plan?.kind === "interview", // D77
           });
           let pendingMeta: Record<string, unknown> | null = null;
           const flushMeta = () => {
@@ -728,6 +729,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 web: webOn || !!need,
                 tutor,
                 silence: silenceOn,
+                interview: plan?.kind === "interview",
               });
               r = await it.next();
             }
