@@ -46,6 +46,14 @@ Checklist §3z2 steps 6 and 7 answer both.
 - Not unit-tested: the Scribe reconnect after 20 s (it needs a clock in the coordinator), and the remote command
   registration itself.
 
+## CI
+- `777270f` failed to build: `discardTurnText` was only in the unpushed D69 work (added in `866ffa2`).
+- Then one test failed because the per-turn log line now follows the activation line (fixed in `ae7af17`).
+- **Green:** run 42396999845 on `ae7af17`. Build (warnings are errors), unit tests and the unsigned archive all passed.
+  New ipa: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42396999845/artifacts/13584186217
+  (available until 2026-11-21).
+- **Not tested on device.**
+
 ## Concerns
 - **Voice into a live mode** needs that mode's start screen confirmed once on this phone. That keeps the guardrail:
   the start screen asks you to tell people the app is listening. Without it, a voice command could start listening
