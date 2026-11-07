@@ -183,7 +183,7 @@ def rizz_checks(options, expected=1):
     return out
 
 
-INTERVIEW_BAD = ["här lägger du", "ditt exempel", "ett bra svar", "du kan svara", "du kan säga", "en struktur", "strukturen", "börja med att",
+INTERVIEW_BAD = ["här lägger du", "ditt exempel", "ett bra svar", "du kan svara", "kan du svara", "du kan säga", "en struktur", "strukturen", "börja med att",
                  "star ", "bra fråga", "sammanfattningsvis", "lycka till"]
 
 
@@ -199,7 +199,7 @@ INVENTED_FACT = re.compile(
     r"|\bnär jag (?:jobbade|arbetade|var anställd|praktiserade)\b"
     r"|\bmin (?:förra|tidigare|nuvarande) (?:chef|arbetsgivare|kollega)"
     r"|\b(?:en gång|en kväll|en dag) (?:när|då|så) (?:jag|vi)\b"
-    r"|\bjag har (?:inte|aldrig) (?:arbetat|jobbat|haft|någon erfarenhet)"
+    r"|\bjag har (?:inte|aldrig) (?:arbetat|jobbat|haft|någon erfarenhet)|\bjag har ingen (?:tidigare )?erfarenhet"
     r"|\bnär (?:två|en|ett|kunden|barnen|hen|han|hon)\b[^.]{0,40}\b(?:började|blev|kom|sa)\b",
     re.I)
 # D77: said aloud in every interview answer: no remark about missing facts, no empty name
@@ -207,7 +207,7 @@ INTERVIEW_META = re.compile(
     r"\bjag heter (?:och|inte|att)\b|\bså jag svarar\b|\bi den här konversationen\b"
     r"|\bjag (?:har (?:inte|ingen)|inte har) (?:någon |något |en |ett )?(?:konkret|egen|specifik)"
     r"|\bsvarar jag (?:med|utifrån) (?:hur|vad)\b|\bjag börjar med (?:vem|vad)\b"
-    r"|\bjag kan inte (?:säga|uppge|berätta|nämna) (?:min|mitt|mina)\b|\bi den här övningen\b", re.I)
+    r"|\bjag kan inte (?:säga|uppge|berätta|nämna|veta) (?:min|mitt|mina|vilken|vilket|vad|hur)\b|\bi den här övningen\b", re.I)
 
 
 def interview_checks(text, turn):
