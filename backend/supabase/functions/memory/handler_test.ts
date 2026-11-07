@@ -90,3 +90,19 @@ Deno.test("D80 memory: validation, method and rate limits", async () => {
   assertEquals((await tight(post({ turn: { q: "jag läser kemi" } }))).status, 200);
   assertEquals((await tight(post({ turn: { q: "jag läser kemi" } }))).status, 429);
 });
+
+Deno.test("D80 memory: accepts the app's body (turn.question / turn.answer / mode, today, weekday, timezone)", async () => {
+  const { h, llm } = mk('{"add": ["Har biologiprov fredag 13 november 2026."]}');
+  const r = await h(post({
+    turn: { question: "jag har biologiprov på fredag", answer: "Lycka till!", mode: "prov" },
+    memories: [],
+    today: "2026-11-07",
+    weekday: "lördag",
+    timezone: "Europe/Stockholm",
+    language: "sv",
+  }));
+  assertEquals(r.status, 200);
+  assertEquals((await r.json()).add, ["Har biologiprov fredag 13 november 2026."]);
+  assert(llm.calls[0].user.includes("<q>jag har biologiprov på fredag</q>"));
+  assert(llm.calls[0].user.includes("<a>Lycka till!</a>"));
+});

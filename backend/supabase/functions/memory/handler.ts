@@ -13,7 +13,7 @@ import type { LLMProvider } from "../answer/llm/types.ts";
  * changed facts about the wearer (tests, dates as absolute dates, subjects, wishes, rules). Never sensitive
  * categories. Nothing is stored or logged: the text is processed and dropped (usage keeps metadata only).
  *
- * Request:  {"turn": {"q": "...", "a": "..."?}, "memories": ["..."]?, "language": "sv"|"en"?}
+ * Request:  {"turn": {"question": "...", "answer": "..."?, "mode"?}, "memories": ["..."]?, "language": "sv"|"en"?}
  * Response: {"add": ["..."], "update": [{"old": "...", "new": "..."}], "remove": ["..."], "skipped"?: "no_self_reference"}
  */
 export const MEMORY_LIMITS = { bodyBytes: 16_384, q: 1000, a: 2000, memories: 30, memory: 200, items: 5 };
@@ -75,9 +75,12 @@ function clean(s: unknown, max: number): string | null {
 export function validateMemoryRequest(raw: unknown): { q: string; a: string; memories: string[]; language: string } {
   const b = raw as Record<string, unknown> | null;
   const turn = b?.turn as Record<string, unknown> | undefined;
-  const q = clean(turn?.q, MEMORY_LIMITS.q);
-  if (!q) throw new HttpError(400, "invalid_request", `turn.q is required (max ${MEMORY_LIMITS.q} characters)`);
-  const a = turn?.a === undefined || turn?.a === null ? "" : clean(turn.a, MEMORY_LIMITS.a);
+  // The app (Lumen/Core/History/MemoryExtraction.swift) sends turn.question / turn.answer; q / a also work.
+  // Its today / weekday / timezone fields are ignored: the date comes from the server's Swedish clock.
+  const q = clean(turn?.question ?? turn?.q, MEMORY_LIMITS.q);
+  if (!q) throw new HttpError(400, "invalid_request", `turn.question is required (max ${MEMORY_LIMITS.q} characters)`);
+  const rawA = turn?.answer ?? turn?.a;
+  const a = rawA === undefined || rawA === null || rawA === "" ? "" : clean(rawA, MEMORY_LIMITS.a);
   if (a === null) throw new HttpError(400, "invalid_request", `turn.a is at most ${MEMORY_LIMITS.a} characters`);
   const mem = b?.memories ?? [];
   if (!Array.isArray(mem) || mem.length > MEMORY_LIMITS.memories) {
