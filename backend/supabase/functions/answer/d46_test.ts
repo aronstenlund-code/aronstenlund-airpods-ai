@@ -916,3 +916,13 @@ Deno.test("D72 live test: more self-narration about not searching is caught", ()
     ]
   ) assert(isSearchMeta(s), s);
 });
+
+Deno.test("D72 live test: a lone source line is never the whole answer", () => {
+  const opts = { previousAnswers: [], trimQuestion: false, firstLineOnly: false, web: true };
+  const a = new AnswerPost(opts);
+  assertEquals(a.push("Succeeding rulers were his son and heir. ") + a.push("källa: riksdagen.se") + a.finish(), "");
+  const b = new AnswerPost(opts);
+  const out = b.push("Den femte presidenten var James Monroe. ") + b.push("källa: britannica.com") + b.finish();
+  assertStringIncludes(out, "James Monroe");
+  assertStringIncludes(out, "Källa: Britannica.");
+});

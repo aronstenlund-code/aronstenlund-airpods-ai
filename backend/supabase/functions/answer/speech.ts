@@ -559,6 +559,7 @@ export class AnswerPost {
   private readonly tap = new SummaryTap();
   private readonly rel: RelationTap;
   private readonly src: SourceTap;
+  private spoke = false;
   private readonly en: EnglishGate;
   private readonly gate: FirstLineGate;
   private readonly nums = new NumberStream();
@@ -611,7 +612,9 @@ export class AnswerPost {
       this.gate.push(this.en.push(this.src.push(this.tap.push(this.rel.push(raw))))),
     );
     if (!a) return "";
-    return this.cap(this.nums.push(this.trim.push(a)));
+    const out = this.cap(this.nums.push(this.trim.push(a)));
+    if (out.trim()) this.spoke = true;
+    return out;
   }
 
   finish(): string {
@@ -620,6 +623,10 @@ export class AnswerPost {
     const e = this.en.push(s) + this.en.finish();
     const rest = this.trim.push(this.dup.push(this.gate.push(e)) + this.dup.finish()) +
       this.trim.finish();
-    return this.cap(this.nums.push(rest) + this.nums.finish());
+    const out = this.cap(this.nums.push(rest) + this.nums.finish());
+    // D72 live test: when every answer sentence was filtered, a lone "Källa: X." is not an answer
+    // (nothing is spoken, so the handler reports empty_answer and the app falls back).
+    if (!this.spoke && /^\s*Källa: [^.]*\.\s*$/.test(out)) return "";
+    return out;
   }
 }
