@@ -17,8 +17,8 @@ struct StudyTuning: Equatable, Sendable {
     var minimumSpeechDBFS: Double = -50
     /// The floor follows quieter input at once and rises slowly (dB per second) so speech never becomes the floor.
     var floorRiseDBPerSecond: Double = 1.0
-    /// No user speech for this long ends the session (and, in Provläge, releases the microphone: "sparläge").
-    var autoEndSilence: TimeInterval = 600
+    /// No user speech for this long ends the session and releases the microphone. Nil: never (D71, the default).
+    var autoEndSilence: TimeInterval?
     /// Rizzläge: nobody has spoken for this long (D43). Nil: off.
     var stallSilence: TimeInterval?
     /// Input this recent means someone is talking: suggestions wait for a pause.
@@ -132,7 +132,7 @@ struct StudyMachine: Equatable, Sendable {
                     }
                 }
             }
-            if let activity = lastActivityAt, now.timeIntervalSince(activity) >= tuning.autoEndSilence {
+            if let limit = tuning.autoEndSilence, let activity = lastActivityAt, now.timeIntervalSince(activity) >= limit {
                 phase = .off
                 resetTurn()
                 return .autoEnded
@@ -262,7 +262,7 @@ final class StudySettings {
     var endpointSilence: Double {
         didSet { defaults.set(endpointSilence, forKey: Self.endpointKey) }
     }
-    /// 1…60 minutes.
+    /// 0 = never (D71, the default), otherwise 1…60 minutes.
     var autoEndMinutes: Int {
         didSet { defaults.set(autoEndMinutes, forKey: Self.autoEndKey) }
     }
@@ -276,14 +276,14 @@ final class StudySettings {
         self.defaults = defaults
         let stored = defaults.object(forKey: Self.endpointKey) as? Double
         self.endpointSilence = stored ?? 0.8
-        self.autoEndMinutes = defaults.object(forKey: Self.autoEndKey) as? Int ?? 10
+        self.autoEndMinutes = defaults.object(forKey: Self.autoEndKey) as? Int ?? 0
         self.useVoiceChatMode = defaults.object(forKey: Self.voiceChatKey) as? Bool ?? false
     }
 
     var tuning: StudyTuning {
         var tuning = StudyTuning()
         tuning.endpointSilence = min(1.5, max(0.5, endpointSilence))
-        tuning.autoEndSilence = TimeInterval(min(60, max(1, autoEndMinutes)) * 60)
+        tuning.autoEndSilence = autoEndMinutes > 0 ? TimeInterval(min(60, autoEndMinutes) * 60) : nil
         return tuning
     }
 }

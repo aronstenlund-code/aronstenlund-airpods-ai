@@ -25,8 +25,10 @@ import Testing
         return (events.first?.event, events.first?.at ?? start + seconds)
     }
 
-    private func started() -> StudyMachine {
-        var machine = StudyMachine()
+    private func started(autoEnd: TimeInterval? = 600) -> StudyMachine {
+        var tuning = StudyTuning()
+        tuning.autoEndSilence = autoEnd
+        var machine = StudyMachine(tuning: tuning)
         machine.start(at: t0)
         // one second of room noise establishes the floor
         _ = feed(&machine, level: quiet, from: 0, seconds: 1.0)
@@ -122,6 +124,15 @@ import Testing
         #expect(machine.phase == .off)
     }
 
+    @Test func neverAutoEndsByDefault() {
+        #expect(StudyTuning().autoEndSilence == nil, "D71: Provläge runs until the user ends it")
+        var machine = started(autoEnd: nil)
+        for second in stride(from: 1.0, to: 3_700, by: 5) {
+            #expect(machine.level(quiet, at: t0.addingTimeInterval(second)) != .autoEnded)
+        }
+        #expect(machine.phase == .listening)
+    }
+
     @Test func speechPostponesTheAutoEnd() {
         var machine = started()
         _ = feedAll(&machine, level: loud, from: 500, seconds: 0.5) // the user said something at 8 min
@@ -168,9 +179,9 @@ import Testing
         defaults.removePersistentDomain(forName: suite)
         let settings = StudySettings(defaults: defaults)
         #expect(settings.endpointSilence == 0.8)
-        #expect(settings.autoEndMinutes == 10)
+        #expect(settings.autoEndMinutes == 0, "never, D71")
         #expect(!settings.useVoiceChatMode)
-        #expect(settings.tuning.autoEndSilence == 600)
+        #expect(settings.tuning.autoEndSilence == nil)
 
         settings.endpointSilence = 1.2
         settings.autoEndMinutes = 3

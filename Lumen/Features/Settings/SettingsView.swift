@@ -143,8 +143,12 @@ struct SettingsView: View {
                     .font(.footnote.monospacedDigit())
                     .frame(width: 44, alignment: .trailing)
             }
-            Stepper(value: $study.autoEndMinutes, in: 1...60) {
-                Text("Auto-end after \(study.autoEndMinutes) min of silence")
+            Stepper(value: $study.autoEndMinutes, in: 0...60) {
+                if study.autoEndMinutes == 0 {
+                    Text("Auto-end after silence: never")
+                } else {
+                    Text("Auto-end after \(study.autoEndMinutes) min of silence")
+                }
             }
             Toggle("Echo cancellation (voiceChat) in Provläge", isOn: $study.useVoiceChatMode)
             Text("Hands-free: speak, pause, get a tutor-style answer, continue. Talking while it speaks interrupts it. Tuned on device.")

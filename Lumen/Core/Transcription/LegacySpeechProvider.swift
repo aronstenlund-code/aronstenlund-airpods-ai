@@ -33,9 +33,7 @@ final class LegacySpeechProvider: STTProvider {
             throw STTError.onDeviceUnavailable(locale: identifier)
         }
         self.recognizer = recognizer
-        let status = await withCheckedContinuation { (continuation: CheckedContinuation<SFSpeechRecognizerAuthorizationStatus, Never>) in
-            SFSpeechRecognizer.requestAuthorization { continuation.resume(returning: $0) }
-        }
+        let status = await Self.requestAuthorization()
         guard status == .authorized else { throw STTError.authorizationDenied }
     }
 
@@ -52,8 +50,28 @@ final class LegacySpeechProvider: STTProvider {
         }
         self.request = request
 
-        let continuation = resultsContinuation
-        task = recognizer.recognitionTask(with: request) { result, error in
+        task = recognizer.recognitionTask(with: request, resultHandler: Self.resultHandler(resultsContinuation))
+
+        feedTask = Task { [weak self] in
+            for await chunk in audio {
+                self?.append(chunk)
+            }
+            self?.request?.endAudio()
+        }
+        Log.transcription.info("on-device SFSpeechRecognizer started · \(self.locale.identifier(.bcp47), privacy: .public)")
+    }
+
+    // Speech calls these on its own queues. Made outside the main actor so they carry no main-actor isolation,
+    // which Swift 6 would trap on at run time (the capture crash of 2026-11-07).
+
+    nonisolated static func requestAuthorization() async -> SFSpeechRecognizerAuthorizationStatus {
+        await withCheckedContinuation { (continuation: CheckedContinuation<SFSpeechRecognizerAuthorizationStatus, Never>) in
+            SFSpeechRecognizer.requestAuthorization { continuation.resume(returning: $0) }
+        }
+    }
+
+    nonisolated static func resultHandler(_ continuation: AsyncStream<STTResult>.Continuation) -> @Sendable (SFSpeechRecognitionResult?, (any Error)?) -> Void {
+        { result, error in
             if let result {
                 continuation.yield(STTResult(text: result.bestTranscription.formattedString,
                                              isFinal: result.isFinal,
@@ -64,14 +82,6 @@ final class LegacySpeechProvider: STTProvider {
                 Log.transcription.error("SFSpeechRecognizer: \(error.localizedDescription, privacy: .public)")
             }
         }
-
-        feedTask = Task { [weak self] in
-            for await chunk in audio {
-                self?.append(chunk)
-            }
-            self?.request?.endAudio()
-        }
-        Log.transcription.info("on-device SFSpeechRecognizer started · \(self.locale.identifier(.bcp47), privacy: .public)")
     }
 
     func stop() async {

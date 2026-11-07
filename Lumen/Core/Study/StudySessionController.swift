@@ -38,7 +38,7 @@ final class StudySessionController {
         endedBySilence = false
         machine.start(at: now)
         subscribeToLevels()
-        Log.session.info("Provläge started · endpoint \(self.machine.tuning.endpointSilence, privacy: .public) s · auto-end \(Int(self.machine.tuning.autoEndSilence), privacy: .public) s")
+        Log.session.info("Provläge started · endpoint \(self.machine.tuning.endpointSilence, privacy: .public) s · auto-end \(self.machine.tuning.autoEndSilence.map { "\(Int($0)) s" } ?? "never", privacy: .public)")
     }
 
     func stop() {

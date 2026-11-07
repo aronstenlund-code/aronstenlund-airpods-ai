@@ -147,10 +147,19 @@ final class CaptureService: CaptureServicing {
         let context = try CaptureTapContext(inputFormat: hardwareFormat, ring: ringBuffer, continuation: continuation,
                                             maxInputFrames: AVAudioFrameCount(hardwareFormat.sampleRate * 0.25))
         let requestedFrames = AVAudioFrameCount(hardwareFormat.sampleRate * LumenAudioFormat.chunkDuration)
-        input.installTap(onBus: 0, bufferSize: requestedFrames, format: hardwareFormat) { buffer, time in
+        input.installTap(onBus: 0, bufferSize: requestedFrames, format: hardwareFormat, block: Self.tapBlock(for: context))
+        return context
+    }
+
+    /// The tap block, made outside the main actor. Core Audio calls it on its own real-time queue
+    /// (RealtimeMessenger.mServiceQueue). A closure written inline in this `@MainActor` class inherits main-actor
+    /// isolation, and Swift 6 checks that at run time: the first buffer crashed with EXC_BREAKPOINT in
+    /// `_dispatch_assert_queue_fail` on the iPhone (2026-11-07). This one is `@Sendable` and nonisolated.
+    nonisolated static func tapBlock(for context: CaptureTapContext) -> AVAudioNodeTapBlock {
+        let block: @Sendable (AVAudioPCMBuffer, AVAudioTime) -> Void = { buffer, time in
             context.process(buffer, at: time)
         }
-        return context
+        return block
     }
 
     func stop() {

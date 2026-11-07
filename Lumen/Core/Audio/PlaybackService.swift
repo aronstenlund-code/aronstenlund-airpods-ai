@@ -162,10 +162,40 @@ final class PlaybackService: PlaybackServicing {
         engine.connect(timePitch, to: engine.mainMixerNode, format: playbackFormat)
         timePitch.rate = rate
         player.volume = speechVolume
-        let probe = self.probe
-        timePitch.installTap(onBus: 0, bufferSize: 256, format: playbackFormat) { buffer, time in
+        timePitch.installTap(onBus: 0, bufferSize: 256, format: playbackFormat, block: Self.probeTapBlock(probe))
+    }
+
+    // MARK: - Callbacks that iOS calls on its own threads
+    //
+    // Made in nonisolated static functions: an inline closure in this `@MainActor` class would inherit main-actor
+    // isolation, and Swift 6 traps at run time when Core Audio or the synthesizer calls it on another queue
+    // (the capture crash of 2026-11-07, see CaptureService.tapBlock).
+
+    /// The latency probe on the playback branch; runs on the real-time render queue.
+    nonisolated static func probeTapBlock(_ probe: PlaybackLatencyProbe) -> AVAudioNodeTapBlock {
+        let block: @Sendable (AVAudioPCMBuffer, AVAudioTime) -> Void = { buffer, time in
             probe.observe(buffer, at: time)
         }
+        return block
+    }
+
+    /// `AVSpeechSynthesizer.write`: buffers arrive on the synthesizer's queue. An empty buffer ends the utterance.
+    nonisolated static func ttsBufferCallback(_ continuation: AsyncStream<TTSChunk>.Continuation) -> @Sendable (AVAudioBuffer) -> Void {
+        { buffer in
+            guard let pcm = buffer as? AVAudioPCMBuffer else { return }
+            if pcm.frameLength == 0 {
+                continuation.finish()
+                return
+            }
+            if let chunk = TTSChunk(pcm) {
+                continuation.yield(chunk)
+            }
+        }
+    }
+
+    /// `scheduleBuffer` completion: runs on a Core Audio thread, hands `action` the work for the main actor.
+    nonisolated static func playedBackHandler(_ action: @escaping @Sendable () -> Void) -> @Sendable (AVAudioPlayerNodeCompletionCallbackType) -> Void {
+        { _ in action() }
     }
 
     // MARK: - Test tone
@@ -207,16 +237,7 @@ final class PlaybackService: PlaybackServicing {
         requestPlayback()
         Log.playback.info("Speak (\(language, privacy: .public)): \(text.count, privacy: .public) chars")
 
-        synthesizer.write(utterance) { buffer in
-            guard let pcm = buffer as? AVAudioPCMBuffer else { return }
-            if pcm.frameLength == 0 {
-                continuation.finish()
-                return
-            }
-            if let chunk = TTSChunk(pcm) {
-                continuation.yield(chunk)
-            }
-        }
+        synthesizer.write(utterance, toBufferCallback: Self.ttsBufferCallback(continuation))
 
         defer { endStream() }
         var chunkCount = 0
@@ -282,9 +303,10 @@ final class PlaybackService: PlaybackServicing {
         pendingBuffers += 1
         updateSpeaking()
         let generation = scheduleGeneration
-        player.scheduleBuffer(output, completionCallbackType: .dataPlayedBack) { [weak self] _ in
-            Task { @MainActor in self?.bufferFinished(generation: generation) }
-        }
+        player.scheduleBuffer(output, completionCallbackType: .dataPlayedBack,
+                              completionHandler: Self.playedBackHandler { [weak self] in
+                                  Task { @MainActor in self?.bufferFinished(generation: generation) }
+                              })
         if !player.isPlaying { player.play() }
         onAudioScheduled?()
     }
