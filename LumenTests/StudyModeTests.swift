@@ -309,8 +309,9 @@ import Testing
         #expect(rig.model.answers.status == .idle)
     }
 
-    @Test func silenceAutoEndsAndReleasesTheMicrophone() async {
+    @Test func aChosenAutoEndEndsAfterSilenceAndReleasesTheMicrophone() async {
         let rig = makeRig()
+        rig.study.settings.autoEndMinutes = 10 // off by default (D71); the setting still works
         await rig.model.toggleStudyMode()
         #expect(rig.model.isListening)
         rig.study.start(at: t0)
@@ -322,6 +323,19 @@ import Testing
         #expect(rig.study.endedBySilence)
         #expect(rig.model.studyNotice?.contains("10 min") == true)
         #expect(await waitUntil { !rig.model.isListening }, "sparläge: the microphone is switched off")
+    }
+
+    @Test func byDefaultSilenceNeverEndsProvlage() async {
+        let rig = makeRig()
+        await rig.model.toggleStudyMode()
+        rig.study.start(at: t0)
+
+        rig.study.level(-62, at: t0)
+        rig.study.level(-62, at: t0.addingTimeInterval(601))
+        rig.study.level(-62, at: t0.addingTimeInterval(7_200))
+
+        #expect(rig.study.isActive, "D71: Provläge runs until the user ends it")
+        #expect(rig.model.isListening)
     }
 
     @Test func endingByTheUserKeepsListeningAndPausingEndsIt() async {
