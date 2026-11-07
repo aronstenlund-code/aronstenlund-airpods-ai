@@ -32,9 +32,8 @@ FluidAudio at the pinned commit links, through its **default traits**:
 The licence rule only allows MIT, Apache-2.0 or BSD. So the app does not depend on FluidAudio directly. The local
 package `LumenVAD` declares it with `traits: []`, which leaves the VAD/ASR core (Apache-2.0) and fastcluster (BSD-2).
 
-CI now fails the build if any LuxTTS, Kokoro, lexicon or Nemo resource ends up in the app. Whether Xcode honours the
-traits of a transitive package is **verified only when CI's bundle check passes**. If it does not, the right fix is to
-drop FluidAudio again, not to accept the data.
+CI now fails the build if any LuxTTS, Kokoro, lexicon or Nemo resource ends up in the app. The first CI run shows
+that Xcode honours the traits of the transitive package (see CI below).
 
 ## Technical notes
 - CI no longer passes `SWIFT_TREAT_WARNINGS_AS_ERRORS` / `GCC_TREAT_WARNINGS_AS_ERRORS` on the `xcodebuild` command
@@ -55,6 +54,15 @@ drop FluidAudio again, not to accept the data.
   downloaded on first use.
 - **The on-device pass** over a recording waits a fixed 4 s for the last words. A very long last sentence may be
   cut.
+
+## CI
+- **Green on the first run:** run 42407573316 on `03969f7`. Build, unit tests and the unsigned archive all passed.
+  FluidAudio was checked out at `ee78635d…`, and no LuxTTS, Kokoro or Nemo target was built. The bundle check
+  printed "Licence check: no FluidAudio TTS or Nemo resources in the bundle". **The traits are verified in CI.**
+- The ipa grew from about 2.1 MB to 5.1 MB with the VAD/ASR core. New ipa:
+  https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42407573316/artifacts/13588044838
+  (available until 2026-11-21).
+- **Not tested on device.**
 
 ## Next session
 Aron: install the new ipa and run §3z3 (before/after) and §3k, then send the files. Me: tune the values per mode from
