@@ -53,11 +53,11 @@ jobs:
         run: |
           set -e
           for f in answer tts stt-token voices feedback shared-history; do
-            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api
+            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes
           done
           # These do their own auth (service key / public endpoint with caps), as documented in backend/README.md.
           for f in usage-stats feedback-admin waitlist; do
-            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --no-verify-jwt
+            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes --no-verify-jwt
           done
       - name: Smoke test
         run: |
