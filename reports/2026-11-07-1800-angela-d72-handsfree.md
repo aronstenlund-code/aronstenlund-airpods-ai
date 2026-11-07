@@ -31,6 +31,15 @@ or feedback only when asked for. The app matches that. The app sends only `turn:
 explicit requests go as the fragment. The app has no "ge mig tre" yet: it needs the D69 instruction channel.
 **Verified in docs** (`backend/README.md`).
 
+## CI
+- `fe3e41a` failed on one test that still expected the backend mode `push_to_talk` for a typed question (it is `text`).
+  Fixed in `4872c88`.
+- **Green:** run 42391668005 on `4872c88`. Build (warnings are errors), unit tests and the unsigned archive all passed.
+  New ipa with the crash fix + D71 + D72:
+  https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42391668005/artifacts/13581583867 (available
+  until 2026-11-21).
+- **Not tested on device.**
+
 ## Concerns
 - **"Få A-svar till provet"** can be read as help *during* an exam. The consent screen and D41 say Lumen must not be
   used during exams, and R6 (school policy) is rated high. Provläge is a study session, and the card is built as
