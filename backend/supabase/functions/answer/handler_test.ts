@@ -975,5 +975,9 @@ Deno.test("D72: 'ge mig tre pickup lines' -> three suggestions on the suggestion
   const e1 = await readSse(await setup({ provider: one.provider }).handler(post(socialBody())));
   assertEquals(e1.map((e) => e.event), ["suggestion_preview", "suggestions", "done"]);
   assertEquals(e1[1].data as unknown, ["Bara den här."]);
-  assert(one.seen[0].user.includes("<count>1</count>"));
+  assert(one.seen[0].user.includes("<count>2</count>"), "one shown, a backup line written");
+  // the backup is used when line 1 is filtered
+  const bk = recordingProvider("1|Vill du ligga med mig ikväll?\n2|Då bjuder jag på kaffe efteråt.\n");
+  const e2 = await readSse(await setup({ provider: bk.provider }).handler(post(socialBody())));
+  assertEquals(e2.find((e) => e.event === "suggestions")?.data as unknown, ["Då bjuder jag på kaffe efteråt."]);
 });

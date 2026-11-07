@@ -231,7 +231,7 @@ Deno.test("conversation formatting and user turn: speakers, trigger, style, inte
 Deno.test("prompt: format, grounding, logic, respect, stage, two styles; hold-out clean", () => {
   const common = [
     "1|<line>",
-    "exactly <count> lines (usually 1)",
+    "exactly <count> lines (usually 2: your best line and a backup",
     "Line 1 is your strongest line",
     "must be concrete",
     "explain in one sentence",
@@ -266,7 +266,7 @@ Deno.test("prompt: format, grounding, logic, respect, stage, two styles; hold-ou
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "a callback to something said earlier");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "light self-irony");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "a quick comeback");
-  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "with three or more, make the last one a comeback");
+  assertStringIncludes(SYSTEM_PROMPT_RIZZ, "with three or more lines, make the last one a comeback");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "never flirting");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "never mocking anyone present");
   assertStringIncludes(SYSTEM_PROMPT_RIZZ, "several different people");
@@ -282,7 +282,7 @@ Deno.test("prompt: format, grounding, logic, respect, stage, two styles; hold-ou
   for (const p of [SYSTEM_PROMPT_RIZZ, SYSTEM_PROMPT_RIZZ_FLIRT]) {
     assertEquals(p.includes("TOP"), false);
     const ex = p.split("\n").filter((l) => /^\d\|[^<]/.test(l));
-    assertEquals(ex.length, 4);
+    assertEquals(ex.length, 5);
     assertEquals(pickSuggestions(ex.join("\n") + "\n", true, undefined, 4).length, 3);
     assertStringIncludes(p, "<request>");
   }
@@ -448,7 +448,8 @@ Deno.test("D72: one suggestion by default; an explicit 'ge mig tre' asks for mor
   const one = req();
   assertEquals(suggestionCount(one), 1);
   assertEquals([personaPlan(one)?.kind, personaPlan(one)?.maxTokens], ["rizz", 100]);
-  assertStringIncludes(buildRizzUserMessage(one), "<count>1</count>");
+  // one shown, two written (the second is a backup if the first is filtered)
+  assertStringIncludes(buildRizzUserMessage(one), "<count>2</count>");
   assertEquals(buildRizzUserMessage(one).includes("<request>"), false);
   const three = req({ social: social({ calibrate: "ge mig tre pickup lines" }) });
   assertEquals(personaPlan(three)?.kind, "rizz", "a count request is a suggestion call, not a calibration");

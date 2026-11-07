@@ -871,9 +871,24 @@ Deno.test("Oscar round 2 F16: web-mode sentences that narrate the search decisio
   }
   assertStringIncludes(WEB_PROMPT, "Never mention searching");
   // D72 live test: counting silently gave the wrong king; the model may name the list first again
-  assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "you may name the items in order in one short sentence first");
+  assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "first name the items in order up to the Nth in one short sentence");
   assert(isEnglishSentence("Ordningen stämmer också med Succeeding rulers were his son Oscar den förste."));
   for (const sv of ["Karl den femtonde var kung från 1859.", "Han blev kung efter sin far."]) {
     assert(!isEnglishSentence(sv), sv);
+  }
+});
+
+Deno.test("D72 live test: a regnal number split from its name by the stream is still read as one", () => {
+  const t = "Han efterträddes av sin son Karl XV. Sedan kom Oscar II och Gustav V.";
+  for (const size of [1, 2, 3, 5, 7, 23]) {
+    const s = new NumberStream();
+    let out = "";
+    for (let k = 0; k < t.length; k += size) out += s.push(t.slice(k, k + size));
+    out += s.finish();
+    assertEquals(
+      out,
+      "Han efterträddes av sin son Karl den femtonde. Sedan kom Oscar den andre och Gustav den femte.",
+      `${size}`,
+    );
   }
 });

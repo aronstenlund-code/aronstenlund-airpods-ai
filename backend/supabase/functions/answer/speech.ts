@@ -519,7 +519,11 @@ export class NumberStream {
     }
     let cut = lastWs + 1;
     const head = this.buf.slice(0, cut);
-    const m = /((?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*|[=≈≠]|\S*\^\S*)\s+$/.exec(head); // incl. "1 " of "1 789"
+    const m = /((?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*|[=≈≠]|\S*\^\S*)\s+$/.exec(head) ?? // incl. "1 " of "1 789"
+      // D72 live test: "Karl " must wait for a possible "XV" (a regnal number is read as a pair with the
+      // name), and a "Karl XV." pair is passed on together.
+      /(?:\p{Lu}\p{L}+\s+)?(?:XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)[.,!?;:]?\s+$|\p{Lu}\p{L}+\s+$/u
+        .exec(head);
     if (m && this.buf.length - cut < 160) cut = head.length - m[0].length;
     const out = this.say(this.buf.slice(0, cut));
     this.buf = this.buf.slice(cut);
