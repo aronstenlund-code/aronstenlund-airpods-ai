@@ -93,13 +93,16 @@ Deno.test("all prompts carry the general principles and the no-filler rule", () 
     assertStringIncludes(p, "last_assistant_turn");
     assertStringIncludes(p, "Every sentence must carry content");
     assertStringIncludes(p, 'never "vad menar du"');
-    assertStringIncludes(p, "ja/nej or one word");
+    // D75: Provläge never asks for clarification; it stays silent instead
+    if (p === SYSTEM_PROMPT_DIRECT_TUTOR) assertStringIncludes(p, "[[TYST]]");
+    else assertStringIncludes(p, "ja/nej or one word");
+    assertStringIncludes(p, "Misheard subject words");
     assertStringIncludes(p, "never begin by repeating the fragment");
     assertStringIncludes(p, "<goals>");
     assertStringIncludes(p, "<commands>");
     assertStringIncludes(p, "continue_more");
   }
-  assert(SYSTEM_PROMPT.length < 11200);
+  assert(SYSTEM_PROMPT.length < 12000); // D75: silence + misheard-term rules (cached, so ~free)
   assert(SYSTEM_PROMPT_DIRECT.length < 8600);
 });
 

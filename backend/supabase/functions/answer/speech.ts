@@ -304,6 +304,114 @@ export class EnglishGate {
   }
 }
 
+// ---------- 0a. D75: silence in Provläge / Auto ----------
+/** The model's "say nothing" marker (prompt.ts SILENT_MARK); everything after it is dropped. */
+const SILENT_OPEN = "[[TYST";
+export class SilenceTap {
+  silent = false;
+  private buf = "";
+  private decided: boolean;
+  constructor(enabled: boolean) {
+    this.decided = !enabled;
+  }
+  push(text: string): string {
+    if (this.silent) return "";
+    if (this.decided) return text;
+    this.buf += text;
+    const t = this.buf.trimStart().toUpperCase();
+    if (t.length < SILENT_OPEN.length) {
+      return SILENT_OPEN.startsWith(t) ? "" : this.release();
+    }
+    if (t.startsWith(SILENT_OPEN)) {
+      this.silent = true;
+      this.buf = "";
+      return "";
+    }
+    return this.release();
+  }
+  finish(): string {
+    if (this.silent || this.decided) return "";
+    // a reply that is only "[[T" or "[[" is not an answer either
+    if (this.buf.trim() && SILENT_OPEN.startsWith(this.buf.trim().toUpperCase())) {
+      this.silent = true;
+      this.buf = "";
+      return "";
+    }
+    return this.release();
+  }
+  private release(): string {
+    this.decided = true;
+    const b = this.buf;
+    this.buf = "";
+    return b;
+  }
+}
+
+/**
+ * D75 (first device run): the model commented on what the student seemed to think ("Det låter som att du
+ * tänker på …") or asked for clarification ("Berätta gärna ordet …") instead of answering. Such a
+ * sentence is never spoken in Provläge or Auto; when nothing else remains the reply is silence.
+ */
+const META_REPLY = new RegExp(
+  [
+    String.raw`^(?:det|detta|det här) (?:låter|verkar|känns|tycks) (?:som )?(?:att|om) (?:du|ni)\b`,
+    String.raw`^(?:det|detta|det här) (?:låter|verkar) som (?:en|ett) (?:ofullständig|avbruten|avbrutet|ofullständigt|halv)`,
+    String.raw`^(?:du|ni) (?:verkar|låter|tycks|kanske) (?:tänka|mena|syfta|undra|vilja|fundera|prata)`,
+    String.raw`^(?:jag )?(?:förstår|uppfattade|uppfattar|hörde|fattar|kunde inte (?:höra|uppfatta|förstå)) (?:tyvärr )?(?:inte|riktigt|helt)?`,
+    String.raw`^jag (?:är )?(?:inte (?:helt )?säker på|osäker på) vad (?:du|ni)`,
+    String.raw`^jag (?:kunde|kan) inte (?:höra|uppfatta|tolka|förstå)`,
+    String.raw`^berätta (?:gärna|lite|mer|vad (?:du|ni) (?:menar|vill|tänker|syftar))`,
+    String.raw`^(?:kan|kunde|vill) (?:du|ni) (?:förtydliga|upprepa|utveckla|precisera|säga (?:det )?igen|säga (?:lite )?mer|berätta (?:lite )?mer|ge (?:mig )?(?:mer|lite) )`,
+    String.raw`^(?:vad|vilket|vilken|vem) (?:menar|syftar|tänker) (?:du|ni)`,
+    String.raw`^menar (?:du|ni)\b`,
+    String.raw`^tänker (?:du|ni) på\b`,
+    String.raw`^syftar (?:du|ni) på\b`,
+    String.raw`^om (?:du|ni) (?:menar|syftar|tänker) (?:på )?`,
+    String.raw`^(?:säg|ge|nämn) (?:gärna |mig )+(?:ordet|vilket|vad|mer)`,
+    String.raw`^hörde jag rätt`,
+    String.raw`^jag gissar (?:att|på att) (?:du|ni)`,
+    String.raw`^(?:det|det där|det här) (?:är|var) (?:lite )?(?:svårt|oklart) att (?:förstå|veta|tolka|höra|säga)`,
+  ].join("|"),
+  "iu",
+);
+export function isMetaReply(sentence: string): boolean {
+  return META_REPLY.test(sentence.trim().replace(/^[\s"'„”»«-]+/, ""));
+}
+
+export class MetaGate {
+  dropped = 0;
+  private buf = "";
+  constructor(private readonly enabled: boolean) {}
+  push(text: string): string {
+    if (!this.enabled) return text;
+    this.buf += text;
+    let out = "";
+    for (;;) {
+      const m = /[.!?](?:\s+|$)|\n/.exec(this.buf);
+      if (!m || m.index + m[0].length >= this.buf.length && !/\s$/.test(m[0]) && m[0] !== "\n") {
+        break;
+      }
+      const end = m.index + m[0].length;
+      out += this.keep(this.buf.slice(0, end));
+      this.buf = this.buf.slice(end);
+    }
+    return out;
+  }
+  finish(): string {
+    if (!this.enabled) return "";
+    const r = this.keep(this.buf);
+    this.buf = "";
+    return r;
+  }
+  private keep(sentence: string): string {
+    if (sentence.trim() && isMetaReply(sentence)) {
+      this.dropped++;
+      return "";
+    }
+    return sentence;
+  }
+}
+
 // ---------- 0b. first line only (social lines) ----------
 /** The social line is ONE line: whatever the model adds after the first line break (tips, requests for
  *  more context) is dropped in code, whatever the prompt said. */
@@ -551,6 +659,8 @@ export interface PostOptions {
   relationTag?: boolean;
   /** D65: web answer: `källa:` line to `source`, English sentences dropped. */
   web?: boolean;
+  /** D75: Provläge / Auto: the `[[TYST]]` marker and meta comments mean "say nothing". */
+  silence?: boolean;
 }
 
 export class AnswerPost {
@@ -558,6 +668,8 @@ export class AnswerPost {
   readonly trim: QuestionTrim;
   private readonly tap = new SummaryTap();
   private readonly rel: RelationTap;
+  private readonly sil: SilenceTap;
+  private readonly meta: MetaGate;
   private readonly src: SourceTap;
   private spoke = false;
   private readonly en: EnglishGate;
@@ -569,6 +681,8 @@ export class AnswerPost {
     this.trim = new QuestionTrim(opts.trimQuestion, opts.tutor === true);
     this.gate = new FirstLineGate(opts.firstLineOnly === true);
     this.rel = new RelationTap(opts.relationTag === true);
+    this.sil = new SilenceTap(opts.silence === true);
+    this.meta = new MetaGate(opts.silence === true);
     this.src = new SourceTap(opts.web === true);
     this.en = new EnglishGate(opts.web === true);
   }
@@ -593,7 +707,17 @@ export class AnswerPost {
 
   /** D48 summary of this exchange (from the trailer line), or null. */
   get summary(): string | null {
-    return this.tap.summary;
+    return this.silent ? null : this.tap.summary;
+  }
+
+  /** D75: the model chose silence, or every sentence was a meta comment (nothing was spoken). */
+  get silent(): boolean {
+    return this.sil.silent || (this.meta.dropped > 0 && !this.spoke);
+  }
+
+  /** D75: the silence marker was seen (the stream can stop at once). */
+  get silenceMarked(): boolean {
+    return this.sil.silent;
   }
 
   private capitalised = false;
@@ -609,7 +733,9 @@ export class AnswerPost {
 
   push(raw: string): string {
     const a = this.dup.push(
-      this.gate.push(this.en.push(this.src.push(this.tap.push(this.rel.push(raw))))),
+      this.gate.push(
+        this.meta.push(this.en.push(this.src.push(this.tap.push(this.sil.push(this.rel.push(raw)))))),
+      ),
     );
     if (!a) return "";
     const out = this.cap(this.nums.push(this.trim.push(a)));
@@ -618,15 +744,17 @@ export class AnswerPost {
   }
 
   finish(): string {
-    const t = this.tap.push(this.rel.finish()) + this.tap.finish();
+    const t = this.tap.push(this.sil.push(this.rel.finish()) + this.sil.finish()) + this.tap.finish();
     const s = this.src.push(t) + this.src.finish();
-    const e = this.en.push(s) + this.en.finish();
+    const e0 = this.en.push(s) + this.en.finish();
+    const e = this.meta.push(e0) + this.meta.finish();
     const rest = this.trim.push(this.dup.push(this.gate.push(e)) + this.dup.finish()) +
       this.trim.finish();
     const out = this.cap(this.nums.push(rest) + this.nums.finish());
     // D72 live test: when every answer sentence was filtered, a lone "Källa: X." is not an answer
     // (nothing is spoken, so the handler reports empty_answer and the app falls back).
     if (!this.spoke && /^\s*Källa: [^.]*\.\s*$/.test(out)) return "";
+    if (out.trim()) this.spoke = true;
     return out;
   }
 }

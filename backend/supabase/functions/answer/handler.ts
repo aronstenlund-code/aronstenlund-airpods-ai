@@ -416,6 +416,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let webSearches = 0;
       let status = "ok";
       const carry = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }; // tokens of discarded attempts
+      // D75: Provläge and Auto say nothing to a fragment that is not a question (or is too broken):
+      // the meta event is held until the first spoken text so the app can still be told to stay silent.
+      const silenceOn = !demo && !plan && (body.mode === "tutor" || body.mode === "auto");
+      let silenced = false;
 
       const isRizz = plan?.kind === "rizz";
       const modelUsed = isRizz ? (cfg.rizzModel ?? provider.model) : provider.model;
@@ -443,7 +447,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           language: body.language,
           provider: provider!.name,
           model: modelUsed,
-          is_question: m?.is_question ?? null,
+          is_question: silenced ? false : m?.is_question ?? null,
           confidence: m?.confidence ?? null,
           input_tokens: inTok,
           output_tokens: outTok,
@@ -579,9 +583,18 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             relationTag,
             web: webOn || !!need, // web filters also when the web cap turned search off
             tutor,
+            silence: silenceOn,
           });
+          let pendingMeta: Record<string, unknown> | null = null;
+          const flushMeta = () => {
+            if (!pendingMeta) return;
+            metaMs = now() - t0;
+            send("meta", pendingMeta);
+            pendingMeta = null;
+          };
           const deliver = (t: string) => {
             if (!t || closed) return;
+            flushMeta();
             if (ttftMs === null) ttftMs = now() - t0;
             answerChars += t.length;
             send("delta", { text: t });
@@ -600,21 +613,27 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let previewText: string | null = null;
           const emit = (ev: ParserEvent) => {
             if (ev.type === "meta") {
-              metaMs = now() - t0;
-              send("meta", {
+              const m = {
                 reconstructed_question: ev.meta.reconstructed_question,
                 confidence: ev.meta.confidence,
                 is_question: ev.meta.is_question,
                 needs_confirmation: ev.meta.needs_confirmation,
                 answer_type: ev.meta.answer_type,
                 relation: ev.meta.relation ?? null,
-              });
+              };
+              if (silenceOn && ev.meta.is_question) {
+                pendingMeta = m; // D75: sent with the first spoken text
+              } else {
+                metaMs = now() - t0;
+                send("meta", m);
+              }
               if (!ev.meta.is_question) {
                 status = "not_question";
                 stop = true;
               }
             } else {
               if (!stop) deliver(post.push(ev.text));
+              if (silenceOn && post.silenceMarked) stop = true; // D75: nothing more will be said
             }
           };
           const handle = (chunk: LLMChunk) => {
@@ -708,6 +727,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 relationTag,
                 web: webOn || !!need,
                 tutor,
+                silence: silenceOn,
               });
               r = await it.next();
             }
@@ -748,6 +768,22 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             if (parser.headerFailed) {
               console.warn(JSON.stringify({ evt: "header_parse_failed", mode: body.mode }));
             }
+            // D75: the model chose silence, or only meta comments were written: tell the app to stay quiet.
+            if (silenceOn && status === "ok" && ttftMs === null && post.silent) {
+              silenced = true;
+              status = "not_question";
+              pendingMeta = null;
+              metaMs = now() - t0;
+              send("meta", {
+                reconstructed_question: parser.meta?.reconstructed_question ?? body.fragment,
+                confidence: parser.meta?.confidence ?? 1,
+                is_question: false,
+                needs_confirmation: false,
+                answer_type: parser.meta?.answer_type ?? answerType,
+                relation: null,
+              });
+            }
+            flushMeta();
             if (status === "ok" && parser.meta?.is_question && ttftMs === null) {
               status = "empty_answer";
               send("error", {

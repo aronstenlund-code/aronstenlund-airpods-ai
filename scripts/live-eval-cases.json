@@ -1756,5 +1756,355 @@
 "max_words": 120
 }
 ]
+},
+{
+"id": "tyst-01",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är fotosyntes",
+"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+},
+{
+"q": "klorofyll",
+"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+}
+],
+"turns": [
+{
+"q": "Äh, syntes. Det är det enda jag vet.",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"fotosyntes"
+],
+"forbid_any": [
+"tolkar",
+"menar du",
+"låter som"
+]
+}
+]
+},
+{
+"id": "tyst-02",
+"cat": "tystnad",
+"turns": [
+{
+"q": "Äh, syntes. Det är det enda jag vet.",
+"mode": "tutor",
+"expect": "either"
+}
+]
+},
+{
+"id": "tyst-03",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är fotosyntes",
+"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+},
+{
+"q": "klorofyll",
+"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+}
+],
+"turns": [
+{
+"q": "Det är en annan. Ja, obrutet. Kom igen.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-04",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är fotosyntes",
+"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+},
+{
+"q": "klorofyll",
+"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+}
+],
+"turns": [
+{
+"q": "Nej men vänta, var la jag, äh.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-05",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är fotosyntes",
+"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+},
+{
+"q": "klorofyll",
+"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+}
+],
+"turns": [
+{
+"q": "Mm. Okej. Ja.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-06",
+"cat": "tystnad",
+"turns": [
+{
+"q": "Kom igen nu, vi tar det sen.",
+"mode": "auto",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-07",
+"cat": "tystnad",
+"turns": [
+{
+"q": "Ja men det var ju det han sa i och för sig.",
+"mode": "auto",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-08",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är kovalent bindning",
+"a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
+}
+],
+"turns": [
+{
+"q": "Och sen så, eh, typ, ja du vet.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-09",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är kovalent bindning",
+"a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
+}
+],
+"turns": [
+{
+"q": "Vänta lite, jag ska bara hämta laddaren.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-10",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är fotosyntes",
+"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+},
+{
+"q": "klorofyll",
+"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+}
+],
+"turns": [
+{
+"q": "Det där med, nej glöm det.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-11",
+"cat": "tystnad",
+"turns": [
+{
+"q": "Så att, ja. Precis. Mm.",
+"mode": "auto",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-12",
+"cat": "tystnad",
+"turns": [
+{
+"q": "Äh, sluta, du är så jobbig.",
+"mode": "auto",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-13",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är kovalent bindning",
+"a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
+}
+],
+"turns": [
+{
+"q": "Okej, okej, jag lyssnar ju.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "tyst-14",
+"cat": "tystnad",
+"turns": [
+{
+"q": "vad är mitos",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"cell"
+]
+}
+]
+},
+{
+"id": "tyst-15",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är fotosyntes",
+"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+},
+{
+"q": "klorofyll",
+"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+}
+],
+"turns": [
+{
+"q": "eh, kan du förklara typ, cellandning",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"energi",
+"syre",
+"glukos",
+"socker"
+]
+}
+]
+},
+{
+"id": "tyst-16",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är kovalent bindning",
+"a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
+}
+],
+"turns": [
+{
+"q": "jon bindning",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"jonbindning",
+"joner",
+"jon"
+]
+}
+]
+},
+{
+"id": "tyst-17",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är fotosyntes",
+"a": "Fotosyntes är när växter bygger socker av koldioxid och vatten med hjälp av ljus. Vad heter organellen där fotosyntesen sker?"
+}
+],
+"turns": [
+{
+"q": "kloroplast",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"kloroplast"
+]
+}
+]
+},
+{
+"id": "tyst-18",
+"cat": "tystnad",
+"context_qa": [
+{
+"q": "vad är fotosyntes",
+"a": "Fotosyntes är när växter bygger socker av koldioxid och vatten med hjälp av ljus. Vad heter organellen där fotosyntesen sker?"
+}
+],
+"turns": [
+{
+"q": "vet inte",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"kloroplast"
+]
+}
+]
+},
+{
+"id": "tyst-19",
+"cat": "tystnad",
+"turns": [
+{
+"q": "vad är huvudstaden i Norge",
+"mode": "auto",
+"expect": "answer",
+"expect_any": [
+"oslo"
+]
+}
+]
+},
+{
+"id": "tyst-20",
+"cat": "tystnad",
+"turns": [
+{
+"q": "hur många ben har en spindel",
+"mode": "auto",
+"expect": "answer",
+"expect_any": [
+"åtta"
+]
+}
+]
 }
 ]

@@ -981,3 +981,81 @@ Deno.test("D72: 'ge mig tre pickup lines' -> three suggestions on the suggestion
   const e2 = await readSse(await setup({ provider: bk.provider }).handler(post(socialBody())));
   assertEquals(e2.find((e) => e.event === "suggestions")?.data as unknown, ["Då bjuder jag på kaffe efteråt."]);
 });
+
+// ---- D75: Provläge / Auto stay silent on non-questions ----
+Deno.test("D75 tutor: the [[TYST]] marker gives meta(is_question=false), no delta, answered false", async () => {
+  for (const reply of ["[[TYST]]", "[[REL new_topic]]\n[[TYST]]", "  [[TYST]]\n[[SAMMANFATTNING]] x"]) {
+    const { provider } = scripted(reply);
+    const { handler, usage } = setup({ provider });
+    const ev = await readSse(
+      await handler(post(body({
+        mode: "tutor",
+        fragment: "Det är en annan. Ja, obrutet. Kom igen.",
+        context: { recent_qa: [{ q: "vad är mitos", a: "Mitos är celldelning." }] },
+      }))),
+    );
+    assertEquals(ev.map((e) => e.event), ["meta", "done"], reply);
+    assertEquals(ev[0].data.is_question, false);
+    assertEquals(ev[1].data.answered, false);
+    assertEquals(ev[1].data.summary, null);
+    assertEquals(usage[0].status, "not_question");
+    assertEquals(usage[0].is_question, false);
+  }
+});
+
+Deno.test("D75 tutor: an answer that is only a meta comment is silence; a meta lead-in is dropped", async () => {
+  const meta = "Det låter som att du tänker på något ord. Berätta gärna ordet så förklarar jag det.";
+  const { provider } = scripted(meta);
+  const ev = await readSse(
+    await setup({ provider }).handler(post(body({ mode: "tutor", fragment: "Äh, syntes." }))),
+  );
+  assertEquals(ev.map((e) => e.event), ["meta", "done"]);
+  assertEquals(ev[0].data.is_question, false);
+  const mixed = scripted("Det låter som att du menar fotosyntes. Fotosyntes är när växter gör socker av ljus.");
+  const ev2 = await readSse(
+    await setup({ provider: mixed.provider }).handler(post(body({ mode: "tutor", fragment: "syntes" }))),
+  );
+  assertEquals(ev2[0].event, "meta");
+  assertEquals(ev2[0].data.is_question, true, "meta comes with the first spoken text");
+  assertEquals(textOf(ev2).trim(), "Fotosyntes är när växter gör socker av ljus.");
+  assertEquals(ev2.at(-1)!.data.answered, true);
+});
+
+Deno.test("D75 tutor: a real answer streams as before (meta first, then deltas)", async () => {
+  const { provider } = scripted("Fotosyntes är när växter bygger socker med hjälp av ljus. Det sker i kloroplasterna.");
+  const ev = await readSse(
+    await setup({ provider }).handler(post(body({ mode: "tutor", fragment: "fotosyntes" }))),
+  );
+  assertEquals(ev[0].event, "meta");
+  assertEquals(ev[0].data.is_question, true);
+  assert(ev.slice(1, -1).every((e) => e.event === "delta"));
+  assertStringIncludes(textOf(ev), "kloroplasterna");
+});
+
+Deno.test("D75 text mode keeps a confirmation question (silence is only for Provläge and Auto)", async () => {
+  const { provider } = scripted("Menar du roten ur hundra?");
+  const ev = await readSse(
+    await setup({ provider }).handler(post(body({ mode: "text", fragment: "roten av hun" }))),
+  );
+  assertEquals(textOf(ev).trim(), "Menar du roten ur hundra?");
+});
+
+Deno.test("D75 auto: a low-confidence header is silence, not a confirmation question", async () => {
+  const { provider } = scripted(
+    '{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"?","confidence":0.3}\nMenar du roten ur hundra?',
+  );
+  const ev = await readSse(await setup({ provider }).handler(post(body({ mode: "auto", fragment: "roten hun" }))));
+  assertEquals(ev.map((e) => e.event), ["meta", "done"]);
+  assertEquals(ev[0].data.is_question, false);
+  assertEquals(ev[1].data.answered, false);
+});
+
+Deno.test("D75 auto: an answer that is only a meta comment becomes silence", async () => {
+  const { provider } = scripted(
+    '{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"x","confidence":0.8}\nDet verkar som att du pratar om något annat.',
+  );
+  const ev = await readSse(await setup({ provider }).handler(post(body({ mode: "auto", fragment: "kom igen nu" }))));
+  assertEquals(ev.map((e) => e.event), ["meta", "done"]);
+  assertEquals(ev[0].data.is_question, false);
+  assertEquals(ev[1].data.answered, false);
+});

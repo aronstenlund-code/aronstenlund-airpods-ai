@@ -118,7 +118,10 @@ export class ResponseParser {
         ? h.reconstructed_question.trim()
         : this.fragment;
     // Explicit modes: the user asked on purpose, so the gate is always open.
-    const is_question = isAuto ? (h ? h.is_question === true : false) : true;
+    // D75: auto never asks a confirmation question; a low-confidence fragment stays silent.
+    const is_question = isAuto
+      ? (h ? h.is_question === true && confidence >= this.threshold : false)
+      : true;
     this._meta = {
       reconstructed_question: question,
       confidence,

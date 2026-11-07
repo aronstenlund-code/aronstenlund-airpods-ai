@@ -926,3 +926,44 @@ Deno.test("D72 live test: a lone source line is never the whole answer", () => {
   assertStringIncludes(out, "James Monroe");
   assertStringIncludes(out, "Källa: Britannica.");
 });
+
+Deno.test("D75: meta replies are recognised, real answers and check questions are not", async () => {
+  const { isMetaReply } = await import("./speech.ts");
+  for (
+    const s of [
+      "Det låter som att du tänker på något.",
+      "Det verkar som om du menar fotosyntes.",
+      "Berätta gärna ordet så hjälper jag dig.",
+      "Kan du förtydliga vad du menar?",
+      "Menar du fotosyntes?",
+      "Jag förstår inte riktigt vad du menar.",
+      "Vad menar du med obrutet?",
+      "Du verkar tänka på en annan sak.",
+      "Jag är inte säker på vad du syftar på.",
+    ]
+  ) assert(isMetaReply(s), s);
+  for (
+    const s of [
+      "Fotosyntes är när växter bygger socker av ljus.",
+      "Vad heter organellen där fotosyntesen sker?",
+      "Det är koldioxid och vatten som behövs.",
+      "Du behöver ljus, vatten och koldioxid.",
+      "Berättelsen handlar om en pojke.",
+    ]
+  ) assert(!isMetaReply(s), s);
+});
+
+Deno.test("D75: AnswerPost silence marker and meta gate", () => {
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, silence: true });
+  assertEquals(p.push("[[TY") + p.push("ST]]") + p.push(" mer text") + p.finish(), "");
+  assert(p.silent);
+  const q = new AnswerPost({ previousAnswers: [], trimQuestion: false, silence: true });
+  const out = q.push("Det låter som att du menar mitos. ") + q.push("Mitos är celldelning.") + q.finish();
+  assertEquals(out.trim(), "Mitos är celldelning.");
+  assert(!q.silent);
+  const off = new AnswerPost({ previousAnswers: [], trimQuestion: false });
+  assertStringIncludes(off.push("Menar du mitos?") + off.finish(), "Menar du mitos?");
+  assert(!off.silent);
+  const one = new AnswerPost({ previousAnswers: [], trimQuestion: false, silence: true });
+  assertEquals(one.push("[") + one.finish(), "");
+});

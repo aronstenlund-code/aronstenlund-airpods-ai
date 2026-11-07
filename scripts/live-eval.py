@@ -100,6 +100,31 @@ def generic_checks(text, prev_answers, turn, ttft_ms):
     return out
 
 
+# D75: Provläge / Auto never comment on what the speaker seems to mean or ask for clarification.
+META_BAD = re.compile(
+    r"^(?:det (?:låter|verkar|känns) som (?:att|om) (?:du|ni)|berätta gärna|kan du (?:förtydliga|upprepa|utveckla|säga mer|berätta mer)"
+    r"|menar du|vad menar du|tänker du på|jag (?:förstår|uppfattade|hörde) (?:inte|tyvärr inte)|du verkar (?:tänka|mena))",
+    re.I)
+
+
+def silence_checks(text, done, turn):
+    """D75: expect="silent" -> nothing spoken and answered false; "answer" -> spoken; "either" -> both fine.
+    Any spoken text must not open a sentence with a meta comment."""
+    out = []
+    spoken = text.strip()
+    silent = not spoken and (done or {}).get("answered") is False
+    exp = turn.get("expect", "answer")
+    if exp == "silent" and not silent:
+        out.append("svarade på en icke-fråga (väntade tystnad)")
+    if exp == "answer" and silent:
+        out.append("tyst på en riktig fråga")
+    for s in re.split(r"(?<=[.!?])\s+", spoken):
+        if META_BAD.search(s.strip()):
+            out.append(f"metasvar: {s.strip()[:60]!r}")
+            break
+    return out
+
+
 def case_checks(text, prev_answer, turn, now):
     """Expectation checks from the case definition."""
     out = []
@@ -274,13 +299,15 @@ def run(cases, rizz, domains, only, now):
             continue
         u = be.user(n_conv)
         n_conv += 1
-        hist, answers = [], []
+        hist, answers = list(case.get("context_qa", [])), []
         cal = ""  # D69: calibration returned by a calibrate turn, sent on with the next turns
         for ti, turn in enumerate(case["turns"]):
             body = {"fragment": turn["q"], "mode": "text", "language": "sv",
                     "context": {"recent_qa": hist[-3:]}}
             if turn.get("memories"):
                 body["memories"] = turn["memories"]
+            if turn.get("mode") in ("tutor", "auto"):  # D75: Provläge (persona tutor) and Auto
+                body["mode"] = turn["mode"]
             if turn.get("interview"):
                 body.update(mode="tutor", persona="interview", persona_setup=case.get("setup", ""))
                 if turn.get("user_answer"):
@@ -320,6 +347,11 @@ def run(cases, rizz, domains, only, now):
                 first = r.get("preview_ms") or r["ttft_ms"] or 0  # time to the first suggestion
                 if first > 2500:
                     problems.append(f"långsamt: första förslaget efter {first} ms (mål 2500)")
+            elif "expect" in turn:
+                problems += silence_checks(text, r["done"], turn)
+                if text.strip():
+                    problems += generic_checks(text, answers, dict(turn, allow_question=True), r["ttft_ms"])
+                    problems += case_checks(text, answers[-1] if answers else None, turn, now)
             else:
                 problems += generic_checks(text, answers, turn, r["ttft_ms"])
                 if turn.get("interview"):
@@ -335,7 +367,8 @@ def run(cases, rizz, domains, only, now):
                 rel_exp = ("new_topic",)
             rows.append(dict(
                 id=case["id"], cat=case["cat"], turn=ti, q=turn["q"] or "(Rizz)", ttft=r["ttft_ms"], total=r["total_ms"],
-                answer=text[:300], problems=problems, relation=rel,
+                answer=text[:300], problems=problems, relation=rel, expect=turn.get("expect"),
+                silent=not text.strip() and (r["done"] or {}).get("answered") is False and not r["error"],
                 relation_ok=(None if rel is None or rel_exp is None else rel in rel_exp),
                 cost=(r["done"].get("usage") or {}).get("est_cost_usd") or 0))
             if text and not r["error"]:
@@ -365,6 +398,11 @@ def report(rows, date):
     rel = [r for r in rows if r["relation_ok"] is not None]
     if rel:
         out += ["", f"Relation (D53): {sum(1 for r in rel if r['relation_ok'])}/{len(rel)} rätt av de turer där modellen angav en."]
+    quiet = [r for r in rows if r.get("expect") == "silent"]
+    real = [r for r in rows if r.get("expect") == "answer"]
+    if quiet or real:
+        out += ["", f"Tystnad (D75): {sum(1 for r in quiet if r['silent'])}/{len(quiet)} icke-frågor fick inget svar; "
+                    f"{sum(1 for r in real if not r['silent'])}/{len(real)} riktiga frågor besvarades."]
     cost = sum(float(r["cost"] or 0) for r in rows)
     out += ["", f"Uppskattad kostnad för körningen: ca {cost:.3f} USD.", ""]
     if bad:
