@@ -975,6 +975,7 @@ Deno.test("D77 interview: a sentence saying facts are missing is dropped, the an
       "Jag har inte någon konkret upplevelse att utgå från, så jag svarar med hur jag brukar göra.",
       "Jag har inte en konkret händelse att berätta om, så jag svarar med hur jag brukar gå tillväga.",
       "Jag vill gärna svara på det, men jag har inte uppgifter om min ålder eller vad jag studerar i den här övningen.",
+      "Jag kan inte säga min ålder här, men jag gillar att jobba praktiskt.",
     ]
   ) assert(isInterviewMeta(s), s);
   for (
