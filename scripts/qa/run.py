@@ -38,8 +38,8 @@ URL = "https://xjczbzfkmbjdebwlccki.supabase.co"
 KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8"  # public by design, see backend/README.md
 
 BUDGET = {"quick": 0.10, "full": 0.50}
-MAX_RIZZ = 10
-MAX_WEB_SEARCHES = 3
+MAX_RIZZ = 30  # round 2: every Rizz scenario runs twice (flirt + social); round 1 cap was 10
+MAX_WEB_SEARCHES = 6  # round 2: W01 + F16 (ordinal fact now searches by design, D65); round 1 cap was 3
 WEB_WORST_CASE = 3  # server cap per answer
 MAX_TTS = 2
 SPACING_S = 3.4  # server allows 20 requests per minute per user
@@ -53,22 +53,31 @@ TTS_TEXTS = [
 
 
 def web_regexes():
-    """Reads the server's trigger words, so the guard cannot drift from web.ts."""
+    """Reads the server's trigger words, so the guard cannot drift from web.ts (ports needsWeb, D65)."""
     src = (ROOT / "backend/supabase/functions/answer/web.ts").read_text(encoding="utf-8")
-    rx = []
-    for name in ("EXPLICIT", "CURRENT"):
-        m = re.search(name + r" = pat\(\s*\[(.*?)\]\.join", src, re.S)
+    P, S = r"(?<![^\W_])", r"(?![^\W_])"
+
+    def py(alt):  # JS \p{L} -> letter, \p{N} -> digit
+        return alt.replace("\\p{L}", r"[^\W\d_]").replace("\\p{N}", r"\d")
+
+    def grab(name):
+        m = re.search(r"const " + name + r" = pat\(\s*(\[.*?\]\.join|\"(?:[^\"\\]|\\.)*\")", src, re.S)
         if not m:
             sys.exit(f"cannot read {name} from web.ts")
         alts = [a.replace("\\\\", "\\") for a in re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))]
-        rx.append(re.compile(r"(?<![^\W_])(?:" + "|".join(alts) + r")(?![^\W_])", re.I))
-    rx.append(re.compile(r"https?://\S+|(?<![\w@.])[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.(?:se|com|org|net|nu|io|eu|dev|gov|edu|info|app|ai|co|uk|de|no|dk|fi)(?:/\S*)?(?!\w)", re.I))
+        return re.compile(P + "(?:" + "|".join(py(a) for a in alts) + ")" + S, re.I)
+
+    rx = {n: grab(n) for n in ("EXPLICIT", "CURRENT", "NOT_WEB", "ORDINAL_FACT")}
+    rx["URL"] = re.compile(r"https?://\S+|(?<![\w@.])[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.(?:se|com|org|net|nu|io|eu|dev|gov|edu|info|app|ai|co|uk|de|no|dk|fi)(?:/\S*)?(?!\w)", re.I)
     return rx
 
 
 def would_search(rx, fragment):
     f = fragment.strip()
-    return bool(f) and len(f) <= 400 and any(r.search(f) for r in rx)
+    if not f or len(f) > 400:
+        return False
+    return bool(rx["URL"].search(f) or rx["EXPLICIT"].search(f) or rx["ORDINAL_FACT"].search(f)
+                or (rx["CURRENT"].search(f) and not rx["NOT_WEB"].search(f)))
 
 
 def post(path, body, token=None, timeout=90):
@@ -82,7 +91,7 @@ def post(path, body, token=None, timeout=90):
 def ask(body, token):
     """Streams one /answer call. Returns a dict with the text, timing and usage."""
     t0 = time.perf_counter()
-    out = {"text": "", "suggestions": None, "ttft_ms": None, "done": None, "error": None, "meta": None}
+    out = {"text": "", "suggestions": None, "preview": None, "preview_ms": None, "sugg_ms": None, "ttft_ms": None, "done": None, "error": None, "meta": None}
     try:
         with post("/functions/v1/answer", body, token) as r:
             ev = None
@@ -92,12 +101,16 @@ def ask(body, token):
                     ev = line[7:]
                 elif line.startswith("data: "):
                     d = json.loads(line[6:])
-                    if ev in ("delta", "suggestions") and out["ttft_ms"] is None:
+                    if ev in ("delta", "suggestions", "suggestion_preview") and out["ttft_ms"] is None:
                         out["ttft_ms"] = round((time.perf_counter() - t0) * 1000)
                     if ev == "delta":
                         out["text"] += d.get("text", "")
+                    elif ev == "suggestion_preview":
+                        out["preview"] = d.get("text")
+                        out["preview_ms"] = round((time.perf_counter() - t0) * 1000)
                     elif ev == "suggestions":
                         out["suggestions"] = d
+                        out["sugg_ms"] = round((time.perf_counter() - t0) * 1000)
                     elif ev == "meta":
                         out["meta"] = d
                     elif ev == "done":
@@ -170,8 +183,8 @@ def main():
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--level", choices=["quick", "full"], required=True)
-    ap.add_argument("--answer-version", type=int, required=True)
-    ap.add_argument("--tts-version", type=int, required=True)
+    ap.add_argument("--answer-version", required=True)
+    ap.add_argument("--tts-version", required=True)
     ap.add_argument("--owner-asked", action="store_true", help="owner asked for another full round today")
     ap.add_argument("--dry-run", action="store_true", help="print the plan; no network, no cost")
     a = ap.parse_args()
@@ -186,7 +199,7 @@ def main():
         if any(r["level"] == "full" and r["date"] == today for r in state["rounds"]):
             sys.exit("full round already run today; use the quick level, or --owner-asked")
 
-    versions = f"answer-v{a.answer_version}/tts-v{a.tts_version}"
+    versions = f"answer-{a.answer_version}/tts-{a.tts_version}"
     same = state.get("versions") == versions
     todo, skipped = [], []
     for c in plan(cases, a.level):
@@ -199,8 +212,9 @@ def main():
     # Only one web turn fits a round, so the web conversations take turns between rounds.
     web = [c for c in todo if c.get("web")]
     if web:
-        first = web[len(state["rounds"]) % len(web)]
-        todo = [first] + [c for c in todo if c is not first]
+        first = next(c for c in web if c["id"] == "W01")  # round 2: W01 again, to compare with round 1
+        web = [first]
+        todo = [first] + [c for c in todo if not c.get("web")]
 
     accidental = []
     for c in todo:
@@ -247,7 +261,7 @@ def main():
         d = r["done"] or {}
         row = {
             "key": tid, "conv": c["id"], "cat": c["cat"], "q": q, "a": text, "ttft_ms": r["ttft_ms"],
-            "wall_ms": r["wall_ms"], "server_ttft_ms": (d.get("timing") or {}).get("ttft_ms"),
+            "wall_ms": r["wall_ms"], "preview": r["preview"], "preview_ms": r["preview_ms"], "sugg_ms": r["sugg_ms"], "server_ttft_ms": (d.get("timing") or {}).get("ttft_ms"),
             "cold": (d.get("breakdown") or {}).get("cold"), "answer_type": (d.get("breakdown") or {}).get("answer_type"),
             "relation": d.get("relation"), "summary": d.get("summary"), "memory_add": d.get("memory_add"),
             "usage": u, "cost_usd": round(cost_of(r["done"]), 6), "error": r["error"],
@@ -263,13 +277,17 @@ def main():
             stop = f"budget reached (${spent:.4f})"
             break
         if c.get("rizz"):
-            if rizz_used >= MAX_RIZZ:
-                skipped.append({"id": c["id"], "why": "Rizz-taket"})
-                continue
-            rizz_used += 1
-            body = {"fragment": "", "mode": "tutor", "language": "sv", "persona": "social", "social": c["social"],
-                    "context": {}}
-            run_one(c, c["id"], json.dumps(c["social"], ensure_ascii=False), body)
+            for style, adult, key, cat in (("flirt", True, c["id"], "rizz"), ("social", False, c["id"] + "s", "socialt-läge")):
+                if rizz_used >= MAX_RIZZ:
+                    skipped.append({"id": key, "why": "Rizz-taket"})
+                    continue
+                rizz_used += 1
+                soc = dict(c["social"], style=style)
+                body = {"fragment": "", "mode": "tutor", "language": "sv", "persona": "social", "social": soc, "context": {}}
+                if adult:
+                    body["adult_confirmed"] = True
+                cc = dict(c, id=key, cat=cat)
+                run_one(cc, key, json.dumps(soc, ensure_ascii=False), body)
             continue
         hist, memories = [], list(c.get("memories", []))
         for i, t in enumerate(c["turns"]):
@@ -282,6 +300,24 @@ def main():
             if row["memory_add"]:
                 memories.append(row["memory_add"])
             hist.append({"q": q, "a": row["a"]})
+
+    neg_rows = []
+    if not stop:
+        sc = next(c for c in cases if c["id"] == "RZ1")["social"]
+        for label, extra in (("flirt, inget adult_confirmed", {}), ("flirt, adult_confirmed=false", {"adult_confirmed": False}),
+                             ("flirt, adult_confirmed=false i social", {"_inner": False})):
+            soc = dict(sc, style="flirt")
+            body = {"fragment": "", "mode": "tutor", "language": "sv", "persona": "social", "social": soc, "context": {}}
+            if "_inner" in extra:
+                soc["adult_confirmed"] = False
+            else:
+                body.update(extra)
+            time.sleep(SPACING_S)
+            r = ask(body, token)
+            spent += cost_of(r["done"])
+            neg_rows.append({"case": label, "http": (r["error"] or {}).get("http"), "body": (r["error"] or {}).get("body"),
+                             "got_suggestions": r["suggestions"] is not None})
+            print("neg", neg_rows[-1], flush=True)
 
     tts_rows = []
     if not stop:
@@ -306,7 +342,7 @@ def main():
     result = {
         "started": stamp, "level": a.level, "versions": versions, "spent_usd": round(spent, 5),
         "budget_usd": BUDGET[a.level], "stopped": stop, "rizz_turns": rizz_used, "web_searches": web_used,
-        "tts_calls": tts_used, "tts": tts_rows, "skipped": skipped, "rows": rows,
+        "tts_calls": tts_used, "tts": tts_rows, "negatives": neg_rows, "skipped": skipped, "rows": rows,
     }
     path.write_text(json.dumps(result, ensure_ascii=False, indent=1), encoding="utf-8")
 
@@ -315,7 +351,7 @@ def main():
         state["seen"] = {}
     ran = {r["conv"] for r in rows if not r["error"]}
     by_id = {c["id"]: c for c in cases}
-    state["seen"].update({i: conv_hash(by_id[i]) for i in ran})
+    state["seen"].update({i: conv_hash(by_id[i]) for i in ran if i in by_id})
     state["rounds"].append({"date": today, "level": a.level, "versions": versions, "spent_usd": round(spent, 5),
                             "data": path.relative_to(ROOT).as_posix()})
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=1), encoding="utf-8")

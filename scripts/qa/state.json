@@ -6,6 +6,13 @@
    "versions": "answer-v37/tts-v10",
    "spent_usd": 0.05917,
    "data": "reports/qa/data/2026-11-06-1737-full.json"
+  },
+  {
+   "date": "2026-11-07",
+   "level": "full",
+   "versions": "answer-deploy42376949828/tts-deploy42376949828",
+   "spent_usd": 0.06903,
+   "data": "reports/qa/data/2026-11-07-1440-full.json"
   }
  ],
  "seen": {
@@ -112,5 +119,5 @@
   "L01": "760cc0ffae221368",
   "E03": "936311b5bbc0d7f6"
  },
- "versions": "answer-v37/tts-v10"
+ "versions": "answer-deploy42376949828/tts-deploy42376949828"
 }
