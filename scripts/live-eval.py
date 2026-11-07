@@ -20,7 +20,7 @@ from zoneinfo import ZoneInfo
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 URL = "https://xjczbzfkmbjdebwlccki.supabase.co"
 KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8"  # public by design
-USERS = 5  # per-user limits are 20/min and 3 web/min; conversations rotate over a small pool
+USERS = 12  # per-user 20/min, 3 web/min; D79: a new session gets 20 answers in its first hour (199 turns / 12 users)
 
 # ---------------------------------------------------------------- checks (pure functions, unit-testable)
 BAD_CHARS = re.compile(r"[0-9=^/²³%*#_<>\[\]{}()~|\\@&+±×÷≈≠→√πΔ∞°]")

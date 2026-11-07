@@ -72,6 +72,50 @@ export class SupabaseRateLimiter implements RateLimiter {
   }
 }
 
+/** An extra window checked in the same round trip (D79: per network, new users). */
+export interface ExtraCheck {
+  key: string;
+  limit: number;
+  windowSec: number;
+}
+
+/**
+ * D79 (owner): app traffic is also capped per network (hashed client IP, as in the demo) and a brand-new
+ * anonymous session gets a small first-hour allowance. A script that mints a new anonymous user per call
+ * gets a new per-user allowance every time; these two windows do not reset with a new user.
+ * The session start is the `amr` timestamp of the JWT (verified live: it stays the same across token
+ * refreshes, `iat` does not). No timestamp = no new-user check (never a false positive).
+ */
+export interface AppGuard {
+  /** Per network and UTC day (answers, or TTS characters). 0 = off. */
+  networkPerDay: number;
+  /** A session younger than this many seconds counts as new. 0 = off. */
+  newUserAgeSec: number;
+  /** Requests a new session may make in its (clock) hour window. */
+  newUserPerHour: number;
+}
+
+export function appChecks(
+  scope: string,
+  net: string | null,
+  user: { id: string; sessionStartSec?: number },
+  g: AppGuard,
+  nowSec = Math.floor(Date.now() / 1000),
+): ExtraCheck[] {
+  const out: ExtraCheck[] = [];
+  if (net && g.networkPerDay > 0) {
+    out.push({ key: `${scope}:ip:${net}:d`, limit: g.networkPerDay, windowSec: 86400 });
+  }
+  const start = user.sessionStartSec;
+  if (
+    g.newUserAgeSec > 0 && g.newUserPerHour > 0 && typeof start === "number" &&
+    nowSec - start < g.newUserAgeSec
+  ) {
+    out.push({ key: `${scope}:new:u:${user.id}:h`, limit: g.newUserPerHour, windowSec: 3600 });
+  }
+  return out;
+}
+
 export interface Limits {
   perMinute: number;
   perDay: number;
@@ -86,12 +130,14 @@ export async function enforceLimits(
   userId: string,
   limits: Limits,
   cost = 1,
+  extra: ExtraCheck[] = [],
 ): Promise<RateResult> {
   try {
     const checks = [
       { key: `${scope}:u:${userId}:m`, limit: limits.perMinute, windowSec: 60 },
       { key: `${scope}:u:${userId}:d`, limit: limits.perDay, windowSec: 86400 },
       { key: `${scope}:global:d`, limit: limits.globalPerDay, windowSec: 86400 },
+      ...extra,
     ];
     if (rl.checkMany) return await rl.checkMany(checks, cost);
     for (const c of checks) {

@@ -1023,3 +1023,15 @@ Deno.test("D77 interview: only the meta part goes, the rest of the sentence is k
   ];
   for (const [inp, want] of cases) assertEquals(stripInterviewMeta(inp), want, inp);
 });
+
+Deno.test("D79 interview: coaching in du-form is never spoken", async () => {
+  const { stripInterviewMeta, isInterviewMeta } = await import("./speech.ts");
+  assertEquals(
+    stripInterviewMeta("Jag kan inte säga vilken ålder eller studieinriktning du har. "),
+    "",
+  );
+  assertEquals(stripInterviewMeta("Däremot kan du svara att du gärna jobbar med plock och packning. "), "");
+  // the user's question to the interviewer stays ("ni"), and a quoted interviewer question is not output
+  assert(!isInterviewMeta("Kan ni berätta mer om hur introduktionen ser ut?"));
+  assert(!isInterviewMeta("Jag kan säga att jag är noggrann och tycker om att jobba praktiskt."));
+});

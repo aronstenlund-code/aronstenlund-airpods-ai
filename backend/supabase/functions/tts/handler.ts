@@ -1,6 +1,6 @@
 import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
-import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
+import { appChecks, enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { readLimitedJson } from "../answer/validate.ts";
 import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
 import { type Voice, VOICE_ID_RE } from "./voices.ts";
@@ -75,11 +75,14 @@ export interface TtsConfig {
   modelId: string; // eleven_flash_v2_5: low latency, supports Swedish [docs]
   /** Limits are in CHARACTERS (ElevenLabs bills credits per character). */
   limits: Limits;
+  /** D79: characters per network (hashed IP) and UTC day for the app; 0 = off. */
+  networkCharsPerDay?: number;
 }
 
 export const DEFAULT_TTS_CONFIG: Omit<TtsConfig, "voiceId" | "voices"> = {
   modelId: "eleven_flash_v2_5",
   limits: { perMinute: 1500, perDay: 15000, globalPerDay: 100000 },
+  networkCharsPerDay: 30000,
 };
 
 export interface TtsDeps {
@@ -220,12 +223,19 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
       }
       const ac = new AbortController();
       req.signal.addEventListener("abort", () => ac.abort());
+      // D79: the app's characters are also capped per network (the demo has its own caps above).
+      const ttsExtra = demo ? [] : appChecks("tts", await networkKey(req), user, {
+        networkPerDay: deps.config.networkCharsPerDay ?? DEFAULT_TTS_CONFIG.networkCharsPerDay!,
+        newUserAgeSec: 0,
+        newUserPerHour: 0,
+      });
       const limitsP = enforceLimits(
         deps.rateLimiter,
         "tts",
         user.id,
         deps.config.limits,
         cost,
+        ttsExtra,
       );
       const callUpstream = (zr: boolean) =>
         doFetch(

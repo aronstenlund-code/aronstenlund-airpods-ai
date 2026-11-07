@@ -41,6 +41,7 @@ const handler = createTtsHandler({
       perDay: envInt(env, "TTS_CHARS_PER_DAY", DEFAULT_TTS_CONFIG.limits.perDay),
       globalPerDay: envInt(env, "TTS_GLOBAL_CHARS_PER_DAY", DEFAULT_TTS_CONFIG.limits.globalPerDay),
     },
+    networkCharsPerDay: envInt(env, "TTS_CHARS_PER_NETWORK_PER_DAY", DEFAULT_TTS_CONFIG.networkCharsPerDay!),
   },
 });
 

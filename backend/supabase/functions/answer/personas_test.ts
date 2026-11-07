@@ -107,6 +107,8 @@ Deno.test("persona prompts: structure, STAR, no invented experience, consent and
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "no name, age, school, school year");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "never an invented story or background");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "Never say that facts are missing");
+  // D79: a question only about a missing fact is still answered in first person, never as advice
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "the answer is still the user's own words in first person");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "never a past event");
   assertEquals(SYSTEM_PROMPT_INTERVIEW.includes("believable, general example"), false);
   // D72: the perfect answer in first person, ready to say aloud; no outline, placeholders or feedback

@@ -1,6 +1,12 @@
 import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
-import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
+import {
+  type AppGuard,
+  appChecks,
+  enforceLimits,
+  type Limits,
+  type RateLimiter,
+} from "../_shared/ratelimit.ts";
 import { SSE_HEADERS, sseFrame } from "../_shared/sse.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
@@ -88,6 +94,8 @@ export interface HandlerConfig {
   directModes: boolean;
   /** D62 demo caps (defaults in _shared/demo.ts). */
   demo?: DemoCaps;
+  /** D79: app traffic per network (answers/day) and the first-hour allowance of a new session. */
+  appGuard?: AppGuard;
   /** USD per million tokens, for the cost estimate only (prices as stated in the assignment). */
   priceInPerMTok: number;
   priceOutPerMTok: number;
@@ -101,6 +109,7 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   maxAnswerCharsStudy: 1800,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
   webLimits: { perMinute: 3, perDay: 20, globalPerDay: 150 },
+  appGuard: { networkPerDay: 1500, newUserAgeSec: 600, newUserPerHour: 20 },
   rizzModel: "claude-sonnet-5-5",
   rizzPriceInPerMTok: 2,
   rizzPriceOutPerMTok: 10,
@@ -207,6 +216,13 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       if (demo) {
         await enforceDemo(deps.rateLimiter, "answer", user.id, await networkKey(req), demoCaps);
       }
+      // D79: the app's own traffic is also capped per network and for brand-new sessions (demo has its caps).
+      const appExtra = demo ? [] : appChecks(
+        "answer",
+        await networkKey(req),
+        user,
+        cfg.appGuard ?? DEFAULT_CONFIG.appGuard!,
+      );
       const tBody = now() - t0;
       const provider = deps.provider;
       if (!provider) {
@@ -221,7 +237,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         !demo && (body.mode === "auto" || body.mode === "push_to_talk" || body.mode === "tutor") &&
         detectReport(body.fragment)
       ) {
-        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits);
+        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
         if (!rl.allowed) {
           throw new HttpError(429, "rate_limited", "Too many requests", {
             fallback: true,
@@ -291,7 +307,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? detectMemoryAdd(body.fragment)
         : null;
       if (memoryFact) {
-        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits);
+        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
         if (!rl.allowed) {
           throw new HttpError(429, "rate_limited", "Too many requests", {
             fallback: true,
@@ -467,7 +483,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const acs = [ac]; // one controller per LLM attempt (a retry starts a new one)
       const abortAll = () => acs.forEach((a) => a.abort());
       req.signal.addEventListener("abort", abortAll);
-      const limitsP = enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits).then((r) => {
+      const limitsP = enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra).then((r) => {
         limitsMs = now() - t0;
         return r;
       });

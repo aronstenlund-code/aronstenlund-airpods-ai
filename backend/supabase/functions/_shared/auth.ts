@@ -4,6 +4,17 @@ import { HttpError } from "./errors.ts";
 export interface AuthedUser {
   id: string;
   isAnonymous: boolean;
+  /** D79: when the session signed in (JWT `amr` timestamp, unchanged by refreshes); unknown = undefined. */
+  sessionStartSec?: number;
+}
+
+/** Earliest `amr[].timestamp` of a Supabase JWT payload (seconds), or undefined. */
+export function sessionStart(payload: Record<string, unknown>): number | undefined {
+  const amr = Array.isArray(payload.amr) ? payload.amr : [];
+  const ts = amr
+    .map((a) => Number((a as { timestamp?: unknown } | null)?.timestamp))
+    .filter((t) => Number.isFinite(t) && t > 0);
+  return ts.length ? Math.min(...ts) : undefined;
 }
 
 /** Resolves the caller from the request or throws HttpError(401). */
@@ -42,7 +53,11 @@ export function createJwtAuthenticator(opts: {
       if (payload.role !== "authenticated" || typeof payload.sub !== "string" || !payload.sub) {
         throw new Error("not an authenticated user token");
       }
-      return { id: payload.sub, isAnonymous: payload.is_anonymous === true };
+      return {
+        id: payload.sub,
+        isAnonymous: payload.is_anonymous === true,
+        sessionStartSec: sessionStart(payload as Record<string, unknown>),
+      };
     } catch (_e) {
       throw new HttpError(401, "unauthorized", "Invalid or expired token");
     }

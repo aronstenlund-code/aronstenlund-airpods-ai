@@ -396,6 +396,9 @@ const INTERVIEW_META = new RegExp(
     String.raw`\bjag kan inte (?:säga|uppge|berätta|nämna) (?:min|mitt|mina|vad jag heter|hur gammal)`,
     String.raw`\bjag heter (?:inte|och)\b`,
     String.raw`\b(?:inte )?(?:nämnt|angett|angivet|givet|framgår) (?:här|i (?:annonsen|uppgifterna))\b`,
+    // D79: coaching the user instead of answering ("Däremot kan du svara att du …")
+    String.raw`\b(?:du kan|kan du|du bör|bör du|du ska|du skulle kunna) (?:svara|säga|berätta|nämna|lyfta|börja|ta upp|förklara)\b`,
+    String.raw`\bjag kan inte (?:säga|veta|uppge) (?:vilken|vilket|vad|hur|om)\b`,
   ].join("|"),
   "iu",
 );

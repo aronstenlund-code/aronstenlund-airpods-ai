@@ -52,6 +52,12 @@ const handler = createHandler({
     rizzPriceOutPerMTok: Number(
       env.get("RIZZ_PRICE_OUT_PER_MTOK") ?? DEFAULT_CONFIG.rizzPriceOutPerMTok,
     ),
+    // D79: per network (hashed IP) and per brand-new session; 0 turns a window off.
+    appGuard: {
+      networkPerDay: envInt(env, "ANSWER_PER_NETWORK_PER_DAY", DEFAULT_CONFIG.appGuard!.networkPerDay),
+      newUserAgeSec: envInt(env, "NEW_USER_AGE_SEC", DEFAULT_CONFIG.appGuard!.newUserAgeSec),
+      newUserPerHour: envInt(env, "NEW_USER_ANSWERS_PER_HOUR", DEFAULT_CONFIG.appGuard!.newUserPerHour),
+    },
     // Web search costs $0.01 per search (owner's Claude credits): hard daily caps.
     webLimits: {
       perMinute: envInt(env, "WEB_PER_MINUTE", DEFAULT_CONFIG.webLimits!.perMinute),
