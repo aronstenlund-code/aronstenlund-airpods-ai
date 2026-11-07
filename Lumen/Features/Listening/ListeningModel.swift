@@ -27,14 +27,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let microphone: MicrophoneSettings
     /// What the session is for: decides the microphone.
     private(set) var mode: ConversationMode = .standard
-    /// The mode picker on the Listening screen.
-    var selectedMode: ConversationMode = .standard
+    /// The mode picker on the Listening screen, remembered between launches (D72).
+    var selectedMode: ConversationMode = .standard {
+        didSet { modeSettings.lastMode = selectedMode }
+    }
     /// Intervjuläge and Rizzläge setup.
     let modeSettings: ModeSettings
     /// The running live session, Rizzläge or Socialt läge. Gone when it ends, and the words with it.
     private(set) var rizz: RizzSession?
-    /// Intervjuläge alternates: the interviewer asks, then the user answers.
-    private var interviewerSpeaksNext = true
     var isShowingInterviewSetup = false
     var isShowingLiveStart = false
     var isShowingAgeGate = false
@@ -68,7 +68,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var isShowingDiagnostics = false
     /// Text mode (item 6): the question being typed. Works without the microphone.
     var draftQuestion = ""
-    private var flushTask: Task<Void, Never>?
 
     var state: SessionState { controller.state }
     var isListening: Bool { controller.state.isListening }
@@ -76,7 +75,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var canResume: Bool { controller.canResume }
     var lastError: String? { controller.lastError }
     var level: AudioLevel.Reading { controller.level }
-    var isHolding: Bool { activation.isHolding }
     var language: TranscriptionLanguage { transcription.language.selected }
     var isAnswering: Bool {
         if case .answering = answers.status { return true }
@@ -116,7 +114,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.history = history ?? HistoryStore()
         self.memory = memory ?? MemoryStore()
         self.microphone = microphone ?? MicrophoneSettings()
-        self.modeSettings = modeSettings ?? ModeSettings()
+        let modes = modeSettings ?? ModeSettings()
+        self.modeSettings = modes
+        // The remembered mode. Rizzläge only if the 18+ question was answered; the gate is never skipped.
+        self.selectedMode = modes.lastMode == .rizz && !modes.isAdultConfirmed ? .standard : modes.lastMode
         self.feedback = feedback
         self.goals = goals ?? GoalsStore()
         self.commands = commands ?? CommandStore()
@@ -237,7 +238,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func stopListening() async {
-        flushTask?.cancel()
         answers.cancel()
         speaker.interrupt()
         conversation.cancelAnswer()
@@ -270,7 +270,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             showActivity()
         case .paused:
             // Whoever has the audio now keeps it: no speech may restart the engine behind their back.
-            flushTask?.cancel()
             answers.cancel()
             speaker.interrupt()
             conversation.cancelAnswer()
@@ -376,7 +375,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         answers.cancel()
         speaker.interrupt()
         conversation.cancelAnswer()
-        interviewerSpeaksNext = true
         if let style = newMode.liveStyle {
             rizz = RizzSession(style: style)
             study.stallSilence = Self.stallSilence
@@ -386,6 +384,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         study.start()
         controller.log("Hands-free \(newMode.rawValue) started")
+    }
+
+    /// Socialt läge and Rizzläge show and speak exactly one suggestion (D72).
+    static let suggestionsShown = 1
+
+    /// The Provläge card on the main screen (D72): one tap, no setup in between.
+    func startProvFromCard() async {
+        selectedMode = .prov
+        await startStudy()
     }
 
     /// ~4 s of silence asks for a way to carry on (D43).
@@ -481,15 +488,18 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - Intervjuläge (D42)
 
+    /// D72: the interviewer's question gets the finished answer, read aloud, and nothing else: no feedback, no
+    /// follow-up questions. The wearer's own words (louder, by input level) are never answered, unless they ask for
+    /// something out loud ("klar", "sammanfatta", "ge mig feedback").
     private func interviewTurn(_ text: String) {
-        // "klar" asks the backend for the summary, which only happens on a question turn.
-        let isDone = text.lowercased().trimmingCharacters(in: .punctuationCharacters) == "klar"
-        let isQuestion = interviewerSpeaksNext || isDone
-        interviewerSpeaksNext.toggle()
-        let trigger: ActivationTrigger = !isQuestion && ownLinesAreReliable ? .tutor : .overheard
-        activated(ActivationRequest(query: text, trigger: trigger, language: language),
-                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup,
-                                          turn: isQuestion ? "question" : "user_answer"))
+        let speaker = RizzSpeaker.tag(levelDBFS: study.lastTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)
+        if speaker == .user, !VoiceCommand.isInterviewRequest(text) {
+            controller.log("Intervjuläge: own turn at \(study.lastTurnLevelDBFS ?? -99) dBFS, not answered")
+            study.resumeListening()
+            return
+        }
+        activated(ActivationRequest(query: text, trigger: .overheard, language: language),
+                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup, turn: "question"))
     }
 
     /// Likely questions and model answers from the role or job ad. Long, so it is shown, not spoken.
@@ -531,13 +541,18 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func answerSuggestions(_ options: [String]) {
         latency.markFirstText(provider: answers.activeProvider.name)
-        rizz?.offer(options)
+        rizz?.offer(Array(options.prefix(Self.suggestionsShown))) // D72: one suggestion, shown and spoken
         showActivity()
         speakSuggestion()
     }
 
-    /// "nästa", or the button on the Live Activity.
+    /// "nästa", or the button on the Live Activity. With one suggestion on screen (D72) it asks for a fresh one.
     func nextSuggestion() {
+        guard let session = rizz else { return }
+        if session.suggestions.count <= 1 {
+            requestSuggestions(trigger: session.hasConversation ? "stall" : "opener")
+            return
+        }
         rizz?.next()
         showActivity()
         speakSuggestion()
@@ -575,25 +590,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     // MARK: - Activation (item 3)
-
-    func pressPushToTalk() {
-        guard isListening else { return }
-        flushTask?.cancel()
-        activation.beginPushToTalk(conversation: conversation)
-    }
-
-    func releasePushToTalk() {
-        transcription.commit()
-        let fired = activation.endPushToTalk(conversation: conversation, language: language)
-        guard !fired, activation.isAwaitingFinal else { return }
-        let grace = activation.settings.releaseGrace
-        flushTask?.cancel()
-        flushTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(grace))
-            guard let self, !Task.isCancelled else { return }
-            self.activation.flushPushToTalk(conversation: self.conversation, language: self.language)
-        }
-    }
 
     func askAboutLast() {
         if !activation.answerLast(conversation: conversation, language: language) {

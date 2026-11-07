@@ -165,24 +165,22 @@ sprintsteg; här testas bara skärmen, indikatorn och samtycket.
 6. Ta ut AirPods (paus) och sätt i dem igen → *Fortsätt lyssna*. Transkriptionen ska starta om själv
    (statusraden visar *Transkriberar …* igen).
 
-### 3k. Aktivering: håll för att fråga och auto (MVP-del 3, 10 min)
-Svarsmotorn kommer i nästa steg – här testas bara att rätt mening fångas som fråga.
-1. *Börja lyssna*, Svenska. I Inställningar: lämna *Aktivering* på **Håll för att fråga**. Håll in den stora knappen
-   *Håll för att fråga* (den blir orange: *Lyssnar på dig … släpp för att fråga*), säg "vad är fotosyntes",
-   släpp. Inom ca 2 s ska kortet **Upptäckt fråga** visa exakt det du sa. Skriv ner om något ord fattades
-   (särskilt det sista) – det styr hur lång väntetiden efter släpp ska vara.
-2. Säg något lågt (nästan viskande) medan du håller. Fångades det?
-3. Låt någon annan säga en mening, tryck *Fråga om det senast sagda*: kortet ska visa den meningen.
-4. I Inställningar: byt *Aktivering* till **Auto**, känslighet *Mellan*. Låt någon läsa tre vanliga påståenden
+### 3k. Frågor (Auto) – handsfree (D72, 10 min)
+Det finns ingen "håll in"-knapp längre: alla lägen lyssnar själva.
+1. Avinstallera appen och installera om. Efter samtycket ska lägesväljaren stå på **Frågor (Auto)**.
+2. Tryck *Börja lyssna*, Svenska, känslighet *Mellan* (Inställningar → *Questions*). Låt någon läsa tre vanliga påståenden
    ("idag ska vi prata om …") och sedan tre frågor ur `testdata/scripts/sv-short-prompts.md` (t.ex. 5, 12, 29).
-   Skriv ner vilka som gav *Upptäckt fråga* och vilka som inte gjorde det (både falska träffar och missar).
-5. Ställ två frågor inom 5 sekunder: bara den första ska fångas (8 s väntetid mellan automatiska svar).
-6. Sätt känslighet *Hög* (Inställningar) och säg bara "fotosyntes": nu ska det fångas. På *Mellan* ska det inte fångas.
+   Skriv ner vilka som besvarades och vilka som inte gjorde det, både falska träffar och missar.
+3. Ställ två frågor inom 5 sekunder: bara den första ska besvaras (8 s väntetid mellan automatiska svar).
+4. Sätt känslighet *Hög* och säg bara "fotosyntes": nu ska det besvaras. På *Mellan* ska det inte besvaras.
+5. Låt någon annan säga en mening och tryck *Fråga om det senast sagda*: den meningen ska besvaras.
+6. Skriv en fråga i skrivrutan: den ska besvaras även utan mikrofon.
+7. Välj **Intervjuläge** i väljaren, stäng appen helt och öppna igen: väljaren ska stå kvar på Intervjuläge.
 
 ### 3l. Riktiga svar från servern (MVP-del 4, 10 min)
 Backend är igång sedan 2026-11-03 22:38 (Deangelos test: svenska svar fungerar, men långsamt – 2–3 s till första
 ljud; Kevin jobbar på det). Telefonen behöver internet. Om något ändrats i Supabase: klickvägar i `backend/README.md`.
-1. *Börja lyssna*, Svenska, *Håll för att fråga* (Inställningar). Håll, säg "roten ur hundra", släpp. Under *Svar* ska det
+1. *Börja lyssna*, Svenska, läget *Frågor (Auto)*. Säg "vad är roten ur hundra?". Under *Svar* ska det
    först stå *Tänker …* och sedan strömma in text. När svaret är klart visas det i listan med tid, källan
    `cloud` och latens i ms (från släpp till första ord). **Skriv ner latensen** för fem frågor
    (t.ex. nr 1, 5, 12, 23, 29 i `testdata/scripts/sv-short-prompts.md`) och om svaren är korrekta och korta.
@@ -200,7 +198,7 @@ ljud; Kevin jobbar på det). Telefonen behöver internet. Om något ändrats i S
 1. Inställningar → *Röst*: *Läs upp svaren* på, röst **Apple-röst (på telefonen)**. Tryck *Provlyssna*: en svensk
    provmening ska höras **i AirPods** (inte i telefonens högtalare), även medan den lyssnar. Skriv ner
    kvaliteten (bra / sämre / telefonkvalitet) – över HFP förväntas telefonkvalitet.
-2. Ställ en fråga med *Håll för att fråga*. Svaret ska läsas upp **mening för mening medan texten strömmar in**,
+2. Ställ en fråga i läget *Frågor (Auto)*. Svaret ska läsas upp **mening för mening medan texten strömmar in**,
    inte först när hela svaret är klart. Skriv ner tiden från släpp till första ordet (ungefär, sekundvisare).
 3. Ställ en ny fråga mitt i ett uppläst svar: uppläsningen ska tystna direkt och det nya svaret börja.
 4. Dra *Hastighet* till 1,5× och provlyssna: snabbare utan att rösten blir ljusare.
@@ -261,7 +259,7 @@ Signering: **båda** targets (`Lumen` och `LumenControls`) behöver ditt team i 
 1. Meny ⋯ → *Förberedelsematerial* → *Kursmål*: klistra in en målbeskrivning (gärna lång), *Spara mål*. Raden under
    visar hur många tecken som skickas komprimerat (max 1 500). Ställ en fråga inom ämnet: blev svaret på kursens nivå?
 2. Meny ⋯ → *Kommandon*: lägg till nyckelord `fusion` med en instruktion (t.ex. "förklara och jämför med fission").
-   Säg sedan bara "fusion" med *Håll för att fråga*: svaret ska följa instruktionen. Säg det lite otydligt
+   Skriv sedan bara "fusion" i skrivrutan: svaret ska följa instruktionen. Säg det lite otydligt
    ("fusjon") – matchas det ändå? Skriv ner.
 3. Säg "spara kommando fotosyntes: förklara steg för steg": raden *Sparade kommandot "fotosyntes"* ska visas, en kort
    bekräftelse höras i AirPods, och kommandot finnas i listan. Ingen fråga ska ha skickats.
@@ -275,7 +273,7 @@ Signering: **båda** targets (`Lumen` och `LumenControls`) behöver ditt team i 
 ### 3t. Kärnflödet från början till slut (10 min)
 1. Radera appen och installera om. Godkänn samtycket och läs texten: den ska säga att talet går till ElevenLabs. Svara *Dela inte* på frågan om historik.
 2. Tryck *Börja lyssna*. I statusraden ska det stå **Skriver ut med Scribe i molnet**. Står det *iPhone*: gå till Inställningar → Språk och läs den orange raden, och skriv ner den exakt.
-3. Håll knappen, säg "roten ur hundra", släpp. Skriv ner tiden från släpp till första ljud, fem gånger. Hörs svaret i AirPods?
+3. I läget *Frågor (Auto)*: säg "vad är roten ur hundra?". Skriv ner tiden från att du slutat tala till första ljud, fem gånger. Hörs svaret i AirPods?
 4. Säg "kom ihåg att jag går trean". Ställ sedan en fråga och kontrollera att svaret tar hänsyn till det.
 5. Slå på flygplansläge medan du lyssnar. Byter appen till iPhonens taligenkänning? Slå av igen.
 
@@ -292,22 +290,25 @@ Tryck *Börja läsa*, läs meningen som visas, tryck *Klar, nästa mening*. Fel-
 Lyssna också: låter svaret bättre i AirPods med iPhone-mikrofonen än med AirPods-mikrofonen? Då fungerar A2DP-uppspelningen. Skriv ner vad du hör.
 
 ### 3v. Provläge (5 min)
-Välj **Prov**, tryck *Starta Provläge*. Ställ en fråga, pausa, lyssna, ställ en följdfråga. Prata medan svaret spelas: svaret ska avbrytas. Säg "rapportera": du ska höra "Skickat" (kräver att Kevins `/feedback` är driftsatt).
+1. Tryck på kortet **Få A-svar till provet** högst upp på huvudskärmen. Provläge ska starta direkt, utan startskärm eller inställningar emellan.
+2. Ställ en fråga, pausa, lyssna, ställ en följdfråga. Prata medan svaret spelas: svaret ska avbrytas. Säg "rapportera": du ska höra "Skickat".
+3. Var tyst i minst 15 minuter med telefonen låst (D71): Provläge ska fortfarande vara igång efteråt. Det slutar bara när du trycker *End session* eller pausar för musik.
 
 ### 3w. Intervjuläge (10 min)
-1. Välj **Intervju**, skriv en roll, tryck *Förbered frågor och svar*: texten ska visas, inte läsas upp.
-2. Starta *övningsintervju* med kompisen som ställer frågorna, telefonen på bordet. Efter en fråga ska du höra ett upplägg, efter ditt svar en kort återkoppling. Säg "klar" när ni är färdiga: du ska få en sammanfattning.
-3. Appen växlar fråga/svar i tur och ordning. Skriv ner om den kommer i otakt.
+1. Välj **Intervjuläge**. Startskärmen ska säga att läget är för träning och inte för riktiga intervjuer utan att den andra vet. Skriv en roll och tryck *Förbered frågor och svar*: texten ska visas, inte läsas upp.
+2. Starta *övningsintervju* med kompisen som ställer frågorna, med AirPods-mikrofonen. Efter varje fråga ska du höra **ett färdigt svar och inget annat**: inga följdfrågor, ingen återkoppling, ingen sammanfattning.
+3. Säg svaret högt själv. Lumen ska **inte** svara på det. Händer det: skriv ner nivån i Diagnostik-loggen ("own turn at … dBFS") och justera *Din röst är starkare än*.
+4. Säg "ge mig feedback": först då ska återkoppling komma. Säg "klar" (eller "sammanfatta"): då ska en sammanfattning komma.
 
 ### 3x. Rizzläge (10 min, med en kompis som vet om det)
 1. Välj **Rizzläge (18+)**. Första gången ska rutan "Rizzläge är bara för dig som är 18 år eller äldre" komma. Tryck *Avbryt*: du ska vara tillbaka i väljaren. Välj igen och tryck *Jag är 18 år eller äldre*. Välj sedan *Förbered Rizzläge*: startskärmen med samtycket ska komma först. Starta.
 2. Prata med kompisen. Skriv ner tiden från att kompisen slutat tala till att förslaget hörs. Hörs det någonsin över någon som pratar? Det får inte hända.
-3. Lås telefonen: syns alla förslag på låsskärmen? Tryck *Nästa*, och säg sedan "nästa".
+3. Exakt **ett** förslag ska visas och läsas upp (D72). Lås telefonen: syns det på låsskärmen? Tryck *Nästa*, och säg sedan "nästa": ett nytt förslag ska komma.
 4. Var tyst i 4 sekunder: kommer ett förslag? Är ljudnivån lagom låg?
 5. Justera *Din röst är starkare än* i Inställningar → Rizzläge. Loggen i Diagnostik visar nivå och vem appen trodde pratade. Hur ofta blir det rätt, med telefonen på bordet och med AirPods?
 
 ### 3x2. Socialt läge (5 min, med samma kompis)
-Välj **Socialt läge**, tryck *Förbered Socialt läge*. Ingen åldersfråga ska komma, men startskärmen med samtycket ska göra det. Gör samma test som i 3x steg 2–4. Förslagen ska vara skämt, repliker, småprat och följdfrågor, aldrig flirt.
+Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt läge, Rizzläge), tryck *Förbered Socialt läge*. Ingen åldersfråga ska komma, men startskärmen med samtycket ska göra det. Gör samma test som i 3x steg 2–4: exakt ett förslag åt gången. Förslagen ska vara skämt, repliker, småprat och följdfrågor, aldrig flirt.
 
 ### 3y. Historik och minne (5 min)
 1. Inställningar → *Historik*: dina egna frågor ska stå ordagrant med svar och sammanfattning. Rizz-passet ska ha förslag men **inget** av det kompisen sa.

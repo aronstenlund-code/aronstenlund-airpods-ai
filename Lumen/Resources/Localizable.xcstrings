@@ -320,17 +320,6 @@
         }
       }
     },
-    "Auto listens for questions in the room. Hold to ask gives the fewest false answers.": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auto lyssnar efter frågor i rummet. Håll för att fråga ger minst felaktiga svar."
-          }
-        }
-      }
-    },
     "Auto-end after %lld min of silence": {
       "extractionState": "manual",
       "localizations": {
@@ -338,6 +327,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avsluta automatiskt efter %lld min tystnad"
+          }
+        }
+      }
+    },
+    "Auto-end after silence: never": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avsluta efter tystnad: aldrig"
           }
         }
       }
@@ -650,6 +650,17 @@
         }
       }
     },
+    "Every mode is hands-free: Lumen listens for questions in the room. Higher sensitivity answers more, and more often by mistake. The text field is the fallback.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alla lägen är handsfree: Lumen lyssnar efter frågor i rummet. Högre känslighet svarar oftare, och oftare fel. Skrivrutan finns som reserv."
+          }
+        }
+      }
+    },
     "Feedback & suggestions": {
       "extractionState": "manual",
       "localizations": {
@@ -723,17 +734,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Historik och minne stannar på din iPhone"
-          }
-        }
-      }
-    },
-    "Hold to ask": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Håll för att fråga"
           }
         }
       }
@@ -921,17 +921,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lyssningen stoppas, sessionens transkription raderas och samtyckesskärmen visas igen."
-          }
-        }
-      }
-    },
-    "Listening to you… release to ask": {
-      "extractionState": "manual",
-      "localizations": {
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lyssnar på dig … släpp för att fråga"
           }
         }
       }

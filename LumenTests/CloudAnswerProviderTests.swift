@@ -98,7 +98,7 @@ import Testing
         let http = FakeHTTP([.init(status: 200, body: Fixtures.tokenJSON(access: "jwt1")),
                              .init(status: 200, body: Fixtures.answerSSE)])
         let provider = makeProvider(http)
-        let activation = ActivationRequest(query: "roten ur hundra", trigger: .pushToTalk, language: .swedish)
+        let activation = ActivationRequest(query: "roten ur hundra", trigger: .answerLast, language: .swedish)
         let context = AnswerContext(transcript: "läraren pratade om tal", recentQA: [AnswerContext.QA(q: "q", a: "a")], prepTerms: ["kvadratrot"])
 
         let events = try await collect(provider.answer(AnswerRequest(activation: activation, context: context)))

@@ -4,7 +4,7 @@ import Testing
 
 @MainActor
 @Suite struct AnswerEngineTests {
-    private let question = ActivationRequest(query: "roten ur hundra", trigger: .pushToTalk, language: .swedish)
+    private let question = ActivationRequest(query: "roten ur hundra", trigger: .text, language: .swedish)
 
     private var happyEvents: [AnswerEvent] {
         [.meta(AnswerMeta(reconstructedQuestion: "Vad är roten ur hundra?", confidence: 0.96, isQuestion: true)),
@@ -97,7 +97,7 @@ import Testing
 
         engine.answer(question, context: AnswerContext())
         #expect(await waitUntil { sink.deltas.count >= 1 })
-        let second = ActivationRequest(query: "vad är pi", trigger: .pushToTalk, language: .swedish)
+        let second = ActivationRequest(query: "vad är pi", trigger: .text, language: .swedish)
         slow.delay = .zero
         engine.answer(second, context: AnswerContext())
 
@@ -152,7 +152,7 @@ import Testing
         return (h, model)
     }
 
-    @Test func holdToAskEndsWithAnAnswerInTheHistory() async {
+    @Test func aQuestionInTheRoomEndsWithAnAnswerInTheHistory() async {
         let provider = FakeAnswerProvider(name: "cloud", events: [
             .meta(AnswerMeta(reconstructedQuestion: "Vad är roten ur hundra?", isQuestion: true)),
             .delta("Tio."), .done(AnswerDone(answered: true)),
@@ -160,9 +160,7 @@ import Testing
         let (h, model) = makeModel(provider: provider)
         await model.startListening()
         model.receiveFinalTranscript("läraren pratade om kvadratrötter")
-        model.pressPushToTalk()
-        model.receiveFinalTranscript("roten ur hundra")
-        model.releasePushToTalk()
+        model.receiveFinalTranscript("vad är roten ur hundra?") // hands-free (D72): the question gate fires
 
         #expect(await waitUntil { model.conversation.answers.count == 1 })
         #expect(model.conversation.answers[0].question == "Vad är roten ur hundra?")

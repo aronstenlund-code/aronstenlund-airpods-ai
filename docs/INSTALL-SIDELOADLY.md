@@ -83,7 +83,7 @@ Följ `docs/DEVICE-TEST-CHECKLIST.md`. **Hoppa över Del 1 och Del 2**, de gäll
 ordningen:
 
 1. **3i** Samtycke och lyssnarskärmen (5 min).
-2. **3t** Kärnflödet från början till slut: håll knappen, ställ en fråga, hör svaret i AirPods (10 min). Det här är
+2. **3t** Kärnflödet från början till slut: ställ en fråga högt (läget Frågor), hör svaret i AirPods (10 min). Det här är
    det viktigaste. Fungerar inget annat, skicka bara resultatet från 3t.
 3. **3q** Växla till musik (10 min).
 4. **3v**, **3w**, **3x** och **3x2**: Provläge, Intervjuläge, Rizzläge och Socialt läge, med en kompis som vet att

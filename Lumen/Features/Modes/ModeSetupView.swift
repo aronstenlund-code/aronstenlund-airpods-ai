@@ -22,7 +22,7 @@ struct InterviewSetupView: View {
                     model.prepareInterview()
                 }
             } footer: {
-                Text("Practice: a friend asks, you get the outline of an answer, then feedback on yours. Use live support only where it is allowed and the others know, for example a mock interview.")
+                Text("Intervjuläge är till för träning: en kompis ställer frågan och du hör ett färdigt svar. Använd det inte i en riktig intervju utan att den andra vet om det.")
             }
             .disabled(settings.interviewSetup.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }

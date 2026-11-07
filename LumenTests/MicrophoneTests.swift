@@ -88,7 +88,7 @@ import Testing
         let h = ControllerHarness()
         let provider = FakeAnswerProvider(name: "cloud")
         let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true), transcription: makeTestCoordinator(h.controller),
-                                   activation: makeTestActivation(mode: .auto), answers: makeTestAnswerEngine(provider), speaker: makeTestSpeaker(h.playback),
+                                   activation: makeTestActivation(), answers: makeTestAnswerEngine(provider), speaker: makeTestSpeaker(h.playback),
                                    voices: makeTestVoiceCatalog(), notes: makeTestNotes(), prep: makeTestPrep(),
                                    history: makeTestHistory(), memory: makeTestMemory(), microphone: MicrophoneSettings(defaults: freshDefaults()))
         let comparison = MicComparisonModel(listening: model, settleDelay: .zero)

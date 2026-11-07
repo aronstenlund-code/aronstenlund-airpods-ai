@@ -5,7 +5,7 @@ import Testing
 @MainActor
 @Suite struct LatencyLogTests {
     private func request(_ query: String) -> ActivationRequest {
-        ActivationRequest(query: query, trigger: .pushToTalk, language: .swedish)
+        ActivationRequest(query: query, trigger: .text, language: .swedish)
     }
 
     @Test func recordsFirstTextAndFirstSpeechOncePerAnswer() {

@@ -172,7 +172,7 @@ import Testing
         #expect(rig.model.study.isActive)
         rig.model.study.level(-70, at: Date())
 
-        speak("Berätta om dig själv", level: -25, rig: rig)
+        speak("Berätta om dig själv", level: -40, rig: rig)
         #expect(await waitUntil { rig.provider.requests.count == 1 })
         #expect(rig.provider.requests[0].persona?.persona == "interview")
         #expect(rig.provider.requests[0].persona?.setup == "Säljare på Volvo")
@@ -180,6 +180,34 @@ import Testing
         #expect(rig.provider.requests[0].mode == "tutor")
         #expect(await waitUntil { rig.history.entries.count == 1 })
         #expect(rig.history.entries[0].question == nil, "the interviewer's words are not saved")
+
+        // D72: the wearer saying the answer aloud gets no feedback and no follow-up.
+        _ = await waitUntil { !rig.model.speaker.isSpeaking && !rig.model.speaker.hasPendingSpeech }
+        rig.model.study.resumeListening()
+        speak("Jag heter Aron och har jobbat med försäljning i fem år", level: -20, rig: rig)
+        try? await Task.sleep(for: .milliseconds(50))
+        #expect(rig.provider.requests.count == 1, "only the interviewer's questions are answered")
+        #expect(rig.model.study.isActive)
+
+        speak("Vad är din största svaghet", level: -40, rig: rig)
+        #expect(await waitUntil { rig.provider.requests.count == 2 })
+        #expect(rig.provider.requests[1].persona?.turn == "question")
+        #expect(!rig.provider.requests.contains { $0.persona?.turn == "user_answer" })
+
+        // Asking for something out loud is sent: only then is there a summary.
+        _ = await waitUntil { !rig.model.speaker.isSpeaking && !rig.model.speaker.hasPendingSpeech }
+        rig.model.study.resumeListening()
+        speak("Sammanfatta", level: -20, rig: rig)
+        #expect(await waitUntil { rig.provider.requests.count == 3 })
+        #expect(rig.provider.requests[2].fragment == "Sammanfatta")
+    }
+
+    @Test func interviewRequestsAreRecognised() {
+        #expect(VoiceCommand.isInterviewRequest("Klar."))
+        #expect(VoiceCommand.isInterviewRequest("ge mig feedback på det"))
+        #expect(VoiceCommand.isInterviewRequest("Hur var mitt svar?"))
+        #expect(!VoiceCommand.isInterviewRequest("Jag har jobbat med försäljning i fem år"))
+        #expect(!VoiceCommand.isInterviewRequest("klarade mig bra"))
     }
 
     @Test func prepareSendsTheJobAdAndIsNotSpoken() async {
@@ -219,7 +247,7 @@ import Testing
         #expect(rig.apple.calls[0].text == "Bästa")
         #expect(rig.provider.requests[0].persona?.social?.trigger == "other_spoke")
         #expect(rig.provider.requests[0].persona?.social?.transcript == [SocialRequest.Line(speaker: "other", text: "Jag älskar chili")])
-        #expect(rig.activity.lastState?.suggestions == ["Bästa", "Andra"])
+        #expect(rig.activity.lastState?.suggestions == ["Bästa"], "exactly one suggestion (D72)")
     }
 
     @Test func rizzNeverTalksOverSomeone() async {
@@ -232,21 +260,21 @@ import Testing
         try? await Task.sleep(for: .milliseconds(30))
 
         #expect(rig.apple.calls.isEmpty, "the other person is talking")
-        #expect(rig.activity.lastState?.suggestions == ["Bästa", "Andra"], "still on the Lock Screen")
+        #expect(rig.activity.lastState?.suggestions == ["Bästa"], "still on the Lock Screen")
     }
 
-    @Test func nextSpeaksTheNextOption() async {
+    @Test func nextAsksForAFreshSuggestion() async {
         let rig = makeRig(events: [], microphone: .iPhone)
-        await rig.model.startHandsFree(.rizz)
+        await rig.model.startHandsFree(.social)
         rig.model.answerSuggestions(["Bästa", "Andra"])
         #expect(await waitUntil { rig.apple.calls.count == 1 && !rig.model.speaker.isSpeaking })
+        #expect(rig.model.rizz?.suggestions == ["Bästa"], "one suggestion, shown and spoken (D72)")
 
         rig.model.receiveFinalTranscript("Nästa", at: Date())
 
-        #expect(await waitUntil { rig.apple.calls.count == 2 })
-        #expect(rig.apple.calls[1].text == "Andra")
-        #expect(rig.activity.lastState?.currentSuggestion == 1)
-        #expect(rig.provider.requests.isEmpty, "a command, not a turn")
+        #expect(await waitUntil { rig.provider.requests.count == 1 })
+        #expect(rig.provider.requests[0].persona?.social?.trigger == "opener")
+        #expect(rig.model.rizz?.transcript.isEmpty == true, "a command, not a line of the conversation")
     }
 
     @Test func historyKeepsSuggestionsAndNeverTheOtherPersonsWords() async {

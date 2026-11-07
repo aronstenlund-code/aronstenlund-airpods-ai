@@ -97,20 +97,13 @@ struct SettingsView: View {
     @ViewBuilder
     private var activationSection: some View {
         @Bindable var settings = model.activation.settings
-        Section("Activation") {
-            Picker("Activation", selection: $settings.mode) {
-                Text("Hold to ask").tag(ActivationMode.pushToTalk)
-                Text("Auto").tag(ActivationMode.auto)
+        Section("Questions") {
+            Picker("Sensitivity", selection: $settings.sensitivity) {
+                Text("Low").tag(GateSensitivity.low)
+                Text("Medium").tag(GateSensitivity.medium)
+                Text("High").tag(GateSensitivity.high)
             }
-            .pickerStyle(.segmented)
-            if settings.mode == .auto {
-                Picker("Sensitivity", selection: $settings.sensitivity) {
-                    Text("Low").tag(GateSensitivity.low)
-                    Text("Medium").tag(GateSensitivity.medium)
-                    Text("High").tag(GateSensitivity.high)
-                }
-            }
-            Text("Auto listens for questions in the room. Hold to ask gives the fewest false answers.")
+            Text("Every mode is hands-free: Lumen listens for questions in the room. Higher sensitivity answers more, and more often by mistake. The text field is the fallback.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }

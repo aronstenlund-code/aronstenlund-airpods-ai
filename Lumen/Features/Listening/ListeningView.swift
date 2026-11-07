@@ -11,6 +11,7 @@ struct ListeningView: View {
 
     var body: some View {
         List {
+            provCard
             statusSection
             transcriptSection
             answersSection
@@ -392,7 +393,6 @@ struct ListeningView: View {
 
     private func triggerLabel(_ trigger: ActivationTrigger) -> LocalizedStringKey {
         switch trigger {
-        case .pushToTalk: "Hold to ask"
         case .auto: "Auto"
         case .answerLast: "Last sentence"
         case .overheard: "Intervjuläge"
@@ -432,11 +432,11 @@ struct ListeningView: View {
         VStack(spacing: 10) {
             textQuestionRow
             Picker("Mode", selection: $model.selectedMode) {
-                Text("Questions").tag(ConversationMode.standard)
+                Text("Frågor (Auto)").tag(ConversationMode.standard)
                 Text("Provläge").tag(ConversationMode.prov)
                 Text("Intervjuläge").tag(ConversationMode.interview)
-                Text("Rizzläge (18+)").tag(ConversationMode.rizz)
                 Text("Socialt läge").tag(ConversationMode.social)
+                Text("Rizzläge (18+)").tag(ConversationMode.rizz)
             }
             .pickerStyle(.menu)
             .disabled(model.study.isActive)
@@ -462,7 +462,6 @@ struct ListeningView: View {
                 .buttonStyle(.bordered)
             }
             if model.isListening, !model.study.isActive {
-                holdToAskButton
                 Button {
                     model.askAboutLast()
                 } label: {
@@ -521,25 +520,37 @@ struct ListeningView: View {
         }
     }
 
-    /// Press-and-hold: the words said while holding become the question (push-to-talk, the default trigger).
-    private var holdToAskButton: some View {
-        Label(model.isHolding ? "Listening to you… release to ask" : "Hold to ask",
-              systemImage: model.isHolding ? "waveform.circle.fill" : "hand.tap")
-            .font(.title3.weight(.semibold))
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .background(model.isHolding ? Color.orange.opacity(0.9) : Color.accentColor.opacity(0.15),
-                        in: RoundedRectangle(cornerRadius: 12))
-            .foregroundStyle(model.isHolding ? Color.white : Color.accentColor)
-            .contentShape(RoundedRectangle(cornerRadius: 12))
-            .onLongPressGesture(minimumDuration: 3600, maximumDistance: 60, pressing: { pressing in
-                if pressing {
-                    model.pressPushToTalk()
-                } else {
-                    model.releasePushToTalk()
+    /// D72: Provläge one tap away. Starts at once, no start screen or settings in between; never ends by itself (D71).
+    @ViewBuilder
+    private var provCard: some View {
+        if !model.study.isActive {
+            Section {
+                Button {
+                    Task { await model.startProvFromCard() }
+                } label: {
+                    HStack(spacing: 14) {
+                        Image(systemName: "graduationcap.fill")
+                            .font(.title)
+                            .foregroundStyle(.white)
+                            .frame(width: 52, height: 52)
+                            .background(Color.purple, in: RoundedRectangle(cornerRadius: 12))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Få A-svar till provet")
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+                            Text("Provläge · tryck för att starta")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "play.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(.purple)
+                    }
+                    .padding(.vertical, 6)
                 }
-            }, perform: {})
-            .accessibilityLabel("Hold to ask")
-            .accessibilityAddTraits(.isButton)
+                .accessibilityLabel("Få A-svar till provet. Startar Provläge.")
+            }
+        }
     }
 }

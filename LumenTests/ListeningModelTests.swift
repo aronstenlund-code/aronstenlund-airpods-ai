@@ -48,7 +48,7 @@ import Testing
         let consent = FakeConsentStore(granted: true)
         let model = ListeningModel(controller: h.controller, consent: consent, transcription: makeTestCoordinator(h.controller), activation: makeTestActivation(), answers: makeTestAnswerEngine(), speaker: makeTestSpeaker(h.playback), voices: makeTestVoiceCatalog(), notes: makeTestNotes(), prep: makeTestPrep())
         await model.startListening()
-        model.receiveFinalTranscript("Vad är fotosyntes?")
+        model.receiveFinalTranscript("Fotosyntes är växternas sätt att leva")
         model.receiveAnswer(question: "Vad är fotosyntes?", answer: "Växternas sätt att …", source: "mock")
 
         await model.withdrawConsent()

@@ -3,7 +3,7 @@ import Observation
 
 /// What the session is for. Decides the microphone (D55) and, in hands-free modes, the backend persona (D42).
 enum ConversationMode: String, CaseIterable, Identifiable, Sendable {
-    /// Hold to ask, or auto.
+    /// Frågor (Auto): the question gate listens to the room (D72).
     case standard
     case prov
     case interview

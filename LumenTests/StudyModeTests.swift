@@ -354,7 +354,6 @@ import Testing
 
     @Test func questionGateIsOffDuringStudy() async {
         let rig = makeRig()
-        rig.model.activation.settings.mode = .auto
         await rig.model.toggleStudyMode()
         rig.model.receiveFinalTranscript("vad är fotosyntes?")
         try? await Task.sleep(for: .milliseconds(100))

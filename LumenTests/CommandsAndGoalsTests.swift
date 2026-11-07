@@ -181,7 +181,6 @@ import Testing
     @Test func spokenSaveCommandIsStoredConfirmedAndNotSent() async {
         let provider = FakeAnswerProvider(name: "cloud", events: [.delta("Svar."), .done(AnswerDone(answered: true))])
         let (_, model) = makeModel(provider: provider)
-        model.activation.settings.mode = .auto
         await model.startListening()
 
         model.receiveFinalTranscript("Spara kommando fotosyntes: förklara steg för steg?")

@@ -3,12 +3,11 @@ import Testing
 @testable import Lumen
 
 @MainActor
-func makeTestActivation(mode: ActivationMode = .pushToTalk, sensitivity: GateSensitivity = .medium) -> ActivationController {
+func makeTestActivation(sensitivity: GateSensitivity = .medium) -> ActivationController {
     let suite = "lumen.tests.activation.\(UUID().uuidString)"
     let defaults = UserDefaults(suiteName: suite)!
     defaults.removePersistentDomain(forName: suite)
     let settings = ActivationSettings(defaults: defaults)
-    settings.mode = mode
     settings.sensitivity = sensitivity
     return ActivationController(settings: settings)
 }
@@ -24,89 +23,8 @@ func makeTestActivation(mode: ActivationMode = .pushToTalk, sensitivity: GateSen
         return { box.requests }
     }
 
-    @Test func pushToTalkCollectsWhatWasSaidWhileHolding() {
-        let controller = makeTestActivation()
-        let fired = recording(controller)
-        var conversation = Conversation()
-        conversation.finalize("det här sa läraren innan", at: t0)
-
-        controller.beginPushToTalk(conversation: conversation, now: t0.addingTimeInterval(10))
-        #expect(controller.isHolding)
-        conversation.finalize("vad är fotosyntes", at: t0.addingTimeInterval(11))
-        conversation.finalize("och varför är den viktig", at: t0.addingTimeInterval(12))
-        let immediate = controller.endPushToTalk(conversation: conversation, language: .swedish, now: t0.addingTimeInterval(13))
-
-        #expect(immediate)
-        #expect(!controller.isHolding)
-        #expect(fired().count == 1)
-        #expect(fired().first?.query == "vad är fotosyntes och varför är den viktig")
-        #expect(fired().first?.trigger == .pushToTalk)
-        #expect(fired().first?.language == .swedish)
-        #expect(fired().first?.backendModeIsPushToTalk == true)
-    }
-
-    @Test func releaseWithOpenPartialWaitsForTheFinal() {
-        let controller = makeTestActivation()
-        let fired = recording(controller)
-        var conversation = Conversation()
-        controller.beginPushToTalk(conversation: conversation, now: t0)
-        conversation.updatePartial("vad är foto", at: t0)
-
-        let immediate = controller.endPushToTalk(conversation: conversation, language: .swedish, now: t0.addingTimeInterval(1))
-        #expect(!immediate)
-        #expect(controller.isAwaitingFinal)
-        #expect(fired().isEmpty)
-
-        conversation.finalize("vad är fotosyntes?", at: t0.addingTimeInterval(1.5))
-        controller.segmentFinalized(conversation.finalSegments.last!, conversation: conversation, language: .swedish,
-                                    isPlaybackSpeaking: false, now: t0.addingTimeInterval(1.5))
-        #expect(!controller.isAwaitingFinal)
-        #expect(fired().map(\.query) == ["vad är fotosyntes?"])
-        #expect(fired().first?.trigger == .pushToTalk)
-    }
-
-    @Test func flushAfterGraceUsesThePartialText() {
-        let controller = makeTestActivation()
-        let fired = recording(controller)
-        var conversation = Conversation()
-        controller.beginPushToTalk(conversation: conversation, now: t0)
-        conversation.finalize("roten ur", at: t0.addingTimeInterval(0.5))
-        conversation.updatePartial("hundra", at: t0.addingTimeInterval(0.9))
-        controller.endPushToTalk(conversation: conversation, language: .swedish, now: t0.addingTimeInterval(1))
-
-        controller.flushPushToTalk(conversation: conversation, language: .swedish, now: t0.addingTimeInterval(3))
-        #expect(fired().map(\.query) == ["roten ur hundra"])
-        controller.flushPushToTalk(conversation: conversation, language: .swedish, now: t0.addingTimeInterval(4))
-        #expect(fired().count == 1, "flush is idempotent")
-    }
-
-    @Test func finalArrivingAfterTheGraceDoesNotFireInPushToTalkMode() {
-        let controller = makeTestActivation()
-        let fired = recording(controller)
-        var conversation = Conversation()
-        controller.beginPushToTalk(conversation: conversation, now: t0)
-        conversation.updatePartial("vad", at: t0)
-        controller.endPushToTalk(conversation: conversation, language: .swedish, now: t0.addingTimeInterval(1))
-
-        conversation.finalize("vad är fotosyntes?", at: t0.addingTimeInterval(9))
-        controller.segmentFinalized(conversation.finalSegments.last!, conversation: conversation, language: .swedish,
-                                    isPlaybackSpeaking: false, now: t0.addingTimeInterval(9))
-        #expect(fired().isEmpty)
-        #expect(!controller.isAwaitingFinal)
-    }
-
-    @Test func releaseWithNothingSaidFiresNothing() {
-        let controller = makeTestActivation()
-        let fired = recording(controller)
-        let conversation = Conversation()
-        controller.beginPushToTalk(conversation: conversation, now: t0)
-        controller.endPushToTalk(conversation: conversation, language: .swedish, now: t0.addingTimeInterval(1))
-        controller.flushPushToTalk(conversation: conversation, language: .swedish, now: t0.addingTimeInterval(4))
-        #expect(fired().isEmpty)
-    }
-
     @Test func autoModeFiresOnQuestionsAndRespectsCooldown() {
-        let controller = makeTestActivation(mode: .auto)
+        let controller = makeTestActivation()
         let fired = recording(controller)
         var conversation = Conversation()
 
@@ -133,7 +51,7 @@ func makeTestActivation(mode: ActivationMode = .pushToTalk, sensitivity: GateSen
     }
 
     @Test func autoModeIgnoresOurOwnPlayback() {
-        let controller = makeTestActivation(mode: .auto)
+        let controller = makeTestActivation()
         let fired = recording(controller)
         var conversation = Conversation()
 
@@ -148,20 +66,9 @@ func makeTestActivation(mode: ActivationMode = .pushToTalk, sensitivity: GateSen
         #expect(fired().isEmpty, "nothing fires while the answer is still playing")
     }
 
-    @Test func pushToTalkModeNeverFiresAutomatically() {
-        let controller = makeTestActivation(mode: .pushToTalk)
-        let fired = recording(controller)
-        var conversation = Conversation()
-        conversation.finalize("vad är fotosyntes?", at: t0)
-        controller.segmentFinalized(conversation.finalSegments.last!, conversation: conversation, language: .swedish,
-                                    isPlaybackSpeaking: false, now: t0)
-        #expect(fired().isEmpty)
-        #expect(controller.lastDecision == nil, "the gate is not even evaluated")
-    }
-
     @Test func sensitivityChangesWhatFires() {
-        let medium = makeTestActivation(mode: .auto, sensitivity: .medium)
-        let high = makeTestActivation(mode: .auto, sensitivity: .high)
+        let medium = makeTestActivation(sensitivity: .medium)
+        let high = makeTestActivation(sensitivity: .high)
         let firedMedium = recording(medium)
         let firedHigh = recording(high)
         var conversation = Conversation()
@@ -186,6 +93,7 @@ func makeTestActivation(mode: ActivationMode = .pushToTalk, sensitivity: GateSen
         #expect(controller.answerLast(conversation: conversation, language: .swedish, now: t0.addingTimeInterval(2.5)), "manual triggers have no cooldown")
         #expect(fired().map(\.query) == ["newtons andra lag", "newtons andra lag"])
         #expect(fired().first?.trigger == .answerLast)
+        #expect(fired().first?.trigger.backendMode == "push_to_talk", "a deliberate question for the backend")
     }
 
     @Test func textModeEntersTheSamePath() {
@@ -212,70 +120,36 @@ func makeTestActivation(mode: ActivationMode = .pushToTalk, sensitivity: GateSen
         let defaults = UserDefaults(suiteName: suite)!
         defaults.removePersistentDomain(forName: suite)
         let fresh = ActivationSettings(defaults: defaults)
-        #expect(fresh.mode == .pushToTalk, "push-to-talk is the MVP default")
         #expect(fresh.sensitivity == .medium)
 
-        fresh.mode = .auto
         fresh.sensitivity = .high
         let reloaded = ActivationSettings(defaults: defaults)
-        #expect(reloaded.mode == .auto)
         #expect(reloaded.sensitivity == .high)
     }
 }
 
-private extension ActivationRequest {
-    var backendModeIsPushToTalk: Bool { trigger.backendMode == "push_to_talk" }
-}
-
 @MainActor
 @Suite struct ListeningActivationTests {
-    private func makeModel() -> (ControllerHarness, ListeningModel) {
+    private func makeModel(defaults: UserDefaults? = nil) -> (ControllerHarness, ListeningModel) {
         let h = ControllerHarness()
+        let settings = defaults.map { ModeSettings(defaults: $0) } ?? ModeSettings(defaults: Self.freshDefaults())
         let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true),
-                                   transcription: makeTestCoordinator(h.controller), activation: makeTestActivation(), answers: makeTestAnswerEngine(), speaker: makeTestSpeaker(h.playback), voices: makeTestVoiceCatalog(), notes: makeTestNotes(), prep: makeTestPrep())
+                                   transcription: makeTestCoordinator(h.controller), activation: makeTestActivation(), answers: makeTestAnswerEngine(),
+                                   speaker: makeTestSpeaker(h.playback), voices: makeTestVoiceCatalog(), notes: makeTestNotes(), prep: makeTestPrep(),
+                                   modeSettings: settings)
         return (h, model)
     }
 
-    @Test func holdToAskProducesAPendingQuestion() async {
-        let (_, model) = makeModel()
-        await model.startListening()
-        model.receiveFinalTranscript("det här sa läraren")
-
-        model.pressPushToTalk()
-        #expect(model.isHolding)
-        model.receiveFinalTranscript("vad är fotosyntes")
-        model.releasePushToTalk()
-
-        #expect(!model.isHolding)
-        #expect(model.pendingQuestion?.query == "vad är fotosyntes")
-        #expect(model.pendingQuestion?.trigger == .pushToTalk)
-        #expect(model.pendingQuestion?.language == .swedish)
+    private static func freshDefaults() -> UserDefaults {
+        let suite = "lumen.tests.listeningactivation.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defaults.removePersistentDomain(forName: suite)
+        return defaults
     }
 
-    @Test func holdIsIgnoredWhenNotListening() {
-        let (_, model) = makeModel()
-        model.pressPushToTalk()
-        #expect(!model.isHolding)
-    }
-
-    @Test func releaseWaitsForTheFinalWordsThenFlushes() async {
-        let (_, model) = makeModel()
-        model.activation.settings.releaseGrace = 0.2
-        await model.startListening()
-        model.pressPushToTalk()
-        model.receivePartialTranscript("roten ur hund")
-        model.releasePushToTalk()
-        #expect(model.pendingQuestion == nil)
-
-        #expect(await waitUntil { model.pendingQuestion != nil })
-        #expect(model.pendingQuestion?.query == "roten ur hund", "the open partial is used when no final arrives in time")
-    }
-
-    @Test func autoModeDetectsAQuestionFromTheTranscript() async {
-        let h = ControllerHarness()
-        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true),
-                                   transcription: makeTestCoordinator(h.controller),
-                                   activation: makeTestActivation(mode: .auto), answers: makeTestAnswerEngine(), speaker: makeTestSpeaker(h.playback), voices: makeTestVoiceCatalog(), notes: makeTestNotes(), prep: makeTestPrep())
+    @Test func questionsAreHandsFreeByDefault() async {
+        let (h, model) = makeModel()
+        #expect(model.selectedMode == .standard, "Frågor (Auto) on the first start")
         await model.startListening()
         model.receiveFinalTranscript("idag pratar vi om celler")
         #expect(model.pendingQuestion == nil)
@@ -283,6 +157,22 @@ private extension ActivationRequest {
         #expect(model.pendingQuestion?.trigger == .auto)
         #expect(model.pendingQuestion?.query == "hur många kromosomer har en människa?")
         #expect(h.controller.eventLog.first?.text.hasPrefix("Activation (auto)") == true)
+    }
+
+    @Test func theLastChosenModeIsRemembered() {
+        let defaults = Self.freshDefaults()
+        let (_, first) = makeModel(defaults: defaults)
+        first.selectedMode = .interview
+        let (_, again) = makeModel(defaults: defaults)
+        #expect(again.selectedMode == .interview)
+    }
+
+    @Test func rizzIsNotRememberedWithoutTheAgeConfirmation() {
+        let defaults = Self.freshDefaults()
+        let (_, first) = makeModel(defaults: defaults)
+        first.selectedMode = .rizz
+        let (_, again) = makeModel(defaults: defaults)
+        #expect(again.selectedMode == .standard, "the 18+ gate is not skipped by a remembered choice")
     }
 
     @Test func askAboutLastAndClearHistory() async {

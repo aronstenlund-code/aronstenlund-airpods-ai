@@ -29,6 +29,7 @@ final class ModeSettings {
     static let profileKey = "mode.rizzProfile"
     static let thresholdKey = "mode.speakerThresholdDBFS"
     static let countsKey = "mode.rizzStyleCounts"
+    static let lastModeKey = "mode.lastSelected"
 
     /// The role or the pasted job ad.
     var interviewSetup: String {
@@ -49,6 +50,10 @@ final class ModeSettings {
     }
     /// How often a suggestion in each style was actually used. Counts only, never content (D43).
     private(set) var styleCounts: [String: Int]
+    /// The mode picker's last choice, so the app opens where the user left it (D72). Frågor on the first start.
+    var lastMode: ConversationMode {
+        didSet { defaults.set(lastMode.rawValue, forKey: Self.lastModeKey) }
+    }
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
@@ -59,6 +64,7 @@ final class ModeSettings {
         self.rizzProfile = defaults.string(forKey: Self.profileKey) ?? ""
         self.speakerThresholdDBFS = defaults.object(forKey: Self.thresholdKey) as? Double ?? -30
         self.styleCounts = defaults.dictionary(forKey: Self.countsKey) as? [String: Int] ?? [:]
+        self.lastMode = defaults.string(forKey: Self.lastModeKey).flatMap(ConversationMode.init(rawValue:)) ?? .standard
     }
 
     var interests: [String] {
