@@ -183,8 +183,8 @@ def rizz_checks(options, expected=1):
     return out
 
 
-INTERVIEW_BAD = ["här lägger du", "ditt exempel", "ett bra svar", "du kan svara", "du kan säga", "struktur", "börja med att",
-                 "star", "bra fråga", "sammanfattningsvis", "lycka till"]
+INTERVIEW_BAD = ["här lägger du", "ditt exempel", "ett bra svar", "du kan svara", "du kan säga", "en struktur", "strukturen", "börja med att",
+                 "star ", "bra fråga", "sammanfattningsvis", "lycka till"]
 
 
 # D77: concrete personal facts that the interview answer may not state unless the case gave them
