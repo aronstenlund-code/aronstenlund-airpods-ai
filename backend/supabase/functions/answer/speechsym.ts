@@ -205,6 +205,8 @@ export function guardPhoneNumbers(text: string, ctx = ""): string {
   return out ? out + full.slice(last) : text;
 }
 
+const CLOCK_CUE_END = /(?:^|[^\p{L}])(?:klockan|kl\.?)\s+$/iu;
+
 /** Before digits become words. */
 export function beforeNumbers(text: string, ctx = ""): string {
   // invisible characters (soft hyphen, zero-width) away; subscript digits (C₁₂H₂₂O₁₁) -> plain digits
@@ -217,6 +219,14 @@ export function beforeNumbers(text: string, ctx = ""): string {
     /((?:klockan|kl\.?|vid|runt|före|efter)\s+)([01]?\d|2[0-3])\.([0-5]\d)(?![\d])/giu,
     (_m, pre: string, h: string, m: string) => `${pre}${h}:${m}`,
   );
+  s = s.replace(
+    /((?:klockan|kl\.?)\s+)([01]?\d|2[0-3]),([0-5]\d)(?![\d])/giu,
+    (_m, pre: string, h: string, m: string) => `${pre}${h}:${m}`,
+  );
+  // ...also when the stream split "klockan " from "17.40" (the cue word is in the text already spoken)
+  if (CLOCK_CUE_END.test(ctx)) {
+    s = s.replace(/^(\s*)([01]?\d|2[0-3])[.,]([0-5]\d)(?![\d])/u, "$1$2:$3");
+  }
   // D65: roman numerals after a name are regnal numbers: "Oscar I" -> "Oscar den förste"
   s = s.replace(
     /(?<![\p{L}\d])(\p{Lu}[\p{L}]+) (XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)(?![\p{L}\d])(?!\s\p{Lu})/gu,

@@ -672,7 +672,7 @@ Deno.test("D65 safety: allergy / health memories add a binding <safety> rule; th
   }
 });
 
-import { EnglishGate, isEnglishSentence, SourceTap, spokenSource } from "./speech.ts";
+import { EnglishGate, isEnglishSentence, isSearchMeta, SourceTap, spokenSource } from "./speech.ts";
 Deno.test("D65 web: source line is spoken as a name, English sentences are dropped, wikis are not allowed", () => {
   const raw =
     "Riksbankschef är Erik Thedéen, som tillträdde 1 januari 2023. Since 1 January 2023 he serves as the Governor of Sveriges Riksbank, the central bank of Sweden.\n\nkälla: en.wikipedia.org";
@@ -836,4 +836,39 @@ Deno.test("D65 tutor: one short check question; two-part questions are dropped; 
   assertStringIncludes(SYSTEM_PROMPT_DIRECT_STUDY, "use no fixed stock phrases");
   assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "koffeinets halveringstid");
   assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "put the whole list in order");
+});
+
+Deno.test("Oscar round 2 M04.2: a clock time split from 'klockan' by the stream is still a time", () => {
+  for (const size of [1, 2, 3, 5, 9, 40]) {
+    for (const t of ["Ditt tåg går klockan 17.40.", "Ditt tåg går klockan 17,40.", "Bussen går kl 7.05 i morgon."]) {
+      const s = new NumberStream();
+      let out = "";
+      for (let k = 0; k < t.length; k += size) out += s.push(t.slice(k, k + size));
+      out += s.finish();
+      assert(/sjutton och fyrtio|sju noll fem/.test(out), `${size}: ${out}`);
+      assert(!out.includes("komma"), `${size}: ${out}`);
+    }
+  }
+  assert(!toSpeech("Det kostar 17,40 kronor.").includes("och fyrtio"), "prices stay prices");
+  const s = new NumberStream();
+  assert(!(s.push("Det kostar ") + s.push("17,40 kronor.") + s.finish()).includes("och fyrtio"));
+});
+
+Deno.test("Oscar round 2 F16: web-mode sentences that narrate the search decision are never spoken", () => {
+  const t =
+    "Det här är en historisk fråga som jag kan svara på direkt, utan sökning. Den tredje kungen av ätten Bernadotte är Karl den femtonde.";
+  for (const size of [1, 4, 17, 400]) {
+    const g = new EnglishGate(true);
+    let out = "";
+    for (let k = 0; k < t.length; k += size) out += g.push(t.slice(k, k + size));
+    assertEquals(out + g.finish(), "Den tredje kungen av ätten Bernadotte är Karl den femtonde.", `${size}`);
+  }
+  for (const s of ["Jag söker på Riksbankens webbplats.", "Det behövs ingen sökning för det här."]) {
+    assert(isSearchMeta(s), s);
+  }
+  for (const s of ["Sökningen visar att räntan är 2 procent.", "Han söker jobb i Malmö.", "Du kan svara direkt i appen."]) {
+    assert(!isSearchMeta(s), s);
+  }
+  assertStringIncludes(WEB_PROMPT, "Never mention searching");
+  assertStringIncludes(SYSTEM_PROMPT_DIRECT_FACT, "never read the list aloud");
 });

@@ -257,7 +257,18 @@ export function isEnglishSentence(sentence: string): boolean {
   return en >= 3 && en > 1.5 * sv;
 }
 
-/** Drops whole English sentences (web mode only, unless the user asked for a translation). */
+/**
+ * Oscar round 2 (F16): in web mode the model sometimes narrates its own decision ("Det här är en historisk
+ * fråga som jag kan svara på direkt, utan sökning.", "Jag söker på ..."). Such a sentence is system talk.
+ */
+const SEARCH_META =
+  /(?:utan (?:att )?s\u00f6k|(?:beh\u00f6ver|beh\u00f6vs) (?:inte |ingen )?s\u00f6k|ingen s\u00f6kning|jag kan svara (?:p\u00e5 )?(?:den |det |fr\u00e5gan )?direkt|^\s*(?:jag|l\u00e5t mig) (?:ska |kan |vill |m\u00e5ste |beh\u00f6ver )?(?:s\u00f6ka|s\u00f6ker|kolla|kollar|letar|leta)\b|^\s*det h\u00e4r \u00e4r en \p{L}+ fr\u00e5ga)/iu;
+export function isSearchMeta(sentence: string): boolean {
+  return SEARCH_META.test(sentence);
+}
+
+/** Drops whole English sentences (web mode only, unless the user asked for a translation), and sentences
+ *  that only narrate the search decision. */
 export class EnglishGate {
   private buf = "";
   constructor(private readonly enabled: boolean) {}
@@ -273,13 +284,13 @@ export class EnglishGate {
       const end = m.index + m[0].length;
       const sentence = this.buf.slice(0, end);
       this.buf = this.buf.slice(end);
-      if (!isEnglishSentence(sentence)) out += sentence;
+      if (!isEnglishSentence(sentence) && !isSearchMeta(sentence)) out += sentence;
     }
     return out;
   }
   finish(): string {
     if (!this.enabled) return "";
-    const r = isEnglishSentence(this.buf) ? "" : this.buf;
+    const r = isEnglishSentence(this.buf) || isSearchMeta(this.buf) ? "" : this.buf;
     this.buf = "";
     return r;
   }
