@@ -200,7 +200,10 @@ INVENTED_FACT = re.compile(
     r"|\bmin (?:förra|tidigare|nuvarande) (?:chef|arbetsgivare|kollega)"
     r"|\b(?:en gång|en kväll|en dag) (?:när|då|så) (?:jag|vi)\b"
     r"|\bjag har (?:inte|aldrig) (?:arbetat|jobbat|haft|någon erfarenhet)|\bjag har ingen (?:tidigare )?erfarenhet"
-    r"|\bnär (?:två|en|ett|kunden|barnen|hen|han|hon)\b[^.]{0,40}\b(?:började|blev|kom|sa)\b",
+    r"|\bnär (?:två|en|ett|kunden|barnen|hen|han|hon)\b[^.]{0,40}\b(?:började|blev|kom|sa)\b"
+    # D79: stand-ins for a missing fact ("Jag är ung", "född och uppvuxen här", "går inte på gymnasiet längre")
+    r"|\bjag är (?:ganska |väldigt )?(?:ung|ny på arbetsmarknaden)\b|\bfödd och uppvuxen\b"
+    r"|\bjag går inte (?:på|i) \w+ längre\b|\binte säker på (?:hur gammal|min ålder|vad jag)",
     re.I)
 # D77: said aloud in every interview answer: no remark about missing facts, no empty name
 INTERVIEW_META = re.compile(

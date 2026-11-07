@@ -1035,3 +1035,13 @@ Deno.test("D79 interview: coaching in du-form is never spoken", async () => {
   assert(!isInterviewMeta("Kan ni berätta mer om hur introduktionen ser ut?"));
   assert(!isInterviewMeta("Jag kan säga att jag är noggrann och tycker om att jobba praktiskt."));
 });
+
+Deno.test("D79 interview: after a dropped opening the answer does not start with Men/Så/Däremot", () => {
+  const post = new AnswerPost({ previousAnswers: [], trimQuestion: false, interview: true });
+  const out = post.push("Jag kan inte säga vad jag heter. Men det som gör mig bra i butiken är att jag är snabb. ") +
+    post.finish();
+  assertEquals(out.trim(), "Det som gör mig bra i butiken är att jag är snabb.");
+  const keep = new AnswerPost({ previousAnswers: [], trimQuestion: false, interview: true });
+  const t = "Jag är noggrann. Men jag kan bli bättre på att be om hjälp.";
+  assertEquals((keep.push(t) + keep.finish()).trim(), t, "a later 'Men' is untouched");
+});

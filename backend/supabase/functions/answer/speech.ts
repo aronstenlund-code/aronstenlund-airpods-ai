@@ -426,6 +426,7 @@ export function stripInterviewMeta(sentence: string): string {
 export class MetaGate {
   dropped = 0;
   private buf = "";
+  private emitted = false;
   constructor(
     private readonly enabled: boolean,
     private readonly isMeta: (sentence: string) => boolean = isMetaReply,
@@ -456,8 +457,13 @@ export class MetaGate {
   private keep(sentence: string): string {
     if (this.rewrite) {
       if (!sentence.trim()) return sentence;
-      const r = this.rewrite(sentence);
+      let r = this.rewrite(sentence);
       if (r !== sentence) this.dropped++;
+      // D79: after a dropped opening, the answer must not start with "Men …" / "Så …" / "Däremot …"
+      if (r.trim() && !this.emitted && this.dropped > 0) {
+        r = r.replace(/^(\s*)(?:men|så|däremot|dock)\b,?\s+(\p{L})/iu, (_m, ws: string, c: string) => ws + c.toUpperCase());
+      }
+      if (r.trim()) this.emitted = true;
       return r;
     }
     if (sentence.trim() && this.isMeta(sentence)) {
