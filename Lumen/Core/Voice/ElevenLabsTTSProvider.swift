@@ -33,17 +33,18 @@ final class ElevenLabsTTSProvider: TTSProvider {
         let pieces = Self.pieces(text)
         guard pieces.count == 1, let piece = pieces.first else { return nil }
         var samples: [Int16] = []
-        try await stream(piece, language: language, voice: voice) { samples += $0 }
+        try await stream(piece, language: language, voice: voice) { (chunk: [Int16]) throws(AudioError) -> Void in
+            samples += chunk
+        }
         return (samples, Self.sampleRate)
     }
 
     private func speakPiece(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice) async throws(TTSError) {
         var scheduled = 0
-        do {
-            try await stream(text, language: language, voice: voice) { samples in
-                try playback.play(samples: samples, sampleRate: Self.sampleRate)
-                scheduled += samples.count
-            }
+        let playback = self.playback
+        try await stream(text, language: language, voice: voice) { (samples: [Int16]) throws(AudioError) -> Void in
+            try playback.play(samples: samples, sampleRate: Self.sampleRate)
+            scheduled += samples.count
         }
         Log.playback.info("ElevenLabs: \(text.count, privacy: .public) chars → \(scheduled, privacy: .public) samples scheduled")
     }
