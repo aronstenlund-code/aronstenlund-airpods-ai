@@ -1005,3 +1005,21 @@ Deno.test("D77 interview: a sentence saying facts are missing is dropped, the an
   const t = "Jag har inte en konkret händelse att berätta om. Först lyssnar jag.";
   assertEquals((plain.push(t) + plain.finish()).trim(), t);
 });
+
+Deno.test("D77 interview: only the meta part goes, the rest of the sentence is kept", async () => {
+  const { stripInterviewMeta } = await import("./speech.ts");
+  const cases: [string, string][] = [
+    [
+      "Jag kan inte säga min exakta ålder här, men jag är redo att jobba hårt i sommar. ",
+      "Jag är redo att jobba hårt i sommar. ",
+    ],
+    ["Jag heter och är sexton år och går naturprogrammet. ", "Jag är sexton år och går naturprogrammet. "],
+    [
+      "Eftersom jag inte har någon konkret upplevelse att utgå från svarar jag med hur jag brukar gå tillväga. ",
+      "",
+    ],
+    ["Jag heter inte nämnt här, så jag börjar med vem jag är och vad jag brinner för. ", ""],
+    ["Jag är noggrann, så jag dubbelkollar alltid kassan. ", "Jag är noggrann, så jag dubbelkollar alltid kassan. "],
+  ];
+  for (const [inp, want] of cases) assertEquals(stripInterviewMeta(inp), want, inp);
+});

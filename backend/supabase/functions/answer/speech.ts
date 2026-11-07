@@ -381,24 +381,43 @@ export function isMetaReply(sentence: string): boolean {
 /**
  * D77 (Oscar's D72 run + live eval): with no personal facts given, the interview answer said so out loud
  * ("Jag har inte någon konkret upplevelse att utgå från, så jag svarar med …", "… i den här övningen").
- * The user reads the answer aloud in the interview, so such a sentence is dropped; the rest is the answer.
+ * The user reads the answer aloud in the interview, so that part is removed: when the sentence goes on with
+ * ", men …" / ", så …" and the rest is a real answer, only the rest is kept; otherwise the sentence is dropped.
  */
 const INTERVIEW_META = new RegExp(
   [
-    String.raw`\b(?:jag har|det finns) (?:inte|ingen|inga) (?:någon |något |en |ett |några )?(?:konkret|egen|specifik|faktisk|verklig)\w* (?:\w+ )?(?:upplevelse|händelse|situation|erfarenhet|exempel|uppgift|uppgifter|information)`,
-    String.raw`\bjag har (?:inte|inga) (?:några )?uppgifter om\b`,
-    String.raw`\bså (?:jag|då) svarar (?:jag )?(?:med|utifrån|genom)\b`,
+    String.raw`\b(?:jag har|jag inte har|det finns|det inte finns) (?:inte |ingen |inga )?(?:någon |något |en |ett |några )?(?:konkret|egen|specifik|faktisk|verklig)\w* (?:\w+ )?(?:upplevelse|händelse|situation|erfarenhet|exempel|uppgift|uppgifter|information)`,
+    String.raw`\bjag (?:har (?:inte|inga)|inte har) (?:några )?uppgifter om\b`,
+    String.raw`\b(?:så )?(?:jag|då) svarar (?:jag )?(?:med|utifrån|genom) (?:hur|vad|det|att)\b`,
+    String.raw`\bsvarar jag (?:med|utifrån|genom) (?:hur|vad|det|att)\b`,
+    String.raw`\b(?:så )?jag börjar med (?:vem|vad|att berätta)\b`,
     String.raw`\b(?:i|under|för) (?:den här|denna|detta|det här) (?:konversationen|övningen|sessionen|samtalet|scenariot)\b`,
     String.raw`\b(?:eftersom|då) (?:jag inte vet|det inte framgår|inget (?:är|finns) (?:angivet|givet))`,
     String.raw`\bjag kan inte (?:säga|uppge|berätta|nämna) (?:min|mitt|mina|vad jag heter|hur gammal)`,
     String.raw`\bjag heter (?:inte|och)\b`,
     String.raw`\b(?:inte )?(?:nämnt|angett|angivet|givet|framgår) (?:här|i (?:annonsen|uppgifterna))\b`,
-    String.raw`\bså jag börjar med\b`,
   ].join("|"),
   "iu",
 );
 export function isInterviewMeta(sentence: string): boolean {
   return INTERVIEW_META.test(sentence);
+}
+
+/** D77: the interview sentence without its meta part ("" when nothing worth saying is left). */
+export function stripInterviewMeta(sentence: string): string {
+  // "Jag heter och är sexton år" (an empty name): keep the fact
+  const s = sentence.replace(/\bjag heter och (?=är |går |bor |tränar |har )/iu, "Jag ");
+  const m = INTERVIEW_META.exec(s);
+  if (!m) return s;
+  const after = s.slice(m.index + m[0].length);
+  const c = /,?\s+(?:men|så)\s+([\s\S]+)$/u.exec(after);
+  if (c) {
+    const rest = c[1];
+    if (rest.trim().split(/\s+/).length >= 4 && !INTERVIEW_META.test(rest)) {
+      return rest.charAt(0).toUpperCase() + rest.slice(1);
+    }
+  }
+  return "";
 }
 
 export class MetaGate {
@@ -407,6 +426,8 @@ export class MetaGate {
   constructor(
     private readonly enabled: boolean,
     private readonly isMeta: (sentence: string) => boolean = isMetaReply,
+    /** D77: returns the sentence with its meta part removed ("" = drop it); replaces `isMeta`. */
+    private readonly rewrite?: (sentence: string) => string,
   ) {}
   push(text: string): string {
     if (!this.enabled) return text;
@@ -430,6 +451,12 @@ export class MetaGate {
     return r;
   }
   private keep(sentence: string): string {
+    if (this.rewrite) {
+      if (!sentence.trim()) return sentence;
+      const r = this.rewrite(sentence);
+      if (r !== sentence) this.dropped++;
+      return r;
+    }
     if (sentence.trim() && this.isMeta(sentence)) {
       this.dropped++;
       return "";
@@ -712,7 +739,7 @@ export class AnswerPost {
     this.rel = new RelationTap(opts.relationTag === true);
     this.sil = new SilenceTap(opts.silence === true);
     this.meta = new MetaGate(opts.silence === true);
-    this.imeta = new MetaGate(opts.interview === true, isInterviewMeta);
+    this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, stripInterviewMeta);
     this.src = new SourceTap(opts.web === true);
     this.en = new EnglishGate(opts.web === true);
   }

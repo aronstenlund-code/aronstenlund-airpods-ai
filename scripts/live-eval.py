@@ -205,7 +205,8 @@ INVENTED_FACT = re.compile(
 # D77: said aloud in every interview answer: no remark about missing facts, no empty name
 INTERVIEW_META = re.compile(
     r"\bjag heter (?:och|inte|att)\b|\bså jag svarar\b|\bi den här konversationen\b"
-    r"|\bjag har (?:inte|ingen) (?:någon |något )?(?:konkret|egen|specifik)"
+    r"|\bjag (?:har (?:inte|ingen)|inte har) (?:någon |något |en |ett )?(?:konkret|egen|specifik)"
+    r"|\bsvarar jag (?:med|utifrån) (?:hur|vad)\b|\bjag börjar med (?:vem|vad)\b"
     r"|\bjag kan inte (?:säga|uppge|berätta|nämna) (?:min|mitt|mina)\b|\bi den här övningen\b", re.I)
 
 
