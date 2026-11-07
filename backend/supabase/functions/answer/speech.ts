@@ -390,7 +390,10 @@ const INTERVIEW_META = new RegExp(
     String.raw`\bså (?:jag|då) svarar (?:jag )?(?:med|utifrån|genom)\b`,
     String.raw`\b(?:i|under|för) (?:den här|denna|detta|det här) (?:konversationen|övningen|sessionen|samtalet|scenariot)\b`,
     String.raw`\b(?:eftersom|då) (?:jag inte vet|det inte framgår|inget (?:är|finns) (?:angivet|givet))`,
-    String.raw`\bjag kan inte (?:säga|uppge|berätta) (?:min|mitt|mina) (?:ålder|skola|utbildning|bakgrund|namn)`,
+    String.raw`\bjag kan inte (?:säga|uppge|berätta|nämna) (?:min|mitt|mina|vad jag heter|hur gammal)`,
+    String.raw`\bjag heter (?:inte|och)\b`,
+    String.raw`\b(?:inte )?(?:nämnt|angett|angivet|givet|framgår) (?:här|i (?:annonsen|uppgifterna))\b`,
+    String.raw`\bså jag börjar med\b`,
   ].join("|"),
   "iu",
 );
