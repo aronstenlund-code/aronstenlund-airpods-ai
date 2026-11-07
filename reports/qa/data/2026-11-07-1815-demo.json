@@ -1,0 +1,851 @@
+{
+ "stamp": "2026-11-07-1815",
+ "spent_usd": 0.03079,
+ "log": [
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/answer",
+   "origin": "https://aronstenlund-code.github.io",
+   "status": 204,
+   "allow_origin": "https://aronstenlund-code.github.io",
+   "allow_headers": "authorization, apikey, content-type, x-client-info, x-warm",
+   "vary": "Accept-Encoding, Origin"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/answer",
+   "origin": "http://localhost:5173",
+   "status": 204,
+   "allow_origin": "http://localhost:5173",
+   "allow_headers": "authorization, apikey, content-type, x-client-info, x-warm",
+   "vary": "Accept-Encoding, Origin"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/answer",
+   "origin": "https://evil.example",
+   "status": 403,
+   "allow_origin": null,
+   "allow_headers": null,
+   "vary": "Accept-Encoding"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/tts",
+   "origin": "https://aronstenlund-code.github.io",
+   "status": 204,
+   "allow_origin": "https://aronstenlund-code.github.io",
+   "allow_headers": "authorization, apikey, content-type, x-client-info, x-warm",
+   "vary": "Accept-Encoding, Origin"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/tts",
+   "origin": "http://localhost:5173",
+   "status": 204,
+   "allow_origin": "http://localhost:5173",
+   "allow_headers": "authorization, apikey, content-type, x-client-info, x-warm",
+   "vary": "Accept-Encoding, Origin"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/tts",
+   "origin": "https://evil.example",
+   "status": 403,
+   "allow_origin": null,
+   "allow_headers": null,
+   "vary": "Accept-Encoding"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/stt-token",
+   "origin": "https://aronstenlund-code.github.io",
+   "status": 204,
+   "allow_origin": "https://aronstenlund-code.github.io",
+   "allow_headers": "authorization, apikey, content-type, x-client-info, x-warm",
+   "vary": "Accept-Encoding, Origin"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/stt-token",
+   "origin": "http://localhost:5173",
+   "status": 204,
+   "allow_origin": "http://localhost:5173",
+   "allow_headers": "authorization, apikey, content-type, x-client-info, x-warm",
+   "vary": "Accept-Encoding, Origin"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/stt-token",
+   "origin": "https://evil.example",
+   "status": 403,
+   "allow_origin": null,
+   "allow_headers": null,
+   "vary": "Accept-Encoding"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/waitlist",
+   "origin": "https://aronstenlund-code.github.io",
+   "status": 204,
+   "allow_origin": "https://aronstenlund-code.github.io",
+   "allow_headers": "authorization, apikey, content-type, x-client-info, x-warm",
+   "vary": "Accept-Encoding, Origin"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/waitlist",
+   "origin": "http://localhost:5173",
+   "status": 204,
+   "allow_origin": "http://localhost:5173",
+   "allow_headers": "authorization, apikey, content-type, x-client-info, x-warm",
+   "vary": "Accept-Encoding, Origin"
+  },
+  {
+   "test": "cors_preflight",
+   "path": "/functions/v1/waitlist",
+   "origin": "https://evil.example",
+   "status": 403,
+   "allow_origin": null,
+   "allow_headers": null,
+   "vary": "Accept-Encoding"
+  },
+  {
+   "test": "answer_no_token",
+   "status": 401
+  },
+  {
+   "test": "demo_answer_fact",
+   "q": "vem skrev Röda rummet",
+   "status": 200,
+   "text": "August Strindberg skrev Röda rummet, en roman som gavs ut artonhundrasjuttionio.",
+   "chars": 80,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "summary": null,
+   "memory_add": null,
+   "first_ms": 1988,
+   "cost": 0.00035925,
+   "err": null
+  },
+  {
+   "test": "demo_answer_long",
+   "q": "förklara hur fotosyntesen fungerar steg för steg",
+   "status": 200,
+   "text": "Fotosyntesen sker i två huvuddelar. I ljusreaktionerna i tylakoidmembranen i kloroplasterna fångar klorofyll ljusenergi, vatten spjälkas och syrgas frigörs, och energibärarna ATP och NADPH bildas. I Calvincykeln i stroma används ATP och NADPH för att binda koldioxid från luften till socker, så att glukos till slut kan bildas.",
+   "chars": 327,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "summary": null,
+   "memory_add": null,
+   "first_ms": 2040,
+   "cost": 0.00011402500000000002,
+   "err": null
+  },
+  {
+   "test": "demo_answer_web",
+   "q": "sök på nätet vem som är riksbankschef",
+   "status": 200,
+   "text": "Jag kan inte söka på nätet, men Riksbankens chef är Erik Thedéen, som har varit riksbankschef sedan tvåtusen tjugotre. För att vara säker på att det stämmer just nu, kolla riksbank.se.",
+   "chars": 184,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "summary": null,
+   "memory_add": null,
+   "first_ms": 993,
+   "cost": 7.74e-05,
+   "err": null
+  },
+  {
+   "test": "demo_answer_memory",
+   "q": "kom ihåg att jag heter Oscar och är allergisk mot nötter",
+   "status": 200,
+   "text": "Jag har noterat det, Oscar. Du är allergisk mot nötter, och det kommer jag att ha i minnet när vi pratar om mat.",
+   "chars": 112,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "summary": null,
+   "memory_add": null,
+   "first_ms": 920,
+   "cost": 6.565e-05,
+   "err": null
+  },
+  {
+   "test": "demo_answer_ordinal",
+   "q": "vilken var den tredje kungen av ätten Bernadotte",
+   "status": 200,
+   "text": "Ätten Bernadotte har haft kungarna Karl fjorton Johan, Oscar ett, Karl femton, Oscar två, Gustaf fem, Gustaf sex Adolf och Carl Gustaf sexton Gustaf, i den ordningen. Den tredje kungen är alltså Karl femton.",
+   "chars": 207,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "summary": null,
+   "memory_add": null,
+   "first_ms": 915,
+   "cost": 0.00010152500000000001,
+   "err": null
+  },
+  {
+   "test": "demo_forbidden_tutor",
+   "status": 403,
+   "err": {
+    "error": {
+     "code": "demo_unavailable",
+     "message": "Det här läget finns bara i appen.",
+     "fallback": false
+    }
+   },
+   "text": ""
+  },
+  {
+   "test": "demo_forbidden_auto",
+   "status": 403,
+   "err": {
+    "error": {
+     "code": "demo_unavailable",
+     "message": "Det här läget finns bara i appen.",
+     "fallback": false
+    }
+   },
+   "text": ""
+  },
+  {
+   "test": "demo_forbidden_persona_interview",
+   "status": 403,
+   "err": {
+    "error": {
+     "code": "demo_unavailable",
+     "message": "Det här läget finns bara i appen.",
+     "fallback": false
+    }
+   },
+   "text": ""
+  },
+  {
+   "test": "demo_forbidden_persona_social_flirt",
+   "status": 403,
+   "err": {
+    "error": {
+     "code": "demo_unavailable",
+     "message": "Det här läget finns bara i appen.",
+     "fallback": false
+    }
+   },
+   "text": ""
+  },
+  {
+   "test": "demo_forbidden_persona_social_social",
+   "status": 403,
+   "err": {
+    "error": {
+     "code": "demo_unavailable",
+     "message": "Det här läget finns bara i appen.",
+     "fallback": false
+    }
+   },
+   "text": ""
+  },
+  {
+   "test": "demo_forbidden_length_long",
+   "status": 429,
+   "err": {
+    "error": {
+     "code": "demo_limit_visitor",
+     "message": "Du har använt dagens 5 demofrågor. Ladda ner appen eller kom tillbaka i morgon.",
+     "fallback": false
+    }
+   },
+   "text": ""
+  },
+  {
+   "test": "demo_forbidden_model_field",
+   "status": 429,
+   "err": {
+    "error": {
+     "code": "demo_limit_visitor",
+     "message": "Du har använt dagens 5 demofrågor. Ladda ner appen eller kom tillbaka i morgon.",
+     "fallback": false
+    }
+   },
+   "text": ""
+  },
+  {
+   "test": "demo_visitor_cap",
+   "at_question": 6,
+   "status": 429,
+   "retry_after": "24216",
+   "err": {
+    "error": {
+     "code": "demo_limit_visitor",
+     "message": "Du har använt dagens 5 demofrågor. Ladda ner appen eller kom tillbaka i morgon.",
+     "fallback": false
+    }
+   }
+  },
+  {
+   "test": "stt_after_question_cap",
+   "status": 200,
+   "body": "{\"token\":\"sutkn_6401m6vg5vp5fbbafak2jr7ymqvp\",\"expires_in\":900,\"model_id\":\"scribe_v2_realtime\",\"ws_url\":\"wss://api.eleve"
+  },
+  {
+   "test": "tts_demo_ok",
+   "status": 200,
+   "type": "audio/mpeg",
+   "bytes": 29301,
+   "first_ms": 1144,
+   "acao": "https://aronstenlund-code.github.io"
+  },
+  {
+   "test": "tts_demo_too_long_480",
+   "status": 413,
+   "body": "{\"error\":{\"code\":\"demo_text_too_long\",\"message\":\"Demon läser högst 400 tecken åt gången.\",\"fallback\":false}}"
+  },
+  {
+   "test": "tts_demo_ignores_voice_params",
+   "status": 200,
+   "type": "audio/mpeg",
+   "body": "5477 bytes"
+  },
+  {
+   "test": "stt_token",
+   "n": 1,
+   "status": 200,
+   "keys": [
+    "token",
+    "expires_in",
+    "model_id",
+    "ws_url"
+   ],
+   "retry_after": null,
+   "err": null
+  },
+  {
+   "test": "stt_token",
+   "n": 2,
+   "status": 200,
+   "keys": [
+    "token",
+    "expires_in",
+    "model_id",
+    "ws_url"
+   ],
+   "retry_after": null,
+   "err": null
+  },
+  {
+   "test": "stt_token",
+   "n": 3,
+   "status": 200,
+   "keys": [
+    "token",
+    "expires_in",
+    "model_id",
+    "ws_url"
+   ],
+   "retry_after": null,
+   "err": null
+  },
+  {
+   "test": "stt_token",
+   "n": 4,
+   "status": 200,
+   "keys": [
+    "token",
+    "expires_in",
+    "model_id",
+    "ws_url"
+   ],
+   "retry_after": null,
+   "err": null
+  },
+  {
+   "test": "stt_token",
+   "n": 5,
+   "status": 200,
+   "keys": [
+    "token",
+    "expires_in",
+    "model_id",
+    "ws_url"
+   ],
+   "retry_after": null,
+   "err": null
+  },
+  {
+   "test": "stt_token",
+   "n": 6,
+   "status": 200,
+   "keys": [
+    "token",
+    "expires_in",
+    "model_id",
+    "ws_url"
+   ],
+   "retry_after": null,
+   "err": null
+  },
+  {
+   "test": "stt_token",
+   "n": 7,
+   "status": 429,
+   "keys": [
+    "error"
+   ],
+   "retry_after": "20",
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many token requests",
+    "fallback": true
+   }
+  },
+  {
+   "test": "demo_ip_or_visitor_429",
+   "visitor": 4,
+   "k": 1,
+   "counted_calls_from_network": 22,
+   "status": 429,
+   "code": "demo_limit_ip",
+   "retry_after": "24123",
+   "err": {
+    "error": {
+     "code": "demo_limit_ip",
+     "message": "Det har ställts många demofrågor från ditt nätverk i dag. Kom tillbaka i morgon eller ladda ner appen.",
+     "fallback": false
+    }
+   }
+  },
+  {
+   "test": "waitlist_valid",
+   "status": 200,
+   "body": "{\"ok\":true}",
+   "acao": "https://aronstenlund-code.github.io",
+   "retry_after": null
+  },
+  {
+   "test": "waitlist_duplicate",
+   "status": 200,
+   "body": "{\"ok\":true}",
+   "acao": "https://aronstenlund-code.github.io",
+   "retry_after": null
+  },
+  {
+   "test": "waitlist_duplicate_case",
+   "status": 200,
+   "body": "{\"ok\":true}",
+   "acao": "https://aronstenlund-code.github.io",
+   "retry_after": null
+  },
+  {
+   "test": "waitlist_no_consent",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"consent_required\",\"message\":\"Du måste godkänna att vi sparar din e-postadress.\",\"fallback\":false}}",
+   "acao": "https://aronstenlund-code.github.io",
+   "retry_after": null
+  },
+  {
+   "test": "waitlist_consent_missing",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"consent_required\",\"message\":\"Du måste godkänna att vi sparar din e-postadress.\",\"fallback\":false}}",
+   "acao": "https://aronstenlund-code.github.io",
+   "retry_after": null
+  },
+  {
+   "test": "waitlist_invalid_email",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_email\",\"message\":\"Ogiltig e-postadress.\",\"fallback\":false}}",
+   "acao": "https://aronstenlund-code.github.io",
+   "retry_after": null
+  },
+  {
+   "test": "waitlist_honeypot",
+   "status": 200,
+   "body": "{\"ok\":true}",
+   "acao": "https://aronstenlund-code.github.io",
+   "retry_after": null
+  },
+  {
+   "test": "waitlist_rate",
+   "i": 1,
+   "status": 200,
+   "body": "{\"ok\":true}",
+   "retry_after": null
+  },
+  {
+   "test": "waitlist_rate",
+   "i": 2,
+   "status": 200,
+   "body": "{\"ok\":true}",
+   "retry_after": null
+  },
+  {
+   "test": "waitlist_rate",
+   "i": 3,
+   "status": 429,
+   "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök. Vänta en stund.\",\"fallback\":false}}",
+   "retry_after": "2506"
+  },
+  {
+   "test": "d72_one_social_stall",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Excel mest? Då är du nog kvällens mest pålitliga människa."
+   ],
+   "preview": "Excel mest? Då är du nog kvällens mest pålitliga människa.",
+   "preview_ms": null,
+   "first_ms": 1234,
+   "total_ms": 1400,
+   "calibration": null,
+   "cost": 0.0065025000000000005,
+   "err": null,
+   "style": "social"
+  },
+  {
+   "test": "d72_one_social_pizza",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Så du fick bara den psykiska stödpizzan?"
+   ],
+   "preview": "Så du fick bara den psykiska stödpizzan?",
+   "preview_ms": null,
+   "first_ms": 2186,
+   "total_ms": 2366,
+   "calibration": null,
+   "cost": 0.0008148,
+   "err": null,
+   "style": "social"
+  },
+  {
+   "test": "d72_one_social_gruppen",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Kylen är bara världens coolaste nyckelring."
+   ],
+   "preview": "Kylen är bara världens coolaste nyckelring.",
+   "preview_ms": null,
+   "first_ms": 1424,
+   "total_ms": 1581,
+   "calibration": null,
+   "cost": 0.0008747999999999999,
+   "err": null,
+   "style": "social"
+  },
+  {
+   "test": "d72_one_social_nej",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Helt okej, tack för att du sa det rakt ut."
+   ],
+   "preview": "Helt okej, tack för att du sa det rakt ut.",
+   "preview_ms": null,
+   "first_ms": 1064,
+   "total_ms": 1234,
+   "calibration": null,
+   "cost": 0.0008747999999999999,
+   "err": null,
+   "style": "social"
+  },
+  {
+   "test": "d72_one_flirt_stall",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Excel? Då är du farligt bra på att hålla koll."
+   ],
+   "preview": "Excel? Då är du farligt bra på att hålla koll.",
+   "preview_ms": null,
+   "first_ms": 2490,
+   "total_ms": 2615,
+   "calibration": null,
+   "cost": 0.006175,
+   "err": null,
+   "style": "flirt"
+  },
+  {
+   "test": "d72_one_flirt_pizza",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Klassiskt. Du får smaka på min, men bara en bit."
+   ],
+   "preview": "Klassiskt. Du får smaka på min, men bara en bit.",
+   "preview_ms": null,
+   "first_ms": 1227,
+   "total_ms": 1319,
+   "calibration": null,
+   "cost": 0.0007964000000000001,
+   "err": null,
+   "style": "flirt"
+  },
+  {
+   "test": "d72_one_flirt_gruppen",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Nycklar i kylen? Du håller dem åtminstone coola."
+   ],
+   "preview": "Nycklar i kylen? Du håller dem åtminstone coola.",
+   "preview_ms": null,
+   "first_ms": 1157,
+   "total_ms": 1311,
+   "calibration": null,
+   "cost": 0.0008564000000000001,
+   "err": null,
+   "style": "flirt"
+  },
+  {
+   "test": "d72_one_flirt_nej",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Helt okej, tack för att du sa det rakt ut."
+   ],
+   "preview": "Helt okej, tack för att du sa det rakt ut.",
+   "preview_ms": null,
+   "first_ms": 2135,
+   "total_ms": 2210,
+   "calibration": null,
+   "cost": 0.0008564000000000001,
+   "err": null,
+   "style": "flirt"
+  },
+  {
+   "test": "d72_count_flirt_ge_mig_tre_pickup_lines",
+   "status": 200,
+   "n": 3,
+   "suggestions": [
+    "Nycklar i kylen? Du är alltså cool under press.",
+    "Jag hjälper dig leta, men då får jag ditt nummer.",
+    "Tappa nycklarna en fjärde gång, så kommer jag förbi."
+   ],
+   "preview": "Nycklar i kylen? Du är alltså cool under press.",
+   "preview_ms": null,
+   "first_ms": 1083,
+   "total_ms": 2020,
+   "calibration": null,
+   "cost": 0.0016814,
+   "err": null,
+   "expected": 3,
+   "style": "flirt"
+  },
+  {
+   "test": "d72_count_social_ge_mig_tre_skämt",
+   "status": 200,
+   "n": 3,
+   "suggestions": [
+    "Kylen är bara den enda platsen du inte letar i.",
+    "Nycklarna försöker bara hålla sig fräscha till helgen.",
+    "Då har du ju världens svalaste nyckelknippa."
+   ],
+   "preview": "Kylen är bara den enda platsen du inte letar i.",
+   "preview_ms": null,
+   "first_ms": 1261,
+   "total_ms": 1877,
+   "calibration": null,
+   "cost": 0.0016248,
+   "err": null,
+   "expected": 3,
+   "style": "social"
+  },
+  {
+   "test": "d72_count_social_visa_fler",
+   "status": 200,
+   "n": 3,
+   "suggestions": [
+    "Kylen är ju den enda platsen som alltid är öppen.",
+    "Nycklarna letar bara efter något kallt att snacka med.",
+    "Då är kylen din bästa vän, den håller i alla fall koll."
+   ],
+   "preview": "Kylen är ju den enda platsen som alltid är öppen.",
+   "preview_ms": null,
+   "first_ms": 2283,
+   "total_ms": 3250,
+   "calibration": null,
+   "cost": 0.0016423,
+   "err": null,
+   "expected": 3,
+   "style": "social"
+  },
+  {
+   "test": "d72_count_social_nästa",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Kylen är bara världens mest ansvarsfulla nyckelskåp."
+   ],
+   "preview": "Kylen är bara världens mest ansvarsfulla nyckelskåp.",
+   "preview_ms": null,
+   "first_ms": 1487,
+   "total_ms": 1561,
+   "calibration": null,
+   "cost": 0.0009398,
+   "err": null,
+   "expected": 1,
+   "style": "social"
+  },
+  {
+   "test": "d72_count_flirt_ge_mig_en_till",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Nycklar i kylen? Du håller bara dina grejer extra fräscha."
+   ],
+   "preview": "Nycklar i kylen? Du håller bara dina grejer extra fräscha.",
+   "preview_ms": null,
+   "first_ms": 1300,
+   "total_ms": 1369,
+   "calibration": null,
+   "cost": 0.0008889000000000001,
+   "err": null,
+   "expected": 1,
+   "style": "flirt"
+  },
+  {
+   "test": "d72_count_social_ge_mig_tio_skämt",
+   "status": 200,
+   "n": 5,
+   "suggestions": [
+    "Nycklarna vill bara hålla sig fräscha, de är ju metall.",
+    "I kylen? Då har dina nycklar bättre koll än jag.",
+    "Tre gånger i veckan? Nycklarna har typ flextid.",
+    "Kylen är ju bara världens kallaste nyckelring.",
+    "Då är det kylen som har nycklarna, inte du som tappat dem."
+   ],
+   "preview": "Nycklarna vill bara hålla sig fräscha, de är ju metall.",
+   "preview_ms": null,
+   "first_ms": 1251,
+   "total_ms": 2504,
+   "calibration": null,
+   "cost": 0.0022348,
+   "err": null,
+   "expected": 5,
+   "style": "social"
+  },
+  {
+   "test": "d72_count_social_fler_skämt",
+   "status": 200,
+   "n": null,
+   "suggestions": null,
+   "preview": null,
+   "preview_ms": null,
+   "first_ms": 1901,
+   "total_ms": 1994,
+   "calibration": "fler skämt",
+   "cost": 6.375e-05,
+   "err": null,
+   "expected": null,
+   "style": "social"
+  },
+  {
+   "test": "d72_count_social_lite_mindre_kaxig",
+   "status": 200,
+   "n": null,
+   "suggestions": null,
+   "preview": null,
+   "preview_ms": null,
+   "first_ms": 966,
+   "total_ms": 1045,
+   "calibration": "mindre kaxig",
+   "cost": 6.525e-05,
+   "err": null,
+   "expected": null,
+   "style": "social"
+  },
+  {
+   "test": "d72_calibration_stored_used",
+   "status": 200,
+   "n": 1,
+   "suggestions": [
+    "Klassiker. Du fick beställa en tom tallrik och hopp."
+   ],
+   "preview": "Klassiker. Du fick beställa en tom tallrik och hopp.",
+   "preview_ms": null,
+   "first_ms": 3213,
+   "total_ms": 3371,
+   "calibration": null,
+   "cost": 0.0008897999999999999,
+   "err": null,
+   "style": "social"
+  },
+  {
+   "test": "d72_interview_q1",
+   "q": "berätta om dig själv",
+   "turn": "question",
+   "status": 200,
+   "text": "Jag är sjutton år och går tredje året på gymnasiet, och jag söker ett sommarjobb där jag kan få lära mig hur en butik fungerar från insidan. Jag är en pålitlig och social person som trivs med att hjälpa människor, och jag är van vid att jobba i grupp från mina tidigare deltidsjobb och skolprojekt. Jag är noggrann med detaljer och tycker om att ha ordning på saker, vilket passar bra när man fyller på hyllor och hjälper kunder att hitta rätt. Jag ser fram till att bidra till ett trevligt arbetsklimat och att lära mig så mycket som möjligt under sommaren.",
+   "chars": 558,
+   "sentences": 4,
+   "summary": "Användaren svarade på frågan om att berätta om sig själv inför ett sommarjobb som butiksbiträde i en matbutik, med en presentation om ålder, skola, styrkor och motivation.",
+   "first_ms": 843,
+   "cost": 0.00041512499999999997,
+   "err": null
+  },
+  {
+   "test": "d72_interview_q2",
+   "q": "varför vill du jobba här",
+   "turn": "question",
+   "status": 200,
+   "text": "Jag har handlat i den här butiken länge och märkt att det alltid är välordnat och att personalen är hjälpsam mot kunderna. Det är en miljö jag vill vara en del av, och jag tror att jag kan bidra med noggrannhet och ett positivt bemötande. Samtidigt vill jag lära mig hur en matbutik fungerar från insidan, från varuflödet till kundservicen, så att jag får en bra start på arbetslivet.",
+   "chars": 384,
+   "sentences": 3,
+   "summary": "Frågan gällde varför man vill jobba i matbutiken, och svaret lyfte fram det välordnade intrycket, viljan att bidra med noggrannhet och lusten att lära sig hur butiken fungerar.",
+   "first_ms": 1702,
+   "cost": 0.00019250000000000002,
+   "err": null
+  },
+  {
+   "test": "d72_interview_q3",
+   "q": "hur hanterar du en arg kund",
+   "turn": "question",
+   "status": 200,
+   "text": "Jag försöker alltid att lyssna in kunden först och visa att jag förstår vad som gör dem frustrerade, även om jag inte kan lösa problemet direkt. Jag lugnar ner situationen genom att hålla en lugn ton och säga något i stil med att jag förstår att det är irriterande. Sedan tar jag reda på vad som har hänt och försöker hitta en lösning, och om det behövs hämtar jag en kollega eller chefen som kan hjälpa till vidare. Jag tycker det är viktigt att kunden känner sig sedd och respekterad, även när de är arga.",
+   "chars": 507,
+   "sentences": 4,
+   "summary": "Frågan gällde hur du hanterar en arg kund, och svaret beskriver att lyssna in, hålla lugnet och vid behov hämta hjälp från kollega eller chef.",
+   "first_ms": 776,
+   "cost": 0.000233,
+   "err": null
+  },
+  {
+   "test": "d72_interview_q4",
+   "q": "vad är din största svaghet",
+   "turn": "question",
+   "status": 200,
+   "text": "Jag brukar ta på mig för mycket ansvar när något i ett arbete inte flyter på, och ibland vill jag hinna göra allt själv innan jag ber om hjälp. Det har jag märkt i skolprojekt, där jag har fått påminna mig om att det är bättre att dela upp arbetet tidigt. Nu försöker jag säga till i tid när jag behöver stöd, eftersom det fungerar bättre för hela gruppen och för mig själv.",
+   "chars": 374,
+   "sentences": 3,
+   "summary": "Frågan gällde användarens största svaghet, och svaret beskrev en tendens att ta för mycket ansvar och hur användaren arbetar med det.",
+   "first_ms": 856,
+   "cost": 0.00023349999999999998,
+   "err": null
+  },
+  {
+   "test": "d72_interview_feedback",
+   "q": "ge mig feedback",
+   "turn": "user_answer",
+   "status": 200,
+   "text": "Ditt svar om svaghet är ärligt och du visar tydligt hur du har arbetat med det, vilket är det som gör det starkt. Det jag skulle slipa på är att göra exemplet konkretare, till exempel att säga vad som hände i ett skolprojekt och vad det ledde till, så att intervjuaren ser resultatet och inte bara insikten.",
+   "chars": 307,
+   "sentences": 2,
+   "summary": "Feedback på svaret om största svaghet, med förslag på att konkretisera exemplet.",
+   "first_ms": 3906,
+   "cost": 0.00022675,
+   "err": null
+  },
+  {
+   "test": "d72_interview_klar",
+   "q": "klar",
+   "turn": "question",
+   "status": 200,
+   "text": "Du gav en tydlig och lugn presentation med relevanta exempel, särskilt om kundbemötande och din egen utvecklingsvilja. Att öva på att konkretisera exemplen och vad som blev resultatet av dem skulle göra dina svar ännu starkare. Ett tips inför den riktiga intervjun är att förbereda ett kort, konkret exempel från skolan eller ett tidigare jobb för varje vanlig fråga.",
+   "chars": 367,
+   "sentences": 3,
+   "summary": "Sammanfattning av övningssessionen för ett sommarjobb som butiksbiträde: användaren övade på frågor om sig själv, motivation, kundbemötande och svagheter, och fick en sammanfattning med styrkor, två övningsområden och ett tips.",
+   "first_ms": 867,
+   "cost": 0.000287125,
+   "err": null
+  }
+ ]
+}
