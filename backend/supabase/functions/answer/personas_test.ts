@@ -104,7 +104,7 @@ Deno.test("persona prompts: structure, STAR, no invented experience, consent and
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "not live support in a real interview");
   // D77: no invented personal facts (Oscar: "Jag är sjutton år och går tredje året", "Jag har handlat i den här butiken länge")
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "Never state a concrete personal fact that is not there");
-  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "no age, school, school year");
+  assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "no name, age, school, school year");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "never an invented story or background");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "Never say that facts are missing");
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "never a past event");
