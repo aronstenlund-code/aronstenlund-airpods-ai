@@ -224,6 +224,12 @@ struct StudyMachine: Equatable, Sendable {
         return .endOfTurn(text)
     }
 
+    /// A voice command took the words: they are not part of the next turn (D74).
+    mutating func discardTurnText() {
+        turnFinals.removeAll()
+        turnPartial = nil
+    }
+
     private mutating func resetTurn() {
         turnFinals.removeAll()
         turnPartial = nil

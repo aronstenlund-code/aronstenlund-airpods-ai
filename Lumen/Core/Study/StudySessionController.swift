@@ -68,6 +68,7 @@ final class StudySessionController {
         }
     }
 
+    func discardTurnText() { machine.discardTurnText() }
     func answerStarted() { machine.answerStarted() }
     func speechStarted() { machine.speechStarted() }
     func resumeListening(at now: Date = Date()) { machine.resumeListening(at: now) }
