@@ -41,5 +41,16 @@ The backend contract is in `backend/README.md` (Kevin, D69/D72/D73). **Verified 
   instruction. Checklist §3x3 step 5 measures how often.
 - Two instructions in quick succession: the second cancels the first.
 
+## CI
+- **Green:** run 42403156253 on `8cf02cb`, which includes `671a7f9`. Build (warnings are errors), unit tests and the
+  unsigned archive all passed. New ipa:
+  https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42403156253/artifacts/13586712549
+  (available until 2026-11-21).
+- **Not tested on device.**
+
+## Other
+Kevin's commit `8cf02cb` is titled "D76" but adds no row to `docs/DECISIONS.md`. D76 there is this decision, so
+Kevin's next one should be D77.
+
 ## Next session
 Aron: install the new ipa and run §3x3 together with §3z2.
