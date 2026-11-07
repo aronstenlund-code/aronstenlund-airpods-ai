@@ -7,6 +7,7 @@ const db = restDbFromEnv();
 const handler = createAdminHandler({
   serviceKey: Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? null,
   select: (q) => db.select("feedback_admin", q),
+  markProcessed: async (id) => (await db.rpc("mark_feedback_processed", { p_id: id })) === true,
 });
 
 Deno.serve(withCors(handler, extraOriginsFromEnv()));

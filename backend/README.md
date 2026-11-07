@@ -177,6 +177,7 @@ To abort a running answer the client just **closes the connection** (cancel the 
 | `TTS_CHARS_PER_MINUTE` / `TTS_CHARS_PER_DAY` / `TTS_GLOBAL_CHARS_PER_DAY` | 1500 / 15000 / 100000 | characters; **tune to the owner's ElevenLabs plan** |
 
 - Privacy: transcripts/fragments/answers are **never logged or stored**. `answer_usage` keeps only metadata (user id, mode, tokens, timings, estimated cost, status).
+- Privacy (D80): `/memory` processes one turn and the existing memory and then drops them: nothing of the text is stored or logged, only the same metadata row in `answer_usage` (endpoint `memory`). The memory itself lives on the device (D49). Feedback the user sends on purpose (`POST /feedback`, D57) is the one place text is kept: a row is deleted within an hour after the owner marks it `processed` (the problem is fixed), and every row is deleted at the latest **90 days** after it was sent (hourly `pg_cron` job `purge-feedback`). Opt-in shared history: at most 12 months (unchanged).
 
 ## Deploy
 Done by the agent (the owner never runs SQL/CLI by hand). Free plan only; never enter billing details.
@@ -268,7 +269,28 @@ Migration `supabase/migrations/20261106120000_feedback_and_shared_history.sql` (
 | `GET /feedback-admin?limit=50&type=report&format=html` | Owner view, **service role key as bearer only**. Shared history is deliberately not exposed there (query it with SQL). |
 | `POST /answer` | A spoken report command ("rapportera", "rapportera det där", "det där var fel", "skicka till utvecklarna", "report this") in `auto` / `push_to_talk` / `tutor` is recognised in code: no model call, no spoken answer; SSE `meta` (`is_question:false`) then `done` with `report:true`, `answered:false`. The app then sends the previous turn to `POST /feedback` and plays its own confirmation. |
 
+| `POST /feedback-admin` | D80: `{"id": "<uuid>", "status": "processed"}` with the service role key as bearer marks a row processed once the problem is fixed; the hourly job `purge_feedback()` deletes processed rows and every row older than 90 days. 404 when there is no such row. |
+
+Migration `20261107233000_feedback_status_retention.sql`: `feedback.status` (`new` | `processed`), `processed_at`, view `feedback_admin` with `status`, `mark_feedback_processed(id)`, `purge_feedback()` and the cron job `purge-feedback` (minute 41 every hour).
+
 Tests: `supabase/functions/feedback/handler_test.ts`, `answer/d48_test.ts`.
+
+## Memory extraction (D80)
+
+`POST /functions/v1/memory` (user JWT like `/answer`), outside the answer path: the app calls it after a turn, in the background.
+
+Request `{"turn": {"q": "<the wearer's own words>", "a": "<the answer, optional>"}, "memories": ["..."], "language": "sv"}` (q at most 1000, a 2000, at most 30 memories of 200 characters; body 16 KB). Send only the wearer's own words as `q`, never other people's speech.
+
+Reply `{"add": ["Har prov i kemi fredag 13 november 2026."], "update": [{"old": "<exact memory>", "new": "..."}], "remove": ["<exact memory>"], "usage": {...}}`: at most 5 items, each at most 160 characters, dates always absolute (from the Swedish date on the server). Only important facts about the wearer (tests, dates, subjects, level, goals, wishes for the answers, rules). Never sensitive categories (health, allergies, diagnoses, religion, politics, sexuality, ethnicity, union, crime): the prompt forbids them and code drops them. A turn with no first-person word (`jag`, `mig`, `min`, `vi`, ...) returns `{"skipped": "no_self_reference"}` without a model call. Haiku 5.5, cached system prompt, about 0.0001 USD per call. Limits: 10/min, 300/day per user, 3 000 per network and day, 10 000/day global (`MEMORY_*` env).
+
+The memories go back to `/answer` as `memories` with every request (unchanged, D49). They are part of the user message, after the static system prompt, so the cached prefix is the same with or without memories.
+
+## Limits for app traffic (D79) and aborted answers (D80)
+
+- Per network (hashed client IP, like the demo): 1 500 answers and 30 000 TTS characters per UTC day for the app (`ANSWER_PER_NETWORK_PER_DAY`, `TTS_CHARS_PER_NETWORK_PER_DAY`). A new anonymous user does not reset it.
+- A new session (JWT `amr` timestamp less than 10 minutes old; the timestamp stays the same across token refreshes) gets at most 20 answers in its first clock hour (`NEW_USER_AGE_SEC`, `NEW_USER_ANSWERS_PER_HOUR`). Without an `amr` timestamp the check is skipped.
+- All of these are checked in the same round trip as the per-user windows; a denial is `429 rate_limited` with `fallback: true`, as before.
+- An answer the client aborts before `done` (the app's preliminary answer, redone when the user keeps talking) is not counted against the user's own minute and day windows (`release_rate_limits`, migration `20261107230000_release_rate_limits.sql`); the network, global and new-user windows stay counted. The usage row gets status `aborted`.
 
 ## Nightly live eval (D59)
 

@@ -14,6 +14,16 @@ export interface RateLimiter {
     checks: { key: string; limit: number; windowSec: number }[],
     cost?: number,
   ): Promise<RateResult>;
+  /** D80: give units back in the window that was current at `atMs` (never below zero). Optional. */
+  release?(windows: { key: string; windowSec: number }[], cost: number, atMs: number): Promise<void>;
+}
+
+/** D80: the user's own windows of a scope (the ones an aborted request gives back). */
+export function userWindows(scope: string, userId: string): { key: string; windowSec: number }[] {
+  return [
+    { key: `${scope}:u:${userId}:m`, windowSec: 60 },
+    { key: `${scope}:u:${userId}:d`, windowSec: 86400 },
+  ];
 }
 
 export class MemoryRateLimiter implements RateLimiter {
@@ -34,6 +44,24 @@ export class MemoryRateLimiter implements RateLimiter {
     }
     b.count += cost;
     return Promise.resolve({ allowed: true, retryAfterSec: 0 });
+  }
+
+  release(windows: { key: string; windowSec: number }[], cost: number, atMs: number): Promise<void> {
+    const atSec = Math.floor(atMs / 1000);
+    for (const w of windows) {
+      const b = this.buckets.get(`${w.key}:${w.windowSec}`);
+      if (b && b.windowStart === Math.floor(atSec / w.windowSec) * w.windowSec) {
+        b.count = Math.max(0, b.count - cost);
+      }
+    }
+    return Promise.resolve();
+  }
+
+  /** Test helper: the current count of a window. */
+  count(key: string, windowSec: number): number {
+    const b = this.buckets.get(`${key}:${windowSec}`);
+    const ws = Math.floor(Math.floor(this.now() / 1000) / windowSec) * windowSec;
+    return b && b.windowStart === ws ? b.count : 0;
   }
 }
 
@@ -69,6 +97,15 @@ export class SupabaseRateLimiter implements RateLimiter {
       | { allowed?: boolean; retry_after?: number }
       | null;
     return { allowed: !!row?.allowed, retryAfterSec: Number(row?.retry_after ?? 60) };
+  }
+
+  async release(windows: { key: string; windowSec: number }[], cost: number, atMs: number): Promise<void> {
+    await this.db.rpc("release_rate_limits", {
+      p_keys: windows.map((w) => w.key),
+      p_windows: windows.map((w) => w.windowSec),
+      p_cost: cost,
+      p_at: new Date(atMs).toISOString(),
+    });
   }
 }
 

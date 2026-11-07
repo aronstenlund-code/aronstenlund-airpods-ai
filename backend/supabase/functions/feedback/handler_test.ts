@@ -205,6 +205,27 @@ Deno.test("D57 feedback-admin: service role only, newest first, html escapes", a
   const t = await html.text();
   assert(t.includes("&#60;b&#62;x"), "text is escaped");
   assert(!queries[1].includes("drop"), "unknown type filter is ignored");
+  // D80: mark a row processed (then the hourly purge deletes it)
+  const marked: string[] = [];
+  const admin = createAdminHandler({
+    serviceKey: "service-secret",
+    select: () => Promise.resolve([]),
+    markProcessed: (id) => {
+      marked.push(id);
+      return Promise.resolve(id.startsWith("1"));
+    },
+  });
+  const auth = { authorization: "Bearer service-secret" };
+  const id = "11111111-2222-3333-4444-555555555555";
+  assertEquals((await admin(req("POST", "feedback-admin", { id, status: "processed" }))).status, 401);
+  const done = await admin(req("POST", "feedback-admin", { id, status: "processed" }, auth));
+  assertEquals(done.status, 200);
+  assertEquals((await done.json()).status, "processed");
+  assertEquals(marked, [id]);
+  assertEquals((await admin(req("POST", "feedback-admin", { id, status: "new" }, auth))).status, 400);
+  assertEquals((await admin(req("POST", "feedback-admin", { id: "x';drop", status: "processed" }, auth))).status, 400);
+  const missing = "21111111-2222-3333-4444-555555555555";
+  assertEquals((await admin(req("POST", "feedback-admin", { id: missing, status: "processed" }, auth))).status, 404);
   const noKey = createAdminHandler({ serviceKey: null, select: () => Promise.resolve([]) });
   assertEquals(
     (await noKey(req("GET", "feedback-admin", undefined, { authorization: "Bearer x" }))).status,

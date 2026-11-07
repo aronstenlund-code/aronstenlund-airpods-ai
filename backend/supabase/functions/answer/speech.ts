@@ -399,6 +399,10 @@ const INTERVIEW_META = new RegExp(
     // D79: coaching the user instead of answering ("Däremot kan du svara att du …")
     String.raw`\b(?:du kan|kan du|du bör|bör du|du ska|du skulle kunna) (?:svara|säga|berätta|nämna|lyfta|börja|ta upp|förklara)\b`,
     String.raw`\bjag kan inte (?:säga|veta|uppge) (?:vilken|vilket|vad|hur|om)\b`,
+    // D79: stand-ins for a missing fact ("Jag är ganska ny på arbetsmarknaden, men …", "Jag heter det du vill veta")
+    String.raw`\bjag är (?:ganska |väldigt |rätt )?(?:ung|ny på arbetsmarknaden)\b`,
+    String.raw`\bjag är inte säker på (?:att det|hur mycket|om det|hur gammal|min ålder)`,
+    String.raw`\bjag heter det\b`,
   ].join("|"),
   "iu",
 );
@@ -413,7 +417,7 @@ export function stripInterviewMeta(sentence: string): string {
   const m = INTERVIEW_META.exec(s);
   if (!m) return s;
   const after = s.slice(m.index + m[0].length);
-  const c = /,?\s+(?:men|så)\s+([\s\S]+)$/u.exec(after);
+  const c = /(?:,?\s+(?:men|så)|,\s*och)\s+([\s\S]+)$/u.exec(after);
   if (c) {
     const rest = c[1];
     if (rest.trim().split(/\s+/).length >= 4 && !INTERVIEW_META.test(rest)) {

@@ -1045,3 +1045,23 @@ Deno.test("D79 interview: after a dropped opening the answer does not start with
   const t = "Jag är noggrann. Men jag kan bli bättre på att be om hjälp.";
   assertEquals((keep.push(t) + keep.finish()).trim(), t, "a later 'Men' is untouched");
 });
+
+Deno.test("D79 interview: stand-ins for a missing fact are cut, the rest is kept", async () => {
+  const { stripInterviewMeta } = await import("./speech.ts");
+  const cases: [string, string][] = [
+    [
+      "Jag är ganska ny på arbetsmarknaden, men det jag tar med mig till lagret är att jag är noggrann. ",
+      "Det jag tar med mig till lagret är att jag är noggrann. ",
+    ],
+    [
+      "Jag är inte säker på att det är det viktigaste här, men det jag tar med mig är att jag är noggrann. ",
+      "Det jag tar med mig är att jag är noggrann. ",
+    ],
+    [
+      "Jag heter det du vill veta, och jag ser fram emot att berätta varför jag söker jobbet. ",
+      "Jag ser fram emot att berätta varför jag söker jobbet. ",
+    ],
+    ["Jag är noggrann och tycker om att jobba i tempo. ", "Jag är noggrann och tycker om att jobba i tempo. "],
+  ];
+  for (const [inp, want] of cases) assertEquals(stripInterviewMeta(inp), want, inp);
+});

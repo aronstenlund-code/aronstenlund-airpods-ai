@@ -2211,5 +2211,144 @@
 ]
 }
 ]
+},
+{
+"id": "felhor-01",
+"cat": "felhörning",
+"turns": [
+{
+"q": "få tes",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"fotosyntes"
+],
+"forbid_any": [
+"menar du",
+"tolkar"
+]
+}
+]
+},
+{
+"id": "felhor-02",
+"cat": "felhörning",
+"turns": [
+{
+"q": "vad är få tes",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"fotosyntes"
+]
+}
+]
+},
+{
+"id": "felhor-03",
+"cat": "felhörning",
+"turns": [
+{
+"q": "pytt a go ras sats",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"pythagoras"
+]
+}
+]
+},
+{
+"id": "felhor-04",
+"cat": "felhörning",
+"turns": [
+{
+"q": "sel andning",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"cellandning"
+]
+}
+]
+},
+{
+"id": "felhor-05",
+"cat": "felhörning",
+"turns": [
+{
+"q": "ko valent bindning",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"kovalent"
+]
+}
+]
+},
+{
+"id": "felhor-06",
+"cat": "felhörning",
+"turns": [
+{
+"q": "förklara evo lusion",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"evolution"
+]
+}
+]
+},
+{
+"id": "felhor-07",
+"cat": "felhörning",
+"turns": [
+{
+"q": "vad är få tes",
+"mode": "auto",
+"expect": "answer",
+"expect_any": [
+"fotosyntes"
+]
+}
+]
+},
+{
+"id": "felhor-08",
+"cat": "felhörning",
+"turns": [
+{
+"q": "glas och bröd i lådan",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "felhor-09",
+"cat": "felhörning",
+"turns": [
+{
+"q": "blå fyra nio sen",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "felhor-10",
+"cat": "felhörning",
+"turns": [
+{
+"q": "ka ve sa",
+"mode": "tutor",
+"expect": "either",
+"forbid_any": [
+"menar du",
+"tolkar"
+]
+}
+]
 }
 ]

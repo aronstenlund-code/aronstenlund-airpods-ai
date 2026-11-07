@@ -6,6 +6,7 @@ import {
   enforceLimits,
   type Limits,
   type RateLimiter,
+  userWindows,
 } from "../_shared/ratelimit.ts";
 import { SSE_HEADERS, sseFrame } from "../_shared/sse.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
@@ -428,6 +429,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let limitsMs: number | null = null;
       let answerChars = 0;
       let closed = false;
+      let doneSent = false; // D80: the client got the whole answer (else a client abort is not counted)
       let retries = 0;
       let webSearches = 0;
       let status = "ok";
@@ -483,6 +485,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const acs = [ac]; // one controller per LLM attempt (a retry starts a new one)
       const abortAll = () => acs.forEach((a) => a.abort());
       req.signal.addEventListener("abort", abortAll);
+      const countedAt = Date.now(); // D80: an aborted answer is given back in this window
       const limitsP = enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra).then((r) => {
         limitsMs = now() - t0;
         return r;
@@ -844,6 +847,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               memory_add: null,
               calibration,
             });
+            doneSent = !closed;
           } catch (e) {
             if (!closed) {
               const he = providerErrorToHttp(e);
@@ -855,6 +859,18 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             try {
               await it.return?.();
             } catch { /* provider already failed */ }
+            // D80: the client aborted (the app redoes its preliminary answer when the user keeps talking):
+            // the request does not count against the user's own minute/day allowance. Network, global and
+            // new-user windows stay counted, so aborting cannot buy free answers.
+            const aborted = closed && !doneSent;
+            if (aborted) {
+              status = "aborted";
+              try {
+                await deps.rateLimiter.release?.(userWindows("answer", user.id), 1, countedAt);
+              } catch (e) {
+                console.error("rate_release_failed", e instanceof Error ? e.message : String(e));
+              }
+            }
             const rec = usage(status);
             console.log(JSON.stringify({
               evt: "answer",
