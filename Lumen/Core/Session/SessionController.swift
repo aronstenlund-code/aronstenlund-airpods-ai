@@ -43,6 +43,8 @@ final class SessionController {
     /// D82: whether the input needs echo cancellation for this route (the listening model decides: only the
     /// iPhone's loudspeaker). Nil: never.
     var voiceProcessingPolicy: (@MainActor (SessionSnapshot) -> Bool)?
+    /// D87: the study-session recording sees every log line (the 500-line log can roll over in 10 minutes).
+    var logObserver: (@MainActor (LogEntry) -> Void)?
     /// D86: true keeps listening when the AirPods go (the answers then play in the phone's speaker); nil or false
     /// pauses as before.
     var keepsListeningWhenOutputLost: (@MainActor () -> Bool)?
@@ -292,8 +294,10 @@ final class SessionController {
     // MARK: - Logging
 
     func log(_ text: String) {
-        eventLog.insert(LogEntry(time: Date(), text: text), at: 0)
+        let entry = LogEntry(time: Date(), text: text)
+        eventLog.insert(entry, at: 0)
         if eventLog.count > 500 { eventLog.removeLast(eventLog.count - 500) }
+        logObserver?(entry)
         Log.diagnostics.info("\(text, privacy: .private)")
     }
 

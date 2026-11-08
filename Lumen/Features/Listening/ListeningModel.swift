@@ -62,6 +62,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var isShowingAddExam = false
     /// D86 screen 6: what is wrong right now, in Swedish with what to do. Nil: nothing.
     private(set) var problem: LumenProblem?
+    /// D87: what happens in a session, for the study-session recording in Diagnostik. Nil: nobody records.
+    enum SessionEvent: Sendable {
+        case heard(String)
+        case asked(query: String, trigger: String)
+        case answered(question: String, answer: String, firstTextMs: Double?, source: String)
+        case spoke(String)
+    }
+    var sessionObserver: (@MainActor (SessionEvent, Date) -> Void)?
+    /// D87: the wearer's Provläge turns (answered or not), for `context.recent_turns`; the exam they belong to.
+    private(set) var studyTurns: [AnswerContext.Turn] = []
+    private(set) var activeExamID: UUID?
     /// "Lägg till prov" → the microphone button: the next sentence is the exam, said aloud.
     private(set) var awaitingExamStatement = false
     /// D84: the practice exam inside Provläge, its uploaded paper and Kevin's `/exam`.
@@ -251,6 +262,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         speaker.onSpeak = { [weak self] text in
             self?.echo.record(text, at: Date())
+            self?.sessionObserver?(.spoke(text), Date())
             self?.spokenAnswer += text + " "
         }
         // D82 (owner): the app only hears itself when the sound goes out of the iPhone's own speaker. Echo
@@ -377,7 +389,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                          goals: goals.terms,
                                          memory: memory.facts.map(\.text),
                                          prep: (studyProfile.profile.terms ?? []) + prep.sttTerms)
-        transcription.setContextualStrings(terms + prep.sttTerms + (studyProfile.profile.terms ?? []))
+        let rest = terms + prep.sttTerms + (studyProfile.profile.terms ?? [])
+        // D87: in Provläge the active exam's words go first, so Scribe hears them right from the first word.
+        let exam = mode == .prov ? ExamKeyterms.terms(profile: studyProfile.profile) : []
+        transcription.setContextualStrings(ExamKeyterms.merged(exam: exam, rest: rest))
     }
 
     /// Raw capture for the Diagnostics recording (D78), the same audio the recogniser gets before any gate.
@@ -552,6 +567,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         studyNotice = nil
         mode = newMode
+        refreshKeyterms() // D87: before Scribe (re)connects for this mode
         await useMicrophone(for: newMode)
         if !isListening {
             if canResume { await resume() } else { await startListening() }
@@ -561,6 +577,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.interrupt()
         conversation.cancelAnswer()
         study.endpointSilence = modeSettings.pause(for: newMode) // D80: the user's pause ends the turn
+        if newMode == .prov { await transcription.applyKeytermsNow() } // D87: the exam's words from the first one
         if let style = newMode.liveStyle {
             rizz = RizzSession(style: style)
             study.stallSilence = Self.stallSilence
@@ -659,6 +676,26 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                 subject: profile.subject, date: date, topics: profile.topics ?? ""))
     }
 
+    /// D87: a Provläge turn; answered or not is filled in when the answer is complete.
+    private func recordStudyTurn(_ text: String) {
+        studyTurns.append(AnswerContext.Turn(text: text, answered: false))
+        if studyTurns.count > 10 { studyTurns.removeFirst(studyTurns.count - 10) }
+    }
+
+    /// The last three turns before `query` (the turn being answered is the fragment, not a recent turn).
+    private func turnsBefore(_ query: String) -> [AnswerContext.Turn] {
+        var turns = studyTurns
+        if let last = turns.last, AheadAnswer.key(last.text) == AheadAnswer.key(query) { turns.removeLast() }
+        return Array(turns.suffix(AnswerContext.turnLimit))
+    }
+
+    /// The exam being studied: the one chosen, else the nearest exam in the profile's subject.
+    func currentExamID() -> UUID? {
+        if let activeExamID, examPlans?.plans.contains(where: { $0.id == activeExamID }) == true { return activeExamID }
+        let subject = studyProfile.profile.subject
+        return examPlans?.upcoming().first { $0.subject.caseInsensitiveCompare(subject) == .orderedSame }?.id
+    }
+
     /// D86 "Spara prov": kept with the others, and Provläge's profile from now on. The subject's terms follow.
     func saveExamPlan(_ plan: ExamPlan) {
         examPlans?.save(plan)
@@ -668,6 +705,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// Provläge for this exam: its grade, subject, date and topics become the profile.
     func useExamPlan(_ plan: ExamPlan) {
+        if activeExamID != plan.id { studyTurns = [] } // another exam: its turns are not this one's
+        activeExamID = plan.id
         var profile = studyProfile.profile
         plan.apply(to: &profile)
         profile.onboarded = true
@@ -833,6 +872,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             case .standard, .prov:
                 headMotion.stop() // answered with the voice
                 activated(ActivationRequest(query: text, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
+                if mode == .prov { recordStudyTurn(text) }
             }
         case .stalled:
             if let session = rizz { requestSuggestions(trigger: session.hasConversation ? "stall" : "opener") }
@@ -1750,6 +1790,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         spokenAnswer = ""
         latency.begin(request)
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
+        sessionObserver?(.asked(query: request.query, trigger: request.trigger.rawValue), Date())
         if !study.isActive { logTurn() }
         timeline = TurnTimeline(heardAt: lastHeardAt, requestAt: Date(), pauseEndAt: Date(), answeredAhead: false)
         answers.answer(request, context: context(for: request), persona: persona)
@@ -1761,6 +1802,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let matched = commands.matches(in: request.query)
         if !matched.isEmpty {
             controller.log("Commands matched: \(matched.map(\.keyword).joined(separator: ", "))")
+        }
+        if study.isActive, mode == .prov {
+            // D87: the last three turns and the active exam in every Provläge call.
+            return AnswerContext(transcript: conversation.recentText(seconds: 60),
+                                 recentQA: conversation.recentQA(limit: qaLimit),
+                                 prepTerms: prep.backendTerms + (studyProfile.profile.terms ?? []),
+                                 goals: goals.compact,
+                                 commands: matched.map { AnswerContext.Command(keyword: $0.keyword, instruction: $0.instruction) },
+                                 memories: memory.backendItems(),
+                                 recentTurns: turnsBefore(request.query),
+                                 examID: currentExamID()?.uuidString)
         }
         return AnswerContext(transcript: conversation.recentText(seconds: 60),
                              recentQA: conversation.recentQA(limit: qaLimit),
@@ -1992,6 +2044,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         inFlightTrigger = nil
         if timeline?.doneAt == nil { timeline?.doneAt = Date() }
         if let turn = conversation.completeAnswer(latencyMs: latencyMs) {
+            sessionObserver?(.answered(question: turn.question, answer: turn.answer, firstTextMs: latencyMs, source: turn.source), Date())
             history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
                                         answer: turn.answer, summary: done?.summary,
                                         mode: mode.rawValue, persona: currentPersona))
@@ -2001,6 +2054,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             scheduleKeytermRefresh()
             studyCardOrGrade(turn)
             showActivity()
+            if mode == .prov, let index = studyTurns.lastIndex(where: { AheadAnswer.key($0.text) == AheadAnswer.key(turn.question) }) {
+                studyTurns[index].answered = true
+            }
         }
         if let fact = done?.memoryAdd {
             memory.add(fact)
@@ -2135,6 +2191,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         conversation.finalize(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
         finalObserver?(segment.text)
+        sessionObserver?(.heard(segment.text), date)
         if isComparing || isEnrollingVoice { return }
         if awaitingExamStatement, ProfileStatement.isAboutSchool(segment.text) {
             awaitingExamStatement = false

@@ -76,6 +76,9 @@ struct DiagnosticsView: View {
             if let comparison = model.micComparison {
                 MicComparisonSection(model: comparison)
             }
+            if let study = model.studyRecording {
+                StudyRecordingSection(model: study)
+            }
             if let recording = model.speechRecording {
                 SpeechRecordingSection(model: recording)
             }

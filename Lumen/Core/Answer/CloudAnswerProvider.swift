@@ -106,6 +106,7 @@ final class CloudAnswerProvider: AnswerProvider {
                 var transcript: String?
                 var recent_qa: [AnswerContext.QA]?
                 var prep_terms: [String]?
+                var recent_turns: [AnswerContext.Turn]?
             }
             var fragment: String
             var mode: String
@@ -120,17 +121,20 @@ final class CloudAnswerProvider: AnswerProvider {
             var turn: String?
             var social: SocialRequest?
             var adult_confirmed: Bool?
+            var exam_id: String?
         }
         let context = Body.Context(transcript: request.context.transcript.isEmpty ? nil : request.context.transcript,
                                    recent_qa: request.context.recentQA.isEmpty ? nil : request.context.recentQA,
-                                   prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms)
+                                   prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms,
+                                   recent_turns: request.context.recentTurns.isEmpty ? nil : request.context.recentTurns)
         let body = Body(fragment: request.fragment, mode: request.mode, language: request.language, context: context, length: request.length,
                         goals: request.context.goals,
                         commands: request.context.commands.isEmpty ? nil : request.context.commands,
                         memories: request.context.memories.isEmpty ? nil : request.context.memories,
                         persona: request.persona?.persona, persona_setup: request.persona?.setup,
                         turn: request.persona?.turn, social: request.persona?.social,
-                        adult_confirmed: request.persona?.adultConfirmed)
+                        adult_confirmed: request.persona?.adultConfirmed,
+                        exam_id: request.context.examID)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return (try? encoder.encode(body)) ?? Data("{}".utf8)

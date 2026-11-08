@@ -107,6 +107,35 @@ struct ExamPlan: Codable, Equatable, Identifiable, Sendable {
     }
 }
 
+/// D87: Provläge's Scribe keyterms come from the active exam first: the subject, the course, what is on the exam,
+/// then Kevin's subject terms from `/study-profile`. Scribe takes 20, so these always win. Pure.
+enum ExamKeyterms {
+    static func terms(profile: StudyProfile) -> [String] {
+        var out: [String] = []
+        func add(_ raw: String) {
+            let term = raw.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+            guard term.count >= 2, term.count <= 40, !out.contains(where: { $0.caseInsensitiveCompare(term) == .orderedSame }) else { return }
+            out.append(term)
+        }
+        add(profile.subject)
+        add(profile.course)
+        for part in (profile.topics ?? "").components(separatedBy: CharacterSet(charactersIn: ",;\n")) {
+            for piece in part.components(separatedBy: " och ") where !piece.lowercased().hasPrefix("kapitel") {
+                add(piece)
+            }
+        }
+        (profile.terms ?? []).forEach(add)
+        return out
+    }
+
+    /// The exam's terms first, then everything else, each once.
+    static func merged(exam: [String], rest: [String]) -> [String] {
+        var out = exam
+        for term in rest where !out.contains(where: { $0.caseInsensitiveCompare(term) == .orderedSame }) { out.append(term) }
+        return out
+    }
+}
+
 @MainActor
 @Observable
 final class ExamPlanStore {

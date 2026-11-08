@@ -366,6 +366,15 @@ final class TranscriptionCoordinator {
         await startTranscribing()
     }
 
+    /// D87: Provläge starts: a running Scribe session takes the exam's keyterms now, before the first word (no wait
+    /// for a pause; the user has not started yet).
+    func applyKeytermsNow() async {
+        guard case .running(.scribe) = status, controller.isCapturing,
+              Array(contextualStrings.prefix(ScribeProvider.keytermLimit)) != connectedKeyterms else { return }
+        controller.log("Scribe keyterms for the exam: reconnecting")
+        await startTranscribing()
+    }
+
     /// The mode or its pause changed (D80): Scribe commits a little before the pause is over, and a running Scribe
     /// session reconnects with the new values.
     func setPause(_ seconds: TimeInterval, mode: ConversationMode) async {

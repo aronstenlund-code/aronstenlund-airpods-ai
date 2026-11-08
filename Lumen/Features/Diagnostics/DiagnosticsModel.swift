@@ -42,6 +42,8 @@ final class DiagnosticsModel {
     var micComparison: MicComparisonModel?
     /// D78: two minutes of audio + transcript for comparing recognisers.
     var speechRecording: SpeechRecordingModel?
+    /// D87: ten minutes of a real study session, for measuring.
+    var studyRecording: StudyRecordingModel?
     private(set) var micSourceRunning = false
     private(set) var localeReport: String?
     private(set) var localeCheckRunning = false

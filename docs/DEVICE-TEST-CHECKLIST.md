@@ -329,6 +329,12 @@ Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt l
 3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
 4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
 
+### 3z10. Plugg-session med mätning (D87, 12 min)
+1. Lägg till ett prov med "Vad kommer på provet?" ifyllt (t.ex. "fotosyntes, klorofyll"). Starta Provläget för det provet.
+2. Säg genast en fråga med ett av orden ("vad gör klorofyll"): ordet ska höras rätt redan första gången.
+3. Inställningar → Diagnostik → Diagnostik → **Spela in plugg-session**. Plugga som vanligt i några minuter, tryck **Stoppa**.
+4. **Exportera WAV, transkript och JSON** och skicka alla tre filerna. I .txt ska överst stå provet och dess keyterms.
+
 ### 3z9. Ny design (D86, 25 min)
 1. Radera appen och installera om. Första start: **Testa nu** → samtycket → iOS frågar om mikrofonen → "Fråga vad som helst". Ställ en fråga högt: svaret ska komma inom 30 s från att appen öppnades. **Fortsätt** → "Lägg till prov" (eller **Hoppa över**). iOS ska inte fråga om taligenkänning.
 2. Lägg till prov: välj Åk 9, NO → Biologi, ett datum, skriv "fotosyntes". Spara. Lägg till ett prov till (Engelska, senare datum). Startskärmen ska visa Biologiprovet som rutat kort med röd ring "N dagar kvar" och Engelska som rad med mikrofonknapp.

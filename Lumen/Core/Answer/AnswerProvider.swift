@@ -21,6 +21,18 @@ struct AnswerContext: Equatable, Sendable {
     var commands: [Command] = []
     /// What the user asked Lumen to remember (D49), ≤30 × 200 chars.
     var memories: [String] = []
+    /// D87, Provläge: the wearer's last three turns before this one, answered or not, oldest first.
+    var recentTurns: [Turn] = []
+    /// D87, Provläge: the active exam (`ExamPlan.id`), so the backend knows which exam the turns belong to.
+    var examID: String?
+
+    struct Turn: Equatable, Sendable, Codable {
+        var text: String
+        /// Lumen answered it (false: silence, filler, a command, or cut off).
+        var answered: Bool
+    }
+
+    static let turnLimit = 3
 
     struct Command: Equatable, Sendable, Codable {
         var keyword: String
@@ -50,7 +62,9 @@ struct AnswerContext: Equatable, Sendable {
                           Command(keyword: String($0.keyword.prefix(Self.commandFieldLimit)),
                                   instruction: String($0.instruction.prefix(Self.commandFieldLimit)))
                       },
-                      memories: memories.prefix(Self.memoryLimit).map { String($0.prefix(Self.memoryFieldLimit)) })
+                      memories: memories.prefix(Self.memoryLimit).map { String($0.prefix(Self.memoryFieldLimit)) },
+                      recentTurns: recentTurns.suffix(Self.turnLimit).map { Turn(text: String($0.text.prefix(Self.qaFieldLimit)), answered: $0.answered) },
+                      examID: examID)
     }
 }
 
