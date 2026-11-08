@@ -135,3 +135,18 @@ Deno.test("K1.5 interview: no yes or no about facts the CV does not give", async
   );
   assertEquals(out.trim(), "Jag är alltid i tid, och på Kafé Solen öppnade jag ofta själv klockan sju.");
 });
+
+Deno.test("K1.6 a suggestion cut at the token cap or holding a speaker label is dropped, never shown cut", async () => {
+  const { pickSuggestions, completeText } = await import("./rizz.ts");
+  assertEquals(completeText("1 | x | Hej där.\n2 | y | Efter loppet kan vi alla ligga ner, Tal"), "1 | x | Hej där.\n");
+  assertEquals(completeText("1 | x | Hej där.\n2 | y | Vi ses vid målet!"), "1 | x | Hej där.\n2 | y | Vi ses vid målet!");
+  assertEquals(pickSuggestions("1 | x | Efter loppet ligger jag ner, precis som hen som s", true, undefined, 1), []);
+  assertEquals(
+    pickSuggestions("1 | x | Talare 2, efter loppet bär vi dig.\n2 | y | Efter loppet bär vi löparen till konserten.\n", true, undefined, 1),
+    ["Efter loppet bär vi löparen till konserten."],
+  );
+  assertEquals(
+    pickSuggestions("1 | x | Talare 1 har rätt om loppet.\n2 | y | Efter loppet kan vi alla ligga ner, Tal", true, undefined, 1),
+    [],
+  );
+});

@@ -199,7 +199,7 @@ export function wordCount(s: string): number {
 export function parseSuggestions(raw: string): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
-  for (const line of raw.split(/\r?\n/)) {
+  for (const line of completeText(raw).split(/\r?\n/)) {
     let t = line.trim().replace(/^(?:[-*•]|\d+[.)])\s*/, "").replace(/^["“”«»'`]+|["“”«»'`]+$/g, "")
       .trim();
     t = t.replace(/[*#_`~]/g, "").replace(/\s+/g, " ").trim();
@@ -235,11 +235,22 @@ function cleanLine(s: string): string {
 }
 
 /** Parses "n|hook|line" candidates and the `TOP: a,b,c` pick. Only complete lines unless `final`. */
+/**
+ * K1.6 (Oscar D81: "Efter loppet kan vi alla ligga ner, Tal"): when the stream ended at the token cap, the last
+ * line is cut mid-word. A last line without a newline counts only when it ends like a finished sentence.
+ */
+export function completeText(raw: string): string {
+  const cut = raw.lastIndexOf("\n");
+  const last = raw.slice(cut + 1);
+  if (!last.trim() || /[.!?…"”»)][*_`~'"”»]*\s*$/u.test(last) || /^\s*TOP\s*[:=]/im.test(last)) return raw;
+  return raw.slice(0, cut + 1);
+}
+
 export function parseCandidates(
   raw: string,
   final = true,
 ): { cands: Candidate[]; top: number[] | null } {
-  const text = final ? raw : raw.slice(0, raw.lastIndexOf("\n") + 1);
+  const text = final ? completeText(raw) : raw.slice(0, raw.lastIndexOf("\n") + 1);
   const cands: Candidate[] = [];
   for (const line of text.split(/\r?\n/)) {
     const m = CAND.exec(line);

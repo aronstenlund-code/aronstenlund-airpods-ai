@@ -673,7 +673,7 @@ Deno.test("D52: Rizz = 5 candidates + TOP -> ONE suggestions event with the 3 pi
   // D72: exactly one suggestion, the best (the model's line 1)
   assertEquals(ev[1].data as unknown, ["Vilket lopp är det?"]);
   assertEquals(ev[2].data.answered, true);
-  assertEquals(seen[0].maxTokens, 100);
+  assertEquals(seen[0].maxTokens, 140);
   assertEquals(seen[0].model, "claude-sonnet-5-5");
   assert(seen[0].system.includes("conversation wingman"));
   assert(
@@ -983,7 +983,7 @@ Deno.test("D72: 'ge mig tre pickup lines' -> three suggestions on the suggestion
   assert(three.seen[0].user.includes("<count>3</count>"));
   assert(three.seen[0].user.includes("<request>ge mig tre pickup lines</request>"));
   assert(three.seen[0].user.includes("<calibration>fler skämt</calibration>"));
-  assertEquals(three.seen[0].maxTokens, 130);
+  assertEquals(three.seen[0].maxTokens, 165);
   const one = recordingProvider("1|Bara den här.\n2|Ska aldrig visas.\n");
   const e1 = await readSse(await setup({ provider: one.provider }).handler(post(socialBody())));
   assertEquals(e1.map((e) => e.event), ["suggestion_preview", "suggestions", "done"]);

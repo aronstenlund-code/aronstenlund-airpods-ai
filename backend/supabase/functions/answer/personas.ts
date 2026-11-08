@@ -129,7 +129,7 @@ export function personaPlan(req: AnswerRequest): Plan | null {
       kind: "rizz",
       task: "rizz_suggestions",
       answerType: "fact",
-      maxTokens: Math.max(100, 40 + 30 * n),
+      maxTokens: Math.max(140, 60 + 35 * n), // K1.6: room after a dropped labelled line, so none is cut
       maxChars: 200 + 150 * n,
     };
   }
