@@ -27,6 +27,14 @@ final class FakeTTSProvider: TTSProvider {
         }
         if let error { throw error }
     }
+
+    /// A4: which sentences were fetched ahead. Returns nil, so they are then spoken the normal way.
+    private(set) var synthesizeCalls: [String] = []
+
+    func synthesize(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice) async throws(TTSError) -> (samples: [Int16], sampleRate: Double)? {
+        synthesizeCalls.append(text)
+        return nil
+    }
 }
 
 @MainActor

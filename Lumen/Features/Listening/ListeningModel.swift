@@ -271,6 +271,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             (self?.microphone.echoCancellation ?? true) && snapshot.outputsToBuiltInSpeaker
         }
         speaker.onFinished = { [weak self] in self?.speechFinished() }
+        speaker.onVoiceStats = { [weak self] stats in self?.controller.log("Röst: \(stats.summary)") } // A4
         controller.keepsListeningWhenOutputLost = { [weak self] in !(self?.microphone.pauseWhenAirPodsLost ?? true) }
         controller.onOutputLost = { [weak self] in self?.report(problem: .airPodsDisconnected) }
         controller.onOutputRestored = { [weak self] in

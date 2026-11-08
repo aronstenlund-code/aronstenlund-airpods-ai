@@ -49,6 +49,11 @@ struct RawTranscriptView: View {
                         .font(.footnote.monospacedDigit())
                 }
                 if let route = model.routeSummary { Text(verbatim: route).font(.footnote) }
+                // A4: hack in the voice, as numbers from Aron's phone.
+                if let last = model.speaker.lastAnswerStats {
+                    Text(verbatim: "Röst, senaste svaret: \(last.summary)").font(.footnote.monospacedDigit())
+                }
+                Text(verbatim: "Röst, totalt: \(model.speaker.totalStats.summary)").font(.footnote.monospacedDigit())
                 Text(verbatim: "Taligenkänning: \(model.recognizerName)").font(.footnote)
             }
         }
