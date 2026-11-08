@@ -88,7 +88,7 @@ export function createEvalHandler(deps: EvalDeps) {
           authenticate: () => Promise.resolve(user),
           rateLimiter: deps.rateLimiter,
           provider: deps.provider,
-          recordUsage: deps.recordUsage ?? (() => {}),
+          recordUsage: (rec) => deps.recordUsage?.(rec as unknown as Record<string, unknown>),
           config: {
             ...base,
             // the eval has its own caps above; the answer windows are not the user's real ones
