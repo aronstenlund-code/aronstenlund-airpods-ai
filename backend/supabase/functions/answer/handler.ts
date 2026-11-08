@@ -14,6 +14,7 @@ import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
+import { computeMath } from "./mathcheck.ts";
 import { nowContext } from "./datecalc.ts";
 import { categorize } from "./category.ts";
 import {
@@ -460,7 +461,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const computed = plan || body.mode === "interview_prep"
         ? null
         : computeFragment(body.fragment, (deps.clock ?? (() => new Date()))()) ??
-          computeFollowUp(body.fragment, body.context.recent_qa.at(-1)?.a);
+          computeFollowUp(body.fragment, body.context.recent_qa.at(-1)?.a) ??
+          computeMath(body.fragment); // K1.3: derivatives and linear equations checked in code
       // History fix 2026-11-08 ("270 gånger 270" was spoken as "sjutusen niohundra" although <computed> was
       // right): arithmetic, percentages and a bare clock time are answered entirely by code, no model call.
       const localCalc = computed && !plan ? spokenComputed(computed, tutor) : null;

@@ -44,3 +44,28 @@ Deno.test("K1.2 the reasoning sentence is dropped, the chemistry answer stays", 
   const other = run({ previousAnswers: [], trimQuestion: false, inputMeta: true, heard: "x" }, ["Du menar att jag ska hjälpa dig. "]);
   assert(other.out.includes("Du menar"), other.out);
 });
+
+Deno.test("K1.3 derivatives and linear equations are computed in code", async () => {
+  const { computeMath, normalizeMath } = await import("./mathcheck.ts");
+  assertEquals(normalizeMath("tre x i kvadrat plus två x"), "3x^2+2x");
+  const cases: [string, string | null][] = [
+    ["derivatan av x i kvadrat", "f′(x) = 2x"],
+    ["vad är derivatan av x^2", "f′(x) = 2x"],
+    ["derivera tre x i kvadrat plus två x minus fem", "f′(x) = 6x + 2"],
+    ["derivatan av x upphöjt till tre", "f′(x) = 3x²"],
+    ["derivatan av f(x) = 4x³ − 2x", "f′(x) = 12x² − 2"],
+    ["lös 3x − 7 = 14", "x = 7"],
+    ["lös ekvationen två x plus nio är lika med tre", "x = -3"],
+    ["5x + 2 = 3x + 10", "x = 4"],
+    ["vad är x om 4x = 10", "x = 2,5"],
+    ["vad är derivata", null],
+    ["derivatan av sinus x", null],
+    ["x är sju", null],
+    ["lös x^2 = 9", null],
+  ];
+  for (const [f, want] of cases) {
+    const r = computeMath(f);
+    if (want === null) assertEquals(r, null, f);
+    else assert(r && r.text.includes(want), `${f}: ${r?.text}`);
+  }
+});
