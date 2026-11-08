@@ -36,11 +36,20 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private var prefetchTask: Task<Void, Never>?
     /// Socialt läge / Rizzläge: the text the last early suggestion request was for, and when (D80: at most every 3 s).
     private var liveAhead: (key: String, at: Date)?
+    /// D82.3: one live turn, logged when its suggestion is spoken: who, why, requested, ready, spoken.
+    private var liveTurn: (endedAt: Date, who: String, requestedAt: Date?, readyAt: Date?)?
     /// When the last answer was completed, so a complaint right after it can be reported (D80).
     private var lastAnswerAt: Date?
     /// D80: turns go to the backend's memory extraction afterwards, never in the answer path.
     let memoryExtractor: MemoryExtractor?
     private var keytermTask: Task<Void, Never>?
+    /// D82: what Lumen said lately, so its own voice coming back is never answered.
+    private var echo = EchoFilter()
+    /// The backend persona of the answer being made (interview, social), for the shared history (D82).
+    private var currentPersona: String?
+    /// Reopens the recogniser 0.7 s after Lumen's voice has stopped.
+    private var ungateTask: Task<Void, Never>?
+    static let echoTail: TimeInterval = 0.7
     /// The Diagnostics recording (D78) sees every final as it arrives.
     var finalObserver: (@MainActor (String) -> Void)?
     /// An instruction is on its way to the backend for this mode (D69): what comes back is a calibration, or the
@@ -178,11 +187,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             guard let self else { return }
             self.latency.markFirstSpeech(provider: provider)
             self.logTimeline()
+            // D82: in every mode the recogniser is closed while Lumen speaks, and 0.7 s after.
+            self.ungateTask?.cancel()
+            self.transcription.setInputGated(true)
             if self.study.isActive {
-                // Our own voice is playing: gate the recogniser, watch the level for a barge-in (D36).
+                // Watch the level for a barge-in (D36).
                 self.study.speechStarted()
-                self.transcription.setInputGated(true)
             }
+        }
+        speaker.onSpeak = { [weak self] text in self?.echo.record(text, at: Date()) }
+        // D82 (owner): the app only hears itself when the sound goes out of the iPhone's own speaker. Echo
+        // cancellation then, never with AirPods or headphones, so their microphone keeps its quality.
+        controller.voiceProcessingPolicy = { [weak self] snapshot in
+            (self?.microphone.echoCancellation ?? true) && snapshot.outputsToBuiltInSpeaker
         }
         speaker.onFinished = { [weak self] in self?.speechFinished() }
         let firstPause = modes.pause(for: .standard)
@@ -237,7 +254,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// Selects the microphone for `mode`. A running session moves to the new route at once (D55).
     private func useMicrophone(for mode: ConversationMode) async {
-        await use(config: microphone.source(for: mode).captureConfig(echoCancellation: mode == .prov && study.settings.useVoiceChatMode))
+        // D82: the AirPods keep their best recording; echo cancellation is decided by the output (see init).
+        await use(config: microphone.source(for: mode).captureConfig())
     }
 
     private func use(config: CaptureConfig) async {
@@ -465,9 +483,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let style = newMode.liveStyle {
             rizz = RizzSession(style: style)
             study.stallSilence = Self.stallSilence
+            study.speechDetector = { [weak self] in self?.transcription.vadSpeaking() } // D82.2
             controller.playback.speechVolume = Self.rizzVolume
         } else {
             study.stallSilence = nil
+            study.speechDetector = nil
         }
         study.start()
         controller.log("Hands-free \(newMode.rawValue) started")
@@ -490,8 +510,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         await startStudy()
     }
 
-    /// ~4 s of silence asks for a way to carry on (D43).
-    static let stallSilence: TimeInterval = 4
+    /// D82.2: 2 s of silence asks for a way to carry on (was 4 s, D43).
+    static let stallSilence: TimeInterval = 2
     /// Quiet enough to say under one's breath, not loud enough to carry (D43). Tuned on device.
     static let rizzVolume: Float = 0.6
 
@@ -536,7 +556,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             let lines = ownLinesAreReliable ? session.ownLines.joined(separator: "\n") : ""
             history.record(HistoryEntry(question: lines.isEmpty ? nil : lines, answer: "",
                                         summary: "\(mode == .rizz ? "Rizzläge" : "Socialt läge"): \(session.offered.count) förslag.",
-                                        suggestions: session.offered))
+                                        suggestions: session.offered, mode: mode.rawValue, persona: "social"))
         }
         rizz = nil
         instructing = nil
@@ -567,6 +587,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .turnStarted:
             break
         case .endOfTurn(let raw):
+            if isOwnEcho(raw, at: Date()) {
+                discardAhead(reason: "Lumen's own echo")
+                study.resumeListening()
+                return
+            }
             // "Lumen, …" can close a turn before its final result arrives (D74).
             let utterance = VoiceChannel.parse(raw)
             if let intent = utterance.intent { perform(intent) }
@@ -633,7 +658,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func rizzTurn(_ text: String) {
         let speaker = RizzSpeaker.tag(levelDBFS: study.lastTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)
-        controller.log("Rizzläge: turn tagged \(speaker.rawValue) · level \(study.lastTurnLevelDBFS ?? -99) dBFS · threshold \(modeSettings.speakerThresholdDBFS)")
+        let why = RizzSpeaker.reason(levelDBFS: study.lastTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)
+        let detector = transcription.vadIsRunning ? "Silero" : "level"
+        controller.log("\(mode.rawValue) turn · \(speaker == .user ? "wearer" : "other") · \(why) · speech by \(detector)")
+        if speaker == .other {
+            // A suggestion asked for while they were talking (D80) counts from that request.
+            let early = liveAhead?.at
+            let ready: Date? = early != nil && rizz?.current != nil ? Date() : nil
+            liveTurn = (endedAt: Date(), who: "other", requestedAt: early, readyAt: ready)
+        }
         study.resumeListening() // the room goes on while the suggestions are being made
         guard var session = rizz else { return }
         if speaker == .user, session.usesSuggestion(text) {
@@ -870,6 +903,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func requestSuggestions(trigger: String) {
         guard let session = rizz else { return }
+        if liveTurn != nil, liveTurn?.requestedAt == nil { liveTurn?.requestedAt = Date() }
         if instructing != nil {
             deferredTrigger = trigger // the instruction goes first, the suggestions follow it
             return
@@ -896,6 +930,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         inFlightTrigger = nil
+        if liveTurn != nil { liveTurn?.readyAt = Date() }
         rizz?.offer(Array(options.prefix(Self.suggestionsShown))) // D72: one suggestion, shown and spoken
         showActivity()
         speakSuggestion()
@@ -922,12 +957,41 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func speakSuggestion() {
         guard let line = rizz?.current, !study.someoneIsTalking(), !speaker.isSpeaking else { return }
         speaker.enqueue(line, language: language)
+        logLiveTurn()
     }
 
     private func speechFinished() {
-        guard study.isActive, !finishSingleTurn() else { return }
-        transcription.setInputGated(false)
-        study.resumeListening()
+        if study.isActive, finishSingleTurn() { return }
+        reopenRecognizerAfterSpeech()
+    }
+
+    /// D82: the recogniser opens again only when Lumen's voice has really stopped playing, plus 0.7 s for its echo.
+    private func reopenRecognizerAfterSpeech() {
+        ungateTask?.cancel()
+        ungateTask = Task { [weak self] in
+            guard let self else { return }
+            var waited = 0
+            while self.controller.playback.isSpeaking, waited < 600 {
+                try? await Task.sleep(for: .milliseconds(50))
+                waited += 1
+            }
+            try? await Task.sleep(for: .seconds(Self.echoTail))
+            guard !Task.isCancelled, !self.speaker.isSpeaking else { return }
+            self.transcription.setInputGated(false)
+            if self.study.isActive { self.study.resumeListening() }
+        }
+    }
+
+    /// Settings → Ekoreducering changed: a running session follows at once.
+    func echoCancellationChanged() async {
+        await controller.reevaluateVoiceProcessing()
+    }
+
+    /// D82: most of the words are something Lumen just said: its own voice came back.
+    private func isOwnEcho(_ text: String, at date: Date) -> Bool {
+        guard let share = echo.overlap(text, now: date), share >= EchoFilter.overlap else { return false }
+        controller.log(String(format: "Echo filtered: %.0f %% of the words were Lumen's own", share * 100))
+        return true
     }
 
     /// The answer produced no speech (silent mode, empty answer): back to listening right away.
@@ -976,6 +1040,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if request.trigger == .auto, FillerFilter.isOnlyFiller(request.query) { return } // D74
         if persona?.social == nil, deliverAhead(for: request) { return } // D80: ready the moment the pause is over
         discardAhead(reason: "a different turn")
+        currentPersona = persona?.persona
         pendingQuestion = request
         answerNotice = nil
         // A new question interrupts the current answer and its speech (assignment item 5).
@@ -1056,6 +1121,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         current.delivered = true
         ahead = current
         aheadStats.delivered += 1
+        currentPersona = current.persona?.persona
         pendingQuestion = current.request
         answerNotice = nil
         if speaker.isSpeaking { speaker.interrupt() }
@@ -1146,6 +1212,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     static let liveRefresh: TimeInterval = 3
 
+    /// D82.3: turn end → suggestion requested → ready → spoken, in ms from the end of the other person's turn.
+    private func logLiveTurn(now: Date = Date()) {
+        guard let turn = liveTurn else { return }
+        liveTurn = nil
+        func ms(_ date: Date?) -> String {
+            guard let date else { return "–" }
+            return "\(Int((date.timeIntervalSince(turn.endedAt) * 1000).rounded())) ms"
+        }
+        controller.log("Live turn timing · \(turn.who) · requested \(ms(turn.requestedAt)) · ready \(ms(turn.readyAt)) · spoken \(ms(now)) (from the end of the turn)")
+    }
+
     private func logTimeline(now: Date = Date()) {
         guard let current = timeline else { return }
         timeline = nil
@@ -1193,7 +1270,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if timeline?.doneAt == nil { timeline?.doneAt = Date() }
         if let turn = conversation.completeAnswer(latencyMs: latencyMs) {
             history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
-                                        answer: turn.answer, summary: done?.summary))
+                                        answer: turn.answer, summary: done?.summary,
+                                        mode: mode.rawValue, persona: currentPersona))
             Task { await feedback?.sync(history.entries) }
             lastAnswerAt = Date()
             extractMemories(from: turn)
@@ -1306,6 +1384,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func receivePartialTranscript(_ text: String, at date: Date = Date()) {
         conversation.updatePartial(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
+        if echo.isEcho(text, now: date) { return } // D82: Lumen's own voice
         if study.isActive { study.transcriptPartial(text) }
         guard !controller.playback.isSpeaking else { return }
         lastHeardAt = date
@@ -1318,7 +1397,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// The recogniser committed words before the pause is over (D80): start the answer now.
     func receiveSentenceHeard(_ text: String, at date: Date) {
-        guard !controller.playback.isSpeaking else { return }
+        guard !controller.playback.isSpeaking, !echo.isEcho(text, now: date) else { return }
         lastHeardAt = date
         schedulePrefetch()
         answerAhead(for: text)
@@ -1330,6 +1409,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
         finalObserver?(segment.text)
         if isComparing { return }
+        if isOwnEcho(segment.text, at: date) {
+            discardAhead(reason: "Lumen's own echo")
+            return
+        }
         if !segment.overlapsPlayback, VoiceCommand.isMusicHandOff(segment.text) {
             controller.log("Spoken pause: handing the audio back")
             Task { await controller.pause() }

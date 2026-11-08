@@ -40,6 +40,9 @@ final class SessionController {
     var onCaptureStopped: (@MainActor () -> Void)?
     /// Called on every state transition.
     var onStateChanged: (@MainActor (SessionState) -> Void)?
+    /// D82: whether the input needs echo cancellation for this route (the listening model decides: only the
+    /// iPhone's loudspeaker). Nil: never.
+    var voiceProcessingPolicy: (@MainActor (SessionSnapshot) -> Bool)?
 
     var snapshot: SessionSnapshot? { session.snapshot }
     var banner: String { session.snapshot?.banner ?? "No active session" }
@@ -146,6 +149,7 @@ final class SessionController {
         do {
             let snapshot = try await session.activate(config)
             log("Session active: \(snapshot.banner)")
+            capture.voiceProcessing = voiceProcessingPolicy?(snapshot) ?? false
             try capture.start()
             _ = session.refreshSnapshot(engineInputFormat: capture.inputFormatDescription)
             startChunkCounter()
@@ -166,6 +170,7 @@ final class SessionController {
             } else {
                 try session.reactivate()
             }
+            if let snapshot = session.snapshot { capture.voiceProcessing = voiceProcessingPolicy?(snapshot) ?? false }
             try capture.start()
             _ = session.refreshSnapshot(engineInputFormat: capture.inputFormatDescription)
             startChunkCounter()
@@ -224,6 +229,7 @@ final class SessionController {
             Task { await apply(.interruptionEnded(shouldResume: shouldResume)) }
         case .routeChanged(let reason, let outputLost, let snapshot):
             log("Route change \(reason) → \(snapshot.banner)")
+            if !outputLost { Task { await reevaluateVoiceProcessing(snapshot) } }
             if outputLost {
                 UINotificationFeedbackGenerator().notificationOccurred(.warning)
                 Task { await apply(.outputDeviceLost) }
@@ -235,6 +241,27 @@ final class SessionController {
             Task { await apply(.mediaServicesReset) }
         case .warning(let text):
             log("Warning: \(text)")
+        }
+    }
+
+    /// D82: the output changed mid-session (AirPods out, speaker on): echo cancellation follows at once. The input
+    /// is restarted in place, without a state change, so a hands-free session goes on.
+    func reevaluateVoiceProcessing(_ snapshot: SessionSnapshot? = nil) async {
+        guard capture.isCapturing, let snapshot = snapshot ?? session.snapshot else { return }
+        let wanted = voiceProcessingPolicy?(snapshot) ?? false
+        guard wanted != capture.voiceProcessing else { return }
+        log("Echo cancellation \(wanted ? "on" : "off") for \(snapshot.outputs.map(\.portType).joined(separator: ", "))")
+        chunkTask?.cancel()
+        capture.stop()
+        onCaptureStopped?()
+        capture.voiceProcessing = wanted
+        do {
+            try capture.start()
+            startChunkCounter()
+            onCaptureStarted?()
+        } catch {
+            fail(error)
+            await apply(.failed(error.localizedDescription))
         }
     }
 

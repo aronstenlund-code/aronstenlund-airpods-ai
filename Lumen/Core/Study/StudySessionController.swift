@@ -16,6 +16,9 @@ final class StudySessionController {
     var stallSilence: TimeInterval?
     /// The user's pause for the mode (D80); nil keeps the Provläge setting.
     var endpointSilence: TimeInterval?
+    /// D82.2: Socialt läge and Rizzläge ask Silero whether someone is talking (nil: no VAD, use the level).
+    /// Only while listening: while Lumen speaks the recogniser is closed, and barge-in goes by the level.
+    var speechDetector: (@MainActor () -> Bool?)?
     private let session: SessionController
     private var levelSubscription: UUID?
     private var levelTask: Task<Void, Never>?
@@ -55,7 +58,8 @@ final class StudySessionController {
     // MARK: Inputs
 
     func level(_ rmsDBFS: Double, at now: Date = Date()) {
-        guard let event = machine.level(rmsDBFS, at: now) else { return }
+        let speech = machine.phase == .listening ? speechDetector?() : nil
+        guard let event = machine.level(rmsDBFS, at: now, speech: speech) else { return }
         if event == .autoEnded {
             endedBySilence = true
             unsubscribeFromLevels()

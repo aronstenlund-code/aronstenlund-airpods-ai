@@ -10,6 +10,8 @@ struct PortInfo: Sendable, Equatable, Codable {
     var dataSource: String?
 
     var isBluetooth: Bool { portType.hasPrefix("Bluetooth") }
+    /// The iPhone's loudspeaker: the only output that makes the microphone hear Lumen (D82).
+    var isBuiltInSpeaker: Bool { portType == AVAudioSession.Port.builtInSpeaker.rawValue }
     /// Headphone-like output whose loss should pause the session.
     var isExternalOutput: Bool { isBluetooth || portType == AVAudioSession.Port.headphones.rawValue }
 
@@ -64,6 +66,9 @@ struct SessionSnapshot: Sendable, Equatable {
     var engineInputFormat: String?
     var region: String
     var osVersion: String
+
+    /// D82: echo cancellation is needed only then.
+    var outputsToBuiltInSpeaker: Bool { outputs.contains(where: \.isBuiltInSpeaker) }
 
     static func shortName(_ raw: String, prefix: String) -> String {
         guard raw.hasPrefix(prefix) else { return raw }

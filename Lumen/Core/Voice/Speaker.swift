@@ -23,6 +23,8 @@ final class Speaker {
     private(set) var notice: String?
     /// Called when the first audio of a sentence is scheduled, so a slow `/tts` counts (latency, item 7 / D28).
     var onSentenceStarted: (@MainActor (_ provider: String) -> Void)?
+    /// D82: every text Lumen speaks, so its echo can be recognised in what the microphone hears next.
+    var onSpeak: (@MainActor (String) -> Void)?
     private(set) var spokenCount = 0
     private(set) var fallbackCount = 0
 
@@ -136,6 +138,7 @@ final class Speaker {
     }
 
     private func speak(_ request: Request) async {
+        onSpeak?(request.text)
         let provider: any TTSProvider = (request.voice.kind == .elevenLabs ? premium : nil) ?? apple
         if let task = prepared.removeValue(forKey: request.text), let audio = await task.value, !audio.samples.isEmpty {
             // Fetched while the user was still pausing (D80): it plays at once.

@@ -74,6 +74,19 @@ final class TranscriptionCoordinator {
     /// Local VAD statistics for the Diagnostics export: seconds sent to Scribe and seconds held back.
     private(set) var vadSentSeconds: Double = 0
     private(set) var vadHeldSeconds: Double = 0
+    /// D82.2: the local VAD is running, and when it last heard speech.
+    private(set) var vadIsRunning = false
+    private(set) var vadLastSpeechAt: Date?
+    /// Speech within this long counts as "someone is talking".
+    static let vadTalkingWindow: TimeInterval = 0.4
+
+    /// D82.2: Silero, not the input level, says whether someone is talking, so background noise is not speech.
+    /// Nil when no VAD runs (the caller falls back to the level).
+    func vadSpeaking(now: Date = Date()) -> Bool? {
+        guard vadIsRunning else { return nil }
+        guard let last = vadLastSpeechAt else { return false }
+        return now.timeIntervalSince(last) < Self.vadTalkingWindow
+    }
     private var chunkSubscription: UUID?
     private var generation = 0
 
@@ -172,6 +185,8 @@ final class TranscriptionCoordinator {
             controller.log(detector == nil ? "Local VAD not ready: all audio goes to Scribe" : "Local VAD in front of Scribe")
         }
         let silence = scribeTuning.silenceSeconds
+        vadIsRunning = detector != nil
+        vadLastSpeechAt = nil
         gateTask?.cancel()
         gateTask = Task { [weak self] in
             var gate = SpeechGate(scribeSilence: silence)
@@ -186,6 +201,7 @@ final class TranscriptionCoordinator {
                 for window in gate.collect(chunk.samples) {
                     // A detector error lets the window through: VAD must never cost words.
                     let probability = (try? await detector.speechProbability(SpeechGate.floats(window))) ?? 1
+                    if probability >= gate.openThreshold { self.vadLastSpeechAt = Date() }
                     let out = gate.decide(window, probability: probability)
                     let windowSeconds = Double(window.count) / LumenAudioFormat.sampleRate
                     if out.isEmpty {
@@ -402,6 +418,7 @@ final class TranscriptionCoordinator {
     /// All state changes happen before the first suspension, so a `startTranscribing()` that begins while an
     /// older stop is still finalising its provider is never invalidated by it.
     func stopTranscribing() async {
+        vadIsRunning = false
         flushPending() // words heard before the stop are not lost
         assembler.reset()
         generation += 1

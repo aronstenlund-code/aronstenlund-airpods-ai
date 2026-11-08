@@ -57,11 +57,18 @@ enum MicrophoneSource: String, CaseIterable, Identifiable, Sendable {
 final class MicrophoneSettings {
     static func key(for mode: ConversationMode) -> String { "microphone.\(mode.rawValue)" }
 
+    static let echoKey = "microphone.echoCancellation"
+
     private var sources: [ConversationMode: MicrophoneSource] = [:]
+    /// D82: echo cancellation (voice processing) in every mode, on by default.
+    var echoCancellation: Bool {
+        didSet { defaults.set(echoCancellation, forKey: Self.echoKey) }
+    }
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        self.echoCancellation = defaults.object(forKey: Self.echoKey) as? Bool ?? true
         for mode in ConversationMode.allCases {
             sources[mode] = defaults.string(forKey: Self.key(for: mode)).flatMap(MicrophoneSource.init(rawValue:))
         }

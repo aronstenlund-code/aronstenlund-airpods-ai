@@ -18,6 +18,8 @@ protocol CaptureServicing: AnyObject {
     var onFormatChange: (@MainActor (String) -> Void)? { get set }
     /// Fired for errors that happen outside a call (engine restart after a configuration change).
     var onError: (@MainActor (AudioError) -> Void)? { get set }
+    /// D82: Apple's voice processing (echo cancellation) on the input, so Lumen does not hear its own voice.
+    var voiceProcessing: Bool { get set }
 
     func start() throws(AudioError)
     func stop()
@@ -88,6 +90,8 @@ final class CaptureService: CaptureServicing {
     private(set) var conversionErrorCount = 0
     var onFormatChange: (@MainActor (String) -> Void)?
     var onError: (@MainActor (AudioError) -> Void)?
+    /// Off until the session controller decides from the output route (D82).
+    var voiceProcessing = false
 
     private let graph: AudioGraph
     private var tapContext: CaptureTapContext?
@@ -106,13 +110,13 @@ final class CaptureService: CaptureServicing {
         let engine = graph.engine
         let input = engine.inputNode
 
-        // We want the room, not one voice (ARCHITECTURE §4.2). Default is already off; a failure here is
-        // reported, not fatal.
-        if input.isVoiceProcessingEnabled {
+        // D82: echo cancellation by default in every mode (the app heard its own answers). Off on request, for the
+        // room (ARCHITECTURE §4.2). A failure here is reported, not fatal.
+        if input.isVoiceProcessingEnabled != voiceProcessing {
             do {
-                try input.setVoiceProcessingEnabled(false)
+                try input.setVoiceProcessingEnabled(voiceProcessing)
             } catch {
-                onError?(.engineStart(detail: "setVoiceProcessingEnabled(false): \(error.localizedDescription)"))
+                onError?(.engineStart(detail: "setVoiceProcessingEnabled(\(voiceProcessing)): \(error.localizedDescription)"))
             }
         }
 

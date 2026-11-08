@@ -11,14 +11,20 @@ struct HistoryEntry: Identifiable, Codable, Equatable, Sendable {
     var summary: String?
     /// Rizzläge: the suggestions that were offered.
     var suggestions: [String]
+    /// The mode and backend persona of the turn, uploaded with shared history (D82). Nil in entries before D82.
+    var mode: String?
+    var persona: String?
 
-    init(id: UUID = UUID(), createdAt: Date = Date(), question: String?, answer: String, summary: String?, suggestions: [String] = []) {
+    init(id: UUID = UUID(), createdAt: Date = Date(), question: String?, answer: String, summary: String?, suggestions: [String] = [],
+         mode: String? = nil, persona: String? = nil) {
         self.id = id
         self.createdAt = createdAt
         self.question = question
         self.answer = answer
         self.summary = summary
         self.suggestions = suggestions
+        self.mode = mode
+        self.persona = persona
     }
 
     /// The list line: the summary, else what was asked, else the answer.

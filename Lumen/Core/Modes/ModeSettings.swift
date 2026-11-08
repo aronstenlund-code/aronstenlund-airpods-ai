@@ -12,10 +12,23 @@ enum RizzSpeaker: String, Sendable, Equatable {
     case user
     case other
 
+    /// D82.2: the wearer only with a clear margin above the threshold. When it cannot be told for sure, the turn is
+    /// the other person's, and a suggestion is asked for.
+    static let certaintyMarginDB = 3.0
+
     /// By input level: the wearer is closer to the microphone. Possible with limitations, untested on device (D43).
     static func tag(levelDBFS: Double?, thresholdDBFS: Double) -> RizzSpeaker {
         guard let levelDBFS else { return .other }
-        return levelDBFS >= thresholdDBFS ? .user : .other
+        return levelDBFS >= thresholdDBFS + certaintyMarginDB ? .user : .other
+    }
+
+    /// Why the turn went to whom, for the per-turn log (D82.3).
+    static func reason(levelDBFS: Double?, thresholdDBFS: Double) -> String {
+        guard let levelDBFS else { return "no level measured → other" }
+        let line = String(format: "%.0f dBFS vs threshold %.0f + %.0f dB", levelDBFS, thresholdDBFS, certaintyMarginDB)
+        if levelDBFS >= thresholdDBFS + certaintyMarginDB { return line + " → wearer" }
+        if levelDBFS >= thresholdDBFS - certaintyMarginDB { return line + " → uncertain, treated as other" }
+        return line + " → other"
     }
 }
 

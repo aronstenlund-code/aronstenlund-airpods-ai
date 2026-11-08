@@ -10,6 +10,9 @@ final class ShareSettings {
     static let installKey = "share.installID"
     static let throughKey = "share.through"
     static let deleteKey = "share.deletePending"
+    static let uploadedKey = "share.uploadedKeys"
+    /// The newest keys kept: enough for months of history, small in UserDefaults.
+    static let uploadedLimit = 2_000
 
     private(set) var isSharing: Bool
     /// The onboarding question has been answered.
@@ -37,6 +40,21 @@ final class ShareSettings {
         set { defaults.set(newValue, forKey: Self.throughKey) }
     }
 
+    /// D82: what has been uploaded, by entry id and by content, so nothing is sent twice (Aron's history had the same
+    /// question twice on 7 Nov 16:18). Cleared only when the server has confirmed an opt-out deletion.
+    private(set) var uploadedKeys: [String] {
+        get { defaults.stringArray(forKey: Self.uploadedKey) ?? [] }
+        set { defaults.set(Array(newValue.suffix(Self.uploadedLimit)), forKey: Self.uploadedKey) }
+    }
+
+    func markUploaded(_ keys: [String]) {
+        uploadedKeys += keys
+    }
+
+    func forgetUploads() {
+        uploadedKeys = []
+    }
+
     /// The user opted out and the server has not confirmed the deletion yet.
     var deleteIsPending: Bool {
         get { defaults.bool(forKey: Self.deleteKey) }
@@ -49,7 +67,8 @@ final class ShareSettings {
         defaults.set(sharing, forKey: Self.sharingKey)
         defaults.set(true, forKey: Self.askedKey)
         if sharing {
-            sharedThrough = nil
+            // D82: turning it on again does not upload everything again. Only a confirmed deletion empties the
+            // record of what is on the server (and an unconfirmed one is simply called off: the rows are still there).
             deleteIsPending = false
         } else {
             deleteIsPending = true
@@ -79,6 +98,10 @@ final class FeedbackClient {
         var fragment: String
         var answer: String
         var summary: String?
+        var mode: String?
+        var persona: String?
+        /// The history entry's id, so the server can refuse a second copy (D82).
+        var client_id: String
     }
 
     private struct SharedBatch: Encodable {
@@ -121,24 +144,44 @@ final class FeedbackClient {
             if settings.deleteIsPending {
                 try await post(config.sharedHistoryURL, method: "DELETE", body: Opt(install_id: settings.installID))
                 settings.deleteIsPending = false
+                settings.forgetUploads()
             }
             guard settings.isSharing else { return }
-            let through = settings.sharedThrough ?? .distantPast
-            let fresh = entries.filter { $0.createdAt > through }.sorted { $0.createdAt < $1.createdAt }
-            for start in stride(from: 0, to: fresh.count, by: Self.batchLimit) {
-                let batch = fresh[start..<min(fresh.count, start + Self.batchLimit)]
-                let items = batch.compactMap { entry -> SharedItem? in
-                    guard let question = entry.question, !entry.answer.isEmpty else { return nil }
-                    return SharedItem(fragment: question, answer: entry.answer, summary: entry.summary)
+            let pending = Self.pendingUploads(entries, uploaded: Set(settings.uploadedKeys))
+            for start in stride(from: 0, to: pending.count, by: Self.batchLimit) {
+                let batch = pending[start..<min(pending.count, start + Self.batchLimit)]
+                let items = batch.map { entry in
+                    SharedItem(fragment: entry.question ?? "", answer: entry.answer, summary: entry.summary,
+                               mode: entry.mode, persona: entry.persona, client_id: entry.id.uuidString)
                 }
-                if !items.isEmpty {
-                    try await post(config.sharedHistoryURL, method: "POST", body: SharedBatch(install_id: settings.installID, items: items))
-                }
+                try await post(config.sharedHistoryURL, method: "POST", body: SharedBatch(install_id: settings.installID, items: items))
+                settings.markUploaded(batch.flatMap { Self.keys($0) })
                 settings.sharedThrough = batch.last?.createdAt
             }
         } catch {
             Log.answer.error("Shared history not synced: \(error.localizedDescription, privacy: .public)")
         }
+    }
+
+    /// Entries to upload: the user's own question with an answer, never sent before, and not the same question and
+    /// answer as another one in the same upload or earlier (D82). Oldest first. Pure; unit-tested.
+    static func pendingUploads(_ entries: [HistoryEntry], uploaded: Set<String>) -> [HistoryEntry] {
+        var seen = uploaded
+        var out: [HistoryEntry] = []
+        for entry in entries.sorted(by: { $0.createdAt < $1.createdAt }) {
+            guard let question = entry.question, !question.isEmpty, !entry.answer.isEmpty else { continue }
+            let keys = keys(entry)
+            if keys.contains(where: seen.contains) { continue }
+            seen.formUnion(keys)
+            out.append(entry)
+        }
+        return out
+    }
+
+    static func keys(_ entry: HistoryEntry) -> [String] {
+        let content = ((entry.question ?? "") + "\u{1F}" + entry.answer).lowercased()
+            .split(whereSeparator: { !$0.isLetter && !$0.isNumber && $0 != "\u{1F}" }).joined(separator: " ")
+        return ["id:" + entry.id.uuidString, "text:" + content]
     }
 
     private func post(_ url: URL, method: String, body: some Encodable) async throws(AnswerError) {

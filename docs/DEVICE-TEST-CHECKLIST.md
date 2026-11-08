@@ -329,6 +329,14 @@ Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt l
 3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
 4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
 
+### 3z5. Eko och live-turer (D82, 15 min)
+1. **Högtalare:** koppla från AirPods så att ljudet går i iPhonens högtalare. Ställ fem frågor i läget Frågor. Lumen får **aldrig** svara på sitt eget förra svar. Diagnostik-loggen ska visa "Echo cancellation on for Speaker", och "Echo filtered: … %" om ekot ändå kom igenom.
+2. Sätt i AirPods mitt i sessionen: loggen ska visa "Echo cancellation off", och lyssnandet ska fortsätta. Mikrofonen ska låta som förut.
+3. Efter varje svar ska de första 0,7 s vara stängda för igenkänningen. Skriv ner om du märker att början på dina egna ord försvinner.
+4. **Socialt läge och Rizzläge i en bullrig miljö** (musik eller sorl i bakgrunden): kompisen säger en mening och slutar. Förslaget ska komma ungefär 0,8 s efter att kompisen slutat, inte först när det är helt tyst. Loggen visar per tur: "turn · other · … dBFS vs threshold … → uncertain, treated as other · speech by Silero", och "Live turn timing · requested … · ready … · spoken … ms".
+5. Var tyst i 2 s utan att någon pratar: ett förslag för att hålla igång samtalet ska komma (var 4 s förut).
+6. Slå på delning av historik (Inställningar → Feedback & förslag) och sedan på igen: ingenting får laddas upp två gånger.
+
 ### 3z4. Svarstid, minne och feedback med rösten (D80, 25 min)
 **Latens per läge.** Diagnostik-loggen skriver för varje tur: *Turn timing · heard→call · call→first token · call→done · heard→pause over · pause over→first sound*, samt hur många anrop som kastades per minut. Målet är **under 0,3 s från att pausen gått till första ljud** när svaret redan är klart.
 1. Frågor: ställ fem korta frågor med normal paus. Skriv ner *pause over→first sound* för var och en. Gör samma sak i Provläge, Intervjuläge (kompisen frågar) och Socialt läge.

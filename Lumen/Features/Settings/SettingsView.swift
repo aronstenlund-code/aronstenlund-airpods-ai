@@ -112,7 +112,19 @@ struct SettingsView: View {
             Text("AirPods hear your own voice best, but answers play in call quality. iPhone hears other people better and keeps music quality in the AirPods; put it on the table.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
+            Toggle("Ekoreducering i iPhonens högtalare", isOn: echoBinding)
+            Text("När ljudet går ut i iPhonens egen högtalare hör mikrofonen annars Lumen. Med AirPods eller hörlurar används den aldrig, så mikrofonen behåller sin kvalitet.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
+    }
+
+    private var echoBinding: Binding<Bool> {
+        Binding(get: { model.microphone.echoCancellation },
+                set: { newValue in
+                    model.microphone.echoCancellation = newValue
+                    Task { await model.echoCancellationChanged() }
+                })
     }
 
     private func modeTitle(_ mode: ConversationMode) -> LocalizedStringKey {
@@ -187,7 +199,6 @@ struct SettingsView: View {
                     Text("Auto-end after \(study.autoEndMinutes) min of silence")
                 }
             }
-            Toggle("Echo cancellation (voiceChat) in Provläge", isOn: $study.useVoiceChatMode)
             Text("Hands-free: speak, pause, get a tutor-style answer, continue. Talking while it speaks interrupts it. Tuned on device.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)

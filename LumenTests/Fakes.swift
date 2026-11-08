@@ -16,6 +16,8 @@ final class FakeSessionManager: AudioSessionManaging {
     var activateCalls: [CaptureConfig] = []
     var reactivateCalls = 0
     var deactivateCalls = 0
+    /// The output the next activation reports, e.g. "Speaker" for the iPhone's loudspeaker (D82).
+    var outputPortType = "BluetoothHFP"
 
     func requestMicrophonePermission() async -> Bool {
         permissionRequests += 1
@@ -26,7 +28,8 @@ final class FakeSessionManager: AudioSessionManaging {
         if let activationError { throw activationError }
         activateCalls.append(config)
         activeConfig = config
-        let snapshot = Self.makeSnapshot(config: config)
+        var snapshot = Self.makeSnapshot(config: config)
+        snapshot.outputs = [PortInfo(portType: outputPortType, portName: outputPortType, uid: "o", channelCount: 1, dataSource: nil)]
         self.snapshot = snapshot
         return snapshot
     }
@@ -74,6 +77,7 @@ final class FakeCaptureService: CaptureServicing {
     var startError: AudioError?
     var startCalls = 0
     var stopCalls = 0
+    var voiceProcessing = false
 
     func start() throws(AudioError) {
         if let startError { throw startError }

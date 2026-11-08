@@ -102,11 +102,13 @@ struct StudyMachine: Equatable, Sendable {
 
     // MARK: Level readings (one per capture chunk, also silence)
 
-    mutating func level(_ rmsDBFS: Double, at now: Date) -> StudyEvent? {
+    /// `speech`: a voice activity detector's verdict (Silero, D82.2). When given it decides what is speech, so
+    /// background noise above the level threshold no longer keeps a turn open; the level is still recorded.
+    mutating func level(_ rmsDBFS: Double, at now: Date, speech: Bool? = nil) -> StudyEvent? {
         guard phase != .off else { return nil }
         updateFloor(rmsDBFS, at: now)
         let threshold = max(tuning.minimumSpeechDBFS, (noiseFloorDBFS ?? -60) + tuning.speechThresholdDB)
-        let loud = rmsDBFS > threshold
+        let loud = speech ?? (rmsDBFS > threshold)
         if loud { lastLoudAt = now }
 
         switch phase {
