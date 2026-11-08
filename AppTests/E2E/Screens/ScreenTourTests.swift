@@ -61,6 +61,10 @@ final class ScreenTourTests: XCTestCase {
             // A2: the short consent card in the intro has "Läs mer" with the full text.
             if waitFor(["Läs mer"], timeout: 2) != nil {
                 tap(["Läs mer"], step: "intro → Läs mer")
+                if waitFor(["Klar"], timeout: 3) == nil {
+                    log.append("note: Läs mer did not open within 3 s, tapping again")
+                    tap(["Läs mer"], step: "intro → Läs mer (again)")
+                }
                 pause(1)
                 shoot("las-mer", note: "Läs mer (full consent)")
                 app.swipeUp()
@@ -330,7 +334,8 @@ final class ScreenTourTests: XCTestCase {
 
     @discardableResult
     private func tap(_ labels: [String], step: String) -> Bool {
-        guard let element = waitFor(labels, timeout: 5) else {
+        // Below the fold (largest text) the element may not exist until it is scrolled to.
+        guard let element = waitFor(labels, timeout: 5) ?? scrollTo(labels) else {
             miss("\(step): '\(labels[0])' not found")
             shoot("saknas-\(labels[0])", note: "Missing: \(labels[0])")
             return false
@@ -347,7 +352,8 @@ final class ScreenTourTests: XCTestCase {
     /// Swipes up (then back down) until an element with one of the labels is hittable.
     private func scrollTo(_ labels: [String], buttonsOnly: Bool = false) -> XCUIElement? {
         for direction in [true, false] {
-            for _ in 0..<10 {
+            // 25 swipes: Settings at the largest text size is about 30 screens long.
+            for _ in 0..<25 {
                 if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
                 if direction { app.swipeUp() } else { app.swipeDown() }
             }

@@ -35,7 +35,7 @@ def rename(folder: Path) -> None:
             exported.rename(folder / target)
     # Keep the artifact small: screenshots and text only (screen recordings and UI snapshots stay in the xcresult).
     for item in folder.iterdir():
-        if item.is_file() and item.suffix not in (".png", ".txt", ".json"):
+        if item.is_file() and item.suffix not in (".png", ".txt", ".json", ".ips"):
             item.unlink()
         elif item.is_dir():
             import shutil
