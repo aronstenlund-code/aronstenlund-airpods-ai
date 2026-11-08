@@ -177,13 +177,19 @@ final class ScreenTourTests: XCTestCase {
             miss("settings row \(labels[0]) not found")
             return
         }
+        // The back button, never the sheet's "Klar" (that would close Settings).
+        let back = app.navigationBars.buttons.matching(NSPredicate(format: "label != 'Klar'")).firstMatch
         row.tap()
         pause(1.5)
+        if !back.exists, let again = scrollTo(labels, buttonsOnly: true) {
+            // The last rows sit at the sheet's bottom edge, where a tap can miss: scroll once more and tap again.
+            app.swipeUp()
+            (find(labels, buttonsOnly: true) ?? again).tap()
+            pause(1.5)
+        }
         shoot("installningar-\(name)", note: "Settings › \(labels[0])")
         app.swipeUp()
         shoot("installningar-\(name)-slut", note: "Settings › \(labels[0]), scrolled")
-        // The back button, never the sheet's "Klar" (that would close Settings).
-        let back = app.navigationBars.buttons.matching(NSPredicate(format: "label != 'Klar'")).firstMatch
         if back.waitForExistence(timeout: 3) {
             back.tap()
             pause(1)

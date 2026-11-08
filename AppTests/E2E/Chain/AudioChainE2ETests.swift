@@ -12,12 +12,17 @@ import Testing
 /// Live and paid (Scribe + `/answer`): runs only when `scripts/apptest/chain.sh` sets `LUMEN_E2E_DIR` (manual and
 /// nightly, never on push). Answers are not spoken (no TTS cost; the recogniser gate while Lumen speaks is not tested).
 /// Simulator only: never a verification on a device.
-@MainActor
-@Suite(.serialized, .enabled(if: AudioChainE2ETests.audioDir != nil, "set LUMEN_E2E_DIR (scripts/apptest/chain.sh)"))
-struct AudioChainE2ETests {
-    nonisolated static var audioDir: URL? {
+/// Outside the suite: a trait that names its own type is a circular reference for the macro.
+enum ChainEnvironment {
+    static var audioDir: URL? {
         ProcessInfo.processInfo.environment["LUMEN_E2E_DIR"].map { URL(fileURLWithPath: $0) }
     }
+}
+
+@MainActor
+@Suite(.serialized, .enabled(if: ChainEnvironment.audioDir != nil, "set LUMEN_E2E_DIR (scripts/apptest/chain.sh)"))
+struct AudioChainE2ETests {
+    static var audioDir: URL? { ChainEnvironment.audioDir }
 
     struct Case: Codable {
         let set: String
