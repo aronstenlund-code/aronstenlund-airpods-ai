@@ -11,7 +11,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   6. Socialt/Rizz: ett förslag som klipps av etikettfiltret kastas, visas aldrig avhugget.
   7. Provpass: tabelluppgifter tolkas rätt; sammanfattningen påstår bara det som finns i rättningen; 429-text på svenska.
 
-- [ ] **K2 – D87 till målet** (effort: high). Baslinjen är 72,6 % "första svaret räcker" med Haiku (`reports/eval/provlage-2026-11-08-haiku-baseline.json`); målet är ≥ 90 %. Läs Oscars granskning `reports/qa/2026-11-08-1610-oscar-d87-review.md` (bedömaren är för sträng på längd; 85 % enligt Oscar i hans urval). Jämför Haiku 5.5 och Sonnet 5.5 (kvalitet, tid till första ljud, kostnad med caching), driftsätt det bästa, och förbättra svarsstrukturen tills målet nås eller förklara exakt vad som stoppar. Skriv siffrorna i rapporten.
+- [ ] **K2 – D87 till målet** (effort: high). _pågår 2026-11-08 21:05 (Kevin)_ Baslinjen är 72,6 % "första svaret räcker" med Haiku (`reports/eval/provlage-2026-11-08-haiku-baseline.json`); målet är ≥ 90 %. Läs Oscars granskning `reports/qa/2026-11-08-1610-oscar-d87-review.md` (bedömaren är för sträng på längd; 85 % enligt Oscar i hans urval). Jämför Haiku 5.5 och Sonnet 5.5 (kvalitet, tid till första ljud, kostnad med caching), driftsätt det bästa, och förbättra svarsstrukturen tills målet nås eller förklara exakt vad som stoppar. Skriv siffrorna i rapporten.
 
 - [ ] **K3 – D88 ljuduppfattning utan telefon** (effort: high).
   1. Välj 60 fall ur D87-testbanken (ämnesord, korta nyckelord, halva meningar, följdfrågor). Läs igenom manusen innan något genereras (spara ElevenLabs-krediter); kör först en pilot med 15 fall.
