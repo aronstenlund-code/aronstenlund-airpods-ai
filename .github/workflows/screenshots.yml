@@ -70,11 +70,18 @@ jobs:
             for screen in intro first home empty addExam listening switch errors settings interview live; do
               # Swedish, as on Aron's phone (the strings' Swedish translations).
               xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" -AppleLanguages "(sv)" -AppleLocale sv_SE
-              sleep 5
+              sleep 9
+              if ! xcrun simctl spawn "$UDID" launchctl list | grep -q com.rsolutions.lumen; then
+                echo "::warning::$appearance $screen: the app is not running (crash?)"
+              fi
               xcrun simctl io "$UDID" screenshot "shots/${appearance}-${screen}.png"
             done
           done
           ls -la shots
+          # Crash reports, if any, go with the pictures.
+          mkdir -p shots/crashes
+          find ~/Library/Logs/DiagnosticReports -iname "*Lumen*" -newer DerivedData -exec cp {} shots/crashes/ \; 2>/dev/null || true
+          ls -la shots/crashes
 
       - uses: actions/upload-artifact@v5
         with:
