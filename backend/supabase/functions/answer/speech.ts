@@ -1,3 +1,4 @@
+import { stripYesNoLead } from "./interviewfacts.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import { afterNumbers, beforeNumbers } from "./speechsym.ts";
 
@@ -944,6 +945,8 @@ export interface PostOptions {
   interview?: boolean;
   /** D87: a Provläge profile names the subject, so a guessed reading is kept within it. */
   subjectKnown?: boolean;
+  /** K1.5: the interviewer asks about a fact the CV does not give. */
+  missingFact?: boolean;
   /** D86: "förhör mig": only the check question itself is said (the last sentence that ends with "?"). */
   quizOnly?: boolean;
   /** D84: split off a `källa:` line without the English filter (texts and quotes). */
@@ -979,7 +982,16 @@ export class AnswerPost {
     this.rel = new RelationTap(opts.relationTag === true);
     this.sil = new SilenceTap(opts.silence === true);
     this.meta = new MetaGate(opts.silence === true);
-    this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, stripInterviewMeta);
+    let firstInterview = true;
+    this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, (sentence) => {
+      // K1.5: about a fact the CV does not give, the answer never opens with yes or no
+      if (opts.missingFact && firstInterview && sentence.trim()) {
+        firstInterview = false;
+        const r = stripYesNoLead(sentence);
+        if (r !== sentence) return r ? stripInterviewMeta(r) : "";
+      }
+      return stripInterviewMeta(sentence);
+    });
     this.input = new MetaGate(opts.inputMeta === true, (x) => isInputMeta(x) || (opts.tutor === true && isReasoningMeta(x, opts.heard ?? "")));
     let firstDone = false;
     let unsure = false;

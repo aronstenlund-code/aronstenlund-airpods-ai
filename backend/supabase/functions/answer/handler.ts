@@ -15,6 +15,7 @@ import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath } from "./mathcheck.ts";
+import { missingFact, missingFactNote } from "./interviewfacts.ts";
 import { nowContext } from "./datecalc.ts";
 import { categorize } from "./category.ts";
 import {
@@ -705,11 +706,16 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const echoNote = echo.echoed
         ? "The start of <fragment> repeated your own last answer (picked up again by the microphone) and was removed. Answer only if what is left is by itself a complete new question or request; a cut-off half sentence, a remark or noise gets the silence reply."
         : undefined;
+      // K1.5: the interviewer asks about a fact the CV does not give (körkort, ålder, alkohol, pendling)
+      const missing = plan?.kind === "interview" && plan.task === "interview_question"
+        ? missingFact(body.fragment, body.personaSetup, body.memories)
+        : null;
       const userFor = (b: AnswerRequest, extras: PromptExtras = {}) =>
         plan
           ? buildPersonaUserMessage(b, plan.task) +
             (extras.note ? `
-<note>${extras.note}</note>` : "")
+<note>${extras.note}</note>` : "") + (missing ? `
+<note>${missingFactNote(missing)}</note>` : "")
           : direct
           ? buildDirectUserMessage(b, continuation, {
             ...extras,
@@ -811,6 +817,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             quizOnly: quiz, // D86: only the check question is said
             subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
             interview: plan?.kind === "interview", // D77
+            missingFact: !!missing,
           });
           let pendingMeta: Record<string, unknown> | null = null;
           const flushMeta = () => {
@@ -973,6 +980,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 quizOnly: quiz,
                 subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
                 interview: plan?.kind === "interview",
+                missingFact: !!missing,
               });
               r = await it.next();
             }

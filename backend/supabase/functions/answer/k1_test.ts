@@ -109,3 +109,25 @@ Deno.test("K1.4 already_asked and last_answer_age_sec are validated", async () =
   }
   assert(threw);
 });
+
+Deno.test("K1.5 interview: no yes or no about facts the CV does not give", async () => {
+  const { missingFact, stripYesNoLead } = await import("./interviewfacts.ts");
+  const setup = "Jobbannons: Systembolaget Malmö, kassa och kundservice, minst 20 år. CV: Kafé Solen 2023–2024 (kassa, servering av kaffe), lager 2022, svenska och engelska, gymnasiet.";
+  assertEquals(missingFact("har du körkort", setup), "körkort");
+  assertEquals(missingFact("hur gammal är du", setup), "ålder");
+  assertEquals(missingFact("har du jobbat med alkohol", setup), "alkohol");
+  assertEquals(missingFact("hur tar du dig till jobbet", setup), "pendling");
+  assertEquals(missingFact("berätta om dig själv", setup), null);
+  assertEquals(missingFact("har du körkort", "CV: B-körkort sedan 2021."), null);
+  assertEquals(missingFact("hur gammal är du", setup, ["Är 19 år."]), null);
+  assertEquals(stripYesNoLead("Det har jag inte, men jag tar mig hit med cykel. "), "");
+  assertEquals(stripYesNoLead("Ja, jag har alltid följt reglerna. "), "");
+  assertEquals(stripYesNoLead("Jag är tjugo år. "), "");
+  assertEquals(stripYesNoLead("Ja, och det jag tar med mig är att jag är pålitlig. ").trim(), "Det jag tar med mig är att jag är pålitlig.");
+  assertEquals(stripYesNoLead("Jag är alltid i tid och pålitlig. "), "Jag är alltid i tid och pålitlig. ");
+  const { out } = run(
+    { previousAnswers: [], trimQuestion: false, interview: true, missingFact: true },
+    ["Det har jag inte än. ", "Jag är alltid i tid, och på Kafé Solen öppnade jag ofta själv klockan sju."],
+  );
+  assertEquals(out.trim(), "Jag är alltid i tid, och på Kafé Solen öppnade jag ofta själv klockan sju.");
+});
