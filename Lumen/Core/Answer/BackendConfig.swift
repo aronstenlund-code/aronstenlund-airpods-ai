@@ -15,6 +15,9 @@ struct BackendConfig: Sendable, Equatable {
     var memoryURL: URL { projectURL.appending(path: "functions/v1/memory") }
     /// D81 (Kevin): study cards and a five-question test from a Provläge session.
     var studyCardsURL: URL { projectURL.appending(path: "functions/v1/study-cards") }
+    /// D84 (Kevin): a spoken profile → the D83 profile and the subject's terms; the exam session.
+    var studyProfileURL: URL { projectURL.appending(path: "functions/v1/study-profile") }
+    var examURL: URL { projectURL.appending(path: "functions/v1/exam") }
     var sharedHistoryURL: URL { projectURL.appending(path: "functions/v1/shared-history") }
     var signUpURL: URL { projectURL.appending(path: "auth/v1/signup") }
     var refreshURL: URL {

@@ -70,7 +70,9 @@ final class AppContainer {
                                        remote: RemoteCommandHub(),
                                        memoryExtractor: MemoryExtractor(config: .lumen, auth: auth, http: http),
                                        speakers: SpeakerIdentifier(), studyCards: StudyCardStore(),
-                                       studyCardsClient: StudyCardsClient(config: .lumen, auth: auth, http: http))
+                                       studyCardsClient: StudyCardsClient(config: .lumen, auth: auth, http: http),
+                                       studyProfileClient: StudyProfileClient(config: .lumen, auth: auth, http: http),
+                                       examMaterials: ExamMaterials(), examClient: ExamClient(config: .lumen, auth: auth, http: http))
         ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
         ListeningRemote.nextSuggestion = { [weak listening] in listening?.nextSuggestion() }
         ListeningRemote.start = { [weak listening] in await listening?.startFromShortcut() }

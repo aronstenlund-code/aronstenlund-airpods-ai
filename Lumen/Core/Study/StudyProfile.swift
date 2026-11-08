@@ -20,6 +20,8 @@ struct StudyProfile: Codable, Equatable, Sendable {
     var explanations: Explanations?
     /// The first-start questions were answered or skipped.
     var onboarded = false
+    /// D84: 30–50 central terms for the grade and subject (Kevin's `/study-profile`), for Scribe and `prep_terms`.
+    var terms: [String]?
 
     static let subjects = ["Matematik", "Svenska", "Engelska", "Biologi", "Fysik", "Kemi", "Historia", "Samhällskunskap",
                            "Geografi", "Religion", "Spanska", "Tyska", "Franska", "Teknik", "Programmering"]

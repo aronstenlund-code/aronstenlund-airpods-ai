@@ -329,6 +329,16 @@ Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt l
 3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
 4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
 
+### 3z8. Röstbesked, provsession, uppläsning (D84, 25 min)
+1. I vilket läge som helst: säg "Lumen, jag går i åk 9 och ska snart ha prov i biologi". Du ska genast höra "Biologi åk 9, sparat." Inställningar → *Provläge: om dig* ska visa åk 9 och Biologi, och Minne provprofilen.
+2. Ställ en kort fråga med ett ämnesord som lätt hörs fel ("vad är fotosyntes"): ordet ska bli rätt (termerna från servern går till taligenkänningen).
+3. Provläge-kortet → **Provsession · ladda upp ett prov**. Välj ett gammalt nationellt prov och dess bedömningsanvisning (PDF eller foton) på en gång. Det ska stå "Läser sida …" och sedan "N uppgifter, betygsgränser hittade."
+4. **Starta provsession**. Säg "Lumen, uppgift ett": Lumen läser uppgiften med poäng. "Lumen, ledtråd" tre gånger: ledtrådarna blir tydligare men aldrig svaret. "Lumen, rätta, jag fick …": poäng och kort återkoppling.
+5. Säg en vanlig fråga utan "Lumen": Lumen ska inte svara under provsessionen. Låt någon annan säga "Lumen, nästa" (med röstprofil): ska inte räknas.
+6. "Lumen, starta provtid två minuter": "En minut kvar" och "Tiden är slut" ska komma en gång var.
+7. "Lumen, hur gick det?" och "Lumen, avsluta provet": en sammanfattning med betyg; Minne ska få "Provträning: öva på uppgifter som …" för uppgifter utan full poäng.
+8. "Lumen, sjung Helan går": texten ska läsas rad för rad med paus mellan raderna; "Källa: …" ska inte läsas upp.
+
 ### 3z7. Röstprofil, talare, CV, studiekort (D81, 20 min)
 1. Inställningar → *Din röst* → **Lär dig min röst (10 s)** i ett tyst rum. Läs texten högt. Det ska stå "Sparad (… s tal)". Första gången laddas röstmodellen ner (ca 30 MB, kräver internet).
 2. Frågor/Auto: ställ själv en fråga högt (utan "Lumen"). Lumen ska **inte** svara. Låt en kompis ställa samma fråga: Lumen ska svara.

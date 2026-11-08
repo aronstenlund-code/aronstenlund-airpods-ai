@@ -157,6 +157,14 @@ func freshTestDefaults() -> UserDefaults {
 
     private func spoken(_ rig: Rig) -> [String] { rig.apple.calls.map(\.text) }
 
+    /// Lumen has finished speaking and the recogniser is open again (D82: 0.7 s after the voice), so a turn now is
+    /// the wearer's and is not cut off by speech that is still to start.
+    private func waitForTheWearersTurn(_ rig: Rig) async -> Bool {
+        guard await waitUntil({ !rig.model.speaker.isSpeaking && !rig.model.speaker.hasPendingSpeech }) else { return false }
+        try? await Task.sleep(for: .milliseconds(900))
+        return await waitUntil { rig.model.study.phase == .listening && !rig.model.speaker.isSpeaking }
+    }
+
     /// One hands-free turn at `level`, ended a moment ago.
     private func speak(_ text: String, level: Double, rig: Rig) {
         var time = Date().addingTimeInterval(-3)
@@ -227,6 +235,17 @@ func freshTestDefaults() -> UserDefaults {
         #expect(spoken(rig).isEmpty, "the wearer's own answer is never answered")
     }
 
+    @Test func theWearerSaysWhatTheyStudy() async {
+        let rig = makeRig(profile: nil)
+        await rig.model.startListening()
+
+        rig.model.receiveFinalTranscript("Lumen, jag går i åk 9 och ska snart ha prov i biologi", at: Date())
+
+        #expect(await waitUntil { spoken(rig).contains("Biologi åk 9, sparat.") }, "D84: confirmed at once, by the phone")
+        #expect(rig.model.studyProfile.profile.grade == .y9)
+        #expect(rig.provider.requests.isEmpty, "a statement is never a question")
+    }
+
     @Test func provlageAnswersBecomeStudyCards() async {
         let rig = makeRig(profile: nil, events: [.delta("Fotosyntes är när växter gör socker av ljus. "), .done(AnswerDone(answered: true))])
         await rig.model.startStudy()
@@ -247,16 +266,17 @@ func freshTestDefaults() -> UserDefaults {
 
         #expect(rig.model.study.isActive)
         #expect(await waitUntil { spoken(rig).first?.hasPrefix("Fråga 1 av 2") == true })
-        #expect(await waitUntil { rig.model.study.phase == .listening })
+        #expect(await waitForTheWearersTurn(rig), "the question was read and the microphone is open again")
         speak("växter gör socker av solljus", level: -25, rig: rig)
 
         #expect(await waitUntil { rig.provider.requests.count == 1 })
+        guard rig.provider.requests.count == 1 else { return }
         #expect(rig.provider.requests[0].fragment.contains("Minitest"))
         #expect(rig.provider.requests[0].fragment.contains("växter gör socker av solljus"))
         #expect(await waitUntil { spoken(rig).contains { $0.hasPrefix("Fråga 2 av 2") } })
         #expect(rig.cards.cards.reduce(0) { $0 + $1.right } == 1)
 
-        #expect(await waitUntil { rig.model.study.phase == .listening })
+        #expect(await waitForTheWearersTurn(rig))
         speak("vet inte", level: -25, rig: rig)
 
         #expect(await waitUntil { spoken(rig).contains("Klart. 1 av 2 rätt.") })

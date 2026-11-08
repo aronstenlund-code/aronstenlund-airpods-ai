@@ -30,7 +30,7 @@ struct AnswerContext: Equatable, Sendable {
     static let transcriptLimit = 6000
     static let qaLimit = 6
     static let qaFieldLimit = 400
-    static let prepTermLimit = 30
+    static let prepTermLimit = 50 // Kevin D84: up to 50 (30 before)
     static let prepTermLength = 60
     static let goalsLimit = 1_500
     static let commandLimit = 10
@@ -175,6 +175,8 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var report: Bool?
     /// After `social.calibrate`: the merged calibration to store for this mode, "" after a reset. Null otherwise (D69).
     var calibration: String?
+    /// The model said [[TYST]] after text it had already streamed: drop the answer, say nothing more (Kevin, D82).
+    var retract: Bool?
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.

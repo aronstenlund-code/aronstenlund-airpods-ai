@@ -64,6 +64,11 @@ struct ListeningView: View {
                 LiveStartView(model: model, settings: model.modeSettings, mode: model.selectedMode)
             }
         }
+        .sheet(isPresented: $model.isShowingExamSetup) {
+            if let materials = model.examMaterials, let client = model.examClient {
+                NavigationStack { ExamSetupView(model: model, materials: materials, client: client) }
+            }
+        }
         .sheet(isPresented: $model.isShowingStudyOnboarding) {
             StudyOnboardingView(initial: model.studyProfile.profile) { answers in
                 Task { await model.finishStudyOnboarding(answers) }
@@ -568,6 +573,14 @@ struct ListeningView: View {
                     .padding(.vertical, 6)
                 }
                 .accessibilityLabel("Få A-svar till provet. Startar Provläge.")
+                if model.examMaterials != nil {
+                    // D84: upload an exam and its marking instructions, then practise it by voice.
+                    Button {
+                        model.isShowingExamSetup = true
+                    } label: {
+                        Label("Provsession · ladda upp ett prov", systemImage: "doc.text.viewfinder")
+                    }
+                }
                 if let cards = model.studyCards, !cards.current().isEmpty {
                     // D81: five questions by voice from the study cards, linked to the exam.
                     Button {
