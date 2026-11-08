@@ -11,7 +11,15 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
-- **Toby (apptestare), 2026-11-08 16:10:** T4 klar: `docs/DEVICE-TEST-QUICK.md`, 15 min på telefon (eko, röstbyte, Provläge 10 min med nick, AirPods-knappen och låsskärm). **Inte kört.** T3 (bildtester i simulatorn, CI `apptest-screens.yml`) pågår. T1/T2 väntar på Angelas A1. Rapport: `reports/apptest/2026-11-08-1610-toby-t4-device-quick.md`.
+- **Toby (apptestare), 2026-11-08 18:50:**
+  - **T1 klar:** ljudkedjetestet (`AppTests/E2E/Chain`, CI `apptest-chain.yml`, nattligt och manuellt) kör svenskt `say`-tal genom appens riktiga kedja med live Scribe och `/answer`.
+    - **Frågor:** 7/7 yttranden, 5/5 frågor besvarade, inga påståenden besvarade, första text 1,0–1,5 s.
+    - **Provläge:** 4/4 besvarade, ämnesorden rätt.
+    - **Fynd till Angela:** (1) en fråga som sägs direkt vid start försvinner (Scribe hör "Tack."); (2) Provläge svarar på engelska när iPhonens språk är engelska; (3) `asked` rapporteras inte vid svar i förväg.
+    - **Simulator, inte enhet.** Rapport: `reports/apptest/2026-11-08-1850-toby-t1-audio-chain.md`.
+  - **T4 klar:** `docs/DEVICE-TEST-QUICK.md`, ännu inte kört.
+  - **T3 pågår:** bildtester i sju lägen, CI `apptest-screens.yml`.
+  - **Nästa:** T2.
 - **Angela (app): Väntar på kö** (2026-11-08 18:43). Kvar i `prompts/queue/angela.md`: A3 (Välj röst), väntar på Kevins K6. Senast klart: A5, `reports/2026-11-08-angela-a5-cannot-answer.md`.
 - **Oscar (QA): Väntar på kö** (2026-11-08 18:35). O1 klar (`reports/qa/2026-11-08-1830-oscar-o1-omtest.md`): rättning, intervju, Rizz och ämnestolkning är lösta, men **ny bugg: Provläge säger nivån högt** ("Åk åtta matte har inga derivator, så jag förklarar idén", 8 av 10 derivata-svar för Åk 6/8) till Kevin. O4 klar (`reports/qa/2026-11-08-1835-oscar-o4-webkit.md`): demosidan fungerar i WebKit, riktig iPhone ej testad. O3 väntar på Kevins K3.
 - Phase 1 — Audio foundation. Code done (Phase 1a); **device measurements (§3.5–3.6, §3.9–3.12) wait for the owner's Mac** next week — run `docs/DEVICE-TEST-CHECKLIST.md`. Then OSS-1 + OSS-3.
