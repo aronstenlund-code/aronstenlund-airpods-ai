@@ -45,7 +45,7 @@ jobs:
         run: deno task test
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 3.0.0 # pinned 2026-11-08: "latest" needs the GitHub API, which failed several times today
       - name: Deploy functions
         working-directory: backend
         env:
