@@ -588,7 +588,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const carry = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 }; // tokens of discarded attempts
       // D75: Provläge and Auto say nothing to a fragment that is not a question (or is too broken):
       // the meta event is held until the first spoken text so the app can still be told to stay silent.
-      const silenceOn = !demo && !plan && (body.mode === "tutor" || body.mode === "auto");
+      // D86: "förhör mig" is an explicit request: never silence
+      const silenceOn = !demo && !plan && (body.mode === "tutor" || body.mode === "auto") &&
+        !(body.mode === "tutor" && isQuizRequest(body.fragment));
       // D86: "förhör mig" asks for exactly one check question (also when the profile has "inga kontrollfrågor")
       const quiz = tutor && !plan && isQuizRequest(body.fragment);
       const lastQ = body.context.recent_qa.at(-1);
