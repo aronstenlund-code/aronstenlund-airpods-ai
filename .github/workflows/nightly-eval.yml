@@ -18,7 +18,7 @@ concurrency:
 jobs:
   eval:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -28,6 +28,13 @@ jobs:
         run: python3 -I scripts/test_live_eval.py
       - name: Run live eval
         run: python3 scripts/live-eval.py
+      # D87: the Provläge test bank (179 spoken cases), graded by Claude Sonnet 5.5 against the rubric; the main
+      # measure is the share where the first answer is enough (target >= 90 %). Model = what Provläge runs on.
+      - name: Provläge test bank
+        continue-on-error: true
+        run: python3 scripts/provlage-eval.py --model "${PROVLAGE_MODEL:-haiku}" --judge sonnet --workers 6
+        env:
+          PROVLAGE_MODEL: haiku
       - name: Commit report
         run: |
           git config user.name "lumen-eval"
