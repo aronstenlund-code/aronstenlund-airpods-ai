@@ -1961,5 +1961,125 @@
 }
 ],
 "profile": "Årskurs: Åk 9. Ämne: Religion. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-180",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "derivata",
+"expect": "idén: hur snabbt något ändras, lutningen på en graf, vardagsexempel som hastighet; grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-181",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "derivata",
+"expect": "idén: förändring och lutning på en graf, exempel; grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-182",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "vad är derivatan av x i kvadrat",
+"expect": "två x (säger x), enkel förklaring: lutningen ökar ju större x är; grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-183",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "ekvation",
+"expect": "en likhet med en obekant, gör samma sak på båda sidor, ett exempel på åk 8-nivå",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-184",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "lös 3x minus 7 är lika med 14",
+"expect": "x = 7: lägg till 7 på båda sidor ger 3x = 21, dela med 3",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-185",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "två x plus nio är lika med tre",
+"expect": "x = −3: dra bort 9 ger 2x = −6, dela med 2",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-186",
+"grade": "Gymnasiet 3, kurs Matematik 3c",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "derivatans definition",
+"expect": "gränsvärdet av (f(x+h) − f(x))/h när h går mot noll, lutningen på tangenten",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 3c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-187",
+"grade": "Gymnasiet 3, kurs Matematik 4",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "kedjeregeln",
+"expect": "derivatan av en sammansatt funktion: yttre derivatan gånger inre derivatan, exempel (3x+1)⁵ ger 15(3x+1)⁴",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 4. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-188",
+"grade": "Gymnasiet 3, kurs Matematik 4",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "derivatan av e upphöjt till två x",
+"expect": "2e^(2x), med kedjeregeln (inre derivatan 2)",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 4. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-189",
+"grade": "Gymnasiet 3, kurs Matematik 4",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "derivera tre x i kvadrat plus två x minus fem",
+"expect": "6x + 2 med potensregeln, konstanten försvinner",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 4. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-190",
+"grade": "Gymnasiet 3, kurs Matematik 4",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "produktregeln",
+"expect": "(f·g)′ = f′·g + f·g′, ett exempel",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 4. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-191",
+"grade": "Gymnasiet 3, kurs Matematik 4",
+"subject": "Matematik",
+"kind": "mathlevel",
+"q": "derivatan av sinus x",
+"expect": "cos x; och derivatan av cos x är −sin x",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 4. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
 }
 ]

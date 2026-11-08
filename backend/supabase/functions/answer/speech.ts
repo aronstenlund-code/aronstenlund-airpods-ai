@@ -1,3 +1,4 @@
+import { claimsMissing, stripYesNoLead } from "./interviewfacts.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import { afterNumbers, beforeNumbers } from "./speechsym.ts";
 
@@ -538,6 +539,48 @@ export function isInputMeta(sentence: string): boolean {
 }
 
 /**
+ * K1.2 (Oscar D84, 2026-11-08): Provläge spoke its reasoning about the heard word ("Syntes är nog fotosyntes, som är
+ * det mest närliggande biologiska begreppet i din lista.", "Syntes är inte ett kemiord, så jag tar det som att du
+ * menar …", "… ligger nära, så jag tar nära ämnesord: …"). Read by meaning, not by one phrase: a sentence is
+ * reasoning when it (a) points at the student's input or the app's material (the list, the profile, "ämnesord",
+ * "närliggande", "låter likt"), or (b) classifies a word as belonging or not belonging to a subject ("inte ett
+ * kemiord"), or (c) states an interpretation ("jag tar det som", "X är nog Y", "du menar") about the heard word.
+ * Such a sentence is never spoken; the rest of the answer is.
+ */
+const REASON_REF = new RegExp(
+  [
+    String.raw`\b(?:i |på |från )?(?:din|dina|er|era) (?:lista|listan|ordlista|ordlistan|termer|termlista|begrepp|ord|profil|ämnesord|provord)\b`,
+    String.raw`\bi (?:listan|ordlistan|termlistan|profilen|provlistan)\b`,
+    String.raw`(?<!\p{L})(?:nära |närliggande )?ämnesord(?:en)?\b`,
+    String.raw`\bdet (?:mest )?närliggande\b`,
+    String.raw`\blåter (?:likt|liknande|nästan som)\b`,
+    String.raw`\b(?:inte|inget|ett|är ett|är inget) (?:\p{L}+-)?(?:kemi|biologi|bio|fysik|matte|matematik|historie|historia|samhälls|geografi|religions|svensk|engelsk|ämnes|fack|skol)ord\b`,
+  ].join("|"),
+  "iu",
+);
+const REASON_ACT = new RegExp(
+  [
+    String.raw`\b(?:jag tar|tar jag|så jag tar) (?:det|ordet|nära|de)\b`,
+    String.raw`\bjag (?:tolkar|gissar|antar|väljer|utgår från|läser det)\b`,
+    String.raw`\b(?:tolkar|gissar|antar) jag\b`,
+    String.raw`\b(?:du|ni) (?:menar|mena|syftar)\b`,
+    String.raw`\b(?:menar|syftar) (?:du|ni)\b`,
+  ].join("|"),
+  "iu",
+);
+/** "Syntes är nog fotosyntes …": the heard word named, then an interpretation verb. */
+const REASON_GUESS = /^["'„”»«]?([\p{L}-]{2,40})["'„”»«]? (?:är|betyder) (?:nog|troligen|förmodligen|antagligen|sannolikt|kanske) /iu;
+export function isReasoningMeta(sentence: string, heard: string): boolean {
+  const t = sentence.trim();
+  if (!t) return false;
+  if (REASON_REF.test(t)) return true;
+  if (REASON_ACT.test(t)) return true;
+  const g = REASON_GUESS.exec(t);
+  if (g && heard && heard.toLowerCase().split(/\s+/).some((w) => similarity(w, g[1]) >= 0.6)) return true;
+  return false;
+}
+
+/**
  * Oscar 2026-11-08 (Provläge): the answer to a misheard term opened with its reading ("Fragmentet … låter som
  * gravitationskraften, så jag svarar på det.", "Det låter som kosinussatsen, en sats …", "Det här är fotosyntesen.",
  * "Det är demokrati, ett styrelseskick …"). Only the FIRST sentence is looked at, and only when the named term is
@@ -902,6 +945,8 @@ export interface PostOptions {
   interview?: boolean;
   /** D87: a Provläge profile names the subject, so a guessed reading is kept within it. */
   subjectKnown?: boolean;
+  /** K1.5: the interviewer asks about a fact the CV does not give. */
+  missingFact?: string;
   /** D86: "förhör mig": only the check question itself is said (the last sentence that ends with "?"). */
   quizOnly?: boolean;
   /** D84: split off a `källa:` line without the English filter (texts and quotes). */
@@ -937,8 +982,20 @@ export class AnswerPost {
     this.rel = new RelationTap(opts.relationTag === true);
     this.sil = new SilenceTap(opts.silence === true);
     this.meta = new MetaGate(opts.silence === true);
-    this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, stripInterviewMeta);
-    this.input = new MetaGate(opts.inputMeta === true, isInputMeta);
+    let firstInterview = true;
+    this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, (sentence) => {
+      // K1.5: about a fact the CV does not give, the answer never opens with yes or no
+      if (opts.missingFact && sentence.trim()) {
+        if (claimsMissing(opts.missingFact, sentence)) return ""; // "Jag bor i Malmö …" when the CV never says so
+        if (firstInterview) {
+          firstInterview = false;
+          const r = stripYesNoLead(sentence);
+          if (r !== sentence) return r ? stripInterviewMeta(r) : "";
+        }
+      }
+      return stripInterviewMeta(sentence);
+    });
+    this.input = new MetaGate(opts.inputMeta === true, (x) => isInputMeta(x) || (opts.tutor === true && isReasoningMeta(x, opts.heard ?? "")));
     let firstDone = false;
     let unsure = false;
     this.lead = new MetaGate(opts.inputMeta === true && !!opts.heard, () => false, (sentence) => {

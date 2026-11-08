@@ -9,15 +9,26 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
 <title>Fråga högt. Få svaret i örat.</title>
 <meta name="description" content="Fråga högt. Få svaret i örat. Telefonen stannar i fickan. Prova här, svaret läses upp.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:site_name" content="Lumen">
+<meta property="og:url" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
 <meta property="og:title" content="Fråga högt. Få svaret i örat.">
 <meta property="og:description" content="Telefonen stannar i fickan. Prova här, svaret läses upp.">
+<meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lumen. Fråga högt. Få svaret i örat.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#11151F">
 <meta name="color-scheme" content="light dark">
 <link rel="preload" href="fonts/familjen-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/kalam.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://xjczbzfkmbjdebwlccki.supabase.co" crossorigin>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Crect width='26' height='26' rx='6' fill='%23FFFFFF'/%3E%3Ccircle cx='13' cy='15' r='3.5' fill='%232346C8'/%3E%3Cpath d='M6.5 15a6.5 6.5 0 0 1 13 0M2.5 15a10.5 10.5 0 0 1 21 0' stroke='%232346C8' stroke-width='2.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   /* D86: samma typsnitt och färger som appen. Familjen Grotesk överallt, Kalam (handstil) bara för frågor. */
   @font-face {
@@ -33,6 +44,24 @@
     font-weight: 400;
     font-style: normal;
     font-display: swap;
+  }
+
+  /* Reservtypsnitt med samma bredd, så att texten inte hoppar när webbtypsnitten laddas. */
+  @font-face {
+    font-family: "FG reserv";
+    src: local("Arial"), local("Helvetica Neue"), local("Helvetica"), local("Roboto");
+    size-adjust: 93.9%;
+    ascent-override: 109.2%;
+    descent-override: 24%;
+    line-gap-override: 0%;
+  }
+  @font-face {
+    font-family: "Kalam reserv";
+    src: local("Arial"), local("Helvetica Neue"), local("Helvetica"), local("Roboto");
+    size-adjust: 96.3%;
+    ascent-override: 110.4%;
+    descent-override: 55.1%;
+    line-gap-override: 0%;
   }
 
   /* Rutat papper, blå kulspetspenna och lärarens röda penna. Ljust och mörkt följer systemet. */
@@ -83,7 +112,7 @@
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font: 400 1.0625rem/1.5 "Familjen Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font: 400 1.0625rem/1.5 "Familjen Grotesk", "FG reserv", system-ui, -apple-system, "Segoe UI", sans-serif;
     font-synthesis: none;
     -webkit-font-smoothing: antialiased;
     overflow-wrap: break-word;
@@ -105,7 +134,7 @@
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
     overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
   }
-  .hand { font-family: "Kalam", "Segoe Print", "Bradley Hand", cursive; font-weight: 400; }
+  .hand { font-family: "Kalam", "Kalam reserv", cursive; font-weight: 400; }
   .paper {
     background-color: var(--paper);
     background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
@@ -239,9 +268,20 @@
     0%, 70%, 100% { opacity: .25; transform: translateY(0); }
     35% { opacity: 1; transform: translateY(-5px); }
   }
+  /* Väntelistan direkt efter svaret: en rad, ett fält. */
+  .nudge { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--grid); display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; }
+  .nudge-h { font-weight: 600; line-height: 1.35; max-width: 36ch; }
+  .mini-row { display: flex; gap: 8px; }
+  .mini-row input {
+    flex: 1; min-width: 0; min-height: 50px; padding: 0 14px;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px; font-size: 1.0625rem;
+  }
+  .mini-row input::placeholder { color: var(--mut); opacity: 1; }
+  .mini-row .pill { flex: none; padding: 0 16px; }
+  .mini-row .pill[disabled] { opacity: .6; cursor: progress; }
+  .mini-fine { color: var(--mut); font-size: .875rem; line-height: 1.4; }
+  .mini-fine a { color: var(--blue); }
   .note { margin-top: 14px; max-width: 40ch; color: var(--mut); font-size: 1rem; line-height: 1.4; }
-  .nudge { margin-top: 16px; max-width: 34ch; }
-  .nudge a { font-weight: 600; color: var(--blue); }
 
   .dock {
     margin-top: 18px;
@@ -266,6 +306,7 @@
   }
   .pill:active { transform: scale(.97); }
   .pill.stop { background: var(--red); color: var(--on-red); }
+  .pill.quiet { background: var(--bg); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
   .bars { display: inline-flex; align-items: center; gap: 3px; height: 16px; }
   .bars i {
     width: 3px; height: 100%; border-radius: 2px; background: currentColor;
@@ -289,7 +330,7 @@
     border: 1px solid var(--line);
     border-radius: 10px;
     color: var(--blue);
-    font-family: "Kalam", "Segoe Print", "Bradley Hand", cursive;
+    font-family: "Kalam", "Kalam reserv", cursive;
     font-size: 1.125rem;
     line-height: 1.2;
     text-align: left;
@@ -383,6 +424,20 @@
   }
   .hint.err { color: var(--bad); font-weight: 600; }
 
+  /* ---------- Exempel från Provläget ---------- */
+  .examples { padding-top: 8px; padding-bottom: 56px; }
+  .examples .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
+  .ex-list { display: grid; gap: 14px; margin-top: 24px; }
+  .ex { padding: 18px; display: grid; gap: 8px; align-content: start; }
+  .ex-meta { font-size: .875rem; font-weight: 600; color: var(--mut); }
+  .ex-q { color: var(--blue); font-size: 1.375rem; line-height: 1.25; }
+  .ex-a { font-size: 1.0625rem; line-height: 1.5; }
+  .ex-a.clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
+  .ex-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 4px; }
+  .ex-more { border: 0; background: none; padding: 0; min-height: 44px; color: var(--blue); font-weight: 600; text-decoration: underline; text-underline-offset: .18em; }
+  .ex-play { min-height: 44px; }
+  .ex-play svg { width: 16px; height: 16px; }
+
   /* ---------- Sektioner under vecket ---------- */
   h2 {
     font-weight: 700;
@@ -445,7 +500,6 @@
     .pitch { font-size: 1.125rem; margin-top: 6px; }
     .hero { gap: 16px; }
     .demo { gap: 12px; padding: 14px 14px 16px; }
-    .try { gap: 6px; }
     .chip { font-size: 1.0625rem; padding: 2px 12px 0; }
     .disc-wrap { --d: clamp(118px, 20svh, 150px); margin: 0; }
     .disc { font-size: 1rem; gap: 3px; }
@@ -455,7 +509,25 @@
     .send { width: 48px; }
   }
 
+  /* Mobil: exempelfrågorna på en rad som går att svepa, så att knappen och textrutan syns direkt. */
+  @media (max-width: 719px) {
+    .try {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+      margin: 0 -18px;
+      padding: 0 18px;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent);
+      mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent);
+    }
+    .try::-webkit-scrollbar { display: none; }
+    .chip { flex: none; white-space: nowrap; scroll-snap-align: start; scroll-margin-left: 18px; }
+  }
+
   @media (min-width: 720px) {
+    .ex-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .modes ul { grid-template-columns: repeat(2, 1fr); column-gap: 36px; }
   }
 
@@ -479,6 +551,7 @@
     body[data-view="answer"] .controls { display: grid; }
     .a { font-size: 1.75rem; }
     .again-only { display: none; }
+    .examples { padding-bottom: 88px; }
     .modes { padding-bottom: 96px; }
     .modes ul { grid-template-columns: repeat(4, 1fr); column-gap: 32px; }
     .join .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); column-gap: 64px; padding-top: 88px; padding-bottom: 72px; }
@@ -522,10 +595,19 @@
         <p class="q hand" id="q"></p>
         <div class="a" id="a" aria-live="polite"></div>
         <p class="note" id="note" role="status" hidden></p>
-        <p class="nudge" id="nudge" hidden><a href="#vantelista">Ladda ner appen för att använda den med låst skärm och i alla lägen</a></p>
+        <form class="nudge" id="nudge" novalidate hidden>
+          <p class="nudge-h" id="mini-h">Ladda ner appen för att använda den med låst skärm och i alla lägen. Den är inte ute än, så vi mejlar när den finns.</p>
+          <div class="mini-row">
+            <label class="sr" for="miniemail">E-post</label>
+            <input id="miniemail" type="email" name="email" placeholder="Din e-post" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="send" aria-describedby="mini-h minimsg">
+            <button class="pill" id="minibtn" type="submit">Mejla mig</button>
+          </div>
+          <p class="mini-fine">Vi använder adressen bara till det mejlet. <a href="#integritet">Om dina uppgifter</a></p>
+          <p class="formmsg" id="minimsg" role="status"></p>
+        </form>
         <div class="dock" id="dock" hidden>
           <button class="pill stop" id="stop" type="button"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Stoppa</button>
-          <button class="pill again-only" id="again" type="button" hidden>Ställ en ny fråga</button>
+          <button class="pill quiet again-only" id="again" type="button" hidden>Ställ en ny fråga</button>
           <span class="left" id="left"></span>
         </div>
       </div>
@@ -570,6 +652,40 @@
     </figure>
   </section>
 
+  <section class="examples wrap" aria-labelledby="ex-h">
+    <h2 id="ex-h">Så låter Provläget</h2>
+    <p class="lead">Tre svar från vårt test av Provläget den 8 november, ordagrant och med samma röst som i appen. Frågorna ställdes som av en elev i årskurs 9.</p>
+    <ul class="ex-list">
+      <li class="ex paper">
+        <p class="ex-meta">Åk 9 · Biologi</p>
+        <p class="ex-q hand">Förklara varför antibiotika inte hjälper mot virus</p>
+        <p class="ex-a clamp" id="ex-pl-019">Antibiotika verkar genom att slå ut eller hindra delar som bakterier har och som vi människor inte har, till exempel bakteriernas egna cellvägg eller deras sätt att tillverka proteiner. Virus är inte celler. De saknar egen ämnesomsättning och en egen cellvägg, och de tar över våra celler för att föröka sig. Eftersom det antibiotikan angriper saknas i virus, har medlet ingen verkan på dem. Ett exempel är förkylning och influensa, som orsakas av virus, där antibiotika alltså inte gör någon nytta. På provet räcker det att skriva att virus saknar cellstruktur och ämnesomsättning, och att antibiotika riktar sig mot bakteriers egna strukturer.</p>
+        <div class="ex-row">
+          <button class="pill ex-play" type="button" data-src="audio/pl-019.mp3" aria-label="Lyssna på svaret om antibiotika"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
+          <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-019">Visa hela svaret</button>
+        </div>
+      </li>
+      <li class="ex paper">
+        <p class="ex-meta">Åk 9 · Biologi</p>
+        <p class="ex-q hand">Vad händer i en näringskedja om rovdjuren försvinner?</p>
+        <p class="ex-a clamp" id="ex-pl-022">Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan. Rovdjuren håller nere antalet växtätare, så när de är borta ökar växtätarna snabbt. Fler växtätare äter upp mer av växterna, och antalet växter kan då minska kraftigt. Det leder till att växtätarna så småningom också får brist på mat och deras antal sjunker igen. Ett klassiskt exempel är när vargen försvann från Yellowstone i USA: hjortarna blev fler, de åt upp unga träd och buskar, och det drabbade även bävrar och fåglar som levde i området. På provet bör du skriva att rovdjur reglerar populationen av växtätare och att borttagandet ger en kedjereaktion genom näringsväven.</p>
+        <div class="ex-row">
+          <button class="pill ex-play" type="button" data-src="audio/pl-022.mp3" aria-label="Lyssna på svaret om näringskedjan"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
+          <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-022">Visa hela svaret</button>
+        </div>
+      </li>
+      <li class="ex paper">
+        <p class="ex-meta">Åk 9 · Samhällskunskap</p>
+        <p class="ex-q hand">Globalisering</p>
+        <p class="ex-a clamp" id="ex-pl-079">Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna. Det sker genom handel, investeringar, resor och internet, och att varor, pengar och idéer rör sig allt lättare mellan länder. Ett vanligt exempel är att en tröja kan designas i Sverige, sys i Bangladesh och säljas i flera länder samtidigt. Fördelarna är billigare varor och fler jobb i vissa länder, men det finns också nackdelar, som att jobb kan försvinna i andra länder när produktionen flyttas. På provet kan du visa att du förstår det genom att ge både fördelar och nackdelar och ett konkret exempel.</p>
+        <div class="ex-row">
+          <button class="pill ex-play" type="button" data-src="audio/pl-079.mp3" aria-label="Lyssna på svaret om globalisering"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
+          <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-079">Visa hela svaret</button>
+        </div>
+      </li>
+    </ul>
+  </section>
+
   <section class="modes wrap" aria-labelledby="modes-h">
     <h2 id="modes-h">Kommer i appen</h2>
     <ul>
@@ -602,7 +718,7 @@
           <p class="formmsg" id="waitmsg" role="status"></p>
         </form>
       </div>
-      <div class="first-note">
+      <div class="first-note" id="integritet">
         <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns. Vi sparar adressen och när du gav ditt samtycke. Vill du bli borttagen, eller har du frågor om dina uppgifter, mejla <a href="mailto:stenlundaron@gmail.com">stenlundaron@gmail.com</a>.</p>
         <p class="fine">Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel.</p>
       </div>
@@ -793,6 +909,7 @@ function finish(r) {
   $("nudge").hidden = !r.answer;
 }
 function cancelRun() {
+  stopExample();
   const r = run;
   if (r && r.busy) { r.cancelled = true; r.busy = false; try { r.ac.abort(); } catch {} }
   try { if (player) player.pause(); } catch {}
@@ -1137,37 +1254,87 @@ disc.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") 
 disc.addEventListener("blur", release);
 
 // ---------- väntelista ----------
-function waitMsg(text, isErr) { $("waitmsg").textContent = text; $("waitmsg").classList.toggle("err", !!isErr); }
+function waitMsg(text, isErr, id = "waitmsg") { $(id).textContent = text; $(id).classList.toggle("err", !!isErr); }
 const NOT_OPEN = "Väntelistan har inte öppnat än, så din adress är inte sparad. Försök igen om några dagar.";
 $("email").addEventListener("input", () => { $("emailmsg").textContent = ""; });
 $("consent").addEventListener("change", () => { $("consentmsg").textContent = ""; });
 $("wait").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = $("email").value.trim();
-  const okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-  $("emailmsg").textContent = okEmail ? "" : "Skriv en hel e-postadress, till exempel namn@exempel.se.";
+  const valid = okEmail(email);
+  $("emailmsg").textContent = valid ? "" : "Skriv en hel e-postadress, till exempel namn@exempel.se.";
   $("consentmsg").textContent = $("consent").checked ? "" : "Kryssa i rutan så att vi får mejla dig.";
   waitMsg("");
-  if (!okEmail) { $("email").focus(); return; }
+  if (!valid) { $("email").focus(); return; }
   if (!$("consent").checked) { $("consent").focus(); return; }
-  const btn = $("waitbtn");
+  joinList(email, CONSENT_VERSION, $("waitbtn"), "waitmsg", () => $("wait").reset());
+});
+
+// Sparar adressen. Samtycket är att man själv trycker på knappen; versionen säger vilken text man såg.
+async function joinList(email, version, btn, msgId, onOk) {
+  const label = btn.textContent;
   btn.disabled = true; btn.textContent = "Skickar";
   try {
-    const payload = { email, consent: true, consent_version: CONSENT_VERSION, source: "demo", website: $("website").value };
+    const payload = { email, consent: true, consent_version: version, source: "demo", website: $("website").value };
     const r = await fetch(SB + "/functions/v1/waitlist", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
     if (r.ok) {
-      $("wait").reset();
-      waitMsg("Klart. Vi mejlar när appen finns.");
-    } else if (r.status === 404) waitMsg(NOT_OPEN, true);
-    else if (r.status === 429) waitMsg("För många försök just nu. Vänta en stund och försök igen.", true);
-    else if (r.status === 400) waitMsg("Adressen gick inte att spara. Kontrollera den och försök igen.", true);
-    else waitMsg("Det gick inte att spara adressen just nu. Försök igen om en stund.", true);
+      onOk();
+      waitMsg("Klart. Vi mejlar när appen finns.", false, msgId);
+    } else if (r.status === 404) waitMsg(NOT_OPEN, true, msgId);
+    else if (r.status === 429) waitMsg("För många försök just nu. Vänta en stund och försök igen.", true, msgId);
+    else if (r.status === 400) waitMsg("Adressen gick inte att spara. Kontrollera den och försök igen.", true, msgId);
+    else waitMsg("Det gick inte att spara adressen just nu. Försök igen om en stund.", true, msgId);
   } catch (err) {
     // Tills /waitlist är driftsatt svarar gatewayn 404 på preflight, och då ser webbläsaren bara ett nätverksfel.
-    waitMsg(navigator.onLine === false ? "Ingen uppkoppling. Din adress är inte sparad." : NOT_OPEN, true);
+    waitMsg(navigator.onLine === false ? "Ingen uppkoppling. Din adress är inte sparad." : NOT_OPEN, true, msgId);
   }
-  btn.disabled = false; btn.textContent = "Skriv upp mig";
+  btn.disabled = false; btn.textContent = label;
+}
+const okEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+
+// Raden i demon efter svaret. Egen version, eftersom texten skiljer sig från stora formuläret.
+const CONSENT_VERSION_ROW = "2026-11-08-rad";
+$("miniemail").addEventListener("input", () => waitMsg("", false, "minimsg"));
+$("nudge").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const email = $("miniemail").value.trim();
+  if (!okEmail(email)) { waitMsg("Skriv en hel e-postadress, till exempel namn@exempel.se.", true, "minimsg"); $("miniemail").focus(); return; }
+  joinList(email, CONSENT_VERSION_ROW, $("minibtn"), "minimsg", () => { $("miniemail").value = ""; $("miniemail").blur(); });
 });
+
+// ---------- exempel från Provläget (förinspelat ljud, kostar inget anrop) ----------
+let exPlayer = null, exBtn = null;
+function exLabel(btn, playing) {
+  btn.querySelector("span").textContent = playing ? "Stoppa" : "Lyssna";
+  btn.querySelector("svg").innerHTML = playing ? '<rect x="6" y="6" width="12" height="12" rx="2"/>' : '<path d="M7 4.5v15l12.5-7.5z"/>';
+  btn.classList.toggle("stop", playing);
+}
+function stopExample() {
+  if (!exBtn) return;
+  try { exPlayer.pause(); } catch {}
+  exLabel(exBtn, false);
+  exBtn = null;
+}
+document.querySelectorAll(".ex-play").forEach((btn) => btn.addEventListener("click", () => {
+  const same = exBtn === btn;
+  cancelRun();          // stoppar demon och ett exempel som redan spelas
+  if (same) return;
+  if (!exPlayer) { exPlayer = new Audio(); exPlayer.playsInline = true; exPlayer.preload = "none"; }
+  setSession("playback");
+  exBtn = btn;
+  exLabel(btn, true);
+  exPlayer.onended = stopExample;
+  exPlayer.onerror = stopExample;
+  exPlayer.src = btn.dataset.src;
+  const p = exPlayer.play();
+  if (p) p.catch(stopExample);
+}));
+document.querySelectorAll(".ex-more").forEach((btn) => btn.addEventListener("click", () => {
+  const a = $(btn.getAttribute("aria-controls"));
+  const open = a.classList.toggle("clamp") === false;
+  btn.setAttribute("aria-expanded", String(open));
+  btn.textContent = open ? "Visa mindre" : "Visa hela svaret";
+}));
 
 // ---------- uppstart ----------
 showLeft();

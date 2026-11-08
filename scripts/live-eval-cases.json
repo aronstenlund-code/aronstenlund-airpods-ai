@@ -3018,5 +3018,156 @@
 ]
 }
 ]
+},
+{
+"id": "amne-k12-kemi-syntes",
+"cat": "ämne",
+"turns": [
+{
+"q": "syntes",
+"profile": "Årskurs: Åk 9. Ämne: Kemi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
+"prep_terms": [
+"atom",
+"molekyl",
+"jon",
+"syra",
+"bas",
+"kemisk reaktion"
+],
+"expect_any": [
+"syntesreaktion",
+"förening",
+"bildar",
+"sätts ihop",
+"sammanfogas"
+],
+"forbid_any": [
+"kemiord",
+"din lista",
+"i din",
+"listan",
+"jag tar det",
+"ämnesord",
+"är nog",
+"tolkar",
+"menar du",
+"du menar",
+"närliggande",
+"låter likt",
+"fotosyntes"
+],
+"expect": "either"
+}
+]
+},
+{
+"id": "amne-k12-kemi-syntes-2",
+"cat": "ämne",
+"turns": [
+{
+"q": "vad är syntes",
+"profile": "Årskurs: Åk 9. Ämne: Kemi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
+"prep_terms": [
+"atom",
+"molekyl",
+"jon",
+"syra",
+"bas",
+"kemisk reaktion"
+],
+"expect_any": [
+"syntesreaktion",
+"förening",
+"bildar",
+"sätts ihop",
+"sammanfogas",
+"ny"
+],
+"forbid_any": [
+"kemiord",
+"din lista",
+"i din",
+"listan",
+"jag tar det",
+"ämnesord",
+"är nog",
+"tolkar",
+"menar du",
+"du menar",
+"närliggande",
+"låter likt",
+"fotosyntes"
+]
+}
+]
+},
+{
+"id": "amne-k12-bio-syntes",
+"cat": "ämne",
+"turns": [
+{
+"q": "syntes",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
+"prep_terms": [
+"cell",
+"fotosyntes",
+"cellandning",
+"mitos",
+"enzym"
+],
+"expect_any": [
+"fotosyntes"
+],
+"forbid_any": [
+"kemiord",
+"din lista",
+"i din",
+"listan",
+"jag tar det",
+"ämnesord",
+"är nog",
+"tolkar",
+"menar du",
+"du menar",
+"närliggande",
+"låter likt"
+]
+}
+]
+},
+{
+"id": "amne-k12-bio-enzym",
+"cat": "ämne",
+"turns": [
+{
+"q": "enn simer",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
+"prep_terms": [
+"cell",
+"fotosyntes",
+"cellandning",
+"mitos",
+"enzym"
+],
+"expect_any": [
+"enzym"
+],
+"forbid_any": [
+"kemiord",
+"din lista",
+"i din",
+"listan",
+"jag tar det",
+"ämnesord",
+"är nog",
+"tolkar",
+"menar du",
+"du menar",
+"närliggande",
+"låter likt"
+],
+"expect": "either"
+}
+]
 }
 ]

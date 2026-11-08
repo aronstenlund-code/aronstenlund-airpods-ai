@@ -126,7 +126,7 @@ Deno.test("plan: persona social + social object = rizz fast path; without it the
   assertEquals([p.kind, p.task, p.maxTokens, p.answerType], [
     "rizz",
     "rizz_suggestions",
-    100, // D72: one suggestion by default
+    140, // D72: one suggestion by default (K1.6: room for a dropped line)
     "fact",
   ]);
   assertEquals(personaPlan(validateAnswerRequest({ ...ok, fragment: "hej" }))?.kind, "social");
@@ -450,7 +450,7 @@ Deno.test("D72: one suggestion by default; an explicit 'ge mig tre' asks for mor
   assertEquals(MAX_SUGGESTIONS, 5);
   const one = req();
   assertEquals(suggestionCount(one), 1);
-  assertEquals([personaPlan(one)?.kind, personaPlan(one)?.maxTokens], ["rizz", 100]);
+  assertEquals([personaPlan(one)?.kind, personaPlan(one)?.maxTokens], ["rizz", 140]);
   // one shown, two written (the second is a backup if the first is filtered)
   assertStringIncludes(buildRizzUserMessage(one), "<count>2</count>");
   assertEquals(buildRizzUserMessage(one).includes("<request>"), false);

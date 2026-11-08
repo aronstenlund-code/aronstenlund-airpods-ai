@@ -51,7 +51,8 @@ struct CommandsView: View {
                 Text(error).font(.footnote).foregroundStyle(.red)
             }
         }
-        .navigationTitle("Commands")
+        .lumenForm()
+        .navigationTitle("Egna kommandon")
         .navigationBarTitleDisplayMode(.inline)
     }
 

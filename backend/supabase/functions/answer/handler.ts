@@ -14,6 +14,8 @@ import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
+import { computeMath } from "./mathcheck.ts";
+import { missingFact, missingFactNote } from "./interviewfacts.ts";
 import { nowContext } from "./datecalc.ts";
 import { categorize } from "./category.ts";
 import {
@@ -37,7 +39,16 @@ import {
   WEB_UNAVAILABLE_NOTE,
   webTools,
 } from "./web.ts";
-import { AnswerPost, NumberStream } from "./speech.ts";
+import { AnswerPost, NumberStream, similarity } from "./speech.ts";
+
+/** K1.4: a short reply grades the check question only within this many seconds of the answer that asked it. */
+export const GRADE_REPLY_MAX_AGE_SEC = 120;
+/** K1.4: the new check question is (almost) one already asked in this session. */
+export function isRepeatedQuestion(text: string, asked: string[]): boolean {
+  const q = text.trim();
+  if (!q) return false;
+  return asked.some((a) => similarity(a, q) >= 0.8);
+}
 import { stripEcho } from "./echo.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import {
@@ -57,7 +68,7 @@ import {
   RELATION_RULE,
   SUMMARY_RULE,
   SYSTEM_PROMPT,
-  systemPromptFor, GRADE_NOTE, isQuizRequest, lastQuestion, QUIZ_NOTE
+  systemPromptFor, GRADE_NOTE, isQuizRequest, lastQuestion, QUIZ_NOTE, askedQuestions, looksLikeQuestion
 } from "./prompt.ts";
 import { type AnswerRequest, LIMITS, readLimitedJson, validateAnswerRequest } from "./validate.ts";
 
@@ -460,7 +471,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const computed = plan || body.mode === "interview_prep"
         ? null
         : computeFragment(body.fragment, (deps.clock ?? (() => new Date()))()) ??
-          computeFollowUp(body.fragment, body.context.recent_qa.at(-1)?.a);
+          computeFollowUp(body.fragment, body.context.recent_qa.at(-1)?.a) ??
+          computeMath(body.fragment); // K1.3: derivatives and linear equations checked in code
       // History fix 2026-11-08 ("270 gånger 270" was spoken as "sjutusen niohundra" although <computed> was
       // right): arithmetic, percentages and a bare clock time are answered entirely by code, no model call.
       const localCalc = computed && !plan ? spokenComputed(computed, tutor) : null;
@@ -598,8 +610,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D86: "förhör mig" asks for exactly one check question (also when the profile has "inga kontrollfrågor")
       const quiz = tutor && !plan && isQuizRequest(body.fragment);
       const lastQ = body.context.recent_qa.at(-1);
+      // K1.4: a short reply is an answer only when it is not a new question and comes shortly after the check
+      // question (the app sends last_answer_age_sec; without it the old rule holds)
+      const replyAge = body.context.last_answer_age_sec;
       const gradeReply = tutor && !plan && !quiz && !!lastQ && !!lastQuestion(lastQ.a) &&
-        lastQ.a.trim().endsWith("?") && body.fragment.trim().split(/\s+/).length <= 12;
+        lastQ.a.trim().endsWith("?") && body.fragment.trim().split(/\s+/).length <= 12 &&
+        !looksLikeQuestion(body.fragment) && (replyAge === undefined || replyAge <= GRADE_REPLY_MAX_AGE_SEC);
       const noChecks = !quiz && tutor && body.persona === "tutor" && /inga kontrollfrågor/i.test(body.personaSetup);
       let silenced = false;
 
@@ -690,11 +706,16 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const echoNote = echo.echoed
         ? "The start of <fragment> repeated your own last answer (picked up again by the microphone) and was removed. Answer only if what is left is by itself a complete new question or request; a cut-off half sentence, a remark or noise gets the silence reply."
         : undefined;
+      // K1.5: the interviewer asks about a fact the CV does not give (körkort, ålder, alkohol, pendling)
+      const missing = plan?.kind === "interview" && plan.task === "interview_question"
+        ? missingFact(body.fragment, body.personaSetup, body.memories)
+        : null;
       const userFor = (b: AnswerRequest, extras: PromptExtras = {}) =>
         plan
           ? buildPersonaUserMessage(b, plan.task) +
             (extras.note ? `
-<note>${extras.note}</note>` : "")
+<note>${extras.note}</note>` : "") + (missing ? `
+<note>${missingFactNote(missing)}</note>` : "")
           : direct
           ? buildDirectUserMessage(b, continuation, {
             ...extras,
@@ -796,6 +817,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             quizOnly: quiz, // D86: only the check question is said
             subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
             interview: plan?.kind === "interview", // D77
+            missingFact: missing ?? undefined,
           });
           let pendingMeta: Record<string, unknown> | null = null;
           const flushMeta = () => {
@@ -899,8 +921,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 if (m) history = history.filter((x) => x.a !== m);
               } else {
                 if (!stop) { for (const ev of parser.finish()) emit(ev); }
-                deliver(post.finish());
-                if (post.questionOnly && !stop) {
+                const fin = post.finish();
+                // K1.4: "förhör mig" never repeats a question of this session (held until here, nothing was sent)
+                const repeated = quiz && attempt === 0 && !stop && isRepeatedQuestion(fin, askedQuestions(body));
+                if (!repeated) deliver(fin);
+                if (repeated) {
+                  note =
+                    "Your previous check question was already asked in this session (see <already_asked>). Ask ONE different check question about another part of the topic.";
+                } else if (post.questionOnly && !stop) {
                   note =
                     "Your previous reply only asked the user a question. Answer directly with the most likely interpretation and do not ask anything back.";
                 } else if (plan?.kind === "interview" && post.interviewMetaOnly && ttftMs === null && !stop) {
@@ -952,6 +980,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 quizOnly: quiz,
                 subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
                 interview: plan?.kind === "interview",
+                missingFact: missing ?? undefined,
               });
               r = await it.next();
             }

@@ -95,6 +95,23 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen.tests
         GENERATE_INFOPLIST_FILE: YES
 
+  # A1: Toby's end-to-end tests (WAV files through the real chain in the Simulator). Its own scheme, so they never run
+  # on an ordinary push (they reach the live Scribe and /answer); run by hand or nightly.
+  LumenE2ETests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: AppTests/E2E
+        excludes:
+          - "**/*.md"
+          - "Audio/**"
+    dependencies:
+      - target: Lumen
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen.e2etests
+        GENERATE_INFOPLIST_FILE: YES
+
 schemes:
   Lumen:
     build:
@@ -108,3 +125,14 @@ schemes:
       gatherCoverageData: false
       targets:
         - LumenTests
+  # A1: `xcodebuild test -scheme LumenE2E …` (Toby). Not in the push workflow.
+  LumenE2E:
+    build:
+      targets:
+        Lumen: all
+        LumenE2ETests: [test]
+    test:
+      config: Debug
+      gatherCoverageData: false
+      targets:
+        - LumenE2ETests

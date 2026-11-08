@@ -67,7 +67,8 @@ struct MemoryView: View {
                 Text(error).font(.footnote).foregroundStyle(.red)
             }
         }
-        .navigationTitle("Memory")
+        .lumenForm()
+        .navigationTitle("Minne")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Edit memory", isPresented: isEditing, presenting: editing) { item in
             TextField("Memory", text: $editedText)

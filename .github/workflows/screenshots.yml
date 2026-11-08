@@ -1,0 +1,90 @@
+name: Simulator screenshots
+
+# A2: screenshots of the app's screens in light and dark, from the Simulator (Debug hook `-LumenScreenshot <name>`
+# with demo data). Started by hand (workflow_dispatch); the Simulator is no device verification.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: screenshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - name: Generate project
+        run: |
+          set -euo pipefail
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Pick and boot an iOS 26 iPhone simulator
+        id: sim
+        run: |
+          set -euo pipefail
+          JSON="$(xcrun simctl list devices available -j)"
+          RUNTIME="$(echo "$JSON" | jq -r '.devices | keys[] | select(test("iOS-26"))' | sort -V | tail -n 1)"
+          UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name | test("^iPhone 17$|^iPhone 17 Pro$|^iPhone Air$")) | .udid' | head -n 1)"
+          if [ -z "$UDID" ]; then
+            UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name | test("^iPhone")) | .udid' | head -n 1)"
+          fi
+          test -n "$UDID"
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+
+      - name: Build for the Simulator
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project Lumen.xcodeproj \
+            -scheme Lumen \
+            -configuration Debug \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | xcbeautify --renderer github-actions
+
+      - name: Take the screenshots
+        run: |
+          set -euo pipefail
+          UDID="${{ steps.sim.outputs.udid }}"
+          APP="$(ls -d DerivedData/Build/Products/Debug-iphonesimulator/Lumen.app)"
+          xcrun simctl install "$UDID" "$APP"
+          # Clean status bar for the pictures.
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 || true
+          mkdir -p shots
+          for appearance in light dark; do
+            xcrun simctl ui "$UDID" appearance "$appearance"
+            for screen in intro first home empty addExam listening switch errors settings interview live; do
+              # Swedish, as on Aron's phone (the strings' Swedish translations).
+              xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" -AppleLanguages "(sv)" -AppleLocale sv_SE
+              sleep 9
+              if ! xcrun simctl spawn "$UDID" launchctl list | grep -q com.rsolutions.lumen; then
+                echo "::warning::$appearance $screen: the app is not running (crash?)"
+              fi
+              xcrun simctl io "$UDID" screenshot "shots/${appearance}-${screen}.png"
+            done
+          done
+          ls -la shots
+          # Crash reports, if any, go with the pictures.
+          mkdir -p shots/crashes
+          find ~/Library/Logs/DiagnosticReports -iname "*Lumen*" -newer DerivedData -exec cp {} shots/crashes/ \; 2>/dev/null || true
+          ls -la shots/crashes
+
+      - uses: actions/upload-artifact@v5
+        with:
+          name: simulator-screenshots
+          path: shots
+          retention-days: 14

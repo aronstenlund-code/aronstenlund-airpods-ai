@@ -52,6 +52,10 @@ export interface AnswerRequest {
     /** D81: `interrupted` = the app stopped this answer mid-way; `a` is what had been said by then. */
     recent_qa: { q: string; a: string; interrupted?: boolean }[];
     prep_terms: string[];
+    /** K1.4: every check question asked in this Provläge session (the app keeps them; recent_qa holds only 6). */
+    already_asked?: string[];
+    /** K1.4: seconds since the last answer ended; a short reply counts as an answer only shortly after it. */
+    last_answer_age_sec?: number;
   };
 }
 
@@ -62,6 +66,7 @@ export const LIMITS = {
   recentQa: 6,
   qaText: 400,
   qaAnswer: 1500,
+  alreadyAsked: 40,
   prepTerms: 50, // D84: the subject term list from /study-profile (30-50 terms)
   prepTerm: 60,
   goals: 1500,
@@ -149,6 +154,17 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     );
   }
   const prep_terms = termsRaw.map((t, i) => str(t, `prep_terms[${i}]`, LIMITS.prepTerm));
+
+  const askedRaw = c.already_asked ?? [];
+  if (!Array.isArray(askedRaw)) throw bad("context.already_asked must be an array");
+  if (askedRaw.length > LIMITS.alreadyAsked) {
+    throw new HttpError(413, "payload_too_large", `context.already_asked exceeds ${LIMITS.alreadyAsked} items`);
+  }
+  const already_asked = askedRaw.map((t, i) => str(t, `already_asked[${i}]`, LIMITS.qaText)).filter(Boolean);
+  const ageRaw = c.last_answer_age_sec;
+  if (ageRaw !== undefined && ageRaw !== null && (typeof ageRaw !== "number" || !Number.isFinite(ageRaw) || ageRaw < 0)) {
+    throw bad("context.last_answer_age_sec must be a non-negative number");
+  }
 
   const goals = str(o.goals, "goals", LIMITS.goals);
 
@@ -285,7 +301,13 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     social,
     commands,
     memories,
-    context: { transcript, recent_qa, prep_terms },
+    context: {
+      transcript,
+      recent_qa,
+      prep_terms,
+      ...(already_asked.length ? { already_asked } : {}),
+      ...(typeof ageRaw === "number" ? { last_answer_age_sec: ageRaw } : {}),
+    },
   };
 }
 

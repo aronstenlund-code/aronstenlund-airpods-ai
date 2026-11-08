@@ -71,6 +71,8 @@ before the backend reads them:
     shows a Swedish problem card).
   - The D81 mini-test test never set the room's noise floor, so the answer did not count as speech.
 
+- **Green:** run `42493099848` on commit `0f99e1c` (D81 + D84 + D86 + D87 together: build, unit tests, licence check). IPA for Sideloadly: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42493099848/artifacts/13621679810 (kept 14 days).
+
 ## Known limits
 - **Long recordings:** a 10-minute WAV is about 19 MB.
 - **Speech:** "SA" is when a sentence started playing, not when it ended.

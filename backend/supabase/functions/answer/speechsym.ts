@@ -242,8 +242,13 @@ export function beforeNumbers(text: string, ctx = ""): string {
       return n === null ? m : `${name} den ${regnal(n)}`;
     },
   );
-  // "2x" is "two times"; "5G"/"3D": a number directly before capital letters is read as number + letters
-  s = s.replace(/(?<![\p{L}\d.,])(\d+)\s?x(?![\p{L}\d])/giu, "$1 gånger");
+  // "2x" is "two times"; "5G"/"3D": a number directly before capital letters is read as number + letters.
+  // K1.3 (Oscar D83: "derivatan av x i kvadrat är två gånger"): in maths "2x" is two x: when the text has an
+  // equation or power ("=", "²", "^", "f′"), a bare variable x, or an operator right after the term.
+  const algebra = /[=²³^′]|(?<![\p{L}\d])x(?![\p{L}\d])/u.test(s.replace(/(?<![\p{L}\d.,])\d+\s?x(?![\p{L}\d])/giu, ""));
+  s = s.replace(/(?<![\p{L}\d.,])(\d+)(\s?)x(?![\p{L}\d])(?=(\s*[+\-−=^²³)/])?)/gu, (_m, n: string, _sp: string, op?: string) =>
+    algebra || op ? `${n} x` : `${n} gånger`);
+  s = s.replace(/(?<![\p{L}\d.,])(\d+)\s?X(?![\p{L}\d])/gu, "$1 gånger");
   s = s.replace(/(?<![\p{L}\d.,])(\d+)([A-Z]{1,2})(?![\p{L}\d])/gu, "$1 $2");
   for (const [re, to] of ABBREVIATIONS) s = s.replace(re, to);
   // powers: 10^23, x^2, 10^{-3}

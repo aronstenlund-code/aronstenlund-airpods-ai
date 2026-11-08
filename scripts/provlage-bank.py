@@ -320,6 +320,25 @@ for g, s, q, e, ctx in [
 ]:
     add(g, s, "followup", q, e, ctx)
 
+# ---------------- K1.3 (Oscar D83): math level, Åk 8 vs Matte 4 ----------------
+M8, MG3c, MG4 = "Åk 8", "Gymnasiet 3, kurs Matematik 3c", "Gymnasiet 3, kurs Matematik 4"
+NOLIM = "; grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation"
+for g, q, e in [
+    (M8, "derivata", "idén: hur snabbt något ändras, lutningen på en graf, vardagsexempel som hastighet" + NOLIM),
+    ("Åk 9", "derivata", "idén: förändring och lutning på en graf, exempel" + NOLIM),
+    (M8, "vad är derivatan av x i kvadrat", "två x (säger x), enkel förklaring: lutningen ökar ju större x är" + NOLIM),
+    (M8, "ekvation", "en likhet med en obekant, gör samma sak på båda sidor, ett exempel på åk 8-nivå"),
+    (M8, "lös 3x minus 7 är lika med 14", "x = 7: lägg till 7 på båda sidor ger 3x = 21, dela med 3"),
+    (M8, "två x plus nio är lika med tre", "x = −3: dra bort 9 ger 2x = −6, dela med 2"),
+    (MG3c, "derivatans definition", "gränsvärdet av (f(x+h) − f(x))/h när h går mot noll, lutningen på tangenten"),
+    (MG4, "kedjeregeln", "derivatan av en sammansatt funktion: yttre derivatan gånger inre derivatan, exempel (3x+1)⁵ ger 15(3x+1)⁴"),
+    (MG4, "derivatan av e upphöjt till två x", "2e^(2x), med kedjeregeln (inre derivatan 2)"),
+    (MG4, "derivera tre x i kvadrat plus två x minus fem", "6x + 2 med potensregeln, konstanten försvinner"),
+    (MG4, "produktregeln", "(f·g)′ = f′·g + f·g′, ett exempel"),
+    (MG4, "derivatan av sinus x", "cos x; och derivatan av cos x är −sin x"),
+]:
+    add(g, "Matematik", "mathlevel", q, e)
+
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "provlage-bank.json")
 json.dump(cases, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
 kinds = {}

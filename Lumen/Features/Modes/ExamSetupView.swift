@@ -46,6 +46,7 @@ struct ExamSetupView: View {
                                      grade: profile.grade?.rawValue)
             }
         }
+        .lumenForm()
         .navigationTitle("Provsession")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

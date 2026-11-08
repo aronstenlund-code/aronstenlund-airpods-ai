@@ -1,0 +1,502 @@
+[
+ {
+  "test": "webkit",
+  "status": "not installed (needs `playwright install webkit`, a download)",
+  "at": "16:09:26"
+ },
+ {
+  "test": "load chromium-desktop-unthrottled",
+  "wall_ms": 434,
+  "dcl": 284,
+  "load": 429,
+  "fcp": 432,
+  "transfer_kb": 57,
+  "requests": 3,
+  "console_errors": [],
+  "failed": [],
+  "resources": [
+   [
+    "https://aronstenlund-code.github.io/aronstenlund-airpods-ai/",
+    200,
+    15
+   ],
+   [
+    "thub.io/aronstenlund-airpods-ai/fonts/familjen-grotesk.woff2",
+    200,
+    18
+   ],
+   [
+    "und-code.github.io/aronstenlund-airpods-ai/fonts/kalam.woff2",
+    200,
+    21
+   ]
+  ],
+  "at": "16:09:27"
+ },
+ {
+  "test": "load chromium-mobile-unthrottled",
+  "wall_ms": 66,
+  "dcl": 46,
+  "load": 61,
+  "fcp": 0,
+  "transfer_kb": 57,
+  "requests": 3,
+  "console_errors": [],
+  "failed": [],
+  "resources": [
+   [
+    "https://aronstenlund-code.github.io/aronstenlund-airpods-ai/",
+    200,
+    15
+   ],
+   [
+    "thub.io/aronstenlund-airpods-ai/fonts/familjen-grotesk.woff2",
+    200,
+    18
+   ],
+   [
+    "und-code.github.io/aronstenlund-airpods-ai/fonts/kalam.woff2",
+    200,
+    21
+   ]
+  ],
+  "at": "16:09:27"
+ },
+ {
+  "test": "load chromium-mobile-fast4g(9Mbps,170ms)",
+  "wall_ms": 462,
+  "dcl": 237,
+  "load": 457,
+  "fcp": 400,
+  "transfer_kb": 57,
+  "requests": 3,
+  "console_errors": [],
+  "failed": [],
+  "resources": [
+   [
+    "https://aronstenlund-code.github.io/aronstenlund-airpods-ai/",
+    200,
+    15
+   ],
+   [
+    "thub.io/aronstenlund-airpods-ai/fonts/familjen-grotesk.woff2",
+    200,
+    18
+   ],
+   [
+    "und-code.github.io/aronstenlund-airpods-ai/fonts/kalam.woff2",
+    200,
+    21
+   ]
+  ],
+  "at": "16:09:28"
+ },
+ {
+  "test": "shot chromium-mobile-light-idle",
+  "kb": 106,
+  "at": "16:09:28"
+ },
+ {
+  "test": "page",
+  "title": "Lumen: fråga högt, få svaret i örat",
+  "lang": "sv",
+  "h1": "Fråga högt. Få svaret i örat.",
+  "scroll_w_ok": true,
+  "viewport_meta": "width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content",
+  "at": "16:09:28"
+ },
+ {
+  "test": "contrast chromium-mobile-light-idle",
+  "checked": 26,
+  "failing": [],
+  "at": "16:09:28"
+ },
+ {
+  "test": "ask 1 (chip) Orsaker till första världskriget",
+  "first_text_ms": 1638,
+  "chars": 256,
+  "answer": "De viktigaste orsakerna till första världskriget var militarism, allianssystemet mellan stormakterna, imperialistisk konkurrens och nationalism. Det utlöstes nittonhundrafjorton när den österrikisk-un",
+  "note": "",
+  "left": "4 frågor kvar idag",
+  "again_visible": false,
+  "at": "16:09:33"
+ },
+ {
+  "test": "shot chromium-mobile-light-answer",
+  "kb": 182,
+  "at": "16:09:33"
+ },
+ {
+  "test": "ask 2 orsaker till första världskriget",
+  "first_text_ms": 890,
+  "chars": 353,
+  "answer": "Första världskriget bröt ut nittonhundrafjorton av flera orsaker: militarism och ett kapplöpning om upprustning, allianssystem som drog in stormakterna, imperialistisk konkurrens om kolonier och markn",
+  "note": "",
+  "left": "3 frågor kvar idag",
+  "again_visible": false,
+  "at": "16:09:36"
+ },
+ {
+  "test": "ask 3 vad betyder low-key",
+  "first_text_ms": 1021,
+  "chars": 228,
+  "answer": "Low-key betyder att något är lågmält, diskret eller oprätt, utan större uppståndelse. På svenska säger man ungefär \"lågmält\" eller \"avslappnat\". Ordet används ofta om en fest, ett stil eller en person",
+  "note": "",
+  "left": "2 frågor kvar idag",
+  "again_visible": false,
+  "at": "16:09:40"
+ },
+ {
+  "test": "ask 4 hur många ben har en spindel",
+  "first_text_ms": 983,
+  "chars": 24,
+  "answer": "En spindel har åtta ben.",
+  "note": "",
+  "left": "1 fråga kvar idag",
+  "again_visible": false,
+  "at": "16:09:44"
+ },
+ {
+  "test": "ask 5 vem var Gustav Vasa",
+  "first_text_ms": 1169,
+  "chars": 228,
+  "answer": "Gustav Vasa var kung i Sverige från femtonhundratjugotre till femtonhundrasextio och grundade den svenska nationalstaten efter unionstiden. Han ledde befrielsen från den danska kungamakten och genomfö",
+  "note": "",
+  "left": "0 frågor kvar idag",
+  "again_visible": false,
+  "at": "16:09:47"
+ },
+ {
+  "test": "network calls so far",
+  "calls": [
+   [
+    "answer",
+    "OPTIONS"
+   ],
+   [
+    "tts",
+    "OPTIONS"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "OPTIONS"
+   ],
+   [
+    "tts",
+    "OPTIONS"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "waitlist",
+    "POST"
+   ],
+   [
+    "waitlist",
+    "POST"
+   ],
+   [
+    "waitlist",
+    "POST"
+   ]
+  ],
+  "at": "16:09:48"
+ },
+ {
+  "test": "6th question (client counter)",
+  "visible_text_has_limit": false,
+  "snippet": [],
+  "at": "16:09:50"
+ },
+ {
+  "test": "shot chromium-mobile-light-limit-client",
+  "kb": 136,
+  "at": "16:09:50"
+ },
+ {
+  "test": "server visitor cap (local counter removed)",
+  "snippet": [
+   "Du har använt dagens 5 demofrågor. Ladda ner appen eller kom tillbaka i morgon.",
+   "Ladda ner appen för att använda den med låst skärm och i alla lägen",
+   "Ladda ner appen för att använda den med låst skärm och i alla lägen"
+  ],
+  "at": "16:09:57"
+ },
+ {
+  "test": "shot chromium-mobile-light-limit-server",
+  "kb": 138,
+  "at": "16:09:57"
+ },
+ {
+  "test": "waitlist invalid email",
+  "email_msg": "Skriv en hel e-postadress, till exempel namn@exempel.se.",
+  "consent_msg": "",
+  "form_msg": "",
+  "at": "16:10:01"
+ },
+ {
+  "test": "waitlist no consent",
+  "email_msg": "",
+  "consent_msg": "Kryssa i rutan så att vi får mejla dig.",
+  "form_msg": "",
+  "at": "16:10:04"
+ },
+ {
+  "test": "shot chromium-mobile-light-waitlist-errors",
+  "kb": 155,
+  "at": "16:10:04"
+ },
+ {
+  "test": "waitlist valid",
+  "email_msg": "",
+  "consent_msg": "",
+  "form_msg": "Klart. Vi mejlar när appen finns.",
+  "at": "16:10:07"
+ },
+ {
+  "test": "shot chromium-mobile-light-waitlist-ok",
+  "kb": 147,
+  "at": "16:10:07"
+ },
+ {
+  "test": "waitlist duplicate",
+  "email_msg": "",
+  "consent_msg": "",
+  "form_msg": "Klart. Vi mejlar när appen finns.",
+  "at": "16:10:09"
+ },
+ {
+  "test": "waitlist duplicate upper-case",
+  "email_msg": "",
+  "consent_msg": "",
+  "form_msg": "Klart. Vi mejlar när appen finns.",
+  "at": "16:10:12"
+ },
+ {
+  "test": "honeypot visible to users",
+  "visible": true,
+  "aria_hidden": "true",
+  "at": "16:10:12"
+ },
+ {
+  "test": "shot chromium-desktop-light-idle",
+  "kb": 53,
+  "at": "16:10:12"
+ },
+ {
+  "test": "contrast chromium-desktop-light-idle",
+  "checked": 26,
+  "failing": [
+   {
+    "sel": ".disc",
+    "text": "Håll in och fråga",
+    "ratio": 2.39,
+    "need": 3.0,
+    "size": 21
+   },
+   {
+    "sel": "button",
+    "text": "Håll in och fråga",
+    "ratio": 2.39,
+    "need": 3.0,
+    "size": 21
+   }
+  ],
+  "at": "16:10:12"
+ },
+ {
+  "test": "keyboard chromium-desktop-light",
+  "stops": 11,
+  "order": [
+   "a:Lumen",
+   "button:Orsaker till första världskriget",
+   "button:Hungrig, ägg, pasta",
+   "button:Vad betyder low-key?",
+   "button#disc:Håll in och fråga",
+   "input#txt:Eller skriv din fråga",
+   "button:Skicka frågan",
+   "input#email:",
+   "input#consent:",
+   "button#waitbtn:Skriv upp mig",
+   "a:stenlundaron@gmail.com"
+  ],
+  "no_visible_focus": [],
+  "under_44px": [
+   "input#consent: 24x24",
+   "a#:stenlundaron@gmail.com 163x18"
+  ],
+  "at": "16:10:12"
+ },
+ {
+  "test": "shot chromium-desktop-dark-idle",
+  "kb": 50,
+  "at": "16:10:13"
+ },
+ {
+  "test": "contrast chromium-desktop-dark-idle",
+  "checked": 26,
+  "failing": [
+   {
+    "sel": ".disc",
+    "text": "Håll in och fråga",
+    "ratio": 2.52,
+    "need": 3.0,
+    "size": 21
+   },
+   {
+    "sel": "button",
+    "text": "Håll in och fråga",
+    "ratio": 2.52,
+    "need": 3.0,
+    "size": 21
+   }
+  ],
+  "at": "16:10:13"
+ },
+ {
+  "test": "keyboard chromium-desktop-dark",
+  "stops": 11,
+  "order": [
+   "a:Lumen",
+   "button:Orsaker till första världskriget",
+   "button:Hungrig, ägg, pasta",
+   "button:Vad betyder low-key?",
+   "button#disc:Håll in och fråga",
+   "input#txt:Eller skriv din fråga",
+   "button:Skicka frågan",
+   "input#email:",
+   "input#consent:",
+   "button#waitbtn:Skriv upp mig",
+   "a:stenlundaron@gmail.com"
+  ],
+  "no_visible_focus": [],
+  "under_44px": [
+   "input#consent: 24x24",
+   "a#:stenlundaron@gmail.com 163x18"
+  ],
+  "at": "16:10:13"
+ },
+ {
+  "test": "shot chromium-desktop-dark-answer",
+  "kb": 63,
+  "at": "16:10:20"
+ },
+ {
+  "test": "contrast chromium-desktop-dark-answer",
+  "checked": 33,
+  "failing": [],
+  "at": "16:10:20"
+ },
+ {
+  "test": "shot chromium-mobile-dark-idle",
+  "kb": 95,
+  "at": "16:10:20"
+ },
+ {
+  "test": "contrast chromium-mobile-dark-idle",
+  "checked": 26,
+  "failing": [],
+  "at": "16:10:20"
+ },
+ {
+  "test": "keyboard-only ask",
+  "ok": true,
+  "answer": "Ekvatorn är ungefär fyrtiotusen sjuttiofem kilometer lång.",
+  "focus_after": "BODY",
+  "at": "16:10:22"
+ },
+ {
+  "test": "stt hold 7",
+  "token_calls": 2,
+  "non200": [],
+  "page_note": [
+   "Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel."
+  ],
+  "at": "16:11:40"
+ },
+ {
+  "test": "stt hold 8",
+  "token_calls": 2,
+  "non200": [],
+  "page_note": [
+   "Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel."
+  ],
+  "at": "16:11:52"
+ },
+ {
+  "test": "stt hold 9",
+  "token_calls": 2,
+  "non200": [],
+  "page_note": [
+   "Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel."
+  ],
+  "at": "16:12:05"
+ },
+ {
+  "test": "shot chromium-desktop-stt-cap",
+  "kb": 55,
+  "at": "16:12:14"
+ }
+]

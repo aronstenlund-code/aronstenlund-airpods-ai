@@ -63,7 +63,7 @@ struct SettingsView: View {
             }
             #endif
         }
-        .textCase(nil) // D86: no capitals over headings
+        .lumenForm() // D86: the new look, no capitals over headings
         .navigationTitle("Inställningar")
         .navigationBarTitleDisplayMode(.inline)
         .task { await model.voices.refreshIfNeeded() }

@@ -2,7 +2,7 @@
 
 Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och ljuduppfattning först.
 
-- [ ] **K1 – Oscars fynd från D81–D84** (effort: high). _pågår 2026-11-08 18:10 (Kevin)_ Underlag: `reports/qa/2026-11-08-1510-oscar-d81-d84.md` och dina egna "Known limits" i D86-rapporten. Push efter varje punkt.
+- [x] **K1 – Oscars fynd från D81–D84** (effort: high). _klar 2026-11-08 21:00 (Kevin): `reports/2026-11-08-2100-kevin-k1-oscar-d81-d84.md`_ Underlag: `reports/qa/2026-11-08-1510-oscar-d81-d84.md` och dina egna "Known limits" i D86-rapporten. Push efter varje punkt.
   1. Muntlig rättning: svensk talparsning ("sexton komma fem" = 16,5, "en halv", bråk); ta det sista talet efter "så", "blir", "är"; godta algebraformer ("x är sju", "7 = x", "x = 7"). 30 nya rättningsfall i live-eval, krav 100 %.
   2. Provläget säger aldrig sitt resonemang högt: inget "X är nog Y", "i din lista", "jag tar det som", "inte ett kemiord". Filtrera på innebörd, inte bara första meningen och kända former. Med Kemi-profil tolkas "syntes" inom kemi (t.ex. syntesreaktion) eller är tyst, aldrig fotosyntes.
   3. Nivå i matte: åk 6–9 utan gränsvärden och kedjeregel; gymnasiet enligt kursen. Matematiska påståenden kontrolleras i kod där det går (derivator, ekvationer). Lägg derivata/ekvation för åk 8 och Matte 4 i D87-testbanken.
@@ -11,7 +11,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   6. Socialt/Rizz: ett förslag som klipps av etikettfiltret kastas, visas aldrig avhugget.
   7. Provpass: tabelluppgifter tolkas rätt; sammanfattningen påstår bara det som finns i rättningen; 429-text på svenska.
 
-- [ ] **K2 – D87 till målet** (effort: high). Baslinjen är 72,6 % "första svaret räcker" med Haiku (`reports/eval/provlage-2026-11-08-haiku-baseline.json`); målet är ≥ 90 %. Läs Oscars granskning `reports/qa/2026-11-08-1610-oscar-d87-review.md` (bedömaren är för sträng på längd; 85 % enligt Oscar i hans urval). Jämför Haiku 5.5 och Sonnet 5.5 (kvalitet, tid till första ljud, kostnad med caching), driftsätt det bästa, och förbättra svarsstrukturen tills målet nås eller förklara exakt vad som stoppar. Skriv siffrorna i rapporten.
+- [ ] **K2 – D87 till målet** (effort: high). _pågår 2026-11-08 21:05 (Kevin)_ Baslinjen är 72,6 % "första svaret räcker" med Haiku (`reports/eval/provlage-2026-11-08-haiku-baseline.json`); målet är ≥ 90 %. Läs Oscars granskning `reports/qa/2026-11-08-1610-oscar-d87-review.md` (bedömaren är för sträng på längd; 85 % enligt Oscar i hans urval). Jämför Haiku 5.5 och Sonnet 5.5 (kvalitet, tid till första ljud, kostnad med caching), driftsätt det bästa, och förbättra svarsstrukturen tills målet nås eller förklara exakt vad som stoppar. Skriv siffrorna i rapporten.
 
 - [ ] **K3 – D88 ljuduppfattning utan telefon** (effort: high).
   1. Välj 60 fall ur D87-testbanken (ämnesord, korta nyckelord, halva meningar, följdfrågor). Läs igenom manusen innan något genereras (spara ElevenLabs-krediter); kör först en pilot med 15 fall.
@@ -26,3 +26,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   2. 8–12 förebildssvar för Provläget (olika ämnen, årskurser, nyckelord, följdfråga) i den cachade systemprompten. Mät före och efter.
   3. Riktiga fel blir testfall automatiskt: "det där var fel"-rapporter och dåliga svar i shared_history läggs (anonymiserade) in i testbanken varje natt.
   4. Kunskapskrav som underlag: korta utdrag ur Skolverkets centrala innehåll och kunskapskrav för A per ämne och årskurs/kurs, skickade med profilen, så att "A-nivå" bygger på riktiga krav. Kolla att texten får användas så.
+
+- [ ] **K5 – Demons svar är första intrycket** (effort: medium). Gör efter K2. Oscar hittade språkfel i demons Haiku-svar ("oprätt", "ett kapplöpning"), `reports/qa/2026-11-08-1630-oscar-demosida.md` fynd 3. Använd modellen som vinner i K2 även för demon om kostnaden ryms i demotaken, och lägg språkkontroll av svenska (genus, påhittade ord) i live-eval. Radera Oscars testrad `oscar-qa-site-160926@example.com` i väntelistan.
+
+- [ ] **K6 – Roliga röster** (effort: low). Lägst prioritet, efter allt Provläge. 4–6 påhittade karaktärsröster att välja mellan (t.ex. självsäker säljcoach, dramatisk sportkommentator, lugn viskare, gammaldags radioröst), från ElevenLabs röstbibliotek med licens för kommersiellt bruk eller Voice Design. Aldrig en verklig persons röst, namn eller kännetecken (Aron frågade om Trump och Jordan Belfort: nej, ägarbeslut tidigare). Läs igenom provtexterna innan något genereras (spara krediter). /tts tar ett röst-id ur en vitlista; skriv licens per röst i DECISIONS.

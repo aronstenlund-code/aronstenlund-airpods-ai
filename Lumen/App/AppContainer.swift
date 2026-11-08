@@ -5,7 +5,8 @@ import Foundation
 final class AppContainer {
     let graph: AudioGraph
     let session: AudioSessionManager
-    let capture: CaptureService
+    /// The microphone, or (Debug, `LUMEN_AUDIO_FILES`) WAV files for Toby's Simulator tests.
+    let capture: any CaptureServicing
     let playback: PlaybackService
     let consent: ConsentStore
     let language: LanguageSettings
@@ -29,7 +30,11 @@ final class AppContainer {
     init() {
         let graph = AudioGraph()
         let session = AudioSessionManager()
-        let capture = CaptureService(graph: graph)
+        #if DEBUG
+        let capture: any CaptureServicing = FileCaptureService.fromEnvironment() ?? CaptureService(graph: graph)
+        #else
+        let capture: any CaptureServicing = CaptureService(graph: graph)
+        #endif
         let playback = PlaybackService(graph: graph)
         let consent = ConsentStore()
         let language = LanguageSettings()
@@ -107,5 +112,8 @@ final class AppContainer {
         diagnostics.micComparison = MicComparisonModel(listening: listening)
         diagnostics.speechRecording = SpeechRecordingModel(listening: listening)
         diagnostics.studyRecording = StudyRecordingModel(listening: listening)
+        #if DEBUG
+        if let shot = ScreenshotStage.requested { ScreenshotStage.seed(self, for: shot) } // A2: demo data, Simulator only
+        #endif
     }
 }

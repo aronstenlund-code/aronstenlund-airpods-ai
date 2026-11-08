@@ -30,7 +30,8 @@ struct NotesView: View {
                 Text(error).font(.footnote).foregroundStyle(.red)
             }
         }
-        .navigationTitle("Notes")
+        .lumenForm()
+        .navigationTitle("Anteckningar")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -48,6 +49,7 @@ struct NoteDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
         }
+        .lumenForm()
         .navigationTitle(note.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

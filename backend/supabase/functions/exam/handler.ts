@@ -222,9 +222,13 @@ export function summarize(results: { no: string; points: Points }[], boundaries:
   const spoken = boundaries.length
     ? `Du har ${total} poäng, varav ${sum.C} C-poäng och ${sum.A} A-poäng. Det räcker till ${grade === "F" ? "F" : `betyget ${grade}`}.` +
       (toNext
-        ? ` Till ${toNext.grade} saknas ${toNext.total} poäng${
-          toNext.a ? `, varav ${toNext.a} A-poäng` : toNext.ca ? `, varav ${toNext.ca} på C- eller A-nivå` : ""
-        }.`
+        ? toNext.a && toNext.a >= toNext.total
+          ? ` Till ${toNext.grade} saknas ${toNext.a} A-poäng.`
+          : toNext.ca && toNext.ca >= toNext.total
+          ? ` Till ${toNext.grade} saknas ${toNext.ca} poäng på C- eller A-nivå.`
+          : ` Till ${toNext.grade} saknas ${toNext.total} poäng${
+            toNext.a ? `, varav ${toNext.a} A-poäng` : toNext.ca ? `, varav ${toNext.ca} på C- eller A-nivå` : ""
+          }.`
         : "")
     : `Du har ${total} poäng, varav ${sum.C} C-poäng och ${sum.A} A-poäng.`;
   return { points: sum, total, grade, to_next: toNext, tasks: results.length, spoken };
@@ -376,7 +380,13 @@ export function createExamHandler(deps: ExamDeps) {
         feedback = clean(j.feedback, 600);
       } catch { /* malformed: zero points, no feedback */ }
       const max = task!.points;
-      const points = correctPoints(task!, clean(b?.answer, EXAM_LIMITS.answer), p, numeric);
+      const answerText = clean(b?.answer, EXAM_LIMITS.answer);
+      const points = correctPoints(task!, answerText, p, numeric);
+      // K1.7 (Oscar: "du har räknat ut summan rätt, eftersom 66 ingår" for "ungefär 16"): a bare wrong number
+      // shows no work, so the feedback never praises a method; it says so in code
+      if (numeric && !numeric.equal && isBareNumber(answerText)) {
+        feedback = "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.";
+      }
       return json({ points, max, total: points.E + points.C + points.A, numeric, feedback, usage });
     } catch (e) {
       return errorResponse(toHttpError(e));

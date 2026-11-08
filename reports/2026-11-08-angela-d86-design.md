@@ -145,5 +145,8 @@ errors, the same Pausa/Avsluta words, and speech permission only when needed.
   font. They follow light/dark and the blue accent, and Settings has no capitals over its headings. Restyling them is
   a later step.
 
+## CI
+- **Green:** run `42493099848` on commit `0f99e1c` (D81 + D84 + D86 + D87 together: build, unit tests, licence check). IPA for Sideloadly: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42493099848/artifacts/13621679810 (kept 14 days).
+
 ## Next session
 After a green CI: checklist 3z9 on Aron's iPhone.

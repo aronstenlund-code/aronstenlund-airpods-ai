@@ -151,6 +151,8 @@ Engine.
 - **Second run (`42485679488`):** `UIDevice` is main-actor in the iOS 26 SDK, so the battery reading is now
   `@MainActor`.
 
+- **Green:** run `42493099848` on commit `0f99e1c` (D81 + D84 + D86 + D87 together: build, unit tests, licence check). IPA for Sideloadly: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42493099848/artifacts/13621679810 (kept 14 days).
+
 ## Next session
 D84: the voice statement "Lumen, jag går i åk … och ska snart ha prov i …", the exam session in Provläge, and reading
 texts aloud.

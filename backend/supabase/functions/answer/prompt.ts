@@ -19,7 +19,7 @@ export const COMMON = `- Same language as <language> ("sv" Swedish, "en" English
 
 const FACT_STYLE =
   `- Short: at most two short sentences, ideally under 30 words. Lead with the answer; never repeat the question.
-- If <computed> is present it is the exact result, calculated by code from the fragment: state it in one short natural sentence and never recompute or contradict it. Otherwise do the maths carefully. A bare term or short phrase means "explain this to me": what it is, the key facts or values a student needs, and one detail that helps it stick - still brief. For quantities and constants give the commonly used value with reasonable precision.`;
+- If <computed> is present it is the exact result, calculated by code from the fragment: state it in one short natural sentence (in Provläge: explain the steps at the student's level, ending in this result) and never recompute or contradict it. Otherwise do the maths carefully. A bare term or short phrase means "explain this to me": what it is, the key facts or values a student needs, and one detail that helps it stick - still brief. For quantities and constants give the commonly used value with reasonable precision.`;
 
 const STUDY_STYLE =
   `- This is a topic to understand, so give a developed spoken answer of five to eight short sentences (about 40 seconds aloud). Start with ONE sentence that names the topic and gives the overview - it is spoken first, so make it stand on its own. Then the main points in plain speech, one or two sentences each. Link them naturally; use no fixed stock phrases (no "För det första", no "Sammanfattningsvis"). For pros and cons or comparisons cover both sides. Stop when everything useful is said: a closing sentence is only allowed if it adds something new, never a restatement.`;
@@ -33,10 +33,10 @@ const TUTOR_STYLE =
  */
 export const PROFILE_RULE =
   `- <profile> (optional) is the student's own study profile: exam date, grade (Åk 6-9, Gymnasiet 1-3 with an optional course, Högskola, Annat), subject, check questions and explanation length. When it is there it overrides the defaults above:
-  - Level: every answer is at the level the Swedish curriculum (Skolverket) asks for the top grade A in exactly that grade and course: the concepts, reasoning and terms an A answer needs there, not more advanced and not simpler. Åk 6-9 stays at the grundskola level: the main idea, cause and effect, everyday examples and the terms the grundskola uses, never the named steps, molecules or mechanisms that belong to gymnasiet courses. Gymnasiet and Högskola go into the mechanisms, named steps and terms of the course. Explain it so the student can say it in their own words on the test: the key point first, then why or how, with the subject's own terms.
+  - Level: every answer is at the level the Swedish curriculum (Skolverket) asks for the top grade A in exactly that grade and course: the concepts, reasoning and terms an A answer needs there, not more advanced and not simpler. Åk 6-9 stays at the grundskola level: the main idea, cause and effect, everyday examples and the terms the grundskola uses, never the named steps, molecules or mechanisms that belong to gymnasiet courses. Gymnasiet and Högskola go into the mechanisms, named steps and terms of the course. Mathematics (K1.3): Åk 6-9 has no derivatives, limits or differentiation rules; when asked, explain only the idea (how fast something changes, the slope of a graph, an everyday example such as speed), never a limit, "h går mot noll", f′(x) notation, the power rule or the chain rule; equations in Åk 7-9 are solved step by step with the same operation on both sides. Matte 3: the derivative as the slope, the limit definition and the power rule. Matte 4: also the chain rule, the product and quotient rules and the derivatives of eˣ, ln x, sin x and cos x. Always say a term with its variable ("två x", never only "två gånger"). Explain it so the student can say it in their own words on the test: the key point first, then why or how, with the subject's own terms.
   - Explanations (this replaces the five to eight sentences above): "korta" = at most three sentences and about 50 words in all, no example unless it is the point; "mellanlånga" = four to six sentences; "utförliga" = seven to ten.
   - Check questions "inga": never a check question. "ja-nej": the check question can be answered with one word or a nod (ja/nej, a yes-no question). "korta": a short question answered with a word or a short phrase. "svåra": a question that needs reasoning, at the A level of the grade.
-  - Subject first (D84): a misheard, split or very short word is first read as a term of the profile's subject and of <prep_terms> (the subject's term list) before any general meaning ("mito" with the subject Biologi = mitos, "tryck" with Fysik = tryck as the physical quantity), and answered as that term without saying that you interpreted it.
+  - Subject first (D84): a misheard, split or very short word is first read as a term of the profile's subject and of <prep_terms> (the subject's term list) before any general meaning ("mito" with the subject Biologi = mitos, "tryck" with Fysik = tryck as the physical quantity), and answered as that term without saying that you interpreted it. A word that is itself a term in the profile's subject keeps that subject's meaning: "syntes" with Kemi = a synthesis reaction (two or more substances form a new compound), with Biologi = fotosyntes; never move it to another subject. Never say how you read the word, never call a word "ett kemiord" or not, never mention the list, the profile, "ämnesord", the exam date as a reason, or what the word is "nog": the answer starts with the term itself.
   - Several exams (D86): <profile> is the exam being studied NOW. <memories> may mention other exams (another subject or date): they are not this exam; never mix their subject, date or content into this one.
   - Exam date: when the exam is today, tomorrow or within a few days, give priority to what is most likely on that test for the grade and subject (core concepts, typical exam questions, common mistakes), and keep answers tight.`;
 
@@ -199,6 +199,27 @@ export function isQuizRequest(fragment: string): boolean {
 }
 export const QUIZ_NOTE =
   "The student says \"förhör mig\": reply with ONE check question and nothing else: no answer, no introduction such as \"Här är en fråga\", the first word is the question. This explicit request overrides \"Kontrollfrågor: inga\" in <profile>. It is about something from <recent_qa>, or, when nothing was studied yet, something likely on the exam in <profile> (its subject, grade and \"På provet\"). Level: what an A answer needs in that grade. Style from <profile>: \"ja-nej\" = answerable with ja or nej; \"korta\" or no style = answerable with a word or a short phrase; \"svåra\" = needs a short explanation. Never a question listed in <already_asked>.";
+/** K1.4: every check question asked so far: the app's list (whole session) plus the ones in recent_qa, once each. */
+export function askedQuestions(req: { context: { recent_qa: { q?: string; a: string }[]; already_asked?: string[] } }): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const q of [...(req.context.already_asked ?? []), ...req.context.recent_qa.map((x) => lastQuestion(x.a))]) {
+    const k = q?.toLowerCase().replace(/[^\p{L}\d]+/gu, " ").trim();
+    if (q && k && !seen.has(k)) {
+      seen.add(k);
+      out.push(q.trim());
+    }
+  }
+  return out.slice(-40);
+}
+
+/** K1.4: does the fragment look like a new question rather than a reply to the check question? */
+export function looksLikeQuestion(fragment: string): boolean {
+  const t = fragment.trim().toLowerCase();
+  return /\?\s*$/.test(t) ||
+    /^(?:och |men |så )?(?:vad|hur|varför|när|vem|vems|vilken|vilket|vilka|var (?:finns|ligger|sker)|kan du|kan man|förklara|berätta|säg|ge mig|lumen)(?![\p{L}])/u.test(t);
+}
+
 /** D86: the student's reply to the check question that ended the last answer: grade it first. */
 export const GRADE_NOTE =
   "The fragment is the student's reply to your check question (the last question in <recent_qa>). Start with the verdict in one or two words: \"Rätt.\", \"Nästan.\" or \"Inte riktigt.\". Then the correct answer in one sentence, and why when it was not right. Then stop, or, when it was right, add one short next step; never a new question in the same answer unless the student asked to be quizzed again.";
@@ -255,9 +276,7 @@ ${PROFILE_RULE}
     parts.push(`<active_topic>${sanitizeTagged(qa[qa.length - 1].q)}</active_topic>`);
   }
   if (req.mode === "tutor") {
-    const asked = pruned.qa
-      .map((x) => lastQuestion(x.a))
-      .filter((x): x is string => !!x);
+    const asked = askedQuestions(req);
     if (asked.length) {
       parts.push(
         `<already_asked count="${asked.length}">\n${

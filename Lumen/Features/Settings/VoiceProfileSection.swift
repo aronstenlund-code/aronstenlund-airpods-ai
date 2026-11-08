@@ -103,6 +103,7 @@ struct StudyCardsView: View {
                 Button("Radera alla studiekort", role: .destructive) { store.deleteAll() }
             }
         }
+        .lumenForm()
         .navigationTitle("Studiekort")
         .navigationBarTitleDisplayMode(.inline)
     }

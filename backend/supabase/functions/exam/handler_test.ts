@@ -106,5 +106,7 @@ Deno.test("K1 exam summary never says fewer missing points than A points needed"
   const s = summarize([{ no: "1", points: { E: 5, C: 3, A: 0 } }], [{ grade: "C", total: 7, min_ca: 2 }, { grade: "A", total: 10, min_a: 3 }] as never);
   assertEquals(s.grade, "C");
   assertEquals(s.to_next?.total, 3);
-  assert(s.spoken.includes("Till A saknas 3 poäng, varav 3 A-poäng."), s.spoken);
+  assert(s.spoken.includes("Till A saknas 3 A-poäng."), s.spoken);
+  const s2 = summarize([{ no: "1", points: { E: 5, C: 3, A: 2 } }], [{ grade: "C", total: 7, min_ca: 2 }, { grade: "A", total: 10, min_a: 3 }] as never);
+  assert(s2.spoken.includes("Till A saknas 1 A-poäng."), s2.spoken);
 });
