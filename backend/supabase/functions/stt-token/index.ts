@@ -4,6 +4,7 @@ import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
+import { secret } from "../_shared/secrets.ts";
 import { envInt, supabaseUsageSink } from "../_shared/usage.ts";
 import { createSttHandler, DEFAULT_STT_CONFIG } from "./handler.ts";
 
@@ -16,7 +17,7 @@ const handler = createSttHandler({
     hs256Secret: env.get("SUPABASE_JWT_SECRET"),
   }),
   rateLimiter: new SupabaseRateLimiter(db),
-  apiKey: env.get("ELEVENLABS_API_KEY") ?? null,
+  apiKey: secret(env, "ELEVENLABS_API_KEY"),
   recordUsage: supabaseUsageSink(db),
   demo: demoCapsFromEnv(env),
   config: {

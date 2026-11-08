@@ -1,5 +1,6 @@
 // POST /functions/v1/tts  - streams ElevenLabs audio (TTS only; never ElevenLabs Agents).
 import { demoCapsFromEnv } from "../_shared/demo.ts";
+import { secret } from "../_shared/secrets.ts";
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { MemoryRateLimiter, SupabaseRateLimiter } from "../_shared/ratelimit.ts";
@@ -28,7 +29,7 @@ const handler = createTtsHandler({
   rateLimiter: new SupabaseRateLimiter(db),
   localLimiter: new MemoryRateLimiter(),
   warm: warmUpstream,
-  apiKey: env.get("ELEVENLABS_API_KEY") ?? null,
+  apiKey: secret(env, "ELEVENLABS_API_KEY"),
   recordUsage: supabaseUsageSink(db),
   demo: demoCapsFromEnv(env),
   config: {

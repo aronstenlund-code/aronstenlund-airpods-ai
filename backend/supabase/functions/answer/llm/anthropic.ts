@@ -1,3 +1,4 @@
+import { redactSecrets } from "../../_shared/secrets.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError, type LLMRequest } from "./types.ts";
 
 export interface AnthropicConfig {
@@ -14,6 +15,8 @@ export interface AnthropicConfig {
 export function classifyAnthropicError(
   status: number | undefined,
   message: string,
+  errorName?: string,
+  log: (line: string) => void = console.error,
 ): LLMProviderError {
   const m = message.toLowerCase();
   if (status === 402 || m.includes("credit balance") || m.includes("billing")) {
@@ -30,6 +33,13 @@ export function classifyAnthropicError(
       status,
     );
   }
+  // K0: say why, so a bad key paste or a network error is visible in the function log (never the key).
+  log(JSON.stringify({
+    event: "provider_unavailable",
+    status: status ?? null,
+    error: errorName ?? null,
+    message: redactSecrets(message).slice(0, 200),
+  }));
   return new LLMProviderError("unavailable", "Provider unavailable", status);
 }
 
@@ -260,6 +270,7 @@ export class AnthropicProvider implements LLMProvider {
           throw classifyAnthropicError(
             err?.type === "overloaded_error" ? 529 : 500,
             err?.message ?? "stream error",
+            err?.type ?? "stream_error",
           );
         }
         const stop = ev.type === "message_delta"
@@ -283,7 +294,11 @@ export class AnthropicProvider implements LLMProvider {
       if (e instanceof LLMProviderError) throw e;
       if (req.signal?.aborted) throw e;
       const status = (e as { status?: number }).status;
-      throw classifyAnthropicError(status, e instanceof Error ? e.message : String(e));
+      const err = e instanceof Error ? e : undefined;
+      const cause = (err as { cause?: unknown } | undefined)?.cause;
+      const causeText = cause instanceof Error ? ` (cause: ${cause.name}: ${cause.message})` : "";
+      const message = redactSecrets((err?.message ?? String(e)) + causeText, this.cfg.apiKey);
+      throw classifyAnthropicError(status, message, err?.name);
     }
   }
 }

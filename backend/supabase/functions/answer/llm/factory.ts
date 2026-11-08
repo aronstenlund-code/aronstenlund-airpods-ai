@@ -1,3 +1,4 @@
+import { secret } from "../../_shared/secrets.ts";
 import { AnthropicProvider } from "./anthropic.ts";
 import { MockProvider } from "./mock.ts";
 import { type LLMProvider } from "./types.ts";
@@ -11,7 +12,7 @@ export function providerFromEnv(env: { get(k: string): string | undefined }): LL
   const which = (env.get("LLM_PROVIDER") ?? "anthropic").toLowerCase();
   if (which === "mock") return new MockProvider();
   if (which === "anthropic") {
-    const apiKey = env.get("ANTHROPIC_API_KEY");
+    const apiKey = secret(env, "ANTHROPIC_API_KEY");
     if (!apiKey) return null;
     const effort = (env.get("LLM_EFFORT") ?? "low") as "low" | "medium" | "high";
     return new AnthropicProvider({
