@@ -2,6 +2,6 @@
 
 Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och ljuduppfattning testas.
 
-- [ ] **A1 – Testkrokar åt Dwight** (effort: medium). Dwight (apptestare) tar över ljudkedjetestet och långtestet. Lägg till det han behöver för att mata WAV-filer i stället för mikrofonen i simulatorn (en testbar ljudkälla bakom ett protokoll, bara i Debug/test-byggen) och en testmålsplats `AppTests/E2E/` i project.yml som han får skriva i. Fråga honom i hans rapport om något saknas.
+- [ ] **A1 – Testkrokar åt Toby** (effort: medium). Toby (apptestare) tar över ljudkedjetestet och långtestet. Lägg till det han behöver för att mata WAV-filer i stället för mikrofonen i simulatorn (en testbar ljudkälla bakom ett protokoll, bara i Debug/test-byggen) och en testmålsplats `AppTests/E2E/` i project.yml som han får skriva i. Fråga honom i hans rapport om något saknas.
 
 - [ ] **A2 – D86 resten** (effort: medium). Skärmarna som behöll listlayouten (Inställningar, Diagnostik, Anteckningar, lägenas startskärmar) får den nya designen. Samtycke: Architect godkänner ett kort samtyckeskort i introduktionen (Lumen lyssnar bara när du startat den, du ser alltid när den lyssnar, ljud sparas inte) med "Läs mer", så att första svaret kan komma inom 30 sekunder. Skicka skärmbilder från simulatorn i rapporten.

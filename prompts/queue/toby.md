@@ -1,4 +1,4 @@
-# Kö: Dwight (apptestare)
+# Kö: Toby (apptestare)
 
 Du testar appen oberoende av Angela och ändrar aldrig appkoden. Saknas en testkrok: skriv det under "Behöver av Angela" i din rapport.
 
