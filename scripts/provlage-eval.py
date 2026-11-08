@@ -17,10 +17,38 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 USERS = 4
 
 
-def signup():
-    req = urllib.request.Request(URL + "/auth/v1/signup", method="POST", data=b"{}",
+def _auth(path, body):
+    req = urllib.request.Request(URL + path, method="POST", data=json.dumps(body).encode(),
                                  headers={"apikey": KEY, "content-type": "application/json"})
-    return json.loads(urllib.request.urlopen(req, timeout=30).read())["access_token"]
+    return json.loads(urllib.request.urlopen(req, timeout=30).read())
+
+
+def signup(cache=None, slot=0):
+    """A session; with --tokens FILE the refresh tokens are kept so repeated local runs do not need new
+    anonymous sign-ins (Supabase limits them per IP)."""
+    if cache:
+        try:
+            saved = json.load(open(cache, encoding="utf-8"))
+        except Exception:
+            saved = {}
+        rt = saved.get(str(slot))
+        if rt:
+            try:
+                j = _auth("/auth/v1/token?grant_type=refresh_token", {"refresh_token": rt})
+                saved[str(slot)] = j["refresh_token"]
+                json.dump(saved, open(cache, "w", encoding="utf-8"))
+                return j["access_token"]
+            except Exception:
+                pass
+    j = _auth("/auth/v1/signup", {})
+    if cache:
+        try:
+            saved = json.load(open(cache, encoding="utf-8"))
+        except Exception:
+            saved = {}
+        saved[str(slot)] = j["refresh_token"]
+        json.dump(saved, open(cache, "w", encoding="utf-8"))
+    return j["access_token"]
 
 
 def stream_answer(tok, model, body):
@@ -134,6 +162,8 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--out", default=os.path.join(ROOT, "reports", "eval"))
+    ap.add_argument("--tokens", default="", help="file that keeps refresh tokens between local runs (never commit it)")
+    ap.add_argument("--users", type=int, default=USERS)
     a = ap.parse_args()
     cases = json.load(open(os.path.join(ROOT, "scripts", "provlage-bank.json"), encoding="utf-8"))
     if a.only:
@@ -141,10 +171,10 @@ def main():
         cases = [c for c in cases if c["kind"] in kinds]
     if a.limit:
         cases = cases[:a.limit]
-    toks = [signup() for _ in range(USERS)]
+    toks = [signup(a.tokens or None, i) for i in range(a.users)]
     rows = []
     with cf.ThreadPoolExecutor(max_workers=a.workers) as ex:
-        futs = [ex.submit(run_case, toks[i % USERS], c, a.model, a.judge) for i, c in enumerate(cases)]
+        futs = [ex.submit(run_case, toks[i % len(toks)], c, a.model, a.judge) for i, c in enumerate(cases)]
         for f in cf.as_completed(futs):
             rows.append(f.result())
     rows.sort(key=lambda r: r["id"])

@@ -50,3 +50,9 @@ Deno.test("Oscar 2026-11-08 Provläge: 'Det verkar vara begreppet X, så här ä
   assertEquals(rewriteLeadIn("Det här är periodiska systemet, som är ett sätt att ordna grundämnena. ", "pe ri o diska syste met"),
     "Periodiska systemet är ett sätt att ordna grundämnena. ");
 });
+
+Deno.test("D87 with an exam profile a guessed reading keeps the answer (only the guess sentence goes)", () => {
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true, silence: true, inputMeta: true, heard: "gra vi ta tion", subjectKnown: true });
+  const out = p.push("Det låter som gravitation, som du kanske menar. Gravitation är dragningskraften mellan massor. ") + p.finish();
+  assertEquals(out.trim(), "Gravitation är dragningskraften mellan massor.");
+});

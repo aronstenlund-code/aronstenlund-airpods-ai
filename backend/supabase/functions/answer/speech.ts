@@ -900,6 +900,8 @@ export interface PostOptions {
   silence?: boolean;
   /** D77: interview answer: sentences that say facts are missing are dropped. */
   interview?: boolean;
+  /** D87: a Provläge profile names the subject, so a guessed reading is kept within it. */
+  subjectKnown?: boolean;
   /** D86: "förhör mig": only the check question itself is said (the last sentence that ends with "?"). */
   quizOnly?: boolean;
   /** D84: split off a `källa:` line without the English filter (texts and quotes). */
@@ -944,7 +946,9 @@ export class AnswerPost {
       if (firstDone || !sentence.trim()) return sentence;
       firstDone = true;
       if (isUnsureLeadIn(sentence)) {
-        unsure = true;
+        // D87: with an exam profile the subject decides: drop the guess sentence, keep the answer.
+        // Without one: rather silence than a wrong subject (Oscar 2026-11-08).
+        unsure = opts.subjectKnown !== true;
         return "";
       }
       return rewriteLeadIn(sentence, opts.heard ?? "");
