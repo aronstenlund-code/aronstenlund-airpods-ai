@@ -183,7 +183,8 @@ export function correctPoints(task: ExamTask, answer: string, model: Points, num
   const level = answerLevel(task.assessment);
   if (numeric && level) {
     if (numeric.equal && p[level] === 0 && max[level] > 0) p = { ...p, [level]: 1 }; // "x är sju" = 7: the answer point
-    if (!numeric.equal) p = { ...p, [level]: 0 }; // a wrong number never gets the answer point
+    // a wrong number never gets the answer point (a method point on the same level stays)
+    if (!numeric.equal) p = { ...p, [level]: Math.min(p[level], Math.max(0, max[level] - 1)) };
   }
   // a bare number shows no method: a wrong one earns nothing ("500", "ungefär 16")
   if (numeric && !numeric.equal && isBareNumber(answer)) p = { E: 0, C: 0, A: 0 };

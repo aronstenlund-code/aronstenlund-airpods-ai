@@ -98,6 +98,8 @@ Deno.test("K1.1 oral grading: spoken numbers, the answer after the last 'så/är
   const task = { no: "2", text: "Lös 3x = 21", points: { E: 1, C: 1, A: 0 }, answer: "x = 7", assessment: "+E för korrekt metod, +C för korrekt svar" };
   assertEquals(correctPoints(task, "x är sju", { E: 0, C: 0, A: 0 }, numericCheck(task.answer, "x är sju")), { E: 0, C: 1, A: 0 });
   assertEquals(correctPoints(task, "500", { E: 1, C: 0, A: 0 }, numericCheck(task.answer, "500")), { E: 0, C: 0, A: 0 });
+  const pct = { no: "3", text: "800 kr sänks 25 %", points: { E: 2, C: 0, A: 0 }, answer: "600 kr", assessment: "+E för korrekt metod, +E för korrekt svar 600 kr" };
+  assertEquals(correctPoints(pct, "25 % av 800 är 200 kronor", { E: 2, C: 0, A: 0 }, numericCheck(pct.answer, "25 % av 800 är 200 kronor")), { E: 1, C: 0, A: 0 });
 });
 
 Deno.test("K1 exam summary never says fewer missing points than A points needed", () => {
