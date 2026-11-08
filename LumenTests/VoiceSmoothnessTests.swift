@@ -34,7 +34,10 @@ import Testing
 
     @Test func lateChunksNoLongerStutter() {
         // A chunk every 100 ms on average, but every other one 150 ms late (uneven 4G).
-        let times = (0..<30).map { i in Double(i) * 0.1 + (i % 2 == 1 ? 0.15 : 0) }
+        let times: [Double] = (0..<30).map { (i: Int) -> Double in
+            let late: Double = i % 2 == 1 ? 0.15 : 0
+            return Double(i) * 0.1 + late
+        }
         let naive = run(times, jitter: false)
         let buffered = run(times, jitter: true)
         #expect(naive.gaps > 5, "playing each chunk at once stutters")

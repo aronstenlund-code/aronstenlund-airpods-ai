@@ -69,5 +69,9 @@ Toby checks in the Simulator, Aron on the phone. CI: see the end of this report.
   it should be 200 or 400.
 - **Apple's voice** (on the phone) has no jitter buffer; it is local and has no network gaps.
 
+## CI
+- **First run (`42500583154`):** the tests did not compile. The start-buffer constant had to be `nonisolated`, and one
+  test expression needed explicit types. Both fixed.
+
 ## Next session
 A3 (choose a voice) when Kevin's K6 is done; otherwise the queue.

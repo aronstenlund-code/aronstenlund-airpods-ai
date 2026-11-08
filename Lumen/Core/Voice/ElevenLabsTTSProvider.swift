@@ -9,7 +9,7 @@ final class ElevenLabsTTSProvider: TTSProvider {
     /// 100 ms of 16-bit mono at 24 kHz per scheduled buffer.
     static let bufferBytes = 4_800
     /// A4: speech starts when this much is queued, and buffers this much again after running dry (DECISIONS A4).
-    static let startBufferSeconds = 0.3
+    nonisolated static let startBufferSeconds = 0.3
     private(set) var lastStats: VoiceStreamStats?
 
     let name = "elevenlabs"
