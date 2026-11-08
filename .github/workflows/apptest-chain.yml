@@ -1,0 +1,66 @@
+name: Apptest audio chain (T1)
+
+# Toby's audio chain test: Swedish speech files through the app's real chain in the Simulator (VAD, Scribe live,
+# utterance joining, QuestionGate/Provläge, /answer). Live and paid, so manual and nightly only (plus Toby's own
+# branch while he builds it). Simulator only: never a verification on a device.
+on:
+  schedule:
+    - cron: "0 2 * * *" # nightly, 03:00 Swedish winter time
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Chain/**"
+      - "AppTests/E2E/Audio/cases.tsv"
+      - "scripts/apptest/chain*"
+      - ".github/workflows/apptest-chain.yml"
+
+concurrency:
+  group: apptest-chain-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chain:
+    name: Audio chain (Simulator, live)
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Audio chain test
+        run: |
+          bash scripts/apptest/chain.sh
+          STATUS=$?
+          cat apptest-out/chain/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-chain
+          path: |
+            apptest-out/chain
+            !apptest-out/chain/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
+
+      - name: Upload result bundle
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-chain-xcresult
+          path: apptest-out/chain/logs/*.xcresult
+          retention-days: 5
+          if-no-files-found: ignore
