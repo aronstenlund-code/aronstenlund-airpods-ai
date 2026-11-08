@@ -1,0 +1,906 @@
+{
+ "backend_start": "3b1a6c3 14:54",
+ "backend_end": "63d9e25 14:59",
+ "spent": 0.082,
+ "log": [
+  {
+   "test": "backend",
+   "start": "3b1a6c3 14:54",
+   "at": "14:54:55"
+  },
+  {
+   "test": "== exam",
+   "at": "14:54:55"
+  },
+  {
+   "test": "X2 grade 4 '16,6'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 16.5,
+    "given": 16.6,
+    "equal": false
+   },
+   "feedback": "Du har försökt beräkna medelvärdet, men svaret 16,6 stämmer inte. Kontrollera summan av de fyra värdena och dela sedan med antalet värden igen.",
+   "err": null,
+   "at": "14:55:04"
+  },
+  {
+   "test": "X2 grade 4 'medelvärdet är sexton komma fem'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 16.5,
+    "given": 5,
+    "equal": false
+   },
+   "feedback": "Du sa sexton komma fem, men kontrollen visar att det slutliga talet inte stämmer med det rätta svaret, så C-poängen för rätt medelvärde ges inte. Titta på hur du får fram summan av de fyra talen och dela den med antalet besökare; visa även summan du räknade fram.",
+   "err": null,
+   "at": "14:55:12"
+  },
+  {
+   "test": "X2 grade 5 'area 40 cm2 och omkrets 26 cm'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 26,
+    "given": 26,
+    "equal": true
+   },
+   "feedback": "Area och omkrets är båda rätt med rätt enheter. För A-poängen behövs en tydlig redovisning, så visa hur du räknade fram area (8 · 5) och omkrets (2 · 8 + 2 · 5).",
+   "err": null,
+   "at": "14:55:20"
+  },
+  {
+   "test": "X2 grade 5 'area 40, omkrets 13 cm'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 26,
+    "given": 13,
+    "equal": false
+   },
+   "feedback": "Arean är rätt beräknad till 40 cm². Omkretsen blev fel, eftersom du måste addera alla fyra sidor (8 + 5 + 8 + 5), inte bara två.",
+   "err": null,
+   "at": "14:55:27"
+  },
+  {
+   "test": "X2 grade 5 '40 och 26'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 26,
+    "given": 26,
+    "equal": true
+   },
+   "feedback": "Du fick rätt area och rätt omkrets, men enheterna saknas och redovisningen är bara två tal. Skriv ut enheterna cm² och cm och visa kort hur du räknade, så får du full poäng.",
+   "err": null,
+   "at": "14:55:35"
+  },
+  {
+   "test": "X2 grade 3 'x är sju'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 7,
+    "equal": true
+   },
+   "feedback": "Svaret x = 7 är rätt, men du har inte visat hur du kom dit. Du behöver visa minst ett steg, till exempel att du lägger till 7 på båda sidor, för att få poäng för metoden.",
+   "err": null,
+   "at": "14:55:43"
+  },
+  {
+   "test": "X2 grade 3 '3x = 14 + 7 = 21, x = 21/3 = 7'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 7,
+    "equal": true
+   },
+   "feedback": "Bra jobbat: du adderade 7 på båda sidor och fick rätt värde på x. Nästa gång kan du skriva ut ett kort steg för att visa att svaret stämmer genom att sätta in x = 7 i ekvationen.",
+   "err": null,
+   "at": "14:55:50"
+  },
+  {
+   "test": "X2 grade 2 'jag vet inte'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": null,
+    "equal": false
+   },
+   "feedback": "Du har inte gett något svar på uppgiften. Försök att först räkna ut hur mycket 25 % av 800 kr är, och dra sedan det beloppet från ursprungspriset.",
+   "err": null,
+   "at": "14:55:58"
+  },
+  {
+   "test": "X2 hint 1",
+   "status": 200,
+   "hint": "Tänk på vad procenten 25 % står för: det är en del av ursprungspriset, så börja med att fundera på hur mycket av de 800 kronorna rabatten motsvarar.",
+   "at": "14:56:05"
+  },
+  {
+   "test": "X2 hint 2",
+   "status": 200,
+   "hint": "Tänk på hur man räknar ut en procentandel av ett belopp: du multiplicerar beloppet med procentsatsen delat med hundra. Börja med att ta reda på hur mycket 25 procent av 800 kronor är, och dra sedan det beloppet från ordinarie pris.",
+   "at": "14:56:12"
+  },
+  {
+   "test": "X2 hint 3",
+   "status": 200,
+   "hint": "Börja med att räkna ut hur mycket rabatten är. Procent betyder hundradelar, så 25 % av 800 kr är 25 hundradelar av 800. Ta 800 delat med 100 och multiplicera sedan med 25. Du får då fram rabattbeloppet i kronor. Dra sedan av det från ordinarie pris på 800 kr för att se vad skorna kostar på rean.",
+   "at": "14:56:20"
+  },
+  {
+   "test": "X2 hint 3 task 5",
+   "status": 200,
+   "hint": "Din area på 40 är helt rätt, och det är bra att du har fått fram den. Nu återstår omkretsen. Börja med att komma ihåg att omkrets är den totala sträckan runt hela rektangeln. Lägg då ihop alla fyra sidorna: två sidor på 8 cm och två sidor på 5 cm. Räkna ut summan av de två olika sidlängderna först och multiplicera sedan resultatet med två.",
+   "at": "14:56:28"
+  },
+  {
+   "test": "X2 summary 8 p",
+   "status": 200,
+   "spoken": "Du har 8 poäng, varav 3 C-poäng och 0 A-poäng. Det räcker till betyget C. Till A saknas 2 poäng, varav 3 A-poäng.",
+   "body": {
+    "points": {
+     "E": 5,
+     "C": 3,
+     "A": 0
+    },
+    "total": 8,
+    "grade": "C",
+    "to_next": {
+     "grade": "A",
+     "total": 2,
+     "a": 3
+    },
+    "tasks": 5,
+    "spoken": "Du har 8 poäng, varav 3 C-poäng och 0 A-poäng. Det räcker till betyget C. Till A saknas 2 poäng, varav 3 A-poäng."
+   },
+   "at": "14:56:30"
+  },
+  {
+   "test": "X2 summary 4 p",
+   "status": 200,
+   "spoken": "Du har 3 poäng, varav 1 C-poäng och 0 A-poäng. Det räcker till F. Till E saknas 1 poäng.",
+   "body": {
+    "points": {
+     "E": 2,
+     "C": 1,
+     "A": 0
+    },
+    "total": 3,
+    "grade": "F",
+    "to_next": {
+     "grade": "E",
+     "total": 1
+    },
+    "tasks": 3,
+    "spoken": "Du har 3 poäng, varav 1 C-poäng och 0 A-poäng. Det räcker till F. Till E saknas 1 poäng."
+   },
+   "at": "14:56:32"
+  },
+  {
+   "test": "X2 summary 11 p",
+   "status": 200,
+   "spoken": "Du har 10 poäng, varav 3 C-poäng och 2 A-poäng. Det räcker till betyget C. Till A saknas 0 poäng, varav 1 A-poäng.",
+   "body": {
+    "points": {
+     "E": 5,
+     "C": 3,
+     "A": 2
+    },
+    "total": 10,
+    "grade": "C",
+    "to_next": {
+     "grade": "A",
+     "total": 0,
+     "a": 1
+    },
+    "tasks": 6,
+    "spoken": "Du har 10 poäng, varav 3 C-poäng och 2 A-poäng. Det räcker till betyget C. Till A saknas 0 poäng, varav 1 A-poäng."
+   },
+   "at": "14:56:34"
+  },
+  {
+   "test": "spent",
+   "answer": 0.0,
+   "other": 0.0013,
+   "backend": "3b1a6c3 14:54",
+   "at": "14:56:35"
+  },
+  {
+   "test": "== cards",
+   "at": "14:56:35"
+  },
+  {
+   "test": "C1 åk7",
+   "status": 200,
+   "ms": 4471,
+   "n_cards": 6,
+   "n_test": 5,
+   "cards": [
+    {
+     "q": "Var sker fotosyntesen i växtcellen?",
+     "a": "Fotosyntesen sker i kloroplasterna."
+    },
+    {
+     "q": "Hur tar växten upp koldioxid?",
+     "a": "Koldioxid tas upp genom klyvöppningarna i bladen."
+    },
+    {
+     "q": "Var tar växten upp vatten?",
+     "a": "Vatten tas upp genom rötterna."
+    },
+    {
+     "q": "Vilken energi används vid fotosyntesen?",
+     "a": "Ljusenergi används för att bilda druvsocker och syre."
+    },
+    {
+     "q": "Vad bildas vid fotosyntesen?",
+     "a": "Druvsocker och syre bildas vid fotosyntesen."
+    },
+    {
+     "q": "Var sker cellandningen och hur förhåller den sig till fotosyntesen?",
+     "a": "Cellandningen sker i mitokondrierna och är motsatsen till fotosyntesen: socker och syre omvandlas till energi, koldioxid och vatten."
+    }
+   ],
+   "tests": [
+    {
+     "q": "Vilka ämnen behöver växten för fotosyntesen?",
+     "a": "Koldioxid, vatten och ljusenergi."
+    },
+    {
+     "q": "Var i cellen sker cellandningen?",
+     "a": "I mitokondrierna."
+    },
+    {
+     "q": "Förklara varför växter behöver både klyvöppningar och rötter.",
+     "a": "Klyvöppningarna släpper in koldioxid som behövs för fotosyntesen, och rötterna tar upp vatten som också behövs för fotosyntesen."
+    },
+    {
+     "q": "Vad skulle hända med fotosyntesen om det var mörkt hela tiden?",
+     "a": "Ingen ljusenergi finns då, så druvsocker och syre kan inte bildas genom fotosyntesen."
+    },
+    {
+     "q": "Ett djur äter växter. Varför kan djuret använda sockret från växten? Använd begreppen cellandning och energi.",
+     "a": "Sockret som bildats i växten innehåller energi. Djurets celler omvandlar sockret i cellandningen i mitokondrierna till användbar energi, koldioxid och vatten."
+    }
+   ],
+   "err": null,
+   "at": "14:56:55"
+  },
+  {
+   "test": "C2 utan profil, 3 kort",
+   "status": 200,
+   "ms": 4830,
+   "n_cards": 3,
+   "n_test": 5,
+   "cards": [
+    {
+     "q": "Var sker fotosyntesen i växtcellen?",
+     "a": "Fotosyntesen sker i kloroplasterna, där ljusenergi används för att bilda druvsocker och syre."
+    },
+    {
+     "q": "Vilka ämnen tar växten upp för fotosyntesen och hur?",
+     "a": "Koldioxid tas upp genom klyvöppningarna och vatten genom rötterna."
+    },
+    {
+     "q": "Hur förhåller sig cellandningen till fotosyntesen?",
+     "a": "Cellandningen är motsatsen: socker och syre omvandlas till energi, koldioxid och vatten i mitokondrierna."
+    }
+   ],
+   "tests": [
+    {
+     "q": "Vad bildas vid fotosyntesen och vilken energikälla behövs?",
+     "a": "Druvsocker och syre bildas, och ljusenergi behövs."
+    },
+    {
+     "q": "Var i växtcellen sker cellandningen?",
+     "a": "Cellandningen sker i mitokondrierna."
+    },
+    {
+     "q": "Förklara varför växter behöver både rötter och klyvöppningar.",
+     "a": "Rötterna tar upp vatten och klyvöppningarna tar upp koldioxid, och båda behövs för att fotosyntesen ska kunna ske."
+    },
+    {
+     "q": "Vilka ämnen ingår i cellandningen som går åt och vilka som bildas?",
+     "a": "Druvsocker och syre går åt, och energi, koldioxid och vatten bildas."
+    },
+    {
+     "q": "En växt står i mörker en hel natt. Vilken process pågår i cellerna och varför slutar fotosyntesen?",
+     "a": "Cellandningen pågår eftersom den inte kräver ljus, medan fotosyntesen stannar av för att den behöver ljusenergi."
+    }
+   ],
+   "err": null,
+   "at": "14:57:16"
+  },
+  {
+   "test": "C3 kort summary",
+   "status": 200,
+   "ms": 4666,
+   "n_cards": 4,
+   "n_test": 5,
+   "cards": [
+    {
+     "q": "Vilken cellorganell producerar energi i cellen?",
+     "a": "Mitokondrien producerar energi i cellen."
+    },
+    {
+     "q": "Vad gör mitokondrien i cellen?",
+     "a": "Mitokondrien gör energi (ATP) åt cellen."
+    },
+    {
+     "q": "Vilken roll har mitokondrien för cellens energiförsörjning?",
+     "a": "Den är cellens energiproducerande organell, som omvandlar näringsämnen till energi som cellen kan använda."
+    },
+    {
+     "q": "Varför är mitokondrien viktig för cellen?",
+     "a": "Utan mitokondriernas energiproduktion skulle cellen inte kunna utföra de processer den behöver för att fungera."
+    }
+   ],
+   "tests": [
+    {
+     "q": "Vilken cellorganell är ansvarig för energiproduktionen i cellen?",
+     "a": "Mitokondrien."
+    },
+    {
+     "q": "Vad är den huvudsakliga funktionen hos mitokondrien?",
+     "a": "Att producera energi åt cellen."
+    },
+    {
+     "q": "Förklara varför en cell som har många energikrävande processer ofta har många mitokondrier.",
+     "a": "Eftersom mitokondrien producerar energi, behöver en cell med hög energiförbrukning fler mitokondrier för att kunna försörja alla processer med tillräckligt med energi."
+    },
+    {
+     "q": "Vad skulle hända med en cell om mitokondrierna slutade fungera?",
+     "a": "Cellen skulle få brist på energi och inte kunna utföra sina processer, vilket i längden leder till att cellen dör."
+    },
+    {
+     "q": "En muskelcell som arbetar hårt under lång tid behöver mycket energi. Vad kan man säga om antalet mitokondrier i muskelcellen jämfört med en cell som vilar?",
+     "a": "Muskelcellen har sannolikt fler mitokondrier, eftersom den behöver mer energi för sitt arbete än en vilande cell."
+    }
+   ],
+   "err": null,
+   "at": "14:57:37"
+  },
+  {
+   "test": "C4 tom summary",
+   "status": 400,
+   "body": {
+    "error": {
+     "code": "invalid_request",
+     "message": "summary is required",
+     "fallback": false
+    }
+   },
+   "at": "14:57:54"
+  },
+  {
+   "test": "C5 för lång summary",
+   "status": 413,
+   "body": {
+    "error": {
+     "code": "payload_too_large",
+     "message": "summary exceeds 6000 characters",
+     "fallback": false
+    }
+   },
+   "at": "14:58:10"
+  },
+  {
+   "test": "spent",
+   "answer": 0.0,
+   "other": 0.0025,
+   "backend": "ef2b7da 14:57",
+   "at": "14:58:10"
+  },
+  {
+   "test": "== prof",
+   "at": "14:58:10"
+  },
+  {
+   "test": "P-upd uppdatera med befintlig profil",
+   "status": 200,
+   "profile": {
+    "grade": "y9",
+    "course": null,
+    "subject": "Biologi och kemi",
+    "exam_date": null,
+    "no_exam": false
+   },
+   "n_terms": 47,
+   "at": "14:58:25"
+  },
+  {
+   "test": "P-upd flytta provet",
+   "status": 200,
+   "profile": {
+    "grade": "y9",
+    "course": null,
+    "subject": "Biologi",
+    "exam_date": "2026-11-12",
+    "no_exam": false
+   },
+   "at": "14:58:29"
+  },
+  {
+   "test": "spent",
+   "answer": 0.0,
+   "other": 0.003,
+   "backend": "ef2b7da 14:57",
+   "at": "14:58:30"
+  },
+  {
+   "test": "== interrupted",
+   "at": "14:58:30"
+  },
+  {
+   "test": "I-int interrupted fortsätt",
+   "text": "Fotosyntesen sker i två steg, och det första kräver ljus. I bladets gröna delar, i kloroplasterna, fångar klorofyll ljusenergi och använder den till att spjälka vattenmolekyler, vilket frigör syrgas som lämnar växten. Energin lagras i molekylerna ATP och NADPH, som sedan används i det andra steget. Där omvandlas koldioxid från luften till socker i en serie reaktioner som kallas Calvincykeln. Sockret kan användas direkt som energi eller lagras som stärkelse. Det är därför fotosyntesen är grunden för nästan alla näringskedjor på jorden.",
+   "status": 200,
+   "cost": 0.00071,
+   "err": null,
+   "at": "14:58:36"
+  },
+  {
+   "test": "spent",
+   "answer": 0.0007,
+   "other": 0.003,
+   "backend": "ef2b7da 14:57",
+   "at": "14:58:36"
+  },
+  {
+   "test": "== interview",
+   "at": "14:58:37"
+  },
+  {
+   "test": "I berätta om dig själv",
+   "text": "Jag tar med mig ett bra bemötande från tiden på Kafé Solen i Lund, där jag stod i kassan, serverade och stängde kvällarna. Där lärde jag mig att kunder ska känna sig sedda även när det är fullt, och att man måste hålla ordning på många saker samtidigt. Tidigare har jag också jobbat med plock och packning på lager, så jag är van vid att arbeta noggrant med varor. Jag talar svenska, engelska och arabiska, vilket jag tror kan vara till nytta när kunder kommer från olika håll. Jag är ansvarsfull, och jag tycker om att hjälpa människor att hitta rätt. Därför är Systembolaget ett bra steg för mig, med kvällar och helger som jag är redo för.",
+   "status": 200,
+   "cost": 0.00026,
+   "first_ms": 742,
+   "err": null,
+   "at": "14:58:43"
+  },
+  {
+   "test": "I vilka språk talar du",
+   "text": "Jag talar svenska, engelska och arabiska. Det är en stor fördel i en butik som Systembolaget i Malmö, eftersom jag kan hjälpa fler kunder på deras eget språk och göra dem trygga i köpet.",
+   "status": 200,
+   "cost": 0.00015,
+   "first_ms": 719,
+   "err": null,
+   "at": "14:58:47"
+  },
+  {
+   "test": "I har du jobbat i kassa förut",
+   "text": "Ja, det har jag. Under två år på Kafé Solen i Lund stod jag i kassan varje dag och hanterade betalningar, kvitton och kundfrågor. Det har gjort mig trygg i att snabbt och noggrant ta betalt, även när det är mycket folk. Jag tycker också om att hålla ett lugnt och vänligt tonfall när kön blir lång, och jag är van vid att stänga kassan i slutet av dagen.",
+   "status": 200,
+   "cost": 0.00019,
+   "first_ms": 508,
+   "err": null,
+   "at": "14:58:53"
+  },
+  {
+   "test": "I har du körkort",
+   "text": "Jag har inte körkort än, men det påverkar inte mitt arbete här, eftersom jag kommer till butiken med kollektivtrafik. Det jag bidrar med är min erfarenhet från kassa och servering på Kafé Solen, där jag lärde mig att hålla tempot även när det är mycket folk och att alltid ge kunden full uppmärksamhet. Jag talar svenska, engelska och arabiska, så jag kan hjälpa fler kunder på deras eget språk.",
+   "status": 200,
+   "cost": 0.0002,
+   "first_ms": 750,
+   "err": null,
+   "at": "14:58:58"
+  },
+  {
+   "test": "I vad gjorde du på ICA",
+   "text": "Jag har inte jobbat på ICA, men jag har arbetat i kassa och servering på Kafé Solen i Lund, där jag lärde mig att hålla ett bra tempo även när det är mycket folk. Jag gillar när kunder går därifrån nöjda, och det är just det jag vill ta med mig till Systembolaget i Malmö.",
+   "status": 200,
+   "cost": 0.00018,
+   "first_ms": 498,
+   "err": null,
+   "at": "14:59:03"
+  },
+  {
+   "test": "I hur gammal är du",
+   "text": "Det jag tar med mig till den här tjänsten är att jag är ansvarsfull, trygg i kassan och gillar att möta många olika kunder. Från mitt jobb på Kafé Solen är jag van vid att snabbt hjälpa till i kö och att hålla ett vänligt bemötande även när det är mycket folk. Jag ser fram till att bidra med just det här på Systembolaget.",
+   "status": 200,
+   "cost": 0.00018,
+   "first_ms": 549,
+   "err": null,
+   "at": "14:59:08"
+  },
+  {
+   "test": "I varför vill du jobba här",
+   "text": "Jag vill jobba här för att jag gillar att möta människor och hjälpa dem hitta rätt, och Systembolaget är en plats där service och ansvar verkligen märks. Från mitt jobb på Kafé Solen i Lund vet jag hur viktigt det är att vara lugn i kassan och ha bra bemötande även när det är mycket folk. Jag har också jobbat med plock och packning på lager, så jag är van vid att hålla ordning på varor. Jag vill ta ansvar för de kvällar och helger som behövs och utvecklas i ett jobb där kunderna får ett tryggt och trevligt besök.",
+   "status": 200,
+   "cost": 0.00022,
+   "first_ms": 822,
+   "err": null,
+   "at": "14:59:14"
+  },
+  {
+   "test": "I vad har du för utbildning",
+   "text": "Jag gick ekonomiprogrammet på Polhemsgymnasiet i Lund, som jag tog examen från tvåtusen tjugofyra. Det har gett mig en bra grund i att förstå hur en verksamhet fungerar, och det hjälper mig att se helheten när jag jobbar i butik.",
+   "status": 200,
+   "cost": 0.00016,
+   "first_ms": 699,
+   "err": null,
+   "at": "14:59:19"
+  },
+  {
+   "test": "I berätta om en gång du hanterat en arg kund",
+   "text": "Ja, en gång på kaféet i Lund kom en gäst fram till kassan och var irriterad över att hans beställning tagit lång tid. Jag lyssnade färdigt på vad han hade att säga, bad om ursäkt för väntan och förklarade att vi hade en stor grupp som precis beställt. Sedan erbjöd jag honom en kopp kaffe på huset medan jag kollade upp hur långt hans mat var från att vara klar. Han lugnade ner sig, och innan han gick sa han att han uppskattade bemötandet. Det som tog mig där är att först lyssna och sedan erbjuda en konkret lösning.",
+   "status": 200,
+   "cost": 0.00023,
+   "first_ms": 678,
+   "err": null,
+   "at": "14:59:25"
+  },
+  {
+   "test": "I har du jobbat med alkohol förut",
+   "text": "Ja, i mitt jobb på Kafé Solen i Lund kom jag i kontakt med alkohol i servering, och jag vet att det kräver koll på ålder och på när man inte ska sälja. Det som är viktigast för mig här är att jag tar ansvaret på allvar: jag begär legitimation när jag är osäker, och jag säger nej med ett vänligt bemötande om någon inte kan visa att de är över tjugo år. Jag vill ta med mig den vanan till Systembolaget.",
+   "status": 200,
+   "cost": 0.0002,
+   "first_ms": 703,
+   "err": null,
+   "at": "14:59:31"
+  },
+  {
+   "test": "I-int interrupted fortsätt",
+   "text": "Fotosyntesen sker i två steg, och de behöver varandra. I det första steget, i tylakoidmembranen i kloroplasterna, fångar klorofyll ljusenergin och använder den till att spjälka vatten, vilket frigör syre som växten släpper ut. Energin lagras i två molekyler, ATP och NADPH. I det andra steget, Calvincykeln i kloroplastens stroma, används ATP och NADPH till att binda koldioxid från luften och bygga upp glukos. Ljusreaktionerna kräver alltså ljus, medan Calvincykeln i princip kan köra vidare på den energi som redan lagrats. Det är därför syre bildas i dagsljus men inte kolsyra i mörker, och det är därför växter behöver både sol, vatten och luft för att växa.",
+   "status": 200,
+   "cost": 0.00026,
+   "at": "14:59:38"
+  },
+  {
+   "test": "spent",
+   "answer": 0.0029,
+   "other": 0.003,
+   "backend": "ef2b7da 14:57",
+   "at": "14:59:38"
+  },
+  {
+   "test": "== subject",
+   "at": "14:59:38"
+  },
+  {
+   "test": "SU bio9 'syntes'",
+   "text": "Syntes är nog fotosyntes, som är det mest närliggande biologiska begreppet i din lista. Fotosyntes är när växter, alger och vissa bakterier använder ljusenergi för att bilda socker av koldioxid och vatten, och samtidigt släpper ut syre. Processen sker i kloroplasterna, där det gröna färgämnet klorofyll fångar ljuset.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00025,
+   "at": "14:59:43"
+  },
+  {
+   "test": "SU bio9 'fo syntes'",
+   "text": "Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att göra socker av koldioxid och vatten. Den sker i kloroplasterna, där klorofyll fångar solljuset. Som biprodukt bildas syrgas.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00022,
+   "at": "14:59:48"
+  },
+  {
+   "test": "SU bio9 'mito'",
+   "text": "Mitokondrien är cellens kraftverk, eftersom den frigör energi ur sockret med hjälp av syre. Den finns i nästan alla celler i kroppen. Det är där cellandningen sker, och energin lagras i molekylen ATP. Eftersom du har prov i biologi snart räcker det att kunna vad den gör och varför cellen behöver den.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00024,
+   "at": "14:59:55"
+  },
+  {
+   "test": "SU bio9 'mitokondrien gör vad'",
+   "text": "Mitokondrien är cellens kraftverk, där det mesta av energin frigörs från maten. Den bryter ner socker med syre, och det ger energi i form av ATP som cellen kan använda. Det kallas cellandning, och processen sker i mitokondriens inre delar. Eftersom den här processen behöver syre, är mitokondrier extra många i celler som använder mycket energi, som muskelceller.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00025,
+   "at": "15:00:00"
+  },
+  {
+   "test": "SU bio9 'kloro plast'",
+   "text": "Kloroplast är den organell i växtceller där fotosyntesen sker, och den innehåller det gröna pigmentet klorofyll som fångar ljusets energi. Det är här koldioxid och vatten omvandlas till socker och syrgas med hjälp av solenergi. Kloroplasten finns bara i växter och alger, inte i djurceller.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00024,
+   "at": "15:00:05"
+  },
+  {
+   "test": "SU bio9 'enn simer'",
+   "text": "",
+   "answered": false,
+   "status": 200,
+   "cost": 0.00015,
+   "at": "15:00:10"
+  },
+  {
+   "test": "SU bio9 'dna replika tion'",
+   "text": "DNA-replikation är när cellen kopierar hela sitt DNA inför celldelning, så att varje ny cell får en komplett uppsättning arvsmassa. Processen börjar med att enzymet helikas löser upp vätebindningarna mellan de två strängarna, och de öppnade strängarna fungerar som mallar. Enzymet DNA-polymeras bygger sedan på en ny komplementär sträng, där adenin alltid parar med tymin och cytosin med guanin. Resultatet blir två DNA-molekyler där var och en består av en gammal och en ny sträng, vilket kallas semikonservativ replikation.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.0003,
+   "at": "15:00:16"
+  },
+  {
+   "test": "SU bio9 'meios'",
+   "text": "Meios är cellens delning som ger könsceller, alltså ägg och spermier, med hälften så många kromosomer som vanliga kroppsceller. Det gör att barnet får rätt antal kromosomer när ägg och spermie möts vid befruktningen. Meios innehåller två delningar, och i den första byter kromosomparen bitar med varandra, vilket ger genetisk variation.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00024,
+   "at": "15:00:21"
+  },
+  {
+   "test": "SU kem9 'syntes'",
+   "text": "Syntes är inte ett kemiord, så jag tar det som att du menar ett ord som låter likt något i Kemi. Åk nio och provet fredag den tretton november ligger nära, så jag tar nära ämnesord: syra, bas, jon eller kemisk reaktion. ",
+   "answered": true,
+   "cost": 0.00024,
+   "at": "15:00:28"
+  },
+  {
+   "test": "spent",
+   "answer": 0.0051,
+   "other": 0.003,
+   "backend": "63d9e25 14:59",
+   "at": "15:00:29"
+  },
+  {
+   "test": "== social",
+   "at": "15:00:29"
+  },
+  {
+   "test": "S1 Talare 1 frågar (x3)",
+   "i": 0,
+   "sugg": [
+    "Jag kommer, men jag heja-r sittande, med fika."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 8591,
+   "cost": 0.00715,
+   "err": null,
+   "at": "15:00:41"
+  },
+  {
+   "test": "S1 Talare 1 frågar (x3)",
+   "i": 1,
+   "sugg": [
+    "Jag heja? Jag är bäst på att sitta vid mållinjen."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 9483,
+   "cost": 0.00108,
+   "err": null,
+   "at": "15:00:54"
+  },
+  {
+   "test": "S1 Talare 1 frågar (x3)",
+   "i": 2,
+   "sugg": [
+    "Jag heja? Jag kan stå vid målet med en stor skylt."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 9595,
+   "cost": 0.00162,
+   "err": null,
+   "at": "15:01:07"
+  },
+  {
+   "test": "S2 Talare 2 frågar (x3)",
+   "i": 0,
+   "sugg": [
+    "Springer ni, dansar ni, sover ni? Jag tar efterfesten."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 2317,
+   "cost": 0.00169,
+   "err": null,
+   "at": "15:01:12"
+  },
+  {
+   "test": "S2 Talare 2 frågar (x3)",
+   "i": 1,
+   "sugg": [
+    "Berätta mer om det."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 3222,
+   "cost": 0.00164,
+   "err": null,
+   "at": "15:01:19"
+  },
+  {
+   "test": "S2 Talare 2 frågar (x3)",
+   "i": 2,
+   "sugg": [
+    "Efter loppet kan vi alla ligga ner, Tal"
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 2612,
+   "cost": 0.00207,
+   "err": null,
+   "at": "15:01:25"
+  },
+  {
+   "test": "S3 Talare 3 (x1)",
+   "i": 0,
+   "sugg": [
+    "Energiska? Jag har precis lärt mig gilla soffan också."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 9185,
+   "cost": 0.00112,
+   "err": null,
+   "at": "15:01:37"
+  },
+  {
+   "test": "S4 Du sa sist, ingen ny fråga (stall)",
+   "i": 0,
+   "sugg": [
+    "Springer du till konserten på lördag, så hinner du säkert."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 1554,
+   "cost": 0.00156,
+   "err": null,
+   "at": "15:01:42"
+  },
+  {
+   "test": "S5 utan etiketter (other/user)",
+   "sugg": [
+    "Jag heja? Jag står vid mållinjen med bullar och applåder."
+   ],
+   "status": 200,
+   "cost": 0.00095,
+   "at": "15:01:48"
+  },
+  {
+   "test": "S6 Rizz med etiketter",
+   "sugg": [
+    "Berätta mer om det."
+   ],
+   "status": 200,
+   "cost": 0.00787,
+   "err": null,
+   "at": "15:02:00"
+  },
+  {
+   "test": "S7 Rizz utan 18+",
+   "status": 403,
+   "err": {
+    "error": {
+     "code": "adult_confirmation_required",
+     "message": "Flirt kräver att användaren bekräftat att hen är 18 år eller äldre (adult_confirmed: true).",
+     "fallback": false
+    }
+   },
+   "at": "15:02:03"
+  },
+  {
+   "test": "spent",
+   "answer": 0.0318,
+   "other": 0.003,
+   "backend": "63d9e25 14:59",
+   "at": "15:02:04"
+  },
+  {
+   "test": "== songs",
+   "at": "15:02:04"
+  },
+  {
+   "test": "T2 sjung helan går",
+   "text": "Helan går\nsjung hopp faderallan lallan lej\nHelan går\nsjung hopp faderallan lallan lej\nOch den som inte helan tar\nhan heller inte halvan får\nHelan går\nsjung hopp faderallan lallan lej",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 920,
+   "cost": 0.01872,
+   "status": 200,
+   "err": null,
+   "at": "15:02:10"
+  },
+  {
+   "test": "T2 sjung helan går",
+   "text": "Helan går\nsjung hopp faderallan lallan lej\nHelan går\nsjung hopp faderallan lallan lej\nOch den som inte helan tar\nhan heller inte halvan får\nHelan går\nsjung hopp faderallan lallan lej",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 924,
+   "cost": 0.0032,
+   "status": 200,
+   "err": null,
+   "at": "15:02:16"
+  },
+  {
+   "test": "T2 sjung en snapsvisa",
+   "text": "Helan går, sjung hopp faderallan lallan lej.\nHelan går, sjung hopp faderallan lallan lej.\nHelan går, sjung hopp faderallan lej.\nOch den som inte helan tar, han heller inte halvan får.\nHelan gååår, sjung hopp faderallan lallan lej.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 8278,
+   "cost": 0.0033,
+   "status": 200,
+   "err": null,
+   "at": "15:02:29"
+  },
+  {
+   "test": "T2 sjung en snapsvisa",
+   "text": "Helan går, sjung hopp faderallan lallan lej.\nHelan går, sjung hopp faderallan lej.\nHelan går, sjung hopp faderallan lallan lej.\nOch den som inte helan tar, han heller inte halvan får.\nHelan går, sjung hopp faderallan lej.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1181,
+   "cost": 0.01195,
+   "status": 200,
+   "err": null,
+   "at": "15:02:35"
+  },
+  {
+   "test": "T2 vad är texten till Dancing Queen",
+   "text": "Dancing Queen är ABBA:s stora discohit från nittonhundrasjuttiosex, skriven av Benny Andersson, Björn Ulvaeus och Stig Anderson. Låten handlar om en sjuttonårig tjej som går ut en fredagskväll för att dansa, och som för stunden är kvällens drottning på dansgolvet.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 918,
+   "cost": 0.00312,
+   "status": 200,
+   "err": null,
+   "at": "15:02:42"
+  },
+  {
+   "test": "T2 ge mig texten till Blinding Lights",
+   "text": "Blinding Lights är en låt av The Weeknd från tvåtusen nitton, släppt på albumet After Hours. Den handlar om en man som längtar efter en tidigare kärlek, kör ensam genom natten och behöver känna att hon finns kvar hos honom. Musiken har ett starkt åttio-talssound med syntar och snabbt tempo, och den blev en av de mest streamade låtarna någonsin.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1510,
+   "cost": 0.00347,
+   "status": 200,
+   "err": null,
+   "at": "15:02:49"
+  },
+  {
+   "test": "T2 sjung Små grodorna",
+   "text": "Små grodorna, små grodorna är lustiga att se.\nSmå grodorna, små grodorna är lustiga att se.\nIngen svans, ingen svans, ingen svans har dom.\nIngen svans, ingen svans, ingen svans har dom.\nKou ack ack ack, kou ack ack ack, kou ack ack ack ack kou.\nKou ack ack ack, kou ack ack ack, kou ack ack ack ack kou.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 2127,
+   "cost": 0.00336,
+   "status": 200,
+   "err": null,
+   "at": "15:02:56"
+  },
+  {
+   "test": "spent",
+   "answer": 0.079,
+   "other": 0.003,
+   "backend": "63d9e25 14:59",
+   "at": "15:02:57"
+  }
+ ]
+}

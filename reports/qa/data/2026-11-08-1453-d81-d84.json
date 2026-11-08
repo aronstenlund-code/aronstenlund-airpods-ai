@@ -1,0 +1,1404 @@
+{
+ "backend_start": "6bd838e 14:13",
+ "backend_end": "777b4e4 14:49",
+ "spent": 0.1026,
+ "log": [
+  {
+   "test": "backend",
+   "at_start": "6bd838e 14:13",
+   "at": "14:46:07"
+  },
+  {
+   "test": "== social",
+   "at": "14:46:07"
+  },
+  {
+   "test": "S1 Talare 1 frågar (x3)",
+   "i": 0,
+   "sugg": [
+    "Jag heja? Jag står vid målsnöret med en kanelbulle."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 2638,
+   "cost": 0.0072,
+   "err": null,
+   "at": "14:46:13"
+  },
+  {
+   "test": "S1 Talare 1 frågar (x3)",
+   "i": 1,
+   "sugg": [
+    "Jag kan heja, men från en bekväm stol med fika."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 2537,
+   "cost": 0.00115,
+   "err": null,
+   "at": "14:46:19"
+  },
+  {
+   "test": "S1 Talare 1 frågar (x3)",
+   "i": 2,
+   "sugg": [
+    "Jag kommer, men jag står vid målfållan med fika."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 1434,
+   "cost": 0.00115,
+   "err": null,
+   "at": "14:46:24"
+  },
+  {
+   "test": "S2 Talare 2 frågar (x3)",
+   "i": 0,
+   "sugg": [
+    "Vi tar det lugnt, ingen av oss springer efter nåt."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 1839,
+   "cost": 0.00111,
+   "err": null,
+   "at": "14:46:29"
+  },
+  {
+   "test": "S2 Talare 2 frågar (x3)",
+   "i": 1,
+   "sugg": [
+    "Efter loppet ligger jag ner, precis som hen som s"
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 3222,
+   "cost": 0.00207,
+   "err": null,
+   "at": "14:46:36"
+  },
+  {
+   "test": "S2 Talare 2 frågar (x3)",
+   "i": 2,
+   "sugg": [
+    "Efter loppet bär vi löparen till din konsert."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 2259,
+   "cost": 0.00111,
+   "err": null,
+   "at": "14:46:41"
+  },
+  {
+   "test": "S3 Talare 3 (x1)",
+   "i": 0,
+   "sugg": [
+    "Energisk? Jag är bara bra på att se pigg ut."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 1117,
+   "cost": 0.00112,
+   "err": null,
+   "at": "14:46:46"
+  },
+  {
+   "test": "S4 Du sa sist, ingen ny fråga (stall)",
+   "i": 0,
+   "sugg": [
+    "Jag hoppas du hinner, annars springer du till konserten."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 1394,
+   "cost": 0.00152,
+   "err": null,
+   "at": "14:46:50"
+  },
+  {
+   "test": "S5 utan etiketter (other/user)",
+   "sugg": [
+    "Jag heja? Jag kan stå vid mål med en bulle."
+   ],
+   "status": 200,
+   "cost": 0.00095,
+   "at": "14:46:55"
+  },
+  {
+   "test": "S6 Rizz med etiketter",
+   "sugg": [
+    "Jag är mer nyfiken på dig. Vilken konsert är det?"
+   ],
+   "status": 200,
+   "cost": 0.00694,
+   "err": null,
+   "at": "14:47:00"
+  },
+  {
+   "test": "S7 Rizz utan 18+",
+   "status": 403,
+   "err": {
+    "error": {
+     "code": "adult_confirmation_required",
+     "message": "Flirt kräver att användaren bekräftat att hen är 18 år eller äldre (adult_confirmed: true).",
+     "fallback": false
+    }
+   },
+   "at": "14:47:04"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0243,
+   "other": 0.0,
+   "backend": "6bd838e 14:13",
+   "at": "14:47:04"
+  },
+  {
+   "test": "== interview",
+   "at": "14:47:04"
+  },
+  {
+   "test": "I berätta om dig själv",
+   "text": "Jag är en serviceinriktad person som trivs när jag får möta många olika människor. Under två år på Kafé Solen i Lund har jag jobbat med kassa, servering och stängning, så jag är van vid att hålla ett bra bemötande även när det är mycket att göra. Jag är ansvarsfull, och jag tycker om att ha ordning på varor och rutiner, vilket jag har fått använda både i kafét och under sommarjobbet på lagret. Jag är också lagkapten i innebandy, så jag gillar att samarbeta och ta initiativ. Jag talar svenska, engelska och arabiska, vilket jag tror kan vara en fördel när man möter kunder i Malmö. Det är därför jag söker tjänsten på Systembolaget, eftersom jag vill arbeta med service i en miljö där ansvar och kundmöten är lika viktiga.",
+   "status": 200,
+   "cost": 0.0006,
+   "first_ms": 588,
+   "err": null,
+   "at": "14:47:10"
+  },
+  {
+   "test": "I vilka språk talar du",
+   "text": "Jag talar svenska, engelska och arabiska. Det hjälper mig att möta kunder på deras eget språk, och i en butik där man möter många olika människor tror jag att det gör stor skillnad för hur trygga och välkomna kunderna känner sig.",
+   "status": 200,
+   "cost": 0.00015,
+   "first_ms": 924,
+   "err": null,
+   "at": "14:47:15"
+  },
+  {
+   "test": "I har du jobbat i kassa förut",
+   "text": "Ja, det har jag. Under mina två år som kafébiträde på Kafé Solen i Lund stod jag i kassan varje dag, och jag tyckte om att snabbt och lugnt få kön att rulla även när det var mycket folk. Jag är van vid att kontrollera betalningar noggrant och räkna av kassan när jag stänger. Det är något jag gärna tar med mig till Systembolaget, där jag vill ge kunderna samma trygga service.",
+   "status": 200,
+   "cost": 0.00015,
+   "first_ms": 745,
+   "err": null,
+   "at": "14:47:20"
+  },
+  {
+   "test": "I har du körkort",
+   "text": "Det har jag inte, så jag får se till att det inte påverkar mitt arbete här. Jag tar mig till jobbet på cykel eller med kollektivtrafiken, och kvällar och helger passar mig bra. Det jag brinner för är att möta kunder och hjälpa dem att hitta rätt, och det har jag gjort i kassan och i servering på kaféet i Lund.",
+   "status": 200,
+   "cost": 0.00018,
+   "first_ms": 681,
+   "err": null,
+   "at": "14:47:26"
+  },
+  {
+   "test": "I vad gjorde du på ICA",
+   "text": "Jag har inte jobbat på ICA, men jag har arbetat med kassa och kundservice på Kafé Solen i Lund, där jag tog betalt, serverade och stängde kaféet på kvällarna. Det har gett mig rutin i att snabbt och korrekt hantera kunder och kassa, något jag gärna tar med mig till Systembolaget.",
+   "status": 200,
+   "cost": 0.00018,
+   "first_ms": 569,
+   "err": null,
+   "at": "14:47:31"
+  },
+  {
+   "test": "I hur gammal är du",
+   "text": "Jag är tjugo år gammal, och det som är viktigt för jobbet är att jag är ansvarsfull och trivs med att möta kunder. Jag jobbade som kafébiträde i Lund under ett år, där jag stod i kassan, serverade och ansvarade för stängningen, så jag är van vid att ta eget ansvar och att vara trevlig även när det är mycket folk.",
+   "status": 200,
+   "cost": 0.00014,
+   "first_ms": 1750,
+   "err": null,
+   "at": "14:47:36"
+  },
+  {
+   "test": "I varför vill du jobba här",
+   "text": "Jag vill jobba här för att Systembolaget är en arbetsplats där service och ansvar verkligen går hand i hand. Jag har jobbat i kassa och servering på Kafé Solen, och där lärde jag mig att varje kund ska känna sig välkomnad och hjälpt, oavsett vad de kommer för. Det är precis den känslan jag vill ta med mig hit. Dessutom gillar jag att kunna svara på frågor och hjälpa till att hitta rätt, och jag kan både svenska, engelska och arabiska, vilket kan vara användbart med kunder från olika bakgrunder. Jag är också van vid kvällar och stängning, så kvällar och helger passar mig bra.",
+   "status": 200,
+   "cost": 0.00024,
+   "first_ms": 745,
+   "err": null,
+   "at": "14:47:42"
+  },
+  {
+   "test": "I vad har du för utbildning",
+   "text": "Jag går ekonomiprogrammet på Polhemsgymnasiet i Lund, som jag tog examen från tvåtusen tjugofyra. Det har gett mig en bra grund i att läsa siffror och planera, vilket jag tar med mig in i kassan och i lagerarbetet. Samtidigt har jag jobbat som kafébiträde i Lund sedan tvåtusen tjugotre, så kundmötet och ansvaret för kassan är något jag redan är van vid.",
+   "status": 200,
+   "cost": 0.00019,
+   "first_ms": 642,
+   "err": null,
+   "at": "14:47:48"
+  },
+  {
+   "test": "I berätta om en gång du hanterat en arg kund",
+   "text": "Jag jobbade som kafébiträde på Kafé Solen i Lund, och en gång kom en kund fram till kassan som var irriterad över att hans beställning tagit lång tid. Jag lyssnade klart på vad han sa utan att avbryta honom och bekräftade att väntan var frustrerande. Sedan kollade jag direkt vad som hänt med beställningen, förklarade kort vad som varit fel och erbjöd en lösning på stället, så att han fick sin kaffe färdigt snabbt. Han lugnade ner sig, och när han gick var han nöjd med hur vi hanterade det.",
+   "status": 200,
+   "cost": 0.00021,
+   "first_ms": 1627,
+   "err": null,
+   "at": "14:47:54"
+  },
+  {
+   "test": "I har du jobbat med alkohol förut",
+   "text": "Ja, i mitt jobb på Kafé Solen i Lund har jag hanterat kassa och servering, och jag har alltid följt reglerna för försäljning av alkohol noga. Jag tycker det är viktigt att kontrollera ålder, och jag vet att man ska säga nej när någon inte uppfyller kraven, även om kunden blir besviken. Det är just den ansvarsfullheten jag vill ta med mig till Systembolaget, och jag ser fram emot att lära mig allt om butikens rutiner.",
+   "status": 200,
+   "cost": 0.00021,
+   "first_ms": 580,
+   "err": null,
+   "at": "14:48:00"
+  },
+  {
+   "test": "I-int interrupted fortsätt",
+   "text": "",
+   "status": 429,
+   "cost": 0,
+   "at": "14:48:03"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0266,
+   "other": 0.0,
+   "backend": "6bd838e 14:13",
+   "at": "14:48:04"
+  },
+  {
+   "test": "== cards",
+   "at": "14:48:04"
+  },
+  {
+   "test": "ERROR cards",
+   "err": "TypeError(\"rec() got multiple values for argument 'test'\")",
+   "at": "14:48:11"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0266,
+   "other": 0.0004,
+   "backend": "6bd838e 14:13",
+   "at": "14:48:12"
+  },
+  {
+   "test": "== profile",
+   "at": "14:48:12"
+  },
+  {
+   "test": "P jag går i nian och har prov i biologi på fredag",
+   "status": 200,
+   "ms": 6152,
+   "profile": {
+    "grade": "y9",
+    "course": null,
+    "subject": "Biologi",
+    "exam_date": "2026-11-13",
+    "no_exam": false
+   },
+   "n_terms": 45,
+   "terms": [
+    "cell",
+    "cellorganell",
+    "cellkärna",
+    "cellmembran",
+    "cellvägg",
+    "mitokondrie",
+    "kloroplast",
+    "ekosystem",
+    "näringskedja",
+    "näringsväv",
+    "producent",
+    "konsument",
+    "nedbrytare",
+    "fotosyntes",
+    "cellandning",
+    "ekologisk nisch",
+    "population",
+    "biologisk mångfald",
+    "art",
+    "släkte",
+    "familj",
+    "ordning",
+    "klass",
+    "stam",
+    "rike",
+    "evolution",
+    "naturligt urval",
+    "arvsanlag",
+    "gen",
+    "DNA",
+    "kromosom",
+    "celldelning",
+    "mitos",
+    "meios",
+    "ärftlighet",
+    "dominant",
+    "recessiv",
+    "ekologisk pyramid",
+    "ämnesomsättning",
+    "organsystem",
+    "hormon",
+    "immunförsvar",
+    "virus",
+    "bakterie",
+    "smittspridning"
+   ],
+   "err": null,
+   "at": "14:48:19"
+  },
+  {
+   "test": "P jag går tvåan på gymnasiet, kursen kemi 2, provet är på fredag",
+   "status": 200,
+   "ms": 3759,
+   "profile": {
+    "grade": "gy2",
+    "course": "Kemi 2",
+    "subject": "Kemi",
+    "exam_date": "2026-11-13",
+    "no_exam": false
+   },
+   "n_terms": 49,
+   "terms": [
+    "atom",
+    "molekyl",
+    "jon",
+    "joniskbindning",
+    "kovalent bindning",
+    "metallbindning",
+    "vätebindning",
+    "van der Waals-krafter",
+    "elektronegativitet",
+    "polär bindning",
+    "opolär bindning",
+    "dipol",
+    "lewisstruktur",
+    "oktettregeln",
+    "molekylgeometri",
+    "reaktionsformel",
+    "stökiometri",
+    "mol",
+    "molmassa",
+    "substansmängd",
+    "koncentration",
+    "molaritet",
+    "löslighet",
+    "lösning",
+    "lösningsmedel",
+    "lösta ämnet",
+    "ämnesmängd",
+    "syra",
+    "bas",
+    "pH",
+    "protolys",
+    "buffertlösning",
+    "neutralisation",
+    "titrering",
+    "oxidation",
+    "reduktion",
+    "redoxreaktion",
+    "oxidationstal",
+    "elektrolys",
+    "galvaniskt element",
+    "energi",
+    "entalpi",
+    "exoterm reaktion",
+    "endoterm reaktion",
+    "reaktionshastighet",
+    "katalysator",
+    "kemisk jämvikt",
+    "Le Chatelier",
+    "aktiveringsenergi"
+   ],
+   "err": null,
+   "at": "14:48:25"
+  },
+  {
+   "test": "P jag pluggar på högskolan, anatomi, tentan är den femte december",
+   "status": 200,
+   "ms": 2679,
+   "profile": {
+    "grade": "university",
+    "course": null,
+    "subject": "Anatomi",
+    "exam_date": "2026-12-05",
+    "no_exam": false
+   },
+   "n_terms": 49,
+   "terms": [
+    "kranium",
+    "skelett",
+    "muskler",
+    "leder",
+    "skelettmuskel",
+    "ryggrad",
+    "revben",
+    "bäcken",
+    "överarm",
+    "underarm",
+    "lår",
+    "underben",
+    "hjärta",
+    "lungor",
+    "lever",
+    "magsäck",
+    "tarmar",
+    "njurar",
+    "bukhålan",
+    "brösthålan",
+    "hjärnan",
+    "nervsystemet",
+    "ryggmärg",
+    "perifera nerver",
+    "hjärnnerver",
+    "blodkärl",
+    "artärer",
+    "vener",
+    "kapillärer",
+    "lymfsystemet",
+    "bröstkorg",
+    "mellangärdet",
+    "thorax",
+    "abdomen",
+    "pelvis",
+    "ledband",
+    "menisk",
+    "senor",
+    "muskelursprung",
+    "muskelfäste",
+    "ledhuvud",
+    "ledskål",
+    "dorsal",
+    "ventral",
+    "proximal",
+    "distal",
+    "sagittalplan",
+    "frontalplan",
+    "transversalplan"
+   ],
+   "err": null,
+   "at": "14:48:29"
+  },
+  {
+   "test": "P jag går i sjuan, historia, inget prov just nu",
+   "status": 200,
+   "ms": 2449,
+   "profile": {
+    "grade": "y7",
+    "course": null,
+    "subject": "Historia",
+    "exam_date": null,
+    "no_exam": true
+   },
+   "n_terms": 42,
+   "terms": [
+    "Vikingatiden",
+    "Medeltiden",
+    "Kung",
+    "Kristendomen",
+    "Hanseförbundet",
+    "Gustav Vasa",
+    "Reformationen",
+    "Stormaktstiden",
+    "Karl XII",
+    "Frihetstiden",
+    "Gustav III",
+    "Industrialiseringen",
+    "Urbanisering",
+    "Emigration",
+    "Demokrati",
+    "Riksdag",
+    "Folkrörelser",
+    "Arbetarrörelsen",
+    "Fackföreningar",
+    "Socialdemokratin",
+    "Rösträtt",
+    "Kvinnors rösträtt",
+    "Första världskriget",
+    "Andra världskriget",
+    "Neutralitet",
+    "Välfärdsstaten",
+    "Kalla kriget",
+    "Förintelsen",
+    "Folkmord",
+    "Kolonialism",
+    "Slavhandel",
+    "Antiken",
+    "Romerska riket",
+    "Grekland",
+    "Feodalism",
+    "Bondesamhälle",
+    "Stad",
+    "Källkritik",
+    "Primärkälla",
+    "Sekundärkälla",
+    "Tidslinje",
+    "Orsak och verkan"
+   ],
+   "err": null,
+   "at": "14:48:33"
+  },
+  {
+   "test": "P jag går i åttan och har prov imorgon i matte",
+   "status": 200,
+   "ms": 2183,
+   "profile": {
+    "grade": "y8",
+    "course": null,
+    "subject": "Matematik",
+    "exam_date": "2026-11-09",
+    "no_exam": false
+   },
+   "n_terms": 41,
+   "terms": [
+    "addition",
+    "subtraktion",
+    "multiplikation",
+    "division",
+    "bråk",
+    "decimaltal",
+    "procent",
+    "förhållande",
+    "ekvation",
+    "obekant",
+    "variabel",
+    "uttryck",
+    "förenkla",
+    "faktor",
+    "primtal",
+    "största gemensamma delare",
+    "minsta gemensamma multipel",
+    "area",
+    "omkrets",
+    "volym",
+    "rektangel",
+    "kvadrat",
+    "triangel",
+    "cirkel",
+    "vinkel",
+    "rät vinkel",
+    "medelvärde",
+    "median",
+    "typvärde",
+    "diagram",
+    "koordinatsystem",
+    "funktion",
+    "positiva tal",
+    "negativa tal",
+    "tallinje",
+    "potens",
+    "kvadratrot",
+    "algebra",
+    "formel",
+    "proportion",
+    "skala"
+   ],
+   "err": null,
+   "at": "14:48:36"
+  },
+  {
+   "test": "P bla bla vad blir det till middag",
+   "status": 200,
+   "ms": 2006,
+   "profile": {
+    "grade": null,
+    "course": null,
+    "subject": null,
+    "exam_date": null,
+    "no_exam": false
+   },
+   "n_terms": 0,
+   "terms": [],
+   "err": null,
+   "at": "14:48:40"
+  },
+  {
+   "test": "P-upd uppdatera med befintlig profil",
+   "status": 429,
+   "profile": null,
+   "at": "14:48:41"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0266,
+   "other": 0.0018,
+   "backend": "6bd838e 14:13",
+   "at": "14:48:42"
+  },
+  {
+   "test": "== subject",
+   "at": "14:48:42"
+  },
+  {
+   "test": "SU bio9 'syntes'",
+   "text": "Fotosyntes är när växter, alger och vissa bakterier använder ljusenergi för att göra socker av koldioxid och vatten. Syret som bildas släpps ut i luften som en restprodukt. Processen sker i kloroplaster, där det gröna färgämnet klorofyll fångar ljuset.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00067,
+   "at": "14:48:48"
+  },
+  {
+   "test": "SU bio9 'fo syntes'",
+   "text": "Fotosyntes är den process där växter, alger och vissa bakterier använder ljusenergi för att göra socker av koldioxid och vatten. Processen sker i kloroplasterna, som innehåller det gröna färgämnet klorofyll. Som biprodukt bildas syrgas, som växten släpper ut i luften. Reaktionen kan skrivas kort: koldioxid plus vatten ger glukos och syrgas, med hjälp av ljus.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00026,
+   "at": "14:48:53"
+  },
+  {
+   "test": "SU bio9 'mito'",
+   "text": "Mitokondrien är cellens kraftverk, där det mesta av cellens energi frigörs genom cellandning. Den har en dubbel membran, och det inre membranet är veckat i så kallade cristae, vilket ger plats åt fler reaktioner. Mitokondrier har också eget arvsmassa, som bara ärvs från mamman.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00024,
+   "at": "14:48:59"
+  },
+  {
+   "test": "SU bio9 'mitokondrien gör vad'",
+   "text": "Mitokondrien är cellens kraftverk, där cellandning frigör energi ur sockret så att cellen kan arbeta. Det sker främst med syre, och energin lagras i form av ATP. Då cellen kan göra mycket mer med syre än utan, är mitokondrier extra många i celler som behöver mycket energi, till exempel muskelceller.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00023,
+   "at": "14:49:05"
+  },
+  {
+   "test": "SU bio9 'kloro plast'",
+   "text": "Kloroplast är den organell i växtceller där fotosyntesen sker. Den innehåller det gröna pigmentet klorofyll, som fångar solljus och används för att göra socker av koldioxid och vatten. Kloroplasterna finns främst i bladens celler.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00022,
+   "at": "14:49:09"
+  },
+  {
+   "test": "SU bio9 'enn simer'",
+   "text": "",
+   "answered": false,
+   "status": 200,
+   "cost": 0.00015,
+   "at": "14:49:14"
+  },
+  {
+   "test": "SU bio9 'dna replika tion'",
+   "text": "DNA-replikation är när en cell kopierar sitt DNA inför att den ska dela sig, så att varje ny cell får en komplett uppsättning arvsmassa. Processen börjar med att DNA-strängarna separeras, och varje sträng fungerar sedan som mall för en ny komplementär sträng. Resultatet blir två identiska DNA-molekyler, där varje består av en gammal och en ny sträng. Ett enzym som kallas DNA-polymeras bygger de nya strängarna och läser av mallsträngen. Kom ihåg att basparningen styr kopieringen, så adenin parar alltid med tymin och cytosin med guanin.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.0003,
+   "at": "14:49:20"
+  },
+  {
+   "test": "SU bio9 'meios'",
+   "text": "Meios är celldelningen som ger könsceller, alltså ägg- och spermieceller, med hälften så många kromosomer som vanliga kroppsceller. Det som är viktigt är att cellen delar sig två gånger efter varandra, så att fyra celler bildas, var och en med en uppsättning kromosomer istället för två. Vid befruktningen slås två könsceller ihop så att kromosomantalet blir fullt igen. Meios skiljer sig från mitos, där två identiska celler bildas med full uppsättning kromosomer.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00028,
+   "at": "14:49:26"
+  },
+  {
+   "test": "SU kem9 'syntes'",
+   "text": "Fotosyntes är den process där gröna växter använder ljusenergi för att tillverka socker av koldioxid och vatten, och samtidigt släpper ut syre. Processen sker i kloroplasterna, där det gröna färgämnet klorofyll fångar upp solljuset. I korthet går reaktionen så här: koldioxid plus vatten ger glukos och syre, med hjälp av ljus. Glukosen används sedan av växten som energi eller byggs om till stärkelse som den lagrar.",
+   "answered": true,
+   "cost": 0.00025,
+   "at": "14:49:31"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0292,
+   "other": 0.0018,
+   "backend": "777b4e4 14:49",
+   "at": "14:49:32"
+  },
+  {
+   "test": "== echo",
+   "at": "14:49:32"
+  },
+  {
+   "test": "E0 fråga",
+   "text": "Fotosyntesen är när växter gör socker av koldioxid och vatten med hjälp av ljusenergi. Växten tar upp koldioxid genom bladens små öppningar och vatten genom rötterna. I bladets gröna delar, kloroplasterna, fångar det gröna färgämnet klorofyll solljuset. Energin används för att bilda druvsocker, och syre släpps ut i luften som en restprodukt.",
+   "cost": 0.00025,
+   "at": "14:49:38"
+  },
+  {
+   "test": "E1 eko av svaret (slut) [Provläge]",
+   "frag": "och syre släpps ut i luften som en restprodukt.",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "14:49:42"
+  },
+  {
+   "test": "E2 eko mitt i [Provläge]",
+   "frag": "växter gör socker av koldioxid och vatten med hjälp",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "14:49:45"
+  },
+  {
+   "test": "E3 eko + brus [Provläge]",
+   "frag": "hmm växter gör socker av koldioxid och vatten med hjälp ö",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "14:49:51"
+  },
+  {
+   "test": "E4 bara brus [Provläge]",
+   "frag": "bla hmm ö",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00065,
+   "at": "14:49:55"
+  },
+  {
+   "test": "E5 reaktion [Provläge]",
+   "frag": "okej kom igen",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00017,
+   "at": "14:50:00"
+  },
+  {
+   "test": "E6 kontroll: ny fråga [Provläge]",
+   "frag": "och vad är klorofyll",
+   "text": "Klorofyll är det gröna färgämnet i växters kloroplaster, och det är det som fångar ljusenergin som fotosyntesen behöver. Det absorberar mest rött och blått ljus och reflekterar grönt, vilket är anledningen till att växterna ser gröna ut. Klorofyll finns i bladens celler, främst i kloroplasterna, och det är därför bladen är grönt.",
+   "answered": true,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00028,
+   "at": "14:50:05"
+  },
+  {
+   "test": "E7 eko + ny fråga [Provläge]",
+   "frag": "och syre släpps ut i luften som en restprodukt. och vad händer i mörker",
+   "text": "I mörker sker ingen fotosyntes, eftersom den behöver ljusenergin för att fungera. Växten fortsätter ändå att andas, precis som alla levande celler, och tar då upp syre och bryter ner socker till energi, vilket ger ut koldioxid. Eftersom fotosyntesen står still men andningen fortsätter, förbrukar växten alltså några av sina sockerreserver under natten.",
+   "answered": true,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00029,
+   "at": "14:50:11"
+  },
+  {
+   "test": "E8 eko [Auto]",
+   "frag": "och syre släpps ut i luften som en restprodukt.",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "14:50:15"
+  },
+  {
+   "test": "E9 eko+brus [Auto]",
+   "frag": "hmm växter gör socker av koldioxid och vatten med hjälp",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "14:50:19"
+  },
+  {
+   "test": "E10 brus [Auto]",
+   "frag": "mm ja okej",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00063,
+   "at": "14:50:23"
+  },
+  {
+   "test": "E11 ny fråga [Auto]",
+   "frag": "vad är mitokondrier",
+   "text": "Mitokondrier är små organeller i cellerna som omvandlar energi från föda till en form cellen kan använda. De finns i nästan alla celler hos djur, växter och svampar, och ofta är det många i celler som behöver mycket energi, till exempel muskelceller. Inne i mitokondrien sker cellandningen, där socker och syre omsätts och energi frigörs i form av ATP. Det är därför mitokondrier ofta kallas cellens kraftverk. En intressant detalj är att mitokondrier har eget arvsmaterial och troligen en gång var självständiga bakterier som levde inne i en annan cell.",
+   "answered": true,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00026,
+   "at": "14:50:29"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0317,
+   "other": 0.0018,
+   "backend": "777b4e4 14:49",
+   "at": "14:50:31"
+  },
+  {
+   "test": "== level",
+   "at": "14:50:31"
+  },
+  {
+   "test": "L förklara fotosyntesen [åk]",
+   "text": "Fotosyntesen är när växter gör egen mat av koldioxid och vatten med hjälp av solljus. Växterna har klorofyll i bladen, som fångar ljusets energi. Med den energin byter de koldioxid från luften och vatten från jorden till socker, och samtidigt släpper de ut syre. Socret används som energi och byggsten för växten. Fotosyntesen är alltså grunden för nästan allt liv på jorden, eftersom djur och människor äter växter eller andra djur som ätit växter. Sammanfattningsvis: ljus, koldioxid och vatten ger socker och syre.",
+   "words": 83,
+   "cost": 0.00073,
+   "first_ms": 1081,
+   "at": "14:50:36"
+  },
+  {
+   "test": "L förklara fotosyntesen [gy3]",
+   "text": "Fotosyntesen är växternas sätt att göra socker av koldioxid och vatten med hjälp av ljusenergi. Den sker i kloroplasterna, där klorofyll fångar ljuset. Ljusreaktionerna i tylakoidmembranen spjälkar vatten, frigör syre och bildar ATP och NADPH. I stroma används sedan dessa i Calvincykeln, där koldioxid binds in och omvandlas till glukos. För provet bör du kunna skriva reaktionsformeln och förklara hur ljusreaktionerna och Calvincykeln hänger ihop.",
+   "words": 65,
+   "cost": 0.00028,
+   "first_ms": 1786,
+   "at": "14:50:43"
+  },
+  {
+   "test": "L vad är en derivata [åk]",
+   "text": "En derivata är ett mått på hur snabbt en funktion ändras i en viss punkt. Den säger alltså hur brant grafen är just där. Om en bil har sträckan som funktion av tiden, ger derivatan bilens hastighet vid varje tidpunkt. Geometriskt är derivatan i en punkt lutningen på tangenten till grafen i den punkten. För att räkna ut den använder man gränsvärdet av kvoten mellan förändringen i funktionsvärdet och förändringen i x, när förändringen i x går mot noll. Enkla regler, som att derivatan av x i kvadrat är två gånger, gör det snabbare att räkna. Till provet imorgon är det bra att kunna tolka derivatan som lutning och som förändringshastighet.",
+   "words": 111,
+   "cost": 0.00031,
+   "first_ms": 781,
+   "at": "14:50:49"
+  },
+  {
+   "test": "L vad är en derivata [gy3]",
+   "text": "En derivata visar hur snabbt en funktion ändras i en punkt, alltså funktionens momentana förändringshastighet. Geometriskt är den lutningen av tangenten till grafen i den punkten. Derivatan definieras som gränsvärdet av kvoten mellan förändringen i funktionsvärdet och förändringen i x, när förändringen i x går mot noll. Man skriver den f prim av x eller derivatan av f med avseende på x. Till provet behöver du kunna derivera potensfunktioner, summor, produkter, kvoter och sammansatta funktioner med kedjeregeln. Vanligt fel är att glömma kedjeregeln när det finns en funktion inuti en annan. Kontrollfråga: Vad är lutningen av tangenten till grafen i en punkt, kallad?",
+   "words": 103,
+   "cost": 0.00032,
+   "first_ms": 1021,
+   "at": "14:50:55"
+  },
+  {
+   "test": "L-inga/korta",
+   "text": "En atom är den minsta delen av ett grundämne som fortfarande har grundämnets egenskaper. Den består av en kärna i mitten med protoner, som är positivt laddade, och neutroner, som saknar laddning. Runt kärnan rör sig elektroner, som är negativt laddade. Atomen är vanligtvis mycket liten, ungefär en tiomiljondels millimeter i diameter.",
+   "words": 52,
+   "has_q": false,
+   "cost": 0.00025,
+   "at": "14:51:00"
+  },
+  {
+   "test": "L-ja/utf",
+   "text": "En atom är den minsta delen av ett grundämne som fortfarande har grundämnets egenskaper. Allt du ser runt dig, luften, vattnet och du själv, är uppbyggt av atomer som sitter ihop på olika sätt. En atom är väldigt liten, och den består av tre huvudsakliga partiklar: protoner, neutroner och elektroner. Protonerna och neutronerna sitter i atomens mitt, som kallas atomkärnan, och de är ungefär lika tunga. Protonerna har positiv laddning, neutronerna är neutrala, alltså utan laddning, och elektronerna har negativ laddning och rör sig runt kärnan i så kallade skal. Antalet protoner bestämmer vilket grundämne atomen är, och i en neutral atom är antalet elektroner lika med antalet protoner. Atomkärnan är mycket liten jämfört med hela atomen, så det mesta av atomen är tomrum. Tänk dig att atomen är en fotbollsstadion där kärnan är en ärta i mitten.\n\nFråga: Har en atom en positiv laddning totalt sett, ja eller nej?",
+   "words": 150,
+   "has_q": true,
+   "cost": 0.00038,
+   "at": "14:51:07"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.034,
+   "other": 0.0018,
+   "backend": "777b4e4 14:49",
+   "at": "14:51:08"
+  },
+  {
+   "test": "== texts",
+   "at": "14:51:08"
+  },
+  {
+   "test": "T sjung helan går",
+   "text": "Helan går\nsjung hopp faderallan lallan lej\nHelan går\nsjung hopp faderallan lej\nOch den som inte helan tar\nhan heller inte halvan får\nHelan går\nsjung hopp faderallan lej",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 853,
+   "ms": 2618,
+   "cost": 0.01854,
+   "status": 200,
+   "err": null,
+   "at": "14:51:14"
+  },
+  {
+   "test": "T sjung en snapsvisa",
+   "text": "Helan går, sjung hopp fallera,\nhelan går, sjung hopp fallera,\nhelan går, sjung hopp fallera,\noch den som inte helan tar, han heller inte halvan far.\nHelan går, sjung hopp fallera!",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1306,
+   "ms": 3085,
+   "cost": 0.00307,
+   "status": 200,
+   "err": null,
+   "at": "14:51:20"
+  },
+  {
+   "test": "T citera Strindberg om kärlek",
+   "text": "I \"Giftas\", i novellen \"Ett dockhem\", säger en man: \"kärleken är en känsloaffär; man seglar på landkänningar, och går i hamn, men tar man till kompass och kort, så går man på grund.\" Strindberg menar att kärlek styrs av känsla och inte av beräkning.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1970,
+   "ms": 6212,
+   "cost": 0.01496,
+   "status": 200,
+   "err": null,
+   "at": "14:51:29"
+  },
+  {
+   "test": "T sjung Tattoo med Loreen",
+   "text": "Tattoo är Loreens låt som vann Eurovision Song Contest tvåtusen tjugotre för Sverige, skriven av bland andra Jimmy Jansson och Peter Boström. Den handlar om en kärlek som sitter kvar som en tatuering, något permanent som inte går att ta bort, och förmedlas med ett kraftfullt, dramatiskt framförande.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 725,
+   "ms": 2883,
+   "cost": 0.01246,
+   "status": 200,
+   "err": null,
+   "at": "14:51:35"
+  },
+  {
+   "test": "T vad är texten till Dancing Queen",
+   "text": "\"Dancing Queen\" av ABBA släpptes nittonhundrasjuttiosex och är skyddad av upphovsrätt, så jag återger bara en rad: \"You can dance, you can jive, having the time of your life\". Låten handlar om en sjutton-årig tjej som dansar på en klubb en fredagskväll och känner sig som kvällens drottning.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 928,
+   "ms": 2753,
+   "cost": 0.00306,
+   "status": 200,
+   "err": null,
+   "at": "14:51:41"
+  },
+  {
+   "test": "T recitera Du gamla du fria",
+   "text": "Du gamla, du fria, du fjällhöga nord,\ndu tysta, du glädjerika sköna!\nJag hälsar dig, vänaste land uppå jord,\ndin sol, din himmel, dina ängder gröna.\n\nDu tronar på minnen från fornstora dar,\ndå ärat ditt namn flög över jorden.\nJag vet att du är och du blir vad du var.\nJa, jag vill leva, jag vill dö i Norden.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 2075,
+   "ms": 7777,
+   "cost": 0.00709,
+   "status": 200,
+   "err": null,
+   "at": "14:51:52"
+  },
+  {
+   "test": "T citera Astrid Lindgren ur Pippi Långstrump",
+   "text": "I Pippi Långstrump av Astrid Lindgren förklarar Pippi att hon inte har prövat något förut och att det därför säkert går bra. Hon är självsäker och tror att hon klarar vad som helst. Det är hennes motto om att våga och tro på sig själv.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1868,
+   "ms": 5409,
+   "cost": 0.00528,
+   "status": 200,
+   "err": null,
+   "at": "14:52:01"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0985,
+   "other": 0.0018,
+   "backend": "777b4e4 14:49",
+   "at": "14:52:02"
+  },
+  {
+   "test": "== exam",
+   "at": "14:52:02"
+  },
+  {
+   "test": "X parse",
+   "status": 200,
+   "ms": 4539,
+   "body": {
+    "tasks": [
+     {
+      "no": "1",
+      "text": "Beräkna 15 % av 240.",
+      "points": {
+       "E": 1,
+       "C": 0,
+       "A": 0
+      },
+      "answer": "36",
+      "assessment": "Rätt svar 36. 1 E-poäng."
+     },
+     {
+      "no": "2",
+      "text": "Ett par skor kostar 800 kr. På rean är priset sänkt med 25 %. Vad kostar skorna på rean?",
+      "points": {
+       "E": 1,
+       "C": 1,
+       "A": 0
+      },
+      "answer": "600 kr",
+      "assessment": "Rätt svar 600 kr. 1 E-poäng för att räkna ut rabatten (200 kr), 1 C-poäng för rätt pris."
+     },
+     {
+      "no": "3",
+      "text": "Lös ekvationen 3x - 7 = 14.",
+      "points": {
+       "E": 1,
+       "C": 1,
+       "A": 0
+      },
+      "answer": "x = 7",
+      "assessment": "Rätt svar x = 7. 1 E-poäng för att addera 7 på båda sidor, 1 C-poäng för rätt x."
+     },
+     {
+      "no": "4",
+      "text": "Tabellen visar antal besökare i en butik. Beräkna medelvärdet av antalet besökare per dag.",
+      "points": {
+       "E": 1,
+       "C": 1,
+       "A": 0
+      },
+      "answer": "16,5",
+      "assessment": "Rätt svar 16,5. 1 E-poäng för summan 66, 1 C-poäng för rätt medelvärde."
+     },
+     {
+      "no": "5",
+      "text": "Figuren visar en rektangel. Beräkna rektangelns area och omkrets. [Rektangel med sidorna 8 cm och 5 cm]",
+      "points": {
+       "E": 1,
+       "C": 1,
+       "A": 1
+      },
+      "answer": "Area 40 cm², omkrets 26 cm",
+      "assessment": "Area 40 cm2, omkrets 26 cm. 1 E-poäng area, 1 C-poäng omkrets, 1 A-poäng för rätt enheter (cm2 och cm) och tydlig redovisning."
+     },
+     {
+      "no": "6",
+      "text": "Visa att summan av tre på varandra följande heltal alltid är delbar med 3.",
+      "points": {
+       "E": 0,
+       "C": 0,
+       "A": 2
+      },
+      "answer": "3n+3 = 3(n+1)",
+      "assessment": "Tre tal n, n+1, n+2 har summan 3n+3 = 3(n+1). 1 A-poäng för uttrycket, 1 A-poäng för slutsatsen att det är delbart med 3."
+     }
+    ],
+    "boundaries": [
+     {
+      "grade": "E",
+      "total": 4
+     },
+     {
+      "grade": "C",
+      "total": 7,
+      "min_ca": 2
+     },
+     {
+      "grade": "A",
+      "total": 10,
+      "min_a": 3
+     }
+    ],
+    "usage": {
+     "input_tokens": 4819,
+     "output_tokens": 953,
+     "est_cost_usd": 0.0009584000000000001
+    }
+   },
+   "kb": [
+    139,
+    148
+   ],
+   "at": "14:52:08"
+  },
+  {
+   "test": "X grade 2 'det blir sexhundra kronor'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 600,
+    "equal": true
+   },
+   "feedback": "Rätt pris, 600 kronor, ger C-poäng. Men för E-poäng måste du visa hur du räknade ut rabatten, alltså hur många kronor 25 % av 800 kr är.",
+   "err": null,
+   "at": "14:52:10"
+  },
+  {
+   "test": "X grade 2 '25 % av 800 är 200, så 800 - 200 = 600 kr'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 600,
+    "equal": true
+   },
+   "feedback": "Bra att du räknade ut rabatten till 200 kr och sedan drog av den från 800 kr, vilket gav rätt pris. Det enda som saknas för full poäng är att du hade kunnat visa uträkningen tydligare, men här finns inget mer att poängsätta.",
+   "err": null,
+   "at": "14:52:13"
+  },
+  {
+   "test": "X grade 2 'jag tar 800 delat med 0,75 och får 1067'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 1067,
+    "equal": false
+   },
+   "feedback": "Du har dividerat 800 med 0,75, men en sänkning med 25 % betyder att du ska multiplicera med 0,75, inte dividera. Försök räkna ut hur mycket 25 % av 800 kr är först, så ser du hur mycket skorna blir billigare.",
+   "err": null,
+   "at": "14:52:16"
+  },
+  {
+   "test": "X grade 2 '500'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 500,
+    "equal": false
+   },
+   "feedback": "Du visar att du kan räkna ut rabatten, och det ger E-poäng. Kontrollera ditt slutsvar: 25 % av 800 kr är 200 kr, och priset efter rabatten blir då 800 minus 200 kr.",
+   "err": null,
+   "at": "14:52:19"
+  },
+  {
+   "test": "X grade 2 '600,5 kr'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 600.5,
+    "equal": true
+   },
+   "feedback": "Svaret 600,5 kr är inte rätt, så du får ingen poäng för priset på rean. Räkna först ut hur mycket 25 % av 800 kr är, och dra sedan av det från 800 kr.",
+   "err": null,
+   "at": "14:52:22"
+  },
+  {
+   "test": "X grade 3 'x = 7'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 7,
+    "equal": true
+   },
+   "feedback": "Du fick rätt svar, x = 7, så C-poängen är given. E-poängen kräver att du visar hur du adderar 7 på båda sidor för att isolera 3x, och det syns inte i ditt svar. Skriv nästa gång ut det steget.",
+   "err": null,
+   "at": "14:52:26"
+  },
+  {
+   "test": "X grade 3 '3x = 21 så x är sju'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 21,
+    "equal": false
+   },
+   "feedback": "Du fick E-poäng för att du började rätt och fick fram 3x = 21 genom att addera 7 på båda sidor. Men du behöver dividera med 3 för att få x, och då blir x = 7, inte 21 eller sju som ditt slutsvar säger.",
+   "err": null,
+   "at": "14:52:29"
+  },
+  {
+   "test": "X grade 3 'x = 21'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 21,
+    "equal": false
+   },
+   "feedback": "Du fick inget poäng eftersom svaret x = 21 inte är rätt. Kontrollera att du först adderar 7 på båda sidor och sedan dividerar med 3 så att du får x ensam.",
+   "err": null,
+   "at": "14:52:31"
+  },
+  {
+   "test": "X grade 3 '7 = x'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 7,
+    "equal": true
+   },
+   "feedback": "Svaret 7 = x har rätt värde, men eleven visar inget arbete för att komma dit, så E-poängen för att addera 7 på båda sidor ges inte. Visa nästa steg, till exempel hur du får bort -7 och sedan delar med 3.",
+   "err": null,
+   "at": "14:52:34"
+  },
+  {
+   "test": "X grade 4 '66 delat med 4 är 16,5'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 16.5,
+    "given": 16.5,
+    "equal": true
+   },
+   "feedback": "Bra jobbat, du har räknat ut summan 66 korrekt och kommit fram till rätt medelvärde 16,5. Du behöver inte göra något mer för den här uppgiften.",
+   "err": null,
+   "at": "14:52:37"
+  },
+  {
+   "test": "X grade 4 'ungefär 16'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 16.5,
+    "given": 16,
+    "equal": false
+   },
+   "feedback": "Du har räknat ut summan rätt, eftersom 66 ingår i uträkningen, och det ger poäng. Medelvärdet blev dock 16, och det är fel. Dela summan med antalet besökare och kontrollera att du får ett exakt svar, inte en avrundning.",
+   "err": null,
+   "at": "14:52:41"
+  },
+  {
+   "test": "X grade 4 '16,6'",
+   "status": 429,
+   "points": null,
+   "numeric": null,
+   "feedback": null,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "Too many requests",
+     "fallback": false
+    }
+   },
+   "at": "14:52:42"
+  },
+  {
+   "test": "X grade 5 'area 40 cm2 och omkrets 26 cm'",
+   "status": 429,
+   "points": null,
+   "numeric": null,
+   "feedback": null,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "Too many requests",
+     "fallback": false
+    }
+   },
+   "at": "14:52:44"
+  },
+  {
+   "test": "X grade 5 'area 40, omkrets 13 cm'",
+   "status": 429,
+   "points": null,
+   "numeric": null,
+   "feedback": null,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "Too many requests",
+     "fallback": false
+    }
+   },
+   "at": "14:52:46"
+  },
+  {
+   "test": "X grade 5 '40 och 26'",
+   "status": 429,
+   "points": null,
+   "numeric": null,
+   "feedback": null,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "Too many requests",
+     "fallback": false
+    }
+   },
+   "at": "14:52:48"
+  },
+  {
+   "test": "X hint 1",
+   "status": 429,
+   "hint": null,
+   "at": "14:52:50"
+  },
+  {
+   "test": "X hint 2",
+   "status": 429,
+   "hint": null,
+   "at": "14:52:52"
+  },
+  {
+   "test": "X hint 3",
+   "status": 429,
+   "hint": null,
+   "at": "14:52:54"
+  },
+  {
+   "test": "X summary (C-gräns 7: 5E+3C=8 poäng)",
+   "status": 200,
+   "body": {
+    "points": {
+     "E": 5,
+     "C": 3,
+     "A": 0
+    },
+    "total": 8,
+    "grade": "C",
+    "to_next": {
+     "grade": "A",
+     "total": 2,
+     "a": 3
+    },
+    "tasks": 5,
+    "spoken": "Du har 8 poäng, varav 3 C-poäng och 0 A-poäng. Det räcker till betyget C. Till A saknas 2 poäng, varav 3 A-poäng."
+   },
+   "at": "14:52:55"
+  },
+  {
+   "test": "X okänd action",
+   "status": 400,
+   "body": {
+    "error": {
+     "code": "invalid_request",
+     "message": "action must be parse, hint, grade or summary",
+     "fallback": false
+    }
+   },
+   "at": "14:52:57"
+  },
+  {
+   "test": "X parse fel format",
+   "status": 400,
+   "body": {
+    "error": {
+     "code": "invalid_request",
+     "message": "pages[0] needs media_type (jpeg/png/webp) and base64 data",
+     "fallback": false
+    }
+   },
+   "at": "14:53:00"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0985,
+   "other": 0.0042,
+   "backend": "777b4e4 14:49",
+   "at": "14:53:00"
+  }
+ ]
+}
