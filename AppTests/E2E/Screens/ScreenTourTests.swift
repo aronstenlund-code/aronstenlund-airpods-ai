@@ -52,11 +52,11 @@ final class ScreenTourTests: XCTestCase {
             miss("intro: 'Testa nu' not found (first start not shown?)")
         }
 
-        if waitFor(["Jag förstår — börja använda Lumen", "I understand — start using Lumen"], timeout: 8) != nil {
+        if waitFor(["Jag förstår*", "I understand*"], timeout: 8) != nil {
             shoot("samtycke", note: "Consent, top")
             app.swipeUp()
             shoot("samtycke-slut", note: "Consent, scrolled")
-            tap(["Jag förstår — börja använda Lumen", "I understand — start using Lumen"], step: "consent → accept")
+            tap(["Jag förstår*", "I understand*"], step: "consent → accept")
         } else {
             miss("consent screen not shown")
         }
@@ -269,7 +269,10 @@ final class ScreenTourTests: XCTestCase {
 
     private func find(_ labels: [String]) -> XCUIElement? {
         for label in labels {
-            let predicate = NSPredicate(format: "label ==[c] %@", label)
+            // "Jag förstår*" = starts with (the app's dashes and ellipses vary; don't depend on them).
+            let predicate = label.hasSuffix("*")
+                ? NSPredicate(format: "label BEGINSWITH[c] %@", String(label.dropLast()))
+                : NSPredicate(format: "label ==[c] %@", label)
             let button = app.buttons.matching(predicate).firstMatch
             if button.exists { return button }
             let any = app.descendants(matching: .any).matching(predicate).firstMatch

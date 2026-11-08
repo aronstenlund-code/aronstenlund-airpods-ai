@@ -33,6 +33,13 @@ def rename(folder: Path) -> None:
             if target.endswith(".txt") is False and exported.suffix == ".txt":
                 target += ".txt"
             exported.rename(folder / target)
+    # Keep the artifact small: screenshots and text only (screen recordings and UI snapshots stay in the xcresult).
+    for item in folder.iterdir():
+        if item.is_file() and item.suffix not in (".png", ".txt", ".json"):
+            item.unlink()
+        elif item.is_dir():
+            import shutil
+            shutil.rmtree(item)
 
 
 def config_and_screen(file_name: str):
