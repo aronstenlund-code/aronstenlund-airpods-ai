@@ -73,5 +73,7 @@ Toby checks in the Simulator, Aron on the phone. CI: see the end of this report.
 - **First run (`42500583154`):** the tests did not compile. The start-buffer constant had to be `nonisolated`, and one
   test expression needed explicit types. Both fixed.
 
+- **Green:** run `42501308513` on `b9bd732`. IPA: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42501308513/artifacts/13625738929
+
 ## Next session
 A3 (choose a voice) when Kevin's K6 is done; otherwise the queue.
