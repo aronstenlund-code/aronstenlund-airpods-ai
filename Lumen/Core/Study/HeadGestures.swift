@@ -86,7 +86,7 @@ final class HeadMotionListener {
 
     /// Made outside the main actor (the crash of 2026-11-07): CoreMotion calls it on the queue we give, but a
     /// main-actor closure must not depend on that. It hops to the main actor itself.
-    nonisolated static func handler(_ action: @escaping @MainActor @Sendable (Double, Double) -> Void) -> CMHeadphoneDeviceMotionHandler {
+    nonisolated static func handler(_ action: @escaping @MainActor @Sendable (Double, Double) -> Void) -> CMHeadphoneMotionManager.DeviceMotionHandler {
         { motion, _ in
             guard let motion else { return }
             let pitch = motion.attitude.pitch

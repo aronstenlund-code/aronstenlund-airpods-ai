@@ -57,6 +57,8 @@ three fields:
 - **Fix:** `scripts/**` is now in the iOS workflow's `paths-ignore`, like `backend/**` and `site/**`. The iOS build
   uses nothing there.
 - **This run:** the run of this commit checks D82 (with its fix) and D83 together.
+- **First D83 run:** failed to build on one deprecation, which counts as an error: `CMHeadphoneDeviceMotionHandler` is
+  `CMHeadphoneMotionManager.DeviceMotionHandler` in the iOS 26 SDK. Renamed.
 
 ## Next
 D81.
