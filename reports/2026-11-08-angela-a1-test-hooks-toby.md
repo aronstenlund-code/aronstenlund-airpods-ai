@@ -54,5 +54,8 @@ his own test target. **The Simulator is no device verification.** CI: see the en
 - **Resampling:** linear resampling is enough for speech recognition tests, not for audio quality measurements.
 - **Route:** the Simulator has no AirPods route: HFP, voice processing and echo cancellation are not exercised.
 
+## CI
+- **Green:** run `42494685768` on `d83480b` (build, unit tests including `FileCaptureTests`). IPA: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42494685768/artifacts/13622479651
+
 ## Next session
 A2 (D86 rest) in the queue.
