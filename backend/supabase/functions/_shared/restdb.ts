@@ -79,6 +79,24 @@ export class RestDb {
     await r.body?.cancel();
   }
 
+  /** Like insertMany, but rows that hit the unique key `onConflict` are skipped (D82). */
+  async insertManyIgnoreDuplicates(table: string, rows: object[], onConflict: string): Promise<void> {
+    if (!rows.length) return;
+    const r = await this.fetchImpl(
+      `${this.baseUrl}/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`,
+      {
+        method: "POST",
+        headers: this.headers({ prefer: "resolution=ignore-duplicates,return=minimal" }),
+        body: JSON.stringify(rows),
+      },
+    );
+    if (!r.ok) {
+      await r.body?.cancel();
+      throw new Error(`insert ${table} failed: HTTP ${r.status}`);
+    }
+    await r.body?.cancel();
+  }
+
   /** DELETE /rest/v1/<table>?<filter>; returns the number of deleted rows. `filter` is a PostgREST query. */
   async deleteWhere(table: string, filter: string): Promise<number> {
     const r = await this.fetchImpl(`${this.baseUrl}/rest/v1/${table}?${filter}`, {

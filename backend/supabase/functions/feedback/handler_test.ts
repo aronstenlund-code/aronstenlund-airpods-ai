@@ -232,3 +232,18 @@ Deno.test("D57 feedback-admin: service role only, newest first, html escapes", a
     401,
   );
 });
+
+Deno.test("D82 shared history: client_id is kept and a repeated id in one batch is stored once", () => {
+  const rows = validateShared({
+    install_id: INSTALL,
+    items: [
+      { fragment: "a", answer: "b", mode: "tutor", persona: "tutor", client_id: "id-1" },
+      { fragment: "a", answer: "b", client_id: "id-1" },
+      { fragment: "c", answer: "d" },
+    ],
+  }, "u1");
+  assertEquals(rows.length, 2);
+  assertEquals(rows[0].client_id, "id-1");
+  assertEquals(rows[0].mode, "tutor");
+  assertEquals(rows[1].client_id, null);
+});

@@ -14,7 +14,8 @@ const handler = createSharedHandler({
     hs256Secret: env.get("SUPABASE_JWT_SECRET"),
   }),
   rateLimiter: new SupabaseRateLimiter(db),
-  insertMany: (rows) => db.insertMany("shared_history", rows),
+  // D82: (install_id, client_id) is unique; a re-upload of the same item is ignored, not stored twice
+  insertMany: (rows) => db.insertManyIgnoreDuplicates("shared_history", rows, "install_id,client_id"),
   deleteWhere: (filter) => db.deleteWhere("shared_history", filter),
 });
 

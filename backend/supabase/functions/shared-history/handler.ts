@@ -19,6 +19,7 @@ export const SHARED_LIMITS = {
   summary: 600,
   mode: 32,
   persona: 32,
+  client_id: 64,
 };
 
 export interface SharedRow {
@@ -29,6 +30,8 @@ export interface SharedRow {
   summary: string | null;
   mode: string | null;
   persona: string | null;
+  /** D82: the app's id of the history item; a second upload of the same id is ignored. */
+  client_id: string | null;
 }
 
 const bad = (m: string) => new HttpError(400, "invalid_request", m);
@@ -72,8 +75,9 @@ export function validateShared(raw: unknown, userId: string): SharedRow[] {
       summary: str(x, "summary", SHARED_LIMITS.summary, false),
       mode: str(x, "mode", SHARED_LIMITS.mode, false),
       persona: str(x, "persona", SHARED_LIMITS.persona, false),
+      client_id: str(x, "client_id", SHARED_LIMITS.client_id, false),
     };
-  });
+  }).filter((r, i, all) => !r.client_id || all.findIndex((o) => o.client_id === r.client_id) === i);
 }
 
 export interface SharedDeps {
