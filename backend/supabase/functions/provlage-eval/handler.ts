@@ -25,7 +25,7 @@ export const EVAL_LIMITS = {
   answer: { perMinute: 40, perDay: 700, globalPerDay: 2500 },
   grade: { perMinute: 40, perDay: 700, globalPerDay: 1500 },
   /** Opus judgments are the expensive part: a separate global cap per day. */
-  opusPerDay: 500,
+  opusPerDay: 800,
 };
 
 export const SYSTEM_PROMPT_JUDGE =
