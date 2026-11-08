@@ -24,13 +24,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   5. **E:** betyget "F" sägs som "inte godkänt". Ägarbeslut (Deangelo): en deluppgift med flera rätta svar utan uträkning ger svarspoäng för varje rätt svar, som när NP skriver "Endast svar krävs". Area och omkrets rätt ger alltså 2 E-poäng.
   Push efter varje punkt, och lägg fallen i D87-banken så att K2-siffran mäter dem.
 
-- [ ] **K3 – D88 ljuduppfattning utan telefon** (effort: high).
-  1. Välj 60 fall ur D87-testbanken (ämnesord, korta nyckelord, halva meningar, följdfrågor). Läs igenom manusen innan något genereras (spara ElevenLabs-krediter); kör först en pilot med 15 fall.
-  2. Tal med ElevenLabs TTS, 3–4 svenska röster. Tre förhållanden: tyst; bakgrundsprat (blandat av andra TTS-röster, inget licensierat ljud) på 10 och 5 dB SNR; nedsamplat till 16 kHz som en AirPods-mikrofon. Ljudet som Actions-artefakt eller i Supabase Storage, aldrig i git.
-  3. Kör genom Scribe som appen gör (realtid, samma VAD-värden per läge, keyterms från en provprofil), med och utan keyterms, och batch som jämförelse. Mät ordfel (WER), andel rätt ämnesord, klippta/sammanslagna yttranden.
-  4. Hela kedjan: transkript → /answer i Provläge med profil → D87-rubriken. Jämför med samma fall som ren text så att förlusten från felhörning syns.
-  5. Arons egna inspelningar läggs till när han skickar dem i din chatt (hans röst aldrig i repot, det är publikt).
-  6. Rapport: tabell per förhållande, de 10 värsta fallen ordagrant, rekommendationer (VAD-värden, keyterms, modell), krediter och kostnad.
+- [x] **K3 – flyttad till Oscar (O6)** 2026-11-08 18:50 av Deangelo, så att den körs parallellt med K2/K7.
 
 - [ ] **K4 – Snabbare förbättringsloop** (effort: medium). Gör efter K2 om K2 inte redan täcker det.
   1. Varje ändring i backend som rör svar körs automatiskt mot ett urval på 40 fall ur D87-testbanken (i CI, några cent) och resultatet skrivs i PR/commit-kommentaren, så att en försämring syns direkt.
