@@ -517,6 +517,7 @@ const INPUT_META = new RegExp(
     // D82: "… och jag tolkar det som att du vill …", "Det här är en fortsättning på …"
     String.raw`\bjag tolkar det (?:som|så)\b`,
     String.raw`^(?:det här|detta|det) är en fortsättning på\b`,
+    String.raw`\bfragmentet (?:blandar|är|var|verkar|innehåller|säger|låter|består)\b`,
   ].join("|"),
   "iu",
 );

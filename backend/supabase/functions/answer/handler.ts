@@ -649,12 +649,19 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? demoCaps.answerMaxTokens + (relationTag ? 12 : 0)
         : baseTokens + (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
       const tools = webOn && need ? webTools(need) : undefined;
+      // D82: after the echo of the last answer was removed, only a complete new question gets an answer.
+      const echoNote = echo.echoed
+        ? "The start of <fragment> repeated your own last answer (picked up again by the microphone) and was removed. Answer only if what is left is by itself a complete new question or request; a cut-off half sentence, a remark or noise gets the silence reply."
+        : undefined;
       const userFor = (b: AnswerRequest, extras: PromptExtras = {}) =>
         plan
           ? buildPersonaUserMessage(b, plan.task)
           : direct
-          ? buildDirectUserMessage(b, continuation, extras)
-          : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, extras);
+          ? buildDirectUserMessage(b, continuation, { ...extras, note: extras.note ?? echoNote })
+          : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, {
+            ...extras,
+            note: extras.note ?? echoNote,
+          });
       // D72 live test: "the Nth king" was answered wrong without listing first; ask for the list in code.
       const ordinal = !plan && isOrdinalFact(body.fragment);
       const baseExtras: PromptExtras = {
