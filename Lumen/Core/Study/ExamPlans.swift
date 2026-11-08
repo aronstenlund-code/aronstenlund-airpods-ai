@@ -120,8 +120,9 @@ enum ExamKeyterms {
         add(profile.subject)
         add(profile.course)
         for part in (profile.topics ?? "").components(separatedBy: CharacterSet(charactersIn: ",;\n")) {
-            for piece in part.components(separatedBy: " och ") where !piece.lowercased().hasPrefix("kapitel") {
-                add(piece)
+            for piece in part.components(separatedBy: " och ") {
+                let word = piece.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !word.lowercased().hasPrefix("kapitel") { add(word) } // "kapitel 4" is no word to hear
             }
         }
         (profile.terms ?? []).forEach(add)

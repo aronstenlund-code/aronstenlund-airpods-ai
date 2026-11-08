@@ -194,7 +194,7 @@ import Testing
         #expect(request.context.recentQA.count == AnswerContext.qaLimit)
         #expect(request.context.recentQA.first?.q == "q2", "the newest pairs are kept")
         #expect(request.context.recentQA.first?.a.count == AnswerContext.qaFieldLimit)
-        #expect(request.context.prepTerms.count == AnswerContext.prepTermLimit)
+        #expect(request.context.prepTerms.count == min(40, AnswerContext.prepTermLimit), "D84: up to 50")
     }
 
     @Test func requestFromActivationUsesBackendModeAndLanguage() {

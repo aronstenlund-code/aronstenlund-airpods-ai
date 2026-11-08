@@ -65,6 +65,11 @@ before the backend reads them:
 ## CI
 - **First run (`42490129061`):** the app built, but the tests did not compile. A test suite called two main-actor
   functions, `encodeBody` and the recording's text, without being on the main actor. The suite is `@MainActor` now.
+- **Second run (`42491906136`):** four test failures, all fixed.
+  - A real bug in (1): "kapitel 4" was not skipped when it came after a semicolon, because of a leading space.
+  - Two old tests still expected the 30-term limit and the English offline line (D84 raised the limit to 50; D86
+    shows a Swedish problem card).
+  - The D81 mini-test test never set the room's noise floor, so the answer did not count as speech.
 
 ## Known limits
 - **Long recordings:** a 10-minute WAV is about 19 MB.

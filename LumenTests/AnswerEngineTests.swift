@@ -177,8 +177,9 @@ import Testing
         let (_, model) = makeModel(provider: provider)
         await model.startListening()
         model.submitText("vad är pi")
-        #expect(await waitUntil { model.answerNotice != nil })
-        #expect(model.answerNotice == "Answers need an internet connection")
+        // D86: a problem card in Swedish (and the line in the ear), never the raw message.
+        #expect(await waitUntil { model.problem == .offline })
+        #expect(model.answerNotice == nil)
         #expect(model.conversation.streamingAnswer == nil)
         #expect(model.conversation.answers.isEmpty)
     }

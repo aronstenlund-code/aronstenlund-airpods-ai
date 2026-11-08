@@ -267,6 +267,7 @@ func freshTestDefaults() -> UserDefaults {
         #expect(rig.model.study.isActive)
         #expect(await waitUntil { spoken(rig).first?.hasPrefix("Fråga 1 av 2") == true })
         #expect(await waitForTheWearersTurn(rig), "the question was read and the microphone is open again")
+        rig.model.study.level(-70, at: Date().addingTimeInterval(-4)) // the room's noise floor before the answer
         speak("växter gör socker av solljus", level: -25, rig: rig)
 
         #expect(await waitUntil { rig.provider.requests.count == 1 })
@@ -277,6 +278,7 @@ func freshTestDefaults() -> UserDefaults {
         #expect(rig.cards.cards.reduce(0) { $0 + $1.right } == 1)
 
         #expect(await waitForTheWearersTurn(rig))
+        rig.model.study.level(-70, at: Date().addingTimeInterval(-4))
         speak("vet inte", level: -25, rig: rig)
 
         #expect(await waitUntil { spoken(rig).contains("Klart. 1 av 2 rätt.") })
