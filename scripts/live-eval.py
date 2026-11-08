@@ -345,6 +345,8 @@ def run(cases, rizz, domains, only, now):
                 body["memories"] = turn["memories"]
             if turn.get("mode") in ("tutor", "auto"):  # D75: Provläge (persona tutor) and Auto
                 body["mode"] = turn["mode"]
+            if turn.get("profile"):  # D83: the Provläge profile from the app
+                body.update(mode="tutor", persona="tutor", persona_setup=turn["profile"])
             if turn.get("interview"):
                 body.update(mode="tutor", persona="interview", persona_setup=case.get("setup", ""))
                 if turn.get("user_answer"):

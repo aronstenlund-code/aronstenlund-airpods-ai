@@ -573,6 +573,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D75: Provläge and Auto say nothing to a fragment that is not a question (or is too broken):
       // the meta event is held until the first spoken text so the app can still be told to stay silent.
       const silenceOn = !demo && !plan && (body.mode === "tutor" || body.mode === "auto");
+      const noChecks = tutor && body.persona === "tutor" && /inga kontrollfrågor/i.test(body.personaSetup);
       let silenced = false;
 
       const isRizz = plan?.kind === "rizz";
@@ -740,7 +741,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             : [];
           let post = new AnswerPost({
             previousAnswers: prevAnswers,
-            trimQuestion: direct && !plan && !tutor,
+            // D83: profile "Inga kontrollfrågor" = no check question, also in Provläge (enforced in code)
+            trimQuestion: direct && !plan && (!tutor || noChecks),
             firstLineOnly: plan?.kind === "socialline",
             relationTag,
             web: webOn || !!need, // web filters also when the web cap turned search off

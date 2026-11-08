@@ -2780,5 +2780,58 @@
 ]
 }
 ]
+},
+{
+"id": "profil-01",
+"cat": "profil",
+"turns": [
+{
+"q": "förklara fotosyntesen",
+"profile": "Prov i Biologi fredag 13 november 2026 (om 5 dagar). Årskurs: Åk 7. Kontrollfrågor: Ja–nej-frågor (svara med rösten eller nicka). Förklaringar: mellanlånga förklaringar.",
+"expect_any": [
+"ljus",
+"socker",
+"syre"
+],
+"forbid_any": [
+"calvin",
+"nadph",
+"tylakoid",
+"ribulos",
+"rubisco"
+]
+}
+]
+},
+{
+"id": "profil-02",
+"cat": "profil",
+"turns": [
+{
+"q": "förklara fotosyntesen",
+"profile": "Prov i Biologi fredag 13 november 2026 (om 5 dagar). Årskurs: Gymnasiet 3, kurs Biologi 2. Kontrollfrågor: Svåra frågor. Förklaringar: mellanlånga förklaringar.",
+"expect_any": [
+"ljusreaktion",
+"calvin",
+"atp",
+"nadph",
+"tylakoid"
+]
+}
+]
+},
+{
+"id": "profil-03",
+"cat": "profil",
+"turns": [
+{
+"q": "vad är en jonbindning",
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar.",
+"max_words": 70,
+"forbid_any": [
+"?"
+]
+}
+]
 }
 ]
