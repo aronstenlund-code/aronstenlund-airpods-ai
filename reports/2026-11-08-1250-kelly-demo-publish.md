@@ -49,7 +49,12 @@ Adressen är redan tillåten i backendens CORS, enligt Oscars test.
 Ingen riktig iPhone, Safari eller AirPods har använts. Riktiga tak-texter från servern har inte visats i sidan; Oscar och Kevin har verifierat texterna mot servern.
 
 ## Körning på GitHub
-Fylls i nedan efter pushen.
+Run 42477272944 (commit `2638e51`), https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42477272944:
+- `check`: **success**, alla steg gröna. Kontrollen av filerna gick igenom.
+- Pages-frågan gav 404, och körningen skrev "GitHub Pages is not on with the source 'GitHub Actions' (API answered 404). The site was checked but not published."
+- `deploy`: **skipped**, som avsett. **Verified on GitHub Actions.**
+- Varningar från GitHub, inte från oss: `actions/checkout@v4` körs på Node 24 i stället för Node 20, och `ubuntu-latest` flyttar till Ubuntu 26.
+- iOS-bygget startade den här gången, eftersom commiten ändrade `ios-build.yml` självt. Ändringar i bara `site/` hoppar över det från och med nu (**untested assumption** tills nästa ändring i `site/`).
 
 ## Kända begränsningar och risker
 - `deploy`-jobbet är otestat tills Pages slås på. Om det fallerar visar körningen felet, och sidan kan publiceras igen med **Run workflow**.
