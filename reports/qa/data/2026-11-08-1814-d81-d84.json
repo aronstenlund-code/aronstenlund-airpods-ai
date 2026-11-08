@@ -1,0 +1,534 @@
+{
+ "backend_start": "1209bb7 16:39",
+ "backend_end": "e70212f 18:12",
+ "spent": 0.0327,
+ "log": [
+  {
+   "test": "backend",
+   "at_start": "1209bb7 16:39",
+   "at": "18:09:39"
+  },
+  {
+   "test": "== social",
+   "at": "18:09:39"
+  },
+  {
+   "test": "S1 Talare 1 frågar (x3)",
+   "i": 0,
+   "sugg": [
+    "Jag heja? Jag är bäst på att sitta vid målsnöret."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 2028,
+   "cost": 0.00715,
+   "err": null,
+   "at": "18:09:44"
+  },
+  {
+   "test": "S1 Talare 1 frågar (x3)",
+   "i": 1,
+   "sugg": [
+    "Jag står vid mållinjen med skylt och matsäck, sittande."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 1105,
+   "cost": 0.00108,
+   "err": null,
+   "at": "18:09:49"
+  },
+  {
+   "test": "S1 Talare 1 frågar (x3)",
+   "i": 2,
+   "sugg": [
+    "Jag står vid mållinjen med den längsta applådskylten."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 1495,
+   "cost": 0.00108,
+   "err": null,
+   "at": "18:09:53"
+  },
+  {
+   "test": "S2 Talare 2 frågar (x3)",
+   "i": 0,
+   "sugg": [
+    "Springer du på lördag kan vi ta efter-sovandet tillsammans."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 2314,
+   "cost": 0.00111,
+   "err": null,
+   "at": "18:09:59"
+  },
+  {
+   "test": "S2 Talare 2 frågar (x3)",
+   "i": 1,
+   "sugg": [
+    "Springa, konsert, sova: lördagen har tre olika svårighetsnivåer."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 1697,
+   "cost": 0.00111,
+   "err": null,
+   "at": "18:10:04"
+  },
+  {
+   "test": "S2 Talare 2 frågar (x3)",
+   "i": 2,
+   "sugg": [
+    "Löparen springer, du går på konsert, han sover. Perfekt helg."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 3447,
+   "cost": 0.00113,
+   "err": null,
+   "at": "18:10:11"
+  },
+  {
+   "test": "S3 Talare 3 (x1)",
+   "i": 0,
+   "sugg": [
+    "Energisk? Jag fick precis ett hjärtklapp av bara era scheman."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 1391,
+   "cost": 0.00112,
+   "err": null,
+   "at": "18:10:16"
+  },
+  {
+   "test": "S4 Du sa sist, ingen ny fråga (stall)",
+   "i": 0,
+   "sugg": [
+    "Lördag: en springer, en sjunger, en sover. Jag hejar på alla."
+   ],
+   "status": 200,
+   "status_str": null,
+   "first_ms": 3168,
+   "cost": 0.00165,
+   "err": null,
+   "at": "18:10:22"
+  },
+  {
+   "test": "S5 utan etiketter (other/user)",
+   "sugg": [
+    "Jag heja? Jag står vid mållinjen med bullar och applåder."
+   ],
+   "status": 200,
+   "cost": 0.00095,
+   "at": "18:10:28"
+  },
+  {
+   "test": "S6 Rizz med etiketter",
+   "sugg": [
+    "Jag är mer nyfiken på dig. Vilken konsert är det?"
+   ],
+   "status": 200,
+   "cost": 0.00694,
+   "err": null,
+   "at": "18:10:34"
+  },
+  {
+   "test": "S7 Rizz utan 18+",
+   "status": 403,
+   "err": {
+    "error": {
+     "code": "adult_confirmation_required",
+     "message": "Flirt kräver att användaren bekräftat att hen är 18 år eller äldre (adult_confirmed: true).",
+     "fallback": false
+    }
+   },
+   "at": "18:10:38"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0233,
+   "other": 0.0,
+   "backend": "1209bb7 16:39",
+   "at": "18:10:39"
+  },
+  {
+   "test": "== interview",
+   "at": "18:10:39"
+  },
+  {
+   "test": "I berätta om dig själv",
+   "text": "Jag heter Alex och har jobbat i kafé i Lund sedan tvåtusen tjugotre, där jag har hanterat kassan, servering och stängning. Tidigare har jag jobbat med plock och packning på ett lager, så jag är van vid att arbeta noggrant och ansvarsfullt. Jag gillar att möta människor och hjälpa dem hitta rätt, och det är därför Systembolaget i Malmö känns som en bra plats för mig. Kvällar och helger passar mig bra. Jag talar svenska, engelska och arabiska, vilket kan vara användbart i mötet med kunder.",
+   "status": 200,
+   "cost": 0.00056,
+   "first_ms": 607,
+   "err": null,
+   "at": "18:10:44"
+  },
+  {
+   "test": "I vilka språk talar du",
+   "text": "Jag talar svenska, engelska och arabiska. Det är en stor fördel i Malmö, där jag tror att kunder med olika språkbakgrunder ofta kommer in, så jag kan hjälpa dem på det språk de känner sig tryggast med. Jag är van vid kundmöten från mitt jobb på Kafé Solen, där jag arbetade i kassan och med servering, och jag ser fram emot att ta med det bemötandet till Systembolaget.",
+   "status": 200,
+   "cost": 0.00019,
+   "first_ms": 678,
+   "err": null,
+   "at": "18:10:49"
+  },
+  {
+   "test": "I har du jobbat i kassa förut",
+   "text": "Ja, det har jeg. Under tvåtusen tjugotre och tvåtusen tjugofyra jobbade jag som kafébiträde på Kafé Solen i Lund, där jag stod i kassan varje dag och även ansvarade för stängningen. Det gav mig rutin i att hantera betalningar snabbt och noggrant, även när kön var lång. Jag tycker också om att möta kunder, så jag ser fram emot att göra det på Systembolaget.",
+   "status": 200,
+   "cost": 0.00019,
+   "first_ms": 1935,
+   "err": null,
+   "at": "18:10:56"
+  },
+  {
+   "test": "I har du körkort",
+   "text": "Det jag tar med mig till Systembolaget är erfarenhet från kassa och service på Kafé Solen, där jag jobbade både med betalningar och med stängning. Där lärde jag mig att vara lugn när det är mycket folk och att alltid kolla att allt stämmer innan jag går. Jag gillar att möta olika kunder och hjälpa dem att hitta rätt, och jag är noggrann med regler och ålder. Jag ser fram till att kunna bidra med ansvar och bra bemötande på kvällar och helger.",
+   "status": 200,
+   "cost": 0.00022,
+   "first_ms": 766,
+   "err": null,
+   "at": "18:11:01"
+  },
+  {
+   "test": "I vad gjorde du på ICA",
+   "text": "Jag har inte jobbat på ICA, men jag har jobbat i kassa och servering på Kafé Solen i Lund, där jag tog hand om gäster från öppning till stängning. Det jag tar med mig till Systembolaget är att jag är lugn när det är mycket folk, tycker om att hjälpa kunder hitta rätt och är noggrann med kassan och ordningen i butiken.",
+   "status": 200,
+   "cost": 0.00018,
+   "first_ms": 654,
+   "err": null,
+   "at": "18:11:06"
+  },
+  {
+   "test": "I hur gammal är du",
+   "text": "Det jag tar med mig till jobbet är att jag är ansvarsfull och vill att kunderna ska känna sig välkomna. Jag har jobbat i kassa, servering och stängning på Kafé Solen, så jag är van vid att hålla ordning när det är mycket att göra. Jag gillar att möta människor och hjälpa dem att hitta rätt, och jag ser fram emot att ta ansvar för kvällar och helger på Systembolaget i Malmö.",
+   "status": 200,
+   "cost": 0.0002,
+   "first_ms": 1650,
+   "err": null,
+   "at": "18:11:13"
+  },
+  {
+   "test": "I varför vill du jobba här",
+   "text": "Jag vill jobba här för att jag gillar att möta kunder och hjälpa dem hitta rätt, och Systembolaget är en plats där service och ansvar verkligen går hand i hand. Från mitt jobb på Kafé Solen i Lund vet jag hur viktigt det är att vara lugn i kassan när det är mycket folk och att ta sig tid för den som har en fråga. Jag tycker också om att jobba med struktur, så plock och packning, som jag gjorde på lagret, passar mig bra. Dessutom kan jag svenska, engelska och arabiska, vilket kan vara en fördel i en stad som Malmö. Jag är tillgänglig kvällar och helger och ser fram emot att bidra i en butik där ansvar och bemötande är i fokus.",
+   "status": 200,
+   "cost": 0.00025,
+   "first_ms": 665,
+   "err": null,
+   "at": "18:11:19"
+  },
+  {
+   "test": "I vad har du för utbildning",
+   "text": "Jag gick ekonomiprogrammet på Polhemsgymnasiet i Lund, som jag tog examen från tvåtusen tjugofyra. Under den tiden lärde jag mig att planera, räkna och hålla ordning på detaljer, något jag tar med mig till butiken, där noggrannhet i kassan och i lagret är viktigt. Jag har också arbetat vid kassan och i servering på ett kafé, så jag är van vid att möta kunder och arbeta i ett stressigt tempo.",
+   "status": 200,
+   "cost": 0.00019,
+   "first_ms": 1642,
+   "err": null,
+   "at": "18:11:25"
+  },
+  {
+   "test": "I berätta om en gång du hanterat en arg kund",
+   "text": "Jag jobbade som kafébiträde på Kafé Solen i Lund, och där kom en kund fram en gång och var riktigt upprörd över att en beställning tagit lång tid. Jag bad honom sätta sig ner, lyssnade klart på vad han sa och bekräftade att väntan var frustrerande. Sedan kollade jag beställningen, förklarade vad som hänt i köket och erbjöd honom något på huset medan han väntade. Han lugnade ner sig, och innan han gick tackade han för att jag var tydlig och schysst.",
+   "status": 200,
+   "cost": 0.0002,
+   "first_ms": 589,
+   "err": null,
+   "at": "18:11:30"
+  },
+  {
+   "test": "I har du jobbat med alkohol förut",
+   "text": "Där lärde jag mig att kontrollera att allt stämmer innan en kund går och att vara ansvarsfull när det är mycket folk. Det är just den noggrannheten jag tar med mig till Systembolaget, och jag ser fram till att lära mig reglerna ordentligt och möta kunderna med trygghet och bra bemötande.",
+   "status": 200,
+   "cost": 0.00023,
+   "first_ms": 557,
+   "err": null,
+   "at": "18:11:36"
+  },
+  {
+   "test": "I-int interrupted fortsätt",
+   "text": "Fotosyntesen sker i kloroplasterna, och de innehåller klorofyll, pigmentet som fångar ljus, mest i det blå och röda området. Processen har två steg. I ljusreaktionerna delas vatten och ljusenergin lagras i molekylerna ATP och NADPH, och syre frigörs som en biprodukt. I Calvincykeln används ATP och NADPH för att binda koldioxid från luften och bygga glukos. Totalt kan man skriva att sex koldioxidmolekyler och tolv vattenmolekyler ger en glukosmolekyl, sex syremolekyler och sex vattenmolekyler. Ett exempel är en vårdkase i solljus, som snabbt ökar sin produktion av socker och syre. På provet kan du beskriva de två stegen och vad som går in och ut i var och en.",
+   "status": 200,
+   "cost": 0.00026,
+   "at": "18:11:43"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.026,
+   "other": 0.0,
+   "backend": "1209bb7 16:39",
+   "at": "18:11:43"
+  },
+  {
+   "test": "== subject",
+   "at": "18:11:44"
+  },
+  {
+   "test": "SU bio9 'syntes'",
+   "text": "Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att tillverka socker av koldioxid och vatten, och samtidigt frigöra syre. Det sker i kloroplasterna, som innehåller det gröna pigmentet klorofyll som fångar ljuset.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00029,
+   "at": "18:11:48"
+  },
+  {
+   "test": "SU bio9 'fo syntes'",
+   "text": "Fotosyntes är den process där gröna växter, alger och vissa bakterier använder ljusenergi för att bilda socker av koldioxid och vatten, och samtidigt frigör syre. Processen sker i kloroplasterna, där klorofyll fångar upp ljuset. På provet ska du skriva koldioxid plus vatten, med ljusenergi, ger glukos och syre.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.0003,
+   "at": "18:11:53"
+  },
+  {
+   "test": "SU bio9 'mito'",
+   "text": "Mitokondrien är cellens kraftverk. Den finns i nästan alla celler och är där cellandningen sker, alltså när socker och syre omvandlas till energi i form av ATP. Det är därför musceller, som behöver mycket energi, har många mitokondrier.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00028,
+   "at": "18:11:59"
+  },
+  {
+   "test": "SU bio9 'mitokondrien gör vad'",
+   "text": "Mitokondrien är cellens kraftverk. Den frigör energi ur sockret i cellandningen, så att cellen får energi i form av ATP. Det sker främst i mitokondriens inre veck, kristorna. På provet kan du skriva att mitokondrien ger cellen energi genom cellandning med syre.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00029,
+   "at": "18:12:03"
+  },
+  {
+   "test": "SU bio9 'kloro plast'",
+   "text": "Kloroplast är cellens organell där fotosyntesen sker. Den innehåller det gröna färgämnet klorofyll, som fångar ljusenergi och omvandlar koldioxid och vatten till socker och syre. Det är därför växters blad är gröna. På provet räcker det att skriva att kloroplasten är platsen för fotosyntesen och nämna klorofyllet.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.0003,
+   "at": "18:12:08"
+  },
+  {
+   "test": "SU bio9 'enn simer'",
+   "text": "",
+   "answered": false,
+   "status": 200,
+   "cost": 0.00021,
+   "at": "18:12:13"
+  },
+  {
+   "test": "SU bio9 'dna replika tion'",
+   "text": "DNA-replikation är att cellen kopierar hela sitt DNA innan den delar sig, så att båda nya cellerna får en komplett uppsättning arvsmassa. Enzymet DNA-polymeras läser av varje sträng och bygger på en ny komplementär sträng, där A parar med T och C med G. Varje ny DNA-molekyl består alltså av en gammal och en ny sträng.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00028,
+   "at": "18:12:18"
+  },
+  {
+   "test": "SU bio9 'meios'",
+   "text": "Meios är celldelning som ger könsceller, till exempel ägg och spermier. Den halverar kromosomantalet, från två uppsättningar till en, så att en befruktning ger rätt antal kromosomer igen. Ett mänskligt äggs kromosomer är därför tjugotre, och spermiets också tjugotre, så barnet får fyrtiosex. Skillnaden mot mitos är att meios ger fyra celler som är genetiskt olika, medan mitos ger två identiska celler. På provet skriver du att meios sker i könsceller, ger fyra celler med halvt kromosomantal och bidrar till genetisk variation.",
+   "answered": true,
+   "status": 200,
+   "cost": 0.00034,
+   "at": "18:12:23"
+  },
+  {
+   "test": "SU kem9 'syntes'",
+   "text": "A syntes är en kemisk reaktion där två eller flera ämnen går ihop och bildar ett nytt, större ämne. Det är motsatsen till sönderdelning, där ett ämne delas upp i flera. Till exempel bildar väte och syre vatten när de reagerar: två vätemolekyler och en syremolekyl ger två vattenmolekyler. Under reaktionen bryts bindningar i de gamla ämnena och nya bildas i de nya. På provet ska du kunna skriva att en syntes är att flera ämnen reagerar och bildar ett enda nytt ämne, och ge exemplet med vatten.",
+   "answered": true,
+   "cost": 0.00034,
+   "at": "18:12:30"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0286,
+   "other": 0.0,
+   "backend": "1209bb7 16:39",
+   "at": "18:12:31"
+  },
+  {
+   "test": "== echo",
+   "at": "18:12:31"
+  },
+  {
+   "test": "E0 fråga",
+   "text": "Fotosyntesen är när växter gör socker av koldioxid och vatten med hjälp av ljusenergi. Det sker i bladens gröna delar, i kloroplasterna, där klorofyll fångar solljuset. Vatten och koldioxid går in, och glukos och syre kommer ut. Till exempel bildar växten socker som den använder till att växa. På provet ska du skriva reaktionen i ord: koldioxid plus vatten ger glukos plus syre, med ljus som energikälla.",
+   "cost": 0.00031,
+   "at": "18:12:36"
+  },
+  {
+   "test": "E1 eko av svaret (slut) [Provläge]",
+   "frag": "vatten ger glukos plus syre, med ljus som energikälla.",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "18:12:40"
+  },
+  {
+   "test": "E2 eko mitt i [Provläge]",
+   "frag": "växter gör socker av koldioxid och vatten med hjälp",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "18:12:44"
+  },
+  {
+   "test": "E3 eko + brus [Provläge]",
+   "frag": "hmm växter gör socker av koldioxid och vatten med hjälp ö",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "18:12:47"
+  },
+  {
+   "test": "E4 bara brus [Provläge]",
+   "frag": "bla hmm ö",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00024,
+   "at": "18:12:51"
+  },
+  {
+   "test": "E5 reaktion [Provläge]",
+   "frag": "okej kom igen",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00024,
+   "at": "18:12:55"
+  },
+  {
+   "test": "E6 kontroll: ny fråga [Provläge]",
+   "frag": "och vad är klorofyll",
+   "text": "Klorofyll är det gröna färgämnet i växternas kloroplaster, och det är det som fångar ljusenergin som fotosyntesen behöver. Det absorberar mest det röda och blå ljuset och reflekterar det gröna, vilket är anledningen till att bladen ser gröna ut. Utan klorofyll kan växten inte omvandla solljus till kemisk energi i socker. Till exempel blir blad som saknar klorofyll gula eller vita.\nPå provet ska du skriva att klorofyll absorberar ljusenergi som startar fotosyntesen.",
+   "answered": true,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00038,
+   "at": "18:13:01"
+  },
+  {
+   "test": "E7 eko + ny fråga [Provläge]",
+   "frag": "vatten ger glukos plus syre, med ljus som energikälla. och vad händer i mörker",
+   "text": "I mörker stannar fotosyntesen, eftersom den behöver ljusenergin för att fånga och lagra energi i ljusreaktionen. Växten fortsätter ändå att andas: den använder syre och bryter ned socker för att få energi, det kallas cellandning. Till exempel gör en växt i mörkret av med sitt lagrade socker och ökar koldioxidutsläppet, medan den inte längre bygger upp något nytt. På provet kan du skriva att fotosyntes kräver ljus, medan cellandning sker dygnet runt.",
+   "answered": true,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00038,
+   "at": "18:13:07"
+  },
+  {
+   "test": "E8 eko [Auto]",
+   "frag": "vatten ger glukos plus syre, med ljus som energikälla.",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "18:13:10"
+  },
+  {
+   "test": "E9 eko+brus [Auto]",
+   "frag": "hmm växter gör socker av koldioxid och vatten med hjälp",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0,
+   "at": "18:13:14"
+  },
+  {
+   "test": "E10 brus [Auto]",
+   "frag": "mm ja okej",
+   "text": "",
+   "answered": false,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.0001,
+   "at": "18:13:19"
+  },
+  {
+   "test": "E11 ny fråga [Auto]",
+   "frag": "vad är mitokondrier",
+   "text": "Mitokondrier är cellens kraftverk, små organeller som finns i nästan alla eukaryota celler. De omvandlar energi från socker och syre till ATP, cellens energibärare, i en process som kallas cellandning. Det sker till stor del i mitokondriernas inre membran, som är veckat i så kallade cristae för att ge större yta. Mitokondrierna har också eget DNA, vilket tyder på att de en gång var fria bakterier som levde i en större cell. Till skillnad från fotosyntesen, som sker i kloroplasterna i växter, frigörs energi i mitokondrierna genom att socker bryts ned och syre förbrukas.",
+   "answered": true,
+   "status_str": null,
+   "retract": null,
+   "cost": 0.00026,
+   "at": "18:13:25"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0305,
+   "other": 0.0,
+   "backend": "e70212f 18:12",
+   "at": "18:13:25"
+  },
+  {
+   "test": "== level",
+   "at": "18:13:25"
+  },
+  {
+   "test": "L förklara fotosyntesen [åk]",
+   "text": "Fotosyntesen är när växter, alger och vissa bakterier använder ljus för att tillverka socker av koldioxid och vatten. Det sker i bladets gröna delar, i kloroplasterna, där det gröna färgämnet klorofyll fångar ljusets energi. Växten tar upp koldioxid från luften och vatten från jorden, och som biprodukt släpps syrgas ut i luften. Ett exempel är ett blad på en solig dag: det blir starkare och producerar mer syrgas än på en mörk dag. På provet räcker det att skriva att fotosyntesen är ljusets omvandling till kemisk energi i socker, med koldioxid, vatten och syrgas som in- och utprodukter.",
+   "words": 98,
+   "cost": 0.00035,
+   "first_ms": 2064,
+   "at": "18:13:32"
+  },
+  {
+   "test": "L förklara fotosyntesen [gy3]",
+   "text": "Fotosyntesen är den process där växter, alger och vissa bakterier använder ljusenergi för att bilda glukos av koldioxid och vatten, och frigör syre. Den sker i kloroplasterna och har två delar. I ljusreaktionerna, i tylakoidmembranen, fångar klorofyll ljus, spjälkar vatten och bildar ATP och NADPH samt syre. I Calvincykeln, i stroma, används ATP och NADPH för att binda koldioxid till sockermolekyler. Ett exempel är ett blad i solsken som tar upp koldioxid genom klyvöppningarna och avger syre. På provet bör du kunna skriva den totala reaktionen, sex koldioxid plus sex vatten ger glukos plus sex syrgas, och förklara vad ljus- respektive mörkerreaktionerna gör.",
+   "words": 103,
+   "cost": 0.00037,
+   "first_ms": 1250,
+   "at": "18:13:39"
+  },
+  {
+   "test": "L vad är en derivata [åk]",
+   "text": "Åk åtta-nivå: derivata är inte något eleven ska kunna i årskurs åtta, så förklara idén enkelt.\n\nEn derivata visar hur snabbt något förändras just i ett ögonblick. Tänk på en bil: hastigheten är hur snabbt läget ändras. I en graf är derivatan lutningen på kurvan i en punkt, alltså hur brant den är just där. Ett enkelt exempel är att om en bil kör femtio kilometer på en timme, och sträckan ökar lika snabbt hela tiden, så är derivatan femtio kilometer per timme.\n\nPå provet räcker det att skriva att derivatan är förändringshastigheten, eller lutningen i en graf.",
+   "words": 98,
+   "cost": 0.00035,
+   "first_ms": 1046,
+   "at": "18:13:44"
+  },
+  {
+   "test": "L vad är en derivata [gy3]",
+   "text": "En derivata är ett mått på hur snabbt en funktion ändras i en viss punkt. Geometriskt är den lutningen av tangenten till funktionens graf i punkten. Derivatan f′(x) definieras som gränsvärdet av kvoten mellan förändringen i funktionsvärdet och förändringen i x, när förändringen i x går mot noll. Till exempel har funktionen f(x) är lika med x i kvadrat derivatan två x, så i punkten x är lika med tre är lutningen sex. Det är bra att på provet kunna visa hur gränsvärdet beräknas och nämna kedjeregeln, produktregeln och kvotregeln när de används.",
+   "words": 93,
+   "cost": 0.00036,
+   "first_ms": 895,
+   "at": "18:13:50"
+  },
+  {
+   "test": "L-inga/korta",
+   "text": "En atom är den minsta delen av ett grundämne som fortfarande har grundämnets egenskaper. Den består av en kärna med protoner och neutroner, och elektroner rör sig runt kärnan. Protonerna är positiva, elektronerna negativa, och en neutral atom har lika många av varje. Kärnan är mycket liten jämfört med hela atomen.",
+   "words": 51,
+   "has_q": false,
+   "cost": 0.00029,
+   "at": "18:13:56"
+  },
+  {
+   "test": "L-ja/utf",
+   "text": "En atom är den minsta byggstenen i ett grundämne, och den går inte att dela upp med kemiska metoder. Varje atom består av en kärna i mitten och elektroner som rör sig runt kärnan. Kärnan innehåller protoner, som har positiv laddning, och neutroner, som saknar laddning. Elektronerna har negativ laddning. En atom är oftast elektriskt neutral, vilket betyder att antalet protoner och elektroner är lika. Atomkärnan är väldigt liten jämfört med hela atomen, nästan all massa finns i kärnan, medan elektronerna är mycket lätta. Till exempel består en kolatom av sex protoner, sex neutroner och sex elektroner. Grundämnen skiljer sig åt just genom antalet protoner i kärnan. Vid provet bör du kunna rita en enkel atommodell med kärna och elektroner och ange laddningen för varje partikel. Är elektronerna i atomen positivt eller negativt laddade?",
+   "words": 134,
+   "has_q": true,
+   "cost": 0.0004,
+   "at": "18:14:02"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0327,
+   "other": 0.0,
+   "backend": "e70212f 18:12",
+   "at": "18:14:03"
+  }
+ ]
+}

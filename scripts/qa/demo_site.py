@@ -147,6 +147,8 @@ def main():
             engines.append(("webkit", pw.webkit))
         except Exception:
             rec("webkit", status="not installed (needs `playwright install webkit`, a download)")
+        if len(sys.argv) > 1:  # e.g. `demo_site.py webkit` runs only that engine
+            engines = [e for e in engines if e[0] in sys.argv[1:]]
         for ename, eng in engines:
             browser = eng.launch(args=["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] if ename == "chromium" else [])
             iphone = pw.devices["iPhone 13"]
@@ -298,7 +300,7 @@ def main():
                 shot(page, "chromium-desktop-stt-cap")
                 ctx.close()
             browser.close()
-    out = ROOT / "reports/qa/data" / (dt.datetime.now().strftime("%Y-%m-%d-%H%M") + "-demo-site.json")
+    out = ROOT / "reports/qa/data" / (dt.datetime.now().strftime("%Y-%m-%d-%H%M") + ("-demo-site-" + "-".join(sys.argv[1:]) if len(sys.argv) > 1 else "-demo-site") + ".json")
     out.write_text(json.dumps(log, ensure_ascii=False, indent=1), encoding="utf-8")
     print("saved", out)
 
