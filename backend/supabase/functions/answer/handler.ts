@@ -817,7 +817,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             quizOnly: quiz, // D86: only the check question is said
             subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
             interview: plan?.kind === "interview", // D77
-            missingFact: !!missing,
+            missingFact: missing ?? undefined,
           });
           let pendingMeta: Record<string, unknown> | null = null;
           const flushMeta = () => {
@@ -980,7 +980,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 quizOnly: quiz,
                 subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
                 interview: plan?.kind === "interview",
-                missingFact: !!missing,
+                missingFact: missing ?? undefined,
               });
               r = await it.next();
             }

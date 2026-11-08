@@ -118,6 +118,10 @@ Deno.test("K1.5 interview: no yes or no about facts the CV does not give", async
   assertEquals(missingFact("har du jobbat med alkohol", setup), "alkohol");
   assertEquals(missingFact("hur tar du dig till jobbet", setup), "pendling");
   assertEquals(missingFact("berätta om dig själv", setup), null);
+  assertEquals(missingFact("är du över tjugo", setup), "ålder");
+  const { claimsMissing } = await import("./interviewfacts.ts");
+  assert(claimsMissing("pendling", "Jag bor i Malmö och har jobbat på Kafé Solen."));
+  assert(!claimsMissing("pendling", "Jag kommer alltid i tid och öppnade kaféet varje morgon."));
   assertEquals(missingFact("har du körkort", "CV: B-körkort sedan 2021."), null);
   assertEquals(missingFact("hur gammal är du", setup, ["Är 19 år."]), null);
   assertEquals(stripYesNoLead("Det har jag inte, men jag tar mig hit med cykel. "), "");
@@ -126,7 +130,7 @@ Deno.test("K1.5 interview: no yes or no about facts the CV does not give", async
   assertEquals(stripYesNoLead("Ja, och det jag tar med mig är att jag är pålitlig. ").trim(), "Det jag tar med mig är att jag är pålitlig.");
   assertEquals(stripYesNoLead("Jag är alltid i tid och pålitlig. "), "Jag är alltid i tid och pålitlig. ");
   const { out } = run(
-    { previousAnswers: [], trimQuestion: false, interview: true, missingFact: true },
+    { previousAnswers: [], trimQuestion: false, interview: true, missingFact: "körkort" },
     ["Det har jag inte än. ", "Jag är alltid i tid, och på Kafé Solen öppnade jag ofta själv klockan sju."],
   );
   assertEquals(out.trim(), "Jag är alltid i tid, och på Kafé Solen öppnade jag ofta själv klockan sju.");
