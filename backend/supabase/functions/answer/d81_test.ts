@@ -56,3 +56,10 @@ Deno.test("D81 interview: job ad + CV up to 2 000 characters, CV facts are the u
   assert(r.personaSetup.length > 1500, String(r.personaSetup.length)); // above the old 1 500 limit
   assertStringIncludes(SYSTEM_PROMPT_INTERVIEW, "the CV is the user's own background");
 });
+
+Deno.test("D81 a suggestion that says a speaker label aloud is never shown", async () => {
+  const { pickSuggestions } = await import("./rizz.ts");
+  const raw = "1|x|Jag föreslår något där Talare ett får sitta ner.\n2|y|Konsert på lördag låter perfekt, vilken artist?\nTOP: 1,2";
+  const picked = pickSuggestions(raw, true, undefined, 1);
+  assert(picked.every((p: string) => !/talare/i.test(p)), JSON.stringify(picked));
+});

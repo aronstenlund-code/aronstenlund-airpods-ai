@@ -67,8 +67,7 @@ export function parseCards(text: string, count: number): { cards: Card[]; test: 
   } catch {
     return { cards: [], test: [] };
   }
-  const seen = new Set<string>();
-  const list = (v: unknown, n: number) =>
+  const list = (v: unknown, n: number, seen = new Set<string>()) =>
     (Array.isArray(v) ? v : [])
       .map((c) => ({ q: clean((c as Card)?.q, CARD_LIMITS.q), a: clean((c as Card)?.a, CARD_LIMITS.a) }))
       .filter((c): c is Card => !!c.q && !!c.a && !seen.has(c.q.toLowerCase()) && !!seen.add(c.q.toLowerCase()))
