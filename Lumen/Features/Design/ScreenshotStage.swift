@@ -16,7 +16,11 @@ struct ScreenshotStage: View {
     /// Demo exams, a profile, a practice item and two answered questions. Called once, before the first frame.
     static func seed(_ container: AppContainer, for name: String) {
         let model = container.listening
-        guard name != "empty", name != "intro" else { return }
+        if name == "empty" {
+            for plan in model.examPlans?.plans ?? [] { model.examPlans?.delete(plan.id) } // left by an earlier screen
+            return
+        }
+        guard name != "intro" else { return }
         let today = Calendar.current.startOfDay(for: Date())
         func day(_ n: Int) -> Date { Calendar.current.date(byAdding: .day, value: n, to: today) ?? today }
         if model.examPlans?.plans.isEmpty == true {

@@ -108,7 +108,8 @@ struct IntroView: View {
                 Button("Testa nu", action: onStart)
                     .buttonStyle(LumenButtonStyle())
                     .accessibilityHint("Godkänner punkterna ovan och startar mikrofonen")
-                Text("Inget konto. Du ställer din första fråga direkt.")
+                // The consent sentence sits at the button, so it is always on screen (A2 screenshots).
+                Text("Genom att trycka Testa nu godkänner du punkterna ovan. Inget konto.")
                     .font(LumenFont.text(14, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
             }
@@ -130,9 +131,6 @@ extension IntroView {
             Button("Läs mer") { isReadingMore = true }
                 .font(LumenFont.text(15, .semibold))
                 .frame(minHeight: 44)
-            Text("Genom att trycka Testa nu godkänner du detta.")
-                .font(LumenFont.text(13, relativeTo: .caption))
-                .foregroundStyle(LumenColor.muted)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
