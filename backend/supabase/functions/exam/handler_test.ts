@@ -75,3 +75,34 @@ Deno.test("D84 exam summary: totals and the grade in code only (no model)", asyn
   assertEquals(llm.calls.length, 0);
   assertEquals(parseExamReply("trasigt").tasks, []);
 });
+
+Deno.test("K1.1 oral grading: spoken numbers, the answer after the last 'så/är/=', algebra forms", async () => {
+  const { finalNumber } = await import("./spoken.ts");
+  const cases: [string, number | null][] = [
+    ["medelvärdet är sexton komma fem", 16.5], ["sexton komma fem", 16.5], ["en halv", 0.5], ["tre fjärdedelar", 0.75],
+    ["två och en halv", 2.5], ["3x = 21 så x är sju", 7], ["x är sju", 7], ["7 = x", 7], ["x = 7", 7],
+    ["det blir sexhundra kronor", 600], ["25 % av 800 är 200, så 800–200=600", 600], ["800/0,75 = 1067", 1067],
+    ["600,5 kr", 600.5], ["ungefär 16", 16], ["16,6", 16.6], ["area 40 cm2 och omkrets 26 cm", 26],
+    ["3x = 14+7 = 21, x = 21/3 = 7", 7], ["jag vet inte", null], ["svaret är tolv komma fem", 12.5],
+    ["x blir minus tre", -3], ["det är en tredjedel", 0.3333], ["hundratjugosex", 126], ["126 kr", 126],
+    ["noll komma två fem", 0.25], ["tjugo procent", 20], ["x = -3", -3], ["y är lika med fyra", 4],
+    ["först 5 sen 10 så blir det 15", 15], ["jag fick tvåhundrasjuttio", 270], ["sju komma nio", 7.9],
+  ];
+  for (const [t, want] of cases) {
+    const got = finalNumber(t);
+    assert(want === null ? got === null : got !== null && Math.abs(got - want) < 0.001, `${t}: ${got} != ${want}`);
+  }
+  // "600,5" is not 600; a bare wrong number gets nothing; "x är sju" gets the answer point
+  assertEquals(numericCheck("600 kr", "600,5 kr")?.equal, false);
+  const { correctPoints } = await import("./handler.ts");
+  const task = { no: "2", text: "Lös 3x = 21", points: { E: 1, C: 1, A: 0 }, answer: "x = 7", assessment: "+E för korrekt metod, +C för korrekt svar" };
+  assertEquals(correctPoints(task, "x är sju", { E: 0, C: 0, A: 0 }, numericCheck(task.answer, "x är sju")), { E: 0, C: 1, A: 0 });
+  assertEquals(correctPoints(task, "500", { E: 1, C: 0, A: 0 }, numericCheck(task.answer, "500")), { E: 0, C: 0, A: 0 });
+});
+
+Deno.test("K1 exam summary never says fewer missing points than A points needed", () => {
+  const s = summarize([{ no: "1", points: { E: 5, C: 3, A: 0 } }], [{ grade: "C", total: 7, min_ca: 2 }, { grade: "A", total: 10, min_a: 3 }] as never);
+  assertEquals(s.grade, "C");
+  assertEquals(s.to_next?.total, 3);
+  assert(s.spoken.includes("Till A saknas 3 poäng, varav 3 A-poäng."), s.spoken);
+});

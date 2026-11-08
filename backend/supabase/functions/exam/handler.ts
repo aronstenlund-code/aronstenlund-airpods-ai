@@ -4,7 +4,7 @@ import { appChecks, enforceLimits, type Limits, type RateLimiter } from "../_sha
 import { networkKey } from "../_shared/demo.ts";
 import { readLimitedJson } from "../answer/validate.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
-import { wordsToNumber } from "../answer/svnum.ts";
+import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
 /**
@@ -76,7 +76,7 @@ export interface ExamDeps {
 export const SYSTEM_PROMPT_EXAM_PARSE =
   `You read pages of a Swedish exam (often a national exam, "nationellt prov") and/or its assessment instructions ("bedömningsanvisningar"), given as images. Return ONLY a JSON object:
 {"tasks": [{"no": "1a", "text": "...", "points": {"E": 1, "C": 0, "A": 0}, "answer": "...", "assessment": "..."}], "boundaries": [{"grade": "E", "total": 15, "min_ca": 0, "min_a": 0}]}
-- tasks: every task you can see, in order. "no" as printed ("1", "3b"). "text": the full task text, word for word (describe a figure in one sentence in square brackets). "points": the points per level as printed, e.g. (1/1/0) = E 1, C 1, A 0; 0 when not printed. "answer": the correct answer or model solution from the instructions ("" when not on these pages). "assessment": the scoring rules for the task from the instructions, word for word in substance ("" when not on these pages).
+- tasks: every task you can see, in order. "no" as printed ("1", "3b"). "text": the full task text, word for word, including every value of a table (row by row, "Måndag: 12, Tisdag: 18, …") and a one-sentence description of a figure in square brackets. "points": the points per level as printed, e.g. (1/1/0) = E 1, C 1, A 0; 0 when not printed. "answer": the correct answer or model solution from the instructions ("" when not on these pages). "assessment": the scoring rules for the task from the instructions, word for word in substance ("" when not on these pages).
 - boundaries: the grade limits ("provbetygsgränser") when they are on these pages: total points for E, D, C, B, A and the extra conditions (min_ca = points on at least C level, min_a = A points); [] otherwise.
 - Copy numbers exactly. Never invent a task, an answer or a limit; leave a field empty when it is not on these pages. No other text.`;
 
@@ -90,7 +90,7 @@ No markdown, no symbols the speech would read out, numbers as digits.`;
 export const SYSTEM_PROMPT_EXAM_GRADE =
   `You mark a student's answer to one exam task, strictly by the scoring rules. You get <task> (text, points per level E/C/A, the correct answer and the scoring rules), <numeric_check> (computed by code: whether the student's final number equals the correct one; trust it) and <answer> (the student's answer, from speech, so it may contain recognition errors in words but not in meaning).
 Return ONLY a JSON object: {"points": {"E": 0, "C": 0, "A": 0}, "feedback": "..."}.
-- Give each point exactly as the scoring rules say, never more than the task's points per level. When <numeric_check> says the final number is wrong, no point that requires the correct answer is given.
+- Give each point exactly as the scoring rules say, never more than the task's points per level. When <numeric_check> says the final number is wrong, no point that requires the correct answer is given; when it says it is right, the point for the correct answer is given. A bare number without any method shown never earns a method point. Never claim the student wrote something that is not in <answer>.
 - feedback: one or two spoken Swedish sentences: what earned points and the single most useful thing that was missing. Never the full solution.`;
 
 function clean(s: unknown, max: number): string {
@@ -153,31 +153,41 @@ export function parseExamReply(text: string): { tasks: ExamTask[]; boundaries: B
   return { tasks: tasks.slice(0, EXAM_LIMITS.tasks), boundaries: validBoundaries(j.boundaries) };
 }
 
-/** The last number in a text: digits ("72 900", "3,5", "-2") or Swedish words ("sjuttiotvåtusen niohundra"). */
+/** The student's final number (spoken Swedish too, K1.1): see spoken.ts. */
 export function lastNumber(text: string): number | null {
-  const t = text.replace(/(\d)\s(?=\d{3}\b)/g, "$1");
-  const digits = [...t.matchAll(/-?\d+(?:[.,]\d+)?/g)].map((m) => Number(m[0].replace(",", ".")));
-  if (digits.length) return digits[digits.length - 1];
-  const words = t.toLowerCase().replace(/[^a-zåäö\s]/g, " ").split(/\s+/).filter(Boolean);
-  for (let end = words.length; end > 0; end--) {
-    for (let start = Math.max(0, end - 4); start < end; start++) { // longest run of number words first
-      const v = wordsToNumber(words.slice(start, end).join(" "));
-      if (v !== null) return v;
-    }
-  }
-  return null;
+  return finalNumber(text);
 }
 
-/** D84: "beräkningar i kod": the student's final number against the correct one (relative tolerance 0.5 %). */
+/** "beräkningar i kod": the student's final number against the correct one. Exact for whole numbers, two decimals otherwise. */
 export function numericCheck(correct: string, answer: string): { expected: number; given: number | null; equal: boolean } | null {
   // an algebraic answer ("8 − x") is not a number: no numeric check, the scoring rules decide
   if (/[+\-−*/^]\s*\(?[a-zåäö]\)?\s*$|^\s*[a-zåäö]\s*[+\-−*/^]/i.test(correct.trim())) return null;
-  const expected = lastNumber(correct);
+  const expected = finalNumber(correct);
   if (expected === null) return null;
-  const given = lastNumber(answer);
+  const given = finalNumber(answer);
   if (given === null) return { expected, given: null, equal: false };
-  const tol = Math.max(1e-9, Math.abs(expected) * 0.005);
+  const tol = Number.isInteger(expected) ? 1e-9 : Math.max(0.005, Math.abs(expected) * 0.0005);
   return { expected, given, equal: Math.abs(given - expected) <= tol };
+}
+
+/** The level the scoring rules give for the correct answer itself ("+C för korrekt svar"), or null. */
+export function answerLevel(assessment: string): "E" | "C" | "A" | null {
+  const m = /\+\s*([ECA])(?:[^+]{0,40}?)(?:korrekt|rätt|godtagbart)\s+(?:svar|slutsvar|värde|resultat)/i.exec(assessment);
+  return m ? (m[1].toUpperCase() as "E" | "C" | "A") : null;
+}
+
+/** K1.1: the model's points corrected in code with the numeric check. */
+export function correctPoints(task: ExamTask, answer: string, model: Points, numeric: ReturnType<typeof numericCheck>): Points {
+  const max = task.points;
+  let p: Points = { E: Math.min(model.E, max.E), C: Math.min(model.C, max.C), A: Math.min(model.A, max.A) };
+  const level = answerLevel(task.assessment);
+  if (numeric && level) {
+    if (numeric.equal && p[level] === 0 && max[level] > 0) p = { ...p, [level]: 1 }; // "x är sju" = 7: the answer point
+    if (!numeric.equal) p = { ...p, [level]: 0 }; // a wrong number never gets the answer point
+  }
+  // a bare number shows no method: a wrong one earns nothing ("500", "ungefär 16")
+  if (numeric && !numeric.equal && isBareNumber(answer)) p = { E: 0, C: 0, A: 0 };
+  return p;
 }
 
 /** "hur gick det?": totals and the grade reached, computed in code only. */
@@ -197,17 +207,24 @@ export function summarize(results: { no: string; points: Points }[], boundaries:
   let grade: string = sorted.length ? "F" : "okänt";
   for (const b of sorted) if (meets(b)) grade = b.grade;
   const next = sorted.find((b) => order.indexOf(b.grade) > order.indexOf(grade === "F" ? "" : grade) && !meets(b));
+  const needCa = next?.min_ca !== undefined ? Math.max(0, next.min_ca - (sum.C + sum.A)) : 0;
+  const needA = next?.min_a !== undefined ? Math.max(0, next.min_a - sum.A) : 0;
   const toNext = next
     ? {
       grade: next.grade,
-      total: Math.max(0, next.total - total),
-      ...(next.min_ca !== undefined ? { ca: Math.max(0, next.min_ca - (sum.C + sum.A)) } : {}),
-      ...(next.min_a !== undefined ? { a: Math.max(0, next.min_a - sum.A) } : {}),
+      // Oscar 2026-11-08: "saknas 2 poäng, varav 3 A-poäng" is impossible; the A points needed are new points
+      total: Math.max(0, next.total - total, needA, needCa),
+      ...(next.min_ca !== undefined ? { ca: needCa } : {}),
+      ...(next.min_a !== undefined ? { a: needA } : {}),
     }
     : null;
   const spoken = boundaries.length
     ? `Du har ${total} poäng, varav ${sum.C} C-poäng och ${sum.A} A-poäng. Det räcker till ${grade === "F" ? "F" : `betyget ${grade}`}.` +
-      (toNext ? ` Till ${toNext.grade} saknas ${toNext.total} poäng${toNext.a ? `, varav ${toNext.a} A-poäng` : ""}.` : "")
+      (toNext
+        ? ` Till ${toNext.grade} saknas ${toNext.total} poäng${
+          toNext.a ? `, varav ${toNext.a} A-poäng` : toNext.ca ? `, varav ${toNext.ca} på C- eller A-nivå` : ""
+        }.`
+        : "")
     : `Du har ${total} poäng, varav ${sum.C} C-poäng och ${sum.A} A-poäng.`;
   return { points: sum, total, grade, to_next: toNext, tasks: results.length, spoken };
 }
@@ -249,7 +266,9 @@ export function createExamHandler(deps: ExamDeps) {
       });
       const rl = await enforceLimits(deps.rateLimiter, "exam", user.id, cfg.limits, 1, extra);
       if (!rl.allowed) {
-        throw new HttpError(429, "rate_limited", "Too many requests", { retryAfterSec: rl.retryAfterSec });
+        throw new HttpError(429, "rate_limited", "För många försök just nu. Vänta en liten stund och försök igen.", {
+          retryAfterSec: rl.retryAfterSec,
+        });
       }
       if (!deps.provider) throw new HttpError(503, "provider_unconfigured", "LLM provider not configured");
 
@@ -356,7 +375,7 @@ export function createExamHandler(deps: ExamDeps) {
         feedback = clean(j.feedback, 600);
       } catch { /* malformed: zero points, no feedback */ }
       const max = task!.points;
-      const points = { E: Math.min(p.E, max.E), C: Math.min(p.C, max.C), A: Math.min(p.A, max.A) };
+      const points = correctPoints(task!, clean(b?.answer, EXAM_LIMITS.answer), p, numeric);
       return json({ points, max, total: points.E + points.C + points.A, numeric, feedback, usage });
     } catch (e) {
       return errorResponse(toHttpError(e));
