@@ -197,6 +197,7 @@
     0%, 70%, 100% { opacity: .25; transform: translateY(0); }
     35% { opacity: 1; transform: translateY(-5px); }
   }
+  .note { margin-top: 16px; max-width: 40ch; color: var(--mut); font-size: 1rem; line-height: 1.4; }
   .nudge { margin-top: 20px; max-width: 34ch; }
   .nudge a { font-weight: 600; }
 
@@ -465,6 +466,7 @@
       <div class="convo" id="convo" hidden>
         <p class="q" id="q"></p>
         <div class="a" id="a" aria-live="polite"></div>
+        <p class="note" id="note" role="status" hidden></p>
         <p class="nudge" id="nudge" hidden><a href="#vantelista">Ladda ner appen för att använda den med låst skärm och i alla lägen</a></p>
         <div class="dock" id="dock" hidden>
           <button class="pill" id="stop" type="button"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Stoppa</button>
@@ -533,7 +535,7 @@
         </form>
       </div>
       <div class="first-note">
-        <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns. Vi sparar adressen och när du gav ditt samtycke. Vill du bli borttagen räcker det att svara på vårt mejl.</p>
+        <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns. Vi sparar adressen och när du gav ditt samtycke. Vill du bli borttagen, eller har du frågor om dina uppgifter, mejla <a href="mailto:stenlundaron@gmail.com">stenlundaron@gmail.com</a>.</p>
         <p class="fine">Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel.</p>
       </div>
     </div>
@@ -614,6 +616,12 @@ async function api(path, init, retry = true) {
   if (r.status === 401 && retry) { await getToken(true); return api(path, init, false); }
   return r;
 }
+async function errorBody(res) {
+  try { return (await res.json()).error || {}; } catch { return {}; }
+}
+// D62/D77: varje demo_limit_* har en egen svensk text från servern som visas som den är.
+function demoLimitText(err) { return String(err.code || "").startsWith("demo_limit") && err.message ? String(err.message) : null; }
+function limitError(message) { const e = new Error(message); e.demoLimit = message; return e; }
 function friendlyError(e, status, code) {
   if (status === 429 || code === "rate_limited") return "Det är många som frågar just nu. Vänta en stund och försök igen.";
   if (status) return "Svaret kunde inte hämtas just nu. Försök igen om en stund.";
@@ -643,9 +651,14 @@ function playBlob(blob) {
     if (p) p.catch(end(reject));
   });
 }
+let ttsLimit = null;   // serverns text när uppläsningstaket är nått; då läses inget mer upp i dag
+function showNote() { $("note").textContent = ttsLimit || ""; $("note").hidden = !ttsLimit; }
 async function fetchAudio(text) {
   const res = await api("tts", { method: "POST", body: JSON.stringify({ text: text.slice(0, 400), source: "demo" }) });
-  if (!res.ok) throw new Error("tts " + res.status);
+  if (!res.ok) {
+    const limit = demoLimitText(await errorBody(res));
+    throw limit ? limitError(limit) : new Error("tts " + res.status);
+  }
   return res.blob();
 }
 function speakFallback(text) {
@@ -658,14 +671,18 @@ function speakFallback(text) {
   });
 }
 function speak(sentence, r) {
+  if (ttsLimit) return;
   const audio = fetchAudio(sentence);
   audio.catch(() => {});
   r.chain = r.chain.then(async () => {
-    if (r.cancelled) return;
+    if (r.cancelled || ttsLimit) return;
     try {
       const blob = await audio;
       if (!r.cancelled) await playBlob(blob);
-    } catch { if (!r.cancelled) await speakFallback(sentence); }
+    } catch (e) {
+      if (e && e.demoLimit) { ttsLimit = e.demoLimit; if (run === r) showNote(); return; }
+      if (!r.cancelled) await speakFallback(sentence);
+    }
   });
 }
 // Starta rösten så fort en mening är klar.
@@ -722,17 +739,18 @@ async function ask(text, mode) {
   $("q").textContent = text;
   showThinking();
   resetDock(true);
+  showNote();
   showLeft();
   try {
     const body = { fragment: text, mode, language: "sv", source: "demo", context: { recent_qa: recent.slice(-3) } };
     const res = await api("answer", { signal: r.ac.signal, method: "POST", body: JSON.stringify(body) });
     if (!res.ok) {
-      let err = {};
-      try { err = (await res.json()).error || {}; } catch {}
+      const err = await errorBody(res);
       const code = String(err.code || "");
-      if (code.startsWith("demo_limit") && err.message) {
+      const limit = demoLimitText(err);
+      if (limit) {
         if (code === "demo_limit_visitor") store.set(dayKey(), String(DEMO_LIMIT));
-        showLimit(err.message);
+        showLimit(limit);
         r.busy = false;
         return;
       }
@@ -810,12 +828,15 @@ $("ask").addEventListener("submit", (e) => {
 });
 
 // ---------- håll in och prata ----------
-let current = null, scribeOff = false;
+let current = null, scribeOff = false, voiceLimit = null;
 const MIN_HOLD = 350;
 
 async function fetchStt() {
   const r = await api("stt-token?source=demo", { method: "GET" });
-  if (!r.ok) throw new Error("stt " + r.status);
+  if (!r.ok) {
+    const limit = demoLimitText(await errorBody(r));
+    throw limit ? limitError(limit) : new Error("stt " + r.status);
+  }
   return r.json();
 }
 function heard(text) { $("q").textContent = text; }
@@ -904,7 +925,8 @@ function closeMic(st) {
   try {
     if (st.proc) st.proc.disconnect();
     if (st.stream) st.stream.getTracks().forEach((t) => t.stop());
-    if (st.ctx) st.ctx.close();
+    // Kan anropas två gånger (släpp + tak), så kontexten stängs bara en gång.
+    if (st.ctx && st.ctx.state !== "closed") st.ctx.close().catch(() => {});
   } catch {}
 }
 function openSocket(st, tok) {
@@ -934,7 +956,15 @@ async function startScribe() {
   (async () => {
     let tok;
     try { tok = await fetchStt(); }
-    catch {
+    catch (e) {
+      if (e && e.demoLimit) {
+        voiceLimit = st.limitMsg = e.demoLimit;
+        closeMic(st); st.done = true;
+        if (!st.released) { st.released = true; if (current === st) current = null; endListening(voiceLimit, true); }
+        else if (st.waiter) st.waiter();
+        else hint(voiceLimit, true);   // släppte innan svaret kom
+        return;
+      }
       scribeOff = true; st.failed = "token";
       if (!st.released && SR) { closeMic(st); st.done = true; st.released = true; startSafari(); }
       return;
@@ -972,6 +1002,7 @@ async function startScribe() {
   }
 }
 async function stopScribe(st) {
+  if (st.limitMsg) return;   // taket nåddes redan medan knappen hölls; texten visas
   st.released = true;
   const held = performance.now() - st.startedAt;
   closeMic(st);
@@ -992,6 +1023,7 @@ async function stopScribe(st) {
   const tail = chunk(pcm16b64(new Float32Array(3200), 16000).b64, true);
   try { if (st.open) st.ws.send(tail); else st.queue.push(tail); } catch {}
   await new Promise((res) => { st.waiter = res; setTimeout(res, 2800); });
+  if (st.limitMsg) { endListening(st.limitMsg, true); return; }
   st.done = true;
   const text = (st.final + " " + st.partial).trim();
   try { if (st.ws) st.ws.close(); } catch {}
@@ -1008,6 +1040,7 @@ function press() {
   unlockAudio();
   if (navigator.vibrate) navigator.vibrate(8);
   if (limitReached()) return;
+  if (voiceLimit) { hint(voiceLimit, true); return; }
   beginListening();
   if (!scribeOff && navigator.mediaDevices && window.WebSocket) startScribe();
   else startSafari();

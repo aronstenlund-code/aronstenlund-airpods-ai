@@ -9,6 +9,8 @@ on:
       - "prompts/**"
       - "testdata/**"
       - "backend/**"
+      - "site/**"
+      - ".github/workflows/pages.yml"
       - "**/*.md"
   pull_request:
     paths-ignore:
@@ -17,6 +19,8 @@ on:
       - "prompts/**"
       - "testdata/**"
       - "backend/**"
+      - "site/**"
+      - ".github/workflows/pages.yml"
       - "**/*.md"
   workflow_dispatch:
 
