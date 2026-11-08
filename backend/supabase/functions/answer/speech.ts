@@ -527,6 +527,8 @@ const INPUT_META = new RegExp(
     String.raw`\bfragmentet (?:blandar|är|var|verkar|innehåller|säger|låter|består)\b`,
     String.raw`\bjag är (?:inte (?:helt )?säker på|osäker på) vad (?:du|ni) menar\b`,
     String.raw`\bså jag svarar inte\b`,
+    String.raw`\b(?:eftersom )?(?:ingen|det finns ingen) tidigare (?:tur|fråga|samtal)`,
+    String.raw`\b(?:är det|det är) svårt att (?:avgöra|veta|säga) (?:vad|vilket)`,
     String.raw`^det verkar vara en fråga om\b`,
   ].join("|"),
   "iu",
@@ -577,7 +579,9 @@ export function rewriteLeadIn(sentence: string, heard: string): string {
   }
   const m = LEAD_NAMED.exec(t);
   if (!m) return sentence;
-  const [, term, sep, rest] = m;
+  const [, term0, sep, rest0] = m;
+  const term = term0.replace(/^(?:begreppet|ordet|termen|ämnet)\s+/iu, "");
+  const rest = rest0?.replace(/^(?:så här är det(?: kort)?|kort sagt)\s*[:,]\s*/iu, "");
   // "Det låter som …" is always a reading; "Det är …" only when the term is what was heard (misheard), so
   // "Det är rätt." or "Det är viktigt, …" is never touched
   const sounds = /^(?:det|det här|detta|det där)\s+låter som\b/iu.test(t);
@@ -587,7 +591,7 @@ export function rewriteLeadIn(sentence: string, heard: string): string {
   const cap = term.charAt(0).toUpperCase() + term.slice(1);
   const trail = /\s$/.test(sentence) ? " " : "";
   if (!sep || !rest?.trim()) return ""; // "Det här är fotosyntesen." on its own says nothing
-  const r = rest.trim().replace(/^(?:alltså|det vill säga|dvs\.?)\s+/i, "");
+  const r = rest.trim().replace(/^(?:alltså|det vill säga|dvs\.?)\s+/i, "").replace(/^som\s+(?:är|betyder)\s+/iu, "");
   if (/^(?:en|ett|när|den|det|de|processen|läran|ett sätt)\b/i.test(r)) {
     return `${cap} är ${r}${/[.!?]$/.test(r) ? "" : "."}${trail}`;
   }

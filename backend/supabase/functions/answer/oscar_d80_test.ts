@@ -43,3 +43,10 @@ Deno.test("Oscar 2026-11-08 Provläge: 'Fragmentet … liknar …' and 'Och jag 
   assertEquals(rewriteLeadIn('Fragmentet "gra vi ta tions kraften" liknar "gravitationskraften", ett tydligt ämne, så jag svarar på det. ', "gra vi ta tions kraften"), "");
   assertEquals(rewriteLeadIn("Och jag svarar på det: demokrati betyder folkstyre. ", "den mo kra tin"), "Demokrati betyder folkstyre. ");
 });
+
+Deno.test("Oscar 2026-11-08 Provläge: 'Det verkar vara begreppet X, så här är det kort:' and '…, som är …'", () => {
+  assertEquals(rewriteLeadIn("Det verkar vara begreppet demokratin, så här är det kort: demokrati betyder folkstyre. ", "den mo kra tin"),
+    "Demokrati betyder folkstyre. ");
+  assertEquals(rewriteLeadIn("Det här är periodiska systemet, som är ett sätt att ordna grundämnena. ", "pe ri o diska syste met"),
+    "Periodiska systemet är ett sätt att ordna grundämnena. ");
+});
