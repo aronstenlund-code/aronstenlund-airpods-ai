@@ -514,6 +514,9 @@ const INPUT_META = new RegExp(
     String.raw`\b(?:föreslår att du säger|säg vilket ämne|berätta vilket ämne|vilket ämne (?:det|provet) gäller)`,
     String.raw`\b(?:kan|kunde) (?:du|ni) (?:förtydliga|upprepa|säga det igen|formulera om)`,
     String.raw`\bså (?:jag svarar på|svarar jag på) det jag hör\b`,
+    // D82: "… och jag tolkar det som att du vill …", "Det här är en fortsättning på …"
+    String.raw`\bjag tolkar det (?:som|så)\b`,
+    String.raw`^(?:det här|detta|det) är en fortsättning på\b`,
   ].join("|"),
   "iu",
 );

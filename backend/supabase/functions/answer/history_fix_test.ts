@@ -57,3 +57,14 @@ Deno.test("2026-11-08 sentences about the fragment, sound or microphone are drop
   ]);
   assertEquals(mixed.out.trim(), "Obamacare kritiseras för kostnaderna.");
 });
+
+Deno.test("D82 the echo of the last answer is removed before the model; nothing left = silence", async () => {
+  const { stripEcho } = await import("./echo.ts");
+  const last = "Om x är ett blir y lika med fem gånger ett plus tio, alltså femton. Du sätter in ett i formeln, gångrar med fem och lägger till tio.";
+  const r = stripEcho("Du sätter in ett i formeln, gångrar med fem och lägger till ut till tio. Gud- Om x ökar från ett till två är- Två är krympning.", last);
+  assert(r.echoed >= 8, String(r.echoed));
+  assert(!r.rest.includes("formeln"), r.rest);
+  assertEquals(stripEcho("vad händer om x är två", last).echoed, 0);
+  assertEquals(stripEcho("du sätter in ett i formeln", last).rest, "");
+  assert(isInputMeta("Det här är en fortsättning på ekvationen, och jag tolkar det som att du vill se vad som händer."));
+});

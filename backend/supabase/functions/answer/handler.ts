@@ -35,6 +35,7 @@ import {
   webTools,
 } from "./web.ts";
 import { AnswerPost, NumberStream } from "./speech.ts";
+import { stripEcho } from "./echo.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import {
   detectDecline,
@@ -213,7 +214,68 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       ) {
         throw new HttpError(403, "demo_unavailable", DEMO_MESSAGES.unavailable);
       }
-      const body = demo ? { ...parsed, memories: [], commands: [], goals: "" } : parsed;
+      const body0 = demo ? { ...parsed, memories: [], commands: [], goals: "" } : parsed;
+      // D82: in Provläge / Auto the words that repeat the last answer (picked up again by the microphone) are
+      // removed before anything else looks at the fragment; nothing left = silence, without a model call.
+      const echo = !demo && !body0.social && (body0.persona ?? "tutor") === "tutor" &&
+          (body0.mode === "tutor" || body0.mode === "auto")
+        ? stripEcho(body0.fragment, body0.context.recent_qa.at(-1)?.a)
+        : { rest: body0.fragment, echoed: 0 };
+      const body = echo.echoed ? { ...body0, fragment: echo.rest } : body0;
+      if (echo.echoed && echo.rest.split(/\s+/).filter((w) => /\p{L}{2,}/u.test(w)).length < 2) {
+        const totalMs = Math.round(now() - t0);
+        try {
+          await deps.recordUsage({
+            user_id: user.id,
+            endpoint: "answer",
+            mode: body0.mode,
+            language: body0.language,
+            provider: "local",
+            model: "echo",
+            is_question: false,
+            confidence: 1,
+            input_tokens: null,
+            output_tokens: null,
+            ttft_ms: null,
+            total_ms: totalMs,
+            est_cost_usd: 0,
+            status: "not_question",
+            category: "övrigt",
+            persona: body0.persona,
+          });
+        } catch (e) {
+          console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+        }
+        const frames = [
+          sseFrame("meta", {
+            reconstructed_question: body0.fragment,
+            confidence: 1,
+            is_question: false,
+            needs_confirmation: false,
+            answer_type: "fact",
+            relation: null,
+          }),
+          sseFrame("done", {
+            answered: false,
+            timing: { meta_ms: totalMs, ttft_ms: null, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "echo" },
+            summary: null,
+            relation: null,
+            source: null,
+            memory_add: null,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
       if (demo) {
         await enforceDemo(deps.rateLimiter, "answer", user.id, await networkKey(req), demoCaps);
       }
