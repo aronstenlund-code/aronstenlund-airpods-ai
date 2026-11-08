@@ -570,9 +570,14 @@ const REASON_ACT = new RegExp(
 );
 /** "Syntes är nog fotosyntes …": the heard word named, then an interpretation verb. */
 const REASON_GUESS = /^["'„”»«]?([\p{L}-]{2,40})["'„”»«]? (?:är|betyder) (?:nog|troligen|förmodligen|antagligen|sannolikt|kanske) /iu;
+/** K2: the same reasoning in English ("The fragment sounds like 'present perfect', …", Oscar's D87 review). */
+const REASON_EN =
+  /^(?:the|this|your) (?:fragment|word|phrase|term|input|question)s? (?:sounds|seems|looks) like|^(?:it|that|this) (?:sounds|seems) like (?:you|the)|^you (?:probably |likely |most likely )?(?:mean|meant)(?![\p{L}])|^i (?:take|read|interpret) (?:it|this|that) as/iu;
+
 export function isReasoningMeta(sentence: string, heard: string): boolean {
   const t = sentence.trim();
   if (!t) return false;
+  if (REASON_EN.test(t)) return true;
   if (REASON_REF.test(t)) return true;
   if (REASON_ACT.test(t)) return true;
   const g = REASON_GUESS.exec(t);
@@ -977,7 +982,8 @@ export class AnswerPost {
 
   constructor(opts: PostOptions) {
     this.dup = new DupGuard(opts.previousAnswers);
-    this.trim = new QuestionTrim(opts.trimQuestion, opts.tutor === true);
+    // K2: a profile without check questions trims every closing question, also in Provläge
+    this.trim = new QuestionTrim(opts.trimQuestion, opts.tutor === true && opts.trimQuestion !== true);
     this.gate = new FirstLineGate(opts.firstLineOnly === true);
     this.rel = new RelationTap(opts.relationTag === true);
     this.sil = new SilenceTap(opts.silence === true);

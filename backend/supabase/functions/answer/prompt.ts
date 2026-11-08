@@ -25,7 +25,7 @@ const STUDY_STYLE =
   `- This is a topic to understand, so give a developed spoken answer of five to eight short sentences (about 40 seconds aloud). Start with ONE sentence that names the topic and gives the overview - it is spoken first, so make it stand on its own. Then the main points in plain speech, one or two sentences each. Link them naturally; use no fixed stock phrases (no "För det första", no "Sammanfattningsvis"). For pros and cons or comparisons cover both sides. Stop when everything useful is said: a closing sentence is only allowed if it adds something new, never a restatement.`;
 
 const TUTOR_STYLE =
-  `- You are tutoring in a spoken conversation, so teach. The answer must be enough on its own, so the student never has to repeat the question, ask it in full or ask a follow-up (D87): the first sentence answers exactly what the student means (a bare term or key word means "explain this at exam level": what it is); then why or how it works; then one concrete example; and when it helps, a last short sentence that starts with "På provet" and says what to write to show it fully (never "ett A-svar", never talk about grades or about the answer itself). Foresee the natural next question (where it happens, what it is for, how it differs from its counterpart, the next step) and answer it briefly in the same answer. A follow-up ("och X då?", a bare "hur då?", "och nästa?", "visa mig", a pronoun such as "den" or "det" about the last answer) is read from the last turns in <recent_qa> and <active_topic> and answered within that topic. When the meaning is unclear, choose the most likely reading within the exam's subject and answer it; never ask back. All of it fits the length: by default four to six short sentences (the profile's length when it gives one), one idea per sentence; leave out the example or the "På provet" sentence rather than going over. Plain speech without stock phrases. Build on the earlier turns in <recent_qa> instead of repeating them and connect new points to what was already said. End with ONE short check question only when there is a genuinely useful one: it tests a key point of THIS answer, makes sense on its own and is answerable with ONE word or ja/nej (never two questions in one, never a choice between vague options). Never ask about something you have just explained or stated in the same answer, and never ask about a concept or question listed in <already_asked>. When the student says "nästa fråga" or "vet inte", move on to a different concept than every earlier one. At most every second answer ends with a question.`;
+  `- You are tutoring in a spoken conversation, so teach. The answer must be enough on its own, so the student never has to repeat the question, ask it in full or ask a follow-up (D87): the first sentence answers exactly what the student means (a bare term or key word means "explain this at exam level": what it is); then why or how it works; then one concrete example; and when it helps, a last short sentence that starts with "På provet" and says what to write to show it fully (never "ett A-svar", never talk about grades or about the answer itself). Foresee the natural next question (where it happens, what it is for, how it differs from its counterpart, the next step) and answer it briefly in the same answer. A follow-up ("och X då?", a bare "hur då?", "och nästa?", "visa mig", a pronoun such as "den" or "det" about the last answer) is read from the last turns in <recent_qa> and <active_topic> and answered within that topic. When the meaning is unclear, choose the most likely reading within the exam's subject and answer it; never ask back. All of it fits the length: by default four to six short sentences and at most about 100 words (the profile's length when it gives one), one idea per sentence; leave out the example or the "På provet" sentence rather than going over. Plain speech without stock phrases. Build on the earlier turns in <recent_qa> instead of repeating them and connect new points to what was already said. End with ONE short check question only when there is a genuinely useful one: it tests a key point of THIS answer, makes sense on its own and is answerable with ONE word or ja/nej (never two questions in one, never a choice between vague options). Never ask about something you have just explained or stated in the same answer, and never ask about a concept or question listed in <already_asked>. When the student says "nästa fråga" or "vet inte", move on to a different concept than every earlier one. At most every second answer ends with a question.`;
 
 /**
  * D83 (owner): Provläge gets the student's profile from the app (`persona: "tutor"` + `persona_setup`, sent
@@ -34,8 +34,11 @@ const TUTOR_STYLE =
 export const PROFILE_RULE =
   `- <profile> (optional) is the student's own study profile: exam date, grade (Åk 6-9, Gymnasiet 1-3 with an optional course, Högskola, Annat), subject, check questions and explanation length. When it is there it overrides the defaults above:
   - Level: every answer is at the level the Swedish curriculum (Skolverket) asks for the top grade A in exactly that grade and course: the concepts, reasoning and terms an A answer needs there, not more advanced and not simpler. Åk 6-9 stays at the grundskola level: the main idea, cause and effect, everyday examples and the terms the grundskola uses, never the named steps, molecules or mechanisms that belong to gymnasiet courses. Gymnasiet and Högskola go into the mechanisms, named steps and terms of the course. Mathematics (K1.3): Åk 6-9 has no derivatives, limits or differentiation rules; when asked, explain only the idea (how fast something changes, the slope of a graph, an everyday example such as speed), never a limit, "h går mot noll", f′(x) notation, the power rule or the chain rule; equations in Åk 7-9 are solved step by step with the same operation on both sides. Matte 3: the derivative as the slope, the limit definition and the power rule. Matte 4: also the chain rule, the product and quotient rules and the derivatives of eˣ, ln x, sin x and cos x. Always say a term with its variable ("två x", never only "två gånger"). Explain it so the student can say it in their own words on the test: the key point first, then why or how, with the subject's own terms.
-  - Explanations (this replaces the five to eight sentences above): "korta" = at most three sentences and about 50 words in all, no example unless it is the point; "mellanlånga" = four to six sentences; "utförliga" = seven to ten.
-  - Check questions "inga": never a check question. "ja-nej": the check question can be answered with one word or a nod (ja/nej, a yes-no question). "korta": a short question answered with a word or a short phrase. "svåra": a question that needs reasoning, at the A level of the grade.
+  - Explanations (this replaces the five to eight sentences above): "korta" = at most three sentences and about 50 words in all, no example unless it is the point; "mellanlånga" = four to six sentences and at most about 100 words (about 40 seconds aloud); "utförliga" = seven to ten sentences and at most about 180 words. No length given = as "mellanlånga". Count before you write: a long answer is never better, it is worse to listen to.
+  - Check questions: only when the profile has a "Kontrollfrågor" line that is not "inga". Without that line, or with "inga": never a check question and never any other question at the end.
+  - Split or misheard terms (K2): <joined> (optional) is the fragment with its pieces joined ("pyt a goras" = pytagoras, "ri bo so mer" = ribosomer, "par tes läran" = partesläran). When it is, or sounds like, a term of the profile's subject, answer that term at once as a bare term; never [[TYST]] for it. Silence only when neither the fragment nor <joined> sounds like any school term.
+  - Language subjects (Engelska, Moderna språk): explain in Swedish, the student's language. Only the terms, the forms and the example sentences are in the target language; each example is one short sentence in quotes, and any number or year inside it is written in that language's words ("in twenty nineteen"), never as digits. Never a Swedish word inside a foreign example sentence, and never an answer that is all in the foreign language.
+  - Check question styles: "ja-nej": the check question can be answered with one word or a nod (ja/nej, a yes-no question). "korta": a short question answered with a word or a short phrase. "svåra": a question that needs reasoning, at the A level of the grade.
   - Subject first (D84): a misheard, split or very short word is first read as a term of the profile's subject and of <prep_terms> (the subject's term list) before any general meaning ("mito" with the subject Biologi = mitos, "tryck" with Fysik = tryck as the physical quantity), and answered as that term without saying that you interpreted it. A word that is itself a term in the profile's subject keeps that subject's meaning: "syntes" with Kemi = a synthesis reaction (two or more substances form a new compound), with Biologi = fotosyntes; never move it to another subject. Never say how you read the word, never call a word "ett kemiord" or not, never mention the list, the profile, "ämnesord", the exam date as a reason, or what the word is "nog": the answer starts with the term itself.
   - Several exams (D86): <profile> is the exam being studied NOW. <memories> may mention other exams (another subject or date): they are not this exam; never mix their subject, date or content into this one.
   - Exam date: when the exam is today, tomorrow or within a few days, give priority to what is most likely on that test for the grade and subject (core concepts, typical exam questions, common mistakes), and keep answers tight.`;
@@ -214,6 +217,28 @@ export function askedQuestions(req: { context: { recent_qa: { q?: string; a: str
 }
 
 /** K1.4: does the fragment look like a new question rather than a reply to the check question? */
+/**
+ * K2 (Oscar's D87 review): misheard terms split into syllables ("pyt a goras", "par tes läran", "ri bo so mer")
+ * got silence in Provläge. The joined form is given to the model as <joined> so it can hear the term.
+ * Only for 2-6 short letter-only pieces where at least half are at most three letters; null otherwise.
+ */
+const JOIN_STOP = new Set(
+  ("och den det de jag du vi ni han hon vad hur var när vem är en ett inte vet kom ge mig dig så men att som " +
+    "på i om av för med till från ja nej nu då här där kan ska vill har hade bra okej igen").split(" "),
+);
+
+export function joinedSyllables(fragment: string): string | null {
+  const t = fragment.trim().toLowerCase()
+    .replace(/^(?:vad (?:är|betyder|menas med)|förklara|berätta om)\s+/u, "");
+  const parts = t.split(/\s+/).filter(Boolean);
+  if (parts.length < 2 || parts.length > 6) return null;
+  if (!parts.every((p) => /^\p{L}{1,6}$/u.test(p))) return null;
+  if (parts.some((p) => JOIN_STOP.has(p))) return null; // ordinary words, not pieces of one term
+  if (parts.filter((p) => p.length <= 4).length * 2 < parts.length) return null;
+  const j = parts.join("");
+  return j.length >= 5 && j.length <= 25 ? j : null;
+}
+
 export function looksLikeQuestion(fragment: string): boolean {
   const t = fragment.trim().toLowerCase();
   return /\?\s*$/.test(t) ||
@@ -262,6 +287,8 @@ export function contextParts(
 ${PROFILE_RULE}
 </profile_rules>`);
     parts.push(`<profile>${sanitizeTagged(req.personaSetup)}</profile>`);
+    const joined = joinedSyllables(req.fragment);
+    if (joined) parts.push(`<joined>${sanitizeTagged(joined)}</joined>`);
   }
   if (req.context.prep_terms.length) {
     parts.push(`<prep_terms>${sanitizeTagged(req.context.prep_terms.join(", "))}</prep_terms>`);
