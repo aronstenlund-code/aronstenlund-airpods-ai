@@ -200,7 +200,7 @@ export function isQuizRequest(fragment: string): boolean {
 export const QUIZ_NOTE =
   "The student says \"förhör mig\": reply with ONE check question and nothing else: no answer, no introduction such as \"Här är en fråga\", the first word is the question. This explicit request overrides \"Kontrollfrågor: inga\" in <profile>. It is about something from <recent_qa>, or, when nothing was studied yet, something likely on the exam in <profile> (its subject, grade and \"På provet\"). Level: what an A answer needs in that grade. Style from <profile>: \"ja-nej\" = answerable with ja or nej; \"korta\" or no style = answerable with a word or a short phrase; \"svåra\" = needs a short explanation. Never a question listed in <already_asked>.";
 /** K1.4: every check question asked so far: the app's list (whole session) plus the ones in recent_qa, once each. */
-export function askedQuestions(req: { context: { recent_qa: { a: string }[]; already_asked?: string[] } }): string[] {
+export function askedQuestions(req: { context: { recent_qa: { q?: string; a: string }[]; already_asked?: string[] } }): string[] {
   const out: string[] = [];
   const seen = new Set<string>();
   for (const q of [...(req.context.already_asked ?? []), ...req.context.recent_qa.map((x) => lastQuestion(x.a))]) {
