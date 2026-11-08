@@ -20,3 +20,9 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   4. Hela kedjan: transkript → /answer i Provläge med profil → D87-rubriken. Jämför med samma fall som ren text så att förlusten från felhörning syns.
   5. Arons egna inspelningar läggs till när han skickar dem i din chatt (hans röst aldrig i repot, det är publikt).
   6. Rapport: tabell per förhållande, de 10 värsta fallen ordagrant, rekommendationer (VAD-värden, keyterms, modell), krediter och kostnad.
+
+- [ ] **K4 – Snabbare förbättringsloop** (effort: medium). Gör efter K2 om K2 inte redan täcker det.
+  1. Varje ändring i backend som rör svar körs automatiskt mot ett urval på 40 fall ur D87-testbanken (i CI, några cent) och resultatet skrivs i PR/commit-kommentaren, så att en försämring syns direkt.
+  2. 8–12 förebildssvar för Provläget (olika ämnen, årskurser, nyckelord, följdfråga) i den cachade systemprompten. Mät före och efter.
+  3. Riktiga fel blir testfall automatiskt: "det där var fel"-rapporter och dåliga svar i shared_history läggs (anonymiserade) in i testbanken varje natt.
+  4. Kunskapskrav som underlag: korta utdrag ur Skolverkets centrala innehåll och kunskapskrav för A per ämne och årskurs/kurs, skickade med profilen, så att "A-nivå" bygger på riktiga krav. Kolla att texten får användas så.
