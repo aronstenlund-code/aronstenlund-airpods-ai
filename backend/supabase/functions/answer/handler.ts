@@ -591,7 +591,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const noChecks = tutor && body.persona === "tutor" && /inga kontrollfrågor/i.test(body.personaSetup);
       let silenced = false;
 
-      const isRizz = plan?.kind === "rizz";
+      // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz
+      const isRizz = plan?.kind === "rizz" || textReq;
       const modelUsed = isRizz ? (cfg.rizzModel ?? provider.model) : provider.model;
       const priceIn = isRizz ? (cfg.rizzPriceInPerMTok ?? cfg.priceInPerMTok) : cfg.priceInPerMTok;
       const priceOut = isRizz
