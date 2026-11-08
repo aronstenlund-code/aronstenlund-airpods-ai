@@ -1,0 +1,1257 @@
+{
+ "spent_usd_est": 0.01074,
+ "log": [
+  {
+   "test": "backend_state_start",
+   "local": "87ccf8b 21:57",
+   "origin": "87ccf8b 21:57",
+   "note": "rapporten: answer v61, tts v34, stt-token v26, memory v5, feedback-admin v24; versionsnummer går inte att läsa utifrån",
+   "at": "12:45:00"
+  },
+  {
+   "test": "signups",
+   "u1": 1794138300.8634152,
+   "u2": 1794138300.9802163,
+   "u3": 1794138301.1126108,
+   "at": "12:45:01"
+  },
+  {
+   "test": "u3_new_session_aborted_cap",
+   "at_call": 21,
+   "ok_before": 20,
+   "status": 429,
+   "err": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"Too many requests\",\"fallback\":true}}",
+   "retry_after": "35",
+   "elapsed_s": 23.7,
+   "at": "12:45:24"
+  },
+  {
+   "test": "u1_new_session_cap",
+   "at_call": 21,
+   "status": 429,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "Too many requests",
+     "fallback": true
+    }
+   },
+   "retry_after": "786",
+   "codes": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    429
+   ],
+   "elapsed_s": 113.7,
+   "at": "12:46:54"
+  },
+  {
+   "test": "memory_kemiprov_fredag",
+   "q": "jag har kemiprov på fredag",
+   "status": 200,
+   "add": [
+    "Har kemiprov fredag 13 november 2026."
+   ],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1403,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:46:56"
+  },
+  {
+   "test": "memory_tentamen_datum",
+   "q": "jag har tentamen den 20 november",
+   "status": 200,
+   "add": [
+    "Har tentamen fredag 20 november 2026."
+   ],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1297,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:46:59"
+  },
+  {
+   "test": "memory_nasta_tisdag",
+   "q": "nästa tisdag har jag redovisning i svenska",
+   "status": 200,
+   "add": [
+    "Har redovisning i svenska tisdag 17 november 2026."
+   ],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1124,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:01"
+  },
+  {
+   "test": "memory_imorgon",
+   "q": "imorgon har jag provskrivning i matte",
+   "status": 200,
+   "add": [
+    "Har provskrivning i matte måndag 9 november 2026."
+   ],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1254,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:03"
+  },
+  {
+   "test": "memory_om_tva_veckor",
+   "q": "om två veckor ska jag på läger med klassen",
+   "status": 200,
+   "add": [
+    "Ska på klassläger om två veckor, ca söndag 22 november 2026."
+   ],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1557,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:06"
+  },
+  {
+   "test": "memory_program",
+   "q": "jag läser naturprogrammet andra året och vill bli läkare",
+   "status": 200,
+   "add": [
+    "Läser naturprogrammet andra året på gymnasiet i Sweden.",
+    "Vill bli läkare."
+   ],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1174,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:08"
+  },
+  {
+   "test": "memory_regel_kort",
+   "q": "svara alltid kort och kalla mig Sam",
+   "status": 200,
+   "add": [
+    "Vill att svaren alltid är korta.",
+    "Vill kallas Sam."
+   ],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1419,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:10"
+  },
+  {
+   "test": "memory_many_facts",
+   "q": "jag heter Alma, går tredje året på samhällsprogrammet, har engelskaprov 12 november och historiaprov 19 november, vill ha korta svar och läser extra matte på fredagar",
+   "status": 200,
+   "add": [
+    "Går tredje året på samhällsprogrammet.",
+    "Har engelskaprov torsdag 12 november 2026.",
+    "Har historiaprov torsdag 19 november 2026.",
+    "Läser extra matte på fredagar.",
+    "Vill ha korta svar."
+   ],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1449,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:13"
+  },
+  {
+   "test": "memory_sens_allergi",
+   "q": "jag är allergisk mot nötter",
+   "status": 200,
+   "add": [],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1311,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:15"
+  },
+  {
+   "test": "memory_sens_adhd",
+   "q": "jag har ADHD och tar medicin",
+   "status": 200,
+   "add": [],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1131,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:17"
+  },
+  {
+   "test": "memory_sens_religion",
+   "q": "jag är muslim och fastar under ramadan",
+   "status": 200,
+   "add": [],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1272,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:19"
+  },
+  {
+   "test": "memory_sens_politik",
+   "q": "jag röstar på Centerpartiet",
+   "status": 200,
+   "add": [],
+   "update": [],
+   "remove": [],
+   "skipped": null,
+   "ms": 1331,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "update",
+    "usage"
+   ],
+   "at": "12:47:22"
+  },
+  {
+   "test": "memory_sens_sexualitet",
+   "q": "jag är gay och har en pojkvän",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 354,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:23"
+  },
+  {
+   "test": "memory_sens_brott",
+   "q": "jag blev dömd för stöld förra året",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 367,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:25"
+  },
+  {
+   "test": "memory_sens_facket",
+   "q": "jag är med i facket",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 333,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:26"
+  },
+  {
+   "test": "memory_sens_gravid",
+   "q": "jag är gravid i femte månaden",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 205,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:27"
+  },
+  {
+   "test": "memory_sens_psyk",
+   "q": "jag mår dåligt och är deprimerad",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 433,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:28"
+  },
+  {
+   "test": "memory_sens_personnr",
+   "q": "mitt personnummer är 900101-1234",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 257,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:30"
+  },
+  {
+   "test": "memory_sens_adress",
+   "q": "jag bor på Storgatan 5 i Umeå",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 302,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:31"
+  },
+  {
+   "test": "memory_sens_losenord",
+   "q": "mitt lösenord är hunter2",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 207,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:32"
+  },
+  {
+   "test": "memory_sens_skulder",
+   "q": "jag har skulder på femtiotusen kronor",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 194,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:33"
+  },
+  {
+   "test": "memory_tredje_person",
+   "q": "min kompis har prov imorgon",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 368,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:35"
+  },
+  {
+   "test": "memory_no_self",
+   "q": "vad är fotosyntes",
+   "status": 200,
+   "add": [],
+   "update": [],
+   "remove": [],
+   "skipped": "no_self_reference",
+   "ms": 172,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "skipped",
+    "update"
+   ],
+   "at": "12:47:36"
+  },
+  {
+   "test": "memory_update",
+   "q": "jag läser kemi 2 nu, inte kemi 1 längre",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 252,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:37"
+  },
+  {
+   "test": "memory_remove",
+   "q": "kemiprovet är inställt",
+   "status": 200,
+   "add": [],
+   "update": [],
+   "remove": [],
+   "skipped": "no_self_reference",
+   "ms": 133,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "skipped",
+    "update"
+   ],
+   "at": "12:47:38"
+  },
+  {
+   "test": "memory_injection_in_answer",
+   "q": "vad är 2 plus 2",
+   "status": 200,
+   "add": [],
+   "update": [],
+   "remove": [],
+   "skipped": "no_self_reference",
+   "ms": 270,
+   "err": null,
+   "keys": [
+    "add",
+    "remove",
+    "skipped",
+    "update"
+   ],
+   "at": "12:47:40"
+  },
+  {
+   "test": "memory_client_date_wrong",
+   "q": "jag har prov på fredag",
+   "status": 429,
+   "add": null,
+   "update": null,
+   "remove": null,
+   "skipped": null,
+   "ms": 276,
+   "err": {
+    "code": "rate_limited",
+    "message": "Too many requests",
+    "fallback": false
+   },
+   "keys": [
+    "error"
+   ],
+   "at": "12:47:41"
+  },
+  {
+   "test": "memory_no_token",
+   "status": 401,
+   "at": "12:47:41"
+  },
+  {
+   "test": "memory_get",
+   "status": 405,
+   "at": "12:47:41"
+  },
+  {
+   "test": "memory_qa_alias",
+   "status": 400,
+   "add": null,
+   "at": "12:47:42"
+  },
+  {
+   "test": "feedback_post",
+   "status": 200,
+   "body": "{\"ok\":true}",
+   "at": "12:47:43"
+  },
+  {
+   "test": "feedback_admin_user_jwt",
+   "status": 401,
+   "body": "{\"error\":{\"code\":\"unauthorized\",\"message\":\"Service role only\",\"fallback\":false}}",
+   "at": "12:47:43"
+  },
+  {
+   "test": "feedback_admin_get_user_jwt",
+   "status": 401,
+   "body": "{\"error\":{\"code\":\"unauthorized\",\"message\":\"Service role only\",\"fallback\":false}}",
+   "at": "12:47:44"
+  },
+  {
+   "test": "feedback_admin_no_token",
+   "status": 401,
+   "at": "12:47:44"
+  },
+  {
+   "test": "waiting_for_session_age",
+   "seconds": 476,
+   "at": "12:47:44"
+  },
+  {
+   "test": "backend_state_mid",
+   "local": "d3df0e7 12:45",
+   "origin": "d3df0e7 12:45",
+   "at": "12:55:41"
+  },
+  {
+   "test": "u1_after_10min",
+   "codes": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+   ],
+   "age_min": 12.4,
+   "at": "12:57:26"
+  },
+  {
+   "test": "u1_after_refresh",
+   "codes": [
+    200,
+    200,
+    200,
+    200
+   ],
+   "at": "12:57:40"
+  },
+  {
+   "test": "u1_minute_window_control",
+   "at_call": 9,
+   "status": 429,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "Too many requests",
+     "fallback": true
+    }
+   },
+   "retry_after": "16",
+   "elapsed_s": 3.0,
+   "at": "12:57:44"
+  },
+  {
+   "test": "u1_minute_window_control",
+   "codes": [
+    200,
+    200,
+    200,
+    200,
+    429
+   ],
+   "total": 9,
+   "elapsed_s": 3.0,
+   "at": "12:57:44"
+  },
+  {
+   "test": "u2_aborted_minute_window",
+   "at_call": 21,
+   "status": 429,
+   "err": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"Too many requests\",\"fallback\":true}}",
+   "retry_after": "8",
+   "elapsed_s": 8.0,
+   "at": "12:57:52"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "få tes",
+   "status": 200,
+   "text": "Fotosyntes är den process där växter, alger och vissa bakterier använder ljusenergi för att omvandla koldioxid och vatten till socker och syre.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1588,
+   "err": null,
+   "at": "12:58:16"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "vad är få tes",
+   "status": 200,
+   "text": "Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att omvandla koldioxid och vatten till socker, och samtidigt frigöra syrgas. Processen sker i kloroplasterna, som innehåller det gröna pigmentet klorofyll. Den har två huvuddelar: ljusreaktionerna, där ljusenergin fångas och vatten spjälkas, och Calvincykeln, där koldioxiden binds in och socker bildas. Fotosyntesen är grunden för nästan alla näringskedjor på jorden, eftersom den tar upp energi från solen och gör den tillgänglig för andra organismer. Syrgasen som frigörs är dessutom den syre vi andas.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1289,
+   "err": null,
+   "at": "12:58:22"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "fo to syn tesen",
+   "status": 200,
+   "text": "Fotosyntesen är processen där växter, alger och vissa bakterier använder ljusenergi för att omvandla koldioxid och vatten till glukos och syre. Den sker i kloroplasterna, med hjälp av klorofyll.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1116,
+   "err": null,
+   "at": "12:58:27"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "mitt o kondrierna",
+   "status": 200,
+   "text": "Mitokondrierna är cellernas kraftverk. De omvandlar energi från näringsämnen till ATP, som cellen använder som energi.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 958,
+   "err": null,
+   "at": "12:58:32"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "den mo kra tin",
+   "status": 200,
+   "text": "Demokrati är ett styrelseskick där makten utgår från folket, som väljer sina företrädare i fria och hemliga val.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1212,
+   "err": null,
+   "at": "12:58:36"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "ex po nentiell funktion",
+   "status": 200,
+   "text": "En exponentiell funktion är en funktion där variabeln står i exponenten, till exempel f(x) är lika med två upphöjt till x. Den växer eller avtar med en konstant procentuell förändring för varje steg i x.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1068,
+   "err": null,
+   "at": "12:58:41"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "pe ri o diska syste met",
+   "status": 200,
+   "text": "Periodiska systemet är en tabell där alla grundämnen ordnas efter atomnummer, det vill säga antalet protoner i atomkärnan. Grundämnen i samma kolumn, kallad grupp, har liknande kemiska egenskaper eftersom de har lika många elektroner i yttersta skalet. Raderna kallas perioder, och när man går från vänster till höger i en period ändras egenskaperna gradvis, till exempel från metaller till icke-metaller. Systemet gör det möjligt att förutsäga hur ett grundämne kommer att reagera utifrån dess plats i tabellen. Dmitrij Mendelejev presenterade den första allmänt använda versionen artonhundrasextionio.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1136,
+   "err": null,
+   "at": "12:58:46"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "gra vi ta tions kraften",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 978,
+   "err": null,
+   "at": "12:58:51"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "ko sinus satsen",
+   "status": 200,
+   "text": "Cosinussatsen säger att c i kvadrat är lika med a i kvadrat plus b i kvadrat minus två gånger a gånger b gånger cosinus för vinkeln C, där C är vinkeln mitt emot sidan c i triangeln.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1492,
+   "err": null,
+   "at": "12:58:55"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "ren ässans en",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 1529,
+   "err": null,
+   "at": "12:59:00"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "kloro fyll",
+   "status": 200,
+   "text": "Klorofyll är det gröna pigment i växters kloroplaster som fångar ljusenergi för fotosyntesen.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1475,
+   "err": null,
+   "at": "12:59:05"
+  },
+  {
+   "test": "mishear_auto_sound",
+   "q": "nat riumk lorid",
+   "status": 200,
+   "text": "Natriumklorid är vanligt bordssalt, en kemisk förening av natrium och klor som bildar vita kristaller och löses lätt i vatten.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1888,
+   "err": null,
+   "at": "12:59:10"
+  },
+  {
+   "test": "mishear_auto_silent",
+   "q": "bla hmm ö",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 956,
+   "err": null,
+   "at": "12:59:14"
+  },
+  {
+   "test": "mishear_auto_silent",
+   "q": "kaffe eller te sa du",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 950,
+   "err": null,
+   "at": "12:59:19"
+  },
+  {
+   "test": "mishear_auto_silent",
+   "q": "ja ska bara hämta en grej",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 1039,
+   "err": null,
+   "at": "12:59:23"
+  },
+  {
+   "test": "mishear_auto_silent",
+   "q": "ssh kh pp",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 825,
+   "err": null,
+   "at": "12:59:27"
+  },
+  {
+   "test": "mishear_auto_silent",
+   "q": "tack så mycket nu tar vi paus",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 1091,
+   "err": null,
+   "at": "12:59:31"
+  },
+  {
+   "test": "mishear_auto_silent",
+   "q": "ett två tre fyra",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 925,
+   "err": null,
+   "at": "12:59:36"
+  },
+  {
+   "test": "mishear_auto_silent",
+   "q": "hm ja ok",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 790,
+   "err": null,
+   "at": "12:59:40"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "få tes",
+   "status": 200,
+   "text": "Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att göra socker av koldioxid och vatten. Den sker i kloroplasterna, där pigmentet klorofyll fångar solljuset. Processen har två huvuddelar: ljusreaktionerna, som kräver ljus och spjälkar vatten så att syre frigörs, och Calvincykeln, som använder energin till att binda koldioxid till socker. Syret vi andas kommer alltså från vattnet, inte från koldioxiden.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 882,
+   "err": null,
+   "at": "12:59:45"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "vad är få tes",
+   "status": 200,
+   "text": "Fotosyntes är den process där växter, alger och vissa bakterier använder ljusets energi för att omvandla koldioxid och vatten till glukos och syrgas. Processen sker i kloroplasterna, där det gröna pigmentet klorofyll fångar upp ljuset. Den delas in i två steg: ljusreaktionerna, som kräver ljus och bildar energirika molekyler samt frigör syrgas, och Calvincykeln, som använder dessa molekyler för att bygga socker av koldioxiden. Sammanfattningsvis gör fotosyntesen att solenergi lagras i kemiska bindningar som hela näringskedjan sedan bygger på. Vilket av de två stegen frigör syrgasen?",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1045,
+   "err": null,
+   "at": "12:59:50"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "fo to syn tesen",
+   "status": 200,
+   "text": "Det här är fotosyntesen. Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att tillverka socker av koldioxid och vatten, och samtidigt släpper ut syrgas. Den sker i kloroplasterna, som innehåller det gröna pigmentet klorofyll som fångar upp ljuset. Reaktionen kan sammanfattas så att koldioxid och vatten ger glukos och syrgas, med ljus som energikälla. Fotosyntesen har två delsteg: ljusreaktionerna, som kräver ljus och producerar energibärare, och Calvincykeln, som använder energin till att bygga socker.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 896,
+   "err": null,
+   "at": "12:59:56"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "mitt o kondrierna",
+   "status": 200,
+   "text": "Mitokondrierna är cellernas kraftverk. De finns i nästan alla eukaryota celler och producerar det mesta av cellens energi i form av ATP, genom cellandning där syre används och glukos bryts ner. Mitokondrierna har två membran: ett yttre och ett inre som bildar veck kallade cristae, vilket ökar ytan där energiproduktionen sker. De har också ett eget litet DNA, som till stor del ärvs från mamman. Det här är ett av skälen till att man tror att mitokondrier från början var självständiga bakterier som levde i symbios med en större cell.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 3208,
+   "err": null,
+   "at": "13:00:04"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "den mo kra tin",
+   "status": 200,
+   "text": "Det verkar vara demokratin, styrelseformen där folket genom fria val utövar makten. Det är ett ord som ofta delas upp i de olika typerna, till exempel direkt demokrati, där medborgarna röstar om sakfrågor själva, och representativ demokrati, där de valda politikerna fattar besluten i deras namn. Demokrati bygger på allmän rösträtt, fria och hemliga val, yttrandefrihet och rättsstatens principer som skyddar minoriteter. Sverige är en parlamentarisk demokrati där riksdagen är folkets främsta representant. Vilken av de två typerna har du mest användning av i din kurs?",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1145,
+   "err": null,
+   "at": "13:00:10"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "ex po nentiell funktion",
+   "status": 200,
+   "text": "Exponentiell funktion är en funktion där variabeln står i exponenten, till exempel f(x) är lika med två upphöjt till x. Det betyder att värdet multipliceras med samma faktor varje gång x ökar med ett steg, vilket ger en snabb tillväxt eller en snabb minskning. Grafen går alltid genom punkten noll, ett, och den närmar sig x-axeln utan att nå den. Ett typiskt exempel är bakterier som delar sig: efter varje delning finns dubbelt så många. Om basen är mindre än ett, till exempel en halvering per period, blir funktionen avtagande i stället för växande.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1170,
+   "err": null,
+   "at": "13:00:16"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "pe ri o diska syste met",
+   "status": 200,
+   "text": "Det är perifera systemet, nervsystemets del utanför hjärna och ryggmärg. Det består av alla nerver som leder signaler mellan centrala nervsystemet och resten av kroppen. Det delas in i det somatiska systemet, som styr medvetna rörelser och tar emot känsel från huden och musklerna, och det autonoma systemet, som sköter omedvetna funktioner som hjärtrytm, andning och matsmältning. Det autonoma systemet har i sin tur två motverkande delar, sympatiska och parasympatiska nervsystemet. Det sympatiska aktiverar kroppen vid stress, medan det parasympatiska lugnar ner den och återställer energi.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1183,
+   "err": null,
+   "at": "13:00:22"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "gra vi ta tions kraften",
+   "status": 200,
+   "text": "Gravitationen är en attraktionskraft mellan alla massor, och ju större massorna är och ju närmare de ligger varandra, desto starkare är kraften. Det är därför jorden håller oss kvar på marken och månen går i bana runt jorden. På jordytan märker vi gravitationen som tyngdkraft, som ger föremål acceleration mot marken med cirka nio komma åtta meter per sekund i kvadrat. Newton beskrev att kraften avtar med kvadraten på avståndet, och Einstein förklarade senare gravitationen som krökning av rum och tid.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1069,
+   "err": null,
+   "at": "13:00:27"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "ko sinus satsen",
+   "status": 200,
+   "text": "Kosinussatsen säger att i en triangel är c i kvadrat lika med a i kvadrat plus b i kvadrat minus två gånger a gånger b gånger cosinus för vinkeln C, där C är vinkeln mitt emot sidan c. Den är en utvidgning av Pythagoras sats, som bara gäller i rätvinkliga trianglar. Om vinkeln C är rät blir cosinus noll, och då återstår just c i kvadrat är lika med a i kvadrat plus b i kvadrat. Satsen använder du när du känner till två sidor och den mellanliggande vinkeln, eller när du vet alla tre sidor och vill räkna ut en vinkel.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1146,
+   "err": null,
+   "at": "13:00:33"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "ren ässans en",
+   "status": 200,
+   "text": "Renässansen var en epok i Europa som började i Italien på trettonhundratalet och spreds över kontinenten under fjortonhundra- och femtonhundratalen. Den kännetecknas av ett nytt intresse för antikens kultur, grekisk och romersk konst, litteratur och filosofi, vilket kallas humanism. Människan sattes i centrum, och konstnärer som Leonardo da Vinci och Michelangelo utvecklade perspektiv, anatomisk kunskap och realistiska framställningar. Även vetenskapen förändrades, eftersom observationer och experiment började få större betydelse än tidigare auktoriteter. Boktryckarkonsten, som Johannes Gutenberg utvecklade omkring fjortonhundrafemtio, gjorde kunskap mycket mer spridd. Renässansen är alltså en brygga mellan medeltiden och den nya tiden.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1152,
+   "err": null,
+   "at": "13:00:39"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "kloro fyll",
+   "status": 200,
+   "text": "Klorofyll är det gröna pigment som gör att växter kan fånga ljus och använda det för fotosyntesen. Det finns i kloroplasterna, små strukturer i växtcellerna, och det absorberar främst blått och rött ljus medan grönt ljus reflekteras, vilket är anledningen till att blad ser gröna ut. Det finns flera varianter, där klorofyll a är den vanligaste och direkt deltar i de ljuskrävande reaktionerna. När bladen åldras eller när det är höst bryts klorofyllet ned, och då syns de gula och orangea färgerna som redan fanns i bladet.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 890,
+   "err": null,
+   "at": "13:00:45"
+  },
+  {
+   "test": "mishear_tutor_sound",
+   "q": "nat riumk lorid",
+   "status": 200,
+   "text": "Natriumklorid är koksalt, alltså den vita kristallina substans vi använder för att salta mat. Den består av natriumjoner och kloridjoner som hålls ihop av elektrostatisk attraktion i ett regelbundet kristallgitter. Natrium ger ifrån sig en elektron och blir positivt laddat, medan klor tar upp den elektronen och blir negativt laddat. Saltet löser sig lätt i vatten eftersom vattenmolekylerna omger och drar isär jonerna. Därför leder en saltlösning elektricitet, medan fast salt inte gör det. Natriumklorid smälter först vid cirka åttahundra grader.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1533,
+   "err": null,
+   "at": "13:00:51"
+  },
+  {
+   "test": "mishear_tutor_silent",
+   "q": "bla hmm ö",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 787,
+   "err": null,
+   "at": "13:00:55"
+  },
+  {
+   "test": "mishear_tutor_silent",
+   "q": "kaffe eller te sa du",
+   "status": 200,
+   "text": "Det här verkar handla om kaffe och te, men jag har inget tidigare samtal att koppla till, så jag vet inte exakt vad du syftar på. Ett vanligt studieämne är koffein: kaffe innehåller ungefär åttio milligram koffein per kopp, medan te oftast har runt trettio till femtio milligram per kopp beroende på sort och bryggtid. Skillnaden beror mest på hur mycket blad eller bönor som används och hur länge de får dra.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1328,
+   "err": null,
+   "at": "13:01:01"
+  },
+  {
+   "test": "mishear_tutor_silent",
+   "q": "ja ska bara hämta en grej",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 739,
+   "err": null,
+   "at": "13:01:05"
+  },
+  {
+   "test": "mishear_tutor_silent",
+   "q": "ssh kh pp",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 914,
+   "err": null,
+   "at": "13:01:09"
+  },
+  {
+   "test": "mishear_tutor_silent",
+   "q": "tack så mycket nu tar vi paus",
+   "status": 200,
+   "text": "Varsågod, ha en bra paus!\n\n",
+   "answered": false,
+   "is_question": true,
+   "first_ms": 975,
+   "err": null,
+   "at": "13:01:13"
+  },
+  {
+   "test": "mishear_tutor_silent",
+   "q": "ett två tre fyra",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 698,
+   "err": null,
+   "at": "13:01:17"
+  },
+  {
+   "test": "mishear_tutor_silent",
+   "q": "hm ja ok",
+   "status": 200,
+   "text": "",
+   "answered": false,
+   "is_question": false,
+   "first_ms": 1506,
+   "err": null,
+   "at": "13:01:22"
+  },
+  {
+   "test": "mishear_push_to_talk_sound",
+   "q": "få tes",
+   "status": 200,
+   "text": "Fotosyntes är processen där växter, alger och vissa bakterier använder ljusets energi för att omvandla koldioxid och vatten till glukos och syre. Det sker främst i kloroplasterna, med hjälp av klorofyll.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 1016,
+   "err": null,
+   "at": "13:01:27"
+  },
+  {
+   "test": "mishear_push_to_talk_sound",
+   "q": "vad är få tes",
+   "status": 200,
+   "text": "Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att omvandla koldioxid och vatten till glukos och syre. Det sker främst i kloroplasterna, med hjälp av klorofyll som fångar ljuset.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 854,
+   "err": null,
+   "at": "13:01:32"
+  },
+  {
+   "test": "mishear_push_to_talk_sound",
+   "q": "fo to syn tesen",
+   "status": 200,
+   "text": "Fotosyntesen är processen där växter, alger och vissa bakterier använder ljusenergi för att omvandla koldioxid och vatten till glukos och syre. Den sker i kloroplaster med hjälp av klorofyll.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 839,
+   "err": null,
+   "at": "13:01:37"
+  },
+  {
+   "test": "mishear_push_to_talk_sound",
+   "q": "mitt o kondrierna",
+   "status": 200,
+   "text": "Mitokondrierna är cellens kraftverk: de bryter ner glukos och andra näringsämnen med syre och frigör energi i form av ATP. De har egna små DNA-ringar och två membran, ett yttre och ett inre med veck som kallas cristae.",
+   "answered": true,
+   "is_question": true,
+   "first_ms": 962,
+   "err": null,
+   "at": "13:01:42"
+  },
+  {
+   "test": "interview_missing_fact",
+   "q": "hur gammal är du",
+   "run": 1,
+   "status": 200,
+   "text": "Jag tar med mig att jag är snabb, gillar att ha många saker igång samtidigt och tycker om att möta gäster, och det är precis det ett café som ditt behöver. Hur gammal jag är spelar inte lika stor roll som att jag trivs med att göra kaffet bra och ge varje gäst en trevlig stund.",
+   "err": null,
+   "at": "13:01:47"
+  },
+  {
+   "test": "interview_missing_fact",
+   "q": "hur gammal är du",
+   "run": 2,
+   "status": 200,
+   "text": "Jag tror att det viktigaste jag tar med mig till caféet är att jag är snabb, trivs med att ha flera saker igång samtidigt och tycker om att möta nya gäster och göra deras dag lite bättre.",
+   "err": null,
+   "at": "13:01:52"
+  },
+  {
+   "test": "interview_missing_fact",
+   "q": "vad heter du",
+   "run": 1,
+   "status": 200,
+   "text": "",
+   "err": null,
+   "at": "13:01:57"
+  },
+  {
+   "test": "interview_missing_fact",
+   "q": "vad heter du",
+   "run": 2,
+   "status": 200,
+   "text": "Det jag tar med mig hit är att jag är snabb, trivs med att ha flera saker igång samtidigt och tycker om att möta gäster.",
+   "err": null,
+   "at": "13:02:01"
+  },
+  {
+   "test": "interview_missing_fact",
+   "q": "vilken skola går du på",
+   "run": 1,
+   "status": 200,
+   "text": "Det jag tar med mig hit är att jag är snabb, gillar att ha flera saker igång samtidigt och tycker om att möta gäster. Jag trivs när kön är lång, för då gäller det att hålla lugnet, prioritera rätt och få varje kund att känna sig välkomnad.",
+   "err": null,
+   "at": "13:02:07"
+  },
+  {
+   "test": "interview_missing_fact",
+   "q": "vilken skola går du på",
+   "run": 2,
+   "status": 200,
+   "text": "Det jag tar med mig hit är att jag är snabb, gillar att ha många saker igång samtidigt och tycker om att möta gäster. Jag trivs när det är fullt i kön och lär mig gärna hur ni gör era drycker, så att kunderna får sin kaffe snabbt och med bra bemötande.",
+   "err": null,
+   "at": "13:02:12"
+  },
+  {
+   "test": "interview_missing_fact",
+   "q": "hur gammal är du och vad pluggar du",
+   "run": 1,
+   "status": 200,
+   "text": "Det jag tar med mig till jobbet är att jag är snabb, trivs när det är mycket igång samtidigt och tycker om att möta nya gäster. Jag är noggrann med detaljerna, så att varje kopp blir som den ska, och jag tar gärna del i teamet när det gäller att hålla kön rörlig.",
+   "err": null,
+   "at": "13:02:17"
+  },
+  {
+   "test": "interview_missing_fact",
+   "q": "hur gammal är du och vad pluggar du",
+   "run": 2,
+   "status": 200,
+   "text": "Det jag tar med mig hit är att jag är snabb, gillar att ha flera saker igång samtidigt och tycker om att möta nya gäster. Jag är noggrann med detaljer, så att varje kopp blir rätt, och jag trivs i ett team där alla hjälper varandra när det är fullt i kön.",
+   "err": null,
+   "at": "13:02:22"
+  },
+  {
+   "test": "backend_state_end",
+   "local": "85f5a81 12:58",
+   "origin": "85f5a81 12:58",
+   "at": "13:02:27"
+  }
+ ]
+}
