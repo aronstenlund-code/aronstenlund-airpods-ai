@@ -91,6 +91,43 @@ Deno.test("K2 profile rules: words cap, language subjects, check questions only 
   const u = p.calls[0].user;
   assertStringIncludes(u, "at most about 100 words");
   assertStringIncludes(u, "explain in Swedish, the student's language");
-  assertStringIncludes(u, '"in twenty nineteen"');
+  assertStringIncludes(u, "<note>Write the explanation in Swedish");
   assertStringIncludes(u, 'Without that line, or with "inga": never a check question');
+});
+
+Deno.test("K2 '<<SAMMANFATTNING>>' is a summary marker, never read aloud", async () => {
+  const { AnswerPost } = await import("./speech.ts");
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true });
+  let out = "";
+  for (const c of ["På provet skriver du formen.", "\n\n<", "<SAMMAN", "FATTNING>> Eleven frågade om present perfect."]) out += p.push(c);
+  out += p.finish();
+  assert(!out.includes("<"), out);
+  assertStringIncludes(out, "På provet skriver du formen.");
+  assertEquals(p.summary, "Eleven frågade om present perfect.");
+});
+
+Deno.test("K2 English examples are read as English: 'If I had', 'in 2019'", async () => {
+  const { beforeNumbers, englishYear } = await import("./speechsym.ts");
+  assertStringIncludes(beforeNumbers('"If I had studied harder, I would have passed."'), "If I had studied");
+  assertStringIncludes(beforeNumbers('"When I was young."'), "When I was");
+  assertStringIncludes(beforeNumbers("Gustav I var kung."), "Gustav den förste");
+  assertStringIncludes(beforeNumbers("Karl XII dog 1718."), "Karl den tolfte");
+  assertStringIncludes(beforeNumbers('"I visited Paris in 2019."'), "in twenty nineteen");
+  assertStringIncludes(beforeNumbers('"She has lived here since 2005."'), "since two thousand and five");
+  assertStringIncludes(beforeNumbers("Revolutionen började 1789."), "1789");
+  assertEquals(englishYear(1066), "ten sixty-six");
+  assertEquals(englishYear(1900), "nineteen hundred");
+  assertEquals(englishYear(1905), "nineteen oh five");
+  assertEquals(englishYear(2000), "two thousand");
+  assertEquals(englishYear(2024), "twenty twenty-four");
+});
+
+Deno.test("K2 language subjects get the Swedish-explanation note", async () => {
+  const { isLanguageSubject } = await import("./prompt.ts");
+  assert(isLanguageSubject("Årskurs: Åk 9. Ämne: Engelska."));
+  assert(isLanguageSubject("Årskurs: Gymnasiet 1, kurs Engelska 5. Ämne: Engelska."));
+  assert(isLanguageSubject("Ämne: Tyska."));
+  assert(!isLanguageSubject("Årskurs: Åk 9. Ämne: Biologi."));
+  const bio = await run("Ok.", tutor("Årskurs: Åk 9. Ämne: Biologi."));
+  assert(!bio.p.calls[0].user.includes("Write the explanation in Swedish"));
 });

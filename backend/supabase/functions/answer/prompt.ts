@@ -37,7 +37,7 @@ export const PROFILE_RULE =
   - Explanations (this replaces the five to eight sentences above): "korta" = at most three sentences and about 50 words in all, no example unless it is the point; "mellanlånga" = four to six sentences and at most about 100 words (about 40 seconds aloud); "utförliga" = seven to ten sentences and at most about 180 words. No length given = as "mellanlånga". Count before you write: a long answer is never better, it is worse to listen to.
   - Check questions: only when the profile has a "Kontrollfrågor" line that is not "inga". Without that line, or with "inga": never a check question and never any other question at the end.
   - Split or misheard terms (K2): <joined> (optional) is the fragment with its pieces joined ("pyt a goras" = pytagoras, "ri bo so mer" = ribosomer, "par tes läran" = partesläran). When it is, or sounds like, a term of the profile's subject, answer that term at once as a bare term; never [[TYST]] for it. Silence only when neither the fragment nor <joined> sounds like any school term.
-  - Language subjects (Engelska, Moderna språk): explain in Swedish, the student's language. Only the terms, the forms and the example sentences are in the target language; each example is one short sentence in quotes, and any number or year inside it is written in that language's words ("in twenty nineteen"), never as digits. Never a Swedish word inside a foreign example sentence, and never an answer that is all in the foreign language.
+  - Language subjects (Engelska, Moderna språk): explain in Swedish, the student's language. Only the terms, the forms and the example sentences are in the target language; each example is one short sentence in quotes. Never a Swedish word inside a foreign example sentence, and never an answer that is all in the foreign language.
   - Check question styles: "ja-nej": the check question can be answered with one word or a nod (ja/nej, a yes-no question). "korta": a short question answered with a word or a short phrase. "svåra": a question that needs reasoning, at the A level of the grade.
   - Subject first (D84): a misheard, split or very short word is first read as a term of the profile's subject and of <prep_terms> (the subject's term list) before any general meaning ("mito" with the subject Biologi = mitos, "tryck" with Fysik = tryck as the physical quantity), and answered as that term without saying that you interpreted it. A word that is itself a term in the profile's subject keeps that subject's meaning: "syntes" with Kemi = a synthesis reaction (two or more substances form a new compound), with Biologi = fotosyntes; never move it to another subject. Never say how you read the word, never call a word "ett kemiord" or not, never mention the list, the profile, "ämnesord", the exam date as a reason, or what the word is "nog": the answer starts with the term itself.
   - Several exams (D86): <profile> is the exam being studied NOW. <memories> may mention other exams (another subject or date): they are not this exam; never mix their subject, date or content into this one.
@@ -239,6 +239,13 @@ export function joinedSyllables(fragment: string): string | null {
   return j.length >= 5 && j.length <= 25 ? j : null;
 }
 
+/** K2: Engelska and the modern languages are explained in Swedish (Oscar: whole answers in English, pl-112). */
+export function isLanguageSubject(profile: string): boolean {
+  return /(?:ämne|kurs)[:\s]+(?:engelska|tyska|franska|spanska|moderna språk|italienska|kinesiska|japanska)/iu.test(profile);
+}
+export const LANGUAGE_SUBJECT_NOTE =
+  "Write the explanation in Swedish, even though the term is foreign. Only the term, the forms and short example sentences in quotes are in the target language.";
+
 export function looksLikeQuestion(fragment: string): boolean {
   const t = fragment.trim().toLowerCase();
   return /\?\s*$/.test(t) ||
@@ -289,6 +296,7 @@ ${PROFILE_RULE}
     parts.push(`<profile>${sanitizeTagged(req.personaSetup)}</profile>`);
     const joined = joinedSyllables(req.fragment);
     if (joined) parts.push(`<joined>${sanitizeTagged(joined)}</joined>`);
+    if (isLanguageSubject(req.personaSetup)) parts.push(`<note>${LANGUAGE_SUBJECT_NOTE}</note>`);
   }
   if (req.context.prep_terms.length) {
     parts.push(`<prep_terms>${sanitizeTagged(req.context.prep_terms.join(", "))}</prep_terms>`);

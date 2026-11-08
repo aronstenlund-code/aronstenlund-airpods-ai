@@ -28,9 +28,10 @@ export const SUMMARY_MARK = "[[SAMMANFATTNING]]";
  * no summary follows. A partial marker at the end of a chunk is held back so it is never spoken.
  */
 const MARKERS: RegExp[] = [
-  /\[{1,2}\s*sammanfattning\s*\]{1,2}\s*:?/i,
+  // K2: also `<<SAMMANFATTNING>>` (the user turn is full of <tags>); before, "<<" was read aloud
+  /[[<]{1,2}\s*sammanfattning\s*[\]>]{1,2}\s*:?/i,
   /(?:^|\n)[ \t]*(?:\*\*)?sammanfattning(?:\*\*)?[ \t]*[:\-–—]/i,
-  /(?<!\[[ \t]*)SAMMANFATTNING\b[ \t]*:?/,
+  /(?<![[<][ \t]*)SAMMANFATTNING\b[ \t]*:?/,
 ];
 
 /** First marker in `s`: [index where the spoken text ends, index where the summary starts]. */
@@ -49,8 +50,8 @@ export function findSummaryMarker(s: string): [number, number] | null {
 function markerHold(buf: string): number {
   let hold = 0;
   const tail = buf.slice(-24);
-  for (let br = tail.indexOf("["); br !== -1; br = tail.indexOf("[", br + 1)) {
-    const t = tail.slice(br).toLowerCase().replace(/\s+/g, "");
+  for (let br = tail.search(/[[<]/); br !== -1; br = tail.slice(br + 1).search(/[[<]/) === -1 ? -1 : br + 1 + tail.slice(br + 1).search(/[[<]/)) {
+    const t = tail.slice(br).toLowerCase().replace(/\s+/g, "").replace(/</g, "[").replace(/>/g, "]");
     if ("[[sammanfattning]]:".startsWith(t) || "[sammanfattning]:".startsWith(t)) {
       hold = tail.length - br;
       break;

@@ -207,12 +207,39 @@ export function guardPhoneNumbers(text: string, ctx = ""): string {
 
 const CLOCK_CUE_END = /(?:^|[^\p{L}])(?:klockan|kl\.?)\s+$/iu;
 
+const EN_ONES = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
+  "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+const EN_TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+const en99 = (n: number) => n < 20 ? EN_ONES[n] : EN_TENS[Math.floor(n / 10)] + (n % 10 ? "-" + EN_ONES[n % 10] : "");
+
+/** K2: a year in an English example as an English speaker says it: 2019 -> "twenty nineteen", 1066 -> "ten sixty-six". */
+export function englishYear(y: number): string {
+  if (y >= 2000 && y <= 2009) return y === 2000 ? "two thousand" : `two thousand and ${EN_ONES[y - 2000]}`;
+  const hi = Math.floor(y / 100), lo = y % 100;
+  if (lo === 0) return `${en99(hi)} hundred`;
+  return `${en99(hi)} ${lo < 10 ? "oh " + EN_ONES[lo] : en99(lo)}`;
+}
+
+/** K2: English words that start a sentence before "I" ("If I had", "When I was"): never a regnal number. */
+const EN_BEFORE_I = new Set(
+  ("if when then and but so because as that what where why how who since until after before have had do did can " +
+    "could would should will am was were yes no now here maybe today yesterday tomorrow once while unless though " +
+    "although sometimes often never always also first last perhaps").split(" "),
+);
+const EN_AFTER_I = /^\s+(?:am|was|have|had|would|will|could|should|can|cannot|do|did|don't|didn't|think|thought|know|knew|like|liked|went|go|see|saw|love|want|wanted|need|needed|feel|felt|got|get|live|lived|studied|study|play|played|visited|visit|always|never|really|just|also)(?![\p{L}])/iu;
+
 /** Before digits become words. */
 export function beforeNumbers(text: string, ctx = ""): string {
   // invisible characters (soft hyphen, zero-width) away; subscript digits (C₁₂H₂₂O₁₁) -> plain digits
   let s = guardPhoneNumbers(text, ctx).replace(/[\u00ad\u200b-\u200d\u2060\ufeff]/g, "").replace(
     /[\u2080-\u2089]/g,
     (c) => String(c.charCodeAt(0) - 0x2080),
+  );
+  // K2: a year after an English preposition is said in English ("in 2019" -> "in twenty nineteen", not
+  // "in tvåtusen nitton"); Swedish never uses these words before a year
+  s = s.replace(
+    /(?<![\p{L}])((?:in|since|by|until|from|before|after|of) )(1[1-9]\d\d|20\d\d)(?!\d|[.,:]\d)/gu,
+    (_m, pre: string, y: string) => pre + englishYear(Number(y)),
   );
   // D65: clock times written with a dot after "klockan"/"kl": 17.40 -> "17:40" (read by the clock rule)
   s = s.replace(
@@ -230,7 +257,9 @@ export function beforeNumbers(text: string, ctx = ""): string {
   // D65: roman numerals after a name are regnal numbers: "Oscar I" -> "Oscar den förste"
   s = s.replace(
     /(?<![\p{L}\d])(\p{Lu}[\p{L}]+) (XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)(?![\p{L}\d])(?!\s\p{Lu})/gu,
-    (m: string, name: string, roman: string) => {
+    (m: string, name: string, roman: string, offset: number, all: string) => {
+      // K2: "If I had studied" is English, not "If den förste" (Oscar's D87 review, pl-117)
+      if (roman === "I" && (EN_BEFORE_I.has(name.toLowerCase()) || EN_AFTER_I.test(all.slice(offset + m.length)))) return m;
       const n = romanToInt(roman);
       return n === null ? m : `${name} den ${regnal(n)}`;
     },
