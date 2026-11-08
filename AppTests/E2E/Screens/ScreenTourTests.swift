@@ -1,3 +1,6 @@
+// Only in the LumenScreenTour UI-test target (AppTests/E2E/project-e2e.yml sets the flag). Angela's LumenE2ETests
+// unit-test bundle compiles all of AppTests/E2E, and a UI test cannot run there.
+#if LUMEN_SCREEN_TOUR
 import XCTest
 
 /// T3 (Toby): walks every screen of the app in the Simulator and attaches a screenshot of each, so CI shows what the
@@ -53,18 +56,33 @@ final class ScreenTourTests: XCTestCase {
     private func firstStart(micDenied: Bool) {
         if waitFor(["Testa nu"], timeout: 20) != nil {
             shoot("intro", note: "Intro (sketch 1)")
+            app.swipeUp()
+            shoot("intro-slut", note: "Intro, scrolled (the consent card)")
+            // A2: the short consent card in the intro has "Läs mer" with the full text.
+            if waitFor(["Läs mer"], timeout: 2) != nil {
+                tap(["Läs mer"], step: "intro → Läs mer")
+                pause(1)
+                shoot("las-mer", note: "Läs mer (full consent)")
+                app.swipeUp()
+                shoot("las-mer-slut", note: "Läs mer, scrolled")
+                tap(["Klar"], step: "Läs mer → Klar")
+                pause(1)
+            } else {
+                log.append("note: no 'Läs mer' in the intro")
+            }
             tap(["Testa nu"], step: "intro → Testa nu")
         } else {
             miss("intro: 'Testa nu' not found (first start not shown?)")
         }
 
-        if waitFor(["Jag förstår*", "I understand*"], timeout: 8) != nil {
+        // Before A2 a separate consent screen came after the intro; since A2, "Testa nu" is the consent.
+        if waitFor(["Jag förstår*", "I understand*"], timeout: 4) != nil {
             shoot("samtycke", note: "Consent, top")
             app.swipeUp()
             shoot("samtycke-slut", note: "Consent, scrolled")
             tap(["Jag förstår*", "I understand*"], step: "consent → accept")
         } else {
-            miss("consent screen not shown")
+            log.append("note: no separate consent screen (A2: Testa nu is the consent)")
         }
 
         dismissSystemAlerts()
@@ -374,3 +392,4 @@ final class ScreenTourTests: XCTestCase {
         add(summary)
     }
 }
+#endif

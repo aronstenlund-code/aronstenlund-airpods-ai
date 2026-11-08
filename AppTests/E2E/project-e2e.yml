@@ -21,6 +21,8 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: Lumen
         CODE_SIGNING_ALLOWED: NO
+        # ScreenTourTests.swift is wrapped in this flag, so it is empty in Angela's LumenE2ETests bundle.
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "DEBUG LUMEN_SCREEN_TOUR"
 
 schemes:
   LumenScreenTour:
