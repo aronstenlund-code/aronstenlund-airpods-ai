@@ -587,7 +587,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .turnStarted:
             break
         case .endOfTurn(let raw):
-            if isOwnEcho(raw, at: Date()) {
+            if isOwnEcho(raw, at: Date()), !isWearerUsingSuggestion(raw, level: study.lastTurnLevelDBFS) {
                 discardAhead(reason: "Lumen's own echo")
                 study.resumeListening()
                 return
@@ -992,6 +992,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard let share = echo.overlap(text, now: date), share >= EchoFilter.overlap else { return false }
         controller.log(String(format: "Echo filtered: %.0f %% of the words were Lumen's own", share * 100))
         return true
+    }
+
+    /// Rizzläge / Socialt läge: the wearer saying the suggestion out loud is its use, not Lumen's echo. Through
+    /// AirPods Lumen is never heard by the microphone (D82, owner); out of the iPhone's own speaker it can be.
+    private func isWearerUsingSuggestion(_ text: String, level: Double?) -> Bool {
+        guard let session = rizz, session.usesSuggestion(text),
+              !(controller.snapshot?.outputsToBuiltInSpeaker ?? false) else { return false }
+        return RizzSpeaker.tag(levelDBFS: level, thresholdDBFS: modeSettings.speakerThresholdDBFS) == .user
     }
 
     /// The answer produced no speech (silent mode, empty answer): back to listening right away.
@@ -1409,7 +1417,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
         finalObserver?(segment.text)
         if isComparing { return }
-        if isOwnEcho(segment.text, at: date) {
+        if isOwnEcho(segment.text, at: date), !isWearerUsingSuggestion(segment.text, level: study.currentTurnLevelDBFS) {
             discardAhead(reason: "Lumen's own echo")
             return
         }

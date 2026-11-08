@@ -56,6 +56,16 @@ The `supabase-lumen` connection needs re-authorising (`/mcp`) before an agent ca
 - **Shared history:** switching sharing on again does not upload twice; the same question + answer goes once; mode,
   persona and client_id go along; a confirmed opt-out starts afresh.
 
+## CI fix after the first run
+The first CI run failed one old test, `ModeFlowTests.aUsedSuggestionIsCountedNotStored`. In Rizzläge, the wearer
+saying the suggestion out loud matched what Lumen had just said, so the echo filter (c) dropped it.
+
+Fix: in Rizzläge and Socialt läge, a turn that repeats the current suggestion is the wearer using it when both hold:
+- the level says it is the wearer;
+- the sound is not going out of the iPhone's own speaker.
+
+Through AirPods the microphone never hears Lumen (owner, D82). Everything else still goes through the filter.
+
 ## Known limits
 - (a) costs the first 0.7 s after every answer. Words said in that window are not heard.
 - With echo cancellation on the loudspeaker, iOS's voice processing also dampens distant voices.
