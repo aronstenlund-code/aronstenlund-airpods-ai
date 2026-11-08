@@ -329,6 +329,12 @@ Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt l
 3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
 4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
 
+### 3z6. Provlägets första start och nick (D83, 10 min)
+1. Avinstallera appen (eller tryck Inställningar → *Provläge: om dig* → *Visa frågorna igen*) och tryck på kortet **Få A-svar till provet**. Fem skärmar ska komma, en fråga i taget: provdatum, årskurs (för gymnasiet ett valfritt kursnamn), ämne, kontrollfrågor och förklaringslängd. Prova *Hoppa över* på en skärm och *Hoppa över allt* en annan gång.
+2. Efter sista skärmen ska Provläge starta. Inställningar → *Minne* ska visa "Provprofil: prov i … <veckodag datum år>".
+3. Välj ja–nej-frågor. Ställ en fråga, och när Lumen avslutar med en ja–nej-fråga: **nicka**. Det ska räknas som "Ja". Prova att skaka på huvudet ("Nej"). Har dina AirPods inte huvudspårning ska Inställningar säga det, och då svarar du med rösten.
+4. Säg "Lumen, korta förklaringar" och "Lumen, provet är på fredag": du ska höra "Uppdaterat.", och Inställningar och Minne ska ändras.
+
 ### 3z5. Eko och live-turer (D82, 15 min)
 1. **Högtalare:** koppla från AirPods så att ljudet går i iPhonens högtalare. Ställ fem frågor i läget Frågor. Lumen får **aldrig** svara på sitt eget förra svar. Diagnostik-loggen ska visa "Echo cancellation on for Speaker", och "Echo filtered: … %" om ekot ändå kom igenom.
 2. Sätt i AirPods mitt i sessionen: loggen ska visa "Echo cancellation off", och lyssnandet ska fortsätta. Mikrofonen ska låta som förut.

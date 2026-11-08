@@ -42,6 +42,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private var lastAnswerAt: Date?
     /// D80: turns go to the backend's memory extraction afterwards, never in the answer path.
     let memoryExtractor: MemoryExtractor?
+    /// D83: Provläge's first-start answers (exam date, grade, subject, check questions, explanation length).
+    let studyProfile: StudyProfileStore
+    var isShowingStudyOnboarding = false
+    /// D83: a nod answers "ja", a shake "nej", for yes/no check questions.
+    let headMotion = HeadMotionListener()
     private var keytermTask: Task<Void, Never>?
     /// D82: what Lumen said lately, so its own voice coming back is never answered.
     private var echo = EchoFilter()
@@ -151,7 +156,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          goals: GoalsStore? = nil, commands: CommandStore? = nil,
          history: HistoryStore? = nil, memory: MemoryStore? = nil, microphone: MicrophoneSettings? = nil,
          modeSettings: ModeSettings? = nil, feedback: FeedbackClient? = nil, remote: RemoteCommandHub? = nil,
-         memoryExtractor: MemoryExtractor? = nil) {
+         memoryExtractor: MemoryExtractor? = nil, studyProfile: StudyProfileStore? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -171,6 +176,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.feedback = feedback
         self.remote = remote
         self.memoryExtractor = memoryExtractor
+        self.studyProfile = studyProfile ?? StudyProfileStore()
         self.goals = goals ?? GoalsStore()
         self.commands = commands ?? CommandStore()
         self.warmer = warmer
@@ -433,7 +439,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         switch selectedMode {
         case .standard: await toggleListening()
-        case .prov: await startStudy()
+        case .prov: await startProvFromCard()
         case .interview: isShowingInterviewSetup = true
         case .rizz:
             if modeSettings.isAdultConfirmed { isShowingLiveStart = true } else { isShowingAgeGate = true }
@@ -462,6 +468,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func startHandsFree(_ newMode: ConversationMode) async {
         guard consent.isGranted else {
             controller.log("Hands-free \(newMode.rawValue) refused: no consent")
+            return
+        }
+        if !ModeAccess.isOpen(newMode) {
+            controller.log("\(newMode.rawValue) needs a subscription (D83, flag off today)")
             return
         }
         if newMode == .rizz, !modeSettings.isAdultConfirmed {
@@ -507,7 +517,33 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// The Provläge card on the main screen (D72): one tap, no setup in between.
     func startProvFromCard() async {
         selectedMode = .prov
+        if !studyProfile.profile.onboarded {
+            isShowingStudyOnboarding = true // D83: the questions come first, once
+            return
+        }
         await startStudy()
+    }
+
+    /// D83: the first-start questions were answered (or skipped): save, put the exam in Minne, start.
+    func finishStudyOnboarding(_ answers: StudyProfile) async {
+        var profile = answers
+        profile.onboarded = true
+        studyProfile.profile = profile
+        isShowingStudyOnboarding = false
+        studyProfileChanged()
+        await startStudy()
+    }
+
+    /// Settings or a voice command changed the profile: Minne follows (absolute exam date).
+    func studyProfileChanged() {
+        memory.forget("provprofil")
+        for fact in studyProfile.profile.memoryFacts() { memory.add(fact, kind: .fact, source: .manual) }
+        refreshKeyterms()
+    }
+
+    /// D83: `persona: "tutor"` + `persona_setup` with the profile, on every Provläge call.
+    private func tutorPersona() -> PersonaRequest? {
+        studyProfile.profile.setupText().map { PersonaRequest(persona: "tutor", setup: $0) }
     }
 
     /// D82.2: 2 s of silence asks for a way to carry on (was 4 s, D43).
@@ -615,7 +651,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             switch mode {
             case .interview: interviewTurn(text)
             case .rizz, .social: rizzTurn(text)
-            case .standard, .prov: activated(ActivationRequest(query: text, trigger: .tutor, language: language))
+            case .standard, .prov:
+                headMotion.stop() // answered with the voice
+                activated(ActivationRequest(query: text, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
             }
         case .stalled:
             if let session = rizz { requestSuggestions(trigger: session.hasConversation ? "stall" : "opener") }
@@ -806,8 +844,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         } else if study.isActive, mode == .interview {
             activated(ActivationRequest(query: text, trigger: .overheard, language: language),
                       persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup, turn: "question"))
+        } else if study.isActive, mode == .prov, StudyProfileVoice.apply(text, to: &studyProfile.profile) {
+            // D83: "Lumen, korta förklaringar", "Lumen, provet är på fredag" …
+            studyProfileChanged()
+            controller.log("Provläge profile changed by voice")
+            say(language == .swedish ? "Uppdaterat." : "Updated.")
         } else if study.isActive {
-            activated(ActivationRequest(query: text, trigger: .tutor, language: language))
+            activated(ActivationRequest(query: text, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
         } else {
             activated(ActivationRequest(query: text, trigger: .text, language: language))
         }
@@ -963,6 +1006,24 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func speechFinished() {
         if study.isActive, finishSingleTurn() { return }
         reopenRecognizerAfterSpeech()
+        listenForHeadAnswerIfAsked()
+    }
+
+    /// D83: after a yes/no check question in Provläge, a nod or a shake answers it for 6 s. The voice works too.
+    private func listenForHeadAnswerIfAsked() {
+        guard study.isActive, mode == .prov, studyProfile.profile.checkQuestions == .yesNo,
+              let answer = conversation.answers.last?.answer.trimmingCharacters(in: .whitespacesAndNewlines),
+              answer.hasSuffix("?") else { return }
+        guard headMotion.isAvailable else {
+            controller.log("Head gestures: not supported by these AirPods, answer with the voice")
+            return
+        }
+        headMotion.listen(for: 6) { [weak self] gesture in
+            guard let self, self.study.isActive, self.study.phase == .listening else { return }
+            let text = gesture == .nod ? "Ja" : "Nej"
+            self.controller.log("Head gesture: \(gesture == .nod ? "nod" : "shake") → \(text)")
+            self.activated(ActivationRequest(query: text, trigger: .tutor, language: self.language), persona: self.tutorPersona())
+        }
     }
 
     /// D82: the recogniser opens again only when Lumen's voice has really stopped playing, plus 0.7 s for its echo.
@@ -1097,6 +1158,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .prov:
             guard study.isActive, study.phase == .listening else { return }
             request = ActivationRequest(query: text, trigger: .tutor, language: language)
+            persona = tutorPersona()
         case .interview:
             guard study.isActive, study.phase == .listening else { return }
             let speaker = RizzSpeaker.tag(levelDBFS: study.currentTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)

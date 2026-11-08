@@ -64,6 +64,11 @@ struct ListeningView: View {
                 LiveStartView(model: model, settings: model.modeSettings, mode: model.selectedMode)
             }
         }
+        .sheet(isPresented: $model.isShowingStudyOnboarding) {
+            StudyOnboardingView(initial: model.studyProfile.profile) { answers in
+                Task { await model.finishStudyOnboarding(answers) }
+            }
+        }
         .sheet(isPresented: $model.isShowingAgeGate) {
             AgeGateView { model.answerAgeGate(confirmed: $0) }
         }

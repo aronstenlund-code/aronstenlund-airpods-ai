@@ -76,6 +76,46 @@ struct SettingsView: View {
         }
     }
 
+    /// D83: the Provläge profile, the same answers as the first-start questions.
+    @ViewBuilder
+    private var studyProfileSection: some View {
+        @Bindable var store = model.studyProfile
+        Section {
+            Toggle("Inget prov just nu", isOn: $store.profile.noExam)
+            if !store.profile.noExam {
+                DatePicker("Provdatum", selection: examBinding, displayedComponents: .date)
+                    .environment(\.locale, Locale(identifier: "sv_SE"))
+            }
+            Picker("Årskurs", selection: $store.profile.grade) {
+                Text("Inte angivet").tag(nil as StudyProfile.Grade?)
+                ForEach(StudyProfile.Grade.allCases, id: \.self) { Text(StudyProfile.gradeName($0)).tag(StudyProfile.Grade?.some($0)) }
+            }
+            TextField("Kurs, t.ex. Matematik 1c", text: $store.profile.course)
+            TextField("Ämne", text: $store.profile.subject)
+            Picker("Kontrollfrågor", selection: $store.profile.checkQuestions) {
+                Text("Inte angivet").tag(nil as StudyProfile.CheckQuestions?)
+                ForEach(StudyProfile.CheckQuestions.allCases, id: \.self) { Text(StudyProfile.checkName($0)).tag(StudyProfile.CheckQuestions?.some($0)) }
+            }
+            Picker("Förklaringar", selection: $store.profile.explanations) {
+                Text("Inte angivet").tag(nil as StudyProfile.Explanations?)
+                ForEach(StudyProfile.Explanations.allCases, id: \.self) { Text(StudyProfile.explanationName($0)).tag(StudyProfile.Explanations?.some($0)) }
+            }
+            Button("Spara i minnet") { model.studyProfileChanged() }
+            Button("Visa frågorna igen vid nästa start") { store.profile.onboarded = false }
+        } header: {
+            Text("Provläge: om dig")
+        } footer: {
+            Text(model.headMotion.isAvailable
+                 ? "Ja–nej-frågor kan besvaras med en nick eller en skakning med huvudet. Du kan också säga \"Lumen, korta förklaringar\" eller \"Lumen, provet är på fredag\"."
+                 : "Dina AirPods stöder inte huvudrörelser just nu: svara på ja–nej-frågor med rösten. Du kan också säga \"Lumen, korta förklaringar\" eller \"Lumen, provet är på fredag\".")
+        }
+    }
+
+    private var examBinding: Binding<Date> {
+        Binding(get: { model.studyProfile.profile.examDate ?? Date() },
+                set: { model.studyProfile.profile.examDate = Calendar.current.startOfDay(for: $0) })
+    }
+
     private var vadBinding: Binding<Bool> {
         Binding(get: { model.transcription.settings?.useLocalVAD ?? false },
                 set: { newValue in Task { await model.transcription.setUseLocalVAD(newValue) } })
@@ -203,6 +243,7 @@ struct SettingsView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
+        studyProfileSection
         @Bindable var modes = model.modeSettings
         Section("Rizzläge and Socialt läge") {
             HStack {

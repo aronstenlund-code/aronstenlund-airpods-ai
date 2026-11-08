@@ -2,7 +2,7 @@ name: iOS build
 
 on:
   push:
-    # Docs-only and backend-only pushes (Architect/CREED/Kevin) must not trigger or cancel an iOS build.
+    # Docs-, backend-, site- and QA-script-only pushes (Architect/Deangelo/Kevin/Kelly/Oscar) must not trigger or cancel an iOS build.
     paths-ignore:
       - "docs/**"
       - "reports/**"
@@ -10,6 +10,7 @@ on:
       - "testdata/**"
       - "backend/**"
       - "site/**"
+      - "scripts/**"
       - ".github/workflows/pages.yml"
       - "**/*.md"
   pull_request:
@@ -20,6 +21,7 @@ on:
       - "testdata/**"
       - "backend/**"
       - "site/**"
+      - "scripts/**"
       - ".github/workflows/pages.yml"
       - "**/*.md"
   workflow_dispatch:
