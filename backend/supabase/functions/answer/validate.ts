@@ -62,7 +62,7 @@ export const LIMITS = {
   recentQa: 6,
   qaText: 400,
   qaAnswer: 1500,
-  prepTerms: 30,
+  prepTerms: 50, // D84: the subject term list from /study-profile (30-50 terms)
   prepTerm: 60,
   goals: 1500,
   personaSetup: 2000, // D81: job ad + compressed CV

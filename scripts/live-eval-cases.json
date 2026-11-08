@@ -2902,5 +2902,121 @@
 "no_invented_facts": true
 }
 ]
+},
+{
+"id": "amne-01",
+"cat": "ämne",
+"turns": [
+{
+"q": "syntes",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"allow_question": true,
+"expect_any": [
+"fotosyntes"
+],
+"forbid_any": [
+"menar du",
+"tolkar"
+]
+}
+]
+},
+{
+"id": "amne-02",
+"cat": "ämne",
+"turns": [
+{
+"q": "fo syntes",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"allow_question": true,
+"expect_any": [
+"fotosyntes"
+]
+}
+]
+},
+{
+"id": "amne-03",
+"cat": "ämne",
+"turns": [
+{
+"q": "syntes",
+"mode": "tutor",
+"expect": "either",
+"forbid_any": [
+"menar du",
+"tolkar"
+]
+}
+]
+},
+{
+"id": "text-01",
+"cat": "texter",
+"turns": [
+{
+"q": "sjung en snapsvisa",
+"mode": "text",
+"allow_question": true,
+"max_words": 200,
+"expect_any": [
+"helan",
+"hej tomtegubbar",
+"tycker"
+],
+"forbid_any": [
+"kan inte sjunga",
+"upphovsrätt"
+]
+}
+]
+},
+{
+"id": "text-02",
+"cat": "texter",
+"turns": [
+{
+"q": "sjung helan går",
+"mode": "text",
+"allow_question": true,
+"max_words": 200,
+"expect_any": [
+"halvan går"
+],
+"forbid_any": [
+"kan inte sjunga"
+]
+}
+]
+},
+{
+"id": "text-03",
+"cat": "texter",
+"turns": [
+{
+"q": "citera Strindberg om kärlek",
+"mode": "text",
+"allow_question": true,
+"max_words": 160,
+"expect_any": [
+"strindberg"
+]
+}
+]
+},
+{
+"id": "text-04",
+"cat": "texter",
+"turns": [
+{
+"q": "sjung Tattoo med Loreen",
+"mode": "text",
+"allow_question": true,
+"max_words": 90,
+"expect_any": [
+"loreen"
+]
+}
+]
 }
 ]

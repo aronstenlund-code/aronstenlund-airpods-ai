@@ -162,6 +162,55 @@ export const RELIABLE_DOMAINS = [
   "developer.mozilla.org",
 ];
 
+/**
+ * D84 (owner): texts and quotes. A request to sing, recite or quote a text, or for the words of a song or poem,
+ * gets its own search (text archives and encyclopedias) and rules: traditional and public-domain texts in full,
+ * short quotes with the source from protected works, modern protected song lyrics never in full.
+ */
+const TEXT_REQ = new RegExp(
+  [
+    String.raw`^(?:kan du |snälla |lumen,? )?(?:sjunga|sjung|nynna|recitera|läs upp|citera)\b`,
+    String.raw`\b(?:texten|orden) (?:till|i|på) `,
+    String.raw`\bhur går (?:texten|visan|sången|låten|dikten|psalmen|ramsan|refrängen)\b`,
+    String.raw`\b(?:ett|något|en) citat (?:av|från|ur|om)\b`,
+    String.raw`\bvad (?:sa|skrev|säger) (?:\p{Lu}[\p{L}-]+ ?){1,3}om\b`,
+  ].join("|"),
+  "iu",
+);
+export function needsText(fragment: string): boolean {
+  const f = fragment.trim();
+  return !!f && f.length <= 300 && TEXT_REQ.test(f);
+}
+
+export const TEXT_DOMAINS = [
+  "runeberg.org",
+  "litteraturbanken.se",
+  "sv.wikisource.org",
+  "en.wikisource.org",
+  "gutenberg.org",
+  "isof.se",
+  "svenskakyrkan.se",
+  "sv.wikipedia.org",
+  "en.wikipedia.org",
+  "ne.se",
+  "britannica.com",
+  "svenska.se",
+];
+export const TEXT_SEARCHES = 2;
+
+export function textTools(): unknown[] {
+  return [{ type: "web_search_20250305", name: "web_search", max_uses: TEXT_SEARCHES, allowed_domains: TEXT_DOMAINS }];
+}
+
+export const TEXT_PROMPT = `
+
+TEXTS AND QUOTES (this request asks for a text, a song, a poem or a quote; these rules replace the length rules above):
+- Traditional texts and texts whose author died more than 70 years ago (folk songs, snapsvisor such as "Helan går", nursery rhymes, old hymns, Strindberg, Bellman, Fröding, Shakespeare) are free: give the words in full, line by line in natural spoken sentences, with no introduction and no comment. Never refuse a traditional song.
+- "Sjung" means: read the text with its rhythm; never say that you cannot sing.
+- From a protected work (author alive or died within 70 years, modern song lyrics, recent books and films): at most one or two sentences as a quote, with title and author, then what it is about in your own words. Modern song lyrics are never given in full or verse by verse: say the title, the artist and what the song is about.
+- Use web_search to get the exact words and the source; never invent or change lines. If you cannot find the exact text, say so in one sentence and give what you are sure of.
+- End with "källa: <domain>" when a search gave the text, otherwise nothing.`;
+
 export const MAX_SEARCHES = 3;
 export const MAX_FETCHES = 2;
 

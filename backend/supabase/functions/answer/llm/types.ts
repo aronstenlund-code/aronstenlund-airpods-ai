@@ -11,6 +11,8 @@ export interface LLMRequest {
   /** Overrides the provider's default model for this request (D52: Rizz uses a stronger model). */
   model?: string;
   signal?: AbortSignal;
+  /** D84: page images sent before the text (exam upload). base64 without the data: prefix. */
+  images?: { mediaType: "image/jpeg" | "image/png" | "image/webp"; data: string }[];
 }
 
 export type LLMChunk =

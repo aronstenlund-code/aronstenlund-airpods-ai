@@ -169,7 +169,7 @@ export class AnthropicProvider implements LLMProvider {
 
   async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
     // maxRetries 0: a retry would double latency; the app has its own fallback.
-    const timeoutMs = req.tools?.length ? 45_000 : 20_000; // a web search turn takes several seconds
+    const timeoutMs = req.images?.length ? 120_000 : req.tools?.length ? 45_000 : 20_000; // a web search turn takes several seconds
     const signal = req.signal
       ? AbortSignal.any([req.signal, AbortSignal.timeout(timeoutMs)])
       : AbortSignal.timeout(timeoutMs);
@@ -199,7 +199,18 @@ export class AnthropicProvider implements LLMProvider {
               system: req.cacheSystem
                 ? [{ type: "text", text: req.system, cache_control: { type: "ephemeral" } }]
                 : req.system,
-              messages: [{ role: "user", content: req.user }],
+              messages: [{
+                role: "user",
+                content: req.images?.length
+                  ? [
+                    ...req.images.map((im) => ({
+                      type: "image",
+                      source: { type: "base64", media_type: im.mediaType, data: im.data },
+                    })),
+                    { type: "text", text: req.user },
+                  ]
+                  : req.user,
+              }],
               output_config: { effort: this.cfg.effort },
               ...(withThinking ? { thinking: { type: "disabled" } } : {}),
               ...(tools?.length ? { tools } : {}),

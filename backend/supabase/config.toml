@@ -22,5 +22,11 @@ verify_jwt = true                  # D80 memory extraction, user JWT
 [functions.study-cards]
 verify_jwt = true                  # D81 study cards, user JWT
 
+[functions.study-profile]
+verify_jwt = true                  # D84 spoken study profile + term list
+
+[functions.exam]
+verify_jwt = true                  # D84 exam session (parse, hint, grade, summary)
+
 [functions.usage-stats]
 verify_jwt = false                 # does its own strict service-role check (new sb_secret keys are not JWTs)

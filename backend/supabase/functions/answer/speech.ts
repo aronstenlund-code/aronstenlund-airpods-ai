@@ -827,6 +827,8 @@ export interface PostOptions {
   silence?: boolean;
   /** D77: interview answer: sentences that say facts are missing are dropped. */
   interview?: boolean;
+  /** D84: split off a `källa:` line without the English filter (texts and quotes). */
+  source?: boolean;
   /** 2026-11-08: sentences about the fragment / sound / microphone are dropped (all modes without a persona). */
   inputMeta?: boolean;
 }
@@ -855,7 +857,7 @@ export class AnswerPost {
     this.meta = new MetaGate(opts.silence === true);
     this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, stripInterviewMeta);
     this.input = new MetaGate(opts.inputMeta === true, isInputMeta);
-    this.src = new SourceTap(opts.web === true);
+    this.src = new SourceTap(opts.web === true || opts.source === true);
     this.en = new EnglishGate(opts.web === true);
   }
 

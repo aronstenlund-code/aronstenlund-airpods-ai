@@ -27,7 +27,10 @@ import { detectReport } from "./report.ts";
 import { detectMemoryAdd, MEMORY_ACK, MEMORY_SUMMARY } from "./memory.ts";
 import {
   isOrdinalFact,
+  needsText,
   needsWeb,
+  TEXT_PROMPT,
+  textTools,
   ORDINAL_NOTE,
   WEB_PROMPT,
   WEB_SEARCH_USD,
@@ -528,12 +531,24 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         );
       }
       // D46 item 8: web search/fetch only when the question needs it, and only within the caps.
+      // D84: a song, a poem or a quote gets its own search and rules (traditional texts in full).
+      const textReq = !demo && !plan && !computed && body.mode !== "interview_prep" && needsText(body.fragment);
       const need =
-        !demo && !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"
+        !textReq && !demo && !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"
           ? needsWeb(body.fragment)
           : null;
       let webOn = false;
       let webNote: string | undefined;
+      let textOn = false;
+      if (textReq) {
+        const wl = await enforceLimits(
+          deps.rateLimiter,
+          "answer-web",
+          user.id,
+          cfg.webLimits ?? DEFAULT_CONFIG.webLimits!,
+        );
+        textOn = wl.allowed; // without search the rules still apply, from the model's own knowledge
+      }
       if (need) {
         const wl = await enforceLimits(
           deps.rateLimiter,
@@ -546,7 +561,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
       const answerType = (computed || webOn || demo) && !tutor ? "fact" : answerTypeBase;
       const maxChars = (demo ? demoCaps.answerMaxChars : undefined) ?? plan?.maxChars ??
-        (webOn ? 800 : undefined) ??
+        (textReq ? 2400 : undefined) ?? (webOn ? 800 : undefined) ??
         (answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars);
       const parser = new ResponseParser(
         body.mode,
@@ -643,13 +658,13 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? systemPromptFor(answerType, tutor)
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
-        (webOn ? WEB_PROMPT : "");
-      const baseTokens = plan?.maxTokens ?? (webOn ? 600 : undefined) ??
+        (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "");
+      const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
         ? demoCaps.answerMaxTokens + (relationTag ? 12 : 0)
         : baseTokens + (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
-      const tools = webOn && need ? webTools(need) : undefined;
+      const tools = textOn ? textTools() : webOn && need ? webTools(need) : undefined;
       // D82: after the echo of the last answer was removed, only a complete new question gets an answer.
       const echoNote = echo.echoed
         ? "The start of <fragment> repeated your own last answer (picked up again by the microphone) and was removed. Answer only if what is left is by itself a complete new question or request; a cut-off half sentence, a remark or noise gets the silence reply."
@@ -745,7 +760,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             trimQuestion: direct && !plan && (!tutor || noChecks),
             firstLineOnly: plan?.kind === "socialline",
             relationTag,
-            web: webOn || !!need, // web filters also when the web cap turned search off
+            web: webOn || !!need,
+            source: textReq, // D84: texts and quotes split off their källa line
             tutor,
             silence: silenceOn,
             inputMeta: silenceOn, // 2026-11-08: never about the fragment, sound or microphone (sentence-buffered modes only)
@@ -893,6 +909,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 firstLineOnly: plan?.kind === "socialline",
                 relationTag,
                 web: webOn || !!need,
+                source: textReq,
                 tutor,
                 silence: silenceOn,
                 inputMeta: silenceOn,
