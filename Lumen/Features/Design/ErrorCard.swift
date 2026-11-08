@@ -27,7 +27,7 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: "Mikrofonen är avstängd. Slå på den i Inställningar för att fortsätta."
         case .offline: "Lumen behöver internet för att svara. Den fortsätter lyssna och svarar igen när du är uppkopplad."
         case .airPodsDisconnected: "Svaren hörs nu i telefonens högtalare."
-        case .overloaded: "Försök igen om en stund. Lumen säger till igen först när något har gått fel efter ett svar."
+        case .overloaded: "Försök igen om en stund."
         case .voiceUnavailable: "Svaren läses med iPhonens röst tills den fungerar igen."
         }
     }

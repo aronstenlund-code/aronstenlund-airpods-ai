@@ -57,5 +57,19 @@ The same line goes to the session log ("Fel (answer): …").
   Diagnostik, as the owner asked.
 - **A long timeout** (30 s request timeout) means the line comes up to 30 s after the question.
 
+## Screenshot (Simulator, not a device check)
+| Lyssnar with the card (light) | Lyssnar with the card (dark) | Every problem card |
+|---|---|---|
+| ![](screenshots/a5/light-cannotAnswer.png) | ![](screenshots/a5/dark-cannotAnswer.png) | ![](screenshots/a5/light-errors.png) |
+
+**A wording change after the picture:** the card's second sentence ("Lumen säger till igen först …") read oddly, so it
+is now only "Försök igen om en stund." The pictures still show the old sentence.
+
+## CI
+- **Green:** build `42503734744` on `220670e`. IPA:
+  https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42503734744/artifacts/13627390989
+- **Screenshots:** run `42503745098`.
+- **Text change:** the change after the picture is built by the next run.
+
 ## Next session
 A3 when Kevin's K6 is done; otherwise "Väntar på kö".
