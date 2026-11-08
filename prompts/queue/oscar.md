@@ -10,7 +10,7 @@
 
 - [ ] **O5 – Förhör mig utan upprepning, och omtest av K7** (effort: low). Beror på: Kevins K7. Kör ditt eget test med 6 frågor i rad och `already_asked` (ja från Deangelo). Testa sedan om fynd A–E, med samma fall och samma antal körningar som i O1. Budget 0,15 USD.
 
-- [ ] **O6 – D88 ljuduppfattning utan telefon** (effort: high). Flyttad från Kevins K3. Du skriver bara i `scripts/qa/` och `reports/qa/`; ändra inte backend. Hittar du något som backend behöver ändra, skriv det under "Till Kevin" i rapporten. Budget: pilot högst 2 USD; fråga Deangelo i rapporten innan hela körningen. Gör O6 före O5.
+- [~] pågår 2026-11-08 20:00 **O6 – D88 ljuduppfattning utan telefon** (effort: high). Flyttad från Kevins K3. Du skriver bara i `scripts/qa/` och `reports/qa/`; ändra inte backend. Hittar du något som backend behöver ändra, skriv det under "Till Kevin" i rapporten. Budget: pilot högst 2 USD; fråga Deangelo i rapporten innan hela körningen. Gör O6 före O5.
   1. Välj 60 fall ur D87-testbanken (ämnesord, korta nyckelord, halva meningar, följdfrågor). Läs igenom manusen innan något genereras (spara ElevenLabs-krediter); kör först en pilot med 15 fall.
   2. Tal med ElevenLabs TTS, 3–4 svenska röster. Tre förhållanden: tyst; bakgrundsprat (blandat av andra TTS-röster, inget licensierat ljud) på 10 och 5 dB SNR; nedsamplat till 16 kHz som en AirPods-mikrofon. Ljudet som Actions-artefakt eller i Supabase Storage, aldrig i git.
   3. Kör genom Scribe som appen gör (realtid, samma VAD-värden per läge, keyterms från en provprofil), med och utan keyterms, och batch som jämförelse. Mät ordfel (WER), andel rätt ämnesord, klippta/sammanslagna yttranden.
