@@ -1,0 +1,25 @@
+n=40; order of digits: correct a_level sufficient natural length_ok
+correct    agree 38/40 (95%); mine ok 34, Kevin ok 34; both ok 33, only I ok 1... (mine1/k0=1, mine0/k1=1), both fail 5; kappa 0.80
+a_level    agree 36/40 (90%); mine ok 38, Kevin ok 34; both ok 34, only I ok 0... (mine1/k0=4, mine0/k1=0), both fail 2; kappa 0.46
+sufficient agree 35/40 (88%); mine ok 38, Kevin ok 33; both ok 33, only I ok 0... (mine1/k0=5, mine0/k1=0), both fail 2; kappa 0.40
+natural    agree 37/40 (92%); mine ok 32, Kevin ok 31; both ok 30, only I ok 1... (mine1/k0=2, mine0/k1=1), both fail 7; kappa 0.78
+length_ok  agree 31/40 (78%); mine ok 22, Kevin ok 29; both ok 21, only I ok 8... (mine1/k0=1, mine0/k1=8), both fail 10; kappa 0.53
+first answer enough (correct AND sufficient, Kevin's definition): both yes 29, I yes Kevin no 5, I no Kevin yes 1, both no 5; agreement 34/40
+mine first-ok 85.0%, Kevin first-ok 75.0% (this sample)
+
+DISAGREEMENTS (no, id, kind, mine, Kevin, Kevin's note)
+3 pl-005 term 11110 10111 | Never uses the terms producenter and konsumenter, and leaves out the sun and photosynthesis as the energy source, which an A answer needs.
+4 pl-013 followup 11101 10111 | Missing genetic variation (crossing over, random assortment), central for an A in Biologi 1; 'moderns' should be 'modercellens'.
+9 pl-047 term 11110 11111 | 
+12 pl-061 term 11110 10111 | Upplysningens idéer saknas som orsak, vilket ett A-svar behöver; republiken nämns inte uttryckligen.
+14 pl-071 half 11111 01111 | Wienkongressen började 1814, före Waterloo, inte efter. Napoleons första fall och Elba saknas.
+17 pl-076 term 11111 11011 | Says Riksbanken uses the policy rate but not how: higher rate dampens demand. That is the natural follow-up. Target is technically measured with KPIF.
+21 pl-104 term 11111 10011 | Touches who, when, why and independence but never names the four criteria: äkthet, tid, beroende, tendens. An A answer and the expected follow-up need them.
+25 pl-112 term 11100 11101 | Written entirely in English instead of spoken Swedish, with an odd mixed phrase 'in tvåtusen nitton' and a list-like run of signal words.
+28 pl-121 term 01110 01011 | The fifty-note example is impossible: 25 fifty-kronor notes cannot fit in 100 kronor. It also leaves out percentage change and never states part divided by whole explicitly.
+29 pl-128 term 11110 11101 | Grammar slip 'det exponent' and the awkward spoken 'Matematik tvåc' course reference; the 2^x=8 example is left unsolved.
+30 pl-133 followup 01100 11100 | Says "minus fem gånger" instead of "minus fem x", which is confusing when heard. Seven sentences is too long for the mellanlånga profile.
+34 pl-147 short 11110 11100 | Four sentences exceeds the korta limit; the last sentence is meta talk about the course and reads awkwardly as 'Historia ettb'.
+35 pl-152 exam_soon 11110 11011 | Leaves out faktorisering, nollproduktmetoden and the link between graph and nollställen, which are typical test content.
+37 pl-158 term 11111 11110 | Seven sentences, over the four to six allowed for mellanlånga; the oxidation-number rule sentence could be cut.
+39 pl-169 term 11110 11011 | Saknar kopplingen till liter (en liter är en kubikdecimeter), som behövs. Liten grammatikmiss: 'en rätblock' ska vara 'ett rätblock'.
