@@ -27,3 +27,14 @@ Deno.test("Oscar 2026-11-08 interview: the remarks about missing facts are dropp
   ) assert(isInterviewMeta(s), s);
   assert(!isInterviewMeta("Jag är noggrann och tycker om att möta kunder."));
 });
+
+Deno.test("Oscar 2026-11-08 Provläge: a guessed subject is silence, not the wrong subject", () => {
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true, silence: true, inputMeta: true, heard: "pe ri o diska syste met" });
+  const out = p.push("Det låter som perifera nervsystemet, som du kanske menar. Det är den del av nervsystemet som ligger utanför hjärnan. ") + p.finish();
+  assertEquals(out.trim(), "");
+  assert(p.silent);
+  const q = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true, silence: true, inputMeta: true, heard: "gra vi ta tions kraften" });
+  const o2 = q.push("Det verkar vara en fråga om fotosyntesen, men jag är inte säker på vad du menar, så jag svarar inte på den. ") + q.finish();
+  assertEquals(o2.trim(), "");
+  assert(isInterviewMeta("Jag tänker inte fokusera på min ålder utan på vad jag tar med mig till jobbet."));
+});

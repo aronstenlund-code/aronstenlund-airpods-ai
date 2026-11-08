@@ -466,6 +466,7 @@ const INTERVIEW_META = new RegExp(
     String.raw`\b(?:jag har|det finns) (?:inget|inte något|ingen) (?:namn|ålder|skola|uppgift)\w* (?:angiv|givet|nämnt|här)`,
     String.raw`\bjag vill (?:hellre|hellst) prata om\b[^.]{0,80} än om (?:min|mitt|mina)\b`,
     String.raw`\bjag är inte (?:så )?noga med (?:siffror|åldrar|år|datum)\b`,
+    String.raw`\b(?:jag tänker|jag vill|jag kommer) inte (?:att )?(?:fokusera|prata|lägga fokus|gå in) på (?:min|mitt|mina)\b`,
     String.raw`\b(?:hur gammal jag är|min ålder|vad jag heter|vilken skola jag går på) (?:spelar|är) (?:inte|mindre)\b`,
     String.raw`\b(?:inte )?(?:nämnt|angett|angivet|givet|framgår) (?:här|i (?:annonsen|uppgifterna))\b`,
     // D79: coaching the user instead of answering ("Däremot kan du svara att du …")
@@ -524,6 +525,9 @@ const INPUT_META = new RegExp(
     String.raw`\bjag tolkar det (?:som|så)\b`,
     String.raw`^(?:det här|detta|det) är en fortsättning på\b`,
     String.raw`\bfragmentet (?:blandar|är|var|verkar|innehåller|säger|låter|består)\b`,
+    String.raw`\bjag är (?:inte (?:helt )?säker på|osäker på) vad (?:du|ni) menar\b`,
+    String.raw`\bså jag svarar inte\b`,
+    String.raw`^det verkar vara en fråga om\b`,
   ].join("|"),
   "iu",
 );
@@ -553,6 +557,12 @@ export function similarity(a: string, b: string): number {
   return nx + ny ? (2 * both) / (nx + ny) : 0;
 }
 const LEAD_META = /^(?:fragmentet|det du sa|orden)\b[^.]{0,120}\blåter som\b/iu;
+/** A first sentence that guesses ("som du kanske menar", "jag är inte säker"): rather silence than a wrong subject. */
+const LEAD_UNSURE =
+  /\b(?:som du (?:kanske|nog|troligen|antagligen) menar|om du menar|jag är (?:inte (?:helt )?säker|osäker)|kanske menar du|du menar (?:nog|kanske))\b/iu;
+export function isUnsureLeadIn(sentence: string): boolean {
+  return LEAD_UNSURE.test(sentence);
+}
 const LEAD_NAMED =
   /^(?:det|det här|detta|det där)\s+(?:låter som|verkar vara|verkar handla om|är|gäller)\s+["'„”»«]?([\p{L}][\p{L} -]{1,40}?)["'„”»«]?(?:\s*([,:])\s*(.*))?\s*[.!]?\s*$/isu;
 export function rewriteLeadIn(sentence: string, heard: string): string {
@@ -562,8 +572,12 @@ export function rewriteLeadIn(sentence: string, heard: string): string {
   const m = LEAD_NAMED.exec(t);
   if (!m) return sentence;
   const [, term, sep, rest] = m;
-  // the named term must be what was heard (misheard): never touch "Det är rätt." or "Det är viktigt, …"
-  if (similarity(term, heard) < 0.6 && !letters(heard).includes(letters(term).slice(0, 6))) return sentence;
+  // "Det låter som …" is always a reading; "Det är …" only when the term is what was heard (misheard), so
+  // "Det är rätt." or "Det är viktigt, …" is never touched
+  const sounds = /^(?:det|det här|detta|det där)\s+låter som\b/iu.test(t);
+  if (!sounds && similarity(term, heard) < 0.6 && !letters(heard).includes(letters(term).slice(0, 6))) {
+    return sentence;
+  }
   const cap = term.charAt(0).toUpperCase() + term.slice(1);
   const trail = /\s$/.test(sentence) ? " " : "";
   if (!sep || !rest?.trim()) return ""; // "Det här är fotosyntesen." on its own says nothing
@@ -910,9 +924,15 @@ export class AnswerPost {
     this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, stripInterviewMeta);
     this.input = new MetaGate(opts.inputMeta === true, isInputMeta);
     let firstDone = false;
+    let unsure = false;
     this.lead = new MetaGate(opts.inputMeta === true && !!opts.heard, () => false, (sentence) => {
+      if (unsure) return ""; // the answer started with a guess: nothing of it is said
       if (firstDone || !sentence.trim()) return sentence;
       firstDone = true;
+      if (isUnsureLeadIn(sentence)) {
+        unsure = true;
+        return "";
+      }
       return rewriteLeadIn(sentence, opts.heard ?? "");
     });
     this.src = new SourceTap(opts.web === true || opts.source === true);
