@@ -309,14 +309,18 @@ export class EnglishGate {
 const SILENT_OPEN = "[[TYST";
 export class SilenceTap {
   silent = false;
+  /** History fix 2026-11-08: the marker came AFTER spoken text ("… nöjd med det. [[TYST]]"). */
+  late = false;
   private buf = "";
   private decided: boolean;
-  constructor(enabled: boolean) {
+  private spoke = false;
+  private closing = false;
+  constructor(private readonly enabled: boolean) {
     this.decided = !enabled;
   }
   push(text: string): string {
-    if (this.silent) return "";
-    if (this.decided) return text;
+    if (this.silent || this.late) return "";
+    if (this.decided) return this.scan(text);
     this.buf += text;
     const t = this.buf.trimStart().toUpperCase();
     if (t.length < SILENT_OPEN.length) {
@@ -330,20 +334,74 @@ export class SilenceTap {
     return this.release();
   }
   finish(): string {
-    if (this.silent || this.decided) return "";
-    // a reply that is only "[[T" or "[[" is not an answer either
-    if (this.buf.trim() && SILENT_OPEN.startsWith(this.buf.trim().toUpperCase())) {
-      this.silent = true;
-      this.buf = "";
-      return "";
+    if (this.silent || this.late) return "";
+    if (!this.decided) {
+      // a reply that is only "[[T" or "[[" is not an answer either
+      if (this.buf.trim() && SILENT_OPEN.startsWith(this.buf.trim().toUpperCase())) {
+        this.silent = this.enabled;
+        this.buf = "";
+        return "";
+      }
+      return this.release();
     }
-    return this.release();
+    // a held-back "[" that never became the marker is ordinary text; a lone "[[T…" tail is dropped
+    const b = this.buf;
+    this.buf = "";
+    return /\[\[[A-ZÅÄÖ]*$/i.test(b) && SILENT_OPEN.startsWith(b.slice(b.lastIndexOf("[[")).toUpperCase())
+      ? b.slice(0, b.lastIndexOf("[["))
+      : b;
+  }
+  /** The marker is never passed on, wherever it is (all modes). */
+  private scan(text: string): string {
+    this.buf += text;
+    const u = this.buf.toUpperCase();
+    const at = u.indexOf(SILENT_OPEN);
+    if (at >= 0) {
+      const before = this.buf.slice(0, at);
+      const after = this.buf.slice(at + SILENT_OPEN.length);
+      this.buf = "";
+      if (this.spoke || before.trim()) {
+        this.late = true;
+        return before;
+      }
+      this.silent = this.enabled;
+      if (this.silent) return "";
+      // a mode without silence: the marker is dropped and the rest is said
+      this.closing = true;
+      return this.scan(after);
+    }
+    if (this.closing) {
+      const m = /^[\]\s]*/.exec(this.buf)!;
+      if (m[0].length === this.buf.length) {
+        this.buf = "";
+        return "";
+      }
+      this.buf = this.buf.slice(m[0].length);
+      this.closing = false;
+    }
+    // hold back a tail that may still become the marker ("[", "[[", "[[TY")
+    const lb = this.buf.lastIndexOf("[");
+    if (lb >= 0) {
+      const tail = u.slice(lb);
+      const tail2 = lb > 0 && this.buf[lb - 1] === "[" ? u.slice(lb - 1) : tail;
+      if (SILENT_OPEN.startsWith(tail2) || SILENT_OPEN.startsWith(tail)) {
+        const cut = SILENT_OPEN.startsWith(tail2) ? lb - (tail2 === tail ? 0 : 1) : lb;
+        const out = this.buf.slice(0, cut);
+        this.buf = this.buf.slice(cut);
+        if (out.trim()) this.spoke = true;
+        return out;
+      }
+    }
+    const out = this.buf;
+    this.buf = "";
+    if (out.trim()) this.spoke = true;
+    return out;
   }
   private release(): string {
     this.decided = true;
     const b = this.buf;
     this.buf = "";
-    return b;
+    return this.scan(b);
   }
 }
 
@@ -433,6 +491,34 @@ export function stripInterviewMeta(sentence: string): string {
     }
   }
   return "";
+}
+
+/**
+ * History fix 2026-11-08: metasvar slipped through in Provläge although D75/D80 ("Men jag kan inte se vad din
+ * mikrofon uppfattar …", "Det här är inte en fråga jag kan svara på som något specifikt ämne …", "… så jag
+ * föreslår att du säger vilket ämne …"). A sentence about the fragment, the sound, the microphone or the
+ * recording, or one that asks the user to clarify, is never spoken, in every mode without a persona.
+ */
+const INPUT_META = new RegExp(
+  [
+    String.raw`\b(?:din|er|telefonens|appens) mikrofon`,
+    String.raw`\bvad (?:mikrofonen|appen|jag) (?:uppfattar|hör|hörde|har hört)\b`,
+    String.raw`\bjag kan inte (?:se|höra) vad (?:du|ni|mikrofonen)`,
+    String.raw`\b(?:det här|det|detta|ditt) fragment(?:et)?\b`,
+    String.raw`\bi fragmentet\b`,
+    String.raw`\b(?:rest|rester) av (?:ljud|det jag sa|mitt (?:svar|förra))`,
+    String.raw`\b(?:ljudet|inspelningen|transkriptionen|transkriberingen) (?:är|var|verkar|innehåller)`,
+    String.raw`^(?:men |så )?(?:det här|detta|det) är inte en (?:ny |riktig )?fråga\b`,
+    String.raw`\b(?:jag ser|det finns|här finns) (?:ingen|inte någon) (?:ny |riktig )?fråga\b`,
+    String.raw`\bjag väntar på (?:nästa|din|en ny) fråga\b`,
+    String.raw`\b(?:föreslår att du säger|säg vilket ämne|berätta vilket ämne|vilket ämne (?:det|provet) gäller)`,
+    String.raw`\b(?:kan|kunde) (?:du|ni) (?:förtydliga|upprepa|säga det igen|formulera om)`,
+    String.raw`\bså (?:jag svarar på|svarar jag på) det jag hör\b`,
+  ].join("|"),
+  "iu",
+);
+export function isInputMeta(sentence: string): boolean {
+  return INPUT_META.test(sentence);
 }
 
 export class MetaGate {
@@ -737,6 +823,8 @@ export interface PostOptions {
   silence?: boolean;
   /** D77: interview answer: sentences that say facts are missing are dropped. */
   interview?: boolean;
+  /** 2026-11-08: sentences about the fragment / sound / microphone are dropped (all modes without a persona). */
+  inputMeta?: boolean;
 }
 
 export class AnswerPost {
@@ -747,6 +835,7 @@ export class AnswerPost {
   private readonly sil: SilenceTap;
   private readonly meta: MetaGate;
   private readonly imeta: MetaGate;
+  private readonly input: MetaGate;
   private readonly src: SourceTap;
   private spoke = false;
   private readonly en: EnglishGate;
@@ -761,6 +850,7 @@ export class AnswerPost {
     this.sil = new SilenceTap(opts.silence === true);
     this.meta = new MetaGate(opts.silence === true);
     this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, stripInterviewMeta);
+    this.input = new MetaGate(opts.inputMeta === true, isInputMeta);
     this.src = new SourceTap(opts.web === true);
     this.en = new EnglishGate(opts.web === true);
   }
@@ -790,7 +880,12 @@ export class AnswerPost {
 
   /** D75: the model chose silence, or every sentence was a meta comment (nothing was spoken). */
   get silent(): boolean {
-    return this.sil.silent || (this.meta.dropped > 0 && !this.spoke);
+    return this.sil.silent || ((this.meta.dropped > 0 || this.input.dropped > 0) && !this.spoke);
+  }
+
+  /** 2026-11-08: the silence marker came after text was already said: the whole answer counts as silent. */
+  get silencedLate(): boolean {
+    return this.sil.late;
   }
 
   /** D75: the silence marker was seen (the stream can stop at once). */
@@ -813,7 +908,9 @@ export class AnswerPost {
     const a = this.dup.push(
       this.gate.push(
         this.imeta.push(
-          this.meta.push(this.en.push(this.src.push(this.tap.push(this.sil.push(this.rel.push(raw)))))),
+          this.input.push(
+            this.meta.push(this.en.push(this.src.push(this.tap.push(this.sil.push(this.rel.push(raw)))))),
+          ),
         ),
       ),
     );
@@ -828,7 +925,8 @@ export class AnswerPost {
     const s = this.src.push(t) + this.src.finish();
     const e0 = this.en.push(s) + this.en.finish();
     const e1 = this.meta.push(e0) + this.meta.finish();
-    const e = this.imeta.push(e1) + this.imeta.finish();
+    const e2 = this.input.push(e1) + this.input.finish();
+    const e = this.imeta.push(e2) + this.imeta.finish();
     const rest = this.trim.push(this.dup.push(this.gate.push(e)) + this.dup.finish()) +
       this.trim.finish();
     const out = this.cap(this.nums.push(rest) + this.nums.finish());

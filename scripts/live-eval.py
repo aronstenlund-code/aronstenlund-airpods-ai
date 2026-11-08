@@ -114,6 +114,10 @@ def silence_checks(text, done, turn):
     spoken = text.strip()
     silent = not spoken and (done or {}).get("answered") is False
     exp = turn.get("expect", "answer")
+    if "[[" in text:  # 2026-11-08: the silence marker leaked into the answer
+        out.append("markören [[TYST]] läckte in i svaret")
+    if (done or {}).get("retract"):
+        out.append("svaret drogs tillbaka (tyst efter text)")
     if exp == "silent" and not silent:
         out.append("svarade på en icke-fråga (väntade tystnad)")
     if exp == "answer" and silent:
@@ -436,6 +440,9 @@ def report(rows, date):
     if quiet or real:
         out += ["", f"Tystnad (D75): {sum(1 for r in quiet if r['silent'])}/{len(quiet)} icke-frågor fick inget svar; "
                     f"{sum(1 for r in real if not r['silent'])}/{len(real)} riktiga frågor besvarades."]
+    calc = [r for r in rows if r["cat"] == "räkna"]
+    if calc:  # 2026-11-08: arithmetic is spoken by code; the requirement is 100 %
+        out += ["", f"Räkna (kod): {sum(1 for r in calc if not r['problems'])}/{len(calc)} rätt (krav 100 %)."]
     cost = sum(float(r["cost"] or 0) for r in rows)
     out += ["", f"Uppskattad kostnad för körningen: ca {cost:.3f} USD.", ""]
     if bad:

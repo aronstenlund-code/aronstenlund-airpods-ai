@@ -37,7 +37,7 @@ const post = (body: unknown, headers: Record<string, string> = {}) =>
     body: typeof body === "string" ? body : JSON.stringify(body),
   });
 const body = (o: Record<string, unknown> = {}) => ({
-  fragment: "fem plus två",
+  fragment: "vad är en atom",
   mode: "push_to_talk",
   language: "sv",
   context: {},
@@ -52,11 +52,11 @@ Deno.test("streams meta, deltas, done in order and logs usage", async () => {
   const ev = await readSse(res);
   assertEquals(ev[0].event, "meta");
   assertEquals(ev[0].data.is_question, true);
-  assertEquals(ev[0].data.reconstructed_question, "fem plus två");
+  assertEquals(ev[0].data.reconstructed_question, "vad är en atom");
   assertEquals(ev[0].data.confidence, 1, "direct mode synthesises the meta");
   assert(ev.slice(1, -1).length > 0 && ev.slice(1, -1).every((e) => e.event === "delta"));
   const answer = ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
-  assertEquals(answer, "Mocksvar på: fem plus två.");
+  assertEquals(answer, "Mocksvar på: vad är en atom.");
   const done = ev.at(-1)!;
   assertEquals(done.event, "done");
   assertEquals(done.data.answered, true);
@@ -368,7 +368,7 @@ Deno.test("local per-isolate guard stops a user before the LLM is ever called", 
     localLimiter: new MemoryRateLimiter(),
     config: { ...DEFAULT_CONFIG, limits: { perMinute: 2, perDay: 100, globalPerDay: 100 } },
   });
-  const q = () => post(body({ fragment: "vad är roten ur hundra" }));
+  const q = () => post(body({ fragment: "vad är en kvadratrot" }));
   for (let i = 0; i < 2; i++) await (await handler(q())).text();
   const res = await handler(q());
   assertEquals(res.status, 429);
@@ -795,20 +795,33 @@ function scripted(...texts: string[]) {
 const textOf = (ev: { event: string; data: Record<string, unknown> }[]) =>
   ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
 
-Deno.test("D46: arithmetic is computed in code, handed over as <computed>, digits spoken as words", async () => {
-  const { provider, seen } = scripted("17 gånger 24 är 408.");
-  const { handler } = setup({ provider });
+Deno.test("D46 + 2026-11-08: arithmetic is computed AND spoken by code, the model is never called", async () => {
+  const { provider, seen } = scripted("17 gånger 24 är 9000.");
+  const { handler, usage } = setup({ provider });
   const ev = await readSse(await handler(post(body({ fragment: "17 gånger 24" }))));
-  assertStringIncludes(seen[0].user, "<computed>17 × 24 = 408</computed>");
+  assertEquals(seen.length, 0, "no model call");
   assertEquals(textOf(ev), "Sjutton gånger tjugofyra är fyrahundraåtta.");
   assertEquals(ev[0].data.answer_type, "fact");
+  assertEquals(usage[0].model, "calc");
+  const big = await readSse(await handler(post(body({ fragment: "270 gånger 270." }))));
+  assertEquals(textOf(big), "Tvåhundrasjuttio gånger tvåhundrasjuttio är sjuttiotvåtusen niohundra.");
+  // Provläge also gets the steps, all computed in code
+  const t = textOf(await readSse(await handler(post(body({ mode: "tutor", fragment: "270 gånger 270" })))));
+  assertStringIncludes(t, "tvåhundrasjuttio gånger tvåhundra, som är femtiofyratusen");
+  assertStringIncludes(t, "Tillsammans blir det sjuttiotvåtusen niohundra.");
+  // a clock time is not a division
+  const k = textOf(await readSse(await handler(post(body({ fragment: "Hej, vad är 20:20?" })))));
+  assertEquals(k, "Klockan tjugo och tjugo är tjugo över åtta på kvällen.");
+  // a conversion still goes to the model with <computed>
+  await readSse(await handler(post(body({ fragment: "2 kilo i gram" }))));
+  assertStringIncludes(seen[0].user, "<computed>2 kilogram = 2000 gram</computed>");
 });
 
 Deno.test("D46: a closing question to the user is removed; tutor mode keeps its check question", async () => {
   const { provider } = scripted("Det är fyra. Vill du att jag räknar mer?");
   const { handler } = setup({ provider });
   assertEquals(
-    textOf(await readSse(await handler(post(body({ fragment: "två plus två" }))))).trim(),
+    textOf(await readSse(await handler(post(body({ fragment: "vad är summan av två och två" }))))).trim(),
     "Det är fyra.",
   );
   const t = await readSse(

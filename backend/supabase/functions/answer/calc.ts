@@ -1,4 +1,4 @@
-import { wordsToNumber } from "./svnum.ts";
+import { cardinal, wordsToNumber } from "./svnum.ts";
 import { dateCalc } from "./datecalc.ts";
 import { zoneClock } from "./timezone.ts";
 
@@ -12,6 +12,18 @@ export interface Computed {
   /** Human/LLM readable line, digits, Swedish decimal comma: "17 × 24 = 408". */
   text: string;
   value: number;
+  /**
+   * History fix (2026-11-08, "270 gånger 270" was said as 7 900): arithmetic and percentages are not only
+   * computed but also SPOKEN by code (`spokenComputed`), no model call; the model never phrases numbers it
+   * could get wrong. Unit conversions, dates and zone clocks keep the model (kind undefined).
+   */
+  kind?: "arith" | "percent" | "clock";
+  /** The spoken expression with digits ("270 gånger 270"), set for arith / percent. */
+  said?: string;
+  /** A single binary operation (for the step-by-step line in Provläge). */
+  binary?: { a: number; op: string; b: number };
+  /** clock: hours and minutes of a bare "HH:MM". */
+  clock?: { h: number; m: number };
 }
 
 export function fmtNumber(x: number): string {
@@ -45,6 +57,7 @@ const PREFIX =
 type Tok = { t: "num"; v: number } | { t: "op"; v: string } | { t: "fn"; v: string };
 
 function tokenize(input: string): Tok[] | null {
+  if (/\b\d{1,2}:\d{2}\b/.test(input)) return null; // "20:20" is a clock time, not 20 ÷ 20
   let s = input.toLowerCase().trim().replace(/[?=!.]+$/g, "").trim().replace(PREFIX, "");
   s = s
     .replace(/\bupphöjt till\b|\bupphöjd till\b|\bin the power of\b/g, " ^ ")
@@ -151,7 +164,27 @@ function percent(input: string): Computed | null {
   const a = parseNum(m[1].trim().split(/\s+/)), b = parseNum(m[2].trim().split(/\s+/));
   if (a === null || b === null) return null;
   const v = (a * b) / 100;
-  return { value: v, text: `${fmtNumber(a)} % av ${fmtNumber(b)} = ${fmtNumber(v)}` };
+  return {
+    value: v,
+    text: `${fmtNumber(a)} % av ${fmtNumber(b)} = ${fmtNumber(v)}`,
+    kind: "percent",
+    said: `${fmtNumber(a)} procent av ${fmtNumber(b)}`,
+  };
+}
+
+// ---------- clock times ----------
+const CLOCK =
+  /^(?:hej|okej|du)?[,!]?\s*(?:vad är|vad betyder|vilken tid är|hur mycket är|vad är klockan)?\s*(?:klockan\s+)?([01]?\d|2[0-3])[:.]([0-5]\d)\s*[?.!]*$/i;
+function clockTime(input: string): Computed | null {
+  const m = CLOCK.exec(input.trim());
+  if (!m || !/[:]/.test(input) && !/klockan/i.test(input)) return null;
+  const h = Number(m[1]), mm = Number(m[2]);
+  return {
+    value: h * 60 + mm,
+    text: `${m[1]}:${m[2]} = klockan ${h}:${m[2]} (24-timmarsklocka)`,
+    kind: "clock",
+    clock: { h, m: mm },
+  };
 }
 
 // ---------- unit conversions ----------
@@ -306,6 +339,8 @@ export function computeFollowUp(fragment: string, lastAnswer: string | undefined
 export function computeFragment(fragment: string, now: Date = new Date()): Computed | null {
   const f = fragment.trim();
   if (!f || f.length > 120) return null;
+  const k = clockTime(f);
+  if (k) return k;
   const z = zoneClock(f, now) ?? dateCalc(f, now);
   if (z) return z;
   const p = percent(f);
@@ -318,8 +353,72 @@ export function computeFragment(fragment: string, now: Date = new Date()): Compu
   if (!r) return null;
   const exact = Number.isInteger(r.value) ||
     Math.abs(r.value * 1e4 - Math.round(r.value * 1e4)) < 1e-6;
+  const said = r.text.replace(/×/g, "gånger").replace(/÷/g, "delat med").replace(/\^/g, "upphöjt till")
+    .replace(/²/g, " i kvadrat").replace(/³/g, " i kubik").replace(/√/g, "roten ur ").replace(/(?<=\s)-(?=\s)/g, "minus")
+    .replace(/\+/g, "plus").replace(/\s+/g, " ").trim();
+  const binary = toks.length === 3 && toks[0].t === "num" && toks[1].t === "op" && toks[2].t === "num"
+    ? { a: toks[0].v, op: toks[1].v, b: toks[2].v }
+    : undefined;
   return {
     value: r.value,
     text: `${r.text} = ${fmtNumber(r.value)}${exact ? "" : " (avrundat till fyra decimaler)"}`,
+    kind: "arith",
+    said,
+    binary,
   };
+}
+
+/** Digits with a space every three (Swedish), so the speech step reads "72 900" as one number. */
+function grouped(x: number): string {
+  const t = fmtNumber(x);
+  const [i, d] = t.split(",");
+  const neg = i.startsWith("-");
+  const g = (neg ? i.slice(1) : i).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return (neg ? "-" : "") + g + (d ? "," + d : "");
+}
+
+const HOUR_WORD = (h: number) => cardinal(h % 12 === 0 ? 12 : h % 12);
+function dayPart(h: number): string {
+  return h < 5 ? "på natten" : h < 10 ? "på morgonen" : h < 12 ? "på förmiddagen" : h < 18
+    ? "på eftermiddagen"
+    : "på kvällen";
+}
+function twelveHour(h: number, m: number): string {
+  const next = (h + 1) % 24;
+  const part = dayPart(m > 30 ? next : h);
+  if (m === 0) return `${HOUR_WORD(h)} ${part}`;
+  if (m === 15) return `kvart över ${HOUR_WORD(h)} ${part}`;
+  if (m === 30) return `halv ${HOUR_WORD(next)} ${part}`;
+  if (m === 45) return `kvart i ${HOUR_WORD(next)} ${part}`;
+  if (m < 30) return `${cardinal(m)} över ${HOUR_WORD(h)} ${part}`;
+  return `${cardinal(60 - m)} i ${HOUR_WORD(next)} ${part}`;
+}
+
+/**
+ * The complete spoken answer for arithmetic, percentages and a bare clock time (digits are turned into words
+ * by the normal speech step). Provläge also gets the steps of a multiplication, all computed here.
+ * null = let the model phrase it (conversions, dates).
+ */
+export function spokenComputed(c: Computed, tutor = false): string | null {
+  if (c.kind === "clock" && c.clock) {
+    const { h, m } = c.clock;
+    const twentyFour = m === 0 ? `klockan ${cardinal(h)}` : `klockan ${cardinal(h)} och ${cardinal(m)}`;
+    return `${twentyFour.charAt(0).toUpperCase()}${twentyFour.slice(1)} är ${twelveHour(h, m)}.`;
+  }
+  if ((c.kind !== "arith" && c.kind !== "percent") || !c.said) return null;
+  const exact = Number.isInteger(c.value) || Math.abs(c.value * 1e4 - Math.round(c.value * 1e4)) < 1e-6;
+  const said = c.said.replace(/-?\d+(?:,\d+)?/g, (d) => grouped(Number(d.replace(",", "."))));
+  const v = exact ? c.value : Math.round(c.value * 100) / 100; // spoken: two decimals are enough
+  const head = `${said.charAt(0).toUpperCase()}${said.slice(1)} är ${exact ? "" : "ungefär "}${grouped(v)}.`;
+  const bin = c.binary;
+  if (!tutor || !bin || bin.op !== "*" || !Number.isInteger(bin.a) || !Number.isInteger(bin.b)) return head;
+  const [a, b] = Math.abs(bin.a) >= Math.abs(bin.b) ? [bin.a, bin.b] : [bin.b, bin.a];
+  if (Math.abs(b) < 11 || Math.abs(a) < 11) return head;
+  const mag = 10 ** Math.floor(Math.log10(Math.abs(b)));
+  const hi = Math.trunc(b / mag) * mag, lo = b - hi;
+  if (lo === 0) return head;
+  const p1 = a * hi, p2 = a * lo;
+  return `${head} Räkna ${grouped(a)} gånger ${grouped(hi)}, som är ${grouped(p1)}, och ${grouped(a)} gånger ${
+    grouped(lo)
+  }, som är ${grouped(p2)}. Tillsammans blir det ${grouped(p1 + p2)}.`;
 }

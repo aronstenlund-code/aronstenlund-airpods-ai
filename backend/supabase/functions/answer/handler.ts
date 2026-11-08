@@ -13,7 +13,7 @@ import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.t
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
-import { computeFollowUp, computeFragment } from "./calc.ts";
+import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { nowContext } from "./datecalc.ts";
 import { categorize } from "./category.ts";
 import {
@@ -34,7 +34,7 @@ import {
   WEB_UNAVAILABLE_NOTE,
   webTools,
 } from "./web.ts";
-import { AnswerPost } from "./speech.ts";
+import { AnswerPost, NumberStream } from "./speech.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import {
   detectDecline,
@@ -391,6 +391,80 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? null
         : computeFragment(body.fragment, (deps.clock ?? (() => new Date()))()) ??
           computeFollowUp(body.fragment, body.context.recent_qa.at(-1)?.a);
+      // History fix 2026-11-08 ("270 gånger 270" was spoken as "sjutusen niohundra" although <computed> was
+      // right): arithmetic, percentages and a bare clock time are answered entirely by code, no model call.
+      const localCalc = computed && !plan ? spokenComputed(computed, tutor) : null;
+      if (localCalc) {
+        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        if (!rl.allowed) {
+          throw new HttpError(429, "rate_limited", "Too many requests", {
+            fallback: true,
+            retryAfterSec: rl.retryAfterSec,
+          });
+        }
+        const ns = new NumberStream();
+        const spoken = (ns.push(localCalc) + ns.finish()).replace(/^\s*\p{Ll}/u, (c) => c.toUpperCase());
+        const totalMs = Math.round(now() - t0);
+        try {
+          await deps.recordUsage({
+            user_id: user.id,
+            endpoint: "answer",
+            mode: body.mode,
+            language: body.language,
+            provider: "local",
+            model: "calc",
+            is_question: true,
+            confidence: 1,
+            input_tokens: null,
+            output_tokens: null,
+            ttft_ms: totalMs,
+            total_ms: totalMs,
+            est_cost_usd: 0,
+            status: "ok",
+            category: "matte",
+            persona: body.persona,
+          });
+        } catch (e) {
+          console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+        }
+        const frames = [
+          sseFrame("meta", {
+            reconstructed_question: body.fragment,
+            confidence: 1,
+            is_question: true,
+            needs_confirmation: false,
+            answer_type: "fact",
+            relation: null,
+          }),
+          sseFrame("delta", { text: spoken }),
+          sseFrame("done", {
+            answered: true,
+            timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: {
+              input_tokens: 0,
+              output_tokens: 0,
+              cache_read_tokens: 0,
+              web_searches: 0,
+              model: "calc",
+              est_cost_usd: 0,
+            },
+            summary: demo ? null : `Räknade ut: ${computed!.text}.`,
+            relation: null,
+            source: null,
+            memory_add: null,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
       // D46 item 8: web search/fetch only when the question needs it, and only within the caps.
       const need =
         !demo && !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"
@@ -603,6 +677,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             web: webOn || !!need, // web filters also when the web cap turned search off
             tutor,
             silence: silenceOn,
+            inputMeta: silenceOn, // 2026-11-08: never about the fragment, sound or microphone (sentence-buffered modes only)
             interview: plan?.kind === "interview", // D77
           });
           let pendingMeta: Record<string, unknown> | null = null;
@@ -654,6 +729,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             } else {
               if (!stop) deliver(post.push(ev.text));
               if (silenceOn && post.silenceMarked) stop = true; // D75: nothing more will be said
+              if (post.silencedLate) stop = true; // 2026-11-08: marker after text: say nothing more
             }
           };
           const handle = (chunk: LLMChunk) => {
@@ -748,6 +824,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 web: webOn || !!need,
                 tutor,
                 silence: silenceOn,
+                inputMeta: silenceOn,
                 interview: plan?.kind === "interview",
               });
               r = await it.next();
@@ -815,7 +892,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             }
             const r2 = (n: number | null) => (n === null ? null : Math.round(n));
             send("done", {
-              answered: status === "ok" || status === "truncated" || status === "filtered",
+              answered: !post.silencedLate &&
+                (status === "ok" || status === "truncated" || status === "filtered"),
+              // 2026-11-08: the model put [[TYST]] after text it had already streamed: the app drops the answer
+              ...(post.silencedLate ? { retract: true } : {}),
               timing: {
                 meta_ms: r2(metaMs),
                 ttft_ms: r2(ttftMs),

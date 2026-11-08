@@ -2378,5 +2378,408 @@
 ]
 }
 ]
+},
+{
+"id": "rakna-01",
+"cat": "räkna",
+"turns": [
+{
+"q": "270 gånger 270",
+"mode": "text",
+"expect_any": [
+"sjuttiotvåtusen niohundra"
+]
+}
+]
+},
+{
+"id": "rakna-02",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 345 gånger 678",
+"mode": "text",
+"expect_any": [
+"tvåhundratrettiotretusen niohundratio"
+]
+}
+]
+},
+{
+"id": "rakna-03",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 123 gånger 456",
+"mode": "text",
+"expect_any": [
+"femtiosextusen åttioåtta"
+]
+}
+]
+},
+{
+"id": "rakna-04",
+"cat": "räkna",
+"turns": [
+{
+"q": "999 gånger 999",
+"mode": "tutor",
+"expect_any": [
+"niohundranittioåttatusen ett"
+]
+}
+]
+},
+{
+"id": "rakna-05",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad blir 512 gånger 384",
+"mode": "text",
+"expect_any": [
+"hundranittiosextusen sexhundraåtta"
+]
+}
+]
+},
+{
+"id": "rakna-06",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 807 gånger 305",
+"mode": "text",
+"expect_any": [
+"tvåhundrafyrtiosextusen hundratrettiofem"
+]
+}
+]
+},
+{
+"id": "rakna-07",
+"cat": "räkna",
+"turns": [
+{
+"q": "hur mycket är 15 procent av 840",
+"mode": "text",
+"expect_any": [
+"hundratjugosex"
+]
+}
+]
+},
+{
+"id": "rakna-08",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 7 procent av 2350",
+"mode": "tutor",
+"expect_any": [
+"hundrasextiofyra komma fem"
+]
+}
+]
+},
+{
+"id": "rakna-09",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 25 procent av 96",
+"mode": "text",
+"expect_any": [
+"tjugofyra"
+]
+}
+]
+},
+{
+"id": "rakna-10",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 12,5 procent av 4800",
+"mode": "text",
+"expect_any": [
+"sexhundra"
+]
+}
+]
+},
+{
+"id": "rakna-11",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 1234 delat med 4",
+"mode": "text",
+"expect_any": [
+"trehundraåtta komma fem"
+]
+}
+]
+},
+{
+"id": "rakna-12",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 8100 delat med 27",
+"mode": "tutor",
+"expect_any": [
+"trehundra"
+]
+}
+]
+},
+{
+"id": "rakna-13",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 1000 delat med 8",
+"mode": "text",
+"expect_any": [
+"hundratjugofem"
+]
+}
+]
+},
+{
+"id": "rakna-14",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 7 delat med 3",
+"mode": "text",
+"expect_any": [
+"två komma tre tre"
+]
+}
+]
+},
+{
+"id": "rakna-15",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 2 upphöjt till 10",
+"mode": "text",
+"expect_any": [
+"tusen tjugofyra"
+]
+}
+]
+},
+{
+"id": "rakna-16",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 3 upphöjt till 5",
+"mode": "tutor",
+"expect_any": [
+"tvåhundrafyrtiotre"
+]
+}
+]
+},
+{
+"id": "rakna-17",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 12 i kvadrat",
+"mode": "text",
+"expect_any": [
+"hundrafyrtiofyra"
+]
+}
+]
+},
+{
+"id": "rakna-18",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är 15 i kubik",
+"mode": "text",
+"expect_any": [
+"tretusen trehundrasjuttiofem"
+]
+}
+]
+},
+{
+"id": "rakna-19",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad är roten ur 625",
+"mode": "text",
+"expect_any": [
+"tjugofem"
+]
+}
+]
+},
+{
+"id": "rakna-20",
+"cat": "räkna",
+"turns": [
+{
+"q": "vad blir 48 gånger 25 plus 300",
+"mode": "tutor",
+"expect_any": [
+"femtonhundra"
+]
+}
+]
+},
+{
+"id": "meta-01",
+"cat": "metasvar",
+"context_qa": [
+{
+"q": "vad är y om x är ett i y lika med fem x plus tio",
+"a": "Om x är ett blir y lika med fem gånger ett plus tio, alltså femton. Du sätter in ett i formeln, gångrar med fem och lägger till tio."
+}
+],
+"turns": [
+{
+"q": "Du sätter in ett i formeln, gångrar med fem och lägger till ut till tio. Gud- Om x ökar från ett till två är- Två är krympning.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "meta-02",
+"cat": "metasvar",
+"turns": [
+{
+"q": "Let it log. Ska du inte... Stop. Stop.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "meta-03",
+"cat": "metasvar",
+"turns": [
+{
+"q": "Jo, visst var det. Kom då så är det frågan. Kolla här, den ser här vad som är fråga. Det här är allting den uppfattar och sen så kollar den vad som är fråga. Är",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "meta-04",
+"cat": "metasvar",
+"turns": [
+{
+"q": "Fråga en fråga som kan komma på prov. Oh, what the hell? How's the hair? Let's say P Diddy. Hey. Hey P Diddy.",
+"mode": "tutor",
+"expect": "either",
+"forbid_any": [
+"vilket ämne",
+"inte en fråga",
+"mikrofon",
+"fragment"
+]
+}
+]
+},
+{
+"id": "meta-05",
+"cat": "metasvar",
+"turns": [
+{
+"q": "Vad heter jag? Det är skönt.",
+"mode": "tutor",
+"expect": "either",
+"forbid_any": [
+"[[",
+"tyst"
+]
+}
+]
+},
+{
+"id": "okant-01",
+"cat": "metasvar",
+"turns": [
+{
+"q": "Vartom.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "okant-02",
+"cat": "metasvar",
+"turns": [
+{
+"q": "Det är en köttjätte. Så. Det är så, det är orange, det är inte det. Nej.",
+"mode": "tutor",
+"expect": "silent"
+}
+]
+},
+{
+"id": "klocka-01",
+"cat": "klocka",
+"turns": [
+{
+"q": "Hej, vad är 20:20?",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"tjugo och tjugo",
+"tjugo över åtta"
+],
+"forbid_any": [
+"komma",
+"bara går till tolv",
+"fyrtio"
+]
+},
+{
+"q": "är det samma som tjugo över åtta på kvällen",
+"mode": "tutor",
+"expect": "answer",
+"expect_any": [
+"ja",
+"samma",
+"stämmer"
+],
+"forbid_any": [
+"bara går till tolv",
+"komma"
+]
+}
+]
+},
+{
+"id": "klocka-02",
+"cat": "klocka",
+"turns": [
+{
+"q": "vad är 07:45",
+"mode": "text",
+"expect_any": [
+"kvart i åtta"
+],
+"forbid_any": [
+"komma"
+]
+}
+]
 }
 ]
