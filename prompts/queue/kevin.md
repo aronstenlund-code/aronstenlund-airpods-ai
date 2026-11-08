@@ -26,6 +26,8 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 
 - [x] **K3 – flyttad till Oscar (O6)** 2026-11-08 18:50 av Deangelo, så att den körs parallellt med K2/K7.
 
+- [ ] **K8 – Färre onödiga begränsningar (D89)** (effort: high). Beror på: Oscars O7. Gör efter K7. Läs `docs/PRINCIPLES.md` och Oscars O7-rapport. Ta bort eller smalna av de begränsningar han markerat som onödiga eller för breda, per läge. Lägg hans 60 fall i live-eval med kravet: 0 onödiga avslag, högst 5 % onödiga förbehåll, och de 10 begränsade fallen ska fortfarande begränsas. Skydden i PRINCIPLES ("Detta tas aldrig bort") rörs inte. Skriv i DECISIONS vad som ändrats och varför.
+
 - [ ] **K4 – Snabbare förbättringsloop** (effort: medium). Gör efter K2 om K2 inte redan täcker det.
   1. Varje ändring i backend som rör svar körs automatiskt mot ett urval på 40 fall ur D87-testbanken (i CI, några cent) och resultatet skrivs i PR/commit-kommentaren, så att en försämring syns direkt.
   2. 8–12 förebildssvar för Provläget (olika ämnen, årskurser, nyckelord, följdfråga) i den cachade systemprompten. Mät före och efter.
