@@ -124,7 +124,7 @@ final class StudyCardStore {
     /// Five questions: this session's first, then the ones most often wrong, then the oldest.
     func miniTest(sessionStart: Date?, count: Int = 5, now: Date = Date()) -> [StudyCard] {
         let current = current(now: now)
-        let fromSession = current.filter { sessionStart.map { start in $0.createdAt >= start } ?? false }
+        let fromSession = current.filter { card in sessionStart.map { start in card.createdAt >= start } ?? false }
             .sorted { $0.createdAt < $1.createdAt }
         let rest = current.filter { card in !fromSession.contains { $0.id == card.id } }
             .sorted { ($0.wrong - $0.right, $1.createdAt) > ($1.wrong - $1.right, $0.createdAt) }

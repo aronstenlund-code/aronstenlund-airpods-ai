@@ -143,6 +143,12 @@ Engine.
 - **Short sentences:** a sentence shorter than 1 s is not embedded. It gets no label, and the level decides.
 - **First session:** downloads the model (about 30 MB). Until it is ready, everything works as before D81.
 
+## CI
+- **First D81 run (`42485333729`):** failed to compile on two slips.
+  - A line break had got inside the Settings footer string.
+  - A closure in the mini-test selection mixed `$0` with a named argument.
+- **Both fixed.** No other control characters or broken strings in the changed files (checked by script).
+
 ## Next session
 D84: the voice statement "Lumen, jag går i åk … och ska snart ha prov i …", the exam session in Provläge, and reading
 texts aloud.
