@@ -1,0 +1,35 @@
+# T3 (Toby): the app's own spec plus a UI-test target for the screen tour. Nothing in project.yml changes.
+# scripts/apptest/screens.sh copies this file to the repo root and generates from there, so every path here and in
+# project.yml is relative to the repo root:  cp AppTests/E2E/project-e2e.yml . && xcodegen generate --spec project-e2e.yml
+include:
+  - path: project.yml
+    relativePaths: false
+
+name: LumenE2E
+
+targets:
+  LumenScreenTour:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: AppTests/E2E/Screens
+    dependencies:
+      - target: Lumen
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen.screentour
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Lumen
+        CODE_SIGNING_ALLOWED: NO
+
+schemes:
+  LumenScreenTour:
+    build:
+      targets:
+        Lumen: all
+        LumenScreenTour: [test]
+    test:
+      config: Debug
+      gatherCoverageData: false
+      targets:
+        - LumenScreenTour
