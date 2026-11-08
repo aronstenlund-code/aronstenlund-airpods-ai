@@ -15,7 +15,8 @@ def main(out: Path) -> None:
         r = json.loads(path.read_text(encoding="utf-8"))
         print(f"### {r['set']} ({r['mode']}), {r['seconds']:.0f} s\n")
         print(f"Spoken {len(r['spoken'])} · heard {r['heard']} · asked {r['asked']} · answered {r['answered']}"
-              + (" · **stopped by itself**" if r.get("crashedOrStopped") else "") + "\n")
+              + (" · **stopped by itself**" if r.get("crashedOrStopped") else "")
+              + (f" · **{r['englishAnswers']} answers in English**" if r.get("englishAnswers") else "") + "\n")
         if r.get("keytermsHeard"):
             terms = ", ".join(f"{k} {'ja' if v else '**nej**'}" for k, v in sorted(r["keytermsHeard"].items()))
             print(f"Ämnesord rätt: {terms}\n")

@@ -128,7 +128,8 @@ for config in "${CONFIGS[@]}"; do
   xcrun xcresulttool export attachments --path "$RESULT" --output-path "$OUT/$NAME" || echo "::warning::attachment export failed for $NAME"
   python3 -I "$ROOT/scripts/apptest/screens_index.py" rename "$OUT/$NAME"
   SHOTS="$(ls "$OUT/$NAME"/*.png 2>/dev/null | wc -l | tr -d ' ')"
-  MISSES="$(grep -c '^MISS:' "$OUT/$NAME/$NAME-tour-log.txt" 2>/dev/null || echo '?')"
+  MISSES="$(grep -c '^MISS:' "$OUT/$NAME/$NAME-tour-log.txt" 2>/dev/null || true)"
+  [ -z "$MISSES" ] && MISSES="?"
   RESULT_TEXT="$([ $STATUS -eq 0 ] && echo 'grön' || echo 'röd')"
   echo "| $NAME | $DEVICE | $SHOTS | $MISSES | $RESULT_TEXT |" >> "$OUT/summary.md"
   [ $STATUS -ne 0 ] && FAILED=1

@@ -32,6 +32,8 @@ tail -n +2 AppTests/E2E/Audio/cases.tsv | while IFS=$'\t' read -r SET ID KIND TE
   say -v "$VOICE" --file-format=WAVE --data-format=LEI16@16000 -o "$AUDIO/$SET-$ID.wav" "$TEXT"
   echo "$SET-$ID ($KIND): $TEXT"
 done
+# 4 s of silence put before the sets (not before "start"), so the recogniser is connected before anyone speaks.
+python3 -I -c "import sys, wave; w = wave.open(sys.argv[1], 'wb'); w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000); w.writeframes(bytes(2 * 16000 * 4)); w.close()" "$AUDIO/lead-silence.wav"
 ls -la "$AUDIO"
 echo "::endgroup::"
 
@@ -58,6 +60,7 @@ xcodebuild test \
   -derivedDataPath "$ROOT/DerivedData-chain" \
   -resultBundlePath "$OUT/logs/chain.xcresult" \
   -only-testing:LumenE2ETests/AudioChainE2ETests \
+  -testLanguage sv -testRegion SE \
   -parallel-testing-enabled NO \
   CODE_SIGNING_ALLOWED=NO \
   > "$OUT/logs/chain-test.log" 2>&1

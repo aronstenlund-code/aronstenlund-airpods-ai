@@ -50,23 +50,25 @@ struct AudioChainE2ETests {
         var asked = 0
         var answered = 0
         var keytermsHeard: [String: Bool] = [:]
+        var englishAnswers = 0
         var log: [String] = []
         var crashedOrStopped = false
         var seconds = 0.0
     }
 
     @Test func frågorAnswersTheQuestionsOnly() async throws {
-        let result = try await run(set: "fragor", mode: .standard)
+        let result = try await run(set: "fragor", mode: .standard, leadSilence: true)
         let cases = try Self.cases(for: "fragor")
         let questions = cases.filter { $0.kind == "question" }.count
         #expect(!result.crashedOrStopped, "the session stopped by itself")
         #expect(abs(result.heard - cases.count) <= 1, "utterances: heard \(result.heard), spoken \(cases.count)")
-        #expect(result.asked >= questions - 1 && result.asked <= questions, "asked \(result.asked) of \(questions) questions")
-        #expect(result.answered >= questions - 1, "answered \(result.answered) of \(questions) questions")
+        // `asked` is not reported on the answer-ahead path (D80), so the answers are what counts.
+        #expect(result.answered >= questions - 1 && result.answered <= questions,
+                "answered \(result.answered), questions \(questions) (statements must not be answered)")
     }
 
     @Test func provlägeAnswersEveryTurnWithSubjectWordsRight() async throws {
-        let result = try await run(set: "prov", mode: .prov)
+        let result = try await run(set: "prov", mode: .prov, leadSilence: true)
         let cases = try Self.cases(for: "prov")
         #expect(!result.crashedOrStopped, "the session stopped by itself")
         #expect(abs(result.heard - cases.count) <= 1, "utterances: heard \(result.heard), spoken \(cases.count)")
@@ -74,14 +76,25 @@ struct AudioChainE2ETests {
         for (term, heard) in result.keytermsHeard {
             #expect(heard, "subject word '\(term)' not heard right")
         }
+        #expect(result.englishAnswers == 0, "\(result.englishAnswers) of \(result.answered) Provläge answers in English")
+    }
+
+    /// A question said the moment listening starts (no silence first): is it heard? (Run 42502966284: the first
+    /// sentence was lost in both sets.)
+    @Test func theFirstWordsRightAfterStartAreHeard() async throws {
+        let result = try await run(set: "start", mode: .standard, leadSilence: false)
+        #expect(result.heard == 1, "a question said at once after the start: heard \(result.heard)")
+        #expect(result.answered == 1, "answered \(result.answered)")
     }
 
     // MARK: Running a set
 
-    private func run(set: String, mode: ConversationMode) async throws -> Result {
+    private func run(set: String, mode: ConversationMode, leadSilence: Bool) async throws -> Result {
         let dir = try #require(Self.audioDir)
         let cases = try Self.cases(for: set)
-        let files = cases.map { dir.appendingPathComponent("\($0.set)-\($0.id).wav").path }
+        // 4 s of silence first (chain.sh writes it): the recogniser connects before anyone speaks.
+        let lead = leadSilence ? [dir.appendingPathComponent("lead-silence.wav").path] : []
+        let files = lead + cases.map { dir.appendingPathComponent("\($0.set)-\($0.id).wav").path }
         for file in files { #expect(FileManager.default.fileExists(atPath: file), "missing \(file)") }
 
         // The container reads these when it builds its capture service (A1).
@@ -146,6 +159,7 @@ struct AudioChainE2ETests {
         result.heard = events.filter { $0.kind == "heard" }.count
         result.asked = events.filter { $0.kind == "asked" }.count
         result.answered = events.filter { $0.kind == "answered" }.count
+        result.englishAnswers = events.filter { $0.kind == "answered" && Self.looksEnglish($0.text) }.count
         if mode == .prov {
             let heardText = events.filter { $0.kind == "heard" }.map(\.text).joined(separator: " ").lowercased()
             for term in ["klorofyll", "fotosyntes", "cellandning", "mitokondrierna"] {
@@ -166,6 +180,12 @@ struct AudioChainE2ETests {
         let url = out.appendingPathComponent("\(result.set).json")
         try encoder.encode(result).write(to: url)
         print("T1 result: \(url.path) heard \(result.heard) asked \(result.asked) answered \(result.answered)")
+    }
+
+    /// Common English words, none of them Swedish words: two or more = an English answer.
+    static func looksEnglish(_ text: String) -> Bool {
+        let words = Set(text.lowercased().split(whereSeparator: { !$0.isLetter }).map(String.init))
+        return words.intersection(["the", "is", "and", "are", "which", "this", "of", "to", "when", "with"]).count >= 2
     }
 
     private static func cases(for set: String) throws -> [Case] {
