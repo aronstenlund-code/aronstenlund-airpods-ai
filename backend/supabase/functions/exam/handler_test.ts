@@ -52,6 +52,8 @@ Deno.test("D84 exam grade: numbers checked in code, points clamped to the task's
   assertEquals(lastNumber("72 900"), 72900);
   assertEquals(numericCheck("126 kr", "jag fick hundratjugosex")?.equal, true);
   assertEquals(numericCheck("126 kr", "130")?.equal, false);
+  assertEquals(numericCheck("8 − x", "x minus 8"), null, "an expression is not checked as a number");
+  assertEquals(numericCheck("x = 5", "fem")?.equal, true);
   const { h, llm } = mk('{"points": {"E": 5, "C": 1, "A": 1}, "feedback": "Rätt metod och svar."}');
   const r = await h(post({ action: "grade", task: TASK, answer: "15 procent av 840 är 126" }));
   const j = await r.json();

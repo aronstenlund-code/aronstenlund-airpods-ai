@@ -170,6 +170,8 @@ export function lastNumber(text: string): number | null {
 
 /** D84: "beräkningar i kod": the student's final number against the correct one (relative tolerance 0.5 %). */
 export function numericCheck(correct: string, answer: string): { expected: number; given: number | null; equal: boolean } | null {
+  // an algebraic answer ("8 − x") is not a number: no numeric check, the scoring rules decide
+  if (/[+\-−*/^]\s*\(?[a-zåäö]\)?\s*$|^\s*[a-zåäö]\s*[+\-−*/^]/i.test(correct.trim())) return null;
   const expected = lastNumber(correct);
   if (expected === null) return null;
   const given = lastNumber(answer);
