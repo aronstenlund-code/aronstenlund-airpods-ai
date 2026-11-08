@@ -70,6 +70,17 @@ def signup():
 
 
 def grade(tok, task, answer):
+    """/exam allows 12 calls a minute per user: wait and retry on 429."""
+    import time
+    for _ in range(4):
+        code, r = grade_once(tok, task, answer)
+        if code != 429:
+            return code, r
+        time.sleep(15)
+    return code, r
+
+
+def grade_once(tok, task, answer):
     body = {"action": "grade", "task": task, "answer": answer}
     req = urllib.request.Request(f"{U}/functions/v1/exam", method="POST", data=json.dumps(body).encode(),
                                  headers={"apikey": K, "authorization": "Bearer " + tok, "content-type": "application/json"})
