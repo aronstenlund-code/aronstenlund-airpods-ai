@@ -65,6 +65,26 @@ inte mänskligt tal). Hela tidslinjen per händelse finns i artefaktens `summary
    - **Varför det spelar roll:** D87-inspelningens JSON saknar därför sannolikt "asked"-raderna. **Untested
      assumption** för inspelningen.
 
+4. **Scribe tappar anslutningen, och då blir lyssnandet dött i simulatorn medan det står "Lyssnar".**
+   - **T1-omkörningen (42506898206, samma kod):** Provläge hörde 0 av 4 meningar.
+   - **Loggen:**
+     ```
+     2,27 STT running: Scribe · sv-SE
+     12,44 Scribe unavailable (connection lost): using the iPhone's speech recognition
+     ```
+     Efter det hördes ingenting.
+   - **T2-röktestet:** Scribe-sessionen slutade efter 22–33 s gång på gång (`Scribe session ended after 23 s:
+     reconnecting`) och kopplade upp igen. Vid minut 4,9 kom `STT start failed: Audio format problem: no analyzer
+     audio format for DictationTranscriber`, och efter minut 3,8 kom inga fler svar.
+   - **Varför reserven inte hjälper i simulatorn:** iPhonens igenkänning startar inte där. På telefon fungerar den
+     troligen (**untested assumption**).
+   - **Tre frågor till Angela:**
+     1. Varför tappas Scribe så ofta? Klipps den av tystnaden (20 s mellan frågorna) eller när keytermerna byts
+        (`Scribe keyterms changed: reconnecting in a pause`)?
+     2. Försöker appen återvända till Scribe efter att ha bytt till iPhonens igenkänning?
+     3. Ska ett misslyckat byte till reserven synas som ett fel, i stället för att det står "Lyssnar"?
+   - **Status:** **verifierat i simulator, inte på enhet.**
+
 ## Behöver av Angela
 - **Pushar som startar iOS-bygget:** `ios-build.yml` ignorerar inte `AppTests/**` eller
   `.github/workflows/apptest-*.yml`. Mina pushar startar därför iOS-bygget och kan avbryta ett pågående bygge på main.
