@@ -112,5 +112,8 @@ final class AppContainer {
         diagnostics.micComparison = MicComparisonModel(listening: listening)
         diagnostics.speechRecording = SpeechRecordingModel(listening: listening)
         diagnostics.studyRecording = StudyRecordingModel(listening: listening)
+        #if DEBUG
+        if let shot = ScreenshotStage.requested { ScreenshotStage.seed(self, for: shot) } // A2: demo data, Simulator only
+        #endif
     }
 }

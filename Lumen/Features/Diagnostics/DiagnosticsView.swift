@@ -86,7 +86,8 @@ struct DiagnosticsView: View {
             resultsSection
             eventLogSection
         }
-        .navigationTitle("Lumen diagnostics")
+        .lumenForm()
+        .navigationTitle("Diagnostik")
         .navigationBarTitleDisplayMode(.inline)
     }
 

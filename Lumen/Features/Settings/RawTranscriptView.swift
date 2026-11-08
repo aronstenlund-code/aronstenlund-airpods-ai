@@ -52,6 +52,7 @@ struct RawTranscriptView: View {
                 Text(verbatim: "Taligenkänning: \(model.recognizerName)").font(.footnote)
             }
         }
+        .lumenForm()
         .navigationTitle("Rå transkription")
         .navigationBarTitleDisplayMode(.inline)
     }

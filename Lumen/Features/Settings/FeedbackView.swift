@@ -42,7 +42,8 @@ struct FeedbackView: View {
                 }
             }
         }
-        .navigationTitle("Feedback & suggestions")
+        .lumenForm()
+        .navigationTitle("Feedback och förslag")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

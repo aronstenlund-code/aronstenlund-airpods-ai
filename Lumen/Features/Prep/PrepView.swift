@@ -118,7 +118,8 @@ struct PrepView: View {
                 Text(error).font(.footnote).foregroundStyle(.red)
             }
         }
-        .navigationTitle("Prep material")
+        .lumenForm()
+        .navigationTitle("Förberedelser")
         .navigationBarTitleDisplayMode(.inline)
         .fileImporter(isPresented: $isImportingGoals, allowedContentTypes: [.pdf, .plainText, .text]) { result in
             switch result {

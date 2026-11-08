@@ -6,6 +6,8 @@ struct ConsentView: View {
     enum Mode {
         case onboarding(onAccept: () -> Void)
         case review(grantedAt: Date?, onWithdraw: () -> Void)
+        /// A2: "Läs mer" from the intro's consent card: the full text, nothing to press.
+        case readMore
     }
 
     let mode: Mode
@@ -59,8 +61,11 @@ struct ConsentView: View {
     }
 
     private var navigationTitle: LocalizedStringKey {
-        if case .review = mode { return "Privacy & consent" }
-        return ""
+        switch mode {
+        case .review: return "Integritet och samtycke"
+        case .readMore: return "Läs mer"
+        case .onboarding: return ""
+        }
     }
 
     @ViewBuilder
@@ -98,6 +103,8 @@ struct ConsentView: View {
             } message: {
                 Text("Listening stops, this session's transcript is cleared and the consent screen is shown again.")
             }
+        case .readMore:
+            EmptyView()
         }
     }
 

@@ -40,7 +40,8 @@ struct HistoryView: View {
                 Text(error).font(.footnote).foregroundStyle(.red)
             }
         }
-        .navigationTitle("History")
+        .lumenForm()
+        .navigationTitle("Historik")
         .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog("Delete all history?", isPresented: $confirmingDeleteAll, titleVisibility: .visible) {
             Button("Delete all history", role: .destructive) { store.deleteAll() }
@@ -72,6 +73,7 @@ struct HistoryDetailView: View {
                 Section("Summary") { Text(summary).textSelection(.enabled) }
             }
         }
+        .lumenForm()
         .navigationTitle(entry.createdAt.formatted(date: .abbreviated, time: .shortened))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

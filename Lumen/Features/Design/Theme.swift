@@ -129,6 +129,16 @@ extension View {
         background { GridPaper(cornerRadius: cornerRadius, dashed: dashed) }
     }
 
+    /// D86 (A2): list screens (Settings, Diagnostik, Notes …) in the new look: squared-paper ground, the app's font,
+    /// no capitals over headings, the blue accent. The rows keep the system's grouped cells (readable in both modes).
+    func lumenForm() -> some View {
+        scrollContentBackground(.hidden)
+            .background(LumenColor.paper.ignoresSafeArea())
+            .font(LumenFont.text(17))
+            .textCase(nil)
+            .tint(LumenColor.blue)
+    }
+
     /// The app's background and ink.
     func lumenScreen() -> some View {
         background(LumenColor.background.ignoresSafeArea())

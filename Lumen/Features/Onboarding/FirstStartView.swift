@@ -1,8 +1,9 @@
 import SwiftUI
 import UIKit
 
-/// D86 screen 1: the first start, an answer within 30 s. Intro → consent (the documented guardrail, kept) → iOS asks
-/// for the microphone → "Fråga vad som helst", where the first question is answered → "Lägg till prov" (optional).
+/// D86 screen 1: the first start, an answer within 30 s. Intro with the short consent card (A2, approved by the
+/// Architect: listens only when started, always visible, no audio saved, "Läs mer" for the full text) → iOS asks for the
+/// microphone → "Fråga vad som helst", where the first question is answered → "Lägg till prov" (optional).
 struct FirstStartView: View {
     enum Step { case intro, consent, firstQuestion, addExam }
 
@@ -18,7 +19,9 @@ struct FirstStartView: View {
             switch step {
             case .intro:
                 IntroView {
-                    step = container.consent.isGranted ? .firstQuestion : .consent
+                    // "Testa nu" under the consent card is the consent (the card's three points, "Läs mer" for all).
+                    if !container.consent.isGranted { container.consent.grant() }
+                    step = .firstQuestion
                 }
             case .consent:
                 ConsentView(mode: .onboarding {
@@ -56,6 +59,7 @@ struct FirstStartView: View {
 /// "Fråga högt. Få svaret i örat."
 struct IntroView: View {
     let onStart: () -> Void
+    @State private var isReadingMore = false
 
     var body: some View {
         ScrollView {
@@ -86,15 +90,24 @@ struct IntroView: View {
                     Text("Telefonen stannar i fickan. Lumen pluggar med dig på din nivå, och du styr allt med rösten.")
                         .font(LumenFont.text(18, relativeTo: .body))
                         .foregroundStyle(LumenColor.muted)
+                    consentCard
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 28)
+                .padding(.bottom, 12)
+            }
+        }
+        .sheet(isPresented: $isReadingMore) {
+            NavigationStack {
+                ConsentView(mode: .readMore)
+                    .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { isReadingMore = false } } }
             }
         }
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 10) {
                 Button("Testa nu", action: onStart)
                     .buttonStyle(LumenButtonStyle())
+                    .accessibilityHint("Godkänner punkterna ovan och startar mikrofonen")
                 Text("Inget konto. Du ställer din första fråga direkt.")
                     .font(LumenFont.text(14, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
@@ -104,6 +117,34 @@ struct IntroView: View {
             .background(LumenColor.background)
         }
         .ignoresSafeArea(edges: .top)
+    }
+}
+
+extension IntroView {
+    /// A2: the short consent, three points and "Läs mer".
+    var consentCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            point("mic", "Lumen lyssnar bara när du har startat den.")
+            point("eye", "Du ser alltid när den lyssnar.")
+            point("waveform.slash", "Ljud sparas inte.")
+            Button("Läs mer") { isReadingMore = true }
+                .font(LumenFont.text(15, .semibold))
+                .frame(minHeight: 44)
+            Text("Genom att trycka Testa nu godkänner du detta.")
+                .font(LumenFont.text(13, relativeTo: .caption))
+                .foregroundStyle(LumenColor.muted)
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
+        .padding(.top, 8)
+    }
+
+    private func point(_ symbol: String, _ text: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Image(systemName: symbol).foregroundStyle(LumenColor.blue).frame(width: 22).accessibilityHidden(true)
+            Text(text).font(LumenFont.text(16, .medium))
+        }
     }
 }
 
