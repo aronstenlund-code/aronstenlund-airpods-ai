@@ -131,3 +131,10 @@ Deno.test("K2 language subjects get the Swedish-explanation note", async () => {
   const bio = await run("Ok.", tutor("Årskurs: Åk 9. Ämne: Biologi."));
   assert(!bio.p.calls[0].user.includes("Write the explanation in Swedish"));
 });
+
+Deno.test("K2 an English year split from its preposition by the stream is still English", async () => {
+  const { NumberStream } = await import("./speech.ts");
+  const n = new NumberStream();
+  const out = n.push('"She has lived here since ') + n.push('2015". Hon bor kvar.') + n.finish();
+  assertStringIncludes(out, "since twenty fifteen");
+});

@@ -241,6 +241,10 @@ export function beforeNumbers(text: string, ctx = ""): string {
     /(?<![\p{L}])((?:in|since|by|until|from|before|after|of) )(1[1-9]\d\d|20\d\d)(?!\d|[.,:]\d)/gu,
     (_m, pre: string, y: string) => pre + englishYear(Number(y)),
   );
+  // ...also when the stream split "since " from "2015" (the preposition is in the text already spoken)
+  if (/(?<![\p{L}])(?:in|since|by|until|from|before|after|of) $/u.test(ctx)) {
+    s = s.replace(/^(1[1-9]\d\d|20\d\d)(?!\d|[.,:]\d)/u, (y: string) => englishYear(Number(y)));
+  }
   // D65: clock times written with a dot after "klockan"/"kl": 17.40 -> "17:40" (read by the clock rule)
   s = s.replace(
     /((?:klockan|kl\.?|vid|runt|före|efter)\s+)([01]?\d|2[0-3])\.([0-5]\d)(?![\d])/giu,
