@@ -12,7 +12,7 @@ import type { LLMProvider } from "../answer/llm/types.ts";
  * Haiku, short JSON. Nothing is stored or logged: only a metadata row in `answer_usage`.
  *
  * Request:  {"summary": "...", "profile"?: "...", "cards"?: 3-12, "language"?: "sv"|"en"}
- * Response: {"cards": [{"q","a"}], "test": [{"q","a"}] (5), "usage": {...}}
+ * Response: {"cards": [{"q","a"}], "test": [{"q","a"}] (5), "practice": ["..."] (1-3, D86 "Öva mer på"), "usage": {...}}
  */
 export const CARD_LIMITS = { bodyBytes: 32_768, summary: 6000, profile: 2000, q: 200, a: 400 };
 
@@ -46,9 +46,10 @@ export interface Card {
 export const SYSTEM_PROMPT_CARDS =
   `You make study material for a student in Sweden from a summary of a study session. You get <summary> (what was studied: questions, answers and explanations), <profile> (optional: exam date, grade, course, subject) and <count> (how many cards).
 
-Return ONLY a JSON object: {"cards": [{"q": "...", "a": "..."}], "test": [{"q": "...", "a": "..."}]}.
+Return ONLY a JSON object: {"cards": [{"q": "...", "a": "..."}], "test": [{"q": "...", "a": "..."}], "practice": ["..."]}.
 - cards: exactly <count> question cards on the most important points of THIS summary, one point per card. "q" is a short question (at most 15 words), "a" the answer the student should be able to say (one or two sentences).
 - test: exactly five test questions with answers, like a short exam for the grade in <profile>: a mix of facts, explanations ("förklara varför ...") and one question that uses a concept in a new situation. Different from the cards.
+- practice: one to three short areas (two to five words each, e.g. "cellandningens steg") where the student was unsure in this session: a wrong or "vet inte" reply to a check question, the same thing asked again, a request for a simpler explanation. With no clear sign, the one area of the summary that matters most for the exam in <profile>. Only areas of this summary and this exam.
 - Only content that is in the summary or follows directly from it; correct facts at the level of the grade. Swedish unless <profile> or the summary is in English. No numbering, no markdown, no extra text.`;
 
 function clean(s: unknown, max: number): string | null {
@@ -58,21 +59,26 @@ function clean(s: unknown, max: number): string | null {
 }
 
 /** Parses the model's JSON; keeps only well-formed cards, trims sizes, drops duplicates. */
-export function parseCards(text: string, count: number): { cards: Card[]; test: Card[] } {
+export function parseCards(text: string, count: number): { cards: Card[]; test: Card[]; practice: string[] } {
   const m = /\{[\s\S]*\}/.exec(text);
-  if (!m) return { cards: [], test: [] };
+  if (!m) return { cards: [], test: [], practice: [] };
   let j: Record<string, unknown>;
   try {
     j = JSON.parse(m[0]);
   } catch {
-    return { cards: [], test: [] };
+    return { cards: [], test: [], practice: [] };
   }
   const list = (v: unknown, n: number, seen = new Set<string>()) =>
     (Array.isArray(v) ? v : [])
       .map((c) => ({ q: clean((c as Card)?.q, CARD_LIMITS.q), a: clean((c as Card)?.a, CARD_LIMITS.a) }))
       .filter((c): c is Card => !!c.q && !!c.a && !seen.has(c.q.toLowerCase()) && !!seen.add(c.q.toLowerCase()))
       .slice(0, n);
-  return { cards: list(j.cards, count), test: list(j.test, 5) };
+  const seenP = new Set<string>();
+  const practice = (Array.isArray(j.practice) ? j.practice : [])
+    .map((p) => clean(p, 60))
+    .filter((p): p is string => !!p && !seenP.has(p.toLowerCase()) && !!seenP.add(p.toLowerCase()))
+    .slice(0, 3);
+  return { cards: list(j.cards, count), test: list(j.test, 5), practice };
 }
 
 export function createCardsHandler(deps: CardsDeps) {

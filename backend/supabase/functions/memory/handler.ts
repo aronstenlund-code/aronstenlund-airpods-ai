@@ -62,6 +62,7 @@ export const SYSTEM_PROMPT_MEMORY =
 Return ONLY a JSON object: {"add": [...], "update": [{"old": "...", "new": "..."}], "remove": [...]}.
 - add: new, important facts the wearer said about THEMSELVES in <q>: tests and deadlines, subjects and courses, level, goals, standing wishes for how answers should be ("svara kortare", "förklara med exempel"), rules ("fråga mig alltid en kontrollfråga"). One short Swedish sentence each, third person about the wearer, no name needed ("Har prov i kemi fredag 13 november 2026.").
 - Dates are always absolute: turn "på fredag", "nästa vecka", "imorgon" into weekday, day, month and year from <now>.
+- Several exams can be in <memories> (D86): a change to an exam (date, topics) updates only the exam with the same subject; a new exam in another subject is a new item, never an update of another exam.
 - update: a fact in <memories> that the wearer changed (old = the exact memory text, new = the new sentence). remove: a memory the wearer said is no longer true (exact text).
 - Write every item in Swedish, whatever language the turn is in. Never: a home address, debts, loans, salary or other money matters, facts about other people, small talk, one-off questions ("vad är fotosyntes" is not a fact about the wearer), guesses, anything already in <memories>, and never sensitive categories (health, allergies, diagnoses, religion, politics, sexuality, ethnicity, union membership, crime).
 - At most ${MEMORY_LIMITS.items} items in total, each at most 160 characters. Nothing worth keeping: {"add": [], "update": [], "remove": []}.`;

@@ -37,6 +37,7 @@ export const PROFILE_RULE =
   - Explanations (this replaces the five to eight sentences above): "korta" = at most three sentences and about 50 words in all, no example unless it is the point; "mellanlånga" = four to six sentences; "utförliga" = seven to ten.
   - Check questions "inga": never a check question. "ja-nej": the check question can be answered with one word or a nod (ja/nej, a yes-no question). "korta": a short question answered with a word or a short phrase. "svåra": a question that needs reasoning, at the A level of the grade.
   - Subject first (D84): a misheard, split or very short word is first read as a term of the profile's subject and of <prep_terms> (the subject's term list) before any general meaning ("mito" with the subject Biologi = mitos, "tryck" with Fysik = tryck as the physical quantity), and answered as that term without saying that you interpreted it.
+  - Several exams (D86): <profile> is the exam being studied NOW. <memories> may mention other exams (another subject or date): they are not this exam; never mix their subject, date or content into this one.
   - Exam date: when the exam is today, tomorrow or within a few days, give priority to what is most likely on that test for the grade and subject (core concepts, typical exam questions, common mistakes), and keep answers tight.`;
 
 /** D75: speech-to-text mishears or cuts subject words; repair them silently from the context. */
@@ -190,6 +191,17 @@ export function lastQuestion(answer: string): string | null {
   const q = s.reverse().find((x) => x.trimEnd().endsWith("?"));
   return q && q.length <= 200 ? q.trim() : null;
 }
+
+/** D86 (owner): "Lumen, förhör mig" in Provläge: ONE check question at the exam's level, in the profile's style. */
+const QUIZ_RE = /^(?:lumen,?\s*)?(?:förhör mig|forhor mig|ställ en kontrollfråga|kontrollfråga|fråga mig något|quiz me|test me)\b/iu;
+export function isQuizRequest(fragment: string): boolean {
+  return QUIZ_RE.test(fragment.trim());
+}
+export const QUIZ_NOTE =
+  "The student says \"förhör mig\": reply with ONE check question and nothing else (no answer, no introduction). It is about something from <recent_qa>, or, when nothing was studied yet, something likely on the exam in <profile> (its subject, grade and \"På provet\"). Level: what an A answer needs in that grade. Style from <profile>: \"ja-nej\" = answerable with ja or nej; \"korta\" or no style = answerable with a word or a short phrase; \"svåra\" = needs a short explanation. Never a question listed in <already_asked>.";
+/** D86: the student's reply to the check question that ended the last answer: grade it first. */
+export const GRADE_NOTE =
+  "The fragment is the student's reply to your check question (the last question in <recent_qa>). Start with the verdict in one or two words: \"Rätt.\", \"Nästan.\" or \"Inte riktigt.\". Then the correct answer in one sentence, and why when it was not right. Then stop, or, when it was right, add one short next step; never a new question in the same answer unless the student asked to be quizzed again.";
 
 export interface PromptExtras {
   /** Exact result computed by code (calc.ts) for arithmetic/percent/unit fragments. */

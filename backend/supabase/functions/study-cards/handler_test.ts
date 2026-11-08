@@ -46,7 +46,7 @@ Deno.test("D81 study cards: cards + five test questions, nothing of the text log
 });
 
 Deno.test("D81 study cards: malformed model output gives nothing, not garbage", () => {
-  assertEquals(parseCards("inget json", 8), { cards: [], test: [] });
+  assertEquals(parseCards("inget json", 8), { cards: [], test: [], practice: [] });
   const r = parseCards('{"cards":[{"q":"a?","a":"b"},{"q":"a?","a":"c"},{"q":"","a":"x"}],"test":[]}', 8);
   assertEquals(r.cards, [{ q: "a?", a: "b" }]);
 });

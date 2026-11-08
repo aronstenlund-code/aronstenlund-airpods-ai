@@ -57,7 +57,7 @@ import {
   RELATION_RULE,
   SUMMARY_RULE,
   SYSTEM_PROMPT,
-  systemPromptFor,
+  systemPromptFor, GRADE_NOTE, isQuizRequest, lastQuestion, QUIZ_NOTE
 } from "./prompt.ts";
 import { type AnswerRequest, LIMITS, readLimitedJson, validateAnswerRequest } from "./validate.ts";
 
@@ -589,7 +589,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D75: Provläge and Auto say nothing to a fragment that is not a question (or is too broken):
       // the meta event is held until the first spoken text so the app can still be told to stay silent.
       const silenceOn = !demo && !plan && (body.mode === "tutor" || body.mode === "auto");
-      const noChecks = tutor && body.persona === "tutor" && /inga kontrollfrågor/i.test(body.personaSetup);
+      // D86: "förhör mig" asks for exactly one check question (also when the profile has "inga kontrollfrågor")
+      const quiz = tutor && !plan && isQuizRequest(body.fragment);
+      const lastQ = body.context.recent_qa.at(-1);
+      const gradeReply = tutor && !plan && !quiz && !!lastQ && !!lastQuestion(lastQ.a) &&
+        lastQ.a.trim().endsWith("?") && body.fragment.trim().split(/\s+/).length <= 12;
+      const noChecks = !quiz && tutor && body.persona === "tutor" && /inga kontrollfrågor/i.test(body.personaSetup);
       let silenced = false;
 
       // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz
@@ -677,7 +682,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             (extras.note ? `
 <note>${extras.note}</note>` : "")
           : direct
-          ? buildDirectUserMessage(b, continuation, { ...extras, note: extras.note ?? echoNote })
+          ? buildDirectUserMessage(b, continuation, {
+            ...extras,
+            note: extras.note ?? echoNote ?? (quiz ? QUIZ_NOTE : gradeReply ? GRADE_NOTE : undefined),
+          })
           : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, {
             ...extras,
             note: extras.note ?? echoNote,
