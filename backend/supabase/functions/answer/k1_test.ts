@@ -78,3 +78,34 @@ Deno.test("K1.3 '2x' in maths is two x, elsewhere two times", async () => {
   assert(beforeNumbers("Laddningen går 2x snabbare.").includes("2 gånger"));
   assert(beforeNumbers("Ta tabletten 3x per dag.").includes("3 gånger"));
 });
+
+Deno.test("K1.4 förhör mig: no repeated question, a short reply is graded only in time and when not a question", async () => {
+  const { askedQuestions, looksLikeQuestion } = await import("./prompt.ts");
+  const { isRepeatedQuestion } = await import("./handler.ts");
+  const asked = askedQuestions({
+    context: {
+      recent_qa: [{ q: "förhör mig", a: "Var i cellen sker cellandningen?" }],
+      already_asked: ["Vad heter cellens kraftverk?", "Var i cellen sker cellandningen?"],
+    },
+  });
+  assertEquals(asked, ["Vad heter cellens kraftverk?", "Var i cellen sker cellandningen?"]);
+  assert(isRepeatedQuestion("Vad heter cellens kraftverk?", asked));
+  assert(isRepeatedQuestion("Var i cellen sker cellandning?", asked));
+  assert(!isRepeatedQuestion("Vilka ämnen behövs för fotosyntesen?", asked));
+  for (const q of ["vad är mitos", "hur fungerar det?", "förklara cellandning", "och vad är meios"]) assert(looksLikeQuestion(q), q);
+  for (const a of ["mitokondrien", "i mitokondrierna", "socker och syre", "ja", "var det glukos"]) assert(!looksLikeQuestion(a), a);
+});
+
+Deno.test("K1.4 already_asked and last_answer_age_sec are validated", async () => {
+  const { validateAnswerRequest } = await import("./validate.ts");
+  const ok = validateAnswerRequest({ fragment: "ja", mode: "tutor", language: "sv", context: { already_asked: ["a?"], last_answer_age_sec: 12 } });
+  assertEquals(ok.context.already_asked, ["a?"]);
+  assertEquals(ok.context.last_answer_age_sec, 12);
+  let threw = false;
+  try {
+    validateAnswerRequest({ fragment: "ja", mode: "tutor", language: "sv", context: { last_answer_age_sec: -1 } });
+  } catch {
+    threw = true;
+  }
+  assert(threw);
+});

@@ -199,6 +199,27 @@ export function isQuizRequest(fragment: string): boolean {
 }
 export const QUIZ_NOTE =
   "The student says \"förhör mig\": reply with ONE check question and nothing else: no answer, no introduction such as \"Här är en fråga\", the first word is the question. This explicit request overrides \"Kontrollfrågor: inga\" in <profile>. It is about something from <recent_qa>, or, when nothing was studied yet, something likely on the exam in <profile> (its subject, grade and \"På provet\"). Level: what an A answer needs in that grade. Style from <profile>: \"ja-nej\" = answerable with ja or nej; \"korta\" or no style = answerable with a word or a short phrase; \"svåra\" = needs a short explanation. Never a question listed in <already_asked>.";
+/** K1.4: every check question asked so far: the app's list (whole session) plus the ones in recent_qa, once each. */
+export function askedQuestions(req: { context: { recent_qa: { a: string }[]; already_asked?: string[] } }): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const q of [...(req.context.already_asked ?? []), ...req.context.recent_qa.map((x) => lastQuestion(x.a))]) {
+    const k = q?.toLowerCase().replace(/[^\p{L}\d]+/gu, " ").trim();
+    if (q && k && !seen.has(k)) {
+      seen.add(k);
+      out.push(q.trim());
+    }
+  }
+  return out.slice(-40);
+}
+
+/** K1.4: does the fragment look like a new question rather than a reply to the check question? */
+export function looksLikeQuestion(fragment: string): boolean {
+  const t = fragment.trim().toLowerCase();
+  return /\?\s*$/.test(t) ||
+    /^(?:och |men |så )?(?:vad|hur|varför|när|vem|vems|vilken|vilket|vilka|var (?:finns|ligger|sker)|kan du|kan man|förklara|berätta|säg|ge mig|lumen)(?![\p{L}])/u.test(t);
+}
+
 /** D86: the student's reply to the check question that ended the last answer: grade it first. */
 export const GRADE_NOTE =
   "The fragment is the student's reply to your check question (the last question in <recent_qa>). Start with the verdict in one or two words: \"Rätt.\", \"Nästan.\" or \"Inte riktigt.\". Then the correct answer in one sentence, and why when it was not right. Then stop, or, when it was right, add one short next step; never a new question in the same answer unless the student asked to be quizzed again.";
@@ -255,9 +276,7 @@ ${PROFILE_RULE}
     parts.push(`<active_topic>${sanitizeTagged(qa[qa.length - 1].q)}</active_topic>`);
   }
   if (req.mode === "tutor") {
-    const asked = pruned.qa
-      .map((x) => lastQuestion(x.a))
-      .filter((x): x is string => !!x);
+    const asked = askedQuestions(req);
     if (asked.length) {
       parts.push(
         `<already_asked count="${asked.length}">\n${
