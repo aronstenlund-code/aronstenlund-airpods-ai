@@ -2,6 +2,8 @@
 
 Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och ljuduppfattning först.
 
+- [ ] **K0 – Nyckelbyte och felloggning** (effort: low). Gör direkt efter pågående punkt. 2026-11-08 17:50: Gmail-organisationens krediter tog slut 17:22 ("Provider credits exhausted", även study-profile 500). Aron bytte `ANTHROPIC_API_KEY` till en nyckel i Max-organisationen (100 USD/mån). Efter bytet ger /answer 502 provider_unavailable på ~1 s, alltid; Anthropic-status är grön. Det betyder att `classifyAnthropicError` fick status undefined/5xx, troligen ett ogiltigt header-värde (mellanslag/radbrytning från inklistring på telefon). (1) Trimma alla hemligheter vid inläsning (Anthropic, ElevenLabs). (2) Logga orsaken för "unavailable" (status, felnamn, de första 200 tecknen av meddelandet, aldrig nyckeln). (3) Kör en riktig fråga mot /answer och skriv resultatet i rapporten. (4) Om /answer fortfarande inte svarar: skriv exakt vad Aron ska göra i Supabase.
+
 - [x] **K1 – Oscars fynd från D81–D84** (effort: high). _klar 2026-11-08 21:00 (Kevin): `reports/2026-11-08-2100-kevin-k1-oscar-d81-d84.md`_ Underlag: `reports/qa/2026-11-08-1510-oscar-d81-d84.md` och dina egna "Known limits" i D86-rapporten. Push efter varje punkt.
   1. Muntlig rättning: svensk talparsning ("sexton komma fem" = 16,5, "en halv", bråk); ta det sista talet efter "så", "blir", "är"; godta algebraformer ("x är sju", "7 = x", "x = 7"). 30 nya rättningsfall i live-eval, krav 100 %.
   2. Provläget säger aldrig sitt resonemang högt: inget "X är nog Y", "i din lista", "jag tar det som", "inte ett kemiord". Filtrera på innebörd, inte bara första meningen och kända former. Med Kemi-profil tolkas "syntes" inom kemi (t.ex. syntesreaktion) eller är tyst, aldrig fotosyntes.
