@@ -34,8 +34,8 @@ Score each criterion 1 (yes) or 0 (no):
 - correct: every fact in the answer is right and it answers what the student most plausibly meant (a misheard term read as the right subject term counts as right; a wrong subject is 0).
 - a_level: the level fits the top grade A for exactly that grade and course in Sweden (Skolverket): the concepts and reasoning an A answer needs, not far above and not below.
 - sufficient: the student would NOT need to repeat themselves, ask a whole new question or a follow-up to get what they wanted: the answer gives the core point, why or how, and what the natural next question would be. A follow-up turn ("och cellandning då?", "varför då?") must be read from the earlier turns.
-- natural: it sounds natural when heard: plain spoken Swedish, no lists or symbols, no meta talk about the question, the recording or the interpretation, no question back except one short check question at the end.
-- length_ok: the length fits the profile (korta = at most three sentences; mellanlånga = four to six; utförliga = seven to ten; no profile = five to eight short sentences, a bare fact may be shorter).
+- natural: it sounds natural when heard: plain spoken Swedish, no lists or symbols, no meta talk about the question, the recording, the interpretation or grades, no question back except one short check question at the end. One short closing sentence that starts with "På provet" and says what to write is natural (it is asked for).
+- length_ok: the length fits the profile (korta = at most three sentences; mellanlånga = four to six; utförliga = seven to ten; no length given = four to six short sentences, a bare fact may be shorter); a check question at the end is not counted.
 Return ONLY a JSON object: {"correct": 0|1, "a_level": 0|1, "sufficient": 0|1, "natural": 0|1, "length_ok": 0|1, "note": "<at most 25 words on the main problem, or empty>"}.`;
 
 export interface EvalDeps {
@@ -45,7 +45,13 @@ export interface EvalDeps {
   recordUsage?: (rec: Record<string, unknown>) => void | Promise<void>;
   /** Base answer config (the production one); the model is set per call. */
   answerConfig?: HandlerConfig;
+  /** D88: ElevenLabs key for the batch Scribe comparison (the realtime path uses /stt-token like the app). */
+  elevenLabsKey?: string | null;
+  fetchImpl?: typeof fetch;
 }
+
+/** D88: batch transcription of one test clip (WAV, base64, at most 2 MB), for comparison with the realtime path. */
+export const TRANSCRIBE_LIMITS = { perMinute: 30, perDay: 400, globalPerDay: 1500, maxBase64: 2_800_000 };
 
 function scores(text: string) {
   const m = /\{[\s\S]*\}/.exec(text);
@@ -139,7 +145,41 @@ export function createEvalHandler(deps: EvalDeps) {
         const first = s.scores.correct && s.scores.sufficient ? 1 : 0;
         return json({ ...s, first_answer_suffices: first, judge: judge.id, usage: { input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost } });
       }
-      throw new HttpError(400, "invalid_request", "action must be answer or grade");
+      if (action === "transcribe") {
+        const xiKey = deps.elevenLabsKey;
+        if (!xiKey) throw new HttpError(503, "stt_unconfigured", "ElevenLabs key not configured");
+        const wav = typeof b?.audio_base64 === "string" ? b.audio_base64 : "";
+        if (!wav || wav.length > TRANSCRIBE_LIMITS.maxBase64) {
+          throw new HttpError(400, "invalid_request", "audio_base64: a WAV file, at most about 2 MB");
+        }
+        const rl = await enforceLimits(deps.rateLimiter, "eval-stt", user.id, TRANSCRIBE_LIMITS, 1,
+          appChecks("eval-stt", net, user, { networkPerDay: 1500, newUserAgeSec: 0, newUserPerHour: 0 }));
+        if (!rl.allowed) throw new HttpError(429, "rate_limited", "Too many requests", { retryAfterSec: rl.retryAfterSec });
+        const bytes = Uint8Array.from(atob(wav), (ch) => ch.charCodeAt(0));
+        const doFetch = deps.fetchImpl ?? fetch;
+        let last = "";
+        for (const model of ["scribe_v2", "scribe_v1"]) {
+          const form = new FormData();
+          form.append("model_id", model);
+          form.append("language_code", "swe");
+          form.append("tag_audio_events", "false");
+          form.append("file", new Blob([bytes], { type: "audio/wav" }), "clip.wav");
+          const r = await doFetch("https://api.elevenlabs.io/v1/speech-to-text?enable_logging=false", {
+            method: "POST",
+            headers: { "xi-api-key": xiKey },
+            body: form,
+          });
+          if (r.ok) {
+            const j = await r.json();
+            return json({ text: String(j.text ?? "").trim(), model });
+          }
+          last = `${model}: HTTP ${r.status}`;
+          await r.body?.cancel();
+          if (r.status !== 400 && r.status !== 422) break; // only an unknown model is retried
+        }
+        throw new HttpError(502, "stt_failed", `batch transcription failed (${last})`);
+      }
+      throw new HttpError(400, "invalid_request", "action must be answer, grade or transcribe");
     } catch (e) {
       return errorResponse(toHttpError(e));
     }

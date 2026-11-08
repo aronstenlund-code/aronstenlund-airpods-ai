@@ -160,6 +160,7 @@ def main():
     ap.add_argument("--judge", default="sonnet", choices=["opus", "sonnet"])
     ap.add_argument("--only", default="")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--every", type=int, default=1, help="take every Nth case (3 = 60 of 179)")
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--out", default=os.path.join(ROOT, "reports", "eval"))
     ap.add_argument("--tokens", default="", help="file that keeps refresh tokens between local runs (never commit it)")
@@ -169,6 +170,8 @@ def main():
     if a.only:
         kinds = set(a.only.split(","))
         cases = [c for c in cases if c["kind"] in kinds]
+    if a.every > 1:  # a spread sample over all kinds and subjects: every Nth case
+        cases = cases[::a.every]
     if a.limit:
         cases = cases[:a.limit]
     toks = [signup(a.tokens or None, i) for i in range(a.users)]
@@ -181,7 +184,7 @@ def main():
     s = summary(rows, a.model, a.judge)
     os.makedirs(a.out, exist_ok=True)
     date = datetime.datetime.now().strftime("%Y-%m-%d")
-    base = os.path.join(a.out, f"provlage-{date}-{a.model}")
+    base = os.path.join(a.out, f"provlage-{date}-{a.model}{'-sample' if a.every > 1 or a.limit else ''}")
     json.dump({"summary": s, "rows": rows}, open(base + ".json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     lines = [f"# Provläge test bank {date}: {a.model} (judge {a.judge})", "",
              f"**First answer is enough: {s['first_answer_suffices_pct']} %** of {s['graded']} graded ({s['errors']} errors). Target ≥ 90 %.", "",

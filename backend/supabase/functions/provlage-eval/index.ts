@@ -21,6 +21,7 @@ const handler = createEvalHandler({
   // usage rows are written so the eval's cost is visible, marked by the model and mode
   recordUsage: supabaseUsageSink(db),
   answerConfig: { ...DEFAULT_CONFIG, directModes: env.get("DIRECT_MODES") !== "0" },
+  elevenLabsKey: env.get("ELEVENLABS_API_KEY") ?? null,
 });
 
 Deno.serve(withCors(handler, extraOriginsFromEnv()));
