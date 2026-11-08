@@ -13,6 +13,8 @@ struct BackendConfig: Sendable, Equatable {
     var feedbackURL: URL { projectURL.appending(path: "functions/v1/feedback") }
     /// D80: memory extraction after a turn (Kevin builds it).
     var memoryURL: URL { projectURL.appending(path: "functions/v1/memory") }
+    /// D81 (Kevin): study cards and a five-question test from a Provläge session.
+    var studyCardsURL: URL { projectURL.appending(path: "functions/v1/study-cards") }
     var sharedHistoryURL: URL { projectURL.appending(path: "functions/v1/shared-history") }
     var signUpURL: URL { projectURL.appending(path: "auth/v1/signup") }
     var refreshURL: URL {

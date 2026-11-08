@@ -66,6 +66,9 @@ Fix: in Rizzläge and Socialt läge, a turn that repeats the current suggestion 
 
 Through AirPods the microphone never hears Lumen (owner, D82). Everything else still goes through the filter.
 
+## CI result
+**Green:** run `42483764321` (commit `a571062`, D82 + its fix + D83 + its fix; the first attempt failed on package resolution before anything was built, the re-run passed: build, unit tests, licence check). IPA for Sideloadly: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42483764321/artifacts/13619043317 (kept 14 days).
+
 ## Known limits
 - (a) costs the first 0.7 s after every answer. Words said in that window are not heard.
 - With echo cancellation on the loudspeaker, iOS's voice processing also dampens distant voices.

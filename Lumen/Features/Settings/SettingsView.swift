@@ -11,11 +11,17 @@ struct SettingsView: View {
             microphoneSection
             activationSection
             studySection
+            if let speakers = model.speakers {
+                VoiceProfileSection(model: model, speakers: speakers)
+            }
             voiceSection
             answerSection
             Section("History and memory") {
                 NavigationLink("History") { HistoryView(store: model.history) }
                 NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands) }
+                if let cards = model.studyCards {
+                    NavigationLink("Studiekort") { StudyCardsView(store: cards) }
+                }
                 NavigationLink("Feedback & suggestions") { FeedbackView(model: model) }
             }
             #if DEBUG

@@ -8,6 +8,8 @@ struct TranscriptSegment: Identifiable, Equatable, Sendable {
     var startedAt: Date
     /// The words were spoken while our own answer was playing (ARCHITECTURE §4.3): never treated as a question.
     var overlapsPlayback: Bool
+    /// D81: "Du", "Talare 1" … when the speaker labels are on and the voice is known.
+    var speakerLabel: String? = nil
 }
 
 /// One answered question, shown in the history list.
@@ -22,6 +24,8 @@ struct AnswerTurn: Identifiable, Equatable, Sendable, Codable {
     var source: String
     /// False when `question` is someone else's speech (auto mode, "last sentence"): never saved word for word (D56).
     var isOwnQuestion: Bool
+    /// D81: stopped by the wearer; `answer` is only what had been said. Optional, so older history still decodes.
+    var interrupted: Bool?
 
     init(id: UUID = UUID(), question: String, answer: String, createdAt: Date = Date(), latencyMs: Double? = nil, source: String,
          isOwnQuestion: Bool = true) {
@@ -87,9 +91,21 @@ struct Conversation: Equatable, Sendable {
         streamingAnswer = nil
     }
 
+    /// D81: the wearer broke in. What had been said stays as an interrupted turn, so the next answer never repeats it.
+    mutating func interruptAnswer(said: String) {
+        guard var turn = streamingAnswer else { return }
+        streamingAnswer = nil
+        let spoken = said.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !spoken.isEmpty else { return }
+        turn.answer = spoken
+        turn.interrupted = true
+        answers.append(turn)
+        if answers.count > Self.maxAnswers { answers.removeFirst(answers.count - Self.maxAnswers) }
+    }
+
     /// Last `limit` answered turns as the backend's `recent_qa`, oldest first.
     func recentQA(limit: Int = 3) -> [AnswerContext.QA] {
-        answers.suffix(limit).map { AnswerContext.QA(q: $0.question, a: $0.answer) }
+        answers.suffix(limit).map { AnswerContext.QA(q: $0.question, a: $0.answer, interrupted: $0.interrupted) }
     }
 
     /// Replaces the current partial result (or creates one). Empty text clears the partial.
@@ -130,6 +146,15 @@ struct Conversation: Equatable, Sendable {
     }
 
     /// The session ended: the words heard go, the answers on screen stay until cleared (D48).
+    /// D81: the voice of speech that ended at `date` is known: label the newest unlabelled final segment that
+    /// began in the 8 s before it (the voice result can come just before or just after the final).
+    mutating func label(_ label: String, near date: Date, window: TimeInterval = 8) {
+        guard let index = finalSegments.lastIndex(where: {
+            $0.speakerLabel == nil && $0.startedAt <= date.addingTimeInterval(1) && date.timeIntervalSince($0.startedAt) <= window
+        }) else { return }
+        finalSegments[index].speakerLabel = label
+    }
+
     mutating func clearTranscript() {
         finalSegments.removeAll()
         partial = nil

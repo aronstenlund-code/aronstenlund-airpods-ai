@@ -297,9 +297,17 @@ struct ListeningView: View {
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(model.conversation.segments) { segment in
-                    Text(segment.text)
-                        .foregroundStyle(segment.isFinal ? .primary : .secondary)
-                        .italic(!segment.isFinal)
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        if let label = segment.speakerLabel {
+                            // D81: "Du" / "Talare 1" from the voice.
+                            Text(verbatim: label)
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(label == "Du" || label == "You" ? Color.accentColor : .secondary)
+                        }
+                        Text(segment.text)
+                            .foregroundStyle(segment.isFinal ? .primary : .secondary)
+                            .italic(!segment.isFinal)
+                    }
                 }
             }
         }
@@ -560,6 +568,14 @@ struct ListeningView: View {
                     .padding(.vertical, 6)
                 }
                 .accessibilityLabel("Få A-svar till provet. Startar Provläge.")
+                if let cards = model.studyCards, !cards.current().isEmpty {
+                    // D81: five questions by voice from the study cards, linked to the exam.
+                    Button {
+                        Task { await model.startMiniTest() }
+                    } label: {
+                        Label("Minitest · 5 frågor (\(cards.current().count) studiekort)", systemImage: "checklist")
+                    }
+                }
             }
         }
     }

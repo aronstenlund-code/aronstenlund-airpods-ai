@@ -8,6 +8,8 @@ struct RizzSession: Equatable, Sendable {
         var speaker: RizzSpeaker
         var text: String
         var at: Date
+        /// D81: "Talare 1" … from the voice; nil when not known.
+        var label: String? = nil
     }
 
     static let window: TimeInterval = 120
@@ -33,8 +35,8 @@ struct RizzSession: Equatable, Sendable {
     var current: String? { suggestions.indices.contains(index) ? suggestions[index] : nil }
     var hasConversation: Bool { !lines.isEmpty }
 
-    mutating func add(_ speaker: RizzSpeaker, text: String, at date: Date) {
-        lines.append(Line(speaker: speaker, text: text, at: date))
+    mutating func add(_ speaker: RizzSpeaker, text: String, at date: Date, label: String? = nil) {
+        lines.append(Line(speaker: speaker, text: text, at: date, label: speaker == .other ? label : nil))
         lines.removeAll { date.timeIntervalSince($0.at) > Self.window }
         if speaker == .user { ownLines.append(text) }
     }
@@ -61,7 +63,9 @@ struct RizzSession: Equatable, Sendable {
     }
 
     var transcript: [SocialRequest.Line] {
-        lines.suffix(Self.maxLines).map { SocialRequest.Line(speaker: $0.speaker.rawValue, text: String($0.text.prefix(Self.lineLimit))) }
+        lines.suffix(Self.maxLines).map {
+            SocialRequest.Line(speaker: $0.speaker.rawValue, text: String($0.text.prefix(Self.lineLimit)), label: $0.label)
+        }
     }
 }
 
@@ -74,7 +78,8 @@ enum LiveRequest {
                             calibration: String?, adultConfirmed: Bool) -> PersonaRequest? {
         persona(session.style, adultConfirmed: adultConfirmed,
                 social: SocialRequest(style: session.style.rawValue, trigger: trigger, transcript: session.transcript,
-                                      interests: interests, profile: profile, calibration: calibration))
+                                      interests: interests, profile: profile, calibration: calibration,
+                                      speaker: session.lines.last(where: { $0.speaker == .other })?.label))
     }
 
     /// The wearer's instruction ("lite mindre kaxig", "ge mig tre pickup lines"). It goes in `calibrate` only; the

@@ -5,13 +5,55 @@ Licence rule (`prompts/2026-11-03-oss-integration.md`): only MIT, Apache-2.0 or 
 
 | Component | Version | Licence | How it is used |
 |---|---|---|---|
-| FluidAudio (FluidInference) | commit `ee78635d23d52379117554ba72358b65a0612447` | Apache-2.0 | Swift package, through `Packages/LumenVAD` with `traits: []`: Silero VAD only. The `TTS`, `Diarizer` and `NemoTextProcessing` traits are off, so FluidAudio's TTS data (espeak-ng GPL-3.0, FrequencyWords CC-BY-SA-4.0), the diarizer and the Nemo engine are not in the app. CI checks the bundle. |
+| FluidAudio (FluidInference) | commit `ee78635d23d52379117554ba72358b65a0612447` | Apache-2.0 | Swift package, through `Packages/LumenVAD` with `traits: ["Diarizer"]` (D81): Silero VAD and the speaker-embedding code. The `TTS` and `NemoTextProcessing` traits stay off, so FluidAudio's TTS data (espeak-ng GPL-3.0, FrequencyWords CC-BY-SA-4.0) and the Nemo engine are not in the app. CI checks the bundle. The `Diarizer` trait adds Swift code only (FluidAudio's own, Apache-2.0, including its VBx clustering port); no resources and no binaries. |
 | fastcluster (linked by FluidAudio's core) | as bundled at that commit | BSD-2-Clause | Linked C++ code. |
 | Silero VAD v6.2.1, Core ML conversion (FluidInference/silero-vad-coreml) | downloaded at first use | MIT (Silero Team; model card "License: MIT") | Model weights, fetched from Hugging Face once, not in the repo. |
+| pyannote segmentation-3.0, Core ML conversion `pyannote_segmentation.mlmodelc` (FluidInference/speaker-diarization-coreml) | Hugging Face revision `df2625ac79a7ac6b65ad868fee6d80f320da4232` (pinned by FluidAudio), upstream `pyannote/segmentation-3.0@e66f3d3b` | MIT, © 2023 CNRS (text below) | D81 voice profile. Model weights, downloaded at first use, not in the repo or the app bundle. Modified: converted to Core ML with fixed input shapes by Fluid Inference. |
+| WeSpeaker VoxCeleb ResNet34-LM, Core ML conversion `wespeaker_v2.mlmodelc` (same repository and revision) | as above, upstream `pyannote/wespeaker-voxceleb-resnet34-LM@837717dd` | CC-BY-4.0 (attribution below) | D81 voice profile and speaker labels. Model weights, downloaded at first use. Modified: Core ML conversion, fbank fused in, 8-bit palettized weights, by Fluid Inference. |
+| PLDA parameters (`plda-parameters.json`, `xvector-transform.json`), if FluidAudio's download sweeps them in with the repository's root JSON files | as above | CC-BY-4.0, BUT Speech@FIT | Not used by Lumen's code; listed because they may land in the model cache. |
 | Volocal `SentenceBuffer.swift` (fikrikarim/volocal) | commit `b731963` | MIT | Vendored and modified: `Lumen/Core/Transcription/SentenceBuffer.swift` (header kept). |
 | Parrot (turantekin/Parrot) | tag `v0.11.3` (MIT) | MIT | **Design only, no code copied**: question debounce, minimum interval, merged follow-up speech in `ActivationController`. Later Parrot versions are GPL-3.0 and are not used. |
 
 FluidAudio has no `NOTICE` file at that commit.
+
+**Not used:** LS-EEND (FluidInference/lseend-coreml). Its model card could not be read without a login (HTTP 401 on
+2026-11-08), so its licence is unverified and it is not shipped. D81's live labels use WeSpeaker embeddings with
+online clustering instead.
+
+## Speaker models — attribution (CC-BY-4.0)
+
+The voice profile and the speaker labels (D81) use **WeSpeaker** (Wang et al., "Wespeaker: A research and production
+oriented speaker embedding learning toolkit", ICASSP 2023), as packaged by **pyannote**
+(`pyannote/wespeaker-voxceleb-resnet34-LM`), converted to Core ML by **Fluid Inference**. The files are modified
+Core ML conversions. Licence: Creative Commons Attribution 4.0 International,
+https://creativecommons.org/licenses/by/4.0/. Licence scope as stated in the repository's `NOTICE.md` (read
+2026-11-08).
+
+## pyannote segmentation-3.0 — MIT License
+
+```
+MIT License
+
+Copyright (c) 2023 CNRS
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 ---
 

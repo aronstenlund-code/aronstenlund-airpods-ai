@@ -329,6 +329,16 @@ Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt l
 3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
 4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
 
+### 3z7. Röstprofil, talare, CV, studiekort (D81, 20 min)
+1. Inställningar → *Din röst* → **Lär dig min röst (10 s)** i ett tyst rum. Läs texten högt. Det ska stå "Sparad (… s tal)". Första gången laddas röstmodellen ner (ca 30 MB, kräver internet).
+2. Frågor/Auto: ställ själv en fråga högt (utan "Lumen"). Lumen ska **inte** svara. Låt en kompis ställa samma fråga: Lumen ska svara.
+3. Live-transkriptet ska visa **Du** framför det du säger och **Talare 1**, **Talare 2** framför andra. Stäng av *Visa vem som pratar*: etiketterna försvinner.
+4. Intervjuläge: lägg till ett CV (PDF). Låt kompisen fråga "Berätta om dig själv": svaret ska bygga på CV:t. Säg själv något: Lumen svarar inte.
+5. Barge-in: medan Lumen pratar, börja prata själv: Lumen ska tystna. Låt kompisen prata medan Lumen pratar: Lumen ska fortsätta.
+6. Provläge: ställ tre frågor, avsluta. Ett erbjudande om minitest ska synas. Tryck **Minitest** (eller säg "Lumen, minitest"): Lumen ställer frågorna, du svarar, Lumen säger "Rätt" eller "Inte riktigt". "vet inte" hoppar över. Till sist "Klart. X av Y rätt." Inställningar → *Studiekort* visar korten.
+7. Efter 10 min lyssning: Diagnostik-loggen ska ha en rad "Resources · CPU … · battery … · voice … embeddings". Gör en session med etiketterna på och en utan, och skicka båda raderna.
+8. Radera röstprofilen: allt ska fungera som förut (ljudnivån avgör).
+
 ### 3z6. Provlägets första start och nick (D83, 10 min)
 1. Avinstallera appen (eller tryck Inställningar → *Provläge: om dig* → *Visa frågorna igen*) och tryck på kortet **Få A-svar till provet**. Fem skärmar ska komma, en fråga i taget: provdatum, årskurs (för gymnasiet ett valfritt kursnamn), ämne, kontrollfrågor och förklaringslängd. Prova *Hoppa över* på en skärm och *Hoppa över allt* en annan gång.
 2. Efter sista skärmen ska Provläge starta. Inställningar → *Minne* ska visa "Provprofil: prov i … <veckodag datum år>".

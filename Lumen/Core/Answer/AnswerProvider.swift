@@ -5,6 +5,8 @@ struct AnswerContext: Equatable, Sendable {
     struct QA: Equatable, Sendable, Codable {
         var q: String
         var a: String
+        /// D81: the wearer stopped this answer; `a` is what had been said by then. Never repeated by the backend.
+        var interrupted: Bool? = nil
     }
 
     /// Last ~60 s of final transcript, excluding words spoken over our own playback.
@@ -40,7 +42,7 @@ struct AnswerContext: Equatable, Sendable {
     var clamped: AnswerContext {
         AnswerContext(transcript: String(transcript.suffix(Self.transcriptLimit)),
                       recentQA: recentQA.suffix(Self.qaLimit).map {
-                          QA(q: String($0.q.prefix(Self.qaFieldLimit)), a: String($0.a.prefix(Self.qaFieldLimit)))
+                          QA(q: String($0.q.prefix(Self.qaFieldLimit)), a: String($0.a.prefix(Self.qaFieldLimit)), interrupted: $0.interrupted)
                       },
                       prepTerms: prepTerms.prefix(Self.prepTermLimit).map { String($0.prefix(Self.prepTermLength)) },
                       goals: goals.flatMap { $0.isEmpty ? nil : String($0.prefix(Self.goalsLimit)) },
@@ -57,6 +59,8 @@ struct SocialRequest: Equatable, Sendable, Encodable {
     struct Line: Equatable, Sendable, Encodable {
         var speaker: String
         var text: String
+        /// D81: "Talare 1" … when the voice is known (Kevin's contract: an `other` line may carry `label`).
+        var label: String? = nil
     }
 
     var style: String
@@ -70,6 +74,8 @@ struct SocialRequest: Equatable, Sendable, Encodable {
     var calibrate: String? = nil
     /// The stored calibration for this mode, sent with every request (D69).
     var calibration: String? = nil
+    /// D81: the label of whoever said the latest words ("Talare 2"), when the voice is known.
+    var speaker: String? = nil
 }
 
 /// Who the assistant is in a mode (D42): `persona` + `persona_setup`, and for interviews whose turn it is.

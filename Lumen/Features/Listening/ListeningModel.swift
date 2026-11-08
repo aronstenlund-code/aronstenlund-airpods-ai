@@ -47,6 +47,27 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var isShowingStudyOnboarding = false
     /// D83: a nod answers "ja", a shake "nej", for yes/no check questions.
     let headMotion = HeadMotionListener()
+    /// D81: who is speaking, by voice (the wearer's profile, "Talare 1/2"). Nil: by the level only, as before.
+    let speakers: SpeakerIdentifier?
+    /// D81: Provläge's questions as study cards, and the five-question test after a session.
+    let studyCards: StudyCardStore?
+    /// D81 (Kevin): cards and the test from the backend after a session. Nil: local cards only.
+    let studyCardsClient: StudyCardsClient?
+    /// What Lumen has said of the current answer, for an interrupted turn (D81).
+    private var spokenAnswer = ""
+    private(set) var miniTest: MiniTest?
+    /// The card whose answer the tutor is judging.
+    private var gradingCardID: UUID?
+    /// When the running Provläge session began, and the last one, so the mini test starts with its cards.
+    private var provStartedAt: Date?
+    private(set) var lastProvSessionStart: Date?
+    /// "Lär dig min röst" is recording: what is said is the enrolment text, never a question.
+    private(set) var isEnrollingVoice = false
+    /// D81: battery and CPU per 10 minutes, in the log.
+    private let resources = ResourceMeter()
+    private var voiceWorkRunning = false
+    /// Where the current turn's audio begins in the capture ring buffer (D81).
+    private var turnAudioMark: Int64?
     private var keytermTask: Task<Void, Never>?
     /// D82: what Lumen said lately, so its own voice coming back is never answered.
     private var echo = EchoFilter()
@@ -156,7 +177,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          goals: GoalsStore? = nil, commands: CommandStore? = nil,
          history: HistoryStore? = nil, memory: MemoryStore? = nil, microphone: MicrophoneSettings? = nil,
          modeSettings: ModeSettings? = nil, feedback: FeedbackClient? = nil, remote: RemoteCommandHub? = nil,
-         memoryExtractor: MemoryExtractor? = nil, studyProfile: StudyProfileStore? = nil) {
+         memoryExtractor: MemoryExtractor? = nil, studyProfile: StudyProfileStore? = nil,
+         speakers: SpeakerIdentifier? = nil, studyCards: StudyCardStore? = nil, studyCardsClient: StudyCardsClient? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -177,6 +199,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.remote = remote
         self.memoryExtractor = memoryExtractor
         self.studyProfile = studyProfile ?? StudyProfileStore()
+        self.speakers = speakers
+        self.studyCards = studyCards
+        self.studyCardsClient = studyCardsClient
         self.goals = goals ?? GoalsStore()
         self.commands = commands ?? CommandStore()
         self.warmer = warmer
@@ -201,13 +226,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 self.study.speechStarted()
             }
         }
-        speaker.onSpeak = { [weak self] text in self?.echo.record(text, at: Date()) }
+        speaker.onSpeak = { [weak self] text in
+            self?.echo.record(text, at: Date())
+            self?.spokenAnswer += text + " "
+        }
         // D82 (owner): the app only hears itself when the sound goes out of the iPhone's own speaker. Echo
         // cancellation then, never with AirPods or headphones, so their microphone keeps its quality.
         controller.voiceProcessingPolicy = { [weak self] snapshot in
             (self?.microphone.echoCancellation ?? true) && snapshot.outputsToBuiltInSpeaker
         }
         speaker.onFinished = { [weak self] in self?.speechFinished() }
+        speakers?.onIdentified = { [weak self] identity, date in self?.voiceIdentified(identity, at: date) }
         let firstPause = modes.pause(for: .standard)
         Task { [transcription] in await transcription.setPause(firstPause, mode: .standard) }
         refreshKeyterms()
@@ -365,6 +394,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         switch state {
         case .listening:
+            beginVoiceWork()
             showActivity()
             if let again = resumeMode {
                 resumeMode = nil
@@ -379,6 +409,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             showActivity()
         case .idle, .error:
             resumeMode = nil
+            endVoiceWork()
             discardAhead(reason: "listening stopped")
             aheadStats = AheadStats()
             conversation.clearTranscript()
@@ -500,6 +531,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             study.speechDetector = nil
         }
         study.start()
+        if newMode == .prov, miniTest == nil { provStartedAt = Date() }
         controller.log("Hands-free \(newMode.rawValue) started")
     }
 
@@ -605,7 +637,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Ends the session. After the silence timeout the microphone is released too ("sparläge").
     func endStudy(bySilence: Bool) {
         guard study.isActive || bySilence else { return }
+        let endedProv = mode == .prov
         study.stop()
+        if endedProv { provSessionEnded() }
         handsFreeEnded()
         showActivity()
         transcription.setInputGated(false)
@@ -621,8 +655,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func studyEvent(_ event: StudyEvent) {
         switch event {
         case .turnStarted:
-            break
+            // D81: the turn's audio, from a little before the onset hold.
+            let written = controller.capture.ringBuffer.totalWritten
+            turnAudioMark = max(0, written - Int64(0.3 * LumenAudioFormat.sampleRate))
         case .endOfTurn(let raw):
+            defer { turnAudioMark = nil }
+            if isEnrollingVoice {
+                study.resumeListening() // the enrolment text, never a turn
+                return
+            }
+            if speakers?.identity(near: Date(), window: 3) == nil { identifySpeech(at: Date()) }
             if isOwnEcho(raw, at: Date()), !isWearerUsingSuggestion(raw, level: study.lastTurnLevelDBFS) {
                 discardAhead(reason: "Lumen's own echo")
                 study.resumeListening()
@@ -648,6 +690,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 study.resumeListening()
                 return
             }
+            if mode == .prov, miniTest != nil {
+                miniTestAnswer(text)
+                return
+            }
             switch mode {
             case .interview: interviewTurn(text)
             case .rizz, .social: rizzTurn(text)
@@ -658,12 +704,23 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .stalled:
             if let session = rizz { requestSuggestions(trigger: session.hasConversation ? "stall" : "opener") }
         case .bargeIn:
-            controller.log("Provläge: barge-in — stopping the answer")
-            answers.cancel()
-            speaker.interrupt()
-            conversation.cancelAnswer()
-            latency.end()
-            transcription.setInputGated(false)
+            // D81: with a voice profile, only the wearer's own voice stops Lumen; someone else talking does not.
+            if let speakers, speakers.profiles.isEnrolled, speakers.isReady {
+                study.speechStarted() // keep speaking until the voice is known (one embedding, tens of ms)
+                let samples = controller.capture.ringBuffer.snapshot(lastSeconds: 1.2)
+                Task { [weak self] in
+                    let wearer = await speakers.isWearer(samples)
+                    guard let self, self.speaker.isSpeaking || self.speaker.hasPendingSpeech else { return }
+                    if wearer == false {
+                        self.controller.log("Barge-in ignored: not the wearer's voice (D81)")
+                        return
+                    }
+                    self.bargeIn()
+                    self.study.resumeListening()
+                }
+                return
+            }
+            bargeIn()
         case .autoEnded:
             endStudy(bySilence: true)
         }
@@ -675,28 +732,27 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// follow-up questions. The wearer's own words (louder, by input level) are never answered, unless they ask for
     /// something out loud ("klar", "sammanfatta", "ge mig feedback").
     private func interviewTurn(_ text: String) {
-        let speaker = RizzSpeaker.tag(levelDBFS: study.lastTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)
+        let (speaker, why) = turnSpeaker(level: study.lastTurnLevelDBFS)
         if speaker == .user, !VoiceCommand.isInterviewRequest(text) {
-            controller.log("Intervjuläge: own turn at \(study.lastTurnLevelDBFS ?? -99) dBFS, not answered")
+            controller.log("Intervjuläge: own turn (\(why)), not answered")
             study.resumeListening()
             return
         }
         activated(ActivationRequest(query: text, trigger: .overheard, language: language),
-                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup, turn: "question"))
+                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewPersonaSetup, turn: "question"))
     }
 
     /// Likely questions and model answers from the role or job ad. Long, so it is shown, not spoken.
     func prepareInterview() {
         activated(ActivationRequest(query: language == .swedish ? "Förbered mig inför intervjun" : "Prepare me for the interview",
                                     trigger: .interviewPrep, language: language),
-                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup))
+                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewPersonaSetup))
     }
 
     // MARK: - Rizzläge (D43)
 
     private func rizzTurn(_ text: String) {
-        let speaker = RizzSpeaker.tag(levelDBFS: study.lastTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)
-        let why = RizzSpeaker.reason(levelDBFS: study.lastTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)
+        let (speaker, why) = turnSpeaker(level: study.lastTurnLevelDBFS)
         let detector = transcription.vadIsRunning ? "Silero" : "level"
         controller.log("\(mode.rawValue) turn · \(speaker == .user ? "wearer" : "other") · \(why) · speech by \(detector)")
         if speaker == .other {
@@ -710,7 +766,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if speaker == .user, session.usesSuggestion(text) {
             modeSettings.countUse(of: session.style)
         }
-        session.add(speaker, text: text, at: Date())
+        session.add(speaker, text: text, at: Date(), label: liveLabel())
         rizz = session
         if speaker == .other, !FillerFilter.isOnlyFiller(text) {
             if let early = liveAhead, early.key == AheadAnswer.key(text) {
@@ -802,7 +858,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             say("\(VoiceChannel.spokenName(target).dropLast()) startas i appen första gången.")
             return
         }
-        if target == .interview, modeSettings.interviewSetup.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if target == .interview, !modeSettings.hasInterviewSetup {
             say("Intervjuläge behöver en roll i appen först.")
             return
         }
@@ -839,11 +895,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// What follows the name when it is not a command. Socialt läge and Rizzläge: the D69 instruction path.
     /// The other modes: a question to Lumen.
     private func instruct(_ text: String) {
+        if MiniTest.isStartCommand(text) {
+            Task { await startMiniTest() }
+            return
+        }
         if rizz != nil {
             liveInstruction(text)
         } else if study.isActive, mode == .interview {
             activated(ActivationRequest(query: text, trigger: .overheard, language: language),
-                      persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup, turn: "question"))
+                      persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewPersonaSetup, turn: "question"))
         } else if study.isActive, mode == .prov, StudyProfileVoice.apply(text, to: &studyProfile.profile) {
             // D83: "Lumen, korta förklaringar", "Lumen, provet är på fredag" …
             studyProfileChanged()
@@ -910,6 +970,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Minne (shown, editable; sensitive categories never). Only the user's own words are sent (D56).
     private func extractMemories(from turn: AnswerTurn) {
         guard let memoryExtractor, turn.isOwnQuestion else { return }
+        if let speakers, speakers.profiles.isEnrolled, speakers.identity(near: turn.createdAt, window: 8)?.isOther == true {
+            controller.log("Minne: not the wearer's voice (D81), nothing extracted")
+            return
+        }
         let body = MemoryExtraction.body(question: turn.question, answer: turn.answer, mode: mode.rawValue,
                                          memories: memory.backendItems(), language: language == .swedish ? "sv" : "en")
         Task { [weak self] in
@@ -1070,6 +1134,202 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         study.resumeListening()
     }
 
+    // MARK: - Voice profile and speakers (D81)
+
+    /// Settings → "Lär dig min röst": about 10 s of the wearer reading aloud.
+    static let enrollSeconds: Double = 10
+
+    func enrollVoice() async -> SpeakerIdentifier.EnrollResult? {
+        guard let speakers, consent.isGranted else { return nil }
+        isEnrollingVoice = true
+        defer { isEnrollingVoice = false }
+        if !isListening {
+            if canResume { await resume() } else { await startListening() }
+        }
+        guard isListening else { return nil }
+        speakers.loader.loadIfNeeded()
+        let mark = controller.capture.ringBuffer.totalWritten
+        try? await Task.sleep(for: .seconds(Self.enrollSeconds))
+        let samples = controller.capture.ringBuffer.snapshot(since: mark)
+        let result = await speakers.enroll(samples)
+        controller.log("Voice profile: \(result)")
+        return result
+    }
+
+    func deleteVoiceProfile() {
+        speakers?.deleteProfile()
+        controller.log("Voice profile deleted")
+    }
+
+    /// The stretch that just ended goes to the embedder; the result comes back through `voiceIdentified`.
+    private func identifySpeech(at date: Date) {
+        guard let speakers, speakers.isWanted, speakers.isReady else { return }
+        let ring = controller.capture.ringBuffer
+        var samples = turnAudioMark.map { ring.snapshot(since: $0) } ?? ring.snapshot(lastSeconds: 4)
+        let maximum = Int(SpeakerIdentifier.maximumSeconds * LumenAudioFormat.sampleRate)
+        if samples.count > maximum { samples = Array(samples.suffix(maximum)) }
+        speakers.identify(samples, at: date)
+    }
+
+    private func voiceIdentified(_ identity: VoiceIdentity, at date: Date) {
+        labelTranscript(identity, at: date)
+    }
+
+    private func labelTranscript(_ identity: VoiceIdentity, at date: Date) {
+        guard speakers?.showsLabels == true, let label = SpeakerLabeler.text(identity, swedish: language == .swedish) else { return }
+        conversation.label(label, near: date)
+    }
+
+    /// "Talare 1" for Socialt läge / Rizzläge (Kevin D81), when the labels are on and the voice is known.
+    private func liveLabel() -> String? {
+        guard let speakers, speakers.showsLabels, let identity = speakers.identity(near: Date()), identity.isOther else { return nil }
+        return SpeakerLabeler.text(identity, swedish: true)
+    }
+
+    /// The voice when it is known and there is a profile to compare with; otherwise the level, as before D81.
+    private func turnSpeaker(level: Double?) -> (speaker: RizzSpeaker, why: String) {
+        if let speakers, speakers.profiles.isEnrolled, let identity = speakers.identity(near: Date()), identity != .uncertain {
+            return identity.isWearer ? (.user, "voice profile → wearer") : (.other, "voice → not the wearer")
+        }
+        let threshold = modeSettings.speakerThresholdDBFS
+        return (RizzSpeaker.tag(levelDBFS: level, thresholdDBFS: threshold), RizzSpeaker.reason(levelDBFS: level, thresholdDBFS: threshold))
+    }
+
+    /// The words just heard were the wearer's, by the voice profile. False when not known.
+    private func isWearersVoice(near date: Date = Date()) -> Bool {
+        guard let speakers, speakers.profiles.isEnrolled else { return false }
+        return speakers.identity(near: date)?.isWearer == true
+    }
+
+    private func bargeIn() {
+        controller.log("\(mode.rawValue): barge-in — stopping the answer")
+        answers.cancel()
+        speaker.interrupt()
+        // Kevin D81: what was said goes along as `interrupted`, so the next answer never repeats it.
+        conversation.interruptAnswer(said: spokenAnswer)
+        spokenAnswer = ""
+        latency.end()
+        transcription.setInputGated(false)
+    }
+
+    private func beginVoiceWork() {
+        guard !voiceWorkRunning else { return }
+        voiceWorkRunning = true
+        speakers?.sessionStarted()
+        resources.start { [weak self] from, to in self?.logResources(from: from, to: to) }
+    }
+
+    private func endVoiceWork() {
+        voiceWorkRunning = false
+        resources.stop()
+    }
+
+    private func logResources(from: ResourceSample, to: ResourceSample) {
+        var line = "Resources · " + ResourceSample.line(from: from, to: to)
+        if let speakers {
+            let stats = speakers.takeStats()
+            line += " · voice \(stats.count) embeddings, avg \(Int(stats.averageMs)) ms"
+            line += " · labels \(speakers.showsLabels ? "on" : "off") · profile \(speakers.profiles.isEnrolled ? "yes" : "no")"
+        }
+        controller.log(line)
+    }
+
+    // MARK: - Study cards and the mini test (D81)
+
+    /// A Provläge answer becomes a card; during the mini test the answer is the tutor's verdict.
+    private func studyCardOrGrade(_ turn: AnswerTurn) {
+        if let id = gradingCardID, var test = miniTest {
+            gradingCardID = nil
+            test.graded(turn.answer)
+            studyCards?.mark(id, right: test.results[id] ?? false)
+            miniTest = test
+            askMiniTestQuestion()
+            return
+        }
+        guard mode == .prov, miniTest == nil, pendingQuestion?.trigger == .tutor, let studyCards else { return }
+        if studyCards.add(question: turn.question, answer: turn.answer, profile: studyProfile.profile) != nil {
+            controller.log("Study card saved (\(studyCards.cards.count) in all)")
+        }
+    }
+
+    private func provSessionEnded() {
+        lastProvSessionStart = provStartedAt ?? lastProvSessionStart
+        provStartedAt = nil
+        if miniTest != nil {
+            miniTest = nil
+            gradingCardID = nil
+            return
+        }
+        guard let studyCards, let start = lastProvSessionStart,
+              studyCards.current().contains(where: { $0.createdAt >= start }) else { return }
+        fetchStudyCards(since: start)
+        studyNotice = language == .swedish
+            ? "Minitest: fem frågor om det du nyss frågade. Tryck på Minitest eller säg \"Lumen, minitest\"."
+            : "Mini test: five questions on what you just asked. Tap Mini test or say \"Lumen, mini test\"."
+    }
+
+    /// Kevin's `/study-cards`: the session's questions and answers → better cards and a five-question test.
+    private func fetchStudyCards(since start: Date) {
+        guard let studyCardsClient, let studyCards else { return }
+        let turns = conversation.answers.filter { $0.createdAt >= start && $0.isOwnQuestion && $0.interrupted != true }
+            .map { (question: $0.question, answer: $0.answer) }
+        guard let body = StudyCardsRequest.body(turns: turns, profile: studyProfile.profile.setupText(), swedish: language == .swedish) else { return }
+        let profile = studyProfile.profile
+        Task { [weak self] in
+            guard let reply = await studyCardsClient.cards(body) else { return }
+            studyCards.addRemote(reply, profile: profile)
+            self?.controller.log("Study cards: \(reply.cards.count) cards, \(reply.test.count) test questions from the backend")
+        }
+    }
+
+    /// Five questions by voice, inside Provläge (the backend's test for the last session, else its cards first).
+    func startMiniTest() async {
+        guard let studyCards else { return }
+        let cards = studyCards.takeTest(sessionStart: provStartedAt ?? lastProvSessionStart)
+        guard !cards.isEmpty else {
+            studyNotice = language == .swedish ? "Inga studiekort än: ställ några frågor i Provläge först."
+                                               : "No study cards yet: ask a few questions in Provläge first."
+            say(studyNotice ?? "")
+            return
+        }
+        if !(study.isActive && mode == .prov) {
+            selectedMode = .prov
+            await startStudy()
+            guard study.isActive else { return }
+        }
+        studyNotice = nil
+        miniTest = MiniTest(cards: cards)
+        gradingCardID = nil
+        controller.log("Mini test started (\(cards.count) cards)")
+        askMiniTestQuestion()
+    }
+
+    private func askMiniTestQuestion() {
+        guard let test = miniTest else { return }
+        if let question = test.question(swedish: language == .swedish) {
+            say(question)
+            return
+        }
+        say(test.summary(swedish: language == .swedish))
+        controller.log("Mini test done: \(test.rightCount) of \(test.cards.count)")
+        miniTest = nil
+    }
+
+    private func miniTestAnswer(_ text: String) {
+        guard var test = miniTest, let card = test.current else { return }
+        if MiniTest.isSkip(text) {
+            test.skip()
+            studyCards?.mark(card.id, right: false)
+            miniTest = test
+            study.resumeListening()
+            askMiniTestQuestion()
+            return
+        }
+        guard let query = test.gradingQuery(for: text, swedish: language == .swedish) else { return }
+        gradingCardID = card.id
+        activated(ActivationRequest(query: query, trigger: .tutor, language: language), persona: tutorPersona())
+    }
+
     /// Item 8: saves the session's answers as a local note.
     @discardableResult
     func saveNote() -> Note? {
@@ -1106,6 +1366,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func activated(_ request: ActivationRequest, persona: PersonaRequest? = nil) {
         if VoiceCommand.isMusicHandOff(request.query) { return } // the final result already paused the session
+        if request.trigger == .auto, isWearersVoice() {
+            // D81: Auto answers the room, not the wearer ("Lumen, …" is how the wearer asks).
+            controller.log("Auto: the wearer's own voice (voice profile), not answered")
+            discardAhead(reason: "the wearer's own voice")
+            return
+        }
         if request.trigger == .auto, FillerFilter.isOnlyFiller(request.query) { return } // D74
         if persona?.social == nil, deliverAhead(for: request) { return } // D80: ready the moment the pause is over
         discardAhead(reason: "a different turn")
@@ -1114,6 +1380,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         answerNotice = nil
         // A new question interrupts the current answer and its speech (assignment item 5).
         speaker.interrupt()
+        spokenAnswer = ""
         latency.begin(request)
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
         if !study.isActive { logTurn() }
@@ -1142,7 +1409,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// pause is over replace it with a new call for the whole text. One call at a time.
     private func answerAhead(for raw: String) {
         let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard isListening, !isComparing, instructing == nil, !text.isEmpty, !FillerFilter.isOnlyFiller(text),
+        guard isListening, !isComparing, !isEnrollingVoice, instructing == nil, !text.isEmpty, !FillerFilter.isOnlyFiller(text),
               VoiceChannel.parse(text).intent == nil, !VoiceCommand.isMusicHandOff(text), !VoiceCommand.isComplaint(text),
               CommandMatcher.parseSaveCommand(text) == nil else { return }
         if rizz != nil {
@@ -1153,7 +1420,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let request: ActivationRequest
         switch mode {
         case .standard:
-            guard !study.isActive, QuestionGate(sensitivity: activation.settings.sensitivity).evaluate(text).fires else { return }
+            guard !study.isActive, QuestionGate(sensitivity: activation.settings.sensitivity).evaluate(text).fires,
+                  !isWearersVoice() else { return }
             request = ActivationRequest(query: text, trigger: .auto, language: language)
         case .prov:
             guard study.isActive, study.phase == .listening else { return }
@@ -1161,10 +1429,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             persona = tutorPersona()
         case .interview:
             guard study.isActive, study.phase == .listening else { return }
-            let speaker = RizzSpeaker.tag(levelDBFS: study.currentTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)
+            let speaker = turnSpeaker(level: study.currentTurnLevelDBFS).speaker
             guard speaker == .other || VoiceCommand.isInterviewRequest(text) else { return }
             request = ActivationRequest(query: text, trigger: .overheard, language: language)
-            persona = PersonaRequest(persona: "interview", setup: modeSettings.interviewSetup, turn: "question")
+            persona = PersonaRequest(persona: "interview", setup: modeSettings.interviewPersonaSetup, turn: "question")
         case .rizz, .social:
             return
         }
@@ -1261,7 +1529,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// pause comes; during a long monologue at most every 3 s (D80).
     private func liveSuggestionAhead(for text: String, now: Date = Date()) {
         guard let session = rizz, instructing == nil else { return }
-        let speaker = RizzSpeaker.tag(levelDBFS: study.currentTurnLevelDBFS, thresholdDBFS: modeSettings.speakerThresholdDBFS)
+        let speaker = turnSpeaker(level: study.currentTurnLevelDBFS).speaker
         guard speaker == .other else { return }
         if let last = liveAhead, now.timeIntervalSince(last.at) < Self.liveRefresh { return }
         var preview = session
@@ -1346,6 +1614,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             lastAnswerAt = Date()
             extractMemories(from: turn)
             scheduleKeytermRefresh()
+            studyCardOrGrade(turn)
         }
         if let fact = done?.memoryAdd {
             memory.add(fact)
@@ -1467,7 +1736,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// The recogniser committed words before the pause is over (D80): start the answer now.
     func receiveSentenceHeard(_ text: String, at date: Date) {
-        guard !controller.playback.isSpeaking, !echo.isEcho(text, now: date) else { return }
+        guard !controller.playback.isSpeaking, !echo.isEcho(text, now: date), !isEnrollingVoice else { return }
+        identifySpeech(at: date) // D81: beside the answer, never before it
         lastHeardAt = date
         schedulePrefetch()
         answerAhead(for: text)
@@ -1478,7 +1748,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         conversation.finalize(text, at: date, overlapsPlayback: controller.playback.isSpeaking)
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
         finalObserver?(segment.text)
-        if isComparing { return }
+        if isComparing || isEnrollingVoice { return }
+        if let identity = speakers?.identity(near: date, window: 4) { labelTranscript(identity, at: date) }
         if isOwnEcho(segment.text, at: date), !isWearerUsingSuggestion(segment.text, level: study.currentTurnLevelDBFS) {
             discardAhead(reason: "Lumen's own echo")
             return

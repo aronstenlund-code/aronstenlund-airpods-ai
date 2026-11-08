@@ -46,12 +46,28 @@ final class ModeSettings {
     static let liveStartKey = "mode.liveStartConfirmed"
     static let calibrationsKey = "mode.calibrations"
     static let pausesKey = "mode.pauseSeconds"
+    static let cvKey = "mode.interviewCV"
+    static let cvNameKey = "mode.interviewCVName"
     /// Settings range for the pause (D80).
     static let pauseRange: ClosedRange<Double> = 0.5...3.0
 
     /// The role or the pasted job ad.
     var interviewSetup: String {
         didSet { defaults.set(interviewSetup, forKey: Self.interviewKey) }
+    }
+    /// D81: the CV's text, read on the phone from a PDF or text file. Only a compressed part goes along.
+    var interviewCV: String {
+        didSet { defaults.set(interviewCV, forKey: Self.cvKey) }
+    }
+    var interviewCVName: String {
+        didSet { defaults.set(interviewCVName, forKey: Self.cvNameKey) }
+    }
+    /// What every interview call carries as `persona_setup` (D81): the job ad and the CV, ≤ 2 000 characters.
+    var interviewPersonaSetup: String {
+        InterviewProfile.setup(jobAd: interviewSetup, cv: interviewCV)
+    }
+    var hasInterviewSetup: Bool {
+        !interviewSetup.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !interviewCV.isEmpty
     }
     /// "Jag är 18 år eller äldre": asked once, stored on this phone (D63).
     private(set) var isAdultConfirmed: Bool
@@ -85,6 +101,8 @@ final class ModeSettings {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.interviewSetup = defaults.string(forKey: Self.interviewKey) ?? ""
+        self.interviewCV = defaults.string(forKey: Self.cvKey) ?? ""
+        self.interviewCVName = defaults.string(forKey: Self.cvNameKey) ?? ""
         self.isAdultConfirmed = defaults.bool(forKey: Self.adultKey)
         self.rizzInterests = defaults.string(forKey: Self.interestsKey) ?? ""
         self.rizzProfile = defaults.string(forKey: Self.profileKey) ?? ""

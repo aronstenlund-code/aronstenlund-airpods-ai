@@ -60,5 +60,8 @@ three fields:
 - **First D83 run:** failed to build on one deprecation, which counts as an error: `CMHeadphoneDeviceMotionHandler` is
   `CMHeadphoneMotionManager.DeviceMotionHandler` in the iOS 26 SDK. Renamed.
 
+## CI result
+**Green:** run `42483764321` (commit `a571062`, D82 + its fix + D83 + its fix; the first attempt failed on package resolution before anything was built, the re-run passed: build, unit tests, licence check). IPA for Sideloadly: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42483764321/artifacts/13619043317 (kept 14 days).
+
 ## Next
 D81.

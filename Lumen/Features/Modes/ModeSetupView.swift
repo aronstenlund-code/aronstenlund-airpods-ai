@@ -1,16 +1,36 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
-/// Start screen for Intervjuläge: the role or job ad, practice or preparation.
+/// Start screen for Intervjuläge: the role or job ad, the CV (D81), practice or preparation.
 struct InterviewSetupView: View {
     @Bindable var model: ListeningModel
     @Bindable var settings: ModeSettings
     @Environment(\.dismiss) private var dismiss
+    @State private var isPickingCV = false
+    @State private var cvNotice: String?
 
     var body: some View {
         Form {
             Section("Role or job ad") {
                 TextEditor(text: $settings.interviewSetup)
                     .frame(minHeight: 140)
+            }
+            Section {
+                if settings.interviewCV.isEmpty {
+                    Button("Lägg till CV (PDF eller text)") { isPickingCV = true }
+                } else {
+                    LabeledContent("CV", value: settings.interviewCVName.isEmpty ? "Inläst" : settings.interviewCVName)
+                    Button("Byt CV") { isPickingCV = true }
+                    Button("Ta bort CV", role: .destructive) {
+                        settings.interviewCV = ""
+                        settings.interviewCVName = ""
+                    }
+                }
+                if let cvNotice { Text(cvNotice).font(.footnote).foregroundStyle(.secondary) }
+            } header: {
+                Text("CV")
+            } footer: {
+                Text("CV:t läses på telefonen och sparas bara här. Med varje intervjufråga skickas en kort sammanfattning av jobbannonsen och CV:t, högst 2 000 tecken, utan e-post, telefonnummer, personnummer och adress.")
             }
             Section {
                 Button("Start practice interview") {
@@ -24,7 +44,17 @@ struct InterviewSetupView: View {
             } footer: {
                 Text("Intervjuläge är till för träning: en kompis ställer frågan och du hör ett färdigt svar. Använd det inte i en riktig intervju utan att den andra vet om det.")
             }
-            .disabled(settings.interviewSetup.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .disabled(!settings.hasInterviewSetup)
+        }
+        .fileImporter(isPresented: $isPickingCV, allowedContentTypes: [.pdf, .plainText, .text]) { result in
+            guard case .success(let url) = result else { return }
+            if let text = InterviewProfile.text(from: url) {
+                settings.interviewCV = text
+                settings.interviewCVName = url.lastPathComponent
+                cvNotice = "\(text.count) tecken inlästa."
+            } else {
+                cvNotice = "Ingen text hittades i filen (en inskannad PDF går inte att läsa). Klistra in texten i stället."
+            }
         }
         .navigationTitle("Intervjuläge")
         .navigationBarTitleDisplayMode(.inline)
