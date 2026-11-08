@@ -1,0 +1,1060 @@
+{
+ "backend_start": "e70212f 18:12",
+ "backend_end": "e70212f 18:12",
+ "spent": 0.0722,
+ "log": [
+  {
+   "test": "backend",
+   "at_start": "e70212f 18:12",
+   "at": "18:14:17"
+  },
+  {
+   "test": "== cards",
+   "at": "18:14:17"
+  },
+  {
+   "test": "C1 åk7",
+   "status": 200,
+   "ms": 4360,
+   "n_cards": 6,
+   "n_test": 5,
+   "cards": [
+    {
+     "q": "Var sker fotosyntesen i växtcellen?",
+     "a": "Fotosyntesen sker i kloroplasterna."
+    },
+    {
+     "q": "Vilka ämnen tar växten upp för fotosyntesen?",
+     "a": "Koldioxid genom klyvöppningarna och vatten genom rötterna."
+    },
+    {
+     "q": "Vilken energi används för att bilda druvsocker?",
+     "a": "Ljusenergi används för att bilda druvsocker och syre."
+    },
+    {
+     "q": "Vilka ämnen bildas vid fotosyntesen?",
+     "a": "Druvsocker och syre."
+    },
+    {
+     "q": "Var sker cellandningen?",
+     "a": "Cellandningen sker i mitokondrierna."
+    },
+    {
+     "q": "Vad är skillnaden mellan fotosyntes och cellandning?",
+     "a": "Cellandningen är motsatsen: socker och syre blir energi, koldioxid och vatten."
+    }
+   ],
+   "tests": [
+    {
+     "q": "Var i cellen sker fotosyntesen?",
+     "a": "I kloroplasterna."
+    },
+    {
+     "q": "Förklara varför växter behöver både vatten och koldioxid.",
+     "a": "Vatten och koldioxid är råämnen i fotosyntesen. Med ljusenergi bildas druvsocker och syre av dem."
+    },
+    {
+     "q": "Vilka ämnen bildas vid cellandningen?",
+     "a": "Koldioxid och vatten."
+    },
+    {
+     "q": "Förklara varför både växter och djur behöver syre.",
+     "a": "Syre används i cellandningen för att omvandla socker till energi, vilket behövs för alla cellers arbete."
+    },
+    {
+     "q": "En växt står i mörker en hel natt. Vilken process sker då, och varför kan den inte göra fotosyntes?",
+     "a": "Cellandning sker. Fotosyntesen behöver ljusenergi, som saknas i mörker."
+    }
+   ],
+   "err": null,
+   "ra": null,
+   "at": "18:14:23"
+  },
+  {
+   "test": "C2 utan profil, 3 kort",
+   "status": 200,
+   "ms": 3677,
+   "n_cards": 3,
+   "n_test": 5,
+   "cards": [
+    {
+     "q": "Var i växtcellen sker fotosyntesen?",
+     "a": "Fotosyntesen sker i kloroplasterna, där ljusenergin används för att bilda druvsocker och syre."
+    },
+    {
+     "q": "Vilka ämnen tar växten upp för fotosyntesen och hur?",
+     "a": "Koldioxid tas upp genom klyvöppningarna i bladen och vatten tas upp genom rötterna."
+    },
+    {
+     "q": "Vad är skillnaden mellan fotosyntes och cellandning?",
+     "a": "Fotosyntesen bildar socker och syre av koldioxid och vatten med ljusenergi, medan cellandningen i mitokondrierna omvandlar socker och syre till energi, koldioxid och vatten."
+    }
+   ],
+   "tests": [
+    {
+     "q": "Var i cellen sker cellandningen?",
+     "a": "Cellandningen sker i mitokondrierna."
+    },
+    {
+     "q": "Vilken energiform används i fotosyntesen?",
+     "a": "Ljusenergi."
+    },
+    {
+     "q": "Förklara varför fotosyntes och cellandning kan ses som varandras motsatser.",
+     "a": "Fotosyntesen binder energi i druvsocker och frigör syre, medan cellandningen använder socker och syre för att frigöra energi och bildar koldioxid och vatten, så processerna går åt motsatt håll."
+    },
+    {
+     "q": "Varför behöver en växt klyvöppningar i bladen?",
+     "a": "För att ta upp koldioxid till fotosyntesen och släppa ut syre."
+    },
+    {
+     "q": "En växt står i mörker en natt. Vilka processer sker i den, och vilka kan inte ske utan ljus?",
+     "a": "Cellandningen fortsätter eftersom den inte kräver ljus, medan fotosyntesen stannar av eftersom den behöver ljusenergi."
+    }
+   ],
+   "err": null,
+   "ra": null,
+   "at": "18:14:28"
+  },
+  {
+   "test": "C3 kort summary",
+   "status": 200,
+   "ms": 4078,
+   "n_cards": 4,
+   "n_test": 5,
+   "cards": [
+    {
+     "q": "Vad är mitokondriens huvudsakliga uppgift i cellen?",
+     "a": "Mitokondrien producerar energi i cellen, i form av ATP, genom cellandning."
+    },
+    {
+     "q": "Vilken molekyl fungerar som cellens energivaluta?",
+     "a": "ATP (adenosintrifosfat) är den molekyl som lagrar och överför energi i cellen."
+    },
+    {
+     "q": "Var i cellen sker energiproduktionen?",
+     "a": "Energiproduktionen sker i mitokondrien, som är cellens kraftverk."
+    },
+    {
+     "q": "Vilket gas används av mitokondrien vid energiproduktion?",
+     "a": "Syrgas (O2) används vid cellandningen i mitokondrien för att producera energi."
+    }
+   ],
+   "tests": [
+    {
+     "q": "Vad är mitokondrien och vilken funktion har den?",
+     "a": "Mitokondrien är en organell i cellen som producerar energi i form av ATP genom cellandning."
+    },
+    {
+     "q": "Förklara varför celler som kräver mycket energi ofta har många mitokondrier.",
+     "a": "Fler mitokondrier ger större kapacitet att producera ATP, vilket behövs i celler med hög energiförbrukning, till exempel muskelceller."
+    },
+    {
+     "q": "Vilken molekyl lagrar och transporterar energi från mitokondrien till andra delar av cellen?",
+     "a": "ATP (adenosintrifosfat)."
+    },
+    {
+     "q": "Varför skulle en cell dö om mitokondrierna slutade fungera?",
+     "a": "Cellen skulle få för lite ATP och kunna därför inte utföra de energikrävande processer som den behöver för att leva."
+    },
+    {
+     "q": "En cell i en sjuk person har mitokondrier som fungerar sämre än normalt. Vad kan hända med cellens energiproduktion och varför?",
+     "a": "Energiproduktionen minskar eftersom mindre ATP bildas genom cellandningen, vilket kan leda till trötthet och nedsatt cellfunktion."
+    }
+   ],
+   "err": null,
+   "ra": null,
+   "at": "18:14:34"
+  },
+  {
+   "test": "C4 tom summary",
+   "status": 400,
+   "body": {
+    "error": {
+     "code": "invalid_request",
+     "message": "summary is required",
+     "fallback": false
+    }
+   },
+   "at": "18:14:36"
+  },
+  {
+   "test": "C5 för lång summary",
+   "status": 413,
+   "body": {
+    "error": {
+     "code": "payload_too_large",
+     "message": "summary exceeds 6000 characters",
+     "fallback": false
+    }
+   },
+   "at": "18:14:38"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0,
+   "other": 0.0013,
+   "backend": "e70212f 18:12",
+   "at": "18:14:39"
+  },
+  {
+   "test": "== profile",
+   "at": "18:14:39"
+  },
+  {
+   "test": "P jag går i nian och har prov i biologi på fredag",
+   "status": 200,
+   "ms": 3349,
+   "profile": {
+    "grade": "y9",
+    "course": null,
+    "subject": "Biologi",
+    "exam_date": "2026-11-13",
+    "no_exam": false
+   },
+   "n_terms": 42,
+   "terms": [
+    "cell",
+    "cellorganell",
+    "cellmembran",
+    "cellkärna",
+    "cytoplasma",
+    "mitokondrie",
+    "kloroplast",
+    "fotosyntes",
+    "cellandning",
+    "ekosystem",
+    "näringskedja",
+    "näringsnät",
+    "producent",
+    "konsument",
+    "nedbrytare",
+    "art",
+    "population",
+    "biologisk mångfald",
+    "evolution",
+    "naturligt urval",
+    "anpassning",
+    "arv",
+    "gen",
+    "DNA",
+    "kromosom",
+    "celldelning",
+    "mitos",
+    "meios",
+    "ärftlighet",
+    "dominant",
+    "recessiv",
+    "fröbildning",
+    "organsystem",
+    "vävnad",
+    "immunförsvar",
+    "smittämne",
+    "bakterie",
+    "virus",
+    "ekologisk nisch",
+    "kretslopp",
+    "klimat",
+    "växthuseffekt"
+   ],
+   "err": null,
+   "at": "18:14:43"
+  },
+  {
+   "test": "P jag går tvåan på gymnasiet, kursen kemi 2, provet är på fredag",
+   "status": 200,
+   "ms": 3059,
+   "profile": {
+    "grade": "gy2",
+    "course": "Kemi 2",
+    "subject": "Kemi",
+    "exam_date": "2026-11-13",
+    "no_exam": false
+   },
+   "n_terms": 50,
+   "terms": [
+    "Atom",
+    "Atomkärna",
+    "Elektron",
+    "Proton",
+    "Neutron",
+    "Joniseringsenergi",
+    "Elektronkonfiguration",
+    "Periodiska systemet",
+    "Atomradie",
+    "Jonbindning",
+    "Kovalent bindning",
+    "Metallbindning",
+    "Vätebindning",
+    "Van der Waals-bindning",
+    "Polär bindning",
+    "Opolär bindning",
+    "Elektronegativitet",
+    "Molekylgeometri",
+    "Lewis-struktur",
+    "Oktettregeln",
+    "Substans",
+    "Ämne",
+    "Molekyl",
+    "Jon",
+    "Mol",
+    "Molmassa",
+    "Substansmängd",
+    "Koncentration",
+    "Löslighet",
+    "Lösning",
+    "Lösningsmedel",
+    "Upplösning",
+    "Utfällning",
+    "Jämvikt",
+    "Jämviktskonstant",
+    "Le Chateliers princip",
+    "Reaktionshastighet",
+    "Katalysator",
+    "Aktiveringsenergi",
+    "Reaktionsentalpi",
+    "Exoterm reaktion",
+    "Endoterm reaktion",
+    "Hess lag",
+    "Syra",
+    "Bas",
+    "pH",
+    "pOH",
+    "Buffert",
+    "Neutralisation",
+    "Oxidation"
+   ],
+   "err": null,
+   "at": "18:14:48"
+  },
+  {
+   "test": "P jag pluggar på högskolan, anatomi, tentan är den femte december",
+   "status": 200,
+   "ms": 2627,
+   "profile": {
+    "grade": "university",
+    "course": null,
+    "subject": "Anatomi",
+    "exam_date": "2026-12-05",
+    "no_exam": false
+   },
+   "n_terms": 47,
+   "terms": [
+    "kroppsbyggnad",
+    "organ",
+    "vävnad",
+    "cell",
+    "skelett",
+    "skelettmuskel",
+    "muskler",
+    "ben",
+    "led",
+    "ledband",
+    "nervsystem",
+    "hjärna",
+    "ryggmärg",
+    "nerv",
+    "blodkärl",
+    "artär",
+    "ven",
+    "hjärta",
+    "lungor",
+    "bröstkorg",
+    "buk",
+    "bukhåla",
+    "bäcken",
+    "huvud",
+    "hals",
+    "rygg",
+    "extremitet",
+    "överarm",
+    "underarm",
+    "lår",
+    "underben",
+    "anatomisk position",
+    "sagittalplan",
+    "frontalplan",
+    "transversalplan",
+    "ledrörelse",
+    "böjning",
+    "sträckning",
+    "rotation",
+    "ledhuvud",
+    "ledskål",
+    "brosk",
+    "senor",
+    "hud",
+    "hormonkörtel",
+    "lymfsystem",
+    "matsmältningssystem"
+   ],
+   "err": null,
+   "at": "18:14:52"
+  },
+  {
+   "test": "P jag går i sjuan, historia, inget prov just nu",
+   "status": 200,
+   "ms": 3684,
+   "profile": {
+    "grade": "y7",
+    "course": null,
+    "subject": "Historia",
+    "exam_date": null,
+    "no_exam": true
+   },
+   "n_terms": 44,
+   "terms": [
+    "Antiken",
+    "Medeltiden",
+    "Vikingatiden",
+    "Kristendomen",
+    "Feodalism",
+    "Reformationen",
+    "Kolonialism",
+    "Upptäcktsresor",
+    "Renässansen",
+    "Industriella revolutionen",
+    "Urbanisering",
+    "Demokrati",
+    "Riksdag",
+    "Monarki",
+    "Kung",
+    "Adel",
+    "Bönder",
+    "Städer",
+    "Hansan",
+    "Gustav Vasa",
+    "Karl XII",
+    "Stormaktstiden",
+    "Frihetstiden",
+    "Gustav III",
+    "Emigration",
+    "Kolonisation",
+    "Förintelsen",
+    "Första världskriget",
+    "Andra världskriget",
+    "Kalla kriget",
+    "Kulturrevolution",
+    "Mesopotamien",
+    "Egypten",
+    "Grekland",
+    "Rom",
+    "Romarriket",
+    "Källkritik",
+    "Primärkälla",
+    "Sekundärkälla",
+    "Tidslinje",
+    "Epok",
+    "Samhälle",
+    "Klimatförändring",
+    "Migration"
+   ],
+   "err": null,
+   "at": "18:14:57"
+  },
+  {
+   "test": "P jag går i åttan och har prov imorgon i matte",
+   "status": 200,
+   "ms": 2674,
+   "profile": {
+    "grade": "y8",
+    "course": null,
+    "subject": "Matematik",
+    "exam_date": "2026-11-09",
+    "no_exam": false
+   },
+   "n_terms": 42,
+   "terms": [
+    "Addition",
+    "Subtraktion",
+    "Multiplikation",
+    "Division",
+    "Bråk",
+    "Decimaltal",
+    "Procent",
+    "Positiva och negativa tal",
+    "Tal på tallinjen",
+    "Ekvation",
+    "Obekant",
+    "Variabel",
+    "Uttryck",
+    "Förenkling",
+    "Parentes",
+    "Prioriteringsregler",
+    "Algebra",
+    "Formel",
+    "Area",
+    "Omkrets",
+    "Volym",
+    "Rektangel",
+    "Kvadrat",
+    "Triangel",
+    "Vinkel",
+    "Rät vinkel",
+    "Spetsig vinkel",
+    "Trubbig vinkel",
+    "Medelvärde",
+    "Median",
+    "Typvärde",
+    "Variationsbredd",
+    "Diagram",
+    "Sannolikhet",
+    "Potens",
+    "Kvadratrot",
+    "Pythagoras sats",
+    "Koordinatsystem",
+    "Symmetri",
+    "Skala",
+    "Enhet",
+    "Mätning"
+   ],
+   "err": null,
+   "at": "18:15:02"
+  },
+  {
+   "test": "P bla bla vad blir det till middag",
+   "status": 200,
+   "ms": 1103,
+   "profile": {
+    "grade": null,
+    "course": null,
+    "subject": null,
+    "exam_date": null,
+    "no_exam": false
+   },
+   "n_terms": 0,
+   "terms": [],
+   "err": null,
+   "at": "18:15:04"
+  },
+  {
+   "test": "P-upd uppdatera med befintlig profil",
+   "status": 200,
+   "profile": {
+    "grade": "y9",
+    "course": null,
+    "subject": "Kemi",
+    "exam_date": null,
+    "no_exam": false
+   },
+   "at": "18:15:09"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0,
+   "other": 0.003,
+   "backend": "e70212f 18:12",
+   "at": "18:15:10"
+  },
+  {
+   "test": "== texts",
+   "at": "18:15:10"
+  },
+  {
+   "test": "T sjung helan går",
+   "text": "Helan går\nsjung hopp faderallan lallan lej\nHelan går\nsjung hopp faderallan lallan lej\nOch den som inte helan tar\nhan heller inte halvan får\nHelan går\nsjung hopp faderallan lallan lej",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1304,
+   "ms": 3213,
+   "cost": 0.01875,
+   "status": 200,
+   "err": null,
+   "at": "18:15:16"
+  },
+  {
+   "test": "T sjung en snapsvisa",
+   "text": "Helan går\nsjung hopp faderallan lallan lej\nHelan går\nsjung hopp faderallan lallan lej\nHelan går, sjung hopp faderallan lallan lej\noch den som inte helan tar\nhan heller ej halvan får\nHelan går, sjung hopp faderallan lallan lej.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 922,
+   "ms": 2700,
+   "cost": 0.00342,
+   "status": 200,
+   "err": null,
+   "at": "18:15:22"
+  },
+  {
+   "test": "T citera Strindberg om kärlek",
+   "text": "«Jag tror nämligen att kärleken är en känsloaffär; man seglar på landkänningar, och går i hamn, men tar man till kompass och kort, så går man på grund.» Det står i novellen Ett dockhem i Giftas av August Strindberg. Källa: Runeberg.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1072,
+   "ms": 4975,
+   "cost": 0.01432,
+   "status": 200,
+   "err": null,
+   "at": "18:15:30"
+  },
+  {
+   "test": "T sjung Tattoo med Loreen",
+   "text": "Tattoo är Loreens bidrag som vann Eurovision Song Contest tvåtusen tjugotre i Liverpool för Sverige. Låten är en dramatisk poplåt om en kärlek som sätter sig så djupt att den känns som en tatuering, något som är permanent och inte går att ta bort. Den skrevs av Loreen tillsammans med flera låtskrivare och blev hennes andra Eurovisionseger efter Euphoria tvåtusen tolv.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1024,
+   "ms": 3523,
+   "cost": 0.01269,
+   "status": 200,
+   "err": null,
+   "at": "18:15:37"
+  },
+  {
+   "test": "T vad är texten till Dancing Queen",
+   "text": "Dancing Queen är en låt av Abba från nittonhundrasjuttiosex, skriven av Benny Andersson, Björn Ulvaeus och Stig Anderson. Den handlar om en sjutton-årig tjej som går ut och dansar en fredagskväll och känner sig som kvällens drottning, med refrängen om att hon är \"dancing queen\".",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1867,
+   "ms": 3980,
+   "cost": 0.003,
+   "status": 200,
+   "err": null,
+   "at": "18:15:44"
+  },
+  {
+   "test": "T recitera Du gamla du fria",
+   "text": "Du gamla, du fria, du fjällhöga nord,\ndu tysta, du glädjerika sköna!\nJag hälsar dig, vänaste land uppå jord,\ndin sol, din himmel, dina ängder gröna.\nDin sol, din himmel, dina ängder gröna.\n\nDu tronar på minnen från fornstora dar,\ndå ärat ditt namn flög över jorden.\nJag vet att du är och du blir vad du var.\nJa, jag vill leva, jag vill dö i Norden.\nJa, jag vill leva, jag vill dö i Norden.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 978,
+   "ms": 6452,
+   "cost": 0.00735,
+   "status": 200,
+   "err": null,
+   "at": "18:15:54"
+  },
+  {
+   "test": "T citera Astrid Lindgren ur Pippi Långstrump",
+   "text": "I Pippi Långstrump själv skriver Astrid Lindgren att Pippi möter nästan allt med tron att hon klarar det, även sådant hon aldrig har gjort förut. Det visar hennes självförtroende och hennes sätt att göra problem till lek. Pippi är också väldigt stark, men använder styrkan för att hjälpa de svaga och sätta sig upp mot orättvisor.",
+   "model": "claude-sonnet-5-5",
+   "first_ms": 1222,
+   "ms": 7004,
+   "cost": 0.00694,
+   "status": 200,
+   "err": null,
+   "at": "18:16:04"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0665,
+   "other": 0.003,
+   "backend": "e70212f 18:12",
+   "at": "18:16:05"
+  },
+  {
+   "test": "== exam",
+   "at": "18:16:05"
+  },
+  {
+   "test": "X parse",
+   "status": 200,
+   "ms": 4636,
+   "body": {
+    "tasks": [
+     {
+      "no": "1",
+      "text": "Beräkna 15 % av 240.",
+      "points": {
+       "E": 1,
+       "C": 0,
+       "A": 0
+      },
+      "answer": "36",
+      "assessment": "Rätt svar 36. 1 E-poäng."
+     },
+     {
+      "no": "2",
+      "text": "Ett par skor kostar 800 kr. På rean är priset sänkt med 25 %. Vad kostar skorna på rean?",
+      "points": {
+       "E": 1,
+       "C": 1,
+       "A": 0
+      },
+      "answer": "600 kr",
+      "assessment": "Rätt svar 600 kr. 1 E-poäng för att räkna ut rabatten (200 kr), 1 C-poäng för rätt pris."
+     },
+     {
+      "no": "3",
+      "text": "Lös ekvationen 3x - 7 = 14.",
+      "points": {
+       "E": 1,
+       "C": 1,
+       "A": 0
+      },
+      "answer": "x = 7",
+      "assessment": "Rätt svar x = 7. 1 E-poäng för att addera 7 på båda sidor, 1 C-poäng för rätt x."
+     },
+     {
+      "no": "4",
+      "text": "Tabellen visar antal besökare i en butik.\nBeräkna medelvärdet av antalet besökare per dag.\n[Tabell: Måndag: 12, Tisdag: 18, Onsdag: 15, Torsdag: 21]",
+      "points": {
+       "E": 1,
+       "C": 1,
+       "A": 0
+      },
+      "answer": "16,5",
+      "assessment": "Rätt svar 16,5. 1 E-poäng för summan 66, 1 C-poäng för rätt medelvärde."
+     },
+     {
+      "no": "5",
+      "text": "Figuren visar en rektangel. Beräkna rektangelns area och omkrets. [Rektangel med bredd 8 cm och höjd 5 cm]",
+      "points": {
+       "E": 1,
+       "C": 1,
+       "A": 1
+      },
+      "answer": "Area 40 cm2, omkrets 26 cm",
+      "assessment": "Area 40 cm2, omkrets 26 cm. 1 E-poäng area, 1 C-poäng omkrets, 1 A-poäng för rätt enheter (cm2 och cm) och tydlig redovisning."
+     },
+     {
+      "no": "6",
+      "text": "Visa att summan av tre på varandra följande heltal alltid är delbar med 3.",
+      "points": {
+       "E": 0,
+       "C": 0,
+       "A": 2
+      },
+      "answer": "Tre tal n, n+1, n+2 har summan 3n+3 = 3(n+1).",
+      "assessment": "1 A-poäng för uttrycket, 1 A-poäng för slutsatsen att det är delbart med 3."
+     }
+    ],
+    "boundaries": [
+     {
+      "grade": "E",
+      "total": 4
+     },
+     {
+      "grade": "C",
+      "total": 7,
+      "min_ca": 2
+     },
+     {
+      "grade": "A",
+      "total": 10,
+      "min_a": 3
+     }
+    ],
+    "usage": {
+     "input_tokens": 4852,
+     "output_tokens": 987,
+     "est_cost_usd": 0.0009787
+    }
+   },
+   "kb": [
+    139,
+    148
+   ],
+   "at": "18:16:11"
+  },
+  {
+   "test": "X grade 2 'det blir sexhundra kronor'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 600,
+    "equal": true
+   },
+   "feedback": "Du fick rätt pris, 600 kr, och det ger C-poäng. Men du visade ingen uträkning, så E-poängen för att räkna ut rabatten kan du tyvärr inte få; skriv gärna hur mycket 25 % av 800 kr är.",
+   "err": null,
+   "at": "18:16:15"
+  },
+  {
+   "test": "X grade 2 '25 % av 800 är 200, så 800 - 200 = 600 kr'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 600,
+    "equal": true
+   },
+   "feedback": "Bra att du räknade ut rabatten på 200 kr och drog av den från 800 kr, så du fick rätt pris, 600 kr. Det finns inget extra som saknas i din lösning för just den här uppgiften.",
+   "err": null,
+   "at": "18:16:18"
+  },
+  {
+   "test": "X grade 2 'jag tar 800 delat med 0,75 och får 1067'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 1067,
+    "equal": false
+   },
+   "feedback": "Du har ett försök med division med 0,75, men det ger ett större pris än 800 kr, vilket inte stämmer för en rea. Försök att först räkna ut hur många kronor 25 % av 800 kr är och dra sedan bort det från 800 kr.",
+   "err": null,
+   "at": "18:16:21"
+  },
+  {
+   "test": "X grade 2 '500'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 500,
+    "equal": false
+   },
+   "feedback": "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.",
+   "err": null,
+   "at": "18:16:24"
+  },
+  {
+   "test": "X grade 2 '600,5 kr'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 600,
+    "given": 600.5,
+    "equal": false
+   },
+   "feedback": "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.",
+   "err": null,
+   "at": "18:16:28"
+  },
+  {
+   "test": "X grade 3 'x = 7'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 7,
+    "equal": true
+   },
+   "feedback": "Svaret x = 7 är rätt och ger C-poängen. Men du visar ingen metod, så E-poängen för att addera 7 på båda sidor ges inte. Skriv gärna ut stegen, till exempel hur du flyttar konstanten över likhetstecknet.",
+   "err": null,
+   "at": "18:16:31"
+  },
+  {
+   "test": "X grade 3 '3x = 21 så x är sju'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 7,
+    "equal": true
+   },
+   "feedback": "Bra att du skrev 3x = 21, vilket visar att du adderade 7 på båda sidor, och att du fick rätt x = 7. Du kunde ha visat steget där du dividerar med 3 för att tydligare motivera svaret.",
+   "err": null,
+   "at": "18:16:35"
+  },
+  {
+   "test": "X grade 3 'x = 21'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 21,
+    "equal": false
+   },
+   "feedback": "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.",
+   "err": null,
+   "at": "18:16:41"
+  },
+  {
+   "test": "X grade 3 '7 = x'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 7,
+    "given": 7,
+    "equal": true
+   },
+   "feedback": "Svaret x = 7 är rätt, så du får C-poängen. Men inget steg är visat, och E-poängen kräver att du visar hur du adderar 7 på båda sidor. Skriv gärna upp hela uträkningen nästa gång.",
+   "err": null,
+   "at": "18:16:45"
+  },
+  {
+   "test": "X grade 4 '66 delat med 4 är 16,5'",
+   "status": 200,
+   "points": {
+    "E": 1,
+    "C": 1,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 16.5,
+    "given": 16.5,
+    "equal": true
+   },
+   "feedback": "Bra att du räknade ut summan 66 och delade med 4, vilket ger rätt medelvärde 16,5. Du fick både E-poäng för summan och C-poäng för det korrekta resultatet.",
+   "err": null,
+   "at": "18:16:47"
+  },
+  {
+   "test": "X grade 4 'ungefär 16'",
+   "status": 200,
+   "points": {
+    "E": 0,
+    "C": 0,
+    "A": 0
+   },
+   "numeric": {
+    "expected": 16.5,
+    "given": 16,
+    "equal": false
+   },
+   "feedback": "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.",
+   "err": null,
+   "at": "18:16:51"
+  },
+  {
+   "test": "X grade 4 '16,6'",
+   "status": 429,
+   "points": null,
+   "numeric": null,
+   "feedback": null,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "För många försök just nu. Vänta en liten stund och försök igen.",
+     "fallback": false
+    }
+   },
+   "at": "18:16:53"
+  },
+  {
+   "test": "X grade 5 'area 40 cm2 och omkrets 26 cm'",
+   "status": 429,
+   "points": null,
+   "numeric": null,
+   "feedback": null,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "För många försök just nu. Vänta en liten stund och försök igen.",
+     "fallback": false
+    }
+   },
+   "at": "18:16:55"
+  },
+  {
+   "test": "X grade 5 'area 40, omkrets 13 cm'",
+   "status": 429,
+   "points": null,
+   "numeric": null,
+   "feedback": null,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "För många försök just nu. Vänta en liten stund och försök igen.",
+     "fallback": false
+    }
+   },
+   "at": "18:16:56"
+  },
+  {
+   "test": "X grade 5 '40 och 26'",
+   "status": 429,
+   "points": null,
+   "numeric": null,
+   "feedback": null,
+   "err": {
+    "error": {
+     "code": "rate_limited",
+     "message": "För många försök just nu. Vänta en liten stund och försök igen.",
+     "fallback": false
+    }
+   },
+   "at": "18:16:58"
+  },
+  {
+   "test": "X hint 1",
+   "status": 200,
+   "hint": "Tänk på vad procenten 25 procent betyder: den anger hur stor del av ursprungspriset som dras av, så börja med att ta reda på hur mycket 25 procent av 800 kronor är.",
+   "at": "18:17:02"
+  },
+  {
+   "test": "X hint 2",
+   "status": 200,
+   "hint": "Tänk på att 25 procent av ett belopp är detsamma som en fjärdedel av beloppet. Räkna först ut hur mycket rabatten är av de 800 kronorna, och dra sedan bort den från ordinarie pris.",
+   "at": "18:17:05"
+  },
+  {
+   "test": "X hint 3",
+   "status": 200,
+   "hint": "Börja med att ta reda på hur mycket 25 procent av 800 kronor är. Det gör du genom att räkna 25 procent som bråket 25/100 eller som 0,25 och multiplicera med 800. När du har fått rabatten i kronor återstår att dra bort den från det ursprungliga priset på 800 kronor.",
+   "at": "18:17:08"
+  },
+  {
+   "test": "X summary (C-gräns 7: 5E+3C=8 poäng)",
+   "status": 200,
+   "body": {
+    "points": {
+     "E": 5,
+     "C": 3,
+     "A": 0
+    },
+    "total": 8,
+    "grade": "C",
+    "to_next": {
+     "grade": "A",
+     "total": 3,
+     "a": 3
+    },
+    "tasks": 5,
+    "spoken": "Du har 8 poäng, varav 3 C-poäng och 0 A-poäng. Det räcker till betyget C. Till A saknas 3 A-poäng."
+   },
+   "at": "18:17:10"
+  },
+  {
+   "test": "X okänd action",
+   "status": 400,
+   "body": {
+    "error": {
+     "code": "invalid_request",
+     "message": "action must be parse, hint, grade or summary",
+     "fallback": false
+    }
+   },
+   "at": "18:17:12"
+  },
+  {
+   "test": "X parse fel format",
+   "status": 400,
+   "body": {
+    "error": {
+     "code": "invalid_request",
+     "message": "pages[0] needs media_type (jpeg/png/webp) and base64 data",
+     "fallback": false
+    }
+   },
+   "at": "18:17:14"
+  },
+  {
+   "test": "spent so far",
+   "answer": 0.0665,
+   "other": 0.0057,
+   "backend": "e70212f 18:12",
+   "at": "18:17:15"
+  }
+ ]
+}

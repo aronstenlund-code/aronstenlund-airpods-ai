@@ -616,7 +616,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const gradeReply = tutor && !plan && !quiz && !!lastQ && !!lastQuestion(lastQ.a) &&
         lastQ.a.trim().endsWith("?") && body.fragment.trim().split(/\s+/).length <= 12 &&
         !looksLikeQuestion(body.fragment) && (replyAge === undefined || replyAge <= GRADE_REPLY_MAX_AGE_SEC);
-      const noChecks = !quiz && tutor && body.persona === "tutor" && /inga kontrollfrågor/i.test(body.personaSetup);
+      // K2: with a profile, a check question only when the profile asks for one (a "Kontrollfrågor" line that is not "inga")
+      const noChecks = !quiz && tutor && body.persona === "tutor" && !!body.personaSetup &&
+        (!/kontrollfrågor\s*:/i.test(body.personaSetup) || /inga kontrollfrågor/i.test(body.personaSetup)) &&
+        !gradeReply;
       let silenced = false;
 
       // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz

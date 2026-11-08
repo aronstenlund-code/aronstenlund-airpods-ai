@@ -121,6 +121,7 @@ def run_case(tok, case, model, judge):
     u = done.get("usage") or {}
     return {
         **case, "answer": a["text"], "scores": g["scores"], "first_ok": g["first_answer_suffices"], "note": g.get("note", ""),
+        "strict": g.get("strict"), "empty": g.get("empty", 0), "words": g.get("words"), "rubric": g.get("rubric", 1),
         "server_ttft": (done.get("timing") or {}).get("ttft_ms"), "client_ttft": a["client_ttft"],
         "answer_cost": float(u.get("est_cost_usd") or 0), "judge_cost": float((g.get("usage") or {}).get("est_cost_usd") or 0),
         "cache_read": u.get("cache_read_tokens"), "chars": len(a["text"]),
@@ -140,7 +141,10 @@ def summary(rows, model, judge):
     out = {
         "model": model, "judge": judge, "cases": len(rows), "graded": n, "errors": len(rows) - n,
         "first_answer_suffices_pct": share(lambda r: r["first_ok"] == 1),
-        **{f"{k}_pct": share(lambda r, k=k: r["scores"][k] == 1) for k in ("correct", "a_level", "sufficient", "natural", "length_ok")},
+        **{f"{k}_pct": share(lambda r, k=k: r["scores"].get(k) == 1) for k in ("correct", "a_level", "sufficient", "covers", "natural", "length_ok", "closing_ok")},
+        "strict_pct": share(lambda r: r.get("strict") == 1),
+        "empty": sum(1 for r in ok if r.get("empty")),
+        "words_p50": pct([r.get("words") for r in ok], .5), "words_p90": pct([r.get("words") for r in ok], .9),
         "server_ttft_p50": pct([r["server_ttft"] for r in ok], .5), "server_ttft_p90": pct([r["server_ttft"] for r in ok], .9),
         "client_ttft_p50": pct([r["client_ttft"] for r in ok], .5),
         "answer_cost_mean_usd": round(statistics.mean([r["answer_cost"] for r in ok]), 6) if n else 0,
@@ -165,6 +169,7 @@ def main():
     ap.add_argument("--out", default=os.path.join(ROOT, "reports", "eval"))
     ap.add_argument("--tokens", default="", help="file that keeps refresh tokens between local runs (never commit it)")
     ap.add_argument("--users", type=int, default=USERS)
+    ap.add_argument("--tag", default="", help="suffix for the output file name, e.g. k2-v1")
     a = ap.parse_args()
     cases = json.load(open(os.path.join(ROOT, "scripts", "provlage-bank.json"), encoding="utf-8"))
     if a.only:
@@ -184,19 +189,20 @@ def main():
     s = summary(rows, a.model, a.judge)
     os.makedirs(a.out, exist_ok=True)
     date = datetime.datetime.now().strftime("%Y-%m-%d")
-    base = os.path.join(a.out, f"provlage-{date}-{a.model}{'-sample' if a.every > 1 or a.limit else ''}")
+    base = os.path.join(a.out, f"provlage-{date}-{a.model}{'-' + a.tag if a.tag else ''}{'-sample' if a.every > 1 or a.limit else ''}")
     json.dump({"summary": s, "rows": rows}, open(base + ".json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    lines = [f"# Provläge test bank {date}: {a.model} (judge {a.judge})", "",
+    lines = [f"# Provläge test bank {date}: {a.model} (judge {a.judge}, rubric v2)", "",
              f"**First answer is enough: {s['first_answer_suffices_pct']} %** of {s['graded']} graded ({s['errors']} errors). Target ≥ 90 %.", "",
-             "| correct | A level | sufficient | natural | length | TTFT p50 server / client (ms) | cost per answer (USD) |", "|---|---|---|---|---|---|---|",
-             f"| {s['correct_pct']} % | {s['a_level_pct']} % | {s['sufficient_pct']} % | {s['natural_pct']} % | {s['length_ok_pct']} % | {s['server_ttft_p50']} / {s['client_ttft_p50']} | {s['answer_cost_mean_usd']} |", "",
+             f"Strict (correct, sufficient and covers the expected points): {s['strict_pct']} %. Empty answers: {s['empty']}. Words p50 / p90: {s['words_p50']} / {s['words_p90']}.", "",
+             "| correct | A level | sufficient | covers | natural | length (code) | no unasked question (code) | TTFT p50 server / client (ms) | cost per answer (USD) |", "|---|---|---|---|---|---|---|---|---|",
+             f"| {s['correct_pct']} % | {s['a_level_pct']} % | {s['sufficient_pct']} % | {s['covers_pct']} % | {s['natural_pct']} % | {s['length_ok_pct']} % | {s['closing_ok_pct']} % | {s['server_ttft_p50']} / {s['client_ttft_p50']} | {s['answer_cost_mean_usd']} |", "",
              "By kind (first answer enough): " + ", ".join(f"{k} {v}" for k, v in s["by_kind"].items()), "",
              f"Cost: answers {s['answer_cost_total_usd']} USD, judge {s['judge_cost_total_usd']} USD.", "", "## Misses", ""]
     for r in rows:
         if r.get("error"):
             lines.append(f"- **{r['id']}** ({r['kind']}) \"{r['q']}\": error {r['error']}")
         elif r["first_ok"] != 1:
-            bad = ", ".join(k for k, v in r["scores"].items() if v == 0)
+            bad = ", ".join(k for k, v in r["scores"].items() if v == 0) + (" (EMPTY)" if r.get("empty") else "")
             lines.append(f"- **{r['id']}** ({r['kind']}, {r['grade']}, {r['subject']}) \"{r['q']}\" → {bad}: {r['note']}  \n  > {r['answer'][:220]}")
     open(base + ".md", "w", encoding="utf-8").write("\n".join(lines) + "\n")
     print(json.dumps(s, ensure_ascii=False))

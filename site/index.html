@@ -256,6 +256,8 @@
     from { opacity: 0; filter: blur(3px); }
     to { opacity: 1; filter: blur(0); }
   }
+  .a:focus { outline: none; }
+  .a:focus-visible { outline: 3px solid var(--blue); outline-offset: 6px; border-radius: 4px; }
   .a.err { font-size: 1.25rem; color: var(--bad); font-weight: 600; }
   .thinking { display: inline-flex; gap: 7px; padding: 14px 0; }
   .thinking i {
@@ -474,7 +476,24 @@
     width: 100%;
   }
   .consent { display: flex; gap: 12px; align-items: flex-start; min-height: 44px; padding-top: 2px; cursor: pointer; }
-  .consent input { width: 24px; height: 24px; margin: 0; flex: none; accent-color: var(--blue); }
+  /* Rutan ritas 22 px men träffytan är 44×44 (Oscar, Ke2). Negativ marginal håller raden lika hög som förut. */
+  .consent input {
+    -webkit-appearance: none; appearance: none;
+    width: 44px; height: 44px; margin: -10px -8px -10px -10px;
+    flex: none; display: grid; place-items: center;
+    background: none; border: 0; border-radius: 10px; cursor: pointer;
+  }
+  .consent input::before, .consent input::after { content: ""; grid-area: 1 / 1; }
+  .consent input::before {
+    width: 22px; height: 22px; box-sizing: border-box;
+    border: 2px solid var(--mut); border-radius: 5px; background: var(--bg);
+  }
+  .consent input:checked::before { background: var(--blue); border-color: var(--blue); }
+  .consent input:checked::after {
+    width: 6px; height: 11px; margin-top: -3px;
+    border: solid var(--on-blue); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+  }
+  .consent input:focus-visible { outline: 3px solid var(--blue); outline-offset: -6px; }
   .wait .pill { width: 100%; min-height: 54px; font-size: 1.0625rem; }
   .wait .pill[disabled] { opacity: .6; cursor: progress; }
   .hp { position: absolute; left: -9999px; }
@@ -486,6 +505,8 @@
   .fine { color: var(--mut); font-size: .9375rem; line-height: 1.45; max-width: 60ch; margin-top: 28px; }
   .fine + .fine { margin-top: 10px; }
   .fine a { color: var(--blue); }
+  /* Länkar i löptext: 44 px hög träffyta utan att raderna glider isär. */
+  .fine a, .mini-fine a { display: inline-block; padding: 12px 0; margin: -12px 0; }
 
   /* Endast ett musstyrt hovertillstånd, så att det inte fastnar på touch. */
   @media (hover: hover) and (pointer: fine) {
@@ -593,7 +614,7 @@
       </p>
       <div class="convo" id="convo" hidden>
         <p class="q hand" id="q"></p>
-        <div class="a" id="a" aria-live="polite"></div>
+        <div class="a" id="a" aria-live="polite" tabindex="-1"></div>
         <p class="note" id="note" role="status" hidden></p>
         <form class="nudge" id="nudge" novalidate hidden>
           <p class="nudge-h" id="mini-h">Ladda ner appen för att använda den med låst skärm och i alla lägen. Den är inte ute än, så vi mejlar när den finns.</p>
@@ -771,6 +792,7 @@ function showLimit(message) {
   setView("answer");
   answerError(message);
   $("nudge").hidden = false; $("dock").hidden = false; $("stop").hidden = true; $("again").hidden = false; $("left").textContent = "";
+  keepFocus();
 }
 function limitReached() {
   if (used() < DEMO_LIMIT) return false;
@@ -901,12 +923,18 @@ function resetDock(busy) {
   $("again").hidden = busy;
   $("nudge").hidden = true;
 }
+function keepFocus() {
+  const el = document.activeElement;
+  const lost = !el || el === document.body || !el.getClientRects().length;
+  if (lost && !$("convo").hidden) $("a").focus({ preventScroll: true });
+}
 function finish(r) {
   r.busy = false;
   if (run !== r) return;
   $("stop").hidden = true;
   $("again").hidden = false;
   $("nudge").hidden = !r.answer;
+  keepFocus();
 }
 function cancelRun() {
   stopExample();
@@ -921,6 +949,7 @@ async function ask(text, mode) {
   if (limitReached()) return;
   const r = run = { busy: true, text, answer: "", buf: "", chain: Promise.resolve(), cancelled: false, ac: new AbortController() };
   setView("answer", document.body.dataset.view === "idle");
+  requestAnimationFrame(keepFocus);
   $("q").textContent = text;
   showThinking();
   resetDock(true);

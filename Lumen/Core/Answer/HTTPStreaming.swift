@@ -93,8 +93,10 @@ extension AnswerError {
         if let urlError = error as? URLError {
             switch urlError.code {
             case .notConnectedToInternet, .networkConnectionLost, .dataNotAllowed, .internationalRoamingOff,
-                 .cannotFindHost, .cannotConnectToHost, .dnsLookupFailed, .timedOut:
+                 .cannotFindHost, .cannotConnectToHost, .dnsLookupFailed:
                 return .offline
+            case .timedOut:
+                return .transport(detail: "timed out") // A5: too slow is "cannot answer now", not "no internet"
             case .cancelled:
                 return .cancelled
             default:

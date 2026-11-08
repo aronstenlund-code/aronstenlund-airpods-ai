@@ -39,6 +39,12 @@ final class Speaker {
     private var drainGeneration = 0
     /// D80: audio for a sentence fetched before the pause was over, by its text.
     private var prepared: [String: Task<(samples: [Int16], sampleRate: Double)?, Never>] = [:]
+    /// A4: how smooth the voice was: this answer so far, the last whole answer, everything since launch.
+    private var answerStats = VoiceStreamStats()
+    private(set) var lastAnswerStats: VoiceStreamStats?
+    private(set) var totalStats = VoiceStreamStats()
+    /// A4: called when an answer has been spoken to the end, with its stats (the log line).
+    var onVoiceStats: (@MainActor (VoiceStreamStats) -> Void)?
 
     init(settings: VoiceSettings, apple: any TTSProvider, premium: (any TTSProvider)?, playback: any PlaybackServicing) {
         self.settings = settings
@@ -61,8 +67,24 @@ final class Speaker {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         queue.append(Request(text: trimmed, language: language, voice: settings.voice))
+        // A4: something is already being spoken: fetch this sentence's voice now, so it follows without a pause.
+        if drainTask != nil { prepare(trimmed, language: language) }
         startDrainingIfNeeded()
     }
+
+    /// A5: a short message from the app itself, always in Apple's voice: it must be heard when ElevenLabs is the
+    /// thing that failed. Ignored in silent mode (it is on the screen anyway).
+    func announce(_ text: String, language: TranscriptionLanguage) {
+        guard settings.speakAnswers else { return }
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        queue.append(Request(text: trimmed, language: language, voice: .appleDefault))
+        startDrainingIfNeeded()
+    }
+
+    /// A5: the chosen voice failed (the sentence was read with Apple's voice), or worked again.
+    var onVoiceFallback: (@MainActor (String) -> Void)?
+    var onVoiceRecovered: (@MainActor () -> Void)?
 
     /// D80: fetches the voice for `text` now, to play it the moment it is queued. Premium voice only.
     @discardableResult
@@ -97,6 +119,7 @@ final class Speaker {
         drainGeneration += 1
         drainTask?.cancel()
         drainTask = nil
+        answerStats = VoiceStreamStats()
         queue.removeAll()
         awaitingFirstAudio = nil
         discardPrepared()
@@ -127,6 +150,7 @@ final class Speaker {
             if generation == drainGeneration {
                 drainTask = nil
                 status = .idle
+                finishAnswerStats()
                 onFinished?()
             }
         }
@@ -135,6 +159,14 @@ final class Speaker {
             let request = queue.removeFirst()
             await speak(request)
         }
+    }
+
+    private func finishAnswerStats() {
+        guard answerStats.sentences > 0 else { return }
+        lastAnswerStats = answerStats
+        totalStats.add(answerStats)
+        onVoiceStats?(answerStats)
+        answerStats = VoiceStreamStats()
     }
 
     private func speak(_ request: Request) async {
@@ -146,7 +178,10 @@ final class Speaker {
             awaitingFirstAudio = provider.name
             do {
                 try playback.play(samples: audio.samples, sampleRate: audio.sampleRate)
+                playback.endOfSpeech()
                 spokenCount += 1
+                answerStats.sentences += 1
+                answerStats.prefetched += 1
                 notice = nil
                 return
             } catch {
@@ -157,7 +192,9 @@ final class Speaker {
         awaitingFirstAudio = provider.name
         do {
             try await provider.speak(request.text, language: request.language, voice: request.voice)
+            if provider.name != apple.name { onVoiceRecovered?() }
             spokenCount += 1
+            if let stats = provider.lastStats { answerStats.add(stats) } else { answerStats.sentences += 1 }
             notice = nil
         } catch {
             if Task.isCancelled || error == .cancelled { return }
@@ -165,6 +202,7 @@ final class Speaker {
             if error.wantsFallback, provider.name != apple.name {
                 fallbackCount += 1
                 notice = "Premium voice unavailable — using Apple's voice (\(error.localizedDescription))"
+                onVoiceFallback?(error.localizedDescription)
                 status = .speaking(provider: apple.name)
                 awaitingFirstAudio = apple.name
                 do {

@@ -23,12 +23,22 @@ protocol PlaybackServicing: AnyObject {
     func play(samples: [Int16], sampleRate: Double) throws(AudioError)
     func stop()
     func clearLatencySamples()
+    /// A4: seconds of speech scheduled but not played yet.
+    var queuedSeconds: Double { get }
+    /// A4: when the scheduled speech last ran out (nil while something is queued).
+    var drainedAt: Date? { get }
+    /// A4: a sentence's audio is complete: the resampler's last frames play now instead of opening the next one.
+    func endOfSpeech()
 }
 
 extension PlaybackServicing {
     func speak(_ text: String, language: String) async throws(AudioError) {
         try await speak(text, language: language, voiceIdentifier: nil)
     }
+
+    var queuedSeconds: Double { 0 }
+    var drainedAt: Date? { nil }
+    func endOfSpeech() {}
 }
 
 /// Measures the time from a play request to the first non-silent buffer leaving the time-pitch node.
@@ -130,6 +140,10 @@ final class PlaybackService: PlaybackServicing {
     }
     private var activeStreams = 0
     private var pendingBuffers = 0
+    /// A4: frames scheduled and not played yet (playback format, 24 kHz), and when that last reached zero.
+    private var queuedFrames = 0
+    private(set) var drainedAt: Date?
+    var queuedSeconds: Double { Double(queuedFrames) / playbackFormat.sampleRate }
     /// Bumped by `stop()` so completion callbacks of discarded buffers are ignored.
     private var scheduleGeneration = 0
 
@@ -245,6 +259,7 @@ final class PlaybackService: PlaybackServicing {
             try schedule(chunk)
             chunkCount += 1
         }
+        endOfSpeech() // A4: the resampler's tail belongs to this sentence
         Log.playback.info("TTS finished scheduling \(chunkCount) buffers")
     }
 
@@ -266,10 +281,28 @@ final class PlaybackService: PlaybackServicing {
         updateSpeaking()
     }
 
-    private func bufferFinished(generation: Int) {
+    private func bufferFinished(generation: Int, frames: Int) {
         guard generation == scheduleGeneration else { return }
         pendingBuffers = max(0, pendingBuffers - 1)
+        queuedFrames = max(0, queuedFrames - frames)
+        if pendingBuffers == 0 { drainedAt = Date() }
         updateSpeaking()
+    }
+
+    /// A4: drains the frames the sample-rate converter still holds (Apple's voice is not 24 kHz) and resets it, so
+    /// they end this sentence instead of starting the next one (a click). Streamed 24 kHz audio passes straight
+    /// through and has nothing held.
+    func endOfSpeech() {
+        guard let converter = ttsConverter,
+              let output = AVAudioPCMBuffer(pcmFormat: playbackFormat, frameCapacity: 4_096) else { return }
+        do {
+            try converter.flush(into: output)
+        } catch {
+            Log.playback.error("TTS converter flush failed: \(error.localizedDescription, privacy: .public)")
+            return
+        }
+        guard output.frameLength > 0 else { return }
+        enqueue(output)
     }
 
     private func updateSpeaking() {
@@ -300,12 +333,19 @@ final class PlaybackService: PlaybackServicing {
         }
         try converter.convert(input, into: output)
         guard output.frameLength > 0 else { return }
+        enqueue(output)
+    }
+
+    private func enqueue(_ output: AVAudioPCMBuffer) {
         pendingBuffers += 1
+        let frames = Int(output.frameLength)
+        queuedFrames += frames
+        drainedAt = nil
         updateSpeaking()
         let generation = scheduleGeneration
         player.scheduleBuffer(output, completionCallbackType: .dataPlayedBack,
                               completionHandler: Self.playedBackHandler { [weak self] in
-                                  Task { @MainActor in self?.bufferFinished(generation: generation) }
+                                  Task { @MainActor in self?.bufferFinished(generation: generation, frames: frames) }
                               })
         if !player.isPlaying { player.play() }
         onAudioScheduled?()
@@ -316,7 +356,10 @@ final class PlaybackService: PlaybackServicing {
         scheduleGeneration += 1
         player.stop()
         pendingBuffers = 0
+        queuedFrames = 0
+        drainedAt = nil
         activeStreams = 0
+        ttsConverter?.resetForNextStream()
         updateSpeaking()
     }
 

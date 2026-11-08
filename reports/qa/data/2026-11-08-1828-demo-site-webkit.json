@@ -1,0 +1,420 @@
+[
+ {
+  "test": "load webkit-desktop-unthrottled",
+  "wall_ms": 1433,
+  "dcl": 1277,
+  "load": 1426,
+  "fcp": 1339,
+  "transfer_kb": 60,
+  "requests": 3,
+  "console_errors": [
+   "Viewport argument key \"interactive-widget\" not recognized and ignored."
+  ],
+  "failed": [],
+  "resources": [
+   [
+    "https://aronstenlund-code.github.io/aronstenlund-airpods-ai/",
+    200,
+    18
+   ],
+   [
+    "und-code.github.io/aronstenlund-airpods-ai/fonts/kalam.woff2",
+    200,
+    21
+   ],
+   [
+    "thub.io/aronstenlund-airpods-ai/fonts/familjen-grotesk.woff2",
+    200,
+    18
+   ]
+  ],
+  "at": "18:27:09"
+ },
+ {
+  "test": "load webkit-mobile-unthrottled",
+  "wall_ms": 87,
+  "dcl": 21,
+  "load": 77,
+  "fcp": 69,
+  "transfer_kb": 60,
+  "requests": 4,
+  "console_errors": [
+   "Viewport argument key \"interactive-widget\" not recognized and ignored."
+  ],
+  "failed": [],
+  "resources": [
+   [
+    "https://aronstenlund-code.github.io/aronstenlund-airpods-ai/",
+    200,
+    18
+   ],
+   [
+    "thub.io/aronstenlund-airpods-ai/fonts/familjen-grotesk.woff2",
+    200,
+    18
+   ],
+   [
+    "und-code.github.io/aronstenlund-airpods-ai/fonts/kalam.woff2",
+    200,
+    21
+   ],
+   [
+    "https://xjczbzfkmbjdebwlccki.supabase.co/auth/v1/signup",
+    200,
+    0
+   ]
+  ],
+  "at": "18:27:10"
+ },
+ {
+  "test": "shot webkit-mobile-light-idle",
+  "kb": 109,
+  "at": "18:27:10"
+ },
+ {
+  "test": "page",
+  "title": "Lumen: fråga högt, få svaret i örat",
+  "lang": "sv",
+  "h1": "Fråga högt. Få svaret i örat.",
+  "scroll_w_ok": true,
+  "viewport_meta": "width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content",
+  "at": "18:27:10"
+ },
+ {
+  "test": "contrast webkit-mobile-light-idle",
+  "checked": 35,
+  "failing": [],
+  "at": "18:27:10"
+ },
+ {
+  "test": "ask 1 (chip) Orsaker till första världskriget",
+  "first_text_ms": 1372,
+  "chars": 360,
+  "answer": "Första världskriget orsakades främst av militarism, nationalism och det komplicerade allianssystemet i Europa, men den direkta utlösaren var mordet på den österrikiske tronföljaren Franz Ferdinand i S",
+  "note": "",
+  "left": "4 frågor kvar idag",
+  "again_visible": true,
+  "at": "18:27:14"
+ },
+ {
+  "test": "shot webkit-mobile-light-answer",
+  "kb": 187,
+  "at": "18:27:14"
+ },
+ {
+  "test": "ask 2 orsaker till första världskriget",
+  "first_text_ms": 1247,
+  "chars": 241,
+  "answer": "Det är samma ämne som förra svaret, så här är en fördjupning: de långsiktiga orsakerna var militarism, nationalism, imperialism och ett rivaliserande allianssystem, medan mordet i Sarajevo nittonhundr",
+  "note": "",
+  "left": "3 frågor kvar idag",
+  "again_visible": true,
+  "at": "18:27:18"
+ },
+ {
+  "test": "ask 3 vad betyder low-key",
+  "first_text_ms": 1181,
+  "chars": 152,
+  "answer": "Low-key betyder ungefär lågmäld eller diskret, alltså något som inte görs stort väv av. På svenska säger man ofta lugn, återhållen eller tillbakadragen.",
+  "note": "",
+  "left": "2 frågor kvar idag",
+  "again_visible": true,
+  "at": "18:27:22"
+ },
+ {
+  "test": "ask 4 hur många ben har en spindel",
+  "first_text_ms": 1412,
+  "chars": 24,
+  "answer": "En spindel har åtta ben.",
+  "note": "",
+  "left": "1 fråga kvar idag",
+  "again_visible": true,
+  "at": "18:27:26"
+ },
+ {
+  "test": "ask 5 vem var Gustav Vasa",
+  "first_text_ms": 1506,
+  "chars": 134,
+  "answer": "Gustav Vasa var kung av Sverige från femton hundra tjugo till femton hundra sextio, och han räknas som landets grundare som enad stat.",
+  "note": "",
+  "left": "0 frågor kvar idag",
+  "again_visible": true,
+  "at": "18:27:30"
+ },
+ {
+  "test": "network calls so far",
+  "calls": [
+   [
+    "answer",
+    "OPTIONS"
+   ],
+   [
+    "tts",
+    "OPTIONS"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "tts",
+    "POST"
+   ],
+   [
+    "answer",
+    "OPTIONS"
+   ],
+   [
+    "tts",
+    "OPTIONS"
+   ],
+   [
+    "answer",
+    "POST"
+   ],
+   [
+    "waitlist",
+    "POST"
+   ],
+   [
+    "waitlist",
+    "POST"
+   ],
+   [
+    "waitlist",
+    "POST"
+   ]
+  ],
+  "at": "18:27:31"
+ },
+ {
+  "test": "6th question (client counter)",
+  "visible_text_has_limit": false,
+  "snippet": [],
+  "at": "18:27:33"
+ },
+ {
+  "test": "shot webkit-mobile-light-limit-client",
+  "kb": 140,
+  "at": "18:27:33"
+ },
+ {
+  "test": "server visitor cap (local counter removed)",
+  "snippet": [
+   "Du har använt dagens 5 demofrågor. Ladda ner appen eller kom tillbaka i morgon.",
+   "Ladda ner appen för att använda den med låst skärm och i alla lägen. Den är inte ute än, så vi mejlar när den finns.",
+   "Ladda ner appen för att använda den med låst skärm och i alla lägen"
+  ],
+  "at": "18:27:40"
+ },
+ {
+  "test": "shot webkit-mobile-light-limit-server",
+  "kb": 148,
+  "at": "18:27:40"
+ },
+ {
+  "test": "waitlist invalid email",
+  "email_msg": "Skriv en hel e-postadress, till exempel namn@exempel.se.",
+  "consent_msg": "",
+  "form_msg": "",
+  "at": "18:27:43"
+ },
+ {
+  "test": "waitlist no consent",
+  "email_msg": "",
+  "consent_msg": "Kryssa i rutan så att vi får mejla dig.",
+  "form_msg": "",
+  "at": "18:27:46"
+ },
+ {
+  "test": "shot webkit-mobile-light-waitlist-errors",
+  "kb": 155,
+  "at": "18:27:46"
+ },
+ {
+  "test": "waitlist valid",
+  "email_msg": "",
+  "consent_msg": "",
+  "form_msg": "Klart. Vi mejlar när appen finns.",
+  "at": "18:27:49"
+ },
+ {
+  "test": "shot webkit-mobile-light-waitlist-ok",
+  "kb": 149,
+  "at": "18:27:49"
+ },
+ {
+  "test": "waitlist duplicate",
+  "email_msg": "",
+  "consent_msg": "",
+  "form_msg": "Klart. Vi mejlar när appen finns.",
+  "at": "18:27:52"
+ },
+ {
+  "test": "waitlist duplicate upper-case",
+  "email_msg": "",
+  "consent_msg": "",
+  "form_msg": "Klart. Vi mejlar när appen finns.",
+  "at": "18:27:54"
+ },
+ {
+  "test": "honeypot visible to users",
+  "visible": true,
+  "aria_hidden": "true",
+  "at": "18:27:54"
+ },
+ {
+  "test": "shot webkit-desktop-light-idle",
+  "kb": 54,
+  "at": "18:27:55"
+ },
+ {
+  "test": "contrast webkit-desktop-light-idle",
+  "checked": 35,
+  "failing": [],
+  "at": "18:27:55"
+ },
+ {
+  "test": "keyboard webkit-desktop-light",
+  "stops": 15,
+  "order": [
+   "button:Orsaker till första världskriget",
+   "button:Hungrig, ägg, pasta",
+   "button:Vad betyder low-key?",
+   "button#disc:Håll in och fråga",
+   "input#txt:Eller skriv din fråga",
+   "button:Skicka frågan",
+   "button:Lyssna",
+   "button:Visa hela svaret",
+   "button:Lyssna",
+   "button:Visa hela svaret",
+   "button:Lyssna",
+   "button:Visa hela svaret",
+   "input#email:",
+   "input#consent:",
+   "button#waitbtn:Skriv upp mig"
+  ],
+  "no_visible_focus": [],
+  "under_44px": [],
+  "at": "18:27:55"
+ },
+ {
+  "test": "shot webkit-desktop-dark-idle",
+  "kb": 49,
+  "at": "18:27:56"
+ },
+ {
+  "test": "contrast webkit-desktop-dark-idle",
+  "checked": 35,
+  "failing": [],
+  "at": "18:27:56"
+ },
+ {
+  "test": "keyboard webkit-desktop-dark",
+  "stops": 15,
+  "order": [
+   "button:Orsaker till första världskriget",
+   "button:Hungrig, ägg, pasta",
+   "button:Vad betyder low-key?",
+   "button#disc:Håll in och fråga",
+   "input#txt:Eller skriv din fråga",
+   "button:Skicka frågan",
+   "button:Lyssna",
+   "button:Visa hela svaret",
+   "button:Lyssna",
+   "button:Visa hela svaret",
+   "button:Lyssna",
+   "button:Visa hela svaret",
+   "input#email:",
+   "input#consent:",
+   "button#waitbtn:Skriv upp mig"
+  ],
+  "no_visible_focus": [],
+  "under_44px": [],
+  "at": "18:27:56"
+ },
+ {
+  "test": "shot webkit-desktop-dark-answer",
+  "kb": 69,
+  "at": "18:28:03"
+ },
+ {
+  "test": "contrast webkit-desktop-dark-answer",
+  "checked": 43,
+  "failing": [],
+  "at": "18:28:03"
+ },
+ {
+  "test": "shot webkit-mobile-dark-idle",
+  "kb": 99,
+  "at": "18:28:04"
+ },
+ {
+  "test": "contrast webkit-mobile-dark-idle",
+  "checked": 35,
+  "failing": [
+   {
+    "sel": ".disc",
+    "text": "Håll in och fråga",
+    "ratio": 4.46,
+    "need": 4.5,
+    "size": 16
+   },
+   {
+    "sel": "button",
+    "text": "Håll in och fråga",
+    "ratio": 4.46,
+    "need": 4.5,
+    "size": 16
+   }
+  ],
+  "at": "18:28:04"
+ },
+ {
+  "test": "keyboard-only ask",
+  "ok": true,
+  "answer": "Ekvatorn är cirka fyrtiotusen sjuttiofem kilometer lång.",
+  "focus_after": "BODY",
+  "at": "18:28:05"
+ }
+]

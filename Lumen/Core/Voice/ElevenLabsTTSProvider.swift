@@ -8,6 +8,9 @@ final class ElevenLabsTTSProvider: TTSProvider {
     static let sampleRate: Double = 24_000
     /// 100 ms of 16-bit mono at 24 kHz per scheduled buffer.
     static let bufferBytes = 4_800
+    /// A4: speech starts when this much is queued, and buffers this much again after running dry (DECISIONS A4).
+    nonisolated static let startBufferSeconds = 0.3
+    private(set) var lastStats: VoiceStreamStats?
 
     let name = "elevenlabs"
     private let config: BackendConfig
@@ -23,8 +26,10 @@ final class ElevenLabsTTSProvider: TTSProvider {
     }
 
     func speak(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice) async throws(TTSError) {
+        var stats = VoiceStreamStats(sentences: 1)
+        defer { lastStats = stats }
         for piece in Self.pieces(text) {
-            try await speakPiece(piece, language: language, voice: voice)
+            try await speakPiece(piece, language: language, voice: voice, stats: &stats)
         }
     }
 
@@ -39,14 +44,47 @@ final class ElevenLabsTTSProvider: TTSProvider {
         return (samples, Self.sampleRate)
     }
 
-    private func speakPiece(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice) async throws(TTSError) {
+    private func speakPiece(_ text: String, language: TranscriptionLanguage, voice: VoiceChoice,
+                            stats: inout VoiceStreamStats) async throws(TTSError) {
         var scheduled = 0
         let playback = self.playback
-        try await stream(text, language: language, voice: voice) { (samples: [Int16]) throws(AudioError) -> Void in
+        var jitter = JitterBuffer(startSamples: Int(Self.sampleRate * Self.startBufferSeconds))
+        var firstArrival: Date?
+        var started = false
+        var silence: Double = 0
+        var startWait: Double = 0
+        var dryAt: Date?
+        func schedule(_ samples: [Int16]) throws(AudioError) {
+            guard !samples.isEmpty else { return }
+            if !started, let firstArrival {
+                startWait = Date().timeIntervalSince(firstArrival) * 1000
+                started = true
+            }
+            if let dryAt {
+                silence += Date().timeIntervalSince(dryAt) * 1000
+            }
+            dryAt = nil
             try playback.play(samples: samples, sampleRate: Self.sampleRate)
             scheduled += samples.count
         }
-        Log.playback.info("ElevenLabs: \(text.count, privacy: .public) chars → \(scheduled, privacy: .public) samples scheduled")
+        try await stream(text, language: language, voice: voice) { (samples: [Int16]) throws(AudioError) -> Void in
+            if firstArrival == nil { firstArrival = Date() }
+            let before = jitter.underruns
+            let queued = Int(playback.queuedSeconds * Self.sampleRate)
+            let out = jitter.push(samples, queuedSamples: queued)
+            if jitter.underruns > before { dryAt = playback.drainedAt ?? Date() }
+            try schedule(out)
+        }
+        do {
+            try schedule(jitter.finish())
+        } catch {
+            throw TTSError.audio(detail: error.localizedDescription)
+        }
+        playback.endOfSpeech()
+        stats.underruns += jitter.underruns
+        stats.silenceMs += silence
+        stats.startWaitMs += startWait
+        Log.playback.info("ElevenLabs: \(text.count, privacy: .public) chars → \(scheduled, privacy: .public) samples, \(jitter.underruns, privacy: .public) underruns, \(Int(silence), privacy: .public) ms silence, start wait \(Int(startWait), privacy: .public) ms")
     }
 
     /// The `/tts` request; every 100 ms of PCM goes to `handle` as it arrives.

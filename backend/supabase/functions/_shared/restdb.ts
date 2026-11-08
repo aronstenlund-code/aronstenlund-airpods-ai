@@ -3,6 +3,7 @@
  * supabase-js costs ~75 ms of isolate boot time and every request here may run in a fresh isolate.
  * Uses the service-role key, which Supabase injects into Edge Functions; it never leaves the function.
  */
+import { secret } from "./secrets.ts";
 export class RestDb {
   constructor(
     private baseUrl: string,
@@ -127,7 +128,7 @@ export class RestDb {
 
 export function restDbFromEnv(env: { get(k: string): string | undefined } = Deno.env): RestDb {
   const url = env.get("SUPABASE_URL");
-  const key = env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const key = secret(env, "SUPABASE_SERVICE_ROLE_KEY");
   if (!url || !key) throw new Error("SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY not set");
   return new RestDb(url.replace(/\/+$/, ""), key);
 }

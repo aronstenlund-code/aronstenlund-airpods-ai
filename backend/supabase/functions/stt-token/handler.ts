@@ -1,4 +1,5 @@
 import { type Authenticator } from "../_shared/auth.ts";
+import { logProviderFailure } from "../_shared/secrets.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
@@ -139,7 +140,8 @@ export function createSttHandler(deps: SttDeps) {
             signal: AbortSignal.timeout(8000),
           },
         );
-      } catch (_e) {
+      } catch (e) {
+        logProviderFailure("elevenlabs", null, e, deps.apiKey);
         throw new HttpError(502, "provider_unavailable", "STT provider unreachable", {
           fallback: true,
         });
@@ -156,6 +158,7 @@ export function createSttHandler(deps: SttDeps) {
       });
       if (!res.ok) {
         const err = classifySttMint(res.status, text);
+        if (err.code === "provider_unavailable") logProviderFailure("elevenlabs", res.status, text, deps.apiKey);
         await Promise.resolve(deps.recordUsage(rec(err.code))).catch(() => {});
         throw err;
       }

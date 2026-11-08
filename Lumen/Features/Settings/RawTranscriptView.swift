@@ -42,6 +42,16 @@ struct RawTranscriptView: View {
                 if let notice = model.answerNotice { Text(notice).font(.footnote).foregroundStyle(.orange) }
                 if let error = model.answers.lastError { Text(verbatim: error.localizedDescription).font(.footnote).foregroundStyle(.red) }
             }
+            Section("Fel (A5)") {
+                if model.failures.isEmpty { Text("Inga fel sedan appen startade.").foregroundStyle(.secondary) }
+                ForEach(model.failures.reversed()) { failure in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(verbatim: "\(failure.at.formatted(date: .omitted, time: .standard)), \(failure.source)")
+                            .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                        Text(verbatim: failure.detail).font(.footnote)
+                    }
+                }
+            }
             Section("Fördröjning") {
                 if let latest = model.latency.latest { Text(verbatim: latest.summary).font(.footnote.monospacedDigit()) }
                 if let p50 = model.latency.firstSpeechP50, let p95 = model.latency.firstSpeechP95 {
@@ -49,6 +59,11 @@ struct RawTranscriptView: View {
                         .font(.footnote.monospacedDigit())
                 }
                 if let route = model.routeSummary { Text(verbatim: route).font(.footnote) }
+                // A4: hack in the voice, as numbers from Aron's phone.
+                if let last = model.speaker.lastAnswerStats {
+                    Text(verbatim: "Röst, senaste svaret: \(last.summary)").font(.footnote.monospacedDigit())
+                }
+                Text(verbatim: "Röst, totalt: \(model.speaker.totalStats.summary)").font(.footnote.monospacedDigit())
                 Text(verbatim: "Taligenkänning: \(model.recognizerName)").font(.footnote)
             }
         }

@@ -1,4 +1,5 @@
 import { type Authenticator } from "../_shared/auth.ts";
+import { logProviderFailure } from "../_shared/secrets.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { appChecks, enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { readLimitedJson } from "../answer/validate.ts";
@@ -277,7 +278,8 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
       let upstream: Response;
       try {
         upstream = await upstreamP;
-      } catch (_e) {
+      } catch (e) {
+        logProviderFailure("elevenlabs", null, e, deps.apiKey);
         throw new HttpError(502, "provider_unavailable", "TTS provider unreachable", {
           fallback: true,
         });
@@ -294,6 +296,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
       if (!upstream.ok) {
         const body = await upstream.text().catch(() => "");
         const err = classifyElevenLabs(upstream.status, body);
+        if (err.code === "provider_unavailable") logProviderFailure("elevenlabs", upstream.status, body, deps.apiKey);
         await Promise.resolve(deps.recordUsage(rec(err.code))).catch(() => {});
         throw err;
       }

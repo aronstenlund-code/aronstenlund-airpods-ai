@@ -108,6 +108,11 @@ final class PCMConverter {
         return Int(output.frameLength)
     }
 
+    /// A4: forget held frames without playing them (speech was interrupted).
+    func resetForNextStream() {
+        converter.reset()
+    }
+
     /// Drains frames the resampler is still holding. The converter is reset afterwards and can be reused.
     @discardableResult
     func flush(into output: AVAudioPCMBuffer) throws(AudioError) -> Int {

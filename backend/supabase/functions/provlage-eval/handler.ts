@@ -28,15 +28,46 @@ export const EVAL_LIMITS = {
   opusPerDay: 800,
 };
 
+/**
+ * K2 (Oscar's D87 review, 2026-11-08): judge v2. Length and the closing question are checked in code (words and
+ * sentences, as heard), "sufficient" no longer means "contains every item of the expected list" (that is the
+ * separate "covers"), and natural also covers the language (all Swedish apart from target-language examples).
+ * "First answer enough" is still correct AND sufficient; "strict" = correct AND sufficient AND covers.
+ */
 export const SYSTEM_PROMPT_JUDGE =
-  `You grade one answer from a spoken study assistant for Swedish school students ("Provläge"). The student is preparing for an exam and asked something out loud; the answer is read aloud to them. You get <case> (grade, subject, profile, earlier turns, what the student said, and optionally what a good answer must contain) and <answer>.
+  `You grade one answer from a spoken study assistant for Swedish school students ("Provläge"). The student is preparing for an exam and asked something out loud; the answer is read aloud to them. You get <case> (grade, subject, profile, earlier turns, what the student said, and optionally what a good answer should contain) and <answer>.
 Score each criterion 1 (yes) or 0 (no):
-- correct: every fact in the answer is right and it answers what the student most plausibly meant (a misheard term read as the right subject term counts as right; a wrong subject is 0).
+- correct: every fact and every example in the answer is right and it answers what the student most plausibly meant (a misheard or split term read as the right subject term counts as right; a wrong subject is 0; silence when a term was clearly meant is 0).
 - a_level: the level fits the top grade A for exactly that grade and course in Sweden (Skolverket): the concepts and reasoning an A answer needs, not far above and not below.
-- sufficient: the student would NOT need to repeat themselves, ask a whole new question or a follow-up to get what they wanted: the answer gives the core point, why or how, and what the natural next question would be. A follow-up turn ("och cellandning då?", "varför då?") must be read from the earlier turns.
-- natural: it sounds natural when heard: plain spoken Swedish, no lists or symbols, no meta talk about the question, the recording, the interpretation or grades, no question back except one short check question at the end. One short closing sentence that starts with "På provet" and says what to write is natural (it is asked for).
-- length_ok: the length fits the profile (korta = at most three sentences; mellanlånga = four to six; utförliga = seven to ten; no length given = four to six short sentences, a bare fact may be shorter); a check question at the end is not counted.
-Return ONLY a JSON object: {"correct": 0|1, "a_level": 0|1, "sufficient": 0|1, "natural": 0|1, "length_ok": 0|1, "note": "<at most 25 words on the main problem, or empty>"}.`;
+- sufficient: a student of that grade would be helped by this answer alone: it gives the core point and the why or how, so they would NOT need to repeat themselves, ask the question again or ask a follow-up to understand what they asked. A follow-up turn ("och cellandning då?", "varför då?") must be read from the earlier turns. Judge what a student needs to understand the question, not whether every item of "Bör innehålla" is there.
+- covers: the answer contains the points listed under "Bör innehålla" (1 when nothing is listed).
+- natural: it sounds natural when heard: plain spoken Swedish with correct grammar (gender, word forms), no lists or symbols, no meta talk about the question, the recording, the interpretation or grades, no unanswerable or odd question. For a language subject only the terms and example sentences may be in the target language; an answer in the foreign language or a Swedish word inside a foreign sentence is 0. One short closing sentence that starts with "På provet" and says what to write is natural (it is asked for).
+Return ONLY a JSON object: {"correct": 0|1, "a_level": 0|1, "sufficient": 0|1, "covers": 0|1, "natural": 0|1, "note": "<at most 25 words on the main problem, or empty>"}.`;
+
+/** K2: does the profile ask for check questions ("Kontrollfrågor: …" that is not "inga")? */
+export function wantsChecks(profile: string): boolean {
+  return /kontrollfrågor\s*:/i.test(profile) && !/inga kontrollfrågor/i.test(profile);
+}
+
+/** K2: the length as heard, checked in code. Limits per the profile's explanation length (Oscar's review). */
+export function lengthCheck(answer: string, profile: string): { ok: 0 | 1; words: number; sentences: number } {
+  let t = answer.trim();
+  const sentences = t ? t.split(/(?<=[.!?…])\s+/u).filter((x) => x.trim()) : [];
+  // a closing check question that the profile asked for is not counted
+  if (wantsChecks(profile) && sentences.length > 1 && sentences.at(-1)!.trim().endsWith("?")) sentences.pop();
+  t = sentences.join(" ");
+  const words = t ? t.split(/\s+/).filter(Boolean).length : 0;
+  const p = profile.toLowerCase();
+  const [maxS, maxW] = /korta förklaringar/.test(p) ? [3, 60] : /utförliga förklaringar/.test(p) ? [10, 200] : [6, 115];
+  const ok = words > 0 && sentences.length <= maxS && words <= maxW ? 1 : 0;
+  return { ok, words, sentences: sentences.length };
+}
+
+/** K2: a question at the end only when the profile asks for check questions. */
+export function closingCheck(answer: string, profile: string): 0 | 1 {
+  if (wantsChecks(profile)) return 1;
+  return answer.trim().endsWith("?") ? 0 : 1;
+}
 
 export interface EvalDeps {
   authenticate: Authenticator;
@@ -60,7 +91,7 @@ function scores(text: string) {
     j = m ? JSON.parse(m[0]) : {};
   } catch { /* malformed: all zero */ }
   const b = (k: string) => (Number(j[k]) === 1 ? 1 : 0);
-  const s = { correct: b("correct"), a_level: b("a_level"), sufficient: b("sufficient"), natural: b("natural"), length_ok: b("length_ok") };
+  const s = { correct: b("correct"), a_level: b("a_level"), sufficient: b("sufficient"), covers: b("covers"), natural: b("natural") };
   return { scores: s, note: typeof j.note === "string" ? j.note.slice(0, 300) : "", parsed: !!m };
 }
 
@@ -141,9 +172,18 @@ export function createEvalHandler(deps: EvalDeps) {
           }
         }
         const s = scores(text);
+        const profile = String(c.profile ?? "");
+        const len = lengthCheck(answer, profile);
+        const empty = answer.trim() ? 0 : 1;
+        const all = { ...s.scores, length_ok: len.ok, closing_ok: closingCheck(answer, profile) };
+        if (empty) all.correct = all.sufficient = all.covers = all.natural = 0;
         const cost = (inTok * judge.inPerM + outTok * judge.outPerM) / 1e6;
-        const first = s.scores.correct && s.scores.sufficient ? 1 : 0;
-        return json({ ...s, first_answer_suffices: first, judge: judge.id, usage: { input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost } });
+        const first = all.correct && all.sufficient ? 1 : 0;
+        return json({
+          ...s, scores: all, rubric: 2, words: len.words, sentences: len.sentences, empty,
+          first_answer_suffices: first, strict: first && all.covers ? 1 : 0,
+          judge: judge.id, usage: { input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost },
+        });
       }
       if (action === "transcribe") {
         const xiKey = deps.elevenLabsKey;

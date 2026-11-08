@@ -54,11 +54,12 @@ struct ScreenshotStage: View {
             case "home", "empty": NavigationStack { HomeView(model: model) }
             case "addExam": AddExamView(model: model) {}
             case "listening": ListeningScreen(model: model) {}
+            case "cannotAnswer": ListeningScreen(model: model) {}.onAppear { model.showProblemForScreenshot(.overloaded) }
             case "switch": ModeSwitchSheet(model: model, current: .prov)
             case "errors":
                 ScrollView {
                     VStack(spacing: 12) {
-                        ForEach([LumenProblem.microphoneDenied, .offline, .airPodsDisconnected, .overloaded], id: \.self) { problem in
+                        ForEach([LumenProblem.overloaded, .offline, .voiceUnavailable, .microphoneDenied, .airPodsDisconnected], id: \.self) { problem in
                             ErrorCard(problem: problem) {}
                         }
                     }

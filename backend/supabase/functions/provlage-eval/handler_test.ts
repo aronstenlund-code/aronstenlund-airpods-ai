@@ -33,3 +33,33 @@ Deno.test("D87 eval: Provläge answers on the chosen model, grading by the judge
   assertEquals(llm.calls.at(-1)!.model, "claude-opus-5-5");
   assertEquals((await h(post({ action: "grade", judge: "haiku", case: {}, answer: "" }))).status, 400);
 });
+
+Deno.test("K2 judge v2: length and the closing question in code, covers apart from sufficient, empty counted", async () => {
+  const { lengthCheck, closingCheck, wantsChecks } = await import("./handler.ts");
+  const mid = "Förklaringar: mellanlånga förklaringar.";
+  const long = Array.from({ length: 7 }, (_, i) => `Mening nummer ${i + 1} är kort.`).join(" ");
+  assertEquals(lengthCheck(long, mid).ok, 0, "seven sentences");
+  assertEquals(lengthCheck("Ett två tre. Fyra fem sex.", mid).ok, 1);
+  assertEquals(lengthCheck(("ord ".repeat(120)).trim() + ".", mid).ok, 0, "120 words");
+  assertEquals(lengthCheck(("ord ".repeat(120)).trim() + ".", "Förklaringar: utförliga förklaringar.").ok, 1);
+  assertEquals(lengthCheck("A. B. C. D.", "Förklaringar: korta förklaringar.").ok, 0);
+  assertEquals(lengthCheck("", mid).ok, 0);
+  const q = "Kontrollfrågor: Korta frågor.";
+  assertEquals(lengthCheck("A. B. C. D. E. F. Vad är G?", `${mid} ${q}`).sentences, 6, "an asked-for check question is not counted");
+  assert(wantsChecks(q) && !wantsChecks("Kontrollfrågor: Inga kontrollfrågor.") && !wantsChecks(mid));
+  assertEquals(closingCheck("Bra. Vad är mitos?", mid), 0);
+  assertEquals(closingCheck("Bra. Vad är mitos?", q), 1);
+  assertEquals(closingCheck("Bra.", mid), 1);
+
+  const llm = new Fake(() => '{"correct":1,"a_level":1,"sufficient":1,"covers":0,"natural":1,"note":""}');
+  const h = createEvalHandler({ authenticate: () => Promise.resolve({ id: "e2", isAnonymous: true }), rateLimiter: new MemoryRateLimiter(), provider: llm });
+  const g = await (await h(post({ action: "grade", judge: "opus", case: { q: "mitos", profile: mid }, answer: "Mitos är celldelning. Vad är meios?" }))).json();
+  assertEquals(g.rubric, 2);
+  assertEquals(g.first_answer_suffices, 1);
+  assertEquals(g.strict, 0, "covers 0");
+  assertEquals(g.scores.closing_ok, 0);
+  assertEquals(g.scores.length_ok, 1);
+  const e = await (await h(post({ action: "grade", judge: "opus", case: { q: "pyt a goras", profile: mid }, answer: "" }))).json();
+  assertEquals(e.empty, 1);
+  assertEquals(e.first_answer_suffices, 0, "silence is never enough, whatever the judge says");
+});
