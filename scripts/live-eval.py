@@ -347,6 +347,8 @@ def run(cases, rizz, domains, only, now):
                 body["mode"] = turn["mode"]
             if turn.get("profile"):  # D83: the Provläge profile from the app
                 body.update(mode="tutor", persona="tutor", persona_setup=turn["profile"])
+            if turn.get("prep_terms"):  # K1.2: the subject's term list from the profile
+                body["context"]["prep_terms"] = turn["prep_terms"]
             if turn.get("interview"):
                 body.update(mode="tutor", persona="interview", persona_setup=case.get("setup", ""))
                 if turn.get("user_answer"):
