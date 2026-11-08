@@ -69,3 +69,12 @@ Deno.test("K1.3 derivatives and linear equations are computed in code", async ()
     else assert(r && r.text.includes(want), `${f}: ${r?.text}`);
   }
 });
+
+Deno.test("K1.3 '2x' in maths is two x, elsewhere two times", async () => {
+  const { beforeNumbers } = await import("./speechsym.ts");
+  assert(beforeNumbers("Derivatan av x i kvadrat är 2x.").includes("2 x"), beforeNumbers("Derivatan av x i kvadrat är 2x."));
+  assert(beforeNumbers("3x = 21, så x = 7.").includes("3 x"));
+  assert(beforeNumbers("Derivatan blir 6x + 2.").includes("6 x"));
+  assert(beforeNumbers("Laddningen går 2x snabbare.").includes("2 gånger"));
+  assert(beforeNumbers("Ta tabletten 3x per dag.").includes("3 gånger"));
+});
