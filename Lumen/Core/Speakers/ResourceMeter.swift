@@ -11,7 +11,7 @@ struct ResourceSample: Equatable, Sendable {
     /// 0–1, or nil when iOS does not say (Simulator).
     var battery: Double?
 
-    static func now() -> ResourceSample {
+    @MainActor static func now() -> ResourceSample {
         var usage = rusage()
         getrusage(RUSAGE_SELF, &usage)
         let cpu = Double(usage.ru_utime.tv_sec + usage.ru_stime.tv_sec)

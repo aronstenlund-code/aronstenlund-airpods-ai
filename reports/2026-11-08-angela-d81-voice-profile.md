@@ -148,6 +148,8 @@ Engine.
   - A line break had got inside the Settings footer string.
   - A closure in the mini-test selection mixed `$0` with a named argument.
 - **Both fixed.** No other control characters or broken strings in the changed files (checked by script).
+- **Second run (`42485679488`):** `UIDevice` is main-actor in the iOS 26 SDK, so the battery reading is now
+  `@MainActor`.
 
 ## Next session
 D84: the voice statement "Lumen, jag går i åk … och ska snart ha prov i …", the exam session in Provläge, and reading
