@@ -11,11 +11,12 @@ Deno.test("D83 the Provläge profile goes in the user message after the cached s
   const u = buildDirectUserMessage(req, null, {});
   assertStringIncludes(u, `<profile>${PROFILE}</profile>`);
   assert(!SYSTEM_PROMPT_DIRECT_TUTOR.includes("Åk 7."), "the system prompt stays static");
-  assertStringIncludes(SYSTEM_PROMPT_DIRECT_TUTOR, "top grade A in exactly that grade and course");
-  assertStringIncludes(SYSTEM_PROMPT_DIRECT_TUTOR, "answered with one word or a nod");
+  assertStringIncludes(u, "top grade A in exactly that grade and course");
+  assertStringIncludes(u, "answered with one word or a nod");
+  assert(!SYSTEM_PROMPT_DIRECT_TUTOR.includes("<profile> (optional) is"), "the rule is not in the cached prompt");
   // no profile: nothing added; other modes never get it
   const none = buildDirectUserMessage(validateAnswerRequest({ fragment: "x", mode: "tutor", language: "sv", context: {} }), null, {});
-  assert(!none.includes("<profile>"));
+  assert(!none.includes("<profile>") && !none.includes("<profile_rules>"));
   const text = buildDirectUserMessage(
     validateAnswerRequest({ fragment: "x", mode: "text", language: "sv", persona: "tutor", persona_setup: PROFILE, context: {} }),
     null,
