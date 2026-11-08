@@ -7,3 +7,5 @@
 - [ ] **O3 – Oberoende granskning av D88** (effort: low). Beror på: Kevins K3 klar. Lyssna inte, men läs transkript mot facit för 30 slumpade fall och kontrollera hans WER-siffror och "räcker"-betyg. Budget 0,10 USD.
 
 - [x] **O4 – Demosidan i Safari-motorn** (effort: low). _klar 2026-11-08 (Oscar): `reports/qa/2026-11-08-1835-oscar-o4-webkit.md`_ Ja från Deangelo: installera Playwrights WebKit (gratis nedladdning) och kör O2 igen i WebKit, mobil och dator. Budget 0,05 USD.
+
+- [ ] **O5 – Förhör mig utan upprepning, och omtest av K7** (effort: low). Beror på: Kevins K7. Kör ditt eget test med 6 frågor i rad och `already_asked` (ja från Deangelo). Testa sedan om fynd A–E, med samma fall och samma antal körningar som i O1. Budget 0,15 USD.

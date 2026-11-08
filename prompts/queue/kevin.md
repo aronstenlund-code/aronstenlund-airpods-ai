@@ -15,6 +15,14 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 
 - [ ] **K2 – D87 till målet** (effort: high). _pågår 2026-11-08 21:05 (Kevin)_ Baslinjen är 72,6 % "första svaret räcker" med Haiku (`reports/eval/provlage-2026-11-08-haiku-baseline.json`); målet är ≥ 90 %. Läs Oscars granskning `reports/qa/2026-11-08-1610-oscar-d87-review.md` (bedömaren är för sträng på längd; 85 % enligt Oscar i hans urval). Jämför Haiku 5.5 och Sonnet 5.5 (kvalitet, tid till första ljud, kostnad med caching), driftsätt det bästa, och förbättra svarsstrukturen tills målet nås eller förklara exakt vad som stoppar. Skriv siffrorna i rapporten.
 
+- [ ] **K7 – Oscars O1-fynd** (effort: high). Gör direkt efter K2, före K3. Underlag: `reports/qa/2026-11-08-1830-oscar-o1-omtest.md`, nya fynd A–E.
+  1. **A (allvarligast):** Provläge säger nivån högt i 8 av 10 svar när frågan ligger över årskursen ("det här är Åk åtta", "på grundskolenivå", "så jag förklarar idén"). Gör om det i prompten så att modellen aldrig kommenterar nivå, årskurs eller sitt val. Filtrera dessutom i kod på innebörd (nivå, årskurs, kursplan, "förklarar jag", "här är idén") i varje mening, inte bara i den första. Lägg till 8 fall i `mathlevel`-banken som kontrollerar just detta, med kravet 0 av 8.
+  2. **C:** när en mening filtreras bort får nästa mening inte börja med en stump ("Där lärde jag …", "A syntes är …"). Skriv om svaret eller filtrera före generering, och lägg till ett test.
+  3. **B:** danska eller norska ord i svensk text ("jeg"). Lägg språkkontroll i live-eval.
+  4. **D:** citat. Lumen hittar aldrig på ett citat eller ett verk. Ordagrant citat bara när det är säkert. Annars ska svaret säga att det inte kan citera ordagrant, och verk och författare nämns bara när de är säkra (fallet Strindberg/Ibsen ska in i banken).
+  5. **E:** betyget "F" sägs som "inte godkänt". Ägarbeslut (Deangelo): en deluppgift med flera rätta svar utan uträkning ger svarspoäng för varje rätt svar, som när NP skriver "Endast svar krävs". Area och omkrets rätt ger alltså 2 E-poäng.
+  Push efter varje punkt, och lägg fallen i D87-banken så att K2-siffran mäter dem.
+
 - [ ] **K3 – D88 ljuduppfattning utan telefon** (effort: high).
   1. Välj 60 fall ur D87-testbanken (ämnesord, korta nyckelord, halva meningar, följdfrågor). Läs igenom manusen innan något genereras (spara ElevenLabs-krediter); kör först en pilot med 15 fall.
   2. Tal med ElevenLabs TTS, 3–4 svenska röster. Tre förhållanden: tyst; bakgrundsprat (blandat av andra TTS-röster, inget licensierat ljud) på 10 och 5 dB SNR; nedsamplat till 16 kHz som en AirPods-mikrofon. Ljudet som Actions-artefakt eller i Supabase Storage, aldrig i git.
