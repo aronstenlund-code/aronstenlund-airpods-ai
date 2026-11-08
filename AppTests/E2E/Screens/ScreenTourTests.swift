@@ -15,6 +15,7 @@ final class ScreenTourTests: XCTestCase {
     private var app: XCUIApplication!
     private var springboard: XCUIApplication!
     private var prefix = "shot"
+    private var micDenied = false
     private var shotNumber = 0
     private var log: [String] = []
     private var unreachable: [String] = []
@@ -23,7 +24,7 @@ final class ScreenTourTests: XCTestCase {
         continueAfterFailure = true
         let env = ProcessInfo.processInfo.environment
         prefix = env["LUMEN_SHOT_PREFIX"] ?? "shot"
-        let micDenied = env["LUMEN_TOUR_MIC"] == "denied"
+        micDenied = env["LUMEN_TOUR_MIC"] == "denied"
 
         app = XCUIApplication()
         springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
@@ -33,6 +34,11 @@ final class ScreenTourTests: XCTestCase {
 
         firstStart(micDenied: micDenied)
         sharePrompt()
+        // With the microphone on, the first start's Frågor session goes on and Lyssnar is shown.
+        if waitFor(["Byt läge"], timeout: 2) != nil {
+            shoot("lyssnar-efter-forsta-start", note: "Lyssnar right after the first start")
+            endSession()
+        }
         shoot("start-utan-prov", note: "Start without an exam (sketch 7)")
         addExamFromHome()
         settingsTour()
@@ -148,7 +154,8 @@ final class ScreenTourTests: XCTestCase {
 
     /// Scrolls the settings list up or down until the row is there, opens it, shoots it and goes back.
     private func openFromSettings(_ labels: [String], name: String) {
-        guard let row = scrollTo(labels) else {
+        // Buttons only: a section header with the same words ("Diagnostik") is not the row.
+        guard let row = scrollTo(labels, buttonsOnly: true) else {
             miss("settings row \(labels[0]) not found")
             return
         }
@@ -157,7 +164,8 @@ final class ScreenTourTests: XCTestCase {
         shoot("installningar-\(name)", note: "Settings › \(labels[0])")
         app.swipeUp()
         shoot("installningar-\(name)-slut", note: "Settings › \(labels[0]), scrolled")
-        let back = app.navigationBars.buttons.element(boundBy: 0)
+        // The back button, never the sheet's "Klar" (that would close Settings).
+        let back = app.navigationBars.buttons.matching(NSPredicate(format: "label != 'Klar'")).firstMatch
         if back.waitForExistence(timeout: 3) {
             back.tap()
             pause(1)
@@ -188,7 +196,7 @@ final class ScreenTourTests: XCTestCase {
                 endSession()
             } else {
                 shoot("fragor-startade-inte", note: "Frågor did not open Lyssnar")
-                miss("Lyssnar did not open for Frågor")
+                noLyssnar(mode: "Frågor")
             }
         }
 
@@ -235,7 +243,21 @@ final class ScreenTourTests: XCTestCase {
             endSession()
         } else {
             shoot("provlage-startade-inte", note: "Provläge did not open Lyssnar")
-            miss("Lyssnar did not open for Provläge")
+            noLyssnar(mode: "Provläge")
+        }
+    }
+
+    /// Lyssnar did not open. With the microphone denied that is right, but the user must then see sketch 9's card
+    /// "Lumen hör dig inte" with "Öppna Inställningar". "APP:" marks a finding about the app, not the tour.
+    private func noLyssnar(mode: String) {
+        if micDenied {
+            if waitFor(["Lumen hör dig inte*", "Öppna Inställningar"], timeout: 2) != nil {
+                log.append("ok: \(mode) with the microphone denied shows 'Lumen hör dig inte'")
+            } else {
+                miss("APP: microphone denied, \(mode) tapped: nothing opens and no 'Lumen hör dig inte' card (sketch 9)")
+            }
+        } else {
+            miss("Lyssnar did not open for \(mode)")
         }
     }
 
@@ -267,7 +289,7 @@ final class ScreenTourTests: XCTestCase {
         return nil
     }
 
-    private func find(_ labels: [String]) -> XCUIElement? {
+    private func find(_ labels: [String], buttonsOnly: Bool = false) -> XCUIElement? {
         for label in labels {
             // "Jag förstår*" = starts with (the app's dashes and ellipses vary; don't depend on them).
             let predicate = label.hasSuffix("*")
@@ -275,6 +297,7 @@ final class ScreenTourTests: XCTestCase {
                 : NSPredicate(format: "label ==[c] %@", label)
             let button = app.buttons.matching(predicate).firstMatch
             if button.exists { return button }
+            if buttonsOnly { continue }
             let any = app.descendants(matching: .any).matching(predicate).firstMatch
             if any.exists { return any }
         }
@@ -298,10 +321,10 @@ final class ScreenTourTests: XCTestCase {
     }
 
     /// Swipes up (then back down) until an element with one of the labels is hittable.
-    private func scrollTo(_ labels: [String]) -> XCUIElement? {
+    private func scrollTo(_ labels: [String], buttonsOnly: Bool = false) -> XCUIElement? {
         for direction in [true, false] {
             for _ in 0..<10 {
-                if let element = find(labels), element.isHittable { return element }
+                if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
                 if direction { app.swipeUp() } else { app.swipeDown() }
             }
         }
