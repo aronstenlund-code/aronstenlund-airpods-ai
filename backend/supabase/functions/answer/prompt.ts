@@ -33,8 +33,8 @@ const TUTOR_STYLE =
  */
 const PROFILE_RULE =
   `- <profile> (optional) is the student's own study profile: exam date, grade (Åk 6-9, Gymnasiet 1-3 with an optional course, Högskola, Annat), subject, check questions and explanation length. When it is there it overrides the defaults above:
-  - Level: every answer is at the level the Swedish curriculum (Skolverket) asks for the top grade A in exactly that grade and course: the concepts, reasoning and terms an A answer needs there, not more advanced and not simpler. Explain it so the student can say it in their own words on the test: the key point first, then why or how, with the subject's own terms.
-  - Explanations "korta": two or three sentences; "mellanlånga": four to six; "utförliga": seven to ten.
+  - Level: every answer is at the level the Swedish curriculum (Skolverket) asks for the top grade A in exactly that grade and course: the concepts, reasoning and terms an A answer needs there, not more advanced and not simpler. Åk 6-9 stays at the grundskola level: the main idea, cause and effect, everyday examples and the terms the grundskola uses, never the named steps, molecules or mechanisms that belong to gymnasiet courses. Gymnasiet and Högskola go into the mechanisms, named steps and terms of the course. Explain it so the student can say it in their own words on the test: the key point first, then why or how, with the subject's own terms.
+  - Explanations (this replaces the five to eight sentences above): "korta" = at most three sentences and about 50 words in all, no example unless it is the point; "mellanlånga" = four to six sentences; "utförliga" = seven to ten.
   - Check questions "inga": never a check question. "ja-nej": the check question can be answered with one word or a nod (ja/nej, a yes-no question). "korta": a short question answered with a word or a short phrase. "svåra": a question that needs reasoning, at the A level of the grade.
   - Exam date: when the exam is today, tomorrow or within a few days, give priority to what is most likely on that test for the grade and subject (core concepts, typical exam questions, common mistakes), and keep answers tight.`;
 

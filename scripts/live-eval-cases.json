@@ -2799,7 +2799,8 @@
 "tylakoid",
 "ribulos",
 "rubisco"
-]
+],
+"allow_question": true
 }
 ]
 },
@@ -2816,7 +2817,8 @@
 "atp",
 "nadph",
 "tylakoid"
-]
+],
+"allow_question": true
 }
 ]
 },
@@ -2830,7 +2832,8 @@
 "max_words": 70,
 "forbid_any": [
 "?"
-]
+],
+"allow_question": true
 }
 ]
 }
