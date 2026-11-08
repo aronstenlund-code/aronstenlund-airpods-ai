@@ -7,17 +7,19 @@
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
-<title>Svaret i ditt öra</title>
-<meta name="description" content="AI i dina AirPods. Ställ en fråga här och hör svaret direkt.">
-<meta property="og:title" content="Svaret i ditt öra">
-<meta property="og:description" content="AI i dina AirPods. Ställ en fråga här och hör svaret direkt.">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFD02E">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#12163A">
+<title>Fråga högt. Få svaret i örat.</title>
+<meta name="description" content="Fråga högt. Få svaret i örat. Telefonen stannar i fickan. Prova här, svaret läses upp.">
+<meta property="og:title" content="Fråga högt. Få svaret i örat.">
+<meta property="og:description" content="Telefonen stannar i fickan. Prova här, svaret läses upp.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#11151F">
 <meta name="color-scheme" content="light dark">
 <link rel="preload" href="fonts/familjen-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/kalam.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://xjczbzfkmbjdebwlccki.supabase.co" crossorigin>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2312163A'/%3E%3Ccircle cx='16' cy='16' r='10' fill='%23FFD02E'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Crect width='26' height='26' rx='6' fill='%23FFFFFF'/%3E%3Ccircle cx='13' cy='15' r='3.5' fill='%232346C8'/%3E%3Cpath d='M6.5 15a6.5 6.5 0 0 1 13 0M2.5 15a10.5 10.5 0 0 1 21 0' stroke='%232346C8' stroke-width='2.2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
 <style>
+  /* D86: samma typsnitt och färger som appen. Familjen Grotesk överallt, Kalam (handstil) bara för frågor. */
   @font-face {
     font-family: "Familjen Grotesk";
     src: url("fonts/familjen-grotesk.woff2") format("woff2");
@@ -25,56 +27,48 @@
     font-style: normal;
     font-display: swap;
   }
+  @font-face {
+    font-family: "Kalam";
+    src: url("fonts/kalam.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
 
-  /* Två färger som byter plats: ljust läge är en gul sida med en mörk skiva, mörkt läge tvärtom. */
+  /* Rutat papper, blå kulspetspenna och lärarens röda penna. Ljust och mörkt följer systemet. */
   :root {
-    --sun: #FFD02E;
-    --night: #12163A;
-    --bg: var(--sun);
-    --fg: var(--night);
-    --mut: #3F3B35;
-    --disc: var(--night);
-    --on-disc: var(--sun);
-    --field: #FFF3BF;
-    --line: rgba(18, 22, 58, .55);
-    --bad: #8F1420;
+    --bg: #FFFFFF;
+    --paper: #F5F8FC;
+    --grid: #D9E3F0;
+    --ink: #18213A;
+    --mut: #5A6478;
+    --line: #E2E7EF;
+    --chip: #F1F4F9;
+    --blue: #2346C8;
+    --on-blue: #FFFFFF;
+    --red: #D9342B;
+    --on-red: #FFFFFF;
+    --bad: #B8261E;          /* röd text på papper: mörkare än knappen för läsbarhet */
     --ease-out: cubic-bezier(.23, 1, .32, 1);
     --gut: 20px;
+    --sq: 18px;              /* rutornas storlek */
     color-scheme: light;
-  }
-  .invert {
-    --bg: var(--night);
-    --fg: #FFF6D6;
-    --mut: #C9C7D8;
-    --disc: var(--sun);
-    --on-disc: var(--night);
-    --field: rgba(255, 255, 255, .08);
-    --line: rgba(255, 255, 255, .42);
-    --bad: #FFB4AE;
-    color-scheme: dark;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: var(--night);
-      --fg: #FFF6D6;
-      --mut: #C9C7D8;
-      --disc: var(--sun);
-      --on-disc: var(--night);
-      --field: rgba(255, 255, 255, .08);
-      --line: rgba(255, 255, 255, .42);
-      --bad: #FFB4AE;
+      --bg: #11151F;
+      --paper: #161C2A;
+      --grid: #232B3D;
+      --ink: #EEF1F7;
+      --mut: #9AA3B5;
+      --line: #2A3247;
+      --chip: #1B2131;
+      --blue: #7F9BFF;
+      --on-blue: #0E1630;
+      --red: #FF6F61;
+      --on-red: #2A0B07;
+      --bad: #FF8A7E;
       color-scheme: dark;
-    }
-    .invert {
-      --bg: var(--sun);
-      --fg: var(--night);
-      --mut: #3F3B35;
-      --disc: var(--night);
-      --on-disc: var(--sun);
-      --field: #FFF3BF;
-      --line: rgba(18, 22, 58, .55);
-      --bad: #8F1420;
-      color-scheme: light;
     }
   }
 
@@ -88,13 +82,13 @@
   body {
     margin: 0;
     background: var(--bg);
-    color: var(--fg);
+    color: var(--ink);
     font: 400 1.0625rem/1.5 "Familjen Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
     font-synthesis: none;
     -webkit-font-smoothing: antialiased;
     overflow-wrap: break-word;
   }
-  h1, h2, h3, p, ul { margin: 0; padding: 0; }
+  h1, h2, h3, p, ul, figure { margin: 0; padding: 0; }
   ul { list-style: none; }
   a { color: inherit; text-underline-offset: .18em; }
   button, input { font: inherit; color: inherit; }
@@ -105,77 +99,125 @@
     -webkit-user-select: none;
     -webkit-touch-callout: none;
   }
-  :focus-visible { outline: 3px solid var(--fg); outline-offset: 3px; }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
   [hidden] { display: none !important; }
   .sr {
     position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
     overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
   }
+  .hand { font-family: "Kalam", "Segoe Print", "Bradley Hand", cursive; font-weight: 400; }
+  .paper {
+    background-color: var(--paper);
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: var(--sq) var(--sq);
+    background-position: -1px -1px;
+    border: 1px solid var(--grid);
+    border-radius: 6px;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gut); }
+
+  /* ---------- Huvud ---------- */
+  .top { padding-top: calc(14px + env(safe-area-inset-top)); }
+  .name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 700;
+    font-size: 1.375rem;
+    letter-spacing: -.02em;
+    text-decoration: none;
+  }
+  .name svg { width: 26px; height: 26px; color: var(--blue); flex: none; }
 
   /* ---------- Första skärmen ---------- */
   .hero {
-    min-height: 100svh;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto 1fr auto;
-    gap: 14px;
-    padding: calc(14px + env(safe-area-inset-top)) var(--gut) calc(18px + env(safe-area-inset-bottom));
-    max-width: 1200px;
-    margin: 0 auto;
+    gap: 20px;
+    padding-top: 10px;
+    padding-bottom: 56px;
   }
-  .name {
-    font-weight: 700;
-    font-size: 1.125rem;
-    letter-spacing: -.01em;
-    text-decoration: none;
-    justify-self: start;
-    padding: 4px 0;
-  }
-
-  /* Intro och samtal ligger i samma ruta, så att skivan står still när texten byts. */
-  .stage { display: grid; min-width: 0; }
-  .stage > * { grid-area: 1 / 1; min-width: 0; }
-  .intro { transition: opacity 180ms ease; }
-  body:not([data-view="idle"]) .intro { opacity: 0; visibility: hidden; }
-
   h1 {
     font-weight: 700;
-    font-size: clamp(3.25rem, min(17.2vw, 11svh), 8.25rem);
-    line-height: .93;
+    font-size: clamp(2.5rem, 11.4vw, 4.25rem);
+    line-height: 1.02;
     letter-spacing: -.035em;
     text-wrap: balance;
   }
-  h1 span { display: block; }
   .pitch {
-    margin-top: 12px;
-    max-width: 34ch;
-    font-size: 1.125rem;
-    line-height: 1.34;
-    letter-spacing: -.005em;
+    margin-top: 10px;
+    color: var(--mut);
+    font-size: 1.25rem;
+    line-height: 1.35;
   }
 
-  /* ---------- Samtalet ---------- */
-  .convo { display: flex; flex-direction: column; }
-  .q {
-    color: var(--mut);
+  .points { display: grid; gap: 0; }
+  .points li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line);
     font-size: 1.125rem;
+    line-height: 1.4;
+  }
+  .points li:first-child { border-top: 1px solid var(--line); }
+  .points svg { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--blue); }
+
+  .photo {
+    min-height: 240px;
+    background: var(--chip);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 8px;
+    padding: 24px;
+    text-align: center;
+    color: var(--mut);
+    font-size: .9375rem;
+    line-height: 1.4;
+  }
+  .photo svg { width: 28px; height: 28px; }
+  .photo span { max-width: 30ch; }
+
+  /* ---------- Demorutan ---------- */
+  .demo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding: 18px 18px 20px;
+    min-width: 0;
+  }
+  .demo-label {
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--mut);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .demo-label svg { width: 18px; height: 18px; color: var(--blue); }
+
+  .convo { display: flex; flex-direction: column; min-width: 0; }
+  .q {
+    color: var(--blue);
+    font-size: 1.375rem;
     line-height: 1.3;
-    letter-spacing: -.005em;
     min-height: 1.3em;
   }
   body[data-view="listening"] .q {
-    color: var(--fg);
-    font-size: clamp(1.75rem, 8vw, 3rem);
-    line-height: 1.12;
-    font-weight: 600;
-    letter-spacing: -.02em;
+    font-size: clamp(1.75rem, 7.6vw, 2.5rem);
+    line-height: 1.2;
   }
   .a {
-    margin-top: 10px;
-    font-size: clamp(1.5rem, 6.4vw, 2.25rem);
-    line-height: 1.22;
+    margin-top: 8px;
+    font-size: clamp(1.375rem, 5.8vw, 1.875rem);
+    line-height: 1.32;
     font-weight: 500;
-    letter-spacing: -.018em;
+    letter-spacing: -.012em;
     max-width: 34ch;
     user-select: text;
     -webkit-user-select: text;
@@ -185,10 +227,10 @@
     from { opacity: 0; filter: blur(3px); }
     to { opacity: 1; filter: blur(0); }
   }
-  .a.err { font-size: 1.375rem; color: var(--bad); }
+  .a.err { font-size: 1.25rem; color: var(--bad); font-weight: 600; }
   .thinking { display: inline-flex; gap: 7px; padding: 14px 0; }
   .thinking i {
-    width: 11px; height: 11px; border-radius: 50%; background: var(--fg);
+    width: 10px; height: 10px; border-radius: 50%; background: var(--blue);
     animation: dot 900ms ease-in-out infinite;
   }
   .thinking i:nth-child(2) { animation-delay: 120ms; }
@@ -197,34 +239,33 @@
     0%, 70%, 100% { opacity: .25; transform: translateY(0); }
     35% { opacity: 1; transform: translateY(-5px); }
   }
-  .note { margin-top: 16px; max-width: 40ch; color: var(--mut); font-size: 1rem; line-height: 1.4; }
-  .nudge { margin-top: 20px; max-width: 34ch; }
-  .nudge a { font-weight: 600; }
+  .note { margin-top: 14px; max-width: 40ch; color: var(--mut); font-size: 1rem; line-height: 1.4; }
+  .nudge { margin-top: 16px; max-width: 34ch; }
+  .nudge a { font-weight: 600; color: var(--blue); }
 
   .dock {
-    position: sticky;
-    bottom: calc(14px + env(safe-area-inset-bottom));
-    margin-top: auto;
-    padding-top: 20px;
+    margin-top: 18px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 12px;
-    z-index: 2;
   }
   .pill {
     min-height: 50px;
-    padding: 0 22px;
+    padding: 0 20px;
     border: 0;
-    border-radius: 999px;
-    background: var(--disc);
-    color: var(--on-disc);
+    border-radius: 10px;
+    background: var(--blue);
+    color: var(--on-blue);
     font-weight: 600;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     transition: transform 140ms var(--ease-out);
   }
   .pill:active { transform: scale(.97); }
+  .pill.stop { background: var(--red); color: var(--on-red); }
   .bars { display: inline-flex; align-items: center; gap: 3px; height: 16px; }
   .bars i {
     width: 3px; height: 100%; border-radius: 2px; background: currentColor;
@@ -234,7 +275,7 @@
   .bars i:nth-child(2) { animation-delay: -300ms; }
   .bars i:nth-child(3) { animation-delay: -550ms; }
   @keyframes bar { from { transform: scaleY(.3); } to { transform: scaleY(1); } }
-  .left { color: var(--mut); font-size: .9375rem; background: var(--bg); padding: 2px 8px; border-radius: 8px; }
+  .left { color: var(--mut); font-size: .9375rem; }
   .left:empty { display: none; }
 
   /* ---------- Kontroller ---------- */
@@ -243,34 +284,37 @@
   .try { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
     min-height: 44px;
-    padding: 0 15px;
-    background: transparent;
-    border: 1.5px solid var(--line);
-    border-radius: 999px;
-    font-size: 1rem;
-    letter-spacing: -.005em;
-    transition: transform 140ms var(--ease-out), background-color 140ms ease;
+    padding: 2px 14px 0;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--blue);
+    font-family: "Kalam", "Segoe Print", "Bradley Hand", cursive;
+    font-size: 1.125rem;
+    line-height: 1.2;
+    text-align: left;
+    transition: transform 140ms var(--ease-out), border-color 140ms ease;
   }
-  .chip:active { transform: scale(.97); background: var(--field); }
+  .chip:active { transform: scale(.97); border-color: var(--blue); }
   body[data-view="listening"] .try { visibility: hidden; }
 
   .pad { display: grid; justify-items: center; }
   .disc-wrap {
-    --d: clamp(150px, min(50vw, 26svh), 270px);
+    --d: clamp(136px, min(42vw, 22svh), 200px);
     position: relative;
     width: var(--d);
     height: var(--d);
-    margin: 4px 0;
+    margin: 6px 0 2px;
   }
   .halo, .ring {
     position: absolute; inset: 0; border-radius: 50%;
     pointer-events: none;
-    background: var(--disc);
+    background: var(--blue);
     opacity: 0;
   }
   .halo { transition: transform 130ms linear, opacity 160ms ease; }
-  body[data-view="listening"] .halo { opacity: .16; }
-  .ring { border: 2px solid var(--disc); background: none; }
+  body[data-view="listening"] .halo { opacity: .14; }
+  .ring { border: 2px solid var(--blue); background: none; }
   body[data-view="listening"] .ring { animation: ring 1500ms var(--ease-out) infinite; }
   body[data-view="listening"] .ring + .ring { animation-delay: 500ms; }
   @keyframes ring {
@@ -283,18 +327,18 @@
     height: 100%;
     border: 0;
     border-radius: 50%;
-    background: var(--disc);
-    color: var(--on-disc);
+    background: var(--blue);
+    color: var(--on-blue);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 7px;
+    gap: 6px;
     padding: 0 18px;
-    font-size: clamp(1.125rem, 5.2vw, 1.5rem);
+    font-size: clamp(1.0625rem, 4.6vw, 1.3125rem);
     font-weight: 700;
-    line-height: 1.08;
-    letter-spacing: -.015em;
+    line-height: 1.1;
+    letter-spacing: -.01em;
     touch-action: none;
     transition: transform 160ms var(--ease-out);
     animation: arrive 520ms var(--ease-out) backwards;
@@ -303,15 +347,15 @@
   .disc:active, .disc.held { transform: scale(1.05); }
   @keyframes arrive { from { opacity: 0; transform: scale(.92); } }
 
-  .ask { display: flex; gap: 8px; width: 100%; max-width: 520px; }
+  .ask { display: flex; gap: 8px; width: 100%; }
   .ask input {
     flex: 1;
     min-width: 0;
     min-height: 52px;
-    padding: 0 18px;
-    background: var(--field);
-    border: 1.5px solid var(--line);
-    border-radius: 999px;
+    padding: 0 16px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
     font-size: 1.0625rem;
   }
   .ask input::placeholder { color: var(--mut); opacity: 1; }
@@ -320,9 +364,9 @@
     width: 52px;
     height: 52px;
     border: 0;
-    border-radius: 50%;
-    background: var(--disc);
-    color: var(--on-disc);
+    border-radius: 10px;
+    background: var(--blue);
+    color: var(--on-blue);
     display: grid;
     place-items: center;
     transition: transform 140ms var(--ease-out);
@@ -340,69 +384,71 @@
   .hint.err { color: var(--bad); font-weight: 600; }
 
   /* ---------- Sektioner under vecket ---------- */
-  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gut); }
-  .modes { padding-top: 72px; padding-bottom: 72px; }
   h2 {
     font-weight: 700;
-    font-size: clamp(2.25rem, 10.5vw, 4.5rem);
-    line-height: 1;
+    font-size: clamp(2rem, 8.6vw, 3.5rem);
+    line-height: 1.04;
     letter-spacing: -.03em;
     text-wrap: balance;
   }
+  .modes { padding-top: 24px; padding-bottom: 64px; }
   .modes h3 {
     font-weight: 700;
-    font-size: 1.625rem;
-    line-height: 1.1;
-    letter-spacing: -.02em;
+    font-size: 1.375rem;
+    line-height: 1.15;
+    letter-spacing: -.015em;
   }
-  .modes ul { display: grid; gap: 26px; margin-top: 32px; }
-  .modes li p { margin-top: 5px; max-width: 42ch; }
+  .modes ul { display: grid; gap: 0; margin-top: 24px; }
+  .modes li { padding: 16px 0; border-top: 1px solid var(--line); }
+  .modes li p { margin-top: 4px; max-width: 42ch; color: var(--mut); }
 
-  .join { background: var(--bg); color: var(--fg); }
-  .join .wrap { padding-top: 64px; padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
-  .join h2 { max-width: 15em; font-size: clamp(2rem, 8.6vw, 3.75rem); line-height: 1.04; }
-  .join .lead { margin-top: 14px; max-width: 44ch; }
-  form.wait { margin-top: 28px; max-width: 520px; display: grid; gap: 14px; }
+  .join { border-top: 1px solid var(--line); }
+  .join .wrap { padding-top: 56px; padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
+  .join h2 { max-width: 16em; font-size: clamp(1.75rem, 7.4vw, 3rem); line-height: 1.06; }
+  .join .lead { margin-top: 12px; max-width: 44ch; color: var(--mut); }
+  form.wait { margin-top: 24px; max-width: 520px; display: grid; gap: 14px; padding: 20px; }
   .wait label.field { display: grid; gap: 6px; font-weight: 600; }
   .wait input[type=email] {
     min-height: 52px;
     padding: 0 16px;
-    background: var(--field);
-    border: 1.5px solid var(--line);
-    border-radius: 14px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
     font-size: 1.0625rem;
     font-weight: 400;
     width: 100%;
   }
   .consent { display: flex; gap: 12px; align-items: flex-start; min-height: 44px; padding-top: 2px; cursor: pointer; }
-  .consent input { width: 24px; height: 24px; margin: 0; flex: none; accent-color: var(--disc); }
-  .wait .pill { justify-content: center; width: 100%; min-height: 54px; font-size: 1.0625rem; }
+  .consent input { width: 24px; height: 24px; margin: 0; flex: none; accent-color: var(--blue); }
+  .wait .pill { width: 100%; min-height: 54px; font-size: 1.0625rem; }
   .wait .pill[disabled] { opacity: .6; cursor: progress; }
   .hp { position: absolute; left: -9999px; }
   .fieldmsg { color: var(--bad); font-weight: 600; font-size: .9375rem; min-height: 0; }
   .fieldmsg:empty { display: none; }
   .formmsg { font-weight: 600; }
+  .formmsg:empty { display: none; }
   .formmsg.err { color: var(--bad); }
   .fine { color: var(--mut); font-size: .9375rem; line-height: 1.45; max-width: 60ch; margin-top: 28px; }
   .fine + .fine { margin-top: 10px; }
+  .fine a { color: var(--blue); }
 
   /* Endast ett musstyrt hovertillstånd, så att det inte fastnar på touch. */
   @media (hover: hover) and (pointer: fine) {
-    .chip:hover { background: var(--field); }
+    .chip:hover { border-color: var(--blue); }
     .pill:hover, .send:hover { transform: scale(1.03); }
     .pill:active, .send:active { transform: scale(.97); }
   }
 
-  /* Korta telefoner: skivan och textrutan ska rymmas på första skärmen. */
+  /* Korta telefoner: skivan och textrutan ska rymmas tidigt. */
   @media (max-height: 720px) and (max-width: 959px) {
-    .hero { gap: 10px; padding-top: calc(8px + env(safe-area-inset-top)); padding-bottom: calc(10px + env(safe-area-inset-bottom)); }
-    h1 { font-size: clamp(2.75rem, 13.4vw, 3.5rem); }
-    .pitch { font-size: 1rem; margin-top: 8px; }
-    .controls { gap: 10px; }
+    h1 { font-size: clamp(2.25rem, 10.4vw, 3rem); }
+    .pitch { font-size: 1.125rem; margin-top: 6px; }
+    .hero { gap: 16px; }
+    .demo { gap: 12px; padding: 14px 14px 16px; }
     .try { gap: 6px; }
-    .chip { font-size: .9375rem; padding: 0 12px; }
-    .disc-wrap { --d: clamp(122px, 21svh, 170px); margin: 0; }
-    .disc { font-size: 1.0625rem; gap: 3px; }
+    .chip { font-size: 1.0625rem; padding: 2px 12px 0; }
+    .disc-wrap { --d: clamp(118px, 20svh, 150px); margin: 0; }
+    .disc { font-size: 1rem; gap: 3px; }
     .disc svg { width: 22px; height: 22px; }
     .hint { margin-top: 4px; font-size: .875rem; }
     .ask input, .send { min-height: 48px; height: 48px; }
@@ -410,32 +456,32 @@
   }
 
   @media (min-width: 720px) {
-    .modes ul { grid-template-columns: repeat(2, 1fr); gap: 36px; }
-    .try { justify-content: center; }
-    .ask { margin: 0 auto; }
+    .modes ul { grid-template-columns: repeat(2, 1fr); column-gap: 36px; }
   }
 
   @media (min-width: 960px) {
-    :root { --gut: 48px; }
+    :root { --gut: 48px; --sq: 22px; }
+    .top { padding-top: 24px; }
     .hero {
-      grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
-      grid-template-rows: auto 1fr;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+      grid-template-rows: auto auto 1fr;
       column-gap: 64px;
-      padding-top: 24px;
-      padding-bottom: 32px;
+      row-gap: 32px;
+      padding-top: 32px;
+      padding-bottom: 88px;
     }
-    .name { grid-column: 1 / -1; }
-    .stage { align-self: center; }
-    .controls { align-self: center; position: sticky; top: 24px; gap: 20px; }
+    .intro { grid-column: 1; grid-row: 1; }
+    .points { grid-column: 1; grid-row: 2; }
+    .photo { grid-column: 1; grid-row: 3; min-height: 280px; }
+    .demo { grid-column: 2; grid-row: 1 / span 3; align-self: start; position: sticky; top: 24px; padding: 26px 26px 28px; gap: 20px; }
+    h1 { font-size: clamp(3.75rem, 6.2vw, 5.5rem); }
+    .pitch { font-size: 1.5rem; margin-top: 16px; }
     body[data-view="answer"] .controls { display: grid; }
-    h1 { font-size: clamp(5rem, min(9.2vw, 19svh), 8.25rem); }
-    .pitch { font-size: 1.375rem; margin-top: 20px; }
-    .disc-wrap { --d: clamp(210px, 34svh, 300px); }
-    .a { font-size: 2rem; }
+    .a { font-size: 1.75rem; }
     .again-only { display: none; }
-    .modes { padding-top: 96px; padding-bottom: 104px; }
-    .modes ul { grid-template-columns: repeat(4, 1fr); }
-    .join .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); column-gap: 64px; padding-top: 88px; padding-bottom: 72px; }
+    .modes { padding-bottom: 96px; }
+    .modes ul { grid-template-columns: repeat(4, 1fr); column-gap: 32px; }
+    .join .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); column-gap: 64px; padding-top: 88px; padding-bottom: 72px; }
     .join .side { grid-column: 2; grid-row: 1 / span 2; }
     form.wait { margin-top: 0; }
     .first-note { grid-column: 1; }
@@ -454,52 +500,74 @@
 </style>
 </head>
 <body data-view="idle">
+<header class="top wrap">
+  <a class="name" href="#">
+    <svg viewBox="0 0 26 26" fill="none" aria-hidden="true"><circle cx="13" cy="13" r="3.5" fill="currentColor"/><path d="M6.5 13a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2.5 13a10.5 10.5 0 0 1 21 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/></svg>
+    <span data-app></span>
+  </a>
+</header>
 <main>
-  <section class="hero">
-    <a class="name" href="#" data-app></a>
+  <section class="hero wrap" aria-labelledby="hero-h">
+    <div class="intro">
+      <h1 id="hero-h">Fråga högt. Få svaret i örat.</h1>
+      <p class="pitch">Telefonen stannar i fickan.</p>
+    </div>
 
-    <div class="stage">
-      <div class="intro">
-        <h1><span>Svaret</span><span>i ditt öra.</span></h1>
-        <p class="pitch"><span data-app></span> är AI i dina AirPods: till plugget, intervjun, matlagningen och sociala situationer. Prova här, svaret läses upp.</p>
-      </div>
+    <div class="demo paper" id="demo" role="region" aria-label="Prova demon">
+      <p class="demo-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></svg>
+        Prova här. Svaret läses upp.
+      </p>
       <div class="convo" id="convo" hidden>
-        <p class="q" id="q"></p>
+        <p class="q hand" id="q"></p>
         <div class="a" id="a" aria-live="polite"></div>
         <p class="note" id="note" role="status" hidden></p>
         <p class="nudge" id="nudge" hidden><a href="#vantelista">Ladda ner appen för att använda den med låst skärm och i alla lägen</a></p>
         <div class="dock" id="dock" hidden>
-          <button class="pill" id="stop" type="button"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Stoppa</button>
+          <button class="pill stop" id="stop" type="button"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Stoppa</button>
           <button class="pill again-only" id="again" type="button" hidden>Ställ en ny fråga</button>
           <span class="left" id="left"></span>
         </div>
       </div>
+
+      <div class="controls">
+        <div class="try" role="group" aria-label="Exempelfrågor">
+          <button class="chip" type="button">Orsaker till första världskriget</button>
+          <button class="chip" type="button">Hungrig, ägg, pasta</button>
+          <button class="chip" type="button">Vad betyder low-key?</button>
+        </div>
+        <div class="pad">
+          <div class="disc-wrap">
+            <span class="ring"></span><span class="ring"></span><span class="halo" id="halo"></span>
+            <button class="disc" id="disc" type="button" aria-describedby="hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5"/></svg>
+              <span id="disclabel">Håll in och fråga</span>
+            </button>
+          </div>
+          <p class="hint" id="hint" role="status">Bäst med hörlurarna i.</p>
+        </div>
+        <form class="ask" id="ask">
+          <label class="sr" for="txt">Skriv din fråga</label>
+          <input id="txt" type="text" placeholder="Eller skriv din fråga" autocomplete="off" enterkeyhint="send" maxlength="1000">
+          <button class="send" type="submit" aria-label="Skicka frågan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
+          </button>
+        </form>
+      </div>
     </div>
 
-    <div class="controls">
-      <div class="try" role="group" aria-label="Exempelfrågor">
-        <button class="chip" type="button">Orsaker till första världskriget</button>
-        <button class="chip" type="button">Hungrig, ägg, pasta</button>
-        <button class="chip" type="button">Vad betyder low-key?</button>
-      </div>
-      <div class="pad">
-        <div class="disc-wrap">
-          <span class="ring"></span><span class="ring"></span><span class="halo" id="halo"></span>
-          <button class="disc" id="disc" type="button" aria-describedby="hint">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5"/></svg>
-            <span id="disclabel">Håll in och fråga</span>
-          </button>
-        </div>
-        <p class="hint" id="hint" role="status">Bäst med hörlurarna i.</p>
-      </div>
-      <form class="ask" id="ask">
-        <label class="sr" for="txt">Skriv din fråga</label>
-        <input id="txt" type="text" placeholder="Eller skriv din fråga" autocomplete="off" enterkeyhint="send" maxlength="1000">
-        <button class="send" type="submit" aria-label="Skicka frågan">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
-        </button>
-      </form>
-    </div>
+    <ul class="points" aria-label="Så fungerar appen">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Säg ”<span data-app></span>, …”. Du behöver aldrig ta upp telefonen.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Avbryt när du vill, som med en människa.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Minns det du ber om, och glömmer när du säger till.</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Inget konto. Börja direkt.</span></li>
+    </ul>
+
+    <!-- Platshållare: byt mot ett foto med fri licens, utan varumärken i bild. -->
+    <figure class="photo" role="img" aria-label="Platshållare för foto">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-8 8"/></svg>
+      <span>Foto: person med trådlösa hörlurar på väg någonstans, telefonen i fickan. Fri licens, inga varumärken i bild.</span>
+    </figure>
   </section>
 
   <section class="modes wrap" aria-labelledby="modes-h">
@@ -512,14 +580,14 @@
     </ul>
   </section>
 
-  <section class="join invert" id="vantelista" aria-labelledby="join-h">
+  <section class="join" id="vantelista" aria-labelledby="join-h">
     <div class="wrap">
       <div>
         <h2 id="join-h">Ladda ner appen för att använda den med låst skärm och i alla lägen</h2>
         <p class="lead">Appen är inte ute än. Skriv upp dig så mejlar vi när den finns.</p>
       </div>
       <div class="side">
-        <form class="wait" id="wait" novalidate>
+        <form class="wait paper" id="wait" novalidate>
           <label class="field">E-post
             <input id="email" type="email" name="email" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="done" required aria-describedby="emailmsg">
           </label>
@@ -559,7 +627,7 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, v); } catch {} },
 };
 
-document.title = APP_NAME + ": svaret i ditt öra";
+document.title = APP_NAME + ": fråga högt, få svaret i örat";
 document.querySelectorAll("[data-app]").forEach((el) => { el.textContent = APP_NAME; });
 
 // ---------- vyer ----------
