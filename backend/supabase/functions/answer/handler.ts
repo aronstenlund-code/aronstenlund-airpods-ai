@@ -780,6 +780,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             silence: silenceOn,
             inputMeta: silenceOn, // 2026-11-08: never about the fragment, sound or microphone (sentence-buffered modes only)
             heard: body.fragment,
+            quizOnly: quiz, // D86: only the check question is said
             interview: plan?.kind === "interview", // D77
           });
           let pendingMeta: Record<string, unknown> | null = null;
@@ -933,6 +934,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 silence: silenceOn,
                 inputMeta: silenceOn,
                 heard: body.fragment,
+                quizOnly: quiz,
                 interview: plan?.kind === "interview",
               });
               r = await it.next();

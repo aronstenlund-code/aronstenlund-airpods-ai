@@ -900,6 +900,8 @@ export interface PostOptions {
   silence?: boolean;
   /** D77: interview answer: sentences that say facts are missing are dropped. */
   interview?: boolean;
+  /** D86: "förhör mig": only the check question itself is said (the last sentence that ends with "?"). */
+  quizOnly?: boolean;
   /** D84: split off a `källa:` line without the English filter (texts and quotes). */
   source?: boolean;
   /** 2026-11-08: sentences about the fragment / sound / microphone are dropped (all modes without a persona). */
@@ -918,6 +920,8 @@ export class AnswerPost {
   private readonly imeta: MetaGate;
   private readonly input: MetaGate;
   private readonly lead: MetaGate;
+  private readonly quizOnly: boolean;
+  private quizBuf = "";
   private readonly src: SourceTap;
   private spoke = false;
   private readonly en: EnglishGate;
@@ -945,6 +949,7 @@ export class AnswerPost {
       }
       return rewriteLeadIn(sentence, opts.heard ?? "");
     });
+    this.quizOnly = opts.quizOnly === true;
     this.src = new SourceTap(opts.web === true || opts.source === true);
     this.en = new EnglishGate(opts.web === true);
   }
@@ -1014,6 +1019,10 @@ export class AnswerPost {
       ),
     );
     if (!a) return "";
+    if (this.quizOnly) {
+      this.quizBuf += a; // D86: held until the end, then only the question is said
+      return "";
+    }
     const out = this.cap(this.nums.push(this.trim.push(a)));
     if (out.trim()) this.spoke = true;
     return out;
@@ -1027,8 +1036,14 @@ export class AnswerPost {
     const e2a = this.input.push(e1) + this.input.finish();
     const e2 = this.lead.push(e2a) + this.lead.finish();
     const e = this.imeta.push(e2) + this.imeta.finish();
-    const rest = this.trim.push(this.dup.push(this.gate.push(e)) + this.dup.finish()) +
+    let rest = this.trim.push(this.dup.push(this.gate.push(e)) + this.dup.finish()) +
       this.trim.finish();
+    if (this.quizOnly) {
+      const all = (this.quizBuf + rest).trim();
+      const sentences = all.split(/(?<=[.!?])\s+/);
+      const q = [...sentences].reverse().find((x) => x.trim().endsWith("?"));
+      rest = q ? q.trim().replace(/^(?:[^:?]{0,80}:\s*)/u, "") : /\p{L}{3}/u.test(all) ? all : "";
+    }
     const out = this.cap(this.nums.push(rest) + this.nums.finish());
     // D72 live test: when every answer sentence was filtered, a lone "Källa: X." is not an answer
     // (nothing is spoken, so the handler reports empty_answer and the app falls back).

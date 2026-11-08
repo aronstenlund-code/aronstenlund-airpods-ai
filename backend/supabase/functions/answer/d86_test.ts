@@ -63,3 +63,13 @@ Deno.test("D86 'Öva mer på': 1-3 practice areas from the study-cards call", ()
   const r = parseCards('{"cards":[{"q":"a?","a":"b"}],"test":[],"practice":["cellandningens steg","Cellandningens steg","klyvöppningar","ljusreaktionen","extra"]}', 8);
   assertEquals(r.practice, ["cellandningens steg", "klyvöppningar", "ljusreaktionen"]);
 });
+
+Deno.test("D86 only the check question itself is said", async () => {
+  const { AnswerPost } = await import("./speech.ts");
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true, quizOnly: true });
+  const out = p.push("Vi har inte pratat om något än, så frågan gäller provet. Varför behöver växter ljus? ") +
+    p.push("Svara gärna med ett kort ord.") + p.finish();
+  assertEquals(out, "Varför behöver växter ljus?");
+  const q = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true, quizOnly: true });
+  assertEquals(q.push("Här är en fråga om syror: Vad kallas en lösning med pH under sju?") + q.finish(), "Vad kallas en lösning med pH under sju?");
+});
