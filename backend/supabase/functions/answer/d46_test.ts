@@ -1073,3 +1073,26 @@ Deno.test("D80 the interpretation of a misheard term is never named", async () =
   assert(!isMetaReply("Det låter som en bra plan att börja med formeln."), "lower-case: not a named term");
   assert(!isMetaReply("Pythagoras sats säger att kvadraten på hypotenusan är summan av kateternas kvadrater."));
 });
+
+Deno.test("D82 a comment on a leftover or noise is never spoken (whole reply = silence)", async () => {
+  const { isMetaReply } = await import("./speech.ts");
+  for (
+    const s of [
+      "Det här är bara en rest av ljud från tidigare, och det går inte att se någon ny fråga i det.",
+      "Om du vill fortsätta kan du ställa en ny fråga.",
+      "Jag ser ingen ny fråga här.",
+      "Det verkar vara brus.",
+    ]
+  ) assert(isMetaReply(s), s);
+  for (
+    const s of [
+      "Det är en rest av en stjärna som exploderat, en så kallad supernovarest.",
+      "Om du vill minnas det: kloroplasten är växtens solpanel.",
+    ]
+  ) assert(!isMetaReply(s), s);
+  const post = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true, silence: true });
+  post.push("Det här är bara en rest av ljud från tidigare, och det går inte att se någon ny fråga i det. ");
+  post.push("Om du vill fortsätta, säg nästa fråga.");
+  assertEquals(post.finish().trim(), "");
+  assert(post.silent, "only meta = silence");
+});

@@ -369,6 +369,11 @@ const META_REPLY = new RegExp(
     String.raw`^om (?:du|ni) (?:menar|syftar|tänker) (?:på )?`,
     String.raw`^(?:säg|ge|nämn) (?:gärna |mig )+(?:ordet|vilket|vad|mer)`,
     String.raw`^hörde jag rätt`,
+    // D82: comments on the fragment or the sound ("Det här är bara en rest av ljud från tidigare …")
+    String.raw`^(?:det|detta|det här|det där)(?: fragmentet)? (?:är|var|verkar vara|låter som) (?:bara |nog |troligen )?(?:en |ett )?(?:rest av (?:ljud|mitt|det jag|ett tidigare|det tidigare|svaret)|restljud|brus|bakgrundsljud|eko|ljud från|upprepning|del av (?:mitt|ett) (?:svar|tidigare)|(?:ett )?(?:stopp|avbrotts)\w*)`,
+    String.raw`^(?:jag )?(?:ser|hör|hittar) (?:ingen|inte någon|inte någon ny) (?:ny )?(?:fråga|begäran)`,
+    String.raw`^(?:det|här) (?:finns|går inte att (?:se|höra|hitta)) (?:ingen|inte någon|någon) (?:ny )?(?:fråga|begäran)`,
+    String.raw`^om (?:du|ni) vill (?:fortsätta|gå vidare|ställa en (?:ny )?fråga|fråga något)`,
     String.raw`^jag gissar (?:att|på att) (?:du|ni)`,
     String.raw`^(?:det|det där|det här) (?:är|var) (?:lite )?(?:svårt|oklart) att (?:förstå|veta|tolka|höra|säga)`,
   ].join("|"),
