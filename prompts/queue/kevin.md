@@ -2,7 +2,7 @@
 
 Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och ljuduppfattning först.
 
-- [ ] **K1 – Oscars fynd från D81–D84** (effort: high). _pågår 2026-11-08 18:10 (Kevin)_ Underlag: `reports/qa/2026-11-08-1510-oscar-d81-d84.md` och dina egna "Known limits" i D86-rapporten. Push efter varje punkt.
+- [x] **K1 – Oscars fynd från D81–D84** (effort: high). _klar 2026-11-08 21:00 (Kevin): `reports/2026-11-08-2100-kevin-k1-oscar-d81-d84.md`_ Underlag: `reports/qa/2026-11-08-1510-oscar-d81-d84.md` och dina egna "Known limits" i D86-rapporten. Push efter varje punkt.
   1. Muntlig rättning: svensk talparsning ("sexton komma fem" = 16,5, "en halv", bråk); ta det sista talet efter "så", "blir", "är"; godta algebraformer ("x är sju", "7 = x", "x = 7"). 30 nya rättningsfall i live-eval, krav 100 %.
   2. Provläget säger aldrig sitt resonemang högt: inget "X är nog Y", "i din lista", "jag tar det som", "inte ett kemiord". Filtrera på innebörd, inte bara första meningen och kända former. Med Kemi-profil tolkas "syntes" inom kemi (t.ex. syntesreaktion) eller är tyst, aldrig fotosyntes.
   3. Nivå i matte: åk 6–9 utan gränsvärden och kedjeregel; gymnasiet enligt kursen. Matematiska påståenden kontrolleras i kod där det går (derivator, ekvationer). Lägg derivata/ekvation för åk 8 och Matte 4 i D87-testbanken.
