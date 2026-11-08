@@ -3,7 +3,12 @@ import { RestDb } from "./restdb.ts";
 export interface RateResult {
   allowed: boolean;
   retryAfterSec: number;
+  /** The window that said no (when known). */
+  deniedKey?: string;
 }
+
+/** Oscar 2026-11-08: a new session that hit its first-hour window is told to retry within minutes, not an hour. */
+export const NEW_USER_RETRY_CAP_SEC = 120;
 
 /** Fixed-window counter. `cost` lets TTS charge per character. Must fail closed: callers treat a
  *  thrown error as "denied". */
@@ -94,9 +99,13 @@ export class SupabaseRateLimiter implements RateLimiter {
       p_cost: cost,
     });
     const row = (Array.isArray(data) ? data[0] : data) as
-      | { allowed?: boolean; retry_after?: number }
+      | { allowed?: boolean; retry_after?: number; denied_key?: string }
       | null;
-    return { allowed: !!row?.allowed, retryAfterSec: Number(row?.retry_after ?? 60) };
+    return {
+      allowed: !!row?.allowed,
+      retryAfterSec: Number(row?.retry_after ?? 60),
+      ...(row?.denied_key ? { deniedKey: String(row.denied_key) } : {}),
+    };
   }
 
   async release(windows: { key: string; windowSec: number }[], cost: number, atMs: number): Promise<void> {
@@ -176,10 +185,14 @@ export async function enforceLimits(
       { key: `${scope}:global:d`, limit: limits.globalPerDay, windowSec: 86400 },
       ...extra,
     ];
-    if (rl.checkMany) return await rl.checkMany(checks, cost);
+    const cap = (r: RateResult): RateResult =>
+      !r.allowed && r.deniedKey?.includes(":new:u:")
+        ? { ...r, retryAfterSec: Math.min(r.retryAfterSec, NEW_USER_RETRY_CAP_SEC) }
+        : r;
+    if (rl.checkMany) return cap(await rl.checkMany(checks, cost));
     for (const c of checks) {
       const r = await rl.check(c.key, c.limit, c.windowSec, cost);
-      if (!r.allowed) return r;
+      if (!r.allowed) return cap({ ...r, deniedKey: c.key });
     }
     return { allowed: true, retryAfterSec: 0 };
   } catch (e) {

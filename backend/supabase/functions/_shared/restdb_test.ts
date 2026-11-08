@@ -40,7 +40,7 @@ Deno.test("SupabaseRateLimiter maps the multi-window RPC result", async () => {
     limit: 2,
     windowSec: 86400,
   }], 3);
-  assertEquals(r, { allowed: false, retryAfterSec: 17 });
+  assertEquals(r, { allowed: false, retryAfterSec: 17, deniedKey: "x" });
   assertEquals(JSON.parse(calls[0].init.body as string), {
     p_keys: ["a", "b"],
     p_limits: [1, 2],

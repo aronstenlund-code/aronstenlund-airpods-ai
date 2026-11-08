@@ -59,6 +59,8 @@ Deno.test("D79 answer: a new session gets its first-hour allowance, an older one
   const e = (await denied.json()).error;
   assertEquals(e.code, "rate_limited");
   assertEquals(e.fallback, true);
+  // Oscar 2026-11-08: retry within minutes, not at the end of the clock hour
+  assert(Number(denied.headers.get("retry-after")) <= 120, denied.headers.get("retry-after") ?? "");
   for (let i = 0; i < 5; i++) {
     assertEquals((await h(ask({ "x-user": "old", "x-age": "7200" }))).status, 200, "older session");
     assertEquals((await h(ask({ "x-user": "unknown" }))).status, 200, "no amr timestamp = no new-user check");

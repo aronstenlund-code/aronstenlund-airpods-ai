@@ -461,6 +461,12 @@ const INTERVIEW_META = new RegExp(
     String.raw`\b(?:eftersom|då) (?:jag inte vet|det inte framgår|inget (?:är|finns) (?:angivet|givet))`,
     String.raw`\bjag kan inte (?:säga|uppge|berätta|nämna) (?:min|mitt|mina|vad jag heter|hur gammal)`,
     String.raw`\bjag heter (?:inte|och)\b`,
+    // Oscar 2026-11-08: "Jag har inget namn angivet …", "Jag vill hellre prata om … än om mina år",
+    // "Jag är inte så noga med siffror", "Hur gammal jag är spelar inte lika stor roll …"
+    String.raw`\b(?:jag har|det finns) (?:inget|inte något|ingen) (?:namn|ålder|skola|uppgift)\w* (?:angiv|givet|nämnt|här)`,
+    String.raw`\bjag vill (?:hellre|hellst) prata om\b[^.]{0,80} än om (?:min|mitt|mina)\b`,
+    String.raw`\bjag är inte (?:så )?noga med (?:siffror|åldrar|år|datum)\b`,
+    String.raw`\b(?:hur gammal jag är|min ålder|vad jag heter|vilken skola jag går på) (?:spelar|är) (?:inte|mindre)\b`,
     String.raw`\b(?:inte )?(?:nämnt|angett|angivet|givet|framgår) (?:här|i (?:annonsen|uppgifterna))\b`,
     // D79: coaching the user instead of answering ("Däremot kan du svara att du …")
     String.raw`\b(?:du kan|kan du|du bör|bör du|du ska|du skulle kunna) (?:svara|säga|berätta|nämna|lyfta|börja|ta upp|förklara)\b`,
@@ -523,6 +529,49 @@ const INPUT_META = new RegExp(
 );
 export function isInputMeta(sentence: string): boolean {
   return INPUT_META.test(sentence);
+}
+
+/**
+ * Oscar 2026-11-08 (Provläge): the answer to a misheard term opened with its reading ("Fragmentet … låter som
+ * gravitationskraften, så jag svarar på det.", "Det låter som kosinussatsen, en sats …", "Det här är fotosyntesen.",
+ * "Det är demokrati, ett styrelseskick …"). Only the FIRST sentence is looked at, and only when the named term is
+ * close to what was heard (the fragment), so "Det är rätt." after a check question is never touched.
+ */
+const letters = (t: string) => t.toLowerCase().replace(/[^\p{L}]+/gu, "");
+function bigrams(t: string): Map<string, number> {
+  const m = new Map<string, number>();
+  for (let i = 0; i < t.length - 1; i++) m.set(t.slice(i, i + 2), (m.get(t.slice(i, i + 2)) ?? 0) + 1);
+  return m;
+}
+/** Dice similarity of letter bigrams (0..1). */
+export function similarity(a: string, b: string): number {
+  const x = bigrams(letters(a)), y = bigrams(letters(b));
+  let both = 0, nx = 0, ny = 0;
+  for (const v of x.values()) nx += v;
+  for (const v of y.values()) ny += v;
+  for (const [k, v] of x) both += Math.min(v, y.get(k) ?? 0);
+  return nx + ny ? (2 * both) / (nx + ny) : 0;
+}
+const LEAD_META = /^(?:fragmentet|det du sa|orden)\b[^.]{0,120}\blåter som\b/iu;
+const LEAD_NAMED =
+  /^(?:det|det här|detta|det där)\s+(?:låter som|verkar vara|verkar handla om|är|gäller)\s+["'„”»«]?([\p{L}][\p{L} -]{1,40}?)["'„”»«]?(?:\s*([,:])\s*(.*))?\s*[.!]?\s*$/isu;
+export function rewriteLeadIn(sentence: string, heard: string): string {
+  const t = sentence.trim();
+  if (!t) return sentence;
+  if (LEAD_META.test(t)) return "";
+  const m = LEAD_NAMED.exec(t);
+  if (!m) return sentence;
+  const [, term, sep, rest] = m;
+  // the named term must be what was heard (misheard): never touch "Det är rätt." or "Det är viktigt, …"
+  if (similarity(term, heard) < 0.6 && !letters(heard).includes(letters(term).slice(0, 6))) return sentence;
+  const cap = term.charAt(0).toUpperCase() + term.slice(1);
+  const trail = /\s$/.test(sentence) ? " " : "";
+  if (!sep || !rest?.trim()) return ""; // "Det här är fotosyntesen." on its own says nothing
+  const r = rest.trim().replace(/^(?:alltså|det vill säga|dvs\.?)\s+/i, "");
+  if (/^(?:en|ett|när|den|det|de|processen|läran|ett sätt)\b/i.test(r)) {
+    return `${cap} är ${r}${/[.!?]$/.test(r) ? "" : "."}${trail}`;
+  }
+  return `${r.charAt(0).toUpperCase()}${r.slice(1)}${/[.!?]$/.test(r) ? "" : "."}${trail}`;
 }
 
 export class MetaGate {
@@ -831,6 +880,8 @@ export interface PostOptions {
   source?: boolean;
   /** 2026-11-08: sentences about the fragment / sound / microphone are dropped (all modes without a persona). */
   inputMeta?: boolean;
+  /** Oscar 2026-11-08: Provläge: the fragment, so a first sentence that names the heard term can be cut. */
+  heard?: string;
 }
 
 export class AnswerPost {
@@ -842,6 +893,7 @@ export class AnswerPost {
   private readonly meta: MetaGate;
   private readonly imeta: MetaGate;
   private readonly input: MetaGate;
+  private readonly lead: MetaGate;
   private readonly src: SourceTap;
   private spoke = false;
   private readonly en: EnglishGate;
@@ -857,6 +909,12 @@ export class AnswerPost {
     this.meta = new MetaGate(opts.silence === true);
     this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, stripInterviewMeta);
     this.input = new MetaGate(opts.inputMeta === true, isInputMeta);
+    let firstDone = false;
+    this.lead = new MetaGate(opts.inputMeta === true && !!opts.heard, () => false, (sentence) => {
+      if (firstDone || !sentence.trim()) return sentence;
+      firstDone = true;
+      return rewriteLeadIn(sentence, opts.heard ?? "");
+    });
     this.src = new SourceTap(opts.web === true || opts.source === true);
     this.en = new EnglishGate(opts.web === true);
   }
@@ -886,7 +944,12 @@ export class AnswerPost {
 
   /** D75: the model chose silence, or every sentence was a meta comment (nothing was spoken). */
   get silent(): boolean {
-    return this.sil.silent || ((this.meta.dropped > 0 || this.input.dropped > 0) && !this.spoke);
+    return this.sil.silent || ((this.meta.dropped > 0 || this.input.dropped > 0 || this.lead.dropped > 0) && !this.spoke);
+  }
+
+  /** Oscar 2026-11-08: every interview sentence was a remark about missing facts (nothing was said). */
+  get interviewMetaOnly(): boolean {
+    return this.imeta.dropped > 0 && !this.spoke;
   }
 
   /** 2026-11-08: the silence marker came after text was already said: the whole answer counts as silent. */
@@ -914,9 +977,9 @@ export class AnswerPost {
     const a = this.dup.push(
       this.gate.push(
         this.imeta.push(
-          this.input.push(
+          this.lead.push(this.input.push(
             this.meta.push(this.en.push(this.src.push(this.tap.push(this.sil.push(this.rel.push(raw)))))),
-          ),
+          )),
         ),
       ),
     );
@@ -931,7 +994,8 @@ export class AnswerPost {
     const s = this.src.push(t) + this.src.finish();
     const e0 = this.en.push(s) + this.en.finish();
     const e1 = this.meta.push(e0) + this.meta.finish();
-    const e2 = this.input.push(e1) + this.input.finish();
+    const e2a = this.input.push(e1) + this.input.finish();
+    const e2 = this.lead.push(e2a) + this.lead.finish();
     const e = this.imeta.push(e2) + this.imeta.finish();
     const rest = this.trim.push(this.dup.push(this.gate.push(e)) + this.dup.finish()) +
       this.trim.finish();

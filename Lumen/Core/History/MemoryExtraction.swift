@@ -13,6 +13,11 @@ enum SensitiveFilter {
         "lesbisk", "transperson", "sexuell", "politisk", "röstar på", "partiet", "socialdemokrat", "sverigedemokrat",
         "moderat", "vänsterparti", "etnisk", "ursprung", "invandrare", "facket", "fackförening", "dömd", "brott",
         "polisanmäl", "straff", "fängelse",
+        // address, debts and money matters (Oscar 2026-11-08, owner; same rule as the backend's /memory)
+        "adress", "bor på ", "gatan ", "postnummer", "skuld", " lån", "kredit", "inkasso", "kronofogd",
+        "betalningsanmärk", " lön", "inkomst", "tjänar ", "ekonomi", "hyra", "csn", "pengar", "förmögenhet",
+        "bankkonto", "kontonummer", "personnummer", "lösenord",
+        "address", "i live at", "debt", "loan", "salary", "income", "bank account", "password",
     ]
 
     static func isSensitive(_ text: String) -> Bool {

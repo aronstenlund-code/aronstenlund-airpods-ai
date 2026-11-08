@@ -43,3 +43,23 @@ Deno.test("D80 an answer the client aborts does not count against the user's own
   assertEquals(rl.count("answer:u:u1:d", 86400), 2);
   assertEquals((await h(ask())).status, 429);
 });
+
+Deno.test("Oscar 2026-11-08 an aborted answer is also given back in the new-session window", async () => {
+  const rl = new MemoryRateLimiter();
+  const h = createHandler({
+    authenticate: () => Promise.resolve({ id: "n1", isAnonymous: true, sessionStartSec: Math.floor(Date.now() / 1000) - 30 }),
+    rateLimiter: rl,
+    provider: new MockProvider({ delayMs: 15, chunkSize: 2 }),
+    recordUsage: () => {},
+    config: { ...DEFAULT_CONFIG, appGuard: { networkPerDay: 1500, newUserAgeSec: 600, newUserPerHour: 3 } },
+  });
+  for (let i = 0; i < 6; i++) {
+    const res = await h(ask());
+    assertEquals(res.status, 200, `aborted ${i}`);
+    const reader = res.body!.getReader();
+    await reader.read();
+    await reader.cancel();
+    await tick();
+  }
+  assertEquals(rl.count("answer:new:u:n1:h", 3600), 0);
+});

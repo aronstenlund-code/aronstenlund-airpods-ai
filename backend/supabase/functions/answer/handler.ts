@@ -114,7 +114,8 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   maxAnswerCharsStudy: 1800,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
   webLimits: { perMinute: 3, perDay: 20, globalPerDay: 150 },
-  appGuard: { networkPerDay: 1500, newUserAgeSec: 600, newUserPerHour: 20 },
+  // Oscar 2026-11-08: 40 (was 20) and aborted calls are given back here too
+  appGuard: { networkPerDay: 1500, newUserAgeSec: 600, newUserPerHour: 40 },
   rizzModel: "claude-sonnet-5-5",
   rizzPriceInPerMTok: 2,
   rizzPriceOutPerMTok: 10,
@@ -672,7 +673,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : undefined;
       const userFor = (b: AnswerRequest, extras: PromptExtras = {}) =>
         plan
-          ? buildPersonaUserMessage(b, plan.task)
+          ? buildPersonaUserMessage(b, plan.task) +
+            (extras.note ? `
+<note>${extras.note}</note>` : "")
           : direct
           ? buildDirectUserMessage(b, continuation, { ...extras, note: extras.note ?? echoNote })
           : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, {
@@ -766,6 +769,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             tutor,
             silence: silenceOn,
             inputMeta: silenceOn, // 2026-11-08: never about the fragment, sound or microphone (sentence-buffered modes only)
+            heard: body.fragment,
             interview: plan?.kind === "interview", // D77
           });
           let pendingMeta: Record<string, unknown> | null = null;
@@ -874,6 +878,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 if (post.questionOnly && !stop) {
                   note =
                     "Your previous reply only asked the user a question. Answer directly with the most likely interpretation and do not ask anything back.";
+                } else if (plan?.kind === "interview" && post.interviewMetaOnly && ttftMs === null && !stop) {
+                  // Oscar 2026-11-08: an interview answer is never empty
+                  note =
+                    "Your previous reply only talked about facts that are not given. Answer the interviewer's question directly in first person with what you bring to the role, and never mention what is missing.";
                 }
               }
               if (!note || attempt > 0) break;
@@ -914,6 +922,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 tutor,
                 silence: silenceOn,
                 inputMeta: silenceOn,
+                heard: body.fragment,
                 interview: plan?.kind === "interview",
               });
               r = await it.next();
@@ -1035,7 +1044,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             if (aborted) {
               status = "aborted";
               try {
-                await deps.rateLimiter.release?.(userWindows("answer", user.id), 1, countedAt);
+                // Oscar 2026-11-08: the new-session window is given back as well (network and global stay counted)
+                const newWin = appExtra.filter((c) => c.key.includes(":new:u:"))
+                  .map((c) => ({ key: c.key, windowSec: c.windowSec }));
+                await deps.rateLimiter.release?.([...userWindows("answer", user.id), ...newWin], 1, countedAt);
               } catch (e) {
                 console.error("rate_release_failed", e instanceof Error ? e.message : String(e));
               }

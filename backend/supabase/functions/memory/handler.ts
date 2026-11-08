@@ -50,11 +50,11 @@ export interface MemoryResult {
 
 /** Words that show the wearer speaks about themselves; without one the model is not called at all. */
 const SELF =
-  /(?<!\p{L})(jag|mig|min|mitt|mina|vi|oss|vår|vårt|våra|me|my|mine|we|our|alltid|aldrig|i fortsättningen|från och med nu|framöver|kortare|längre)(?!\p{L})/iu;
+  /(?<!\p{L})(jag|mig|min|mitt|mina|vi|oss|vår|vårt|våra|me|my|mine|we|our|i am|i'm|i've|i have|i will|i'll|i need|i want|i study|i go|i like|i prefer|always|never|from now on|alltid|aldrig|i fortsättningen|från och med nu|framöver|kortare|längre)(?!\p{L})/iu;
 
 /** Never kept even if the model returns it (GDPR art. 9 categories and similar). */
 const SENSITIVE =
-  /allerg|sjuk|diagnos|adhd|autism|diabet|astma|depress|ångest|medicin|gravid|psyk|terapi|religi|kristen|muslim|jude|judisk|ateist|politi|parti|röstar|sexuell|homosex|bisex|transperson|etnisk|ursprung|fackförening|brott|dömd|polisanmäl|biometri|health|religion|sexual|ethnic/iu;
+  /allerg|sjuk|diagnos|adhd|autism|diabet|astma|depress|ångest|medicin|gravid|psyk|terapi|religi|kristen|muslim|jude|judisk|ateist|politi|parti|röstar|sexuell|homosex|bisex|transperson|etnisk|ursprung|fackförening|brott|dömd|polisanmäl|biometri|health|religion|sexual|ethnic|adress|bor på|bor i en|gatan|vägen \d|postnummer|skuld|lån|kredit|inkasso|kronofogd|betalningsanmärk|lön|inkomst|tjänar|ekonomi|hyra|bidrag|csn|pengar|förmögenhet|sparpengar|bankkonto|kontonummer|personnummer|lösenord|address|i live at|debt|loan|credit|salary|income|bank account|password/iu;
 
 export const SYSTEM_PROMPT_MEMORY =
   `You keep a short memory about the wearer of a study assistant (a student in Sweden). You get <now> (the current date in Sweden), <memories> (what is already remembered) and <turn> (<q> = what the wearer just said, <a> = the assistant's answer, context only).
@@ -63,7 +63,7 @@ Return ONLY a JSON object: {"add": [...], "update": [{"old": "...", "new": "..."
 - add: new, important facts the wearer said about THEMSELVES in <q>: tests and deadlines, subjects and courses, level, goals, standing wishes for how answers should be ("svara kortare", "förklara med exempel"), rules ("fråga mig alltid en kontrollfråga"). One short Swedish sentence each, third person about the wearer, no name needed ("Har prov i kemi fredag 13 november 2026.").
 - Dates are always absolute: turn "på fredag", "nästa vecka", "imorgon" into weekday, day, month and year from <now>.
 - update: a fact in <memories> that the wearer changed (old = the exact memory text, new = the new sentence). remove: a memory the wearer said is no longer true (exact text).
-- Never: facts about other people, small talk, one-off questions ("vad är fotosyntes" is not a fact about the wearer), guesses, anything already in <memories>, and never sensitive categories (health, allergies, diagnoses, religion, politics, sexuality, ethnicity, union membership, crime).
+- Write every item in Swedish, whatever language the turn is in. Never: a home address, debts, loans, salary or other money matters, facts about other people, small talk, one-off questions ("vad är fotosyntes" is not a fact about the wearer), guesses, anything already in <memories>, and never sensitive categories (health, allergies, diagnoses, religion, politics, sexuality, ethnicity, union membership, crime).
 - At most ${MEMORY_LIMITS.items} items in total, each at most 160 characters. Nothing worth keeping: {"add": [], "update": [], "remove": []}.`;
 
 function clean(s: unknown, max: number): string | null {

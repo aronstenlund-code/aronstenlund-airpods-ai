@@ -1,0 +1,29 @@
+import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
+import { AnswerPost, isInterviewMeta, rewriteLeadIn } from "./speech.ts";
+
+Deno.test("Oscar 2026-11-08 Provläge: the reading of a misheard term is never said", () => {
+  assertEquals(rewriteLeadIn('Fragmentet "gra vi ta tions kraften" låter som "gravitationskraften", ett klart studieämne, så jag svarar på det. ', "gra vi ta tions kraften"), "");
+  assertEquals(rewriteLeadIn("Det låter som kosinussatsen, en sats i geometri som kopplar ihop sidor och vinklar. ", "ko sinus satsen"),
+    "Kosinussatsen är en sats i geometri som kopplar ihop sidor och vinklar. ");
+  assertEquals(rewriteLeadIn("Det här är fotosyntesen. ", "fo to syn tesen"), "");
+  assertEquals(rewriteLeadIn("Det är demokrati, ett styrelseskick där folket väljer. ", "den mo kra tin"),
+    "Demokrati är ett styrelseskick där folket väljer. ");
+  // never touched: a reply to a check question, an ordinary first sentence
+  assertEquals(rewriteLeadIn("Det är rätt. ", "kloroplast"), "Det är rätt. ");
+  assertEquals(rewriteLeadIn("Det är viktigt, eftersom växter behöver ljus. ", "fotosyntes"), "Det är viktigt, eftersom växter behöver ljus. ");
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true, silence: true, inputMeta: true, heard: "fo to syn tesen" });
+  const out = p.push("Det här är fotosyntesen. Växter bygger socker av ljus. ") + p.finish();
+  assertEquals(out.trim(), "Växter bygger socker av ljus.");
+});
+
+Deno.test("Oscar 2026-11-08 interview: the remarks about missing facts are dropped", () => {
+  for (
+    const s of [
+      "Jag har inget namn angivet, så jag svarar utan att nämna det.",
+      "Jag vill hellre prata om vad jag tar med mig till jobbet än om mina år.",
+      "Jag är inte så noga med siffror, men jag är noggrann i kassan.",
+      "Hur gammal jag är spelar inte lika stor roll som vad jag kan bidra med.",
+    ]
+  ) assert(isInterviewMeta(s), s);
+  assert(!isInterviewMeta("Jag är noggrann och tycker om att möta kunder."));
+});
