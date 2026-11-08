@@ -97,5 +97,7 @@ Lumen had begun reading the question, so the turn was reset when the speech star
 in the app. The test now waits until the question is read and the microphone is open again, and a missing call can no
 longer crash the test run. The tests after it had not run, because of the crash; they run now.
 
+- **Green:** run `42493099848` on commit `0f99e1c` (D81 + D84 + D86 + D87 together: build, unit tests, licence check). IPA for Sideloadly: https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42493099848/artifacts/13621679810 (kept 14 days).
+
 ## Next session
 After a green CI: device test checklist 3z8. Waiting for Aron's device test of D80–D84.
