@@ -62,6 +62,10 @@ before the backend reads them:
 - **A Provläge flow:** the second call carries the exam id and the turn before it, marked answered.
 - **The recording's text:** in time order, with timings.
 
+## CI
+- **First run (`42490129061`):** the app built, but the tests did not compile. A test suite called two main-actor
+  functions, `encodeBody` and the recording's text, without being on the main actor. The suite is `@MainActor` now.
+
 ## Known limits
 - **Long recordings:** a 10-minute WAV is about 19 MB.
 - **Speech:** "SA" is when a sentence started playing, not when it ended.

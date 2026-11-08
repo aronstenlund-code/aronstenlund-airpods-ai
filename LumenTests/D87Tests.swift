@@ -3,6 +3,7 @@ import Testing
 @testable import Lumen
 
 /// D87: Provläge's keyterms from the active exam, the last three turns and the exam id, the study-session recording.
+@MainActor
 @Suite struct ExamKeytermTests {
     @Test func theExamsWordsComeFirst() {
         var profile = StudyProfile()
