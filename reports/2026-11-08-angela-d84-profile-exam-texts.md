@@ -87,6 +87,10 @@ is ignored. Everything else is never answered (Auto off).
 - **Answers by voice:** a long answer ("rätta, jag fick …") is limited by what Scribe hears. Algebra by voice is hard.
 - **Wearer's voice:** with a voice profile, a command whose voice was not identified yet still counts.
 
+## CI
+- **First D84 run (`42487727296`):** failed to build. Two constants of the main-actor class `ExamMaterials` were used by
+  its non-isolated page functions. They are `nonisolated` now.
+
 ## D81 test fix in this push
 The D81 run (`42486781789`) failed one test, `theMiniTestAsksGradesAndMovesOn`. The test spoke the answer before
 Lumen had begun reading the question, so the turn was reset when the speech started. That is a race in the test, not

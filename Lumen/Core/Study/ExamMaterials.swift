@@ -63,8 +63,8 @@ final class ExamMaterials {
 
     // MARK: Pages
 
-    static let longestSide: CGFloat = 1_600
-    static let maxPages = 40
+    nonisolated static let longestSide: CGFloat = 1_600
+    nonisolated static let maxPages = 40
 
     /// JPEG pages from a PDF or one photo.
     nonisolated static func pages(from url: URL) async -> [Data] {
