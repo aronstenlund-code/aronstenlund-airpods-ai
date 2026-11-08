@@ -99,7 +99,7 @@ struct MemoryView: View {
         case .manual: "skrivet"
         case .automatic: "hittat av Lumen"
         }
-        return "\(item.createdAt.formatted(date: .abbreviated, time: .omitted)) · \(source)"
+        return "\(item.createdAt.formatted(date: .abbreviated, time: .omitted)), \(source)"
     }
 
     private var isEditing: Binding<Bool> {

@@ -3,6 +3,8 @@ import SwiftUI
 /// Consent gate + the always-visible listening indicator above every screen (ARCHITECTURE §12).
 struct RootView: View {
     let container: AppContainer
+    /// D86: the first start (intro, consent, the first question, an exam) runs once.
+    @AppStorage(FirstStartView.doneKey) private var firstStartDone = false
 
     private var asksAboutSharing: Binding<Bool> {
         let asking = !container.share.hasAsked // read here, in `body`, so the view follows it
@@ -11,15 +13,12 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            if container.consent.isGranted {
-                // D74: the indicator sits above the navigation bar, not on top of the title.
-                VStack(spacing: 0) {
-                    ListeningIndicatorBar(state: container.sessionController.state,
-                                          onStop: { Task { await container.listening.stopListening() } },
-                                          onResume: { Task { await container.listening.resume() } })
-                    NavigationStack {
-                        ListeningView(model: container.listening, diagnostics: container.diagnostics)
-                    }
+            if !firstStartDone {
+                FirstStartView(container: container) { firstStartDone = true }
+            } else if container.consent.isGranted {
+                // D86: the indicator line is part of the main screen (above Start; Lyssnar is the indicator itself).
+                NavigationStack {
+                    ListeningView(model: container.listening, diagnostics: container.diagnostics)
                 }
                 .sheet(isPresented: asksAboutSharing) {
                     ShareHistoryPromptView { container.listening.setSharing($0) }
@@ -29,5 +28,8 @@ struct RootView: View {
             }
         }
         .animation(.default, value: container.consent.isGranted)
+        .environment(container.appearance)
+        .preferredColorScheme(container.appearance.colorScheme) // D86: follows the iPhone unless locked
+        .tint(LumenColor.blue)
     }
 }

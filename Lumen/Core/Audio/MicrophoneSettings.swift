@@ -64,11 +64,18 @@ final class MicrophoneSettings {
     var echoCancellation: Bool {
         didSet { defaults.set(echoCancellation, forKey: Self.echoKey) }
     }
+    /// D86: when the AirPods are taken out, pause (on) or keep listening with the answers in the phone's speaker
+    /// (off, the default in the owner's design).
+    var pauseWhenAirPodsLost: Bool {
+        didSet { defaults.set(pauseWhenAirPodsLost, forKey: Self.pauseOnLossKey) }
+    }
+    static let pauseOnLossKey = "microphone.pauseWhenAirPodsLost"
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.echoCancellation = defaults.object(forKey: Self.echoKey) as? Bool ?? true
+        self.pauseWhenAirPodsLost = defaults.bool(forKey: Self.pauseOnLossKey)
         for mode in ConversationMode.allCases {
             sources[mode] = defaults.string(forKey: Self.key(for: mode)).flatMap(MicrophoneSource.init(rawValue:))
         }

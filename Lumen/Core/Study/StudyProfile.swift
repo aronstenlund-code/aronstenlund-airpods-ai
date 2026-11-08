@@ -22,6 +22,8 @@ struct StudyProfile: Codable, Equatable, Sendable {
     var onboarded = false
     /// D84: 30–50 central terms for the grade and subject (Kevin's `/study-profile`), for Scribe and `prep_terms`.
     var terms: [String]?
+    /// D86: "Vad kommer på provet?", as typed (chapters, areas, concepts).
+    var topics: String?
 
     static let subjects = ["Matematik", "Svenska", "Engelska", "Biologi", "Fysik", "Kemi", "Historia", "Samhällskunskap",
                            "Geografi", "Religion", "Spanska", "Tyska", "Franska", "Teknik", "Programmering"]
@@ -90,6 +92,7 @@ struct StudyProfile: Codable, Equatable, Sendable {
         }
         if let grade { lines.append("Årskurs: \(Self.gradeName(grade))\(course.isEmpty ? "" : ", kurs \(course)").") }
         if !subject.isEmpty, examDate == nil || noExam { lines.append("Ämne: \(subject).") }
+        if let topics, !topics.isEmpty { lines.append("På provet: \(topics).") }
         if let checkQuestions { lines.append("Kontrollfrågor: \(Self.checkName(checkQuestions)).") }
         if let explanations { lines.append("Förklaringar: \(Self.explanationName(explanations).lowercased()).") }
         return lines.isEmpty ? nil : String(lines.joined(separator: " ").prefix(1_500))

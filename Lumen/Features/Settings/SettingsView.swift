@@ -3,10 +3,13 @@ import SwiftUI
 /// Language, activation, voice and speed (items 2, 3, 5). Presented as a sheet from the Listening screen.
 struct SettingsView: View {
     @Bindable var model: ListeningModel
+    var diagnostics: DiagnosticsModel?
+    @Environment(AppearanceSettings.self) private var appearance
     @AppStorage("debug.latencyOverlay") private var showsLatencyOverlay = false
 
     var body: some View {
         Form {
+            appearanceSection
             languageSection
             microphoneSection
             activationSection
@@ -16,6 +19,30 @@ struct SettingsView: View {
             }
             voiceSection
             answerSection
+            Section("Mer") {
+                if model.canSaveNote {
+                    Button("Spara samtalet som anteckning") { model.saveNote() }
+                }
+                NavigationLink("Anteckningar") { NotesView(store: model.notes) }
+                NavigationLink("Förberedelser") { PrepView(store: model.prep, goals: model.goals) }
+                NavigationLink("Egna kommandon") { CommandsView(store: model.commands) }
+                Button("Provsession, ladda upp ett prov") {
+                    model.isShowingSettings = false
+                    model.isShowingExamSetup = true
+                }
+                NavigationLink("Integritet och samtycke") {
+                    ConsentView(mode: .review(grantedAt: model.consent.record?.grantedAt) {
+                        model.isShowingSettings = false
+                        Task { await model.withdrawConsent() }
+                    })
+                }
+            }
+            Section("Diagnostik") {
+                NavigationLink("Rå transkription och svar") { RawTranscriptView(model: model) }
+                if let diagnostics {
+                    NavigationLink("Diagnostik") { DiagnosticsView(model: diagnostics) }
+                }
+            }
             Section("History and memory") {
                 NavigationLink("History") { HistoryView(store: model.history) }
                 NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands) }
@@ -36,9 +63,25 @@ struct SettingsView: View {
             }
             #endif
         }
-        .navigationTitle("Settings")
+        .textCase(nil) // D86: no capitals over headings
+        .navigationTitle("Inställningar")
         .navigationBarTitleDisplayMode(.inline)
         .task { await model.voices.refreshIfNeeded() }
+    }
+
+    /// D86: light, dark or as the iPhone; handwriting for the user's questions.
+    private var appearanceSection: some View {
+        @Bindable var appearance = appearance
+        return Section {
+            Picker("Utseende", selection: $appearance.appearance) {
+                ForEach(AppearanceSettings.Appearance.allCases, id: \.self) { Text($0.title).tag($0) }
+            }
+            Toggle("Frågor i handstil", isOn: $appearance.handwriting)
+        } header: {
+            Text("Utseende")
+        } footer: {
+            Text("Som standard följer Lumen iPhonens ljusa eller mörka läge.")
+        }
     }
 
     private var languageSection: some View {
@@ -159,6 +202,11 @@ struct SettingsView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             Toggle("Ekoreducering i iPhonens högtalare", isOn: echoBinding)
+            Toggle("Pausa när AirPods kopplas bort", isOn: Binding(get: { model.microphone.pauseWhenAirPodsLost },
+                                                                  set: { model.microphone.pauseWhenAirPodsLost = $0 }))
+            Text("Av: Lumen lyssnar vidare och svaren hörs i telefonens högtalare.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
             Text("När ljudet går ut i iPhonens egen högtalare hör mikrofonen annars Lumen. Med AirPods eller hörlurar används den aldrig, så mikrofonen behåller sin kvalitet.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)

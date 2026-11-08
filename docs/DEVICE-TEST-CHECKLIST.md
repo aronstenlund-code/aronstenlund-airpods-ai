@@ -329,6 +329,15 @@ Välj **Socialt läge** (väljaren: Frågor, Provläge, Intervjuläge, Socialt l
 3. Spela Spotify, börja lyssna, säg "pausa": Spotify ska fortsätta i full kvalitet. Säg "spela musik" på samma sätt.
 4. Inställningar → *Feedback & förslag*: skicka en text. Slå på och av *Dela historik*.
 
+### 3z9. Ny design (D86, 25 min)
+1. Radera appen och installera om. Första start: **Testa nu** → samtycket → iOS frågar om mikrofonen → "Fråga vad som helst". Ställ en fråga högt: svaret ska komma inom 30 s från att appen öppnades. **Fortsätt** → "Lägg till prov" (eller **Hoppa över**). iOS ska inte fråga om taligenkänning.
+2. Lägg till prov: välj Åk 9, NO → Biologi, ett datum, skriv "fotosyntes". Spara. Lägg till ett prov till (Engelska, senare datum). Startskärmen ska visa Biologiprovet som rutat kort med röd ring "N dagar kvar" och Engelska som rad med mikrofonknapp.
+3. Tryck mikrofonen på Engelska-raden: Provläget startar för engelskaprovet (titeln högst upp ska vara Engelskaprovet).
+4. Lyssnarskärmen: frågan i handstil, svaret stort, förra frågan dämpad. **Byt läge** → välj Socialt: lyssnandet ska fortsätta. Tumme ned skickar en rapport. **Pausa** / **Fortsätt** / **Avsluta**, och samma med rösten: "Lumen, pausa", "Lumen, avsluta". I Provläget: "Lumen, förhör mig" ska ge en kontrollfråga.
+5. Låsskärmen och Dynamic Island: logga, provets namn, "Lyssnar", senaste svaret på en rad, **Pausa** och **Avsluta** fungerar.
+6. Fel: stäng av internet och ställ en fråga: kortet "Ingen internetanslutning" och samma mening i örat. Ta ur AirPods: kortet "AirPods kopplades bort", svaren hörs i telefonen, **Pausa** pausar. (Inställningar → *Pausa när AirPods kopplas bort* på: pausar direkt.) Neka mikrofonen i iOS: "Lumen hör dig inte" + **Öppna Inställningar**. Inga felkoder eller "HTTP" någonstans utom Inställningar → Diagnostik.
+7. Inställningar → Utseende: Ljust, Mörkt, Som iPhonen. Stäng av *Frågor i handstil*. Gör textstorleken störst i iOS: inget ska klippas. VoiceOver: alla knappar ska ha namn.
+
 ### 3z8. Röstbesked, provsession, uppläsning (D84, 25 min)
 1. I vilket läge som helst: säg "Lumen, jag går i åk 9 och ska snart ha prov i biologi". Du ska genast höra "Biologi åk 9, sparat." Inställningar → *Provläge: om dig* ska visa åk 9 och Biologi, och Minne provprofilen.
 2. Ställ en kort fråga med ett ämnesord som lätt hörs fel ("vad är fotosyntes"): ordet ska bli rätt (termerna från servern går till taligenkänningen).

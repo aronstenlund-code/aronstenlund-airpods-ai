@@ -43,6 +43,12 @@ final class SessionController {
     /// D82: whether the input needs echo cancellation for this route (the listening model decides: only the
     /// iPhone's loudspeaker). Nil: never.
     var voiceProcessingPolicy: (@MainActor (SessionSnapshot) -> Bool)?
+    /// D86: true keeps listening when the AirPods go (the answers then play in the phone's speaker); nil or false
+    /// pauses as before.
+    var keepsListeningWhenOutputLost: (@MainActor () -> Bool)?
+    /// D86: the AirPods went while listening went on, or came back.
+    var onOutputLost: (@MainActor () -> Void)?
+    var onOutputRestored: (@MainActor () -> Void)?
 
     var snapshot: SessionSnapshot? { session.snapshot }
     var banner: String { session.snapshot?.banner ?? "No active session" }
@@ -232,9 +238,17 @@ final class SessionController {
             if !outputLost { Task { await reevaluateVoiceProcessing(snapshot) } }
             if outputLost {
                 UINotificationFeedbackGenerator().notificationOccurred(.warning)
-                Task { await apply(.outputDeviceLost) }
+                if state == .listening, keepsListeningWhenOutputLost?() == true {
+                    // D86: the answers go on in the phone's speaker (echo cancellation follows the new route).
+                    Task { await reevaluateVoiceProcessing(snapshot) }
+                    onOutputLost?()
+                } else {
+                    Task { await apply(.outputDeviceLost) }
+                }
             } else if case .paused(.outputDeviceLost) = state, reason == "newDeviceAvailable" {
                 Task { await apply(.outputDeviceRestored) }
+            } else if reason == "newDeviceAvailable" {
+                onOutputRestored?()
             }
         case .mediaServicesReset:
             log("Media services were reset")

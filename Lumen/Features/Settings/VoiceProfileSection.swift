@@ -90,7 +90,7 @@ struct StudyCardsView: View {
                     HStack {
                         if let subject = card.subject { Text(subject) }
                         if let exam = card.examDate { Text("prov \(exam.formatted(date: .abbreviated, time: .omitted))") }
-                        if card.right + card.wrong > 0 { Text("\(card.right) rätt · \(card.wrong) fel") }
+                        if card.right + card.wrong > 0 { Text("\(card.right) rätt, \(card.wrong) fel") }
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)

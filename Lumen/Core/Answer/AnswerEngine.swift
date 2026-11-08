@@ -33,6 +33,8 @@ final class AnswerEngine {
     private(set) var status: Status = .idle
     /// Activation → first streamed text, for the last answer (item 7 adds the full overlay).
     private(set) var lastLatencyMs: Double?
+    /// D86: the kind of the last failure, so the app can say it in Swedish with what to do (never the code).
+    private(set) var lastError: AnswerError?
     private(set) var answersCompleted = 0
     weak var sink: (any AnswerSink)?
     /// Debug switch: deterministic local answers instead of the backend (no network, no cost).
@@ -116,6 +118,7 @@ final class AnswerEngine {
                 sink?.answerSentence(rest)
             }
             lastLatencyMs = firstDeltaMs
+            lastError = nil
             answersCompleted += 1
             status = .idle
             Log.answer.info("answer done · first delta \(firstDeltaMs ?? -1, privacy: .public) ms · provider \(provider.name, privacy: .public)")
@@ -126,6 +129,7 @@ final class AnswerEngine {
             if answerError == .cancelled { return }
             Log.answer.error("answer failed: \(answerError.localizedDescription, privacy: .public)")
             status = .failed(answerError.localizedDescription)
+            lastError = answerError
             sink?.answerFailed(answerError.localizedDescription, wantsFallback: answerError.wantsFallback)
         }
     }

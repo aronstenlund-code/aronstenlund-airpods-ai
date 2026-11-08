@@ -11,10 +11,16 @@ Licence rule (`prompts/2026-11-03-oss-integration.md`): only MIT, Apache-2.0 or 
 | pyannote segmentation-3.0, Core ML conversion `pyannote_segmentation.mlmodelc` (FluidInference/speaker-diarization-coreml) | Hugging Face revision `df2625ac79a7ac6b65ad868fee6d80f320da4232` (pinned by FluidAudio), upstream `pyannote/segmentation-3.0@e66f3d3b` | MIT, © 2023 CNRS (text below) | D81 voice profile. Model weights, downloaded at first use, not in the repo or the app bundle. Modified: converted to Core ML with fixed input shapes by Fluid Inference. |
 | WeSpeaker VoxCeleb ResNet34-LM, Core ML conversion `wespeaker_v2.mlmodelc` (same repository and revision) | as above, upstream `pyannote/wespeaker-voxceleb-resnet34-LM@837717dd` | CC-BY-4.0 (attribution below) | D81 voice profile and speaker labels. Model weights, downloaded at first use. Modified: Core ML conversion, fbank fused in, 8-bit palettized weights, by Fluid Inference. |
 | PLDA parameters (`plda-parameters.json`, `xvector-transform.json`), if FluidAudio's download sweeps them in with the repository's root JSON files | as above | CC-BY-4.0, BUT Speech@FIT | Not used by Lumen's code; listed because they may land in the model cache. |
+| Familjen Grotesk (Familjen-Sthlm), variable font `FamiljenGrotesk[wght].ttf` | google/fonts `ofl/familjengrotesk`, fetched 2026-11-08 | SIL Open Font License 1.1 | D86: the app's font, bundled in the app and the Live Activity extension (`Lumen/Resources/Fonts/`, licence text beside it). Not modified, not sold on its own. |
+| Kalam (Indian Type Foundry), `Kalam-Regular.ttf`, `Kalam-Bold.ttf` | google/fonts `ofl/kalam`, fetched 2026-11-08 | SIL Open Font License 1.1 | D86: handwriting for the user's questions and the red pen, bundled in the app. Not modified. |
 | Volocal `SentenceBuffer.swift` (fikrikarim/volocal) | commit `b731963` | MIT | Vendored and modified: `Lumen/Core/Transcription/SentenceBuffer.swift` (header kept). |
 | Parrot (turantekin/Parrot) | tag `v0.11.3` (MIT) | MIT | **Design only, no code copied**: question debounce, minimum interval, merged follow-up speech in `ActivationController`. Later Parrot versions are GPL-3.0 and are not used. |
 
 FluidAudio has no `NOTICE` file at that commit.
+
+**Fonts (D86):** the licence rule names code licences (MIT, Apache-2.0, BSD). The owner chose these two fonts by
+name; both are under the SIL Open Font License 1.1, which allows bundling them in an app. The full licence texts ship
+in the app bundle (`OFL-FamiljenGrotesk.txt`, `OFL-Kalam.txt`). No GPL parts.
 
 **Not used:** LS-EEND (FluidInference/lseend-coreml). Its model card could not be read without a login (HTTP 401 on
 2026-11-08), so its licence is unverified and it is not shipped. D81's live labels use WeSpeaker embeddings with

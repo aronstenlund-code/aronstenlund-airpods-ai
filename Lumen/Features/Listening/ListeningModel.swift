@@ -55,6 +55,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let studyCardsClient: StudyCardsClient?
     /// D84 (Kevin): "Lumen, jag går i åk 9 …" → the profile and the subject's terms. Nil: the phone's reading only.
     let studyProfileClient: StudyProfileClient?
+    /// D86: the exams the user added; the nearest is the start screen's card and Provläge's profile.
+    let examPlans: ExamPlanStore?
+    /// D86: Lyssnar is shown while a session runs; "Tillbaka" goes to Start with the session still on.
+    var showsListeningScreen = true
+    var isShowingAddExam = false
+    /// D86 screen 6: what is wrong right now, in Swedish with what to do. Nil: nothing.
+    private(set) var problem: LumenProblem?
+    /// "Lägg till prov" → the microphone button: the next sentence is the exam, said aloud.
+    private(set) var awaitingExamStatement = false
     /// D84: the practice exam inside Provläge, its uploaded paper and Kevin's `/exam`.
     let examMaterials: ExamMaterials?
     let examClient: ExamClient?
@@ -187,7 +196,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          modeSettings: ModeSettings? = nil, feedback: FeedbackClient? = nil, remote: RemoteCommandHub? = nil,
          memoryExtractor: MemoryExtractor? = nil, studyProfile: StudyProfileStore? = nil,
          speakers: SpeakerIdentifier? = nil, studyCards: StudyCardStore? = nil, studyCardsClient: StudyCardsClient? = nil,
-         studyProfileClient: StudyProfileClient? = nil, examMaterials: ExamMaterials? = nil, examClient: ExamClient? = nil) {
+         studyProfileClient: StudyProfileClient? = nil, examMaterials: ExamMaterials? = nil, examClient: ExamClient? = nil,
+         examPlans: ExamPlanStore? = nil) {
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -213,6 +223,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.studyCardsClient = studyCardsClient
         self.studyProfileClient = studyProfileClient
         self.examMaterials = examMaterials
+        self.examPlans = examPlans
         self.examClient = examClient
         self.goals = goals ?? GoalsStore()
         self.commands = commands ?? CommandStore()
@@ -248,6 +259,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             (self?.microphone.echoCancellation ?? true) && snapshot.outputsToBuiltInSpeaker
         }
         speaker.onFinished = { [weak self] in self?.speechFinished() }
+        controller.keepsListeningWhenOutputLost = { [weak self] in !(self?.microphone.pauseWhenAirPodsLost ?? true) }
+        controller.onOutputLost = { [weak self] in self?.report(problem: .airPodsDisconnected) }
+        controller.onOutputRestored = { [weak self] in
+            if self?.problem == .airPodsDisconnected { self?.problem = nil }
+        }
         speakers?.onIdentified = { [weak self] identity, date in self?.voiceIdentified(identity, at: date) }
         let firstPause = modes.pause(for: .standard)
         Task { [transcription] in await transcription.setPause(firstPause, mode: .standard) }
@@ -405,6 +421,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             handsFreeEnded()
         }
         switch state {
+        case .paused(.outputDeviceLost):
+            problem = .airPodsDisconnected
+        case .error(let message) where message.localizedCaseInsensitiveContains("permission"):
+            problem = .microphoneDenied
+        case .listening:
+            if problem == .microphoneDenied || problem == .airPodsDisconnected { problem = nil }
+        default:
+            break
+        }
+        switch state {
         case .listening:
             beginVoiceWork()
             showActivity()
@@ -435,7 +461,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func showActivity() {
         activity?.show(ListeningActivityAttributes.ContentState(isPaused: !isListening, suggestions: rizz?.suggestions ?? [],
-                                                                currentSuggestion: rizz?.index ?? 0))
+                                                                currentSuggestion: rizz?.index ?? 0,
+                                                                title: activityTitle,
+                                                                latestAnswer: conversation.answers.last.map { String($0.answer.prefix(120)) }))
     }
 
     /// Stops the microphone, forgets the session's transcript and clears the consent record; the consent
@@ -594,6 +622,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             local.apply(to: &profile)
             studyProfile.profile = profile
             studyProfileChanged()
+            saveSpokenExam(profile)
             say(local.confirmation())
             controller.log("Profile by voice (phone): \(local.confirmation())")
         }
@@ -613,12 +642,61 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             reply.apply(to: &updated)
             self.studyProfile.profile = updated
             self.studyProfileChanged()
+            self.saveSpokenExam(updated)
             self.controller.log("Profile by voice (server): \(reply.terms.count) terms")
             if local == nil {
                 let heard = ProfileStatement(grade: updated.grade, course: updated.course.isEmpty ? nil : updated.course,
                                              subject: updated.subject.isEmpty ? nil : updated.subject, examDate: updated.examDate)
                 if !heard.isEmpty { self.say(heard.confirmation()) }
             }
+        }
+    }
+
+    /// D86: a said exam with a subject and a date is one of the saved exams too.
+    private func saveSpokenExam(_ profile: StudyProfile) {
+        guard let examPlans, !profile.subject.isEmpty, let date = profile.examDate, !profile.noExam else { return }
+        examPlans.save(ExamPlan(grade: profile.grade, course: profile.course, area: .of(subject: profile.subject),
+                                subject: profile.subject, date: date, topics: profile.topics ?? ""))
+    }
+
+    /// D86 "Spara prov": kept with the others, and Provläge's profile from now on. The subject's terms follow.
+    func saveExamPlan(_ plan: ExamPlan) {
+        examPlans?.save(plan)
+        useExamPlan(plan)
+        controller.log("Exam saved: \(plan.name), \(plan.daysLeft()) days")
+    }
+
+    /// Provläge for this exam: its grade, subject, date and topics become the profile.
+    func useExamPlan(_ plan: ExamPlan) {
+        var profile = studyProfile.profile
+        plan.apply(to: &profile)
+        profile.onboarded = true
+        profile.terms = nil
+        studyProfile.profile = profile
+        studyProfileChanged()
+        guard let studyProfileClient else { return }
+        let body = StudyProfileClient.body(text: "", profile: profile, swedish: language == .swedish)
+        Task { [weak self] in
+            guard let reply = await studyProfileClient.read(body), let self else { return }
+            var updated = self.studyProfile.profile
+            if !reply.terms.isEmpty { updated.terms = Array(reply.terms.prefix(50)) }
+            self.studyProfile.profile = updated
+            self.refreshKeyterms()
+        }
+    }
+
+    /// D86 start screen: an exam row's microphone, or "Få A-svar till provet".
+    func startProv(for plan: ExamPlan) async {
+        useExamPlan(plan)
+        selectedMode = .prov
+        await startStudy()
+    }
+
+    /// "Lägg till prov" → "Eller säg det": listen, and the next sentence about an exam is saved as one.
+    func listenForExamStatement() async {
+        awaitingExamStatement = true
+        if !isListening {
+            if canResume { await resume() } else { await startListening() }
         }
     }
 
@@ -952,6 +1030,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func instruct(_ text: String) {
         if exam != nil {
             examCommand(text) // D84: in the exam session only exam commands count
+            return
+        }
+        if MiniTest.isCheckQuestionRequest(text), study.isActive, mode == .prov {
+            // D86: one check question; the wearer's answer is an ordinary Provläge turn.
+            activated(ActivationRequest(query: MiniTest.checkQuestionQuery(swedish: language == .swedish), trigger: .tutor, language: language),
+                      persona: tutorPersona())
             return
         }
         if MiniTest.isStartCommand(text) {
@@ -1295,6 +1379,111 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             line += " · labels \(speakers.showsLabels ? "on" : "off") · profile \(speakers.profiles.isEnrolled ? "yes" : "no")"
         }
         controller.log(line)
+    }
+
+    // MARK: - D86 screens
+
+    /// Offline and transport errors are "Ingen internetanslutning"; every other failure is "Försök igen om en minut".
+    nonisolated static func problem(for error: AnswerError?) -> LumenProblem? {
+        switch error {
+        case .offline?, .transport?: .offline
+        case .cancelled?, nil: nil
+        default: .overloaded
+        }
+    }
+
+    /// Shown on the card, and said in the ear when it has a spoken line (once per problem).
+    private func report(problem new: LumenProblem?) {
+        guard let new else { return }
+        let changed = problem != new
+        problem = new
+        if changed, let line = new.spoken { say(line) }
+    }
+
+    /// The card's button.
+    func act(on problem: LumenProblem) {
+        switch problem {
+        case .microphoneDenied:
+            ErrorCard.openSettings()
+        case .airPodsDisconnected:
+            Task { await controller.pause() }
+            self.problem = nil
+        case .overloaded:
+            self.problem = nil
+            if let question = conversation.answers.last?.question ?? pendingQuestion?.query, !question.isEmpty {
+                activated(ActivationRequest(query: question, trigger: pendingQuestion?.trigger ?? .text, language: language),
+                          persona: mode == .prov ? tutorPersona() : nil)
+            }
+        case .offline:
+            self.problem = nil
+        }
+    }
+
+    /// The short notices under the answers, in Swedish.
+    var visibleNotices: [String] {
+        [studyNotice, reportNotice].compactMap { $0 }
+    }
+
+    /// The Live Activity's title: the exam in Provläge, else the mode.
+    private var activityTitle: String {
+        if study.isActive, mode == .prov, let plan = examPlans?.upcoming().first(where: {
+            $0.subject.caseInsensitiveCompare(studyProfile.profile.subject) == .orderedSame
+        }) { return plan.name }
+        return (study.isActive ? mode : .standard).shortName
+    }
+
+    /// Start's round buttons: Frågor listens at once; the other modes go through their gates and start screens.
+    func startMode(_ target: ConversationMode) async {
+        if study.isActive || isListening {
+            await switchMode(to: target)
+            return
+        }
+        selectedMode = target
+        if target == .standard {
+            if canResume { await resume() } else { await startListening() }
+        } else {
+            await toggleSelectedMode()
+        }
+        showsListeningScreen = true
+    }
+
+    /// "Byt läge": the same checks as the screen and the voice; listening goes on.
+    func switchMode(to target: ConversationMode) async {
+        if target == .rizz, !modeSettings.isAdultConfirmed {
+            selectedMode = .rizz
+            isShowingAgeGate = true
+            return
+        }
+        if target.isLive, !modeSettings.hasConfirmedLiveStart(target) {
+            selectedMode = target
+            isShowingLiveStart = true
+            return
+        }
+        if target == .interview, !modeSettings.hasInterviewSetup {
+            selectedMode = .interview
+            isShowingInterviewSetup = true
+            return
+        }
+        await switchByVoice(to: target)
+    }
+
+    /// "Avsluta" (app, lock screen, voice): ends the mode and the microphone.
+    func endSession() async {
+        if study.isActive { endStudy(bySilence: false) }
+        await stopListening()
+        problem = nil
+    }
+
+    /// "Öva mer på": what Provläge or the exam session found weak, else the cards answered wrong, else the topics.
+    func practiseHint(for plan: ExamPlan) -> String? {
+        let prefix = "Provträning: öva på uppgifter som "
+        if let fact = memory.facts.last(where: { $0.text.hasPrefix(prefix) }) {
+            return String(fact.text.dropFirst(prefix.count)).trimmingCharacters(in: CharacterSet(charactersIn: "\"…"))
+        }
+        if let cards = studyCards?.current().filter({ $0.wrong > $0.right && ($0.subject ?? plan.subject) == plan.subject }), !cards.isEmpty {
+            return cards.prefix(2).map(\.question).joined(separator: " och ")
+        }
+        return plan.topics.isEmpty ? nil : plan.topics
     }
 
     // MARK: - The exam session (D84)
@@ -1811,6 +2000,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             extractMemories(from: turn)
             scheduleKeytermRefresh()
             studyCardOrGrade(turn)
+            showActivity()
         }
         if let fact = done?.memoryAdd {
             memory.add(fact)
@@ -1910,8 +2100,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         inFlightTrigger = nil
         latency.end()
         conversation.cancelAnswer()
-        answerNotice = message
+        answerNotice = nil // D86: the problem card says it in Swedish; the raw message is in Diagnostik's log
         controller.log("Answer failed: \(message)" + (wantsFallback ? " · fallback requested (on-device engine not available on this iPhone)" : ""))
+        report(problem: Self.problem(for: answers.lastError))
         studyAnswerEnded()
     }
 
@@ -1945,6 +2136,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard conversation.finalSegments.count > before, let segment = conversation.finalSegments.last else { return }
         finalObserver?(segment.text)
         if isComparing || isEnrollingVoice { return }
+        if awaitingExamStatement, ProfileStatement.isAboutSchool(segment.text) {
+            awaitingExamStatement = false
+            discardAhead(reason: "an exam said aloud")
+            profileStatement(segment.text)
+            return
+        }
         if let identity = speakers?.identity(near: date, window: 4) { labelTranscript(identity, at: date) }
         if isOwnEcho(segment.text, at: date), !isWearerUsingSuggestion(segment.text, level: study.currentTurnLevelDBFS) {
             discardAhead(reason: "Lumen's own echo")

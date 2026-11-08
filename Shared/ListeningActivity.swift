@@ -8,6 +8,10 @@ struct ListeningActivityAttributes: ActivityAttributes {
         /// Rizzläge: all options, best first (D43).
         var suggestions: [String] = []
         var currentSuggestion = 0
+        /// D86: "Biologiprovet" in Provläge, else the mode ("Frågor").
+        var title: String? = nil
+        /// D86: the latest answer, shown on one line.
+        var latestAnswer: String? = nil
     }
 }
 
@@ -20,6 +24,21 @@ enum ListeningRemote {
     static var ask: (@MainActor () async -> Void)?
     static var startStudy: (@MainActor () async -> Void)?
     static var pause: (@MainActor () async -> Void)?
+    /// D86: "Avsluta" on the lock screen.
+    static var stop: (@MainActor () async -> Void)?
+}
+
+/// D86: "Avsluta" on the Live Activity: ends the mode and the microphone, like the button in the app.
+struct StopListeningIntent: LiveActivityIntent {
+    static let title: LocalizedStringResource = "Avsluta Lumen"
+
+    init() {}
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        await ListeningRemote.stop?()
+        return .result()
+    }
 }
 
 /// "Starta Lumen" from Siri or a Control (D58). Runs with the app open: the microphone only starts from the app,

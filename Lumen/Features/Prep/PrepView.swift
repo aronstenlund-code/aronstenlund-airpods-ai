@@ -49,12 +49,12 @@ struct PrepView: View {
                         Toggle(isOn: Binding(get: { material.isEnabled }, set: { store.setEnabled(material, $0) })) {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(material.title)
-                                Text("\(material.terms.count) terms · \(material.text.count) characters")
+                                Text("\(material.terms.count) termer, \(material.text.count) tecken")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
                         }
-                        Text(material.terms.prefix(12).joined(separator: " · "))
+                        Text(material.terms.prefix(12).joined(separator: ", "))
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
                             .lineLimit(2)
@@ -90,7 +90,7 @@ struct PrepView: View {
                 }
                 if goals.stored != nil {
                     Toggle("Use the goals in answers", isOn: Binding(get: { goals.isEnabled }, set: { goals.setEnabled($0) }))
-                    Text("\(goals.text.count) characters · sent compact (\(goals.compact?.count ?? 0) characters): \(goals.terms.prefix(8).joined(separator: ", "))")
+                    Text("\(goals.text.count) tecken, skickas kort (\(goals.compact?.count ?? 0) characters): \(goals.terms.prefix(8).joined(separator: ", "))")
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .lineLimit(3)

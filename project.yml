@@ -72,6 +72,9 @@ targets:
         excludes:
           - "Info.plist"
       - path: Shared
+      # D86: the app's font on the lock screen too.
+      - path: Lumen/Resources/Fonts/FamiljenGrotesk.ttf
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen.controls

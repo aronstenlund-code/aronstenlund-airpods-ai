@@ -22,6 +22,12 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Lumen listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>FamiljenGrotesk.ttf</string>
+		<string>Kalam-Regular.ttf</string>
+		<string>Kalam-Bold.ttf</string>
+	</array>
 	<key>NSMotionUsageDescription</key>
 	<string>In Provläge you can answer a yes/no check question by nodding or shaking your head with your AirPods. Only used then.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

@@ -317,7 +317,8 @@ func freshTestDefaults() -> UserDefaults {
         test.graded("Rätt, bra.")
         #expect(test.isFinished && test.rightCount == 1)
         #expect(MiniTest.isStartCommand("minitest"))
-        #expect(MiniTest.isStartCommand("förhör mig på biologin"))
+        #expect(!MiniTest.isStartCommand("förhör mig på biologin"), "D86: förhör mig is one check question")
+        #expect(MiniTest.isCheckQuestionRequest("förhör mig på biologin"))
         #expect(MiniTest.isSkip("Vet inte."))
         #expect(!MiniTest.isSkip("vet inte riktigt men det är socker"))
     }

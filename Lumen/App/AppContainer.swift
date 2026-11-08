@@ -23,6 +23,8 @@ final class AppContainer {
     let prep: PrepStore
     let listening: ListeningModel
     let diagnostics: DiagnosticsModel
+    /// D86: light/dark/follow the iPhone, handwriting for questions.
+    let appearance = AppearanceSettings()
 
     init() {
         let graph = AudioGraph()
@@ -72,13 +74,15 @@ final class AppContainer {
                                        speakers: SpeakerIdentifier(), studyCards: StudyCardStore(),
                                        studyCardsClient: StudyCardsClient(config: .lumen, auth: auth, http: http),
                                        studyProfileClient: StudyProfileClient(config: .lumen, auth: auth, http: http),
-                                       examMaterials: ExamMaterials(), examClient: ExamClient(config: .lumen, auth: auth, http: http))
+                                       examMaterials: ExamMaterials(), examClient: ExamClient(config: .lumen, auth: auth, http: http),
+                                       examPlans: ExamPlanStore())
         ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
         ListeningRemote.nextSuggestion = { [weak listening] in listening?.nextSuggestion() }
         ListeningRemote.start = { [weak listening] in await listening?.startFromShortcut() }
         ListeningRemote.ask = { [weak listening] in await listening?.askFromShortcut() }
         ListeningRemote.startStudy = { [weak listening] in await listening?.startStudyFromShortcut() }
         ListeningRemote.pause = { [weak listening] in await listening?.pauseFromShortcut() }
+        ListeningRemote.stop = { [weak listening] in await listening?.endSession() }
         transcription.sink = listening
         self.graph = graph
         self.session = session

@@ -179,10 +179,22 @@ struct MiniTest: Equatable, Sendable {
         index += 1
     }
 
-    /// "Lumen, minitest", "Lumen, förhör mig", "Lumen, quiz me".
+    /// "Lumen, minitest", "Lumen, testa mig", "Lumen, quiz me". ("förhör mig" is one check question since D86.)
     static func isStartCommand(_ text: String) -> Bool {
         let key = AheadAnswer.key(text)
-        return ["minitest", "mini test", "förhör mig", "forhor mig", "testa mig", "quiz me", "test me"].contains { key.hasPrefix($0) || key == $0 }
+        return ["minitest", "mini test", "testa mig", "quiz me", "test me"].contains { key.hasPrefix($0) || key == $0 }
+    }
+
+    /// D86: "Lumen, förhör mig" in Provläge: one check question on what was just studied (or the exam).
+    static func isCheckQuestionRequest(_ text: String) -> Bool {
+        let key = AheadAnswer.key(text)
+        return ["förhör mig", "forhor mig", "ställ en kontrollfråga", "kontrollfråga", "fråga mig något"].contains { key.hasPrefix($0) }
+    }
+
+    static func checkQuestionQuery(swedish: Bool) -> String {
+        swedish
+            ? "Förhör mig: ställ en kontrollfråga på det vi just pratat om, eller på provet om vi inte pratat än. Bara frågan, inget svar."
+            : "Quiz me: ask one check question on what we just talked about, or on the exam. Only the question."
     }
 
     /// "vet inte", "hoppa över", "nästa", "pass".

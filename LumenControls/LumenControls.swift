@@ -28,32 +28,61 @@ struct StartListeningControl: ControlWidget {
 
 struct ListeningLiveActivity: Widget {
     var body: some WidgetConfiguration {
+        // D86: logo, the exam's name, "Lyssnar", the latest answer on one line, Pausa and Avsluta.
         ActivityConfiguration(for: ListeningActivityAttributes.self) { context in
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 12) {
-                    ListeningStatus(isPaused: context.state.isPaused)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 10) {
+                    LumenLogo(size: 24)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(verbatim: context.state.title ?? "Lumen")
+                            .font(LumenFont.text(17, .bold))
+                            .lineLimit(1)
+                        ListeningStatus(isPaused: context.state.isPaused)
+                    }
                     Spacer()
-                    ToggleButton(isPaused: context.state.isPaused)
+                }
+                if let answer = context.state.latestAnswer, context.state.suggestions.isEmpty {
+                    Text(verbatim: answer)
+                        .font(LumenFont.text(15))
+                        .lineLimit(1)
                 }
                 SuggestionList(state: context.state)
+                HStack(spacing: 10) {
+                    ToggleButton(isPaused: context.state.isPaused)
+                    StopButton()
+                }
             }
             .padding()
+            .activityBackgroundTint(LumenColor.background)
+            .foregroundStyle(LumenColor.ink)
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    ListeningStatus(isPaused: context.state.isPaused)
+                    HStack(spacing: 8) {
+                        LumenLogo(size: 22)
+                        Text(verbatim: context.state.title ?? "Lumen").font(LumenFont.text(15, .bold)).lineLimit(1)
+                    }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    ToggleButton(isPaused: context.state.isPaused)
+                    ListeningStatus(isPaused: context.state.isPaused)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    SuggestionList(state: context.state)
+                    VStack(alignment: .leading, spacing: 8) {
+                        if let answer = context.state.latestAnswer, context.state.suggestions.isEmpty {
+                            Text(verbatim: answer).font(LumenFont.text(14)).lineLimit(1)
+                        }
+                        SuggestionList(state: context.state)
+                        HStack(spacing: 10) {
+                            ToggleButton(isPaused: context.state.isPaused)
+                            StopButton()
+                        }
+                    }
                 }
             } compactLeading: {
-                StatusSymbol(isPaused: context.state.isPaused)
+                LumenLogo(size: 18)
             } compactTrailing: {
-                Text(context.state.isPaused ? "Paused" : "Listening")
-                    .font(.caption2)
+                Text(context.state.isPaused ? "Pausad" : "Lyssnar")
+                    .font(LumenFont.text(12, .semibold))
             } minimal: {
                 StatusSymbol(isPaused: context.state.isPaused)
             }
@@ -78,8 +107,10 @@ private struct StatusSymbol: View {
     let isPaused: Bool
 
     var body: some View {
-        Image(systemName: isPaused ? "pause.circle.fill" : "mic.fill")
-            .foregroundStyle(isPaused ? .orange : .red)
+        Image(systemName: isPaused ? "pause.circle.fill" : "circle.fill")
+            .font(.system(size: isPaused ? 14 : 9))
+            .foregroundStyle(isPaused ? LumenColor.muted : LumenColor.red)
+            .accessibilityHidden(true)
     }
 }
 
@@ -87,12 +118,11 @@ private struct ListeningStatus: View {
     let isPaused: Bool
 
     var body: some View {
-        Label {
-            Text(isPaused ? "Paused" : "Listening")
-                .font(.headline)
-        } icon: {
+        HStack(spacing: 6) {
             StatusSymbol(isPaused: isPaused)
+            Text(isPaused ? "Pausad" : "Lyssnar").font(LumenFont.text(14, .semibold))
         }
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -106,25 +136,44 @@ private struct SuggestionList: View {
                 VStack(alignment: .leading, spacing: 2) {
                     ForEach(Array(state.suggestions.enumerated()), id: \.offset) { index, line in
                         Text(verbatim: line)
-                            .font(.footnote.weight(index == state.currentSuggestion ? .semibold : .regular))
-                            .foregroundStyle(index == state.currentSuggestion ? .primary : .secondary)
+                            .font(LumenFont.text(14, index == state.currentSuggestion ? .semibold : .regular))
+                            .foregroundStyle(index == state.currentSuggestion ? LumenColor.ink : LumenColor.muted)
+                            .lineLimit(1)
                     }
                 }
                 Spacer()
                 Button(intent: NextSuggestionIntent()) {
-                    Label("Next", systemImage: "forward.fill")
+                    Label("Nästa", systemImage: "forward.fill")
                 }
+                .tint(LumenColor.blue)
             }
         }
     }
 }
 
+/// "Pausa" / "Fortsätt": the same words as in the app and by voice.
 private struct ToggleButton: View {
     let isPaused: Bool
 
     var body: some View {
         Button(intent: ToggleListeningIntent()) {
-            Label(isPaused ? "Resume" : "Pause", systemImage: isPaused ? "play.fill" : "pause.fill")
+            Label(isPaused ? "Fortsätt" : "Pausa", systemImage: isPaused ? "play.fill" : "pause.fill")
+                .font(LumenFont.text(15, .semibold))
+                .frame(maxWidth: .infinity, minHeight: 36)
         }
+        .tint(LumenColor.chip)
+        .foregroundStyle(LumenColor.ink)
+    }
+}
+
+private struct StopButton: View {
+    var body: some View {
+        Button(intent: StopListeningIntent()) {
+            Label("Avsluta", systemImage: "stop.fill")
+                .font(LumenFont.text(15, .semibold))
+                .frame(maxWidth: .infinity, minHeight: 36)
+        }
+        .tint(LumenColor.red)
+        .foregroundStyle(LumenColor.onRed)
     }
 }
