@@ -26,3 +26,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   2. 8–12 förebildssvar för Provläget (olika ämnen, årskurser, nyckelord, följdfråga) i den cachade systemprompten. Mät före och efter.
   3. Riktiga fel blir testfall automatiskt: "det där var fel"-rapporter och dåliga svar i shared_history läggs (anonymiserade) in i testbanken varje natt.
   4. Kunskapskrav som underlag: korta utdrag ur Skolverkets centrala innehåll och kunskapskrav för A per ämne och årskurs/kurs, skickade med profilen, så att "A-nivå" bygger på riktiga krav. Kolla att texten får användas så.
+
+- [ ] **K5 – Demons svar är första intrycket** (effort: medium). Gör efter K2. Oscar hittade språkfel i demons Haiku-svar ("oprätt", "ett kapplöpning"), `reports/qa/2026-11-08-1630-oscar-demosida.md` fynd 3. Använd modellen som vinner i K2 även för demon om kostnaden ryms i demotaken, och lägg språkkontroll av svenska (genus, påhittade ord) i live-eval. Radera Oscars testrad `oscar-qa-site-160926@example.com` i väntelistan.
