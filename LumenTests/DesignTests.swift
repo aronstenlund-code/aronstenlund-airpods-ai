@@ -82,14 +82,14 @@ import Testing
 @Suite struct ProblemTests {
     @Test func failuresBecomeSwedishProblems() {
         #expect(ListeningModel.problem(for: .offline) == .offline)
-        #expect(ListeningModel.problem(for: .transport(detail: "x")) == .offline)
+        #expect(ListeningModel.problem(for: .transport(detail: "x")) == .overloaded, "A5: a broken connection is 'cannot answer now'")
         #expect(ListeningModel.problem(for: .backend(status: 529, failure: AnswerFailure(code: "overloaded"))) == .overloaded)
         #expect(ListeningModel.problem(for: .cancelled) == nil)
-        for problem in [LumenProblem.microphoneDenied, .offline, .airPodsDisconnected, .overloaded] {
+        for problem in [LumenProblem.microphoneDenied, .offline, .airPodsDisconnected, .overloaded, .voiceUnavailable] {
             #expect(!problem.title.contains("HTTP") && !problem.text.contains("HTTP"), "never a code")
         }
         #expect(LumenProblem.offline.spoken == "Ingen internetanslutning.")
-        #expect(LumenProblem.overloaded.spoken == "Försök igen om en minut.")
+        #expect(LumenProblem.overloaded.spoken == "Jag kan inte svara just nu, försök igen om en stund.")
         #expect(LumenProblem.microphoneDenied.actionTitle == "Öppna Inställningar")
     }
 

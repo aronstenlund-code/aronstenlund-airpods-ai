@@ -72,6 +72,20 @@ final class Speaker {
         startDrainingIfNeeded()
     }
 
+    /// A5: a short message from the app itself, always in Apple's voice: it must be heard when ElevenLabs is the
+    /// thing that failed. Ignored in silent mode (it is on the screen anyway).
+    func announce(_ text: String, language: TranscriptionLanguage) {
+        guard settings.speakAnswers else { return }
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        queue.append(Request(text: trimmed, language: language, voice: .appleDefault))
+        startDrainingIfNeeded()
+    }
+
+    /// A5: the chosen voice failed (the sentence was read with Apple's voice), or worked again.
+    var onVoiceFallback: (@MainActor (String) -> Void)?
+    var onVoiceRecovered: (@MainActor () -> Void)?
+
     /// D80: fetches the voice for `text` now, to play it the moment it is queued. Premium voice only.
     @discardableResult
     func prepare(_ text: String, language: TranscriptionLanguage) -> Bool {
@@ -178,6 +192,7 @@ final class Speaker {
         awaitingFirstAudio = provider.name
         do {
             try await provider.speak(request.text, language: request.language, voice: request.voice)
+            if provider.name != apple.name { onVoiceRecovered?() }
             spokenCount += 1
             if let stats = provider.lastStats { answerStats.add(stats) } else { answerStats.sentences += 1 }
             notice = nil
@@ -187,6 +202,7 @@ final class Speaker {
             if error.wantsFallback, provider.name != apple.name {
                 fallbackCount += 1
                 notice = "Premium voice unavailable — using Apple's voice (\(error.localizedDescription))"
+                onVoiceFallback?(error.localizedDescription)
                 status = .speaking(provider: apple.name)
                 awaitingFirstAudio = apple.name
                 do {

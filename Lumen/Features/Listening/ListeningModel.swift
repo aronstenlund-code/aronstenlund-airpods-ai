@@ -62,6 +62,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var isShowingAddExam = false
     /// D86 screen 6: what is wrong right now, in Swedish with what to do. Nil: nothing.
     private(set) var problem: LumenProblem?
+    /// A5: the problems already said in the ear since the last answer that worked (each is said once).
+    private var spokenProblems: Set<LumenProblem> = []
+    /// A5: every failure with its code and time, newest last, for Diagnostik.
+    struct Failure: Equatable, Sendable, Identifiable {
+        let id = UUID()
+        var at: Date
+        var source: String
+        var detail: String
+    }
+    private(set) var failures: [Failure] = []
     /// D87: what happens in a session, for the study-session recording in Diagnostik. Nil: nobody records.
     enum SessionEvent: Sendable {
         case heard(String)
@@ -272,6 +282,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         speaker.onFinished = { [weak self] in self?.speechFinished() }
         speaker.onVoiceStats = { [weak self] stats in self?.controller.log("Röst: \(stats.summary)") } // A4
+        speaker.onVoiceFallback = { [weak self] detail in
+            self?.recordFailure(source: "tts", detail: detail)
+            if self?.problem == nil { self?.report(problem: .voiceUnavailable) }
+        }
+        speaker.onVoiceRecovered = { [weak self] in
+            if self?.problem == .voiceUnavailable { self?.problem = nil }
+        }
         controller.keepsListeningWhenOutputLost = { [weak self] in !(self?.microphone.pauseWhenAirPodsLost ?? true) }
         controller.onOutputLost = { [weak self] in self?.report(problem: .airPodsDisconnected) }
         controller.onOutputRestored = { [weak self] in
@@ -1427,18 +1444,37 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Offline and transport errors are "Ingen internetanslutning"; every other failure is "Försök igen om en minut".
     nonisolated static func problem(for error: AnswerError?) -> LumenProblem? {
         switch error {
-        case .offline?, .transport?: .offline
+        case .offline?: .offline
         case .cancelled?, nil: nil
-        default: .overloaded
+        default: .overloaded // credits out, the provider down, too slow, anything else: "Jag kan inte svara just nu"
         }
     }
 
-    /// Shown on the card, and said in the ear when it has a spoken line (once per problem).
+    /// Shown on the card, and said in the ear once (in Apple's voice) until an answer has worked again (A5).
     private func report(problem new: LumenProblem?) {
         guard let new else { return }
-        let changed = problem != new
         problem = new
-        if changed, let line = new.spoken { say(line) }
+        guard let line = new.spoken, !spokenProblems.contains(new) else { return }
+        spokenProblems.insert(new)
+        if case .paused = state { return }
+        speaker.announce(line, language: language)
+    }
+
+    #if DEBUG
+    /// A2/A5 screenshots only.
+    func showProblemForScreenshot(_ shown: LumenProblem) { problem = shown }
+    #endif
+
+    /// A5: an answer worked: the problem is over, and the next one is said again.
+    private func answerWorked() {
+        spokenProblems.removeAll()
+        if problem == .overloaded || problem == .offline { problem = nil }
+    }
+
+    private func recordFailure(source: String, detail: String) {
+        failures.append(Failure(at: Date(), source: source, detail: detail))
+        if failures.count > 30 { failures.removeFirst(failures.count - 30) }
+        controller.log("Fel (\(source)): \(detail)")
     }
 
     /// The card's button.
@@ -1448,6 +1484,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             ErrorCard.openSettings()
         case .airPodsDisconnected:
             Task { await controller.pause() }
+            self.problem = nil
+        case .voiceUnavailable:
             self.problem = nil
         case .overloaded:
             self.problem = nil
@@ -2045,6 +2083,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         inFlightTrigger = nil
         if timeline?.doneAt == nil { timeline?.doneAt = Date() }
         if let turn = conversation.completeAnswer(latencyMs: latencyMs) {
+            answerWorked()
             sessionObserver?(.answered(question: turn.question, answer: turn.answer, firstTextMs: latencyMs, source: turn.source), Date())
             history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
                                         answer: turn.answer, summary: done?.summary,
@@ -2159,6 +2198,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         conversation.cancelAnswer()
         answerNotice = nil // D86: the problem card says it in Swedish; the raw message is in Diagnostik's log
         controller.log("Answer failed: \(message)" + (wantsFallback ? " · fallback requested (on-device engine not available on this iPhone)" : ""))
+        if let error = answers.lastError, error != .cancelled { recordFailure(source: "answer", detail: error.localizedDescription) }
         report(problem: Self.problem(for: answers.lastError))
         studyAnswerEnded()
     }

@@ -7,14 +7,18 @@ enum LumenProblem: Equatable, Sendable {
     case microphoneDenied
     case offline
     case airPodsDisconnected
+    /// A5: /answer failed (credits out, the provider down, too slow): "Jag kan inte svara just nu".
     case overloaded
+    /// A5: the chosen voice (ElevenLabs) failed; answers are read with the iPhone's voice meanwhile.
+    case voiceUnavailable
 
     var title: String {
         switch self {
         case .microphoneDenied: "Lumen hör dig inte"
         case .offline: "Ingen internetanslutning"
         case .airPodsDisconnected: "AirPods kopplades bort"
-        case .overloaded: "Lumen är överbelastad"
+        case .overloaded: "Lumen kan inte svara just nu"
+        case .voiceUnavailable: "Rösten fungerar inte just nu"
         }
     }
 
@@ -23,7 +27,8 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: "Mikrofonen är avstängd. Slå på den i Inställningar för att fortsätta."
         case .offline: "Lumen behöver internet för att svara. Den fortsätter lyssna och svarar igen när du är uppkopplad."
         case .airPodsDisconnected: "Svaren hörs nu i telefonens högtalare."
-        case .overloaded: "Försök igen om en minut."
+        case .overloaded: "Försök igen om en stund. Lumen säger till igen först när något har gått fel efter ett svar."
+        case .voiceUnavailable: "Svaren läses med iPhonens röst tills den fungerar igen."
         }
     }
 
@@ -34,6 +39,7 @@ enum LumenProblem: Equatable, Sendable {
         case .offline: nil
         case .airPodsDisconnected: "Pausa"
         case .overloaded: "Försök igen"
+        case .voiceUnavailable: nil
         }
     }
 
@@ -44,7 +50,8 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: nil
         case .offline: "Ingen internetanslutning."
         case .airPodsDisconnected: nil
-        case .overloaded: "Försök igen om en minut."
+        case .overloaded: "Jag kan inte svara just nu, försök igen om en stund."
+        case .voiceUnavailable: nil
         }
     }
 
@@ -53,7 +60,8 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: "mic.slash"
         case .offline: "wifi.slash"
         case .airPodsDisconnected: "airpods"
-        case .overloaded: "hourglass"
+        case .overloaded: "exclamationmark.bubble"
+        case .voiceUnavailable: "speaker.slash"
         }
     }
 }
