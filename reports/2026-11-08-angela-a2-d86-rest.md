@@ -49,10 +49,37 @@ not a device check. CI: see the end of this report.
 - **Screens:** intro, the first question, Start with and without an exam, Lägg till prov, Lyssnar, Byt läge, the
   errors, Settings, Intervju, Socialt.
 
+## Screenshots (Simulator, Swedish, light and dark)
+**Not a device check.** All 22 pictures (11 screens × light/dark) are in the artifact of run `42499174685`:
+https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42499174685/artifacts/13625241707 (14 days).
+A selection is in the repo:
+
+| Screen | Light | Dark |
+|---|---|---|
+| Intro with the consent card | ![](screenshots/a2/light-intro.png) | ![](screenshots/a2/dark-intro.png) |
+| Start with exams | ![](screenshots/a2/light-home.png) | ![](screenshots/a2/dark-home.png) |
+| Start without an exam | ![](screenshots/a2/light-empty.png) | ![](screenshots/a2/dark-empty.png) |
+| Lyssnar | ![](screenshots/a2/light-listening.png) | ![](screenshots/a2/dark-listening.png) |
+| Settings | ![](screenshots/a2/light-settings.png) | ![](screenshots/a2/dark-settings.png) |
+
+**What the pictures changed:** the first run showed three things, now fixed.
+- **The consent sentence** "Genom att trycka Testa nu …" was hidden behind the button area. It now sits right under
+  the button.
+- **The empty Start screen** kept the exams from the screen before.
+- **Language:** the Simulator ran in English. The pictures now use Swedish, as on Aron's phone.
+
+A 5-second wait also caught two screens still starting, so it is now 9 s.
+
+## CI
+- **Green:** build run `42497914126` on `4c07cdb` (build, unit tests). IPA:
+  https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42497914126/artifacts/13624721249
+- **Screenshot run:** `42499174685`, green.
+
 ## Known limits
 - **Settings and Diagnostik:** the rows keep the system's grouped cells. Only the ground, font and accent are the new
   design.
 - **The Lyssnar screenshot** shows "Startar …" in the header, because the demo has no live session.
+- **The commands line** on Lyssnar can break inside a quote mark at large text sizes (seen in the picture); cosmetic.
 
 ## Next session
 A3 (choose a voice) depends on Kevin's K6.
