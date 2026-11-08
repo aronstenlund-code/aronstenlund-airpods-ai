@@ -253,6 +253,15 @@ ${PROFILE_RULE}
       );
     }
   }
+  // D81: the app stopped the last answer mid-way; what was already said must not be said again
+  const lastQa = req.context.recent_qa.at(-1);
+  if (lastQa?.interrupted && lastQa.a) {
+    parts.push(
+      `<interrupted>Your last answer was stopped by the student after these words: "${
+        sanitizeTagged(lastQa.a)
+      }". Never repeat any of that. If the fragment asks to go on, continue from where it stopped; otherwise answer the fragment.</interrupted>`,
+    );
+  }
   if (req.context.transcript) {
     parts.push(`<transcript>\n${sanitizeTagged(req.context.transcript)}\n</transcript>`);
   }

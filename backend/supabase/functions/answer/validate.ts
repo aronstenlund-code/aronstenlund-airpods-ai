@@ -10,7 +10,10 @@ export type SocialTrigger = "other_spoke" | "stall" | "opener";
 export interface SocialInput {
   style: SocialStyle;
   trigger: SocialTrigger;
-  transcript: { speaker: "user" | "other"; text: string }[];
+  /** D81: `label` is the app's speaker label ("Du", "Talare 1" …) when its voice tracking knows the speaker. */
+  transcript: { speaker: "user" | "other"; text: string; label?: string }[];
+  /** D81: the label of whoever said the fragment ("Talare 2"). */
+  fragmentSpeaker?: string;
   interests: string[];
   profile: string;
   /** D69: the stored calibration (the user's own tone wishes / facts), applied to every suggestion. */
@@ -46,7 +49,8 @@ export interface AnswerRequest {
   source: "app" | "demo";
   context: {
     transcript: string;
-    recent_qa: { q: string; a: string }[];
+    /** D81: `interrupted` = the app stopped this answer mid-way; `a` is what had been said by then. */
+    recent_qa: { q: string; a: string; interrupted?: boolean }[];
     prep_terms: string[];
   };
 }
@@ -61,7 +65,7 @@ export const LIMITS = {
   prepTerms: 30,
   prepTerm: 60,
   goals: 1500,
-  personaSetup: 1500,
+  personaSetup: 2000, // D81: job ad + compressed CV
   socialLines: 40,
   socialLine: 300,
   socialInterests: 10,
@@ -131,6 +135,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     return {
       q: str(e.q, `recent_qa[${i}].q`, LIMITS.qaText),
       a: str(e.a, `recent_qa[${i}].a`, LIMITS.qaAnswer),
+      ...(e.interrupted === true ? { interrupted: true } : {}),
     };
   });
 
@@ -212,12 +217,24 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     }
     const transcript = trRaw.map((l, i) => {
       const e = (l ?? {}) as Record<string, unknown>;
-      if (e.speaker !== "user" && e.speaker !== "other") {
-        throw bad(`social.transcript[${i}].speaker must be "user" or "other"`);
-      }
+      // D81: besides "user"/"other" the speaker may be the app's label itself ("Du", "Talare 1"); "Du" is the user
+      const raw = typeof e.speaker === "string" ? e.speaker.trim() : "";
+      const labelOf = (v: unknown) =>
+        typeof v === "string" && /^[\p{L}\p{N} .'-]{1,24}$/u.test(v.trim()) ? v.trim() : undefined;
+      let speaker: "user" | "other";
+      let label = labelOf(e.label);
+      if (raw === "user" || raw === "other") speaker = raw;
+      else if (/^(du|jag|you)$/i.test(raw)) {
+        speaker = "user";
+        label = undefined;
+      } else if (labelOf(raw)) {
+        speaker = "other";
+        label = labelOf(raw);
+      } else throw bad(`social.transcript[${i}].speaker must be "user", "other" or a speaker label`);
       return {
-        speaker: e.speaker as "user" | "other",
+        speaker,
         text: str(e.text, `social.transcript[${i}].text`, LIMITS.socialLine),
+        ...(speaker === "other" && label ? { label } : {}),
       };
     }).filter((l) => l.text);
     const inRaw = x.interests ?? [];
@@ -242,6 +259,10 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
         ? x.calibration.trim().slice(0, LIMITS.socialCalibration)
         : str(x.calibration, "social.calibration", LIMITS.socialCalibration),
       calibrate: str(x.calibrate, "social.calibrate", LIMITS.socialCalibrate),
+      ...(typeof x.speaker === "string" && /^[\p{L}\p{N} .'-]{1,24}$/u.test(x.speaker.trim()) &&
+          !/^(du|jag|you)$/i.test(x.speaker.trim())
+        ? { fragmentSpeaker: x.speaker.trim() }
+        : {}),
     };
   }
 

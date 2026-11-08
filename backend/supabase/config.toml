@@ -19,5 +19,8 @@ verify_jwt = true
 [functions.memory]
 verify_jwt = true                  # D80 memory extraction, user JWT
 
+[functions.study-cards]
+verify_jwt = true                  # D81 study cards, user JWT
+
 [functions.usage-stats]
 verify_jwt = false                 # does its own strict service-role check (new sb_secret keys are not JWTs)

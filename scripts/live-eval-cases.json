@@ -2836,5 +2836,71 @@
 "allow_question": true
 }
 ]
+},
+{
+"id": "cv-01",
+"cat": "intervju",
+"setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger, kundservice och noggrannhet. CV: Utbildning: Ekonomiprogrammet, Polhemsgymnasiet 2023–2026. Arbete: Extrajobb på ett kafé i Lund 2024–2025, kassa och stängning. Övrigt: Ledare i en fotbollsskola för barn sommaren 2025. Språk: svenska, engelska, arabiska.",
+"turns": [
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"q": "berätta om dig själv",
+"expect_any": [
+"ekonomi",
+"kafé",
+"fotboll"
+]
+}
+]
+},
+{
+"id": "cv-02",
+"cat": "intervju",
+"setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger, kundservice och noggrannhet. CV: Utbildning: Ekonomiprogrammet, Polhemsgymnasiet 2023–2026. Arbete: Extrajobb på ett kafé i Lund 2024–2025, kassa och stängning. Övrigt: Ledare i en fotbollsskola för barn sommaren 2025. Språk: svenska, engelska, arabiska.",
+"turns": [
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"q": "har du jobbat med kassa förut",
+"expect_any": [
+"kafé",
+"kassa"
+]
+}
+]
+},
+{
+"id": "cv-03",
+"cat": "intervju",
+"setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger, kundservice och noggrannhet. CV: Utbildning: Ekonomiprogrammet, Polhemsgymnasiet 2023–2026. Arbete: Extrajobb på ett kafé i Lund 2024–2025, kassa och stängning. Övrigt: Ledare i en fotbollsskola för barn sommaren 2025. Språk: svenska, engelska, arabiska.",
+"turns": [
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"q": "vilka språk talar du",
+"expect_any": [
+"arabiska"
+],
+"forbid_any": [
+"franska",
+"tyska",
+"spanska"
+]
+}
+]
+},
+{
+"id": "cv-04",
+"cat": "intervju",
+"setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger.",
+"turns": [
+{
+"interview": true,
+"ttft_budget_ms": 3000,
+"q": "har du jobbat med kassa förut",
+"no_invented_facts": true
+}
+]
 }
 ]
