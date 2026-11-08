@@ -23,3 +23,31 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   3. **Spotify-styrning** via Spotify iOS SDK (App Remote): "nästa låt", "förra låten", "pausa musiken", "spela musik". Apple Music via `MPMusicPlayerController.systemMusicPlayer` som reserv. Det är ett tredjepartsberoende och kräver en rad i DECISIONS (licens, Premium-krav, att Spotify-appen måste vara installerad). Spotify kräver ett Client ID: skriv exakt vad Aron ska göra på developer.spotify.com (gratis). Lägg aldrig in någon nyckel i repot.
   4. **Egna fraser:** Inställningar › Röstkommandon. En lista med åtgärder (pausa/musik, tillbaka till Lumen, nästa låt, förra låten, byt läge, förhör mig, avsluta, det där var fel), där användaren kan lägga till och ta bort fraser per åtgärd. Standardfraserna ligger kvar. Varna för krockar mellan åtgärder och för fraser som är vanliga ord i en fråga. Hela yttrandet måste matcha, som i dag. Nya fraser blir keyterms till Scribe.
   5. Tester: enhetstester för frasmatchning och krockar. En checklista för Arons telefontest läggs i `docs/DEVICE-TEST-QUICK.md` (Toby äger filen, så be honom via din rapport).
+
+- [ ] **A7 – Förinställda kommandon med naturliga formuleringar** (effort: high). Gör efter A6 och bygg på A6:s lista med fraser. Ägarens önskelista (Aron 2026-11-08 21:21) och Deangelos granskning finns nedan. Börja med att inventera det som redan finns (`VoiceChannel`, `VoiceCommand`, D49/D57/D74/D76/D80/D86) och bygg inget dubbelt.
+  **Arkitektur, en kommandotabell för hela appen:**
+  - `CommandRegistry`: varje åtgärd har ett id, standardfraser, användarens egna fraser (A6), i vilka lägen den gäller, en nivå och den korta bekräftelsen som sägs.
+  - **Nivå 1, i telefonen** (gratis, < 50 ms, inget API-anrop): åtgärder som styr appen. Matcha mot normaliserad text med synonymer och varianter ("byt/växla/gå till/starta", "pausa/paus/vänta", "fortsätt/lyssna igen"). Använd inte LLM här.
+  - **Nivå 2, i samma /answer-anrop** (ingen extra rundresa): övriga "Lumen, …" skickas som i dag som instruktion med ett `task`. Kevin gör K9: en regeltabell i backend med uttrycksfamiljer, och modellen tolkar det som inte passar in. Det ger fria formuleringar utan extra kostnad.
+  - **Skydd mot oavsiktliga kommandon:** "Lumen" krävs först. Undantag: korta universalkommandon ("viska", "snabbare", "utveckla", "upprepa") godtas utan "Lumen" bara när de är hela yttrandet, bara i Provläge och Frågor (där den som pratar är användaren), och kan stängas av i inställningarna. I Socialt läge, Rizzläge och Intervjuläge krävs alltid "Lumen", eftersom andra pratar där.
+  - Lägesbyten fungerar från alla lägen och bekräftas kort i AirPods (finns, D74). Övriga åtgärder bekräftas bara när inget annat hörs, till exempel "Kortare." eller "Sparat."
+  **Nivå 1 (telefonen):**
+  - byt läge (5); pausa och fortsätt lyssna; avsluta.
+  - **upprepa senaste svaret:** spela upp det cachade ljudet igen, inget API-anrop.
+  - **viska / högre:** sänk eller höj Lumens uppspelningsvolym (gain på player-noden, inte systemvolymen), sparas.
+  - **kortare / utveckla som stående stil** ("svara kortare", "längre svar"): en längdinställning per session som skickas med i `length`.
+  - **spara det:** senaste svaret läggs i Anteckningar.
+  - **kom ihåg det här:** finns (D49/D80). Lägg till varianter ("spara det här", "glöm inte").
+  - **vilket prov har jag härnäst?:** läses från provprofilerna lokalt och sägs med Apple-röst eller TTS, ingen LLM.
+  **Nivå 2 (skickas till backend som `task`, se K9):**
+  - utveckla svaret / mer (`continue_more`, finns); förklara enklare (`continue_simpler`, finns); ge ett exempel; sammanfatta det viktigaste; A-nivåförklaring.
+  - ställ en svår fråga; förhör mig på X (finns för Provläge, lägg till ämne); snabbförhör (5 frågor i rad); ja–nej-frågor (finns, D86); testa mina svagaste områden och hur bra kan jag det här (bygger på förhörsresultat per begrepp; spara antal rätt/fel per begrepp lokalt i provprofilen och skicka med).
+  - **Intervjuläge:** hjälp mig svara professionellt / vad borde jag säga / bättre svar / mer självsäkert / motfråga / hjälp, jag fastnar.
+  - **Socialt läge och Rizzläge:** vad ska jag svara / roligare / mer naturligt / byt ämne / smart följdfråga / vad menade personen / ge mig lite rizz / mer självsäker / flirtigare / mer subtil / kaxigare / rädda mig / mindre cringe / tre alternativ (ett förslag är standard, tre bara när man ber om det, enligt ägarbeslut). Går via D69/D76 `social.calibrate` och den instruktionsväg som redan finns.
+  - **var säker:** nästa svar körs med den starkare modellen (Sonnet) och kontrolleras extra. Kostar mer, så bara på begäran.
+  - **vad missade jag?:** sammanfattning av de senaste minuternas transkript i sessionen. Följ D61: inget sparas, och transkriptet finns bara medan sessionen pågår.
+  - **hjälp mig diskret:** stil med ett kort, naturligt svar på en mening. Det är bara en längdstil; ingen funktion som döljer appen (CLAUDE.md).
+  - **svara som jag brukar:** använd de sparade reglerna och minnena (D80). Ingen ny mekanism behövs.
+  **Utgår (dubbletter):** "lyssna efter frågor" är Frågor-läget, så frasen blir en synonym till "byt till frågor". "Förklara" blir samma som "förklara enklare". "Snabbare" blir samma som "kortare".
+  **Dokumentation:** skapa `docs/COMMANDS.md` som enda källa. Varje åtgärd ska ha fraser, lägen, nivå, bekräftelse och beteende. Övriga sessioner läser där. Inställningar › Röstkommandon (A6) visar samma lista.
+  **Tester:** enhetstester för frasmatchning, med 3–5 varianter per åtgärd, och negativa fall där orden står mitt i en vanlig mening ("jag vill byta till ett annat ämne", "kan du upprepa det för klassen", "hon sa viska"), med kravet 0 falska träffar. Testa också att lägesbyte fungerar från alla 5 lägen. Allt röst- och AirPods-beteende är **ej verifierat på enhet** tills Aron har testat. Lägg till en rad per grupp i Tobys snabbtest genom att be Toby i din rapport.
