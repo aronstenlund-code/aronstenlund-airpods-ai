@@ -212,14 +212,18 @@ export class AnthropicProvider implements LLMProvider {
                   : req.user,
               }],
               output_config: { effort: this.cfg.effort },
-              ...(withThinking ? { thinking: { type: "disabled" } } : {}),
+              ...(withThinking
+                ? { thinking: { type: /sonnet-5-5/i.test(model) ? "between_tools" : "disabled" } }
+                : {}),
               ...(tools?.length ? { tools } : {}),
               ...(tools?.length && toolChoice ? { tool_choice: toolChoice } : {}),
             }),
             signal,
           },
         );
-      const wantThinkingOff = this.cfg.disableThinking && /haiku/i.test(model);
+      // D87: Sonnet 5.5 takes no `disabled`; `between_tools` turns thinking off (at effort high or below)
+      const wantThinkingOff = this.cfg.disableThinking &&
+        (/haiku/i.test(model) || (req.noThinking === true && /sonnet-5-5/i.test(model)));
       let res = await send(wantThinkingOff);
       if (res.status === 400 && wantThinkingOff) {
         const peek = await res.clone().text().catch(() => "");

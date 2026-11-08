@@ -46,6 +46,10 @@ const handler = createHandler({
     },
     // D52: Rizz suggestions run on a stronger model (Sonnet 5.5: $2 in / $10 out per MTok, docs 2026-11-05).
     rizzModel: env.get("RIZZ_MODEL") || DEFAULT_CONFIG.rizzModel,
+    // D87: Provläge model (unset = Haiku via LLM_MODEL); prices for the cost estimate
+    tutorModel: env.get("TUTOR_MODEL") || DEFAULT_CONFIG.tutorModel,
+    tutorPriceInPerMTok: Number(env.get("TUTOR_PRICE_IN_PER_MTOK") ?? DEFAULT_CONFIG.tutorPriceInPerMTok ?? 0.10),
+    tutorPriceOutPerMTok: Number(env.get("TUTOR_PRICE_OUT_PER_MTOK") ?? DEFAULT_CONFIG.tutorPriceOutPerMTok ?? 0.50),
     rizzPriceInPerMTok: Number(
       env.get("RIZZ_PRICE_IN_PER_MTOK") ?? DEFAULT_CONFIG.rizzPriceInPerMTok,
     ),

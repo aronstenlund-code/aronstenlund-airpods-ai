@@ -8,6 +8,8 @@ export interface LLMRequest {
   tools?: unknown[];
   /** Forces a tool call (Anthropic `tool_choice`), e.g. `{type: "any"}` for an ordinal fact (D72). */
   toolChoice?: unknown;
+  /** D87: no thinking even on models where it is on by default (Sonnet 5.5: `between_tools`). */
+  noThinking?: boolean;
   /** Overrides the provider's default model for this request (D52: Rizz uses a stronger model). */
   model?: string;
   signal?: AbortSignal;

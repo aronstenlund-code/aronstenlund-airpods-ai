@@ -93,6 +93,10 @@ export interface HandlerConfig {
   webLimits?: Limits;
   /** D52: model + prices (USD / MTok) for Rizz suggestions (Sonnet 5.5 by default; Haiku for the rest). */
   rizzModel?: string;
+  /** D87: model for Provläge (persona tutor in mode tutor); unset = the provider's default (Haiku). */
+  tutorModel?: string;
+  tutorPriceInPerMTok?: number;
+  tutorPriceOutPerMTok?: number;
   rizzPriceInPerMTok?: number;
   rizzPriceOutPerMTok?: number;
   /** push_to_talk/text: headerless prompt, meta synthesised up front (lowest latency). */
@@ -601,10 +605,18 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
 
       // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz
       const isRizz = plan?.kind === "rizz" || textReq;
-      const modelUsed = isRizz ? (cfg.rizzModel ?? provider.model) : provider.model;
-      const priceIn = isRizz ? (cfg.rizzPriceInPerMTok ?? cfg.priceInPerMTok) : cfg.priceInPerMTok;
+      // D87: Provläge can run on its own model (TUTOR_MODEL); the measured choice is in DECISIONS D87
+      const tutorModel = !isRizz && tutor && !plan && !demo && cfg.tutorModel ? cfg.tutorModel : undefined;
+      const modelUsed = isRizz ? (cfg.rizzModel ?? provider.model) : tutorModel ?? provider.model;
+      const priceIn = isRizz
+        ? (cfg.rizzPriceInPerMTok ?? cfg.priceInPerMTok)
+        : tutorModel
+        ? (cfg.tutorPriceInPerMTok ?? cfg.priceInPerMTok)
+        : cfg.priceInPerMTok;
       const priceOut = isRizz
         ? (cfg.rizzPriceOutPerMTok ?? cfg.priceOutPerMTok)
+        : tutorModel
+        ? (cfg.tutorPriceOutPerMTok ?? cfg.priceOutPerMTok)
         : cfg.priceOutPerMTok;
       const cacheReadMult = 0.1; // cache hits cost 0.1x of the input price (Sonnet 5.5 and Haiku 5.5; claude-api skill 2026-10-06)
 
@@ -712,6 +724,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
+          ...(tutorModel ? { model: tutorModel, noThinking: true } : {}),
           signal: ac.signal,
         })[Symbol.asyncIterator]();
       const firstP = iterator.next().then((r) => {
@@ -921,6 +934,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 cacheSystem: true,
                 tools,
                 ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
+                ...(tutorModel ? { model: tutorModel, noThinking: true } : {}),
                 signal: ac2.signal,
               })[Symbol.asyncIterator]();
               post = new AnswerPost({

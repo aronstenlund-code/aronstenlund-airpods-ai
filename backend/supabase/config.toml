@@ -28,5 +28,8 @@ verify_jwt = true                  # D84 spoken study profile + term list
 [functions.exam]
 verify_jwt = true                  # D84 exam session (parse, hint, grade, summary)
 
+[functions.provlage-eval]
+verify_jwt = true                  # D87 Provläge test bank (answers + grading, capped)
+
 [functions.usage-stats]
 verify_jwt = false                 # does its own strict service-role check (new sb_secret keys are not JWTs)

@@ -1,0 +1,1965 @@
+[
+{
+"id": "pl-001",
+"grade": "Åk 7",
+"subject": "Biologi",
+"kind": "term",
+"q": "fotosyntes",
+"expect": "ljusenergi, koldioxid och vatten blir socker och syre, i kloroplasterna",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-002",
+"grade": "Åk 7",
+"subject": "Biologi",
+"kind": "term",
+"q": "cellen",
+"expect": "cellens delar: cellmembran, cellkärna, cytoplasma; växtceller har cellvägg och kloroplaster",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-003",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "term",
+"q": "cellandning",
+"expect": "glukos och syre blir koldioxid, vatten och energi (ATP) i mitokondrierna",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-004",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "term",
+"q": "evolution",
+"expect": "naturligt urval, variation, ärftlighet, anpassning över många generationer",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-005",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "term",
+"q": "ekosystem",
+"expect": "producenter, konsumenter, nedbrytare, energiflöde och kretslopp",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-006",
+"grade": "Gymnasiet 1, kurs Biologi 1",
+"subject": "Biologi",
+"kind": "term",
+"q": "DNA",
+"expect": "dubbelspiral av nukleotider med baserna A T C G, bär genetisk information, gener kodar för proteiner",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-007",
+"grade": "Gymnasiet 1, kurs Biologi 1",
+"subject": "Biologi",
+"kind": "term",
+"q": "mitos",
+"expect": "celldelning till två identiska dotterceller, faser profas metafas anafas telofas",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-008",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "term",
+"q": "immunförsvaret",
+"expect": "ospecifikt och specifikt försvar, vita blodkroppar, antikroppar, minnesceller, vaccin",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-009",
+"grade": "Åk 7",
+"subject": "Biologi",
+"kind": "half",
+"q": "och vad behöver växten för att",
+"expect": "vad växten behöver för fotosyntes: ljus, vatten, koldioxid",
+"context": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med hjälp av ljusenergi gör socker av koldioxid och vatten, och syre bildas."
+}
+],
+"profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-010",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "half",
+"q": "eh skillnaden mellan mitos och",
+"expect": "skillnaden mellan mitos och meios",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-011",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "followup",
+"q": "och cellandning då?",
+"expect": "cellandning: glukos och syre till koldioxid, vatten, energi; motsatsen till fotosyntesen",
+"context": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi bygger glukos av koldioxid och vatten, och syre släpps ut."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-012",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "followup",
+"q": "varför då?",
+"expect": "varför växter behöver ljus: ljusenergin driver fotosyntesen, utan ljus ingen glukos",
+"context": [
+{
+"q": "varför växer inte växter i mörker",
+"a": "Växter som står i mörker kan inte göra fotosyntes, så de får ingen ny energi."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-013",
+"grade": "Gymnasiet 1, kurs Biologi 1",
+"subject": "Biologi",
+"kind": "followup",
+"q": "och den andra?",
+"expect": "den andra typen av celldelning: meios, könsceller, halverat kromosomtal",
+"context": [
+{
+"q": "vilka två typer av celldelning finns det",
+"a": "Det finns två typer av celldelning: mitos och meios. Mitos ger två identiska celler för tillväxt."
+}
+],
+"profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-014",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "followup",
+"q": "ge ett exempel",
+"expect": "ett exempel på naturligt urval, t.ex. björkmätare eller antibiotikaresistens",
+"context": [
+{
+"q": "naturligt urval",
+"a": "Naturligt urval betyder att individer med egenskaper som passar miljön överlever och får fler avkommor."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-015",
+"grade": "Åk 7",
+"subject": "Biologi",
+"kind": "misheard",
+"q": "fo to syn tes",
+"expect": "fotosyntes",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-016",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "misheard",
+"q": "ri bo so mer",
+"expect": "ribosomer: där proteiner byggs i cellen",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-017",
+"grade": "Gymnasiet 1, kurs Biologi 1",
+"subject": "Biologi",
+"kind": "misheard",
+"q": "pro tein syntes",
+"expect": "proteinsyntes: transkription och translation, mRNA, ribosomer",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-018",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "misheard",
+"q": "nat urligt ur val",
+"expect": "naturligt urval",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-019",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "exam",
+"q": "förklara varför antibiotika inte hjälper mot virus",
+"expect": "antibiotika angriper bakteriers egna strukturer, virus saknar dem och förökar sig i värdceller",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-020",
+"grade": "Åk 7",
+"subject": "Biologi",
+"kind": "exam",
+"q": "vad är skillnaden mellan en växtcell och en djurcell",
+"expect": "växtcell har cellvägg, kloroplaster, stor vakuol",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-021",
+"grade": "Gymnasiet 1, kurs Biologi 1",
+"subject": "Biologi",
+"kind": "exam",
+"q": "hur fungerar ett vaccin",
+"expect": "försvagat eller delar av smittämnet, immunförsvaret bildar antikroppar och minnesceller",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-022",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "exam",
+"q": "vad händer i en näringskedja om rovdjuren försvinner",
+"expect": "bytesdjuren ökar, växterna minskar, obalans",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-023",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "term",
+"q": "periodiska systemet",
+"expect": "grundämnen ordnade efter atomnummer, perioder och grupper, liknande egenskaper i grupper",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-024",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "term",
+"q": "atom",
+"expect": "kärna med protoner och neutroner, elektroner i skal",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-025",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "term",
+"q": "jonbindning",
+"expect": "metall lämnar elektroner till icke-metall, positiva och negativa joner attraheras, t.ex. NaCl",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-026",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "term",
+"q": "kovalent bindning",
+"expect": "atomer delar elektronpar, t.ex. vatten, polär och opolär",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-027",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "term",
+"q": "substansmängd",
+"expect": "mol, Avogadros tal, n = m/M",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-028",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "term",
+"q": "syror och baser",
+"expect": "syror avger vätejoner, baser tar upp, pH-skalan, neutralisation",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-029",
+"grade": "Gymnasiet 2, kurs Kemi 2",
+"subject": "Kemi",
+"kind": "term",
+"q": "jämvikt",
+"expect": "reaktion åt båda håll, lika hastighet, Le Chateliers princip",
+"context": [],
+"profile": "Årskurs: Gymnasiet 2, kurs Kemi 2. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-030",
+"grade": "Gymnasiet 2, kurs Kemi 2",
+"subject": "Kemi",
+"kind": "term",
+"q": "buffert",
+"expect": "svag syra och dess korresponderande bas, motverkar pH-ändring",
+"context": [],
+"profile": "Årskurs: Gymnasiet 2, kurs Kemi 2. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-031",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "misheard",
+"q": "perifera systemet",
+"expect": "tolkas som periodiska systemet i kemi",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-032",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "misheard",
+"q": "neutra lisation",
+"expect": "neutralisation: syra plus bas ger salt och vatten",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-033",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "misheard",
+"q": "ele ktro negativitet",
+"expect": "elektronegativitet: hur starkt en atom drar till sig elektroner",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-034",
+"grade": "Gymnasiet 2, kurs Kemi 2",
+"subject": "Kemi",
+"kind": "misheard",
+"q": "kata lysator",
+"expect": "katalysator: sänker aktiveringsenergin, förbrukas inte",
+"context": [],
+"profile": "Årskurs: Gymnasiet 2, kurs Kemi 2. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-035",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "half",
+"q": "varför är vatten så",
+"expect": "varför vatten är polärt eller ett bra lösningsmedel",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-036",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "half",
+"q": "vad är skillnaden på jon och",
+"expect": "skillnaden mellan jonbindning och kovalent bindning eller jon och atom",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-037",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "followup",
+"q": "och metallbindning då?",
+"expect": "metallbindning: elektronmoln, positiva metalljoner, leder ström",
+"context": [
+{
+"q": "jonbindning",
+"a": "Jonbindning är när en metall lämnar elektroner till en icke-metall och de laddade jonerna dras till varandra."
+}
+],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-038",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "followup",
+"q": "varför då?",
+"expect": "varför pH under sju är surt: hög koncentration vätejoner/oxoniumjoner",
+"context": [
+{
+"q": "vad betyder pH tre",
+"a": "pH tre betyder att lösningen är sur, eftersom pH under sju är surt."
+}
+],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-039",
+"grade": "Gymnasiet 2, kurs Kemi 2",
+"subject": "Kemi",
+"kind": "followup",
+"q": "och om man höjer temperaturen?",
+"expect": "Le Chatelier: jämvikten förskjuts åt det endoterma hållet",
+"context": [
+{
+"q": "vad händer med jämvikten om man ökar trycket",
+"a": "Om trycket ökar förskjuts jämvikten åt den sida som har färre gasmolekyler."
+}
+],
+"profile": "Årskurs: Gymnasiet 2, kurs Kemi 2. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-040",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "exam",
+"q": "hur många mol är tjugo gram natriumhydroxid",
+"expect": "molmassa ca 40 g/mol, ca 0,5 mol",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-041",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "exam",
+"q": "vad händer när man blandar en syra och en bas",
+"expect": "neutralisation, salt och vatten",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-042",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "exam",
+"q": "förklara varför salt löser sig i vatten",
+"expect": "vattnets polära molekyler omger jonerna, hydratisering",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-043",
+"grade": "Gymnasiet 2, kurs Kemi 2",
+"subject": "Kemi",
+"kind": "exam",
+"q": "vad är skillnaden mellan en stark och en svag syra",
+"expect": "stark protolyseras fullständigt, svag delvis",
+"context": [],
+"profile": "Årskurs: Gymnasiet 2, kurs Kemi 2. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-044",
+"grade": "Åk 8",
+"subject": "Fysik",
+"kind": "term",
+"q": "densitet",
+"expect": "massa per volym, rho = m/V, kg per kubikmeter",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-045",
+"grade": "Åk 9",
+"subject": "Fysik",
+"kind": "term",
+"q": "ohms lag",
+"expect": "U = R gånger I, spänning, resistans, ström",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-046",
+"grade": "Åk 9",
+"subject": "Fysik",
+"kind": "term",
+"q": "tryck",
+"expect": "kraft per area, p = F/A, pascal",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-047",
+"grade": "Gymnasiet 1, kurs Fysik 1",
+"subject": "Fysik",
+"kind": "term",
+"q": "newtons andra lag",
+"expect": "F = m gånger a, kraft, massa, acceleration",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-048",
+"grade": "Åk 9",
+"subject": "Fysik",
+"kind": "term",
+"q": "energiprincipen",
+"expect": "energi kan inte skapas eller förstöras, bara omvandlas",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-049",
+"grade": "Gymnasiet 1, kurs Fysik 1",
+"subject": "Fysik",
+"kind": "term",
+"q": "rörelseenergi",
+"expect": "Ek = mv²/2, beror på massa och hastighet",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-050",
+"grade": "Åk 8",
+"subject": "Fysik",
+"kind": "term",
+"q": "ljud",
+"expect": "longitudinella vågor, behöver medium, frekvens och tonhöjd",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-051",
+"grade": "Åk 9",
+"subject": "Fysik",
+"kind": "misheard",
+"q": "gra vi ta tion",
+"expect": "gravitation: dragningskraft mellan massor",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-052",
+"grade": "Gymnasiet 1, kurs Fysik 1",
+"subject": "Fysik",
+"kind": "misheard",
+"q": "acce le ration",
+"expect": "acceleration: hastighetsändring per tid, m/s²",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-053",
+"grade": "Åk 9",
+"subject": "Fysik",
+"kind": "misheard",
+"q": "ele ktrisk resi stans",
+"expect": "resistans: motstånd mot ström, ohm",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-054",
+"grade": "Åk 8",
+"subject": "Fysik",
+"kind": "half",
+"q": "varför flyter en båt fast den är",
+"expect": "flytkraft, Arkimedes princip, båtens medeldensitet lägre än vattnets",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-055",
+"grade": "Gymnasiet 1, kurs Fysik 1",
+"subject": "Fysik",
+"kind": "followup",
+"q": "och den tredje?",
+"expect": "Newtons tredje lag: kraft och motkraft",
+"context": [
+{
+"q": "newtons första lag",
+"a": "Newtons första lag säger att en kropp behåller sin hastighet om ingen resulterande kraft verkar."
+},
+{
+"q": "och den andra?",
+"a": "Newtons andra lag är F lika med m gånger a: kraften ger massan en acceleration."
+}
+],
+"profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-056",
+"grade": "Åk 9",
+"subject": "Fysik",
+"kind": "followup",
+"q": "räkna ut det",
+"expect": "U = R·I med givna värden från tidigare tur: 2 A och 6 ohm ger 12 V",
+"context": [
+{
+"q": "en lampa har resistansen sex ohm och strömmen är två ampere vad är spänningen",
+"a": "Använd Ohms lag, U är lika med R gånger I."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-057",
+"grade": "Åk 8",
+"subject": "Fysik",
+"kind": "followup",
+"q": "varför då?",
+"expect": "varför ljud inte går i vakuum: behöver partiklar att svänga",
+"context": [
+{
+"q": "kan ljud gå i rymden",
+"a": "Nej, ljud kan inte gå i rymden."
+}
+],
+"profile": "Årskurs: Åk 8. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-058",
+"grade": "Åk 9",
+"subject": "Fysik",
+"kind": "exam",
+"q": "vad är skillnaden mellan serie och parallellkoppling",
+"expect": "serie: samma ström, delad spänning; parallell: samma spänning, delad ström",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-059",
+"grade": "Gymnasiet 1, kurs Fysik 1",
+"subject": "Fysik",
+"kind": "exam",
+"q": "hur långt faller en sten på två sekunder",
+"expect": "s = gt²/2 ≈ 19,6 m",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-060",
+"grade": "Åk 8",
+"subject": "Fysik",
+"kind": "exam",
+"q": "varför är det kallare på vintern",
+"expect": "jordaxelns lutning, solinstrålning i lägre vinkel, kortare dagar",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-061",
+"grade": "Åk 8",
+"subject": "Historia",
+"kind": "term",
+"q": "franska revolutionen",
+"expect": "1789, orsaker: ojämlikhet, skulder, upplysning; följder: republik, mänskliga rättigheter",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-062",
+"grade": "Åk 8",
+"subject": "Historia",
+"kind": "term",
+"q": "industriella revolutionen",
+"expect": "Storbritannien 1700-1800-tal, ångmaskin, fabriker, urbanisering",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-063",
+"grade": "Åk 9",
+"subject": "Historia",
+"kind": "term",
+"q": "första världskriget",
+"expect": "1914-1918, allianser, skotten i Sarajevo, skyttegravskrig, Versaillesfreden",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-064",
+"grade": "Åk 9",
+"subject": "Historia",
+"kind": "term",
+"q": "kalla kriget",
+"expect": "USA mot Sovjet, kapitalism mot kommunism, kapprustning, Berlinmuren",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-065",
+"grade": "Gymnasiet 1, kurs Historia 1b",
+"subject": "Historia",
+"kind": "term",
+"q": "upplysningen",
+"expect": "1700-tal, förnuft, Voltaire, Rousseau, maktdelning",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Historia 1b. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-066",
+"grade": "Åk 9",
+"subject": "Historia",
+"kind": "term",
+"q": "förintelsen",
+"expect": "nazisternas folkmord på sex miljoner judar, rasideologi, koncentrationsläger",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-067",
+"grade": "Åk 9",
+"subject": "Historia",
+"kind": "followup",
+"q": "och andra världskriget då?",
+"expect": "andra världskriget 1939-1945, orsaker och följder, kopplat till första",
+"context": [
+{
+"q": "första världskriget",
+"a": "Första världskriget pågick 1914 till 1918 och slutade med Versaillesfreden som straffade Tyskland hårt."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-068",
+"grade": "Åk 8",
+"subject": "Historia",
+"kind": "followup",
+"q": "varför då?",
+"expect": "varför franska revolutionen började: ojämlikhet, statsskuld, svält, nya idéer",
+"context": [
+{
+"q": "när började franska revolutionen",
+"a": "Franska revolutionen började 1789 när folket stormade Bastiljen."
+}
+],
+"profile": "Årskurs: Åk 8. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-069",
+"grade": "Gymnasiet 1, kurs Historia 1b",
+"subject": "Historia",
+"kind": "misheard",
+"q": "re nässansen",
+"expect": "renässansen: 1400-1500-tal, Italien, humanism, konst och vetenskap",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Historia 1b. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-070",
+"grade": "Åk 9",
+"subject": "Historia",
+"kind": "misheard",
+"q": "kall a kriget",
+"expect": "kalla kriget",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-071",
+"grade": "Åk 8",
+"subject": "Historia",
+"kind": "half",
+"q": "vad hände efter att napoleon",
+"expect": "Napoleons fall, Wienkongressen 1815",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-072",
+"grade": "Åk 9",
+"subject": "Historia",
+"kind": "exam",
+"q": "vilka var orsakerna till första världskriget",
+"expect": "militarism, allianser, imperialism, nationalism, skotten i Sarajevo",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-073",
+"grade": "Gymnasiet 1, kurs Historia 1b",
+"subject": "Historia",
+"kind": "exam",
+"q": "jämför demokratin i antikens aten med dagens",
+"expect": "direktdemokrati, bara fria män, idag representativ och allmän rösträtt",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Historia 1b. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-074",
+"grade": "Åk 9",
+"subject": "Samhällskunskap",
+"kind": "term",
+"q": "demokrati",
+"expect": "folkstyre, fria val, yttrandefrihet, maktdelning, rättsstat",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-075",
+"grade": "Åk 9",
+"subject": "Samhällskunskap",
+"kind": "term",
+"q": "riksdagen",
+"expect": "349 ledamöter, stiftar lagar, beslutar om budget, väljs vart fjärde år",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-076",
+"grade": "Gymnasiet 1, kurs Samhällskunskap 1b",
+"subject": "Samhällskunskap",
+"kind": "term",
+"q": "inflation",
+"expect": "stigande priser, penningvärdet minskar, Riksbanken styr med räntan",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Samhällskunskap 1b. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-077",
+"grade": "Åk 8",
+"subject": "Samhällskunskap",
+"kind": "term",
+"q": "mänskliga rättigheter",
+"expect": "FN:s deklaration 1948, universella, yttrandefrihet, rätt till utbildning",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-078",
+"grade": "Gymnasiet 1, kurs Samhällskunskap 1b",
+"subject": "Samhällskunskap",
+"kind": "term",
+"q": "ideologier",
+"expect": "liberalism, konservatism, socialism, synen på stat och individ",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Samhällskunskap 1b. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-079",
+"grade": "Åk 9",
+"subject": "Samhällskunskap",
+"kind": "term",
+"q": "globalisering",
+"expect": "ökad handel och kontakt över gränser, för- och nackdelar",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-080",
+"grade": "Åk 9",
+"subject": "Samhällskunskap",
+"kind": "followup",
+"q": "och regeringen då?",
+"expect": "regeringen styr landet, verkställer, statsministern, skillnad mot riksdagen",
+"context": [
+{
+"q": "riksdagen",
+"a": "Riksdagen är Sveriges folkvalda församling som stiftar lagar och beslutar om statens budget."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-081",
+"grade": "Gymnasiet 1, kurs Samhällskunskap 1b",
+"subject": "Samhällskunskap",
+"kind": "followup",
+"q": "varför då?",
+"expect": "varför höjd ränta minskar inflation: dyrare lån, mindre konsumtion",
+"context": [
+{
+"q": "vad gör riksbanken när inflationen är hög",
+"a": "När inflationen är hög höjer Riksbanken styrräntan."
+}
+],
+"profile": "Årskurs: Gymnasiet 1, kurs Samhällskunskap 1b. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-082",
+"grade": "Åk 9",
+"subject": "Samhällskunskap",
+"kind": "misheard",
+"q": "demo kratin",
+"expect": "demokratin",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-083",
+"grade": "Gymnasiet 1, kurs Samhällskunskap 1b",
+"subject": "Samhällskunskap",
+"kind": "misheard",
+"q": "ma kt del ning",
+"expect": "maktdelning: lagstiftande, verkställande, dömande makt",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Samhällskunskap 1b. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-084",
+"grade": "Åk 8",
+"subject": "Samhällskunskap",
+"kind": "half",
+"q": "vad är skillnaden mellan riksdag och",
+"expect": "skillnaden mellan riksdag och regering",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-085",
+"grade": "Åk 9",
+"subject": "Samhällskunskap",
+"kind": "exam",
+"q": "förklara hur en lag blir till",
+"expect": "förslag, utredning, remiss, proposition, riksdagen röstar",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-086",
+"grade": "Gymnasiet 1, kurs Samhällskunskap 1b",
+"subject": "Samhällskunskap",
+"kind": "exam",
+"q": "vilka för och nackdelar finns med globalisering",
+"expect": "tillväxt, billigare varor; utflyttning av jobb, miljö",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Samhällskunskap 1b. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-087",
+"grade": "Åk 7",
+"subject": "Geografi",
+"kind": "term",
+"q": "klimat och väder",
+"expect": "väder är kortsiktigt, klimat är genomsnitt över 30 år",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-088",
+"grade": "Åk 9",
+"subject": "Geografi",
+"kind": "term",
+"q": "växthuseffekten",
+"expect": "gaser som koldioxid håller kvar värme, förstärkt av människan",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-089",
+"grade": "Åk 7",
+"subject": "Geografi",
+"kind": "term",
+"q": "plattektonik",
+"expect": "jordskorpans plattor rör sig, jordbävningar, vulkaner, bergskedjor",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-090",
+"grade": "Åk 9",
+"subject": "Geografi",
+"kind": "term",
+"q": "urbanisering",
+"expect": "fler flyttar till städer, orsaker och följder",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-091",
+"grade": "Åk 9",
+"subject": "Geografi",
+"kind": "followup",
+"q": "och vad kan man göra åt det?",
+"expect": "minska utsläpp: förnybar energi, mindre fossila bränslen",
+"context": [
+{
+"q": "växthuseffekten",
+"a": "Den förstärkta växthuseffekten beror på att människan släpper ut koldioxid som håller kvar mer värme."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-092",
+"grade": "Åk 7",
+"subject": "Geografi",
+"kind": "misheard",
+"q": "platt tektonik",
+"expect": "plattektonik",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-093",
+"grade": "Åk 9",
+"subject": "Geografi",
+"kind": "exam",
+"q": "varför bor det så många människor nära floder",
+"expect": "vatten, bördig jord, transporter, handel",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-094",
+"grade": "Åk 8",
+"subject": "Religion",
+"kind": "term",
+"q": "buddhismen",
+"expect": "Buddha, de fyra ädla sanningarna, åttafaldiga vägen, nirvana, återfödelse",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Religion. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-095",
+"grade": "Åk 9",
+"subject": "Religion",
+"kind": "term",
+"q": "etik",
+"expect": "läran om rätt och fel, konsekvensetik, pliktetik, dygdetik",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Religion. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-096",
+"grade": "Åk 8",
+"subject": "Religion",
+"kind": "term",
+"q": "islam",
+"expect": "Muhammed, Koranen, fem pelare, monoteism",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Religion. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-097",
+"grade": "Åk 9",
+"subject": "Religion",
+"kind": "followup",
+"q": "och pliktetik?",
+"expect": "pliktetik: handlingen själv, regler och plikter, Kant",
+"context": [
+{
+"q": "konsekvensetik",
+"a": "Konsekvensetik betyder att en handling är rätt om den ger bäst följder för flest."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Religion. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-098",
+"grade": "Åk 8",
+"subject": "Religion",
+"kind": "misheard",
+"q": "bud dismen",
+"expect": "buddhismen",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Religion. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-099",
+"grade": "Åk 9",
+"subject": "Svenska",
+"kind": "term",
+"q": "argumenterande text",
+"expect": "tes, argument, motargument, slutsats",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-100",
+"grade": "Åk 7",
+"subject": "Svenska",
+"kind": "term",
+"q": "berättande text",
+"expect": "inledning, handling, konflikt, upplösning, miljö och personer",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-101",
+"grade": "Gymnasiet 1, kurs Svenska 1",
+"subject": "Svenska",
+"kind": "term",
+"q": "retorik",
+"expect": "ethos, pathos, logos, partesläran",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-102",
+"grade": "Åk 9",
+"subject": "Svenska",
+"kind": "term",
+"q": "metafor",
+"expect": "bildligt uttryck utan som, t.ex. livet är en resa",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-103",
+"grade": "Gymnasiet 1, kurs Svenska 1",
+"subject": "Svenska",
+"kind": "term",
+"q": "novell",
+"expect": "kort berättelse, få personer, ofta öppet slut",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-104",
+"grade": "Åk 9",
+"subject": "Svenska",
+"kind": "term",
+"q": "källkritik",
+"expect": "äkthet, tid, beroende, tendens",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-105",
+"grade": "Åk 9",
+"subject": "Svenska",
+"kind": "followup",
+"q": "och liknelse då?",
+"expect": "liknelse: jämförelse med som, t.ex. stark som en björn",
+"context": [
+{
+"q": "metafor",
+"a": "En metafor är ett bildligt uttryck där man säger att något är något annat, utan ordet som."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-106",
+"grade": "Gymnasiet 1, kurs Svenska 1",
+"subject": "Svenska",
+"kind": "followup",
+"q": "ge ett exempel",
+"expect": "exempel på pathos, t.ex. känsloladdade ord i ett tal",
+"context": [
+{
+"q": "pathos",
+"a": "Pathos är när talaren väcker känslor hos publiken för att övertyga."
+}
+],
+"profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-107",
+"grade": "Gymnasiet 1, kurs Svenska 1",
+"subject": "Svenska",
+"kind": "misheard",
+"q": "par tes läran",
+"expect": "partesläran: talets delar, ordningen i retoriken",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-108",
+"grade": "Åk 9",
+"subject": "Svenska",
+"kind": "misheard",
+"q": "käll kri tik",
+"expect": "källkritik",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-109",
+"grade": "Åk 9",
+"subject": "Svenska",
+"kind": "half",
+"q": "hur börjar man en argumenterande",
+"expect": "hur man inleder en argumenterande text: väck intresse, presentera tesen",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-110",
+"grade": "Åk 9",
+"subject": "Svenska",
+"kind": "exam",
+"q": "hur skriver man en bra inledning",
+"expect": "fånga läsaren, presentera ämnet eller tesen",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-111",
+"grade": "Gymnasiet 1, kurs Svenska 1",
+"subject": "Svenska",
+"kind": "exam",
+"q": "vad kännetecknar romantiken",
+"expect": "känslor, naturen, fantasi, 1800-talets början, reaktion mot upplysningen",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-112",
+"grade": "Åk 9",
+"subject": "Engelska",
+"kind": "term",
+"q": "present perfect",
+"expect": "have/has + participle, erfarenhet eller något som fortsätter, skillnad mot past simple",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-113",
+"grade": "Åk 7",
+"subject": "Engelska",
+"kind": "term",
+"q": "oregelbundna verb",
+"expect": "verb som inte får -ed, t.ex. go went gone",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-114",
+"grade": "Gymnasiet 1, kurs Engelska 5",
+"subject": "Engelska",
+"kind": "term",
+"q": "conditionals",
+"expect": "if-satser, first second third conditional",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Engelska 5. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-115",
+"grade": "Åk 9",
+"subject": "Engelska",
+"kind": "term",
+"q": "passiv form",
+"expect": "be + participle, the book was written",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-116",
+"grade": "Åk 9",
+"subject": "Engelska",
+"kind": "followup",
+"q": "och past simple då?",
+"expect": "past simple: avslutad tid i dåtid, yesterday, skillnad mot present perfect",
+"context": [
+{
+"q": "present perfect",
+"a": "Present perfect bildas med have eller has och perfekt particip, som I have eaten."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-117",
+"grade": "Gymnasiet 1, kurs Engelska 5",
+"subject": "Engelska",
+"kind": "followup",
+"q": "och den tredje?",
+"expect": "third conditional: if + had + participle, would have, overkligt i dåtid",
+"context": [
+{
+"q": "first conditional",
+"a": "First conditional är if plus presens och will, för något som kan hända."
+},
+{
+"q": "och second?",
+"a": "Second conditional är if plus imperfekt och would, för något overkligt nu."
+}
+],
+"profile": "Årskurs: Gymnasiet 1, kurs Engelska 5. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-118",
+"grade": "Åk 9",
+"subject": "Engelska",
+"kind": "misheard",
+"q": "pre sent per fekt",
+"expect": "present perfect",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-119",
+"grade": "Åk 7",
+"subject": "Engelska",
+"kind": "exam",
+"q": "när använder man some och any",
+"expect": "some i jakande, any i frågor och nekande",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-120",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "term",
+"q": "pythagoras",
+"expect": "a² + b² = c² i rätvinklig triangel, c är hypotenusan, exempel 3-4-5",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-121",
+"grade": "Åk 7",
+"subject": "Matematik",
+"kind": "term",
+"q": "procent",
+"expect": "hundradelar, del delat med det hela, procentuell förändring",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-122",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "term",
+"q": "linjär funktion",
+"expect": "y = kx + m, k lutning, m skärning med y-axeln",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-123",
+"grade": "Gymnasiet 1, kurs Matematik 1c",
+"subject": "Matematik",
+"kind": "term",
+"q": "ekvation",
+"expect": "likhet med obekant, gör samma sak på båda sidor",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Matematik 1c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-124",
+"grade": "Gymnasiet 2, kurs Matematik 2c",
+"subject": "Matematik",
+"kind": "term",
+"q": "andragradsekvation",
+"expect": "pq-formeln, x² + px + q = 0",
+"context": [],
+"profile": "Årskurs: Gymnasiet 2, kurs Matematik 2c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-125",
+"grade": "Gymnasiet 3, kurs Matematik 3c",
+"subject": "Matematik",
+"kind": "term",
+"q": "derivata",
+"expect": "förändringshastighet, lutningen på tangenten, deriveringsregler",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 3c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-126",
+"grade": "Gymnasiet 3, kurs Matematik 3c",
+"subject": "Matematik",
+"kind": "term",
+"q": "integral",
+"expect": "area under kurva, primitiv funktion, motsatsen till derivata",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 3c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-127",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "term",
+"q": "sannolikhet",
+"expect": "gynnsamma utfall delat med möjliga, mellan noll och ett",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-128",
+"grade": "Gymnasiet 2, kurs Matematik 2c",
+"subject": "Matematik",
+"kind": "term",
+"q": "logaritmer",
+"expect": "logaritmen är exponenten, lg 100 = 2",
+"context": [],
+"profile": "Årskurs: Gymnasiet 2, kurs Matematik 2c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-129",
+"grade": "Åk 7",
+"subject": "Matematik",
+"kind": "term",
+"q": "bråk",
+"expect": "täljare och nämnare, förlänga och förkorta",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-130",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "followup",
+"q": "och hur räknar man ut den andra sidan?",
+"expect": "kateter: a² = c² − b², roten ur",
+"context": [
+{
+"q": "pythagoras sats",
+"a": "Pythagoras sats säger att i en rätvinklig triangel är a i kvadrat plus b i kvadrat lika med c i kvadrat."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-131",
+"grade": "Gymnasiet 3, kurs Matematik 3c",
+"subject": "Matematik",
+"kind": "followup",
+"q": "och andraderivatan då?",
+"expect": "andraderivatan: derivatan av derivatan, maximum/minimum, konkav/konvex",
+"context": [
+{
+"q": "derivata",
+"a": "Derivatan beskriver hur snabbt en funktion förändras, alltså lutningen på kurvan i en punkt."
+}
+],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 3c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-132",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "followup",
+"q": "varför då?",
+"expect": "varför k är lutningen: y ökar k för varje steg i x",
+"context": [
+{
+"q": "vad betyder k i y är lika med kx plus m",
+"a": "k är lutningen, alltså hur mycket y ändras när x ökar med ett."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-133",
+"grade": "Gymnasiet 2, kurs Matematik 2c",
+"subject": "Matematik",
+"kind": "followup",
+"q": "ge ett exempel",
+"expect": "exempel med pq-formeln, t.ex. x² − 5x + 6 = 0 ger 2 och 3",
+"context": [
+{
+"q": "pq-formeln",
+"a": "pq-formeln löser andragradsekvationer på formen x i kvadrat plus px plus q är lika med noll."
+}
+],
+"profile": "Årskurs: Gymnasiet 2, kurs Matematik 2c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-134",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "misheard",
+"q": "pyt a goras",
+"expect": "Pythagoras sats",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-135",
+"grade": "Gymnasiet 3, kurs Matematik 3c",
+"subject": "Matematik",
+"kind": "misheard",
+"q": "deri vata",
+"expect": "derivata",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 3c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-136",
+"grade": "Gymnasiet 2, kurs Matematik 2c",
+"subject": "Matematik",
+"kind": "misheard",
+"q": "loga ritmer",
+"expect": "logaritmer",
+"context": [],
+"profile": "Årskurs: Gymnasiet 2, kurs Matematik 2c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-137",
+"grade": "Åk 7",
+"subject": "Matematik",
+"kind": "half",
+"q": "hur räknar man ut procent av",
+"expect": "hur man räknar ut procent av ett tal: andel gånger det hela",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-138",
+"grade": "Gymnasiet 1, kurs Matematik 1c",
+"subject": "Matematik",
+"kind": "half",
+"q": "när man löser ekvationer ska man",
+"expect": "göra samma sak på båda sidor",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Matematik 1c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-139",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "exam",
+"q": "hur räknar man ut arean av en cirkel",
+"expect": "pi gånger radien i kvadrat",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-140",
+"grade": "Gymnasiet 1, kurs Matematik 1c",
+"subject": "Matematik",
+"kind": "exam",
+"q": "vad är skillnaden mellan procent och procentenheter",
+"expect": "procentenheter är differensen, procent är relativ förändring",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Matematik 1c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-141",
+"grade": "Gymnasiet 3, kurs Matematik 3c",
+"subject": "Matematik",
+"kind": "exam",
+"q": "hur hittar man en funktions maximum",
+"expect": "derivera, sätt derivatan lika med noll, teckenstudium",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 3c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-142",
+"grade": "Åk 7",
+"subject": "Matematik",
+"kind": "exam",
+"q": "vad är medelvärde median och typvärde",
+"expect": "lägesmått: medel summa/antal, median mitten, typvärde vanligast",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-143",
+"grade": "Gymnasiet 2, kurs Matematik 2c",
+"subject": "Matematik",
+"kind": "exam",
+"q": "vad är en exponentialfunktion",
+"expect": "y = C · a^x, förändring med samma faktor",
+"context": [],
+"profile": "Årskurs: Gymnasiet 2, kurs Matematik 2c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-144",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "short",
+"q": "molekyl",
+"expect": "två eller fler atomer bundna, t.ex. vatten H2O",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar."
+},
+{
+"id": "pl-145",
+"grade": "Åk 9",
+"subject": "Fysik",
+"kind": "short",
+"q": "effekt",
+"expect": "energi per tid, watt, P = U·I",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar."
+},
+{
+"id": "pl-146",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "short",
+"q": "hormoner",
+"expect": "signalämnen i blodet, insulin, adrenalin",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar."
+},
+{
+"id": "pl-147",
+"grade": "Gymnasiet 1, kurs Historia 1b",
+"subject": "Historia",
+"kind": "short",
+"q": "imperialism",
+"expect": "stormakter tar kolonier, 1800-tal, råvaror och makt",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Historia 1b. Ämne: Historia. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar."
+},
+{
+"id": "pl-148",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "short",
+"q": "kvadratrot",
+"expect": "talet som gånger sig självt ger talet, roten ur 49 är 7",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar."
+},
+{
+"id": "pl-149",
+"grade": "Gymnasiet 1, kurs Svenska 1",
+"subject": "Svenska",
+"kind": "short",
+"q": "ethos",
+"expect": "talarens trovärdighet",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar."
+},
+{
+"id": "pl-150",
+"grade": "Åk 9",
+"subject": "Biologi",
+"kind": "exam_soon",
+"q": "vad är viktigast att kunna",
+"expect": "det som troligen kommer: gener, DNA, arv, naturligt urval",
+"context": [],
+"profile": "Prov i Biologi imorgon. Årskurs: Åk 9. På provet: genetik och evolution. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-151",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "exam_soon",
+"q": "vad ska jag plugga på sista kvällen",
+"expect": "pH-skalan, neutralisation, vätejoner, exempel",
+"context": [],
+"profile": "Prov i Kemi imorgon. Årskurs: Åk 8. På provet: syror och baser. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-152",
+"grade": "Gymnasiet 2, kurs Matematik 2c",
+"subject": "Matematik",
+"kind": "exam_soon",
+"q": "vad brukar komma på provet",
+"expect": "pq-formeln, faktorisering, grafen, nollställen",
+"context": [],
+"profile": "Prov i Matematik imorgon. Årskurs: Gymnasiet 2, kurs Matematik 2c. På provet: andragradsekvationer. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-153",
+"grade": "Åk 9",
+"subject": "Historia",
+"kind": "exam_soon",
+"q": "sammanfatta det viktigaste",
+"expect": "USA och Sovjet, ideologier, kapprustning, murens fall 1989",
+"context": [],
+"profile": "Prov i Historia imorgon. Årskurs: Åk 9. På provet: kalla kriget. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-154",
+"grade": "Åk 7",
+"subject": "Biologi",
+"kind": "term",
+"q": "näringskedja",
+"expect": "producent, konsument, energin minskar i varje led",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-155",
+"grade": "Åk 8",
+"subject": "Biologi",
+"kind": "term",
+"q": "blodomloppet",
+"expect": "hjärtat pumpar, stora och lilla kretsloppet, artärer och vener",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-156",
+"grade": "Gymnasiet 1, kurs Biologi 1",
+"subject": "Biologi",
+"kind": "term",
+"q": "genetisk kod",
+"expect": "tripletter av baser kodar aminosyror",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-157",
+"grade": "Åk 9",
+"subject": "Kemi",
+"kind": "term",
+"q": "förbränning",
+"expect": "ämne reagerar med syre, koldioxid och vatten bildas",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-158",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "term",
+"q": "oxidation",
+"expect": "avgivande av elektroner, redoxreaktion",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-159",
+"grade": "Åk 8",
+"subject": "Fysik",
+"kind": "term",
+"q": "magnetism",
+"expect": "nord- och sydpol, magnetfält, lika poler stöter bort",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-160",
+"grade": "Gymnasiet 1, kurs Fysik 1",
+"subject": "Fysik",
+"kind": "term",
+"q": "arbete",
+"expect": "kraft gånger sträcka, joule",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-161",
+"grade": "Åk 9",
+"subject": "Historia",
+"kind": "term",
+"q": "medeltiden",
+"expect": "ca 500-1500, feodalism, kyrkans makt, digerdöden",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-162",
+"grade": "Åk 9",
+"subject": "Samhällskunskap",
+"kind": "term",
+"q": "kommunen",
+"expect": "skola, äldreomsorg, kommunalskatt, kommunfullmäktige",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-163",
+"grade": "Gymnasiet 1, kurs Samhällskunskap 1b",
+"subject": "Samhällskunskap",
+"kind": "term",
+"q": "marknadsekonomi",
+"expect": "utbud och efterfrågan, privat ägande, konkurrens",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Samhällskunskap 1b. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-164",
+"grade": "Åk 8",
+"subject": "Geografi",
+"kind": "term",
+"q": "befolkningspyramid",
+"expect": "ålder och kön, visar födelsetal och livslängd",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-165",
+"grade": "Åk 9",
+"subject": "Religion",
+"kind": "term",
+"q": "kristendomen",
+"expect": "Jesus, Bibeln, treenigheten, kyrkor",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Religion. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-166",
+"grade": "Åk 9",
+"subject": "Svenska",
+"kind": "term",
+"q": "debattartikel",
+"expect": "tes, argument, motargument, uppmaning",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-167",
+"grade": "Gymnasiet 1, kurs Svenska 1",
+"subject": "Svenska",
+"kind": "term",
+"q": "språkhistoria",
+"expect": "runsvenska, fornsvenska, lånord",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-168",
+"grade": "Åk 9",
+"subject": "Engelska",
+"kind": "term",
+"q": "relative pronouns",
+"expect": "who which that, vem vad",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-169",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "term",
+"q": "volym",
+"expect": "längd gånger bredd gånger höjd, kubikcentimeter, liter",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-170",
+"grade": "Gymnasiet 1, kurs Matematik 1c",
+"subject": "Matematik",
+"kind": "term",
+"q": "potenser",
+"expect": "basen och exponenten, potenslagar",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Matematik 1c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-171",
+"grade": "Gymnasiet 3, kurs Matematik 3c",
+"subject": "Matematik",
+"kind": "term",
+"q": "gränsvärde",
+"expect": "värdet funktionen närmar sig, lim",
+"context": [],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 3c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-172",
+"grade": "Åk 8",
+"subject": "Biologi",
+"kind": "followup",
+"q": "och lilla kretsloppet?",
+"expect": "lilla kretsloppet: hjärta till lungor och tillbaka, syresättning",
+"context": [
+{
+"q": "stora kretsloppet",
+"a": "Stora kretsloppet går från hjärtat ut till kroppen och tillbaka med syrefattigt blod."
+}
+],
+"profile": "Årskurs: Åk 8. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-173",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "followup",
+"q": "och reduktion?",
+"expect": "reduktion: upptag av elektroner, sker samtidigt som oxidation",
+"context": [
+{
+"q": "oxidation",
+"a": "Oxidation betyder att ett ämne avger elektroner."
+}
+],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-174",
+"grade": "Åk 9",
+"subject": "Historia",
+"kind": "followup",
+"q": "vad hände sen?",
+"expect": "efter digerdöden: arbetskraftsbrist, högre löner, feodalismen försvagas",
+"context": [
+{
+"q": "digerdöden",
+"a": "Digerdöden var en pestepidemi på 1300-talet som dödade ungefär en tredjedel av Europas befolkning."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-175",
+"grade": "Åk 9",
+"subject": "Samhällskunskap",
+"kind": "followup",
+"q": "och landstinget då?",
+"expect": "regionen: sjukvård, kollektivtrafik, regionfullmäktige",
+"context": [
+{
+"q": "kommunen",
+"a": "Kommunen ansvarar för till exempel skola och äldreomsorg och tar ut kommunalskatt."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-176",
+"grade": "Gymnasiet 3, kurs Matematik 3c",
+"subject": "Matematik",
+"kind": "followup",
+"q": "hur räknar man med det?",
+"expect": "räkna gränsvärde: sätt in värden närmare, förenkla, faktorisera",
+"context": [
+{
+"q": "gränsvärde",
+"a": "Ett gränsvärde är det värde en funktion närmar sig när x går mot ett visst tal."
+}
+],
+"profile": "Årskurs: Gymnasiet 3, kurs Matematik 3c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-177",
+"grade": "Åk 9",
+"subject": "Engelska",
+"kind": "followup",
+"q": "och whose?",
+"expect": "whose: vars, ägande",
+"context": [
+{
+"q": "relative pronouns",
+"a": "Relative pronouns som who, which och that binder ihop satser och syftar tillbaka på något."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Engelska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-178",
+"grade": "Gymnasiet 1, kurs Fysik 1",
+"subject": "Fysik",
+"kind": "followup",
+"q": "och effekt då?",
+"expect": "effekt: arbete per tid, watt, P = W/t",
+"context": [
+{
+"q": "arbete",
+"a": "Arbete i fysik är kraft gånger sträcka och mäts i joule."
+}
+],
+"profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-179",
+"grade": "Åk 9",
+"subject": "Religion",
+"kind": "followup",
+"q": "vad är skillnaden mot islam?",
+"expect": "skillnader: Jesus som Guds son vs profet, treenighet vs strikt monoteism",
+"context": [
+{
+"q": "kristendomen",
+"a": "Kristendomen bygger på tron på Jesus som Guds son och har Bibeln som helig skrift."
+}
+],
+"profile": "Årskurs: Åk 9. Ämne: Religion. Förklaringar: mellanlånga förklaringar."
+}
+]
