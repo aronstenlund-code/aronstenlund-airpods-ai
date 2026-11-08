@@ -38,3 +38,8 @@ Deno.test("Oscar 2026-11-08 Provläge: a guessed subject is silence, not the wro
   assertEquals(o2.trim(), "");
   assert(isInterviewMeta("Jag tänker inte fokusera på min ålder utan på vad jag tar med mig till jobbet."));
 });
+
+Deno.test("Oscar 2026-11-08 Provläge: 'Fragmentet … liknar …' and 'Och jag svarar på det:' are cut", () => {
+  assertEquals(rewriteLeadIn('Fragmentet "gra vi ta tions kraften" liknar "gravitationskraften", ett tydligt ämne, så jag svarar på det. ', "gra vi ta tions kraften"), "");
+  assertEquals(rewriteLeadIn("Och jag svarar på det: demokrati betyder folkstyre. ", "den mo kra tin"), "Demokrati betyder folkstyre. ");
+});

@@ -556,7 +556,9 @@ export function similarity(a: string, b: string): number {
   for (const [k, v] of x) both += Math.min(v, y.get(k) ?? 0);
   return nx + ny ? (2 * both) / (nx + ny) : 0;
 }
-const LEAD_META = /^(?:fragmentet|det du sa|orden)\b[^.]{0,120}\blåter som\b/iu;
+const LEAD_META = /^(?:fragmentet|det du sa|orden|ordet)\b[^.]{0,160}\b(?:låter som|liknar|är nog|är troligen|tolkar|uppfattar)\b/iu;
+/** "Och jag svarar på det: …" before the real answer. */
+const LEAD_PREFIX = /^(?:och\s+|så\s+)?(?:jag svarar på det|då svarar jag|här är svaret)\s*[:,]?\s*/iu;
 /** A first sentence that guesses ("som du kanske menar", "jag är inte säker"): rather silence than a wrong subject. */
 const LEAD_UNSURE =
   /\b(?:som du (?:kanske|nog|troligen|antagligen) menar|om du menar|jag är (?:inte (?:helt )?säker|osäker)|kanske menar du|du menar (?:nog|kanske))\b/iu;
@@ -569,6 +571,10 @@ export function rewriteLeadIn(sentence: string, heard: string): string {
   const t = sentence.trim();
   if (!t) return sentence;
   if (LEAD_META.test(t)) return "";
+  if (LEAD_PREFIX.test(t)) {
+    const r = t.replace(LEAD_PREFIX, "");
+    return r ? `${r.charAt(0).toUpperCase()}${r.slice(1)}${/\s$/.test(sentence) ? " " : ""}` : "";
+  }
   const m = LEAD_NAMED.exec(t);
   if (!m) return sentence;
   const [, term, sep, rest] = m;
