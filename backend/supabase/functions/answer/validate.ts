@@ -51,7 +51,7 @@ export interface AnswerRequest {
   context: {
     transcript: string;
     /** D81: `interrupted` = the app stopped this answer mid-way; `a` is what had been said by then. */
-    recent_qa: { q: string; a: string; interrupted?: boolean }[];
+    recent_qa: { q: string; a: string; interrupted?: boolean; source?: string }[];
     prep_terms: string[];
     /** K1.4: every check question asked in this Provläge session (the app keeps them; recent_qa holds only 6). */
     already_asked?: string[];
@@ -154,6 +154,8 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       q: str(e.q, `recent_qa[${i}].q`, LIMITS.qaText),
       a: str(e.a, `recent_qa[${i}].a`, LIMITS.qaAnswer),
       ...(e.interrupted === true ? { interrupted: true } : {}),
+      // K16.2: the web source of that answer (the done event's `source`), so a follow-up keeps it
+      ...(typeof e.source === "string" && /^[a-z0-9][a-z0-9.-]{2,59}$/i.test(e.source.trim()) ? { source: e.source.trim().toLowerCase() } : {}),
     };
   });
 

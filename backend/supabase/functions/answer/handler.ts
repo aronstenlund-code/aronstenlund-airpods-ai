@@ -45,8 +45,13 @@ import {
 import { detectReport } from "./report.ts";
 import { detectMemoryAdd, MEMORY_ACK, MEMORY_SUMMARY } from "./memory.ts";
 import {
+  cleanDomain,
+  isFollowUp,
   isOrdinalFact,
   isPersonQuote,
+  NO_GUESS_NOTE,
+  SAME_SOURCE_NOTE,
+  SEARCH_MARK_RULE,
   needsText,
   needsWeb,
   TEXT_PROMPT,
@@ -653,10 +658,17 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const quoteCheck = textReq && isPersonQuote(body.fragment); // K11
       // K8 (Oscar O7 W1): prices search shops; not in Auto: there the web tools made the meta step call the price
       // question "not a question" (empty answer live), worse than the answer without a price
-      const need =
+      let need =
         !textReq && !demo && !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"
           ? needsWeb(body.fragment)
           : null;
+      // K16.2: a short follow-up to an answer that came from a source searches that source again
+      const lastSource = cleanDomain(body.context.recent_qa.at(-1)?.source);
+      const followSource = lastSource && !textReq && !demo && !plan && !computed &&
+          body.mode !== "auto" && body.mode !== "interview_prep" && body.mode !== "tutor" && isFollowUp(body.fragment)
+        ? lastSource
+        : null;
+      if (followSource) need = { ...(need ?? { search: true, fetch: false }), search: true, extraDomains: [followSource] };
       let webOn = false;
       let webNote: string | undefined;
       let textOn = false;
@@ -678,6 +690,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         );
         webOn = wl.allowed;
         if (!webOn) webNote = WEB_UNAVAILABLE_NOTE;
+        else if (followSource) webNote = SAME_SOURCE_NOTE(followSource);
       }
       const answerType = (computed || webOn || demo) && !tutor ? "fact" : answerTypeBase;
       // K10.2: only the learned settings that apply to this context (mode, subject, exam, kind of answer)
@@ -812,13 +825,16 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       });
       const noSummary = plan?.kind === "rizz" || plan?.kind === "calibrate" || demo;
       const relationTag = direct && !plan && body.context.recent_qa.length > 0;
+      // K16.1: in Frågor (push to talk, text) the model may answer only [[SÖK]] when it is not sure of a specific fact
+      const askSearch = direct && !tutor && !plan && !demo && !need && !textReq && !computed &&
+        body.mode !== "auto" && body.mode !== "interview_prep";
       const systemPrompt = (plan
         ? personaSystemPrompt(plan.kind, body)
         : direct
         ? systemPromptFor(answerType, tutor)
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
-        (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "");
+        (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
@@ -983,6 +999,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let calibBuf = "";
           let calibration: string | null = null;
           let rizzBuf = "";
+          let headBuf: string | null = askSearch ? "" : null;
+          let searchMarked = false;
+          let retrySystem = systemPrompt;
+          let retryTools = tools;
+          let searched = false;
           const rizzCount = rizz ? suggestionCount(body) : 0; // D72: 1 by default, max 5 when asked
           let previewSent = false;
           let previewText: string | null = null;
@@ -1012,6 +1033,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (silenceOn && post.silenceMarked) stop = true; // D75: nothing more will be said
               if (post.silencedLate) stop = true; // 2026-11-08: marker after text: say nothing more
             }
+          };
+          const feed = (text: string) => {
+            for (const ev of parser.push(text)) emit(ev);
+          };
+          const flushHead = () => {
+            if (headBuf === null) return;
+            const h = headBuf;
+            headBuf = null;
+            if (h) feed(h);
           };
           const handle = (chunk: LLMChunk) => {
             if (chunk.type === "cite") {
@@ -1045,7 +1075,19 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                   send("suggestion_preview", { text: numbersToSpeech(first) });
                 }
               }
-            } else for (const ev of parser.push(chunk.text)) emit(ev);
+            } else if (headBuf !== null) {
+              // K16.1: the first characters decide whether the model asked for a search ([[SÖK]])
+              headBuf += chunk.text;
+              const head0 = headBuf.replace(/^\s*\[\[REL [^\]]*\]\]\s*/u, "");
+              if (/^\s*\[\[REL/u.test(headBuf) && !headBuf.includes("]]")) return; // the relation tag is not complete yet
+              if (/^\s*\[\[S[ÖO]K\]\]/iu.test(head0)) {
+                searchMarked = true;
+                headBuf = null;
+                stop = true;
+              } else if (head0.replace(/\s+/g, "").length >= 8 || (!/^\s*\[/.test(head0) && head0.trim().length > 0)) {
+                flushHead();
+              }
+            } else feed(chunk.text);
           };
 
           try {
@@ -1065,7 +1107,22 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                   "Your previous reply repeated an earlier answer. The fragment is a new request: answer only the fragment.";
                 const m = post.dup.matched;
                 if (m) history = history.filter((x) => x.a !== m);
+              } else if (searchMarked && attempt === 0) {
+                // K16.1: the model is not sure: search once (within the web caps), or say it does not know
+                const wl = await enforceLimits(deps.rateLimiter, "answer-web", user.id, cfg.webLimits ?? DEFAULT_CONFIG.webLimits!);
+                if (wl.allowed) {
+                  retrySystem = systemPrompt.replace(SEARCH_MARK_RULE, "") + WEB_PROMPT;
+                  retryTools = webTools({ search: true, fetch: false });
+                  searched = true;
+                  note = "Search the web for this question and answer from the sources.";
+                } else {
+                  retrySystem = systemPrompt.replace(SEARCH_MARK_RULE, "");
+                  note = NO_GUESS_NOTE;
+                }
+                stop = false;
+                console.warn("search_marked", JSON.stringify({ allowed: wl.allowed }));
               } else {
+                flushHead();
                 if (!stop) { for (const ev of parser.finish()) emit(ev); }
                 const fin = post.finish();
                 // K1.4: "förhör mig" never repeats a question of this session (held until here, nothing was sent)
@@ -1104,15 +1161,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               acs.push(ac2);
               retries++;
               it = llm.stream({
-                system: systemPrompt,
+                system: retrySystem,
                 user: userFor({ ...body, context: { ...body.context, recent_qa: history } }, {
                   ...baseExtras,
                   note,
                 }),
-                maxTokens,
+                maxTokens: searched ? Math.max(maxTokens, 600 + 80) : maxTokens,
                 cacheSystem: true,
                 ...(systemTail ? { systemTail } : {}),
-                tools,
+                tools: retryTools,
                 ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
                 ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
           ...(careful ? { think: true } : {}),
@@ -1123,7 +1180,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 trimQuestion: false,
                 firstLineOnly: plan?.kind === "socialline",
                 relationTag,
-                web: webOn || !!need,
+                web: webOn || !!need || searched,
                 source: textReq,
                 tutor,
                 silence: silenceOn,
