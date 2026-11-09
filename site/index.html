@@ -218,18 +218,29 @@
   .photo svg { width: 28px; height: 28px; }
   .photo span { max-width: 30ch; }
 
-  /* Ke7: Elias, scrollstyrd sekvens på canvas, ringar från hörluren. */
-  .elias { position: relative; margin: 0 auto; width: min(78%, 300px); aspect-ratio: 480 / 700; }
-  .elias img, .elias canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; transform-origin: 50% 30%; will-change: transform; }
+  /* Ke8: Elias i ett kort med rutpapper runt. Kortet är alltid ljust som ett foto, också i mörkt läge. */
+  .elias-wrap { margin: 0 auto; width: min(100%, 360px); padding: 18px; border-radius: 26px; background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: var(--sq) var(--sq); border: 1px solid var(--line); }
+  .elias { position: relative; width: 100%; aspect-ratio: 480 / 600; overflow: hidden; border-radius: 18px; background: #FEFEFE; box-shadow: 0 14px 34px rgba(24,33,58,.20), 0 2px 6px rgba(24,33,58,.10); }
+  .stage { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 480 / 700; transform-origin: 50% 25%; will-change: transform; }
+  .stage img, .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .elias canvas { visibility: hidden; }
   .elias.live canvas { visibility: visible; } .elias.live img { visibility: hidden; }
-  .rings { position: absolute; left: var(--ex); top: var(--ey); width: 0; height: 0; pointer-events: none; }
+  .rings { position: absolute; left: var(--ex); top: calc(var(--ey) * 600 / 700); width: 0; height: 0; pointer-events: none; }
   .rings i { position: absolute; left: -50px; top: -50px; width: 100px; height: 100px; border-radius: 50%; border: 3px solid #2346C8; opacity: 0; transform: scale(.15); }
   .elias.pulse .rings i { animation: ering 2.4s cubic-bezier(.23,1,.32,1) both; }
   .elias.pulse .rings i:nth-child(2) { animation-delay: .25s; } .elias.pulse .rings i:nth-child(3) { animation-delay: .5s; }
   @keyframes ering { 0% { opacity: 0; transform: scale(.15); } 15% { opacity: .9; } 70%, 100% { opacity: 0; transform: scale(1.8); } }
-  @media (prefers-color-scheme: dark) { .rings i { border-color: #7F9BFF; } }
   @media (prefers-reduced-motion: reduce) { .elias.pulse .rings i { animation: none; opacity: .5; transform: scale(.7); } .elias.pulse .rings i:nth-child(2) { transform: scale(1.1); opacity: .3; } .elias.pulse .rings i:nth-child(3) { display: none; } }
+
+  /* Ke8: tre budskap. */
+  .voice { padding-top: 8px; padding-bottom: 56px; }
+  .voice .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
+  .vlist { display: grid; gap: 14px; margin-top: 24px; }
+  .vlist li { padding: 18px; }
+  .vlist h3 { font-size: 1.25rem; line-height: 1.25; }
+  .vlist p { margin-top: 6px; color: var(--mut); }
+  .vlist .shot { max-width: 200px; }
+  @media (min-width: 900px) { .vlist { grid-template-columns: repeat(3, minmax(0, 1fr)); } .voice { padding-bottom: 88px; } }
 
   /* ---------- Demorutan ---------- */
   .demo {
@@ -584,7 +595,7 @@
     }
     .intro { grid-column: 1; grid-row: 1; }
     .points { grid-column: 1; grid-row: 2; }
-    .elias { grid-column: 1; grid-row: 3; margin: 0; width: min(100%, 400px); }
+    .elias-wrap { grid-column: 1; grid-row: 3; margin: 0; width: min(100%, 400px); }
     .demo { grid-column: 2; grid-row: 1 / span 3; align-self: start; position: sticky; top: 24px; padding: 26px 26px 28px; gap: 20px; }
     h1 { font-size: clamp(3.75rem, 6.2vw, 5.5rem); }
     .pitch { font-size: 1.5rem; margin-top: 16px; }
@@ -714,11 +725,15 @@
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Inget konto. Börja direkt.</span></li>
     </ul>
 
-    <!-- Ke7: Elias, scrollstyrd bildsekvens (site/img/elias-seq). Bild 1 laddas direkt, resten efter load. -->
-    <figure class="elias" id="elias" style="--ex:35%;--ey:33%">
-      <img id="elias-still" src="img/elias-seq/001.webp" width="480" height="700" alt="Elias, 17 år, med en vit trådlös hörlur i örat. AI-genererad figur, ingen verklig person.">
-      <canvas id="elias-cv" width="480" height="700" aria-hidden="true"></canvas>
-      <span class="rings" aria-hidden="true"><i></i><i></i><i></i></span>
+    <!-- Ke8: Elias i ett kort (vit bakgrund i bildrutorna), scrollstyrd sekvens. Bild 1 direkt, resten efter load. -->
+    <figure class="elias-wrap">
+      <div class="elias" id="elias" style="--ex:35%;--ey:38%">
+        <div class="stage" id="elias-stage">
+          <img id="elias-still" src="img/elias-seq/001.webp" width="480" height="700" alt="Elias, 17 år, med en vit trådlös hörlur i örat. AI-genererad figur, ingen verklig person.">
+          <canvas id="elias-cv" width="480" height="700" aria-hidden="true"></canvas>
+          <span class="rings" aria-hidden="true"><i></i><i></i><i></i></span>
+        </div>
+      </div>
     </figure>
   </section>
 
@@ -735,6 +750,17 @@
       <p class="anim-q hand" aria-hidden="true">Globalisering</p>
       <div class="anim-a" aria-hidden="true"><span class="bars"><i></i><i></i><i></i></span><span class="t">Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna.</span></div>
     </div>
+  </section>
+
+  <section class="voice wrap" aria-labelledby="voice-h">
+    <h2 id="voice-h">Telefonen i fickan. Allt med rösten.</h2>
+    <p class="lead">Du styr Lumen med rösten och dina AirPods.</p>
+    <ul class="vlist">
+      <li class="paper"><h3>Låt telefonen ligga kvar</h3><p>Säg till i örat, till exempel "Lumen, pausa" eller "Lumen, byt till provläge". Du behöver inte ta upp skärmen.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget lyssnar i appen med texten 'Ställ en fråga när du vill'."></picture></li>
+      <li class="paper"><h3>Egna kommandon</h3><p>Säg det du vill. Under Inställningar › Röstkommandon väljer du själv fraserna för att byta läge och pausa, och under Egna kommandon sparar du egna nyckelord med en instruktion till Lumen.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/egna-dark.webp"><img class="shot" src="img/egna-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Egna kommandon i appen med fälten Nyckelord och Instruktion."></picture></li>
+      <li class="paper"><h3>Lägg in ditt material i förväg</h3><p>Importera instuderingsmaterial som PDF eller textfil, och kursmål, under Förberedelser. Lumen känner igen dina ämnesord och svarar på kursens nivå.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/forb-dark.webp"><img class="shot" src="img/forb-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Förberedelser i appen där man lägger till material och kursmål."></picture></li>
+    </ul>
+    <p class="shot-note">Skärmbilder från en testversion av appen.</p>
   </section>
 
   <section class="examples wrap" aria-labelledby="ex-h">
@@ -1449,8 +1475,8 @@ getToken().catch(() => {});   // Felet visas när någon faktiskt frågar.
 // Ke7: scrollstyrd Elias. Visad bildruta glider mot målet (lerp), och vilar aldrig på en dålig vilobild.
 (() => {
   const fig = document.getElementById("elias"); if (!fig) return;
-  const cv = document.getElementById("elias-cv"), still = document.getElementById("elias-still"), ctx = cv.getContext("2d");
-  const N = 120, BAD = [[22, 30], [48, 66], [85, 93]], RING = 38;
+  const stage = document.getElementById("elias-stage"), cv = document.getElementById("elias-cv"), still = document.getElementById("elias-still"), ctx = cv.getContext("2d");
+  const N = 120, BAD = [[22, 30], [48, 66], [85, 93]], RING = 39, SKIP = [49, 65]; // udda bildrutor finns; 49–65 (handen) hoppas över och tonas över 47→67
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const step = 2; // Deangelo: bara udda bildrutor finns (site/ max 2 MB)
   const src = n => "img/elias-seq/" + String(n).padStart(3, "0") + ".webp";
@@ -1458,13 +1484,21 @@ getToken().catch(() => {});   // Felet visas när någon faktiskt frågar.
   const frames = new Array(N + 1);
   let cur = 1, target = 1, shown = 1, tmo = 0, last = 0;
   function load() {
-    const list = []; for (let n = 1; n <= N; n += step) list.push(n);
+    const list = []; for (let n = 1; n <= N; n += step) if (n < SKIP[0] || n > SKIP[1]) list.push(n);
     let i = 0;
     const next = () => { if (i >= list.length) return; const n = list[i++]; const im = new Image(); im.decoding = "async"; im.onload = () => { frames[n] = im; if (n === 1) { fig.classList.add("live"); draw(1); } next(); }; im.onerror = next; im.src = src(n); };
     next(); next();
   }
   function nearest(f) { for (let d = 0; d < N; d++) { if (frames[f - d]) return frames[f - d]; if (frames[f + d]) return frames[f + d]; } return null; }
-  function draw(f) { const im = nearest(f); if (im) { ctx.clearRect(0, 0, 480, 700); ctx.drawImage(im, 0, 0); } }
+  function draw(f) {
+    ctx.clearRect(0, 0, 480, 700);
+    if (f > 47 && f < 67 && frames[47] && frames[67]) { // kort toning 47→67 över ca 3 bildrutor
+      const t = Math.min(1, Math.max(0, (f - 56) / 3));
+      ctx.globalAlpha = 1; ctx.drawImage(frames[47], 0, 0);
+      ctx.globalAlpha = t; ctx.drawImage(frames[67], 0, 0); ctx.globalAlpha = 1; return;
+    }
+    const im = nearest(f); if (im) ctx.drawImage(im, 0, 0);
+  }
   function progress() {
     const r = fig.getBoundingClientRect(), vh = innerHeight;
     return Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (vh * 0.85)));
@@ -1481,7 +1515,7 @@ getToken().catch(() => {});   // Felet visas när någon faktiskt frågar.
     if (f !== cur) { cur = f; draw(f); }
     if (cur >= RING) fig.classList.add("pulse"); else if (cur < RING - 8) fig.classList.remove("pulse");
     const p = (shown - 1) / (N - 1); const z = 1 + 0.1 * p;
-    cv.style.transform = still.style.transform = `scale(${z.toFixed(3)}) translateY(${(-p * 2).toFixed(2)}%)`;
+    stage.style.transform = `scale(${z.toFixed(3)}) translateY(${(-p * 2).toFixed(2)}%)`;
     if (shown !== target) kick();
   }
   addEventListener("scroll", onScroll, { passive: true }); addEventListener("resize", onScroll);
