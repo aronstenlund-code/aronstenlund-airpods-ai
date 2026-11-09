@@ -48,7 +48,7 @@
 
 - [ ] **O12 – Jämför röstmodellerna** (effort: medium). Beror på: Kevins K14 punkt 1. Gör före O11.
   1. Välj 20 riktiga Lumen-svar på svenska ur D87-körningen (fakta, tal och årtal, namn, en lång förklaring). Läs igenom texterna innan något genereras, för att spara ElevenLabs-krediter.
-  2. Generera via `/tts` med `eleven_flash_v2_5`, `eleven_v4_turbo` och `eleven_multilingual_v2`, med samma röst.
+  2. Generera via `/tts` med `eleven_flash_v2_5`, `eleven_v4_turbo` och `eleven_multilingual_v2`, med samma röst. Jämför också dagens röst "Adam" med de svenska kandidatröster Kevin valt i K14, på den modell som vinner. Aron tycker att demoljudet låter riktigt dåligt, så det här är bråttom.
   3. Mät per modell:
      - tid till första ljud (p50/p90),
      - kostnad,
