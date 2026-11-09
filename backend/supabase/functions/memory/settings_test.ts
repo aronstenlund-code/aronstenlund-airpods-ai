@@ -50,3 +50,13 @@ Deno.test("K10.2-3 only the settings for this context; the profile is at most 30
   const many: Setting[] = Array.from({ length: 30 }, (_, i) => ({ key: "length", value: "shorter", scope: { subject: `Ämne nummer ${i}` } }));
   assert(profileOf(many).length <= 300);
 });
+
+Deno.test("K8 memory filter: study subjects are kept, the user's own sensitive facts are not", async () => {
+  const { parseMemoryReply } = await import("./handler.ts");
+  const keep = ["Har prov i religionskunskap fredag 13 november 2026.", "Vill ha långa förklaringar.", "Läser företagsekonomi.", "Pluggar partiklar i fysik.", "Har prov i religion på måndag."];
+  const drop = ["Är muslim.", "Har ADHD.", "Röstar på ett parti.", "Har studielån."];
+  const r = parseMemoryReply(JSON.stringify({ add: [...keep, ...drop].slice(0, 5) }), []);
+  for (const k of keep) assert(r.add.includes(k), k);
+  const r2 = parseMemoryReply(JSON.stringify({ add: drop }), []);
+  assertEquals(r2.add, []);
+});

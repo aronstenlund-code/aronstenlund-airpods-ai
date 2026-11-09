@@ -70,6 +70,7 @@ import { numbersToSpeech } from "./svnum.ts";
 import {
   detectDecline,
   FALLBACK_DECLINE,
+  filterReasons,
   FALLBACK_SUGGESTIONS,
   pickSuggestions,
   previewSuggestion,
@@ -1134,6 +1135,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                   rizzCount,
                 );
                 status = "filtered";
+                console.log(JSON.stringify({ event: "suggestions_filtered", ...filterReasons(rizzBuf) }));
               }
               if (ttftMs === null) ttftMs = now() - t0;
               metaMs = ttftMs;

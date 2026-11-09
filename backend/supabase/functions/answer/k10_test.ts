@@ -76,3 +76,37 @@ Deno.test("K10.2-3 only the settings for this context reach the model; the profi
   assert(seen[0].systemTail?.includes("kortare svar i biologi"));
   assert(!seen[0].system.includes("<user_profile>"), "the shared cached prompt is unchanged");
 });
+
+Deno.test("K8 interview: a situation question about alcohol is not a missing fact; only own claims are", async () => {
+  const { missingFact, claimsMissing } = await import("./interviewfacts.ts");
+  const setup = "Jobbannons: Kassapersonal på Systembolaget. CV: Gymnasieelev.";
+  assertEquals(missingFact("Hur skulle du hantera en full kund som vill köpa alkohol?", setup), null);
+  assertEquals(missingFact("Har du jobbat med alkohol förut?", setup), "alkohol");
+  assert(!claimsMissing("alkohol", "Jag nekar försäljning och kontrollerar alltid legitimation."));
+  assert(claimsMissing("alkohol", "Jag har jobbat med alkohol på en restaurang."));
+});
+
+Deno.test("K8 Rizz/Socialt: a no is a no only when the line is one (Oscar O7 D1-D3)", async () => {
+  const { isDecline } = await import("./rizz.ts");
+  for (const t of ["Jag ska gå på bio i helgen, gillar du film?", "Jag vill inte missa matchen ikväll, ska du kolla?", "Jag ska gå och hämta en drink, vill du ha något?", "Jag ska gå på konsert sen."]) {
+    assert(!isDecline(t), t);
+  }
+  for (const t of ["Nej tack.", "Jag måste gå nu, hej då!", "Sluta.", "Jag är inte intresserad.", "Jag vill inte.", "Lämna mig ifred"]) assert(isDecline(t), t);
+});
+
+Deno.test("K8 Rizz filters read words in context", async () => {
+  const { parseSuggestions } = await import("./rizz.ts");
+  assertEquals(parseSuggestions("Frukost på sängen är det bästa.\n"), ["Frukost på sängen är det bästa."]);
+  assertEquals(parseSuggestions("Simmar du bröstsim också?\n"), ["Simmar du bröstsim också?"]);
+  assertEquals(parseSuggestions("Du måste testa pizzan där.\n"), ["Du måste testa pizzan där."]);
+  assertEquals(parseSuggestions("Följ med upp i sängen.\n"), []);
+  assertEquals(parseSuggestions("Du måste följa med mig hem.\n"), []);
+});
+
+Deno.test("K8 texts: 'hur lyder', 'första versen', 'en rad ur' go to the text path; prices search shops", async () => {
+  const { needsText, needsWeb, webTools } = await import("./web.ts");
+  for (const f of ["hur lyder första versen av Du gamla du fria", "citera en rad ur Bohemian Rhapsody", "första versen av Vem kan segla"]) assert(needsText(f), f);
+  const w = needsWeb("vad kostar en iPhone 17 i Sverige");
+  assert(w?.price);
+  assert(JSON.stringify(webTools(w!)).includes("prisjakt.nu"));
+});

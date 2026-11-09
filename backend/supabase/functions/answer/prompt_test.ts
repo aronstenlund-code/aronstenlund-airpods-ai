@@ -102,8 +102,8 @@ Deno.test("all prompts carry the general principles and the no-filler rule", () 
     assertStringIncludes(p, "<commands>");
     assertStringIncludes(p, "continue_more");
   }
-  assert(SYSTEM_PROMPT.length < 13500); // D75 silence + misheard terms, D80 sound-alike terms (cached, so ~free)
-  assert(SYSTEM_PROMPT_DIRECT.length < 10200); // D80 sound-alike terms, 2026-11-08 clock + unknown words
+  assert(SYSTEM_PROMPT.length < 13700); // D75 silence + misheard terms, D80 sound-alike terms, K8 dose rule (cached, so ~free)
+  assert(SYSTEM_PROMPT_DIRECT.length < 10400); // D80 sound-alike terms, 2026-11-08 clock + unknown words, K8 dose rule
 });
 
 Deno.test("prompts contain no examples about the owner's secret test questions (hold-out rule)", () => {

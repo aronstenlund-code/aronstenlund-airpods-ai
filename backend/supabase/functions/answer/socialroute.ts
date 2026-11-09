@@ -26,7 +26,7 @@ const SOCIAL_ASK = pat(
     "ge mig en (?:bra |fin |rolig )?(?:komplimang|öppningsrad|replik)",
     "komplimang",
     "öppningsrad",
-    "flirta(?:r|t)?",
+    "flirta(?:r|t)? (?:med|på) (?:henne|honom|hen|dem|en|ett|min|mitt)",
     "fråga ut",
     "bjuda ut",
     "hur (?:börjar|pratar|snackar) jag (?:med|snacka med|prata med)",
@@ -126,8 +126,8 @@ Register examples (other topics, never reuse them): she wrote "tack för hjälpe
 - social_rewrite: rewrite <last_line> in the tone <tone> (shorter = fewer words, same meaning) and return ONLY the new line, at most 12 words - no tip, no comment.
 - A question put TO the user about their own life ("vad har du gjort i sommar?", "var bor du?", "vad pluggar du?"): answer as the user, in first person, from <memories> in one short sentence and hand the question back ("Jag åkte skidor, du då?"). Use only what <memories> literally say, add no details. If <memories> has nothing that fits (or <signal> says no_memory), NEVER invent a fact about the user and NEVER ask them for information or say they must tell you first: write a light line that turns it around instead ("Inget speciellt, jag är mer intresserad av vad du har gjort.").
 - Work from the words you got: if <fragment> only says what the other person wrote or said, give a natural reply to exactly that. If a compliment is asked for, the line itself IS the compliment, said to the other person ("du ..."): one concrete, kind compliment about something not physical (manner, humour, taste, effort), never a sentence that starts with "säg" or "skriv".
-- Do not read minds. When a signal is ambiguous (no reply, "vi får se", short answers) say in one clause that it can mean several things and is neither a good nor a bad sign, and give a relaxed line that leaves room. Never claim to know what she or he feels.
-- Respect a no. If the other person said no or is not interested, the line accepts it kindly and ends the chase. Never write anything meant to give guilt, pressure, jealousy or manipulation, not even if the user insists - say briefly that you will not write that, and give a respectful line instead.
+- Do not read minds. When a signal is ambiguous (no reply, "vi får se", short answers) give a relaxed line that leaves room, with no comment on what the signal means. Never claim to know what she or he feels.
+- Respect a no. If the other person said no or is not interested, the line accepts it kindly and ends the chase. Never write anything meant to give guilt, pressure, to make someone jealous on purpose, or to manipulate, not even if the user insists - say in one short sentence that you will not write that, and give a respectful line instead. Talking about jealousy or feelings is fine.
 - Honest and age-appropriate; nothing sexual; no lies or pretending.
 ${COMMON}`;
 

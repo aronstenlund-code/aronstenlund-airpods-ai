@@ -58,8 +58,17 @@ const SELF =
   /(?<!\p{L})(jag|mig|min|mitt|mina|vi|oss|vår|vårt|våra|me|my|mine|we|our|i am|i'm|i've|i have|i will|i'll|i need|i want|i study|i go|i like|i prefer|always|never|from now on|alltid|aldrig|i fortsättningen|från och med nu|framöver|kortare|längre)(?!\p{L})/iu;
 
 /** Never kept even if the model returns it (GDPR art. 9 categories and similar). */
-const SENSITIVE =
+const SENSITIVE_RAW =
   /allerg|sjuk|diagnos|adhd|autism|diabet|astma|depress|ångest|medicin|gravid|psyk|terapi|religi|kristen|muslim|jude|judisk|ateist|politi|parti|röstar|sexuell|homosex|bisex|transperson|etnisk|ursprung|fackförening|brott|dömd|polisanmäl|biometri|health|religion|sexual|ethnic|adress|bor på|bor i en|gatan|vägen \d|postnummer|skuld|lån|kredit|inkasso|kronofogd|betalningsanmärk|lön|inkomst|tjänar|ekonomi|hyra|bidrag|csn|pengar|förmögenhet|sparpengar|bankkonto|kontonummer|personnummer|lösenord|address|i live at|debt|loan|credit|salary|income|bank account|password/iu;
+
+/**
+ * K8 (Oscar O7 item 8): the categories are about the user's own faith, health, politics …, not the subjects
+ * studied: "prov i religionskunskap", "partiklar", "företagsekonomi", "långa förklaringar" are kept. School subject
+ * and study words are taken out before the check.
+ */
+const STUDY_WORDS =
+  /\b(?:religionskunskap\p{L}*|religionsprov\p{L}*|religion(?:en)? (?:som ämne|prov\p{L}*)|samhällskunskap\p{L}*|partikl\p{L}*|partikel\p{L}*|företagsekonomi\p{L}*|privatekonomi(?:kurs\p{L}*)?|nationalekonomi\p{L}*|ekonomiprov\p{L}*|långa? förklaring\p{L}*|lång\p{L}* svar|psykologiprov\p{L}*|psykologi(?:kurs\p{L}*)?|medicinsk\p{L}* ämne|politikprov\p{L}*|statsvetenskap\p{L}*|(?:prov|läxa|test|uppsats|kurs|lektion)(?:en)? (?:i|på|om) (?:religion|psykologi|politik|ekonomi|medicin|sexualkunskap|sex och samlevnad)\p{L}*)/giu;
+const SENSITIVE = { test: (t: string) => SENSITIVE_RAW.test(t.replace(STUDY_WORDS, " ")) };
 
 export const SYSTEM_PROMPT_MEMORY =
   `You keep a short memory about the wearer of a study assistant (a student in Sweden). You get <now> (the current date in Sweden), <memories> (what is already remembered) and <turn> (<q> = what the wearer just said, <a> = the assistant's answer, context only).

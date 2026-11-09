@@ -277,9 +277,9 @@ Deno.test("social prompt: line first, no mind reading, respects no, refuses mani
       "at most 12 words",
       "never a request for more context",
       "Do not read minds",
-      "neither a good nor a bad sign",
+      "with no comment on what the signal means", // K8 (Oscar O7 #24): no caveat
       "Respect a no",
-      "guilt, pressure, jealousy or manipulation",
+      "to make someone jealous on purpose, or to manipulate",
       "ONLY the new line",
       "nothing sexual",
       "as DIGITS",

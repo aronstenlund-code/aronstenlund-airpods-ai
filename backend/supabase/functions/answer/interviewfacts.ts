@@ -22,7 +22,9 @@ const TOPICS: Topic[] = [
   },
   {
     topic: "alkohol",
-    q: rx(String.raw`alkohol|<sprit>|<öl>|<vin>|drinkar|bartender|serveringstillstånd`),
+    // K8 (Oscar O7 I07): only a question about the user's own experience, never a situation question ("hur skulle
+    // du hantera en full kund som vill köpa alkohol" is about how you work, and the answer must say "neka")
+    q: rx(String.raw`<har du (?:jobbat|arbetat|erfarenhet|vana)(?: [\p{L}]+){0,3} (?:alkohol|sprit|öl|vin|bar|servering|bartender)|<dricker du>|serveringstillstånd|<har du (?:jobbat|arbetat) (?:i|på) (?:en )?bar>|<är du van vid (?:att )?(?:sälja|servera) (?:alkohol|öl|vin)`),
     known: rx(String.raw`alkohol|<sprit>|<öl>|<vin>|bartender|<bar>|serveringstillstånd|<krog|restaurang`),
   },
   {
@@ -50,7 +52,8 @@ export function missingFact(question: string, setup: string, memories: string[] 
 const CLAIM: Record<string, RegExp> = {
   körkort: rx(String.raw`körkort|<kör (?:bil|själv)>|<egen bil>`),
   ålder: rx(String.raw`<(?:jag är|jag har fyllt|jag fyllde|jag fyller)\s+(?:över\s+|under\s+)?${AGE_WORD}>|<år gammal>|<min ålder>`),
-  alkohol: rx(String.raw`alkohol|<sprit>|<öl>|<vin(?:er)?>|<drinkar>|legitimation`),
+  // K8: a claim of own experience, not a sentence that only names the word ("jag kontrollerar legitimation")
+  alkohol: rx(String.raw`<jag har (?:jobbat|arbetat|sålt|serverat|hållit på)(?: [\p{L}]+){0,2} (?:med |i |på )?(?:alkohol|sprit|öl|vin|bar)|<jag dricker>|<jag har serveringstillstånd>|<jag är van vid (?:att )?(?:sälja|servera)`),
   pendling: rx(String.raw`<jag bor>|<bor (?:i|på|nära)>|kollektivtrafik|<buss(?:en)?>|<tåg(?:et)?>|<cykl|<med bil>|<pendla`),
 };
 export function claimsMissing(topic: string, sentence: string): boolean {

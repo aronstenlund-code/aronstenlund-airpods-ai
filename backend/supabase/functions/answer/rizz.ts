@@ -45,7 +45,8 @@ Other: "Du hade inte ens fått upp kartongen." <count>2:
 The same with <count>3:
 1|Skruvar över betyder bara att hyllan har reservdelar.
 2|Hela kvällen? Då är det hyllan som har byggt dig.
-3|Kartongen och jag har en ömsesidig respekt.`;
+3|Kartongen och jag har en ömsesidig respekt.
+- When the other person asks for a joke ("berätta ett skämt", "säg något roligt"), the line IS a short, clean joke the user can tell right away, never a line about telling one.`;
 
 /** System prompt for Rizzläge (flirt) or Socialt läge (social); two cache-friendly static variants. */
 export function rizzSystemPrompt(style: SocialStyle): string {
@@ -54,14 +55,32 @@ export function rizzSystemPrompt(style: SocialStyle): string {
 export const SYSTEM_PROMPT_RIZZ = rizzSystemPrompt("social");
 export const SYSTEM_PROMPT_RIZZ_FLIRT = rizzSystemPrompt("flirt");
 
-const DECLINE =
-  /(?:^|[\s,.!?])(?:nej tack|nej,? nej|sluta|låt mig vara|lämna mig|jag vill inte|jag vill (?:inte )?prata om|inte intresserad|ointresserad|jag måste gå|jag ska gå|jag går nu|jag måste tyvärr|du är obehaglig|det är obekvämt|vill inte prata)(?=$|[\s,.!?])/iu;
 
-/** Did the other person's latest words signal no / leaving / discomfort? */
+/**
+ * Did the other person's latest words signal no / leaving / discomfort?
+ * K8 (Oscar O7, live 3/3: "Jag ska gå på bio i helgen, gillar du film?" -> "Okej, helt lugnt."): only when the
+ * line IS a no or a goodbye: the decline words open the line or a clause and nothing but a short end follows
+ * ("Nej tack.", "Jag måste gå nu, hej då!"), and never when a question or an invitation follows. Strong words
+ * ("sluta", "låt mig vara", "du är obehaglig") count anywhere.
+ */
+const DECLINE_STRONG =
+  /(?:^|[\s,.!?])(?:sluta|låt mig vara|lämna mig (?:ifred|i fred)|du är obehaglig|det är obekvämt|inte intresserad|ointresserad|nej,? nej)(?=$|[\s,.!?])/iu;
+const DECLINE_PART =
+  /^(?:nej tack|jag vill inte(?: prata(?: om det)?)?|vill inte prata(?: om det)?|jag måste gå|jag ska gå|jag går nu|jag måste tyvärr gå|nej)(?:\s+(?:nu|hem|härifrån|tyvärr|faktiskt|alltså|då|ändå))*$/iu;
+const GOODBYE = /^(?:hej då|hej|vi ses|ha det(?: bra)?|sorry|förlåt|tack|okej)$/iu;
+export function isDecline(line: string): boolean {
+  const t = line.trim();
+  if (!t) return false;
+  if (DECLINE_STRONG.test(t)) return true;
+  if (/\?/.test(t)) return false; // "…, gillar du film?" / "…, vill du ha något?" is an opening, not a no
+  // every clause is a no / a goodbye ("Nej tack, jag vill inte.", "Jag måste gå nu, hej då!"), and at least one is a no
+  const parts = t.split(/[,.!;]+/u).map((x) => x.trim()).filter(Boolean);
+  return parts.some((x) => DECLINE_PART.test(x)) && parts.every((x) => DECLINE_PART.test(x) || GOODBYE.test(x));
+}
 export function detectDecline(req: AnswerRequest): boolean {
   const lines = req.social?.transcript.filter((l) => l.speaker === "other") ?? [];
   const last = req.fragment || lines[lines.length - 1]?.text || "";
-  return DECLINE.test(last);
+  return isDecline(last);
 }
 
 // ---- D72: one suggestion by default; "ge mig tre pickup lines" asks for more (max 5) for one call ----
@@ -189,10 +208,11 @@ export function buildRizzUserMessage(req: AnswerRequest): string {
 }
 
 // ---- output handling ----
+// K8 (Oscar O7): words in context, so "frukost på sängen", "bröstsim" and "Du måste testa pizzan där" are kept
 const SEXUAL =
-  /(?:^|[^\p{L}])(?:knull\p{L}*|ligga med|sex(?:ig\p{L}*|uell\p{L}*|\s+med(?![\p{L}]))|naken|nakna|kåt\p{L}*|runk\p{L}*|bröst|rumpa|snygg(?:a|aste) kropp|sängen|ta med dig hem|hångl\p{L}*)(?![\p{L}])/iu;
+  /(?:^|[^\p{L}])(?:knull\p{L}*|ligga med|sex(?:ig\p{L}*|uell\p{L}*|\s+med(?![\p{L}]))|naken|nakna|kåt\p{L}*|runk\p{L}*|bröst(?:en)?(?![\p{L}])|rumpa|snygg(?:a|aste) kropp|(?:i|till|ner i|upp i) (?:min |din )?sängen|ta med dig hem|hångl\p{L}*)(?![\p{L}])/iu;
 const PRESSURE =
-  /(?:^|[^\p{L}])(?:var inte så blyg|du måste|kom igen då|du är skyldig|ångra dig inte|stanna kvar)(?![\p{L}])/iu;
+  /(?:^|[^\p{L}])(?:var inte så blyg|du måste (?:följa med|stanna|ge mig|komma hem|dricka|kyssa)|kom igen då|du är skyldig|ångra dig inte|stanna kvar(?! och prata))(?![\p{L}])/iu;
 
 export const MAX_WORDS = 10;
 /** Lines up to this length are used only when nothing within MAX_WORDS is left (D72). */
@@ -329,6 +349,20 @@ export function pickSuggestions(
 export const SOCIAL_COMEBACK = 4;
 
 /** Used when everything the model produced was filtered out: always safe, always speakable. */
+/** K8 (Oscar O7 S03): which filter removed the lines, for the log when the fallback line is used (no text logged). */
+export function filterReasons(raw: string): { lines: number; long: number; sexual: number; pressure: number; label: number } {
+  const r = { lines: 0, long: 0, sexual: 0, pressure: 0, label: 0 };
+  for (const line of raw.split(/\r?\n/)) {
+    const t = line.replace(/^\s*(?:\d+\s*\||[-*•]|\d+[.)])\s*/, "").trim();
+    if (!t) continue;
+    r.lines++;
+    if (wordCount(t) > SOFT_MAX_WORDS) r.long++;
+    if (SEXUAL.test(t)) r.sexual++;
+    if (PRESSURE.test(t)) r.pressure++;
+    if (SPEAKER_LABEL.test(t)) r.label++;
+  }
+  return r;
+}
 export const FALLBACK_SUGGESTIONS = ["Berätta mer om det.", "Hur har din dag varit?"];
 export const FALLBACK_DECLINE = ["Okej, helt lugnt.", "Vi tar det en annan gång."];
 
