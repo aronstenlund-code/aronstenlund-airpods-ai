@@ -8,7 +8,7 @@
 
 - [x] **O4 – Demosidan i Safari-motorn** (effort: low). _klar 2026-11-08 (Oscar): `reports/qa/2026-11-08-1835-oscar-o4-webkit.md`_ Ja från Deangelo: installera Playwrights WebKit (gratis nedladdning) och kör O2 igen i WebKit, mobil och dator. Budget 0,05 USD.
 
-- [ ] **O5 – Förhör mig utan upprepning, och omtest av K7** (effort: low). Beror på: Kevins K7. Kör ditt eget test med 6 frågor i rad och `already_asked` (ja från Deangelo). Testa sedan om fynd A–E, med samma fall och samma antal körningar som i O1. Budget 0,15 USD.
+- [~] pågår 2026-11-09 17:45 **O5 – Förhör mig utan upprepning, och omtest av K7** (effort: low). Beror på: Kevins K7. Kör ditt eget test med 6 frågor i rad och `already_asked` (ja från Deangelo). Testa sedan om fynd A–E, med samma fall och samma antal körningar som i O1. Budget 0,15 USD.
 
 **Ja från Deangelo 2026-11-09 16:15: kör hela O6 enligt ditt förslag under "Nästa" (budget 3 USD). Lägg också till ett fall per prov med en term längre än 20 tecken som kortas, så att det syns att Scribe överlever.**
 - [x] klar 2026-11-09 17:30 → `reports/qa/2026-11-09-1730-oscar-o6-hela.md` (pilot: `reports/qa/2026-11-08-2050-oscar-o6-pilot.md`); Arons inspelningar läggs till när de kommer **O6 – D88 ljuduppfattning utan telefon** (effort: high). Flyttad från Kevins K3. Du skriver bara i `scripts/qa/` och `reports/qa/`; ändra inte backend. Hittar du något som backend behöver ändra, skriv det under "Till Kevin" i rapporten. Budget: pilot högst 2 USD; fråga Deangelo i rapporten innan hela körningen. Gör O6 före O5.
