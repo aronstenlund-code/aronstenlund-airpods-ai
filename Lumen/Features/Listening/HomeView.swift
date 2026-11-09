@@ -13,6 +13,10 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 topBar
+                if model.problem == .microphoneDenied {
+                    // A12: a start that cannot get the microphone says so here (it did nothing before).
+                    ErrorCard(problem: .microphoneDenied) { ErrorCard.openSettings() }
+                }
                 if let nearest = plans.first {
                     examCard(nearest)
                     otherExams(Array(plans.dropFirst()))

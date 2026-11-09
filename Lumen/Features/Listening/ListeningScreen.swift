@@ -53,8 +53,8 @@ struct ListeningScreen: View {
             HStack(spacing: 12) {
                 IconButton(systemName: "chevron.left", label: "Tillbaka till start", background: LumenColor.background, action: onBack)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(title).font(LumenFont.text(18, .bold, relativeTo: .headline)).lineLimit(1)
-                    Text(subtitle).font(LumenFont.text(14, relativeTo: .subheadline)).foregroundStyle(LumenColor.muted).lineLimit(1)
+                    Text(title).font(LumenFont.text(18, .bold, relativeTo: .headline)).lineLimit(2).minimumScaleFactor(0.7)
+                    Text(subtitle).font(LumenFont.text(14, relativeTo: .subheadline)).foregroundStyle(LumenColor.muted).lineLimit(2).minimumScaleFactor(0.7)
                 }
                 .accessibilityElement(children: .combine)
                 Spacer(minLength: 0)

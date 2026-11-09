@@ -18,10 +18,12 @@ private struct ModeHeader: View {
                 .accessibilityHidden(true)
             Text(title)
                 .font(LumenFont.text(30, .bold, relativeTo: .largeTitle))
+                .fixedSize(horizontal: false, vertical: true) // A12: wraps, never "…"
                 .accessibilityAddTraits(.isHeader)
             Text(text)
                 .font(LumenFont.text(16))
                 .foregroundStyle(LumenColor.muted)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
@@ -121,18 +123,27 @@ struct AgeGateView: View {
     let onAnswer: (Bool) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        // A12: the age limit and what is stored must be readable in full before the button: the text scrolls and
+        // the sheet can grow (it was cut on the iPhone SE and at the largest text size).
+        ScrollView {
             ModeHeader(mode: .rizz, title: "Rizz är för 18 år och äldre",
                        text: "Frågan ställs en gång och sparas bara på den här telefonen.")
-            Spacer(minLength: 8)
-            Button("Jag är 18 år eller äldre") { onAnswer(true) }
-                .buttonStyle(LumenButtonStyle())
-            Button("Avbryt") { onAnswer(false) }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(24)
         }
-        .padding(24)
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: 12) {
+                Button("Jag är 18 år eller äldre") { onAnswer(true) }
+                    .buttonStyle(LumenButtonStyle())
+                Button("Avbryt") { onAnswer(false) }
+                    .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+            }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 16)
+            .background(LumenColor.background)
+        }
         .lumenScreen()
-        .presentationDetents([.medium])
+        .presentationDetents([.medium, .large])
         .interactiveDismissDisabled()
     }
 }

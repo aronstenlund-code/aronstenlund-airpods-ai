@@ -367,6 +367,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         await useMicrophone(for: mode)
         await controller.start()
         logMicrophone()
+        if !isListening, case .error(let message) = state, message.localizedCaseInsensitiveContains("permission") {
+            problem = .microphoneDenied // A12: shown on Start as well, not only on the first-question screen
+        }
     }
 
     /// Selects the microphone for `mode`. A running session moves to the new route at once (D55).
@@ -1760,7 +1763,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         } else {
             await toggleSelectedMode()
         }
-        showsListeningScreen = true
+        // A12: without the microphone Start stays, with the card that says why and opens Settings.
+        showsListeningScreen = problem != .microphoneDenied || isActiveSession
     }
 
     /// "Byt läge": the same checks as the screen and the voice; listening goes on.

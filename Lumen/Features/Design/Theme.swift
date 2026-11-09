@@ -156,6 +156,9 @@ struct LumenButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(LumenFont.text(18, .semibold, relativeTo: .headline))
+            .lineLimit(2)
+            .minimumScaleFactor(0.7)
+            .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity, minHeight: height)
             .padding(.horizontal, 12)
             .foregroundStyle(foreground)
@@ -217,8 +220,9 @@ struct ModeCircle: View {
                 Text(mode.shortName)
                     .font(LumenFont.text(14, .medium, relativeTo: .caption))
                     .foregroundStyle(LumenColor.ink)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.6)
+                    .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity, minHeight: 44)
         }

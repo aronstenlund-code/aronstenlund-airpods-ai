@@ -60,23 +60,26 @@ struct FirstStartView: View {
 struct IntroView: View {
     let onStart: () -> Void
     @State private var isReadingMore = false
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 // The photo (a student with AirPods at a desk with a squared notebook, phone out of sight) needs a
                 // freely licensed picture; until then the squared paper and the listening rings stand in for it.
-                ZStack {
-                    GridPaper(cornerRadius: 0)
-                    VStack(spacing: 14) {
-                        ListeningRings(size: 96)
-                        Image(systemName: "airpods")
-                            .font(.system(size: 34, weight: .regular))
-                            .foregroundStyle(LumenColor.muted)
+                if !typeSize.isAccessibilitySize { // A12: the picture gives way to the text at the largest sizes
+                    ZStack {
+                        GridPaper(cornerRadius: 0)
+                        VStack(spacing: 14) {
+                            ListeningRings(size: 96)
+                            Image(systemName: "airpods")
+                                .font(.system(size: 34, weight: .regular))
+                                .foregroundStyle(LumenColor.muted)
+                        }
                     }
+                    .containerRelativeFrame(.vertical) { height, _ in min(300, height * 0.3) } // smaller on the SE
+                    .accessibilityHidden(true)
                 }
-                .frame(height: 300)
-                .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: 14) {
                     HStack(spacing: 8) {
@@ -93,8 +96,8 @@ struct IntroView: View {
                     consentCard
                 }
                 .padding(.horizontal, 24)
-                .padding(.top, 28)
-                .padding(.bottom, 12)
+                .padding(.top, typeSize.isAccessibilitySize ? 64 : 28)
+                .padding(.bottom, 28) // "Läs mer" stays clear of the bar
             }
         }
         .sheet(isPresented: $isReadingMore) {
@@ -108,10 +111,12 @@ struct IntroView: View {
                 Button("Testa nu", action: onStart)
                     .buttonStyle(LumenButtonStyle())
                     .accessibilityHint("Godkänner punkterna ovan och startar mikrofonen")
-                // The consent sentence sits at the button, so it is always on screen (A2 screenshots).
-                Text("Genom att trycka Testa nu godkänner du punkterna ovan. Inget konto.")
+                // A12: what the user agrees to sits at the button, so it is on screen when they press it, on every
+                // iPhone and text size (the card above can scroll away on the SE).
+                Text("Genom att trycka Testa nu godkänner du att Lumen lyssnar bara när du har startat den, att du alltid ser när den lyssnar och att ljud inte sparas. Inget konto.")
                     .font(LumenFont.text(14, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 16)
