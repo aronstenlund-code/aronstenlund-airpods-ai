@@ -4,7 +4,7 @@
   "width": 480,
   "height": 700,
   "fps_source": 24,
-  "background": "transparent",
+  "background": "vit (#FFFFFF), inte frilagd: friläggningen gav fladdrande kanter och ljus mellan finger och öra",
   "bad_rest_frames": [
     [
       22,
@@ -34,6 +34,6 @@
     "note": "ungefärlig position i bildruta 1, i 480x700-koordinater; Kelly justerar"
   },
   "mobile": "alla 60 bilder (step 2) på både mobil och dator",
-  "source": "Gemini Omni 1.2 Flash, 9:16, frilagd med rembg isnet-general-use; se docs/marketing/karaktar.md",
+  "source": "Gemini Omni 1.2 Flash, 9:16, originalbildrutor beskurna till 480x700; se docs/marketing/karaktar.md",
   "frames_present": "udda nummer 001–119 (60 bilder); jämna saknas för att hålla site/ under 2 MB"
 }

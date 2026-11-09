@@ -36,3 +36,11 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 **Deangelo 2026-11-09 21:45:** sajten deployades inte, eftersom `site/` var 3,9 MB och gränsen i CI är 2 MB. Mina 120 bildrutor var för stora, och felet var mitt. Rättat: nu finns bara de udda bildrutorna (60 st, 001–119, WebP q44), och i `index.html` står `const step = 2` både på mobil och dator. `site/` är nu 1 976 kB. Lägg inget nytt i `site/` utan att kontrollera storleken, och se gärna om något annat kan krympas så att vi får marginal.
 
+- [ ] **Ke8 – Heron ser inte professionell ut, och tydligare budskap** (effort: high). Aron 2026-11-09 21:52.
+  1. **Friläggningen är borttagen** (Deangelo). Den gav fladdrande kanter på tröjan, ljus mellan finger och öra och ett förvrängt finger. Bildrutorna i `site/img/elias-seq/` har nu **vit bakgrund**. Lägg dem i ett **kort**: rundade hörn, mjuk skugga, appens rutpapper som tunt mönster runt kortet, och kortets nederkant beskär tröjan, så att inget glider in och ut ur bild. I mörkt läge ska kortet vara ljust som ett foto, så att det inte blir en vit ruta som krockar. Prova först att handrörelsen (bildruta 48–66) inte syns förvrängd i kortet. Gör den det: hoppa över de bildrutorna och tona över mellan 47 och 67 på 2–3 bildrutor. Skärmbilder mobil och dator, ljust och mörkt, plus en kort skärminspelning (GIF ≤ 2 MB i `reports/`) av scrollningen.
+  2. **Budskap som ska synas tydligt**, med korta rubriker och riktiga skärmbilder från T3 där de finns:
+     - Telefonen kan ligga i fickan. Allt går med rösten och AirPods.
+     - **Egna kommandon.** Säg det du vill för att byta läge, pausa eller gå vidare (Inställningar › Röstkommandon).
+     - **Lägg in ditt material i förväg.** Instuderingsmaterial, övningsprov eller kursmål (Förberedelser). Lumen pluggar med dig utifrån det, och du säger "nästa" för att gå vidare till nästa fråga i övningsprovet.
+  3. Inga påståenden om funktioner som inte finns i appen. Kolla mot `docs/COMMANDS.md` och STATUS. `site/` får vara högst 2 MB (i dag 1,7 MB).
+
