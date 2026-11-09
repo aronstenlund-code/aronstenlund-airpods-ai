@@ -65,3 +65,12 @@
   Budget 0,60 USD.
 
 - [ ] **O14 – Oberoende test av K11 (inga anrop som hänger, stump, citat)** (effort: medium). Gör nu, medan O12 väntar på K14. Kevin rapporterar 0/10 Provläge-svar över 8 s (första text max 4,5 s), stump 0/6 och Strindberg-citatet 5/5 inte påhittat. Gör 20 egna Provläge-fall (blanda tänkande/textuppgifter och vanliga), 6 fall med en mening som filtreras bort, och 5 citatfall från andra författare. Krav: inget svar över 8 s till första text, ingen stump, inga påhittade citat. Mät också 429 vid täta anrop (underlag för K12). Budget 0,40 USD.
+
+- [ ] **O15 – Verklighetsbanken: som riktiga användare faktiskt pratar** (effort: high). Aron 2026-11-09 22:44: "testning är A och O". Gör efter O14 och O12. Bygg minst 200 nya fall som Kevin aldrig sett, i alla lägen (mest Frågor och Provläge), uppdelat i grupper:
+  1. Bara nyckelord ("fotosyntes", "andra världskriget orsaker", "derivata x i kvadrat").
+  2. Felformulerade och halva frågor, omtag mitt i ("vad är den där… alltså grejen i cellen som gör energi").
+  3. Hörfel som Scribe faktiskt gör (sär- och felskrivna ämnesord, ord som låter lika).
+  4. Talspråk, slang, svengelska, förkortningar, dialektord ("asså", "typ", "vad e grejen me").
+  5. Lärarfrågor från ett klassrum, frågor till en kompis, och sådant som inte är frågor alls (Lumen ska vara tyst).
+  6. Konstiga och oväntade saker en 15–17-åring kan säga: skämt, test av Lumen, flera frågor i ett, frågor om Lumen själv.
+  Tänk utanför boxen: hitta fallen som får Lumen att missförstå. Kör mot live med `meta` och svar, gradera "förstod rätt", "svarade rätt", "tyst när den skulle". Siffror per grupp, de 20 värsta fallen ordagrant, allt under "Till Kevin". Banken sparas i `scripts/qa/` så att den kan köras igen. Budget 1,50 USD.

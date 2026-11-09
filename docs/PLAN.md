@@ -20,7 +20,7 @@ Så många sessioner som möjligt jobbar samtidigt. Är kön tom tar sessionen s
 | Angela | Gör appen enklare: kortare väg från start till första svar, färre knappar per skärm, avancerat bakom Inställningar. |
 | Kevin | K4-loopen: kör eval, rätta det sämsta fallet, mät igen. |
 | Kelly | Demosidan och appen ska se ut som samma produkt: förbättra sidan, och skriv designunderlag för appen i `docs/design/` som Angela bygger. |
-| Oscar | Oberoende test av den senaste klara K-punkten som saknar O-punkt. |
+| Oscar | Oberoende test av den senaste klara K-punkten som saknar O-punkt, annars väx verklighetsbanken (O15): fler kreativa, felformulerade och verkliga fall. |
 | Toby | Omtest av den senaste klara A-punkten, annars förstagångsanvändaren i simulatorn. |
 Fokus för allt som syns: **lätt att förstå, lätt att komma igång, aldrig överväldigande, en tydlig väg framåt.**
 
