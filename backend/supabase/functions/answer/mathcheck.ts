@@ -113,3 +113,18 @@ export function computeMath(fragment: string): Computed | null {
     text: `${polyText(L)} = ${polyText(R)} ger x = ${fmtNumber(exact ? x : Math.round(x * 1e4) / 1e4)}${exact ? "" : " (avrundat)"} (beräknat i kod)`,
   };
 }
+
+/**
+ * K7.6 (Aron's phone test 2026-11-08 21:22, Lisa/Tom in the K7 run): a spoken word or logic problem: a question
+ * about an unknown quantity (age, distance, time, price, when or how it is possible) in a sentence that also gives
+ * numbers or a comparison. Such a question is answered with thinking on, so the answer is worked out before the
+ * first sentence.
+ */
+const WP_ASK =
+  /(?:^|[\s,])(?:hur (?:gammal|gamla|långt|lång tid|många|mycket|kan det|snabbt|stor)|vad kostar|när (?:är|möts|kommer|hinner)|hur kan det komma sig|vem (?:vinner|kommer först))(?=[\s,?]|$)/iu;
+const WP_DATA =
+  /\d|(?:^|\s)(?:en|ett|två|tre|fyra|fem|sex|sju|åtta|nio|tio|tjugo|trettio|fyrtio|femtio|hundra|tusen|halv|halva|dubbelt|hälften|tredjedel|fjärdedel|procent)(?=[\s,.?]|$)/iu;
+export function isWordProblem(fragment: string): boolean {
+  const f = fragment.trim();
+  return f.split(/\s+/).length >= 8 && WP_ASK.test(f) && WP_DATA.test(f);
+}

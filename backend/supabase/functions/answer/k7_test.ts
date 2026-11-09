@@ -85,3 +85,34 @@ Deno.test("K2 '3x' in an equation is 'tre x' also in words and at the end of a s
   assert(beforeNumbers("Ta tabletten 3x per dag.").includes("3 gånger"));
   assert(beforeNumbers("Laddningen går 2x snabbare.").includes("2 gånger"));
 });
+
+Deno.test("K7.6 a word problem is recognised (thinking on), a term or a plain question is not", async () => {
+  const { isWordProblem } = await import("./mathcheck.ts");
+  for (
+    const f of [
+      "Lisa är dubbelt så gammal som Tom om tre år är de tillsammans trettio år hur gammal är Tom",
+      "Anna och Fredrik går hem till varandra Anna går dubbelt så snabbt som Fredrik men de möttes ändå halvvägs hur kan det komma sig",
+      "ett tåg kör i nittio kilometer i timmen i två och en halv timme hur långt kör det",
+      "en tröja kostar 400 kronor och sänks med 25 procent och höjs sedan med 25 procent vad kostar den",
+    ]
+  ) assert(isWordProblem(f), f);
+  for (const f of ["fotosyntes", "vad är en derivata", "hur gammal är jorden", "hur många kromosomer har en människa"]) {
+    assert(!isWordProblem(f), f);
+  }
+});
+
+Deno.test("K7 a relation tag the model writes unasked is never read aloud", () => {
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true });
+  const out = (p.push("[[RELATION: newtopic]]\n\nKedjeregeln är en regel.") + p.finish()).trim();
+  assertEquals(out, "Kedjeregeln är en regel.");
+});
+
+Deno.test("K7 'Frågan kan tolkas på två sätt' is never said", () => {
+  const out = run(["Frågan kan tolkas på två sätt, men det naturliga är att Lisa är dubbelt så gammal nu. ", "Då är Tom åtta år."]);
+  assert(!/tolkas/.test(out), out);
+});
+
+Deno.test("K7 Swedish letters at a word end: 'på den nivå', 'Då …' after a drop", () => {
+  assert(isLevelMeta("Jag förklarar det på en enkel nivå så att det går att följa."));
+  assertEquals(fixStump("Då lärde jag mig att kontrollera."), "");
+});

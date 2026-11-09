@@ -116,8 +116,9 @@ export class SummaryTap {
 export type Relation = "continues" | "refines" | "new_topic";
 export const RELATIONS: readonly Relation[] = ["continues", "refines", "new_topic"];
 export function parseRelation(v: unknown): Relation | null {
-  const t = typeof v === "string" ? v.toLowerCase().replace(/[^a-z_]/g, "") : "";
-  return RELATIONS.find((r) => r === t) ?? null;
+  const t = typeof v === "string" ? v.toLowerCase().replace(/[^a-z_]/g, "").replace(/^ation_?/, "") : "";
+  // K7: Sonnet writes "[[RELATION: newtopic]]" as well as "[[REL new_topic]]"
+  return RELATIONS.find((r) => r === t || r.replace(/_/g, "") === t) ?? null;
 }
 
 /**
@@ -129,8 +130,10 @@ export class RelationTap {
   private buf = "";
   private strip = false; // drop the whitespace between the tag and the answer, across chunks
   private decided: boolean;
-  constructor(enabled: boolean) {
-    this.decided = !enabled;
+  constructor(private readonly enabled: boolean) {
+    // K7 (Sonnet): the model can write the tag even when none was asked for ("[[RELATION: newtopic]]" was read
+    // aloud): a leading tag is always split off; its value is used only when it was asked for
+    this.decided = false;
   }
   push(text: string): string {
     if (this.decided) {
@@ -149,7 +152,7 @@ export class RelationTap {
     if (!t.toUpperCase().startsWith(open)) return this.release();
     const end = t.indexOf("]]");
     if (end === -1) return t.length > 40 ? this.release() : "";
-    this.relation = parseRelation(t.slice(open.length, end));
+    if (this.enabled) this.relation = parseRelation(t.slice(open.length, end));
     this.decided = true;
     this.strip = true;
     this.buf = "";
@@ -535,6 +538,8 @@ const INPUT_META = new RegExp(
     // K7.7 (Oscar O6, noisy input): "Jag hör inget nytt att svara på, så jag håller mig tyst.", "Det här är bara ett
     // skärmljud.", "Säg gärna en fråga …", "Det verkar vara tre olika saker, så jag tar …"
     String.raw`\bjag (?:hör|uppfattar|hittar) (?:inget|ingenting|inte något|ingen)\b`,
+    // K7 run (Lisa/Tom): "Frågan kan tolkas på två sätt, men det naturliga är att …"
+    String.raw`^(?:frågan|uppgiften|det) kan (?:tolkas|läsas|förstås) (?:på|som)(?![\p{L}])`,
     String.raw`\b(?:jag )?håller (?:mig|jag mig) tyst\b|\bjag (?:är|förblir) tyst\b|\bså jag säger (?:inget|ingenting)\b`,
     String.raw`\b(?:bara|endast|nog|troligen|antagligen) (?:ett |en )?(?:skärmljud|ljud|brus|bakgrundsljud|bakgrundsprat|prat i bakgrunden|ljudeffekt|ljudklipp|reklam)\b`,
     String.raw`\bsäg gärna (?:en |ett |vad |vilket |din |ditt )`,
@@ -603,7 +608,7 @@ export function isReasoningMeta(sentence: string, heard: string): boolean {
 const LEVEL_GRADE =
   /(?<![\p{L}])(?:åk|årskurs|årskursen)\s*(?:[0-9]|sex|sju|åtta|nio)|(?<![\p{L}])(?:grundskole|gymnasie|högstadie|mellanstadie|universitets|högskole)nivå|\bkursplan(?:en)?\b|\bläroplan(?:en)?\b|\bcentrala innehållet\b|\bkunskapskrav(?:en)?\b/iu;
 const LEVEL_SELF =
-  /\b(?:på|för) (?:den|din|er|rätt|denna|en enkel|en enklare|grundläggande) nivå(?:n)?\b|(?:förklarar|tar|visar|beskriver|håller) jag (?:bara |det |den |enkelt |här )*(?:idén|grunden|det enkelt|enkelt)\b|\bjag (?:förklarar|tar|visar|håller) (?:bara |det |den )*(?:idén|grunden|det enkelt|enkelt)\b|\bhär är (?:den |själva )?(?:enkla |grundläggande |övergripande )?idén\b|\b(?:inte|inget) (?:något )?(?:du|ni|man|eleven) (?:behöver|ska) (?:kunna|räkna|lära)|\bhör (?:till|hemma i) (?:gymnasiet|gymnasiets|högstadiet|grundskolan|universitetet|högskolan)\b|\b(?:ingår|finns) (?:inte )?i (?:gymnasiets|grundskolans|högstadiets) (?:matte|matematik|kurs|kurser)\b|\b(?:i|på) (?:gymnasiet|grundskolan|högstadiet) (?:lär|läser|räknar|tänker|möter) (?:man|du|ni)\b|\bså jag förklarar\b/iu;
+  /\b(?:på|för) (?:den|din|er|rätt|denna|en enkel|en enklare|grundläggande) nivå(?:n)?(?![\p{L}])|(?:förklarar|tar|visar|beskriver|håller) jag (?:bara |det |den |enkelt |här )*(?:idén|grunden|det enkelt|enkelt)\b|\bjag (?:förklarar|tar|visar|håller) (?:bara |det |den )*(?:idén|grunden|det enkelt|enkelt)\b|\bhär är (?:den |själva )?(?:enkla |grundläggande |övergripande )?idén\b|\b(?:inte|inget) (?:något )?(?:du|ni|man|eleven) (?:behöver|ska) (?:kunna|räkna|lära)|\bhör (?:till|hemma i) (?:gymnasiet|gymnasiets|högstadiet|grundskolan|universitetet|högskolan)\b|\b(?:ingår|finns) (?:inte )?i (?:gymnasiets|grundskolans|högstadiets) (?:matte|matematik|kurs|kurser)\b|\b(?:i|på) (?:gymnasiet|grundskolan|högstadiet) (?:lär|läser|räknar|tänker|möter) (?:man|du|ni)\b|\bså jag förklarar\b/iu;
 export function isLevelMeta(sentence: string): boolean {
   const t = sentence.trim();
   return !!t && (LEVEL_GRADE.test(t) || LEVEL_SELF.test(t));
@@ -629,7 +634,7 @@ export function rewriteLevelMeta(sentence: string): string {
  * ("Där lärde jag mig …", "A syntes är …"). A stray single capital letter before a lower-case word is removed; a
  * sentence that opens with a word pointing back at the dropped one is dropped as well.
  */
-const STUMP_BACKREF = /^\s*(?:där|därför|dessutom|alltså|också|då|sedan|därefter|annars|ändå|det vill säga|med andra ord)\b(?![-])/iu;
+const STUMP_BACKREF = /^\s*(?:där|därför|dessutom|alltså|också|då|sedan|därefter|annars|ändå|det vill säga|med andra ord)(?![\p{L}-])/iu;
 export function fixStump(sentence: string): string {
   if (!sentence.trim()) return sentence;
   if (STUMP_BACKREF.test(sentence)) return "";

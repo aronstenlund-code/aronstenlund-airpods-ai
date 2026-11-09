@@ -414,8 +414,12 @@ Deno.test("D53: text without a tag passes through untouched; disabled tap is a n
   assertEquals(t.relation, null);
   const t2 = new RelationTap(true);
   assertEquals(t2.push("[[") + t2.finish(), "[[");
+  // K7: a tag the model writes unasked is split off too, but its value is not used
   const off = new RelationTap(false);
-  assertEquals(off.push("[[REL continues]] x"), "[[REL continues]] x");
+  assertEquals(off.push("[[REL continues]] x") + off.finish(), "x");
+  assertEquals(off.relation, null);
+  const plain = new RelationTap(false);
+  assertEquals(plain.push("Hej, så är det.") + plain.finish(), "Hej, så är det.");
   assertEquals(parseRelation("Refines"), "refines");
   assertEquals(parseRelation("nonsense"), null);
   assertStringIncludes(RELATION_RULE, "[[REL new_topic]]");

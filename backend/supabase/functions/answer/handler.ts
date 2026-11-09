@@ -14,7 +14,7 @@ import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
-import { computeMath } from "./mathcheck.ts";
+import { computeMath, isWordProblem } from "./mathcheck.ts";
 import { missingFact, missingFactNote } from "./interviewfacts.ts";
 import { nowContext } from "./datecalc.ts";
 import { categorize } from "./category.ts";
@@ -631,6 +631,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const isRizz = plan?.kind === "rizz" || textReq;
       // D87: Provläge can run on its own model (TUTOR_MODEL); the measured choice is in DECISIONS D87
       const tutorModel = !isRizz && tutor && !plan && !demo && cfg.tutorModel ? cfg.tutorModel : undefined;
+      // K7.6: a word or logic problem in Provläge gets the model's thinking (it said "Tom är nio" before working
+      // out eight); everything else keeps thinking off for the first word
+      const wordProblem = !!tutorModel && isWordProblem(body.fragment);
       const modelUsed = isRizz ? (cfg.rizzModel ?? provider.model) : tutorModel ?? provider.model;
       const priceIn = isRizz
         ? (cfg.rizzPriceInPerMTok ?? cfg.priceInPerMTok)
@@ -753,7 +756,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
-          ...(tutorModel ? { model: tutorModel, noThinking: true } : {}),
+          ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem } : {}),
           signal: ac.signal,
         })[Symbol.asyncIterator]();
       const firstP = iterator.next().then((r) => {
@@ -971,7 +974,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 cacheSystem: true,
                 tools,
                 ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
-                ...(tutorModel ? { model: tutorModel, noThinking: true } : {}),
+                ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem } : {}),
                 signal: ac2.signal,
               })[Symbol.asyncIterator]();
               post = new AnswerPost({
