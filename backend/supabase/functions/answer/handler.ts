@@ -648,9 +648,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D46 item 8: web search/fetch only when the question needs it, and only within the caps.
       // D84: a song, a poem or a quote gets its own search and rules (traditional texts in full).
       const textReq = !demo && !plan && !computed && body.mode !== "interview_prep" && needsText(body.fragment);
-      // K8 (Oscar O7 W1): Auto (hands-free Frågor) searches too, but only for a price or availability question
-      const need0 = !textReq && !demo && !plan && !computed && body.mode !== "interview_prep" ? needsWeb(body.fragment) : null;
-      const need = need0 && (body.mode !== "auto" || need0.price) ? need0 : null;
+      // K8 (Oscar O7 W1): prices search shops; not in Auto: there the web tools made the meta step call the price
+      // question "not a question" (empty answer live), worse than the answer without a price
+      const need =
+        !textReq && !demo && !plan && !computed && body.mode !== "auto" && body.mode !== "interview_prep"
+          ? needsWeb(body.fragment)
+          : null;
       let webOn = false;
       let webNote: string | undefined;
       let textOn = false;
