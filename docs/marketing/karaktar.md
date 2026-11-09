@@ -2,6 +2,8 @@
 
 Samma person i intro, annonser och på demosidan. Han är påhittad och AI-genererad, och är ingen verklig person. Använd alltid **referensbilden** (`docs/marketing/elias-referens.png` när den finns) som bildreferens vid generering, så att ansiktet blir detsamma.
 
+**Stil (Deangelo 2026-11-09, efter Arons test): illustrerad, inte fotorealistisk.** Handritad bläcklinje med flata färgfält, som en teckning i ett anteckningsblock som fått liv. Det matchar appens handstil och rutpapper, ser inte "AI-foto" ut och blir lättare att hålla lika mellan bilder.
+
 **Utseende**
 - 17 år, svensk gymnasieelev i årskurs 2.
 - Mörkblont, lätt vågigt hår, kort i sidorna och lite längre ovanpå, en lugg som faller åt sidan.
@@ -17,13 +19,13 @@ Samma person i intro, annonser och på demosidan. Han är påhittad och AI-gener
 - Ljust dagsljus från vänster och mjuka skuggor.
 - Bakgrund: vit med svagt ljusblått rutnät (#D9E3F0), som rutat mattepapper.
 - Accentfärg i detaljer: kungsblå #2346C8, till exempel en penna, ett anteckningsblock eller ringarna från hörluren.
-- Kortare skärpedjup. Kameran i ögonhöjd, nära.
+- Kameran i ögonhöjd, nära.
 
 **Varumärkets rörelse**
 - Tre tunna kungsblå ringar (#2346C8) sprids ut från hörluren när han trycker på den. Det är Lumens logga.
 
-## Grundprompt (engelska, för bildmodeller)
+## Grundprompt (engelska, för bild- och videomodeller)
 
 ```
-Photorealistic portrait of "Elias", a fictional 17-year-old Swedish high-school student: dark-blonde slightly wavy hair, short on the sides and a bit longer on top with a side-swept fringe, fair skin with a few light freckles across the nose, green-grey eyes, clean-shaven, calm focused expression with a slight smile. He wears an oversized navy (#18213A) crew-neck college sweatshirt with a white t-shirt edge at the collar, no logos, text or jewellery. A generic white wireless earbud (no logo, not any specific brand) in his right ear; his right index fingertip rests lightly on it. Soft daylight from the left, clean white background with a faint light-blue (#D9E3F0) grid like math paper. Close-up, eye level, shallow depth of field. Vertical 9:16, no text.
+Editorial illustration of "Elias", a fictional 17-year-old Swedish high-school student, drawn in confident hand-inked navy (#18213A) line art with flat colour fills and subtle paper texture, like a sketch in a school notebook come to life. Dark-blonde slightly wavy hair with a side-swept fringe, a few freckles, calm focused expression with a slight smile. Oversized navy crew-neck college sweatshirt with a white t-shirt edge at the collar, no logos or text. A simple white wireless earbud (no logo, not any specific brand) in his right ear; his right index fingertip rests lightly on it. Background: white paper with a faint light-blue (#D9E3F0) math grid. Only accent colour royal blue (#2346C8). Clean, minimal, friendly, premium. Head and shoulders, eye level. Vertical 9:16, no text.
 ```
