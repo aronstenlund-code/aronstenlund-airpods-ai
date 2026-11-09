@@ -3342,5 +3342,1061 @@
 ]
 }
 ]
+},
+{
+"id": "k9-example-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "Lumen, ge ett exempel",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"exempel",
+"till exempel",
+"som",
+"när"
+]
+}
+]
+},
+{
+"id": "k9-example-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "kan du ge mig ett exempel tack",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"exempel",
+"till exempel",
+"som",
+"när"
+]
+}
+]
+},
+{
+"id": "k9-example-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "har du något exempel?",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"exempel",
+"till exempel",
+"som",
+"när"
+]
+}
+]
+},
+{
+"id": "k9-summary-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "sammanfatta det viktigaste",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"fotosyntes",
+"socker",
+"ljus"
+]
+}
+]
+},
+{
+"id": "k9-summary-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "Lumen, summera",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"fotosyntes",
+"socker",
+"ljus"
+]
+}
+]
+},
+{
+"id": "k9-summary-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "vad är det viktigaste",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"fotosyntes",
+"socker",
+"ljus"
+]
+}
+]
+},
+{
+"id": "k9-a_level-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "förklara på a-nivå",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"kloroplast",
+"klorofyll",
+"glukos",
+"socker"
+],
+"forbid_any": [
+"a-nivå",
+"ett a-svar"
+]
+}
+]
+},
+{
+"id": "k9-a_level-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "Lumen, som ett A-svar",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"kloroplast",
+"klorofyll",
+"glukos",
+"socker"
+],
+"forbid_any": [
+"a-nivå",
+"ett a-svar"
+]
+}
+]
+},
+{
+"id": "k9-a_level-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "hur får jag ett A på det här",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"kloroplast",
+"klorofyll",
+"glukos",
+"socker"
+],
+"forbid_any": [
+"a-nivå",
+"ett a-svar"
+]
+}
+]
+},
+{
+"id": "k9-harder_question-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "ställ en svår fråga",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-harder_question-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "Lumen, en svårare fråga",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-harder_question-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "utmana mig",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-quick_quiz-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "snabbförhör",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-quick_quiz-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "ge mig fem snabba frågor",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-quick_quiz-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "Lumen, kör fem frågor i rad",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-yes_no_quiz-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "ja eller nej frågor",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-yes_no_quiz-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "ställ ja nej frågor",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-yes_no_quiz-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "förhör mig med ja och nej",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-quiz_topic-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "förhör mig på cellandning",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-quiz_topic-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "Lumen, testa mig om klorofyll",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-quiz_topic-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "fråga ut mig om kloroplaster",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-weak_areas-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "testa mina svagaste områden",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-weak_areas-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "vad kan jag sämst",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-weak_areas-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "vad behöver jag öva mer på",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-self_assessment-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "hur bra kan jag det här",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer"
+}
+]
+},
+{
+"id": "k9-self_assessment-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "Lumen, hur ligger jag till",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer"
+}
+]
+},
+{
+"id": "k9-self_assessment-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "kan jag det här?",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer"
+}
+]
+},
+{
+"id": "k9-careful-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "var säker",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"ttft_budget_ms": 9000
+}
+]
+},
+{
+"id": "k9-careful-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "Lumen, dubbelkolla det",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"ttft_budget_ms": 9000
+}
+]
+},
+{
+"id": "k9-careful-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "är du säker på det?",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"ttft_budget_ms": 9000
+}
+]
+},
+{
+"id": "k9-brief_style-1",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "hjälp mig diskret",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer"
+}
+]
+},
+{
+"id": "k9-brief_style-2",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "kort och diskret",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer"
+}
+]
+},
+{
+"id": "k9-brief_style-3",
+"cat": "kommando",
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+}
+],
+"turns": [
+{
+"q": "bara en mening",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer"
+}
+]
+},
+{
+"id": "k9-ih-professional-1",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "hjälp mig svara professionellt",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-professional-2",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "vad borde jag säga",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-professional-3",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "Lumen, vad ska jag säga",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-better-1",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "ge mig ett bättre svar",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-better-2",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "gör svaret bättre",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-better-3",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "förbättra det",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-confident-1",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "mer självsäkert",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-confident-2",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "låt mer säker",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-confident-3",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "mer övertygande",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-counter_question-1",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "ge mig en motfråga",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true,
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-ih-counter_question-2",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "vad kan jag fråga tillbaka",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true,
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-ih-counter_question-3",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "en bra fråga att ställa",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true,
+"allow_question": true
+}
+]
+},
+{
+"id": "k9-ih-stuck-1",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "hjälp, jag fastnar",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-stuck-2",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "jag har fastnat",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-ih-stuck-3",
+"cat": "kommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+"context_qa": [
+{
+"q": "varför vill du jobba här",
+"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+}
+],
+"turns": [
+{
+"q": "jag vet inte vad jag ska säga",
+"interview": true,
+"ttft_budget_ms": 3500,
+"no_invented_facts": true
+}
+]
+},
+{
+"id": "k9-regel-1",
+"cat": "kommando",
+"turns": [
+{
+"q": "fortsätt att du i framtiden bara ska ställa korta svar under en mening alltså det är minnet",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"okej"
+]
+}
+]
+},
+{
+"id": "k9-regel-2",
+"cat": "kommando",
+"turns": [
+{
+"q": "från och med nu ska du svara med ett exempel",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"okej"
+]
+}
+]
+},
+{
+"id": "k9-regel-3",
+"cat": "kommando",
+"turns": [
+{
+"q": "svara alltid enklare i framtiden",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"okej"
+]
+}
+]
+},
+{
+"id": "k9-neg-1",
+"cat": "kommando",
+"turns": [
+{
+"q": "ge ett exempel på en exoterm reaktion",
+"expect": "answer",
+"forbid_any": [
+"okej, korta",
+"fråga ett"
+]
+}
+]
+},
+{
+"id": "k9-neg-2",
+"cat": "kommando",
+"turns": [
+{
+"q": "sammanfatta franska revolutionens orsaker",
+"expect": "answer",
+"forbid_any": [
+"okej, korta",
+"fråga ett"
+]
+}
+]
+},
+{
+"id": "k9-neg-3",
+"cat": "kommando",
+"turns": [
+{
+"q": "vad menade Marx med klasskamp",
+"expect": "answer",
+"forbid_any": [
+"okej, korta",
+"fråga ett"
+]
+}
+]
+},
+{
+"id": "k9-neg-4",
+"cat": "kommando",
+"turns": [
+{
+"q": "är du säker på att mitokondrien gör energi",
+"expect": "answer",
+"forbid_any": [
+"okej, korta",
+"fråga ett"
+]
+}
+]
+},
+{
+"id": "k9-neg-5",
+"cat": "kommando",
+"turns": [
+{
+"q": "vad händer med klimatet i framtiden",
+"expect": "answer",
+"forbid_any": [
+"okej, korta",
+"fråga ett"
+]
+}
+]
+},
+{
+"id": "k9-neg-6",
+"cat": "kommando",
+"turns": [
+{
+"q": "en mening med bisats, vad är det",
+"expect": "answer",
+"forbid_any": [
+"okej, korta",
+"fråga ett"
+]
+}
+]
 }
 ]

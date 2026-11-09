@@ -15,6 +15,12 @@ import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
+import { commandTask, detectRule } from "./commands.ts";
+
+/** K9: tasks that ask for one check question (only the question is said, as for "förhör mig"). */
+const FREE_INSTRUCTION_NOTE =
+  "The fragment is the student's spoken instruction to you (said after \"Lumen\"), not a question: carry it out on the last answer in <recent_qa> or the current topic, in the usual spoken style. Never answer it as a question about its own words and never silence.";
+const QUIZ_TASKS = new Set(["harder_question", "quick_quiz", "yes_no_quiz", "quiz_topic", "weak_areas"]);
 import { missingFact, missingFactNote } from "./interviewfacts.ts";
 import { nowContext } from "./datecalc.ts";
 import { categorize } from "./category.ts";
@@ -390,9 +396,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
 
       // D49: an explicit "kom ihåg ..." is answered locally (no model call) and returned as `memory_add`.
-      const memoryFact = !demo && body.mode !== "auto" && body.mode !== "interview_prep"
+      const memoryOnly = !demo && body.mode !== "auto" && body.mode !== "interview_prep"
         ? detectMemoryAdd(body.fragment)
         : null;
+      // K9: "i framtiden ska du …" / "svara alltid …" / "… det är minnet" in Provläge and Frågor is a standing rule,
+      // answered locally like "kom ihåg" (memory_add "Regel: …", which the app sends back among the memories)
+      const ruleHit = !memoryOnly && !demo && (body.mode === "tutor" || body.mode === "push_to_talk" || body.mode === "text") && !personaPlan(body)
+        ? detectRule(body.fragment)
+        : null;
+      const memoryFact = memoryOnly ?? (ruleHit ? `Regel: ${ruleHit.rule}` : null);
       if (memoryFact) {
         const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
         if (!rl.allowed) {
@@ -424,7 +436,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         } catch (e) {
           console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
         }
-        const ack = body.language === "en" ? MEMORY_ACK.en : MEMORY_ACK.sv;
+        const ack = ruleHit ? ruleHit.ack : body.language === "en" ? MEMORY_ACK.en : MEMORY_ACK.sv;
         const frames = [
           sseFrame("meta", {
             reconstructed_question: body.fragment,
@@ -445,8 +457,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               web_searches: 0,
               model: "memory",
             },
-            summary: MEMORY_SUMMARY,
+            summary: ruleHit ? "Användaren gav en stående regel för hur svaren ska vara." : MEMORY_SUMMARY,
             memory_add: memoryFact,
+            ...(ruleHit ? { rule_add: ruleHit.rule } : {}),
           }),
         ];
         return new Response(
@@ -467,7 +480,19 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? detectContinuation(body.fragment)
         : null;
       const tutor = body.mode === "tutor";
-      const answerTypeBase = plan?.answerType ??
+      // K9: a spoken instruction from the command table ("ge ett exempel", "sammanfatta", "var säker" …)
+      const command = demo || continuation
+        ? null
+        : !plan && body.mode !== "auto" && body.mode !== "interview_prep"
+        ? commandTask(body.fragment, "study")
+        : plan?.kind === "interview" && plan.task === "interview_question"
+        ? commandTask(body.fragment, "interview")
+        : null;
+      const quizTask = !!command && QUIZ_TASKS.has(command.task);
+      // K9: an instruction the table does not know goes to the model as one (A7 sends voice_instruction: true)
+      const freeInstruction = body.voiceInstruction === true && !command && !continuation && !plan;
+      const careful = command?.task === "careful";
+      const answerTypeBase = plan?.answerType ?? (command ? (command.task === "brief_style" ? "fact" : "study") : undefined) ??
         classifyAnswerType(body.fragment, body.length, continuation, {
           tutor,
           commands: body.commands.length > 0,
@@ -611,14 +636,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // the meta event is held until the first spoken text so the app can still be told to stay silent.
       // D86: "förhör mig" is an explicit request: never silence
       const silenceOn = !demo && !plan && (body.mode === "tutor" || body.mode === "auto") &&
-        !(body.mode === "tutor" && isQuizRequest(body.fragment));
+        !(body.mode === "tutor" && isQuizRequest(body.fragment)) && !command && body.voiceInstruction !== true;
       // D86: "förhör mig" asks for exactly one check question (also when the profile has "inga kontrollfrågor")
-      const quiz = tutor && !plan && isQuizRequest(body.fragment);
+      const quiz = !plan && ((tutor && isQuizRequest(body.fragment)) || quizTask);
       const lastQ = body.context.recent_qa.at(-1);
       // K1.4: a short reply is an answer only when it is not a new question and comes shortly after the check
       // question (the app sends last_answer_age_sec; without it the old rule holds)
       const replyAge = body.context.last_answer_age_sec;
-      const gradeReply = tutor && !plan && !quiz && !!lastQ && !!lastQuestion(lastQ.a) &&
+      const gradeReply = tutor && !plan && !quiz && !command && !!lastQ && !!lastQuestion(lastQ.a) &&
         lastQ.a.trim().endsWith("?") && body.fragment.trim().split(/\s+/).length <= 12 &&
         !looksLikeQuestion(body.fragment) && (replyAge === undefined || replyAge <= GRADE_REPLY_MAX_AGE_SEC);
       // K2: with a profile, a check question only when the profile asks for one (a "Kontrollfrågor" line that is not "inga")
@@ -628,7 +653,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let silenced = false;
 
       // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz
-      const isRizz = plan?.kind === "rizz" || textReq;
+      const isRizz = plan?.kind === "rizz" || textReq || careful; // K9: "var säker" = the stronger model, one answer
       // D87: Provläge can run on its own model (TUTOR_MODEL); the measured choice is in DECISIONS D87
       const tutorModel = !isRizz && tutor && !plan && !demo && cfg.tutorModel ? cfg.tutorModel : undefined;
       // K7.6: a word or logic problem in Provläge gets the model's thinking (it said "Tom är nio" before working
@@ -724,16 +749,21 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const userFor = (b: AnswerRequest, extras: PromptExtras = {}) =>
         plan
           ? buildPersonaUserMessage(b, plan.task) +
+            (command ? `
+<task>${command.task}</task>
+<task_rule>${command.rule}</task_rule>` : "") +
             (extras.note ? `
 <note>${extras.note}</note>` : "") + (missing ? `
 <note>${missingFactNote(missing)}</note>` : "")
           : direct
           ? buildDirectUserMessage(b, continuation, {
             ...extras,
-            note: extras.note ?? echoNote ?? (quiz ? QUIZ_NOTE : gradeReply ? GRADE_NOTE : undefined),
+            ...(command ? { command } : {}),
+            note: extras.note ?? echoNote ?? (quiz ? QUIZ_NOTE : gradeReply ? GRADE_NOTE : freeInstruction ? FREE_INSTRUCTION_NOTE : undefined),
           })
           : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, {
             ...extras,
+            ...(command ? { command } : {}),
             note: extras.note ?? echoNote,
           });
       // D72 live test: "the Nth king" was answered wrong without listing first; ask for the list in code.
@@ -757,6 +787,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
           ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
+          ...(careful ? { think: true } : {}),
           signal: ac.signal,
         })[Symbol.asyncIterator]();
       const firstP = iterator.next().then((r) => {
@@ -975,6 +1006,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 tools,
                 ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
                 ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
+          ...(careful ? { think: true } : {}),
                 signal: ac2.signal,
               })[Symbol.asyncIterator]();
               post = new AnswerPost({

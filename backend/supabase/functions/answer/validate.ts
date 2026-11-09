@@ -56,7 +56,11 @@ export interface AnswerRequest {
     already_asked?: string[];
     /** K1.4: seconds since the last answer ended; a short reply counts as an answer only shortly after it. */
     last_answer_age_sec?: number;
+    /** K9: quiz results per concept from the app (weak_areas, self_assessment), <= 30. */
+    concept_stats?: { concept: string; right: number; wrong: number }[];
   };
+  /** K9: the fragment is a spoken "Lumen, …" instruction (A7 level 2); unmatched ones go to the model as one. */
+  voiceInstruction?: boolean;
 }
 
 export const LIMITS = {
@@ -67,6 +71,8 @@ export const LIMITS = {
   qaText: 400,
   qaAnswer: 1500,
   alreadyAsked: 40,
+  conceptStats: 30,
+  concept: 80,
   prepTerms: 50, // D84: the subject term list from /study-profile (30-50 terms)
   prepTerm: 60,
   goals: 1500,
@@ -164,6 +170,27 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
   const ageRaw = c.last_answer_age_sec;
   if (ageRaw !== undefined && ageRaw !== null && (typeof ageRaw !== "number" || !Number.isFinite(ageRaw) || ageRaw < 0)) {
     throw bad("context.last_answer_age_sec must be a non-negative number");
+  }
+
+  const statsRaw = c.concept_stats ?? [];
+  if (!Array.isArray(statsRaw)) throw bad("context.concept_stats must be an array");
+  if (statsRaw.length > LIMITS.conceptStats) {
+    throw new HttpError(413, "payload_too_large", `context.concept_stats exceeds ${LIMITS.conceptStats} items`);
+  }
+  const count = (v: unknown, name: string) => {
+    if (typeof v !== "number" || !Number.isInteger(v) || v < 0 || v > 10000) throw bad(`${name} must be a whole number >= 0`);
+    return v;
+  };
+  const concept_stats = statsRaw.map((x, i) => {
+    const e = (x ?? {}) as Record<string, unknown>;
+    return {
+      concept: str(e.concept, `concept_stats[${i}].concept`, LIMITS.concept, true),
+      right: count(e.right, `concept_stats[${i}].right`),
+      wrong: count(e.wrong, `concept_stats[${i}].wrong`),
+    };
+  });
+  if (o.voice_instruction !== undefined && o.voice_instruction !== null && typeof o.voice_instruction !== "boolean") {
+    throw bad("voice_instruction must be a boolean");
   }
 
   const goals = str(o.goals, "goals", LIMITS.goals);
@@ -307,7 +334,9 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       prep_terms,
       ...(already_asked.length ? { already_asked } : {}),
       ...(typeof ageRaw === "number" ? { last_answer_age_sec: ageRaw } : {}),
+      ...(concept_stats.length ? { concept_stats } : {}),
     },
+    ...(o.voice_instruction === true ? { voiceInstruction: true } : {}),
   };
 }
 

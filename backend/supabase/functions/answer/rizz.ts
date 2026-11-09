@@ -1,4 +1,5 @@
 import { COMMON, INTRO, sanitizeTagged } from "./prompt.ts";
+import { socialRequest, socialStyle } from "./commands.ts";
 import type { AnswerRequest, SocialStyle } from "./validate.ts";
 
 /**
@@ -104,6 +105,9 @@ export function requestedCount(instruction: string): number | null {
   const t = instruction.trim();
   if (!t) return null;
   if (NEXT.test(t)) return 1; // DECISIONS D72 (5): "nästa" asks for a fresh suggestion
+  // K9: "vad ska jag svara", "byt ämne", "smart följdfråga", "rädda mig", "tre alternativ" ask for new lines
+  const fam = socialRequest(t);
+  if (fam) return fam.count;
   const m = MORE_VERB.exec(t) ?? MORE_NOUN.exec(t);
   if (!m) return null;
   const w = (m[1] ?? m[2] ?? "").toLowerCase();
@@ -162,7 +166,9 @@ export function buildRizzUserMessage(req: AnswerRequest): string {
     `<count>${linesToWrite(req)}</count>`,
   ];
   if (x.calibrate && requestedCount(x.calibrate) !== null) {
-    parts.push(`<request>${sanitizeTagged(x.calibrate)}</request>`);
+    // K9: a known family is sent as its plain meaning, with the user's own words
+    const fam = socialRequest(x.calibrate);
+    parts.push(`<request>${fam ? `${fam.request} (${sanitizeTagged(x.calibrate)})` : sanitizeTagged(x.calibrate)}</request>`);
   }
   if (detectDecline(req)) parts.push("<signal>decline</signal>");
   if (req.personaSetup) {
@@ -362,8 +368,14 @@ export function buildCalibrateUserMessage(req: AnswerRequest): string {
   return [
     `<style>${x.style}</style>`,
     `<calibration>${sanitizeTagged(x.calibration) || "(tom)"}</calibration>`,
-    `<instruction>${sanitizeTagged(x.calibrate)}</instruction>`,
+    `<instruction>${sanitizeTagged(x.calibrate)}${styleHint(x.calibrate)}</instruction>`,
   ].join("\n");
+}
+
+/** K9: a known style family ("roligare", "kaxigare", "mindre cringe") with its plain meaning. */
+function styleHint(instruction: string): string {
+  const s = socialStyle(instruction);
+  return s ? ` (= ${s})` : "";
 }
 
 /** Cuts a calibration to MAX_CALIBRATION characters at the last whole point or word. */
