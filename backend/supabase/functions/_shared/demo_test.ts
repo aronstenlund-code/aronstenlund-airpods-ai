@@ -46,7 +46,7 @@ Deno.test("D62 tts demo: max 400 characters, default voice/model/format only, da
   }));
   assertEquals(ok.status, 200, "demo ignores voice / model / format instead of failing");
   assert(calls[0].url.includes(`/text-to-speech/${VOICE}/stream`));
-  assertEquals(JSON.parse(calls[0].init.body as string).model_id, "eleven_flash_v2_5");
+  assertEquals(JSON.parse(calls[0].init.body as string).model_id, "eleven_v4_turbo"); // K14: the demo gets the default model
   // visitor allowance 2000 characters per day
   const small = tts({
     config: { ...DEFAULT_TTS_CONFIG, voiceId: VOICE, voices: [] },
