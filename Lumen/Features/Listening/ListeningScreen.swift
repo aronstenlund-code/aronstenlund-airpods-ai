@@ -8,6 +8,7 @@ struct ListeningScreen: View {
     let onBack: () -> Void
     @Environment(AppearanceSettings.self) private var appearance
     @State private var isSwitching = false
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var reportingTurn: AnswerTurn?
     @State private var reportComment = ""
 
@@ -204,6 +205,7 @@ struct ListeningScreen: View {
             Text(commandsLine)
                 .font(LumenFont.text(15))
                 .foregroundStyle(LumenColor.muted)
+                .fixedSize(horizontal: false, vertical: true) // A12: the whole line, never "…"
                 .frame(maxWidth: .infinity, alignment: .leading)
             if let tip = model.tipNotice {
                 Text(tip)
@@ -211,7 +213,9 @@ struct ListeningScreen: View {
                     .foregroundStyle(LumenColor.blue)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            HStack(spacing: 10) {
+            // A12: at the accessibility text sizes the two buttons stack, so each gets the whole width.
+            let buttonRow = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
+            buttonRow {
                 Button {
                     Task { await model.togglePause() }
                 } label: {

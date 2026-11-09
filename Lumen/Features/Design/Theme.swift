@@ -156,9 +156,9 @@ struct LumenButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(LumenFont.text(18, .semibold, relativeTo: .headline))
-            .lineLimit(2)
-            .minimumScaleFactor(0.7)
-            .multilineTextAlignment(.center)
+            // A12: one line that shrinks; two lines broke words in the middle ("Paus/a") at the largest size.
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
             .frame(maxWidth: .infinity, minHeight: height)
             .padding(.horizontal, 12)
             .foregroundStyle(foreground)

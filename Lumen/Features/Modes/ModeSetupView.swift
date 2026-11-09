@@ -121,6 +121,7 @@ struct InterviewSetupView: View {
 /// Rizzläge is for adults (D63): asked the first time, remembered on this phone.
 struct AgeGateView: View {
     let onAnswer: (Bool) -> Void
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         // A12: the age limit and what is stored must be readable in full before the button: the text scrolls and
@@ -143,7 +144,8 @@ struct AgeGateView: View {
             .background(LumenColor.background)
         }
         .lumenScreen()
-        .presentationDetents([.medium, .large])
+        // A12: at the largest text sizes the sheet opens at full height, so the explanation is not under the buttons.
+        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium, .large])
         .interactiveDismissDisabled()
     }
 }
