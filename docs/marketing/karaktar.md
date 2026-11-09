@@ -17,7 +17,7 @@ Samma person i intro, annonser och på demosidan. Han är påhittad och AI-gener
 
 **Miljö och ljus**
 - Ljust dagsljus från vänster och mjuka skuggor.
-- Bakgrund: vit med svagt ljusblått rutnät (#D9E3F0), som rutat mattepapper.
+- Bakgrund (Aron 2026-11-09): en antydan om ett klassrum, lätt tecknat och i ljusa toner. Kanten av en whiteboard, några bänkar och ett fönster med dagsljus, mjukt i bakgrunden så att personen står i fokus. Ett svagt ljusblått rutnät (#D9E3F0) får finnas kvar som papperstextur.
 - Accentfärg i detaljer: kungsblå #2346C8, till exempel en penna, ett anteckningsblock eller ringarna från hörluren.
 - Kameran i ögonhöjd, nära.
 
@@ -27,5 +27,5 @@ Samma person i intro, annonser och på demosidan. Han är påhittad och AI-gener
 ## Grundprompt (engelska, för bild- och videomodeller)
 
 ```
-Editorial illustration of "Elias", a fictional 17-year-old Swedish high-school student, drawn in confident hand-inked navy (#18213A) line art with flat colour fills and subtle paper texture, like a sketch in a school notebook come to life. Dark-blonde slightly wavy hair with a side-swept fringe, a few freckles, calm focused expression with a slight smile. Oversized navy crew-neck college sweatshirt with a white t-shirt edge at the collar, no logos or text. A simple white wireless earbud (no logo, not any specific brand) in his right ear; his right index fingertip rests lightly on it. Background: white paper with a faint light-blue (#D9E3F0) math grid. Only accent colour royal blue (#2346C8). Clean, minimal, friendly, premium. Head and shoulders, eye level. Vertical 9:16, no text.
+Editorial illustration of "Elias", a fictional 17-year-old Swedish high-school student, drawn in confident hand-inked navy (#18213A) line art with flat colour fills and subtle paper texture, like a sketch in a school notebook come to life. Dark-blonde slightly wavy hair with a side-swept fringe, a few freckles, calm focused expression with a slight smile. Oversized navy crew-neck college sweatshirt with a white t-shirt edge at the collar, no logos or text. A simple white wireless earbud (no logo, not any specific brand) in his right ear; his right index fingertip rests lightly on it. Background: a softly sketched, airy classroom only hinted at (edge of a whiteboard, a few desks, a bright window), in pale tones and slightly out of focus so he stays the clear subject, on paper with a faint light-blue (#D9E3F0) grid texture. Only accent colour royal blue (#2346C8). Clean, minimal, friendly, premium. Head and shoulders, eye level. Vertical 9:16, no text.
 ```
