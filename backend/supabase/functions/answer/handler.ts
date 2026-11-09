@@ -134,6 +134,11 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   rizzModel: "claude-sonnet-5-5",
   rizzPriceInPerMTok: 2,
   rizzPriceOutPerMTok: 10,
+  // K2 (2026-11-09): Provläge on Sonnet 5.5, the only model over the 90 % target in the D87 bank (DECISIONS D90);
+  // TUTOR_MODEL overrides it (e.g. back to Haiku), the demo never uses it
+  tutorModel: "claude-sonnet-5-5",
+  tutorPriceInPerMTok: 2,
+  tutorPriceOutPerMTok: 10,
   directModes: true,
   priceInPerMTok: 0.10,
   priceOutPerMTok: 0.50,

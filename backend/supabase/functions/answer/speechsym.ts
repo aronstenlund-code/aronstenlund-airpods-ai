@@ -278,9 +278,16 @@ export function beforeNumbers(text: string, ctx = ""): string {
   // "2x" is "two times"; "5G"/"3D": a number directly before capital letters is read as number + letters.
   // K1.3 (Oscar D83: "derivatan av x i kvadrat är två gånger"): in maths "2x" is two x: when the text has an
   // equation or power ("=", "²", "^", "f′"), a bare variable x, or an operator right after the term.
-  const algebra = /[=²³^′]|(?<![\p{L}\d])x(?![\p{L}\d])/u.test(s.replace(/(?<![\p{L}\d.,])\d+\s?x(?![\p{L}\d])/giu, ""));
-  s = s.replace(/(?<![\p{L}\d.,])(\d+)(\s?)x(?![\p{L}\d])(?=(\s*[+\-−=^²³)/])?)/gu, (_m, n: string, _sp: string, op?: string) =>
-    algebra || op ? `${n} x` : `${n} gånger`);
+  // K2 (pl-184, pl-187): also an operator in words after the term ("3x minus 7", "3x är lika med 21") or a power or
+  // bracket before it ("e^{3x}", "(3x)"), and maths words in the text ("ekvationen", "derivatan", "lös").
+  const algebra = /[=²³^′]|(?<![\p{L}\d])x(?![\p{L}\d])|\b(?:ekvation(?:en)?|derivat(?:a|an)|deriver\p{L}*|lös|funktionen)\b/iu.test(
+    s.replace(/(?<![\p{L}\d.,])\d+\s?x(?![\p{L}\d])/giu, ""),
+  );
+  s = s.replace(
+    /(?<![\p{L}\d.,])(\d+)(\s?)x(?![\p{L}\d])(?=(\s*(?:[+\-−=^²³)}/]|minus\b|plus\b|är lika med\b|delat med\b|i kvadrat\b|upphöjt\b))?)/gu,
+    (_m: string, n: string, _sp: string, op: string | undefined, off: number, all: string) =>
+      algebra || op || /[\^({]\s*$/.test(all.slice(0, off)) ? `${n} x` : `${n} gånger`,
+  );
   s = s.replace(/(?<![\p{L}\d.,])(\d+)\s?X(?![\p{L}\d])/gu, "$1 gånger");
   s = s.replace(/(?<![\p{L}\d.,])(\d+)([A-Z]{1,2})(?![\p{L}\d])/gu, "$1 $2");
   for (const [re, to] of ABBREVIATIONS) s = s.replace(re, to);

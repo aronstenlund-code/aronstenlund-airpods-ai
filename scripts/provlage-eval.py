@@ -40,7 +40,14 @@ def signup(cache=None, slot=0):
                 return j["access_token"]
             except Exception:
                 pass
-    j = _auth("/auth/v1/signup", {})
+    for attempt in range(4):  # anonymous sign-ins are limited per IP: wait and retry instead of a bare traceback
+        try:
+            j = _auth("/auth/v1/signup", {})
+            break
+        except urllib.error.HTTPError as e:
+            if attempt == 3:
+                sys.exit(f"signup failed: http {e.code} {e.read()[:150]!r} (anonymous sign-in limit? reuse --tokens)")
+            time.sleep(15 * (attempt + 1))
     if cache:
         try:
             saved = json.load(open(cache, encoding="utf-8"))
