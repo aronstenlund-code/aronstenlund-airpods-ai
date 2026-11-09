@@ -64,3 +64,4 @@
   4. Länkarna fungerar och handlar om ämnet (K19), och ingen påhittad URL.
   Budget 0,60 USD.
 
+- [ ] **O14 – Oberoende test av K11 (inga anrop som hänger, stump, citat)** (effort: medium). Gör nu, medan O12 väntar på K14. Kevin rapporterar 0/10 Provläge-svar över 8 s (första text max 4,5 s), stump 0/6 och Strindberg-citatet 5/5 inte påhittat. Gör 20 egna Provläge-fall (blanda tänkande/textuppgifter och vanliga), 6 fall med en mening som filtreras bort, och 5 citatfall från andra författare. Krav: inget svar över 8 s till första text, ingen stump, inga påhittade citat. Mät också 429 vid täta anrop (underlag för K12). Budget 0,40 USD.

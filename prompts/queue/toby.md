@@ -18,3 +18,6 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 - [ ] **T7 – Mer-fönstret i simulatorn** (effort: medium). Beror på: Angelas A15. Kör via WAV-kroken: "ja", "mer", "gärna" inom 5 s, ett "ja" efter 6 s, "ja" mitt i en mening, ett ja från en annan röst och en ny fråga i fönstret. Krav: rätt i alla fall, och långt svar under 1 s efter ja. Lägg till steget i `docs/DEVICE-TEST-QUICK.md` (nick och tryck testas på telefonen av Aron).
 
+- [ ] **T8 – Förstagångsanvändaren** (effort: medium). Gör efter T7. Aron 2026-11-09: lätt att komma igång och aldrig överväldigande. I simulatorn, från helt ny installation till första upplästa svaret i Frågor och i Provläge: räkna tryck, skärmar och sekunder, och skriv ner varje text eller knapp som är oklar eller onödig. Skärmbilder av varje steg till `reports/apptest/`. Fynd till Angela och Kelly (Ke9). Ändra ingen appkod.
+
+- [ ] **T5b – Omtest av T5 efter Angelas A21** (effort: medium). Beror på: A21. Samma fall som T5.

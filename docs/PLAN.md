@@ -13,6 +13,17 @@ Planen är regler, inte en lista med punkter. **Ordningen finns bara i köerna**
 - Beror en punkt på något som inte är klart: hoppa över, ingen väntar.
 - Deangelo håller varje kö minst 2 punkter lång utifrån fasens mål, och säger till Aron när en session står still.
 
+## 2b. Ingen står still (Aron 2026-11-09 22:39)
+Så många sessioner som möjligt jobbar samtidigt. Är kön tom tar sessionen sin **stående uppgift** och skriver den som en egen punkt i sin kö:
+| Session | Stående uppgift |
+|---|---|
+| Angela | Gör appen enklare: kortare väg från start till första svar, färre knappar per skärm, avancerat bakom Inställningar. |
+| Kevin | K4-loopen: kör eval, rätta det sämsta fallet, mät igen. |
+| Kelly | Demosidan och appen ska se ut som samma produkt: förbättra sidan, och skriv designunderlag för appen i `docs/design/` som Angela bygger. |
+| Oscar | Oberoende test av den senaste klara K-punkten som saknar O-punkt. |
+| Toby | Omtest av den senaste klara A-punkten, annars förstagångsanvändaren i simulatorn. |
+Fokus för allt som syns: **lätt att förstå, lätt att komma igång, aldrig överväldigande, en tydlig väg framåt.**
+
 ## 3. Verifiering på telefon
 - Allt märks verifierat på enhet / i CI / i simulator / ej verifierat.
 - Aron kör `docs/DEVICE-TEST-QUICK.md` när han kan. Fynden blir prio 1. Bygget fortsätter under tiden.
