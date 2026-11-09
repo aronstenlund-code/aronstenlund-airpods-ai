@@ -106,7 +106,7 @@ struct ListeningScreen: View {
 
     private var stateTitle: String {
         switch model.state {
-        case .listening: model.speaker.status != .idle ? "Svarar" : "Lyssnar"
+        case .listening: model.speaker.status != .idle ? "Svarar" : (model.isHearing ? "Lyssnar" : "Hör inte, försöker igen") // A11
         case .paused: "Pausad"
         case .idle, .error: "Startar …"
         }
@@ -205,6 +205,12 @@ struct ListeningScreen: View {
                 .font(LumenFont.text(15))
                 .foregroundStyle(LumenColor.muted)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            if let tip = model.tipNotice {
+                Text(tip)
+                    .font(LumenFont.text(15))
+                    .foregroundStyle(LumenColor.blue)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             HStack(spacing: 10) {
                 Button {
                     Task { await model.togglePause() }
@@ -226,10 +232,9 @@ struct ListeningScreen: View {
         .background(LumenColor.background)
     }
 
+    /// A9.1: from the command table, so the user's own phrases show here too.
     private var commandsLine: String {
-        mode == .prov
-            ? "Säg ”Lumen, förhör mig”, ”Lumen, pausa” eller ”Lumen, avsluta”."
-            : "Säg ”Lumen, byt till provläge”, ”Lumen, pausa” eller ”Lumen, avsluta”."
+        model.commandsLine(for: mode)
     }
 
     private var isReporting: Binding<Bool> {

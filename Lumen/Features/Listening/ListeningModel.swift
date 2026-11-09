@@ -164,6 +164,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A6: the user's own phrases per action (Settings › Röstkommandon) and the music players.
     let phrases: CommandPhraseStore
     let music: MusicRemote
+    /// A9.1: which commands were used, and the one tip per session and day.
+    let tips: CommandTipStore
+    /// The tip on the screen, until the next answer.
+    private(set) var tipNotice: String?
+    private var tipTask: Task<Void, Never>?
     /// "Sparade kommandot …" after a spoken save, shown once.
     private(set) var commandNotice: String?
     private let warmer: BackendWarmer?
@@ -226,7 +231,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          memoryExtractor: MemoryExtractor? = nil, studyProfile: StudyProfileStore? = nil,
          speakers: SpeakerIdentifier? = nil, studyCards: StudyCardStore? = nil, studyCardsClient: StudyCardsClient? = nil,
          studyProfileClient: StudyProfileClient? = nil, examMaterials: ExamMaterials? = nil, examClient: ExamClient? = nil,
-         examPlans: ExamPlanStore? = nil, phrases: CommandPhraseStore? = nil, music: MusicRemote? = nil) {
+         examPlans: ExamPlanStore? = nil, phrases: CommandPhraseStore? = nil, music: MusicRemote? = nil,
+         tips: CommandTipStore? = nil) {
+        self.tips = tips ?? CommandTipStore(defaults: UserDefaults(suiteName: "lumen.tips.\(UUID().uuidString)") ?? .standard)
         self.phrases = phrases ?? CommandPhraseStore(defaults: UserDefaults(suiteName: "lumen.phrases.\(UUID().uuidString)") ?? .standard,
                                                      book: CommandBook())
         self.music = music ?? MusicRemote(players: [])
@@ -268,6 +275,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             speaker?.settings.reconcile(with: voices, defaultID: defaultID)
         }
         activation.onActivate = { [weak self] request in self?.activated(request) }
+        transcription.onStatusChanged = { [weak self] status in self?.recognitionChanged(status) }
         activation.onDrop = { [weak self] text, reason in
             guard let self else { return }
             self.controller.turns.dropped(text, mode: self.mode.rawValue, trigger: "auto", reason: reason)
@@ -353,6 +361,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.log("Start refused: no consent")
             return
         }
+        tips.sessionStarted()
         Task { await prepareBackend() }
         refreshKeyterms()
         await useMicrophone(for: mode)
@@ -1031,10 +1040,54 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         return action.level == 1 ? .command(action) : .instruction(action.instruction)
     }
 
+    /// A9.1: a used command is never tipped.
+    private func markUsed(_ intent: VoiceIntent) {
+        switch intent {
+        case .switchTo: tips.markUsed(.switchMode)
+        case .pause: tips.markUsed(.musicHandOff)
+        case .stopListening: tips.markUsed(.stop)
+        case .music(let action), .command(let action): tips.markUsed(action)
+        case .complaint: tips.markUsed(.wrong)
+        case .instruction(let text):
+            if let action = CommandAction.allCases.first(where: { $0.level == 2 && $0.instruction == text }) { tips.markUsed(action) }
+            else if text.hasPrefix("förhör mig") { tips.markUsed(.quizMe) }
+        case .remember, .forget, .rule: break
+        }
+    }
+
+    /// A9.1: after an answer, in a natural pause, at most one tip per session and per day. Never during an exam
+    /// session, a mini test, Intervjuläge's question or while anything is heard or said.
+    private func scheduleTip() {
+        tipTask?.cancel()
+        guard tips.enabled, !tips.tippedThisSession, conversation.answers.count >= 2 else { return }
+        tipTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Self.tipPause))
+            guard let self, !Task.isCancelled, self.isListening else { return }
+            let quietFor = self.lastHeardAt.map { Date().timeIntervalSince($0) } ?? .infinity
+            var busy = self.exam != nil || self.miniTest != nil || self.speaker.isSpeaking || self.speaker.hasPendingSpeech
+                || self.activation.pendingDueAt != nil || self.activation.hasQueued || quietFor < Self.tipPause
+            if case .answering = self.answers.status { busy = true }
+            guard let action = self.tips.next(for: self.mode, busy: busy) else { return }
+            let text = CommandTips.tip(action, table: CommandBook.shared.table)
+            self.tips.tipped(action)
+            self.tipNotice = text
+            self.controller.log("Tip: \(action.rawValue)")
+            self.say(text)
+        }
+    }
+
+    static let tipPause: TimeInterval = 4
+
+    /// The listening screen's line: the three most useful commands for the mode, from the command table.
+    func commandsLine(for shown: ConversationMode) -> String {
+        CommandTips.line(for: shown, table: CommandBook.shared.table)
+    }
+
     private func perform(_ intent: VoiceIntent) {
         let now = Date()
         if let last = lastVoice, last.intent == intent, now.timeIntervalSince(last.at) < 5 { return }
         lastVoice = (intent, now)
+        markUsed(intent)
         switch intent {
         case .switchTo(let target):
             controller.log("Voice: switch to \(target.rawValue)")
@@ -1407,6 +1460,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         reopenRecognizerAfterSpeech()
         listenForHeadAnswerIfAsked()
         if !study.isActive { askWaitingQuestionIfIdle() }
+        scheduleTip()
     }
 
     /// A8: a question that waited (cooldown, Lumen speaking, or split from the same utterance) goes now that the
@@ -1604,6 +1658,36 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// Shown on the card, and said in the ear once (in Apple's voice) until an answer has worked again (A5).
+    /// A11: the recogniser is not running while we listen: after 3 s the screen says so (never "Lyssnar") and the ear
+    /// hears it once; it clears when recognition runs again. Short gaps (a reconnect) say nothing.
+    private var hearingTask: Task<Void, Never>?
+
+    var isHearing: Bool {
+        switch transcription.status {
+        case .running, .preparing, .probing: true
+        case .idle: !isListening
+        case .failed, .unavailable: false
+        }
+    }
+
+    private func recognitionChanged(_ status: TranscriptionCoordinator.Status) {
+        hearingTask?.cancel()
+        if status.isRunning {
+            if problem == .cannotHear {
+                problem = nil
+                spokenProblems.remove(.cannotHear)
+                controller.log("Recognition is back")
+            }
+            return
+        }
+        hearingTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(3))
+            guard let self, !Task.isCancelled, self.isListening, !self.isHearing else { return }
+            self.controller.log("Not hearing: \(String(describing: self.transcription.status))")
+            self.report(problem: .cannotHear)
+        }
+    }
+
     private func report(problem new: LumenProblem?) {
         guard let new else { return }
         problem = new
@@ -1646,7 +1730,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 activated(ActivationRequest(query: question, trigger: pendingQuestion?.trigger ?? .text, language: language),
                           persona: mode == .prov ? tutorPersona() : nil)
             }
-        case .offline:
+        case .offline, .cannotHear:
             self.problem = nil
         }
     }
@@ -2202,6 +2286,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func answerStarted(_ request: ActivationRequest, source: String) {
         if request.trigger == .rizz { return } // suggestions have no answer of their own
         if bufferAhead(.started(request, source: source)) { return }
+        tipTask?.cancel()
+        tipNotice = nil
         conversation.beginAnswer(question: request.query, source: source, at: request.createdAt,
                                  isOwnQuestion: request.trigger.isUsersOwnWords)
         controller.playback.startRecordingSpeech() // A7 "upprepa"

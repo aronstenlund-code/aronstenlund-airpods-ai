@@ -7,6 +7,7 @@ struct VoiceCommandsView: View {
     @Bindable var store: CommandPhraseStore
     let music: MusicRemote
     @Bindable var voice: VoiceSettings
+    @Bindable var tips: CommandTipStore
     @State private var search = ""
 
     private var actions: [CommandAction] {
@@ -23,6 +24,7 @@ struct VoiceCommandsView: View {
                 Text("Säg frasen som hela meningen. Med \"Lumen\" först fungerar alla, utan \"Lumen\" bara musik och \"det där var fel\".")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                Toggle("Tips om kommandon (högst ett om dagen)", isOn: $tips.enabled)
                 Toggle("Korta ord utan \"Lumen\" i Provläge och Frågor", isOn: $voice.universalCommands)
                 Text("\"Upprepa\", \"viska\", \"högre\", \"kortare\", \"snabbare\" och \"utveckla\" som hela meningen.")
                     .font(.footnote)

@@ -11,6 +11,8 @@ enum LumenProblem: Equatable, Sendable {
     case overloaded
     /// A5: the chosen voice (ElevenLabs) failed; answers are read with the iPhone's voice meanwhile.
     case voiceUnavailable
+    /// A11: no speech recognition runs (Scribe and the phone both failed); Lumen retries by itself.
+    case cannotHear
 
     var title: String {
         switch self {
@@ -19,6 +21,7 @@ enum LumenProblem: Equatable, Sendable {
         case .airPodsDisconnected: "AirPods kopplades bort"
         case .overloaded: "Lumen kan inte svara just nu"
         case .voiceUnavailable: "Rösten fungerar inte just nu"
+        case .cannotHear: "Jag hör inte just nu"
         }
     }
 
@@ -29,6 +32,7 @@ enum LumenProblem: Equatable, Sendable {
         case .airPodsDisconnected: "Svaren hörs nu i telefonens högtalare."
         case .overloaded: "Försök igen om en stund."
         case .voiceUnavailable: "Svaren läses med iPhonens röst tills den fungerar igen."
+        case .cannotHear: "Taligenkänningen gick ner. Lumen försöker igen av sig själv."
         }
     }
 
@@ -40,6 +44,7 @@ enum LumenProblem: Equatable, Sendable {
         case .airPodsDisconnected: "Pausa"
         case .overloaded: "Försök igen"
         case .voiceUnavailable: nil
+        case .cannotHear: nil
         }
     }
 
@@ -52,6 +57,7 @@ enum LumenProblem: Equatable, Sendable {
         case .airPodsDisconnected: nil
         case .overloaded: "Jag kan inte svara just nu, försök igen om en stund."
         case .voiceUnavailable: nil
+        case .cannotHear: "Jag hör inte just nu, försöker igen."
         }
     }
 
@@ -62,6 +68,7 @@ enum LumenProblem: Equatable, Sendable {
         case .airPodsDisconnected: "airpods"
         case .overloaded: "exclamationmark.bubble"
         case .voiceUnavailable: "speaker.slash"
+        case .cannotHear: "ear.trianglebadge.exclamationmark"
         }
     }
 }

@@ -212,6 +212,13 @@ final class ScribeProvider: STTProvider {
     private var feedTask: Task<Void, Never>?
     private var receiveTask: Task<Void, Never>?
     private var streamedFrames = 0
+    private var keepAliveTask: Task<Void, Never>?
+    private var lastSentAt = Date()
+    /// A11: with the local VAD in front, minutes of silence send nothing, and Scribe ends a session that gets no
+    /// audio for about 20 s (Toby T2: 21–32 s, again and again, once the VAD was ready). A quarter second of silence
+    /// every `keepAliveInterval` keeps it open (≈ 3 % of the silent time billed).
+    nonisolated static let keepAliveInterval: TimeInterval = 8
+    private static let keepAliveSamples = [Int16](repeating: 0, count: 4_000)
     /// Why the session ended by itself, for the coordinator (A8.5). Nil while it runs or after a normal stop.
     private(set) var endReason: String?
     /// The server refused the request (1008 / `invalid_request`): reopening with the same keyterms fails again.
@@ -261,15 +268,27 @@ final class ScribeProvider: STTProvider {
         receiveTask = Task { [weak self] in
             await self?.receiveLoop(socket)
         }
+        lastSentAt = Date()
         feedTask = Task { [weak self] in
             for await chunk in audio {
                 guard let self else { return }
                 self.streamedFrames += chunk.frameCount
+                self.lastSentAt = Date()
                 do {
                     try await socket.send(ScribeMessage.audio(chunk.samples, commit: false))
                 } catch {
                     return // the receive loop sees the same failure
                 }
+            }
+        }
+        keepAliveTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(1))
+                guard let self, !Task.isCancelled else { return }
+                guard Date().timeIntervalSince(self.lastSentAt) >= Self.keepAliveInterval else { continue }
+                self.lastSentAt = Date()
+                self.streamedFrames += Self.keepAliveSamples.count
+                try? await socket.send(ScribeMessage.audio(Self.keepAliveSamples, commit: false))
             }
         }
     }
@@ -281,6 +300,8 @@ final class ScribeProvider: STTProvider {
     }
 
     func stop() async {
+        keepAliveTask?.cancel()
+        keepAliveTask = nil
         feedTask?.cancel()
         feedTask = nil
         receiveTask?.cancel()

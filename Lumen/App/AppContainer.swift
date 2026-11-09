@@ -80,7 +80,8 @@ final class AppContainer {
                                        studyCardsClient: StudyCardsClient(config: .lumen, auth: auth, http: http),
                                        studyProfileClient: StudyProfileClient(config: .lumen, auth: auth, http: http),
                                        examMaterials: ExamMaterials(), examClient: ExamClient(config: .lumen, auth: auth, http: http),
-                                       examPlans: ExamPlanStore(), phrases: CommandPhraseStore(), music: MusicRemote.live())
+                                       examPlans: ExamPlanStore(), phrases: CommandPhraseStore(), music: MusicRemote.live(),
+                                       tips: CommandTipStore())
         ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
         ListeningRemote.nextSuggestion = { [weak listening] in listening?.nextSuggestion() }
         ListeningRemote.start = { [weak listening] in await listening?.startFromShortcut() }

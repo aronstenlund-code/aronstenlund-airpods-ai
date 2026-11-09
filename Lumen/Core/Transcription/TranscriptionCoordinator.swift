@@ -25,7 +25,20 @@ final class TranscriptionCoordinator {
     typealias ProviderFactory = @MainActor (Locale, STTEngine) -> any STTProvider
     typealias AvailabilityProbe = @MainActor ([Locale]) async -> SpeechEngineAvailability
 
-    private(set) var status: Status = .idle
+    private(set) var status: Status = .idle {
+        didSet { if status != oldValue { onStatusChanged?(status) } }
+    }
+    /// A11: the listening screen must never say "Lyssnar" while nothing transcribes.
+    var onStatusChanged: (@MainActor (Status) -> Void)?
+    /// A11: Scribe is tried again after a failure, 1, 2, 4 … 30 s apart, as long as capture runs, also after the
+    /// phone's own recogniser failed.
+    private(set) var scribeRetryAttempt = 0
+    private var retryTask: Task<Void, Never>?
+    static let maxRetryDelay: TimeInterval = 30
+
+    static func retryDelay(attempt: Int) -> TimeInterval {
+        min(maxRetryDelay, pow(2, Double(max(0, attempt - 1))))
+    }
     private(set) var availability: SpeechEngineAvailability?
     let language: LanguageSettings
     /// Nil: on-device only.
@@ -130,12 +143,17 @@ final class TranscriptionCoordinator {
 
     func captureStarted() {
         cloudFailure = nil
+        scribeRetryAttempt = 0
+        retryTask?.cancel()
+        retryTask = nil
         scribeKeytermsDropped = false
         lifecycleTask?.cancel()
         lifecycleTask = Task { await startTranscribing() }
     }
 
     func captureStopped() {
+        retryTask?.cancel()
+        retryTask = nil
         lifecycleTask?.cancel()
         lifecycleTask = Task { await stopTranscribing() }
     }
@@ -174,12 +192,19 @@ final class TranscriptionCoordinator {
                 dropSubscription()
                 status = .unavailable(selectedLanguage)
                 controller.log("STT: no on-device engine for \(locale.identifier(.bcp47))")
+                scheduleScribeRetry(reason: "no on-device engine")
                 return
             }
             engine = chosen
         }
 
         let provider = makeProvider(locale, engine)
+        if engine == .scribe {
+            // A11 / Toby: how many keyterms and the longest, each time a session opens.
+            let terms = scribeKeyterms
+            let longest = terms.max(by: { $0.count < $1.count })
+            controller.log("Scribe keyterms: \(terms.count), longest \(longest?.count ?? 0) characters" + (longest.map { " (\($0))" } ?? ""))
+        }
         provider.setContextualStrings(engine == .scribe ? scribeKeyterms : contextualStrings)
         provider.setScribeTuning(scribeTuning)
         status = .preparing(engine)
@@ -194,6 +219,7 @@ final class TranscriptionCoordinator {
             dropSubscription()
             status = .failed(error.localizedDescription)
             controller.log("STT prepare failed: \(error.localizedDescription)")
+            scheduleScribeRetry(reason: "prepare failed")
             return
         }
         guard myGeneration == generation, controller.isCapturing else {
@@ -281,7 +307,9 @@ final class TranscriptionCoordinator {
                 self.lifecycleTask = Task { await self.startTranscribing() }
             } else if engine == .scribe, ranFor >= Self.reconnectAfter {
                 // A session limit or a dropped connection after a while: a new Scribe session, not the phone.
-                self.controller.log("Scribe session ended after \(Int(ranFor)) s: reconnecting")
+                let reason = (provider as? ScribeProvider)?.endReason ?? "no reason given"
+                self.controller.log("Scribe session ended after \(Int(ranFor)) s (\(reason)): reconnecting")
+                self.scribeRetryAttempt = 0
                 self.lifecycleTask = Task { await self.startTranscribing() }
             } else if engine == .scribe {
                 self.lifecycleTask = Task { await self.fallBackToDevice("connection lost") }
@@ -294,6 +322,7 @@ final class TranscriptionCoordinator {
             } else {
                 self.status = .failed("\(engine.displayName) stopped")
                 self.controller.log("\(engine.displayName) stopped after \(Int(ranFor)) s")
+                self.scheduleScribeRetry(reason: "\(engine.displayName) stopped")
             }
         }
         do {
@@ -314,6 +343,8 @@ final class TranscriptionCoordinator {
             status = .failed(error.localizedDescription)
             controller.log("STT start failed: \(error.localizedDescription)")
             await stopTranscribing()
+            status = .failed(error.localizedDescription)
+            scheduleScribeRetry(reason: "start failed")
         }
     }
 
@@ -495,6 +526,24 @@ final class TranscriptionCoordinator {
         cloudFailure = reason
         controller.log("Scribe unavailable (\(reason)): using the iPhone's speech recognition")
         await startTranscribing()
+        // A11: the phone is a stopgap; Scribe is tried again later, whether the phone works or not.
+        scheduleScribeRetry(reason: reason)
+    }
+
+    /// A11: one pending retry at a time; the delay doubles per failed attempt up to 30 s.
+    private func scheduleScribeRetry(reason: String) {
+        guard settings?.useCloud == true, controller.isCapturing, retryTask == nil else { return }
+        scribeRetryAttempt += 1
+        let delay = Self.retryDelay(attempt: scribeRetryAttempt)
+        controller.log("Scribe retry \(scribeRetryAttempt) in \(Int(delay)) s (\(reason))")
+        retryTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard let self, !Task.isCancelled else { return }
+            self.retryTask = nil
+            guard self.controller.isCapturing else { return }
+            self.cloudFailure = nil
+            await self.startTranscribing()
+        }
     }
 
     /// Hold-to-ask released.
