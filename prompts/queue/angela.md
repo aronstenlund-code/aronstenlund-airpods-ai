@@ -85,5 +85,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   2. **Lyssnarskärmen visar inte att den hör.** Lägg till en liten nivåmätare som rör sig när bäraren pratar, i appens stil och diskret. Om Scribe inte är ansluten visas tillståndet från A11 i stället för "Lyssnar". Det bygger förtroende och gör att Aron själv ser om något är fel.
   3. **Tomt läge på lyssnarskärmen:** i Provläge visas provets ämnesord som chips och en knapp **Förhör mig**, som reserv för den som inte vill prata. Sessionens tidigare frågor och svar visas i en lista som går att skrolla. I dag syns bara det senaste.
   4. **Flera prov på Start:** med 2 eller fler prov visas de som en lista sorterad efter datum, och det närmaste överst som stort kort. Kontrollera att det redan fungerar så; annars bygg det.
-  5. Skärmbilder före och efter, ljust och mörkt, iPhone SE och Pro. Be Toby i din rapport att köra om T3.
+  5. **Ägarbeslut (Aron 2026-11-09 19:01):** Startskärmen visar Provläge och Frågor. Socialt, Intervju och Rizz 18+ flyttas till "Fler lägen", en rad eller ett blad under. Röstkommandona fungerar som förut.
+  6. **Intro med en kort loop:** introts ikon byts mot en kort, ljudlös video i loop (3–5 s, HEVC/H.264, högst 1,5 MB) som Aron gör i Higgsfield. Bygg platsen nu med en platshållare: `IntroLoopView` (AVPlayerLayer, loop, ingen ljudsession som stör, startar först när skärmen syns). Med "Reducera rörelse" påslaget visas en stillbild. Filen läggs i `Lumen/Resources/intro-loop.mp4` när Aron skickar den.
+  7. Skärmbilder före och efter, ljust och mörkt, iPhone SE och Pro. Be Toby i din rapport att köra om T3.
 
