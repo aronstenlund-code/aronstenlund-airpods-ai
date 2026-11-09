@@ -67,6 +67,8 @@ final class FakeScribeSocket: ScribeSocket, @unchecked Sendable {
         #expect(ScribeMessage.parse("{\"message_type\":\"warning\",\"text\":\"Zero retention mode not applied\"}") == .other)
         #expect(ScribeMessage.parse("{\"message_type\":\"quota_exceeded\",\"error\":\"no credits\"}") == .failure("quota_exceeded: no credits"))
         #expect(ScribeMessage.parse("not json") == .other)
+        #expect(ScribeMessage.parse("{\"message_type\":\"invalid_request\",\"error\":\"Each keyterm must be at most 20 characters.\"}")
+            == .failure("invalid_request: Each keyterm must be at most 20 characters."))
     }
 
     @Test func audioIsLittleEndianBase64() throws {
@@ -96,6 +98,40 @@ final class FakeScribeSocket: ScribeSocket, @unchecked Sendable {
 
         let english = try #require(token.url(language: .english, keyterms: []))
         #expect(english.absoluteString.contains("language_code=eng"))
+    }
+}
+
+/// A8.5: Scribe closes the session for a keyterm over 20 characters (Oscar O6).
+@Suite struct ScribeKeytermTests {
+    @Test func longTermsAreSplitIntoWholeWordsThatFit() {
+        #expect(ScribeKeyterms.sanitized(["Kristendomens införande"]) == ["Kristendomens", "införande"])
+        #expect(ScribeKeyterms.sanitized(["Elektromagnetisk induktion"]) == ["Elektromagnetisk", "induktion"])
+        #expect(ScribeKeyterms.sanitized(["Ohms lag", "Franska revolutionen"]) == ["Ohms lag", "Franska revolutionen"])
+        // Filler words go; short words that fit stay together.
+        #expect(ScribeKeyterms.sanitized(["Sveriges stormaktstid och dess fall"]) == ["Sveriges", "stormaktstid dess", "fall"])
+    }
+
+    @Test func aSingleWordThatIsTooLongIsCut() {
+        let out = ScribeKeyterms.sanitized(["Kärnkraftsolycksutredningen"])
+        #expect(out == ["Kärnkraftsolycksutre"])
+        #expect(out.allSatisfy { $0.count <= 20 })
+    }
+
+    @Test func atMostTwentyDistinctTermsOfTwentyCharacters() {
+        let raw = ["Fotosyntes", "fotosyntes", "  Cellandning  ", "Kristendomens införande", "Kristendomens"]
+            + (0..<40).map { "term \($0) med ett långt namn som inte får plats" }
+        let out = ScribeKeyterms.sanitized(raw)
+        #expect(out.count == 20)
+        #expect(out.allSatisfy { $0.count <= 20 && !$0.isEmpty })
+        #expect(Set(out.map { $0.lowercased() }).count == out.count)
+        #expect(Array(out.prefix(4)) == ["Fotosyntes", "Cellandning", "Kristendomens", "införande"])
+    }
+
+    @Test func theSocketURLNeverCarriesALongTerm() throws {
+        let token = ScribeToken(token: "t", model_id: "m", ws_url: "wss://example.com/rt", language_code: nil, extra_query: nil)
+        let url = try #require(token.url(language: .swedish, keyterms: ["Kristendomens införande", "Elektromagnetisk induktion"]))
+        let terms = (URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []).filter { $0.name == "keyterms" }.compactMap(\.value)
+        #expect(terms == ["Kristendomens", "införande", "Elektromagnetisk", "induktion"])
     }
 }
 
@@ -237,6 +273,28 @@ final class FakeScribeSocket: ScribeSocket, @unchecked Sendable {
 
         #expect(coordinator.cloudFailure == nil)
         #expect(coordinator.status == .idle)
+    }
+
+    /// A8.5: a session Scribe refuses (1008 `invalid_request` for a bad keyterm) reopens without keyterms, not on the phone.
+    @Test func aRefusedSessionWithKeytermsReopensScribeWithoutThem() async {
+        let h = ControllerHarness()
+        let (coordinator, recorder) = makeCoordinator(h)
+        coordinator.setContextualStrings(["Kristendomens införande", "Vasatiden"])
+        await h.controller.start()
+        #expect(await waitUntil { coordinator.status == .running(.scribe) })
+        #expect(recorder.created[0].contextualStrings == ["Kristendomens", "införande", "Vasatiden"])
+
+        recorder.created[0].emit.finish()
+
+        #expect(await waitUntil { recorder.created.count == 2 && coordinator.status == .running(.scribe) })
+        #expect(recorder.created[1].engine == .scribe)
+        #expect(recorder.created[1].contextualStrings.isEmpty)
+        #expect(coordinator.scribeKeytermsDropped)
+        #expect(coordinator.cloudFailure == nil)
+
+        // A second failure is a real one: the phone takes over.
+        recorder.created[1].emit.finish()
+        #expect(await waitUntil { coordinator.status == .running(.speechTranscriber) })
     }
 
     @Test func theSwitchStaysOnThePhone() async {

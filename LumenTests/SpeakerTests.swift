@@ -179,7 +179,8 @@ func freshTestDefaults() -> UserDefaults {
         }
     }
 
-    @Test func autoNeverAnswersTheWearer() async {
+    /// A8 (owner, 2026-11-08): Frågor answers the wearer's own question too; D81's rule made Lumen silent for Aron.
+    @Test func autoAnswersTheWearerToo() async {
         let rig = makeRig(profile: [0, 1, 0]) // the quiet voice is the wearer
         await rig.model.startListening()
         playTone(rig.h.capture, amplitude: 0.1)
@@ -188,9 +189,7 @@ func freshTestDefaults() -> UserDefaults {
 
         rig.model.receiveFinalTranscript("vad är roten ur hundra", at: Date())
 
-        try? await Task.sleep(for: .milliseconds(200))
-        #expect(spoken(rig).isEmpty, "the wearer's own question is not answered in Auto")
-        #expect(rig.model.conversation.answers.isEmpty)
+        #expect(await waitUntil { spoken(rig) == ["Tio."] })
     }
 
     @Test func autoAnswersSomeoneElse() async {

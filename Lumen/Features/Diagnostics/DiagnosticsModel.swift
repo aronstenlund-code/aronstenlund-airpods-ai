@@ -58,6 +58,7 @@ final class DiagnosticsModel {
     var state: SessionState { controller.state }
     var lastError: String? { controller.lastError }
     var eventLog: [LogEntry] { controller.eventLog }
+    var turns: TurnLedger { controller.turns }
     var chunkCount: Int { controller.chunkCount }
     var lastChunkFrames: Int { controller.lastChunkFrames }
     var formatChanges: [String] { controller.formatChanges }

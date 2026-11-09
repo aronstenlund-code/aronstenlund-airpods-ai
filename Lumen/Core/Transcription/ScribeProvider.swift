@@ -42,10 +42,56 @@ struct ScribeToken: Decodable, Equatable, Sendable {
                      URLQueryItem(name: "audio_format", value: "pcm_16000"),
                      URLQueryItem(name: "commit_strategy", value: "vad")]
         items += tuning.queryItems // D78: pause detection per mode
-        items += keyterms.prefix(ScribeProvider.keytermLimit).map { URLQueryItem(name: "keyterms", value: $0) }
+        items += ScribeKeyterms.sanitized(keyterms).map { URLQueryItem(name: "keyterms", value: $0) } // A8.5
         items += URLComponents(string: "?" + (extra_query ?? ""))?.queryItems ?? []
         components.queryItems = items
         return components.url
+    }
+}
+
+/// A8.5: Scribe closes the whole session (1008 `invalid_request`) when one keyterm is longer than 20 characters,
+/// and `/study-profile` sends terms up to 40. Every term that reaches the socket goes through here. Pure.
+enum ScribeKeyterms {
+    static let maxLength = 20
+    static let maxCount = 20
+    /// Words that carry nothing for the recogniser when a long term has to be split.
+    private static let fillers: Set<String> = ["och", "i", "av", "på", "en", "ett", "den", "det", "de", "för", "med", "till",
+                                               "om", "som", "the", "of", "and", "a", "an", "in", "on", "to", "for"]
+
+    /// At most 20 terms of at most 20 characters, each once (case-insensitive), in the given order. A longer term is
+    /// split into runs of whole words that fit ("Kristendomens införande" → "Kristendomens", "införande"), filler
+    /// words dropped; a single word that is still too long is cut at 20.
+    static func sanitized(_ terms: [String]) -> [String] {
+        var out: [String] = []
+        func add(_ raw: String) {
+            let term = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !term.isEmpty, out.count < maxCount,
+                  !out.contains(where: { $0.caseInsensitiveCompare(term) == .orderedSame }) else { return }
+            out.append(term)
+        }
+        for raw in terms {
+            guard out.count < maxCount else { break }
+            let term = raw.split(whereSeparator: \.isWhitespace).joined(separator: " ")
+            if term.count <= maxLength {
+                add(term)
+                continue
+            }
+            let words = term.split(separator: " ").map(String.init).filter { !fillers.contains($0.lowercased()) }
+            var run = ""
+            for word in words {
+                let piece = word.count > maxLength ? String(word.prefix(maxLength)) : word
+                if run.isEmpty {
+                    run = piece
+                } else if run.count + 1 + piece.count <= maxLength {
+                    run += " " + piece
+                } else {
+                    add(run)
+                    run = piece
+                }
+            }
+            if !run.isEmpty, run.count >= 2 { add(run) }
+        }
+        return out
     }
 }
 
@@ -73,7 +119,7 @@ enum ScribeMessage: Equatable, Sendable {
             return .committed(body.text ?? "")
         default:
             let lowered = kind.lowercased()
-            if lowered.contains("error") || lowered.contains("quota") || lowered.contains("limit") {
+            if lowered.contains("error") || lowered.contains("quota") || lowered.contains("limit") || lowered.contains("invalid") {
                 return .failure(body.error.map { "\(kind): \($0)" } ?? kind)
             }
             return .other
@@ -94,6 +140,14 @@ protocol ScribeSocket: Sendable {
     func close()
 }
 
+/// The server closed the socket; `code` 1008 is a policy close (`invalid_request`).
+struct ScribeClosed: Error, LocalizedError, Equatable {
+    var code: Int
+    var reason: String
+    var errorDescription: String? { "closed \(code) \(reason)" }
+    var isInvalidRequest: Bool { code == 1008 || reason.contains("invalid_request") }
+}
+
 /// Sendable: `URLSessionWebSocketTask` is thread-safe.
 final class URLSessionScribeSocket: ScribeSocket, @unchecked Sendable {
     private let task: URLSessionWebSocketTask
@@ -108,10 +162,17 @@ final class URLSessionScribeSocket: ScribeSocket, @unchecked Sendable {
     }
 
     func receive() async throws -> String {
-        switch try await task.receive() {
-        case .string(let text): return text
-        case .data(let data): return String(decoding: data, as: UTF8.self)
-        @unknown default: return ""
+        do {
+            switch try await task.receive() {
+            case .string(let text): return text
+            case .data(let data): return String(decoding: data, as: UTF8.self)
+            @unknown default: return ""
+            }
+        } catch {
+            // A8.5: the close code and reason say why Scribe ended (1008 `invalid_request` for a bad keyterm).
+            guard task.closeCode != .invalid else { throw error }
+            let reason = task.closeReason.map { String(decoding: $0, as: UTF8.self) } ?? ""
+            throw ScribeClosed(code: task.closeCode.rawValue, reason: reason)
         }
     }
 
@@ -145,6 +206,13 @@ final class ScribeProvider: STTProvider {
     private var feedTask: Task<Void, Never>?
     private var receiveTask: Task<Void, Never>?
     private var streamedFrames = 0
+    /// Why the session ended by itself, for the coordinator (A8.5). Nil while it runs or after a normal stop.
+    private(set) var endReason: String?
+    /// The server refused the request (1008 / `invalid_request`): reopening with the same keyterms fails again.
+    var endedAsInvalidRequest: Bool {
+        guard let endReason else { return false }
+        return endReason.contains("1008") || endReason.lowercased().contains("invalid") || endReason.lowercased().contains("keyterm")
+    }
 
     init(locale: Locale, language: TranscriptionLanguage, config: BackendConfig, auth: SupabaseAuth, http: any HTTPStreaming,
          makeSocket: @escaping @Sendable (URL) -> any ScribeSocket = { URLSessionScribeSocket(url: $0) }) {
@@ -236,6 +304,7 @@ final class ScribeProvider: STTProvider {
                 case .committed(let text):
                     resultsContinuation.yield(STTResult(text: text, isFinal: true))
                 case .failure(let detail):
+                    endReason = detail
                     Log.transcription.error("Scribe: \(detail, privacy: .public)")
                     resultsContinuation.finish()
                     return
@@ -244,6 +313,7 @@ final class ScribeProvider: STTProvider {
                 }
             }
         } catch {
+            if endReason == nil { endReason = error.localizedDescription }
             Log.transcription.error("Scribe connection ended: \(error.localizedDescription, privacy: .public)")
             resultsContinuation.finish()
         }

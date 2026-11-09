@@ -45,10 +45,11 @@ func makeTestActivation(sensitivity: GateSensitivity = .medium, debounce: TimeIn
         #expect(fired().first?.gate?.fires == true)
 
         say("hur många kromosomer har en människa", at: 8)
-        #expect(fired().count == 1, "second question inside the 5 s minimum interval is skipped")
-
-        say("hur många kromosomer har en människa", at: 14)
-        #expect(fired().count == 2)
+        #expect(fired().count == 1, "a second question inside the 5 s minimum interval waits")
+        #expect(controller.pendingDueAt == t0.addingTimeInterval(10))
+        #expect(!controller.fireDue(now: t0.addingTimeInterval(9)))
+        #expect(controller.fireDue(now: t0.addingTimeInterval(10)), "A8: it is asked when the interval is over, never dropped")
+        #expect(fired().map(\.query) == ["vad är fotosyntes?", "hur många kromosomer har en människa"])
     }
 
     @Test func aQuestionWaitsForTheSpeakerToFinish() {
@@ -76,7 +77,8 @@ func makeTestActivation(sensitivity: GateSensitivity = .medium, debounce: TimeIn
         #expect(gate.evaluate("vad tycker du om?").fires, "a question mark ends it")
     }
 
-    @Test func aQuestionThatTurnsIntoAStatementIsDropped() {
+    /// A8.2: a question that goes on is sent whole; the backend judges it (it used to be dropped).
+    @Test func aQuestionThatGoesOnIsSentWhole() {
         let controller = makeTestActivation(debounce: 1.0)
         let fired = recording(controller)
         var conversation = Conversation()
@@ -86,8 +88,62 @@ func makeTestActivation(sensitivity: GateSensitivity = .medium, debounce: TimeIn
         conversation.finalize("idag ska vi prata om celler och om hur de delar sig och växer i kroppen hos alla djur", at: t0.addingTimeInterval(0.5))
         controller.segmentFinalized(conversation.finalSegments.last!, conversation: conversation, language: .swedish,
                                     isPlaybackSpeaking: false, now: t0.addingTimeInterval(0.5))
-        #expect(!controller.fireDue(now: t0.addingTimeInterval(3)))
-        #expect(fired().isEmpty)
+        #expect(controller.fireDue(now: t0.addingTimeInterval(3)))
+        #expect(fired().map(\.query) == ["vem vet idag ska vi prata om celler och om hur de delar sig och växer i kroppen hos alla djur"])
+    }
+
+    private func say(_ text: String, at seconds: TimeInterval, to controller: ActivationController, in conversation: inout Conversation,
+                     speaking: Bool = false) {
+        conversation.finalize(text, at: t0.addingTimeInterval(seconds))
+        controller.segmentFinalized(conversation.finalSegments.last!, conversation: conversation, language: .swedish,
+                                    isPlaybackSpeaking: speaking, now: t0.addingTimeInterval(seconds))
+    }
+
+    /// A8.2: Aron's case. Scribe cut the question at a breath; the first half went to the backend (not_question).
+    /// The rest completes it and the whole question is sent, inside the cooldown.
+    @Test func wordsThatCompleteTheQuestionJustSentAreSentWithIt() {
+        let controller = makeTestActivation()
+        let fired = recording(controller)
+        var conversation = Conversation()
+        say("vilka är de största", at: 0, to: controller, in: &conversation)
+        say("bergen i världen", at: 1.4, to: controller, in: &conversation)
+        #expect(fired().map(\.query) == ["vilka är de största", "vilka är de största bergen i världen"])
+    }
+
+    @Test func noContinuationAfterTheAnswerWasDelivered() {
+        let controller = makeTestActivation()
+        let fired = recording(controller)
+        var conversation = Conversation()
+        say("vad är fotosyntes", at: 0, to: controller, in: &conversation)
+        controller.answerDelivered()
+        say("okej tack så mycket", at: 3, to: controller, in: &conversation)
+        #expect(fired().map(\.query) == ["vad är fotosyntes"])
+    }
+
+    /// A8.4: two questions in one breath are two turns; the second waits for the first answer.
+    @Test func twoQuestionsInOneUtteranceAreAskedOneAfterTheOther() {
+        let controller = makeTestActivation()
+        let fired = recording(controller)
+        var conversation = Conversation()
+        var dropped: [String] = []
+        controller.onDrop = { text, _ in dropped.append(text) }
+        say("vilka är de största bergen i världen fortsätt att du i framtiden bara ska ge korta svar vad är 250 gånger 250",
+            at: 0, to: controller, in: &conversation)
+        #expect(fired().map(\.query) == ["vilka är de största bergen i världen"])
+        #expect(controller.hasQueued)
+        #expect(controller.fireNextQueued(now: t0.addingTimeInterval(6)))
+        #expect(fired().last?.query == "vad är 250 gånger 250")
+        #expect(dropped == ["fortsätt att du i framtiden bara ska ge korta svar"], "the request is no question in Frågor")
+        #expect(!controller.fireNextQueued(now: t0.addingTimeInterval(9)))
+    }
+
+    @Test func wordsWhileLumenSpeaksAreRecordedAsDropped() {
+        let controller = makeTestActivation()
+        var conversation = Conversation()
+        var reasons: [String] = []
+        controller.onDrop = { _, reason in reasons.append(reason) }
+        say("vad är pi", at: 0, to: controller, in: &conversation, speaking: true)
+        #expect(reasons == ["heard while Lumen spoke"])
     }
 
     @Test func autoModeIgnoresOurOwnPlayback() {

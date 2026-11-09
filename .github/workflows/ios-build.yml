@@ -12,6 +12,8 @@ on:
       - "site/**"
       - "scripts/**"
       - ".github/workflows/pages.yml"
+      - "AppTests/**"
+      - ".github/workflows/apptest-*.yml"
       - "**/*.md"
   pull_request:
     paths-ignore:
@@ -23,6 +25,8 @@ on:
       - "site/**"
       - "scripts/**"
       - ".github/workflows/pages.yml"
+      - "AppTests/**"
+      - ".github/workflows/apptest-*.yml"
       - "**/*.md"
   workflow_dispatch:
 

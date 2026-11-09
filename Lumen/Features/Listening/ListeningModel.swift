@@ -28,6 +28,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private var questionTimer: Task<Void, Never>?
     /// D80: the answer being made before the pause is over. Spoken only when the pause comes and the words did not go on.
     private var ahead: AheadAnswer?
+    /// A8.3: the Diagnostics turn rows of the answer in flight and of the answer made ahead.
+    private var currentTurnID: UUID?
+    private var aheadTurnID: UUID?
+    /// A8.4: Provläge turns split from one utterance, asked one after another.
+    private var studyQueue: [String] = []
     private(set) var aheadStats = AheadStats()
     /// The turn being timed, logged at the first sound (D80).
     private var timeline: TurnTimeline?
@@ -257,6 +262,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             speaker?.settings.reconcile(with: voices, defaultID: defaultID)
         }
         activation.onActivate = { [weak self] request in self?.activated(request) }
+        activation.onDrop = { [weak self] text, reason in
+            guard let self else { return }
+            self.controller.turns.dropped(text, mode: self.mode.rawValue, trigger: "auto", reason: reason)
+        }
         answers.sink = self
         speaker.onSentenceStarted = { [weak self] provider in
             guard let self else { return }
@@ -424,6 +433,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func stopListening() async {
         activation.cancelPending()
+        studyQueue.removeAll()
         answers.cancel()
         speaker.interrupt()
         conversation.cancelAnswer()
@@ -889,8 +899,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             case .rizz, .social: rizzTurn(text)
             case .standard, .prov:
                 headMotion.stop() // answered with the voice
-                activated(ActivationRequest(query: text, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
-                if mode == .prov { recordStudyTurn(text) }
+                // A8.4: several questions in one breath are separate turns, each with its own answer.
+                var parts = QuestionSplitter.split(text)
+                let first = parts.isEmpty ? text : parts.removeFirst()
+                if !parts.isEmpty { controller.log("\(mode.rawValue): one turn split into \(parts.count + 1) parts") }
+                studyQueue = parts
+                activated(ActivationRequest(query: first, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
+                if mode == .prov { recordStudyTurn(first) }
             }
         case .stalled:
             if let session = rizz { requestSuggestions(trigger: session.hasConversation ? "stall" : "opener") }
@@ -982,11 +997,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             let wait = due.timeIntervalSinceNow
             if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
             guard let self, !Task.isCancelled else { return }
-            if self.controller.playback.isSpeaking {
-                self.activation.cancelPending()
-                return
-            }
-            self.activation.fireDue(now: Date())
+            // A8: Lumen is speaking: the question waits for the end of the answer (speechFinished), never dropped.
+            if self.controller.playback.isSpeaking || self.speaker.hasPendingSpeech { return }
+            if case .answering = self.answers.status { return } // asked when this answer is over
+            if !self.activation.fireDue(now: Date()) { self.scheduleQuestionTimer() } // the cooldown moved it
         }
     }
 
@@ -1276,6 +1290,29 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if study.isActive, finishSingleTurn() { return }
         reopenRecognizerAfterSpeech()
         listenForHeadAnswerIfAsked()
+        if !study.isActive { askWaitingQuestionIfIdle() }
+    }
+
+    /// A8: a question that waited (cooldown, Lumen speaking, or split from the same utterance) goes now that the
+    /// answer before it is over. Frågor only; Provläge asks its split turns when it would listen again.
+    private func askWaitingQuestionIfIdle() {
+        guard !study.isActive, isListening, !speaker.isSpeaking, !speaker.hasPendingSpeech else { return }
+        if case .answering = answers.status { return }
+        if activation.pendingDueAt != nil {
+            if !activation.fireDue(now: Date()) { scheduleQuestionTimer() }
+            return
+        }
+        activation.fireNextQueued(now: Date())
+    }
+
+    /// A8.4: the next turn split from the same utterance, instead of listening again. True: it was asked.
+    private func askNextStudyPart() -> Bool {
+        guard study.isActive, mode == .prov || mode == .standard, !studyQueue.isEmpty else { return false }
+        let next = studyQueue.removeFirst()
+        controller.log("\(mode.rawValue): next part of the same turn: \(next)")
+        activated(ActivationRequest(query: next, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
+        if mode == .prov { recordStudyTurn(next) }
+        return true
     }
 
     /// D83: after a yes/no check question in Provläge, a nod or a shake answers it for 6 s. The voice works too.
@@ -1308,7 +1345,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             try? await Task.sleep(for: .seconds(Self.echoTail))
             guard !Task.isCancelled, !self.speaker.isSpeaking else { return }
             self.transcription.setInputGated(false)
-            if self.study.isActive { self.study.resumeListening() }
+            if self.study.isActive, !self.askNextStudyPart() { self.study.resumeListening() }
         }
     }
 
@@ -1336,7 +1373,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func studyAnswerEnded() {
         guard study.isActive, !mode.isLive, !speaker.hasPendingSpeech, !finishSingleTurn() else { return }
         transcription.setInputGated(false)
-        study.resumeListening()
+        if !askNextStudyPart() { study.resumeListening() }
     }
 
     // MARK: - Voice profile and speakers (D81)
@@ -1812,15 +1849,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func activated(_ request: ActivationRequest, persona: PersonaRequest? = nil) {
         if VoiceCommand.isMusicHandOff(request.query) { return } // the final result already paused the session
-        if request.trigger == .auto, isWearersVoice() {
-            // D81: Auto answers the room, not the wearer ("Lumen, …" is how the wearer asks).
-            controller.log("Auto: the wearer's own voice (voice profile), not answered")
-            discardAhead(reason: "the wearer's own voice")
+        // A8 (owner, 2026-11-08): Frågor answers the wearer's own questions too. D81's "Auto never answers the
+        // wearer" made Lumen silent when Aron asked, with a voice profile. The voice is only logged now.
+        if request.trigger == .auto, isWearersVoice() { controller.log("Auto: the wearer's own voice (answered, A8)") }
+        if request.trigger == .auto, FillerFilter.isOnlyFiller(request.query) {
+            controller.turns.dropped(request.query, mode: mode.rawValue, trigger: request.trigger.rawValue, reason: "filler")
             return
-        }
-        if request.trigger == .auto, FillerFilter.isOnlyFiller(request.query) { return } // D74
+        } // D74
         if persona?.social == nil, deliverAhead(for: request) { return } // D80: ready the moment the pause is over
         discardAhead(reason: "a different turn")
+        controller.turns.finish(currentTurnID, outcome: .interrupted, reason: "a newer turn: \(request.query)")
         currentPersona = persona?.persona
         pendingQuestion = request
         answerNotice = nil
@@ -1832,7 +1870,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         sessionObserver?(.asked(query: request.query, trigger: request.trigger.rawValue), Date())
         if !study.isActive { logTurn() }
         timeline = TurnTimeline(heardAt: lastHeardAt, requestAt: Date(), pauseEndAt: Date(), answeredAhead: false)
-        answers.answer(request, context: context(for: request), persona: persona)
+        let sent = self.context(for: request)
+        currentTurnID = controller.turns.begin(fragment: request.query, mode: mode.rawValue, trigger: request.trigger.rawValue,
+                                               transcript: sent.transcript)
+        answers.answer(request, context: sent, persona: persona)
     }
 
     private func context(for request: ActivationRequest) -> AnswerContext {
@@ -1878,8 +1919,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let request: ActivationRequest
         switch mode {
         case .standard:
-            guard !study.isActive, QuestionGate(sensitivity: activation.settings.sensitivity).evaluate(text).fires,
-                  !isWearersVoice() else { return }
+            guard !study.isActive, QuestionGate(sensitivity: activation.settings.sensitivity).evaluate(text).fires else { return }
             request = ActivationRequest(query: text, trigger: .auto, language: language)
         case .prov:
             guard study.isActive, study.phase == .listening else { return }
@@ -1908,7 +1948,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if case .answering = answers.status { return }
         ahead = AheadAnswer(request: request, persona: persona, heardAt: Date())
         aheadStats.started += 1
-        answers.answer(request, context: context(for: request), persona: persona)
+        let sent = self.context(for: request)
+        aheadTurnID = controller.turns.begin(fragment: request.query, mode: mode.rawValue, trigger: request.trigger.rawValue,
+                                             transcript: sent.transcript, ahead: true)
+        answers.answer(request, context: sent, persona: persona)
     }
 
     /// The pause is over and the turn is the one answered ahead: play it back through the normal path at once.
@@ -1923,6 +1966,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if speaker.isSpeaking { speaker.interrupt() }
         latency.begin(current.request)
         controller.log("Activation (\(current.request.trigger.rawValue)) · answered ahead: \(current.request.query)")
+        // Toby T1 finding 3: the answer-ahead path reports `asked` too.
+        sessionObserver?(.asked(query: current.request.query, trigger: current.request.trigger.rawValue), Date())
+        controller.turns.finish(currentTurnID, outcome: .interrupted, reason: "a newer turn: \(current.request.query)")
+        currentTurnID = aheadTurnID
+        aheadTurnID = nil
         logTurn()
         timeline = TurnTimeline(heardAt: current.heardAt, requestAt: current.heardAt, firstTokenAt: current.firstTokenAt,
                                 doneAt: current.doneAt, pauseEndAt: Date(), answeredAhead: true)
@@ -1943,6 +1991,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
+    /// A8.3: the turn row an answer event belongs to: the answer made ahead while it is buffered, else the one in flight.
+    private var eventTurnID: UUID? {
+        if let current = ahead, !current.delivered { return aheadTurnID }
+        return currentTurnID
+    }
+
     /// Keeps an event of the answer made ahead. True: it was buffered and must not reach the screen or the voice.
     private func bufferAhead(_ event: AheadAnswer.Event) -> Bool {
         guard var current = ahead, !current.delivered else { return false }
@@ -1959,6 +2013,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.discardPrepared()
         aheadStats.discarded += 1
         if current.prefetched { aheadStats.prefetchWasted += 1 }
+        controller.turns.finish(aheadTurnID, outcome: .discarded, reason: reason)
+        aheadTurnID = nil
         controller.log("Answer ahead discarded (\(reason)) · \(aheadStats.summary())")
     }
 
@@ -2049,6 +2105,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func answerSentence(_ sentence: String) {
         if bufferAhead(.sentence(sentence)) { return }
+        activation.answerDelivered() // A8.2: later words are a new turn
         if case .paused = state { return } // a typed question while paused is shown, not spoken over the music
         if pendingQuestion?.trigger == .interviewPrep { return }
         let spoken = pendingQuestion?.language ?? language
@@ -2068,8 +2125,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             instructionEnded(done?.calibration, answered: true)
             return
         }
+        controller.turns.setStatus(eventTurnID, status: done?.retract == true ? "retract" : "ok", isQuestion: true)
         if bufferAhead(.completed(latencyMs: latencyMs, done: done)) { return }
         if done?.retract == true {
+            controller.turns.finish(currentTurnID, outcome: .silent, reason: "the backend withdrew it")
             // Kevin: the model said [[TYST]] after it had begun: nothing of it is kept or said.
             speaker.interrupt()
             conversation.cancelAnswer()
@@ -2077,12 +2136,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             if ahead?.delivered == true { ahead = nil }
             controller.log("Answer withdrawn by the backend (retract)")
             studyAnswerEnded()
+            askWaitingQuestionIfIdle()
             return
         }
         if ahead?.delivered == true { ahead = nil }
         inFlightTrigger = nil
         if timeline?.doneAt == nil { timeline?.doneAt = Date() }
         if let turn = conversation.completeAnswer(latencyMs: latencyMs) {
+            activation.answerDelivered()
+            var notSpoken: String? = speaker.settings.speakAnswers ? nil : "shown, voice off"
+            if case .paused = state { notSpoken = "shown, paused" }
+            controller.turns.finish(currentTurnID, outcome: .answered, reason: notSpoken)
             answerWorked()
             sessionObserver?(.answered(question: turn.question, answer: turn.answer, firstTextMs: latencyMs, source: turn.source), Date())
             history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
@@ -2104,7 +2168,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let latencyMs {
             controller.log("Answer · first text after \(Int(latencyMs)) ms" + (done?.usage?.model.map { " · \($0)" } ?? ""))
         }
+        controller.turns.finish(currentTurnID, outcome: .silent, reason: "no answer text")
         studyAnswerEnded()
+        askWaitingQuestionIfIdle()
     }
 
     func answerReportRequested() {
@@ -2169,13 +2235,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             instructionEnded(nil, answered: true)
             return
         }
+        controller.turns.setStatus(eventTurnID, status: "not_question", isQuestion: false)
         if bufferAhead(.skipped(request)) { return }
         if ahead?.delivered == true { ahead = nil }
         latency.end()
         conversation.cancelAnswer()
         answerNotice = "Not a question — no answer (auto mode)"
         controller.log("Auto: backend says not a question: \(request.query)")
+        controller.turns.finish(currentTurnID, outcome: .silent, reason: "backend: not a question")
         studyAnswerEnded()
+        askWaitingQuestionIfIdle()
     }
 
     func answerFailed(_ message: String, wantsFallback: Bool) {
@@ -2189,6 +2258,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let current = ahead, !current.delivered {
             // The answer made ahead failed: at the pause the turn is asked again the normal way.
             ahead = nil
+            controller.turns.setStatus(aheadTurnID, status: message, isQuestion: nil)
+            controller.turns.finish(aheadTurnID, outcome: .failed, reason: "ahead; asked again at the pause")
+            aheadTurnID = nil
             controller.log("Answer ahead failed: \(message)")
             return
         }
@@ -2200,7 +2272,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         controller.log("Answer failed: \(message)" + (wantsFallback ? " · fallback requested (on-device engine not available on this iPhone)" : ""))
         if let error = answers.lastError, error != .cancelled { recordFailure(source: "answer", detail: error.localizedDescription) }
         report(problem: Self.problem(for: answers.lastError))
+        controller.turns.setStatus(currentTurnID, status: message, isQuestion: nil)
+        controller.turns.finish(currentTurnID, outcome: .failed)
         studyAnswerEnded()
+        askWaitingQuestionIfIdle()
     }
 
     // MARK: - TranscriptSink (fed by TranscriptionCoordinator)

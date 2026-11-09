@@ -66,6 +66,13 @@ final class TranscriptionCoordinator {
     /// The keyterms the running Scribe session was opened with, and when (D80).
     private var connectedKeyterms: [String] = []
     private var scribeStartedAt: Date?
+    /// A8.5: Scribe refused the session (a bad keyterm closes it with 1008 `invalid_request`), so for the rest of this
+    /// listening run it opens without keyterms instead of falling back to the phone.
+    private(set) var scribeKeytermsDropped = false
+    /// The keyterms a Scribe session opens with: sanitised (≤ 20 × ≤ 20 characters), or none after a refusal.
+    var scribeKeyterms: [String] {
+        scribeKeytermsDropped ? [] : ScribeKeyterms.sanitized(contextualStrings)
+    }
     /// A Scribe session is reopened for new keyterms at most this often, and only in a quiet moment.
     static let keytermReconnectInterval: TimeInterval = 120
     private var flushTask: Task<Void, Never>?
@@ -114,6 +121,7 @@ final class TranscriptionCoordinator {
 
     func captureStarted() {
         cloudFailure = nil
+        scribeKeytermsDropped = false
         lifecycleTask?.cancel()
         lifecycleTask = Task { await startTranscribing() }
     }
@@ -152,7 +160,7 @@ final class TranscriptionCoordinator {
         }
 
         let provider = makeProvider(locale, engine)
-        provider.setContextualStrings(contextualStrings)
+        provider.setContextualStrings(engine == .scribe ? scribeKeyterms : contextualStrings)
         provider.setScribeTuning(scribeTuning)
         status = .preparing(engine)
         do {
@@ -224,7 +232,15 @@ final class TranscriptionCoordinator {
             // by itself. D74: listening never stops by itself, so it starts again.
             guard let self, myGeneration == self.generation, self.controller.isCapturing else { return }
             let ranFor = Date().timeIntervalSince(startedAt)
-            if engine == .scribe, ranFor >= Self.reconnectAfter {
+            let refused = (provider as? ScribeProvider)?.endedAsInvalidRequest == true
+            if engine == .scribe, !self.scribeKeytermsDropped, !self.connectedKeyterms.isEmpty,
+               refused || ranFor < Self.reconnectAfter {
+                // A8.5: a refused request (or a session that died at once with keyterms) is retried once without them.
+                let reason = (provider as? ScribeProvider)?.endReason ?? "ended after \(Int(ranFor)) s"
+                self.controller.log("Scribe refused the session (\(reason)): reopening without keyterms")
+                self.scribeKeytermsDropped = true
+                self.lifecycleTask = Task { await self.startTranscribing() }
+            } else if engine == .scribe, ranFor >= Self.reconnectAfter {
                 // A session limit or a dropped connection after a while: a new Scribe session, not the phone.
                 self.controller.log("Scribe session ended after \(Int(ranFor)) s: reconnecting")
                 self.lifecycleTask = Task { await self.startTranscribing() }
@@ -246,7 +262,7 @@ final class TranscriptionCoordinator {
             guard myGeneration == generation else { return }
             status = .running(engine)
             if engine == .scribe {
-                connectedKeyterms = Array(contextualStrings.prefix(ScribeProvider.keytermLimit))
+                connectedKeyterms = scribeKeyterms
                 scribeStartedAt = Date()
             }
             controller.log("STT running: \(engine.displayName) · \(locale.identifier(.bcp47))")
@@ -360,7 +376,7 @@ final class TranscriptionCoordinator {
     /// caller checks) and at most every two minutes the session is reopened with them.
     func applyKeytermsIfQuiet() async {
         guard case .running(.scribe) = status, controller.isCapturing,
-              Array(contextualStrings.prefix(ScribeProvider.keytermLimit)) != connectedKeyterms,
+              !scribeKeytermsDropped, scribeKeyterms != connectedKeyterms,
               let started = scribeStartedAt, Date().timeIntervalSince(started) >= Self.keytermReconnectInterval else { return }
         controller.log("Scribe keyterms changed: reconnecting in a pause")
         await startTranscribing()
@@ -370,7 +386,7 @@ final class TranscriptionCoordinator {
     /// for a pause; the user has not started yet).
     func applyKeytermsNow() async {
         guard case .running(.scribe) = status, controller.isCapturing,
-              Array(contextualStrings.prefix(ScribeProvider.keytermLimit)) != connectedKeyterms else { return }
+              !scribeKeytermsDropped, scribeKeyterms != connectedKeyterms else { return }
         controller.log("Scribe keyterms for the exam: reconnecting")
         await startTranscribing()
     }
@@ -419,6 +435,7 @@ final class TranscriptionCoordinator {
     func setUseCloud(_ useCloud: Bool) async {
         settings?.useCloud = useCloud
         cloudFailure = nil
+        scribeKeytermsDropped = false
         if controller.isCapturing {
             await startTranscribing()
         }

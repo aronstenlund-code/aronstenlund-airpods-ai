@@ -75,6 +75,11 @@ enum ResultsMarkdown {
         out.append("```")
         out.append("")
 
+        out.append("## Turns (A8: fragment, is_question, status, what the user got)")
+        out.append("")
+        out.append(model.turns.markdown)
+        out.append("")
+
         out.append("## Event log (newest first)")
         out.append("")
         let tf = DateFormatter()

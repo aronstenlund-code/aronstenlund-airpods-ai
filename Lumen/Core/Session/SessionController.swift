@@ -20,6 +20,8 @@ final class SessionController {
     private(set) var state: SessionState = .idle
     private(set) var lastError: String?
     private(set) var eventLog: [LogEntry] = []
+    /// A8.3: every turn that could have been answered, with its fate, for the Diagnostics export.
+    var turns = TurnLedger()
     private(set) var chunkCount = 0
     private(set) var lastChunkFrames = 0
     private(set) var formatChanges: [String] = []
