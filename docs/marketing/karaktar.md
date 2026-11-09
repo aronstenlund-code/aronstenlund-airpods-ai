@@ -2,7 +2,7 @@
 
 Samma person i intro, annonser och på demosidan. Han är påhittad och AI-genererad, och är ingen verklig person. Använd alltid **referensbilden** (`docs/marketing/elias-referens.png` när den finns) som bildreferens vid generering, så att ansiktet blir detsamma.
 
-**Stil (Deangelo 2026-11-09, efter Arons test): illustrerad, inte fotorealistisk.** Handritad bläcklinje med flata färgfält, som en teckning i ett anteckningsblock som fått liv. Det matchar appens handstil och rutpapper, ser inte "AI-foto" ut och blir lättare att hålla lika mellan bilder.
+**Stil (Aron 2026-11-09): varm, stiliserad 3D som i en animerad långfilm**, i samma anda som Luca: runda förenklade former, handmålade texturer, matt hud, varmt sommarljus och ett uttrycksfullt ansikte. Det är en egen originalfigur och ingen kopia av en befintlig. Skriv aldrig film- eller studionamn i prompten. Undvik det som blev fel i testerna: stel passfotopose, blick rakt in i kameran, fotorealism, platt linjeteckning och blank plastyta.
 
 **Utseende**
 - 17 år, svensk gymnasieelev i årskurs 2.
