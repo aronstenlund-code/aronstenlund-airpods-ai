@@ -46,3 +46,14 @@
   5. Att ett nej eller tystnad inte gör den långrandig.
   Budget 0,40 USD.
 
+- [ ] **O12 – Jämför röstmodellerna** (effort: medium). Beror på: Kevins K14 punkt 1. Gör före O11.
+  1. Välj 20 riktiga Lumen-svar på svenska ur D87-körningen (fakta, tal och årtal, namn, en lång förklaring). Läs igenom texterna innan något genereras, för att spara ElevenLabs-krediter.
+  2. Generera via `/tts` med `eleven_flash_v2_5`, `eleven_v4_turbo` och `eleven_multilingual_v2`, med samma röst.
+  3. Mät per modell:
+     - tid till första ljud (p50/p90),
+     - kostnad,
+     - **tydlighet**: kör ljudet genom Scribe och räkna ordfel mot texten, där ett lågt värde betyder att det låter tydligt,
+     - **artefakter**: tystnader över 400 ms mitt i en mening, upprepade stavelser, avklippta slut.
+  4. Lägg 3 korta A/B-par (samma mening) som Actions-artefakt eller i Supabase Storage, aldrig i git, så att Aron kan lyssna och välja själv.
+  5. Rapport med tabell och rekommendation. Budget: högst 1 USD i API och 20 000 ElevenLabs-tecken.
+
