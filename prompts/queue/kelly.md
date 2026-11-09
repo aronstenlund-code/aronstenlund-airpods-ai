@@ -32,3 +32,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
   3. Gör en ny delningsbild (1200×630) med Elias.
   Tills bilden finns: bygg med en platshållare i samma storlek. Lighthouse ska hålla minst 95. Skärmbilder mobil och dator.
 
+**Deangelo 2026-11-09 21:35:** bilderna finns. Stillbilden ligger i `docs/marketing/elias-frilagd.png` (och `docs/marketing/elias/`), och scrollsekvensen i `site/img/elias-seq/` med `manifest.json`. Byt ut platshållarna i Ke7.
+

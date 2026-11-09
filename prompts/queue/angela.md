@@ -100,3 +100,9 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   6. Lägg till en loggrad för namnlösa musikkommandon.
   Be Toby köra om T6 när du är klar. Krav: 0 falska träffar.
 
+- [ ] **A15 – "Mer?" efter korta svar: ja, nick eller tryck** (effort: high). Gör efter A14, före A13. Hör ihop med Kevins K13 (läs den).
+  1. Efter ett kort svar finns ett fönster på 5 s där "ja", "mer", "utveckla", "gärna", en nick (CMHeadphoneMotionManager, som D86) eller ett tryck på AirPods spelar upp det cachade långa svaret direkt (mål: under 1 s). Lumen säger inte "vill du ha mer?" varje gång. Det hörs en mjuk, kort ton (under 150 ms) och lyssningsskärmen visar "Säg ja för mer". Användaren kan stänga av tonen.
+  2. "Nej", tystnad eller en ny fråga stänger fönstret. Ett "ja" som är riktat till någon annan, alltså inte bärarens röst (D81), räknas inte.
+  3. Skicka signalerna (tackade ja/nej/tystnad, rättelse) med sammanhang till /memory som K13 beskriver. När standarden blivit "långt direkt" visas det i Minne som en läsbar rad, till exempel "Utvecklade svar i Historia", och går att ändra.
+  4. Tester: fönstret, nick kontra skakning, ett "ja" mitt i en mening räknas inte. Toby kör i simulatorn. **Ej verifierat på enhet** tills Aron har testat.
+

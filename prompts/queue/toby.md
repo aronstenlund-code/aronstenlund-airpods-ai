@@ -16,3 +16,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 - [x] klar 2026-11-09 20:05 → `reports/apptest/2026-11-09-2000-toby-t6-commands.md` **T6 – Kommandon i simulatorn** (effort: medium). Beror på: Angelas A7. Läs `docs/COMMANDS.md`. Mata varje kommando (3 varianter) och 10 vanliga meningar som innehåller kommandoord via WAV-kroken i alla 5 lägen. Krav: rätt åtgärd och 0 falska träffar. Lägg till de 5 viktigaste kommandona i `docs/DEVICE-TEST-QUICK.md` så att Aron testar dem på telefon.
 
+- [ ] **T7 – Mer-fönstret i simulatorn** (effort: medium). Beror på: Angelas A15. Kör via WAV-kroken: "ja", "mer", "gärna" inom 5 s, ett "ja" efter 6 s, "ja" mitt i en mening, ett ja från en annan röst och en ny fråga i fönstret. Krav: rätt i alla fall, och långt svar under 1 s efter ja. Lägg till steget i `docs/DEVICE-TEST-QUICK.md` (nick och tryck testas på telefonen av Aron).
+
