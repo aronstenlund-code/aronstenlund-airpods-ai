@@ -11,7 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
-- **Toby (apptestare): T5 pågår** (2026-11-09 20:05), omtest efter A8 och A11. Senast klart: **T6** kommandon i simulatorn, 485/541 rätt i 5 lägen, 5 falska träffar (alla från "Lumen" mitt i en mening), 6 fynd till Angela, **inte verifierat på enhet**: `reports/apptest/2026-11-09-2000-toby-t6-commands.md`.
+- **Toby (apptestare): Väntar på kö** (2026-11-09 21:55). Nästa punkt T7 väntar på Angelas A15. Senast klart: **T5** omtest efter A8 och A11 i simulatorn, **inte verifierat på enhet**: Frågor 9/10 besvarade och upplästa (2 av 3 fortsättningar tappade, för att svaret i förväg svarar på första halvan), Provläge 1 tur av 4 i ett andetag, keyterms över 20 tecken håller, 60 min Provläge 117/117 filer hörda och 0 döva perioder. 4 fynd till Angela: `reports/apptest/2026-11-09-2150-toby-t5-retest.md`. Före det: T6, 485/541 kommandon rätt.
   - **T1 klar:** ljudkedjetestet (`AppTests/E2E/Chain`, CI `apptest-chain.yml`, nattligt och manuellt) kör svenskt `say`-tal genom appens riktiga kedja med live Scribe och `/answer`.
     - **Frågor:** 7/7 yttranden, 5/5 frågor besvarade, inga påståenden besvarade, första text 1,0–1,5 s.
     - **Provläge:** 4/4 besvarade, ämnesorden rätt.
