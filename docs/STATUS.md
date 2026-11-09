@@ -11,7 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
-- **Toby (apptestare), 2026-11-09 16:25:**
+- **Toby (apptestare): Väntar på kö** (2026-11-09 16:30).
   - **T1 klar:** ljudkedjetestet (`AppTests/E2E/Chain`, CI `apptest-chain.yml`, nattligt och manuellt) kör svenskt `say`-tal genom appens riktiga kedja med live Scribe och `/answer`.
     - **Frågor:** 7/7 yttranden, 5/5 frågor besvarade, inga påståenden besvarade, första text 1,0–1,5 s.
     - **Provläge:** 4/4 besvarade, ämnesorden rätt.
@@ -22,7 +22,7 @@ Last updated: 2026-11-08 by Angela (builder).
     - **Fynd till Angela:** Rizz-åldersgränsen kapas på iPhone SE och vid största text; samtyckespunkterna syns inte när man trycker Testa nu på SE; med mikrofonen nekad gör Frågor och Provläge från Start ingenting; vid största text kapas Pausa/Avsluta och lägesikonerna.
     - **Bilder till Kelly:** `reports/apptest/2026-11-09-t3-skarmbilder/` (README har tabellen för Ke3).
     - **Simulator, inte enhet.** Rapport: `reports/apptest/2026-11-09-1625-toby-t3-screens.md`.
-  - **T2 pågår:** 60-minuterskörningen är klar, rapporten skrivs.
+  - **T2 klar:** 60 min Provläge på upprepat tal (CI `apptest-long.yml`, manuellt). Lyssnade hela timmen och minnet låg platt på 59 MB, men **bara 8 svar, alla före minut 3,8**: efter att keytermerna bytts slutade varje Scribe-session efter 21–32 s (troligen A8.5); vid minut 4,8 föll appen till iPhonens igenkänning, som inte startar i simulatorn, och försökte aldrig Scribe igen. Den visade "Lyssnar" i 55 min utan att höra något. Första svaret 13,9 s, sedan 0,6–0,8 s. **Simulator, inte enhet.** Rapport: `reports/apptest/2026-11-09-1630-toby-t2-long-run.md`. Körs om när A8.5 är löst.
 - **Angela (app): Väntar på kö** (2026-11-08 19:35). Kvar i `prompts/queue/angela.md`: A3 (Välj röst), väntar på Kevins K6. Senast klart: A5, `reports/2026-11-08-angela-a5-cannot-answer.md`.
 - **Oscar (QA): Väntar på kö** (2026-11-08 20:50). O6-pilot klar (`reports/qa/2026-11-08-2050-oscar-o6-pilot.md`, 15 fall × 3 röster, live Scribe + /answer, ej telefon): tyst rum med keyterms 89 % exakt transkript och 89 % 'första svaret räcker' (text 93 %); **bakgrundsprat bryter pausdetekteringen** (20 dB: 22 %, 10 dB: 9 %); **ny bugg: Scribe stänger sessionen vid keyterm > 20 tecken** (`/study-profile` ger upp till 40, appen kortar inte) till Kevin och Angela; Provläge säger meta-meningar högt vid brus. Hela O6 (60 fall, ~2,5–3 USD) väntar på ja från Deangelo; O5 väntar på Kevins K7.
 - Phase 1 — Audio foundation. Code done (Phase 1a); **device measurements (§3.5–3.6, §3.9–3.12) wait for the owner's Mac** next week — run `docs/DEVICE-TEST-CHECKLIST.md`. Then OSS-1 + OSS-3.

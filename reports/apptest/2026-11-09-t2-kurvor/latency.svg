@@ -1,0 +1,30 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='640' height='260' font-family='sans-serif' font-size='11'>
+<rect width='100%' height='100%' fill='white'/>
+<text x='56' y='16' font-size='13' font-weight='bold'>Tid till första text per svar</text>
+<line x1='56' x2='624' y1='228.0' y2='228.0' stroke='#e2e7ef'/>
+<text x='50' y='232.0' text-anchor='end' fill='#5a6478'>0</text>
+<line x1='56' x2='624' y1='178.0' y2='178.0' stroke='#e2e7ef'/>
+<text x='50' y='182.0' text-anchor='end' fill='#5a6478'>3831</text>
+<line x1='56' x2='624' y1='128.0' y2='128.0' stroke='#e2e7ef'/>
+<text x='50' y='132.0' text-anchor='end' fill='#5a6478'>7662</text>
+<line x1='56' x2='624' y1='78.0' y2='78.0' stroke='#e2e7ef'/>
+<text x='50' y='82.0' text-anchor='end' fill='#5a6478'>11493</text>
+<line x1='56' x2='624' y1='28.0' y2='28.0' stroke='#e2e7ef'/>
+<text x='50' y='32.0' text-anchor='end' fill='#5a6478'>15324</text>
+<text x='56.0' y='248' text-anchor='middle' fill='#5a6478'>0 min</text>
+<text x='150.7' y='248' text-anchor='middle' fill='#5a6478'>1 min</text>
+<text x='245.3' y='248' text-anchor='middle' fill='#5a6478'>1 min</text>
+<text x='340.0' y='248' text-anchor='middle' fill='#5a6478'>2 min</text>
+<text x='434.7' y='248' text-anchor='middle' fill='#5a6478'>3 min</text>
+<text x='529.3' y='248' text-anchor='middle' fill='#5a6478'>3 min</text>
+<text x='624.0' y='248' text-anchor='middle' fill='#5a6478'>4 min</text>
+<text x='12' y='36' fill='#5a6478'>ms</text>
+<circle cx='160.0' cy='46.2' r='2.2' fill='#2346c8'/>
+<circle cx='205.8' cy='218.2' r='2.2' fill='#2346c8'/>
+<circle cx='261.6' cy='219.7' r='2.2' fill='#2346c8'/>
+<circle cx='326.1' cy='218.1' r='2.2' fill='#2346c8'/>
+<circle cx='447.2' cy='207.0' r='2.2' fill='#2346c8'/>
+<circle cx='505.7' cy='217.4' r='2.2' fill='#2346c8'/>
+<circle cx='564.6' cy='219.3' r='2.2' fill='#2346c8'/>
+<circle cx='624.0' cy='217.7' r='2.2' fill='#2346c8'/>
+</svg>

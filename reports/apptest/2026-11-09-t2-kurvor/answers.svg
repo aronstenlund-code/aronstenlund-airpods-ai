@@ -1,0 +1,23 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='640' height='260' font-family='sans-serif' font-size='11'>
+<rect width='100%' height='100%' fill='white'/>
+<text x='56' y='16' font-size='13' font-weight='bold'>Svar totalt</text>
+<line x1='56' x2='624' y1='228.0' y2='228.0' stroke='#e2e7ef'/>
+<text x='50' y='232.0' text-anchor='end' fill='#5a6478'>0</text>
+<line x1='56' x2='624' y1='178.0' y2='178.0' stroke='#e2e7ef'/>
+<text x='50' y='182.0' text-anchor='end' fill='#5a6478'>2</text>
+<line x1='56' x2='624' y1='128.0' y2='128.0' stroke='#e2e7ef'/>
+<text x='50' y='132.0' text-anchor='end' fill='#5a6478'>4</text>
+<line x1='56' x2='624' y1='78.0' y2='78.0' stroke='#e2e7ef'/>
+<text x='50' y='82.0' text-anchor='end' fill='#5a6478'>7</text>
+<line x1='56' x2='624' y1='28.0' y2='28.0' stroke='#e2e7ef'/>
+<text x='50' y='32.0' text-anchor='end' fill='#5a6478'>9</text>
+<text x='56.0' y='248' text-anchor='middle' fill='#5a6478'>0 min</text>
+<text x='150.7' y='248' text-anchor='middle' fill='#5a6478'>10 min</text>
+<text x='245.3' y='248' text-anchor='middle' fill='#5a6478'>20 min</text>
+<text x='340.0' y='248' text-anchor='middle' fill='#5a6478'>30 min</text>
+<text x='434.7' y='248' text-anchor='middle' fill='#5a6478'>40 min</text>
+<text x='529.3' y='248' text-anchor='middle' fill='#5a6478'>50 min</text>
+<text x='624.0' y='248' text-anchor='middle' fill='#5a6478'>60 min</text>
+<text x='12' y='36' fill='#5a6478'>svar</text>
+<path d='M56.2,228.0 L65.5,205.3 L75.0,137.1 L84.5,114.4 L94.0,46.2 L103.4,46.2 L112.8,46.2 L122.3,46.2 L131.7,46.2 L141.2,46.2 L150.8,46.2 L160.2,46.2 L169.6,46.2 L179.0,46.2 L188.6,46.2 L198.0,46.2 L207.5,46.2 L217.0,46.2 L226.4,46.2 L235.9,46.2 L245.3,46.2 L254.9,46.2 L264.3,46.2 L273.7,46.2 L283.2,46.2 L292.8,46.2 L302.2,46.2 L311.6,46.2 L321.0,46.2 L330.5,46.2 L340.0,46.2 L349.4,46.2 L358.9,46.2 L368.4,46.2 L377.9,46.2 L387.3,46.2 L396.8,46.2 L406.3,46.2 L415.7,46.2 L425.3,46.2 L434.7,46.2 L444.1,46.2 L453.5,46.2 L463.1,46.2 L472.5,46.2 L481.9,46.2 L491.5,46.2 L500.9,46.2 L510.3,46.2 L519.8,46.2 L529.2,46.2 L538.8,46.2 L548.2,46.2 L557.7,46.2 L567.1,46.2 L576.7,46.2 L586.1,46.2 L595.6,46.2 L605.0,46.2 L614.4,46.2 L624.0,46.2' fill='none' stroke='#2346c8' stroke-width='2'/>
+</svg>

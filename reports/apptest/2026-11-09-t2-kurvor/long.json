@@ -1,0 +1,605 @@
+{
+  "answers" : [
+    {
+      "firstTextMs" : 13930.947333,
+      "minute" : 0.7023045341173808,
+      "question" : "Vad gör klorofyll i en plant?"
+    },
+    {
+      "firstTextMs" : 753.994459,
+      "minute" : 1.0112083832422891,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 634.416709,
+      "minute" : 1.388254851102829,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 762.308083,
+      "minute" : 1.823493234316508,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1605.909375,
+      "minute" : 2.6411560515562695,
+      "question" : "Vad gör klorofyll i en växt?"
+    },
+    {
+      "firstTextMs" : 810.269667,
+      "minute" : 3.036162616809209,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 670.241334,
+      "minute" : 3.433695050080617,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 789.551334,
+      "minute" : 3.8350068012873333,
+      "question" : "Vad bildas när glukos bryts ner i mitokondrierna?"
+    }
+  ],
+  "errorLines" : [
+    "  4.84 STT start failed: Audio format problem: no analyzer audio format for DictationTranscriber"
+  ],
+  "minutes" : 60,
+  "reconnectLines" : [
+    "  2.69 Scribe keyterms changed: reconnecting in a pause",
+    "  3.27 Scribe session ended after 32 s: reconnecting",
+    "  3.67 Scribe session ended after 21 s: reconnecting",
+    "  4.08 Scribe session ended after 23 s: reconnecting"
+  ],
+  "samples" : [
+    {
+      "active" : true,
+      "answered" : 0,
+      "heard" : 0,
+      "memoryMB" : 46.33392333984375,
+      "minute" : 0.01746658484141032,
+      "mode" : "prov",
+      "scribeReconnects" : 0
+    },
+    {
+      "active" : true,
+      "answered" : 1,
+      "heard" : 2,
+      "memoryMB" : 58.49041748046875,
+      "minute" : 1.0057738502820333,
+      "mode" : "prov",
+      "scribeReconnects" : 0
+    },
+    {
+      "active" : true,
+      "answered" : 4,
+      "heard" : 4,
+      "memoryMB" : 58.45916748046875,
+      "minute" : 2.0025021016597746,
+      "mode" : "prov",
+      "scribeReconnects" : 0
+    },
+    {
+      "active" : true,
+      "answered" : 5,
+      "heard" : 6,
+      "memoryMB" : 112.88104248046875,
+      "minute" : 3.0159393668174745,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.64666748046875,
+      "minute" : 4.012444367011388,
+      "mode" : "prov",
+      "scribeReconnects" : 3
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.771728515625,
+      "minute" : 5.006976000467936,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.724853515625,
+      "minute" : 6.005968451499939,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.693603515625,
+      "minute" : 7.003403900067012,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.693603515625,
+      "minute" : 8.00123301744461,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 9.001254649957021,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.662353515625,
+      "minute" : 10.015101633469264,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 11.011026501655579,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 12.004436018069585,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 13.000159867604573,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 14.012766218185424,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 15.008754817644755,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 16.002851100762687,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 17.016072833538054,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 18.009870668252308,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 19.00484535098076,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 20.000360918045043,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 21.012712717056274,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 22.008440701166787,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 23.00613745053609,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 24.001863634586336,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 25.015801300605137,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 26.011632384856544,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 27.007170883814492,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.631103515625,
+      "minute" : 28.005810433626174,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.631103515625,
+      "minute" : 29.00113990108172,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.631103515625,
+      "minute" : 30.01217858393987,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.631103515625,
+      "minute" : 31.006185217698416,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.631103515625,
+      "minute" : 32.00298045078913,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.631103515625,
+      "minute" : 33.01324180165927,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.646728515625,
+      "minute" : 34.00930871764819,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 35.00392493406932,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 36.01470055182775,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 37.0105955183506,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 38.00451238354047,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 39.016327850023906,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 40.0120679517587,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 41.00765741666158,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 42.003584400812784,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.599853515625,
+      "minute" : 43.01387765010198,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.599853515625,
+      "minute" : 44.00804046789805,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.599853515625,
+      "minute" : 45.005047633250555,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.599853515625,
+      "minute" : 46.01485228339831,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 47.00946948329608,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 48.00592215061188,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 49.00419003367424,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 50.00199903448423,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 51.016768451531725,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 52.01144396662712,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 53.00703160166741,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.615478515625,
+      "minute" : 54.003050500154494,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 55.01659406820933,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 56.01463826696078,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 57.01355281670888,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 58.00856438477834,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.584228515625,
+      "minute" : 59.00486280123393,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 58.599853515625,
+      "minute" : 60.01631545027097,
+      "mode" : "prov",
+      "scribeReconnects" : 4
+    }
+  ]
+}
