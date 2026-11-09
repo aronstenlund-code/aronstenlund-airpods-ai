@@ -26,7 +26,7 @@ const FREE_INSTRUCTION_NOTE =
 const PREF_RULE: Record<string, string> = {
   "length:shorter": "at most three short sentences, the core only",
   "length:longer": "a developed answer, clearly longer than usual, with the why and the details",
-  "simplicity:simpler": "everyday words and short sentences; explain every subject term in plain words; no extra terms",
+  "simplicity:simpler": "everyday words and short sentences of at most twelve words each; explain every subject term in plain words; no extra terms",
   "examples:more": "always at least one concrete everyday example, introduced with \"Till exempel\" or \"Ett exempel är\"",
   "accuracy:careful": "double-check every fact and leave out anything you are not sure of",
 };

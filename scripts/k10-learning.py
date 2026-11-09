@@ -52,6 +52,11 @@ def post_json(tok, path, body):
                 time.sleep(int(e.headers.get("retry-after") or 20))
                 continue
             raise
+        except (TimeoutError, OSError):
+            if attempt < 2:  # a stalled stream: ask again
+                time.sleep(5)
+                continue
+            raise
 
 
 def answer(tok, body):
@@ -79,8 +84,10 @@ EX = re.compile(r"\b(?:till exempel|exempel|t\.ex\.|tänk dig|som när|om du)\b"
 
 
 def satisfied(kind, with_, without):
-    if kind == "shorter":
-        return words(with_) <= 0.75 * words(without), f"{words(with_)} mot {words(without)} ord"
+    if kind == "shorter":  # clearly shorter than the control, or already at the setting's own target (<= 3 sentences, <= 45 words)
+        n_s = len([x for x in re.split(r"(?<=[.!?])\s+", with_) if x.strip()])
+        ok = words(with_) <= 0.75 * words(without) or (words(with_) <= 45 and n_s <= 3)
+        return ok, f"{words(with_)} mot {words(without)} ord, {n_s} meningar"
     if kind == "longer":
         return words(with_) >= 1.25 * words(without), f"{words(with_)} mot {words(without)} ord"
     if kind == "examples":
