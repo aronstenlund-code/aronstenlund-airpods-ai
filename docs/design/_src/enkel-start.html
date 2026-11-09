@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enkel start: före och efter</title>
+<!-- Kelly, Ke9. Ritar förslagen till appens första start bredvid Tobys T3-bilder (före).
+     Rendera: python -m http.server 8790 (från repots rot), sedan
+     chrome --headless=new --screenshot=out.png --window-size=860,1000 "http://localhost:8790/docs/design/_src/enkel-start.html?s=intro"
+     Skärmar: intro, fraga, prov, start, lyssnar, flode. Lägg till &dark=1 för mörkt. -->
+<style>
+  @font-face { font-family: "Familjen Grotesk"; src: url("../../../site/fonts/familjen-grotesk.woff2") format("woff2"); font-weight: 400 700; }
+  @font-face { font-family: "Kalam"; src: url("../../../site/fonts/kalam.woff2") format("woff2"); }
+  :root {
+    --bg: #FFFFFF; --paper: #F5F8FC; --grid: #D9E3F0; --ink: #18213A; --mut: #5A6478;
+    --line: #E2E7EF; --chip: #F1F4F9; --blue: #2346C8; --on-blue: #fff; --red: #D9342B; --stage: #E9EDF3;
+  }
+  .dark {
+    --bg: #11151F; --paper: #161C2A; --grid: #232B3D; --ink: #EEF1F7; --mut: #9AA3B5;
+    --line: #2A3247; --chip: #1B2131; --blue: #7F9BFF; --on-blue: #0E1630; --red: #FF6F61; --stage: #0A0D14;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Familjen Grotesk", system-ui, sans-serif; background: var(--stage); color: var(--ink); padding: 28px; }
+  .pair { display: flex; gap: 36px; align-items: flex-start; justify-content: center; }
+  .col { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .tag { font-weight: 700; font-size: 18px; letter-spacing: .02em; }
+  .tag.after { color: var(--blue); }
+  .cap { font-size: 14px; color: var(--mut); max-width: 380px; text-align: center; line-height: 1.35; }
+  .shot, .phone { width: 375px; height: 815px; border-radius: 38px; overflow: hidden; box-shadow: 0 10px 40px rgba(16,24,40,.18); }
+  .shot { object-fit: cover; object-position: top; background: #fff; }
+  .phone { background: var(--bg); position: relative; display: flex; flex-direction: column; border: 1px solid var(--line); }
+  .status { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 28px; font-weight: 600; font-size: 15px; }
+  .grid { background-color: var(--paper);
+    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 22px 22px; }
+  .pad { padding: 0 20px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 19px; }
+  .logo svg { width: 22px; height: 22px; color: var(--blue); }
+  h1 { font-size: 34px; line-height: 1.05; letter-spacing: -.01em; font-weight: 700; }
+  h2 { font-size: 26px; line-height: 1.1; font-weight: 700; }
+  .sub { color: var(--mut); font-size: 16px; line-height: 1.35; }
+  .hand { font-family: "Kalam", cursive; color: var(--blue); font-size: 21px; line-height: 1.3; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 54px; border-radius: 14px; background: var(--blue); color: var(--on-blue); font-weight: 700; font-size: 18px; }
+  .btn.quiet { background: var(--chip); color: var(--ink); }
+  .link { color: var(--blue); font-weight: 600; font-size: 16px; text-align: center; }
+  .fine { color: var(--mut); font-size: 13px; text-align: center; line-height: 1.35; }
+  .card { border-radius: 16px; padding: 16px; }
+  .soft { background: var(--chip); }
+  .bottom { margin-top: auto; padding: 0 20px 26px; display: flex; flex-direction: column; gap: 10px; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .pts { display: flex; flex-direction: column; gap: 10px; font-size: 15px; font-weight: 500; }
+  .pts svg { width: 20px; height: 20px; color: var(--blue); flex: none; }
+  .rings { position: relative; width: 38px; height: 38px; flex: none; }
+  .rings i { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--blue); opacity: .35; }
+  .rings i:nth-child(2) { inset: 7px; opacity: .7; }
+  .rings b { position: absolute; inset: 13px; border-radius: 50%; background: var(--blue); }
+  .bars { display: flex; gap: 3px; align-items: flex-end; height: 18px; margin-left: auto; }
+  .bars i { width: 4px; border-radius: 2px; background: var(--blue); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 9px 14px; border-radius: 12px; border: 1px solid var(--line); font-weight: 600; font-size: 15px; background: var(--bg); }
+  .chip.on { border-color: var(--blue); color: var(--blue); background: color-mix(in srgb, var(--blue) 10%, var(--bg)); }
+  .lbl { font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+  .elias { margin: 6px 20px 0; height: 250px; border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 4px 18px rgba(16,24,40,.12); position: relative; }
+  .elias img { width: 100%; height: auto; display: block; margin-top: -38px; }
+  .circled { font-family: "Kalam", cursive; color: var(--red); font-size: 20px; border: 2px solid var(--red); border-radius: 50%; padding: 2px 14px; transform: rotate(-4deg); display: inline-block; }
+  .listrow { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .listrow b { font-size: 17px; }
+  .listrow span { color: var(--mut); font-size: 14px; }
+  .chev { color: var(--mut); font-size: 20px; }
+  .flow { display: flex; flex-direction: column; gap: 22px; width: 800px; margin: 0 auto; }
+  .flowrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .flowrow h3 { width: 100%; font-size: 18px; margin-bottom: 4px; }
+  .step { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 14px; line-height: 1.3; max-width: 150px; }
+  .step small { display: block; color: var(--mut); font-size: 12px; }
+  .step.tap { border-color: var(--blue); }
+  .step.goal { background: var(--blue); color: var(--on-blue); border-color: var(--blue); }
+  .step.goal small { color: var(--on-blue); opacity: .8; }
+  .step.drop { opacity: .45; text-decoration: line-through; }
+  .arrow { color: var(--mut); }
+  .count { font-weight: 700; font-size: 15px; margin-left: 6px; }
+  .note { font-size: 13px; color: var(--mut); }
+  .hide { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ============ 1. Intro ============ -->
+<section class="pair" data-s="intro">
+  <div class="col"><p class="tag">Före (T3, bild 01)</p>
+    <img class="shot" data-light="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-light/pro-light-01-intro.png" data-dark="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-dark/pro-dark-01-intro.png" alt="">
+    <p class="cap">Två meningar under rubriken, "Läs mer" skyms av knappen, finstilt upprepar kortet.</p></div>
+  <div class="col"><p class="tag after">Efter</p>
+    <div class="phone">
+      <div class="status grid" style="background:none"><span>9:41</span><span>●●●</span></div>
+      <div class="elias"><img src="../../../site/img/elias-seq/001.webp" alt=""></div>
+      <div class="pad" style="margin-top:18px; display:flex; flex-direction:column; gap:12px">
+        <div class="logo"><svg viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="3.5" fill="currentColor"/><path d="M6.5 13a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2.5 13a10.5 10.5 0 0 1 21 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/></svg>Lumen</div>
+        <h1>Fråga högt. Få svaret i örat.</h1>
+        <p class="sub">Telefonen stannar i fickan.</p>
+        <div class="card soft pts">
+          <div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Lyssnar bara när du har startat den.</div>
+          <div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Du ser alltid när den lyssnar.</div>
+          <div class="row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4l16 16M9 9v6M13 6v12M17 10v4"/></svg>Ljud sparas inte. <span style="color:var(--blue);font-weight:600;margin-left:auto">Läs mer</span></div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div class="btn">Testa nu</div>
+        <p class="fine">Inget konto. Testa nu betyder att du godkänner punkterna ovan.</p>
+      </div>
+    </div>
+    <p class="cap">Elias i kortet som på sidan. En mening under rubriken. "Läs mer" inne i kortet, så att knappen aldrig täcker den.</p></div>
+</section>
+
+<!-- ============ 2. Första frågan ============ -->
+<section class="pair" data-s="fraga">
+  <div class="col"><p class="tag">Före (T3, bild 05)</p>
+    <img class="shot" data-light="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-light/pro-light-05-forsta-fragan.png" data-dark="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-dark/pro-dark-05-forsta-fragan.png" alt="">
+    <p class="cap">Tre exempelfrågor och en blå "Fortsätt" som lockar bort innan man ens frågat.</p></div>
+  <div class="col"><p class="tag after">Efter (när svaret har kommit)</p>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="pad" style="margin-top:20px; display:flex; flex-direction:column; gap:14px">
+        <h1 style="font-size:32px">Fråga vad som helst</h1>
+        <p class="sub">Sätt i AirPods och fråga högt.</p>
+        <div class="card grid" style="border:1px solid var(--line); display:flex; flex-direction:column; gap:14px">
+          <div class="row"><span class="rings"><i></i><i></i><b></b></span><b style="font-size:17px">Lyssnar</b>
+            <span class="bars"><i style="height:6px"></i><i style="height:11px"></i><i style="height:16px"></i><i style="height:9px"></i><i style="height:5px"></i></span></div>
+          <p class="hand">Vad är fotosyntes?</p>
+          <p style="font-size:19px; font-weight:500; line-height:1.35">Fotosyntesen är när växter använder ljusenergi för att göra socker av koldioxid och vatten. Syre bildas som en restprodukt.</p>
+        </div>
+        <p class="sub" style="font-size:15px">Fråga en sak till, eller gå vidare.</p>
+      </div>
+      <div class="bottom">
+        <div class="btn">Fortsätt</div>
+      </div>
+    </div>
+    <p class="cap">Innan första svaret finns bara den svaga exempelfrågan i kortet och en tyst länk "Hoppa över". Den blå knappen visas först när svaret har kommit.</p></div>
+</section>
+
+<!-- ============ 3. Lägg till prov (första start) ============ -->
+<section class="pair" data-s="prov">
+  <div class="col"><p class="tag">Före (T3, bild 06)</p>
+    <img class="shot" data-light="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-light/pro-light-06-lagg-till-prov-forsta.png" data-dark="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-dark/pro-dark-06-lagg-till-prov-forsta.png" alt="">
+    <p class="cap">8 årskurser, 6 ämnen, 4 delämnen och datum på en gång: 19 val innan man har sett Start.</p></div>
+  <div class="col"><p class="tag after">Efter</p>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="pad" style="margin-top:20px; display:flex; flex-direction:column; gap:16px">
+        <h1 style="font-size:32px">Har du prov snart?</h1>
+        <p class="sub">Säg det, så förhör Lumen dig inför provet.</p>
+        <div class="card soft row" style="gap:14px; align-items:flex-start">
+          <span class="rings" style="margin-top:4px"><i></i><i></i><b></b></span>
+          <div><p style="font-weight:600; font-size:15px">Säg till exempel</p><p class="hand" style="font-size:20px">Jag har prov i biologi på fredag</p></div>
+        </div>
+        <div style="padding:6px 2px 0"><p class="lbl">Eller välj ämne</p>
+          <div class="chips"><span class="chip">Matte</span><span class="chip on">NO</span><span class="chip">SO</span><span class="chip">Språk</span><span class="chip">Annat</span></div></div>
+        <div class="listrow" style="border-top:1px solid var(--line)"><b style="font-weight:600">Datum</b><span style="color:var(--blue);font-weight:600">fre 13 nov</span></div>
+        <div class="listrow" style="margin-top:-16px"><b style="font-weight:600">Årskurs</b><span style="color:var(--blue);font-weight:600">Åk 9</span></div>
+      </div>
+      <div class="bottom">
+        <div class="btn">Spara prov</div>
+        <p class="link" style="color:var(--mut)">Inte nu</p>
+      </div>
+    </div>
+    <p class="cap">Rösten först, Lumen lyssnar redan. Formuläret har tre rader: ämne, datum och årskurs (en rad, minns valet). Delämne (Biologi, Fysik) frågas först i Provläget.</p></div>
+</section>
+
+<!-- ============ 4. Start ============ -->
+<section class="pair" data-s="start">
+  <div class="col"><p class="tag">Före (A13, efter-bild)</p>
+    <img class="shot" data-light="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-light-home.png" data-dark="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-dark-home.png" alt="">
+    <p class="cap">Fem saker att trycka på under kortet. Provläge-cirkeln gör samma sak som den blå knappen.</p></div>
+  <div class="col"><p class="tag after">Efter</p>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="pad row" style="justify-content:space-between; margin-top:8px">
+        <div class="logo" style="font-size:24px"><svg viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="3.5" fill="currentColor"/><path d="M6.5 13a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2.5 13a10.5 10.5 0 0 1 21 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/></svg>Lumen</div>
+        <span class="card soft" style="padding:9px 11px; font-size:18px">⚙</span>
+      </div>
+      <div class="pad" style="margin-top:16px">
+        <div class="card grid" style="border:1px solid var(--line); padding:22px 20px; display:flex; flex-direction:column; gap:14px">
+          <h2 style="font-size:34px">Biologiprovet</h2>
+          <div class="row" style="justify-content:space-between"><span class="sub">lör 14 nov, åk 9</span><span class="circled">5 dagar kvar</span></div>
+          <div><p class="sub" style="font-size:14px">Öva mer på</p><p style="font-weight:700; font-size:18px">Cellandning och klorofyll</p></div>
+          <div class="btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Förhör mig</div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="listrow"><div><b>Engelska</b><br><span>tors 19 nov, om 10 dagar</span></div><span class="chev">›</span></div>
+          <div class="listrow"><div><b>Historia</b><br><span>ons 25 nov, om 16 dagar</span></div><span class="chev">›</span></div>
+        </div>
+        <p class="link" style="text-align:left; margin-top:16px">+ Lägg till prov</p>
+        <div class="row" style="margin-top:26px; gap:10px">
+          <span class="chip" style="display:flex; gap:8px; align-items:center"><span style="color:var(--mut)">?</span>Bara fråga</span>
+          <span class="chip" style="border:none; color:var(--blue); background:none">Fler lägen ⌄</span>
+        </div>
+      </div>
+    </div>
+    <p class="cap">En blå knapp: "Förhör mig", samma ord som rösten. Andra prov är rader utan egna mikrofonknappar. Frågor blir en liten knapp, "Fler lägen" som i dag.</p></div>
+</section>
+
+<!-- ============ 5. Lyssnar (Provläge) ============ -->
+<section class="pair" data-s="lyssnar">
+  <div class="col"><p class="tag">Före (T3, bild 47)</p>
+    <img class="shot" data-light="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-light/pro-light-47-lyssnar-provlage.png" data-dark="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-dark/pro-dark-47-lyssnar-provlage.png" alt="">
+    <p class="cap">Röd "Avsluta" är det starkaste på skärmen. Tre röstkommandon på en gång.</p></div>
+  <div class="col"><p class="tag after">Efter (tomt läge)</p>
+    <div class="phone">
+      <div class="grid" style="padding-bottom:18px; border-bottom:1px solid var(--line)">
+        <div class="status" style="background:none"><span>9:41</span><span>●●●</span></div>
+        <div class="pad row" style="justify-content:space-between; margin-top:6px">
+          <div class="row"><span class="card" style="background:var(--bg); padding:8px 12px; font-size:18px">‹</span><div><b style="font-size:18px">Biologiprovet</b><br><span class="sub" style="font-size:14px">Provläge</span></div></div>
+          <span class="card" style="background:var(--bg); padding:9px 12px; font-weight:600; font-size:15px">Byt läge ⌄</span>
+        </div>
+        <div class="pad row" style="margin-top:16px; gap:14px"><span class="rings" style="width:52px;height:52px"><i></i><i style="inset:9px"></i><b style="inset:18px"></b></span>
+          <div><b style="font-size:22px">Lyssnar</b><br><span class="sub" style="font-size:15px">Fråga när du vill</span></div>
+          <span class="bars"><i style="height:6px"></i><i style="height:12px"></i><i style="height:17px"></i><i style="height:10px"></i><i style="height:5px"></i></span></div>
+      </div>
+      <div class="pad" style="margin-top:22px; display:flex; flex-direction:column; gap:16px">
+        <p class="sub" style="font-size:17px; color:var(--ink)">Fråga om det du pluggar, eller bli förhörd.</p>
+        <div class="chips"><span class="chip">fotosyntes</span><span class="chip">cellandning</span><span class="chip">klorofyll</span><span class="chip">näringskedja</span></div>
+        <div class="btn" style="margin-top:6px">Förhör mig</div>
+        <p class="fine" style="text-align:left">Eller säg ”Lumen, förhör mig”.</p>
+      </div>
+      <div class="bottom">
+        <div class="row" style="gap:10px"><div class="btn quiet" style="flex:1">Pausa</div><div class="btn quiet" style="flex:1">Klar</div></div>
+      </div>
+    </div>
+    <p class="cap">"Förhör mig" är den enda blå knappen. Pausa och Klar är lika tysta (rött bara för fel). Ett röstkommando åt gången, nära knappen det ersätter.</p></div>
+</section>
+
+<!-- ============ 6. Flödet ============ -->
+<section data-s="flode" class="flow">
+  <h2>Från första start till första svar</h2>
+  <div class="flowrow"><h3>Före (T3) <span class="count">2 tryck till första svaret, 5 till Start</span></h3>
+    <span class="step tap">Intro<small>tryck Testa nu</small></span><span class="arrow">→</span>
+    <span class="step tap">iOS: mikrofon<small>tryck Tillåt</small></span><span class="arrow">→</span>
+    <span class="step goal">Fråga vad som helst<small>första svaret</small></span><span class="arrow">→</span>
+    <span class="step tap">Fortsätt</span><span class="arrow">→</span>
+    <span class="step tap">Lägg till prov<small>19 val, Spara eller Hoppa över</small></span><span class="arrow">→</span>
+    <span class="step tap">Dela historik?<small>Dela inte / Dela</small></span><span class="arrow">→</span>
+    <span class="step">Start</span>
+  </div>
+  <div class="flowrow"><h3>Efter <span class="count">2 tryck till första svaret, 4 till Start (inget av dem ett formulär)</span></h3>
+    <span class="step tap">Intro<small>tryck Testa nu</small></span><span class="arrow">→</span>
+    <span class="step tap">iOS: mikrofon<small>tryck Tillåt</small></span><span class="arrow">→</span>
+    <span class="step goal">Fråga vad som helst<small>första svaret</small></span><span class="arrow">→</span>
+    <span class="step tap">Fortsätt<small>syns först efter svaret</small></span><span class="arrow">→</span>
+    <span class="step tap">Har du prov snart?<small>säg det, eller Inte nu</small></span><span class="arrow">→</span>
+    <span class="step">Start</span>
+  </div>
+  <div class="flowrow"><h3>Flyttas ut ur första starten</h3>
+    <span class="step drop">Fortsätt före svaret</span>
+    <span class="step drop">Dela historik i första starten</span>
+    <span class="step drop">Delämne och 8 årskurser</span>
+    <span class="step drop">Två extra exempelfrågor</span>
+  </div>
+  <p class="note">"Dela historik" frågas en gång när första passet är slut (D57 säger "i onboarding", se Till Aron i rapporten). Förslaget är att Lumen redan lyssnar på skärmen "Har du prov snart?", så att det räcker att säga provet (i dag krävs ett tryck på mikrofonknappen).</p>
+</section>
+
+<script>
+  const q = new URLSearchParams(location.search);
+  const s = q.get("s");
+  const dark = q.get("dark") === "1";
+  if (dark) document.documentElement.classList.add("dark");
+  document.querySelectorAll("[data-s]").forEach(el => { if (s && el.dataset.s !== s) el.classList.add("hide"); });
+  document.querySelectorAll("img[data-light]").forEach(img => { img.src = dark ? img.dataset.dark : img.dataset.light; });
+  if (s) document.body.style.minHeight = "0";
+</script>
+</body>
+</html>
