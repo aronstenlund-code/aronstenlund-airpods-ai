@@ -19,6 +19,7 @@ Arbetssätt för sessionen:
    - Punkt 7 stoppar inte arbetet: skriv överlämningen när du når gränsen men fortsätt jobba.
    - Vänta aldrig på Aron. Det som är hans beslut skrivs under "Till Aron" i rapporten, och du tar nästa punkt.
    - Har du `send_later`: schemalägg "kolla kön" om 30 min innan du avslutar en tur, fram till sluttiden.
+   - Kör du i molnet och ett verktyg saknas (simulator, gh, MCP): skriv det under "Till Aron" och ta nästa punkt som går att göra. Pusha alltid allt innan turen tar slut.
    - Fortfarande aldrig utan Aron (CLAUDE.md): radera data eller historik, force-push, betaltjänster eller köp, publicera (TestFlight/App Store), ändra kontoinställningar. API-kostnad i natt: högst 6 USD för Kevin och 2 USD för Oscar.
 
 Ändra aldrig andras punkter eller andras köfiler. Effort står på varje punkt.
