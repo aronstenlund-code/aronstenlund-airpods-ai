@@ -58,6 +58,9 @@ def last_sentence(t):
     return s[-1] if s else ""
 
 
+NORDIC = re.compile(r"(?<![^\W\d_])(?:jeg|ikke|ikkje|hvad|hvordan|hvorfor|hvilken|hvilket|hvem|hvis|også|meget|nogle|nogen|kanskje|desværre|dejlig|selvfølgelig)(?![^\W\d_])", re.I)
+
+
 def generic_checks(text, prev_answers, turn, ttft_ms):
     """Problems found in a spoken answer; each is a short string."""
     out = []
@@ -94,6 +97,10 @@ def generic_checks(text, prev_answers, turn, ttft_ms):
         if pn and (n == pn or (len(n) > 40 and len(pn) > 40 and n[:40] == pn[:40])):
             out.append("kopia av tidigare svar")
             break
+    # K7.3 (Oscar O1 finding B): Danish or Norwegian words in Swedish speech ("Ja, det har jeg.")
+    m = NORDIC.search(re.sub(r'["”“„»«][^"”“„»«]*["”“„»«]', "", spoken))
+    if m:
+        out.append(f"danskt/norskt ord: {m.group(0)!r}")
     limit = turn.get("ttft_budget_ms", 8000 if turn.get("web") else 2500)
     if ttft_ms is not None and ttft_ms > limit:
         out.append(f"långsamt: {ttft_ms} ms till första ord (budget {limit})")
@@ -103,7 +110,12 @@ def generic_checks(text, prev_answers, turn, ttft_ms):
 # D75: Provläge / Auto never comment on what the speaker seems to mean or ask for clarification.
 META_BAD = re.compile(
     r"^(?:det (?:låter|verkar|känns) som (?:att|om) (?:du|ni)|berätta gärna|kan du (?:förtydliga|upprepa|utveckla|säga mer|berätta mer)"
-    r"|(?:det|det där|det här) (?:låter|verkar) som [\"'„”»«]?[A-ZÅÄÖ]|menar du|vad menar du|tänker du på|jag (?:förstår|uppfattade|hörde) (?:inte|tyvärr inte)|du verkar (?:tänka|mena))",
+    r"|(?:det|det där|det här) (?:låter|verkar) som [\"'„”»«]?[A-ZÅÄÖ]|menar du|vad menar du|tänker du på|jag (?:förstår|uppfattade|hörde) (?:inte|tyvärr inte)|du verkar (?:tänka|mena)"
+    # K7.7 (Oscar O6): noisy input is never commented on
+    r"|jag (?:hör|uppfattar) (?:inget|ingenting|inte något)|.*\bhåller mig tyst|.*\b(?:bara|nog) (?:ett |en )?(?:skärmljud|ljud|brus|bakgrundsprat)\b|säg gärna"
+    r"|det (?:verkar|låter) (?:vara|som) (?:två|tre|flera|några) (?:olika )?(?:saker|ämnen|frågor)"
+    # K7.1: the level is never said
+    r"|.*\b(?:åk|årskurs) (?:sex|sju|åtta|nio)\b|.*(?:grundskole|gymnasie)nivå|.*\b(?:förklarar jag|här är) (?:bara )?(?:den enkla )?idén)",
     re.I)
 
 

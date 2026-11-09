@@ -110,3 +110,13 @@ Deno.test("K1 exam summary never says fewer missing points than A points needed"
   const s2 = summarize([{ no: "1", points: { E: 5, C: 3, A: 2 } }], [{ grade: "C", total: 7, min_ca: 2 }, { grade: "A", total: 10, min_a: 3 }] as never);
   assert(s2.spoken.includes("Till A saknas 1 A-poäng."), s2.spoken);
 });
+
+Deno.test("K7.5 grade F is said as 'inte godkänt', never the letter; several results without working each count", async () => {
+  const s = summarize([{ no: "1", points: { E: 3, C: 0, A: 0 } }], [{ grade: "E", total: 4 }, { grade: "C", total: 8 }] as never);
+  assertEquals(s.grade, "F");
+  assert(s.spoken.includes("Det räcker inte till godkänt än."), s.spoken);
+  assert(s.spoken.includes("Till godkänt saknas 1 poäng."), s.spoken);
+  assert(!/\bF\b/.test(s.spoken), s.spoken);
+  const { SYSTEM_PROMPT_EXAM_GRADE } = await import("./handler.ts");
+  assert(SYSTEM_PROMPT_EXAM_GRADE.includes("Endast svar krävs"));
+});

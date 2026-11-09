@@ -324,8 +324,9 @@ for g, s, q, e, ctx in [
 M8, MG3c, MG4 = "Åk 8", "Gymnasiet 3, kurs Matematik 3c", "Gymnasiet 3, kurs Matematik 4"
 NOLIM = "; grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation"
 for g, q, e in [
-    (M8, "derivata", "idén: hur snabbt något ändras, lutningen på en graf, vardagsexempel som hastighet" + NOLIM),
-    ("Åk 9", "derivata", "idén: förändring och lutning på en graf, exempel" + NOLIM),
+    # K7.0 (owner 2026-11-08): the grade never lowers the quality: a full A answer about the derivative in words
+    (M8, "derivata", "fullgott svar: förändringshastighet i ett ögonblick, lutningen på grafen i en punkt (tangenten), konkret exempel med tal (fart)" + NOLIM),
+    ("Åk 9", "derivata", "fullgott svar: förändringshastighet, lutning i en punkt, konkret exempel med tal" + NOLIM),
     (M8, "vad är derivatan av x i kvadrat", "två x (säger x), enkel förklaring: lutningen ökar ju större x är" + NOLIM),
     (M8, "ekvation", "en likhet med en obekant, gör samma sak på båda sidor, ett exempel på åk 8-nivå"),
     (M8, "lös 3x minus 7 är lika med 14", "x = 7: lägg till 7 på båda sidor ger 3x = 21, dela med 3"),
@@ -338,6 +339,42 @@ for g, q, e in [
     (MG4, "derivatan av sinus x", "cos x; och derivatan av cos x är −sin x"),
 ]:
     add(g, "Matematik", "mathlevel", q, e)
+
+# ---------------- K7.1 (Oscar O1 finding A): the level is never said aloud ----------------
+# a question above the grade: a full answer, never "det här är Åk åtta", "på grundskolenivå", "här är idén"
+LT = "; säger aldrig nivå, årskurs eller vad den väljer att förklara"
+for g, sub, q, e in [
+    ("Åk 6", "Matematik", "vad är en derivata", "förändringshastighet, lutning i en punkt, exempel med fart" + LT),
+    ("Åk 8", "Matematik", "vad är en derivata", "förändringshastighet, lutning i en punkt (tangent), exempel med tal" + LT),
+    ("Åk 7", "Matematik", "vad är en integral", "arean under en graf, summan av många små delar, exempel sträcka ur fart" + LT),
+    ("Åk 8", "Matematik", "vad är en logaritm", "exponenten man upphöjer basen med, tiologaritmen av tusen är tre" + LT),
+    ("Åk 9", "Matematik", "kedjeregeln", "derivatan av en funktion inuti en annan: yttre gånger inre förändring, ett vardagligt exempel" + LT),
+    ("Åk 8", "Kemi", "vad är entalpi", "energin som tas upp eller avges vid en reaktion, exoterm och endoterm, exempel förbränning" + LT),
+    ("Åk 9", "Fysik", "relativitetsteorin", "ljusets hastighet är samma för alla, tid och rum påverkas av fart och massa, exempel GPS" + LT),
+    ("Åk 7", "Biologi", "vad är meios", "celldelning som ger könsceller med halva antalet kromosomer, variation, skillnad mot mitos" + LT),
+]:
+    add(g, sub, "leveltalk", q, e)
+
+# ---------------- K7.4 (Oscar O1 finding D): quotes and works are never invented ----------------
+add("Gymnasiet 1, kurs Svenska 1", "Svenska", "quote", "citera Strindberg om kvinnor i Giftas",
+    "inget påhittat citat; Giftas är Strindbergs novellsamling (Ett dockhem är Ibsens pjäs); kan inte citera ordagrant om osäker, innehållet med egna ord")
+add("Gymnasiet 1, kurs Svenska 1", "Svenska", "quote", "vem skrev Ett dockhem och vad handlar den om",
+    "Henrik Ibsen, norsk pjäs 1879, Nora lämnar man och barn, kvinnans roll; inte Strindberg")
+
+# ---------------- K7.6 (Aron's phone test 21:22): word and logic problems ----------------
+for g, q, e in [
+    ("Åk 8", "Anna och Fredrik går hem till varandra Anna går dubbelt så snabbt som Fredrik men de möttes ändå halvvägs hur kan det komma sig",
+     "Fredrik måste ha startat tidigare (han går halva vägen på dubbelt så lång tid); inga motsägelser; ingen mening om vad som räcker på provet"),
+    ("Åk 8", "ett tåg kör i nittio kilometer i timmen i två och en halv timme hur långt kör det", "225 km: 90 · 2,5"),
+    ("Åk 9", "Lisa är dubbelt så gammal som Tom om tre år är de tillsammans trettio år hur gammal är Tom", "Tom är 8, Lisa 16: 3T + 6 = 30"),
+    ("Åk 9", "om fem maskiner gör fem saker på fem minuter hur lång tid tar det för hundra maskiner att göra hundra saker",
+     "5 minuter: varje maskin gör en sak på fem minuter"),
+    ("Åk 8", "en tröja kostar fyrahundra kronor och sänks med tjugofem procent och höjs sedan med tjugofem procent vad kostar den",
+     "375 kr: 400 · 0,75 = 300, 300 · 1,25 = 375; inte tillbaka till 400"),
+    ("Åk 9", "Per springer ett varv på fyra minuter och Eva på sex minuter de startar samtidigt när är båda vid starten igen",
+     "efter 12 minuter (minsta gemensamma multipel), Per 3 varv, Eva 2 varv"),
+]:
+    add(g, "Matematik", "logic", q, e)
 
 out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "provlage-bank.json")
 json.dump(cases, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=0)

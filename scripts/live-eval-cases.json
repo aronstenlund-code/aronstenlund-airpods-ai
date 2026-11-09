@@ -3169,5 +3169,178 @@
 "expect": "either"
 }
 ]
+},
+{
+"id": "k7-niva-01",
+"cat": "nivå",
+"turns": [
+{
+"q": "vad är en derivata",
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"lutning",
+"förändr",
+"ändras"
+],
+"forbid_any": [
+" åk ",
+"årskurs",
+"grundskolenivå",
+"gymnasienivå",
+"här är idén",
+"förklarar jag",
+"på den nivån"
+]
+}
+]
+},
+{
+"id": "k7-niva-02",
+"cat": "nivå",
+"turns": [
+{
+"q": "vad är en derivata",
+"profile": "Årskurs: Åk 6. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"lutning",
+"förändr",
+"ändras",
+"snabbt"
+],
+"forbid_any": [
+" åk ",
+"årskurs",
+"grundskolenivå",
+"gymnasienivå",
+"här är idén",
+"förklarar jag",
+"på den nivån"
+]
+}
+]
+},
+{
+"id": "k7-niva-03",
+"cat": "nivå",
+"turns": [
+{
+"q": "vad är en integral",
+"profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"area",
+"summa"
+],
+"forbid_any": [
+" åk ",
+"årskurs",
+"grundskolenivå",
+"gymnasienivå",
+"här är idén",
+"förklarar jag",
+"på den nivån"
+]
+}
+]
+},
+{
+"id": "k7-o6-01",
+"cat": "tystnad",
+"turns": [
+{
+"q": "Och stallandning då?",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "either",
+"forbid_any": [
+"stallandning är",
+"Stallandning"
+]
+}
+],
+"context_qa": [
+{
+"q": "fotosyntes",
+"a": "Fotosyntes är när växter med ljusenergi bygger socker av koldioxid och vatten, och syre bildas."
+}
+]
+},
+{
+"id": "k7-o6-02",
+"cat": "tystnad",
+"turns": [
+{
+"q": "mm ja nä",
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
+"expect": "silent",
+"forbid_any": [
+"skärmljud",
+"håller mig tyst",
+"hör inget",
+"säg gärna"
+]
+}
+]
+},
+{
+"id": "k7-o6-03",
+"cat": "tystnad",
+"turns": [
+{
+"q": "Franska revolutionen, Afrika och klassrummet igen.",
+"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar.",
+"expect": "either",
+"forbid_any": [
+"tre olika saker",
+"så jag tar",
+"verkar vara"
+]
+}
+]
+},
+{
+"id": "k7-o6-04",
+"cat": "tystnad",
+"turns": [
+{
+"q": "hormoner",
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"hormon"
+],
+"forbid_any": [
+"hör inget",
+"håller mig tyst"
+]
+}
+],
+"context_qa": [
+{
+"q": "vad gör insulin",
+"a": "Insulin är ett hormon som sänker blodsockret genom att hjälpa cellerna att ta upp socker."
+}
+]
+},
+{
+"id": "k7-logik-01",
+"cat": "logik",
+"turns": [
+{
+"q": "Anna och Fredrik går hem till varandra, Anna går dubbelt så snabbt som Fredrik men de möttes ändå halvvägs, hur kan det komma sig",
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+"expect": "answer",
+"expect_any": [
+"tidigare",
+"före",
+"försprång"
+],
+"forbid_any": [
+"tredjedel",
+"räcker det"
+]
+}
+]
 }
 ]

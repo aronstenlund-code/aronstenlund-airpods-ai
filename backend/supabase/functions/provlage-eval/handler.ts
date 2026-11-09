@@ -6,6 +6,7 @@ import { readLimitedJson } from "../answer/validate.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
 import { createHandler, DEFAULT_CONFIG, type HandlerConfig } from "../answer/handler.ts";
 import type { LLMProvider } from "../answer/llm/types.ts";
+import { isLevelMeta } from "../answer/speech.ts";
 
 /**
  * D87 (owner): the Provläge test bank's server side. Two actions, both behind the user JWT and hard daily caps:
@@ -67,6 +68,18 @@ export function lengthCheck(answer: string, profile: string): { ok: 0 | 1; words
 export function closingCheck(answer: string, profile: string): 0 | 1 {
   if (wantsChecks(profile)) return 1;
   return answer.trim().endsWith("?") ? 0 : 1;
+}
+
+/** K7.1: no sentence of the answer (as heard) talks about the level, the grade or what it chooses to explain. */
+export function levelCheck(answer: string): 0 | 1 {
+  return answer.split(/(?<=[.!?…:])\s+/u).some((x) => isLevelMeta(x)) ? 0 : 1;
+}
+
+/** K7.3 (Oscar O1 finding B): Danish or Norwegian words in Swedish speech ("Ja, det har jeg."). */
+const NORDIC = /(?<![\p{L}])(?:jeg|ikke|ikkje|hvad|hvordan|hvorfor|hvilken|hvilket|hvem|hvis|også|meget|nogle|nogen|kanskje|efter at|desværre|dejlig|selvfølgelig)(?![\p{L}])/iu;
+export function languageCheck(answer: string): 0 | 1 {
+  // target-language examples in quotes are not Swedish speech
+  return NORDIC.test(answer.replace(/["”“„»«][^"”“„»«]*["”“„»«]/gu, "")) ? 0 : 1;
 }
 
 export interface EvalDeps {
@@ -175,10 +188,15 @@ export function createEvalHandler(deps: EvalDeps) {
         const profile = String(c.profile ?? "");
         const len = lengthCheck(answer, profile);
         const empty = answer.trim() ? 0 : 1;
-        const all = { ...s.scores, length_ok: len.ok, closing_ok: closingCheck(answer, profile) };
+        const all = {
+          ...s.scores, length_ok: len.ok, closing_ok: closingCheck(answer, profile),
+          // K7: in code, as heard
+          level_ok: empty ? 1 : levelCheck(answer), lang_ok: empty ? 1 : languageCheck(answer),
+        };
         if (empty) all.correct = all.sufficient = all.covers = all.natural = 0;
         const cost = (inTok * judge.inPerM + outTok * judge.outPerM) / 1e6;
-        const first = all.correct && all.sufficient ? 1 : 0;
+        // K7.1: an answer that says the level aloud is not enough in the leveltalk cases; K7.3: never another language
+        const first = all.correct && all.sufficient && all.lang_ok && (c.kind !== "leveltalk" || all.level_ok) ? 1 : 0;
         return json({
           ...s, scores: all, rubric: 2, words: len.words, sentences: len.sentences, empty,
           first_answer_suffices: first, strict: first && all.covers ? 1 : 0,

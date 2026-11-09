@@ -63,3 +63,12 @@ Deno.test("K2 judge v2: length and the closing question in code, covers apart fr
   assertEquals(e.empty, 1);
   assertEquals(e.first_answer_suffices, 0, "silence is never enough, whatever the judge says");
 });
+
+Deno.test("K7 judge: level talk and Danish/Norwegian words are checked in code", async () => {
+  const { levelCheck, languageCheck } = await import("./handler.ts");
+  assertEquals(levelCheck("Det här är Åk åtta, så jag förklarar idén. Derivatan är lutningen."), 0);
+  assertEquals(levelCheck("Derivatan är hur snabbt något ändras. Havsnivån stiger."), 1);
+  assertEquals(languageCheck("Ja, det har jeg."), 0);
+  assertEquals(languageCheck("Ja, det har jag. På engelska säger man \"I have\"."), 1);
+  assertEquals(languageCheck("På norska heter det \"ikke\"."), 1);
+});

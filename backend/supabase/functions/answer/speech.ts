@@ -532,6 +532,13 @@ const INPUT_META = new RegExp(
     String.raw`\b(?:eftersom )?(?:ingen|det finns ingen) tidigare (?:tur|fråga|samtal)`,
     String.raw`\b(?:är det|det är) svårt att (?:avgöra|veta|säga) (?:vad|vilket)`,
     String.raw`^det verkar vara en fråga om\b`,
+    // K7.7 (Oscar O6, noisy input): "Jag hör inget nytt att svara på, så jag håller mig tyst.", "Det här är bara ett
+    // skärmljud.", "Säg gärna en fråga …", "Det verkar vara tre olika saker, så jag tar …"
+    String.raw`\bjag (?:hör|uppfattar|hittar) (?:inget|ingenting|inte något|ingen)\b`,
+    String.raw`\b(?:jag )?håller (?:mig|jag mig) tyst\b|\bjag (?:är|förblir) tyst\b|\bså jag säger (?:inget|ingenting)\b`,
+    String.raw`\b(?:bara|endast|nog|troligen|antagligen) (?:ett |en )?(?:skärmljud|ljud|brus|bakgrundsljud|bakgrundsprat|prat i bakgrunden|ljudeffekt|ljudklipp|reklam)\b`,
+    String.raw`\bsäg gärna (?:en |ett |vad |vilket |din |ditt )`,
+    String.raw`\bdet (?:verkar|låter|ser ut att) (?:vara|som) (?:två|tre|fyra|flera|några) (?:olika )?(?:saker|ämnen|frågor|delar|meningar)\b`,
   ].join("|"),
   "iu",
 );
@@ -584,6 +591,50 @@ export function isReasoningMeta(sentence: string, heard: string): boolean {
   const g = REASON_GUESS.exec(t);
   if (g && heard && heard.toLowerCase().split(/\s+/).some((w) => similarity(w, g[1]) >= 0.6)) return true;
   return false;
+}
+
+/**
+ * K7.1 (Oscar O1 finding A): Provläge said the level aloud when the question lay above the grade ("det här är Åk
+ * åtta, så på den nivån förklarar jag bara idén", "Det är svårt att förklara en derivata på grundskolenivå, men här
+ * är idén.", "I Åk nio tänker man på det som …"). Read by meaning in every sentence: a sentence that names the
+ * grade or a school level, the curriculum, or what the answer chooses to explain, is about the answer, not the
+ * subject. When the part after a colon is the real answer it is kept ("… på grundskolenivå: X är …" -> "X är …").
+ */
+const LEVEL_GRADE =
+  /(?<![\p{L}])(?:åk|årskurs|årskursen)\s*(?:[0-9]|sex|sju|åtta|nio)|(?<![\p{L}])(?:grundskole|gymnasie|högstadie|mellanstadie|universitets|högskole)nivå|\bkursplan(?:en)?\b|\bläroplan(?:en)?\b|\bcentrala innehållet\b|\bkunskapskrav(?:en)?\b/iu;
+const LEVEL_SELF =
+  /\b(?:på|för) (?:den|din|er|rätt|denna|en enkel|en enklare|grundläggande) nivå(?:n)?\b|(?:förklarar|tar|visar|beskriver|håller) jag (?:bara |det |den |enkelt |här )*(?:idén|grunden|det enkelt|enkelt)\b|\bjag (?:förklarar|tar|visar|håller) (?:bara |det |den )*(?:idén|grunden|det enkelt|enkelt)\b|\bhär är (?:den |själva )?(?:enkla |grundläggande |övergripande )?idén\b|\b(?:inte|inget) (?:något )?(?:du|ni|man|eleven) (?:behöver|ska) (?:kunna|räkna|lära)|\bhör (?:till|hemma i) (?:gymnasiet|gymnasiets|högstadiet|grundskolan|universitetet|högskolan)\b|\b(?:ingår|finns) (?:inte )?i (?:gymnasiets|grundskolans|högstadiets) (?:matte|matematik|kurs|kurser)\b|\b(?:i|på) (?:gymnasiet|grundskolan|högstadiet) (?:lär|läser|räknar|tänker|möter) (?:man|du|ni)\b|\bså jag förklarar\b/iu;
+export function isLevelMeta(sentence: string): boolean {
+  const t = sentence.trim();
+  return !!t && (LEVEL_GRADE.test(t) || LEVEL_SELF.test(t));
+}
+export function rewriteLevelMeta(sentence: string): string {
+  if (!isLevelMeta(sentence)) {
+    // K7.6 (Aron's phone test 21:22): never what is "enough" on the exam: "På provet räcker det att skriva …" ->
+    // "På provet kan du skriva …"
+    return sentence.replace(/^(\s*på provet,?\s+)(?:så\s+)?räcker det (?:med )?att (?:du\s+)?(\p{L}+a)\b/iu, "$1kan du $2");
+  }
+  const i = sentence.lastIndexOf(":");
+  if (i > 0) {
+    const rest = sentence.slice(i + 1).trim();
+    if (rest.split(/\s+/).length >= 3 && !isLevelMeta(rest)) {
+      return rest.charAt(0).toUpperCase() + rest.slice(1) + (/\s$/.test(sentence) ? " " : "");
+    }
+  }
+  return "";
+}
+
+/**
+ * K7.2 (Oscar O1 finding C): after a dropped sentence the next one must not start with a stump that pointed at it
+ * ("Där lärde jag mig …", "A syntes är …"). A stray single capital letter before a lower-case word is removed; a
+ * sentence that opens with a word pointing back at the dropped one is dropped as well.
+ */
+const STUMP_BACKREF = /^\s*(?:där|därför|dessutom|alltså|också|då|sedan|därefter|annars|ändå|det vill säga|med andra ord)\b(?![-])/iu;
+export function fixStump(sentence: string): string {
+  if (!sentence.trim()) return sentence;
+  if (STUMP_BACKREF.test(sentence)) return "";
+  // an English article left in front of the term ("A syntes är …"); single letters such as "X är sju" are kept
+  return sentence.replace(/^(\s*)(?:A|An|The)\s+(\p{Ll})(?=[\p{L}-]*\s+(?:är|betyder|kallas|innebär)\b)/u, (_m, ws: string, c: string) => ws + c.toUpperCase());
 }
 
 /**
@@ -678,7 +729,24 @@ export class MetaGate {
     this.buf = "";
     return r;
   }
+  /** K7.2: the sentence right after a dropped one is checked for a stump (once, never in a chain). */
+  private afterDrop = false;
   private keep(sentence: string): string {
+    const r0 = this.keep0(sentence);
+    if (!sentence.trim()) return r0;
+    if (r0 !== sentence && !r0.trim()) {
+      this.afterDrop = true;
+      return r0;
+    }
+    if (this.afterDrop) {
+      this.afterDrop = false;
+      const f = fixStump(r0);
+      if (f !== r0) this.dropped++;
+      return f;
+    }
+    return r0;
+  }
+  private keep0(sentence: string): string {
     if (this.rewrite) {
       if (!sentence.trim()) return sentence;
       let r = this.rewrite(sentence);
@@ -1014,6 +1082,7 @@ export class AnswerPost {
   private readonly meta: MetaGate;
   private readonly imeta: MetaGate;
   private readonly input: MetaGate;
+  private readonly level: MetaGate;
   private readonly lead: MetaGate;
   private readonly quizOnly: boolean;
   private quizBuf = "";
@@ -1045,6 +1114,8 @@ export class AnswerPost {
       return stripInterviewMeta(sentence);
     });
     this.input = new MetaGate(opts.inputMeta === true, (x) => isInputMeta(x) || (opts.tutor === true && isReasoningMeta(x, opts.heard ?? "")));
+    // K7.1: Provläge never says the level, the grade or what it chooses to explain (every sentence)
+    this.level = new MetaGate(opts.tutor === true, () => false, rewriteLevelMeta);
     let firstDone = false;
     let unsure = false;
     this.lead = new MetaGate(opts.inputMeta === true && !!opts.heard, () => false, (sentence) => {
@@ -1089,7 +1160,7 @@ export class AnswerPost {
 
   /** D75: the model chose silence, or every sentence was a meta comment (nothing was spoken). */
   get silent(): boolean {
-    return this.sil.silent || ((this.meta.dropped > 0 || this.input.dropped > 0 || this.lead.dropped > 0) && !this.spoke);
+    return this.sil.silent || ((this.meta.dropped > 0 || this.input.dropped > 0 || this.level.dropped > 0 || this.lead.dropped > 0) && !this.spoke);
   }
 
   /** Oscar 2026-11-08: every interview sentence was a remark about missing facts (nothing was said). */
@@ -1122,9 +1193,9 @@ export class AnswerPost {
     const a = this.dup.push(
       this.gate.push(
         this.imeta.push(
-          this.lead.push(this.input.push(
+          this.lead.push(this.level.push(this.input.push(
             this.meta.push(this.en.push(this.src.push(this.strip.push(this.tap.push(this.sil.push(this.rel.push(raw))))))),
-          )),
+          ))),
         ),
       ),
     );
@@ -1144,7 +1215,8 @@ export class AnswerPost {
     const s = this.src.push(t) + this.src.finish();
     const e0 = this.en.push(s) + this.en.finish();
     const e1 = this.meta.push(e0) + this.meta.finish();
-    const e2a = this.input.push(e1) + this.input.finish();
+    const e2i = this.input.push(e1) + this.input.finish();
+    const e2a = this.level.push(e2i) + this.level.finish();
     const e2 = this.lead.push(e2a) + this.lead.finish();
     const e = this.imeta.push(e2) + this.imeta.finish();
     let rest = this.trim.push(this.dup.push(this.gate.push(e)) + this.dup.finish()) +

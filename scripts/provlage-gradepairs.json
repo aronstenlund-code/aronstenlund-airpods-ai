@@ -1,0 +1,202 @@
+[
+{
+"id": "gp-01",
+"grade": "Åk 8",
+"subject": "Biologi",
+"kind": "gradepair_grund",
+"q": "fotosyntes",
+"expect": "ljusenergi, koldioxid och vatten blir glukos och syre i kloroplasterna",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-02",
+"grade": "Gymnasiet 1, kurs Biologi 1",
+"subject": "Biologi",
+"kind": "gradepair_gym",
+"q": "fotosyntes",
+"expect": "ljusenergi, koldioxid och vatten blir glukos och syre i kloroplasterna",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-03",
+"grade": "Åk 8",
+"subject": "Biologi",
+"kind": "gradepair_grund",
+"q": "vad är DNA",
+"expect": "arvsmassa, dubbelspiral, baser, gener styr proteiner",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-04",
+"grade": "Gymnasiet 1, kurs Biologi 1",
+"subject": "Biologi",
+"kind": "gradepair_gym",
+"q": "vad är DNA",
+"expect": "arvsmassa, dubbelspiral, baser, gener styr proteiner",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-05",
+"grade": "Åk 8",
+"subject": "Biologi",
+"kind": "gradepair_grund",
+"q": "evolution",
+"expect": "variation, naturligt urval, ärftlighet, anpassning",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-06",
+"grade": "Gymnasiet 1, kurs Biologi 1",
+"subject": "Biologi",
+"kind": "gradepair_gym",
+"q": "evolution",
+"expect": "variation, naturligt urval, ärftlighet, anpassning",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-07",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "gradepair_grund",
+"q": "vad är en kemisk bindning",
+"expect": "atomer hålls ihop av elektroner: jonbindning, kovalent bindning",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-08",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "gradepair_gym",
+"q": "vad är en kemisk bindning",
+"expect": "atomer hålls ihop av elektroner: jonbindning, kovalent bindning",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-09",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "gradepair_grund",
+"q": "syror och baser",
+"expect": "pH, vätejoner, neutralisation, exempel",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-10",
+"grade": "Gymnasiet 1, kurs Kemi 1",
+"subject": "Kemi",
+"kind": "gradepair_gym",
+"q": "syror och baser",
+"expect": "pH, vätejoner, neutralisation, exempel",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-11",
+"grade": "Åk 8",
+"subject": "Fysik",
+"kind": "gradepair_grund",
+"q": "Newtons andra lag",
+"expect": "kraft är massa gånger acceleration, exempel",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-12",
+"grade": "Gymnasiet 1, kurs Fysik 1",
+"subject": "Fysik",
+"kind": "gradepair_gym",
+"q": "Newtons andra lag",
+"expect": "kraft är massa gånger acceleration, exempel",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-13",
+"grade": "Åk 8",
+"subject": "Fysik",
+"kind": "gradepair_grund",
+"q": "vad är energiprincipen",
+"expect": "energi kan inte skapas eller förstöras, bara omvandlas, exempel",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-14",
+"grade": "Gymnasiet 1, kurs Fysik 1",
+"subject": "Fysik",
+"kind": "gradepair_gym",
+"q": "vad är energiprincipen",
+"expect": "energi kan inte skapas eller förstöras, bara omvandlas, exempel",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-15",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "gradepair_grund",
+"q": "vad är en derivata",
+"expect": "förändringshastighet, lutning i en punkt, exempel",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-16",
+"grade": "Gymnasiet 1, kurs Matematik 1c",
+"subject": "Matematik",
+"kind": "gradepair_gym",
+"q": "vad är en derivata",
+"expect": "förändringshastighet, lutning i en punkt, exempel",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Matematik 1c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-17",
+"grade": "Åk 8",
+"subject": "Historia",
+"kind": "gradepair_grund",
+"q": "första världskriget orsaker",
+"expect": "nationalism, allianser, imperialism, kapprustning, skotten i Sarajevo",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-18",
+"grade": "Gymnasiet 1, kurs Historia 1b",
+"subject": "Historia",
+"kind": "gradepair_gym",
+"q": "första världskriget orsaker",
+"expect": "nationalism, allianser, imperialism, kapprustning, skotten i Sarajevo",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Historia 1b. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-19",
+"grade": "Åk 8",
+"subject": "Samhällskunskap",
+"kind": "gradepair_grund",
+"q": "vad är demokrati",
+"expect": "folkstyre, fria val, yttrandefrihet, maktdelning",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "gp-20",
+"grade": "Gymnasiet 1, kurs Samhällskunskap 1b",
+"subject": "Samhällskunskap",
+"kind": "gradepair_gym",
+"q": "vad är demokrati",
+"expect": "folkstyre, fria val, yttrandefrihet, maktdelning",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Samhällskunskap 1b. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar."
+}
+]

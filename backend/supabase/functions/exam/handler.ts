@@ -90,7 +90,7 @@ No markdown, no symbols the speech would read out, numbers as digits.`;
 export const SYSTEM_PROMPT_EXAM_GRADE =
   `You mark a student's answer to one exam task, strictly by the scoring rules. You get <task> (text, points per level E/C/A, the correct answer and the scoring rules), <numeric_check> (computed by code: whether the student's final number equals the correct one; trust it) and <answer> (the student's answer, from speech, so it may contain recognition errors in words but not in meaning).
 Return ONLY a JSON object: {"points": {"E": 0, "C": 0, "A": 0}, "feedback": "..."}.
-- Give each point exactly as the scoring rules say, never more than the task's points per level. When <numeric_check> says the final number is wrong, no point that requires the correct answer is given; when it says it is right, the point for the correct answer is given. A bare number without any method shown never earns a method point. Never claim the student wrote something that is not in <answer>.
+- Give each point exactly as the scoring rules say, never more than the task's points per level. When <numeric_check> says the final number is wrong, no point that requires the correct answer is given; when it says it is right, the point for the correct answer is given. A bare number without any method shown never earns a method point. When a task asks for several results (for example area and perimeter) and the student gives them without working, each correct result earns its answer point, as when the national exam says "Endast svar krävs" (area and perimeter both right = 2 E points, when the task has them). Never claim the student wrote something that is not in <answer>.
 - feedback: one or two spoken Swedish sentences: what earned points and the single most useful thing that was missing. Never the full solution.`;
 
 function clean(s: unknown, max: number): string {
@@ -220,13 +220,13 @@ export function summarize(results: { no: string; points: Points }[], boundaries:
     }
     : null;
   const spoken = boundaries.length
-    ? `Du har ${total} poäng, varav ${sum.C} C-poäng och ${sum.A} A-poäng. Det räcker till ${grade === "F" ? "F" : `betyget ${grade}`}.` +
+    ? `Du har ${total} poäng, varav ${sum.C} C-poäng och ${sum.A} A-poäng. ${grade === "F" ? "Det räcker inte till godkänt än." : `Det räcker till betyget ${grade}.`}` +
       (toNext
         ? toNext.a && toNext.a >= toNext.total
-          ? ` Till ${toNext.grade} saknas ${toNext.a} A-poäng.`
+          ? ` Till ${toNext.grade === "E" ? "godkänt" : toNext.grade} saknas ${toNext.a} A-poäng.`
           : toNext.ca && toNext.ca >= toNext.total
-          ? ` Till ${toNext.grade} saknas ${toNext.ca} poäng på C- eller A-nivå.`
-          : ` Till ${toNext.grade} saknas ${toNext.total} poäng${
+          ? ` Till ${toNext.grade === "E" ? "godkänt" : toNext.grade} saknas ${toNext.ca} poäng på C- eller A-nivå.`
+          : ` Till ${toNext.grade === "E" ? "godkänt" : toNext.grade} saknas ${toNext.total} poäng${
             toNext.a ? `, varav ${toNext.a} A-poäng` : toNext.ca ? `, varav ${toNext.ca} på C- eller A-nivå` : ""
           }.`
         : "")

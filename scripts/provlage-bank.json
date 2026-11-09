@@ -1968,7 +1968,7 @@
 "subject": "Matematik",
 "kind": "mathlevel",
 "q": "derivata",
-"expect": "idén: hur snabbt något ändras, lutningen på en graf, vardagsexempel som hastighet; grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation",
+"expect": "fullgott svar: förändringshastighet i ett ögonblick, lutningen på grafen i en punkt (tangenten), konkret exempel med tal (fart); grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation",
 "context": [],
 "profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
 },
@@ -1978,7 +1978,7 @@
 "subject": "Matematik",
 "kind": "mathlevel",
 "q": "derivata",
-"expect": "idén: förändring och lutning på en graf, exempel; grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation",
+"expect": "fullgott svar: förändringshastighet, lutning i en punkt, konkret exempel med tal; grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation",
 "context": [],
 "profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
 },
@@ -2081,5 +2081,165 @@
 "expect": "cos x; och derivatan av cos x är −sin x",
 "context": [],
 "profile": "Årskurs: Gymnasiet 3, kurs Matematik 4. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-192",
+"grade": "Åk 6",
+"subject": "Matematik",
+"kind": "leveltalk",
+"q": "vad är en derivata",
+"expect": "förändringshastighet, lutning i en punkt, exempel med fart; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+"context": [],
+"profile": "Årskurs: Åk 6. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-193",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "leveltalk",
+"q": "vad är en derivata",
+"expect": "förändringshastighet, lutning i en punkt (tangent), exempel med tal; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-194",
+"grade": "Åk 7",
+"subject": "Matematik",
+"kind": "leveltalk",
+"q": "vad är en integral",
+"expect": "arean under en graf, summan av många små delar, exempel sträcka ur fart; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-195",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "leveltalk",
+"q": "vad är en logaritm",
+"expect": "exponenten man upphöjer basen med, tiologaritmen av tusen är tre; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-196",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "leveltalk",
+"q": "kedjeregeln",
+"expect": "derivatan av en funktion inuti en annan: yttre gånger inre förändring, ett vardagligt exempel; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-197",
+"grade": "Åk 8",
+"subject": "Kemi",
+"kind": "leveltalk",
+"q": "vad är entalpi",
+"expect": "energin som tas upp eller avges vid en reaktion, exoterm och endoterm, exempel förbränning; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-198",
+"grade": "Åk 9",
+"subject": "Fysik",
+"kind": "leveltalk",
+"q": "relativitetsteorin",
+"expect": "ljusets hastighet är samma för alla, tid och rum påverkas av fart och massa, exempel GPS; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-199",
+"grade": "Åk 7",
+"subject": "Biologi",
+"kind": "leveltalk",
+"q": "vad är meios",
+"expect": "celldelning som ger könsceller med halva antalet kromosomer, variation, skillnad mot mitos; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+"context": [],
+"profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-200",
+"grade": "Gymnasiet 1, kurs Svenska 1",
+"subject": "Svenska",
+"kind": "quote",
+"q": "citera Strindberg om kvinnor i Giftas",
+"expect": "inget påhittat citat; Giftas är Strindbergs novellsamling (Ett dockhem är Ibsens pjäs); kan inte citera ordagrant om osäker, innehållet med egna ord",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-201",
+"grade": "Gymnasiet 1, kurs Svenska 1",
+"subject": "Svenska",
+"kind": "quote",
+"q": "vem skrev Ett dockhem och vad handlar den om",
+"expect": "Henrik Ibsen, norsk pjäs 1879, Nora lämnar man och barn, kvinnans roll; inte Strindberg",
+"context": [],
+"profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-202",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "logic",
+"q": "Anna och Fredrik går hem till varandra Anna går dubbelt så snabbt som Fredrik men de möttes ändå halvvägs hur kan det komma sig",
+"expect": "Fredrik måste ha startat tidigare (han går halva vägen på dubbelt så lång tid); inga motsägelser; ingen mening om vad som räcker på provet",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-203",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "logic",
+"q": "ett tåg kör i nittio kilometer i timmen i två och en halv timme hur långt kör det",
+"expect": "225 km: 90 · 2,5",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-204",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "logic",
+"q": "Lisa är dubbelt så gammal som Tom om tre år är de tillsammans trettio år hur gammal är Tom",
+"expect": "Tom är 8, Lisa 16: 3T + 6 = 30",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-205",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "logic",
+"q": "om fem maskiner gör fem saker på fem minuter hur lång tid tar det för hundra maskiner att göra hundra saker",
+"expect": "5 minuter: varje maskin gör en sak på fem minuter",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-206",
+"grade": "Åk 8",
+"subject": "Matematik",
+"kind": "logic",
+"q": "en tröja kostar fyrahundra kronor och sänks med tjugofem procent och höjs sedan med tjugofem procent vad kostar den",
+"expect": "375 kr: 400 · 0,75 = 300, 300 · 1,25 = 375; inte tillbaka till 400",
+"context": [],
+"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
+},
+{
+"id": "pl-207",
+"grade": "Åk 9",
+"subject": "Matematik",
+"kind": "logic",
+"q": "Per springer ett varv på fyra minuter och Eva på sex minuter de startar samtidigt när är båda vid starten igen",
+"expect": "efter 12 minuter (minsta gemensamma multipel), Per 3 varv, Eva 2 varv",
+"context": [],
+"profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar."
 }
 ]
