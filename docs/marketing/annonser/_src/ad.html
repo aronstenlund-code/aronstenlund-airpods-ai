@@ -9,15 +9,20 @@ body{font-family:FG,sans-serif;color:#18213A;background:#F5F8FC;position:relativ
 .logo svg{width:60px;height:60px}
 h1{position:absolute;left:100px;top:330px;width:820px;font-size:112px;line-height:1.02;font-weight:700;letter-spacing:-2px}
 h1 em{font-style:normal;color:#2346C8}
-.card{position:absolute;left:100px;top:760px;width:820px;background:#fff;border:2px solid #E2E7EF;border-radius:28px;padding:36px 40px;box-shadow:0 10px 30px rgba(24,33,58,.10)}
-.q{font-family:Kalam;font-size:56px;line-height:1.25;color:#2346C8}
-.a{margin-top:20px;font-size:38px;line-height:1.4;color:#18213A}
-.ph{position:absolute;left:300px;top:1160px;width:480px;border-radius:44px;border:2px solid #E2E7EF;box-shadow:0 20px 50px rgba(24,33,58,.22);display:block}
+.card{position:absolute;left:100px;top:1250px;width:640px;z-index:2;background:#fff;border:2px solid #E2E7EF;border-radius:28px;padding:28px 32px;box-shadow:0 10px 30px rgba(24,33,58,.10)}
+.q{font-family:Kalam;font-size:44px;line-height:1.25;color:#2346C8}
+.a{margin-top:14px;font-size:30px;line-height:1.4;color:#18213A}
+.el{position:absolute;left:260px;top:690px;width:560px;height:700px;border-radius:36px;overflow:hidden;box-shadow:0 20px 50px rgba(24,33,58,.2)}
+.el img{width:100%;height:100%;object-fit:cover;display:block}
+.rg{position:absolute;left:70%;top:43%}.rg i{position:absolute;left:-70px;top:-70px;width:140px;height:140px;border-radius:50%;border:5px solid #2346C8}
+.rg i:nth-child(1){transform:scale(.45);opacity:.9}.rg i:nth-child(2){transform:scale(.8);opacity:.55}.rg i:nth-child(3){transform:scale(1.15);opacity:.3}
+.ph{position:absolute;left:790px;top:1090px;width:190px;border-radius:26px;border:2px solid #E2E7EF;box-shadow:0 14px 34px rgba(24,33,58,.25);display:block;z-index:3}
 .src{position:absolute;left:100px;top:1470px;width:150px;font-size:26px;color:#5A6478;line-height:1.3}
 .skiss div.box{position:absolute;display:block;border:4px dashed #D9342B;color:#D9342B;font:700 28px FG;padding:6px 10px;z-index:9;background:rgba(217,52,43,.06)}
 </style><body>
 <div class="logo"><svg viewBox="0 0 26 26" fill="none"><circle cx="13" cy="13" r="3.5" fill="currentColor"/><path d="M6.5 13a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2.5 13a10.5 10.5 0 0 1 21 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/></svg>Lumen</div>
 <h1 id="h"></h1>
+<div class="el"><img id="el"><span class="rg"><i></i><i></i><i></i></span></div>
 <div class="card"><p class="q" id="q"></p><p class="a" id="a"></p></div>
 <img class="ph" id="ph">
 <script>
@@ -26,7 +31,7 @@ const ADS={
 2:{h:'Fråga i örat. <em>Sikta på A-nivå.</em>',q:'Globalisering',a:'Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna.',img:'s12.png'},
 3:{h:'Plugga utan att <em>titta på skärmen</em>',q:'Vad händer i en näringskedja om rovdjuren försvinner?',a:'Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan.',img:'s47.png'}};
 const p=new URLSearchParams(location.search),n=p.get('n')||1,d=ADS[n];
-h.innerHTML=d.h;q.textContent=d.q;a.textContent=d.a;ph.src=d.img;
+h.innerHTML=d.h;q.textContent=d.q;a.textContent=d.a;ph.src=d.img;el.src=p.get('real')?'elias-frilagd.png':'elias-placeholder.svg';
 if(p.get('skiss')){document.body.classList.add('skiss');
  for(const [id,l] of [['h','Rubrik 820×~340, Familjen Grotesk 112 px'],['q','Fråga, Kalam 56 px'],['a','Svar, 38 px, citat ur D87-svar']]){const r=document.getElementById(id).getBoundingClientRect();const b=document.createElement('div');b.className='box';b.style.cssText=`left:${r.left-8}px;top:${r.top-8}px;width:${r.width+16}px;height:${r.height+16}px`;const t=document.createElement('span');t.textContent=l;t.style.cssText='position:absolute;left:0;top:-44px;background:#fff;padding:2px 8px;white-space:nowrap';b.appendChild(t);b.style.background='none';document.body.appendChild(b)}
  const z=document.createElement('div');z.className='box';z.style.cssText='left:0;top:1520px;width:1080px;height:400px;color:#5A6478;border-color:#5A6478';z.textContent='Videoflödets egna knappar och text täcker nedre 400 px (säker zon: inga viktiga texter här)';document.body.appendChild(z)}

@@ -218,6 +218,18 @@
   .photo svg { width: 28px; height: 28px; }
   .photo span { max-width: 30ch; }
 
+  /* Ke7: Elias med ringar från hörluren. */
+  .elias { position: relative; margin: 0 auto; width: min(100%, 360px); aspect-ratio: 4 / 5; border-radius: 18px; overflow: hidden; background: var(--chip); border: 1px solid var(--line); }
+  .elias img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .rings { position: absolute; left: var(--ex); top: var(--ey); width: 0; height: 0; }
+  .rings i { position: absolute; left: -60px; top: -60px; width: 120px; height: 120px; border-radius: 50%; border: 3px solid #2346C8; opacity: 0; transform: scale(.15); }
+  @media (prefers-reduced-motion: no-preference) {
+    .rings i { animation: ering 3.6s cubic-bezier(.23,1,.32,1) infinite; }
+    .rings i:nth-child(2) { animation-delay: .35s; } .rings i:nth-child(3) { animation-delay: .7s; }
+    @keyframes ering { 0% { opacity: 0; transform: scale(.15); } 12% { opacity: .9; } 55%, 100% { opacity: 0; transform: scale(1.6); } }
+  }
+  @media (prefers-reduced-motion: reduce) { .rings i { opacity: .55; } .rings i:nth-child(1) { transform: scale(.3); } .rings i:nth-child(2) { transform: scale(.6); opacity: .35; } .rings i:nth-child(3) { transform: scale(.9); opacity: .2; } }
+
   /* ---------- Demorutan ---------- */
   .demo {
     display: grid;
@@ -571,7 +583,7 @@
     }
     .intro { grid-column: 1; grid-row: 1; }
     .points { grid-column: 1; grid-row: 2; }
-    .photo { grid-column: 1; grid-row: 3; min-height: 280px; }
+    .elias { grid-column: 1; grid-row: 3; margin: 0; width: min(100%, 420px); }
     .demo { grid-column: 2; grid-row: 1 / span 3; align-self: start; position: sticky; top: 24px; padding: 26px 26px 28px; gap: 20px; }
     h1 { font-size: clamp(3.75rem, 6.2vw, 5.5rem); }
     .pitch { font-size: 1.5rem; margin-top: 16px; }
@@ -701,10 +713,10 @@
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Inget konto. Börja direkt.</span></li>
     </ul>
 
-    <!-- Platshållare: byt mot ett foto med fri licens, utan varumärken i bild. -->
-    <figure class="photo" role="img" aria-label="Platshållare för foto">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-8 8"/></svg>
-      <span>Foto: person med trådlösa hörlurar på väg någonstans, telefonen i fickan. Fri licens, inga varumärken i bild.</span>
+    <!-- Ke7: Elias. Byt src mot img/elias.webp (frilagd bild, 4:5) när den finns; --ex/--ey är hörlurens plats i procent av bilden. -->
+    <figure class="elias" style="--ex:70%;--ey:43%">
+      <img src="img/elias-placeholder.svg" width="800" height="1000" alt="Elias, 17 år, med en vit trådlös hörlur i örat. Illustration, ingen verklig person.">
+      <span class="rings" aria-hidden="true"><i></i><i></i><i></i></span>
     </figure>
   </section>
 
