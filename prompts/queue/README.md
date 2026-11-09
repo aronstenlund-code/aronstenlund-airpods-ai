@@ -3,6 +3,7 @@
 En fil per session: `kevin.md`, `angela.md`, `oscar.md`, `kelly.md`. Deangelo och Aron lägger till punkter; sessionen själv ändrar bara status på sina egna punkter.
 
 Arbetssätt för sessionen:
+0. **Tavlan `prompts/queue/BOARD.md`:** uppdatera din egen rad (modell, effort, vad du gör, status, resultatet i en mening med siffror och tid) varje gång du tar en punkt, blir klar, fastnar eller väntar. Pusha den i samma commit som köändringen.
 1. När en uppgift är klar och rapporten pushad: `git pull`, öppna din köfil.
 2. Ta översta punkten med `[ ]`. Ändra till `[~] pågår <ÅÅÅÅ-MM-DD HH:MM>` och pusha.
 3. Gör uppgiften enligt CLAUDE.md (rapport, STATUS, DECISIONS, push).
