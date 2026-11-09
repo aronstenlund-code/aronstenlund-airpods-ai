@@ -48,7 +48,7 @@ def case_problems(cid, ans, r):
         p.append("mening om upphovsrätt i stället för en rad")
     if cid == "W1" and not re.search(r"kronor|kr\b", low):
         p.append("inget pris")
-    if cid == "I07" and not re.search(r"nek|legitimation|säljer inte|inte sälja|får inte köpa", low):
+    if cid == "I07" and not re.search(r"nek|legitimation|säljer inte|inte sälja|inte får sälja|får inte sälja|får inte köpa", low):
         p.append("säger inte att försäljningen nekas")
     if cid == "S03" and re.fullmatch(r"\s*berätta mer om det\.?\s*", low):
         p.append("reservraden")
