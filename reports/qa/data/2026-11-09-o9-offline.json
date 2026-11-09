@@ -1,0 +1,799 @@
+{
+ "positives": {
+  "n": 93,
+  "ok": 90,
+  "misses": [
+   {
+    "p": "förhör mig på mina sämsta begrepp",
+    "scope": "study",
+    "expect": "weak_areas",
+    "got": "quiz_topic",
+    "arg": "mina sämsta begrepp",
+    "ok": false
+   },
+   {
+    "p": "hur går det för mig",
+    "scope": "study",
+    "expect": "self_assessment",
+    "got": null,
+    "ok": false
+   },
+   {
+    "p": "kan du göra det roligare",
+    "scope": "social",
+    "expect": "social:funnier",
+    "got": null,
+    "ok": false
+   }
+  ]
+ },
+ "negatives": {
+  "n": 15,
+  "ok": 15,
+  "false_hits": []
+ },
+ "pos": [
+  {
+   "p": "Lumen, kan jag få ett exempel?",
+   "scope": "study",
+   "expect": "example",
+   "got": "example",
+   "ok": true
+  },
+  {
+   "p": "ge mig ett annat exempel",
+   "scope": "study",
+   "expect": "example",
+   "got": "example",
+   "ok": true
+  },
+  {
+   "p": "visa ett exempel på det",
+   "scope": "study",
+   "expect": "example",
+   "got": "example",
+   "ok": true
+  },
+  {
+   "p": "sammanfatta kort",
+   "scope": "study",
+   "expect": "summary",
+   "got": "summary",
+   "ok": true
+  },
+  {
+   "p": "Lumen, ge mig det viktigaste",
+   "scope": "study",
+   "expect": "summary",
+   "got": "summary",
+   "ok": true
+  },
+  {
+   "p": "kan du summera det här",
+   "scope": "study",
+   "expect": "summary",
+   "got": "summary",
+   "ok": true
+  },
+  {
+   "p": "säg det på A-nivå",
+   "scope": "study",
+   "expect": "a_level",
+   "got": "a_level",
+   "ok": true
+  },
+  {
+   "p": "ge mig ett A-svar",
+   "scope": "study",
+   "expect": "a_level",
+   "got": "a_level",
+   "ok": true
+  },
+  {
+   "p": "hur får jag ett A",
+   "scope": "study",
+   "expect": "a_level",
+   "got": "a_level",
+   "ok": true
+  },
+  {
+   "p": "fråga mig något svårare",
+   "scope": "study",
+   "expect": "harder_question",
+   "got": "harder_question",
+   "ok": true
+  },
+  {
+   "p": "ge mig en klurig fråga",
+   "scope": "study",
+   "expect": "harder_question",
+   "got": "harder_question",
+   "ok": true
+  },
+  {
+   "p": "Lumen, ställ en svårare fråga",
+   "scope": "study",
+   "expect": "harder_question",
+   "got": "harder_question",
+   "ok": true
+  },
+  {
+   "p": "snabbförhör mig",
+   "scope": "study",
+   "expect": "quick_quiz",
+   "got": "quick_quiz",
+   "ok": true
+  },
+  {
+   "p": "kör fem korta frågor",
+   "scope": "study",
+   "expect": "quick_quiz",
+   "got": "quick_quiz",
+   "ok": true
+  },
+  {
+   "p": "Lumen, snabbquiz",
+   "scope": "study",
+   "expect": "quick_quiz",
+   "got": "quick_quiz",
+   "ok": true
+  },
+  {
+   "p": "ge mig ja eller nej frågor",
+   "scope": "study",
+   "expect": "yes_no_quiz",
+   "got": "yes_no_quiz",
+   "ok": true
+  },
+  {
+   "p": "kör ja-nej-frågor",
+   "scope": "study",
+   "expect": "yes_no_quiz",
+   "got": "yes_no_quiz",
+   "ok": true
+  },
+  {
+   "p": "ja nej förhör",
+   "scope": "study",
+   "expect": "yes_no_quiz",
+   "got": "yes_no_quiz",
+   "ok": true
+  },
+  {
+   "p": "förhör mig om fotosyntesen",
+   "scope": "study",
+   "expect": "quiz_topic",
+   "got": "quiz_topic",
+   "arg": "fotosyntesen",
+   "ok": true
+  },
+  {
+   "p": "Lumen, testa mig på andra världskriget",
+   "scope": "study",
+   "expect": "quiz_topic",
+   "got": "quiz_topic",
+   "arg": "andra världskriget",
+   "ok": true
+  },
+  {
+   "p": "quizza mig i ekvationer",
+   "scope": "study",
+   "expect": "quiz_topic",
+   "got": "quiz_topic",
+   "arg": "ekvationer",
+   "ok": true
+  },
+  {
+   "p": "öva på mina svaga delar",
+   "scope": "study",
+   "expect": "weak_areas",
+   "got": "weak_areas",
+   "ok": true
+  },
+  {
+   "p": "vad är jag sämst på",
+   "scope": "study",
+   "expect": "weak_areas",
+   "got": "weak_areas",
+   "ok": true
+  },
+  {
+   "p": "förhör mig på mina sämsta begrepp",
+   "scope": "study",
+   "expect": "weak_areas",
+   "got": "quiz_topic",
+   "arg": "mina sämsta begrepp",
+   "ok": false
+  },
+  {
+   "p": "hur går det för mig",
+   "scope": "study",
+   "expect": "self_assessment",
+   "got": null,
+   "ok": false
+  },
+  {
+   "p": "hur bra kan jag ämnet",
+   "scope": "study",
+   "expect": "self_assessment",
+   "got": "self_assessment",
+   "ok": true
+  },
+  {
+   "p": "Lumen, kan jag det här",
+   "scope": "study",
+   "expect": "self_assessment",
+   "got": "self_assessment",
+   "ok": true
+  },
+  {
+   "p": "kolla noga",
+   "scope": "study",
+   "expect": "careful",
+   "got": "careful",
+   "ok": true
+  },
+  {
+   "p": "dubbelkolla svaret",
+   "scope": "study",
+   "expect": "careful",
+   "got": "careful",
+   "ok": true
+  },
+  {
+   "p": "är du säker på det där",
+   "scope": "study",
+   "expect": "careful",
+   "got": "careful",
+   "ok": true
+  },
+  {
+   "p": "vad sa hon",
+   "scope": "study",
+   "expect": "catch_up",
+   "got": "catch_up",
+   "ok": true
+  },
+  {
+   "p": "sammanfatta vad som sades",
+   "scope": "study",
+   "expect": "catch_up",
+   "got": "catch_up",
+   "ok": true
+  },
+  {
+   "p": "vad pratade de om",
+   "scope": "study",
+   "expect": "catch_up",
+   "got": "catch_up",
+   "ok": true
+  },
+  {
+   "p": "svara diskret",
+   "scope": "study",
+   "expect": "brief_style",
+   "got": "brief_style",
+   "ok": true
+  },
+  {
+   "p": "svara med bara en mening",
+   "scope": "study",
+   "expect": "brief_style",
+   "got": "brief_style",
+   "ok": true
+  },
+  {
+   "p": "en mening tack",
+   "scope": "study",
+   "expect": "brief_style",
+   "got": "brief_style",
+   "ok": true
+  },
+  {
+   "p": "vad säger jag",
+   "scope": "interview",
+   "expect": "interview_help:professional",
+   "got": "interview_help:professional",
+   "ok": true
+  },
+  {
+   "p": "hjälp mig att svara professionellt",
+   "scope": "interview",
+   "expect": "interview_help:professional",
+   "got": "interview_help:professional",
+   "ok": true
+  },
+  {
+   "p": "Lumen, hjälp mig svara",
+   "scope": "interview",
+   "expect": "interview_help:professional",
+   "got": "interview_help:professional",
+   "ok": true
+  },
+  {
+   "p": "säg ett bättre svar",
+   "scope": "interview",
+   "expect": "interview_help:better",
+   "got": "interview_help:better",
+   "ok": true
+  },
+  {
+   "p": "förbättra svaret",
+   "scope": "interview",
+   "expect": "interview_help:better",
+   "got": "interview_help:better",
+   "ok": true
+  },
+  {
+   "p": "gör det bättre",
+   "scope": "interview",
+   "expect": "interview_help:better",
+   "got": "interview_help:better",
+   "ok": true
+  },
+  {
+   "p": "mer säker",
+   "scope": "interview",
+   "expect": "interview_help:confident",
+   "got": "interview_help:confident",
+   "ok": true
+  },
+  {
+   "p": "säkrare",
+   "scope": "interview",
+   "expect": "interview_help:confident",
+   "got": "interview_help:confident",
+   "ok": true
+  },
+  {
+   "p": "låt säker",
+   "scope": "interview",
+   "expect": "interview_help:confident",
+   "got": "interview_help:confident",
+   "ok": true
+  },
+  {
+   "p": "motfråga",
+   "scope": "interview",
+   "expect": "interview_help:counter_question",
+   "got": "interview_help:counter_question",
+   "ok": true
+  },
+  {
+   "p": "vad kan jag fråga dem",
+   "scope": "interview",
+   "expect": "interview_help:counter_question",
+   "got": "interview_help:counter_question",
+   "ok": true
+  },
+  {
+   "p": "Lumen, ge mig en motfråga tack",
+   "scope": "interview",
+   "expect": "interview_help:counter_question",
+   "got": "interview_help:counter_question",
+   "ok": true
+  },
+  {
+   "p": "hjälp",
+   "scope": "interview",
+   "expect": "interview_help:stuck",
+   "got": "interview_help:stuck",
+   "ok": true
+  },
+  {
+   "p": "jag kommer inte på något",
+   "scope": "interview",
+   "expect": "interview_help:stuck",
+   "got": "interview_help:stuck",
+   "ok": true
+  },
+  {
+   "p": "jag fastnar",
+   "scope": "interview",
+   "expect": "interview_help:stuck",
+   "got": "interview_help:stuck",
+   "ok": true
+  },
+  {
+   "p": "vad bör jag svara",
+   "scope": "social",
+   "expect": "social:reply",
+   "got": "social:reply",
+   "ok": true
+  },
+  {
+   "p": "vad ska jag säga",
+   "scope": "social",
+   "expect": "social:reply",
+   "got": "social:reply",
+   "ok": true
+  },
+  {
+   "p": "Lumen, vad svarar jag",
+   "scope": "social",
+   "expect": "social:reply",
+   "got": "social:reply",
+   "ok": true
+  },
+  {
+   "p": "mer skämt",
+   "scope": "social",
+   "expect": "social:funnier",
+   "got": "social:funnier",
+   "ok": true
+  },
+  {
+   "p": "Lumen, roligare tack",
+   "scope": "social",
+   "expect": "social:funnier",
+   "got": "social:funnier",
+   "ok": true
+  },
+  {
+   "p": "kan du göra det roligare",
+   "scope": "social",
+   "expect": "social:funnier",
+   "got": null,
+   "ok": false
+  },
+  {
+   "p": "mer avslappnat",
+   "scope": "social",
+   "expect": "social:natural",
+   "got": "social:natural",
+   "ok": true
+  },
+  {
+   "p": "naturligare tack",
+   "scope": "social",
+   "expect": "social:natural",
+   "got": "social:natural",
+   "ok": true
+  },
+  {
+   "p": "mindre stelt snälla",
+   "scope": "social",
+   "expect": "social:natural",
+   "got": "social:natural",
+   "ok": true
+  },
+  {
+   "p": "nytt ämne",
+   "scope": "social",
+   "expect": "social:change_topic",
+   "got": "social:change_topic",
+   "ok": true
+  },
+  {
+   "p": "Lumen, byt ämne",
+   "scope": "social",
+   "expect": "social:change_topic",
+   "got": "social:change_topic",
+   "ok": true
+  },
+  {
+   "p": "något annat att prata om tack",
+   "scope": "social",
+   "expect": "social:change_topic",
+   "got": "social:change_topic",
+   "ok": true
+  },
+  {
+   "p": "följdfråga",
+   "scope": "social",
+   "expect": "social:follow_up",
+   "got": "social:follow_up",
+   "ok": true
+  },
+  {
+   "p": "ge mig en smart följdfråga",
+   "scope": "social",
+   "expect": "social:follow_up",
+   "got": "social:follow_up",
+   "ok": true
+  },
+  {
+   "p": "en bra följdfråga",
+   "scope": "social",
+   "expect": "social:follow_up",
+   "got": "social:follow_up",
+   "ok": true
+  },
+  {
+   "p": "vad menade de",
+   "scope": "social",
+   "expect": "social:what_meant",
+   "got": "social:what_meant",
+   "ok": true
+  },
+  {
+   "p": "vad menade hen med det",
+   "scope": "social",
+   "expect": "social:what_meant",
+   "got": "social:what_meant",
+   "ok": true
+  },
+  {
+   "p": "Lumen, vad menade hon",
+   "scope": "social",
+   "expect": "social:what_meant",
+   "got": "social:what_meant",
+   "ok": true
+  },
+  {
+   "p": "lite rizz",
+   "scope": "social",
+   "expect": "rizz:more",
+   "got": "rizz:more",
+   "ok": true
+  },
+  {
+   "p": "ge mig mer rizz",
+   "scope": "social",
+   "expect": "rizz:more",
+   "got": "rizz:more",
+   "ok": true
+  },
+  {
+   "p": "Lumen, rizz",
+   "scope": "social",
+   "expect": "rizz:more",
+   "got": "rizz:more",
+   "ok": true
+  },
+  {
+   "p": "mer självsäkert tack",
+   "scope": "social",
+   "expect": "rizz:confident",
+   "got": "rizz:confident",
+   "ok": true
+  },
+  {
+   "p": "Lumen, säkrare",
+   "scope": "social",
+   "expect": "rizz:confident",
+   "got": "rizz:confident",
+   "ok": true
+  },
+  {
+   "p": "mer självsäker",
+   "scope": "social",
+   "expect": "rizz:confident",
+   "got": "rizz:confident",
+   "ok": true
+  },
+  {
+   "p": "flörtigare",
+   "scope": "social",
+   "expect": "rizz:flirty",
+   "got": "rizz:flirty",
+   "ok": true
+  },
+  {
+   "p": "mer flörtig tack",
+   "scope": "social",
+   "expect": "rizz:flirty",
+   "got": "rizz:flirty",
+   "ok": true
+  },
+  {
+   "p": "Lumen, flirtigare",
+   "scope": "social",
+   "expect": "rizz:flirty",
+   "got": "rizz:flirty",
+   "ok": true
+  },
+  {
+   "p": "mer diskret",
+   "scope": "social",
+   "expect": "rizz:subtle",
+   "got": "rizz:subtle",
+   "ok": true
+  },
+  {
+   "p": "lugnare tack",
+   "scope": "social",
+   "expect": "rizz:subtle",
+   "got": "rizz:subtle",
+   "ok": true
+  },
+  {
+   "p": "Lumen, subtilare",
+   "scope": "social",
+   "expect": "rizz:subtle",
+   "got": "rizz:subtle",
+   "ok": true
+  },
+  {
+   "p": "mer kaxig",
+   "scope": "social",
+   "expect": "rizz:cocky",
+   "got": "rizz:cocky",
+   "ok": true
+  },
+  {
+   "p": "kaxigare tack",
+   "scope": "social",
+   "expect": "rizz:cocky",
+   "got": "rizz:cocky",
+   "ok": true
+  },
+  {
+   "p": "Lumen, mer kaxigt",
+   "scope": "social",
+   "expect": "rizz:cocky",
+   "got": "rizz:cocky",
+   "ok": true
+  },
+  {
+   "p": "hjälp det går dåligt",
+   "scope": "social",
+   "expect": "rizz:rescue",
+   "got": "rizz:rescue",
+   "ok": true
+  },
+  {
+   "p": "rädda situationen tack",
+   "scope": "social",
+   "expect": "rizz:rescue",
+   "got": "rizz:rescue",
+   "ok": true
+  },
+  {
+   "p": "Lumen, rädda mig",
+   "scope": "social",
+   "expect": "rizz:rescue",
+   "got": "rizz:rescue",
+   "ok": true
+  },
+  {
+   "p": "mindre pinsam",
+   "scope": "social",
+   "expect": "rizz:less_cringe",
+   "got": "rizz:less_cringe",
+   "ok": true
+  },
+  {
+   "p": "mindre pinsamt tack",
+   "scope": "social",
+   "expect": "rizz:less_cringe",
+   "got": "rizz:less_cringe",
+   "ok": true
+  },
+  {
+   "p": "Lumen, mindre cringe",
+   "scope": "social",
+   "expect": "rizz:less_cringe",
+   "got": "rizz:less_cringe",
+   "ok": true
+  },
+  {
+   "p": "tre repliker",
+   "scope": "social",
+   "expect": "alternatives:3",
+   "got": "alternatives:3",
+   "ok": true
+  },
+  {
+   "p": "ge mig tre varianter",
+   "scope": "social",
+   "expect": "alternatives:3",
+   "got": "alternatives:3",
+   "ok": true
+  },
+  {
+   "p": "Lumen, tre alternativ",
+   "scope": "social",
+   "expect": "alternatives:3",
+   "got": "alternatives:3",
+   "ok": true
+  }
+ ],
+ "neg": [
+  {
+   "p": "vad är ett bra exempel på en näringskedja",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "sammanfatta andra världskriget för mig",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "hur bra kan en hund höra",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "vad sa Martin Luther King i sitt tal",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "förklara på enkel svenska vad en atom är",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "vad missade jag på provet om cellen",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "ge mig fem exempel på adjektiv",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "jag fastnar alltid på bråktal, varför",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "vad betyder diskret i matematik",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "är du säker på att jorden är 4,5 miljarder år",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "en mening om fotosyntes",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "testa mig",
+   "scope": "study",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "vad säger jag om min största svaghet",
+   "scope": "interview",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "det går dåligt i skolan för mig just nu",
+   "scope": "social",
+   "got": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "vad menade du med att du skulle åka bort",
+   "scope": "social",
+   "got": null,
+   "rule": null,
+   "ok": true
+  }
+ ]
+}

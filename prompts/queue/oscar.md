@@ -30,5 +30,5 @@
   3. Kostnad per fråga och per timmes plugg (cirka 30 frågor), jämfört med Max-krediten på 100 USD per månad: hur många pluggtimmar räcker den till?
   4. Rapport med tabell och konkreta förslag till Kevin. Budget 0,50 USD.
 
-- [ ] **O9 – Oberoende test av kommandona i backend (K9)** (effort: medium). Läs `docs/COMMANDS.md`. Kör 3 nya formuleringar per uppgift som Kevin inte har testat, plus 15 vanliga meningar med kommandoord. Krav: rätt `task`, 0 falska träffar. Budget 0,15 USD.
+- [x] **O9 – Oberoende test av kommandona i backend (K9)** (effort: medium). Läs `docs/COMMANDS.md`. Kör 3 nya formuleringar per uppgift som Kevin inte har testat, plus 15 vanliga meningar med kommandoord. Krav: rätt `task`, 0 falska träffar. Budget 0,15 USD. _klar 2026-11-09 18:29 (Oscar): `reports/qa/2026-11-09-1835-oscar-o9-kommandon.md`; rätt task 90/93, falska träffar 0/15; 3 matchningsfel till Kevin ('hur går det för mig' ger påhittad lägesbild)_
 
