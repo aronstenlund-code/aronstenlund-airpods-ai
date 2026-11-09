@@ -1,0 +1,17 @@
+set	id	kind	pause	key	text
+fragor	q1	question	0	australien	Vad är huvudstaden i Australien?
+fragor	q2	question	0	planeter	Hur många planeter finns det i solsystemet?
+fragor	c1	continuation	1.5	bergen	Vilka är de största | bergen i världen?
+fragor	q3	question	0	röda rummet	Vem skrev Röda rummet?
+fragor	q4	question	0	23	Vad är tjugotre gånger fyra?
+fragor	c2	continuation	2.5	sverige	Hur många invånare har | Sverige ungefär?
+fragor	q5	question	0	flod	Vilken är världens längsta flod?
+fragor	q6	question	0	maraton	Hur långt är ett maraton?
+fragor	c3	continuation	3.5	bakterie	Vad är skillnaden mellan ett virus | och en bakterie?
+fragor	q7	question	0	empati	Vad betyder ordet empati?
+block	b1	block	0	4	Vad är fotosyntes? Vad gör klorofyllet i bladen? Hur fungerar cellandningen? I framtiden ska du svara kortare.
+block	b2	block	0	4	vad är fotosyntes vad gör klorofyllet i bladen hur fungerar cellandningen i framtiden ska du svara kortare
+keyterm	k1	question	0	ljusberoende	Vad händer i fotosyntesens ljusberoende reaktioner?
+keyterm	k2	question	0	calvincykeln	Vad är Calvincykeln?
+keyterm	k3	question	0	elektrontransportkedja	Hur fungerar mitokondriernas elektrontransportkedja?
+keyterm	k4	question	0	kloroplast	Var i cellen finns kloroplasterna?

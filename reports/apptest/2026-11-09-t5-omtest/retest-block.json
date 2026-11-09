@@ -1,0 +1,100 @@
+{
+  "cases" : [
+    {
+      "answered" : [
+        "Vad är fotosyntes?"
+      ],
+      "asked" : [
+        "Vad är fotosyntes?"
+      ],
+      "heard" : [
+        "Vad är fotosyntes?",
+        "Vad gör klorofyll i bladen?",
+        "Hur fungerar cellandningen?",
+        "I framtiden ska du svara kortare."
+      ],
+      "id" : "b1",
+      "key" : "4",
+      "kind" : "block",
+      "spoken" : 0,
+      "text" : "Vad är fotosyntes? Vad gör klorofyllet i bladen? Hur fungerar cellandningen? I framtiden ska du svara kortare.",
+      "verdict" : "1 turns"
+    },
+    {
+      "answered" : [
+        "Vad är fotosyntes?"
+      ],
+      "asked" : [
+        "Vad är fotosyntes?"
+      ],
+      "heard" : [
+        "Vad är fotosyntes?",
+        "Vad gör klorofyll i bladen?",
+        "Hur fungerar cellandningen?",
+        "I framtiden ska du svara kortare."
+      ],
+      "id" : "b2",
+      "key" : "4",
+      "kind" : "block",
+      "spoken" : 0,
+      "text" : "vad är fotosyntes vad gör klorofyllet i bladen hur fungerar cellandningen i framtiden ska du svara kortare",
+      "verdict" : "1 turns"
+    }
+  ],
+  "keytermLines" : [
+    "Scribe keyterms: 8, longest 12 characters (mitokondrier)"
+  ],
+  "log" : [
+    "   0.02 log State Idle → Listening",
+    "   0.69 log Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+    "   0.69 log Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   0.69 log Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   0.81 log Capture started · engine input WAV files (3) · 16000 Hz · 1 ch · Int16",
+    "   0.81 log Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+    "   0.81 log Hands-free prov started",
+    "   0.96 log Scribe keyterms: 8, longest 12 characters (mitokondrier)",
+    "   1.86 log Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+    "   3.11 log Local VAD not ready: all audio goes to Scribe",
+    "   3.12 log STT running: Scribe · sv-SE",
+    "  43.92 log Answer ahead discarded (the words went on) · ahead 1 · used 0 · discarded 1 (1.4/min) · TTS ahead 0, wasted 0",
+    "  44.89 log Answer ahead discarded (the words went on) · ahead 2 · used 0 · discarded 2 (2.7/min) · TTS ahead 0, wasted 0",
+    "  46.15 log Answer ahead discarded (the words went on) · ahead 3 · used 0 · discarded 3 (3.9/min) · TTS ahead 0, wasted 0",
+    "  47.17 log Answer ahead discarded (the words went on) · ahead 4 · used 0 · discarded 4 (5.1/min) · TTS ahead 0, wasted 0",
+    "  49.10 log Answer ahead discarded (the words went on) · ahead 5 · used 0 · discarded 5 (6.1/min) · TTS ahead 0, wasted 0",
+    "  52.50 heard Vad är fotosyntes?",
+    "  52.52 log Turn · prov · STT Scribe · mic airPods · B-HQ",
+    "  52.52 log Answer ahead discarded (a different turn) · ahead 6 · used 0 · discarded 6 (6.9/min) · TTS ahead 0, wasted 0",
+    "  52.52 log Activation (tutor): Vad är fotosyntes?",
+    "  52.52 asked Vad är fotosyntes?",
+    "  52.52 heard Vad gör klorofyll i bladen?",
+    "  52.52 heard Hur fungerar cellandningen?",
+    "  52.96 heard I framtiden ska du svara kortare.",
+    "  56.41 answered Vad är fotosyntes?",
+    "  56.45 log Study card saved (1 in all)",
+    "  56.45 log Answer · first text after 1282 ms · claude-sonnet-5-5",
+    "  90.14 log Answer ahead discarded (the words went on) · ahead 7 · used 0 · discarded 7 (4.7/min) · TTS ahead 0, wasted 0",
+    "  91.12 log Answer ahead discarded (the words went on) · ahead 8 · used 0 · discarded 8 (5.3/min) · TTS ahead 0, wasted 0",
+    "  92.12 log Answer ahead discarded (the words went on) · ahead 9 · used 0 · discarded 9 (5.9/min) · TTS ahead 0, wasted 0",
+    "  94.55 log Answer ahead discarded (the words went on) · ahead 10 · used 0 · discarded 10 (6.3/min) · TTS ahead 0, wasted 0",
+    "  97.34 heard Vad är fotosyntes?",
+    "  97.36 log Turn · prov · STT Scribe · mic airPods · B-HQ",
+    "  97.36 log Answer ahead discarded (a different turn) · ahead 11 · used 0 · discarded 11 (6.8/min) · TTS ahead 0, wasted 0",
+    "  97.36 log Activation (tutor): Vad är fotosyntes?",
+    "  97.36 asked Vad är fotosyntes?",
+    "  97.36 heard Vad gör klorofyll i bladen?",
+    "  97.36 heard Hur fungerar cellandningen?",
+    "  97.80 heard I framtiden ska du svara kortare.",
+    "  99.75 answered Vad är fotosyntes?",
+    "  99.76 log Answer · first text after 927 ms · claude-sonnet-5-5",
+    " 148.48 log Provläge ended by the user",
+    " 148.48 log State Listening → Idle"
+  ],
+  "longestKeyterm" : 12,
+  "mode" : "prov",
+  "refusedOrFellBack" : [
+
+  ],
+  "seconds" : 148.42986702919006,
+  "set" : "block",
+  "topics" : "fotosyntes, klorofyll, cellandning, mitokondrier"
+}

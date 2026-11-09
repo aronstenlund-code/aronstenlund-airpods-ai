@@ -1,0 +1,57 @@
+name: Apptest retest after A8 and A11 (T5)
+
+# Toby's T5: Frågor answers and speaks every question (3 continuations after a pause), Provläge makes four turns of
+# one breath, Scribe holds an exam with topics over 20 characters. Live and paid (Scribe, /answer; Apple's voice, no
+# /tts), so manual, and on Toby's branch when the test changes. The long run (part 4) is apptest-long.yml.
+# Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Retest/**"
+      - "AppTests/E2E/Audio/retest.tsv"
+      - "scripts/apptest/retest*"
+      - ".github/workflows/apptest-retest.yml"
+
+concurrency:
+  group: apptest-retest-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  retest:
+    name: T5 retest (Simulator, live)
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Retest
+        run: |
+          bash scripts/apptest/retest.sh
+          STATUS=$?
+          cat apptest-out/retest/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-retest
+          path: |
+            apptest-out/retest
+            !apptest-out/retest/audio/*.wav
+            !apptest-out/retest/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn

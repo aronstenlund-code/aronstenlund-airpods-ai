@@ -51,6 +51,7 @@ def median(values):
 
 
 def main(out: Path) -> None:
+    sys.stdout.reconfigure(encoding="utf-8")
     path = out / "long.json"
     print("## Långtest Provläge (T2, simulator)\n")
     print("Simulator only, never a verification on a device. Live Scribe and /answer, answers not spoken.\n")
@@ -68,6 +69,24 @@ def main(out: Path) -> None:
           f"{len(answers)} svar · Scribe-händelser {len(r.get('reconnectLines', []))} · "
           + (f"**stoppade vid minut {r['stoppedAtMinute']:.1f}**" if r.get("stoppedAtMinute") is not None else "lyssnade hela tiden")
           + "\n")
+    plays = r.get("plays", [])
+    if plays:
+        print("### Döva perioder (T5, efter A11)\n")
+        print(f"- Spelade filer: {len(plays)}, ohörda: {r.get('missedFiles', 0)}, "
+              f"varav medan skärmen sa \"Lyssnar\": {r.get('missedWhileShowingListening', 0)}")
+        print(f"- Längsta döva period (första ohörda filen till nästa hörda): {r.get('longestDeafSeconds', 0):.0f} s "
+              "(krav ≤ 30 s)")
+        print(f"- Längsta tid igenkänningen låg nere medan appen lyssnade (skärmen sa inte \"Lyssnar\"): "
+              f"{r.get('longestNotHearingSeconds', 0):.0f} s (krav ≤ 30 s)")
+        long_periods = [p for p in r.get("deafPeriods", []) if p[1] - p[0] > 30]
+        for start, end in long_periods[:20]:
+            inside = [p for p in plays if start <= p["second"] < end]
+            shown = all(p["showedListening"] for p in inside)
+            print(f"  - minut {start / 60:.1f}–{end / 60:.1f} ({end - start:.0f} s, {len(inside)} filer): "
+                  + ("**skärmen sa Lyssnar hela tiden**" if shown else "skärmen sa att den inte hör"))
+        for line in r.get("hearingLines", [])[:20]:
+            print(f"  - `{line}`")
+        print()
     print("| Minut | Minne MB | Hört | Svar | Svar/min (senaste 5) | Median första text (senaste 5 min) | Läge | Aktiv |")
     print("|---:|---:|---:|---:|---:|---:|---|---|")
     for i, s in enumerate(samples):
