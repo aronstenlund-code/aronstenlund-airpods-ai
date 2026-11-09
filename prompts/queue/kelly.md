@@ -19,5 +19,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
   3. Hittbarhet: titel, beskrivning och rubriker för det elever söker ("plugga inför prov", "förhör mig", "A-nivå", "nationella provet"), strukturerad data (FAQ) och en sitemap. Inget som sidan inte kan hålla.
   4. Mät sidvikt och Lighthouse före och efter. Skärmbilder mobil och dator, ljust och mörkt.
 
-- [~] pågår 2026-11-09 18:30 **Ke4 – Lighthouse och finputs** (effort: medium). Kör Lighthouse (mobil och dator) med Playwright/Chromium i CI eller lokalt. Mål: minst 95 i Performance, Accessibility, Best Practices och SEO. Rätta det som drar ner. Kontrollera att delningsbilden och FAQ-datan validerar (Googles Rich Results-format, Open Graph). Inga nya påståenden om funktioner som inte är testade på telefon. Skriv siffrorna före och efter.
+- [x] klar 2026-11-09 18:45 → reports/2026-11-09-1840-kelly-ke4-lighthouse.md **Ke4 – Lighthouse och finputs** (effort: medium). Kör Lighthouse (mobil och dator) med Playwright/Chromium i CI eller lokalt. Mål: minst 95 i Performance, Accessibility, Best Practices och SEO. Rätta det som drar ner. Kontrollera att delningsbilden och FAQ-datan validerar (Googles Rich Results-format, Open Graph). Inga nya påståenden om funktioner som inte är testade på telefon. Skriv siffrorna före och efter.
 
