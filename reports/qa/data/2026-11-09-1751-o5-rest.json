@@ -1,0 +1,146 @@
+[
+ {
+  "test": "backend",
+  "state": "506edc0 17:48",
+  "at": "17:51:45"
+ },
+ {
+  "test": "L derivata Åk 6.",
+  "i": 0,
+  "text": "En derivata visar hur snabbt något förändras just i ett ögonblick. På en graf är den lutningen på kurvan i en punkt, alltså lutningen på en rak linje som precis nuddar kurvan där, och den linjen kallas tangent. Tänk dig en bil som kör så att sträckan växer med tjugo meter varje sekund: då är derivatan tjugo meter per sekund, alltså bilens hastighet. Är grafen brantare, är derivatan större, och är grafen helt vågrät är derivatan noll, eftersom ingenting förändras. På provet skriver du att derivatan är förändringshastigheten i en punkt, och att den är lutningen på tangenten.",
+  "model": "claude-sonnet-5-5",
+  "cost": 0.00855,
+  "status": 200,
+  "err": null,
+  "first_ms": 1363,
+  "ms": 4038,
+  "at": "17:51:53"
+ },
+ {
+  "test": "L derivata Åk 6.",
+  "i": 1,
+  "text": "En derivata visar hur snabbt något förändras just i ett ögonblick. På en graf är det lutningen i en punkt, alltså hur brant kurvan är precis där. Tänk dig en bil som kör så att sträckan växer med tjugo meter varje sekund: då är derivatan tjugo meter per sekund, och det är bilens hastighet. Är grafen brant är derivatan stor, är den helt vågrät är derivatan noll. På provet skriver du att derivatan är förändringshastigheten i en punkt, alltså lutningen på grafen där.",
+  "model": "claude-sonnet-5-5",
+  "cost": 0.00809,
+  "status": 200,
+  "err": null,
+  "first_ms": 1096,
+  "ms": 3000,
+  "at": "17:51:59"
+ },
+ {
+  "test": "== interview round 2",
+  "at": "17:51:59"
+ },
+ {
+  "test": "I berätta om dig själv",
+  "text": "Jag heter Alex och har jobbat i kassa, servering och med stängning på Kafé Solen i Lund sedan tvåtusen tjugotre, så kundmötet är något jag gör varje dag. Innan dess hade jag ett sommarjobb på lager där jag plockade och packade varor, vilket gav mig koll på noggrannhet och ordning. Jag är ansvarsfull och tar gärna hand om helheten, vilket jag visade som lagkapten i innebandy och som volontär på ungdomsgården. Jag talar svenska, engelska och arabiska, vilket jag tror kan vara en fördel när kunderna i Malmö är så blandade. Det som lockar mig med Systembolaget är att få jobba med service och ansvar på kvällar och helger, och jag ser fram emot att bidra i ett team där bemötandet är viktigt.",
+  "status": 200,
+  "cost": 0.00059,
+  "first_ms": 823,
+  "err": null,
+  "at": "17:52:05"
+ },
+ {
+  "test": "I vilka språk talar du",
+  "text": "Jag talar svenska, engelska och arabiska. Det hjälper mig att möta kunder på deras eget språk, och i en butik som Systembolaget tror jag att det verkligen gör skillnad när någon vill ha råd men är osäker på svenskan.",
+  "status": 200,
+  "cost": 0.00012,
+  "first_ms": 853,
+  "err": null,
+  "at": "17:52:10"
+ },
+ {
+  "test": "I har du jobbat i kassa förut",
+  "text": "Ja, jag har jobbat i kassa på Kafé Solen i Lund, både under tvåtusen tjugotre och tvåtusen tjugofyra. Där hanterade jag betalningar, hjälpte gäster snabbt och vänligt även när det var fullt, och såg till att kassan stämde när jag stängde. Jag tror att den erfarenheten gör mig redo för kassan här, särskilt kvällar och helger när det är mycket folk.",
+  "status": 200,
+  "cost": 0.00019,
+  "first_ms": 713,
+  "err": null,
+  "at": "17:52:15"
+ },
+ {
+  "test": "I har du körkort",
+  "text": "Det jag tar med mig till Systembolaget är erfarenheten från kassan och serveringen på Kafé Solen, där jag fick möta många gäster i rörig stund och lärde mig att hålla farten utan att tappa bemötandet. Jag är noggrann med kassan och med att varorna kommer rätt, och jag tycker om att hjälpa kunder hitta det de söker. Kvällar och helger passar mig bra, och jag ser fram emot att bidra i en butik där ansvar och service är viktigt.",
+  "status": 200,
+  "cost": 0.00021,
+  "first_ms": 854,
+  "err": null,
+  "at": "17:52:21"
+ },
+ {
+  "test": "I vad gjorde du på ICA",
+  "text": "Jag har inte jobbat på ICA, men jag har jobbat på Kafé Solen i Lund, där jag stod i kassan och serverade gäster och sköt stängningen på kvällarna. Det är därför jag trivs med det som Systembolaget efterfrågar: att hjälpa kunder på ett lugnt och vänligt sätt, även när det är mycket folk. Jag är van vid att ta ansvar för kassan och att göra rent och ordning innan jag går hem, så jag är trygg med att jobba kvällar och helger.",
+  "status": 200,
+  "cost": 0.00021,
+  "first_ms": 875,
+  "err": null,
+  "at": "17:52:26"
+ },
+ {
+  "test": "I hur gammal är du",
+  "text": "Jag tar det här jobbet på allvar och har vant mig vid ansvar redan i mina tidigare jobb. På Kafé Solen i Lund arbetade jag med kassan, servering och stängning, så jag är van att ha koll på rutiner och att hålla en bra kvalitet även när det är mycket folk. Jag gillar att möta kunder och hjälpa dem att hitta rätt, och jag ser fram emot att göra det på Systembolaget, där ansvarsfullhet och ett gott bemötande är lika viktigt. Jag är också tillgänglig på kvällar och helger.",
+  "status": 200,
+  "cost": 0.00023,
+  "first_ms": 743,
+  "err": null,
+  "at": "17:52:32"
+ },
+ {
+  "test": "I varför vill du jobba här",
+  "text": "Jag vill jobba här för att Systembolaget i Malmö har en tydlig service som jag gillar, och för att jag redan vet hur det är att stå i kassa och möta kunder under stressiga kvällar från mitt jobb på Kafé Solen. Det jag tycker om är att hjälpa människor hitta rätt och att ha ordning i flödet, och det passar bra med att jobba kvällar och helger. Dessutom talar jag svenska, engelska och arabiska, vilket jag tror kan göra det lättare att bemöta alla kunder i en stad som Malmö. Jag vill växa i en miljö där ansvar och ett gott bemötande verkligen värderas.",
+  "status": 200,
+  "cost": 0.00024,
+  "first_ms": 1882,
+  "err": null,
+  "at": "17:52:39"
+ },
+ {
+  "test": "I vad har du för utbildning",
+  "text": "Jag gick ekonomiprogrammet på Polhemsgymnasiet i Lund, som jag tog examen från tvåtusen tjugofyra. Det har gett mig en bra grund i att förstå hur en verksamhet fungerar, och det har också lärt mig att planera och hålla ordning på flera saker samtidigt. Vid sidan av studierna har jag jobbat på ett kafé i Lund, där jag fick öva på kassa, servering och ansvar för stängningen, och det är just det kundnära arbetet jag vill ta med mig till Systembolaget.",
+  "status": 200,
+  "cost": 0.0002,
+  "first_ms": 827,
+  "err": null,
+  "at": "17:52:45"
+ },
+ {
+  "test": "I berätta om en gång du hanterat en arg kund",
+  "text": "Jag jobbade som kafébiträde på Kafé Solen i Lund, och en gång kom en gäst fram till kassan rasande för att en beställning blivit fel. Jag lyssnade klart på vad hen sa utan att avbryta och bad om ursäkt för besväret. Sedan kollade jag upp beställningen direkt, fixade rätt dryck på en gång och bjöd på något extra så att hen kände sig omhändertagen. Gästen gick därifrån nöjd, och jag tar med mig den erfarenheten till Systembolaget eftersom jag vill möta alla kunder med lugn och bemötande.",
+  "status": 200,
+  "cost": 0.00023,
+  "first_ms": 699,
+  "err": null,
+  "at": "17:52:51"
+ },
+ {
+  "test": "I har du jobbat med alkohol förut",
+  "text": "Det är just den noggrannheten jag vill ta med mig till Systembolaget, och jag ser fram emot att lära mig reglerna och rutinerna ordentligt. Jag är gärna tillgänglig kvällar och helger.",
+  "status": 200,
+  "cost": 0.00023,
+  "first_ms": 868,
+  "err": null,
+  "at": "17:52:57"
+ },
+ {
+  "test": "I-int interrupted fortsätt",
+  "text": "Processen sker i kloroplasterna, där klorofyllet i bladets celler fångar ljuset. Först, i ljusreaktionerna, används ljuset för att spjälka vatten, och då bildas syrgas som avges till luften. Energin lagras tillfälligt i molekylerna ATP och NADPH. Sedan, i Calvincykeln, använder cellen den energin för att binda koldioxid och bygga glukos. Reaktionsformeln är sex koldioxid plus sex vatten plus ljusenergi som ger glukos plus sex syrgas. Glukosen används till växtens egen cellandning, till tillväxt och lagras som stärkelse. På provet: skriv att ljusreaktionerna och Calvincykeln hör ihop, och att syret kommer från vattnet.\nVilken molekyl i bladet fångar ljuset?",
+  "status": 200,
+  "cost": 0.00572,
+  "at": "17:53:05"
+ },
+ {
+  "test": "T citera Strindberg om kärlek",
+  "text": "Strindberg skriver i novellsamlingen Giftas: \"Jag tror nämligen att kärleken är en känsloaffär.\" Han menar att man ska följa känslan som en sjöman som navigerar efter landkänning. Använder man kompass och kort, alltså förnuftet, går man på grund.",
+  "model": "claude-sonnet-5-5",
+  "cost": 0.03317,
+  "status": 200,
+  "err": null,
+  "at": "17:53:14"
+ },
+ {
+  "test": "spent",
+  "usd": 0.058,
+  "at": "17:53:14"
+ }
+]

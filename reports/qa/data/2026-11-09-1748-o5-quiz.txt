@@ -1,0 +1,43 @@
+backend {"state": "506edc0 17:48", "at": "17:48:50"}
+Q bio9 #1 {"text": "Vilken del av cellen är det där fotosyntesen sker?", "status": 200, "model": "claude-sonnet-5-5", "first_ms": 2017, "cost": 0.01778, "err": null, "repeat_exact": false, "ends_q": true, "sentences": 1, "at": "17:48:57"}
+Q bio9 #2 {"text": "Vilket ämne i cellen ger bladen deras gröna färg?", "status": 200, "model": "claude-sonnet-5-5", "first_ms": 2165, "cost": 0.01877, "err": null, "repeat_exact": false, "ends_q": true, "sentences": 1, "at": "17:49:04"}
+Q bio9 #3 {"text": "Vilken gas tar växten upp från luften när den gör fotosyntes?", "status": 200, "model": "claude-sonnet-5-5", "first_ms": 933, "cost": 0.00766, "err": null, "repeat_exact": false, "ends_q": true, "sentences": 1, "at": "17:49:09"}
+Q bio9 #4 {"text": "Vilken gas lämnar växten som restprodukt?", "status": 200, "model": "claude-sonnet-5-5", "first_ms": 1222, "cost": 0.01474, "err": null, "repeat_exact": false, "ends_q": true, "sentences": 1, "at": "17:49:19"}
+Q bio9 #5 {"text": "Vilken organell i cellen frigör energi genom cellandning?", "status": 200, "model": "claude-sonnet-5-5", "first_ms": 896, "cost": 0.00776, "err": null, "repeat_exact": false, "ends_q": true, "sentences": 1, "at": "17:49:24"}
+Q bio9 #6 {"text": "Vilket ämne bildar växten av koldioxid och vatten, förutom syre?", "status": 200, "model": "claude-sonnet-5-5", "first_ms": 2084, "cost": 0.00806, "err": null, "repeat_exact": false, "ends_q": true, "sentences": 1, "at": "17:49:31"}
+L derivata  Åk 8. {"i": 0, "text": "En derivata visar hur snabbt något förändras just i ett ögonblick. På en graf är den lutningen i en punkt, alltså lutningen på tangenten som precis nuddar kurvan där. Tänk dig en bil vars sträcka växer med tjugo meter varje sekund: då är derivatan tjugo meter per sekund, och det är bilens hastighet. Är grafen brant är derivatan stor, är den flack är derivatan nära noll, och går grafen nedåt är derivatan negativ. På provet: skriv att derivatan är förändringshastigheten i en punkt, det vill säga lutningen på tangenten, och ge ett exempel med siffror.", "model": "claude-sonnet-5-5", "cost": 0.00859, "status": 200, "err": null, "at": "17:49:38"}
+L derivata  Åk 8. {"i": 1, "text": "En derivata beskriver hur snabbt något förändras just i ett ögonblick. På en graf är den lutningen i en enda punkt, alltså hur brant en tangent som precis nuddar kurvan lutar där. Tänk dig en bil vars sträcka ökar med tjugo meter varje sekund. Då är derivatan tjugo meter per sekund, och det är bilens hastighet i det ögonblicket. Är grafen brant är derivatan stor, är den helt vågrät är derivatan noll. Är grafen på väg nedåt är derivatan negativ. På provet skriver du att derivatan är förändringshastigheten i en punkt, som lutningen hos tangenten, och ger ett exempel med siffror.", "model": "claude-sonnet-5-5", "cost": 0.00878, "status": 200, "err": null, "at": "17:49:46"}
+Traceback (most recent call last):
+  File "D:\OneDrive\Airpods ai\scripts\qa\o5.py", line 61, in <module>
+    main()
+    ~~~~^^
+  File "D:\OneDrive\Airpods ai\scripts\qa\o5.py", line 43, in main
+    r = A(tok, M.prov(setup, {"fragment": "vad �r en derivata"}))
+        ~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\OneDrive\Airpods ai\scripts\qa\d81.py", line 37, in A
+    r = D.ask(tok, body)
+  File "D:\OneDrive\Airpods ai\scripts\qa\demo.py", line 94, in ask
+    o = call("POST", "/functions/v1/answer", body, token, {"Origin": origin} if origin else None)
+  File "D:\OneDrive\Airpods ai\scripts\qa\demo.py", line 43, in call
+    out["body"] = first + r.read()
+                          ~~~~~~^^
+  File "C:\Users\rothm\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 473, in read
+    return self._read_chunked(amt)
+           ~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\rothm\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 595, in _read_chunked
+    while (chunk_left := self._get_chunk_left()) is not None:
+                         ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\rothm\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 579, in _get_chunk_left
+    chunk_left = self._read_next_chunk_size()
+  File "C:\Users\rothm\AppData\Local\Programs\Python\Python313\Lib\http\client.py", line 539, in _read_next_chunk_size
+    line = self.fp.readline(_MAXLINE + 1)
+  File "C:\Users\rothm\AppData\Local\Programs\Python\Python313\Lib\socket.py", line 719, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\rothm\AppData\Local\Programs\Python\Python313\Lib\ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\rothm\AppData\Local\Programs\Python\Python313\Lib\ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TimeoutError: The read operation timed out
