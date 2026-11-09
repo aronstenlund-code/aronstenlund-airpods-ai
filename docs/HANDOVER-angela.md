@@ -39,3 +39,18 @@ T5-fynd), sedan A18 och A20. Läs rapporterna i `reports/2026-11-09-angela-*.md`
 - **A13:** `IntroElias`-bilden väntar på Aron. Justera `IntroHeroView.ringOrigin` när den kommer.
 - **Tobys runda behöver nya steg:** "Avancerat" i Inställningar, "Fler lägen" på Start och nya texter. De står i
   A13-rapporten.
+
+## A21 påbörjad 2026-11-09 (pausad till i morgon)
+Pushat: bara `Lumen/Core/Understanding/UnfinishedQuestion.swift` (regel för halva frågor, används inte än, inga tester).
+Orsaker som hittats i koden (ej verifierat i CI/simulator):
+- **Fynd 1:** `StudyMachine.transcriptFinal` kastar finals när fasen inte är `.listening`. Plan: i
+  `ListeningModel.receiveFinalTranscript`, Provläge-grenen: fas ≠ listening och inte en sen final av förra turen
+  → `QuestionSplitter.split` och lägg i `studyQueue` (frågas via `askNextStudyPart`). Rad ~945: `studyQueue = parts + studyQueue`.
+- **Fynd 2:** `UnfinishedQuestion.looksUnfinished` → hoppa över `answerAhead`; i `ActivationController` sätt `dueAt`
+  +3 s för en ensam halv fråga, slå ihop fortsättning även när förra slutar på "?" om den ser ofullständig ut,
+  förläng väntan vid nya partials. Provläge: `StudyMachine` endpoint + 3 s (bara prov/standard, inte live-lägen).
+- **Fynd 3:** `reopenRecognizerAfterSpeech` ger upp efter 30 s (600×50 ms) och `guard !speaker.isSpeaking` gör att
+  grinden aldrig öppnas; öppnas bara via `speaker.onFinished`. Plan: deadline = summa(tecken/14/rate) från `onSpeak`
+  + 2 s; vaktuppgift öppnar grinden, loggar och kör `askNextStudyPart`/`resumeListening`.
+- **Fynd 4:** finalen kommer först när Scribe stänger. Plan i `TranscriptionCoordinator.deliver`: ingen ny partial på
+  paus + 0,8 s → `provider.commit()`; ingen final 1,5 s senare → sista partial som final (dubblettskydd).
