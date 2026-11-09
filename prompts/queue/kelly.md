@@ -13,7 +13,7 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [x] klar 2026-11-08 18:12 → reports/2026-11-08-1815-kelly-ke2-oscar-fynd.md **Ke2 – Oscars fynd på demosidan** (effort: low). Underlag: `reports/qa/2026-11-08-1630-oscar-demosida.md`. (1) Efter ett svar flyttas fokus till svaret eller "Ställ en ny fråga". (2) Samtyckesrutan och mejllänken får träffytor på minst 44×44 px. (4) Skriv i rapporten exakt hur taket för tal provats; kan det inte provas utan riktig telefon, säg det. Skärmbild mobil.
 
-- [~] pågår 2026-11-09 09:00 **Ke3 – "Så funkar Provläget" och hitta sidan** (effort: medium). Aron: demosidan måste bli väldigt bra.
+- [~] pågår, delvis klar 2026-11-09 09:30 (rapport reports/2026-11-09-0930-kelly-ke3-delvis.md; väntar på Tobys T3-skärmbilder) **Ke3 – "Så funkar Provläget" och hitta sidan** (effort: medium). Aron: demosidan måste bli väldigt bra.
   1. En sektion med tre steg (lägg in provet, starta, fråga i örat) med riktiga skärmbilder från Tobys T3 (`reports/apptest/`). Inga påhittade skärmar och inga påståenden om svarstid i sekunder.
   2. En kort animation (CSS/SVG, under 50 kB, respekterar "reducera rörelse") som visar en fråga i handstil bli ett uppläst svar, som i appens design.
   3. Hittbarhet: titel, beskrivning och rubriker för det elever söker ("plugga inför prov", "förhör mig", "A-nivå", "nationella provet"), strukturerad data (FAQ) och en sitemap. Inget som sidan inte kan hålla.

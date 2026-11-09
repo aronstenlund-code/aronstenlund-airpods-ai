@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://aronstenlund-code.github.io/aronstenlund-airpods-ai/sitemap.xml

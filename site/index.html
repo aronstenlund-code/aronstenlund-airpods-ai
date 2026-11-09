@@ -7,8 +7,9 @@
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
-<title>Fråga högt. Få svaret i örat.</title>
-<meta name="description" content="Fråga högt. Få svaret i örat. Telefonen stannar i fickan. Prova här, svaret läses upp.">
+<title>Fråga högt. Få svaret i örat. Plugga inför prov handsfree</title>
+<meta name="description" content="Plugga inför prov utan att ta fram telefonen. Fråga högt, bli förhörd och få svaret uppläst i hörlurarna. Prova Provläget direkt här.">
+<link rel="canonical" href="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="sv_SE">
 <meta property="og:site_name" content="Lumen">
@@ -29,6 +30,11 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Hur kan jag plugga inför prov utan att titta på telefonen?","acceptedAnswer":{"@type":"Answer","text":"Lägg in provet, starta Provläget och fråga högt. Svaret läses upp i hörlurarna medan telefonen ligger i fickan."}},
+{"@type":"Question","name":"Kan jag bli förhörd inför ett prov?","acceptedAnswer":{"@type":"Answer","text":"Ja. I Provläget kan du få en pedagogisk förklaring och en kontrollfråga på vägen."}},
+{"@type":"Question","name":"Funkar det för nationella provet och A-nivå?","acceptedAnswer":{"@type":"Answer","text":"Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}},
+{"@type":"Question","name":"Kan jag prova utan att ladda ner något?","acceptedAnswer":{"@type":"Answer","text":"Ja, du kan prova demon direkt på sidan. Appen är inte ute än, men du kan skriva upp dig på väntelistan."}}]}</script>
 <style>
   /* D86: samma typsnitt och färger som appen. Familjen Grotesk överallt, Kalam (handstil) bara för frågor. */
   @font-face {
@@ -117,8 +123,8 @@
     -webkit-font-smoothing: antialiased;
     overflow-wrap: break-word;
   }
-  h1, h2, h3, p, ul, figure { margin: 0; padding: 0; }
-  ul { list-style: none; }
+  h1, h2, h3, p, ul, ol, figure { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
   a { color: inherit; text-underline-offset: .18em; }
   button, input { font: inherit; color: inherit; }
   button {
@@ -581,6 +587,33 @@
     .first-note { grid-column: 1; }
   }
 
+
+  /* Ke3: Så funkar Provläget. Animationen är ren CSS, loopar 10 s, stilla slutläge vid "reducera rörelse". */
+  .how { padding-top: 8px; padding-bottom: 56px; }
+  .how .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
+  .steps { display: grid; gap: 14px; margin-top: 24px; counter-reset: st; }
+  .steps li { counter-increment: st; padding: 18px 18px 18px 64px; position: relative; }
+  .steps li::before { content: counter(st); position: absolute; left: 18px; top: 16px; width: 34px; height: 34px; border-radius: 50%; background: var(--blue); color: var(--on-blue); display: grid; place-items: center; font-weight: 700; }
+  .steps h3 { font-size: 1.125rem; line-height: 1.3; }
+  .steps p { margin-top: 4px; color: var(--mut); }
+  .anim { margin-top: 14px; padding: 18px; min-height: 168px; }
+  .anim-q { display: inline-block; font-size: 1.5rem; line-height: 1.3; color: var(--blue); white-space: nowrap; overflow: hidden; vertical-align: bottom; }
+  .anim-a { margin-top: 10px; display: flex; gap: 10px; align-items: flex-start; }
+  .anim-a .bars { margin-top: 6px; flex: none; }
+  .anim-a span.t { display: block; }
+  @media (prefers-reduced-motion: no-preference) {
+    .anim-q { width: 0; animation: ty 10s steps(14, end) infinite; }
+    .anim-a { opacity: 0; animation: ans 10s ease infinite; }
+    .anim-a .bars i { animation-play-state: running; }
+    @keyframes ty { 0% { width: 0; } 28% { width: 14ch; } 100% { width: 14ch; } }
+    @keyframes ans { 0%, 34% { opacity: 0; transform: translateY(6px); } 42%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  }
+  @media (prefers-reduced-motion: reduce) { .anim-q { width: auto; } .anim-a .bars i { animation: none; transform: scaleY(.7); } }
+  @media (min-width: 900px) {
+    .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .how { padding-bottom: 88px; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .disc, .thinking i, .bars i { animation: none; }
@@ -671,6 +704,20 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-8 8"/></svg>
       <span>Foto: person med trådlösa hörlurar på väg någonstans, telefonen i fickan. Fri licens, inga varumärken i bild.</span>
     </figure>
+  </section>
+
+  <section class="how wrap" aria-labelledby="how-h">
+    <h2 id="how-h">Så funkar Provläget: plugga inför prov och bli förhörd</h2>
+    <p class="lead">Du pluggar handsfree, inför prov och nationella provet, och när du siktar på A-nivå.</p>
+    <ol class="steps">
+      <li class="paper"><h3>Lägg in provet</h3><p>Skriv in ämne och vad provet handlar om.</p></li>
+      <li class="paper"><h3>Starta</h3><p>Tryck på start och lägg telefonen i fickan.</p></li>
+      <li class="paper"><h3>Fråga i örat</h3><p>Fråga högt, eller be om att bli förhörd. Svaret läses upp.</p></li>
+    </ol>
+    <div class="anim paper" role="img" aria-label="Animation: en fråga i handstil, 'Globalisering', blir ett uppläst svar.">
+      <p class="anim-q hand" aria-hidden="true">Globalisering</p>
+      <div class="anim-a" aria-hidden="true"><span class="bars"><i></i><i></i><i></i></span><span class="t">Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna.</span></div>
+    </div>
   </section>
 
   <section class="examples wrap" aria-labelledby="ex-h">
