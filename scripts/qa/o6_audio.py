@@ -43,6 +43,47 @@ CONDS = ["tyst", "prat 10 dB", "prat 5 dB", "airpods 16 kHz", "hfp 8 kHz"]
 WRONG_CONDS = ["tyst", "prat 5 dB"]
 # --burst: chatter in bursts with pauses (more like a room) at three levels; the plain "prat" conditions run unbroken talk
 BURST_CONDS = ["prat 20 dB burst", "prat 10 dB burst", "prat 5 dB burst"]
+# --full (Deangelo's yes 2026-11-09): 60 cases + one long-term case per exam, four conditions, wrong keyterms in quiet only
+FULL_CONDS = ["tyst", "airpods 16 kHz", "prat 20 dB burst", "prat 10 dB burst"]
+FULL_WRONG = ["tyst"]
+# one subject term over 20 characters per exam: it is put in that exam's keyterm list (shortened before sending, like the
+# app should) AND spoken as an extra case, so the report shows that the Scribe session survives and whether the term is heard
+LONG_TERMS = {
+    "Biologi": ("kolets kretslopp i naturen", "kol går mellan luft, växter, djur och mark genom fotosyntes, cellandning, nedbrytning och förbränning"),
+    "Fysik": ("elektromagnetisk induktion", "när magnetfältet genom en spole ändras induceras en spänning; så fungerar en generator"),
+    "Kemi": ("periodiska systemets grupper", "grupperna är de lodräta kolumnerna; samma antal valenselektroner ger liknande egenskaper"),
+    "Matematik": ("andragradsekvationens lösningar", "x i kvadrat plus px plus q lika med noll löses med pq-formeln; två, en eller ingen reell lösning"),
+    "Engelska": ("present perfect continuous", "have/has been + ing-form för något som pågått fram till nu, till exempel I have been waiting for an hour"),
+    "Historia": ("kristendomens införande", "Sverige kristnades gradvis från vikingatiden (Ansgar på 800-talet) till tidig medeltid, Olof Skötkonung"),
+    "Samhällskunskap": ("demokratins grundprinciper", "folksuveränitet, fria och allmänna val, yttrandefrihet, rättsstat och allas lika värde inför lagen"),
+    "Svenska": ("argumenterande texters struktur", "inledning med tes, argument med belägg, motargument som bemöts, avslutning som knyter an till tesen"),
+    "Geografi": ("klimatförändringarnas orsaker", "ökad växthuseffekt från koldioxid och metan: fossila bränslen, avskogning och jordbruk"),
+    "Religion": ("buddhismens fyra ädla sanningar", "livet är lidande, lidandet kommer av begär, lidandet kan upphöra, vägen dit är den åttafaldiga vägen"),
+}
+SHORT_STOP = {"och", "med", "för", "som", "till", "från", "eller", "inom", "mellan"}
+
+
+def shorten(keyterms):
+    """Scribe refuses the whole session for a keyterm over 20 characters: keep short terms, split a long one into its
+    content words (each at most 20 characters), drop duplicates. This is what I recommend the app does."""
+    out, seen = [], set()
+    for k in keyterms:
+        # a word over 20 is usually a genitive ("andragradsekvationens"): drop the -s, else leave the word out
+        words = [w[:-1] if len(w) == 21 and w.endswith("s") else w for w in k.split()]
+        parts = [k] if len(k) <= 20 else [w for w in words if 4 <= len(w) <= 20 and w.lower() not in SHORT_STOP]
+        for w in parts:
+            if w.lower() not in seen:
+                seen.add(w.lower())
+                out.append(w)
+    return out
+
+
+def term_ok(case, hyp):
+    if case["kind"] == "longterm":  # every content word of the long term must be heard
+        words = [w for w in E.norm(case["say"]).split() if len(w) >= 4 and w not in SHORT_STOP]
+        h = E.norm(hyp)
+        return all(w in h for w in words)
+    return E.term_ok(case, hyp)
 
 BABBLE_A = E.BABBLE_LINES
 BABBLE_B = [
@@ -126,7 +167,7 @@ async def scribe(tok, audio, keyterms):
     t = E.http("GET", "/functions/v1/stt-token", tok=tok)
     q = {"model_id": t["model_id"], "token": t["token"], "language_code": "swe", "audio_format": "pcm_16000", "commit_strategy": "vad", **E.VAD}
     parts = [f"{k}={urllib.parse.quote(str(v))}" for k, v in q.items()]
-    keyterms = [k for k in keyterms if len(k) <= 20]  # Scribe closes the session on a longer one (see the report)
+    keyterms = shorten(keyterms)  # Scribe closes the session on a term over 20 characters (pilot report)
     parts += [f"keyterms={urllib.parse.quote(k)}" for k in keyterms[:20]]
     if t.get("extra_query"):
         parts.append(t["extra_query"])
@@ -228,11 +269,21 @@ def main():
     ap.add_argument("--out", default=os.path.join(ROOT, "reports", "qa", "data"))
     ap.add_argument("--concurrency", type=int, default=4)
     ap.add_argument("--burst", action="store_true", help="chatter in bursts at 20/10/5 dB instead of the plain conditions")
+    ap.add_argument("--full", action="store_true", help="the full O6 run: 60 cases + long-term cases, FULL_CONDS")
+    ap.add_argument("--chain-workers", type=int, default=4)
     a = ap.parse_args()
     cases = json.load(open(os.path.join(ROOT, "scripts", "audio-bank.json"), encoding="utf-8"))
     if a.pilot:
         by = {c["id"]: c for c in cases}
         cases = [by[i] for i in PILOT_IDS]
+    if a.full:
+        first = {}
+        for c in cases:
+            first.setdefault(c["subject"], c)
+        for subj, (term, expect) in LONG_TERMS.items():
+            f = first[subj]
+            cases.append({"id": f"lt-{subj[:4].lower()}", "bank_id": None, "kind": "longterm", "grade": f["grade"], "subject": subj,
+                          "say": term, "profile": f["profile"], "context": [], "expect": expect, "pilot": False})
     cbi = {c["id"]: c for c in cases}
     toks = [E.signup() for _ in range(4)]
     voices = E.http("GET", "/functions/v1/voices", tok=toks[0])["voices"][: a.voices]
@@ -244,14 +295,15 @@ def main():
     for c in cases:
         groups.setdefault(c["subject"], []).append(c["id"])
     terms = {}
-    tfile = os.path.join(a.audio_dir, "terms.json")  # /study-profile answers vary between calls: keep them for a re-run
+    tfile = os.path.join(a.audio_dir, "terms-full.json" if a.full else "terms.json")  # /study-profile answers vary between calls: keep them for a re-run
     if os.path.exists(tfile):
         terms = json.load(open(tfile, encoding="utf-8"))
     for subj, ids in groups.items():
         if subj in terms:
             continue
         p = E.http("POST", "/functions/v1/study-profile", {"text": f"jag går i {cbi[ids[0]]['grade']} och har prov i {subj.lower()}"}, toks[1], timeout=60)
-        terms[subj] = ([subj] + p.get("terms", []))[:20]
+        lt = [LONG_TERMS[subj][0]] if a.full else []
+        terms[subj] = ([subj] + lt + [t for t in p.get("terms", []) if t.lower() not in {x.lower() for x in lt}])[:20]
         time.sleep(1.5)
     json.dump(terms, open(tfile, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
     subj_list = list(groups)
@@ -283,18 +335,19 @@ def main():
 
     # streams
     jobs = []  # (mode, voice, key, segments=[(cond, [cids])], keyterms)
-    conds = BURST_CONDS if a.burst else CONDS
+    conds = FULL_CONDS if a.full else BURST_CONDS if a.burst else CONDS
+    wconds = FULL_WRONG if a.full else WRONG_CONDS
     for v in voices:
         for cond in conds:
             jobs.append(("nokt", v["name"], cond, [(cond, [c["id"] for c in cases])], []))
         for subj, ids in groups.items():
             jobs.append(("kt", v["name"], subj, [(cd, ids) for cd in conds], terms[subj]))
             if not a.burst:
-                jobs.append(("wrongkt", v["name"], subj, [(cd, ids) for cd in WRONG_CONDS], wrong_terms[subj]))
+                jobs.append(("wrongkt", v["name"], subj, [(cd, ids) for cd in wconds], wrong_terms[subj]))
     log("streams", len(jobs))
     rows, streams_audio = [], {}
     results, failed, rawc = {}, {}, {}
-    sfile = os.path.join(a.audio_dir, "streams-burst.json" if a.burst else "streams.json")  # raw Scribe results, saved after every session; delete to measure again
+    sfile = os.path.join(a.audio_dir, "streams-full.json" if a.full else "streams-burst.json" if a.burst else "streams.json")  # raw Scribe results, saved after every session; delete to measure again
     saved = json.load(open(sfile, encoding="utf-8")) if os.path.exists(sfile) else {}
 
     async def run_all():
@@ -360,14 +413,14 @@ def main():
                 hyp = wt
             rows.append({"mode": mode, "cond": cond, "voice": vn, "id": cid, "kind": c["kind"], "subject": c["subject"], "say": c["say"], "heard": hyp,
                          "commits": len(commits), "commit_texts": [t for _, t in commits], "wer": round(E.wer(c["say"], hyp), 3),
-                         "exact": E.norm(c["say"]) == E.norm(hyp), "term_ok": E.term_ok(c, hyp), "clipped": len(commits) > 1, "missing": len(commits) == 0,
+                         "exact": E.norm(c["say"]) == E.norm(hyp), "term_ok": term_ok(c, hyp), "clipped": len(commits) > 1, "missing": len(commits) == 0,
                          "stray": stray(c["say"], commits), "lag_s": lag, "first_text_s": first, "stream_failed": failed[(mode, vn, key)],
                          "win_text": wt, "win_recall": win_recall, "win_extra": win_extra})
 
     # batch Scribe, quiet and 5 dB, first two voices, no keyterms (the nokt streams hold the same audio)
     batch_skipped = 0
     for vn in [v["name"] for v in voices[:2]]:
-        for cond in (() if a.burst else ("tyst", "prat 5 dB")):
+        for cond in (() if (a.burst or a.full) else ("tyst", "prat 5 dB")):
             audio, tl = streams_audio[("nokt", vn, cond)]
             for (cd, cid), s, e in tl:
                 clip = audio[max(0, int((s - 0.3) * SR)): int((e + 0.8) * SR)]
@@ -388,22 +441,37 @@ def main():
             time.sleep(1)
 
     # chain: text baseline, then every distinct transcript
-    cache, text_res = {}, {}
-    for c in cases:
-        ok, ans, _ = grade_chain(toks, cache, cbi, c["id"], c["say"], a.model, a.judge, a.max_llm_usd)
-        text_res[c["id"]] = (ok, ans)
+    # graded in priority order (text, the app's path with keyterms, wrong keyterms, no keyterms) until the LLM budget is used
+    from concurrent.futures import ThreadPoolExecutor
+    cache = {}
+    prio = {"kt": 0, "wrongkt": 1, "nokt": 2}
+    todo = [(c["id"], c["say"]) for c in cases] + [(r["id"], r["heard"] or "…") for r in sorted(rows, key=lambda r: (prio[r["mode"]], r["cond"]))]
+    seen, uniq = set(), []
+    for cid, text in todo:
+        k = (cid, E.norm(text))
+        if k not in seen:
+            seen.add(k)
+            uniq.append((cid, text))
+    log("chain: distinct", len(uniq))
+    done_n = [0]
+    def work(ct):
+        grade_chain(toks, cache, cbi, ct[0], ct[1], a.model, a.judge, a.max_llm_usd)
+        done_n[0] += 1
+        if done_n[0] % 50 == 0:
+            log("chain", done_n[0], "of", len(uniq), "llm USD", round(spent["llm"], 3))
+    with ThreadPoolExecutor(a.chain_workers) as ex:
+        list(ex.map(work, uniq))
+    text_res = {c["id"]: cache.get((c["id"], E.norm(c["say"])), (None, ""))[:2] for c in cases}
     for row in rows:
-        ok, ans, _ = grade_chain(toks, cache, cbi, row["id"], row["heard"] or "…", a.model, a.judge, a.max_llm_usd)
+        ok, ans = cache.get((row["id"], E.norm(row["heard"] or "…")), (None, ""))[:2]
         row.update(chain_ok=ok, text_ok=text_res[row["id"]][0], answer=ans[:300])
-        if len(cache) % 25 == 0:
-            log("chain", len(cache), "distinct, llm USD", round(spent["llm"], 3))
 
     stamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M")
     name = f"{stamp}-o6-{'pilot' if a.pilot else 'full'}{'-burst' if a.burst else ''}"
     os.makedirs(a.out, exist_ok=True)
     summary = {"stamp": stamp, "pilot": a.pilot, "cases": len(cases), "voices": [v["name"] for v in voices], "model": a.model, "judge": a.judge,
                "tts_chars": spent["tts_chars"], "realtime_scribe_s": round(spent["rt_audio_s"], 1), "batch_scribe_s": round(spent["batch_audio_s"], 1), "batch_clips_too_big": batch_skipped,
-               "burst": a.burst, "failed_streams": [k for k, v in failed.items() if v], "terms": terms,
+               "burst": a.burst, "full": a.full, "terms_sent": {k: shorten(v)[:20] for k, v in terms.items()}, "failed_streams": [k for k, v in failed.items() if v], "terms": terms,
                "llm_usd": round(spent["llm"], 4), "distinct_chain": len(cache), "streams": len(jobs)}
     json.dump({"summary": summary, "rows": rows}, open(os.path.join(a.out, name + ".json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     for (mode, vn, key), (audio, _) in streams_audio.items():
