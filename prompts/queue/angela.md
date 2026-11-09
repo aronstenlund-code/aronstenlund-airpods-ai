@@ -22,6 +22,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   2. Rätta felet. Svar-i-förväg får aldrig göra att en hel fråga blir obesvarad. Om en senare fortsättning kastar ett svar ska den sammanslagna frågan alltid få ett svar.
   3. Diagnostik-exporten ska innehålla per tur: fragment, is_question, status och om svaret spelades upp, kastades eller var tyst. Då räcker Arons export nästa gång.
   4. Provläge, samma test: Arons skärmbild visar flera frågor och en instruktion ihopslagna till ett block ("vilka är de största bergen i världen fortsätt att du i framtiden bara ska ställa korta svar … vad är 250×250 …"). Kontrollera att varje fråga blir en egen tur och får ett eget svar.
+  5. **Scribe-krasch (Oscar O6, allvarlig):** Scribe stänger hela sessionen (1008 `invalid_request`) om ett keyterm är längre än 20 tecken, till exempel "Kristendomens införande" (23). `/study-profile` ger termer upp till 40 tecken och appen skickar dem okontrollerat. Gör så här: korta eller dela varje keyterm till högst 20 tecken (ta helst de viktigaste orden), ta bort dubbletter, högst 20 termer, och skriv ett enhetstest. Kontrollera också att appen startar om Scribe utan keyterms om sessionen ändå stängs med `invalid_request`.
   Rapport med före/efter-siffror (frågor ställda, besvarade).
 
 - [ ] **A6 – Musik ↔ Lumen och egna kommandon** (effort: high). Ägarkrav (Aron 2026-11-08 20:41): man ska lätt kunna växla mellan musik och Lumen, antingen genom att säga det till Lumen eller med en AirPods-gest (en av gesterna, inte både tryck och håll in). Övriga röstkommandon ska fungera, och användaren ska kunna ändra fraserna. Nästan alla använder Spotify.
@@ -64,4 +65,10 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   2. **Kommandon med egna ord:** när `meta.app_command` kommer med hög säkerhet utför appen kommandot och bekräftar kort ("Byter till Frågor."). Säger användaren "nej", "ångra" eller "fel" inom 5 s går appen tillbaka. I Socialt läge, Rizzläge och Intervjuläge krävs fortfarande "Lumen".
   3. **Inlärda inställningar:** visas i Minne som läsbara rader, till exempel "Kortare svar i matte" eller "Fler exempel inför Geografiprovet". Användaren kan ändra och ta bort dem. Appen skickar sammanhang (läge, ämne, prov, svarstyp) med varje rättelse till /memory.
   Tester: tipsreglerna (frekvens, aldrig under förhör), ångra efter ett kommando som tolkats fel. **Ej verifierat på enhet** tills Aron har testat.
+
+- [ ] **A10 – Frågor i ett rum där andra pratar** (effort: high). Gör efter A8. Oscar O6 (`reports/qa/2026-11-08-2050-oscar-o6-pilot.md`): när andra pratar i bakgrunden hör Scribe ämnesordet i 78 % av fallen, men bara 42 % av frågorna kommer in innan nästa fråga börjar. Första svaret räcker då i 22 % (20 dB) och 4 % (5 dB). Vid oavbrutet prat committar Scribe nästan aldrig. Felet ligger i när en fråga anses klar, inte i hörseln. Undersök och mät (Tobys WAV-krok, Oscars ljud ligger som Actions-artefakter):
+  1. Bärarens röst som grind: D81 har redan en röstprofil. I Provläge och Frågor räknas bara bärarens tal som en fråga. Bakgrundsprat varken startar eller förlänger en tur.
+  2. Egen slut-på-tur: Silero VAD på bärarens röst plus Scribe-partials avgör när frågan är klar, i stället för att vänta på Scribes commit när det aldrig blir tyst.
+  3. AirPods-mikrofonens riktverkan och brusreducering (`setVoiceProcessingEnabled`, ljudläget för röstisolering): mät om det hjälper.
+  Mål: minst 80 % av frågorna kommer in i tid vid prat i skurar på 10 dB. Skriv siffror före och efter. **Ej verifierat på enhet** tills Aron har testat i ett riktigt rum.
 
