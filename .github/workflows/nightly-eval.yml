@@ -32,9 +32,10 @@ jobs:
       # measure is the share where the first answer is enough (target >= 90 %). Model = what Provläge runs on.
       - name: Provläge test bank
         continue-on-error: true
-        run: python3 scripts/provlage-eval.py --model "${PROVLAGE_MODEL:-haiku}" --judge sonnet --workers 6
+        # K2 (2026-11-09): Provläge runs on Sonnet; every third case keeps the night at about the old cost (~0.85 USD)
+        run: python3 scripts/provlage-eval.py --model "${PROVLAGE_MODEL:-sonnet}" --judge sonnet --workers 6 --every 3
         env:
-          PROVLAGE_MODEL: haiku
+          PROVLAGE_MODEL: sonnet
       - name: Commit report
         run: |
           git config user.name "lumen-eval"

@@ -281,10 +281,11 @@ export function beforeNumbers(text: string, ctx = ""): string {
   // K2 (pl-184, pl-187): also an operator in words after the term ("3x minus 7", "3x är lika med 21") or a power or
   // bracket before it ("e^{3x}", "(3x)"), and maths words in the text ("ekvationen", "derivatan", "lös").
   const algebra = /[=²³^′]|(?<![\p{L}\d])x(?![\p{L}\d])|\b(?:ekvation(?:en)?|derivat(?:a|an)|deriver\p{L}*|lös|funktionen)\b/iu.test(
-    s.replace(/(?<![\p{L}\d.,])\d+\s?x(?![\p{L}\d])/giu, ""),
+    (ctx.slice(-120) + " " + s).replace(/(?<![\p{L}\d.,])\d+\s?x(?![\p{L}\d])/giu, ""),
   );
+  // K2 full run (pl-184, "… plus sju blir 3x."): the term at the end of a sentence or clause is also x
   s = s.replace(
-    /(?<![\p{L}\d.,])(\d+)(\s?)x(?![\p{L}\d])(?=(\s*(?:[+\-−=^²³)}/]|minus\b|plus\b|är lika med\b|delat med\b|i kvadrat\b|upphöjt\b))?)/gu,
+    /(?<![\p{L}\d.,])(\d+)(\s?)x(?![\p{L}\d])(?=(\s*(?:[+\-−=^²³)}/]|minus\b|plus\b|är lika med\b|delat med\b|i kvadrat\b|upphöjt\b|[.,;:](?=\s|$)|$))?)/gu,
     (_m: string, n: string, _sp: string, op: string | undefined, off: number, all: string) =>
       algebra || op || /[\^({]\s*$/.test(all.slice(0, off)) ? `${n} x` : `${n} gånger`,
   );
