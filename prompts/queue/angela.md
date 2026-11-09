@@ -106,3 +106,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   3. Skicka signalerna (tackade ja/nej/tystnad, rättelse) med sammanhang till /memory som K13 beskriver. När standarden blivit "långt direkt" visas det i Minne som en läsbar rad, till exempel "Utvecklade svar i Historia", och går att ändra.
   4. Tester: fönstret, nick kontra skakning, ett "ja" mitt i en mening räknas inte. Toby kör i simulatorn. **Ej verifierat på enhet** tills Aron har testat.
 
+- [ ] **A16 – Övningsprov i appen** (effort: high). Beror på: Kevins K15. Under Förberedelser › Lägg till övningsprov (PDF, foto eller text) och en lista med frågorna. I Provläge finns knappen/kommandot "Kör övningsprovet": Lumen läser upp en fråga i taget, lyssnar på svaret och rättar. Navigering med "nästa", "förra", "fråga N", "hoppa över", "upprepa" och egna fraser (A6). Lyssnarskärmen visar "Fråga 3 av 12" och resultatet i slutet (rätt, fel, att öva på). Tester och skärmbilder. **Ej verifierat på enhet** tills Aron har testat.
+
