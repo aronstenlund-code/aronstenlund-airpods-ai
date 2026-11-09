@@ -80,3 +80,10 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   3. AirPods-mikrofonens riktverkan och brusreducering (`setVoiceProcessingEnabled`, ljudläget för röstisolering): mät om det hjälper.
   Mål: minst 80 % av frågorna kommer in i tid vid prat i skurar på 10 dB. Skriv siffror före och efter. **Ej verifierat på enhet** tills Aron har testat i ett riktigt rum.
 
+- [ ] **A13 – Designgranskning (Deangelo 2026-11-09, utifrån Tobys T3-bilder)** (effort: medium). Gör efter A9.
+  1. **Inställningar är för tekniska för en elev.** I dag är det en lång lista med mikrofon per läge, paus i sekunder per läge, känslighet, Scribe, lokal röstdetektor, dB-reglage och licenstext för WeSpeaker. Dela upp den i två delar. **Vanliga** högst upp: Röst och hastighet, Svarslängd, Röstkommandon, Minne, Prov, Utseende, Språk, Integritet. **Avancerat** hopfällt längst ner: mikrofon, pauser, känslighet, Scribe och röstdetektor, kalibrering, Diagnostik. Licenser och tekniska förklaringar flyttas till "Om appen". Inga funktioner tas bort.
+  2. **Lyssnarskärmen visar inte att den hör.** Lägg till en liten nivåmätare som rör sig när bäraren pratar, i appens stil och diskret. Om Scribe inte är ansluten visas tillståndet från A11 i stället för "Lyssnar". Det bygger förtroende och gör att Aron själv ser om något är fel.
+  3. **Tomt läge på lyssnarskärmen:** i Provläge visas provets ämnesord som chips och en knapp **Förhör mig**, som reserv för den som inte vill prata. Sessionens tidigare frågor och svar visas i en lista som går att skrolla. I dag syns bara det senaste.
+  4. **Flera prov på Start:** med 2 eller fler prov visas de som en lista sorterad efter datum, och det närmaste överst som stort kort. Kontrollera att det redan fungerar så; annars bygg det.
+  5. Skärmbilder före och efter, ljust och mörkt, iPhone SE och Pro. Be Toby i din rapport att köra om T3.
+
