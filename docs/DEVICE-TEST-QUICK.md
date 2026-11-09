@@ -1,7 +1,7 @@
-# Snabbtest på telefon (15 minuter)
+# Snabbtest på telefon (18 minuter)
 
 Bara det som **måste** testas på riktig iPhone + AirPods. Simulatorn kan inte testa något av detta.
-Skrivet av Toby (apptestare), 2026-11-08. Det långa schemat finns i `docs/DEVICE-TEST-CHECKLIST.md`.
+Skrivet av Toby (apptestare), 2026-11-08. Steg 4 (röstkommandon) tillagt 2026-11-09 (T6). Det långa schemat finns i `docs/DEVICE-TEST-CHECKLIST.md`.
 
 **Du behöver:** iPhone med senaste `Lumen-unsigned.ipa`, AirPods (helst med huvudspårning: AirPods Pro eller
 AirPods 3/4), internet, ett tyst rum. Ha papper och penna, eller svara direkt i chatten efter varje steg.
@@ -65,11 +65,26 @@ Det här är huvudtestet. Nick, AirPods-knappen och låsskärmen testas medan Pr
    Skicka alla tre filerna (AirDrop till datorn, eller mail till dig själv).
 3. Tryck **Avsluta** på Lyssnar.
 
+## 4. Röstkommandon (3 min)
+
+Simulatorn har testat att orden blir rätt kommando (T6). Det här kan bara du testa: ljudet i AirPods och musiken.
+Starta Spotify (eller Apple Music) och spela en låt. Öppna Lumen och tryck **Frågor** (musiken pausas).
+
+| | Gör | Ska hända | Skicka |
+|---|---|---|---|
+| 4a | Fråga: "Hur långt är det till månen?" Vänta på svaret. Säg sedan: "Lumen, upprepa." | Samma svar med samma röst igen, direkt, utan paus för att hämta det. | J/N + hur många sekunder det tog |
+| 4b | Säg bara: "Viska." Ställ en fråga. Säg sedan: "Lumen, högre." Ställ en fråga till. | Första svaret är tydligt tystare, det andra som vanligt. | J/N |
+| 4c | Säg: "Lumen, svara kortare." Ställ en fråga. | Du hör "Kortare." och svaret är en eller två meningar. | J/N |
+| 4d | Säg: "Lumen, nästa låt." | Du hör "Nästa låt.", Lumen släpper ljudet och musiken fortsätter med **nästa** låt. | J/N + vilken app |
+| 4e | Starta Lumen igen (öppna appen och tryck **Frågor**). Säg bara: "Spela musik." | Lumen pausar och musiken fortsätter där den var. | J/N |
+
+Tryck **Avsluta** om Lumen fortfarande lyssnar.
+
 ---
 
 ## Skicka tillbaka
 
-1. Raderna `1a` till `3h` med J/N.
+1. Raderna `1a` till `4e` med J/N.
 2. Skärmbilden från 3f.
 3. De tre filerna från plugg-sessionen (`.wav`, `.txt`, `.json`).
 4. iPhone-modell och iOS-version (Inställningar → Allmänt → Om), AirPods-modell.

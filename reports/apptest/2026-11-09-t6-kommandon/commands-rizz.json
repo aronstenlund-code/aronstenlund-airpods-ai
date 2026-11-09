@@ -1,0 +1,3469 @@
+{
+  "cases" : [
+    {
+      "actions" : [
+        "feedback"
+      ],
+      "cause" : "",
+      "classified" : [
+        "feedback",
+        "feedback"
+      ],
+      "expect" : "feedback",
+      "heard" : [
+        "Lumen, det var fel."
+      ],
+      "id" : "wrong-1",
+      "log" : [
+        "  3.24 Voice feedback: the last turn goes to /feedback"
+      ],
+      "session" : "long",
+      "text" : "Lumen, det var fel.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "feedback"
+      ],
+      "cause" : "",
+      "classified" : [
+        "feedback",
+        "feedback"
+      ],
+      "expect" : "feedback",
+      "heard" : [
+        "Lumen, fel svar."
+      ],
+      "id" : "wrong-2",
+      "log" : [
+        "  3.24 Voice feedback: the last turn goes to /feedback"
+      ],
+      "session" : "long",
+      "text" : "Lumen, fel svar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "feedback"
+      ],
+      "cause" : "",
+      "classified" : [
+        "feedback",
+        "feedback"
+      ],
+      "expect" : "feedback",
+      "heard" : [
+        "Lumen, det stämmer inte."
+      ],
+      "id" : "wrong-3",
+      "log" : [
+        "  3.42 Voice feedback: the last turn goes to /feedback"
+      ],
+      "session" : "long",
+      "text" : "Lumen, det stämmer inte.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "music:backToLumen"
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:backToLumen",
+        "music:backToLumen"
+      ],
+      "expect" : "music:backToLumen",
+      "heard" : [
+        "Lumen, lyssna igen."
+      ],
+      "id" : "back-1",
+      "log" : [
+        "  3.15 Voice: music backToLumen"
+      ],
+      "session" : "long",
+      "text" : "Lumen, lyssna igen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "music:backToLumen"
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:backToLumen",
+        "music:backToLumen"
+      ],
+      "expect" : "music:backToLumen",
+      "heard" : [
+        "Lumen, fortsätt lyssna."
+      ],
+      "id" : "back-2",
+      "log" : [
+        "  3.52 Voice: music backToLumen"
+      ],
+      "session" : "long",
+      "text" : "Lumen, fortsätt lyssna.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "music:backToLumen"
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:backToLumen",
+        "music:backToLumen"
+      ],
+      "expect" : "music:backToLumen",
+      "heard" : [
+        "Lumen, tillbaka till Lumen."
+      ],
+      "id" : "back-3",
+      "log" : [
+        "  3.66 Voice: music backToLumen"
+      ],
+      "session" : "long",
+      "text" : "Lumen, tillbaka till Lumen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "music:pauseMusic"
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:pauseMusic",
+        "music:pauseMusic"
+      ],
+      "expect" : "music:pauseMusic",
+      "heard" : [
+        "Lumen, pausa musiken."
+      ],
+      "id" : "pmus-1",
+      "log" : [
+        "  3.73 Voice: music pauseMusic"
+      ],
+      "session" : "long",
+      "text" : "Lumen, pausa musiken.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "music:pauseMusic"
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:pauseMusic",
+        "music:pauseMusic"
+      ],
+      "expect" : "music:pauseMusic",
+      "heard" : [
+        "Lumen, stoppa musiken."
+      ],
+      "id" : "pmus-2",
+      "log" : [
+        "  3.80 Voice: music pauseMusic"
+      ],
+      "session" : "long",
+      "text" : "Lumen, stoppa musiken.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:pauseMusic",
+        "music:pauseMusic"
+      ],
+      "expect" : "music:pauseMusic",
+      "heard" : [
+        "Pausa musiken."
+      ],
+      "id" : "pmus-3",
+      "log" : [
+
+      ],
+      "session" : "long",
+      "text" : "Pausa musiken.",
+      "verdict" : "ok (from the heard words: unnamed music commands have no log line)"
+    },
+    {
+      "actions" : [
+        "cmd:repeatAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:repeatAnswer",
+        "cmd:repeatAnswer"
+      ],
+      "expect" : "cmd:repeatAnswer",
+      "heard" : [
+        "Lumen, upprepa svaret."
+      ],
+      "id" : "rep-1",
+      "log" : [
+        "  3.43 Voice: command repeatAnswer",
+        "  3.43 STT input gated (own speech)",
+        "  3.43 STT input open"
+      ],
+      "session" : "long",
+      "text" : "Lumen, upprepa svaret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:repeatAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:repeatAnswer",
+        "cmd:repeatAnswer"
+      ],
+      "expect" : "cmd:repeatAnswer",
+      "heard" : [
+        "Lumen, säg det igen."
+      ],
+      "id" : "rep-2",
+      "log" : [
+        "  3.35 Voice: command repeatAnswer",
+        "  3.35 STT input gated (own speech)",
+        "  3.35 STT input open"
+      ],
+      "session" : "long",
+      "text" : "Lumen, säg det igen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:repeatAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:repeatAnswer",
+        "cmd:repeatAnswer"
+      ],
+      "expect" : "cmd:repeatAnswer",
+      "heard" : [
+        "Lumen, kan du upprepa?"
+      ],
+      "id" : "rep-3",
+      "log" : [
+        "  3.01 Voice: command repeatAnswer",
+        "  3.01 STT input gated (own speech)",
+        "  3.01 STT input open"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kan du upprepa?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:whisper"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:whisper",
+        "cmd:whisper"
+      ],
+      "expect" : "cmd:whisper",
+      "heard" : [
+        "Lumen, viska."
+      ],
+      "id" : "whis-1",
+      "log" : [
+        "  2.90 Voice: command whisper",
+        "  2.91 Voice gain 0.60"
+      ],
+      "session" : "long",
+      "text" : "Lumen, viska.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:whisper"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:whisper",
+        "cmd:whisper"
+      ],
+      "expect" : "cmd:whisper",
+      "heard" : [
+        "Lumen, prata tystare."
+      ],
+      "id" : "whis-2",
+      "log" : [
+        "  3.55 Voice: command whisper",
+        "  3.55 Voice gain 0.36"
+      ],
+      "session" : "long",
+      "text" : "Lumen, prata tystare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:whisper"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:whisper",
+        "cmd:whisper"
+      ],
+      "expect" : "cmd:whisper",
+      "heard" : [
+        "Lumen, sänk volymen."
+      ],
+      "id" : "whis-3",
+      "log" : [
+        "  3.52 Voice: command whisper",
+        "  3.52 Voice gain 0.25"
+      ],
+      "session" : "long",
+      "text" : "Lumen, sänk volymen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:louder"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:louder",
+        "cmd:louder"
+      ],
+      "expect" : "cmd:louder",
+      "heard" : [
+        "Lumen, högre."
+      ],
+      "id" : "loud-1",
+      "log" : [
+        "  3.00 Voice: command louder",
+        "  3.00 Voice gain 0.42"
+      ],
+      "session" : "long",
+      "text" : "Lumen, högre.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:louder"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:louder",
+        "cmd:louder"
+      ],
+      "expect" : "cmd:louder",
+      "heard" : [
+        "Lumen, prata högre."
+      ],
+      "id" : "loud-2",
+      "log" : [
+        "  3.55 Voice: command louder",
+        "  3.55 Voice gain 0.69"
+      ],
+      "session" : "long",
+      "text" : "Lumen, prata högre.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:louder"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:louder",
+        "cmd:louder"
+      ],
+      "expect" : "cmd:louder",
+      "heard" : [
+        "Lumen, höj volymen."
+      ],
+      "id" : "loud-3",
+      "log" : [
+        "  3.56 Voice: command louder",
+        "  3.56 Voice gain 1.00"
+      ],
+      "session" : "long",
+      "text" : "Lumen, höj volymen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:shorter"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:shorter",
+        "cmd:shorter"
+      ],
+      "expect" : "cmd:shorter",
+      "heard" : [
+        "Lumen, svara kortare."
+      ],
+      "id" : "short-1",
+      "log" : [
+        "  3.53 Voice: command shorter",
+        "  3.53 Session length short"
+      ],
+      "session" : "long",
+      "text" : "Lumen, svara kortare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:shorter"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:shorter",
+        "cmd:shorter"
+      ],
+      "expect" : "cmd:shorter",
+      "heard" : [
+        "Lumen, kortare svar."
+      ],
+      "id" : "short-2",
+      "log" : [
+        "  3.31 Voice: command shorter",
+        "  3.31 Session length short"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kortare svar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:shorter"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:shorter",
+        "cmd:shorter"
+      ],
+      "expect" : "cmd:shorter",
+      "heard" : [
+        "Lumen, kortare tack."
+      ],
+      "id" : "short-3",
+      "log" : [
+        "  3.17 Voice: command shorter",
+        "  3.17 Session length short"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kortare tack.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:longer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:longer",
+        "cmd:longer"
+      ],
+      "expect" : "cmd:longer",
+      "heard" : [
+        "Lumen, svara längre."
+      ],
+      "id" : "long-1",
+      "log" : [
+        "  3.35 Voice: command longer",
+        "  3.35 Session length long"
+      ],
+      "session" : "long",
+      "text" : "Lumen, svara längre.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:longer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:longer",
+        "cmd:longer"
+      ],
+      "expect" : "cmd:longer",
+      "heard" : [
+        "Lumen, längre svar."
+      ],
+      "id" : "long-2",
+      "log" : [
+        "  3.18 Voice: command longer",
+        "  3.18 Session length long"
+      ],
+      "session" : "long",
+      "text" : "Lumen, längre svar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:longer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:longer",
+        "cmd:longer"
+      ],
+      "expect" : "cmd:longer",
+      "heard" : [
+        "Lumen, utförligare svar."
+      ],
+      "id" : "long-3",
+      "log" : [
+        "  3.78 Voice: command longer",
+        "  3.78 Session length long"
+      ],
+      "session" : "long",
+      "text" : "Lumen, utförligare svar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:saveAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:saveAnswer",
+        "cmd:saveAnswer"
+      ],
+      "expect" : "cmd:saveAnswer",
+      "heard" : [
+        "Lumen, spara det."
+      ],
+      "id" : "save-1",
+      "log" : [
+        "  3.29 Voice: command saveAnswer",
+        "  3.30 Save note: nothing to save"
+      ],
+      "session" : "long",
+      "text" : "Lumen, spara det.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:saveAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:saveAnswer",
+        "cmd:saveAnswer"
+      ],
+      "expect" : "cmd:saveAnswer",
+      "heard" : [
+        "Lumen, spara svaret."
+      ],
+      "id" : "save-2",
+      "log" : [
+        "  3.61 Voice: command saveAnswer",
+        "  3.61 Save note: nothing to save"
+      ],
+      "session" : "long",
+      "text" : "Lumen, spara svaret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:saveAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:saveAnswer",
+        "cmd:saveAnswer"
+      ],
+      "expect" : "cmd:saveAnswer",
+      "heard" : [
+        "Lumen, spara i anteckningar."
+      ],
+      "id" : "save-3",
+      "log" : [
+        "  3.93 Voice: command saveAnswer",
+        "  3.93 Save note: nothing to save"
+      ],
+      "session" : "long",
+      "text" : "Lumen, spara i anteckningar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:nextExam"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:nextExam",
+        "cmd:nextExam"
+      ],
+      "expect" : "cmd:nextExam",
+      "heard" : [
+        "Lumen, vilket prov har jag härnäst?"
+      ],
+      "id" : "exam-1",
+      "log" : [
+        "  3.71 Voice: command nextExam"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vilket prov har jag härnäst?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:nextExam"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:nextExam",
+        "cmd:nextExam"
+      ],
+      "expect" : "cmd:nextExam",
+      "heard" : [
+        "Lumen, när är nästa prov?"
+      ],
+      "id" : "exam-2",
+      "log" : [
+        "  3.09 Voice: command nextExam"
+      ],
+      "session" : "long",
+      "text" : "Lumen, när är nästa prov?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:nextExam"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:nextExam",
+        "cmd:nextExam"
+      ],
+      "expect" : "cmd:nextExam",
+      "heard" : [
+        "Lumen, vilket är nästa prov?"
+      ],
+      "id" : "exam-3",
+      "log" : [
+        "  3.44 Voice: command nextExam"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vilket är nästa prov?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "remember"
+      ],
+      "cause" : "",
+      "classified" : [
+        "remember",
+        "remember"
+      ],
+      "expect" : "remember",
+      "heard" : [
+        "Lumen, kom ihåg att jag gillar korta svar."
+      ],
+      "id" : "mem-1",
+      "log" : [
+        "  4.81 Voice: remembered (21 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kom ihåg att jag gillar korta svar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "remember"
+      ],
+      "cause" : "",
+      "classified" : [
+        "remember",
+        "remember"
+      ],
+      "expect" : "remember",
+      "heard" : [
+        "Lumen, glöm inte att jag går i nian."
+      ],
+      "id" : "mem-2",
+      "log" : [
+        "  4.12 Voice: remembered (14 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, glöm inte att jag går i nian.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "remember"
+      ],
+      "cause" : "",
+      "classified" : [
+        "remember",
+        "remember"
+      ],
+      "expect" : "remember",
+      "heard" : [
+        "Lumen, kom ihåg att jag tränar fotboll på tisdagar."
+      ],
+      "id" : "mem-3",
+      "log" : [
+        "  5.73 Voice: remembered (30 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kom ihåg att jag tränar fotboll på tisdagar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Upplepa."
+      ],
+      "id" : "uni-rep",
+      "log" : [
+        "  2.24 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  2.24 rizz turn · wearer · -25 dBFS vs threshold -30 + 3 dB → wearer · speech by level"
+      ],
+      "session" : "long",
+      "text" : "Upprepa.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Viska."
+      ],
+      "id" : "uni-whis",
+      "log" : [
+        "  1.90 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  1.90 rizz turn · other · -28 dBFS vs threshold -30 + 3 dB → uncertain, treated as other · speech by level",
+        "  1.90 Live turn timing · other · requested -406 ms · ready 0 ms · spoken 0 ms (from the end of the turn)"
+      ],
+      "session" : "long",
+      "text" : "Viska.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Högre."
+      ],
+      "id" : "uni-loud",
+      "log" : [
+        "  2.12 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  2.12 rizz turn · wearer · -19 dBFS vs threshold -30 + 3 dB → wearer · speech by level"
+      ],
+      "session" : "long",
+      "text" : "Högre.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Hoppa där."
+      ],
+      "id" : "uni-short",
+      "log" : [
+        "  2.03 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  2.04 rizz turn · wearer · -25 dBFS vs threshold -30 + 3 dB → wearer · speech by level"
+      ],
+      "session" : "long",
+      "text" : "Kortare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Snabbare."
+      ],
+      "id" : "uni-fast",
+      "log" : [
+        "  1.48 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  1.48 rizz turn · wearer · -21 dBFS vs threshold -30 + 3 dB → wearer · speech by level"
+      ],
+      "session" : "long",
+      "text" : "Snabbare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Utveckla."
+      ],
+      "id" : "uni-more",
+      "log" : [
+        "  1.68 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  1.68 rizz turn · other · -27 dBFS vs threshold -30 + 3 dB → uncertain, treated as other · speech by level",
+        "  2.42 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  2.42 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.16 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.16 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Utveckla.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Kan du upprepa det för hela klassen?"
+      ],
+      "id" : "neg-1",
+      "log" : [
+        "  3.29 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  3.29 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  5.84 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  5.84 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Kan du upprepa det för hela klassen?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Hon sa att vi måste prata högre i salen."
+      ],
+      "id" : "neg-2",
+      "log" : [
+        "  4.33 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  4.33 rizz turn · wearer · -21 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  6.65 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  6.65 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Hon sa att vi måste prata högre i salen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Läraren sa att vi ska spara det till nästa lektion."
+      ],
+      "id" : "neg-3",
+      "log" : [
+        "  4.83 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  4.83 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  7.46 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  7.46 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Läraren sa att vi ska spara det till nästa lektion.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Vi tog en paus och spelade musik på rasten."
+      ],
+      "id" : "neg-4",
+      "log" : [
+        "  4.47 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  4.47 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  7.19 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  7.19 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Vi tog en paus och spelade musik på rasten.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Nästa låt på listan var faktiskt riktigt bra."
+      ],
+      "id" : "neg-5",
+      "log" : [
+        "  4.50 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  4.50 rizz turn · wearer · -26 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  6.82 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  6.82 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Nästa låt på listan var faktiskt riktigt bra.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Han ville byta till en annan skola i höst."
+      ],
+      "id" : "neg-6",
+      "log" : [
+        "  4.01 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  4.01 rizz turn · wearer · -20 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  6.59 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  6.59 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Han ville byta till en annan skola i höst.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "När är nästa prov i matte?",
+        "Vet du det?"
+      ],
+      "id" : "neg-7",
+      "log" : [
+        "  3.84 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  3.84 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  6.40 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  6.40 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "När är nästa prov i matte, vet du det?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Jag tycker att svaret blev lite kortare än förra gången."
+      ],
+      "id" : "neg-8",
+      "log" : [
+        "  4.21 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  4.21 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  6.47 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  6.47 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Jag tycker att svaret blev lite kortare än förra gången.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Vi måste sluta lyssna på honom när han pratar."
+      ],
+      "id" : "neg-9",
+      "log" : [
+        "  4.42 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  4.42 rizz turn · wearer · -21 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  6.93 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  6.93 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Vi måste sluta lyssna på honom när han pratar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(19 characters)"
+      ],
+      "cause" : "matcher",
+      "classified" : [
+        "instr:other(för min kompis igår)",
+        "instr:other(för min kompis igår)"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Jag berättade om Lumen för min kompis igår."
+      ],
+      "id" : "neg-10",
+      "log" : [
+        "  4.03 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  4.03 rizz turn · wearer · -19 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  4.03 Voice: instruction (19 characters)",
+        "  4.03 rizz: instruction sent",
+        "  4.51 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  6.52 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  6.52 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Jag berättade om Lumen för min kompis igår.",
+      "verdict" : "false-hit"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreDetail",
+        "instr:moreDetail"
+      ],
+      "expect" : "instr:moreDetail",
+      "heard" : [
+        "Lumen, utveckla svaret."
+      ],
+      "id" : "more-1",
+      "log" : [
+        "  3.69 Voice: instruction (8 characters)",
+        "  3.69 rizz: instruction sent",
+        "  3.96 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.51 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.51 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, utveckla svaret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreDetail",
+        "instr:moreDetail"
+      ],
+      "expect" : "instr:moreDetail",
+      "heard" : [
+        "Lumen, berätta mer."
+      ],
+      "id" : "more-2",
+      "log" : [
+        "  3.30 Voice: instruction (8 characters)",
+        "  3.30 rizz: instruction sent",
+        "  3.53 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.19 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.19 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, berätta mer.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreDetail",
+        "instr:moreDetail"
+      ],
+      "expect" : "instr:moreDetail",
+      "heard" : [
+        "Lumen, mer om det."
+      ],
+      "id" : "more-3",
+      "log" : [
+        "  3.17 Voice: instruction (8 characters)",
+        "  3.17 rizz: instruction sent",
+        "  3.73 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.11 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.11 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, mer om det.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:simpler",
+        "instr:simpler"
+      ],
+      "expect" : "instr:simpler",
+      "heard" : [
+        "Lumen, förklara enklare."
+      ],
+      "id" : "simp-1",
+      "log" : [
+        "  3.76 Voice: instruction (16 characters)",
+        "  3.76 rizz: instruction sent",
+        "  4.26 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.61 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.61 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, förklara enklare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:simpler",
+        "instr:simpler"
+      ],
+      "expect" : "instr:simpler",
+      "heard" : [
+        "Lumen, förklara det enklare."
+      ],
+      "id" : "simp-2",
+      "log" : [
+        "  3.83 Voice: instruction (16 characters)",
+        "  3.83 rizz: instruction sent",
+        "  4.31 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.89 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.89 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, förklara det enklare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:simpler",
+        "instr:simpler"
+      ],
+      "expect" : "instr:simpler",
+      "heard" : [
+        "Lumen, enklare."
+      ],
+      "id" : "simp-3",
+      "log" : [
+        "  3.01 Voice: instruction (16 characters)",
+        "  3.01 rizz: instruction sent",
+        "  3.24 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  3.86 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  3.86 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, enklare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:example",
+        "instr:example"
+      ],
+      "expect" : "instr:example",
+      "heard" : [
+        "Lumen, ge ett exempel."
+      ],
+      "id" : "ex-1",
+      "log" : [
+        "  3.76 Voice: instruction (14 characters)",
+        "  3.76 rizz: instruction sent",
+        "  4.02 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.90 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.90 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, ge ett exempel.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:example",
+        "instr:example"
+      ],
+      "expect" : "instr:example",
+      "heard" : [
+        "Lumen, ge mig ett exempel."
+      ],
+      "id" : "ex-2",
+      "log" : [
+        "  3.71 Voice: instruction (14 characters)",
+        "  3.71 rizz: instruction sent",
+        "  4.21 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.65 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.65 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, ge mig ett exempel.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:example",
+        "instr:example"
+      ],
+      "expect" : "instr:example",
+      "heard" : [
+        "Lumen, exempel."
+      ],
+      "id" : "ex-3",
+      "log" : [
+        "  3.16 Voice: instruction (14 characters)",
+        "  3.16 rizz: instruction sent",
+        "  3.43 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.13 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.13 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, exempel.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(24 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(sammanfattade viktigaste)",
+        "instr:other(sammanfattade viktigaste)"
+      ],
+      "expect" : "instr:summary",
+      "heard" : [
+        "Lumen, sammanfattade viktigaste."
+      ],
+      "id" : "sum-1",
+      "log" : [
+        "  4.15 Voice: instruction (24 characters)",
+        "  4.15 rizz: instruction sent",
+        "  4.66 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  5.14 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  5.14 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, sammanfatta det viktigaste.",
+      "verdict" : "wrong (instr(24 characters))"
+    },
+    {
+      "actions" : [
+        "instr(26 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:summary",
+        "instr:summary"
+      ],
+      "expect" : "instr:summary",
+      "heard" : [
+        "Lumen, sammanfatta."
+      ],
+      "id" : "sum-2",
+      "log" : [
+        "  3.43 Voice: instruction (26 characters)",
+        "  3.43 rizz: instruction sent",
+        "  3.71 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.30 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.30 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, sammanfatta.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(26 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:summary",
+        "instr:summary"
+      ],
+      "expect" : "instr:summary",
+      "heard" : [
+        "Lumen, summera."
+      ],
+      "id" : "sum-3",
+      "log" : [
+        "  3.04 Voice: instruction (26 characters)",
+        "  3.04 rizz: instruction sent",
+        "  3.52 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  3.95 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  3.95 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, summera.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(9 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:careful",
+        "instr:careful"
+      ],
+      "expect" : "instr:careful",
+      "heard" : [
+        "Lumen, var säker."
+      ],
+      "id" : "care-1",
+      "log" : [
+        "  3.23 Voice: instruction (9 characters)",
+        "  3.23 rizz: instruction sent",
+        "  3.72 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.07 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.07 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, var säker.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(9 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:careful",
+        "instr:careful"
+      ],
+      "expect" : "instr:careful",
+      "heard" : [
+        "Lumen, dubbelkolla."
+      ],
+      "id" : "care-2",
+      "log" : [
+        "  3.17 Voice: instruction (9 characters)",
+        "  3.17 rizz: instruction sent",
+        "  3.40 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.40 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.40 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, dubbelkolla.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(9 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:careful",
+        "instr:careful"
+      ],
+      "expect" : "instr:careful",
+      "heard" : [
+        "Lumen, var noggrann."
+      ],
+      "id" : "care-3",
+      "log" : [
+        "  3.22 Voice: instruction (9 characters)",
+        "  3.22 rizz: instruction sent",
+        "  3.55 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.30 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.30 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, var noggrann.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(15 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:catchUp",
+        "instr:catchUp"
+      ],
+      "expect" : "instr:catchUp",
+      "heard" : [
+        "Lumen, vad missade jag?"
+      ],
+      "id" : "miss-1",
+      "log" : [
+        "  2.88 Voice: instruction (15 characters)",
+        "  2.89 rizz: instruction sent",
+        "  3.21 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.12 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.12 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad missade jag?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(15 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:catchUp",
+        "instr:catchUp"
+      ],
+      "expect" : "instr:catchUp",
+      "heard" : [
+        "Lumen, vad har jag missat?"
+      ],
+      "id" : "miss-2",
+      "log" : [
+        "  2.95 Voice: instruction (15 characters)",
+        "  2.95 rizz: instruction sent",
+        "  3.25 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.89 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.89 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad har jag missat?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(15 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:catchUp",
+        "instr:catchUp"
+      ],
+      "expect" : "instr:catchUp",
+      "heard" : [
+        "Lumen, vad sa de?"
+      ],
+      "id" : "miss-3",
+      "log" : [
+        "  2.75 Voice: instruction (15 characters)",
+        "  2.75 rizz: instruction sent",
+        "  2.98 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.33 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.33 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad sa de?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(17 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:discreet",
+        "instr:discreet"
+      ],
+      "expect" : "instr:discreet",
+      "heard" : [
+        "Lumen, hjälp mig diskret."
+      ],
+      "id" : "disc-1",
+      "log" : [
+        "  3.68 Voice: instruction (17 characters)",
+        "  3.68 rizz: instruction sent",
+        "  4.28 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.83 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.83 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, hjälp mig diskret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(17 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:discreet",
+        "instr:discreet"
+      ],
+      "expect" : "instr:discreet",
+      "heard" : [
+        "Lumen, diskret."
+      ],
+      "id" : "disc-2",
+      "log" : [
+        "  3.00 Voice: instruction (17 characters)",
+        "  3.00 rizz: instruction sent",
+        "  3.51 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.26 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.26 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, diskret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(17 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:discreet",
+        "instr:discreet"
+      ],
+      "expect" : "instr:discreet",
+      "heard" : [
+        "Lumen, kort och diskret."
+      ],
+      "id" : "disc-3",
+      "log" : [
+        "  3.41 Voice: instruction (17 characters)",
+        "  3.41 rizz: instruction sent",
+        "  3.67 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.64 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.64 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kort och diskret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(20 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:asUsual",
+        "instr:asUsual"
+      ],
+      "expect" : "instr:asUsual",
+      "heard" : [
+        "Lumen, svara som jag brukar."
+      ],
+      "id" : "usual-1",
+      "log" : [
+        "  4.06 Voice: instruction (20 characters)",
+        "  4.06 rizz: instruction sent",
+        "  4.31 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.86 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.86 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, svara som jag brukar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(20 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:asUsual",
+        "instr:asUsual"
+      ],
+      "expect" : "instr:asUsual",
+      "heard" : [
+        "Lumen, som vanligt."
+      ],
+      "id" : "usual-2",
+      "log" : [
+        "  3.39 Voice: instruction (20 characters)",
+        "  3.39 rizz: instruction sent",
+        "  3.82 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.18 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.18 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, som vanligt.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(17 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:socialReply",
+        "instr:socialReply"
+      ],
+      "expect" : "instr:socialReply",
+      "heard" : [
+        "Lumen, vad ska jag svara?"
+      ],
+      "id" : "sr-1",
+      "log" : [
+        "  3.06 Voice: instruction (17 characters)",
+        "  3.06 rizz: instruction sent",
+        "  3.59 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.52 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.52 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad ska jag svara?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(17 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:socialReply",
+        "instr:socialReply"
+      ],
+      "expect" : "instr:socialReply",
+      "heard" : [
+        "Lumen, vad svarar jag?"
+      ],
+      "id" : "sr-2",
+      "log" : [
+        "  2.88 Voice: instruction (17 characters)",
+        "  2.88 rizz: instruction sent",
+        "  3.11 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.17 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.17 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad svarar jag?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:funnier",
+        "instr:funnier"
+      ],
+      "expect" : "instr:funnier",
+      "heard" : [
+        "Lumen, roligare."
+      ],
+      "id" : "fun-1",
+      "log" : [
+        "  3.14 Voice: instruction (8 characters)",
+        "  3.15 rizz: instruction sent",
+        "  3.40 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  3.90 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  3.90 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, roligare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:funnier",
+        "instr:funnier"
+      ],
+      "expect" : "instr:funnier",
+      "heard" : [
+        "Lumen, gör det roligare."
+      ],
+      "id" : "fun-2",
+      "log" : [
+        "  3.45 Voice: instruction (8 characters)",
+        "  3.45 rizz: instruction sent",
+        "  4.94 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, gör det roligare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(13 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreNatural",
+        "instr:moreNatural"
+      ],
+      "expect" : "instr:moreNatural",
+      "heard" : [
+        "Lumen, mer naturligt."
+      ],
+      "id" : "nat-1",
+      "log" : [
+        "  3.42 Voice: instruction (13 characters)",
+        "  3.42 rizz: instruction sent",
+        "  3.96 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.42 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.42 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, mer naturligt.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(13 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreNatural",
+        "instr:moreNatural"
+      ],
+      "expect" : "instr:moreNatural",
+      "heard" : [
+        "Lumen, naturligare."
+      ],
+      "id" : "nat-2",
+      "log" : [
+        "  3.17 Voice: instruction (13 characters)",
+        "  3.18 rizz: instruction sent",
+        "  3.47 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.11 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.11 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  5.48 Resources · CPU 19.0 % · battery n/a · 10 min · voice 75 embeddings, avg 429 ms · labels on · profile no"
+      ],
+      "session" : "long",
+      "text" : "Lumen, naturligare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:changeTopic",
+        "instr:changeTopic"
+      ],
+      "expect" : "instr:changeTopic",
+      "heard" : [
+        "Lumen, byt ämne."
+      ],
+      "id" : "top-1",
+      "log" : [
+        "  3.15 Voice: instruction (8 characters)",
+        "  3.15 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, byt ämne.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:changeTopic",
+        "instr:changeTopic"
+      ],
+      "expect" : "instr:changeTopic",
+      "heard" : [
+        "Lumen, nytt ämne."
+      ],
+      "id" : "top-2",
+      "log" : [
+        "  3.19 Voice: instruction (8 characters)",
+        "  3.20 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, nytt ämne.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:followUp",
+        "instr:followUp"
+      ],
+      "expect" : "instr:followUp",
+      "heard" : [
+        "Lumen, smart följdfråga."
+      ],
+      "id" : "fol-1",
+      "log" : [
+        "  3.95 Voice: instruction (16 characters)",
+        "  3.95 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, smart följdfråga.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:followUp",
+        "instr:followUp"
+      ],
+      "expect" : "instr:followUp",
+      "heard" : [
+        "Lumen, följdfråga."
+      ],
+      "id" : "fol-2",
+      "log" : [
+        "  3.52 Voice: instruction (16 characters)",
+        "  3.52 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, följdfråga.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:followUp",
+        "instr:followUp"
+      ],
+      "expect" : "instr:followUp",
+      "heard" : [
+        "Lumen, ge mig en följdfråga."
+      ],
+      "id" : "fol-3",
+      "log" : [
+        "  3.92 Voice: instruction (16 characters)",
+        "  3.92 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, ge mig en följdfråga.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(19 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:whatMeant",
+        "instr:whatMeant"
+      ],
+      "expect" : "instr:whatMeant",
+      "heard" : [
+        "Lumen, vad menade personen?"
+      ],
+      "id" : "mean-1",
+      "log" : [
+        "  3.36 Voice: instruction (19 characters)",
+        "  3.36 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad menade personen?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(19 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:whatMeant",
+        "instr:whatMeant"
+      ],
+      "expect" : "instr:whatMeant",
+      "heard" : [
+        "Lumen, vad menade hon?"
+      ],
+      "id" : "mean-2",
+      "log" : [
+        "  2.85 Voice: instruction (19 characters)",
+        "  2.85 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad menade hon?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(vad menade dom)",
+        "instr:other(vad menade dom)"
+      ],
+      "expect" : "instr:whatMeant",
+      "heard" : [
+        "Lumen, vad menade dom?"
+      ],
+      "id" : "mean-3",
+      "log" : [
+        "  3.08 Voice: instruction (14 characters)",
+        "  3.08 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad menade de?",
+      "verdict" : "wrong (instr(14 characters))"
+    },
+    {
+      "actions" : [
+        "instr(15 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(ge mig lite ris)",
+        "instr:other(ge mig lite ris)"
+      ],
+      "expect" : "instr:rizz",
+      "heard" : [
+        "Lumen, ge mig lite ris."
+      ],
+      "id" : "rz-1",
+      "log" : [
+        "  3.62 Voice: instruction (15 characters)",
+        "  3.62 rizz: instruction sent",
+        "  5.01 rizz: calibration stored (159 characters)",
+        "  7.10 Live turn timing · other · requested 0 ms · ready 374788 ms · spoken 374790 ms (from the end of the turn)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, ge mig lite rizz.",
+      "verdict" : "wrong (instr(15 characters))"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(lite ris)",
+        "instr:other(lite ris)"
+      ],
+      "expect" : "instr:rizz",
+      "heard" : [
+        "Lumen, lite ris."
+      ],
+      "id" : "rz-2",
+      "log" : [
+        "  3.18 Voice: instruction (8 characters)",
+        "  3.18 rizz: instruction sent",
+        "  4.27 rizz: calibration stored (0 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, lite rizz.",
+      "verdict" : "wrong (instr(8 characters))"
+    },
+    {
+      "actions" : [
+        "instr(3 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(ris)",
+        "instr:other(ris)"
+      ],
+      "expect" : "instr:rizz",
+      "heard" : [
+        "Lumen, ris."
+      ],
+      "id" : "rz-3",
+      "log" : [
+        "  2.77 Voice: instruction (3 characters)",
+        "  2.77 rizz: instruction sent",
+        "  4.10 rizz: calibration stored (95 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, rizz.",
+      "verdict" : "wrong (instr(3 characters))"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreConfident",
+        "instr:moreConfident"
+      ],
+      "expect" : "instr:moreConfident",
+      "heard" : [
+        "Lumen, mer självsäker."
+      ],
+      "id" : "conf-1",
+      "log" : [
+        "  3.79 Voice: instruction (14 characters)",
+        "  3.80 rizz: instruction sent",
+        "  5.08 rizz: calibration stored (14 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, mer självsäker.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreConfident",
+        "instr:moreConfident"
+      ],
+      "expect" : "instr:moreConfident",
+      "heard" : [
+        "Lumen, säkrare."
+      ],
+      "id" : "conf-2",
+      "log" : [
+        "  3.14 Voice: instruction (14 characters)",
+        "  3.14 rizz: instruction sent",
+        "  3.95 rizz: calibration stored (14 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, säkrare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(9 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(flitigare)",
+        "instr:other(flitigare)"
+      ],
+      "expect" : "instr:flirtier",
+      "heard" : [
+        "Lumen, flitigare."
+      ],
+      "id" : "fl-1",
+      "log" : [
+        "  3.14 Voice: instruction (9 characters)",
+        "  3.14 rizz: instruction sent",
+        "  4.57 rizz: calibration stored (29 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, flirtigare.",
+      "verdict" : "wrong (instr(9 characters))"
+    },
+    {
+      "actions" : [
+        "instr(10 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(mer flitig)",
+        "instr:other(mer flitig)"
+      ],
+      "expect" : "instr:flirtier",
+      "heard" : [
+        "Lumen, mer flitig."
+      ],
+      "id" : "fl-2",
+      "log" : [
+        "  3.25 Voice: instruction (10 characters)",
+        "  3.25 rizz: instruction sent",
+        "  4.23 rizz: calibration stored (41 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, mer flirtig.",
+      "verdict" : "wrong (an instruction, but instr:other(mer flitig))"
+    },
+    {
+      "actions" : [
+        "instr(10 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:subtler",
+        "instr:subtler"
+      ],
+      "expect" : "instr:subtler",
+      "heard" : [
+        "Lumen, mer subtil."
+      ],
+      "id" : "sub-1",
+      "log" : [
+        "  3.45 Voice: instruction (10 characters)",
+        "  3.45 rizz: instruction sent",
+        "  4.82 rizz: calibration stored (54 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, mer subtil.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(10 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:subtler",
+        "instr:subtler"
+      ],
+      "expect" : "instr:subtler",
+      "heard" : [
+        "Lumen, subtilare."
+      ],
+      "id" : "sub-2",
+      "log" : [
+        "  3.21 Voice: instruction (10 characters)",
+        "  3.22 rizz: instruction sent",
+        "  4.02 rizz: calibration stored (40 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, subtilare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:cockier",
+        "instr:cockier"
+      ],
+      "expect" : "instr:cockier",
+      "heard" : [
+        "Lumen, kaxigare."
+      ],
+      "id" : "cock-1",
+      "log" : [
+        "  3.18 Voice: instruction (8 characters)",
+        "  3.18 rizz: instruction sent",
+        "  3.98 rizz: calibration stored (50 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kaxigare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:cockier",
+        "instr:cockier"
+      ],
+      "expect" : "instr:cockier",
+      "heard" : [
+        "Lumen, mer kaxig."
+      ],
+      "id" : "cock-2",
+      "log" : [
+        "  3.44 Voice: instruction (8 characters)",
+        "  3.44 rizz: instruction sent",
+        "  5.72 rizz: calibration stored (62 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, mer kaxig.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(9 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:rescue",
+        "instr:rescue"
+      ],
+      "expect" : "instr:rescue",
+      "heard" : [
+        "Lumen, rädda mig."
+      ],
+      "id" : "resc-1",
+      "log" : [
+        "  3.13 Voice: instruction (9 characters)",
+        "  3.13 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, rädda mig.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(9 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:rescue",
+        "instr:rescue"
+      ],
+      "expect" : "instr:rescue",
+      "heard" : [
+        "Lumen, hjälp mig ur det här."
+      ],
+      "id" : "resc-2",
+      "log" : [
+        "  3.75 Voice: instruction (9 characters)",
+        "  3.75 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, hjälp mig ur det här.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(mindre kringel)",
+        "instr:other(mindre kringel)"
+      ],
+      "expect" : "instr:lessCringe",
+      "heard" : [
+        "Lumen, mindre kringel."
+      ],
+      "id" : "cri-1",
+      "log" : [
+        "  3.48 Voice: instruction (14 characters)",
+        "  3.48 rizz: instruction sent",
+        "  6.18 rizz: calibration stored (68 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, mindre cringe.",
+      "verdict" : "wrong (instr(14 characters))"
+    },
+    {
+      "actions" : [
+        "instr(15 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(inte så kringel)",
+        "instr:other(inte så kringel)"
+      ],
+      "expect" : "instr:lessCringe",
+      "heard" : [
+        "Lumen, inte så kringel."
+      ],
+      "id" : "cri-2",
+      "log" : [
+        "  3.44 Voice: instruction (15 characters)",
+        "  3.44 rizz: instruction sent",
+        "  4.59 rizz: calibration stored (91 characters)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, inte så cringe.",
+      "verdict" : "wrong (instr(15 characters))"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:threeOptions",
+        "instr:threeOptions"
+      ],
+      "expect" : "instr:threeOptions",
+      "heard" : [
+        "Lumen, tre alternativ."
+      ],
+      "id" : "three-1",
+      "log" : [
+        "  3.53 Voice: instruction (14 characters)",
+        "  3.53 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, tre alternativ.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:threeOptions",
+        "instr:threeOptions"
+      ],
+      "expect" : "instr:threeOptions",
+      "heard" : [
+        "Lumen, ge mig tre."
+      ],
+      "id" : "three-2",
+      "log" : [
+        "  3.32 Voice: instruction (14 characters)",
+        "  3.32 rizz: instruction sent"
+      ],
+      "session" : "long",
+      "text" : "Lumen, ge mig tre.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:threeOptions",
+        "instr:threeOptions"
+      ],
+      "expect" : "instr:threeOptions",
+      "heard" : [
+        "Lumen, tre förslag."
+      ],
+      "id" : "three-3",
+      "log" : [
+        "  3.40 Voice: instruction (14 characters)",
+        "  3.40 rizz: instruction sent",
+        " 19.88 Provläge ended by the user",
+        " 19.89 State Listening → Idle"
+      ],
+      "session" : "long",
+      "text" : "Lumen, tre förslag.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "pause"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "pause",
+        "pause"
+      ],
+      "expect" : "pause",
+      "heard" : [
+        "Pausa."
+      ],
+      "id" : "hand-1",
+      "log" : [
+        "  2.23 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  2.23 rizz turn · wearer · -23 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        "  2.29 Spoken pause: handing the audio back",
+        "  2.29 State Listening → Paused — by you",
+        "  5.55 State Paused — by you → Idle"
+      ],
+      "session" : "hand-1",
+      "text" : "Pausa.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "pause"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "pause",
+        "pause"
+      ],
+      "expect" : "pause",
+      "heard" : [
+        "Spela musik."
+      ],
+      "id" : "hand-2",
+      "log" : [
+        "  2.55 Spoken pause: handing the audio back",
+        "  2.55 State Listening → Paused — by you",
+        "  5.73 State Paused — by you → Idle"
+      ],
+      "session" : "hand-2",
+      "text" : "Spela musik.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "pause"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "pause",
+        "pause"
+      ],
+      "expect" : "pause",
+      "heard" : [
+        "Lumen, pausa dig."
+      ],
+      "id" : "hand-3",
+      "log" : [
+        "  3.40 Voice: pause",
+        "  3.40 State Listening → Paused — by you",
+        "  6.69 State Paused — by you → Idle"
+      ],
+      "session" : "hand-3",
+      "text" : "Lumen, pausa dig.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "stop"
+      ],
+      "after" : "mode=standard listening=false active=false state=idle",
+      "cause" : "",
+      "classified" : [
+        "stop",
+        "stop"
+      ],
+      "expect" : "stop",
+      "heard" : [
+        "Lumen, sluta lyssna."
+      ],
+      "id" : "stop-1",
+      "log" : [
+        "  3.48 Voice: stop listening",
+        "  3.48 State Listening → Idle"
+      ],
+      "session" : "stop-1",
+      "text" : "Lumen, sluta lyssna.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "stop"
+      ],
+      "after" : "mode=standard listening=false active=false state=idle",
+      "cause" : "",
+      "classified" : [
+        "stop",
+        "stop"
+      ],
+      "expect" : "stop",
+      "heard" : [
+        "Lumen, avsluta."
+      ],
+      "id" : "stop-2",
+      "log" : [
+        "  3.23 Voice: stop listening",
+        "  3.23 State Listening → Idle"
+      ],
+      "session" : "stop-2",
+      "text" : "Lumen, avsluta.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "stop"
+      ],
+      "after" : "mode=standard listening=false active=false state=idle",
+      "cause" : "",
+      "classified" : [
+        "stop",
+        "stop"
+      ],
+      "expect" : "stop",
+      "heard" : [
+        "Lumen, stäng av."
+      ],
+      "id" : "stop-3",
+      "log" : [
+        "  3.25 Voice: stop listening",
+        "  3.25 State Listening → Idle"
+      ],
+      "session" : "stop-3",
+      "text" : "Lumen, stäng av.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "music:nextTrack",
+        "music:nextTrack"
+      ],
+      "expect" : "music:nextTrack",
+      "heard" : [
+        "Nästa låt."
+      ],
+      "id" : "next-1",
+      "log" : [
+        "  2.18 State Listening → Paused — by you",
+        " 69.58 State Paused — by you → Idle"
+      ],
+      "session" : "next-1",
+      "text" : "Nästa låt.",
+      "verdict" : "ok (from the heard words: unnamed music commands have no log line)"
+    },
+    {
+      "actions" : [
+        "music:nextTrack"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "music:nextTrack",
+        "music:nextTrack"
+      ],
+      "expect" : "music:nextTrack",
+      "heard" : [
+        "Lumen, hoppa över låten."
+      ],
+      "id" : "next-2",
+      "log" : [
+        "  3.60 Voice: music nextTrack",
+        "  3.60 State Listening → Paused — by you",
+        "  6.80 State Paused — by you → Idle"
+      ],
+      "session" : "next-2",
+      "text" : "Lumen, hoppa över låten.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(13 characters)"
+      ],
+      "after" : "mode=rizz listening=true active=true state=listening",
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(skippar låten)",
+        "instr:other(skippar låten)"
+      ],
+      "expect" : "music:nextTrack",
+      "heard" : [
+        "Lumen, skippar låten."
+      ],
+      "id" : "next-3",
+      "log" : [
+        "  3.51 Voice: instruction (13 characters)",
+        "  3.51 rizz: instruction sent",
+        "  4.94 rizz: calibration stored (91 characters)",
+        " 18.25 Provläge ended by the user",
+        " 18.25 State Listening → Idle"
+      ],
+      "session" : "next-3",
+      "text" : "Lumen, skippa låten.",
+      "verdict" : "wrong (instr(13 characters))"
+    },
+    {
+      "actions" : [
+
+      ],
+      "after" : "mode=rizz listening=true active=true state=listening",
+      "cause" : "STT",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "music:previousTrack",
+      "heard" : [
+        "Föra låten."
+      ],
+      "id" : "prev-1",
+      "log" : [
+        "  2.53 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+        "  2.53 rizz turn · wearer · -20 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+        " 17.07 Provläge ended by the user",
+        " 17.07 State Listening → Idle"
+      ],
+      "session" : "prev-1",
+      "text" : "Förra låten.",
+      "verdict" : "missed"
+    },
+    {
+      "actions" : [
+        "music:previousTrack"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "music:previousTrack",
+        "music:previousTrack"
+      ],
+      "expect" : "music:previousTrack",
+      "heard" : [
+        "Lumen, föregående låt."
+      ],
+      "id" : "prev-2",
+      "log" : [
+        "  3.61 Voice: music previousTrack",
+        "  3.61 State Listening → Paused — by you",
+        "  6.89 State Paused — by you → Idle"
+      ],
+      "session" : "prev-2",
+      "text" : "Lumen, föregående låt.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "music:previousTrack"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "music:previousTrack",
+        "music:previousTrack"
+      ],
+      "expect" : "music:previousTrack",
+      "heard" : [
+        "Lumen, spela förra låten."
+      ],
+      "id" : "prev-3",
+      "log" : [
+        "  3.83 Voice: music previousTrack",
+        "  3.83 State Listening → Paused — by you",
+        "  6.95 State Paused — by you → Idle"
+      ],
+      "session" : "prev-3",
+      "text" : "Lumen, spela förra låten.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "switch:social"
+      ],
+      "after" : "mode=social listening=true active=true state=listening",
+      "cause" : "",
+      "classified" : [
+        "switch:social",
+        "switch:social"
+      ],
+      "expect" : "switch:social",
+      "heard" : [
+        "Lumen, socialt."
+      ],
+      "id" : "sw-social2",
+      "log" : [
+        "  3.06 Voice: switch to social",
+        "  3.07 Provläge ended by the user",
+        "  3.07 Hands-free social started",
+        "  3.08 Scribe pause detection 0.6 s: reconnecting",
+        "  4.17 Local VAD in front of Scribe",
+        "  4.18 STT running: Scribe · sv-SE",
+        "  6.19 Provläge ended by the user",
+        "  6.19 State Listening → Idle"
+      ],
+      "session" : "sw-social2",
+      "text" : "Lumen, socialt.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "after" : "mode=rizz listening=true active=true state=listening",
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(by till provläge)",
+        "instr:other(by till provläge)"
+      ],
+      "expect" : "switch:prov",
+      "heard" : [
+        "Lumen, by till provläge."
+      ],
+      "id" : "sw-prov",
+      "log" : [
+        "  3.58 Voice: instruction (16 characters)",
+        "  3.58 rizz: instruction sent",
+        "  4.49 rizz: calibration stored (0 characters)",
+        " 18.26 Provläge ended by the user",
+        " 18.26 State Listening → Idle"
+      ],
+      "session" : "sw-prov",
+      "text" : "Lumen, byt till provläge.",
+      "verdict" : "wrong (instr(16 characters))"
+    },
+    {
+      "actions" : [
+        "switch:standard"
+      ],
+      "after" : "mode=standard listening=true active=true state=listening",
+      "cause" : "",
+      "classified" : [
+        "switch:standard",
+        "switch:standard"
+      ],
+      "expect" : "switch:standard",
+      "heard" : [
+        "Lumen, växla till frågor."
+      ],
+      "id" : "sw-standard",
+      "log" : [
+        "  3.68 Voice: switch to standard",
+        "  3.69 Provläge ended by the user",
+        "  3.70 Scribe pause detection 0.6 s: reconnecting",
+        "  5.47 Local VAD in front of Scribe",
+        "  5.47 Wearer focus in front of Scribe (A10)",
+        "  5.47 STT running: Scribe · sv-SE",
+        "  6.79 State Listening → Idle"
+      ],
+      "session" : "sw-standard",
+      "text" : "Lumen, växla till frågor.",
+      "verdict" : "ok"
+    }
+  ],
+  "mode" : "rizz",
+  "seconds" : 1159.5124360322952,
+  "sessions" : {
+    "hand-1" : [
+      "   0.00 State Idle → Listening",
+      "   0.25 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.25 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.28 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.28 Hands-free rizz started",
+      "   0.28 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.40 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.60 Local VAD not ready: all audio goes to Scribe",
+      "   1.60 STT running: Scribe · sv-SE",
+      "  12.35 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      "  12.35 rizz turn · wearer · -23 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      "  12.41 Spoken pause: handing the audio back",
+      "  12.41 State Listening → Paused — by you",
+      "  12.41 heard: Pausa.",
+      "  15.67 State Paused — by you → Idle"
+    ],
+    "hand-2" : [
+      "   0.00 State Idle → Listening",
+      "   0.25 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.25 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.28 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.28 Hands-free rizz started",
+      "   0.28 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.31 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.34 Local VAD not ready: all audio goes to Scribe",
+      "   1.34 STT running: Scribe · sv-SE",
+      "  12.49 Spoken pause: handing the audio back",
+      "  12.49 State Listening → Paused — by you",
+      "  12.49 heard: Spela musik.",
+      "  15.67 State Paused — by you → Idle"
+    ],
+    "hand-3" : [
+      "   0.00 State Idle → Listening",
+      "   0.16 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.16 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.21 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.21 Hands-free rizz started",
+      "   0.21 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.24 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.27 Local VAD not ready: all audio goes to Scribe",
+      "   1.27 STT running: Scribe · sv-SE",
+      "  13.14 State Listening → Paused — by you",
+      "  13.14 Voice: pause",
+      "  13.14 heard: Lumen, pausa dig.",
+      "  16.44 State Paused — by you → Idle"
+    ],
+    "long" : [
+      "   0.03 State Idle → Listening",
+      "   0.89 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.89 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   2.36 Capture started · engine input WAV files (105) · 16000 Hz · 1 ch · Int16",
+      "   2.36 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   2.37 Hands-free rizz started",
+      "   3.41 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   5.29 Local VAD not ready: all audio goes to Scribe",
+      "   5.29 STT running: Scribe · sv-SE",
+      "  15.22 Voice feedback: the last turn goes to /feedback",
+      "  15.22 heard: Lumen, det var fel.",
+      "  22.41 Voice feedback: the last turn goes to /feedback",
+      "  22.41 heard: Lumen, fel svar.",
+      "  29.89 Voice feedback: the last turn goes to /feedback",
+      "  29.89 heard: Lumen, det stämmer inte.",
+      "  37.16 Voice: music backToLumen",
+      "  37.16 heard: Lumen, lyssna igen.",
+      "  44.75 Voice: music backToLumen",
+      "  44.75 heard: Lumen, fortsätt lyssna.",
+      "  52.58 Voice: music backToLumen",
+      "  52.58 heard: Lumen, tillbaka till Lumen.",
+      "  60.39 Voice: music pauseMusic",
+      "  60.39 heard: Lumen, pausa musiken.",
+      "  68.30 Voice: music pauseMusic",
+      "  68.30 heard: Lumen, stoppa musiken.",
+      "  75.22 heard: Pausa musiken.",
+      "  82.66 STT input gated (own speech)",
+      "  82.66 STT input open",
+      "  82.66 Voice: command repeatAnswer",
+      "  82.66 heard: Lumen, upprepa svaret.",
+      "  90.28 STT input gated (own speech)",
+      "  90.28 STT input open",
+      "  90.28 Voice: command repeatAnswer",
+      "  90.28 heard: Lumen, säg det igen.",
+      "  97.33 STT input gated (own speech)",
+      "  97.33 STT input open",
+      "  97.33 Voice: command repeatAnswer",
+      "  97.33 heard: Lumen, kan du upprepa?",
+      " 104.75 Voice: command whisper",
+      " 104.75 heard: Lumen, viska.",
+      " 104.76 Voice gain 0.60",
+      " 112.37 Voice gain 0.36",
+      " 112.37 Voice: command whisper",
+      " 112.37 heard: Lumen, prata tystare.",
+      " 120.00 Voice gain 0.25",
+      " 120.00 Voice: command whisper",
+      " 120.00 heard: Lumen, sänk volymen.",
+      " 127.05 Voice gain 0.42",
+      " 127.05 Voice: command louder",
+      " 127.05 heard: Lumen, högre.",
+      " 134.62 Voice gain 0.69",
+      " 134.62 Voice: command louder",
+      " 134.62 heard: Lumen, prata högre.",
+      " 142.17 Voice: command louder",
+      " 142.18 Voice gain 1.00",
+      " 142.19 heard: Lumen, höj volymen.",
+      " 149.64 heard: Lumen, svara kortare.",
+      " 149.65 Session length short",
+      " 149.65 Voice: command shorter",
+      " 157.02 Session length short",
+      " 157.02 Voice: command shorter",
+      " 157.02 heard: Lumen, kortare svar.",
+      " 164.25 heard: Lumen, kortare tack.",
+      " 164.26 Session length short",
+      " 164.26 Voice: command shorter",
+      " 171.87 Session length long",
+      " 171.87 Voice: command longer",
+      " 171.87 heard: Lumen, svara längre.",
+      " 179.11 Session length long",
+      " 179.11 Voice: command longer",
+      " 179.11 heard: Lumen, längre svar.",
+      " 186.94 Session length long",
+      " 186.94 Voice: command longer",
+      " 186.94 heard: Lumen, utförligare svar.",
+      " 194.28 Voice: command saveAnswer",
+      " 194.28 heard: Lumen, spara det.",
+      " 194.29 Save note: nothing to save",
+      " 201.88 Save note: nothing to save",
+      " 201.88 Voice: command saveAnswer",
+      " 201.88 heard: Lumen, spara svaret.",
+      " 209.96 heard: Lumen, spara i anteckningar.",
+      " 209.97 Save note: nothing to save",
+      " 209.97 Voice: command saveAnswer",
+      " 217.67 Voice: command nextExam",
+      " 217.67 heard: Lumen, vilket prov har jag härnäst?",
+      " 225.32 Voice: command nextExam",
+      " 225.32 heard: Lumen, när är nästa prov?",
+      " 233.33 Voice: command nextExam",
+      " 233.33 heard: Lumen, vilket är nästa prov?",
+      " 242.45 heard: Lumen, kom ihåg att jag gillar korta svar.",
+      " 242.62 Voice: remembered (21 characters)",
+      " 250.82 heard: Lumen, glöm inte att jag går i nian.",
+      " 250.83 Voice: remembered (14 characters)",
+      " 260.62 heard: Lumen, kom ihåg att jag tränar fotboll på tisdagar.",
+      " 260.63 Voice: remembered (30 characters)",
+      " 266.88 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 266.88 rizz turn · wearer · -25 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 266.92 heard: Upplepa.",
+      " 272.66 heard: Viska.",
+      " 272.67 Live turn timing · other · requested -406 ms · ready 0 ms · spoken 0 ms (from the end of the turn)",
+      " 272.67 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 272.67 rizz turn · other · -28 dBFS vs threshold -30 + 3 dB → uncertain, treated as other · speech by level",
+      " 278.91 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 278.91 rizz turn · wearer · -19 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 278.93 heard: Högre.",
+      " 284.90 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 284.90 rizz turn · wearer · -25 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 285.89 heard: Hoppa där.",
+      " 291.05 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 291.05 rizz turn · wearer · -21 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 291.62 heard: Snabbare.",
+      " 297.29 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 297.29 rizz turn · other · -27 dBFS vs threshold -30 + 3 dB → uncertain, treated as other · speech by level",
+      " 297.92 heard: Utveckla.",
+      " 298.03 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 298.03 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 299.77 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 299.77 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 305.26 heard: Kan du upprepa det för hela klassen?",
+      " 305.28 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 305.28 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 307.83 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 307.83 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 314.11 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 314.11 heard: Hon sa att vi måste prata högre i salen.",
+      " 314.11 rizz turn · wearer · -21 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 316.43 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 316.43 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 323.02 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 323.02 heard: Läraren sa att vi ska spara det till nästa lektion.",
+      " 323.02 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 325.65 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 325.65 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 331.40 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 331.40 heard: Vi tog en paus och spelade musik på rasten.",
+      " 331.40 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 334.11 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 334.11 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 340.08 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 340.08 heard: Nästa låt på listan var faktiskt riktigt bra.",
+      " 340.08 rizz turn · wearer · -26 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 342.40 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 342.40 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 348.04 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 348.04 heard: Han ville byta till en annan skola i höst.",
+      " 348.04 rizz turn · wearer · -20 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 350.61 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 350.61 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 356.09 heard: När är nästa prov i matte?",
+      " 356.11 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 356.11 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 356.52 heard: Vet du det?",
+      " 358.67 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 358.67 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 364.73 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 364.73 rizz turn · wearer · -22 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 365.40 heard: Jag tycker att svaret blev lite kortare än förra gången.",
+      " 366.99 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 366.99 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 373.82 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 373.82 rizz turn · wearer · -21 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 373.85 heard: Vi måste sluta lyssna på honom när han pratar.",
+      " 376.32 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 376.33 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 381.89 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      " 381.89 Voice: instruction (19 characters)",
+      " 381.89 heard: Jag berättade om Lumen för min kompis igår.",
+      " 381.89 rizz turn · wearer · -19 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      " 381.90 rizz: instruction sent",
+      " 382.37 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 384.38 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 384.38 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 389.71 Voice: instruction (8 characters)",
+      " 389.71 heard: Lumen, utveckla svaret.",
+      " 389.71 rizz: instruction sent",
+      " 389.98 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 390.53 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 390.53 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 397.14 Voice: instruction (8 characters)",
+      " 397.14 heard: Lumen, berätta mer.",
+      " 397.14 rizz: instruction sent",
+      " 397.37 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 398.03 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 398.03 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 404.36 Voice: instruction (8 characters)",
+      " 404.36 heard: Lumen, mer om det.",
+      " 404.36 rizz: instruction sent",
+      " 404.92 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 405.30 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 405.30 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 412.18 Voice: instruction (16 characters)",
+      " 412.18 heard: Lumen, förklara enklare.",
+      " 412.19 rizz: instruction sent",
+      " 412.68 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 413.04 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 413.04 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 419.98 Voice: instruction (16 characters)",
+      " 419.98 heard: Lumen, förklara det enklare.",
+      " 419.98 rizz: instruction sent",
+      " 420.46 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 421.04 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 421.04 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 427.02 Voice: instruction (16 characters)",
+      " 427.02 heard: Lumen, enklare.",
+      " 427.02 rizz: instruction sent",
+      " 427.25 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 427.87 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 427.87 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 434.87 Voice: instruction (14 characters)",
+      " 434.87 heard: Lumen, ge ett exempel.",
+      " 434.87 rizz: instruction sent",
+      " 435.13 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 436.00 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 436.00 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 442.65 Voice: instruction (14 characters)",
+      " 442.65 heard: Lumen, ge mig ett exempel.",
+      " 442.65 rizz: instruction sent",
+      " 443.15 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 443.59 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 443.59 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 450.04 Voice: instruction (14 characters)",
+      " 450.04 heard: Lumen, exempel.",
+      " 450.04 rizz: instruction sent",
+      " 450.31 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 451.02 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 451.02 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 458.29 Voice: instruction (24 characters)",
+      " 458.29 heard: Lumen, sammanfattade viktigaste.",
+      " 458.29 rizz: instruction sent",
+      " 458.80 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 459.28 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 459.28 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 465.94 Voice: instruction (26 characters)",
+      " 465.94 heard: Lumen, sammanfatta.",
+      " 465.94 rizz: instruction sent",
+      " 466.22 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 466.80 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 466.80 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 473.00 Voice: instruction (26 characters)",
+      " 473.00 heard: Lumen, summera.",
+      " 473.00 rizz: instruction sent",
+      " 473.47 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 473.91 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 473.91 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 480.38 Voice: instruction (9 characters)",
+      " 480.38 heard: Lumen, var säker.",
+      " 480.38 rizz: instruction sent",
+      " 480.87 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 481.22 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 481.22 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 487.59 Voice: instruction (9 characters)",
+      " 487.59 heard: Lumen, dubbelkolla.",
+      " 487.59 rizz: instruction sent",
+      " 487.82 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 488.82 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 488.82 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 494.93 Voice: instruction (9 characters)",
+      " 494.93 heard: Lumen, var noggrann.",
+      " 494.93 rizz: instruction sent",
+      " 495.26 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 496.01 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 496.01 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 501.93 Voice: instruction (15 characters)",
+      " 501.93 heard: Lumen, vad missade jag?",
+      " 501.93 rizz: instruction sent",
+      " 502.26 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 503.17 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 503.17 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 509.31 Voice: instruction (15 characters)",
+      " 509.31 heard: Lumen, vad har jag missat?",
+      " 509.31 rizz: instruction sent",
+      " 509.61 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 511.25 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 511.25 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 516.75 Voice: instruction (15 characters)",
+      " 516.75 heard: Lumen, vad sa de?",
+      " 516.75 rizz: instruction sent",
+      " 516.97 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 518.32 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 518.32 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 525.03 Voice: instruction (17 characters)",
+      " 525.03 heard: Lumen, hjälp mig diskret.",
+      " 525.03 rizz: instruction sent",
+      " 525.63 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 526.18 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 526.18 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 532.26 Voice: instruction (17 characters)",
+      " 532.26 heard: Lumen, diskret.",
+      " 532.26 rizz: instruction sent",
+      " 532.78 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 533.52 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 533.52 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 540.05 Voice: instruction (17 characters)",
+      " 540.05 heard: Lumen, kort och diskret.",
+      " 540.05 rizz: instruction sent",
+      " 540.31 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 541.28 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 541.28 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 548.31 Voice: instruction (20 characters)",
+      " 548.31 heard: Lumen, svara som jag brukar.",
+      " 548.31 rizz: instruction sent",
+      " 548.57 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 549.11 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 549.11 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 555.76 Voice: instruction (20 characters)",
+      " 555.76 heard: Lumen, som vanligt.",
+      " 555.76 rizz: instruction sent",
+      " 556.19 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 556.55 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 556.55 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 562.92 Voice: instruction (17 characters)",
+      " 562.92 heard: Lumen, vad ska jag svara?",
+      " 562.92 rizz: instruction sent",
+      " 563.45 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 564.39 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 564.39 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 570.20 Voice: instruction (17 characters)",
+      " 570.20 heard: Lumen, vad svarar jag?",
+      " 570.20 rizz: instruction sent",
+      " 570.43 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 571.49 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 571.49 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 577.78 Voice: instruction (8 characters)",
+      " 577.78 heard: Lumen, roligare.",
+      " 577.78 rizz: instruction sent",
+      " 578.04 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 578.54 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 578.54 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 585.23 Voice: instruction (8 characters)",
+      " 585.23 heard: Lumen, gör det roligare.",
+      " 585.23 rizz: instruction sent",
+      " 586.72 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 592.70 Voice: instruction (13 characters)",
+      " 592.70 heard: Lumen, mer naturligt.",
+      " 592.71 rizz: instruction sent",
+      " 593.24 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 593.71 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 593.71 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 600.10 Voice: instruction (13 characters)",
+      " 600.10 heard: Lumen, naturligare.",
+      " 600.11 rizz: instruction sent",
+      " 600.40 Instruction failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 601.04 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 601.04 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 602.41 Resources · CPU 19.0 % · battery n/a · 10 min · voice 75 embeddings, avg 429 ms · labels on · profile no",
+      " 607.36 Voice: instruction (8 characters)",
+      " 607.36 heard: Lumen, byt ämne.",
+      " 607.37 rizz: instruction sent",
+      " 614.64 Voice: instruction (8 characters)",
+      " 614.64 heard: Lumen, nytt ämne.",
+      " 614.64 rizz: instruction sent",
+      " 622.66 Voice: instruction (16 characters)",
+      " 622.66 heard: Lumen, smart följdfråga.",
+      " 622.66 rizz: instruction sent",
+      " 630.25 heard: Lumen, följdfråga.",
+      " 630.26 Voice: instruction (16 characters)",
+      " 630.26 rizz: instruction sent",
+      " 638.17 Voice: instruction (16 characters)",
+      " 638.17 heard: Lumen, ge mig en följdfråga.",
+      " 638.17 rizz: instruction sent",
+      " 645.53 Voice: instruction (19 characters)",
+      " 645.53 heard: Lumen, vad menade personen?",
+      " 645.53 rizz: instruction sent",
+      " 652.98 Voice: instruction (19 characters)",
+      " 652.98 heard: Lumen, vad menade hon?",
+      " 652.98 rizz: instruction sent",
+      " 660.59 Voice: instruction (14 characters)",
+      " 660.59 heard: Lumen, vad menade dom?",
+      " 660.59 rizz: instruction sent",
+      " 668.60 Voice: instruction (15 characters)",
+      " 668.60 heard: Lumen, ge mig lite ris.",
+      " 668.60 rizz: instruction sent",
+      " 669.99 rizz: calibration stored (159 characters)",
+      " 672.08 Live turn timing · other · requested 0 ms · ready 374788 ms · spoken 374790 ms (from the end of the turn)",
+      " 675.98 Voice: instruction (8 characters)",
+      " 675.98 heard: Lumen, lite ris.",
+      " 675.98 rizz: instruction sent",
+      " 677.07 rizz: calibration stored (0 characters)",
+      " 682.95 heard: Lumen, ris.",
+      " 682.96 Voice: instruction (3 characters)",
+      " 682.96 rizz: instruction sent",
+      " 684.29 rizz: calibration stored (95 characters)",
+      " 690.86 Voice: instruction (14 characters)",
+      " 690.86 heard: Lumen, mer självsäker.",
+      " 690.86 rizz: instruction sent",
+      " 692.15 rizz: calibration stored (14 characters)",
+      " 698.06 Voice: instruction (14 characters)",
+      " 698.06 heard: Lumen, säkrare.",
+      " 698.06 rizz: instruction sent",
+      " 698.87 rizz: calibration stored (14 characters)",
+      " 705.27 Voice: instruction (9 characters)",
+      " 705.27 heard: Lumen, flitigare.",
+      " 705.27 rizz: instruction sent",
+      " 706.70 rizz: calibration stored (29 characters)",
+      " 712.64 Voice: instruction (10 characters)",
+      " 712.64 heard: Lumen, mer flitig.",
+      " 712.64 rizz: instruction sent",
+      " 713.62 rizz: calibration stored (41 characters)",
+      " 720.28 Voice: instruction (10 characters)",
+      " 720.28 heard: Lumen, mer subtil.",
+      " 720.28 rizz: instruction sent",
+      " 721.64 rizz: calibration stored (54 characters)",
+      " 727.52 Voice: instruction (10 characters)",
+      " 727.52 heard: Lumen, subtilare.",
+      " 727.52 rizz: instruction sent",
+      " 728.33 rizz: calibration stored (40 characters)",
+      " 734.89 Voice: instruction (8 characters)",
+      " 734.89 heard: Lumen, kaxigare.",
+      " 734.89 rizz: instruction sent",
+      " 735.69 rizz: calibration stored (50 characters)",
+      " 742.36 Voice: instruction (8 characters)",
+      " 742.36 heard: Lumen, mer kaxig.",
+      " 742.36 rizz: instruction sent",
+      " 744.64 rizz: calibration stored (62 characters)",
+      " 749.56 Voice: instruction (9 characters)",
+      " 749.56 heard: Lumen, rädda mig.",
+      " 749.57 rizz: instruction sent",
+      " 757.45 Voice: instruction (9 characters)",
+      " 757.45 heard: Lumen, hjälp mig ur det här.",
+      " 757.45 rizz: instruction sent",
+      " 764.92 Voice: instruction (14 characters)",
+      " 764.92 heard: Lumen, mindre kringel.",
+      " 764.92 rizz: instruction sent",
+      " 767.62 rizz: calibration stored (68 characters)",
+      " 772.37 Voice: instruction (15 characters)",
+      " 772.37 heard: Lumen, inte så kringel.",
+      " 772.37 rizz: instruction sent",
+      " 773.52 rizz: calibration stored (91 characters)",
+      " 780.06 Voice: instruction (14 characters)",
+      " 780.06 heard: Lumen, tre alternativ.",
+      " 780.06 rizz: instruction sent",
+      " 787.51 Voice: instruction (14 characters)",
+      " 787.51 heard: Lumen, ge mig tre.",
+      " 787.51 rizz: instruction sent",
+      " 794.90 Voice: instruction (14 characters)",
+      " 794.90 heard: Lumen, tre förslag.",
+      " 794.91 rizz: instruction sent",
+      " 811.39 Provläge ended by the user",
+      " 811.39 State Listening → Idle"
+    ],
+    "next-1" : [
+      "   0.00 State Idle → Listening",
+      "   0.24 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.24 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.28 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.28 Hands-free rizz started",
+      "   0.28 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.30 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   2.01 Local VAD not ready: all audio goes to Scribe",
+      "   2.01 STT running: Scribe · sv-SE",
+      "  12.09 heard: Nästa låt.",
+      "  12.14 State Listening → Paused — by you",
+      "  79.55 State Paused — by you → Idle"
+    ],
+    "next-2" : [
+      "   0.00 State Idle → Listening",
+      "   0.32 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.32 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.40 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.40 Hands-free rizz started",
+      "   0.40 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.45 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.50 Local VAD not ready: all audio goes to Scribe",
+      "   1.50 STT running: Scribe · sv-SE",
+      "  13.65 State Listening → Paused — by you",
+      "  13.65 Voice: music nextTrack",
+      "  13.65 heard: Lumen, hoppa över låten.",
+      "  16.85 State Paused — by you → Idle"
+    ],
+    "next-3" : [
+      "   0.00 State Idle → Listening",
+      "   0.15 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.15 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.19 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.19 Hands-free rizz started",
+      "   0.19 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   0.95 Local VAD not ready: all audio goes to Scribe",
+      "   0.95 STT running: Scribe · sv-SE",
+      "   1.25 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  13.36 Voice: instruction (13 characters)",
+      "  13.36 heard: Lumen, skippar låten.",
+      "  13.36 rizz: instruction sent",
+      "  14.79 rizz: calibration stored (91 characters)",
+      "  28.10 Provläge ended by the user",
+      "  28.10 State Listening → Idle"
+    ],
+    "prev-1" : [
+      "   0.00 State Idle → Listening",
+      "   0.27 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.27 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.30 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.30 Hands-free rizz started",
+      "   0.30 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.12 Local VAD not ready: all audio goes to Scribe",
+      "   1.12 STT running: Scribe · sv-SE",
+      "   1.33 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  12.58 Turn · rizz · STT Scribe · mic iPhone · A-ref-default",
+      "  12.58 rizz turn · wearer · -20 dBFS vs threshold -30 + 3 dB → wearer · speech by level",
+      "  12.65 heard: Föra låten.",
+      "  27.12 Provläge ended by the user",
+      "  27.12 State Listening → Idle"
+    ],
+    "prev-2" : [
+      "   0.00 State Idle → Listening",
+      "   0.13 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.13 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.26 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.26 Hands-free rizz started",
+      "   0.26 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.02 Local VAD not ready: all audio goes to Scribe",
+      "   1.02 STT running: Scribe · sv-SE",
+      "   1.29 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  13.57 State Listening → Paused — by you",
+      "  13.57 Voice: music previousTrack",
+      "  13.57 heard: Lumen, föregående låt.",
+      "  16.85 State Paused — by you → Idle"
+    ],
+    "prev-3" : [
+      "   0.00 State Idle → Listening",
+      "   0.24 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.24 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.28 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.28 Hands-free rizz started",
+      "   0.28 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.33 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.55 Local VAD not ready: all audio goes to Scribe",
+      "   1.55 STT running: Scribe · sv-SE",
+      "  13.91 State Listening → Paused — by you",
+      "  13.91 Voice: music previousTrack",
+      "  13.91 heard: Lumen, spela förra låten.",
+      "  17.03 State Paused — by you → Idle"
+    ],
+    "stop-1" : [
+      "   0.00 State Idle → Listening",
+      "   0.27 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.27 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.31 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.31 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   0.32 Hands-free rizz started",
+      "   1.31 Local VAD not ready: all audio goes to Scribe",
+      "   1.31 STT running: Scribe · sv-SE",
+      "   1.35 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  13.43 State Listening → Idle",
+      "  13.43 Voice: stop listening",
+      "  13.43 heard: Lumen, sluta lyssna."
+    ],
+    "stop-2" : [
+      "   0.00 State Idle → Listening",
+      "   0.25 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.25 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.29 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.29 Hands-free rizz started",
+      "   0.29 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.14 Local VAD not ready: all audio goes to Scribe",
+      "   1.14 STT running: Scribe · sv-SE",
+      "   1.30 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  13.25 State Listening → Idle",
+      "  13.25 Voice: stop listening",
+      "  13.25 heard: Lumen, avsluta."
+    ],
+    "stop-3" : [
+      "   0.00 State Idle → Listening",
+      "   0.23 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.23 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.26 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.26 Hands-free rizz started",
+      "   0.26 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.28 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.87 Local VAD not ready: all audio goes to Scribe",
+      "   1.87 STT running: Scribe · sv-SE",
+      "  13.17 State Listening → Idle",
+      "  13.17 Voice: stop listening",
+      "  13.17 heard: Lumen, stäng av."
+    ],
+    "sw-prov" : [
+      "   0.00 State Idle → Listening",
+      "   0.21 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.21 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.26 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.26 Hands-free rizz started",
+      "   0.26 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.08 Local VAD not ready: all audio goes to Scribe",
+      "   1.08 STT running: Scribe · sv-SE",
+      "   1.29 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  13.54 Voice: instruction (16 characters)",
+      "  13.54 heard: Lumen, by till provläge.",
+      "  13.54 rizz: instruction sent",
+      "  14.45 rizz: calibration stored (0 characters)",
+      "  28.22 Provläge ended by the user",
+      "  28.22 State Listening → Idle"
+    ],
+    "sw-social2" : [
+      "   0.00 State Idle → Listening",
+      "   0.22 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.22 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.27 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.27 Hands-free rizz started",
+      "   0.27 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.24 Local VAD not ready: all audio goes to Scribe",
+      "   1.24 STT running: Scribe · sv-SE",
+      "   1.30 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  13.03 Hands-free social started",
+      "  13.03 Provläge ended by the user",
+      "  13.03 Voice: switch to social",
+      "  13.03 heard: Lumen, socialt.",
+      "  13.04 Scribe pause detection 0.6 s: reconnecting",
+      "  14.14 Local VAD in front of Scribe",
+      "  14.14 STT running: Scribe · sv-SE",
+      "  16.16 Provläge ended by the user",
+      "  16.16 State Listening → Idle"
+    ],
+    "sw-standard" : [
+      "   0.00 State Idle → Listening",
+      "   0.27 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.27 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.31 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.31 Hands-free rizz started",
+      "   0.31 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "   1.02 Local VAD not ready: all audio goes to Scribe",
+      "   1.02 STT running: Scribe · sv-SE",
+      "   1.34 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  13.78 Voice: switch to standard",
+      "  13.78 heard: Lumen, växla till frågor.",
+      "  13.79 Provläge ended by the user",
+      "  13.81 Scribe pause detection 0.6 s: reconnecting",
+      "  15.57 Local VAD in front of Scribe",
+      "  15.57 STT running: Scribe · sv-SE",
+      "  15.57 Wearer focus in front of Scribe (A10)",
+      "  16.89 State Listening → Idle"
+    ]
+  },
+  "stoppedEarly" : [
+
+  ]
+}

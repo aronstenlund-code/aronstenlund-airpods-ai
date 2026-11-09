@@ -1,0 +1,3192 @@
+{
+  "cases" : [
+    {
+      "actions" : [
+        "feedback"
+      ],
+      "cause" : "",
+      "classified" : [
+        "feedback",
+        "feedback"
+      ],
+      "expect" : "feedback",
+      "heard" : [
+        "Lumen, det var fel."
+      ],
+      "id" : "wrong-1",
+      "log" : [
+        "  3.57 Voice feedback: the last turn goes to /feedback"
+      ],
+      "session" : "long",
+      "text" : "Lumen, det var fel.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "feedback"
+      ],
+      "cause" : "",
+      "classified" : [
+        "feedback",
+        "feedback"
+      ],
+      "expect" : "feedback",
+      "heard" : [
+        "Lumen, fel svar."
+      ],
+      "id" : "wrong-2",
+      "log" : [
+        "  3.59 Voice feedback: the last turn goes to /feedback"
+      ],
+      "session" : "long",
+      "text" : "Lumen, fel svar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "feedback"
+      ],
+      "cause" : "",
+      "classified" : [
+        "feedback",
+        "feedback"
+      ],
+      "expect" : "feedback",
+      "heard" : [
+        "Lumen, det stämmer inte."
+      ],
+      "id" : "wrong-3",
+      "log" : [
+        "  3.84 Voice feedback: the last turn goes to /feedback"
+      ],
+      "session" : "long",
+      "text" : "Lumen, det stämmer inte.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:backToLumen",
+        "none",
+        "none"
+      ],
+      "expect" : "music:backToLumen",
+      "heard" : [
+        "Lumen?",
+        "Lyssna igen."
+      ],
+      "id" : "back-1",
+      "log" : [
+
+      ],
+      "session" : "long",
+      "text" : "Lumen, lyssna igen.",
+      "verdict" : "ok (from the heard words: unnamed music commands have no log line)"
+    },
+    {
+      "actions" : [
+        "music:backToLumen"
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:backToLumen",
+        "none",
+        "none"
+      ],
+      "expect" : "music:backToLumen",
+      "heard" : [
+        "Lumen.",
+        "Fortsätt lyssna."
+      ],
+      "id" : "back-2",
+      "log" : [
+        "  3.44 Voice: music backToLumen",
+        "  3.45 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  3.45 Activation (tutor) · answered ahead: Lyssna igen.",
+        "  3.45 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  3.45 Auto: backend says not a question: Lyssna igen."
+      ],
+      "session" : "long",
+      "text" : "Lumen, fortsätt lyssna.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:backToLumen",
+        "none",
+        "none"
+      ],
+      "expect" : "music:backToLumen",
+      "heard" : [
+        "Lumen.",
+        "Tillbaka till lumen."
+      ],
+      "id" : "back-3",
+      "log" : [
+        "  3.55 Answer ahead discarded (a voice command) · ahead 2 · used 1 · discarded 1 (1.1/min) · TTS ahead 0, wasted 0"
+      ],
+      "session" : "long",
+      "text" : "Lumen, tillbaka till Lumen.",
+      "verdict" : "ok (from the heard words: unnamed music commands have no log line)"
+    },
+    {
+      "actions" : [
+        "instr(21 characters)",
+        "instr(14 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(pausar musiken)",
+        "instr:other(pausar musiken)"
+      ],
+      "expect" : "music:pauseMusic",
+      "heard" : [
+        "Lumen, pausar musiken."
+      ],
+      "id" : "pmus-1",
+      "log" : [
+        "  3.67 Voice: instruction (21 characters)",
+        "  3.68 Answer ahead discarded (a different turn) · ahead 3 · used 1 · discarded 2 (1.9/min) · TTS ahead 0, wasted 0",
+        "  3.68 Activation (tutor): Lumen, pausar musiken",
+        "  3.68 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  3.69 Activation (tutor): Tillbaka till",
+        "  4.59 Voice: instruction (14 characters)",
+        "  4.59 Activation (tutor): pausar musiken",
+        "  5.45 Auto: backend says not a question: pausar musiken"
+      ],
+      "session" : "long",
+      "text" : "Lumen, pausa musiken.",
+      "verdict" : "wrong (instr(21 characters), instr(14 characters))"
+    },
+    {
+      "actions" : [
+        "music:pauseMusic"
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:pauseMusic",
+        "music:pauseMusic"
+      ],
+      "expect" : "music:pauseMusic",
+      "heard" : [
+        "Lumen, stoppa musiken."
+      ],
+      "id" : "pmus-2",
+      "log" : [
+        "  4.07 Voice: music pauseMusic"
+      ],
+      "session" : "long",
+      "text" : "Lumen, stoppa musiken.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "music:pauseMusic",
+        "music:pauseMusic"
+      ],
+      "expect" : "music:pauseMusic",
+      "heard" : [
+        "Pausa musiken."
+      ],
+      "id" : "pmus-3",
+      "log" : [
+        "  3.31 Answer ahead discarded (a music command) · ahead 4 · used 1 · discarded 3 (2.3/min) · TTS ahead 0, wasted 0"
+      ],
+      "session" : "long",
+      "text" : "Pausa musiken.",
+      "verdict" : "ok (from the heard words: unnamed music commands have no log line)"
+    },
+    {
+      "actions" : [
+        "cmd:repeatAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:repeatAnswer",
+        "cmd:repeatAnswer"
+      ],
+      "expect" : "cmd:repeatAnswer",
+      "heard" : [
+        "Lumen, upprepa svaret."
+      ],
+      "id" : "rep-1",
+      "log" : [
+        "  3.84 Voice: command repeatAnswer",
+        "  3.84 STT input gated (own speech)",
+        "  3.84 STT input open"
+      ],
+      "session" : "long",
+      "text" : "Lumen, upprepa svaret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:repeatAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:repeatAnswer",
+        "cmd:repeatAnswer"
+      ],
+      "expect" : "cmd:repeatAnswer",
+      "heard" : [
+        "Lumen, säg det igen."
+      ],
+      "id" : "rep-2",
+      "log" : [
+        "  3.50 Voice: command repeatAnswer",
+        "  3.50 STT input gated (own speech)",
+        "  3.50 STT input open"
+      ],
+      "session" : "long",
+      "text" : "Lumen, säg det igen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:repeatAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:repeatAnswer",
+        "cmd:repeatAnswer"
+      ],
+      "expect" : "cmd:repeatAnswer",
+      "heard" : [
+        "Lumen, kan du upprepa?"
+      ],
+      "id" : "rep-3",
+      "log" : [
+        "  3.45 Voice: command repeatAnswer",
+        "  3.45 STT input gated (own speech)",
+        "  3.45 STT input open"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kan du upprepa?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:whisper"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:whisper",
+        "cmd:whisper"
+      ],
+      "expect" : "cmd:whisper",
+      "heard" : [
+        "Lumen, viska."
+      ],
+      "id" : "whis-1",
+      "log" : [
+        "  3.38 Voice: command whisper",
+        "  3.39 Voice gain 0.60"
+      ],
+      "session" : "long",
+      "text" : "Lumen, viska.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:whisper"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:whisper",
+        "cmd:whisper"
+      ],
+      "expect" : "cmd:whisper",
+      "heard" : [
+        "Lumen, prata tystare."
+      ],
+      "id" : "whis-2",
+      "log" : [
+        "  3.99 Voice: command whisper",
+        "  3.99 Voice gain 0.36"
+      ],
+      "session" : "long",
+      "text" : "Lumen, prata tystare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:whisper"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:whisper",
+        "cmd:whisper"
+      ],
+      "expect" : "cmd:whisper",
+      "heard" : [
+        "Lumen, sänk volymen."
+      ],
+      "id" : "whis-3",
+      "log" : [
+        "  3.99 Voice: command whisper",
+        "  3.99 Voice gain 0.25"
+      ],
+      "session" : "long",
+      "text" : "Lumen, sänk volymen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:louder"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:louder",
+        "cmd:louder"
+      ],
+      "expect" : "cmd:louder",
+      "heard" : [
+        "Lumen, högre."
+      ],
+      "id" : "loud-1",
+      "log" : [
+        "  3.20 Voice: command louder",
+        "  3.21 Voice gain 0.42"
+      ],
+      "session" : "long",
+      "text" : "Lumen, högre.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:louder"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:louder",
+        "cmd:louder"
+      ],
+      "expect" : "cmd:louder",
+      "heard" : [
+        "Lumen, prata högre."
+      ],
+      "id" : "loud-2",
+      "log" : [
+        "  3.87 Voice: command louder",
+        "  3.87 Voice gain 0.69"
+      ],
+      "session" : "long",
+      "text" : "Lumen, prata högre.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:louder"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:louder",
+        "cmd:louder"
+      ],
+      "expect" : "cmd:louder",
+      "heard" : [
+        "Lumen, höj volymen."
+      ],
+      "id" : "loud-3",
+      "log" : [
+        "  3.89 Voice: command louder",
+        "  3.89 Voice gain 1.00"
+      ],
+      "session" : "long",
+      "text" : "Lumen, höj volymen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:shorter"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:shorter",
+        "cmd:shorter"
+      ],
+      "expect" : "cmd:shorter",
+      "heard" : [
+        "Lumen, svara kortare."
+      ],
+      "id" : "short-1",
+      "log" : [
+        "  3.82 Voice: command shorter",
+        "  3.82 Session length short"
+      ],
+      "session" : "long",
+      "text" : "Lumen, svara kortare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:shorter"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:shorter",
+        "cmd:shorter"
+      ],
+      "expect" : "cmd:shorter",
+      "heard" : [
+        "Lumen, kortare svar."
+      ],
+      "id" : "short-2",
+      "log" : [
+        "  3.67 Voice: command shorter",
+        "  3.67 Session length short"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kortare svar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:shorter"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:shorter",
+        "cmd:shorter"
+      ],
+      "expect" : "cmd:shorter",
+      "heard" : [
+        "Lumen, kortare tack."
+      ],
+      "id" : "short-3",
+      "log" : [
+        "  3.66 Voice: command shorter",
+        "  3.66 Session length short"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kortare tack.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:longer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:longer",
+        "cmd:longer"
+      ],
+      "expect" : "cmd:longer",
+      "heard" : [
+        "Lumen, svara längre."
+      ],
+      "id" : "long-1",
+      "log" : [
+        "  3.58 Voice: command longer",
+        "  3.58 Session length long"
+      ],
+      "session" : "long",
+      "text" : "Lumen, svara längre.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:longer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:longer",
+        "cmd:longer"
+      ],
+      "expect" : "cmd:longer",
+      "heard" : [
+        "Lumen, längre svar."
+      ],
+      "id" : "long-2",
+      "log" : [
+        "  3.62 Voice: command longer",
+        "  3.62 Session length long"
+      ],
+      "session" : "long",
+      "text" : "Lumen, längre svar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:longer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:longer",
+        "cmd:longer"
+      ],
+      "expect" : "cmd:longer",
+      "heard" : [
+        "Lumen, utförligare svar."
+      ],
+      "id" : "long-3",
+      "log" : [
+        "  3.95 Voice: command longer",
+        "  3.95 Session length long"
+      ],
+      "session" : "long",
+      "text" : "Lumen, utförligare svar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:saveAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:saveAnswer",
+        "cmd:saveAnswer"
+      ],
+      "expect" : "cmd:saveAnswer",
+      "heard" : [
+        "Lumen, spara det."
+      ],
+      "id" : "save-1",
+      "log" : [
+        "  3.70 Voice: command saveAnswer",
+        "  3.70 Save note: nothing to save"
+      ],
+      "session" : "long",
+      "text" : "Lumen, spara det.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:saveAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:saveAnswer",
+        "cmd:saveAnswer"
+      ],
+      "expect" : "cmd:saveAnswer",
+      "heard" : [
+        "Lumen, spara svaret."
+      ],
+      "id" : "save-2",
+      "log" : [
+        "  3.98 Voice: command saveAnswer",
+        "  3.99 Save note: nothing to save"
+      ],
+      "session" : "long",
+      "text" : "Lumen, spara svaret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:saveAnswer"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:saveAnswer",
+        "cmd:saveAnswer"
+      ],
+      "expect" : "cmd:saveAnswer",
+      "heard" : [
+        "Lumen, spara i anteckningar."
+      ],
+      "id" : "save-3",
+      "log" : [
+        "  4.27 Voice: command saveAnswer",
+        "  4.27 Save note: nothing to save"
+      ],
+      "session" : "long",
+      "text" : "Lumen, spara i anteckningar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:nextExam"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:nextExam",
+        "cmd:nextExam"
+      ],
+      "expect" : "cmd:nextExam",
+      "heard" : [
+        "Lumen, vilket prov har jag härnäst?"
+      ],
+      "id" : "exam-1",
+      "log" : [
+        "  4.11 Voice: command nextExam"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vilket prov har jag härnäst?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:nextExam"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:nextExam",
+        "cmd:nextExam"
+      ],
+      "expect" : "cmd:nextExam",
+      "heard" : [
+        "Lumen, när är nästa prov?"
+      ],
+      "id" : "exam-2",
+      "log" : [
+        "  3.46 Voice: command nextExam"
+      ],
+      "session" : "long",
+      "text" : "Lumen, när är nästa prov?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:nextExam"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:nextExam",
+        "cmd:nextExam"
+      ],
+      "expect" : "cmd:nextExam",
+      "heard" : [
+        "Lumen, vilket är nästa prov?"
+      ],
+      "id" : "exam-3",
+      "log" : [
+        "  3.81 Voice: command nextExam"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vilket är nästa prov?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "app",
+      "classified" : [
+        "remember",
+        "none",
+        "none"
+      ],
+      "expect" : "remember",
+      "heard" : [
+        "Lumen.",
+        "Kom ihåg att jag gillar korta svar."
+      ],
+      "id" : "mem-1",
+      "log" : [
+
+      ],
+      "session" : "long",
+      "text" : "Lumen, kom ihåg att jag gillar korta svar.",
+      "verdict" : "missed"
+    },
+    {
+      "actions" : [
+        "remember"
+      ],
+      "cause" : "",
+      "classified" : [
+        "remember",
+        "none",
+        "none"
+      ],
+      "expect" : "remember",
+      "heard" : [
+        "Lumen.",
+        "Glöm inte att jag går i nian."
+      ],
+      "id" : "mem-2",
+      "log" : [
+        "  4.08 Voice: remembered (14 characters)",
+        "  4.09 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.09 Activation (tutor) · answered ahead: Kom ihåg att jag gillar korta svar.",
+        "  4.09 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.21 Study card saved (1 in all)",
+        "  4.21 Answer · first text after 2194 ms · memory",
+        "  6.94 Minne: 1 new item(s) from the last turn"
+      ],
+      "session" : "long",
+      "text" : "Lumen, glöm inte att jag går i nian.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "app",
+      "classified" : [
+        "remember",
+        "none",
+        "none"
+      ],
+      "expect" : "remember",
+      "heard" : [
+        "Lumen.",
+        "Kom ihåg att jag tränar fotboll på tisdagar."
+      ],
+      "id" : "mem-3",
+      "log" : [
+        "  5.47 Answer ahead discarded (a voice command) · ahead 6 · used 2 · discarded 4 (0.9/min) · TTS ahead 0, wasted 0"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kom ihåg att jag tränar fotboll på tisdagar.",
+      "verdict" : "missed"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "cmd:repeatAnswer",
+      "heard" : [
+        "Uppe i Pä."
+      ],
+      "id" : "uni-rep",
+      "log" : [
+        "  1.94 Answer ahead discarded (the words went on) · ahead 7 · used 2 · discarded 5 (1.1/min) · TTS ahead 0, wasted 0",
+        "  1.95 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  1.95 prov: one turn split into 2 parts",
+        "  1.95 Answer ahead discarded (a different turn) · ahead 8 · used 2 · discarded 6 (1.3/min) · TTS ahead 0, wasted 0",
+        "  1.96 Activation (tutor): Kom ihåg att jag tränar fotboll på tisdagar.",
+        "  3.13 Study card saved (2 in all)",
+        "  3.13 Answer · first text after 1167 ms · memory",
+        "  3.13 prov: next part of the same turn: Uppe i Pä.",
+        "  3.13 Activation (tutor): Uppe i Pä.",
+        "  4.45 Minne: 1 new item(s) from the last turn",
+        "  4.47 Auto: backend says not a question: Uppe i Pä.",
+        "  6.16 Scribe keyterms changed: reconnecting in a pause"
+      ],
+      "session" : "long",
+      "text" : "Upprepa.",
+      "verdict" : "missed"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "STT",
+      "classified" : [
+
+      ],
+      "expect" : "cmd:whisper",
+      "heard" : [
+
+      ],
+      "id" : "uni-whis",
+      "log" : [
+        "  1.97 Local VAD in front of Scribe",
+        "  1.97 Wearer focus in front of Scribe (A10)",
+        "  1.97 STT running: Scribe · sv-SE"
+      ],
+      "session" : "long",
+      "text" : "Viska.",
+      "verdict" : "not heard"
+    },
+    {
+      "actions" : [
+        "cmd:louder"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:louder",
+        "cmd:louder"
+      ],
+      "expect" : "cmd:louder",
+      "heard" : [
+        "Högre."
+      ],
+      "id" : "uni-loud",
+      "log" : [
+        "  2.18 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  2.18 Activation (tutor) · answered ahead: Högre.",
+        "  2.18 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  2.18 Voice: command louder",
+        "  3.52 Auto: backend says not a question: Högre."
+      ],
+      "session" : "long",
+      "text" : "Högre.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "cmd:louder"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "cmd:louder",
+        "cmd:louder"
+      ],
+      "expect" : "cmd:shorter",
+      "heard" : [
+        "Högre."
+      ],
+      "id" : "uni-short",
+      "log" : [
+        "  1.80 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  2.34 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  2.34 Activation (tutor) · answered ahead: Högre.",
+        "  2.34 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  2.34 Voice: command louder",
+        "  3.37 Auto: backend says not a question: Högre."
+      ],
+      "session" : "long",
+      "text" : "Kortare.",
+      "verdict" : "wrong (cmd:louder)"
+    },
+    {
+      "actions" : [
+        "cmd:shorter"
+      ],
+      "cause" : "",
+      "classified" : [
+        "cmd:shorter",
+        "cmd:shorter"
+      ],
+      "expect" : "cmd:shorter",
+      "heard" : [
+        "Snabbare."
+      ],
+      "id" : "uni-fast",
+      "log" : [
+        "  2.36 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  2.36 Activation (tutor) · answered ahead: Snabbare.",
+        "  2.36 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  2.36 Voice: command shorter",
+        "  2.36 Session length short",
+        "  3.52 Auto: backend says not a question: Snabbare."
+      ],
+      "session" : "long",
+      "text" : "Snabbare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreDetail",
+        "instr:moreDetail"
+      ],
+      "expect" : "instr:moreDetail",
+      "heard" : [
+        "Utveckla."
+      ],
+      "id" : "uni-more",
+      "log" : [
+        "  2.56 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  2.56 Activation (tutor) · answered ahead: Utveckla.",
+        "  2.56 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  2.56 Voice: instruction (8 characters)",
+        "  2.56 Activation (tutor): utveckla"
+      ],
+      "session" : "long",
+      "text" : "Utveckla.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Kan du upprepa det för hela klassen?"
+      ],
+      "id" : "neg-1",
+      "log" : [
+        "  0.24 Answer · first text after 1218 ms · claude-sonnet-5-5",
+        "  3.75 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  3.75 Activation (tutor) · answered ahead: Kan du upprepa det för hela klassen?",
+        "  3.75 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  6.79 Study card saved (3 in all)",
+        "  6.79 Answer · first text after 1033 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Kan du upprepa det för hela klassen?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Hon sa att vi måste prata högre i salen."
+      ],
+      "id" : "neg-2",
+      "log" : [
+        "  4.53 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.53 Activation (tutor) · answered ahead: Hon sa att vi måste prata högre i salen.",
+        "  4.53 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  5.37 Study card saved (4 in all)",
+        "  5.37 Answer · first text after 842 ms · claude-haiku-5-5"
+      ],
+      "session" : "long",
+      "text" : "Hon sa att vi måste prata högre i salen.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Läraren sa att vi ska spara det till nästa lektion."
+      ],
+      "id" : "neg-3",
+      "log" : [
+        "  5.15 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  5.16 Activation (tutor) · answered ahead: Läraren sa att vi ska spara det till nästa lektion.",
+        "  5.16 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  7.19 Auto: backend says not a question: Läraren sa att vi ska spara det till nästa lektion."
+      ],
+      "session" : "long",
+      "text" : "Läraren sa att vi ska spara det till nästa lektion.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Vi tog en paus och spelade musik på"
+      ],
+      "id" : "neg-4",
+      "log" : [
+        "  4.41 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  4.94 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.94 Activation (tutor) · answered ahead: Vi tog en paus och spelade musik på",
+        "  4.94 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  6.21 Auto: backend says not a question: Vi tog en paus och spelade musik på"
+      ],
+      "session" : "long",
+      "text" : "Vi tog en paus och spelade musik på rasten.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Nästa låt på listan var faktiskt riktigt bra."
+      ],
+      "id" : "neg-5",
+      "log" : [
+        "  4.63 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.63 Activation (tutor) · answered ahead: Nästa låt på listan var faktiskt riktigt bra.",
+        "  4.63 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  6.02 Auto: backend says not a question: Nästa låt på listan var faktiskt riktigt bra."
+      ],
+      "session" : "long",
+      "text" : "Nästa låt på listan var faktiskt riktigt bra.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Han ville byta till en annan skola i höst."
+      ],
+      "id" : "neg-6",
+      "log" : [
+        "  4.34 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.34 Activation (tutor) · answered ahead: Han ville byta till en annan skola i höst.",
+        "  4.34 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  5.56 Auto: backend says not a question: Han ville byta till en annan skola i höst."
+      ],
+      "session" : "long",
+      "text" : "Han ville byta till en annan skola i höst.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "När är nästa prov i matte?",
+        "Vet du det?"
+      ],
+      "id" : "neg-7",
+      "log" : [
+        "  3.78 Answer ahead discarded (the words went on) · ahead 19 · used 12 · discarded 7 (1.2/min) · TTS ahead 0, wasted 0",
+        "  4.07 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.07 Answer ahead discarded (a different turn) · ahead 20 · used 12 · discarded 8 (1.3/min) · TTS ahead 0, wasted 0",
+        "  4.07 Activation (tutor): När är nästa prov i matte?",
+        "  6.71 Study card saved (5 in all)",
+        "  6.71 Answer · first text after 892 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "När är nästa prov i matte, vet du det?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Jag tycker att svaret blev lite kortare än förra gången."
+      ],
+      "id" : "neg-8",
+      "log" : [
+        "  4.92 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.93 Activation (tutor) · answered ahead: Jag tycker att svaret blev lite kortare än förra gången.",
+        "  4.93 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  6.27 Auto: backend says not a question: Jag tycker att svaret blev lite kortare än förra gången."
+      ],
+      "session" : "long",
+      "text" : "Jag tycker att svaret blev lite kortare än förra gången.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "",
+      "classified" : [
+        "none",
+        "none"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Vi måste sluta lyssna på honom när han pratar."
+      ],
+      "id" : "neg-9",
+      "log" : [
+        "  4.58 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.58 Activation (tutor) · answered ahead: Vi måste sluta lyssna på honom när han pratar.",
+        "  4.58 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  5.38 Auto: backend says not a question: Vi måste sluta lyssna på honom när han pratar."
+      ],
+      "session" : "long",
+      "text" : "Vi måste sluta lyssna på honom när han pratar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(19 characters)"
+      ],
+      "cause" : "matcher",
+      "classified" : [
+        "instr:other(för min kompis igår)",
+        "instr:other(för min kompis igår)"
+      ],
+      "expect" : "none",
+      "heard" : [
+        "Jag berättade om lumen för min kompis igår."
+      ],
+      "id" : "neg-10",
+      "log" : [
+        "  4.13 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  4.69 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  4.70 Activation (tutor): Jag berättade om",
+        "  4.70 Voice: instruction (19 characters)",
+        "  4.70 Activation (tutor): för min kompis igår",
+        "  6.98 Auto: backend says not a question: för min kompis igår"
+      ],
+      "session" : "long",
+      "text" : "Jag berättade om Lumen för min kompis igår.",
+      "verdict" : "false-hit"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreDetail",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:moreDetail",
+      "heard" : [
+        "Lumen.",
+        "Utveckla svaret."
+      ],
+      "id" : "more-1",
+      "log" : [
+        "  3.38 Answer ahead discarded (the words went on) · ahead 23 · used 14 · discarded 9 (1.4/min) · TTS ahead 0, wasted 0",
+        "  3.52 Voice: instruction (8 characters)",
+        "  3.53 Answer ahead discarded (a different turn) · ahead 24 · used 14 · discarded 10 (1.5/min) · TTS ahead 0, wasted 0",
+        "  3.53 Activation (tutor): utveckla",
+        "  6.59 Answer · first text after 777 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, utveckla svaret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "app",
+      "classified" : [
+        "instr:moreDetail",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:moreDetail",
+      "heard" : [
+        "Lumen.",
+        "Berätta mer."
+      ],
+      "id" : "more-2",
+      "log" : [
+        "  3.11 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, berätta mer.",
+      "verdict" : "missed"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:moreDetail",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:moreDetail",
+      "heard" : [
+        "Lumen.",
+        "Mer om det."
+      ],
+      "id" : "more-3",
+      "log" : [
+        "  2.93 Voice: instruction (8 characters)",
+        "  2.93 Answer ahead discarded (a different turn) · ahead 25 · used 14 · discarded 11 (1.6/min) · TTS ahead 0, wasted 0",
+        "  2.93 Activation (tutor): utveckla",
+        "  2.93 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  2.93 Activation (tutor): Berätta mer."
+      ],
+      "session" : "long",
+      "text" : "Lumen, mer om det.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:simpler",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:simpler",
+      "heard" : [
+        "Lumen.",
+        "Förklara enklare."
+      ],
+      "id" : "simp-1",
+      "log" : [
+        "  1.18 Answer · first text after 1839 ms · claude-sonnet-5-5",
+        "  3.63 Voice: instruction (16 characters)",
+        "  3.63 Activation (tutor) · answered ahead: Förklara enklare.",
+        "  3.63 Turn · prov · STT Scribe · mic airPods · B-HQ"
+      ],
+      "session" : "long",
+      "text" : "Lumen, förklara enklare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:simpler",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:simpler",
+      "heard" : [
+        "Lumen.",
+        "Förklara det enklare."
+      ],
+      "id" : "simp-2",
+      "log" : [
+        "  1.00 Answer · first text after 1379 ms · claude-sonnet-5-5",
+        "  3.63 Voice: instruction (16 characters)",
+        "  3.63 Answer ahead discarded (a different turn) · ahead 27 · used 15 · discarded 12 (1.7/min) · TTS ahead 0, wasted 0",
+        "  3.63 Activation (tutor): förklara enklare",
+        "  6.67 Answer · first text after 1002 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, förklara det enklare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(16 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:simpler",
+        "instr:simpler"
+      ],
+      "expect" : "instr:simpler",
+      "heard" : [
+        "Lumen, enklare."
+      ],
+      "id" : "simp-3",
+      "log" : [
+        "  3.03 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  3.56 Voice: instruction (16 characters)",
+        "  3.56 Activation (tutor): förklara enklare",
+        "  6.25 Answer · first text after 963 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, enklare.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:example",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:example",
+      "heard" : [
+        "Lumen.",
+        "Ge ett exempel."
+      ],
+      "id" : "ex-1",
+      "log" : [
+        "  3.52 Voice: instruction (14 characters)",
+        "  3.52 Activation (tutor) · answered ahead: Ge ett exempel.",
+        "  3.52 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  7.33 Study card saved (6 in all)",
+        "  7.33 Answer · first text after 1391 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, ge ett exempel.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:example",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:example",
+      "heard" : [
+        "Lumen.",
+        "Ge mig ett exempel."
+      ],
+      "id" : "ex-2",
+      "log" : [
+        "  3.73 Voice: instruction (14 characters)",
+        "  3.73 Answer ahead discarded (a different turn) · ahead 29 · used 16 · discarded 13 (1.8/min) · TTS ahead 0, wasted 0",
+        "  3.73 Activation (tutor): ge ett exempel",
+        "  6.73 Answer · first text after 1237 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, ge mig ett exempel.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(14 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:example",
+        "instr:example"
+      ],
+      "expect" : "instr:example",
+      "heard" : [
+        "Lumen, exempel."
+      ],
+      "id" : "ex-3",
+      "log" : [
+        "  3.39 Voice: instruction (14 characters)",
+        "  3.39 Activation (tutor): ge ett exempel",
+        "  7.31 Answer · first text after 1420 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, exempel.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(24 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(sammanfattade viktigaste)",
+        "instr:other(sammanfattade viktigaste)"
+      ],
+      "expect" : "instr:summary",
+      "heard" : [
+        "Lumen, sammanfattade viktigaste."
+      ],
+      "id" : "sum-1",
+      "log" : [
+        "  4.62 Voice: instruction (24 characters)",
+        "  4.62 Activation (tutor): sammanfattade viktigaste",
+        "  8.16 Answer · first text after 1526 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, sammanfatta det viktigaste.",
+      "verdict" : "wrong (instr(24 characters))"
+    },
+    {
+      "actions" : [
+        "instr(26 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:summary",
+        "instr:summary"
+      ],
+      "expect" : "instr:summary",
+      "heard" : [
+        "Lumen, sammanfatta."
+      ],
+      "id" : "sum-2",
+      "log" : [
+        "  3.61 Voice: instruction (26 characters)",
+        "  3.61 Activation (tutor): sammanfatta det viktigaste"
+      ],
+      "session" : "long",
+      "text" : "Lumen, sammanfatta.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(26 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:summary",
+        "instr:summary"
+      ],
+      "expect" : "instr:summary",
+      "heard" : [
+        "Lumen, summera."
+      ],
+      "id" : "sum-3",
+      "log" : [
+        "  0.54 Study card saved (7 in all)",
+        "  0.54 Answer · first text after 2087 ms · claude-sonnet-5-5",
+        "  3.31 Voice: instruction (26 characters)",
+        "  3.32 Activation (tutor): sammanfatta det viktigaste",
+        "  6.64 Answer · first text after 1748 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, summera.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(8 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(varsäker)",
+        "instr:other(varsäker)"
+      ],
+      "expect" : "instr:careful",
+      "heard" : [
+        "Lumen, varsäker."
+      ],
+      "id" : "care-1",
+      "log" : [
+        "  3.45 Voice: instruction (8 characters)",
+        "  3.46 Activation (tutor): varsäker",
+        "  6.58 Answer · first text after 1619 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, var säker.",
+      "verdict" : "wrong (instr(8 characters))"
+    },
+    {
+      "actions" : [
+        "instr(9 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:careful",
+        "instr:careful"
+      ],
+      "expect" : "instr:careful",
+      "heard" : [
+        "Lumen, dubbelkolla."
+      ],
+      "id" : "care-2",
+      "log" : [
+        "  3.27 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  3.82 Voice: instruction (9 characters)",
+        "  3.82 Activation (tutor): var säker"
+      ],
+      "session" : "long",
+      "text" : "Lumen, dubbelkolla.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(9 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:careful",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:careful",
+      "heard" : [
+        "Lumen.",
+        "Var noggrann."
+      ],
+      "id" : "care-3",
+      "log" : [
+        "  0.28 Answer · first text after 2876 ms · claude-sonnet-5-5",
+        "  2.99 Voice: instruction (9 characters)",
+        "  2.99 Answer ahead discarded (a different turn) · ahead 30 · used 16 · discarded 14 (1.7/min) · TTS ahead 0, wasted 0",
+        "  2.99 Activation (tutor): var säker",
+        "  3.69 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  3.69 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, var noggrann.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "app",
+      "classified" : [
+        "instr:catchUp",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:catchUp",
+      "heard" : [
+        "Lumen.",
+        "Vad missade jag?"
+      ],
+      "id" : "miss-1",
+      "log" : [
+        "  3.65 Answer ahead failed: Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad missade jag?",
+      "verdict" : "missed"
+    },
+    {
+      "actions" : [
+        "instr(15 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:catchUp",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:catchUp",
+      "heard" : [
+        "Lumen.",
+        "Vad har jag missat?"
+      ],
+      "id" : "miss-2",
+      "log" : [
+        "  3.33 Voice: instruction (15 characters)",
+        "  3.33 Answer ahead discarded (a different turn) · ahead 32 · used 16 · discarded 15 (1.8/min) · TTS ahead 0, wasted 0",
+        "  3.33 Activation (tutor): vad missade jag",
+        "  3.33 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  3.33 Activation (tutor): Vad missade jag?",
+        "  3.65 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  3.65 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad har jag missat?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "cause" : "app",
+      "classified" : [
+        "instr:catchUp",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:catchUp",
+      "heard" : [
+        "Lumen.",
+        "Vad sa de?"
+      ],
+      "id" : "miss-3",
+      "log" : [
+        "  3.18 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  3.71 Answer ahead failed: Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad sa de?",
+      "verdict" : "missed"
+    },
+    {
+      "actions" : [
+        "instr(21 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(Hjälp mig, det är)",
+        "none",
+        "none"
+      ],
+      "expect" : "instr:discreet",
+      "heard" : [
+        "Lumen.",
+        "Hjälp mig, det är..."
+      ],
+      "id" : "disc-1",
+      "log" : [
+        "  3.53 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  3.62 Voice: instruction (21 characters)",
+        "  3.62 Activation (tutor): Hjälp mig, det är det",
+        "  3.62 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  3.63 Activation (tutor): Vad sa de?",
+        "  4.07 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.07 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, hjälp mig diskret.",
+      "verdict" : "wrong (instr(21 characters))"
+    },
+    {
+      "actions" : [
+        "instr(17 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:discreet",
+        "instr:discreet"
+      ],
+      "expect" : "instr:discreet",
+      "heard" : [
+        "Lumen, diskret."
+      ],
+      "id" : "disc-2",
+      "log" : [
+        "  3.31 Voice: instruction (17 characters)",
+        "  3.31 Activation (tutor): hjälp mig diskret",
+        "  3.63 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  3.63 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, diskret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(17 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:discreet",
+        "instr:discreet"
+      ],
+      "expect" : "instr:discreet",
+      "heard" : [
+        "Lumen, kort och diskret."
+      ],
+      "id" : "disc-3",
+      "log" : [
+        "  3.75 Voice: instruction (17 characters)",
+        "  3.75 Activation (tutor): hjälp mig diskret",
+        "  4.12 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.12 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, kort och diskret.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(20 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:asUsual",
+        "instr:asUsual"
+      ],
+      "expect" : "instr:asUsual",
+      "heard" : [
+        "Lumen, svara som jag brukar."
+      ],
+      "id" : "usual-1",
+      "log" : [
+        "  4.25 Voice: instruction (20 characters)",
+        "  4.25 Activation (tutor): svara som jag brukar",
+        "  4.85 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.85 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, svara som jag brukar.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(20 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:asUsual",
+        "instr:asUsual"
+      ],
+      "expect" : "instr:asUsual",
+      "heard" : [
+        "Lumen, som vanligt."
+      ],
+      "id" : "usual-2",
+      "log" : [
+        "  3.61 Voice: instruction (20 characters)",
+        "  3.61 Activation (tutor): svara som jag brukar",
+        "  4.08 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.08 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, som vanligt.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(18 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:aLevel",
+        "instr:aLevel"
+      ],
+      "expect" : "instr:aLevel",
+      "heard" : [
+        "Lumen, förklara på A-nivå."
+      ],
+      "id" : "alev-1",
+      "log" : [
+        "  4.01 Voice: instruction (18 characters)",
+        "  4.01 Activation (tutor): förklara på a-nivå",
+        "  4.61 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.61 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, förklara på A-nivå.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(18 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:aLevel",
+        "instr:aLevel"
+      ],
+      "expect" : "instr:aLevel",
+      "heard" : [
+        "Lumen, A-nivå."
+      ],
+      "id" : "alev-2",
+      "log" : [
+        "  2.89 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  3.47 Voice: instruction (18 characters)",
+        "  3.47 Activation (tutor): förklara på a-nivå",
+        "  3.90 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  3.90 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, A-nivå.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(18 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:aLevel",
+        "instr:aLevel"
+      ],
+      "expect" : "instr:aLevel",
+      "heard" : [
+        "Lumen, som för ett A."
+      ],
+      "id" : "alev-3",
+      "log" : [
+        "  3.44 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  3.97 Voice: instruction (18 characters)",
+        "  3.97 Activation (tutor): förklara på a-nivå",
+        "  4.70 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.70 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, som för ett A.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(19 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:harderQuestion",
+        "instr:harderQuestion"
+      ],
+      "expect" : "instr:harderQuestion",
+      "heard" : [
+        "Lumen, ställ en svår fråga."
+      ],
+      "id" : "hard-1",
+      "log" : [
+        "  4.01 Voice: instruction (19 characters)",
+        "  4.01 Activation (tutor): ställ en svår fråga",
+        "  4.38 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.38 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, ställ en svår fråga.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(19 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:harderQuestion",
+        "instr:harderQuestion"
+      ],
+      "expect" : "instr:harderQuestion",
+      "heard" : [
+        "Lumen, en svårare fråga."
+      ],
+      "id" : "hard-2",
+      "log" : [
+        "  3.64 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  4.21 Voice: instruction (19 characters)",
+        "  4.21 Activation (tutor): ställ en svår fråga",
+        "  4.62 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.62 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)"
+      ],
+      "session" : "long",
+      "text" : "Lumen, en svårare fråga.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(19 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:harderQuestion",
+        "instr:harderQuestion"
+      ],
+      "expect" : "instr:harderQuestion",
+      "heard" : [
+        "Lumen, svårare fråga."
+      ],
+      "id" : "hard-3",
+      "log" : [
+        "  3.85 Voice: instruction (19 characters)",
+        "  3.85 Activation (tutor): ställ en svår fråga",
+        "  4.42 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+        "  4.42 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+        "  4.55 Resources · CPU 21.2 % · battery n/a · 10 min · voice 97 embeddings, avg 445 ms · labels on · profile no"
+      ],
+      "session" : "long",
+      "text" : "Lumen, svårare fråga.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(28 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(testar mina svagaste områden)",
+        "instr:other(testar mina svagaste områden)"
+      ],
+      "expect" : "instr:weakAreas",
+      "heard" : [
+        "Lumen, testar mina svagaste områden."
+      ],
+      "id" : "weak-1",
+      "log" : [
+        "  4.81 Voice: instruction (28 characters)",
+        "  4.81 Activation (tutor): testar mina svagaste områden",
+        "  7.93 Study card saved (8 in all)",
+        "  7.93 Answer · first text after 1644 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, testa mina svagaste områden.",
+      "verdict" : "wrong (instr(28 characters))"
+    },
+    {
+      "actions" : [
+        "instr(27 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:weakAreas",
+        "instr:weakAreas"
+      ],
+      "expect" : "instr:weakAreas",
+      "heard" : [
+        "Lumen, hur bra kan jag det här?"
+      ],
+      "id" : "weak-2",
+      "log" : [
+        "  3.53 Voice: instruction (27 characters)",
+        "  3.54 Activation (tutor): testa mina svagaste områden",
+        "  5.53 Study card saved (9 in all)",
+        "  5.54 Answer · first text after 1761 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, hur bra kan jag det här?",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(15 characters)"
+      ],
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(vad kan jag sem)",
+        "instr:other(vad kan jag sem)"
+      ],
+      "expect" : "instr:weakAreas",
+      "heard" : [
+        "Lumen, vad kan jag sem..."
+      ],
+      "id" : "weak-3",
+      "log" : [
+        "  3.24 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  3.83 Voice: instruction (15 characters)",
+        "  3.83 Activation (tutor): vad kan jag sem",
+        "  7.41 Study card saved (10 in all)",
+        "  7.41 Answer · first text after 1461 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, vad kan jag sämst?",
+      "verdict" : "wrong (instr(15 characters))"
+    },
+    {
+      "actions" : [
+        "instr(24 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:quizMe",
+        "instr:quizMe"
+      ],
+      "expect" : "instr:quizMe",
+      "heard" : [
+        "Lumen, förhör mig på fotosyntes."
+      ],
+      "id" : "quiz-1",
+      "log" : [
+        "  4.66 Voice: instruction (24 characters)",
+        "  4.66 Activation (tutor): Förhör mig: ställ en kontrollfråga på det vi just pratat om, eller på provet om vi inte pratat än. Bara frågan, inget svar.",
+        "  6.85 Study card saved (11 in all)",
+        "  6.85 Answer · first text after 1954 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, förhör mig på fotosyntes.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(25 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:quizMe",
+        "instr:quizMe"
+      ],
+      "expect" : "instr:quizMe",
+      "heard" : [
+        "Lumen, testa mig på cellandning."
+      ],
+      "id" : "quiz-2",
+      "log" : [
+        "  4.23 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  4.78 Voice: instruction (25 characters)",
+        "  4.78 Activation (tutor): Förhör mig: ställ en kontrollfråga på det vi just pratat om, eller på provet om vi inte pratat än. Bara frågan, inget svar.",
+        "  7.09 Answer · first text after 1738 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, testa mig på cellandning.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(10 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:quizMe",
+        "instr:quizMe"
+      ],
+      "expect" : "instr:quizMe",
+      "heard" : [
+        "Lumen, förhör mig."
+      ],
+      "id" : "quiz-3",
+      "log" : [
+        "  3.55 Voice: instruction (10 characters)",
+        "  3.55 Activation (tutor): Förhör mig: ställ en kontrollfråga på det vi just pratat om, eller på provet om vi inte pratat än. Bara frågan, inget svar.",
+        "  5.01 Answer · first text after 1246 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, förhör mig.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(11 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:quickQuiz",
+        "instr:quickQuiz"
+      ],
+      "expect" : "instr:quickQuiz",
+      "heard" : [
+        "Lumen, snabbförhör."
+      ],
+      "id" : "qq-1",
+      "log" : [
+        "  3.34 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  3.92 Voice: instruction (11 characters)",
+        "  3.92 Activation (tutor): snabbförhör",
+        "  6.04 Answer · first text after 1553 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, snabbförhör.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(11 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:quickQuiz",
+        "instr:quickQuiz"
+      ],
+      "expect" : "instr:quickQuiz",
+      "heard" : [
+        "Lumen, fem snabba frågor."
+      ],
+      "id" : "qq-2",
+      "log" : [
+        "  4.11 Voice: instruction (11 characters)",
+        "  4.11 Activation (tutor): snabbförhör",
+        "  6.34 Answer · first text after 1581 ms · claude-sonnet-5-5"
+      ],
+      "session" : "long",
+      "text" : "Lumen, fem snabba frågor.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(11 characters)"
+      ],
+      "cause" : "",
+      "classified" : [
+        "instr:quickQuiz",
+        "instr:quickQuiz"
+      ],
+      "expect" : "instr:quickQuiz",
+      "heard" : [
+        "Lumen, snabbförhör mig."
+      ],
+      "id" : "qq-3",
+      "log" : [
+        "  3.51 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+        "  4.09 Voice: instruction (11 characters)",
+        "  4.09 Activation (tutor): snabbförhör",
+        "  6.14 Answer · first text after 1469 ms · claude-sonnet-5-5",
+        " 18.77 Scribe session ended after 415 s: reconnecting",
+        " 18.77 Wearer focus: 22 s of others muted, 15 own ends of turn",
+        " 19.85 Provläge ended by the user",
+        " 19.85 State Listening → Idle"
+      ],
+      "session" : "long",
+      "text" : "Lumen, snabbförhör mig.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "pause"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "pause",
+        "pause"
+      ],
+      "expect" : "pause",
+      "heard" : [
+        "Pausa."
+      ],
+      "id" : "hand-1",
+      "log" : [
+        "  2.51 Spoken pause: handing the audio back",
+        "  2.52 State Listening → Paused — by you",
+        "  5.67 State Paused — by you → Idle"
+      ],
+      "session" : "hand-1",
+      "text" : "Pausa.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "pause"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "pause",
+        "pause"
+      ],
+      "expect" : "pause",
+      "heard" : [
+        "Spela musik."
+      ],
+      "id" : "hand-2",
+      "log" : [
+        "  3.09 Turn · prov · STT Scribe · mic airPods · B-HQ",
+        "  3.17 Spoken pause: handing the audio back",
+        "  3.17 State Listening → Paused — by you",
+        "  6.46 State Paused — by you → Idle"
+      ],
+      "session" : "hand-2",
+      "text" : "Spela musik.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "pause"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "pause",
+        "pause"
+      ],
+      "expect" : "pause",
+      "heard" : [
+        "Lumen, pausa dig."
+      ],
+      "id" : "hand-3",
+      "log" : [
+        "  3.77 Voice: pause",
+        "  3.77 State Listening → Paused — by you",
+        "  7.03 State Paused — by you → Idle"
+      ],
+      "session" : "hand-3",
+      "text" : "Lumen, pausa dig.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "stop"
+      ],
+      "after" : "mode=standard listening=false active=false state=idle",
+      "cause" : "",
+      "classified" : [
+        "stop",
+        "stop"
+      ],
+      "expect" : "stop",
+      "heard" : [
+        "Lumen, sluta lyssna."
+      ],
+      "id" : "stop-1",
+      "log" : [
+        "  3.78 Voice: stop listening",
+        "  3.78 State Listening → Idle"
+      ],
+      "session" : "stop-1",
+      "text" : "Lumen, sluta lyssna.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "stop"
+      ],
+      "after" : "mode=standard listening=false active=false state=idle",
+      "cause" : "",
+      "classified" : [
+        "stop",
+        "stop"
+      ],
+      "expect" : "stop",
+      "heard" : [
+        "Lumen, avsluta."
+      ],
+      "id" : "stop-2",
+      "log" : [
+        "  3.81 Voice: stop listening",
+        "  3.81 State Listening → Idle"
+      ],
+      "session" : "stop-2",
+      "text" : "Lumen, avsluta.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "stop"
+      ],
+      "after" : "mode=standard listening=false active=false state=idle",
+      "cause" : "",
+      "classified" : [
+        "stop",
+        "stop"
+      ],
+      "expect" : "stop",
+      "heard" : [
+        "Lumen, stäng av."
+      ],
+      "id" : "stop-3",
+      "log" : [
+        "  3.66 Voice: stop listening",
+        "  3.67 State Listening → Idle"
+      ],
+      "session" : "stop-3",
+      "text" : "Lumen, stäng av.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "music:nextTrack",
+        "music:nextTrack"
+      ],
+      "expect" : "music:nextTrack",
+      "heard" : [
+        "Nästa låt."
+      ],
+      "id" : "next-1",
+      "log" : [
+        "  2.57 Answer ahead discarded (a music command) · ahead 1 · used 0 · discarded 1 (4.8/min) · TTS ahead 0, wasted 0",
+        "  2.62 State Listening → Paused — by you",
+        " 69.66 State Paused — by you → Idle"
+      ],
+      "session" : "next-1",
+      "text" : "Nästa låt.",
+      "verdict" : "ok (from the heard words: unnamed music commands have no log line)"
+    },
+    {
+      "actions" : [
+        "music:nextTrack"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "music:nextTrack",
+        "music:nextTrack"
+      ],
+      "expect" : "music:nextTrack",
+      "heard" : [
+        "Lumen, hoppa över låten."
+      ],
+      "id" : "next-2",
+      "log" : [
+        "  3.87 Voice: music nextTrack",
+        "  3.87 State Listening → Paused — by you",
+        "  7.02 State Paused — by you → Idle"
+      ],
+      "session" : "next-2",
+      "text" : "Lumen, hoppa över låten.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "instr(13 characters)"
+      ],
+      "after" : "mode=prov listening=true active=true state=listening",
+      "cause" : "STT",
+      "classified" : [
+        "instr:other(skippar låten)",
+        "instr:other(skippar låten)"
+      ],
+      "expect" : "music:nextTrack",
+      "heard" : [
+        "Lumen, skippar låten."
+      ],
+      "id" : "next-3",
+      "log" : [
+        "  3.71 Voice: instruction (13 characters)",
+        "  3.72 Activation (tutor): skippar låten",
+        "  5.30 Auto: backend says not a question: skippar låten",
+        " 18.08 Provläge ended by the user",
+        " 18.09 State Listening → Idle"
+      ],
+      "session" : "next-3",
+      "text" : "Lumen, skippa låten.",
+      "verdict" : "wrong (instr(13 characters))"
+    },
+    {
+      "actions" : [
+
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "music:previousTrack",
+        "music:previousTrack"
+      ],
+      "expect" : "music:previousTrack",
+      "heard" : [
+        "Förra låten."
+      ],
+      "id" : "prev-1",
+      "log" : [
+        "  2.82 Answer ahead discarded (a music command) · ahead 1 · used 0 · discarded 1 (4.7/min) · TTS ahead 0, wasted 0",
+        "  2.82 State Listening → Paused — by you",
+        " 69.62 State Paused — by you → Idle"
+      ],
+      "session" : "prev-1",
+      "text" : "Förra låten.",
+      "verdict" : "ok (from the heard words: unnamed music commands have no log line)"
+    },
+    {
+      "actions" : [
+        "music:previousTrack"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "music:previousTrack",
+        "music:previousTrack"
+      ],
+      "expect" : "music:previousTrack",
+      "heard" : [
+        "Lumen, föregående låt."
+      ],
+      "id" : "prev-2",
+      "log" : [
+        "  3.91 Voice: music previousTrack",
+        "  3.91 State Listening → Paused — by you",
+        "  7.18 State Paused — by you → Idle"
+      ],
+      "session" : "prev-2",
+      "text" : "Lumen, föregående låt.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "music:previousTrack"
+      ],
+      "after" : "mode=standard listening=false active=true state=paused(Lumen.PauseReason.user)",
+      "cause" : "",
+      "classified" : [
+        "music:previousTrack",
+        "music:previousTrack"
+      ],
+      "expect" : "music:previousTrack",
+      "heard" : [
+        "Lumen, spela förra låten."
+      ],
+      "id" : "prev-3",
+      "log" : [
+        "  4.37 Voice: music previousTrack",
+        "  4.37 State Listening → Paused — by you",
+        "  7.54 State Paused — by you → Idle"
+      ],
+      "session" : "prev-3",
+      "text" : "Lumen, spela förra låten.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "switch:social"
+      ],
+      "after" : "mode=social listening=true active=true state=listening",
+      "cause" : "",
+      "classified" : [
+        "switch:social",
+        "switch:social"
+      ],
+      "expect" : "switch:social",
+      "heard" : [
+        "Lumen, starta socialt läge."
+      ],
+      "id" : "sw-social",
+      "log" : [
+        "  4.67 Voice: switch to social",
+        "  4.68 Provläge ended by the user",
+        "  4.69 State Listening → Idle",
+        "  4.88 State Idle → Listening",
+        "  5.04 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+        "  5.04 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+        "  5.10 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+        "  5.10 Microphone iPhone for social · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+        "  5.10 Hands-free social started",
+        "  5.11 Scribe pause detection 0.6 s: reconnecting",
+        "  6.13 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+        "  6.92 Local VAD in front of Scribe",
+        "  6.92 STT running: Scribe · sv-SE",
+        "  8.14 Provläge ended by the user",
+        "  8.14 State Listening → Idle"
+      ],
+      "session" : "sw-social",
+      "text" : "Lumen, starta socialt läge.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "switch:rizz"
+      ],
+      "after" : "mode=rizz listening=true active=true state=listening",
+      "cause" : "",
+      "classified" : [
+        "switch:rizz",
+        "switch:rizz"
+      ],
+      "expect" : "switch:rizz",
+      "heard" : [
+        "Lumen, byta till rissläge."
+      ],
+      "id" : "sw-rizz",
+      "log" : [
+        "  4.00 Voice: switch to rizz",
+        "  4.00 Provläge ended by the user",
+        "  4.01 State Listening → Idle",
+        "  4.09 State Idle → Listening",
+        "  4.23 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+        "  4.23 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+        "  4.27 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+        "  4.33 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+        "  4.33 Hands-free rizz started",
+        "  4.34 Scribe pause detection 0.6 s: reconnecting",
+        "  5.02 Local VAD in front of Scribe",
+        "  5.03 STT running: Scribe · sv-SE",
+        "  5.37 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+        "  6.16 Local VAD in front of Scribe",
+        "  6.16 STT running: Scribe · sv-SE",
+        "  7.39 Provläge ended by the user",
+        "  7.39 State Listening → Idle"
+      ],
+      "session" : "sw-rizz",
+      "text" : "Lumen, byta till rizzläge.",
+      "verdict" : "ok"
+    },
+    {
+      "actions" : [
+        "switch:standard"
+      ],
+      "after" : "mode=standard listening=true active=true state=listening",
+      "cause" : "",
+      "classified" : [
+        "switch:standard",
+        "switch:standard"
+      ],
+      "expect" : "switch:standard",
+      "heard" : [
+        "Lumen, lyssna efter frågor."
+      ],
+      "id" : "sw-standard2",
+      "log" : [
+        "  4.34 Voice: switch to standard",
+        "  4.35 Provläge ended by the user",
+        "  4.36 Scribe pause detection 0.6 s: reconnecting",
+        "  6.47 Local VAD in front of Scribe",
+        "  6.47 Wearer focus in front of Scribe (A10)",
+        "  6.47 STT running: Scribe · sv-SE",
+        "  7.42 State Listening → Idle"
+      ],
+      "session" : "sw-standard2",
+      "text" : "Lumen, lyssna efter frågor.",
+      "verdict" : "ok"
+    }
+  ],
+  "mode" : "prov",
+  "seconds" : 1088.0686849355698,
+  "sessions" : {
+    "hand-1" : [
+      "   0.01 State Idle → Listening",
+      "   0.54 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.54 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.54 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.58 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.58 Hands-free prov started",
+      "   0.58 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.81 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   2.46 Local VAD not ready: all audio goes to Scribe",
+      "   2.46 STT running: Scribe · sv-SE",
+      "  12.93 Spoken pause: handing the audio back",
+      "  12.93 State Listening → Paused — by you",
+      "  12.93 heard: Pausa.",
+      "  16.09 State Paused — by you → Idle"
+    ],
+    "hand-2" : [
+      "   0.01 State Idle → Listening",
+      "   0.29 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.29 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.29 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.34 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.34 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   0.35 Hands-free prov started",
+      "   1.25 Local VAD not ready: all audio goes to Scribe",
+      "   1.26 STT running: Scribe · sv-SE",
+      "   1.39 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  13.12 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      "  13.20 Spoken pause: handing the audio back",
+      "  13.20 State Listening → Paused — by you",
+      "  13.20 heard: Spela musik.",
+      "  16.49 State Paused — by you → Idle"
+    ],
+    "hand-3" : [
+      "   0.01 State Idle → Listening",
+      "   0.17 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.17 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.17 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.22 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.22 Hands-free prov started",
+      "   0.22 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.19 Local VAD not ready: all audio goes to Scribe",
+      "   1.19 STT running: Scribe · sv-SE",
+      "   1.24 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  13.56 State Listening → Paused — by you",
+      "  13.56 Voice: pause",
+      "  13.56 heard: Lumen, pausa dig.",
+      "  16.82 State Paused — by you → Idle"
+    ],
+    "long" : [
+      "   0.02 State Idle → Listening",
+      "   2.61 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   2.76 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   2.76 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   4.12 Capture started · engine input WAV files (88) · 16000 Hz · 1 ch · Int16",
+      "   4.12 Hands-free prov started",
+      "   4.12 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   5.16 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   7.17 Local VAD not ready: all audio goes to Scribe",
+      "   7.18 STT running: Scribe · sv-SE",
+      "  17.29 Voice feedback: the last turn goes to /feedback",
+      "  17.29 heard: Lumen, det var fel.",
+      "  24.60 Voice feedback: the last turn goes to /feedback",
+      "  24.60 heard: Lumen, fel svar.",
+      "  32.15 Voice feedback: the last turn goes to /feedback",
+      "  32.15 heard: Lumen, det stämmer inte.",
+      "  38.95 heard: Lumen?",
+      "  39.39 heard: Lyssna igen.",
+      "  46.59 Activation (tutor) · answered ahead: Lyssna igen.",
+      "  46.59 Auto: backend says not a question: Lyssna igen.",
+      "  46.59 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      "  46.59 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      "  46.59 Voice: music backToLumen",
+      "  46.78 heard: Lumen.",
+      "  47.23 heard: Fortsätt lyssna.",
+      "  54.38 heard: Lumen.",
+      "  54.39 Answer ahead discarded (a voice command) · ahead 2 · used 1 · discarded 1 (1.1/min) · TTS ahead 0, wasted 0",
+      "  54.83 heard: Tillbaka till lumen.",
+      "  62.28 Voice: instruction (21 characters)",
+      "  62.29 Activation (tutor): Lumen, pausar musiken",
+      "  62.29 Answer ahead discarded (a different turn) · ahead 3 · used 1 · discarded 2 (1.9/min) · TTS ahead 0, wasted 0",
+      "  62.29 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      "  62.30 Activation (tutor): Tillbaka till",
+      "  63.19 heard: Lumen, pausar musiken.",
+      "  63.20 Activation (tutor): pausar musiken",
+      "  63.20 Voice: instruction (14 characters)",
+      "  64.06 Auto: backend says not a question: pausar musiken",
+      "  70.51 heard: Lumen, stoppa musiken.",
+      "  70.52 Voice: music pauseMusic",
+      "  77.59 Answer ahead discarded (a music command) · ahead 4 · used 1 · discarded 3 (2.3/min) · TTS ahead 0, wasted 0",
+      "  77.59 heard: Pausa musiken.",
+      "  85.03 Voice: command repeatAnswer",
+      "  85.03 heard: Lumen, upprepa svaret.",
+      "  85.04 STT input gated (own speech)",
+      "  85.04 STT input open",
+      "  92.46 STT input gated (own speech)",
+      "  92.46 Voice: command repeatAnswer",
+      "  92.46 heard: Lumen, säg det igen.",
+      "  92.47 STT input open",
+      "  99.71 STT input gated (own speech)",
+      "  99.71 STT input open",
+      "  99.71 Voice: command repeatAnswer",
+      "  99.71 heard: Lumen, kan du upprepa?",
+      " 107.17 Voice: command whisper",
+      " 107.17 heard: Lumen, viska.",
+      " 107.18 Voice gain 0.60",
+      " 114.80 Voice gain 0.36",
+      " 114.80 Voice: command whisper",
+      " 114.80 heard: Lumen, prata tystare.",
+      " 122.43 Voice: command whisper",
+      " 122.43 heard: Lumen, sänk volymen.",
+      " 122.44 Voice gain 0.25",
+      " 129.34 Voice gain 0.42",
+      " 129.34 Voice: command louder",
+      " 129.34 heard: Lumen, högre.",
+      " 137.02 Voice gain 0.69",
+      " 137.02 Voice: command louder",
+      " 137.02 heard: Lumen, prata högre.",
+      " 144.63 Voice: command louder",
+      " 144.64 Voice gain 1.00",
+      " 144.65 heard: Lumen, höj volymen.",
+      " 152.07 Session length short",
+      " 152.07 Voice: command shorter",
+      " 152.07 heard: Lumen, svara kortare.",
+      " 159.53 Voice: command shorter",
+      " 159.53 heard: Lumen, kortare svar.",
+      " 159.54 Session length short",
+      " 166.97 Session length short",
+      " 166.97 Voice: command shorter",
+      " 166.97 heard: Lumen, kortare tack.",
+      " 174.29 Session length long",
+      " 174.29 Voice: command longer",
+      " 174.29 heard: Lumen, svara längre.",
+      " 181.69 Session length long",
+      " 181.69 Voice: command longer",
+      " 181.69 heard: Lumen, längre svar.",
+      " 189.34 Session length long",
+      " 189.34 Voice: command longer",
+      " 189.34 heard: Lumen, utförligare svar.",
+      " 196.80 Save note: nothing to save",
+      " 196.80 Voice: command saveAnswer",
+      " 196.80 heard: Lumen, spara det.",
+      " 204.41 Voice: command saveAnswer",
+      " 204.41 heard: Lumen, spara svaret.",
+      " 204.42 Save note: nothing to save",
+      " 212.42 Save note: nothing to save",
+      " 212.42 Voice: command saveAnswer",
+      " 212.42 heard: Lumen, spara i anteckningar.",
+      " 220.28 Voice: command nextExam",
+      " 220.28 heard: Lumen, vilket prov har jag härnäst?",
+      " 227.90 Voice: command nextExam",
+      " 227.90 heard: Lumen, när är nästa prov?",
+      " 235.68 Voice: command nextExam",
+      " 235.68 heard: Lumen, vilket är nästa prov?",
+      " 244.49 heard: Lumen.",
+      " 244.94 heard: Kom ihåg att jag gillar korta svar.",
+      " 252.54 Voice: remembered (14 characters)",
+      " 252.55 Activation (tutor) · answered ahead: Kom ihåg att jag gillar korta svar.",
+      " 252.55 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 252.55 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 252.67 Answer · first text after 2194 ms · memory",
+      " 252.67 Study card saved (1 in all)",
+      " 252.70 heard: Lumen.",
+      " 253.14 heard: Glöm inte att jag går i nian.",
+      " 255.39 Minne: 1 new item(s) from the last turn",
+      " 262.33 heard: Lumen.",
+      " 262.35 Answer ahead discarded (a voice command) · ahead 6 · used 2 · discarded 4 (0.9/min) · TTS ahead 0, wasted 0",
+      " 262.77 heard: Kom ihåg att jag tränar fotboll på tisdagar.",
+      " 268.36 Answer ahead discarded (a different turn) · ahead 8 · used 2 · discarded 6 (1.3/min) · TTS ahead 0, wasted 0",
+      " 268.36 Answer ahead discarded (the words went on) · ahead 7 · used 2 · discarded 5 (1.1/min) · TTS ahead 0, wasted 0",
+      " 268.36 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 268.36 prov: one turn split into 2 parts",
+      " 268.37 Activation (tutor): Kom ihåg att jag tränar fotboll på tisdagar.",
+      " 268.78 heard: Uppe i Pä.",
+      " 269.54 Study card saved (2 in all)",
+      " 269.55 Activation (tutor): Uppe i Pä.",
+      " 269.55 Answer · first text after 1167 ms · memory",
+      " 269.55 prov: next part of the same turn: Uppe i Pä.",
+      " 270.86 Minne: 1 new item(s) from the last turn",
+      " 270.89 Auto: backend says not a question: Uppe i Pä.",
+      " 272.57 Scribe keyterms changed: reconnecting in a pause",
+      " 274.58 Local VAD in front of Scribe",
+      " 274.58 Wearer focus in front of Scribe (A10)",
+      " 274.59 STT running: Scribe · sv-SE",
+      " 280.78 Activation (tutor) · answered ahead: Högre.",
+      " 280.78 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 280.78 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 280.78 Voice: command louder",
+      " 280.78 heard: Högre.",
+      " 282.12 Auto: backend says not a question: Högre.",
+      " 286.44 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 286.97 heard: Högre.",
+      " 286.98 Activation (tutor) · answered ahead: Högre.",
+      " 286.98 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 286.98 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 286.98 Voice: command louder",
+      " 288.01 Auto: backend says not a question: Högre.",
+      " 292.95 Activation (tutor) · answered ahead: Snabbare.",
+      " 292.95 Session length short",
+      " 292.95 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 292.95 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 292.95 Voice: command shorter",
+      " 292.95 heard: Snabbare.",
+      " 294.11 Auto: backend says not a question: Snabbare.",
+      " 299.24 heard: Utveckla.",
+      " 299.25 Activation (tutor) · answered ahead: Utveckla.",
+      " 299.25 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 299.25 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 299.25 Voice: instruction (8 characters)",
+      " 299.26 Activation (tutor): utveckla",
+      " 303.28 Answer · first text after 1218 ms · claude-sonnet-5-5",
+      " 306.79 heard: Kan du upprepa det för hela klassen?",
+      " 306.80 Activation (tutor) · answered ahead: Kan du upprepa det för hela klassen?",
+      " 306.80 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 306.80 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 309.83 Answer · first text after 1033 ms · claude-sonnet-5-5",
+      " 309.83 Study card saved (3 in all)",
+      " 315.44 Activation (tutor) · answered ahead: Hon sa att vi måste prata högre i salen.",
+      " 315.44 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 315.44 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 315.44 heard: Hon sa att vi måste prata högre i salen.",
+      " 316.27 Answer · first text after 842 ms · claude-haiku-5-5",
+      " 316.27 Study card saved (4 in all)",
+      " 324.54 Activation (tutor) · answered ahead: Läraren sa att vi ska spara det till nästa lektion.",
+      " 324.54 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 324.54 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 324.54 heard: Läraren sa att vi ska spara det till nästa lektion.",
+      " 326.58 Auto: backend says not a question: Läraren sa att vi ska spara det till nästa lektion.",
+      " 332.78 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 333.32 Activation (tutor) · answered ahead: Vi tog en paus och spelade musik på",
+      " 333.32 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 333.32 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 333.35 heard: Vi tog en paus och spelade musik på",
+      " 334.58 Auto: backend says not a question: Vi tog en paus och spelade musik på",
+      " 341.61 Activation (tutor) · answered ahead: Nästa låt på listan var faktiskt riktigt bra.",
+      " 341.61 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 341.61 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 341.61 heard: Nästa låt på listan var faktiskt riktigt bra.",
+      " 343.00 Auto: backend says not a question: Nästa låt på listan var faktiskt riktigt bra.",
+      " 349.78 heard: Han ville byta till en annan skola i höst.",
+      " 349.79 Activation (tutor) · answered ahead: Han ville byta till en annan skola i höst.",
+      " 349.79 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 349.79 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 351.00 Auto: backend says not a question: Han ville byta till en annan skola i höst.",
+      " 357.59 Answer ahead discarded (the words went on) · ahead 19 · used 12 · discarded 7 (1.2/min) · TTS ahead 0, wasted 0",
+      " 357.86 heard: När är nästa prov i matte?",
+      " 357.88 Activation (tutor): När är nästa prov i matte?",
+      " 357.88 Answer ahead discarded (a different turn) · ahead 20 · used 12 · discarded 8 (1.3/min) · TTS ahead 0, wasted 0",
+      " 357.88 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 358.31 heard: Vet du det?",
+      " 360.52 Answer · first text after 892 ms · claude-sonnet-5-5",
+      " 360.52 Study card saved (5 in all)",
+      " 366.97 Activation (tutor) · answered ahead: Jag tycker att svaret blev lite kortare än förra gången.",
+      " 366.97 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 366.97 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 366.97 heard: Jag tycker att svaret blev lite kortare än förra gången.",
+      " 368.31 Auto: backend says not a question: Jag tycker att svaret blev lite kortare än förra gången.",
+      " 375.41 Activation (tutor) · answered ahead: Vi måste sluta lyssna på honom när han pratar.",
+      " 375.41 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 375.41 heard: Vi måste sluta lyssna på honom när han pratar.",
+      " 375.42 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 376.21 Auto: backend says not a question: Vi måste sluta lyssna på honom när han pratar.",
+      " 383.34 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 383.89 heard: Jag berättade om lumen för min kompis igår.",
+      " 383.91 Activation (tutor): Jag berättade om",
+      " 383.91 Activation (tutor): för min kompis igår",
+      " 383.91 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 383.91 Voice: instruction (19 characters)",
+      " 386.19 Auto: backend says not a question: för min kompis igår",
+      " 390.84 heard: Lumen.",
+      " 390.85 Answer ahead discarded (the words went on) · ahead 23 · used 14 · discarded 9 (1.4/min) · TTS ahead 0, wasted 0",
+      " 390.99 Voice: instruction (8 characters)",
+      " 391.00 Activation (tutor): utveckla",
+      " 391.00 Answer ahead discarded (a different turn) · ahead 24 · used 14 · discarded 10 (1.5/min) · TTS ahead 0, wasted 0",
+      " 391.28 heard: Utveckla svaret.",
+      " 394.06 Answer · first text after 777 ms · claude-sonnet-5-5",
+      " 398.41 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 398.55 heard: Lumen.",
+      " 398.99 heard: Berätta mer.",
+      " 405.62 Activation (tutor): Berätta mer.",
+      " 405.62 Activation (tutor): utveckla",
+      " 405.62 Answer ahead discarded (a different turn) · ahead 25 · used 14 · discarded 11 (1.6/min) · TTS ahead 0, wasted 0",
+      " 405.62 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 405.62 Voice: instruction (8 characters)",
+      " 405.64 heard: Lumen.",
+      " 406.07 heard: Mer om det.",
+      " 411.00 Answer · first text after 1839 ms · claude-sonnet-5-5",
+      " 413.27 heard: Lumen.",
+      " 413.44 Voice: instruction (16 characters)",
+      " 413.45 Activation (tutor) · answered ahead: Förklara enklare.",
+      " 413.45 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 413.69 heard: Förklara enklare.",
+      " 418.75 Answer · first text after 1379 ms · claude-sonnet-5-5",
+      " 421.30 heard: Lumen.",
+      " 421.38 Activation (tutor): förklara enklare",
+      " 421.38 Answer ahead discarded (a different turn) · ahead 27 · used 15 · discarded 12 (1.7/min) · TTS ahead 0, wasted 0",
+      " 421.38 Voice: instruction (16 characters)",
+      " 421.71 heard: Förklara det enklare.",
+      " 424.42 Answer · first text after 1002 ms · claude-sonnet-5-5",
+      " 428.61 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 429.14 Voice: instruction (16 characters)",
+      " 429.15 Activation (tutor): förklara enklare",
+      " 429.15 heard: Lumen, enklare.",
+      " 431.83 Answer · first text after 963 ms · claude-sonnet-5-5",
+      " 436.11 heard: Lumen.",
+      " 436.27 Activation (tutor) · answered ahead: Ge ett exempel.",
+      " 436.27 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 436.27 Voice: instruction (14 characters)",
+      " 436.52 heard: Ge ett exempel.",
+      " 440.07 Answer · first text after 1391 ms · claude-sonnet-5-5",
+      " 440.07 Study card saved (6 in all)",
+      " 444.02 heard: Lumen.",
+      " 444.17 Voice: instruction (14 characters)",
+      " 444.18 Activation (tutor): ge ett exempel",
+      " 444.18 Answer ahead discarded (a different turn) · ahead 29 · used 16 · discarded 13 (1.8/min) · TTS ahead 0, wasted 0",
+      " 444.43 heard: Ge mig ett exempel.",
+      " 447.17 Answer · first text after 1237 ms · claude-sonnet-5-5",
+      " 451.88 Voice: instruction (14 characters)",
+      " 451.88 heard: Lumen, exempel.",
+      " 451.89 Activation (tutor): ge ett exempel",
+      " 455.81 Answer · first text after 1420 ms · claude-sonnet-5-5",
+      " 460.45 Activation (tutor): sammanfattade viktigaste",
+      " 460.45 Voice: instruction (24 characters)",
+      " 460.45 heard: Lumen, sammanfattade viktigaste.",
+      " 463.99 Answer · first text after 1526 ms · claude-sonnet-5-5",
+      " 467.82 Activation (tutor): sammanfatta det viktigaste",
+      " 467.82 Voice: instruction (26 characters)",
+      " 467.82 heard: Lumen, sammanfatta.",
+      " 472.26 Answer · first text after 2087 ms · claude-sonnet-5-5",
+      " 472.26 Study card saved (7 in all)",
+      " 475.03 heard: Lumen, summera.",
+      " 475.04 Activation (tutor): sammanfatta det viktigaste",
+      " 475.04 Voice: instruction (26 characters)",
+      " 478.36 Answer · first text after 1748 ms · claude-sonnet-5-5",
+      " 482.40 Voice: instruction (8 characters)",
+      " 482.40 heard: Lumen, varsäker.",
+      " 482.41 Activation (tutor): varsäker",
+      " 485.53 Answer · first text after 1619 ms · claude-sonnet-5-5",
+      " 489.46 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 490.01 Activation (tutor): var säker",
+      " 490.01 Voice: instruction (9 characters)",
+      " 490.01 heard: Lumen, dubbelkolla.",
+      " 493.90 Answer · first text after 2876 ms · claude-sonnet-5-5",
+      " 496.45 heard: Lumen.",
+      " 496.60 Voice: instruction (9 characters)",
+      " 496.61 Activation (tutor): var säker",
+      " 496.61 Answer ahead discarded (a different turn) · ahead 30 · used 16 · discarded 14 (1.7/min) · TTS ahead 0, wasted 0",
+      " 496.88 heard: Var noggrann.",
+      " 497.30 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 497.30 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 504.05 heard: Lumen.",
+      " 504.41 Answer ahead failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 504.49 heard: Vad missade jag?",
+      " 511.40 heard: Lumen.",
+      " 511.55 Activation (tutor): Vad missade jag?",
+      " 511.55 Activation (tutor): vad missade jag",
+      " 511.55 Answer ahead discarded (a different turn) · ahead 32 · used 16 · discarded 15 (1.8/min) · TTS ahead 0, wasted 0",
+      " 511.55 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 511.55 Voice: instruction (15 characters)",
+      " 511.82 heard: Vad har jag missat?",
+      " 511.87 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 511.87 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 518.91 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 519.07 heard: Lumen.",
+      " 519.43 Answer ahead failed: Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 519.50 heard: Vad sa de?",
+      " 526.61 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 526.70 Activation (tutor): Hjälp mig, det är det",
+      " 526.70 Activation (tutor): Vad sa de?",
+      " 526.70 Turn · prov · STT Scribe · mic airPods · B-HQ",
+      " 526.70 Voice: instruction (21 characters)",
+      " 526.80 heard: Lumen.",
+      " 527.14 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 527.14 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 527.22 heard: Hjälp mig, det är...",
+      " 534.27 Activation (tutor): hjälp mig diskret",
+      " 534.27 Voice: instruction (17 characters)",
+      " 534.27 heard: Lumen, diskret.",
+      " 534.60 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 534.60 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 541.87 Voice: instruction (17 characters)",
+      " 541.87 heard: Lumen, kort och diskret.",
+      " 541.88 Activation (tutor): hjälp mig diskret",
+      " 542.25 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 542.25 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 550.07 Activation (tutor): svara som jag brukar",
+      " 550.07 Voice: instruction (20 characters)",
+      " 550.07 heard: Lumen, svara som jag brukar.",
+      " 550.67 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 550.67 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 557.44 heard: Lumen, som vanligt.",
+      " 557.45 Activation (tutor): svara som jag brukar",
+      " 557.45 Voice: instruction (20 characters)",
+      " 557.91 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 557.91 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 565.41 Activation (tutor): förklara på a-nivå",
+      " 565.41 Voice: instruction (18 characters)",
+      " 565.41 heard: Lumen, förklara på A-nivå.",
+      " 566.02 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 566.02 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 572.26 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 572.84 Activation (tutor): förklara på a-nivå",
+      " 572.84 Voice: instruction (18 characters)",
+      " 572.84 heard: Lumen, A-nivå.",
+      " 573.27 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 573.27 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 579.96 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 580.49 Activation (tutor): förklara på a-nivå",
+      " 580.49 Voice: instruction (18 characters)",
+      " 580.49 heard: Lumen, som för ett A.",
+      " 581.22 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 581.22 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 588.03 Activation (tutor): ställ en svår fråga",
+      " 588.03 Voice: instruction (19 characters)",
+      " 588.03 heard: Lumen, ställ en svår fråga.",
+      " 588.40 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 588.40 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 595.49 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 596.06 Activation (tutor): ställ en svår fråga",
+      " 596.06 Voice: instruction (19 characters)",
+      " 596.08 heard: Lumen, en svårare fråga.",
+      " 596.47 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 596.47 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 603.44 Activation (tutor): ställ en svår fråga",
+      " 603.44 Voice: instruction (19 characters)",
+      " 603.44 heard: Lumen, svårare fråga.",
+      " 604.01 Answer failed: Answer service: rate_limited — Too many requests (HTTP 429) · fallback requested (on-device engine not available on this iPhone)",
+      " 604.01 Fel (answer): Answer service: rate_limited — Too many requests (HTTP 429)",
+      " 604.14 Resources · CPU 21.2 % · battery n/a · 10 min · voice 97 embeddings, avg 445 ms · labels on · profile no",
+      " 612.05 Activation (tutor): testar mina svagaste områden",
+      " 612.05 Voice: instruction (28 characters)",
+      " 612.05 heard: Lumen, testar mina svagaste områden.",
+      " 615.17 Study card saved (8 in all)",
+      " 615.18 Answer · first text after 1644 ms · claude-sonnet-5-5",
+      " 619.54 Activation (tutor): testa mina svagaste områden",
+      " 619.54 Voice: instruction (27 characters)",
+      " 619.54 heard: Lumen, hur bra kan jag det här?",
+      " 621.54 Answer · first text after 1761 ms · claude-sonnet-5-5",
+      " 621.54 Study card saved (9 in all)",
+      " 627.17 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 627.76 Activation (tutor): vad kan jag sem",
+      " 627.76 Voice: instruction (15 characters)",
+      " 627.76 heard: Lumen, vad kan jag sem...",
+      " 631.34 Answer · first text after 1461 ms · claude-sonnet-5-5",
+      " 631.34 Study card saved (10 in all)",
+      " 636.23 Activation (tutor): Förhör mig: ställ en kontrollfråga på det vi just pratat om, eller på provet om vi inte pratat än. Bara frågan, inget svar.",
+      " 636.23 Voice: instruction (24 characters)",
+      " 636.23 heard: Lumen, förhör mig på fotosyntes.",
+      " 638.42 Answer · first text after 1954 ms · claude-sonnet-5-5",
+      " 638.42 Study card saved (11 in all)",
+      " 644.45 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 645.01 Activation (tutor): Förhör mig: ställ en kontrollfråga på det vi just pratat om, eller på provet om vi inte pratat än. Bara frågan, inget svar.",
+      " 645.01 Voice: instruction (25 characters)",
+      " 645.01 heard: Lumen, testa mig på cellandning.",
+      " 647.31 Answer · first text after 1738 ms · claude-sonnet-5-5",
+      " 652.08 Voice: instruction (10 characters)",
+      " 652.08 heard: Lumen, förhör mig.",
+      " 652.09 Activation (tutor): Förhör mig: ställ en kontrollfråga på det vi just pratat om, eller på provet om vi inte pratat än. Bara frågan, inget svar.",
+      " 653.54 Answer · first text after 1246 ms · claude-sonnet-5-5",
+      " 659.12 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 659.69 Activation (tutor): snabbförhör",
+      " 659.69 Voice: instruction (11 characters)",
+      " 659.69 heard: Lumen, snabbförhör.",
+      " 661.81 Answer · first text after 1553 ms · claude-sonnet-5-5",
+      " 667.27 Activation (tutor): snabbförhör",
+      " 667.27 Voice: instruction (11 characters)",
+      " 667.27 heard: Lumen, fem snabba frågor.",
+      " 669.50 Answer · first text after 1581 ms · claude-sonnet-5-5",
+      " 674.68 Wearer quiet for 1.2 s, Scribe had not committed: final asked for (A10)",
+      " 675.26 Activation (tutor): snabbförhör",
+      " 675.26 Voice: instruction (11 characters)",
+      " 675.26 heard: Lumen, snabbförhör mig.",
+      " 677.30 Answer · first text after 1469 ms · claude-sonnet-5-5",
+      " 689.93 Scribe session ended after 415 s: reconnecting",
+      " 689.93 Wearer focus: 22 s of others muted, 15 own ends of turn",
+      " 691.02 Provläge ended by the user",
+      " 691.02 State Listening → Idle"
+    ],
+    "next-1" : [
+      "   0.01 State Idle → Listening",
+      "   0.19 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.19 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.19 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.23 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.23 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   0.24 Hands-free prov started",
+      "   1.27 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.60 Local VAD not ready: all audio goes to Scribe",
+      "   1.60 STT running: Scribe · sv-SE",
+      "  12.46 Answer ahead discarded (a music command) · ahead 1 · used 0 · discarded 1 (4.8/min) · TTS ahead 0, wasted 0",
+      "  12.46 heard: Nästa låt.",
+      "  12.50 State Listening → Paused — by you",
+      "  79.55 State Paused — by you → Idle"
+    ],
+    "next-2" : [
+      "   0.01 State Idle → Listening",
+      "   0.29 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.29 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.29 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.34 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.34 Hands-free prov started",
+      "   0.34 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.37 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   2.36 Local VAD not ready: all audio goes to Scribe",
+      "   2.36 STT running: Scribe · sv-SE",
+      "  13.94 State Listening → Paused — by you",
+      "  13.94 Voice: music nextTrack",
+      "  13.94 heard: Lumen, hoppa över låten.",
+      "  17.09 State Paused — by you → Idle"
+    ],
+    "next-3" : [
+      "   0.02 State Idle → Listening",
+      "   0.26 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.26 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.26 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.30 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.30 Hands-free prov started",
+      "   0.30 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.33 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.73 Local VAD not ready: all audio goes to Scribe",
+      "   1.73 STT running: Scribe · sv-SE",
+      "  13.72 Voice: instruction (13 characters)",
+      "  13.72 heard: Lumen, skippar låten.",
+      "  13.73 Activation (tutor): skippar låten",
+      "  15.31 Auto: backend says not a question: skippar låten",
+      "  28.10 Provläge ended by the user",
+      "  28.10 State Listening → Idle"
+    ],
+    "prev-1" : [
+      "   0.01 State Idle → Listening",
+      "   0.29 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.29 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.29 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.34 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.34 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   0.42 Hands-free prov started",
+      "   1.45 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.49 Local VAD not ready: all audio goes to Scribe",
+      "   1.49 STT running: Scribe · sv-SE",
+      "  12.86 Answer ahead discarded (a music command) · ahead 1 · used 0 · discarded 1 (4.7/min) · TTS ahead 0, wasted 0",
+      "  12.86 State Listening → Paused — by you",
+      "  12.86 heard: Förra låten.",
+      "  79.66 State Paused — by you → Idle"
+    ],
+    "prev-2" : [
+      "   0.01 State Idle → Listening",
+      "   0.24 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.24 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.24 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.29 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.29 Hands-free prov started",
+      "   0.29 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.32 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   2.46 Local VAD not ready: all audio goes to Scribe",
+      "   2.46 STT running: Scribe · sv-SE",
+      "  13.88 State Listening → Paused — by you",
+      "  13.88 Voice: music previousTrack",
+      "  13.88 heard: Lumen, föregående låt.",
+      "  17.14 State Paused — by you → Idle"
+    ],
+    "prev-3" : [
+      "   0.01 State Idle → Listening",
+      "   0.19 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.19 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.19 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.25 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.25 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   0.27 Hands-free prov started",
+      "   1.30 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.86 Local VAD not ready: all audio goes to Scribe",
+      "   1.86 STT running: Scribe · sv-SE",
+      "  14.25 State Listening → Paused — by you",
+      "  14.25 Voice: music previousTrack",
+      "  14.25 heard: Lumen, spela förra låten.",
+      "  17.42 State Paused — by you → Idle"
+    ],
+    "stop-1" : [
+      "   0.01 State Idle → Listening",
+      "   0.29 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.29 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.29 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.34 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.34 Hands-free prov started",
+      "   0.34 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.41 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.76 Local VAD not ready: all audio goes to Scribe",
+      "   1.76 STT running: Scribe · sv-SE",
+      "  13.97 State Listening → Idle",
+      "  13.97 Voice: stop listening",
+      "  13.97 heard: Lumen, sluta lyssna."
+    ],
+    "stop-2" : [
+      "   0.01 State Idle → Listening",
+      "   0.24 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.24 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.24 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.29 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.29 Hands-free prov started",
+      "   0.29 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.33 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.41 Local VAD not ready: all audio goes to Scribe",
+      "   1.41 STT running: Scribe · sv-SE",
+      "  13.76 State Listening → Idle",
+      "  13.76 Voice: stop listening",
+      "  13.97 heard: Lumen, avsluta."
+    ],
+    "stop-3" : [
+      "   0.02 State Idle → Listening",
+      "   0.25 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.25 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.25 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.28 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.28 Hands-free prov started",
+      "   0.28 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.31 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.88 Local VAD not ready: all audio goes to Scribe",
+      "   1.89 STT running: Scribe · sv-SE",
+      "  13.47 State Listening → Idle",
+      "  13.47 Voice: stop listening",
+      "  13.47 heard: Lumen, stäng av."
+    ],
+    "sw-rizz" : [
+      "   0.01 State Idle → Listening",
+      "   0.28 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.28 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.28 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.67 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.67 Hands-free prov started",
+      "   0.67 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.78 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.98 Local VAD not ready: all audio goes to Scribe",
+      "   1.98 STT running: Scribe · sv-SE",
+      "  14.64 Provläge ended by the user",
+      "  14.64 State Listening → Idle",
+      "  14.64 Voice: switch to rizz",
+      "  14.64 heard: Lumen, byta till rissläge.",
+      "  14.72 State Idle → Listening",
+      "  14.87 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "  14.87 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "  14.91 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "  14.96 Microphone iPhone for rizz · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "  14.97 Hands-free rizz started",
+      "  14.97 Scribe pause detection 0.6 s: reconnecting",
+      "  15.66 Local VAD in front of Scribe",
+      "  15.66 STT running: Scribe · sv-SE",
+      "  16.01 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  16.79 Local VAD in front of Scribe",
+      "  16.79 STT running: Scribe · sv-SE",
+      "  18.02 Provläge ended by the user",
+      "  18.02 State Listening → Idle"
+    ],
+    "sw-social" : [
+      "   0.01 State Idle → Listening",
+      "   0.26 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.26 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.26 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.36 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.36 Hands-free prov started",
+      "   0.36 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.40 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   2.32 Local VAD not ready: all audio goes to Scribe",
+      "   2.32 STT running: Scribe · sv-SE",
+      "  14.79 Voice: switch to social",
+      "  14.79 heard: Lumen, starta socialt läge.",
+      "  14.80 Provläge ended by the user",
+      "  14.81 State Listening → Idle",
+      "  15.01 State Idle → Listening",
+      "  15.16 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "  15.16 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "  15.22 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "  15.22 Hands-free social started",
+      "  15.22 Microphone iPhone for social · A-ref-default · MicrophoneBuiltIn · iPhone mic",
+      "  15.23 Scribe pause detection 0.6 s: reconnecting",
+      "  16.26 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "  17.04 Local VAD in front of Scribe",
+      "  17.05 STT running: Scribe · sv-SE",
+      "  18.27 Provläge ended by the user",
+      "  18.27 State Listening → Idle"
+    ],
+    "sw-standard2" : [
+      "   0.01 State Idle → Listening",
+      "   0.20 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.20 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+      "   0.20 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+      "   0.24 Capture started · engine input WAV files (2) · 16000 Hz · 1 ch · Int16",
+      "   0.24 Hands-free prov started",
+      "   0.24 Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+      "   1.31 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+      "   1.79 Local VAD not ready: all audio goes to Scribe",
+      "   1.79 STT running: Scribe · sv-SE",
+      "  14.28 Voice: switch to standard",
+      "  14.29 Provläge ended by the user",
+      "  14.31 Scribe pause detection 0.6 s: reconnecting",
+      "  14.31 heard: Lumen, lyssna efter frågor.",
+      "  16.41 Local VAD in front of Scribe",
+      "  16.41 STT running: Scribe · sv-SE",
+      "  16.41 Wearer focus in front of Scribe (A10)",
+      "  17.36 State Listening → Idle"
+    ]
+  },
+  "stoppedEarly" : [
+
+  ]
+}
