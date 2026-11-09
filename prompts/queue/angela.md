@@ -108,7 +108,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [ ] **A16 – Övningsprov i appen** (effort: high). Beror på: Kevins K15. Under Förberedelser › Lägg till övningsprov (PDF, foto eller text) och en lista med frågorna. I Provläge finns knappen/kommandot "Kör övningsprovet": Lumen läser upp en fråga i taget, lyssnar på svaret och rättar. Navigering med "nästa", "förra", "fråga N", "hoppa över", "upprepa" och egna fraser (A6). Lyssnarskärmen visar "Fråga 3 av 12" och resultatet i slutet (rätt, fel, att öva på). Tester och skärmbilder. **Ej verifierat på enhet** tills Aron har testat.
 
-- [ ] **A17 – "Igen" upprepar exakt, med tidsregler** (effort: medium). Gör direkt. Ägarkrav (Aron 2026-11-09 21:54/21:58): "igen" ska ge **exakt samma svar** (samma ljud, `repeatAnswer`, inget nytt anrop). Appen ska förstå när ett "igen" syftar på Lumen:
+- [~] pågår 2026-11-09 21:59 **A17 – "Igen" upprepar exakt, med tidsregler** (effort: medium). Gör direkt. Ägarkrav (Aron 2026-11-09 21:54/21:58): "igen" ska ge **exakt samma svar** (samma ljud, `repeatAnswer`, inget nytt anrop). Appen ska förstå när ett "igen" syftar på Lumen:
   1. **Bara bärarens röst räknas** (D81). Säger någon annan "igen" händer inget.
   2. **"Igen" som hela yttrandet** (även "en gång till", "va?", "hörde inte"), med eller utan "Lumen": upprepa om Lumen svarade för **högst 15 minuter sedan**.
   3. **"Igen" inne i ett yttrande med brus eller andra ord** (till exempel på tunnelbanan): upprepa bara om Lumen svarade för **högst 45 sekunder sedan** och "igen" är det sista eller enda tydliga ordet från bäraren. Annars syftar "igen" inte på Lumen och ignoreras.
