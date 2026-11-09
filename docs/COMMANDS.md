@@ -82,4 +82,40 @@ samma lista, och där kan användaren lägga till och ta bort fraser per åtgär
 - "snabbare" är "kortare".
 
 ## Backend (K9, Kevin)
-_Kevin fyller i: regeltabellen i `answer/` som översätter instruktionerna ovan till `task`._
+Källa: `backend/supabase/functions/answer/commands.ts` (`FAMILIES`), tester i `answer/k9_test.ts`.
+
+**Så tolkas en instruktion (inget extra modellanrop):**
+- Appen skickar instruktionen som `fragment`, som i dag. Backend normaliserar texten: små bokstäver, ingen interpunktion, "Lumen" och artighetsord ("kan du", "snälla", "tack") tas bort.
+- Hela yttrandet ska matcha en uttrycksfamilj. Ord mitt i en vanlig fråga räknas aldrig: "ge ett exempel på en exoterm reaktion" är en fråga.
+- En träff blir `<task>` + `<task_rule>` i användarmeddelandet. Den cachade systemprompten ändras inte.
+- Ingen träff: som förut. Med `voice_instruction: true` i anropet får modellen texten som en instruktion att utföra. **Angela: skicka den för `.instruction(text)`.**
+- Socialt och Rizz: familjerna läses ur `social.calibrate`. Önskemål om nya repliker räknas som förslag (antal 1, "tre alternativ" = 3). Stilord är kalibreringar med sin betydelse.
+
+| `task` | Lägen | Exempel på fraser (3 per task i live-eval) | Beteende |
+|---|---|---|---|
+| `continue_more` / `continue_simpler` | Provläge, Frågor | mer, utveckla, förklara enklare | finns sedan D35 |
+| `example` | Provläge, Frågor | ge ett exempel, har du något exempel | ett nytt konkret exempel på senaste ämnet |
+| `summary` | Provläge, Frågor | sammanfatta det viktigaste, summera, vad är det viktigaste | 3–4 meningar om ämnet i `recent_qa` |
+| `a_level` | Provläge, Frågor | förklara på a-nivå, som ett A-svar, hur får jag ett A | ett fullt A-svar, utan att säga "A-nivå" |
+| `harder_question` | Provläge, Frågor | ställ en svår fråga, en svårare fråga, utmana mig | en resonerande fråga, bara frågan |
+| `quick_quiz` | Provläge, Frågor | snabbförhör, fem snabba frågor | "Fråga ett: …" (bara frågan) |
+| `yes_no_quiz` | Provläge, Frågor | ja eller nej frågor | en ja/nej-fråga |
+| `quiz_topic` (+ `task_arg`) | Provläge, Frågor | förhör mig på X, testa mig om X, fråga ut mig om X | en fråga om X |
+| `weak_areas` | Provläge, Frågor | testa mina svagaste områden, vad kan jag sämst | fråga om begreppet med flest fel i `context.concept_stats` |
+| `self_assessment` | Provläge, Frågor | hur bra kan jag det här, hur ligger jag till | lägesbild ur `concept_stats` och rättade svar, aldrig påhittade siffror |
+| `careful` | Provläge, Frågor | var säker, dubbelkolla det, är du säker på det | Sonnet med tänkande för just det svaret ("Rättelse: …" vid fel); kostnaden loggas per svar |
+| `catch_up` | Provläge, Frågor | vad missade jag, vad sa läraren | sammanfattning av `context.transcript` (D61: inget sparas) |
+| `brief_style` | Provläge, Frågor | hjälp mig diskret, bara en mening | en mening |
+| `interview_help:professional\|better\|confident\|counter_question\|stuck` | Intervju | vad borde jag säga / bättre svar / mer självsäkert / ge mig en motfråga / jag fastnar | jag-form; motfrågan sägs som fråga |
+| `social:reply\|change_topic\|follow_up\|what_meant`, `rizz:more\|rescue`, `alternatives:3` | Socialt, Rizz | vad ska jag svara, byt ämne, smart följdfråga, vad menade hon, mer rizz, rädda mig, tre alternativ | nya repliker (`<request>`) |
+| `social:funnier\|natural`, `rizz:confident\|flirty\|subtle\|cocky\|less_cringe` | Socialt, Rizz | roligare, mer naturligt, mer självsäker, flirtigare, mer subtil, kaxigare, mindre cringe | kalibrering (D69) med betydelsen |
+
+**Nya fält i `/answer` (valfria, appen behöver inte skicka dem):**
+- `context.concept_stats: [{concept, right, wrong}]`: högst 30, från förhörsresultaten i provprofilen.
+- `voice_instruction: boolean`.
+
+**Stående regler (D80) utan "Lumen", i Provläge och Frågor:**
+- Gäller "i framtiden ska du …", "från och med nu …", "svara alltid …", "… det är minnet", när det handlar om svaren.
+- Besvaras lokalt med en kort bekräftelse ("Okej, korta svar.").
+- Kommer tillbaka som `done.memory_add` = "Regel: …" (appen lagrar det som i dag och skickar det med bland minnena, och prompten följer "Regel:"-rader) och som `done.rule_add` (regeltexten, för Minne › Regler).
+- En fråga om framtiden ("vad händer med klimatet i framtiden") blir aldrig en regel.
