@@ -11,7 +11,7 @@ on:
         default: "iPhone 17 Pro"
 
 concurrency:
-  group: screenshots-${{ github.ref }}
+  group: screenshots-${{ github.ref }}-${{ inputs.device }}
   cancel-in-progress: true
 
 jobs:
