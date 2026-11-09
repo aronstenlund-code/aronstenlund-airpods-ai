@@ -67,6 +67,7 @@ struct ScreenshotStage: View {
                 }
                 .lumenScreen()
             case "settings": NavigationStack { SettingsView(model: model, diagnostics: container.diagnostics) }
+            case "about": NavigationStack { AboutView() } // A13.1
             case "interview": NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
             case "live": NavigationStack { LiveStartView(model: model, settings: model.modeSettings, mode: .social) }
             default: Text(verbatim: "Okänd skärm: \(name)")

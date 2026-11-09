@@ -4,6 +4,11 @@ name: Simulator screenshots
 # with demo data). Started by hand (workflow_dispatch); the Simulator is no device verification.
 on:
   workflow_dispatch:
+    inputs:
+      device:
+        description: "Simulator name (A13: 'iPhone 17 Pro' or 'iPhone SE (3rd generation)')"
+        required: false
+        default: "iPhone 17 Pro"
 
 concurrency:
   group: screenshots-${{ github.ref }}
@@ -35,7 +40,16 @@ jobs:
           set -euo pipefail
           JSON="$(xcrun simctl list devices available -j)"
           RUNTIME="$(echo "$JSON" | jq -r '.devices | keys[] | select(test("iOS-26"))' | sort -V | tail -n 1)"
-          UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name | test("^iPhone 17$|^iPhone 17 Pro$|^iPhone Air$")) | .udid' | head -n 1)"
+          WANT="${{ inputs.device || 'iPhone 17 Pro' }}"
+          UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" --arg want "$WANT" '.devices[$rt][] | select(.name == $want) | .udid' | head -n 1)"
+          if [ -z "$UDID" ]; then
+            # Not installed in this runtime: create it.
+            TYPE="$(xcrun simctl list devicetypes -j | jq -r --arg want "$WANT" '.devicetypes[] | select(.name == $want) | .identifier' | head -n 1)"
+            if [ -n "$TYPE" ]; then UDID="$(xcrun simctl create "$WANT" "$TYPE" "$RUNTIME")"; fi
+          fi
+          if [ -z "$UDID" ]; then
+            UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name | test("^iPhone 17$|^iPhone 17 Pro$|^iPhone Air$")) | .udid' | head -n 1)"
+          fi
           if [ -z "$UDID" ]; then
             UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name | test("^iPhone")) | .udid' | head -n 1)"
           fi
@@ -67,7 +81,7 @@ jobs:
           mkdir -p shots
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"
-            for screen in intro first home empty addExam listening cannotAnswer switch errors settings interview live; do
+            for screen in intro first home empty addExam listening cannotAnswer switch errors settings about interview live; do
               # Swedish, as on Aron's phone (the strings' Swedish translations).
               xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" -AppleLanguages "(sv)" -AppleLocale sv_SE
               sleep 9
@@ -85,6 +99,6 @@ jobs:
 
       - uses: actions/upload-artifact@v5
         with:
-          name: simulator-screenshots
+          name: simulator-screenshots-${{ github.run_id }}
           path: shots
           retention-days: 14
