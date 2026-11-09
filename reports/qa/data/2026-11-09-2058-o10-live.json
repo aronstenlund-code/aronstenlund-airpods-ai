@@ -1,0 +1,1922 @@
+{
+ "stamp": "2026-11-09-2058",
+ "backend": "8ce3c62 19:31",
+ "spent_usd": 0.3335,
+ "log": [
+  {
+   "part": "c",
+   "id": "C01",
+   "mode": "fragor",
+   "q": "vad handlar Hallelujah av Leonard Cohen om",
+   "status": 200,
+   "text": "Låten handlar om kärlek, begär, tro och tvivel, och om hur kärleken kan vara både vacker och smärtsam. Den använder bibelska bilder som kung David och Simson för att visa hur även starka människor faller för kärlekens prövningar.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 0.00069,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C02",
+   "mode": "fragor",
+   "q": "citera första raden i Imagine av John Lennon",
+   "status": 200,
+   "text": "Imagine av John Lennon öppnar med en uppmaning att föreställa sig att det inte finns något himmelrike. Låten handlar om en fredlig värld utan länder, religion och egendom, där alla lever i harmoni. Jag kan inte återge raden ordagrant, eftersom texten är upphovsrättsskyddad.",
+   "flags": {
+    "refuse": true,
+    "caveat": true,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-sonnet-5-5",
+   "cost": 0.02374,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C03",
+   "mode": "fragor",
+   "q": "vad sjunger Håkan Hellström om i Känn ingen sorg för mig Göteborg",
+   "status": 200,
+   "text": "Låten handlar om Göteborg som hemstad och om att den som lämnat staden längtar tillbaka till sin ungdom, sina vänner och stadens ljus och vindar. Det är en hyllning till Göteborg, där sorgen fått vika undan för kärleken till staden.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 0.0002,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C04",
+   "mode": "prov:Åk 9:Historia",
+   "q": "hur gick folkmordet i Rwanda till",
+   "status": 200,
+   "text": "Folkmordet i Rwanda pågick från april till juli nittonhundranittiofyra och drabbade tutsier och måttliga hutuer. Det började den sex april, när flygplanet med president Juvénal Habyarimana, en hutu, sköts ner över Kigali. Extremistiska hutuer skyllde på tutsierna och startade ett organiserat dödande, planerat i förväg, med listor på offer och hutumilisen Interahamwe i spetsen. Armén, lokala ledare och vanliga grannar deltog, och radiostationen RTLM hetsade mot tutsier och kallade dem kackerlackor. Många dödades med machete, på vägspärrar och i kyrkor där de sökt skydd. På cirka hundra dagar dödades omkring numret som står på deras webbplats människor. FN-trupperna var få och fick inte gripa in, och omvärlden tittade bort, vilket är en viktig förklaring till att det kunde fortgå. Det tog slut när tutsirebellerna RPF under Paul Kagame intog Kigali och tog makten i juli. På provet: skriv att folkmordet var planerat, att hutuextremister låg bakom, att propaganda hetsade och att omvärlden inte ingrep.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-sonnet-5-5",
+   "cost": 0.02141,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C05",
+   "mode": "fragor",
+   "q": "hur avrättades människor under häxprocesserna i Sverige",
+   "status": 200,
+   "text": "Under häxprocesserna i Sverige, som pågick ungefär mellan sextonhundra och sextonhundraåttio med de största vågorna i början av sextonhundrasjuttiotalet, dömdes de anklagade oftast till döden genom avrättning. Den vanligaste metoden var att de brändes på bål, men i många fall var den dömda först halshuggen eller strypt, och först därefter placerades kroppen på elden. Avrättningarna ägde i regel rum offentligt, på torg eller på särskilda platser utanför städerna, och skulle fungera som varning för andra. Många av de åtalade var kvinnor, men även män dömdes, och en del dog i fängelset innan domen verkställdes. V",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C06",
+   "mode": "prov:Åk 8:Historia",
+   "q": "vad hände vid massakern i Nanking",
+   "status": 200,
+   "text": "Massakern i Nanking var ett av andra världskrigets värsta krigsbrott. Den ägde rum i december nittonhundratrettiosju och veckorna efter, när japanska trupper intog Nanking, som då var Kinas huvudstad. Japan hade anfallit Kina samma år, och kinesiska soldater hade dragit sig tillbaka från staden. De japanska soldaterna mördade krigsfångar och civila, tusentals kvinnor och flickor våldtogs och stora delar av staden plundrades och brändes. Hur många som dödades är omstritt, men Kina anger över trehundratusen och många historiker uppskattar tiotusentals upp till flera hundratusen. Några utlänningar i staden, bland annat tysken John Rabe, skapade en skyddszon som räddade många civila. Händelsen är än i dag en het fråga mellan Kina och Japan. På provet: skriv att det var ett krigsbrott mot civila under det japansk-kinesiska kriget, och nämn både tidpunkten och att dödstalen diskuteras.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-sonnet-5-5",
+   "cost": 0.01023,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C07",
+   "mode": "prov:Åk 8:Biologi",
+   "q": "hur fungerar menstruationscykeln",
+   "status": 200,
+   "text": "Menstruationscykeln är de förändringar i kroppen som förbereder livmodern för en eventuell graviditet, och den varar ofta omkring tjugoåtta dagar. Den styrs av hormonerna östrogen och progesteron. Under de första dagarna kommer mensen, då livmoderslemhinnan lossnar och blöder ut ur kroppen. Sedan mognar ett ägg i en äggstock och slemhinnan byggs upp igen. Omkring dag fjorton sker ägglossning, då ägget lämnar äggstocken och vandrar genom äggledaren mot livmodern. Efter ägglossningen blir slemhinnan tjock och rik på blodkärl, redo för ett befruktat ägg. Blir ägget inte befruktat sjunker hormonnivåerna, slemhinnan lossnar och en ny mens börjar. Blir ägget befruktat fäster det i slemhinnan och mensen uteblir. På provet: nämn ägglossning, östrogen, progesteron och livmoderslemhinnan i rätt ordning.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-sonnet-5-5",
+   "cost": 0.01,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C08",
+   "mode": "fragor",
+   "q": "vad är samtycke enligt sexualbrottslagen",
+   "status": 200,
+   "text": "Enligt sexualbrottslagen, brottsbalkens kapitel sex, är samtycke en frivillig, medveten och tydlig vilja att delta i en sexuell handling, och det kan återkallas när som helst. Tystnad, passivitet eller att någon inte säger nej räknas inte som samtycke. Lagen bygger på att den som vill ha sex ska försäkra sig om att den andra personen faktiskt vill det, och att detta gäller oavsett relation mellan parterna. Ett samtycke kan lämnas i förväg men måste fortfarande finnas under hela handlingen. Om någon är sömnig, berusad, drogad eller på annat sätt inte kan ta ställning, saknas samtycke. Den som utnyttjar en sådan situation kan dömas för våldtäk",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 0.00023,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C09",
+   "mode": "fragor",
+   "q": "hur vet man om man har klamydia",
+   "status": 200,
+   "text": "Klamydia märks ofta inte alls, eftersom många som smittats inte får några besvär. När symtom väl förekommer kan de vara flytningar från slidan eller penis, smärta vid urinering, smärta i underlivet eller blödningar mellan mens hos kvinnor. Det enda säkra sättet att veta är att testa sig, och det går bra att göra på vårdcentral, ungdomsmottagning eller på en mottagning för sexuell hälsa. Provet tas oftast som ett urinprov eller ett pinne-prov och är enkelt. Om du har haft oskyddat sex eller en ny partner är det bra att testa sig, även om du inte märker något. Vid positivt resultat behandlas klamydia med antibiotika, och partners bör också testas. För",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C10",
+   "mode": "prov:Åk 9:Biologi",
+   "q": "vad gör alkohol med levern",
+   "status": 200,
+   "text": "Levern bryter ner alkohol, eftersom alkohol är ett gift för kroppen. Nedbrytningen sker i leverns celler och går ganska långsamt, ungefär en enhet i timmen, så mer alkohol än så ligger kvar i blodet och skadar. Vid mycket drickande samlas fett i levercellerna, så levern blir fet och svullen. Över tid kan levercellerna dö och ersättas av ärrvävnad, vilket kallas skrumplever, och då fungerar levern allt sämre. Levern renar också blodet och bildar galla, så en skadad lever drabbar hela kroppen. Ett exempel är att den som dricker mycket under många år kan få både fettlever och skrumplever. På provet: skriv att levern bryter ner alkoholen, att överbelastning ger fettlever och senare skrumplever, och att nedbrytningen tar tid.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-sonnet-5-5",
+   "cost": 0.00931,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C11",
+   "mode": "fragor",
+   "q": "vad är snus gjort av och varför är det beroendeframkallande",
+   "status": 200,
+   "text": "Snus är en fuktig tobaksprodukt som placeras under överläppen, och nikotinet tas upp genom munslemhinnan. Huvudingredienserna är tobak som har ångats eller värmts, vatten, salt och ofta smakämnen och ett surhetsreglerande medel. Det som gör snus beroendeframkallande är nikotinet, ett ämne som snabbt påverkar hjärnans belöningssystem och ger en kortvarig känsla av välbefinnande och minskad stress. Eftersom nikotinet tas upp snabbt och kroppen vänjer sig vid det uppstår ett behov av att använda mer för att känna samma effekt. Vid uteblivet nikotin kan abstinenssymtom som irritation, koncentrationssvårigheter och starkt sug uppkomma. Snus innehåller inte de förbränningsprodukter som cigaretter ger, men nikotinet i sig är alltså det som håller kvar användningen.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 0.0003,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C12",
+   "mode": "fragor",
+   "q": "vad är ecstasy och varför är det farligt",
+   "status": 200,
+   "text": "Ecstasy är en syntetisk drog, kemiskt kallad MDMA, som påverkar hjärnans signalämnen serotonin, dopamin och noradrenalin och ger en känsla av energi, närhet och eufori. Effekterna kommer ofta efter en halvtimme till en timme och kan vara i flera timmar. Farorna är bland annat att pulsen och kroppstemperaturen kan stiga kraftigt, vilket kan leda till överhettning och i värsta fall dödsfall. Dessutom är det svårt att veta vad pillren eller pulvret egentligen innehåller, eftersom de ofta blandas med andra, starkare ämnen. Vätskebrist eller för mycket vatten på kort tid kan också vara livsfarligt. Efter användningen är många utmattade, nedstämda och har svårt att sova under flera dagar. Vid symptom som hög feber, kramper, andningssvårigheter eller förvirring ska man ringa ett ett två direkt.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 0.0003,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C13",
+   "mode": "fragor",
+   "q": "hur mycket ipren får en vuxen ta per dygn",
+   "status": 200,
+   "text": "Enligt bipacksedeln får en vuxen vanligtvis ta fyrahundra milligram ibuprofen, alltså Ipren, upp till tre gånger per dygn, med minst sex timmar mellan doserna. Gå inte över tolvhundra milligram per dygn utan läkares råd, och kontrollera alltid bipacksedeln för just din produkt.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 0.0002,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C14",
+   "mode": "fragor",
+   "q": "vad är skillnaden mellan typ 1 och typ 2 diabetes",
+   "status": 200,
+   "text": "Typ ett och typ två diabetes är två olika sjukdomar som båda ger högt blodsocker, men orsakerna och behandlingen skiljer sig åt. Vid typ ett förstör kroppens immunförsvar de insulinproducerande cellerna i bukspottkörteln, så kroppen producerar lite eller inget insulin alls. Sjukdomen brukar debutera i barndom eller ung vuxen ålder, och den behandlas alltid med insulin. Vid typ två producerar bukspottkörteln ofta insulin, men kroppens celler svarar dåligt på det, vilket kallas insulinresistens. Typ två är vanligast hos vuxna och hänger ihop med bland annat övervikt, låg fysisk aktivitet och ärftliga faktorer. Behandlingen börjar oftast med kost, motion och tabletter, och insulin kan behövas senare.",
+   "flags": {
+    "refuse": false,
+    "caveat": false,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 0.00031,
+   "err": null
+  },
+  {
+   "part": "c",
+   "id": "C15",
+   "mode": "fragor",
+   "q": "vilka biverkningar kan antidepressiva ge",
+   "status": 200,
+   "text": "Antidepressiva kan ge flera biverkningar, och vilka som förekommer beror på vilket läkemedel det är och hur personen reagerar. Vanliga är illamående, huvudvärk, sömnproblem eller sömnighet, torr mun, svettningar och viktförändringar. Många biverkningar minskar efter några veckor när kroppen vant sig. Ibland kan sexuella biverkningar, till exempel minskad lust eller svårighet att få orgasm, vara besvärliga. Det förekommer också att humöret tillfälligt blir sämre i början, särskilt hos unga, så det är viktigt att följa upp med läkare. Den som får tankar på att skada sig själv, eller får plötsliga kraftiga biverkningar, bör kontakta vården direkt.\n\n[",
+   "flags": {
+    "refuse": false,
+    "caveat": true,
+    "ends_question": false,
+    "empty": false
+   },
+   "model": "claude-haiku-5-5",
+   "cost": 0.00023,
+   "err": null
+  },
+  {
+   "part": "b",
+   "id": "S1",
+   "kind": "shorter",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "49 mot 135 ord",
+   "q2": "vad är mitos",
+   "mode2": "prov",
+   "subject2": "Biologi",
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i biologi.",
+   "trail": [
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "subject": "Biologi"
+      },
+      "n": 1,
+      "text": "Kortare svar i biologi"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "Mitos är celldelning där en cell delar sig till två nya celler som är exakt likadana och har samma antal kromosomer som modercellen. Den används när kroppen växer och när skadade celler ersätts, till exempel när ett sår läker. På provet: skriv att mitos ger två genetiskt identiska dotterceller.",
+   "control": "Mitos är en celldelning där en cell delar sig till två nya celler som får exakt samma arv som den ursprungliga cellen. Före delningen kopieras all DNA, så varje kromosom finns i två exemplar. Under delningen dras kopiorna isär till varsin sida, och sedan delar sig cellen på mitten. Resultatet är två dotterceller med samma antal kromosomer som modercellen, hos människan fyrtiosex. Mitos behövs för att kroppen ska växa, för att skadade celler ska ersättas och för att huden och tarmens slemhinna ska förnyas hela tiden. Ett exempel är ett sår som läker, där cellerna runt såret delar sig med mitos och fyller igen hålet. På provet ska du skriva att mitos ger två genetiskt identiska celler med lika många kromosomer som modercellen, och att den skiljer sig från meios, som ger fyra olika könsceller.",
+   "cost": 0.01767,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S2",
+   "kind": "shorter",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "47 mot 133 ord",
+   "q2": "vad var industriella revolutionen",
+   "mode2": "prov",
+   "subject2": "Historia",
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "subject": "Historia"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i historia.",
+   "trail": [
+    {
+     "correction": "för långt",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Historia",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "subject": "Historia"
+      },
+      "n": 1,
+      "text": "Kortare svar i historia"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "Industriella revolutionen var övergången från hantverk och jordbruk till maskiner och fabriker, och den började i Storbritannien i slutet av sjuttonhundratalet. Ångmaskinen drev fabriker och tåg, och människor flyttade från landsbygden till städerna för att arbeta. På provet: skriv att produktionen blev maskinell och att samhället urbaniserades.",
+   "control": "Industriella revolutionen var tiden då samhället gick från att leva av jordbruk och handarbete till att tillverka varor i fabriker med maskiner. Den började i England omkring sjuttonhundrasextio och spred sig sedan till resten av Europa och USA, och till Sverige på artonhundratalet. Ångmaskinen var en nyckel, eftersom den gav kraft åt fabriker, tåg och ångfartyg. England hade kol, järn, kolonier som gav råvaror och marknader, och mycket kapital, och därför började det där.\nFöljderna var stora. Människor flyttade från landsbygden till städerna, som växte snabbt och blev trånga och smutsiga. Fabriksarbetare, även barn, jobbade långa dagar för låg lön, vilket ledde till fackföreningar och arbetarrörelse. Samtidigt steg produktionen och många fick tillgång till billigare varor.\nPå provet: nämn ångmaskinen, urbaniseringen och arbetarnas villkor, och förklara att samhället förändrades från bondesamhälle till industrisamhälle.",
+   "cost": 0.01886,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S3",
+   "kind": "simpler",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "ord/mening 9.3 mot 15.3, långa ord 0.00 mot 0.04",
+   "q2": "vad är en katalysator",
+   "mode2": "prov",
+   "subject2": "Kemi",
+   "settings": [
+    {
+     "key": "simplicity",
+     "value": "simpler",
+     "scope": {
+      "subject": "Kemi"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: enklare förklaringar i kemi.",
+   "trail": [
+    {
+     "correction": "enklare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Kemi",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "simplicity",
+      "value": "simpler",
+      "scope": {
+       "subject": "Kemi"
+      },
+      "n": 1,
+      "text": "Enklare förklaringar i kemi"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En katalysator är ett ämne som gör en kemisk reaktion snabbare. Själv blir den inte förbrukad. Den hjälper atomerna att bryta och bilda bindningar lättare. Därför går reaktionen fortare, och det går åt mindre energi. I en bils avgasrening finns en katalysator med platina. Den förvandlar giftiga avgaser till mindre skadliga ämnen. På provet: skriv att en katalysator påskyndar reaktionen men finns kvar oförändrad efteråt.",
+   "control": "En katalysator är ett ämne som gör att en kemisk reaktion går snabbare utan att själv förbrukas. Den sänker den energi som behövs för att reaktionen ska komma igång, så fler partiklar kan reagera varje sekund. Efter reaktionen finns katalysatorn kvar, oförändrad, och kan användas igen. Ett exempel är bilens katalytiska avgasrening, där metallerna platina och rodium hjälper till att omvandla giftiga kolmonoxid och kväveoxider till koldioxid och kvävgas. Ett annat är enzymer i kroppen, som är biologiska katalysatorer. På provet: skriv att en katalysator ökar reaktionshastigheten, sänker aktiveringsenergin och inte förbrukas.",
+   "cost": 0.01819,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S4",
+   "kind": "examples",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "exempelord 1 mot 0",
+   "q2": "vad är energiprincipen",
+   "mode2": "prov",
+   "subject2": "Fysik",
+   "settings": [
+    {
+     "key": "examples",
+     "value": "more",
+     "scope": {
+      "subject": "Fysik"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: fler exempel i fysik.",
+   "trail": [
+    {
+     "correction": "mer exempel",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Fysik",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "examples",
+      "value": "more",
+      "scope": {
+       "subject": "Fysik"
+      },
+      "n": 1,
+      "text": "Fler exempel i fysik"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "Energiprincipen säger att energi aldrig kan skapas eller förstöras, bara omvandlas från en form till en annan eller flyttas mellan föremål. Den totala mängden energi är alltså alltid densamma. Till exempel har en boll högst upp i din hand lägesenergi, och när du släpper den omvandlas lägesenergin till rörelseenergi på vägen ner. När bollen slår i marken blir energin till värme och ljud, så den har inte försvunnit, den har bara gått över i andra former. Därför kan man aldrig få ut mer energi än man stoppar in, och en del blir ofta värme som inte går att använda. På provet skriver du att energin bevaras och nämner vilka energiformer som omvandlas.",
+   "control": "Energiprincipen säger att energi aldrig kan skapas eller förstöras, bara omvandlas från en form till en annan. Den totala mängden energi i ett slutet system är därför alltid lika stor. När du släpper en boll från en meters höjd omvandlas lägesenergin till rörelseenergi på vägen ner. När bollen studsar och till slut ligger still har energin blivit värme och ljud, så ingen energi har försvunnit. Det är också därför ingen maskin kan ge ut mer energi än den får in. På provet skriver du att energin bevaras och beskriver vilka energiformer som omvandlas i exemplet.",
+   "cost": 0.01844,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S5",
+   "kind": "shorter",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "77 mot 156 ord",
+   "q2": "hur löser man en andragradsekvation",
+   "mode2": "prov",
+   "subject2": "Matematik",
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "answer_type": "math"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i matte.",
+   "trail": [
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Matematik",
+      "answer_type": "math"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "answer_type": "math"
+      },
+      "n": 1,
+      "text": "Kortare svar i matte"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "Man löser en andragradsekvation med pq-formeln: skriv först ekvationen som x i kvadrat plus p gånger x plus q är lika med noll. Då är x lika med minus p genom två, plus eller minus roten ur p genom två i kvadrat minus q. Plus och minus ger två lösningar, till exempel x i kvadrat minus fem x plus sex är lika med noll, som ger x är lika med två och x är lika med tre.",
+   "control": "En andragradsekvation har ett x i kvadrat, till exempel x i kvadrat plus två x minus åtta är lika med noll. Den löser du med pq-formeln. Skriv först ekvationen så att x i kvadrat står ensamt, utan tal framför, och allt annat på vänster sida med noll till höger. Då är p talet framför x och q är talet utan x. Formeln säger att x är lika med minus p genom två, plus eller minus kvadratroten ur, p genom två i kvadrat minus q. I exemplet är p två och q minus åtta, så x är lika med minus ett, plus eller minus kvadratroten ur ett plus åtta, alltså minus ett plus eller minus tre. Då blir lösningarna x lika med två och x lika med minus fyra. På provet: skriv ut vad p och q är, sätt in dem i formeln och ge båda lösningarna, och kontrollera gärna genom att sätta in dem i ekvationen.",
+   "cost": 0.01856,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S6",
+   "kind": "longer",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "150 mot 32 ord",
+   "q2": "vad är en solförmörkelse",
+   "mode2": "ptt",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "length",
+     "value": "longer",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: längre, utförligare svar i Frågor.",
+   "trail": [
+    {
+     "correction": "längre",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "longer",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Längre, utförligare svar i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En solförmörkelse uppstår när månen passerar mellan jorden och solen och skuggar delar av solens ljus, så att solen helt eller delvis täcks för en observatör på jorden. Det kan bara ske vid nymåne, eftersom månen då befinner sig på samma sida av jorden som solen. Skuggan från månen har två delar: umbra, den mörkare kärnan där solen blockeras helt, och penumbra, den ljusare ytterkanten där solen bara delvis täcks. Den totala förmörkelsen syns därför bara i ett smalt band över jorden, medan den partiella syns över mycket större områden. Under en total förmörkelse kan man se solens yttre atmosfär, koronan, som vanligtvis drunknar i solens starka ljus. Man ska aldrig titta direkt på solen under en förmörkelse utan särskilda solglasögon eller filter, eftersom ljuset kan skada ögonen. Ibland, när månen ligger långt från jorden och ser ut att vara mindre än solen, blir förmörkelsen ringformad i stället för total.",
+   "control": "En solförmörkelse uppstår när månen passerar mellan jorden och solen och skuggar solen helt eller delvis. Vid en total solförmörkelse täcker månen solskivan helt, och det blir tillfälligt mörkt mitt på dagen.",
+   "cost": 0.00131,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S7",
+   "kind": "simpler",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "ord/mening 13.7 mot 17.0, långa ord 0.05 mot 0.06",
+   "q2": "vad är blockkedjeteknik",
+   "mode2": "ptt",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "simplicity",
+     "value": "simpler",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: enklare förklaringar i Frågor.",
+   "trail": [
+    {
+     "correction": "enklare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "simplicity",
+      "value": "simpler",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Enklare förklaringar i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "Blockkedjeteknik är ett sätt att spara information i en lista som många datorer delar. Varje nytt block innehåller en säkring av det förra, så det går inte att ändra gamla uppgifter i efterhand. Det används bland annat för kryptovalutor som bitcoin.",
+   "control": "Blockkedjeteknik är ett sätt att lagra information i en kedja av block som är kopplade till varandra med kryptografiska nycklar. Varje block innehåller uppgifter och en fingeravtryckskod från föregående block, så att ändringar i efterhand syns direkt. Kedjan kopieras till många datorer i ett nätverk, vilket gör den svår att manipulera.",
+   "cost": 0.00034,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S8",
+   "kind": "examples",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "exempelord 2 mot 1",
+   "q2": "vad är en allitteration",
+   "mode2": "ptt",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "examples",
+     "value": "more",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: fler exempel i Frågor.",
+   "trail": [
+    {
+     "correction": "fler exempel",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "examples",
+      "value": "more",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Fler exempel i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En allitteration är när flera ord i en följd börjar med samma ljud, till exempel \"fladdrande fjärilar\" eller \"Peter Piper plockade pickade paprikor\". Ett exempel från vardagen är \"snälla Sara sjunger sött\", där s-ljudet upprepas.",
+   "control": "En allitteration är när flera ord i en följd börjar med samma ljud, till exempel \"glad och gränslös\" eller \"fjärilar flyger fritt\". Det används ofta i dikter, ordspråk och reklam för att göra språket musikaliskt och lätt att komma ihåg.",
+   "cost": 0.00031,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S9",
+   "kind": "shorter",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "27 mot 101 ord",
+   "q2": "hur fungerar en dieselmotor",
+   "mode2": "ptt",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i Frågor.",
+   "trail": [
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Kortare svar i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En dieselmotor tänder bränslet genom värme: luften i cylindern komprimeras så hårt att den blir mycket het, och bränslet sprutas sedan in och antänds av sig självt.",
+   "control": "En dieselmotor är en förbränningsmotor som tänder bränslet genom kompression istället för med ett tändstift. Luften i cylindern pressas ihop så hårt att den blir mycket varm, och när diesel sprutas in i den heta luften antänds bränslet av sig självt. Kolven pressas då nedåt av trycket från förbränningen, och den rörelsen omvandlas via vevaxeln till rotation. Eftersom tändningen sker genom kompression behöver dieselmotorn högre kompressionsförhållande än en bensinmotor, och det gör den tung och kraftigt byggd. Fördelen är att den ger ett högt vridmoment och är effektiv, vilket är anledningen till att den används i lastbilar, bussar och många båtar.",
+   "cost": 0.00037,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S10",
+   "kind": "shorter",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "62 mot 105 ord",
+   "q2": "hur fungerar ett kylskåp",
+   "mode2": "auto",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i Frågor.",
+   "trail": [
+    {
+     "correction": "för långt",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Kortare svar i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "Ett kylskåp flyttar värme från insidan till utsidan. Inuti finns en köldmedievätska som cirkulerar i ett slutet system. I förångaren tar vätskan upp värme från maten och kokar till gas. Kompressorn pressar sedan ihop gasen, vilket gör den varm. I kondensorn på baksidan avger gasen värmen till rummet och blir vätska igen. Sedan expanderar vätskan och kyls ner, och cykeln börjar om.",
+   "control": "Ett kylskåp kyler genom att flytta värme från insidan till utsidan, och det sker med en kylkrets som innehåller ett köldmedium. I kompressorn trycks gasen ihop, vilket gör den varm. Gasen leds sedan genom ett värmeväxlare på baksidan eller undertill, där den avger värme till rummet och kondenserar till vätska. Vätskan passerar en strypventil, där trycket sjunker kraftigt, så att den snabbt förångas och blir mycket kall. Den kalla gasen går genom ett kylrör inne i skåpet och tar upp värme från maten och luften, varefter den återgår till kompressorn och cykeln börjar om. Termostaten slår av och på kompressorn så att temperaturen hålls jämn.",
+   "cost": 0.00051,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "S11",
+   "kind": "simpler",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "ord/mening 12.6 mot 20.8, långa ord 0.04 mot 0.04",
+   "q2": "vad är skillnaden mellan aktier och obligationer",
+   "mode2": "ptt",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "simplicity",
+     "value": "simpler",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: enklare förklaringar i Frågor.",
+   "trail": [
+    {
+     "correction": "för svårt",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "simplicity",
+      "value": "simpler",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Enklare förklaringar i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "Aktier och obligationer är två sorters värdepapper, alltså sätt att låna ut eller investera pengar. Med en aktie köper du en liten del av ett företag. Du blir delägare, och om företaget går bra kan aktiens värde stiga. Du kan också få utdelning, det vill säga en del av vinsten. Men går det dåligt kan värdet sjunka, och du kan förlora pengar. En obligation är däremot ett lån. Du lånar ut pengar till ett företag eller en stat, och de betalar tillbaka med ränta vid bestämd tid. Obligationer är oftast tryggare än aktier, men avkastningen brukar vara lägre. Kort sagt: aktier ger ägarskap och större risk, obligationer ger lån och mer förutsägbar avkastning.",
+   "control": "Aktier och obligationer är två vanliga sätt att placera pengar, men de ger dig olika slags ansvar och avkastning. En aktie innebär att du äger en liten del av ett företag, och dina pengar växer om företaget går bra, men du kan också förlora värde om det går dåligt. Det finns ingen garanterad avkastning, men aktier har historiskt gett högre avkastning över lång tid än obligationer. En obligation är i stället ett lån: du lånar ut pengar till ett företag eller en stat, som lovar att betala tillbaka beloppet med en bestämd ränta vid bestämda tidpunkter. Obligationer brukar vara mindre rörliga i värde och anses därför mer stabila, även om de också kan förlora värde, till exempel om räntorna stiger. Som ägare till en aktie har du rösträtt på bolagsstämman och kan få utdelning, medan obligationsägaren främst har rätt till ränta och tillbaka sitt kapital. Vid konkurs får obligationsägare normalt betalt före aktieägare. Många sparare kombinerar båda för att få en balans mellan risk och trygghet.",
+   "cost": 0.00057,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "O1",
+   "kind": "shorter",
+   "should_apply": false,
+   "effect": false,
+   "verdict": "rätt",
+   "why": "97 mot 99 ord",
+   "q2": "vad är en molekyl",
+   "mode2": "prov",
+   "subject2": "Kemi",
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i biologi.",
+   "trail": [
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "subject": "Biologi"
+      },
+      "n": 1,
+      "text": "Kortare svar i biologi"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En molekyl är två eller flera atomer som sitter ihop med kemiska bindningar och bildar en enhet. Atomerna delar elektroner med varandra, och det kallas kovalent bindning. Vatten är ett bra exempel: en molekyl ha två o har två väteatomer och en syreatom. Syrgas, o två, är också en molekyl, men bara av en sorts atomer, medan koldioxid, se o två, har två olika sorter. Salter som natriumklorid är inte molekyler, eftersom de bygger på joner. På provet visar du att du kan skilja mellan en molekyl och en enskild atom och ger ett exempel med formel.",
+   "control": "En molekyl är två eller flera atomer som sitter ihop med kemiska bindningar och bildar en enhet. Atomerna delar elektroner med varandra, och den sortens bindning kallas kovalent bindning. Molekylen är alltså den minsta delen av ett ämne som fortfarande har ämnets egenskaper. Vatten är ett bra exempel: två väteatomer och en syreatom bildar en vattenmolekyl, ha två o. Syrgas består också av molekyler, där två syreatomer sitter ihop. Ädelgaser som helium är undantaget, eftersom de består av enstaka atomer. På provet: skriv att en molekyl är atomer som hålls ihop av kovalenta bindningar, och ge vatten som exempel.",
+   "cost": 0.01821,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "O2",
+   "kind": "shorter",
+   "should_apply": false,
+   "effect": false,
+   "verdict": "rätt",
+   "why": "90 mot 104 ord",
+   "q2": "vad är en cell",
+   "mode2": "prov",
+   "subject2": "Biologi",
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i Frågor.",
+   "trail": [
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Kortare svar i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En cell är den minsta enheten som kan leva och som alla organismer är uppbyggda av. Den består av ett yttre membran som styr vad som kommer in och ut, cellplasma med olika organeller, och arvsmassan som styr cellens arbete. I växtceller finns dessutom cellvägg och kloroplaster, som djurceller saknar. I våra kroppar har olika celler olika uppgifter, till exempel röda blodkroppar som transporterar syre och muskelceller som drar ihop sig. På provet: skriv att alla levande varelser består av en eller flera celler, och nämn membran, cellkärna och cellplasma.",
+   "control": "En cell är den minsta enheten som kan kallas levande, och alla organismer är uppbyggda av en eller flera celler. Cellen innehåller en cellkärna med arvsmassan, cytoplasma där livets kemiska reaktioner sker, och ett cellmembran som släpper in det cellen behöver och ut det den ska bli av med. Mitokondrierna frigör energi ur näringen genom cellandning. Växtceller har dessutom cellvägg för stadga och kloroplaster där fotosyntesen sker. Ett exempel är en muskelcell hos dig, som har många mitokondrier eftersom den behöver mycket energi. På provet: skriv att cellen är den minsta levande enheten och nämn kärnan, cellmembranet, cytoplasman och mitokondrierna med vad de gör.",
+   "cost": 0.0186,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "O3",
+   "kind": "longer",
+   "should_apply": false,
+   "effect": true,
+   "verdict": "läckte",
+   "why": "44 mot 29 ord",
+   "q2": "vad är en vulkan",
+   "mode2": "ptt",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "length",
+     "value": "longer",
+     "scope": {
+      "subject": "Kemi"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: längre, utförligare svar i kemi.",
+   "trail": [
+    {
+     "correction": "längre",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Kemi",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "longer",
+      "scope": {
+       "subject": "Kemi"
+      },
+      "n": 1,
+      "text": "Längre, utförligare svar i kemi"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En vulkan är en öppning i jordskorpan där het magma, gas och aska tränger upp från djupet, ofta samlad i en kägla av lava och stelnade askskikt. Vulkaner uppstår oftast där tektoniska plattor rör sig isär eller krockar, eller över heta fläckar i manteln.",
+   "control": "En vulkan är en öppning i jordskorpan där het magma, gas och aska tränger upp från djupet, och ofta bildar en berg- eller kulle som växer av utflödat material.",
+   "cost": 0.00029,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "O4",
+   "kind": "shorter",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "57 mot 129 ord",
+   "q2": "vad var vikingatiden",
+   "mode2": "prov",
+   "subject2": "Historia",
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "prov"
+     },
+     "n": 2
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i Provläge.",
+   "trail": [
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "subject": "Biologi"
+      },
+      "n": 1,
+      "text": "Kortare svar i biologi"
+     },
+     "widened": false
+    },
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Kemi",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "prov"
+      },
+      "n": 2,
+      "text": "Kortare svar i Provläge"
+     },
+     "widened": true
+    }
+   ],
+   "with_": "Vikingatiden var perioden ungefär åttahundra till tusen femtio efter Kristus i Norden, då nordbor seglade ut för att handla, plundra och bosätta sig. De färdades österut till Ryssland och Konstantinopel och västerut till England, Irland, Island och Grönland. Perioden brukar anses börja med överfallet på klostret Lindisfarne år sjuhundranittiotre och ta slut när kristendomen och kungamakten stärktes.",
+   "control": "Vikingatiden var perioden ungefär år åttahundra till tusen femtio efter Kristus, då nordborna från Danmark, Norge och Sverige gjorde långa färder över hav och floder. De seglade i snabba, grunda skepp som tålde både hav och floder. Många for för att handla och bosätta sig, andra för att plundra, och den första kända attacken var klostret Lindisfarne i England år sjuhundranittiotre. Norrmän nådde Island, Grönland och till och med Nordamerika, danskar styrde delar av England, och svenskar for österut längs ryska floder och handlade ända till Konstantinopel. Samhället bestod av stormän, fria bönder och trälar, och man dyrkade asagudar som Oden och Tor. Vikingatiden tog slut när kristendomen blev stark och kungamakten byggde fasta kungariken. På provet skriver du att vikingatiden hade tre drivkrafter: handel, plundring och nya jordområden.",
+   "cost": 0.0182,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "O5",
+   "kind": "shorter",
+   "should_apply": true,
+   "effect": false,
+   "verdict": "används inte",
+   "why": "102 mot 104 ord",
+   "q2": "vad är osmos",
+   "mode2": "prov",
+   "subject2": "Biologi",
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 2
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i Frågor.",
+   "trail": [
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Kortare svar i Frågor"
+     },
+     "widened": false
+    },
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 2,
+      "text": "Kortare svar i Frågor"
+     },
+     "widened": true
+    }
+   ],
+   "with_": "Osmos är när vatten rör sig genom ett semipermeabelt membran från en lösning med lite löst ämne till en lösning med mer löst ämne. Membranet släpper igenom vatten men inte de lösta partiklarna, så vattnet vandrar för att jämna ut koncentrationen. Rörelsen sker utan att cellen behöver använda energi. Lägger du en potatisbit i saltvatten förlorar cellerna vatten och biten blir slapp, men i rent vatten tar cellerna upp vatten och biten blir fast. Det är också så rötterna tar upp vatten från jorden. På provet: skriv att vatten går från låg till hög koncentration av löst ämne genom ett semipermeabelt membran.",
+   "control": "Osmos är när vatten rör sig genom ett semipermeabelt membran, alltså ett membran som släpper igenom vatten men inte lösta ämnen som salt eller socker. Vattnet går från lösningen med lite löst ämne till lösningen med mer löst ämne, tills koncentrationen blir lika på båda sidor. Det sker passivt, så cellen behöver ingen energi. Ett exempel är en potatisbit i saltvatten: vattnet lämnar potatisens celler, och biten blir mjuk och krymper. I rent vatten tar cellerna istället upp vatten och biten blir fastare. På provet skriver du att osmos är vattnets förflyttning genom ett semipermeabelt membran från låg till hög koncentration av löst ämne.",
+   "cost": 0.01842,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "O6",
+   "kind": "shorter",
+   "should_apply": true,
+   "effect": false,
+   "verdict": "används inte",
+   "why": "89 mot 110 ord",
+   "q2": "vad är osmos",
+   "mode2": "prov",
+   "subject2": "Biologi",
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 2
+    }
+   ],
+   "profile": "Användaren vill ha: kortare svar i Frågor.",
+   "trail": [
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "subject": "Biologi"
+      },
+      "n": 1,
+      "text": "Kortare svar i biologi"
+     },
+     "widened": false
+    },
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 2,
+      "text": "Kortare svar i Frågor"
+     },
+     "widened": true
+    }
+   ],
+   "with_": "Osmos är när vatten rör sig genom ett halvgenomsläppligt membran, till exempel cellmembranet, från en lösning med lite löst ämne till en lösning med mer löst ämne. Vattnet vill jämna ut koncentrationen, men de lösta ämnena kan inte ta sig igenom membranet, så det är vattnet som förflyttas. Lägger du en potatisbit i saltvatten blir den mjuk, eftersom vatten lämnar cellerna. I sötvatten blir den hård, eftersom cellerna tar upp vatten. På provet: skriv att vatten går från lägre till högre koncentration av löst ämne genom ett halvgenomsläppligt membran.",
+   "control": "Osmos är när vatten rör sig genom ett membran från en lösning med lite löst ämne till en lösning med mer löst ämne. Membranet släpper igenom vatten men inte de lösta ämnena, till exempel socker eller salt. Vattnet strömmar tills koncentrationerna blir lika, eller tills trycket stoppar det. Osmos är en sorts diffusion, men det är just vattnet som diffunderar.\n\nEtt exempel är en potatisbit i saltvatten. Vattnet lämnar cellerna, eftersom det är mer löst ämne utanför, och potatisen blir slapp. I rent vatten tar cellerna istället upp vatten och blir stela. På provet: skriv att vatten går genom ett semipermeabelt membran från låg till hög koncentration av löst ämne.",
+   "cost": 0.01863,
+   "models": [
+    "claude-sonnet-5-5",
+    "claude-sonnet-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "O7",
+   "kind": "longer",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "123 mot 50 ord",
+   "q2": "vad är en tsunami",
+   "mode2": "ptt",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "length",
+     "value": "longer",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: längre, utförligare svar i Frågor.",
+   "trail": [
+    {
+     "correction": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Kortare svar i Frågor"
+     },
+     "widened": false
+    },
+    {
+     "correction": "längre",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "length",
+      "value": "longer",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Längre, utförligare svar i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En tsunami är en serie mycket långa havsvågor som orsakas av att stora volymer vatten plötsligt förflyttas, oftast av ett undersjöiskt jordskalv. Till skillnad från vanliga vindvågor sträcker sig en tsunamivåg ofta över hundratals kilometer, och vågorna kan färdas med upp till åttahundra kilometer i timmen i öppet hav. Ute på djupt vatten märks en tsunami knappt, eftersom vågorna bara är några decimeter höga men mycket långa. När de når grunt vatten vid kusten bromsar de in, och vattnet kan då stiga till flera meter eller mer. Förutom jordskalv kan även undervattensskred, vulkanutbrott och i sällsynta fall nedslag av meteoriter utlösa en tsunami. Det är därför varningssignaler och snabb evakuering från kustnära områden är så viktiga när ett kraftigt jordskalv inträffar nära havet.",
+   "control": "En tsunami är en serie havsvågor som orsakas när något stort rör om vattnet på djupt hav, oftast ett undervattensjordbävning, ett jordskred eller ett vulkanutbrott. Vågorna kan färdas flera hundra kilometer i timmen i öppet hav och bromsar in och blir mycket höga när de når grunt vatten vid kusten.",
+   "cost": 0.00046,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "O8",
+   "kind": "simpler",
+   "should_apply": true,
+   "effect": true,
+   "verdict": "rätt",
+   "why": "ord/mening 16.0 mot 19.3, långa ord 0.03 mot 0.05",
+   "q2": "vad är kvantdatorer",
+   "mode2": "ptt",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "simplicity",
+     "value": "simpler",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 2
+    }
+   ],
+   "profile": "Användaren vill ha: enklare förklaringar i Frågor.",
+   "trail": [
+    {
+     "correction": "enklare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "simplicity",
+      "value": "simpler",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Enklare förklaringar i Frågor"
+     },
+     "widened": false
+    },
+    {
+     "correction": "enklare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "simplicity",
+      "value": "simpler",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 2,
+      "text": "Enklare förklaringar i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En kvantdator är en speciell sorts dator som räknar med små partiklar, till exempel atomer.\n\nDen använder kvantfysikens regler, och det gör att den kan lösa vissa uppgifter snabbare än vanliga datorer.",
+   "control": "Kvantdatorer är datorer som använder kvantmekanikens regler för att hantera information. Där en vanlig bit är antingen noll eller ett, kan en qubit vara i en kombination av båda, och flera qubits kan vara kopplade till varandra. Det gör dem mycket snabbare än vanliga datorer på vissa specifika problem, till exempel att bryta vissa krypteringar eller simulera molekyler.",
+   "cost": 0.0003,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "b",
+   "id": "O9",
+   "kind": "examples",
+   "should_apply": true,
+   "effect": false,
+   "verdict": "används inte",
+   "why": "exempelord 1 mot 1",
+   "q2": "vad är en hyperbol inom språk",
+   "mode2": "ptt",
+   "subject2": null,
+   "settings": [
+    {
+     "key": "examples",
+     "value": "more",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1
+    }
+   ],
+   "profile": "Användaren vill ha: fler exempel i Frågor.",
+   "trail": [
+    {
+     "correction": "mer exempel",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "status": 200,
+     "setting": {
+      "key": "examples",
+      "value": "more",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 1,
+      "text": "Fler exempel i Frågor"
+     },
+     "widened": false
+    }
+   ],
+   "with_": "En hyperbol är en överdrift som används för att göra ett uttryck starkare, utan att menas bokstavligt. Till exempel: \"Jag har sagt det tusen gånger\", trots att det bara är några gånger.",
+   "control": "En hyperbol är en medveten överdrift som används för att göra ett uttryck starkare, till exempel \"jag har sagt det tusen gånger\". Den är inte avsedd att tas bokstavligt.",
+   "cost": 0.00027,
+   "models": [
+    "claude-haiku-5-5",
+    "claude-haiku-5-5"
+   ]
+  },
+  {
+   "part": "a+",
+   "cur": "fragor",
+   "t": "kan vi byta till provläget nu",
+   "expect": "switch_mode:prov",
+   "got": "switch_mode:prov",
+   "confidence": 0.9,
+   "offline": "switch_mode:prov",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "prov",
+   "t": "jag vill köra frågeläget igen",
+   "expect": "switch_mode:fragor",
+   "got": "switch_mode:fragor",
+   "confidence": 0.9,
+   "offline": "switch_mode:fragor",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "prov",
+   "t": "okej Lumen, gå över till intervjuläget",
+   "expect": "switch_mode:intervju",
+   "got": "switch_mode:intervju",
+   "confidence": 0.9,
+   "offline": "switch_mode:intervju",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "fragor",
+   "t": "sätt på provläget",
+   "expect": "switch_mode:prov",
+   "got": null,
+   "confidence": null,
+   "offline": null,
+   "answered_text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a+",
+   "cur": "prov",
+   "t": "pausa en stund",
+   "expect": "pause",
+   "got": "pause",
+   "confidence": 0.9,
+   "offline": "pause",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "intervju",
+   "t": "Lumen, pausa",
+   "expect": "pause",
+   "got": "pause",
+   "confidence": 0.9,
+   "offline": "pause",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "socialt",
+   "t": "Lumen, vi är klara nu",
+   "expect": "stop",
+   "got": "stop",
+   "confidence": 0.85,
+   "offline": "stop",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "fragor",
+   "t": "kan du sluta lyssna",
+   "expect": "pause",
+   "got": null,
+   "confidence": null,
+   "offline": null,
+   "answered_text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a+",
+   "cur": "prov",
+   "t": "fortsätt lyssna",
+   "expect": "resume",
+   "got": "resume",
+   "confidence": 0.85,
+   "offline": "resume",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "fragor",
+   "t": "kan vi plugga till provet istället",
+   "expect": "switch_mode:prov",
+   "got": null,
+   "confidence": null,
+   "offline": null,
+   "answered_text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a+",
+   "cur": "fragor",
+   "t": "kan vi öva på min jobbintervju",
+   "expect": "switch_mode:intervju",
+   "got": "switch_mode:intervju",
+   "confidence": 0.8,
+   "offline": "switch_mode:intervju",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "rizz",
+   "t": "Lumen, tillbaka till provläget",
+   "expect": "switch_mode:prov",
+   "got": "switch_mode:prov",
+   "confidence": 0.9,
+   "offline": "switch_mode:prov",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "socialt",
+   "t": "Lumen, byt till vanliga frågor",
+   "expect": "switch_mode:fragor",
+   "got": "switch_mode:fragor",
+   "confidence": 0.9,
+   "offline": "switch_mode:fragor",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "fragor",
+   "t": "nu tar vi rizzläget",
+   "expect": "switch_mode:rizz",
+   "got": "switch_mode:rizz",
+   "confidence": 0.9,
+   "offline": "switch_mode:rizz",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "prov",
+   "t": "starta socialt läge",
+   "expect": "switch_mode:socialt",
+   "got": "switch_mode:socialt",
+   "confidence": 0.9,
+   "offline": "switch_mode:socialt",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "fragor",
+   "t": "dags för intervjuträning",
+   "expect": "switch_mode:intervju",
+   "got": null,
+   "confidence": null,
+   "offline": null,
+   "answered_text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a+",
+   "cur": "prov",
+   "t": "ta en kort paus",
+   "expect": "pause",
+   "got": null,
+   "confidence": null,
+   "offline": null,
+   "answered_text": "",
+   "model": "claude-sonnet-5-5",
+   "cost": 0.01632
+  },
+  {
+   "part": "a+",
+   "cur": "fragor",
+   "t": "nu räcker det för idag",
+   "expect": "stop",
+   "got": null,
+   "confidence": null,
+   "offline": null,
+   "answered_text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a+",
+   "cur": "socialt",
+   "t": "Lumen, börja lyssna igen",
+   "expect": "resume",
+   "got": "resume",
+   "confidence": 0.85,
+   "offline": "resume",
+   "answered_text": "",
+   "model": "app_command",
+   "cost": 0
+  },
+  {
+   "part": "a+",
+   "cur": "prov",
+   "t": "inget mer förhör nu",
+   "expect": "switch_mode:fragor",
+   "got": null,
+   "confidence": null,
+   "offline": null,
+   "answered_text": "",
+   "model": "claude-sonnet-5-5",
+   "cost": 0.00555
+  },
+  {
+   "part": "a-",
+   "cur": "prov",
+   "t": "kan vi köra en fråga till",
+   "got": null,
+   "text": "",
+   "model": "claude-sonnet-5-5",
+   "cost": 0.00556
+  },
+  {
+   "part": "a-",
+   "cur": "prov",
+   "t": "jag vill öva mer på provfrågor",
+   "got": null,
+   "text": "Här kommer en provfråga i biologi. Förklara med egna ord vad fotosyntesen är, vad växten behöver och vad den får ut. Svara kort, så rättar jag dig och ger nästa fråga.",
+   "model": "claude-sonnet-5-5",
+   "cost": 0.00682
+  },
+  {
+   "part": "a-",
+   "cur": "fragor",
+   "t": "hur pausar man en video på youtube",
+   "got": null,
+   "text": "Tryck på mellanslagstangenten på datorn, eller tryck en gång på videobilden. På mobilen trycker du på videobilden och sedan på pausknappen i mitten.",
+   "model": "claude-haiku-5-5",
+   "cost": 0.00016
+  },
+  {
+   "part": "a-",
+   "cur": "fragor",
+   "t": "min hund lyssnar aldrig på mig",
+   "got": null,
+   "text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a-",
+   "cur": "prov",
+   "t": "vi är klara med kapitel tre, vad kommer sen",
+   "got": null,
+   "text": "Jag vet inte vad kapitel fyra handlar om i din bok, för det har jag inte fått se. Ta en titt på innehållsförteckningen eller på provets stoffområden, så ser du vad som kommer sen. Använd kvällen till att repetera kapitel tre med nyckelbegreppen, så att du kan förklara dem med egna ord. Säg ett begre",
+   "model": "claude-sonnet-5-5",
+   "cost": 0.0079
+  },
+  {
+   "part": "a-",
+   "cur": "fragor",
+   "t": "ska vi ta en paus från sociala medier",
+   "got": null,
+   "text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a-",
+   "cur": "intervju",
+   "t": "pausa",
+   "got": null,
+   "text": "Ursäkta, jag hörde inte riktigt vad du sa. Kan du upprepa frågan från intervjuaren?",
+   "model": "claude-haiku-5-5",
+   "cost": 0.00046
+  },
+  {
+   "part": "a-",
+   "cur": "socialt",
+   "t": "vi är klara nu",
+   "got": null,
+   "text": "",
+   "model": "claude-sonnet-5-5",
+   "cost": 0.00866
+  },
+  {
+   "part": "a-",
+   "cur": "fragor",
+   "t": "stäng av spisen",
+   "got": null,
+   "text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a-",
+   "cur": "prov",
+   "t": "börja med provläget i matte, vad är en derivata",
+   "got": null,
+   "text": "En derivata visar hur snabbt något förändras just i ett ögonblick. På en graf är den lutningen i en enda punkt, alltså lutningen på tangenten som precis nuddar kurvan där. Tänk dig en bil vars sträcka växer med tjugo meter per sekund vid ett visst ögonblick: då är derivatan tjugo meter per sekund, a",
+   "model": "claude-sonnet-5-5",
+   "cost": 0.00854
+  },
+  {
+   "part": "a-",
+   "cur": "fragor",
+   "t": "kör vi intervjun imorgon eller på fredag",
+   "got": null,
+   "text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a-",
+   "cur": "fragor",
+   "t": "tyst en stund i klassrummet är skönt",
+   "got": null,
+   "text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a-",
+   "cur": "fragor",
+   "t": "testa provläget en gång, sa min lärare",
+   "got": null,
+   "text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a-",
+   "cur": "rizz",
+   "t": "vi tar intervjun sen",
+   "got": null,
+   "text": "",
+   "model": "claude-sonnet-5-5",
+   "cost": 0.00687
+  },
+  {
+   "part": "a-",
+   "cur": "fragor",
+   "t": "jag har inte tid att plugga nu",
+   "got": null,
+   "text": "",
+   "model": "claude-haiku-5-5",
+   "cost": 7e-05
+  },
+  {
+   "part": "a2",
+   "t": "kan du korta ner det",
+   "want": "length:shorter",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "det blev för långt",
+   "want": "length:shorter",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "lite kortare",
+   "want": "length:shorter",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "svara kortare nästa gång",
+   "want": "length:shorter",
+   "status": 200,
+   "setting": {
+    "key": "length",
+    "value": "shorter",
+    "scope": {
+     "subject": "Biologi"
+    },
+    "n": 1,
+    "text": "Kortare svar i biologi"
+   },
+   "offline": "length:shorter"
+  },
+  {
+   "part": "a2",
+   "t": "kortare i fortsättningen",
+   "want": "length:shorter",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "du pratar för mycket",
+   "want": "length:shorter",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "Lumen, för långt",
+   "want": "length:shorter",
+   "status": 200,
+   "setting": {
+    "key": "length",
+    "value": "shorter",
+    "scope": {
+     "subject": "Biologi"
+    },
+    "n": 1,
+    "text": "Kortare svar i biologi"
+   },
+   "offline": "length:shorter"
+  },
+  {
+   "part": "a2",
+   "t": "kan du förklara mer",
+   "want": "length:longer",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "lite längre svar tack",
+   "want": "length:longer",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "det var för kort, utveckla",
+   "want": "length:longer",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "förklara som för en tioåring",
+   "want": "simplicity:simpler",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "jag fattar inte",
+   "want": "simplicity:simpler",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "för svåra ord",
+   "want": "simplicity:simpler",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "säg det enklare",
+   "want": "simplicity:simpler",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "enklare tack",
+   "want": "simplicity:simpler",
+   "status": 200,
+   "setting": {
+    "key": "simplicity",
+    "value": "simpler",
+    "scope": {
+     "subject": "Biologi"
+    },
+    "n": 1,
+    "text": "Enklare förklaringar i biologi"
+   },
+   "offline": "simplicity:simpler"
+  },
+  {
+   "part": "a2",
+   "t": "ge ett exempel",
+   "want": "examples:more",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "kan du ta ett exempel",
+   "want": "examples:more",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "exempel hade hjälpt",
+   "want": "examples:more",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "det stämmer inte alls",
+   "want": "accuracy:careful",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  },
+  {
+   "part": "a2",
+   "t": "nej det är inte sant",
+   "want": "accuracy:careful",
+   "status": 200,
+   "setting": null,
+   "offline": null
+  }
+ ]
+}

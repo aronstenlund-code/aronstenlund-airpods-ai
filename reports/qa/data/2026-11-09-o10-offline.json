@@ -1,0 +1,1292 @@
+{
+ "app_commands": {
+  "n": 20,
+  "ok": 13,
+  "misses": [
+   {
+    "cur": "fragor",
+    "t": "sätt på provläget",
+    "expect": "switch_mode:prov",
+    "got": null,
+    "confidence": null,
+    "ok": false
+   },
+   {
+    "cur": "fragor",
+    "t": "kan du sluta lyssna",
+    "expect": "pause",
+    "got": null,
+    "confidence": null,
+    "ok": false
+   },
+   {
+    "cur": "fragor",
+    "t": "kan vi plugga till provet istället",
+    "expect": "switch_mode:prov",
+    "got": null,
+    "confidence": null,
+    "ok": false
+   },
+   {
+    "cur": "fragor",
+    "t": "dags för intervjuträning",
+    "expect": "switch_mode:intervju",
+    "got": null,
+    "confidence": null,
+    "ok": false
+   },
+   {
+    "cur": "prov",
+    "t": "ta en kort paus",
+    "expect": "pause",
+    "got": null,
+    "confidence": null,
+    "ok": false
+   },
+   {
+    "cur": "fragor",
+    "t": "nu räcker det för idag",
+    "expect": "stop",
+    "got": null,
+    "confidence": null,
+    "ok": false
+   },
+   {
+    "cur": "prov",
+    "t": "inget mer förhör nu",
+    "expect": "switch_mode:fragor",
+    "got": null,
+    "confidence": null,
+    "ok": false
+   }
+  ]
+ },
+ "app_command_negatives": {
+  "n": 15,
+  "false_hits": [],
+  "unsure_hits": []
+ },
+ "corrections": {
+  "n": 20,
+  "ok": 3,
+  "misses": [
+   {
+    "t": "kan du korta ner det",
+    "want": "length:shorter",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "det blev för långt",
+    "want": "length:shorter",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "lite kortare",
+    "want": "length:shorter",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "kortare i fortsättningen",
+    "want": "length:shorter",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "du pratar för mycket",
+    "want": "length:shorter",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "kan du förklara mer",
+    "want": "length:longer",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "lite längre svar tack",
+    "want": "length:longer",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "det var för kort, utveckla",
+    "want": "length:longer",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "förklara som för en tioåring",
+    "want": "simplicity:simpler",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "jag fattar inte",
+    "want": "simplicity:simpler",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "för svåra ord",
+    "want": "simplicity:simpler",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "säg det enklare",
+    "want": "simplicity:simpler",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "ge ett exempel",
+    "want": "examples:more",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "kan du ta ett exempel",
+    "want": "examples:more",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "exempel hade hjälpt",
+    "want": "examples:more",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "det stämmer inte alls",
+    "want": "accuracy:careful",
+    "got": null,
+    "ok": false
+   },
+   {
+    "t": "nej det är inte sant",
+    "want": "accuracy:careful",
+    "got": null,
+    "ok": false
+   }
+  ]
+ },
+ "correction_negatives": {
+  "n": 5,
+  "false_hits": []
+ },
+ "scope": {
+  "n": 12,
+  "ok": 9,
+  "wrong": [
+   {
+    "name": "Frågor then Provläge widen to global (probe Provläge, third subject)",
+    "probe": {
+     "mode": "prov",
+     "subject": "Fysik",
+     "answer_type": "explanation"
+    },
+    "expect": true,
+    "applies": [],
+    "settings": [
+     {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 2,
+      "text": "Kortare svar i Frågor"
+     }
+    ],
+    "trace": [
+     {
+      "text": "kortare",
+      "ctx": {
+       "mode": "fragor",
+       "answer_type": "fact"
+      },
+      "changed": "Kortare svar i Frågor",
+      "scope": {
+       "mode": "fragor"
+      },
+      "widened": false
+     },
+     {
+      "text": "kortare",
+      "ctx": {
+       "mode": "prov",
+       "subject": "Biologi",
+       "answer_type": "explanation"
+      },
+      "changed": "Kortare svar i Frågor",
+      "scope": {
+       "mode": "fragor"
+      },
+      "widened": true
+     }
+    ],
+    "ok": false
+   },
+   {
+    "name": "Frågor then Provläge widen to global (probe the Provläge subject itself)",
+    "probe": {
+     "mode": "prov",
+     "subject": "Biologi",
+     "answer_type": "explanation"
+    },
+    "expect": true,
+    "applies": [],
+    "settings": [
+     {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 2,
+      "text": "Kortare svar i Frågor"
+     }
+    ],
+    "trace": [
+     {
+      "text": "kortare",
+      "ctx": {
+       "mode": "fragor",
+       "answer_type": "fact"
+      },
+      "changed": "Kortare svar i Frågor",
+      "scope": {
+       "mode": "fragor"
+      },
+      "widened": false
+     },
+     {
+      "text": "kortare",
+      "ctx": {
+       "mode": "prov",
+       "subject": "Biologi",
+       "answer_type": "explanation"
+      },
+      "changed": "Kortare svar i Frågor",
+      "scope": {
+       "mode": "fragor"
+      },
+      "widened": true
+     }
+    ],
+    "ok": false
+   },
+   {
+    "name": "Provläge then Frågor widen to global (probe Provläge, other subject)",
+    "probe": {
+     "mode": "prov",
+     "subject": "Kemi",
+     "answer_type": "explanation"
+    },
+    "expect": true,
+    "applies": [],
+    "settings": [
+     {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "fragor"
+      },
+      "n": 2,
+      "text": "Kortare svar i Frågor"
+     }
+    ],
+    "trace": [
+     {
+      "text": "kortare",
+      "ctx": {
+       "mode": "prov",
+       "subject": "Biologi",
+       "answer_type": "explanation"
+      },
+      "changed": "Kortare svar i biologi",
+      "scope": {
+       "subject": "Biologi"
+      },
+      "widened": false
+     },
+     {
+      "text": "kortare",
+      "ctx": {
+       "mode": "fragor",
+       "answer_type": "fact"
+      },
+      "changed": "Kortare svar i Frågor",
+      "scope": {
+       "mode": "fragor"
+      },
+      "widened": true
+     }
+    ],
+    "ok": false
+   }
+  ]
+ },
+ "cmd": [
+  {
+   "cur": "fragor",
+   "t": "kan vi byta till provläget nu",
+   "expect": "switch_mode:prov",
+   "got": "switch_mode:prov",
+   "confidence": 0.9,
+   "ok": true
+  },
+  {
+   "cur": "prov",
+   "t": "jag vill köra frågeläget igen",
+   "expect": "switch_mode:fragor",
+   "got": "switch_mode:fragor",
+   "confidence": 0.9,
+   "ok": true
+  },
+  {
+   "cur": "prov",
+   "t": "okej Lumen, gå över till intervjuläget",
+   "expect": "switch_mode:intervju",
+   "got": "switch_mode:intervju",
+   "confidence": 0.9,
+   "ok": true
+  },
+  {
+   "cur": "fragor",
+   "t": "sätt på provläget",
+   "expect": "switch_mode:prov",
+   "got": null,
+   "confidence": null,
+   "ok": false
+  },
+  {
+   "cur": "prov",
+   "t": "pausa en stund",
+   "expect": "pause",
+   "got": "pause",
+   "confidence": 0.9,
+   "ok": true
+  },
+  {
+   "cur": "intervju",
+   "t": "Lumen, pausa",
+   "expect": "pause",
+   "got": "pause",
+   "confidence": 0.9,
+   "ok": true
+  },
+  {
+   "cur": "socialt",
+   "t": "Lumen, vi är klara nu",
+   "expect": "stop",
+   "got": "stop",
+   "confidence": 0.85,
+   "ok": true
+  },
+  {
+   "cur": "fragor",
+   "t": "kan du sluta lyssna",
+   "expect": "pause",
+   "got": null,
+   "confidence": null,
+   "ok": false
+  },
+  {
+   "cur": "prov",
+   "t": "fortsätt lyssna",
+   "expect": "resume",
+   "got": "resume",
+   "confidence": 0.85,
+   "ok": true
+  },
+  {
+   "cur": "fragor",
+   "t": "kan vi plugga till provet istället",
+   "expect": "switch_mode:prov",
+   "got": null,
+   "confidence": null,
+   "ok": false
+  },
+  {
+   "cur": "fragor",
+   "t": "kan vi öva på min jobbintervju",
+   "expect": "switch_mode:intervju",
+   "got": "switch_mode:intervju",
+   "confidence": 0.8,
+   "ok": true
+  },
+  {
+   "cur": "rizz",
+   "t": "Lumen, tillbaka till provläget",
+   "expect": "switch_mode:prov",
+   "got": "switch_mode:prov",
+   "confidence": 0.9,
+   "ok": true
+  },
+  {
+   "cur": "socialt",
+   "t": "Lumen, byt till vanliga frågor",
+   "expect": "switch_mode:fragor",
+   "got": "switch_mode:fragor",
+   "confidence": 0.9,
+   "ok": true
+  },
+  {
+   "cur": "fragor",
+   "t": "nu tar vi rizzläget",
+   "expect": "switch_mode:rizz",
+   "got": "switch_mode:rizz",
+   "confidence": 0.9,
+   "ok": true
+  },
+  {
+   "cur": "prov",
+   "t": "starta socialt läge",
+   "expect": "switch_mode:socialt",
+   "got": "switch_mode:socialt",
+   "confidence": 0.9,
+   "ok": true
+  },
+  {
+   "cur": "fragor",
+   "t": "dags för intervjuträning",
+   "expect": "switch_mode:intervju",
+   "got": null,
+   "confidence": null,
+   "ok": false
+  },
+  {
+   "cur": "prov",
+   "t": "ta en kort paus",
+   "expect": "pause",
+   "got": null,
+   "confidence": null,
+   "ok": false
+  },
+  {
+   "cur": "fragor",
+   "t": "nu räcker det för idag",
+   "expect": "stop",
+   "got": null,
+   "confidence": null,
+   "ok": false
+  },
+  {
+   "cur": "socialt",
+   "t": "Lumen, börja lyssna igen",
+   "expect": "resume",
+   "got": "resume",
+   "confidence": 0.85,
+   "ok": true
+  },
+  {
+   "cur": "prov",
+   "t": "inget mer förhör nu",
+   "expect": "switch_mode:fragor",
+   "got": null,
+   "confidence": null,
+   "ok": false
+  }
+ ],
+ "notCmd": [
+  {
+   "cur": "prov",
+   "t": "kan vi köra en fråga till",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "prov",
+   "t": "jag vill öva mer på provfrågor",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "fragor",
+   "t": "hur pausar man en video på youtube",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "fragor",
+   "t": "min hund lyssnar aldrig på mig",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "prov",
+   "t": "vi är klara med kapitel tre, vad kommer sen",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "fragor",
+   "t": "ska vi ta en paus från sociala medier",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "intervju",
+   "t": "pausa",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "socialt",
+   "t": "vi är klara nu",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "fragor",
+   "t": "stäng av spisen",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "prov",
+   "t": "börja med provläget i matte, vad är en derivata",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "fragor",
+   "t": "kör vi intervjun imorgon eller på fredag",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "fragor",
+   "t": "tyst en stund i klassrummet är skönt",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "fragor",
+   "t": "testa provläget en gång, sa min lärare",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "rizz",
+   "t": "vi tar intervjun sen",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  },
+  {
+   "cur": "fragor",
+   "t": "jag har inte tid att plugga nu",
+   "got": null,
+   "confidence": null,
+   "false_hit": false
+  }
+ ],
+ "corr": [
+  {
+   "t": "kan du korta ner det",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "det blev för långt",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "lite kortare",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "svara kortare nästa gång",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "ok": true
+  },
+  {
+   "t": "kortare i fortsättningen",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "du pratar för mycket",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "Lumen, för långt",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "ok": true
+  },
+  {
+   "t": "kan du förklara mer",
+   "want": "length:longer",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "lite längre svar tack",
+   "want": "length:longer",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "det var för kort, utveckla",
+   "want": "length:longer",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "förklara som för en tioåring",
+   "want": "simplicity:simpler",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "jag fattar inte",
+   "want": "simplicity:simpler",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "för svåra ord",
+   "want": "simplicity:simpler",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "säg det enklare",
+   "want": "simplicity:simpler",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "enklare tack",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "ok": true
+  },
+  {
+   "t": "ge ett exempel",
+   "want": "examples:more",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan du ta ett exempel",
+   "want": "examples:more",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "exempel hade hjälpt",
+   "want": "examples:more",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "det stämmer inte alls",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "nej det är inte sant",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  }
+ ],
+ "notCorr": [
+  {
+   "t": "vad är kortare, en mil eller en kilometer",
+   "got": null,
+   "false_hit": false
+  },
+  {
+   "t": "ge exempel på däggdjur",
+   "got": null,
+   "false_hit": false
+  },
+  {
+   "t": "är det fel att ljuga",
+   "got": null,
+   "false_hit": false
+  },
+  {
+   "t": "jag förstår inte varför himlen är blå",
+   "got": null,
+   "false_hit": false
+  },
+  {
+   "t": "kortare än en meter, vad heter det",
+   "got": null,
+   "false_hit": false
+  }
+ ],
+ "seq": [
+  {
+   "name": "same subject",
+   "probe": {
+    "mode": "prov",
+    "subject": "Biologi",
+    "answer_type": "explanation"
+   },
+   "expect": true,
+   "applies": [
+    "Kortare svar i biologi"
+   ],
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "n": 1,
+     "text": "Kortare svar i biologi"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "changed": "Kortare svar i biologi",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "widened": false
+    }
+   ],
+   "ok": true
+  },
+  {
+   "name": "other subject, same mode (one correction)",
+   "probe": {
+    "mode": "prov",
+    "subject": "Kemi",
+    "answer_type": "explanation"
+   },
+   "expect": false,
+   "applies": [],
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "n": 1,
+     "text": "Kortare svar i biologi"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "changed": "Kortare svar i biologi",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "widened": false
+    }
+   ],
+   "ok": true
+  },
+  {
+   "name": "two subjects in Provläge widen to the mode",
+   "probe": {
+    "mode": "prov",
+    "subject": "Historia",
+    "answer_type": "explanation"
+   },
+   "expect": true,
+   "applies": [
+    "Kortare svar i Provläge"
+   ],
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "prov"
+     },
+     "n": 2,
+     "text": "Kortare svar i Provläge"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "changed": "Kortare svar i biologi",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "widened": false
+    },
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Kemi",
+      "answer_type": "explanation"
+     },
+     "changed": "Kortare svar i Provläge",
+     "scope": {
+      "mode": "prov"
+     },
+     "widened": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "name": "Frågor setting stays in Frågor",
+   "probe": {
+    "mode": "prov",
+    "subject": "Biologi",
+    "answer_type": "explanation"
+   },
+   "expect": false,
+   "applies": [],
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1,
+     "text": "Kortare svar i Frågor"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "changed": "Kortare svar i Frågor",
+     "scope": {
+      "mode": "fragor"
+     },
+     "widened": false
+    }
+   ],
+   "ok": true
+  },
+  {
+   "name": "Frågor then Provläge widen to global (probe Provläge, third subject)",
+   "probe": {
+    "mode": "prov",
+    "subject": "Fysik",
+    "answer_type": "explanation"
+   },
+   "expect": true,
+   "applies": [],
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 2,
+     "text": "Kortare svar i Frågor"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "changed": "Kortare svar i Frågor",
+     "scope": {
+      "mode": "fragor"
+     },
+     "widened": false
+    },
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "changed": "Kortare svar i Frågor",
+     "scope": {
+      "mode": "fragor"
+     },
+     "widened": true
+    }
+   ],
+   "ok": false
+  },
+  {
+   "name": "Frågor then Provläge widen to global (probe the Provläge subject itself)",
+   "probe": {
+    "mode": "prov",
+    "subject": "Biologi",
+    "answer_type": "explanation"
+   },
+   "expect": true,
+   "applies": [],
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 2,
+     "text": "Kortare svar i Frågor"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "changed": "Kortare svar i Frågor",
+     "scope": {
+      "mode": "fragor"
+     },
+     "widened": false
+    },
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "changed": "Kortare svar i Frågor",
+     "scope": {
+      "mode": "fragor"
+     },
+     "widened": true
+    }
+   ],
+   "ok": false
+  },
+  {
+   "name": "Provläge then Frågor widen to global (probe Frågor)",
+   "probe": {
+    "mode": "fragor",
+    "answer_type": "fact"
+   },
+   "expect": true,
+   "applies": [
+    "Kortare svar i Frågor"
+   ],
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 2,
+     "text": "Kortare svar i Frågor"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "changed": "Kortare svar i biologi",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "widened": false
+    },
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "changed": "Kortare svar i Frågor",
+     "scope": {
+      "mode": "fragor"
+     },
+     "widened": true
+    }
+   ],
+   "ok": true
+  },
+  {
+   "name": "Provläge then Frågor widen to global (probe Provläge, other subject)",
+   "probe": {
+    "mode": "prov",
+    "subject": "Kemi",
+    "answer_type": "explanation"
+   },
+   "expect": true,
+   "applies": [],
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 2,
+     "text": "Kortare svar i Frågor"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "changed": "Kortare svar i biologi",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "widened": false
+    },
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "changed": "Kortare svar i Frågor",
+     "scope": {
+      "mode": "fragor"
+     },
+     "widened": true
+    }
+   ],
+   "ok": false
+  },
+  {
+   "name": "math by answer type",
+   "probe": {
+    "mode": "prov",
+    "subject": "Matematik",
+    "answer_type": "math"
+   },
+   "expect": true,
+   "applies": [
+    "Kortare svar i matte"
+   ],
+   "settings": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "answer_type": "math"
+     },
+     "n": 1,
+     "text": "Kortare svar i matte"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Matematik",
+      "answer_type": "math"
+     },
+     "changed": "Kortare svar i matte",
+     "scope": {
+      "answer_type": "math"
+     },
+     "widened": false
+    }
+   ],
+   "ok": true
+  },
+  {
+   "name": "math setting not in Biologi",
+   "probe": {
+    "mode": "prov",
+    "subject": "Biologi",
+    "answer_type": "explanation"
+   },
+   "expect": false,
+   "applies": [],
+   "settings": [
+    {
+     "key": "simplicity",
+     "value": "simpler",
+     "scope": {
+      "answer_type": "math"
+     },
+     "n": 1,
+     "text": "Enklare förklaringar i matte"
+    }
+   ],
+   "trace": [
+    {
+     "text": "enklare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Matematik",
+      "answer_type": "math"
+     },
+     "changed": "Enklare förklaringar i matte",
+     "scope": {
+      "answer_type": "math"
+     },
+     "widened": false
+    }
+   ],
+   "ok": true
+  },
+  {
+   "name": "opposite replaces (Frågor kortare then längre)",
+   "probe": {
+    "mode": "fragor",
+    "answer_type": "fact"
+   },
+   "expect": "longer only",
+   "applies": [
+    "Längre, utförligare svar i Frågor"
+   ],
+   "settings": [
+    {
+     "key": "length",
+     "value": "longer",
+     "scope": {
+      "mode": "fragor"
+     },
+     "n": 1,
+     "text": "Längre, utförligare svar i Frågor"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "changed": "Kortare svar i Frågor",
+     "scope": {
+      "mode": "fragor"
+     },
+     "widened": false
+    },
+    {
+     "text": "längre",
+     "ctx": {
+      "mode": "fragor",
+      "answer_type": "fact"
+     },
+     "changed": "Längre, utförligare svar i Frågor",
+     "scope": {
+      "mode": "fragor"
+     },
+     "widened": false
+    }
+   ],
+   "ok": true
+  },
+  {
+   "name": "opposite replaces (Biologi kortare then längre)",
+   "probe": {
+    "mode": "prov",
+    "subject": "Biologi",
+    "answer_type": "explanation"
+   },
+   "expect": "longer only",
+   "applies": [
+    "Längre, utförligare svar i biologi"
+   ],
+   "settings": [
+    {
+     "key": "length",
+     "value": "longer",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "n": 1,
+     "text": "Längre, utförligare svar i biologi"
+    }
+   ],
+   "trace": [
+    {
+     "text": "kortare",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "changed": "Kortare svar i biologi",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "widened": false
+    },
+    {
+     "text": "längre",
+     "ctx": {
+      "mode": "prov",
+      "subject": "Biologi",
+      "answer_type": "explanation"
+     },
+     "changed": "Längre, utförligare svar i biologi",
+     "scope": {
+      "subject": "Biologi"
+     },
+     "widened": false
+    }
+   ],
+   "ok": true
+  }
+ ]
+}
