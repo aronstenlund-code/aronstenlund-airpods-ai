@@ -176,6 +176,12 @@ final class ScreenTourTests: XCTestCase {
 
     /// Scrolls the settings list up or down until the row is there, opens it, shoots it and goes back.
     private func openFromSettings(_ labels: [String], name: String) {
+        // If going back from the previous page closed the whole sheet (seen after Förberedelser), open Settings again.
+        if !app.navigationBars.buttons["Klar"].exists {
+            log.append("note: Settings sheet closed before \(labels[0]), opening it again")
+            tap(["Inställningar"], step: "start → Inställningar (again)")
+            pause(1)
+        }
         // Buttons only: a section header with the same words ("Diagnostik") is not the row.
         guard let row = scrollTo(labels, buttonsOnly: true) else {
             miss("settings row \(labels[0]) not found")
