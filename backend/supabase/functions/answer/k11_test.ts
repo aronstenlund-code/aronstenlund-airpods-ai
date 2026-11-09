@@ -139,6 +139,7 @@ Deno.test("K11.2 an interview answer never opens with a back-reference (live 2/5
   for (const text of [
     "Det är precis den noggrannheten jag vill ta med mig till Systembolaget. Jag ser fram emot att lära mig reglerna. ",
     "Det har lärt mig att vara noggrann med regler. Jag ser fram emot att lära mig reglerna. ",
+    "Det har gjort mig van vid ansvar. Jag ser fram emot att lära mig reglerna. ",
   ]) {
     const post = new AnswerPost({ previousAnswers: [], trimQuestion: false, interview: true, missingFact: "alkohol" });
     const out = post.push(text) + post.finish();

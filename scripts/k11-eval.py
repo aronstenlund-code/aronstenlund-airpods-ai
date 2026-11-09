@@ -79,11 +79,11 @@ def main():
         rows.append(row)
         print(kind, r["status"], r.get("first_ms"), r.get("ms"), r.get("model"), "|", ans[:160].replace("\n", " / "), flush=True)
     t = [x for x in rows if x["kind"] == "time"]
-    firsts = sorted(x["first_ms"] or 99999 for x in t)
+    firsts = sorted(x["first_ms"] or 99999 for x in t) or [0]
     s = {
         "time_n": len(t),
         "time_first_max_ms": max(firsts),
-        "time_total_max_ms": max(x["ms"] or 99999 for x in t),
+        "time_total_max_ms": max([x["ms"] or 99999 for x in t] or [0]),
         "time_over_8s": sum(f > 8000 for f in firsts),
         "time_empty_or_error": sum(x["status"] != 200 or not x["answer"].strip() for x in t),
         "stump": f"{sum(x['stump'] for x in rows if x['kind'] == 'stump')}/{sum(x['kind'] == 'stump' for x in rows)}",

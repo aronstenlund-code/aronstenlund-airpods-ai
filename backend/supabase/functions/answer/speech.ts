@@ -641,7 +641,7 @@ const STUMP_BACKREF = /^\s*(?:där|därför|dessutom|alltså|också|då|sedan|d�
  * ("Det är precis den noggrannheten jag vill ta med mig …", "Det har lärt mig att …"): the first sentence of an
  * interview answer is held to the same test, plus "det har lärt/gett mig".
  */
-const OPENING_BACKREF = /^\s*(?:det|den|detta|det där) (?:har|gav|ger) (?:lärt|gett|givit|format|visat) mig(?![\p{L}-])/iu;
+const OPENING_BACKREF = /^\s*(?:det|den|detta|det där) (?:har|gav|ger) (?:lärt|gett|givit|format|visat|gjort|fått) mig(?![\p{L}-])/iu;
 export function isOpeningStump(sentence: string): boolean {
   return !!sentence.trim() && (STUMP_BACKREF.test(sentence) || OPENING_BACKREF.test(sentence));
 }
