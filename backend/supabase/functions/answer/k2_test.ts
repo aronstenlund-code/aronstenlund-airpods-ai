@@ -138,3 +138,32 @@ Deno.test("K2 an English year split from its preposition by the stream is still 
   const out = n.push('"She has lived here since ') + n.push('2015". Hon bor kvar.') + n.finish();
   assertStringIncludes(out, "since twenty fifteen");
 });
+
+Deno.test("K2 markup at the end is never read aloud; 'x < 5' is kept", async () => {
+  const { TagStrip, AnswerPost } = await import("./speech.ts");
+  const strip = (chunks: string[]) => {
+    const t = new TagStrip();
+    return chunks.map((c) => t.push(c)).join("") + t.finish();
+  };
+  assertEquals(strip(["Klar.", " <b", "r>"]), "Klar. ");
+  assertEquals(strip(["Klar. <!-- ", "x -->"]), "Klar. ");
+  assertEquals(strip(["Klar. <already_asked>"]), "Klar. ");
+  assertEquals(strip(["Klar. <safe"]), "Klar. ");
+  assertEquals(strip(["Om x < 5 gäller det."]), "Om x < 5 gäller det.");
+  assertEquals(strip(["Jag <3 kemi."]), "Jag <3 kemi.");
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor: true });
+  const out = p.push("Ribosomer bygger proteiner. ") + p.push("<br>") + p.push("\n[[SAMMANFATTNING]] Om ribosomer.") + p.finish();
+  assert(!/br|</.test(out), out);
+  assertEquals(p.summary, "Om ribosomer.");
+});
+
+Deno.test("K2 common gender slips are fixed in speech", async () => {
+  const { afterNumbers } = await import("./speechsym.ts");
+  assertEquals(afterNumbers("Det är ett glukosmolekyl."), "Det är en glukosmolekyl.");
+  assertEquals(afterNumbers("genom ett misstroendeförklaring"), "genom en misstroendeförklaring");
+  assertEquals(afterNumbers("Ett icke-metall leder dåligt."), "En icke-metall leder dåligt.");
+  assertEquals(afterNumbers("i en ekosystem"), "i ett ekosystem");
+  assertEquals(afterNumbers("en rätblock"), "ett rätblock");
+  assertEquals(afterNumbers("ett nervsystem"), "ett nervsystem");
+  assertEquals(afterNumbers("en cell och ett helt organ"), "en cell och ett helt organ");
+});

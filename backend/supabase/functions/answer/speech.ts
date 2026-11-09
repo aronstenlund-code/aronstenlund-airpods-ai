@@ -963,10 +963,52 @@ export interface PostOptions {
   heard?: string;
 }
 
+/**
+ * K2 (Oscar's D87 review): markup the model sometimes writes at the end ("<br>", "<!-- -->", "<already_asked>",
+ * "<safety>") is never read aloud. A "<" that starts a tag or comment is held until it closes (or 60 chars); a tag
+ * or comment is dropped, anything else ("x < 5", "<3") is passed on unchanged.
+ */
+export class TagStrip {
+  private held = "";
+  push(text: string): string {
+    let out = "";
+    for (const ch of text) {
+      if (this.held) {
+        this.held += ch;
+        const h = this.held;
+        if (h.startsWith("<!--")) {
+          if (h.endsWith("-->")) this.held = "";
+          else if (h.length > 400) { out += h; this.held = ""; }
+          continue;
+        }
+        if (h.length === 2 && !/^<[!/a-zA-Z_]$/.test(h)) { out += h; this.held = ""; continue; }
+        if (h.startsWith("<!") && h.length <= 4 && "<!--".startsWith(h)) continue;
+        if (ch === ">") {
+          if (/^<\/?[a-zA-Z_][\w:-]{0,30}(?:\s[^<>]{0,40})?\/?>$/.test(h)) this.held = "";
+          else { out += h; this.held = ""; }
+          continue;
+        }
+        if (ch === "<" || ch === "\n" || h.length > 60) { out += h.slice(0, -1); this.held = ch === "<" ? "<" : ""; if (ch === "\n") out += ch; }
+        continue;
+      }
+      if (ch === "<") this.held = "<";
+      else out += ch;
+    }
+    return out;
+  }
+  /** An unclosed "<tag" at the very end is junk, not speech. */
+  finish(): string {
+    const h = this.held;
+    this.held = "";
+    return /^<[!/a-zA-Z_][\w:!-]*\s*$/.test(h) || h === "<" ? "" : h;
+  }
+}
+
 export class AnswerPost {
   readonly dup: DupGuard;
   readonly trim: QuestionTrim;
   private readonly tap = new SummaryTap();
+  private readonly strip = new TagStrip();
   private readonly rel: RelationTap;
   private readonly sil: SilenceTap;
   private readonly meta: MetaGate;
@@ -1081,7 +1123,7 @@ export class AnswerPost {
       this.gate.push(
         this.imeta.push(
           this.lead.push(this.input.push(
-            this.meta.push(this.en.push(this.src.push(this.tap.push(this.sil.push(this.rel.push(raw)))))),
+            this.meta.push(this.en.push(this.src.push(this.strip.push(this.tap.push(this.sil.push(this.rel.push(raw))))))),
           )),
         ),
       ),
@@ -1097,7 +1139,8 @@ export class AnswerPost {
   }
 
   finish(): string {
-    const t = this.tap.push(this.sil.push(this.rel.finish()) + this.sil.finish()) + this.tap.finish();
+    const t0 = this.tap.push(this.sil.push(this.rel.finish()) + this.sil.finish()) + this.tap.finish();
+    const t = this.strip.push(t0) + this.strip.finish();
     const s = this.src.push(t) + this.src.finish();
     const e0 = this.en.push(s) + this.en.finish();
     const e1 = this.meta.push(e0) + this.meta.finish();

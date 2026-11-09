@@ -348,6 +348,11 @@ export function afterNumbers(text: string): string {
   let s = text;
   // "mol" is an en-word ("en mol"), a recurring slip in the model's Swedish
   s = s.replace(/(?<![\p{L}])([Ee])tt mol(?![\p{L}])/gu, (_m, e: string) => `${e}n mol`);
+  // K2 (Oscar's D87 review): the commonest gender slips, only article directly before the noun.
+  // -ning/-ring/-het/-tion/-molekyl/-metall/-cell/-process/-förklaring are en-words; -system/-block are ett-words.
+  s = s.replace(/(?<![\p{L}])([Ee])tt ((?:[\p{L}-]*(?:ning|ring|het|tion|molekyl|metall|process))|[\p{L}]*cell|icke-metall)(?![\p{L}])/gu,
+    (_m, e: string, w: string) => `${e}n ${w}`);
+  s = s.replace(/(?<![\p{L}])([Ee])n ([\p{L}]*(?:system|block))(?![\p{L}])/gu, (_m, e: string, w: string) => `${e}tt ${w}`);
   // squared / cubed units: "meter²" -> "kvadratmeter"
   s = s.replace(
     /(kilometer|meter|centimeter|millimeter|decimeter)([²³])/g,
