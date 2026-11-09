@@ -636,6 +636,15 @@ export function rewriteLevelMeta(sentence: string): string {
  */
 // K11 (Oscar O5): "Det är just den noggrannheten jag vill ta med mig …" pointed at the dropped claim
 const STUMP_BACKREF = /^\s*(?:där|därför|dessutom|alltså|också|då|sedan|därefter|annars|ändå|det vill säga|med andra ord|(?:det|detta|det här) är (?:just|precis|också|därför)|just (?:den|det|de|därför|så)|(?:den|det|de) (?:här|där)|(?:denna|detta|dessa|samma)|(?:den|det|de) [\p{L}]+(?:heten|erfarenheten|vanan|kunskapen)(?:na)? (?:jag|är|har|vill|tar|gör))(?![\p{L}-])/iu;
+/**
+ * K11 (live 2/5): an interview answer about a fact the CV lacks OPENED with a back-reference to nothing
+ * ("Det är precis den noggrannheten jag vill ta med mig …", "Det har lärt mig att …"): the first sentence of an
+ * interview answer is held to the same test, plus "det har lärt/gett mig".
+ */
+const OPENING_BACKREF = /^\s*(?:det|den|detta|det där) (?:har|gav|ger) (?:lärt|gett|givit|format|visat) mig(?![\p{L}-])/iu;
+export function isOpeningStump(sentence: string): boolean {
+  return !!sentence.trim() && (STUMP_BACKREF.test(sentence) || OPENING_BACKREF.test(sentence));
+}
 export function fixStump(sentence: string): string {
   if (!sentence.trim()) return sentence;
   if (STUMP_BACKREF.test(sentence)) return "";
@@ -1142,7 +1151,8 @@ export class AnswerPost {
     this.sil = new SilenceTap(opts.silence === true);
     this.meta = new MetaGate(opts.silence === true);
     let firstInterview = true;
-    this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, (sentence) => {
+    let interviewKept = false;
+    const interviewRewrite = (sentence: string): string => {
       // K1.5: about a fact the CV does not give, the answer never opens with yes or no
       if (opts.missingFact && sentence.trim()) {
         if (claimsMissing(opts.missingFact, sentence)) return ""; // "Jag bor i Malmö …" when the CV never says so
@@ -1153,6 +1163,14 @@ export class AnswerPost {
         }
       }
       return stripInterviewMeta(sentence);
+    };
+    this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, (sentence) => {
+      const r = interviewRewrite(sentence);
+      if (!interviewKept && r.trim()) {
+        if (isOpeningStump(r)) return ""; // K11: the answer never opens pointing at something not said
+        interviewKept = true;
+      }
+      return r;
     });
     this.input = new MetaGate(opts.inputMeta === true, (x) => isInputMeta(x) || (opts.tutor === true && isReasoningMeta(x, opts.heard ?? "")));
     // K7.1: Provläge never says the level, the grade or what it chooses to explain (every sentence)

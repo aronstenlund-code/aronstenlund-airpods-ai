@@ -61,7 +61,7 @@ export function claimsMissing(topic: string, sentence: string): boolean {
 }
 
 export function missingFactNote(topic: string): string {
-  return `The interviewer asks about ${topic}, which the CV and <memories> do not mention. Never answer ja or nej, never "det har jag inte", "jag har inte", "jag är … år" or any other claim about ${topic} either way (also not where you live or how you travel), and never say that it is missing: answer in first person with what the CV does show that matters for the question (reliability, how you work, relevant experience, what you look forward to in the role).`;
+  return `The interviewer asks about ${topic}, which the CV and <memories> do not mention. Never answer ja or nej, never "det har jag inte", "jag har inte", "jag är … år" or any other claim about ${topic} either way (also not where you live or how you travel), and never say that it is missing: answer in first person with what the CV does show that matters for the question (reliability, how you work, relevant experience, what you look forward to in the role). The first sentence stands on its own: never open with "Det är just den …", "Det är precis det …" or "Det har lärt mig …" pointing at something you did not say.`;
 }
 
 /** A yes/no or has/lacks opening about the missing fact (only the first sentence is checked). */

@@ -134,3 +134,17 @@ Deno.test("K11.3 an unverified quote is dropped and flagged; a quote from the se
   const off = new AnswerPost({ previousAnswers: [], trimQuestion: false, source: true });
   assert((off.push("Han skrev 'det här är ett långt citat utan sökning'. ") + off.finish()).includes("långt citat"));
 });
+
+Deno.test("K11.2 an interview answer never opens with a back-reference (live 2/5 before)", () => {
+  for (const text of [
+    "Det är precis den noggrannheten jag vill ta med mig till Systembolaget. Jag ser fram emot att lära mig reglerna. ",
+    "Det har lärt mig att vara noggrann med regler. Jag ser fram emot att lära mig reglerna. ",
+  ]) {
+    const post = new AnswerPost({ previousAnswers: [], trimQuestion: false, interview: true, missingFact: "alkohol" });
+    const out = post.push(text) + post.finish();
+    assert(out.startsWith("Jag ser fram emot"), out);
+  }
+  const ok = new AnswerPost({ previousAnswers: [], trimQuestion: false, interview: true });
+  const out = ok.push("Det jag tar med mig är ansvar i kassan. Det är just den noggrannheten jag vill visa. ") + ok.finish();
+  assert(out.startsWith("Det jag tar med mig"), out);
+});
