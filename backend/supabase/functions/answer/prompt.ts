@@ -287,6 +287,10 @@ export function contextParts(
       parts.push(`<concept_stats>\n${lines}\n</concept_stats>`);
     }
   }
+  if (extras.preferences?.length) {
+    // K10.2: learned from the user's own corrections; they apply to this answer
+    parts.push(`<preferences note="learned from this user's own corrections: follow them in this answer">\n${extras.preferences.map((p) => `- ${sanitizeTagged(p)}`).join("\n")}\n</preferences>`);
+  }
   if (req.goals) parts.push(`<goals>\n${sanitizeTagged(req.goals)}\n</goals>`);
   if (req.commands.length) {
     const lines = req.commands

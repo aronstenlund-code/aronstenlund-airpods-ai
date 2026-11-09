@@ -16,6 +16,8 @@ import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./per
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
 import { commandTask, detectRule } from "./commands.ts";
+import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
+import { applicable, describe } from "../memory/settings.ts";
 
 /** K9: tasks that ask for one check question (only the question is said, as for "förhör mig"). */
 const FREE_INSTRUCTION_NOTE =
@@ -74,7 +76,7 @@ import {
   RELATION_RULE,
   SUMMARY_RULE,
   SYSTEM_PROMPT,
-  systemPromptFor, GRADE_NOTE, isQuizRequest, lastQuestion, QUIZ_NOTE, askedQuestions, looksLikeQuestion
+  systemPromptFor, GRADE_NOTE, isQuizRequest, lastQuestion, QUIZ_NOTE, askedQuestions, looksLikeQuestion, sanitizeTagged,
 } from "./prompt.ts";
 import { type AnswerRequest, LIMITS, readLimitedJson, validateAnswerRequest } from "./validate.ts";
 
@@ -395,6 +397,40 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         );
       }
 
+      // K10.1: a request to control the app in the user's own words. Sure (>= 0.8): no answer, the app does it.
+      const appCmd = demo ? null : detectAppCommand(body.fragment, currentMode(body));
+      if (appCmd && appCmd.confidence >= APP_COMMAND_SURE) {
+        const totalMs = Math.round(now() - t0);
+        const frames = [
+          sseFrame("meta", {
+            reconstructed_question: body.fragment,
+            confidence: 1,
+            is_question: false,
+            needs_confirmation: false,
+            answer_type: "fact",
+            app_command: appCmd,
+          }),
+          sseFrame("done", {
+            answered: false,
+            timing: { meta_ms: 0, ttft_ms: null, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "app_command" },
+            summary: null,
+            memory_add: null,
+            app_command: appCmd,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
+
       // D49: an explicit "kom ihåg ..." is answered locally (no model call) and returned as `memory_add`.
       const memoryOnly = !demo && body.mode !== "auto" && body.mode !== "interview_prep"
         ? detectMemoryAdd(body.fragment)
@@ -608,6 +644,20 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         if (!webOn) webNote = WEB_UNAVAILABLE_NOTE;
       }
       const answerType = (computed || webOn || demo) && !tutor ? "fact" : answerTypeBase;
+      // K10.2: only the learned settings that apply to this context (mode, subject, exam, kind of answer)
+      const prefSubject = body.prefContext?.subject ?? /(?:^|\.\s*)Ämne:\s*([^.]+)/u.exec(body.personaSetup)?.[1]?.trim();
+      const prefLines = body.preferences?.length && !demo
+        ? applicable(body.preferences, {
+          mode: currentMode(body) ?? undefined,
+          subject: prefSubject,
+          exam: body.prefContext?.exam,
+          answer_type: computed || /^matem/iu.test(prefSubject ?? "") ? "math" : answerType === "study" ? "explanation" : "fact",
+        }).map(describe)
+        : [];
+      // K10.3: the profile goes in its own cached system block after the shared prompt
+      const systemTail = body.prefProfile && !demo
+        ? `<user_profile>${sanitizeTagged(body.prefProfile)}</user_profile> How this user wants answers, learned from their corrections: follow it unless the request asks otherwise.`
+        : undefined;
       const maxChars = (demo ? demoCaps.answerMaxChars : undefined) ?? plan?.maxChars ??
         (textReq ? 2400 : undefined) ?? (webOn ? 800 : undefined) ??
         (answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars);
@@ -770,6 +820,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D72 live test: "the Nth king" was answered wrong without listing first; ask for the list in code.
       const ordinal = !plan && isOrdinalFact(body.fragment);
       const baseExtras: PromptExtras = {
+        ...(prefLines.length ? { preferences: prefLines } : {}),
         now: nowContext((deps.clock ?? (() =>
           new Date()))()),
         ...(computed ? { computed: computed.text } : {}),
@@ -783,6 +834,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           user: userFor(body, baseExtras),
           maxTokens,
           cacheSystem: true,
+          ...(systemTail ? { systemTail } : {}),
           tools,
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
@@ -897,6 +949,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 needs_confirmation: ev.meta.needs_confirmation,
                 answer_type: ev.meta.answer_type,
                 relation: ev.meta.relation ?? null,
+                ...(appCmd ? { app_command: appCmd } : {}), // K10.1: unsure (< 0.8): the app may offer it
               };
               if (silenceOn && ev.meta.is_question) {
                 pendingMeta = m; // D75: sent with the first spoken text
@@ -1004,6 +1057,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 }),
                 maxTokens,
                 cacheSystem: true,
+                ...(systemTail ? { systemTail } : {}),
                 tools,
                 ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
                 ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),

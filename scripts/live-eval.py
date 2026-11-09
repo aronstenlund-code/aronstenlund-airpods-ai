@@ -388,6 +388,14 @@ def run(cases, rizz, domains, only, now):
                     problems.append(f"väntade 403 {turn['expect_error']}, fick {json.dumps(r['error'], ensure_ascii=False)[:80] if r['error'] else 'svar'}")
             elif r["error"]:
                 problems.append(f"fel: {json.dumps(r['error'], ensure_ascii=False)[:100]}")
+            elif "app_command" in turn:  # K10.1: a request to control the app in the user's own words
+                got = (r["done"] or {}).get("app_command")
+                want = turn["app_command"]
+                if want is None and got:
+                    problems.append(f"falsk träff: app_command {json.dumps(got, ensure_ascii=False)}")
+                elif want and (not got or got.get("action") != want["action"] or (want.get("mode") and got.get("mode") != want["mode"])):
+                    problems.append(f"väntade app_command {json.dumps(want, ensure_ascii=False)}, fick {json.dumps(got, ensure_ascii=False)}")
+                text = json.dumps(got, ensure_ascii=False) if got else text
             elif turn.get("calibrate") and "expect_count" not in turn:
                 new = (r["done"] or {}).get("calibration")
                 problems += calibration_checks(new, r["options"], turn)

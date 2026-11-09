@@ -12,6 +12,8 @@ export interface LLMRequest {
   noThinking?: boolean;
   /** K7.6: think before answering (adaptive thinking at effort high, room for it in max_tokens): word problems. */
   think?: boolean;
+  /** K10.3: a per-user block after the cached system prompt (the profile), cached on its own. */
+  systemTail?: string;
   /** Overrides the provider's default model for this request (D52: Rizz uses a stronger model). */
   model?: string;
   signal?: AbortSignal;

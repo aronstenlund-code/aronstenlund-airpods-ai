@@ -1,4 +1,5 @@
 import { HttpError } from "../_shared/errors.ts";
+import { readContext, readSettings, type Setting } from "../memory/settings.ts";
 
 export type Mode = "push_to_talk" | "auto" | "text" | "tutor" | "interview_prep";
 export type Persona = "tutor" | "interview" | "social";
@@ -61,6 +62,12 @@ export interface AnswerRequest {
   };
   /** K9: the fragment is a spoken "Lumen, …" instruction (A7 level 2); unmatched ones go to the model as one. */
   voiceInstruction?: boolean;
+  /** K10.2: the learned settings from /memory (all of them; /answer keeps only those for this context). */
+  preferences?: Setting[];
+  /** K10.3: the /memory profile of how the user wants answers (<= 300 chars), in a cached system block. */
+  prefProfile?: string;
+  /** K10.2: the context the settings are matched against (subject and exam of the current study profile). */
+  prefContext?: { subject?: string; exam?: string };
 }
 
 export const LIMITS = {
@@ -337,6 +344,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       ...(concept_stats.length ? { concept_stats } : {}),
     },
     ...(o.voice_instruction === true ? { voiceInstruction: true } : {}),
+    ...prefs(o),
   };
 }
 
@@ -371,4 +379,16 @@ export async function readLimitedJson(req: Request, maxBytes: number): Promise<u
   } catch {
     throw bad("Body is not valid JSON");
   }
+}
+
+/** K10.2-3: learned settings, profile and their context (all optional; malformed entries are dropped). */
+function prefs(o: Record<string, unknown>): Pick<AnswerRequest, "preferences" | "prefProfile" | "prefContext"> {
+  const preferences = readSettings(o.preferences);
+  const profile = typeof o.pref_profile === "string" ? o.pref_profile.replace(/[\u0000-\u001f<>]/g, " ").trim().slice(0, 300) : "";
+  const ctx = readContext(o.pref_context);
+  return {
+    ...(preferences.length ? { preferences } : {}),
+    ...(profile ? { prefProfile: profile } : {}),
+    ...(ctx.subject || ctx.exam ? { prefContext: { ...(ctx.subject ? { subject: ctx.subject } : {}), ...(ctx.exam ? { exam: ctx.exam } : {}) } } : {}),
+  };
 }

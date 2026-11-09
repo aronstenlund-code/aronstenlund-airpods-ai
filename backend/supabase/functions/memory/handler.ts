@@ -6,6 +6,7 @@ import { readLimitedJson } from "../answer/validate.ts";
 import { nowContext } from "../answer/datecalc.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
 import type { LLMProvider } from "../answer/llm/types.ts";
+import { applyCorrection, describe, detectCorrection, profileOf, readContext, readSettings, SETTINGS_LIMITS } from "./settings.ts";
 
 /**
  * D80 (owner): `POST /memory` - memory extraction outside the answer path. The app sends one turn (the
@@ -15,6 +16,10 @@ import type { LLMProvider } from "../answer/llm/types.ts";
  *
  * Request:  {"turn": {"question": "...", "answer": "..."?, "mode"?}, "memories": ["..."]?, "language": "sv"|"en"?}
  * Response: {"add": ["..."], "update": [{"old": "...", "new": "..."}], "remove": ["..."], "skipped"?: "no_self_reference"}
+ *
+ * K10.2: {"correction": {"text": "kortare", "context": {mode?, subject?, exam?, answer_type?: fact|explanation|math}},
+ *         "settings": [{key, value, scope, n?}]} -> {"settings": [...], "setting": {..., text}, "widened", "profile"}
+ * (code only, no model call, nothing stored).
  */
 export const MEMORY_LIMITS = { bodyBytes: 16_384, q: 1000, a: 2000, memories: 30, memory: 200, items: 5 };
 
@@ -150,7 +155,24 @@ export function createMemoryHandler(deps: MemoryDeps) {
     try {
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use POST");
       const user = await deps.authenticate(req);
-      const body = validateMemoryRequest(await readLimitedJson(req, MEMORY_LIMITS.bodyBytes));
+      const raw = await readLimitedJson(req, MEMORY_LIMITS.bodyBytes);
+      // K10.2: a correction right after an answer -> a structured setting with a scope (code only, no model call)
+      const corr = (raw as Record<string, unknown> | null)?.correction as Record<string, unknown> | undefined;
+      if (corr && typeof corr === "object") {
+        const text = typeof corr.text === "string" ? corr.text.slice(0, SETTINGS_LIMITS.text) : "";
+        const settings = readSettings((raw as Record<string, unknown>).settings);
+        const c = detectCorrection(text);
+        if (!c) return json({ add: [], update: [], remove: [], settings, profile: profileOf(settings), skipped: "not_a_correction" });
+        const r = applyCorrection(settings, c, readContext(corr.context));
+        return json({
+          add: [], update: [], remove: [],
+          settings: r.settings,
+          setting: { ...r.changed, text: describe(r.changed) },
+          widened: r.widened,
+          profile: profileOf(r.settings),
+        });
+      }
+      const body = validateMemoryRequest(raw);
       if (!SELF.test(body.q)) {
         // nothing about the wearer: no model call, no cost
         return json({ add: [], update: [], remove: [], skipped: "no_self_reference" });

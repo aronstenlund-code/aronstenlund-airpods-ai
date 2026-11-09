@@ -207,8 +207,12 @@ export class AnthropicProvider implements LLMProvider {
               max_tokens: req.think ? req.maxTokens + 6000 : req.maxTokens,
               stream: true,
               system: req.cacheSystem
-                ? [{ type: "text", text: req.system, cache_control: { type: "ephemeral" } }]
-                : req.system,
+                ? [
+                  { type: "text", text: req.system, cache_control: { type: "ephemeral" } },
+                  // K10.3: the user's profile after the shared prompt, so the shared prefix stays cached for everyone
+                  ...(req.systemTail ? [{ type: "text", text: req.systemTail, cache_control: { type: "ephemeral" } }] : []),
+                ]
+                : req.systemTail ? `${req.system}\n\n${req.systemTail}` : req.system,
               messages: [{
                 role: "user",
                 content: req.images?.length

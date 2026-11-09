@@ -4383,5 +4383,792 @@
 ]
 }
 ]
+},
+{
+"id": "k10-pos-01",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "kan vi köra vanliga frågor nu",
+"app_command": {
+"action": "switch_mode",
+"mode": "fragor"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-02",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag vill öva inför provet",
+"app_command": {
+"action": "switch_mode",
+"mode": "prov"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-03",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "sluta lyssna en stund",
+"app_command": {
+"action": "pause"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-04",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "kan vi gå över till provläget",
+"app_command": {
+"action": "switch_mode",
+"mode": "prov"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-05",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "byt till frågeläget",
+"app_command": {
+"action": "switch_mode",
+"mode": "fragor"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-06",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "nu kör vi provläget",
+"app_command": {
+"action": "switch_mode",
+"mode": "prov"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-07",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "ska vi plugga lite",
+"app_command": {
+"action": "switch_mode",
+"mode": "prov"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-08",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "dags att plugga",
+"app_command": {
+"action": "switch_mode",
+"mode": "prov"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-09",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag vill öva på en jobbintervju",
+"app_command": {
+"action": "switch_mode",
+"mode": "intervju"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-10",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "kan vi öva inför min intervju",
+"app_command": {
+"action": "switch_mode",
+"mode": "intervju"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-11",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "starta intervjuläget",
+"app_command": {
+"action": "switch_mode",
+"mode": "intervju"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-12",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag vill bara ställa vanliga frågor",
+"app_command": {
+"action": "switch_mode",
+"mode": "fragor"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-13",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "sluta förhöra mig",
+"app_command": {
+"action": "switch_mode",
+"mode": "fragor"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-14",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "låt oss köra socialt läge",
+"app_command": {
+"action": "switch_mode",
+"mode": "socialt"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-15",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "kör rizzläget",
+"app_command": {
+"action": "switch_mode",
+"mode": "rizz"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-16",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "pausa lite",
+"app_command": {
+"action": "pause"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-17",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "ta en paus",
+"app_command": {
+"action": "pause"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-18",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "du kan sluta lyssna nu",
+"app_command": {
+"action": "pause"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-19",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "var tyst en stund",
+"app_command": {
+"action": "pause"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-20",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "avsluta sessionen",
+"app_command": {
+"action": "stop"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-21",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "vi är klara för idag",
+"app_command": {
+"action": "stop"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-22",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "det var allt för idag",
+"app_command": {
+"action": "stop"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-23",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "lyssna igen",
+"app_command": {
+"action": "resume"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-24",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "du kan lyssna igen",
+"app_command": {
+"action": "resume"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-25",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "Lumen, byt till frågeläget",
+"app_command": {
+"action": "switch_mode",
+"mode": "fragor"
+},
+"ttft_budget_ms": 8000,
+"interview": true
+}
+]
+},
+{
+"id": "k10-pos-27",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag skulle vilja köra provläget",
+"app_command": {
+"action": "switch_mode",
+"mode": "prov"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-pos-28",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "tillbaka till vanliga frågor",
+"app_command": {
+"action": "switch_mode",
+"mode": "fragor"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-29",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "kan vi testa intervjuläget",
+"app_command": {
+"action": "switch_mode",
+"mode": "intervju"
+},
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-pos-30",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag vill plugga nu",
+"app_command": {
+"action": "switch_mode",
+"mode": "prov"
+},
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-01",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "vad är provläget",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-02",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "hur fungerar intervjuläget",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-03",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "ska vi köra frågor om fotosyntes",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-04",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "kan vi köra frågor",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-05",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag vill öva på derivator",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-06",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag vill öva inför provet",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-07",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "eleverna slutade lyssna på läraren",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-08",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "varför ska man ta en paus när man pluggar",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-09",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "min intervju gick bra igår",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-10",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "vi pratade om sociala medier",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-11",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "han sa att jag skulle sluta lyssna på musik",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-12",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "vad betyder rizz",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-13",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "avsluta meningen med en punkt",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-14",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "vad är skillnaden mellan väder och klimat",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-15",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag har prov på fredag",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-16",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "kan vi prata om andra världskriget",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-17",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "sluta lyssna",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"interview": true
+}
+]
+},
+{
+"id": "k10-neg-19",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "vi kör frågor om ekvationer",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-20",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag vill bli bättre på intervjuer",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-21",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "är provläget bra för matte",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-22",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "pausa filmen",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-23",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "hur långa pauser ska man ta",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-24",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "vad sa du om provet",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-25",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "frågor",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+}
+]
+},
+{
+"id": "k10-neg-27",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag vill plugga till läkare",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-28",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "lyssna på den här låten",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
+},
+{
+"id": "k10-neg-29",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "kan du förklara intervjuteknik",
+"app_command": null,
+"ttft_budget_ms": 8000,
+"interview": true
+}
+]
+},
+{
+"id": "k10-neg-30",
+"cat": "appkommando",
+"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+"turns": [
+{
+"q": "jag tycker om att plugga",
+"app_command": null,
+"ttft_budget_ms": 8000
+}
+]
 }
 ]
