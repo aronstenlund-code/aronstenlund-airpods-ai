@@ -28,6 +28,7 @@ struct RootView: View {
         .environment(container.appearance)
         .preferredColorScheme(container.appearance.colorScheme) // D86: follows the iPhone unless locked
         .tint(LumenColor.blue)
+        .onOpenURL { url in _ = container.listening.music.spotify?.handle(url) } // A6.3: back from Spotify
     }
 
     @ViewBuilder

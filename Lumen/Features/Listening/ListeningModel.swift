@@ -161,6 +161,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Course goals and personal keyword commands (D37).
     let goals: GoalsStore
     let commands: CommandStore
+    /// A6: the user's own phrases per action (Settings › Röstkommandon) and the music players.
+    let phrases: CommandPhraseStore
+    let music: MusicRemote
     /// "Sparade kommandot …" after a spoken save, shown once.
     private(set) var commandNotice: String?
     private let warmer: BackendWarmer?
@@ -223,7 +226,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          memoryExtractor: MemoryExtractor? = nil, studyProfile: StudyProfileStore? = nil,
          speakers: SpeakerIdentifier? = nil, studyCards: StudyCardStore? = nil, studyCardsClient: StudyCardsClient? = nil,
          studyProfileClient: StudyProfileClient? = nil, examMaterials: ExamMaterials? = nil, examClient: ExamClient? = nil,
-         examPlans: ExamPlanStore? = nil) {
+         examPlans: ExamPlanStore? = nil, phrases: CommandPhraseStore? = nil, music: MusicRemote? = nil) {
+        self.phrases = phrases ?? CommandPhraseStore(defaults: UserDefaults(suiteName: "lumen.phrases.\(UUID().uuidString)") ?? .standard,
+                                                     book: CommandBook())
+        self.music = music ?? MusicRemote(players: [])
         self.controller = controller
         self.consent = consent
         self.transcription = transcription
@@ -410,7 +416,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Command keywords first: they decide what happens, and Scribe takes a limited number of keyterms (D44).
     private func refreshKeyterms() {
         let recent = conversation.answers.suffix(2)
-        let terms = KeytermBuilder.terms(commands: commands.commands.map(\.keyword),
+        let terms = KeytermBuilder.terms(commands: phrases.userPhrases + commands.commands.map(\.keyword),
                                          topic: recent.last?.question,
                                          answers: recent.map(\.answer),
                                          goals: goals.terms,
@@ -1049,6 +1055,40 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 controller.log("Voice: rule saved")
                 say(language == .swedish ? "Regel sparad." : "Rule saved.")
             }
+        case .music(let action):
+            controller.log("Voice: music \(action.rawValue)")
+            Task { await musicByVoice(action) }
+        case .complaint:
+            controller.log("Voice feedback: the last turn goes to /feedback")
+            Task { await reportPreviousTurn() }
+        }
+    }
+
+    /// A6: "nästa låt" / "förra låten" hand the audio to the music and skip; "pausa musiken" is true already while
+    /// Lumen listens (the music waits for us, D58); "tillbaka till Lumen" while listening only confirms.
+    func musicByVoice(_ action: CommandAction) async {
+        switch action {
+        case .backToLumen:
+            if isListening { say(action.confirmation ?? "") } else { await resume() }
+        case .pauseMusic:
+            if isListening {
+                say(action.confirmation ?? "")
+            } else {
+                music.perform(.pauseMusic)
+            }
+        case .nextTrack, .previousTrack:
+            guard isListening else {
+                music.perform(action)
+                return
+            }
+            let controllable = music.players.contains(where: \.isAvailable)
+            say(controllable ? (action.confirmation ?? "") : "Musiken spelar. Tryck två gånger på AirPods för att byta låt.")
+            await speechDone()
+            await controller.pause() // the music comes back when Lumen lets go
+            try? await Task.sleep(for: .milliseconds(800))
+            music.perform(action)
+        default:
+            break
         }
     }
 
@@ -2323,6 +2363,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if !segment.overlapsPlayback, VoiceCommand.isMusicHandOff(segment.text) {
             controller.log("Spoken pause: handing the audio back")
             Task { await controller.pause() }
+            return
+        }
+        if !segment.overlapsPlayback, let action = VoiceCommand.musicAction(segment.text) {
+            discardAhead(reason: "a music command")
+            study.discardTurnText()
+            Task { await musicByVoice(action) }
             return
         }
         if !segment.overlapsPlayback, handleVoice(in: segment.text, at: date) {

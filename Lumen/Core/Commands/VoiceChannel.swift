@@ -16,6 +16,10 @@ enum VoiceIntent: Equatable, Sendable {
     case remember(String)
     case forget(String)
     case rule(String)
+    /// A6: the music ("nästa låt", "förra låten", "pausa musiken") and "tillbaka till Lumen".
+    case music(CommandAction)
+    /// A6: "det där var fel" after the name: the last turn goes to /feedback.
+    case complaint
     /// Anything else. In Socialt läge and Rizzläge an instruction to the AI (D69 calibration, "ge mig tre"),
     /// in the other modes a question to Lumen. Never a line of the conversation.
     case instruction(String)
@@ -32,7 +36,6 @@ enum VoiceChannel {
     /// The backend keeps an instruction at most this long (D69).
     static let instructionLimit = 300
 
-    private static let switchPrefixes = ["byt till ", "byta till ", "växla till ", "gå till ", "starta ", "switch to "]
     private static let modeNames: [ConversationMode: Set<String>] = [
         .standard: ["frågor", "frågeläge", "frågorläge", "frågläge", "auto", "questions"],
         .prov: ["provläge", "provläget", "prov"],
@@ -40,8 +43,8 @@ enum VoiceChannel {
         .social: ["socialtläge", "socialtläget", "socialläge", "socialaläget", "socialt", "social", "socialmode"],
         .rizz: ["rizzläge", "rizzläget", "rizläge", "risläge", "rissläge", "ritsläge", "rizz", "rizzmode"],
     ]
-    private static let pausePhrases: Set<String> = ["pausa", "paus", "pausa dig", "spela musik", "pause"]
-    private static let stopPhrases: Set<String> = ["sluta lyssna", "sluta", "avsluta", "stäng av", "stop listening"]
+    /// After the name only, besides the user-editable phrases (A6): too short to be safe without "Lumen".
+    private static let namedPauseAliases: Set<String> = ["paus", "pausa dig"]
 
     /// A turn without the name has no intent and is unchanged. The name alone is neither.
     static func parse(_ text: String) -> VoiceUtterance {
@@ -64,9 +67,26 @@ enum VoiceChannel {
             let rest = stripPrefix(original, words: prefix.split(separator: " ").count)
             if !rest.isEmpty { return make(String(rest.prefix(instructionLimit))) }
         }
-        if pausePhrases.contains(words) { return .pause }
-        if stopPhrases.contains(words) { return .stopListening }
-        let target = switchPrefixes.first(where: { words.hasPrefix($0) }).map { String(words.dropFirst($0.count)) } ?? words
+        // A6.4: the phrases come from the command table, so the user's own phrases work here too.
+        let table = CommandBook.shared.table
+        if namedPauseAliases.contains(words) { return .pause }
+        switch table.action(forWhole: words, named: true) {
+        case .musicHandOff: return .pause
+        case .stop: return .stopListening
+        case .nextTrack: return .music(.nextTrack)
+        case .previousTrack: return .music(.previousTrack)
+        case .pauseMusic: return .music(.pauseMusic)
+        case .backToLumen: return .music(.backToLumen)
+        case .wrong: return .complaint
+        case .switchMode, .quizMe, nil: break
+        }
+        let prefixed = table.prefix(in: words)
+        if let prefixed, prefixed.action == .quizMe {
+            // "testa mig på fotosyntes" (a user phrase) reaches the tutor as "förhör mig på fotosyntes".
+            let rest = prefixed.rest.isEmpty ? "" : " " + prefixed.rest
+            return .instruction(String(("förhör mig" + rest).prefix(instructionLimit)))
+        }
+        let target = prefixed?.action == .switchMode ? prefixed?.rest ?? words : words
         let compact = target.replacingOccurrences(of: " ", with: "")
         if let mode = modeNames.first(where: { $0.value.contains(compact) })?.key {
             return .switchTo(mode)

@@ -15,6 +15,10 @@ packages:
   # D78 / OSS-2: Silero VAD. The local package pins FluidAudio and switches its TTS/diarizer/Nemo traits off.
   LumenVAD:
     path: Packages/LumenVAD
+  # A6.3: Spotify App Remote (binary xcframework, Spotify Developer Terms). Inert without SPOTIFY_CLIENT_ID.
+  SpotifyiOS:
+    url: https://github.com/spotify/ios-sdk
+    exactVersion: 5.0.1
 
 settings:
   base:
@@ -44,10 +48,13 @@ targets:
     dependencies:
       - package: LumenScoring
       - package: LumenVAD
+      - package: SpotifyiOS
       - target: LumenControls
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen
+        # A6.3: empty in the repo. CI passes the repository secret SPOTIFY_CLIENT_ID (a public identifier, not a key).
+        SPOTIFY_CLIENT_ID: ""
         PRODUCT_NAME: Lumen
         INFOPLIST_FILE: Lumen/Resources/Info.plist
         GENERATE_INFOPLIST_FILE: YES
