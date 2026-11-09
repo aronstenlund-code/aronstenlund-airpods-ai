@@ -1058,6 +1058,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         return action.level == 1 ? .command(action) : .instruction(action.instruction)
     }
 
+    /// A13.3: the "Förhör mig" button on Provläge's empty screen: the same as saying "Lumen, förhör mig".
+    func askForQuiz() {
+        tips.markUsed(.quizMe)
+        instruct("förhör mig")
+    }
+
     /// A9.1: a used command is never tipped.
     private func markUsed(_ intent: VoiceIntent) {
         switch intent {

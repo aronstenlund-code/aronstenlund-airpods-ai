@@ -6,31 +6,24 @@ struct SettingsView: View {
     var diagnostics: DiagnosticsModel?
     @Environment(AppearanceSettings.self) private var appearance
     @AppStorage("debug.latencyOverlay") private var showsLatencyOverlay = false
+    /// A13.1: the technical settings are folded away; the choice is remembered.
+    @AppStorage("settings.showsAdvanced") private var showsAdvanced = false
 
+    /// A13.1: what a student changes first, at the top; the technical parts folded under "Avancerat"; licences and
+    /// technical explanations in "Om appen". Nothing is removed.
     var body: some View {
         Form {
-            appearanceSection
-            languageSection
-            microphoneSection
-            activationSection
-            studySection
-            if let speakers = model.speakers {
-                VoiceProfileSection(model: model, speakers: speakers)
-            }
+            // Vanliga
             voiceSection
             answerSection
-            Section("Mer") {
-                if model.canSaveNote {
-                    Button("Spara samtalet som anteckning") { model.saveNote() }
-                }
-                NavigationLink("Anteckningar") { NotesView(store: model.notes) }
-                NavigationLink("Förberedelser") { PrepView(store: model.prep, goals: model.goals) }
+            Section {
                 NavigationLink("Röstkommandon") { VoiceCommandsView(store: model.phrases, music: model.music, voice: model.speaker.settings, tips: model.tips) }
-                NavigationLink("Egna kommandon") { CommandsView(store: model.commands) }
-                Button("Provsession, ladda upp ett prov") {
-                    model.isShowingSettings = false
-                    model.isShowingExamSetup = true
-                }
+                NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences) }
+            }
+            studyProfileSection
+            appearanceSection
+            languageSection
+            Section {
                 NavigationLink("Integritet och samtycke") {
                     ConsentView(mode: .review(grantedAt: model.consent.record?.grantedAt) {
                         model.isShowingSettings = false
@@ -38,19 +31,52 @@ struct SettingsView: View {
                     })
                 }
             }
-            Section("Diagnostik") {
-                NavigationLink("Rå transkription och svar") { RawTranscriptView(model: model) }
-                if let diagnostics {
-                    NavigationLink("Diagnostik") { DiagnosticsView(model: diagnostics) }
+            Section("Mer") {
+                if model.canSaveNote {
+                    Button("Spara samtalet som anteckning") { model.saveNote() }
                 }
-            }
-            Section("History and memory") {
-                NavigationLink("History") { HistoryView(store: model.history) }
-                NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences) }
+                NavigationLink("Anteckningar") { NotesView(store: model.notes) }
+                NavigationLink("Historik") { HistoryView(store: model.history) }
                 if let cards = model.studyCards {
                     NavigationLink("Studiekort") { StudyCardsView(store: cards) }
                 }
-                NavigationLink("Feedback & suggestions") { FeedbackView(model: model) }
+                NavigationLink("Förberedelser") { PrepView(store: model.prep, goals: model.goals) }
+                NavigationLink("Egna kommandon") { CommandsView(store: model.commands) }
+                Button("Provsession, ladda upp ett prov") {
+                    model.isShowingSettings = false
+                    model.isShowingExamSetup = true
+                }
+                NavigationLink("Feedback och förslag") { FeedbackView(model: model) }
+                NavigationLink("Om appen") { AboutView() }
+            }
+            // Avancerat
+            Section {
+                Button {
+                    withAnimation { showsAdvanced.toggle() }
+                } label: {
+                    HStack {
+                        Text("Avancerat").foregroundStyle(LumenColor.ink)
+                        Spacer()
+                        Image(systemName: showsAdvanced ? "chevron.up" : "chevron.down").foregroundStyle(.secondary)
+                    }
+                }
+            } footer: {
+                Text("Mikrofon, pauser, känslighet, taligenkänning, röstprofil, kalibrering och diagnostik.")
+            }
+            if showsAdvanced {
+                microphoneSection
+                activationSection
+                recognitionSection
+                studySection
+                if let speakers = model.speakers {
+                    VoiceProfileSection(model: model, speakers: speakers)
+                }
+                Section("Diagnostik") {
+                    NavigationLink("Rå transkription och svar") { RawTranscriptView(model: model) }
+                    if let diagnostics {
+                        NavigationLink("Diagnostik") { DiagnosticsView(model: diagnostics) }
+                    }
+                }
             }
             #if DEBUG
             Section("Debug") {
@@ -86,13 +112,19 @@ struct SettingsView: View {
     }
 
     private var languageSection: some View {
-        Section("Language") {
-            Picker("Language", selection: languageBinding) {
+        Section("Språk") {
+            Picker("Språk", selection: languageBinding) {
                 ForEach(TranscriptionLanguage.allCases) { language in
                     Text(language.nativeName).tag(language)
                 }
             }
             .pickerStyle(.segmented)
+        }
+    }
+
+    /// A13.1: Scribe, the local voice detector and the wearer focus (Avancerat).
+    private var recognitionSection: some View {
+        Section("Taligenkänning") {
             Toggle("Cloud speech recognition (Scribe)", isOn: cloudBinding)
             if let failure = model.transcription.cloudFailure {
                 Text("Using the iPhone's speech recognition: \(failure)")
@@ -157,7 +189,7 @@ struct SettingsView: View {
             Button("Spara i minnet") { model.studyProfileChanged() }
             Button("Visa frågorna igen vid nästa start") { store.profile.onboarded = false }
         } header: {
-            Text("Provläge: om dig")
+            Text("Prov")
         } footer: {
             Text(model.headMotion.isAvailable
                  ? "Ja–nej-frågor kan besvaras med en nick eller en skakning med huvudet. Du kan också säga \"Lumen, korta förklaringar\" eller \"Lumen, provet är på fredag\"."
@@ -265,7 +297,7 @@ struct SettingsView: View {
     @ViewBuilder
     private var answerSection: some View {
         @Bindable var answer = model.answers.settings
-        Section("Answers") {
+        Section("Svarslängd") {
             Picker("Answer length", selection: $answer.length) {
                 Text("Short").tag(AnswerLength.short)
                 Text("Adaptive").tag(AnswerLength.adaptive)
@@ -353,7 +385,7 @@ struct SettingsView: View {
     @ViewBuilder
     private var voiceSection: some View {
         @Bindable var voice = model.speaker.settings
-        Section("Voice") {
+        Section("Röst och hastighet") {
             Toggle("Speak answers", isOn: $voice.speakAnswers)
             if !voice.speakAnswers {
                 Text("Silent mode: answers are shown, not spoken.")

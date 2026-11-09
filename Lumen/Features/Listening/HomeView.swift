@@ -6,6 +6,7 @@ import SwiftUI
 struct HomeView: View {
     @Bindable var model: ListeningModel
     @Environment(AppearanceSettings.self) private var appearance
+    @AppStorage("home.showsMoreModes") private var showsMoreModes = false
 
     private var plans: [ExamPlan] { model.examPlans?.upcoming() ?? [] }
 
@@ -180,12 +181,36 @@ struct HomeView: View {
 
     // MARK: Modes
 
+    /// A13.5 (owner 2026-11-09): Start shows Frågor and Provläge; Intervju, Socialt and Rizz 18+ sit under "Fler lägen".
+    /// The voice commands reach every mode as before.
     private func modes(title: String) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title).font(LumenFont.text(17, .semibold)).accessibilityAddTraits(.isHeader)
             HStack(alignment: .top, spacing: 8) {
-                ForEach([ConversationMode.standard, .interview, .social, .rizz]) { mode in
+                ForEach([ConversationMode.standard, .prov]) { mode in
                     ModeCircle(mode: mode) { Task { await model.startMode(mode) } }
+                }
+                Spacer(minLength: 0)
+                Spacer(minLength: 0)
+            }
+            Button {
+                withAnimation { showsMoreModes.toggle() }
+            } label: {
+                HStack(spacing: 6) {
+                    Text("Fler lägen")
+                    Image(systemName: showsMoreModes ? "chevron.up" : "chevron.down").font(.system(size: 12, weight: .bold))
+                }
+                .font(LumenFont.text(16, .semibold))
+                .frame(minHeight: 44)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(LumenColor.blue)
+            if showsMoreModes {
+                HStack(alignment: .top, spacing: 8) {
+                    ForEach([ConversationMode.interview, .social, .rizz]) { mode in
+                        ModeCircle(mode: mode) { Task { await model.startMode(mode) } }
+                    }
+                    Spacer(minLength: 0)
                 }
             }
         }

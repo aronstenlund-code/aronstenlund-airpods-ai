@@ -40,7 +40,7 @@ struct VoiceProfileSection: View {
         } header: {
             Text("Din röst")
         } footer: {
-            Text("Röstprofilen är ett tal-avtryck av din röst, inte en inspelning. Den sparas bara på den här telefonen (inte i iCloud) och skickas aldrig. Med den svarar Auto inte på dina egna ord, Intervjuläge svarar bara intervjuaren, Rizzläge vet vem som pratar, minnet sparar bara det du själv sa, och bara din röst kan avbryta Lumen. Utan profil avgör ljudnivån som förut. Talare 1, 2 … är bara en etikett för sessionen; ingen identifieras.\n\nRöstmodell: WeSpeaker (CC BY 4.0) via pyannote, och pyannote segmentation-3.0 (MIT, © 2023 CNRS), ändrade Core ML-konverteringar av Fluid Inference.")
+            Text("Röstprofilen är ett tal-avtryck av din röst, inte en inspelning. Den sparas bara på den här telefonen (inte i iCloud) och skickas aldrig. Med den svarar Intervjuläge bara intervjuaren, Rizzläge vet vem som pratar, minnet sparar bara det du själv sa, och bara din röst kan avbryta Lumen. Utan profil avgör ljudnivån som förut. Talare 1, 2 … är bara en etikett för sessionen; ingen identifieras. Licenser finns under Om appen.")
         }
         .confirmationDialog("Radera röstprofilen?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Radera", role: .destructive) {

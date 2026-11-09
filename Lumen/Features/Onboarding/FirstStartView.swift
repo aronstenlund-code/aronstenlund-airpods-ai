@@ -68,17 +68,8 @@ struct IntroView: View {
                 // The photo (a student with AirPods at a desk with a squared notebook, phone out of sight) needs a
                 // freely licensed picture; until then the squared paper and the listening rings stand in for it.
                 if !typeSize.isAccessibilitySize { // A12: the picture gives way to the text at the largest sizes
-                    ZStack {
-                        GridPaper(cornerRadius: 0)
-                        VStack(spacing: 14) {
-                            ListeningRings(size: 96)
-                            Image(systemName: "airpods")
-                                .font(.system(size: 34, weight: .regular))
-                                .foregroundStyle(LumenColor.muted)
-                        }
-                    }
-                    .containerRelativeFrame(.vertical) { height, _ in min(300, height * 0.3) } // smaller on the SE
-                    .accessibilityHidden(true)
+                    IntroHeroView() // A13.6: Elias and the rings (a placeholder until the picture is approved)
+                        .containerRelativeFrame(.vertical) { height, _ in min(300, height * 0.3) } // smaller on the SE
                 }
 
                 VStack(alignment: .leading, spacing: 14) {

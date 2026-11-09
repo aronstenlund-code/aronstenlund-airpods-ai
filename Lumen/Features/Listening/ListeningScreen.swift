@@ -79,6 +79,9 @@ struct ListeningScreen: View {
                     Text(stateTitle).font(LumenFont.text(22, .bold, relativeTo: .title2))
                     Text(stateDetail).font(LumenFont.text(15)).foregroundStyle(LumenColor.muted)
                 }
+                Spacer(minLength: 0)
+                // A13.2: moves when someone talks, so you can see that Lumen hears (nothing while it cannot, A11).
+                LevelMeter(levelDBFS: model.isListening && model.isHearing ? model.controller.level.rmsDBFS : nil)
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.updatesFrequently)
@@ -166,28 +169,49 @@ struct ListeningScreen: View {
                     }
                 }
             }
+        } else if mode == .prov {
+            // A13.3: something to start from, for whoever does not want to talk first.
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Ställ en fråga om det du pluggar. Svaret hörs i örat.")
+                    .font(LumenFont.text(18))
+                    .foregroundStyle(LumenColor.muted)
+                let terms = Array(ExamKeyterms.terms(profile: model.studyProfile.profile).prefix(8))
+                if !terms.isEmpty {
+                    TermChips(terms: terms)
+                }
+                Button {
+                    model.askForQuiz()
+                } label: {
+                    Label("Förhör mig", systemImage: "questionmark.bubble")
+                }
+                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+            }
         } else {
-            Text(mode == .prov ? "Ställ en fråga om det du pluggar. Svaret hörs i örat." : "Svaren hörs i örat och syns här.")
+            Text("Svaren hörs i örat och syns här.")
                 .font(LumenFont.text(18))
                 .foregroundStyle(LumenColor.muted)
         }
     }
 
+    /// A13.3: the session's earlier questions and answers, newest first, dimmed (it was only the one before).
     @ViewBuilder
     private var previous: some View {
         let answers = model.conversation.answers
         let skip = model.conversation.streamingAnswer == nil ? 1 : 0
-        if model.rizz == nil, answers.count > skip, let turn = answers.dropLast(skip).last {
-            VStack(alignment: .leading, spacing: 8) {
-                if !turn.question.isEmpty {
-                    Text(turn.question).font(appearance.questionFont(18)).foregroundStyle(LumenColor.muted)
+        if model.rizz == nil, answers.count > skip {
+            let earlier = Array(answers.dropLast(skip).suffix(30).reversed())
+            ForEach(Array(earlier.enumerated()), id: \.offset) { _, turn in
+                VStack(alignment: .leading, spacing: 8) {
+                    if !turn.question.isEmpty {
+                        Text(turn.question).font(appearance.questionFont(18)).foregroundStyle(LumenColor.muted)
+                    }
+                    Text(turn.answer).font(LumenFont.text(16)).foregroundStyle(LumenColor.muted)
                 }
-                Text(turn.answer).font(LumenFont.text(16)).foregroundStyle(LumenColor.muted)
+                .padding(.top, 18)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .overlay(alignment: .top) { Rectangle().fill(LumenColor.line).frame(height: 1) }
+                .padding(.top, 8)
             }
-            .padding(.top, 18)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .overlay(alignment: .top) { Rectangle().fill(LumenColor.line).frame(height: 1) }
-            .padding(.top, 8)
         }
     }
 
@@ -298,5 +322,53 @@ struct ModeSwitchSheet: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } }
             }
         }
+    }
+}
+
+
+/// A13.2: a small, quiet level meter in the app's blue: five bars that follow the microphone (−60…−15 dBFS).
+struct LevelMeter: View {
+    let levelDBFS: Double?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    static func fraction(_ dbfs: Double?) -> Double {
+        guard let dbfs else { return 0 }
+        return min(1, max(0, (dbfs + 60) / 45))
+    }
+
+    var body: some View {
+        let fraction = Self.fraction(levelDBFS)
+        HStack(alignment: .center, spacing: 3) {
+            ForEach(0..<5, id: \.self) { index in
+                let threshold = Double(index) / 5
+                let lit = fraction > threshold
+                Capsule()
+                    .fill(lit ? LumenColor.blue : LumenColor.grid)
+                    .frame(width: 4, height: 8 + CGFloat(index) * 4)
+            }
+        }
+        .frame(height: 26)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: fraction)
+        .accessibilityHidden(true)
+    }
+}
+
+
+/// A13.3: the exam's words as plain chips (not selectable), wrapping with `FlowLayout` from AddExamView.
+struct TermChips: View {
+    let terms: [String]
+
+    var body: some View {
+        FlowLayout(spacing: 8) {
+            ForEach(terms, id: \.self) { term in
+                Text(term)
+                    .font(LumenFont.text(15, .medium))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 7)
+                    .background(LumenColor.chip, in: Capsule())
+            }
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Ämnesord: " + terms.joined(separator: ", "))
     }
 }

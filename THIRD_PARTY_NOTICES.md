@@ -14,6 +14,7 @@ Licence rule (`prompts/2026-11-03-oss-integration.md`): only MIT, Apache-2.0 or 
 | Familjen Grotesk (Familjen-Sthlm), variable font `FamiljenGrotesk[wght].ttf` | google/fonts `ofl/familjengrotesk`, fetched 2026-11-08 | SIL Open Font License 1.1 | D86: the app's font, bundled in the app and the Live Activity extension (`Lumen/Resources/Fonts/`, licence text beside it). Not modified, not sold on its own. |
 | Kalam (Indian Type Foundry), `Kalam-Regular.ttf`, `Kalam-Bold.ttf` | google/fonts `ofl/kalam`, fetched 2026-11-08 | SIL Open Font License 1.1 | D86: handwriting for the user's questions and the red pen, bundled in the app. Not modified. |
 | Volocal `SentenceBuffer.swift` (fikrikarim/volocal) | commit `b731963` | MIT | Vendored and modified: `Lumen/Core/Transcription/SentenceBuffer.swift` (header kept). |
+| Spotify iOS SDK (`SpotifyiOS.xcframework`, spotify/ios-sdk) | `5.0.1` (SPM) | Spotify Developer Terms (not an open-source licence) | A6.3, chosen by the assignment: App Remote pause/resume/skip when the user links Spotify. Binary framework, unmodified. **Exception to the MIT/Apache/BSD rule**, recorded in DECISIONS (A6); inert without the `SPOTIFY_CLIENT_ID` secret. |
 | Parrot (turantekin/Parrot) | tag `v0.11.3` (MIT) | MIT | **Design only, no code copied**: question debounce, minimum interval, merged follow-up speech in `ActivationController`. Later Parrot versions are GPL-3.0 and are not used. |
 
 FluidAudio has no `NOTICE` file at that commit.
