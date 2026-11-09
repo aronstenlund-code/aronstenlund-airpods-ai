@@ -218,7 +218,7 @@ export function createMemoryHandler(deps: MemoryDeps) {
         })
       ) {
         if (c.type === "text") text += c.text;
-        else {
+        else if (c.type === "usage") {
           inTok = c.inputTokens ?? inTok;
           outTok = c.outputTokens ?? outTok;
         }

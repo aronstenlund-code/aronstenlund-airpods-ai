@@ -340,7 +340,7 @@ export function createExamHandler(deps: ExamDeps) {
       let inTok = 0, outTok = 0;
       for await (const c of deps.provider.stream(llm)) {
         if (c.type === "text") text += c.text;
-        else {
+        else if (c.type === "usage") {
           inTok = c.inputTokens ?? inTok;
           outTok = c.outputTokens ?? outTok;
         }

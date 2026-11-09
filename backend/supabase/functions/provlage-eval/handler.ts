@@ -179,7 +179,7 @@ export function createEvalHandler(deps: EvalDeps) {
           const ch of deps.provider.stream({ system: SYSTEM_PROMPT_JUDGE, user: user_, maxTokens: 1200, cacheSystem: true, model: judge.id, signal: req.signal })
         ) {
           if (ch.type === "text") text += ch.text;
-          else {
+          else if (ch.type === "usage") {
             inTok = ch.inputTokens ?? inTok;
             outTok = ch.outputTokens ?? outTok;
           }
