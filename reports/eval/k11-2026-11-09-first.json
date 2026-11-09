@@ -1,0 +1,212 @@
+{
+ "summary": {
+  "time_n": 10,
+  "time_first_max_ms": 4521,
+  "time_total_max_ms": 7323,
+  "time_over_8s": 0,
+  "time_empty_or_error": 0,
+  "stump": "2/5",
+  "quote_cannot": 2,
+  "quote_with_quote": 1
+ },
+ "rows": [
+  {
+   "kind": "time",
+   "q": "vad är derivata",
+   "status": 200,
+   "first_ms": 1499,
+   "ms": 4185,
+   "model": "claude-sonnet-5-5",
+   "answer": "Derivata är hur snabbt något förändras just i ett enda ögonblick. På en graf är det lutningen i en punkt, alltså lutningen på den räta linje, tangenten, som precis nuddar kurvan där. Ett exempel: en bil som just nu rullar så att sträckan växer med tjugo meter per sekund har derivatan tjugo meter per sekund, och det är dess hastighet i det ögonblicket. Är grafen brant är derivatan stor, är den helt vågrät är derivatan noll. På provet skriver du att derivatan visar hur snabbt värdet ändras i en punkt, och att den är lutningen på tangenten."
+  },
+  {
+   "kind": "time",
+   "q": "hur deriverar man x i kvadrat",
+   "status": 200,
+   "first_ms": 1462,
+   "ms": 4357,
+   "model": "claude-sonnet-5-5",
+   "answer": "Att derivera x i kvadrat betyder att hitta hur snabbt funktionen växer i varje punkt, alltså lutningen på grafen där. Svaret är två x: derivatan av x i kvadrat är två gånger x. Regeln är att exponenten två hoppar ner och blir en faktor framför, och sedan blir exponenten ett mindre, så x upphöjt till två blir två gånger x upphöjt till ett, alltså två x. Titta på punkten x är lika med tre: där är lutningen två gånger tre, alltså sex, så grafen stiger sex steg uppåt för varje steg åt sidan. I punkten x är lika med noll blir lutningen noll, och där ligger just parabelns botten. På provet: skriv att derivatan av x i kvadrat är två x och säg att det är lutningen i punkten."
+  },
+  {
+   "kind": "time",
+   "q": "vad betyder derivatan i en graf",
+   "status": 200,
+   "first_ms": 2210,
+   "ms": 5052,
+   "model": "claude-sonnet-5-5",
+   "answer": "Derivatan i en graf visar hur brant grafen lutar i en viss punkt, alltså hur snabbt värdet ändras just där. Lutningen mäts med tangenten, den raka linje som precis nuddar kurvan i punkten. Går grafen uppåt är derivatan positiv, går den nedåt är den negativ, och på en helt plan topp eller botten är den noll. Tänk dig en bil där grafen visar sträckan: om sträckan växer med tjugo meter per sekund just då, är derivatan tjugo meter per sekund, alltså bilens fart. Ju brantare grafen är, desto större blir derivatan. På provet skriver du att derivatan är lutningen på tangenten i punkten och säger vad den betyder i sammanhanget."
+  },
+  {
+   "kind": "time",
+   "q": "vad är en lutning",
+   "status": 200,
+   "first_ms": 1080,
+   "ms": 3546,
+   "model": "claude-sonnet-5-5",
+   "answer": "Lutning visar hur brant en rät linje är, alltså hur mycket y ändras när x ökar med ett. Den kallas ofta k-värdet i räta linjens ekvation, y är lika med k x plus m. Man räknar ut den som ändringen i y delat med ändringen i x. Om en linje går från punkten ett komma två till punkten tre komma sex, ökar y med fyra när x ökar med två, så lutningen är fyra delat med två, alltså två. Är k positivt går linjen uppåt, är k negativt går den nedåt, och är k noll är linjen vågrät. På provet: skriv ut ändring i y delat med ändring i x och sätt in siffrorna steg för steg."
+  },
+  {
+   "kind": "time",
+   "q": "vad är kedjeregeln",
+   "status": 200,
+   "first_ms": 2093,
+   "ms": 5346,
+   "model": "claude-sonnet-5-5",
+   "answer": "Kedjeregeln används när du ska derivera en sammansatt funktion, alltså en funktion inuti en annan. Du deriverar den yttre funktionen och låter den inre stå kvar, och multiplicerar sedan med derivatan av den inre funktionen. I symboler: om y är f av g av x, så är y prim lika med f prim av g av x, gånger g prim av x.\n\nTa funktionen y är lika med x i kvadrat plus ett, upphöjt till fem. Yttre funktionen är något upphöjt till fem, med derivatan fem gånger något upphöjt till fyra. Inre funktionen är x i kvadrat plus ett, med derivatan två x. Alltså blir derivatan fem gånger x i kvadrat plus ett upphöjt till fyra, gånger två x, vilket är tio x gånger x i kvadrat plus ett upphöjt till fyra.\n\nPå prov"
+  },
+  {
+   "kind": "time",
+   "q": "derivera sinus av två x",
+   "status": 200,
+   "first_ms": 964,
+   "ms": 3536,
+   "model": "claude-sonnet-5-5",
+   "answer": "Derivatan av sinus av två x är två gånger cosinus av två x. Det är kedjeregeln: du deriverar den yttre funktionen sinus, som ger cosinus av två x, och multiplicerar med derivatan av den inre funktionen två x, som är två. Funktionen f av x är lika med sin två x ger alltså f prim av x lika med två cos två x. Ett exempel: i punkten x lika med noll är lutningen två gånger cosinus av noll, alltså två gånger ett, som är två. På provet skriver du först vilken som är yttre och inre funktion, och sedan hela produkten med faktorn två tydligt utskriven."
+  },
+  {
+   "kind": "time",
+   "q": "Anna och Fredrik går hem till varandra, Anna går dubbelt så snabbt som Fredrik men de möttes ändå halvvägs, hur kan det komma sig",
+   "status": 200,
+   "first_ms": 4521,
+   "ms": 7323,
+   "model": "claude-sonnet-5-5",
+   "answer": "Fredrik måste ha gått hemifrån tidigare än Anna. De möttes halvvägs, så båda har gått lika långt. Eftersom Anna går dubbelt så snabbt, klarar hon samma sträcka på halva tiden. Fredrik har alltså gått dubbelt så länge som Anna.\n\nSäg att Fredrik går fyra kilometer i timmen och Anna åtta kilometer i timmen, och att det är åtta kilometer mellan husen. Då går båda fyra kilometer. Fredrik behöver en timme och Anna bara trettio minuter, så Fredrik startade trettio minuter före henne.\n\nPå provet: skriv att sträckan är hastighet gånger tid, och att lika lång sträcka med dubbel hastighet kräver halva tiden."
+  },
+  {
+   "kind": "time",
+   "q": "Lisa är tre år äldre än Tom och tillsammans är de sjutton, hur gammal är Tom",
+   "status": 200,
+   "first_ms": 1232,
+   "ms": 3334,
+   "model": "claude-sonnet-5-5",
+   "answer": "Tom är sju år och Lisa är tio år.\n\nKalla Toms ålder för x, då är Lisas ålder x plus tre. Tillsammans är de sjutton, så x plus x plus tre är lika med sjutton. Det blir två x plus tre är lika med sjutton. Ta bort tre på båda sidor, då får du två x är lika med fjorton. Dela båda sidor med två, så är x lika med sju.\n\nKontrollera: sju plus tio är sjutton, och tio är tre mer än sju.\n\nPå provet: skriv ekvationen, lös den steg för steg och svara med en mening."
+  },
+  {
+   "kind": "time",
+   "q": "ett tåg kör i nittio kilometer i timmen i två och en halv timme, hur långt kommer det",
+   "status": 200,
+   "first_ms": 2048,
+   "ms": 4275,
+   "model": "claude-sonnet-5-5",
+   "answer": "Tåget kommer tvåhundratjugofem kilometer. Sträckan är hastighet gånger tid, alltså nittio kilometer i timmen gånger två komma fem timmar. Räkna nittio gånger två som är hundraåttio och nittio gånger noll komma fem som är fyrtiofem, och lägg ihop hundraåttio och fyrtiofem till tvåhundratjugofem. Tåget kör alltså nittio kilometer varje timme, och på två och en halv timme blir det tvåhundratjugofem kilometer. På provet skriver du formeln s är lika med v gånger t, sätter in värdena med enheter och svarar med enheten km."
+  },
+  {
+   "kind": "time",
+   "q": "om fem arbetare bygger en mur på sex dagar, hur lång tid tar det för tre arbetare",
+   "status": 200,
+   "first_ms": 1031,
+   "ms": 3513,
+   "model": "claude-sonnet-5-5",
+   "answer": "Det tar tio dagar. Totalt arbete är fem arbetare gånger sex dagar, alltså trettio arbetardagar. Det arbetet är lika stort oavsett hur många som bygger, så du delar trettio med antalet arbetare. Med tre arbetare blir det trettio delat med tre, alltså tio dagar. Färre arbetare ger alltså längre tid, eftersom antal arbetare och antal dagar är omvänt proportionella. Kontrollera genom att tre arbetare gånger tio dagar blir trettio arbetardagar, precis som förut. På provet skriver du först hur många arbetardagar muren kräver och sedan delar du med det nya antalet arbetare."
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat med alkohol förut",
+   "status": 200,
+   "first_ms": 940,
+   "ms": 2549,
+   "model": "claude-haiku-5-5",
+   "answer": "Det jag tar med mig är ett stort ansvar i kassan och i servering, där jag har lärt mig att hålla koll på regler och att alltid göra rätt även när det är mycket folk. På Kafé Solen i Lund stängde jag ofta själv, och då var det viktigt att allt stämde innan jag gick. Jag är noggrann med det, och det är just det jag ser fram emot att göra här: att möta kunder med ett lugnt bemötande och att ta ansvar för varje försäljning.",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat med alkohol förut",
+   "status": 200,
+   "first_ms": 1000,
+   "ms": 2749,
+   "model": "claude-haiku-5-5",
+   "answer": "Det är precis den noggrannheten jag vill ta med mig till Systembolaget. Jag ser fram emot att lära mig reglerna ordentligt och att ge varje kund ett tryggt och professionellt bemötande.",
+   "stump": true
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat med alkohol förut",
+   "status": 200,
+   "first_ms": 753,
+   "ms": 2803,
+   "model": "claude-haiku-5-5",
+   "answer": "Det är just den ansvarskänslan jag tar med mig hit. Jag ser fram emot att lära mig Systembolagets regler ordentligt och att möta kunder med ett lugnt och tydligt bemötande.",
+   "stump": true
+  },
+  {
+   "kind": "stump",
+   "q": "har du erfarenhet av att sälja alkohol",
+   "status": 200,
+   "first_ms": 1863,
+   "ms": 3630,
+   "model": "claude-haiku-5-5",
+   "answer": "Det har lärt mig att vara noggrann med regler och att alltid kontrollera det jag gör innan jag går vidare. Jag är trygg med ansvaret att säga nej när något inte stämmer, och jag tar gärna in de rutiner Systembolaget har. Det jag ser mest fram emot är att möta kunder på ett lugnt och vänligt sätt, även när det är mycket folk i butiken.",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat i bar",
+   "status": 200,
+   "first_ms": 712,
+   "ms": 2427,
+   "model": "claude-haiku-5-5",
+   "answer": "Det har lärt mig att vara lugn när det är mycket folk och att alltid kontrollera att allt stämmer innan jag lämnar av.\n\nJag är ansvarsfull och noggrann, och jag ser fram till att möta kunder på Systembolaget där bemötande och ordning är lika viktiga. Jag är också van vid kvällar och helger från tidigare jobb, så det passar mig bra.",
+   "stump": false
+  },
+  {
+   "kind": "quote",
+   "q": "citera Strindberg om kärlek",
+   "status": 200,
+   "first_ms": 9489,
+   "ms": 9661,
+   "model": "claude-sonnet-5-5",
+   "answer": "Strindberg skriver i novellen \"Ett dockhem\" i samlingen Giftas: \"kärleken är en känsloaffär; man seglar på landkänningar, och går i hamn\". Han fortsätter med att den som i stället tar till kompass och kort går på grund. Det betyder att kärlek känns sig fram och inte kan styras med förnuft och beräkning. Novellen är Strindbergs svar på Ibsens pjäs Ett dockhem, och där anklagar han Ibsens syn på äktenskapet för att vara för förståndsmässig. På provet kan du koppla citatet till Strindbergs misstro mot att bygga kärlek och äktenskap på logik och rättvisa. Källa: Runeberg.",
+   "quoted": [],
+   "says_cannot": false
+  },
+  {
+   "kind": "quote",
+   "q": "citera Strindberg om kärlek",
+   "status": 200,
+   "first_ms": 7574,
+   "ms": 7656,
+   "model": "claude-sonnet-5-5",
+   "answer": "\"Jag tror nämligen att kärleken är en känsloaffär. Man seglar på landkänningar och går i hamn, men tar man till kompass och kort, så går man på grund.\"\n\nDet står i novellen \"Ett dockhem\" i August Strindbergs novellsamling Giftas. Strindberg menar att kärlek styrs av känsla och inte av förnuft, och att man förstör den om man försöker räkna ut den. Det är en bra motpol till Ibsens \"Ett dockhem\", som du kan jämföra med på provet. Källa: Runeberg.",
+   "quoted": [
+    "Jag tror nämligen att kärleken är en känsloaffär. Man seglar på landkänningar och går i hamn, men tar man till kompass och kort, så går man på grund.",
+    " i August Strindbergs novellsamling Giftas. Strindberg menar att kärlek styrs av känsla och inte av förnuft, och att man förstör den om man försöker räkna ut den. Det är en bra motpol till Ibsens "
+   ],
+   "says_cannot": false
+  },
+  {
+   "kind": "quote",
+   "q": "citera Strindberg om kvinnor i Giftas",
+   "status": 200,
+   "first_ms": 6423,
+   "ms": 6521,
+   "model": "claude-sonnet-5-5",
+   "answer": "Jag kan inte citera det ordagrant, men i novellsamlingen Giftas skildrar Strindberg äktenskapet och kvinnans ställning kritiskt. Han angriper den borgerliga uppfattningen om kvinnan och menar att flickor fostras till att vara oskyldiga och okunniga om livet. Han tycker att det gör dem dåligt rustade för äktenskapet. Samtidigt kritiserar han tidens äktenskapslagar, som gav mannen makten. Boken väckte stark debatt, och Strindberg åtalades för hädelse men frikändes artonhundraåttiofyra.\n\nPå provet: skriv att Strindberg i Giftas kritiserar äktenskapets villkor och samhällets kvinnoideal, och att han ofta ses som både kvinnoförtryckskritiker och kvinnoföraktare.",
+   "quoted": [],
+   "says_cannot": true
+  },
+  {
+   "kind": "quote",
+   "q": "citera Strindberg om kvinnor i Giftas",
+   "status": 200,
+   "first_ms": 6602,
+   "ms": 6686,
+   "model": "claude-sonnet-5-5",
+   "answer": "Jag kan inte citera det ordagrant, men i novellsamlingen Giftas skriver Strindberg med en satirisk och ofta kvinnokritisk ton om äktenskapet. Han hävdar att kvinnan hålls underordnad och infantiliserad av samhällets uppfostran, men novellerna ger också en bild av att mannen är fången i samma konventioner. Samtidigt är hans syn motsägelsefull, eftersom han kritiserar både dåtidens kvinnoideal och kvinnors krav på jämlikhet.\n\nEtt konkret exempel är novellen om en kvinna som i äktenskapet visar sig vara oförberedd på vuxenlivet, vilket Strindberg använder för att kritisera flickors uppfostran. På provet: skriv att Giftas kritiserar äktenskapet och könsrollerna, men att Strindbergs kvinnosyn är ",
+   "quoted": [],
+   "says_cannot": true
+  },
+  {
+   "kind": "quote",
+   "q": "vad sa Strindberg om äktenskapet",
+   "status": 200,
+   "first_ms": 5034,
+   "ms": 5100,
+   "model": "claude-sonnet-5-5",
+   "answer": "Strindberg såg äktenskapet som en maktkamp mellan man och kvinna, där båda försöker dominera och ingen går säker. I novellsamlingen Giftas från artonhundraåttiofyra och artonhundraåttiosex skildrar han äktenskap som ofta slutar i besvikelse, och han kritiserar samtidigt den tidens syn på kvinnans roll. Han ville ha jämlikhet i lagens mening, men var skeptisk till kvinnors frigörelse och kände sig hotad av den. I pjäsen Fadren från artonhundraåttiosju kämpar en man och hans hustru om makten över barnets uppfostran, och kampen driver mannen till vansinne. Därför brukar man säga att han i det naturalistiska dramat gör äktenskapet till ett slagfält. Motsatsen är Ibsens Ett dockhem, där kritiken ",
+   "quoted": [],
+   "says_cannot": false
+  }
+ ]
+}

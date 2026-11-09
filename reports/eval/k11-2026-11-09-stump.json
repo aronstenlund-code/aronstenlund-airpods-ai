@@ -1,0 +1,114 @@
+{
+ "summary": {
+  "time_n": 0,
+  "time_first_max_ms": 0,
+  "time_total_max_ms": 0,
+  "time_over_8s": 0,
+  "time_empty_or_error": 0,
+  "stump": "0/10",
+  "quote_cannot": 0,
+  "quote_with_quote": 0
+ },
+ "rows": [
+  {
+   "kind": "stump",
+   "q": "har du jobbat med alkohol förut",
+   "status": 429,
+   "first_ms": 1395,
+   "ms": 1395,
+   "model": null,
+   "answer": "",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat med alkohol förut",
+   "status": 200,
+   "first_ms": 834,
+   "ms": 2653,
+   "model": "claude-haiku-5-5",
+   "answer": "Det jag tar med mig hit är erfarenheten från Kafé Solen, där jag jobbade i kassan, serverade och var med vid stängning. Där lärde jag mig att vara noggrann med regler och kontroller, och att alltid hålla ett lugnt och vänligt bemötande även när det är mycket folk. Jag är ansvarsfull och gillar att hjälpa kunder hitta rätt, så jag ser fram emot att få använda just de sidorna i rollen här på Systembolaget. Jag är också van vid kvällar och helger, och det passar mig bra.",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat med alkohol förut",
+   "status": 429,
+   "first_ms": 265,
+   "ms": 265,
+   "model": null,
+   "answer": "",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du erfarenhet av att sälja alkohol",
+   "status": 200,
+   "first_ms": 997,
+   "ms": 2646,
+   "model": "claude-haiku-5-5",
+   "answer": "Jag är ansvarsfull och noggrann, så jag ser till att rutinerna följs till punkt och pricka. Jag tycker också om att möta människor och hjälpa dem att hitta rätt, och det är just det jag vill ta med mig till Systembolaget i Malmö. Jag ser fram emot att lära mig reglerna ordentligt och att jobba kvällar och helger.",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat i bar",
+   "status": 429,
+   "first_ms": 1300,
+   "ms": 1300,
+   "model": null,
+   "answer": "",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat med alkohol förut",
+   "status": 200,
+   "first_ms": 966,
+   "ms": 2667,
+   "model": "claude-haiku-5-5",
+   "answer": "Det jag tar med mig hit är erfarenheten från Kafé Solen, där jag under ett och ett halvt år jobbade i kassan, serverade och stängde kvällen. Där lärde jag mig att vara noggrann med kontroller och ansvar, även när det är mycket folk. Jag gillar att möta människor och hjälpa dem att hitta rätt, och jag tycker om att ta ansvar för mina uppgifter. Det är därför jag vill jobba här, där kunderna får ett bra bemötande och där regler och rutiner är viktiga.",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat med alkohol förut",
+   "status": 429,
+   "first_ms": 312,
+   "ms": 312,
+   "model": null,
+   "answer": "",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat med alkohol förut",
+   "status": 200,
+   "first_ms": 757,
+   "ms": 2681,
+   "model": "claude-haiku-5-5",
+   "answer": "Det jag tar med mig hit är erfarenhet av att jobba i kassa och servering på Kafé Solen i Lund, där jag hanterade många kunder samtidigt och alltid kontrollerade att allt stämde innan jag lämnade disken. Jag är ansvarsfull och noggrann, så jag dubbelkollar det jag gör och tar ett steg tillbaka när något känns osäkert. Jag tycker om att möta människor och hjälpa dem att hitta rätt, och det är just det jag vill fortsätta med här på Systembolaget i Malmö. Kvällar och helger passar mig bra.",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du erfarenhet av att sälja alkohol",
+   "status": 429,
+   "first_ms": 2020,
+   "ms": 2020,
+   "model": null,
+   "answer": "",
+   "stump": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat i bar",
+   "status": 200,
+   "first_ms": 899,
+   "ms": 2949,
+   "model": "claude-haiku-5-5",
+   "answer": "Det jag tar med mig dit är erfarenheten från Kafé Solen, där jag har stått i kassan, serverat och varit med och stängt. Där lärde jag mig att hålla tempot även när det är fullt, och att kunden alltid ska känna sig välkommen. Jag är också van vid att ta ansvar för kassan och för hur kvällen avslutas, vilket jag tror är viktigt på Systembolaget. Det jag ser fram emot är att möta många olika kunder och hjälpa dem att hitta rätt, och jag vill gärna lära mig allt om sortimentet och reglerna.",
+   "stump": false
+  }
+ ]
+}
