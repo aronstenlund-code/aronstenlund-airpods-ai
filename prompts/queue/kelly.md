@@ -44,7 +44,7 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
      - **Lägg in ditt material i förväg.** Instuderingsmaterial, övningsprov eller kursmål (Förberedelser). Lumen pluggar med dig utifrån det, och du säger "nästa" för att gå vidare till nästa fråga i övningsprovet.
   3. Inga påståenden om funktioner som inte finns i appen. Kolla mot `docs/COMMANDS.md` och STATUS. `site/` får vara högst 2 MB (i dag 1,7 MB).
 
-- [ ] **Ke9 – Enkel väg in: appen och demosidan som en produkt** (effort: high). Aron 2026-11-09 22:39: stort fokus på användarvänlighet, lätt att förstå, lätt att sätta igång, inte överväldigande, en tydlig väg framåt. Appen och sidan ska se ut som samma produkt.
+- [~] pågår 2026-11-09 22:47 **Ke9 – Enkel väg in: appen och demosidan som en produkt** (effort: high). Aron 2026-11-09 22:39: stort fokus på användarvänlighet, lätt att förstå, lätt att sätta igång, inte överväldigande, en tydlig väg framåt. Appen och sidan ska se ut som samma produkt.
   1. **Designunderlag för appen** i `docs/design/enkel-start.md` (+ bilder i `docs/design/`): gå igenom Tobys T3-bilder (`reports/apptest/2026-11-09-t3-skarmbilder/`) och Angelas A13-rapport. Föreslå skärm för skärm: vägen från första start till första svar på högst 3 tryck, en huvudknapp per skärm, vad som flyttas bakom Inställningar, kortare texter. Rita förslagen som bilder (före/efter). Ändra ingen appkod; Angela bygger det i A18.
   2. **Demosidan:** samma typsnitt, färger och ord som appen. En enda tydlig väg: "Så kommer du igång" i 3 steg och en knapp. Ta bort det som drar uppmärksamheten åt flera håll. `site/` högst 2 MB.
   3. Rapport med före/efter-bilder (mobil, ljust och mörkt).
