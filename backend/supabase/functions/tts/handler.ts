@@ -404,6 +404,22 @@ async function modelInfo(doFetch: typeof fetch, deps: TtsDeps): Promise<Record<s
     return r.ok ? await r.json() : { error: r.status };
   };
   const models = await get("/v1/models");
+  // the key may not read /v1/models: one 4-character request per model shows what ElevenLabs reports for it
+  const probes: Record<string, unknown> = {};
+  for (const model of ["eleven_v4_turbo", "eleven_flash_v2_5"]) {
+    const t = performance.now();
+    const r = await doFetch(`${base}/v1/text-to-speech/${deps.config.voiceId}/stream?output_format=mp3_22050_32`, {
+      method: "POST",
+      headers: { ...h, "content-type": "application/json", accept: "audio/*" },
+      body: JSON.stringify({ text: "Hej.", model_id: model, language_code: "sv" }),
+    });
+    const head: Record<string, string> = {};
+    r.headers.forEach((v, k) => {
+      if (/cost|character|credit|model|request-id|latency/i.test(k)) head[k] = v;
+    });
+    const bytes = (await r.arrayBuffer().catch(() => new ArrayBuffer(0))).byteLength;
+    probes[model] = { status: r.status, headers: head, bytes, ms: Math.round(performance.now() - t) };
+  }
   const voices = await get("/v1/shared-voices?language=sv&page_size=40&sort=cloned_by_count");
   const user = await get("/v1/user/subscription");
   // deno-lint-ignore no-explicit-any
@@ -447,5 +463,7 @@ async function modelInfo(doFetch: typeof fetch, deps: TtsDeps): Promise<Record<s
       description: typeof v.description === "string" ? v.description.slice(0, 160) : null,
     })),
     voices_error: vo?.error ?? null,
+    models_error: (models as { error?: number })?.error ?? null,
+    probes,
   };
 }
