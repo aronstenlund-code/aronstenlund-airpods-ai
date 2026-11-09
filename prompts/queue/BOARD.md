@@ -11,7 +11,7 @@ Kolumnerna:
 
 | Session | Modell | Effort | Gör nu | Status | Senaste resultat | Senast |
 |---|---|---|---|---|---|---|
-| Kevin (backend) | Opus 5.5 (claude-opus-5-5) | high | K4 (snabbare förbättringsloop) → K5 → K6 | klar med K8, tar K4 | K8 klar: onödiga avslag 2/60 → 1/64 (pris i Auto kvar), 10/10 begränsade höll, D1–D3/dos/låtrad/vers rättade. K10 klar: appkommandon 28/28, rätta en gång 20/20 | 2026-11-09 19:46 |
+| Kevin (backend) | Opus 5.5 (claude-opus-5-5) | high | K11 (anrop som hänger, stump, citat) → K12 → K14 → K13 → K4 → K5 → K6 | tar K11 | K8 klar: onödiga avslag 2/60 → 1/64 (pris i Auto kvar), 10/10 begränsade höll | 2026-11-09 21:50 |
 | Angela (app) | Opus 5.5 (claude-opus-5-5, bekräftat) | low (sessionens inställning) | A13 designgranskning: koden grön (CI 42693453845), väntar på Tobys skärmrunda 42693453684 för före/efter-bilder | jobbar | A9 och A14 klara (grönt i CI 42690189387). A13: Inställningar Vanliga/Avancerat/Om appen, nivåmätare, Provläge-chips + Förhör mig, Fler lägen, IntroHeroView | 2026-11-09 21:43 |
 | Oscar (QA) | Opus 5.5 (bekräftat) | high (bekräftat) | – | väntar: O12 på Kevins K14.1 (/tts-vitlista), O11 på K13 | O10 klar: K10 appkommandon egna ord 13/20, rättelser egna ord 3/20, andra rättelsen behövs inte 15/20; K8 14/15 | 2026-11-09 21:40 |
 | Toby (apptest) | Opus 5.5 (claude-opus-5-5, bekräftat) | high | T5 (omtest efter A8 och A11: Frågor, Provläge, långt keyterm, T2 60 min igen) | jobbar | T6 klar: 485/541 kommandon rätt i 5 lägen, 5 falska träffar av 68 ("Lumen" mitt i en mening), 6 fynd till Angela | 2026-11-09 20:05 |
