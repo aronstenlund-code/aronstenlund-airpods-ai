@@ -1,0 +1,1985 @@
+{
+  "answers" : [
+    {
+      "firstTextMs" : 996.091,
+      "minute" : 0.547664999961853,
+      "question" : "Vad gör klorofyll i en växt?"
+    },
+    {
+      "firstTextMs" : 1209.917667,
+      "minute" : 0.9591319998105367,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 3319.145583,
+      "minute" : 1.3707528014977772,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1592.4035840000001,
+      "minute" : 1.7737662672996521,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1145.978541,
+      "minute" : 2.564444734652837,
+      "question" : "Vad gör klorofyll i en växt?"
+    },
+    {
+      "firstTextMs" : 852.906041,
+      "minute" : 2.9722962001959483,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1204.126042,
+      "minute" : 3.361071834961573,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1001.864542,
+      "minute" : 3.7800356348355613,
+      "question" : "Vad bildas när glukos bryts ner i mitokondrierna?"
+    },
+    {
+      "firstTextMs" : 2279.082334,
+      "minute" : 4.616053501764934,
+      "question" : "Vad gör klorofilen väg..."
+    },
+    {
+      "firstTextMs" : 1040.808625,
+      "minute" : 4.992034633954366,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 983.538667,
+      "minute" : 5.386701283852259,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1334.80525,
+      "minute" : 5.79777423342069,
+      "question" : "Vad bildas när glukos bryts ner i mitokondrierna?"
+    },
+    {
+      "firstTextMs" : 1204.961583,
+      "minute" : 6.627843501170476,
+      "question" : "Vad gör klorofilen bäst?"
+    },
+    {
+      "firstTextMs" : 927.275625,
+      "minute" : 7.034440833330154,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1034.8205,
+      "minute" : 7.418479100863139,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 2266.0748750000002,
+      "minute" : 7.86114073395729,
+      "question" : "För att bildas när glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1131.650583,
+      "minute" : 8.651045550902685,
+      "question" : "Vad gör klorofyllen väg-"
+    },
+    {
+      "firstTextMs" : 1233.270875,
+      "minute" : 9.062509983778,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1234.894875,
+      "minute" : 9.456863367557526,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1135.7796250000001,
+      "minute" : 9.873122751712799,
+      "question" : "För att bildas när glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 2382.214125,
+      "minute" : 10.717495733499527,
+      "question" : "Vad gör klorofyllen bäst?"
+    },
+    {
+      "firstTextMs" : 921.975166,
+      "minute" : 11.092023499806722,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1214.743458,
+      "minute" : 11.491631867488225,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1069.559708,
+      "minute" : 11.892838233709336,
+      "question" : "Vad bildas när glukos bryts ner i mitokondrierna?"
+    },
+    {
+      "firstTextMs" : 921.89375,
+      "minute" : 12.716645483175913,
+      "question" : "Vad gör klorofilen växt?"
+    },
+    {
+      "firstTextMs" : 1092.110583,
+      "minute" : 13.131561001141867,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1041.085875,
+      "minute" : 13.522169750928878,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1296.75525,
+      "minute" : 13.952512983481089,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 2271.702791,
+      "minute" : 14.79013123313586,
+      "question" : "Vad gör klorofyllen vä-"
+    },
+    {
+      "firstTextMs" : 1012.415292,
+      "minute" : 15.175171633561453,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1038.708416,
+      "minute" : 15.573404401540756,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1030.666792,
+      "minute" : 15.984849550326665,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 2086.985333,
+      "minute" : 16.839765501022338,
+      "question" : "Vad gör klorofyllen bättre?"
+    },
+    {
+      "firstTextMs" : 854.212083,
+      "minute" : 17.214725267887115,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1431.0501669999999,
+      "minute" : 17.62844495177269,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1489.066875,
+      "minute" : 18.0483292500178,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 919.760125,
+      "minute" : 18.85895510117213,
+      "question" : "Vad gör klorofyll i en växt?"
+    },
+    {
+      "firstTextMs" : 1421.196583,
+      "minute" : 19.280462300777437,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 935.134667,
+      "minute" : 19.65821836789449,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 920.444,
+      "minute" : 20.08047893444697,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 2223.696916,
+      "minute" : 20.928058767318724,
+      "question" : "Vad gör klorofilen bäg-"
+    },
+    {
+      "firstTextMs" : 1267.545666,
+      "minute" : 21.31996265053749,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 984.860292,
+      "minute" : 21.699796084562937,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1055.951291,
+      "minute" : 22.126939833164215,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 921.830792,
+      "minute" : 22.950299483537673,
+      "question" : "Vad gör klorofyllen bättre?"
+    },
+    {
+      "firstTextMs" : 1110.805667,
+      "minute" : 23.35789801677068,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 886.109542,
+      "minute" : 23.741980834801993,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1196.622417,
+      "minute" : 24.17035990158717,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1905.415,
+      "minute" : 25.014338501294453,
+      "question" : "Vad gör klorofilen vä-"
+    },
+    {
+      "firstTextMs" : 1195.637917,
+      "minute" : 25.401904183626176,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 969.302458,
+      "minute" : 25.7913304011027,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1042.088667,
+      "minute" : 26.21293543378512,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 962.364834,
+      "minute" : 27.02217671672503,
+      "question" : "Vad gör klorofyllen b?"
+    },
+    {
+      "firstTextMs" : 1195.684459,
+      "minute" : 27.442082568009695,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 856.2165,
+      "minute" : 27.82504128416379,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 2033.455791,
+      "minute" : 28.267805151144664,
+      "question" : "Vad bildas när glukos bryts ner i mitokondrierna?"
+    },
+    {
+      "firstTextMs" : 2325.737083,
+      "minute" : 29.096621533234913,
+      "question" : "Vad gör klorofilen växt?"
+    },
+    {
+      "firstTextMs" : 977.939542,
+      "minute" : 29.48402903477351,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1485.7655,
+      "minute" : 29.900560651222865,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 2530.5697920000002,
+      "minute" : 31.14533056815465,
+      "question" : "Vad gör klorofilen väg..."
+    },
+    {
+      "firstTextMs" : 1351.028292,
+      "minute" : 31.53122068444888,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 851.45825,
+      "minute" : 31.90778068502744,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 983.743208,
+      "minute" : 32.3454233845075,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1349.002,
+      "minute" : 33.169107800722124,
+      "question" : "Vad gör klorofilen bättre?"
+    },
+    {
+      "firstTextMs" : 917.225875,
+      "minute" : 33.56803241769473,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 863.544083,
+      "minute" : 33.96543660163879,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1937.590334,
+      "minute" : 34.41577699979146,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 2061.370958,
+      "minute" : 35.237995034456254,
+      "question" : "Vad gör klorofilen växt?"
+    },
+    {
+      "firstTextMs" : 917.371,
+      "minute" : 35.62340623339017,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1020.89375,
+      "minute" : 36.015640968084334,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 917.752916,
+      "minute" : 36.43893458445867,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 2141.634458,
+      "minute" : 37.2888213177522,
+      "question" : "Vad gör klorofilen bägge?"
+    },
+    {
+      "firstTextMs" : 921.162875,
+      "minute" : 37.66191058357557,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 894.424333,
+      "minute" : 38.05600006779035,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 2435.620625,
+      "minute" : 38.505465334653856,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 2559.980458,
+      "minute" : 39.3290386180083,
+      "question" : "Vad gör klorofilen väx-"
+    },
+    {
+      "firstTextMs" : 954.22,
+      "minute" : 39.71389825145403,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1155.73175,
+      "minute" : 40.10930208365122,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1277.483958,
+      "minute" : 40.529440933465956,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 5193.842791,
+      "minute" : 41.410887885093686,
+      "question" : "Vad gör klorofilen vä-"
+    },
+    {
+      "firstTextMs" : 997.910625,
+      "minute" : 41.74430158336957,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1273.048833,
+      "minute" : 42.15106565157573,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 992.32825,
+      "minute" : 42.56659864981969,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1254.064791,
+      "minute" : 43.3861839512984,
+      "question" : "Vad gör klorofyllen bättre?"
+    },
+    {
+      "firstTextMs" : 918.039125,
+      "minute" : 43.78014105161031,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 941.564167,
+      "minute" : 44.17654305100441,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1042.422125,
+      "minute" : 44.59932293494543,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1714.0315,
+      "minute" : 45.42859920064608,
+      "question" : "Vad gör klorofilen växt?"
+    },
+    {
+      "firstTextMs" : 948.616292,
+      "minute" : 45.81764428416888,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 960.540625,
+      "minute" : 46.20399031837781,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1496.267,
+      "minute" : 46.64293499986331,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1681.3194170000002,
+      "minute" : 47.462004667520524,
+      "question" : "Vad gör klorofilen väg..."
+    },
+    {
+      "firstTextMs" : 904.203417,
+      "minute" : 47.84577273329099,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1281.620583,
+      "minute" : 48.252564350763954,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1037.149792,
+      "minute" : 48.65108926693598,
+      "question" : "Vad bildas när glukos bryts ner i mitokondrierna?"
+    },
+    {
+      "firstTextMs" : 1236.376167,
+      "minute" : 49.483074351151785,
+      "question" : "Vad gör klorofilen bäst?"
+    },
+    {
+      "firstTextMs" : 1193.434625,
+      "minute" : 49.88920811812083,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1068.039708,
+      "minute" : 50.27957851688067,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1908.58175,
+      "minute" : 50.72445650100708,
+      "question" : "För att bildas när glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 2234.881042,
+      "minute" : 51.551253817478816,
+      "question" : "Vad gör klorofyllen vä-"
+    },
+    {
+      "firstTextMs" : 1403.745833,
+      "minute" : 51.94168105125427,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 916.094958,
+      "minute" : 52.31695918440819,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 987.89475,
+      "minute" : 52.7426951666673,
+      "question" : "För att bildas när glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1146.078416,
+      "minute" : 53.572241284449895,
+      "question" : "Vad gör klorofyllen bäst?"
+    },
+    {
+      "firstTextMs" : 852.40025,
+      "minute" : 53.96768000125885,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1216.347125,
+      "minute" : 54.37342808445295,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1157.533416,
+      "minute" : 54.78506570061048,
+      "question" : "För att bildas när glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1060.446208,
+      "minute" : 55.609848600625995,
+      "question" : "Vad gör klorofilen växt?"
+    },
+    {
+      "firstTextMs" : 880.529917,
+      "minute" : 56.023047117392224,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 980.29125,
+      "minute" : 56.41033751765887,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 1392.0464160000001,
+      "minute" : 56.84195468425751,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 2045.058917,
+      "minute" : 57.67382988333702,
+      "question" : "Vad gör klorofyllen vä-"
+    },
+    {
+      "firstTextMs" : 966.074125,
+      "minute" : 58.05837663412094,
+      "question" : "Vad är skillnaden mellan fotosyntes och cellandning?"
+    },
+    {
+      "firstTextMs" : 1003.861459,
+      "minute" : 58.46282501816749,
+      "question" : "Varför behöver växter ljus?"
+    },
+    {
+      "firstTextMs" : 951.547458,
+      "minute" : 58.87514781753222,
+      "question" : "För att bilda snar glukos bryts ner i mitokondrierna."
+    },
+    {
+      "firstTextMs" : 1770.587666,
+      "minute" : 59.720922366778055,
+      "question" : "Vad gör klorofilen bättre?"
+    }
+  ],
+  "deafPeriods" : [
+
+  ],
+  "errorLines" : [
+
+  ],
+  "heardSeconds" : [
+    29.671905040740967,
+    54.61702001094818,
+    77.92984700202942,
+    103.02777099609375,
+    151.2734340429306,
+    175.96830010414124,
+    199.24307906627655,
+    224.0411330461502,
+    272.8009020090103,
+    297.3844690322876,
+    321.12362802028656,
+    345.92488408088684,
+    394.7126100063324,
+    419.7562190294266,
+    442.9205090999603,
+    468.07392501831055,
+    516.5347681045532,
+    541.4386100769043,
+    564.8293870687485,
+    590.1782120466232,
+    638.3742160797119,
+    663.1804159879684,
+    687.067489027977,
+    711.6822760105133,
+    760.3729710578918,
+    785.5070610046387,
+    808.9627710580826,
+    834.6491060256958,
+    883.4266570806503,
+    908.4090130329132,
+    932.0143359899521,
+    957.110622048378,
+    1005.7340400218964,
+    1030.9699470996857,
+    1054.5429220199585,
+    1080.092357993126,
+    1128.62679708004,
+    1153.9690541028976,
+    1177.154960989952,
+    1202.8550970554352,
+    1251.610153079033,
+    1276.4905680418015,
+    1300.2567991018295,
+    1325.3039910793304,
+    1373.817088007927,
+    1399.0483059883118,
+    1422.4550000429153,
+    1448.1087670326233,
+    1497.0017080307007,
+    1522.0076349973679,
+    1545.577542066574,
+    1570.7536820173264,
+    1619.1755100488663,
+    1644.242161989212,
+    1668.064148068428,
+    1693.0606840848923,
+    1741.619901061058,
+    1766.951369047165,
+    1790.6247670650482,
+    1815.8389320373535,
+    1864.4005380868912,
+    1889.415699005127,
+    1913.0735490322113,
+    1938.1598740816116,
+    1987.00328707695,
+    2012.317417025566,
+    2035.6970390081406,
+    2061.4476730823517,
+    2109.9302920103073,
+    2135.3200380802155,
+    2158.875941991806,
+    2184.4352980852127,
+    2232.9058260917664,
+    2257.9228880405426,
+    2281.6601890325546,
+    2306.6709220409393,
+    2355.6883070468903,
+    2380.5914710760117,
+    2404.205517053604,
+    2429.4947600364685,
+    2477.987676024437,
+    2503.015897989273,
+    2526.4581760168076,
+    2551.744379043579,
+    2600.184061050415,
+    2624.9824481010437,
+    2648.998377084732,
+    2673.703458070755,
+    2722.034681081772,
+    2747.1299090385437,
+    2770.588119029999,
+    2795.862137079239,
+    2844.363750100136,
+    2868.9919040203094,
+    2892.7728700637817,
+    2917.261386990547,
+    2966.1879889965057,
+    2991.2533260583878,
+    3014.4654660224915,
+    3039.9798899888992,
+    3088.771099090576,
+    3113.8210940361023,
+    3137.1670730113983,
+    3162.5660001039505,
+    3211.2195930480957,
+    3236.194631099701,
+    3260.010547041893,
+    3285.2435060739517,
+    3333.909581065178,
+    3359.087273001671,
+    3382.332745075226,
+    3407.8423540592194,
+    3456.629271030426,
+    3481.711443066597,
+    3505.0928490161896,
+    3530.5280270576477,
+    3579.244626045227
+  ],
+  "hearingLines" : [
+
+  ],
+  "longestDeafSeconds" : 0,
+  "longestNotHearingSeconds" : 1.0123639106750488,
+  "minutes" : 60,
+  "missedFiles" : 0,
+  "missedWhileShowingListening" : 0,
+  "notHearingSpans" : [
+    [
+      1.1102629899978638,
+      1.6205329895019531
+    ],
+    [
+      157.31291210651398,
+      158.32527601718903
+    ]
+  ],
+  "plays" : [
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 26.988171100616455,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 49.90048909187317,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 74.81371402740479,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 98.24219799041748,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 148.1658080816269,
+      "showedListening" : false
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 171.58298206329346,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 196.05102109909058,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 219.39466905593872,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 269.81862103939056,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 293.24200201034546,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 318.23765099048615,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 341.64938604831696,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 392.02999103069305,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 415.4410810470581,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 439.81655609607697,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 463.20279109477997,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 513.7379610538483,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 537.1379470825195,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 561.5473580360413,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 585.5082859992981,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 635.4721640348434,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 658.8796410560608,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 684.0311740636826,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 707.4954030513763,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 757.4664160013199,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 780.9413810968399,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 805.9911119937897,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 829.9996900558472,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 880.1542500257492,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 904.1432040929794,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 928.7106010913849,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 952.2306790351868,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 1002.8947830200195,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 1026.4234120845795,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 1051.5075570344925,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 1075.101613998413,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 1125.684031009674,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 1149.627081990242,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 1174.1451100111008,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 1198.2230460643768,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 1248.715194106102,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 1272.2455240488052,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 1297.3462080955505,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 1320.8219929933548,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 1370.9346150159836,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 1394.5811001062393,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 1419.51582300663,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 1443.467915058136,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 1494.1257359981537,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 1517.6098001003265,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 1542.2376310825348,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 1565.727569103241,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 1616.2230820655823,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 1639.8057481050491,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 1664.9447129964828,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 1688.488177061081,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 1738.9484320878983,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 1762.4897770881653,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 1787.4711910486221,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 1810.9448810815811,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 1861.557217001915,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 1885.0334540605545,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 1910.120887041092,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 1933.6879650354385,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 1984.253702044487,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 2008.2138330936432,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 2033.1755501031876,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 2056.709662079811,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 2107.3157790899277,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 2130.8681449890137,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 2155.9233490228653,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 2179.487843990326,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 2230.104393005371,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 2253.688845038414,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 2278.673302054405,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 2302.2543050050735,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 2352.331081032753,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 2375.9140681028366,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 2401.392163991928,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 2424.8183430433273,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 2474.8789761066437,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 2498.4042860269547,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 2523.457578063011,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 2546.9803479909897,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 2597.098049044609,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 2620.4979370832443,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 2645.5996590852737,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 2669.1352330446243,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 2719.1468420028687,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 2742.633491039276,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 2767.6976430416107,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 2791.234300017357,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 2841.2548600435257,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 2864.747489094734,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 2889.726355075836,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 2913.2547540664673,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 2963.2863940000534,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 2986.857130050659,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 3011.814842104912,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 3035.2333430051804,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 3085.8993870019913,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 3109.4692690372467,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 3133.988597035408,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 3157.4472880363464,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 3208.519604086876,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 3232.0575350522995,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 3257.005150079727,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 3280.4584090709686,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 3331.0210210084915,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 3354.471267104149,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 3379.4677830934525,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 3402.960348010063,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 3453.9043999910355,
+      "showedListening" : true
+    },
+    {
+      "file" : 2,
+      "heard" : true,
+      "second" : 3477.3156250715256,
+      "showedListening" : true
+    },
+    {
+      "file" : 3,
+      "heard" : true,
+      "second" : 3502.4542710781097,
+      "showedListening" : true
+    },
+    {
+      "file" : 4,
+      "heard" : true,
+      "second" : 3525.971655011177,
+      "showedListening" : true
+    },
+    {
+      "file" : 1,
+      "heard" : true,
+      "second" : 3576.607773065567,
+      "showedListening" : true
+    }
+  ],
+  "reconnectLines" : [
+    "  2.61 Scribe keyterms changed: reconnecting in a pause"
+  ],
+  "samples" : [
+    {
+      "active" : true,
+      "answered" : 0,
+      "heard" : 0,
+      "memoryMB" : 55.7713623046875,
+      "minute" : 0.018505301078160605,
+      "mode" : "prov",
+      "scribeReconnects" : 0
+    },
+    {
+      "active" : true,
+      "answered" : 2,
+      "heard" : 2,
+      "memoryMB" : 67.5216064453125,
+      "minute" : 1.001373016834259,
+      "mode" : "prov",
+      "scribeReconnects" : 0
+    },
+    {
+      "active" : true,
+      "answered" : 4,
+      "heard" : 4,
+      "memoryMB" : 67.8341064453125,
+      "minute" : 2.0031673848628997,
+      "mode" : "prov",
+      "scribeReconnects" : 0
+    },
+    {
+      "active" : true,
+      "answered" : 6,
+      "heard" : 6,
+      "memoryMB" : 67.8341064453125,
+      "minute" : 3.0043915510177612,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 8,
+      "heard" : 8,
+      "memoryMB" : 67.7403564453125,
+      "minute" : 4.00540003379186,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 10,
+      "heard" : 10,
+      "memoryMB" : 67.7716064453125,
+      "minute" : 5.005944683154424,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 12,
+      "heard" : 12,
+      "memoryMB" : 67.6466064453125,
+      "minute" : 6.0082725505034125,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 13,
+      "heard" : 14,
+      "memoryMB" : 122.0841064453125,
+      "minute" : 7.000629051526388,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 16,
+      "heard" : 16,
+      "memoryMB" : 67.6466064453125,
+      "minute" : 8.001030451059341,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 17,
+      "heard" : 17,
+      "memoryMB" : 67.6778564453125,
+      "minute" : 9.002852201461792,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 20,
+      "heard" : 20,
+      "memoryMB" : 67.6778564453125,
+      "minute" : 10.005071918169657,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 21,
+      "heard" : 21,
+      "memoryMB" : 67.5684814453125,
+      "minute" : 11.007049850622813,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 24,
+      "heard" : 24,
+      "memoryMB" : 67.6778564453125,
+      "minute" : 12.00451210141182,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 25,
+      "heard" : 25,
+      "memoryMB" : 67.5997314453125,
+      "minute" : 13.00726238489151,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 28,
+      "heard" : 28,
+      "memoryMB" : 67.6153564453125,
+      "minute" : 14.0039808511734,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 29,
+      "heard" : 29,
+      "memoryMB" : 65.7716064453125,
+      "minute" : 15.001795784632366,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 32,
+      "heard" : 32,
+      "memoryMB" : 67.6153564453125,
+      "minute" : 16.007611300547918,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 33,
+      "heard" : 33,
+      "memoryMB" : 65.7247314453125,
+      "minute" : 17.004409251610436,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 35,
+      "heard" : 36,
+      "memoryMB" : 65.7403564453125,
+      "minute" : 18.002954949935276,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 37,
+      "heard" : 37,
+      "memoryMB" : 65.7716064453125,
+      "minute" : 19.00734181801478,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 39,
+      "heard" : 39,
+      "memoryMB" : 65.7559814453125,
+      "minute" : 20.004918150107066,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 41,
+      "heard" : 41,
+      "memoryMB" : 65.8497314453125,
+      "minute" : 21.000654834508897,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 43,
+      "heard" : 43,
+      "memoryMB" : 65.7247314453125,
+      "minute" : 22.005055433511735,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 45,
+      "heard" : 45,
+      "memoryMB" : 67.5841064453125,
+      "minute" : 23.003450866540273,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 47,
+      "heard" : 47,
+      "memoryMB" : 65.8184814453125,
+      "minute" : 24.007093334197997,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 48,
+      "heard" : 49,
+      "memoryMB" : 65.7872314453125,
+      "minute" : 25.00379785100619,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 51,
+      "heard" : 51,
+      "memoryMB" : 65.7403564453125,
+      "minute" : 26.001418566703798,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 52,
+      "heard" : 53,
+      "memoryMB" : 65.9747314453125,
+      "minute" : 27.00487500031789,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 55,
+      "heard" : 55,
+      "memoryMB" : 65.7247314453125,
+      "minute" : 28.005640733242036,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 56,
+      "heard" : 56,
+      "memoryMB" : 65.7091064453125,
+      "minute" : 29.00840881665548,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 59,
+      "heard" : 59,
+      "memoryMB" : 65.8497314453125,
+      "minute" : 30.00396171808243,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 59,
+      "heard" : 60,
+      "memoryMB" : 65.8966064453125,
+      "minute" : 31.000138368209203,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 62,
+      "heard" : 63,
+      "memoryMB" : 65.8028564453125,
+      "minute" : 32.005599268277486,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 63,
+      "heard" : 64,
+      "memoryMB" : 65.8028564453125,
+      "minute" : 33.00226556658745,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 66,
+      "heard" : 67,
+      "memoryMB" : 65.8341064453125,
+      "minute" : 34.00598261753718,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 67,
+      "heard" : 68,
+      "memoryMB" : 65.8184814453125,
+      "minute" : 35.001861133178075,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 69,
+      "heard" : 71,
+      "memoryMB" : 65.8497314453125,
+      "minute" : 36.00138005018234,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 71,
+      "heard" : 72,
+      "memoryMB" : 65.8653564453125,
+      "minute" : 37.006739634275434,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 73,
+      "heard" : 74,
+      "memoryMB" : 65.8653564453125,
+      "minute" : 38.003314367930095,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 75,
+      "heard" : 76,
+      "memoryMB" : 65.8966064453125,
+      "minute" : 39.00104338328044,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 77,
+      "heard" : 78,
+      "memoryMB" : 65.8809814453125,
+      "minute" : 40.006419817606606,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 79,
+      "heard" : 80,
+      "memoryMB" : 65.9747314453125,
+      "minute" : 41.00016065041224,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 81,
+      "heard" : 82,
+      "memoryMB" : 66.0372314453125,
+      "minute" : 42.0063938498497,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 83,
+      "heard" : 84,
+      "memoryMB" : 66.0059814453125,
+      "minute" : 43.00389448404312,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 85,
+      "heard" : 86,
+      "memoryMB" : 66.0684814453125,
+      "minute" : 44.00807186762492,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 87,
+      "heard" : 88,
+      "memoryMB" : 66.0372314453125,
+      "minute" : 45.00555340051651,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 89,
+      "heard" : 90,
+      "memoryMB" : 66.0841064453125,
+      "minute" : 46.000629750887555,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 91,
+      "heard" : 92,
+      "memoryMB" : 66.0684814453125,
+      "minute" : 47.004041800896324,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 93,
+      "heard" : 94,
+      "memoryMB" : 66.0372314453125,
+      "minute" : 48.00050480167071,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 95,
+      "heard" : 96,
+      "memoryMB" : 66.0372314453125,
+      "minute" : 49.004220233360925,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 97,
+      "heard" : 98,
+      "memoryMB" : 66.0841064453125,
+      "minute" : 50.00179053346316,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 99,
+      "heard" : 100,
+      "memoryMB" : 66.0684814453125,
+      "minute" : 51.003045016527174,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 101,
+      "heard" : 102,
+      "memoryMB" : 66.0372314453125,
+      "minute" : 52.00287420153618,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 103,
+      "heard" : 104,
+      "memoryMB" : 65.9747314453125,
+      "minute" : 53.005890317757924,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 105,
+      "heard" : 106,
+      "memoryMB" : 66.0216064453125,
+      "minute" : 54.002628650267916,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 107,
+      "heard" : 108,
+      "memoryMB" : 66.0997314453125,
+      "minute" : 55.005363367001216,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 108,
+      "heard" : 110,
+      "memoryMB" : 66.0684814453125,
+      "minute" : 56.00193071762721,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 111,
+      "heard" : 112,
+      "memoryMB" : 66.0997314453125,
+      "minute" : 57.004934684435526,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 112,
+      "heard" : 113,
+      "memoryMB" : 66.0684814453125,
+      "minute" : 58.00658908486366,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 115,
+      "heard" : 116,
+      "memoryMB" : 66.1153564453125,
+      "minute" : 59.00357413490613,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    },
+    {
+      "active" : true,
+      "answered" : 116,
+      "heard" : 117,
+      "memoryMB" : 66.0684814453125,
+      "minute" : 60.00208558440208,
+      "mode" : "prov",
+      "scribeReconnects" : 1
+    }
+  ]
+}

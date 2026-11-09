@@ -1,0 +1,138 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='640' height='260' font-family='sans-serif' font-size='11'>
+<rect width='100%' height='100%' fill='white'/>
+<text x='56' y='16' font-size='13' font-weight='bold'>Tid till första text per svar</text>
+<line x1='56' x2='624' y1='228.0' y2='228.0' stroke='#e2e7ef'/>
+<text x='50' y='232.0' text-anchor='end' fill='#5a6478'>0</text>
+<line x1='56' x2='624' y1='178.0' y2='178.0' stroke='#e2e7ef'/>
+<text x='50' y='182.0' text-anchor='end' fill='#5a6478'>1428</text>
+<line x1='56' x2='624' y1='128.0' y2='128.0' stroke='#e2e7ef'/>
+<text x='50' y='132.0' text-anchor='end' fill='#5a6478'>2857</text>
+<line x1='56' x2='624' y1='78.0' y2='78.0' stroke='#e2e7ef'/>
+<text x='50' y='82.0' text-anchor='end' fill='#5a6478'>4285</text>
+<line x1='56' x2='624' y1='28.0' y2='28.0' stroke='#e2e7ef'/>
+<text x='50' y='32.0' text-anchor='end' fill='#5a6478'>5713</text>
+<text x='56.0' y='248' text-anchor='middle' fill='#5a6478'>0 min</text>
+<text x='150.7' y='248' text-anchor='middle' fill='#5a6478'>10 min</text>
+<text x='245.3' y='248' text-anchor='middle' fill='#5a6478'>20 min</text>
+<text x='340.0' y='248' text-anchor='middle' fill='#5a6478'>30 min</text>
+<text x='434.7' y='248' text-anchor='middle' fill='#5a6478'>40 min</text>
+<text x='529.3' y='248' text-anchor='middle' fill='#5a6478'>50 min</text>
+<text x='624.0' y='248' text-anchor='middle' fill='#5a6478'>60 min</text>
+<text x='12' y='36' fill='#5a6478'>ms</text>
+<circle cx='61.2' cy='193.1' r='2.2' fill='#2346c8'/>
+<circle cx='65.1' cy='185.6' r='2.2' fill='#2346c8'/>
+<circle cx='69.0' cy='111.8' r='2.2' fill='#2346c8'/>
+<circle cx='72.9' cy='172.3' r='2.2' fill='#2346c8'/>
+<circle cx='80.4' cy='187.9' r='2.2' fill='#2346c8'/>
+<circle cx='84.3' cy='198.1' r='2.2' fill='#2346c8'/>
+<circle cx='88.0' cy='185.8' r='2.2' fill='#2346c8'/>
+<circle cx='92.0' cy='192.9' r='2.2' fill='#2346c8'/>
+<circle cx='99.9' cy='148.2' r='2.2' fill='#2346c8'/>
+<circle cx='103.5' cy='191.6' r='2.2' fill='#2346c8'/>
+<circle cx='107.2' cy='193.6' r='2.2' fill='#2346c8'/>
+<circle cx='111.1' cy='181.3' r='2.2' fill='#2346c8'/>
+<circle cx='119.0' cy='185.8' r='2.2' fill='#2346c8'/>
+<circle cx='122.9' cy='195.5' r='2.2' fill='#2346c8'/>
+<circle cx='126.6' cy='191.8' r='2.2' fill='#2346c8'/>
+<circle cx='130.8' cy='148.7' r='2.2' fill='#2346c8'/>
+<circle cx='138.3' cy='188.4' r='2.2' fill='#2346c8'/>
+<circle cx='142.2' cy='184.8' r='2.2' fill='#2346c8'/>
+<circle cx='145.9' cy='184.8' r='2.2' fill='#2346c8'/>
+<circle cx='149.9' cy='188.2' r='2.2' fill='#2346c8'/>
+<circle cx='157.9' cy='144.6' r='2.2' fill='#2346c8'/>
+<circle cx='161.5' cy='195.7' r='2.2' fill='#2346c8'/>
+<circle cx='165.3' cy='185.5' r='2.2' fill='#2346c8'/>
+<circle cx='169.1' cy='190.6' r='2.2' fill='#2346c8'/>
+<circle cx='176.9' cy='195.7' r='2.2' fill='#2346c8'/>
+<circle cx='180.9' cy='189.8' r='2.2' fill='#2346c8'/>
+<circle cx='184.6' cy='191.6' r='2.2' fill='#2346c8'/>
+<circle cx='188.7' cy='182.6' r='2.2' fill='#2346c8'/>
+<circle cx='196.7' cy='148.5' r='2.2' fill='#2346c8'/>
+<circle cx='200.3' cy='192.6' r='2.2' fill='#2346c8'/>
+<circle cx='204.1' cy='191.6' r='2.2' fill='#2346c8'/>
+<circle cx='208.0' cy='191.9' r='2.2' fill='#2346c8'/>
+<circle cx='216.2' cy='154.9' r='2.2' fill='#2346c8'/>
+<circle cx='219.7' cy='198.1' r='2.2' fill='#2346c8'/>
+<circle cx='223.7' cy='177.9' r='2.2' fill='#2346c8'/>
+<circle cx='227.7' cy='175.9' r='2.2' fill='#2346c8'/>
+<circle cx='235.4' cy='195.8' r='2.2' fill='#2346c8'/>
+<circle cx='239.4' cy='178.2' r='2.2' fill='#2346c8'/>
+<circle cx='243.0' cy='195.3' r='2.2' fill='#2346c8'/>
+<circle cx='247.0' cy='195.8' r='2.2' fill='#2346c8'/>
+<circle cx='255.0' cy='150.2' r='2.2' fill='#2346c8'/>
+<circle cx='258.8' cy='183.6' r='2.2' fill='#2346c8'/>
+<circle cx='262.4' cy='193.5' r='2.2' fill='#2346c8'/>
+<circle cx='266.4' cy='191.0' r='2.2' fill='#2346c8'/>
+<circle cx='274.3' cy='195.7' r='2.2' fill='#2346c8'/>
+<circle cx='278.2' cy='189.1' r='2.2' fill='#2346c8'/>
+<circle cx='281.8' cy='197.0' r='2.2' fill='#2346c8'/>
+<circle cx='285.9' cy='186.1' r='2.2' fill='#2346c8'/>
+<circle cx='293.9' cy='161.3' r='2.2' fill='#2346c8'/>
+<circle cx='297.6' cy='186.1' r='2.2' fill='#2346c8'/>
+<circle cx='301.3' cy='194.1' r='2.2' fill='#2346c8'/>
+<circle cx='305.3' cy='191.5' r='2.2' fill='#2346c8'/>
+<circle cx='313.0' cy='194.3' r='2.2' fill='#2346c8'/>
+<circle cx='317.0' cy='186.1' r='2.2' fill='#2346c8'/>
+<circle cx='320.6' cy='198.0' r='2.2' fill='#2346c8'/>
+<circle cx='324.9' cy='156.8' r='2.2' fill='#2346c8'/>
+<circle cx='332.7' cy='146.6' r='2.2' fill='#2346c8'/>
+<circle cx='336.4' cy='193.8' r='2.2' fill='#2346c8'/>
+<circle cx='340.4' cy='176.0' r='2.2' fill='#2346c8'/>
+<circle cx='352.2' cy='139.4' r='2.2' fill='#2346c8'/>
+<circle cx='355.9' cy='180.7' r='2.2' fill='#2346c8'/>
+<circle cx='359.5' cy='198.2' r='2.2' fill='#2346c8'/>
+<circle cx='363.6' cy='193.6' r='2.2' fill='#2346c8'/>
+<circle cx='371.5' cy='180.8' r='2.2' fill='#2346c8'/>
+<circle cx='375.3' cy='195.9' r='2.2' fill='#2346c8'/>
+<circle cx='379.0' cy='197.8' r='2.2' fill='#2346c8'/>
+<circle cx='383.3' cy='160.2' r='2.2' fill='#2346c8'/>
+<circle cx='391.1' cy='155.8' r='2.2' fill='#2346c8'/>
+<circle cx='394.8' cy='195.9' r='2.2' fill='#2346c8'/>
+<circle cx='398.5' cy='192.3' r='2.2' fill='#2346c8'/>
+<circle cx='402.6' cy='195.9' r='2.2' fill='#2346c8'/>
+<circle cx='410.7' cy='153.0' r='2.2' fill='#2346c8'/>
+<circle cx='414.2' cy='195.8' r='2.2' fill='#2346c8'/>
+<circle cx='417.9' cy='196.7' r='2.2' fill='#2346c8'/>
+<circle cx='422.2' cy='142.7' r='2.2' fill='#2346c8'/>
+<circle cx='430.1' cy='138.4' r='2.2' fill='#2346c8'/>
+<circle cx='433.7' cy='194.6' r='2.2' fill='#2346c8'/>
+<circle cx='437.5' cy='187.5' r='2.2' fill='#2346c8'/>
+<circle cx='441.5' cy='183.3' r='2.2' fill='#2346c8'/>
+<circle cx='449.9' cy='46.2' r='2.2' fill='#2346c8'/>
+<circle cx='453.0' cy='193.1' r='2.2' fill='#2346c8'/>
+<circle cx='456.9' cy='183.4' r='2.2' fill='#2346c8'/>
+<circle cx='460.8' cy='193.3' r='2.2' fill='#2346c8'/>
+<circle cx='468.6' cy='184.1' r='2.2' fill='#2346c8'/>
+<circle cx='472.4' cy='195.9' r='2.2' fill='#2346c8'/>
+<circle cx='476.2' cy='195.0' r='2.2' fill='#2346c8'/>
+<circle cx='480.2' cy='191.5' r='2.2' fill='#2346c8'/>
+<circle cx='488.1' cy='168.0' r='2.2' fill='#2346c8'/>
+<circle cx='491.8' cy='194.8' r='2.2' fill='#2346c8'/>
+<circle cx='495.4' cy='194.4' r='2.2' fill='#2346c8'/>
+<circle cx='499.6' cy='175.6' r='2.2' fill='#2346c8'/>
+<circle cx='507.4' cy='169.1' r='2.2' fill='#2346c8'/>
+<circle cx='511.1' cy='196.3' r='2.2' fill='#2346c8'/>
+<circle cx='514.9' cy='183.1' r='2.2' fill='#2346c8'/>
+<circle cx='518.7' cy='191.7' r='2.2' fill='#2346c8'/>
+<circle cx='526.6' cy='184.7' r='2.2' fill='#2346c8'/>
+<circle cx='530.5' cy='186.2' r='2.2' fill='#2346c8'/>
+<circle cx='534.2' cy='190.6' r='2.2' fill='#2346c8'/>
+<circle cx='538.4' cy='161.2' r='2.2' fill='#2346c8'/>
+<circle cx='546.3' cy='149.8' r='2.2' fill='#2346c8'/>
+<circle cx='550.0' cy='178.9' r='2.2' fill='#2346c8'/>
+<circle cx='553.6' cy='195.9' r='2.2' fill='#2346c8'/>
+<circle cx='557.6' cy='193.4' r='2.2' fill='#2346c8'/>
+<circle cx='565.5' cy='187.9' r='2.2' fill='#2346c8'/>
+<circle cx='569.3' cy='198.2' r='2.2' fill='#2346c8'/>
+<circle cx='573.1' cy='185.4' r='2.2' fill='#2346c8'/>
+<circle cx='577.1' cy='187.5' r='2.2' fill='#2346c8'/>
+<circle cx='584.9' cy='190.9' r='2.2' fill='#2346c8'/>
+<circle cx='588.8' cy='197.2' r='2.2' fill='#2346c8'/>
+<circle cx='592.5' cy='193.7' r='2.2' fill='#2346c8'/>
+<circle cx='596.6' cy='179.3' r='2.2' fill='#2346c8'/>
+<circle cx='604.5' cy='156.4' r='2.2' fill='#2346c8'/>
+<circle cx='608.2' cy='194.2' r='2.2' fill='#2346c8'/>
+<circle cx='612.0' cy='192.9' r='2.2' fill='#2346c8'/>
+<circle cx='616.0' cy='194.7' r='2.2' fill='#2346c8'/>
+<circle cx='624.0' cy='166.0' r='2.2' fill='#2346c8'/>
+</svg>

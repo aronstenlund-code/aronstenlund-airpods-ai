@@ -1,0 +1,136 @@
+{
+  "cases" : [
+    {
+      "answered" : [
+        "Vad händer i fotosyntesens ljusberoende reaktioner?"
+      ],
+      "asked" : [
+        "Vad händer i fotosyntesens ljusberoende reaktioner?"
+      ],
+      "heard" : [
+        "Vad händer i fotosyntesens ljusberoende reaktioner?"
+      ],
+      "id" : "k1",
+      "key" : "ljusberoende",
+      "kind" : "question",
+      "spoken" : 0,
+      "text" : "Vad händer i fotosyntesens ljusberoende reaktioner?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Vad är Calvincykeln?"
+      ],
+      "asked" : [
+        "Vad är Calvincykeln?"
+      ],
+      "heard" : [
+        "Vad är Calvincykeln?"
+      ],
+      "id" : "k2",
+      "key" : "calvincykeln",
+      "kind" : "question",
+      "spoken" : 0,
+      "text" : "Vad är Calvincykeln?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Hur fungerar mitokondriernas elektrontransportkedja?"
+      ],
+      "asked" : [
+        "Hur fungerar mitokondriernas elektrontransportkedja?"
+      ],
+      "heard" : [
+        "Hur fungerar mitokondriernas elektrontransportkedja?"
+      ],
+      "id" : "k3",
+      "key" : "elektrontransportkedja",
+      "kind" : "question",
+      "spoken" : 0,
+      "text" : "Hur fungerar mitokondriernas elektrontransportkedja?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Var i cellen finns kloroplasterna?"
+      ],
+      "asked" : [
+        "Var i cellen finns kloroplasterna?"
+      ],
+      "heard" : [
+        "Var i cellen finns kloroplasterna?"
+      ],
+      "id" : "k4",
+      "key" : "kloroplast",
+      "kind" : "question",
+      "spoken" : 0,
+      "text" : "Var i cellen finns kloroplasterna?",
+      "verdict" : "ok"
+    }
+  ],
+  "keytermLines" : [
+    "Scribe keyterms: 11, longest 20 characters (elektrontransportked)"
+  ],
+  "log" : [
+    "   0.01 log State Idle → Listening",
+    "   0.28 log Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+    "   2.48 log Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   2.48 log Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   2.60 log Capture started · engine input WAV files (5) · 16000 Hz · 1 ch · Int16",
+    "   2.60 log Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic",
+    "   2.60 log Hands-free prov started",
+    "   2.78 log Scribe keyterms: 11, longest 20 characters (elektrontransportked)",
+    "   3.79 log Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+    "   4.05 log Local VAD not ready: all audio goes to Scribe",
+    "   4.05 log STT running: Scribe · sv-SE",
+    "  23.63 log Answer ahead discarded (the words went on) · ahead 1 · used 0 · discarded 1 (2.5/min) · TTS ahead 0, wasted 0",
+    "  25.62 log Answer ahead discarded (the words went on) · ahead 2 · used 0 · discarded 2 (4.7/min) · TTS ahead 0, wasted 0",
+    "  26.66 log Answer ahead discarded (the words went on) · ahead 3 · used 0 · discarded 3 (6.7/min) · TTS ahead 0, wasted 0",
+    "  26.97 heard Vad händer i fotosyntesens ljusberoende reaktioner?",
+    "  26.99 log Turn · prov · STT Scribe · mic airPods · B-HQ",
+    "  26.99 log Activation (tutor) · answered ahead: Vad händer i fotosyntesens ljusberoende reaktioner?",
+    "  26.99 asked Vad händer i fotosyntesens ljusberoende reaktioner?",
+    "  26.99 log Turn · prov · STT Scribe · mic airPods · B-HQ",
+    "  30.41 answered Vad händer i fotosyntesens ljusberoende reaktioner?",
+    "  30.43 log Study card saved (2 in all)",
+    "  30.43 log Answer · first text after 883 ms · claude-sonnet-5-5",
+    "  42.43 log Answer ahead discarded (the words went on) · ahead 5 · used 1 · discarded 4 (5.7/min) · TTS ahead 0, wasted 0",
+    "  43.61 heard Vad är Calvincykeln?",
+    "  43.62 log Turn · prov · STT Scribe · mic airPods · B-HQ",
+    "  43.62 log Activation (tutor) · answered ahead: Vad är Calvincykeln?",
+    "  43.62 asked Vad är Calvincykeln?",
+    "  43.62 log Turn · prov · STT Scribe · mic airPods · B-HQ",
+    "  45.86 answered Vad är Calvincykeln?",
+    "  45.86 log Study card saved (3 in all)",
+    "  45.86 log Answer · first text after 973 ms · claude-sonnet-5-5",
+    "  61.97 log Answer ahead discarded (the words went on) · ahead 7 · used 2 · discarded 5 (4.8/min) · TTS ahead 0, wasted 0",
+    "  62.37 heard Hur fungerar mitokondriernas elektrontransportkedja?",
+    "  62.40 log Turn · prov · STT Scribe · mic airPods · B-HQ",
+    "  62.40 log Activation (tutor) · answered ahead: Hur fungerar mitokondriernas elektrontransportkedja?",
+    "  62.40 asked Hur fungerar mitokondriernas elektrontransportkedja?",
+    "  62.40 log Turn · prov · STT Scribe · mic airPods · B-HQ",
+    "  66.20 answered Hur fungerar mitokondriernas elektrontransportkedja?",
+    "  66.21 log Study card saved (4 in all)",
+    "  66.21 log Answer · first text after 972 ms · claude-sonnet-5-5",
+    "  78.60 log Answer ahead discarded (the words went on) · ahead 9 · used 3 · discarded 6 (4.6/min) · TTS ahead 0, wasted 0",
+    "  79.61 heard Var i cellen finns kloroplasterna?",
+    "  79.62 log Turn · prov · STT Scribe · mic airPods · B-HQ",
+    "  79.62 log Answer ahead discarded (a different turn) · ahead 10 · used 3 · discarded 7 (5.3/min) · TTS ahead 0, wasted 0",
+    "  79.62 log Activation (tutor): Var i cellen finns kloroplasterna?",
+    "  79.62 asked Var i cellen finns kloroplasterna?",
+    "  83.57 answered Var i cellen finns kloroplasterna?",
+    "  83.58 log Study card saved (5 in all)",
+    "  83.58 log Answer · first text after 1322 ms · claude-sonnet-5-5",
+    " 108.28 log Provläge ended by the user",
+    " 108.28 log State Listening → Idle"
+  ],
+  "longestKeyterm" : 20,
+  "mode" : "prov",
+  "refusedOrFellBack" : [
+
+  ],
+  "seconds" : 108.27170896530151,
+  "set" : "keyterm",
+  "topics" : "fotosyntesens ljusberoende reaktioner, Calvincykeln i kloroplasterna, mitokondriernas elektrontransportkedja"
+}

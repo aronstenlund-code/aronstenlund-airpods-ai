@@ -1,0 +1,337 @@
+{
+  "cases" : [
+    {
+      "answered" : [
+        "Vad är huvudstaden i Australien?"
+      ],
+      "asked" : [
+        "Vad är huvudstaden i Australien?"
+      ],
+      "heard" : [
+        "Vad är huvudstaden i Australien?"
+      ],
+      "id" : "q1",
+      "key" : "australien",
+      "kind" : "question",
+      "spoken" : 1,
+      "text" : "Vad är huvudstaden i Australien?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Hur många planeter finns det i solsystemet?"
+      ],
+      "asked" : [
+        "Hur många planeter finns det i solsystemet?"
+      ],
+      "heard" : [
+        "Hur många planeter finns det i solsystemet?"
+      ],
+      "id" : "q2",
+      "key" : "planeter",
+      "kind" : "question",
+      "spoken" : 1,
+      "text" : "Hur många planeter finns det i solsystemet?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Vilka är de största planeterna i solsystemet?"
+      ],
+      "asked" : [
+        "Vilka är de största?"
+      ],
+      "heard" : [
+        "Vilka är de största?"
+      ],
+      "id" : "c1",
+      "key" : "bergen",
+      "kind" : "continuation",
+      "spoken" : 1,
+      "text" : "Vilka är de största | bergen i världen?",
+      "verdict" : "asked without the continuation"
+    },
+    {
+      "answered" : [
+        "Vem skrev Röda rummet?"
+      ],
+      "asked" : [
+        "Vem skrev Röda rummet?"
+      ],
+      "heard" : [
+        "Vem skrev Röda rummet?"
+      ],
+      "id" : "q3",
+      "key" : "röda rummet",
+      "kind" : "question",
+      "spoken" : 1,
+      "text" : "Vem skrev Röda rummet?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Vad är 23 gånger 4?"
+      ],
+      "asked" : [
+        "Vad är 23 gånger 4?"
+      ],
+      "heard" : [
+        "Vad är 23 gånger 4?"
+      ],
+      "id" : "q4",
+      "key" : "23",
+      "kind" : "question",
+      "spoken" : 2,
+      "text" : "Vad är tjugotre gånger fyra?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Hur många invånare har Sverige ungefär?"
+      ],
+      "asked" : [
+        "Hur många invånare har...",
+        "Hur många invånare har... Sverige ungefär."
+      ],
+      "heard" : [
+        "Hur många invånare har...",
+        "Sverige ungefär."
+      ],
+      "id" : "c2",
+      "key" : "sverige",
+      "kind" : "continuation",
+      "spoken" : 1,
+      "text" : "Hur många invånare har | Sverige ungefär?",
+      "verdict" : "split: 2 asked"
+    },
+    {
+      "answered" : [
+        "Vilken är världens längsta flod?"
+      ],
+      "asked" : [
+        "Vilken är världens längsta flod?"
+      ],
+      "heard" : [
+        "Vilken är världens längsta flod?"
+      ],
+      "id" : "q5",
+      "key" : "flod",
+      "kind" : "question",
+      "spoken" : 1,
+      "text" : "Vilken är världens längsta flod?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Hur långt är ett maraton?"
+      ],
+      "asked" : [
+        "Hur långt är ett maraton?"
+      ],
+      "heard" : [
+        "Hur långt är ett maraton?"
+      ],
+      "id" : "q6",
+      "key" : "maraton",
+      "kind" : "question",
+      "spoken" : 1,
+      "text" : "Hur långt är ett maraton?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Vad är skillnaden mellan ett virus och en bakterie?"
+      ],
+      "asked" : [
+        "Vad är skillnaden mellan ett virus..."
+      ],
+      "heard" : [
+        "Vad är skillnaden mellan ett virus..."
+      ],
+      "id" : "c3",
+      "key" : "bakterie",
+      "kind" : "continuation",
+      "spoken" : 7,
+      "text" : "Vad är skillnaden mellan ett virus | och en bakterie?",
+      "verdict" : "asked without the continuation"
+    },
+    {
+      "answered" : [
+
+      ],
+      "asked" : [
+
+      ],
+      "heard" : [
+
+      ],
+      "id" : "q7",
+      "key" : "empati",
+      "kind" : "question",
+      "spoken" : 0,
+      "text" : "Vad betyder ordet empati?",
+      "verdict" : "not heard"
+    }
+  ],
+  "keytermLines" : [
+    "Scribe keyterms: 0, longest 0 characters",
+    "Scribe keyterms: 9, longest 11 characters (solsystemet)"
+  ],
+  "log" : [
+    "   0.01 log State Idle → Listening",
+    "   3.15 log Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+    "   3.15 log Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   3.16 log Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   3.42 log Capture started · engine input WAV files (11) · 16000 Hz · 1 ch · Int16",
+    "   3.42 log Microphone airPods for standard · B-HQ · MicrophoneBuiltIn · iPhone mic",
+    "   3.46 log Scribe keyterms: 0, longest 0 characters",
+    "   4.47 log Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+    "   7.12 log Local VAD not ready: all audio goes to Scribe",
+    "   7.12 log STT running: Scribe · sv-SE",
+    "  24.26 log Answer ahead discarded (the words went on) · ahead 1 · used 0 · discarded 1 (2.5/min) · TTS ahead 0, wasted 0",
+    "  25.22 log Answer ahead discarded (the words went on) · ahead 2 · used 0 · discarded 2 (4.8/min) · TTS ahead 0, wasted 0",
+    "  26.18 heard Vad är huvudstaden i Australien?",
+    "  26.19 log Activation (auto) · answered ahead: Vad är huvudstaden i Australien?",
+    "  26.19 asked Vad är huvudstaden i Australien?",
+    "  26.19 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    "  26.35 spoke Australiens huvudstad är Canberra.",
+    "  26.66 answered Vad är huvudstaden i Australien?",
+    "  26.66 log Answer · first text after 1120 ms · claude-haiku-5-5",
+    "  34.87 log Turn timing · answered ahead · heard→call 0 ms · call→first token 1121 ms · call→done 1431 ms · heard→pause over 967 ms · pause over→first sound 8675 ms · ahead 3 · used 1 · discarded 2 (3.4/min) · TTS ahead 0, wasted 0",
+    "  34.87 log STT input gated (own speech)",
+    "  34.97 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    "  38.15 log STT input open",
+    "  48.74 log Answer ahead discarded (the words went on) · ahead 4 · used 1 · discarded 3 (3.7/min) · TTS ahead 0, wasted 0",
+    "  49.14 heard Hur många planeter finns det i solsystemet?",
+    "  49.15 log Activation (auto) · answered ahead: Hur många planeter finns det i solsystemet?",
+    "  49.15 asked Hur många planeter finns det i solsystemet?",
+    "  49.15 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    "  50.17 spoke Solsystemet har åtta planeter.",
+    "  50.24 log Turn timing · answered ahead · heard→call 0 ms · call→first token 1426 ms · call→done – · heard→pause over 406 ms · pause over→first sound 1092 ms · ahead 5 · used 2 · discarded 3 (3.6/min) · TTS ahead 0, wasted 0",
+    "  50.24 log STT input gated (own speech)",
+    "  50.41 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    "  50.41 answered Hur många planeter finns det i solsystemet?",
+    "  50.41 log Answer · first text after 1425 ms · claude-haiku-5-5",
+    "  53.53 log STT input open",
+    "  64.73 log Answer ahead discarded (the words went on) · ahead 6 · used 2 · discarded 4 (3.7/min) · TTS ahead 0, wasted 0",
+    "  65.84 heard Vilka är de största?",
+    "  65.84 log Activation (auto) · answered ahead: Vilka är de största?",
+    "  65.84 asked Vilka är de största?",
+    "  65.84 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    "  65.88 spoke De största planeterna är Jupiter, Saturnus, Uranus och Neptunus, där Jupiter är störst.",
+    "  65.99 log Turn timing · answered ahead · heard→call 0 ms · call→first token 1155 ms · call→done – · heard→pause over 1112 ms · pause over→first sound 152 ms · ahead 7 · used 3 · discarded 4 (3.6/min) · TTS ahead 0, wasted 0",
+    "  65.99 log STT input gated (own speech)",
+    "  66.37 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    "  66.66 answered Vilka är de största planeterna i solsystemet?",
+    "  66.66 log Answer · first text after 1154 ms · claude-haiku-5-5",
+    "  74.26 log STT input open",
+    "  85.07 heard Vem skrev Röda rummet?",
+    "  85.07 log Answer ahead discarded (a different turn) · ahead 8 · used 3 · discarded 5 (3.5/min) · TTS ahead 0, wasted 0",
+    " 100.85 log Activation (auto): Vem skrev Röda rummet?",
+    " 100.85 asked Vem skrev Röda rummet?",
+    " 100.85 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 100.90 log Scribe session ended after 93 s (closed 1000 ): reconnecting",
+    " 102.19 log Scribe keyterms: 9, longest 11 characters (solsystemet)",
+    " 102.33 spoke Röda rummet skrevs av August Strindberg och gavs ut artonhundrasjuttionio.",
+    " 102.53 log Turn timing · answered at the pause · heard→call 16814 ms · call→first token 1479 ms · call→done – · heard→pause over 16814 ms · pause over→first sound 1673 ms · ahead 8 · used 3 · discarded 5 (2.9/min) · TTS ahead 0, wasted 0",
+    " 102.53 log STT input gated (own speech)",
+    " 102.61 answered Vem skrev Röda rummet?",
+    " 102.62 log Answer · first text after 1435 ms · claude-haiku-5-5",
+    " 102.69 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 103.25 log Local VAD in front of Scribe",
+    " 103.25 log Wearer focus in front of Scribe (A10)",
+    " 103.25 log STT running: Scribe · sv-SE",
+    " 108.32 log STT input open",
+    " 116.69 log Answer ahead discarded (the words went on) · ahead 9 · used 3 · discarded 6 (3.1/min) · TTS ahead 0, wasted 0",
+    " 117.77 log Answer ahead discarded (the words went on) · ahead 10 · used 3 · discarded 7 (3.6/min) · TTS ahead 0, wasted 0",
+    " 117.93 log Wearer quiet for 1.0 s, Scribe had not committed: final asked for (A10)",
+    " 118.05 heard Vad är 23 gånger 4?",
+    " 118.05 log Answer ahead discarded (a different turn) · ahead 11 · used 3 · discarded 8 (4.1/min) · TTS ahead 0, wasted 0",
+    " 124.60 log Activation (auto): Vad är 23 gånger 4?",
+    " 124.60 asked Vad är 23 gånger 4?",
+    " 124.60 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 125.88 spoke Tjugotre gånger fyra är nittiotvå.",
+    " 125.88 answered Vad är 23 gånger 4?",
+    " 125.89 log Answer · first text after 1274 ms · calc",
+    " 125.96 log Turn timing · answered at the pause · heard→call 6837 ms · call→first token 1277 ms · call→done 1282 ms · heard→pause over 6837 ms · pause over→first sound 1353 ms · ahead 11 · used 3 · discarded 8 (3.8/min) · TTS ahead 0, wasted 0",
+    " 125.96 log STT input gated (own speech)",
+    " 126.01 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 129.22 log STT input open",
+    " 130.05 log Tip: shorter",
+    " 130.06 spoke Tips: säg ”Lumen, svara kortare” om svaren är för långa.",
+    " 130.13 log STT input gated (own speech)",
+    " 130.31 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 135.47 log STT input open",
+    " 141.36 log Wearer quiet for 1.0 s, Scribe had not committed: final asked for (A10)",
+    " 141.48 log Answer ahead discarded (the words went on) · ahead 12 · used 3 · discarded 9 (3.8/min) · TTS ahead 0, wasted 0",
+    " 141.90 heard Hur många invånare har...",
+    " 141.90 log Activation (auto) · answered ahead: Hur många invånare har...",
+    " 141.90 asked Hur många invånare har...",
+    " 141.90 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 142.52 log Auto: backend says not a question: Hur många invånare har...",
+    " 145.16 log Wearer quiet for 1.0 s, Scribe had not committed: final asked for (A10)",
+    " 145.70 heard Sverige ungefär.",
+    " 153.30 log Activation (auto): Hur många invånare har... Sverige ungefär.",
+    " 153.30 asked Hur många invånare har... Sverige ungefär.",
+    " 153.30 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 154.57 spoke Sverige har ungefär tio komma sex miljoner invånare.",
+    " 154.69 log Turn timing · answered at the pause · heard→call 8016 ms · call→first token 1275 ms · call→done – · heard→pause over 8016 ms · pause over→first sound 1395 ms · ahead 13 · used 4 · discarded 9 (3.5/min) · TTS ahead 0, wasted 0",
+    " 154.69 log STT input gated (own speech)",
+    " 154.79 answered Hur många invånare har Sverige ungefär?",
+    " 154.79 log Answer · first text after 1266 ms · claude-haiku-5-5",
+    " 154.80 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 159.22 log STT input open",
+    " 169.44 log Answer ahead discarded (the words went on) · ahead 14 · used 4 · discarded 10 (3.5/min) · TTS ahead 0, wasted 0",
+    " 169.82 log Wearer quiet for 1.0 s, Scribe had not committed: final asked for (A10)",
+    " 170.00 heard Vilken är världens längsta flod?",
+    " 170.00 log Activation (auto) · answered ahead: Vilken är världens längsta flod?",
+    " 170.00 asked Vilken är världens längsta flod?",
+    " 170.00 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 170.70 spoke Världens längsta flod är Nilen i Afrika, cirka sextusen sexhundrafemtio kilometer lång, men vissa mätningar ger Amazonas som längst.",
+    " 170.99 log Turn timing · answered ahead · heard→call 0 ms · call→first token 1257 ms · call→done – · heard→pause over 559 ms · pause over→first sound 990 ms · ahead 15 · used 5 · discarded 10 (3.5/min) · TTS ahead 0, wasted 0",
+    " 170.99 log STT input gated (own speech)",
+    " 170.99 answered Vilken är världens längsta flod?",
+    " 170.99 log Answer · first text after 1257 ms · claude-haiku-5-5",
+    " 171.19 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 181.32 log STT input open",
+    " 186.92 log Wearer quiet for 1.0 s, Scribe had not committed: final asked for (A10)",
+    " 187.06 heard Hur långt är ett maraton?",
+    " 187.06 log Activation (auto) · answered ahead: Hur långt är ett maraton?",
+    " 187.06 asked Hur långt är ett maraton?",
+    " 187.06 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 187.78 spoke Ett maraton är fyrtiotvå kilometer och hundranittiofem meter.",
+    " 187.98 answered Hur långt är ett maraton?",
+    " 187.98 log Answer · first text after 983 ms · claude-haiku-5-5",
+    " 192.49 log Turn timing · answered ahead · heard→call 0 ms · call→first token 984 ms · call→done 1184 ms · heard→pause over 266 ms · pause over→first sound 5431 ms · ahead 16 · used 6 · discarded 10 (3.1/min) · TTS ahead 0, wasted 0",
+    " 192.49 log STT input gated (own speech)",
+    " 192.64 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 197.16 log STT input open",
+    " 203.60 log Wearer quiet for 1.0 s, Scribe had not committed: final asked for (A10)",
+    " 203.79 log Answer ahead discarded (the words went on) · ahead 17 · used 6 · discarded 11 (3.2/min) · TTS ahead 0, wasted 0",
+    " 204.19 heard Vad är skillnaden mellan ett virus...",
+    " 204.19 log Activation (auto) · answered ahead: Vad är skillnaden mellan ett virus...",
+    " 204.19 asked Vad är skillnaden mellan ett virus...",
+    " 204.19 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 205.01 spoke Virus och bakterier är båda mycket små smittämnen, men de är i grunden olika.",
+    " 205.24 log Turn timing · answered ahead · heard→call 0 ms · call→first token 1221 ms · call→done – · heard→pause over 403 ms · pause over→first sound 1046 ms · ahead 18 · used 7 · discarded 11 (3.2/min) · TTS ahead 0, wasted 0",
+    " 205.24 log STT input gated (own speech)",
+    " 205.35 spoke En bakterie är en levande encellig organism med egen cellvägg och egen ämnesomsättning, och den kan föröka sig själv utan hjälp.",
+    " 205.76 spoke Ett virus är betydligt mindre och är inte uppbyggt av celler.",
+    " 205.90 spoke Det består bara av en genetisk arvsmassa, DNA eller RNA, omgiven av ett skyddande proteinhölje, och ibland ett yttre fettlager.",
+    " 206.21 spoke Eftersom viruset saknar egen ämnesomsättning kan det bara förökas genom att kapa en värdcells maskineri.",
+    " 206.42 spoke Många bakterier är ofarliga eller till och med nyttiga, till exempel i tarmen, medan virus alltid är parasiter.",
+    " 206.67 log Röst: 6 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 207.01 spoke Bakterieinfektioner kan ofta behandlas med antibiotika, men antibiotika verkar inte mot virus.",
+    " 207.21 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 207.21 answered Vad är skillnaden mellan ett virus och en bakterie?",
+    " 207.22 log Answer · first text after 1220 ms · claude-haiku-5-5",
+    " 313.47 log State Listening → Idle"
+  ],
+  "longestKeyterm" : 11,
+  "mode" : "standard",
+  "refusedOrFellBack" : [
+
+  ],
+  "seconds" : 267.66846001148224,
+  "set" : "fragor"
+}

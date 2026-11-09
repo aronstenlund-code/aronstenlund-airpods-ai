@@ -1,0 +1,23 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='640' height='260' font-family='sans-serif' font-size='11'>
+<rect width='100%' height='100%' fill='white'/>
+<text x='56' y='16' font-size='13' font-weight='bold'>Minne (phys_footprint)</text>
+<line x1='56' x2='624' y1='228.0' y2='228.0' stroke='#e2e7ef'/>
+<text x='50' y='232.0' text-anchor='end' fill='#5a6478'>0</text>
+<line x1='56' x2='624' y1='178.0' y2='178.0' stroke='#e2e7ef'/>
+<text x='50' y='182.0' text-anchor='end' fill='#5a6478'>34</text>
+<line x1='56' x2='624' y1='128.0' y2='128.0' stroke='#e2e7ef'/>
+<text x='50' y='132.0' text-anchor='end' fill='#5a6478'>67</text>
+<line x1='56' x2='624' y1='78.0' y2='78.0' stroke='#e2e7ef'/>
+<text x='50' y='82.0' text-anchor='end' fill='#5a6478'>101</text>
+<line x1='56' x2='624' y1='28.0' y2='28.0' stroke='#e2e7ef'/>
+<text x='50' y='32.0' text-anchor='end' fill='#5a6478'>134</text>
+<text x='56.0' y='248' text-anchor='middle' fill='#5a6478'>0 min</text>
+<text x='150.7' y='248' text-anchor='middle' fill='#5a6478'>10 min</text>
+<text x='245.3' y='248' text-anchor='middle' fill='#5a6478'>20 min</text>
+<text x='340.0' y='248' text-anchor='middle' fill='#5a6478'>30 min</text>
+<text x='434.7' y='248' text-anchor='middle' fill='#5a6478'>40 min</text>
+<text x='529.3' y='248' text-anchor='middle' fill='#5a6478'>50 min</text>
+<text x='624.0' y='248' text-anchor='middle' fill='#5a6478'>60 min</text>
+<text x='12' y='36' fill='#5a6478'>MB</text>
+<path d='M56.2,144.9 L65.5,127.4 L75.0,127.0 L84.4,127.0 L93.9,127.1 L103.4,127.1 L112.9,127.3 L122.3,46.2 L131.7,127.3 L141.2,127.2 L150.7,127.2 L160.2,127.4 L169.6,127.2 L179.1,127.3 L188.6,127.3 L198.0,130.0 L207.5,127.3 L217.0,130.1 L226.4,130.1 L235.9,130.0 L245.4,130.1 L254.8,129.9 L264.3,130.1 L273.8,127.3 L283.3,130.0 L292.7,130.0 L302.1,130.1 L311.6,129.7 L321.1,130.1 L330.6,130.1 L340.0,129.9 L349.5,129.9 L359.0,130.0 L368.4,130.0 L377.9,130.0 L387.3,130.0 L396.8,129.9 L406.3,129.9 L415.8,129.9 L425.2,129.9 L434.7,129.9 L444.1,129.7 L453.6,129.7 L463.1,129.7 L472.6,129.6 L482.0,129.7 L491.5,129.6 L501.0,129.6 L510.4,129.7 L519.9,129.7 L529.3,129.6 L538.8,129.6 L548.3,129.7 L557.8,129.7 L567.2,129.7 L576.7,129.6 L586.1,129.6 L595.6,129.6 L605.1,129.6 L614.5,129.5 L624.0,129.6' fill='none' stroke='#2346c8' stroke-width='2'/>
+</svg>
