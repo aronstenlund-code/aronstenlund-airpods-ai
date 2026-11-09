@@ -115,7 +115,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   4. Om ljudet är äldre än 120 s läses samma **text** upp igen via TTS, utan att något nytt svar genereras.
   5. Uppdatera `docs/COMMANDS.md`. Tester: varje regel, ett "igen" från en annan röst, "gör det igen sen" mitt i en vanlig mening efter 2 minuter (ingen träff), och brus plus "igen" efter 20 s (träff).
 
-- [ ] **A21 – Tobys T5-fynd: tappade frågor och döv mikrofon** (effort: high). Gör nu, före A18. Underlag: `reports/apptest/2026-11-09-2150-toby-t5-retest.md`, "Fynd (till Angela)". Simulator, **ej verifierat på enhet**.
+- [~] pågår 2026-11-09 22:50 **A21 – Tobys T5-fynd: tappade frågor och döv mikrofon** (effort: high). Gör nu, före A18. Underlag: `reports/apptest/2026-11-09-2150-toby-t5-retest.md`, "Fynd (till Angela)". Simulator, **ej verifierat på enhet**.
   1. **Segment som kommer medan en tur pågår köas som egna turer** (Provläge: fyra frågor i ett andetag gav en tur, tre tappades, och "I framtiden ska du svara kortare" sparades inte).
   2. **Svar i förväg på en halv fråga:** ett mycket kort yttrande som slutar mitt i tanken ("Vilka är de största?") väntar på pausen. Kommer en fortsättning ersätter den svaret, trots att D82 stänger igenkänningen när Lumen pratar.
   3. **Mikrofonen öppnas inte efter ett långt svar** ("STT input gated (own speech)" utan "STT input open", 106 s döv). Säkerhetsspärr: om uppläsningen inte rapporterat slut inom beräknad längd + 2 s öppnas igenkänningen ändå och det loggas.
