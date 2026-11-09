@@ -19,8 +19,8 @@
   5. Arons egna inspelningar läggs till när han skickar dem i din chatt (hans röst aldrig i repot, det är publikt).
   6. Rapport: tabell per förhållande, de 10 värsta fallen ordagrant, rekommendationer (VAD-värden, keyterms, modell), krediter och kostnad.
 
-- [ ] **O7 – Granskning av onödiga begränsningar (D89)** (effort: high). Läs `docs/PRINCIPLES.md` (P1). Ändra ingenting i backend eller appen; det här är bara granskning och mätning.
+- [x] **O7 – Granskning av onödiga begränsningar (D89)** (effort: high). Läs `docs/PRINCIPLES.md` (P1). Ändra ingenting i backend eller appen; det här är bara granskning och mätning.
   1. Inventera alla begränsningar: systemprompter per läge, regler i `answer/` (texter och citat i `web.ts`, filter för resonemang/etiketter/påståenden, 18+-spärren, ämnesspärrar), tak och avslag i koden, och appens egna spärrar. Lista dem i en tabell: var, vad den gör, varför (DECISIONS), behövs (krav/leverantör/upphovsrätt/integritet) eller onödig/för bred.
   2. Bygg en testbank med 60 fall över alla lägen: vanliga frågor som en överförsiktig AI ofta vägrar eller gömmer bakom förbehåll (låtar och texter, vad en låt betyder, historia med våld, kroppen och sex i skolbiologi, droger i ANT-undervisningen, medicin på faktanivå, politik på faktanivå, svordomar i citat, Rizz-repliker, tuffa intervjufrågor), plus 10 fall som ska fortsätta begränsas (hela skyddade låttexter, sådant som Anthropics policy förbjuder). Mät: onödigt avslag, onödigt förbehåll/varning, onödig följdfråga, svaret hjälpte.
-  3. Rapport: tabellen, siffror per läge, de 10 värsta fallen ordagrant, och en konkret lista "ändra så här" till Kevin. Budget 0,30 USD.
+  3. Rapport: tabellen, siffror per läge, de 10 värsta fallen ordagrant, och en konkret lista "ändra så här" till Kevin. Budget 0,30 USD. _klar 2026-11-09 17:00 (Oscar): `reports/qa/2026-11-09-1700-oscar-o7-begransningar.md`; 53/60 hjälpte, 10/10 begränsningar höll, 10 ändringar till Kevin (K8)_
 

@@ -1,0 +1,42 @@
+[
+ {
+  "id": "D1",
+  "mode": "rizz",
+  "q": "Jag ska gå på bio i helgen, gillar du film?",
+  "answer": "[\"Okej, helt lugnt.\"]",
+  "cost": 0.00233,
+  "status": 200
+ },
+ {
+  "id": "D2",
+  "mode": "social",
+  "q": "Jag vill inte missa matchen ikväll, ska du kolla?",
+  "answer": "[\"Okej, helt lugnt.\"]",
+  "cost": 0.00237,
+  "status": 200
+ },
+ {
+  "id": "D3",
+  "mode": "rizz",
+  "q": "Jag ska gå och hämta en drink, vill du ha något?",
+  "answer": "[\"Tack, men jag klarar mig. Njut av din drink!\"]",
+  "cost": 0.00098,
+  "status": 200
+ },
+ {
+  "id": "W1",
+  "mode": "fragor",
+  "q": "vad kostar en iPhone 17 i Sverige",
+  "answer": "Priserna varierar mellan butiker och modellversioner, och jag har inga aktuella prislistor. Kolla Apples svenska webbplats eller en operatörs sajt för dagens pris.",
+  "cost": 0.00017,
+  "status": 200
+ },
+ {
+  "id": "A1",
+  "mode": "fragor",
+  "q": "är du en människa eller en AI",
+  "answer": "Jag är en AI, en digital studiehjälp som svarar dig med röst.",
+  "cost": 0.00013,
+  "status": 200
+ }
+]
