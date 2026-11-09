@@ -68,7 +68,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   **Dokumentation:** skapa `docs/COMMANDS.md` som enda källa. Varje åtgärd ska ha fraser, lägen, nivå, bekräftelse och beteende. Övriga sessioner läser där. Inställningar › Röstkommandon (A6) visar samma lista.
   **Tester:** enhetstester för frasmatchning, med 3–5 varianter per åtgärd, och negativa fall där orden står mitt i en vanlig mening ("jag vill byta till ett annat ämne", "kan du upprepa det för klassen", "hon sa viska"), med kravet 0 falska träffar. Testa också att lägesbyte fungerar från alla 5 lägen. Allt röst- och AirPods-beteende är **ej verifierat på enhet** tills Aron har testat. Lägg till en rad per grupp i Tobys snabbtest genom att be Toby i din rapport.
 
-- [~] pågår 2026-11-09 20:52 (punkt 1 klar → reports/2026-11-09-angela-a9-command-tips.md) **A9 – Tips om kommandon, kommandon med egna ord och inlärda inställningar** (effort: medium). Beror på: Kevins K10 för punkt 2–3. Ägarkrav (Aron 2026-11-08 21:26).
+- [x] klar 2026-11-09 21:26 → reports/2026-11-09-angela-a9-command-tips.md, reports/2026-11-09-angela-a9-own-words-and-learning.md **A9 – Tips om kommandon, kommandon med egna ord och inlärda inställningar** (effort: medium). Beror på: Kevins K10 för punkt 2–3. Ägarkrav (Aron 2026-11-08 21:26).
   1. **Tips:** de 3 viktigaste kommandona för det aktuella läget står på lyssningsskärmen (finns, men hämta dem från `CommandRegistry`). Ibland ger Lumen ett kort tips, i örat eller på skärmen, om ett kommando som användaren inte har använt, till exempel "Tips: säg 'Lumen, kortare' om svaren är för långa". Regler: högst ett tips per session och högst ett per dag, bara i en naturlig paus och aldrig mitt i ett prov eller förhör. Ett kommando som användaren redan har använt tipsas aldrig. Tipsen kan stängas av. Alla kommandon finns under Inställningar › Röstkommandon (A6/A7) med sökning.
   2. **Kommandon med egna ord:** när `meta.app_command` kommer med hög säkerhet utför appen kommandot och bekräftar kort ("Byter till Frågor."). Säger användaren "nej", "ångra" eller "fel" inom 5 s går appen tillbaka. I Socialt läge, Rizzläge och Intervjuläge krävs fortfarande "Lumen".
   3. **Inlärda inställningar:** visas i Minne som läsbara rader, till exempel "Kortare svar i matte" eller "Fler exempel inför Geografiprovet". Användaren kan ändra och ta bort dem. Appen skickar sammanhang (läge, ämne, prov, svarstyp) med varje rättelse till /memory.
@@ -80,7 +80,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   3. AirPods-mikrofonens riktverkan och brusreducering (`setVoiceProcessingEnabled`, ljudläget för röstisolering): mät om det hjälper.
   Mål: minst 80 % av frågorna kommer in i tid vid prat i skurar på 10 dB. Skriv siffror före och efter. **Ej verifierat på enhet** tills Aron har testat i ett riktigt rum.
 
-- [ ] **A13 – Designgranskning (Deangelo 2026-11-09, utifrån Tobys T3-bilder)** (effort: medium). Gör efter A9.
+- [~] pågår 2026-11-09 21:26 **A13 – Designgranskning (Deangelo 2026-11-09, utifrån Tobys T3-bilder)** (effort: medium). Gör efter A9.
   1. **Inställningar är för tekniska för en elev.** I dag är det en lång lista med mikrofon per läge, paus i sekunder per läge, känslighet, Scribe, lokal röstdetektor, dB-reglage och licenstext för WeSpeaker. Dela upp den i två delar. **Vanliga** högst upp: Röst och hastighet, Svarslängd, Röstkommandon, Minne, Prov, Utseende, Språk, Integritet. **Avancerat** hopfällt längst ner: mikrofon, pauser, känslighet, Scribe och röstdetektor, kalibrering, Diagnostik. Licenser och tekniska förklaringar flyttas till "Om appen". Inga funktioner tas bort.
   2. **Lyssnarskärmen visar inte att den hör.** Lägg till en liten nivåmätare som rör sig när bäraren pratar, i appens stil och diskret. Om Scribe inte är ansluten visas tillståndet från A11 i stället för "Lyssnar". Det bygger förtroende och gör att Aron själv ser om något är fel.
   3. **Tomt läge på lyssnarskärmen:** i Provläge visas provets ämnesord som chips och en knapp **Förhör mig**, som reserv för den som inte vill prata. Sessionens tidigare frågor och svar visas i en lista som går att skrolla. I dag syns bara det senaste.
@@ -91,7 +91,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 **Deangelo 2026-11-09 20:50:** Kevins K10 är klar, så A9.2–3 är inte blockerad längre. Ordning nu: A9.2–3 → A14 → A13.
 
-- [ ] **A14 – Tobys T6-fynd (röstkommandon)** (effort: high). Underlag: `reports/apptest/*t6*`, avsnittet "Fynd (till Angela)". Rätta i den här ordningen:
+- [x] klar 2026-11-09 21:26 → reports/2026-11-09-angela-a14-t6-commands.md **A14 – Tobys T6-fynd (röstkommandon)** (effort: high). Underlag: `reports/apptest/*t6*`, avsnittet "Fynd (till Angela)". Rätta i den här ordningen:
   1. "Lumen" räknas som tilltal bara i början av ett yttrande. Det ger 5 falska träffar av 68.
   2. Ett ensamt "Lumen."-segment slås ihop med nästa segment.
   3. Tolerant matchning för nivå 1-kommandon: verbändelser och små hörfel.
