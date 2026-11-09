@@ -171,6 +171,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A9.2: the last app command done for the backend, so "nej" / "ångra" within 5 s takes it back.
     @ObservationIgnored private var lastAppCommand: (command: AppCommand, previousMode: ConversationMode, wasListening: Bool, at: Date)?
     static let undoWindow: TimeInterval = 5
+    /// A14: when a lone "Lumen." was heard; the next segment within `loneNameWindow` is its command.
+    @ObservationIgnored private var loneNameAt: Date?
+    static let loneNameWindow: TimeInterval = 4
     /// The tip on the screen, until the next answer.
     private(set) var tipNotice: String?
     private var tipTask: Task<Void, Never>?
@@ -443,7 +446,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let rest = terms + prep.sttTerms + (studyProfile.profile.terms ?? [])
         // D87: in Provläge the active exam's words go first, so Scribe hears them right from the first word.
         let exam = mode == .prov ? ExamKeyterms.terms(profile: studyProfile.profile) : []
-        transcription.setContextualStrings(ExamKeyterms.merged(exam: exam, rest: rest))
+        // A14 (Toby T6): alone, these short words are what Scribe mishears most ("kortare" heard as "högre").
+        let spoken: [String] = switch mode {
+        case .prov, .standard: ["kortare", "upprepa", "viska", "högre"]
+        case .social, .rizz: ["rizz", "cringe", "flirtig", "flirtigare"]
+        case .interview: []
+        }
+        transcription.setContextualStrings(ExamKeyterms.merged(exam: exam, rest: spoken + rest))
     }
 
     /// Raw capture for the Diagnostics recording (D78), the same audio the recogniser gets before any gate.
@@ -2613,6 +2622,21 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             discardAhead(reason: "Lumen's own echo")
             return
         }
+        // A14: Scribe sometimes puts "Lumen." in a segment of its own; the command is the next segment.
+        if VoiceChannel.normalized(segment.text) == WakeWord.name.lowercased() {
+            loneNameAt = date
+            controller.log("Name alone: waiting for the command")
+            study.discardTurnText()
+            return
+        }
+        if let lone = loneNameAt {
+            loneNameAt = nil
+            if date.timeIntervalSince(lone) <= Self.loneNameWindow, !segment.overlapsPlayback,
+               handleVoice(in: WakeWord.name + ", " + segment.text, at: date) {
+                discardAhead(reason: "a voice command")
+                return
+            }
+        }
         if undoAppCommandIfAsked(segment.text, at: date) {
             discardAhead(reason: "an undo")
             study.discardTurnText()
@@ -2624,6 +2648,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         if !segment.overlapsPlayback, let action = VoiceCommand.musicAction(segment.text) {
+            controller.log("Voice: music \(action.rawValue) (unnamed)") // A14 / Toby T6 finding 8
+            tips.markUsed(action)
             discardAhead(reason: "a music command")
             study.discardTurnText()
             Task { await musicByVoice(action) }

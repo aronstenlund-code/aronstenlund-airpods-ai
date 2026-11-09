@@ -86,7 +86,7 @@ struct CorrectionReply: Decodable, Equatable, Sendable {
 @Observable
 final class PreferenceStore {
     static let key = "preferences.settings"
-    static let limit = 30
+    nonisolated static let limit = 30
 
     private(set) var settings: [PrefSetting] = []
     private let defaults: UserDefaults

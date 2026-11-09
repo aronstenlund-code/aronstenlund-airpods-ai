@@ -275,7 +275,54 @@ struct CommandTable: Equatable, Sendable {
         for action in CommandAction.allCases where !action.isPrefix && (named || action.worksWithoutName) {
             if phrases(for: action).contains(words) { return action }
         }
-        return nil
+        // A14: what Scribe mishears in level-1 commands ("skippar låten", "föra låten", "pausar musiken").
+        let loose = Self.loose(words)
+        var found: CommandAction?
+        // Not the complaints: "det var fem" is one letter from "det var fel".
+        for action in CommandAction.allCases where action.level == 1 && !action.isPrefix && action != .wrong
+            && (named || action.worksWithoutName) {
+            for phrase in phrases(for: action) where Self.isClose(loose, Self.loose(phrase)) {
+                if let found, found != action { return nil } // two candidates: not sure enough
+                found = action
+            }
+        }
+        return found
+    }
+
+    /// Verb endings away ("skippar"/"skippa" → "skipp"), "by" read as "byt".
+    static func loose(_ words: String) -> String {
+        words.split(separator: " ").map { word -> String in
+            var w = String(word)
+            if w == "by" { return "byt" }
+            for ending in ["ar", "er", "a", "e"] where w.count > ending.count + 3 && w.hasSuffix(ending) {
+                w.removeLast(ending.count)
+                break
+            }
+            return w
+        }.joined(separator: " ")
+    }
+
+    /// Equal, or one letter apart when the phrase has at least two words and 8 letters (single short words are
+    /// never stretched: "kortare" must not become "högre").
+    static func isClose(_ a: String, _ b: String) -> Bool {
+        if a == b { return b.contains(" ") }
+        guard b.contains(" "), b.count >= 8, abs(a.count - b.count) <= 1 else { return false }
+        return editDistance(Array(a), Array(b), limit: 1) <= 1
+    }
+
+    private static func editDistance(_ a: [Character], _ b: [Character], limit: Int) -> Int {
+        var previous = Array(0...b.count)
+        for (i, ca) in a.enumerated() {
+            var current = [i + 1] + [Int](repeating: 0, count: b.count)
+            var rowMin = current[0]
+            for (j, cb) in b.enumerated() {
+                current[j + 1] = Swift.min(previous[j + 1] + 1, current[j] + 1, previous[j] + (ca == cb ? 0 : 1))
+                rowMin = Swift.min(rowMin, current[j + 1])
+            }
+            if rowMin > limit { return limit + 1 }
+            previous = current
+        }
+        return previous[b.count]
     }
 
     /// A7: a universal word ("upprepa", "viska", "kortare", "utveckla") as the whole utterance, without "Lumen".
@@ -288,7 +335,8 @@ struct CommandTable: Equatable, Sendable {
 
     /// A prefix action ("byt till", "förhör mig") at the start of the words after "Lumen", and the words after it.
     func prefix(in text: String) -> (action: CommandAction, rest: String)? {
-        let words = Self.normalized(text)
+        var words = Self.normalized(text)
+        if words.hasPrefix("by till ") { words = "byt" + words.dropFirst(2) } // A14: Scribe's "by till provläge"
         for action in CommandAction.allCases where action.isPrefix {
             // The longest phrase first, so "byta till" is not read as "byt" + "a till".
             for phrase in phrases(for: action).sorted(by: { $0.count > $1.count }) {

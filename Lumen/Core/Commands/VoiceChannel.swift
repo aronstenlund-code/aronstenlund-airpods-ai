@@ -50,7 +50,7 @@ enum VoiceChannel {
 
     /// A turn without the name has no intent and is unchanged. The name alone is neither.
     static func parse(_ text: String) -> VoiceUtterance {
-        guard let name = wakeWord(in: text) else {
+        guard let name = wakeWord(in: text), isAddress(text, nameAt: name) else {
             let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
             return VoiceUtterance(before: trimmed.isEmpty ? nil : trimmed, intent: nil)
         }
@@ -126,6 +126,17 @@ enum VoiceChannel {
         case .social: "Socialt läge."
         case .rizz: "Rizzläge."
         }
+    }
+
+    /// A14 (Toby T6: "Jag berättade om Lumen för min kompis" became an instruction, 5 of 68): the name addresses Lumen
+    /// only at the start of the utterance, after a sentence end ("Ja precis. Lumen, …") or after a greeting alone.
+    private static let greetings: Set<String> = ["hej", "hallå", "okej", "ok", "ja", "nej", "du", "hörru", "hey", "hi", "okay"]
+
+    static func isAddress(_ text: String, nameAt name: Range<String.Index>) -> Bool {
+        let before = text[..<name.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines.union(CharacterSet(charactersIn: ",;:-–")))
+        if before.isEmpty { return true }
+        if let last = before.last, ".?!".contains(last) { return true }
+        return greetings.contains(normalized(before))
     }
 
     /// The name as a word of its own, any case, with or without an accent ("Lumén"). "Lumens" is not the name.

@@ -107,6 +107,8 @@ final class TranscriptionCoordinator {
     /// A10: words heard but not committed yet, since when; and when the wearer last spoke.
     private var partialSince: Date?
     private var wearerSpokeAt: Date?
+    /// A14: when someone else's speech was last muted; the forced final is only for a turn drowned in chatter.
+    private var otherSpokeAt: Date?
     private var commitRequestedAt: Date?
 
     /// D82.2: Silero, not the input level, says whether someone is talking, so background noise is not speech.
@@ -267,6 +269,7 @@ final class TranscriptionCoordinator {
                             sent = [Int16](repeating: 0, count: window.count)
                             probability = 0
                             self.focusMutedSeconds += SpeechGate.windowSeconds
+                            self.otherSpokeAt = now
                         case .wearer:
                             self.wearerSpokeAt = now
                         case .quiet:
@@ -351,8 +354,11 @@ final class TranscriptionCoordinator {
     /// A10.2: own end of turn. Words wait uncommitted and the wearer has been quiet for the mode's pause (others may
     /// still talk): ask Scribe for the final now instead of waiting for a silence that does not come.
     private func endTurnIfScribeDoesNot(now: Date) {
-        guard let since = partialSince, let spoke = wearerSpokeAt, spoke >= since.addingTimeInterval(-10),
-              now.timeIntervalSince(spoke) >= pauseSeconds,
+        // A14 (Toby T6: 38 forced finals in Frågor, last words cut): only when others are talking now, so Scribe
+        // cannot hear the pause itself, and only after a little more than the pause.
+        guard let other = otherSpokeAt, now.timeIntervalSince(other) < 1.5,
+              let since = partialSince, let spoke = wearerSpokeAt, spoke >= since.addingTimeInterval(-10),
+              now.timeIntervalSince(spoke) >= pauseSeconds + 0.4,
               commitRequestedAt.map({ now.timeIntervalSince($0) > 2 }) ?? true else { return }
         commitRequestedAt = now
         ownEndsOfTurn += 1
