@@ -231,6 +231,13 @@ struct ListeningScreen: View {
                 .foregroundStyle(LumenColor.muted)
                 .fixedSize(horizontal: false, vertical: true) // A12: the whole line, never "…"
                 .frame(maxWidth: .infinity, alignment: .leading)
+            if model.isOfferingMore {
+                // A15: the window after a short answer.
+                Text("Säg ja för mer")
+                    .font(LumenFont.text(17, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             if let tip = model.tipNotice {
                 Text(tip)
                     .font(LumenFont.text(15))

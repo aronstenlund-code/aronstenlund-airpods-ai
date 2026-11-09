@@ -25,6 +25,7 @@ struct VoiceCommandsView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 Toggle("Tips om kommandon (högst ett om dagen)", isOn: $tips.enabled)
+                Toggle("Ton när du kan säga \"ja\" för mer", isOn: $voice.moreTone)
                 Toggle("Korta ord utan \"Lumen\" i Provläge och Frågor", isOn: $voice.universalCommands)
                 Text("\"Upprepa\", \"viska\", \"högre\", \"kortare\", \"snabbare\" och \"utveckla\" som hela meningen.")
                     .font(.footnote)

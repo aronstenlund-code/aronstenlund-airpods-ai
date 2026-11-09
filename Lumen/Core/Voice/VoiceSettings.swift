@@ -10,6 +10,7 @@ final class VoiceSettings {
     static let speakKey = "voice.speakAnswers"
     static let gainKey = "voice.gain"
     static let universalKey = "voice.universalCommands"
+    static let moreToneKey = "voice.moreTone"
 
     var voice: VoiceChoice {
         didSet {
@@ -37,6 +38,10 @@ final class VoiceSettings {
         }
     }
     static let minimumGain = 0.25
+    /// A15: the soft tone that says "säg ja för mer" after a short answer.
+    var moreTone: Bool {
+        didSet { defaults.set(moreTone, forKey: Self.moreToneKey) }
+    }
     /// A7: "upprepa", "viska", "kortare", "utveckla" … without "Lumen" in Provläge and Frågor.
     var universalCommands: Bool {
         didSet { defaults.set(universalCommands, forKey: Self.universalKey) }
@@ -47,6 +52,7 @@ final class VoiceSettings {
         self.defaults = defaults
         self.speechGain = defaults.object(forKey: Self.gainKey) as? Double ?? 1
         self.universalCommands = defaults.object(forKey: Self.universalKey) as? Bool ?? true
+        self.moreTone = defaults.object(forKey: Self.moreToneKey) as? Bool ?? true
         self.voice = defaults.data(forKey: Self.voiceKey).flatMap { try? JSONDecoder().decode(VoiceChoice.self, from: $0) } ?? .appleDefault
         let storedRate = defaults.object(forKey: Self.rateKey) as? Double
         self.rate = Float(storedRate ?? 1.0)

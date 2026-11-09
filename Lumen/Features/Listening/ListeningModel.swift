@@ -481,6 +481,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// One tap to switch to music and back (D33): screen button, Live Activity and Control. Never starts a
     /// session: the microphone is only switched on from the app.
     func togglePause() async {
+        if isOfferingMore {
+            takeMore(by: "AirPods press") // A15: the press means "mer" while the window is open
+            return
+        }
         if isListening {
             await controller.pause()
         } else if canResume {
@@ -1224,6 +1228,54 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     static let repeatAudioAge: TimeInterval = 120
 
+    // MARK: - A15 "Mer?" after a short answer
+
+    /// The 5 s window is open: the screen shows "Säg ja för mer".
+    private(set) var isOfferingMore = false
+    @ObservationIgnored private var moreTask: Task<Void, Never>?
+    @ObservationIgnored private var moreOfferedFor: Date?
+
+    /// After a short answer has been spoken (Frågor and Provläge): the window opens with a soft tone.
+    private func offerMoreIfShort() {
+        guard mode == .standard || mode == .prov, exam == nil, miniTest == nil, isListening,
+              let last = conversation.answers.last, MoreOffer.isShort(last.answer),
+              let answered = lastAnswerAt, Date().timeIntervalSince(answered) < 30,
+              moreOfferedFor != answered else { return } // once per answer (a tip or a confirmation also ends speech)
+        moreOfferedFor = answered
+        isOfferingMore = true
+        controller.log("More? window open (A15)")
+        if speaker.settings.moreTone {
+            try? controller.playback.playTestTone(frequency: 1_320, duration: 0.12)
+        }
+        if headMotion.isAvailable {
+            headMotion.listen(for: MoreOffer.window) { [weak self] gesture in
+                guard let self, self.isOfferingMore else { return }
+                if gesture == .nod { self.takeMore(by: "nod") } else { self.closeMoreOffer(why: "shake") }
+            }
+        }
+        moreTask?.cancel()
+        moreTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(MoreOffer.window))
+            guard let self, !Task.isCancelled, self.isOfferingMore else { return }
+            self.closeMoreOffer(why: "silence")
+        }
+    }
+
+    private func closeMoreOffer(why: String) {
+        guard isOfferingMore else { return }
+        isOfferingMore = false
+        moreTask?.cancel()
+        moreTask = nil
+        controller.log("More? window closed (\(why))")
+    }
+
+    /// "ja" / nod / AirPods press in the window: the developed answer. Until K13's cache, through `continue_more`.
+    private func takeMore(by how: String) {
+        closeMoreOffer(why: "yes, \(how)")
+        tips.markUsed(.moreDetail)
+        instruct(MoreOffer.instruction)
+    }
+
     /// A17: the voice profile says someone else spoke (nil without a profile or when unknown).
     private func isOtherVoice(near date: Date) -> Bool? {
         guard let speakers, speakers.profiles.isEnrolled, let identity = speakers.identity(near: date, window: 4) else { return nil }
@@ -1504,6 +1556,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         listenForHeadAnswerIfAsked()
         if !study.isActive { askWaitingQuestionIfIdle() }
         scheduleTip()
+        offerMoreIfShort()
     }
 
     /// A8: a question that waited (cooldown, Lumen speaking, or split from the same utterance) goes now that the
@@ -2364,6 +2417,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if bufferAhead(.started(request, source: source)) { return }
         tipTask?.cancel()
         tipNotice = nil
+        closeMoreOffer(why: "a new answer")
         conversation.beginAnswer(question: request.query, source: source, at: request.createdAt,
                                  isOwnQuestion: request.trigger.isUsersOwnWords)
         controller.playback.startRecordingSpeech() // A7 "upprepa"
@@ -2656,6 +2710,22 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                handleVoice(in: WakeWord.name + ", " + segment.text, at: date) {
                 discardAhead(reason: "a voice command")
                 return
+            }
+        }
+        // A15: in the "Mer?" window "ja" / "mer" from the wearer gets the long answer; "nej" or anything else closes it.
+        if isOfferingMore {
+            switch MoreOffer.verdict(segment.text) {
+            case true? where isOtherVoice(near: date) != true:
+                discardAhead(reason: "more")
+                study.discardTurnText()
+                takeMore(by: "voice")
+                return
+            case false?:
+                closeMoreOffer(why: "no")
+                study.discardTurnText()
+                return
+            default:
+                closeMoreOffer(why: "new words")
             }
         }
         // A17: "igen" / "en gång till" / "va?" from the wearer: exactly the same answer again, within the time rules.
