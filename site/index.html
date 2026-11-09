@@ -790,7 +790,7 @@
         </form>
       </div>
       <div class="first-note" id="integritet">
-        <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns. Vi sparar adressen och när du gav ditt samtycke. Vill du bli borttagen, eller har du frågor om dina uppgifter, mejla <a href="mailto:stenlundaron@gmail.com">stenlundaron@gmail.com</a>.</p>
+        <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns. Vi sparar adressen, när du gav ditt samtycke och vilken länk du kom från (till exempel en kanal som tiktok). Vill du bli borttagen, eller har du frågor om dina uppgifter, mejla <a href="mailto:stenlundaron@gmail.com">stenlundaron@gmail.com</a>.</p>
         <p class="fine">Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel.</p>
       </div>
     </div>
@@ -808,6 +808,17 @@ const CONSENT_VERSION = "2026-11-06";   // Höj när samtyckes- eller integritet
 
 const $ = (id) => document.getElementById(id);
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+// Ke5: var kom besökaren ifrån? ?utm_source= eller ?ref=, sparas i sessionStorage, annars "direkt". Inga cookies.
+  function waitSource() {
+    const ok = v => (typeof v === "string" && /^[a-z0-9_-]{1,32}$/.test(v)) ? v : null;
+    let v = null;
+    try {
+      const q = new URLSearchParams(location.search);
+      v = ok((q.get("utm_source") || q.get("ref") || "").toLowerCase().trim());
+      if (v) sessionStorage.setItem("lumen_src", v); else v = ok(sessionStorage.getItem("lumen_src"));
+    } catch (e) {}
+    return v || "direkt";
+  }
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -1354,7 +1365,7 @@ async function joinList(email, version, btn, msgId, onOk) {
   const label = btn.textContent;
   btn.disabled = true; btn.textContent = "Skickar";
   try {
-    const payload = { email, consent: true, consent_version: version, source: "demo", website: $("website").value };
+    const payload = { email, consent: true, consent_version: version, source: waitSource(), website: $("website").value };
     const r = await fetch(SB + "/functions/v1/waitlist", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
     if (r.ok) {
       onOk();
