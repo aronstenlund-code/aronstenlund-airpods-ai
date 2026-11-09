@@ -34,3 +34,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 **Deangelo 2026-11-09 21:35:** bilderna finns. Stillbilden ligger i `docs/marketing/elias-frilagd.png` (och `docs/marketing/elias/`), och scrollsekvensen i `site/img/elias-seq/` med `manifest.json`. Byt ut platshållarna i Ke7.
 
+**Deangelo 2026-11-09 21:45:** sajten deployades inte, eftersom `site/` var 3,9 MB och gränsen i CI är 2 MB. Mina 120 bildrutor var för stora, och felet var mitt. Rättat: nu finns bara de udda bildrutorna (60 st, 001–119, WebP q44), och i `index.html` står `const step = 2` både på mobil och dator. `site/` är nu 1 976 kB. Lägg inget nytt i `site/` utan att kontrollera storleken, och se gärna om något annat kan krympas så att vi får marginal.
+

@@ -1452,7 +1452,7 @@ getToken().catch(() => {});   // Felet visas när någon faktiskt frågar.
   const cv = document.getElementById("elias-cv"), still = document.getElementById("elias-still"), ctx = cv.getContext("2d");
   const N = 120, BAD = [[22, 30], [48, 66], [85, 93]], RING = 38;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const step = matchMedia("(max-width: 959px)").matches ? 2 : 1;
+  const step = 2; // Deangelo: bara udda bildrutor finns (site/ max 2 MB)
   const src = n => "img/elias-seq/" + String(n).padStart(3, "0") + ".webp";
   if (reduced) { still.src = src(100); fig.classList.add("pulse"); return; }
   const frames = new Array(N + 1);

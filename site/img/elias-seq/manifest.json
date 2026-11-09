@@ -5,10 +5,35 @@
   "height": 700,
   "fps_source": 24,
   "background": "transparent",
-  "bad_rest_frames": [[22, 30], [48, 66], [85, 93]],
-  "good_rest_frames": [1, 40, 70, 80, 100, 120],
+  "bad_rest_frames": [
+    [
+      22,
+      30
+    ],
+    [
+      48,
+      66
+    ],
+    [
+      85,
+      93
+    ]
+  ],
+  "good_rest_frames": [
+    1,
+    40,
+    70,
+    80,
+    100,
+    120
+  ],
   "rings_start_frame": 38,
-  "earbud_point_px": { "x": 132, "y": 168, "note": "ungefärlig position i bildruta 1, i 480x700-koordinater; Kelly justerar" },
-  "mobile": "använd varannan bildruta (udda nummer)",
-  "source": "Gemini Omni 1.2 Flash, 9:16, frilagd med rembg isnet-general-use; se docs/marketing/karaktar.md"
+  "earbud_point_px": {
+    "x": 132,
+    "y": 168,
+    "note": "ungefärlig position i bildruta 1, i 480x700-koordinater; Kelly justerar"
+  },
+  "mobile": "alla 60 bilder (step 2) på både mobil och dator",
+  "source": "Gemini Omni 1.2 Flash, 9:16, frilagd med rembg isnet-general-use; se docs/marketing/karaktar.md",
+  "frames_present": "udda nummer 001–119 (60 bilder); jämna saknas för att hålla site/ under 2 MB"
 }
