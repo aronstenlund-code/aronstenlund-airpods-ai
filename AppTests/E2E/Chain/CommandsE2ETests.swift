@@ -161,12 +161,18 @@ struct CommandsE2ETests {
         let plan = ExamPlan(grade: .y9, area: .no, subject: "Biologi", date: date,
                             topics: "fotosyntes, klorofyll, cellandning, mitokondrier")
         model.examPlans?.save(plan)
-        if mode == .prov { await model.startProv(for: plan) } else { await model.startMode(mode) }
+        switch mode {
+        case .prov: await model.startProv(for: plan)
+        case .standard: await model.startMode(.standard)
+        // Intervju, Socialt and Rizz open a sheet first (role, live start); its Start button calls this.
+        default: await model.startHandsFree(mode)
+        }
 
         // When each file starts (file 0 is the lead silence). A restart after a mode switch begins at 0 again: ignored.
         var fileStart: [Int: Double] = [:]
         var stoppedEarly: String?
-        let deadline = start.addingTimeInterval(audioSeconds + 25)
+        // The files play a little slower than real time (a sleep per 40 ms chunk), so the end is when they are done.
+        let deadline = start.addingTimeInterval(audioSeconds * 1.3 + 60)
         let terminal = cases.count == 1 && cases[0].isTerminal
         var metAt: Date?
         var quietSince: Date?
@@ -213,7 +219,9 @@ struct CommandsE2ETests {
             let lines = log.filter { $0.t >= from && $0.t < to }
             result.log = lines.map { String(format: "%6.2f ", $0.t - from) + $0.text }
             result.actions = lines.compactMap { Self.action(in: $0.text) }
-            result.classified = result.heard.map { Self.classify($0, in: mode) }
+            // Scribe may commit "Lumen." on its own; the app's turn can join it with the words after it again.
+            result.classified = ([result.heard.joined(separator: " ")] + result.heard).filter { !$0.isEmpty }
+                .map { Self.classify($0, in: mode) }
             if terminal { result.after = after }
             Self.judge(&result)
             results.append(result)
