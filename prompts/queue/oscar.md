@@ -32,7 +32,7 @@
 
 - [x] **O9 – Oberoende test av kommandona i backend (K9)** (effort: medium). Läs `docs/COMMANDS.md`. Kör 3 nya formuleringar per uppgift som Kevin inte har testat, plus 15 vanliga meningar med kommandoord. Krav: rätt `task`, 0 falska träffar. Budget 0,15 USD. _klar 2026-11-09 18:29 (Oscar): `reports/qa/2026-11-09-1835-oscar-o9-kommandon.md`; rätt task 90/93, falska träffar 0/15; 3 matchningsfel till Kevin ('hur går det för mig' ger påhittad lägesbild)_
 
-- [ ] **O10 – Oberoende test av K10 (Lumen lär sig användaren) och K8 (färre begränsningar)** (effort: high). Kevin rapporterar appkommandon 28/28 och "rätta en gång" 20/20 på sina egna fall. Gör 20 nya fall per del, som Kevin inte har sett:
+- [~] pågår 2026-11-09 20:05 (Oscar) **O10 – Oberoende test av K10 (Lumen lär sig användaren) och K8 (färre begränsningar)** (effort: high). Kevin rapporterar appkommandon 28/28 och "rätta en gång" 20/20 på sina egna fall. Gör 20 nya fall per del, som Kevin inte har sett:
   - (a) Appkommandon med egna ord, i alla lägen, plus 15 vanliga meningar som inte får tolkas som kommandon.
   - (b) Rättelse följd av en liknande fråga, i samma ämne och i ett annat ämne: används inställningen, och i rätt räckvidd?
   - (c) 15 nya fall från O7-typen (låttexter, historia med våld, sexualkunskap, ANT, medicin på faktanivå).
