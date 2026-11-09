@@ -11,4 +11,6 @@ Arbetssätt för sessionen:
 5. Beror punkten på något som inte är klart (står i punkten): hoppa till nästa och kom tillbaka.
 6. Tom kö, eller bara punkter som väntar på andra: skriv "Väntar på kö" på din rad i `docs/STATUS.md` och pusha. Har du verktyget `send_later` (claude-code-remote), schemalägg meddelandet "kolla kön" till dig själv om 30 minuter. Gör det bara mellan 08 och 23, och sluta efter 4 tomma kontroller i rad. Då behöver Aron inte väcka dig. Annars: sluta.
 
+7. **Kontext (lätt, läs aldrig om sessionen):** skriv i kolumnen *Kontext* på din tavelrad hur många punkter du gjort i den här sessionen, och "komprimerad" om sessionen har komprimerats. Vid 5 punkter eller efter en komprimering: skriv "byt snart" i kolumnen, gör klart pågående punkt, ta ingen ny, och skriv en kort `docs/HANDOVER-<namn>.md` (högst 30 rader: vad du lärt dig som inte står i rapporterna, öppna trådar). Deangelo ger Aron en startprompt för en ny session.
+
 Ändra aldrig andras punkter eller andras köfiler. Effort står på varje punkt.
