@@ -42,7 +42,7 @@ Deno.test("streams audio and sends key only upstream", async () => {
   assertEquals([...new Uint8Array(await res.arrayBuffer())], [1, 2, 3]);
   assert(calls[0].url.includes(`/text-to-speech/${VOICE}/stream`));
   assertEquals((calls[0].init.headers as Record<string, string>)["xi-api-key"], "xi-test");
-  assertEquals(JSON.parse(calls[0].init.body as string).model_id, "eleven_flash_v2_5");
+  assertEquals(JSON.parse(calls[0].init.body as string).model_id, "eleven_v4_turbo"); // K14 default
   assertEquals(recs[0].chars, 4);
 });
 
@@ -263,4 +263,51 @@ Deno.test("D67: voice_settings are validated and forwarded; the demo ignores the
     false,
     "demo: default settings only",
   );
+});
+
+Deno.test("K14: v4 Turbo by default; a 5xx or a slow start goes once to Flash; quota does not", async () => {
+  const audio = () => new Response(new Uint8Array([9]), { status: 200, headers: { "content-type": "audio/mpeg" } });
+  const models: string[] = [];
+  const t1 = setup({}, (_u, init) => {
+    const m = JSON.parse(init!.body as string).model_id;
+    models.push(m);
+    return Promise.resolve(m === "eleven_v4_turbo" ? new Response("boom", { status: 503 }) : audio());
+  });
+  const r1 = await t1.handler(post({ text: "Sju." }));
+  assertEquals(r1.status, 200);
+  assertEquals(r1.headers.get("x-tts-model"), "eleven_flash_v2_5");
+  await r1.arrayBuffer();
+  assertEquals(models, ["eleven_v4_turbo", "eleven_flash_v2_5"]);
+  assertEquals(t1.recs[0].model, "eleven_flash_v2_5");
+
+  const slow: string[] = [];
+  const t2 = setup({ config: { ...DEFAULT_TTS_CONFIG, voiceId: VOICE, voices: [], firstByteMs: 50 } }, (_u, init) => {
+    const m = JSON.parse(init!.body as string).model_id;
+    slow.push(m);
+    if (m === "eleven_v4_turbo") {
+      return new Promise((_res, rej) => init!.signal!.addEventListener("abort", () => rej(new DOMException("a", "AbortError"))));
+    }
+    return Promise.resolve(audio());
+  });
+  const r2 = await t2.handler(post({ text: "Sju." }));
+  assertEquals(r2.status, 200);
+  await r2.arrayBuffer();
+  assertEquals(slow, ["eleven_v4_turbo", "eleven_flash_v2_5"]);
+
+  const q: string[] = [];
+  const t3 = setup({}, (_u, init) => {
+    q.push(JSON.parse(init!.body as string).model_id);
+    return Promise.resolve(new Response('{"detail":{"status":"quota_exceeded"}}', { status: 401 }));
+  });
+  assertEquals((await t3.handler(post({ text: "Sju." }))).status, 503);
+  assertEquals(q, ["eleven_v4_turbo"]);
+
+  // an explicitly asked model is never swapped (A/B by ear)
+  const e: string[] = [];
+  const t4 = setup({}, (_u, init) => {
+    e.push(JSON.parse(init!.body as string).model_id);
+    return Promise.resolve(new Response("boom", { status: 503 }));
+  });
+  assertEquals((await t4.handler(post({ text: "Sju.", model: "eleven_v4_turbo" }))).status, 502);
+  assertEquals(e, ["eleven_v4_turbo"]);
 });

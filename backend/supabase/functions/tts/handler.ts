@@ -6,12 +6,20 @@ import { readLimitedJson } from "../answer/validate.ts";
 import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
 import { type Voice, VOICE_ID_RE } from "./voices.ts";
 
-/** D46 item 9: models the app/webtest may ask for (A/B by ear). multilingual costs 2 credits per character. */
+/**
+ * D46 item 9 / K14: models the app, the demo and the evals may ask for, with their metering weight relative to Flash
+ * (Flash bills half a credit per character, multilingual one). K14 (owner decision 2026-11-09 21:54): v4 Turbo is
+ * the default, Flash the automatic fallback. v4 Turbo's weight is from ElevenLabs' own model list (GET /tts with
+ * `x-info: models`), see DECISIONS.
+ */
 export const TTS_MODELS: Record<string, number> = {
+  eleven_v4_turbo: 1, // provisional until the model list is read (K14)
   eleven_flash_v2_5: 1,
   eleven_turbo_v2_5: 1,
   eleven_multilingual_v2: 2,
 };
+/** K14: no audio headers from the default model within this time = the fallback model is asked instead. */
+export const TTS_FIRST_BYTE_MS = 3500;
 /**
  * D48: ask ElevenLabs for zero retention (`enable_logging=false`). Verified live 2026-11-05: the parameter is
  * accepted (HTTP 200) on the current plan; the STT socket answers with a warning that zero retention is only
@@ -73,7 +81,11 @@ export interface TtsConfig {
   voices: Voice[];
   /** Override for tests/proxies; default https://api.elevenlabs.io */
   baseUrl?: string;
-  modelId: string; // eleven_flash_v2_5: low latency, supports Swedish [docs]
+  modelId: string; // K14: eleven_v4_turbo (~100 ms, Swedish) [docs]
+  /** K14: used when the default model fails (5xx, rejected, unreachable or slow); never for quota/auth. */
+  fallbackModelId?: string;
+  /** K14: override for TTS_FIRST_BYTE_MS (tests). */
+  firstByteMs?: number;
   /** Limits are in CHARACTERS (ElevenLabs bills credits per character). */
   limits: Limits;
   /** D79: characters per network (hashed IP) and UTC day for the app; 0 = off. */
@@ -81,7 +93,8 @@ export interface TtsConfig {
 }
 
 export const DEFAULT_TTS_CONFIG: Omit<TtsConfig, "voiceId" | "voices"> = {
-  modelId: "eleven_flash_v2_5",
+  modelId: "eleven_v4_turbo",
+  fallbackModelId: "eleven_flash_v2_5",
   limits: { perMinute: 1500, perDay: 15000, globalPerDay: 100000 },
   networkCharsPerDay: 30000,
 };
@@ -133,6 +146,16 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
     if (req.method === "GET" && req.headers.get("x-warm") === "1") {
       deps.warm?.();
       return new Response(null, { status: 204 });
+    }
+    if (req.method === "GET" && req.headers.get("x-info") === "models") {
+      // K14: read-only facts for the model and voice choice (credits per character, Swedish voices); no audio
+      try {
+        await deps.authenticate(req);
+        if (!deps.apiKey) throw new HttpError(503, "provider_unconfigured", "TTS not configured");
+        return Response.json(await modelInfo(doFetch, deps), { headers: CORS_HEADERS });
+      } catch (e) {
+        return errorResponse(toHttpError(e));
+      }
     }
     const t0 = performance.now();
     try {
@@ -238,7 +261,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         cost,
         ttsExtra,
       );
-      const callUpstream = (zr: boolean) =>
+      const callUpstream = (zr: boolean, model = modelId, signal = ac.signal) =>
         doFetch(
           `${
             deps.config.baseUrl ?? "https://api.elevenlabs.io"
@@ -254,15 +277,57 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
             },
             body: JSON.stringify({
               text,
-              model_id: modelId,
+              model_id: model,
               language_code: language,
               ...(voiceSettings ? { voice_settings: voiceSettings } : {}),
             }),
-            signal: ac.signal,
+            signal,
           },
         );
       const usedZr = zeroRetention;
-      const upstreamP = callUpstream(usedZr);
+      // K14: the default model gets TTS_FIRST_BYTE_MS for its headers; then (or on a 5xx/400/422/network error)
+      // the same text goes once to the fallback model. Quota and key errors are passed on as they are.
+      const fallbackId = deps.config.fallbackModelId && deps.config.fallbackModelId !== modelId &&
+          (demo || raw.model === undefined || raw.model === null)
+        ? deps.config.fallbackModelId
+        : null;
+      let usedModel = modelId;
+      const attempt = async (): Promise<Response> => {
+        const one = new AbortController();
+        const signal = AbortSignal.any([ac.signal, one.signal]);
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const timeout = new Promise<"timeout">((r) => {
+          timer = setTimeout(() => r("timeout"), fallbackId ? deps.config.firstByteMs ?? TTS_FIRST_BYTE_MS : 60_000);
+        });
+        let first: Response | "timeout" | Error;
+        try {
+          first = await Promise.race([callUpstream(usedZr, modelId, signal), timeout]);
+        } catch (e) {
+          first = e instanceof Error ? e : new Error(String(e));
+        } finally {
+          clearTimeout(timer);
+        }
+        const retry = !!fallbackId && !ac.signal.aborted && (
+          first === "timeout" || first instanceof Error ||
+          first.status >= 500 || first.status === 400 || first.status === 422
+        );
+        if (!retry) {
+          if (first instanceof Error) throw first;
+          if (first === "timeout") throw new Error("timeout");
+          return first;
+        }
+        if (first === "timeout") one.abort();
+        else if (first instanceof Response) {
+          const peek = await first.clone().text().catch(() => "");
+          if (first.status < 500 && /logging|retention/i.test(peek)) return first; // D48 path below
+          first.body?.cancel().catch(() => {});
+        }
+        const why = first === "timeout" ? "timeout" : first instanceof Error ? "network" : `http_${first.status}`;
+        console.warn("tts_fallback", JSON.stringify({ model: modelId, fallback: fallbackId, why }));
+        usedModel = fallbackId!;
+        return callUpstream(usedZr, fallbackId!, ac.signal);
+      };
+      const upstreamP = attempt();
       upstreamP.catch(() => {}); // handled below, or deliberately dropped when the budget denies
 
       const rl = await limitsP;
@@ -288,7 +353,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         const peek = await upstream.text().catch(() => "");
         if (/logging|retention/i.test(peek)) {
           zeroRetention = false; // the plan rejects it: continue without, silently
-          upstream = await callUpstream(false);
+          upstream = await callUpstream(false, usedModel);
         } else {
           upstream = new Response(peek, { status: upstream.status });
         }
@@ -307,6 +372,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
           "content-type": CONTENT_TYPES[format.split("_")[0]] ?? "application/octet-stream",
           "cache-control": "no-store",
           "x-audio-format": format,
+          "x-tts-model": usedModel,
           ...CORS_HEADERS,
         },
       });
@@ -317,7 +383,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
           endpoint: "tts",
           language,
           provider: "elevenlabs",
-          model: modelId,
+          model: usedModel,
           chars: text.length,
           total_ms: Math.round(performance.now() - t0),
           status,
@@ -326,5 +392,60 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
     } catch (e) {
       return errorResponse(toHttpError(e));
     }
+  };
+}
+
+/** K14: what ElevenLabs says about our models (credit multiplier, languages) and the Swedish library voices. */
+async function modelInfo(doFetch: typeof fetch, deps: TtsDeps): Promise<Record<string, unknown>> {
+  const base = deps.config.baseUrl ?? "https://api.elevenlabs.io";
+  const h = { "xi-api-key": deps.apiKey! };
+  const get = async (path: string): Promise<unknown> => {
+    const r = await doFetch(`${base}${path}`, { headers: h });
+    return r.ok ? await r.json() : { error: r.status };
+  };
+  const models = await get("/v1/models");
+  const voices = await get("/v1/shared-voices?language=sv&page_size=40&sort=cloned_by_count");
+  const user = await get("/v1/user/subscription");
+  // deno-lint-ignore no-explicit-any
+  const ms = Array.isArray(models) ? models as any[] : [];
+  // deno-lint-ignore no-explicit-any
+  const vo = voices as any;
+  // deno-lint-ignore no-explicit-any
+  const vs = Array.isArray(vo?.voices) ? vo.voices as any[] : [];
+  // deno-lint-ignore no-explicit-any
+  const u = user as any;
+  return {
+    configured_model: deps.config.modelId,
+    fallback_model: deps.config.fallbackModelId ?? null,
+    default_voice: deps.config.voiceId,
+    plan: u?.tier ?? null,
+    characters: u ? { used: u.character_count ?? null, limit: u.character_limit ?? null } : null,
+    models: ms.filter((m) => m.model_id in TTS_MODELS || /v4/.test(String(m.model_id))).map((m) => ({
+      model_id: m.model_id,
+      name: m.name,
+      swedish: Array.isArray(m.languages)
+        ? m.languages.some((l: { language_id?: string }) => l.language_id === "sv")
+        : null,
+      model_rates: m.model_rates ?? null,
+      max_characters: m.maximum_text_length_per_request ?? null,
+      can_do_text_to_speech: m.can_do_text_to_speech ?? null,
+    })),
+    swedish_voices: vs.map((v) => ({
+      voice_id: v.voice_id,
+      public_owner_id: v.public_owner_id,
+      name: v.name,
+      gender: v.gender,
+      age: v.age,
+      accent: v.accent,
+      language: v.language,
+      locale: v.locale,
+      use_case: v.use_case,
+      category: v.category,
+      descriptive: v.descriptive,
+      free_users_allowed: v.free_users_allowed,
+      cloned_by_count: v.cloned_by_count,
+      description: typeof v.description === "string" ? v.description.slice(0, 160) : null,
+    })),
+    voices_error: vo?.error ?? null,
   };
 }

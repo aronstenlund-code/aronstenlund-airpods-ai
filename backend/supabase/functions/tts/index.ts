@@ -37,6 +37,7 @@ const handler = createTtsHandler({
     voices,
     baseUrl: env.get("ELEVENLABS_BASE_URL") || undefined,
     modelId: env.get("ELEVENLABS_MODEL_ID") ?? DEFAULT_TTS_CONFIG.modelId,
+    fallbackModelId: env.get("ELEVENLABS_FALLBACK_MODEL_ID") ?? DEFAULT_TTS_CONFIG.fallbackModelId,
     limits: {
       perMinute: envInt(env, "TTS_CHARS_PER_MINUTE", DEFAULT_TTS_CONFIG.limits.perMinute),
       perDay: envInt(env, "TTS_CHARS_PER_DAY", DEFAULT_TTS_CONFIG.limits.perDay),
