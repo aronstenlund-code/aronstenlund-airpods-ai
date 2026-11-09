@@ -80,7 +80,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   3. AirPods-mikrofonens riktverkan och brusreducering (`setVoiceProcessingEnabled`, ljudläget för röstisolering): mät om det hjälper.
   Mål: minst 80 % av frågorna kommer in i tid vid prat i skurar på 10 dB. Skriv siffror före och efter. **Ej verifierat på enhet** tills Aron har testat i ett riktigt rum.
 
-- [~] pågår 2026-11-09 21:26 **A13 – Designgranskning (Deangelo 2026-11-09, utifrån Tobys T3-bilder)** (effort: medium). Gör efter A9.
+- [x] klar 2026-11-09 22:35 → reports/2026-11-09-angela-a13-design-review.md **A13 – Designgranskning (Deangelo 2026-11-09, utifrån Tobys T3-bilder)** (effort: medium). Gör efter A9.
   1. **Inställningar är för tekniska för en elev.** I dag är det en lång lista med mikrofon per läge, paus i sekunder per läge, känslighet, Scribe, lokal röstdetektor, dB-reglage och licenstext för WeSpeaker. Dela upp den i två delar. **Vanliga** högst upp: Röst och hastighet, Svarslängd, Röstkommandon, Minne, Prov, Utseende, Språk, Integritet. **Avancerat** hopfällt längst ner: mikrofon, pauser, känslighet, Scribe och röstdetektor, kalibrering, Diagnostik. Licenser och tekniska förklaringar flyttas till "Om appen". Inga funktioner tas bort.
   2. **Lyssnarskärmen visar inte att den hör.** Lägg till en liten nivåmätare som rör sig när bäraren pratar, i appens stil och diskret. Om Scribe inte är ansluten visas tillståndet från A11 i stället för "Lyssnar". Det bygger förtroende och gör att Aron själv ser om något är fel.
   3. **Tomt läge på lyssnarskärmen:** i Provläge visas provets ämnesord som chips och en knapp **Förhör mig**, som reserv för den som inte vill prata. Sessionens tidigare frågor och svar visas i en lista som går att skrolla. I dag syns bara det senaste.
@@ -100,7 +100,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   6. Lägg till en loggrad för namnlösa musikkommandon.
   Be Toby köra om T6 när du är klar. Krav: 0 falska träffar.
 
-- [ ] **A15 – "Mer?" efter korta svar: ja, nick eller tryck** (effort: high). Gör efter A14, före A13. Hör ihop med Kevins K13 (läs den).
+- [x] klar 2026-11-09 22:35 (cache och signaler väntar på K13) → reports/2026-11-09-angela-a15-more.md **A15 – "Mer?" efter korta svar: ja, nick eller tryck** (effort: high). Gör efter A14, före A13. Hör ihop med Kevins K13 (läs den).
   1. Efter ett kort svar finns ett fönster på 5 s där "ja", "mer", "utveckla", "gärna", en nick (CMHeadphoneMotionManager, som D86) eller ett tryck på AirPods spelar upp det cachade långa svaret direkt (mål: under 1 s). **Ägarbeslut 22:03:** i Provläge säger Lumen kort **"Längre svar? Nicka eller säg ja."** efter ett kort svar. Lyssningsskärmen visar samma sak. När eleven har lärt sig det (efter 3 gånger) räcker det med "Längre svar?". Användaren kan stänga av det.
   2. "Nej", tystnad eller en ny fråga stänger fönstret. Ett "ja" som är riktat till någon annan, alltså inte bärarens röst (D81), räknas inte.
   3. Skicka signalerna (tackade ja/nej/tystnad, rättelse) med sammanhang till /memory som K13 beskriver. När standarden blivit "långt direkt" visas det i Minne som en läsbar rad, till exempel "Utvecklade svar i Historia", och går att ändra.
@@ -108,7 +108,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [ ] **A16 – Övningsprov i appen** (effort: high). Beror på: Kevins K15. Under Förberedelser › Lägg till övningsprov (PDF, foto eller text) och en lista med frågorna. I Provläge finns knappen/kommandot "Kör övningsprovet": Lumen läser upp en fråga i taget, lyssnar på svaret och rättar. Navigering med "nästa", "förra", "fråga N", "hoppa över", "upprepa" och egna fraser (A6). Lyssnarskärmen visar "Fråga 3 av 12" och resultatet i slutet (rätt, fel, att öva på). Tester och skärmbilder. **Ej verifierat på enhet** tills Aron har testat.
 
-- [~] pågår 2026-11-09 21:59 **A17 – "Igen" upprepar exakt, med tidsregler** (effort: medium). Gör direkt. Ägarkrav (Aron 2026-11-09 21:54/21:58): "igen" ska ge **exakt samma svar** (samma ljud, `repeatAnswer`, inget nytt anrop). Appen ska förstå när ett "igen" syftar på Lumen:
+- [x] klar 2026-11-09 22:35 → reports/2026-11-09-angela-a17-again.md **A17 – "Igen" upprepar exakt, med tidsregler** (effort: medium). Gör direkt. Ägarkrav (Aron 2026-11-09 21:54/21:58): "igen" ska ge **exakt samma svar** (samma ljud, `repeatAnswer`, inget nytt anrop). Appen ska förstå när ett "igen" syftar på Lumen:
   1. **Bara bärarens röst räknas** (D81). Säger någon annan "igen" händer inget.
   2. **"Igen" som hela yttrandet** (även "en gång till", "va?", "hörde inte"), med eller utan "Lumen": upprepa om Lumen svarade för **högst 15 minuter sedan**.
   3. **"Igen" inne i ett yttrande med brus eller andra ord** (till exempel på tunnelbanan): upprepa bara om Lumen svarade för **högst 45 sekunder sedan** och "igen" är det sista eller enda tydliga ordet från bäraren. Annars syftar "igen" inte på Lumen och ignoreras.

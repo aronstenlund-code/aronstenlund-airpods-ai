@@ -1,7 +1,7 @@
 # A13 – Designgranskning (Angela, 2026-11-09)
 
-Kort: alla sju punkter är byggda. Grönt i CI (körning 42693453845). Efter-bilderna kommer från Tobys skärmrunda på
-A13-koden (körning 42693453684, simulator). Före-bilderna är T3 i `reports/apptest/2026-11-09-t3-skarmbilder/`.
+Kort: alla sju punkter är byggda. Grönt i CI (körning 42693453845). Efter-bilderna kommer från mitt
+skärmbildsflöde (iPhone SE och iPhone 17 Pro, ljust och mörkt).
 **Ej verifierat på enhet.**
 
 ## Vad som ändrades
@@ -52,7 +52,27 @@ A13-koden (körning 42693453684, simulator). Före-bilderna är T3 i `reports/ap
 7. **Skärmbilder:** se nedan.
 
 ## Skärmbilder före och efter (iPhone SE och Pro, ljust och mörkt)
-SHOTS
+**Var bilderna kommer från:**
+- **Efter:** `reports/2026-11-09-a13-skarmbilder/`, från mitt skärmbildsflöde (simulator, demodata).
+  - iPhone SE: körning 42697414257.
+  - iPhone 17 Pro: körning 42697509079.
+- **Före:** Tobys T3 i `reports/apptest/2026-11-09-t3-skarmbilder/pro-light/` och `pro-dark/`.
+- Tobys skärmrunda på A13 (42693453684) avbröts innan den tog bilder.
+
+| Skärm | Före (T3) | Efter (SE / Pro, ljust och mörkt) | Vad som syns |
+|---|---|---|---|
+| Inställningar | `pro-light-15-installningar-1.png` … `-20-installningar-6.png` (sex sidor: mikrofon per läge, Scribe, dB-reglage överst) | `efter-se-light-settings.png`, `efter-pro-dark-settings.png` … | Röst och hastighet, Svarslängd, Röstkommandon och Minne överst. Det tekniska ligger under Avancerat. |
+| Om appen | finns inte | `efter-*-about.png` | Licenserna och vad varje del gör. |
+| Start | `pro-light-13-start-med-prov.png` (fyra cirklar) | `efter-se-light-home.png`, `efter-pro-*-home.png` | Flera prov sorterade på datum (Biologi stort, Engelska och Historia under). Frågor och Provläge som cirklar. Fler lägen ligger nedanför (syns på Pro). |
+| Lyssnar | `pro-light-09-lyssnar-efter-forsta-start.png` | `efter-*-listening.png` | Nivåmätaren till höger om tillståndet (grå när inget hörs) och tidigare frågor och svar under det senaste. |
+| Intro | `pro-light-01-intro.png` | `efter-*-intro.png` | `IntroHeroView` med platshållare. Bilden togs när ringarna redan hade tonat bort. Efter rättningen i den här commiten vilar de synliga som i loggan. |
+
+**Inte fotat:**
+- Provlägets tomma läge med ämneschips och "Förhör mig". Skärmbildsscenen visar Frågor.
+- "Fler lägen" utfällt.
+- "Säg ja för mer" (A15).
+
+Toby får gärna ta dem i nästa T3.
 
 ## Till Toby (skärmrundan behöver uppdateras)
 **Inställningar har ändrats:**

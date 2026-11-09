@@ -14,6 +14,8 @@ struct IntroHeroView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var spread = false
+    /// After the three spreads the rings rest where the logo has them (they faded to nothing before).
+    @State private var settled = false
 
     private var hasPicture: Bool { UIImage(named: Self.imageName) != nil }
 
@@ -43,6 +45,10 @@ struct IntroHeroView: View {
         .clipped()
         .accessibilityHidden(true)
         .onAppear { spread = true }
+        .task {
+            try? await Task.sleep(for: .seconds(1.6 * 3 + 0.9 + 0.2))
+            withAnimation(.easeIn(duration: 0.4)) { settled = true }
+        }
     }
 
     /// Three rings in the logo's colour and rhythm, one after the other, three times; then still.
@@ -53,8 +59,8 @@ struct IntroHeroView: View {
                 Circle()
                     .stroke(LumenColor.blue.opacity(0.6), lineWidth: 2)
                     .frame(width: 22, height: 22)
-                    .scaleEffect(reduceMotion ? 1 + CGFloat(index + 1) * 0.9 : (spread ? 4.5 : 1))
-                    .opacity(reduceMotion ? 0.8 - Double(index) * 0.2 : (spread ? 0 : 0.9))
+                    .scaleEffect(reduceMotion || settled ? 1 + CGFloat(index + 1) * 0.9 : (spread ? 4.5 : 1))
+                    .opacity(reduceMotion || settled ? 0.8 - Double(index) * 0.2 : (spread ? 0 : 0.9))
                     .animation(reduceMotion ? nil : .easeOut(duration: 1.6).repeatCount(3, autoreverses: false).delay(Double(index) * 0.45),
                                value: spread)
             }
