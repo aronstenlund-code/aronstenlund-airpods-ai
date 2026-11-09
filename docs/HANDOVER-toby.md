@@ -28,4 +28,3 @@ Sessionen gjorde 6 punkter (T4, T1, T2, T3, T6, T5) och har komprimerats. Nästa
 - T5-fynd 1–4 till Angela (A21): Provläge-segment under en tur, svar i förväg på en halv fråga, mikrofonen stängd efter långt svar, 6–17 s väntan. T5b kör samma fall med `apptest-retest.yml`.
 - T6-fynd: Angela har rättat dem i A14, men ingen har testat om dem. Kör om `apptest-commands` någon gång.
 - `docs/DEVICE-TEST-QUICK.md` saknar Frågor med en fortsättning efter paus. Lägg in det när A21 är klar.
-- Stående uppgift när kön är tom (PLAN 2b): omtest av den senaste klara A-punkten, annars förstagångsanvändaren.
