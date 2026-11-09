@@ -1196,6 +1196,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// A7 "upprepa": the last answer's audio again from memory (no TTS call). Recorded while the answer played.
     private func repeatLastAnswer() {
+        // A17: the kept audio for 120 s; after that the same text is read again (no new answer is made).
+        if let last = lastAnswerAt, Date().timeIntervalSince(last) > Self.repeatAudioAge,
+           let text = conversation.answers.last?.answer, !text.isEmpty {
+            controller.log("Repeat: older than \(Int(Self.repeatAudioAge)) s, the same text is spoken again")
+            speaker.enqueue(text, language: language)
+            return
+        }
         do {
             transcription.setInputGated(true) // our own voice again: the recogniser must not hear it
             if try controller.playback.replayRecordedSpeech() {
@@ -1213,6 +1220,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         } else {
             say("Det finns inget svar att upprepa.")
         }
+    }
+
+    static let repeatAudioAge: TimeInterval = 120
+
+    /// A17: the voice profile says someone else spoke (nil without a profile or when unknown).
+    private func isOtherVoice(near date: Date) -> Bool? {
+        guard let speakers, speakers.profiles.isEnrolled, let identity = speakers.identity(near: date, window: 4) else { return nil }
+        return !identity.isWearer
     }
 
     /// A7: Lumen's loudness = the mode's level (Rizzläge speaks quietly, D43) × the user's "viska"/"högre".
@@ -2642,6 +2657,20 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 discardAhead(reason: "a voice command")
                 return
             }
+        }
+        // A17: "igen" / "en gång till" / "va?" from the wearer: exactly the same answer again, within the time rules.
+        switch AgainRule.judge(segment.text, lastAnswerAt: lastAnswerAt, now: date, isOtherVoice: isOtherVoice(near: date)) {
+        case .repeatAnswer?:
+            controller.log("Again: the last answer is repeated (A17)")
+            discardAhead(reason: "igen")
+            study.discardTurnText()
+            tips.markUsed(.repeatAnswer)
+            repeatLastAnswer()
+            return
+        case .notForLumen?:
+            controller.log("'Igen' not for Lumen (time or voice, A17)")
+        case nil:
+            break
         }
         if undoAppCommandIfAsked(segment.text, at: date) {
             discardAhead(reason: "an undo")
