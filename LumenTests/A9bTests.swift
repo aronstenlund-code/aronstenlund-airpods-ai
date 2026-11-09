@@ -3,6 +3,7 @@ import Testing
 @testable import Lumen
 
 /// A9.2–3 against Kevin's K10 contract.
+@MainActor
 @Suite struct PreferenceContractTests {
     @Test func appCommandAndAnswerTypeAreRead() throws {
         let meta = "{\"reconstructed_question\":\"kan vi byta till frågor\",\"confidence\":1,\"is_question\":false,\"needs_confirmation\":false,\"answer_type\":\"fact\",\"app_command\":{\"action\":\"switch_mode\",\"mode\":\"fragor\",\"confidence\":0.9}}"
