@@ -16,7 +16,7 @@
 <meta property="og:url" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
 <meta property="og:title" content="Fråga högt. Få svaret i örat.">
 <meta property="og:description" content="Telefonen stannar i fickan. Prova här, svaret läses upp.">
-<meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og.png">
+<meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og-elias.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Lumen. Fråga högt. Få svaret i örat.">
@@ -218,17 +218,18 @@
   .photo svg { width: 28px; height: 28px; }
   .photo span { max-width: 30ch; }
 
-  /* Ke7: Elias med ringar från hörluren. */
-  .elias { position: relative; margin: 0 auto; width: min(100%, 360px); aspect-ratio: 4 / 5; border-radius: 18px; overflow: hidden; background: var(--chip); border: 1px solid var(--line); }
-  .elias img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .rings { position: absolute; left: var(--ex); top: var(--ey); width: 0; height: 0; }
-  .rings i { position: absolute; left: -60px; top: -60px; width: 120px; height: 120px; border-radius: 50%; border: 3px solid #2346C8; opacity: 0; transform: scale(.15); }
-  @media (prefers-reduced-motion: no-preference) {
-    .rings i { animation: ering 3.6s cubic-bezier(.23,1,.32,1) infinite; }
-    .rings i:nth-child(2) { animation-delay: .35s; } .rings i:nth-child(3) { animation-delay: .7s; }
-    @keyframes ering { 0% { opacity: 0; transform: scale(.15); } 12% { opacity: .9; } 55%, 100% { opacity: 0; transform: scale(1.6); } }
-  }
-  @media (prefers-reduced-motion: reduce) { .rings i { opacity: .55; } .rings i:nth-child(1) { transform: scale(.3); } .rings i:nth-child(2) { transform: scale(.6); opacity: .35; } .rings i:nth-child(3) { transform: scale(.9); opacity: .2; } }
+  /* Ke7: Elias, scrollstyrd sekvens på canvas, ringar från hörluren. */
+  .elias { position: relative; margin: 0 auto; width: min(78%, 300px); aspect-ratio: 480 / 700; }
+  .elias img, .elias canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; transform-origin: 50% 30%; will-change: transform; }
+  .elias canvas { visibility: hidden; }
+  .elias.live canvas { visibility: visible; } .elias.live img { visibility: hidden; }
+  .rings { position: absolute; left: var(--ex); top: var(--ey); width: 0; height: 0; pointer-events: none; }
+  .rings i { position: absolute; left: -50px; top: -50px; width: 100px; height: 100px; border-radius: 50%; border: 3px solid #2346C8; opacity: 0; transform: scale(.15); }
+  .elias.pulse .rings i { animation: ering 2.4s cubic-bezier(.23,1,.32,1) both; }
+  .elias.pulse .rings i:nth-child(2) { animation-delay: .25s; } .elias.pulse .rings i:nth-child(3) { animation-delay: .5s; }
+  @keyframes ering { 0% { opacity: 0; transform: scale(.15); } 15% { opacity: .9; } 70%, 100% { opacity: 0; transform: scale(1.8); } }
+  @media (prefers-color-scheme: dark) { .rings i { border-color: #7F9BFF; } }
+  @media (prefers-reduced-motion: reduce) { .elias.pulse .rings i { animation: none; opacity: .5; transform: scale(.7); } .elias.pulse .rings i:nth-child(2) { transform: scale(1.1); opacity: .3; } .elias.pulse .rings i:nth-child(3) { display: none; } }
 
   /* ---------- Demorutan ---------- */
   .demo {
@@ -583,7 +584,7 @@
     }
     .intro { grid-column: 1; grid-row: 1; }
     .points { grid-column: 1; grid-row: 2; }
-    .elias { grid-column: 1; grid-row: 3; margin: 0; width: min(100%, 420px); }
+    .elias { grid-column: 1; grid-row: 3; margin: 0; width: min(100%, 400px); }
     .demo { grid-column: 2; grid-row: 1 / span 3; align-self: start; position: sticky; top: 24px; padding: 26px 26px 28px; gap: 20px; }
     h1 { font-size: clamp(3.75rem, 6.2vw, 5.5rem); }
     .pitch { font-size: 1.5rem; margin-top: 16px; }
@@ -713,9 +714,10 @@
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Inget konto. Börja direkt.</span></li>
     </ul>
 
-    <!-- Ke7: Elias. Byt src mot img/elias.webp (frilagd bild, 4:5) när den finns; --ex/--ey är hörlurens plats i procent av bilden. -->
-    <figure class="elias" style="--ex:70%;--ey:43%">
-      <img src="img/elias-placeholder.svg" width="800" height="1000" alt="Elias, 17 år, med en vit trådlös hörlur i örat. Illustration, ingen verklig person.">
+    <!-- Ke7: Elias, scrollstyrd bildsekvens (site/img/elias-seq). Bild 1 laddas direkt, resten efter load. -->
+    <figure class="elias" id="elias" style="--ex:35%;--ey:33%">
+      <img id="elias-still" src="img/elias-seq/001.webp" width="480" height="700" alt="Elias, 17 år, med en vit trådlös hörlur i örat. AI-genererad figur, ingen verklig person.">
+      <canvas id="elias-cv" width="480" height="700" aria-hidden="true"></canvas>
       <span class="rings" aria-hidden="true"><i></i><i></i><i></i></span>
     </figure>
   </section>
@@ -1443,6 +1445,49 @@ showLeft();
 // Väcker funktionerna så att första frågan slipper kallstart. OPTIONS går igenom gatewayn och kostar ingenting.
 for (const fn of ["answer", "tts"]) fetch(SB + "/functions/v1/" + fn, { method: "OPTIONS" }).catch(() => {});
 getToken().catch(() => {});   // Felet visas när någon faktiskt frågar.
+
+// Ke7: scrollstyrd Elias. Visad bildruta glider mot målet (lerp), och vilar aldrig på en dålig vilobild.
+(() => {
+  const fig = document.getElementById("elias"); if (!fig) return;
+  const cv = document.getElementById("elias-cv"), still = document.getElementById("elias-still"), ctx = cv.getContext("2d");
+  const N = 120, BAD = [[22, 30], [48, 66], [85, 93]], RING = 38;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const step = matchMedia("(max-width: 959px)").matches ? 2 : 1;
+  const src = n => "img/elias-seq/" + String(n).padStart(3, "0") + ".webp";
+  if (reduced) { still.src = src(100); fig.classList.add("pulse"); return; }
+  const frames = new Array(N + 1);
+  let cur = 1, target = 1, shown = 1, tmo = 0, last = 0;
+  function load() {
+    const list = []; for (let n = 1; n <= N; n += step) list.push(n);
+    let i = 0;
+    const next = () => { if (i >= list.length) return; const n = list[i++]; const im = new Image(); im.decoding = "async"; im.onload = () => { frames[n] = im; if (n === 1) { fig.classList.add("live"); draw(1); } next(); }; im.onerror = next; im.src = src(n); };
+    next(); next();
+  }
+  function nearest(f) { for (let d = 0; d < N; d++) { if (frames[f - d]) return frames[f - d]; if (frames[f + d]) return frames[f + d]; } return null; }
+  function draw(f) { const im = nearest(f); if (im) { ctx.clearRect(0, 0, 480, 700); ctx.drawImage(im, 0, 0); } }
+  function progress() {
+    const r = fig.getBoundingClientRect(), vh = innerHeight;
+    return Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (vh * 0.85)));
+  }
+  function settle() { // scrollen har stannat: glid till närmaste bra vilobild
+    for (const [a, b] of BAD) if (target >= a && target <= b) { target = (target - a < b - target) ? a - 1 : b + 1; }
+  }
+  function onScroll() { target = 1 + progress() * (N - 1); clearTimeout(tmo); tmo = setTimeout(settle, 140); kick(); }
+  let raf = 0; function kick() { if (!raf) raf = requestAnimationFrame(tick); }
+  function tick() {
+    raf = 0; shown += (target - shown) * 0.12;
+    if (Math.abs(target - shown) < 0.02) shown = target;
+    const f = Math.round(shown);
+    if (f !== cur) { cur = f; draw(f); }
+    if (cur >= RING) fig.classList.add("pulse"); else if (cur < RING - 8) fig.classList.remove("pulse");
+    const p = (shown - 1) / (N - 1); const z = 1 + 0.1 * p;
+    cv.style.transform = still.style.transform = `scale(${z.toFixed(3)}) translateY(${(-p * 2).toFixed(2)}%)`;
+    if (shown !== target) kick();
+  }
+  addEventListener("scroll", onScroll, { passive: true }); addEventListener("resize", onScroll);
+  const go = () => { load(); onScroll(); };
+  if (document.readyState === "complete") setTimeout(go, 0); else addEventListener("load", () => setTimeout(go, 0));
+})();
 </script>
 </body>
 </html>

@@ -1,0 +1,7 @@
+# Kelly Ke7 klar: Elias med riktig bild och scrollstyrd hero
+- **Hero:** `site/index.html`, scrollstyrd bildsekvens (`site/img/elias-seq`, 120 WebP) på `<canvas>`. Bild 1 visas direkt som `<img>`, resten laddas efter `load` (mobil: varannan bild). Visad bild glider mot målet med lerp 0,12 per bildruta, vilar aldrig på de dåliga bilderna (22–30, 48–66, 85–93: glider till närmaste bra bild efter 140 ms utan scroll), zoom och förflyttning med CSS-transform. Tre blå ringar (CSS) startar när bild 38 nås. "Reducera rörelse": stillbild (bild 100) och stilla ringar. Ringarnas plats justerad efter bild 38 (35 %, 33 %).
+- **Annonser:** de tre bilderna omgjorda med `elias-frilagd.png` som huvudmotiv (387–394 kB PNG), skisser uppdaterade. Rendering: `docs/marketing/annonser/_src/ad.html?n=1&real=1`.
+- **Delningsbild:** `site/og-elias.png` (1200×630, 310 kB) är nu og:image. `og.png` finns kvar som reserv.
+- **Lighthouse (lokalt):** mobil 100/100/100/100, dator 100/100/100/100. Sidan väger 1,5 MB mobil, 2,8 MB dator efter att sekvensen laddats (sekvensen laddas efter load, påverkar inte Performance-poängen).
+- **Verifierat:** skrolleffekten provad i webbläsarpanelen på dator (ringar startar, zoom följer, canvas aktiv). **Untested:** Safari/iPhone (rörelsen, canvas-prestanda), mobil scroll, mörkt/ljust läge granskat bara delvis. Bilderna är AI-genererade och märkta så i alt-texten.
+- Namnkrock löst: klassen heter `pulse`, inte `ring` (den finns redan i demon).
