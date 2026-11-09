@@ -32,6 +32,8 @@ def main() -> None:
         print(f"## {NAMES[name]}\n")
         print(f"**{ok} av {len(cases)} rätt.** Ställda {asked}, fall med svar {answered}, fall med uppläst svar {spoken}."
               + (f" **Stannade: {data['stoppedEarly']}.**" if data.get("stoppedEarly") else "") + "\n")
+        if data.get("endState"):
+            print(f"- Läget när sessionen avslutades: `{data['endState']}`\n")
         if name == "keyterm":
             print(f"- Längsta keyterm som skickades: {data.get('longestKeyterm')} tecken")
             print(f"- Scribe vägrade eller bytte till iPhonens igenkänning: "

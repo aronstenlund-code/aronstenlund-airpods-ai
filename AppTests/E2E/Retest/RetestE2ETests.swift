@@ -64,6 +64,8 @@ struct RetestE2ETests {
         var refusedOrFellBack: [String] = []
         var longestKeyterm: Int?
         var stoppedEarly: String?
+        /// When the session ended: still answering or speaking means the end was the deadline, not a quiet room.
+        var endState = ""
         var seconds = 0.0
     }
 
@@ -178,6 +180,7 @@ struct RetestE2ETests {
         }
         let end = Date().timeIntervalSince(start)
         result.seconds = end
+        result.endState = "answering=\(model.isAnswering) speaking=\(model.speaker.isSpeaking) listening=\(model.isListening)"
         if model.isActiveSession { await model.endSession() }
         model.sessionObserver = nil
         container.sessionController.logObserver = nil
@@ -218,7 +221,8 @@ struct RetestE2ETests {
         case "continuation":
             if item.answered.isEmpty { return item.asked.isEmpty ? "not asked" : "asked, no answer" }
             guard let last = asked.last, last.contains(item.key) else { return "asked without the continuation" }
-            if asked.count > 1 { return "split: \(asked.count) asked" }
+            // A first half the backend calls "not a question" gets no answer; the whole question is asked after it.
+            if item.answered.count > 1 { return "split: \(item.answered.count) answers" }
             return speak && item.spoken == 0 ? "answered, not spoken" : "ok (asked whole)"
         default:
             if item.answered.isEmpty { return item.asked.isEmpty ? (item.heard.isEmpty ? "not heard" : "not asked") : "asked, no answer" }
