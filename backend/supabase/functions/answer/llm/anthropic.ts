@@ -68,6 +68,9 @@ export function mapAnthropicEvent(ev: {
       if (ev.delta?.type === "text_delta" && typeof ev.delta.text === "string" && ev.delta.text) {
         return { type: "text", text: ev.delta.text };
       }
+      if (ev.delta?.type === "citations_delta" && typeof ev.delta.citation?.cited_text === "string") {
+        return { type: "cite", cited: ev.delta.citation.cited_text };
+      }
       return null;
     case "message_delta":
       // Input tokens come from message_start only (message_delta may report a cache-exclusive count).

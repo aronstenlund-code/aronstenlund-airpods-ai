@@ -10,6 +10,7 @@ import {
 } from "../_shared/ratelimit.ts";
 import { SSE_HEADERS, sseFrame } from "../_shared/sse.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
+import { withDeadline } from "./llm/deadline.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
@@ -45,6 +46,7 @@ import { detectReport } from "./report.ts";
 import { detectMemoryAdd, MEMORY_ACK, MEMORY_SUMMARY } from "./memory.ts";
 import {
   isOrdinalFact,
+  isPersonQuote,
   needsText,
   needsWeb,
   TEXT_PROMPT,
@@ -648,6 +650,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D46 item 8: web search/fetch only when the question needs it, and only within the caps.
       // D84: a song, a poem or a quote gets its own search and rules (traditional texts in full).
       const textReq = !demo && !plan && !computed && body.mode !== "interview_prep" && needsText(body.fragment);
+      const quoteCheck = textReq && isPersonQuote(body.fragment); // K11
       // K8 (Oscar O7 W1): prices search shops; not in Auto: there the web tools made the meta step call the price
       // question "not a question" (empty answer live), worse than the answer without a price
       const need =
@@ -861,7 +864,16 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ? { note: [webNote, ordinal ? ORDINAL_NOTE : ""].filter(Boolean).join(" ") }
           : {}),
       };
-      const iterator = provider
+      // K11 (Oscar O5: a Sonnet call hung for 90 s): first text within 5 s (7.5 s with thinking), else the same
+      // request once more on the default model without thinking; a web turn gets 12 s and no second try
+      const thinking = wordProblem || careful;
+      const llm = withDeadline(provider, {
+        firstTextMs: tools ? 12_000 : thinking ? 7_500 : 5_000,
+        idleMs: tools ? 12_000 : 4_000,
+        fallbackModel: tools ? undefined : provider.model,
+        log: (event, data) => console.warn(event, JSON.stringify(data)),
+      });
+      const iterator = llm
         .stream({
           system: systemPrompt,
           user: userFor(body, baseExtras),
@@ -946,6 +958,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
             interview: plan?.kind === "interview", // D77
             missingFact: missing ?? undefined,
+            quoteCheck,
           });
           let pendingMeta: Record<string, unknown> | null = null;
           const flushMeta = () => {
@@ -1001,6 +1014,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             }
           };
           const handle = (chunk: LLMChunk) => {
+            if (chunk.type === "cite") {
+              post.addCited(chunk.cited);
+              return;
+            }
             if (chunk.type === "usage") {
               if (chunk.inputTokens !== undefined) inputTokens = chunk.inputTokens;
               if (chunk.outputTokens !== undefined) outputTokens = chunk.outputTokens;
@@ -1057,6 +1074,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 if (repeated) {
                   note =
                     "Your previous check question was already asked in this session (see <already_asked>). Ask ONE different check question about another part of the topic.";
+                } else if (post.unverifiedQuote && ttftMs === null && !stop) {
+                  // K11: the quote was not in what the search gave: nothing was said yet, ask for own words
+                  note =
+                    "The quote you gave was not found word for word in the search results. Do not quote anything: start with \"Jag kan inte citera det ordagrant, men\" and say in your own words what the person writes or says about it, without quotation marks, and name a work only when you are sure the person wrote it.";
                 } else if (post.questionOnly && !stop) {
                   note =
                     "Your previous reply only asked the user a question. Answer directly with the most likely interpretation and do not ask anything back.";
@@ -1082,7 +1103,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               const ac2 = new AbortController();
               acs.push(ac2);
               retries++;
-              it = provider.stream({
+              it = llm.stream({
                 system: systemPrompt,
                 user: userFor({ ...body, context: { ...body.context, recent_qa: history } }, {
                   ...baseExtras,
@@ -1112,6 +1133,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
                 interview: plan?.kind === "interview",
                 missingFact: missing ?? undefined,
+                quoteCheck,
               });
               r = await it.next();
             }

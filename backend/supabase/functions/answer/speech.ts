@@ -634,7 +634,8 @@ export function rewriteLevelMeta(sentence: string): string {
  * ("Där lärde jag mig …", "A syntes är …"). A stray single capital letter before a lower-case word is removed; a
  * sentence that opens with a word pointing back at the dropped one is dropped as well.
  */
-const STUMP_BACKREF = /^\s*(?:där|därför|dessutom|alltså|också|då|sedan|därefter|annars|ändå|det vill säga|med andra ord)(?![\p{L}-])/iu;
+// K11 (Oscar O5): "Det är just den noggrannheten jag vill ta med mig …" pointed at the dropped claim
+const STUMP_BACKREF = /^\s*(?:där|därför|dessutom|alltså|också|då|sedan|därefter|annars|ändå|det vill säga|med andra ord|(?:det|detta|det här) är (?:just|precis|också|därför)|just (?:den|det|de|därför|så)|(?:den|det|de) (?:här|där)|(?:denna|detta|dessa|samma)|(?:den|det|de) [\p{L}]+(?:heten|erfarenheten|vanan|kunskapen)(?:na)? (?:jag|är|har|vill|tar|gör))(?![\p{L}-])/iu;
 export function fixStump(sentence: string): string {
   if (!sentence.trim()) return sentence;
   if (STUMP_BACKREF.test(sentence)) return "";
@@ -1032,6 +1033,8 @@ export interface PostOptions {
   source?: boolean;
   /** 2026-11-08: sentences about the fragment / sound / microphone are dropped (all modes without a persona). */
   inputMeta?: boolean;
+  /** K11: a request for a person's quote: a verbatim quote is kept only when the search gave its words. */
+  quoteCheck?: boolean;
   /** Oscar 2026-11-08: Provläge: the fragment, so a first sentence that names the heard term can be cut. */
   heard?: string;
 }
@@ -1077,6 +1080,33 @@ export class TagStrip {
   }
 }
 
+/**
+ * K11 (Oscar O5 finding D, third time): a quote by a person ("citera Strindberg om kärlek") was made up even with
+ * the prompt rule. A verbatim quote (4+ words in quotation marks) is now said only when the same words are in what
+ * the web search returned (the API's citations, `cited_text`); otherwise the sentence is dropped and the handler
+ * asks once more for the content in the model's own words.
+ */
+const normWords = (t: string) => t.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+/** The quoted parts of a sentence (an opening mark without a closing one runs to the end). */
+export function quotedParts(sentence: string): string[] {
+  const out: string[] = [];
+  const re = /(?:^|[^\p{L}\p{N}])["“”«»„'‘’]([^"“”«»„]+?)(?:["“”«»„'‘’](?![\p{L}\p{N}])|$)/gu;
+  for (const m of sentence.matchAll(re)) {
+    const q = normWords(m[1]);
+    if (q.split(" ").length >= 4) out.push(q);
+  }
+  return out;
+}
+export function quoteVerified(quote: string, cited: string): boolean {
+  const c = normWords(cited);
+  if (!c) return false;
+  if (c.includes(quote)) return true;
+  const w = quote.split(" ");
+  let hit = 0;
+  for (let i = 0; i < w.length - 1; i++) if (c.includes(`${w[i]} ${w[i + 1]}`)) hit++;
+  return hit / Math.max(1, w.length - 1) >= 0.75;
+}
+
 export class AnswerPost {
   readonly dup: DupGuard;
   readonly trim: QuestionTrim;
@@ -1089,6 +1119,10 @@ export class AnswerPost {
   private readonly input: MetaGate;
   private readonly level: MetaGate;
   private readonly lead: MetaGate;
+  private readonly quote: MetaGate;
+  private cited = "";
+  /** K11: a quote was dropped because the search did not give its words (the handler may ask again). */
+  unverifiedQuote = false;
   private readonly quizOnly: boolean;
   private quizBuf = "";
   private readonly src: SourceTap;
@@ -1137,9 +1171,29 @@ export class AnswerPost {
       }
       return rewriteLeadIn(sentence, opts.heard ?? "");
     });
+    let openQuote = false;
+    this.quote = new MetaGate(opts.quoteCheck === true, () => false, (sentence) => {
+      if (openQuote) {
+        // the rest of a dropped quote that ran over a sentence end
+        if (/["“”«»„'’](?![\p{L}\p{N}])/u.test(sentence)) openQuote = false;
+        return "";
+      }
+      const parts = quotedParts(sentence);
+      if (!parts.length || parts.every((q) => quoteVerified(q, this.cited))) return sentence;
+      this.unverifiedQuote = true;
+      const marks = [...sentence].filter((ch) => `"“”«»„`.includes(ch)).length;
+      if (marks % 2 === 1) openQuote = true;
+      return "";
+    });
     this.quizOnly = opts.quizOnly === true;
     this.src = new SourceTap(opts.web === true || opts.source === true);
     this.en = new EnglishGate(opts.web === true);
+  }
+
+  /** K11: text the web search returned (citations), used to check a verbatim quote. */
+  addCited(text: string): void {
+    this.cited += `
+${text}`;
   }
 
   /** Domain of the web source (from the `källa:` line), or null. */
@@ -1201,7 +1255,7 @@ export class AnswerPost {
       this.gate.push(
         this.imeta.push(
           this.lead.push(this.level.push(this.input.push(
-            this.meta.push(this.en.push(this.src.push(this.strip.push(this.tap.push(this.sil.push(this.rel.push(raw))))))),
+            this.meta.push(this.quote.push(this.en.push(this.src.push(this.strip.push(this.tap.push(this.sil.push(this.rel.push(raw)))))))),
           ))),
         ),
       ),
@@ -1220,7 +1274,8 @@ export class AnswerPost {
     const t0 = this.tap.push(this.sil.push(this.rel.finish()) + this.sil.finish()) + this.tap.finish();
     const t = this.strip.push(t0) + this.strip.finish();
     const s = this.src.push(t) + this.src.finish();
-    const e0 = this.en.push(s) + this.en.finish();
+    const e0q = this.en.push(s) + this.en.finish();
+    const e0 = this.quote.push(e0q) + this.quote.finish();
     const e1 = this.meta.push(e0) + this.meta.finish();
     const e2i = this.input.push(e1) + this.input.finish();
     const e2a = this.level.push(e2i) + this.level.finish();

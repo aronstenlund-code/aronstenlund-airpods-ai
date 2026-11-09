@@ -210,6 +210,13 @@ export function needsText(fragment: string): boolean {
   return !!f && f.length <= 300 && TEXT_REQ.test(f);
 }
 
+/** K11: a quote by a person (not a song, a verse or a whole text): its words must come from the search. */
+const PERSON_QUOTE = /\bciter(?:a|ar)\b|\bcitat\b|\bvad (?:sa|sade|skrev|säger|skriver)\b/iu;
+const WHOLE_TEXT = /(?<![\p{L}])(?:rad(?:en)?|vers(?:en)?|strof(?:en)?|refräng(?:en)?|låt(?:en)?|sång(?:en)?|visa[n]?|text(?:en)?|dikt(?:en)?|psalm(?:en)?|snapsvisa[n]?|ramsa[n]?)(?![\p{L}])/iu;
+export function isPersonQuote(fragment: string): boolean {
+  return needsText(fragment) && PERSON_QUOTE.test(fragment) && !WHOLE_TEXT.test(fragment);
+}
+
 export const TEXT_DOMAINS = [
   "runeberg.org",
   "litteraturbanken.se",

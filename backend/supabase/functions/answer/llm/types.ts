@@ -23,6 +23,8 @@ export interface LLMRequest {
 
 export type LLMChunk =
   | { type: "text"; text: string }
+  /** K11: text a web search result gave for a citation (`cited_text`), to check verbatim quotes. */
+  | { type: "cite"; cited: string }
   | {
     type: "usage";
     inputTokens?: number;
