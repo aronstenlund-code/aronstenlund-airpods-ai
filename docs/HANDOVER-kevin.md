@@ -21,3 +21,5 @@ Sessionen har gjort K2, K7, K9, K10, K8, K11 och K14 och har komprimerats. Den f
 - Angela: samma ändring av minnesfiltret i `MemoryExtraction.swift` (K8), inkoppling av A9 `app_command` och `voice_instruction` (K9 och K10).
 - Pris i Auto går fortfarande inte. Med sökning blev svaret tomt, eftersom modellen kallade frågan "inte en fråga" (K8).
 - Oscars O10 säger att K10 inte räknas som klar förrän rättelser med egna ord når 18/20. Det tas i K13.
+
+**Pausad 2026-11-10 00:35 mitt i K16:** koden är driftsatt (commit 552319d, deploy 42706487639). Kvar: kör `python -X utf8 -I scripts/k16-eval.py --tokens <scratchpad>/tokens.json` (4 token-platser, eftersom webben tillåter 3/min och 20/dag per användare), läs svaren för hand (mängder mot källan, motsägelser i kedjorna), skriv rapporten och D97, och be Angela skicka `done.source` som `recent_qa[].source`.
