@@ -107,6 +107,10 @@ struct SettingsView: View {
                 Text(vadStatusText)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                Toggle("Bara min röst i Provläge och Frågor", isOn: focusBinding)
+                Text("Andra som pratar i rummet hörs svagare i AirPods. Deras tal skickas inte, så din fråga blir klar när du tystnar.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
         }
     }
@@ -164,6 +168,12 @@ struct SettingsView: View {
     private var examBinding: Binding<Date> {
         Binding(get: { model.studyProfile.profile.examDate ?? Date() },
                 set: { model.studyProfile.profile.examDate = Calendar.current.startOfDay(for: $0) })
+    }
+
+    /// A10: the wearer focus in front of Scribe.
+    private var focusBinding: Binding<Bool> {
+        Binding(get: { model.transcription.settings?.focusOnWearer ?? false },
+                set: { newValue in Task { await model.transcription.setFocusOnWearer(newValue) } })
     }
 
     private var vadBinding: Binding<Bool> {

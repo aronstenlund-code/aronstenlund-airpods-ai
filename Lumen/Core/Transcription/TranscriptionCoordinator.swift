@@ -86,6 +86,15 @@ final class TranscriptionCoordinator {
     private(set) var vadLastSpeechAt: Date?
     /// Speech within this long counts as "someone is talking".
     static let vadTalkingWindow: TimeInterval = 0.4
+    /// A10: the current mode wants only the wearer's voice (Provläge, Frågor), see `WearerFocus`.
+    private(set) var modeFocusesOnWearer = true
+    /// A10: seconds of other people's speech sent to Scribe as silence, and own ends of turn, for Diagnostics.
+    private(set) var focusMutedSeconds: Double = 0
+    private(set) var ownEndsOfTurn = 0
+    /// A10: words heard but not committed yet, since when; and when the wearer last spoke.
+    private var partialSince: Date?
+    private var wearerSpokeAt: Date?
+    private var commitRequestedAt: Date?
 
     /// D82.2: Silero, not the input level, says whether someone is talking, so background noise is not speech.
     /// Nil when no VAD runs (the caller falls back to the level).
@@ -204,11 +213,14 @@ final class TranscriptionCoordinator {
             controller.log(detector == nil ? "Local VAD not ready: all audio goes to Scribe" : "Local VAD in front of Scribe")
         }
         let silence = scribeTuning.silenceSeconds
+        let focuses = detector != nil && modeFocusesOnWearer && settings?.focusOnWearer == true
+        if focuses { controller.log("Wearer focus in front of Scribe (A10)") }
         vadIsRunning = detector != nil
         vadLastSpeechAt = nil
         gateTask?.cancel()
         gateTask = Task { [weak self] in
             var gate = SpeechGate(scribeSilence: silence)
+            var focus = WearerFocus()
             await detector?.reset()
             for await chunk in subscription.stream {
                 guard let self else { break }
@@ -219,9 +231,25 @@ final class TranscriptionCoordinator {
                 }
                 for window in gate.collect(chunk.samples) {
                     // A detector error lets the window through: VAD must never cost words.
-                    let probability = (try? await detector.speechProbability(SpeechGate.floats(window))) ?? 1
+                    var probability = (try? await detector.speechProbability(SpeechGate.floats(window))) ?? 1
+                    var sent = window
+                    if focuses {
+                        let now = Date()
+                        switch focus.judge(rmsDBFS: WearerFocus.rmsDBFS(window), probability: probability, at: now) {
+                        case .other:
+                            // Someone else: silence for Scribe, so the wearer's pause is a pause (A10).
+                            sent = [Int16](repeating: 0, count: window.count)
+                            probability = 0
+                            self.focusMutedSeconds += SpeechGate.windowSeconds
+                        case .wearer:
+                            self.wearerSpokeAt = now
+                        case .quiet:
+                            break
+                        }
+                        self.endTurnIfScribeDoesNot(now: now)
+                    }
                     if probability >= gate.openThreshold { self.vadLastSpeechAt = Date() }
-                    let out = gate.decide(window, probability: probability)
+                    let out = gate.decide(sent, probability: probability)
                     let windowSeconds = Double(window.count) / LumenAudioFormat.sampleRate
                     if out.isEmpty {
                         self.vadHeldSeconds += windowSeconds
@@ -289,8 +317,25 @@ final class TranscriptionCoordinator {
         }
     }
 
+    /// A10.2: own end of turn. Words wait uncommitted and the wearer has been quiet for the mode's pause (others may
+    /// still talk): ask Scribe for the final now instead of waiting for a silence that does not come.
+    private func endTurnIfScribeDoesNot(now: Date) {
+        guard let since = partialSince, let spoke = wearerSpokeAt, spoke >= since.addingTimeInterval(-10),
+              now.timeIntervalSince(spoke) >= pauseSeconds,
+              commitRequestedAt.map({ now.timeIntervalSince($0) > 2 }) ?? true else { return }
+        commitRequestedAt = now
+        ownEndsOfTurn += 1
+        controller.log("Wearer quiet for \(pauseSeconds) s, Scribe had not committed: final asked for (A10)")
+        provider?.commit()
+    }
+
     /// D78: finals become whole utterances before the question gate and the backend see them.
     private func deliver(_ result: STTResult) {
+        if result.isFinal {
+            partialSince = nil
+        } else if partialSince == nil, !result.text.isEmpty {
+            partialSince = Date()
+        }
         guard joinsUtterances else {
             if result.isFinal {
                 sink?.receiveFinalTranscript(result.text, at: Date())
@@ -406,6 +451,13 @@ final class TranscriptionCoordinator {
     /// session reconnects with the new values.
     func setPause(_ seconds: TimeInterval, mode: ConversationMode) async {
         pauseSeconds = seconds
+        let focus = mode == .prov || mode == .standard
+        if focus != modeFocusesOnWearer {
+            modeFocusesOnWearer = focus
+            if case .running(.scribe) = status, controller.isCapturing, scribeTuning == .forMode(mode, pause: seconds) {
+                await startTranscribing() // the tuning below reconnects otherwise
+            }
+        }
         await setScribeTuning(.forMode(mode, pause: seconds))
     }
 
@@ -415,6 +467,14 @@ final class TranscriptionCoordinator {
         scribeTuning = tuning
         if case .running(.scribe) = status, controller.isCapturing {
             controller.log("Scribe pause detection \(tuning.silenceSeconds) s: reconnecting")
+            await startTranscribing()
+        }
+    }
+
+    /// A10: the wearer focus on or off; a running Scribe session changes over at once.
+    func setFocusOnWearer(_ on: Bool) async {
+        settings?.focusOnWearer = on
+        if case .running(.scribe) = status, controller.isCapturing {
             await startTranscribing()
         }
     }
@@ -456,6 +516,10 @@ final class TranscriptionCoordinator {
     /// older stop is still finalising its provider is never invalidated by it.
     func stopTranscribing() async {
         vadIsRunning = false
+        partialSince = nil
+        if focusMutedSeconds > 0 || ownEndsOfTurn > 0 {
+            controller.log("Wearer focus: \(Int(focusMutedSeconds)) s of others muted, \(ownEndsOfTurn) own ends of turn")
+        }
         flushPending() // words heard before the stop are not lost
         assembler.reset()
         generation += 1

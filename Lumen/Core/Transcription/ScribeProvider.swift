@@ -7,6 +7,7 @@ import Observation
 final class STTSettings {
     static let cloudKey = "stt.useCloud"
     static let localVADKey = "stt.localVAD"
+    static let focusKey = "stt.focusOnWearer"
 
     var useCloud: Bool {
         didSet { defaults.set(useCloud, forKey: Self.cloudKey) }
@@ -15,10 +16,15 @@ final class STTSettings {
     var useLocalVAD: Bool {
         didSet { defaults.set(useLocalVAD, forKey: Self.localVADKey) }
     }
+    /// A10: in Provläge and Frågor only the wearer's (louder) voice reaches Scribe. On by default.
+    var focusOnWearer: Bool {
+        didSet { defaults.set(focusOnWearer, forKey: Self.focusKey) }
+    }
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        self.focusOnWearer = defaults.object(forKey: Self.focusKey) as? Bool ?? true
         self.useCloud = defaults.object(forKey: Self.cloudKey) as? Bool ?? true
         self.useLocalVAD = defaults.object(forKey: Self.localVADKey) as? Bool ?? true
     }
