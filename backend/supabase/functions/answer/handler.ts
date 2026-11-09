@@ -492,6 +492,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K9: an instruction the table does not know goes to the model as one (A7 sends voice_instruction: true)
       const freeInstruction = body.voiceInstruction === true && !command && !continuation && !plan;
       const careful = command?.task === "careful";
+      const counterQ = command?.task === "interview_help:counter_question"; // the answer is a question to ask
       const answerTypeBase = plan?.answerType ?? (command ? (command.task === "brief_style" ? "fact" : "study") : undefined) ??
         classifyAnswerType(body.fragment, body.length, continuation, {
           tutor,
@@ -856,7 +857,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             silence: silenceOn,
             inputMeta: silenceOn, // 2026-11-08: never about the fragment, sound or microphone (sentence-buffered modes only)
             heard: body.fragment,
-            quizOnly: quiz, // D86: only the check question is said
+            quizOnly: quiz || counterQ, // D86: only the check question is said; K9: the interview counter question too
             subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
             interview: plan?.kind === "interview", // D77
             missingFact: missing ?? undefined,
@@ -1020,7 +1021,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 silence: silenceOn,
                 inputMeta: silenceOn,
                 heard: body.fragment,
-                quizOnly: quiz,
+                quizOnly: quiz || counterQ,
                 subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
                 interview: plan?.kind === "interview",
                 missingFact: missing ?? undefined,

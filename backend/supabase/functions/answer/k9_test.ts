@@ -181,3 +181,13 @@ Deno.test("K9 handler: an unknown voice instruction goes to the model as an inst
   })));
   assertStringIncludes(seen[0].user, "spoken instruction to you");
 });
+
+Deno.test("K9 handler: the interview counter question is said (the answer is a question)", async () => {
+  const { handler } = setup("Hur ser ett vanligt kvällspass ut hos er, och hur många jobbar samtidigt?");
+  const ev = await sse(await handler(post({
+    fragment: "ge mig en motfråga", mode: "tutor", language: "sv", persona: "interview", turn: "question",
+    persona_setup: "Jobbannons: Kassapersonal. CV: Gymnasieelev.", context: { recent_qa: QA },
+  })));
+  const said = ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
+  assertStringIncludes(said, "kvällspass");
+});
