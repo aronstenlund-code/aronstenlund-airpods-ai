@@ -1,0 +1,152 @@
+id	expect	run	flags	text
+wrong-1	feedback	all	-	Lumen, det var fel.
+wrong-2	feedback	all	-	Lumen, fel svar.
+wrong-3	feedback	all	-	Lumen, det stämmer inte.
+back-1	music:backToLumen	all	-	Lumen, lyssna igen.
+back-2	music:backToLumen	all	-	Lumen, fortsätt lyssna.
+back-3	music:backToLumen	all	-	Lumen, tillbaka till Lumen.
+pmus-1	music:pauseMusic	all	-	Lumen, pausa musiken.
+pmus-2	music:pauseMusic	all	-	Lumen, stoppa musiken.
+pmus-3	music:pauseMusic	all	-	Pausa musiken.
+rep-1	cmd:repeatAnswer	all	-	Lumen, upprepa svaret.
+rep-2	cmd:repeatAnswer	all	-	Lumen, säg det igen.
+rep-3	cmd:repeatAnswer	all	-	Lumen, kan du upprepa?
+whis-1	cmd:whisper	all	-	Lumen, viska.
+whis-2	cmd:whisper	all	-	Lumen, prata tystare.
+whis-3	cmd:whisper	all	-	Lumen, sänk volymen.
+loud-1	cmd:louder	all	-	Lumen, högre.
+loud-2	cmd:louder	all	-	Lumen, prata högre.
+loud-3	cmd:louder	all	-	Lumen, höj volymen.
+short-1	cmd:shorter	all	-	Lumen, svara kortare.
+short-2	cmd:shorter	all	-	Lumen, kortare svar.
+short-3	cmd:shorter	all	-	Lumen, kortare tack.
+long-1	cmd:longer	all	-	Lumen, svara längre.
+long-2	cmd:longer	all	-	Lumen, längre svar.
+long-3	cmd:longer	all	-	Lumen, utförligare svar.
+save-1	cmd:saveAnswer	all	-	Lumen, spara det.
+save-2	cmd:saveAnswer	all	-	Lumen, spara svaret.
+save-3	cmd:saveAnswer	all	-	Lumen, spara i anteckningar.
+exam-1	cmd:nextExam	all	-	Lumen, vilket prov har jag härnäst?
+exam-2	cmd:nextExam	all	-	Lumen, när är nästa prov?
+exam-3	cmd:nextExam	all	-	Lumen, vilket är nästa prov?
+mem-1	remember	all	-	Lumen, kom ihåg att jag gillar korta svar.
+mem-2	remember	all	-	Lumen, glöm inte att jag går i nian.
+mem-3	remember	all	-	Lumen, kom ihåg att jag tränar fotboll på tisdagar.
+uni-rep	cmd:repeatAnswer	all	uni	Upprepa.
+uni-whis	cmd:whisper	all	uni	Viska.
+uni-loud	cmd:louder	all	uni	Högre.
+uni-short	cmd:shorter	all	uni	Kortare.
+uni-fast	cmd:shorter	all	uni	Snabbare.
+uni-more	instr:moreDetail	all	uni	Utveckla.
+neg-1	none	all	-	Kan du upprepa det för hela klassen?
+neg-2	none	all	-	Hon sa att vi måste prata högre i salen.
+neg-3	none	all	-	Läraren sa att vi ska spara det till nästa lektion.
+neg-4	none	all	-	Vi tog en paus och spelade musik på rasten.
+neg-5	none	all	-	Nästa låt på listan var faktiskt riktigt bra.
+neg-6	none	all	-	Han ville byta till en annan skola i höst.
+neg-7	none	all	-	När är nästa prov i matte, vet du det?
+neg-8	none	all	-	Jag tycker att svaret blev lite kortare än förra gången.
+neg-9	none	all	-	Vi måste sluta lyssna på honom när han pratar.
+neg-10	none	all	-	Jag berättade om Lumen för min kompis igår.
+more-1	instr:moreDetail	all	-	Lumen, utveckla svaret.
+more-2	instr:moreDetail	all	-	Lumen, berätta mer.
+more-3	instr:moreDetail	all	-	Lumen, mer om det.
+simp-1	instr:simpler	all	-	Lumen, förklara enklare.
+simp-2	instr:simpler	all	-	Lumen, förklara det enklare.
+simp-3	instr:simpler	all	-	Lumen, enklare.
+ex-1	instr:example	all	-	Lumen, ge ett exempel.
+ex-2	instr:example	all	-	Lumen, ge mig ett exempel.
+ex-3	instr:example	all	-	Lumen, exempel.
+sum-1	instr:summary	all	-	Lumen, sammanfatta det viktigaste.
+sum-2	instr:summary	all	-	Lumen, sammanfatta.
+sum-3	instr:summary	all	-	Lumen, summera.
+care-1	instr:careful	all	-	Lumen, var säker.
+care-2	instr:careful	all	-	Lumen, dubbelkolla.
+care-3	instr:careful	all	-	Lumen, var noggrann.
+miss-1	instr:catchUp	all	-	Lumen, vad missade jag?
+miss-2	instr:catchUp	all	-	Lumen, vad har jag missat?
+miss-3	instr:catchUp	all	-	Lumen, vad sa de?
+disc-1	instr:discreet	all	-	Lumen, hjälp mig diskret.
+disc-2	instr:discreet	all	-	Lumen, diskret.
+disc-3	instr:discreet	all	-	Lumen, kort och diskret.
+usual-1	instr:asUsual	all	-	Lumen, svara som jag brukar.
+usual-2	instr:asUsual	all	-	Lumen, som vanligt.
+alev-1	instr:aLevel	standard,prov	-	Lumen, förklara på A-nivå.
+alev-2	instr:aLevel	standard,prov	-	Lumen, A-nivå.
+alev-3	instr:aLevel	standard,prov	-	Lumen, som för ett A.
+hard-1	instr:harderQuestion	standard,prov	-	Lumen, ställ en svår fråga.
+hard-2	instr:harderQuestion	standard,prov	-	Lumen, en svårare fråga.
+hard-3	instr:harderQuestion	standard,prov	-	Lumen, svårare fråga.
+weak-1	instr:weakAreas	standard,prov	-	Lumen, testa mina svagaste områden.
+weak-2	instr:weakAreas	standard,prov	-	Lumen, hur bra kan jag det här?
+weak-3	instr:weakAreas	standard,prov	-	Lumen, vad kan jag sämst?
+ivh-1	instr:interviewHelp	interview	-	Lumen, hjälp mig svara professionellt.
+ivh-2	instr:interviewHelp	interview	-	Lumen, vad borde jag säga?
+ivh-3	instr:interviewHelp	interview	-	Lumen, hjälp mig svara.
+ivb-1	instr:interviewBetter	interview	-	Lumen, bättre svar.
+ivb-2	instr:interviewBetter	interview	-	Lumen, ge mig ett bättre svar.
+ivc-1	instr:interviewConfident	interview	-	Lumen, mer självsäkert.
+ivc-2	instr:interviewConfident	interview	-	Lumen, låt mer säker.
+ivq-1	instr:interviewCounter	interview	-	Lumen, motfråga.
+ivq-2	instr:interviewCounter	interview	-	Lumen, ge mig en motfråga.
+ivs-1	instr:interviewStuck	interview	-	Lumen, hjälp, jag fastnar.
+ivs-2	instr:interviewStuck	interview	-	Lumen, jag fastnar.
+ivs-3	instr:interviewStuck	interview	-	Lumen, hjälp.
+sr-1	instr:socialReply	social,rizz	-	Lumen, vad ska jag svara?
+sr-2	instr:socialReply	social,rizz	-	Lumen, vad svarar jag?
+fun-1	instr:funnier	social,rizz	-	Lumen, roligare.
+fun-2	instr:funnier	social,rizz	-	Lumen, gör det roligare.
+nat-1	instr:moreNatural	social,rizz	-	Lumen, mer naturligt.
+nat-2	instr:moreNatural	social,rizz	-	Lumen, naturligare.
+top-1	instr:changeTopic	social,rizz	-	Lumen, byt ämne.
+top-2	instr:changeTopic	social,rizz	-	Lumen, nytt ämne.
+fol-1	instr:followUp	social,rizz	-	Lumen, smart följdfråga.
+fol-2	instr:followUp	social,rizz	-	Lumen, följdfråga.
+fol-3	instr:followUp	social,rizz	-	Lumen, ge mig en följdfråga.
+mean-1	instr:whatMeant	social,rizz	-	Lumen, vad menade personen?
+mean-2	instr:whatMeant	social,rizz	-	Lumen, vad menade hon?
+mean-3	instr:whatMeant	social,rizz	-	Lumen, vad menade de?
+rz-1	instr:rizz	social,rizz	-	Lumen, ge mig lite rizz.
+rz-2	instr:rizz	social,rizz	-	Lumen, lite rizz.
+rz-3	instr:rizz	social,rizz	-	Lumen, rizz.
+conf-1	instr:moreConfident	social,rizz	-	Lumen, mer självsäker.
+conf-2	instr:moreConfident	social,rizz	-	Lumen, säkrare.
+fl-1	instr:flirtier	social,rizz	-	Lumen, flirtigare.
+fl-2	instr:flirtier	social,rizz	-	Lumen, mer flirtig.
+sub-1	instr:subtler	social,rizz	-	Lumen, mer subtil.
+sub-2	instr:subtler	social,rizz	-	Lumen, subtilare.
+cock-1	instr:cockier	social,rizz	-	Lumen, kaxigare.
+cock-2	instr:cockier	social,rizz	-	Lumen, mer kaxig.
+resc-1	instr:rescue	social,rizz	-	Lumen, rädda mig.
+resc-2	instr:rescue	social,rizz	-	Lumen, hjälp mig ur det här.
+cri-1	instr:lessCringe	social,rizz	-	Lumen, mindre cringe.
+cri-2	instr:lessCringe	social,rizz	-	Lumen, inte så cringe.
+three-1	instr:threeOptions	social,rizz	-	Lumen, tre alternativ.
+three-2	instr:threeOptions	social,rizz	-	Lumen, ge mig tre.
+three-3	instr:threeOptions	social,rizz	-	Lumen, tre förslag.
+quiz-1	instr:quizMe	standard,prov	-	Lumen, förhör mig på fotosyntes.
+quiz-2	instr:quizMe	standard,prov	-	Lumen, testa mig på cellandning.
+quiz-3	instr:quizMe	standard,prov	-	Lumen, förhör mig.
+qq-1	instr:quickQuiz	standard,prov	-	Lumen, snabbförhör.
+qq-2	instr:quickQuiz	standard,prov	-	Lumen, fem snabba frågor.
+qq-3	instr:quickQuiz	standard,prov	-	Lumen, snabbförhör mig.
+hand-1	pause	all	term	Pausa.
+hand-2	pause	all	term	Spela musik.
+hand-3	pause	all	term	Lumen, pausa dig.
+stop-1	stop	all	term	Lumen, sluta lyssna.
+stop-2	stop	all	term	Lumen, avsluta.
+stop-3	stop	all	term	Lumen, stäng av.
+next-1	music:nextTrack	all	term	Nästa låt.
+next-2	music:nextTrack	all	term	Lumen, hoppa över låten.
+next-3	music:nextTrack	all	term	Lumen, skippa låten.
+prev-1	music:previousTrack	all	term	Förra låten.
+prev-2	music:previousTrack	all	term	Lumen, föregående låt.
+prev-3	music:previousTrack	all	term	Lumen, spela förra låten.
+sw-prov	switch:prov	all	term	Lumen, byt till provläge.
+sw-standard	switch:standard	all	term	Lumen, växla till frågor.
+sw-interview	switch:interview	all	term	Lumen, gå till intervjuläge.
+sw-social	switch:social	all	term	Lumen, starta socialt läge.
+sw-rizz	switch:rizz	all	term	Lumen, byta till rizzläge.
+sw-prov2	switch:prov	all	term	Lumen, provläge.
+sw-standard2	switch:standard	all	term	Lumen, lyssna efter frågor.
+sw-social2	switch:social	all	term	Lumen, socialt.

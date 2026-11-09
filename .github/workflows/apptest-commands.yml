@@ -1,0 +1,85 @@
+name: Apptest voice commands (T6)
+
+# Toby's command test: every command in docs/COMMANDS.md (three wordings) and ten ordinary sentences with command
+# words, spoken through the app's real chain in the Simulator, one job per mode. Live and paid (about 20 minutes of
+# Scribe per mode and the level-2 instructions' /answer calls), so manual, and on Toby's branch when the test changes.
+# Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Chain/CommandsE2ETests.swift"
+      - "AppTests/E2E/Audio/commands.tsv"
+      - "scripts/apptest/commands.sh"
+      - "scripts/apptest/commands_summary.py"
+      - ".github/workflows/apptest-commands.yml"
+
+concurrency:
+  group: apptest-commands-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mode:
+    name: Commands in ${{ matrix.mode }} (Simulator, live)
+    runs-on: macos-26
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [standard, prov, interview, social, rizz]
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Command test
+        env:
+          LUMEN_E2E_MODES: ${{ matrix.mode }}
+        run: |
+          bash scripts/apptest/commands.sh
+          STATUS=$?
+          cat apptest-out/commands/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-commands-${{ matrix.mode }}
+          path: |
+            apptest-out/commands
+            !apptest-out/commands/audio/*.wav
+            !apptest-out/commands/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
+
+  summary:
+    name: Summary of all modes
+    needs: mode
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: apptest-commands-*
+          path: results
+      - name: Summary
+        run: |
+          python3 -I scripts/apptest/commands_summary.py results > summary.md
+          cat summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v5
+        with:
+          name: apptest-commands-summary
+          path: summary.md
+          retention-days: 14
