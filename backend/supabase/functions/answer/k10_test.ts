@@ -21,7 +21,7 @@ Deno.test("K10.1 app commands in the user's own words: 30 positive, 30 negative 
   }
   assertEquals(CASES.positive.length, 30);
   assertEquals(CASES.negative.length, 30);
-  assert(right >= 29 && falseHits <= 1, `${right}/30 right, ${falseHits} false: ${wrong.join("; ")}`);
+  assert(right === 30 && falseHits === 0, `${right}/30 right, ${falseHits} false: ${wrong.join("; ")}`);
 });
 
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";

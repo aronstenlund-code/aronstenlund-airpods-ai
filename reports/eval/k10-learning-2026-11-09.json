@@ -1,0 +1,446 @@
+{
+ "ok": 20,
+ "of": 20,
+ "rows": [
+  {
+   "kind": "shorter",
+   "correction": "kortare",
+   "mode": "prov",
+   "subject": "Biologi",
+   "q1": "vad är fotosyntes",
+   "q2": "vad är cellandning",
+   "setting": {
+    "key": "length",
+    "value": "shorter",
+    "scope": {
+     "subject": "Biologi"
+    },
+    "n": 1,
+    "text": "Kortare svar i biologi"
+   },
+   "profile": "Användaren vill ha: kortare svar i biologi.",
+   "ok": true,
+   "why": "46 mot 102 ord, 3 meningar",
+   "with": "Cellandning är processen där cellerna bryter ner druvsocker med hjälp av syre och frigör energi, och restprodukterna är koldioxid och vatten. Det sker i cellernas mitokondrier, hos både växter, djur och människor. På provet skriver du ordformeln: druvsocker plus syre ger koldioxid plus vatten plus energi.",
+   "without": "Cellandning är processen där cellerna bryter ner druvsocker med hjälp av syre och frigör energi som cellen kan använda. Den sker i cellernas mitokondrier, ofta kallade cellens kraftverk. Druvsockret kommer från maten vi äter eller, hos växter, från fotosyntesen, och syret får vi med andningen. Som restprodukter bildas koldioxid och vatten, och det är därför vi andas ut koldioxid. Ett exempel är när du springer: musklerna gör mer cellandning och du andas snabbare för att få mer syre. Alla levande celler gör cellandning, även växternas, dag och natt. På provet skriver du ordformeln: druvsocker plus syre ger koldioxid plus vatten plus energi."
+  },
+  {
+   "kind": "shorter",
+   "correction": "det var för långt",
+   "mode": "prov",
+   "subject": "Historia",
+   "q1": "franska revolutionen",
+   "q2": "ryska revolutionen",
+   "setting": {
+    "key": "length",
+    "value": "shorter",
+    "scope": {
+     "subject": "Historia"
+    },
+    "n": 1,
+    "text": "Kortare svar i historia"
+   },
+   "profile": "Användaren vill ha: kortare svar i historia.",
+   "ok": true,
+   "why": "43 mot 101 ord, 3 meningar",
+   "with": "Ryska revolutionen nittonhundrasjutton störtade tsaren och ledde till att bolsjevikerna under Lenin tog makten. Orsakerna var fattigdom, hunger och många dödade i första världskriget, och i februari tvingades tsar Nikolaj två att abdikera. I oktober tog bolsjevikerna makten, och landet blev senare Sovjetunionen.",
+   "without": "Ryska revolutionen var omvälvningen nittonhundrasjutton då tsarväldet föll och kommunisterna tog makten i Ryssland. Orsakerna var att tsar Nikolaj två styrde enväldigt, att bönderna var fattiga och arbetarna levde under hårda förhållanden, och att första världskriget gav enorma förluster och hunger. I februari nittonhundrasjutton tvingades tsaren avgå, och en provisorisk regering tog över men fortsatte kriget. I oktober nittonhundrasjutton tog bolsjevikerna under Lenin makten med parollen fred, jord och bröd. Därefter följde ett inbördeskrig mellan röda och vita, som de röda vann, och nittonhundratjugotvå bildades Sovjetunionen. På provet skriver du orsaker, förlopp och följder: att Ryssland blev världens första kommunistiska stat."
+  },
+  {
+   "kind": "shorter",
+   "correction": "Lumen, kortare",
+   "mode": "fragor",
+   "subject": null,
+   "q1": "vad är inflation",
+   "q2": "vad är ränta",
+   "setting": {
+    "key": "length",
+    "value": "shorter",
+    "scope": {
+     "mode": "fragor"
+    },
+    "n": 1,
+    "text": "Kortare svar i Frågor"
+   },
+   "profile": "Användaren vill ha: kortare svar i Frågor.",
+   "ok": true,
+   "why": "28 mot 43 ord, 2 meningar",
+   "with": "Ränta är priset för att låna pengar, uttryckt som en procentandel av lånebeloppet per år. Det är också vad man får för att spara pengar på ett konto.",
+   "without": "Ränta är den avgift man betalar för att låna pengar, eller den ersättning man får för att spara dem. Den uttrycks oftast i procent per år, och Riksbankens styrränta är den ränta som styr vad bankerna tar för lån och betalar för sparande."
+  },
+  {
+   "kind": "shorter",
+   "correction": "för långt",
+   "mode": "prov",
+   "subject": "Kemi",
+   "q1": "vad är en jonbindning",
+   "q2": "vad är en kovalent bindning",
+   "setting": {
+    "key": "length",
+    "value": "shorter",
+    "scope": {
+     "subject": "Kemi"
+    },
+    "n": 1,
+    "text": "Kortare svar i kemi"
+   },
+   "profile": "Användaren vill ha: kortare svar i kemi.",
+   "ok": true,
+   "why": "47 mot 112 ord, 3 meningar",
+   "with": "En kovalent bindning är en kemisk bindning där två icke-metallatomer delar på elektronpar, så att båda får fullt yttersta elektronskal. Ett exempel är vatten, där syre delar ett elektronpar med var och en av två väteatomer. Till skillnad från jonbindning överförs inga elektroner, och det bildas molekyler.",
+   "without": "En kovalent bindning är en kemisk bindning där två icke-metallatomer delar på ett eller flera elektronpar. Båda atomerna vill fylla sitt yttersta elektronskal, men ingen av dem kan ta elektroner från den andra, så de delar i stället. De delade elektronerna hör till båda atomerna och håller ihop dem. Ett exempel är vatten: syre delar ett elektronpar med varje väteatom, så att det bildas en molekyl med formeln ha två o. Ämnen med kovalenta bindningar kallas molekylföreningar. De har oftast låga smält- och kokpunkter och leder inte ström. Skillnaden mot jonbindning är att elektroner delas i stället för att överföras. På provet: skriv att icke-metaller delar elektronpar och att det bildas molekyler."
+  },
+  {
+   "kind": "shorter",
+   "correction": "kortare svar",
+   "mode": "fragor",
+   "subject": null,
+   "q1": "hur fungerar en kylskåp",
+   "q2": "hur fungerar en mikrovågsugn",
+   "setting": {
+    "key": "length",
+    "value": "shorter",
+    "scope": {
+     "mode": "fragor"
+    },
+    "n": 1,
+    "text": "Kortare svar i Frågor"
+   },
+   "profile": "Användaren vill ha: kortare svar i Frågor.",
+   "ok": true,
+   "why": "33 mot 118 ord, 2 meningar",
+   "with": "En mikrovågsugn värmer mat med mikrovågor, en typ av radiovågor. Magnetronen skapar mikrovågorna, som får vattenmolekylerna i maten att vrida sig fram och tillbaka tusentals gånger per sekund, och den friktionen ger värme.",
+   "without": "En mikrovågsugn värmer mat genom att skicka mikrovågor, en form av elektromagnetisk strålning, in i matens inre. Mikrovågorna genereras av en komponent som kallas magnetron, och de styrs in i ugnsrummet där de når maten. Vattenmolekyler i maten är elektriskt polära, vilket betyder att de har en plus- och en minuspol. När mikrovågorna växlar riktning många miljoner gånger per sekund vill molekylerna vrida sig för att följa fältet. Den ständiga vridningen och friktionen mellan molekylerna omvandlas till värme. Därför värms vattenhaltig mat upp snabbt, medan till exempel ett glas eller en tallrik i porslin förblir relativt kall, eftersom de inte absorberar mikrovågorna lika bra. Värmen sprids sedan inåt genom maten, så att den blir varm även i mitten."
+  },
+  {
+   "kind": "shorter",
+   "correction": "kortare",
+   "mode": "prov",
+   "subject": "Geografi",
+   "q1": "vad är plattektonik",
+   "q2": "vad är vulkaner",
+   "setting": {
+    "key": "length",
+    "value": "shorter",
+    "scope": {
+     "subject": "Geografi"
+    },
+    "n": 1,
+    "text": "Kortare svar i geografi"
+   },
+   "profile": "Användaren vill ha: kortare svar i geografi.",
+   "ok": true,
+   "why": "44 mot 124 ord, 2 meningar",
+   "with": "Vulkaner är öppningar i jordskorpan där magma, alltså smält berg, tränger upp och blir lava, aska och gaser. De finns mest vid plattgränser, där plattor glider isär eller en platta sjunker ner under en annan, och Island och eldringen runt Stilla havet är exempel.",
+   "without": "En vulkan är en öppning i jordskorpan där smält berg, magma, tränger upp från jordens inre. När magman når ytan kallas den lava, och tillsammans med aska och gaser bygger den upp ett berg, ofta kägelformat, när det rinner och lägger sig lager på lager. Vulkaner finns oftast vid plattgränser, till exempel där en platta pressas ned under en annan, som runt Stilla havet, eller där plattor glider isär, som på Island. Vissa ligger också över så kallade het punkter, som Hawaii, långt från någon plattgräns. Utbrott kan ge lavaflöden, askmoln och giftiga gaser, men vulkanisk jord är också mycket bördig, och många bor nära vulkaner just därför. På provet: skriv att vulkaner är kopplade till plattgränser och förklara skillnaden mellan magma och lava."
+  },
+  {
+   "kind": "longer",
+   "correction": "längre",
+   "mode": "fragor",
+   "subject": null,
+   "q1": "vad är en svart hål",
+   "q2": "vad är en neutronstjärna",
+   "setting": {
+    "key": "length",
+    "value": "longer",
+    "scope": {
+     "mode": "fragor"
+    },
+    "n": 1,
+    "text": "Längre, utförligare svar i Frågor"
+   },
+   "profile": "Användaren vill ha: längre, utförligare svar i Frågor.",
+   "ok": true,
+   "why": "130 mot 40 ord",
+   "with": "En neutronstjärna är en extremt tät stjärnrest som blir kvar när en stor stjärna, ungefär åtta till tjugo gånger solens massa, exploderar i en supernova. Gravitationen pressar då ihop kärnan så hårt att elektronerna slås samman med protonerna och bildar neutroner, och nästan hela stjärnan packas ihop till en sfär med en diameter på bara cirka tjugo kilometer. Trots den lilla storleken väger den mer än solen, så en tesked av materialet skulle väga flera miljarder kilo på jorden. Neutronstjärnor roterar ofta mycket snabbt och kan skicka ut starka strålningspulser i form av radiopulsarer. Till skillnad från ett svart hål har en neutronstjärna en fast yta, och det är just gränsen mellan massa som räcker för neutronstjärna och för svart hål som är en av de stora frågorna i astrofysiken.",
+   "without": "En neutronstjärna är en extremt tät stjärnrest som bildas när en massiv stjärna exploderar i en supernova och kärnan kollapsar. Den består nästan helt av neutroner och kan väga ungefär ett komma fyra solmassor på bara ett tjugotal kilometers diameter."
+  },
+  {
+   "kind": "longer",
+   "correction": "mer detaljer",
+   "mode": "prov",
+   "subject": "Fysik",
+   "q1": "vad är tryck",
+   "q2": "vad är densitet",
+   "setting": {
+    "key": "length",
+    "value": "longer",
+    "scope": {
+     "subject": "Fysik"
+    },
+    "n": 1,
+    "text": "Längre, utförligare svar i fysik"
+   },
+   "profile": "Användaren vill ha: längre, utförligare svar i fysik.",
+   "ok": true,
+   "why": "199 mot 111 ord",
+   "with": "Densitet är hur mycket massa ett ämne har per volymenhet, alltså hur tätt materialet är packat. Man räknar ut den som massan delad med volymen, och enheten är kilogram per kubikmeter, eller gram per kubikcentimeter. Vatten har densiteten tusen kilogram per kubikmeter, vilket är samma sak som ett gram per kubikcentimeter. Ett ämne med hög densitet har mycket massa i en liten volym, och ett ämne med låg densitet har lite massa i en stor volym. Därför väger en liter bly mycket mer än en liter trä, fast volymen är lika stor. Om en metallbit har massan tvåhundrasjuttio gram och volymen hundra kubikcentimeter blir densiteten två komma sju gram per kubikcentimeter, och det är ungefär aluminium. Densiteten avgör också om något flyter eller sjunker: ett föremål flyter i vatten om dess densitet är lägre än vattnets, och sjunker om den är högre. Isen flyter därför att den har lägre densitet än flytande vatten, ungefär niohundratjugo kilogram per kubikmeter. Densitet är en egenskap hos ämnet, så en liten och en stor bit av samma material har samma densitet. På provet: skriv formeln densitet är lika med massa delat med volym och förklara med ett exempel varför något flyter eller sjunker.",
+   "without": "Densitet är hur mycket massa ett ämne har per volym, alltså hur tätt materian sitter packad. Man räknar ut den som massan delad med volymen, och enheten är kilogram per kubikmeter eller gram per kubikcentimeter. Vatten har densiteten ett gram per kubikcentimeter, så en liter vatten väger ett kilogram. Järn har ungefär sju komma nio gram per kubikcentimeter och är därför mycket tyngre än samma volym trä. Det är också därför ett föremål flyter om dess densitet är lägre än vattnets och sjunker om den är högre, och därför flyter olja på vatten. På provet: skriv formeln densitet är lika med massa delat med volym och förklara med flytförmågan som exempel."
+  },
+  {
+   "kind": "longer",
+   "correction": "för kort",
+   "mode": "fragor",
+   "subject": null,
+   "q1": "vem var Gustav Vasa",
+   "q2": "vem var Karl XII",
+   "setting": {
+    "key": "length",
+    "value": "longer",
+    "scope": {
+     "mode": "fragor"
+    },
+    "n": 1,
+    "text": "Längre, utförligare svar i Frågor"
+   },
+   "profile": "Användaren vill ha: längre, utförligare svar i Frågor.",
+   "ok": true,
+   "why": "134 mot 34 ord",
+   "with": "Karl den tolfte var kung av Sverige från sextonhundra till sjuttonhundrasjutton och är en av de mest omtalade svenska regenterna. Han blev kung som femtonåring och ledde Sverige genom det stora nordiska kriget mot en koalition av Ryssland, Danmark-Norge, Sachsen-Polen och senare flera andra stater. Under de första åren vann han en rad slagfält, bland annat vid Narva år sextonhundra och nittonhundra och vid Poltava år sjuttonhundranio, och han framstod som en av Europas främsta fältherrar. Efter nederlaget vid Poltava flyttade han med sina trupper till Osmanska riket och stannade där i flera år. När han slutligen återvände till Sverige fortsatte kriget i Norge, där han stupade vid Fredriksten år sjuttonhundraåtta. Hans död innebar slutet på Sveriges ställning som stormakt, och han har sedan dess varit en symbol för både soldatdygd och tragisk överambition.",
+   "without": "Karl den tolfte var kung av Sverige från sextonhundranittiosju till sjuttonhundraarton. Han var en känd krigare som ledde Sverige i det stora nordiska kriget mot Ryssland, och han stupade vid Fredriksten i Norge sjuttonhundraarton."
+  },
+  {
+   "kind": "longer",
+   "correction": "utförligare",
+   "mode": "prov",
+   "subject": "Samhällskunskap",
+   "q1": "vad gör riksdagen",
+   "q2": "vad gör regeringen",
+   "setting": {
+    "key": "length",
+    "value": "longer",
+    "scope": {
+     "subject": "Samhällskunskap"
+    },
+    "n": 1,
+    "text": "Längre, utförligare svar i samhällskunskap"
+   },
+   "profile": "Användaren vill ha: längre, utförligare svar i samhällskunskap.",
+   "ok": true,
+   "why": "183 mot 117 ord",
+   "with": "Regeringen styr Sverige och ansvarar för att genomföra de beslut som riksdagen har fattat. Den leds av statsministern, som tillsammans med de andra ministrarna bestämmer hur landet ska styras, och regeringen är ansvarig inför riksdagen. Regeringen lägger fram förslag till nya lagar och föreslår också statsbudgeten, alltså hur statens pengar ska fördelas. Det är riksdagen som sedan röstar ja eller nej till förslagen. Regeringen styr även över statliga myndigheter som Skatteverket och Polismyndigheten, men får inte lägga sig i hur en myndighet avgör ett enskilt ärende. Den representerar också Sverige internationellt, till exempel i EU och i kontakter med andra länder. Regeringen kan fatta vissa egna beslut, så kallade förordningar, inom de ramar som lagarna sätter. Ett exempel är att riksdagen beslutar om en ny skollag, medan regeringen ger Skolverket i uppdrag att se till att den följs i praktiken. Skillnaden är alltså att riksdagen bestämmer vad som ska gälla, medan regeringen verkställer besluten och styr landet i det dagliga arbetet. På provet kan du skriva att regeringen har den verkställande makten, föreslår lagar och budget, styr myndigheterna och är ansvarig inför riksdagen.",
+   "without": "Regeringen styr Sverige och genomför de beslut som riksdagen har fattat. Den leds av statsministern och består av ett antal ministrar, som var och en ansvarar för ett område, till exempel skolministern för utbildning. Regeringen lägger fram förslag till nya lagar och föreslår statsbudgeten, men det är riksdagen som bestämmer om de går igenom. Den leder också myndigheterna, som Skatteverket och Försäkringskassan, som sköter det praktiska arbetet. Ett exempel är att riksdagen beslutar om en ny lag och regeringen sedan ser till att den följs i landet. Regeringen kan inte styra mot riksdagen, eftersom riksdagen kan rösta ner den med en misstroendeförklaring. På provet kan du skriva att regeringen har den verkställande makten, riksdagen den lagstiftande makten."
+  },
+  {
+   "kind": "examples",
+   "correction": "mer exempel",
+   "mode": "prov",
+   "subject": "Biologi",
+   "q1": "vad är en näringskedja",
+   "q2": "vad är ett ekosystem",
+   "setting": {
+    "key": "examples",
+    "value": "more",
+    "scope": {
+     "subject": "Biologi"
+    },
+    "n": 1,
+    "text": "Fler exempel i biologi"
+   },
+   "profile": "Användaren vill ha: fler exempel i biologi.",
+   "ok": true,
+   "why": "exempelord 3 mot 1",
+   "with": "Ett ekosystem är alla levande organismer i ett område tillsammans med den livlösa miljön de lever i, som jord, vatten, luft, ljus och temperatur. De levande och livlösa delarna samspelar hela tiden: växterna tar upp vatten och ljus, djuren äter växterna, och nedbrytarna för tillbaka näringsämnen till jorden. En näringskedja är alltså bara en liten del av ett ekosystem, och flera näringskedjor som hänger ihop bildar ett näringsnät. Till exempel är en sjö ett ekosystem med alger, fiskar, rovfiskar, bakterier, vatten, syre och solljus. Ett annat exempel är en skog, där granar, älgar, vargar, svampar och jorden hör ihop. Förändras en del, till exempel om fiskarna försvinner, påverkas hela ekosystemet. På provet skriver du att ett ekosystem består av biotiska faktorer, alltså levande, och abiotiska faktorer, alltså livlösa, som samverkar.",
+   "without": "Ett ekosystem är ett område där levande organismer och den döda miljön samspelar, till exempel en sjö, en skog eller en äng. Det består av biotiska faktorer, alltså alla levande organismer, och abiotiska faktorer, som ljus, vatten, temperatur och jordmån. Näringskedjorna i området hänger ihop i ett näringsnät, och där finns producenter, konsumenter och nedbrytare. Allt hänger ihop: om rävarna i skogen försvinner kan harparna bli för många och äta upp växterna. Energin kommer från solen, medan näringsämnena går runt i ett kretslopp. På provet skriver du att ett ekosystem är organismer och miljö i samspel, och nämner både biotiska och abiotiska faktorer."
+  },
+  {
+   "kind": "examples",
+   "correction": "fler exempel tack",
+   "mode": "prov",
+   "subject": "Fysik",
+   "q1": "vad är friktion",
+   "q2": "vad är tröghet",
+   "setting": {
+    "key": "examples",
+    "value": "more",
+    "scope": {
+     "subject": "Fysik"
+    },
+    "n": 1,
+    "text": "Fler exempel i fysik"
+   },
+   "profile": "Användaren vill ha: fler exempel i fysik.",
+   "ok": true,
+   "why": "exempelord 2 mot 0",
+   "with": "Tröghet är att ett föremål vill behålla sin rörelse: det som står still vill stå still, och det som rör sig vill fortsätta med samma fart och i samma riktning, tills en kraft ändrar det. Det är Newtons första lag. Ju större massa ett föremål har, desto större är tröghet, så det krävs mer kraft för att få det att starta, stanna eller svänga. Till exempel åker du framåt i bilen när föraren bromsar, eftersom din kropp vill fortsätta med samma fart. Ett annat exempel är att en tung lastbil är mycket svårare att få att stanna än en cykel. Den som sitter i en buss som tar fart pressas bakåt mot sätet av samma skäl. På provet skriver du att tröghet är ett föremåls motstånd mot förändring av sin rörelse, och att den ökar med massan.",
+   "without": "Tröghet är ett föremåls motstånd mot att ändra sin rörelse. Ett föremål som står still vill fortsätta stå still, och ett föremål som rör sig vill fortsätta med samma fart och i samma riktning, om ingen kraft verkar på det. Detta är Newtons första lag, som också kallas tröghetslagen. Ju större massa ett föremål har, desto större är tröghet, så en tung lastbil är mycket svårare att få igång och att stoppa än en cykel. Du känner det i en bil som bromsar hårt: bilen stannar, men din kropp vill fortsätta framåt och trycks mot bältet. På provet kan du skriva att tröghet är ett föremåls motstånd mot ändring av sin rörelse och att den är större ju större massan är."
+  },
+  {
+   "kind": "examples",
+   "correction": "ge exempel",
+   "mode": "fragor",
+   "subject": null,
+   "q1": "vad är en metafor",
+   "q2": "vad är en liknelse",
+   "setting": {
+    "key": "examples",
+    "value": "more",
+    "scope": {
+     "mode": "fragor"
+    },
+    "n": 1,
+    "text": "Fler exempel i Frågor"
+   },
+   "profile": "Användaren vill ha: fler exempel i Frågor.",
+   "ok": true,
+   "why": "exempelord 1 mot 1",
+   "with": "En liknelse är en jämförelse där man säger att något är likt något annat, oftast med ordet \"som\". Till exempel \"hon sjunger som en engel\", där sångerskans röst jämförs med en engels.",
+   "without": "En liknelse är en jämförelse där man säger att något är likt något annat, oftast med ordet \"som\". Till exempel \"hon är glad som en solstråle\", där man jämför henne med en solstråle."
+  },
+  {
+   "kind": "examples",
+   "correction": "Lumen, mer exempel",
+   "mode": "prov",
+   "subject": "Kemi",
+   "q1": "vad är en syra",
+   "q2": "vad är en bas",
+   "setting": {
+    "key": "examples",
+    "value": "more",
+    "scope": {
+     "subject": "Kemi"
+    },
+    "n": 1,
+    "text": "Fler exempel i kemi"
+   },
+   "profile": "Användaren vill ha: fler exempel i kemi.",
+   "ok": true,
+   "why": "exempelord 2 mot 1",
+   "with": "En bas är ett ämne som tar upp vätejoner eller avger hydroxidjoner, OH minus, när det löser sig i vatten. Ju fler hydroxidjoner, desto starkare bas och desto högre pH, över sju. En bas är alltså motsatsen till en syra, och när de blandas neutraliserar de varandra så att det bildas vatten och ett salt. Till exempel är natriumhydroxid, som finns i avloppsrens, en stark bas som delas i natriumjoner och hydroxidjoner i vatten. Ett annat exempel är ammoniak i fönsterputsmedel och såpa, som är svagare baser och känns hala. Baser ger blå färg med BTB. På provet: skriv att en bas avger hydroxidjoner i vattenlösning och har pH över sju.",
+   "without": "En bas är ett ämne som tar upp vätejoner, eller som avger hydroxidjoner, OH minus, när det löser sig i vatten. Det är hydroxidjonerna som gör lösningen basisk, så att pH hamnar över sju. Ju fler hydroxidjoner, desto starkare bas och desto högre pH. Natriumhydroxid är ett exempel: i vatten delas det i natriumjoner och hydroxidjoner. Baser känns hala och ger blå färg med BTB. När en syra och en bas blandas neutraliserar de varandra och bildar vatten och ett salt. På provet: skriv att en bas avger hydroxidjoner i vattenlösning och har pH över sju."
+  },
+  {
+   "kind": "examples",
+   "correction": "jag behöver exempel",
+   "mode": "prov",
+   "subject": "Svenska",
+   "q1": "vad är en novell",
+   "q2": "vad är en krönika",
+   "setting": {
+    "key": "examples",
+    "value": "more",
+    "scope": {
+     "subject": "Svenska"
+    },
+    "n": 1,
+    "text": "Fler exempel i svenska"
+   },
+   "profile": "Användaren vill ha: fler exempel i svenska.",
+   "ok": true,
+   "why": "exempelord 1 mot 1",
+   "with": "En krönika är en kort, personligt skriven text i en tidning eller tidskrift där skribenten ger sin egen syn på något aktuellt eller vardagligt. Den skrivs oftast i jagform, har ett engagerat och ibland humoristiskt språk och återkommer regelbundet under skribentens namn. Det som skiljer den från en nyhetsartikel är att den inte försöker vara objektiv, utan vill väcka tankar eller känslor hos läsaren. Till exempel kan en krönikör skriva om hur mobilen tar över middagsbordet och dra egna slutsatser av det. På provet kan du skriva att en krönika är subjektiv, personlig och ofta har en tydlig åsikt, ett vardagligt språk och en återkommande skribent.",
+   "without": "En krönika är en personlig, kort text i en tidning eller på nätet där skribenten får ge sin egen åsikt och sin egen röst. Den skiljer sig från en vanlig nyhetsartikel genom att den är subjektiv, alltså färgad av skribentens tyckande, och ofta har ett språk som är humoristiskt, ironiskt eller provocerande. Krönikören tar ofta upp en sak i samtiden, till exempel skolmaten eller mobilvanor, och kopplar den till egna erfarenheter för att få läsaren att tänka eller le. Den är kortare än en essä och skrivs på ett vardagligt, direkt sätt, ofta med ett tydligt anslag och en spetsig avslutning. På provet kan du skriva att en krönika är en personligt hållen, åsiktsbärande text med tydlig avsändare och ett medvetet, ofta underhållande språk."
+  },
+  {
+   "kind": "simpler",
+   "correction": "enklare",
+   "mode": "prov",
+   "subject": "Biologi",
+   "q1": "vad är DNA",
+   "q2": "vad är en gen",
+   "setting": {
+    "key": "simplicity",
+    "value": "simpler",
+    "scope": {
+     "subject": "Biologi"
+    },
+    "n": 1,
+    "text": "Enklare förklaringar i biologi"
+   },
+   "profile": "Användaren vill ha: enklare förklaringar i biologi.",
+   "ok": true,
+   "why": "ord/mening 13.3 mot 17.7, långa ord 0.01 mot 0.01",
+   "with": "En gen är en liten bit av DNA som innehåller ett recept på en egenskap. Receptet säger hur cellen ska bygga ett visst protein. Proteinet gör sedan jobbet i kroppen. Ett exempel är genen för ögonfärg, som styr vilket färgämne ögat får. Du har två kopior av varje gen, en från mamma och en från pappa. Olika varianter av samma gen kan ge olika utseende, till exempel blå eller bruna ögon. På provet: skriv att en gen är en bit DNA som är koden för ett protein, och att generna ligger på kromosomerna.",
+   "without": "En gen är en bit av DNA-molekylen som innehåller receptet på en viss egenskap, oftast genom att koda för ett protein. Cellen läser av genens baser och bygger det protein som koden beskriver. Proteinet gör sedan jobbet i kroppen, till exempel att ge pigment i ögonen eller att bryta ner socker. Du har två exemplar av varje gen, ett från mamma och ett från pappa, och de kan vara olika varianter som kallas alleler. Hos människan finns ungefär tjugotusen gener, fördelade på kromosomerna. På provet: skriv att en gen är en avsnitt av DNA som bestämmer en egenskap, och att den styr vilket protein cellen tillverkar."
+  },
+  {
+   "kind": "simpler",
+   "correction": "för svårt",
+   "mode": "prov",
+   "subject": "Fysik",
+   "q1": "vad är elektrisk spänning",
+   "q2": "vad är elektrisk ström",
+   "setting": {
+    "key": "simplicity",
+    "value": "simpler",
+    "scope": {
+     "subject": "Fysik"
+    },
+    "n": 1,
+    "text": "Enklare förklaringar i fysik"
+   },
+   "profile": "Användaren vill ha: enklare förklaringar i fysik.",
+   "ok": true,
+   "why": "ord/mening 12.0 mot 16.6, långa ord 0.02 mot 0.03",
+   "with": "Elektrisk ström är laddade partiklar som rör sig i en krets. I en tråd är det elektroner som flyttar sig åt samma håll. Strömmen mäts i ampere och skrivs med bokstaven I. Tänk på vatten i en slang: strömmen är hur mycket vatten som rinner förbi varje sekund. Spänningen från batteriet är det som puttar på elektronerna. Utan spänning blir det ingen ström. En lampa i en sluten krets lyser för att strömmen går genom tråden. Strömmen mäter man med en amperemätare som kopplas i serie, alltså mitt i kretsen. På provet: skriv att ström är rörliga laddningar, att enheten är ampere och att kretsen måste vara sluten.",
+   "without": "Elektrisk ström är laddade partiklar som rör sig genom en krets, i metaller är det elektroner. Den mäts i ampere, förkortas A, och skrivs med bokstaven I. Strömstyrkan säger hur mycket laddning som passerar en punkt i kretsen varje sekund. Tänk på vattenledningen igen: spänningen är trycket och strömmen är hur mycket vatten som faktiskt flödar förbi. Strömmen går bara om kretsen är sluten och det finns en spänningskälla som driver den. En glödlampa kan till exempel ha strömmen noll komma två ampere, och strömmen mäts med en amperemeter som kopplas i serie, alltså mitt i kretsen. På provet: skriv att ström är laddningar i rörelse, att enheten är ampere och att kretsen måste vara sluten."
+  },
+  {
+   "kind": "simpler",
+   "correction": "jag förstår inte",
+   "mode": "fragor",
+   "subject": null,
+   "q1": "vad är kvantfysik",
+   "q2": "vad är relativitetsteorin",
+   "setting": {
+    "key": "simplicity",
+    "value": "simpler",
+    "scope": {
+     "mode": "fragor"
+    },
+    "n": 1,
+    "text": "Enklare förklaringar i Frågor"
+   },
+   "profile": "Användaren vill ha: enklare förklaringar i Frågor.",
+   "ok": true,
+   "why": "ord/mening 14.5 mot 19.0, långa ord 0.07 mot 0.08",
+   "with": "Relativitetsteorin är Albert Einsteins teori om rum, tid och gravitation. Den säger att tiden går olika fort beroende på hur snabbt man rör sig och hur starkt gravitationen är.",
+   "without": "Relativitetsteorin är Albert Einsteins teori om rum, tid och gravitation. Den säger att tiden går olika fort beroende på hur snabbt man rör sig och hur starkt gravitationen är, och att ljusets hastighet är densamma för alla observatörer."
+  },
+  {
+   "kind": "simpler",
+   "correction": "förklara enklare",
+   "mode": "prov",
+   "subject": "Kemi",
+   "q1": "vad är oxidation",
+   "q2": "vad är reduktion",
+   "setting": {
+    "key": "simplicity",
+    "value": "simpler",
+    "scope": {
+     "subject": "Kemi"
+    },
+    "n": 1,
+    "text": "Enklare förklaringar i kemi"
+   },
+   "profile": "Användaren vill ha: enklare förklaringar i kemi.",
+   "ok": true,
+   "why": "ord/mening 10.9 mot 16.0, långa ord 0.03 mot 0.02",
+   "with": "Reduktion är motsatsen till oxidation. Då avger ett ämne syre eller tar upp elektroner. Elektroner är de små, negativt laddade partiklarna som finns utanför atomkärnan. När rost reagerar med kol i en masugn lämnar syret järnet, och då blir det rent järn. Järnet har reducerats. Reduktion och oxidation sker alltid samtidigt, och det kallas redoxreaktion. Ämnet som tar emot elektronerna reduceras, och ämnet som lämnar ifrån sig dem oxideras. På provet: skriv att reduktion är avgivning av syre eller upptagning av elektroner, och ge järnframställning som exempel.",
+   "without": "Reduktion är en kemisk reaktion där ett ämne avger syre eller tar upp elektroner. Den är motsatsen till oxidation och sker alltid samtidigt med den, eftersom elektronerna som ett ämne lämnar ifrån sig måste tas emot av ett annat. När rost, alltså järnoxid, upphettas med kol avger järnoxiden sitt syre och blir rent järn. Då har järnoxiden reducerats, medan kolet oxideras när det tar upp syret och bildar koldioxid. Så framställs järn i en masugn. På provet: skriv att reduktion är avgivning av syre eller upptagning av elektroner, och att oxidation och reduktion tillsammans kallas redoxreaktion."
+  },
+  {
+   "kind": "simpler",
+   "correction": "för krångligt",
+   "mode": "prov",
+   "subject": "Samhällskunskap",
+   "q1": "vad är parlamentarism",
+   "q2": "vad är maktdelning",
+   "setting": {
+    "key": "simplicity",
+    "value": "simpler",
+    "scope": {
+     "subject": "Samhällskunskap"
+    },
+    "n": 1,
+    "text": "Enklare förklaringar i samhällskunskap"
+   },
+   "profile": "Användaren vill ha: enklare förklaringar i samhällskunskap.",
+   "ok": true,
+   "why": "ord/mening 10.6 mot 14.2, långa ord 0.03 mot 0.05",
+   "with": "Maktdelning betyder att den politiska makten är uppdelad på flera delar som kontrollerar varandra. Då kan ingen ensam få för mycket makt.\n\nMakten delas ofta i tre delar. Den lagstiftande makten är riksdagen, som stiftar lagar. Den verkställande makten är regeringen, som styr landet och genomför besluten. Den dömande makten är domstolarna, som dömer enligt lagen.\n\nEtt exempel är att en domstol kan döma en tjänsteman, även om regeringen vill något annat. Domstolarna är nämligen fria från politiker.\n\nPå provet: skriv att maktdelning skyddar demokratin genom att makten är delad och att delarna granskar varandra.",
+   "without": "Maktdelning betyder att den politiska makten är uppdelad på flera olika delar, så att ingen enskild person eller grupp får all makt. Tanken är att dela makten för att förhindra maktmissbruk och diktatur. Man delar vanligen upp den i tre delar: den lagstiftande makten, den verkställande makten och den dömande makten.\n\nI Sverige är det riksdagen som stiftar lagar och beslutar om budgeten. Regeringen verkställer besluten och styr landet. Domstolarna dömer och ska vara oberoende, så att varken riksdag eller regering kan bestämma hur de dömer. Dessutom granskar medierna makthavarna, och det ibland kallas den fjärde statsmakten.\n\nDet hänger ihop med parlamentarism: regeringen är beroende av riksdagen, men domstolarna är fristående.\n\nPå provet: skriv att maktdelning fördelar makten på lagstiftande, verkställande och dömande makt för att förhindra maktmissbruk."
+  }
+ ]
+}

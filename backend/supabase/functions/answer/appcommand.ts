@@ -54,6 +54,8 @@ const STOP =
 const RESUME = /^(?:(?:börja |fortsätt )?lyssna igen|du kan lyssna igen|fortsätt lyssna|lyssna nu)(?: nu| tack)*$/u;
 
 const SWITCH = MODE_WORDS.map(([m, w]) => [m, new RegExp(`^${FRAME}${GO} (?:till )?(?:${w})${TAIL}$`, "u")] as const);
+// "nu kör vi provläget", "vi tar intervjuläget": the verb is in the frame
+const SWITCH_VI = MODE_WORDS.map(([m, w]) => [m, new RegExp(`^(?:nu |då )?(?:kör|tar|testar) vi (?:${w})${TAIL}$|^vi (?:kör|tar) (?:${w})${TAIL}$`, "u")] as const);
 const BARE = MODE_WORDS.map(([m, w]) => [m, new RegExp(`^(?:${w})(?: nu| tack| igen)*$`, "u")] as const);
 
 /** Lower case, no punctuation, no leading "Lumen" (the request frame words are kept: they carry the meaning). */
@@ -78,6 +80,7 @@ export function detectAppCommand(text: string, current: AppMode | null): AppComm
   const sw = (mode: AppMode, confidence: number): AppCommand | null =>
     mode === current ? null : { action: "switch_mode", mode, confidence };
   for (const [m, re] of SWITCH) if (re.test(t)) return sw(m, 0.9);
+  for (const [m, re] of SWITCH_VI) if (re.test(t)) return sw(m, 0.9);
   if (STUDY_INTENT.test(t)) return sw("prov", 0.8);
   if (INTERVIEW_INTENT.test(t)) return sw("intervju", 0.8);
   if (QUESTIONS_INTENT.test(t)) return sw("fragor", 0.8);
