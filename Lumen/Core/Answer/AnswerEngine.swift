@@ -44,6 +44,8 @@ final class AnswerEngine {
     private let mock: any AnswerProvider
     /// Svarslängd (D35).
     let settings: AnswerSettings
+    /// A7 "svara kortare" / "längre svar": this session's length, over the setting. Nil: the setting.
+    var sessionLength: AnswerLength?
     private var task: Task<Void, Never>?
 
     var activeProvider: any AnswerProvider { useMock ? mock : cloud }
@@ -76,7 +78,7 @@ final class AnswerEngine {
         var done: AnswerDone?
         var notAQuestion = false
         do {
-            for try await event in provider.answer(AnswerRequest(activation: request, context: context, length: settings.length, persona: persona)) {
+            for try await event in provider.answer(AnswerRequest(activation: request, context: context, length: sessionLength ?? settings.length, persona: persona)) {
                 if Task.isCancelled { return }
                 switch event {
                 case .meta(let meta):

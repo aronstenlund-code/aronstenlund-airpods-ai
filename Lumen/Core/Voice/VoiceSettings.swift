@@ -8,6 +8,8 @@ final class VoiceSettings {
     static let voiceKey = "voice.choice"
     static let rateKey = "voice.rate"
     static let speakKey = "voice.speakAnswers"
+    static let gainKey = "voice.gain"
+    static let universalKey = "voice.universalCommands"
 
     var voice: VoiceChoice {
         didSet {
@@ -26,10 +28,25 @@ final class VoiceSettings {
     var speakAnswers: Bool {
         didSet { defaults.set(speakAnswers, forKey: Self.speakKey) }
     }
+    /// A7 "viska" / "högre": Lumen's own loudness on the player node (0.25…1), not the iPhone's volume.
+    var speechGain: Double {
+        didSet {
+            let clamped = min(1, max(Self.minimumGain, speechGain))
+            if clamped != speechGain { speechGain = clamped }
+            defaults.set(speechGain, forKey: Self.gainKey)
+        }
+    }
+    static let minimumGain = 0.25
+    /// A7: "upprepa", "viska", "kortare", "utveckla" … without "Lumen" in Provläge and Frågor.
+    var universalCommands: Bool {
+        didSet { defaults.set(universalCommands, forKey: Self.universalKey) }
+    }
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        self.speechGain = defaults.object(forKey: Self.gainKey) as? Double ?? 1
+        self.universalCommands = defaults.object(forKey: Self.universalKey) as? Bool ?? true
         self.voice = defaults.data(forKey: Self.voiceKey).flatMap { try? JSONDecoder().decode(VoiceChoice.self, from: $0) } ?? .appleDefault
         let storedRate = defaults.object(forKey: Self.rateKey) as? Double
         self.rate = Float(storedRate ?? 1.0)

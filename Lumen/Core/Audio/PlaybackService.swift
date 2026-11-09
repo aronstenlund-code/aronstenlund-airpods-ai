@@ -29,6 +29,12 @@ protocol PlaybackServicing: AnyObject {
     var drainedAt: Date? { get }
     /// A4: a sentence's audio is complete: the resampler's last frames play now instead of opening the next one.
     func endOfSpeech()
+    /// A7 "upprepa": the speech scheduled from now on is kept (until `stopRecordingSpeech`) so it can play again
+    /// without a new TTS call.
+    func startRecordingSpeech()
+    func stopRecordingSpeech()
+    /// Plays the kept speech again. False: nothing kept.
+    func replayRecordedSpeech() throws(AudioError) -> Bool
 }
 
 extension PlaybackServicing {
@@ -39,6 +45,9 @@ extension PlaybackServicing {
     var queuedSeconds: Double { 0 }
     var drainedAt: Date? { nil }
     func endOfSpeech() {}
+    func startRecordingSpeech() {}
+    func stopRecordingSpeech() {}
+    func replayRecordedSpeech() throws(AudioError) -> Bool { false }
 }
 
 /// Measures the time from a play request to the first non-silent buffer leaving the time-pitch node.
@@ -310,7 +319,40 @@ final class PlaybackService: PlaybackServicing {
         if speaking != isSpeaking { isSpeaking = speaking }
     }
 
+    /// A7: the last answer's speech, as scheduled (at most `recordingLimitSeconds`).
+    private var speechRecording: [TTSChunk] = []
+    private var recordedSeconds: Double = 0
+    private var isRecordingSpeech = false
+    private var isReplaying = false
+    static let recordingLimitSeconds: Double = 120
+
+    func startRecordingSpeech() {
+        speechRecording.removeAll()
+        recordedSeconds = 0
+        isRecordingSpeech = true
+    }
+
+    func stopRecordingSpeech() {
+        isRecordingSpeech = false
+    }
+
+    func replayRecordedSpeech() throws(AudioError) -> Bool {
+        let chunks = speechRecording
+        guard !chunks.isEmpty else { return false }
+        isReplaying = true
+        defer { isReplaying = false }
+        try graph.ensureRunning()
+        if pendingBuffers == 0 { requestPlayback() }
+        for chunk in chunks { try schedule(chunk) }
+        endOfSpeech()
+        return true
+    }
+
     private func schedule(_ chunk: TTSChunk) throws(AudioError) {
+        if isRecordingSpeech, !isReplaying, chunk.sampleRate > 0, recordedSeconds < Self.recordingLimitSeconds {
+            speechRecording.append(chunk)
+            recordedSeconds += Double(chunk.samples.count) / chunk.sampleRate
+        }
         guard let inputFormat = AVAudioFormat(standardFormatWithSampleRate: chunk.sampleRate, channels: 1),
               let input = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: AVAudioFrameCount(chunk.samples.count)),
               let inputChannel = input.floatChannelData?[0] else {

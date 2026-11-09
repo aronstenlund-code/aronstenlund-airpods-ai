@@ -438,6 +438,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func stopListening() async {
+        answers.sessionLength = nil
         activation.cancelPending()
         studyQueue.removeAll()
         answers.cancel()
@@ -616,7 +617,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             rizz = RizzSession(style: style)
             study.stallSilence = Self.stallSilence
             study.speechDetector = { [weak self] in self?.transcription.vadSpeaking() } // D82.2
-            controller.playback.speechVolume = Self.rizzVolume
+            applySpeechVolume()
         } else {
             study.stallSilence = nil
             study.speechDetector = nil
@@ -830,7 +831,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         instructing = nil
         deferredTrigger = nil
         inFlightTrigger = nil
-        controller.playback.speechVolume = 1
+        applySpeechVolume()
+        answers.sessionLength = nil // A7: "svara kortare" lasts one session
         mode = .standard
     }
 
@@ -1014,11 +1016,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @discardableResult
     private func handleVoice(in text: String, at date: Date) -> Bool {
         let utterance = VoiceChannel.parse(text)
-        guard let intent = utterance.intent else { return false }
+        guard let intent = utterance.intent ?? universalIntent(text) else { return false }
         study.discardTurnText()
         if let before = utterance.before, study.isActive { study.transcriptFinal(before, at: date) }
         perform(intent)
         return true
+    }
+
+    /// A7: "upprepa", "viska", "kortare", "utveckla" … as the whole utterance count without "Lumen", only in
+    /// Provläge and Frågor (the speaker is the user there) and only with the setting on.
+    private func universalIntent(_ text: String) -> VoiceIntent? {
+        guard mode == .prov || mode == .standard, speaker.settings.universalCommands,
+              let action = CommandBook.shared.table.universal(text) else { return nil }
+        return action.level == 1 ? .command(action) : .instruction(action.instruction)
     }
 
     private func perform(_ intent: VoiceIntent) {
@@ -1061,7 +1071,72 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .complaint:
             controller.log("Voice feedback: the last turn goes to /feedback")
             Task { await reportPreviousTurn() }
+        case .command(let action):
+            controller.log("Voice: command \(action.rawValue)")
+            runCommand(action)
         }
+    }
+
+    /// A7 level 1: done on the phone, no API call. Confirmed briefly, only when nothing else is being said.
+    func runCommand(_ action: CommandAction) {
+        func confirm(_ line: String?) {
+            guard let line, !speaker.isSpeaking, !speaker.hasPendingSpeech else { return }
+            say(line)
+        }
+        switch action {
+        case .repeatAnswer:
+            repeatLastAnswer()
+        case .whisper, .louder:
+            let settings = speaker.settings
+            if action == .louder, settings.speechGain >= 1 {
+                confirm("Det är redan högsta volymen i Lumen. Höj på telefonen.")
+                return
+            }
+            settings.speechGain = action == .whisper ? settings.speechGain * 0.6 : settings.speechGain / 0.6
+            applySpeechVolume()
+            controller.log("Voice gain \(String(format: "%.2f", settings.speechGain))")
+            confirm(action.confirmation)
+        case .shorter, .longer:
+            answers.sessionLength = action == .shorter ? .short : .long
+            controller.log("Session length \(answers.sessionLength?.rawValue ?? "-")")
+            confirm(action.confirmation)
+        case .saveAnswer:
+            confirm(saveNote() != nil ? action.confirmation : "Det finns inget svar att spara.")
+        case .nextExam:
+            if let plan = examPlans?.nearest() {
+                say("\(plan.name), \(plan.whenLine()).")
+            } else {
+                say("Du har inget prov inlagt.")
+            }
+        default:
+            break
+        }
+    }
+
+    /// A7 "upprepa": the last answer's audio again from memory (no TTS call). Recorded while the answer played.
+    private func repeatLastAnswer() {
+        do {
+            transcription.setInputGated(true) // our own voice again: the recogniser must not hear it
+            if try controller.playback.replayRecordedSpeech() {
+                controller.log("Repeat: the last answer from memory")
+                reopenRecognizerAfterSpeech()
+                return
+            }
+        } catch {
+            controller.log("Repeat failed: \(error.localizedDescription)")
+        }
+        transcription.setInputGated(false)
+        if let last = conversation.answers.last?.answer, !last.isEmpty {
+            controller.log("Repeat: nothing kept, the text is spoken again")
+            speaker.enqueue(last, language: language)
+        } else {
+            say("Det finns inget svar att upprepa.")
+        }
+    }
+
+    /// A7: Lumen's loudness = the mode's level (Rizzläge speaks quietly, D43) × the user's "viska"/"högre".
+    private func applySpeechVolume() {
+        controller.playback.speechVolume = (rizz != nil ? Self.rizzVolume : 1) * Float(speaker.settings.speechGain)
     }
 
     /// A6: "nästa låt" / "förra låten" hand the audio to the music and skip; "pausa musiken" is true already while
@@ -1327,6 +1402,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     private func speechFinished() {
+        controller.playback.stopRecordingSpeech()
         if study.isActive, finishSingleTurn() { return }
         reopenRecognizerAfterSpeech()
         listenForHeadAnswerIfAsked()
@@ -2128,6 +2204,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if bufferAhead(.started(request, source: source)) { return }
         conversation.beginAnswer(question: request.query, source: source, at: request.createdAt,
                                  isOwnQuestion: request.trigger.isUsersOwnWords)
+        controller.playback.startRecordingSpeech() // A7 "upprepa"
         if study.isActive { study.answerStarted() }
     }
 

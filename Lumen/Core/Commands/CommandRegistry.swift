@@ -4,6 +4,7 @@ import Observation
 /// A6.4 / A7: the app's spoken actions in one table. Each action has default phrases, the user's own phrases, where
 /// it works and how it is confirmed. `docs/COMMANDS.md` describes the same table for people.
 enum CommandAction: String, CaseIterable, Codable, Sendable, Identifiable {
+    // MARK: Level 1, on the phone (A6, A7): no API call
     /// "pausa", "spela musik": Lumen lets go of the audio so the music plays (D58).
     case musicHandOff
     /// Back to Lumen after music: Siri "Starta Lumen", the Control or the Lock Screen (D58); the phrase works while
@@ -14,11 +15,56 @@ enum CommandAction: String, CaseIterable, Codable, Sendable, Identifiable {
     case pauseMusic
     /// "byt till …" + a mode name.
     case switchMode
-    /// "förhör mig (på …)": sent to the tutor as "förhör mig …".
-    case quizMe
     case stop
     /// "det där var fel": the last turn goes to /feedback (D80).
     case wrong
+    /// A7: the last answer's audio again, from memory.
+    case repeatAnswer
+    /// A7: Lumen's own voice quieter / louder (the player node, not the iPhone volume), remembered.
+    case whisper
+    case louder
+    /// A7: a standing length for this session ("svara kortare"), sent as `length`.
+    case shorter
+    case longer
+    /// A7: the last answer into Anteckningar.
+    case saveAnswer
+    /// A7: the next exam from the exam plans, read on the phone.
+    case nextExam
+
+    // MARK: Level 2, in the same /answer call (A7 + Kevin's K9): the phrase goes as an instruction
+    /// "förhör mig (på …)".
+    case quizMe
+    case moreDetail
+    case simpler
+    case example
+    case summary
+    case aLevel
+    case harderQuestion
+    case quickQuiz
+    case weakAreas
+    case careful
+    case catchUp
+    case discreet
+    case asUsual
+    case interviewHelp
+    case interviewBetter
+    case interviewConfident
+    case interviewCounter
+    case interviewStuck
+    case socialReply
+    case funnier
+    case moreNatural
+    case changeTopic
+    case followUp
+    case whatMeant
+    case rizz
+    case moreConfident
+    case flirtier
+    case subtler
+    case cockier
+    case rescue
+    case lessCringe
+    case threeOptions
 
     var id: String { rawValue }
 
@@ -31,36 +77,116 @@ enum CommandAction: String, CaseIterable, Codable, Sendable, Identifiable {
         case .previousTrack: "Förra låten"
         case .pauseMusic: "Pausa musiken"
         case .switchMode: "Byt läge (följs av lägets namn)"
-        case .quizMe: "Förhör mig"
         case .stop: "Avsluta"
         case .wrong: "Det där var fel"
+        case .repeatAnswer: "Upprepa senaste svaret"
+        case .whisper: "Viska (tystare röst)"
+        case .louder: "Högre röst"
+        case .shorter: "Kortare svar resten av passet"
+        case .longer: "Längre svar resten av passet"
+        case .saveAnswer: "Spara svaret i Anteckningar"
+        case .nextExam: "Vilket prov har jag härnäst?"
+        case .quizMe: "Förhör mig (på …)"
+        case .moreDetail: "Utveckla svaret"
+        case .simpler: "Förklara enklare"
+        case .example: "Ge ett exempel"
+        case .summary: "Sammanfatta det viktigaste"
+        case .aLevel: "Förklaring på A-nivå"
+        case .harderQuestion: "Ställ en svår fråga"
+        case .quickQuiz: "Snabbförhör (5 frågor)"
+        case .weakAreas: "Testa mina svagaste områden"
+        case .careful: "Var säker (starkare modell)"
+        case .catchUp: "Vad missade jag?"
+        case .discreet: "Hjälp mig diskret (en mening)"
+        case .asUsual: "Svara som jag brukar"
+        case .interviewHelp: "Intervju: hjälp mig svara"
+        case .interviewBetter: "Intervju: bättre svar"
+        case .interviewConfident: "Intervju: mer självsäkert"
+        case .interviewCounter: "Intervju: motfråga"
+        case .interviewStuck: "Intervju: jag fastnar"
+        case .socialReply: "Vad ska jag svara?"
+        case .funnier: "Roligare"
+        case .moreNatural: "Mer naturligt"
+        case .changeTopic: "Byt ämne"
+        case .followUp: "Smart följdfråga"
+        case .whatMeant: "Vad menade personen?"
+        case .rizz: "Ge mig lite rizz"
+        case .moreConfident: "Mer självsäker"
+        case .flirtier: "Flirtigare"
+        case .subtler: "Mer subtil"
+        case .cockier: "Kaxigare"
+        case .rescue: "Rädda mig"
+        case .lessCringe: "Mindre cringe"
+        case .threeOptions: "Tre alternativ"
         }
     }
 
-    /// True: the phrase alone is the whole utterance, "Lumen" not needed. False: only after "Lumen".
+    /// True: the phrase alone is the whole utterance, "Lumen" not needed, in every mode. False: only after "Lumen"
+    /// (or as a universal word, see `universalPhrases`).
     var worksWithoutName: Bool {
         switch self {
         case .musicHandOff, .nextTrack, .previousTrack, .pauseMusic, .wrong: true
-        case .backToLumen, .switchMode, .quizMe, .stop: false
+        default: false
+        }
+    }
+
+    /// A7: short words that count without "Lumen" when they are the whole utterance, only in Provläge and Frågor
+    /// (there the speaker is the user) and only while the setting is on. Not editable.
+    var universalPhrases: [String] {
+        switch self {
+        case .repeatAnswer: ["upprepa"]
+        case .whisper: ["viska"]
+        case .louder: ["högre"]
+        case .shorter: ["kortare", "snabbare"]
+        case .moreDetail: ["utveckla"]
+        default: []
         }
     }
 
     /// The phrase starts the utterance and more words follow (a mode name, a topic).
     var isPrefix: Bool { self == .switchMode || self == .quizMe }
 
-    /// Level 1 runs on the phone (no API call); level 2 goes to /answer as an instruction (A7).
-    var level: Int { self == .quizMe ? 2 : 1 }
+    /// Level 1 runs on the phone (no API call); level 2 goes to /answer as an instruction (A7, K9).
+    var level: Int {
+        switch self {
+        case .musicHandOff, .backToLumen, .nextTrack, .previousTrack, .pauseMusic, .switchMode, .stop, .wrong,
+             .repeatAnswer, .whisper, .louder, .shorter, .longer, .saveAnswer, .nextExam: 1
+        default: 2
+        }
+    }
 
-    /// What Lumen says when the action is done (nil: nothing, or the action says it itself).
+    /// Where the action means something; nil = every mode. Level-2 phrases outside their modes still go to the
+    /// backend as an ordinary instruction, which is what they were before.
+    var modes: Set<ConversationMode>? {
+        switch self {
+        case .quizMe, .harderQuestion, .quickQuiz, .weakAreas, .aLevel: [.prov, .standard]
+        case .interviewHelp, .interviewBetter, .interviewConfident, .interviewCounter, .interviewStuck: [.interview]
+        case .socialReply, .funnier, .moreNatural, .changeTopic, .followUp, .whatMeant, .threeOptions: [.social, .rizz]
+        case .rizz, .moreConfident, .flirtier, .subtler, .cockier, .rescue, .lessCringe: [.rizz, .social]
+        default: nil
+        }
+    }
+
+    /// What Lumen says when a level-1 action is done (nil: nothing, or the action says it itself). Said only when
+    /// nothing else is heard (A7).
     var confirmation: String? {
         switch self {
         case .nextTrack: "Nästa låt."
         case .previousTrack: "Förra låten."
         case .pauseMusic: "Musiken är pausad."
         case .backToLumen: "Jag lyssnar."
-        case .musicHandOff, .switchMode, .quizMe, .stop, .wrong: nil
+        case .whisper: "Tystare."
+        case .louder: "Högre."
+        case .shorter: "Kortare."
+        case .longer: "Längre."
+        case .saveAnswer: "Sparat."
+        default: nil
         }
     }
+
+    /// The instruction a level-2 action sends: its first default phrase, so a user phrase ("testa mig") reaches
+    /// the backend in the words K9's table knows.
+    var instruction: String { defaultPhrases.first ?? rawValue }
 
     var defaultPhrases: [String] {
         switch self {
@@ -69,8 +195,7 @@ enum CommandAction: String, CaseIterable, Codable, Sendable, Identifiable {
         case .nextTrack: ["nästa låt", "hoppa över låten", "skippa låten", "next song", "skip song"]
         case .previousTrack: ["förra låten", "föregående låt", "spela förra låten", "previous song"]
         case .pauseMusic: ["pausa musiken", "stoppa musiken", "pause the music", "stop the music"]
-        case .switchMode: ["byt till", "byta till", "växla till", "gå till", "starta", "switch to"]
-        case .quizMe: ["förhör mig", "quiz me"]
+        case .switchMode: ["byt till", "byta till", "växla till", "gå till", "starta", "lyssna efter", "switch to"]
         case .stop: ["sluta lyssna", "sluta", "avsluta", "stäng av", "stop listening"]
         case .wrong: [
             "det där var inte riktigt rätt", "det var inte riktigt rätt", "det var fel", "det där var fel", "det är fel",
@@ -78,6 +203,45 @@ enum CommandAction: String, CaseIterable, Codable, Sendable, Identifiable {
             "nej det var fel", "nej det stämmer inte", "det var inte rätt", "det där var inte rätt", "inte rätt",
             "det var ett dåligt svar", "det svaret var fel", "that was wrong", "wrong answer", "thats not right",
         ]
+        case .repeatAnswer: ["upprepa", "upprepa svaret", "säg det igen", "repetera", "vad sa du", "kan du upprepa", "repeat", "say that again"]
+        case .whisper: ["viska", "tystare", "prata tystare", "lägre", "sänk volymen", "whisper", "quieter"]
+        case .louder: ["högre", "prata högre", "höj volymen", "louder"]
+        case .shorter: ["svara kortare", "kortare", "kortare svar", "snabbare", "kortare tack", "shorter"]
+        case .longer: ["svara längre", "längre svar", "längre", "utförligare svar", "longer answers"]
+        case .saveAnswer: ["spara det", "spara svaret", "spara det där", "spara i anteckningar", "save that"]
+        case .nextExam: ["vilket prov har jag härnäst", "när är nästa prov", "nästa prov", "vilket är nästa prov", "next exam"]
+        case .quizMe: ["förhör mig", "testa mig", "quiz me"]
+        case .moreDetail: ["utveckla", "utveckla svaret", "berätta mer", "mer", "mer om det", "tell me more"]
+        case .simpler: ["förklara enklare", "förklara", "enklare", "förklara det enklare", "simpler"]
+        case .example: ["ge ett exempel", "ge mig ett exempel", "exempel", "give an example"]
+        case .summary: ["sammanfatta det viktigaste", "sammanfatta", "summera", "summarize"]
+        case .aLevel: ["förklara på a-nivå", "a-nivå", "som för ett a"]
+        case .harderQuestion: ["ställ en svår fråga", "en svårare fråga", "svårare fråga"]
+        case .quickQuiz: ["snabbförhör", "fem snabba frågor", "snabbförhör mig"]
+        case .weakAreas: ["testa mina svagaste områden", "hur bra kan jag det här", "vad kan jag sämst"]
+        case .careful: ["var säker", "dubbelkolla", "var noggrann"]
+        case .catchUp: ["vad missade jag", "vad har jag missat", "vad sa de"]
+        case .discreet: ["hjälp mig diskret", "diskret", "kort och diskret"]
+        case .asUsual: ["svara som jag brukar", "som vanligt"]
+        case .interviewHelp: ["hjälp mig svara professionellt", "vad borde jag säga", "hjälp mig svara"]
+        case .interviewBetter: ["bättre svar", "ge mig ett bättre svar"]
+        case .interviewConfident: ["mer självsäkert", "låt mer säker"]
+        case .interviewCounter: ["motfråga", "ge mig en motfråga"]
+        case .interviewStuck: ["hjälp jag fastnar", "jag fastnar", "hjälp"]
+        case .socialReply: ["vad ska jag svara", "vad svarar jag"]
+        case .funnier: ["roligare", "gör det roligare"]
+        case .moreNatural: ["mer naturligt", "naturligare"]
+        case .changeTopic: ["byt ämne", "nytt ämne"]
+        case .followUp: ["smart följdfråga", "följdfråga", "ge mig en följdfråga"]
+        case .whatMeant: ["vad menade personen", "vad menade hon", "vad menade han", "vad menade de"]
+        case .rizz: ["ge mig lite rizz", "lite rizz", "rizz"]
+        case .moreConfident: ["mer självsäker", "säkrare"]
+        case .flirtier: ["flirtigare", "mer flirtig"]
+        case .subtler: ["mer subtil", "subtilare"]
+        case .cockier: ["kaxigare", "mer kaxig"]
+        case .rescue: ["rädda mig", "hjälp mig ur det här"]
+        case .lessCringe: ["mindre cringe", "inte så cringe"]
+        case .threeOptions: ["tre alternativ", "ge mig tre", "tre förslag"]
         }
     }
 }
@@ -112,6 +276,14 @@ struct CommandTable: Equatable, Sendable {
             if phrases(for: action).contains(words) { return action }
         }
         return nil
+    }
+
+    /// A7: a universal word ("upprepa", "viska", "kortare", "utveckla") as the whole utterance, without "Lumen".
+    /// The caller allows it only in Provläge and Frågor with the setting on.
+    func universal(_ text: String) -> CommandAction? {
+        let words = Self.normalized(text)
+        guard !words.isEmpty else { return nil }
+        return CommandAction.allCases.first { $0.universalPhrases.contains(words) }
     }
 
     /// A prefix action ("byt till", "förhör mig") at the start of the words after "Lumen", and the words after it.
@@ -178,7 +350,7 @@ final class CommandBook: @unchecked Sendable {
 final class CommandPhraseStore {
     static let addedKey = "commands.phrases.added"
     static let removedKey = "commands.phrases.removed"
-    static let phraseLimit = 40
+    nonisolated static let phraseLimit = 40
     private static let commonWords: Set<String> = [
         "ja", "nej", "okej", "ok", "tack", "hej", "vad", "hur", "när", "var", "vem", "varför", "och", "eller", "det", "den",
         "en", "ett", "jag", "du", "vi", "är", "så", "bra", "nu", "igen", "mer", "yes", "no", "what", "how", "the", "a",

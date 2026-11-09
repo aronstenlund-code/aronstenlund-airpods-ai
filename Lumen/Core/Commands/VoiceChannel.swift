@@ -20,6 +20,8 @@ enum VoiceIntent: Equatable, Sendable {
     case music(CommandAction)
     /// A6: "det där var fel" after the name: the last turn goes to /feedback.
     case complaint
+    /// A7: a level-1 action the phone does itself ("upprepa", "viska", "spara det", "vilket prov har jag härnäst").
+    case command(CommandAction)
     /// Anything else. In Socialt läge and Rizzläge an instruction to the AI (D69 calibration, "ge mig tre"),
     /// in the other modes a question to Lumen. Never a line of the conversation.
     case instruction(String)
@@ -79,6 +81,9 @@ enum VoiceChannel {
         case .backToLumen: return .music(.backToLumen)
         case .wrong: return .complaint
         case .switchMode, .quizMe, nil: break
+        case let action?:
+            // A7: level 1 on the phone; level 2 to the backend in the words K9 knows.
+            return action.level == 1 ? .command(action) : .instruction(action.instruction)
         }
         let prefixed = table.prefix(in: words)
         if let prefixed, prefixed.action == .quizMe {
@@ -96,6 +101,8 @@ enum VoiceChannel {
 
     private static let memoryPrefixes: [(String, @Sendable (String) -> VoiceIntent)] = [
         ("kom ihåg att ", { .remember($0) }), ("kom ihåg ", { .remember($0) }), ("remember that ", { .remember($0) }),
+        // A7: "glöm inte …" is remembering, so it comes before "glöm …".
+        ("glöm inte att ", { .remember($0) }), ("glöm inte ", { .remember($0) }),
         ("glöm att ", { .forget($0) }), ("glöm ", { .forget($0) }), ("forget ", { .forget($0) }),
         ("regel ", { .rule($0) }), ("ny regel ", { .rule($0) }), ("rule ", { .rule($0) }),
     ]

@@ -139,6 +139,16 @@ final class TranscriptionCoordinator {
         await stopTranscribing()
         generation += 1
         let myGeneration = generation
+        // Toby T1 finding 1 / A8: subscribe before the token and the socket, so the words said while Scribe
+        // connects wait in the stream (up to 256 chunks, 10 s) instead of being lost.
+        let subscription = controller.subscribeToChunks()
+        chunkSubscription = subscription.id
+        func dropSubscription() {
+            if chunkSubscription == subscription.id {
+                controller.unsubscribeFromChunks(subscription.id)
+                chunkSubscription = nil
+            }
+        }
         let selectedLanguage = language.selected
         let locale = selectedLanguage.locale
 
@@ -152,6 +162,7 @@ final class TranscriptionCoordinator {
             self.availability = availability
 
             guard let chosen = SpeechEngineSelector.choose(for: locale, availability: availability) else {
+                dropSubscription()
                 status = .unavailable(selectedLanguage)
                 controller.log("STT: no on-device engine for \(locale.identifier(.bcp47))")
                 return
@@ -171,18 +182,18 @@ final class TranscriptionCoordinator {
                 await fallBackToDevice(error.localizedDescription)
                 return
             }
+            dropSubscription()
             status = .failed(error.localizedDescription)
             controller.log("STT prepare failed: \(error.localizedDescription)")
             return
         }
         guard myGeneration == generation, controller.isCapturing else {
+            dropSubscription()
             await provider.stop()
             return
         }
 
         self.provider = provider
-        let subscription = controller.subscribeToChunks()
-        chunkSubscription = subscription.id
         // Gate (D36): while the assistant speaks, its own voice must not reach the recogniser.
         let (gatedStream, gatedContinuation) = AsyncStream<AudioChunk>.makeStream(bufferingPolicy: .bufferingNewest(256))
         // D78: in front of Scribe, Silero lets only speech through. Not ready or switched off: everything goes.

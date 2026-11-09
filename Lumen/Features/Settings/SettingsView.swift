@@ -25,7 +25,7 @@ struct SettingsView: View {
                 }
                 NavigationLink("Anteckningar") { NotesView(store: model.notes) }
                 NavigationLink("Förberedelser") { PrepView(store: model.prep, goals: model.goals) }
-                NavigationLink("Röstkommandon") { VoiceCommandsView(store: model.phrases, music: model.music) }
+                NavigationLink("Röstkommandon") { VoiceCommandsView(store: model.phrases, music: model.music, voice: model.speaker.settings) }
                 NavigationLink("Egna kommandon") { CommandsView(store: model.commands) }
                 Button("Provsession, ladda upp ett prov") {
                     model.isShowingSettings = false
