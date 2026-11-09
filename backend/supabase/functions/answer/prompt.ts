@@ -267,6 +267,8 @@ export interface PromptExtras {
   note?: string;
   /** K9: a spoken instruction matched in the command table (commands.ts). */
   command?: CommandTask;
+  /** K10.2: the learned settings that apply here, as readable lines. */
+  preferences?: string[];
 }
 
 export function contextParts(
