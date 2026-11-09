@@ -16,7 +16,13 @@ protocol AnswerSink: AnyObject {
     func answerSkipped(_ request: ActivationRequest)
     /// The spoken report command (D57): the previous turn should go to the developers.
     func answerReportRequested()
+    /// K10.1 / A9.2: the backend is sure the words were an app command ("kan vi byta till frågor"); nothing is answered.
+    func answerAppCommand(_ command: AppCommand)
     func answerFailed(_ message: String, wantsFallback: Bool)
+}
+
+extension AnswerSink {
+    func answerAppCommand(_ command: AppCommand) {}
 }
 
 /// Runs one answer at a time: a new question interrupts the current answer (assignment item 5), streams
@@ -46,6 +52,8 @@ final class AnswerEngine {
     let settings: AnswerSettings
     /// A7 "svara kortare" / "längre svar": this session's length, over the setting. Nil: the setting.
     var sessionLength: AnswerLength?
+    /// A9.3: the kind of the last answer (`fact` | `study`), for a correction's context.
+    private(set) var lastAnswerType: String?
     private var task: Task<Void, Never>?
 
     var activeProvider: any AnswerProvider { useMock ? mock : cloud }
@@ -84,6 +92,8 @@ final class AnswerEngine {
                 case .meta(let meta):
                     // `done` follows at once and says whether this was the report command.
                     notAQuestion = !meta.isQuestion
+                    if let kind = meta.answerType { lastAnswerType = kind }
+                    if let command = meta.appCommand, command.isSure { sink?.answerAppCommand(command) }
                     if let question = meta.reconstructedQuestion, !meta.needsConfirmation, !question.isEmpty {
                         sink?.answerQuestionReconstructed(question)
                     }

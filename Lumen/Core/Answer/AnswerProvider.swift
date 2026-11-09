@@ -25,6 +25,11 @@ struct AnswerContext: Equatable, Sendable {
     var recentTurns: [Turn] = []
     /// D87, Provläge: the active exam (`ExamPlan.id`), so the backend knows which exam the turns belong to.
     var examID: String?
+    /// A9.3 / K10: the learned settings, their profile, and what the backend checks their scope against.
+    var preferences: [PrefSetting] = []
+    var prefProfile: String?
+    var prefSubject: String?
+    var prefExam: String?
 
     struct Turn: Equatable, Sendable, Codable {
         var text: String
@@ -64,7 +69,11 @@ struct AnswerContext: Equatable, Sendable {
                       },
                       memories: memories.prefix(Self.memoryLimit).map { String($0.prefix(Self.memoryFieldLimit)) },
                       recentTurns: recentTurns.suffix(Self.turnLimit).map { Turn(text: String($0.text.prefix(Self.qaFieldLimit)), answered: $0.answered) },
-                      examID: examID)
+                      examID: examID,
+                      preferences: Array(preferences.prefix(PreferenceStore.limit)),
+                      prefProfile: prefProfile.map { String($0.prefix(300)) },
+                      prefSubject: prefSubject,
+                      prefExam: prefExam)
     }
 }
 
@@ -151,8 +160,13 @@ struct AnswerMeta: Equatable, Sendable, Codable {
         self.needsConfirmation = needsConfirmation
     }
 
+    /// K10.1: a request to control the app in the user's own words.
+    var appCommand: AppCommand?
+    /// `fact` | `study` (K10.2: study = explanation in a correction's context).
+    var answerType: String?
+
     private enum CodingKeys: String, CodingKey {
-        case reconstructedQuestion, confidence, isQuestion, needsConfirmation
+        case reconstructedQuestion, confidence, isQuestion, needsConfirmation, appCommand, answerType
     }
 
     init(from decoder: any Decoder) throws {
@@ -161,6 +175,8 @@ struct AnswerMeta: Equatable, Sendable, Codable {
         confidence = try container.decodeIfPresent(Double.self, forKey: .confidence)
         isQuestion = try container.decodeIfPresent(Bool.self, forKey: .isQuestion) ?? true
         needsConfirmation = try container.decodeIfPresent(Bool.self, forKey: .needsConfirmation) ?? false
+        appCommand = try? container.decodeIfPresent(AppCommand.self, forKey: .appCommand)
+        answerType = try? container.decodeIfPresent(String.self, forKey: .answerType)
     }
 }
 
@@ -191,6 +207,8 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var calibration: String?
     /// The model said [[TYST]] after text it had already streamed: drop the answer, say nothing more (Kevin, D82).
     var retract: Bool?
+    /// K10.1: the app command again at the end (sure ones come with nothing answered).
+    var appCommand: AppCommand? = nil
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.

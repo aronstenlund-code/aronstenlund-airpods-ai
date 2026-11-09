@@ -122,7 +122,15 @@ final class CloudAnswerProvider: AnswerProvider {
             var social: SocialRequest?
             var adult_confirmed: Bool?
             var exam_id: String?
+            var preferences: [PrefSetting]?
+            var pref_profile: String?
+            var pref_context: PrefContext?
         }
+        struct PrefContext: Encodable {
+            var subject: String?
+            var exam: String?
+        }
+        let prefs = request.context.preferences
         let context = Body.Context(transcript: request.context.transcript.isEmpty ? nil : request.context.transcript,
                                    recent_qa: request.context.recentQA.isEmpty ? nil : request.context.recentQA,
                                    prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms,
@@ -134,7 +142,10 @@ final class CloudAnswerProvider: AnswerProvider {
                         persona: request.persona?.persona, persona_setup: request.persona?.setup,
                         turn: request.persona?.turn, social: request.persona?.social,
                         adult_confirmed: request.persona?.adultConfirmed,
-                        exam_id: request.context.examID)
+                        exam_id: request.context.examID,
+                        preferences: prefs.isEmpty ? nil : prefs,
+                        pref_profile: prefs.isEmpty ? nil : request.context.prefProfile,
+                        pref_context: prefs.isEmpty ? nil : PrefContext(subject: request.context.prefSubject, exam: request.context.prefExam))
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return (try? encoder.encode(body)) ?? Data("{}".utf8)

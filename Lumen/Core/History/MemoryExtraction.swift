@@ -98,6 +98,34 @@ final class MemoryExtractor {
         self.http = http
     }
 
+    /// A9.3 / K10.2: a correction ("kortare" right after an answer) becomes a setting with a scope. Code only on the
+    /// server, no model call. Nil: no network or not a correction.
+    func correct(text: String, context: PrefScope, settings: [PrefSetting]) async -> CorrectionReply? {
+        struct Body: Encodable {
+            struct Correction: Encodable {
+                var text: String
+                var context: PrefScope
+            }
+            var correction: Correction
+            var settings: [PrefSetting]
+        }
+        do {
+            let token = try await auth.accessToken()
+            var request = URLRequest(url: config.memoryURL)
+            request.httpMethod = "POST"
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.timeoutInterval = 15
+            request.httpBody = try JSONEncoder().encode(Body(correction: .init(text: String(text.prefix(200)), context: context), settings: settings))
+            let (response, data) = try await http.data(for: request)
+            guard response.statusCode == 200 else { return nil }
+            return try JSONDecoder().decode(CorrectionReply.self, from: data)
+        } catch {
+            return nil
+        }
+    }
+
     func extract(_ body: MemoryExtraction.Body) async -> [String] {
         do {
             let token = try await auth.accessToken()

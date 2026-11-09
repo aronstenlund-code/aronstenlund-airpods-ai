@@ -5,6 +5,8 @@ import SwiftUI
 struct MemoryView: View {
     let store: MemoryStore
     let commands: CommandStore
+    /// A9.3: the learned answer settings (K10).
+    var preferences: PreferenceStore?
     @State private var newMemory = ""
     @State private var editing: MemoryItem?
     @State private var editedText = ""
@@ -22,6 +24,26 @@ struct MemoryView: View {
                 }
             } footer: {
                 Text("Säg \"Lumen, kom ihåg …\", \"Lumen, glöm …\" eller \"Lumen, regel: …\". Efter varje tur sparar Lumen också viktiga saker du säger om dig själv, med datum. Känsliga uppgifter (hälsa, tro, politik och liknande) sparas aldrig av sig själva. Allt ligger på den här iPhonen, skickas med dina frågor och går ut efter 2 år.")
+            }
+            if let preferences {
+                Section {
+                    if preferences.settings.isEmpty {
+                        Text("Inget inlärt än. Säg till exempel \"kortare\" eller \"mer exempel\" direkt efter ett svar.").foregroundStyle(.secondary)
+                    }
+                    ForEach(preferences.settings) { setting in
+                        Text(setting.text)
+                            .swipeActions {
+                                Button("Ta bort", role: .destructive) { preferences.remove(setting) }
+                                if !setting.scope.isGlobal {
+                                    Button("Överallt") { preferences.makeGlobal(setting) }.tint(.blue)
+                                }
+                            }
+                    }
+                } header: {
+                    Text("Inlärda inställningar")
+                } footer: {
+                    Text("Lumen lär sig av dina rättelser och gäller dem där du gav dem. Svep för att ta bort eller låta en gälla överallt.")
+                }
             }
             Section("Regler") {
                 if store.rules.isEmpty {

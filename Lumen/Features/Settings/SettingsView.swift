@@ -46,7 +46,7 @@ struct SettingsView: View {
             }
             Section("History and memory") {
                 NavigationLink("History") { HistoryView(store: model.history) }
-                NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands) }
+                NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences) }
                 if let cards = model.studyCards {
                     NavigationLink("Studiekort") { StudyCardsView(store: cards) }
                 }

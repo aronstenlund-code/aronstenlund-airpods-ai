@@ -166,6 +166,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let music: MusicRemote
     /// A9.1: which commands were used, and the one tip per session and day.
     let tips: CommandTipStore
+    /// A9.3: learned answer settings (K10), shown in Minne and sent with every answer.
+    let preferences: PreferenceStore
+    /// A9.2: the last app command done for the backend, so "nej" / "ångra" within 5 s takes it back.
+    @ObservationIgnored private var lastAppCommand: (command: AppCommand, previousMode: ConversationMode, wasListening: Bool, at: Date)?
+    static let undoWindow: TimeInterval = 5
     /// The tip on the screen, until the next answer.
     private(set) var tipNotice: String?
     private var tipTask: Task<Void, Never>?
@@ -232,7 +237,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          speakers: SpeakerIdentifier? = nil, studyCards: StudyCardStore? = nil, studyCardsClient: StudyCardsClient? = nil,
          studyProfileClient: StudyProfileClient? = nil, examMaterials: ExamMaterials? = nil, examClient: ExamClient? = nil,
          examPlans: ExamPlanStore? = nil, phrases: CommandPhraseStore? = nil, music: MusicRemote? = nil,
-         tips: CommandTipStore? = nil) {
+         tips: CommandTipStore? = nil, preferences: PreferenceStore? = nil) {
+        self.preferences = preferences ?? PreferenceStore(defaults: UserDefaults(suiteName: "lumen.prefs.\(UUID().uuidString)") ?? .standard)
         self.tips = tips ?? CommandTipStore(defaults: UserDefaults(suiteName: "lumen.tips.\(UUID().uuidString)") ?? .standard)
         self.phrases = phrases ?? CommandPhraseStore(defaults: UserDefaults(suiteName: "lumen.phrases.\(UUID().uuidString)") ?? .standard,
                                                      book: CommandBook())
@@ -1103,6 +1109,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             Task { await stopByVoice() }
         case .instruction(let text):
             controller.log("Voice: instruction (\(text.count) characters)") // the words stay out of the log
+            // A9.3: these presets are also corrections of the answer just given.
+            if ["förklara enklare", "ge ett exempel"].contains(text) { learnCorrection(text == "ge ett exempel" ? "mer exempel" : "enklare") }
             instruct(text)
         case .remember(let text):
             if memory.add(text, kind: .fact, source: .voice) != nil {
@@ -1126,6 +1134,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             Task { await musicByVoice(action) }
         case .complaint:
             controller.log("Voice feedback: the last turn goes to /feedback")
+            learnCorrection("det där var fel")
             Task { await reportPreviousTurn() }
         case .command(let action):
             controller.log("Voice: command \(action.rawValue)")
@@ -1153,6 +1162,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.log("Voice gain \(String(format: "%.2f", settings.speechGain))")
             confirm(action.confirmation)
         case .shorter, .longer:
+            learnCorrection(action == .shorter ? "kortare" : "längre")
             answers.sessionLength = action == .shorter ? .short : .long
             controller.log("Session length \(answers.sessionLength?.rawValue ?? "-")")
             confirm(action.confirmation)
@@ -2096,14 +2106,46 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                  commands: matched.map { AnswerContext.Command(keyword: $0.keyword, instruction: $0.instruction) },
                                  memories: memory.backendItems(),
                                  recentTurns: turnsBefore(request.query),
-                                 examID: currentExamID()?.uuidString)
+                                 examID: currentExamID()?.uuidString,
+                                 preferences: preferences.settings, prefProfile: preferences.profile,
+                                 prefSubject: prefSubject, prefExam: prefExam)
         }
         return AnswerContext(transcript: conversation.recentText(seconds: 60),
                              recentQA: conversation.recentQA(limit: qaLimit),
                              prepTerms: prep.backendTerms + (studyProfile.profile.terms ?? []), // D84: the subject's terms
                              goals: goals.compact,
                              commands: matched.map { AnswerContext.Command(keyword: $0.keyword, instruction: $0.instruction) },
-                             memories: memory.backendItems())
+                             memories: memory.backendItems(),
+                             preferences: preferences.settings, prefProfile: preferences.profile,
+                             prefSubject: prefSubject, prefExam: prefExam)
+    }
+
+    /// A9.3: the subject and exam a setting's scope is checked against (K10 `pref_context`).
+    private var prefSubject: String? {
+        let subject = studyProfile.profile.subject.trimmingCharacters(in: .whitespaces)
+        return mode == .prov && !subject.isEmpty ? subject : nil
+    }
+
+    private var prefExam: String? {
+        guard mode == .prov, let id = currentExamID() else { return nil }
+        return examPlans?.plans.first { $0.id == id }?.name
+    }
+
+    /// A9.3: "kortare", "enklare", "mer exempel", "det där var fel" right after an answer become a learned setting
+    /// for the context of that answer (K10.2). The phone's own effect (A7) happens as before.
+    func learnCorrection(_ text: String) {
+        guard let extractor = memoryExtractor, let last = lastAnswerAt, Date().timeIntervalSince(last) < 120 else { return }
+        let subject = prefSubject
+        let kind: String? = subject.map { $0.lowercased().hasPrefix("matem") } == true
+            ? "math" : answers.lastAnswerType.map { $0 == "study" ? "explanation" : "fact" }
+        let context = PrefScope(mode: mode.backendName, subject: subject, exam: prefExam, answerType: kind)
+        let current = preferences.settings
+        Task { [weak self] in
+            guard let reply = await extractor.correct(text: text, context: context, settings: current), let self else { return }
+            guard reply.skipped == nil, let settings = reply.settings else { return }
+            self.preferences.replace(with: settings)
+            self.controller.log("Learned setting: \(reply.setting?.text ?? "-")")
+        }
     }
 
     // MARK: - Answer ahead, deliver at the pause (D80)
@@ -2380,6 +2422,50 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         askWaitingQuestionIfIdle()
     }
 
+    /// A9.2 / K10.1: "kan vi byta till frågor" in the user's own words. The app does it and confirms; "nej" or
+    /// "ångra" within 5 s takes it back. Outside Provläge and Frågor the backend only sends it after "Lumen".
+    func answerAppCommand(_ command: AppCommand) {
+        lastAppCommand = (command, mode, isListening, Date())
+        controller.log("App command: \(command.action) \(command.mode ?? "")")
+        tips.markUsed(command.action == "switch_mode" ? .switchMode : command.action == "stop" ? .stop : .musicHandOff)
+        switch command.action {
+        case "switch_mode":
+            guard let name = command.mode, let target = ConversationMode(backendName: name) else { return }
+            Task { await switchByVoice(to: target) }
+        case "pause":
+            Task { await pauseByVoice() }
+        case "stop":
+            Task { await stopByVoice() }
+        case "resume":
+            Task { await resume() }
+        default:
+            lastAppCommand = nil
+        }
+    }
+
+    /// A9.2: true when the words took the last app command back.
+    private func undoAppCommandIfAsked(_ text: String, at date: Date) -> Bool {
+        guard let last = lastAppCommand, date.timeIntervalSince(last.at) <= Self.undoWindow, UndoWords.matches(text) else { return false }
+        lastAppCommand = nil
+        controller.log("App command undone: \(last.command.action)")
+        Task {
+            switch last.command.action {
+            case "switch_mode":
+                await switchByVoice(to: last.previousMode)
+            case "pause":
+                await resume()
+            case "stop":
+                if last.wasListening { await startMode(last.previousMode) }
+            case "resume":
+                await pauseByVoice()
+            default:
+                break
+            }
+            say(language == .swedish ? "Okej, ångrat." : "Okay, undone.")
+        }
+        return true
+    }
+
     func answerReportRequested() {
         if bufferAhead(.report) { return }
         if ahead?.delivered == true { ahead = nil }
@@ -2525,6 +2611,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let identity = speakers?.identity(near: date, window: 4) { labelTranscript(identity, at: date) }
         if isOwnEcho(segment.text, at: date), !isWearerUsingSuggestion(segment.text, level: study.currentTurnLevelDBFS) {
             discardAhead(reason: "Lumen's own echo")
+            return
+        }
+        if undoAppCommandIfAsked(segment.text, at: date) {
+            discardAhead(reason: "an undo")
+            study.discardTurnText()
             return
         }
         if !segment.overlapsPlayback, VoiceCommand.isMusicHandOff(segment.text) {
