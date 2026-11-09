@@ -40,6 +40,13 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 
 - [x] **K8 – Färre onödiga begränsningar (D89)** (effort: high). _klar 2026-11-09 19:45 (Kevin): `reports/2026-11-09-1945-kevin-k8-fewer-restrictions.md` (pris i Auto och komplimanger om utseende öppna)_ Beror på: Oscars O7. Gör efter K7. Läs `docs/PRINCIPLES.md` och Oscars O7-rapport. Ta bort eller smalna av de begränsningar han markerat som onödiga eller för breda, per läge. Lägg hans 60 fall i live-eval med kravet: 0 onödiga avslag, högst 5 % onödiga förbehåll, och de 10 begränsade fallen ska fortfarande begränsas. Skydden i PRINCIPLES ("Detta tas aldrig bort") rörs inte. Skriv i DECISIONS vad som ändrats och varför.
 
+- [ ] **K12 – Oscars O9-fynd och 429** (effort: medium). Gör före K4. Underlag: `reports/qa/2026-11-09-1835-oscar-o9-kommandon.md`, avsnittet "Till Kevin":
+  1. `WRAP_END` stryker "för mig" före matchningen.
+  2. `weak_areas` ska gå före `quiz_topic`.
+  3. `gör(?:a)?` i familjerna.
+  4. Ingen kontrollfråga efter `summary` om eleven inte ber om det.
+  Kolla också Tobys T6-fynd 7: 429 vid snabba instruktioner i Socialt och Rizz. En användare som ger 3–4 instruktioner i rad får aldrig 429. Höj gränsen för instruktioner, eller räkna dem separat.
+
 - [ ] **K4 – Snabbare förbättringsloop** (effort: medium). Gör efter K2 om K2 inte redan täcker det.
   1. Varje ändring i backend som rör svar körs automatiskt mot ett urval på 40 fall ur D87-testbanken (i CI, några cent) och resultatet skrivs i PR/commit-kommentaren, så att en försämring syns direkt.
   2. 8–12 förebildssvar för Provläget (olika ämnen, årskurser, nyckelord, följdfråga) i den cachade systemprompten. Mät före och efter.

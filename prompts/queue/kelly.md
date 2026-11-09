@@ -25,3 +25,9 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [x] klar 2026-11-09 19:45 → reports/2026-11-09-1940-kelly-ke6-annonser.md **Ke6 – Tre annonsbilder för korta videoflöden** (effort: medium). Gör 3 stillbilder, 1080×1920 (TikTok, Snapchat, Reels), i `docs/marketing/annonser/`, i sidans stil (rutpapper, handstil). Använd riktiga skärmbilder från T3 och en riktig fråga och ett riktigt svar från D87-körningen. Svensk text till högstadie- och gymnasieelever, med en vinkel per bild: "Bli förhörd inför provet", "Fråga i örat, få A-nivåsvaret", "Plugga utan att titta på skärmen". Regler: inga påståenden om svarstid i sekunder, inget om funktioner som inte är testade på telefon, inget om fusk på prov, och ingen verklig person. Bilderna ska vara PNG på högst 500 kB och ha en skiss för textrutorna. Aron väljer själv vilka som används.
 
+- [ ] **Ke7 – Annonserna och demosidan med karaktären Elias** (effort: medium). Läs `docs/marketing/karaktar.md`. Aron har valt en egen figur i varm, stiliserad 3D. Den frilagda bilden kommer i `docs/marketing/elias-frilagd.png` (Deangelo lägger in den).
+  1. Gör om Ke6:s tre annonsbilder med Elias i stället för skärmbilder som huvudmotiv. Skärmbilden får vara kvar som en mindre detalj.
+  2. Lägg Elias i demosidans hero med de blå ringarna som CSS-animation från hörluren, som i appens intro. "Reducera rörelse" ska respekteras.
+  3. Gör en ny delningsbild (1200×630) med Elias.
+  Tills bilden finns: bygg med en platshållare i samma storlek. Lighthouse ska hålla minst 95. Skärmbilder mobil och dator.
+

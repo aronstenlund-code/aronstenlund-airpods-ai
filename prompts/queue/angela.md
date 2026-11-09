@@ -89,3 +89,14 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   6. **Introts hero (ändrat av Deangelo 2026-11-09, ersätter videoloopen):** ingen video. Hero-ytan högst upp i introt (fältet med rutpapper ovanför "Lumen") visar karaktären Elias (`docs/marketing/karaktar.md`) som **frilagd PNG med transparent bakgrund**, med huvud och axlar, ovanpå appens eget rutpapper. Då fungerar den i både ljust och mörkt läge. Ringarna (Lumens logga) ritas och animeras **i SwiftUI** och sprids från hörluren tre gånger, i loggans färg och takt. Med "Reducera rörelse" visas ringarna stilla. Bilden ska vara högst 300 kB i @3x, med en mörk variant om kanten syns dåligt mot mörkt rutpapper. Bygg platsen nu med `IntroHeroView` och en platshållare. Filen kommer i `Lumen/Resources/Assets.xcassets/IntroElias` när Aron har godkänt bilden. Ringarnas utgångspunkt (hörlurens position i bilden) ska vara ett värde som går att justera.
   7. Skärmbilder före och efter, ljust och mörkt, iPhone SE och Pro. Be Toby i din rapport att köra om T3.
 
+**Deangelo 2026-11-09 20:50:** Kevins K10 är klar, så A9.2–3 är inte blockerad längre. Ordning nu: A9.2–3 → A14 → A13.
+
+- [ ] **A14 – Tobys T6-fynd (röstkommandon)** (effort: high). Underlag: `reports/apptest/*t6*`, avsnittet "Fynd (till Angela)". Rätta i den här ordningen:
+  1. "Lumen" räknas som tilltal bara i början av ett yttrande. Det ger 5 falska träffar av 68.
+  2. Ett ensamt "Lumen."-segment slås ihop med nästa segment.
+  3. Tolerant matchning för nivå 1-kommandon: verbändelser och små hörfel.
+  4. Keyterms för korta universalord och för lånorden i Socialt och Rizz.
+  5. Kontrollera om A10:s tvingade slutresultat kapar sista ordet.
+  6. Lägg till en loggrad för namnlösa musikkommandon.
+  Be Toby köra om T6 när du är klar. Krav: 0 falska träffar.
+
