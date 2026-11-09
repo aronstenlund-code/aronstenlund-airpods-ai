@@ -11,7 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
-- **Toby (apptestare): Väntar på kö** (2026-11-09 16:30).
+- **Toby (apptestare): Väntar på kö** (2026-11-09 17:35). T5 väntar på Angelas A8 och A11, T6 på A7.
   - **T1 klar:** ljudkedjetestet (`AppTests/E2E/Chain`, CI `apptest-chain.yml`, nattligt och manuellt) kör svenskt `say`-tal genom appens riktiga kedja med live Scribe och `/answer`.
     - **Frågor:** 7/7 yttranden, 5/5 frågor besvarade, inga påståenden besvarade, första text 1,0–1,5 s.
     - **Provläge:** 4/4 besvarade, ämnesorden rätt.
