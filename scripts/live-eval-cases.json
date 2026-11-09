@@ -3999,8 +3999,7 @@
 {
 "q": "hjälp mig svara professionellt",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4018,8 +4017,7 @@
 {
 "q": "vad borde jag säga",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4037,8 +4035,7 @@
 {
 "q": "Lumen, vad ska jag säga",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4056,8 +4053,7 @@
 {
 "q": "ge mig ett bättre svar",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4075,8 +4071,7 @@
 {
 "q": "gör svaret bättre",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4094,8 +4089,7 @@
 {
 "q": "förbättra det",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4113,8 +4107,7 @@
 {
 "q": "mer självsäkert",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4132,8 +4125,7 @@
 {
 "q": "låt mer säker",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4151,8 +4143,7 @@
 {
 "q": "mer övertygande",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4171,7 +4162,6 @@
 "q": "ge mig en motfråga",
 "interview": true,
 "ttft_budget_ms": 3500,
-"no_invented_facts": true,
 "allow_question": true
 }
 ]
@@ -4191,7 +4181,6 @@
 "q": "vad kan jag fråga tillbaka",
 "interview": true,
 "ttft_budget_ms": 3500,
-"no_invented_facts": true,
 "allow_question": true
 }
 ]
@@ -4211,7 +4200,6 @@
 "q": "en bra fråga att ställa",
 "interview": true,
 "ttft_budget_ms": 3500,
-"no_invented_facts": true,
 "allow_question": true
 }
 ]
@@ -4230,8 +4218,7 @@
 {
 "q": "hjälp, jag fastnar",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4249,8 +4236,7 @@
 {
 "q": "jag har fastnat",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },
@@ -4268,8 +4254,7 @@
 {
 "q": "jag vet inte vad jag ska säga",
 "interview": true,
-"ttft_budget_ms": 3500,
-"no_invented_facts": true
+"ttft_budget_ms": 3500
 }
 ]
 },

@@ -1100,7 +1100,9 @@ export class AnswerPost {
   constructor(opts: PostOptions) {
     this.dup = new DupGuard(opts.previousAnswers);
     // K2: a profile without check questions trims every closing question, also in Provläge
-    this.trim = new QuestionTrim(opts.trimQuestion, opts.tutor === true && opts.trimQuestion !== true);
+    // K9: a question the student asked for ("ställ en svår fråga", "förhör mig på X") is never held to the short
+    // check-question form (a hard question needs reasoning)
+    this.trim = new QuestionTrim(opts.trimQuestion, opts.tutor === true && opts.trimQuestion !== true && opts.quizOnly !== true);
     this.gate = new FirstLineGate(opts.firstLineOnly === true);
     this.rel = new RelationTap(opts.relationTag === true);
     this.sil = new SilenceTap(opts.silence === true);
