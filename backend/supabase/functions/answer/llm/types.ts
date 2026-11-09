@@ -10,6 +10,8 @@ export interface LLMRequest {
   toolChoice?: unknown;
   /** D87: no thinking even on models where it is on by default (Sonnet 5.5: `between_tools`). */
   noThinking?: boolean;
+  /** K7.6: think before answering (adaptive thinking at effort high, room for it in max_tokens): word problems. */
+  think?: boolean;
   /** Overrides the provider's default model for this request (D52: Rizz uses a stronger model). */
   model?: string;
   signal?: AbortSignal;

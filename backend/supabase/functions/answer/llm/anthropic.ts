@@ -204,7 +204,7 @@ export class AnthropicProvider implements LLMProvider {
             // Haiku 5.5: temperature/top_p/top_k must be omitted. Thinking off + low effort = lowest latency.
             body: JSON.stringify({
               model,
-              max_tokens: req.maxTokens,
+              max_tokens: req.think ? req.maxTokens + 6000 : req.maxTokens,
               stream: true,
               system: req.cacheSystem
                 ? [{ type: "text", text: req.system, cache_control: { type: "ephemeral" } }]
@@ -221,8 +221,9 @@ export class AnthropicProvider implements LLMProvider {
                   ]
                   : req.user,
               }],
-              output_config: { effort: this.cfg.effort },
-              ...(withThinking
+              output_config: { effort: req.think ? "high" : this.cfg.effort },
+              ...(req.think ? { thinking: { type: "adaptive" } } : {}),
+              ...(withThinking && !req.think
                 ? { thinking: { type: /sonnet-5-5/i.test(model) ? "between_tools" : "disabled" } }
                 : {}),
               ...(tools?.length ? { tools } : {}),

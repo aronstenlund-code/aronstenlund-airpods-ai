@@ -756,7 +756,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
-          ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem } : {}),
+          ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
           signal: ac.signal,
         })[Symbol.asyncIterator]();
       const firstP = iterator.next().then((r) => {
@@ -974,7 +974,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 cacheSystem: true,
                 tools,
                 ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
-                ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem } : {}),
+                ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
                 signal: ac2.signal,
               })[Symbol.asyncIterator]();
               post = new AnswerPost({
