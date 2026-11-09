@@ -22,6 +22,14 @@ import { applicable, describe } from "../memory/settings.ts";
 /** K9: tasks that ask for one check question (only the question is said, as for "förhör mig"). */
 const FREE_INSTRUCTION_NOTE =
   "The fragment is the student's spoken instruction to you (said after \"Lumen\"), not a question: carry it out on the last answer in <recent_qa> or the current topic, in the usual spoken style. Never answer it as a question about its own words and never silence.";
+/** K10.2: what each learned setting means for this answer (shown with its readable line). */
+const PREF_RULE: Record<string, string> = {
+  "length:shorter": "at most three short sentences, the core only",
+  "length:longer": "a developed answer, clearly longer than usual, with the why and the details",
+  "simplicity:simpler": "everyday words and short sentences; explain every subject term in plain words; no extra terms",
+  "examples:more": "always at least one concrete everyday example, introduced with \"Till exempel\" or \"Ett exempel är\"",
+  "accuracy:careful": "double-check every fact and leave out anything you are not sure of",
+};
 const QUIZ_TASKS = new Set(["harder_question", "quick_quiz", "yes_no_quiz", "quiz_topic", "weak_areas"]);
 import { missingFact, missingFactNote } from "./interviewfacts.ts";
 import { nowContext } from "./datecalc.ts";
@@ -509,6 +517,28 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         );
       }
 
+      // K10.2 (measured: "kortare" was ignored 0/6 when only a line in the prompt said it): a learned length setting
+      // drives the real length controls, the Provläge profile's explanation length or `length`
+      const earlySubject = body.prefContext?.subject ?? /(?:^|\.\s*)Ämne:\s*([^.]+)/u.exec(body.personaSetup)?.[1]?.trim();
+      const earlyPrefs = body.preferences?.length && !demo
+        ? applicable(body.preferences, {
+          mode: currentMode(body) ?? undefined,
+          subject: earlySubject,
+          exam: body.prefContext?.exam,
+          answer_type: /^matem/iu.test(earlySubject ?? "") ? "math" : undefined,
+        })
+        : [];
+      const lengthPref = earlyPrefs.find((x) => x.key === "length")?.value;
+      if (lengthPref === "shorter" || lengthPref === "longer") {
+        const want = lengthPref === "shorter" ? "korta förklaringar" : "utförliga förklaringar";
+        if (body.mode === "tutor" && body.persona === "tutor" && body.personaSetup) {
+          body.personaSetup = /Förklaringar:\s*[^.]*\./u.test(body.personaSetup)
+            ? body.personaSetup.replace(/Förklaringar:\s*[^.]*\./u, `Förklaringar: ${want}.`)
+            : `${body.personaSetup} Förklaringar: ${want}.`;
+        } else if (!personaPlan(body)) {
+          body.length = lengthPref === "shorter" ? "short" : "long";
+        }
+      }
       const direct = (cfg.directModes && body.mode !== "auto") || !!personaPlan(body);
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
       const plan = personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
@@ -652,7 +682,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           subject: prefSubject,
           exam: body.prefContext?.exam,
           answer_type: computed || /^matem/iu.test(prefSubject ?? "") ? "math" : answerType === "study" ? "explanation" : "fact",
-        }).map(describe)
+        }).map((x) => `${describe(x)}: ${PREF_RULE[`${x.key}:${x.value}`] ?? ""}`.replace(/: $/, ""))
         : [];
       // K10.3: the profile goes in its own cached system block after the shared prompt
       const systemTail = body.prefProfile && !demo
