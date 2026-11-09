@@ -1,0 +1,2 @@
+# Kelly Ke6: tre annonsbilder
+Tre bilder + tre skisser i `docs/marketing/annonser/` (PNG 160–243 kB, 1080×1920), källa i `_src/`. Text och app-bilder enligt `README.md` där. Fråga och svar är ordagrant ur de riktiga D87-svaren (samma som demosidan), app-bilderna ur Tobys T3 (simulatorn, **inte verifierade på riktig iPhone**). Avvikelse från köns ordalydelse: rubrik 2 är "Fråga i örat. Sikta på A-nivå." för att inte lova A. Kollade bild 1, 2 och 3-skissen visuellt; bild 2 och 3 utan skiss och mörkt läge inte genomgångna. Inget hörbart eller tidsangivet i bilderna.
