@@ -57,3 +57,10 @@
   4. Lägg 3 korta A/B-par (samma mening) som Actions-artefakt eller i Supabase Storage, aldrig i git, så att Aron kan lyssna och välja själv.
   5. Rapport med tabell och rekommendation. Budget: högst 1 USD i API och 20 000 ElevenLabs-tecken.
 
+- [ ] **O13 – Test av K16–K19** (effort: high). Beror på: respektive K-punkt. Oberoende fall:
+  1. Recept och följdfrågor utan motsägelser (K16).
+  2. Repetitionen kommer tillbaka på rätt dag (K17, simulerad tid).
+  3. Ämnesord uttalas rätt genom TTS → Scribe (K18).
+  4. Länkarna fungerar och handlar om ämnet (K19), och ingen påhittad URL.
+  Budget 0,60 USD.
+
