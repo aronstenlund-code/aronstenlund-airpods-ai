@@ -1,0 +1,62 @@
+name: Apptest long run (T2)
+
+# Toby's long run: Provläge on looped Swedish speech in the Simulator for an hour (memory, Scribe renewal, the mode
+# staying on, first-text time over the hour). Live and paid (about an hour of Scribe and ~150 /answer calls), so
+# manual only; a 5-minute smoke run on Toby's own branch when the test changes. Simulator only: never a device test.
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "Minutes of Provläge"
+        required: false
+        default: "60"
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Chain/LongRunE2ETests.swift"
+      - "scripts/apptest/long_curves.py"
+      - ".github/workflows/apptest-long.yml"
+
+concurrency:
+  group: apptest-long-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  long:
+    name: Provläge long run (Simulator, live)
+    runs-on: macos-26
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Long run
+        env:
+          MINUTES: ${{ github.event.inputs.minutes }}
+        run: |
+          LONG_MINUTES="${MINUTES:-5}" bash scripts/apptest/chain.sh
+          STATUS=$?
+          cat apptest-out/chain/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-long
+          path: |
+            apptest-out/chain
+            !apptest-out/chain/audio/*.wav
+            !apptest-out/chain/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn

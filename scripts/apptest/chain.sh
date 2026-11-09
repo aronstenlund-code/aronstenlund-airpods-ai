@@ -3,7 +3,8 @@
 # exists) go through the app's real chain in the Simulator: VAD → Scribe live → utterance joining → QuestionGate /
 # Provläge → /answer. Live and paid (Scribe, /answer): manual and nightly only.
 #
-#   scripts/apptest/chain.sh
+#   scripts/apptest/chain.sh                       the chain test (T1)
+#   LONG_MINUTES=60 scripts/apptest/chain.sh       the long run (T2): Provläge on looped speech, curves
 #
 # Output: apptest-out/chain/{fragor,prov}.json, audio/ (the generated files), logs/. Simulator only.
 set -uo pipefail
@@ -51,15 +52,18 @@ xcrun simctl bootstatus "$UDID" -b >/dev/null
 xcrun simctl privacy "$UDID" grant microphone com.rsolutions.lumen || true
 
 echo "::group::Chain test (real time, live Scribe and /answer)"
+TEST_NAME="AudioChainE2ETests"
+[ -n "${LONG_MINUTES:-}" ] && TEST_NAME="LongRunE2ETests"
 TEST_RUNNER_LUMEN_E2E_DIR="$AUDIO" \
 TEST_RUNNER_LUMEN_E2E_OUT="$OUT" \
+TEST_RUNNER_LUMEN_E2E_LONG_MINUTES="${LONG_MINUTES:-}" \
 xcodebuild test \
   -project Lumen.xcodeproj \
   -scheme LumenE2E \
   -destination "platform=iOS Simulator,id=$UDID" \
   -derivedDataPath "$ROOT/DerivedData-chain" \
   -resultBundlePath "$OUT/logs/chain.xcresult" \
-  -only-testing:LumenE2ETests/AudioChainE2ETests \
+  -only-testing:"LumenE2ETests/$TEST_NAME" \
   -testLanguage sv -testRegion SE \
   -parallel-testing-enabled NO \
   CODE_SIGNING_ALLOWED=NO \
@@ -68,6 +72,10 @@ STATUS=$?
 grep -E "error:|✘|✔|Test run|T1 result|passed|failed" "$OUT/logs/chain-test.log" | tail -n 60
 echo "::endgroup::"
 
-python3 -I "$ROOT/scripts/apptest/chain_summary.py" "$OUT" > "$OUT/summary.md" || true
+if [ -n "${LONG_MINUTES:-}" ]; then
+  python3 -I "$ROOT/scripts/apptest/long_curves.py" "$OUT" > "$OUT/summary.md" || true
+else
+  python3 -I "$ROOT/scripts/apptest/chain_summary.py" "$OUT" > "$OUT/summary.md" || true
+fi
 cat "$OUT/summary.md"
 exit $STATUS
