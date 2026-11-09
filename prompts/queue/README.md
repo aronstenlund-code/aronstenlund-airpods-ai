@@ -13,4 +13,12 @@ Arbetssätt för sessionen:
 
 7. **Kontext (lätt, läs aldrig om sessionen):** skriv i kolumnen *Kontext* på din tavelrad hur många punkter du gjort i den här sessionen, och "komprimerad" om sessionen har komprimerats. Vid 5 punkter eller efter en komprimering: skriv "byt snart" i kolumnen, gör klart pågående punkt, ta ingen ny, och skriv en kort `docs/HANDOVER-<namn>.md` (högst 30 rader: vad du lärt dig som inte står i rapporterna, öppna trådar). Deangelo ger Aron en startprompt för en ny session.
 
+8. **Nattläge** (står överst på tavlan med en sluttid, Aron sover):
+   - Jobba igenom kön utan att avsluta din tur mellan punkterna. Rapport, STATUS, kö och tavla pushas efter varje punkt som vanligt.
+   - Tom kö eller bara punkter som väntar: ta din stående uppgift (`docs/PLAN.md` 2b), skriv den som en egen punkt i din kö och gör den.
+   - Punkt 7 stoppar inte arbetet: skriv överlämningen när du når gränsen men fortsätt jobba.
+   - Vänta aldrig på Aron. Det som är hans beslut skrivs under "Till Aron" i rapporten, och du tar nästa punkt.
+   - Har du `send_later`: schemalägg "kolla kön" om 30 min innan du avslutar en tur, fram till sluttiden.
+   - Fortfarande aldrig utan Aron (CLAUDE.md): radera data eller historik, force-push, betaltjänster eller köp, publicera (TestFlight/App Store), ändra kontoinställningar. API-kostnad i natt: högst 6 USD för Kevin och 2 USD för Oscar.
+
 Ändra aldrig andras punkter eller andras köfiler. Effort står på varje punkt.

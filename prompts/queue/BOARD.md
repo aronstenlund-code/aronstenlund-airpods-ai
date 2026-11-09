@@ -1,5 +1,7 @@
 # Tavla: vem gör vad
 
+**Nattläge: på till 2026-11-10 07:30.** Aron sover. Se README punkt 8.
+
 Deangelo läser tavlan före varje statusrapport till Aron. **Varje session uppdaterar bara sin egen rad**:
 - när den tar en punkt,
 - när den blir klar (resultatet i en mening med siffror),
