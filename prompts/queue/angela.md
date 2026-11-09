@@ -31,7 +31,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   3. Visa aldrig "Lyssnar" när ingen igenkänning går. Visa och säg en gång tydligt "Jag hör inte just nu, försöker igen" (som A5).
   4. Enhetstest för återanslutningen. Toby kör om T2 efteråt.
 
-- [~] pågår 2026-11-09 18:25 **A12 – Tobys skärmfynd** (effort: low). Från `reports/apptest/2026-11-09-1625-toby-t3-screens.md`: Rizz-åldersspärren klipps, samtyckespunkterna syns inte på iPhone SE, nekad mikrofon gör ingenting (visa en förklaring och en knapp till Inställningar), och texten klipps vid största textstorlek. Skärmbilder före och efter.
+- [x] klar 2026-11-09 20:16 → reports/2026-11-09-angela-a12-screen-findings.md **A12 – Tobys skärmfynd** (effort: low). Från `reports/apptest/2026-11-09-1625-toby-t3-screens.md`: Rizz-åldersspärren klipps, samtyckespunkterna syns inte på iPhone SE, nekad mikrofon gör ingenting (visa en förklaring och en knapp till Inställningar), och texten klipps vid största textstorlek. Skärmbilder före och efter.
 
 - [x] klar 2026-11-09 17:41 → reports/2026-11-09-angela-a6-music-commands.md **A6 – Musik ↔ Lumen och egna kommandon** (effort: high). Ägarkrav (Aron 2026-11-08 20:41): man ska lätt kunna växla mellan musik och Lumen, antingen genom att säga det till Lumen eller med en AirPods-gest (en av gesterna, inte både tryck och håll in). Övriga röstkommandon ska fungera, och användaren ska kunna ändra fraserna. Nästan alla använder Spotify.
   1. **Lumen → musik:** "Lumen, pausa"/"spela musik" (finns, D58) och ett tryck på AirPods-skaftet medan Lumen lyssnar (MPRemoteCommandCenter `togglePlayPause`/`pause`). Båda släpper ljudet och startar musiken igen.
