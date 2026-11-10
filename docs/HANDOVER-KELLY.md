@@ -25,10 +25,19 @@ Det här står inte i rapporterna. Rapporterna `reports/*kelly*` täcker resten.
 - Samtyckesmeningen under Testa nu och tummen ned (D57) får aldrig försvinna ur en skiss.
 
 ## Öppna trådar
-- Ke13b klar: sidan följer SYSTEM.md. Ke13 (D97, två knappar på provkortet) klar. Loggan byts när Aron valt A, B eller C (sidhuvudet, `og-lumen.png` via `docs/marketing/annonser/_src/og-system.html`, appen).
+- Ke13b klar: sidan följer SYSTEM.md. Ke13 (D97, två knappar på provkortet) klar. Loggan byts när Aron valt (Ke24, ChatGPT-förslagen; A/B/C gillades inte) (sidhuvudet, `og-lumen.png` via `docs/marketing/annonser/_src/og-system.html`, appen).
 - Kör Lighthouse med `--blocked-url-patterns="*supabase.co*"`. Annars skapar varje körning en anonym inloggning, och spärren
   ger 429 (Best Practices 96). Med blockering: 99/100/100/100 (Ke19).
-- Skärmbilderna i sidans tre steg (Ke18) byts när Angelas A26 har skärmbilder i repot. Granska dem först (PLAN 2c).
+- **Ke18 klar (12:49).** Stegbilderna görs med `ke18.py` (scratchpad, försvinner): ta Pro-bilderna ur
+  `reports/<datum>-aNN-skarmbilder/` eller ur CI-artefakten från "Simulator screenshots" (API: `actions/runs/<id>/artifacts`,
+  ladda ned zip med token från `git credential fill`). Skala till 300 bredd, WebP kvalitet 82, `method=6`. Mappning:
+  `first` → `fraga-*`, `addExamFirst` → `steg1-*`, `listeningProv` → `steg3-*`. Byt steg 2 när Angela har rättat
+  "Startar …" (fynd 1 i `reports/2026-11-10-1249-kelly-granskning-a30-ke18.md`).
+- **Session 2026-11-10 (Ke19–Ke21, Ke18) stoppade 12:50 enligt PLAN 2e (två komprimeringar).** Nästa i kön: Ke22
+  (annonser, effort high), Ke23 (namn och logga), Ke24 (logga från ChatGPT-förslagen, väntar på Arons val), Ke25
+  (App Store-sidan). Rizz har ingen åldersgräns längre (D112), och skydden i `docs/RESTRIKTIONER.md` del B är de enda (D114).
+- Skissen `bytlage.png` och `kommandon.png` har "Klar" i bladets hörn. Det är iOS-bladets ord, men appen använder "Stäng"
+  på resultatkortet. Bestäm en gång vilket ord bladen ska ha.
 - Ke19: demorutan har D97:s två val. "Förhör mig" är tre Provlägesfrågor med de inspelade svaren i `site/audio/`,
   helt utan anrop, för att servern inte låter demon förhöra (D62). `QUIZ` i skriptet har texterna ordagrant. Byt
   aldrig svarstext utan att byta ljudfil. Oscars `scripts/qa/demo_site*.py` förutsätter att `#txt` syns vid start, så
