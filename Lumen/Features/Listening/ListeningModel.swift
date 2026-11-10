@@ -66,6 +66,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// D86: Lyssnar is shown while a session runs; "Tillbaka" goes to Start with the session still on.
     var showsListeningScreen = true
     var isShowingAddExam = false
+    /// A42: "Ändra" on Start's exam card (the exam is changed there, not in Inställningar).
+    var editingExam: ExamPlan?
     /// D86 screen 6: what is wrong right now, in Swedish with what to do. Nil: nothing.
     private(set) var problem: LumenProblem?
     /// A5: the problems already said in the ear since the last answer that worked (each is said once).

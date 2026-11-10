@@ -69,7 +69,8 @@ final class ModeSettings {
     var hasInterviewSetup: Bool {
         !interviewSetup.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || !interviewCV.isEmpty
     }
-    /// "Jag är 18 år eller äldre": asked once, stored on this phone (D63).
+    /// D112 (owner) / A35: Rizzläge is for all ages (flirty, never sexual), so there is no age question any more.
+    /// Always true; the flag still tells the backend that the flirt style may be used.
     private(set) var isAdultConfirmed: Bool
     /// Comma separated, as typed.
     var rizzInterests: String {
@@ -103,7 +104,7 @@ final class ModeSettings {
         self.interviewSetup = defaults.string(forKey: Self.interviewKey) ?? ""
         self.interviewCV = defaults.string(forKey: Self.cvKey) ?? ""
         self.interviewCVName = defaults.string(forKey: Self.cvNameKey) ?? ""
-        self.isAdultConfirmed = defaults.bool(forKey: Self.adultKey)
+        self.isAdultConfirmed = true // D112: no 18+ gate
         self.rizzInterests = defaults.string(forKey: Self.interestsKey) ?? ""
         self.rizzProfile = defaults.string(forKey: Self.profileKey) ?? ""
         self.speakerThresholdDBFS = defaults.object(forKey: Self.thresholdKey) as? Double ?? -30

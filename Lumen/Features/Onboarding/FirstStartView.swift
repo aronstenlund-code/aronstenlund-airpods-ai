@@ -143,15 +143,14 @@ extension IntroView {
         VStack(alignment: .leading, spacing: 4) {
             point("mic", "Lyssnar bara när du har startat den")
             point("eye", "Du ser alltid när den lyssnar")
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                icon("waveform.slash")
-                Text("Ljud sparas inte").font(LumenFont.text(16, .medium))
-                Text("·").foregroundStyle(LumenColor.muted).accessibilityHidden(true)
-                Button("Läs mer") { isReadingMore = true }
-                    .font(LumenFont.text(16, .semibold))
-                    .foregroundStyle(LumenColor.blue)
-                    .frame(minHeight: 44)
-            }
+            point("waveform.slash", "Ljud sparas inte")
+            // A41 (D116): what is sent for analysis is part of what "Testa nu" agrees to.
+            point("paperplane", "Frågor och svar skickas till oss")
+            Button("Läs mer") { isReadingMore = true } // the word Toby's screen tour looks for
+                .font(LumenFont.text(16, .semibold))
+                .foregroundStyle(LumenColor.blue)
+                .frame(minHeight: 44)
+                .padding(.leading, 32)
         }
         .padding(.top, 6)
     }

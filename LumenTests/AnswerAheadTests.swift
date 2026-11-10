@@ -28,7 +28,7 @@ import Testing
 
     @Test func sensitiveThingsAreNeverSavedByThemselves() {
         #expect(SensitiveFilter.isSensitive("Har ADHD-diagnos"))
-        #expect(SensitiveFilter.isSensitive("Röstar på Moderaterna"))
+        #expect(!SensitiveFilter.isSensitive("Röstar på Moderaterna"), "A35 (D113): politics is no longer stopped by code")
         #expect(!SensitiveFilter.isSensitive("Biologiprov fredag 14 nov"))
         #expect(!SensitiveFilter.isSensitive("Går i trean på gymnasiet"))
     }

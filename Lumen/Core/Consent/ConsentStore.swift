@@ -4,7 +4,7 @@ import Observation
 /// Consent policy (ARCHITECTURE §12). Bump `currentVersion` whenever the consent text changes in substance;
 /// the app then shows the consent screen again before the next session.
 enum ConsentPolicy {
-    static let currentVersion = 4
+    static let currentVersion = 5 // A41: D116 (questions and answers sent for analysis), other people's words
 }
 
 struct ConsentRecord: Codable, Equatable, Sendable {

@@ -318,43 +318,13 @@ import Testing
         #expect(rig.model.conversation.finalSegments.isEmpty)
     }
 
-    @Test func withoutAgeConfirmationNoRizzRequestIsSent() async {
+    @Test func rizzNeedsNoAgeQuestion() async {
+        // D112 (owner) / A35: Rizzläge is for all ages; there is no gate and nothing waits for one.
         let rig = makeRig(events: [.suggestions(["Bästa"]), .done(AnswerDone(answered: true))], microphone: .iPhone, adult: false)
-
-        await rig.model.startHandsFree(.rizz)
-        rig.model.study.level(-70, at: Date())
-        speak("Jag älskar chili", level: -40, rig: rig)
-        try? await Task.sleep(for: .milliseconds(30))
-
-        #expect(!rig.model.study.isActive)
-        #expect(!rig.model.isListening, "the microphone stays off")
-        #expect(rig.model.isShowingAgeGate)
-        #expect(rig.provider.requests.isEmpty)
-    }
-
-    @Test func theGateComesTheFirstTimeAndCancelGoesBack() {
-        let rig = makeRig(events: [], adult: false)
         rig.model.selectedMode = .rizz
-        rig.model.modeSelected()
-        #expect(rig.model.isShowingAgeGate)
-
-        rig.model.answerAgeGate(confirmed: false)
-
-        #expect(rig.model.selectedMode == .standard)
-        #expect(!rig.settings.isAdultConfirmed)
-    }
-
-    @Test func theAnswerIsRememberedOnThisPhone() {
-        let defaults = freshDefaults()
-        ModeSettings(defaults: defaults).confirmAdult()
-        #expect(ModeSettings(defaults: defaults).isAdultConfirmed)
-
-        let rig = makeRig(events: [], adult: false)
-        rig.model.selectedMode = .rizz
-        rig.model.modeSelected()
-        rig.model.answerAgeGate(confirmed: true)
         rig.model.modeSelected()
         #expect(!rig.model.isShowingAgeGate)
+        #expect(rig.settings.isAdultConfirmed)
         #expect(rig.model.selectedMode == .rizz)
     }
 

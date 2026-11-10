@@ -3,9 +3,9 @@ import Foundation
 /// D80: what never goes into Minne by itself. Health, beliefs, sexuality, politics, origin, union membership, crime
 /// and similar (GDPR art. 9/10 categories). The user can still add such a thing by hand or by voice. Pure; unit-tested.
 enum SensitiveFilter {
-    /// A27 (Oscar O28): the categories as patterns with word boundaries where a short stem would also hit ordinary
-    /// words ("lånat", "sjukt", "brottslighet", "kristendomen" are kept). Same categories as the backend's
-    /// `SENSITIVE_RAW` plus O28's additions; the 47 cases of `scripts/qa/o28_memory_sensitive_offline.mjs` are tests.
+    /// A35 (D113, `docs/RESTRIKTIONER.md` B5): only health, crisis and ID numbers (with account numbers and passwords)
+    /// never go into Minne by themselves. Religion, politics, relationships, where someone lives and the like are no
+    /// longer stopped by code (A5). Word boundaries where a short stem would hit ordinary words ("sjukt").
     private static let patterns = [
         // health
         #"allerg|\bsjuk(?:dom\p{L}*|a|e|skriven)?\b|diagnos|\badhd\b|\badd\b|autism|diabet|astma|depress|deprimerad|ångest"#,
@@ -13,34 +13,18 @@ enum SensitiveFilter {
         #"celiaki|gluten|laktos|intolerans|dyslexi|\bmens\b|\bväger\b|\bkilo\b|concerta|elvanse|ritalin|melatonin"#,
         // crisis (the words of the backend's crisis.ts that fit a memory)
         #"självmord|skär sig|skär mig|självskad|skada mig själv|vill inte leva|orkar inte leva"#,
-        // sexuality and relationships
-        #"\bgay\b|\bbi\b|homosex|bisex|lesbisk|transperson|sexuell|\b(?:pojkvän|flickvän|partner)\p{L}*"#,
-        // religion
-        #"religi|\bkristen\b|\bmuslim|\bjude\b|\bjudisk|ateist|tror på gud|ramadan|\bfasta(?:r)?\b|\bkyrka|moské|synagog|\bbön\b|\bber till\b"#,
-        // politics
-        #"politi|parti(?!k|ell)|röstar på|röstade på|socialist|socialdemokrat|sverigedemokrat|\bmoderat|kommunist|nazist|ungdomsförbund"#,
-        // origin, union, crime
-        #"etnisk|ursprung|invandrare|\bromsk|\bär same\b|fackförening|\bfacket\b|\bbrott\b|\bdömd|polisanmäl|\bstraff\b|fängelse|snatta|\bgripen\b"#,
-        // address, money
-        #"adress|\bbor (?:på|i)\b|gatan\b|postnummer|skuld|\blån(?:et|en|a)?\b|kredit|inkasso|kronofogd|betalningsanmärk|\blön\b|inkomst"#,
-        #"tjänar |ekonomi|hyra|\bcsn\b|pengar|förmögenhet|bankkonto|kontonummer|personnummer|lösenord|\b\d+ ?kr\b|kronor"#,
-        // contact details
-        #"@|\b\d{2,4}[ -]?\d{2,3}[ -]?\d{2}[ -]?\d{2}\b|instagram|\binsta\b|snapchat|\bsnap\b|tiktok|e-?post|\bmejl|telefonnummer"#,
-        // other people by name
-        #"\b(?:mamma|pappa|bror|brorsan|syster|systern|kompis\p{L}*|vän\p{L}*|farmor|farfar|mormor|morfar)\b.{0,24}\bheter\b"#,
+        // ID numbers, account numbers and passwords
+        #"personnummer|samordningsnummer|\b\d{6}(?:\d{2})?[- ]?\d{4}\b|kontonummer|bankkonto|kortnummer|clearingnummer|lösenord|pinkod|\bpin\b"#,
         // English
-        #"health|religion|sexual|ethnic|address|i live at|debt|loan|credit|salary|income|bank account|password|anxiety|therapy|pregnan"#,
+        #"health|diagnosis|anxiety|therapy|pregnan|suicid|self-harm|bank account|password"#,
     ]
 
-    /// K8 (backend) and O28: a school subject or what is studied is not about the student: "Läser religionskunskap",
-    /// "Skriver en uppsats om brottslighet", "Har prov om partiklar". A study word and the four words after it are
-    /// taken out before the check ("Pluggar trots att jag är deprimerad" still stops).
+    /// A27 (O28): a school subject or what is studied is not about the student ("Läser om psykisk ohälsa i
+    /// samhällskunskap"). A study word and the four words after it are taken out before the check.
     private static let studyWords =
         #"\b(?:läser|pluggar|plugga|skriver|prov|provet|läxa|läxan|uppsats\p{L}*|kurs\p{L}*|lektion\p{L}*|ämnet)\b(?:\s+[\p{L}\p{N}]+){0,4}"#
 
     static func isSensitive(_ text: String) -> Bool {
-        // "Kommer från Syrien": a capital after "kommer från" is a country or a place, before lower-casing.
-        if text.range(of: #"(?i:kommer från) [A-ZÅÄÖ]"#, options: .regularExpression) != nil { return true }
         let lowered = " " + text.lowercased()
             .replacingOccurrences(of: studyWords, with: " ", options: .regularExpression) + " "
         return patterns.contains { lowered.range(of: $0, options: .regularExpression) != nil }

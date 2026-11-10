@@ -77,10 +77,19 @@ struct HomeView: View {
                 .font(LumenFont.text(28, .bold, relativeTo: .title))
                 .accessibilityAddTraits(.isHeader)
                 .padding(.top, 10)
-            Text(plan.dateLine())
-                .font(LumenFont.text(15))
-                .foregroundStyle(LumenColor.muted)
-                .padding(.top, 2)
+            HStack(alignment: .firstTextBaseline) {
+                Text(plan.dateLine())
+                    .font(LumenFont.text(15))
+                    .foregroundStyle(LumenColor.muted)
+                Spacer(minLength: 8)
+                // A42 (Deangelo G2): the exam's date and grade are changed here, not in Inställningar.
+                Button("Ändra") { model.editingExam = plan }
+                    .font(LumenFont.text(15, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+                    .frame(minHeight: 44)
+                    .accessibilityLabel("Ändra \(plan.name.lowercased())")
+            }
+            .padding(.top, 2)
             if let today = model.todayLine(for: plan) {
                 // A19 (K17): today's pass from the study plan
                 VStack(alignment: .leading, spacing: 6) {
@@ -161,6 +170,7 @@ struct HomeView: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel("Plugga till \(plan.name.lowercased()), \(plan.whenLine())")
                     .contextMenu {
+                        Button("Ändra provet") { model.editingExam = plan } // A42
                         Button("Ta bort provet", role: .destructive) { model.examPlans?.delete(plan.id) }
                     }
                     Rectangle().fill(LumenColor.line).frame(height: 1).padding(.leading, 16)

@@ -17,45 +17,50 @@ struct ConsentView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Before you start")
-                        .font(.largeTitle.bold())
-                    Text("Lumen is a listening companion for lectures, meetings and studying. This is exactly what it does with sound and text.")
-                        .foregroundStyle(.secondary)
+                    Text("Innan du börjar")
+                        .font(LumenFont.text(32, .bold, relativeTo: .largeTitle))
+                        .accessibilityAddTraits(.isHeader)
+                    Text("Lumen är en pluggkompis som lyssnar genom dina AirPods och svarar på det du frågar. Så här gör den med ljud och text.")
+                        .font(LumenFont.text(17))
+                        .foregroundStyle(LumenColor.muted)
                 }
 
+                // A41 (Deangelo G1, D116): a study app, the blue indicator, what is sent where, and other people's words.
                 VStack(alignment: .leading, spacing: 18) {
-                    point(symbol: "mic.fill",
-                          title: "It listens only while a session is on",
-                          text: "You start and stop listening yourself. While the microphone is live, a red indicator is shown in the app and iOS shows its own microphone indicator.")
+                    point(symbol: "mic",
+                          title: "Lyssnar bara när du har startat den",
+                          text: "Du startar och stoppar själv. När mikrofonen är på syns en blå lyssnarbricka i appen, och iOS visar sin egen mikrofonsymbol.")
                     point(symbol: "waveform",
-                          title: "Speech goes to ElevenLabs",
-                          text: "While you listen, the audio is streamed to ElevenLabs, which writes it out. ElevenLabs handles it under its own terms. Lumen saves no audio, and the live transcript is forgotten when the session ends. You can keep everything on the iPhone instead under Settings, with weaker recognition.")
-                    point(symbol: "clock.arrow.circlepath",
-                          title: "History and memory stay on your iPhone",
-                          text: "Your own questions and Lumen's answers are saved word for word with a short summary, and memories only when you ask for it. Other people's speech is not saved. Delete it in Settings at any time; it is deleted automatically after 2 years.")
+                          title: "Talet skrivs ut av ElevenLabs",
+                          text: "Medan Lumen lyssnar skickas ljudet till ElevenLabs, som skriver ut det. Svaren läses också upp med en röst från ElevenLabs. Lumen sparar aldrig ljud.")
                     point(symbol: "cloud",
-                          title: "Answers come from the internet",
-                          text: "To answer a question, the transcribed text is sent to Lumen's server, which asks Claude by Anthropic. Without a connection there are no answers.")
+                          title: "Svaren kommer från Claude",
+                          text: "Texten skickas via Lumens server till Claude från Anthropic, som tar fram svaret. Utan nät blir det inga svar.")
                     point(symbol: "paperplane",
-                          title: "Reports and sharing are your choice",
-                          text: "When you report an answer, your question and that answer go to the developers word for word. Sharing your history to improve the app is off unless you turn it on. Other people's speech is never sent this way.")
+                          title: "Frågor och svar skickas till oss",
+                          text: "Dina frågor och Lumens svar skickas till oss så att vi kan göra Lumen bättre. Ljud sparas aldrig, och texten raderas när vi har läst den.")
                     point(symbol: "person.2",
-                          title: "Tell the people around you",
-                          text: "You are responsible for informing anyone whose speech is transcribed. Do not use Lumen where recording is not allowed, for example during exams.")
+                          title: "Andras ord kan också komma med",
+                          text: "I Standardläge svarar Lumen också på frågor som någon annan ställer, till exempel läraren. Då skrivs deras ord ut och skickas på samma sätt. Berätta för dem runt dig att du använder Lumen, och använd den inte där inspelning inte är tillåten, till exempel på prov.")
+                    point(symbol: "clock.arrow.circlepath",
+                          title: "Historik på telefonen",
+                          text: "Dina frågor och svar sparas också i Historik på den här telefonen i högst två år. Du kan radera dem i Inställningar när du vill.")
                     point(symbol: "hand.raised",
-                          title: "You can stop at any time",
-                          text: "One tap stops the microphone. You can withdraw this consent later under Privacy & consent; the consent screen then returns.")
+                          title: "Du kan sluta när du vill",
+                          text: "Ett tryck stoppar mikrofonen. Du kan ta tillbaka samtycket under Integritet och samtycke, och då visas den här sidan igen.")
                 }
 
                 if case .review(let grantedAt, _) = mode, let grantedAt {
-                    Text("Consent given \(grantedAt.formatted(date: .abbreviated, time: .shortened))")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    Text("Samtycke givet \(grantedAt.formatted(date: .abbreviated, time: .shortened))")
+                        .font(LumenFont.text(14, relativeTo: .footnote))
+                        .foregroundStyle(LumenColor.muted)
                 }
             }
             .padding(20)
         }
         .safeAreaInset(edge: .bottom) { footer }
+        .background(LumenColor.background.ignoresSafeArea())
+        .foregroundStyle(LumenColor.ink)
         .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -73,36 +78,25 @@ struct ConsentView: View {
         switch mode {
         case .onboarding(let onAccept):
             VStack(spacing: 8) {
-                Button(action: onAccept) {
-                    Text("I understand — start using Lumen")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 6)
-                }
-                .buttonStyle(.borderedProminent)
-                Text("By continuing you confirm that you have read the points above.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Button("Jag förstår, starta Lumen", action: onAccept)
+                    .buttonStyle(LumenButtonStyle())
+                Text("Genom att fortsätta bekräftar du att du har läst punkterna ovan.")
+                    .font(LumenFont.text(14, relativeTo: .footnote))
+                    .foregroundStyle(LumenColor.muted)
                     .multilineTextAlignment(.center)
             }
             .padding(20)
-            .background(.bar)
+            .background(LumenColor.background)
         case .review(_, let onWithdraw):
-            Button(role: .destructive) {
-                confirmingWithdrawal = true
-            } label: {
-                Text("Withdraw consent")
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 6)
-            }
-            .buttonStyle(.bordered)
-            .padding(20)
-            .background(.bar)
-            .confirmationDialog("Withdraw consent?", isPresented: $confirmingWithdrawal, titleVisibility: .visible) {
-                Button("Stop listening and withdraw", role: .destructive, action: onWithdraw)
-            } message: {
-                Text("Listening stops, this session's transcript is cleared and the consent screen is shown again.")
-            }
+            Button("Ta tillbaka samtycket") { confirmingWithdrawal = true }
+                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 50))
+                .padding(20)
+                .background(LumenColor.background)
+                .confirmationDialog("Ta tillbaka samtycket?", isPresented: $confirmingWithdrawal, titleVisibility: .visible) {
+                    Button("Sluta lyssna och ta tillbaka", role: .destructive, action: onWithdraw)
+                } message: {
+                    Text("Lyssningen stoppas, passets text raderas och samtyckessidan visas igen.")
+                }
         case .readMore:
             EmptyView()
         }
@@ -112,12 +106,12 @@ struct ConsentView: View {
         HStack(alignment: .top, spacing: 14) {
             Image(systemName: symbol)
                 .font(.title3)
-                .foregroundStyle(.tint)
+                .foregroundStyle(LumenColor.blue)
                 .frame(width: 28)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.headline)
-                Text(text).foregroundStyle(.secondary)
+                Text(title).font(LumenFont.text(17, .semibold, relativeTo: .headline))
+                Text(text).font(LumenFont.text(16)).foregroundStyle(LumenColor.muted)
             }
         }
     }

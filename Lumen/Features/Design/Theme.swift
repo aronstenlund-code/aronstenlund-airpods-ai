@@ -13,7 +13,7 @@ extension ConversationMode {
         case .standard: "Frågor"
         case .interview: "Intervju"
         case .social: "Socialt"
-        case .rizz: "Rizz 18+"
+        case .rizz: "Rizz" // D112: no 18+
         case .prov: "Provläge"
         }
     }

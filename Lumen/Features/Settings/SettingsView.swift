@@ -136,7 +136,7 @@ struct SettingsView: View {
         Section("Taligenkänning") {
             Toggle("Cloud speech recognition (Scribe)", isOn: cloudBinding)
             if let failure = model.transcription.cloudFailure {
-                Text("Using the iPhone's speech recognition: \(failure)")
+                Text("Använder iPhonens taligenkänning: \(failure)") // A42 (Deangelo G4)
                     .font(.footnote)
                     .foregroundStyle(.orange)
             }
@@ -176,15 +176,8 @@ struct SettingsView: View {
     private var studyProfileSection: some View {
         @Bindable var store = model.studyProfile
         Section {
-            // A23 (Deangelo): no "Inget prov just nu" switch; exams are added and removed on Start.
-            DatePicker("Provdatum", selection: examBinding, displayedComponents: .date)
-                .environment(\.locale, Locale(identifier: "sv_SE"))
-            Picker("Årskurs", selection: $store.profile.grade) {
-                Text("Inte angivet").tag(nil as StudyProfile.Grade?)
-                ForEach(StudyProfile.Grade.allCases, id: \.self) { Text(StudyProfile.gradeName($0)).tag(StudyProfile.Grade?.some($0)) }
-            }
-            TextField("Kurs, t.ex. Matematik 1c", text: $store.profile.course)
-            TextField("Ämne", text: $store.profile.subject)
+            // A42 (Deangelo G2): the exam itself (subject, date, grade) is only on Start's exam card; here the way
+            // Lumen quizzes and explains.
             Picker("Kontrollfrågor", selection: $store.profile.checkQuestions) {
                 Text("Inte angivet").tag(nil as StudyProfile.CheckQuestions?)
                 ForEach(StudyProfile.CheckQuestions.allCases, id: \.self) { Text(StudyProfile.checkName($0)).tag(StudyProfile.CheckQuestions?.some($0)) }
@@ -196,20 +189,12 @@ struct SettingsView: View {
             Button("Spara i minnet") { model.studyProfileChanged() }
             Button("Visa frågorna igen vid nästa start") { store.profile.onboarded = false }
         } header: {
-            Text("Prov")
+            Text("Förhör och förklaringar")
         } footer: {
-            Text(model.headMotion.isAvailable
+            Text("Provet, datumet och årskursen ändrar du på provkortet på Start. " + (model.headMotion.isAvailable
                  ? "Ja–nej-frågor kan besvaras med en nick eller en skakning med huvudet. Du kan också säga \"Lumen, korta förklaringar\" eller \"Lumen, provet är på fredag\"."
-                 : "Dina AirPods stöder inte huvudrörelser just nu: svara på ja–nej-frågor med rösten. Du kan också säga \"Lumen, korta förklaringar\" eller \"Lumen, provet är på fredag\".")
+                 : "Dina AirPods stöder inte huvudrörelser just nu: svara på ja–nej-frågor med rösten. Du kan också säga \"Lumen, korta förklaringar\" eller \"Lumen, provet är på fredag\"."))
         }
-    }
-
-    private var examBinding: Binding<Date> {
-        Binding(get: { model.studyProfile.profile.examDate ?? Date() },
-                set: {
-                    model.studyProfile.profile.examDate = Calendar.current.startOfDay(for: $0)
-                    model.studyProfile.profile.noExam = false // A23: a date means there is an exam
-                })
     }
 
     /// A10: the wearer focus in front of Scribe.

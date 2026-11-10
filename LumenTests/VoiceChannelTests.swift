@@ -115,15 +115,15 @@ import Testing
         #expect(rig.provider.requests.isEmpty, "a command, never a question")
     }
 
-    @Test func rizzByVoiceNeedsTheAgeConfirmation() async {
+    @Test func rizzByVoiceAsksNoAge() async {
+        // D112 / A35: no 18+ question; like Socialt läge, Rizzläge is started in the app the first time.
         let rig = makeRig(adult: false)
         await rig.model.startListening()
 
         rig.model.receiveFinalTranscript("Lumen, byt till rizzläge", at: Date())
 
-        #expect(await waitUntil { spoke(rig, "Rizzläge kräver att du bekräftar 18 år i appen.") })
-        #expect(!rig.model.study.isActive)
-        #expect(rig.model.mode == .standard)
+        #expect(await waitUntil { rig.apple.calls.contains { $0.text.hasSuffix("startas i appen första gången.") } })
+        #expect(!rig.apple.calls.contains { $0.text.contains("18 år") })
     }
 
     @Test func aLiveModeByVoiceNeedsItsStartScreenOnce() async {

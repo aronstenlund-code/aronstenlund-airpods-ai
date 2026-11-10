@@ -37,6 +37,9 @@ struct ListeningView: View {
         .sheet(isPresented: $model.isShowingAddExam) {
             AddExamView(model: model) { model.isShowingAddExam = false }
         }
+        .sheet(item: $model.editingExam) { plan in
+            AddExamView(model: model, editing: plan) { model.editingExam = nil } // A42
+        }
         .sheet(isPresented: $model.isShowingInterviewSetup) {
             NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
         }

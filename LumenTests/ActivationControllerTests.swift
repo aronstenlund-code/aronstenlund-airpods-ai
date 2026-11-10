@@ -265,12 +265,12 @@ func makeTestActivation(sensitivity: GateSensitivity = .medium, debounce: TimeIn
         #expect(again.selectedMode == .interview)
     }
 
-    @Test func rizzIsNotRememberedWithoutTheAgeConfirmation() {
+    @Test func rizzIsRememberedLikeAnyMode() {
         let defaults = Self.freshDefaults()
         let (_, first) = makeModel(defaults: defaults)
         first.selectedMode = .rizz
         let (_, again) = makeModel(defaults: defaults)
-        #expect(again.selectedMode == .standard, "the 18+ gate is not skipped by a remembered choice")
+        #expect(again.selectedMode == .rizz, "D112: no 18+ gate")
     }
 
     @Test func askAboutLastAndClearHistory() async {
