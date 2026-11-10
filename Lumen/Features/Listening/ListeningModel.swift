@@ -2621,6 +2621,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func refreshStudyPlan(askForReminders: Bool = false) async {
         streak = quizDays.streak()
         updateWidget() // A44
+        #if DEBUG
+        if ScreenshotStage.requested != nil { return } // A43: the staged plan, not the live one (the Simulator has network)
+        #endif
         let plans = examPlans?.upcoming() ?? []
         guard let studyPlanClient, !plans.isEmpty || !quizDays.days.isEmpty else { return }
         let exams = plans.prefix(10).map { plan in
@@ -2652,7 +2655,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// A43 (K33): how ready the student is for the exam, when the backend could count it.
     func readiness(for plan: ExamPlan) -> StudyPlanAPI.Readiness? {
-        guard let readiness = studyPlans[plan.id]?.readiness, readiness.readyPct != nil else { return nil }
+        // Nothing practised yet: no ring (a new exam at "0 %" says nothing and discourages).
+        guard let readiness = studyPlans[plan.id]?.readiness, readiness.readyPct != nil, (readiness.practiced ?? 1) > 0 else { return nil }
         return readiness
     }
 
