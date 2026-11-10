@@ -1003,7 +1003,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           const emitText = (raw: string) => {
             // K16: a late search marker ("… femtusen invånare. [[SÖK]]", live 3/10) is never read aloud
             if (/\[\[S[ÖO]K\]\]/iu.test(raw)) console.warn("search_marker_late", JSON.stringify({ mode: body.mode }));
-            const t = raw.replace(/\s*\[\[S[ÖO]K\]\]\s*/giu, " ").replace(/\s*\[+\s*$/u, "");
+            const t = raw.replace(/\s*\[\[(?:S[ÖO]K|VET)\]\]\s*/giu, " ").replace(/\s*\[+\s*$/u, "");
             if (!t.trim()) return;
             flushMeta();
             if (ttftMs === null) ttftMs = now() - t0;
@@ -1088,7 +1088,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           };
           const flushHead = () => {
             if (headBuf === null) return;
-            const h = headBuf;
+            const h = headBuf.replace(/\[\[VET\]\]\s*/iu, "");
             headBuf = null;
             if (h) feed(h);
           };
@@ -1129,6 +1129,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               headBuf += chunk.text;
               const head0 = headBuf.replace(/^\s*\[\[REL [^\]]*\]\]\s*/u, "");
               if (/^\s*\[\[REL/u.test(headBuf) && !headBuf.includes("]]")) return; // the relation tag is not complete yet
+              if (/^\s*\[\[(?:V(?:E(?:T(?:\])?)?)?)?$/iu.test(head0)) return; // the [[VET]] marker is not complete yet
               if (/^\s*\[\[S[ÖO]K\]\]/iu.test(head0)) {
                 searchMarked = true;
                 headBuf = null;

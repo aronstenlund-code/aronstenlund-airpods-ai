@@ -75,7 +75,7 @@ Deno.test("K16.1 [[SÖK]] from the model: nothing is said, the question is asked
   const { provider, seen } = scripted("[[SÖK]]", "Bullarna gräddas i 250 grader i fem till sju minuter. källa: ica.se");
   const out = await spoken(await handlerWith(provider)(ask({ fragment: "hur varm ska ugnen vara för Lisas pepparkakor" })));
   assertEquals(seen.length, 2);
-  assert(seen[0].system.includes("NOT SURE (K16)"));
+  assert(seen[0].system.includes("SURE OR SEARCH (K16"));
   assert(!searches(seen[0]));
   assert(searches(seen[1]), "second call searches");
   assert(!seen[1].system.includes(SEARCH_MARK_RULE.trim().slice(0, 20)) || !seen[1].system.includes("[[SÖK]]"));
@@ -128,4 +128,15 @@ Deno.test("K16 changing facts search; a late [[SÖK]] is never spoken", async ()
   const { provider } = scripted("Ockelbo har ungefär femtusen invånare. [[SÖK]]");
   const out = await spoken(await handlerWith(provider)(ask({ fragment: "hur gammal är Ockelbo kyrka" })));
   assert(!out.includes("SÖK") && !out.includes("["), out);
+});
+
+Deno.test("K16 the [[VET]] marker is never spoken, also after a relation tag", async () => {
+  const a = scripted("[[VET]] En atom är den minsta delen av ett grundämne.");
+  assertEquals(await spoken(await handlerWith(a.provider)(ask({}))), "En atom är den minsta delen av ett grundämne.");
+  const b = scripted("[[REL new_topic]]\n[[VET]]\nJa.");
+  const out = await spoken(await handlerWith(b.provider)(ask({
+    fragment: "är vatten blött",
+    context: { recent_qa: [{ q: "vad är en atom", a: "En atom är den minsta delen av ett grundämne." }] },
+  })));
+  assertEquals(out.trim(), "Ja.");
 });
