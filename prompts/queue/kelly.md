@@ -98,3 +98,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [~] pågår 2026-11-10 19:33 **Ke25 – App Store-sidan (N5, fas 3)** (effort: medium). Lägre prioritet än Ke22–Ke24. Utkast: 6 skärmbilder (6,9" och 6,1"), underrubrik, beskrivning, nyckelord, förslag på åldersgräns utifrån innehållet (D112, inget sexuellt) och integritetsetiketter som stämmer med samtyckestexten (A41).
 
 - [ ] **Ke26 – D121 på demosidan** (effort: low). Huvudbudskapet på sidan: AI:n i dina AirPods för vardagen, skolan och jobbet; "Starta Lumen en gång, sen finns den i örat hela dagen. Säg 'Lumen' så svarar den." Sant formulerat (D121).
+
+- [ ] **Ke27 – Sömnläget: start och morgonrapport (D123)** (effort: medium). En knapp "Sov", inget mer att ställa in. Morgonrapporten: en mening överst ("Du pratade 3 gånger i sömnen"), tidslinje för natten, klipp att trycka på. Lugnt och snyggt, som Apples Hälsa/Sleep Cycle.
