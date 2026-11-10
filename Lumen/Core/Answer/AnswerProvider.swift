@@ -88,7 +88,8 @@ struct AnswerContext: Equatable, Sendable {
                       prefSubject: prefSubject,
                       prefExam: prefExam,
                       conceptStats: Array(conceptStats.prefix(ConceptStats.limit)),
-                      sessionEnd: sessionEnd)
+                      sessionEnd: sessionEnd,
+                      qaLog: qaLog) // A48: dropped here at first (the unit test caught it)
     }
 }
 
