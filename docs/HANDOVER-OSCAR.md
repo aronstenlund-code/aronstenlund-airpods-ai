@@ -1,31 +1,30 @@
-# Överlämning: Oscar (QA), 2026-11-09 22:45
+# Överlämning: Oscar (QA), 2026-11-10 08:45
 
-Sessionen gjorde O5–O10 och har komprimerats. Nästa Oscar-session börjar med O14 och tar sedan O12 när Kevins K14.1 är klar. Läs CLAUDE.md, `prompts/queue/README.md`, `prompts/queue/oscar.md`.
+Sessionen gjorde O14, O12, O15, O16 del 1 och O18 och fortsätter med O13 del 1. Läs CLAUDE.md, `prompts/queue/README.md` och `prompts/queue/oscar.md`.
 
 ## Det som inte står i rapporterna
-- **Hjälpskript:** `scripts/qa/demo.py` (`signup`, `ask`, kostnad från tokens), `scripts/qa/d81.py` (`A`, `P`, `prov`, `CV`, `AD`, `backend_state`).
-  - Importera **aldrig** `d81b.py`. Den kör hela sin svit vid import, och det kostade O5 dubbelt.
-- **Gräns för nya användare:** en anonym användare får bara 20 svar den första timmen. Gör en ny `signup()` var 15:e anrop. `ask` väntar 3,2 s mellan anrop (20/min).
-- **Kör offline först.** Node 24 kör backendens `.ts` direkt (`import … from "../../backend/supabase/functions/answer/x.ts"`). Matchare och regex testas då gratis och utan slump. Se `scripts/qa/o9_commands.mjs` och `o10_offline.mjs`.
-- **Python:** kör med `python -I`. Scipy och websockets ligger i en egen mapp via `O6_LIB` (se `scripts/qa/o6_audio.py`). Windows-konsolen visar å/ä/ö som skräp, men JSON-filerna är rätt.
-- **Utdata:** skriv till scratch eller `reports/qa/data/`, aldrig till `/tmp`.
-- **Delad checkout:** stage bara egna sökvägar (andras filer ligger ocommittade i trädet). Kör `git pull --rebase --autostash` före varje push. Döda aldrig `python.exe` brett, bara ditt eget PID.
-- **Gränser i backend:**
-  - Scribe: varje keyterm får vara högst 20 tecken (längre ger 1008 och sessionen stängs).
-  - `/provlage-eval` tar högst 64 KB, så transkribering i batch går inte.
-  - `task` syns inte i `/answer`-svaret, så kommandon testas offline.
-- **Bedöm själv:** kodkriterier som "minst lika många exempel" godkänner 1 mot 1. Läs svaren för hand innan något räknas som rätt (O10 S4/O9).
-- Aron vill ha korta svar när en punkt är klar. Den långa versionen hör hemma i rapporten.
+- **Hjälpskript:**
+  - `scripts/qa/o15.py` kör vilken bank som helst (`--bank`, `--only g5,g6-03`, `--cap`, `--tag=-x` med likhetstecken). Skriptet sparar JSON efter varje fall och väntar ut inloggningsspärren.
+  - Banker: `o15_bank.py` (215 fall) och `o15b_bank.py` (82 fall).
+  - `tts_alive.py` kontrollerar om rösten lever med ett anrop.
+  - `o12_tts.py` mäter TTS och `o16_keyterms.py` testar Scribe-termer.
+- **Supabase spärrar anonym signup per nät** (`429 over_request_rate_limit`, cirka en timme) om flera skript kör samtidigt. Kör aldrig tre körningar parallellt.
+  - En användare klarar 35 anrop (40 per timme de första 10 minuterna, sedan 20 per minut).
+  - `demo.signup()` kraschar vid 429. Använd `o15.signup()`.
+- **ElevenLabs-krediterna tog slut 2026-11-10 07:45** (mina O12 och Deangelos ljudtest). Både `/tts` och Scribe ger kvotfel. Starta ingen TTS eller Scribe förrän `python -I scripts/qa/tts_alive.py` ger 200.
+- **A/B-ljud:**
+  - `.github/workflows/oscar-ab-audio.yml` (workflow_dispatch) körs via API: `ghapi.sh actions/workflows/oscar-ab-audio.yml/dispatches -X POST -d '{"ref":"main"}'`. `ghapi.sh` finns i scratch `ci/` och använder token från `git credential fill`.
+  - En push av en ny workflow-fil startar iOS-bygget. Kolla att inget iOS-bygge redan körs.
+- **Klockan:** läs `date` och skriv aldrig gissade tider i kö eller rapporter. Jag skrev 09:30 när klockan var 07:40 och fick döpa om filen.
+- **Delad checkout:**
+  - Commita kö- och tavelrader direkt.
+  - Kör `grep '^<<<<<<<'` före varje commit.
+  - Commita med pathspec (`git commit -m … -- <mina filer>`).
+  - `stash@{0}` (autostash 08:2x) innehåller bara filer som redan finns i HEAD och mina gamla köändringar. Den kan tas bort när någon bekräftar det, men jag har låtit den ligga.
+- **Gradera för hand:** nyckelordsmatchning missar stavningar ("Frans Ferdinand") och missar fel innehåll som ändå har nyckelordet (Kebnekaise 2 099 m). Läs alla fel och alla "båda går"-fall.
 
 ## Öppna trådar
-- **O10 till Kevin (K13 tar dem först):**
-  - vidgning mellan lägen i `memory/settings.ts`
-  - rättelser med egna ord 3/20
-  - appkommandon 13/20
-  - telefonfiltret ("ring" i "omkring" gör "800 000" till platshållaren)
-  - Frågor klipper mitt i ett ord vid 600 tecken
-- **O9:** `WRAP_END` stryker "för mig" ("hur går det för mig").
-- **O8:** textuppgifter som kan räknas i kod tar 7 s med tänkande, och O5-hänget återskapades inte.
-- **O6:** Arons egna inspelningar läggs till när han skickar dem. Bara i scratch, aldrig i git: repot är publikt.
-- **O14:** 429-mätningen är underlag för K12.
-- **O12:** ElevenLabs-tecknen är begränsade, så läs texterna innan något genereras. A/B-ljud ska som artefakt eller i Storage, aldrig i git.
+- **O16 del 2:** `o16_keyterms.py` med 36 försök (å/ä/ö i byte eller grafem, specialtecken, antal termer) när Scribe har krediter.
+- **O17:** test av K21 direkt när Kevin är klar. Grupp 11 i `o15b_bank.py` (oro utan svar) är ett bra underlag för falska larm.
+- **O13:** del 1 (K16) pågår. Del 2–4 kräver K17–K19, och del 3 kräver dessutom ElevenLabs.
+- **Concerns till Architect:** Frågor svarar på lärarens provfrågor (O18 fynd 3) och säger "övrigt prat ignorerar jag" (O15 fall 2).
