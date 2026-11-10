@@ -1,4 +1,4 @@
-# Ke12 (stående uppgift): gemensam designspec för appen och sidan (Kelly, 2026-11-10)
+# Ke12b (stående uppgift): gemensam designspec för appen och sidan (Kelly, 2026-11-10)
 
 Kort: `docs/design/designspec.md` ställer appens och sidans värden bredvid varandra (färger, typsnitt, knappar, kort,
 rutpapper).
@@ -30,3 +30,9 @@ Inget nytt.
 
 ## Concerns
 Inga.
+
+## Git-notering
+Ke12b-filerna kom med i Kevins commit "Kevin K16: every Frågor answer opens with a decision marker" (delat index i samma
+mapp). Min `git rebase --autostash` krockade samtidigt med en låsfil. Inget gick förlorat: Angelas oincheckade
+Swift-ändringar (10 filer) låg i autostash `e02c4b5` och lades tillbaka. Kevins commit pushades tillsammans med Kellys
+namnbyte till Ke12b, eftersom Deangelo samtidigt lagt in en ny Ke12 i kön.

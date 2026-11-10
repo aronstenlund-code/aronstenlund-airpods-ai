@@ -1,4 +1,4 @@
-# Designspec: appen och demosidan som en produkt (Kelly, Ke12, 2026-11-10)
+# Designspec: appen och demosidan som en produkt (Kelly, Ke12b, 2026-11-10)
 
 Ett ställe där appens och sidans värden står bredvid varandra. Appen: `Shared/LumenStyle.swift` och
 `Lumen/Features/Design/Theme.swift`. Sidan: `:root` och `.pill`/`.chip` i `site/index.html`. Värdena är lästa ur koden
