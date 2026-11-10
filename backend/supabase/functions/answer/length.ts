@@ -58,6 +58,40 @@ const STUDY_CUES = re(
   ].join("|"),
 );
 
+/**
+ * K29 (D115 T1): a short fact question in Provläge ("när började franska revolutionen", "vem skrev Röda rummet",
+ * "vad heter cellens kraftverk") is answered by the cheaper model; explanations, terms on their own, several
+ * questions, numbers (calculations) and rules ("när använder man some") stay on the stronger one. Conservative on
+ * purpose: a miss only costs money, a wrong route costs quality.
+ */
+const FACT_OPEN = new RegExp(
+  `^(?:${[
+    "när (?:var|är|blev|började|slutade|startade|hände|kom|föddes|dog|skrevs|uppfanns|upptäcktes|infördes|grundades|byggdes|avskaffades|bildades|landade|sjönk|föll|ägde)",
+    "vem (?:skrev|uppfann|upptäckte|byggde|grundade|ledde|vann|målade|komponerade|regisserade|myntade|formulerade|kallas|kallades)",
+    "vilket år",
+    "vilket årtal",
+    "vilken (?:är|var) (?:den |det )?(?:största|minsta|högsta|längsta|första|sista|äldsta|vanligaste)",
+    "vad heter(?! det när| det som| det man)",
+    "vad hette",
+    "vad kallas",
+    "vad kallades",
+    "vad står \\p{L}+ för",
+    "var ligger",
+    "var föddes",
+    "hur många (?:kromosomer|ben|planeter|länder|invånare|landskap|län|ledamöter|riksdagsledamöter|tänder|hjärtkammare|elektroner|protoner|neutroner|grundämnen|år varade|år pågick)",
+    "hur (?:lång|hög|stor|djup|gammal|tung) (?:är|var|blev)",
+    "vad är (?:huvudstaden|det kemiska tecknet|kemiska tecknet|beteckningen|enheten|si-enheten|formeln) (?:i|för|på)",
+    "vilken (?:enhet|färg|valör|planet|grundämne)",
+  ].join("|")})(?![\\p{L}])`,
+  "iu",
+);
+const NOT_FACT = /(?<![\p{L}])(?:och (?:vad|hur|varför|när|vem|vilka|vilken)|varför|hur kommer det sig|förklara|beskriv|jämför|skillnad|orsak\p{L}*|följd\p{L}*|betyd\p{L}*|innebär|fungerar)(?![\p{L}])|\d|(?<![\p{L}])(?:två|tre|fyra|fem|sex|sju|åtta|nio|tio|elva|tolv|tjugo|trettio|fyrtio|femtio|hundra|tusen|halv|procent|mol|gram|liter|meter|sekunder|newton|joule)(?![\p{L}])/iu;
+export function isShortFactQuestion(fragment: string): boolean {
+  const t = (fragment ?? "").trim().replace(/^(?:lumen,?\s+)?(?:och\s+|men\s+|asså\s+|alltså\s+)?/iu, "");
+  const words = t.split(/\s+/).filter(Boolean).length;
+  return words >= 3 && words <= 12 && FACT_OPEN.test(t) && !NOT_FACT.test(t) && !STUDY_CUES.test(t);
+}
+
 const CONTINUE_MORE =
   /^\s*(?:och\s+)?(?:mer|mera|fortsätt|fortsätta|berätta mer|säg mer|utveckla|utförligare|mer detaljer|och sen|och sedan)\s*[?.!]?\s*$/iu;
 const CONTINUE_SIMPLER =

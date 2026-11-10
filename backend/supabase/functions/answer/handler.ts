@@ -27,7 +27,7 @@ import {
 import { selfAnswer } from "./self.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
-import { classifyAnswerType, detectContinuation } from "./length.ts";
+import { classifyAnswerType, detectContinuation, isShortFactQuestion } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
@@ -153,6 +153,8 @@ export interface HandlerConfig {
   rizzModel?: string;
   /** D87: model for Provläge (persona tutor in mode tutor); unset = the provider's default (Haiku). */
   tutorModel?: string;
+  /** K29: short fact questions in Provläge on the provider's default model (Haiku); off by default (TUTOR_FACT_ROUTE=1). */
+  tutorFactRoute?: boolean;
   /** K5: the public demo's model (first impression; DEMO_MODEL overrides, "" = the default model). */
   demoModel?: string;
   tutorPriceInPerMTok?: number;
@@ -188,6 +190,8 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   // K2 (2026-11-09): Provläge on Sonnet 5.5, the only model over the 90 % target in the D87 bank (DECISIONS D90);
   // TUTOR_MODEL overrides it (e.g. back to Haiku), the demo never uses it
   tutorModel: "claude-sonnet-5-5",
+  // K29 measured (2026-11-10, 20 short fact questions, Sonnet judge): Haiku correct 75 % vs Sonnet 100 %, so off
+  tutorFactRoute: false,
   // K5 (2026-11-10): the demo on Sonnet too (Haiku's demo answers had Swedish slips); within the demo caps
   // (600 questions a day, 160 tokens each) at most about 3 USD a day
   demoModel: "claude-sonnet-5-5",
@@ -1026,7 +1030,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz
       const isRizz = plan?.kind === "rizz" || textReq || careful; // K9: "var säker" = the stronger model, one answer
       // D87: Provläge can run on its own model (TUTOR_MODEL); the measured choice is in DECISIONS D87
-      const tutorModel = !isRizz && tutor && !plan && !demo && cfg.tutorModel
+      // K29 (D115 T1): a short fact question in Provläge can go to the cheaper default model (TUTOR_FACT_ROUTE=1)
+      const factRoute = !isRizz && tutor && !plan && !demo && !!cfg.tutorModel && cfg.tutorFactRoute === true &&
+        !continuation && !computed && isShortFactQuestion(body.fragment);
+      const tutorModel = !isRizz && tutor && !plan && !demo && cfg.tutorModel && !factRoute
         ? cfg.tutorModel
         : demo && cfg.demoModel // K5: the demo runs on the stronger model (priced like Provläge)
         ? cfg.demoModel

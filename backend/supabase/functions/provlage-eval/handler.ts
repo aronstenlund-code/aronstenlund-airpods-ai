@@ -145,6 +145,7 @@ export function createEvalHandler(deps: EvalDeps) {
             limits: { perMinute: 60, perDay: 2000, globalPerDay: 20000 },
             appGuard: { networkPerDay: 0, newUserAgeSec: 0, newUserPerHour: 0 },
             tutorModel: m.id,
+            tutorFactRoute: false, // K29: the chosen model answers every case
             tutorPriceInPerMTok: m.inPerM,
             tutorPriceOutPerMTok: m.outPerM,
           },

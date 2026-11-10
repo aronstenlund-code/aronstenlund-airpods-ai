@@ -1,0 +1,202 @@
+[
+ {
+  "id": "k29-01",
+  "grade": "Åk 9",
+  "subject": "Historia",
+  "kind": "fact",
+  "q": "när började första världskriget",
+  "expect": "1914, efter skottet i Sarajevo 28 juni; krigsförklaringar i juli-augusti",
+  "context": [],
+  "profile": "Prov i Historia nästa vecka om 1900-talet. Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-02",
+  "grade": "Åk 9",
+  "subject": "Historia",
+  "kind": "fact",
+  "q": "vem ledde Sovjetunionen under andra världskriget",
+  "expect": "Josef Stalin",
+  "context": [],
+  "profile": "Prov i Historia nästa vecka om 1900-talet. Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-03",
+  "grade": "Åk 9",
+  "subject": "Historia",
+  "kind": "fact",
+  "q": "vilket år föll Berlinmuren",
+  "expect": "1989 (9 november)",
+  "context": [],
+  "profile": "Prov i Historia nästa vecka om 1900-talet. Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-04",
+  "grade": "Åk 9",
+  "subject": "Historia",
+  "kind": "fact",
+  "q": "när blev Sverige demokrati",
+  "expect": "allmän och lika rösträtt 1918-1921, kvinnor röstade första gången 1921",
+  "context": [],
+  "profile": "Prov i Historia nästa vecka om 1900-talet. Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-05",
+  "grade": "Åk 9",
+  "subject": "Historia",
+  "kind": "fact",
+  "q": "vem var Sveriges statsminister under andra världskriget",
+  "expect": "Per Albin Hansson",
+  "context": [],
+  "profile": "Prov i Historia nästa vecka om 1900-talet. Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-06",
+  "grade": "Åk 9",
+  "subject": "Biologi",
+  "kind": "fact",
+  "q": "vad heter cellens kraftverk",
+  "expect": "mitokondrierna (cellandningen)",
+  "context": [],
+  "profile": "Prov i Biologi nästa vecka om cellen och genetik. Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-07",
+  "grade": "Åk 9",
+  "subject": "Biologi",
+  "kind": "fact",
+  "q": "hur många kromosomer har en människa",
+  "expect": "46, 23 par",
+  "context": [],
+  "profile": "Prov i Biologi nästa vecka om cellen och genetik. Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-08",
+  "grade": "Åk 9",
+  "subject": "Biologi",
+  "kind": "fact",
+  "q": "vem upptäckte penicillinet",
+  "expect": "Alexander Fleming, 1928",
+  "context": [],
+  "profile": "Prov i Biologi nästa vecka om cellen och genetik. Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-09",
+  "grade": "Åk 9",
+  "subject": "Biologi",
+  "kind": "fact",
+  "q": "vad står DNA för",
+  "expect": "deoxiribonukleinsyra",
+  "context": [],
+  "profile": "Prov i Biologi nästa vecka om cellen och genetik. Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-10",
+  "grade": "Gymnasiet 1",
+  "subject": "Kemi",
+  "kind": "fact",
+  "q": "vad är det kemiska tecknet för natrium",
+  "expect": "Na",
+  "context": [],
+  "profile": "Prov i Kemi 1 nästa vecka om atomer och bindningar. Årskurs: Gymnasiet 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-11",
+  "grade": "Gymnasiet 1",
+  "subject": "Kemi",
+  "kind": "fact",
+  "q": "vem skapade det periodiska systemet",
+  "expect": "Dmitrij Mendelejev, 1869",
+  "context": [],
+  "profile": "Prov i Kemi 1 nästa vecka om atomer och bindningar. Årskurs: Gymnasiet 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-12",
+  "grade": "Gymnasiet 1",
+  "subject": "Kemi",
+  "kind": "fact",
+  "q": "vad kallas partiklarna i atomkärnan",
+  "expect": "protoner och neutroner (nukleoner)",
+  "context": [],
+  "profile": "Prov i Kemi 1 nästa vecka om atomer och bindningar. Årskurs: Gymnasiet 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-13",
+  "grade": "Gymnasiet 1",
+  "subject": "Svenska",
+  "kind": "fact",
+  "q": "vem skrev Röda rummet",
+  "expect": "August Strindberg, 1879",
+  "context": [],
+  "profile": "Prov i Svenska 1 nästa vecka om litteraturhistoria. Årskurs: Gymnasiet 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-14",
+  "grade": "Gymnasiet 1",
+  "subject": "Svenska",
+  "kind": "fact",
+  "q": "när skrevs Gösta Berlings saga",
+  "expect": "1891, Selma Lagerlöf",
+  "context": [],
+  "profile": "Prov i Svenska 1 nästa vecka om litteraturhistoria. Årskurs: Gymnasiet 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-15",
+  "grade": "Gymnasiet 1",
+  "subject": "Svenska",
+  "kind": "fact",
+  "q": "vem skrev Nils Holgerssons underbara resa",
+  "expect": "Selma Lagerlöf",
+  "context": [],
+  "profile": "Prov i Svenska 1 nästa vecka om litteraturhistoria. Årskurs: Gymnasiet 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-16",
+  "grade": "Åk 8",
+  "subject": "Geografi",
+  "kind": "fact",
+  "q": "vad är huvudstaden i Portugal",
+  "expect": "Lissabon",
+  "context": [],
+  "profile": "Prov i Geografi nästa vecka om Europa. Årskurs: Åk 8. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-17",
+  "grade": "Åk 8",
+  "subject": "Geografi",
+  "kind": "fact",
+  "q": "var ligger Pyrenéerna",
+  "expect": "mellan Spanien och Frankrike",
+  "context": [],
+  "profile": "Prov i Geografi nästa vecka om Europa. Årskurs: Åk 8. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-18",
+  "grade": "Åk 8",
+  "subject": "Geografi",
+  "kind": "fact",
+  "q": "vilken är den längsta floden i Europa",
+  "expect": "Volga",
+  "context": [],
+  "profile": "Prov i Geografi nästa vecka om Europa. Årskurs: Åk 8. Ämne: Geografi. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-19",
+  "grade": "Gymnasiet 1",
+  "subject": "Fysik",
+  "kind": "fact",
+  "q": "vad är si-enheten för kraft",
+  "expect": "newton, N",
+  "context": [],
+  "profile": "Prov i Fysik 1 nästa vecka om kraft och energi. Årskurs: Gymnasiet 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+ },
+ {
+  "id": "k29-20",
+  "grade": "Gymnasiet 1",
+  "subject": "Fysik",
+  "kind": "fact",
+  "q": "vem formulerade gravitationslagen",
+  "expect": "Isaac Newton",
+  "context": [],
+  "profile": "Prov i Fysik 1 nästa vecka om kraft och energi. Årskurs: Gymnasiet 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar."
+ }
+]

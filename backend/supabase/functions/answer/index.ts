@@ -48,6 +48,7 @@ const handler = createHandler({
     rizzModel: env.get("RIZZ_MODEL") || DEFAULT_CONFIG.rizzModel,
     // D87: Provläge model (unset = Haiku via LLM_MODEL); prices for the cost estimate
     tutorModel: env.get("TUTOR_MODEL") || DEFAULT_CONFIG.tutorModel,
+    tutorFactRoute: env.get("TUTOR_FACT_ROUTE") === "1",
     demoModel: env.get("DEMO_MODEL") ?? DEFAULT_CONFIG.demoModel,
     tutorPriceInPerMTok: Number(env.get("TUTOR_PRICE_IN_PER_MTOK") ?? DEFAULT_CONFIG.tutorPriceInPerMTok ?? 0.10),
     tutorPriceOutPerMTok: Number(env.get("TUTOR_PRICE_OUT_PER_MTOK") ?? DEFAULT_CONFIG.tutorPriceOutPerMTok ?? 0.50),
