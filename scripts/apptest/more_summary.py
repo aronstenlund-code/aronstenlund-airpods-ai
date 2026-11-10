@@ -24,12 +24,12 @@ def since_open(result, key):
 ok = sum(1 for r in results if r["verdict"].startswith("ok"))
 print(f"## T7 Mer-fönstret: {ok}/{len(results)} fall rätt (simulator, inte enhet)")
 print()
-print("| Fall | Ljud | Röst | Fönster | Stängt efter (s) | Varför | Efter ordet (s): tal / klart | Ord kort → nästa | Domslut |")
-print("|---|---|---|---|---|---|---|---|---|")
+print("| Fall | Ljud | Röst | Fönster | Mikrofonen öppen efter (s) | Stängt efter (s) | Varför | Efter ordet (s): tal / klart | Ord kort → nästa | Domslut |")
+print("|---|---|---|---|---|---|---|---|---|---|")
 for r in results:
     opened = "öppnades" if r.get("windowOpenAt") is not None else "nej"
     words = f"{r.get('firstAnswerWords') or '-'} → {r.get('answerAfterProbeWords') or '-'}"
-    print(f"| {r['id']} | {r['probe']} (+{r['delay']} s) | {r['voice']} | {opened} | {sec(since_open(r, 'closedAt'))} | "
+    print(f"| {r['id']} | {r['probe']} (+{r['delay']} s) | {r['voice']} | {opened} | {sec(r.get("inputOpenAfterWindow"))} | {sec(since_open(r, "closedAt"))} | "
           f"{r.get('closeReason') or '-'} | {sec(r.get('secondsToSpeech'))} / {sec(r.get('secondsToAnswer'))} | {words} | "
           f"{r['verdict']} |")
 print()

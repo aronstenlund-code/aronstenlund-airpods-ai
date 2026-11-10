@@ -197,6 +197,11 @@ struct MoreE2ETests {
         var firstAnswerWords: Int?
         var windowOpenAt: Double?
         var screenShowedOffer = false
+        /// Was the recogniser open at window + delay (the moment a user says the word)?
+        var inputOpenAtProbeTime = true
+        /// Seconds from the window opening to "STT input open" (nil: never gated, or no line).
+        var inputOpenAfterWindow: Double?
+        var windowStillOpenAtProbe = true
         var probeStartAt: Double?
         var probeEndAt: Double?
         var closedAt: Double?
@@ -225,7 +230,12 @@ struct MoreE2ETests {
         let cases = try Self.cases(in: dir)
         var results: [CaseResult] = []
         for item in cases {
-            let result = try await run(item, dir: dir)
+            var result = try await run(item, dir: dir)
+            if result.windowOpenAt == nil { // a Scribe/TLS hiccup in the Simulator: once more
+                print("T7 case \(item.id): no window, once more")
+                try await Task.sleep(for: .seconds(3))
+                result = try await run(item, dir: dir)
+            }
             print("T7 case \(item.id): \(result.verdict)")
             results.append(result)
             try write(results)
@@ -303,6 +313,23 @@ struct MoreE2ETests {
             result.windowOpenAt = now()
             result.screenShowedOffer = true
             try await Task.sleep(for: .seconds(item.delay))
+            // D82 gates the recogniser after Lumen's own speech ("STT input gated (own speech)" … "STT input open").
+            // Run 42768391441: the gate outlasted the probe at +1.5 s in every case. Record when the input opens, and
+            // for every case but the late one play the probe once it is open (or the window closed), so the words
+            // themselves are tested too.
+            func inputIsOpen() -> Bool {
+                guard let last = events.last(where: { $0.kind == "log" && $0.text.hasPrefix("STT input ") }) else { return true }
+                return last.text.hasPrefix("STT input open")
+            }
+            result.inputOpenAtProbeTime = inputIsOpen()
+            if item.kind != "late" {
+                while !inputIsOpen(), model.isOfferingMore { try await Task.sleep(for: .milliseconds(50)) }
+                if !result.inputOpenAtProbeTime { try await Task.sleep(for: .milliseconds(300)) }
+            }
+            if let open = events.last(where: { $0.kind == "log" && $0.text.hasPrefix("STT input open") }), let w = result.windowOpenAt {
+                result.inputOpenAfterWindow = open.t - w
+            }
+            result.windowStillOpenAtProbe = model.isOfferingMore
             result.probeStartAt = now()
             result.probeEndAt = await capture.play(probe).timeIntervalSince(start)
             // Afterwards: the next answer (if any) and quiet.
@@ -348,11 +375,16 @@ struct MoreE2ETests {
             return "no window: first answer \(r.firstAnswerWords ?? 0) words (\(r.firstAnswer ?? "none"))"
         }
         let tookMore = r.closeReason?.hasPrefix("yes") == true
+        let gate = r.inputOpenAfterWindow.map { String(format: "%.1f s", $0) } ?? "?"
+        if r.kind != "late", !r.windowStillOpenAtProbe {
+            return "deaf window: the recogniser opened \(gate) after the window, which closed after 5 s; the word was not tested"
+        }
+        let deaf = r.inputOpenAtProbeTime ? "" : "deaf at +\(r.delay) s (recogniser opened after \(gate)); played then: "
         switch r.kind {
         case "more":
-            guard tookMore else { return "the word was not taken as more (closed: \(r.closeReason ?? "never"))" }
-            guard r.secondsToSpeech != nil else { return "taken, but no long answer spoken" }
-            return "ok"
+            guard tookMore else { return deaf + "the word was not taken as more (closed: \(r.closeReason ?? "never"))" }
+            guard r.secondsToSpeech != nil else { return deaf + "taken, but no long answer spoken" }
+            return deaf.isEmpty ? "ok" : deaf + "taken as more"
         case "late":
             guard !tookMore else { return "a 'ja' after 6 s still got more" }
             guard r.closeReason == "silence" else { return "closed by \(r.closeReason ?? "nothing"), expected silence" }
@@ -362,11 +394,12 @@ struct MoreE2ETests {
             return r.answeredAfterProbe.isEmpty ? "ok" : "the late 'ja' got an answer: \(r.answeredAfterProbe)"
         case "other":
             if r.enrolled?.hasPrefix("saved") != true { return "voice not learned: \(r.enrolled ?? "nil")" }
-            return tookMore ? "another voice's '\(r.probe)' got more" : "ok"
+            return tookMore ? deaf + "another voice's '\(r.probe)' got more" : (deaf.isEmpty ? "ok" : deaf + "not taken (right)")
         default: // "newquestion": the window closes and the words are an ordinary turn
-            guard !tookMore else { return "taken as more" }
+            guard !tookMore else { return deaf + "taken as more" }
             let answered = r.answeredAfterProbe.contains { $0.lowercased().contains(key) }
-            return answered ? "ok" : "the new question was not answered (asked \(r.askedAfterProbe))"
+            if !answered { return deaf + "the new question was not answered (asked \(r.askedAfterProbe))" }
+            return deaf.isEmpty ? "ok" : deaf + "answered"
         }
     }
 
