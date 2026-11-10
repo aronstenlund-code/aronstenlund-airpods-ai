@@ -29,7 +29,7 @@ print("|---|---|---|---|---|---|---|---|---|---|")
 for r in results:
     opened = "öppnades" if r.get("windowOpenAt") is not None else "nej"
     words = f"{r.get('firstAnswerWords') or '-'} → {r.get('answerAfterProbeWords') or '-'}"
-    print(f"| {r['id']} | {r['probe']} (+{r['delay']} s) | {r['voice']} | {opened} | {sec(r.get("inputOpenAfterWindow"))} | {sec(since_open(r, "closedAt"))} | "
+    print(f"| {r['id']} | {r['probe']} (+{r['delay']} s) | {r['voice']} | {opened} | {sec(r.get('inputOpenAfterWindow'))} | {sec(since_open(r, 'closedAt'))} | "
           f"{r.get('closeReason') or '-'} | {sec(r.get('secondsToSpeech'))} / {sec(r.get('secondsToAnswer'))} | {words} | "
           f"{r['verdict']} |")
 print()
