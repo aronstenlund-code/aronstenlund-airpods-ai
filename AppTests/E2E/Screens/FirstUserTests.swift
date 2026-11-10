@@ -87,6 +87,8 @@ final class FirstUserTests: XCTestCase {
         if wait(["Inte nu", "Spara prov", "Hoppa över"], 8) != nil {
             screen("prov-steget", "First start: add an exam or skip")
             if path == "exam" {
+                // A33: the form is behind "Skriv i stället" (Lumen asks aloud first; no voice in the Simulator).
+                if find(["Skriv i stället"]) != nil { tap(["Skriv i stället"], "exam step → Skriv i stället") }
                 tap(["NO"], "exam step → NO")
                 screen("prov-steget-no", "Exam step, NO chosen")
                 tap(["Spara prov"], "exam step → Spara prov")

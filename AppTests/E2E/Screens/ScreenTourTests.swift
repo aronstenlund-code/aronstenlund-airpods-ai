@@ -110,6 +110,14 @@ final class ScreenTourTests: XCTestCase {
             shoot("lagg-till-prov-forsta", note: "Add exam at first start (sketch 3)")
             app.swipeUp()
             shoot("lagg-till-prov-forsta-slut", note: "Add exam at first start, scrolled")
+            // A33: the form is behind "Skriv i stället" (Lumen asks aloud first).
+            if let write = find(["Skriv i stället"]) {
+                write.tap()
+                pause(1)
+                shoot("lagg-till-prov-forsta-formular", note: "Add exam at first start, the form (A33)")
+                app.swipeUp()
+                shoot("lagg-till-prov-forsta-formular-slut", note: "Add exam at first start, the form, scrolled")
+            }
             tap(["Inte nu", "Hoppa över"], step: "add exam → Inte nu")
         } else {
             miss("add-exam step of the first start not shown")
