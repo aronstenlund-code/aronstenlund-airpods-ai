@@ -1,0 +1,70 @@
+{
+ "stamp": "2026-11-10-0806",
+ "spent_usd": 0.0003,
+ "summary": {
+  "6": {
+   "n": 2,
+   "answer_n": 2,
+   "understood": 2,
+   "right": 2,
+   "silent_n": 0,
+   "quiet_ok": 0,
+   "either_n": 0,
+   "errors": 0
+  }
+ },
+ "rows": [
+  {
+   "id": "g6-14",
+   "group": 6,
+   "mode": "fragor",
+   "profile": null,
+   "text": "vilken dag är det idag",
+   "expect": "answer",
+   "kw": "tisdag|november",
+   "status": 200,
+   "answer": "Idag är det tisdag den tionde november tjugohundratjugosex.",
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "first_ms": 1383,
+   "ms": 1460,
+   "cost": 0.00012,
+   "err": null,
+   "spoke": true,
+   "recon": "Vilken dag är det idag?",
+   "is_question": true,
+   "answer_type": "fact",
+   "app_command": null,
+   "status_done": null,
+   "understood": true,
+   "right": true,
+   "ok": true
+  },
+  {
+   "id": "g6-15",
+   "group": 6,
+   "mode": "fragor",
+   "profile": null,
+   "text": "vad är klockan",
+   "expect": "answer",
+   "kw": "",
+   "status": 200,
+   "answer": "Klockan är åtta och sex på morgonen, tisdag den tio november.",
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "first_ms": 1300,
+   "ms": 1440,
+   "cost": 0.00014,
+   "err": null,
+   "spoke": true,
+   "recon": "Vad är klockan?",
+   "is_question": true,
+   "answer_type": "fact",
+   "app_command": null,
+   "status_done": null,
+   "understood": true,
+   "right": true,
+   "ok": true
+  }
+ ]
+}
