@@ -2,15 +2,15 @@ name: Apptest screens (T3)
 
 # Toby's screen tour: every screen in the Simulator in light, dark, the largest text size, on a small iPhone and with
 # the microphone denied. Screenshots + index.html as an artifact. Simulator only: never a verification on a device.
+# D120 (2026-11-10): the tour opens Lyssnar in several modes, so every run opens Scribe sessions. Not on every push to
+# main any more (those runs were cancelled by the next push anyway, and each one cost Scribe seconds): nightly, by hand,
+# and on Toby's branch only when the screen tests themselves change.
 on:
   push:
-    # toby/**: Toby iterates on his own branch, so his pushes never cancel the iOS build on main.
-    branches: [main, "toby/**"]
+    branches: ["toby/**"]
     paths:
-      - "Lumen/**"
-      - "Shared/**"
-      - "project.yml"
-      - "AppTests/E2E/**"
+      - "AppTests/E2E/Screens/**"
+      - "AppTests/E2E/project-e2e.yml"
       - "scripts/apptest/screens*"
       - ".github/workflows/apptest-screens.yml"
   schedule:

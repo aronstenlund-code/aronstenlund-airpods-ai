@@ -2,7 +2,8 @@ name: Apptest more window (T7)
 
 # Toby's T7: Angela's A15 'Mer?' window through the app's real chain in the Simulator (ja, mer, gärna, a late ja,
 # ja inside a sentence, another voice, a new question). Live and paid (Scribe, /answer; Apple's voice, no /tts), so
-# manual, and on Toby's branch when the test changes. Simulator only: never a device test.
+# manual, and on Toby's branch when the test changes. Simulator only: never a device test. D120: the speech is
+# macOS `say` (free); Scribe is open about 30 s per case, 8 cases. Run once per fix, not on every push.
 on:
   workflow_dispatch:
   push:

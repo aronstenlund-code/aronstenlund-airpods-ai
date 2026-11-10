@@ -3,7 +3,7 @@
 # Frågor with 10 questions (3 continuations after a pause), Provläge with three questions and a wish in one breath,
 # Provläge with an exam whose topics are longer than 20 characters. The long run (T5 part 4) is apptest-long.yml.
 #
-#   scripts/apptest/retest.sh
+#   RETEST_SETS=fragor,block scripts/apptest/retest.sh   (D120: only the sets named; empty = all three)
 #
 # Output: apptest-out/retest/retest-<set>.json, summary.md, logs/. Live and paid (Scribe, /answer). Answers in
 # Frågor are spoken in Apple's voice (no /tts). Simulator only: never a verification on a device.
@@ -70,6 +70,7 @@ xcrun simctl privacy "$UDID" grant microphone com.rsolutions.lumen || true
 
 echo "::group::Retest (real time, live Scribe and /answer)"
 TEST_RUNNER_LUMEN_E2E_RETEST_DIR="$AUDIO" \
+TEST_RUNNER_LUMEN_E2E_RETEST_SETS="${RETEST_SETS:-}" \
 TEST_RUNNER_LUMEN_E2E_OUT="$OUT" \
 xcodebuild test \
   -project Lumen.xcodeproj \
