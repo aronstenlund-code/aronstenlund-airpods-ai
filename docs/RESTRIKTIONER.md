@@ -11,7 +11,7 @@ Aron (D113): så få egna restriktioner som möjligt, eftersom modellen (Anthrop
 | A4 | Appen | 18+-spärren före Rizzläget (D112, A32) | Inget |
 | A5 | Appen och servern | Kodstopp för "känsliga minnen" som inte är farliga (religion, intressen, mående i allmänhet) | Inget. Se B5 för det som är kvar tills Aron bestämt |
 
-## B. Finns kvar tills Aron säger annat (skyddar mot verklig skada, lag eller kostnad, inte innehåll)
+## B. De enda restriktionerna i appen (Aron 2026-11-10: "det är de enda som ska finnas")
 | # | Vad | Varför den finns | Om den tas bort | Rekommendation |
 |---|---|---|---|---|
 | B1 | **Krissvar** (`crisis.ts`, K21/K23) | I Frågor var modellen **tyst** på "jag orkar inte leva" eftersom det inte var en fråga. Det är ett svar som läggs till, inget som tas bort | Tystnad mot en elev som mår dåligt | **Behåll** |

@@ -81,3 +81,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-10 10:47 → reports/2026-11-10-1046-kelly-ke19-d97-pa-sidan.md **Ke19 – Demosidan som samma produkt som appen: D97:s två val i demorutan** (effort: low, Aron 2026-11-10). "Förhör mig" och "Få A-svar till provet" med samma namn och rader som provkortet. Få A-svar = dagens livedemo. Förhör mig = tre frågor ur Provläget med de inspelade svaren, utan nya anrop. `site/` ≤ 2 MB, Lighthouse ≥ 95.
 
 - [x] klar 2026-11-10 11:33 → reports/2026-11-10-1133-kelly-granskning-a26.md (A26 godkänd, R1–R6 stängda, 4 nya fynd varav 1 skyddsräcke) **Ke20 – Granska A26:s skärmbilder** (effort: low, PLAN 2c, Aron 2026-11-10).
+
+- [ ] **Ke21 – Demosidan efter D112/D113** (effort: medium). Ta bort allt om 18+ och åldersgräns för Rizzläget på sidan (D112: flirtigt men aldrig sexuellt, för alla åldrar). Om sidan beskriver vad Lumen inte gör: håll det till de åtta skydden i `docs/RESTRIKTIONER.md` del B (t.ex. samtycke och lyssningsindikator), inga andra spärrar. Granska sedan Angelas A28–A30-bilder när de är pushade.
