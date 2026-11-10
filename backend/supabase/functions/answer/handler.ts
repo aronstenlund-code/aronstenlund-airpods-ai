@@ -31,7 +31,7 @@ import { classifyAnswerType, detectContinuation, isShortFactQuestion } from "./l
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
-import { type CommandTask, commandTask, detectRule, socialRequest } from "./commands.ts";
+import { type CommandTask, commandTask, detectRule, funCommand, socialRequest } from "./commands.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
 import { applicable, describe, detectCorrection, profileOf } from "../memory/settings.ts";
 
@@ -797,15 +797,18 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           body.length = lengthPref === "shorter" ? "short" : "long";
         }
       }
-      const direct = (cfg.directModes && body.mode !== "auto") || !!personaPlan(body);
+      // K32 (D115): "sjung", "rappa", "berätta ett skämt", "säg det som en pirat" in every mode, answered to the user
+      const funCmd = demo || body.sessionEnd ? null : funCommand(body.social?.calibrate || body.fragment,
+        body.mode === "auto" || !!personaPlan(body));
+      const direct = !!funCmd || (cfg.directModes && body.mode !== "auto") || !!personaPlan(body);
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
-      const plan = personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
+      const plan = funCmd ? null : personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
       const continuation = !plan && body.context.recent_qa.length
         ? detectContinuation(body.fragment)
         : null;
-      const tutor = body.mode === "tutor";
+      const tutor = body.mode === "tutor" && !funCmd;
       // K9: a spoken instruction from the command table ("ge ett exempel", "sammanfatta", "var säker" …)
-      const command: CommandTask | null = body.sessionEnd && !demo && !personaPlan(body)
+      const command: CommandTask | null = funCmd ? funCmd : body.sessionEnd && !demo && !personaPlan(body)
         ? { task: "session_summary", rule: SESSION_END_RULE }
         : demo || continuation
         ? null

@@ -34,6 +34,7 @@ Deno.test("K30 qa-log: only the owner signed in by email reads; the rows and the
     assertEquals(s === 401 || s === 403, true, JSON.stringify(u));
   }
   assertEquals((await setup(owner, [""]).h(new Request("http://x/qa-log"))).status, 503, "OWNER_EMAIL unset");
+  assertEquals((await setup({ id: "a", isAnonymous: true }, [""]).h(new Request("http://x/qa-log"))).status, 403, "anonymous never sees the config");
 });
 
 Deno.test("K30 qa-log: 'Hämtat' deletes up to the newest fetched row, nothing else", async () => {

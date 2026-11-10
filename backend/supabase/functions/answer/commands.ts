@@ -9,7 +9,7 @@
  * removed), so the words inside an ordinary sentence ("ge ett exempel på en reaktion") never trigger a task.
  */
 
-export type Scope = "study" | "interview" | "social";
+export type Scope = "study" | "interview" | "social" | "fun";
 
 export interface CommandTask {
   /** e.g. "example", "quiz_topic", "interview_help:better", "social:funnier", "rizz:flirty", "alternatives:3" */
@@ -129,6 +129,19 @@ const FAMILIES: Family[] = [
     "A light line that saves the moment after an awkward silence or a bad line."),
   F("rizz:less_cringe", "social", /^(?:mindre cringe|mindre pinsamt|mindre pinsam)$/u, "less cringe, more relaxed"),
   F("alternatives:3", "social", /^(?:ge mig )?tre (?:alternativ|förslag|varianter|repliker)|ge mig tre$/u, "Three different lines."),
+  // ---------- K32 (D115): fun commands, in every mode (commands, not modes) ----------
+  F("fun:sing", "fun",
+    /^(?:sjung|sjung en (?:sång|visa|låt)|sjung något|sjung för mig|sjung en sång för mig)(?: om (.{2,60}))?$/u,
+    "Sing: write a short ORIGINAL song text of four to eight short lines about <task_arg> (without one: the topic of <recent_qa>, or something cheerful), with rhyme and a clear rhythm, in Swedish, to be read aloud. Never the lyrics of an existing song. No title, no stage directions."),
+  F("fun:rap", "fun",
+    /^(?:rappa|rapa|gör en rap|kör en rap|rappa något|freestyla|freestyle)(?: om (.{2,60}))?$/u,
+    "Rap: write a short ORIGINAL rap verse of four to eight lines about <task_arg> (without one: the topic of <recent_qa>, or the day), with rhymes and a beat, in Swedish, to be read aloud. Never existing lyrics."),
+  F("fun:joke", "fun",
+    /^(?:(?:berätta|säg|dra|kör|ta) (?:ett |en )?(?:skämt|vits|ordvits|rolig historia|dåligt skämt|pappaskämt)|(?:ett )?skämt|en vits|(?:ett )?pappaskämt)(?: om (.{2,60}))?$/u,
+    "Tell ONE short joke (about <task_arg> if given, otherwise about school or the topic of <recent_qa>), two or three sentences, with the punchline last. Only the joke."),
+  F("fun:style", "fun",
+    /^(?:säg|förklara|svara|upprepa|berätta) (?:det|det där|svaret|det igen)(?: igen)? (?:som (?:en |ett )?|på |med )(?!för |enklare|kortare|längre|svenska|engelska)(.{2,40})$/u,
+    "Say your last answer in <recent_qa> again in the style named in <task_arg> (for example a pirate: \"Arrr\", ship and sea words; a sports commentator: fast and excited), with the same facts, two to four sentences. Without a last answer, one short line about the day in that style."),
 ];
 
 /** Social families that ask for a new line (a suggestion request), not a style change (a calibration). */
@@ -162,6 +175,15 @@ export function socialRequest(text: string): { count: number; request: string } 
 export function socialStyle(text: string): string | null {
   const c = commandTask(text, "social");
   return c && !SOCIAL_REQUESTS.has(c.task) ? c.rule : null;
+}
+
+/**
+ * K32: a fun command in any mode. In Auto and in the social modes (where other people speak) only after "Lumen"
+ * ("Lumen, berätta ett skämt"), so a classmate's "berätta ett skämt" never starts one.
+ */
+export function funCommand(text: string, requireName: boolean): CommandTask | null {
+  if (requireName && !/^\s*(?:(?:hej|okej|ok)\s+)?lumen(?![\p{L}])/iu.test(text ?? "")) return null;
+  return commandTask(text ?? "", "fun");
 }
 
 /** The table as data, for docs/COMMANDS.md and tests. */

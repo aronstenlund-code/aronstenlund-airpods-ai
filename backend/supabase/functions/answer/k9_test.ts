@@ -39,6 +39,11 @@ const VARIANTS: Record<string, [string, "study" | "interview" | "social", string
   r_rescue: ["rizz:rescue", "social", ["rädda mig", "det går dåligt", "rädda situationen"]],
   r_cringe: ["rizz:less_cringe", "social", ["mindre cringe", "mindre pinsamt", "Lumen, mindre cringe tack"]],
   alt3: ["alternatives:3", "social", ["ge mig tre alternativ", "tre förslag", "ge mig tre"]],
+  // K32: fun commands (every mode)
+  f_sing: ["fun:sing", "fun", ["sjung", "sjung en sång om hösten", "Lumen, sjung något"]],
+  f_rap: ["fun:rap", "fun", ["rappa", "kör en rap om fotosyntes", "freestyla"]],
+  f_joke: ["fun:joke", "fun", ["berätta ett skämt", "dra en vits", "Lumen, ett pappaskämt"]],
+  f_style: ["fun:style", "fun", ["säg det som en pirat", "förklara det som en sportkommentator", "säg det igen som en robot"]],
 };
 
 Deno.test("K9 every family: three variants each map to the task", () => {
@@ -178,7 +183,7 @@ Deno.test("K9 handler: a standing rule is answered locally and returned as a mem
 Deno.test("K9 handler: an unknown voice instruction goes to the model as an instruction", async () => {
   const { handler, seen } = setup("Kort: växter gör socker av ljus.");
   await sse(await handler(post({
-    fragment: "säg det som en rubrik", mode: "push_to_talk", language: "sv", voice_instruction: true, context: { recent_qa: QA },
+    fragment: "gör om det till tre punkter", mode: "push_to_talk", language: "sv", voice_instruction: true, context: { recent_qa: QA },
   })));
   assertStringIncludes(seen[0].user, "spoken instruction to you");
 });

@@ -32,8 +32,9 @@ export function createQaLogHandler(deps: QaLogDeps) {
       const user = await deps.authenticate(req);
       const owners = deps.ownerEmails.map((e) => e.trim().toLowerCase()).filter(Boolean);
       const byEmail = (user.amr ?? []).some((m) => m === "otp" || m === "magiclink");
+      if (user.isAnonymous || !user.email || !byEmail) throw new HttpError(403, "forbidden", "Owner only");
       if (!owners.length) throw new HttpError(503, "unconfigured", "OWNER_EMAIL is not set");
-      if (user.isAnonymous || !user.email || !owners.includes(user.email.toLowerCase()) || !byEmail) {
+      if (!owners.includes(user.email.toLowerCase())) {
         throw new HttpError(403, "forbidden", "Owner only");
       }
       if (req.method === "POST") {

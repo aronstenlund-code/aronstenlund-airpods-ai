@@ -1,6 +1,7 @@
 import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { readLimitedJson } from "../answer/validate.ts";
+import { notificationFor, readinessOf, streakOf } from "./progress.ts";
 
 /**
  * K17 (owner 2026-11-09 22:03): Lumen remembers what the student missed and plans the days up to the exam.
@@ -13,6 +14,9 @@ import { readLimitedJson } from "../answer/validate.ts";
  *            "prompt": "I går missade du cellandning, ska vi ta den?" | null,
  *            "plan": [{"date", "minutes", "concepts": [...], "note"}]}]}
  *
+ * K31 (D115 C2/C3): optional "quiz_days": ["2026-11-08", …] (every day with at least one quiz answer, the student's
+ *   calendar) -> "streak": {current, best, done_today, at_risk} and "notification": {title, body} | null (null = today
+ *   is done, no reminder). K33 (N1): every exam gets "readiness": {ready_pct, practiced, total, weakest, explain}.
  * Spaced repetition (Leitner): a concept is in box 0-3 (next review after 1, 3, 7 days, then 14). A wrong answer
  * puts it in box 0 (back tomorrow); a right one moves it up a box. Due = the next review day has come.
  */
@@ -156,20 +160,29 @@ export function createPlanHandler(deps: PlanDeps) {
         }).filter((c) => c.concept);
         return { name: clean(o.name, PLAN_LIMITS.name) || "Provet", date: dateOk(o.date) ? String(o.date) : null, concepts };
       });
-      if (!exams.length) throw new HttpError(400, "invalid_request", "exams is required");
+      const quizDays = (Array.isArray(b?.quiz_days) ? b!.quiz_days : []).filter(dateOk).slice(-400).map(String);
+      if (!exams.length && !Array.isArray(b?.quiz_days)) throw new HttpError(400, "invalid_request", "exams is required");
+      const out = exams.map((e) => {
+        const due = dueConcepts(e.concepts, today);
+        return {
+          name: e.name,
+          date: e.date,
+          days_left: e.date ? Math.round((parse(e.date)! - parse(today)!) / DAY) : null,
+          due,
+          prompt: promptFor(due, today),
+          plan: e.date ? planDays(e.concepts, today, e.date) : [],
+          readiness: readinessOf(e.concepts, today),
+        };
+      });
+      const streak = streakOf(quizDays, today);
+      // the nearest exam that has not been yet; its weakest concept goes in the notification
+      const next = out.filter((e) => e.days_left !== null && e.days_left >= 0).sort((a, b) => a.days_left! - b.days_left!)[0] ?? null;
+      const first = next ? (next.due[0]?.concept ?? next.readiness.weakest[0]?.concept ?? null) : null;
       return json({
         today,
-        exams: exams.map((e) => {
-          const due = dueConcepts(e.concepts, today);
-          return {
-            name: e.name,
-            date: e.date,
-            days_left: e.date ? Math.round((parse(e.date)! - parse(today)!) / DAY) : null,
-            due,
-            prompt: promptFor(due, today),
-            plan: e.date ? planDays(e.concepts, today, e.date) : [],
-          };
-        }),
+        exams: out,
+        streak,
+        notification: notificationFor(streak, next ? { name: next.name, days_left: next.days_left, first } : null),
       });
     } catch (e) {
       return errorResponse(toHttpError(e));

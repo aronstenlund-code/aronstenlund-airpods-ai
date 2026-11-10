@@ -124,6 +124,23 @@ Källa: `backend/supabase/functions/answer/commands.ts` (`FAMILIES`), tester i `
 - Kommer tillbaka som `done.memory_add` = "Regel: …" (appen lagrar det som i dag och skickar det med bland minnena, och prompten följer "Regel:"-rader) och som `done.rule_add` (regeltexten, för Minne › Regler).
 - En fråga om framtiden ("vad händer med klimatet i framtiden") blir aldrig en regel.
 
+### Backend: roliga kommandon i alla lägen (K32, Kevin, D115)
+Källa: `answer/commands.ts` (`fun:*`, `funCommand`), tester i `answer/k32_test.ts` och `k9_test.ts`. Det är kommandon, inga egna lägen.
+
+| `task` (+ `task_arg`) | Exempel på fraser | Beteende |
+|---|---|---|
+| `fun:sing` (ämne) | sjung, sjung en sång om hösten, sjung om fotosyntes | en egen kort sångtext (4–8 rader, rim), aldrig en befintlig låttext |
+| `fun:rap` (ämne) | rappa, kör en rap om fotosyntes, freestyla | en egen kort rapvers (4–8 rader) |
+| `fun:joke` (ämne) | berätta ett skämt, dra en vits om matte, ett pappaskämt | ett kort skämt, poängen sist |
+| `fun:style` (stil) | säg det som en pirat, förklara det som en sportkommentator, säg det igen som en robot | senaste svaret igen i den stilen, samma fakta |
+
+- **Var de gäller:** i alla lägen.
+  - I Standardläge (tryck och prata, text) och Provläge räcker frasen.
+  - I Auto och i Socialt, Rizz och Intervju krävs "Lumen" först, eftersom andra människor pratar där ("Lumen, berätta ett skämt").
+- **I Socialt, Rizz och Intervju** läses kommandot ur `social.calibrate` eller `fragment`. Svaret kommer som vanliga `delta`-händelser till användaren, inte som `suggestions` och inte som kalibrering. **Angela: spela upp det som ett vanligt svar.**
+- Ett roligt kommando är aldrig tyst (räknas som instruktion, inte som fråga, i hastighetsgränsen).
+- "Säg det på engelska", "förklara det som för en femåring" och "enklare/kortare" är inte `fun:style`. De går till sina vanliga vägar.
+
 ### Backend: "mer?" efter ett kort svar (K13, Kevin, D100)
 - Med `two_level: true` får appen först ett kort svar (`delta`, läses upp) och direkt därefter det utvecklade svaret (`more_delta` och `done.more`, läses inte upp). Appen sparar det i cirka 2 minuter.
 - **"ja", "mer", "utveckla" eller en nick** inom fönstret: appen spelar `done.more` direkt, utan nytt anrop, och skickar `/memory` `length_signal: {signal: "yes", context}`. **"nej" eller tystnad:** `signal: "no"`.
