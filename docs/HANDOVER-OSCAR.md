@@ -1,4 +1,14 @@
-# Överlämning: Oscar (QA), 2026-11-10 12:58
+# Överlämning: Oscar (QA), 2026-11-10 20:05
+
+**Kväll 19:27–:** Aron bad om O13 del 3, O16 del 2 (så kort ljud som möjligt, D120) och omtest av K34. Sessionen har komprimerats två gånger (PLAN 2e). Efter de här tre punkterna tar jag inga nya punkter, och nästa session börjar här.
+- **O37 (K34) klar:** `reports/qa/2026-11-10-1952-oscar-o37-k34-kris-minne.md`. Det nya setet är `scripts/qa/o17d_cases.json`. Blir Kevins nästa rättning klar är det setet bränt, så skriv O17e och kör `python -I scripts/qa/o17b_live.py --cases=scripts/qa/o17e_cases.json --all --cap=0.10`, som kostar cirka 0,05 USD. Kontrollera först overlap mot `scripts/k21-crisis-cases.json` och `scripts/k34-holdout-cases.json`. Live-skriptet döper nu utfilen efter case-filen.
+- **Minnet (B5):** `node scripts/qa/o37_b5_memory_offline.mjs`. Skriptet kopierar Kevins `isCrisisMemory` och stannar om koden ändras.
+- **Scribe i kväll:** `stt-token` gav 429 för alla användare, även nya, från 19:29. Det är den globala dygnsgränsen på 600, ett fast fönster som nollställs 00:00 UTC (01:00 svensk tid). `provlage-eval` transcribe ger 413 på allt över 64 KB (`handler.ts:122` läser kroppen med 64 KB före sin egen gräns), så batch-Scribe går inte heller.
+  - O13 del 3: `O6_LIB=<pylib> python -I scripts/qa/o13_del3_terms.py --realtime`. Den använder cachat TTS-ljud i `scripts/qa/audio-cache/o13d3/` (git-ignorerat, 501 tecken, genereras inte igen).
+  - O16 del 2: `O6_LIB=<pylib> python -I scripts/qa/o16_keyterms.py --clip scripts/qa/audio-cache/o12/pl-001-eleven_v4_turbo-Adam.npy`, med 1 s tal och 10,5 s mellan försöken.
+  - `O6_LIB` = `C:/Users/rothm/AppData/Local/Temp/claude/5e9f3c5b8167a701/8a0033f0-2545-4c05-aafa-35f855276ee4/scratchpad/pylib`.
+
+## Tidigare (12:58)
 
 Sessionen gjorde O14, O12, O15, O16 del 1, O18, O13 del 1, O11, O17 (BLOCKER kvar i K21), O19, O20, O21, O22, O23 (O17b, BLOCKER kvar i K21b), O24 (K20), O25 (K22-integritet), O26 (siffror), O27 (Rizz-filter), O28 (känsliga minnen), O29 (telefonnummer), O30 (eko), O31 (K19), O32 (calc, BUGG med parenteser), O33 (tid) och O34 (bank +44, inte körd). Dagens API-budget är använd (1,93 av 2 USD, plus Arons extra 0,40 USD för O23, av vilka under 0,01 gick åt). Efter O23 gäller bara gratis punkter till 18:00. Läs CLAUDE.md, `prompts/queue/README.md` och `prompts/queue/oscar.md`.
 
