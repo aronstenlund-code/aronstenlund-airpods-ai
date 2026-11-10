@@ -119,7 +119,8 @@ export function createEvalHandler(deps: EvalDeps) {
     try {
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use POST");
       const user = await deps.authenticate(req);
-      const b = (await readLimitedJson(req, 64 * 1024)) as Record<string, unknown> | null;
+      // Oscar O13 del 3: a transcribe body is up to ~2 MB of base64 (it was cut at 64 KB = 1.4 s of audio, 413)
+      const b = (await readLimitedJson(req, TRANSCRIBE_LIMITS.maxBase64 + 64 * 1024)) as Record<string, unknown> | null;
       const action = String(b?.action ?? "");
       if (!deps.provider) throw new HttpError(503, "provider_unconfigured", "LLM provider not configured");
       const net = await networkKey(req);
