@@ -146,3 +146,11 @@ Deno.test("K16 an English 'the sources do not say' sentence is never spoken in a
   assert(isEnglishSentence("The sources don't give a founding year for IFK Kalmar."));
   assert(!isEnglishSentence("Källorna anger inget grundår för IFK Kalmar."));
 });
+
+Deno.test("K4 loop: 'en 5:a' is a five, 1/6 is a sixth, 5:e is still fifth", async () => {
+  const { numbersToSpeech } = await import("./svnum.ts");
+  assertEquals(numbersToSpeech("Sannolikheten att slå en 5:a är 1/6."), "Sannolikheten att slå en femma är en sjättedel.");
+  assertEquals(numbersToSpeech("Han kom på 5:e plats."), "Han kom på femte plats.");
+  assertEquals(numbersToSpeech("2/5 av eleverna"), "två femtedelar av eleverna");
+  assertEquals(numbersToSpeech("öppet 24/7"), "öppet tjugofyra/sju");
+});

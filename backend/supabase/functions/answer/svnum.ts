@@ -182,14 +182,23 @@ const FRACTION_WORDS: Record<string, [string, string]> = {
   "3/4": ["tre fjärdedelar", "tre fjärdedels"],
   "1/8": ["en åttondel", "en åttondels"],
 };
+// K4 loop (D87 pl-127: "1/6" was read "ett/sex"): any a/b up to tenths
+const DENOM = ["", "", "halv", "tredjedel", "fjärdedel", "femtedel", "sjättedel", "sjundedel", "åttondel", "niondel", "tiondel"];
+function genericFraction(a: number, b: number): [string, string] | null {
+  if (b < 2 || b > 10 || a < 1 || a >= b) return null;
+  if (b === 2) return ["en halv", "en halv"];
+  const one = a === 1;
+  const w = one ? "en" : cardinal(a);
+  return [`${w} ${DENOM[b]}${one ? "" : "ar"}`, `${w} ${DENOM[b]}s`];
+}
 const UNICODE_FRACTIONS: Record<string, string> = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅛": "1/8" };
 const FRACTION_UNIT = String.raw`(?:\s?(dl|cl|ml|l|tsk|msk|krm|kg|g|st)(?![\p{L}\d]))?`;
 function speakFractions(text: string): string {
   let s = text.replace(/(\d)?([½⅓⅔¼¾⅛])/gu, (_m, d: string | undefined, f: string) => (d ? `${d} ` : "") + UNICODE_FRACTIONS[f]);
   s = s.replace(
-    new RegExp(String.raw`(?<![\p{L}\d.,/])(?:(\d{1,3})\s+)?([1-8])\/([2-8])(?![\d/])${FRACTION_UNIT}`, "gu"),
+    new RegExp(String.raw`(?<![\p{L}\d.,/])(?:(\d{1,3})\s+)?([1-9])\/([2-9]|10)(?![\d/])${FRACTION_UNIT}`, "gu"),
     (m: string, whole: string | undefined, a: string, b: string, unit: string | undefined) => {
-      const f = FRACTION_WORDS[`${a}/${b}`];
+      const f = FRACTION_WORDS[`${a}/${b}`] ?? genericFraction(Number(a), Number(b));
       if (!f) return m;
       const u = unit ? UNIT_WORDS[unit] : undefined;
       if (whole !== undefined) {
@@ -215,6 +224,9 @@ const EN_NOUNS = new Set(
 function readDecimals(d: string): string {
   return d.split("").map((c) => UNITS[Number(c)]).join(" ");
 }
+
+/** "en etta", "en femma": a digit as a noun (dice, grades, bus lines). */
+const DIGIT_NOUN = ["nolla", "etta", "tvåa", "trea", "fyra", "femma", "sexa", "sjua", "åtta", "nia"];
 
 /** Converts all numbers, years, percentages, units and times in `text` to Swedish words. */
 export function numbersToSpeech(text: string): string {
@@ -251,6 +263,10 @@ export function numbersToSpeech(text: string): string {
     return cardinal(Number(h)) +
       (mm === 0 ? "" : mm < 10 ? " noll " + cardinal(mm) : " och " + cardinal(mm));
   });
+  // K4 loop (D87 pl-127: "en 5:a" on a die was read "en femte"): after "en"/"ett"/"någon"/"varje"/"slår" a digit
+  // with :a is the noun ("en femma", "en sexa"), not the ordinal
+  s = s.replace(/(?<![\p{L}])(en|ett|någon|varje|ingen|slår|slog|få|fick|minst en|högst en) (\d):a(?![\p{L}\d])/giu,
+    (_m, w: string, n: string) => `${w} ${DIGIT_NOUN[Number(n)] ?? n}`);
   // ordinals 1:a 2:a 3:e ...
   s = s.replace(/(?<![\d])(\d{1,4}):(?:a|e)(?![\p{L}\d])/gu, (_m, n: string) => ordinal(Number(n)));
   // ranges 5-10 / 5–10 (not dates 2026-11-04)
