@@ -73,6 +73,9 @@ struct ListeningScreen: View {
                     Menu {
                         Button("Byt läge") { isSwitching = true }
                         Button("Kommandon") { isShowingCommands = true }
+                        if mode == .prov, model.practice == nil, model.examMaterials?.isReady == true {
+                            Button("Kör övningsprovet") { Task { await model.startPracticeExam() } } // A16
+                        }
                     } label: {
                         Image(systemName: "ellipsis")
                             .font(.system(size: 18, weight: .semibold))
@@ -121,6 +124,9 @@ struct ListeningScreen: View {
     }
 
     private var stateDetail: String {
+        if let run = model.practice {
+            return "Övningsprov, " + run.progress.lowercased() + ". Svara högt, eller säg nästa." // A16
+        }
         if let quiz = model.silentQuiz {
             return "Tyst förhör, fråga \(max(1, quiz.asked)) av \(SilentQuiz.questions). Nicka för ja, skaka för nej." // A20.2
         }
@@ -134,7 +140,11 @@ struct ListeningScreen: View {
 
     @ViewBuilder
     private var latest: some View {
-        if let line = model.rizz?.current {
+        if let run = model.practice {
+            PracticeCard(run: run)
+        } else if let result = model.practiceResult {
+            PracticeResultCard(result: result) { model.dismissPracticeResult() }
+        } else if let line = model.rizz?.current {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Förslag").font(LumenFont.text(15)).foregroundStyle(LumenColor.muted)
                 Text(line).font(LumenFont.text(23, .medium, relativeTo: .title3))
@@ -463,5 +473,98 @@ struct StatusBadge: View {
         .background(active ? LumenColor.soft : LumenColor.surface, in: Capsule())
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.updatesFrequently)
+    }
+}
+
+/// A16: the practice exam's question on the listening screen: "Fråga 3 av 12", the question, and the last feedback.
+struct PracticeCard: View {
+    let run: PracticeRun
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(run.progress.uppercased())
+                    .font(LumenFont.text(13, .semibold, relativeTo: .footnote))
+                    .foregroundStyle(LumenColor.muted)
+                Spacer()
+                if run.isGrading {
+                    ProgressView().controlSize(.small)
+                    Text("Rättar …").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
+                }
+            }
+            Text(run.task.text)
+                .font(LumenFont.text(20, .medium, relativeTo: .title3))
+                .lineSpacing(4)
+                .textSelection(.enabled)
+            if run.task.points.total > 0 {
+                Text(PracticeCard.points(run.task.points))
+                    .font(LumenFont.text(14))
+                    .foregroundStyle(LumenColor.muted)
+            }
+            ProgressView(value: Double(run.outcomes.count), total: Double(run.count))
+                .tint(LumenColor.blue)
+                .accessibilityLabel("\(run.outcomes.count) av \(run.count) rättade")
+            if let feedback = run.lastFeedback, let no = run.lastFeedbackNo {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Fråga \(no)").font(LumenFont.text(13, .semibold)).foregroundStyle(LumenColor.muted)
+                    Text(feedback).font(LumenFont.text(16)).lineSpacing(3)
+                }
+                .padding(.top, 4)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(20)
+        .gridPaper()
+        .accessibilityElement(children: .contain)
+    }
+
+    static func points(_ points: ExamTask.Points) -> String {
+        var parts: [String] = []
+        if points.E > 0 { parts.append("\(ExamSession.number(points.E)) E") }
+        if points.C > 0 { parts.append("\(ExamSession.number(points.C)) C") }
+        if points.A > 0 { parts.append("\(ExamSession.number(points.A)) A") }
+        return parts.joined(separator: ", ") + " poäng"
+    }
+}
+
+/// A16: the result at the end: right, partly, wrong, and what to practise.
+struct PracticeResultCard: View {
+    let result: PracticeRun.Summary
+    let onClose: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("ÖVNINGSPROVET").font(LumenFont.text(13, .semibold, relativeTo: .footnote)).foregroundStyle(LumenColor.muted)
+            Text("\(result.right) rätt av \(result.answered)")
+                .font(LumenFont.text(28, .bold, relativeTo: .title))
+            HStack(spacing: 16) {
+                count("Rätt", result.right)
+                count("Delvis", result.partly)
+                count("Fel", result.wrong)
+                if result.skipped > 0 { count("Hoppade över", result.skipped) }
+            }
+            if !result.practise.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Att öva på").font(LumenFont.text(15, .semibold))
+                    ForEach(result.practise.prefix(5), id: \.self) { topic in
+                        Label(topic, systemImage: "arrow.turn.down.right")
+                            .font(LumenFont.text(16))
+                    }
+                }
+            }
+            Button("Klar", action: onClose)
+                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(20)
+        .gridPaper()
+    }
+
+    private func count(_ title: String, _ value: Int) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("\(value)").font(LumenFont.text(20, .semibold))
+            Text(title).font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
+        }
+        .accessibilityElement(children: .combine)
     }
 }

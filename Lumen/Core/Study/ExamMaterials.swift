@@ -27,10 +27,43 @@ final class ExamMaterials {
         save()
     }
 
+    /// A16: a practice exam pasted as text (K15 `parse` with `text`).
+    func read(text: String, name: String, with client: ExamClient, subject: String?, grade: String?) async {
+        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+        isReading = true
+        defer { isReading = false }
+        status = "Läser frågorna …"
+        guard let parsed = await client.parse(text: text, subject: subject, grade: grade) else {
+            status = "Kunde inte läsa texten. Försök igen med internet."
+            return
+        }
+        paper = ExamPaper()
+        paper.name = name
+        paper.merge(tasks: parsed.tasks, boundaries: parsed.boundaries)
+        save()
+        status = "\(paper.tasks.count) frågor."
+    }
+
+    /// A PDF with a text layer is read as text (K15), which is cheaper and exact; one without goes as page images.
+    nonisolated static let textLayerMinimum = 200
+
     /// Reads the files (the exam, the instructions, or both at once) and merges what comes back.
     func read(_ urls: [URL], with client: ExamClient, subject: String?, grade: String?) async {
         isReading = true
         defer { isReading = false }
+        if urls.count == 1, let url = urls.first, url.pathExtension.lowercased() == "pdf",
+           let text = try? DocumentText.read(url), text.count >= Self.textLayerMinimum {
+            status = "Läser \(url.lastPathComponent) …"
+            if let parsed = await client.parse(text: text, subject: subject, grade: grade) {
+                if paper.name.isEmpty { paper.name = url.deletingPathExtension().lastPathComponent }
+                paper.merge(tasks: parsed.tasks, boundaries: parsed.boundaries)
+                save()
+                status = "\(paper.tasks.count) uppgifter" + (paper.boundaries.isEmpty ? "." : ", betygsgränser hittade.")
+                return
+            }
+            // the text call failed: the pages as images below
+        }
         var pages: [Data] = []
         for url in urls {
             status = "Förbereder \(url.lastPathComponent) …"
@@ -141,8 +174,18 @@ final class ExamClient {
         return reply?.hint
     }
 
-    func grade(task: ExamTask, answer: String) async -> Graded? {
-        await call(["action": "grade", "task": Self.json(task), "answer": String(answer.prefix(2_000))], timeout: 30)
+    func grade(task: ExamTask, answer: String, practice: Bool = false) async -> Graded? {
+        var body: [String: Any] = ["action": "grade", "task": Self.json(task), "answer": String(answer.prefix(2_000))]
+        if practice { body["practice"] = true } // K15: the feedback also says the right answer and why
+        return await call(body, timeout: 30)
+    }
+
+    /// K15: an exam given as text (pasted, or a PDF's text layer); at most 40 000 characters.
+    func parse(text: String, subject: String?, grade: String?) async -> Parsed? {
+        var body: [String: Any] = ["action": "parse", "text": String(text.prefix(40_000))]
+        if let subject { body["subject"] = subject }
+        if let grade { body["grade"] = grade }
+        return await call(body, timeout: 120)
     }
 
     func summary(results: [(no: String, points: ExamTask.Points)], boundaries: [ExamBoundary]) async -> Summary? {

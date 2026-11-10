@@ -5,6 +5,8 @@ import UniformTypeIdentifiers
 struct PrepView: View {
     let store: PrepStore
     let goals: GoalsStore
+    /// A16: Förberedelser › Övningsprov (the practice exam Provläge reads aloud).
+    var model: ListeningModel? = nil
     @State private var pastedText = ""
     @State private var pastedTitle = ""
     @State private var goalsDraft = ""
@@ -14,6 +16,17 @@ struct PrepView: View {
 
     var body: some View {
         Form {
+            if let model, let materials = model.examMaterials, let client = model.examClient {
+                Section {
+                    NavigationLink {
+                        ExamSetupView(model: model, materials: materials, client: client, isSheet: false)
+                    } label: {
+                        LabeledContent("Övningsprov", value: materials.isReady ? "\(materials.paper.tasks.count) frågor" : "Lägg till")
+                    }
+                } footer: {
+                    Text("Ett övningsprov (PDF, foto eller text) som Lumen läser upp fråga för fråga i Provläge och rättar.")
+                }
+            }
             Section {
                 TextField("Title (optional)", text: $pastedTitle)
                 TextEditor(text: $pastedText)

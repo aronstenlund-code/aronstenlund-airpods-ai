@@ -30,6 +30,14 @@ struct AnswerContext: Equatable, Sendable {
     var prefProfile: String?
     var prefSubject: String?
     var prefExam: String?
+    /// A16: right and wrong per concept from practice runs (Provläge), for "testa mina svagaste" (K9, K17).
+    var conceptStats: [ConceptStat] = []
+
+    struct ConceptStat: Equatable, Sendable, Codable {
+        var concept: String
+        var right: Int
+        var wrong: Int
+    }
 
     struct Turn: Equatable, Sendable, Codable {
         var text: String
@@ -73,7 +81,8 @@ struct AnswerContext: Equatable, Sendable {
                       preferences: Array(preferences.prefix(PreferenceStore.limit)),
                       prefProfile: prefProfile.map { String($0.prefix(300)) },
                       prefSubject: prefSubject,
-                      prefExam: prefExam)
+                      prefExam: prefExam,
+                      conceptStats: Array(conceptStats.prefix(ConceptStats.limit)))
     }
 }
 

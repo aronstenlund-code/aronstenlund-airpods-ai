@@ -70,7 +70,7 @@ struct ListeningView: View {
         }
         .sheet(isPresented: $model.isShowingPrep) {
             NavigationStack {
-                PrepView(store: model.prep, goals: model.goals)
+                PrepView(store: model.prep, goals: model.goals, model: model)
                     .toolbar { ToolbarItem(placement: .topBarLeading) { Button("Klar") { model.isShowingPrep = false } } }
             }
         }

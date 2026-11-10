@@ -68,12 +68,41 @@ struct ScreenshotStage: View {
                 .lumenScreen()
             case "settings": NavigationStack { SettingsView(model: model, diagnostics: container.diagnostics) }
             case "voice": NavigationStack { VoicePageView(model: model) } // A26 R5
+            case "practice": PracticeStage() // A16
             case "about": NavigationStack { AboutView() } // A13.1
             case "interview": NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
             case "live": NavigationStack { LiveStartView(model: model, settings: model.modeSettings, mode: .social) }
             default: Text(verbatim: "Okänd skärm: \(name)")
             }
         }
+    }
+}
+/// A16: the practice exam's question card and result card with demo questions.
+private struct PracticeStage: View {
+    var body: some View {
+        let tasks = [
+            ExamTask(no: "1", text: "Beräkna 15 % av 840 kr.", points: .init(E: 1, C: 0, A: 0), answer: "126 kr", assessment: "", topic: "procent"),
+            ExamTask(no: "2", text: "Lös ekvationen 3x + 5 = 20.", points: .init(E: 1, C: 1, A: 0), answer: "x = 5", assessment: "", topic: "ekvationer"),
+            ExamTask(no: "3", text: "Förklara varför första världskriget bröt ut. Använd begreppen allianser och nationalism.",
+                     points: .init(E: 1, C: 1, A: 1), answer: "", assessment: "", topic: "första världskriget", answerSource: "eget svar"),
+        ]
+        var run = PracticeRun(paper: ExamPaper(tasks: tasks, name: "Övningsprov"))!
+        run.graded(points: 1, max: 1)
+        run.move(to: 1)
+        run.graded(points: 1, max: 2)
+        run.lastFeedback = "Delvis rätt. x är fem: dra bort fem från båda sidor och dela med tre."
+        run.lastFeedbackNo = "2"
+        run.move(to: 2)
+        var done = run
+        done.graded(points: 0, max: 3)
+        return ScrollView {
+            VStack(spacing: 16) {
+                PracticeCard(run: run)
+                PracticeResultCard(result: done.summary) {}
+            }
+            .padding(20)
+        }
+        .lumenScreen()
     }
 }
 #endif

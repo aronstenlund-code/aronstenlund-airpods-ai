@@ -40,9 +40,9 @@ struct SettingsView: View {
                 if let cards = model.studyCards {
                     NavigationLink("Studiekort") { StudyCardsView(store: cards) }
                 }
-                NavigationLink("Förberedelser") { PrepView(store: model.prep, goals: model.goals) }
+                NavigationLink("Förberedelser") { PrepView(store: model.prep, goals: model.goals, model: model) }
                 NavigationLink("Egna kommandon") { CommandsView(store: model.commands) }
-                Button("Provsession, ladda upp ett prov") {
+                Button("Övningsprov") {
                     model.isShowingSettings = false
                     model.isShowingExamSetup = true
                 }

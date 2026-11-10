@@ -17,15 +17,29 @@ struct ExamTask: Codable, Equatable, Sendable, Identifiable {
     var points: Points
     var answer: String
     var assessment: String
+    /// K15 / A16: the concept the task tests (1–3 words), how Lumen reads it aloud, and "facit" or "eget svar".
+    var topic: String? = nil
+    var spoken: String? = nil
+    var answerSource: String? = nil
 
     var id: String { no }
+
+    enum CodingKeys: String, CodingKey {
+        case no, text, points, answer, assessment, topic, spoken
+        case answerSource = "answer_source"
+    }
+
+    /// Lumen wrote the answer itself (the material had no facit), so it may say so.
+    var isOwnAnswer: Bool { answerSource == "eget svar" }
 
     /// The exam and its marking instructions are read separately; the same task number from both becomes one task.
     func merged(with other: ExamTask) -> ExamTask {
         func pick(_ a: String, _ b: String) -> String { a.count >= b.count ? a : b }
         return ExamTask(no: no, text: pick(text, other.text),
                         points: points.total >= other.points.total ? points : other.points,
-                        answer: pick(answer, other.answer), assessment: pick(assessment, other.assessment))
+                        answer: pick(answer, other.answer), assessment: pick(assessment, other.assessment),
+                        topic: topic ?? other.topic, spoken: spoken ?? other.spoken,
+                        answerSource: answerSource ?? other.answerSource)
     }
 }
 
