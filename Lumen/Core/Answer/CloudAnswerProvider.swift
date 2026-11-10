@@ -127,6 +127,7 @@ final class CloudAnswerProvider: AnswerProvider {
             var pref_profile: String?
             var pref_context: PrefContext?
             var session_end: Bool?
+            var qa_log: Bool?
         }
         struct PrefContext: Encodable {
             var subject: String?
@@ -149,7 +150,8 @@ final class CloudAnswerProvider: AnswerProvider {
                         preferences: prefs.isEmpty ? nil : prefs,
                         pref_profile: prefs.isEmpty ? nil : request.context.prefProfile,
                         pref_context: prefs.isEmpty ? nil : PrefContext(subject: request.context.prefSubject, exam: request.context.prefExam),
-                        session_end: request.context.sessionEnd ? true : nil)
+                        session_end: request.context.sessionEnd ? true : nil,
+                        qa_log: request.context.qaLog ? true : nil)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return (try? encoder.encode(body)) ?? Data("{}".utf8)

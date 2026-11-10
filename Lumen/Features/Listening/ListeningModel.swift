@@ -2882,6 +2882,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func context(for request: ActivationRequest) -> AnswerContext {
         var context = baseContext(for: request)
         context.sessionEnd = request.id == summaryRequestID // A19.2
+        context.qaLog = ConsentPolicy.allowsQALog(consent.record) // A48 (D116, K30)
         return context
     }
 

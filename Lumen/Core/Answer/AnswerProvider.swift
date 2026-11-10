@@ -34,6 +34,9 @@ struct AnswerContext: Equatable, Sendable {
     var conceptStats: [ConceptStat] = []
     /// A19 (K17): the last call of a Provläge session: the backend says the session's summary instead of answering.
     var sessionEnd = false
+    /// A48 (D116, K30): the consent with D116's text (version 5) is accepted, so the backend may log the question and
+    /// answer for Aron's analysis (masked, deleted after delivery). False: never logged.
+    var qaLog = false
 
     struct ConceptStat: Equatable, Sendable, Codable {
         var concept: String

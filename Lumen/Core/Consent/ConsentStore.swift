@@ -5,6 +5,11 @@ import Observation
 /// the app then shows the consent screen again before the next session.
 enum ConsentPolicy {
     static let currentVersion = 5 // A41: D116 (questions and answers sent for analysis), other people's words
+    /// A48 (D116, K30): the first version whose text says questions and answers are sent to us.
+    static let qaLogVersion = 5
+
+    /// Only a record that accepted D116's text lets the backend log questions and answers.
+    static func allowsQALog(_ record: ConsentRecord?) -> Bool { (record?.version ?? 0) >= qaLogVersion }
 }
 
 struct ConsentRecord: Codable, Equatable, Sendable {
