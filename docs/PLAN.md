@@ -31,7 +31,7 @@ Fokus för allt som syns: **lätt att förstå, lätt att komma igång, aldrig �
 
 ## 2d. Ägarbeslut och kostnad
 - Alla frågor till Aron samlas i `docs/TILL-ARON.md` (Deangelo håller den, kortast möjligt, med "rekommenderar"). Sessionerna skriver "Till Aron" i sina rapporter; Deangelo flyttar dit.
-- API-kostnad: varje session skriver kostnaden per punkt på tavlan. Riktmärke **5 USD per dag** för test och eval. Det får gå över lite när det behövs (Aron 2026-11-10), men aldrig slösa: kör inte om fall som redan är mätta, använd billigaste modellen som räcker, och skriv varför i rapporten när dagen går över.
+- API-kostnad: varje session skriver kostnaden per punkt på tavlan. Riktmärke **5 USD per dag** i snitt för test och eval; enstaka dagar runt 12 USD är okej (D110). Krediten fylls på varje månad, men aldrig slösa: kör inte om fall som redan är mätta, använd billigaste modellen som räcker, och skriv varför i rapporten när dagen går över.
 - **Allt sparas:** varje testkörning sparar rådata (fråga, vad som hördes, svar, tid, modell, kostnad) i `reports/qa/data/` eller `reports/eval/` och pushas. Ljud sparas aldrig i git (artefakter). Inget svar som kostat pengar får försvinna.
 - **Riktiga användare tar över testandet:** så fort det finns användare blir deras frågor (bara de som valt att dela historik, D57, utan personuppgifter) den viktigaste testbanken. Kevins och Oscars stående uppgifter börjar då där: hämta veckans delade frågor, gruppera dem, mät de vanligaste och de som gick fel. De påhittade bankerna blir reserv.
 
