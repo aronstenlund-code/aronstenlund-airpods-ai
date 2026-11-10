@@ -11,6 +11,7 @@ import {
 import { SSE_HEADERS, sseFrame } from "../_shared/sse.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
 import { withDeadline } from "./llm/deadline.ts";
+import { CRISIS_OTHER, CRISIS_SELF, isCrisis } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
@@ -279,6 +280,72 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? stripEcho(body0.fragment, body0.context.recent_qa.at(-1)?.a)
         : { rest: body0.fragment, echoed: 0 };
       const body = echo.echoed ? { ...body0, fragment: echo.rest } : body0;
+      // K21 (BLOCKER, safety): words about not wanting to live, suicide or self-harm always get a warm answer with a
+      // way to help, in every mode (also the demo), before anything else and whatever the model would call it
+      const othersSaid = (body0.social?.transcript ?? []).slice(-2).filter((x) => x.speaker !== "user").map((x) => x.text);
+      const crisisSelf = isCrisis(body0.fragment) && !(body0.persona === "social" || body0.persona === "interview");
+      const crisisOther = !crisisSelf && (isCrisis(body0.fragment) || othersSaid.some(isCrisis));
+      if (crisisSelf || crisisOther) {
+        const text = crisisSelf ? CRISIS_SELF : CRISIS_OTHER;
+        const totalMs = Math.round(now() - t0);
+        console.warn(JSON.stringify({ event: "crisis_answer", mode: body0.mode, persona: body0.persona, who: crisisSelf ? "self" : "other" }));
+        try {
+          await deps.recordUsage({
+            user_id: user.id,
+            endpoint: "answer",
+            mode: body0.mode,
+            language: body0.language,
+            provider: "local",
+            model: "crisis",
+            is_question: true,
+            confidence: 1,
+            input_tokens: null,
+            output_tokens: null,
+            ttft_ms: totalMs,
+            total_ms: totalMs,
+            est_cost_usd: 0,
+            status: "ok",
+            category: "övrigt",
+            persona: body0.persona,
+          });
+        } catch (e) {
+          console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+        }
+        const frames = [
+          sseFrame("meta", {
+            reconstructed_question: body0.fragment,
+            confidence: 1,
+            is_question: true,
+            needs_confirmation: false,
+            answer_type: "fact",
+            relation: null,
+            safety: "crisis",
+          }),
+          ...(body0.persona === "social" && body0.social
+            ? [sseFrame("suggestions", [text])]
+            : [sseFrame("delta", { text })]),
+          sseFrame("done", {
+            answered: true,
+            safety: "crisis",
+            timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "crisis" },
+            summary: null, // never stored
+            relation: null,
+            source: null,
+            memory_add: null,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
       if (echo.echoed && echo.rest.split(/\s+/).filter((w) => /\p{L}{2,}/u.test(w)).length < 2) {
         const totalMs = Math.round(now() - t0);
         try {
