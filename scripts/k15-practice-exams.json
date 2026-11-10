@@ -1,0 +1,36 @@
+{
+ "matte9": {
+  "subject": "Matematik",
+  "grade": "Åk 9",
+  "text": "Övningsprov i matematik, årskurs 9 (skrivet för Lumen, likt ett nationellt prov). Poäng anges som (E/C/A).\n\n1. Beräkna 15 % av 840 kr. (1/0/0)\nSvar: 126 kr\n\n2. Lös ekvationen 3x + 7 = 22. (1/0/0)\nSvar: x = 5\n\n3a. En tröja kostar 400 kr och sänks med 25 %. Vad kostar tröjan efter sänkningen? (1/0/0)\nSvar: 300 kr\n\n3b. Efter en tid höjs priset på den sänkta tröjan med 25 %. Vad kostar tröjan nu? (0/1/0)\nSvar: 375 kr\n\n4. En rektangel har längden 12 cm och bredden 5 cm. Beräkna rektangelns area och omkrets. (2/0/0)\nSvar: area 60 cm², omkrets 34 cm\n\n5. Skriv 0,375 i procentform. (1/0/0)\n\n6. En cykel kör med farten 18 km/h. Hur långt kommer den på 40 minuter? (0/1/0)\nSvar: 12 km\n\n7. Lös ekvationen 2(x − 3) = x + 4. (0/1/0)\n\n8. En rätvinklig triangel har kateterna 6 cm och 8 cm. Hur lång är hypotenusan? (1/1/0)\nSvar: 10 cm\n\n9. Förenkla uttrycket 4a + 3b − a + 2b. (1/0/0)\nSvar: 3a + 5b\n\n10. Linjen y = 2x + 1. Vilket värde har y när x = 4? (1/0/0)\n\n11. Visa att summan av tre på varandra följande heltal alltid är delbar med 3. Förklara ditt resonemang. (0/1/2)\n",
+  "expect_nos": ["1", "2", "3a", "3b", "4", "5", "6", "7", "8", "9", "10", "11"],
+  "points": {"4": [2, 0, 0], "8": [1, 1, 0], "11": [0, 1, 2]},
+  "no_facit": {"5": "37,5", "7": "10", "10": "9"},
+  "grade": [
+   ["1", "etthundratjugosex kronor", true],
+   ["1", "hundrafyrtio kronor", false],
+   ["2", "x är fem", true],
+   ["2", "x är sju", false],
+   ["3b", "trehundrasjuttiofem kronor, för tjugofem procent av trehundra är sjuttiofem", true],
+   ["3b", "fyrahundra kronor, den blir lika dyr igen", false],
+   ["6", "tolv kilometer", true],
+   ["6", "sju komma två kilometer", false],
+   ["8", "tio centimeter för sex i kvadrat plus åtta i kvadrat är hundra", true],
+   ["8", "fjorton centimeter", false]
+  ]
+ },
+ "so9": {
+  "subject": "Historia",
+  "grade": "Åk 9",
+  "text": "Instuderingsfrågor inför provet om industrialismen och första världskriget\n\n1. Vad menas med industriella revolutionen och var började den?\n2. Nämn två uppfinningar som var viktiga för industrialiseringen.\n3. Varför flyttade många människor från landsbygden till städerna under 1800-talet?\n4. Hur såg arbetsförhållandena ut i fabrikerna?\n5. Vad var arbetarrörelsen och vad kämpade den för?\n6. Varför emigrerade omkring 1,3 miljoner svenskar till Amerika mellan 1850 och 1930?\n7. Vilka var de långsiktiga orsakerna till första världskriget?\n8. Vad hände i Sarajevo 1914?\n9. Varför blev kriget ett skyttegravskrig på västfronten?\n10. Vilka följder fick Versaillesfreden för Tyskland?\n",
+  "expect_nos": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+  "grade": [
+   ["8", "den österrikiska tronföljaren Franz Ferdinand mördades av en serbisk nationalist", true],
+   ["8", "då slutade kriget", false],
+   ["2", "ångmaskinen och spinnmaskinen", true],
+   ["2", "datorn och telefonen", false],
+   ["10", "Tyskland fick skulden för kriget, betala stora skadestånd, förlora land och nästan hela sin armé", true],
+   ["10", "Tyskland vann och blev större", false]
+  ]
+ }
+}

@@ -6,6 +6,7 @@ import { readLimitedJson } from "../answer/validate.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
+import { practiceNav, spokenTask } from "./practice.ts";
 
 /**
  * D84 (owner): exam session. `POST /exam` with one of four actions. The exam and its assessment instructions are
@@ -18,6 +19,13 @@ import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
  *  {"action":"hint","task":{...},"level":1|2|3,"tried"?}          -> {"hint"}
  *  {"action":"grade","task":{...},"answer":"<the student's answer>"} -> {"points":{E,C,A},"max":{E,C,A},"numeric":{...}|null,"feedback"}
  *  {"action":"summary","results":[{"no","points":{E,C,A}}],"boundaries":[...]} -> totals and the grade, in code only
+ *
+ * K15 (practice exam by voice): "parse" also takes {"text": "<the exam as text>"} (a pasted text or a PDF's text);
+ * every task gets "topic" (1-3 words, for weak areas), "spoken" (how Lumen reads it aloud) and "answer_source"
+ * ("facit" from the material, or "eget svar": Lumen's own A-level answer when the material has none; off with
+ * "own_answers": false). {"action":"nav","utterance","current","nos":[...]} -> {"action","index"?} in code only:
+ * next, prev, goto ("fråga sju"), skip, repeat, stop, results, or "answer" (grade it). "grade" with "practice": true
+ * explains the right answer too.
  */
 export const EXAM_LIMITS = {
   bodyBytes: 24 * 1024 * 1024,
@@ -27,6 +35,8 @@ export const EXAM_LIMITS = {
   answer: 3000,
   assessment: 3000,
   tasks: 80,
+  /** K15: an exam given as text (a pasted text or a PDF's text layer). */
+  examText: 40_000,
 };
 
 export interface Points {
@@ -40,6 +50,12 @@ export interface ExamTask {
   points: Points;
   answer: string;
   assessment: string;
+  /** K15: the concept the task tests (1-3 words), for "testa mina svagaste". */
+  topic?: string;
+  /** K15: "facit" (from the material) or "eget svar" (Lumen's own A-level answer). */
+  answer_source?: "facit" | "eget svar";
+  /** K15: the task as read aloud. */
+  spoken?: string;
 }
 export interface Boundary {
   grade: "E" | "D" | "C" | "B" | "A";
@@ -57,12 +73,20 @@ export interface ExamConfig {
   model?: string;
   priceInPerMTok: number;
   priceOutPerMTok: number;
+  /** K15: the model that writes Lumen's own answers when the material has no facit (correctness matters). */
+  solveModel?: string;
+  solvePriceInPerMTok?: number;
+  solvePriceOutPerMTok?: number;
 }
+
 export const DEFAULT_EXAM_CONFIG: ExamConfig = {
   limits: { perMinute: 12, perDay: 300, globalPerDay: 8000 },
   networkPerDay: 3000,
   priceInPerMTok: 0.10,
   priceOutPerMTok: 0.50,
+  solveModel: "claude-sonnet-5-5",
+  solvePriceInPerMTok: 2,
+  solvePriceOutPerMTok: 10,
 };
 
 export interface ExamDeps {
@@ -74,11 +98,20 @@ export interface ExamDeps {
 }
 
 export const SYSTEM_PROMPT_EXAM_PARSE =
-  `You read pages of a Swedish exam (often a national exam, "nationellt prov") and/or its assessment instructions ("bedömningsanvisningar"), given as images. Return ONLY a JSON object:
-{"tasks": [{"no": "1a", "text": "...", "points": {"E": 1, "C": 0, "A": 0}, "answer": "...", "assessment": "..."}], "boundaries": [{"grade": "E", "total": 15, "min_ca": 0, "min_a": 0}]}
+  `You read a Swedish exam or practice exam (often a national exam, "nationellt prov", or a teacher's "övningsprov" or "instuderingsfrågor") and/or its assessment instructions ("bedömningsanvisningar"), given as page images or as text. Return ONLY a JSON object:
+{"tasks": [{"no": "1a", "text": "...", "points": {"E": 1, "C": 0, "A": 0}, "answer": "...", "assessment": "...", "topic": "..."}], "boundaries": [{"grade": "E", "total": 15, "min_ca": 0, "min_a": 0}]}
 - tasks: every task you can see, in order. "no" as printed ("1", "3b"). "text": the full task text, word for word, including every value of a table (row by row, "Måndag: 12, Tisdag: 18, …") and a one-sentence description of a figure in square brackets. "points": the points per level as printed, e.g. (1/1/0) = E 1, C 1, A 0; 0 when not printed. "answer": the correct answer or model solution from the instructions ("" when not on these pages). "assessment": the scoring rules for the task from the instructions, word for word in substance ("" when not on these pages).
 - boundaries: the grade limits ("provbetygsgränser") when they are on these pages: total points for E, D, C, B, A and the extra conditions (min_ca = points on at least C level, min_a = A points); [] otherwise.
-- Copy numbers exactly. Never invent a task, an answer or a limit; leave a field empty when it is not on these pages. No other text.`;
+- "topic": the concept the task tests, in one to three Swedish words ("procent", "linjära ekvationer", "franska revolutionen").
+- A list of numbered questions without points: each question is a task, its points 0. Questions that are not numbered: number them 1, 2, 3 in order.
+- Copy numbers exactly. Never invent a task, an answer or a limit; leave a field empty when it is not in the material. No other text.`;
+
+/** K15: Lumen's own A-level answers for tasks the material gives no facit for. */
+export const SYSTEM_PROMPT_EXAM_SOLVE =
+  `You write the model answers for tasks of a Swedish practice exam that has no facit. You get <context> (subject and grade) and <tasks> (JSON: no, text, points). Return ONLY a JSON object {"answers": [{"no": "1", "answer": "..."}]} with one entry per task.
+- Each answer is what earns full points at A level for that grade, in Swedish: for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to five sentences.
+- Work every calculation out carefully before you write it; the final number must be right. When a task cannot be answered from its text (a missing figure or table), say so in the answer in one sentence.
+No markdown, no other text.`;
 
 export const SYSTEM_PROMPT_EXAM_HINT =
   `You help a student during an exam practice session in Sweden. You get <task> (text, points, the correct answer and the scoring rules), <level> (1, 2 or 3) and <tried> (optional: what the student has tried). Reply with plain spoken Swedish, never the final answer:
@@ -92,6 +125,10 @@ export const SYSTEM_PROMPT_EXAM_GRADE =
 Return ONLY a JSON object: {"points": {"E": 0, "C": 0, "A": 0}, "feedback": "..."}.
 - Give each point exactly as the scoring rules say, never more than the task's points per level. When <numeric_check> says the final number is wrong, no point that requires the correct answer is given; when it says it is right, the point for the correct answer is given. A bare number without any method shown never earns a method point. When a task asks for several results (for example area and perimeter) and the student gives them without working, each correct result earns its answer point, as when the national exam says "Endast svar krävs" (area and perimeter both right = 2 E points, when the task has them). Never claim the student wrote something that is not in <answer>.
 - feedback: one or two spoken Swedish sentences: what earned points and the single most useful thing that was missing. Never the full solution.`;
+
+/** K15: in a practice run the student also hears why (the exam itself never gives the solution). */
+export const PRACTICE_GRADE_RULE = `
+- PRACTICE RUN: this is practice, not the exam. After the points, the feedback also says the correct answer and why in two or three short spoken sentences (the method or the key concept), so the student learns it now. Start with "Rätt.", "Delvis rätt." or "Inte riktigt.".`;
 
 function clean(s: unknown, max: number): string {
   if (typeof s !== "string") return "";
@@ -108,12 +145,16 @@ const pts = (v: unknown): Points => {
 
 export function validTask(v: unknown): ExamTask {
   const o = (v ?? {}) as Record<string, unknown>;
-  const task = {
+  const topic = clean(o.topic, 40);
+  const src = o.answer_source === "eget svar" || o.answer_source === "facit" ? o.answer_source : undefined;
+  const task: ExamTask = {
     no: clean(o.no, 12),
     text: clean(o.text, EXAM_LIMITS.text),
     points: pts(o.points),
     answer: clean(o.answer, EXAM_LIMITS.answer),
     assessment: clean(o.assessment, EXAM_LIMITS.assessment),
+    ...(topic ? { topic } : {}),
+    ...(src ? { answer_source: src } : {}),
   };
   if (!task.text) throw new HttpError(400, "invalid_request", "task.text is required");
   return task;
@@ -261,8 +302,14 @@ export function createExamHandler(deps: ExamDeps) {
         }));
         return json(summarize(results, validBoundaries(b?.boundaries))); // no model, no cost
       }
+      if (action === "nav") {
+        // K15: what the student said during the practice run, decided in code (no model, no cost)
+        const nos = (Array.isArray(b?.nos) ? b!.nos : []).slice(0, EXAM_LIMITS.tasks).map((x) => clean(x, 12)).filter(Boolean);
+        const current = Math.max(0, Math.min(nos.length - 1, Math.floor(Number(b?.current) || 0)));
+        return json(practiceNav(clean(b?.utterance, 300), current, nos));
+      }
       if (!["parse", "hint", "grade"].includes(action)) {
-        throw new HttpError(400, "invalid_request", "action must be parse, hint, grade or summary");
+        throw new HttpError(400, "invalid_request", "action must be parse, hint, grade, summary or nav");
       }
       const extra = appChecks("exam", await networkKey(req), user, {
         networkPerDay: cfg.networkPerDay,
@@ -280,7 +327,19 @@ export function createExamHandler(deps: ExamDeps) {
       let llm: LLMRequest;
       let numeric: ReturnType<typeof numericCheck> = null;
       let task: ExamTask | null = null;
-      if (action === "parse") {
+      const examText = action === "parse" && typeof b?.text === "string" ? clean(b.text, EXAM_LIMITS.examText) : "";
+      if (action === "parse" && examText) {
+        const ctx = [clean(b?.subject, 60) && `Ämne: ${clean(b?.subject, 60)}`, clean(b?.grade, 60) && `Årskurs: ${clean(b?.grade, 60)}`]
+          .filter(Boolean).join(". ");
+        llm = {
+          system: SYSTEM_PROMPT_EXAM_PARSE,
+          user: `${ctx ? `<context>${sanitizeTagged(ctx)}</context>\n` : ""}<material>\n${sanitizeTagged(examText)}\n</material>\nRead this material.`,
+          maxTokens: 8000,
+          cacheSystem: true,
+          model: cfg.model,
+          signal: req.signal,
+        };
+      } else if (action === "parse") {
         const pages = Array.isArray(b?.pages) ? b!.pages : [];
         if (!pages.length || pages.length > EXAM_LIMITS.pages) {
           throw new HttpError(400, "invalid_request", `pages: 1-${EXAM_LIMITS.pages} images per call`);
@@ -320,6 +379,8 @@ export function createExamHandler(deps: ExamDeps) {
         };
       } else {
         task = validTask(b?.task);
+        // K15: a study question without points (instuderingsfrågor) is marked right or wrong: one E point
+        if (task.points.E + task.points.C + task.points.A === 0) task = { ...task, points: { E: 1, C: 0, A: 0 } };
         const answer = clean(b?.answer, EXAM_LIMITS.answer);
         if (!answer) throw new HttpError(400, "invalid_request", "answer is required");
         numeric = task.answer ? numericCheck(task.answer, answer) : null;
@@ -329,7 +390,7 @@ export function createExamHandler(deps: ExamDeps) {
             : `The final number is wrong: expected ${numeric.expected}, the student gave ${numeric.given ?? "no number"}.`
           : "No numeric answer to check.";
         llm = {
-          system: SYSTEM_PROMPT_EXAM_GRADE,
+          system: SYSTEM_PROMPT_EXAM_GRADE + (b?.practice === true ? PRACTICE_GRADE_RULE : ""),
           user: `${taskTag(task)}\n<numeric_check>${nc}</numeric_check>\n<answer>${sanitizeTagged(answer)}</answer>`,
           maxTokens: 300,
           cacheSystem: true,
@@ -367,7 +428,49 @@ export function createExamHandler(deps: ExamDeps) {
         if (!out.tasks.length && !out.boundaries.length) {
           throw new HttpError(502, "exam_unreadable", "No tasks or grade limits could be read from these pages");
         }
-        return json({ ...out, usage });
+        // K15: Lumen's own A-level answer where the material has no facit (one extra call), and the spoken form
+        const missing = out.tasks.filter((t) => !t.answer);
+        let solveCost = 0;
+        if (missing.length && b?.own_answers !== false) {
+          const ctx = [clean(b?.subject, 60) && `Ämne: ${clean(b?.subject, 60)}`, clean(b?.grade, 60) && `Årskurs: ${clean(b?.grade, 60)}`]
+            .filter(Boolean).join(". ");
+          let st = "";
+          let si = 0, so = 0;
+          for await (const c of deps.provider.stream({
+            system: SYSTEM_PROMPT_EXAM_SOLVE,
+            user: `<context>${sanitizeTagged(ctx || "okänt")}</context>\n<tasks>${
+              sanitizeTagged(JSON.stringify(missing.map((t) => ({ no: t.no, text: t.text, points: t.points }))))
+            }</tasks>`,
+            maxTokens: 6000,
+            cacheSystem: true,
+            ...(cfg.solveModel ? { model: cfg.solveModel, noThinking: true } : {}),
+            signal: req.signal,
+          })) {
+            if (c.type === "text") st += c.text;
+            else if (c.type === "usage") {
+              si = c.inputTokens ?? si;
+              so = c.outputTokens ?? so;
+            }
+          }
+          solveCost = (si * (cfg.solvePriceInPerMTok ?? cfg.priceInPerMTok) + so * (cfg.solvePriceOutPerMTok ?? cfg.priceOutPerMTok)) / 1e6;
+          try {
+            const j = JSON.parse(/\{[\s\S]*\}/.exec(st)?.[0] ?? "{}");
+            for (const a of Array.isArray(j.answers) ? j.answers : []) {
+              const t = missing.find((x) => x.no === clean(a?.no, 12));
+              const ans = clean(a?.answer, EXAM_LIMITS.answer);
+              if (t && ans) {
+                t.answer = ans;
+                t.answer_source = "eget svar";
+              }
+            }
+          } catch { /* malformed: the tasks stay without an answer */ }
+        }
+        const tasks = out.tasks.map((t) => ({
+          ...t,
+          ...(t.answer && !t.answer_source ? { answer_source: "facit" as const } : {}),
+          spoken: spokenTask(t.no, t.text, t.points),
+        }));
+        return json({ ...out, tasks, usage: { ...usage, est_cost_usd: usage.est_cost_usd + solveCost } });
       }
       if (action === "hint") return json({ hint: text.trim().replace(/\s+/g, " "), usage });
       // grade: the points are clamped to the task's points in code; the sum is code
