@@ -106,3 +106,5 @@
 - [x] klar 2026-11-10 11:07 → `reports/qa/2026-11-10-1108-oscar-o30-ekofilter.md` (ekofiltret 8/12: riktigt eko bort 4/4, men 4 av 8 följdfrågor som citerar svaret förlorar innehållet, 'vad menar du med i form av glukos' blir 'vad menar du med') **O30 – Ekofiltret (D82), offline (stående uppgift, PLAN 2b)** (effort: medium). `node scripts/qa/o30_echo_offline.mjs`, 0 USD.
 
 - [x] klar 2026-11-10 11:08 → `reports/qa/2026-11-10-1109-oscar-o31-k19-lank.md` (K19 offline: länkbegäran känns igen 5/15, inga falska 8/8, ämne 7/8, falska domäner stoppas 9/9) **O31 – Oberoende test av K19 (läromedelslänk), offline (stående uppgift, PLAN 2b)** (effort: medium). `node scripts/qa/o31_k19_resource_offline.mjs`, 0 USD.
+
+- [x] klar 2026-11-10 11:10 → `reports/qa/2026-11-10-1111-oscar-o32-uttrakning.md` (**BUGG: parenteser tas bort i calc.ts**, '(12 + 8) * 2' räknas och läses upp som 28, '100/(2+3)' som 53; i övrigt 19/20 uträkningar rätt) **O32 – Tal som räknas ut i kod (D46), offline (stående uppgift, PLAN 2b)** (effort: medium). `node scripts/qa/o32_calc_offline.mjs`, 0 USD.

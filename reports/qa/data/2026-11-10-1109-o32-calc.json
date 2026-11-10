@@ -1,0 +1,331 @@
+{
+ "n": 30,
+ "computed": 20,
+ "wrong": 1,
+ "fails": [
+  {
+   "t": "vad är (12 + 8) * 2",
+   "want": 40,
+   "got": 28,
+   "text": "12 + 8 × 2 = 28",
+   "spoken": "12 plus 8 gånger 2 är 28.",
+   "err": null,
+   "ok": false,
+   "computed": true
+  }
+ ],
+ "left_to_model": [
+  "vad blir 499 med 20 procent rabatt",
+  "vad är minus fem plus tre",
+  "vad är hälften av 37",
+  "vad är 3/4 av 60",
+  "vilken veckodag är den 24 december 2026",
+  "vad är en tredjedel av nittio",
+  "moms 25 procent på 800 kronor",
+  "vad är 1,5 miljoner gånger 2",
+  "jag fick 18 av 24 rätt, hur många procent är det",
+  "vad är 5 procent av 1 000 000"
+ ],
+ "rows": [
+  {
+   "t": "vad är 15 procent av 240",
+   "want": 36,
+   "got": 36,
+   "text": "15 % av 240 = 36",
+   "spoken": "15 procent av 240 är 36.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "hur mycket är tjugo procent av femhundra",
+   "want": 100,
+   "got": 100,
+   "text": "20 % av 500 = 100",
+   "spoken": "20 procent av 500 är 100.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad blir 499 med 20 procent rabatt",
+   "want": 399.2,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "vad är 7 gånger 8",
+   "want": 56,
+   "got": 56,
+   "text": "7 × 8 = 56",
+   "spoken": "7 gånger 8 är 56.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är sjutton gånger tjugofyra",
+   "want": 408,
+   "got": 408,
+   "text": "17 × 24 = 408",
+   "spoken": "17 gånger 24 är 408.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "hur mycket är 270 gånger 270",
+   "want": 72900,
+   "got": 72900,
+   "text": "270 × 270 = 72900",
+   "spoken": "270 gånger 270 är 72 900.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är 100 delat med 3",
+   "want": 33.333,
+   "got": 33.333333333333336,
+   "text": "100 ÷ 3 = 33,3333 (avrundat till fyra decimaler)",
+   "spoken": "100 delat med 3 är ungefär 33,33.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är roten ur 144",
+   "want": 12,
+   "got": 12,
+   "text": "√144 = 12",
+   "spoken": "Roten ur 144 är 12.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är 2 upphöjt till 10",
+   "want": 1024,
+   "got": 1024,
+   "text": "2 ^ 10 = 1024",
+   "spoken": "2 upphöjt till 10 är 1 024.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är minus fem plus tre",
+   "want": -2,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "vad är hälften av 37",
+   "want": 18.5,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "vad är 3/4 av 60",
+   "want": 45,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "hur många minuter är 2,5 timmar",
+   "want": 150,
+   "got": 150,
+   "text": "2,5 timmar = 150 minuter",
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "hur många sekunder är ett dygn",
+   "want": 86400,
+   "got": 86400,
+   "text": "1 dygn = 86400 sekunder",
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är 100 fahrenheit i celsius",
+   "want": 37.778,
+   "got": 37.77777777777778,
+   "text": "100 °F = 37,7778 °C",
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "hur många kilometer är 5 miles",
+   "want": 8.047,
+   "got": 8.04672,
+   "text": "5 engelska mil = 8,0467 kilometer",
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är 1 kilo i pund",
+   "want": 2.205,
+   "got": 2.2046226218487757,
+   "text": "1 kilogram = 2,2046 pund",
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "hur många dagar är det kvar till julafton",
+   "want": 44,
+   "got": 44,
+   "text": "Idag är det tisdag 10 november 2026. Julafton är torsdag 24 december 2026, om 44 dagar (6 veckor och 2 dagar)",
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vilken veckodag är den 24 december 2026",
+   "want": null,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "vad är 12 + 8 * 2",
+   "want": 28,
+   "got": 28,
+   "text": "12 + 8 × 2 = 28",
+   "spoken": "12 plus 8 gånger 2 är 28.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är (12 + 8) * 2",
+   "want": 40,
+   "got": 28,
+   "text": "12 + 8 × 2 = 28",
+   "spoken": "12 plus 8 gånger 2 är 28.",
+   "err": null,
+   "ok": false,
+   "computed": true
+  },
+  {
+   "t": "vad är 10 minus 2 minus 3",
+   "want": 5,
+   "got": 5,
+   "text": "10 - 2 - 3 = 5",
+   "spoken": "10 minus 2 minus 3 är 5.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är 0,1 plus 0,2",
+   "want": 0.3,
+   "got": 0.30000000000000004,
+   "text": "0,1 + 0,2 = 0,3",
+   "spoken": "0,1 plus 0,2 är 0,3.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är en tredjedel av nittio",
+   "want": 30,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "moms 25 procent på 800 kronor",
+   "want": 200,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "vad är 1,5 miljoner gånger 2",
+   "want": 3000000,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "jag fick 18 av 24 rätt, hur många procent är det",
+   "want": 75,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "vad är tjugofem procent av hundratjugo",
+   "want": 30,
+   "got": 30,
+   "text": "25 % av 120 = 30",
+   "spoken": "25 procent av 120 är 30.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  },
+  {
+   "t": "vad är 5 procent av 1 000 000",
+   "want": 50000,
+   "got": null,
+   "text": null,
+   "spoken": null,
+   "err": null,
+   "ok": true,
+   "computed": false
+  },
+  {
+   "t": "vad är 9 minus 12",
+   "want": -3,
+   "got": -3,
+   "text": "9 - 12 = -3",
+   "spoken": "9 minus 12 är -3.",
+   "err": null,
+   "ok": true,
+   "computed": true
+  }
+ ]
+}
