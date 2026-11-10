@@ -104,3 +104,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-10 20:30 → reports/2026-11-10-2030-kelly-ke28-granskning.md (godkänd; F1 Elias vit hörlur före App Store, F2 Ljud sparas inte före A49) **Ke28 – Stående uppgift (PLAN 2b): granska appens skärmbilder från CI 42876421405 (main 19:33, iPhone 17 Pro Max) mot SYSTEM.md** (effort: low, Kelly själv). Kön har bara Ke22 (Ryan/Aron) och Ke24 (väntar på Arons nummer).
 
 - [ ] **Ke29 – Ny Start + "Vad Lumen kan" (D124, D125)** (effort: high). Gör först. Skiss: stor Start-knapp överst med läget under, provkortet nedanför, "Få A-svar" inne i Provläget. Sidan "Vad kan Lumen?" med rader för förhör, frågor, träning, kalender, timers, Spotify, samtal, sömn: vad man säger och om något behöver ställas in. Text: "Som Siri, fast den faktiskt förstår vad du frågar och svarar direkt i dina AirPods." Samma budskap på sajten.
+
+- [ ] **Ke30 – "Mina svar" och "Lumen kan allt" (D126)** (effort: medium). Skissa listan Mina svar per prov, redigeringen (Lumens förslag → din text), inspelningen med Klar-knapp, och raden "Lumen kan allt" med exempelfraser under Start-knappen. Uppdatera Ke29.
