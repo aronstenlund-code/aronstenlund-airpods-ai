@@ -1,0 +1,56 @@
+name: Apptest more window (T7)
+
+# Toby's T7: Angela's A15 'Mer?' window through the app's real chain in the Simulator (ja, mer, gärna, a late ja,
+# ja inside a sentence, another voice, a new question). Live and paid (Scribe, /answer; Apple's voice, no /tts), so
+# manual, and on Toby's branch when the test changes. Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/More/**"
+      - "AppTests/E2E/Audio/more.tsv"
+      - "scripts/apptest/more*"
+      - ".github/workflows/apptest-more.yml"
+
+concurrency:
+  group: apptest-more-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  more:
+    name: T7 more window (Simulator, live)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Retest
+        run: |
+          bash scripts/apptest/more.sh
+          STATUS=$?
+          cat apptest-out/more/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-more
+          path: |
+            apptest-out/more
+            !apptest-out/more/audio/*.wav
+            !apptest-out/more/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
