@@ -21,6 +21,12 @@ Samma person i intro, annonser och på demosidan. Han är påhittad och AI-gener
 - Accentfärg i detaljer: kungsblå #2346C8, till exempel en penna, ett anteckningsblock eller ringarna från hörluren.
 - Kameran i ögonhöjd, nära.
 
+**Hur han visas (Kelly, Ke12–Ke16, 2026-11-10)**
+- Alltid i ett ljust kort: vit bakgrund, rundade hörn (24 i appen, 40–48 i annonser), mjuk skugga. Kortet är ljust även
+  i mörkt läge, som ett foto. Inget rutpapper runt kortet (`docs/design/SYSTEM.md`).
+- Bildkälla för stillbilder: appens godkända `docs/marketing/elias/IntroElias@3x.png`. Hörluren sitter vid (0,32; 0,37)
+  av bildens bredd och höjd; där startar ringarna.
+
 **Varumärkets rörelse**
 - Tre tunna kungsblå ringar (#2346C8) sprids ut från hörluren när han trycker på den. Det är Lumens logga.
 
