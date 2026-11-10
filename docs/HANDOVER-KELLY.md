@@ -25,7 +25,7 @@ Det här står inte i rapporterna. Rapporterna `reports/*kelly*` täcker resten.
 - Samtyckesmeningen under Testa nu och tummen ned (D57) får aldrig försvinna ur en skiss.
 
 ## Öppna trådar
-- Ke13 klar: sidan följer SYSTEM.md. Loggan och `og-elias.png` (har rutpapper) byts när Aron valt A, B eller C.
+- Ke13b klar: sidan följer SYSTEM.md. **Ke13 (D97, två knappar på provkortet) pågår.** Loggan och `og-elias.png` (har rutpapper) byts när Aron valt A, B eller C.
 - Kör inte Lighthouse många gånger i rad: varje körning skapar en anonym inloggning, och spärren ger 429 (Best Practices 96).
 - Skärmbilderna i sidans tre steg ska bytas när A18 är byggd (Toby tar nya).
 - Safari och iPhone är inte provade för någonting på sidan. Rich Results-testet mot live-URL är inte gjort.

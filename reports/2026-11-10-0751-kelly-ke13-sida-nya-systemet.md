@@ -1,4 +1,4 @@
-# Ke13 (stående uppgift): demosidan i det nya systemet (Kelly, 2026-11-10)
+# Ke13b (stående uppgift): demosidan i det nya systemet (Kelly, 2026-11-10)
 
 Kort: demosidan följer nu `docs/design/SYSTEM.md`, precis som appen ska göra efter A18.
 - Ingen handstil och inget rutpapper.
