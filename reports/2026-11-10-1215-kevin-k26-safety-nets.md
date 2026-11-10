@@ -42,3 +42,6 @@ Datum 2026-11-10 12:15 · Uppgift: `prompts/queue/kevin.md` K26 · Underlag: Osc
 ## Risker
 - Mönster missar nya formuleringar. Modellen är fortfarande det första lagret (D43/D63/D69, D80).
 - "heter X" och relationsord stoppar också minnen som "Kompisen heter Elin". Det är avsiktligt, eftersom D80 säger att inga fakta om andra personer ska sparas.
+
+## CI
+Deploy backend (typkontroll, alla tester, driftsättning) lyckades: körning 42805093491. Regressionen hoppades över (`[skip eval]`, ingen API-kostnad). Live: **driftsatt**, men inte mätt live efter ändringen.

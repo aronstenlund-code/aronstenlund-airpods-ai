@@ -1,28 +1,27 @@
-# Överlämning: Kevin (backend), 2026-11-10 10:50
+# Överlämning: Kevin (backend), 2026-11-10 12:20
 
-Sessionen har gjort cirka 20 punkter (K2–K22) och har komprimerats. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Det här står inte i rapporterna.
+Sessionen har gjort cirka 25 punkter (K2–K27), har komprimerats två gånger och slutar därför enligt PLAN 2e. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom. Nästa steg är den stående uppgiften (K4-loopen, kostar API).
 
 **Arbetssätt som sparar tid**
-- Lokala tester körs med Node-shimmen (minnet `backend-tests-without-deno`). Shimmen typkontrollerar inte, så nya fält eller nya medlemmar i `LLMChunk` måste kontrolleras för hand. Actions är grinden.
-- Skriv patchskript med Write-verktyget och `r'''…'''`. Bash-heredoc med citattecken eller `$` och Python-f-strängar med `{…}` i text har gått fel flera gånger. Använd `%`-formatering eller strängsammanfogning för STATUS- och DECISIONS-rader.
-- Committa med pathspec, `git commit -m … -- <mina sökvägar>`, eftersom indexet delas med andra sessioner. Nya filer måste få `git add` först. Kör sedan `git fetch` och `git rebase --autostash origin/main` och pusha.
-- Tider: använd `date`. Några av dagens rapportnamn ligger för sent (1015–1230 skrevs runt 09:30).
-- Regressionen (K4.1) körs för varje driftsättning som rör `answer/` och kostar cirka 0,3 USD. `[skip eval]` i commit-meddelandet hoppar över den.
-- Webbtaket är 20 per användare och dag. Mätningar med sökning behöver nya token-platser i `scratchpad/tokens.json`, och nya anonyma inloggningar stoppas efter cirka 30 per timme och IP.
+- Lokala tester körs med Node-shimmen (minnet `backend-tests-without-deno`). Shimmen typkontrollerar inte, så Actions är grinden. Oscars offlineskript i `scripts/qa/o2*_offline.mjs` och `o3*_offline.mjs` körs direkt med `node --experimental-transform-types` och kostar inget. Ge dem `< /dev/null`.
+- Skriv patchskript med Write-verktyget. Bash-heredoc med `\p` eller citattecken och Python-f-strängar med `{…}` har gått fel flera gånger.
+- Committa med pathspec, `git commit -m … -- <mina sökvägar>`, eftersom indexet delas och andras ändringar ligger ostagade (`git pull --rebase` vägrar då). Kör `git fetch`, kontrollera `HEAD..origin/main` och pusha.
+- `[skip eval]` i commit-meddelandet hoppar över regressionen (cirka 0,3 USD).
+- `memory/handler.ts` `SENSITIVE_RAW` måste stå på en rad, eftersom Oscars O28 läser det ur filen.
 
 **Läge**
-- API i dag cirka 6,1 USD (riktmärket är 6). ElevenLabs-krediterna har varit slut sedan 07:45.
-- **När krediterna finns:** `python scripts/dispatch.py credits-ready.yml` (K18 del 2 och K6). Det stannar utan kostnad om de fortfarande är slut.
-- Efter uttalsmätningen: lägg in alias för de felhörda ämnesorden i `/tts` (ingen ändring i kontot behövs) och kör `… tag=after`.
+- API i dag: bara K23:s live-test (0,004 USD av de godkända 0,50). K25–K27 gjordes helt offline.
+- **När ElevenLabs-krediterna finns:** `python scripts/dispatch.py credits-ready.yml` (K18 del 2 och K6).
+- Oscar bör köra om O24, O26–O28, O30–O32 och O17c (kris).
 
 **Öppna trådar (Aron)**
-- Hemligheten `SUPABASE_SERVICE_ROLE_KEY` i GitHub låser upp K4.3 (felrapporter varje natt), K22 (riktiga användare) och förhandsproven i K6.
-- Godkänna texten i krissvaret (K21). Godkänna Sonnet i demon (K5). Radera Oscars testrad i väntelistan (K5).
-- Komplimanger om utseende i Rizz 18+ (K8). De svenska rösterna i ElevenLabs (K14).
+- `SUPABASE_SERVICE_ROLE_KEY` för K22, men först efter Oscars godkännande av K24. Samma hemlighet behövs för K4.3 och K6.
+- Godkänna krissvarets text (K21/K23), Sonnet i demon (K5) och raderingen av Oscars testrad i väntelistan (K5).
+- Komplimanger om utseende i Rizz 18+ (K8). De svenska rösterna (K14).
 
 **Öppna trådar (teknik)**
-- Auto söker aldrig på webben (D46). Aktuella frågor i Auto besvaras ur minnet. Att ändra det kräver att metasteget inte kallar frågan "inte en fråga" (K8 W1), och att det mäts.
-- Oscars fall i K21 finns nu i mina tester. Be honom om en ny, oberoende uppsättning (O17b).
-- Angela: `two_level` och `more` (K13), `done.source` som `recent_qa[].source` (K16), `meta.safety` (K21), `done.resource` (K19), `/study-plan` och `session_end` (K17), övningsprov (K15), A9 `app_command`.
-- `self.ts` (K20) använder exakt texten i `AboutView.swift`. Ändras "Om appen" måste båda ändras.
-- Två beslut heter "D98" (mitt och ägarens, "D98 (owner)"). Det rör jag inte.
+- Angela: appens `SensitiveFilter` ska följa serverlistan (`answer/k26_test.ts`). `echo.quoted` (K27) finns bara på servern.
+- Oscars förslag om en Haiku-kontroll av Rizz-raderna är inte byggt (D107). Ta det om O27-omtestet hittar nya luckor.
+- Auto söker aldrig på webben (D46).
+- `self.ts`: svarstexterna är ordagrant ur `AboutView.swift`, så båda måste ändras tillsammans.
+- Två beslut heter "D98". Rör det inte.

@@ -28,3 +28,6 @@ Datum 2026-11-10 12:15 · Uppgift: `prompts/queue/kevin.md` K27 · Underlag: Osc
 ## Risker
 - Ett eko som råkar innehålla ett frågeord ("… eller …") behålls nu i stället för att tas bort. A28 begränsar redan ekot till det som börjar medan Lumen talar eller inom 1,5 s därefter, så risken är liten (**untested assumption**, bör provas på en enhet).
 - Självsvaret ges i alla lägen, även i Auto när en klasskompis frågar "lyssnar du nu". Då svarar Lumen sanningsenligt om sig själv, vilket är ofarligt.
+
+## CI
+Deploy backend (typkontroll, alla tester, driftsättning) lyckades: körning 42805896061. Regressionen hoppades över (`[skip eval]`, ingen API-kostnad). Live: **driftsatt**, men inte mätt live efter ändringen.

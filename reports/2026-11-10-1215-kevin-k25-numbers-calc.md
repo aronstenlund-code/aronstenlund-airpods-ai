@@ -23,7 +23,7 @@ Datum 2026-11-10 12:15 · Uppgift: `prompts/queue/kevin.md` K25 · Underlag: Osc
 | O24 kungar / falska kungar | 5/5 / 2/10 | **5/5 / 10/10** |
 | Alla `answer/*_test.ts` i shimmen | – | 305/305, nytt `k25_test.ts` (3 tester) |
 
-CI-resultat (typkontroll och driftsättning): se avsnittet "CI" nedan. **Verified in docs**/offline: ingen enhet behövs, eftersom detta är text före TTS.
+**Verified in docs**/offline: ingen enhet behövs, eftersom detta är text före TTS.
 
 ## Risker
 - Listan med ett-ord är begränsad. Ett ovanligt ett-ord efter "1" blir "en" (tidigare blev ett ovanligt en-ord "ett"). Fler ord är nu rätt än tidigare (**untested assumption**, bygger på att cirka tre av fyra svenska substantiv är en-ord).
@@ -31,3 +31,6 @@ CI-resultat (typkontroll och driftsättning): se avsnittet "CI" nedan. **Verifie
 
 ## Nästa
 - Oscar: kör om O26, O32 och O24 (kungarna).
+
+## CI
+Deploy backend (typkontroll, alla tester, driftsättning) lyckades: körning 42804686846. Regressionen hoppades över (`[skip eval]`, ingen API-kostnad). Live: **driftsatt**, men inte mätt live efter ändringen.
