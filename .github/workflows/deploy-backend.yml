@@ -77,3 +77,42 @@ jobs:
             echo "$f -> $g (expected 410)"
             [ "$g" = "410" ]
           done
+
+  # K4.1: every deploy that touches the answer code is checked against 21 cases of the D87 bank (every tenth case,
+  # Sonnet answers as in the app, Sonnet grades), and the result goes to the commit as a comment, so a regression is
+  # seen at once. A newer push cancels a running check; "[skip eval]" in the commit message skips it. ~0.3 USD a run.
+  regress:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip eval]') }}
+    permissions:
+      contents: write # commit comment with the built-in GITHUB_TOKEN
+    concurrency:
+      group: answer-regress
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Did the answer code change?
+        id: changed
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -qE '^backend/supabase/functions/(answer|_shared|provlage-eval)/'; then
+            echo "run=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=0" >> "$GITHUB_OUTPUT"; echo "no answer change: no regression check"
+          fi
+      - uses: actions/setup-python@v5
+        if: steps.changed.outputs.run == '1'
+        with:
+          python-version: "3.12"
+      - name: D87 sample (21 cases)
+        if: steps.changed.outputs.run == '1'
+        continue-on-error: true
+        run: python3 scripts/provlage-eval.py --model sonnet --judge sonnet --workers 4 --every 10 --users 3 --tag regress --out /tmp/regress
+      - name: Comment on the commit
+        if: steps.changed.outputs.run == '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/regress-comment.py /tmp/regress "${{ github.repository }}" "${{ github.sha }}"
