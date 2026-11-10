@@ -1,0 +1,55 @@
+name: Apptest first-time user (T8)
+
+# Toby's T8: the first-time user from a fresh install to the first answer in Frågor and Provläge, timed, every tap
+# counted and every screen photographed. Live (Scribe, /answer, the default voice), so manual, and on Toby's branch
+# when the test changes. Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Screens/FirstUserTests.swift"
+      - "scripts/apptest/firstuser.sh"
+      - ".github/workflows/apptest-firstuser.yml"
+
+concurrency:
+  group: apptest-firstuser-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  firstuser:
+    name: T8 first-time user (Simulator, live)
+    runs-on: macos-26
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: First-time user
+        run: |
+          bash scripts/apptest/firstuser.sh
+          STATUS=$?
+          cat apptest-out/firstuser/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-firstuser
+          path: |
+            apptest-out/firstuser
+            !apptest-out/firstuser/audio/*.wav
+            !apptest-out/firstuser/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
