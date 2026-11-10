@@ -178,3 +178,7 @@ Mätt tecken per sekund per undertext (gräns ca 15 för unga tittare, minst ca 
 ## 23:40 v11: appen heter Earmind (Aron 23:35)
 - Slutbilden: "Earmind" i stället för "Lumen", Kellys appikon (bock med ljudvågor, docs/design/logo/lumen-ikon-mork-1024.png) ovanför namnet. Filnamn earmind-elias-v11.mp4.
 - Alla framtida annonser och manus: Earmind. Äldre manus i reports/ads/ säger Lumen (historik, ändras inte).
+
+## 23:50 v12 (39,8 s)
+- Slutbilden 3,5 → 5 s (Aron: hinna läsa och bestämma sig).
+- All text större: undertexter 62 → 76 px, "AI i örat" 46 → 56, intervjufrågan 56 → 66, hook 88 → 100. Marginaler justerade så två rader ryms och inget överlappar.
