@@ -182,11 +182,13 @@ export class AnthropicProvider implements LLMProvider {
 
   async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
     // maxRetries 0: a retry would double latency; the app has its own fallback.
-    const timeoutMs = req.timeoutMs ?? (req.images?.length ? 120_000 : req.tools?.length ? 45_000 : 20_000); // a web search turn takes several seconds
+    const timeoutMs = req.timeoutMs ?? (req.images?.length ? 120_000 : (req.tools ?? []).some((t) => typeof (t as { type?: unknown })?.type === "string") ? 45_000 : 20_000); // a web search turn takes several seconds
     const signal = req.signal
       ? AbortSignal.any([req.signal, AbortSignal.timeout(timeoutMs)])
       : AbortSignal.timeout(timeoutMs);
-    const gate = req.tools?.length ? new WebTextGate() : null;
+    // only server tools (web search / fetch, they have a `type`) hold back text; K35 phone tools stream as usual
+    const serverTools = (req.tools ?? []).some((t) => typeof (t as { type?: unknown })?.type === "string");
+    const gate = serverTools ? new WebTextGate() : null;
     let emitted = false;
     try {
       const model = req.model ?? this.cfg.model;
@@ -216,7 +218,7 @@ export class AnthropicProvider implements LLMProvider {
                   ...(req.systemTail ? [{ type: "text", text: req.systemTail, cache_control: { type: "ephemeral" } }] : []),
                 ]
                 : req.systemTail ? `${req.system}\n\n${req.systemTail}` : req.system,
-              messages: [{
+              messages: req.messages ?? [{
                 role: "user",
                 content: req.images?.length
                   ? [
@@ -272,6 +274,7 @@ export class AnthropicProvider implements LLMProvider {
         } catch { /* body is not JSON */ }
         throw classifyAnthropicError(res.status, message || `HTTP ${res.status}`);
       }
+      const toolBlocks = new Map<number, { id: string; name: string; json: string }>();
       for await (const ev of sseJson(res.body)) {
         if (ev.type === "error") {
           const err = ev.error as { type?: string; message?: string } | undefined;
@@ -290,6 +293,30 @@ export class AnthropicProvider implements LLMProvider {
         if (stop === "pause_turn" && !emitted) {
           // A long search turn the API paused; continuing needs the encrypted blocks back. Fail closed.
           throw new LLMProviderError("unavailable", "Search turn paused", 529);
+        }
+        // K35: client tool calls (phone tools): collect the input JSON per block, pass the call on at its end
+        if (ev.type === "content_block_start" && (ev.content_block as { type?: string } | undefined)?.type === "tool_use") {
+          const b = ev.content_block as { id?: string; name?: string };
+          toolBlocks.set(Number(ev.index), { id: String(b.id ?? ""), name: String(b.name ?? ""), json: "" });
+          continue;
+        }
+        if (ev.type === "content_block_delta" && toolBlocks.has(Number(ev.index))) {
+          const d = ev.delta as { type?: string; partial_json?: string } | undefined;
+          if (d?.type === "input_json_delta" && typeof d.partial_json === "string") toolBlocks.get(Number(ev.index))!.json += d.partial_json;
+          continue;
+        }
+        if (ev.type === "content_block_stop" && toolBlocks.has(Number(ev.index))) {
+          const tb = toolBlocks.get(Number(ev.index))!;
+          toolBlocks.delete(Number(ev.index));
+          let input: unknown = null;
+          try {
+            input = JSON.parse(tb.json || "{}");
+          } catch { /* invalid JSON: input stays null, the caller never runs it */ }
+          if (tb.id && tb.name) {
+            emitted = true;
+            yield { type: "tool_use", id: tb.id, name: tb.name, input };
+          }
+          continue;
         }
         const chunk = mapAnthropicEvent(ev);
         const out = gate ? gate.filter(ev, chunk) : chunk ? [chunk] : [];

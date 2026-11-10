@@ -19,6 +19,8 @@ export interface LLMRequest {
   signal?: AbortSignal;
   /** K15: a longer limit for a slow, non-interactive call (Lumen's own exam answers); default by request kind. */
   timeoutMs?: number;
+  /** K35: the whole conversation instead of one user turn (a tool round: user, assistant tool_use, tool_result). */
+  messages?: unknown[];
   /** D84: page images sent before the text (exam upload). base64 without the data: prefix. */
   images?: { mediaType: "image/jpeg" | "image/png" | "image/webp"; data: string }[];
 }
@@ -27,6 +29,8 @@ export type LLMChunk =
   | { type: "text"; text: string }
   /** K11: text a web search result gave for a citation (`cited_text`), to check verbatim quotes. */
   | { type: "cite"; cited: string }
+  /** K35: a client tool call the app runs (input null = the model's JSON did not parse). */
+  | { type: "tool_use"; id: string; name: string; input: unknown }
   | {
     type: "usage";
     inputTokens?: number;

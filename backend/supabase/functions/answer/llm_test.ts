@@ -331,3 +331,28 @@ Deno.test("D72: tool_choice is sent only with tools; a 'tool_choice' 400 is retr
   assertEquals(bodies.length, 2);
   assertEquals(bodies[1].tool_choice, undefined);
 });
+
+Deno.test("K35 AnthropicProvider: a client tool_use block becomes one tool_use chunk; messages are sent as given; no text gate", async () => {
+  let body: Record<string, unknown> = {};
+  const f = ((_url: string, init: RequestInit) => {
+    body = JSON.parse(init.body as string);
+    return Promise.resolve(sse([
+      { type: "message_start", message: { usage: { input_tokens: 10, output_tokens: 1 } } },
+      { type: "content_block_start", index: 0, content_block: { type: "text", text: "" } },
+      { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: "Okej." } },
+      { type: "content_block_stop", index: 0 },
+      { type: "content_block_start", index: 1, content_block: { type: "tool_use", id: "toolu_9", name: "timer_start", input: {} } },
+      { type: "content_block_delta", index: 1, delta: { type: "input_json_delta", partial_json: "{\"seconds\":" } },
+      { type: "content_block_delta", index: 1, delta: { type: "input_json_delta", partial_json: " 300}" } },
+      { type: "content_block_stop", index: 1 },
+      { type: "message_delta", delta: { stop_reason: "tool_use" }, usage: { output_tokens: 20 } },
+      { type: "message_stop" },
+    ]));
+  }) as typeof fetch;
+  const chunks = [];
+  const messages = [{ role: "user", content: "U" }];
+  for await (const c of new AnthropicProvider(cfg, f).stream({ system: "S", user: "ignored", maxTokens: 50, tools: [{ name: "timer_start", input_schema: {} }], messages })) chunks.push(c);
+  assertEquals(body.messages, messages);
+  assertEquals(chunks.filter((c) => c.type === "text").map((c) => (c as { text: string }).text), ["Okej."]);
+  assertEquals(chunks.find((c) => c.type === "tool_use"), { type: "tool_use", id: "toolu_9", name: "timer_start", input: { seconds: 300 } });
+});

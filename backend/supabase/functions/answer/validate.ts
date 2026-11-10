@@ -1,3 +1,4 @@
+import { isPhoneTool, type ToolRound, validatePhoneInput } from "./phonetools.ts";
 import { HttpError } from "../_shared/errors.ts";
 import { readContext, readSettings, type Setting } from "../memory/settings.ts";
 
@@ -62,6 +63,10 @@ export interface AnswerRequest {
   };
   /** K9: the fragment is a spoken "Lumen, …" instruction (A7 level 2); unmatched ones go to the model as one. */
   voiceInstruction?: boolean;
+  /** K35: the phone tools the app can run (A48); none = no tools offered. */
+  toolsAvailable?: string[];
+  /** K35: the result of a phone tool the app ran (the second call of a tool round). */
+  toolRound?: ToolRound;
   /** K10.2: the learned settings from /memory (all of them; /answer keeps only those for this context). */
   preferences?: Setting[];
   /** K10.3: the /memory profile of how the user wants answers (<= 300 chars), in a cached system block. */
@@ -352,6 +357,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       ...(concept_stats.length ? { concept_stats } : {}),
     },
     ...(o.voice_instruction === true ? { voiceInstruction: true } : {}),
+    ...toolFields(o),
     ...prefs(o),
     ...(o.two_level === true ? { twoLevel: true } : {}),
     ...(o.session_end === true ? { sessionEnd: true } : {}),
@@ -404,4 +410,30 @@ function prefs(o: Record<string, unknown>): Pick<AnswerRequest, "preferences" | 
     ...(profile ? { prefProfile: profile } : {}),
     ...(ctx.subject || ctx.exam ? { prefContext: { ...(ctx.subject ? { subject: ctx.subject } : {}), ...(ctx.exam ? { exam: ctx.exam } : {}) } } : {}),
   };
+}
+
+/** K35: `tools_available` (known phone tools only) and `tool_round` (a call the app ran, its input re-validated). */
+function toolFields(o: Record<string, unknown>): { toolsAvailable?: string[]; toolRound?: ToolRound } {
+  const out: { toolsAvailable?: string[]; toolRound?: ToolRound } = {};
+  if (Array.isArray(o.tools_available)) {
+    const t = [...new Set(o.tools_available.filter((x): x is string => typeof x === "string" && isPhoneTool(x)))];
+    if (t.length) out.toolsAvailable = t;
+  }
+  const r = o.tool_round as Record<string, unknown> | undefined;
+  if (r && typeof r === "object") {
+    const c = (r.call ?? {}) as Record<string, unknown>;
+    const name = typeof c.name === "string" ? c.name : "";
+    const id = typeof c.id === "string" && /^[A-Za-z0-9_-]{1,100}$/.test(c.id) ? c.id : "";
+    const input = isPhoneTool(name) ? validatePhoneInput(name, c.input) : null;
+    const status = r.status === "ok" || r.status === "declined" || r.status === "error" ? r.status : null;
+    if (!id || !input || !status || !isPhoneTool(name)) throw bad("tool_round: {call: {id, name, input}, status: ok|declined|error, result?}");
+    let result: unknown = r.result;
+    try {
+      if (JSON.stringify(result ?? null).length > 8000) result = { truncated: true };
+    } catch {
+      result = null;
+    }
+    out.toolRound = { call: { id, name, input }, status, result };
+  }
+  return out;
 }

@@ -78,7 +78,7 @@ async function* deadlineStream(p: LLMProvider, req: LLMRequest, o: DeadlineOptio
         return;
       }
       const c = r.value;
-      if (!sawText && c.type !== "text") {
+      if (!sawText && c.type !== "text" && c.type !== "tool_use") { // K35: a tool call is the first output too
         held.push(c); // usage before the first word: passed on with it (a timeout drops it with the call)
       } else {
         if (!sawText) {

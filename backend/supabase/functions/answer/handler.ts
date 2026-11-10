@@ -32,6 +32,7 @@ import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./per
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
 import { type CommandTask, commandTask, detectRule, funCommand, socialRequest } from "./commands.ts";
+import { confirmText, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
 import { applicable, describe, detectCorrection, profileOf } from "../memory/settings.ts";
 
@@ -1115,6 +1116,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         web: webOn,
         computed: !!computed,
       });
+      // K35 (D122): phone tools the app can run, in the direct modes (Standardläge, Provläge), never in the demo
+      const phoneOffer = [...(body.toolsAvailable ?? []), ...(body.toolRound ? [body.toolRound.call.name] : [])];
+      const phoneTools = !demo && !plan && direct && body.mode !== "auto" && phoneOffer.length ? phoneToolDefs(phoneOffer) : undefined;
       const noSummary = plan?.kind === "rizz" || plan?.kind === "calibrate" || demo;
       const relationTag = direct && !plan && body.context.recent_qa.length > 0;
       // K16.1: in Frågor (push to talk, text) the model may answer only [[SÖK]] when it is not sure of a specific fact
@@ -1127,13 +1131,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
         (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "") +
-        (twoLevel ? TWO_LEVEL_RULE : "");
+        (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools ? PHONE_TOOLS_RULE : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
         ? demoCaps.answerMaxTokens + (relationTag ? 12 : 0)
         : baseTokens + (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
       const tools = textOn ? textTools() : webOn && need ? webTools(need) : undefined;
+      const allTools = tools && phoneTools ? [...tools, ...phoneTools] : tools ?? phoneTools;
       // D82: after the echo of the last answer was removed, only a complete new question gets an answer.
       const echoNote = echo.echoed
         ? "The start of <fragment> repeated your own last answer (picked up again by the microphone) and was removed. Answer only if what is left is by itself a complete new question or request; a cut-off half sentence, a remark or noise gets the silence reply."
@@ -1190,7 +1195,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           maxTokens,
           cacheSystem: true,
           ...(systemTail ? { systemTail } : {}),
-          tools,
+          tools: allTools,
+          // K35: the second call of a tool round: the user's turn, the tool call and the app's result
+          ...(body.toolRound && phoneTools ? { messages: toolRoundMessages(userFor(body, baseExtras), body.toolRound) } : {}),
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
@@ -1340,6 +1347,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let headBuf: string | null = askSearch || (direct && !plan) ? "" : null;
           let crisisMarked = false;
           let crisisLate = false;
+          let toolPending = false; // K35: a phone tool call was sent; the app runs it and sends a tool_round
           // K13.1: the developed answer after [[MER]]: its own post-processing, sent as more_delta, kept for done
           let inMore = false;
           let markBuf = "";
@@ -1460,6 +1468,20 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           const handle = (chunk: LLMChunk) => {
             if (chunk.type === "cite") {
               post.addCited(chunk.cited);
+              return;
+            }
+            if (chunk.type === "tool_use") {
+              // K35: validated before anything reaches the app; an unknown tool or bad input is dropped (logged)
+              const input = isPhoneTool(chunk.name) ? validatePhoneInput(chunk.name, chunk.input) : null;
+              if (!input || !isPhoneTool(chunk.name) || toolPending) {
+                console.warn(JSON.stringify({ event: "tool_call_dropped", name: chunk.name.slice(0, 40), valid: !!input }));
+                return;
+              }
+              toolPending = true;
+              flushMeta();
+              if (ttftMs === null) ttftMs = now() - t0;
+              send("tool_call", { id: chunk.id, name: chunk.name, input, confirm: confirmText(chunk.name, input), kind: toolKind(chunk.name) });
+              console.log(JSON.stringify({ event: "tool_call", name: chunk.name, mode: body.mode }));
               return;
             }
             if (chunk.type === "usage") {
@@ -1735,6 +1757,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               source: post.source,
               memory_add: null,
               calibration,
+              ...(toolPending ? { tool_pending: true } : {}),
             });
             doneSent = !closed;
           } catch (e) {
