@@ -26,6 +26,8 @@ struct AnswerTurn: Identifiable, Equatable, Sendable, Codable {
     var isOwnQuestion: Bool
     /// D81: stopped by the wearer; `answer` is only what had been said. Optional, so older history still decodes.
     var interrupted: Bool?
+    /// A19 (K19): the link Lumen sent with this answer (opens in Safari).
+    var link: LearningLink?
 
     init(id: UUID = UUID(), question: String, answer: String, createdAt: Date = Date(), latencyMs: Double? = nil, source: String,
          isOwnQuestion: Bool = true) {
@@ -89,6 +91,12 @@ struct Conversation: Equatable, Sendable {
 
     mutating func cancelAnswer() {
         streamingAnswer = nil
+    }
+
+    /// A19: the link that came with an answer.
+    mutating func attach(_ link: LearningLink, to id: UUID) {
+        guard let index = answers.lastIndex(where: { $0.id == id }) else { return }
+        answers[index].link = link
     }
 
     /// D81: the wearer broke in. What had been said stays as an interrupted turn, so the next answer never repeats it.

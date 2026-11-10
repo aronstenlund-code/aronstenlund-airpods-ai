@@ -169,6 +169,9 @@ struct ListeningScreen: View {
                         .lineSpacing(5)
                         .textSelection(.enabled)
                 }
+                if let link = turn.link {
+                    LinkRow(link: link) // A19 (K19)
+                }
                 if model.conversation.streamingAnswer == nil {
                     HStack {
                         Spacer()
@@ -566,5 +569,31 @@ struct PracticeResultCard: View {
             Text(title).font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// A19 (K19): a link Lumen sent, opened in Safari.
+struct LinkRow: View {
+    let link: LearningLink
+
+    var body: some View {
+        Link(destination: link.url) {
+            HStack(spacing: 12) {
+                Image(systemName: "play.rectangle")
+                    .font(.system(size: 20))
+                    .foregroundStyle(LumenColor.blue)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(link.title).font(LumenFont.text(16, .semibold)).foregroundStyle(LumenColor.ink).multilineTextAlignment(.leading)
+                    Text(link.sourceName + (link.loginLikely == true ? ", kan kräva skolkonto" : ""))
+                        .font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "arrow.up.right").foregroundStyle(LumenColor.muted).accessibilityHidden(true)
+            }
+            .padding(14)
+            .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
+        }
+        .accessibilityHint("Öppnas i Safari")
     }
 }

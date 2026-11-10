@@ -18,6 +18,7 @@ struct BackendConfig: Sendable, Equatable {
     /// D84 (Kevin): a spoken profile → the D83 profile and the subject's terms; the exam session.
     var studyProfileURL: URL { projectURL.appending(path: "functions/v1/study-profile") }
     var examURL: URL { projectURL.appending(path: "functions/v1/exam") }
+    var studyPlanURL: URL { projectURL.appending(path: "functions/v1/study-plan") } // A19 (K17)
     var sharedHistoryURL: URL { projectURL.appending(path: "functions/v1/shared-history") }
     var signUpURL: URL { projectURL.appending(path: "auth/v1/signup") }
     var refreshURL: URL {

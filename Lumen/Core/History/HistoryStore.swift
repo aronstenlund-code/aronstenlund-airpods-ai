@@ -14,6 +14,8 @@ struct HistoryEntry: Identifiable, Codable, Equatable, Sendable {
     /// The mode and backend persona of the turn, uploaded with shared history (D82). Nil in entries before D82.
     var mode: String?
     var persona: String?
+    /// A19 (K19): the link Lumen sent with the answer.
+    var link: LearningLink? = nil
 
     init(id: UUID = UUID(), createdAt: Date = Date(), question: String?, answer: String, summary: String?, suggestions: [String] = [],
          mode: String? = nil, persona: String? = nil) {
@@ -72,6 +74,13 @@ final class HistoryStore {
     func record(_ entry: HistoryEntry, now: Date = Date()) {
         entries.insert(entry, at: 0)
         entries.removeAll { Retention.isExpired($0.createdAt, at: now) }
+        persist()
+    }
+
+    /// A19 (K19): the link that came with the answer recorded at `createdAt`.
+    func attachLink(_ link: LearningLink, at createdAt: Date) {
+        guard let index = entries.firstIndex(where: { $0.createdAt == createdAt }) else { return }
+        entries[index].link = link
         persist()
     }
 

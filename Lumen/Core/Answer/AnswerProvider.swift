@@ -32,6 +32,8 @@ struct AnswerContext: Equatable, Sendable {
     var prefExam: String?
     /// A16: right and wrong per concept from practice runs (Provläge), for "testa mina svagaste" (K9, K17).
     var conceptStats: [ConceptStat] = []
+    /// A19 (K17): the last call of a Provläge session: the backend says the session's summary instead of answering.
+    var sessionEnd = false
 
     struct ConceptStat: Equatable, Sendable, Codable {
         var concept: String
@@ -82,7 +84,8 @@ struct AnswerContext: Equatable, Sendable {
                       prefProfile: prefProfile.map { String($0.prefix(300)) },
                       prefSubject: prefSubject,
                       prefExam: prefExam,
-                      conceptStats: Array(conceptStats.prefix(ConceptStats.limit)))
+                      conceptStats: Array(conceptStats.prefix(ConceptStats.limit)),
+                      sessionEnd: sessionEnd)
     }
 }
 
@@ -218,6 +221,8 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var retract: Bool?
     /// K10.1: the app command again at the end (sure ones come with nothing answered).
     var appCommand: AppCommand? = nil
+    /// K19 / A19: a checked link to a film or page about what is studied.
+    var resource: LearningLink? = nil
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.

@@ -64,6 +64,9 @@ struct HistoryDetailView: View {
             if !entry.answer.isEmpty {
                 Section("Lumen") { Text(entry.answer).textSelection(.enabled) }
             }
+            if let link = entry.link {
+                Section("Länk") { LinkRow(link: link) } // A19 (K19), opens in Safari
+            }
             if !entry.suggestions.isEmpty {
                 Section("Suggestions") {
                     ForEach(entry.suggestions, id: \.self) { Text($0) }

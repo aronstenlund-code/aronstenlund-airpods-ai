@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import UserNotifications
 
 /// Drives the Listening screen (MVP items 1–9). No business logic in views.
 @MainActor
@@ -100,6 +101,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private(set) var practiceResult: PracticeRun.Summary?
     /// A16: right and wrong per concept from practice runs, sent as `concept_stats` in Provläge.
     @ObservationIgnored private var conceptStats = ConceptStats.load()
+    /// A19 (K17): what came up per exam and concept, right or wrong, for `/study-plan`.
+    @ObservationIgnored private var studyHistory = StudyHistory.load()
+    let studyPlanClient: StudyPlanClient?
+    /// A19: today's plan per exam, from `/study-plan`.
+    private(set) var studyPlans: [UUID: StudyPlanAPI.ExamPlanReply] = [:]
+    @ObservationIgnored private var planPromptSaid: Set<String> = []
+    /// A19.2: the id of the session-end call ("avsluta" in Provläge): its answer is the summary.
+    @ObservationIgnored private var summaryRequestID: UUID?
+    @ObservationIgnored private var summaryTimeout: Task<Void, Never>?
     private var examTimer: Task<Void, Never>?
     var isShowingExamSetup = false
     /// What Lumen has said of the current answer, for an interrupted turn (D81).
@@ -260,7 +270,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
          speakers: SpeakerIdentifier? = nil, studyCards: StudyCardStore? = nil, studyCardsClient: StudyCardsClient? = nil,
          studyProfileClient: StudyProfileClient? = nil, examMaterials: ExamMaterials? = nil, examClient: ExamClient? = nil,
          examPlans: ExamPlanStore? = nil, phrases: CommandPhraseStore? = nil, music: MusicRemote? = nil,
-         tips: CommandTipStore? = nil, preferences: PreferenceStore? = nil) {
+         tips: CommandTipStore? = nil, preferences: PreferenceStore? = nil, studyPlanClient: StudyPlanClient? = nil) {
+        self.studyPlanClient = studyPlanClient
         self.preferences = preferences ?? PreferenceStore(defaults: UserDefaults(suiteName: "lumen.prefs.\(UUID().uuidString)") ?? .standard)
         self.tips = tips ?? CommandTipStore(defaults: UserDefaults(suiteName: "lumen.tips.\(UUID().uuidString)") ?? .standard)
         self.phrases = phrases ?? CommandPhraseStore(defaults: UserDefaults(suiteName: "lumen.phrases.\(UUID().uuidString)") ?? .standard,
@@ -823,12 +834,23 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// D86 start screen: an exam row's microphone, or "Få A-svar till provet".
-    func startProv(for plan: ExamPlan, answersOnly: Bool = false) async {
+    func startProv(for plan: ExamPlan, answersOnly: Bool = false, sayPlan: Bool = true) async {
         useExamPlan(plan)
         selectedMode = .prov
         provAnswersOnly = answersOnly
         await startStudy()
         askSubjectIfOnlyArea(plan)
+        if sayPlan, !answersOnly, awaitingSubject == nil { sayPlanPrompt(for: plan) }
+    }
+
+    /// A19 (K17): "I går missade du cellandning och mitos. Ska vi ta dem nu?", once a day per exam.
+    private func sayPlanPrompt(for plan: ExamPlan) {
+        guard study.isActive, mode == .prov, let prompt = studyPlans[plan.id]?.prompt, !prompt.isEmpty else { return }
+        let key = plan.id.uuidString + StudyHistory.day(Date())
+        guard !planPromptSaid.contains(key) else { return }
+        planPromptSaid.insert(key)
+        controller.log("Provläge: the study plan's question (A19)")
+        say(prompt)
     }
 
     /// A24: an exam that is only an area ("NO", from the first start) waits for its subject; the quiz can wait for it.
@@ -871,7 +893,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A18 (Kelly Ke9): Start's one blue button says what it does, "Förhör mig", the same words as the voice command.
     /// Provläge for the exam, and the first quiz question at once.
     func startQuiz(for plan: ExamPlan) async {
-        await startProv(for: plan)
+        await startProv(for: plan, sayPlan: false)
         guard study.isActive, mode == .prov else { return }
         if awaitingSubject != nil {
             awaitingSubject?.quizAfter = true // A24: the subject first, then the quiz
@@ -1455,6 +1477,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             finishPractice(speak: true) // A16: the first "avsluta" ends the practice exam with its result
             return
         }
+        if summarizeBeforeEnding() { return } // A19.2: the summary first, then Lumen stops
         say(language == .swedish ? "Slutar lyssna." : "Stopping.")
         await speechDone()
         await stopListening()
@@ -2179,6 +2202,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// "Avsluta" (app, lock screen, voice): ends the mode and the microphone.
     func endSession() async {
+        if summaryRequestID == nil, summarizeBeforeEnding() { return } // A19.2; a second tap ends at once
+        summaryRequestID = nil
+        summaryTimeout?.cancel()
+        await endNow()
+    }
+
+    private func endNow() async {
         if study.isActive { endStudy(bySilence: false) }
         await stopListening()
         problem = nil
@@ -2399,6 +2429,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             if let topic = task.topic, !topic.isEmpty {
                 self.conceptStats.record(topic, right: right)
                 self.conceptStats.save()
+                if let exam = self.currentExamID() { // A19: the study plan's history
+                    self.studyHistory.record(topic, ok: right, exam: exam)
+                    self.studyHistory.save()
+                }
             }
             current.lastFeedback = graded.feedback
             current.lastFeedbackNo = task.no
@@ -2432,6 +2466,99 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func dismissPracticeResult() {
         practiceResult = nil
+    }
+
+
+    // MARK: - Study plan, summary and links (A19: K17, K19)
+
+    /// Asks `/study-plan` for every upcoming exam: what is due today, and the days up to the exam (local reminders).
+    func refreshStudyPlan(askForReminders: Bool = false) async {
+        guard let studyPlanClient, let plans = examPlans?.upcoming(), !plans.isEmpty else { return }
+        let exams = plans.prefix(10).map { plan in
+            StudyPlanAPI.ExamIn(name: plan.name, date: StudyHistory.day(plan.date),
+                                concepts: StudyPlanAPI.concepts(history: studyHistory.history(for: plan.id),
+                                                                topics: StudyPlanAPI.topics(plan.topics)))
+        }
+        guard let reply = await studyPlanClient.plan(StudyPlanAPI.Request(today: StudyHistory.day(Date()), exams: Array(exams))) else {
+            controller.log("Study plan: no reply")
+            return
+        }
+        var byExam: [UUID: StudyPlanAPI.ExamPlanReply] = [:]
+        var days: [(subject: String, day: StudyPlanAPI.Day)] = []
+        for (plan, answer) in zip(plans.prefix(10), reply.exams) {
+            byExam[plan.id] = answer
+            days += answer.plan.map { (subject: plan.subject, day: $0) }
+        }
+        studyPlans = byExam
+        controller.log("Study plan: \(byExam.count) exams, \(days.count) days")
+        await LumenNotifications.schedulePlan(days, ask: askForReminders)
+        let status = await LumenNotifications.status()
+        canAskForReminders = !days.isEmpty && LumenNotifications.remindersOn && status == .notDetermined
+    }
+
+    /// A19: "Påminn mig om passen" on Start: iOS asks once, then the plan's days are reminders at 16:00.
+    private(set) var canAskForReminders = false
+
+    /// "I dag: 10 min Biologi (cellandning, klorofyll)" when the plan has a pass today.
+    func todayLine(for plan: ExamPlan) -> String? {
+        let today = StudyHistory.day(Date())
+        guard let day = studyPlans[plan.id]?.plan.first(where: { $0.date == today }) else { return nil }
+        return StudyPlanAPI.todayLine(subject: plan.subject, day: day)
+    }
+
+    /// A19.2: "avsluta" in Provläge after real questions: one last call says the summary, then Lumen stops.
+    private func summarizeBeforeEnding() -> Bool {
+        guard study.isActive, mode == .prov, isListening, exam == nil, practice == nil, miniTest == nil, summaryRequestID == nil,
+              let start = provStartedAt,
+              conversation.answers.filter({ $0.createdAt >= start && $0.isOwnQuestion && $0.interrupted != true }).count >= 2 else {
+            return false
+        }
+        let request = ActivationRequest(query: "avsluta", trigger: .tutor, language: language)
+        summaryRequestID = request.id
+        controller.log("Provläge: the session's summary before ending (A19)")
+        summaryTimeout?.cancel()
+        summaryTimeout = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(45))
+            guard !Task.isCancelled else { return }
+            self?.endAfterSummary(reason: "no summary within 45 s")
+        }
+        activated(request, persona: tutorPersona())
+        return true
+    }
+
+    /// The summary is spoken: kept as a study card and with the session in Anteckningar, then Provläge ends.
+    private func summaryArrived(_ turn: AnswerTurn) {
+        summaryTimeout?.cancel()
+        let profile = studyProfile.profile
+        let title = "Sammanfattning: " + (profile.subject.isEmpty ? "Provläge" : profile.subject) + ", "
+            + Date().formatted(.dateTime.day().month(.abbreviated))
+        _ = studyCards?.add(question: title, answer: turn.answer, profile: profile)
+        saveNote()
+        controller.log("Provläge: summary saved as a study card and a note (A19)")
+        Task { [weak self] in
+            for _ in 0..<1_200 {
+                guard let self, self.summaryRequestID != nil else { return }
+                if !self.speaker.isSpeaking, !self.speaker.hasPendingSpeech { break }
+                try? await Task.sleep(for: .milliseconds(50))
+            }
+            self?.endAfterSummary(reason: "summary spoken")
+        }
+    }
+
+    private func endAfterSummary(reason: String) {
+        guard summaryRequestID != nil else { return }
+        summaryRequestID = nil
+        summaryTimeout?.cancel()
+        controller.log("Provläge ends: \(reason) (A19)")
+        Task { [weak self] in await self?.endNow() }
+    }
+
+    /// A19.3 (K19): the link is on the answer, in Historik, and a notification (the phone is in the pocket).
+    private func linkArrived(_ link: LearningLink, for turn: AnswerTurn) {
+        conversation.attach(link, to: turn.id)
+        history.attachLink(link, at: turn.createdAt)
+        controller.log("Link sent: \(link.sourceName) (A19)")
+        Task { await LumenNotifications.sendLink(link) }
     }
 
 
@@ -2595,6 +2722,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     private func context(for request: ActivationRequest) -> AnswerContext {
+        var context = baseContext(for: request)
+        context.sessionEnd = request.id == summaryRequestID // A19.2
+        return context
+    }
+
+    private func baseContext(for request: ActivationRequest) -> AnswerContext {
         // Provläge sends the whole session's memory (the backend keeps the last 6 pairs).
         let qaLimit = study.isActive ? AnswerContext.qaLimit : 3
         let matched = commands.matches(in: request.query)
@@ -2912,11 +3045,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             lastAnswerAt = Date()
             extractMemories(from: turn)
             scheduleKeytermRefresh()
-            studyCardOrGrade(turn)
+            if summaryRequestID == nil { studyCardOrGrade(turn) } // A19.2: the summary is its own card
             showActivity()
             if mode == .prov, let index = studyTurns.lastIndex(where: { AheadAnswer.key($0.text) == AheadAnswer.key(turn.question) }) {
                 studyTurns[index].answered = true
             }
+            if let link = done?.resource { linkArrived(link, for: turn) }
+            if summaryRequestID != nil { summaryArrived(turn) }
         }
         if let fact = done?.memoryAdd {
             memory.add(fact)
@@ -3048,6 +3183,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerFailed(_ message: String, wantsFallback: Bool) {
+        if summaryRequestID != nil { endAfterSummary(reason: "the summary failed") } // A19.2: never stuck
         if instructing != nil {
             latency.end()
             answerNotice = message

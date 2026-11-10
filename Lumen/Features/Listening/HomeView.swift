@@ -48,6 +48,7 @@ struct HomeView: View {
         .onChange(of: model.problem == .microphoneDenied) { _, denied in
             if denied { isShowingMicrophoneDenied = true }
         }
+        .task { await model.refreshStudyPlan() } // A19: today's pass and the reminders
     }
 
     private var topBar: some View {
@@ -80,7 +81,21 @@ struct HomeView: View {
                 .font(LumenFont.text(15))
                 .foregroundStyle(LumenColor.muted)
                 .padding(.top, 2)
-            if let practise = model.practiseHint(for: plan) {
+            if let today = model.todayLine(for: plan) {
+                // A19 (K17): today's pass from the study plan
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(today).font(LumenFont.text(16, .semibold))
+                    if model.canAskForReminders {
+                        Button("Påminn mig om passen kl. 16") { Task { await model.refreshStudyPlan(askForReminders: true) } }
+                            .font(LumenFont.text(15, .semibold))
+                            .frame(minHeight: 44)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(14)
+                .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
+                .padding(.top, 16)
+            } else if let practise = model.practiseHint(for: plan) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Öva mer på").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
                     Text(practise).font(LumenFont.text(16, .semibold))

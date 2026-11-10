@@ -8,6 +8,8 @@ struct SettingsView: View {
     @AppStorage("debug.latencyOverlay") private var showsLatencyOverlay = false
     /// A13.1: the technical settings are folded away; the choice is remembered.
     @AppStorage("settings.showsAdvanced") private var showsAdvanced = false
+    /// A19 (K17): the study plan's reminders; Aron wants them, and they can be turned off.
+    @AppStorage(LumenNotifications.enabledKey) private var studyReminders = true
 
     /// A13.1: what a student changes first, at the top; the technical parts folded under "Avancerat"; licences and
     /// technical explanations in "Om appen". Nothing is removed.
@@ -16,6 +18,14 @@ struct SettingsView: View {
             // Vanliga
             voiceSection
             answerSection
+            Section {
+                Toggle("Påminn om dagens pluggpass", isOn: $studyReminders)
+                    .onChange(of: studyReminders) { _, on in Task { await model.refreshStudyPlan(askForReminders: on) } }
+            } header: {
+                Text("Påminnelser")
+            } footer: {
+                Text("Kl. 16 de dagar planen fram till provet har ett pass, till exempel ”10 minuter biologi i dag”.")
+            }
             Section {
                 NavigationLink("Röstkommandon") { VoiceCommandsView(store: model.phrases, music: model.music, voice: model.speaker.settings, tips: model.tips) }
                 NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences, paces: model.paces) }
