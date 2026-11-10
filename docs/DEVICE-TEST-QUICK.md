@@ -1,7 +1,7 @@
-# Snabbtest på telefon (18 minuter)
+# Snabbtest på telefon (20 minuter)
 
 Bara det som **måste** testas på riktig iPhone + AirPods. Simulatorn kan inte testa något av detta.
-Skrivet av Toby (apptestare), 2026-11-08. Steg 4 (röstkommandon) tillagt 2026-11-09 (T6). Det långa schemat finns i `docs/DEVICE-TEST-CHECKLIST.md`.
+Skrivet av Toby (apptestare), 2026-11-08. Steg 4 (röstkommandon) tillagt 2026-11-09 (T6), steg 5 (mer efter korta svar) 2026-11-10 (T7). Det långa schemat finns i `docs/DEVICE-TEST-CHECKLIST.md`.
 
 **Du behöver:** iPhone med senaste `Lumen-unsigned.ipa`, AirPods (helst med huvudspårning: AirPods Pro eller
 AirPods 3/4), internet, ett tyst rum. Ha papper och penna, eller svara direkt i chatten efter varje steg.
@@ -82,9 +82,26 @@ Tryck **Avsluta** om Lumen fortfarande lyssnar.
 
 ---
 
+## 5. Mer efter korta svar (2 min)
+
+Simulatorn har testat orden "ja", "mer" och "gärna", tiden och andra röster (T7). Det här kan bara du testa: tonen,
+nicken och trycket på AirPods. Tryck **Frågor**.
+
+| | Gör | Ska hända | Skicka |
+|---|---|---|---|
+| 5a | Fråga: "Vad är huvudstaden i Kanada?" Vänta tills svaret är slut. | En kort mjuk ton i AirPods, och "Säg ja för mer" i blått på skärmen i ca 5 s. | J/N |
+| 5b | Fråga något kort igen. När tonen kommer: **nicka**. | Ett längre svar om samma sak. | J/N + sekunder från nick till svar |
+| 5c | Fråga något kort igen. När tonen kommer: **tryck en gång** på AirPods. | Ett längre svar. Lumen pausar **inte**. | J/N |
+| 5d | Fråga något kort igen. När tonen kommer: **skaka på huvudet**. | Inget mer, "Säg ja för mer" försvinner. | J/N |
+| 5e | Fråga något kort igen. Låt en annan person säga "ja" när tonen kommer. | Inget längre svar (Lumen känner igen din röst om du har gjort "Lär dig min röst"). | J/N + om röstprofilen fanns |
+
+Tryck **Avsluta**.
+
+---
+
 ## Skicka tillbaka
 
-1. Raderna `1a` till `4e` med J/N.
+1. Raderna `1a` till `5e` med J/N.
 2. Skärmbilden från 3f.
 3. De tre filerna från plugg-sessionen (`.wav`, `.txt`, `.json`).
 4. iPhone-modell och iOS-version (Inställningar → Allmänt → Om), AirPods-modell.

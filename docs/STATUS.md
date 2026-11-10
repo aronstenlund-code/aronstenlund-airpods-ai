@@ -11,7 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
-- **Toby (apptestare): byt session** (2026-11-09 23:50). 6 punkter och komprimerad, så T7, T8 och T5b tas av nästa session (överlämning `docs/HANDOVER-toby.md`). Senast klart: **T5** omtest efter A8 och A11 i simulatorn, **inte verifierat på enhet**: Frågor 9/10 besvarade och upplästa (2 av 3 fortsättningar tappade, för att svaret i förväg svarar på första halvan), Provläge 1 tur av 4 i ett andetag, keyterms över 20 tecken håller, 60 min Provläge 117/117 filer hörda och 0 döva perioder. 4 fynd till Angela: `reports/apptest/2026-11-09-2150-toby-t5-retest.md`. Före det: T6, 485/541 kommandon rätt.
+- **Toby (apptestare): jobbar** (självständigt till 18:00). **T7 klar** (`reports/apptest/2026-11-10-0815-toby-t7-more.md`, simulatorn, **inte enhet**): Mer-fönstret är dövt. Mikrofonen öppnar 2,8–13,3 s efter att "Säg ja för mer" visats (fönstret är 5 s), så ett "ja" 1,5 s efter tonen hördes 0/7 gånger, och en ny fråga i fönstret blev aldrig besvarad. Fynd till Angela: fönstret öppnas i `speechFinished()` innan ljudet är slut. Ordlogiken är inte prövad: ElevenLabs-kvoten tog slut (Scribe `quota_exceeded`), och iPhonens reservigenkänning startar inte i simulatorn. Omtest T7b i kön. Nu: T8 (förstagångsanvändaren). Senast före: T5 (Frågor 9/10 upplästa, Provläge 1 av 4 turer, 60 min 0 döva perioder).
   - **T1 klar:** ljudkedjetestet (`AppTests/E2E/Chain`, CI `apptest-chain.yml`, nattligt och manuellt) kör svenskt `say`-tal genom appens riktiga kedja med live Scribe och `/answer`.
     - **Frågor:** 7/7 yttranden, 5/5 frågor besvarade, inga påståenden besvarade, första text 1,0–1,5 s.
     - **Provläge:** 4/4 besvarade, ämnesorden rätt.

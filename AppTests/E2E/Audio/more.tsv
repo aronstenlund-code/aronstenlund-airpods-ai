@@ -1,0 +1,9 @@
+id	kind	delay	voice	key	question	probe
+ja	more	1.5	wearer	-	Vad är huvudstaden i Australien?	Ja.
+mer	more	1.5	wearer	-	Vilken är världens längsta flod?	Mer.
+garna	more	1.5	wearer	-	Vem skrev Röda rummet?	Gärna.
+late	late	6.0	wearer	-	Hur många planeter finns det i solsystemet?	Ja.
+mid	newquestion	1.5	wearer	fotosyntes	Vad heter Sveriges kung?	Ja men vad är fotosyntes?
+other1	other	1.5	other	-	Vad är huvudstaden i Norge?	Ja.
+other2	other	1.5	other	-	Vad är huvudstaden i Danmark?	Ja gärna.
+newq	newquestion	1.5	wearer	maraton	Vad är huvudstaden i Finland?	Hur långt är ett maraton?
