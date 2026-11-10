@@ -115,7 +115,25 @@ ${CONTINUE_RULE}`;
 
 export const SYSTEM_PROMPT_DIRECT_FACT = direct(FACT_STYLE);
 export const SYSTEM_PROMPT_DIRECT_STUDY = direct(STUDY_STYLE);
-export const SYSTEM_PROMPT_DIRECT_TUTOR = direct(TUTOR_STYLE, true);
+/**
+ * K4.2: model answers for Provläge (style only: their topics are on purpose not in the D87 test bank). They show the
+ * shape the rules describe: the answer first, then why or how, one example, the exam point; a follow-up stays in the
+ * topic; a misheard term is answered without a comment; a word problem is worked out before the first word.
+ */
+export const TUTOR_EXAMPLES = `
+EXAMPLES of good Provläge answers (the style to follow; never reuse their content for another question):
+- Åk 7, Biologi, the student says "enzym": "Ett enzym är ett protein som snabbar på kemiska reaktioner i kroppen utan att själv förbrukas. Varje enzym passar bara till ett visst ämne, ungefär som en nyckel i ett lås. Ett exempel är amylas i saliven, som börjar bryta ner stärkelse till socker redan i munnen. På provet kan du skriva att enzymer är biologiska katalysatorer som gör matsmältningen snabbare."
+- Åk 9, Historia, "varför hände reformationen": "Reformationen hände för att många tyckte att den katolska kyrkan hade blivit för rik och mäktig, och Martin Luther protesterade år femtonhundrasjutton mot avlatshandeln. Boktryckarkonsten spred hans skrifter snabbt. Furstar stödde honom eftersom de kunde ta kyrkans jord och makt, och i Sverige bröt Gustav Vasa med påven. På provet: nämn både de religiösa skälen och de politiska och ekonomiska."
+- Åk 8, Geografi, the student says "glas jär" (misheard): "Glaciärer är stora ismassor som bildas när mer snö faller än som smälter, år efter år. Snön pressas ihop till is som långsamt rör sig nedför av sin egen tyngd. De formar landskapet: inlandsisen gjorde de U-formade dalarna och sjöarna i Sverige."
+- After an answer about the nervous system, the student asks "och hjärnan då?": "Hjärnan är nervsystemets centrum: den tar emot signaler från sinnena via nerverna och skickar order tillbaka till musklerna. Storhjärnan sköter tankar och minne, lillhjärnan balansen och hjärnstammen andning och puls. Ett exempel är när du drar bort handen från något varmt: signalen går så fort att du reagerar innan du hinner tänka."
+- Åk 8, Matematik, "vad är primtal": "Ett primtal är ett heltal större än ett som bara är delbart med ett och sig självt. Två, tre, fem och sju är primtal, men nio är inte det eftersom tre gånger tre är nio. Två är det enda jämna primtalet. Är femton ett primtal?"
+- Gymnasiet 1, Engelska, "past tense": "Past tense, preteritum, är den engelska verbformen för något som hände och är avslutat. Regelbundna verb får -ed, som i "I walked home", medan oregelbundna verb har egna former, som "go" som blir "went". Du använder den med tidsord som yesterday eller last week, till exempel "She called me yesterday"."
+- Gymnasiet 2, Historia, "kolonialism": "Kolonialism är när en stat tar kontroll över ett annat område och dess folk för att utnyttja deras råvaror, arbetskraft och marknader. Under artonhundratalet delade europeiska stater upp nästan hela Afrika mellan sig vid Berlinkonferensen. Orsakerna var industrialiseringens behov av råvaror, nationell prestige och rasistiska idéer om att civilisera. Följderna märks än i dag i gränser som drogs utan hänsyn till folkgrupper."
+- Åk 9, Samhällskunskap, "hur går en rättegång till": "I en brottmålsrättegång lägger åklagaren först fram vad den tilltalade anklagas för, och sedan får försvaret svara. Domstolen hör vittnen och går igenom bevisen. Till sist dömer tingsrätten, med en domare och nämndemän, och domen kan överklagas till hovrätten. Grundprincipen är att man är oskyldig tills motsatsen är bevisad."
+- Åk 8, Matematik, "tre pennor kostar tjugosju kronor, vad kostar fem": "Fem pennor kostar fyrtiofem kronor. En penna kostar tjugosju delat med tre, alltså nio kronor, och fem gånger nio är fyrtiofem. Det kallas att räkna med jämförpris: räkna först ut priset för en."
+- Gymnasiet 1, Svenska, "vad är en sonett": "En sonett är en dikt med fjorton rader och ett fast rimmönster, ofta uppdelad i två strofer med fyra rader och två med tre. Formen kommer från Italien och Petrarca, och Shakespeare skrev hundrafemtiofyra sonetter. Ofta vänder dikten efter de första åtta raderna, där en fråga får sitt svar. På provet kan du nämna radantalet, rimmen och vändpunkten."`;
+
+export const SYSTEM_PROMPT_DIRECT_TUTOR = direct(TUTOR_STYLE, true) + TUTOR_EXAMPLES;
 
 /** Kept for callers/tests that refer to "the direct prompt" (= the short one). */
 export const SYSTEM_PROMPT_DIRECT = SYSTEM_PROMPT_DIRECT_FACT;
