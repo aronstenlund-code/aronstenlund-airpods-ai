@@ -9,3 +9,4 @@ Kortast möjligt. Svara "ja"/"nej"/eget val i chatten med Deangelo.
 | 3 | Rizz 18+: får förslag handla om utseende (från K8)? | Ditt val |
 | 4 | Namn: Lumen, Proviska eller Testvisk | Bestäm före Fas 3 |
 | 5 | Installera om appen senast fre 13 nov (går ut lör 14 nov) | Måste göras |
+| 6 | "Skriv min uppsats om evolution" → Lumen skriver uppsatsen. Ska den skriva inlämningsuppgifter, eller hjälpa eleven att skriva själv (disposition, förklaringar, återkoppling)? | Hjälp eleven skriva själv (bättre för lärandet och för App Store-risken R6) |
