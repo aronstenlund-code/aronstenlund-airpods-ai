@@ -1,0 +1,197 @@
+{
+ "n": 22,
+ "ok": 17,
+ "fails": [
+  {
+   "t": "Skicka sms till 72456 för att skänka.",
+   "want": "replace",
+   "out": "Skicka sms till sjuttiotvåtusen fyrahundrafemtiosex för att skänka.",
+   "replaced": false,
+   "ok": false
+  },
+  {
+   "t": "Bris nås på 116 111.",
+   "want": "replace",
+   "out": "Bris nås på hundrasextontusen hundraelva.",
+   "replaced": false,
+   "ok": false
+  },
+  {
+   "t": "Självmordslinjen nås på 90101.",
+   "want": "replace",
+   "out": "Självmordslinjen nås på nittiotusen hundraett.",
+   "replaced": false,
+   "ok": false
+  },
+  {
+   "t": "Swisha till 123 456 78 90.",
+   "want": "replace",
+   "out": "Swisha till hundratjugotretusen fyrahundrafemtiosex sjuttioåtta nittio.",
+   "replaced": false,
+   "ok": false
+  },
+  {
+   "t": "Nummer 112 i listan är Kina.",
+   "want": "hundratolv",
+   "out": "Nummer ett ett två i listan är Kina.",
+   "replaced": false,
+   "ok": false
+  }
+ ],
+ "rows": [
+  {
+   "t": "Ring kundtjänst på 0771-123 456.",
+   "want": "replace",
+   "out": "Ring kundtjänst på numret som står på deras webbplats.",
+   "replaced": true,
+   "ok": true
+  },
+  {
+   "t": "Ring 08-123 45 67 för att boka.",
+   "want": "replace",
+   "out": "Ring numret som står på deras webbplats för att boka.",
+   "replaced": true,
+   "ok": true
+  },
+  {
+   "t": "Numret är 070 123 45 67.",
+   "want": "replace",
+   "out": "Numret är numret som står på deras webbplats.",
+   "replaced": true,
+   "ok": true
+  },
+  {
+   "t": "Du når dem på +46 70 123 45 67.",
+   "want": "replace",
+   "out": "Du når dem på numret som står på deras webbplats.",
+   "replaced": true,
+   "ok": true
+  },
+  {
+   "t": "Giftinformationscentralen har 010-456 67 00.",
+   "want": "replace",
+   "out": "Giftinformationscentralen har numret som står på deras webbplats.",
+   "replaced": true,
+   "ok": true
+  },
+  {
+   "t": "Skicka sms till 72456 för att skänka.",
+   "want": "replace",
+   "out": "Skicka sms till sjuttiotvåtusen fyrahundrafemtiosex för att skänka.",
+   "replaced": false,
+   "ok": false
+  },
+  {
+   "t": "Bris nås på 116 111.",
+   "want": "replace",
+   "out": "Bris nås på hundrasextontusen hundraelva.",
+   "replaced": false,
+   "ok": false
+  },
+  {
+   "t": "Självmordslinjen nås på 90101.",
+   "want": "replace",
+   "out": "Självmordslinjen nås på nittiotusen hundraett.",
+   "replaced": false,
+   "ok": false
+  },
+  {
+   "t": "Swisha till 123 456 78 90.",
+   "want": "replace",
+   "out": "Swisha till hundratjugotretusen fyrahundrafemtiosex sjuttioåtta nittio.",
+   "replaced": false,
+   "ok": false
+  },
+  {
+   "t": "Ring 112 om det är akut.",
+   "want": "ett ett två",
+   "out": "Ring ett ett två om det är akut.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Ring 1177 för råd.",
+   "want": "elva sjuttiosju",
+   "out": "Ring elva sjuttiosju för råd.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Ring polisen på 114 14 om det inte är akut.",
+   "want": "ett ett fyra, ett fyra",
+   "out": "Ring polisen på ett ett fyra, ett fyra om det inte är akut.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Läs sidan 112 i boken.",
+   "want": "hundratolv",
+   "out": "Läs sidan hundratolv i boken.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Nummer 112 i listan är Kina.",
+   "want": "hundratolv",
+   "out": "Nummer ett ett två i listan är Kina.",
+   "replaced": false,
+   "ok": false
+  },
+  {
+   "t": "Telefonen uppfanns 1876.",
+   "want": "artonhundrasjuttiosex",
+   "out": "Telefonen uppfanns artonhundrasjuttiosex.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Telefonen kostar 12 999 kr.",
+   "want": "tolvtusen",
+   "out": "Telefonen kostar tolvtusen niohundranittionio kronor.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Atomnummer 26 är järn.",
+   "want": "tjugosex",
+   "out": "Atomnummer tjugosex är järn.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Nummer 10 i laget heter Messi.",
+   "want": "tio",
+   "out": "Nummer tio i laget heter Messi.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Ett telefonnummer har 10 siffror.",
+   "want": "tio siffror",
+   "out": "Ett telefonnummer har tio siffror.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Ring din mormor, hon fyller 85 den 12 maj.",
+   "want": "åttiofem",
+   "out": "Ring din mormor, hon fyller åttiofem den tolv maj.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Ring 112 om någon har tagit 20 tabletter.",
+   "want": "tjugo tabletter",
+   "out": "Ring ett ett två om någon har tagit tjugo tabletter.",
+   "replaced": false,
+   "ok": true
+  },
+  {
+   "t": "Numret till växeln står på 1177.se.",
+   "want": "keep",
+   "out": "Numret till växeln står på elvahundrasjuttiosju.se.",
+   "replaced": false,
+   "ok": true
+  }
+ ]
+}
