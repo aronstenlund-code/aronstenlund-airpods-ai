@@ -1,0 +1,644 @@
+{
+ "stamp": "2026-11-10-0723",
+ "spent_usd": 0.1089,
+ "rows": [
+  {
+   "kind": "stump",
+   "q": "har du körkort",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 1839,
+   "done_ms": 3245,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "cost": 0.00058,
+   "answered": true,
+   "text": "Det som är viktigast för mig är att jag är pålitlig och kommer i tid. På Kafé Solen i Lund jobbade jag med kassa, servering och stängning, och där lärde jag mig att ta ansvar för hela skiftet. Jag trivs med att möta kunder och hjälpa dem att hitta rätt, och jag ser fram till att kombinera det med ert utbud och ert bemötande i Malmö.",
+   "stump_regex": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat på Systembolaget förut",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 3365,
+   "done_ms": 4216,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "cost": 0.00019,
+   "answered": true,
+   "text": "Nej, jag har inte jobbat på Systembolaget tidigare, men jag har arbetat i kassa och med kunder på ett kafé i Lund, så jag är van vid att ta emot gäster, hantera betalningar och arbeta i ett tempo där kunderna ska få snabb och trevlig service. Det är just den typen av erfarenhet jag tar med mig hit, och jag ser fram emot att lära mig Systembolagets sortiment och rutiner.",
+   "stump_regex": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du gått utbildningen i ansvarsfull alkoholservering",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 2375,
+   "done_ms": 3294,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "cost": 0.0002,
+   "answered": true,
+   "text": "Jag har inte gått någon utbildning i ansvarsfull alkoholservering, men i mitt jobb på Kafé Solen har jag hanterat kassa och servering och stängt kvällar, så jag är van vid att ta ansvar och kontrollera saker noggrant. Jag är medveten om hur viktigt det är att vara uppmärksam på kunders beteende och att säga nej när det behövs. Jag ser verkligen fram till att lära mig Systembolagets rutiner och att få fortbildning direkt.",
+   "stump_regex": false
+  },
+  {
+   "kind": "stump",
+   "q": "kan du jobba nätter",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 1142,
+   "done_ms": 2398,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "cost": 0.00019,
+   "answered": true,
+   "text": "Ja, nätter är inget problem för mig, men helst vill jag jobba kvällar och helger, eftersom det är de tider som passar bäst för butiken och mina studier. Jag är van vid att jobba sena pass från tiden på kaféet i Lund, där jag stängde kvällarna och ansvarade för kassan och kvällens avslut. Så om ni behöver någon ibland sent på kvällen kan ni räkna med mig.",
+   "stump_regex": false
+  },
+  {
+   "kind": "stump",
+   "q": "har du jobbat med barn",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 1358,
+   "done_ms": 2436,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "cost": 0.00022,
+   "answered": true,
+   "text": "Barn har jag inte jobbat med i något yrke, men jag har volontärt på en ungdomsgård, och där handlar det mycket om att lyssna och vara trygg för de yngre. Jag gillar att ha många saker igång samtidigt, och det hjälper mig i kassan och när kunderna kommer i kö. Det jag tar med mig till Systembolaget är ansvar och ett bra bemötande, både när någon vet exakt vad den vill ha och när någon behöver hjälp att välja.",
+   "stump_regex": false
+  },
+  {
+   "kind": "stump",
+   "q": "hur gammal är du och när kan du börja",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 1065,
+   "done_ms": 2296,
+   "model": "claude-haiku-5-5",
+   "web": 0,
+   "cost": 0.00022,
+   "answered": true,
+   "text": "Jag är tillgänglig för kvällar och helger, och jag kan börja så snart det passar er schema. Mitt kafébiträde i Lund har lärt mig att hantera kassan, servera och avsluta dagen ordentligt, även när det är mycket folk. Under stängning har jag lärt mig att vara noggrann och ansvarsfull med det som ska göras. Det jag ser fram emot på Systembolaget är att möta kunder med ett bra bemötande och hjälpa dem hitta rätt.",
+   "stump_regex": false
+  },
+  {
+   "kind": "quote",
+   "q": "citera Karin Boye ur dikten Ja visst gör det ont",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 7917,
+   "done_ms": 8031,
+   "model": "claude-sonnet-5-5",
+   "web": 1,
+   "cost": 0.03983,
+   "answered": true,
+   "text": "Ja visst gör det ont när knoppar brister.\nVarför skulle annars våren tveka?\nVarför skulle all vår heta längtan\nbindas i det frusna bitterbleka?\nHöljet var ju knoppen hela vintern.\nVad är det för nytt, som tär och spränger?\nJa visst gör det ont när knoppar brister,\nont för det som växer\noch det som stänger.\n\nKarin Boye, ur För trädets skull, nittonhundratrettiofem. Källa: Litteraturbanken.",
+   "quoted": [],
+   "says_cannot": false
+  },
+  {
+   "kind": "quote",
+   "q": "ge mig ett citat av Hjalmar Söderberg ur Doktor Glas",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 5740,
+   "done_ms": 5814,
+   "model": "claude-sonnet-5-5",
+   "web": 1,
+   "cost": 0.0214,
+   "answered": true,
+   "text": "\nHjalmar Söderberg, Doktor Glas. Det är det citat som oftast lyfts fram ur romanen, och det handlar om människans behov av kontakt och av att betyda något för andra. Källa: Litteraturbanken.",
+   "quoted": [],
+   "says_cannot": false
+  },
+  {
+   "kind": "quote",
+   "q": "vad sa Astrid Lindgren om barn",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 5255,
+   "done_ms": 5342,
+   "model": "claude-sonnet-5-5",
+   "web": 0,
+   "cost": 0.01098,
+   "answered": true,
+   "text": "Jag kan inte citera henne ordagrant utan att vara säker, men Astrid Lindgren återkom ofta till att barn är fria, nyfikna och måste få växa upp med trygghet och kärlek. Hon menade att barn ska behandlas med respekt och att man inte får slå dem. Det sa hon bland annat i sitt tal när hon fick Tyska bokhandelns fredspris nittonhundrasjuttioåtta, \"Aldrig våld\". Där berättar hon om en mamma som bestämde sig för att inte straffa sitt barn med spö. Lindgren menade att barn som möts av förståelse och kärlek lär sig fred och inte våld. Hon sa också att fantasi och lek är livsviktigt för barn, och hon skrev sina böcker utifrån barnets perspektiv, som i Pippi Långstrump och Bröderna Lejonhjärta. På provet kan du skriva att hennes barnsyn är både romantisk och samhällskritisk, eftersom hon ser barnet som starkt och fritt men också sårbart.",
+   "quoted": [],
+   "says_cannot": true
+  },
+  {
+   "kind": "quote",
+   "q": "citera Selma Lagerlöf om Gösta Berling",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 5257,
+   "done_ms": 5392,
+   "model": "claude-sonnet-5-5",
+   "web": 1,
+   "cost": 0.02042,
+   "answered": true,
+   "text": "Äntligen stod prästen i predikstolen. Det är första meningen i Gösta Berlings saga, från artonhundranittioett.\n\n",
+   "quoted": [],
+   "says_cannot": false
+  },
+  {
+   "kind": "quote",
+   "q": "citera Vilhelm Moberg ur Utvandrarna",
+   "status": 200,
+   "err": null,
+   "first_text_ms": 4687,
+   "done_ms": 4752,
+   "model": "claude-sonnet-5-5",
+   "web": 0,
+   "cost": 0.01001,
+   "answered": true,
+   "text": "Jag kan inte citera Utvandrarna ordagrant, eftersom jag inte vill gissa orden. Romanen kom nittonhundrafyrtionio och är första delen i Mobergs utvandrarsvit. Den handlar om Karl Oskar och Kristina från Ugglehult i Småland som lämnar Sverige på artonhundrafyrtiotalet. Skälen är missväxt, fattigdom och hård arbetsbörda. Kristina är rädd för resan, men Karl Oskar driver på. Bakom beslutet ligger också Karl Oskars bror Robert, som längtar efter frihet från drängarbetet, och Danjel, som flyr kyrkans förföljelse. På provet: skriv att Moberg gestaltar utvandringen som ett val som drivs av nöd och längtan efter frihet.",
+   "quoted": [],
+   "says_cannot": true
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 1,
+   "status": 200,
+   "ms": 563,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 2,
+   "status": 200,
+   "ms": 522,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 3,
+   "status": 200,
+   "ms": 231,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 4,
+   "status": 200,
+   "ms": 381,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 5,
+   "status": 200,
+   "ms": 414,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 6,
+   "status": 200,
+   "ms": 235,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 7,
+   "status": 200,
+   "ms": 210,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 8,
+   "status": 200,
+   "ms": 268,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 9,
+   "status": 200,
+   "ms": 193,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 10,
+   "status": 200,
+   "ms": 516,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 11,
+   "status": 200,
+   "ms": 193,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 12,
+   "status": 200,
+   "ms": 201,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 13,
+   "status": 200,
+   "ms": 515,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 14,
+   "status": 200,
+   "ms": 247,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 15,
+   "status": 200,
+   "ms": 665,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 16,
+   "status": 200,
+   "ms": 245,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 17,
+   "status": 200,
+   "ms": 278,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 18,
+   "status": 200,
+   "ms": 237,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 19,
+   "status": 200,
+   "ms": 188,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 20,
+   "status": 200,
+   "ms": 189,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 21,
+   "status": 429,
+   "ms": 129,
+   "retry_after": "28",
+   "code": "rate_limited",
+   "msg": "Too many requests"
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 22,
+   "status": 429,
+   "ms": 240,
+   "retry_after": "28",
+   "code": "rate_limited",
+   "msg": "Too many requests"
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 23,
+   "status": 429,
+   "ms": 166,
+   "retry_after": "28",
+   "code": "rate_limited",
+   "msg": "Too many requests"
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 24,
+   "status": 429,
+   "ms": 348,
+   "retry_after": "27",
+   "code": "rate_limited",
+   "msg": "Too many requests"
+  },
+  {
+   "kind": "rate:R1_sequential",
+   "i": 25,
+   "status": 429,
+   "ms": 358,
+   "retry_after": "27",
+   "code": "rate_limited",
+   "msg": "Too many requests"
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 1,
+   "user": 0,
+   "status": 200,
+   "ms": 2975,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 2,
+   "user": 1,
+   "status": 200,
+   "ms": 3491,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 3,
+   "user": 0,
+   "status": 200,
+   "ms": 3593,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 4,
+   "user": 1,
+   "status": 200,
+   "ms": 3986,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 5,
+   "user": 0,
+   "status": 200,
+   "ms": 2951,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 6,
+   "user": 1,
+   "status": 200,
+   "ms": 2874,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 7,
+   "user": 0,
+   "status": 200,
+   "ms": 3684,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 8,
+   "user": 1,
+   "status": 200,
+   "ms": 2544,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 9,
+   "user": 0,
+   "status": 200,
+   "ms": 2306,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 10,
+   "user": 1,
+   "status": 200,
+   "ms": 3061,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 11,
+   "user": 0,
+   "status": 200,
+   "ms": 3068,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 12,
+   "user": 1,
+   "status": 200,
+   "ms": 3438,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 13,
+   "user": 0,
+   "status": 200,
+   "ms": 3697,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 14,
+   "user": 1,
+   "status": 200,
+   "ms": 2402,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 15,
+   "user": 0,
+   "status": 200,
+   "ms": 2886,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 16,
+   "user": 1,
+   "status": 200,
+   "ms": 2813,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 17,
+   "user": 0,
+   "status": 200,
+   "ms": 3340,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 18,
+   "user": 1,
+   "status": 200,
+   "ms": 3045,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 19,
+   "user": 0,
+   "status": 200,
+   "ms": 2570,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R2_interview_3s",
+   "i": 20,
+   "user": 1,
+   "status": 200,
+   "ms": 2662,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R3_parallel6",
+   "i": 1,
+   "status": 200,
+   "ms": 205,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R3_parallel6",
+   "i": 2,
+   "status": 200,
+   "ms": 353,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R3_parallel6",
+   "i": 3,
+   "status": 200,
+   "ms": 318,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R3_parallel6",
+   "i": 4,
+   "status": 200,
+   "ms": 204,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R3_parallel6",
+   "i": 5,
+   "status": 200,
+   "ms": 387,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  },
+  {
+   "kind": "rate:R3_parallel6",
+   "i": 6,
+   "status": 200,
+   "ms": 433,
+   "retry_after": null,
+   "code": null,
+   "msg": null
+  }
+ ]
+}

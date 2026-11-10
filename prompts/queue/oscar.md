@@ -46,7 +46,7 @@
   5. Att ett nej eller tystnad inte gör den långrandig.
   Budget 0,40 USD.
 
-- [ ] **O12 – Jämför röstmodellerna** (effort: medium). Beror på: Kevins K14 punkt 1. Gör före O11.
+- [~] pågår 2026-11-10 09:30 **O12 – Jämför röstmodellerna** (effort: medium). Beror på: Kevins K14 punkt 1. Gör före O11.
   1. Välj 20 riktiga Lumen-svar på svenska ur D87-körningen (fakta, tal och årtal, namn, en lång förklaring). Läs igenom texterna innan något genereras, för att spara ElevenLabs-krediter.
   2. Generera via `/tts` med `eleven_flash_v2_5`, `eleven_v4_turbo` och `eleven_multilingual_v2`, med samma röst. Jämför också dagens röst "Adam" med de svenska kandidatröster Kevin valt i K14, på den modell som vinner. Aron tycker att demoljudet låter riktigt dåligt, så det här är bråttom.
   3. Mät per modell:
@@ -64,7 +64,7 @@
   4. Länkarna fungerar och handlar om ämnet (K19), och ingen påhittad URL.
   Budget 0,60 USD.
 
-- [~] pausad 2026-11-10 00:45 (tidsdelen 20/20 klar: 0 över 8 s, första text max 5,7 s; stump 4/6 körda; citat och 429 kvar; rådata `reports/qa/data/2026-11-10-o14-partial.log`, skript `scripts/qa/o14.py`) **O14 – Oberoende test av K11 (inga anrop som hänger, stump, citat)** (effort: medium). Gör nu, medan O12 väntar på K14. Kevin rapporterar 0/10 Provläge-svar över 8 s (första text max 4,5 s), stump 0/6 och Strindberg-citatet 5/5 inte påhittat. Gör 20 egna Provläge-fall (blanda tänkande/textuppgifter och vanliga), 6 fall med en mening som filtreras bort, och 5 citatfall från andra författare. Krav: inget svar över 8 s till första text, ingen stump, inga påhittade citat. Mät också 429 vid täta anrop (underlag för K12). Budget 0,40 USD.
+- [x] klar 2026-11-10 09:30 → `reports/qa/2026-11-10-0930-oscar-o14-k11.md` (tid 0/20 över 8 s, stump 0/6 i intervju men 1 efter bortfiltrerat citat, påhittade citat 0/5, 429 först på anrop 21/min) **O14 – Oberoende test av K11 (inga anrop som hänger, stump, citat)** (effort: medium). Gör nu, medan O12 väntar på K14. Kevin rapporterar 0/10 Provläge-svar över 8 s (första text max 4,5 s), stump 0/6 och Strindberg-citatet 5/5 inte påhittat. Gör 20 egna Provläge-fall (blanda tänkande/textuppgifter och vanliga), 6 fall med en mening som filtreras bort, och 5 citatfall från andra författare. Krav: inget svar över 8 s till första text, ingen stump, inga påhittade citat. Mät också 429 vid täta anrop (underlag för K12). Budget 0,40 USD.
 
 - [ ] **O15 – Verklighetsbanken: som riktiga användare faktiskt pratar** (effort: high). Aron 2026-11-09 22:44: "testning är A och O". Gör efter O14 och O12. Bygg minst 200 nya fall som Kevin aldrig sett, i alla lägen (mest Frågor och Provläge), uppdelat i grupper:
   1. Bara nyckelord ("fotosyntes", "andra världskriget orsaker", "derivata x i kvadrat").
