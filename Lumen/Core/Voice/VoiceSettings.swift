@@ -83,6 +83,8 @@ final class VoiceCatalog {
     }
 
     private(set) var voices: [VoiceChoice] = []
+    /// A26 R5: the service's description per voice id ("Mansröst, lugn"), when it sends one.
+    private(set) var descriptions: [String: String] = [:]
     private(set) var defaultID: String?
     private(set) var status: Status = .idle
     /// Called after every successful load.
@@ -121,11 +123,31 @@ final class VoiceCatalog {
                 throw AnswerError.backend(status: response.statusCode, failure: failure)
             }
             (voices, defaultID) = try Self.decode(data)
+            descriptions = Self.descriptions(data)
             status = .loaded
             onLoaded?(voices, defaultID)
         } catch {
             status = .failed(AnswerError.from(error).localizedDescription)
         }
+    }
+
+    /// The optional `description` of each voice (absent today; Kevin can add it to `/voices`).
+    static func descriptions(_ data: Data) -> [String: String] {
+        struct Listing: Decodable {
+            struct Entry: Decodable {
+                var id: String
+                var description: String?
+            }
+            var voices: [Entry]
+        }
+        guard let listing = try? JSONDecoder().decode(Listing.self, from: data) else { return [:] }
+        var result: [String: String] = [:]
+        for entry in listing.voices {
+            if let text = entry.description?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty {
+                result[entry.id] = text
+            }
+        }
+        return result
     }
 
     static func decode(_ data: Data) throws(AnswerError) -> (voices: [VoiceChoice], defaultID: String?) {

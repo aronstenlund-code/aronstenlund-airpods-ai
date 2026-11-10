@@ -11,6 +11,8 @@ struct FirstStartView: View {
     let onDone: () -> Void
     @State private var step: Step = .intro
     @State private var microphoneDenied = false
+    /// A26 R4: true while the first start is starting the microphone (both tries), so the badge says "Startar …".
+    @State private var starting = false
 
     static let doneKey = "design.firstStartDone"
 
@@ -29,7 +31,8 @@ struct FirstStartView: View {
                     step = .firstQuestion
                 })
             case .firstQuestion:
-                FirstQuestionView(model: container.listening, microphoneDenied: microphoneDenied) {
+                FirstQuestionView(model: container.listening, microphoneDenied: microphoneDenied, starting: starting,
+                                  onListen: { Task { await startListening() } }) {
                     step = .addExam
                 }
                 .task { await startListening() }
@@ -43,7 +46,9 @@ struct FirstStartView: View {
 
     /// iOS asks for the microphone right here (the session start asks), then Lumen listens in Frågor.
     private func startListening() async {
-        guard !container.listening.isListening else { return }
+        guard !container.listening.isListening, !starting else { return }
+        starting = true
+        defer { starting = false }
         let granted = await container.session.requestMicrophonePermission()
         microphoneDenied = !granted
         guard granted else { return }
@@ -64,6 +69,8 @@ struct FirstStartView: View {
 }
 
 /// "Fråga högt. Få svaret i örat."
+/// A26 (Kelly R2, `docs/design/bilder/system/intro.png`): one sentence under the title and the three promises as a calm
+/// list, so all three and "Läs mer" are above "Testa nu" on the SE too (the protections must be seen, GRANSKNING 9).
 struct IntroView: View {
     let onStart: () -> Void
     @State private var isReadingMore = false
@@ -72,32 +79,32 @@ struct IntroView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // The photo (a student with AirPods at a desk with a squared notebook, phone out of sight) needs a
-                // freely licensed picture; until then the squared paper and the listening rings stand in for it.
                 if !typeSize.isAccessibilitySize { // A12: the picture gives way to the text at the largest sizes
-                    IntroHeroView() // A13.6: Elias and the rings (a placeholder until the picture is approved)
-                        .containerRelativeFrame(.vertical) { height, _ in min(340, height * 0.36) } // smaller on the SE
+                    IntroHeroView() // A13.6: Elias and the rings
+                        .containerRelativeFrame(.vertical) { height, _ in Self.heroHeight(for: height) }
                 }
 
-                VStack(alignment: .leading, spacing: 14) {
+                VStack(alignment: .leading, spacing: 12) {
                     HStack(spacing: 8) {
-                        LumenLogo(size: 24)
-                        Text("Lumen").font(LumenFont.text(20, .bold, relativeTo: .title3))
+                        LumenLogo(size: 22)
+                        Text("Lumen").font(LumenFont.text(18, .bold, relativeTo: .title3))
                     }
                     Text("Fråga högt. Få svaret i örat.")
-                        .font(LumenFont.text(40, .bold, relativeTo: .largeTitle))
-                        .lineSpacing(-4)
+                        .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
+                        .lineSpacing(-3)
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
-                    Text("Telefonen stannar i fickan. Lumen pluggar med dig på din nivå, och du styr allt med rösten.")
+                    Text("Telefonen stannar i fickan.")
                         .font(LumenFont.text(18, relativeTo: .body))
                         .foregroundStyle(LumenColor.muted)
-                    consentCard
+                    promises
                 }
                 .padding(.horizontal, 24)
-                .padding(.top, typeSize.isAccessibilitySize ? 64 : 28)
-                .padding(.bottom, 28) // "Läs mer" stays clear of the bar
+                .padding(.top, typeSize.isAccessibilitySize ? 24 : 18)
+                .padding(.bottom, 12)
             }
         }
+        .background(LumenColor.background) // A26 R3: the whole screen is `background`, also behind the scroll view
         .sheet(isPresented: $isReadingMore) {
             NavigationStack {
                 ConsentView(mode: .readMore)
@@ -109,43 +116,55 @@ struct IntroView: View {
                 Button("Testa nu", action: onStart)
                     .buttonStyle(LumenButtonStyle())
                     .accessibilityHint("Godkänner punkterna ovan och startar mikrofonen")
-                // A12: what the user agrees to sits at the button, so it is on screen when they press it, on every
-                // iPhone and text size (the card above can scroll away on the SE).
-                Text("Genom att trycka Testa nu godkänner du att Lumen lyssnar bara när du har startat den, att du alltid ser när den lyssnar och att ljud inte sparas. Inget konto.")
+                // A12: what the user agrees to sits at the button. A26: the points are above it on every iPhone now,
+                // so the line names them instead of repeating them (Kelly's intro.png).
+                Text("Inget konto. Testa nu betyder att du godkänner punkterna ovan.")
                     .font(LumenFont.text(14, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
+                    .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, 24)
+            .padding(.top, 8)
             .padding(.bottom, 16)
             .background(LumenColor.background)
         }
-        .ignoresSafeArea(edges: .top)
+    }
+
+    /// The hero's height from the visible height: smaller on the SE so the three promises stay above the button.
+    static func heroHeight(for visible: CGFloat) -> CGFloat {
+        visible < 600 ? visible * 0.34 : min(320, visible * 0.42)
     }
 }
 
 extension IntroView {
-    /// A2: the short consent, three points and "Läs mer".
-    var consentCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            point("mic", "Lumen lyssnar bara när du har startat den.")
-            point("eye", "Du ser alltid när den lyssnar.")
-            point("waveform.slash", "Ljud sparas inte.")
-            Button("Läs mer") { isReadingMore = true }
-                .font(LumenFont.text(15, .semibold))
-                .frame(minHeight: 44)
+    /// A2's short consent: three points and "Läs mer" (A26: a list, not a card).
+    var promises: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            point("mic", "Lyssnar bara när du har startat den")
+            point("eye", "Du ser alltid när den lyssnar")
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                icon("waveform.slash")
+                Text("Ljud sparas inte").font(LumenFont.text(16, .medium))
+                Text("·").foregroundStyle(LumenColor.muted).accessibilityHidden(true)
+                Button("Läs mer") { isReadingMore = true }
+                    .font(LumenFont.text(16, .semibold))
+                    .frame(minHeight: 44)
+            }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
-        .padding(.top, 8)
+        .padding(.top, 6)
     }
 
     private func point(_ symbol: String, _ text: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Image(systemName: symbol).foregroundStyle(LumenColor.blue).frame(width: 22).accessibilityHidden(true)
+            icon(symbol)
             Text(text).font(LumenFont.text(16, .medium))
         }
+        .frame(minHeight: 30)
+    }
+
+    private func icon(_ symbol: String) -> some View {
+        Image(systemName: symbol).foregroundStyle(LumenColor.muted).frame(width: 22).accessibilityHidden(true)
     }
 }
 
@@ -153,6 +172,9 @@ extension IntroView {
 struct FirstQuestionView: View {
     @Bindable var model: ListeningModel
     let microphoneDenied: Bool
+    var starting = false
+    /// A26 R4: "Lyssna igen" when the microphone is not on (it says "Pausad" then, never "Startar …" for ever).
+    var onListen: () -> Void = {}
     let onContinue: () -> Void
     @Environment(AppearanceSettings.self) private var appearance
 
@@ -183,6 +205,7 @@ struct FirstQuestionView: View {
             .padding(.horizontal, 20)
             .padding(.top, 24)
         }
+        .background(LumenColor.background) // A26 R3
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 10) {
                 // A18 (Kelly Ke9): no blue button before the first answer, so the question is the obvious thing to do.
@@ -207,14 +230,30 @@ struct FirstQuestionView: View {
         }
     }
 
+    private var isPaused: Bool { !model.isListening && !starting && !model.isStarting }
+
+    /// A26 R4 (Kelly): the badge says what is true.
+    private var badgeTitle: String {
+        if model.isListening { return "Lyssnar" }
+        return isPaused ? "Pausad" : "Startar …"
+    }
+
     private var hasAnswer: Bool {
         model.conversation.answers.contains { !$0.answer.isEmpty }
     }
 
     private var card: some View {
         VStack(alignment: .leading, spacing: 16) {
-            StatusBadge(title: model.isListening ? "Lyssnar" : "Startar …", active: model.isListening,
-                        levelDBFS: model.isListening && model.isHearing ? model.controller.level.rmsDBFS : nil)
+            HStack {
+                StatusBadge(title: badgeTitle, active: model.isListening,
+                            levelDBFS: model.isListening && model.isHearing ? model.controller.level.rmsDBFS : nil)
+                Spacer(minLength: 8)
+                if isPaused {
+                    Button("Lyssna igen", action: onListen)
+                        .font(LumenFont.text(15, .semibold))
+                        .frame(minHeight: 44)
+                }
+            }
             if let turn = model.conversation.streamingAnswer ?? model.conversation.answers.last {
                 Text(turn.question).font(appearance.questionFont(22)).foregroundStyle(LumenColor.muted)
                 if !turn.answer.isEmpty {

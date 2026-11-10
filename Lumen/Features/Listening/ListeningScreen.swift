@@ -116,7 +116,7 @@ struct ListeningScreen: View {
         switch model.state {
         case .listening: model.speaker.status != .idle ? "Svarar" : (model.isHearing ? "Lyssnar" : "Hör inte, försöker igen") // A11
         case .paused: "Pausad"
-        case .idle, .error: "Startar …"
+        case .idle, .error: model.isStarting ? "Startar …" : "Pausad" // A26 R4: the badge and "Lyssna igen" agree
         }
     }
 

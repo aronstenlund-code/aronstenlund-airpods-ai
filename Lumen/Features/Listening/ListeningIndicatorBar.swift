@@ -54,7 +54,7 @@ struct ListeningIndicatorBar: View {
             .accessibilityHint(onOpen == nil ? "" : "Öppnar lyssnarskärmen")
             Button(action, action: perform)
                 .font(LumenFont.text(14, .semibold, relativeTo: .footnote))
-                .foregroundStyle(LumenColor.blue)
+                .foregroundStyle(active ? LumenColor.ink : LumenColor.blue) // A26 R6 (Kelly): "Avsluta" in ink, never red
                 .frame(minWidth: 44, minHeight: 44)
         }
         .padding(.horizontal, 16)

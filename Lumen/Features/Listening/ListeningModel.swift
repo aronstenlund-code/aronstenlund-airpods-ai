@@ -217,6 +217,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     var state: SessionState { controller.state }
     var isListening: Bool { controller.state.isListening }
+    /// A26 R4 (Kelly): true only while a start is under way, so the badge says "Startar …" then and "Pausad" otherwise.
+    private(set) var isStarting = false
     var isActiveSession: Bool { controller.isActiveSession }
     var canResume: Bool { controller.canResume }
     var lastError: String? { controller.lastError }
@@ -386,6 +388,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         tips.sessionStarted()
         Task { await prepareBackend() }
         refreshKeyterms()
+        isStarting = true
+        defer { isStarting = false }
         await useMicrophone(for: mode)
         await controller.start()
         logMicrophone()
@@ -584,6 +588,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func previewVoice() {
         speaker.preview(speaker.settings.voice, language: language)
+    }
+
+    /// A26 R5: ▶ on a voice's row plays that voice without choosing it.
+    func previewVoice(_ choice: VoiceChoice) {
+        speaker.preview(choice, language: language)
     }
 
     // MARK: - Provläge (D36)

@@ -385,64 +385,23 @@ struct SettingsView: View {
     @ViewBuilder
     private var voiceSection: some View {
         @Bindable var voice = model.speaker.settings
-        Section("Röst och hastighet") {
+        Section("Röst") {
             Toggle("Läs upp svaren", isOn: $voice.speakAnswers)
             if !voice.speakAnswers {
                 Text("Tyst läge: svaren visas men läses inte upp.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-            Picker("Röst", selection: $voice.voice) {
-                Text("iPhonens röst").tag(VoiceChoice.appleDefault)
-                ForEach(model.appleVoices) { choice in
-                    Text(choice.name).tag(choice)
-                }
-                ForEach(model.voices.voices) { choice in
-                    Text(choice.name).tag(choice)
-                }
-            }
-            // A23 (Deangelo): a plain row, not a floating chip.
-            Button {
-                model.previewVoice()
+            // A26 R5 (Kelly): the voice page describes the voices, with ▶ on each row and the speed in three steps.
+            NavigationLink {
+                VoicePageView(model: model)
             } label: {
-                HStack {
-                    Text("Provlyssna")
-                    Spacer()
-                    if model.speaker.status != .idle {
-                        Text("Pratar …").font(.footnote).foregroundStyle(.secondary)
-                    }
-                }
+                LabeledContent("Röst", value: VoiceDescription.words(for: voice.voice,
+                                                                      described: model.voices.descriptions[voice.voice.voiceID]).title)
             }
-            // A23: words, not "1.00×".
-            Picker("Hastighet", selection: Binding(get: { SpeedChoice.nearest(to: voice.rate) },
-                                                   set: { voice.rate = $0.rate; model.speaker.applyRate() })) {
-                ForEach(SpeedChoice.allCases, id: \.self) { Text($0.title).tag($0) }
-            }
-            voiceCatalogStatus
             if let notice = model.speaker.notice {
                 Text(notice).font(.footnote).foregroundStyle(.orange)
             }
-        }
-    }
-
-    @ViewBuilder
-    private var voiceCatalogStatus: some View {
-        switch model.voices.status {
-        case .idle, .loaded:
-            if model.voices.voices.isEmpty {
-                Text("Premium voices appear here when the voice service is live.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-        case .loading:
-            HStack(spacing: 8) {
-                ProgressView()
-                Text("Loading voices…").font(.footnote).foregroundStyle(.secondary)
-            }
-        case .failed(let message):
-            Label("Could not load premium voices: \(message)", systemImage: "exclamationmark.triangle")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
         }
     }
 }

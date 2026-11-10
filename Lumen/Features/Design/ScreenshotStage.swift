@@ -49,8 +49,8 @@ struct ScreenshotStage: View {
         let model = container.listening
         Group {
             switch name {
-            case "intro": IntroView {}
-            case "first": FirstQuestionView(model: model, microphoneDenied: false) {}
+            case "intro": IntroView {}.lumenScreen() // A26 R3: as in the app (FirstStartView applies it)
+            case "first": FirstQuestionView(model: model, microphoneDenied: false) {}.lumenScreen()
             case "home", "empty": NavigationStack { HomeView(model: model) }
             case "addExam": AddExamView(model: model) {}
             case "listening": ListeningScreen(model: model) {}
@@ -67,6 +67,7 @@ struct ScreenshotStage: View {
                 }
                 .lumenScreen()
             case "settings": NavigationStack { SettingsView(model: model, diagnostics: container.diagnostics) }
+            case "voice": NavigationStack { VoicePageView(model: model) } // A26 R5
             case "about": NavigationStack { AboutView() } // A13.1
             case "interview": NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
             case "live": NavigationStack { LiveStartView(model: model, settings: model.modeSettings, mode: .social) }
