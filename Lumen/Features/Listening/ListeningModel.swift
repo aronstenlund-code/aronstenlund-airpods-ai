@@ -813,6 +813,37 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         selectedMode = .prov
         provAnswersOnly = answersOnly
         await startStudy()
+        askSubjectIfOnlyArea(plan)
+    }
+
+    /// A24: an exam that is only an area ("NO", from the first start) waits for its subject; the quiz can wait for it.
+    @ObservationIgnored private var awaitingSubject: (planID: UUID, area: ExamPlan.Area, quizAfter: Bool)?
+
+    private func askSubjectIfOnlyArea(_ plan: ExamPlan) {
+        guard study.isActive, mode == .prov, let area = SubjectQuestion.area(of: plan) else {
+            awaitingSubject = nil
+            return
+        }
+        awaitingSubject = (plan.id, area, false)
+        controller.log("Provläge: the exam is only an area (\(area.title)), the subject is asked for (A24)")
+        say(SubjectQuestion.prompt(for: area))
+    }
+
+    /// The answer to "Vilket ämne i NO …?". True: it was the subject (saved, and the quiz starts if it waited).
+    private func subjectAnswered(_ text: String) -> Bool {
+        guard let waiting = awaitingSubject else { return false }
+        awaitingSubject = nil
+        guard let subject = SubjectQuestion.subject(in: text, area: waiting.area),
+              var plan = examPlans?.plans.first(where: { $0.id == waiting.planID }) else {
+            if waiting.quizAfter { askForQuiz() } // not a subject: the words are a turn of their own, then the quiz
+            return false
+        }
+        plan.subject = subject
+        saveExamPlan(plan)
+        controller.log("Provläge: the subject is \(subject) (A24)")
+        if waiting.quizAfter { askForQuiz() } // before `say`: the quiz's request interrupts speech
+        say("Bra, \(plan.name.lowercased()).")
+        return true
     }
 
     /// D97 (owner): "Få A-svar till provet" answers the student's questions and never quizzes; "Förhör mig" does both.
@@ -827,6 +858,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func startQuiz(for plan: ExamPlan) async {
         await startProv(for: plan)
         guard study.isActive, mode == .prov else { return }
+        if awaitingSubject != nil {
+            awaitingSubject?.quizAfter = true // A24: the subject first, then the quiz
+            return
+        }
         askForQuiz()
     }
 
@@ -2927,6 +2962,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let identity = speakers?.identity(near: date, window: 4) { labelTranscript(identity, at: date) }
         if isOwnEcho(segment.text, at: date), !isWearerUsingSuggestion(segment.text, level: study.currentTurnLevelDBFS) {
             discardAhead(reason: "Lumen's own echo")
+            return
+        }
+        // A24: the answer to "Vilket ämne i NO är provet i?".
+        if awaitingSubject != nil, study.isActive, mode == .prov, !segment.overlapsPlayback, subjectAnswered(segment.text) {
+            discardAhead(reason: "the exam's subject")
+            study.discardTurnText()
             return
         }
         // A14: Scribe sometimes puts "Lumen." in a segment of its own; the command is the next segment.

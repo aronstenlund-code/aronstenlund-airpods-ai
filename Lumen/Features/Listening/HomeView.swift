@@ -10,6 +10,8 @@ import SwiftUI
 struct HomeView: View {
     @Bindable var model: ListeningModel
     @State private var isShowingMoreModes = false
+    /// A24 (Kelly Ke10, T3 finding 3): a start with the microphone off shows the screen that fixes it.
+    @State private var isShowingMicrophoneDenied = false
 
     private var plans: [ExamPlan] { model.examPlans?.upcoming() ?? [] }
 
@@ -38,6 +40,13 @@ struct HomeView: View {
         .sheet(isPresented: $isShowingMoreModes) {
             MoreModesSheet(model: model)
                 .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $isShowingMicrophoneDenied) {
+            MicrophoneDeniedView { isShowingMicrophoneDenied = false }
+                .lumenScreen()
+        }
+        .onChange(of: model.problem == .microphoneDenied) { _, denied in
+            if denied { isShowingMicrophoneDenied = true }
         }
     }
 
