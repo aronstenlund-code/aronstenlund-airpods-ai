@@ -1,0 +1,21 @@
+{
+ "stamp": "2026-11-10-0810",
+ "rows": [
+  {
+   "probe": "none",
+   "keyterms": [],
+   "ok": false,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}",
+    "{'message_type': 'quota_exceeded', 'error': 'You have exceeded your quota.'}"
+   ],
+   "close": [
+    1000,
+    "insufficient_funds_initial_check"
+   ],
+   "commits": [],
+   "url_len": 336
+  }
+ ]
+}

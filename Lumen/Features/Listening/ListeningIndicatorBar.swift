@@ -37,7 +37,7 @@ struct ListeningIndicatorBar: View {
                 HStack(spacing: 8) {
                     Image(systemName: "circle.fill")
                         .font(.system(size: 8))
-                        .foregroundStyle(active ? LumenColor.red : LumenColor.orange)
+                        .foregroundStyle(active ? LumenColor.blue : LumenColor.muted) // A18 (Kelly): red only for errors
                         .symbolEffect(.pulse, isActive: active)
                         .accessibilityHidden(true)
                     Text(title)
@@ -54,7 +54,7 @@ struct ListeningIndicatorBar: View {
             .accessibilityHint(onOpen == nil ? "" : "Öppnar lyssnarskärmen")
             Button(action, action: perform)
                 .font(LumenFont.text(14, .semibold, relativeTo: .footnote))
-                .foregroundStyle(active ? LumenColor.red : LumenColor.blue)
+                .foregroundStyle(LumenColor.blue)
                 .frame(minWidth: 44, minHeight: 44)
         }
         .padding(.horizontal, 16)

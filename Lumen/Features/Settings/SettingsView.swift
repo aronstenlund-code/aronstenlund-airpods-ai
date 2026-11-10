@@ -453,7 +453,7 @@ enum SpeedChoice: CaseIterable, Hashable {
 
     var title: String {
         switch self {
-        case .slow: "Långsam"
+        case .slow: "Lugn"
         case .normal: "Normal"
         case .fast: "Snabb"
         }
