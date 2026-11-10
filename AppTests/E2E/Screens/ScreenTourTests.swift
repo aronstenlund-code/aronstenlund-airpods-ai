@@ -38,7 +38,7 @@ final class ScreenTourTests: XCTestCase {
         firstStart(micDenied: micDenied)
         sharePrompt()
         // With the microphone on, the first start's Frågor session goes on and Lyssnar is shown.
-        if waitFor(["Byt läge"], timeout: 2) != nil {
+        if waitFor(["Tillbaka till start"], timeout: 2) != nil {
             shoot("lyssnar-efter-forsta-start", note: "Lyssnar right after the first start")
             endSession()
         }
@@ -223,10 +223,13 @@ final class ScreenTourTests: XCTestCase {
         // A22: Start has "Bara fråga" (Frågor) and "Fler lägen" (Provläge, Intervju, Socialt, Rizz 18+).
         if tap(["Bara fråga", "Frågor"], step: "start → Bara fråga") {
             dismissSystemAlerts()
-            if waitFor(["Byt läge"], timeout: 10) != nil {
+            if waitFor(["Tillbaka till start"], timeout: 10) != nil {
                 pause(2)
                 dismissSystemAlerts()
                 shoot("lyssnar-fragor", note: "Lyssnar in Frågor (sketch 5)")
+                // A18: "Byt läge" sits in the ⋯ menu ("Mer").
+                tap(["Mer"], step: "lyssnar → ⋯")
+                pause(0.5)
                 tap(["Byt läge"], step: "lyssnar → Byt läge")
                 if waitFor(["Klar"], timeout: 5) != nil {
                     pause(1)
@@ -270,14 +273,14 @@ final class ScreenTourTests: XCTestCase {
         shoot(name, note: "\(labels[0]) first screen")
         if waitFor(close, timeout: 2) != nil {
             tap(close, step: "\(name) → close")
-        } else if waitFor(["Byt läge"], timeout: 1) != nil {
+        } else if waitFor(["Tillbaka till start"], timeout: 1) != nil {
             // It went straight to Lyssnar.
             endSession()
         } else {
             app.swipeDown(velocity: .fast) // pull the sheet down
         }
         pause(1)
-        if waitFor(["Byt läge"], timeout: 1) != nil { endSession() }
+        if waitFor(["Tillbaka till start"], timeout: 1) != nil { endSession() }
     }
 
     // MARK: Provläge
@@ -297,7 +300,7 @@ final class ScreenTourTests: XCTestCase {
             pause(2)
         }
         dismissSystemAlerts()
-        if waitFor(["Byt läge"], timeout: 8) != nil {
+        if waitFor(["Tillbaka till start"], timeout: 8) != nil {
             pause(1)
             shoot("lyssnar-provlage", note: "Lyssnar in Provläge (sketch 5)")
             endSession()
