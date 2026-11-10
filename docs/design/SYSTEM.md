@@ -59,6 +59,9 @@ använder `raised` i stället. **Ikoner:** SF Symbols i vikt regular, 20–22 pt
 - **Huvudknapp:** blå, höjd 54, hörn 14. **Högst en per skärm.**
 - **Knapp med förklaring** (D97): två rader, rubrik 17 semibold och en rad 13 under, höjd 64. Används på provkortet,
   där "Förhör mig" (blå) och "Få A-svar till provet" (sekundär) står ihop och raden under säger skillnaden.
+- **Lägesväljare (bara sidan, Ke19):** iOS-segmentkontroll, ränna i `surface` (hörn 14), vald del i `seg-on`
+  (#FFFFFF ljust, #2B3245 mörkt) med liten skugga, text 16 semibold. Används i demorutan för D97:s två val, "Förhör mig"
+  och "Få A-svar till provet", med appens rad under. Den räknas inte som huvudknapp.
 - **Sekundär knapp:** `surface`-yta, bläck-text. Används för Pausa, Avsluta, Bara fråga och Fler lägen.
 - **Textknapp:** blå text, för "Hoppa över", "+ Lägg till prov" och "Läs mer".
 - **Fara:** röd text, bara i bekräftelser ("Radera minnet"). Aldrig för Avsluta.

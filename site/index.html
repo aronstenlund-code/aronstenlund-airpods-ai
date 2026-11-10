@@ -22,7 +22,7 @@
 <meta property="og:image:alt" content="Lumen. Fråga högt. Få svaret i örat. Elias, en påhittad elev, med en hörlur i örat.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#11151F">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1218">
 <meta name="color-scheme" content="light dark">
 <link rel="preload" href="fonts/familjen-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://xjczbzfkmbjdebwlccki.supabase.co" crossorigin>
@@ -60,6 +60,7 @@
     --mut: #5E6779;
     --line: #E4E8EF;
     --chip: #F4F6FA;
+    --seg-on: #FFFFFF;
     --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 20px rgba(16,24,40,.07);
     --blue: #2346C8;
     --on-blue: #FFFFFF;
@@ -80,6 +81,7 @@
       --mut: #9AA3B5;
       --line: #272D3B;
       --chip: #181C26;
+      --seg-on: #2B3245;
       --shadow: none;
       --blue: #7F9BFF;
       --on-blue: #0E1630;
@@ -222,6 +224,23 @@
   }
   .demo-label svg { width: 18px; height: 18px; color: var(--blue); }
 
+  /* Ke19 (D97): lägesväljare som iOS segmentkontroll. Vald del ligger upphöjd på en surface-ränna. */
+  .seg { display: flex; gap: 4px; padding: 4px; background: var(--surface); border-radius: 14px; }
+  .seg-b {
+    flex: 1 1 auto; min-height: 44px; padding: 4px 12px; border: 0; border-radius: 10px;
+    background: transparent; color: var(--mut); font-size: 1rem; font-weight: 600; line-height: 1.2;
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+  .seg-b[aria-pressed="true"] { background: var(--seg-on); color: var(--ink); box-shadow: 0 1px 2px rgba(16,24,40,.08), 0 2px 8px rgba(16,24,40,.06); }
+  @media (max-width: 359px) { .seg-b { font-size: .9375rem; padding: 4px 8px; } }
+  .seg-line { margin-top: -8px; color: var(--mut); font-size: .9375rem; line-height: 1.4; }
+  .quiz { display: grid; gap: 10px; min-width: 0; }
+  .quiz-q { font-size: 1.375rem; line-height: 1.3; font-weight: 600; letter-spacing: -.01em; max-width: 30ch; }
+  .quiz-q:focus { outline: none; }
+  .quiz-hint { color: var(--mut); line-height: 1.4; }
+  .quiz .pill svg { width: 16px; height: 16px; }
+  .quiz .mini-fine a { font-weight: 600; }
+  body[data-mode="quiz"] .controls, body[data-mode="quiz"] .convo { display: none; }
   .convo { display: flex; flex-direction: column; min-width: 0; }
   .q {
     color: var(--ink);
@@ -421,16 +440,11 @@
   .hint.err { color: var(--bad); font-weight: 600; }
 
   /* ---------- Exempel från Provläget ---------- */
-  .ex-list { display: grid; gap: 14px; margin-top: 24px; }
-  .ex { padding: 18px; display: grid; gap: 8px; align-content: start; }
   .ex-meta { font-size: .875rem; font-weight: 600; color: var(--mut); }
-  .ex-q { color: var(--ink); font-size: 1.25rem; line-height: 1.3; }
   .ex-a { font-size: 1.0625rem; line-height: 1.5; }
   .ex-a.clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
   .ex-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 4px; }
   .ex-more { border: 0; background: none; padding: 0; min-height: 44px; color: var(--blue); font-weight: 600; text-decoration: underline; text-underline-offset: .18em; }
-  .ex-play { min-height: 44px; }
-  .ex-play svg { width: 16px; height: 16px; }
 
   /* ---------- Sektioner under vecket ---------- */
   h2 {
@@ -624,6 +638,25 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></svg>
         Prova här. Svaret läses upp.
       </p>
+      <!-- Ke19 (D97): samma två val som provkortet i appen, samma namn och rader. Få A-svar är livedemon. -->
+      <div class="seg" role="group" aria-label="Två sätt att plugga">
+        <button class="seg-b" id="m-quiz" type="button" aria-pressed="false">Förhör mig</button>
+        <button class="seg-b" id="m-ask" type="button" aria-pressed="true">Få A-svar till provet</button>
+      </div>
+      <p class="seg-line" id="segline">Lumen svarar bara när du frågar.</p>
+      <div class="quiz" id="quiz" hidden>
+        <p class="ex-meta" id="qz-meta"></p>
+        <p class="quiz-q" id="qz-q" tabindex="-1"></p>
+        <p class="quiz-hint" id="qz-hint">Svara högt för dig själv. Sedan hör du hur Lumen svarar.</p>
+        <p class="ex-a clamp" id="qz-a" aria-live="polite" hidden></p>
+        <div class="ex-row">
+          <button class="pill" id="qz-play" type="button"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Hör Lumens svar</span></button>
+          <button class="pill quiet" id="qz-next" type="button" hidden>Nästa fråga</button>
+          <button class="ex-more" id="qz-more" type="button" aria-expanded="false" aria-controls="qz-a" hidden>Visa hela svaret</button>
+        </div>
+        <p class="mini-fine" id="qz-end" hidden>I appen förhör Lumen dig på ditt eget prov. <a href="#vantelista">Mejla mig när appen finns</a></p>
+        <p class="mini-fine">Svaren är ordagranna från vårt test av Provläget den 8 november, med samma röst som i appen.</p>
+      </div>
       <div class="convo" id="convo" hidden>
         <p class="q hand" id="q"></p>
         <div class="a" id="a" aria-live="polite" tabindex="-1"></div>
@@ -736,39 +769,6 @@
       <details>
         <summary>Lägg in ditt material i förväg</summary>
         <p>Importera instuderingsmaterial som PDF eller textfil, och kursmål, under Förberedelser. <span data-app></span> känner igen dina ämnesord och svarar på kursens nivå.</p>
-      </details>
-      <details class="ex-details">
-        <summary>Hör tre svar från Provläget</summary>
-        <p>Svar från vårt test av Provläget den 8 november, ordagrant och med samma röst som i appen. Frågorna ställdes som av en elev i årskurs 9.</p>
-        <ul class="ex-list">
-          <li class="ex paper">
-            <p class="ex-meta">Åk 9 · Biologi</p>
-            <p class="ex-q hand">Förklara varför antibiotika inte hjälper mot virus</p>
-            <p class="ex-a clamp" id="ex-pl-019">Antibiotika verkar genom att slå ut eller hindra delar som bakterier har och som vi människor inte har, till exempel bakteriernas egna cellvägg eller deras sätt att tillverka proteiner. Virus är inte celler. De saknar egen ämnesomsättning och en egen cellvägg, och de tar över våra celler för att föröka sig. Eftersom det antibiotikan angriper saknas i virus, har medlet ingen verkan på dem. Ett exempel är förkylning och influensa, som orsakas av virus, där antibiotika alltså inte gör någon nytta. På provet räcker det att skriva att virus saknar cellstruktur och ämnesomsättning, och att antibiotika riktar sig mot bakteriers egna strukturer.</p>
-            <div class="ex-row">
-              <button class="pill ex-play" type="button" data-src="audio/pl-019.mp3" aria-label="Lyssna på svaret om antibiotika"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
-              <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-019">Visa hela svaret</button>
-            </div>
-          </li>
-          <li class="ex paper">
-            <p class="ex-meta">Åk 9 · Biologi</p>
-            <p class="ex-q hand">Vad händer i en näringskedja om rovdjuren försvinner?</p>
-            <p class="ex-a clamp" id="ex-pl-022">Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan. Rovdjuren håller nere antalet växtätare, så när de är borta ökar växtätarna snabbt. Fler växtätare äter upp mer av växterna, och antalet växter kan då minska kraftigt. Det leder till att växtätarna så småningom också får brist på mat och deras antal sjunker igen. Ett klassiskt exempel är när vargen försvann från Yellowstone i USA: hjortarna blev fler, de åt upp unga träd och buskar, och det drabbade även bävrar och fåglar som levde i området. På provet bör du skriva att rovdjur reglerar populationen av växtätare och att borttagandet ger en kedjereaktion genom näringsväven.</p>
-            <div class="ex-row">
-              <button class="pill ex-play" type="button" data-src="audio/pl-022.mp3" aria-label="Lyssna på svaret om näringskedjan"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
-              <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-022">Visa hela svaret</button>
-            </div>
-          </li>
-          <li class="ex paper">
-            <p class="ex-meta">Åk 9 · Samhällskunskap</p>
-            <p class="ex-q hand">Globalisering</p>
-            <p class="ex-a clamp" id="ex-pl-079">Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna. Det sker genom handel, investeringar, resor och internet, och att varor, pengar och idéer rör sig allt lättare mellan länder. Ett vanligt exempel är att en tröja kan designas i Sverige, sys i Bangladesh och säljas i flera länder samtidigt. Fördelarna är billigare varor och fler jobb i vissa länder, men det finns också nackdelar, som att jobb kan försvinna i andra länder när produktionen flyttas. På provet kan du visa att du förstår det genom att ge både fördelar och nackdelar och ett konkret exempel.</p>
-            <div class="ex-row">
-              <button class="pill ex-play" type="button" data-src="audio/pl-079.mp3" aria-label="Lyssna på svaret om globalisering"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
-              <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-079">Visa hela svaret</button>
-            </div>
-          </li>
-        </ul>
       </details>
       <details>
         <summary>Fler lägen</summary>
@@ -1387,38 +1387,88 @@ $("nudge").addEventListener("submit", (e) => {
 });
 
 // ---------- exempel från Provläget (förinspelat ljud, kostar inget anrop) ----------
-let exPlayer = null, exBtn = null;
-function exLabel(btn, playing) {
-  btn.querySelector("span").textContent = playing ? "Stoppa" : "Lyssna";
-  btn.querySelector("svg").innerHTML = playing ? '<rect x="6" y="6" width="12" height="12" rx="2"/>' : '<path d="M7 4.5v15l12.5-7.5z"/>';
-  btn.classList.toggle("stop", playing);
+// ---------- Ke19 (D97): Förhör mig ----------
+// Demon får inte förhöra på servern (D62), så förhöret är tre frågor ur Provlägestestet den 8 november
+// med de inspelade svaren, ordagrant. Inga anrop, ingen demokvot.
+const QUIZ = [
+  {"meta": "Åk 9 · Biologi", "q": "Förklara varför antibiotika inte hjälper mot virus.", "a": "Antibiotika verkar genom att slå ut eller hindra delar som bakterier har och som vi människor inte har, till exempel bakteriernas egna cellvägg eller deras sätt att tillverka proteiner. Virus är inte celler. De saknar egen ämnesomsättning och en egen cellvägg, och de tar över våra celler för att föröka sig. Eftersom det antibiotikan angriper saknas i virus, har medlet ingen verkan på dem. Ett exempel är förkylning och influensa, som orsakas av virus, där antibiotika alltså inte gör någon nytta. På provet räcker det att skriva att virus saknar cellstruktur och ämnesomsättning, och att antibiotika riktar sig mot bakteriers egna strukturer.", "src": "audio/pl-019.mp3"},
+  {"meta": "Åk 9 · Biologi", "q": "Vad händer i en näringskedja om rovdjuren försvinner?", "a": "Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan. Rovdjuren håller nere antalet växtätare, så när de är borta ökar växtätarna snabbt. Fler växtätare äter upp mer av växterna, och antalet växter kan då minska kraftigt. Det leder till att växtätarna så småningom också får brist på mat och deras antal sjunker igen. Ett klassiskt exempel är när vargen försvann från Yellowstone i USA: hjortarna blev fler, de åt upp unga träd och buskar, och det drabbade även bävrar och fåglar som levde i området. På provet bör du skriva att rovdjur reglerar populationen av växtätare och att borttagandet ger en kedjereaktion genom näringsväven.", "src": "audio/pl-022.mp3"},
+  {"meta": "Åk 9 · Samhällskunskap", "q": "Förklara vad globalisering är.", "a": "Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna. Det sker genom handel, investeringar, resor och internet, och att varor, pengar och idéer rör sig allt lättare mellan länder. Ett vanligt exempel är att en tröja kan designas i Sverige, sys i Bangladesh och säljas i flera länder samtidigt. Fördelarna är billigare varor och fler jobb i vissa länder, men det finns också nackdelar, som att jobb kan försvinna i andra länder när produktionen flyttas. På provet kan du visa att du förstår det genom att ge både fördelar och nackdelar och ett konkret exempel.", "src": "audio/pl-079.mp3"}
+];
+const LINES = { quiz: "Lumen frågar ut dig och svarar på dina frågor.", ask: "Lumen svarar bara när du frågar." };
+let qi = 0, exPlayer = null, qzPlaying = false;
+const PLAY = '<path d="M7 4.5v15l12.5-7.5z"/>', STOP = '<rect x="6" y="6" width="12" height="12" rx="2"/>';
+function qzButton(text, icon, primary) {
+  const b = $("qz-play");
+  b.querySelector("span").textContent = text;
+  b.querySelector("svg").innerHTML = icon;
+  b.classList.toggle("quiet", !primary);
 }
 function stopExample() {
-  if (!exBtn) return;
+  if (!qzPlaying) return;
+  qzPlaying = false;
   try { exPlayer.pause(); } catch {}
-  exLabel(exBtn, false);
-  exBtn = null;
+  qzButton("Hör igen", PLAY, false);
+  $("qz-next").hidden = false;
+  $("qz-next").classList.remove("quiet");
+  $("qz-end").hidden = qi < QUIZ.length - 1;
 }
-document.querySelectorAll(".ex-play").forEach((btn) => btn.addEventListener("click", () => {
-  const same = exBtn === btn;
-  cancelRun();          // stoppar demon och ett exempel som redan spelas
-  if (same) return;
+function showQuestion(i, focus) {
+  stopExample();
+  qi = i;
+  const q = QUIZ[i];
+  $("qz-meta").textContent = "Fråga " + (i + 1) + " av " + QUIZ.length + " · " + q.meta;
+  $("qz-q").textContent = q.q;
+  $("qz-hint").hidden = false;
+  $("qz-a").textContent = q.a;
+  $("qz-a").hidden = true;
+  $("qz-a").classList.add("clamp");
+  $("qz-more").hidden = true;
+  $("qz-more").setAttribute("aria-expanded", "false");
+  $("qz-more").textContent = "Visa hela svaret";
+  qzButton("Hör Lumens svar", PLAY, true);
+  $("qz-next").hidden = true;
+  $("qz-next").textContent = i === QUIZ.length - 1 ? "Börja om" : "Nästa fråga";
+  $("qz-end").hidden = true;
+  if (focus) $("qz-q").focus({ preventScroll: true });
+}
+function setMode(mode) {
+  if (document.body.dataset.mode === mode) return;
+  cancelRun();
+  if (document.body.dataset.view !== "idle") setView("idle");
+  document.body.dataset.mode = mode;
+  $("m-quiz").setAttribute("aria-pressed", String(mode === "quiz"));
+  $("m-ask").setAttribute("aria-pressed", String(mode === "ask"));
+  $("segline").textContent = LINES[mode];
+  $("quiz").hidden = mode !== "quiz";
+  if (mode === "quiz") showQuestion(0, false);
+}
+document.body.dataset.mode = "ask";
+$("m-quiz").addEventListener("click", () => setMode("quiz"));
+$("m-ask").addEventListener("click", () => setMode("ask"));
+$("qz-play").addEventListener("click", () => {
+  if (qzPlaying) { stopExample(); return; }
+  cancelRun();
   if (!exPlayer) { exPlayer = new Audio(); exPlayer.playsInline = true; exPlayer.preload = "none"; }
   setSession("playback");
-  exBtn = btn;
-  exLabel(btn, true);
+  qzPlaying = true;
+  $("qz-hint").hidden = true;
+  $("qz-a").hidden = false;
+  $("qz-more").hidden = false;
+  $("qz-next").hidden = true;
+  qzButton("Stoppa", STOP, false);
   exPlayer.onended = stopExample;
   exPlayer.onerror = stopExample;
-  exPlayer.src = btn.dataset.src;
+  exPlayer.src = QUIZ[qi].src;
   const p = exPlayer.play();
   if (p) p.catch(stopExample);
-}));
-document.querySelectorAll(".ex-more").forEach((btn) => btn.addEventListener("click", () => {
-  const a = $(btn.getAttribute("aria-controls"));
-  const open = a.classList.toggle("clamp") === false;
-  btn.setAttribute("aria-expanded", String(open));
-  btn.textContent = open ? "Visa mindre" : "Visa hela svaret";
-}));
+});
+$("qz-next").addEventListener("click", () => showQuestion((qi + 1) % QUIZ.length, true));
+$("qz-more").addEventListener("click", () => {
+  const open = $("qz-a").classList.toggle("clamp") === false;
+  $("qz-more").setAttribute("aria-expanded", String(open));
+  $("qz-more").textContent = open ? "Visa mindre" : "Visa hela svaret";
+});
 
 // ---------- uppstart ----------
 showLeft();
