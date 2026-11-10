@@ -22,4 +22,4 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 - [ ] **T5b – Omtest av T5 efter Angelas A21** (effort: medium). Beror på: A21. Samma fall som T5.
 
-- [ ] **T9 – Skärmrunda efter A22 och A18** (effort: medium). Beror på: A22 (sedan igen efter A18). Samma sju lägen som T3. Lägg bilderna sida vid sida med Kellys Ke12-skisser och skriv avvikelserna till Angela och Kelly.
+- [ ] **T9 – Skärmrunda efter A22 och A18** (effort: medium). Beror på: A23 (sedan igen efter A18). Samma sju lägen som T3. Lägg bilderna sida vid sida med Kellys Ke12-skisser och skriv avvikelserna till Angela och Kelly.
