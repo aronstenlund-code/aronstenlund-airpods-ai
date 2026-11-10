@@ -11,6 +11,19 @@ import {
 import { SSE_HEADERS, sseFrame } from "../_shared/sse.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
 import { withDeadline } from "./llm/deadline.ts";
+import {
+  aboutTopic,
+  checkLink,
+  domainOf,
+  isResourceRequest,
+  NO_RESOURCE,
+  parseResource,
+  RESOURCE_DOMAINS,
+  RESOURCE_PROMPT,
+  resourceOf,
+  resourceTopic,
+  spokenFor,
+} from "./resource.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
@@ -199,6 +212,8 @@ export interface Deps {
   now?: () => number;
   /** Called for `GET` + `x-warm: 1` (keep-alive ping): open the upstream connection ahead of time. */
   warm?: () => void;
+  /** K19: fetch used to check a resource link (tests). */
+  fetchImpl?: typeof fetch;
 }
 
 export function providerErrorToHttp(e: unknown): HttpError {
@@ -547,6 +562,87 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             summary: null,
             memory_add: null,
             app_command: appCmd,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
+
+      // K19: "har du en film om fotosyntes?": one checked link from Swedish learning resources, and one sentence
+      if (!demo && !personaPlan(body) && body.mode !== "auto" && body.mode !== "interview_prep" && isResourceRequest(body.fragment)) {
+        const wl = await enforceLimits(deps.rateLimiter, "answer-web", user.id, cfg.webLimits ?? DEFAULT_CONFIG.webLimits!);
+        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        if (!rl.allowed) {
+          throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
+        }
+        const topic = resourceTopic(body.fragment, body.context.recent_qa.at(-1)?.q);
+        const grade = /Årskurs:\s*([^.]+)/u.exec(body.personaSetup)?.[1]?.trim();
+        let text = "";
+        let inTok = 0, outTok = 0, searches = 0;
+        if (wl.allowed) {
+          try {
+            for await (const c of provider.stream({
+              system: "You find learning resources for a Swedish school student." + RESOURCE_PROMPT,
+              user: `<topic>${sanitizeTagged(topic)}</topic>${grade ? `\n<grade>${sanitizeTagged(grade)}</grade>` : ""}\n<request>${sanitizeTagged(body.fragment)}</request>`,
+              maxTokens: 400,
+              cacheSystem: true,
+              tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 2, allowed_domains: RESOURCE_DOMAINS }],
+              timeoutMs: 25_000,
+              signal: req.signal,
+            })) {
+              if (c.type === "text") text += c.text;
+              else if (c.type === "usage") {
+                inTok = c.inputTokens ?? inTok;
+                outTok = c.outputTokens ?? outTok;
+                searches = c.webSearches ?? searches;
+              }
+            }
+          } catch (e) {
+            console.warn("resource_search_failed", e instanceof Error ? e.message.slice(0, 150) : String(e));
+          }
+        }
+        // the link is checked in code: on the list, answers 200, about the topic; otherwise no link is passed on
+        const found = parseResource(text);
+        let resource = found && domainOf(found.url) ? resourceOf(found.url, found.title) : null;
+        let check: { ok: boolean; status: number; pageTitle: string } | null = null;
+        if (resource) {
+          check = await checkLink(resource.url, deps.fetchImpl ?? fetch);
+          if (!check.ok || !aboutTopic(topic, resource.title, check.pageTitle, resource.url)) resource = null;
+        }
+        const said = text.replace(/LÄNK:[^\n]*\n?/iu, "").trim();
+        const spoken = numbersToSpeech(resource ? spokenFor(resource, topic, said) : NO_RESOURCE);
+        console.log(JSON.stringify({ event: "resource", found: !!found, ok: !!resource, status: check?.status ?? null }));
+        const totalMs = Math.round(now() - t0);
+        const cost = ((inTok * cfg.priceInPerMTok) + outTok * cfg.priceOutPerMTok) / 1e6 + searches * WEB_SEARCH_USD;
+        try {
+          await deps.recordUsage({
+            user_id: user.id, endpoint: "answer", mode: body.mode, language: body.language, provider: provider.name,
+            model: "resource", is_question: true, confidence: 1, input_tokens: inTok, output_tokens: outTok,
+            ttft_ms: totalMs, total_ms: totalMs, est_cost_usd: cost, status: "ok", category: "övrigt", persona: body.persona,
+          });
+        } catch (e) {
+          console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+        }
+        const frames = [
+          sseFrame("meta", { reconstructed_question: body.fragment, confidence: 1, is_question: true, needs_confirmation: false, answer_type: "fact", relation: null }),
+          sseFrame("delta", { text: spoken }),
+          sseFrame("done", {
+            answered: true,
+            timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: inTok, output_tokens: outTok, cache_read_tokens: 0, web_searches: searches, model: "resource", est_cost_usd: cost },
+            summary: null,
+            relation: null,
+            source: resource ? domainOf(resource.url) : null,
+            memory_add: null,
+            resource,
           }),
         ];
         return new Response(
