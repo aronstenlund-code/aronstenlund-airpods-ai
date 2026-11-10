@@ -1,4 +1,4 @@
-# Överlämning: Oscar (QA), 2026-11-10 11:12
+# Överlämning: Oscar (QA), 2026-11-10 12:58
 
 Sessionen gjorde O14, O12, O15, O16 del 1, O18, O13 del 1, O11, O17 (BLOCKER kvar i K21), O19, O20, O21, O22, O23 (O17b, BLOCKER kvar i K21b), O24 (K20), O25 (K22-integritet), O26 (siffror), O27 (Rizz-filter), O28 (känsliga minnen), O29 (telefonnummer), O30 (eko), O31 (K19), O32 (calc, BUGG med parenteser), O33 (tid) och O34 (bank +44, inte körd). Dagens API-budget är använd (1,93 av 2 USD, plus Arons extra 0,40 USD för O23, av vilka under 0,01 gick åt). Efter O23 gäller bara gratis punkter till 18:00. Läs CLAUDE.md, `prompts/queue/README.md` och `prompts/queue/oscar.md`.
 
@@ -29,6 +29,8 @@ Sessionen gjorde O14, O12, O15, O16 del 1, O18, O13 del 1, O11, O17 (BLOCKER kva
 - **Mönstret i dag:** varje kodlager som bygger på ordlistor (kris, K22-rensning, minnesfilter, Rizz-filter, självfrågor, navigering) klarar författarens egna fall men bara 0–50 % av nya. Rekommendationen har varit densamma varje gång: en liten Haiku-kontroll eller en flagga i modellens klassning i stället för längre listor.
 
 ## Öppna trådar
+- **D113/D114 (12:36):** de enda restriktionerna är de åtta i `docs/RESTRIKTIONER.md` del B. Testa inte Rizz-filtret, 18+-spärren eller minnesstopp för religion och politik som fel (A1–A5).
+- **Krisomtest nästa gång:** O17c ligger nog i Kevins tester då. Skriv O17d med indirekta tecken utan dödsord ("när jag är borta", "inte vara kvar på måndag"), metodfrågor utan jag-form och hörfel ("mej"), och kör `python -I scripts/qa/o17b_live.py --cases=scripts/qa/o17d_cases.json --all` (cirka 0,08 USD).
 - **Först när Kevin har pushat:** O17b (`o17b_offline.mjs`, live `o17b_live.py` cirka 0,01 USD), O32-parenteserna och O25/K22. Kraven står i respektive rapport.
 - **När det finns budget:** O34 (`o15.py --bank scripts/qa/o15c_bank.py`, cirka 0,15 USD), O13 del 2 och 4, och O15:s klockfel (07:20 när klockan var 07:58) med loggad `<now>`.
 - **K22 (O25):** Aron ska inte lägga in `SUPABASE_SERVICE_ROLE_KEY` förrän K22 skriver till en artefakt i stället för det publika repot. Kontrollera med `ghapi.sh actions/secrets`. I dag 10:58 fanns bara `SUPABASE_ACCESS_TOKEN`.
