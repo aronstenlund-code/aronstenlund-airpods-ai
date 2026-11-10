@@ -1,0 +1,39 @@
+<!doctype html><html lang="sv"><meta charset="utf-8">
+<!-- Kelly Ke16: annonserna i det nya systemet (docs/design/SYSTEM.md). Ingen handstil, inget rutpapper, ingen gammal
+     skärmbild. Samma rubriker och samma ordagranna D87-svar som Ke6. ?n=1|2|3, &skiss=1 för textrutorna.
+     Rendera från repots rot: chrome --headless=new --window-size=1080,1920 --screenshot=… ".../_src/ad-system.html?n=1" -->
+<style>
+@font-face{font-family:FG;src:url(familjen-grotesk.woff2);font-weight:400 700}
+*{box-sizing:border-box;margin:0}
+html,body{width:1080px;height:1920px;overflow:hidden}
+body{font-family:FG,sans-serif;color:#141A2E;background:#F4F6FA;position:relative}
+.word{position:absolute;left:100px;top:220px;font-weight:700;font-size:46px;color:#2346C8;letter-spacing:-.5px}
+h1{position:absolute;left:100px;top:310px;width:880px;font-size:112px;line-height:1.02;font-weight:700;letter-spacing:-3px}
+h1 em{font-style:normal;color:#2346C8}
+.el{position:absolute;left:180px;top:580px;width:720px;height:660px;border-radius:48px;overflow:hidden;background:#fff;box-shadow:0 2px 6px rgba(16,24,40,.06),0 24px 60px rgba(16,24,40,.16)}
+.el img{position:absolute;left:-20px;top:-10px;width:760px}
+.rg{position:absolute;left:224px;top:432px}
+.rg i{position:absolute;left:-70px;top:-70px;width:140px;height:140px;border-radius:50%;border:6px solid #2346C8}
+.rg i:nth-child(1){transform:scale(.45);opacity:.9}.rg i:nth-child(2){transform:scale(.85);opacity:.5}.rg i:nth-child(3){transform:scale(1.25);opacity:.25}
+.card{position:absolute;left:100px;top:1100px;width:880px;background:#fff;border:2px solid #E4E8EF;border-radius:40px;padding:34px 40px 38px;box-shadow:0 2px 6px rgba(16,24,40,.06),0 18px 44px rgba(16,24,40,.12)}
+.live{display:inline-flex;align-items:center;gap:14px;padding:12px 22px 12px 18px;border-radius:999px;background:#EAF0FF;color:#2346C8;font-weight:600;font-size:30px}
+.live i{width:16px;height:16px;border-radius:50%;background:#2346C8;box-shadow:0 0 0 7px rgba(35,70,200,.18)}
+.q{margin-top:22px;font-size:34px;line-height:1.3;font-weight:600;color:#5E6779}
+.a{margin-top:12px;font-size:42px;line-height:1.35;color:#141A2E}
+.skiss .box{position:absolute;border:4px dashed #D9342B;color:#D9342B;font:700 28px FG;padding:6px 10px;z-index:9;background:rgba(217,52,43,.06)}
+</style><body>
+<div class="word">Lumen</div>
+<h1 id="h"></h1>
+<div class="el"><img src="../../elias/IntroElias@3x.png" alt=""><span class="rg"><i></i><i></i><i></i></span></div>
+<div class="card"><span class="live"><i></i>Svarar i örat</span><p class="q" id="q"></p><p class="a" id="a"></p></div>
+<script>
+const ADS={
+1:{h:'Bli <em>förhörd</em> inför provet',q:'Förklara varför antibiotika inte hjälper mot virus',a:'Virus är inte celler. De saknar egen ämnesomsättning och en egen cellvägg, och de tar över våra celler för att föröka sig.'},
+2:{h:'Fråga i örat. <em>Sikta på A-nivå.</em>',q:'Globalisering',a:'Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna.'},
+3:{h:'Plugga utan att <em>titta på skärmen</em>',q:'Vad händer i en näringskedja om rovdjuren försvinner?',a:'Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan.'}};
+const p=new URLSearchParams(location.search),d=ADS[p.get('n')||1];
+h.innerHTML=d.h;q.textContent=d.q;a.textContent=d.a;
+if(p.get('skiss')){document.body.classList.add('skiss');
+ for(const [id,l] of [['h','Rubrik, Familjen Grotesk 112 px'],['q','Fråga, 34 px halvfet grå'],['a','Svar, 42 px, ordagrant ur D87']]){const r=document.getElementById(id).getBoundingClientRect();const b=document.createElement('div');b.className='box';b.style.cssText=`left:${r.left-8}px;top:${r.top-8}px;width:${r.width+16}px;height:${r.height+16}px`;b.textContent=l;document.body.appendChild(b)}
+ const z=document.createElement('div');z.className='box';z.style.cssText='left:0;top:1520px;width:1080px;height:400px;color:#5A6478;border-color:#5A6478';z.textContent='Videoflödets egna knappar och text täcker nedre 400 px';document.body.appendChild(z)}
+</script></body></html>
