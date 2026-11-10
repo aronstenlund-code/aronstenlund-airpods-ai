@@ -1,0 +1,174 @@
+{
+ "n": 22,
+ "computed": 11,
+ "right": 12,
+ "wrong": 0,
+ "left_to_model": [
+  "vilket datum är det på fredag",
+  "vilken dag är det imorgon",
+  "vad är klockan om 3 timmar",
+  "vad är klockan om 90 minuter",
+  "hur lång tid är det kvar till klockan 15",
+  "hur gammal är man om man är född 2010",
+  "vilken veckodag var den 1 januari 2000",
+  "hur många dagar är det mellan 1 mars och 1 april",
+  "vilket år är det om 5 år",
+  "när är det påsk nästa år"
+ ],
+ "rows": [
+  {
+   "t": "vad är klockan",
+   "must": "11:00",
+   "text": "Klockan är 11:00 svensk tid (tisdag 10 november 2026)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "vad är klockan i Tokyo",
+   "must": "19:00",
+   "text": "Klockan 11:00 i Sverige just nu är klockan 19:00 i Tokyo (Tokyo är 8 timmar före Sverige)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "vad är klockan i New York",
+   "must": "05:00",
+   "text": "Klockan 11:00 i Sverige just nu är klockan 05:00 i New York (New York är 6 timmar efter Sverige)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "vad är klockan i London",
+   "must": "10:00",
+   "text": "Klockan 11:00 i Sverige just nu är klockan 10:00 i London (London är 1 timme efter Sverige)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "vad är klockan i Sydney",
+   "must": "21:00",
+   "text": "Klockan 11:00 i Sverige just nu är klockan 21:00 i Sydney (Sydney är 10 timmar före Sverige)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "vad är klockan i Kalifornien",
+   "must": "02:00",
+   "text": "Klockan 11:00 i Sverige just nu är klockan 02:00 i Kalifornien (Kalifornien är 9 timmar efter Sverige)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "hur många timmar skiljer det mellan Sverige och Thailand",
+   "must": "6",
+   "text": "Thailand är 6 timmar före Sverige just nu (sommar-/vintertid för dagens datum)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "vad är klockan i Indien",
+   "must": "15:30",
+   "text": "Klockan 11:00 i Sverige just nu är klockan 15:30 i Indien (Indien är 4,5 timmar före Sverige)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "hur många dagar är det till nyårsafton",
+   "must": "51",
+   "text": "Idag är det tisdag 10 november 2026. Nyårsafton är torsdag 31 december 2026, om 51 dagar (7 veckor och 2 dagar)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "vilken vecka är det",
+   "must": "46",
+   "text": "Det är vecka 46 (tisdag 10 november 2026)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "vilket datum är det på fredag",
+   "must": "13",
+   "text": null,
+   "err": null,
+   "ok": null
+  },
+  {
+   "t": "vilken dag är det imorgon",
+   "must": "onsdag",
+   "text": null,
+   "err": null,
+   "ok": null
+  },
+  {
+   "t": "vad är klockan om 3 timmar",
+   "must": "14:00",
+   "text": null,
+   "err": null,
+   "ok": null
+  },
+  {
+   "t": "vad är klockan om 90 minuter",
+   "must": "12:30",
+   "text": null,
+   "err": null,
+   "ok": null
+  },
+  {
+   "t": "hur lång tid är det kvar till klockan 15",
+   "must": "4",
+   "text": null,
+   "err": null,
+   "ok": null
+  },
+  {
+   "t": "hur många dagar är det till midsommarafton",
+   "must": "227",
+   "text": "Idag är det tisdag 10 november 2026. Midsommarafton är fredag 25 juni 2027, om 227 dagar (32 veckor och 3 dagar)",
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "hur gammal är man om man är född 2010",
+   "must": "15|16",
+   "text": null,
+   "err": null,
+   "ok": null
+  },
+  {
+   "t": "vilken veckodag var den 1 januari 2000",
+   "must": "lördag",
+   "text": null,
+   "err": null,
+   "ok": null
+  },
+  {
+   "t": "hur många dagar är det mellan 1 mars och 1 april",
+   "must": "31",
+   "text": null,
+   "err": null,
+   "ok": null
+  },
+  {
+   "t": "vilket år är det om 5 år",
+   "must": "2031",
+   "text": null,
+   "err": null,
+   "ok": null
+  },
+  {
+   "t": "hur många veckor är det kvar till sportlovet",
+   "must": null,
+   "text": null,
+   "err": null,
+   "ok": true
+  },
+  {
+   "t": "när är det påsk nästa år",
+   "must": "5 april|april",
+   "text": null,
+   "err": null,
+   "ok": null
+  }
+ ]
+}
