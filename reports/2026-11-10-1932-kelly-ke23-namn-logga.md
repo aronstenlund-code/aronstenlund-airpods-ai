@@ -3,7 +3,7 @@
 ## Vad som gjordes
 - `docs/design/namn.md`: de fyra namnkandidaterna (D117) med kontroll i App Store, TMview (EUIPO, PRV m.fl.) och DNS,
   risker som inte syns i registren, rangordning och en tabell över Arons sex ChatGPT-symboler.
-- `docs/design/namn/namn-tavla.png`: varje namn ihop med symbol 1–6 på en hemskärm.
+- `docs/design/namn/namn-tavla.jpg`: varje namn ihop med symbol 1–6 på en hemskärm (JPEG efter del 2, eftersom PNG med palett tog bort färgen på prickarna).
 - `docs/design/namn/storlekar.png`: symbol 1–6 i 29 pt (Inställningar) och 60 pt, ljust och mörkt. Det är underlag
   för Arons val i Ke24.
 - Källa för bilderna: `docs/design/_src/namn.html`. Ikonerna är utklipp ur `logo/chatgpt-forslag-2026-11-10.jpg` och
@@ -55,3 +55,27 @@ Källor: iTunes Search API, tmdn.org/tmview (i den inbyggda webbläsaren, efters
 
 ## Nästa
 Ke24 väntar på Arons nummer. Jag tar Ke25 (App Store-sidan).
+
+---
+
+## Del 2 (20:20): Earwise, Earmind, Earpiece AI (D122)
+Deangelo lade till namnen i Ke23 19:57, medan del 1 pågick. De finns nu överst på tavlan och i `namn.md`.
+
+| Namn | Resultat | Bedömning |
+|---|---|---|
+| Earwise | App Store: "EarWise: Ear Training" finns. earwise.se är en hörselklinik i Göteborg och earwise.app en uppläsningsapp. .com är till salu och .ai upptagen. EUIPO: inget exakt, GEARWISE (svenskt, klass 9) | **Rött** |
+| Earmind | App Store: inget. EUIPO: inget exakt (ClearMind/BEARMIND liknar). .com och .ai upptagna, .app och .se utan DNS-poster | **Grönt till gult**, bäst av de nya |
+| Earpiece AI | earpieceai.com är en AI-produkt för samtal i örat. Ordet är beskrivande. EUIPO: HEARPIECES, Spy Earpiece | **Rött** |
+
+- **Verifierat i källorna:** App Store via iTunes Search API, EUIPO eSearch (en omladdning per sökning, eftersom
+  sidan annars visar förra resultatet), domänernas DNS och startsidornas titlar.
+- **Ej kontrollerat:** PRV (svenska nationella märken) och USPTO för del 2. TMview spärrade sessionen
+  ("Problem detected") efter del 1, och jag försökte inte ta mig förbi spärren. För USA finns bara
+  aggregatorsidor: EARWISE AUDIOLOGY avregistrerad 2002, EARWEISS väntande.
+- **Del 1 är fortfarande giltig:** de positiva träffarna i TMview (PROVISKIN, TESTVISION, "whisper pod") kom
+  mellan nollresultaten, så sökningen fungerade då.
+
+### Till Aron (ersätter punkt 1 ovan)
+1. **Rekommenderar Earmind** i stället för Earwise. Earwise används redan av en svensk hörselklinik och av en
+   app i App Store. Proviska är reserv om namnet ska vara svenskt och handla om plugg.
+2. Innan namnet bestäms: sök i PRV:s varumärkesdatabas och hos ett ombud. Jag kunde inte göra det i natt.

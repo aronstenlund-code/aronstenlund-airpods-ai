@@ -28,7 +28,7 @@ den fortfarande Lumen.
 
 Antal tecken är räknade med Python (`len`). Apples gränser står inom parentes.
 
-**Namn** (30): `[NAMN] – AI i örat`. Med Proviska blir det `Proviska – AI i örat` (20).
+**Namn** (30): `[NAMN] – AI i örat`. Med Earmind (Kellys förstahandsval efter D122, `docs/design/namn.md`) blir det `Earmind – AI i örat` (19). Inte "AirPods" i namn eller underrubrik (D122).
 
 **Underrubrik** (30): `Fråga högt. Få svaret i örat.` (29)
 

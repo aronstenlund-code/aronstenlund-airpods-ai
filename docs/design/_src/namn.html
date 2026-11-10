@@ -44,8 +44,8 @@
 </style>
 </head>
 <body>
-<h1>Namn och logga: fyra namn × sex symboler</h1>
-<p class="sub">D117:s namnkandidater bredvid Arons sex ChatGPT-förslag (Ke24), som de skulle se ut på hemskärmen. Loggorna A/B/C från Ke12 är inte med eftersom Aron inte gillade dem.
+<h1>Namn och logga: sju namn × sex symboler</h1>
+<p class="sub">D117:s och D122:s namnkandidater bredvid Arons sex ChatGPT-förslag (Ke24), som de skulle se ut på hemskärmen. Loggorna A/B/C från Ke12 är inte med eftersom Aron inte gillade dem.
   Ikonerna är utklipp ur Arons bild och har inte ritats om. Det görs när Aron valt nummer. Träffarna söktes 2026-11-10 och är ingen juridisk bedömning.</p>
 
 <div class="rows" id="rows"></div>
@@ -67,6 +67,12 @@
     return d;
   }
   const NAMES = [
+    { n: 'Earwise', m: 'D122:s förstahandsval. Engelskt, "klok i örat". Passar en agent för hela vardagen.',
+      f: [['bad','App Store: "EarWise: Ear Training" finns redan (SE och US)'], ['bad','earwise.se är en hörselklinik i Göteborg; earwise.app en ljudapp; .com till salu, .ai upptagen'], ['warn','EUIPO: inget exakt; GEARWISE (Gearwise AB, klass 9). USA: EARWISE AUDIOLOGY avregistrerad 2002']] },
+    { n: 'Earmind', m: 'Engelskt, "ett huvud i örat". Säger agent mer än plugg.',
+      f: [['ok','App Store SE/US: ingen app; inget företag eller produkt på webben'], ['warn','EUIPO: inget exakt; liknande CLEARMIND (Zeiss, klass 9) och BEARMIND'], ['warn','earmind.com och .ai registrerade; .app och .se utan DNS-poster']] },
+    { n: 'Earpiece AI', m: 'Beskrivande: "hörsnäcka" + AI. Svårt att skydda som varumärke.',
+      f: [['bad','earpieceai.com: "Earpiece.ai", en app för samtal i örat (samma område)'], ['warn','EUIPO: HEARPIECES (klass 9), Spy Earpiece; earpiece.ai till salu'], ['bad','Ordet "earpiece" är beskrivande för hörlurar']] },
     { n: 'Proviska', m: 'prov + viska. Svenskt, lätt att säga. Låter som plugg, och "viska på provet" ligger nära (se namn.md).',
       f: [['ok','App Store SE/US: ingen app med namnet'], ['ok','TMview (EU, SE m.fl.): 0 träffar på "proviska"'], ['warn','proviska.com är registrerad av någon (NS hos Namecheap), .se ledig enligt DNS']] },
     { n: 'Testvisk', m: 'test + visk. Svenskt men svårare att uttala, och läses som "test-visk".',

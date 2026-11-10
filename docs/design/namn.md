@@ -2,7 +2,36 @@
 
 Kelly, 2026-11-10. Underlag för Arons val av namn (D117) och logga (Ke24). Inget av det här är beslutat.
 
-![Fyra namn × sex symboler på en hemskärm](namn/namn-tavla.png)
+![Sju namn × sex symboler på en hemskärm](namn/namn-tavla.jpg)
+
+## Del 2 (D122, 20:20): Earwise, Earmind, Earpiece AI
+
+Deangelo lade till de här tre 19:57, med Earwise som förstahandsval och "an all-round AI agent in your AirPods".
+Sökt 2026-11-10 20:00–20:20.
+
+| Namn | App Store (SE, US) | EUIPO (eSearch, EU-märken) | Webben och domäner |
+|---|---|---|---|
+| **Earwise** | **"EarWise: Ear Training"** (26 Branding Agency Inc.) finns i båda | Inget exakt. GEARWISE och Gearwise (Gearwise AB, svenskt, klass 9/35/39) innehåller ordet | **earwise.se = Earwise Hörselmottagning Göteborg** (audionomer). **earwise.app = "Earwise – Save it, hear it"**, en app som läser upp artiklar. earwise.com parkerad hos Afternic (troligen till salu). earwise.ai registrerad (GoDaddy, sida utan innehåll). earwise.io: inga poster |
+| **Earmind** | Ingen app | Inget exakt. Liknande: ClearMind (Carl Zeiss Vision, klass 9/10), CLEARMIND, BEARMIND (klass 9/10/25/42) | Ingen produkt eller firma hittad på webben. earmind.com registrerad (bakom Cloudflare), earmind.ai registrerad (BytePlus DNS). earmind.app och earmind.se: inga poster |
+| **Earpiece AI** | Ingen app med namnet | Inget exakt. HEARPIECES (LIZN ApS, klass 9/10/44), Spy Earpiece (klass 9) | **earpieceai.com = "Earpiece.ai – Stay present. Capture what matters."**, ett minne för samtal i örat (samma område). earpiece.ai är till salu |
+
+USA: EARWISE AUDIOLOGY (hörselvård) avregistrerades 2002, och EARWEISS (Shenzhen, klass 9) är en väntande
+ansökan från 2024 (**ej verifierat i USPTO**, bara på aggregatorsidor). **PRV och TMview är inte kontrollerade för
+del 2:** TMview spärrade sessionen med "Problem detected" efter del 1, och jag försökte inte ta mig förbi spärren.
+EUIPO eSearch täcker EU-märken och internationella märken som gäller i EU, men inte svenska nationella märken.
+
+**Bedömning:**
+- **Earwise: rött.** Namnet används redan av en app i App Store, en ljudapp och en svensk hörselklinik, alla
+  med öron eller ljud. App Store kräver unika namn, och "Earwise – …" skulle förväxlas med EarWise: Ear Training.
+  Användare i Göteborg som söker "Earwise" hamnar hos audionomen.
+- **Earmind: grönt till gult.** Det renaste av de nya. Domänerna .com och .ai är tagna, men .app och .se ser lediga
+  ut (ej verifierat hos registrar). "-mind" finns i flera märken i klass 9, men inget börjar med "Ear".
+- **Earpiece AI: rött.** Ordet är beskrivande (svårt att få ensamrätt till) och en annan AI-produkt för örat heter redan så.
+
+Med D122 (agent för hela vardagen, inte bara plugg) blir rangordningen: **1 Earmind**, 2 Proviska (bara om appen
+ska heta något svenskt med plugg i fokus), 3 Whisper Pod. Earwise, Earpiece AI, Pod Whisper och Testvisk avråder jag från.
+
+## Del 1 (D117, 19:32): Proviska, Testvisk, Pod Whisper, Whisper Pod
 
 ![Symbolerna 1–6 i 29 pt och 60 pt, ljust och mörkt](namn/storlekar.png)
 
@@ -41,7 +70,7 @@ oftast att den är ledig, men inte säkert (**ej verifierat** hos registrar).
 4. **Bara plugg.** Proviska och Testvisk säger "prov". D118 säger att Lumen är AI i örat för hela vardagen
    (intervju, socialt, vardag). Ett provnamn gör annonserna för Rizz och vardag svårare.
 
-### Rangordning (Kelly, rekommenderar)
+### Rangordning i del 1 (före D122; se del 2 för den samlade)
 1. **Proviska.** Inga krockar i registren, kort och svenskt, och det låter som ett namn och inte en beskrivning.
    Nackdelar: läsningen "viska på provet" och att det bara säger plugg. Kontrollera vem som äger `proviska.com`.
 2. **Whisper Pod.** Passar D118 och domänerna verkar lediga, men "Pod" och "Whisper" är båda lånade från större
@@ -64,7 +93,7 @@ kandidater med samma kontroll. Det är Arons beslut och ingen punkt i kön.
 | 6 | Stjärna med svans | Tydlig | Samma AI-gnista som 2 |
 
 **Rekommenderar 4** (bock med ljudvågor). Den är egen, läsbar i 29 pt, säger både "rätt" och "i örat" och passar
-ihop med alla fyra namn. Om Aron väljer 1 eller 5: förenkla linjerna när de ritas om, så att de håller i 29 pt.
+ihop med alla namnen. Med D122:s agentriktning (göra saker åt dig) passar en bock också: "klart". Om Aron väljer 1 eller 5: förenkla linjerna när de ritas om, så att de håller i 29 pt.
 Ingen av de sex visar en hörlur, så ingen är Apple-lik på det sättet.
 
 Färgerna i ChatGPT-förslagen (blå–lila toning) stämmer inte med SYSTEM.md (en accent, #2346C8). Vid omritningen
