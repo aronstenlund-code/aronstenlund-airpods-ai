@@ -74,3 +74,5 @@
   5. Lärarfrågor från ett klassrum, frågor till en kompis, och sådant som inte är frågor alls (Lumen ska vara tyst).
   6. Konstiga och oväntade saker en 15–17-åring kan säga: skämt, test av Lumen, flera frågor i ett, frågor om Lumen själv.
   Tänk utanför boxen: hitta fallen som får Lumen att missförstå. Kör mot live med `meta` och svar, gradera "förstod rätt", "svarade rätt", "tyst när den skulle". Siffror per grupp, de 20 värsta fallen ordagrant, allt under "Till Kevin". Banken sparas i `scripts/qa/` så att den kan köras igen. Budget 1,50 USD.
+
+- [ ] **O16 – Scribe stänger anslutningen på vissa keyterms** (effort: medium). Gör efter O15. Underlag: `reports/qa/2026-11-10-0815-deangelo-audio.md` fynd 1 (1008 invalid_request i 22 av 39 strömmar). Ta reda på exakt vilken regel Scribe har (längd, antal ord, specialtecken, antal termer) med små strömmar, och kontrollera att appens keyterms-filter (A14) och `/study-profile` aldrig skickar något som bryter den. Fynd till Angela/Kevin. Budget: bara Scribe-sekunder, inga /answer-anrop.
