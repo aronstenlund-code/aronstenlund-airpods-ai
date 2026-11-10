@@ -220,7 +220,7 @@ struct FirstQuestionView: View {
                         .foregroundStyle(LumenColor.muted)
                         .frame(maxWidth: .infinity, minHeight: 50)
                 }
-                Text("iOS frågar om mikrofonen första gången. Lumen sparar aldrig ljud.")
+                Text("iOS frågar om mikrofonen första gången. Ljud sparas inte.") // A30 (Kelly Ke20): the intro's words
                     .font(LumenFont.text(14, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
                     .multilineTextAlignment(.center)

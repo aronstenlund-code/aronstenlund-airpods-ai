@@ -47,12 +47,15 @@ struct VoicePageView: View {
         }
     }
 
-    /// The service's voices first (the default leads), then the iPhone's own.
+    /// The service's voices first (the default leads), then the iPhone's own. The chosen voice is always a row, with
+    /// its ✓, also while the service's list is still loading (A30, Kelly Ke20).
     private var choices: [VoiceChoice] {
         let service = model.voices.voices.sorted { a, b in
             (a.voiceID == model.voices.defaultID ? 0 : 1) < (b.voiceID == model.voices.defaultID ? 0 : 1)
         }
-        return service + [VoiceChoice.appleDefault] + model.appleVoices
+        let all = service + [VoiceChoice.appleDefault] + model.appleVoices
+        let chosen = model.speaker.settings.voice
+        return all.contains(chosen) ? all : [chosen] + all
     }
 
     private func row(_ choice: VoiceChoice, chosen: Bool, choose: @escaping () -> Void) -> some View {

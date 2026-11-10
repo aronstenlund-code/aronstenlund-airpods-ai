@@ -21,6 +21,13 @@ struct ScreenshotStage: View {
             return
         }
         guard name != "intro" else { return }
+        // A30: Lyssnar while listening in Provläge, before the first frame (the stage is not observed).
+        switch name {
+        case "listeningProv": model.screenshotShows = .prov
+        case "practice": model.stagePracticeForScreenshot(PracticeDemo.run, result: nil)
+        case "practiceResult": model.stagePracticeForScreenshot(nil, result: PracticeDemo.result)
+        default: break
+        }
         let today = Calendar.current.startOfDay(for: Date())
         func day(_ n: Int) -> Date { Calendar.current.date(byAdding: .day, value: n, to: today) ?? today }
         if model.examPlans?.plans.isEmpty == true {
@@ -68,7 +75,10 @@ struct ScreenshotStage: View {
                 .lumenScreen()
             case "settings": NavigationStack { SettingsView(model: model, diagnostics: container.diagnostics) }
             case "voice": NavigationStack { VoicePageView(model: model) } // A26 R5
-            case "practice": PracticeStage() // A16
+            // A30 (Kelly Ke20): Lyssnar in Provläge while listening, the practice exam on Lyssnar (with its badge), its
+            // result, and the first start's exam step.
+            case "listeningProv", "practice", "practiceResult": ListeningScreen(model: model) {} // set up in `seed`
+            case "addExamFirst": AddExamView(model: model, isFirstStart: true) {}.lumenScreen()
             case "about": NavigationStack { AboutView() } // A13.1
             case "interview": NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
             case "live": NavigationStack { LiveStartView(model: model, settings: model.modeSettings, mode: .social) }
@@ -77,32 +87,30 @@ struct ScreenshotStage: View {
         }
     }
 }
-/// A16: the practice exam's question card and result card with demo questions.
-private struct PracticeStage: View {
-    var body: some View {
-        let tasks = [
-            ExamTask(no: "1", text: "Beräkna 15 % av 840 kr.", points: .init(E: 1, C: 0, A: 0), answer: "126 kr", assessment: "", topic: "procent"),
-            ExamTask(no: "2", text: "Lös ekvationen 3x + 5 = 20.", points: .init(E: 1, C: 1, A: 0), answer: "x = 5", assessment: "", topic: "ekvationer"),
-            ExamTask(no: "3", text: "Förklara varför första världskriget bröt ut. Använd begreppen allianser och nationalism.",
-                     points: .init(E: 1, C: 1, A: 1), answer: "", assessment: "", topic: "första världskriget", answerSource: "eget svar"),
-        ]
-        var run = PracticeRun(paper: ExamPaper(tasks: tasks, name: "Övningsprov"))!
+/// A16: demo questions for the practice exam's screenshots.
+private enum PracticeDemo {
+    static var tasks: [ExamTask] {
+        [ExamTask(no: "1", text: "Beräkna 15 % av 840 kr.", points: .init(E: 1, C: 0, A: 0), answer: "126 kr", assessment: "", topic: "procent"),
+         ExamTask(no: "2", text: "Lös ekvationen 3x + 5 = 20.", points: .init(E: 1, C: 1, A: 0), answer: "x = 5", assessment: "", topic: "ekvationer"),
+         ExamTask(no: "3", text: "Förklara varför första världskriget bröt ut. Använd begreppen allianser och nationalism.",
+                  points: .init(E: 1, C: 1, A: 1), answer: "", assessment: "", topic: "första världskriget", answerSource: "eget svar")]
+    }
+
+    static var run: PracticeRun? {
+        guard var run = PracticeRun(paper: ExamPaper(tasks: tasks, name: "Övningsprov")) else { return nil }
         run.graded(points: 1, max: 1)
         run.move(to: 1)
         run.graded(points: 1, max: 2)
         run.lastFeedback = "Delvis rätt. x är fem: dra bort fem från båda sidor och dela med tre."
         run.lastFeedbackNo = "2"
         run.move(to: 2)
-        var done = run
+        return run
+    }
+
+    static var result: PracticeRun.Summary? {
+        guard var done = run else { return nil }
         done.graded(points: 0, max: 3)
-        return ScrollView {
-            VStack(spacing: 16) {
-                PracticeCard(run: run)
-                PracticeResultCard(result: done.summary) {}
-            }
-            .padding(20)
-        }
-        .lumenScreen()
+        return done.summary
     }
 }
 #endif

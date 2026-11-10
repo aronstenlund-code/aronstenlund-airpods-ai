@@ -2493,6 +2493,18 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         practiceResult = nil
     }
 
+    #if DEBUG
+    /// A30 (Kelly Ke20): screenshots of Lyssnar while listening in a mode, and of the practice exam on Lyssnar,
+    /// without a microphone or network. Debug builds only (`ScreenshotStage`).
+    var screenshotShows: ConversationMode?
+
+    func stagePracticeForScreenshot(_ run: PracticeRun?, result: PracticeRun.Summary?) {
+        screenshotShows = .prov
+        practice = run
+        practiceResult = result
+    }
+    #endif
+
 
     // MARK: - Study plan, summary and links (A19: K17, K19)
 

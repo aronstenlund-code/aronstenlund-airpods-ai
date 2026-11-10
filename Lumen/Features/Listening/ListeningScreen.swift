@@ -14,7 +14,29 @@ struct ListeningScreen: View {
     @State private var reportingTurn: AnswerTurn?
     @State private var reportComment = ""
 
-    private var mode: ConversationMode { model.study.isActive ? model.mode : .standard }
+    private var mode: ConversationMode {
+        #if DEBUG
+        if let shown = model.screenshotShows { return shown } // A30: screenshots of Lyssnar while listening
+        #endif
+        return model.study.isActive ? model.mode : .standard
+    }
+
+    /// Listening and hearing as shown: the model's, or "listening" in a screenshot (the simulator has no microphone).
+    private var listening: Bool {
+        #if DEBUG
+        if model.screenshotShows != nil { return true }
+        #endif
+        return model.isListening
+    }
+
+    private var hearing: Bool {
+        #if DEBUG
+        if model.screenshotShows != nil { return true }
+        #endif
+        return model.isHearing
+    }
+
+    private var state: SessionState { listening ? .listening : model.state }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -87,8 +109,8 @@ struct ListeningScreen: View {
                 }
             }
             StatusBadge(title: stateTitle,
-                        active: model.isListening && model.isHearing && model.speaker.status == .idle,
-                        levelDBFS: model.isListening && model.isHearing ? model.controller.level.rmsDBFS : nil)
+                        active: listening && hearing && model.speaker.status == .idle,
+                        levelDBFS: listening && hearing ? model.controller.level.rmsDBFS : nil)
             if !stateDetail.isEmpty {
                 Text(stateDetail)
                     .font(LumenFont.text(13, relativeTo: .footnote))
@@ -116,8 +138,8 @@ struct ListeningScreen: View {
     }
 
     private var stateTitle: String {
-        switch model.state {
-        case .listening: model.speaker.status != .idle ? "Svarar" : (model.isHearing ? "Lyssnar" : "Hör inte, försöker igen") // A11
+        switch state {
+        case .listening: model.speaker.status != .idle ? "Svarar" : (hearing ? "Lyssnar" : "Hör inte, försöker igen") // A11
         case .paused: "Pausad"
         case .idle, .error: model.isStarting ? "Startar …" : "Pausad" // A26 R4: the badge and "Lyssna igen" agree
         }
@@ -130,7 +152,7 @@ struct ListeningScreen: View {
         if let quiz = model.silentQuiz {
             return "Tyst förhör, fråga \(max(1, quiz.asked)) av \(SilentQuiz.questions). Nicka för ja, skaka för nej." // A20.2
         }
-        return switch model.state {
+        return switch state {
         case .paused: "Tryck Lyssna igen eller säg ”Lumen, fortsätt”"
         default: mode.isLive ? "Lumen ger ett förslag i pausen" : ""
         }
@@ -287,10 +309,10 @@ struct ListeningScreen: View {
                 Button {
                     Task { await model.togglePause() }
                 } label: {
-                    Text(model.isListening ? "Pausa" : "Lyssna igen")
+                    Text(listening ? "Pausa" : "Lyssna igen")
                 }
                 // A18 (Kelly Ke10): while paused, going on is the one thing to do, so it is the blue button.
-                .buttonStyle(LumenButtonStyle(kind: model.isListening ? .secondary : .primary, height: 54))
+                .buttonStyle(LumenButtonStyle(kind: listening ? .secondary : .primary, height: 54))
                 Button {
                     Task { await model.endSession() }
                 } label: {
@@ -555,7 +577,7 @@ struct PracticeResultCard: View {
                     }
                 }
             }
-            Button("Klar", action: onClose)
+            Button("Stäng", action: onClose) // A30 (Kelly Ke20): "klar" is a voice word (D72)
                 .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
