@@ -518,6 +518,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func stopListening() async {
+        if isListening { cue(.stop) } // A34: before the graph stops
         answers.sessionLength = nil
         activation.cancelPending()
         studyQueue.removeAll()
@@ -540,13 +541,39 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         if isListening {
+            cue(.stop) // A34
             await controller.pause()
         } else if canResume {
             await controller.resume()
         }
     }
 
+    /// A34 (D109): the sounds. Kelly chooses their character (SYSTEM.md); until then short soft tones from the
+    /// playback graph, local, no calls. Only into headphones: out of the iPhone's own speaker the microphone would hear
+    /// them (echo filter, VAD), so then there is no sound.
+    enum ListeningCue: String {
+        case start, stop, hm
+
+        var tone: (frequency: Double, duration: Double) {
+            switch self {
+            case .start: (880, 0.07)
+            case .stop: (587, 0.09)
+            case .hm: (330, 0.12)
+            }
+        }
+    }
+
+    @ObservationIgnored private var cuedListening = false
+
+    private func cue(_ kind: ListeningCue) {
+        guard speaker.settings.listeningCues, !(controller.snapshot?.outputsToBuiltInSpeaker ?? false) else { return }
+        try? controller.playback.playTestTone(frequency: kind.tone.frequency, duration: kind.tone.duration)
+        controller.log("Cue: \(kind.rawValue) (A34)")
+    }
+
     private func sessionStateChanged(_ state: SessionState) {
+        if state.isListening, !cuedListening { cue(.start) } // A34: started or resumed
+        cuedListening = state.isListening
         if state != .listening, study.isActive {
             // Paused, stopped or failed: the hands-free session cannot continue without the microphone. After a
             // pause or an interruption it comes back in the same mode (D74).
@@ -3232,6 +3259,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         latency.end()
         conversation.cancelAnswer()
         answerNotice = "Not a question — no answer (auto mode)"
+        cue(.hm) // A34: heard, and chose to stay quiet
         controller.log("Auto: backend says not a question: \(request.query)")
         controller.turns.finish(currentTurnID, outcome: .silent, reason: "backend: not a question")
         studyAnswerEnded()

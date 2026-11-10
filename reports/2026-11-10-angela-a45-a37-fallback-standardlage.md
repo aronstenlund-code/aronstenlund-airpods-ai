@@ -47,4 +47,4 @@ Demosidan och bilderna säger "Frågor". Byt till "Standardläge".
   "Standardläge".
 
 ## CI
-Se slutet av rapporten när körningen är klar.
+Grönt i CI: A45 i iOS build 42813874171 (`a8a2ccf`), och A37 i 42816388453 (`f629799`). Bygget för enhet räknar varningar som fel, och alla LumenTests är gröna.

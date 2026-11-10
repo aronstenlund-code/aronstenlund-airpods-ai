@@ -158,13 +158,13 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [ ] **A33 – U2: kom igång med rösten** (effort: high). Ägarbeslut D109. Efter första svaret säger Lumen "Har du prov snart? Säg vilket ämne och när." och fyller provprofilen från svaret via `/study-profile` (D84). Formuläret finns kvar som reserv ("Skriv i stället"). Följ `docs/design/SYSTEM.md`. Skärmbilder Pro/SE ljust/mörkt, Kelly granskar, Toby testar i T8-flödet.
 
-- [ ] **A34 – U3: ljudsignal i AirPods** (effort: medium). Ägarbeslut D109. En kort, diskret signal när Lumen börjar lyssna och när den slutar, och ett mjukt "hm" när den hörde tal men valde att vara tyst. Allt går att stänga av i Inställningar (en rad). Signalerna lokalt i appen, inga nya anrop, får inte trigga ekofiltret eller VAD. Kelly väljer ljudens karaktär i SYSTEM.md.
+- [~] pågår (Angela, 16:40, CI) **A34 – U3: ljudsignal i AirPods** (effort: medium). Ägarbeslut D109. En kort, diskret signal när Lumen börjar lyssna och när den slutar, och ett mjukt "hm" när den hörde tal men valde att vara tyst. Allt går att stänga av i Inställningar (en rad). Signalerna lokalt i appen, inga nya anrop, får inte trigga ekofiltret eller VAD. Kelly väljer ljudens karaktär i SYSTEM.md.
 
 - [x] klar 2026-11-10 15:45 → reports/2026-11-10-angela-a41-a42-a35-consent-exam-restrictions.md **A35 – D112/D113: ta bort 18+-spärren före Rizzläget, och appens onödiga minnesstopp** (effort: low). Enligt `docs/RESTRIKTIONER.md` A4 och A5: appens känsliga-minnen-nät (A27) stoppar bara hälsa, kris och ID-nummer. Samtycke och lyssningsindikatorn finns kvar (B2). Ägarbeslut: Rizzläget är flirtigt men aldrig sexuellt och för alla åldrar. Ta bort åldersfrågan/spärren och texter om 18+ i appen och på demosidan (säg till Kelly). Samtyckespunkterna för lyssning finns kvar.
 
 - [ ] **A36 – U4: fota sidan du pluggar** (effort: high). D115. En knapp på provkortet "Fota sidan" → kameran → `/exam` (läser redan bilder, D84) → ämnesord, övningsfrågor och förhör på det fotade. Skärmbilder, Kelly granskar.
 
-- [~] pågår (Angela, 16:20, CI) **A37 – D115: "Frågor" heter "Standardläge", och lägesbytet** (effort: medium). Byt namnet överallt (app, röstkommandon "byt till standardläge", COMMANDS.md, säg till Kelly för sidan). Kontrollera att man alltid själv kan byta läge, både med knappen och med rösten, från alla skärmar. Toby testar.
+- [x] klar 2026-11-10 16:40 → reports/2026-11-10-angela-a45-a37-fallback-standardlage.md **A37 – D115: "Frågor" heter "Standardläge", och lägesbytet** (effort: medium). Byt namnet överallt (app, röstkommandon "byt till standardläge", COMMANDS.md, säg till Kelly för sidan). Kontrollera att man alltid själv kan byta läge, både med knappen och med rösten, från alla skärmar. Toby testar.
 
 - [ ] **A38 – C2 + C3: notiser och streak som Duolingo** (effort: high). D115. Streak synlig på Start (liten, en siffra + låga), förloras om en dag missas. Notiser: nedräkning till provet och "5 snabba frågor" (eleven slår på dem, en gång per dag, tid valbar). Bygger på K31.
 
@@ -180,4 +180,4 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [ ] **A44 – Hemskärmswidget (N2)** (effort: medium). Beror på: A38. WidgetKit: dagar kvar till nästa prov, streak, och en knapp "Förhör mig" som startar Provläget (App Intent).
 
-- [~] pågår (Angela, 15:45, CI) **A45 – Säg till när reservmotorn används (N3)** (effort: low). När Scribe eller ElevenLabs-rösten inte går (t.ex. kvoten slut) och appen faller tillbaka till iPhonens egna: en lugn rad en gång per pass ("Lumen hör och pratar lite sämre just nu"), ingen felruta. Toby testar (T10).
+- [x] klar 2026-11-10 16:40 → reports/2026-11-10-angela-a45-a37-fallback-standardlage.md **A45 – Säg till när reservmotorn används (N3)** (effort: low). När Scribe eller ElevenLabs-rösten inte går (t.ex. kvoten slut) och appen faller tillbaka till iPhonens egna: en lugn rad en gång per pass ("Lumen hör och pratar lite sämre just nu"), ingen felruta. Toby testar (T10).
