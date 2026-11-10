@@ -187,3 +187,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [x] klar 2026-11-10 13:49 → reports/2026-11-10-angela-a45-a37-fallback-standardlage.md **A45 – Säg till när reservmotorn används (N3)** (effort: low). När Scribe eller ElevenLabs-rösten inte går (t.ex. kvoten slut) och appen faller tillbaka till iPhonens egna: en lugn rad en gång per pass ("Lumen hör och pratar lite sämre just nu"), ingen felruta. Toby testar (T10).
 
 - [ ] pågår 2026-11-10 19:27 (Angela) **A46 – Vändkort i tyst läge (N6)** (effort: medium). Gör medan A38/A43 väntar på Kevin. Studiekorten som kort att trycka igenom (fråga → tryck → svar → kunde / kunde inte), från provkortet. Resultatet räknas som förhörssvar. Följ SYSTEM.md, Kelly granskar.
+
+- [ ] **A47 – Kontrollera att D121 stämmer** (effort: medium). Verifiera och rapportera (simulator + Aron på telefon): lyssnar Lumen efter "Lumen …" hela tiden medan den är startad, även med låst skärm och i bakgrunden i flera timmar? Hur mycket batteri per timme? Rätta det som inte håller, så att annonsens löfte stämmer.

@@ -96,3 +96,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [ ] väntar på Arons nummer (underlag `docs/design/namn/storlekar.png`, Kelly rekommenderar 4) **Ke24 – Logga från ChatGPT-förslagen** (effort: medium). Aron gillade inte A/B/C och tog fram sex förslag i ChatGPT: `docs/design/logo/chatgpt-forslag-2026-11-10.jpg`. När Aron har valt nummer (Deangelo skriver det här): rita om det valda som ren vektor (SVG appikon 1024 + enfärgad symbol), ljust och mörkt, kontrollera i 29 pt, och ersätt radiovågorna i appen (Angela) och på sidan. Ingen Apple-lik hörlur.
 
 - [~] pågår 2026-11-10 19:33 **Ke25 – App Store-sidan (N5, fas 3)** (effort: medium). Lägre prioritet än Ke22–Ke24. Utkast: 6 skärmbilder (6,9" och 6,1"), underrubrik, beskrivning, nyckelord, förslag på åldersgräns utifrån innehållet (D112, inget sexuellt) och integritetsetiketter som stämmer med samtyckestexten (A41).
+
+- [ ] **Ke26 – D121 på demosidan** (effort: low). Huvudbudskapet på sidan: AI:n i dina AirPods för vardagen, skolan och jobbet; "Starta Lumen en gång, sen finns den i örat hela dagen. Säg 'Lumen' så svarar den." Sant formulerat (D121).
