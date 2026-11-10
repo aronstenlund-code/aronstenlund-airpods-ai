@@ -6,7 +6,7 @@ Kort: ny delningsbild `site/og-lumen.png` (1200×630, 111 kB) enligt SYSTEM.md.
 - Ordmärket "Lumen" står utan symbol tills Aron valt logga.
 
 `og:image` pekar på den nya filen. De gamla `og-elias.png` (310 kB) och `og.png` (17 kB) är borttagna, och `site/` gick
-från 1 699 till 1 482 kB. **Ej provat i Messenger, iMessage eller Snapchat.**
+från 1 699 till 1 487 kB. **Ej provat i Messenger, iMessage eller Snapchat.**
 
 ## Vad som gjorts
 - Källa: `docs/marketing/annonser/_src/og-system.html`. Bilden av Elias är appens godkända `IntroElias@3x.png`, och
