@@ -103,3 +103,13 @@ Symbolen ersätter radiovågorna överallt: appikonen, introt, Start och demosid
 ## 7. Ersätter
 Det här ersätter handstilen, rutpappret och den röda pennan i `enkel-start.md` (Ke9/Ke10). Flödet och "en knapp per
 skärm" därifrån gäller fortfarande.
+
+## 8. Fler skärmar (Ke14)
+Bilder i `bilder/system/`, ljust till vänster och mörkt till höger.
+| Skärm | Bild | Det viktigaste |
+|---|---|---|
+| Har du prov snart? (A22) | `prov2.png` | Lumen lyssnar redan, och brickan "Lyssnar" sitter i kortet med exemplet. Tre val (ämne som runda chips, datum, årskurs), "Spara prov" blå och "Inte nu" tyst. Delämnet frågas i första förhöret. |
+| Röst | `rost.png` | Rösterna beskrivs ("Mansröst, lugn"), ▶ på varje rad för att provlyssna och ✓ på den valda. Talhastighet i tre steg (Lugn, Normal, Snabb). Beskrivningarna är exempel och sätts efter de röster som finns. |
+| Byt läge (blad) | `bytlage.png` | Förhör mig, Få A-svar till provet och Bara fråga överst, och under dem FLER LÄGEN. Ikonerna är grå SF Symbols; det valda läget har blå ikon och ✓. Röstkommandot står en gång, längst ner. |
+| Kommandon (blad) | `kommandon.png` | "Säg till Lumen" med fem kommandon och vad som händer, plus "Alla kommandon ›". |
+| Lumen hör dig inte | `nekad2.png` | En ikon i en mjuk cirkel, tre numrerade steg i en brunn, "Öppna Inställningar" blå och "Hoppa över" tyst. |
