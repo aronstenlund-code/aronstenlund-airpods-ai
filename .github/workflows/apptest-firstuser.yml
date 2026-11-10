@@ -5,6 +5,10 @@ name: Apptest first-time user (T8)
 # when the test changes. Simulator only: never a device test.
 on:
   workflow_dispatch:
+    inputs:
+      paths:
+        description: "Paths: skip, exam or 'skip exam' (D120: each path costs Scribe and /tts)"
+        default: "skip"
   push:
     branches: ["toby/**"]
     paths:
@@ -36,8 +40,11 @@ jobs:
         run: brew install xcodegen
 
       - name: First-time user
+        env:
+          T8_PATHS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.paths || 'skip' }}
         run: |
-          bash scripts/apptest/firstuser.sh
+          # D120: one path by default (both modes' first answer); "skip exam" for both.
+          bash scripts/apptest/firstuser.sh $T8_PATHS
           STATUS=$?
           cat apptest-out/firstuser/summary.md >> "$GITHUB_STEP_SUMMARY" || true
           exit $STATUS

@@ -3,9 +3,14 @@ name: Apptest retest after A8 and A11 (T5)
 # Toby's T5: Frågor answers and speaks every question (3 continuations after a pause), Provläge makes four turns of
 # one breath, Scribe holds an exam with topics over 20 characters. Live and paid (Scribe, /answer; Apple's voice, no
 # /tts), so manual, and on Toby's branch when the test changes. The long run (part 4) is apptest-long.yml.
-# Simulator only: never a device test.
+# Simulator only: never a device test. D120: Scribe is open for the whole set, so only the sets named in `sets` run
+# (default fragor,block, the two A21 changed; keyterm held in T5).
 on:
   workflow_dispatch:
+    inputs:
+      sets:
+        description: "Sets to run (fragor, block, keyterm), comma separated; empty = all"
+        default: "fragor,block"
   push:
     branches: ["toby/**"]
     paths:
@@ -38,6 +43,8 @@ jobs:
         run: brew install xcodegen
 
       - name: Retest
+        env:
+          RETEST_SETS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.sets || 'fragor,block' }}
         run: |
           bash scripts/apptest/retest.sh
           STATUS=$?

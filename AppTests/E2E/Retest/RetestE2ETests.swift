@@ -22,6 +22,14 @@ enum RetestEnvironment {
     static var audioDir: URL? {
         ProcessInfo.processInfo.environment["LUMEN_E2E_RETEST_DIR"].map { URL(fileURLWithPath: $0) }
     }
+
+    /// D120 (no wasted ElevenLabs credits): `LUMEN_E2E_RETEST_SETS` ("fragor,block") runs only those sets, since
+    /// Scribe is open for the whole set. Empty or unset: all three.
+    static func includes(_ set: String) -> Bool {
+        let sets = (ProcessInfo.processInfo.environment["LUMEN_E2E_RETEST_SETS"] ?? "")
+            .split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        return sets.isEmpty || sets.contains(set)
+    }
 }
 
 @MainActor
@@ -73,7 +81,7 @@ struct RetestE2ETests {
     static let longTopics = "fotosyntesens ljusberoende reaktioner, Calvincykeln i kloroplasterna, "
         + "mitokondriernas elektrontransportkedja"
 
-    @Test func frågorAnswersAndSpeaksEveryQuestion() async throws {
+    @Test(.enabled(if: RetestEnvironment.includes("fragor"))) func frågorAnswersAndSpeaksEveryQuestion() async throws {
         let result = try await run(set: "fragor", mode: .standard, speak: true, topics: nil, gap: 14)
         let answered = result.cases.filter { !$0.answered.isEmpty }.count
         let spoken = result.cases.filter { $0.spoken > 0 }.count
@@ -85,7 +93,7 @@ struct RetestE2ETests {
         }
     }
 
-    @Test func provlägeMakesFourTurnsOfOneBreath() async throws {
+    @Test(.enabled(if: RetestEnvironment.includes("block"))) func provlägeMakesFourTurnsOfOneBreath() async throws {
         // 4 turns one at a time take a while: a long gap keeps them in the block's own window.
         let result = try await run(set: "block", mode: .prov, speak: false, topics: Self.ordinaryTopics, gap: 35)
         #expect(result.stoppedEarly == nil, "stopped early: \(result.stoppedEarly ?? "")")
@@ -94,7 +102,7 @@ struct RetestE2ETests {
         }
     }
 
-    @Test func scribeHoldsAnExamWithLongTopics() async throws {
+    @Test(.enabled(if: RetestEnvironment.includes("keyterm"))) func scribeHoldsAnExamWithLongTopics() async throws {
         let result = try await run(set: "keyterm", mode: .prov, speak: false, topics: Self.longTopics, gap: 14)
         #expect(result.stoppedEarly == nil, "stopped early: \(result.stoppedEarly ?? "")")
         #expect(result.refusedOrFellBack.isEmpty, "Scribe: \(result.refusedOrFellBack)")
