@@ -1,0 +1,102 @@
+# Designsystem: Lumen som en riktig pluggapp (Kelly, Ke12, 2026-11-10)
+
+Aron 2026-11-10: appen ska se ut som andra pluggappar, inte som en vibe-kodad app. Det här ersätter D86:s skollook
+(rutpapper, handstil, röd lärarpenna). Angela bygger det i A18. Sidan följer efter. `designspec.md` visar hur appen och
+sidan ser ut i dag; den här filen visar hur de ska se ut.
+
+Skisser: `bilder/system/` (fem skärmar, före och efter, ljust och mörkt, plus `logo.png`), källa
+`_src/system.html`. **Skisser, inget byggt, inget provat på telefon.**
+
+## 1. Vad gör de andra proffsiga?
+Jämförelsen bygger på vad jag vet om apparna, inte på dagens versioner. Den är **ej verifierad mot App Store**, och inga
+bilder därifrån ligger i repot.
+
+| App | Det som gör den proffsig | Vi tar |
+|---|---|---|
+| Quizlet | Vita kort med mjuk skugga, en blå accent och mycket luft. Inga mönster bakom texten. | Kort i stället för rutpapper, en accent. |
+| Speak | En stor sak per skärm (frågan, mikrofonen). Rösten står i centrum och knapparna är få och stora. | En huvudknapp per skärm, och ett tydligt läge för "Lyssnar". |
+| Duolingo | En egen figur i en enda stil som återkommer överallt. Korta, vänliga texter. | Elias som återkommande figur, i en stil. Ton i texterna. |
+| Apple Anteckningar / Fitness | Systemets listor, typografi som bär allt och ett fåtal färger. Allt avancerat ligger en nivå ner. | Vanliga iOS-listor i Inställningar. Rubriker i stort och fett. |
+
+Det gemensamma är luft, typografi och en accentfärg. Illustrationer ligger i en enda stil, och det finns inga gimmickar.
+
+## 2. Grunder
+**Färger** (ljust / mörkt). En accent. Rött bara vid fel.
+| Token | Ljust | Mörkt | Används till |
+|---|---|---|---|
+| `background` | #FFFFFF | #0F1218 | skärmar |
+| `surface` | #F4F6FA | #181C26 | grupperade listor, sekundära knappar, brunnar i kort |
+| `raised` | #FFFFFF | #1D2230 | kort |
+| `ink` | #141A2E | #EEF1F7 | text |
+| `muted` | #5E6779 | #9AA3B5 | hjälptext, frågan ovanför svaret |
+| `line` | #E4E8EF | #272D3B | avdelare, kortkant i ljust |
+| `blue` (accent) | #2346C8 | #7F9BFF | huvudknapp, länkar, Lyssnar-brickan |
+| `soft` | #EAF0FF | #1E2A4F | brickor ("5 dagar kvar", "Lyssnar") |
+| `red` | #D9342B | #FF6F61 | **bara** fel och "radera" |
+
+Lägesfärgerna (grön, orange, magenta, grafit) tas bort ur gränssnittet. Rutpappret tas bort helt i appen.
+
+**Typsnitt:** Familjen Grotesk, en familj. **Ingen handstil** (Kalam används inte längre i gränssnittet).
+| Stil | Storlek / vikt | Exempel |
+|---|---|---|
+| Stor rubrik | 34 / bold, spärr −2 % | "Fråga högt. Få svaret i örat." |
+| Rubrik | 28 / bold | "Biologiprovet" |
+| Brödtext | 17 / regular, radavstånd 1,4 | |
+| Svar | 20 / regular, radavstånd 1,4 | svaret på Lyssnar |
+| Frågan | 15 / semibold, `muted` | "Vad är fotosyntes?" ovanför svaret |
+| Knapp | 17 / semibold | |
+| Fotnot | 13 / regular, `muted` | "Inget konto." |
+| Sektionsrubrik | 13 / semibold, versaler, `muted` | "ANDRA PROV" |
+
+Alla storlekar följer Dynamic Type (`relativeTo:`).
+
+**Avstånd:** 4, 8, 12, 16, 20 (skärmkant), 24, 32. **Hörn:** knappar 14, kort 20, brickor och chips helt runda, listgrupper
+16, ikonknappar 12. **Skugga:** kort i ljust läge `0 1 2 / 6 %` plus `0 6 20 / 7 %`. Mörkt läge har ingen skugga och
+använder `raised` i stället. **Ikoner:** SF Symbols i vikt regular, 20–22 pt (på sidan: SVG med 1,8 px streck och rundade
+ändar). Inga egna ikoner utom loggan.
+
+## 3. Komponenter
+- **Huvudknapp:** blå, höjd 54, hörn 14. **Högst en per skärm.**
+- **Sekundär knapp:** `surface`-yta, bläck-text. Används för Pausa, Klar, Bara fråga och Fler lägen.
+- **Textknapp:** blå text, för "Hoppa över", "+ Lägg till prov" och "Läs mer".
+- **Fara:** röd text, bara i bekräftelser ("Radera minnet"). Aldrig för Avsluta.
+- **Kort:** `raised`, hörn 20, skugga. Provkortet: liten rubrik "NÄSTA PROV", bricka med dagar kvar, rubrik, datum,
+  en brunn med "Öva mer på" och huvudknappen.
+- **Bricka:** `soft` och blå text, helt rund. "5 dagar kvar" ersätter den röda handstilsringen.
+- **Lyssnar-bricka:** blå punkt med en mjuk ring, texten och nivåmätaren i en rund bricka mitt på skärmen. Texterna:
+  "Lyssnar", "Hör inte, försöker igen", "Pausad" och "Svarar".
+- **Lista:** vanlig iOS-lista (`insetGrouped`), rad med värde och pil. Inga chips eller reglage med siffror i listan.
+- **Elias:** alltid i ett ljust kort (vit bakgrund, hörn 24, skugga), också i mörkt läge, som ett foto. Ringarna från
+  hörluren är loggans rörelse.
+
+## 4. Ton i texterna
+- Du-form. Korta meningar. Verbet först på knappar: "Förhör mig", "Lägg till prov", "Testa nu".
+- Samma ord på knappen som det man säger till Lumen.
+- Aldrig: utvecklartext (licenser, modellnamn, "1.00×", röstnamn som "Adam"), dubbla negationer ("Inget prov just
+  nu" på en brytare), utropstecken, ständiga instruktionsrader ("Säg 'Lumen, byt till …'").
+- Röstkommandon visas en gång, när de behövs (tips efter första svaret, under Röstkommandon), inte på varje skärm.
+
+## 5. Logga och appikon (U5): tre förslag, Aron väljer
+Bild: `bilder/system/logo.png` och `logo-dark.png`. Filer: `logo/<förslag>-ikon.svg` (1024, iOS rundar hörnen) och
+`logo/<förslag>-symbol.svg` (enfärgad).
+- **A. Aha-punkten:** en punkt över en mjuk båge, som ett svar som tänds eller ett leende. Den är tydligast i 29 pt och
+  fungerar oavsett namn (Lumen, Proviska eller Testvisk). **Rekommenderas.**
+- **B. Bubblan:** en pratbubbla med en punkt. Den är lätt att förstå, men chattappar använder samma form, så den är svår
+  att äga.
+- **C. Örat:** ett öra i en linje med en punkt där svaret landar. Den säger "i örat" utan en Apple-lik hörlur
+  (granskningsrisk 5.2.5), men blir otydlig i små storlekar.
+
+Symbolen ersätter radiovågorna överallt: appikonen, introt, Start och demosidan.
+
+## 6. Skärmarna (före → efter)
+| Skärm | Bild | Det viktigaste |
+|---|---|---|
+| Intro | `bilder/system/intro.png`, `-dark` | Elias-kortet i stället för grå hörlurar på rutpapper. En mening under rubriken. Löftena som en lugn lista. Samtyckesmeningen står kvar under Testa nu. |
+| Första frågan | `fraga.png`, `-dark` | Ingen handstil: frågan i 15 semibold grå, svaret i 20. Lyssnar-brickan i kortet. Fortsätt syns först efter svaret. |
+| Start | `start.png`, `-dark` | Provkortet med brickan "5 dagar kvar" och "Förhör mig". Andra prov i en lista utan mikrofoner. "Bara fråga" och "Fler lägen" som sekundära knappar. Inga lägescirklar och ingen instruktionsrad. |
+| Lyssnar | `lyssnar.png`, `-dark` | Titeln i mitten, "Byt läge" under ⋯. Lyssnar-brickan i mitten. Pausa och Klar är neutrala; Pausa blir blå "Lyssna igen" när det är pausat. Tummen ned (D57) står kvar. |
+| Inställningar | `inst.png`, `-dark` | iOS-lista i fyra grupper. Rösten beskrivs, och provlyssning och hastighet ligger på Röst-sidan. Prov tas bort (hanteras på Start). Licenser bara under Om Lumen › Licenser. |
+
+## 7. Ersätter
+Det här ersätter handstilen, rutpappret och den röda pennan i `enkel-start.md` (Ke9/Ke10). Flödet och "en knapp per
+skärm" därifrån gäller fortfarande.

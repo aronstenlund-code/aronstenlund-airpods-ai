@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proffsig pluggapp: system och skärmar</title>
+<!-- Kelly, Ke12. Det nya systemet (docs/design/SYSTEM.md) ritat på fem skärmar, bredvid A13/T3-bilderna (före).
+     Rendera från repots rot: python -m http.server 8790, sedan Chrome headless
+     ".../docs/design/_src/system.html?s=intro|fraga|start|lyssnar|inst|logo[&dark=1]" -->
+<style>
+  @font-face { font-family: "Familjen Grotesk"; src: url("../../../site/fonts/familjen-grotesk.woff2") format("woff2"); font-weight: 400 700; }
+  :root {
+    --bg: #FFFFFF; --surface: #F4F6FA; --raised: #FFFFFF; --ink: #141A2E; --mut: #5E6779; --line: #E4E8EF;
+    --blue: #2346C8; --blue-2: #3A5BE0; --on-blue: #FFFFFF; --soft: #EAF0FF; --red: #D9342B; --stage: #E9EDF3;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 20px rgba(16,24,40,.07);
+  }
+  .dark {
+    --bg: #0F1218; --surface: #181C26; --raised: #1D2230; --ink: #EEF1F7; --mut: #9AA3B5; --line: #272D3B;
+    --blue: #7F9BFF; --blue-2: #9DB2FF; --on-blue: #0E1630; --soft: #1E2A4F; --red: #FF6F61; --stage: #07090D;
+    --shadow: none;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Familjen Grotesk", system-ui, sans-serif; background: var(--stage); color: var(--ink); padding: 28px; }
+  .pair { display: flex; gap: 36px; align-items: flex-start; justify-content: center; }
+  .col { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  .tag { font-weight: 700; font-size: 18px; }
+  .tag.after { color: var(--blue); }
+  .cap { font-size: 14px; color: var(--mut); max-width: 380px; text-align: center; line-height: 1.35; }
+  .shot, .phone { width: 375px; height: 815px; border-radius: 38px; overflow: hidden; box-shadow: 0 10px 40px rgba(16,24,40,.18); }
+  .shot { object-fit: cover; object-position: top; background: #fff; }
+  .phone { background: var(--bg); position: relative; display: flex; flex-direction: column; border: 1px solid var(--line); }
+  .status { height: 46px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; font-weight: 600; font-size: 15px; flex: none; }
+  .pad { padding: 0 20px; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .between { justify-content: space-between; }
+  h1 { font-size: 34px; line-height: 1.08; letter-spacing: -.02em; font-weight: 700; }
+  h2 { font-size: 28px; line-height: 1.1; letter-spacing: -.015em; font-weight: 700; }
+  .sub { color: var(--mut); font-size: 17px; line-height: 1.4; }
+  .small { font-size: 15px; }
+  .foot { font-size: 13px; color: var(--mut); text-align: center; line-height: 1.35; }
+  .card { background: var(--raised); border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--line); }
+  .dark .card { border-color: transparent; }
+  .well { background: var(--surface); border-radius: 20px; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 54px; border-radius: 14px; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 17px; flex: 1; }
+  .btn.sec { background: var(--surface); color: var(--ink); }
+  .link { color: var(--blue); font-weight: 600; font-size: 16px; text-align: center; }
+  .bottom { margin-top: auto; padding: 0 20px 28px; display: flex; flex-direction: column; gap: 12px; }
+  .ico { width: 22px; height: 22px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .iconbtn { width: 40px; height: 40px; border-radius: 12px; background: var(--surface); display: grid; place-items: center; color: var(--ink); }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: var(--soft); color: var(--blue); font-weight: 600; font-size: 14px; }
+  .live { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px 7px 10px; border-radius: 999px; background: var(--soft); color: var(--blue); font-weight: 600; font-size: 15px; }
+  .live i { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 22%, transparent); }
+  .bars { display: inline-flex; gap: 3px; align-items: center; height: 16px; }
+  .bars b { width: 3px; border-radius: 2px; background: currentColor; }
+  .listrow { display: flex; align-items: center; justify-content: space-between; min-height: 52px; padding: 10px 16px; border-bottom: 1px solid var(--line); font-size: 17px; }
+  .listrow:last-child { border-bottom: 0; }
+  .listrow .v { color: var(--mut); display: flex; align-items: center; gap: 6px; }
+  .chev { color: var(--mut); opacity: .7; }
+  .group { background: var(--raised); border-radius: 16px; overflow: hidden; }
+  .dark .group { background: var(--surface); }
+  .phone.grouped { background: var(--surface); }
+  .dark .phone.grouped { background: var(--bg); }
+  .gtitle { font-size: 13px; font-weight: 600; color: var(--mut); padding: 0 16px 6px; margin-top: 22px; }
+  .toggle { width: 51px; height: 31px; border-radius: 999px; background: var(--blue); position: relative; }
+  .toggle::after { content: ""; position: absolute; right: 2px; top: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .seg { display: flex; background: var(--surface); border-radius: 10px; padding: 2px; margin: 10px 16px 4px; }
+  .seg span { flex: 1; text-align: center; padding: 7px 0; font-size: 15px; font-weight: 500; border-radius: 8px; }
+  .seg span.on { background: var(--raised); box-shadow: 0 1px 3px rgba(16,24,40,.12); font-weight: 600; }
+  .dark .seg { background: var(--bg); }
+  .dark .seg span.on { background: #2A3142; }
+  .q { font-weight: 600; font-size: 15px; color: var(--mut); }
+  .a { font-size: 20px; line-height: 1.4; }
+  .eliascard { margin: 4px 16px 0; height: 300px; border-radius: 24px; overflow: hidden; background: #fff; position: relative; box-shadow: 0 8px 30px rgba(16,24,40,.14); }
+  .eliascard img { width: 100%; display: block; margin-top: -30px; }
+  .eliascard .ring { position: absolute; border: 2.5px solid #2346C8; border-radius: 50%; opacity: .5; }
+  .note { font-size: 13px; color: var(--mut); }
+  .hide { display: none !important; }
+  /* Loggblad */
+  .sheet { width: 1140px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .opt { background: var(--bg); border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 16px; align-items: center; border: 1px solid var(--line); }
+  .opt h3 { font-size: 20px; align-self: flex-start; }
+  .opt p { font-size: 14px; color: var(--mut); line-height: 1.4; align-self: flex-start; }
+  .icons { display: flex; gap: 18px; align-items: flex-end; }
+  .tile { border-radius: 22.5%; overflow: hidden; box-shadow: 0 6px 18px rgba(16,24,40,.18); }
+  .word { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 22px; align-self: flex-start; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A5BE0"/><stop offset="1" stop-color="#1B33A6"/></linearGradient>
+    <!-- Förslag A: Aha-punkten. En lysande punkt över en mjuk båge (ett svar som tänds). -->
+    <symbol id="markA" viewBox="0 0 100 100"><circle cx="50" cy="38" r="13"/><path d="M27 66c6 9 14 13 23 13s17-4 23-13" stroke-width="9" stroke-linecap="round" fill="none"/></symbol>
+    <!-- Förslag B: Bubblan. En pratbubbla med svaret som en punkt inuti. -->
+    <symbol id="markB" viewBox="0 0 100 100"><path d="M24 22h52a12 12 0 0 1 12 12v26a12 12 0 0 1-12 12H48l-16 12v-12h-8a12 12 0 0 1-12-12V34a12 12 0 0 1 12-12z" fill="none" stroke-width="8" stroke-linejoin="round"/><circle cx="50" cy="47" r="9"/></symbol>
+    <!-- Förslag C: Örat. En enda båge som ett öra, med en punkt där ljudet når fram. -->
+    <symbol id="markC" viewBox="0 0 100 100"><path d="M36 74c0-10 8-12 8-22a14 14 0 1 1 28 0" fill="none" stroke-width="9" stroke-linecap="round"/><circle cx="58" cy="54" r="8"/><path d="M36 74a8 8 0 0 0 14 4" fill="none" stroke-width="9" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ Logga och appikon ============ -->
+<section data-s="logo">
+  <div class="sheet">
+    <div class="opt"><h3>A. Aha-punkten</h3>
+      <div class="icons">
+        <svg class="tile" width="180" height="180"><rect width="180" height="180" fill="url(#g)"/><use href="#markA" x="25" y="25" width="130" height="130" fill="#fff" stroke="#fff"/></svg>
+        <svg class="tile" width="60" height="60"><rect width="60" height="60" fill="url(#g)"/><use href="#markA" x="8" y="8" width="44" height="44" fill="#fff" stroke="#fff"/></svg>
+        <svg class="tile" width="29" height="29"><rect width="29" height="29" fill="url(#g)"/><use href="#markA" x="3" y="3" width="23" height="23" fill="#fff" stroke="#fff"/></svg>
+      </div>
+      <div class="word"><svg width="28" height="28"><use href="#markA" width="28" height="28" fill="var(--blue)" stroke="var(--blue)"/></svg>Lumen</div>
+      <p>En punkt som tänds över en mjuk båge: ett leende, ett svar som kommer. Fungerar oavsett namn. Enklast att känna igen i 29 pt.</p>
+    </div>
+    <div class="opt"><h3>B. Bubblan</h3>
+      <div class="icons">
+        <svg class="tile" width="180" height="180"><rect width="180" height="180" fill="url(#g)"/><use href="#markB" x="22" y="22" width="136" height="136" fill="#fff" stroke="#fff"/></svg>
+        <svg class="tile" width="60" height="60"><rect width="60" height="60" fill="url(#g)"/><use href="#markB" x="7" y="7" width="46" height="46" fill="#fff" stroke="#fff"/></svg>
+        <svg class="tile" width="29" height="29"><rect width="29" height="29" fill="url(#g)"/><use href="#markB" x="3" y="3" width="23" height="23" fill="#fff" stroke="#fff"/></svg>
+      </div>
+      <div class="word"><svg width="28" height="28"><use href="#markB" width="28" height="28" fill="var(--blue)" stroke="var(--blue)"/></svg>Lumen</div>
+      <p>Samtal och svar. Tydligt vad appen gör, men pratbubblor är vanliga bland chattappar, så den är svårare att äga.</p>
+    </div>
+    <div class="opt"><h3>C. Örat</h3>
+      <div class="icons">
+        <svg class="tile" width="180" height="180"><rect width="180" height="180" fill="url(#g)"/><use href="#markC" x="20" y="20" width="140" height="140" fill="#fff" stroke="#fff"/></svg>
+        <svg class="tile" width="60" height="60"><rect width="60" height="60" fill="url(#g)"/><use href="#markC" x="6" y="6" width="48" height="48" fill="#fff" stroke="#fff"/></svg>
+        <svg class="tile" width="29" height="29"><rect width="29" height="29" fill="url(#g)"/><use href="#markC" x="2" y="2" width="25" height="25" fill="#fff" stroke="#fff"/></svg>
+      </div>
+      <div class="word"><svg width="28" height="28"><use href="#markC" width="28" height="28" fill="var(--blue)" stroke="var(--blue)"/></svg>Lumen</div>
+      <p>Ett öra i en linje med en punkt där svaret landar. Säger "i örat" utan att visa en hörlur (ingen Apple-lik AirPod, 5.2.5).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Intro ============ -->
+<section class="pair" data-s="intro">
+  <div class="col"><p class="tag">Före (A13)</p>
+    <img class="shot" data-light="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-light-intro.png" data-dark="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-dark-intro.png" alt="">
+    <p class="cap">Små grå hörlurar och radiovågor på rutpapper. Ser ut som en platshållare.</p></div>
+  <div class="col"><p class="tag after">Efter</p>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="eliascard"><img src="../../../site/img/elias-seq/001.webp" alt="">
+        <span class="ring" style="left:95px; top:110px; width:44px; height:44px"></span><span class="ring" style="left:83px; top:98px; width:68px; height:68px; opacity:.25"></span></div>
+      <div class="pad" style="margin-top:22px; display:flex; flex-direction:column; gap:12px">
+        <div class="row" style="gap:8px; font-weight:700; font-size:17px"><svg width="24" height="24"><use href="#markA" width="24" height="24" fill="var(--blue)" stroke="var(--blue)"/></svg>Lumen</div>
+        <h1>Fråga högt. Få svaret i örat.</h1>
+        <p class="sub">Telefonen stannar i fickan.</p>
+        <div style="display:flex; flex-direction:column; gap:9px; margin-top:4px; font-size:15px">
+          <div class="row"><svg class="ico" viewBox="0 0 24 24" style="color:var(--mut)"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Lyssnar bara när du har startat den</div>
+          <div class="row"><svg class="ico" viewBox="0 0 24 24" style="color:var(--mut)"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Du ser alltid när den lyssnar</div>
+          <div class="row"><svg class="ico" viewBox="0 0 24 24" style="color:var(--mut)"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/></svg>Ljud sparas inte · <span style="color:var(--blue); font-weight:600">Läs mer</span></div>
+        </div>
+      </div>
+      <div class="bottom"><div class="btn" style="flex:none">Testa nu</div><p class="foot">Inget konto. Testa nu betyder att du godkänner punkterna ovan.</p></div>
+    </div>
+    <p class="cap">Elias i ett ljust kort (samma som på sidan), en mening under rubriken, löftena som en lugn lista. Kortet är ljust även i mörkt läge, som ett foto.</p></div>
+</section>
+
+<!-- ============ Första frågan ============ -->
+<section class="pair" data-s="fraga">
+  <div class="col"><p class="tag">Före (T3)</p>
+    <img class="shot" data-light="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-light/pro-light-05-forsta-fragan.png" data-dark="../../../reports/apptest/2026-11-09-t3-skarmbilder/pro-dark/pro-dark-05-forsta-fragan.png" alt="">
+    <p class="cap">Blå handstil som dekoration, rutpapper, tre exempel och en blå knapp innan något hänt.</p></div>
+  <div class="col"><p class="tag after">Efter (svaret har kommit)</p>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="pad" style="margin-top:22px; display:flex; flex-direction:column; gap:12px">
+        <h1>Fråga vad som helst</h1>
+        <p class="sub">Sätt i AirPods och fråga högt.</p>
+      </div>
+      <div class="pad" style="margin-top:22px">
+        <div class="card" style="padding:18px; display:flex; flex-direction:column; gap:14px">
+          <div class="row between"><span class="live"><i></i>Lyssnar</span><span class="bars" style="color:var(--blue)"><b style="height:6px"></b><b style="height:11px"></b><b style="height:16px"></b><b style="height:9px"></b><b style="height:5px"></b></span></div>
+          <p class="q">Vad är fotosyntes?</p>
+          <p class="a">Fotosyntesen är när växter använder ljusenergi för att göra socker av koldioxid och vatten. Syre bildas som en restprodukt.</p>
+        </div>
+        <p class="sub small" style="margin-top:16px">Fråga en sak till, eller gå vidare.</p>
+      </div>
+      <div class="bottom"><div class="btn" style="flex:none">Fortsätt</div></div>
+    </div>
+    <p class="cap">Frågan i vanlig text (halvfet, grå), svaret stort. Innan svaret: "Till exempel: Vad är fotosyntes?" i grått och bara en tyst "Hoppa över".</p></div>
+</section>
+
+<!-- ============ Start ============ -->
+<section class="pair" data-s="start">
+  <div class="col"><p class="tag">Före (A13)</p>
+    <img class="shot" data-light="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-light-home.png" data-dark="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-dark-home.png" alt="">
+    <p class="cap">Röd handstilsring, "Få A-svar till provet", mikrofon på varje rad, runda lägescirklar och en instruktionsrad.</p></div>
+  <div class="col"><p class="tag after">Efter</p>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="pad row between" style="margin-top:6px">
+        <div class="row" style="gap:8px; font-weight:700; font-size:22px"><svg width="26" height="26"><use href="#markA" width="26" height="26" fill="var(--blue)" stroke="var(--blue)"/></svg>Lumen</div>
+        <span class="iconbtn"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>
+      </div>
+      <div class="pad" style="margin-top:18px">
+        <div class="card" style="padding:22px 20px; display:flex; flex-direction:column; gap:12px">
+          <div class="row between"><span class="note" style="font-weight:600">NÄSTA PROV</span><span class="badge">5 dagar kvar</span></div>
+          <h2>Biologiprovet</h2>
+          <p class="sub small" style="margin-top:-6px">lör 14 nov · åk 9</p>
+          <div class="well" style="padding:12px 14px; border-radius:14px"><p class="note">Öva mer på</p><p style="font-weight:600; font-size:16px">Cellandning och klorofyll</p></div>
+          <div class="btn" style="flex:none; margin-top:4px">Förhör mig</div>
+        </div>
+        <p class="gtitle" style="padding-left:2px">ANDRA PROV</p>
+        <div class="group" style="border:1px solid var(--line)">
+          <div class="listrow"><div><div style="font-weight:600">Engelska</div><div class="note" style="font-size:14px">tors 19 nov · om 10 dagar</div></div><span class="chev">›</span></div>
+          <div class="listrow"><div><div style="font-weight:600">Historia</div><div class="note" style="font-size:14px">ons 25 nov · om 16 dagar</div></div><span class="chev">›</span></div>
+          <div class="listrow" style="color:var(--blue); font-weight:600">+ Lägg till prov</div>
+        </div>
+        <div class="row" style="margin-top:20px; gap:10px"><div class="btn sec" style="height:46px; font-size:16px">Bara fråga</div><div class="btn sec" style="height:46px; font-size:16px">Fler lägen</div></div>
+      </div>
+    </div>
+    <p class="cap">"Förhör mig" är enda blå knappen. Dagarna kvar som en lugn bricka. Andra prov i en vanlig lista utan mikrofoner. Inga lägescirklar, ingen instruktionsrad.</p></div>
+</section>
+
+<!-- ============ Lyssnar ============ -->
+<section class="pair" data-s="lyssnar">
+  <div class="col"><p class="tag">Före (A13)</p>
+    <img class="shot" data-light="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-light-listening.png" data-dark="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-dark-listening.png" alt="">
+    <p class="cap">Rutpappershuvud, "Startar …" bredvid Fortsätt, röd Avsluta och en instruktionsrad.</p></div>
+  <div class="col"><p class="tag after">Efter</p>
+    <div class="phone">
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="pad row between" style="margin-top:6px">
+        <span class="iconbtn"><svg class="ico" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></span>
+        <div style="text-align:center"><div style="font-weight:700; font-size:17px">Biologiprovet</div><div class="note">Förhör</div></div>
+        <span class="iconbtn"><svg class="ico" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg></span>
+      </div>
+      <div class="pad" style="margin-top:20px; display:flex; justify-content:center"><span class="live" style="font-size:16px; padding:9px 16px 9px 12px"><i></i>Lyssnar<span class="bars" style="margin-left:6px"><b style="height:6px"></b><b style="height:12px"></b><b style="height:16px"></b><b style="height:9px"></b></span></span></div>
+      <div class="pad" style="margin-top:26px; display:flex; flex-direction:column; gap:10px">
+        <p class="q">Vad är fotosyntes?</p>
+        <p class="a">Fotosyntesen är när växter använder ljusenergi för att göra socker av koldioxid och vatten. Syre bildas som en restprodukt.</p>
+        <div class="row" style="justify-content:flex-end"><span class="iconbtn" style="width:36px; height:36px; color:var(--mut)"><svg class="ico" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M17 14V2M9 18.1 10 14H4.2a2 2 0 0 1-1.9-2.5l2.3-8A2 2 0 0 1 6.5 2H17v12l-4 7.5a1.5 1.5 0 0 1-2.8-.9z"/></svg></span></div>
+        <div style="border-top:1px solid var(--line); padding-top:14px; margin-top:4px; display:flex; flex-direction:column; gap:6px">
+          <p class="q" style="font-size:14px">Vad är klorofyll?</p>
+          <p class="sub small">Klorofyll är det gröna ämnet i bladen som fångar ljuset.</p>
+        </div>
+      </div>
+      <div class="bottom"><div class="row" style="gap:12px"><div class="btn sec">Pausa</div><div class="btn sec">Klar</div></div></div>
+    </div>
+    <p class="cap">Status som en blå bricka i mitten ("Lyssnar", "Hör inte, försöker igen", "Pausad"). Byt läge under ⋯. Pausa blir "Lyssna igen" (då blå). Klar är neutral.</p></div>
+</section>
+
+<!-- ============ Inställningar ============ -->
+<section class="pair" data-s="inst">
+  <div class="col"><p class="tag">Före (A13)</p>
+    <img class="shot" data-light="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-light-settings.png" data-dark="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-dark-settings.png" alt="">
+    <p class="cap">"Adam", "Provlyssna"-chip, "1.00×" och brytaren "Inget prov just nu" (dubbel negation).</p></div>
+  <div class="col"><p class="tag after">Efter</p>
+    <div class="phone grouped">
+      <div class="status"><span>9:41</span><span>●●●</span></div>
+      <div class="pad" style="margin-top:10px"><h1 style="font-size:32px">Inställningar</h1></div>
+      <div class="pad">
+        <p class="gtitle">RÖST</p>
+        <div class="group">
+          <div class="listrow">Läs upp svaren<span class="toggle"></span></div>
+          <div class="listrow">Röst<span class="v">Mansröst, lugn <span class="chev">›</span></span></div>
+          <div class="listrow">Talhastighet<span class="v">Normal <span class="chev">›</span></span></div>
+        </div>
+        <p class="gtitle">SVAR</p>
+        <div class="group" style="padding-bottom:10px">
+          <div class="listrow" style="border:0; padding-bottom:0">Svarslängd</div>
+          <div class="seg"><span>Kort</span><span class="on">Lagom</span><span>Utförlig</span></div>
+          <p class="note" style="padding:4px 16px 0">Kort fakta, längre när du pluggar.</p>
+        </div>
+        <p class="gtitle">DU OCH LUMEN</p>
+        <div class="group">
+          <div class="listrow">Röstkommandon<span class="chev">›</span></div>
+          <div class="listrow">Minne<span class="chev">›</span></div>
+          <div class="listrow">Utseende<span class="chev">›</span></div>
+          <div class="listrow">Integritet<span class="chev">›</span></div>
+        </div>
+        <div class="group" style="margin-top:22px">
+          <div class="listrow">Avancerat<span class="chev">›</span></div>
+          <div class="listrow">Om Lumen<span class="chev">›</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="cap">Vanlig iOS-lista. Rösten beskrivs, inte namnges; provlyssning och hastighet ligger på Röst-sidan. Prov hanteras på Start. Licenser bara under Om Lumen › Licenser.</p></div>
+</section>
+
+<script>
+  const q = new URLSearchParams(location.search);
+  const s = q.get("s"), dark = q.get("dark") === "1";
+  if (dark) document.documentElement.classList.add("dark");
+  document.querySelectorAll("[data-s]").forEach(el => { if (s && el.dataset.s !== s) el.classList.add("hide"); });
+  document.querySelectorAll("img[data-light]").forEach(img => { img.src = dark ? img.dataset.dark : img.dataset.light; });
+</script>
+</body>
+</html>

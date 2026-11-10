@@ -1,23 +1,30 @@
-# Överlämning: Kelly (demosidan), session som gjorde Ke3–Ke8
+# Överlämning: Kelly (demosidan och design), session som gjorde Ke9–Ke12 och Ke12b (2026-11-10)
 
 Det här står inte i rapporterna. Rapporterna `reports/*kelly*` täcker resten.
 
 ## Så jobbar du
-- Jag arbetar bara i `site/` (plus `docs/marketing/`, `docs/design/`). Förhandsvisa med `python -m http.server 8765 -d site`.
-- **Lighthouse:** `npx -y lighthouse http://localhost:8765/ [--preset=desktop] --chrome-flags="--headless=new --no-sandbox"`. Senast 100/100/100/100 (mobil 99–100).
-- **Skärmbilder och scrollinspelning:** `puppeteer-core` med Chrome (`C:/Program Files/Google/Chrome/Application/chrome.exe`) fungerar bra; webbläsarpanelens `scrollTo` är opålitlig. Skriptet jag använde finns bara i min scratchpad, skriv om det vid behov (emulera `prefers-color-scheme`, sätt scroll så att `#elias` får önskad progress).
-- **Renderade bilder** (annonser, OG): `docs/marketing/annonser/_src/ad.html?n=1|2|3&real=1[&skiss=1]` och `og.html?real`, Chrome `--headless=new --screenshot`, via en lokal `http.server` i `_src`.
+- Jag jobbar i `site/`, `docs/design/` och `docs/marketing/`. Förhandsvisa med `python -m http.server 8765 -d site`.
+- **Skisser:** `docs/design/_src/system.html` (det nya systemet) och `enkel-start.html` (Ke9/Ke10, gammal stil). Starta
+  `python -m http.server 8790` från repots rot och kör sedan Chrome `--headless=new --screenshot --window-size=880,1010
+  "…?s=<skärm>[&dark=1]"`. Loggbladet behöver bredden 1210.
+- **Helsidesbilder, klick och mätning:** `puppeteer-core@23` i scratchpad (`npm i puppeteer-core@23`), med Chrome i
+  `C:/Program Files/Google/Chrome/Application/chrome.exe`.
+  - Sätt `document.documentElement.style.scrollBehavior='auto'` innan du scrollar, annars hamnar bilden fel.
+  - Kvantisera bilderna med PIL (`quantize(128)`), så att rapporterna håller sig små.
+- **Lighthouse:** `npx -y lighthouse http://localhost:8765/ [--preset=desktop] --chrome-flags="--headless=new --no-sandbox"`.
+  Senast 100/100/100/100.
+- **Deploy:** kontrollera med GitHub API via `git credential fill` (gh finns inte). Pages-deployen tar ungefär 1 min.
 
 ## Fallgropar
-- Klassen `.ring` finns redan i demon (skivans ringar). Elias-ringarna heter `.rings`/`.pulse`.
-- `site/` ska vara högst 2 MB (nu 1,77 MB). Elias-sekvensen är bara udda bildrutor (60 st). Bild 049–065 laddas inte (handen såg konstig ut); de ligger kvar i mappen och kan tas bort om vikten behövs.
-- Skriv aldrig "nästa" i övningsprov, "ljudet lämnar aldrig telefonen" eller svarstid i sekunder på sidan. Övningsprov (A16) är inte byggt.
-- Använd `git add` på namngivna filer, inte `git add -A reports`: det tog med Angelas oincheckade rapporter i `9c62e44`.
-- Klockan: kör `date` för tid i tavlan och köerna, gissa inte.
+- **Delat index:** en annan session kan committa dina stagade filer. Gör `git add F && git commit -- F` i ett kommando.
+  En tom `.git/rebase-merge` som blir kvar tas bort med `rmdir`. Kontrollera autostash innan du gör något annat.
+- Kör `date` innan du skriver en tid. Jag gissade 07:50 när klockan var 07:38 och fick rätta det.
+- Raden i demon efter svaret har en egen samtyckesversion (`CONSENT_VERSION_ROW`, högst 16 tecken). Höj den när radens
+  text ändras.
+- FAQ-datan (JSON-LD) och "Vanliga frågor" på sidan måste ha samma text. Ändra båda från en lista (se Ke11).
+- Samtyckesmeningen under Testa nu och tummen ned (D57) får aldrig försvinna ur en skiss.
 
 ## Öppna trådar
-- **Ke9 är inte påbörjad** (`prompts/queue/kelly.md`): designunderlag i `docs/design/enkel-start.md` och en enda väg framåt på sidan ("Så kommer du igång", 3 steg, en knapp).
-- Sidan har nu många sektioner (hero, "Så funkar", röstbudskap, exempel, lägen, väntelista): Ke9 ska ta bort det som drar åt flera håll.
-- Rich Results-test mot live-URL och Safari/iPhone-test av scrolleffekten är inte gjorda.
-- `site/og.png` (gammal) ligger kvar som reserv; og:image är `og-elias.png`.
-- Väntelistans `source` (`?utm_source=`) är bara provad lokalt, inte mot live `/waitlist`.
+- **Ke13 pågår:** demosidan i SYSTEM.md, utan handstil och nästan utan rutpapper. Loggan byts först när Aron valt A, B eller C.
+- Skärmbilderna i sidans tre steg ska bytas när A18 är byggd (Toby tar nya).
+- Safari och iPhone är inte provade för någonting på sidan. Rich Results-testet mot live-URL är inte gjort.
