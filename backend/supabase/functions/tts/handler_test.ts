@@ -311,3 +311,10 @@ Deno.test("K14: v4 Turbo by default; a 5xx or a slow start goes once to Flash; q
   assertEquals((await t4.handler(post({ text: "Sju.", model: "eleven_v4_turbo" }))).status, 502);
   assertEquals(e, ["eleven_v4_turbo"]);
 });
+
+Deno.test("K18: measured subject terms get a spoken spelling for the voice only (Swedish), endings kept", async () => {
+  const { pronounce } = await import("./handler.ts");
+  assertEquals(pronounce("Plattektonik förklarar jordbävningar.", "sv"), "Platt-tektonik förklarar jordbävningar.");
+  assertEquals(pronounce("om plattektoniken", "sv"), "om platt-tektoniken");
+  assertEquals(pronounce("plate tectonics", "en"), "plate tectonics");
+});

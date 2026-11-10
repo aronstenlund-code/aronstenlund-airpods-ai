@@ -71,6 +71,23 @@ export function parseVoiceSettings(v: unknown): Record<string, number | boolean>
 }
 
 export const TTS_LIMITS = { bodyBytes: 4 * 1024, text: 500 } as const;
+
+/**
+ * K18 part 2 (measured 2026-11-10: 29/30 subject terms heard right through Scribe): spellings that make the voice say a
+ * subject term the way a Swedish teacher does, applied to the text sent to ElevenLabs only (the app shows the original).
+ * Only terms that were measured wrong; ElevenLabs' own pronunciation dictionaries are not used (no account change).
+ */
+export const PRONUNCIATION_SV: [RegExp, string][] = [
+  [/(?<![\p{L}])plattektonik(\p{L}*)/giu, "platt-tektonik$1"],
+];
+export function pronounce(text: string, language: string): string {
+  if (language !== "sv") return text;
+  let t = text;
+  for (const [re, to] of PRONUNCIATION_SV) {
+    t = t.replace(re, (m, end) => (/^[A-ZÅÄÖ]/u.test(m) ? to.charAt(0).toUpperCase() + to.slice(1) : to).replace("$1", end ?? ""));
+  }
+  return t;
+}
 const OUTPUT_FORMATS = new Set(["mp3_22050_32", "mp3_44100_64", "pcm_16000", "pcm_24000"]);
 const CONTENT_TYPES: Record<string, string> = { mp3: "audio/mpeg", pcm: "audio/L16" };
 
@@ -266,7 +283,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
               accept: "audio/*",
             },
             body: JSON.stringify({
-              text,
+              text: pronounce(text, language),
               model_id: model,
               language_code: language,
               ...(voiceSettings ? { voice_settings: voiceSettings } : {}),
