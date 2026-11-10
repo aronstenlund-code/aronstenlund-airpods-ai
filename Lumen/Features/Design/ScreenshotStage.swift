@@ -97,6 +97,9 @@ struct ScreenshotStage: View {
                     ReadinessView(plan: plan, readiness: readiness, known: ["fotosyntes", "klorofyll"],
                                   today: model.todayLine(for: plan), onQuiz: {}, onClose: {})
                 }
+            // A49 (D123): the night and the morning report (Kelly draws them properly in Ke27).
+            case "sleep": SleepView(sleep: SleepController(store: SleepStore(directory: FileManager.default.temporaryDirectory.appendingPathComponent("sleep-demo"))))
+            case "sleepReport": SleepReportView(night: SleepDemo.night, clipURL: { _ in FileManager.default.temporaryDirectory }, onDelete: {}, onClose: {})
             case "about": NavigationStack { AboutView() } // A13.1
             case "interview": NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
             case "live": NavigationStack { LiveStartView(model: model, settings: model.modeSettings, mode: .social) }
@@ -105,6 +108,23 @@ struct ScreenshotStage: View {
         }
     }
 }
+/// A49: a demo night, 23:10–06:40, two times talking, a little snoring, one restless half hour.
+private enum SleepDemo {
+    static var night: SleepNight {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let start = calendar.date(byAdding: .minute, value: -50, to: today) ?? today // 23:10
+        var night = SleepNight(start: start, end: start.addingTimeInterval(7.5 * 3600))
+        night.talks = [SleepTalk(at: start.addingTimeInterval(2.2 * 3600), seconds: 4, text: "nej, det är min tur att svara", clip: "a.caf"),
+                       SleepTalk(at: start.addingTimeInterval(5.1 * 3600), seconds: 3, text: nil, clip: "b.caf")]
+        night.snores = (0..<40).map { start.addingTimeInterval(3.0 * 3600 + Double($0) * 5) }
+        night.snoreSeconds = 12 * 60
+        night.noises = (0..<14).map { start.addingTimeInterval(4.0 * 3600 + Double($0) * 120) }
+        night.batteryUsed = 9
+        return night
+    }
+}
+
 /// A38/A43: the plan's reply as K31/K33 send it, and three quiz days ending today.
 private enum ReadinessDemo {
     static var quizDays: [String] {

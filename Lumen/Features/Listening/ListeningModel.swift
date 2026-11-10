@@ -115,6 +115,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var conceptStats = ConceptStats.load()
     /// A19 (K17): what came up per exam and concept, right or wrong, for `/study-plan`.
     @ObservationIgnored private var studyHistory = StudyHistory.load()
+    /// A49 (D123): Sömnläge, its nights and the morning report.
+    @ObservationIgnored let sleep = SleepController()
     /// A48 (D122, K35): the phone tools (set by AppContainer; nil in most tests: no tools offered).
     @ObservationIgnored var phoneTools: (any PhoneToolRunning)?
     /// A48: the question Lumen asked before a tool changes something ("Ska jag lägga in …?"); shown with Ja / Nej.
@@ -2690,6 +2692,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         streak = quizDays.streak()
     }
     #endif
+
+    /// A49: "Sov": Lumen's own listening ends first (one microphone user at a time), then the night starts.
+    func startSleep() async {
+        if isListening || study.isActive { await endSession() }
+        sleep.start()
+        controller.log("Sleep mode started (A49)")
+    }
 
     // MARK: - A48 (D122, K35): phone tools
 

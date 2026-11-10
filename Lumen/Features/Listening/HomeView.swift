@@ -35,6 +35,7 @@ struct HomeView: View {
                 } else {
                     emptyCard
                 }
+                lastNight
                 modes
             }
             .padding(.horizontal, 20)
@@ -63,6 +64,19 @@ struct HomeView: View {
                     Task { await model.startQuiz(for: plan) }
                 } onClose: {
                     readinessPlan = nil
+                }
+            }
+        }
+        .fullScreenCover(isPresented: Binding(get: { model.sleep.isSleeping || model.sleep.report != nil }, set: { _ in })) {
+            // A49 (D123): the night, then the morning report.
+            if model.sleep.isSleeping {
+                SleepView(sleep: model.sleep)
+            } else if let night = model.sleep.report {
+                SleepReportView(night: night, clipURL: { model.sleep.store.clipURL($0, in: night) }) {
+                    model.sleep.store.delete(night)
+                    model.sleep.report = nil
+                } onClose: {
+                    model.sleep.report = nil
                 }
             }
         }
@@ -96,6 +110,33 @@ struct HomeView: View {
             Spacer()
             if model.streak.current > 0 { StreakBadge(streak: model.streak) }
             IconButton(systemName: "gearshape", label: "Inställningar") { model.isShowingSettings = true }
+        }
+    }
+
+    /// A49: last night's report, for 16 hours after waking.
+    @ViewBuilder
+    private var lastNight: some View {
+        if let night = model.sleep.store.latest, let end = night.end, Date().timeIntervalSince(end) < 16 * 3600 {
+            Button {
+                model.sleep.report = night
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "moon.stars")
+                        .foregroundStyle(LumenColor.blue)
+                        .frame(width: 36, height: 36)
+                        .background(LumenColor.soft, in: Circle())
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("I natt").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
+                        Text(night.talkLine).font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.ink)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundStyle(LumenColor.muted)
+                }
+                .padding(.horizontal, 16)
+                .frame(minHeight: 64)
+                .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 16))
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -378,6 +419,24 @@ struct MoreModesSheet: View {
                         }
                         .padding(.vertical, 4)
                     }
+                }
+                // A49 (D123): Sömnläge, not a listening mode: the phone on the bedside table all night.
+                Button {
+                    dismiss()
+                    Task { await model.startSleep() }
+                } label: {
+                    HStack(spacing: 14) {
+                        Image(systemName: "moon.stars")
+                            .font(.system(size: 17, weight: .regular))
+                            .foregroundStyle(LumenColor.blue)
+                            .frame(width: 36, height: 36)
+                            .background(LumenColor.soft, in: Circle())
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Sov").font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.ink)
+                            Text("Prat i sömnen och snarkning, bara på telefonen").font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
+                        }
+                    }
+                    .padding(.vertical, 4)
                 }
             }
             .lumenForm()
