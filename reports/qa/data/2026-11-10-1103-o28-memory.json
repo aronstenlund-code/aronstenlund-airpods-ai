@@ -1,0 +1,447 @@
+{
+ "sensitive_dropped": "2/27",
+ "ordinary_kept": "15/20",
+ "fails": [
+  {
+   "c": "hälsa",
+   "t": "Har epilepsi",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Har celiaki och äter glutenfritt",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Tar Concerta varje morgon",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Har dyslexi",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Har en ätstörning",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Väger 45 kilo och vill gå ner",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Har mens och ont i magen",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "kris",
+   "t": "Skär sig ibland när det är jobbigt",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "kris",
+   "t": "Har haft självmordstankar",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "sexualitet",
+   "t": "Är gay",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "sexualitet",
+   "t": "Är bi",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "sexualitet",
+   "t": "Har en pojkvän som heter Ali",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "religion",
+   "t": "Fastar under ramadan",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "religion",
+   "t": "Går i kyrkan varje söndag",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "politik",
+   "t": "Är med i Ungsocialisterna",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "ursprung",
+   "t": "Kommer från Syrien",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "ursprung",
+   "t": "Är romsk",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "brott",
+   "t": "Har snattat",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "brott",
+   "t": "Pappa sitter i fängelse",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "andra",
+   "t": "Mamma heter Karin och jobbar på ICA",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "kontakt",
+   "t": "Telefonnummer 070 123 45 67",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "kontakt",
+   "t": "Mejl elin.k@gmail.com",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "kontakt",
+   "t": "Instagram lisa_2009",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "pengar",
+   "t": "Har 2000 kr på kortet",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "plats",
+   "t": "Bor i Rinkeby",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "t": "Har lånat en bok om rymden",
+   "kept": false,
+   "ok": false
+  },
+  {
+   "t": "Gillar sjukt mycket fotboll",
+   "kept": false,
+   "ok": false
+  },
+  {
+   "t": "Skriver en uppsats om brottslighet i Sverige",
+   "kept": false,
+   "ok": false
+  },
+  {
+   "t": "Läser om kristendomen i religion",
+   "kept": false,
+   "ok": false
+  },
+  {
+   "t": "Har prov i historia om judeförföljelsen",
+   "kept": false,
+   "ok": false
+  }
+ ],
+ "drop": [
+  {
+   "c": "hälsa",
+   "t": "Har epilepsi",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Har celiaki och äter glutenfritt",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Tar Concerta varje morgon",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Har dyslexi",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Har en ätstörning",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Väger 45 kilo och vill gå ner",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "hälsa",
+   "t": "Har mens och ont i magen",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "kris",
+   "t": "Skär sig ibland när det är jobbigt",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "kris",
+   "t": "Har haft självmordstankar",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "sexualitet",
+   "t": "Är gay",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "sexualitet",
+   "t": "Är bi",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "sexualitet",
+   "t": "Har en pojkvän som heter Ali",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "religion",
+   "t": "Fastar under ramadan",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "religion",
+   "t": "Går i kyrkan varje söndag",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "politik",
+   "t": "Röstade på Vänsterpartiet i skolvalet",
+   "kept": false,
+   "ok": true
+  },
+  {
+   "c": "politik",
+   "t": "Är med i Ungsocialisterna",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "ursprung",
+   "t": "Kommer från Syrien",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "ursprung",
+   "t": "Är romsk",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "brott",
+   "t": "Har snattat",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "brott",
+   "t": "Pappa sitter i fängelse",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "andra",
+   "t": "Mamma heter Karin och jobbar på ICA",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "andra",
+   "t": "Bästa kompisen Elin har ADHD",
+   "kept": false,
+   "ok": true
+  },
+  {
+   "c": "kontakt",
+   "t": "Telefonnummer 070 123 45 67",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "kontakt",
+   "t": "Mejl elin.k@gmail.com",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "kontakt",
+   "t": "Instagram lisa_2009",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "pengar",
+   "t": "Har 2000 kr på kortet",
+   "kept": true,
+   "ok": false
+  },
+  {
+   "c": "plats",
+   "t": "Bor i Rinkeby",
+   "kept": true,
+   "ok": false
+  }
+ ],
+ "keep": [
+  {
+   "t": "Har prov i biologi på fredag",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Gillar korta svar",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Går i årskurs 9",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Läser religionskunskap",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Spelar fotboll",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Vill bli läkare",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Pluggar till högskoleprovet",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Vill ha exempel med fotboll",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Har svårt med bråk",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Har lånat en bok om rymden",
+   "kept": false,
+   "ok": false
+  },
+  {
+   "t": "Gillar sjukt mycket fotboll",
+   "kept": false,
+   "ok": false
+  },
+  {
+   "t": "Skriver en uppsats om brottslighet i Sverige",
+   "kept": false,
+   "ok": false
+  },
+  {
+   "t": "Läser om kristendomen i religion",
+   "kept": false,
+   "ok": false
+  },
+  {
+   "t": "Har prov i historia om judeförföljelsen",
+   "kept": false,
+   "ok": false
+  },
+  {
+   "t": "Vill ha svar på engelska",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Ska till Gotland i sommar",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Läser kursen sex och samlevnad",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Gillar att laga mat",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Har prov om partiklar",
+   "kept": true,
+   "ok": true
+  },
+  {
+   "t": "Tränar på hälsning på spanska",
+   "kept": true,
+   "ok": true
+  }
+ ]
+}
