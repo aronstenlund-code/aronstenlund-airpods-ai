@@ -1,0 +1,391 @@
+{
+ "sum_self": "5/20",
+ "sum_not_self": "10/10",
+ "sum_ruler": "5/5",
+ "sum_ruler_false": "2/10",
+ "fails": [
+  {
+   "t": "Lumen, är du en människa eller en robot",
+   "want": "robot",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "är det chatgpt",
+   "want": "robot",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "vilken AI är du",
+   "want": "robot",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "vem har gjort dig",
+   "want": "robot",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "lyssnar du på mig nu",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "hör du allt jag säger",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "spelar du in lektionen",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "lyssnar du när appen är stängd",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan du höra mig när skärmen är släckt",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "vem ser det jag frågar",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan läraren se vad jag frågar",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "sparas det jag säger",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "säljer ni min data",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "vart skickas ljudet",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan mina föräldrar läsa mina frågor",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "s": "Erik 14 poäng, Johan 12 poäng",
+   "out": "Erik den fjortonde poäng, Johan den tolfte poäng",
+   "ok": false
+  },
+  {
+   "s": "Peter 5 äpplen och Filip 3 äpplen",
+   "out": "Peter den femte äpplen och Filip den tredje äpplen",
+   "ok": false
+  },
+  {
+   "s": "Alexander 2 mål i matchen",
+   "out": "Alexander den andre mål i matchen",
+   "ok": false
+  },
+  {
+   "s": "Oscar 7 och Leo 9 i provet",
+   "out": "Oscar den sjunde och Leo den nionde i provet",
+   "ok": false
+  },
+  {
+   "s": "Henrik 3 rätt av 10",
+   "out": "Henrik den tredje rätt av 10",
+   "ok": false
+  },
+  {
+   "s": "Johan 3 kom tvåa",
+   "out": "Johan den tredje kom tvåa",
+   "ok": false
+  },
+  {
+   "s": "Leo 10 cm lång",
+   "out": "Leo den tionde cm lång",
+   "ok": false
+  },
+  {
+   "s": "Filip 8, Ludvig 6",
+   "out": "Filip 8, Ludvig den sjätte",
+   "ok": false
+  }
+ ],
+ "self": [
+  {
+   "t": "är du en AI",
+   "want": "robot",
+   "got": "robot",
+   "ok": true
+  },
+  {
+   "t": "Lumen, är du en människa eller en robot",
+   "want": "robot",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "är det chatgpt",
+   "want": "robot",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "vilken AI är du",
+   "want": "robot",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "vem har gjort dig",
+   "want": "robot",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "är du på riktigt eller",
+   "want": "robot",
+   "got": "robot",
+   "ok": true
+  },
+  {
+   "t": "lyssnar du på mig nu",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "hör du allt jag säger",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "spelar du in lektionen",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "lyssnar du när appen är stängd",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan du höra mig när skärmen är släckt",
+   "want": "listen",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "spelar du in det här",
+   "want": "listen",
+   "got": "listen",
+   "ok": true
+  },
+  {
+   "t": "asså lyssnar du hela tiden",
+   "want": "listen",
+   "got": "listen",
+   "ok": true
+  },
+  {
+   "t": "sparar du mina frågor",
+   "want": "save",
+   "got": "save",
+   "ok": true
+  },
+  {
+   "t": "vem ser det jag frågar",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan läraren se vad jag frågar",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "sparas det jag säger",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "säljer ni min data",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "vart skickas ljudet",
+   "want": "save",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan mina föräldrar läsa mina frågor",
+   "want": "save",
+   "got": null,
+   "ok": false
+  }
+ ],
+ "notSelf": [
+  {
+   "t": "är en robot levande",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "vad är AI",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "vem har gjort Mona Lisa",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "lyssnar hundar på musik",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "spelar du piano",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "sparar man pengar på att cykla",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "hör fladdermöss ultraljud",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "vad är en chattbot",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "vem är du i Hamlet, Horatio eller Hamlet",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "är det sant att robotar tar jobb",
+   "got": null,
+   "ok": true
+  }
+ ],
+ "ruler": [
+  {
+   "s": "Erik 14 var kung av Sverige",
+   "out": "Erik den fjortonde var kung av Sverige",
+   "ok": true
+  },
+  {
+   "s": "Karl den 12 dog 1718",
+   "out": "Karl den tolfte dog 1718",
+   "ok": true
+  },
+  {
+   "s": "Gustav III mördades på en maskerad",
+   "out": "Gustav den tredje mördades på en maskerad",
+   "ok": true
+  },
+  {
+   "s": "Kristina var drottning",
+   "out": "Kristina var drottning",
+   "ok": true
+  },
+  {
+   "s": "Ludvig 14 kallades solkungen",
+   "out": "Ludvig den fjortonde kallades solkungen",
+   "ok": true
+  }
+ ],
+ "rulerFalse": [
+  {
+   "s": "Erik 14 poäng, Johan 12 poäng",
+   "out": "Erik den fjortonde poäng, Johan den tolfte poäng",
+   "ok": false
+  },
+  {
+   "s": "Peter 5 äpplen och Filip 3 äpplen",
+   "out": "Peter den femte äpplen och Filip den tredje äpplen",
+   "ok": false
+  },
+  {
+   "s": "Alexander 2 mål i matchen",
+   "out": "Alexander den andre mål i matchen",
+   "ok": false
+  },
+  {
+   "s": "Oscar 7 och Leo 9 i provet",
+   "out": "Oscar den sjunde och Leo den nionde i provet",
+   "ok": false
+  },
+  {
+   "s": "Henrik 3 rätt av 10",
+   "out": "Henrik den tredje rätt av 10",
+   "ok": false
+  },
+  {
+   "s": "Karl 12 år gammal",
+   "out": "Karl 12 år gammal",
+   "ok": true
+  },
+  {
+   "s": "Johan 3 kom tvåa",
+   "out": "Johan den tredje kom tvåa",
+   "ok": false
+  },
+  {
+   "s": "Magnus 4 timmar",
+   "out": "Magnus 4 timmar",
+   "ok": true
+  },
+  {
+   "s": "Leo 10 cm lång",
+   "out": "Leo den tionde cm lång",
+   "ok": false
+  },
+  {
+   "s": "Filip 8, Ludvig 6",
+   "out": "Filip 8, Ludvig den sjätte",
+   "ok": false
+  }
+ ]
+}
