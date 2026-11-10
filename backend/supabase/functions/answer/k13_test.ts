@@ -103,3 +103,11 @@ Deno.test("K13 the spoken short part ends after two sentences; the rest starts t
   assert(!spoken.includes("russin"), spoken);
   assert(more.startsWith("Till exempel") && more.includes("alla celler"), more);
 });
+
+Deno.test("K13 the short answer is sent before the developed one starts (never held to the end)", async () => {
+  const { h } = two("Jämvikt är när två reaktioner går lika fort. [[MER]]\nDen pågår hela tiden åt båda håll. Halterna är konstanta.");
+  const ev = await events(await h(post(tutorBody({ two_level: true, fragment: "vad är jämvikt" }))));
+  const firstDelta = ev.findIndex((e) => e.event === "delta");
+  const firstMore = ev.findIndex((e) => e.event === "more_delta");
+  assert(firstDelta >= 0 && firstDelta < firstMore, ev.map((e) => e.event).join(","));
+});

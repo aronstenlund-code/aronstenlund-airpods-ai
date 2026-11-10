@@ -1091,6 +1091,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           // K13 (live: the short part was 103 words p50): the spoken part ends after two sentences or ~35 words at a
           // sentence end; what the model wrote beyond that is the start of the developed answer
           let shortDone = false;
+          let shortFinished = false;
           let shortSentences = 0;
           let shortWords = 0;
           const sayShort = (t: string) => {
@@ -1154,7 +1155,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 markBuf += ev.text;
                 const i = markBuf.indexOf(MORE_MARK);
                 if (i >= 0) {
+                  // the short answer is complete: flush every held sentence now (a held last sentence came only at the end)
                   sayShort(post.push(markBuf.slice(0, i) + "\n"));
+                  sayShort(post.finish());
+                  shortFinished = true;
                   inMore = true;
                   const rest = markBuf.slice(i + MORE_MARK.length);
                   markBuf = "";
@@ -1266,7 +1270,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               } else {
                 flushHead();
                 if (!stop) { for (const ev of parser.finish()) emit(ev); }
-                const fin = post.finish();
+                const fin = shortFinished ? "" : post.finish();
                 // K1.4: "förhör mig" never repeats a question of this session (held until here, nothing was sent)
                 const repeated = quiz && attempt === 0 && !stop && isRepeatedQuestion(fin, askedQuestions(body));
                 if (!repeated) (twoLevel ? sayShort : deliver)(fin);
