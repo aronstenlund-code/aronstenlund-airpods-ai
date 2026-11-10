@@ -218,13 +218,16 @@ export function createEvalHandler(deps: EvalDeps) {
         const bytes = Uint8Array.from(atob(wav), (ch) => ch.charCodeAt(0));
         const doFetch = deps.fetchImpl ?? fetch;
         let last = "";
-        for (const model of ["scribe_v2", "scribe_v1"]) {
+        // K18 (2026-11-10, verified live): zero retention ("enable_logging=false") is enterprise/trial only and gives
+        // 403 "ZRM"; eval clips are synthetic school sentences (no user audio), so they are retried without it
+        let zrm = true;
+        for (const model of ["scribe_v2", "scribe_v2", "scribe_v1"]) {
           const form = new FormData();
           form.append("model_id", model);
           form.append("language_code", "swe");
           form.append("tag_audio_events", "false");
           form.append("file", new Blob([bytes], { type: "audio/wav" }), "clip.wav");
-          const r = await doFetch("https://api.elevenlabs.io/v1/speech-to-text?enable_logging=false", {
+          const r = await doFetch(`https://api.elevenlabs.io/v1/speech-to-text${zrm ? "?enable_logging=false" : ""}`, {
             method: "POST",
             headers: { "xi-api-key": xiKey },
             body: form,
@@ -236,6 +239,10 @@ export function createEvalHandler(deps: EvalDeps) {
           // the provider's reason (never the key), so a 403 can be told apart (permission, plan, logging)
           const why = (await r.text().catch(() => "")).replace(/\s+/g, " ").slice(0, 200);
           last = `${model}: HTTP ${r.status} ${why}`.trim();
+          if (r.status === 403 && zrm && /ZRM/u.test(why)) {
+            zrm = false;
+            continue;
+          }
           if (r.status !== 400 && r.status !== 422) break; // only an unknown model is retried
         }
         throw new HttpError(502, "stt_failed", `batch transcription failed (${last})`);
