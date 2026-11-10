@@ -27,12 +27,12 @@ Status: v2 är ihopklippt (27,7 s: fotosyntes → fest → hallen → slutbild).
 
 ## V1 Köket (Omni 1.2 Flash, 8 s, 9:16, startbild: köket "elias-kok-slut")
 ```
-Animate the attached image as the first frame. Keep the exact same character, clothing, stylized 3D animated look, kitchen and morning light. Static camera, no zoom, no cuts. Acting is natural and understated, never completely frozen.
+Animate the attached image as the first frame. Keep the exact same character, clothing, stylized 3D animated look, kitchen and morning light. One continuous shot from the same static camera position: no zoom, no cuts, no close-ups. The toaster, the bread board and the loaf stay exactly where they are in the first frame. Acting is natural and understated, never completely frozen.
 
 0–0.5 s: He stands at the counter. Nobody speaks.
 0.5–2.2 s: He says casually in Swedish: "Vad ska jag ha till frukost?"
-2.2–5.2 s: Nobody speaks. The white earbud that is visible to the camera lights up with a faint, steady soft white-blue glow. He keeps his mouth fully closed the whole time and listens, eyes shifting slightly to the side, then a small nod. While listening, he calmly picks up one slice of bread from the loaf with one hand.
-5.2–6.6 s: The glow fades out. With a small, confident flick of the wrist he tosses the slice a little into the air; it flips once and drops straight down into one of the toaster slots.
+2.2–5.2 s: Nobody speaks. The white earbud that is visible to the camera lights up with a faint, steady soft white-blue glow. He keeps his mouth fully closed the whole time and listens, eyes shifting slightly to the side, then a small nod. While listening, he calmly picks up one slice of bread from the loaf with one hand and holds it just above the toaster. Only this one slice moves; the rest of the loaf stays on the board.
+5.2–6.6 s: The glow fades out. Holding the slice directly above the toaster, he flicks it a short distance straight up with a confident little motion; it flips once and drops straight down into the toaster slot nearest to him.
 6.6–7.3 s: He presses the toaster lever down with one finger.
 7.3–8.0 s: The inside of the toaster slots glows warm orange. He gives a satisfied half-smile, mouth closed.
 
@@ -43,11 +43,11 @@ Risk: kastet kan bli fysiskt konstigt. Plan B utan ny generering: klipp bort kas
 
 ## V2 Brödet hoppar upp (Omni 1.2 Flash, 5 s, startbild: sista bildrutan från V1)
 ```
-Animate the attached image as the first frame. Keep the exact same character, clothing, stylized 3D animated look, kitchen and morning light. Static camera, no zoom, no cuts. Acting is natural and understated.
+Animate the attached image as the first frame. Keep the exact same character, clothing, stylized 3D animated look, kitchen and morning light. One continuous shot from the same static camera position: no zoom, no cuts, no close-ups. The toaster and the bread board stay exactly where they are. Acting is natural and understated.
 
 0–1.0 s: The toaster glows warm orange inside. He waits, relaxed, mouth closed.
-1.0–2.0 s: The toast pops up out of the toaster and he catches it with one hand.
-2.0–3.5 s: He looks straight into the camera with a confident half-smile and taps the white earbud once with his index finger.
+1.0–2.0 s: The single slice of golden toast pops up halfway out of the toaster slot, and he lifts it out with one hand.
+2.0–3.5 s: Holding the toast in one hand, he looks straight into the camera with a confident half-smile and taps the white earbud once with the index finger of his other hand.
 3.5–5.0 s: He holds the look, relaxed, mouth closed.
 
 Audio: the pop of the toaster and soft kitchen ambience. Nobody speaks. No music, no voices. No text, subtitles, captions or logos anywhere.
@@ -64,7 +64,7 @@ No text, letters, numbers, signs, screens with content, logos or brand names any
 ```
 Mitten per bild:
 - **G1 Jobbintervju** (text i redigering: "Jobbintervju"): `Vertical 9:16. A bright, modern meeting room. He sits at a table in his navy blazer and white shirt, calm and confident, listening. In the soft-focus foreground, the shoulder and back of an interviewer across the table.`
-- **G2 Förhör mig** (text: "Förhör mig"): `Vertical 9:16. A quiet library table by a window. He sits with an open notebook with blank lines in front of him, pen in hand, focused and thinking, wearing a navy crewneck sweater.`
+- **G2 Förhör mig** (text: "Förhör mig"): `Vertical 9:16. A quiet library table by a window. He sits with an open notebook in front of him, its pages blank with only faint ruled lines and no writing, pen in hand, focused and thinking, wearing a navy crewneck sweater.`
 - **G3 Träning** (text: "Träning"): `Vertical 9:16. Early morning on a park running path with autumn trees. He jogs toward the camera in a dark running jacket and running tights, focused and light on his feet.`
 - **G4 Vägen** (text: "Vägbeskrivning"): `Vertical 9:16. A Scandinavian city street with old stone buildings in daylight. He walks along the sidewalk in a navy coat, looking ahead confidently. No street signs, shop signs or house numbers.`
 - **G5 Sammanfattning** (text: "Sammanfatta mejlet"): `Vertical 9:16. He sits by the window on a city bus, looking out, relaxed, holding a phone face down in his lap. Soft daylight through the window.`
@@ -84,17 +84,17 @@ No text, letters, numbers, logos or brand names anywhere, including on the pizza
 ```
 Video:
 ```
-Animate the attached image as the first frame. Keep the exact same characters, clothing, stylized 3D animated look, hallway and daylight. Static camera, no zoom, no cuts. Acting is natural and understated, never completely frozen.
+Animate the attached image as the first frame. Keep the exact same characters, clothing, stylized 3D animated look, hallway and daylight. One continuous shot from the same static camera position: no zoom, no cuts, no close-ups. Nobody walks through the door; both stay where they are. Acting is natural and understated, never completely frozen.
 
 0–0.5 s: They look at each other. Nobody speaks.
-0.5–3.3 s: The delivery man says in Spanish, friendly: "Hola. Solo hablo español. Son doscientas coronas." The young man does not speak.
+0.5–3.3 s: The delivery man holds out the pizza box and says in Spanish, friendly: "Hola. Solo hablo español. Su pizza, con extra de queso." The young man does not speak.
 3.3–5.6 s: Nobody speaks. The white earbud facing the camera lights up with a faint, steady soft white-blue glow. The young man keeps his mouth fully closed and listens, then a small nod.
 5.6–8.4 s: The glow fades out. The young man smiles and says in Spanish, relaxed and fluent: "¡Perfecto, muchas gracias! ¡Que tenga un buen día!" and takes the pizza box. The delivery man does not speak.
 8.4–10.0 s: The delivery man smiles, surprised and impressed, and gives a thumbs up. Nobody speaks.
 
 Audio: only the two spoken lines above, each spoken once, never overlapping. Soft street ambience from outside. No music, no other voices, no voice from the earbud. No text, subtitles, captions or logos anywhere.
 ```
-Efteråt: Adam "Han pratar bara spanska. Det blir 200 kronor." (ca 2,3 s) i skenet. Elias spanska byts mot Arons inspelning (Filip).
+Efteråt: Adam "Han säger: din pizza, med extra ost." (ca 2 s) i skenet. Elias spanska byts mot Arons inspelning (Filip).
 
 ---
 
@@ -110,3 +110,13 @@ Efteråt: Adam "Han pratar bara spanska. Det blir 200 kronor." (ca 2,3 s) i sken
 ## Gratisalternativ (kollat 2026-11-10)
 - **Google Flow** (labs.google/flow): 50 gratis krediter per dag utan prenumeration, inga sparade krediter. Samma modell, Omni Flash 1.2, kostar 3 krediter/s i 720p, alltså ca 16 s video per dag gratis. Veo 3.1 Lite 8 s = 10 krediter. Kan inte generera gratis ca 15–18 svensk tid. Källa: support.google.com/flow/answer/16526234. **Ej verifierat:** om gratisvideor har synlig vattenstämpel, om startbild fungerar i gratisläget, och om kommersiell användning är tillåten (ingen officiell uppgift hittad).
 - Kling, Hailuo, Pika, Luma: gratis med vattenstämpel och oftast inte kommersiellt på gratisnivån (Krea 2026-11-02, Fello AI 2026-11-07). Passar inte annonser.
+
+## Tredje genomgången: vad som kan bli tokigt (som trappan) och vad jag ändrade
+Trappan gick fel för att prompten bad om rörelser som inte stämde med startbilden (gå mot kameran fast trappan gick åt ett annat håll) och om ett kameraåk mellan rum. Samma test på resten:
+- **V1 köket:** kastet över bänken var den största risken (föremål som flyger brukar förvandlas). Ändrat: han håller skivan direkt ovanför brödrosten och knäpper upp den en kort bit rakt upp, den faller rakt ner. Låst att brödrost, skärbräda och bröd inte flyttar sig och att bara en skiva rör sig. Lagt till "no close-ups" (14 s-klippet klippte själv till närbild).
+- **V2 brödet:** att fånga en flygande macka bytt mot att den hoppar upp halvvägs och han lyfter ur den. Han håller mackan i ena handen och knackar på hörluren med den andra (annars krockar händerna).
+- **G2:** "blank lines" kunde bli klotter; nu uttryckligen tomma sidor utan skrift.
+- **V3 pizzan:** repliken nämnde 200 kronor men han betalade aldrig, det blev ologiskt. Nu säger budet "Su pizza, con extra de queso" och AI:n översätter. Lagt till att ingen går genom dörren.
+- **Alla klipp:** "one continuous shot from the same static camera position: no zoom, no cuts, no close-ups".
+- **Kvar som risk:** Omni kan ändå lägga till en egen röst i örat eller prata för länge. Det går att rätta i ljudmixen utan ny generering, så länge munnen är stängd.
+- **Ordning:** V1 måste köras före V2 (V2 börjar på V1:s sista bildruta). Glimtarna och pizzans startbild är oberoende.
