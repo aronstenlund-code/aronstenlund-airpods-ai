@@ -217,10 +217,17 @@ final class ScreenTourTests: XCTestCase {
         let back = app.navigationBars.buttons.matching(NSPredicate(format: "label != 'Klar'")).firstMatch
         row.tap()
         pause(1.5)
-        if !back.exists, let again = scrollTo(labels, buttonsOnly: true) {
-            // The last rows sit at the sheet's bottom edge, where a tap can miss: scroll once more and tap again.
-            app.swipeUp()
-            (find(labels, buttonsOnly: true) ?? again).tap()
+        // The last rows sit at the sheet's bottom edge, where a tap can miss (seen at the largest text size):
+        // look the row up again each time and tap it only when it is hittable, never a stale element.
+        var attempt = 0
+        while !back.exists, attempt < 3 {
+            attempt += 1
+            log.append("note: \(labels[0]) tap missed, retry \(attempt)")
+            if let again = scrollTo(labels, buttonsOnly: true), again.isHittable {
+                again.tap()
+            } else {
+                app.swipeDown()
+            }
             pause(1.5)
         }
         shoot("installningar-\(name)", note: "Settings › \(labels[0])")
