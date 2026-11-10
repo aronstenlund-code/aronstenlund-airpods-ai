@@ -43,6 +43,9 @@
   .well { background: var(--surface); border-radius: 20px; }
   .btn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 54px; border-radius: 14px; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 17px; flex: 1; }
   .btn.sec { background: var(--surface); color: var(--ink); }
+  .btn.two { flex-direction: column; gap: 2px; height: 64px; }
+  .btn.two small { font-size: 13px; font-weight: 500; opacity: .85; }
+  .btn.two.sec small { color: var(--mut); opacity: 1; }
   .link { color: var(--blue); font-weight: 600; font-size: 16px; text-align: center; }
   .bottom { margin-top: auto; padding: 0 20px 28px; display: flex; flex-direction: column; gap: 12px; }
   .ico { width: 22px; height: 22px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -185,7 +188,7 @@
 <section class="pair" data-s="start">
   <div class="col"><p class="tag">Före (A13)</p>
     <img class="shot" data-light="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-light-home.png" data-dark="../../../reports/2026-11-09-a13-skarmbilder/efter-pro-dark-home.png" alt="">
-    <p class="cap">Röd handstilsring, "Få A-svar till provet", mikrofon på varje rad, runda lägescirklar och en instruktionsrad.</p></div>
+    <p class="cap">Röd handstilsring, en knapp utan förklaring, mikrofon på varje rad, runda lägescirklar och en instruktionsrad.</p></div>
   <div class="col"><p class="tag after">Efter</p>
     <div class="phone">
       <div class="status"><span>9:41</span><span>●●●</span></div>
@@ -199,7 +202,9 @@
           <h2>Biologiprovet</h2>
           <p class="sub small" style="margin-top:-6px">lör 14 nov · åk 9</p>
           <div class="well" style="padding:12px 14px; border-radius:14px"><p class="note">Öva mer på</p><p style="font-weight:600; font-size:16px">Cellandning och klorofyll</p></div>
-          <div class="btn" style="flex:none; margin-top:4px">Förhör mig</div>
+          <!-- D97 (ägarbeslut): två knappar, namnen ändras inte. En rad under varje visar skillnaden. -->
+          <div class="btn two" style="flex:none; margin-top:4px"><span>Förhör mig</span><small>Lumen frågar ut dig och svarar på dina frågor</small></div>
+          <div class="btn two sec" style="flex:none"><span>Få A-svar till provet</span><small>Lumen svarar bara när du frågar</small></div>
         </div>
         <p class="gtitle" style="padding-left:2px">ANDRA PROV</p>
         <div class="group" style="border:1px solid var(--line)">
@@ -210,7 +215,7 @@
         <div class="row" style="margin-top:20px; gap:10px"><div class="btn sec" style="height:46px; font-size:16px">Bara fråga</div><div class="btn sec" style="height:46px; font-size:16px">Fler lägen</div></div>
       </div>
     </div>
-    <p class="cap">"Förhör mig" är enda blå knappen. Dagarna kvar som en lugn bricka. Andra prov i en vanlig lista utan mikrofoner. Inga lägescirklar, ingen instruktionsrad.</p></div>
+    <p class="cap">D97: "Förhör mig" (blå) och "Få A-svar till provet" (grå), med en rad under varje som säger skillnaden. Dagarna kvar som en lugn bricka. Andra prov i en lista utan mikrofoner. Inga lägescirklar, ingen instruktionsrad.</p></div>
 </section>
 
 <!-- ============ Lyssnar ============ -->

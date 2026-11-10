@@ -57,11 +57,14 @@ använder `raised` i stället. **Ikoner:** SF Symbols i vikt regular, 20–22 pt
 
 ## 3. Komponenter
 - **Huvudknapp:** blå, höjd 54, hörn 14. **Högst en per skärm.**
+- **Knapp med förklaring** (D97): två rader, rubrik 17 semibold och en rad 13 under, höjd 64. Används på provkortet,
+  där "Förhör mig" (blå) och "Få A-svar till provet" (sekundär) står ihop och raden under säger skillnaden.
 - **Sekundär knapp:** `surface`-yta, bläck-text. Används för Pausa, Klar, Bara fråga och Fler lägen.
 - **Textknapp:** blå text, för "Hoppa över", "+ Lägg till prov" och "Läs mer".
 - **Fara:** röd text, bara i bekräftelser ("Radera minnet"). Aldrig för Avsluta.
 - **Kort:** `raised`, hörn 20, skugga. Provkortet: liten rubrik "NÄSTA PROV", bricka med dagar kvar, rubrik, datum,
-  en brunn med "Öva mer på" och huvudknappen.
+  en brunn med "Öva mer på", och sist **"Förhör mig"** ("Lumen frågar ut dig och svarar på dina frågor") och **"Få A-svar
+  till provet"** ("Lumen svarar bara när du frågar"). Namnen är Arons beslut (D97) och ändras inte.
 - **Bricka:** `soft` och blå text, helt rund. "5 dagar kvar" ersätter den röda handstilsringen.
 - **Lyssnar-bricka:** blå punkt med en mjuk ring, texten och nivåmätaren i en rund bricka mitt på skärmen. Texterna:
   "Lyssnar", "Hör inte, försöker igen", "Pausad" och "Svarar".
@@ -93,7 +96,7 @@ Symbolen ersätter radiovågorna överallt: appikonen, introt, Start och demosid
 |---|---|---|
 | Intro | `bilder/system/intro.png`, `-dark` | Elias-kortet i stället för grå hörlurar på rutpapper. En mening under rubriken. Löftena som en lugn lista. Samtyckesmeningen står kvar under Testa nu. |
 | Första frågan | `fraga.png`, `-dark` | Ingen handstil: frågan i 15 semibold grå, svaret i 20. Lyssnar-brickan i kortet. Fortsätt syns först efter svaret. |
-| Start | `start.png`, `-dark` | Provkortet med brickan "5 dagar kvar" och "Förhör mig". Andra prov i en lista utan mikrofoner. "Bara fråga" och "Fler lägen" som sekundära knappar. Inga lägescirklar och ingen instruktionsrad. |
+| Start | `start.png`, `-dark` | Provkortet med brickan "5 dagar kvar" och D97:s två knappar, "Förhör mig" och "Få A-svar till provet", med en rad under varje. Andra prov i en lista utan mikrofoner. "Bara fråga" och "Fler lägen" som sekundära knappar. Inga lägescirklar och ingen instruktionsrad. |
 | Lyssnar | `lyssnar.png`, `-dark` | Titeln i mitten, "Byt läge" under ⋯. Lyssnar-brickan i mitten. Pausa och Klar är neutrala; Pausa blir blå "Lyssna igen" när det är pausat. Tummen ned (D57) står kvar. |
 | Inställningar | `inst.png`, `-dark` | iOS-lista i fyra grupper. Rösten beskrivs, och provlyssning och hastighet ligger på Röst-sidan. Prov tas bort (hanteras på Start). Licenser bara under Om Lumen › Licenser. |
 
