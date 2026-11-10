@@ -124,6 +124,17 @@ const STRONG = [
   String.raw`(?:en|har en|gjort en|har gjort en) plan (?:för att|att|på hur (?:jag|ja) ska) (?:dö|ta livet av mig|ta mitt liv|göra slut)`,
   String.raw`(?:räknat ut|kollat|googlat|letat upp|vet) hur många (?:\p{L}+ )?(?:tabletter|piller|alvedon|ipren) (?:som )?(?:behövs|krävs|man behöver)`,
   String.raw`(?:ska|tänker|vill) ta alla (?:\p{L}+ )?(?:tabletter|piller|mediciner|medicin)`,
+  // K34 (Oscar O37): lying down on the tracks, stepping in front of a train or a vehicle, in any form
+  String.raw`(?:lägga|ställa|kasta|slänga|lägger|ställer|kastar) (?:mig|mej) (?:på|framför|under|ner på) (?:spåret|spåren|rälsen|tåget|ett tåg|tunnelbanan|pendeln|bussen|en buss|bilarna|en bil|lastbilen|en lastbil)`,
+  String.raw`(?:gå|går|kliva|kliver|springa|springer|hoppa|hoppar) (?:ut )?(?:framför|under|ner på) (?:tåget|ett tåg|spåret|spåren|rälsen|tunnelbanan|pendeln|bussen|en buss|bilarna|en bil|lastbilen|en lastbil)(?! (?:för att|och) (?:ta|hinna|komma|byta|vinka))`,
+  String.raw`(?:skadat|skadar|skadade|skurit|skär) (?:mig|mej) (?:med|på) (?:en |ett )?(?:sax|saxen|kniv|kniven|rakblad|rakbladet|glas|glasbit|passare|nål)(?! (?:när jag (?:lagade|klippte|pysslade)|av misstag|i slöjden))`,
+  String.raw`(?:alla|ni|de|dom|familjen|mamma|pappa) (?:\p{L}+ )?(?:vore|skulle vara|hade varit|blir) (?:lyckligare|gladare) (?:om|utan) (?:jag|mig|mej)`,
+  String.raw`(?:don'?t|do not|dont) want to (?:be here|exist|be alive|live) (?:anymore|any more)`,
+  String.raw`(?:gjort|gör|gjorde) illa (?:på )?(?:mig|mej) själv (?:igen|med (?:en |ett )?(?:sax|kniv|rakblad|glas|flit)|varje|när jag mår)`,
+  String.raw`(?:alla|ni|de|dom|familjen|mamma|pappa|världen|alla runt mig|folk) (?:\p{L}+ ){0,3}(?:bättre|lättare|enklare|lyckligare|gladare) (?:utan mig|utan mej|om (?:jag|ja) (?:inte fanns|var borta|var död|dog|försvann|aldrig (?:hade )?fötts|aldrig hade funnits))`,
+  String.raw`(?:skrivit|skriver|skrev) (?:ett |några |en )?(?:brev|lappar|lapp|meddelanden|meddelande) (?:till \p{L}+ )?(?:som ska (?:läsas|öppnas|hittas)|att (?:läsa|öppna)) (?:efteråt|när jag är borta|sen när jag)`,
+  String.raw`när (?:${I} )?inte (?:finns|lever)(?: (?:kvar|längre|mer))?(?! (?:hemma|där|på plats|med|i |på ))`,
+  String.raw`hurt(?:ing)? myself(?: on purpose| again)?|cut(?:ting)? myself|(?:no ?one|nobody) (?:would|will|is going to) (?:care|notice|miss me) if i (?:was|were|am|died|die|disappeared)`,
   // method questions without first person: every question on how to hurt oneself or die (Oscar O17c)
   String.raw`(?:vilka|vilken|vad för) (?:tabletter|piller|mediciner|medicin|läkemedel) (?:är|blir) (?:farligast|dödligast|mest dödliga|mest farliga|farliga) (?:att ta|att äta|att svälja|om man tar)`,
   String.raw`farligast att (?:ta|äta|svälja) (?:många|mycket|för många|för mycket) av`,
@@ -165,13 +176,19 @@ const EXCEPT = [
   String.raw`leva med att (?:ha fel|förlora|vara)`,
   String.raw`(?:låten|boken|filmen|serien|dikten|spelet) (?:heter|hette) [\p{L} ]+`,
   String.raw`vill du dö`,
+  // K34 (Oscar O37): everyday readings of 'inte finnas', 'en börda', 'ta sitt liv i egna händer'
+  String.raw`inte ${F}finnas (?:med )?(?:på|i|med) (?:bilden|bild|fotot|fotona|kortet|kort|listan|videon|filmen|klippet|story|storyn)`,
+  String.raw`(?:en )?börda för (?:laget|klassen|gruppen|teamet|kören|bandet)`,
+  String.raw`ta (?:sitt|mitt|ditt|ert|vårt|hans|hennes) (?:eget )?liv i (?:egna|sina|mina|dina|egen) händer|tar livet i egna händer|ta livet i egna händer`,
 ];
 
 /** Words that may be about the speaker's life or harm: first person plus one of these = ask the small model. */
-const RISK = /(?<![\p{L}])(?:leva|läva|lever|livet|liv|dö|död|döda|dog|dör|vakna|försvinna|försvann|sakna mig|skadade mig|hoppa från|börda|vara här längre|vara kvar längre|avsked\p{L}*|tabletter|överdos|hänga mig|andas|självmord\p{L}*|självskad\p{L}*|skada mig|skadar mig|skär mig|skar mig|skurit mig|ta slut|göra slut|hoppa framför|kms|kill myself|die|dying|vara kvar|finnas kvar|inget kvar|ingenting kvar|vara med längre|vara med mer|sår|såren|ärr|handleden|kniv|rakblad|begravning|ihjäl|sista gången|straffa mig|end it|worth it|slippa mig|slipper mig|hejdå|hej då|farväl|adjö|plan|planen|bestämt mig)(?![\p{L}])/iu;
+const RISK = /(?<![\p{L}])(?:leva|läva|lever|livet|liv|dö|död|döda|dog|dör|vakna|försvinna|försvann|sakna mig|skadade mig|hoppa från|börda|vara här längre|vara kvar längre|avsked\p{L}*|tabletter|överdos|hänga mig|andas|självmord\p{L}*|självskad\p{L}*|skada mig|skadar mig|skär mig|skar mig|skurit mig|ta slut|göra slut|hoppa framför|kms|kill myself|die|dying|vara kvar|finnas kvar|inget kvar|ingenting kvar|vara med längre|vara med mer|sår|såren|ärr|handleden|kniv|rakblad|begravning|ihjäl|sista gången|straffa mig|end it|worth it|slippa mig|slipper mig|hejdå|hej då|farväl|adjö|plan|planen|bestämt mig|ingen framtid|ingen idé|ingen mening|här längre|här mer|orkar inte mer|inte orkar mer|orkar inte längre|inte orkar längre|illa mig själv|efteråt)(?![\p{L}])/iu;
 const FIRST = /(?<![\p{L}])(?:jag|ja|mig|mitt|min|jg|i|me|my|im|i'm)(?![\p{L}])/iu;
 /** K34: questions about how to hurt oneself or die, without first person, go to the check too (never to a list). */
-const METHOD_Q = /(?<![\p{L}])(?:hur|vilka|vilken|vad|är det|går det)(?![\p{L}]).{0,60}(?<![\p{L}])(?:dö|dör|dödlig\p{L}*|ihjäl|skära|skär sig|förblöda|överdos|tabletter|piller|hänga sig|dränka sig|kvävas|självmord|ta livet av sig)(?![\p{L}])/iu;
+/** K34 (Oscar O37): a message to someone close that sounds like a last one; the check decides. */
+const FAREWELL = /(?<![\p{L}])(?:säg|hälsa|berätta|skriv) (?:till )?(?:mamma|pappa|mamma och pappa|morsan|farsan|min \p{L}+|mina \p{L}+|alla|familjen|syrran|brorsan) att (?:det inte var (?:hennes|hans|deras|ert|ditt|någons) fel|jag älskar (?:henne|honom|dem|dom|er|dig|alla)|jag är ledsen|förlåt|jag är tacksam för allt)/iu;
+const METHOD_Q = /(?<![\p{L}])(?:hur|vilka|vilken|vilket|vad|var|är det|går det)(?![\p{L}]).{0,60}(?<![\p{L}])(?:dö|dör|dödlig\p{L}*|ihjäl|skära|skär sig|förblöda|överdos|tabletter|piller|hänga sig|dränka sig|kvävas|självmord|ta livet av sig|drunkna|drunknar|rep|repet|snara|snaran|kvävs|strypa|överleva|farligt|farlig|skär|blöder|blöda|förblöda)(?![\p{L}])/iu;
 
 const STRONG_RE = RE(STRONG);
 const EXCEPT_G = RE_G(EXCEPT);
@@ -195,7 +212,7 @@ export function crisisLevel(text: string): CrisisLevel {
   const rest = t.replace(EXCEPT_G, " ");
   if (STRONG_RE.test(rest)) return "strong";
   if (FIRST.test(rest) && RISK.test(rest)) return "weak";
-  if (METHOD_Q.test(rest)) return "weak";
+  if (METHOD_Q.test(rest) || FAREWELL.test(rest)) return "weak";
   // a strong pattern that only an everyday reading explains: the check decides (never silence by itself)
   return STRONG_RE.test(t) ? "weak" : null;
 }
