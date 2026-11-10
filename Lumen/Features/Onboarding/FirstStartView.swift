@@ -69,7 +69,7 @@ struct IntroView: View {
                 // freely licensed picture; until then the squared paper and the listening rings stand in for it.
                 if !typeSize.isAccessibilitySize { // A12: the picture gives way to the text at the largest sizes
                     IntroHeroView() // A13.6: Elias and the rings (a placeholder until the picture is approved)
-                        .containerRelativeFrame(.vertical) { height, _ in min(300, height * 0.3) } // smaller on the SE
+                        .containerRelativeFrame(.vertical) { height, _ in min(340, height * 0.36) } // smaller on the SE
                 }
 
                 VStack(alignment: .leading, spacing: 14) {
@@ -206,20 +206,15 @@ struct FirstQuestionView: View {
 
     private var card: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 12) {
-                ListeningRings(size: 40, active: model.isListening)
-                Text(model.isListening ? "Lyssnar" : "Startar …").font(LumenFont.text(17, .semibold))
-                Spacer(minLength: 0)
-                LevelMeter(levelDBFS: model.isListening && model.isHearing ? model.controller.level.rmsDBFS : nil)
-            }
-            .accessibilityElement(children: .combine)
+            StatusBadge(title: model.isListening ? "Lyssnar" : "Startar …", active: model.isListening,
+                        levelDBFS: model.isListening && model.isHearing ? model.controller.level.rmsDBFS : nil)
             if let turn = model.conversation.streamingAnswer ?? model.conversation.answers.last {
-                Text(turn.question).font(appearance.questionFont(22)).foregroundStyle(LumenColor.blue)
+                Text(turn.question).font(appearance.questionFont(22)).foregroundStyle(LumenColor.muted)
                 if !turn.answer.isEmpty {
-                    Text(turn.answer).font(LumenFont.text(19, .medium))
+                    Text(turn.answer).font(LumenFont.text(20)).lineSpacing(5)
                 }
             } else {
-                Text("Vad är fotosyntes?").font(appearance.questionFont(22)).foregroundStyle(LumenColor.blue.opacity(0.5))
+                Text("Säg till exempel: ”Vad är fotosyntes?”").font(LumenFont.text(17)).foregroundStyle(LumenColor.muted)
                     .accessibilityLabel("Till exempel: Vad är fotosyntes?")
             }
         }

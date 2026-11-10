@@ -55,50 +55,48 @@ struct ListeningScreen: View {
 
     // MARK: Header
 
+    /// A18 (SYSTEM.md): back, the title in the middle, "Byt läge" under ⋯; then the status as one round badge in
+    /// the middle (dot, word, level meter). No squared paper.
     private var header: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            HStack(spacing: 12) {
-                IconButton(systemName: "chevron.left", label: "Tillbaka till start", background: LumenColor.background, action: onBack)
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(title).font(LumenFont.text(18, .bold, relativeTo: .headline)).lineLimit(2).minimumScaleFactor(0.7)
-                    Text(subtitle).font(LumenFont.text(14, relativeTo: .subheadline)).foregroundStyle(LumenColor.muted).lineLimit(2).minimumScaleFactor(0.7)
+        VStack(spacing: 14) {
+            ZStack {
+                VStack(spacing: 0) {
+                    Text(title).font(LumenFont.text(17, .bold, relativeTo: .headline)).lineLimit(1).minimumScaleFactor(0.7)
+                    Text(subtitle).font(LumenFont.text(13, relativeTo: .footnote)).foregroundStyle(LumenColor.muted).lineLimit(1).minimumScaleFactor(0.7)
                 }
+                .padding(.horizontal, 56)
                 .accessibilityElement(children: .combine)
-                Spacer(minLength: 0)
-                Button {
-                    isSwitching = true
-                } label: {
-                    HStack(spacing: 6) {
-                        Text("Byt läge")
-                        Image(systemName: "chevron.down").font(.system(size: 12, weight: .bold))
+                .accessibilityAddTraits(.isHeader)
+                HStack {
+                    IconButton(systemName: "chevron.left", label: "Tillbaka till start", background: .clear, action: onBack)
+                    Spacer()
+                    Menu {
+                        Button("Byt läge") { isSwitching = true }
+                        Button("Kommandon") { isShowingCommands = true }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: 18, weight: .semibold))
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
                     }
-                    .font(LumenFont.text(15, .semibold))
-                    .padding(.horizontal, 14)
-                    .frame(minHeight: 44)
-                    .background(LumenColor.background, in: RoundedRectangle(cornerRadius: 10))
+                    .foregroundStyle(LumenColor.ink)
+                    .accessibilityLabel("Mer")
                 }
-                .buttonStyle(.plain)
             }
-            HStack(spacing: 14) {
-                ListeningRings(size: 64, active: model.isListening)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(stateTitle).font(LumenFont.text(22, .bold, relativeTo: .title2))
-                    Text(stateDetail).font(LumenFont.text(15)).foregroundStyle(LumenColor.muted)
-                }
-                Spacer(minLength: 0)
-                // A13.2: moves when someone talks, so you can see that Lumen hears (nothing while it cannot, A11).
-                LevelMeter(levelDBFS: model.isListening && model.isHearing ? model.controller.level.rmsDBFS : nil)
+            StatusBadge(title: stateTitle,
+                        active: model.isListening && model.isHearing && model.speaker.status == .idle,
+                        levelDBFS: model.isListening && model.isHearing ? model.controller.level.rmsDBFS : nil)
+            if !stateDetail.isEmpty {
+                Text(stateDetail)
+                    .font(LumenFont.text(13, relativeTo: .footnote))
+                    .foregroundStyle(LumenColor.muted)
+                    .multilineTextAlignment(.center)
             }
-            .accessibilityElement(children: .combine)
-            .accessibilityAddTraits(.updatesFrequently)
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 8)
-        .padding(.bottom, 26)
-        .background {
-            GridPaper(cornerRadius: 0).ignoresSafeArea(edges: .top)
-        }
-        .overlay(alignment: .bottom) { Rectangle().fill(LumenColor.grid).frame(height: 1) }
+        .padding(.horizontal, 12)
+        .padding(.top, 4)
+        .padding(.bottom, 12)
+        .background(LumenColor.background)
     }
 
     private var plan: ExamPlan? {
@@ -128,7 +126,7 @@ struct ListeningScreen: View {
         }
         return switch model.state {
         case .paused: "Tryck Lyssna igen eller säg ”Lumen, fortsätt”"
-        default: mode.isLive ? "Lumen ger ett förslag i pausen" : "Ställ en fråga när du vill"
+        default: mode.isLive ? "Lumen ger ett förslag i pausen" : ""
         }
     }
 
@@ -147,7 +145,7 @@ struct ListeningScreen: View {
         } else if let turn = model.conversation.streamingAnswer ?? model.conversation.answers.last {
             VStack(alignment: .leading, spacing: 12) {
                 if !turn.question.isEmpty {
-                    Text(turn.question).font(appearance.questionFont(20)).foregroundStyle(LumenColor.blue)
+                    Text(turn.question).font(appearance.questionFont(20)).foregroundStyle(LumenColor.muted)
                         .accessibilityLabel("Fråga: \(turn.question)")
                 }
                 if turn.answer.isEmpty {
@@ -157,7 +155,8 @@ struct ListeningScreen: View {
                     }
                 } else {
                     Text(turn.answer)
-                        .font(LumenFont.text(23, .medium, relativeTo: .title3))
+                        .font(LumenFont.text(20, relativeTo: .title3))
+                        .lineSpacing(5)
                         .textSelection(.enabled)
                 }
                 if model.conversation.streamingAnswer == nil {
@@ -168,9 +167,8 @@ struct ListeningScreen: View {
                             reportingTurn = turn
                         } label: {
                             Image(systemName: "hand.thumbsdown")
-                                .font(.system(size: 17, weight: .medium))
+                                .font(.system(size: 17, weight: .regular))
                                 .frame(width: 44, height: 44)
-                                .overlay { RoundedRectangle(cornerRadius: 10).strokeBorder(LumenColor.line, lineWidth: 1) }
                         }
                         .buttonStyle(.plain)
                         .foregroundStyle(LumenColor.muted)
@@ -356,10 +354,10 @@ struct ModeSwitchSheet: View {
                         } label: {
                             HStack(spacing: 14) {
                                 Image(systemName: mode.symbol)
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundStyle(LumenColor.background)
+                                    .font(.system(size: 18, weight: .regular))
+                                    .foregroundStyle(LumenColor.blue)
                                     .frame(width: 44, height: 44)
-                                    .background(mode.color, in: Circle())
+                                    .background(LumenColor.soft, in: Circle())
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(mode.shortName).font(LumenFont.text(17, .semibold))
                                     Text(mode.tagline).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
@@ -439,5 +437,31 @@ struct TermChips: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Ämnesord: " + terms.joined(separator: ", "))
+    }
+}
+
+/// A18 (SYSTEM.md): the listening status as one round badge: a dot with a soft ring, the word ("Lyssnar", "Hör inte,
+/// försöker igen", "Pausad", "Svarar") and the level meter. Blue on `soft` while it hears, grey otherwise.
+struct StatusBadge: View {
+    let title: String
+    let active: Bool
+    let levelDBFS: Double?
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ZStack {
+                Circle().stroke((active ? LumenColor.blue : LumenColor.muted).opacity(0.35), lineWidth: 2).frame(width: 16, height: 16)
+                Circle().fill(active ? LumenColor.blue : LumenColor.muted).frame(width: 9, height: 9)
+            }
+            Text(title)
+                .font(LumenFont.text(15, .semibold, relativeTo: .subheadline))
+                .foregroundStyle(active ? LumenColor.blue : LumenColor.ink)
+            if active { LevelMeter(levelDBFS: levelDBFS).frame(height: 18) }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .background(active ? LumenColor.soft : LumenColor.surface, in: Capsule())
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.updatesFrequently)
     }
 }

@@ -1,8 +1,29 @@
 import SwiftUI
 
-/// A13.1: Inställningar › Mer › Om appen. The licences and the technical explanations that used to sit among the
-/// settings. The full texts are in `THIRD_PARTY_NOTICES.md` and in the app bundle for the fonts.
+/// A13.1: Inställningar › Mer › Om appen: the promises and one line about the AI server. A22 (Deangelo): the licences
+/// moved one level down, to "Licenser". The full texts are in `THIRD_PARTY_NOTICES.md` and in the app bundle.
 struct AboutView: View {
+    var body: some View {
+        List {
+            Section {
+                Text("Lumen lyssnar bara när du har startat den, du ser alltid när den lyssnar, och ljud sparas inte.")
+                Text("Frågor och svar går via Lumens server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen.")
+                    .foregroundStyle(.secondary)
+            }
+            Section {
+                NavigationLink("Licenser") { LicencesView() }
+            } footer: {
+                Text("Version \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "–") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "–"))")
+            }
+        }
+        .lumenForm()
+        .navigationTitle("Om appen")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// The parts from others, with their licences.
+struct LicencesView: View {
     private struct Item: Identifiable {
         let name: String
         let licence: String
@@ -25,11 +46,6 @@ struct AboutView: View {
 
     var body: some View {
         List {
-            Section {
-                Text("Lumen lyssnar bara när du har startat den, du ser alltid när den lyssnar, och ljud sparas inte.")
-                Text("Frågor och svar går via Lumens server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen.")
-                    .foregroundStyle(.secondary)
-            }
             Section("Delar från andra") {
                 ForEach(items) { item in
                     VStack(alignment: .leading, spacing: 4) {
@@ -43,14 +59,9 @@ struct AboutView: View {
                     .padding(.vertical, 2)
                 }
             }
-            Section {
-                Text("Version \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "–") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "–"))")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
         }
         .lumenForm()
-        .navigationTitle("Om appen")
+        .navigationTitle("Licenser")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

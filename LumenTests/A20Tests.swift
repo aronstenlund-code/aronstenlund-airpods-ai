@@ -29,22 +29,30 @@ import Testing
 
     @Test func twoRepeatsWithinTenMinutesSlowDown() {
         var signals = PaceSignals()
-        #expect(!signals.repeated(at: t0))
-        #expect(signals.repeated(at: t0.addingTimeInterval(120)))
-        #expect(!signals.repeated(at: t0.addingTimeInterval(130)), "the counter starts over")
+        let r1 = signals.repeated(at: t0)
+        #expect(!r1)
+        let r2 = signals.repeated(at: t0.addingTimeInterval(120))
+        #expect(r2)
+        let r3 = signals.repeated(at: t0.addingTimeInterval(130))
+        #expect(!r3, "the counter starts over")
     }
 
     @Test func repeatsFarApartDoNot() {
         var signals = PaceSignals()
-        #expect(!signals.repeated(at: t0))
-        #expect(!signals.repeated(at: t0.addingTimeInterval(SpeechPace.repeatWindow + 1)))
+        let r4 = signals.repeated(at: t0)
+        #expect(!r4)
+        let r5 = signals.repeated(at: t0.addingTimeInterval(SpeechPace.repeatWindow + 1))
+        #expect(!r5)
     }
 
     @Test func threeNotePausesSlowDown() {
         var signals = PaceSignals()
-        #expect(!signals.tookNotes())
-        #expect(!signals.tookNotes())
-        #expect(signals.tookNotes())
+        let r6 = signals.tookNotes()
+        #expect(!r6)
+        let r7 = signals.tookNotes()
+        #expect(!r7)
+        let r8 = signals.tookNotes()
+        #expect(r8)
     }
 
     @Test func linesForMinne() {

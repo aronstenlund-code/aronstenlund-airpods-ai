@@ -103,7 +103,6 @@ struct SettingsView: View {
             Picker("Utseende", selection: $appearance.appearance) {
                 ForEach(AppearanceSettings.Appearance.allCases, id: \.self) { Text($0.title).tag($0) }
             }
-            Toggle("Frågor i handstil", isOn: $appearance.handwriting)
         } header: {
             Text("Utseende")
         } footer: {
@@ -167,12 +166,9 @@ struct SettingsView: View {
     private var studyProfileSection: some View {
         @Bindable var store = model.studyProfile
         Section {
-            // A18: no double negative (Deangelo's user journey): on = there is an exam.
-            Toggle("Jag har ett prov", isOn: Binding(get: { !store.profile.noExam }, set: { store.profile.noExam = !$0 }))
-            if !store.profile.noExam {
-                DatePicker("Provdatum", selection: examBinding, displayedComponents: .date)
-                    .environment(\.locale, Locale(identifier: "sv_SE"))
-            }
+            // A22 (Deangelo): no "Inget prov just nu" switch; exams are added and removed on Start.
+            DatePicker("Provdatum", selection: examBinding, displayedComponents: .date)
+                .environment(\.locale, Locale(identifier: "sv_SE"))
             Picker("Årskurs", selection: $store.profile.grade) {
                 Text("Inte angivet").tag(nil as StudyProfile.Grade?)
                 ForEach(StudyProfile.Grade.allCases, id: \.self) { Text(StudyProfile.gradeName($0)).tag(StudyProfile.Grade?.some($0)) }
@@ -200,7 +196,10 @@ struct SettingsView: View {
 
     private var examBinding: Binding<Date> {
         Binding(get: { model.studyProfile.profile.examDate ?? Date() },
-                set: { model.studyProfile.profile.examDate = Calendar.current.startOfDay(for: $0) })
+                set: {
+                    model.studyProfile.profile.examDate = Calendar.current.startOfDay(for: $0)
+                    model.studyProfile.profile.noExam = false // A22: a date means there is an exam
+                })
     }
 
     /// A10: the wearer focus in front of Scribe.
@@ -387,14 +386,14 @@ struct SettingsView: View {
     private var voiceSection: some View {
         @Bindable var voice = model.speaker.settings
         Section("Röst och hastighet") {
-            Toggle("Speak answers", isOn: $voice.speakAnswers)
+            Toggle("Läs upp svaren", isOn: $voice.speakAnswers)
             if !voice.speakAnswers {
-                Text("Silent mode: answers are shown, not spoken.")
+                Text("Tyst läge: svaren visas men läses inte upp.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-            Picker("Voice", selection: $voice.voice) {
-                Text("Apple voice (on device)").tag(VoiceChoice.appleDefault)
+            Picker("Röst", selection: $voice.voice) {
+                Text("iPhonens röst").tag(VoiceChoice.appleDefault)
                 ForEach(model.appleVoices) { choice in
                     Text(choice.name).tag(choice)
                 }
@@ -402,22 +401,22 @@ struct SettingsView: View {
                     Text(choice.name).tag(choice)
                 }
             }
-            HStack {
-                Button("Preview") { model.previewVoice() }
-                    .buttonStyle(.bordered)
-                Spacer()
-                if model.speaker.status != .idle {
-                    Text("Speaking…").font(.footnote).foregroundStyle(.secondary)
+            // A22 (Deangelo): a plain row, not a floating chip.
+            Button {
+                model.previewVoice()
+            } label: {
+                HStack {
+                    Text("Provlyssna")
+                    Spacer()
+                    if model.speaker.status != .idle {
+                        Text("Pratar …").font(.footnote).foregroundStyle(.secondary)
+                    }
                 }
             }
-            HStack {
-                Text("Speed")
-                Slider(value: $voice.rate, in: 0.5...2.0, step: 0.05) { editing in
-                    if !editing { model.speaker.applyRate() }
-                }
-                Text(String(format: "%.2f×", voice.rate))
-                    .font(.footnote.monospacedDigit())
-                    .frame(width: 52, alignment: .trailing)
+            // A22: words, not "1.00×".
+            Picker("Hastighet", selection: Binding(get: { SpeedChoice.nearest(to: voice.rate) },
+                                                   set: { voice.rate = $0.rate; model.speaker.applyRate() })) {
+                ForEach(SpeedChoice.allCases, id: \.self) { Text($0.title).tag($0) }
             }
             voiceCatalogStatus
             if let notice = model.speaker.notice {
@@ -445,5 +444,30 @@ struct SettingsView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
+    }
+}
+
+/// A22 (Deangelo): the voice speed in words. The stored rate stays a number (0.5…2.0); A20's learned pace multiplies it.
+enum SpeedChoice: CaseIterable, Hashable {
+    case slow, normal, fast
+
+    var title: String {
+        switch self {
+        case .slow: "Långsam"
+        case .normal: "Normal"
+        case .fast: "Snabb"
+        }
+    }
+
+    var rate: Float {
+        switch self {
+        case .slow: 0.85
+        case .normal: 1.0
+        case .fast: 1.2
+        }
+    }
+
+    static func nearest(to rate: Float) -> SpeedChoice {
+        allCases.min { abs($0.rate - rate) < abs($1.rate - rate) } ?? .normal
     }
 }

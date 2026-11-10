@@ -4,15 +4,8 @@ import UIKit
 
 extension ConversationMode {
     /// Frågor graphite, Intervju green, Socialt orange, Rizz magenta, Prov blue (D86).
-    var color: Color {
-        switch self {
-        case .standard: LumenColor.graphite
-        case .interview: LumenColor.green
-        case .social: LumenColor.orange
-        case .rizz: LumenColor.magenta
-        case .prov: LumenColor.blue
-        }
-    }
+    /// A18 (SYSTEM.md): one accent; the modes no longer have colours of their own in the interface.
+    var color: Color { LumenColor.blue }
 
     /// The short name on the mode buttons.
     var shortName: String {
@@ -88,54 +81,58 @@ final class AppearanceSettings {
         }
     }
 
-    /// The font for a question the user asked.
+    /// The font for a question the user asked. A18 (SYSTEM.md): one family, no handwriting; the question is the
+    /// smaller, quieter line above its answer. The old setting is kept but no longer changes the look.
     func questionFont(_ size: CGFloat) -> Font {
-        handwriting ? LumenFont.handwriting(size) : LumenFont.text(size - 2, .medium)
+        LumenFont.text(max(15, size - 4), .semibold, relativeTo: .subheadline)
     }
 }
 
 // MARK: - Paper and buttons
 
-/// The squared exercise-book paper: lines every 18 pt.
+/// A18 (SYSTEM.md, Ke12): the squared paper is gone. What used to be paper is now the system's card: `raised`,
+/// corners 20, a soft shadow in light mode, a hairline instead of the shadow in dark mode. Corner 0 (a screen's
+/// header) is just the screen's background.
 struct GridPaper: View {
-    var cornerRadius: CGFloat = 6
+    var cornerRadius: CGFloat = 20
     var dashed = false
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        RoundedRectangle(cornerRadius: cornerRadius)
-            .fill(LumenColor.paper)
-            .overlay {
-                Canvas { context, size in
-                    var path = Path()
-                    var x: CGFloat = 18
-                    while x < size.width { path.move(to: CGPoint(x: x, y: 0)); path.addLine(to: CGPoint(x: x, y: size.height)); x += 18 }
-                    var y: CGFloat = 18
-                    while y < size.height { path.move(to: CGPoint(x: 0, y: y)); path.addLine(to: CGPoint(x: size.width, y: y)); y += 18 }
-                    context.stroke(path, with: .color(LumenColor.grid), lineWidth: 1)
+        if cornerRadius == 0 {
+            LumenColor.background.accessibilityHidden(true)
+        } else {
+            RoundedRectangle(cornerRadius: LumenCard.radius)
+                .fill(LumenColor.raised)
+                .overlay {
+                    if colorScheme == .dark {
+                        RoundedRectangle(cornerRadius: LumenCard.radius).strokeBorder(LumenColor.line, lineWidth: 1)
+                    }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
-            }
-            .overlay {
-                RoundedRectangle(cornerRadius: cornerRadius)
-                    .strokeBorder(LumenColor.grid, style: StrokeStyle(lineWidth: dashed ? 1.5 : 1, dash: dashed ? [6, 4] : []))
-            }
-            .accessibilityHidden(true)
+                .shadow(color: .black.opacity(colorScheme == .dark ? 0 : 0.06), radius: 1, y: 1)
+                .shadow(color: .black.opacity(colorScheme == .dark ? 0 : 0.07), radius: 10, y: 6)
+                .accessibilityHidden(true)
+        }
     }
 }
 
+enum LumenCard {
+    static let radius: CGFloat = 20
+}
+
 extension View {
-    /// Content on squared paper (the exam card, the listening header).
-    func gridPaper(cornerRadius: CGFloat = 6, dashed: Bool = false) -> some View {
+    /// The system's card (A18: was squared paper; the name stays so every caller follows).
+    func gridPaper(cornerRadius: CGFloat = 20, dashed: Bool = false) -> some View {
         background { GridPaper(cornerRadius: cornerRadius, dashed: dashed) }
     }
 
-    /// D86 (A2): list screens (Settings, Diagnostik, Notes …) in the new look: squared-paper ground, the app's font,
-    /// no capitals over headings, the blue accent. The rows keep the system's grouped cells (readable in both modes).
+    /// List screens (Settings, Diagnostik, Notes …): the system's inset grouped list on `surface` (A18, SYSTEM.md),
+    /// the app's font, the blue accent.
     func lumenForm() -> some View {
-        scrollContentBackground(.hidden)
-            .background(LumenColor.paper.ignoresSafeArea())
+        listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(LumenColor.surface.ignoresSafeArea())
             .font(LumenFont.text(17))
-            .textCase(nil)
             .tint(LumenColor.blue)
     }
 
@@ -155,19 +152,19 @@ struct LumenButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(LumenFont.text(18, .semibold, relativeTo: .headline))
+            .font(LumenFont.text(17, .semibold, relativeTo: .headline))
             // A12: one line that shrinks; two lines broke words in the middle ("Paus/a") at the largest size.
             .lineLimit(1)
             .minimumScaleFactor(0.5)
             .frame(maxWidth: .infinity, minHeight: height)
             .padding(.horizontal, 12)
             .foregroundStyle(foreground)
-            .background(background, in: RoundedRectangle(cornerRadius: 10))
+            .background(background, in: RoundedRectangle(cornerRadius: 14))
             .opacity(configuration.isPressed ? 0.85 : 1)
             // A18: a press is felt, like system buttons: a small scale, quick out, never on the way back.
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.easeOut(duration: configuration.isPressed ? 0.08 : 0.16), value: configuration.isPressed)
-            .contentShape(RoundedRectangle(cornerRadius: 10))
+            .contentShape(RoundedRectangle(cornerRadius: 14))
     }
 
     private var foreground: Color {
@@ -181,7 +178,7 @@ struct LumenButtonStyle: ButtonStyle {
     private var background: Color {
         switch kind {
         case .primary: LumenColor.blue
-        case .secondary: LumenColor.chip
+        case .secondary: LumenColor.surface
         case .danger: LumenColor.red
         }
     }
@@ -199,7 +196,7 @@ struct IconButton: View {
             Image(systemName: systemName)
                 .font(.system(size: 18, weight: .semibold))
                 .frame(width: 44, height: 44)
-                .background(background, in: RoundedRectangle(cornerRadius: 10))
+                .background(background, in: RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
         .foregroundStyle(LumenColor.ink)
@@ -235,20 +232,17 @@ struct ModeCircle: View {
     }
 }
 
-/// The teacher's red pen: a loose hand-drawn ring around a few handwritten words ("5 dagar kvar").
+/// A18 (SYSTEM.md): the red pen became a calm badge, `soft` with blue text, fully round ("5 dagar kvar").
 struct RedPenRing: View {
     let text: String
 
     var body: some View {
         Text(text)
-            .font(LumenFont.handwriting(20, bold: true, relativeTo: .headline))
-            .foregroundStyle(LumenColor.red)
-            .rotationEffect(.degrees(-4))
-            .padding(.horizontal, 22)
-            .padding(.vertical, 14)
-            .background {
-                RingShape().stroke(LumenColor.red, style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
-            }
+            .font(LumenFont.text(14, .semibold, relativeTo: .footnote))
+            .foregroundStyle(LumenColor.blue)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(LumenColor.soft, in: Capsule())
             .fixedSize()
     }
 

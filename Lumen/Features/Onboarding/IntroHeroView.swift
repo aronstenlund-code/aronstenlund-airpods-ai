@@ -4,8 +4,8 @@ import UIKit
 /// A13.6: the intro's hero. Elias (`docs/marketing/karaktar.md`) as a cut-out PNG with a transparent background
 /// (head and shoulders) on the app's own squared paper, so it works in light and dark; the logo's rings are drawn
 /// here and spread from his earbud three times. Reduce Motion: the rings stand still. A18: the approved picture is in
-/// the app (`Resources/Images/IntroElias@2x/@3x.png`, 191 kB @3x after quantising); in dark mode a soft light glow
-/// sits behind him so the navy jumper does not melt into the dark paper. Without the file a placeholder stands in.
+/// the app (`Resources/Images/IntroElias@2x/@3x.png`, 191 kB @3x after quantising), always in a light card (SYSTEM.md),
+/// so the navy jumper never melts into a dark background. Without the file a placeholder stands in.
 struct IntroHeroView: View {
     /// Where the earbud is in the picture (0…1 of the picture's own width and height): the rings start here.
     static let ringOrigin = UnitPoint(x: 0.32, y: 0.37)
@@ -26,25 +26,27 @@ struct IntroHeroView: View {
             let size = geometry.size
             let origin = CGPoint(x: size.width * Self.placeholderOrigin.x, y: size.height * Self.placeholderOrigin.y)
             ZStack {
-                GridPaper(cornerRadius: 0)
+                LumenColor.background
                 if let picture {
+                    // A18 (SYSTEM.md): Elias always in a light card, also in dark mode, like a photo.
+                    RoundedRectangle(cornerRadius: 24)
+                        .fill(Color.white)
+                        .shadow(color: .black.opacity(0.06), radius: 1, y: 1)
+                        .shadow(color: .black.opacity(0.08), radius: 12, y: 6)
+                        .padding(.horizontal, 24)
+                        .padding(.top, 56) // clear of the status bar (the intro ignores the top safe area)
                     Image(uiImage: picture)
                         .resizable()
                         .scaledToFit()
-                        .background {
-                            if colorScheme == .dark {
-                                RadialGradient(colors: [Color.white.opacity(0.22), Color.white.opacity(0)],
-                                               center: UnitPoint(x: 0.5, y: 0.62), startRadius: 4, endRadius: size.height * 0.62)
-                                    .scaleEffect(x: 1.25, y: 1)
-                            }
-                        }
                         .overlay {
                             GeometryReader { image in
                                 rings.position(x: image.size.width * Self.ringOrigin.x, y: image.size.height * Self.ringOrigin.y)
                             }
                         }
-                        .frame(maxWidth: size.width, maxHeight: size.height - 8, alignment: .bottom)
+                        .frame(maxWidth: size.width - 48, maxHeight: size.height - 64, alignment: .bottom)
                         .frame(maxHeight: .infinity, alignment: .bottom)
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                        .padding(.horizontal, 24)
                 } else {
                     // Placeholder: the earbud where Elias' will be.
                     Image(systemName: "airpods")

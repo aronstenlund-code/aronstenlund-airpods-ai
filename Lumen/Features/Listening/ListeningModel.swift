@@ -808,10 +808,18 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// D86 start screen: an exam row's microphone, or "Få A-svar till provet".
-    func startProv(for plan: ExamPlan) async {
+    func startProv(for plan: ExamPlan, answersOnly: Bool = false) async {
         useExamPlan(plan)
         selectedMode = .prov
+        provAnswersOnly = answersOnly
         await startStudy()
+    }
+
+    /// D97 (owner): "Få A-svar till provet" answers the student's questions and never quizzes; "Förhör mig" does both.
+    private(set) var provAnswersOnly = false
+
+    func startAnswersOnly(for plan: ExamPlan) async {
+        await startProv(for: plan, answersOnly: true)
     }
 
     /// A18 (Kelly Ke9): Start's one blue button says what it does, "Förhör mig", the same words as the voice command.
@@ -832,7 +840,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// D83: `persona: "tutor"` + `persona_setup` with the profile, on every Provläge call.
     private func tutorPersona() -> PersonaRequest? {
-        studyProfile.profile.setupText().map { PersonaRequest(persona: "tutor", setup: $0) }
+        var profile = studyProfile.profile
+        if provAnswersOnly { profile.checkQuestions = StudyProfile.CheckQuestions.none } // D97: never quiz
+        return profile.setupText().map { PersonaRequest(persona: "tutor", setup: $0) }
     }
 
     /// D82.2: 2 s of silence asks for a way to carry on (was 4 s, D43).

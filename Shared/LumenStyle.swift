@@ -8,17 +8,21 @@ enum LumenColor {
         Color(UIColor { traits in UIColor(hex: traits.userInterfaceStyle == .dark ? dark : light) })
     }
 
-    static let background = dynamic(0xFFFFFF, 0x11151F)
-    static let paper = dynamic(0xF5F8FC, 0x161C2A)
-    static let grid = dynamic(0xD9E3F0, 0x232B3D)
-    static let ink = dynamic(0x18213A, 0xEEF1F7)
-    static let muted = dynamic(0x5A6478, 0x9AA3B5)
+    // A18: the tokens of `docs/design/SYSTEM.md` (Ke12). `paper` and `grid` remain as names for the grouped
+    // background and the hairlines; there is no squared paper any more.
+    static let background = dynamic(0xFFFFFF, 0x0F1218)
+    static let surface = dynamic(0xF4F6FA, 0x181C26)
+    static let raised = dynamic(0xFFFFFF, 0x1D2230)
+    static let paper = surface
+    static let grid = dynamic(0xE4E8EF, 0x272D3B)
+    static let ink = dynamic(0x141A2E, 0xEEF1F7)
+    static let muted = dynamic(0x5E6779, 0x9AA3B5)
     static let blue = dynamic(0x2346C8, 0x7F9BFF)
     static let red = dynamic(0xD9342B, 0xFF6F61)
     static let onBlue = dynamic(0xFFFFFF, 0x0E1630)
     static let onRed = dynamic(0xFFFFFF, 0x2A0B07)
-    static let chip = dynamic(0xF1F4F9, 0x1B2131)
-    static let line = dynamic(0xE2E7EF, 0x2A3247)
+    static let chip = surface
+    static let line = dynamic(0xE4E8EF, 0x272D3B)
     static let soft = dynamic(0xEAF0FF, 0x1E2A4F)
 
     // The modes (the sketches' dark variants keep the contrast on the dark background).
