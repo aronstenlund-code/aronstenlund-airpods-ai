@@ -87,7 +87,9 @@ import Testing
         let rig = makeRig(error: nil, premiumFails: true)
         await rig.model.startListening()
         rig.model.submitText("vad är roten ur hundra")
-        #expect(await waitUntil { rig.model.problem == .voiceUnavailable })
+        // A45 (Deangelo N3): a calm line once per session, no error card.
+        #expect(await waitUntil { rig.model.visibleNotices.contains(ListeningModel.fallbackLine) })
+        #expect(rig.model.problem == nil)
         #expect(await waitUntil { rig.apple.calls.contains { $0.text == "Tio." } }, "the answer is still heard, in Apple's voice")
         #expect(rig.model.failures.contains { $0.source == "tts" })
     }

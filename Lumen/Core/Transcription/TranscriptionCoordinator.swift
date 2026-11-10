@@ -611,8 +611,12 @@ final class TranscriptionCoordinator {
     /// failure, not a session limit, and is not retried in a loop.
     static let reconnectAfter: TimeInterval = 20
 
+    /// A45: told when Scribe fails and the iPhone's own recogniser takes over.
+    @ObservationIgnored var onFallback: (@MainActor (String) -> Void)?
+
     private func fallBackToDevice(_ reason: String) async {
         cloudFailure = reason
+        onFallback?(reason)
         controller.log("Scribe unavailable (\(reason)): using the iPhone's speech recognition")
         await startTranscribing()
         // A11: the phone is a stopgap; Scribe is tried again later, whether the phone works or not.

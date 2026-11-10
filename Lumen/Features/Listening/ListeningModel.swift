@@ -360,12 +360,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         speaker.onFinished = { [weak self] in self?.speechFinished() }
         speaker.onVoiceStats = { [weak self] stats in self?.controller.log("Röst: \(stats.summary)") } // A4
+        // A45 (Deangelo N3): the iPhone's own voice or recogniser standing in is a calm line once per session, not an
+        // error card. The failure is still recorded for Diagnostik.
         speaker.onVoiceFallback = { [weak self] detail in
             self?.recordFailure(source: "tts", detail: detail)
-            if self?.problem == nil { self?.report(problem: .voiceUnavailable) }
+            self?.noteFallback(what: "the voice")
         }
-        speaker.onVoiceRecovered = { [weak self] in
-            if self?.problem == .voiceUnavailable { self?.problem = nil }
+        transcription.onFallback = { [weak self] reason in
+            self?.recordFailure(source: "stt", detail: reason)
+            self?.noteFallback(what: "speech recognition")
         }
         controller.keepsListeningWhenOutputLost = { [weak self] in !(self?.microphone.pauseWhenAirPodsLost ?? true) }
         controller.onOutputLost = { [weak self] in self?.report(problem: .airPodsDisconnected) }
@@ -417,6 +420,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         tips.sessionStarted()
+        fallbackNotedThisSession = false // A45: a new session may say it once again
+        fallbackNotice = nil
         Task { await prepareBackend() }
         refreshKeyterms()
         isStarting = true
@@ -2180,7 +2185,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// The short notices under the answers, in Swedish.
     var visibleNotices: [String] {
-        [studyNotice, reportNotice].compactMap { $0 }
+        [studyNotice, reportNotice, fallbackNotice].compactMap { $0 }
+    }
+
+    /// A45: "Lumen hör och pratar lite sämre just nu", once per session, while a stand-in engine is used.
+    private(set) var fallbackNotice: String?
+    @ObservationIgnored private var fallbackNotedThisSession = false
+    static let fallbackLine = "Lumen hör och pratar lite sämre just nu"
+
+    private func noteFallback(what: String) {
+        guard !fallbackNotedThisSession else { return }
+        fallbackNotedThisSession = true
+        fallbackNotice = Self.fallbackLine
+        controller.log("Stand-in engine for \(what): said once on Lyssnar (A45)")
     }
 
     /// The Live Activity's title: the exam in Provläge, else the mode.
