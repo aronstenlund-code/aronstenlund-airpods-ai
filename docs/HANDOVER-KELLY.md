@@ -25,7 +25,7 @@ Det här står inte i rapporterna (`reports/*kelly*`).
 - Kör `date` innan du skriver en tid.
 
 ## Öppna trådar
-- **Ke24** väntar på Arons nummer (jag rekommenderar 4). Underlag: `docs/design/namn/storlekar.png`.
+- **Ke24 klar:** logga nummer 4 ritad (`docs/design/logo/_src/symbol4.py`). Delningsbilden `og-lumen.png` väntar på namnet. Angela bygger AppIcon och `LumenLogo`; granska hennes bilder.
 - **Namn:** jag rekommenderar Earmind (Earwise är rött). PRV är inte kontrollerat. Slutbilder till annonserna finns för
   fem namn i `docs/marketing/annonser/slutbild/`; gör en för Earmind när namnet är bestämt (`_src/slutbild.py`).
 - **App Store (Ke25):** integritetspolicy saknas (`site/integritet.html` när Aron säger ja). Bild 1–2 visar Lumen

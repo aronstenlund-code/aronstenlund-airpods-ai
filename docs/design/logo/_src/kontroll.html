@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><title>Symbol 4: kontroll (Ke24)</title>
+<!-- Kelly, Ke24. Appikonen i iOS-storlekar och symbolen i text, ljust och mörkt. Rendera med _src/render.js. -->
+<style>
+  @font-face { font-family: "Familjen Grotesk"; src: url("../../../../site/fonts/familjen-grotesk.woff2") format("woff2"); font-weight: 400 700; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Familjen Grotesk", system-ui, sans-serif; width: 1400px; background: #E9EDF3; padding: 28px; color: #141A2E; }
+  h1 { font-size: 26px; } p.s { color: #5E6779; font-size: 15px; margin: 4px 0 18px; }
+  .panel { border-radius: 20px; padding: 22px 26px; margin-bottom: 18px; display: flex; gap: 34px; align-items: flex-end; }
+  .light { background: #fff; } .dark { background: #0F1218; color: #EEF1F7; }
+  .it { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; color: #5E6779; }
+  .dark .it { color: #9AA3B5; }
+  img.i { display: block; }
+  .word { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 22px; }
+  .word svg { width: 32px; height: 20px; color: #2346C8; } .dark .word svg { color: #7F9BFF; }
+  .set { display: flex; align-items: center; gap: 10px; font: 400 15px system-ui; padding: 8px 12px; border-radius: 10px; background: #F4F6FA; }
+  .dark .set { background: #181C26; }
+</style></head><body>
+<h1>Symbol 4: bock med ljudvågor</h1>
+<p class="s">Arons val (2026-11-10 21:18). Ren vektor ur docs/design/logo/_src/symbol4.py. Hörnen rundas av iOS; här med samma mask (22,37 %).</p>
+<div id="root"></div>
+<script>
+const SYM = document.currentScript.dataset.sym;
+const rows = [['light','lumen-ikon-ljus.svg','Ljust'],['dark','lumen-ikon-mork.svg','Mörkt'],['dark','lumen-ikon-tonad.svg','Tonat (iOS färgar)']];
+const sizes = [[180,'60 pt @3x'],[120,'60 pt @2x'],[87,'29 pt @3x'],[58,'29 pt @2x'],[40,'20 pt @2x'],[29,'29 pt @1x']];
+fetch('../lumen-symbol.svg').then(r => r.text()).then(sym => {
+  for (const [cls, file, label] of rows) {
+    const p = document.createElement('div'); p.className = 'panel ' + cls;
+    p.innerHTML = `<div class="it"><b style="font-size:15px;color:inherit">${label}</b></div>` +
+      sizes.map(([s, t]) => `<div class="it"><img class="i" src="../${file}" width="${s}" height="${s}" style="border-radius:${s*0.2237}px">${t}</div>`).join('') +
+      `<div class="it"><div class="set"><img src="../${file}" width="29" height="29" style="border-radius:6.5px">Lumen</div>Inställningar</div>` +
+      `<div class="it"><div class="word">${sym}<span>Lumen</span></div>Sidhuvud / appen</div>`;
+    document.getElementById('root').append(p);
+  }
+});
+</script></body></html>

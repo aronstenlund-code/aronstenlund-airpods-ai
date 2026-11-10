@@ -85,17 +85,34 @@ använder `raised` i stället. **Ikoner:** SF Symbols i vikt regular, 20–22 pt
   höger, som iOS. Ett kort inuti en skärm (resultatkortet i övningsprovet, felkort) har **"Stäng"**.
 - Citat och exempel på svenska skrivs med ”…” (samma tecken på båda sidor), inte med raka "…".
 
-## 5. Logga och appikon (U5): tre förslag, Aron väljer
-Bild: `bilder/system/logo.png` och `logo-dark.png`. Filer: `logo/<förslag>-ikon.svg` (1024, iOS rundar hörnen) och
-`logo/<förslag>-symbol.svg` (enfärgad).
-- **A. Aha-punkten:** en punkt över en mjuk båge, som ett svar som tänds eller ett leende. Den är tydligast i 29 pt och
-  fungerar oavsett namn (Lumen, Proviska eller Testvisk). **Rekommenderas.**
-- **B. Bubblan:** en pratbubbla med en punkt. Den är lätt att förstå, men chattappar använder samma form, så den är svår
-  att äga.
-- **C. Örat:** ett öra i en linje med en punkt där svaret landar. Den säger "i örat" utan en Apple-lik hörlur
-  (granskningsrisk 5.2.5), men blir otydlig i små storlekar.
+## 5. Logga och appikon: symbol 4, bock med ljudvågor (Aron 2026-11-10 21:18, Ke24)
+Aron valde nummer 4 bland sina sex ChatGPT-förslag (`logo/chatgpt-forslag-2026-11-10.jpg`). A/B/C från Ke12 är avvisade.
+Kontroll i alla storlekar: `logo/symbol4-kontroll.png`. Källa: `logo/_src/symbol4.py` (ändra bara där).
 
-Symbolen ersätter radiovågorna överallt: appikonen, introt, Start och demosidan.
+**Filer**
+| Fil | Till |
+|---|---|
+| `logo/lumen-ikon-ljus-1024.png` (+ `.svg`) | AppIcon, vanlig. Fyrkantig, utan genomskinlighet; iOS rundar hörnen |
+| `logo/lumen-ikon-mork-1024.png` | AppIcon, mörk variant (iOS 18+) |
+| `logo/lumen-ikon-tonad-1024.png` | AppIcon, tonad variant (iOS 18+), gråskala |
+| `logo/lumen-symbol.svg` | Symbolen ensam, `currentColor`, ruta 89 × 56 |
+| `site/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png` | Demosidan (bytta i Ke24) |
+
+**Geometri** (ruta 100 × 100, runda ändar och hörn, ingen fyllning):
+- Bock: linje 13,51 → 31,68 → 53,42, bredd 12.
+- Våg 1: båge med centrum 59,55, radie 18, från −46° till +46° (0° = rakt åt höger), bredd 10.
+- Våg 2: samma centrum, radie 32, samma vinklar, bredd 10.
+- Symbolens yta är x 7–96, y 27–83 (89 × 56). Ska den stå i en kvadrat: centrera ytan och låt bredden styra.
+- **I SwiftUI (`LumenLogo`)**: tre `Shape` i en ruta med bredden `size` och höjden `size × 56/89`; skala
+  `size / 89` och flytta −7, −27. Bocken som `Path` med `addLines`, vågorna med `addArc` (center 59,55,
+  `startAngle: -46°`, `endAngle: 46°`, `clockwise: false` i SwiftUI:s koordinater där y går nedåt). Färg
+  `LumenColor.blue`, båda vågorna i full färg (inte 50 % som de gamla radiovågorna).
+
+**Färger:** ljus ikon med toning #3D62E6 → #1D34AE (uppe till vänster → nere till höger) och vit symbol. Mörk ikon
+#1A2030 → #0B0E15 med symbolen #A9BCFF → #7F9BFF. Utanför ikonen har symbolen alltid accentfärgen (#2346C8 / #7F9BFF).
+
+Symbolen ersätter radiovågorna överallt: appikonen, introt, Start, kontrollen/Live Activity och demosidan.
+Namnet är inte beslutat (D117/D122), så ordmärket säger fortfarande "Lumen".
 
 ## 6. Skärmarna (före → efter)
 | Skärm | Bild | Det viktigaste |
