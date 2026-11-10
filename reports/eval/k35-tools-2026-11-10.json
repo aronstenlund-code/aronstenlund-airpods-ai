@@ -1,0 +1,137 @@
+{
+ "summary": {
+  "cases": 12,
+  "right": 12,
+  "spoken_before_tool": 0
+ },
+ "rows": [
+  {
+   "fragment": "lägg in tandläkaren på torsdag klockan tre",
+   "want": "calendar_add",
+   "got": "calendar_add",
+   "ok": true,
+   "input": {
+    "title": "Tandläkaren",
+    "start": "2026-11-12T15:00"
+   },
+   "confirm": "Ska jag lägga in Tandläkaren torsdag den 12 november klockan 15:00 i kalendern?",
+   "said": ""
+  },
+  {
+   "fragment": "boka in fotbollsträning på lördag klockan tio",
+   "want": "calendar_add",
+   "got": "calendar_add",
+   "ok": true,
+   "input": {
+    "title": "Fotbollsträning",
+    "start": "2026-11-14T10:00"
+   },
+   "confirm": "Ska jag lägga in Fotbollsträning lördag den 14 november klockan 10:00 i kalendern?",
+   "said": ""
+  },
+  {
+   "fragment": "sätt en timer på fem minuter",
+   "want": "timer_start",
+   "got": "timer_start",
+   "ok": true,
+   "input": {
+    "seconds": 300,
+    "label": "Fem minuter"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "påminn mig att ta med gympakläder i morgon klockan sju",
+   "want": "reminder_add",
+   "got": "reminder_add",
+   "ok": true,
+   "input": {
+    "title": "Ta med gympakläder",
+    "due": "2026-11-11T07:00"
+   },
+   "confirm": "Ska jag påminna dig om Ta med gympakläder onsdag den 11 november klockan 07:00?",
+   "said": ""
+  },
+  {
+   "fragment": "väck mig klockan halv sju",
+   "want": "alarm_set",
+   "got": "alarm_set",
+   "ok": true,
+   "input": {
+    "time": "06:30",
+    "label": "Väckning"
+   },
+   "confirm": "Ska jag ställa ett larm på 06:30?",
+   "said": ""
+  },
+  {
+   "fragment": "vad har jag i kalendern i morgon",
+   "want": "calendar_list",
+   "got": "calendar_list",
+   "ok": true,
+   "input": {
+    "from": "2026-11-11T00:00",
+    "to": "2026-11-11T23:59"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "spara en anteckning: köp mjölk och bröd",
+   "want": "note_add",
+   "got": "note_add",
+   "ok": true,
+   "input": {
+    "text": "Köp mjölk och bröd"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "vad är huvudstaden i Frankrike",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": null,
+   "confirm": null,
+   "said": "Huvudstaden i Frankrike är Paris."
+  },
+  {
+   "fragment": "hur lång tid tar det att koka ägg",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": null,
+   "confirm": null,
+   "said": "Hårdkokta ägg tar ungefär tio till tolv minuter i kokande vatten, beroende på storlek och hur hårda du vill ha dem. För löskokta ägg räcker det med cirka fem till sex minuter, och mjukkokta ägg, med flytande gula, tar ungefär sju minuter. Lägg äggen i kallt vatten efter kokningen så går de lättare att skala och gulan får inte den grå kanten."
+  },
+  {
+   "fragment": "vad betyder ordet påminnelse",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": null,
+   "confirm": null,
+   "said": "Påminnelse betyder ett meddelande som påminner dig om något du behöver komma ihåg, till exempel en uppgift eller en tid. Ordet kommer av verbet påminna, alltså att få någon att minnas igen."
+  },
+  {
+   "fragment": "när var franska revolutionen",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": null,
+   "confirm": null,
+   "said": "Franska revolutionen började sjuttonhundraåttionio, med stormningen av Bastiljen den fjortonde juli sjuttonhundraåttionio."
+  },
+  {
+   "fragment": "min kompis sa att hon skulle boka biljetter",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": null,
+   "confirm": null,
+   "said": "Det låter som något du kan fråga henne om direkt, eller be henne skicka vad det gäller så kan jag hjälpa dig påminna dig om det."
+  }
+ ]
+}
