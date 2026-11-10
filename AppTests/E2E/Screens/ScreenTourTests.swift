@@ -253,6 +253,15 @@ final class ScreenTourTests: XCTestCase {
 
     private func modesTour() {
         // A22: Start has "Bara fråga" (Frågor) and "Fler lägen" (Provläge, Intervju, Socialt, Rizz 18+).
+        // A33: the first start's Frågor session can still be on behind Start ("Lyssnar … Avsluta" on top, seen in T8 on
+        // the A33 build); a new mode does not open while it runs, so end it first.
+        if let running = find(["Avsluta"]), running.isHittable {
+            log.append("note: a session was still on at Start, ending it before Bara fråga")
+            running.tap()
+            pause(2)
+            dismissSystemAlerts()
+            for label in ["Klar", "Stäng"] where app.buttons[label].exists { app.buttons[label].tap(); pause(1); break }
+        }
         if tap(["Bara fråga", "Frågor"], step: "start → Bara fråga") {
             dismissSystemAlerts()
             if waitFor(["Tillbaka till start"], timeout: 10) != nil {
@@ -281,7 +290,7 @@ final class ScreenTourTests: XCTestCase {
 
         sheetFromMode(["Intervju"], name: "intervju-setup", close: ["Avbryt", "Cancel"])
         sheetFromMode(["Socialt"], name: "socialt-start", close: ["Avbryt", "Cancel"])
-        sheetFromMode(["Rizz 18+"], name: "rizz-aldersgrans", close: ["Avbryt", "Cancel"])
+        sheetFromMode(["Rizz 18+", "Rizz"], name: "rizz-aldersgrans", close: ["Avbryt", "Cancel"])
     }
 
     /// A22: the other modes sit in the "Fler lägen" sheet. Opens it (and shoots it once) when the mode is not on Start.
