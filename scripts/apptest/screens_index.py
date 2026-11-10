@@ -32,6 +32,9 @@ def rename(folder: Path) -> None:
                 target = human
             if target.endswith(".txt") is False and exported.suffix == ".txt":
                 target += ".txt"
+            # upload-artifact refuses the characters " : < > | * ? and line breaks in a path
+            # (XCTest names some attachments "Debug description for `\"...\"`").
+            target = re.sub(r'[":<>|*?\r\n]', "", target)
             exported.rename(folder / target)
     # Keep the artifact small: screenshots and text only (screen recordings and UI snapshots stay in the xcresult).
     for item in folder.iterdir():

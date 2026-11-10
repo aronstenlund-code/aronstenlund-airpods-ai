@@ -90,11 +90,17 @@ final class ScreenTourTests: XCTestCase {
         }
 
         dismissSystemAlerts()
-        if waitFor(["Fråga vad som helst"], timeout: 10) != nil {
+        // A18: with the microphone denied the whole screen is "Lumen hör dig inte" (Ke10), and before the first
+        // answer the button is "Hoppa över" (Fortsätt only after an answer, Ke9).
+        if waitFor(["Fråga vad som helst", "Lumen hör dig inte"], timeout: 10) != nil {
             pause(3) // let "Startar …" become "Lyssnar" (or the microphone error card)
             dismissSystemAlerts()
             shoot(micDenied ? "forsta-fragan-mikrofon-nekad" : "forsta-fragan", note: "First question (sketch 2)")
-            tap(["Fortsätt"], step: "first question → Fortsätt")
+            if micDenied, waitFor(["Lumen hör dig inte"], timeout: 1) == nil {
+                miss("APP: microphone denied, the first question does not show 'Lumen hör dig inte'")
+            }
+            tap(["Fortsätt", "Hoppa över"], step: "first question → Fortsätt/Hoppa över")
+            pause(1.5)
         } else {
             miss("'Fråga vad som helst' not shown")
         }
@@ -165,7 +171,10 @@ final class ScreenTourTests: XCTestCase {
             ("historik", ["Historik", "History"]),
             ("minne", ["Minne"]),
             ("studiekort", ["Studiekort"]),
-            ("feedback", ["Feedback & förslag", "Feedback & suggestions"]),
+            ("feedback", ["Feedback och förslag", "Feedback & förslag", "Feedback & suggestions"]),
+            ("rostkommandon", ["Röstkommandon"]),
+            ("om-appen", ["Om appen"]),
+            ("avancerat", ["Avancerat"]),
         ]
         for page in pages {
             openFromSettings(page.labels, name: page.name)
@@ -211,7 +220,8 @@ final class ScreenTourTests: XCTestCase {
     // MARK: Modes (sketches 5 and 8)
 
     private func modesTour() {
-        if tap(["Frågor"], step: "start → Frågor") {
+        // A22: Start has "Bara fråga" (Frågor) and "Fler lägen" (Provläge, Intervju, Socialt, Rizz 18+).
+        if tap(["Bara fråga", "Frågor"], step: "start → Bara fråga") {
             dismissSystemAlerts()
             if waitFor(["Byt läge"], timeout: 10) != nil {
                 pause(2)
@@ -239,7 +249,21 @@ final class ScreenTourTests: XCTestCase {
         sheetFromMode(["Rizz 18+"], name: "rizz-aldersgrans", close: ["Avbryt", "Cancel"])
     }
 
+    /// A22: the other modes sit in the "Fler lägen" sheet. Opens it (and shoots it once) when the mode is not on Start.
+    private func openMoreModes(for labels: [String]) {
+        if let onStart = find(labels), onStart.isHittable { return }
+        guard tap(["Fler lägen"], step: "start → Fler lägen") else { return }
+        pause(1)
+        if !shotMoreModes {
+            shoot("fler-lagen", note: "Fler lägen (A22)")
+            shotMoreModes = true
+        }
+    }
+
+    private var shotMoreModes = false
+
     private func sheetFromMode(_ labels: [String], name: String, close: [String]) {
+        openMoreModes(for: labels)
         guard tap(labels, step: "start → \(labels[0])") else { return }
         pause(2)
         dismissSystemAlerts()
@@ -259,7 +283,9 @@ final class ScreenTourTests: XCTestCase {
     // MARK: Provläge
 
     private func provTour() {
-        guard tap(["Få A-svar till provet"], step: "start → Få A-svar till provet") else { return }
+        // A22 (D97): with an exam, "Få A-svar till provet" on Start; Provläge also sits in "Fler lägen".
+        if find(["Få A-svar till provet"]) == nil { openMoreModes(for: ["Provläge"]) }
+        guard tap(["Få A-svar till provet", "Provläge"], step: "start → Få A-svar till provet") else { return }
         pause(2)
         dismissSystemAlerts()
         if waitFor(["Hoppa över allt"], timeout: 5) != nil {
