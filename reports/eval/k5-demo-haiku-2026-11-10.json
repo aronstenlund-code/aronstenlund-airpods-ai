@@ -1,0 +1,143 @@
+{
+ "summary": {
+  "n": 10,
+  "answered": 10,
+  "correct": 10,
+  "natural": 9,
+  "slips": 0,
+  "cost_mean_usd": 0.00014,
+  "first_ms_p50": 2126
+ },
+ "rows": [
+  {
+   "q": "vad är fotosyntes",
+   "status": 200,
+   "answer": "Fotosyntes är den process där växter, alger och vissa bakterier använder ljusenergi för att omvandla koldioxid och vatten till glukos, och samtidigt frigöra syrgas. Det sker främst i kloroplasterna, med hjälp av klorofyll.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.000498,
+   "ms": 3180
+  },
+  {
+   "q": "varför är himlen blå",
+   "status": 200,
+   "answer": "Himlen är blå eftersom solljus innehåller alla färger, och luftens små molekyler sprider kortare våglängder, som blått, mycket mer än längre, som rött. Blått ljus sprids därför åt alla håll och når våra ögon från hela himlen.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 9.2035e-05,
+   "ms": 1332
+  },
+  {
+   "q": "hur fungerar en vaccin",
+   "status": 200,
+   "answer": "Ett vaccin innehåller en ofarlig del av en sjukdomsframkallande mikrob, eller en instruktion för att göra den, och lär immunförsvaret att känna igen den. Då bildas minnesceller, så att kroppen snabbt kan bekämpa den riktiga mikroben om man senare utsätts för den.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Kort och korrekt. Ordet 'mikrob' är något tekniskt men fungerar. Bra för en demosida.",
+   "cost": 0.00010341000000000001,
+   "ms": 2126
+  },
+  {
+   "q": "vem var Gustav Vasa",
+   "status": 200,
+   "answer": "Gustav Vasa var kung av Sverige från femtonhundratjugotre till femtonhundrasextio och grundade den vasatiden som gav Sverige ett arvkungadöme och en stark kungamakt. Han ledde befrielsen från den danska unionen och genomförde reformationen, vilket gjorde den lutherska kyrkan till statskyrka.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 0,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Formuleringen \"grundade den vasatiden\" är grammatiskt ful, och \"arvkungadöme\" är ett ovanligt ord (det heter arvrike eller arvmonarki). Annars korrekt och kort.",
+   "cost": 0.00010341000000000001,
+   "ms": 3013
+  },
+  {
+   "q": "vad är skillnaden mellan väder och klimat",
+   "status": 200,
+   "answer": "Väder är tillståndet i atmosfären just nu och under några dagar, till exempel regn, vind och temperatur. Klimat är den genomsnittliga väderleken över lång tid, vanligtvis minst trettio år, och visar vad man kan vänta sig i en region.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 9.416e-05,
+   "ms": 1392
+  },
+  {
+   "q": "hur räknar man ut procent",
+   "status": 200,
+   "answer": "För att räkna ut procent delar du delen med helheten och multiplicerar sedan med hundra. Till exempel: femton är hur många procent av sextio? femton delat med sextio är noll komma två fem, och noll komma två fem gånger hundra är tjugofem procent.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Korrekt och tydligt. Exemplet stämmer: 15/60 = 0,25 = 25 %. Frågan i exemplet är lite stel men fungerar muntligt.",
+   "cost": 8.928500000000001e-05,
+   "ms": 4231
+  },
+  {
+   "q": "varför har vi skottår",
+   "status": 200,
+   "answer": "Vi har skottår för att jordens omloppstid runt solen är ungefär trehundrasextiofem dagar och sex timmar, inte exakt trehundrasextiofem dagar. Därför läggs ett extra dygn, den tjugonio februari, till vart fjärde år så att kalendern och årstiderna stämmer överens. Det finns också ett undantag: år som är jämnt delbara med hundra är inte skottår, om de inte även är delbara med fyrahundra.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 4.9535000000000006e-05,
+   "ms": 967
+  },
+  {
+   "q": "vad är en atom",
+   "status": 200,
+   "answer": "En atom är den minsta beståndsdelen av ett grundämne som fortfarande har grundämnets egenskaper. Den består av en kärna med protoner och neutroner, omgiven av elektroner som rör sig i områden runt kärnan. Atomens diameter är ungefär en tiomiljarddel av en meter.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.000100285,
+   "ms": 1926
+  },
+  {
+   "q": "hur uppstår regnbågar",
+   "status": 200,
+   "answer": "Regnbågar uppstår när solljus bryts och reflekteras i regndroppar. Varje droppe fungerar som ett litet prisma: ljuset böjs när det går in i droppen, reflekteras mot dropens baksida och böjs igen när det kommer ut. Eftersom olika färger böjs olika mycket delas ljuset upp i ett spektrum, och du ser regnbågen när solen står lågt bakom dig och regnet framför dig.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Minor typo 'dropens' (should be 'droppens'), but correct, concise and fits the 2-3 sentence demo request.",
+   "cost": 0.00012441,
+   "ms": 1667
+  },
+  {
+   "q": "vad betyder demokrati",
+   "status": 200,
+   "answer": "Demokrati betyder folkstyre. Det är ett styrelseskick där folket utövar makten, oftast genom folkvalda företrädare, och där alla medborgare har lika rätt att delta, till exempel genom att rösta i allmänna val. Ordet kommer från grekiskans demos, folk, och kratia, styre.",
+   "model": "claude-haiku-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.00010216000000000001,
+   "ms": 2473
+  }
+ ]
+}

@@ -154,6 +154,8 @@ export interface HandlerConfig {
   rizzModel?: string;
   /** D87: model for Provläge (persona tutor in mode tutor); unset = the provider's default (Haiku). */
   tutorModel?: string;
+  /** K5: the public demo's model (first impression; DEMO_MODEL overrides, "" = the default model). */
+  demoModel?: string;
   tutorPriceInPerMTok?: number;
   tutorPriceOutPerMTok?: number;
   rizzPriceInPerMTok?: number;
@@ -187,6 +189,9 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   // K2 (2026-11-09): Provläge on Sonnet 5.5, the only model over the 90 % target in the D87 bank (DECISIONS D90);
   // TUTOR_MODEL overrides it (e.g. back to Haiku), the demo never uses it
   tutorModel: "claude-sonnet-5-5",
+  // K5 (2026-11-10): the demo on Sonnet too (Haiku's demo answers had Swedish slips); within the demo caps
+  // (600 questions a day, 160 tokens each) at most about 3 USD a day
+  demoModel: "claude-sonnet-5-5",
   tutorPriceInPerMTok: 2,
   tutorPriceOutPerMTok: 10,
   directModes: true,
@@ -989,7 +994,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz
       const isRizz = plan?.kind === "rizz" || textReq || careful; // K9: "var säker" = the stronger model, one answer
       // D87: Provläge can run on its own model (TUTOR_MODEL); the measured choice is in DECISIONS D87
-      const tutorModel = !isRizz && tutor && !plan && !demo && cfg.tutorModel ? cfg.tutorModel : undefined;
+      const tutorModel = !isRizz && tutor && !plan && !demo && cfg.tutorModel
+        ? cfg.tutorModel
+        : demo && cfg.demoModel // K5: the demo runs on the stronger model (priced like Provläge)
+        ? cfg.demoModel
+        : undefined;
       // K7.6: a word or logic problem in Provläge gets the model's thinking (it said "Tom är nio" before working
       // out eight); everything else keeps thinking off for the first word
       const wordProblem = !!tutorModel && isWordProblem(body.fragment);
