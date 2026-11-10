@@ -106,8 +106,8 @@ export interface WebNeed {
  * These questions search in every mode that has web search (not Auto, not the demo).
  */
 const RECIPE_Q = /(?<![\p{L}])(?:recept(?:et)?(?: på| för| till)?|hur (?:gör|lagar|bakar|kokar|steker|tillagar|grillar|marinerar) (?:man|jag|du)|hur länge (?:ska|ska man|kokar|steker|bakar|i ugnen)|hur (?:mycket|många) (?:mjöl|socker|smör|ägg|mjölk|grädde|salt|jäst|vatten|deciliter|gram|dl|msk|tsk)|vilken temperatur (?:i ugnen|ska)|ugnstemperatur)(?![\p{L}])/iu;
-const HOWTO_Q = /(?<![\p{L}])(?:steg för steg|hur (?:installerar|byter|monterar|ansluter|kopplar|återställer|nollställer|uppdaterar|aktiverar|avaktiverar|stänger av|sätter på|laddar ner|tar bort|rensar|parkopplar|ställer in|startar om) (?:man|jag|du)|instruktion(?:er|en)? (?:för|till)|hur (?:fungerar|funkar) (?:inställningen|knappen|appen))(?![\p{L}])/iu;
-const RULE_Q = /(?<![\p{L}])(?:är det (?:lagligt|olagligt|tillåtet|förbjudet)|får (?:man|jag) (?:lagligt|enligt lag)|vad säger lagen|vilka regler gäller|vad gäller (?:enligt lag|juridiskt)|hur många (?:dagar|timmar|veckor) (?:får|har|måste)|vad är (?:hastighetsgränsen|åldersgränsen|straffet|böterna)|vilken (?:åldersgräns|hastighetsgräns)|måste (?:man|jag) (?:ha|betala|deklarera|anmäla)|regler(?:na)? för)(?![\p{L}])/iu;
+const HOWTO_Q = /(?<![\p{L}])(?:steg för steg|hur (?:installerar|byter|monterar|ansluter|kopplar|återställer|nollställer|uppdaterar|aktiverar|avaktiverar|stänger av|sätter på|laddar ner|tar bort|rensar|parkopplar|ställer in|startar om) (?:man|jag|du)|instruktion(?:er|en)? (?:för|till)|hur (?:fungerar|funkar) (?:inställningen|knappen|appen)|hur (?:stänger|sätter|slår|laddar|tar|ställer|startar|kopplar|loggar|skruvar|byter) (?:man|jag|du) (?:av|på|ner|bort|in|om|ur|ut|upp|till)|hur (?:tar|gör) (?:man|jag|du) (?:en )?(?:skärmdump|skärmbild|screenshot|backup|säkerhetskopia))(?![\p{L}])/iu;
+const RULE_Q = /(?<![\p{L}])(?:är det (?:lagligt|olagligt|tillåtet|förbjudet)|får (?:man|jag) (?:lagligt|enligt lag)|vad säger lagen|vilka regler gäller|vad gäller (?:enligt lag|juridiskt)|hur många (?:dagar|timmar|veckor) (?:får|har|måste)|vad är (?:hastighetsgränsen|åldersgränsen|straffet|böterna)|vilken (?:åldersgräns|hastighetsgräns)|måste (?:man|jag) (?:ha|betala|deklarera|anmäla)|regler(?:na)? för|får (?:man|jag|vi|barn|ungdomar|en tonåring) (?!(?:en|ett|fråga|låna|hjälp|se|veta|höra|prova)\s)\p{L}+(?:a|era) (?:på|i|utan|med|om|när|efter|före|under|över|till|hos))(?![\p{L}])/iu;
 export const RECIPE_DOMAINS = ["ica.se", "arla.se", "koket.se", "coop.se", "tasteline.com", "livsmedelsverket.se"];
 export const HOWTO_DOMAINS = [
   "support.apple.com",
@@ -336,12 +336,12 @@ export function webTools(need: WebNeed): unknown[] {
       type: "web_search_20250305",
       name: "web_search",
       max_uses: MAX_SEARCHES,
+      // Oscar O20: a recipe or an instruction searches ONLY its own sources (the general list gave an SVT answer
+      // to "hur stänger man av hitta min iphone"); rules keep the authorities
       allowed_domains: [
         ...new Set([
-          ...RELIABLE_DOMAINS,
+          ...(need.lookup === "recipe" ? RECIPE_DOMAINS : need.lookup === "howto" ? HOWTO_DOMAINS : RELIABLE_DOMAINS),
           ...(need.price ? PRICE_DOMAINS : []),
-          ...(need.lookup === "recipe" ? RECIPE_DOMAINS : []),
-          ...(need.lookup === "howto" ? HOWTO_DOMAINS : []),
           ...(need.lookup === "rule" ? RULE_DOMAINS : []),
           ...(need.extraDomains ?? []),
         ]),

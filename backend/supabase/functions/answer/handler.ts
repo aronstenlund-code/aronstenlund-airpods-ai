@@ -178,7 +178,7 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   maxAnswerChars: 600,
   maxAnswerCharsStudy: 1800,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
-  webLimits: { perMinute: 3, perDay: 20, globalPerDay: 150 },
+  webLimits: { perMinute: 5, perDay: 20, globalPerDay: 150 }, // Oscar O20: a recipe and two follow-ups in a minute
   // K12 (Toby T6 #7: 429 on quick instructions in Socialt/Rizz): instructions have their own budget
   commandLimits: { perMinute: 15, perDay: 300, globalPerDay: 3000 },
   // Oscar 2026-11-08: 40 (was 20) and aborted calls are given back here too
@@ -1241,7 +1241,13 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           const emitText = (raw: string) => {
             // K16: a late search marker ("… femtusen invånare. [[SÖK]]", live 3/10) is never read aloud
             if (/\[\[S[ÖO]K\]\]/iu.test(raw)) console.warn("search_marker_late", JSON.stringify({ mode: body.mode }));
-            const t = raw.replace(/\s*\[\[(?:S[ÖO]K|VET)\]\]\s*/giu, " ").replace(/\s*\[+\s*$/u, "");
+            let t = raw.replace(/\s*\[\[(?:S[ÖO]K|VET)\]\]\s*/giu, " ").replace(/\s*\[+\s*$/u, "");
+            // Oscar O13: raw search text was read aloud ("| Arjeplog |", "Nickname: …"): table bars and English
+            // field labels never reach the voice
+            if (webOn || searched || textOn) {
+              t = t.replace(/\s*\|\s*/gu, ", ").replace(/,\s*,/gu, ",")
+                .replace(/(?<![\p{L}])(?:Nickname|Population|Area|Elevation|Founded|Website|Coordinates|Type|Country|Region)\s*:\s*/gu, "");
+            }
             if (!t.trim()) return;
             flushMeta();
             if (ttftMs === null) ttftMs = now() - t0;

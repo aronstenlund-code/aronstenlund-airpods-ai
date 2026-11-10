@@ -154,3 +154,22 @@ Deno.test("K4 loop: 'en 5:a' is a five, 1/6 is a sixth, 5:e is still fifth", asy
   assertEquals(numbersToSpeech("2/5 av eleverna"), "två femtedelar av eleverna");
   assertEquals(numbersToSpeech("öppet 24/7"), "öppet tjugofyra/sju");
 });
+
+Deno.test("O20: particle verbs and 'får man …' route right; recipes and instructions search only their own sources", () => {
+  for (const f of ["hur stänger man av hitta min iphone", "hur sätter man på mörkt läge på en iphone", "hur tar man en skärmdump på en mac", "hur laddar man ner spotify på datorn"]) {
+    assertEquals(lookupKind(f), "howto", f);
+  }
+  assertEquals(lookupKind("får man cykla på trottoaren"), "rule");
+  for (const f of ["får man en kram", "får jag fråga en sak", "får jag låna din penna"]) assertEquals(lookupKind(f), null, f);
+  const howto = JSON.stringify(webTools({ search: true, fetch: false, lookup: "howto" }));
+  assert(howto.includes("support.apple.com") && !howto.includes("svt.se"));
+  const recipe = JSON.stringify(webTools({ search: true, fetch: false, lookup: "recipe" }));
+  assert(recipe.includes("ica.se") && !recipe.includes("svt.se"));
+  assert(JSON.stringify(webTools({ search: true, fetch: false, lookup: "rule" })).includes("transportstyrelsen.se"));
+});
+
+Deno.test("O13: table bars and English field labels from a search are never read aloud", async () => {
+  const { provider } = scripted("[[SÖK]]", "Arjeplog har omkring 2 700 invånare | Arjeplog | Nickname: Silvervägen. källa: scb.se");
+  const out = await spoken(await handlerWith(provider)(ask({ fragment: "hur gammal är Arjeplogs kyrka" })));
+  assert(!out.includes("|") && !out.includes("Nickname"), out);
+});
