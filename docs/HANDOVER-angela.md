@@ -1,36 +1,42 @@
-# Överlämning: Angela (app), 2026-11-10
+# Överlämning: Angela (app), 2026-11-10 eftermiddag
 
-Sessionen (självständigt läge) gjorde A21, A18, A20, A22, A23, A24 och A25. Alla är gröna i CI, men ingen är
-provad på enhet. Läs rapporterna i `reports/2026-11-10-angela-a*.md`. Resten av kön väntar på Kevin (A3/K6, A16/K15,
-A19/K17+K19).
+Den här sessionen har gjort 11 punkter i dag: A21, A18, A20, A22, A23, A24, A25, A26, A16, A19 och A27. Alla är
+gröna i CI, men ingen är provad på telefon. Rapporterna finns i `reports/2026-11-10-angela-a*.md`. I kön återstår
+bara A3 (röstlistan), som väntar på Kevins K6 (ElevenLabs-krediter). Det mesta av A3 finns redan i A26:s röstsida.
 
 ## Det här står inte i rapporterna
-- **Ingen Mac.** CI (`ios-build.yml`) är kompilatorn, ca 15–20 min per körning. Hjälpskript: `ghapi.sh`, `waitsha.sh`
-  och `waitrun.sh` (minnet `lumen-project-setup`).
-  - Varje push som rör app-kod avbryter körningen som pågår, också andras pushar. Samla dina ändringar.
-- **Delat index och delad autostash:**
-  - Andra sessioner har två gånger fått med mina ostagade ändringar i sina commits (Oscars `bda589a`), och en gång har
-    en rebase burit dem i sin autostash.
+- **Ingen Mac.** CI (`ios-build.yml`) är kompilatorn och tar cirka 15–20 minuter. Hjälpskripten heter `ghapi.sh`,
+  `waitsha.sh` och `waitrun.sh` (se minnet `lumen-project-setup`).
+  - Varje push som rör app-kod avbryter körningen som pågår, också när någon annan pushar. Samla ändringarna innan du
+    pushar.
+  - Skärmbilder tas med `screenshots.yml` (workflow_dispatch med `device`). Scenerna `voice` och `practice` är nya.
+  - Den första bilden i en körning kan bli hemskärmen. Det hände med SE och intro i ljust läge.
+- **Swift-fällor som har kostat CI-rundor:**
+  - Tester anropar vyernas statiska hjälpfunktioner från en nonisolated kontext. Märk funktionerna `nonisolated` eller
+    testsviten `@MainActor`.
+  - Ett muterande anrop får inte stå inne i `#require` eller `#expect`. Lägg resultatet i en `let` först.
+  - `switch` som implicit returvärde efter en `if` kräver `return switch`.
+- **Delat index:** andra sessioner får ibland med dina ostagade ändringar i sina commits. Oscars `310a7c0` tog till
+  exempel med min STATUS-rad.
   - Committa med `git commit -- <filer>`.
-  - Säger `git pull` "Cannot rebase onto multiple branches": kör `git fetch origin main && git rebase --autostash
-    origin/main`.
-- **Swift-fällor som kostade en CI-runda i dag:**
-  - `switch` som implicit retur fungerar inte efter en `if` i samma getter; skriv `return switch`.
-  - `#expect` kan inte anropa en muterande metod. Lägg resultatet i en `let` först.
-  - `FakePlaybackService.stop()` nollställer `isSpeaking`, och en ny tur kör `interrupt()`.
-- **Numrering:** Deangelo numrerar om i kön samtidigt. Läs kön precis före commit. A22 är min stående uppgift och A23
-  hans proffsfixar.
-- **Designsystemet** (`docs/design/SYSTEM.md`) gäller. `gridPaper()` ritar nu kortet, `questionFont` är ingen handstil
-  och `ConversationMode.color` är blå. Gamla namn finns kvar så att alla skärmar följer med.
+  - Synka med `git fetch origin main && git rebase --autostash origin/main`.
+- **Python-patchar:** skriv skriptet till scratchpad med Write-verktyget och kör det med `python -I`. Heredocs med `'''`
+  och `\(` bryter i bash.
 
 ## Öppna trådar
-- **A18:** klar, med skärmbilder i `reports/2026-11-10-a18-skarmbilder/`. Kelly granskar del 2 med bilderna.
-  Introbilden fotades före rättelsen i `ddec2ad` (Elias stack ut under kortet), så fota om den.
-- **Loggan (U5):** Aron väljer bland Kellys tre förslag. Byt `LumenLogo` när valet är gjort.
-- **Toby:** kör om T5, T7b (Mer-fönstret, rättat i `6133e6c`) och T3 med de nya knapporden.
-- **Nästa stående uppgift (PLAN 2b):**
-  - Tobys T8 fynd 5: Provläge utan prov frågar fem saker. Det är beslutet D83, och Kelly har fått det som design.
-  - Röstens namn med beskrivning när K14:s röster har beskrivningar.
-  - En `SessionEvent` för "fönstret öppet" och "mikrofonen öppen", som Toby ber om i T7.
-- **ElevenLabs-kvoten är slut** (Oscar, Toby). Simulatortesterna som hör ljud kan inte köras klart förrän den är
-  påfylld (Aron).
+- **A16, övningsprovet:**
+  - Navigeringen är en Swift-port av Kevins `practice.ts` (`PracticeNav`). Ändrar Kevin `practice.ts` måste porten
+    ändras också.
+  - Toby kan göra ett E2E-test när ElevenLabs-kvoten är påfylld.
+- **A19:**
+  - Påminnelsen kommer kl. 16 tills Aron väljer en annan tid.
+  - Förhörssvar fyller inte planens historik. Det kräver ett begrepp per fråga från Kevin (`done.concept`).
+  - "Länk när eleven kört fast" behöver att appen skickar `stuck: true` (K19). Det är nästa steg.
+- **A26:** Kevin kan lägga till `description` i `/voices`. Loggan (U5) väntar på Arons val.
+- **A27:** serverns och appens listor över känsliga ord bör bli en enda lista (Kevin).
+- **Toby:** kör om T3 och T8. Introt har nya ord ("Lyssnar bara när du har startat den" och "Inget konto. Testa nu
+  betyder …"), och Första frågan har "Pausad" och "Lyssna igen".
+- **Möjliga stående uppgifter:**
+  - `stuck: true` för K19;
+  - Oscars O30: ett ekofilter som räknar med när uppläsningen slutade;
+  - Tobys `SessionEvent` för "fönstret öppet" och "mikrofonen öppen" (T7).
