@@ -546,7 +546,7 @@ Deno.test("D65: clock times with a dot, regnal numbers, 2x, 5G and hertz are spo
   assertEquals(toSpeech("Tåget går klockan 17.40."), "Tåget går klockan sjutton och fyrtio.");
   assertEquals(
     toSpeech("Möte kl 9.05 och 14:30."),
-    "Möte kl nio noll fem och fjorton och trettio.",
+    "Möte klockan nio noll fem och fjorton och trettio.",
   );
   assertEquals(toSpeech("Pi är 3.14 ungefär."), "Pi är tre komma ett fyra ungefär.");
   assertEquals(

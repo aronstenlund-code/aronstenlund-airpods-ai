@@ -144,6 +144,9 @@ const ABBREVIATIONS: [RegExp, string][] = [
   [/(?<![\p{L}])d\.v\.s\.?/giu, "det vill säga"],
   [/(?<![\p{L}])dvs\.?(?![\p{L}])/giu, "det vill säga"],
   [/(?<![\p{L}])ca\.?(?=\s)/gu, "cirka"],
+  // K25 (Oscar O26): "Spår nr 7" -> "nummer sju", "kl. 14.30" -> "klockan fjorton och trettio"
+  [/(?<![\p{L}])[Nn]r\.?(?=\s*\d)/gu, "nummer"],
+  [/(?<![\p{L}])kl\.?(?=\s*\d)/gu, "klockan"],
   [/(?<![\p{L}])ev\.(?=\s)/gu, "eventuellt"],
   [/(?<![\p{L}])resp\.?(?=\s)/gu, "respektive"],
 ];
@@ -374,7 +377,10 @@ const CARD_TO_ORD: Record<string, string> = {
   åtta: "åttonde", nio: "nionde", tio: "tionde", elva: "elfte", tolv: "tolfte", tretton: "trettonde", fjorton: "fjortonde",
   femton: "femtonde", sexton: "sextonde", sjutton: "sjuttonde", arton: "artonde", nitton: "nittonde", tjugo: "tjugonde",
 };
-const RULER_DIGIT = new RegExp(String.raw`(?<![\p{L}])(${RULERS}) (?:den )?([1-9]|1\d|20)(?::e|:a)?(?![\p{L}\d.,:]|\s?(?:år|kr|kronor|procent|%|st|gånger|minuter|timmar))`, "gu");
+const RULER_DIGIT = new RegExp(String.raw`(?<![\p{L}])(${RULERS}) (den )?([1-9]|1\d|20)(?::e|:a)?(?![\p{L}\d.,:]|\s?(?:år|kr|kronor|procent|%|st|gånger|minuter|timmar|januari|februari|mars|april|maj|juni|juli|augusti|september|oktober|november|december))`, "gu");
+// K25 (Oscar O24: "Peter 5 äpplen", "Leo 10 cm", "Filip 8, Ludvig 6" became kings): a bare "Name digit" is a regnal
+// number only when the text is about rulers; "Karl den 12" always is
+const RULER_CONTEXT = /kung|drottning|regent|monark|påve|kejsar|tsar|krön|regera|tron(?:en|följ|arvinge)?(?![\p{L}])|dynasti|envälde|furste|hertig|riket|stormakt|ätten|huset (?:Vasa|Bernadotte|Habsburg|Tudor|Bourbon|Romanov)/iu;
 const RULER_WORD = new RegExp(String.raw`(?<![\p{L}])(${RULERS}) den (en|ett|två|tre|fyra|fem|sex|sju|åtta|nio|tio|elva|tolv|tretton|fjorton|femton|sexton|sjutton|arton|nitton|tjugo)(?![\p{L}])`, "gu");
 const RULER_ROMAN_DEN = new RegExp(String.raw`(?<![\p{L}])(${RULERS}) den (XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)(?![\p{L}])`, "gu");
 export function rulerNumbers(text: string): string {
@@ -383,7 +389,8 @@ export function rulerNumbers(text: string): string {
       const n = romanToInt(r);
       return n === null ? m : `${name} den ${regnal(n)}`;
     })
-    .replace(RULER_DIGIT, (_m, name: string, n: string) => `${name} den ${regnal(Number(n))}`);
+    .replace(RULER_DIGIT, (m, name: string, den: string | undefined, n: string) =>
+      den || RULER_CONTEXT.test(text) ? `${name} den ${regnal(Number(n))}` : m);
 }
 
 /** After digits became words. */

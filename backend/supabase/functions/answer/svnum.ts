@@ -183,9 +183,12 @@ const FRACTION_WORDS: Record<string, [string, string]> = {
   "1/8": ["en åttondel", "en åttondels"],
 };
 // K4 loop (D87 pl-127: "1/6" was read "ett/sex"): any a/b up to tenths
-const DENOM = ["", "", "halv", "tredjedel", "fjärdedel", "femtedel", "sjättedel", "sjundedel", "åttondel", "niondel", "tiondel"];
+const DENOM: Record<number, string> = {
+  2: "halv", 3: "tredjedel", 4: "fjärdedel", 5: "femtedel", 6: "sjättedel", 7: "sjundedel", 8: "åttondel", 9: "niondel",
+  10: "tiondel", 11: "elftedel", 12: "tolftedel", 20: "tjugondel", 100: "hundradel",
+};
 function genericFraction(a: number, b: number): [string, string] | null {
-  if (b < 2 || b > 10 || a < 1 || a >= b) return null;
+  if (!DENOM[b] || a < 1 || a >= b) return null;
   if (b === 2) return ["en halv", "en halv"];
   const one = a === 1;
   const w = one ? "en" : cardinal(a);
@@ -193,10 +196,25 @@ function genericFraction(a: number, b: number): [string, string] | null {
 }
 const UNICODE_FRACTIONS: Record<string, string> = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅛": "1/8" };
 const FRACTION_UNIT = String.raw`(?:\s?(dl|cl|ml|l|tsk|msk|krm|kg|g|st)(?![\p{L}\d]))?`;
+// K25 (Oscar O26: "6/6" was "sex/sex", "30/4" "trettio/fyra"): day/month is a date when the day is not smaller than the
+// month (so never a proper fraction) or a date word comes before ("den 1/5", "firas 1/5"); never after scores ("10/10 rätt")
+const DATE_CUE = /(?:^|[^\p{L}])(?:den|firas|firar|fyller|föddes|född|född den|datum|dagen|till|från|före|efter|sedan|på)\s+$/iu;
+const NOT_DATE_AFTER = /^\s*(?:rätt|poäng|i betyg|av|på provet|[=+*×÷−-])/u;
+function slashDates(text: string): string {
+  return text.replace(/(?<![\p{L}\d.,/:])(\d{1,2})\/(\d{1,2})(?![\d/.,]\d|\/)/gu, (m: string, d: string, mo: string, off: number, whole: string) => {
+    const di = Number(d), mi = Number(mo);
+    if (di < 1 || di > 31 || mi < 1 || mi > 12 || m === "24/7") return m; // "öppet 24/7" is not the 24th of July
+    const before = whole.slice(0, off), after = whole.slice(off + m.length);
+    if (NOT_DATE_AFTER.test(after) || /(?:fick|får|betyg|poäng|resultat)\s+$/iu.test(before)) return m;
+    if (di < mi && !DATE_CUE.test(before)) return m;
+    return `${ordinal(di)} ${MONTHS[mi - 1]}`;
+  });
+}
 function speakFractions(text: string): string {
   let s = text.replace(/(\d)?([½⅓⅔¼¾⅛])/gu, (_m, d: string | undefined, f: string) => (d ? `${d} ` : "") + UNICODE_FRACTIONS[f]);
+  s = slashDates(s);
   s = s.replace(
-    new RegExp(String.raw`(?<![\p{L}\d.,/])(?:(\d{1,3})\s+)?([1-9])\/([2-9]|10)(?![\d/])${FRACTION_UNIT}`, "gu"),
+    new RegExp(String.raw`(?<![\p{L}\d.,/])(?:(\d{1,3})\s+)?([1-9]|1[01]|[1-9]\d)\/([2-9]|1[0-2]|20|100)(?![\d/])${FRACTION_UNIT}`, "gu"),
     (m: string, whole: string | undefined, a: string, b: string, unit: string | undefined) => {
       const f = FRACTION_WORDS[`${a}/${b}`] ?? genericFraction(Number(a), Number(b));
       if (!f) return m;
@@ -212,7 +230,7 @@ function speakFractions(text: string): string {
   return s;
 }
 
-// Nouns that take "en" (the model writes "1 liter", "21 personer"); everything else defaults to "ett".
+// Nouns that take "en" (the model writes "1 liter", "21 personer").
 const EN_NOUNS = new Set(
   (
     "liter deciliter centiliter milliliter meter centimeter millimeter kilometer mil minut timme sekund krona " +
@@ -220,6 +238,44 @@ const EN_NOUNS = new Set(
     "personer gånger minuter timmar sekunder dagar veckor månader kronor koppar skedar bitar sidor mil mol"
   ).split(" "),
 );
+
+/**
+ * K25 (Oscar O26: "1 bok" was "ett bok"): most Swedish nouns are en-words, so a digit before an unknown noun is "en";
+ * "ett" before the ett-nouns below (and their -et/-en forms), before a neuter adjective, and when no noun follows
+ * ("1 plus 1", "svaret är 1").
+ */
+const ETT_NOUNS = new Set(
+  (
+    "äpple ägg år barn hus land mål prov ord glas rum bord tal ben öga öra hjärta frö djur träd blad ark kapitel nummer " +
+    "problem exempel svar steg lag parti sekel århundrade decennium dygn halvår kvartal gram hekto hg kilo ton kilogram " +
+    "stycke par slag val mynt frimärke paket brev kort spel bi lejon får lamm tåg plan flygplan skepp fartyg krig " +
+    "rike landskap län samhälle företag program system ämne språk ljud ljus moln berg hav vatten fönster papper " +
+    "äventyr citat tecken kapitel avsnitt test bevis experiment element atom- grundämne tusental hundratal miljontal " +
+    "försök fel misstag poängtal betyg intervall område avstånd värde resultat recept dussin halvt jobb arbete " +
+    "material mönster tryck medel instrument verktyg vapen fordon objekt ögonblick liv namn brott beslut förslag"
+  ).split(" "),
+);
+const NEUTER_ADJ = new Set("stort litet nytt gammalt annat helt enda varje enkelt svårt viktigt bra rätt fel".split(" "));
+const NOT_A_NOUN = new Set(
+  ("och plus minus gånger delat av är var blir till eller i på med som om än men så att för från under över efter " +
+    "före vid mot per komma tusen hundra miljon miljoner miljard").split(" "),
+);
+function genderBefore(next: string | undefined): Gender {
+  if (!next || NOT_A_NOUN.has(next)) return "ett";
+  if (EN_NOUNS.has(next)) return "en";
+  if (NEUTER_ADJ.has(next)) return "ett";
+  const base = next.replace(/(?:et|en|t)$/u, "");
+  if (ETT_NOUNS.has(next) || ETT_NOUNS.has(base) || ETT_NOUNS.has(next.replace(/n$/u, ""))) return "ett";
+  if (/(?:ande|ende|um|ium|eri|nde)$/u.test(next)) return "ett";
+  return "en";
+}
+
+/** K25: "12,50 kr" -> "tolv kronor och femtio öre". */
+function kronorOre(n: number, dec: string): string {
+  const ore = Number((dec + "0").slice(0, 2));
+  const kr = n === 1 ? "en krona" : `${cardinal(n, "en")} kronor`;
+  return ore ? `${kr} och ${cardinal(ore, "ett")} öre` : kr;
+}
 
 function readDecimals(d: string): string {
   return d.split("").map((c) => UNITS[Number(c)]).join(" ");
@@ -265,10 +321,18 @@ export function numbersToSpeech(text: string): string {
   });
   // K4 loop (D87 pl-127: "en 5:a" on a die was read "en femte"): after "en"/"ett"/"någon"/"varje"/"slår" a digit
   // with :a is the noun ("en femma", "en sexa"), not the ordinal
-  s = s.replace(/(?<![\p{L}])(en|ett|någon|varje|ingen|slår|slog|få|fick|minst en|högst en) (\d):a(?![\p{L}\d])/giu,
+  s = s.replace(/(?<![\p{L}])(en|ett|någon|varje|ingen|slår|slog|få|fick|minst en|högst en|kom|blev|hamnade|slutade|kommer|blir) (\d):a(?![\p{L}\d])/giu,
     (_m, w: string, n: string) => `${w} ${DIGIT_NOUN[Number(n)] ?? n}`);
   // ordinals 1:a 2:a 3:e ...
   s = s.replace(/(?<![\d])(\d{1,4}):(?:a|e)(?![\p{L}\d])/gu, (_m, n: string) => ordinal(Number(n)));
+  // K25: a day before a month name is an ordinal: "den 20 juni" -> "den tjugonde juni", "1 maj" -> "första maj"
+  s = s.replace(/(?<![\p{L}\d.,])([1-9]|[12]\d|3[01])(?:\s|\u00a0)+(?=(?:januari|februari|mars|april|maj|juni|juli|augusti|september|oktober|november|december)(?![\p{L}]))/giu,
+    (_m, d: string) => ordinal(Number(d)) + " ");
+  // K25: scores after a result word are "mot": "vann med 3–1" -> "tre mot ett" (otherwise a range "5–10" is "till")
+  s = s.replace(
+    /(?<![\p{L}])((?:vann|vinner|förlorade|förlorar|torskade|slutade|slutar|ledde|leder|stod det|stod|siffrorna|resultatet|oavgjort|kryss)(?: \p{L}+)?(?: med| på)? )(\d{1,2})\s*[–-]\s*(\d{1,2})(?![\d-])/giu,
+    "$1$2 mot $3",
+  );
   // ranges 5-10 / 5–10 (not dates 2026-11-04)
   s = s.replace(/(?<![\d-])(\d+(?:[.,]\d+)?)\s*[–-]\s*(\d+(?:[.,]\d+)?)(?![\d-])/g, "$1 till $2");
   // negative numbers
@@ -291,7 +355,8 @@ export function numbersToSpeech(text: string): string {
       const next = /^\s+(\p{L}+)/u.exec(whole.slice(off + m.length))?.[1]?.toLowerCase();
       const n = Number(int);
       if (!Number.isSafeInteger(n) || n >= 1e15) return m;
-      const gender: Gender = unit ? unit.g : next && EN_NOUNS.has(next) ? "en" : "ett";
+      const gender: Gender = unit ? unit.g : genderBefore(next);
+      if (unitKey === "kr" && dec !== undefined && dec.length <= 2) return kronorOre(n, dec);
       let words: string;
       if (dec !== undefined) words = yearOrCardinal(n, "ett") + " komma " + readDecimals(dec);
       else words = yearOrCardinal(n, gender);

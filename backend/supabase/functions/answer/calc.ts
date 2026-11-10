@@ -58,6 +58,8 @@ type Tok = { t: "num"; v: number } | { t: "op"; v: string } | { t: "fn"; v: stri
 
 function tokenize(input: string): Tok[] | null {
   if (/\b\d{1,2}:\d{2}\b/.test(input)) return null; // "20:20" is a clock time, not 20 ÷ 20
+  // K25 (Oscar O32): the parser has no grouping, so "(12 + 8) * 2" became 28; with parentheses the model answers
+  if (/[()]/.test(input)) return null;
   let s = input.toLowerCase().trim().replace(/[?=!.]+$/g, "").trim().replace(PREFIX, "");
   s = s
     .replace(/\bupphöjt till\b|\bupphöjd till\b|\bin the power of\b/g, " ^ ")
