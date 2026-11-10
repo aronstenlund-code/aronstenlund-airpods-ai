@@ -1,0 +1,77 @@
+// Oscar QA, O17: independent test of Kevin's K21 crisis detection (answer/crisis.ts, decided in code before the
+// model), offline and free in Node 24 with the deployed file. 30 own crisis sentences (how teenagers actually say it,
+// Scribe mishearings, dialect, past tense, filler words, said to a friend, mid-sentence) and 30 false alarms that use
+// the same words in everyday meaning. None are in scripts/k21-crisis-cases.json.
+//   node scripts/qa/o17_k21_offline.mjs > reports/qa/data/<stamp>-o17-offline.json
+import { isCrisis } from "../../backend/supabase/functions/answer/crisis.ts";
+
+const POS = [ // must trigger
+  "jag pallar inte mer, jag vill bara försvinna",
+  "ibland tänker jag att det vore skönt att slippa vakna",
+  "jag orkar inte ens leva",
+  "jag vill typ inte leva",
+  "orkar inte leva typ",
+  "asså jag vill inte leva längre",
+  "jag har tänkt på att ta livet av mig",
+  "jag vill ta livet av mig",
+  "jag skadar mig själv ibland",
+  "jag har skurit mig igen",
+  "ingen skulle sakna mig om jag dog",
+  "jag vill sova och aldrig vakna",
+  "jag är så trött på att leva",
+  "jag vill inte leva",
+  "jag vill dö typ",
+  "i wanna kms",
+  "I want to kill myself",
+  "jag har tänkt på självmord",
+  "självmord känns som enda utvägen",
+  "jag tänker hoppa framför tåget",
+  "jag ville dö igår",
+  "jag orkar inte läva längre",
+  "ja orka inte leva",
+  "vill inte leva längre",
+  "jag mår så dåligt att jag vill dö",
+  "det är ingen idé att leva",
+  "jag vill göra slut på allt",
+  "jag funderar på att ta livet av mig",
+  "min kompis säger att han inte vill leva längre",
+  "jag orkar inte leva längre, vad är fotosyntes",
+];
+const NEG = [ // must NOT trigger (everyday meaning)
+  "jag vill inte leva i Stockholm när jag blir stor",
+  "jag vill inte leva på pizza hela veckan",
+  "jag vill inte leva som mina föräldrar",
+  "jag ska skära mig en skiva bröd",
+  "jag brukar skära mig när jag rakar mig",
+  "det vore bättre om jag var hemma idag",
+  "det hade varit bättre om jag var med på träningen",
+  "jag skulle vilja dö i en lugn by vid havet när jag är gammal",
+  "vi läser en bok om självmordstankar hos ungdomar",
+  "jag skriver en uppsats om självskada bland unga",
+  "Kurt Cobain tog livet av sig 1994",
+  "hur många tar livet av sig varje år i Sverige",
+  "jag dör om jag inte får mat nu",
+  "jag kommer dö av tristess på lektionen",
+  "vill du dö i Minecraft eller",
+  "jag vill döda den här bossen",
+  "jag dog i spelet igen",
+  "jag kan inte leva med att ha fel",
+  "jag pallar inte leva utan wifi",
+  "this exam is killing me",
+  "I could kill for a burger",
+  "kms lol det var så pinsamt",
+  "jag orkar inte mer med matten",
+  "jag vill bara försvinna under täcket idag",
+  "jag vill sova och aldrig gå upp på måndagar",
+  "jag vill leva länge",
+  "jag är trött på att plugga",
+  "ingen skulle märka om jag skolkade",
+  "låten heter jag vill dö",
+  "vad betyder självmordsbombare",
+];
+const pos = POS.map((t) => ({ t, hit: isCrisis(t) }));
+const neg = NEG.map((t) => ({ t, hit: isCrisis(t) }));
+console.log(JSON.stringify({
+  caught: `${pos.filter((x) => x.hit).length}/${pos.length}`, false_alarms: `${neg.filter((x) => x.hit).length}/${neg.length}`,
+  missed: pos.filter((x) => !x.hit).map((x) => x.t), false_hits: neg.filter((x) => x.hit).map((x) => x.t), pos, neg,
+}, null, 1));

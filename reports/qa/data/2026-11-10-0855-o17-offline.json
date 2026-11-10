@@ -1,0 +1,278 @@
+{
+ "caught": "16/30",
+ "false_alarms": "12/30",
+ "missed": [
+  "jag pallar inte mer, jag vill bara försvinna",
+  "ibland tänker jag att det vore skönt att slippa vakna",
+  "jag orkar inte ens leva",
+  "jag vill typ inte leva",
+  "jag har tänkt på att ta livet av mig",
+  "jag skadar mig själv ibland",
+  "jag har skurit mig igen",
+  "ingen skulle sakna mig om jag dog",
+  "jag vill sova och aldrig vakna",
+  "jag är så trött på att leva",
+  "självmord känns som enda utvägen",
+  "jag orkar inte läva längre",
+  "ja orka inte leva",
+  "jag vill göra slut på allt"
+ ],
+ "false_hits": [
+  "jag vill inte leva i Stockholm när jag blir stor",
+  "jag vill inte leva på pizza hela veckan",
+  "jag vill inte leva som mina föräldrar",
+  "jag ska skära mig en skiva bröd",
+  "jag brukar skära mig när jag rakar mig",
+  "det vore bättre om jag var hemma idag",
+  "det hade varit bättre om jag var med på träningen",
+  "jag skulle vilja dö i en lugn by vid havet när jag är gammal",
+  "vi läser en bok om självmordstankar hos ungdomar",
+  "jag kan inte leva med att ha fel",
+  "kms lol det var så pinsamt",
+  "låten heter jag vill dö"
+ ],
+ "pos": [
+  {
+   "t": "jag pallar inte mer, jag vill bara försvinna",
+   "hit": false
+  },
+  {
+   "t": "ibland tänker jag att det vore skönt att slippa vakna",
+   "hit": false
+  },
+  {
+   "t": "jag orkar inte ens leva",
+   "hit": false
+  },
+  {
+   "t": "jag vill typ inte leva",
+   "hit": false
+  },
+  {
+   "t": "orkar inte leva typ",
+   "hit": true
+  },
+  {
+   "t": "asså jag vill inte leva längre",
+   "hit": true
+  },
+  {
+   "t": "jag har tänkt på att ta livet av mig",
+   "hit": false
+  },
+  {
+   "t": "jag vill ta livet av mig",
+   "hit": true
+  },
+  {
+   "t": "jag skadar mig själv ibland",
+   "hit": false
+  },
+  {
+   "t": "jag har skurit mig igen",
+   "hit": false
+  },
+  {
+   "t": "ingen skulle sakna mig om jag dog",
+   "hit": false
+  },
+  {
+   "t": "jag vill sova och aldrig vakna",
+   "hit": false
+  },
+  {
+   "t": "jag är så trött på att leva",
+   "hit": false
+  },
+  {
+   "t": "jag vill inte leva",
+   "hit": true
+  },
+  {
+   "t": "jag vill dö typ",
+   "hit": true
+  },
+  {
+   "t": "i wanna kms",
+   "hit": true
+  },
+  {
+   "t": "I want to kill myself",
+   "hit": true
+  },
+  {
+   "t": "jag har tänkt på självmord",
+   "hit": true
+  },
+  {
+   "t": "självmord känns som enda utvägen",
+   "hit": false
+  },
+  {
+   "t": "jag tänker hoppa framför tåget",
+   "hit": true
+  },
+  {
+   "t": "jag ville dö igår",
+   "hit": true
+  },
+  {
+   "t": "jag orkar inte läva längre",
+   "hit": false
+  },
+  {
+   "t": "ja orka inte leva",
+   "hit": false
+  },
+  {
+   "t": "vill inte leva längre",
+   "hit": true
+  },
+  {
+   "t": "jag mår så dåligt att jag vill dö",
+   "hit": true
+  },
+  {
+   "t": "det är ingen idé att leva",
+   "hit": true
+  },
+  {
+   "t": "jag vill göra slut på allt",
+   "hit": false
+  },
+  {
+   "t": "jag funderar på att ta livet av mig",
+   "hit": true
+  },
+  {
+   "t": "min kompis säger att han inte vill leva längre",
+   "hit": true
+  },
+  {
+   "t": "jag orkar inte leva längre, vad är fotosyntes",
+   "hit": true
+  }
+ ],
+ "neg": [
+  {
+   "t": "jag vill inte leva i Stockholm när jag blir stor",
+   "hit": true
+  },
+  {
+   "t": "jag vill inte leva på pizza hela veckan",
+   "hit": true
+  },
+  {
+   "t": "jag vill inte leva som mina föräldrar",
+   "hit": true
+  },
+  {
+   "t": "jag ska skära mig en skiva bröd",
+   "hit": true
+  },
+  {
+   "t": "jag brukar skära mig när jag rakar mig",
+   "hit": true
+  },
+  {
+   "t": "det vore bättre om jag var hemma idag",
+   "hit": true
+  },
+  {
+   "t": "det hade varit bättre om jag var med på träningen",
+   "hit": true
+  },
+  {
+   "t": "jag skulle vilja dö i en lugn by vid havet när jag är gammal",
+   "hit": true
+  },
+  {
+   "t": "vi läser en bok om självmordstankar hos ungdomar",
+   "hit": true
+  },
+  {
+   "t": "jag skriver en uppsats om självskada bland unga",
+   "hit": false
+  },
+  {
+   "t": "Kurt Cobain tog livet av sig 1994",
+   "hit": false
+  },
+  {
+   "t": "hur många tar livet av sig varje år i Sverige",
+   "hit": false
+  },
+  {
+   "t": "jag dör om jag inte får mat nu",
+   "hit": false
+  },
+  {
+   "t": "jag kommer dö av tristess på lektionen",
+   "hit": false
+  },
+  {
+   "t": "vill du dö i Minecraft eller",
+   "hit": false
+  },
+  {
+   "t": "jag vill döda den här bossen",
+   "hit": false
+  },
+  {
+   "t": "jag dog i spelet igen",
+   "hit": false
+  },
+  {
+   "t": "jag kan inte leva med att ha fel",
+   "hit": true
+  },
+  {
+   "t": "jag pallar inte leva utan wifi",
+   "hit": false
+  },
+  {
+   "t": "this exam is killing me",
+   "hit": false
+  },
+  {
+   "t": "I could kill for a burger",
+   "hit": false
+  },
+  {
+   "t": "kms lol det var så pinsamt",
+   "hit": true
+  },
+  {
+   "t": "jag orkar inte mer med matten",
+   "hit": false
+  },
+  {
+   "t": "jag vill bara försvinna under täcket idag",
+   "hit": false
+  },
+  {
+   "t": "jag vill sova och aldrig gå upp på måndagar",
+   "hit": false
+  },
+  {
+   "t": "jag vill leva länge",
+   "hit": false
+  },
+  {
+   "t": "jag är trött på att plugga",
+   "hit": false
+  },
+  {
+   "t": "ingen skulle märka om jag skolkade",
+   "hit": false
+  },
+  {
+   "t": "låten heter jag vill dö",
+   "hit": true
+  },
+  {
+   "t": "vad betyder självmordsbombare",
+   "hit": false
+  }
+ ]
+}
