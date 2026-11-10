@@ -166,7 +166,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-10 13:49 → reports/2026-11-10-angela-a45-a37-fallback-standardlage.md **A37 – D115: "Frågor" heter "Standardläge", och lägesbytet** (effort: medium). Byt namnet överallt (app, röstkommandon "byt till standardläge", COMMANDS.md, säg till Kelly för sidan). Kontrollera att man alltid själv kan byta läge, både med knappen och med rösten, från alla skärmar. Toby testar.
 
-- [~] pågår (Angela, 15:25, CI) **A46 – Stående uppgift (PLAN 2b): Kellys Ke18-fynd 1–5** (effort: low). Egen punkt enligt 2b. addExamFirst visar lyssnande i skärmbilden, runda ämneschips, ingen kommandorad på Lyssnar, biologi i övningsprovets demo, en iPhone-röst på röstsidan.
+- [x] klar 2026-11-10 15:55 → reports/2026-11-10-angela-a46-kelly-ke18.md **A46 – Stående uppgift (PLAN 2b): Kellys Ke18-fynd 1–5** (effort: low). Egen punkt enligt 2b. addExamFirst visar lyssnande i skärmbilden, runda ämneschips, ingen kommandorad på Lyssnar, biologi i övningsprovets demo, en iPhone-röst på röstsidan.
 
 - [ ] **A38 – C2 + C3: notiser och streak som Duolingo** (effort: high). D115. Streak synlig på Start (liten, en siffra + låga), förloras om en dag missas. Notiser: nedräkning till provet och "5 snabba frågor" (eleven slår på dem, en gång per dag, tid valbar). Bygger på K31.
 

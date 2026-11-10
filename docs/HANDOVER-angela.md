@@ -1,42 +1,70 @@
-# Överlämning: Angela (app), 2026-11-10 eftermiddag
+# Överlämning: Angela (app), 2026-11-10 kl. 15.30
 
-Den här sessionen har gjort 11 punkter i dag: A21, A18, A20, A22, A23, A24, A25, A26, A16, A19 och A27. Alla är
-gröna i CI, men ingen är provad på telefon. Rapporterna finns i `reports/2026-11-10-angela-a*.md`. I kön återstår
-bara A3 (röstlistan), som väntar på Kevins K6 (ElevenLabs-krediter). Det mesta av A3 finns redan i A26:s röstsida.
+Den här sessionen har gjort 30 punkter i dag. Alla är gröna i CI, men ingen är provad på telefon. Rapporterna finns i
+`reports/2026-11-10-angela-a*.md`.
+
+**Punkterna:**
+- A16–A30;
+- A33–A37, A39–A42, A45 och A46.
+
+**Kvar i kön (`prompts/queue/angela.md`), alla väntar på Kevin:**
+- A3 väntar på K6. Det mesta finns redan i A26:s röstsida.
+- A38 väntar på K31.
+- A43 väntar på K33.
+- A44 väntar på A38.
 
 ## Det här står inte i rapporterna
-- **Ingen Mac.** CI (`ios-build.yml`) är kompilatorn och tar cirka 15–20 minuter. Hjälpskripten heter `ghapi.sh`,
-  `waitsha.sh` och `waitrun.sh` (se minnet `lumen-project-setup`).
-  - Varje push som rör app-kod avbryter körningen som pågår, också när någon annan pushar. Samla ändringarna innan du
-    pushar.
-  - Skärmbilder tas med `screenshots.yml` (workflow_dispatch med `device`). Scenerna `voice` och `practice` är nya.
-  - Den första bilden i en körning kan bli hemskärmen. Det hände med SE och intro i ljust läge.
-- **Swift-fällor som har kostat CI-rundor:**
-  - Tester anropar vyernas statiska hjälpfunktioner från en nonisolated kontext. Märk funktionerna `nonisolated` eller
+- **Ingen Mac.** CI (`ios-build.yml`) är kompilatorn och tar 15–25 minuter. Hjälpskripten finns i scratchpad-mappen
+  `ci/`: `ghapi.sh`, `waitsha.sh` och `waitrun.sh` (se minnet `lumen-project-setup`).
+  - En push som rör app-kod avbryter körningen som pågår, också när någon annan pushar. Pushar som bara rör dokument
+    startar ingen körning.
+  - Skärmbilder tas med `screenshots.yml` (workflow_dispatch med `device`). Dessa scener finns:
+    - intro och first;
+    - home och empty;
+    - addExam och addExamFirst;
+    - listening och listeningProv;
+    - practice och practiceResult;
+    - voice, settings, about och resten.
+  - `ListeningModel.screenshotShows` (bara i Debug) visar Lyssnar som när appen lyssnar.
+- **Swift-fällor som har kostat CI-rundor i dag:**
+  - **Statiska hjälpfunktioner i vyer:** tester anropar dem utanför MainActor. Märk dem `nonisolated`, eller märk
     testsviten `@MainActor`.
-  - Ett muterande anrop får inte stå inne i `#require` eller `#expect`. Lägg resultatet i en `let` först.
-  - `switch` som implicit returvärde efter en `if` kräver `return switch`.
-- **Delat index:** andra sessioner får ibland med dina ostagade ändringar i sina commits. Oscars `310a7c0` tog till
-  exempel med min STATUS-rad.
+  - **`#require` och `#expect`:** ett muterande anrop får inte stå inne i dem. Lägg resultatet i en `let` först.
+  - **`switch` som implicit returvärde:** efter en `if` krävs `return switch`.
+  - **Testernas falska uppspelning:** den rapporterar aldrig att den är klar. Den riktiga vägen väntar då upp till 30 s
+    på att mikrofonen öppnas. Styr spärren direkt i testerna.
+- **Delat index:** andra sessioner får ibland med dina ostagade ändringar i sina commits.
   - Committa med `git commit -- <filer>`.
   - Synka med `git fetch origin main && git rebase --autostash origin/main`.
-- **Python-patchar:** skriv skriptet till scratchpad med Write-verktyget och kör det med `python -I`. Heredocs med `'''`
-  och `\(` bryter i bash.
+- **Klockan:** skriv tider i kön och på tavlan från `date`, inte uppskattade. Jag skrev en stund 1–3 timmar för tidigt
+  och rättade det i `c3f078b`.
+- **Python-patchar:** skriv skriptet med Write-verktyget till scratchpad och kör det med `python -I`. Heredocs med `'''`
+  och `\(` krånglar i bash.
 
 ## Öppna trådar
-- **A16, övningsprovet:**
-  - Navigeringen är en Swift-port av Kevins `practice.ts` (`PracticeNav`). Ändrar Kevin `practice.ts` måste porten
-    ändras också.
-  - Toby kan göra ett E2E-test när ElevenLabs-kvoten är påfylld.
-- **A19:**
-  - Påminnelsen kommer kl. 16 tills Aron väljer en annan tid.
-  - Förhörssvar fyller inte planens historik. Det kräver ett begrepp per fråga från Kevin (`done.concept`).
-  - "Länk när eleven kört fast" behöver att appen skickar `stuck: true` (K19). Det är nästa steg.
-- **A26:** Kevin kan lägga till `description` i `/voices`. Loggan (U5) väntar på Arons val.
-- **A27:** serverns och appens listor över känsliga ord bör bli en enda lista (Kevin).
-- **Toby:** kör om T3 och T8. Introt har nya ord ("Lyssnar bara när du har startat den" och "Inget konto. Testa nu
-  betyder …"), och Första frågan har "Pausad" och "Lyssna igen".
-- **Möjliga stående uppgifter:**
-  - `stuck: true` för K19;
-  - Oscars O30: ett ekofilter som räknar med när uppläsningen slutade;
-  - Tobys `SessionEvent` för "fönstret öppet" och "mikrofonen öppen" (T7).
+- **Tobys tester:** han behöver köra om T3 och T8. De här texterna i appen har ändrats:
+  - samtycket är på svenska;
+  - Rizz heter "Rizz", utan 18+;
+  - Frågor heter Standardläge;
+  - introt har en fjärde punkt;
+  - första starten går vidare av sig själv och frågar om provet med rösten;
+  - "Skriv i stället".
+
+  Han har också `listeningEventObserver` (A29) för att vänta på mikrofonen och Mer?-fönstret.
+- **Kelly:**
+  - Granska A46 med nya bilder: `reports/2026-11-10-a46-skarmbilder/`.
+  - Ändra på demosidan: Standardläge, ingen 18+, och introts fjärde punkt.
+  - Välj ljuden för A34.
+  - Hennes fynd 6, att "Lägg till prov" har 19 val, är inte gjort. Snabbformen saknar fältet för provets innehåll, och
+    det fältet behövs för studieplanen (A19).
+- **Kevin:**
+  - `description` i `/voices` (A26);
+  - ett begrepp per förhörsfråga, `done.concept` (A19);
+  - en gemensam lista över känsliga ord (A27/A35);
+  - `parse` med en lärobokssida (A36);
+  - K30:s text om att samtycket gäller 14 dagar (A41).
+- **Aron:**
+  - välja tid för påminnelserna (A19, nu kl. 16);
+  - välja logga;
+  - pröva A40 med flygplansläge;
+  - samtycket visas en gång till för honom (version 5).

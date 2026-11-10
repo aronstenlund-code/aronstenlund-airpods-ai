@@ -14,8 +14,8 @@ simulatorbilder. Inget är provat på telefon.**
 | 6 | "Lägg till prov" har fortfarande 19 val | **Inte ändrat.** Kelly tog bara med det gamla fyndet för att det inte skulle tappas bort. Det kan bli en egen punkt: "Lägg till prov" från Start kan använda samma snabbform som första starten (rösten först och "Skriv i stället"). |
 
 ## Bilder
-Nya skärmbilder på Pro och SE är startade (`screenshots.yml`). De läggs i `reports/2026-11-10-a46-skarmbilder/` när de
-är klara.
+Bilderna från iPhone 17 Pro ligger i `reports/2026-11-10-a46-skarmbilder/` (körning 42830169882). "Har du prov snart?" visar
+"Säg till exempel", lyssnande ringar och "Skriv i stället" (A33).
 
 ## CI
-Se slutet av rapporten när körningen är klar.
+Grönt i CI: iOS build 42830170108 (`ed4bbdb`). Bygget för enhet räknar varningar som fel, och alla LumenTests är gröna.
