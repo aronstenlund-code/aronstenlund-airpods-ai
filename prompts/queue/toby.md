@@ -28,3 +28,4 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 - [ ] **T8b – Omtest av förstagångsanvändaren** (effort: medium). Beror på: påfylld ElevenLabs-kvot, och Angela har tittat på T8-fynd 1 ("Startar …" efter mikrofonfrågan). Kör `apptest-firstuser`: tid och tryck till första svaret i Frågor och Provläge.
 
+- [ ] **T10 – När ElevenLabs ligger nere (N3)** (effort: medium). Simulera att Scribe och ElevenLabs-rösten svarar fel (kvoten slut, 503) och kontrollera att appen fortsätter med iPhonens taligenkänning och röst, inte blir döv eller tyst, och att A45:s rad visas en gång. Skärmbilder.

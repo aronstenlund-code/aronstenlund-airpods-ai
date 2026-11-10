@@ -110,3 +110,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 - [ ] **K31 – C2 + C3: notiser och streak** (effort: medium). D115. Backend för streak (en dag räknas när eleven gjort minst en förhörsfråga; streaken nollas om en dag missas, som Duolingo) och för vad notisen ska säga (nedräkning till provet + "5 snabba frågor"). Angela bygger appdelen (A38).
 
 - [ ] **K32 – Roliga kommandon i alla lägen** (effort: low). D115. "Lumen, sjung …", "rappa …", "berätta ett skämt", "säg det som en pirat" fungerar i alla lägen som kommandon, inte som egna lägen. Lägg dem i `docs/COMMANDS.md`.
+
+- [ ] **K33 – Hur redo är eleven? (N1)** (effort: medium). Räkna fram "% redo" per prov från förhörssvar, studiekort och K17-planens repetitioner (enkel, förklarbar formel; dokumentera den), plus de tre svagaste områdena. Utan nya modellanrop om det går. Till Angelas A43.

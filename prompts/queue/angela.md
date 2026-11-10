@@ -175,3 +175,9 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [ ] **A41 – Samtyckestexten ska stämma (G1)** (effort: high). Gör före A33. Underlag: `reports/2026-11-10-1300-deangelo-granskning-appen.md` G1. Skriv om ConsentView och de svenska texterna: en pluggapp (inte föreläsningar/möten), blå indikator, att frågor och svar skickas till oss för analys och raderas efteråt (D116, ersätter "delning avstängd"), att andras tal som Lumen svarar på (t.ex. lärarens fråga i Standardläge) också skrivs ut och skickas, ljudet till ElevenLabs, texten till Claude via Lumens server, ljud sparas aldrig. Kort, på svenska, i samma ton som introt. Kevin bekräftar det tekniska (K30).
 
 - [ ] **A42 – Prov bara på Start, och en översättning (G2, G4)** (effort: low). Ta bort avsnittet Prov ur Inställningar (provdatum och årskurs ändras från provkortet på Start), samma datumformat överallt. Översätt "Using the iPhone's speech recognition: …".
+
+- [ ] **A43 – Framsteg per prov (N1)** (effort: high). En ring på provkortet ("68 % redo") och en sida "Så redo är du" med det du kan, det du ska öva på och dagens pass. Data från K33. Följ SYSTEM.md, Kelly granskar.
+
+- [ ] **A44 – Hemskärmswidget (N2)** (effort: medium). Beror på: A38. WidgetKit: dagar kvar till nästa prov, streak, och en knapp "Förhör mig" som startar Provläget (App Intent).
+
+- [ ] **A45 – Säg till när reservmotorn används (N3)** (effort: low). När Scribe eller ElevenLabs-rösten inte går (t.ex. kvoten slut) och appen faller tillbaka till iPhonens egna: en lugn rad en gång per pass ("Lumen hör och pratar lite sämre just nu"), ingen felruta. Toby testar (T10).

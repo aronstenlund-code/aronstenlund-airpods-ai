@@ -21,3 +21,15 @@ Underlag: källkoden (`Lumen/`, 24 000 rader Swift), `Localizable.xcstrings` (23
 
 ## Restriktioner (D114)
 Koden har de åtta skydden i `docs/RESTRIKTIONER.md` del B. Det som ska bort (del A) ligger i K28 (servern) och A35 (18+-spärren i `ModeSettings.adultConfirmed` / `ModeSetupView`).
+
+## Djupare: vad som saknas (jämfört med Quizlet, Duolingo, Speak)
+| # | Saknas | Varför det behövs | Vem | Märkning |
+|---|---|---|---|---|
+| N1 | **Framsteg per prov:** en ring på provkortet ("68 % redo"), vad du kan och vad du ska öva på | Den vanligaste motivationen i pluggappar; datan finns redan (studiekort, förhörssvar, K17-planen) | Kevin (K33) + Angela (A43) | möjligt |
+| N2 | **Widget på hemskärmen:** dagar kvar + streak + "Förhör mig" | Duolingos streak syns utan att öppna appen; i dag finns bara kontrollknappen och Live Activity | Angela (A44) | möjligt |
+| N3 | **Tydligt när ElevenLabs ligger nere:** appen faller redan tillbaka till iPhonens taligenkänning och röst (i koden, ej provat på telefon), men säger inget om att kvaliteten är sämre | Hände i dag 08:10 | Angela (A45) + Toby (T10) | möjligt |
+| N4 | **Betalning i appen** (StoreKit-prenumeration + gratisgräns) | Måste finnas före App Store; pris från kostnad per timme (R7) | Angela + Kevin, fas 3 | möjligt |
+| N5 | **App Store-sidan:** 6 skärmbilder, text, åldersgräns, integritetsetiketter | Krävs för TestFlight extern och App Store | Kelly (Ke25), fas 3 | möjligt |
+| N6 | **Kort att bläddra i tyst** (bibliotek, buss): studiekorten som vändkort med tryck | Röst fungerar inte överallt; Tyst förhör med nick finns men är svårt att upptäcka | Angela (backlog) | möjligt |
+
+Rättelse till Aron (Deangelo): i dag sa jag att appen inte hör eller läser upp utan ElevenLabs. Koden faller tillbaka till iPhonens egen taligenkänning och röst, så den fungerar, men sämre. Ej verifierat på telefon.
