@@ -142,3 +142,8 @@ Ordning: fotosyntes 10,5 → fest 8,7 → "Dagen efter" hallen 5,5 → köket 7,
 - Glimtarna: Nano Banana 2.1 i Flow (0 krediter), granskade en och en; träningsbildens sken förstärkt med gratis redigering.
 - Brödklippet bara 0–2,2 s (mackan svävade i luften efter det). Lärdom: aldrig två handrörelser samtidigt.
 - Saknas för slutversion: Adams frukostsvar (text ligger som undertext), förhörsrepliken från ElevenLabs, Arons inspelningar (Filip) för "Vad ska jag ha till frukost?" och "Då behöver jag en lärare.", musik i plattformen.
+
+## 21:45 v4 (43,7 s)
+- Tajtare: scen 1 börjar direkt på frågan (2,4 s) och slutar när svaret är klart; festen och köket trimmade i båda ändar.
+- "Klipp" var 2–3 s utan nya bilder: zoomsteg när hörluren tänds och ett andra zoomsteg mitt i långa repliker (scen 1, festen tillbaka till helbild när Elias svarar, köket).
+- Geminis Elias-röst (fest och kök) tillfälligt 3 halvtoner mörkare (rubberband, formant bevarad) tills Arons Filip-inspelningar finns.
