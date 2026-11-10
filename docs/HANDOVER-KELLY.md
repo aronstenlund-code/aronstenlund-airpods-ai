@@ -26,6 +26,11 @@ Det här står inte i rapporterna. Rapporterna `reports/*kelly*` täcker resten.
 
 ## Öppna trådar
 - Ke13b klar: sidan följer SYSTEM.md. Ke13 (D97, två knappar på provkortet) klar. Loggan byts när Aron valt A, B eller C (sidhuvudet, `og-lumen.png` via `docs/marketing/annonser/_src/og-system.html`, appen).
-- Kör inte Lighthouse många gånger i rad: varje körning skapar en anonym inloggning, och spärren ger 429 (Best Practices 96).
-- Skärmbilderna i sidans tre steg ska bytas när A18 är byggd (Toby tar nya).
+- Kör Lighthouse med `--blocked-url-patterns="*supabase.co*"`. Annars skapar varje körning en anonym inloggning, och spärren
+  ger 429 (Best Practices 96). Med blockering: 99/100/100/100 (Ke19).
+- Skärmbilderna i sidans tre steg (Ke18) byts när Angelas A26 har skärmbilder i repot. Granska dem först (PLAN 2c).
+- Ke19: demorutan har D97:s två val. "Förhör mig" är tre Provlägesfrågor med de inspelade svaren i `site/audio/`,
+  helt utan anrop, för att servern inte låter demon förhöra (D62). `QUIZ` i skriptet har texterna ordagrant. Byt
+  aldrig svarstext utan att byta ljudfil. Oscars `scripts/qa/demo_site*.py` förutsätter att `#txt` syns vid start, så
+  "Få A-svar till provet" måste vara förvalt.
 - Safari och iPhone är inte provade för någonting på sidan. Rich Results-testet mot live-URL är inte gjort.
