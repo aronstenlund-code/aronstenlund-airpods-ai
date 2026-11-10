@@ -3,26 +3,47 @@ import Foundation
 /// D80: what never goes into Minne by itself. Health, beliefs, sexuality, politics, origin, union membership, crime
 /// and similar (GDPR art. 9/10 categories). The user can still add such a thing by hand or by voice. Pure; unit-tested.
 enum SensitiveFilter {
-    private static let stems = [
+    /// A27 (Oscar O28): the categories as patterns with word boundaries where a short stem would also hit ordinary
+    /// words ("lånat", "sjukt", "brottslighet", "kristendomen" are kept). Same categories as the backend's
+    /// `SENSITIVE_RAW` plus O28's additions; the 47 cases of `scripts/qa/o28_memory_sensitive_offline.mjs` are tests.
+    private static let patterns = [
         // health
-        "sjuk", "diagnos", "adhd", "add ", "autism", "depression", "deprimerad", "ångest", "medicin", "terapi", "psykolog",
-        "psykiatri", "cancer", "diabetes", "graviditet", "gravid", "abort", "hiv", "funktionsnedsättning", "ätstörning",
-        "health", "diagnos", "anxiety", "therapy", "pregnan",
-        // beliefs, sexuality, politics, origin, union, crime
-        "religion", "kristen", "muslim", "jude", "judisk", "ateist", "tror på gud", "gay", "homosexuell", "bisexuell",
-        "lesbisk", "transperson", "sexuell", "politisk", "röstar på", "partiet", "socialdemokrat", "sverigedemokrat",
-        "moderat", "vänsterparti", "etnisk", "ursprung", "invandrare", "facket", "fackförening", "dömd", "brott",
-        "polisanmäl", "straff", "fängelse",
-        // address, debts and money matters (Oscar 2026-11-08, owner; same rule as the backend's /memory)
-        "adress", "bor på ", "gatan ", "postnummer", "skuld", " lån", "kredit", "inkasso", "kronofogd",
-        "betalningsanmärk", " lön", "inkomst", "tjänar ", "ekonomi", "hyra", "csn", "pengar", "förmögenhet",
-        "bankkonto", "kontonummer", "personnummer", "lösenord",
-        "address", "i live at", "debt", "loan", "salary", "income", "bank account", "password",
+        #"allerg|\bsjuk(?:dom\p{L}*|a|e|skriven)?\b|diagnos|\badhd\b|\badd\b|autism|diabet|astma|depress|deprimerad|ångest"#,
+        #"medicin|\bterapi|psykiatri|\bpsykisk|psykolog(?!i)|cancer|gravid|abort|\bhiv\b|funktionsnedsättning|ätstörning|epilepsi"#,
+        #"celiaki|gluten|laktos|intolerans|dyslexi|\bmens\b|\bväger\b|\bkilo\b|concerta|elvanse|ritalin|melatonin"#,
+        // crisis (the words of the backend's crisis.ts that fit a memory)
+        #"självmord|skär sig|skär mig|självskad|skada mig själv|vill inte leva|orkar inte leva"#,
+        // sexuality and relationships
+        #"\bgay\b|\bbi\b|homosex|bisex|lesbisk|transperson|sexuell|\b(?:pojkvän|flickvän|partner)\p{L}*"#,
+        // religion
+        #"religi|\bkristen\b|\bmuslim|\bjude\b|\bjudisk|ateist|tror på gud|ramadan|\bfasta(?:r)?\b|\bkyrka|moské|synagog|\bbön\b|\bber till\b"#,
+        // politics
+        #"politi|parti(?!k|ell)|röstar på|röstade på|socialist|socialdemokrat|sverigedemokrat|\bmoderat|kommunist|nazist|ungdomsförbund"#,
+        // origin, union, crime
+        #"etnisk|ursprung|invandrare|\bromsk|\bär same\b|fackförening|\bfacket\b|\bbrott\b|\bdömd|polisanmäl|\bstraff\b|fängelse|snatta|\bgripen\b"#,
+        // address, money
+        #"adress|\bbor (?:på|i)\b|gatan\b|postnummer|skuld|\blån(?:et|en|a)?\b|kredit|inkasso|kronofogd|betalningsanmärk|\blön\b|inkomst"#,
+        #"tjänar |ekonomi|hyra|\bcsn\b|pengar|förmögenhet|bankkonto|kontonummer|personnummer|lösenord|\b\d+ ?kr\b|kronor"#,
+        // contact details
+        #"@|\b\d{2,4}[ -]?\d{2,3}[ -]?\d{2}[ -]?\d{2}\b|instagram|\binsta\b|snapchat|\bsnap\b|tiktok|e-?post|\bmejl|telefonnummer"#,
+        // other people by name
+        #"\b(?:mamma|pappa|bror|brorsan|syster|systern|kompis\p{L}*|vän\p{L}*|farmor|farfar|mormor|morfar)\b.{0,24}\bheter\b"#,
+        // English
+        #"health|religion|sexual|ethnic|address|i live at|debt|loan|credit|salary|income|bank account|password|anxiety|therapy|pregnan"#,
     ]
 
+    /// K8 (backend) and O28: a school subject or what is studied is not about the student: "Läser religionskunskap",
+    /// "Skriver en uppsats om brottslighet", "Har prov om partiklar". A study word and the four words after it are
+    /// taken out before the check ("Pluggar trots att jag är deprimerad" still stops).
+    private static let studyWords =
+        #"\b(?:läser|pluggar|plugga|skriver|prov|provet|läxa|läxan|uppsats\p{L}*|kurs\p{L}*|lektion\p{L}*|ämnet)\b(?:\s+[\p{L}\p{N}]+){0,4}"#
+
     static func isSensitive(_ text: String) -> Bool {
-        let lowered = " " + text.lowercased() + " "
-        return stems.contains { lowered.contains($0) }
+        // "Kommer från Syrien": a capital after "kommer från" is a country or a place, before lower-casing.
+        if text.range(of: #"(?i:kommer från) [A-ZÅÄÖ]"#, options: .regularExpression) != nil { return true }
+        let lowered = " " + text.lowercased()
+            .replacingOccurrences(of: studyWords, with: " ", options: .regularExpression) + " "
+        return patterns.contains { lowered.range(of: $0, options: .regularExpression) != nil }
     }
 }
 

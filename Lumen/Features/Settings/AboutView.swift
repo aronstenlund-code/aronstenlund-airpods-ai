@@ -9,6 +9,9 @@ struct AboutView: View {
                 Text("Lumen lyssnar bara när du har startat den, du ser alltid när den lyssnar, och ljud sparas inte.")
                 Text("Frågor och svar går via Lumens server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen.")
                     .foregroundStyle(.secondary)
+                // A27 (Oscar O24): where the questions are kept, said plainly (D61, D57).
+                Text("Dina frågor och Lumens svar sparas i Historik på den här telefonen, i högst två år, och du kan radera dem där. Har du slagit på ”Dela historik” sparas de också på Lumens server i högst 12 månader, utan namn, och raderas när du stänger av det.")
+                    .foregroundStyle(.secondary)
             }
             Section {
                 NavigationLink("Licenser") { LicencesView() }
