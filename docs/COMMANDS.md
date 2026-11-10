@@ -122,3 +122,9 @@ Källa: `backend/supabase/functions/answer/commands.ts` (`FAMILIES`), tester i `
 - Besvaras lokalt med en kort bekräftelse ("Okej, korta svar.").
 - Kommer tillbaka som `done.memory_add` = "Regel: …" (appen lagrar det som i dag och skickar det med bland minnena, och prompten följer "Regel:"-rader) och som `done.rule_add` (regeltexten, för Minne › Regler).
 - En fråga om framtiden ("vad händer med klimatet i framtiden") blir aldrig en regel.
+
+### Backend: "mer?" efter ett kort svar (K13, Kevin, D100)
+- Med `two_level: true` får appen först ett kort svar (`delta`, läses upp) och direkt därefter det utvecklade svaret (`more_delta` och `done.more`, läses inte upp). Appen sparar det i cirka 2 minuter.
+- **"ja", "mer", "utveckla" eller en nick** inom fönstret: appen spelar `done.more` direkt, utan nytt anrop, och skickar `/memory` `length_signal: {signal: "yes", context}`. **"nej" eller tystnad:** `signal: "no"`.
+- Två ja av de tre senaste i samma sammanhang ger inställningen "Längre, utförligare svar i …". Då kommer det långa svaret direkt. Säger eleven "kortare" kommer det korta först igen.
+- Instruktioner ("mer", "kortare", "ge ett exempel", "roligare" och så vidare) räknas i en egen budget, så de får aldrig 429 för att eleven har frågat mycket (K12, D99).

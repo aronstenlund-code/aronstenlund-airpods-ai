@@ -1,0 +1,82 @@
+{
+ "series": [
+  {
+   "q": "vad är osmos",
+   "status": 200,
+   "short": "Osmos är när vatten rör sig genom ett semipermeabelt membran, alltså en hinna som släpper igenom vatten men inte lösta ämnen som salt eller socker.\n\n",
+   "more": "Vattnet går alltid från sidan med låg koncentration av löst ämne till sidan med hög koncentration, tills koncentrationen blir ungefär lika på båda sidor. Det sker utan att cellen behöver använda energi. Ett exempel är en potatisbit i saltvatten: vattnet lämnar potatisen, så den blir mjuk och krymper. I rent vatten gör osmos motsatsen, och potatisen tar upp vatten och blir hård. Samma sak händer i en djurcell, som kan svälla och spricka i rent vatten, medan en växtcell får hållfasthet av cellväggen och blir spänd, vilket kallas turgor. På provet: skriv att osmos är vattentransport genom ett semipermeabelt membran från låg till hög koncentration av löst ämne, och ge gärna potatisexemplet.",
+   "first_ms": 2318,
+   "step": 1,
+   "long_first_after": false
+  },
+  {
+   "q": "vad gör mitokondrien",
+   "status": 200,
+   "short": "Mitokondrien är cellens kraftverk: där omvandlas energin i näringsämnen till energi som cellen kan använda. Det sker i cellandningen, där glukos och syre reagerar och bildar koldioxid, vatten och energi. Energin lagras i en molekyl som heter ATP, och den använder cellen till allt den gör, till exempel att dela sig, röra sig eller bygga ämnen. Muskelceller har många mitokondrier eftersom de behöver mycket energi, och växtceller har både mitokondrier och kloroplaster. På provet: skriv glukos plus syre blir koldioxid plus vatten plus energi, och nämn att det sker i mitokondrierna.\n\n",
+   "more": "Cellandningen är motsatsen till fotosyntesen, eftersom ämnena som bildas i den ena används i den andra. Mitokondrien har ett yttre och ett inre membran, och det inre är veckat så att ytan blir stor och mer energi hinner bildas. Den har dessutom ett eget DNA och delar sig själv, vilket tyder på att den en gång var en egen liten bakterie som hamnade inne i en större cell. Ett konkret exempel är att du andas in syre när du springer: musklernas mitokondrier använder det för att göra mer ATP, och därför andas du snabbare. Alla växter, djur och svampar har mitokondrier, men bakterier har inga. Vet du vilken gas som bildas som restprodukt i cellandningen?",
+   "first_ms": 1173,
+   "step": 2,
+   "long_first_after": true
+  },
+  {
+   "q": "vad är diffusion",
+   "status": 200,
+   "short": "Diffusion är när små partiklar, till exempel syrgas, koldioxid eller sockermolekyler, sprider sig från ett ställe där det finns många av dem till ett ställe där det finns färre, tills de är jämnt fördelade. Det händer av sig självt, eftersom partiklar hela tiden rör sig slumpmässigt och därför i längden vandrar bort från trängseln. Cellen behöver inte lägga någon energi på det, och därför kallas diffusion passiv transport.\n\nI kroppen sker det hela tiden. I lungblåsorna är det mycket syre och lite koldioxid i luften, medan blodet har mindre syre och mer koldioxid. Syret diffunderar därför in i blodet och koldioxiden diffunderar ut i lungblåsorna. Samma sak händer i cellerna ute i kroppen, fast åt andra hållet: syret lämnar blodet och går in i cellen, där det används vid cellandningen.\n\nDiffusion går snabbare när skillnaden i koncentration är stor, när temperaturen är högre och när avståndet är kort. Det är därför lungblåsornas väggar är extremt tunna, och därför kan diffusion bara fungera över mycket korta sträckor, vilket är en av anledningarna till att större djur behöver blodomlopp.\n\nOsmos är en särskild sorts diffusion, där det är vatten som vandrar genom ett membran, från lösning med lite löst ämne till lösning med mycket löst ämne.\n\nPå provet: skriv att diffusion är passiv transport från hög till låg koncentration, och ge lungblåsorna som exempel.",
+   "more": null,
+   "first_ms": 1929,
+   "step": 3
+  },
+  {
+   "q": "vad är en cellvägg",
+   "status": 200,
+   "short": "En cellvägg är ett stelt lager utanför cellmembranet som ger cellen form och stöd. Den finns hos växtceller och är gjord av cellulosa, medan djurceller saknar den. På provet: skriv att cellväggen skyddar och stöttar växtcellen.\n\n",
+   "more": "Cellväggen gör att växtceller kan stå emot vattentryck utan att spricka, och det är därför växter kan stå upprätta. Vatten tar sig lätt igenom den, så den hindrar inte upptag av näring. Även bakterier och svampar har cellvägg, men den är uppbyggd av andra ämnen än cellulosa. Ett konkret exempel är trädstammen, där celler med tjock cellvägg ger styrka. Skillnaden mot cellmembranet är att membranet styr vad som kommer in och ut, medan väggen bara stöttar och skyddar.",
+   "first_ms": 1255,
+   "step": "after kortare"
+  }
+ ],
+ "situation": [
+  {
+   "q": "vad är fotosyntes",
+   "alone": 103,
+   "alone_text": "Fotosyntes är processen där växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi i form av socker. Det sker i kloroplasterna, i de gröna cellerna, där klorofyllet fångar upp solljuset. Växten tar upp koldioxid ur luften genom klyvöppningarna och vatten från marken genom rötterna",
+   "others": 122,
+   "others_text": "Fotosyntes är den process där växter, alger och vissa bakterier använder solljus för att tillverka socker, och samtidigt bildas syre. Det sker i växtcellens kloroplaster, som innehåller det gröna ämnet klorofyll, och klorofyllet fångar upp ljusenergin. Växten tar upp koldioxid från luften genom klyv"
+  },
+  {
+   "q": "vad är ett ekosystem",
+   "alone": 105,
+   "alone_text": "Ett ekosystem är ett område där levande organismer och den livlösa miljön samspelar. De levande delarna, till exempel växter, djur och nedbrytare, kallas biotiska faktorer. De livlösa delarna, som ljus, vatten, temperatur och jordmån, kallas abiotiska faktorer. Allt hänger ihop genom att energi flöd",
+   "others": 138,
+   "others_text": "Ett ekosystem är ett område där levande organismer och den livlösa miljön samspelar och hänger ihop. De levande delarna är växter, djur, svampar och bakterier, och de livlösa är till exempel vatten, ljus, luft, temperatur och jord. Organismerna är beroende av varandra och av miljön: växter gör närin"
+  },
+  {
+   "q": "vad gör röda blodkroppar",
+   "alone": 96,
+   "alone_text": "Röda blodkroppar transporterar syre från lungorna till kroppens alla celler. Syret binds till hemoglobin, ett järnhaltigt protein som också ger blodet dess röda färg. Cellerna behöver syret för cellandningen, där de förbränner socker och får energi. På tillbakavägen hjälper blodkropparna till att ta",
+   "others": 82,
+   "others_text": "Röda blodkroppar transporterar syre från lungorna till kroppens alla celler. De innehåller hemoglobin, ett järnhaltigt protein som binder syret i lungorna och släpper det där syrehalten är låg, till exempel i musklerna. Cellerna behöver syret för cellandningen, där de får energi ur druvsocker. På ti"
+  },
+  {
+   "q": "vad är en gen",
+   "alone": 108,
+   "alone_text": "En gen är en bit av DNA som innehåller ritningen för en viss egenskap, oftast ett protein. DNA:t sitter i kromosomerna i cellkärnan, och varje gen ligger på en bestämd plats på en kromosom. Cellen läser av genen och bygger proteinet, och proteinet gör sedan jobbet i kroppen eller påverkar hur vi ser",
+   "others": 107,
+   "others_text": "En gen är en bit av DNA som innehåller ritningen till en viss egenskap, oftast ett protein. DNA:t sitter i kromosomerna i cellkärnan, och varje gen ligger på en bestämd plats på en kromosom. Cellen läser av genen och bygger det protein som genen beskriver, och proteinet påverkar sedan kroppen, till "
+  },
+  {
+   "q": "vad är evolution",
+   "alone": 131,
+   "alone_text": "Evolution är hur arter förändras över många generationer, genom att egenskaper som hjälper individer att överleva och få avkomma blir vanligare i en population. Det hänger ihop så här: individer av samma art är olika på grund av variation, och variationen uppstår genom mutationer och genom att arvsm",
+   "others": 97,
+   "others_text": "Evolution är de förändringar som sker i arters egenskaper över många generationer, så att nya arter kan uppstå. Förklaringen är naturligt urval. Individer i en art är olika, och de som har egenskaper som passar miljön bäst överlever oftare och får fler ungar. Egenskaperna ärvs, så de blir vanligare "
+  }
+ ],
+ "series_ok": {
+  "q1_two_level": true,
+  "q2_two_level": true,
+  "q3_long_at_once": true,
+  "after_kortare_two_level_again": true
+ },
+ "situation_ok": "3/5 shorter when others talk"
+}
