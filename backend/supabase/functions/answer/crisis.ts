@@ -67,7 +67,18 @@ const STRONG = [
   String.raw`(?:googlade|googlat|sökte|sökt) (?:på )?hur man (?:begår självmord|tar livet av sig|dör)`,
   String.raw`(?:ser|hittar) ingen (?:anledning|mening) (?:att|med att) (?:fortsätta|${LIVE}|finnas)`,
   // warning signs without the words
-  String.raw`(?:skrivit|skriver|skrev) (?:ett )?(?:avskedsbrev|självmordsbrev|brev till alla (?:innan|ifall))`,
+  String.raw`(?:skrivit|skriver|skrev|lagt upp|postat|gjort) (?:ett |en )?(?:avskedsbrev|självmordsbrev|avskedsinlägg|avskedsvideo|avskedsmeddelande|avskedsstory|brev till alla (?:innan|ifall))`,
+  // K34 (Oscar O17e, kinds): ending existence, pills tonight, harm until it breaks, others not worrying any more,
+  // not waking up, English pills
+  String.raw`(?:sluta|vill inte|orkar inte) ${F}(?:existera|finnas till)(?! (?:på|i|för|som) )`,
+  String.raw`${I} (?:\p{L}+ ){0,2}(?:ska|tänker|vill|kommer (?:att )?) (?:ta|äta|svälja) (?:alla |hela |en massa |många )?(?:mammas |pappas |mina |alla |\p{L}+s )(?:sömntabletter|tabletter|piller|mediciner|alvedon|medicin)`,
+  String.raw`(?:nyper|klöser|biter|slår|river|kliar|skär) (?:mig|mej) (?:själv )?tills (?:huden går sönder|det blöder|jag blöder)`,
+  String.raw`(?:ni|du|ingen|alla|mamma|pappa) (?:kommer (?:att )?)?(?:inte |aldrig )?(?:behöva|behöver) (?:oroa (?:er|dig|sig)|bry (?:er|dig|sig)|tänka) (?:för|om|på) (?:mig|mej) (?:längre|mer)`,
+  String.raw`hoppas (?:att )?(?:${I} )?(?:inte|aldrig) (?:vaknar|vakna|vaknar igen)(?! (?:för|innan|tidigt|klockan|förrän))`,
+  String.raw`(?:take|swallow|gonna take) all (?:my|the|of my|of the) (?:pills|meds|tablets|medicine)`,
+  String.raw`(?:vem som ska få|vem som får|vad som ska hända med) (?:min|mitt|mina) \p{L}+ (?:när|efter att|om) (?:${I} )?(?:dött|dör|har dött|dog|är död)`,
+  // K34 (Oscar O17e): a plan to crash a vehicle on purpose
+  String.raw`${I} (?:\p{L}+ ){0,2}(?:tänker|ska|vill|kommer (?:att )?|har tänkt) (?:köra|krascha|cykla|åka|styra) (?:av vägen|in i (?:\p{L}+ ){0,2}(?:vägg|väggen|träd|trädet|lastbil|bil|buss|bergvägg|räcke|räcket|en mur)|ut i (?:sjön|vattnet|havet|älven))`,
   String.raw`(?:sparat|sparar|samlar|samlat) (?:på )?(?:tabletter|piller|mediciner)`,
   String.raw`(?:jag är|är jag) (?:bara )?en börda`,
   String.raw`(?:gett|ger|gav) bort (?:alla )?mina saker`,
@@ -85,7 +96,7 @@ const STRONG = [
   String.raw`(?:${I} )?(?:skadar|skadat|har skadat|brukar skada|vill skada|ska skada|börjat skada) mig själv`,
   String.raw`(?:skadade|skadar) mig själv med flit`,
   String.raw`(?:rispar|rispade|rispat|ristar|skärrit|skurrit|skuri) mig`,
-  String.raw`(?:bränner|brände|bränt) mig (?:med (?:cigaretter|cigarett|en tändare)|med flit)`,
+  String.raw`(?:bränner|brände|bränt) mig (?:med (?:cigaretter|cigarett|(?:en )?tändare(?:n)?)|med flit)`,
   String.raw`slår mig själv (?:tills|med flit|när)`,
   String.raw`skär mig när (?:jag|ja) (?:får|mår|blir|har)`,
   String.raw`(?:skär|skar|skurit|har skurit|skära) mig (?:igen|ofta|varje (?:dag|kväll|natt)|när jag mår|i armen|i armarna|på armen|på armarna|i benen)`,
@@ -187,6 +198,14 @@ const RISK = /(?<![\p{L}])(?:leva|läva|lever|livet|liv|dö|död|döda|dog|dör|
 const FIRST = /(?<![\p{L}])(?:jag|ja|mig|mitt|min|jg|i|me|my|im|i'm)(?![\p{L}])/iu;
 /** K34: questions about how to hurt oneself or die, without first person, go to the check too (never to a list). */
 /** K34 (Oscar O37): a message to someone close that sounds like a last one; the check decides. */
+/** K34 (Oscar O17e): signs without a death word, for the check: never growing old, not reaching an age. */
+const WEAK_MORE = /(?<![\p{L}])(?:(?:inte|aldrig) (?:komma|kommer) tillbaka(?! (?:till skolan|hem|i tid|efter|på måndag))|tar (?:bara )?upp plats(?: på jorden| här| i världen)?|(?:inte|aldrig) (?:jag |ja )?(?:finns|är) (?:kvar |här )(?:när|till|efter)|vill inte bli (?:bättre|frisk)|det (?:här )?är (?:slutet|över nu)|min sista (?:dagboksanteckning|anteckning|dag|kväll|natt|inlägg|video)|aldrig (?:kommer att |kommer )?bli gammal|kommer aldrig (?:att )?bli gammal|inte (?:kommer att |kommer )?(?:bli gammal|fylla \p{L}+)|hinner aldrig fylla)(?![\p{L}])/iu;
+/** K34 (Oscar O17e): everyday sentences that a strong pattern also matches; nothing else risky = no crisis at all. */
+const PLAIN = RE_G([
+  String.raw`(?:vill|kan|klarar|orkar) inte ${F}(?:att )?${LIVE} utan (?:min|mitt|mina|mammas|pappas) \p{L}+`,
+  String.raw`(?:don'?t|do not|dont) want to be alive (?:at|before|on|until|this early)`,
+  String.raw`vill inte ${F}(?:leva|vara vaken|finnas) (?:klockan|kl|före|innan) `,
+]);
 const FAREWELL = /(?<![\p{L}])(?:säg|hälsa|berätta|skriv) (?:till )?(?:mamma|pappa|mamma och pappa|morsan|farsan|min \p{L}+|mina \p{L}+|alla|familjen|syrran|brorsan) att (?:det inte var (?:hennes|hans|deras|ert|ditt|någons) fel|jag älskar (?:henne|honom|dem|dom|er|dig|alla)|jag är ledsen|förlåt|jag är tacksam för allt)/iu;
 const METHOD_Q = /(?<![\p{L}])(?:hur|vilka|vilken|vilket|vad|var|är det|går det)(?![\p{L}]).{0,60}(?<![\p{L}])(?:dö|dör|dödlig\p{L}*|ihjäl|skära|skär sig|förblöda|överdos|tabletter|piller|hänga sig|dränka sig|kvävas|självmord|ta livet av sig|drunkna|drunknar|rep|repet|snara|snaran|kvävs|strypa|överleva|farligt|farlig|skär|blöder|blöda|förblöda)(?![\p{L}])/iu;
 
@@ -206,19 +225,20 @@ export function normalize(text: string): string {
 }
 
 export function crisisLevel(text: string): CrisisLevel {
-  const t = normalize(text);
+  // K34 (Oscar O17e): plain everyday sentences that a strong pattern also matches are taken out first
+  const t = normalize(text).replace(PLAIN, " ").replace(/ +/g, " ").trim();
   if (!t) return null;
   // an everyday reading is removed first: strong only if a clear sign is left; weak if risk words are left
   const rest = t.replace(EXCEPT_G, " ");
   if (STRONG_RE.test(rest)) return "strong";
   if (FIRST.test(rest) && RISK.test(rest)) return "weak";
-  if (METHOD_Q.test(rest) || FAREWELL.test(rest)) return "weak";
+  if (METHOD_Q.test(rest) || FAREWELL.test(rest) || WEAK_MORE.test(rest)) return "weak";
   // a strong pattern that only an everyday reading explains: the check decides (never silence by itself)
   return STRONG_RE.test(t) ? "weak" : null;
 }
 
 /** "min kompis säger att han inte vill leva": about someone else, so the user gets the line on how to help. */
-const ABOUT_OTHER = /(?<![\p{L}])(?:min (?:kompis|vän|bästis|bror|syster|polare|tjej|kille|flickvän|pojkvän|klasskompis)|mitt ex|han|hon|hen|dom|de)(?: \p{L}+){0,2} (?:säger|sa|sade|skrev|skriver|har sagt|berättade|tycker|messade|sms:ade) att|(?<![\p{L}])(?:han|hon|hen|min \p{L}+|mitt ex|någon) (?:\p{L}+ ){0,2}(?:skär sig|skadar sig själv|vill ta livet av sig|ska ta livet av sig|tänker ta livet av sig|vill dö|har självmordstankar|pratar om att dö)|hjälper man någon som/iu;
+const ABOUT_OTHER = /(?<![\p{L}])(?:(?:en|ett) (?:tjej|kille|person|kompis|vän|klasskompis|polare|tönt|kid)(?: \p{L}+){0,3} (?:har skrivit|skriver|skrev|har lagt upp|lagt upp|postade|sa|säger|pratar)|min (?:kompis|vän|bästis|bror|syster|polare|tjej|kille|flickvän|pojkvän|klasskompis)|mitt ex|han|hon|hen|dom|de)(?: \p{L}+){0,2} (?:säger|sa|sade|skrev|skriver|har sagt|berättade|tycker|messade|sms:ade) att|(?<![\p{L}])(?:han|hon|hen|min \p{L}+|mitt ex|någon) (?:\p{L}+ ){0,2}(?:skär sig|skadar sig själv|vill ta livet av sig|ska ta livet av sig|tänker ta livet av sig|vill dö|har självmordstankar|pratar om att dö)|hjälper man någon som/iu;
 export function aboutOther(text: string): boolean {
   return ABOUT_OTHER.test(text ?? "");
 }

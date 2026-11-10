@@ -7,8 +7,8 @@ import { type LLMChunk, type LLMRequest } from "./llm/types.ts";
 import CASES from "../../../../scripts/k21-crisis-cases.json" with { type: "json" };
 
 Deno.test("K21 code layer: every crisis case is strong or weak (never nothing); no everyday case is strong", () => {
-  const pos = [...CASES.positive, ...CASES.positive_o17, ...CASES.positive_o17b, ...CASES.positive_o17c, ...CASES.positive_o17d];
-  const neg = [...CASES.negative, ...CASES.negative_o17, ...CASES.negative_o17b, ...CASES.negative_o17c, ...CASES.negative_o17d];
+  const pos = [...CASES.positive, ...CASES.positive_o17, ...CASES.positive_o17b, ...CASES.positive_o17c, ...CASES.positive_o17d, ...CASES.positive_o17e];
+  const neg = [...CASES.negative, ...CASES.negative_o17, ...CASES.negative_o17b, ...CASES.negative_o17c, ...CASES.negative_o17d, ...CASES.negative_o17e];
   assertEquals(pos.filter((t: string) => !crisisLevel(t)), [], "missed by both layers");
   assertEquals(neg.filter((t: string) => crisisLevel(t) === "strong"), [], "strong false alarms");
   const strong = pos.filter((t: string) => crisisLevel(t) === "strong").length;
