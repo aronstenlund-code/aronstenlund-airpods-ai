@@ -997,6 +997,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func studyEvent(_ event: StudyEvent) {
         switch event {
         case .turnStarted:
+            turnStartedAt = Date()
             // D81: the turn's audio, from a little before the onset hold.
             let written = controller.capture.ringBuffer.totalWritten
             turnAudioMark = max(0, written - Int64(0.3 * LumenAudioFormat.sampleRate))
@@ -1007,7 +1008,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 return
             }
             if speakers?.identity(near: Date(), window: 3) == nil { identifySpeech(at: Date()) }
-            if isOwnEcho(raw, at: Date()), !isWearerUsingSuggestion(raw, level: study.lastTurnLevelDBFS) {
+            if isOwnEcho(raw, at: Date(), startedAt: turnStartedAt), !isWearerUsingSuggestion(raw, level: study.lastTurnLevelDBFS) {
                 discardAhead(reason: "Lumen's own echo")
                 study.resumeListening()
                 return
@@ -1896,6 +1897,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     private func ownSpeechEnded() {
+        ownSpeechEndedAt = Date() // A28: what starts later than the tail is the wearer, not Lumen's echo
         ownSpeech.reset()
         gateWatchdog?.cancel()
         gateWatchdog = nil
@@ -1941,8 +1943,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// D82: most of the words are something Lumen just said: its own voice came back.
-    private func isOwnEcho(_ text: String, at date: Date) -> Bool {
+    /// A28: when the last own speech ended (after its echo tail), and when the current study turn began.
+    @ObservationIgnored private var ownSpeechEndedAt: Date?
+    @ObservationIgnored private var turnStartedAt: Date?
+
+    private func isOwnEcho(_ text: String, at date: Date, startedAt: Date? = nil, overlapsPlayback: Bool = false) -> Bool {
         guard let share = echo.overlap(text, now: date), share >= EchoFilter.overlap else { return false }
+        if let startedAt, !EchoFilter.mayBeEcho(startedAt: startedAt, speaking: speaker.isSpeaking || ownSpeech.deadline != nil,
+                                                overlapsPlayback: overlapsPlayback, lastSpeechEnd: ownSpeechEndedAt) {
+            controller.log(String(format: "Not echo: %.0f %% of the words were Lumen's, but said after Lumen stopped (A28)", share * 100))
+            return false
+        }
         controller.log(String(format: "Echo filtered: %.0f %% of the words were Lumen's own", share * 100))
         return true
     }
@@ -3253,7 +3264,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         if let identity = speakers?.identity(near: date, window: 4) { labelTranscript(identity, at: date) }
-        if isOwnEcho(segment.text, at: date), !isWearerUsingSuggestion(segment.text, level: study.currentTurnLevelDBFS) {
+        if isOwnEcho(segment.text, at: date, startedAt: segment.startedAt, overlapsPlayback: segment.overlapsPlayback),
+           !isWearerUsingSuggestion(segment.text, level: study.currentTurnLevelDBFS) {
             discardAhead(reason: "Lumen's own echo")
             return
         }

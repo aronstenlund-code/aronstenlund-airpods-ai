@@ -29,6 +29,17 @@ struct EchoFilter: Sendable {
         return Double(matching) / Double(heard.count)
     }
 
+    /// A28 (Oscar O30): Lumen's own voice can only come back while it speaks or just after (the room's tail and the
+    /// recogniser's last words). What the wearer starts saying later is the wearer, even when it quotes the answer
+    /// ("så fotosyntesen omvandlar ljusenergi till kemisk energi?", "vad menar du med i form av glukos").
+    static let tail: TimeInterval = 1.5
+
+    static func mayBeEcho(startedAt: Date, speaking: Bool, overlapsPlayback: Bool, lastSpeechEnd: Date?) -> Bool {
+        if speaking || overlapsPlayback { return true }
+        guard let lastSpeechEnd else { return false }
+        return startedAt <= lastSpeechEnd.addingTimeInterval(tail)
+    }
+
     func isEcho(_ text: String, now: Date) -> Bool {
         (overlap(text, now: now) ?? 0) >= Self.overlap
     }
