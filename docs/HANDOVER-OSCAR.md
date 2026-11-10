@@ -1,6 +1,6 @@
-# Överlämning: Oscar (QA), 2026-11-10 08:55
+# Överlämning: Oscar (QA), 2026-11-10 10:56
 
-Sessionen gjorde O14, O12, O15, O16 del 1, O18, O13 del 1, O11, O17 (BLOCKER kvar i K21), O19, O20, O21 och O22. Dagens API-budget är använd (1,93 av 2 USD). Läs CLAUDE.md, `prompts/queue/README.md` och `prompts/queue/oscar.md`.
+Sessionen gjorde O14, O12, O15, O16 del 1, O18, O13 del 1, O11, O17 (BLOCKER kvar i K21), O19, O20, O21, O22 och O23 (O17b, BLOCKER kvar i K21b). Dagens API-budget är använd (1,93 av 2 USD, plus Arons extra 0,40 USD för O23, av vilka under 0,01 gick åt). Efter O23 gäller bara gratis punkter till 18:00. Läs CLAUDE.md, `prompts/queue/README.md` och `prompts/queue/oscar.md`.
 
 ## Det som inte står i rapporterna
 - **Hjälpskript:**
@@ -26,7 +26,7 @@ Sessionen gjorde O14, O12, O15, O16 del 1, O18, O13 del 1, O11, O17 (BLOCKER kva
 - **Gratis offline-tester** (Node 24 kör backendens `.ts` direkt): `o17_k21_offline.mjs` (krisfall), `o19_k12_offline.mjs`, `o20_web_routing.mjs`, `o21_k15_nav_offline.mjs`, `o22_corrections_offline.mjs`. Kör dem igen efter varje rättning från Kevin. De tar en sekund och kostar inget.
 
 ## Öppna trådar
-- **O17 omtest först** när Kevin har rättat K21: krav 30/30 fångade och högst 2/30 falska.
+- **O17b omtest först** när Kevin har rättat K21b: `node scripts/qa/o17b_offline.mjs` (gratis) och `python -I scripts/qa/o17b_live.py` (cirka 0,01 USD, kräver Arons godkännande eftersom dagens budget är använd). Krav: 40/40 krisfall får krissvaret, 0 tysta och högst 2/40 falska. Har Kevin lagt in O17b-fallen i sina tester behövs en ny uppsättning (O17c). Skriv den med indirekta tecken, metodfrågor, engelska och hörfel, för det är där listorna missar.
 - **O16 del 2:** `o16_keyterms.py` med 36 försök (å/ä/ö i byte eller grafem, specialtecken, antal termer) när Scribe har krediter.
 - **O13:** del 1 (K16) är klar. Del 2–4 kräver K17–K19, och del 3 kräver dessutom ElevenLabs.
 - **Concerns till Architect:** Frågor svarar på lärarens provfrågor (O18 fynd 3) och säger "övrigt prat ignorerar jag" (O15 fall 2).
