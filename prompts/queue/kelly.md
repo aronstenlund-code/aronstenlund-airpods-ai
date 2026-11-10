@@ -106,3 +106,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [ ] **Ke29 – Ny Start + "Vad Lumen kan" (D124, D125)** (effort: high). Gör först. Skiss: stor Start-knapp överst med läget under, provkortet nedanför, "Få A-svar" inne i Provläget. Sidan "Vad kan Lumen?" med rader för förhör, frågor, träning, kalender, timers, Spotify, samtal, sömn: vad man säger och om något behöver ställas in. Text: "Som Siri, fast den faktiskt förstår vad du frågar och svarar direkt i dina AirPods." Samma budskap på sajten.
 
 - [ ] **Ke30 – "Mina svar" och "Lumen kan allt" (D126)** (effort: medium). Skissa listan Mina svar per prov, redigeringen (Lumens förslag → din text), inspelningen med Klar-knapp, och raden "Lumen kan allt" med exempelfraser under Start-knappen. Uppdatera Ke29.
+
+- [ ] **Ke31 – Tre loggkandidater för röstningen (D127)** (effort: medium). Gör först. Rita om A klotet, B den gröna formen och C den orange ringen (`docs/design/logo/rostning/`) som rena vektorer i samma storlek och ljus, så att röstningen blir rättvis. Ljust och mörkt, kontrollera i 60 pt. Lägg dem i `docs/design/logo/rostning/vektor/` till Angela (A54).
