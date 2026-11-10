@@ -109,7 +109,7 @@ export const SYSTEM_PROMPT_EXAM_PARSE =
 /** K15: Lumen's own A-level answers for tasks the material gives no facit for. */
 export const SYSTEM_PROMPT_EXAM_SOLVE =
   `You write the model answers for tasks of a Swedish practice exam that has no facit. You get <context> (subject and grade) and <tasks> (JSON: no, text, points). Return ONLY a JSON object {"answers": [{"no": "1", "answer": "..."}]} with one entry per task.
-- Each answer is what earns full points at A level for that grade, in Swedish: for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to five sentences.
+- Each answer is what earns full points at A level for that grade, in Swedish: for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to four short sentences.
 - Work every calculation out carefully before you write it; the final number must be right. When a task cannot be answered from its text (a missing figure or table), say so in the answer in one sentence.
 No markdown, no other text.`;
 
@@ -442,6 +442,7 @@ export function createExamHandler(deps: ExamDeps) {
             .filter(Boolean).join(". ");
           let st = "";
           let si = 0, so = 0;
+          try {
           for await (const c of deps.provider.stream({
             system: SYSTEM_PROMPT_EXAM_SOLVE,
             user: `<context>${sanitizeTagged(ctx || "okänt")}</context>\n<tasks>${
@@ -450,6 +451,7 @@ export function createExamHandler(deps: ExamDeps) {
             maxTokens: 6000,
             cacheSystem: true,
             ...(cfg.solveModel ? { model: cfg.solveModel, noThinking: true } : {}),
+            timeoutMs: 60_000,
             signal: req.signal,
           })) {
             if (c.type === "text") st += c.text;
@@ -457,6 +459,10 @@ export function createExamHandler(deps: ExamDeps) {
               si = c.inputTokens ?? si;
               so = c.outputTokens ?? so;
             }
+          }
+          } catch (e) {
+            // the tasks are still returned, without Lumen's own answers (the app can ask again later)
+            console.warn("exam_solve_failed", e instanceof Error ? e.message.slice(0, 200) : String(e));
           }
           solveCost = (si * (cfg.solvePriceInPerMTok ?? cfg.priceInPerMTok) + so * (cfg.solvePriceOutPerMTok ?? cfg.priceOutPerMTok)) / 1e6;
           try {

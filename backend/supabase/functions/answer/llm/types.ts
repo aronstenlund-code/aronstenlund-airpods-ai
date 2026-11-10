@@ -17,6 +17,8 @@ export interface LLMRequest {
   /** Overrides the provider's default model for this request (D52: Rizz uses a stronger model). */
   model?: string;
   signal?: AbortSignal;
+  /** K15: a longer limit for a slow, non-interactive call (Lumen's own exam answers); default by request kind. */
+  timeoutMs?: number;
   /** D84: page images sent before the text (exam upload). base64 without the data: prefix. */
   images?: { mediaType: "image/jpeg" | "image/png" | "image/webp"; data: string }[];
 }

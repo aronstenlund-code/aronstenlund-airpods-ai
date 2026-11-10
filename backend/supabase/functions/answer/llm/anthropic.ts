@@ -182,7 +182,7 @@ export class AnthropicProvider implements LLMProvider {
 
   async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
     // maxRetries 0: a retry would double latency; the app has its own fallback.
-    const timeoutMs = req.images?.length ? 120_000 : req.tools?.length ? 45_000 : 20_000; // a web search turn takes several seconds
+    const timeoutMs = req.timeoutMs ?? (req.images?.length ? 120_000 : req.tools?.length ? 45_000 : 20_000); // a web search turn takes several seconds
     const signal = req.signal
       ? AbortSignal.any([req.signal, AbortSignal.timeout(timeoutMs)])
       : AbortSignal.timeout(timeoutMs);
