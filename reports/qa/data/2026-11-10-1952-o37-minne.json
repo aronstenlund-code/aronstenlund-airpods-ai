@@ -1,0 +1,167 @@
+{
+ "check_found": true,
+ "sum_drop": "14/14",
+ "sum_keep": "10/11",
+ "o36_old": "14/14",
+ "o36_fails": [],
+ "fails": [
+  {
+   "t": "Skriver om depression som tema i svenskan",
+   "want": "keep",
+   "sens": true,
+   "ok": false
+  }
+ ],
+ "rows": [
+  {
+   "t": "Har typ 1-diabetes",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Äter antidepressiva",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Har ätstörningar",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Har ADHD-medicin på morgonen",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Har astma och använder inhalator",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Vill inte leva ibland",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Har försökt ta livet av sig förra året",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Skär sig när det blir jobbigt",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Har panikångest inför prov",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Opererades för blindtarmen i somras",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Är gravid",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Har cancer",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Personnummer 20090521-4417",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Har passnummer AA1234567",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Pluggar till provet om cellandning",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Har fått A i matte",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Läser om andra världskriget",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Går i 9B",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Spelar fotboll på tisdagar",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Är muslim",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Gillar Vänsterpartiets skolpolitik",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Har prov om sjukdomar i biologi",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Skriver om depression som tema i svenskan",
+   "want": "keep",
+   "sens": true,
+   "ok": false
+  },
+  {
+   "t": "Vill bli läkare",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Gillar att läsa om hjärnan",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  }
+ ]
+}

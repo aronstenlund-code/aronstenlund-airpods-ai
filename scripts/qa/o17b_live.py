@@ -83,7 +83,7 @@ for kind, group, lv, mode, t in cases:
     rows.append(row)
     print(kind, group, lv, mode, r["status"], "CRISIS" if crisis else "-", "spoke" if row["spoke"] else "silent", "|", t, "=>",
           (txt or "")[:120].replace("\n", " "), flush=True)
-out = ROOT / "reports/qa/data" / f"{dt.datetime.now().strftime('%Y-%m-%d-%H%M')}-{'o17c' if CASES and 'o17c' in CASES else 'o17b'}-live.json"
+out = ROOT / "reports/qa/data" / f"{dt.datetime.now().strftime('%Y-%m-%d-%H%M')}-{pathlib.Path(CASES).stem.replace('_cases', '') if CASES else 'o17b'}-live.json"
 out.write_text(json.dumps({"spent_usd": round(D.spent, 4), "cap": CAP, "offline": {k: off[k] for k in ("crisis", "crisis_by_group", "other", "false", "border")},
                            "rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
 print("spent", round(D.spent, 4), "->", out)
