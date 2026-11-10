@@ -105,11 +105,12 @@ final class ScreenTourTests: XCTestCase {
             miss("'Fråga vad som helst' not shown")
         }
 
-        if waitFor(["Hoppa över"], timeout: 8) != nil {
+        // A22: the first start's exam step is "Har du prov snart?" with "Inte nu" (was "Hoppa över").
+        if waitFor(["Inte nu", "Hoppa över"], timeout: 8) != nil {
             shoot("lagg-till-prov-forsta", note: "Add exam at first start (sketch 3)")
             app.swipeUp()
             shoot("lagg-till-prov-forsta-slut", note: "Add exam at first start, scrolled")
-            tap(["Hoppa över"], step: "add exam → Hoppa över")
+            tap(["Inte nu", "Hoppa över"], step: "add exam → Inte nu")
         } else {
             miss("add-exam step of the first start not shown")
         }
