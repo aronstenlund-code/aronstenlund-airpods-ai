@@ -83,7 +83,8 @@ import Testing
         var conversation = Conversation()
         conversation.beginAnswer(question: "har du en film om fotosyntes", source: "cloud")
         conversation.appendAnswerText("Jag skickade en länk.")
-        let turn = try #require(conversation.completeAnswer())
+        let completed = conversation.completeAnswer() // a mutating call cannot sit inside #require
+        let turn = try #require(completed)
         conversation.attach(link, to: turn.id)
         #expect(conversation.answers.last?.link == link)
     }
