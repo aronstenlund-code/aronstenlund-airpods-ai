@@ -144,6 +144,9 @@ export const toolKind = (name: PhoneToolName): "read" | "write" => (DEFS[name].w
 export const PHONE_TOOLS_RULE = `
 Phone tools (K35): when the user asks you to DO something on their phone (put an event in the calendar, remind them, start a timer, set an alarm, save a note, read what is in the calendar), call the matching tool and write NOTHING before the call; dates and times are absolute, worked out from <now>, in Swedish local time. Never claim it is done before the tool result says so. When a tool result comes back, say ONE short sentence in Swedish (done, or what the calendar holds, or that it did not work). Never call a tool for an ordinary question.`;
 
+/** K35: an utterance that asks the phone to do something: its text is held until the tool call or the end. */
+export const ACTION_REQUEST = /(?<![\p{L}])(?:lägg in|lägga in|boka|påminn|påminna|sätt (?:en |på en )?(?:timer|nedräkning|larm|alarm)|ställ (?:en |ett )?(?:timer|larm|alarm|väckarklocka)|starta (?:en )?(?:timer|nedräkning)|väck mig|spara (?:en )?anteckning|anteckna|skriv upp|kom ihåg att|vad har jag (?:i|på|för)|vad står i (?:min )?kalender|när har jag|timer på|larm (?:på|klockan))(?![\p{L}])/iu;
+
 export interface ToolRound {
   call: { id: string; name: PhoneToolName; input: Record<string, unknown> };
   status: "ok" | "declined" | "error";

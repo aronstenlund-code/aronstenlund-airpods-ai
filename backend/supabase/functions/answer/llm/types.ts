@@ -19,6 +19,8 @@ export interface LLMRequest {
   signal?: AbortSignal;
   /** K15: a longer limit for a slow, non-interactive call (Lumen's own exam answers); default by request kind. */
   timeoutMs?: number;
+  /** K35: hold text until a tool call (then dropped) or the end (then released): Haiku may reason aloud first. */
+  holdTextBeforeTool?: boolean;
   /** K35: the whole conversation instead of one user turn (a tool round: user, assistant tool_use, tool_result). */
   messages?: unknown[];
   /** D84: page images sent before the text (exam upload). base64 without the data: prefix. */

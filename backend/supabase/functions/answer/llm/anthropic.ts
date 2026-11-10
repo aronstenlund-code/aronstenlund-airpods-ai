@@ -131,7 +131,7 @@ export class WebTextGate {
     if (ev.type === "content_block_start") {
       const t = (ev.content_block as { type?: string } | undefined)?.type;
       if (
-        t === "server_tool_use" || t === "web_search_tool_result" || t === "web_fetch_tool_result"
+        t === "server_tool_use" || t === "web_search_tool_result" || t === "web_fetch_tool_result" || t === "tool_use"
       ) {
         this.toolUsed = true;
         this.held = "";
@@ -188,7 +188,7 @@ export class AnthropicProvider implements LLMProvider {
       : AbortSignal.timeout(timeoutMs);
     // only server tools (web search / fetch, they have a `type`) hold back text; K35 phone tools stream as usual
     const serverTools = (req.tools ?? []).some((t) => typeof (t as { type?: unknown })?.type === "string");
-    const gate = serverTools ? new WebTextGate() : null;
+    const gate = serverTools || req.holdTextBeforeTool ? new WebTextGate() : null;
     let emitted = false;
     try {
       const model = req.model ?? this.cfg.model;
@@ -298,6 +298,7 @@ export class AnthropicProvider implements LLMProvider {
         if (ev.type === "content_block_start" && (ev.content_block as { type?: string } | undefined)?.type === "tool_use") {
           const b = ev.content_block as { id?: string; name?: string };
           toolBlocks.set(Number(ev.index), { id: String(b.id ?? ""), name: String(b.name ?? ""), json: "" });
+          gate?.filter(ev, null); // text said before the call (reasoning aloud) is dropped
           continue;
         }
         if (ev.type === "content_block_delta" && toolBlocks.has(Number(ev.index))) {

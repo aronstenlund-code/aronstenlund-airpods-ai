@@ -356,3 +356,29 @@ Deno.test("K35 AnthropicProvider: a client tool_use block becomes one tool_use c
   assertEquals(chunks.filter((c) => c.type === "text").map((c) => (c as { text: string }).text), ["Okej."]);
   assertEquals(chunks.find((c) => c.type === "tool_use"), { type: "tool_use", id: "toolu_9", name: "timer_start", input: { seconds: 300 } });
 });
+
+Deno.test("K35 holdTextBeforeTool: reasoning said before a tool call is dropped; without a call the text comes at the end", async () => {
+  const ev = (withTool: boolean) => [
+    { type: "message_start", message: { usage: { input_tokens: 10, output_tokens: 1 } } },
+    { type: "content_block_start", index: 0, content_block: { type: "text", text: "" } },
+    { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: "The user asks to add an event." } },
+    { type: "content_block_stop", index: 0 },
+    ...(withTool
+      ? [
+        { type: "content_block_start", index: 1, content_block: { type: "tool_use", id: "toolu_1", name: "timer_start", input: {} } },
+        { type: "content_block_delta", index: 1, delta: { type: "input_json_delta", partial_json: "{\"seconds\": 60}" } },
+        { type: "content_block_stop", index: 1 },
+      ]
+      : []),
+    { type: "message_delta", delta: { stop_reason: withTool ? "tool_use" : "end_turn" }, usage: { output_tokens: 9 } },
+    { type: "message_stop" },
+  ];
+  for (const withTool of [true, false]) {
+    const f = (() => Promise.resolve(sse(ev(withTool)))) as unknown as typeof fetch;
+    const out = [];
+    for await (const c of new AnthropicProvider(cfg, f).stream({ system: "S", user: "U", maxTokens: 50, tools: [{ name: "timer_start", input_schema: {} }], holdTextBeforeTool: true })) out.push(c);
+    const texts = out.filter((c) => c.type === "text");
+    assertEquals(texts.length, withTool ? 0 : 1, String(withTool));
+    assertEquals(out.some((c) => c.type === "tool_use"), withTool);
+  }
+});
