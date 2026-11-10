@@ -1,7 +1,7 @@
 import { type Authenticator } from "../_shared/auth.ts";
 import { logProviderFailure } from "../_shared/secrets.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
-import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
+import { enforceLimits, type Limits, type RateLimiter, userWindows } from "../_shared/ratelimit.ts";
 import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
 import { readLimitedJson } from "../answer/validate.ts";
 
@@ -121,6 +121,7 @@ export function createSttHandler(deps: SttDeps) {
           fallback: true,
         });
       }
+      const countedAt = Date.now();
       const rl = await enforceLimits(deps.rateLimiter, "stt", user.id, deps.config.limits);
       if (!rl.allowed) {
         throw new HttpError(429, "rate_limited", "Too many token requests", {
@@ -128,6 +129,15 @@ export function createSttHandler(deps: SttDeps) {
           retryAfterSec: rl.retryAfterSec,
         });
       }
+      // Toby T10 del 2 (2026-11-10: the whole app got 429 until midnight UTC after ElevenLabs' quota outage, because
+      // every failed retry counted): no token minted = nothing spent, so the user's and the global units go back.
+      const giveBack = async () => {
+        try {
+          await deps.rateLimiter.release?.([...userWindows("stt", user.id), { key: "stt:global:d", windowSec: 86400 }], 1, countedAt);
+        } catch (e) {
+          console.error("rate_release_failed", e instanceof Error ? e.message : String(e));
+        }
+      };
       let res: Response;
       try {
         res = await doFetch(
@@ -142,6 +152,7 @@ export function createSttHandler(deps: SttDeps) {
         );
       } catch (e) {
         logProviderFailure("elevenlabs", null, e, deps.apiKey);
+        await giveBack();
         throw new HttpError(502, "provider_unavailable", "STT provider unreachable", {
           fallback: true,
         });
@@ -160,6 +171,7 @@ export function createSttHandler(deps: SttDeps) {
         const err = classifySttMint(res.status, text);
         if (err.code === "provider_unavailable") logProviderFailure("elevenlabs", res.status, text, deps.apiKey);
         await Promise.resolve(deps.recordUsage(rec(err.code))).catch(() => {});
+        await giveBack();
         throw err;
       }
       let token = "";
@@ -167,6 +179,7 @@ export function createSttHandler(deps: SttDeps) {
         token = String(JSON.parse(text).token ?? "");
       } catch { /* handled below */ }
       if (!token) {
+        await giveBack();
         throw new HttpError(502, "provider_error", "STT token missing in reply", {
           fallback: true,
         });

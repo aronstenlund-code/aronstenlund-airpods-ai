@@ -65,3 +65,22 @@ Deno.test("per-user minute limit applies; usage report logs seconds and cost", a
   assertEquals((await h2(post({ seconds: 99999 }))).status, 400);
   assertEquals((await h2(new Request("http://x/stt-token", { method: "PUT" }))).status, 405);
 });
+
+Deno.test("Toby T10: a mint that ElevenLabs rejects gives the user's and the global units back", async () => {
+  const rl = new MemoryRateLimiter();
+  let status = 402;
+  const h = createSttHandler({
+    authenticate: () => Promise.resolve({ id: "u-t10", isAnonymous: true }),
+    rateLimiter: rl,
+    apiKey: "k",
+    config: { limits: { perMinute: 2, perDay: 2, globalPerDay: 2 } },
+    recordUsage: () => {},
+    fetchImpl: () => Promise.resolve(status === 200 ? new Response(JSON.stringify({ token: "t" })) : new Response("quota_exceeded", { status })),
+  });
+  for (let i = 0; i < 5; i++) assertEquals((await h(new Request("http://x/stt-token"))).status, 503, "quota: fallback, not 429");
+  assertEquals(rl.count("stt:global:d", 86400), 0, "nothing counted");
+  status = 200;
+  assertEquals((await h(new Request("http://x/stt-token"))).status, 200);
+  assertEquals((await h(new Request("http://x/stt-token"))).status, 200);
+  assertEquals((await h(new Request("http://x/stt-token"))).status, 429, "a real token still counts");
+});
