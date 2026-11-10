@@ -84,7 +84,12 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [x] klar 2026-11-10 12:40 (Kelly, `reports/2026-11-10-1240-kelly-ke21-d112-sidan.md`; A30 granskad och godkänd 12:49, `reports/2026-11-10-1249-kelly-granskning-a30-ke18.md`) **Ke21 – Demosidan efter D112/D113** (effort: medium). Ta bort allt om 18+ och åldersgräns för Rizzläget på sidan (D112: flirtigt men aldrig sexuellt, för alla åldrar). Om sidan beskriver vad Lumen inte gör: håll det till de åtta skydden i `docs/RESTRIKTIONER.md` del B (t.ex. samtycke och lyssningsindikator), inga andra spärrar. Granska sedan Angelas A28–A30-bilder när de är pushade.
 
-- [ ] **Ke22 – Annonser, start** (effort: high). D117: annonserna ska börja snart. Ta fram 3 korta annonsidéer (9:16, 15 s) för Instagram/TikTok med Elias, med manus och bildplan, och två stillbilder. Läs varje manus noga (naturlig svenska, längd) innan något genereras i ElevenLabs. Använd de två knapparna (D97) och "Standardläge" (D115).
+- [ ] **Ke22 – Annonser: 7 koncept som inte ser ut som reklam** (effort: high). Ägarbeslut D117 + D118. Lumen säljs som **AI i örat för hela vardagen**, inte bara plugg (arbetsrubriker: "Låt dina AirPods bli värda köpet", "Lås upp AI till dess fulla potential"). Varje annons ska se ut som en vanlig TikTok-video eller en berättelse där personen nästan har en superkraft: rösten i örat säger exakt vad hen ska göra. Gör 7 koncept (9:16, 15–30 s), var och en med manus, bildplan och en stillbild:
+  1. Behåll: eleven som går in på lektionen.
+  2. Rizzläget: en kort scen där rösten hjälper till att säga rätt sak (D112: flirtigt, aldrig sexuellt).
+  3. Fantasy: en hjälte med "en röst i örat" som vägleder genom ett äventyr. Stiliserad som spelkonst, heroiska proportioner för både män och kvinnor, men inte sexualiserat (inga närbilder på urringning eller kroppar), eftersom TikTok och Meta stoppar suggestiva annonser och publiken är ung.
+  4–7. Fyra andra helt olika stilar (t.ex. POV "en dag med AI i örat", träning/coach, en mockumentär "superkraften avslöjas", en reaktions-/prank-video). Inga två får likna varandra.
+  Skriv var och en som en hook på de första 2 sekunderna. Läs varje manus noga innan något genereras i ElevenLabs. Ingen Apple-lik hörlur i bild, och skriv "fungerar med AirPods" i stället för att antyda att Apple står bakom.
 
 - [ ] **Ke23 – Namn och logga** (effort: medium). D117: namnkandidater Proviska, Testvisk, Pod Whisper, Whisper Pod. Gör en sida i `docs/design/namn.md` med varje namn ihop med loggan A, B och C (Aron väljer logga), och kontrollera kort om namnen redan används av en app eller ett varumärke i App Store / EUIPO (skriv vad du hittade och var).
 
