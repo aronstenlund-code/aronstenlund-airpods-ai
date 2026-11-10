@@ -209,10 +209,12 @@ export function buildRizzUserMessage(req: AnswerRequest): string {
 
 // ---- output handling ----
 // K8 (Oscar O7): words in context, so "frukost på sängen", "bröstsim" and "Du måste testa pizzan där" are kept
+// K26 (Oscar O27: 0/25 new unsafe lines were stopped): home and bed, the body, "het", undressing
 const SEXUAL =
-  /(?:^|[^\p{L}])(?:knull\p{L}*|ligga med|sex(?:ig\p{L}*|uell\p{L}*|\s+med(?![\p{L}]))|naken|nakna|kåt\p{L}*|runk\p{L}*|bröst(?:en)?(?![\p{L}])|rumpa|snygg(?:a|aste) kropp|(?:i|till|ner i|upp i) (?:min |din )?sängen|ta med dig hem|hångl\p{L}*)(?![\p{L}])/iu;
+  /(?:^|[^\p{L}])(?:knull\p{L}*|ligga med|sex(?:ig\p{L}*|uell\p{L}*|\s+med(?![\p{L}]))|naken|nakna|kåt\p{L}*|runk\p{L}*|bröst(?:en)?(?![\p{L}])|rumpa|snygg(?:a|aste) kropp|(?:i|till|ner i|upp i) (?:min |din )?sängen|ta med dig hem|hångl\p{L}*|(?:min|din) säng|mitt (?:hotell)?rum|hotellrum\p{L}*|hem till (?:mig|dig|dej)|hemma hos (?:mig|dig|dej)|(?:följer|följa|följ|går|gå|dra|drar|åka|åker) (?:med )?(?:dig |mig )?hem(?![\p{L}])|dra till mig|till mig och mysa|mysa hos|(?:din|hennes|hans) kropp|ser het ut|het(?:a)? i (?:den|det|din)|ta av (?:dig|dej|den|det)|klä av)(?![\p{L}])/iu;
+// K26: pressure, a no that is not respected, negging, manipulation, lies and using that someone is drunk
 const PRESSURE =
-  /(?:^|[^\p{L}])(?:var inte så blyg|du måste (?:följa med|stanna|ge mig|komma hem|dricka|kyssa)|kom igen då|du är skyldig|ångra dig inte|stanna kvar(?! och prata))(?![\p{L}])/iu;
+  /(?:^|[^\p{L}])(?:var inte så blyg|du måste (?:följa med|stanna|ge mig|komma hem|dricka|kyssa)|kom igen då|du är skyldig|ångra dig inte|stanna kvar(?! och prata)|nej är (?:bara )?ett kanske|nej som (?:ett )?svar|inga ursäkter|ge mig ditt nummer|ditt nummer nu|du kan inte gå|gå inte (?:redan|än|hem|till (?:dem|dom|honom|henne))|stanna en (?:timme|stund) till|spela svår\p{L}*|(?:sa|säger|sagt) nej\p{L}*,? men|fråga (?:en gång )?(?:till|igen)(?! om du)|ignorera att|fortsätt (?:ändå|trots)|(?:söt|snygg|fin|smart|rolig|bra)\p{L}* för att vara|om du (?:log|ler|sminkade|klädde|gick ner)|snyggare än (?:du|dig)|du duger|inte illa för|för någon (?:i din ålder|som du)|om du (?:gillade|tyckte om|brydde dig om) mig|alla andra (?:här )?är tråkiga|säg att du (?:är|har|jobbar|äger|var|kör)|ljug|(?:full|berusad|packad|dragen|på lyset|onykter)\p{L}*[^.!?]{0,20}passa på|passa på (?:nu )?(?:när|medan) (?:hon|han|hen) är)(?![\p{L}])/iu;
 
 export const MAX_WORDS = 10;
 /** Lines up to this length are used only when nothing within MAX_WORDS is left (D72). */

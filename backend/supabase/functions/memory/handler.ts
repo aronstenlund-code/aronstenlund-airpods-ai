@@ -57,9 +57,14 @@ export interface MemoryResult {
 const SELF =
   /(?<!\p{L})(jag|mig|min|mitt|mina|vi|oss|vår|vårt|våra|me|my|mine|we|our|i am|i'm|i've|i have|i will|i'll|i need|i want|i study|i go|i like|i prefer|always|never|from now on|alltid|aldrig|i fortsättningen|från och med nu|framöver|kortare|längre)(?!\p{L})/iu;
 
-/** Never kept even if the model returns it (GDPR art. 9 categories and similar). */
+/**
+ * Never kept even if the model returns it (GDPR art. 9 categories and similar). K26 (Oscar O28: 2/27 stopped): health,
+ * crisis, sexuality and relationships, faith, politics, origin, crime, other people, contact details, money and where
+ * someone lives; short stems have word boundaries ("lånat", "sjukt", "brottslighet", "judeförföljelsen" are kept).
+ * Kept on one line: Oscar's O28 test reads the literal from this file.
+ */
 const SENSITIVE_RAW =
-  /allerg|sjuk|diagnos|adhd|autism|diabet|astma|depress|ångest|medicin|gravid|psyk|terapi|religi|kristen|muslim|jude|judisk|ateist|politi|parti|röstar|sexuell|homosex|bisex|transperson|etnisk|ursprung|fackförening|brott|dömd|polisanmäl|biometri|health|religion|sexual|ethnic|adress|bor på|bor i en|gatan|vägen \d|postnummer|skuld|lån|kredit|inkasso|kronofogd|betalningsanmärk|lön|inkomst|tjänar|ekonomi|hyra|bidrag|csn|pengar|förmögenhet|sparpengar|bankkonto|kontonummer|personnummer|lösenord|address|i live at|debt|loan|credit|salary|income|bank account|password/iu;
+  /allerg|(?<![\p{L}])sjuk(?:dom\p{L}*|skriv\p{L}*|hus\p{L}*|a)?(?![\p{L}])|diagnos|adhd|add(?![\p{L}])|autism|asperger|diabet|astma|epilep|celiaki|gluten|laktos|intolerans|dyslexi|dyskalkyli|depress|ångest|panikångest|ätstörning|anorexi|bulimi|(?<![\p{L}])väger(?![\p{L}])|\d+ ?kilo(?![\p{L}])|gå ner i vikt|(?<![\p{L}])mens(?![\p{L}])|mensvärk|medicin|concerta|elvanse|ritalin|medikinet|sertralin|gravid|psyk|terapi|kurator|bup(?![\p{L}])|självmord|självskad|(?<![\p{L}])skär (?:sig|mig)|ta livet|vill dö|vill inte leva|orkar inte leva|sexuell|homosex|bisex|(?<![\p{L}])(?:är|som) bi(?![\p{L}])|(?<![\p{L}])gay(?![\p{L}])|lesbisk|queer|transperson|(?<![\p{L}])trans(?![\p{L}])|pojkvän|flickvän|kär i|dejtar|ihop med|religiös|troende|(?<![\p{L}])tror på gud|(?<![\p{L}])kristen(?![\p{L}])|muslim|(?<![\p{L}])(?:jude|judinna|judar|judisk)(?![\p{L}])|ateist|ramadan|(?<![\p{L}])fast(?:ar|ade|a)(?![\p{L}])|kyrkan|(?<![\p{L}])kyrka(?![\p{L}])|moské|synagog|ber till gud|(?<![\p{L}])(?:bön|bönen|ber varje)(?![\p{L}])|politi|(?<![\p{L}])parti(?:et)?(?![\p{L}])|\p{L}+partiet(?![\p{L}])|röst(?:ar|ade|a) på|ungdomsförbund|ungsocialist|(?<![\p{L}])(?:muf|ssu|cuf|kdu|luf)(?![\p{L}])|fackförening|etnisk|ursprung|kommer (?:ursprungligen )?från (?!skolan|jobbet|träning|stan)|(?<![\p{L}])romsk|(?<![\p{L}])(?:same|samer|samisk\p{L}*)(?![\p{L}])|flykting|asyl|uppehållstillstånd|(?<![\p{L}])brott(?![\p{L}])|dömd|polisanmäl|snatta|(?<![\p{L}])stal(?![\p{L}])|stöld|fängelse|gripen|anhållen|häktad|(?<![\p{L}])(?:mamma|pappa|morsa|farsa|bror|brorsa|syster|syrra|bästis|kompis\p{L}*|mormor|morfar|farmor|farfar|kusin\p{L}*|styvpappa|styvmamma)(?![\p{L}])|heter [A-ZÅÄÖ]|\S+@\S+|(?<![\p{L}])mejl(?![\p{L}])|e-?post|telefon|mobilnummer|(?:\+46|0\d{1,3})[ -]?\d{2,3}[ -]?\d{2}[ -]?\d{2}(?!\d)|instagram|(?<![\p{L}])insta(?![\p{L}])|snapchat|(?<![\p{L}])snap(?![\p{L}])|tiktok|discord|användarnamn|\p{L}_\d{2,}|biometri|health|religious|sexual|ethnic|adress|bor på|(?<![\p{L}])bor (?:i|vid|nära|utanför)(?![\p{L}])|gatan|vägen \d|postnummer|skuld|(?<![\p{L}])lån(?:et|en|ar)?(?![\p{L}])|studielån|sms-?lån|kredit|inkasso|kronofogd|betalningsanmärk|(?<![\p{L}])lön(?:en)?(?![\p{L}])|månadslön|inkomst|tjänar|ekonomi|hyra|bidrag|csn|pengar|\d+ ?kr(?![\p{L}])|kronor|på kortet|förmögenhet|sparpengar|bankkonto|kontonummer|personnummer|lösenord|address|i live at|debt|loan|credit|salary|income|bank account|password/iu;
 
 /**
  * K8 (Oscar O7 item 8): the categories are about the user's own faith, health, politics …, not the subjects
@@ -67,8 +72,10 @@ const SENSITIVE_RAW =
  * and study words are taken out before the check.
  */
 const STUDY_WORDS =
-  /\b(?:religionskunskap\p{L}*|religionsprov\p{L}*|religion(?:en)? (?:som ämne|prov\p{L}*)|samhällskunskap\p{L}*|partikl\p{L}*|partikel\p{L}*|företagsekonomi\p{L}*|privatekonomi(?:kurs\p{L}*)?|nationalekonomi\p{L}*|ekonomiprov\p{L}*|långa? förklaring\p{L}*|lång\p{L}* svar|psykologiprov\p{L}*|psykologi(?:kurs\p{L}*)?|medicinsk\p{L}* ämne|politikprov\p{L}*|statsvetenskap\p{L}*|(?:prov|läxa|test|uppsats|kurs|lektion)(?:en)? (?:i|på|om) (?:religion|psykologi|politik|ekonomi|medicin|sexualkunskap|sex och samlevnad)\p{L}*)/giu;
+  /\b(?:religionskunskap\p{L}*|religionsprov\p{L}*|religion(?:en)? (?:som ämne|prov\p{L}*)|samhällskunskap\p{L}*|partikl\p{L}*|partikel\p{L}*|företagsekonomi\p{L}*|privatekonomi(?:kurs\p{L}*)?|nationalekonomi\p{L}*|ekonomiprov\p{L}*|långa? förklaring\p{L}*|lång\p{L}* svar|psykologiprov\p{L}*|psykologi(?:kurs\p{L}*)?|medicinsk\p{L}* ämne|politikprov\p{L}*|statsvetenskap\p{L}*|(?:prov|läxa|test|uppsats|kurs|lektion)(?:en)? (?:i|på|om) (?:religion|psykologi|politik|ekonomi|medicin|sexualkunskap|sex och samlevnad)\p{L}*|(?:uppsats|arbete|redovisning|fördjupning|prov|läxa)(?:en)? (?:i \p{L}+ )?om \p{L}+|läser om \p{L}+|(?:i|om) religion(?:en)?(?![\p{L}]))/giu;
 const SENSITIVE = { test: (t: string) => SENSITIVE_RAW.test(t.replace(STUDY_WORDS, " ")) };
+/** K26: for the tests (Oscar O28). */
+export const isSensitiveMemory = (t: string): boolean => SENSITIVE.test(t);
 
 export const SYSTEM_PROMPT_MEMORY =
   `You keep a short memory about the wearer of a study assistant (a student in Sweden). You get <now> (the current date in Sweden), <memories> (what is already remembered) and <turn> (<q> = what the wearer just said, <a> = the assistant's answer, context only).
