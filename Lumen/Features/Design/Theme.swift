@@ -10,7 +10,7 @@ extension ConversationMode {
     /// The short name on the mode buttons.
     var shortName: String {
         switch self {
-        case .standard: "Frågor"
+        case .standard: "Standardläge" // A37 (D115)
         case .interview: "Intervju"
         case .social: "Socialt"
         case .rizz: "Rizz" // D112: no 18+

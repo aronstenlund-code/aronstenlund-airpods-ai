@@ -72,7 +72,7 @@ private struct AllVoiceCommandsView: View {
                     .foregroundStyle(.secondary)
                 Toggle("Tips om kommandon (högst ett om dagen)", isOn: $tips.enabled)
                 Toggle("Ton när du kan säga \"ja\" för mer", isOn: $voice.moreTone)
-                Toggle("Korta ord utan \"Lumen\" i Provläge och Frågor", isOn: $voice.universalCommands)
+                Toggle("Korta ord utan \"Lumen\" i Provläge och Standardläge", isOn: $voice.universalCommands)
                 Text("\"Upprepa\", \"viska\", \"högre\", \"kortare\", \"snabbare\" och \"utveckla\" som hela meningen.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)

@@ -14,7 +14,7 @@ samma lista, och där kan användaren lägga till och ta bort fraser per åtgär
 - **Utan "Lumen"** fungerar bara de som står som "utan namn" nedan (musik och "det där var fel").
 - **Universella ord utan "Lumen":**
   - Orden: "upprepa", "viska", "högre", "kortare", "snabbare" och "utveckla".
-  - De gäller bara som hela yttrandet och bara i Provläge och Frågor, där den som pratar är användaren.
+  - De gäller bara som hela yttrandet och bara i Provläge och Standardläge, där den som pratar är användaren.
   - Inställningen `voice.universalCommands` styr dem och är på från början.
   - I Socialt läge, Rizzläge och Intervjuläge krävs alltid "Lumen".
 - **Användarens egna fraser:**
@@ -45,7 +45,7 @@ samma lista, och där kan användaren lägga till och ta bort fraser per åtgär
 | Spara svaret (`saveAnswer`) | spara det, spara svaret, spara det där, spara i anteckningar, save that | nej | alla | "Sparat." | Senaste svaret läggs i Anteckningar. |
 | Nästa prov (`nextExam`) | vilket prov har jag härnäst, när är nästa prov, nästa prov, vilket är nästa prov, next exam | nej | alla | provets namn och dag | Läses ur provplanerna i telefonen. Ingen LLM. |
 | Kom ihåg (finns, D49/D80) | kom ihåg (att) …, glöm inte (att) …, remember that … | nej | alla | "Sparat." | Sparas i Minne. "Glöm …" tar bort. |
-| Taltempo (A20, `SpeechPace`) | långsammare, långsamt, lugnare, prata (lite) långsammare / snabbare, fortare | ja (hela yttrandet, bärarens röst) | Provläge, Frågor | "Jag pratar lite långsammare." / "Jag pratar snabbare igen." | Tempot per läge och ämne: 1,0 → 0,9 → 0,85, sparas och syns i Minne. Sänks också av sig självt efter 2 "igen" på 10 min eller 3 långa tystnader (≥ 20 s) efter långa svar i Provläge (antecknar). "Snabbare" vid fullt tempo är "kortare" som förut. |
+| Taltempo (A20, `SpeechPace`) | långsammare, långsamt, lugnare, prata (lite) långsammare / snabbare, fortare | ja (hela yttrandet, bärarens röst) | Provläge, Standardläge | "Jag pratar lite långsammare." / "Jag pratar snabbare igen." | Tempot per läge och ämne: 1,0 → 0,9 → 0,85, sparas och syns i Minne. Sänks också av sig självt efter 2 "igen" på 10 min eller 3 långa tystnader (≥ 20 s) efter långa svar i Provläge (antecknar). "Snabbare" vid fullt tempo är "kortare" som förut. |
 | Tyst förhör (A20, `SilentQuiz`) | tyst förhör, tyst förhör mig, förhör mig tyst, starta tyst förhör | ja | Provläge | "Tyst förhör. Nicka för ja, skaka på huvudet för nej. …" | Ja–nej-frågor (nivå 2 som instruktion), svaret med nick/skakning (D86) eller "ja"/"nej". 10 frågor, eller slut efter 2 frågor utan svar. "Lumen, sluta" avslutar förhöret (nästa "sluta" avslutar Provläge). Slut: "Tyst förhör klart. N av M rätt." |
 | Övningsprov (A16, `PracticeNav`, K15) | kör övningsprovet, starta övningsprovet; under provet: nästa, förra, fråga sju, uppgift 3b, hoppa över, upprepa, hur gick det, avsluta | ja (under provet räknas allt som inte är navigering som ett svar) | Provläge, med ett övningsprov i Förberedelser | Frågan uppläst ("Fråga tre. … Den ger två poäng."), sedan rättning med förklaring och nästa fråga | Navigeringen är Kevins `practiceNav` portad till appen; "avsluta" ger resultatet först |
 
@@ -57,15 +57,15 @@ samma lista, och där kan användaren lägga till och ta bort fraser per åtgär
 
 | Åtgärd (`id`) | Skickas som | Standardfraser | Lägen |
 |---|---|---|---|
-| `quizMe` | förhör mig (+ resten) | förhör mig …, testa mig …, quiz me | Provläge, Frågor |
+| `quizMe` | förhör mig (+ resten) | förhör mig …, testa mig …, quiz me | Provläge, Standardläge |
 | `moreDetail` | utveckla | utveckla, utveckla svaret, berätta mer, mer, mer om det, tell me more (universellt "utveckla") | alla |
 | `simpler` | förklara enklare | förklara enklare, förklara, enklare, förklara det enklare, simpler | alla |
 | `example` | ge ett exempel | ge ett exempel, ge mig ett exempel, exempel | alla |
 | `summary` | sammanfatta det viktigaste | sammanfatta, summera, summarize | alla |
-| `aLevel` | förklara på a-nivå | a-nivå, som för ett a | Provläge, Frågor |
-| `harderQuestion` | ställ en svår fråga | en svårare fråga, svårare fråga | Provläge, Frågor |
-| `quickQuiz` | snabbförhör | fem snabba frågor, snabbförhör mig | Provläge, Frågor |
-| `weakAreas` | testa mina svagaste områden | hur bra kan jag det här, vad kan jag sämst | Provläge, Frågor |
+| `aLevel` | förklara på a-nivå | a-nivå, som för ett a | Provläge, Standardläge |
+| `harderQuestion` | ställ en svår fråga | en svårare fråga, svårare fråga | Provläge, Standardläge |
+| `quickQuiz` | snabbförhör | fem snabba frågor, snabbförhör mig | Provläge, Standardläge |
+| `weakAreas` | testa mina svagaste områden | hur bra kan jag det här, vad kan jag sämst | Provläge, Standardläge |
 | `careful` | var säker | dubbelkolla, var noggrann | alla (starkare modell, kostar mer) |
 | `catchUp` | vad missade jag | vad har jag missat, vad sa de | alla (D61: bara sessionens transkript) |
 | `discreet` | hjälp mig diskret | diskret, kort och diskret | alla (bara en längdstil) |
@@ -81,7 +81,7 @@ samma lista, och där kan användaren lägga till och ta bort fraser per åtgär
 | `threeOptions` | tre alternativ | ge mig tre, tre förslag | Socialt, Rizz (ett förslag är standard) |
 
 **Utgår (dubbletter, A7):**
-- "lyssna efter frågor" är "byt till Frågor".
+- "lyssna efter frågor" är "byt till standardläge" (A37, D115: läget hette Frågor förut, och "byt till frågor" fungerar fortfarande).
 - "förklara" är "förklara enklare".
 - "snabbare" är "kortare".
 
@@ -97,19 +97,19 @@ Källa: `backend/supabase/functions/answer/commands.ts` (`FAMILIES`), tester i `
 
 | `task` | Lägen | Exempel på fraser (3 per task i live-eval) | Beteende |
 |---|---|---|---|
-| `continue_more` / `continue_simpler` | Provläge, Frågor | mer, utveckla, förklara enklare | finns sedan D35 |
-| `example` | Provläge, Frågor | ge ett exempel, har du något exempel | ett nytt konkret exempel på senaste ämnet |
-| `summary` | Provläge, Frågor | sammanfatta det viktigaste, summera, vad är det viktigaste | 3–4 meningar om ämnet i `recent_qa` |
-| `a_level` | Provläge, Frågor | förklara på a-nivå, som ett A-svar, hur får jag ett A | ett fullt A-svar, utan att säga "A-nivå" |
-| `harder_question` | Provläge, Frågor | ställ en svår fråga, en svårare fråga, utmana mig | en resonerande fråga, bara frågan |
-| `quick_quiz` | Provläge, Frågor | snabbförhör, fem snabba frågor | "Fråga ett: …" (bara frågan) |
-| `yes_no_quiz` | Provläge, Frågor | ja eller nej frågor | en ja/nej-fråga |
-| `quiz_topic` (+ `task_arg`) | Provläge, Frågor | förhör mig på X, testa mig om X, fråga ut mig om X | en fråga om X |
-| `weak_areas` | Provläge, Frågor | testa mina svagaste områden, vad kan jag sämst | fråga om begreppet med flest fel i `context.concept_stats` |
-| `self_assessment` | Provläge, Frågor | hur bra kan jag det här, hur ligger jag till | lägesbild ur `concept_stats` och rättade svar, aldrig påhittade siffror |
-| `careful` | Provläge, Frågor | var säker, dubbelkolla det, är du säker på det | Sonnet med tänkande för just det svaret ("Rättelse: …" vid fel); kostnaden loggas per svar |
-| `catch_up` | Provläge, Frågor | vad missade jag, vad sa läraren | sammanfattning av `context.transcript` (D61: inget sparas) |
-| `brief_style` | Provläge, Frågor | hjälp mig diskret, bara en mening | en mening |
+| `continue_more` / `continue_simpler` | Provläge, Standardläge | mer, utveckla, förklara enklare | finns sedan D35 |
+| `example` | Provläge, Standardläge | ge ett exempel, har du något exempel | ett nytt konkret exempel på senaste ämnet |
+| `summary` | Provläge, Standardläge | sammanfatta det viktigaste, summera, vad är det viktigaste | 3–4 meningar om ämnet i `recent_qa` |
+| `a_level` | Provläge, Standardläge | förklara på a-nivå, som ett A-svar, hur får jag ett A | ett fullt A-svar, utan att säga "A-nivå" |
+| `harder_question` | Provläge, Standardläge | ställ en svår fråga, en svårare fråga, utmana mig | en resonerande fråga, bara frågan |
+| `quick_quiz` | Provläge, Standardläge | snabbförhör, fem snabba frågor | "Fråga ett: …" (bara frågan) |
+| `yes_no_quiz` | Provläge, Standardläge | ja eller nej frågor | en ja/nej-fråga |
+| `quiz_topic` (+ `task_arg`) | Provläge, Standardläge | förhör mig på X, testa mig om X, fråga ut mig om X | en fråga om X |
+| `weak_areas` | Provläge, Standardläge | testa mina svagaste områden, vad kan jag sämst | fråga om begreppet med flest fel i `context.concept_stats` |
+| `self_assessment` | Provläge, Standardläge | hur bra kan jag det här, hur ligger jag till | lägesbild ur `concept_stats` och rättade svar, aldrig påhittade siffror |
+| `careful` | Provläge, Standardläge | var säker, dubbelkolla det, är du säker på det | Sonnet med tänkande för just det svaret ("Rättelse: …" vid fel); kostnaden loggas per svar |
+| `catch_up` | Provläge, Standardläge | vad missade jag, vad sa läraren | sammanfattning av `context.transcript` (D61: inget sparas) |
+| `brief_style` | Provläge, Standardläge | hjälp mig diskret, bara en mening | en mening |
 | `interview_help:professional\|better\|confident\|counter_question\|stuck` | Intervju | vad borde jag säga / bättre svar / mer självsäkert / ge mig en motfråga / jag fastnar | jag-form; motfrågan sägs som fråga |
 | `social:reply\|change_topic\|follow_up\|what_meant`, `rizz:more\|rescue`, `alternatives:3` | Socialt, Rizz | vad ska jag svara, byt ämne, smart följdfråga, vad menade hon, mer rizz, rädda mig, tre alternativ | nya repliker (`<request>`) |
 | `social:funnier\|natural`, `rizz:confident\|flirty\|subtle\|cocky\|less_cringe` | Socialt, Rizz | roligare, mer naturligt, mer självsäker, flirtigare, mer subtil, kaxigare, mindre cringe | kalibrering (D69) med betydelsen |
@@ -118,7 +118,7 @@ Källa: `backend/supabase/functions/answer/commands.ts` (`FAMILIES`), tester i `
 - `context.concept_stats: [{concept, right, wrong}]`: högst 30, från förhörsresultaten i provprofilen.
 - `voice_instruction: boolean`.
 
-**Stående regler (D80) utan "Lumen", i Provläge och Frågor:**
+**Stående regler (D80) utan "Lumen", i Provläge och Standardläge:**
 - Gäller "i framtiden ska du …", "från och med nu …", "svara alltid …", "… det är minnet", när det handlar om svaren.
 - Besvaras lokalt med en kort bekräftelse ("Okej, korta svar.").
 - Kommer tillbaka som `done.memory_add` = "Regel: …" (appen lagrar det som i dag och skickar det med bland minnena, och prompten följer "Regel:"-rader) och som `done.rule_add` (regeltexten, för Minne › Regler).
@@ -131,5 +131,5 @@ Källa: `backend/supabase/functions/answer/commands.ts` (`FAMILIES`), tester i `
 - Instruktioner ("mer", "kortare", "ge ett exempel", "roligare" och så vidare) räknas i en egen budget, så de får aldrig 429 för att eleven har frågat mycket (K12, D99).
 
 ### Backend: "jag vet inte ens vad jag ska fråga" (K20, Kevin)
-- I Provläge och Frågor får "jag vet inte ens vad jag ska fråga", "var ska jag börja" och "hjälp mig komma igång" uppgiften `get_started`: tre saker att börja med för provet i profilen och en lätt första fråga. Det blir aldrig tystnad.
-- Frågor om Lumen själv ("är du en robot", "lyssnar du hela tiden", "sparar du det jag säger") besvaras i kod med orden från Om appen.
+- I Provläge och Standardläge får "jag vet inte ens vad jag ska fråga", "var ska jag börja" och "hjälp mig komma igång" uppgiften `get_started`: tre saker att börja med för provet i profilen och en lätt första fråga. Det blir aldrig tystnad.
+- Standardläge om Lumen själv ("är du en robot", "lyssnar du hela tiden", "sparar du det jag säger") besvaras i kod med orden från Om appen.

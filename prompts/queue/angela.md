@@ -164,7 +164,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [ ] **A36 – U4: fota sidan du pluggar** (effort: high). D115. En knapp på provkortet "Fota sidan" → kameran → `/exam` (läser redan bilder, D84) → ämnesord, övningsfrågor och förhör på det fotade. Skärmbilder, Kelly granskar.
 
-- [ ] **A37 – D115: "Frågor" heter "Standardläge", och lägesbytet** (effort: medium). Byt namnet överallt (app, röstkommandon "byt till standardläge", COMMANDS.md, säg till Kelly för sidan). Kontrollera att man alltid själv kan byta läge, både med knappen och med rösten, från alla skärmar. Toby testar.
+- [~] pågår (Angela, 16:20, CI) **A37 – D115: "Frågor" heter "Standardläge", och lägesbytet** (effort: medium). Byt namnet överallt (app, röstkommandon "byt till standardläge", COMMANDS.md, säg till Kelly för sidan). Kontrollera att man alltid själv kan byta läge, både med knappen och med rösten, från alla skärmar. Toby testar.
 
 - [ ] **A38 – C2 + C3: notiser och streak som Duolingo** (effort: high). D115. Streak synlig på Start (liten, en siffra + låga), förloras om en dag missas. Notiser: nedräkning till provet och "5 snabba frågor" (eleven slår på dem, en gång per dag, tid valbar). Bygger på K31.
 

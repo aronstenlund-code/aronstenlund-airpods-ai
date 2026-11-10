@@ -35,7 +35,7 @@ struct PrefSetting: Codable, Equatable, Sendable, Identifiable {
             "examples:more": "fler exempel", "accuracy:careful": "extra noggrann kontroll av fakta",
         ]
         let kinds = ["fact": "faktasvar", "explanation": "förklaringar", "math": "matte"]
-        let modes = ["prov": "Provläge", "fragor": "Frågor", "intervju": "Intervju", "socialt": "Socialt", "rizz": "Rizz"]
+        let modes = ["prov": "Provläge", "fragor": "Standardläge", "intervju": "Intervju", "socialt": "Socialt", "rizz": "Rizz"]
         let what = words["\(key):\(value)"] ?? "\(key) \(value)"
         var line = what.prefix(1).uppercased() + what.dropFirst()
         if let kind = scope.answerType {

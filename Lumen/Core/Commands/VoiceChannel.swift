@@ -39,7 +39,7 @@ enum VoiceChannel {
     static let instructionLimit = 300
 
     private static let modeNames: [ConversationMode: Set<String>] = [
-        .standard: ["frågor", "frågeläge", "frågorläge", "frågläge", "auto", "questions"],
+        .standard: ["standardläge", "standardläget", "standard", "frågor", "frågeläge", "frågorläge", "frågläge", "auto", "questions"], // A37: the new name first, the old still heard
         .prov: ["provläge", "provläget", "prov"],
         .interview: ["intervjuläge", "intervjuläget", "intervju"],
         .social: ["socialtläge", "socialtläget", "socialläge", "socialaläget", "socialt", "social", "socialmode"],
@@ -120,7 +120,7 @@ enum VoiceChannel {
     /// What a mode is called out loud, for the confirmation in the AirPods.
     static func spokenName(_ mode: ConversationMode) -> String {
         switch mode {
-        case .standard: "Frågor."
+        case .standard: "Standardläge."
         case .prov: "Provläge."
         case .interview: "Intervjuläge."
         case .social: "Socialt läge."

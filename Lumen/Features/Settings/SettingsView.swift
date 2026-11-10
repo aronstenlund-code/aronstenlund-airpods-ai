@@ -148,7 +148,7 @@ struct SettingsView: View {
                 Text(vadStatusText)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                Toggle("Bara min röst i Provläge och Frågor", isOn: focusBinding)
+                Toggle("Bara min röst i Provläge och Standardläge", isOn: focusBinding)
                 Text("Andra som pratar i rummet hörs svagare i AirPods. Deras tal skickas inte, så din fråga blir klar när du tystnar.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -163,7 +163,7 @@ struct SettingsView: View {
 
     static func modeName(_ mode: ConversationMode) -> String {
         switch mode {
-        case .standard: "Frågor"
+        case .standard: "Standardläge" // A37
         case .prov: "Provläge"
         case .interview: "Intervju"
         case .social: "Socialt"

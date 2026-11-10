@@ -57,7 +57,7 @@ import Testing
 
     @Test func linesForMinne() {
         #expect(SpeechPace.line(factor: 0.85, mode: .prov, subject: "Biologi") == "Långsammare tal i Biologi")
-        #expect(SpeechPace.line(factor: 0.9, mode: .standard, subject: nil) == "Lite långsammare tal i Frågor")
+        #expect(SpeechPace.line(factor: 0.9, mode: .standard, subject: nil) == "Lite långsammare tal i Standardläge")
     }
 
     @MainActor
