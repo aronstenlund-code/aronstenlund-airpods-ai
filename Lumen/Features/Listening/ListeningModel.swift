@@ -115,6 +115,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var conceptStats = ConceptStats.load()
     /// A19 (K17): what came up per exam and concept, right or wrong, for `/study-plan`.
     @ObservationIgnored private var studyHistory = StudyHistory.load()
+    /// A38 (K31): the days with a quiz answer, and the streak they make (shown on Start).
+    @ObservationIgnored private var quizDays = QuizDays.load()
+    private(set) var streak = QuizDays.load().streak()
     let studyPlanClient: StudyPlanClient?
     /// A19: today's plan per exam, from `/study-plan`.
     private(set) var studyPlans: [UUID: StudyPlanAPI.ExamPlanReply] = [:]
@@ -1111,7 +1114,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             case .rizz, .social: rizzTurn(text)
             case .standard, .prov:
                 headMotion.stop() // answered with the voice
-                if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered() } // A20.2: "ja" / "nej" by voice
+                if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered(); noteQuizAnswer() } // A20.2: "ja" / "nej" by voice; A38
                 // A8.4: several questions in one breath are separate turns, each with its own answer.
                 var parts = QuestionSplitter.split(text)
                 let first = parts.isEmpty ? text : parts.removeFirst()
@@ -1933,6 +1936,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         headMotion.listen(for: SilentQuiz.answerWindow) { [weak self] gesture in
             guard let self, self.silentQuiz?.awaitingAnswer == true else { return }
             self.silentQuiz?.answered()
+            self.noteQuizAnswer() // A38
             let text = gesture == .nod ? "Ja" : "Nej"
             self.controller.log("Silent quiz: \(gesture == .nod ? "nod" : "shake") → \(text) (A20)")
             self.activated(ActivationRequest(query: text, trigger: .tutor, language: self.language), persona: self.tutorPersona())
@@ -2367,6 +2371,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 guard let self, var current = self.exam else { return }
                 current.graded(graded.points)
                 self.exam = current
+                self.noteQuizAnswer() // A38
                 let got = ExamSession.number(graded.points.total)
                 let of = ExamSession.number((graded.max ?? task.points).total)
                 self.say("\(got) av \(of) poäng. \(graded.feedback)")
@@ -2510,6 +2515,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             }
             let max = (graded.max ?? task.points).total
             current.graded(points: graded.points.total, max: max)
+            self.noteQuizAnswer() // A38
             let right = current.outcomes[task.no]?.isRight ?? false
             if let topic = task.topic, !topic.isEmpty {
                 self.conceptStats.record(topic, right: right)
@@ -2612,27 +2618,43 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// Asks `/study-plan` for every upcoming exam: what is due today, and the days up to the exam (local reminders).
     func refreshStudyPlan(askForReminders: Bool = false) async {
-        guard let studyPlanClient, let plans = examPlans?.upcoming(), !plans.isEmpty else { return }
+        streak = quizDays.streak()
+        let plans = examPlans?.upcoming() ?? []
+        guard let studyPlanClient, !plans.isEmpty || !quizDays.days.isEmpty else { return }
         let exams = plans.prefix(10).map { plan in
             StudyPlanAPI.ExamIn(name: plan.name, date: StudyHistory.day(plan.date),
                                 concepts: StudyPlanAPI.concepts(history: studyHistory.history(for: plan.id),
                                                                 topics: StudyPlanAPI.topics(plan.topics)))
         }
-        guard let reply = await studyPlanClient.plan(StudyPlanAPI.Request(today: StudyHistory.day(Date()), exams: Array(exams))) else {
+        let request = StudyPlanAPI.Request(today: StudyHistory.day(Date()), exams: Array(exams), quiz_days: quizDays.days)
+        guard let reply = await studyPlanClient.plan(request) else {
             controller.log("Study plan: no reply")
             return
         }
         var byExam: [UUID: StudyPlanAPI.ExamPlanReply] = [:]
-        var days: [(subject: String, day: StudyPlanAPI.Day)] = []
+        var planDays: [String: [String]] = [:]
         for (plan, answer) in zip(plans.prefix(10), reply.exams) {
             byExam[plan.id] = answer
-            days += answer.plan.map { (subject: plan.subject, day: $0) }
+            for day in answer.plan where planDays[day.date] == nil && !day.concepts.isEmpty { planDays[day.date] = day.concepts }
         }
         studyPlans = byExam
-        controller.log("Study plan: \(byExam.count) exams, \(days.count) days")
-        await LumenNotifications.schedulePlan(days, ask: askForReminders)
+        // A38: one reminder a day at the chosen time (K31's text today, a countdown on the other days).
+        let daily = LumenNotifications.days(today: Date(), note: reply.notification, doneToday: streak.doneToday,
+                                            exams: plans.map { (name: $0.name, date: $0.date) }, plan: planDays)
+        controller.log("Study plan: \(byExam.count) exams, streak \(streak.current), \(daily.count) reminders")
+        await LumenNotifications.scheduleDaily(daily, ask: askForReminders)
         let status = await LumenNotifications.status()
-        canAskForReminders = !days.isEmpty && LumenNotifications.remindersOn && status == .notDetermined
+        canAskForReminders = !daily.isEmpty && LumenNotifications.remindersOn && status == .notDetermined
+    }
+
+    /// A38 (K31): a quiz answer today (Förhör mig, the practice exam, the mini test, the silent quiz, flip cards).
+    /// The day's first one keeps the streak and takes away today's reminder.
+    func noteQuizAnswer(at date: Date = Date()) {
+        guard quizDays.record(date) else { return }
+        quizDays.save()
+        streak = quizDays.streak(today: date)
+        LumenNotifications.cancelToday(date)
+        controller.log("Quiz day: streak \(streak.current) (A38)")
     }
 
     /// A19: "Påminn mig om passen" on Start: iOS asks once, then the plan's days are reminders at 16:00.
@@ -2709,9 +2731,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             gradingCardID = nil
             test.graded(turn.answer)
             studyCards?.mark(id, right: test.results[id] ?? false)
+            noteQuizAnswer() // A38
             miniTest = test
             askMiniTestQuestion()
             return
+        }
+        // A38: an answer to Lumen's own check question in Förhör mig counts for the streak.
+        if mode == .prov, study.isActive, turn.isOwnQuestion,
+           let index = conversation.answers.firstIndex(where: { $0.id == turn.id }), index > 0,
+           conversation.answers[index - 1].answer.trimmingCharacters(in: .whitespacesAndNewlines).hasSuffix("?") {
+            noteQuizAnswer()
         }
         guard mode == .prov, miniTest == nil, pendingQuestion?.trigger == .tutor, let studyCards else { return }
         if studyCards.add(question: turn.question, answer: turn.answer, profile: studyProfile.profile) != nil {
@@ -2760,6 +2789,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// One flip card answered: it counts like a quiz answer (the card, the tutor's concept stats, the study plan).
     func recordFlip(_ card: StudyCard, knew: Bool, for plan: ExamPlan) {
         studyCards?.mark(card.id, right: knew)
+        noteQuizAnswer() // A38
         let concept = FlipDeck.concept(for: card, topics: plan.topics)
         conceptStats.record(concept, right: knew)
         conceptStats.save()

@@ -10,21 +10,37 @@ struct SettingsView: View {
     @AppStorage("settings.showsAdvanced") private var showsAdvanced = false
     /// A19 (K17): the study plan's reminders; Aron wants them, and they can be turned off.
     @AppStorage(LumenNotifications.enabledKey) private var studyReminders = true
+    /// A38: the reminder's time, minutes after midnight.
+    @AppStorage(LumenNotifications.timeKey) private var reminderMinutes = LumenNotifications.planHour * 60
 
     /// A13.1: what a student changes first, at the top; the technical parts folded under "Avancerat"; licences and
     /// technical explanations in "Om appen". Nothing is removed.
+    /// The time as a date today, for the picker; a change reschedules the reminders.
+    private var reminderTime: Binding<Date> {
+        Binding {
+            Calendar.current.date(bySettingHour: reminderMinutes / 60, minute: reminderMinutes % 60, second: 0, of: Date()) ?? Date()
+        } set: { date in
+            let parts = Calendar.current.dateComponents([.hour, .minute], from: date)
+            reminderMinutes = (parts.hour ?? 16) * 60 + (parts.minute ?? 0)
+            Task { await model.refreshStudyPlan() }
+        }
+    }
+
     var body: some View {
         Form {
             // Vanliga
             voiceSection
             answerSection
             Section {
-                Toggle("Påminn om dagens pluggpass", isOn: $studyReminders)
+                Toggle("Påminn mig varje dag", isOn: $studyReminders)
                     .onChange(of: studyReminders) { _, on in Task { await model.refreshStudyPlan(askForReminders: on) } }
+                if studyReminders {
+                    DatePicker("Tid", selection: reminderTime, displayedComponents: .hourAndMinute)
+                }
             } header: {
                 Text("Påminnelser")
             } footer: {
-                Text("Kl. 16 de dagar planen fram till provet har ett pass, till exempel ”10 minuter biologi i dag”.")
+                Text("En gång om dagen: dagar kvar till provet och 5 snabba frågor. Ingen påminnelse de dagar du redan har övat.")
             }
             Section {
                 NavigationLink("Röstkommandon") { VoiceCommandsView(store: model.phrases, music: model.music, voice: model.speaker.settings, tips: model.tips) }

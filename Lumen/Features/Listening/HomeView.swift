@@ -81,6 +81,7 @@ struct HomeView: View {
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
             Spacer()
+            if model.streak.current > 0 { StreakBadge(streak: model.streak) }
             IconButton(systemName: "gearshape", label: "Inställningar") { model.isShowingSettings = true }
         }
     }
@@ -116,7 +117,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(today).font(LumenFont.text(16, .semibold))
                     if model.canAskForReminders {
-                        Button("Påminn mig om passen kl. 16") { Task { await model.refreshStudyPlan(askForReminders: true) } }
+                        Button("Påminn mig kl. \(LumenNotifications.timeText())") { Task { await model.refreshStudyPlan(askForReminders: true) } }
                             .font(LumenFont.text(15, .semibold))
                             .frame(minHeight: 44)
                     }
@@ -359,6 +360,29 @@ struct MoreModesSheet: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } }
             }
         }
+    }
+}
+
+/// A38 (K31): the streak, small, next to the settings: a flame and the number of days in a row (SYSTEM.md badge,
+/// `soft` and blue). While today's question is not done the flame is hollow and VoiceOver says what keeps it.
+struct StreakBadge: View {
+    let streak: QuizDays.Streak
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: streak.doneToday ? "flame.fill" : "flame")
+                .font(.system(size: 15, weight: .semibold))
+            Text("\(streak.current)")
+                .font(LumenFont.text(16, .bold, relativeTo: .subheadline))
+                .monospacedDigit()
+        }
+        .foregroundStyle(LumenColor.blue)
+        .padding(.horizontal, 12)
+        .frame(minHeight: 36)
+        .background(LumenColor.soft, in: Capsule())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(streak.current == 1 ? "Svit: 1 dag" : "Svit: \(streak.current) dagar i rad")
+        .accessibilityHint(streak.doneToday ? "Dagens fråga är gjord" : "Gör en förhörsfråga i dag, annars börjar sviten om")
     }
 }
 
