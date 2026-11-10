@@ -69,6 +69,14 @@ const EXCEPT = [
   String.raw`kms (?:lol|haha|xd|asså det var)`,
   String.raw`(?:min |mitt |den |det )?(?:telefon|mobil|dator|laptop|bil|batteri|cykel|växt|blomma|router|skrivare|tv|surfplatta|ipad|iphone)\p{L}* (?:vill|orkar|klarar) inte (?:leva|leva längre|leva mer)`,
   String.raw`(?:om|hos|bland|kring|angående) (?:\p{L}+ )?självmordstankar`,
+  // everyday idioms that carry no risk at all (removed before the risk words are counted)
+  String.raw`(?:dör|dog|döden|kommer dö|kommer att dö) (?:om jag inte får|av \p{L}+|i spelet|i minecraft|i fortnite)`,
+  String.raw`döda (?:den här |den |en )?(?:bossen|boss|zombien|draken|fienden|monstret)`,
+  String.raw`(?:vill|ska) (?:bara )?försvinna under täcket`,
+  String.raw`(?:vill|ville) dö av \p{L}+`,
+  String.raw`leva med att (?:ha fel|förlora|vara)`,
+  String.raw`(?:låten|boken|filmen|serien|dikten|spelet) (?:heter|hette) [\p{L} ]+`,
+  String.raw`vill du dö`,
 ];
 
 /** Words that may be about the speaker's life or harm: first person plus one of these = ask the small model. */
@@ -83,12 +91,12 @@ export type CrisisLevel = "strong" | "weak" | null;
 export function crisisLevel(text: string): CrisisLevel {
   const t = (text ?? "").toLowerCase().replace(/[,.!?;:]+/g, " ").replace(/\s+/g, " ").trim();
   if (!t) return null;
-  if (STRONG_RE.test(t)) {
-    // an everyday reading: strong only if a clear sign is left once it is removed
-    const rest = t.replace(EXCEPT_G, " ");
-    return STRONG_RE.test(rest) ? "strong" : "weak";
-  }
-  return FIRST.test(t) && RISK.test(t) ? "weak" : null;
+  // an everyday reading is removed first: strong only if a clear sign is left; weak if risk words are left
+  const rest = t.replace(EXCEPT_G, " ");
+  if (STRONG_RE.test(rest)) return "strong";
+  if (FIRST.test(rest) && RISK.test(rest)) return "weak";
+  // a strong pattern that only an everyday reading explains: the check decides (never silence by itself)
+  return STRONG_RE.test(t) ? "weak" : null;
 }
 
 /** "min kompis säger att han inte vill leva": about someone else, so the user gets the line on how to help. */
@@ -104,7 +112,7 @@ export function isCrisis(text: string): boolean {
 
 /** The yes/no check for a weak hit (small model, a few tokens). */
 export const CRISIS_CHECK_PROMPT =
-  `You check ONE utterance that a young person (13-19) said, picked up by a microphone. Does the SPEAKER express thoughts of suicide, of not wanting to live, of wanting to die or disappear for good, or of hurting themself, now or recently? Answer "ja" for any such sign, also when it is said casually, with slang, in passing or half as a joke. Answer "nej" for everyday figures of speech ("dör av skratt", "provet tar livet av mig"), wishes about where or how to live, dying old one day, cutting food or shaving, books, songs, school work and other people's stories. When unsure, answer "ja". Reply with one word: ja or nej.`;
+  `You check ONE utterance that a young person (13-19) said, picked up by a microphone. Does the SPEAKER express thoughts of suicide, of not wanting to live, of wanting to die or disappear for good, or of hurting themself, now or recently? Answer "ja" for any such sign, also when it is said casually, with slang, in passing or half as a joke. Answer "nej" for everyday figures of speech and exaggerations ("dör av skratt", "jag dör om jag inte får mat", "provet tar livet av mig", "jag vill dö av skam", "jag kan inte leva med att ha fel", "jag vill bara försvinna under täcket idag"), wishes about where or how to live, dying old one day, games, cutting food or shaving, titles of books and songs, school work and other people's stories in the news or history. Answer "ja" when the words could mean that the speaker does not want to live or wants to hurt themself and nothing in the sentence makes it an everyday expression. Reply with one word: ja or nej.`;
 
 export function crisisVerdict(reply: string): boolean {
   return !/^\s*nej\b/iu.test(reply);

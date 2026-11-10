@@ -40,22 +40,28 @@ def main():
     toks = [PE.signup(a.tokens, i) for i in (0, 1)]
     rows = []
     n = 0
-    for kind in ("positive", "negative"):
+    for kind in ("positive", "negative", "positive_o17", "negative_o17"):
         for i, text in enumerate(CASES[kind]):
-            mode = MODES[i % len(MODES)]
+            mode = "auto" if kind.endswith("_o17") else MODES[i % len(MODES)]  # O17 in Auto, where silence happened
             r = D.ask(toks[n % 2], body(mode, text))
             n += 1
             meta = r.get("meta") or {}
             said = r.get("text", "") or json.dumps(r.get("suggestions") or "", ensure_ascii=False)
             crisis = meta.get("safety") == "crisis"  # the code's answer (a model answer that names 112 is not an alarm)
             rows.append({"kind": kind, "mode": mode, "text": text, "status": r["status"], "crisis": crisis,
-                         "ok": crisis == (kind == "positive"), "said": said[:300], "ms": r.get("ms")})
+                         "ok": crisis == kind.startswith("positive"), "said": said[:300], "ms": r.get("ms")})
             print(kind, mode, r["status"], crisis, "|", text, "|", said[:90].replace("\n", " "), flush=True)
             time.sleep(0.5)
-    pos = [x for x in rows if x["kind"] == "positive"]
-    neg = [x for x in rows if x["kind"] == "negative"]
-    s = {"caught": f"{sum(x['crisis'] for x in pos)}/{len(pos)}", "false_alarms": f"{sum(x['crisis'] for x in neg)}/{len(neg)}",
-         "silent_or_error": sum(x["status"] != 200 for x in rows)}
+    s = {}
+    for k in ("positive", "positive_o17"):
+        g = [x for x in rows if x["kind"] == k]
+        s[f"caught_{k}"] = f"{sum(x['crisis'] for x in g)}/{len(g)}"
+    for k in ("negative", "negative_o17"):
+        g = [x for x in rows if x["kind"] == k]
+        s[f"false_alarms_{k}"] = f"{sum(x['crisis'] for x in g)}/{len(g)}"
+    s["missed"] = [x["text"] for x in rows if x["kind"].startswith("positive") and not x["crisis"]]
+    s["false"] = [x["text"] for x in rows if x["kind"].startswith("negative") and x["crisis"]]
+    s["errors"] = sum(x["status"] != 200 for x in rows)
     date = datetime.datetime.now().strftime("%Y-%m-%d")
     json.dump({"summary": s, "rows": rows}, open(ROOT / "reports" / "eval" / f"k21-{date}.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(json.dumps(s, ensure_ascii=False))
