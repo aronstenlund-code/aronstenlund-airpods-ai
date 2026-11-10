@@ -6,7 +6,7 @@ import { COMMAND_FAMILIES, commandTask, detectRule, normalizeCommand, socialRequ
 import { requestedCount } from "./rizz.ts";
 
 // three spoken variants per task (K9: "3 varianter per task")
-const VARIANTS: Record<string, [string, "study" | "interview" | "social", string[]]> = {
+const VARIANTS: Record<string, [string, "study" | "interview" | "social" | "fun", string[]]> = {
   example: ["example", "study", ["Lumen, ge ett exempel", "kan du ge mig ett exempel tack", "har du något exempel?"]],
   summary: ["summary", "study", ["sammanfatta det viktigaste", "Lumen, summera", "vad är det viktigaste"]],
   a_level: ["a_level", "study", ["förklara på a-nivå", "Lumen, som ett A-svar", "hur får jag ett A på det här"]],
