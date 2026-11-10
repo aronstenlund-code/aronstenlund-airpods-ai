@@ -2,7 +2,7 @@ import SwiftUI
 
 /// D86 screen 2: "Lägg till prov". Grade, area → subject, a real date, optionally what is on the exam, or say it.
 /// Several exams are kept (`ExamPlanStore`); saving one makes it Provläge's profile.
-/// A23 (Kelly Ke9, PLAN 2b): in the first start it is "Har du prov snart?": the voice first (Lumen already listens),
+/// A22 (Kelly Ke9, PLAN 2b): in the first start it is "Har du prov snart?": the voice first (Lumen already listens),
 /// then one row of subjects, the date and the grade on one line each (the grade remembered), "Inte nu" to skip.
 /// The full form stays for "Lägg till prov" from Start and for editing.
 struct AddExamView: View {
@@ -27,14 +27,14 @@ struct AddExamView: View {
 
     @State private var pickedSubject = false
 
-    /// The first start's short form (A23).
+    /// The first start's short form (A22).
     private var isQuick: Bool { isFirstStart && editing == nil }
 
     var body: some View {
         if isQuick { quickBody } else { fullBody }
     }
 
-    // MARK: A23 the first start: "Har du prov snart?"
+    // MARK: A22 the first start: "Har du prov snart?"
 
     private static let quickAreas: [ExamPlan.Area] = [.matte, .no, .so, .sprak, .annat]
 
@@ -289,7 +289,7 @@ struct AddExamView: View {
         switch area {
         case .matte: "Matematik"
         case .annat: otherSubject.trimmingCharacters(in: .whitespacesAndNewlines)
-        default: subject.isEmpty ? area.title : subject // A23: "NO" until Provläge knows more
+        default: subject.isEmpty ? area.title : subject // A22: "NO" until Provläge knows more
         }
     }
 

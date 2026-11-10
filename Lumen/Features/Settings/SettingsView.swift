@@ -166,7 +166,7 @@ struct SettingsView: View {
     private var studyProfileSection: some View {
         @Bindable var store = model.studyProfile
         Section {
-            // A22 (Deangelo): no "Inget prov just nu" switch; exams are added and removed on Start.
+            // A23 (Deangelo): no "Inget prov just nu" switch; exams are added and removed on Start.
             DatePicker("Provdatum", selection: examBinding, displayedComponents: .date)
                 .environment(\.locale, Locale(identifier: "sv_SE"))
             Picker("Årskurs", selection: $store.profile.grade) {
@@ -198,7 +198,7 @@ struct SettingsView: View {
         Binding(get: { model.studyProfile.profile.examDate ?? Date() },
                 set: {
                     model.studyProfile.profile.examDate = Calendar.current.startOfDay(for: $0)
-                    model.studyProfile.profile.noExam = false // A22: a date means there is an exam
+                    model.studyProfile.profile.noExam = false // A23: a date means there is an exam
                 })
     }
 
@@ -401,7 +401,7 @@ struct SettingsView: View {
                     Text(choice.name).tag(choice)
                 }
             }
-            // A22 (Deangelo): a plain row, not a floating chip.
+            // A23 (Deangelo): a plain row, not a floating chip.
             Button {
                 model.previewVoice()
             } label: {
@@ -413,7 +413,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            // A22: words, not "1.00×".
+            // A23: words, not "1.00×".
             Picker("Hastighet", selection: Binding(get: { SpeedChoice.nearest(to: voice.rate) },
                                                    set: { voice.rate = $0.rate; model.speaker.applyRate() })) {
                 ForEach(SpeedChoice.allCases, id: \.self) { Text($0.title).tag($0) }
@@ -447,7 +447,7 @@ struct SettingsView: View {
     }
 }
 
-/// A22 (Deangelo): the voice speed in words. The stored rate stays a number (0.5…2.0); A20's learned pace multiplies it.
+/// A23 (Deangelo): the voice speed in words. The stored rate stays a number (0.5…2.0); A20's learned pace multiplies it.
 enum SpeedChoice: CaseIterable, Hashable {
     case slow, normal, fast
 

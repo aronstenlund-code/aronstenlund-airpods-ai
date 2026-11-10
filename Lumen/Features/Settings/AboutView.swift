@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A13.1: Inställningar › Mer › Om appen: the promises and one line about the AI server. A22 (Deangelo): the licences
+/// A13.1: Inställningar › Mer › Om appen: the promises and one line about the AI server. A23 (Deangelo): the licences
 /// moved one level down, to "Licenser". The full texts are in `THIRD_PARTY_NOTICES.md` and in the app bundle.
 struct AboutView: View {
     var body: some View {

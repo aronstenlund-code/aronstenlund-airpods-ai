@@ -1594,16 +1594,25 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         logLiveTurn()
     }
 
+    /// The voice has taken the last sentence. Its sound may still be playing for many seconds (Toby T7: 2.8–13.3 s),
+    /// so everything that waits for the student (the "Mer?" window, a tip, a nod, a waiting question) starts when the
+    /// recogniser opens again, in `recognizerOpenAfterSpeech` (A21/T7).
     private func speechFinished() {
         controller.playback.stopRecordingSpeech()
         if study.isActive, finishSingleTurn() { return }
         reopenRecognizerAfterSpeech()
-        listenForHeadAnswerIfAsked()
+    }
+
+    /// Lumen's sound is over and the recogniser hears again: now the student can answer (Toby T7 findings 1–2).
+    private func recognizerOpenAfterSpeech(askedNext: Bool) {
+        if !askedNext {
+            listenForHeadAnswerIfAsked()
+            silentQuizAfterSpeech()
+            watchForNoteTaking()
+            scheduleTip()
+            offerMoreIfShort()
+        }
         if !study.isActive { askWaitingQuestionIfIdle() }
-        silentQuizAfterSpeech()
-        watchForNoteTaking()
-        scheduleTip()
-        offerMoreIfShort()
     }
 
     /// A8: a question that waited (cooldown, Lumen speaking, or split from the same utterance) goes now that the
@@ -1678,7 +1687,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             guard !Task.isCancelled, !self.speaker.isSpeaking else { return } // A21.3: the safety timer opens it then
             self.ownSpeechEnded()
             self.transcription.setInputGated(false)
-            if self.study.isActive, !self.askNextStudyPart() { self.study.resumeListening() }
+            var askedNext = false
+            if self.study.isActive {
+                askedNext = self.askNextStudyPart()
+                if !askedNext { self.study.resumeListening() }
+            }
+            self.recognizerOpenAfterSpeech(askedNext: askedNext)
         }
     }
 
@@ -1823,11 +1837,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             + "(playback speaking \(controller.playback.isSpeaking), speaker speaking \(speaker.isSpeaking)) (A21)")
         ungateTask?.cancel()
         transcription.setInputGated(false)
-        if study.isActive {
-            if study.phase != .listening, !askNextStudyPart() { study.resumeListening() }
-        } else {
-            askWaitingQuestionIfIdle()
+        var askedNext = false
+        if study.isActive, study.phase != .listening {
+            askedNext = askNextStudyPart()
+            if !askedNext { study.resumeListening() }
         }
+        recognizerOpenAfterSpeech(askedNext: askedNext)
     }
 
     /// Settings → Ekoreducering changed: a running session follows at once.
