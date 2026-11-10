@@ -164,3 +164,8 @@ Risker kvar mot checklistan: A på pappret (punkt 32, betygslöfte), fråga bako
 ## 22:20 Läshastighet (v7, 39 s)
 Mätt tecken per sekund per undertext (gräns ca 15 för unga tittare, minst ca 1 s per text). Fel i v6: intervjufrågan 31 tkn/s (0,9 s), köks-AI 21, "Påminnelse: drick vatten" 23, "Sammanfatta mejlet" 19, tre repliker 17.
 Åtgärd: intervjufrågan ligger kvar hela glimten ("Intervjuaren: Vad är din största svaghet?") ovanför AI-svaret; köks-AI förkortad till "Rosta en macka med ost och ägg." (tar också bort sömnpåståendet; ElevenLabs-texten uppdaterad); repliker visas längre; glimtarna vägbeskrivning 1,2 s, mejlet och vatten 1,3 s; "Drick vatten"; slutbilden 3,5 s; etiketten "AI i örat" större (46 px). Kvar på gränsen: två repliker ca 16 tkn/s (styrs av talet).
+
+## 22:30 v8 (36,3 s): brödskivan blev två
+- I köksklippet blir den enda skivan två i brödrosten 6,2–6,35 s (efter landningen). Brödklippet börjar därför med två skivor och två hoppar upp.
+- Åtgärd utan krediter: köket klipps när skivan är i luften (före landningen), brödklippet borttaget, montaget följer direkt, slutbilden bakgrund från köket med en skiva.
+- Om brödet som hoppar upp ska tillbaka: redigera startbilden i Flow till en skiva (gratis bildredigering) och generera om (15 krediter, tidigast när krediterna fylls på).
