@@ -1,6 +1,6 @@
 # Oscar O25: Oberoende test av K22 (riktiga användares frågor in i repot): integritet, offline
 
-Datum: 2026-11-10, 10:52–11:00
+Datum: 2026-11-10, 10:50–10:54
 Uppgift: stående uppgift (PLAN 2b), test av den senaste klara K-punkten som saknar O-punkt. Kevin skrev "Oscar granskar" i `reports/2026-11-10-1050-kevin-k22-real-users-and-credit-runs.md`.
 Skript: `scripts/qa/o25_k22_privacy.py`. Det kör Kevins `scripts/real_users.py` (`scrub`, `sensitive`, `run`) på påhittade data, utan nät och utan modell, och kostar 0 USD.
 Rådata: `reports/qa/data/2026-11-10-1054-o25-k22-privacy.json`
