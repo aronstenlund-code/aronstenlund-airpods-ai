@@ -30,11 +30,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-{"@type":"Question","name":"Hur kan jag plugga inför prov utan att titta på telefonen?","acceptedAnswer":{"@type":"Answer","text":"Lägg in provet, starta Provläget och fråga högt. Svaret läses upp i hörlurarna medan telefonen ligger i fickan."}},
-{"@type":"Question","name":"Kan jag bli förhörd inför ett prov?","acceptedAnswer":{"@type":"Answer","text":"Ja. I Provläget kan du få en pedagogisk förklaring och en kontrollfråga på vägen."}},
-{"@type":"Question","name":"Funkar det för nationella provet och A-nivå?","acceptedAnswer":{"@type":"Answer","text":"Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}},
-{"@type":"Question","name":"Kan jag prova utan att ladda ner något?","acceptedAnswer":{"@type":"Answer","text":"Ja, du kan prova demon direkt på sidan. Appen är inte ute än, men du kan skriva upp dig på väntelistan."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Säg vilket prov du har och sedan ”Lumen, förhör mig”. Lumen ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan."}}, {"@type": "Question", "name": "Kan jag bli förhörd inför ett prov?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Säg ”Lumen, förhör mig” i Provläget, så ställer Lumen frågor om det du pluggar och kan ge en kontrollfråga på vägen."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
 <style>
   /* D86: samma typsnitt och färger som appen. Familjen Grotesk överallt, Kalam (handstil) bara för frågor. */
   @font-face {
@@ -591,6 +587,10 @@
   .acc .ex-list { margin-top: 0; max-width: none; color: var(--ink); }
   .modes-list li { padding: 6px 0; }
   .modes-list b { color: var(--ink); }
+  .faq { padding-bottom: 18px; max-width: 60ch; }
+  .faq dt { font-weight: 600; color: var(--ink); margin-top: 12px; }
+  .faq dt:first-child { margin-top: 0; }
+  .faq dd { margin: 4px 0 0; color: var(--mut); }
   .steps { display: grid; gap: 14px; margin-top: 24px; counter-reset: st; }
   .steps li { counter-increment: st; padding: 18px 18px 18px 64px; position: relative; }
   .steps li::before { content: counter(st); position: absolute; left: 18px; top: 16px; width: 34px; height: 34px; border-radius: 50%; background: var(--blue); color: var(--on-blue); display: grid; place-items: center; font-weight: 700; }
@@ -640,7 +640,7 @@
         <div class="a" id="a" aria-live="polite" tabindex="-1"></div>
         <p class="note" id="note" role="status" hidden></p>
         <form class="nudge" id="nudge" novalidate hidden>
-          <p class="nudge-h" id="mini-h">Ladda ner appen för att använda den med låst skärm och i alla lägen. Den är inte ute än, så vi mejlar när den finns.</p>
+          <p class="nudge-h" id="mini-h">Vill du ha appen? Den är inte ute än, så vi mejlar när den finns.</p>
           <div class="mini-row">
             <label class="sr" for="miniemail">E-post</label>
             <input id="miniemail" type="email" name="email" placeholder="Din e-post" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="send" aria-describedby="mini-h minimsg">
@@ -788,6 +788,15 @@
           <li><b>Socialt.</b> Förslag på skämt, svar och följdfrågor när samtalet går trögt.</li>
           <li><b>Rizz 18+.</b> Charmiga förslag när du flirtar. Bara för dig som är 18 år eller äldre.</li>
         </ul>
+      </details>
+      <details>
+        <summary>Vanliga frågor</summary>
+        <dl class="faq">
+          <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Säg vilket prov du har och sedan ”Lumen, förhör mig”. Lumen ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan.</dd>
+          <dt>Kan jag bli förhörd inför ett prov?</dt><dd>Ja. Säg ”Lumen, förhör mig” i Provläget, så ställer Lumen frågor om det du pluggar och kan ge en kontrollfråga på vägen.</dd>
+          <dt>Funkar det för nationella provet och A-nivå?</dt><dd>Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok.</dd>
+          <dt>Kan jag prova utan att ladda ner något?</dt><dd>Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns.</dd>
+        </dl>
       </details>
     </div>
   </section>
@@ -1379,7 +1388,7 @@ async function joinList(email, version, btn, msgId, onOk) {
 const okEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 
 // Raden i demon efter svaret. Egen version, eftersom texten skiljer sig från stora formuläret.
-const CONSENT_VERSION_ROW = "2026-11-08-rad";
+const CONSENT_VERSION_ROW = "2026-11-10-rad";   // Ke11: radens text ändrad
 $("miniemail").addEventListener("input", () => waitMsg("", false, "minimsg"));
 $("nudge").addEventListener("submit", (e) => {
   e.preventDefault();
