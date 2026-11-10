@@ -2132,6 +2132,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func logResources(from: ResourceSample, to: ResourceSample) {
         var line = "Resources · " + ResourceSample.line(from: from, to: to)
+        if let first = resources.first, let session = ResourceSample.sessionLine(from: first, to: to) {
+            line += " · " + session // A47 (D121): battery per hour over the whole session
+        }
         if let speakers {
             let stats = speakers.takeStats()
             line += " · voice \(stats.count) embeddings, avg \(Int(stats.averageMs)) ms"

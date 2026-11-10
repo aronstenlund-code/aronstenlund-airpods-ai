@@ -188,7 +188,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-10 20:19 → reports/2026-11-10-angela-a46-flip-cards.md **A46 – Vändkort i tyst läge (N6)** (effort: medium). Gör medan A38/A43 väntar på Kevin. Studiekorten som kort att trycka igenom (fråga → tryck → svar → kunde / kunde inte), från provkortet. Resultatet räknas som förhörssvar. Följ SYSTEM.md, Kelly granskar.
 
-- [ ] **A47 – Kontrollera att D121 stämmer** (effort: medium). Verifiera och rapportera (simulator + Aron på telefon): lyssnar Lumen efter "Lumen …" hela tiden medan den är startad, även med låst skärm och i bakgrunden i flera timmar? Hur mycket batteri per timme? Rätta det som inte håller, så att annonsens löfte stämmer.
+- [ ] pågår 2026-11-10 23:08 (Angela) **A47 – Kontrollera att D121 stämmer** (effort: medium). Verifiera och rapportera (simulator + Aron på telefon): lyssnar Lumen efter "Lumen …" hela tiden medan den är startad, även med låst skärm och i bakgrunden i flera timmar? Hur mycket batteri per timme? Rätta det som inte håller, så att annonsens löfte stämmer.
 
 - [ ] **A48 – Telefonverktyg för agenten (D122)** (effort: high). Beror på: K35 (protokollet). Kalender och påminnelser (EventKit), timer/larm (AlarmKit, iOS 26), anteckningar i appen. Behörighet frågas första gången verktyget behövs, inte vid start. Lumen bekräftar innan något läggs in. Testbart i simulatorn med påhittade händelser.
 
