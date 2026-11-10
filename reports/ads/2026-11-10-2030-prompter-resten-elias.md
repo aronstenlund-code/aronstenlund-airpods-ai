@@ -132,3 +132,7 @@ Trappan gick fel för att prompten bad om rörelser som inte stämde med startbi
 - Låst att köket inte ändras (hyllor, fönster, skåp, växter), brödrosten vänster, brödet höger, inga andra personer. Det är just sådant som gick fel i hallen.
 - Startbilden i Flow är sista bildrutan från hallklippet (reports/ads/media/elias-kok-start.jpg), så köket hänger ihop med hallen.
 - Kvar som risk: spaken på brödrosten syns inte i startbilden, så AI:n måste hitta på den. Om det ser konstigt ut klipper jag innan han trycker.
+
+## 20:45 Köksklippet klart i Flow, brödklippet förberett
+- V1 genererat i Flow (720p, 8 s, 24 krediter). Ingen synlig vattenstämpel i spelaren (kontrollera i nedladdad fil). Sista bildrutan: två skivor i brödrosten (AI:n la i två), köket oförändrat, hörluren syns.
+- V2 anpassad: båda skivorna hoppar upp, han lyfter ur en. Startbild = sparad sista bildruta från V1 i Flow. 5 s, 15 krediter (11 kvar i dag).
