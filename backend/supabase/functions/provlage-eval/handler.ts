@@ -233,8 +233,9 @@ export function createEvalHandler(deps: EvalDeps) {
             const j = await r.json();
             return json({ text: String(j.text ?? "").trim(), model });
           }
-          last = `${model}: HTTP ${r.status}`;
-          await r.body?.cancel();
+          // the provider's reason (never the key), so a 403 can be told apart (permission, plan, logging)
+          const why = (await r.text().catch(() => "")).replace(/\s+/g, " ").slice(0, 200);
+          last = `${model}: HTTP ${r.status} ${why}`.trim();
           if (r.status !== 400 && r.status !== 422) break; // only an unknown model is retried
         }
         throw new HttpError(502, "stt_failed", `batch transcription failed (${last})`);
