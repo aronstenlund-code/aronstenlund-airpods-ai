@@ -115,14 +115,14 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   4. Om ljudet är äldre än 120 s läses samma **text** upp igen via TTS, utan att något nytt svar genereras.
   5. Uppdatera `docs/COMMANDS.md`. Tester: varje regel, ett "igen" från en annan röst, "gör det igen sen" mitt i en vanlig mening efter 2 minuter (ingen träff), och brus plus "igen" efter 20 s (träff).
 
-- [~] pågår 2026-11-09 22:50 (rättad, väntar på CI) **A21 – Tobys T5-fynd: tappade frågor och döv mikrofon** (effort: high). Gör nu, före A18. Underlag: `reports/apptest/2026-11-09-2150-toby-t5-retest.md`, "Fynd (till Angela)". Simulator, **ej verifierat på enhet**.
+- [x] klar 2026-11-10 08:35 → reports/2026-11-10-angela-a21-t5-findings.md **A21 – Tobys T5-fynd: tappade frågor och döv mikrofon** (effort: high). Gör nu, före A18. Underlag: `reports/apptest/2026-11-09-2150-toby-t5-retest.md`, "Fynd (till Angela)". Simulator, **ej verifierat på enhet**.
   1. **Segment som kommer medan en tur pågår köas som egna turer** (Provläge: fyra frågor i ett andetag gav en tur, tre tappades, och "I framtiden ska du svara kortare" sparades inte).
   2. **Svar i förväg på en halv fråga:** ett mycket kort yttrande som slutar mitt i tanken ("Vilka är de största?") väntar på pausen. Kommer en fortsättning ersätter den svaret, trots att D82 stänger igenkänningen när Lumen pratar.
   3. **Mikrofonen öppnas inte efter ett långt svar** ("STT input gated (own speech)" utan "STT input open", 106 s döv). Säkerhetsspärr: om uppläsningen inte rapporterat slut inom beräknad längd + 2 s öppnas igenkänningen ändå och det loggas.
   4. **6–17 s väntan när svaret i förväg kastas:** en fråga får inte vänta på att Scribe-sessionen stängs; ställ den vid pausen.
   5. (Fynd 5, långa svar i Frågor, hör till Kevins K13.) Be Toby köra om T5 när du är klar.
 
-- [ ] **A23 – Snabba proffsfixar (före A18; heter A23 eftersom A22 blev din stående uppgift) som inte väntar på designsystemet** (effort: medium). Gör efter A21, före A18. Aron 2026-11-10: appen ska inte se ut som en vibe-kodad app. Skärmbilder före/efter (ljust, mörkt, SE) i rapporten.
+- [x] klar 2026-11-10 08:35 → reports/2026-11-10-angela-a23-quick-pro-fixes.md **A23 – Snabba proffsfixar (före A18; heter A23 eftersom A22 blev din stående uppgift) som inte väntar på designsystemet** (effort: medium). Gör efter A21, före A18. Aron 2026-11-10: appen ska inte se ut som en vibe-kodad app. Skärmbilder före/efter (ljust, mörkt, SE) i rapporten.
   1. Om appen: licenslistan (Silero, WeSpeaker, pyannote, fastcluster …) flyttas till en undersida "Licenser" längst ner. Om appen visar bara löftena och en rad om AI-servern.
   2. Inställningar: brytaren "Inget prov just nu" bort (proven hanteras på Start); hastighet visas som "Långsam / Normal / Snabb" i stället för "1.00×"; "Provlyssna" som vanlig rad, inte ett flytande chip; röstens namn med beskrivning ("Svensk, lugn") när K14:s röster finns.
   3. Start (D97, ägarbeslut): provkortet får **två** knappar: **"Förhör mig"** (Lumen ställer frågor och svarar på elevens egna) och **"Få A-svar till provet"** (svarar bara på frågor, förhör aldrig). Byt inte namnen. Mikrofonknapparna på provraderna bort (raden öppnar provet); instruktionsraden längst ner bort (tips visas en gång i Lyssnar i stället).
@@ -136,8 +136,8 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   2. Sammanfattningen vid "avsluta" läses upp och sparas som studiekort.
   3. En länk från K19 kommer som notis och i sessionslistan, och öppnas i Safari.
 
-- [~] pågår 2026-11-10 07:50 (byggd, väntar på CI) **A20 – Talet anpassar sig och tyst förhör** (effort: medium). Godkänt av Aron.
+- [x] klar 2026-11-10 08:35 → reports/2026-11-10-angela-a20-pace-silent-quiz.md **A20 – Talet anpassar sig och tyst förhör** (effort: medium). Godkänt av Aron.
   1. **Taltempo:** säger eleven ofta "igen"/"va?" eller "långsammare", eller om eleven antecknar (lång tystnad efter svar i Provläge), sänks talhastigheten stegvis (1,0 → 0,9 → 0,85) i det sammanhanget och sparas som inlärd inställning. "Snabbare" går tillbaka. Visas i Minne.
   2. **Tyst förhör:** i läget "Tyst förhör" (Provläge, t.ex. i kollektivtrafik) ställer Lumen ja–nej- eller flervalsfrågor och eleven svarar med nick eller skakning (D86-huvudspårning), utan att prata. Tydlig start och avslutning.
 
-- [~] pågår 2026-11-10 08:00 (byggd, väntar på CI) **A23 – Stående uppgift (PLAN 2b): "Har du prov snart?" i första starten** (effort: medium). Egen punkt enligt 2b. Kellys `docs/design/enkel-start.md` (Ke9, bilden `prov-fore-efter.png`): första starten frågar "Har du prov snart?" med rösten först (Lumen lyssnar redan), ämne som en rad (Matte, NO, SO, Språk, Annat; delämne valfritt), datum och årskurs på en rad var, "Inte nu". Hela formuläret finns kvar för "Lägg till prov" från Start och för att ändra ett prov.
+- [x] klar 2026-11-10 08:35 → reports/2026-11-10-angela-a22-first-start-exam.md **A22 – Stående uppgift (PLAN 2b): "Har du prov snart?" i första starten** (effort: medium). Egen punkt enligt 2b. Kellys `docs/design/enkel-start.md` (Ke9, bilden `prov-fore-efter.png`): första starten frågar "Har du prov snart?" med rösten först (Lumen lyssnar redan), ämne som en rad (Matte, NO, SO, Språk, Annat; delämne valfritt), datum och årskurs på en rad var, "Inte nu". Hela formuläret finns kvar för "Lägg till prov" från Start och för att ändra ett prov.
