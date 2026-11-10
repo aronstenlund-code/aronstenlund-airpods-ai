@@ -125,7 +125,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [ ] **A22 – Snabba proffsfixar som inte väntar på designsystemet** (effort: medium). Gör efter A21, före A18. Aron 2026-11-10: appen ska inte se ut som en vibe-kodad app. Skärmbilder före/efter (ljust, mörkt, SE) i rapporten.
   1. Om appen: licenslistan (Silero, WeSpeaker, pyannote, fastcluster …) flyttas till en undersida "Licenser" längst ner. Om appen visar bara löftena och en rad om AI-servern.
   2. Inställningar: brytaren "Inget prov just nu" bort (proven hanteras på Start); hastighet visas som "Långsam / Normal / Snabb" i stället för "1.00×"; "Provlyssna" som vanlig rad, inte ett flytande chip; röstens namn med beskrivning ("Svensk, lugn") när K14:s röster finns.
-  3. Start: "Få A-svar till provet" → "Förhör mig"; mikrofonknapparna på provraderna bort (raden öppnar provet); instruktionsraden längst ner bort (tips visas en gång i Lyssnar i stället).
+  3. Start (D97, ägarbeslut): provkortet får **två** knappar: **"Förhör mig"** (Lumen ställer frågor och svarar på elevens egna) och **"Få A-svar till provet"** (svarar bara på frågor, förhör aldrig). Byt inte namnen. Mikrofonknapparna på provraderna bort (raden öppnar provet); instruktionsraden längst ner bort (tips visas en gång i Lyssnar i stället).
   4. Lyssnar: "Avsluta" i neutral färg (rött bara vid fel); "Fortsätt" heter "Lyssna igen" när den är pausad och syns inte när den lyssnar.
   5. Ingen ny funktion. Kelly granskar bilderna (PLAN 2c).
 
