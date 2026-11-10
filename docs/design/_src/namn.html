@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<title>Namn och logga (Ke23)</title>
+<!-- Kelly, Ke23 (2026-11-10). Varje namnkandidat (D117) ihop med Arons sex ChatGPT-förslag (Ke24), på en hemskärm.
+     Ikonerna är utklipp ur docs/design/logo/chatgpt-forslag-2026-11-10.jpg, inte omritade (Ke24 väntar på Arons nummer).
+     Rendera från repots rot: python -m http.server 8790, sedan Chrome headless
+     --window-size=1600,1900 ".../docs/design/_src/namn.html"  (?s=storlek för storleksbladet) -->
+<style>
+  @font-face { font-family: "Familjen Grotesk"; src: url("../../../site/fonts/familjen-grotesk.woff2") format("woff2"); font-weight: 400 700; }
+  :root { --bg:#FFFFFF; --surface:#F4F6FA; --ink:#141A2E; --mut:#5E6779; --line:#E4E8EF; --blue:#2346C8; --soft:#EAF0FF; --red:#D9342B;
+          --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 20px rgba(16,24,40,.07); }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Familjen Grotesk", system-ui, sans-serif; background: #E9EDF3; color: var(--ink); padding: 40px; width: 1600px; }
+  h1 { font-size: 34px; font-weight: 700; letter-spacing: -.01em; }
+  .sub { color: var(--mut); font-size: 17px; margin-top: 6px; line-height: 1.4; max-width: 1300px; }
+  .row { display: grid; grid-template-columns: 430px 1fr; gap: 28px; background: var(--bg); border-radius: 20px; box-shadow: var(--shadow); padding: 26px 28px; margin-top: 22px; align-items: center; }
+  .name { font-size: 46px; font-weight: 700; letter-spacing: -.02em; line-height: 1; }
+  .mean { color: var(--mut); font-size: 16px; margin-top: 8px; line-height: 1.35; }
+  .facts { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.3; }
+  .f { display: flex; gap: 8px; align-items: baseline; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; transform: translateY(-1px); }
+  .ok { background: #1F9D55; } .warn { background: #E0A100; } .bad { background: var(--red); }
+  .home { display: flex; gap: 22px; justify-content: space-between; padding: 22px 26px 18px; border-radius: 26px;
+          background: linear-gradient(160deg, #3B4A6B 0%, #1C2438 55%, #121726 100%); }
+  .app { display: flex; flex-direction: column; align-items: center; gap: 7px; width: 112px; }
+  .ico { width: 92px; height: 92px; border-radius: 21px; background-image: url("../logo/chatgpt-forslag-2026-11-10.jpg");
+         background-repeat: no-repeat; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+  .lbl { color: #fff; font: 500 13px/1.1 -apple-system, "SF Pro Text", "Segoe UI", system-ui, sans-serif; text-align: center;
+         max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
+  .num { color: rgba(255,255,255,.55); font: 600 11px system-ui; }
+  /* storleksbladet */
+  .sizes { display: none; }
+  body.s .rows { display: none; } body.s .sizes { display: block; }
+  .panel { border-radius: 20px; padding: 24px 28px; margin-top: 22px; }
+  .panel.light { background: #fff; box-shadow: var(--shadow); } .panel.dark { background: #0F1218; color: #EEF1F7; }
+  .panel h2 { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; }
+  .cell { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .cell .n { font-size: 15px; font-weight: 700; }
+  .settings { display: flex; align-items: center; gap: 10px; font: 400 15px system-ui; padding: 8px 12px; border-radius: 10px; }
+  .light .settings { background: #F4F6FA; } .dark .settings { background: #181C26; }
+</style>
+</head>
+<body>
+<h1>Namn och logga: fyra namn × sex symboler</h1>
+<p class="sub">D117:s namnkandidater bredvid Arons sex ChatGPT-förslag (Ke24), som de skulle se ut på hemskärmen. Loggorna A/B/C från Ke12 är inte med eftersom Aron inte gillade dem.
+  Ikonerna är utklipp ur Arons bild och har inte ritats om. Det görs när Aron valt nummer. Träffarna söktes 2026-11-10 och är ingen juridisk bedömning.</p>
+
+<div class="rows" id="rows"></div>
+
+<div class="sizes">
+  <div class="panel light"><h2>Ljust: 29 pt (Inställningar) och 60 pt (hemskärm)</h2><div class="grid" id="gl"></div></div>
+  <div class="panel dark"><h2>Mörkt: 29 pt och 60 pt</h2><div class="grid" id="gd"></div></div>
+</div>
+
+<script>
+  // Rutornas läge i chatgpt-forslag-2026-11-10.jpg (1536×1024), uppmätt med PIL: x, y, sida.
+  const TILE = { 1:[142,99,346], 2:[607,100,340], 3:[1075,100,340], 4:[143,577,345], 5:[606,577,342], 6:[1077,577,338] };
+  function ico(n, size, radius) {
+    const [x0, y0, w0] = TILE[n], x = x0 + 5, y = y0 + 5, w = w0 - 10, k = size / w; // 5 px in, så att den vita kanten runt rutan inte syns
+    const d = document.createElement('div');
+    d.className = 'ico';
+    Object.assign(d.style, { width: size+'px', height: size+'px', borderRadius: (radius ?? size*0.2237)+'px',
+      backgroundSize: (1536*k)+'px '+(1024*k)+'px', backgroundPosition: (-x*k)+'px '+(-y*k)+'px' });
+    return d;
+  }
+  const NAMES = [
+    { n: 'Proviska', m: 'prov + viska. Svenskt, lätt att säga. Låter som plugg, och "viska på provet" ligger nära (se namn.md).',
+      f: [['ok','App Store SE/US: ingen app med namnet'], ['ok','TMview (EU, SE m.fl.): 0 träffar på "proviska"'], ['warn','proviska.com är registrerad av någon (NS hos Namecheap), .se ledig enligt DNS']] },
+    { n: 'Testvisk', m: 'test + visk. Svenskt men svårare att uttala, och läses som "test-visk".',
+      f: [['ok','App Store SE/US: ingen app med namnet'], ['warn','TMview: TESTVISION (Teelen, Benelux, klass 9 provprogram, giltig till 2029)'], ['ok','testvisk.se och .com: inga DNS-poster']] },
+    { n: 'Pod Whisper', m: 'Engelskt, passar "AI i örat för hela vardagen" (D118). Två lånade ord.',
+      f: [['ok','App Store SE/US och TMview: inget med exakt namnet'], ['bad','"Pod": Apple bestrider -POD-namn (AirPods, HomePod; t.ex. PODSHEDZ, HOLOPOD)'], ['bad','"Whisper": OpenAIs talmodell, ansökan WHISPER i USA (klass 9/42); podwhisper.com upptagen']] },
+    { n: 'Whisper Pod', m: 'Samma ord, omvänd ordning. Låter mer som en produkt (en pryl) än en app.',
+      f: [['ok','App Store SE/US och TMview: inget med exakt namnet'], ['bad','Samma "Pod"- och "Whisper"-risk som ovan'], ['ok','whisperpod.com, .app och .se: inga DNS-poster']] },
+  ];
+  const rows = document.getElementById('rows');
+  for (const N of NAMES) {
+    const r = document.createElement('section'); r.className = 'row';
+    r.innerHTML = `<div><div class="name">${N.n}</div><p class="mean">${N.m}</p><div class="facts">${
+      N.f.map(([c,t]) => `<div class="f"><span class="dot ${c}"></span><span>${t}</span></div>`).join('')}</div></div>`;
+    const h = document.createElement('div'); h.className = 'home';
+    for (let i = 1; i <= 6; i++) {
+      const a = document.createElement('div'); a.className = 'app';
+      a.append(ico(i, 92));
+      const l = document.createElement('div'); l.className = 'lbl'; l.textContent = N.n; a.append(l);
+      const nn = document.createElement('div'); nn.className = 'num'; nn.textContent = i; a.append(nn);
+      h.append(a);
+    }
+    r.append(h); rows.append(r);
+  }
+  for (const id of ['gl','gd']) {
+    const g = document.getElementById(id);
+    for (let i = 1; i <= 6; i++) {
+      const c = document.createElement('div'); c.className = 'cell';
+      c.innerHTML = `<div class="n">${i}</div>`;
+      const s = document.createElement('div'); s.className = 'settings'; s.append(ico(i, 29, 6.5));
+      const t = document.createElement('span'); t.textContent = 'Lumen'; s.append(t);
+      c.append(s, ico(i, 60));
+      g.append(c);
+    }
+  }
+  if (new URLSearchParams(location.search).has('s')) document.body.classList.add('s');
+</script>
+</body>
+</html>
