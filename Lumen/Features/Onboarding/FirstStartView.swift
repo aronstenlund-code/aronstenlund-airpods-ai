@@ -149,6 +149,7 @@ extension IntroView {
                 Text("·").foregroundStyle(LumenColor.muted).accessibilityHidden(true)
                 Button("Läs mer") { isReadingMore = true }
                     .font(LumenFont.text(16, .semibold))
+                    .foregroundStyle(LumenColor.blue)
                     .frame(minHeight: 44)
             }
         }
@@ -251,6 +252,7 @@ struct FirstQuestionView: View {
                 if isPaused {
                     Button("Lyssna igen", action: onListen)
                         .font(LumenFont.text(15, .semibold))
+                        .foregroundStyle(LumenColor.blue)
                         .frame(minHeight: 44)
                 }
             }

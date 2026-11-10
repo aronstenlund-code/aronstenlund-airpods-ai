@@ -131,7 +131,8 @@ enum VoiceDescription {
         switch choice.kind {
         case .apple:
             if choice.voiceID.isEmpty { return Words(title: "iPhonens röst", detail: "Fungerar utan nät") }
-            return Words(title: choice.name, detail: "iPhonens röst, fungerar utan nät")
+            let name = choice.name.replacingOccurrences(of: "Apple · ", with: "") // "Apple · Alva" → "Alva"
+            return Words(title: name, detail: "iPhonens röst, fungerar utan nät")
         case .elevenLabs:
             if let described, !described.trimmingCharacters(in: .whitespaces).isEmpty {
                 return Words(title: described, detail: "Svensk röst")
