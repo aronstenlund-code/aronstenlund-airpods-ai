@@ -29,6 +29,23 @@ Deno.test("accepts an anonymous-user token", async () => {
     id: "11111111-1111-1111-1111-111111111111",
     isAnonymous: true,
     sessionStartSec: 1794083239, // D79: from amr, unchanged by refreshes
+    amr: ["anonymous"], // K30: the sign-in methods
+  });
+});
+
+Deno.test("K30: an email sign-in carries the email claim and the otp method", async () => {
+  const t = await sign({
+    sub: "22222222-2222-2222-2222-222222222222",
+    role: "authenticated",
+    email: "owner@example.com",
+    amr: [{ method: "otp", timestamp: 1794083239 }],
+  });
+  assertEquals(await auth(req(t)), {
+    id: "22222222-2222-2222-2222-222222222222",
+    isAnonymous: false,
+    sessionStartSec: 1794083239,
+    email: "owner@example.com",
+    amr: ["otp"],
   });
 });
 
