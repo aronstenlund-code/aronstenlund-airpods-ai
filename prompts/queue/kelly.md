@@ -86,10 +86,10 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [ ] **Ke22 – Annonser: 7 koncept som inte ser ut som reklam** (effort: high). Ägarbeslut D117 + D118. Lumen säljs som **AI i örat för hela vardagen**, inte bara plugg (arbetsrubriker: "Låt dina AirPods bli värda köpet", "Lås upp AI till dess fulla potential"). Varje annons ska se ut som en vanlig TikTok-video eller en berättelse där personen nästan har en superkraft: rösten i örat säger exakt vad hen ska göra. Gör 7 koncept (9:16, 15–30 s), var och en med manus, bildplan och en stillbild:
   1. Behåll: eleven som går in på lektionen.
-  2. Rizzläget: en kort scen där rösten hjälper till att säga rätt sak (D112: flirtigt, aldrig sexuellt).
-  3. Fantasy: en hjälte med "en röst i örat" som vägleder genom ett äventyr. Stiliserad som spelkonst, heroiska proportioner för både män och kvinnor, men inte sexualiserat (inga närbilder på urringning eller kroppar), eftersom TikTok och Meta stoppar suggestiva annonser och publiken är ung.
+  2. Rizzläget: en kort scen där rösten hjälper till att säga rätt sak.
+  3. Fantasy: en hjälte med "en röst i örat" som vägleder genom ett äventyr. Gör **två versioner** (D119): (a) stiliserad spelkonst med heroiska proportioner, och (b) en egen kampanj med överdrivna kroppsproportioner, urringat och sixpack, för både kvinnor och män. Version (b) riktas till 18+ i Meta/TikTok (plattformarnas regler för suggestiva annonser, inte appens), så att den inte stoppas.
   4–7. Fyra andra helt olika stilar (t.ex. POV "en dag med AI i örat", träning/coach, en mockumentär "superkraften avslöjas", en reaktions-/prank-video). Inga två får likna varandra.
-  Skriv var och en som en hook på de första 2 sekunderna. Läs varje manus noga innan något genereras i ElevenLabs. Ingen Apple-lik hörlur i bild, och skriv "fungerar med AirPods" i stället för att antyda att Apple står bakom.
+  Skriv var och en som en hook på de första 2 sekunderna. **Alla annonser** visar att Lumen kan användas till mycket (plugg, intervju, socialt, vardag) men har ett eget tema. Blanda stilar: några animerade (olika animeringsstilar), några realistiska. Planen läggs upp så att Meta själv kan välja vilken som får mest visningar. Läs varje manus noga innan något genereras i ElevenLabs. Ingen Apple-lik hörlur i bild, och skriv "fungerar med AirPods" i stället för att antyda att Apple står bakom.
 
 - [ ] **Ke23 – Namn och logga** (effort: medium). D117: namnkandidater Proviska, Testvisk, Pod Whisper, Whisper Pod. Gör en sida i `docs/design/namn.md` med varje namn ihop med loggan A, B och C (Aron väljer logga), och kontrollera kort om namnen redan används av en app eller ett varumärke i App Store / EUIPO (skriv vad du hittade och var).
 
