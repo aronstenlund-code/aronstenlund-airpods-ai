@@ -45,6 +45,8 @@ samma lista, och där kan användaren lägga till och ta bort fraser per åtgär
 | Spara svaret (`saveAnswer`) | spara det, spara svaret, spara det där, spara i anteckningar, save that | nej | alla | "Sparat." | Senaste svaret läggs i Anteckningar. |
 | Nästa prov (`nextExam`) | vilket prov har jag härnäst, när är nästa prov, nästa prov, vilket är nästa prov, next exam | nej | alla | provets namn och dag | Läses ur provplanerna i telefonen. Ingen LLM. |
 | Kom ihåg (finns, D49/D80) | kom ihåg (att) …, glöm inte (att) …, remember that … | nej | alla | "Sparat." | Sparas i Minne. "Glöm …" tar bort. |
+| Taltempo (A20, `SpeechPace`) | långsammare, långsamt, lugnare, prata (lite) långsammare / snabbare, fortare | ja (hela yttrandet, bärarens röst) | Provläge, Frågor | "Jag pratar lite långsammare." / "Jag pratar snabbare igen." | Tempot per läge och ämne: 1,0 → 0,9 → 0,85, sparas och syns i Minne. Sänks också av sig självt efter 2 "igen" på 10 min eller 3 långa tystnader (≥ 20 s) efter långa svar i Provläge (antecknar). "Snabbare" vid fullt tempo är "kortare" som förut. |
+| Tyst förhör (A20, `SilentQuiz`) | tyst förhör, tyst förhör mig, förhör mig tyst, starta tyst förhör | ja | Provläge | "Tyst förhör. Nicka för ja, skaka på huvudet för nej. …" | Ja–nej-frågor (nivå 2 som instruktion), svaret med nick/skakning (D86) eller "ja"/"nej". 10 frågor, eller slut efter 2 frågor utan svar. "Lumen, sluta" avslutar förhöret (nästa "sluta" avslutar Provläge). Slut: "Tyst förhör klart. N av M rätt." |
 
 ## Nivå 2: i samma /answer-anrop
 - Frasen skickas som instruktion i första standardformuleringen, så att en egen fras ("testa mig") når backend med

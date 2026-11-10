@@ -9,11 +9,11 @@ struct CommandsView: View {
     var body: some View {
         Form {
             Section {
-                TextField("Keyword (what you say)", text: $keyword)
+                TextField("Ord (det du säger)", text: $keyword)
                     .textInputAutocapitalization(.never)
-                TextField("Instruction (what Lumen should do)", text: $instruction, axis: .vertical)
+                TextField("Instruktion (det Lumen ska göra)", text: $instruction, axis: .vertical)
                     .lineLimit(2...5)
-                Button(editsExisting ? "Replace command" : "Add command") {
+                Button(editsExisting ? "Ersätt kommandot" : "Lägg till kommando") {
                     store.save(keyword: keyword, instruction: instruction)
                     keyword = ""
                     instruction = ""
@@ -21,14 +21,14 @@ struct CommandsView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(keyword.trimmingCharacters(in: .whitespaces).isEmpty || instruction.trimmingCharacters(in: .whitespaces).isEmpty)
             } header: {
-                Text("New command")
+                Text("Nytt kommando")
             } footer: {
-                Text("Say the keyword in a question and Lumen follows the instruction for that answer. You can also say: \"spara kommando fission: förklara fission och jämför med fusion\".")
+                Text("Säg ordet i en fråga, så följer Lumen instruktionen i det svaret. Du kan också säga: \"spara kommando fission: förklara fission och jämför med fusion\".")
             }
 
-            Section("Saved commands") {
+            Section("Sparade kommandon") {
                 if store.commands.isEmpty {
-                    Text("No commands yet.").foregroundStyle(.secondary)
+                    Text("Inga kommandon än.").foregroundStyle(.secondary)
                 }
                 ForEach(store.commands) { command in
                     Button {

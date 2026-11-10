@@ -2,12 +2,14 @@ import SwiftUI
 
 /// D86 screen 4: Lyssnar. The squared header with the exam and the mode, "Byt läge" (a sheet with every mode; the
 /// listening goes on), the latest question in handwriting and its answer large, the one before dimmed, a thumb down,
-/// the spoken commands, and Pausa / Avsluta (the same words in the app, on the lock screen and by voice).
+/// one spoken command with a "Kommandon" sheet of the five that matter (A18), and Pausa / Avsluta: quiet, the same
+/// weight, red only for errors (A18, Kelly Ke9).
 struct ListeningScreen: View {
     @Bindable var model: ListeningModel
     let onBack: () -> Void
     @Environment(AppearanceSettings.self) private var appearance
     @State private var isSwitching = false
+    @State private var isShowingCommands = false
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var reportingTurn: AnswerTurn?
     @State private var reportComment = ""
@@ -37,6 +39,10 @@ struct ListeningScreen: View {
         .sheet(isPresented: $isSwitching) {
             ModeSwitchSheet(model: model, current: mode)
                 .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $isShowingCommands) {
+            CommandsSheet(mode: mode)
+                .presentationDetents([.medium])
         }
         .alert("Fel svar?", isPresented: isReporting, presenting: reportingTurn) { turn in
             TextField("Vad var fel? (valfritt)", text: $reportComment)
@@ -117,8 +123,11 @@ struct ListeningScreen: View {
     }
 
     private var stateDetail: String {
+        if let quiz = model.silentQuiz {
+            return "Tyst förhör, fråga \(max(1, quiz.asked)) av \(SilentQuiz.questions). Nicka för ja, skaka för nej." // A20.2
+        }
         switch model.state {
-        case .paused: "Tryck Fortsätt eller säg ”Lumen, fortsätt”"
+        case .paused: "Tryck Lyssna igen eller säg ”Lumen, fortsätt”"
         default: mode.isLive ? "Lumen ger ett förslag i pausen" : "Ställ en fråga när du vill"
         }
     }
@@ -170,9 +179,10 @@ struct ListeningScreen: View {
                 }
             }
         } else if mode == .prov {
-            // A13.3: something to start from, for whoever does not want to talk first.
-            VStack(alignment: .leading, spacing: 14) {
-                Text("Ställ en fråga om det du pluggar. Svaret hörs i örat.")
+            // A13.3 / A18: something to start from, for whoever does not want to talk first. "Förhör mig" is the
+            // screen's one blue button, with the same words as the voice command.
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Fråga om det du pluggar, eller bli förhörd.")
                     .font(LumenFont.text(18))
                     .foregroundStyle(LumenColor.muted)
                 let terms = Array(ExamKeyterms.terms(profile: model.studyProfile.profile).prefix(8))
@@ -182,9 +192,18 @@ struct ListeningScreen: View {
                 Button {
                     model.askForQuiz()
                 } label: {
-                    Label("Förhör mig", systemImage: "questionmark.bubble")
+                    Text("Förhör mig")
                 }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+                .buttonStyle(LumenButtonStyle(height: 54))
+                .padding(.top, 4)
+                Text("Eller säg ”Lumen, förhör mig”.")
+                    .font(LumenFont.text(15))
+                    .foregroundStyle(LumenColor.muted)
+                // A20.2: for the bus or the library, answered with the head.
+                Button("Tyst förhör: svara genom att nicka") { model.startSilentQuiz() }
+                    .font(LumenFont.text(16, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+                    .frame(minHeight: 44)
             }
         } else {
             Text("Svaren hörs i örat och syns här.")
@@ -226,11 +245,18 @@ struct ListeningScreen: View {
 
     private var footer: some View {
         VStack(spacing: 14) {
-            Text(commandsLine)
-                .font(LumenFont.text(15))
-                .foregroundStyle(LumenColor.muted)
-                .fixedSize(horizontal: false, vertical: true) // A12: the whole line, never "…"
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack(alignment: .firstTextBaseline, spacing: 12) {
+                Text(commandsLine)
+                    .font(LumenFont.text(15))
+                    .foregroundStyle(LumenColor.muted)
+                    .fixedSize(horizontal: false, vertical: true) // A12: the whole line, never "…"
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Button("Kommandon") { isShowingCommands = true }
+                    .font(LumenFont.text(15, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+                    .frame(minHeight: 44)
+                    .accessibilityHint("Visar de fem viktigaste röstkommandona")
+            }
             if model.isOfferingMore {
                 // A15: the window after a short answer.
                 Text("Säg ja för mer")
@@ -250,15 +276,16 @@ struct ListeningScreen: View {
                 Button {
                     Task { await model.togglePause() }
                 } label: {
-                    Label(model.isListening ? "Pausa" : "Fortsätt", systemImage: model.isListening ? "pause.fill" : "play.fill")
+                    Text(model.isListening ? "Pausa" : "Lyssna igen")
                 }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 54))
+                // A18 (Kelly Ke10): while paused, going on is the one thing to do, so it is the blue button.
+                .buttonStyle(LumenButtonStyle(kind: model.isListening ? .secondary : .primary, height: 54))
                 Button {
                     Task { await model.endSession() }
                 } label: {
-                    Label("Avsluta", systemImage: "stop.fill")
+                    Text("Avsluta") // the voice's word ("Lumen, avsluta"); "klar" means something in Intervjuläge
                 }
-                .buttonStyle(LumenButtonStyle(kind: .danger, height: 54))
+                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 54))
             }
         }
         .padding(.horizontal, 20)
@@ -267,13 +294,48 @@ struct ListeningScreen: View {
         .background(LumenColor.background)
     }
 
-    /// A9.1: from the command table, so the user's own phrases show here too.
+    /// A9.1 / A18: from the command table (the user's own phrases show here too), one command at a time.
     private var commandsLine: String {
-        model.commandsLine(for: mode)
+        if model.silentQuiz != nil { return "Säg ”Lumen, sluta” för att avsluta förhöret" } // A20.2
+        return CommandTips.firstLine(for: mode, table: CommandBook.shared.table)
     }
 
     private var isReporting: Binding<Bool> {
         Binding(get: { reportingTurn != nil }, set: { if !$0 { reportingTurn = nil } })
+    }
+}
+
+/// A18: the five voice commands a beginner needs in this mode. The rest: Inställningar › Röstkommandon.
+struct CommandsSheet: View {
+    let mode: ConversationMode
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    ForEach(CommandTips.essentials(for: mode), id: \.self) { action in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("”" + CommandTips.spoken(action, table: CommandBook.shared.table) + "”")
+                                .font(LumenFont.text(17, .semibold))
+                            Text(action.title)
+                                .font(LumenFont.text(15))
+                                .foregroundStyle(LumenColor.muted)
+                        }
+                        .padding(.vertical, 4)
+                        .accessibilityElement(children: .combine)
+                    }
+                } footer: {
+                    Text("Fler kommandon och egna fraser finns i Inställningar › Röstkommandon.")
+                }
+            }
+            .lumenForm()
+            .navigationTitle("Kommandon")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } }
+            }
+        }
     }
 }
 

@@ -116,7 +116,11 @@ import Testing
         var machine = StudyMachine(tuning: tuning)
         machine.start(at: t0)
         _ = firstEvent(&machine, level: -62, from: 0, seconds: 1.0)
-        _ = firstEvent(&machine, level: -28, from: 1.04, seconds: 0.6)
+        var t = 1.04 // speech until 1.64 s, every reading (the onset event must not stop the feed)
+        while t <= 1.64 + 1e-9 {
+            _ = machine.level(-28, at: t0.addingTimeInterval(t))
+            t += 0.04
+        }
         return machine
     }
 
@@ -311,12 +315,14 @@ import Testing
         let rig = makeRig(events: shortAnswer, speechDelay: .milliseconds(300))
         await rig.model.toggleStudyMode()
         rig.study.start(at: t0)
-        rig.h.playback.isSpeaking = true // stuck: the end of the speech is never reported
         for i in 0..<25 { rig.study.level(-62, at: t0.addingTimeInterval(Double(i) * 0.04)) }
         for i in 0..<15 { rig.study.level(-28, at: t0.addingTimeInterval(1.0 + Double(i) * 0.04)) }
         rig.model.receiveFinalTranscript("Vad är fotosyntes?", at: t0.addingTimeInterval(1.6))
         for i in 0..<45 { rig.study.level(-62, at: t0.addingTimeInterval(1.6 + Double(i) * 0.04)) }
         #expect(await waitUntil { rig.apple.calls.count >= 1 })
+        // Stuck from now on: the end of the speech is never reported (set after the turn's interrupt, which stops
+        // the fake player).
+        rig.h.playback.isSpeaking = true
         rig.h.playback.onAudioScheduled?()
         #expect(rig.coordinator.coordinator.isInputGated)
 

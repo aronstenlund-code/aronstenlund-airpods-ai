@@ -46,6 +46,11 @@ final class Speaker {
     /// A4: called when an answer has been spoken to the end, with its stats (the log line).
     var onVoiceStats: (@MainActor (VoiceStreamStats) -> Void)?
 
+    /// A20.1: the learned pace for the current context (1.0, 0.9, 0.85), on top of the user's own speed.
+    var paceFactor: Float = 1 {
+        didSet { if paceFactor != oldValue { applyRate() } }
+    }
+
     init(settings: VoiceSettings, apple: any TTSProvider, premium: (any TTSProvider)?, playback: any PlaybackServicing) {
         self.settings = settings
         self.apple = apple
@@ -128,7 +133,7 @@ final class Speaker {
     }
 
     func applyRate() {
-        playback.rate = settings.rate
+        playback.rate = min(2, max(0.5, settings.rate * paceFactor))
     }
 
     private func startDrainingIfNeeded() {

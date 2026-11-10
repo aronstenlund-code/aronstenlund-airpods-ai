@@ -150,6 +150,14 @@ struct FirstQuestionView: View {
     @Environment(AppearanceSettings.self) private var appearance
 
     var body: some View {
+        if microphoneDenied {
+            MicrophoneDeniedView(onSkip: onContinue) // A18 (Kelly Ke10): the whole screen fixes the microphone
+        } else {
+            questionScreen
+        }
+    }
+
+    private var questionScreen: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 10) {
@@ -162,26 +170,25 @@ struct FirstQuestionView: View {
                 }
                 .padding(.horizontal, 4)
 
-                if microphoneDenied {
-                    ErrorCard(problem: .microphoneDenied) { ErrorCard.openSettings() }
-                } else {
-                    card
-                }
+                card
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Prova också").font(LumenFont.text(15)).foregroundStyle(LumenColor.muted)
-                    Text("Vad är 270 gånger 270?").font(appearance.questionFont(20)).foregroundStyle(LumenColor.blue)
-                    Text("Hur böjer man ”att vara” på spanska?").font(appearance.questionFont(20)).foregroundStyle(LumenColor.blue)
-                }
-                .padding(.horizontal, 4)
             }
             .padding(.horizontal, 20)
             .padding(.top, 24)
         }
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 10) {
-                Button("Fortsätt", action: onContinue)
-                    .buttonStyle(LumenButtonStyle())
+                // A18 (Kelly Ke9): no blue button before the first answer, so the question is the obvious thing to do.
+                if hasAnswer {
+                    Button("Fortsätt", action: onContinue)
+                        .buttonStyle(LumenButtonStyle())
+                        .transition(.opacity)
+                } else {
+                    Button("Hoppa över", action: onContinue)
+                        .font(LumenFont.text(17, .semibold))
+                        .foregroundStyle(LumenColor.muted)
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                }
                 Text("iOS frågar om mikrofonen första gången. Lumen sparar aldrig ljud.")
                     .font(LumenFont.text(14, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
@@ -193,11 +200,17 @@ struct FirstQuestionView: View {
         }
     }
 
+    private var hasAnswer: Bool {
+        model.conversation.answers.contains { !$0.answer.isEmpty }
+    }
+
     private var card: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(spacing: 12) {
                 ListeningRings(size: 40, active: model.isListening)
                 Text(model.isListening ? "Lyssnar" : "Startar …").font(LumenFont.text(17, .semibold))
+                Spacer(minLength: 0)
+                LevelMeter(levelDBFS: model.isListening && model.isHearing ? model.controller.level.rmsDBFS : nil)
             }
             .accessibilityElement(children: .combine)
             if let turn = model.conversation.streamingAnswer ?? model.conversation.answers.last {
@@ -213,6 +226,7 @@ struct FirstQuestionView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(20)
         .gridPaper()
+        .animation(.easeOut(duration: 0.2), value: hasAnswer)
     }
 }
 

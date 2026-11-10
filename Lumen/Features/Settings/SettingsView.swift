@@ -18,7 +18,7 @@ struct SettingsView: View {
             answerSection
             Section {
                 NavigationLink("Röstkommandon") { VoiceCommandsView(store: model.phrases, music: model.music, voice: model.speaker.settings, tips: model.tips) }
-                NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences) }
+                NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences, paces: model.paces) }
             }
             studyProfileSection
             appearanceSection
@@ -167,7 +167,8 @@ struct SettingsView: View {
     private var studyProfileSection: some View {
         @Bindable var store = model.studyProfile
         Section {
-            Toggle("Inget prov just nu", isOn: $store.profile.noExam)
+            // A18: no double negative (Deangelo's user journey): on = there is an exam.
+            Toggle("Jag har ett prov", isOn: Binding(get: { !store.profile.noExam }, set: { store.profile.noExam = !$0 }))
             if !store.profile.noExam {
                 DatePicker("Provdatum", selection: examBinding, displayedComponents: .date)
                     .environment(\.locale, Locale(identifier: "sv_SE"))

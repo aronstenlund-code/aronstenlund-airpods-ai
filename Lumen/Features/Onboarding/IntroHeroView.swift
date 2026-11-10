@@ -3,33 +3,47 @@ import UIKit
 
 /// A13.6: the intro's hero. Elias (`docs/marketing/karaktar.md`) as a cut-out PNG with a transparent background
 /// (head and shoulders) on the app's own squared paper, so it works in light and dark; the logo's rings are drawn
-/// here and spread from his earbud three times. Reduce Motion: the rings stand still. Until Aron has approved the
-/// picture (`Assets.xcassets/IntroElias`, at most 300 kB @3x, a dark variant if the edge shows on dark paper) a
-/// placeholder stands in.
+/// here and spread from his earbud three times. Reduce Motion: the rings stand still. A18: the approved picture is in
+/// the app (`Resources/Images/IntroElias@2x/@3x.png`, 191 kB @3x after quantising); in dark mode a soft light glow
+/// sits behind him so the navy jumper does not melt into the dark paper. Without the file a placeholder stands in.
 struct IntroHeroView: View {
-    /// Where the earbud is in the picture (0…1 of the hero's width and height): the rings start here. Adjust when
-    /// the final picture lands.
-    static let ringOrigin = UnitPoint(x: 0.62, y: 0.46)
+    /// Where the earbud is in the picture (0…1 of the picture's own width and height): the rings start here.
+    static let ringOrigin = UnitPoint(x: 0.32, y: 0.37)
+    /// The placeholder's earbud, in the hero's own frame.
+    static let placeholderOrigin = UnitPoint(x: 0.62, y: 0.46)
     static let imageName = "IntroElias"
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorScheme) private var colorScheme
     @State private var spread = false
     /// After the three spreads the rings rest where the logo has them (they faded to nothing before).
     @State private var settled = false
 
-    private var hasPicture: Bool { UIImage(named: Self.imageName) != nil }
+    private var picture: UIImage? { UIImage(named: Self.imageName) }
 
     var body: some View {
         GeometryReader { geometry in
             let size = geometry.size
-            let origin = CGPoint(x: size.width * Self.ringOrigin.x, y: size.height * Self.ringOrigin.y)
+            let origin = CGPoint(x: size.width * Self.placeholderOrigin.x, y: size.height * Self.placeholderOrigin.y)
             ZStack {
                 GridPaper(cornerRadius: 0)
-                if hasPicture {
-                    Image(Self.imageName)
+                if let picture {
+                    Image(uiImage: picture)
                         .resizable()
                         .scaledToFit()
-                        .frame(maxWidth: size.width, maxHeight: size.height, alignment: .bottom)
+                        .background {
+                            if colorScheme == .dark {
+                                RadialGradient(colors: [Color.white.opacity(0.22), Color.white.opacity(0)],
+                                               center: UnitPoint(x: 0.5, y: 0.62), startRadius: 4, endRadius: size.height * 0.62)
+                                    .scaleEffect(x: 1.25, y: 1)
+                            }
+                        }
+                        .overlay {
+                            GeometryReader { image in
+                                rings.position(x: image.size.width * Self.ringOrigin.x, y: image.size.height * Self.ringOrigin.y)
+                            }
+                        }
+                        .frame(maxWidth: size.width, maxHeight: size.height - 8, alignment: .bottom)
                         .frame(maxHeight: .infinity, alignment: .bottom)
                 } else {
                     // Placeholder: the earbud where Elias' will be.
@@ -37,9 +51,9 @@ struct IntroHeroView: View {
                         .font(.system(size: 34, weight: .regular))
                         .foregroundStyle(LumenColor.muted)
                         .position(x: origin.x, y: origin.y + 34)
+                    rings
+                        .position(origin)
                 }
-                rings
-                    .position(origin)
             }
         }
         .clipped()

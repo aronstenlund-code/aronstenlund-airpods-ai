@@ -163,7 +163,10 @@ struct LumenButtonStyle: ButtonStyle {
             .padding(.horizontal, 12)
             .foregroundStyle(foreground)
             .background(background, in: RoundedRectangle(cornerRadius: 10))
-            .opacity(configuration.isPressed ? 0.8 : 1)
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            // A18: a press is felt, like system buttons: a small scale, quick out, never on the way back.
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .animation(.easeOut(duration: configuration.isPressed ? 0.08 : 0.16), value: configuration.isPressed)
             .contentShape(RoundedRectangle(cornerRadius: 10))
     }
 

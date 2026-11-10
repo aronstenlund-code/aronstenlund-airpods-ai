@@ -3,6 +3,8 @@ import SwiftUI
 
 /// A6.4: Settings › Röstkommandon. Every action with its phrases; the user adds and removes phrases. Default phrases
 /// can be removed and come back with "Återställ". The whole utterance must match, as before.
+/// A18: the commands a beginner needs come first; the rest and the switches sit under "Alla kommandon". Search
+/// still finds every command.
 struct VoiceCommandsView: View {
     @Bindable var store: CommandPhraseStore
     let music: MusicRemote
@@ -18,6 +20,50 @@ struct VoiceCommandsView: View {
         }
     }
 
+    /// The commands in Provläge's and Frågor's "Kommandon" sheet, in that order, each once.
+    static var essentials: [CommandAction] {
+        var seen: [CommandAction] = []
+        for action in CommandTips.essentials(for: .prov) + CommandTips.essentials(for: .standard) where !seen.contains(action) {
+            seen.append(action)
+        }
+        return seen
+    }
+
+    var body: some View {
+        List {
+            if search.trimmingCharacters(in: .whitespaces).isEmpty {
+                Section {
+                    ForEach(Self.essentials) { action in
+                        PhraseSection(store: store, action: action)
+                    }
+                } header: {
+                    Text("De viktigaste")
+                } footer: {
+                    Text("Börja med \"Lumen\", till exempel \"Lumen, förhör mig\". Du kan lägga till egna fraser.")
+                }
+                Section {
+                    NavigationLink("Alla kommandon") {
+                        AllVoiceCommandsView(store: store, music: music, voice: voice, tips: tips)
+                    }
+                }
+            } else {
+                ForEach(actions) { action in
+                    PhraseSection(store: store, action: action)
+                }
+            }
+        }
+        .searchable(text: $search, prompt: "Sök kommando")
+        .navigationTitle("Röstkommandon")
+    }
+}
+
+/// A18: everything that is not for the first day: every command, the switches and the music players.
+private struct AllVoiceCommandsView: View {
+    @Bindable var store: CommandPhraseStore
+    let music: MusicRemote
+    @Bindable var voice: VoiceSettings
+    @Bindable var tips: CommandTipStore
+
     var body: some View {
         List {
             Section {
@@ -31,13 +77,12 @@ struct VoiceCommandsView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-            ForEach(actions) { action in
+            ForEach(CommandAction.allCases.filter { !VoiceCommandsView.essentials.contains($0) }) { action in
                 PhraseSection(store: store, action: action)
             }
             MusicPlayersSection(music: music)
         }
-        .searchable(text: $search, prompt: "Sök kommando")
-        .navigationTitle("Röstkommandon")
+        .navigationTitle("Alla kommandon")
     }
 }
 

@@ -17,6 +17,24 @@ enum CommandTips {
         }
     }
 
+    /// A18: the five a beginner needs, most useful first. Shown on the listening screen (the first one) and in its
+    /// "Kommandon" sheet; everything else sits under Inställningar › Röstkommandon › Alla kommandon.
+    static func essentials(for mode: ConversationMode) -> [CommandAction] {
+        switch mode {
+        case .prov: [.quizMe, .moreDetail, .repeatAnswer, .musicHandOff, .stop]
+        case .standard: [.repeatAnswer, .moreDetail, .shorter, .musicHandOff, .stop]
+        case .interview: [.interviewHelp, .interviewStuck, .repeatAnswer, .musicHandOff, .stop]
+        case .social: [.socialReply, .threeOptions, .changeTopic, .musicHandOff, .stop]
+        case .rizz: [.rizz, .rescue, .threeOptions, .musicHandOff, .stop]
+        }
+    }
+
+    /// A18: one command at a time on the listening screen, the one this mode is for.
+    static func firstLine(for mode: ConversationMode, table: CommandTable) -> String {
+        let first = essentials(for: mode).first.map { spoken($0, table: table) } ?? "Lumen, …"
+        return "Säg ”" + first + "”"
+    }
+
     /// Tip candidates, in order: what helps most in that mode.
     static func candidates(for mode: ConversationMode) -> [CommandAction] {
         switch mode {

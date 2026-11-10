@@ -7,6 +7,8 @@ struct MemoryView: View {
     let commands: CommandStore
     /// A9.3: the learned answer settings (K10).
     var preferences: PreferenceStore?
+    /// A20.1: the learned speaking pace per context.
+    var paces: SpeechPaceStore?
     @State private var newMemory = ""
     @State private var editing: MemoryItem?
     @State private var editedText = ""
@@ -16,10 +18,10 @@ struct MemoryView: View {
         List {
             Section {
                 HStack {
-                    TextField("Add something to remember", text: $newMemory)
+                    TextField("Något Lumen ska komma ihåg", text: $newMemory)
                         .submitLabel(.done)
                         .onSubmit(add)
-                    Button("Add", action: add)
+                    Button("Lägg till", action: add)
                         .disabled(newMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             } footer: {
@@ -27,8 +29,14 @@ struct MemoryView: View {
             }
             if let preferences {
                 Section {
-                    if preferences.settings.isEmpty {
+                    if preferences.settings.isEmpty, paces?.entries.isEmpty ?? true {
                         Text("Inget inlärt än. Säg till exempel \"kortare\" eller \"mer exempel\" direkt efter ett svar.").foregroundStyle(.secondary)
+                    }
+                    ForEach(paces?.entries ?? []) { entry in
+                        Text(paces?.line(for: entry) ?? "")
+                            .swipeActions {
+                                Button("Ta bort", role: .destructive) { paces?.remove(entry) }
+                            }
                     }
                     ForEach(preferences.settings) { setting in
                         Text(setting.text)

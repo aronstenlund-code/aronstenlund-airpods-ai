@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// D86 screen 3: Start. The nearest exam as a squared card (name, date, the red pen's "N dagar kvar", "Öva mer på",
-/// "Få A-svar till provet"), the other exams as rows with a microphone, "Lägg till prov", four round mode buttons,
-/// and a line about switching by voice. Without an exam: "Har du ett prov snart?".
+/// D86 screen 3: Start. A18 (Kelly Ke9, Deangelo's user journey): one blue button per screen. The nearest exam as a
+/// squared card (name, date, the red pen's "N dagar kvar", "Öva mer på", **Förhör mig**), the other exams as plain
+/// rows, "Lägg till prov", then two quiet choices: "Bara fråga" (Frågor) and "Fler lägen" (Provläge without a quiz,
+/// Intervju, Socialt, Rizz 18+). Without an exam: "Har du ett prov snart?" with "Lägg till prov" as the blue button.
 struct HomeView: View {
     @Bindable var model: ListeningModel
     @Environment(AppearanceSettings.self) private var appearance
@@ -21,15 +22,10 @@ struct HomeView: View {
                 if let nearest = plans.first {
                     examCard(nearest)
                     otherExams(Array(plans.dropFirst()))
-                    modes(title: "Andra lägen")
                 } else {
                     emptyCard
-                    modes(title: "Eller börja direkt")
                 }
-                Text("Byt läge utan att ta upp telefonen. Säg ”Lumen, byt till intervju”.")
-                    .font(LumenFont.text(15))
-                    .foregroundStyle(LumenColor.muted)
-                    .padding(.top, 8)
+                modes
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
@@ -80,13 +76,13 @@ struct HomeView: View {
                 .accessibilityElement(children: .combine)
             }
             Button {
-                Task { await model.startProv(for: plan) }
+                Task { await model.startQuiz(for: plan) }
             } label: {
-                Label("Få A-svar till provet", systemImage: "mic")
+                Label("Förhör mig", systemImage: "mic")
             }
             .buttonStyle(LumenButtonStyle(height: 54))
             .padding(.top, 16)
-            .accessibilityHint("Startar Provläget för \(plan.name)")
+            .accessibilityHint("Lumen förhör dig inför \(plan.name.lowercased()). Du kan också fråga själv.")
             if let cards = model.studyCards, !cards.current().isEmpty {
                 // D81: five questions by voice from the study cards.
                 Button {
@@ -116,13 +112,11 @@ struct HomeView: View {
                             Text(plan.whenLine()).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
                         }
                         Spacer()
-                        Image(systemName: "mic")
-                            .font(.system(size: 17, weight: .semibold))
-                            .foregroundStyle(LumenColor.blue)
-                            .frame(width: 44, height: 44)
-                            .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(LumenColor.muted)
                     }
-                    .padding(.vertical, 6)
+                    .padding(.vertical, 10)
                     .frame(minHeight: 52)
                     .contentShape(Rectangle())
                 }
@@ -154,10 +148,10 @@ struct HomeView: View {
 
     private var emptyCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Har du ett prov snart?")
+            Text("Har du prov snart?")
                 .font(LumenFont.text(30, .bold, relativeTo: .largeTitle))
                 .accessibilityAddTraits(.isHeader)
-            Text("Lägg till det, så pratar Lumen på din nivå och vet vad du ska öva på.")
+            Text("Säg det, så förhör Lumen dig inför provet.")
                 .font(LumenFont.text(16))
                 .foregroundStyle(LumenColor.muted)
             Button {
@@ -176,42 +170,74 @@ struct HomeView: View {
         .padding(.top, 24)
         .padding(.bottom, 20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .gridPaper(dashed: true)
+        .gridPaper() // A18 (Kelly Ke10): the same card as with an exam
     }
 
     // MARK: Modes
 
-    /// A13.5 (owner 2026-11-09): Start shows Frågor and Provläge; Intervju, Socialt and Rizz 18+ sit under "Fler lägen".
-    /// The voice commands reach every mode as before.
-    private func modes(title: String) -> some View {
+    /// A18: two quiet choices instead of five round buttons. "Bara fråga" is Frågor; Provläge (without a quiz) and the
+    /// other modes are under "Fler lägen". The voice commands reach every mode as before (A13.5).
+    private var modes: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title).font(LumenFont.text(17, .semibold)).accessibilityAddTraits(.isHeader)
-            HStack(alignment: .top, spacing: 8) {
-                ForEach([ConversationMode.standard, .prov]) { mode in
-                    ModeCircle(mode: mode) { Task { await model.startMode(mode) } }
+            HStack(spacing: 16) {
+                Button {
+                    Task { await model.startMode(.standard) }
+                } label: {
+                    Label("Bara fråga", systemImage: "questionmark")
+                        .font(LumenFont.text(16, .semibold))
+                        .padding(.horizontal, 16)
+                        .frame(minHeight: 44)
+                        .overlay { RoundedRectangle(cornerRadius: 10).strokeBorder(LumenColor.line, lineWidth: 1) }
+                        .contentShape(RoundedRectangle(cornerRadius: 10))
                 }
-                Spacer(minLength: 0)
-                Spacer(minLength: 0)
-            }
-            Button {
-                withAnimation { showsMoreModes.toggle() }
-            } label: {
-                HStack(spacing: 6) {
-                    Text("Fler lägen")
-                    Image(systemName: showsMoreModes ? "chevron.up" : "chevron.down").font(.system(size: 12, weight: .bold))
-                }
-                .font(LumenFont.text(16, .semibold))
-                .frame(minHeight: 44)
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(LumenColor.blue)
-            if showsMoreModes {
-                HStack(alignment: .top, spacing: 8) {
-                    ForEach([ConversationMode.interview, .social, .rizz]) { mode in
-                        ModeCircle(mode: mode) { Task { await model.startMode(mode) } }
+                .buttonStyle(.plain)
+                .foregroundStyle(LumenColor.ink)
+                .accessibilityHint("Lumen svarar kort på frågor, utan prov")
+                Button {
+                    withAnimation(.easeOut(duration: 0.2)) { showsMoreModes.toggle() }
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("Fler lägen")
+                        Image(systemName: showsMoreModes ? "chevron.up" : "chevron.down").font(.system(size: 12, weight: .bold))
                     }
-                    Spacer(minLength: 0)
+                    .font(LumenFont.text(16, .semibold))
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .foregroundStyle(LumenColor.blue)
+                Spacer(minLength: 0)
+            }
+            if showsMoreModes {
+                VStack(spacing: 0) {
+                    ForEach([ConversationMode.prov, .interview, .social, .rizz]) { mode in
+                        Button {
+                            Task { await model.startMode(mode) }
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: mode.symbol)
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundStyle(LumenColor.background)
+                                    .frame(width: 34, height: 34)
+                                    .background(mode.color, in: Circle())
+                                VStack(alignment: .leading, spacing: 1) {
+                                    Text(mode.shortName).font(LumenFont.text(17, .semibold))
+                                    Text(mode.tagline).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
+                                }
+                                Spacer(minLength: 0)
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundStyle(LumenColor.muted)
+                            }
+                            .padding(.vertical, 10)
+                            .frame(minHeight: 52)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        Rectangle().fill(LumenColor.line).frame(height: 1)
+                    }
+                }
+                .transition(.opacity)
             }
         }
         .padding(.top, 4)

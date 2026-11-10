@@ -123,6 +123,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var gateWatchdog: Task<Void, Never>?
     /// A21.3: how often the safety timer had to open the recogniser, for Diagnostics.
     private(set) var gateWatchdogOpens = 0
+    /// A20.1: the learned speaking pace per context, and the signals that change it.
+    let paces = SpeechPaceStore()
+    @ObservationIgnored private var paceSignals = PaceSignals()
+    @ObservationIgnored private var noteTask: Task<Void, Never>?
+    /// A20.2: the silent quiz in Provläge (nod = ja, shake = nej). Nil: not running.
+    private(set) var silentQuiz: SilentQuiz?
+    @ObservationIgnored private var silentQuizSeenAnswers = 0
     static let echoTail: TimeInterval = 0.7
     /// The Diagnostics recording (D78) sees every final as it arrives.
     var finalObserver: (@MainActor (String) -> Void)?
@@ -661,6 +668,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             study.stallSilence = nil
             study.speechDetector = nil
         }
+        applyPace()
+        if silentQuiz != nil, newMode != .prov { endSilentQuiz(speak: false) }
         study.start()
         if newMode == .prov, miniTest == nil { provStartedAt = Date() }
         controller.log("Hands-free \(newMode.rawValue) started")
@@ -805,6 +814,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         await startStudy()
     }
 
+    /// A18 (Kelly Ke9): Start's one blue button says what it does, "Förhör mig", the same words as the voice command.
+    /// Provläge for the exam, and the first quiz question at once.
+    func startQuiz(for plan: ExamPlan) async {
+        await startProv(for: plan)
+        guard study.isActive, mode == .prov else { return }
+        askForQuiz()
+    }
+
     /// "Lägg till prov" → "Eller säg det": listen, and the next sentence about an exam is saved as one.
     func listenForExamStatement() async {
         awaitingExamStatement = true
@@ -946,6 +963,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             case .rizz, .social: rizzTurn(text)
             case .standard, .prov:
                 headMotion.stop() // answered with the voice
+                if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered() } // A20.2: "ja" / "nej" by voice
                 // A8.4: several questions in one breath are separate turns, each with its own answer.
                 var parts = QuestionSplitter.split(text)
                 let first = parts.isEmpty ? text : parts.removeFirst()
@@ -1246,7 +1264,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// After a short answer has been spoken (Frågor and Provläge): the window opens with a soft tone.
     private func offerMoreIfShort() {
-        guard mode == .standard || mode == .prov, exam == nil, miniTest == nil, isListening,
+        guard mode == .standard || mode == .prov, exam == nil, miniTest == nil, silentQuiz == nil, isListening,
               let last = conversation.answers.last, MoreOffer.isShort(last.answer),
               let answered = lastAnswerAt, Date().timeIntervalSince(answered) < 30,
               moreOfferedFor != answered else { return } // once per answer (a tip or a confirmation also ends speech)
@@ -1364,6 +1382,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     private func stopByVoice() async {
+        if silentQuiz != nil {
+            endSilentQuiz() // A20.2: the first "sluta" ends the quiz, the next one Provläge
+            return
+        }
         say(language == .swedish ? "Slutar lyssna." : "Stopping.")
         await speechDone()
         await stopListening()
@@ -1384,6 +1406,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         if MiniTest.isStartCommand(text) {
             Task { await startMiniTest() }
+            return
+        }
+        if SilentQuiz.isStartCommand(text), study.isActive, mode == .prov {
+            startSilentQuiz() // A20.2: "Lumen, tyst förhör" closing a turn before its final arrived
             return
         }
         if ProfileStatement.isAboutSchool(text) {
@@ -1564,6 +1590,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         reopenRecognizerAfterSpeech()
         listenForHeadAnswerIfAsked()
         if !study.isActive { askWaitingQuestionIfIdle() }
+        silentQuizAfterSpeech()
+        watchForNoteTaking()
         scheduleTip()
         offerMoreIfShort()
     }
@@ -1611,7 +1639,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// D83: after a yes/no check question in Provläge, a nod or a shake answers it for 6 s. The voice works too.
     private func listenForHeadAnswerIfAsked() {
-        guard study.isActive, mode == .prov, studyProfile.profile.checkQuestions == .yesNo,
+        guard study.isActive, mode == .prov, silentQuiz == nil, studyProfile.profile.checkQuestions == .yesNo,
               let answer = conversation.answers.last?.answer.trimmingCharacters(in: .whitespacesAndNewlines),
               answer.hasSuffix("?") else { return }
         guard headMotion.isAvailable else {
@@ -1641,6 +1669,108 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             self.ownSpeechEnded()
             self.transcription.setInputGated(false)
             if self.study.isActive, !self.askNextStudyPart() { self.study.resumeListening() }
+        }
+    }
+
+    // MARK: - A20.1 the pace adapts
+
+    /// The learned pace for the current mode and subject goes to the voice.
+    func applyPace() {
+        let factor = paces.factor(mode: mode, subject: prefSubject)
+        speaker.paceFactor = Float(factor)
+        paceSignals.reset()
+    }
+
+    /// True when the pace changed. "Snabbare" at full speed is not a pace request: it stays "kortare" (A7).
+    @discardableResult
+    private func changePace(_ request: SpeechPace.Request, why: String) -> Bool {
+        let current = paces.factor(mode: mode, subject: prefSubject)
+        let next = request == .slower ? SpeechPace.slower(than: current) : SpeechPace.faster(than: current)
+        guard next != current else {
+            if request == .slower, why == "asked" { say("Jag pratar redan så långsamt jag kan.") ; return true }
+            return false
+        }
+        paces.set(next, mode: mode, subject: prefSubject)
+        speaker.paceFactor = Float(next)
+        controller.log(String(format: "Pace %.2f → %.2f (%@, A20)", current, next, why))
+        say(next < current ? "Jag pratar lite långsammare." : "Jag pratar snabbare igen.")
+        return true
+    }
+
+    /// Provläge: a long silence after a long answer looks like writing it down (A20.1).
+    private func watchForNoteTaking() {
+        noteTask?.cancel()
+        guard study.isActive, mode == .prov, silentQuiz == nil, exam == nil, miniTest == nil,
+              let answer = conversation.answers.last?.answer,
+              answer.split(separator: " ").count >= 25 else { return }
+        let answersBefore = conversation.answers.count
+        noteTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(SpeechPace.noteSilence))
+            guard let self, !Task.isCancelled, self.isListening, self.conversation.answers.count == answersBefore,
+                  !self.study.isUserSpeaking else { return }
+            self.controller.log("Long silence after an answer: note-taking (A20)")
+            if self.paceSignals.tookNotes() { self.changePace(.slower, why: "note-taking") }
+        }
+    }
+
+    // MARK: - A20.2 Tyst förhör
+
+    func startSilentQuiz() {
+        guard study.isActive, mode == .prov, silentQuiz == nil else { return }
+        silentQuiz = SilentQuiz()
+        silentQuizSeenAnswers = conversation.answers.count
+        controller.log("Silent quiz started (A20)")
+        tips.markUsed(.quizMe)
+        activated(ActivationRequest(query: SilentQuiz.questionRequest, trigger: .tutor, language: language), persona: tutorPersona())
+        // After `activated` (it interrupts speech): the start line plays before the first question arrives.
+        say(SilentQuiz.startLine)
+        if !headMotion.isAvailable { say(SilentQuiz.noHeadTrackingLine) }
+    }
+
+    func endSilentQuiz(speak: Bool = true) {
+        guard let quiz = silentQuiz else { return }
+        silentQuiz = nil
+        headMotion.stop()
+        controller.log("Silent quiz ended: \(quiz.summary) (A20)")
+        if speak { say(quiz.summary) }
+    }
+
+    /// After Lumen spoke in the quiz: count the new answer once, then wait for a nod or a shake.
+    private func silentQuizAfterSpeech() {
+        guard var quiz = silentQuiz, study.isActive, mode == .prov else { return }
+        let count = conversation.answers.count
+        if count > silentQuizSeenAnswers, let answer = conversation.answers.last?.answer {
+            silentQuizSeenAnswers = count
+            quiz.lumenSaid(answer)
+            silentQuiz = quiz
+        }
+        if quiz.graded >= SilentQuiz.questions || quiz.isFinished {
+            endSilentQuiz()
+            return
+        }
+        if quiz.awaitingAnswer { listenForSilentAnswer() }
+    }
+
+    private func listenForSilentAnswer() {
+        guard headMotion.isAvailable else { return } // the voice answers ("ja" / "nej")
+        headMotion.listen(for: SilentQuiz.answerWindow) { [weak self] gesture in
+            guard let self, self.silentQuiz?.awaitingAnswer == true else { return }
+            self.silentQuiz?.answered()
+            let text = gesture == .nod ? "Ja" : "Nej"
+            self.controller.log("Silent quiz: \(gesture == .nod ? "nod" : "shake") → \(text) (A20)")
+            self.activated(ActivationRequest(query: text, trigger: .tutor, language: self.language), persona: self.tutorPersona())
+        }
+        let asked = silentQuiz?.asked
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(SilentQuiz.answerWindow + 0.3))
+            guard let self, var quiz = self.silentQuiz, quiz.awaitingAnswer, quiz.asked == asked else { return }
+            quiz.missed()
+            self.silentQuiz = quiz
+            if quiz.isFinished {
+                self.endSilentQuiz()
+            } else {
+                self.say(SilentQuiz.nudgeLine)
+            }
         }
     }
 
@@ -2812,12 +2942,27 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             discardAhead(reason: "igen")
             study.discardTurnText()
             tips.markUsed(.repeatAnswer)
+            if mode == .prov || mode == .standard, paceSignals.repeated(at: date) { changePace(.slower, why: "two repeats in 10 min") }
             repeatLastAnswer()
             return
         case .notForLumen?:
             controller.log("'Igen' not for Lumen (time or voice, A17)")
         case nil:
             break
+        }
+        noteTask?.cancel() // A20.1: the student spoke, so the silence after the answer was not note-taking
+        if !segment.overlapsPlayback, study.isActive, mode == .prov || mode == .standard, isOtherVoice(near: date) != true,
+           let request = SpeechPace.request(segment.text), changePace(request, why: "asked") {
+            discardAhead(reason: "a pace request")
+            study.discardTurnText()
+            return
+        }
+        if !segment.overlapsPlayback, study.isActive, mode == .prov, exam == nil, miniTest == nil,
+           SilentQuiz.isStartCommand(segment.text) {
+            discardAhead(reason: "silent quiz")
+            study.discardTurnText()
+            startSilentQuiz()
+            return
         }
         if undoAppCommandIfAsked(segment.text, at: date) {
             discardAhead(reason: "an undo")
