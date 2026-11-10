@@ -1,0 +1,28 @@
+name: Oscar A/B audio (O12)
+
+# O12 point 4: three short A/B pairs of TTS models and voices through the DEPLOYED /tts, with an anonymous session and
+# the public key (no secrets). The WAV files are uploaded as an Actions artifact (kept 14 days) and NEVER committed.
+# About 800 weighted ElevenLabs characters per run. Started by hand (workflow_dispatch) only.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Make the A/B pairs
+        run: python3 scripts/qa/o12_ab.py --out ab-audio
+      - name: Upload (artifact, never git)
+        uses: actions/upload-artifact@v4
+        with:
+          name: o12-ab-audio
+          path: ab-audio
+          retention-days: 14
