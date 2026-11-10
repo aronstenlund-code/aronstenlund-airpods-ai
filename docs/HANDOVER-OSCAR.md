@@ -1,4 +1,4 @@
-# Överlämning: Oscar (QA), 2026-11-10 08:45
+# Överlämning: Oscar (QA), 2026-11-10 08:30
 
 Sessionen gjorde O14, O12, O15, O16 del 1 och O18 och fortsätter med O13 del 1. Läs CLAUDE.md, `prompts/queue/README.md` och `prompts/queue/oscar.md`.
 
