@@ -1,0 +1,605 @@
+{
+ "pii_removed": "4/22",
+ "sensitive_skipped": "2/20",
+ "ordinary_kept": "8/10",
+ "e2e_summary": {
+  "rows": 4,
+  "kept": 4,
+  "skipped": {},
+  "groups": 2,
+  "groups_k": 2,
+  "cases": 2
+ },
+ "e2e_written": [
+  "min kompis [namn] Andersson sa att provet var svårt",
+  "jag vill hänga mig"
+ ],
+ "fails": [
+  {
+   "t": "min kompis Lisa Andersson sa att provet var svårt",
+   "scrubbed": "min kompis [namn] Andersson sa att provet var svårt",
+   "secret": "Andersson",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Lisa Andersson i nian sa att provet flyttas",
+   "scrubbed": "Lisa Andersson i nian sa att provet flyttas",
+   "secret": "Lisa",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag och elin ska plugga ikväll, vad är fotosyntes",
+   "scrubbed": "jag och elin ska plugga ikväll, vad är fotosyntes",
+   "secret": "elin",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Ahmed och jag gör grupparbetet, hur skriver man en källhänvisning",
+   "scrubbed": "Ahmed och jag gör grupparbetet, hur skriver man en källhänvisning",
+   "secret": "Ahmed",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Fatima frågade om läxan, vad betyder empati",
+   "scrubbed": "Fatima frågade om läxan, vad betyder empati",
+   "secret": "Fatima",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "vår lärare Kalle sa att vi har prov på fredag",
+   "scrubbed": "vår lärare Kalle sa att vi har prov på fredag",
+   "secret": "Kalle",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "min mamma heter Gunilla, hur stavar man det på engelska",
+   "scrubbed": "min mamma [namn] Gunilla, hur stavar man det på engelska",
+   "secret": "Gunilla",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Oskar i min klass sa att jorden är platt",
+   "scrubbed": "Oskar i min klass sa att jorden är platt",
+   "secret": "Oskar",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag bor på storgatan 12 i Umeå, hur långt är det till skolan",
+   "scrubbed": "jag bor på storgatan 12 i Umeå, hur långt är det till skolan",
+   "secret": "storgatan 12",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag bor på Ringvägen i Hässleholm",
+   "scrubbed": "jag bor på Ringvägen i Hässleholm",
+   "secret": "Ringvägen",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag går på Kungsholmens gymnasium",
+   "scrubbed": "jag går på Kungsholmens gymnasium",
+   "secret": "Kungsholmens",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag går i 9B på vasaskolan",
+   "scrubbed": "jag går i 9B på vasaskolan",
+   "secret": "vasaskolan",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "följ mig på insta lisa_2009",
+   "scrubbed": "följ mig på insta lisa_2009",
+   "secret": "lisa_2009",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "min snap är @elin.k09",
+   "scrubbed": "min snap är @elin.k09",
+   "secret": "@elin.k09",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "mejla aron punkt stenlund snabel-a icloud punkt com",
+   "scrubbed": "mejla aron punkt stenlund snabel-a icloud punkt com",
+   "secret": "stenlund",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "vår bil har registreringsnumret ABC 123",
+   "scrubbed": "vår bil har registreringsnumret ABC 123",
+   "secret": "ABC 123",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "hej Lumen, det är Wilhelm här, vad är klockan",
+   "scrubbed": "hej Lumen, det är Wilhelm här, vad är klockan",
+   "secret": "Wilhelm",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Elvira Johansson har födelsedag idag, vad ska jag köpa",
+   "scrubbed": "Elvira Johansson har födelsedag idag, vad ska jag köpa",
+   "secret": "Johansson",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag vill hänga mig",
+   "skipped": false,
+   "scrubbed_if_kept": "jag vill hänga mig",
+   "ok": false
+  },
+  {
+   "t": "jag rispar mig på armarna",
+   "skipped": false,
+   "scrubbed_if_kept": "jag rispar mig på armarna",
+   "ok": false
+  },
+  {
+   "t": "jag har skurit mig igen",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har skurit mig igen",
+   "ok": false
+  },
+  {
+   "t": "jag har sparat tabletter ifall jag inte orkar",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har sparat tabletter ifall jag inte orkar",
+   "ok": false
+  },
+  {
+   "t": "ingen skulle sakna mig om jag försvann",
+   "skipped": false,
+   "scrubbed_if_kept": "ingen skulle sakna mig om jag försvann",
+   "ok": false
+  },
+  {
+   "t": "jag har diabetes, får jag äta godis",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har diabetes, får jag äta godis",
+   "ok": false
+  },
+  {
+   "t": "jag har epilepsi, får jag spela tv-spel",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har epilepsi, får jag spela tv-spel",
+   "ok": false
+  },
+  {
+   "t": "är jag gay om jag gillar killar",
+   "skipped": false,
+   "scrubbed_if_kept": "är jag gay om jag gillar killar",
+   "ok": false
+  },
+  {
+   "t": "jag har klamydia, vad gör jag",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har klamydia, vad gör jag",
+   "ok": false
+  },
+  {
+   "t": "jag har fått mens för första gången",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har fått mens för första gången",
+   "ok": false
+  },
+  {
+   "t": "pappa slår mig när han är full",
+   "skipped": false,
+   "scrubbed_if_kept": "pappa slår mig när han är full",
+   "ok": false
+  },
+  {
+   "t": "mina föräldrar ska skiljas",
+   "skipped": false,
+   "scrubbed_if_kept": "mina föräldrar ska skiljas",
+   "ok": false
+  },
+  {
+   "t": "jag har rökt hasch, märks det i blodet",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har rökt hasch, märks det i blodet",
+   "ok": false
+  },
+  {
+   "t": "jag snattade på ICA igår",
+   "skipped": false,
+   "scrubbed_if_kept": "jag snattade på ICA igår",
+   "ok": false
+  },
+  {
+   "t": "min kompis tar kokain",
+   "skipped": false,
+   "scrubbed_if_kept": "min kompis [namn] kokain",
+   "ok": false
+  },
+  {
+   "t": "jag fastar under ramadan, hur orkar jag träningen",
+   "skipped": false,
+   "scrubbed_if_kept": "jag fastar under ramadan, hur orkar jag träningen",
+   "ok": false
+  },
+  {
+   "t": "jag är kär i min lärare",
+   "skipped": false,
+   "scrubbed_if_kept": "jag är kär i min lärare",
+   "ok": false
+  },
+  {
+   "t": "jag har ätit nästan ingenting på en vecka för att gå ner i vikt",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har ätit nästan ingenting på en vecka för att gå ner i vikt",
+   "ok": false
+  },
+  {
+   "t": "vad är sex gånger åtta",
+   "skipped": true,
+   "scrubbed": "vad är sex gånger åtta",
+   "ok": false
+  },
+  {
+   "t": "vad är skillnaden mellan diagnos och prognos i biologi",
+   "skipped": true,
+   "scrubbed": "vad är skillnaden mellan diagnos och prognos i biologi",
+   "ok": false
+  }
+ ],
+ "pii": [
+  {
+   "t": "min kompis Lisa Andersson sa att provet var svårt",
+   "scrubbed": "min kompis [namn] Andersson sa att provet var svårt",
+   "secret": "Andersson",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Lisa Andersson i nian sa att provet flyttas",
+   "scrubbed": "Lisa Andersson i nian sa att provet flyttas",
+   "secret": "Lisa",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag och elin ska plugga ikväll, vad är fotosyntes",
+   "scrubbed": "jag och elin ska plugga ikväll, vad är fotosyntes",
+   "secret": "elin",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Ahmed och jag gör grupparbetet, hur skriver man en källhänvisning",
+   "scrubbed": "Ahmed och jag gör grupparbetet, hur skriver man en källhänvisning",
+   "secret": "Ahmed",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Fatima frågade om läxan, vad betyder empati",
+   "scrubbed": "Fatima frågade om läxan, vad betyder empati",
+   "secret": "Fatima",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "vår lärare Kalle sa att vi har prov på fredag",
+   "scrubbed": "vår lärare Kalle sa att vi har prov på fredag",
+   "secret": "Kalle",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "min mamma heter Gunilla, hur stavar man det på engelska",
+   "scrubbed": "min mamma [namn] Gunilla, hur stavar man det på engelska",
+   "secret": "Gunilla",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Oskar i min klass sa att jorden är platt",
+   "scrubbed": "Oskar i min klass sa att jorden är platt",
+   "secret": "Oskar",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "kan du ringa 070-123 45 67",
+   "scrubbed": "kan du ringa [nummer]",
+   "secret": "45 67",
+   "skipped_as_sensitive": false,
+   "ok": true
+  },
+  {
+   "t": "mitt nummer är noll sju noll ett två tre fyra fem sex sju",
+   "scrubbed": "mitt nummer är noll sju noll ett två tre fyra fem sex sju",
+   "secret": "noll sju noll ett två tre fyra",
+   "skipped_as_sensitive": true,
+   "ok": true
+  },
+  {
+   "t": "mitt personnummer är 090314-1234 behöver skolan det",
+   "scrubbed": "mitt personnummer är [personnummer] behöver skolan det",
+   "secret": "1234",
+   "skipped_as_sensitive": false,
+   "ok": true
+  },
+  {
+   "t": "jag bor på storgatan 12 i Umeå, hur långt är det till skolan",
+   "scrubbed": "jag bor på storgatan 12 i Umeå, hur långt är det till skolan",
+   "secret": "storgatan 12",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag bor på Ringvägen i Hässleholm",
+   "scrubbed": "jag bor på Ringvägen i Hässleholm",
+   "secret": "Ringvägen",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag går på Kungsholmens gymnasium",
+   "scrubbed": "jag går på Kungsholmens gymnasium",
+   "secret": "Kungsholmens",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "jag går i 9B på vasaskolan",
+   "scrubbed": "jag går i 9B på vasaskolan",
+   "secret": "vasaskolan",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "följ mig på insta lisa_2009",
+   "scrubbed": "följ mig på insta lisa_2009",
+   "secret": "lisa_2009",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "min snap är @elin.k09",
+   "scrubbed": "min snap är @elin.k09",
+   "secret": "@elin.k09",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "mejla aron punkt stenlund snabel-a icloud punkt com",
+   "scrubbed": "mejla aron punkt stenlund snabel-a icloud punkt com",
+   "secret": "stenlund",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "vår bil har registreringsnumret ABC 123",
+   "scrubbed": "vår bil har registreringsnumret ABC 123",
+   "secret": "ABC 123",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "min bror Noel har feber",
+   "scrubbed": "min bror [namn] har feber",
+   "secret": "Noel",
+   "skipped_as_sensitive": false,
+   "ok": true
+  },
+  {
+   "t": "hej Lumen, det är Wilhelm här, vad är klockan",
+   "scrubbed": "hej Lumen, det är Wilhelm här, vad är klockan",
+   "secret": "Wilhelm",
+   "skipped_as_sensitive": false,
+   "ok": false
+  },
+  {
+   "t": "Elvira Johansson har födelsedag idag, vad ska jag köpa",
+   "scrubbed": "Elvira Johansson har födelsedag idag, vad ska jag köpa",
+   "secret": "Johansson",
+   "skipped_as_sensitive": false,
+   "ok": false
+  }
+ ],
+ "sens": [
+  {
+   "t": "jag vill hänga mig",
+   "skipped": false,
+   "scrubbed_if_kept": "jag vill hänga mig",
+   "ok": false
+  },
+  {
+   "t": "jag rispar mig på armarna",
+   "skipped": false,
+   "scrubbed_if_kept": "jag rispar mig på armarna",
+   "ok": false
+  },
+  {
+   "t": "jag har skurit mig igen",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har skurit mig igen",
+   "ok": false
+  },
+  {
+   "t": "jag har sparat tabletter ifall jag inte orkar",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har sparat tabletter ifall jag inte orkar",
+   "ok": false
+  },
+  {
+   "t": "ingen skulle sakna mig om jag försvann",
+   "skipped": false,
+   "scrubbed_if_kept": "ingen skulle sakna mig om jag försvann",
+   "ok": false
+  },
+  {
+   "t": "jag har diabetes, får jag äta godis",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har diabetes, får jag äta godis",
+   "ok": false
+  },
+  {
+   "t": "jag har epilepsi, får jag spela tv-spel",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har epilepsi, får jag spela tv-spel",
+   "ok": false
+  },
+  {
+   "t": "är jag gay om jag gillar killar",
+   "skipped": false,
+   "scrubbed_if_kept": "är jag gay om jag gillar killar",
+   "ok": false
+  },
+  {
+   "t": "jag tror att jag är bi",
+   "skipped": true,
+   "scrubbed_if_kept": null,
+   "ok": true
+  },
+  {
+   "t": "jag har klamydia, vad gör jag",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har klamydia, vad gör jag",
+   "ok": false
+  },
+  {
+   "t": "jag har fått mens för första gången",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har fått mens för första gången",
+   "ok": false
+  },
+  {
+   "t": "pappa slår mig när han är full",
+   "skipped": false,
+   "scrubbed_if_kept": "pappa slår mig när han är full",
+   "ok": false
+  },
+  {
+   "t": "mina föräldrar ska skiljas",
+   "skipped": false,
+   "scrubbed_if_kept": "mina föräldrar ska skiljas",
+   "ok": false
+  },
+  {
+   "t": "jag har rökt hasch, märks det i blodet",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har rökt hasch, märks det i blodet",
+   "ok": false
+  },
+  {
+   "t": "jag snattade på ICA igår",
+   "skipped": false,
+   "scrubbed_if_kept": "jag snattade på ICA igår",
+   "ok": false
+  },
+  {
+   "t": "min kompis tar kokain",
+   "skipped": false,
+   "scrubbed_if_kept": "min kompis [namn] kokain",
+   "ok": false
+  },
+  {
+   "t": "jag fastar under ramadan, hur orkar jag träningen",
+   "skipped": false,
+   "scrubbed_if_kept": "jag fastar under ramadan, hur orkar jag träningen",
+   "ok": false
+  },
+  {
+   "t": "jag är kär i min lärare",
+   "skipped": false,
+   "scrubbed_if_kept": "jag är kär i min lärare",
+   "ok": false
+  },
+  {
+   "t": "min syster är gravid och sexton",
+   "skipped": true,
+   "scrubbed_if_kept": null,
+   "ok": true
+  },
+  {
+   "t": "jag har ätit nästan ingenting på en vecka för att gå ner i vikt",
+   "skipped": false,
+   "scrubbed_if_kept": "jag har ätit nästan ingenting på en vecka för att gå ner i vikt",
+   "ok": false
+  }
+ ],
+ "keep": [
+  {
+   "t": "vad är sex gånger åtta",
+   "skipped": true,
+   "scrubbed": "vad är sex gånger åtta",
+   "ok": false
+  },
+  {
+   "t": "vad betyder medicinsk",
+   "skipped": false,
+   "scrubbed": "vad betyder medicinsk",
+   "ok": true
+  },
+  {
+   "t": "vem var Gustav Vasa",
+   "skipped": false,
+   "scrubbed": "vem var Gustav Vasa",
+   "ok": true
+  },
+  {
+   "t": "när dog Karl XII",
+   "skipped": false,
+   "scrubbed": "när dog Karl XII",
+   "ok": true
+  },
+  {
+   "t": "vad hände i andra världskriget",
+   "skipped": false,
+   "scrubbed": "vad hände i andra världskriget",
+   "ok": true
+  },
+  {
+   "t": "vad är fotosyntes",
+   "skipped": false,
+   "scrubbed": "vad är fotosyntes",
+   "ok": true
+  },
+  {
+   "t": "hur stavar man rytm",
+   "skipped": false,
+   "scrubbed": "hur stavar man rytm",
+   "ok": true
+  },
+  {
+   "t": "vad är huvudstaden i Ungern",
+   "skipped": false,
+   "scrubbed": "vad är huvudstaden i Ungern",
+   "ok": true
+  },
+  {
+   "t": "vem skrev Röda rummet",
+   "skipped": false,
+   "scrubbed": "vem skrev Röda rummet",
+   "ok": true
+  },
+  {
+   "t": "vad är skillnaden mellan diagnos och prognos i biologi",
+   "skipped": true,
+   "scrubbed": "vad är skillnaden mellan diagnos och prognos i biologi",
+   "ok": false
+  }
+ ]
+}
