@@ -1,0 +1,811 @@
+{
+  "events" : [
+    {
+      "kind" : "spoke",
+      "t" : 40.20943903923035,
+      "text" : "Jag hör inte just nu, försöker igen."
+    },
+    {
+      "kind" : "spoke",
+      "t" : 64.58652102947235,
+      "text" : "Det här är ett test av reservrösten."
+    }
+  ],
+  "log" : [
+    "   0.00 State Idle → Listening",
+    "   0.03 Cue: start (A34)",
+    "   1.35 Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+    "   1.35 Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   1.35 Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   1.44 Capture started · engine input WAV files (3) · 16000 Hz · 1 ch · Int16",
+    "   1.59 Microphone airPods for standard · B-HQ · MicrophoneBuiltIn · iPhone mic",
+    "   1.61 Scribe keyterms: 4, longest 7 characters (kortare)",
+    "   2.42 Fel (stt): Could not start speech recognition: http_503 (HTTP 503)",
+    "   2.42 Stand-in engine for speech recognition: said once on Lyssnar (A45)",
+    "   2.42 Scribe unavailable (Could not start speech recognition: http_503 (HTTP 503)): using the iPhone's speech recognition",
+    "   2.62 Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+    "  34.05 STT start failed: Audio format problem: no analyzer audio format for DictationTranscriber",
+    "  34.06 Scribe retry 1 in 1 s (start failed)",
+    "  35.09 Scribe keyterms: 4, longest 7 characters (kortare)",
+    "  35.10 Fel (stt): Could not start speech recognition: http_503 (HTTP 503)",
+    "  35.10 Scribe unavailable (Could not start speech recognition: http_503 (HTTP 503)): using the iPhone's speech recognition",
+    "  35.14 STT start failed: Audio format problem: no analyzer audio format for DictationTranscriber",
+    "  35.14 Scribe retry 2 in 2 s (start failed)",
+    "  37.15 Scribe keyterms: 4, longest 7 characters (kortare)",
+    "  37.15 Fel (stt): Could not start speech recognition: http_503 (HTTP 503)",
+    "  37.16 Scribe unavailable (Could not start speech recognition: http_503 (HTTP 503)): using the iPhone's speech recognition",
+    "  37.17 STT start failed: Audio format problem: no analyzer audio format for DictationTranscriber",
+    "  37.17 Scribe retry 3 in 4 s (start failed)",
+    "  40.20 Not hearing: failed(\"Audio format problem: no analyzer audio format for DictationTranscriber\")",
+    "  52.67 Scribe keyterms: 4, longest 7 characters (kortare)",
+    "  52.70 Fel (stt): Could not start speech recognition: http_503 (HTTP 503)",
+    "  52.70 Scribe unavailable (Could not start speech recognition: http_503 (HTTP 503)): using the iPhone's speech recognition",
+    "  52.76 STT start failed: Audio format problem: no analyzer audio format for DictationTranscriber",
+    "  52.76 Scribe retry 4 in 8 s (start failed)",
+    "  55.78 Not hearing: failed(\"Audio format problem: no analyzer audio format for DictationTranscriber\")",
+    "  60.79 Scribe keyterms: 4, longest 7 characters (kortare)",
+    "  60.81 Fel (stt): Could not start speech recognition: http_503 (HTTP 503)",
+    "  60.81 Scribe unavailable (Could not start speech recognition: http_503 (HTTP 503)): using the iPhone's speech recognition",
+    "  60.90 STT start failed: Audio format problem: no analyzer audio format for DictationTranscriber",
+    "  60.90 Scribe retry 5 in 16 s (start failed)",
+    "  63.93 Not hearing: failed(\"Audio format problem: no analyzer audio format for DictationTranscriber\")",
+    "  64.45 STT input gated (own speech)",
+    "  64.60 Fel (tts): Voice service: Answer service: http_503 — T10 test outage (503) (HTTP 503)",
+    "  64.88 Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    "  69.36 STT input opened by the safety timer: no end of Lumen's speech after 5 s (playback speaking true, speaker speaking true) (A21)",
+    "  69.36 STT input open",
+    "  76.91 Scribe keyterms: 4, longest 7 characters (kortare)",
+    "  76.95 Fel (stt): Could not start speech recognition: http_503 (HTTP 503)",
+    "  76.95 Scribe unavailable (Could not start speech recognition: http_503 (HTTP 503)): using the iPhone's speech recognition",
+    "  77.01 STT start failed: Audio format problem: no analyzer audio format for DictationTranscriber",
+    "  77.01 Scribe retry 6 in 30 s (start failed)",
+    "  80.03 Not hearing: failed(\"Audio format problem: no analyzer audio format for DictationTranscriber\")"
+  ],
+  "lyssnarWithCannotHear" : 0,
+  "noticeFirstAt" : 2.5957729816436768,
+  "noticeSeconds" : 66,
+  "samples" : [
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 2.5957729816436768
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 3.596337080001831
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 4.597701072692871
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 5.603281021118164
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 6.6075990200042725
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 7.624451994895935
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 8.628838062286377
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 9.640191078186035
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 10.67623507976532
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 11.693405032157898
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 12.708840012550354
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 13.715810060501099
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 14.733506083488464
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 15.74099600315094
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 16.752987027168274
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 17.787821054458618
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 18.805798053741455
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 19.807693004608154
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 20.84969198703766
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 21.85678505897522
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 22.876430988311768
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 23.891121983528137
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 24.905713081359863
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 25.944488048553467
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 26.959248065948486
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 27.97156298160553
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 28.99365508556366
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 30.000341057777405
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 31.01210105419159
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 32.019173979759216
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 33.037060022354126
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 34.05937707424164
+    },
+    {
+      "active" : true,
+      "hearing" : true,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 35.09632408618927
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 36.100749015808105
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 37.118772983551025
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 38.15852606296539
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 39.1648530960083
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "",
+      "speaking" : false,
+      "t" : 40.16785800457001
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 52.646730065345764
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 54.42873299121857
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 55.48330998420715
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 56.49797809123993
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 57.498738050460815
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 58.50096309185028
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 59.50434100627899
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 60.53073704242706
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 61.53163504600525
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 62.54635405540466
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 63.55955898761749
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 64.57433605194092
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 65.57814300060272
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 66.57845401763916
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 67.58098006248474
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 68.59182405471802
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : true,
+      "t" : 69.59501206874847
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 70.62879300117493
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 71.6388750076294
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 72.66614902019501
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 73.69014406204224
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 74.69148409366608
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 75.70940005779266
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 76.72351598739624
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 77.7243800163269
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 78.72529804706573
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 79.73807203769684
+    },
+    {
+      "active" : true,
+      "hearing" : false,
+      "listening" : true,
+      "notices" : [
+        "Lumen hör och pratar lite sämre just nu"
+      ],
+      "problem" : "cannotHear",
+      "speaking" : false,
+      "t" : 80.76506209373474
+    }
+  ],
+  "seconds" : 80.76512598991394,
+  "spoken" : 2,
+  "standInLines" : 1,
+  "stubHits" : [
+    "/functions/v1/tts",
+    "/functions/v1/stt-token",
+    "/functions/v1/stt-token",
+    "/functions/v1/stt-token",
+    "/functions/v1/stt-token",
+    "/functions/v1/tts",
+    "/functions/v1/stt-token",
+    "/functions/v1/tts",
+    "/functions/v1/stt-token"
+  ],
+  "voiceAtStart" : "elevenLabs:t10-outage",
+  "voiceFallbacks" : 1
+}
