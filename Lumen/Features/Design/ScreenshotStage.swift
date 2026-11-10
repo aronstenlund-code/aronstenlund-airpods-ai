@@ -45,6 +45,10 @@ struct ScreenshotStage: View {
         if !model.memory.facts.contains(where: { $0.text.hasPrefix("Provträning") }) {
             model.memory.add("Provträning: öva på uppgifter som \"Cellandning och klorofyll\"", kind: .fact, source: .automatic)
         }
+        // A38/A43: a streak of three days and the readiness ring on the nearest exam.
+        if let nearest = model.examPlans?.upcoming().first {
+            model.stageStudyPlanForScreenshot(nearest, reply: ReadinessDemo.reply(for: nearest), quizDays: ReadinessDemo.quizDays)
+        }
         // A46: study cards, so Start shows "Öva med 3 vändkort".
         if model.studyCards?.current().isEmpty == true {
             for card in FlipDemo.cards { model.studyCards?.add(question: card.question, answer: card.answer, profile: profile) }
@@ -87,6 +91,12 @@ struct ScreenshotStage: View {
             // A46 (N6): the flip cards, the question, the answer with Kunde / Kunde inte, and the end.
             case "flipCards", "flipCardsBack", "flipCardsDone":
                 FlipCardsView(plan: FlipDemo.plan, deck: FlipDemo.deck(name), onMark: { _, _ in }, onClose: {})
+            // A43: "Så redo är du".
+            case "readiness":
+                if let plan = model.examPlans?.upcoming().first, let readiness = model.readiness(for: plan) {
+                    ReadinessView(plan: plan, readiness: readiness, known: ["fotosyntes", "klorofyll"],
+                                  today: model.todayLine(for: plan), onQuiz: {}, onClose: {})
+                }
             case "about": NavigationStack { AboutView() } // A13.1
             case "interview": NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
             case "live": NavigationStack { LiveStartView(model: model, settings: model.modeSettings, mode: .social) }
@@ -95,6 +105,26 @@ struct ScreenshotStage: View {
         }
     }
 }
+/// A38/A43: the plan's reply as K31/K33 send it, and three quiz days ending today.
+private enum ReadinessDemo {
+    static var quizDays: [String] {
+        (0..<3).compactMap { Calendar.current.date(byAdding: .day, value: -$0, to: Date()) }.map { StudyHistory.day($0) }
+    }
+
+    static func reply(for plan: ExamPlan) -> StudyPlanAPI.ExamPlanReply {
+        let today = StudyHistory.day(Date())
+        return StudyPlanAPI.ExamPlanReply(
+            name: plan.name, date: StudyHistory.day(plan.date), daysLeft: plan.daysLeft(), prompt: nil,
+            plan: [StudyPlanAPI.Day(date: today, minutes: 10, concepts: ["cellandning", "mitokondrier"], note: nil)],
+            readiness: StudyPlanAPI.Readiness(
+                readyPct: 68, practiced: 7, total: 12,
+                weakest: [.init(concept: "cellandning", score: 0, why: "fel senast"),
+                          .init(concept: "kolets kretslopp", score: 0, why: "inte övat än"),
+                          .init(concept: "mitokondrier", score: 0.4, why: "dags att repetera")],
+                explain: "Räknat på 12 begrepp, 7 övade. Ett begrepp räknas fullt när du har haft rätt tre gånger i rad."))
+    }
+}
+
 /// A46: demo flip cards, biology like the demo exam.
 private enum FlipDemo {
     static let plan = ExamPlan(grade: .y9, area: .no, subject: "Biologi", date: Date().addingTimeInterval(5 * 86_400),

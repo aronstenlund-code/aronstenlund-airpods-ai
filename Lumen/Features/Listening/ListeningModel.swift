@@ -2647,6 +2647,32 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         canAskForReminders = !daily.isEmpty && LumenNotifications.remindersOn && status == .notDetermined
     }
 
+    /// A43 (K33): how ready the student is for the exam, when the backend could count it.
+    func readiness(for plan: ExamPlan) -> StudyPlanAPI.Readiness? {
+        guard let readiness = studyPlans[plan.id]?.readiness, readiness.readyPct != nil else { return nil }
+        return readiness
+    }
+
+    /// A43: what the student already knows for the exam: right the last two times or more (K33 counts three in a
+    /// row as full, two as most of it). At most six, by name.
+    func knownConcepts(for plan: ExamPlan) -> [String] {
+        Self.known(studyHistory.history(for: plan.id))
+    }
+
+    nonisolated static func known(_ history: [String: [StudyHistory.Entry]], limit: Int = 6) -> [String] {
+        let known = history.filter { _, entries in entries.count >= 2 && entries.suffix(2).allSatisfy(\.ok) }.map(\.key)
+        return Array(known.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }.prefix(limit))
+    }
+
+    #if DEBUG
+    /// A38/A43: the plan's reply and the quiz days for the Simulator screenshots (no network there).
+    func stageStudyPlanForScreenshot(_ plan: ExamPlan, reply: StudyPlanAPI.ExamPlanReply, quizDays days: [String]) {
+        studyPlans[plan.id] = reply
+        quizDays = QuizDays(days: days)
+        streak = quizDays.streak()
+    }
+    #endif
+
     /// A38 (K31): a quiz answer today (Förhör mig, the practice exam, the mini test, the silent quiz, flip cards).
     /// The day's first one keeps the streak and takes away today's reminder.
     func noteQuizAnswer(at date: Date = Date()) {
@@ -2732,6 +2758,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             test.graded(turn.answer)
             studyCards?.mark(id, right: test.results[id] ?? false)
             noteQuizAnswer() // A38
+            // A43 (K33): the mini test's answers count in the study plan too, like the flip cards.
+            if let examID = currentExamID(), let plan = examPlans?.plans.first(where: { $0.id == examID }),
+               let card = test.cards.first(where: { $0.id == id }) {
+                studyHistory.record(FlipDeck.concept(for: card, topics: plan.topics), ok: test.results[id] ?? false, exam: examID)
+                studyHistory.save()
+            }
             miniTest = test
             askMiniTestQuestion()
             return

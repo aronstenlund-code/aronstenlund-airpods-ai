@@ -14,6 +14,8 @@ struct HomeView: View {
     @State private var photographing: ExamPlan?
     /// A46: the flip cards being tapped through.
     @State private var flipping: FlipSession?
+    /// A43: the exam whose "Så redo är du" is open.
+    @State private var readinessPlan: ExamPlan?
     /// A24 (Kelly Ke10, T3 finding 3): a start with the microphone off shows the screen that fixes it.
     @State private var isShowingMicrophoneDenied = false
 
@@ -53,6 +55,17 @@ struct HomeView: View {
             if denied { isShowingMicrophoneDenied = true }
         }
         .task { await model.refreshStudyPlan() } // A19: today's pass and the reminders
+        .sheet(item: $readinessPlan) { plan in
+            if let readiness = model.readiness(for: plan) {
+                ReadinessView(plan: plan, readiness: readiness, known: model.knownConcepts(for: plan),
+                              today: model.todayLine(for: plan)) {
+                    readinessPlan = nil
+                    Task { await model.startQuiz(for: plan) }
+                } onClose: {
+                    readinessPlan = nil
+                }
+            }
+        }
         .fullScreenCover(item: $flipping) { session in
             FlipCardsView(plan: session.plan, deck: session.deck) { card, knew in
                 model.recordFlip(card, knew: knew, for: session.plan)
@@ -95,10 +108,24 @@ struct HomeView: View {
                 Spacer(minLength: 8)
                 RedPenRing(text: ExamPlan.daysLeftText(plan.daysLeft()))
             }
-            Text(plan.name)
-                .font(LumenFont.text(28, .bold, relativeTo: .title))
-                .accessibilityAddTraits(.isHeader)
-                .padding(.top, 10)
+            HStack(alignment: .center, spacing: 12) {
+                Text(plan.name)
+                    .font(LumenFont.text(28, .bold, relativeTo: .title))
+                    .accessibilityAddTraits(.isHeader)
+                Spacer(minLength: 0)
+                if let readiness = model.readiness(for: plan), let percent = readiness.readyPct {
+                    // A43 (K33): "68 %" in a ring; a tap shows what is known and what to practise.
+                    Button {
+                        readinessPlan = plan
+                    } label: {
+                        ReadinessRing(percent: percent)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(percent) procent redo")
+                    .accessibilityHint("Visar vad du kan och vad du ska öva på")
+                }
+            }
+            .padding(.top, 10)
             HStack(alignment: .firstTextBaseline) {
                 Text(plan.dateLine())
                     .font(LumenFont.text(15))
