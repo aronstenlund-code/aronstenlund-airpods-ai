@@ -5,8 +5,6 @@ import {
   buildCalibrateUserMessage,
   buildRizzUserMessage,
   capCalibration,
-  detectDecline,
-  FALLBACK_DECLINE,
   finalizeCalibration,
   formatConversation,
   MAX_CALIBRATION,
@@ -150,39 +148,12 @@ Deno.test("parseSuggestions: clean lines, max three, dedupe, strip numbering/quo
     [],
   );
   assertEquals(
-    parseSuggestions("Vill du ligga med mig?\nVad gör du i helgen?\nDu måste stanna kvar"),
-    ["Vad gör du i helgen?"],
+    parseSuggestions("Talare 1 sa hej?\nVad gör du i helgen?\nDu måste stanna kvar"),
+    ["Talare 1 sa hej?", "Vad gör du i helgen?"], // the last line is not complete yet
   );
-  assertEquals(parseSuggestions("Du har så sexig kropp\nSnygga kropp?"), []);
+  assertEquals(parseSuggestions("Du har så sexig kropp\nSnygga kropp?"), ["Du har så sexig kropp", "Snygga kropp?"], "D113 A1: no content filter in code");
   assertEquals(parseSuggestions("**Fint!**"), ["Fint!"]);
   assertEquals(parseSuggestions(""), []);
-});
-
-Deno.test("detectDecline: no / leaving / discomfort in the other person's latest words", () => {
-  const d = (text: string) =>
-    detectDecline(req({ social: social({ transcript: [{ speaker: "other", text }] }) }));
-  for (
-    const t of [
-      "Nej tack, jag vill inte.",
-      "Sluta nu.",
-      "Jag måste gå nu.",
-      "Jag är inte intresserad.",
-      "Det är obekvämt för mig.",
-      "Lämna mig ifred",
-    ]
-  ) {
-    assert(d(t) || /ifred/.test(t), t);
-  }
-  for (
-    const t of [
-      "Nej vad kul!",
-      "Jag gick till affären",
-      "Vi måste ses snart",
-      "Jag ska gå och handla efter detta",
-    ]
-  ) assert(!d(t) || /ska gå/.test(t), t);
-  assert(detectDecline(req({ fragment: "sluta", social: social({ transcript: [] }) })));
-  assertEquals(FALLBACK_DECLINE.length, 2);
 });
 
 Deno.test("conversation formatting and user turn: speakers, trigger, style, interests, decline signal", () => {
@@ -196,7 +167,7 @@ Deno.test("conversation formatting and user turn: speakers, trigger, style, inte
   const d = buildRizzUserMessage(
     req({ social: social({ transcript: [{ speaker: "other", text: "Nej tack." }] }) }),
   );
-  assertStringIncludes(d, "<signal>decline</signal>");
+  assert(!d.includes("<signal>"), "D113 A2: no decline signal from code");
   const o = buildRizzUserMessage(
     req({
       social: social({
@@ -240,7 +211,7 @@ Deno.test("prompt: format, grounding, logic, respect, stage, two styles; hold-ou
     "nothing sexual or about bodies or looks",
     "Stage: opener",
     "stalled =",
-    'signal> is "decline"',
+    "If the other person says no",
     "Never persuade or keep them",
     "never mention the silence",
     "answers as the user from <memories>",
@@ -290,7 +261,7 @@ Deno.test("prompt: format, grounding, logic, respect, stage, two styles; hold-ou
 
 Deno.test("D52/D63 parsing: candidates + TOP, top-up, drops, legacy plain lines, preview", () => {
   const raw =
-    "1|a|Ett två tre fyra fem sex sju åtta nio tio elva\n2|b|Vilket lopp?\n3|c|Hoppas det blir sol!\n4|d|Vill du ligga med mig?\n5|e|Vad springer du helst?\nTOP: 1,4,3\n";
+    "1|a|Ett två tre fyra fem sex sju åtta nio tio elva\n2|b|Vilket lopp?\n3|c|Hoppas det blir sol!\n4|d|Talare 2 sa det där?\n5|e|Vad springer du helst?\nTOP: 1,4,3\n";
   assertEquals(pickSuggestions(raw), [
     "Hoppas det blir sol!",
     "Vilket lopp?",
@@ -317,14 +288,10 @@ Deno.test("D52/D63 parsing: candidates + TOP, top-up, drops, legacy plain lines,
   ]);
   // D63: compact "n|line" format (no hook column) and the preview of line 1
   const c4 =
-    "1|Kl sex på en lördag? Du är modigare än jag.\n2|Vad springer du helst?\n3|Sex med mig?\n4|Ska du";
+    "1|Kl sex på en lördag? Du är modigare än jag.\n2|Vad springer du helst?\n3|Talare 2 sa det?\n4|Ska du";
   assertEquals(previewSuggestion(c4), "Kl sex på en lördag? Du är modigare än jag.");
   assertEquals(previewSuggestion("1|Hej och välkommen hit"), null, "line 1 not complete yet");
-  assertEquals(
-    previewSuggestion("1|Ligga med mig?\n2|Hej\n"),
-    null,
-    "unsafe line 1 is never previewed",
-  );
+  assertEquals(previewSuggestion("1|Talare 1 sa hej?\n2|Hej\n"), null, "a speaker label is never previewed");
   assertEquals(
     previewSuggestion("1|ett två tre fyra fem sex sju åtta nio tio elva\n"),
     null,
@@ -372,9 +339,9 @@ Deno.test("D69 Socialt läge: the comeback (candidate 4) is always one of the th
   );
   assertEquals(pickSuggestions("1|A.\n2|B.\nTOP: 1,2\n", true, SOCIAL_COMEBACK), ["A.", "B."]);
   assertEquals(
-    pickSuggestions("1|A.\n2|B.\n3|C.\n4|Vill du ligga med mig?\nTOP: 1,2,3\n", true, 4),
+    pickSuggestions("1|A.\n2|B.\n3|C.\n4|Talare 2 sa det där.\nTOP: 1,2,3\n", true, 4),
     ["A.", "B.", "C."],
-    "an unsafe comeback is never forced in",
+    "a comeback with a speaker label is never forced in",
   );
 });
 
@@ -413,7 +380,7 @@ Deno.test("D69 calibration: fields validated, own plan, merged reply cleaned and
     "mindre kaxig; hon gillar fotboll",
   );
   assertEquals(finalizeCalibration("mindre kaxig\nfler skämt", ""), "mindre kaxig; fler skämt");
-  assertEquals(finalizeCalibration("var mer sexig", "lugn"), "lugn", "unsafe reply keeps the old one");
+  assertEquals(finalizeCalibration("var mer flörtig", "lugn"), "var mer flörtig", "D113 A1: no content filter in code");
   const cut = capCalibration(Array.from({ length: 40 }, (_, i) => `punkt ${i} här`).join("; "));
   assert(cut.length <= MAX_CALIBRATION && !/[;,]$/.test(cut), cut);
 });
@@ -469,7 +436,7 @@ Deno.test("D72: one suggestion by default; an explicit 'ge mig tre' asks for mor
   assertEquals(pickSuggestions("1|A.\n2|B.\n3|C.\n4|D.\n5|E.\n", true, undefined, 5).length, 5);
 });
 
-Deno.test("D72: a safe line of 11-14 words is used before the generic fallback; unsafe or very long never", () => {
+Deno.test("D72: a line of 11-14 words is used before the generic fallback; a speaker label or very long never", () => {
   const twelve = "Jag peppar dig från sidan och du bjuder på kaffe efteråt sen.";
   assertEquals(pickSuggestions(`1|${twelve}\n`, true, undefined, 1), [twelve]);
   assertEquals(pickSuggestions(`1|Kort och bra.\n2|${twelve}\n`, true, undefined, 1), ["Kort och bra."]);
@@ -483,7 +450,7 @@ Deno.test("D72: a safe line of 11-14 words is used before the generic fallback; 
     [],
   );
   assertEquals(
-    pickSuggestions("1|Vill du ligga med mig efter festen ikväll hos mig?\n", true, undefined, 1),
+    pickSuggestions("1|Talare 1 sa att du ville gå på festen ikväll eller hur?\n", true, undefined, 1),
     [],
   );
 });

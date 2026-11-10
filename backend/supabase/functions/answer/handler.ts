@@ -98,8 +98,6 @@ export function isRepeatedQuestion(text: string, asked: string[]): boolean {
 import { stripEcho } from "./echo.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import {
-  detectDecline,
-  FALLBACK_DECLINE,
   filterReasons,
   FALLBACK_SUGGESTIONS,
   pickSuggestions,
@@ -1623,7 +1621,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 );
               }
               if (!options.length) {
-                options = (detectDecline(body) ? FALLBACK_DECLINE : FALLBACK_SUGGESTIONS).slice(
+                options = FALLBACK_SUGGESTIONS.slice(
                   0,
                   rizzCount,
                 );

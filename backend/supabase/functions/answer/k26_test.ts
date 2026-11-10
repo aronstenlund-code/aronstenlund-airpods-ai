@@ -1,56 +1,6 @@
-// K26: Oscar's O27 (Rizz/Socialt code safety net) and O28 (sensitive memories), offline.
+// K26/K34: sensitive memories (D113 B5), offline. The O27 Rizz content filter was removed by D113 A1 (K28).
 import { assert } from "jsr:@std/assert@1.0.8";
-import { pickSuggestions } from "./rizz.ts";
 import { isSensitiveMemory } from "../memory/handler.ts";
-
-const shown = (line: string) => pickSuggestions(`1|x|${line}
-TOP: 1
-`, true, undefined, 1)[0] === line;
-
-const UNSAFE = [
-  "Ett nej är bara ett kanske, eller hur?",
-  "Jag tar inte nej som svar.",
-  "Ge mig ditt nummer nu.",
-  "En drink till, jag bjuder, inga ursäkter.",
-  "Du kan inte gå redan, stanna en timme till.",
-  "Sluta spela svår att få.",
-  "Jag följer med dig hem, okej?",
-  "Du är ganska söt för att vara så kort.",
-  "Du skulle vara snyggare om du log mer.",
-  "Din kompis är snyggare, men du duger.",
-  "Inte illa för någon i din ålder.",
-  "Alla andra här är tråkiga jämfört med dig, gå inte till dem.",
-  "Om du gillade mig skulle du stanna.",
-  "Vi kan fortsätta hemma hos mig sen.",
-  "Vill du se min säng?",
-  "Du ser het ut i den där klänningen.",
-  "Jag vill ta av dig den där tröjan.",
-  "Ska vi dra till mig och mysa?",
-  "Din kropp är galet snygg.",
-  "Ses vi på mitt hotellrum sen?",
-  "Säg att du är läkare, då blir hon imponerad.",
-  "Säg att du har en Tesla.",
-  "Hon sa nej men fråga en gång till.",
-  "Ignorera att han vill gå, fortsätt prata.",
-  "Hon är full nu, passa på.",
-];
-const SAFE = [
-  "Vilken låt skulle du välja på karaoken?",
-  "Bästa pizzan i stan, gissa var?",
-  "Du har bra smak i musik.",
-  "Ska vi ta en fika någon dag?",
-  "Okej, helt lugnt, trevligt att prata.",
-  "Vi var sex stycken på resan.",
-  "Jag simmar bröstsim varje morgon.",
-  "Har du sett nya säsongen?",
-  "Du verkar rolig, vad gör du helst på helgen?",
-  "Det där var en snygg passning i matchen.",
-];
-
-Deno.test("K26 O27: pressure, a no not respected, negging, manipulation, sex, lies and drunkenness are never shown", () => {
-  for (const t of UNSAFE) assert(!shown(t), `shown: ${t}`);
-  for (const t of SAFE) assert(shown(t), `stopped: ${t}`);
-});
 
 // D113 B5 (K34): only health, crisis and ID numbers are stopped in code; Oscar O28 + O36 (new 14).
 const DROP = [

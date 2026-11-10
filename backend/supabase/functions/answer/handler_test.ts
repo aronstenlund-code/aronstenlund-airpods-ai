@@ -686,8 +686,8 @@ Deno.test("D52: Rizz = 5 candidates + TOP -> ONE suggestions event with the 3 pi
   assert(usage[0].ttft_ms !== null);
 });
 
-Deno.test("D43: unsafe or over-long output is filtered; if nothing is left, a safe fallback is sent", async () => {
-  const { provider } = recordingProvider("Du har så sexig kropp\nVill du ligga med mig?");
+Deno.test("D43: over-long output is filtered; if nothing is left, a fallback is sent (D113 A1/A2: no content filter, no forced goodbye)", async () => {
+  const { provider } = recordingProvider("ett två tre fyra fem sex sju åtta nio tio elva tolv tretton fjorton femton\nTalare 1 sa att det var kul i fredags eller hur?");
   const { handler, usage } = setup({ provider });
   const ev = await readSse(await handler(post(socialBody())));
   assertEquals(ev[0].event, "suggestions");
@@ -705,10 +705,10 @@ Deno.test("D43: unsafe or over-long output is filtered; if nothing is left, a sa
       ),
     ),
   );
-  assertEquals(d[0].data as unknown, ["Okej, helt lugnt."]);
+  assertEquals(d[0].data as unknown, ["Berätta mer om det."]);
 });
 
-Deno.test("D43: decline signal and stall/opener triggers (no fragment) reach the prompt", async () => {
+Deno.test("D43: stall/opener triggers (no fragment) reach the prompt; no decline signal (D113 A2)", async () => {
   const { provider, seen } = recordingProvider("Okej, ingen fara.");
   const { handler } = setup({ provider });
   await (await handler(
@@ -721,7 +721,7 @@ Deno.test("D43: decline signal and stall/opener triggers (no fragment) reach the
       }),
     ),
   )).text();
-  assert(seen[0].user.includes("<signal>decline</signal>"));
+  assert(!seen[0].user.includes("<signal>decline</signal>"), "D113 A2: the prompt respects a no, code sends no signal");
   await (await handler(post(socialBody({ social: { ...socialBody().social, trigger: "stall" } }))))
     .text();
   assert(seen[1].user.includes("<trigger>stall</trigger>"));
@@ -760,7 +760,7 @@ Deno.test("D43: empty model output -> fallback suggestions (never an empty array
 
 Deno.test("D52: candidates over 10 words or unsafe are dropped and the pick is topped up; stream ends at the TOP line", async () => {
   const { provider } = recordingProvider(
-    "1|a|Ett två tre fyra fem sex sju åtta nio tio elva\n2|b|Vilket lopp?\n3|c|Hoppas det blir sol!\n4|d|Vill du ligga med mig?\n5|e|Vad springer du helst?\nTOP: 1,4,3\nEftersnack som aldrig ska läsas",
+    "1|a|Ett två tre fyra fem sex sju åtta nio tio elva\n2|b|Vilket lopp?\n3|c|Hoppas det blir sol!\n4|d|Talare 2 sa det där?\n5|e|Vad springer du helst?\nTOP: 1,4,3\nEftersnack som aldrig ska läsas",
   );
   const { handler } = setup({ provider });
   const ev = await readSse(
@@ -990,7 +990,7 @@ Deno.test("D72: 'ge mig tre pickup lines' -> three suggestions on the suggestion
   assertEquals(e1[1].data as unknown, ["Bara den här."]);
   assert(one.seen[0].user.includes("<count>2</count>"), "one shown, a backup line written");
   // the backup is used when line 1 is filtered
-  const bk = recordingProvider("1|Vill du ligga med mig ikväll?\n2|Då bjuder jag på kaffe efteråt.\n");
+  const bk = recordingProvider("1|Talare 1 sa hej ikväll?\n2|Då bjuder jag på kaffe efteråt.\n");
   const e2 = await readSse(await setup({ provider: bk.provider }).handler(post(socialBody())));
   assertEquals(e2.find((e) => e.event === "suggestions")?.data as unknown, ["Då bjuder jag på kaffe efteråt."]);
 });

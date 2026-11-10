@@ -5,7 +5,8 @@ import type { AnswerRequest, SocialStyle } from "./validate.ts";
 /**
  * D43 Rizzläge: live wingman for everyday conversations. Returns 2-3 ultra-short options (best first)
  * as one `suggestions` event. General principles only (no scripted lines); respectful and honest by
- * construction; a small deterministic filter and a decline detector back the prompt up.
+ * construction. D113 A1/A2 (K28): no code filter for content and no forced goodbye; the model's own limits
+ * and this role description decide (a no is respected by the prompt). Code keeps only length and labels.
  */
 const RIZZ_HEAD = `${
   INTRO.replace("study assistant", "conversation wingman").replace(
@@ -23,7 +24,7 @@ Weigh several angles silently and write only your best: exactly <count> lines (u
 <line> = what the user says out loud, plain spoken Swedish, at most 10 words (aim for 6-8), natural for a 17-25 year old, no translated English phrasing, no explaining the joke. Line 1 is your strongest line (it is shown first, so write it first). Several lines are clearly different angles. <request> also sets the theme or kind of line for this call ("tre pickup lines" = three openers), within the rules below.
 Every line must be concrete (built on something the other person just said, or on <profile>, <interests>, the place, the mood), must follow logically from what was said, and a joke needs a clear connection you could explain in one sentence (else drop it; a pun only if it really works in Swedish). Nothing generic that would fit any conversation. Do not claim facts about the user that are not given.
 Stage: opener = a friendly opening built on something specific in <profile>, <interests> or the shared situation; middle = continue exactly this thread and do not repeat what the user already said; stalled = a follow-up on the current thread, a new topic from <interests> or the situation, or a light comment - never mention the silence.
-- Respect: no negging, pressure, guilt, lies or manipulation; nothing sexual or about bodies or looks. If <signal> is "decline", or the other person says no, wants to leave or change topic, or sounds uncomfortable, every line must respect that: accept it kindly, change topic if they asked, or end the conversation warmly. Never persuade or keep them.
+- Respect: no negging, pressure, guilt, lies or manipulation; nothing sexual or about bodies or looks. If the other person says no, wants to leave or change topic, or sounds uncomfortable, every line must respect that: accept it kindly, change topic if they asked, or end the conversation warmly. Never persuade or keep them.
 - When the other person asks the user something about themselves, at least line 1 answers as the user from <memories> in first person and hands the question back ("Jag åkte skidor, du då?"). With no fitting memory never invent a fact and never ask for information first: turn it around ("Jag är mer intresserad av vad du har gjort.").`;
 
 const RIZZ_FLIRT = `
@@ -55,33 +56,6 @@ export function rizzSystemPrompt(style: SocialStyle): string {
 export const SYSTEM_PROMPT_RIZZ = rizzSystemPrompt("social");
 export const SYSTEM_PROMPT_RIZZ_FLIRT = rizzSystemPrompt("flirt");
 
-
-/**
- * Did the other person's latest words signal no / leaving / discomfort?
- * K8 (Oscar O7, live 3/3: "Jag ska gå på bio i helgen, gillar du film?" -> "Okej, helt lugnt."): only when the
- * line IS a no or a goodbye: the decline words open the line or a clause and nothing but a short end follows
- * ("Nej tack.", "Jag måste gå nu, hej då!"), and never when a question or an invitation follows. Strong words
- * ("sluta", "låt mig vara", "du är obehaglig") count anywhere.
- */
-const DECLINE_STRONG =
-  /(?:^|[\s,.!?])(?:sluta|låt mig vara|lämna mig (?:ifred|i fred)|du är obehaglig|det är obekvämt|inte intresserad|ointresserad|nej,? nej)(?=$|[\s,.!?])/iu;
-const DECLINE_PART =
-  /^(?:nej tack|jag vill inte(?: prata(?: om det)?)?|vill inte prata(?: om det)?|jag måste gå|jag ska gå|jag går nu|jag måste tyvärr gå|nej)(?:\s+(?:nu|hem|härifrån|tyvärr|faktiskt|alltså|då|ändå))*$/iu;
-const GOODBYE = /^(?:hej då|hej|vi ses|ha det(?: bra)?|sorry|förlåt|tack|okej)$/iu;
-export function isDecline(line: string): boolean {
-  const t = line.trim();
-  if (!t) return false;
-  if (DECLINE_STRONG.test(t)) return true;
-  if (/\?/.test(t)) return false; // "…, gillar du film?" / "…, vill du ha något?" is an opening, not a no
-  // every clause is a no / a goodbye ("Nej tack, jag vill inte.", "Jag måste gå nu, hej då!"), and at least one is a no
-  const parts = t.split(/[,.!;]+/u).map((x) => x.trim()).filter(Boolean);
-  return parts.some((x) => DECLINE_PART.test(x)) && parts.every((x) => DECLINE_PART.test(x) || GOODBYE.test(x));
-}
-export function detectDecline(req: AnswerRequest): boolean {
-  const lines = req.social?.transcript.filter((l) => l.speaker === "other") ?? [];
-  const last = req.fragment || lines[lines.length - 1]?.text || "";
-  return isDecline(last);
-}
 
 // ---- D72: one suggestion by default; "ge mig tre pickup lines" asks for more (max 5) for one call ----
 export const MAX_SUGGESTIONS = 5;
@@ -189,7 +163,6 @@ export function buildRizzUserMessage(req: AnswerRequest): string {
     const fam = socialRequest(x.calibrate);
     parts.push(`<request>${fam ? `${fam.request} (${sanitizeTagged(x.calibrate)})` : sanitizeTagged(x.calibrate)}</request>`);
   }
-  if (detectDecline(req)) parts.push("<signal>decline</signal>");
   if (req.personaSetup) {
     parts.push(`<persona_setup>\n${sanitizeTagged(req.personaSetup)}\n</persona_setup>`);
   }
@@ -208,14 +181,6 @@ export function buildRizzUserMessage(req: AnswerRequest): string {
 }
 
 // ---- output handling ----
-// K8 (Oscar O7): words in context, so "frukost på sängen", "bröstsim" and "Du måste testa pizzan där" are kept
-// K26 (Oscar O27: 0/25 new unsafe lines were stopped): home and bed, the body, "het", undressing
-const SEXUAL =
-  /(?:^|[^\p{L}])(?:knull\p{L}*|ligga med|sex(?:ig\p{L}*|uell\p{L}*|\s+med(?![\p{L}]))|naken|nakna|kåt\p{L}*|runk\p{L}*|bröst(?:en)?(?![\p{L}])|rumpa|snygg(?:a|aste) kropp|(?:i|till|ner i|upp i) (?:min |din )?sängen|ta med dig hem|hångl\p{L}*|(?:min|din) säng|mitt (?:hotell)?rum|hotellrum\p{L}*|hem till (?:mig|dig|dej)|hemma hos (?:mig|dig|dej)|(?:följer|följa|följ|går|gå|dra|drar|åka|åker) (?:med )?(?:dig |mig )?hem(?![\p{L}])|dra till mig|till mig och mysa|mysa hos|(?:din|hennes|hans) kropp|ser het ut|het(?:a)? i (?:den|det|din)|ta av (?:dig|dej|den|det)|klä av)(?![\p{L}])/iu;
-// K26: pressure, a no that is not respected, negging, manipulation, lies and using that someone is drunk
-const PRESSURE =
-  /(?:^|[^\p{L}])(?:var inte så blyg|du måste (?:följa med|stanna|ge mig|komma hem|dricka|kyssa)|kom igen då|du är skyldig|ångra dig inte|stanna kvar(?! och prata)|nej är (?:bara )?ett kanske|nej som (?:ett )?svar|inga ursäkter|ge mig ditt nummer|ditt nummer nu|du kan inte gå|gå inte (?:redan|än|hem|till (?:dem|dom|honom|henne))|stanna en (?:timme|stund) till|spela svår\p{L}*|(?:sa|säger|sagt) nej\p{L}*,? men|fråga (?:en gång )?(?:till|igen)(?! om du)|ignorera att|fortsätt (?:ändå|trots)|(?:söt|snygg|fin|smart|rolig|bra)\p{L}* för att vara|om du (?:log|ler|sminkade|klädde|gick ner)|snyggare än (?:du|dig)|du duger|inte illa för|för någon (?:i din ålder|som du)|om du (?:gillade|tyckte om|brydde dig om) mig|alla andra (?:här )?är tråkiga|säg att du (?:är|har|jobbar|äger|var|kör)|ljug|(?:full|berusad|packad|dragen|på lyset|onykter)\p{L}*[^.!?]{0,20}passa på|passa på (?:nu )?(?:när|medan) (?:hon|han|hen) är)(?![\p{L}])/iu;
-
 export const MAX_WORDS = 10;
 /** Lines up to this length are used only when nothing within MAX_WORDS is left (D72). */
 export const SOFT_MAX_WORDS = 14;
@@ -231,7 +196,7 @@ export function parseSuggestions(raw: string): string[] {
     let t = line.trim().replace(/^(?:[-*•]|\d+[.)])\s*/, "").replace(/^["“”«»'`]+|["“”«»'`]+$/g, "")
       .trim();
     t = t.replace(/[*#_`~]/g, "").replace(/\s+/g, " ").trim();
-    if (!t || wordCount(t) > MAX_WORDS || SEXUAL.test(t) || PRESSURE.test(t)) continue;
+    if (!t || wordCount(t) > MAX_WORDS) continue;
     const key = t.toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
@@ -241,11 +206,11 @@ export function parseSuggestions(raw: string): string[] {
   return out;
 }
 
-/** A suggestion line that passes the hard rules (length, safety). */
+/** A suggestion line that passes the hard rules (length, no speaker label). */
 // D81: the app's speaker labels are for the model only; a line that says "Talare 1" out loud is never shown
 const SPEAKER_LABEL = /\btalare\s*(?:\d+|ett|två|tre|fyra|fem)\b/i;
 function usable(t: string): boolean {
-  return !!t && wordCount(t) <= MAX_WORDS && !SEXUAL.test(t) && !PRESSURE.test(t) && !SPEAKER_LABEL.test(t);
+  return !!t && wordCount(t) <= MAX_WORDS && !SPEAKER_LABEL.test(t);
 }
 
 export interface Candidate {
@@ -311,8 +276,7 @@ export function pickSuggestions(
   const { cands, top } = parseCandidates(raw, final);
   if (!cands.length) return parseSuggestions(raw).slice(0, count);
   const ok = (c: Candidate) =>
-    c.text && wordCount(c.text) <= MAX_WORDS && !SEXUAL.test(c.text) && !PRESSURE.test(c.text) &&
-    !SPEAKER_LABEL.test(c.text);
+    c.text && wordCount(c.text) <= MAX_WORDS && !SPEAKER_LABEL.test(c.text);
   const byN = new Map(cands.filter(ok).map((c) => [c.n, c]));
   const order = [...(top ?? []), ...cands.map((c) => c.n)];
   const out: string[] = [];
@@ -332,8 +296,7 @@ export function pickSuggestions(
     if (out.length >= count) break;
     const key = c.text.toLowerCase();
     if (
-      !c.text || seen.has(key) || wordCount(c.text) > SOFT_MAX_WORDS || SEXUAL.test(c.text) ||
-      PRESSURE.test(c.text) || SPEAKER_LABEL.test(c.text)
+      !c.text || seen.has(key) || wordCount(c.text) > SOFT_MAX_WORDS || SPEAKER_LABEL.test(c.text)
     ) continue;
     seen.add(key);
     out.push(c.text);
@@ -352,21 +315,18 @@ export const SOCIAL_COMEBACK = 4;
 
 /** Used when everything the model produced was filtered out: always safe, always speakable. */
 /** K8 (Oscar O7 S03): which filter removed the lines, for the log when the fallback line is used (no text logged). */
-export function filterReasons(raw: string): { lines: number; long: number; sexual: number; pressure: number; label: number } {
-  const r = { lines: 0, long: 0, sexual: 0, pressure: 0, label: 0 };
+export function filterReasons(raw: string): { lines: number; long: number; label: number } {
+  const r = { lines: 0, long: 0, label: 0 };
   for (const line of raw.split(/\r?\n/)) {
     const t = line.replace(/^\s*(?:\d+\s*\||[-*•]|\d+[.)])\s*/, "").trim();
     if (!t) continue;
     r.lines++;
     if (wordCount(t) > SOFT_MAX_WORDS) r.long++;
-    if (SEXUAL.test(t)) r.sexual++;
-    if (PRESSURE.test(t)) r.pressure++;
     if (SPEAKER_LABEL.test(t)) r.label++;
   }
   return r;
 }
 export const FALLBACK_SUGGESTIONS = ["Berätta mer om det.", "Hur har din dag varit?"];
-export const FALLBACK_DECLINE = ["Okej, helt lugnt.", "Vi tar det en annan gång."];
 
 /**
  * The first suggestion as soon as candidate 1 is a complete line (it is the model's strongest line): shown at
@@ -376,7 +336,7 @@ export function previewSuggestion(raw: string): string | null {
   const { cands } = parseCandidates(raw, false);
   const c = cands.find((x) => x.n === 1);
   if (
-    !c || !c.text || wordCount(c.text) > MAX_WORDS || SEXUAL.test(c.text) || PRESSURE.test(c.text) ||
+    !c || !c.text || wordCount(c.text) > MAX_WORDS ||
     SPEAKER_LABEL.test(c.text)
   ) {
     return null;
@@ -432,6 +392,5 @@ export function finalizeCalibration(raw: string, previous: string): string {
     .replace(/[*#_`~<>]/g, "").trim();
   if (/^RESET\b/i.test(t)) return "";
   if (!t) return capCalibration(previous);
-  if (SEXUAL.test(t)) return capCalibration(previous);
   return capCalibration(t);
 }

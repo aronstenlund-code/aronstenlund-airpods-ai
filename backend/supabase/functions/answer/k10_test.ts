@@ -86,21 +86,13 @@ Deno.test("K8 interview: a situation question about alcohol is not a missing fac
   assert(claimsMissing("alkohol", "Jag har jobbat med alkohol på en restaurang."));
 });
 
-Deno.test("K8 Rizz/Socialt: a no is a no only when the line is one (Oscar O7 D1-D3)", async () => {
-  const { isDecline } = await import("./rizz.ts");
-  for (const t of ["Jag ska gå på bio i helgen, gillar du film?", "Jag vill inte missa matchen ikväll, ska du kolla?", "Jag ska gå och hämta en drink, vill du ha något?", "Jag ska gå på konsert sen."]) {
-    assert(!isDecline(t), t);
-  }
-  for (const t of ["Nej tack.", "Jag måste gå nu, hej då!", "Sluta.", "Jag är inte intresserad.", "Jag vill inte.", "Lämna mig ifred"]) assert(isDecline(t), t);
-});
-
-Deno.test("K8 Rizz filters read words in context", async () => {
+Deno.test("K8/K28 Rizz lines are kept as written (D113 A1)", async () => {
   const { parseSuggestions } = await import("./rizz.ts");
   assertEquals(parseSuggestions("Frukost på sängen är det bästa.\n"), ["Frukost på sängen är det bästa."]);
   assertEquals(parseSuggestions("Simmar du bröstsim också?\n"), ["Simmar du bröstsim också?"]);
   assertEquals(parseSuggestions("Du måste testa pizzan där.\n"), ["Du måste testa pizzan där."]);
-  assertEquals(parseSuggestions("Följ med upp i sängen.\n"), []);
-  assertEquals(parseSuggestions("Du måste följa med mig hem.\n"), []);
+  // D113 A1 (K28): no content filter in code any more; the model's own limits and the role description decide
+  assertEquals(parseSuggestions("Följ med upp i sängen.\n"), ["Följ med upp i sängen."]);
 });
 
 Deno.test("K8 texts: 'hur lyder', 'första versen', 'en rad ur' go to the text path; prices search shops", async () => {
