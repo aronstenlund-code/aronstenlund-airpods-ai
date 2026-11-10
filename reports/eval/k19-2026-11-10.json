@@ -1,0 +1,121 @@
+{
+ "summary": {
+  "n": 8,
+  "with_link": 6,
+  "links_200": 6
+ },
+ "rows": [
+  {
+   "q": "har du en film om fotosyntes",
+   "status": 200,
+   "said": "Jag skickade en länk till en film om fotosyntes från UR Play, säg till om du vill ha en annan.",
+   "resource": {
+    "url": "https://urplay.se/program/238612-no-naturligtvis-fotosyntes",
+    "title": "NO naturligtvis: Fotosyntes",
+    "source": "UR Play",
+    "login_likely": false
+   },
+   "recheck": {
+    "status": 200,
+    "title": "NO naturligtvis: Fotosyntes | UR Play"
+   },
+   "cost": 0.0193725
+  },
+  {
+   "q": "finns det någon bra film om franska revolutionen",
+   "status": 200,
+   "said": "Jag skickade en länk till en film om franska revolutionen från UR Play, säg till om du vill ha en annan.",
+   "resource": {
+    "url": "https://urplay.se/program/232838-plugga-historia-franska-revolutionen",
+    "title": "Plugga historia: Franska revolutionen",
+    "source": "UR Play",
+    "login_likely": false
+   },
+   "recheck": {
+    "status": 200,
+    "title": "Plugga historia: Franska revolutionen | UR Play"
+   },
+   "cost": 0.0193575
+  },
+  {
+   "q": "har du en video om Pythagoras sats",
+   "status": 200,
+   "said": "Jag skickade en länk till en film om Pythagoras sats från UR Play, säg till om du vill ha en annan.",
+   "resource": {
+    "url": "https://urplay.se/program/183062-kalkyl-pythagoras-sats",
+    "title": "Kalkyl: Pythagoras sats",
+    "source": "UR Play",
+    "login_likely": false
+   },
+   "recheck": {
+    "status": 200,
+    "title": "Kalkyl: Pythagoras sats | UR Play"
+   },
+   "cost": 0.0196625
+  },
+  {
+   "q": "har du en film om andra världskriget",
+   "status": 200,
+   "said": "Jag skickade en länk till en film om andra världskriget från UR Play, säg till om du vill ha en annan.",
+   "resource": {
+    "url": "https://urplay.se/program/236151-plugga-historia-andra-varldskriget",
+    "title": "Plugga historia: Andra världskriget",
+    "source": "UR Play",
+    "login_likely": false
+   },
+   "recheck": {
+    "status": 200,
+    "title": "Plugga historia: Andra världskriget | UR Play"
+   },
+   "cost": 0.0193525
+  },
+  {
+   "q": "finns det någon bra sida om ekvationer",
+   "status": 200,
+   "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+   "resource": null,
+   "recheck": null,
+   "cost": 0.02036
+  },
+  {
+   "q": "har du en film om cellen",
+   "status": 200,
+   "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+   "resource": null,
+   "recheck": null,
+   "cost": 0.0191275
+  },
+  {
+   "q": "har du en film om syror och baser",
+   "status": 200,
+   "said": "Jag skickade en länk till en film om syror och baser från UR Play, säg till om du vill ha en annan.",
+   "resource": {
+    "url": "https://urplay.se/program/213562-snabbkoll-syror",
+    "title": "Snabbkoll!: Syror",
+    "source": "UR Play",
+    "login_likely": false
+   },
+   "recheck": {
+    "status": 200,
+    "title": "Snabbkoll!: Syror | UR Play"
+   },
+   "cost": 0.019207500000000002
+  },
+  {
+   "q": "har du en film om plattektonik",
+   "status": 200,
+   "said": "Jag skickade en länk till en film om plattektonik från SLI, säg till om du vill ha en annan. Den kan kräva att du loggar in med ditt skolkonto.",
+   "resource": {
+    "url": "https://www.sli.se/apps/sli/prodsearch.php?db=53&subj=Kontinenter",
+    "title": "Så rör sig kontinenterna - om plattektonik",
+    "source": "SLI",
+    "login_likely": true
+   },
+   "recheck": {
+    "status": 200,
+    "title": "Logga in | SLI Play"
+   },
+   "cost": 0.021677500000000002
+  }
+ ]
+}
