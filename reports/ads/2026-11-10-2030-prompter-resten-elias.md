@@ -169,3 +169,8 @@ Mätt tecken per sekund per undertext (gräns ca 15 för unga tittare, minst ca 
 - I köksklippet blir den enda skivan två i brödrosten 6,2–6,35 s (efter landningen). Brödklippet börjar därför med två skivor och två hoppar upp.
 - Åtgärd utan krediter: köket klipps när skivan är i luften (före landningen), brödklippet borttaget, montaget följer direkt, slutbilden bakgrund från köket med en skiva.
 - Om brödet som hoppar upp ska tillbaka: redigera startbilden i Flow till en skiva (gratis bildredigering) och generera om (15 krediter, tidigast när krediterna fylls på).
+
+## 23:35 v10 (38,3 s)
+- Slutbild ny (Arons feedback): mörk bakgrund med blått sken, "Lumen" / "AI:n som svarar i örat" / "Skola · Intervjuer · Vardag" / knapp "Skriv upp dig gratis" / "Fungerar med AirPods", all text större. Brödet som poppar upp tillbaka före slutbilden.
+- Köket: Adam "God morgon Elias. Rosta en macka med ost och ägg." (Arons val av två tagningar; den andra sa "Du sov åtta timmar i natt" och togs inte, sömndata finns inte i appen). Pausen kortad, 6 % snabbare, 2,9 s, lagd 18,98 s i skenet. Kontrollerat med Whisper.
+- Kvar: förhörsrepliken, Arons Filip-inspelningar för Elias repliker, musik.
