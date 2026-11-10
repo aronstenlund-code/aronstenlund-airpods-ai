@@ -10,6 +10,7 @@ struct LumenControlsBundle: WidgetBundle {
         ListeningLiveActivity()
         ListeningControl()
         StartListeningControl()
+        ExamWidget() // A44
     }
 }
 

@@ -182,7 +182,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [ ] pågår 2026-11-10 21:34 (Angela) **A43 – Framsteg per prov (N1)** (effort: high). En ring på provkortet ("68 % redo") och en sida "Så redo är du" med det du kan, det du ska öva på och dagens pass. Data från K33. Följ SYSTEM.md, Kelly granskar.
 
-- [ ] **A44 – Hemskärmswidget (N2)** (effort: medium). Beror på: A38. WidgetKit: dagar kvar till nästa prov, streak, och en knapp "Förhör mig" som startar Provläget (App Intent).
+- [ ] pågår 2026-11-10 22:14 (Angela) **A44 – Hemskärmswidget (N2)** (effort: medium). Beror på: A38. WidgetKit: dagar kvar till nästa prov, streak, och en knapp "Förhör mig" som startar Provläget (App Intent).
 
 - [x] klar 2026-11-10 13:49 → reports/2026-11-10-angela-a45-a37-fallback-standardlage.md **A45 – Säg till när reservmotorn används (N3)** (effort: low). När Scribe eller ElevenLabs-rösten inte går (t.ex. kvoten slut) och appen faller tillbaka till iPhonens egna: en lugn rad en gång per pass ("Lumen hör och pratar lite sämre just nu"), ingen felruta. Toby testar (T10).
 

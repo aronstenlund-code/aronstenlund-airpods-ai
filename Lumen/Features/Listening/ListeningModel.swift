@@ -858,6 +858,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// D86 "Spara prov": kept with the others, and Provläge's profile from now on. The subject's terms follow.
     func saveExamPlan(_ plan: ExamPlan) {
         examPlans?.save(plan)
+        updateWidget() // A44
         useExamPlan(plan)
         controller.log("Exam saved: \(plan.name), \(plan.daysLeft()) days")
     }
@@ -2619,6 +2620,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Asks `/study-plan` for every upcoming exam: what is due today, and the days up to the exam (local reminders).
     func refreshStudyPlan(askForReminders: Bool = false) async {
         streak = quizDays.streak()
+        updateWidget() // A44
         let plans = examPlans?.upcoming() ?? []
         guard let studyPlanClient, !plans.isEmpty || !quizDays.days.isEmpty else { return }
         let exams = plans.prefix(10).map { plan in
@@ -2638,6 +2640,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             for day in answer.plan where planDays[day.date] == nil && !day.concepts.isEmpty { planDays[day.date] = day.concepts }
         }
         studyPlans = byExam
+        updateWidget() // A44: the readiness too
         // A38: one reminder a day at the chosen time (K31's text today, a countdown on the other days).
         let daily = LumenNotifications.days(today: Date(), note: reply.notification, doneToday: streak.doneToday,
                                             exams: plans.map { (name: $0.name, date: $0.date) }, plan: planDays)
@@ -2680,6 +2683,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         quizDays.save()
         streak = quizDays.streak(today: date)
         LumenNotifications.cancelToday(date)
+        updateWidget(now: date) // A44
         controller.log("Quiz day: streak \(streak.current) (A38)")
     }
 

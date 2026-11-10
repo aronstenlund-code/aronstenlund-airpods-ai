@@ -89,6 +89,7 @@ final class AppContainer {
         ListeningRemote.start = { [weak listening] in await listening?.startFromShortcut() }
         ListeningRemote.ask = { [weak listening] in await listening?.askFromShortcut() }
         ListeningRemote.startStudy = { [weak listening] in await listening?.startStudyFromShortcut() }
+        ListeningRemote.quiz = { [weak listening] in await listening?.quizFromShortcut() } // A44
         ListeningRemote.pause = { [weak listening] in await listening?.pauseFromShortcut() }
         ListeningRemote.stop = { [weak listening] in await listening?.endSession() }
         transcription.sink = listening

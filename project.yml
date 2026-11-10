@@ -53,6 +53,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen
+        # A44: the app group the home screen widget reads its snapshot from (CI builds unsigned and ignores it).
+        CODE_SIGN_ENTITLEMENTS: Entitlements/Lumen.entitlements
         # A6.3: empty in the repo. CI passes the repository secret SPOTIFY_CLIENT_ID (a public identifier, not a key).
         SPOTIFY_CLIENT_ID: ""
         PRODUCT_NAME: Lumen
@@ -85,6 +87,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen.controls
+        CODE_SIGN_ENTITLEMENTS: Entitlements/LumenControls.entitlements # A44
         PRODUCT_NAME: LumenControls
         INFOPLIST_FILE: LumenControls/Info.plist
         MARKETING_VERSION: "0.1.0"

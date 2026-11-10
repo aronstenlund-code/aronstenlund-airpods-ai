@@ -23,6 +23,8 @@ enum ListeningRemote {
     static var start: (@MainActor () async -> Void)?
     static var ask: (@MainActor () async -> Void)?
     static var startStudy: (@MainActor () async -> Void)?
+    /// A44: "Förhör mig" on the home screen widget.
+    static var quiz: (@MainActor () async -> Void)?
     static var pause: (@MainActor () async -> Void)?
     /// D86: "Avsluta" on the lock screen.
     static var stop: (@MainActor () async -> Void)?
