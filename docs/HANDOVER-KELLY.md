@@ -1,45 +1,35 @@
-# Överlämning: Kelly (demosidan och design), session som gjorde Ke9–Ke12 och Ke12b (2026-11-10)
+# Överlämning: Kelly (demosidan och design), session 2026-11-10 kväll (Ke23, Ke25–Ke28)
 
-Det här står inte i rapporterna. Rapporterna `reports/*kelly*` täcker resten.
+Det här står inte i rapporterna (`reports/*kelly*`).
 
-## Så jobbar du
-- Jag jobbar i `site/`, `docs/design/` och `docs/marketing/`. Förhandsvisa med `python -m http.server 8765 -d site`.
-- **Skisser:** `docs/design/_src/system.html` (det nya systemet) och `enkel-start.html` (Ke9/Ke10, gammal stil). Starta
-  `python -m http.server 8790` från repots rot och kör sedan Chrome `--headless=new --screenshot --window-size=880,1010
-  "…?s=<skärm>[&dark=1]"`. Loggbladet behöver bredden 1210.
-- **Helsidesbilder, klick och mätning:** `puppeteer-core@23` i scratchpad (`npm i puppeteer-core@23`), med Chrome i
-  `C:/Program Files/Google/Chrome/Application/chrome.exe`.
-  - Sätt `document.documentElement.style.scrollBehavior='auto'` innan du scrollar, annars hamnar bilden fel.
-  - Kvantisera bilderna med PIL (`quantize(128)`), så att rapporterna håller sig små.
-- **Lighthouse:** `npx -y lighthouse http://localhost:8765/ [--preset=desktop] --chrome-flags="--headless=new --no-sandbox"`.
-  Senast 100/100/100/100.
-- **Deploy:** kontrollera med GitHub API via `git credential fill` (gh finns inte). Pages-deployen tar ungefär 1 min.
+## Verktyg
+- Förhandsvisning: `python -m http.server 8765 -d site` (sidan) och `8790` från repots rot (skisser i `docs/design/_src/`).
+- **Mät med puppeteer-core@23** (scratchpad, `npm i puppeteer-core@23`). Chrome headless med `--window-size` klipper
+  under ca 500 px och ignorerar mörkt läge. Använd `setViewport` och `emulateMediaFeatures`.
+- Text på bilder med PIL: gör om `site/fonts/familjen-grotesk.woff2` till TTF med fontTools (`flavor=None`), sedan
+  `set_variation_by_axes([vikt])`. Python via heredoc tolkar å/ä/ö fel i `str.replace`: lägg skriptet i en fil eller använd Edit.
+- PNG med `quantize(128)` tar bort små färgprickar. Ta JPEG när bilden har statusfärger.
+- **App Store-bilder:** kör workflowen "Simulator screenshots" (workflow_dispatch, `device: iPhone 17 Pro Max` ger
+  1320×2868). Ladda ned artefakten via API med token från `git credential fill`, och kör sedan
+  `docs/marketing/appstore/_src/appstore.py`.
+- Lighthouse: `npx -y lighthouse … --blocked-url-patterns="*supabase.co*"` (senast 100×4, 20:24).
+- **Varumärken:** EUIPO eSearch fungerar i den inbyggda webbläsaren, men ladda om sidan för varje sökning
+  (hash-byte visar förra resultatet). TMview spärrade efter ca 15 sökningar ("Problem detected"). Försök inte ta dig förbi.
 
 ## Fallgropar
-- **Delat index:** en annan session kan committa dina stagade filer. Gör `git add F && git commit -- F` i ett kommando.
-  En tom `.git/rebase-merge` som blir kvar tas bort med `rmdir`. Kontrollera autostash innan du gör något annat.
-- Kör `date` innan du skriver en tid. Jag gissade 07:50 när klockan var 07:38 och fick rätta det.
-- Raden i demon efter svaret har en egen samtyckesversion (`CONSENT_VERSION_ROW`, högst 16 tecken). Höj den när radens
-  text ändras.
-- FAQ-datan (JSON-LD) och "Vanliga frågor" på sidan måste ha samma text. Ändra båda från en lista (se Ke11).
-- Samtyckesmeningen under Testa nu och tummen ned (D57) får aldrig försvinna ur en skiss.
+- Delad checkout: andras ändringar ligger osparade. `git add <mina filer>` och kontrollera `git diff --cached --name-only`
+  före commit. Ett delat dokument med andras osparade rader (DECISIONS): lägg bara in min rad i indexet
+  (`git hash-object -w` + `update-index --cacheinfo`). Nekad push: `git pull --rebase --autostash`, och kontrollera
+  sedan "Applied autostash". I `git stash list` låg två gamla autostash-poster som inte är mina; de är orörda.
+- Deangelo ändrar köpunkter medan jag jobbar (Ke23 fick tre namn till 19:57). Läs om `kelly.md` före varje statusändring.
+- Kör `date` innan du skriver en tid.
 
 ## Öppna trådar
-- Ke13b klar: sidan följer SYSTEM.md. Ke13 (D97, två knappar på provkortet) klar. Loggan byts när Aron valt (Ke24, ChatGPT-förslagen; A/B/C gillades inte) (sidhuvudet, `og-lumen.png` via `docs/marketing/annonser/_src/og-system.html`, appen).
-- Kör Lighthouse med `--blocked-url-patterns="*supabase.co*"`. Annars skapar varje körning en anonym inloggning, och spärren
-  ger 429 (Best Practices 96). Med blockering: 99/100/100/100 (Ke19).
-- **Ke18 klar (12:49).** Stegbilderna görs med `ke18.py` (scratchpad, försvinner): ta Pro-bilderna ur
-  `reports/<datum>-aNN-skarmbilder/` eller ur CI-artefakten från "Simulator screenshots" (API: `actions/runs/<id>/artifacts`,
-  ladda ned zip med token från `git credential fill`). Skala till 300 bredd, WebP kvalitet 82, `method=6`. Mappning:
-  `first` → `fraga-*`, `addExamFirst` → `steg1-*`, `listeningProv` → `steg3-*`. Byt steg 2 när Angela har rättat
-  "Startar …" (fynd 1 i `reports/2026-11-10-1249-kelly-granskning-a30-ke18.md`).
-- **Session 2026-11-10 (Ke19–Ke21, Ke18) stoppade 12:50 enligt PLAN 2e (två komprimeringar).** Nästa i kön: Ke22
-  (annonser, effort high), Ke23 (namn och logga), Ke24 (logga från ChatGPT-förslagen, väntar på Arons val), Ke25
-  (App Store-sidan). Rizz har ingen åldersgräns längre (D112), och skydden i `docs/RESTRIKTIONER.md` del B är de enda (D114).
-- Skissen `bytlage.png` och `kommandon.png` har "Klar" i bladets hörn. Det är iOS-bladets ord, men appen använder "Stäng"
-  på resultatkortet. Bestäm en gång vilket ord bladen ska ha.
-- Ke19: demorutan har D97:s två val. "Förhör mig" är tre Provlägesfrågor med de inspelade svaren i `site/audio/`,
-  helt utan anrop, för att servern inte låter demon förhöra (D62). `QUIZ` i skriptet har texterna ordagrant. Byt
-  aldrig svarstext utan att byta ljudfil. Oscars `scripts/qa/demo_site*.py` förutsätter att `#txt` syns vid start, så
-  "Få A-svar till provet" måste vara förvalt.
-- Safari och iPhone är inte provade för någonting på sidan. Rich Results-testet mot live-URL är inte gjort.
+- **Ke24** väntar på Arons nummer (jag rekommenderar 4). Underlag: `docs/design/namn/storlekar.png`.
+- **Namn:** jag rekommenderar Earmind (Earwise är rött). PRV är inte kontrollerat. Slutbilder till annonserna finns för
+  fem namn i `docs/marketing/annonser/slutbild/`; gör en för Earmind när namnet är bestämt (`_src/slutbild.py`).
+- **App Store (Ke25):** integritetspolicy saknas (`site/integritet.html` när Aron säger ja). Bild 1–2 visar Lumen
+  och radiovågorna och byts efter Ke24.
+- **"Ljud sparas inte"** blir osant med A49 (sömnläget). Deangelo avgör texten.
+- **Elias hörlur är vit och Apple-lik** (F1 i Ke28): ny bild behövs före App Store.
+- Safari och iPhone är fortfarande inte provade för sidan.

@@ -81,6 +81,9 @@ använder `raised` i stället. **Ikoner:** SF Symbols i vikt regular, 20–22 pt
 - Aldrig: utvecklartext (licenser, modellnamn, "1.00×", röstnamn som "Adam"), dubbla negationer ("Inget prov just
   nu" på en brytare), utropstecken, ständiga instruktionsrader ("Säg 'Lumen, byt till …'").
 - Röstkommandon visas en gång, när de behövs (tips efter första svaret, under Röstkommandon), inte på varje skärm.
+- **Klar eller Stäng (Ke28, 2026-11-10):** ett blad som glider upp (Byt läge, Kommandon) har **"Klar"** uppe till
+  höger, som iOS. Ett kort inuti en skärm (resultatkortet i övningsprovet, felkort) har **"Stäng"**.
+- Citat och exempel på svenska skrivs med ”…” (samma tecken på båda sidor), inte med raka "…".
 
 ## 5. Logga och appikon (U5): tre förslag, Aron väljer
 Bild: `bilder/system/logo.png` och `logo-dark.png`. Filer: `logo/<förslag>-ikon.svg` (1024, iOS rundar hörnen) och

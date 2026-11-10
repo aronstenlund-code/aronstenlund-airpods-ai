@@ -10,7 +10,7 @@ En knapp "Sov", inget att ställa in (D123). Allt avancerat (VAD, ljudklassning,
 Samma system som resten av appen (SYSTEM.md): en accent, inga röda färger utom i raderingsdialogen, Familjen Grotesk.
 
 ## 1. Var man startar
-- **Byt läge-bladet:** en sista rad "Sov" med en måne och raden "Telefonen på nattduksbordet". Under listan står en
+- **Byt läge-bladet** (med "Klar" uppe till höger, som i appen): en sista rad "Sov" med en måne och raden "Telefonen på nattduksbordet". Under listan står en
   rad: "Sov är inget samtalsläge: Lumen svarar inte, den bara lyssnar tills du trycker Godmorgon."
 - Kontroll eller widget enligt A49, med samma ikon och ord.
 - Sov hör inte till D97:s två knappar på provkortet och ska inte synas på Start förrän det finns en natt att visa.
