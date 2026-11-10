@@ -159,3 +159,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [ ] **A30 – U2: kom igång med rösten** (effort: high). Ägarbeslut D109. Efter första svaret säger Lumen "Har du prov snart? Säg vilket ämne och när." och fyller provprofilen från svaret via `/study-profile` (D84). Formuläret finns kvar som reserv ("Skriv i stället"). Följ `docs/design/SYSTEM.md`. Skärmbilder Pro/SE ljust/mörkt, Kelly granskar, Toby testar i T8-flödet.
 
 - [ ] **A31 – U3: ljudsignal i AirPods** (effort: medium). Ägarbeslut D109. En kort, diskret signal när Lumen börjar lyssna och när den slutar, och ett mjukt "hm" när den hörde tal men valde att vara tyst. Allt går att stänga av i Inställningar (en rad). Signalerna lokalt i appen, inga nya anrop, får inte trigga ekofiltret eller VAD. Kelly väljer ljudens karaktär i SYSTEM.md.
+
+- [ ] **A32 – D112: ta bort 18+-spärren före Rizzläget** (effort: low). Ägarbeslut: Rizzläget är flirtigt men aldrig sexuellt och för alla åldrar. Ta bort åldersfrågan/spärren och texter om 18+ i appen och på demosidan (säg till Kelly). Samtyckespunkterna för lyssning finns kvar.
