@@ -303,7 +303,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           (body0.mode === "tutor" || body0.mode === "auto")
         ? stripEcho(body0.fragment, body0.context.recent_qa.at(-1)?.a)
         : { rest: body0.fragment, echoed: 0 };
-      const body = echo.echoed ? { ...body0, fragment: echo.rest } : body0;
+      // K27: a quote inside a follow-up (echo.quoted) keeps the whole fragment
+      const body = echo.echoed && !echo.quoted ? { ...body0, fragment: echo.rest } : body0;
       // K21 (BLOCKER, safety): words about not wanting to live, suicide or self-harm always get a warm answer with a
       // way to help, in every mode (also the demo), before anything else and whatever the model would call it
       const provider0 = deps.provider;

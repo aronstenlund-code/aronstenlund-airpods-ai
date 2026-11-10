@@ -5,10 +5,19 @@
  * same order) are removed before the model sees the fragment; what is left is the user's own new words.
  */
 const norm = (w: string) => w.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+/**
+ * K27 (Oscar O30: "vad menar du med i form av glukos" became "vad menar du med" in 4/8): when the wearer's own words
+ * around the repeated part ask about it, the repeat is a quote, not an echo: the whole fragment is kept and only
+ * marked (quoted = true); a bare echo with noise ("och lägger till tio. Gud- ehm") is still removed.
+ */
+const ASKS_ABOUT_IT =
+  /(?<![\p{L}])(?:vad|varför|hur|när|vem|vilken|vilket|vilka|menar|betyder|stämmer|förklara|eller|igen|hände|händer|alltså)(?![\p{L}])/iu;
+const SO_QUESTION = /^(?:så|alltså|va|vänta|menar du att|är det så att)$/iu;
 
 export function stripEcho(fragment: string, lastAnswer: string | undefined, minRun = 4): {
   rest: string;
   echoed: number;
+  quoted?: boolean;
 } {
   if (!lastAnswer) return { rest: fragment, echoed: 0 };
   const words = fragment.split(/\s+/).filter(Boolean);
@@ -29,5 +38,9 @@ export function stripEcho(fragment: string, lastAnswer: string | undefined, minR
   }
   if (!echoed) return { rest: fragment, echoed: 0 };
   const rest = words.filter((_, i) => keep[i]).join(" ").replace(/^[\s,.;:!?-]+/, "").trim();
+  const own = rest.replace(/[,.;:!?-]+/g, " ").replace(/\s+/g, " ").trim();
+  if (own && (ASKS_ABOUT_IT.test(own) || (SO_QUESTION.test(own) && /\?\s*$/.test(fragment)))) {
+    return { rest: fragment, echoed, quoted: true };
+  }
   return { rest, echoed };
 }

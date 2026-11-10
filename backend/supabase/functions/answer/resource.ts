@@ -20,14 +20,26 @@ const LOGIN = new Set(["binogi.se", "sli.se", "ne.se"]);
 
 const ASK = /(?<![\p{L}])(?:har du (?:en|någon) (?:bra )?(?:film|video|filmklipp|sida|länk|webbsida|resurs)|finns det (?:en|någon) (?:bra )?(?:film|video|filmklipp|sida|länk|webbsida)|(?:tipsa|tips) (?:om|på) (?:en|någon) (?:bra )?(?:film|video|sida)|skicka (?:en|någon) (?:länk|film|video)|ge mig en (?:länk|film|video)|en (?:film|video) (?:om|på) det(?: här)?|var kan jag (?:se|titta på) (?:en )?(?:film|video))(?![\p{L}])/iu;
 
+// K27 (Oscar O31: 5/15): any asking word + a film/page word + a topic ("kan du hitta en film om cellen", "har du nåt
+// bra på UR om demokrati", "var kan jag läsa mer om …"); a film that was seen or a question about a film is not one
+const REQ = String.raw`(?:har du|finns det|tipsa|tips|skicka|ge mig|hitta|visa|länka|rekommendera|vill (?:se|titta på|läsa)|var kan jag (?:se|läsa|titta|hitta)|kan du (?:hitta|visa|länka|skicka|ge|rekommendera|tipsa)|någon|nån|nåt|något)`;
+const NOUN = String.raw`(?:film|filmer|video|videor|videon|filmklipp|klipp|sida|sidor|länk|länkar|webbsida|resurs|youtube\p{L}*|ur play|ur)`;
+const ASK_CONTENT = new RegExp(
+  String.raw`(?<![\p{L}])${REQ}(?: [\p{L}-]+){0,3} ${NOUN}(?: [\p{L}-]+){0,3}? (?:om|kring|angående)(?![\p{L}])|(?<![\p{L}])(?:var kan jag|kan du|vill) läsa mer om(?![\p{L}])|(?<![\p{L}])länka (?:något|nåt|någon|en|ett) (?:\p{L}+ )?om(?![\p{L}])`,
+  "iu",
+);
+
 export function isResourceRequest(fragment: string): boolean {
-  return ASK.test(fragment ?? "");
+  const f = fragment ?? "";
+  return ASK.test(f) ||
+    (ASK_CONTENT.test(f) && !/(?<![\p{L}])(?:såg|sett|tittade på|gjorde|gjort|läste)(?![\p{L}])/iu.test(f));
 }
 
 /** The topic: the words after "om"/"på" in the request, else the last question studied. */
 export function resourceTopic(fragment: string, lastQ?: string): string {
   const m = /(?:om|på|kring|angående) (.{3,80}?)\s*[?.!]?$/iu.exec(fragment.trim());
-  const t = m?.[1]?.replace(/^(?:det här|det|detta|den här)\s*/iu, "").trim();
+  const t = m?.[1]?.replace(/\s*(?:på|från|i) (?:ur play|ur|youtube|binogi|sli|ne|khan academy)\s*$/iu, "")
+    .replace(/^(?:det här|det|detta|den här)\s*/iu, "").replace(/^(?:på|från) (?:ur play|ur|youtube|binogi)\s*$/iu, "").trim();
   return t && t.length >= 3 ? t : (lastQ ?? "").replace(/^(?:vad är|vad betyder|förklara|hur fungerar)\s+/iu, "").trim();
 }
 
