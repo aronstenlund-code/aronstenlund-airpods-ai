@@ -77,7 +77,11 @@ in docs** där det står HIG).
 
 ## Testresultat
 - **CI:** se "CI" nedan.
-- **Skärmbilder:** se "Skärmbilder" nedan (före = `reports/2026-11-09-a13-skarmbilder/`).
+- **Skärmbilder:** `reports/2026-11-10-a18-skarmbilder/` (efter), före = `reports/2026-11-09-a13-skarmbilder/`.
+  Simulator, `screenshots.yml` körning 42775680102 (iPhone 17 Pro) och 42775684726 (iPhone SE), commit `6133e6c`.
+  - Intro, första frågan, Start, Lyssnar och Inställningar, ljust och mörkt.
+  - På introbilderna sticker Elias-bilden ut under kortets nederkant. Det är rättat i `ddec2ad`: bilden ligger inne i
+    kortet och klipps av det. Den rättade versionen är inte fotad än, så ta med den i T3.
 - **Enhet:** inget.
 
 ## Kända begränsningar
@@ -97,4 +101,6 @@ in docs** där det står HIG).
   "Kommandon"-bladet, "Fler lägen" utfällt, "Lumen hör dig inte".
 
 ## CI
-(fylls i)
+Grönt i CI: iOS build 42773767993 (`bda589a`, designsystemet), 42775666996 (`6133e6c`, Kellys punkt 5 och T7). Bygget
+för enhet räknar varningar som fel, och alla LumenTests är gröna. Två körningar föll på vägen, båda på kompileringsfel
+som rättades: `switch` utan `return` efter en `if`, och en muterande metod i `#expect`.

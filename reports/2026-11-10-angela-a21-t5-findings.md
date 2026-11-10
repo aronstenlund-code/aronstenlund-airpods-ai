@@ -67,4 +67,4 @@ Toby kör om T7 (T7b).
 - A18 (pågår i samma session), sedan A20.
 
 ## CI
-Grönt i CI: iOS build run 42773767993 (commit bda589a): bygget för enhet (varningar = fel) och alla LumenTests gröna (147 sviter, de nya A21-sviterna inräknade). T7-rättelsen kom efter, i `6133e6c`; dess CI-körning står i STATUS.
+Grönt i CI: iOS build run 42773767993 (commit bda589a): bygget för enhet (varningar = fel) och alla LumenTests gröna (147 sviter, de nya A21-sviterna inräknade). T7-rättelsen kom efter, i `6133e6c`, och är grön i CI 42775666996.
