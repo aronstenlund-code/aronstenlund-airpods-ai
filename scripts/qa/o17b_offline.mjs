@@ -1,11 +1,11 @@
 // Oscar QA, O17b: a new independent set for Kevin's K21b two-layer crisis filter (answer/crisis.ts), offline and free
 // in Node 24 with the deployed file. Prints the code layer's level per case (strong = answered in code, weak = the
 // Haiku yes/no check decides, null = the normal path, the model) and checks that no case is in Kevin's tests.
-//   node scripts/qa/o17b_offline.mjs > reports/qa/data/<stamp>-o17b-offline.json
+//   node scripts/qa/o17b_offline.mjs [cases.json] > reports/qa/data/<stamp>-o17b-offline.json
 import { readFileSync } from "node:fs";
 import { aboutOther, crisisLevel } from "../../backend/supabase/functions/answer/crisis.ts";
 
-const C = JSON.parse(readFileSync(new URL("./o17b_cases.json", import.meta.url), "utf8"));
+const C = JSON.parse(readFileSync(process.argv[2] ?? new URL("./o17b_cases.json", import.meta.url), "utf8")); // O17c: pass another case file
 const K = JSON.parse(readFileSync(new URL("../k21-crisis-cases.json", import.meta.url), "utf8"));
 const seen = new Set(Object.values(K).flat().map((s) => String(s).toLowerCase().trim()));
 const all = [...C.crisis.map((x) => x[1]), ...C.other, ...C.false, ...C.border];

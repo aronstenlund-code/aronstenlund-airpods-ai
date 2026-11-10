@@ -1,0 +1,442 @@
+{
+ "sum_numbers": "14/15",
+ "sum_calc_no_wrong": "8/8",
+ "sum_self": "4/9",
+ "sum_echo": "4/4",
+ "sum_resource": "5/6",
+ "sum_memory_b5": "6/14",
+ "fails": [
+  {
+   "t": "Läs s. 23.",
+   "out": "läs s. tjugotre.",
+   "ok": false
+  },
+  {
+   "t": "hör du vad min lärare säger",
+   "want": "listen",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "är du typ en bot",
+   "want": "robot",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "vem programmerade dig",
+   "want": "robot",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "kan någon annan läsa det här",
+   "want": "save",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "tar du upp ljud i bakgrunden",
+   "want": "listen",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "kan jag få en länk till något om ekosystem",
+   "req": false,
+   "topic": "",
+   "ok": false
+  },
+  {
+   "t": "Har migrän ofta",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Tar insulin",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Har psoriasis",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Har en hjärtfel sedan födseln",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Har tänkt på att ta sitt liv",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Brukar rispa sig",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Har hörapparat",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Ska skriva om diabetes som uppsatsämne",
+   "want": "keep",
+   "sens": true,
+   "ok": false
+  }
+ ],
+ "nRow": [
+  {
+   "t": "Skolavslutningen är 12/6.",
+   "out": "skolavslutningen är tolfte juni.",
+   "ok": true
+  },
+  {
+   "t": "Mors dag firas den 31 maj.",
+   "out": "mors dag firas den trettioförsta maj.",
+   "ok": true
+  },
+  {
+   "t": "Den 1/12 tänds adventsljusen.",
+   "out": "den första december tänds adventsljusen.",
+   "ok": true
+  },
+  {
+   "t": "Matchen slutade 2–0.",
+   "out": "matchen slutade två mot noll.",
+   "ok": true
+  },
+  {
+   "t": "Mjölken kostar 7,90 kr.",
+   "out": "mjölken kostar sju kronor och nittio öre.",
+   "ok": true
+  },
+  {
+   "t": "Jag har 1 katt.",
+   "out": "jag har en katt.",
+   "ok": true
+  },
+  {
+   "t": "Hon köpte 1 banan och 1 äpple.",
+   "out": "hon köpte en banan och ett äpple.",
+   "ok": true
+  },
+  {
+   "t": "Ta buss nr 4.",
+   "out": "ta buss nummer fyra.",
+   "ok": true
+  },
+  {
+   "t": "Mötet börjar kl. 8.15.",
+   "out": "mötet börjar klockan åtta och femton.",
+   "ok": true
+  },
+  {
+   "t": "5/9 av klassen kom.",
+   "out": "fem niondelar av klassen kom.",
+   "ok": true
+  },
+  {
+   "t": "Han kom 3:a i tävlingen.",
+   "out": "han kom trea i tävlingen.",
+   "ok": true
+  },
+  {
+   "t": "Hon fick 13 poäng och Karl 15 poäng.",
+   "out": "hon fick tretton poäng och karl femton poäng.",
+   "ok": true
+  },
+  {
+   "t": "Biljetten kostade 120,50 kr.",
+   "out": "biljetten kostade hundratjugo kronor och femtio öre.",
+   "ok": true
+  },
+  {
+   "t": "Läs s. 23.",
+   "out": "läs s. tjugotre.",
+   "ok": false
+  },
+  {
+   "t": "Det var 1 000 personer där.",
+   "out": "det var tusen personer där.",
+   "ok": true
+  }
+ ],
+ "cRow": [
+  {
+   "t": "vad är 3 * (2 + 2)",
+   "want": null,
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "vad är 5 procent av 80",
+   "want": 4,
+   "got": 4,
+   "ok": true
+  },
+  {
+   "t": "vad är 2,5 gånger 4",
+   "want": 10,
+   "got": 10,
+   "ok": true
+  },
+  {
+   "t": "vad är 1000 delat med 8",
+   "want": 125,
+   "got": 125,
+   "ok": true
+  },
+  {
+   "t": "vad är (7)",
+   "want": null,
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "vad är 4 upphöjt till 3",
+   "want": 64,
+   "got": 64,
+   "ok": true
+  },
+  {
+   "t": "vad är 13 gånger 13",
+   "want": 169,
+   "got": 169,
+   "ok": true
+  },
+  {
+   "t": "vad är 99 plus 1 gånger 0",
+   "want": 99,
+   "got": 99,
+   "ok": true
+  }
+ ],
+ "sRow": [
+  {
+   "t": "hör du vad min lärare säger",
+   "want": "listen",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "sparar ni allt jag frågar",
+   "want": "save",
+   "got": "save",
+   "answer": "Ljud sparas inte. Frågor och svar går via Lumens server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen.",
+   "ok": true
+  },
+  {
+   "t": "är du typ en bot",
+   "want": "robot",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "vem programmerade dig",
+   "want": "robot",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "kan någon annan läsa det här",
+   "want": "save",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "tar du upp ljud i bakgrunden",
+   "want": "listen",
+   "got": null,
+   "answer": null,
+   "ok": false
+  },
+  {
+   "t": "vilket år föddes Alan Turing",
+   "want": null,
+   "got": null,
+   "answer": null,
+   "ok": true
+  },
+  {
+   "t": "sparar du energi på natten",
+   "want": null,
+   "got": null,
+   "answer": null,
+   "ok": true
+  },
+  {
+   "t": "hör du hur dum frågan är",
+   "want": null,
+   "got": null,
+   "answer": null,
+   "ok": true
+  }
+ ],
+ "eRow": [
+  {
+   "f": "där jordskorpans plattor möts eller glider isär",
+   "rest": "",
+   "ok": true
+  },
+  {
+   "f": "vad betyder glider isär och magma tränger upp",
+   "rest": "vad betyder glider isär och magma tränger upp",
+   "ok": true
+  },
+  {
+   "f": "så vulkaner bildas där jordskorpans plattor möts?",
+   "rest": "så vulkaner bildas där jordskorpans plattor möts?",
+   "ok": true
+  },
+  {
+   "f": "och magma tränger upp, varför gör den det",
+   "rest": "och magma tränger upp, varför gör den det",
+   "ok": true
+  }
+ ],
+ "rRow": [
+  {
+   "t": "har du typ en video om Newtons lagar",
+   "req": true,
+   "topic": "Newtons lagar",
+   "ok": true
+  },
+  {
+   "t": "kan jag få en länk till något om ekosystem",
+   "req": false,
+   "topic": "",
+   "ok": false
+  },
+  {
+   "t": "finns det något klipp på Khan om bråk",
+   "req": true,
+   "topic": "Khan om bråk",
+   "ok": true
+  },
+  {
+   "t": "vad är en länk i kemi",
+   "req": false,
+   "topic": "",
+   "ok": true
+  },
+  {
+   "t": "jag tittade på en film om rymden igår",
+   "req": false,
+   "topic": "",
+   "ok": true
+  },
+  {
+   "t": "tips på någon sida där jag kan öva glosor",
+   "req": true,
+   "topic": "någon sida där jag kan öva glosor",
+   "ok": true
+  }
+ ],
+ "mRow": [
+  {
+   "t": "Har migrän ofta",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Tar insulin",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Har psoriasis",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Har en hjärtfel sedan födseln",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Har tänkt på att ta sitt liv",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Brukar rispa sig",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Personnummer 090314-1234",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Samordningsnummer 091314-1234",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Har hörapparat",
+   "want": "drop",
+   "sens": false,
+   "ok": false
+  },
+  {
+   "t": "Går på BUP varje vecka",
+   "want": "drop",
+   "sens": true,
+   "ok": true
+  },
+  {
+   "t": "Har prov i biologi om hjärtat",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Läser om migration i samhällskunskap",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Gillar att springa",
+   "want": "keep",
+   "sens": false,
+   "ok": true
+  },
+  {
+   "t": "Ska skriva om diabetes som uppsatsämne",
+   "want": "keep",
+   "sens": true,
+   "ok": false
+  }
+ ]
+}
