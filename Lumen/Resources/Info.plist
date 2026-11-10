@@ -39,6 +39,12 @@
 	<string>$(SPOTIFY_CLIENT_ID)</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Lumen can skip and pause songs in Apple Music when you say "Lumen, nästa låt".</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>When you ask, Lumen adds events to your calendar and tells you what is in it. It always asks before it adds something.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>When you ask, Lumen adds reminders. It always asks before it adds one.</string>
+	<key>NSAlarmKitUsageDescription</key>
+	<string>When you ask, Lumen sets timers and alarms. It asks before it sets an alarm.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Take a photo of the page you are studying, so Lumen can quiz you on it. The text is read on the iPhone; the photo is not saved.</string>
 	<key>NSMicrophoneUsageDescription</key>

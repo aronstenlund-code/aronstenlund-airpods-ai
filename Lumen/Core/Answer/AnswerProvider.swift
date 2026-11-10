@@ -37,6 +37,10 @@ struct AnswerContext: Equatable, Sendable {
     /// A48 (D116, K30): the consent with D116's text (version 5) is accepted, so the backend may log the question and
     /// answer for Aron's analysis (masked, deleted after delivery). False: never logged.
     var qaLog = false
+    /// A48 (K35): the phone tools this phone can run; empty = none offered.
+    var toolsAvailable: [String] = []
+    /// A48 (K35): the second call after a tool ran (or was declined).
+    var toolRound: ToolRound?
 
     struct ConceptStat: Equatable, Sendable, Codable {
         var concept: String
@@ -89,7 +93,9 @@ struct AnswerContext: Equatable, Sendable {
                       prefExam: prefExam,
                       conceptStats: Array(conceptStats.prefix(ConceptStats.limit)),
                       sessionEnd: sessionEnd,
-                      qaLog: qaLog) // A48: dropped here at first (the unit test caught it)
+                      qaLog: qaLog, // A48: dropped here at first (the unit test caught it)
+                      toolsAvailable: toolsAvailable,
+                      toolRound: toolRound)
     }
 }
 
@@ -244,6 +250,8 @@ enum AnswerEvent: Equatable, Sendable {
     case suggestions([String])
     case done(AnswerDone)
     case error(AnswerFailure)
+    /// A48 (K35): the model wants a phone tool run.
+    case toolCall(PhoneToolCall)
 }
 
 enum AnswerError: Error, Equatable, Sendable, LocalizedError {

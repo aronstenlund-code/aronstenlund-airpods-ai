@@ -115,6 +115,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var conceptStats = ConceptStats.load()
     /// A19 (K17): what came up per exam and concept, right or wrong, for `/study-plan`.
     @ObservationIgnored private var studyHistory = StudyHistory.load()
+    /// A48 (D122, K35): the phone tools (set by AppContainer; nil in most tests: no tools offered).
+    @ObservationIgnored var phoneTools: (any PhoneToolRunning)?
+    /// A48: the question Lumen asked before a tool changes something ("Ska jag lägga in …?"); shown with Ja / Nej.
+    private(set) var pendingToolConfirm: String?
+    @ObservationIgnored private var pendingTool: (call: PhoneToolCall, request: ActivationRequest, persona: PersonaRequest?)?
+    @ObservationIgnored private var lastSent: (request: ActivationRequest, persona: PersonaRequest?)?
+    @ObservationIgnored private var toolRoundFor: (id: UUID, round: ToolRound)?
     /// A38 (K31): the days with a quiz answer, and the streak they make (shown on Start).
     @ObservationIgnored private var quizDays = QuizDays.load()
     private(set) var streak = QuizDays.load().streak()
@@ -1091,6 +1098,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 return
             }
             logTurn()
+            if pendingToolConfirm != nil, toolConfirmTurn(text) { return } // A48: "ja" before the filler filter
             if mode == .prov, practice != nil {
                 practiceTurn(text) // A16: before the filler filter, "ja" can be an answer
                 return
@@ -2683,6 +2691,63 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
     #endif
 
+    // MARK: - A48 (D122, K35): phone tools
+
+    /// The model asked for a tool: run it at once when nothing changes, else ask first (voice or Ja / Nej).
+    func answerToolCall(_ call: PhoneToolCall) {
+        guard let lastSent, phoneTools != nil else { return }
+        controller.log("Tool call: \(call.name) (A48)")
+        pendingTool = (call, lastSent.request, lastSent.persona)
+        if let confirm = call.confirm, !confirm.isEmpty {
+            pendingToolConfirm = confirm
+            say(confirm)
+        } else {
+            runPendingTool()
+        }
+    }
+
+    /// "Ja" / "Nej" on Lyssnar, or the voice.
+    func confirmTool(_ yes: Bool) {
+        guard pendingTool != nil else { return }
+        pendingToolConfirm = nil
+        if yes { runPendingTool() } else { sendToolRound(.declined, result: nil) }
+    }
+
+    /// A spoken yes or no to the confirm question; anything else drops the tool and is a turn of its own.
+    private func toolConfirmTurn(_ text: String) -> Bool {
+        switch ToolConfirmReply.parse(text) {
+        case .yes: confirmTool(true)
+        case .no: confirmTool(false)
+        case .other:
+            controller.log("Tool not confirmed: something else was said (A48)")
+            pendingTool = nil
+            pendingToolConfirm = nil
+            return false
+        }
+        study.resumeListening()
+        return true
+    }
+
+    private func runPendingTool() {
+        guard let pending = pendingTool, let phoneTools else { return }
+        pendingToolConfirm = nil
+        Task { [weak self] in
+            let outcome = await phoneTools.run(pending.call)
+            guard let self, self.pendingTool?.call.id == pending.call.id else { return }
+            self.controller.log("Tool \(pending.call.name): \(outcome.status.rawValue) (A48)")
+            self.sendToolRound(outcome.status, result: outcome.result)
+        }
+    }
+
+    /// The second call: same question, the tool's result; the model says one short sentence about it.
+    private func sendToolRound(_ status: ToolRound.Status, result: JSONValue?) {
+        guard let pending = pendingTool else { return }
+        pendingTool = nil
+        let request = ActivationRequest(query: pending.request.query, trigger: pending.request.trigger, language: pending.request.language)
+        toolRoundFor = (request.id, ToolRound(call: pending.call, status: status, result: result))
+        activated(request, persona: pending.persona)
+    }
+
     /// A38 (K31): a quiz answer today (Förhör mig, the practice exam, the mini test, the silent quiz, flip cards).
     /// The day's first one keeps the streak and takes away today's reminder.
     func noteQuizAnswer(at date: Date = Date()) {
@@ -2947,6 +3012,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if !study.isActive { logTurn() }
         timeline = TurnTimeline(heardAt: lastHeardAt, requestAt: Date(), pauseEndAt: Date(), answeredAhead: false)
         let sent = self.context(for: request)
+        lastSent = (request, persona) // A48: a tool call belongs to this request
         currentTurnID = controller.turns.begin(fragment: request.query, mode: mode.rawValue, trigger: request.trigger.rawValue,
                                                transcript: sent.transcript)
         answers.answer(request, context: sent, persona: persona)
@@ -2956,6 +3022,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         var context = baseContext(for: request)
         context.sessionEnd = request.id == summaryRequestID // A19.2
         context.qaLog = ConsentPolicy.allowsQALog(consent.record) // A48 (D116, K30)
+        // A48 (K35): tools in Standardläge and Provläge, never on an answer fetched ahead (it may never be asked).
+        let isAhead = ahead?.request.id == request.id
+        if let phoneTools, mode == .standard || mode == .prov, !isAhead {
+            context.toolsAvailable = phoneTools.available.map(\.rawValue)
+        }
+        if let round = toolRoundFor, round.id == request.id { context.toolRound = round.round }
         return context
     }
 

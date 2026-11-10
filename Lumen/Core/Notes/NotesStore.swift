@@ -82,6 +82,16 @@ final class NotesStore {
         return note
     }
 
+    /// A48 (K35 `note_add`): a note the user dictated to Lumen ("anteckna att …").
+    @discardableResult
+    func add(text: String, at date: Date = Date()) -> Note {
+        let note = Note(createdAt: date, language: "sv",
+                        answers: [AnswerTurn(question: "Anteckning", answer: text, createdAt: date, source: "note")])
+        notes.insert(note, at: 0)
+        persist()
+        return note
+    }
+
     func delete(_ note: Note) {
         notes.removeAll { $0.id == note.id }
         persist()

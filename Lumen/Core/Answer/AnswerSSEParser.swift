@@ -70,6 +70,9 @@ enum AnswerSSEDecoder {
                 return .done(try decoder.decode(AnswerDone.self, from: data))
             case "error":
                 return .error(try decoder.decode(AnswerFailure.self, from: data))
+            case "tool_call":
+                // A48: no snake-case conversion, the input goes back to the server exactly as it came.
+                return .toolCall(try JSONDecoder().decode(PhoneToolCall.self, from: data))
             default:
                 return nil // unknown event names are ignored (forward compatibility)
             }

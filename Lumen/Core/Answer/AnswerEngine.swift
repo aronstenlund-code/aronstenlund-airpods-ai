@@ -19,10 +19,13 @@ protocol AnswerSink: AnyObject {
     /// K10.1 / A9.2: the backend is sure the words were an app command ("kan vi byta till frågor"); nothing is answered.
     func answerAppCommand(_ command: AppCommand)
     func answerFailed(_ message: String, wantsFallback: Bool)
+    /// A48 (K35): the model asked for a phone tool; the sink confirms and runs it.
+    func answerToolCall(_ call: PhoneToolCall)
 }
 
 extension AnswerSink {
     func answerAppCommand(_ command: AppCommand) {}
+    func answerToolCall(_ call: PhoneToolCall) {}
 }
 
 /// Runs one answer at a time: a new question interrupts the current answer (assignment item 5), streams
@@ -116,6 +119,8 @@ final class AnswerEngine {
                     sink?.answerSuggestions(options)
                 case .done(let finished):
                     done = finished
+                case .toolCall(let call):
+                    sink?.answerToolCall(call)
                 case .error:
                     break // the provider throws right after yielding this
                 }

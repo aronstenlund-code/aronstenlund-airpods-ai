@@ -90,6 +90,8 @@ final class AppContainer {
         ListeningRemote.ask = { [weak listening] in await listening?.askFromShortcut() }
         ListeningRemote.startStudy = { [weak listening] in await listening?.startStudyFromShortcut() }
         ListeningRemote.quiz = { [weak listening] in await listening?.quizFromShortcut() } // A44
+        // A48 (D122): calendar, reminders, timers, alarms and notes for the agent.
+        listening.phoneTools = LivePhoneTools { [weak listening] text in listening?.notes.add(text: text) }
         ListeningRemote.pause = { [weak listening] in await listening?.pauseFromShortcut() }
         ListeningRemote.stop = { [weak listening] in await listening?.endSession() }
         transcription.sink = listening

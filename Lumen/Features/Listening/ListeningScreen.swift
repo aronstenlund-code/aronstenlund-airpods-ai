@@ -162,7 +162,19 @@ struct ListeningScreen: View {
 
     @ViewBuilder
     private var latest: some View {
-        if let run = model.practice {
+        if let confirm = model.pendingToolConfirm {
+            // A48 (D122): Lumen asks before it changes something on the phone; the voice works too ("ja" / "nej").
+            VStack(alignment: .leading, spacing: 14) {
+                Text(confirm).font(LumenFont.text(20, .semibold, relativeTo: .title3))
+                HStack(spacing: 12) {
+                    Button("Nej") { model.confirmTool(false) }
+                        .buttonStyle(LumenButtonStyle(kind: .secondary))
+                    Button("Ja") { model.confirmTool(true) }
+                        .buttonStyle(LumenButtonStyle())
+                }
+                Text("Eller säg ja eller nej.").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
+            }
+        } else if let run = model.practice {
             PracticeCard(run: run)
         } else if let result = model.practiceResult {
             PracticeResultCard(result: result) { model.dismissPracticeResult() }
