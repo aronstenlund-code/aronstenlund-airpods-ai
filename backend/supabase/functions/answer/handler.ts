@@ -18,7 +18,7 @@ import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
 import { commandTask, detectRule, socialRequest } from "./commands.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
-import { applicable, describe, profileOf } from "../memory/settings.ts";
+import { applicable, describe, detectCorrection, profileOf } from "../memory/settings.ts";
 
 /** K9: tasks that ask for one check question (only the question is said, as for "förhör mig"). */
 const FREE_INSTRUCTION_NOTE =
@@ -820,7 +820,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       req.signal.addEventListener("abort", abortAll);
       const countedAt = Date.now(); // D80: an aborted answer is given back in this window
       // K12: an instruction ("roligare", "ge mig tre", "förhör mig på …") never uses up the question budget
-      const instruction = !demo && (!!command || plan?.kind === "calibrate" || body.voiceInstruction === true ||
+      const instruction = !demo && (!!command || !!continuation || plan?.kind === "calibrate" ||
+        body.voiceInstruction === true || !!body.social?.calibrate || detectCorrection(body.fragment) !== null ||
         (!!body.social && socialRequest(body.fragment) !== null));
       const limitsP = (instruction
         ? enforceLimits(deps.rateLimiter, "answer-cmd", user.id, cfg.commandLimits ?? DEFAULT_CONFIG.commandLimits!, 1,

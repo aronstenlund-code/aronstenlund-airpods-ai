@@ -50,11 +50,11 @@ Deno.test("K12.5 instructions have their own budget: 4 in a row never get 429 af
     h(new Request("http://x/answer", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ fragment, mode: "push_to_talk", language: "sv", context: {} }),
+      body: JSON.stringify({ fragment, mode: "push_to_talk", language: "sv", context: { recent_qa: [{ q: "vad är en atom", a: "En atom är den minsta delen av ett grundämne." }] } }),
     }));
   for (let i = 0; i < 3; i++) await (await ask(`vad är en atom nummer ${i}`)).text();
   assertEquals((await ask("vad är en molekyl")).status, 429, "the question budget is used up");
-  for (const f of ["ge mig ett exempel", "sammanfatta", "förhör mig på atomer", "en mening"]) {
+  for (const f of ["ge mig ett exempel", "sammanfatta", "förhör mig på atomer", "en mening", "mer", "kortare"]) {
     const r = await ask(f);
     await r.text();
     assertEquals(r.status, 200, f);
