@@ -66,6 +66,10 @@ export interface AnswerRequest {
   preferences?: Setting[];
   /** K10.3: the /memory profile of how the user wants answers (<= 300 chars), in a cached system block. */
   prefProfile?: string;
+  /** K13.1: the app can play a short answer first and keep the developed one (sent after it) for "ja"/"mer"/a nod. */
+  twoLevel?: boolean;
+  /** K13.3: the situation (A10): someone else is talking near the user. */
+  situation?: { othersTalking?: boolean };
   /** K10.2: the context the settings are matched against (subject and exam of the current study profile). */
   prefContext?: { subject?: string; exam?: string };
 }
@@ -347,6 +351,10 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     },
     ...(o.voice_instruction === true ? { voiceInstruction: true } : {}),
     ...prefs(o),
+    ...(o.two_level === true ? { twoLevel: true } : {}),
+    ...(o.situation && typeof o.situation === "object" && (o.situation as Record<string, unknown>).others_talking === true
+      ? { situation: { othersTalking: true } }
+      : {}),
   };
 }
 

@@ -83,3 +83,22 @@ Deno.test("K13 (O10 #1) a correction in Frågor then in Provläge becomes global
   assertEquals(r.changed.scope, {});
   assert(covers(r.changed.scope, { mode: "fragor" }) && covers(r.changed.scope, { mode: "prov", subject: "Kemi" }));
 });
+
+Deno.test("K13.2 two 'ja' of the last three make the long answer the default; 'kortare' brings short-first back", async () => {
+  const { applySignal } = await import("./settings.ts");
+  const ctx = { mode: "prov", subject: "Biologi", answer_type: "explanation" as const };
+  let r = applySignal([], "yes", ctx);
+  assertEquals(r.longFirst, false);
+  r = applySignal(r.settings, "no", ctx);
+  assertEquals(r.longFirst, false);
+  r = applySignal(r.settings, "yes", ctx);
+  assertEquals(r.longFirst, true, "y n y");
+  assert(r.changed && describe(r.changed) === "Längre, utförligare svar i biologi");
+  assert(!applySignal(r.settings, "yes", { mode: "prov", subject: "Kemi", answer_type: "explanation" }).longFirst, "only in Biologi");
+  const back = applyCorrection(r.settings, { key: "length", value: "shorter" }, ctx);
+  assert(!back.settings.some((s) => s.key === "length" && s.value === "longer"), "kortare replaces it");
+  // "no" alone never makes it long
+  let n = applySignal([], "no", ctx);
+  n = applySignal(n.settings, "no", ctx);
+  assertEquals(n.longFirst, false);
+});

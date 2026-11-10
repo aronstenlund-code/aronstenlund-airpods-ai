@@ -270,6 +270,8 @@ export interface PromptExtras {
   command?: CommandTask;
   /** K10.2: the learned settings that apply here, as readable lines. */
   preferences?: string[];
+  /** K13.3: mode, subject, how close the exam is, time of day, others talking (one short line). */
+  situation?: string;
 }
 
 export function contextParts(
@@ -289,6 +291,10 @@ export function contextParts(
       const lines = stats.map((x) => `- ${sanitizeTagged(x.concept)}: ${x.right} rätt, ${x.wrong} fel`).join("\n");
       parts.push(`<concept_stats>\n${lines}\n</concept_stats>`);
     }
+  }
+  if (extras.situation) {
+    // K13.3: use it to choose the level and the length (others talking: shorter and discreet; exam close: its core)
+    parts.push(`<situation note="use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first">${sanitizeTagged(extras.situation)}</situation>`);
   }
   if (extras.preferences?.length) {
     // K10.2: learned from the user's own corrections; they apply to this answer

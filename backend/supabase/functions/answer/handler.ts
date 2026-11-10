@@ -31,6 +31,11 @@ const PREF_RULE: Record<string, string> = {
   "examples:more": "always at least TWO different concrete everyday examples (more than you would give otherwise), each introduced with \"Till exempel\" or \"Ett annat exempel är\"",
   "accuracy:careful": "double-check every fact and leave out anything you are not sure of",
 };
+/** K13.1: short answer first, then the developed answer after a marker (the app keeps it for "ja"/"mer"/a nod). */
+export const TWO_LEVEL_RULE = `
+
+TWO LEVELS (K13, this request): first the SHORT answer: one or two sentences, correct, with the single most important point, no check question. Then a line with only [[MER]]. Then the DEVELOPED answer at A level for the student: the concepts, how they connect, one concrete example and the nuance that matters, in four to seven sentences. The developed answer continues from the short one and never repeats or rephrases it; it may end with one check question when the style rules allow one. Nothing is said about the two parts.`;
+const MORE_MARK = "[[MER]]";
 const QUIZ_TASKS = new Set(["harder_question", "quick_quiz", "yes_no_quiz", "quiz_topic", "weak_areas"]);
 import { missingFact, missingFactNote } from "./interviewfacts.ts";
 import { nowContext } from "./datecalc.ts";
@@ -707,6 +712,17 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           answer_type: computed || /^matem/iu.test(prefSubject ?? "") ? "math" : answerType === "study" ? "explanation" : "fact",
         })
         : [];
+      // K13.3: the situation as one line (mode, subject, exam, time of day, others talking)
+      const examDays = /\(om (\d{1,2}) dag(?:ar)?\)|\bom (\d{1,2}) dag(?:ar)?\b/u.exec(body.personaSetup);
+      const days = examDays ? Number(examDays[1] ?? examDays[2]) : /\b(?:imorgon|i morgon)\b/iu.test(body.personaSetup) ? 1 : null;
+      const hour = Number(new Intl.DateTimeFormat("sv-SE", { hour: "numeric", timeZone: "Europe/Stockholm" }).format((deps.clock ?? (() => new Date()))()));
+      const situation = demo ? "" : [
+        `läge: ${currentMode(body) ?? body.mode}`,
+        prefSubject ? `ämne: ${prefSubject}` : "",
+        days !== null ? `provet om ${days} ${days === 1 ? "dag" : "dagar"}` : "",
+        Number.isFinite(hour) ? (hour < 6 ? "natt" : hour < 10 ? "morgon" : hour < 17 ? "dag" : hour < 22 ? "kväll" : "sen kväll") : "",
+        body.situation?.othersTalking ? "andra pratar runt användaren" : "",
+      ].filter(Boolean).join("; ");
       const prefLines = applicableHere.map((x) => `${describe(x)}: ${PREF_RULE[`${x.key}:${x.value}`] ?? ""}`.replace(/: $/, ""));
       // K10.3: the profile goes in its own cached system block after the shared prompt
       // K13 (Oscar O10 #4: "längre svar i kemi" followed into Frågor): with the settings at hand the profile is built
@@ -759,6 +775,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         (!/kontrollfrågor\s*:/i.test(body.personaSetup) || /inga kontrollfrågor/i.test(body.personaSetup)) &&
         !gradeReply;
       let silenced = false;
+      // K13.1: short first unless the learned default here is the long answer (2 of the last 3 "ja", K13.2)
+      const longFirst = applicableHere.some((x) => x.key === "length" && x.value === "longer");
+      const twoLevel = body.twoLevel === true && !demo && !plan && !command && !continuation && !computed &&
+        !textReq && !need && !quiz && !gradeReply && (tutor || answerTypeBase === "study") && !longFirst;
 
       // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz
       const isRizz = plan?.kind === "rizz" || textReq || careful; // K9: "var säker" = the stronger model, one answer
@@ -849,7 +869,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? systemPromptFor(answerType, tutor)
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
-        (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "");
+        (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "") +
+        (twoLevel ? TWO_LEVEL_RULE : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
@@ -888,6 +909,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const ordinal = !plan && isOrdinalFact(body.fragment);
       const baseExtras: PromptExtras = {
         ...(prefLines.length ? { preferences: prefLines } : {}),
+        ...(situation ? { situation } : {}),
         now: nowContext((deps.clock ?? (() =>
           new Date()))()),
         ...(computed ? { computed: computed.text } : {}),
@@ -1050,6 +1072,18 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let calibration: string | null = null;
           let rizzBuf = "";
           let headBuf: string | null = askSearch ? "" : null;
+          // K13.1: the developed answer after [[MER]]: its own post-processing, sent as more_delta, kept for done
+          let inMore = false;
+          let markBuf = "";
+          let moreText = "";
+          const morePost = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor, heard: body.fragment });
+          const sendMore = (t: string) => {
+            if (!t || closed || moreText.length >= 2000) return;
+            const cut = t.slice(0, 2000 - moreText.length);
+            moreText += cut;
+            send("more_delta", { text: cut });
+          };
+          const pushMore = (t: string) => sendMore(morePost.push(t));
           let searchMarked = false;
           let retrySystem = systemPrompt;
           let retryTools = tools;
@@ -1078,6 +1112,29 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 status = "not_question";
                 stop = true;
               }
+            } else if (twoLevel && !stop) {
+              // K13.1: text before [[MER]] is the short answer (spoken), after it the developed one (more_delta)
+              if (inMore) {
+                pushMore(ev.text);
+              } else {
+                markBuf += ev.text;
+                const i = markBuf.indexOf(MORE_MARK);
+                if (i >= 0) {
+                  deliver(post.push(markBuf.slice(0, i) + "\n"));
+                  inMore = true;
+                  const rest = markBuf.slice(i + MORE_MARK.length);
+                  markBuf = "";
+                  if (rest) pushMore(rest);
+                } else {
+                  // keep a possible start of the marker ("[", "[[M" …) for the next chunk
+                  const keep = /\[(?:\[(?:M(?:E(?:R(?:\])?)?)?)?)?$/u.exec(markBuf)?.[0] ?? "";
+                  const say = markBuf.slice(0, markBuf.length - keep.length);
+                  markBuf = keep;
+                  if (say) deliver(post.push(say));
+                }
+              }
+              if (silenceOn && post.silenceMarked) stop = true;
+              if (post.silencedLate) stop = true;
             } else {
               if (!stop) deliver(post.push(ev.text));
               if (silenceOn && post.silenceMarked) stop = true; // D75: nothing more will be said
@@ -1279,6 +1336,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             } else if (stop && !closed && status !== "ok") {
               deliver(post.finish()); // truncated: speak the tail that was held back
             }
+            if (twoLevel) {
+              if (!inMore && markBuf && status !== "truncated") deliver(post.push(markBuf)); // no marker came
+              markBuf = "";
+              if (inMore) sendMore(morePost.finish());
+            }
             flushNear();
             if (stop) abortAll();
             if (parser.headerFailed) {
@@ -1339,7 +1401,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 model: modelUsed,
                 est_cost_usd: usage("ok").est_cost_usd,
               },
-              summary: noSummary ? null : post.summary,
+              summary: noSummary ? null : post.summary ?? (twoLevel ? morePost.summary : null),
+              ...(twoLevel ? { more: moreText.trim() || null } : {}),
               relation: post.relation ?? parser.meta?.relation ?? null,
               source: post.source,
               memory_add: null,

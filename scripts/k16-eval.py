@@ -50,15 +50,17 @@ def main():
     ap.add_argument("--tokens", required=True)
     ap.add_argument("--only", help="A, B or C")
     ap.add_argument("--out", default=str(ROOT / "reports" / "eval"))
+    ap.add_argument("--slots", default="0,1,2,3", help="token slots (web: 20 searches per user and day)")
+    ap.add_argument("--pause", type=float, default=2.0, help="seconds after each call (web: 3/min per user)")
     a = ap.parse_args()
-    toks = [PE.signup(a.tokens, i) for i in (0, 1, 2, 3)]  # web: 3/min and 20/day per user
+    toks = [PE.signup(a.tokens, int(i)) for i in a.slots.split(",")]  # web: 3/min and 20/day per user
     n = [0]
 
     def ask(frag, recent):
         tok = toks[n[0] % len(toks)]
         n[0] += 1
         r = D.ask(tok, {"fragment": frag, "mode": "push_to_talk", "language": "sv", "context": {"recent_qa": recent}})
-        time.sleep(2.0)
+        time.sleep(a.pause)
         done = r.get("done") or {}
         u = done.get("usage") or {}
         return {"q": frag, "status": r["status"], "answer": r.get("text", ""), "source": done.get("source"),
