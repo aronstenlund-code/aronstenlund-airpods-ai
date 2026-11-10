@@ -38,7 +38,7 @@
   - (c) 15 nya fall från O7-typen (låttexter, historia med våld, sexualkunskap, ANT, medicin på faktanivå).
   Budget 0,40 USD. Rapport med siffror och till Kevin. _klar 2026-11-09 21:10 (Oscar): `reports/qa/2026-11-09-2110-oscar-o10-k10-k8.md`; appkommandon 13/20, 0/15 falska; rättelser med egna ord 3/20; andra rättelsen behövs inte 15/20 (vidgning mellan lägen trasig); K8 14/15; nya fel: telefonfiltret byter 'omkring 800 000', Frågor klipper mitt i ord; 0,33 USD_
 
-- [ ] **O11 – Oberoende test av K13 (kort först, mer på ja, inlärd längd)** (effort: high). Beror på: K13. 30 nya fall:
+- [~] pågår 2026-11-10 08:40 **O11 – Oberoende test av K13 (kort först, mer på ja, inlärd längd)** (effort: high). Beror på: K13. 30 nya fall:
   1. Är det korta svaret korrekt och användbart på egen hand?
   2. Är det långa svaret på A-nivå och fritt från upprepning?
   3. Tid till första ljud efter ett "ja".
