@@ -147,3 +147,16 @@ Ordning: fotosyntes 10,5 → fest 8,7 → "Dagen efter" hallen 5,5 → köket 7,
 - Tajtare: scen 1 börjar direkt på frågan (2,4 s) och slutar när svaret är klart; festen och köket trimmade i båda ändar.
 - "Klipp" var 2–3 s utan nya bilder: zoomsteg när hörluren tänds och ett andra zoomsteg mitt i långa repliker (scen 1, festen tillbaka till helbild när Elias svarar, köket).
 - Geminis Elias-röst (fest och kök) tillfälligt 3 halvtoner mörkare (rubberband, formant bevarad) tills Arons Filip-inspelningar finns.
+
+## 21:55 Ärlig granskning av v4 mot checklistan, åtgärdat i v5 (37,8 s)
+Åtgärdat:
+- För lång (43,7 s, checklistan: 15–30 s): scen 1 slutar efter "koldioxid" ("Syre blir över" bort, -1,6 s); hallen (5,5 s utan AI i bruk, punkt 14/15) ersatt av 1,4 s: pappret genom brevinkastet + närbild på A, med "Dagen efter".
+- Brödklippet kortat till 2,0 s.
+- Slutbilden var helt tyst (digital tystnad): nu pling + svagt rumsljud.
+- Köket var suddigt av zoom på 720p: zoomen sänkt från 12 % till 6 %.
+Kvar (kräver Aron):
+- 2,4 s helt tyst i köket där AI-svaret ska ligga (texten syns men ljudet saknas) – största felet just nu.
+- Förhörsrepliken saknas (glimten har bara text).
+- Elias röst är Geminis, tillfälligt mörkad; Arons Filip-inspelningar behövs.
+- Ingen musik (läggs i plattformen).
+Risker kvar mot checklistan: A på pappret (punkt 32, betygslöfte), fråga bakom handen vid skrivbord (punkt 33, fusk), Apple-lik hörlur (punkt 36).
