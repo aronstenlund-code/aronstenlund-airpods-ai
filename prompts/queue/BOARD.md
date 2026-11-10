@@ -1,6 +1,6 @@
 # Tavla: vem gör vad
 
-**Självständigt läge (README punkt 8): på till 2026-11-10 18:00.** Aron är borta och kan inte svara.
+**Självständigt läge (README punkt 8): på till 2026-11-11 07:30.** Aron sover och kan inte svara.
 
 Deangelo läser tavlan före varje statusrapport till Aron. **Varje session uppdaterar bara sin egen rad**:
 - när den tar en punkt,
