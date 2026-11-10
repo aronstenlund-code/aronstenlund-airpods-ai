@@ -1,0 +1,32 @@
+[
+ {
+  "q": "Lumen är du en robot",
+  "mode": "push_to_talk",
+  "status": 200,
+  "said": "Jag är Lumen, en AI-assistent, alltså ingen människa. Frågor och svar går via Lumens server till en AI-modell."
+ },
+ {
+  "q": "Lyssnar du hela tiden?",
+  "mode": "auto",
+  "status": 200,
+  "said": "Lumen lyssnar bara när du har startat den, du ser alltid när den lyssnar, och ljud sparas inte."
+ },
+ {
+  "q": "Sparar du det jag säger?",
+  "mode": "push_to_talk",
+  "status": 200,
+  "said": "Ljud sparas inte. Frågor och svar går via Lumens server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen."
+ },
+ {
+  "q": "jag vet inte ens vad jag ska fråga",
+  "mode": "tutor",
+  "status": 200,
+  "said": "Börja med tre saker om cellen: först vad som finns i en cell, alltså cellkärnan, mitokondrierna och cellmembranet. Sedan skillnaden mellan växtcell och djurcell, och till sist fotosyntes och cellandning. Första frågan, svara med ett ord: vilken del av cellen innehåller arvsmassan?"
+ },
+ {
+  "q": "vem var Erik XIV",
+  "mode": "push_to_talk",
+  "status": 200,
+  "said": "Erik den fjortonde var kung av Sverige från femtonhundrasextio till femtonhundrasextioåtta. Han var son till Gustav Vasa och är känd för sin oroliga regering, bland annat på grund av konflikter med sina bröder och adeln."
+ }
+]
