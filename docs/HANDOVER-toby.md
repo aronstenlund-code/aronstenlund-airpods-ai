@@ -1,4 +1,4 @@
-# Överlämning Toby (apptest), 2026-11-10 17:10
+# Överlämning Toby (apptest), 2026-11-10 20:15
 Sessionen har gjort T7, T8 och T9 i dag (efter T4, T1, T2, T3, T6 och T5 i går) och har komprimerats. Kön har T5b,
 T7b och T8b (alla väntar på ElevenLabs-kvoten) samt T10.
 
@@ -11,7 +11,7 @@ T7b och T8b (alla väntar på ElevenLabs-kvoten) samt T10.
 - **Delad utcheckning.** Jobba i en egen worktree. På main byter du bara dina egna rader (STATUS, BOARD,
   `prompts/queue/toby.md`), från `origin/main` och om igen vid krock.
 - **Python på Windows:** Bash-verktyget gör om `\\` i heredoc. Skriv Python-filer med Write/Edit, inte heredoc.
-- **ElevenLabs-kvoten är slut sedan 07:45.** Scribe svarar `quota_exceeded`, och iPhone-igenkänningen fungerar inte i
+- **ElevenLabs-kvoten var slut 07:45–19:15 (påfylld i kväll).** Det som stod här gällde då: Scribe svarar `quota_exceeded`, och iPhone-igenkänningen fungerar inte i
   simulatorn. Alla ljudtest står därför (T5b, T7b, A17-omtest).
   - Det som går är UI: skärmturen, och förstagångstestets kontroll av "Lyssnar" inom 15 s.
 - **A18/A22 bytte knappord:**
@@ -23,15 +23,18 @@ T7b och T8b (alla väntar på ElevenLabs-kvoten) samt T10.
 - **upload-artifact** vägrar filnamn med `"`. XCTest döper bilagor till `Debug description for "…"`, så
   `screens_index.py` tar bort de tecknen.
 
-## Öppna trådar
-- **Fullrundan på dagens main:** körningen [42851614197](https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42851614197)
-  (push till main 08ecb6f, med turens fixar) stod i kö 17:10. Läs den först. Mac-köerna i CI var långa i dag (80–150 min).
-  - A35, A37, A41, A42 och A47 kom efter T9:s gröna körning. Turens fixar för A33 och A35 körde bara på push (två
-    lägen) 17:06.
-  - Kontrollera också om "Lägg till prov" från Start (A47) fortfarande täcker Datum.
-- **Efter A33** går första startens Frågor-session vidare bakom Start. Turen avslutar den före "Bara fråga".
-- **T10 del 1 klar** (rapport 2026-11-10-1710). Telefonsteget är steg 6 i DEVICE-TEST-QUICK. Del 1 kunde göras, eftersom kvoten är slut. T8-körningen 42825446414 visar redan A45:s rad
-  "Lumen hör och pratar lite sämre just nu" och kortet "Jag hör inte just nu".
-  - iPhone-igenkänningen fungerar inte i simulatorn, så "blir inte döv" går bara att se på telefon.
-- **T5b och T7b:** kör `apptest-retest` och `apptest-more` när kvoten är tillbaka (Kevins `credits-ready.yml`).
-- Den gamla grenen `toby/t9-screens` är ersatt av `toby/t9b-screens` (samma fixar, flyttad till main).
+## Öppna trådar (20:15)
+- **D120:** krediterna är påfyllda, men slösa inte. Talet görs med `say`. `apptest-retest` kör som standard bara
+  `fragor,block`, och `apptest-firstuser` bara `skip`. Skärmturen körs inte längre på varje push till main, bara
+  nattligt (03:30), manuellt och på egen gren när `AppTests/E2E/Screens/**` ändras. Den öppnar Scribe.
+- **`/stt-token` svarar 429 `rate_limited`** sedan kvällen, troligen dagstaket på 600 för hela appen. Det nollställs
+  00:00 UTC (01:00 svensk tid). Rapport `reports/apptest/2026-11-10-2007-toby-t10-del2-stt-tak.md`, till Kevin.
+- **01:05:** `at0105.sh` (scratchpad, bakgrund) startar `apptest-more`, `apptest-firstuser paths=skip` och
+  `apptest-retest sets=fragor,block` på main. Läs dem och skriv slutrapporten för T5b, T7b och T8b. Om 429 är kvar:
+  skriv det och kör inte om.
+- **T10:** del 2 är grön (`apptest-outage`, en 503-stub i testprocessen, 0 krediter). Kvar är bara telefonsteget
+  (DEVICE-TEST-QUICK steg 6).
+- **Fullrundan på main (42851614197):** "Bara fråga" öppnar inte Lyssnar efter första starten, eftersom
+  `startMode` hoppar till `switchMode`. Appfel, till Angela. Turen är rätt. "Studiekort" på SE och "Rå
+  transkription"/"Diagnostik" vid största text missas ibland av turens rullning.
+- Grenen `toby/t5b-t7b-t8b` är flyttad till main (ce7411c).
