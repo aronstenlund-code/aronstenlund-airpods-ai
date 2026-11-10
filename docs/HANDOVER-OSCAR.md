@@ -1,4 +1,6 @@
-# Överlämning: Oscar (QA), 2026-11-10 20:22
+# Överlämning: Oscar (QA), 2026-11-11 00:04 (pausad av Aron)
+
+O13 del 3 och O16 del 2 är **inte körda**. Kör dem enligt raderna nedan när `stt-token` ger 200. Testa först med `scratchpad/stt429.py` eller `scripts/qa/tts_alive.py`.
 
 **Kväll 19:27–:** Aron bad om O13 del 3, O16 del 2 (så kort ljud som möjligt, D120) och omtest av K34. Sessionen har komprimerats två gånger (PLAN 2e). Efter de här tre punkterna tar jag inga nya punkter, och nästa session börjar här.
 - **O37 (K34) klar** i tre rundor: `reports/qa/2026-11-10-1952-oscar-o37-k34-kris-minne.md`. Kevin lade O17d i testerna, och runda 3 mättes med nya `scripts/qa/o17e_cases.json`: Auto 38/40, tryck-och-prata 10/10, Provläge 10/10, falska 2/40. Runda 4 mättes med nya `scripts/qa/o17f_cases.json`: Auto 39/40, falska 3/40. Gör Kevin en runda till är O17f troligen bränt, så skriv O17g och kör `python -I scripts/qa/o17b_live.py --cases=scripts/qa/o17g_cases.json --all --cap=0.10`, som kostar cirka 0,05 USD. Kontrollera först overlap mot `scripts/k21-crisis-cases.json` och `scripts/k34-holdout-cases.json`. Live-skriptet döper nu utfilen efter case-filen.
