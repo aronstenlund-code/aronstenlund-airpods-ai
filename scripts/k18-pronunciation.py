@@ -79,7 +79,7 @@ def wav_of(pcm, rate=24000):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tokens", required=True)
+    ap.add_argument("--tokens", default=None, help="refresh-token file (local runs); CI signs up")
     ap.add_argument("--tag", default="before")
     a = ap.parse_args()
     tok = PE.signup(a.tokens, 4)

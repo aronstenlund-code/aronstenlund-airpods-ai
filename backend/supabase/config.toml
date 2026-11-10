@@ -34,5 +34,8 @@ verify_jwt = true                  # K17 spaced repetition + plan up to the exam
 [functions.provlage-eval]
 verify_jwt = true                  # D87 Provläge test bank (answers + grading, capped)
 
+[functions.voice-lab]
+verify_jwt = false                 # K6 voice design previews, does its own strict service-role check
+
 [functions.usage-stats]
 verify_jwt = false                 # does its own strict service-role check (new sb_secret keys are not JWTs)

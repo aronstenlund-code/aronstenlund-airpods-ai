@@ -1,0 +1,43 @@
+name: Credits ready (K18 + K6)
+
+# Run when the ElevenLabs credits are back (manual): checks the credits first (stops at no cost when they are still
+# out), then K18's pronunciation measurement (30 subject terms through /tts and Scribe) and K6's voice previews
+# (five invented characters, Voice Design previews only: nothing is saved to the account). The previews are an
+# artifact "k6-voice-previews" for Aron to listen to; the numbers go to reports/eval/. ~7 000 ElevenLabs characters.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "K18 measurement: before (first run) or after (once aliases are in)"
+        default: "before"
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: K18 pronunciation + K6 voice previews
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/credits_ready.py --out /tmp/credits --tag "${{ github.event.inputs.tag || 'before' }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: k6-voice-previews
+          path: /tmp/credits/*.mp3
+          if-no-files-found: ignore
+      - name: Commit the numbers
+        run: |
+          git config user.name "lumen-eval"
+          git config user.email "lumen-eval@users.noreply.github.com"
+          git add reports/eval/credits-ready-*.json reports/eval/k18-*.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "Credits ready: K18 and K6 $(date -u +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep $((i*5)); done
+          exit 1

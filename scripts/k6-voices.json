@@ -1,0 +1,35 @@
+{
+ "note": "K6: invented character voices (owner: never a real person's voice, name or traits). Each sample text has been read by a person before anything is generated (it costs credits). Voice Design previews only: no voice is saved to the account until Aron has listened and chosen.",
+ "characters": [
+  {
+   "id": "coach",
+   "name": "Självsäker säljcoach",
+   "description": "An energetic, confident Swedish man in his forties, a motivational sales coach with a warm smile in his voice, clear Stockholm Swedish, upbeat pace, never shouting.",
+   "text": "Okej, nu kör vi! Du har redan gjort det svåraste, nämligen att börja. Tre frågor till, sedan tar vi en paus, och jag lovar att det sitter bättre än du tror. Kom igen, fotosyntesen väntar!"
+  },
+  {
+   "id": "sport",
+   "name": "Dramatisk sportkommentator",
+   "description": "A dramatic, fast-talking Swedish sports commentator, man around fifty, excited and breathless at the big moments, clear articulation, radio sports style.",
+   "text": "Och där kommer frågan, en riktig klassiker, vad är en atom? Eleven tvekar en sekund, men nej, där sitter svaret! Den minsta delen av ett grundämne! Vilken prestation, publiken jublar på läktaren!"
+  },
+  {
+   "id": "whisper",
+   "name": "Lugn viskare",
+   "description": "A calm, soft-spoken Swedish woman in her thirties, almost whispering, slow and soothing, like a meditation guide, warm and close.",
+   "text": "Andas in, och andas ut. Vi tar det här i lugn och ro, en fråga i taget. Det finns ingen brådska. När du är redo säger du bara till, så fortsätter vi med nästa del av kapitlet tillsammans."
+  },
+  {
+   "id": "radio",
+   "name": "Gammaldags radioröst",
+   "description": "An old-fashioned Swedish radio announcer from the 1950s, a man with a formal, rounded and slightly nasal broadcasting voice, measured pace, very correct pronunciation.",
+   "text": "God afton, kära lyssnare. Här kommer kvällens kunskapsprogram. I dag ska vi tala om Gustav Vasa, som år femtonhundratjugotre blev Sveriges konung. Var god och lyssna noga, ty frågor kommer att ställas."
+  },
+  {
+   "id": "story",
+   "name": "Sagoberättare",
+   "description": "A friendly elderly Swedish woman telling a bedtime story, gentle, expressive and slightly playful, slow pace with small pauses for effect.",
+   "text": "Det var en gång en liten vattendroppe som bodde i ett moln. En dag blev den så tung att den föll ner mot marken, sipprade ner i jorden och hamnade till slut i havet. Och vet du vad det kallas? Vattnets kretslopp."
+  }
+ ]
+}
