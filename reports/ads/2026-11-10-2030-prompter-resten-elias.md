@@ -182,3 +182,8 @@ Mätt tecken per sekund per undertext (gräns ca 15 för unga tittare, minst ca 
 ## 23:50 v12 (39,8 s)
 - Slutbilden 3,5 → 5 s (Aron: hinna läsa och bestämma sig).
 - All text större: undertexter 62 → 76 px, "AI i örat" 46 → 56, intervjufrågan 56 → 66, hook 88 → 100. Marginaler justerade så två rader ryms och inget överlappar.
+
+## 00:15 v13 (41,3 s): paus-hook
+- 0–1,4 s: frusen närbild på Elias öra (från scen 1), hörluren lyser (ljuset förstärkt i efterhand), röd ring poppar in vid 0,25 s, texten "Vänta… vad lyser i hans öra?" (112 px). Ljud: "tape stop" + pop. Sedan scen 1 med "POV: du har en AI i örat".
+- Inspiration: mönsterbrott/frusen bild och stor text i första sekunden (sovran.ai, "scroll-stopping hooks").
+- Arons idé 00:10, en person före som säger "Bro, det har aldrig varit så här lätt att komma in på Harvard": flaggad, påstår ett resultat (antagning) som appen inte kan lova (checklistan punkt 32, Metas regel om orealistiska resultat) och kräver en ny figur (krediter). Förslag på sanna repliker i chatten.
