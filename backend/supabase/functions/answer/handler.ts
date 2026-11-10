@@ -34,7 +34,7 @@ const PREF_RULE: Record<string, string> = {
 /** K13.1: short answer first, then the developed answer after a marker (the app keeps it for "ja"/"mer"/a nod). */
 export const TWO_LEVEL_RULE = `
 
-TWO LEVELS (K13, this request): first the SHORT answer: one or two sentences, correct, with the single most important point, no check question. Then a line with only [[MER]]. Then the DEVELOPED answer at A level for the student: the concepts, how they connect, one concrete example and the nuance that matters, in four to seven sentences. The developed answer continues from the short one and never repeats or rephrases it; it may end with one check question when the style rules allow one. Nothing is said about the two parts.`;
+TWO LEVELS (K13, this request; it replaces the length rules above): first the SHORT answer: one or two sentences, at most 30 words, correct, with the single most important point, no check question. Then a line with only [[MER]]. Then the DEVELOPED answer at A level for the student: the concepts, how they connect, one concrete example and the nuance that matters, in four to seven sentences. The developed answer continues from the short one and never repeats or rephrases it; it may end with one check question when the style rules allow one. Nothing is said about the two parts.`;
 const MORE_MARK = "[[MER]]";
 const QUIZ_TASKS = new Set(["harder_question", "quick_quiz", "yes_no_quiz", "quiz_topic", "weak_areas"]);
 import { missingFact, missingFactNote } from "./interviewfacts.ts";
@@ -724,6 +724,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         body.situation?.othersTalking ? "andra pratar runt användaren" : "",
       ].filter(Boolean).join("; ");
       const prefLines = applicableHere.map((x) => `${describe(x)}: ${PREF_RULE[`${x.key}:${x.value}`] ?? ""}`.replace(/: $/, ""));
+      // K13.3 (live: 3/5 shorter with only the situation line): others talking near the user = a short, discreet answer
+      if (body.situation?.othersTalking && !demo) {
+        prefLines.push("Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear");
+      }
       // K10.3: the profile goes in its own cached system block after the shared prompt
       // K13 (Oscar O10 #4: "längre svar i kemi" followed into Frågor): with the settings at hand the profile is built
       // from those that apply here; the app's own profile line only when no settings are sent
@@ -1084,6 +1088,36 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             send("more_delta", { text: cut });
           };
           const pushMore = (t: string) => sendMore(morePost.push(t));
+          // K13 (live: the short part was 103 words p50): the spoken part ends after two sentences or ~35 words at a
+          // sentence end; what the model wrote beyond that is the start of the developed answer
+          let shortDone = false;
+          let shortSentences = 0;
+          let shortWords = 0;
+          const sayShort = (t: string) => {
+            if (!t) return;
+            if (shortDone) {
+              sendMore(t);
+              return;
+            }
+            const wordsIn = (x: string) => (x.match(/[\p{L}\p{N}]+/gu) ?? []).length;
+            let cut = -1;
+            for (const m of t.matchAll(/[.!?](?=\s|$)/gu)) {
+              shortSentences++;
+              if (shortSentences >= 2 || shortWords + wordsIn(t.slice(0, m.index! + 1)) >= 35) {
+                cut = m.index! + 1;
+                break;
+              }
+            }
+            if (cut < 0) {
+              shortWords += wordsIn(t);
+              deliver(t);
+              return;
+            }
+            deliver(t.slice(0, cut));
+            shortDone = true;
+            const rest = t.slice(cut).replace(/^\s+/u, "");
+            if (rest) sendMore(rest);
+          };
           let searchMarked = false;
           let retrySystem = systemPrompt;
           let retryTools = tools;
@@ -1120,7 +1154,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 markBuf += ev.text;
                 const i = markBuf.indexOf(MORE_MARK);
                 if (i >= 0) {
-                  deliver(post.push(markBuf.slice(0, i) + "\n"));
+                  sayShort(post.push(markBuf.slice(0, i) + "\n"));
                   inMore = true;
                   const rest = markBuf.slice(i + MORE_MARK.length);
                   markBuf = "";
@@ -1130,7 +1164,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                   const keep = /\[(?:\[(?:M(?:E(?:R(?:\])?)?)?)?)?$/u.exec(markBuf)?.[0] ?? "";
                   const say = markBuf.slice(0, markBuf.length - keep.length);
                   markBuf = keep;
-                  if (say) deliver(post.push(say));
+                  if (say) sayShort(post.push(say));
                 }
               }
               if (silenceOn && post.silenceMarked) stop = true;
@@ -1235,7 +1269,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 const fin = post.finish();
                 // K1.4: "förhör mig" never repeats a question of this session (held until here, nothing was sent)
                 const repeated = quiz && attempt === 0 && !stop && isRepeatedQuestion(fin, askedQuestions(body));
-                if (!repeated) deliver(fin);
+                if (!repeated) (twoLevel ? sayShort : deliver)(fin);
                 if (repeated) {
                   note =
                     "Your previous check question was already asked in this session (see <already_asked>). Ask ONE different check question about another part of the topic.";
@@ -1337,7 +1371,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               deliver(post.finish()); // truncated: speak the tail that was held back
             }
             if (twoLevel) {
-              if (!inMore && markBuf && status !== "truncated") deliver(post.push(markBuf)); // no marker came
+              if (!inMore && markBuf && status !== "truncated") sayShort(post.push(markBuf)); // no marker came
               markBuf = "";
               if (inMore) sendMore(morePost.finish());
             }

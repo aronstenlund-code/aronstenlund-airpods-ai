@@ -73,7 +73,7 @@ def stream_answer(tok, model, body):
             continue
         if r.status != 200:
             return {"error": f"http {r.status} {r.read()[:150]!r}"}
-        buf, text, done, ttft = "", "", None, None
+        buf, text, done, ttft, more, more_t = "", "", None, None, "", None
         while True:
             chunk = r.read1(4096)
             if not chunk:
@@ -90,10 +90,13 @@ def stream_answer(tok, model, body):
                     if ttft is None:
                         ttft = (time.perf_counter() - t0) * 1000
                     text += d.get("text", "")
+                elif ev.group(1) == "more_delta":  # K13: the developed answer (kept by the app for "ja")
+                    more += d.get("text", "")
+                    more_t = (time.perf_counter() - t0) * 1000
                 elif ev.group(1) == "done":
                     done = d
         c.close()
-        return {"text": text.strip(), "client_ttft": ttft, "done": done}
+        return {"text": text.strip(), "client_ttft": ttft, "done": done, "more": more.strip(), "more_done_ms": more_t}
     return {"error": "rate limited"}
 
 
@@ -115,9 +118,13 @@ def post(tok, payload):
             return {"error": str(e)}
 
 
+TWO_LEVEL = False
+
+
 def run_case(tok, case, model, judge):
     body = {"fragment": case["q"], "mode": "tutor", "language": "sv", "persona": "tutor",
-            "persona_setup": case["profile"], "context": {"recent_qa": case["context"][-3:]}}
+            "persona_setup": case["profile"], "context": {"recent_qa": case["context"][-3:]},
+            **({"two_level": True} if TWO_LEVEL else {})}
     a = stream_answer(tok, model, body)
     if a.get("error"):
         return {**case, "error": a["error"]}
@@ -126,8 +133,18 @@ def run_case(tok, case, model, judge):
     if g.get("error"):
         return {**case, "answer": a["text"], "error": g["error"]}
     u = done.get("usage") or {}
+    extra = {}
+    if TWO_LEVEL:
+        # K13.4: "first answer plus at most one ja": the short answer and the developed one together
+        extra = {"more": a.get("more", ""), "more_done_ms": a.get("more_done_ms")}
+        if a.get("more"):
+            g2 = post(tok, {"action": "grade", "judge": judge, "case": case, "answer": a["text"] + " " + a["more"]})
+            extra["plus_one_ok"] = g2.get("first_answer_suffices") if not g2.get("error") else None
+            extra["judge_cost2"] = float((g2.get("usage") or {}).get("est_cost_usd") or 0)
+        else:
+            extra["plus_one_ok"] = g["first_answer_suffices"]
     return {
-        **case, "answer": a["text"], "scores": g["scores"], "first_ok": g["first_answer_suffices"], "note": g.get("note", ""),
+        **case, **extra, "answer": a["text"], "scores": g["scores"], "first_ok": g["first_answer_suffices"], "note": g.get("note", ""),
         "strict": g.get("strict"), "empty": g.get("empty", 0), "words": g.get("words"), "rubric": g.get("rubric", 1),
         "server_ttft": (done.get("timing") or {}).get("ttft_ms"), "client_ttft": a["client_ttft"],
         "answer_cost": float(u.get("est_cost_usd") or 0), "judge_cost": float((g.get("usage") or {}).get("est_cost_usd") or 0),
@@ -159,6 +176,10 @@ def summary(rows, model, judge):
         "judge_cost_total_usd": round(sum(r["judge_cost"] for r in ok), 4),
         "by_kind": {},
     }
+    if TWO_LEVEL:
+        out["first_plus_one_ja_pct"] = share(lambda r: r.get("plus_one_ok") == 1)
+        out["with_more_pct"] = share(lambda r: bool(r.get("more")))
+        out["judge_cost_total_usd"] = round(out["judge_cost_total_usd"] + sum(r.get("judge_cost2", 0) for r in ok), 4)
     for k in sorted({r["kind"] for r in ok}):
         sub = [r for r in ok if r["kind"] == k]
         out["by_kind"][k] = f'{sum(1 for r in sub if r["first_ok"] == 1)}/{len(sub)}'
@@ -177,8 +198,11 @@ def main():
     ap.add_argument("--tokens", default="", help="file that keeps refresh tokens between local runs (never commit it)")
     ap.add_argument("--users", type=int, default=USERS)
     ap.add_argument("--tag", default="", help="suffix for the output file name, e.g. k2-v1")
+    ap.add_argument("--two-level", action="store_true", help="K13: short answer first, developed answer after it")
     ap.add_argument("--bank", default=os.path.join(ROOT, "scripts", "provlage-bank.json"), help="another case file (same format)")
     a = ap.parse_args()
+    global TWO_LEVEL
+    TWO_LEVEL = a.two_level
     cases = json.load(open(a.bank, encoding="utf-8"))
     if a.only:
         kinds = set(a.only.split(","))

@@ -94,3 +94,12 @@ Deno.test("K13.3 others talking reaches the model", async () => {
   await events(await h(post(tutorBody({ situation: { others_talking: true } }))));
   assert(seen[0].user.includes("andra pratar"));
 });
+
+Deno.test("K13 the spoken short part ends after two sentences; the rest starts the developed answer", async () => {
+  const { h } = two("Osmos är vattnets rörelse genom ett membran. Det sker mot högre koncentration. Till exempel skrynklar ett russin ihop. [[MER]]\nDetta händer i alla celler.");
+  const ev = await events(await h(post(tutorBody({ two_level: true }))));
+  const spoken = ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
+  const more = ev.filter((e) => e.event === "more_delta").map((e) => e.data.text).join("");
+  assert(!spoken.includes("russin"), spoken);
+  assert(more.startsWith("Till exempel") && more.includes("alla celler"), more);
+});
