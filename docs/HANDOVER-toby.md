@@ -1,4 +1,4 @@
-# Överlämning Toby (apptest), 2026-11-10 20:15
+# Överlämning Toby (apptest), 2026-11-11 00:00 (pausad)
 Sessionen har gjort T7, T8 och T9 i dag (efter T4, T1, T2, T3, T6 och T5 i går) och har komprimerats. Kön har T5b,
 T7b och T8b (alla väntar på ElevenLabs-kvoten) samt T10.
 
@@ -29,7 +29,9 @@ T7b och T8b (alla väntar på ElevenLabs-kvoten) samt T10.
   nattligt (03:30), manuellt och på egen gren när `AppTests/E2E/Screens/**` ändras. Den öppnar Scribe.
 - **`/stt-token` svarar 429 `rate_limited`** sedan kvällen, troligen dagstaket på 600 för hela appen. Det nollställs
   00:00 UTC (01:00 svensk tid). Rapport `reports/apptest/2026-11-10-2007-toby-t10-del2-stt-tak.md`, till Kevin.
-- **01:05:** `at0105.sh` (scratchpad, bakgrund) startar `apptest-more`, `apptest-firstuser paths=skip` och
+- **Pausad 00:00 på Arons begäran.** 01:05-timern är stoppad, så inget startades. Kör nästa pass `apptest-more`, `apptest-firstuser paths=skip` och `apptest-retest sets=fragor,block` på main (Kevin 22fdf17 lämnar nu tillbaka enheter vid misslyckade token). Läs dem och skriv slutrapporten.
+- **Oro att ta upp:** Angelas A49 Sömnläge sparar klipp av sömnprat i 30 dagar. Ljud sparas, och andra i rummet kan spelas in. Skriv det under Concerns i nästa rapport.
+- *(gammalt)* **01:05:** `at0105.sh` (scratchpad, bakgrund) startar `apptest-more`, `apptest-firstuser paths=skip` och
   `apptest-retest sets=fragor,block` på main. Läs dem och skriv slutrapporten för T5b, T7b och T8b. Om 429 är kvar:
   skriv det och kör inte om.
 - **T10:** del 2 är grön (`apptest-outage`, en 503-stub i testprocessen, 0 krediter). Kvar är bara telefonsteget
