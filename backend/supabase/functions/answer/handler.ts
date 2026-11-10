@@ -11,7 +11,7 @@ import {
 import { SSE_HEADERS, sseFrame } from "../_shared/sse.ts";
 import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
 import { withDeadline } from "./llm/deadline.ts";
-import { CRISIS_OTHER, CRISIS_SELF, isCrisis } from "./crisis.ts";
+import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
@@ -285,9 +285,43 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const body = echo.echoed ? { ...body0, fragment: echo.rest } : body0;
       // K21 (BLOCKER, safety): words about not wanting to live, suicide or self-harm always get a warm answer with a
       // way to help, in every mode (also the demo), before anything else and whatever the model would call it
+      const provider0 = deps.provider;
       const othersSaid = (body0.social?.transcript ?? []).slice(-2).filter((x) => x.speaker !== "user").map((x) => x.text);
-      const crisisSelf = isCrisis(body0.fragment) && !(body0.persona === "social" || body0.persona === "interview");
-      const crisisOther = !crisisSelf && (isCrisis(body0.fragment) || othersSaid.some(isCrisis));
+      // Oscar O17: a strong hit answers at once; a weak one (first person + a word about living, dying or harm, or an
+      // everyday reading of a strong pattern) gets a one-word check by the small model first; a failed check = answer
+      const otherPersona = body0.persona === "social" || body0.persona === "interview" || aboutOther(body0.fragment);
+      const fragLevel = crisisLevel(body0.fragment);
+      const otherLevels = othersSaid.map(crisisLevel);
+      let crisisWho: "self" | "other" | null = fragLevel === "strong"
+        ? (otherPersona ? "other" : "self")
+        : otherLevels.includes("strong")
+        ? "other"
+        : null;
+      if (!crisisWho) {
+        const weak = [...(fragLevel === "weak" ? [body0.fragment] : []), ...othersSaid.filter((_, i) => otherLevels[i] === "weak")];
+        if (weak.length) {
+          let yes = true;
+          let reply = "";
+          try {
+            if (!provider0) throw new Error("no provider");
+            for await (const c of provider0.stream({
+              system: CRISIS_CHECK_PROMPT,
+              user: `<utterance>${sanitizeTagged(weak.join(" / ").slice(0, 600))}</utterance>`,
+              maxTokens: 5,
+              cacheSystem: true,
+              noThinking: true,
+              signal: AbortSignal.timeout(4000),
+            })) if (c.type === "text") reply += c.text;
+            yes = crisisVerdict(reply);
+          } catch (e) {
+            console.warn("crisis_check_failed", e instanceof Error ? e.message.slice(0, 120) : String(e)); // fail safe: answer
+          }
+          console.log(JSON.stringify({ event: "crisis_check", verdict: yes, reply: reply.trim().slice(0, 10) }));
+          if (yes) crisisWho = fragLevel === "weak" && !otherPersona ? "self" : "other";
+        }
+      }
+      const crisisSelf = crisisWho === "self";
+      const crisisOther = crisisWho === "other";
       if (crisisSelf || crisisOther) {
         const text = crisisSelf ? CRISIS_SELF : CRISIS_OTHER;
         const totalMs = Math.round(now() - t0);
