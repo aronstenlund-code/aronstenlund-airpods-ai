@@ -7,15 +7,15 @@
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
-<title>Fråga högt. Få svaret i örat. Plugga inför prov handsfree</title>
-<meta name="description" content="Plugga inför prov utan att ta fram telefonen. Fråga högt, bli förhörd och få svaret uppläst i hörlurarna. Prova Provläget direkt här.">
+<title>Fråga högt. Få svaret i örat. AI i dina AirPods för skolan och vardagen</title>
+<meta name="description" content="Starta Lumen en gång, sen finns AI:n i dina hörlurar. Fråga högt och hör svaret i örat, i vardagen, i skolan och på jobbet. Plugga inför prov och bli förhörd. Prova direkt här.">
 <link rel="canonical" href="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="sv_SE">
 <meta property="og:site_name" content="Lumen">
 <meta property="og:url" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
 <meta property="og:title" content="Fråga högt. Få svaret i örat.">
-<meta property="og:description" content="Telefonen stannar i fickan. Prova här, svaret läses upp.">
+<meta property="og:description" content="AI:n i dina AirPods, för vardagen, skolan och jobbet. Prova här, svaret läses upp.">
 <meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og-lumen.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -171,6 +171,7 @@
     font-size: 1.25rem;
     line-height: 1.35;
   }
+  .pitch-sub { margin-top: 8px; color: var(--mut); font-size: 1rem; line-height: 1.45; max-width: 34em; }
 
 
   .photo {
@@ -515,6 +516,7 @@
   @media (max-height: 720px) and (max-width: 959px) {
     h1 { font-size: clamp(2.25rem, 10.4vw, 3rem); }
     .pitch { font-size: 1.125rem; margin-top: 6px; }
+    .pitch-sub { display: none; } /* Ke26: textrutan ska synas utan att rulla på SE; budskapet står i .pitch */
     .hero { gap: 16px; }
     .demo { gap: 12px; padding: 14px 14px 16px; }
     .chip { font-size: 1rem; padding: 2px 12px 0; }
@@ -563,6 +565,7 @@
     .demo { grid-column: 2; grid-row: 1 / span 2; align-self: start; position: sticky; top: 24px; padding: 26px 26px 28px; gap: 20px; }
     h1 { font-size: clamp(3.75rem, 6.2vw, 5.5rem); }
     .pitch { font-size: 1.5rem; margin-top: 16px; }
+    .pitch-sub { font-size: 1.125rem; margin-top: 12px; }
     body[data-view="answer"] .controls { display: grid; }
     .a { font-size: 1.75rem; }
     .again-only { display: none; }
@@ -630,7 +633,10 @@
   <section class="hero wrap" aria-labelledby="hero-h">
     <div class="intro">
       <h1 id="hero-h">Fråga högt. Få svaret i örat.</h1>
-      <p class="pitch">Telefonen stannar i fickan.</p>
+      <!-- Ke26 (D121): vardagen, skolan och jobbet. Sant formulerat: Lumen lyssnar efter "Lumen" så länge den är
+           startad (även med låst skärm). Inget "hela dagen", eftersom batteriet inte är mätt. -->
+      <p class="pitch">AI:n i dina AirPods. För vardagen, skolan och jobbet.</p>
+      <p class="pitch-sub">Starta Lumen en gång, sen finns den i örat. Säg ”Lumen” så svarar den.</p>
     </div>
 
     <div class="demo paper" id="demo" role="region" aria-label="Prova demon">
