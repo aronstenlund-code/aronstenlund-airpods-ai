@@ -1,0 +1,38 @@
+name: Reported cases
+
+# K4.3: the newest "det där var fel" reports are asked again on the deployed backend every night and graded; only
+# numbers are committed (reports/eval/reported-<date>.json), never the users' words. ~0.2 USD a night (15 cases).
+on:
+  schedule:
+    - cron: "47 2 * * *" # every night 02:47 UTC, after the nightly eval
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reported-cases
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Ask the reported questions again
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: python3 scripts/reported-cases.py
+      - name: Commit the numbers
+        run: |
+          git config user.name "lumen-eval"
+          git config user.email "lumen-eval@users.noreply.github.com"
+          git add reports/eval/reported-*.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "Reported cases $(date -u +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep $((i*5)); done
+          exit 1
