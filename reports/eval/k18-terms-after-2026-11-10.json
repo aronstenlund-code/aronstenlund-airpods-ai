@@ -1,0 +1,78 @@
+{
+ "summary": {
+  "n": 10,
+  "uses_term": 10
+ },
+ "rows": [
+  {
+   "subject": "Biologi",
+   "q": "hur gör växter mat",
+   "term": "fotosyntes",
+   "ok": true,
+   "answer": "Växter gör sin mat genom fotosyntesen. I klorofyllet i bladens gröna delar, kloroplasterna, tar växten in solljus. Med ljusets energi bygger den druvsocker, glukos, av koldioxid från luften och vatten från rötterna. Samtidigt släpper växten ut syre. Druvsockret använder växten som energi och som byggmaterial, och överskottet lagras som stärkelse. Koldioxiden kommer in genom små öppningar på bladens undersida som kallas klyvöppningar. På provet skriver du ordformeln: koldioxid plus vatten blir me"
+  },
+  {
+   "subject": "Fysik",
+   "q": "vad är det som gör att saker faller ner",
+   "term": "gravitation|tyngdkraft",
+   "ok": true,
+   "answer": "Det som gör att saker faller är gravitationen, en kraft där jorden drar alla föremål mot sitt centrum. Alla föremål med massa drar i varandra, men jorden är så tung att dess dragning är den enda vi märker i vardagen. Kraften kallas tyngdkraften och mäts i newton; på jorden drar den med ungefär tio newton på varje kilogram. Släpper du en boll ökar farten nedåt med ungefär tio meter per sekund varje sekund, om luftmotståndet är litet. Därför faller tunga och lätta saker lika snabbt i vakuum, medan"
+  },
+  {
+   "subject": "Geografi",
+   "q": "varför har vi sommar och vinter",
+   "term": "jordaxel|axelns lutning|lutar|solinstrålning",
+   "ok": true,
+   "answer": "Vi har årstider för att jordaxeln lutar, ungefär tjugotre komma fem grader mot banan runt solen. Under ett år ändrar sig vilken halva av jorden som lutar mot solen. När norra halvklotet lutar mot solen träffar strålarna mer lodrätt och dagarna är längre, så det blir sommar hos oss. Samtidigt lutar södra halvklotet från solen, så där är det vinter. Efter ett halvt år, när jorden är på andra sidan solen, är det tvärtom. Avståndet till solen har alltså nästan ingen betydelse, och faktiskt är jorden"
+  },
+  {
+   "subject": "Kemi",
+   "q": "vad händer om man blandar en syra med en bas",
+   "term": "neutralis",
+   "ok": true,
+   "answer": "När man blandar en syra med en bas sker en neutralisation. Syran innehåller vätejoner och basen hydroxidjoner, och de reagerar med varandra och bildar vatten. Det som blir kvar av syran och basen bildar ett salt. Ett exempel är saltsyra och natriumhydroxid, som ger vatten och natriumklorid, alltså vanligt bordssalt. När syran och basen tar ut varandra blir lösningen neutral, med pH sju, och det blir också lite värme. På provet: skriv att det bildas vatten och ett salt, och att pH närmar sig sju."
+  },
+  {
+   "subject": "Biologi",
+   "q": "hur får man sin ögonfärg från föräldrarna",
+   "term": "gen(?:er|en)?|allel|arv|ärftlig",
+   "ok": true,
+   "answer": "Ögonfärgen styrs av gener, och du får en uppsättning gener från mamma och en från pappa, så varje gen finns i två varianter, så kallade alleler. Brun ögonfärg är dominant och blå är recessiv, så det räcker med en brun allel för att bli brunögd, medan du måste ha två blå alleler för att bli blåögd. Två brunögda föräldrar kan alltså få ett blåögt barn om båda bär på en dold blå allel, och då är chansen tjugofem procent. I verkligheten påverkas ögonfärgen av flera gener, men den enkla modellen med "
+  },
+  {
+   "subject": "Biologi",
+   "q": "varför blir man andfådd när man springer",
+   "term": "cellandning|syrebrist|mjölksyra|syreskuld",
+   "ok": true,
+   "answer": "När du springer arbetar musklerna hårdare och behöver mer syre för sin cellandning, som frigör energi av socker och syre. Samtidigt bildar cellandningen mer koldioxid, och den måste föras bort. Därför andas du snabbare och djupare, och hjärtat slår fortare så att blodet snabbt transporterar syre till musklerna och koldioxid till lungorna. Man blir andfådd när kroppen inte riktigt hinner få in syre i samma takt som musklerna förbrukar det. Det känns som att man flämtar och hjärtat bultar. På prov"
+  },
+  {
+   "subject": "Fysik",
+   "q": "varför blir vatten till is",
+   "term": "fryspunkt|stelnar|fasövergång|aggregationsform",
+   "ok": true,
+   "answer": "Vatten blir till is när det kyls ner till noll grader, som är fryspunkten, och då stelnar det. Vattenmolekylerna rör sig långsammare ju kallare det blir. Vid noll grader rör de sig så lite att de fastnar i ett fast mönster och bildar fast form, som är is. I vätskan glider molekylerna runt varandra, men i isen sitter de på bestämda platser och vibrerar bara. Ett exempel är en vattenpöl som fryser på natten när temperaturen sjunker under noll grader. Is tar också lite mer plats än vatten, så den f"
+  },
+  {
+   "subject": "Samhällskunskap",
+   "q": "hur bestämmer riksdagen nya lagar",
+   "term": "lagförslag|proposition|vot|motion|beslut",
+   "ok": true,
+   "answer": "Riksdagen stiftar lagar genom att ledamöterna röstar ja eller nej i kammaren, och förslaget blir lag om fler röstar ja än nej. Först kommer ett förslag, oftast från regeringen men ibland från riksdagsledamöter, som kallas proposition respektive motion. Sedan granskas förslaget i ett utskott, till exempel justitieutskottet för brott och straff, där ledamöter från olika partier förbereder beslutet. Därefter debatterar kammaren förslaget, och till sist röstar alla trehundrafyrtionio ledamöter. Är d"
+  },
+  {
+   "subject": "Kemi",
+   "q": "varför rostar en cykel",
+   "term": "oxid|oxidation|korrosion|syre",
+   "ok": true,
+   "answer": "En cykel rostar för att järnet i den reagerar med syre och vatten och bildar järnoxid, som är rost. Det är en kemisk reaktion, så ett nytt ämne bildas. Rosten är porös och flagnar, så nytt järn kommer ständigt åt att reagera, och rostningen fortsätter inåt. Salt, till exempel från vägsaltet, gör att det går ännu snabbare. Därför målar eller smörjer man cyklar, eftersom färg och olja håller undan syre och vatten. På provet: skriv att järn och syre bildar järnoxid och att det kräver både syre och "
+  },
+  {
+   "subject": "Biologi",
+   "q": "vad är det i blodet som skyddar mot bakterier",
+   "term": "vita blodkroppar|immunförsvar|antikroppar|lymfocyt|fagocyt",
+   "ok": true,
+   "answer": "Det är de vita blodkropparna som skyddar kroppen mot bakterier och andra smittämnen. De hittar bakterierna och oskadliggör dem, till exempel genom att äta upp dem, och en del bildar antikroppar som fastnar på bakterierna och hjälper kroppen att bekämpa dem. De röda blodkropparna transporterar syre och blodplättarna får blodet att levra sig, så de gör inte det här jobbet. Ett exempel är när du får ett sår: de vita blodkropparna samlas där och angriper bakterierna som kommit in, och då blir såret "
+  }
+ ]
+}

@@ -23,3 +23,5 @@ Sessionen har gjort K2, K7, K9, K10, K8, K11 och K14 och har komprimerats. Den f
 - Oscars O10 säger att K10 inte räknas som klar förrän rättelser med egna ord når 18/20. Det tas i K13.
 
 **Pausad 2026-11-10 00:35 mitt i K16:** koden är driftsatt (commit 552319d, deploy 42706487639). Kvar: kör `python -X utf8 -I scripts/k16-eval.py --tokens <scratchpad>/tokens.json` (4 token-platser, eftersom webben tillåter 3/min och 20/dag per användare), läs svaren för hand (mängder mot källan, motsägelser i kedjorna), skriv rapporten och D97, och be Angela skicka `done.source` som `recent_qa[].source`.
+
+**2026-11-10:** rapporterna `…-1015-…`, `-1100-`, `-1135-` och `-1230-` och tavlans tider fick klockslag som låg före den verkliga tiden (det var cirka 09:20 när K18 skrevs). Använd `date`. Innehållet stämmer. Committa alltid med pathspec (`git commit -- <paths>`): en vanlig commit tog med Kellys filer (de2fd5f).
