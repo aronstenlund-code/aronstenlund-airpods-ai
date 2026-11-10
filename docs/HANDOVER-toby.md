@@ -24,12 +24,13 @@ T7b och T8b (alla väntar på ElevenLabs-kvoten) samt T10.
   `screens_index.py` tar bort de tecknen.
 
 ## Öppna trådar
-- **Fullrundan på dagens main.** Kör `apptest-screens` via workflow_dispatch utan input. Den tar 80–150 min.
+- **Fullrundan på dagens main:** körningen [42851614197](https://github.com/aronstenlund-code/aronstenlund-airpods-ai/actions/runs/42851614197)
+  (push till main 08ecb6f, med turens fixar) stod i kö 17:10. Läs den först. Mac-köerna i CI var långa i dag (80–150 min).
   - A35, A37, A41, A42 och A47 kom efter T9:s gröna körning. Turens fixar för A33 och A35 körde bara på push (två
     lägen) 17:06.
   - Kontrollera också om "Lägg till prov" från Start (A47) fortfarande täcker Datum.
 - **Efter A33** går första startens Frågor-session vidare bakom Start. Turen avslutar den före "Bara fråga".
-- **T10** (ElevenLabs nere) kan göras nu, eftersom kvoten är slut. T8-körningen 42825446414 visar redan A45:s rad
+- **T10 del 1 klar** (rapport 2026-11-10-1710). Telefonsteget är steg 6 i DEVICE-TEST-QUICK. Del 1 kunde göras, eftersom kvoten är slut. T8-körningen 42825446414 visar redan A45:s rad
   "Lumen hör och pratar lite sämre just nu" och kortet "Jag hör inte just nu".
   - iPhone-igenkänningen fungerar inte i simulatorn, så "blir inte döv" går bara att se på telefon.
 - **T5b och T7b:** kör `apptest-retest` och `apptest-more` när kvoten är tillbaka (Kevins `credits-ready.yml`).

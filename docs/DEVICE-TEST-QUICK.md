@@ -1,7 +1,7 @@
-# Snabbtest på telefon (20 minuter)
+# Snabbtest på telefon (22 minuter)
 
 Bara det som **måste** testas på riktig iPhone + AirPods. Simulatorn kan inte testa något av detta.
-Skrivet av Toby (apptestare), 2026-11-08. Steg 4 (röstkommandon) tillagt 2026-11-09 (T6), steg 5 (mer efter korta svar) 2026-11-10 (T7). Det långa schemat finns i `docs/DEVICE-TEST-CHECKLIST.md`.
+Skrivet av Toby (apptestare), 2026-11-08. Steg 4 (röstkommandon) tillagt 2026-11-09 (T6), steg 5 (mer efter korta svar) 2026-11-10 (T7), steg 6 (ElevenLabs nere) 2026-11-10 (T10). Det långa schemat finns i `docs/DEVICE-TEST-CHECKLIST.md`.
 
 **Du behöver:** iPhone med senaste `Lumen-unsigned.ipa`, AirPods (helst med huvudspårning: AirPods Pro eller
 AirPods 3/4), internet, ett tyst rum. Ha papper och penna, eller svara direkt i chatten efter varje steg.
@@ -99,9 +99,24 @@ Tryck **Avsluta**.
 
 ---
 
+## 6. När ElevenLabs ligger nere (2 min)
+
+Gör bara det här medan ElevenLabs-krediterna är slut, eller när STATUS säger att ElevenLabs ligger nere. Då ska
+iPhonens egen taligenkänning och röst ta över. Simulatorn kan inte visa det (T10). Tryck **Bara fråga**.
+
+| | Gör | Ska hända | Skicka |
+|---|---|---|---|
+| 6a | Titta på skärmen. | En gång står "Lumen hör och pratar lite sämre just nu". | J/N + skärmbild |
+| 6b | Säg: "Vad är huvudstaden i Norge?" | Svaret syns och läses upp med iPhonens röst. Den låter annorlunda än vanligt. | J/N + sekunder till svaret |
+| 6c | Titta på raden högst upp medan du pratar. | Den säger "Lyssnar" och inte "Jag hör inte just nu". | J/N |
+
+Tryck **Avsluta**.
+
+---
+
 ## Skicka tillbaka
 
-1. Raderna `1a` till `5e` med J/N.
+1. Raderna `1a` till `6c` med J/N (6 bara om ElevenLabs är nere).
 2. Skärmbilden från 3f.
 3. De tre filerna från plugg-sessionen (`.wav`, `.txt`, `.json`).
 4. iPhone-modell och iOS-version (Inställningar → Allmänt → Om), AirPods-modell.

@@ -26,8 +26,8 @@ skärms texter loggades.
 
 ## Kvar i T10
 - **Telefon:** med kvoten slut, eller utan nät till ElevenLabs, ställ en fråga och kontrollera att iPhonens
-  igenkänning tar över och att svaret läses upp med iPhonens röst. Det kan bara Aron göra. Steget passar i
-  `docs/DEVICE-TEST-QUICK.md`, och nästa session lägger till det.
+  igenkänning tar över och att svaret läses upp med iPhonens röst. Det kan bara Aron göra. Steget ligger nu
+  som steg 6 (6a–6c) i `docs/DEVICE-TEST-QUICK.md`.
 - **Simulatorn med 503:** ett test som får `/stt-token` och `/tts` att svara 503 i stället för slut kvot. Det kräver en
   testkrok i appen. Om det behövs frågar jag Angela i nästa rapport.
 
