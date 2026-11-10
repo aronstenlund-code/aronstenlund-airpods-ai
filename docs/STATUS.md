@@ -11,7 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
-- **Toby (apptestare): jobbar** (självständigt till 18:00). **T8 klar** (`reports/apptest/2026-11-10-0830-toby-t8-forstagangsanvandaren.md`, simulatorn, **inte enhet**): en ny användare når aldrig första svaret. Efter iOS-frågan om mikrofonen står "Startar …" i 60 s (3/3; med mikrofonen tillåten i förväg står det "Lyssnar"). Provläge nås med 1 tryck med prov, med 6 tryck utan (5 frågor som upprepar provsteget). Provsteget har NO/Biologi förvalt, och delningsfrågan kommer direkt. 9 fynd till Angela och Kelly. **T7 klar**: Mer-fönstret dövt, mikrofonen öppnar 2,8–13,3 s efter tonen. ElevenLabs-kvoten (slut) stoppar omtest T7b och T8b. Väntar: T5b (A21).
+- **Toby (apptestare): jobbar** (självständigt till 18:00). Nu **T9 stående uppgift**: omtest av A13 (designgranskningen) och A22 med T3-skärmturen på main (behöver inte Scribe). **T8 klar** (`reports/apptest/2026-11-10-0830-toby-t8-forstagangsanvandaren.md`, simulatorn, **inte enhet**): ny användare når aldrig första svaret ("Startar …" efter mikrofonfrågan, 3/3), Provläge 1 tryck med prov, 6 utan, 9 fynd. **T7 klar**: Mer-fönstret dövt (mikrofonen öppnar 2,8–13,3 s efter tonen). Väntar: T5b (A21), T7b och T8b (ElevenLabs-kvoten).
   - **T1 klar:** ljudkedjetestet (`AppTests/E2E/Chain`, CI `apptest-chain.yml`, nattligt och manuellt) kör svenskt `say`-tal genom appens riktiga kedja med live Scribe och `/answer`.
     - **Frågor:** 7/7 yttranden, 5/5 frågor besvarade, inga påståenden besvarade, första text 1,0–1,5 s.
     - **Provläge:** 4/4 besvarade, ämnesorden rätt.

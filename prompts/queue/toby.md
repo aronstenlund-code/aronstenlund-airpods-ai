@@ -27,3 +27,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 - [ ] **T7b – Omtest av Mer-fönstret** (effort: medium). Beror på: Angelas rättning av T7-fynd 1 (fönstret öppnas innan mikrofonen hör) och påfylld ElevenLabs-kvot. Kör `apptest-more` på `toby/t7-more` (eller main): ordlogiken (ja, mer, gärna, ja mitt i mening, annan röst, ny fråga) och tid till långt svar under 1 s (K13).
 
 - [ ] **T8b – Omtest av förstagångsanvändaren** (effort: medium). Beror på: påfylld ElevenLabs-kvot, och Angela har tittat på T8-fynd 1 ("Startar …" efter mikrofonfrågan). Kör `apptest-firstuser`: tid och tryck till första svaret i Frågor och Provläge.
+
+- [~] pågår 2026-11-10 08:40 **T9 – Stående uppgift (PLAN 2b): omtest av A13 och A22 i skärmturen** (effort: medium). A17 (senaste klara A-punkten) behöver ljud och väntar på ElevenLabs-kvoten. Kör T3 (`apptest-screens`) på main, jämför med T3-avvikelserna och A13-rapporten: vilka avvikelser är rättade, vilka finns kvar, nya fel.
