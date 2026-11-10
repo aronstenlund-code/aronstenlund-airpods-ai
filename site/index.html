@@ -187,18 +187,6 @@
     line-height: 1.35;
   }
 
-  .points { display: grid; gap: 0; }
-  .points li {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    padding: 13px 0;
-    border-bottom: 1px solid var(--line);
-    font-size: 1.125rem;
-    line-height: 1.4;
-  }
-  .points li:first-child { border-top: 1px solid var(--line); }
-  .points svg { width: 20px; height: 20px; flex: none; margin-top: 2px; color: var(--blue); }
 
   .photo {
     min-height: 240px;
@@ -232,15 +220,6 @@
   @keyframes ering { 0% { opacity: 0; transform: scale(.15); } 15% { opacity: .9; } 70%, 100% { opacity: 0; transform: scale(1.8); } }
   @media (prefers-reduced-motion: reduce) { .elias.pulse .rings i { animation: none; opacity: .5; transform: scale(.7); } .elias.pulse .rings i:nth-child(2) { transform: scale(1.1); opacity: .3; } .elias.pulse .rings i:nth-child(3) { display: none; } }
 
-  /* Ke8: tre budskap. */
-  .voice { padding-top: 8px; padding-bottom: 56px; }
-  .voice .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
-  .vlist { display: grid; gap: 14px; margin-top: 24px; }
-  .vlist li { padding: 18px; }
-  .vlist h3 { font-size: 1.25rem; line-height: 1.25; }
-  .vlist p { margin-top: 6px; color: var(--mut); }
-  .vlist .shot { max-width: 200px; }
-  @media (min-width: 900px) { .vlist { grid-template-columns: repeat(3, minmax(0, 1fr)); } .voice { padding-bottom: 88px; } }
 
   /* ---------- Demorutan ---------- */
   .demo {
@@ -457,8 +436,6 @@
   .hint.err { color: var(--bad); font-weight: 600; }
 
   /* ---------- Exempel från Provläget ---------- */
-  .examples { padding-top: 8px; padding-bottom: 56px; }
-  .examples .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
   .ex-list { display: grid; gap: 14px; margin-top: 24px; }
   .ex { padding: 18px; display: grid; gap: 8px; align-content: start; }
   .ex-meta { font-size: .875rem; font-weight: 600; color: var(--mut); }
@@ -478,16 +455,6 @@
     letter-spacing: -.03em;
     text-wrap: balance;
   }
-  .modes { padding-top: 24px; padding-bottom: 64px; }
-  .modes h3 {
-    font-weight: 700;
-    font-size: 1.375rem;
-    line-height: 1.15;
-    letter-spacing: -.015em;
-  }
-  .modes ul { display: grid; gap: 0; margin-top: 24px; }
-  .modes li { padding: 16px 0; border-top: 1px solid var(--line); }
-  .modes li p { margin-top: 4px; max-width: 42ch; color: var(--mut); }
 
   .join { border-top: 1px solid var(--line); }
   .join .wrap { padding-top: 56px; padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
@@ -579,7 +546,6 @@
 
   @media (min-width: 720px) {
     .ex-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .modes ul { grid-template-columns: repeat(2, 1fr); column-gap: 36px; }
   }
 
   @media (min-width: 960px) {
@@ -587,24 +553,20 @@
     .top { padding-top: 24px; }
     .hero {
       grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
-      grid-template-rows: auto auto 1fr;
+      grid-template-rows: auto 1fr;
       column-gap: 64px;
       row-gap: 32px;
       padding-top: 32px;
       padding-bottom: 88px;
     }
     .intro { grid-column: 1; grid-row: 1; }
-    .points { grid-column: 1; grid-row: 2; }
-    .elias-wrap { grid-column: 1; grid-row: 3; margin: 0; width: min(100%, 400px); }
-    .demo { grid-column: 2; grid-row: 1 / span 3; align-self: start; position: sticky; top: 24px; padding: 26px 26px 28px; gap: 20px; }
+    .elias-wrap { grid-column: 1; grid-row: 2; margin: 0; width: min(100%, 400px); }
+    .demo { grid-column: 2; grid-row: 1 / span 2; align-self: start; position: sticky; top: 24px; padding: 26px 26px 28px; gap: 20px; }
     h1 { font-size: clamp(3.75rem, 6.2vw, 5.5rem); }
     .pitch { font-size: 1.5rem; margin-top: 16px; }
     body[data-view="answer"] .controls { display: grid; }
     .a { font-size: 1.75rem; }
     .again-only { display: none; }
-    .examples { padding-bottom: 88px; }
-    .modes { padding-bottom: 96px; }
-    .modes ul { grid-template-columns: repeat(4, 1fr); column-gap: 32px; }
     .join .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); column-gap: 64px; padding-top: 88px; padding-bottom: 72px; }
     .join .side { grid-column: 2; grid-row: 1 / span 2; }
     form.wait { margin-top: 0; }
@@ -612,9 +574,23 @@
   }
 
 
-  /* Ke3: Så funkar Provläget. Animationen är ren CSS, loopar 10 s, stilla slutläge vid "reducera rörelse". */
-  .how { padding-top: 8px; padding-bottom: 56px; }
-  .how .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
+  /* Ke9: Så kommer du igång (tre steg) och Mer när du vill (hopfällt). */
+  .start { padding-top: 8px; padding-bottom: 56px; }
+  .start .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
+  .steps .hand { color: var(--blue); font-size: 1.1875rem; }
+  .start .shot { max-width: 180px; }
+  .more { padding-top: 48px; padding-bottom: calc(56px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
+  .more h2 { font-size: clamp(1.5rem, 6vw, 2.25rem); }
+  .acc { margin-top: 16px; max-width: 980px; }
+  .acc details { border-bottom: 1px solid var(--line); }
+  .acc summary { list-style: none; cursor: pointer; min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-weight: 600; font-size: 1.125rem; }
+  .acc summary::-webkit-details-marker { display: none; }
+  .acc summary::after { content: ""; flex: none; width: 10px; height: 10px; margin-right: 6px; border: solid var(--mut); border-width: 0 2px 2px 0; transform: translateY(-3px) rotate(45deg); transition: transform 200ms var(--ease-out); }
+  .acc details[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+  .acc details > p, .acc details > ul { padding-bottom: 18px; color: var(--mut); max-width: 60ch; }
+  .acc .ex-list { margin-top: 0; max-width: none; color: var(--ink); }
+  .modes-list li { padding: 6px 0; }
+  .modes-list b { color: var(--ink); }
   .steps { display: grid; gap: 14px; margin-top: 24px; counter-reset: st; }
   .steps li { counter-increment: st; padding: 18px 18px 18px 64px; position: relative; }
   .steps li::before { content: counter(st); position: absolute; left: 18px; top: 16px; width: 34px; height: 34px; border-radius: 50%; background: var(--blue); color: var(--on-blue); display: grid; place-items: center; font-weight: 700; }
@@ -622,22 +598,10 @@
   .steps p { margin-top: 4px; color: var(--mut); }
   .shot { display: block; width: 100%; max-width: 220px; height: auto; margin: 14px auto 0; border-radius: 18px; border: 1px solid var(--line); }
   .shot-note { margin-top: 10px; font-size: .875rem; color: var(--mut); }
-  .anim { margin-top: 14px; padding: 18px; min-height: 168px; }
-  .anim-q { display: inline-block; font-size: 1.5rem; line-height: 1.3; color: var(--blue); white-space: nowrap; overflow: hidden; vertical-align: bottom; }
-  .anim-a { margin-top: 10px; display: flex; gap: 10px; align-items: flex-start; }
-  .anim-a .bars { margin-top: 6px; flex: none; }
-  .anim-a span.t { display: block; }
-  @media (prefers-reduced-motion: no-preference) {
-    .anim-q { width: 0; animation: ty 10s steps(14, end) infinite; }
-    .anim-a { opacity: 0; animation: ans 10s ease infinite; }
-    .anim-a .bars i { animation-play-state: running; }
-    @keyframes ty { 0% { width: 0; } 28% { width: 14ch; } 100% { width: 14ch; } }
-    @keyframes ans { 0%, 34% { opacity: 0; transform: translateY(6px); } 42%, 92% { opacity: 1; transform: none; } 100% { opacity: 0; } }
-  }
-  @media (prefers-reduced-motion: reduce) { .anim-q { width: auto; } .anim-a .bars i { animation: none; transform: scaleY(.7); } }
   @media (min-width: 900px) {
     .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .how { padding-bottom: 88px; }
+    .start { padding-bottom: 88px; }
+    .more { padding-top: 72px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -718,12 +682,6 @@
       </div>
     </div>
 
-    <ul class="points" aria-label="Så fungerar appen">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Säg ”<span data-app></span>, …”. Du behöver aldrig ta upp telefonen.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Avbryt när du vill, som med en människa.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Minns det du ber om, och glömmer när du säger till.</span></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5"/></svg><span>Inget konto. Börja direkt.</span></li>
-    </ul>
 
     <!-- Ke8: Elias i ett kort (vit bakgrund i bildrutorna), scrollstyrd sekvens. Bild 1 direkt, resten efter load. -->
     <figure class="elias-wrap">
@@ -737,81 +695,23 @@
     </figure>
   </section>
 
-  <section class="how wrap" aria-labelledby="how-h">
-    <h2 id="how-h">Så funkar Provläget: plugga inför prov och bli förhörd</h2>
-    <p class="lead">Du pluggar handsfree, inför prov och nationella provet, och när du siktar på A-nivå.</p>
+  <!-- Ke9: en enda väg. Demo ovanför, tre steg här, och en knapp (väntelistan) direkt efter. Samma ord som appen. -->
+  <section class="start wrap" id="kom-igang" aria-labelledby="start-h">
+    <h2 id="start-h">Så kommer du igång</h2>
+    <p class="lead">Tre steg. Sedan ligger telefonen i fickan och du pluggar med rösten.</p>
     <ol class="steps">
-      <li class="paper"><h3>Lägg in provet</h3><p>Välj årskurs, ämne och datum, eller säg det.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg1-dark.webp"><img class="shot" src="img/steg1-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Lägg till prov i appen med årskurs, ämne och datum."></picture></li>
-      <li class="paper"><h3>Starta</h3><p>Tryck på Starta och lägg telefonen i fickan.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg2-dark.webp"><img class="shot" src="img/steg2-light.webp" width="300" height="652" loading="lazy" alt="Startskärmen i appen med ett Biologiprov inlagt."></picture></li>
-      <li class="paper"><h3>Fråga i örat</h3><p>Fråga högt, eller be om att bli förhörd. Svaret läses upp.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget lyssnar i appen: Ställ en fråga när du vill."></picture></li>
+      <li class="paper"><h3>Tryck Testa nu och fråga högt</h3><p>Inget konto. Sätt i AirPods och fråga vad som helst. Svaret hörs i örat.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/fraga-dark.webp"><img class="shot" src="img/fraga-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Fråga vad som helst i appen: Lumen lyssnar, med exempelfrågan Vad är fotosyntes?"></picture></li>
+      <li class="paper"><h3>Säg vilket prov du har</h3><p>Till exempel <span class="hand">”Jag har prov i biologi på fredag”</span>. Du kan också välja ämne och datum.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg1-dark.webp"><img class="shot" src="img/steg1-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Lägg till prov i appen med årskurs, ämne och datum."></picture></li>
+      <li class="paper"><h3>Säg ”Lumen, förhör mig”</h3><p>Lumen ställer frågor om det du pluggar, och du styr resten med rösten.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget lyssnar i appen: Ställ en fråga när du vill."></picture></li>
     </ol>
     <p class="shot-note">Skärmbilder från en testversion av appen.</p>
-    <div class="anim paper" role="img" aria-label="Animation: en fråga i handstil, 'Globalisering', blir ett uppläst svar.">
-      <p class="anim-q hand" aria-hidden="true">Globalisering</p>
-      <div class="anim-a" aria-hidden="true"><span class="bars"><i></i><i></i><i></i></span><span class="t">Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna.</span></div>
-    </div>
-  </section>
-
-  <section class="voice wrap" aria-labelledby="voice-h">
-    <h2 id="voice-h">Telefonen i fickan. Allt med rösten.</h2>
-    <p class="lead">Du styr Lumen med rösten och dina AirPods.</p>
-    <ul class="vlist">
-      <li class="paper"><h3>Låt telefonen ligga kvar</h3><p>Säg till i örat, till exempel "Lumen, pausa" eller "Lumen, byt till provläge". Du behöver inte ta upp skärmen.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget lyssnar i appen med texten 'Ställ en fråga när du vill'."></picture></li>
-      <li class="paper"><h3>Egna kommandon</h3><p>Säg det du vill. Under Inställningar › Röstkommandon väljer du själv fraserna för att byta läge och pausa, och under Egna kommandon sparar du egna nyckelord med en instruktion till Lumen.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/egna-dark.webp"><img class="shot" src="img/egna-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Egna kommandon i appen med fälten Nyckelord och Instruktion."></picture></li>
-      <li class="paper"><h3>Lägg in ditt material i förväg</h3><p>Importera instuderingsmaterial som PDF eller textfil, och kursmål, under Förberedelser. Lumen känner igen dina ämnesord och svarar på kursens nivå.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/forb-dark.webp"><img class="shot" src="img/forb-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Förberedelser i appen där man lägger till material och kursmål."></picture></li>
-    </ul>
-    <p class="shot-note">Skärmbilder från en testversion av appen.</p>
-  </section>
-
-  <section class="examples wrap" aria-labelledby="ex-h">
-    <h2 id="ex-h">Så låter Provläget</h2>
-    <p class="lead">Tre svar från vårt test av Provläget den 8 november, ordagrant och med samma röst som i appen. Frågorna ställdes som av en elev i årskurs 9.</p>
-    <ul class="ex-list">
-      <li class="ex paper">
-        <p class="ex-meta">Åk 9 · Biologi</p>
-        <p class="ex-q hand">Förklara varför antibiotika inte hjälper mot virus</p>
-        <p class="ex-a clamp" id="ex-pl-019">Antibiotika verkar genom att slå ut eller hindra delar som bakterier har och som vi människor inte har, till exempel bakteriernas egna cellvägg eller deras sätt att tillverka proteiner. Virus är inte celler. De saknar egen ämnesomsättning och en egen cellvägg, och de tar över våra celler för att föröka sig. Eftersom det antibiotikan angriper saknas i virus, har medlet ingen verkan på dem. Ett exempel är förkylning och influensa, som orsakas av virus, där antibiotika alltså inte gör någon nytta. På provet räcker det att skriva att virus saknar cellstruktur och ämnesomsättning, och att antibiotika riktar sig mot bakteriers egna strukturer.</p>
-        <div class="ex-row">
-          <button class="pill ex-play" type="button" data-src="audio/pl-019.mp3" aria-label="Lyssna på svaret om antibiotika"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
-          <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-019">Visa hela svaret</button>
-        </div>
-      </li>
-      <li class="ex paper">
-        <p class="ex-meta">Åk 9 · Biologi</p>
-        <p class="ex-q hand">Vad händer i en näringskedja om rovdjuren försvinner?</p>
-        <p class="ex-a clamp" id="ex-pl-022">Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan. Rovdjuren håller nere antalet växtätare, så när de är borta ökar växtätarna snabbt. Fler växtätare äter upp mer av växterna, och antalet växter kan då minska kraftigt. Det leder till att växtätarna så småningom också får brist på mat och deras antal sjunker igen. Ett klassiskt exempel är när vargen försvann från Yellowstone i USA: hjortarna blev fler, de åt upp unga träd och buskar, och det drabbade även bävrar och fåglar som levde i området. På provet bör du skriva att rovdjur reglerar populationen av växtätare och att borttagandet ger en kedjereaktion genom näringsväven.</p>
-        <div class="ex-row">
-          <button class="pill ex-play" type="button" data-src="audio/pl-022.mp3" aria-label="Lyssna på svaret om näringskedjan"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
-          <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-022">Visa hela svaret</button>
-        </div>
-      </li>
-      <li class="ex paper">
-        <p class="ex-meta">Åk 9 · Samhällskunskap</p>
-        <p class="ex-q hand">Globalisering</p>
-        <p class="ex-a clamp" id="ex-pl-079">Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna. Det sker genom handel, investeringar, resor och internet, och att varor, pengar och idéer rör sig allt lättare mellan länder. Ett vanligt exempel är att en tröja kan designas i Sverige, sys i Bangladesh och säljas i flera länder samtidigt. Fördelarna är billigare varor och fler jobb i vissa länder, men det finns också nackdelar, som att jobb kan försvinna i andra länder när produktionen flyttas. På provet kan du visa att du förstår det genom att ge både fördelar och nackdelar och ett konkret exempel.</p>
-        <div class="ex-row">
-          <button class="pill ex-play" type="button" data-src="audio/pl-079.mp3" aria-label="Lyssna på svaret om globalisering"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
-          <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-079">Visa hela svaret</button>
-        </div>
-      </li>
-    </ul>
-  </section>
-
-  <section class="modes wrap" aria-labelledby="modes-h">
-    <h2 id="modes-h">Kommer i appen</h2>
-    <ul>
-      <li><h3>Provläge</h3><p>Plugga handsfree. Du frågar, får en pedagogisk förklaring och kan få en kontrollfråga på vägen.</p></li>
-      <li><h3>Intervjuläge</h3><p>Träna inför intervjun. Du övar på frågor till jobbet du söker och får kort återkoppling på dina svar.</p></li>
-      <li><h3>Socialt läge</h3><p>Förslag på skämt, svar och följdfrågor när samtalet går trögt.</p></li>
-      <li><h3>Rizzläge</h3><p>Charmiga förslag när du flirtar. Bara för dig som är 18 år eller äldre.</p></li>
-    </ul>
   </section>
 
   <section class="join" id="vantelista" aria-labelledby="join-h">
     <div class="wrap">
       <div>
-        <h2 id="join-h">Ladda ner appen för att använda den med låst skärm och i alla lägen</h2>
-        <p class="lead">Appen är inte ute än. Skriv upp dig så mejlar vi när den finns.</p>
+        <h2 id="join-h">Vill du ha appen?</h2>
+        <p class="lead">Den är inte ute än. Skriv din e-post, så mejlar vi när den finns.</p>
       </div>
       <div class="side">
         <form class="wait paper" id="wait" novalidate>
@@ -825,7 +725,7 @@
           </label>
           <p class="fieldmsg" id="consentmsg"></p>
           <div class="hp" aria-hidden="true"><label>Webbplats <input id="website" type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-          <button class="pill" id="waitbtn" type="submit">Skriv upp mig</button>
+          <button class="pill" id="waitbtn" type="submit">Mejla mig när appen finns</button>
           <p class="formmsg" id="waitmsg" role="status"></p>
         </form>
       </div>
@@ -833,6 +733,62 @@
         <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns. Vi sparar adressen, när du gav ditt samtycke och vilken länk du kom från (till exempel en kanal som tiktok). Vill du bli borttagen, eller har du frågor om dina uppgifter, mejla <a href="mailto:stenlundaron@gmail.com">stenlundaron@gmail.com</a>.</p>
         <p class="fine">Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- Ke9: allt som inte behövs för att komma igång, hopfällt. Inga blå knappar förrän man öppnar. -->
+  <section class="more wrap" aria-labelledby="more-h">
+    <h2 id="more-h">Mer när du vill</h2>
+    <div class="acc">
+      <details>
+        <summary>Egna röstkommandon</summary>
+        <p>Säg det du vill. Under Inställningar › Röstkommandon väljer du själv fraserna för att byta läge och pausa. Under Egna kommandon sparar du egna nyckelord med en instruktion till <span data-app></span>.</p>
+      </details>
+      <details>
+        <summary>Lägg in ditt material i förväg</summary>
+        <p>Importera instuderingsmaterial som PDF eller textfil, och kursmål, under Förberedelser. <span data-app></span> känner igen dina ämnesord och svarar på kursens nivå.</p>
+      </details>
+      <details class="ex-details">
+        <summary>Hör tre svar från Provläget</summary>
+        <p>Svar från vårt test av Provläget den 8 november, ordagrant och med samma röst som i appen. Frågorna ställdes som av en elev i årskurs 9.</p>
+        <ul class="ex-list">
+          <li class="ex paper">
+            <p class="ex-meta">Åk 9 · Biologi</p>
+            <p class="ex-q hand">Förklara varför antibiotika inte hjälper mot virus</p>
+            <p class="ex-a clamp" id="ex-pl-019">Antibiotika verkar genom att slå ut eller hindra delar som bakterier har och som vi människor inte har, till exempel bakteriernas egna cellvägg eller deras sätt att tillverka proteiner. Virus är inte celler. De saknar egen ämnesomsättning och en egen cellvägg, och de tar över våra celler för att föröka sig. Eftersom det antibiotikan angriper saknas i virus, har medlet ingen verkan på dem. Ett exempel är förkylning och influensa, som orsakas av virus, där antibiotika alltså inte gör någon nytta. På provet räcker det att skriva att virus saknar cellstruktur och ämnesomsättning, och att antibiotika riktar sig mot bakteriers egna strukturer.</p>
+            <div class="ex-row">
+              <button class="pill ex-play" type="button" data-src="audio/pl-019.mp3" aria-label="Lyssna på svaret om antibiotika"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
+              <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-019">Visa hela svaret</button>
+            </div>
+          </li>
+          <li class="ex paper">
+            <p class="ex-meta">Åk 9 · Biologi</p>
+            <p class="ex-q hand">Vad händer i en näringskedja om rovdjuren försvinner?</p>
+            <p class="ex-a clamp" id="ex-pl-022">Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan. Rovdjuren håller nere antalet växtätare, så när de är borta ökar växtätarna snabbt. Fler växtätare äter upp mer av växterna, och antalet växter kan då minska kraftigt. Det leder till att växtätarna så småningom också får brist på mat och deras antal sjunker igen. Ett klassiskt exempel är när vargen försvann från Yellowstone i USA: hjortarna blev fler, de åt upp unga träd och buskar, och det drabbade även bävrar och fåglar som levde i området. På provet bör du skriva att rovdjur reglerar populationen av växtätare och att borttagandet ger en kedjereaktion genom näringsväven.</p>
+            <div class="ex-row">
+              <button class="pill ex-play" type="button" data-src="audio/pl-022.mp3" aria-label="Lyssna på svaret om näringskedjan"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
+              <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-022">Visa hela svaret</button>
+            </div>
+          </li>
+          <li class="ex paper">
+            <p class="ex-meta">Åk 9 · Samhällskunskap</p>
+            <p class="ex-q hand">Globalisering</p>
+            <p class="ex-a clamp" id="ex-pl-079">Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna. Det sker genom handel, investeringar, resor och internet, och att varor, pengar och idéer rör sig allt lättare mellan länder. Ett vanligt exempel är att en tröja kan designas i Sverige, sys i Bangladesh och säljas i flera länder samtidigt. Fördelarna är billigare varor och fler jobb i vissa länder, men det finns också nackdelar, som att jobb kan försvinna i andra länder när produktionen flyttas. På provet kan du visa att du förstår det genom att ge både fördelar och nackdelar och ett konkret exempel.</p>
+            <div class="ex-row">
+              <button class="pill ex-play" type="button" data-src="audio/pl-079.mp3" aria-label="Lyssna på svaret om globalisering"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Lyssna</span></button>
+              <button class="ex-more" type="button" aria-expanded="false" aria-controls="ex-pl-079">Visa hela svaret</button>
+            </div>
+          </li>
+        </ul>
+      </details>
+      <details>
+        <summary>Fler lägen</summary>
+        <ul class="modes-list">
+          <li><b>Intervju.</b> Träna inför intervjun med frågor till jobbet du söker, och få kort återkoppling på dina svar.</li>
+          <li><b>Socialt.</b> Förslag på skämt, svar och följdfrågor när samtalet går trögt.</li>
+          <li><b>Rizz 18+.</b> Charmiga förslag när du flirtar. Bara för dig som är 18 år eller äldre.</li>
+        </ul>
+      </details>
     </div>
   </section>
 </main>

@@ -22,10 +22,9 @@ Underlag till Angela (A18). Före = Tobys T3 och Angelas A13-bilder (simulator).
 
 ## Ord som ska vara lika i appen och på sidan
 Lumen · Fråga högt. Få svaret i örat. · Telefonen stannar i fickan. · Testa nu · Inget konto · Lägg till prov ·
-Förhör mig · Provläge · Frågor · Lyssnar · Fler lägen. Sidan säger i dag "Tryck på Starta" (steg 2), men någon
-sådan knapp finns inte i appen. Det rättas i Ke9 del 2.
+Förhör mig · Provläge · Frågor · Lyssnar · Fler lägen. "Tryck på Starta" är borta från sidan (knappen finns inte i appen).
 
-## Kvar (Ke9 fortsätter i morgon)
-- Del 2, demosidan: "Så kommer du igång" i 3 steg plus väntelistan som enda knapp; ta bort punktlistan, animationen,
-  "Kommer i appen" och skärmbildskorten för röststyrning (blir en kort lista "Mer när du vill").
-- Före- och efterbilder av sidan (mobil, ljust och mörkt), Lighthouse och storlek.
+## Demosidan (Ke9 del 2, gjord 2026-11-10)
+Sidan följer nu samma väg: demo → "Så kommer du igång" (Testa nu och fråga högt, säg vilket prov du har, säg "Lumen,
+förhör mig") → en knapp. Resten ligger hopfällt under "Mer när du vill". Före/efter: `reports/2026-11-10-ke9-sida/`.
+När Angela byggt A18 byts skärmbilderna i stegen mot de nya (samma tre steg).
