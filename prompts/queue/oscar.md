@@ -84,3 +84,5 @@
 - [x] klar 2026-11-10 08:42 → `reports/qa/2026-11-10-0842-oscar-o19-k12-offline.md` (O9-sviten 93/93, nya K12-formuleringar 11/15, falska 0/15) **O19 – Oberoende test av K12, offline (stående uppgift, PLAN 2b)** (effort: medium). Oscar skrev punkten själv (README punkt 8): senaste klara K-punkten utan O-punkt. Gratis (Node mot driftsatt `commands.ts`) eftersom dagens API-budget nästan är slut.
 
 - [x] klar 2026-11-10 08:43 → `reports/qa/2026-11-10-0843-oscar-o20-web-routing.md` (15/20 dirigeras rätt; `HOWTO_Q` har fel ordföljd för partikelverb, 'hur stänger man av' matchar inte; domänlistorna begränsar inte) **O20 – Vilka frågor söker på webben (K16), offline (stående uppgift)** (effort: medium). Oscar skrev punkten själv: uppföljning av O13 del 1, gratis.
+
+- [x] klar 2026-11-10 08:52 → `reports/qa/2026-11-10-0852-oscar-o21-k15-nav.md` (navigering 28/40: svar som liknar kommandon 6/6, 'fråga sju' 9/9, men 'vad sa du', 'förra frågan', 'hur många rätt har jag' blir svar som rättas) **O21 – Oberoende test av K15-navigeringen, offline (stående uppgift, PLAN 2b)** (effort: medium). Oscar skrev punkten själv. Gratis.

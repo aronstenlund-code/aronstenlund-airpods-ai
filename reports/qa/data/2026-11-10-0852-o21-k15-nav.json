@@ -1,0 +1,424 @@
+{
+ "n": 40,
+ "ok": 28,
+ "fails": [
+  {
+   "u": "asså nästa fråga",
+   "expect": "next",
+   "expect_no": "6",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "vi går vidare",
+   "expect": "next",
+   "expect_no": "6",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "förra frågan",
+   "expect": "prev",
+   "expect_no": "4",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "gå tillbaka en",
+   "expect": "prev",
+   "expect_no": "4",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "jag vet inte, hoppa över",
+   "expect": "skip",
+   "expect_no": "6",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "skippa den här",
+   "expect": "skip",
+   "expect_no": "6",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "vad sa du",
+   "expect": "repeat",
+   "expect_no": "5",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "säg det igen",
+   "expect": "repeat",
+   "expect_no": "5",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "jag orkar inte mer, vi slutar",
+   "expect": "stop",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "hur många rätt har jag",
+   "expect": "results",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "hur går det för mig",
+   "expect": "results",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "vad har jag för poäng",
+   "expect": "results",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  }
+ ],
+ "rows": [
+  {
+   "u": "nästa",
+   "expect": "next",
+   "expect_no": "6",
+   "got": "next",
+   "got_no": "6",
+   "ok": true
+  },
+  {
+   "u": "asså nästa fråga",
+   "expect": "next",
+   "expect_no": "6",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "Lumen nästa",
+   "expect": "next",
+   "expect_no": "6",
+   "got": "next",
+   "got_no": "6",
+   "ok": true
+  },
+  {
+   "u": "kan vi ta nästa",
+   "expect": "next",
+   "expect_no": "6",
+   "got": "next",
+   "got_no": "6",
+   "ok": true
+  },
+  {
+   "u": "okej nästa tack",
+   "expect": "next",
+   "expect_no": "6",
+   "got": "next",
+   "got_no": "6",
+   "ok": true
+  },
+  {
+   "u": "nästa uppgift",
+   "expect": "next",
+   "expect_no": "6",
+   "got": "next",
+   "got_no": "6",
+   "ok": true
+  },
+  {
+   "u": "vi går vidare",
+   "expect": "next",
+   "expect_no": "6",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "förra frågan",
+   "expect": "prev",
+   "expect_no": "4",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "gå tillbaka en",
+   "expect": "prev",
+   "expect_no": "4",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "kan vi gå tillbaka",
+   "expect": "prev",
+   "expect_no": "4",
+   "got": "prev",
+   "got_no": "4",
+   "ok": true
+  },
+  {
+   "u": "hoppa över",
+   "expect": "skip",
+   "expect_no": "6",
+   "got": "skip",
+   "got_no": "6",
+   "ok": true
+  },
+  {
+   "u": "jag vet inte, hoppa över",
+   "expect": "skip",
+   "expect_no": "6",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "skippa den här",
+   "expect": "skip",
+   "expect_no": "6",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "pass",
+   "expect": "skip",
+   "expect_no": "6",
+   "got": "skip",
+   "got_no": "6",
+   "ok": true
+  },
+  {
+   "u": "upprepa",
+   "expect": "repeat",
+   "expect_no": "5",
+   "got": "repeat",
+   "got_no": "5",
+   "ok": true
+  },
+  {
+   "u": "kan du upprepa frågan",
+   "expect": "repeat",
+   "expect_no": "5",
+   "got": "repeat",
+   "got_no": "5",
+   "ok": true
+  },
+  {
+   "u": "vad sa du",
+   "expect": "repeat",
+   "expect_no": "5",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "säg det igen",
+   "expect": "repeat",
+   "expect_no": "5",
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "fråga sju",
+   "expect": "goto",
+   "expect_no": "7",
+   "got": "goto",
+   "got_no": "7",
+   "ok": true
+  },
+  {
+   "u": "fråga 7",
+   "expect": "goto",
+   "expect_no": "7",
+   "got": "goto",
+   "got_no": "7",
+   "ok": true
+  },
+  {
+   "u": "ta fråga tolv",
+   "expect": "goto",
+   "expect_no": "12",
+   "got": "goto",
+   "got_no": "12",
+   "ok": true
+  },
+  {
+   "u": "uppgift 3b",
+   "expect": "goto",
+   "expect_no": "3b",
+   "got": "goto",
+   "got_no": "3b",
+   "ok": true
+  },
+  {
+   "u": "uppgift tre b",
+   "expect": "goto",
+   "expect_no": "3b",
+   "got": "goto",
+   "got_no": "3b",
+   "ok": true
+  },
+  {
+   "u": "fråga trean",
+   "expect": "goto",
+   "expect_no": "3a",
+   "got": "goto",
+   "got_no": "3a",
+   "ok": true
+  },
+  {
+   "u": "kan vi ta fråga nio",
+   "expect": "goto",
+   "expect_no": "9",
+   "got": "goto",
+   "got_no": "9",
+   "ok": true
+  },
+  {
+   "u": "gå till uppgift två",
+   "expect": "goto",
+   "expect_no": "2",
+   "got": "goto",
+   "got_no": "2",
+   "ok": true
+  },
+  {
+   "u": "jag vill göra fråga elva",
+   "expect": "goto",
+   "expect_no": "11",
+   "got": "goto",
+   "got_no": "11",
+   "ok": true
+  },
+  {
+   "u": "fråga 15",
+   "expect": "answer",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": true
+  },
+  {
+   "u": "sluta",
+   "expect": "stop",
+   "expect_no": null,
+   "got": "stop",
+   "got_no": null,
+   "ok": true
+  },
+  {
+   "u": "jag orkar inte mer, vi slutar",
+   "expect": "stop",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "avsluta provet",
+   "expect": "stop",
+   "expect_no": null,
+   "got": "stop",
+   "got_no": null,
+   "ok": true
+  },
+  {
+   "u": "hur många rätt har jag",
+   "expect": "results",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "hur går det för mig",
+   "expect": "results",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "vad har jag för poäng",
+   "expect": "results",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": false
+  },
+  {
+   "u": "sju",
+   "expect": "answer",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": true
+  },
+  {
+   "u": "x är lika med sju",
+   "expect": "answer",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": true
+  },
+  {
+   "u": "nästa är väl fyrtio",
+   "expect": "answer",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": true
+  },
+  {
+   "u": "fråga mig om Pythagoras",
+   "expect": "answer",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": true
+  },
+  {
+   "u": "svaret är tillbaka till noll",
+   "expect": "answer",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": true
+  },
+  {
+   "u": "det blir hundratjugo kronor",
+   "expect": "answer",
+   "expect_no": null,
+   "got": "answer",
+   "got_no": null,
+   "ok": true
+  }
+ ]
+}
