@@ -28,13 +28,13 @@ Status: v2 är ihopklippt (27,7 s: fotosyntes → fest → hallen → slutbild).
 
 ## V1 Köket (Omni 1.2 Flash, 8 s, 9:16, startbild: köket "elias-kok-slut")
 ```
-Animate the attached image as the first frame. Keep the exact same character, clothing, stylized 3D animated look, kitchen and morning light. One continuous shot from the same static camera position: no zoom, no cuts, no close-ups. The toaster, the bread board and the loaf stay exactly where they are in the first frame. Acting is natural and understated, never completely frozen.
+Animate the attached image as the first frame. Keep the exact same character, clothing, stylized 3D animated look, kitchen and morning light. One continuous shot from the same static camera position: no zoom, no cuts, no close-ups. The kitchen stays exactly as in the first frame: same shelves, windows, cabinets and plants, nothing appears or disappears. The toaster stays on the left side of the counter and the bread board with the loaf stays on the right side, both exactly where they are. No other people appear. Acting is natural and understated, never completely frozen.
 
-0–0.5 s: He stands at the counter. Nobody speaks.
+0–0.5 s: He stands behind the counter. Nobody speaks.
 0.5–2.2 s: He says casually in Swedish: "Vad ska jag ha till frukost?"
-2.2–5.2 s: Nobody speaks. The white earbud that is visible to the camera lights up with a faint, steady soft white-blue glow. He keeps his mouth fully closed the whole time, but he never stands still: while listening he reaches for the loaf, picks up one slice of bread with one hand, glances at it, gives a small nod as if agreeing with what he hears, and brings the slice over until he holds it just above the toaster. Only this one slice moves; the rest of the loaf stays on the board.
+2.2–5.2 s: Nobody speaks. The white earbud that is visible to the camera lights up with a faint, steady soft white-blue glow. He keeps his mouth fully closed the whole time, but he never stands still: while listening he picks up the single loose slice of bread lying flat on the bread board, glances at it, gives a small nod as if agreeing with what he hears, and carries it across to the toaster until he holds it just above the toaster's slots. Only this one slice moves; the loaf stays on the board.
 5.2–6.6 s: The glow fades out. Holding the slice directly above the toaster, he flicks it a short distance straight up with a confident little motion; it flips once and drops straight down into the toaster slot nearest to him.
-6.6–7.3 s: He presses the toaster lever down with one finger.
+6.6–7.3 s: He presses the toaster's lever down with one finger.
 7.3–8.0 s: The inside of the toaster slots glows warm orange. He gives a satisfied half-smile, mouth closed.
 
 Audio: only his one spoken line, spoken once. Soft kitchen ambience, the soft sound of the bread dropping into the toaster and the click of the lever. No music, no other voices, no voice from the earbud. No text, subtitles, captions or logos anywhere.
@@ -126,3 +126,9 @@ Trappan gick fel för att prompten bad om rörelser som inte stämde med startbi
 - V1: under skenet sträcker han sig efter brödet, tar en skiva, tittar på den, nickar och för den till brödrosten.
 - V3: under skenet tar han emot pizzakartongen, lyfter locket lite och nickar nöjt. Pizzan har därför bytt plats från efter repliken till under skenet.
 - V2 och glimtarna har ingen AI-replik som behöver ett tyst fönster.
+
+## Fjärde genomgången 20:31 (köket mot startbilden, Flow)
+- Startbilden: brödrosten står till vänster, brödet till höger, en lös skiva ligger platt på skärbrädan. Prompten sa "tar en skiva ur limpan", vilket kunde ge en extra skiva eller en limpa som ändrar form. Nu tar han den lösa skivan som redan ligger där.
+- Låst att köket inte ändras (hyllor, fönster, skåp, växter), brödrosten vänster, brödet höger, inga andra personer. Det är just sådant som gick fel i hallen.
+- Startbilden i Flow är sista bildrutan från hallklippet (reports/ads/media/elias-kok-start.jpg), så köket hänger ihop med hallen.
+- Kvar som risk: spaken på brödrosten syns inte i startbilden, så AI:n måste hitta på den. Om det ser konstigt ut klipper jag innan han trycker.
