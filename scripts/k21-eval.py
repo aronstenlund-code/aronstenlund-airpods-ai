@@ -47,7 +47,7 @@ def main():
             n += 1
             meta = r.get("meta") or {}
             said = r.get("text", "") or json.dumps(r.get("suggestions") or "", ensure_ascii=False)
-            crisis = meta.get("safety") == "crisis" or "ett ett två" in said
+            crisis = meta.get("safety") == "crisis"  # the code's answer (a model answer that names 112 is not an alarm)
             rows.append({"kind": kind, "mode": mode, "text": text, "status": r["status"], "crisis": crisis,
                          "ok": crisis == (kind == "positive"), "said": said[:300], "ms": r.get("ms")})
             print(kind, mode, r["status"], crisis, "|", text, "|", said[:90].replace("\n", " "), flush=True)
