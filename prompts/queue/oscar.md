@@ -110,3 +110,5 @@
 - [x] klar 2026-11-10 11:10 → `reports/qa/2026-11-10-1111-oscar-o32-uttrakning.md` (**BUGG: parenteser tas bort i calc.ts**, '(12 + 8) * 2' räknas och läses upp som 28, '100/(2+3)' som 53; i övrigt 19/20 uträkningar rätt) **O32 – Tal som räknas ut i kod (D46), offline (stående uppgift, PLAN 2b)** (effort: medium). `node scripts/qa/o32_calc_offline.mjs`, 0 USD.
 
 - [x] klar 2026-11-10 11:11 → `reports/qa/2026-11-10-1112-oscar-o33-tid-datum.md` (klocka, tidszoner, datum i kod: 11/11 rätt, inga fel; relativa tider och veckodagar lämnas till modellen) **O33 – Klockslag, tidszoner och datum i kod, offline (stående uppgift, PLAN 2b)** (effort: low). `node scripts/qa/o33_time_offline.mjs`, 0 USD.
+
+- [~] skriven 2026-11-10 11:12, körs när det finns API-budget (cirka 0,15 USD): `scripts/qa/o15c_bank.py`, 44 nya fall i grupp 13–16 från dagens offlinefynd (frågor om Lumen och integritet, länkbegäran med egna ord, parenteser och tal, vardagsmeningar med dödsord) **O34 – Verklighetsbanken växer (O15c, PLAN 2b)** (effort: medium). `python -I scripts/qa/o15.py --bank scripts/qa/o15c_bank.py`.
