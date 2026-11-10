@@ -47,6 +47,13 @@ struct FirstStartView: View {
         let granted = await container.session.requestMicrophonePermission()
         microphoneDenied = !granted
         guard granted else { return }
+        // Toby T8 finding 1: right after iOS's microphone question the app may still be inactive, and a start then
+        // never became "Lyssnar" (3/3 in the simulator). Wait for the foreground, and try once more if it did not start.
+        await container.listening.controller.waitForForeground()
+        await container.listening.startListening()
+        try? await Task.sleep(for: .seconds(3))
+        guard !Task.isCancelled, !container.listening.isListening else { return }
+        container.listening.controller.log("First start: not listening 3 s after the microphone was allowed, starting again (T8)")
         await container.listening.startListening()
     }
 
