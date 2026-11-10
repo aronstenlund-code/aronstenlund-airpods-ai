@@ -174,3 +174,7 @@ Mätt tecken per sekund per undertext (gräns ca 15 för unga tittare, minst ca 
 - Slutbild ny (Arons feedback): mörk bakgrund med blått sken, "Lumen" / "AI:n som svarar i örat" / "Skola · Intervjuer · Vardag" / knapp "Skriv upp dig gratis" / "Fungerar med AirPods", all text större. Brödet som poppar upp tillbaka före slutbilden.
 - Köket: Adam "God morgon Elias. Rosta en macka med ost och ägg." (Arons val av två tagningar; den andra sa "Du sov åtta timmar i natt" och togs inte, sömndata finns inte i appen). Pausen kortad, 6 % snabbare, 2,9 s, lagd 18,98 s i skenet. Kontrollerat med Whisper.
 - Kvar: förhörsrepliken, Arons Filip-inspelningar för Elias repliker, musik.
+
+## 23:40 v11: appen heter Earmind (Aron 23:35)
+- Slutbilden: "Earmind" i stället för "Lumen", Kellys appikon (bock med ljudvågor, docs/design/logo/lumen-ikon-mork-1024.png) ovanför namnet. Filnamn earmind-elias-v11.mp4.
+- Alla framtida annonser och manus: Earmind. Äldre manus i reports/ads/ säger Lumen (historik, ändras inte).

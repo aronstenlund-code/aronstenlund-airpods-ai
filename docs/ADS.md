@@ -1,4 +1,5 @@
 # Annonser (Ryan håller filen, Aron sätter budgeten)
+> **Appens namn är Earmind (Aron 2026-11-10 23:35).** Annonser, slutbilder och texter använder Earmind. "Lumen" i äldre delar av den här filen är det gamla arbetsnamnet.
 
 ## Budget (bara Aron ändrar)
 | Plattform | Per dag | Per månad | Senast ändrad |
