@@ -38,4 +38,4 @@ model.listeningEventObserver = { event, date in
 Fönstret ska öppnas efter `micOpen` (A21, rättat i `6133e6c`).
 
 ## CI
-Se slutet av rapporten när körningen är klar.
+Grönt i CI: iOS build 42807652449 (`2115a3d`, med A28, A29 och A30). Bygget för enhet räknar varningar som fel, och alla LumenTests är gröna. Det första testet väntade på `micOpen` efter ett riktigt svar. Det föll i 42803935391, eftersom testernas falska uppspelning aldrig säger att den är klar: den riktiga vägen väntar på det i upp till 30 s. Testet styr nu spärren direkt.

@@ -330,6 +330,7 @@ struct ListeningScreen: View {
     /// A9.1 / A18: from the command table (the user's own phrases show here too), one command at a time.
     private var commandsLine: String {
         if model.silentQuiz != nil { return "Säg ”Lumen, sluta” för att avsluta förhöret" } // A20.2
+        if model.practice != nil { return "Svara högt, eller säg nästa, förra eller avsluta" } // A16 / A30
         return CommandTips.firstLine(for: mode, table: CommandBook.shared.table)
     }
 

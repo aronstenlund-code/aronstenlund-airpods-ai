@@ -35,12 +35,12 @@ sätts när mikrofonen öppnas igen, alltså efter `echoTail` på 0,7 s.
 - `EchoFlowTests` finns kvar: igenkänningen som hör Lumens svar medan svaret pågår filtreras fortfarande bort.
 
 ## Till Kevin
-Serverns `stripEcho` har samma problem (O30). Appen skickar nu frågan när den sägs efter Lumen. Om servern sedan tar
-bort de citerade orden blir det ändå "så" kvar. Se Oscars förslag med `<echo>`.
+Kevins K27 (`8e7ced4`) rättade samma sak på servern samtidigt: frågan behålls och det citerade märks (O30 12/12). Appen och
+servern släpper nu båda igenom en följdfråga som citerar svaret.
 
 ## Kända begränsningar
 - **Untested assumption:** att 1,5 s efter att mikrofonen öppnats räcker för rummets efterklang när ljudet går ut ur
   iPhonens högtalare. Med AirPods hörs Lumen aldrig i mikrofonen (D82).
 
 ## CI
-Se slutet av rapporten när körningen är klar.
+Grönt i CI: iOS build 42807652449 (`2115a3d`, med A28, A29 och A30). Bygget för enhet räknar varningar som fel, och alla LumenTests är gröna. Körningen 42803935391 (`2ad2e36`) föll bara på A29:s första test. A28:s tester var gröna redan där.
