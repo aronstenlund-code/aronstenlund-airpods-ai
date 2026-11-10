@@ -34,6 +34,9 @@ verify_jwt = true                  # K17 spaced repetition + plan up to the exam
 [functions.provlage-eval]
 verify_jwt = true                  # D87 Provläge test bank (answers + grading, capped)
 
+[functions.qa-log]
+verify_jwt = true                  # K30 Aron's question-and-answer log (owner email + email sign-in only)
+
 [functions.voice-lab]
 verify_jwt = false                 # K6 voice design previews, does its own strict service-role check
 

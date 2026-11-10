@@ -6,6 +6,9 @@ export interface AuthedUser {
   isAnonymous: boolean;
   /** D79: when the session signed in (JWT `amr` timestamp, unchanged by refreshes); unknown = undefined. */
   sessionStartSec?: number;
+  /** K30: the email claim (email sign-in only) and the sign-in methods (`amr[].method`, e.g. "otp"). */
+  email?: string;
+  amr?: string[];
 }
 
 /** Earliest `amr[].timestamp` of a Supabase JWT payload (seconds), or undefined. */
@@ -57,6 +60,9 @@ export function createJwtAuthenticator(opts: {
         id: payload.sub,
         isAnonymous: payload.is_anonymous === true,
         sessionStartSec: sessionStart(payload as Record<string, unknown>),
+        ...(typeof payload.email === "string" && payload.email ? { email: payload.email } : {}),
+        amr: (Array.isArray(payload.amr) ? payload.amr : [])
+          .map((x) => String((x as { method?: unknown } | null)?.method ?? "")).filter(Boolean),
       };
     } catch (_e) {
       throw new HttpError(401, "unauthorized", "Invalid or expired token");

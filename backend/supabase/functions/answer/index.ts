@@ -7,6 +7,7 @@ import { restDbFromEnv } from "../_shared/restdb.ts";
 import { envInt, supabaseUsageSink } from "../_shared/usage.ts";
 import { createHandler, DEFAULT_CONFIG } from "./handler.ts";
 import { providerFromEnv } from "./llm/factory.ts";
+import { withQaLog } from "./qalog.ts";
 
 const env = Deno.env;
 
@@ -73,4 +74,12 @@ const handler = createHandler({
   },
 });
 
-Deno.serve(withCors(handler, extraOriginsFromEnv()));
+// K30 (D116): questions and answers to Aron's private log when the app sends qa_log: true (consent v5); masked
+const waitUntil = (p: Promise<unknown>) => {
+  const rt = (globalThis as { EdgeRuntime?: { waitUntil?: (p: Promise<unknown>) => void } }).EdgeRuntime;
+  if (rt?.waitUntil) rt.waitUntil(p);
+  else void p;
+};
+const logged = env.get("QA_LOG") === "0" ? handler : withQaLog(handler, (row) => db.insert("qa_log", row), waitUntil);
+
+Deno.serve(withCors(logged, extraOriginsFromEnv()));

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumen frågor och svar</title>
+<!-- K30 (D116): Aron's private view of every question and answer. No data is in this file: the rows come from
+     /functions/v1/qa-log only after Aron has signed in with his email (one-time code or link), and the server checks
+     that the address is OWNER_EMAIL. The publishable key below is public by design. -->
+<style>
+  :root { --bg:#fbfaf7; --fg:#1d1b18; --muted:#6b665e; --line:#e3ded5; --accent:#2f5d8a; --card:#fff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#151412; --fg:#ece8e1; --muted:#a39d93; --line:#34312c; --accent:#8db4dc; --card:#1e1c19; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.45 -apple-system, system-ui, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 20px 16px 60px; }
+  h1 { font-size: 22px; margin: 0 0 4px; } h2 { font-size: 17px; margin: 28px 0 8px; } h3 { font-size: 14px; color: var(--muted); margin: 14px 0 6px; text-transform: uppercase; letter-spacing: .04em; }
+  p.muted, .muted { color: var(--muted); }
+  input, button { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--fg); }
+  button { background: var(--accent); color: #fff; border: 0; cursor: pointer; } button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .qa { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin: 6px 0; }
+  .qa .t { font-size: 12px; color: var(--muted); } .qa .q { font-weight: 600; margin: 2px 0; } .qa .a { white-space: pre-wrap; }
+  #msg { min-height: 1.4em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Frågor och svar</h1>
+  <p class="muted">Bara för Aron. Raderas när du trycker Hämtat, och senast efter 14 dagar.</p>
+
+  <section id="login">
+    <div class="row"><input id="email" type="email" placeholder="Din e-post" autocomplete="email" size="28"><button id="send">Skicka kod</button></div>
+    <div class="row"><input id="code" inputmode="numeric" placeholder="Koden i mejlet" size="12"><button id="verify">Logga in</button></div>
+  </section>
+
+  <section id="view" hidden>
+    <div class="row">
+      <button id="reload" class="ghost">Uppdatera</button>
+      <button id="csv" class="ghost">Ladda ner CSV</button>
+      <button id="fetched">Hämtat (radera det som visas)</button>
+      <button id="logout" class="ghost">Logga ut</button>
+    </div>
+    <div id="list"></div>
+  </section>
+  <p id="msg" class="muted"></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+  const URL_ = "https://xjczbzfkmbjdebwlccki.supabase.co";
+  const KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8";
+  const sb = supabase.createClient(URL_, KEY, { auth: { persistSession: true, detectSessionInUrl: true } });
+  const $ = (id) => document.getElementById(id);
+  const msg = (t) => { $("msg").textContent = t || ""; };
+  let rows = [], newest = null;
+  const MODE = { auto: "Standardläge (Auto)", push_to_talk: "Standardläge (tryck och prata)", text: "Text", tutor: "Provläge / Socialt / Rizz", interview_prep: "Intervjuförberedelse" };
+
+  async function token() { const { data } = await sb.auth.getSession(); return data.session?.access_token || null; }
+  async function load() {
+    const t = await token(); if (!t) return show(false);
+    msg("Hämtar …");
+    const r = await fetch(`${URL_}/functions/v1/qa-log`, { headers: { apikey: KEY, authorization: `Bearer ${t}` } });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { msg(r.status === 403 ? "Den här adressen har inte behörighet." : `Fel: ${j.message || r.status}`); return show(false); }
+    rows = j.rows || []; newest = j.newest; show(true); render();
+    msg(rows.length ? `${rows.length} rader${rows.length >= j.max ? " (de senaste " + j.max + ")" : ""}.` : "Inga rader just nu.");
+  }
+  function show(on) { $("login").hidden = on; $("view").hidden = !on; }
+  function esc(s) { return String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`); }
+  function render() {
+    const byDay = {};
+    for (const r of rows) { const d = new Date(r.created_at).toLocaleDateString("sv-SE"); const m = (r.persona && r.persona !== "tutor" ? r.persona : MODE[r.mode] || r.mode || "okänt"); ((byDay[d] ??= {})[m] ??= []).push(r); }
+    $("list").innerHTML = Object.entries(byDay).map(([d, modes]) => `<h2>${esc(d)}</h2>` + Object.entries(modes).map(([m, list]) =>
+      `<h3>${esc(m)} · ${list.length}</h3>` + list.map((r) => `<div class="qa"><div class="t">${esc(new Date(r.created_at).toLocaleTimeString("sv-SE"))}</div><div class="q">${esc(r.question)}</div><div class="a">${esc(r.answer)}</div></div>`).join("")).join("")).join("");
+  }
+  function csv() {
+    const q = (s) => `"${String(s ?? "").replace(/"/g, '""')}"`;
+    const text = "﻿tid;läge;persona;fråga;svar\n" + rows.map((r) => [r.created_at, r.mode, r.persona, r.question, r.answer].map(q).join(";")).join("\n");
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type: "text/csv;charset=utf-8" }));
+    a.download = `lumen-fragor-${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+  }
+  $("send").onclick = async () => {
+    const email = $("email").value.trim(); if (!email) return msg("Skriv din e-post.");
+    const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.protocol.startsWith("http") ? location.href : undefined } });
+    msg(error ? `Kunde inte skicka: ${error.message}` : "Kolla mejlen: skriv koden här, eller tryck på länken.");
+  };
+  $("verify").onclick = async () => {
+    const { error } = await sb.auth.verifyOtp({ email: $("email").value.trim(), token: $("code").value.trim(), type: "email" });
+    if (error) return msg(`Fel kod: ${error.message}`);
+    load();
+  };
+  $("reload").onclick = load;
+  $("csv").onclick = () => rows.length ? csv() : msg("Inget att ladda ner.");
+  $("fetched").onclick = async () => {
+    if (!newest) return msg("Inget att radera.");
+    if (!confirm(`Radera ${rows.length} rader för gott? Ladda ner CSV först om du vill spara dem.`)) return;
+    const r = await fetch(`${URL_}/functions/v1/qa-log`, { method: "POST", headers: { apikey: KEY, authorization: `Bearer ${await token()}`, "content-type": "application/json" }, body: JSON.stringify({ fetched_until: newest }) });
+    const j = await r.json().catch(() => ({}));
+    msg(r.ok ? `${j.deleted} rader raderade.` : `Fel: ${j.message || r.status}`); if (r.ok) load();
+  };
+  $("logout").onclick = async () => { await sb.auth.signOut(); rows = []; show(false); msg("Utloggad."); };
+  sb.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_IN") load(); });
+  load();
+</script>
+</body>
+</html>
