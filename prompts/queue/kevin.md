@@ -45,6 +45,8 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   2. **Konsekvens:** källan och de viktigaste fakta från ett svar (till exempel receptets mängder) sparas i `recent_qa`. Följdfrågor ("hur länge i ugnen?", "kan jag byta mjölet?") svarar utifrån det och samma källa. Lumen ändrar bara ett tidigare påstående om det var fel, och säger då kort att det var fel.
   3. **Live-eval:** 10 recept och instruktioner (korrekt mot källan, ingen påhittad mängd), 10 följdfrågekedjor om 3 steg (inga motsägelser) och 10 frågor där modellen inte vet (söker eller säger att den inte vet, gissar aldrig). Rapportera kostnad per svar med sökning.
 
+- [ ] **K20 – Fynd från Deangelos verklighetstest** (effort: medium). Gör direkt efter pågående punkt (testfynd, PLAN 1.1). Underlag: `reports/qa/2026-11-10-0815-deangelo-reality.md`. (1) "Lumen är du en robot" ska få ett ärligt svar: en AI. (2) "ge mig en svår fråga" ska följa profilens ämne (Biologi gav matte). (3) "jag vet inte ens vad jag ska fråga" i Provläge ska hjälpa eleven igång, inte vara tyst. (4) Väder och annat aktuellt: sök i stället för "ingen tillgång". (5) Språkfel: "grundare av den vasatiden", "yttre hinn"; skämt ska fungera på svenska. Lägg fallen i live-eval. Faktafelet om mjöl hör till K16, längden i Frågor till K13.
+
 - [ ] **K12 – Oscars O9-fynd och 429** (effort: medium). Gör före K4. Underlag: `reports/qa/2026-11-09-1835-oscar-o9-kommandon.md`, avsnittet "Till Kevin":
   1. `WRAP_END` stryker "för mig" före matchningen.
   2. `weak_areas` ska gå före `quiz_topic`.
