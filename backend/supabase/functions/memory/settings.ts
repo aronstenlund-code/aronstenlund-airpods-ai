@@ -7,7 +7,7 @@
  * gets only the settings that apply to the current context, and the profile in a cached system block.
  */
 
-export type SettingKey = "length" | "simplicity" | "examples" | "accuracy";
+export type SettingKey = "length" | "simplicity" | "examples" | "accuracy" | "more";
 export type AnswerKind = "fact" | "explanation" | "math";
 export interface Scope {
   mode?: string;
@@ -31,31 +31,45 @@ export interface CorrectionContext {
 
 export const SETTINGS_LIMITS = { settings: 30, field: 80, text: 200 };
 
+// K13 (Oscar O10: own words 3/20): whole utterances after the wrapper is removed ("Lumen", "nej", "kan du", "lite",
+// "tack", "i fortsättningen" …); never a question about something else ("vad är kortare, en mil eller …").
 const C: [RegExp, SettingKey, string][] = [
-  [/^(?:kortare|för långt|det var för långt|mindre text|korta svar|kortare svar|svara kortare|snabbare|inte så långt|kortfattat|för mycket)$/u, "length", "shorter"],
-  [/^(?:längre|för kort|det var för kort|mer detaljer|utveckla mer|längre svar|svara längre|mer utförligt|utförligare)$/u, "length", "longer"],
-  [/^(?:enklare|för svårt|det var för svårt|jag förstår inte|förklara enklare|enklare ord|lättare|för krångligt|inte så krångligt)$/u, "simplicity", "simpler"],
-  [/^(?:mer exempel|fler exempel|ge exempel|med exempel|ett exempel till|exempel tack|jag behöver exempel)$/u, "examples", "more"],
-  [/^(?:det där var fel|det var fel|fel|inte rätt|det stämmer inte|det är fel|du har fel|det där stämmer inte)$/u, "accuracy", "careful"],
+  [/^(?:kortare(?: svar)?|svara kortare|korta ner(?: det| svaret)?|(?:det (?:blev|var|är) )?(?:alldeles )?för långt|för långa svar|(?:du )?pratar för mycket|för mycket(?: text| prat)?|mindre text|inte så långt|kortfattat|kortfattare|korta svar|håll det kort(?:are)?|snabbare|fatta dig kort(?:are)?)$/u, "length", "shorter"],
+  [/^(?:längre(?: svar)?|svara längre|(?:förklara|berätta) mer|utveckla(?: mer| det)?|(?:det (?:blev|var|är) )?för kort(?: utveckla(?: mer)?)?|mer detaljer|mer utförligt|utförligare|mer djup)$/u, "length", "longer"],
+  [/^(?:enklare(?: ord)?|(?:förklara|säg) det enklare|förklara enklare|säg det på ett enklare sätt|(?:det (?:var|är|blev) )?för svårt|jag (?:förstår|fattar) inte(?: alls| vad du menar| ett ord)?|för svåra ord|(?:förklara )?som för en (?:tioåring|femåring|åttaåring|tolvåring|nybörjare|ett barn)|lättare|(?:det (?:var|är) )?för krångligt|inte så krångligt|mindre krångligt)$/u, "simplicity", "simpler"],
+  [/^(?:mer exempel|fler exempel|(?:ge|ta) (?:mig )?(?:ett|några|fler|något) exempel|ge exempel|med exempel|ett exempel till|exempel|jag behöver exempel|(?:ett )?exempel (?:hade|skulle) (?:hjälpt|vara bra|hjälpa))$/u, "examples", "more"],
+  [/^(?:(?:det )?(?:där )?(?:var|är) fel|fel|inte rätt|det (?:där )?stämmer inte(?: alls)?|du har fel|det (?:där )?är inte sant|det var inte sant)$/u, "accuracy", "careful"],
 ];
+
+const LEAD = /^(?:(?:hej|okej|ok|nej|men|äh|alltså|du|hörru) )+/u;
+const POLITE = /^(?:(?:kan|kunde|skulle) (?:du|ni)(?: snälla)? |snälla |jag vill att du |vill du )/u;
+const DEGREE = /^(?:lite|mycket|lite mer|mycket mer|ännu|ännu mer|lite grann) /u;
+const TAIL = / (?:tack|snälla|nästa gång|i fortsättningen|framöver|i framtiden|från och med nu|är du snäll|då)$/u;
 
 /** The setting a spoken correction stands for, or null. */
 export function detectCorrection(text: string): { key: SettingKey; value: string } | null {
-  const t = text.toLowerCase().replace(/[^\p{L}\s]/gu, " ").replace(/\s+/g, " ").trim()
-    .replace(/^(?:(?:hej|okej|ok) )?lumen /u, "").replace(/^(?:nej |men |äh |alltså )+/u, "").replace(/ (?:tack|snälla|nästa gång)$/u, "");
-  for (const [re, key, value] of C) if (re.test(t)) return { key, value };
+  let t = text.toLowerCase().replace(/[^\p{L}\s]/gu, " ").replace(/\s+/g, " ").trim();
+  for (let i = 0; i < 3; i++) {
+    t = t.replace(/^lumen /u, "").replace(LEAD, "").replace(/^lumen /u, "").replace(POLITE, "").replace(TAIL, "").trim();
+  }
+  const forms = [t, t.replace(DEGREE, "")];
+  for (const f of forms) for (const [re, key, value] of C) if (re.test(f)) return { key, value };
   return null;
 }
 
 const OPPOSITE: Record<string, string> = { shorter: "longer", longer: "shorter" };
 
-/** Guess the scope from the answer that was corrected: maths answers by type, else the subject, else the exam/mode. */
+/**
+ * Guess the scope from the answer that was corrected: maths answers by type, else the subject, else the exam, else
+ * the mode. K13 (Oscar O10 #1): the mode is kept in every scope, so a later correction elsewhere can tell whether it
+ * came from another mode (then the setting becomes global) and the setting never moves away from where it was given.
+ */
 export function guessScope(ctx: CorrectionContext): Scope {
-  if (ctx.answer_type === "math") return { answer_type: "math" };
-  if (ctx.subject) return { subject: ctx.subject };
-  if (ctx.exam) return { exam: ctx.exam };
-  if (ctx.mode) return { mode: ctx.mode };
-  return {};
+  const m = ctx.mode ? { mode: ctx.mode } : {};
+  if (ctx.answer_type === "math") return { ...m, answer_type: "math" };
+  if (ctx.subject) return { ...m, subject: ctx.subject };
+  if (ctx.exam) return { ...m, exam: ctx.exam };
+  return m;
 }
 
 const same = (a: Scope, b: Scope) =>
@@ -63,10 +77,12 @@ const same = (a: Scope, b: Scope) =>
   (a.exam ?? "") === (b.exam ?? "") && (a.answer_type ?? "") === (b.answer_type ?? "");
 
 /** The wider scope that covers both: another subject in the same mode = the mode; another mode = global. */
-export function widen(a: Scope, b: Scope, ctx: CorrectionContext): Scope {
-  if (a.answer_type && a.answer_type === b.answer_type) return { answer_type: a.answer_type };
-  const modeA = a.mode ?? ctx.mode, modeB = b.mode ?? ctx.mode;
-  if (modeA && modeA === modeB && !(a.mode && b.mode && a.mode !== b.mode)) return { mode: modeA };
+export function widen(a: Scope, b: Scope, _ctx?: CorrectionContext): Scope {
+  const sameMode = (a.mode ?? "") === (b.mode ?? "");
+  if (a.answer_type && a.answer_type === b.answer_type) {
+    return sameMode && a.mode ? { mode: a.mode, answer_type: a.answer_type } : { answer_type: a.answer_type };
+  }
+  if (sameMode && a.mode) return { mode: a.mode };
   return {};
 }
 
@@ -85,7 +101,7 @@ export function applyCorrection(settings: Setting[], c: { key: SettingKey; value
   if (hit) {
     hit.n = (hit.n ?? 1) + 1;
     if (!covers(hit.scope, ctx)) {
-      hit.scope = widen(hit.scope, scope, { ...ctx, mode: hit.scope.mode ?? ctx.mode });
+      hit.scope = widen(hit.scope, scope);
       return { settings: keep, changed: hit, widened: true };
     }
     return { settings: keep, changed: hit, widened: false };
@@ -121,7 +137,9 @@ const KIND_NAMES: Record<AnswerKind, string> = { fact: "faktasvar", explanation:
 
 /** "Kortare svar i matte", "Fler exempel inför Geografiprovet": the readable line (also for Minne in the app). */
 export function describe(s: Setting): string {
-  const what = WORDS[`${s.key}:${s.value}`] ?? `${s.key} ${s.value}`;
+  const what = s.key === "more"
+    ? `Svar på "mer?": ${[...s.value].map((c) => (c === "y" ? "ja" : "nej")).join(", ") || "inga än"}`
+    : WORDS[`${s.key}:${s.value}`] ?? `${s.key} ${s.value}`;
   const where = s.scope.answer_type
     ? ` i ${KIND_NAMES[s.scope.answer_type]}`
     : s.scope.subject
@@ -137,7 +155,7 @@ export function describe(s: Setting): string {
 /** The whole picture in at most 300 characters (no sensitive categories: the settings hold none). */
 export function profileOf(settings: Setting[]): string {
   if (!settings.length) return "";
-  const sorted = [...settings].sort((a, b) => (b.n ?? 1) - (a.n ?? 1));
+  const sorted = settings.filter((s) => s.key !== "more").sort((a, b) => (b.n ?? 1) - (a.n ?? 1));
   let out = "Användaren vill ha: ";
   const parts: string[] = [];
   for (const s of sorted) {
@@ -149,13 +167,46 @@ export function profileOf(settings: Setting[]): string {
   return parts.length ? `${out}${parts.join("; ")}.` : "";
 }
 
+/**
+ * K13.2 (owner 2026-11-09 21:33): the student's answer to "mer?" after a short answer is a signal. The last three
+ * signals per scope are kept ("more" = e.g. "yny"); two yes of the last three (the last one a yes) make "längre svar"
+ * the default there (the long answer at once), and the history starts over. "kortare" (a correction) brings the
+ * short answer first back, in the scope of the correction (it replaces "längre", see applyCorrection). A no or silence
+ * is a weak signal: it only counts against the two yes. Nothing but these letters is stored.
+ */
+export function applySignal(settings: Setting[], signal: "yes" | "no", ctx: CorrectionContext): {
+  settings: Setting[];
+  history: string;
+  longFirst: boolean;
+  changed: Setting | null;
+} {
+  const scope = guessScope(ctx);
+  let list = settings.map((s) => ({ ...s, scope: { ...s.scope } }));
+  let h = list.find((s) => s.key === "more" && same(s.scope, scope));
+  if (!h) {
+    h = { key: "more", value: "", scope, n: 1 };
+    list.push(h);
+  }
+  h.value = (h.value + (signal === "yes" ? "y" : "n")).slice(-3);
+  const yes = [...h.value].filter((c) => c === "y").length;
+  let changed: Setting | null = null;
+  if (signal === "yes" && yes >= 2) {
+    list = list.filter((s) => !(s.key === "length" && same(s.scope, scope)));
+    changed = { key: "length", value: "longer", scope, n: 1 };
+    list.push(changed);
+    h.value = "";
+  }
+  const longFirst = applicable(list, ctx).some((s) => s.key === "length" && s.value === "longer");
+  return { settings: list.slice(-SETTINGS_LIMITS.settings), history: h.value, longFirst, changed };
+}
+
 function str(v: unknown, max: number): string | undefined {
   if (typeof v !== "string") return undefined;
   const t = v.replace(/[\u0000-\u001f<>]/g, " ").replace(/\s+/g, " ").trim();
   return t ? t.slice(0, max) : undefined;
 }
 const KINDS = new Set(["fact", "explanation", "math"]);
-const KEYS = new Set(["length", "simplicity", "examples", "accuracy"]);
+const KEYS = new Set(["length", "simplicity", "examples", "accuracy", "more"]);
 
 export function readContext(v: unknown): CorrectionContext {
   const o = (v ?? {}) as Record<string, unknown>;

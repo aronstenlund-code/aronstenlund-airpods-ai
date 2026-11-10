@@ -26,7 +26,7 @@ export function currentMode(req: { mode: string; persona: string; social?: { sty
 // a request frame: "kan vi", "ska vi", "jag vill", "låt oss", "nu kör vi", or an imperative verb first
 const FRAME =
   String.raw`(?:(?:kan|ska|skulle) vi (?:inte )?|vi kan |låt oss |jag vill (?:att vi |hellre )?|jag skulle vilja |nu (?:kör|tar) vi |dags (?:att|för) |vi (?:kör|tar) |)`;
-const GO = String.raw`(?:köra|kör|ta|gå (?:över )?till|gå tillbaka till|byta till|byt till|växla till|starta|börja med|ha|använda|köra med|testa|öppna|sätta på|slå på|tillbaka till|över till)`;
+const GO = String.raw`(?:köra|kör|ta|gå (?:över )?till|gå tillbaka till|byta till|byt till|växla till|starta|börja med|ha|använda|köra med|testa|öppna|sätta på|slå på|sätt på|slå över till|tillbaka till|över till)`;
 const MODE_WORDS: [AppMode, string][] = [
   // "frågor" alone is too open ("kan vi köra frågor" in Provläge can mean a quiz): "vanliga frågor" or the mode name
   ["fragor", String.raw`(?:vanliga|bara vanliga) frågor|frågor(?:läget|läge)|frågeläget|frågeläge`],
@@ -39,23 +39,23 @@ const TAIL = String.raw`(?: nu| igen| ett tag| en stund| istället| i stället| 
 
 // "jag vill öva inför provet", "nu pluggar vi", "dags att plugga": Provläge without its name
 const STUDY_INTENT =
-  /^(?:jag vill (?:öva|plugga|plugga lite|förbereda mig) (?:inför|till|för) (?:provet|mitt prov|ett prov|tentan|förhöret)|(?:kan|ska) vi plugga(?: lite)?|nu pluggar vi|dags att plugga|jag ska plugga nu|hjälp mig plugga inför provet|jag vill plugga)(?: nu| lite| tack)*$/u;
+  /^(?:jag vill (?:öva|plugga|plugga lite|förbereda mig) (?:inför|till|för) (?:provet|mitt prov|ett prov|tentan|förhöret)|(?:kan|ska) vi plugga(?: lite)?(?: (?:till|inför|för) (?:provet|mitt prov|tentan|förhöret))?|nu pluggar vi|dags att plugga|jag ska plugga nu|hjälp mig plugga inför provet|jag vill plugga)(?: nu| lite| tack| istället| i stället)*$/u;
 // "jag har en intervju snart, kan vi öva", "jag vill öva inför en intervju"
 const INTERVIEW_INTENT =
   /^(?:jag vill öva (?:på |inför )?(?:en |min )?(?:jobb)?intervju(?:n)?|kan vi öva (?:på |inför )?(?:en |min )?(?:jobb)?intervju(?:n)?|hjälp mig öva inför (?:en |min )?intervju(?:n)?)(?: nu| tack)*$/u;
 // "jag vill bara ställa frågor", "nu vill jag fråga saker"
 const QUESTIONS_INTENT =
-  /^(?:jag vill (?:bara )?ställa (?:lite )?(?:vanliga )?frågor|nu vill jag (?:bara )?fråga (?:saker|lite)|jag vill fråga om (?:allt möjligt|lite av varje)|sluta förhöra mig|inget mer plugg)(?: nu| tack)*$/u;
+  /^(?:jag vill (?:bara )?ställa (?:lite )?(?:vanliga )?frågor|nu vill jag (?:bara )?fråga (?:saker|lite)|jag vill fråga om (?:allt möjligt|lite av varje)|sluta förhöra mig|inget mer (?:plugg|förhör|provläge|plugga))(?: nu| tack| för idag)*$/u;
 
 const PAUSE =
-  /^(?:sluta lyssna|lyssna inte|pausa|pausa lyssnandet|ta en paus|vänta med att lyssna|sluta lyssna på mig|du kan sluta lyssna|inte lyssna|tyst en stund|var tyst en stund|håll tyst en stund)(?: nu| ett tag| en stund| lite| tack| en liten stund)*$/u;
+  /^(?:(?:kan du |du kan )?(?:sluta lyssna|pausa)|lyssna inte|pausa|pausa lyssnandet|ta en (?:kort |liten |snabb )?paus|vänta med att lyssna|sluta lyssna på mig|du kan sluta lyssna|inte lyssna|tyst en stund|var tyst en stund|håll tyst en stund)(?: nu| ett tag| en stund| lite| tack| en liten stund)*$/u;
 const STOP =
-  /^(?:avsluta(?: sessionen| lyssnandet| lyssningen| passet)?|stäng av(?: dig)?|vi är klara(?: för idag| nu)?|det var allt för idag|nu slutar vi|sluta helt|stäng av lumen|vi slutar för idag)(?: nu| tack)*$/u;
-const RESUME = /^(?:(?:börja |fortsätt )?lyssna igen|du kan lyssna igen|fortsätt lyssna|lyssna nu)(?: nu| tack)*$/u;
+  /^(?:avsluta(?: sessionen| lyssnandet| lyssningen| passet)?|stäng av(?: dig)?|vi är klara(?: för idag| nu)?|det var allt för idag|nu slutar vi|sluta helt|stäng av lumen|vi slutar för idag|(?:kan du )?(?:avsluta|stänga av)|(?:nu )?räcker det(?: för idag| för i dag)?)(?: nu| tack)*$/u;
+const RESUME = /^(?:(?:kan du )?(?:börja |fortsätt )?lyssna igen|du kan lyssna igen|fortsätt lyssna|lyssna nu)(?: nu| tack)*$/u;
 
 const SWITCH = MODE_WORDS.map(([m, w]) => [m, new RegExp(`^${FRAME}${GO} (?:till )?(?:${w})${TAIL}$`, "u")] as const);
 // "nu kör vi provläget", "vi tar intervjuläget": the verb is in the frame
-const SWITCH_VI = MODE_WORDS.map(([m, w]) => [m, new RegExp(`^(?:nu |då )?(?:kör|tar|testar) vi (?:${w})${TAIL}$|^vi (?:kör|tar) (?:${w})${TAIL}$`, "u")] as const);
+const SWITCH_VI = MODE_WORDS.map(([m, w]) => [m, new RegExp(`^(?:nu |då )?(?:kör|tar|testar) vi (?:${w})${TAIL}$|^vi (?:kör|tar) (?:${w})${TAIL}$|^(?:nu är det )?dags för (?:${w})${TAIL}$`, "u")] as const);
 const BARE = MODE_WORDS.map(([m, w]) => [m, new RegExp(`^(?:${w})(?: nu| tack| igen)*$`, "u")] as const);
 
 /** Lower case, no punctuation, no leading "Lumen" (the request frame words are kept: they carry the meaning). */

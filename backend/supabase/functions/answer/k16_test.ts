@@ -111,3 +111,21 @@ Deno.test("K16.2 a follow-up to a sourced answer searches the same source", asyn
   assert(seen[0].user.includes("Source: arla.se"));
   assert(seen[0].user.includes("came from arla.se"));
 });
+
+Deno.test("K16 recipe fractions and kitchen measures are read as words", async () => {
+  const { numbersToSpeech } = await import("./svnum.ts");
+  assertEquals(numbersToSpeech("2 1/2 dl vetemjöl"), "två och en halv deciliter vetemjöl");
+  assertEquals(numbersToSpeech("1/2 tsk salt"), "en halv tesked salt");
+  assertEquals(numbersToSpeech("3/4 dl"), "tre fjärdedels deciliter");
+  assertEquals(numbersToSpeech("2½ dl"), "två och en halv deciliter");
+  assertEquals(numbersToSpeech("3 msk socker"), "tre matskedar socker");
+  assertEquals(numbersToSpeech("öppet 24/7"), "öppet tjugofyra/sju");
+});
+
+Deno.test("K16 changing facts search; a late [[SÖK]] is never spoken", async () => {
+  assert(needsWeb("hur många invånare har Ockelbo kommun")?.search);
+  assert(needsWeb("vem är rektor på KTH")?.search);
+  const { provider } = scripted("Ockelbo har ungefär femtusen invånare. [[SÖK]]");
+  const out = await spoken(await handlerWith(provider)(ask({ fragment: "hur gammal är Ockelbo kyrka" })));
+  assert(!out.includes("SÖK") && !out.includes("["), out);
+});

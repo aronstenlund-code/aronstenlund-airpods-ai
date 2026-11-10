@@ -152,8 +152,11 @@ const ABBREVIATIONS: [RegExp, string][] = [
 // The model must never state a phone number from memory. Only 112 (emergency), 1177 (healthcare advice) and
 // 114 14 (police, non-emergency; only when the context is the police) pass; any other number written like a
 // phone number next to a phone cue is replaced. The prompt says the same; this is the safety net.
+// K13 (Oscar O10 #6: "omkring 800 000 människor" became the placeholder: "ring" in "omkring"): whole words only
 const PHONE_CUE =
-  /(?:ring|ringa|ringer|nummer|numret|telefon|tel\b|växel|jour|spärr|larm|hjälplinje|support|kundtjänst|sms)/i;
+  /(?<![\p{L}])(?:ring|ringa|ringer|ringde|ringt|nummer|numret|numren|telefon(?:nummer|numret|en)?|tel|växel(?:n)?|jour(?:en|numret|nummer)?|spärr(?:a|tjänst|tjänsten|linjen)?|larmnummer|larmnumret|larmcentral(?:en)?|hjälplinje(?:n)?|support(?:en)?|kundtjänst(?:en)?|sms)(?![\p{L}])/iu;
+/** "800 000", "1 000 000", "12 000": a number grouped in thousands, never a phone number. */
+const THOUSANDS = /^[1-9]\d{0,2}(?: \d{3})+$/;
 const PHONE_RE =
   /(?<![\p{L}\d.,:+/-])(?:\+\d[\d -]{6,14}\d|0\d{1,3}[ -]?\d{2,3}(?:[ -]?\d{2,4}){1,3}|\d{2,5}(?:[ -]\d{2,4}){1,4})(?![\p{L}\d]|[.,]\d)/gu;
 export const PHONE_PLACEHOLDER = "numret som står på deras webbplats";
@@ -198,7 +201,7 @@ export function guardPhoneNumbers(text: string, ctx = ""): string {
     const before = full.slice(Math.max(0, start - 80), start);
     const national = /^0\d{6,}$/.test(digits) || /^\+/.test(m[0]);
     const cued = PHONE_CUE.test(before) || national;
-    if (!cued || digits.length < 5) continue;
+    if (!cued || digits.length < 5 || THOUSANDS.test(m[0])) continue;
     out += full.slice(Math.max(last, ctx.length), start) + PHONE_PLACEHOLDER;
     last = start + m[0].length;
   }

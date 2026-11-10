@@ -29,7 +29,9 @@ interface Family {
 
 const WRAP_START =
   /^(?:(?:hej|okej|ok|du)\s+)?(?:lumen\s+)?(?:(?:kan|kunde|skulle) (?:du|ni)(?: snälla)? |snälla |jag vill (?:att du |ha )?|vill du |kom igen |nu )?/u;
-const WRAP_END = /\s+(?:tack|snälla|nu|igen|är du snäll|för mig)$/u;
+const WRAP_END = /\s+(?:tack|snälla|nu|igen|är du snäll)$/u;
+/** K12 (O9 #1): "för mig" is only a polite ending when the utterance does not match with it ("hur går det för mig"). */
+const FOR_ME_END = /\s+för mig$/u;
 
 /** Lower case, no punctuation, no "Lumen" and no polite wrapper: the form the families are written for. */
 export function normalizeCommand(text: string): string {
@@ -41,8 +43,9 @@ export function normalizeCommand(text: string): string {
 }
 
 // every family matches the WHOLE normalised utterance (its alternatives are wrapped in ^(?: … )$)
+// K12 (O9 #3): "kan du göra det roligare" = "gör det roligare": every "gör " in a family also takes "göra "
 const F = (task: string, scope: Scope, re: RegExp, rule: string): Family => ({
-  task, scope, rule, re: new RegExp(`^(?:${re.source})$`, "u"),
+  task, scope, rule, re: new RegExp(`^(?:${re.source.replaceAll("gör ", "göra? ")})$`, "u"),
 });
 
 const FAMILIES: Family[] = [
@@ -52,7 +55,7 @@ const FAMILIES: Family[] = [
     "Give ONE concrete, new example of the last answer's topic in <recent_qa> (not the example already given there), and say in one sentence how it shows the point. Two to four sentences."),
   F("summary", "study",
     /^(?:sammanfatta|summera)(?: det| det viktigaste| allt| kort| det här| svaret| ämnet)?|(?:vad är|säg) det viktigaste|ge mig det viktigaste|(?:en )?kort sammanfattning|summarize|sum it up$/u,
-    "Summarise the most important points of the topic studied in <recent_qa> (all recent turns on it, not only the last answer) in three or four short sentences, the key terms included. Nothing new."),
+    "Summarise the most important points of the topic studied in <recent_qa> (all recent turns on it, not only the last answer) in three or four short sentences, the key terms included. Nothing new, and no check question at the end unless the student asked for one."),
   F("a_level", "study",
     /^(?:förklara |svara |säg det |ge mig )?(?:det )?(?:på |som |för )?(?:a-?nivå|a nivå|ett a|ett a-svar|a-svar|a svar)(?:-?nivå)?|hur får jag (?:ett )?a(?: på det här| på det)?$/u,
     "Explain the last answer's topic again as an answer that would earn the top grade A for the student's grade and course: the concepts, how they connect (cause and effect, comparison), one example and the conclusion. Do not say the grade or 'A-nivå' aloud."),
@@ -65,12 +68,12 @@ const FAMILIES: Family[] = [
   F("yes_no_quiz", "study",
     /^(?:ställ |ge mig |kör )?ja[- ]?(?:eller[- ])?nej[- ]?frågor|förhör mig med ja och nej|ja nej förhör$/u,
     "Ask ONE check question on the topic of <recent_qa> that is answered with ja or nej. Only the question."),
-  F("quiz_topic", "study",
-    /^(?:förhör|testa|quizza|fråga ut|förhöra) mig (?:på|om|i|inom) (.{2,60})$/u,
-    "Ask ONE check question about the topic given in <task_arg>, at the A level of the grade in <profile>. Only the question, nothing before it. Never a question in <already_asked>."),
   F("weak_areas", "study",
     /^(?:testa|förhör|öva|fråga) (?:mig )?(?:på )?mina (?:svagaste|svaga|sämsta) (?:områden|delar|sidor|begrepp)|vad kan jag sämst|vad behöver jag öva (?:mer )?på|vad är jag sämst på$/u,
     "<concept_stats> lists how the student did per concept (right/wrong). Pick the concept with the most wrong answers (or the lowest share right) and ask ONE check question on it. Only the question. Without <concept_stats>, ask about a core concept of <profile> not yet in <recent_qa>."),
+  F("quiz_topic", "study",
+    /^(?:förhör|testa|quizza|fråga ut|förhöra) mig (?:på|om|i|inom) (?!mina )(.{2,60})$/u,
+    "Ask ONE check question about the topic given in <task_arg>, at the A level of the grade in <profile>. Only the question, nothing before it. Never a question in <already_asked>."),
   F("self_assessment", "study",
     /^hur bra kan jag (?:det här|det|detta|ämnet|det här ämnet)|hur ligger jag till|kan jag det här|hur går det för mig$/u,
     "Tell the student in two or three spoken sentences how well they know this, from <concept_stats> (right/wrong per concept) and the graded replies in <recent_qa>: what is secure and the one concept to practise next. Numbers in words. Never invent results: without data say there are no quiz results yet and offer one practice question."),
@@ -131,12 +134,15 @@ const SOCIAL_REQUESTS = new Set(["social:reply", "social:change_topic", "social:
 export function commandTask(text: string, scope: Scope): CommandTask | null {
   const t = normalizeCommand(text);
   if (!t || t.split(" ").length > 12) return null;
-  for (const f of FAMILIES) {
-    if (f.scope !== scope) continue;
-    const m = f.re.exec(t);
-    if (!m) continue;
-    const arg = m[1]?.trim();
-    return { task: f.task, ...(arg ? { arg } : {}), rule: f.rule };
+  const forms = FOR_ME_END.test(t) ? [t, t.replace(FOR_ME_END, "").trim()] : [t];
+  for (const form of forms) {
+    for (const f of FAMILIES) {
+      if (f.scope !== scope) continue;
+      const m = f.re.exec(form);
+      if (!m) continue;
+      const arg = m[1]?.trim();
+      return { task: f.task, ...(arg ? { arg } : {}), rule: f.rule };
+    }
   }
   return null;
 }

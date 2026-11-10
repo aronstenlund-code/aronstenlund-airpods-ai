@@ -16,9 +16,9 @@ import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
-import { commandTask, detectRule } from "./commands.ts";
+import { commandTask, detectRule, socialRequest } from "./commands.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
-import { applicable, describe } from "../memory/settings.ts";
+import { applicable, describe, profileOf } from "../memory/settings.ts";
 
 /** K9: tasks that ask for one check question (only the question is said, as for "förhör mig"). */
 const FREE_INSTRUCTION_NOTE =
@@ -28,7 +28,7 @@ const PREF_RULE: Record<string, string> = {
   "length:shorter": "at most three short sentences, the core only",
   "length:longer": "a developed answer, clearly longer than usual, with the why and the details",
   "simplicity:simpler": "everyday words and short sentences of at most twelve words each; explain every subject term in plain words; no extra terms",
-  "examples:more": "always at least one concrete everyday example, introduced with \"Till exempel\" or \"Ett exempel är\"",
+  "examples:more": "always at least TWO different concrete everyday examples (more than you would give otherwise), each introduced with \"Till exempel\" or \"Ett annat exempel är\"",
   "accuracy:careful": "double-check every fact and leave out anything you are not sure of",
 };
 const QUIZ_TASKS = new Set(["harder_question", "quick_quiz", "yes_no_quiz", "quiz_topic", "weak_areas"]);
@@ -126,6 +126,8 @@ export interface HandlerConfig {
   limits: Limits;
   /** D46 item 8: caps for requests that use web search/fetch (they cost real money per search). */
   webLimits?: Limits;
+  /** K12: spoken instructions (commands, calibrations, free instructions) are counted apart from questions. */
+  commandLimits?: Limits;
   /** D52: model + prices (USD / MTok) for Rizz suggestions (Sonnet 5.5 by default; Haiku for the rest). */
   rizzModel?: string;
   /** D87: model for Provläge (persona tutor in mode tutor); unset = the provider's default (Haiku). */
@@ -153,6 +155,8 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   maxAnswerCharsStudy: 1800,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
   webLimits: { perMinute: 3, perDay: 20, globalPerDay: 150 },
+  // K12 (Toby T6 #7: 429 on quick instructions in Socialt/Rizz): instructions have their own budget
+  commandLimits: { perMinute: 15, perDay: 300, globalPerDay: 3000 },
   // Oscar 2026-11-08: 40 (was 20) and aborted calls are given back here too
   appGuard: { networkPerDay: 1500, newUserAgeSec: 600, newUserPerHour: 40 },
   rizzModel: "claude-sonnet-5-5",
@@ -695,17 +699,21 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const answerType = (computed || webOn || demo) && !tutor ? "fact" : answerTypeBase;
       // K10.2: only the learned settings that apply to this context (mode, subject, exam, kind of answer)
       const prefSubject = body.prefContext?.subject ?? /(?:^|\.\s*)Ämne:\s*([^.]+)/u.exec(body.personaSetup)?.[1]?.trim();
-      const prefLines = body.preferences?.length && !demo
+      const applicableHere = body.preferences?.length && !demo
         ? applicable(body.preferences, {
           mode: currentMode(body) ?? undefined,
           subject: prefSubject,
           exam: body.prefContext?.exam,
           answer_type: computed || /^matem/iu.test(prefSubject ?? "") ? "math" : answerType === "study" ? "explanation" : "fact",
-        }).map((x) => `${describe(x)}: ${PREF_RULE[`${x.key}:${x.value}`] ?? ""}`.replace(/: $/, ""))
+        })
         : [];
+      const prefLines = applicableHere.map((x) => `${describe(x)}: ${PREF_RULE[`${x.key}:${x.value}`] ?? ""}`.replace(/: $/, ""));
       // K10.3: the profile goes in its own cached system block after the shared prompt
-      const systemTail = body.prefProfile && !demo
-        ? `<user_profile>${sanitizeTagged(body.prefProfile)}</user_profile> How this user wants answers, learned from their corrections: follow it unless the request asks otherwise.`
+      // K13 (Oscar O10 #4: "längre svar i kemi" followed into Frågor): with the settings at hand the profile is built
+      // from those that apply here; the app's own profile line only when no settings are sent
+      const profileText = demo ? "" : body.preferences?.length ? profileOf(applicableHere) : body.prefProfile ?? "";
+      const systemTail = profileText
+        ? `<user_profile>${sanitizeTagged(profileText)}</user_profile> How this user wants answers in this context, learned from their corrections: follow it unless the request asks otherwise.`
         : undefined;
       const maxChars = (demo ? demoCaps.answerMaxChars : undefined) ?? plan?.maxChars ??
         (textReq ? 2400 : undefined) ?? (webOn ? 800 : undefined) ??
@@ -811,7 +819,13 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const abortAll = () => acs.forEach((a) => a.abort());
       req.signal.addEventListener("abort", abortAll);
       const countedAt = Date.now(); // D80: an aborted answer is given back in this window
-      const limitsP = enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra).then((r) => {
+      // K12: an instruction ("roligare", "ge mig tre", "förhör mig på …") never uses up the question budget
+      const instruction = !demo && (!!command || plan?.kind === "calibrate" || body.voiceInstruction === true ||
+        (!!body.social && socialRequest(body.fragment) !== null));
+      const limitsP = (instruction
+        ? enforceLimits(deps.rateLimiter, "answer-cmd", user.id, cfg.commandLimits ?? DEFAULT_CONFIG.commandLimits!, 1,
+          appChecks("answer-cmd", await networkKey(req), user, cfg.appGuard ?? DEFAULT_CONFIG.appGuard!))
+        : enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra)).then((r) => {
         limitsMs = now() - t0;
         return r;
       });
@@ -983,16 +997,51 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             send("meta", pendingMeta);
             pendingMeta = null;
           };
-          const deliver = (t: string) => {
-            if (!t || closed) return;
+          // K13 (Oscar O10 #7: Frågor cut answers mid-word at the cap, "… kontakta vården direkt. ["): close to the cap
+          // only whole sentences are said; what does not fit is dropped, and nothing is said after the cut
+          let nearBuf = "";
+          const emitText = (raw: string) => {
+            // K16: a late search marker ("… femtusen invånare. [[SÖK]]", live 3/10) is never read aloud
+            if (/\[\[S[ÖO]K\]\]/iu.test(raw)) console.warn("search_marker_late", JSON.stringify({ mode: body.mode }));
+            const t = raw.replace(/\s*\[\[S[ÖO]K\]\]\s*/giu, " ").replace(/\s*\[+\s*$/u, "");
+            if (!t.trim()) return;
             flushMeta();
             if (ttftMs === null) ttftMs = now() - t0;
             answerChars += t.length;
             send("delta", { text: t });
-            if (answerChars >= maxChars) {
+          };
+          const deliver = (t: string) => {
+            if (!t || closed || status === "truncated") return;
+            if (answerChars + nearBuf.length + t.length <= maxChars - 200) {
+              emitText(t);
+              return;
+            }
+            nearBuf += t;
+            const fits = maxChars - answerChars;
+            let end = -1;
+            for (const m of nearBuf.matchAll(/[.!?](?=\s|$)/gu)) if (m.index! + 1 <= fits) end = m.index! + 1;
+            if (nearBuf.length > fits) {
+              // no sentence end fits: when nothing was said yet, stop at the last whole word instead of saying nothing
+              const out = end > 0
+                ? nearBuf.slice(0, end)
+                : answerChars === 0
+                ? nearBuf.slice(0, fits).replace(/\s+\S*$/u, "")
+                : "";
+              nearBuf = "";
+              emitText(out);
               status = "truncated";
               stop = true;
+              return;
             }
+            if (end > 0) {
+              emitText(nearBuf.slice(0, end));
+              nearBuf = nearBuf.slice(end);
+            }
+          };
+          const flushNear = () => {
+            const rest = nearBuf;
+            nearBuf = "";
+            if (rest && status !== "truncated") emitText(rest);
           };
           const rizz = plan?.kind === "rizz";
           const calib = plan?.kind === "calibrate"; // D69: collect the merged calibration, send nothing else
@@ -1228,6 +1277,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             } else if (stop && !closed && status !== "ok") {
               deliver(post.finish()); // truncated: speak the tail that was held back
             }
+            flushNear();
             if (stop) abortAll();
             if (parser.headerFailed) {
               console.warn(JSON.stringify({ evt: "header_parse_failed", mode: body.mode }));

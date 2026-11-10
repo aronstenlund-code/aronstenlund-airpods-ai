@@ -46,6 +46,11 @@ const CURRENT = pat(
     "aktiekurs(?:en)?",
     "kurs(?:en)? på",
     "vem vann (?:senaste|i går|igår|i år|just nu)",
+    // K16 (live: population and office holders answered from memory): facts that change
+    "hur många invånare",
+    "invånarantal(?:et)?",
+    "folkmängd(?:en)?",
+    "vem är (?:den )?(?:nuvarande |sittande )?(?:rektor|ordförande|kommunstyrelsens ordförande|vd|chef|statsminister|minister|borgmästare|landshövding|tränare|förbundskapten|kapten|partiledare|ledare|ärkebiskop|riksbankschef)(?:n|en)?",
     "vem (?:vinner|leder|vann).*20[2-9]\\d",
     "ställning(?:en)?",
     "tabellen",
@@ -151,7 +156,7 @@ export function cleanDomain(d: string | undefined | null): string | null {
 export const SEARCH_MARK = "[[SÖK]]";
 export const SEARCH_MARK_RULE = `
 
-NOT SURE (K16): you never invent a recipe, an amount, a step of an instruction for a specific product or service, a number, a name, an opening hour, a price, a rule or a law. When the answer needs such a specific fact and you are not sure of it, write only ${"[[SÖK]]"} and nothing else (a search runs and you answer again with sources). General knowledge you are sure of is answered directly as usual.`;
+NOT SURE (K16): you never invent a recipe, an amount, a step of an instruction for a specific product or service, a number, a name, an opening hour, a price, a rule or a law. When the answer needs such a specific fact and you are not sure of it, your WHOLE reply is ${"[[SÖK]]"}: it is the first and only thing you write, never after a sentence and never next to a guess (a search runs and you answer again with sources). Facts that change over time (population, who holds an office now, opening hours, records, heights that were measured again) count as not sure. General knowledge you are sure of is answered directly as usual.`;
 export const NO_GUESS_NOTE =
   "You said you are not sure and no search is available now. Say in one short sentence that you do not know it for sure, then only what you are sure of (for example where to look it up). Never guess a number, an amount, a step or a rule.";
 export const SAME_SOURCE_NOTE = (d: string) =>
@@ -270,6 +275,10 @@ const TEXT_REQ = new RegExp(
     String.raw`\b(?:första|andra|tredje|sista) (?:versen|strofen|raden)\b`,
     String.raw`\b(?:en|någon) (?:rad|vers|refräng) (?:ur|från|i)\b`,
     String.raw`\btexten lyder\b`,
+    // K13 (Oscar O10 #8, C02)
+    String.raw`\b(?:första|sista) raden (?:i|ur|av|på)\b`,
+    String.raw`\bciter(?:a|ar) (?:den )?(?:första|sista) raden\b`,
+    String.raw`\bvad är (?:den )?(?:första|sista) raden\b`,
   ].join("|"),
   "iu",
 );

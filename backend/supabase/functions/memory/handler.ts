@@ -6,7 +6,7 @@ import { readLimitedJson } from "../answer/validate.ts";
 import { nowContext } from "../answer/datecalc.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
 import type { LLMProvider } from "../answer/llm/types.ts";
-import { applyCorrection, describe, detectCorrection, profileOf, readContext, readSettings, SETTINGS_LIMITS } from "./settings.ts";
+import { SETTINGS_LIMITS, applyCorrection, applySignal, describe, detectCorrection, profileOf, readContext, readSettings } from "./settings.ts";
 
 /**
  * D80 (owner): `POST /memory` - memory extraction outside the answer path. The app sends one turn (the
@@ -166,6 +166,20 @@ export function createMemoryHandler(deps: MemoryDeps) {
       const user = await deps.authenticate(req);
       const raw = await readLimitedJson(req, MEMORY_LIMITS.bodyBytes);
       // K10.2: a correction right after an answer -> a structured setting with a scope (code only, no model call)
+      // K13.2: the answer to "mer?" after a short answer (yes / no or silence) -> the learned default length
+      const sig = (raw as Record<string, unknown> | null)?.length_signal as Record<string, unknown> | undefined;
+      if (sig && typeof sig === "object" && (sig.signal === "yes" || sig.signal === "no")) {
+        const settings = readSettings((raw as Record<string, unknown>).settings);
+        const r = applySignal(settings, sig.signal, readContext(sig.context));
+        console.log(JSON.stringify({ event: "length_signal", signal: sig.signal, history: r.history, long_first: r.longFirst }));
+        return json({
+          add: [], update: [], remove: [],
+          settings: r.settings,
+          ...(r.changed ? { setting: { ...r.changed, text: describe(r.changed) } } : {}),
+          long_first: r.longFirst,
+          profile: profileOf(r.settings),
+        });
+      }
       const corr = (raw as Record<string, unknown> | null)?.correction as Record<string, unknown> | undefined;
       if (corr && typeof corr === "object") {
         const text = typeof corr.text === "string" ? corr.text.slice(0, SETTINGS_LIMITS.text) : "";

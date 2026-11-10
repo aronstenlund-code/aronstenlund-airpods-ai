@@ -241,7 +241,7 @@ Deno.test("overlong answers are cut off at maxAnswerChars", async () => {
     (a, e) => a + (e.data.text as string).length,
     0,
   );
-  assert(n >= 120 && n <= 200, `n=${n}`);
+  assert(n > 60 && n <= 120, `n=${n}`); // K13: never over the cap, never mid-word
   assertEquals(usage[0].status, "truncated");
 });
 

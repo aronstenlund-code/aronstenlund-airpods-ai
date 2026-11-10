@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
-import { applicable, applyCorrection, describe, detectCorrection, profileOf, type Setting } from "./settings.ts";
+import { applicable, applyCorrection, covers, describe, detectCorrection, profileOf, type Setting } from "./settings.ts";
 
 Deno.test("K10.2 corrections are read with or without Lumen; ordinary questions are not", () => {
   assertEquals(detectCorrection("Lumen, kortare"), { key: "length", value: "shorter" });
@@ -15,7 +15,7 @@ Deno.test("K10.2 corrections are read with or without Lumen; ordinary questions 
 Deno.test("K10.2 scope: guessed from the answer, widened by the same correction elsewhere", () => {
   let s: Setting[] = [];
   let r = applyCorrection(s, { key: "length", value: "shorter" }, { mode: "prov", subject: "Geografi", answer_type: "explanation" });
-  assertEquals(r.changed.scope, { subject: "Geografi" });
+  assertEquals(r.changed.scope, { mode: "prov", subject: "Geografi" }); // K13: the mode is kept (O10 #1)
   assertEquals(describe(r.changed), "Kortare svar i geografi");
   s = r.settings;
   // same subject again: no change
@@ -31,7 +31,7 @@ Deno.test("K10.2 scope: guessed from the answer, widened by the same correction 
   assertEquals(r.settings.length, 1);
   // maths answers by answer type
   const m = applyCorrection([], { key: "examples", value: "more" }, { mode: "prov", subject: "Matematik", answer_type: "math" });
-  assertEquals(m.changed.scope, { answer_type: "math" });
+  assertEquals(m.changed.scope, { mode: "prov", answer_type: "math" });
   // the opposite value replaces it
   const o = applyCorrection(r.settings, { key: "length", value: "longer" }, { mode: "fragor" });
   assert(!o.settings.some((x) => x.value === "shorter"));
@@ -59,4 +59,27 @@ Deno.test("K8 memory filter: study subjects are kept, the user's own sensitive f
   for (const k of keep) assert(r.add.includes(k), k);
   const r2 = parseMemoryReply(JSON.stringify({ add: drop }), []);
   assertEquals(r2.add, []);
+});
+
+Deno.test("K13 (O10) corrections in own words, my own variants; ordinary sentences stay questions", () => {
+  for (const [t, want] of [
+    ["Lumen, mycket kortare tack", "length:shorter"], ["kan du fatta dig kortare", "length:shorter"], ["okej det var alldeles för långt", "length:shorter"],
+    ["utveckla det", "length:longer"], ["kan du berätta mer", "length:longer"], ["lite mer utförligt framöver", "length:longer"],
+    ["jag fattar inte vad du menar", "simplicity:simpler"], ["förklara som för en femåring", "simplicity:simpler"], ["mindre krångligt tack", "simplicity:simpler"],
+    ["ta något exempel", "examples:more"], ["ett exempel skulle vara bra", "examples:more"],
+    ["nej det där är inte sant", "accuracy:careful"], ["men det där stämmer inte alls", "accuracy:careful"],
+  ]) {
+    const r = detectCorrection(t);
+    assertEquals(r ? `${r.key}:${r.value}` : null, want, t);
+  }
+  for (const t of ["vilken är kortare, Göta älv eller Klarälven", "berätta mer om vikingarna", "jag fattar inte matte alls, hjälp mig med ekvationer", "ge exempel på en metafor", "är det fel att ljuga"]) {
+    assertEquals(detectCorrection(t), null, t);
+  }
+});
+
+Deno.test("K13 (O10 #1) a correction in Frågor then in Provläge becomes global and still covers Frågor", () => {
+  let r = applyCorrection([], { key: "length", value: "shorter" }, { mode: "fragor", answer_type: "fact" });
+  r = applyCorrection(r.settings, { key: "length", value: "shorter" }, { mode: "prov", subject: "Biologi", answer_type: "explanation" });
+  assertEquals(r.changed.scope, {});
+  assert(covers(r.changed.scope, { mode: "fragor" }) && covers(r.changed.scope, { mode: "prov", subject: "Kemi" }));
 });

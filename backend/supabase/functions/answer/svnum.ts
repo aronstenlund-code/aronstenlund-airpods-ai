@@ -166,7 +166,42 @@ const UNIT_WORDS: Record<string, { one: string; many: string; g: Gender }> = {
   kr: { one: "krona", many: "kronor", g: "en" },
   min: { one: "minut", many: "minuter", g: "en" },
   st: { one: "stycke", many: "stycken", g: "ett" },
+  // K16 (recipes): kitchen measures
+  tsk: { one: "tesked", many: "teskedar", g: "en" },
+  msk: { one: "matsked", many: "matskedar", g: "en" },
+  krm: { one: "kryddmått", many: "kryddmått", g: "ett" },
 };
+
+// K16 (live: "2 1/2 dl" was read "två ett/två deciliter"): fractions in recipes and measures
+const FRACTION_WORDS: Record<string, [string, string]> = {
+  // [alone, before a unit]
+  "1/2": ["en halv", "en halv"],
+  "1/3": ["en tredjedel", "en tredjedels"],
+  "2/3": ["två tredjedelar", "två tredjedels"],
+  "1/4": ["en fjärdedel", "en kvarts"],
+  "3/4": ["tre fjärdedelar", "tre fjärdedels"],
+  "1/8": ["en åttondel", "en åttondels"],
+};
+const UNICODE_FRACTIONS: Record<string, string> = { "½": "1/2", "⅓": "1/3", "⅔": "2/3", "¼": "1/4", "¾": "3/4", "⅛": "1/8" };
+const FRACTION_UNIT = String.raw`(?:\s?(dl|cl|ml|l|tsk|msk|krm|kg|g|st)(?![\p{L}\d]))?`;
+function speakFractions(text: string): string {
+  let s = text.replace(/(\d)?([½⅓⅔¼¾⅛])/gu, (_m, d: string | undefined, f: string) => (d ? `${d} ` : "") + UNICODE_FRACTIONS[f]);
+  s = s.replace(
+    new RegExp(String.raw`(?<![\p{L}\d.,/])(?:(\d{1,3})\s+)?([1-8])\/([2-8])(?![\d/])${FRACTION_UNIT}`, "gu"),
+    (m: string, whole: string | undefined, a: string, b: string, unit: string | undefined) => {
+      const f = FRACTION_WORDS[`${a}/${b}`];
+      if (!f) return m;
+      const u = unit ? UNIT_WORDS[unit] : undefined;
+      if (whole !== undefined) {
+        const n = Number(whole);
+        const w = n === 1 ? (u?.g === "ett" ? "ett" : "en") : cardinal(n);
+        return `${w} och ${f[0]}${u ? " " + u.one : ""}`;
+      }
+      return u ? `${f[1]} ${u.one}` : f[0];
+    },
+  );
+  return s;
+}
 
 // Nouns that take "en" (the model writes "1 liter", "21 personer"); everything else defaults to "ett".
 const EN_NOUNS = new Set(
@@ -183,8 +218,9 @@ function readDecimals(d: string): string {
 
 /** Converts all numbers, years, percentages, units and times in `text` to Swedish words. */
 export function numbersToSpeech(text: string): string {
-  if (!/\d/.test(text)) return text;
-  let s = text;
+  if (!/[\d½⅓⅔¼¾⅛]/.test(text)) return text;
+  let s = speakFractions(text);
+  if (!/\d/.test(s)) return s;
   // thousands separators: "1 500", "12 500 000" (nbsp / thin space always, plain space only for 1-3 digit lead)
   s = s.replace(
     /(?<![\d.,])(\d{1,3})((?:[\u00a0\u202f ]\d{3})+)(?![\d])/g,
@@ -222,7 +258,7 @@ export function numbersToSpeech(text: string): string {
   // negative numbers
   s = s.replace(/(?<![\p{L}\d)])-(?=\d)/gu, "minus ");
   const re =
-    /(?<![\p{L}\d.,])(\d+)(?:[.,](\d+))?(?:\s*(%|°C|°F|°|km\/h|m\/s)|\s?(GHz|MHz|kHz|Hz|kWh|kW|MW|ml|cl|dl|kg|mg|cm|mm|km|kr|min|st|l|g|m)(?![\p{L}\d]))?/gu;
+    /(?<![\p{L}\d.,])(\d+)(?:[.,](\d+))?(?:\s*(%|°C|°F|°|km\/h|m\/s)|\s?(GHz|MHz|kHz|Hz|kWh|kW|MW|ml|cl|dl|kg|mg|cm|mm|km|kr|min|st|tsk|msk|krm|l|g|m)(?![\p{L}\d]))?/gu;
   s = s.replace(
     re,
     (
