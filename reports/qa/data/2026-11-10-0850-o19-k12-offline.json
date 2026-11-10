@@ -1,0 +1,254 @@
+{
+ "positives": {
+  "n": 15,
+  "ok": 11
+ },
+ "negatives": {
+  "n": 15,
+  "ok": 15
+ },
+ "pos": [
+  {
+   "p": "hur går det för mig nu",
+   "scope": "study",
+   "expect": "self_assessment",
+   "got": "self_assessment",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "Lumen, hur går det för mig?",
+   "scope": "study",
+   "expect": "self_assessment",
+   "got": "self_assessment",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "hur ligger jag till",
+   "scope": "study",
+   "expect": "self_assessment",
+   "got": "self_assessment",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "hur har det gått för mig idag",
+   "scope": "study",
+   "expect": "self_assessment",
+   "got": null,
+   "arg": null,
+   "ok": false
+  },
+  {
+   "p": "hur bra kan jag det här nu",
+   "scope": "study",
+   "expect": "self_assessment",
+   "got": "self_assessment",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "förhör mig på mina svaga områden",
+   "scope": "study",
+   "expect": "weak_areas",
+   "got": "weak_areas",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "fråga mig om mina sämsta delar",
+   "scope": "study",
+   "expect": "weak_areas",
+   "got": null,
+   "arg": null,
+   "ok": false
+  },
+  {
+   "p": "öva på det jag är sämst på",
+   "scope": "study",
+   "expect": "weak_areas",
+   "got": null,
+   "arg": null,
+   "ok": false
+  },
+  {
+   "p": "förhör mig på mina svagaste begrepp",
+   "scope": "study",
+   "expect": "weak_areas",
+   "got": "weak_areas",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "Lumen, förhör mig på det jag kan sämst",
+   "scope": "study",
+   "expect": "weak_areas",
+   "got": "quiz_topic",
+   "arg": "det jag kan sämst",
+   "ok": false
+  },
+  {
+   "p": "kan du göra det roligare tack",
+   "scope": "social",
+   "expect": "social:funnier",
+   "got": "social:funnier",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "göra det roligare",
+   "scope": "social",
+   "expect": "social:funnier",
+   "got": "social:funnier",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "kan du göra svaret bättre",
+   "scope": "interview",
+   "expect": "interview_help:better",
+   "got": "interview_help:better",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "Lumen, göra det bättre",
+   "scope": "interview",
+   "expect": "interview_help:better",
+   "got": "interview_help:better",
+   "arg": null,
+   "ok": true
+  },
+  {
+   "p": "kan du göra det bättre tack",
+   "scope": "interview",
+   "expect": "interview_help:better",
+   "got": "interview_help:better",
+   "arg": null,
+   "ok": true
+  }
+ ],
+ "neg": [
+  {
+   "p": "det gick bra för mig på provet",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "vad betyder det här för mig",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "hur gick det för mig på provet i fredags",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "mina föräldrar vill att jag pluggar mer",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "jag glömde mina anteckningar hemma",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "vad ska jag göra i helgen",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "hur gör man en pizzadeg",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "kan du göra mina läxor",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "jag ska göra en presentation om Gustav Vasa",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "varför är det svårt för mig att koncentrera mig",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "det är roligare att göra det själv",
+   "scope": "social",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "han sa att det skulle bli bättre för mig",
+   "scope": "social",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "vad ska jag göra om jag inte får jobbet",
+   "scope": "interview",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "kan du göra en lista med mina styrkor",
+   "scope": "interview",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  },
+  {
+   "p": "förhör mig om mina anteckningar",
+   "scope": "study",
+   "got": null,
+   "arg": null,
+   "rule": null,
+   "ok": true
+  }
+ ]
+}
