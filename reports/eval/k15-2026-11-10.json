@@ -47,13 +47,13 @@
    "procent",
    "procent",
    "area och omkrets",
-   "procent",
+   "decimaltal och procent",
    "hastighet och sträcka",
    "linjära ekvationer",
    "Pythagoras sats",
    "algebraiska uttryck",
    "linjära funktioner",
-   "resonemang om heltal"
+   "heltal och delbarhet"
   ],
   "nav": [
    {
@@ -111,7 +111,7 @@
     "answer": "etthundratjugosex kronor",
     "right": true,
     "total": 1,
-    "feedback": "Rätt. Du svarade 126 kronor, vilket är korrekt, och eftersom uppgiften bara har en E-poäng för rätt svar får du den. Svaret är 126 kr eftersom 15 % av 840 är 0,15 gånger 840, vilket ger 126. Du kan räkna så genom att först hitta 10 % (84 kr) och sedan 5 % (42 kr) och addera dem.",
+    "feedback": "Rätt. Svaret 126 kronor är korrekt och ger E-poängen, fast du inte visat någon uträkning. Kom ihåg att 15 % av 840 räknas ut genom att först ta 10 % (84) och sedan 5 % (42) och addera dem, eller genom att multiplicera 840 med 0,15.",
     "ok": true
    },
    {
@@ -127,7 +127,7 @@
     "answer": "x är fem",
     "right": true,
     "total": 1,
-    "feedback": "Rätt. Du fick fram att x är fem, vilket är det korrekta svaret. Eftersom ingen metod visades, kan poängen för lösningsväg inte ges, men svaret i sig är riktigt. Tänk på att visa hur du subtraherar 7 från båda leden och sedan dividerar med 3, så att lösningen blir tydlig. Rätt svar: 3x + 7 = 22 ger 3x = 15 och därmed x = 5, eftersom man först isolerar termen med x och sedan delar med koefficienten.",
+    "feedback": "Rätt. Du fick fram rätt värde, x = 5, och det ger poäng för svaret. Visa gärna också steget där du subtraherar 7 från båda leden och sedan dividerar med 3, eftersom det ger dig poäng för metoden på nästa nivå. Den korrekta lösningen är: 3x = 22 − 7 = 15, så x = 15 / 3 = 5.",
     "ok": true
    },
    {
@@ -142,16 +142,16 @@
     "no": "3b",
     "answer": "trehundrasjuttiofem kronor, för tjugofem procent av trehundra är sjuttiofem",
     "right": true,
-    "total": 0,
-    "feedback": "Inte riktigt. Du räknade ut 25 % av 300, vilket ger 75 kr, men du glömde att lägga till höjningen på det sänkta priset. Rätt svar är 375 kr: det nya priset är 300 + 75 = 375 kr, eller 300 gånger 1,25. Räkna alltid om höjningen ska adderas till det ursprungliga priset.",
-    "ok": false
+    "total": 1,
+    "feedback": "Rätt. Du visar metoden, att 25 % av 300 är 75, och får rätt svar, så du får C-poängen. Den sänkta priset var 300 kr, och vid en höjning med 25 % blir priset 300 + 75 = 375 kr. Det är det som ger poängen för rätt svar, och E-poängen för det kräver dessutom att du skriver ut beräkningen tydligt, vilket ger dig hela 1 poäng här. Kom ihåg att höja med procenten av det sänkta priset, inte av ursprungspriset.",
+    "ok": true
    },
    {
     "no": "3b",
     "answer": "fyrahundra kronor, den blir lika dyr igen",
     "right": false,
     "total": 0,
-    "feedback": "Inte riktigt. Svaret 400 kr är fel, och eftersom slutsvaret saknas och ingen metod visas ges inga poäng. Rätt svar är 375 kr. Det förutsätter att du vet vilket pris som är utgångspunkt: 25 % höjning innebär att du multiplicerar det sänkta priset med 1,25, och om det sänkta priset är 300 kr blir det 300 · 1,25 = 375 kr. Att priset 'blir lika dyrt igen' stämmer inte, eftersom höjningen görs på det sänkta priset och inte på ursprungspriset.",
+    "feedback": "Inte riktigt. Svaret 400 kr är fel, och det finns ingen metod i ditt svar som kan ge poäng. Rätt svar är 375 kr. Den sänkta tröjans pris höjs med 25 %, så du tar priset och multiplicerar med 1,25 (eller räknar 25 % av priset och lägger till det). Tänk på att procenten räknas på det sänkta priset, inte på det ursprungliga priset.",
     "ok": true
    },
    {
@@ -159,7 +159,7 @@
     "answer": "tolv kilometer",
     "right": true,
     "total": 1,
-    "feedback": "Rätt. Svaret tolv kilometer är korrekt och ger C-poäng, eftersom du fick fram det rätta slutresultatet. Rätt svar är 12 km: 40 minuter är 2/3 av en timme, och 2/3 av 18 km/h är 12 km. Det är ett bra sätt att tänka: omvandla minuterna till timmar först och multiplicera sedan farten med tiden.",
+    "feedback": "Rätt. Svaret tolv kilometer är korrekt och ger C-poäng, men inget arbete är visat. Eftersom uppgiften bara har en C-poäng för rätt svar räcker det här, men det är bra att skriva en metod. Rätt svar är 12 km: 40 minuter är 2/3 timme, och 18 km/h gånger 2/3 h ger 12 km. Tänk på att räkna om minuterna till timmar först.",
     "ok": true
    },
    {
@@ -167,27 +167,27 @@
     "answer": "sju komma två kilometer",
     "right": false,
     "total": 0,
-    "feedback": "Inte riktigt. Svaret 7,2 km är fel, och inga metoder visas, så inga poäng ges. Tänk på att 40 minuter är två tredjedelar av en timme, så sträckan blir två tredjedelar av 18 km. Rätt svar är 12 km, eftersom 18 gånger 40 delat med 60 ger 12.",
+    "feedback": "Inte riktigt. Svaret 7,2 km är fel, och inga metodpoäng ges eftersom uträkningen saknas. Tänk på att 40 minuter är 40/60 av en timme, så sträckan blir 18 gånger 40/60, vilket ger 12 km. Ett bra sätt är att först räkna ut hur långt cykeln kör på 20 minuter, som är 6 km, och sedan dubbla det.",
     "ok": true
    },
    {
     "no": "8",
     "answer": "tio centimeter för sex i kvadrat plus åtta i kvadrat är hundra",
     "right": true,
-    "total": 0,
-    "feedback": "Inte riktigt. Du visade metoden med Pythagoras rätt, men svaret 100 cm är fel, och därför ges ingen poäng för rätt svar. Rätt svar är 10 cm: hypotenusan c uppfyller c² = 6² + 8² = 36 + 64 = 100, så c = √100 = 10 cm. Kom ihåg att man tar kvadratroten av summan för att få hypotenusans längd.",
-    "ok": false
+    "total": 2,
+    "feedback": "Rätt. Du visade metoden, alltså Pythagoras sats med 6² + 8² = 100, och kom fram till rätt svar 10 cm. Poängen för C får du för just att du visar metoden. Rätt sätt att göra det är: hypotenusan² = kateta₁² + kateta₂² = 36 + 64 = 100, och då är hypotenusan √100 = 10 cm. Du missade bara att skriva roten ur 100 och enheten, men det är inte den viktigaste delen.",
+    "ok": true
    },
    {
     "no": "8",
     "answer": "fjorton centimeter",
     "right": false,
     "total": 0,
-    "feedback": "Inte riktigt. Svaret fjorton centimeter är fel, och eftersom slutsvaret saknas och ingen metod visas ges inga poäng. Pythagoras sats säger att hypotenusan c uppfyller c² = 6² + 8² = 36 + 64 = 100, så c = √100 = 10 cm. Hypotenusan är alltså tio centimeter, och du hade kunnat få poäng genom att skriva upp sambandet och räkningen.",
+    "feedback": "Inte riktigt. Svaret fjorton centimeter är fel, och uppgiften kräver ett korrekt svar för att ge poäng. Rätt svar är 10 cm: enligt Pythagoras sats är hypotenusan c där c² = 6² + 8² = 36 + 64 = 100, så c = √100 = 10 cm. Tänk på att hypotenusan är det längsta sidan och att man kvadrerar kateterna, adderar och tar roten ur summan.",
     "ok": true
    }
   ],
-  "grade_ok": "8/10"
+  "grade_ok": "10/10"
  },
  "so9": {
   "status": 200,
@@ -221,7 +221,7 @@
   "spoken_sample": "Fråga ett. Vad menas med industriella revolutionen och var började den?",
   "topics": [
    "industriella revolutionen",
-   "uppfinningar industrialiseringen",
+   "uppfinningar",
    "urbanisering",
    "arbetsförhållanden",
    "arbetarrörelsen",
@@ -279,7 +279,7 @@
     "answer": "den österrikiska tronföljaren Franz Ferdinand mördades av en serbisk nationalist",
     "right": true,
     "total": 1,
-    "feedback": "Rätt. Du nämner mordet på den österrikiska tronföljaren Franz Ferdinand och att en serbisk nationalist låg bakom, vilket ger E-poängen. Det som saknas för C är att mordet utlöste ett ultimatum till Serbien och att alliansernas system drog in andra stormakter i kriget. Det som är viktigt att komma ihåg är att mordet var utlösande gnista, inte den egentliga orsaken till första världskriget. Alliansernas system gjorde att en lokal konflikt snabbt blev ett världskrig.",
+    "feedback": "Rätt. Du nämner mordet på Franz Ferdinand och att mördaren var serbisk nationalist, vilket ger E-poängen. Det saknas kopplingen till hur mordet ledde till första världskriget, alltså julikrisen med ultimatumet till Serbien och allianssystemet, vilket hade krävts för C- och A-poäng. Rätt svar är att den 28 juni 1914 mördades tronföljaren Franz Ferdinand och hans fru Sophie i Sarajevo av Gavrilo Princip. Mordet utlöste julikrisen, där Österrike-Ungern ställde ett ultimatum till Serbien och förklarade krig. Genom allianssystemet drogs sedan stormakterna in, vilket startade första världskriget.",
     "ok": true
    },
    {
@@ -287,7 +287,7 @@
     "answer": "då slutade kriget",
     "right": false,
     "total": 0,
-    "feedback": "Inte riktigt. Svaret \"då slutade kriget\" beskriver inte vad som hände i Sarajevo, utan talar om krigets slut, vilket är fel. Rätt svar: Den 28 juni 1914 mördades tronföljaren Franz Ferdinand och hans hustru Sophie av den serbiske nationalisten Gavrilo Princip i Sarajevo. Mordet blev den utlösande gnistan till första världskriget, eftersom Österrike-Ungern ställde ultimatum till Serbien och alliansssystemet drog in stormakterna i kriget.",
+    "feedback": "Inte riktigt. Svaret \"då slutade kriget\" säger inget om vad som hände i Sarajevo, så E-poängen går inte att ge. Rätt svar: Den 28 juni 1914 mördades tronföljaren Franz Ferdinand och hans fru Sophie i Sarajevo av den bosnienserbiske nationalisten Gavrilo Princip. Mordet ledde via allianssystemet till en kedja av krigsförklaringar, den så kallade julikrisen, och till att första världskriget bröt ut. Poängen för rätt svar ges för att man nämner mordet på Franz Ferdinand, och för de större händelserna man beskriver med orsak och verkan.",
     "ok": true
    },
    {
@@ -295,7 +295,7 @@
     "answer": "ångmaskinen och spinnmaskinen",
     "right": true,
     "total": 1,
-    "feedback": "Rätt. Du nämnde två viktiga uppfinningar, ångmaskinen och spinnmaskinen, och båda är korrekta exempel på uppfinningar som drev industrialiseringen. Ångmaskinen gav kraft åt fabriker, tåg och fartyg oberoende av vatten och muskelkraft, och spinnmaskinen gjorde textilproduktionen mycket effektivare. Eftersom uppgiften är E-nivå gav det här ett E-poäng, och det finns inga poäng för förklaringar här.",
+    "feedback": "Rätt. Du nämnde två av de viktigaste uppfinningarna, ångmaskinen och spinnmaskinen, och det räcker för E-poängen. Rätt svar är två uppfinningar som var viktiga för industrialiseringen, till exempel ångmaskinen (James Watt), som gav kraft åt fabriker, tåg och fartyg, och spinnmaskinen eller vävstolen, som mekaniserade textilproduktionen. Järnvägen och ångloket hade också kunnat användas.",
     "ok": true
    },
    {
@@ -303,27 +303,27 @@
     "answer": "datorn och telefonen",
     "right": false,
     "total": 0,
-    "feedback": "Inte riktigt. Datorn och telefonen är uppfinningar från 1900-talet och hörde inte till industrialiseringen, som ägde rum under 1700- och 1800-talet. Rätt svar är två uppfinningar från den tiden, till exempel ångmaskinen, som James Watt förbättrade och som gav kraft åt fabriker och tåg, och spinnmaskinen eller den mekaniska väven, som gjorde textilproduktionen mycket effektivare. Även järnvägen, telegrafen eller Bessemerprocessen för stål går bra.",
+    "feedback": "Inte riktigt. Datorn och telefonen hör till en senare tid, efter industrialiseringen, så de kan inte användas här. Två uppfinningar från industrialiseringen var ångmaskinen (James Watt), som gav kraft åt fabriker, tåg och fartyg, och spinnmaskinen eller vävstolen, som mekaniserade textilproduktionen. Tänk på 1700- och 1800-talet när du letar efter nästa svar.",
     "ok": true
    },
    {
     "no": "10",
     "answer": "Tyskland fick skulden för kriget, betala stora skadestånd, förlora land och nästan hela sin armé",
     "right": true,
-    "total": 1,
-    "feedback": "Rätt. Du nämner skuldfrågan, skadestånden, landförlusterna och avväpningen, vilket ger E-poängen. För C behövs att du förklarar följderna mer, till exempel hur bitterheten och ekonomiska problemen skapade grund för nazisterna. Rätt svar: Versaillesfreden 1919 tvingade Tyskland att ta ensamt krigsansvar, betala stora krigsskadestånd, avstå land och kolonier och kraftigt begränsa sin armé och flygvapen och ubåtar. Freden upplevdes som förnedrande, vilket gav bitterhet, ekonomiska problem och politisk instabilitet som nazisterna utnyttjade och som bidrog till andra världskriget.",
-    "ok": true
+    "total": null,
+    "feedback": null,
+    "ok": false
    },
    {
     "no": "10",
     "answer": "Tyskland vann och blev större",
     "right": false,
-    "total": 0,
-    "feedback": "Inte riktigt. Svaret att Tyskland vann och blev större är fel, eftersom Tyskland förlorade första världskriget och tvingades avstå land, kolonier och betala krigsskadestånd. Versaillesfreden innehöll skuldparagrafen där Tyskland fick ta ensamt ansvar för kriget, och freden upplevdes som förnedrande, vilket skapade bitterhet och ekonomisk oro som nazisterna senare utnyttjade. Tänk på att beskriva både vilka krav freden innebar för Tyskland och varför den blev ett problem.",
+    "total": null,
+    "feedback": null,
     "ok": true
    }
   ],
-  "grade_ok": "6/6"
+  "grade_ok": "5/6"
  },
- "cost_usd": 0.0314
+ "cost_usd": 0.0288
 }

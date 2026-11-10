@@ -64,7 +64,7 @@ export function practiceNav(utterance: string, current: number, nos: string[]): 
 export function spokenTask(no: string, text: string, points: { E: number; C: number; A: number }): string {
   const total = points.E + points.C + points.A;
   const body = numbersToSpeech(text.replace(/\s*\n\s*/g, ". ").replace(/\[([^\]]+)\]/g, "Bilden visar $1."));
-  return `Fråga ${numbersToSpeech(no)}. ${body}${total ? ` Den ger ${numbersToSpeech(String(total))} ${total === 1 ? "poäng" : "poäng"}.` : ""}`
+  return `Fråga ${numbersToSpeech(no)}. ${body}${total ? ` Den ger ${total === 1 ? "en" : numbersToSpeech(String(total))} poäng.` : ""}`
     .replace(/\.\s*\./g, ".")
     .replace(/\s+/g, " ")
     .trim();

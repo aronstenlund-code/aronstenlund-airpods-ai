@@ -1,0 +1,329 @@
+{
+ "matte9": {
+  "status": 200,
+  "nos": [
+   "1",
+   "2",
+   "3a",
+   "3b",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10",
+   "11"
+  ],
+  "split_ok": true,
+  "points_ok": {
+   "4": true,
+   "8": true,
+   "11": true
+  },
+  "sources": {
+   "1": "facit",
+   "2": "facit",
+   "3a": "facit",
+   "3b": "facit",
+   "4": "facit",
+   "5": "eget svar",
+   "6": "facit",
+   "7": "eget svar",
+   "8": "facit",
+   "9": "facit",
+   "10": "eget svar",
+   "11": "eget svar"
+  },
+  "own_ok": {
+   "5": true,
+   "7": true,
+   "10": true
+  },
+  "spoken_sample": "Fråga ett. Beräkna femton procent av åttahundrafyrtio kronor. Den ger ett poäng.",
+  "topics": [
+   "procent",
+   "linjära ekvationer",
+   "procent",
+   "procent",
+   "area och omkrets",
+   "procent",
+   "hastighet och sträcka",
+   "linjära ekvationer",
+   "Pythagoras sats",
+   "algebraiska uttryck",
+   "linjära funktioner",
+   "resonemang om heltal"
+  ],
+  "nav": [
+   {
+    "utterance": "fråga 7",
+    "got": {
+     "action": "goto",
+     "index": 7
+    },
+    "ok": true
+   },
+   {
+    "utterance": "fråga sju",
+    "got": {
+     "action": "goto",
+     "index": 7
+    },
+    "ok": true
+   },
+   {
+    "utterance": "uppgift 3b",
+    "got": {
+     "action": "goto",
+     "index": 3
+    },
+    "ok": true
+   },
+   {
+    "utterance": "nästa",
+    "got": {
+     "action": "next",
+     "index": 3
+    },
+    "ok": true
+   },
+   {
+    "utterance": "hoppa över",
+    "got": {
+     "action": "skip",
+     "index": 3
+    },
+    "ok": true
+   },
+   {
+    "utterance": "upprepa",
+    "got": {
+     "action": "repeat",
+     "index": 2
+    },
+    "ok": true
+   }
+  ],
+  "grades": [
+   {
+    "no": "1",
+    "answer": "etthundratjugosex kronor",
+    "right": true,
+    "total": 1,
+    "feedback": "Rätt. Du svarade 126 kronor, vilket är korrekt, och eftersom uppgiften bara har en E-poäng för rätt svar får du den. Svaret är 126 kr eftersom 15 % av 840 är 0,15 gånger 840, vilket ger 126. Du kan räkna så genom att först hitta 10 % (84 kr) och sedan 5 % (42 kr) och addera dem.",
+    "ok": true
+   },
+   {
+    "no": "1",
+    "answer": "hundrafyrtio kronor",
+    "right": false,
+    "total": 0,
+    "feedback": "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.",
+    "ok": true
+   },
+   {
+    "no": "2",
+    "answer": "x är fem",
+    "right": true,
+    "total": 1,
+    "feedback": "Rätt. Du fick fram att x är fem, vilket är det korrekta svaret. Eftersom ingen metod visades, kan poängen för lösningsväg inte ges, men svaret i sig är riktigt. Tänk på att visa hur du subtraherar 7 från båda leden och sedan dividerar med 3, så att lösningen blir tydlig. Rätt svar: 3x + 7 = 22 ger 3x = 15 och därmed x = 5, eftersom man först isolerar termen med x och sedan delar med koefficienten.",
+    "ok": true
+   },
+   {
+    "no": "2",
+    "answer": "x är sju",
+    "right": false,
+    "total": 0,
+    "feedback": "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.",
+    "ok": true
+   },
+   {
+    "no": "3b",
+    "answer": "trehundrasjuttiofem kronor, för tjugofem procent av trehundra är sjuttiofem",
+    "right": true,
+    "total": 0,
+    "feedback": "Inte riktigt. Du räknade ut 25 % av 300, vilket ger 75 kr, men du glömde att lägga till höjningen på det sänkta priset. Rätt svar är 375 kr: det nya priset är 300 + 75 = 375 kr, eller 300 gånger 1,25. Räkna alltid om höjningen ska adderas till det ursprungliga priset.",
+    "ok": false
+   },
+   {
+    "no": "3b",
+    "answer": "fyrahundra kronor, den blir lika dyr igen",
+    "right": false,
+    "total": 0,
+    "feedback": "Inte riktigt. Svaret 400 kr är fel, och eftersom slutsvaret saknas och ingen metod visas ges inga poäng. Rätt svar är 375 kr. Det förutsätter att du vet vilket pris som är utgångspunkt: 25 % höjning innebär att du multiplicerar det sänkta priset med 1,25, och om det sänkta priset är 300 kr blir det 300 · 1,25 = 375 kr. Att priset 'blir lika dyrt igen' stämmer inte, eftersom höjningen görs på det sänkta priset och inte på ursprungspriset.",
+    "ok": true
+   },
+   {
+    "no": "6",
+    "answer": "tolv kilometer",
+    "right": true,
+    "total": 1,
+    "feedback": "Rätt. Svaret tolv kilometer är korrekt och ger C-poäng, eftersom du fick fram det rätta slutresultatet. Rätt svar är 12 km: 40 minuter är 2/3 av en timme, och 2/3 av 18 km/h är 12 km. Det är ett bra sätt att tänka: omvandla minuterna till timmar först och multiplicera sedan farten med tiden.",
+    "ok": true
+   },
+   {
+    "no": "6",
+    "answer": "sju komma två kilometer",
+    "right": false,
+    "total": 0,
+    "feedback": "Inte riktigt. Svaret 7,2 km är fel, och inga metoder visas, så inga poäng ges. Tänk på att 40 minuter är två tredjedelar av en timme, så sträckan blir två tredjedelar av 18 km. Rätt svar är 12 km, eftersom 18 gånger 40 delat med 60 ger 12.",
+    "ok": true
+   },
+   {
+    "no": "8",
+    "answer": "tio centimeter för sex i kvadrat plus åtta i kvadrat är hundra",
+    "right": true,
+    "total": 0,
+    "feedback": "Inte riktigt. Du visade metoden med Pythagoras rätt, men svaret 100 cm är fel, och därför ges ingen poäng för rätt svar. Rätt svar är 10 cm: hypotenusan c uppfyller c² = 6² + 8² = 36 + 64 = 100, så c = √100 = 10 cm. Kom ihåg att man tar kvadratroten av summan för att få hypotenusans längd.",
+    "ok": false
+   },
+   {
+    "no": "8",
+    "answer": "fjorton centimeter",
+    "right": false,
+    "total": 0,
+    "feedback": "Inte riktigt. Svaret fjorton centimeter är fel, och eftersom slutsvaret saknas och ingen metod visas ges inga poäng. Pythagoras sats säger att hypotenusan c uppfyller c² = 6² + 8² = 36 + 64 = 100, så c = √100 = 10 cm. Hypotenusan är alltså tio centimeter, och du hade kunnat få poäng genom att skriva upp sambandet och räkningen.",
+    "ok": true
+   }
+  ],
+  "grade_ok": "8/10"
+ },
+ "so9": {
+  "status": 200,
+  "nos": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "6",
+   "7",
+   "8",
+   "9",
+   "10"
+  ],
+  "split_ok": true,
+  "points_ok": {},
+  "sources": {
+   "1": "eget svar",
+   "2": "eget svar",
+   "3": "eget svar",
+   "4": "eget svar",
+   "5": "eget svar",
+   "6": "eget svar",
+   "7": "eget svar",
+   "8": "eget svar",
+   "9": "eget svar",
+   "10": "eget svar"
+  },
+  "own_ok": {},
+  "spoken_sample": "Fråga ett. Vad menas med industriella revolutionen och var började den?",
+  "topics": [
+   "industriella revolutionen",
+   "uppfinningar industrialiseringen",
+   "urbanisering",
+   "arbetsförhållanden",
+   "arbetarrörelsen",
+   "emigration",
+   "första världskrigets orsaker",
+   "Sarajevo 1914",
+   "skyttegravskrig",
+   "Versaillesfreden"
+  ],
+  "nav": [
+   {
+    "utterance": "fråga 7",
+    "got": {
+     "action": "goto",
+     "index": 6
+    },
+    "ok": true
+   },
+   {
+    "utterance": "fråga sju",
+    "got": {
+     "action": "goto",
+     "index": 6
+    },
+    "ok": true
+   },
+   {
+    "utterance": "nästa",
+    "got": {
+     "action": "next",
+     "index": 3
+    },
+    "ok": true
+   },
+   {
+    "utterance": "hoppa över",
+    "got": {
+     "action": "skip",
+     "index": 3
+    },
+    "ok": true
+   },
+   {
+    "utterance": "upprepa",
+    "got": {
+     "action": "repeat",
+     "index": 2
+    },
+    "ok": true
+   }
+  ],
+  "grades": [
+   {
+    "no": "8",
+    "answer": "den österrikiska tronföljaren Franz Ferdinand mördades av en serbisk nationalist",
+    "right": true,
+    "total": 1,
+    "feedback": "Rätt. Du nämner mordet på den österrikiska tronföljaren Franz Ferdinand och att en serbisk nationalist låg bakom, vilket ger E-poängen. Det som saknas för C är att mordet utlöste ett ultimatum till Serbien och att alliansernas system drog in andra stormakter i kriget. Det som är viktigt att komma ihåg är att mordet var utlösande gnista, inte den egentliga orsaken till första världskriget. Alliansernas system gjorde att en lokal konflikt snabbt blev ett världskrig.",
+    "ok": true
+   },
+   {
+    "no": "8",
+    "answer": "då slutade kriget",
+    "right": false,
+    "total": 0,
+    "feedback": "Inte riktigt. Svaret \"då slutade kriget\" beskriver inte vad som hände i Sarajevo, utan talar om krigets slut, vilket är fel. Rätt svar: Den 28 juni 1914 mördades tronföljaren Franz Ferdinand och hans hustru Sophie av den serbiske nationalisten Gavrilo Princip i Sarajevo. Mordet blev den utlösande gnistan till första världskriget, eftersom Österrike-Ungern ställde ultimatum till Serbien och alliansssystemet drog in stormakterna i kriget.",
+    "ok": true
+   },
+   {
+    "no": "2",
+    "answer": "ångmaskinen och spinnmaskinen",
+    "right": true,
+    "total": 1,
+    "feedback": "Rätt. Du nämnde två viktiga uppfinningar, ångmaskinen och spinnmaskinen, och båda är korrekta exempel på uppfinningar som drev industrialiseringen. Ångmaskinen gav kraft åt fabriker, tåg och fartyg oberoende av vatten och muskelkraft, och spinnmaskinen gjorde textilproduktionen mycket effektivare. Eftersom uppgiften är E-nivå gav det här ett E-poäng, och det finns inga poäng för förklaringar här.",
+    "ok": true
+   },
+   {
+    "no": "2",
+    "answer": "datorn och telefonen",
+    "right": false,
+    "total": 0,
+    "feedback": "Inte riktigt. Datorn och telefonen är uppfinningar från 1900-talet och hörde inte till industrialiseringen, som ägde rum under 1700- och 1800-talet. Rätt svar är två uppfinningar från den tiden, till exempel ångmaskinen, som James Watt förbättrade och som gav kraft åt fabriker och tåg, och spinnmaskinen eller den mekaniska väven, som gjorde textilproduktionen mycket effektivare. Även järnvägen, telegrafen eller Bessemerprocessen för stål går bra.",
+    "ok": true
+   },
+   {
+    "no": "10",
+    "answer": "Tyskland fick skulden för kriget, betala stora skadestånd, förlora land och nästan hela sin armé",
+    "right": true,
+    "total": 1,
+    "feedback": "Rätt. Du nämner skuldfrågan, skadestånden, landförlusterna och avväpningen, vilket ger E-poängen. För C behövs att du förklarar följderna mer, till exempel hur bitterheten och ekonomiska problemen skapade grund för nazisterna. Rätt svar: Versaillesfreden 1919 tvingade Tyskland att ta ensamt krigsansvar, betala stora krigsskadestånd, avstå land och kolonier och kraftigt begränsa sin armé och flygvapen och ubåtar. Freden upplevdes som förnedrande, vilket gav bitterhet, ekonomiska problem och politisk instabilitet som nazisterna utnyttjade och som bidrog till andra världskriget.",
+    "ok": true
+   },
+   {
+    "no": "10",
+    "answer": "Tyskland vann och blev större",
+    "right": false,
+    "total": 0,
+    "feedback": "Inte riktigt. Svaret att Tyskland vann och blev större är fel, eftersom Tyskland förlorade första världskriget och tvingades avstå land, kolonier och betala krigsskadestånd. Versaillesfreden innehöll skuldparagrafen där Tyskland fick ta ensamt ansvar för kriget, och freden upplevdes som förnedrande, vilket skapade bitterhet och ekonomisk oro som nazisterna senare utnyttjade. Tänk på att beskriva både vilka krav freden innebar för Tyskland och varför den blev ett problem.",
+    "ok": true
+   }
+  ],
+  "grade_ok": "6/6"
+ },
+ "cost_usd": 0.0314
+}

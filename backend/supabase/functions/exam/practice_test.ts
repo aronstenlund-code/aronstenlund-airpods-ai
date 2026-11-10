@@ -30,6 +30,7 @@ Deno.test("K15 spoken task: number, text with numbers in words, the points", () 
   assert(s.startsWith("Fråga tre b") || s.startsWith("Fråga 3b") || s.startsWith("Fråga tre"), s);
   assert(s.includes("femton procent") && s.includes("åttahundrafyrtio kronor"), s);
   assert(s.includes("två poäng"), s);
+  assert(spokenTask("1", "Lös x.", { E: 1, C: 0, A: 0 }).includes("en poäng"));
 });
 
 class Seq implements LLMProvider {
