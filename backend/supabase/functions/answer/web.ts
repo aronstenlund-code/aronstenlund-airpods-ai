@@ -48,6 +48,14 @@ const CURRENT = pat(
     "vem vann (?:senaste|i går|igår|i år|just nu)",
     // K16 (live: population and office holders answered from memory): facts that change
     "hur många invånare",
+    // K20 (Deangelo: El Clásico "ingen aktuell information" without a search): results and weather
+    "hur gick (?:det i )?(?:matchen|el cl[aá]sico|derbyt|finalen|semifinalen|landskampen|loppet|valet)",
+    "vem vann (?:el cl[aá]sico|matchen|derbyt|finalen|semifinalen|landskampen|loppet|valet|melodifestivalen|mellon)",
+    "vad (?:blev|slutade) matchen",
+    "hur blir vädret",
+    "vad blir det för väder",
+    "regnar det (?:i morgon|imorgon|idag|i dag|i helgen|på lördag|på söndag)",
+    "blir det (?:regn|sol|snö|storm) (?:i morgon|imorgon|idag|i helgen)",
     "invånarantal(?:et)?",
     "folkmängd(?:en)?",
     "vem är (?:den )?(?:nuvarande |sittande )?(?:rektor|ordförande|kommunstyrelsens ordförande|vd|chef|statsminister|minister|borgmästare|landshövding|tränare|förbundskapten|kapten|partiledare|ledare|ärkebiskop|riksbankschef)(?:n|en)?",

@@ -261,6 +261,7 @@ export function beforeNumbers(text: string, ctx = ""): string {
   if (CLOCK_CUE_END.test(ctx)) {
     s = s.replace(/^(\s*)([01]?\d|2[0-3])[.,]([0-5]\d)(?![\d])/u, "$1$2:$3");
   }
+  s = rulerNumbers(s); // K20: "Erik 14", "Erik den XIV"
   // D65: roman numerals after a name are regnal numbers: "Oscar I" -> "Oscar den förste"
   s = s.replace(
     /(?<![\p{L}\d])(\p{Lu}[\p{L}]+) (XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)(?![\p{L}\d])(?!\s\p{Lu})/gu,
@@ -354,9 +355,32 @@ const UNIT_SPOKEN: Record<string, string> = {
   watt: "watt",
 };
 
+/**
+ * K20 (Deangelo's reality test: "Erik den fjorton", "Johan den tre"): a king's or queen's number after the name is
+ * an ordinal, also when the model wrote it as a digit ("Erik 14") or as a cardinal word ("Erik den fjorton").
+ */
+const RULERS = String.raw`Erik|Johan|Karl|Gustav|Gustaf|Kristian|Christian|Oscar|Oskar|Fredrik|Adolf Fredrik|Gustav Adolf|Magnus|Håkan|Valdemar|Sten|Sverker|Knut|Kristoffer|Albrekt|Birger|Olof|Ulrika Eleonora|Kristina|Margareta|Louis|Ludvig|Henrik|Henry|Edvard|Edward|Richard|Elizabeth|Elisabet|Filip|Philip|Frederik|Haakon|Olav|Napoleon|Peter|Katarina|Nikolaj|Aleksandr|Alexander|Wilhelm|Vilhelm|Frans|Ferdinand|Leopold|Pius|Johannes Paulus|Benedictus|Innocentius|Gregorius|Urban|Leo`;
+const CARD_TO_ORD: Record<string, string> = {
+  en: "förste", ett: "förste", två: "andre", tre: "tredje", fyra: "fjärde", fem: "femte", sex: "sjätte", sju: "sjunde",
+  åtta: "åttonde", nio: "nionde", tio: "tionde", elva: "elfte", tolv: "tolfte", tretton: "trettonde", fjorton: "fjortonde",
+  femton: "femtonde", sexton: "sextonde", sjutton: "sjuttonde", arton: "artonde", nitton: "nittonde", tjugo: "tjugonde",
+};
+const RULER_DIGIT = new RegExp(String.raw`(?<![\p{L}])(${RULERS}) (?:den )?([1-9]|1\d|20)(?::e|:a)?(?![\p{L}\d.,:]|\s?(?:år|kr|kronor|procent|%|st|gånger|minuter|timmar))`, "gu");
+const RULER_WORD = new RegExp(String.raw`(?<![\p{L}])(${RULERS}) den (en|ett|två|tre|fyra|fem|sex|sju|åtta|nio|tio|elva|tolv|tretton|fjorton|femton|sexton|sjutton|arton|nitton|tjugo)(?![\p{L}])`, "gu");
+const RULER_ROMAN_DEN = new RegExp(String.raw`(?<![\p{L}])(${RULERS}) den (XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)(?![\p{L}])`, "gu");
+export function rulerNumbers(text: string): string {
+  return text
+    .replace(RULER_ROMAN_DEN, (m, name: string, r: string) => {
+      const n = romanToInt(r);
+      return n === null ? m : `${name} den ${regnal(n)}`;
+    })
+    .replace(RULER_DIGIT, (_m, name: string, n: string) => `${name} den ${regnal(Number(n))}`);
+}
+
 /** After digits became words. */
 export function afterNumbers(text: string): string {
   let s = text;
+  s = s.replace(RULER_WORD, (_m, name: string, w: string) => `${name} den ${CARD_TO_ORD[w] ?? w}`);
   // "mol" is an en-word ("en mol"), a recurring slip in the model's Swedish
   s = s.replace(/(?<![\p{L}])([Ee])tt mol(?![\p{L}])/gu, (_m, e: string) => `${e}n mol`);
   // K2 (Oscar's D87 review): the commonest gender slips, only article directly before the noun.

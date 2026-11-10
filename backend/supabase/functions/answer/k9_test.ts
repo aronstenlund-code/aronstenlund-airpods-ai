@@ -15,6 +15,7 @@ const VARIANTS: Record<string, [string, "study" | "interview" | "social", string
   yes_no_quiz: ["yes_no_quiz", "study", ["ja eller nej frågor", "ställ ja nej frågor", "förhör mig med ja och nej"]],
   quiz_topic: ["quiz_topic", "study", ["förhör mig på cellandning", "Lumen, testa mig om franska revolutionen", "fråga ut mig om ekvationer"]],
   weak_areas: ["weak_areas", "study", ["testa mina svagaste områden", "vad kan jag sämst", "vad behöver jag öva mer på"]],
+  get_started: ["get_started", "study", ["jag vet inte ens vad jag ska fråga", "var ska jag börja", "hjälp mig komma igång"]],
   self_assessment: ["self_assessment", "study", ["hur bra kan jag det här", "Lumen, hur ligger jag till", "kan jag det här?"]],
   careful: ["careful", "study", ["var säker", "Lumen, dubbelkolla det", "är du säker på det?"]],
   catch_up: ["catch_up", "study", ["vad missade jag", "Lumen, vad har jag missat", "vad sa läraren"]],

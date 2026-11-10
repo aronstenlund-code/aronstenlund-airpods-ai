@@ -128,3 +128,7 @@ Källa: `backend/supabase/functions/answer/commands.ts` (`FAMILIES`), tester i `
 - **"ja", "mer", "utveckla" eller en nick** inom fönstret: appen spelar `done.more` direkt, utan nytt anrop, och skickar `/memory` `length_signal: {signal: "yes", context}`. **"nej" eller tystnad:** `signal: "no"`.
 - Två ja av de tre senaste i samma sammanhang ger inställningen "Längre, utförligare svar i …". Då kommer det långa svaret direkt. Säger eleven "kortare" kommer det korta först igen.
 - Instruktioner ("mer", "kortare", "ge ett exempel", "roligare" och så vidare) räknas i en egen budget, så de får aldrig 429 för att eleven har frågat mycket (K12, D99).
+
+### Backend: "jag vet inte ens vad jag ska fråga" (K20, Kevin)
+- I Provläge och Frågor får "jag vet inte ens vad jag ska fråga", "var ska jag börja" och "hjälp mig komma igång" uppgiften `get_started`: tre saker att börja med för provet i profilen och en lätt första fråga. Det blir aldrig tystnad.
+- Frågor om Lumen själv ("är du en robot", "lyssnar du hela tiden", "sparar du det jag säger") besvaras i kod med orden från Om appen.

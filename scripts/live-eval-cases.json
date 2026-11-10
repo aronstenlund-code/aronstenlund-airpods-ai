@@ -1,5174 +1,5284 @@
 [
-{
-"id": "fakta-01",
-"cat": "fakta",
-"turns": [
-{
-"q": "vad är huvudstaden i Australien",
-"expect_any": [
-"canberra"
-]
-}
-]
-},
-{
-"id": "fakta-02",
-"cat": "fakta",
-"turns": [
-{
-"q": "vem skrev Pippi Långstrump",
-"expect_any": [
-"lindgren"
-]
-}
-]
-},
-{
-"id": "fakta-03",
-"cat": "fakta",
-"turns": [
-{
-"q": "hur många planeter finns i solsystemet",
-"expect_any": [
-"åtta"
-]
-}
-]
-},
-{
-"id": "fakta-04",
-"cat": "fakta",
-"turns": [
-{
-"q": "när började andra världskriget",
-"expect_any": [
-"nittonhundratrettionio"
-]
-}
-]
-},
-{
-"id": "fakta-05",
-"cat": "fakta",
-"turns": [
-{
-"q": "vilken är världens längsta flod",
-"expect_any": [
-"nilen",
-"amazonas"
-]
-}
-]
-},
-{
-"id": "fakta-06",
-"cat": "fakta",
-"turns": [
-{
-"q": "vad är en mitokondrie",
-"expect_any": [
-"cell"
-]
-}
-]
-},
-{
-"id": "fakta-07",
-"cat": "fakta",
-"turns": [
-{
-"q": "vad är BNP",
-"expect_any": [
-"brutto"
-]
-}
-]
-},
-{
-"id": "fakta-08",
-"cat": "fakta",
-"turns": [
-{
-"q": "vem var Gustav Vasa",
-"expect_any": [
-"femtonhundra"
-]
-}
-]
-},
-{
-"id": "fakta-09",
-"cat": "fakta",
-"turns": [
-{
-"q": "hur många ledamöter har riksdagen",
-"expect_any": [
-"trehundrafyrtionio"
-]
-}
-]
-},
-{
-"id": "fakta-10",
-"cat": "fakta",
-"turns": [
-{
-"q": "vad är fotosyntes",
-"expect_any": [
-"ljus"
-]
-}
-]
-},
-{
-"id": "fakta-11",
-"cat": "fakta",
-"turns": [
-{
-"q": "vad betyder ambivalent",
-"expect_any": [
-"motstridig",
-"tvehågsen",
-"blandade"
-]
-}
-]
-},
-{
-"id": "fakta-12",
-"cat": "fakta",
-"turns": [
-{
-"q": "vad är pi",
-"expect_any": [
-"tre komma ett fyra"
-]
-}
-]
-},
-{
-"id": "fakta-13",
-"cat": "fakta",
-"turns": [
-{
-"q": "vem målade Mona Lisa",
-"expect_any": [
-"leonardo"
-]
-}
-]
-},
-{
-"id": "fakta-14",
-"cat": "fakta",
-"turns": [
-{
-"q": "vad är skillnaden mellan virus och bakterie",
-"expect_any": [
-"värdcell",
-"levande",
-"antibiotika"
-]
-}
-]
-},
-{
-"id": "följdfråga-01",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "andra världskriget"
-},
-{
-"q": "varför började det",
-"shorter": false,
-"follow": true
-},
-{
-"q": "kortare",
-"shorter": true,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-02",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "vad är inflation"
-},
-{
-"q": "enklare",
-"shorter": false,
-"follow": true
-},
-{
-"q": "ge ett exempel",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-03",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "hur fungerar ett batteri"
-},
-{
-"q": "anod, katod och elektrolyt",
-"shorter": false,
-"follow": true
-},
-{
-"q": "mer detaljer",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-04",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "vad är fotosyntes"
-},
-{
-"q": "vad behöver växten?",
-"shorter": false,
-"follow": true
-},
-{
-"q": "varför då?",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-05",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "franska revolutionen"
-},
-{
-"q": "Bastiljen",
-"shorter": false,
-"follow": true
-},
-{
-"q": "vad hände 1792?",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-06",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "vad är en mol"
-},
-{
-"q": "och vad är avogadros tal",
-"shorter": false,
-"follow": true
-},
-{
-"q": "förklara enklare",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-07",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "vad är demokrati"
-},
-{
-"q": "fördelar och nackdelar",
-"shorter": false,
-"follow": true
-},
-{
-"q": "kortare",
-"shorter": true,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-08",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "pythagoras sats"
-},
-{
-"q": "exempel",
-"shorter": false,
-"follow": true
-},
-{
-"q": "och i en annan triangel",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-09",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "mitokondrien"
-},
-{
-"q": "vad gör den",
-"shorter": false,
-"follow": true
-},
-{
-"q": "mer",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-10",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "vad är energi"
-},
-{
-"q": "joule, kalori och kilowattimme",
-"shorter": false,
-"follow": true
-},
-{
-"q": "enklare",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-11",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "skillnad virus bakterie"
-},
-{
-"q": "hur behandlas de",
-"shorter": false,
-"follow": true
-},
-{
-"q": "kortare",
-"shorter": true,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-12",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "vad är aktier"
-},
-{
-"q": "vad är utdelning",
-"shorter": false,
-"follow": true
-},
-{
-"q": "ge ett exempel",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-13",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "Gustav Vasa"
-},
-{
-"q": "vad hände 1523",
-"shorter": false,
-"follow": true
-},
-{
-"q": "varför då?",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "följdfråga-14",
-"cat": "följdfråga",
-"turns": [
-{
-"q": "riksdagens uppgift"
-},
-{
-"q": "budgeten, lagarna och kontrollen av regeringen",
-"shorter": false,
-"follow": true
-},
-{
-"q": "förklara det enklare",
-"shorter": false,
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-01",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "vad är joniserande strålning"
-},
-{
-"q": "hur gör man pannkakor",
-"forbid_any": [
-"strålning"
-],
-"expect_any": [
-"mjöl",
-"ägg",
-"smet"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"strålning"
-],
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-02",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "grekiska filosofer"
-},
-{
-"q": "vad är inflation",
-"forbid_any": [
-"filosof",
-"platon"
-],
-"expect_any": [
-"pris",
-"pengar"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"filosof",
-"platon"
-],
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-03",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "hur fungerar ett batteri"
-},
-{
-"q": "vem var Gustav Vasa",
-"forbid_any": [
-"batteri",
-"anod"
-],
-"expect_any": [
-"vasa",
-"kung"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"batteri",
-"anod"
-],
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-04",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "vad är demokrati"
-},
-{
-"q": "hur räknar man ut procent",
-"forbid_any": [
-"demokrati"
-],
-"expect_any": [
-"procent",
-"hundra"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"demokrati"
-],
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-05",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "vad är fotosyntes"
-},
-{
-"q": "vad är huvudstaden i Frankrike",
-"forbid_any": [
-"fotosyntes",
-"växt"
-],
-"expect_any": [
-"paris"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"fotosyntes",
-"växt"
-],
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-06",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "andra världskriget"
-},
-{
-"q": "hur byter man däck",
-"forbid_any": [
-"krig"
-],
-"expect_any": [
-"däck",
-"domkraft"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"krig"
-],
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-07",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "vad är energi"
-},
-{
-"q": "till engelska: jag blir sen",
-"forbid_any": [
-"energi"
-],
-"expect_any": [
-"late"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"energi"
-],
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-08",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "vad är en mol"
-},
-{
-"q": "vem skrev Pippi Långstrump",
-"forbid_any": [
-"mol"
-],
-"expect_any": [
-"lindgren"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"mol"
-],
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-09",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "vad är aktier"
-},
-{
-"q": "hur lagar man ris",
-"forbid_any": [
-"aktie"
-],
-"expect_any": [
-"ris",
-"vatten"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"aktie"
-],
-"follow": true
-}
-]
-},
-{
-"id": "ämnesbyte-10",
-"cat": "ämnesbyte",
-"turns": [
-{
-"q": "franska revolutionen"
-},
-{
-"q": "vad är skillnaden mellan virus och bakterie",
-"forbid_any": [
-"revolution"
-],
-"expect_any": [
-"virus",
-"bakter"
-]
-},
-{
-"q": "varför då?",
-"forbid_any": [
-"revolution"
-],
-"follow": true
-}
-]
-},
-{
-"id": "beräkning-01",
-"cat": "beräkning",
-"turns": [
-{
-"q": "17 gånger 24",
-"expect_any": [
-"fyrahundraåtta"
-]
-}
-]
-},
-{
-"id": "beräkning-02",
-"cat": "beräkning",
-"turns": [
-{
-"q": "vad är 15 procent av 80",
-"expect_any": [
-"tolv"
-]
-}
-]
-},
-{
-"id": "beräkning-03",
-"cat": "beräkning",
-"turns": [
-{
-"q": "hur mycket är 250 delat med 4",
-"expect_any": [
-"sextiotvå komma fem"
-]
-}
-]
-},
-{
-"id": "beräkning-04",
-"cat": "beräkning",
-"turns": [
-{
-"q": "roten ur 144",
-"expect_any": [
-"tolv"
-]
-}
-]
-},
-{
-"id": "beräkning-05",
-"cat": "beräkning",
-"turns": [
-{
-"q": "3 upphöjt till 5",
-"expect_any": [
-"tvåhundrafyrtiotre"
-]
-}
-]
-},
-{
-"id": "beräkning-06",
-"cat": "beräkning",
-"turns": [
-{
-"q": "vad är 1250 plus 3475",
-"expect_any": [
-"fyratusensjuhundratjugofem"
-]
-}
-]
-},
-{
-"id": "beräkning-07",
-"cat": "beräkning",
-"turns": [
-{
-"q": "2 liter i deciliter",
-"expect_any": [
-"tjugo"
-]
-}
-]
-},
-{
-"id": "beräkning-08",
-"cat": "beräkning",
-"turns": [
-{
-"q": "hur många gram är 3 kilo",
-"expect_any": [
-"tretusen"
-]
-}
-]
-},
-{
-"id": "beräkning-09",
-"cat": "beräkning",
-"turns": [
-{
-"q": "20 grader celsius i fahrenheit",
-"expect_any": [
-"sextioåtta"
-]
-}
-]
-},
-{
-"id": "beräkning-10",
-"cat": "beräkning",
-"turns": [
-{
-"q": "99 minus 57",
-"expect_any": [
-"fyrtiotvå"
-]
-}
-]
-},
-{
-"id": "beräkning-11",
-"cat": "beräkning",
-"turns": [
-{
-"q": "tiotusen genom fyra hundra",
-"expect_any": [
-"tjugofem"
-]
-}
-]
-},
-{
-"id": "beräkning-12",
-"cat": "beräkning",
-"turns": [
-{
-"q": "8 gånger 7",
-"expect_any": [
-"femtiosex"
-]
-}
-]
-},
-{
-"id": "beräkning-13",
-"cat": "beräkning",
-"turns": [
-{
-"q": "vad är 20 procent av 350",
-"expect_any": [
-"sjuttio"
-]
-}
-]
-},
-{
-"id": "beräkning-14",
-"cat": "beräkning",
-"turns": [
-{
-"q": "1000 genom 8",
-"expect_any": [
-"hundratjugofem"
-]
-}
-]
-},
-{
-"id": "beräkning-15",
-"cat": "beräkning",
-"turns": [
-{
-"q": "hur långt är 5 mil i kilometer",
-"expect_any": [
-"femtio"
-]
-}
-]
-},
-{
-"id": "beräkning-16",
-"cat": "beräkning",
-"turns": [
-{
-"q": "36 delat med 9 plus 2",
-"expect_any": [
-"sex"
-]
-}
-]
-},
-{
-"id": "beräkning-17",
-"cat": "beräkning",
-"turns": [
-{
-"q": "vad är 0,5 gånger 18",
-"expect_any": [
-"nio"
-]
-}
-]
-},
-{
-"id": "tid-01",
-"cat": "tid",
-"turns": [
-{
-"q": "vad är klockan i tokyo när den är 12 här",
-"tz": {
-"zone": "Asia/Tokyo",
-"hour": 12
-},
-"forbid_any": [
-"det beror på"
-]
-}
-]
-},
-{
-"id": "tid-02",
-"cat": "tid",
-"turns": [
-{
-"q": "vad är klockan i new york när den är 15 här",
-"tz": {
-"zone": "America/New_York",
-"hour": 15
-},
-"forbid_any": [
-"det beror på"
-]
-}
-]
-},
-{
-"id": "tid-03",
-"cat": "tid",
-"turns": [
-{
-"q": "vad är klockan i london när den är 18 här",
-"tz": {
-"zone": "Europe/London",
-"hour": 18
-},
-"forbid_any": [
-"det beror på"
-]
-}
-]
-},
-{
-"id": "tid-04",
-"cat": "tid",
-"turns": [
-{
-"q": "vad är klockan i sydney när den är 8 här",
-"tz": {
-"zone": "Australia/Sydney",
-"hour": 8
-},
-"forbid_any": [
-"det beror på"
-]
-}
-]
-},
-{
-"id": "tid-05",
-"cat": "tid",
-"turns": [
-{
-"q": "vad är klockan i los angeles när den är 12 här",
-"tz": {
-"zone": "America/Los_Angeles",
-"hour": 12
-},
-"forbid_any": [
-"det beror på"
-]
-}
-]
-},
-{
-"id": "tid-06",
-"cat": "tid",
-"turns": [
-{
-"q": "vad är klockan i dubai när den är 9 här",
-"tz": {
-"zone": "Asia/Dubai",
-"hour": 9
-},
-"forbid_any": [
-"det beror på"
-]
-}
-]
-},
-{
-"id": "tid-07",
-"cat": "tid",
-"turns": [
-{
-"q": "vad är klockan i bangkok när den är 22 här",
-"tz": {
-"zone": "Asia/Bangkok",
-"hour": 22
-},
-"forbid_any": [
-"det beror på"
-]
-}
-]
-},
-{
-"id": "tid-08",
-"cat": "tid",
-"turns": [
-{
-"q": "vad är klockan i delhi när den är 14 här",
-"tz": {
-"zone": "Asia/Kolkata",
-"hour": 14
-},
-"forbid_any": [
-"det beror på"
-]
-}
-]
-},
-{
-"id": "symboler-01",
-"cat": "symboler",
-"turns": [
-{
-"q": "e=mc2",
-"expect_any": [
-"i kvadrat"
-]
-}
-]
-},
-{
-"id": "symboler-02",
-"cat": "symboler",
-"turns": [
-{
-"q": "kemisk formel för koksalt",
-"expect_any": [
-"natriumklorid",
-"enn a se ell"
-]
-}
-]
-},
-{
-"id": "symboler-03",
-"cat": "symboler",
-"turns": [
-{
-"q": "kemisk formel för vatten",
-"expect_any": [
-"ha två o",
-"vatten"
-]
-}
-]
-},
-{
-"id": "symboler-04",
-"cat": "symboler",
-"turns": [
-{
-"q": "vad är ljusets hastighet",
-"expect_any": [
-"kilometer per sekund",
-"meter per sekund"
-]
-}
-]
-},
-{
-"id": "symboler-05",
-"cat": "symboler",
-"turns": [
-{
-"q": "vad är avogadros tal",
-"expect_any": [
-"upphöjt till"
-]
-}
-]
-},
-{
-"id": "symboler-06",
-"cat": "symboler",
-"turns": [
-{
-"q": "vad säger pythagoras sats",
-"expect_any": [
-"i kvadrat"
-]
-}
-]
-},
-{
-"id": "symboler-07",
-"cat": "symboler",
-"turns": [
-{
-"q": "när föll västromerska riket",
-"expect_any": [
-"efter kristus",
-"fyrahundra"
-]
-}
-]
-},
-{
-"id": "symboler-08",
-"cat": "symboler",
-"turns": [
-{
-"q": "hur lyder andragradsformeln",
-"expect_any": [
-"roten ur",
-"i kvadrat"
-]
-}
-]
-},
-{
-"id": "symboler-09",
-"cat": "symboler",
-"turns": [
-{
-"q": "ohms lag",
-"expect_any": [
-"gånger",
-"delat",
-"är lika med"
-]
-}
-]
-},
-{
-"id": "symboler-10",
-"cat": "symboler",
-"turns": [
-{
-"q": "kemisk formel för socker",
-"expect_any": [
-"se tolv ha tjugotvå o elva"
-]
-}
-]
-},
-{
-"id": "praktiskt-01",
-"cat": "praktiskt",
-"turns": [
-{
-"q": "hur gör man pannkakor",
-"expect_any": [
-"mjöl",
-"ägg"
-],
-"forbid_any": [
-"jag kan inte hjälpa",
-"jag är inte läkare",
-"som ai"
-]
-}
-]
-},
-{
-"id": "praktiskt-02",
-"cat": "praktiskt",
-"turns": [
-{
-"q": "jag har tappat nycklarna",
-"expect_any": [],
-"forbid_any": [
-"jag kan inte hjälpa",
-"jag är inte läkare",
-"som ai"
-]
-}
-]
-},
-{
-"id": "praktiskt-03",
-"cat": "praktiskt",
-"turns": [
-{
-"q": "hur byter man däck",
-"expect_any": [
-"domkraft"
-],
-"forbid_any": [
-"jag kan inte hjälpa",
-"jag är inte läkare",
-"som ai"
-]
-}
-]
-},
-{
-"id": "praktiskt-04",
-"cat": "praktiskt",
-"turns": [
-{
-"q": "recept på köttbullar",
-"expect_any": [
-"köttfärs"
-],
-"forbid_any": [
-"jag kan inte hjälpa",
-"jag är inte läkare",
-"som ai"
-]
-}
-]
-},
-{
-"id": "praktiskt-05",
-"cat": "praktiskt",
-"turns": [
-{
-"q": "hur lagar man ris",
-"expect_any": [
-"vatten"
-],
-"forbid_any": [
-"jag kan inte hjälpa",
-"jag är inte läkare",
-"som ai"
-]
-}
-]
-},
-{
-"id": "praktiskt-06",
-"cat": "praktiskt",
-"turns": [
-{
-"q": "jag har ont i halsen",
-"expect_any": [],
-"forbid_any": [
-"jag kan inte hjälpa",
-"jag är inte läkare",
-"som ai"
-]
-}
-]
-},
-{
-"id": "praktiskt-07",
-"cat": "praktiskt",
-"turns": [
-{
-"q": "hur skriver jag ett cv",
-"expect_any": [
-"erfarenhet",
-"utbildning"
-],
-"forbid_any": [
-"jag kan inte hjälpa",
-"jag är inte läkare",
-"som ai"
-]
-}
-]
-},
-{
-"id": "praktiskt-08",
-"cat": "praktiskt",
-"turns": [
-{
-"q": "hur tvättar jag en ylletröja",
-"expect_any": [
-"handtvätt",
-"kallt",
-"ylle",
-"tvätt"
-],
-"forbid_any": [
-"jag kan inte hjälpa",
-"jag är inte läkare",
-"som ai"
-]
-}
-]
-},
-{
-"id": "socialt-01",
-"cat": "socialt",
-"turns": [
-{
-"q": "Kalle sa att jag är tråkig vad säger jag",
-"max_words": 16
-}
-]
-},
-{
-"id": "socialt-02",
-"cat": "socialt",
-"turns": [
-{
-"q": "hon skrev hej vad svarar jag",
-"max_words": 16
-}
-]
-},
-{
-"id": "socialt-03",
-"cat": "socialt",
-"turns": [
-{
-"q": "min kompis frågade om jag vill hänga ikväll vad säger jag",
-"max_words": 16
-}
-]
-},
-{
-"id": "rizz-01",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "P1",
-"style": "flirt"
-}
-]
-},
-{
-"id": "rizz-02",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "P3",
-"style": "social"
-}
-]
-},
-{
-"id": "rizz-03",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "S1",
-"style": "flirt"
-}
-]
-},
-{
-"id": "rizz-04",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "G1",
-"style": "social"
-}
-]
-},
-{
-"id": "rizz-05",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "C1",
-"style": "flirt"
-}
-]
-},
-{
-"id": "rizz-06",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "T1",
-"style": "social"
-}
-]
-},
-{
-"id": "rizz-07",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "A1",
-"style": "flirt"
-}
-]
-},
-{
-"id": "rizz-08",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "N1",
-"style": "social"
-}
-]
-},
-{
-"id": "minne-01",
-"cat": "minne",
-"turns": [
-{
-"q": "vad har du gjort i sommar",
-"memories": [
-"Jag har varit och åkt skidor"
-],
-"expect_any": [
-"skidor"
-],
-"forbid_any": [
-"berätta för mig först"
-]
-}
-]
-},
-{
-"id": "minne-02",
-"cat": "minne",
-"turns": [
-{
-"q": "vad tycker jag om för mat",
-"memories": [
-"Jag älskar italiensk mat"
-],
-"expect_any": [
-"italiensk"
-],
-"forbid_any": []
-}
-]
-},
-{
-"id": "minne-03",
-"cat": "minne",
-"turns": [
-{
-"q": "var bor jag",
-"memories": [
-"Jag bor i Göteborg"
-],
-"expect_any": [
-"göteborg"
-],
-"forbid_any": []
-}
-]
-},
-{
-"id": "minne-04",
-"cat": "minne",
-"turns": [
-{
-"q": "föreslå en present till min syster",
-"memories": [
-"Min syster gillar att baka"
-],
-"expect_any": [
-"bak"
-],
-"forbid_any": []
-}
-]
-},
-{
-"id": "minne-05",
-"cat": "minne",
-"turns": [
-{
-"q": "vad heter min hund",
-"memories": [
-"Min hund heter Bella"
-],
-"expect_any": [
-"bella"
-],
-"forbid_any": []
-}
-]
-},
-{
-"id": "minne-06",
-"cat": "minne",
-"turns": [
-{
-"q": "hur gammal är min hund",
-"memories": [
-"Min hund Bella är 4 år"
-],
-"expect_any": [
-"fyra"
-],
-"forbid_any": []
-}
-]
-},
-{
-"id": "webb-01",
-"cat": "webb",
-"turns": [
-{
-"q": "vem vann senaste fotbolls VM",
-"web": true
-}
-]
-},
-{
-"id": "webb-02",
-"cat": "webb",
-"turns": [
-{
-"q": "vad är vädret idag i Stockholm",
-"web": true
-}
-]
-},
-{
-"id": "webb-03",
-"cat": "webb",
-"turns": [
-{
-"q": "vem är Sveriges statsminister just nu",
-"web": true
-}
-]
-},
-{
-"id": "webb-04",
-"cat": "webb",
-"turns": [
-{
-"q": "nyheter om Sverige idag",
-"web": true
-}
-]
-},
-{
-"id": "webb-05",
-"cat": "webb",
-"turns": [
-{
-"q": "kolla scb.se hur många bor i Sverige",
-"web": true
-}
-]
-},
-{
-"id": "rizz-09",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "P1",
-"style": "flirt",
-"no_adult": true,
-"expect_error": "adult_confirmation_required"
-}
-]
-},
-{
-"id": "rizz-10",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "C2",
-"style": "flirt",
-"calibrate": "lite mindre kaxig, och hon gillar fotboll",
-"expect_all": [
-"fotboll"
-]
-},
-{
-"q": "",
-"rizz_ref": "C2",
-"style": "flirt"
-}
-]
-},
-{
-"id": "rizz-11",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "S2",
-"style": "social",
-"calibrate": "mer skämt, vi är på jobbet",
-"expect_all": [
-"jobb"
-]
-},
-{
-"q": "",
-"rizz_ref": "S2",
-"style": "social",
-"calibrate": "glöm allt och börja om",
-"expect_empty": true
-},
-{
-"q": "",
-"rizz_ref": "S2",
-"style": "social"
-}
-]
-},
-{
-"id": "rizz-12",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "A1",
-"style": "social"
-}
-]
-},
-{
-"id": "rizz-13",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "P4",
-"style": "flirt"
-}
-]
-},
-{
-"id": "rizz-14",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "C1",
-"style": "flirt",
-"calibrate": "ge mig tre pickup lines",
-"expect_count": 3
-},
-{
-"q": "",
-"rizz_ref": "C1",
-"style": "flirt"
-}
-]
-},
-{
-"id": "rizz-15",
-"cat": "rizz",
-"turns": [
-{
-"q": "",
-"rizz_ref": "S2",
-"style": "social",
-"calibrate": "ge mig fem skämt",
-"expect_count": 5
-},
-{
-"q": "",
-"rizz_ref": "S2",
-"style": "social",
-"calibrate": "ge mig en till",
-"expect_count": 1
-},
-{
-"q": "",
-"rizz_ref": "S2",
-"style": "social",
-"calibrate": "nästa",
-"expect_count": 1
-}
-]
-},
-{
-"id": "intervju-01",
-"cat": "intervju",
-"setup": "Kassapersonal i livsmedelsbutik, kvällar och helger, kundservice, noggrannhet.",
-"turns": [
-{
-"q": "berätta lite om dig själv",
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true
-}
-]
-},
-{
-"id": "intervju-02",
-"cat": "intervju",
-"setup": "Barnskötare på förskola, heltid.",
-"turns": [
-{
-"q": "berätta om en gång du löste en konflikt",
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true
-}
-]
-},
-{
-"id": "intervju-03",
-"cat": "intervju",
-"setup": "Junior utvecklare, React och TypeScript, agilt team.",
-"turns": [
-{
-"q": "vad är din största svaghet",
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true
-},
-{
-"q": "jag är ibland för noggrann och blir inte klar i tid",
-"interview": true,
-"user_answer": true,
-"ttft_budget_ms": 3000
-}
-]
-},
-{
-"id": "intervju-04",
-"cat": "intervju",
-"setup": "Lagerarbetare, truckkort.",
-"turns": [
-{
-"q": "har du några frågor till oss",
-"interview": true,
-"allow_question": true,
-"no_person_check": true,
-"ttft_budget_ms": 3000
-},
-{
-"q": "klar",
-"interview": true,
-"no_person_check": true,
-"allow": [
-"sammanfattningsvis",
-"lycka till",
-"struktur"
-],
-"max_words": 120
-}
-]
-},
-{
-"id": "tyst-01",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är fotosyntes",
-"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
-},
-{
-"q": "klorofyll",
-"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
-}
-],
-"turns": [
-{
-"q": "Äh, syntes. Det är det enda jag vet.",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"fotosyntes"
-],
-"forbid_any": [
-"tolkar",
-"menar du",
-"låter som"
-]
-}
-]
-},
-{
-"id": "tyst-02",
-"cat": "tystnad",
-"turns": [
-{
-"q": "Äh, syntes. Det är det enda jag vet.",
-"mode": "tutor",
-"expect": "either"
-}
-]
-},
-{
-"id": "tyst-03",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är fotosyntes",
-"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
-},
-{
-"q": "klorofyll",
-"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
-}
-],
-"turns": [
-{
-"q": "Det är en annan. Ja, obrutet. Kom igen.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-04",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är fotosyntes",
-"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
-},
-{
-"q": "klorofyll",
-"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
-}
-],
-"turns": [
-{
-"q": "Nej men vänta, var la jag, äh.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-05",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är fotosyntes",
-"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
-},
-{
-"q": "klorofyll",
-"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
-}
-],
-"turns": [
-{
-"q": "Mm. Okej. Ja.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-06",
-"cat": "tystnad",
-"turns": [
-{
-"q": "Kom igen nu, vi tar det sen.",
-"mode": "auto",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-07",
-"cat": "tystnad",
-"turns": [
-{
-"q": "Ja men det var ju det han sa i och för sig.",
-"mode": "auto",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-08",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är kovalent bindning",
-"a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
-}
-],
-"turns": [
-{
-"q": "Och sen så, eh, typ, ja du vet.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-09",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är kovalent bindning",
-"a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
-}
-],
-"turns": [
-{
-"q": "Vänta lite, jag ska bara hämta laddaren.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-10",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är fotosyntes",
-"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
-},
-{
-"q": "klorofyll",
-"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
-}
-],
-"turns": [
-{
-"q": "Det där med, nej glöm det.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-11",
-"cat": "tystnad",
-"turns": [
-{
-"q": "Så att, ja. Precis. Mm.",
-"mode": "auto",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-12",
-"cat": "tystnad",
-"turns": [
-{
-"q": "Äh, sluta, du är så jobbig.",
-"mode": "auto",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-13",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är kovalent bindning",
-"a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
-}
-],
-"turns": [
-{
-"q": "Okej, okej, jag lyssnar ju.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "tyst-14",
-"cat": "tystnad",
-"turns": [
-{
-"q": "vad är mitos",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"cell"
-]
-}
-]
-},
-{
-"id": "tyst-15",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är fotosyntes",
-"a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
-},
-{
-"q": "klorofyll",
-"a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
-}
-],
-"turns": [
-{
-"q": "eh, kan du förklara typ, cellandning",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"energi",
-"syre",
-"glukos",
-"socker"
-]
-}
-]
-},
-{
-"id": "tyst-16",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är kovalent bindning",
-"a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
-}
-],
-"turns": [
-{
-"q": "jon bindning",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"jonbindning",
-"joner",
-"jon"
-]
-}
-]
-},
-{
-"id": "tyst-17",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är fotosyntes",
-"a": "Fotosyntes är när växter bygger socker av koldioxid och vatten med hjälp av ljus. Vad heter organellen där fotosyntesen sker?"
-}
-],
-"turns": [
-{
-"q": "kloroplast",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"kloroplast"
-]
-}
-]
-},
-{
-"id": "tyst-18",
-"cat": "tystnad",
-"context_qa": [
-{
-"q": "vad är fotosyntes",
-"a": "Fotosyntes är när växter bygger socker av koldioxid och vatten med hjälp av ljus. Vad heter organellen där fotosyntesen sker?"
-}
-],
-"turns": [
-{
-"q": "vet inte",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"kloroplast"
-]
-}
-]
-},
-{
-"id": "tyst-19",
-"cat": "tystnad",
-"turns": [
-{
-"q": "vad är huvudstaden i Norge",
-"mode": "auto",
-"expect": "answer",
-"expect_any": [
-"oslo"
-]
-}
-]
-},
-{
-"id": "tyst-20",
-"cat": "tystnad",
-"turns": [
-{
-"q": "hur många ben har en spindel",
-"mode": "auto",
-"expect": "answer",
-"expect_any": [
-"åtta"
-]
-}
-]
-},
-{
-"id": "intervju-05",
-"cat": "intervju",
-"setup": "Sommarjobb som butiksbiträde i en matbutik",
-"turns": [
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true,
-"q": "berätta om dig själv"
-},
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true,
-"q": "varför vill du jobba här"
-},
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true,
-"q": "hur hanterar du en arg kund"
-},
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true,
-"q": "vad är din största svaghet"
-}
-]
-},
-{
-"id": "intervju-06",
-"cat": "intervju",
-"setup": "Extrajobb som vårdbiträde på ett äldreboende, helger.",
-"turns": [
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true,
-"q": "berätta om en gång du hjälpte någon som var ledsen"
-},
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true,
-"q": "vad har du för erfarenhet av vård"
-}
-]
-},
-{
-"id": "intervju-07",
-"cat": "intervju",
-"setup": "Sommarjobb på ett lager, plock och packning.",
-"turns": [
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"no_invented_facts": true,
-"q": "hur gammal är du och vad pluggar du"
-}
-]
-},
-{
-"id": "intervju-08",
-"cat": "intervju",
-"setup": "Sommarjobb som cafébiträde. Om mig: 16 år, går naturvetenskapsprogrammet, tränar ett fotbollslag för barn.",
-"turns": [
-{
-"q": "berätta om dig själv",
-"interview": true,
-"ttft_budget_ms": 3000,
-"expect_any": [
-"16",
-"sexton",
-"natur",
-"fotboll"
-]
-}
-]
-},
-{
-"id": "intervju-09",
-"cat": "intervju",
-"setup": "Butiksbiträde i en klädbutik.",
-"turns": [
-{
-"q": "vad har du för erfarenhet av butik",
-"interview": true,
-"ttft_budget_ms": 3000,
-"memories": [
-"Jag har jobbat två somrar i min mosters klädbutik."
-],
-"expect_any": [
-"klädbutik",
-"två somrar",
-"moster"
-]
-}
-]
-},
-{
-"id": "felhor-01",
-"cat": "felhörning",
-"turns": [
-{
-"q": "få tes",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"fotosyntes"
-],
-"forbid_any": [
-"menar du",
-"tolkar"
-]
-}
-]
-},
-{
-"id": "felhor-02",
-"cat": "felhörning",
-"turns": [
-{
-"q": "vad är få tes",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"fotosyntes"
-]
-}
-]
-},
-{
-"id": "felhor-03",
-"cat": "felhörning",
-"turns": [
-{
-"q": "pytt a go ras sats",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"pythagoras"
-]
-}
-]
-},
-{
-"id": "felhor-04",
-"cat": "felhörning",
-"turns": [
-{
-"q": "sel andning",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"cellandning"
-]
-}
-]
-},
-{
-"id": "felhor-05",
-"cat": "felhörning",
-"turns": [
-{
-"q": "ko valent bindning",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"kovalent"
-]
-}
-]
-},
-{
-"id": "felhor-06",
-"cat": "felhörning",
-"turns": [
-{
-"q": "förklara evo lusion",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"evolution"
-]
-}
-]
-},
-{
-"id": "felhor-07",
-"cat": "felhörning",
-"turns": [
-{
-"q": "vad är få tes",
-"mode": "auto",
-"expect": "answer",
-"expect_any": [
-"fotosyntes"
-]
-}
-]
-},
-{
-"id": "felhor-08",
-"cat": "felhörning",
-"turns": [
-{
-"q": "glas och bröd i lådan",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "felhor-09",
-"cat": "felhörning",
-"turns": [
-{
-"q": "blå fyra nio sen",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "felhor-10",
-"cat": "felhörning",
-"turns": [
-{
-"q": "ka ve sa",
-"mode": "tutor",
-"expect": "either",
-"forbid_any": [
-"menar du",
-"tolkar"
-]
-}
-]
-},
-{
-"id": "felhor-11",
-"cat": "felhörning",
-"turns": [
-{
-"q": "klo ro plast",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"kloroplast"
-]
-}
-]
-},
-{
-"id": "felhor-12",
-"cat": "felhörning",
-"turns": [
-{
-"q": "ni tons lagar",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"newton"
-]
-}
-]
-},
-{
-"id": "rakna-01",
-"cat": "räkna",
-"turns": [
-{
-"q": "270 gånger 270",
-"mode": "text",
-"expect_any": [
-"sjuttiotvåtusen niohundra"
-]
-}
-]
-},
-{
-"id": "rakna-02",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 345 gånger 678",
-"mode": "text",
-"expect_any": [
-"tvåhundratrettiotretusen niohundratio"
-]
-}
-]
-},
-{
-"id": "rakna-03",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 123 gånger 456",
-"mode": "text",
-"expect_any": [
-"femtiosextusen åttioåtta"
-]
-}
-]
-},
-{
-"id": "rakna-04",
-"cat": "räkna",
-"turns": [
-{
-"q": "999 gånger 999",
-"mode": "tutor",
-"expect_any": [
-"niohundranittioåttatusen ett"
-]
-}
-]
-},
-{
-"id": "rakna-05",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad blir 512 gånger 384",
-"mode": "text",
-"expect_any": [
-"hundranittiosextusen sexhundraåtta"
-]
-}
-]
-},
-{
-"id": "rakna-06",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 807 gånger 305",
-"mode": "text",
-"expect_any": [
-"tvåhundrafyrtiosextusen hundratrettiofem"
-]
-}
-]
-},
-{
-"id": "rakna-07",
-"cat": "räkna",
-"turns": [
-{
-"q": "hur mycket är 15 procent av 840",
-"mode": "text",
-"expect_any": [
-"hundratjugosex"
-]
-}
-]
-},
-{
-"id": "rakna-08",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 7 procent av 2350",
-"mode": "tutor",
-"expect_any": [
-"hundrasextiofyra komma fem"
-]
-}
-]
-},
-{
-"id": "rakna-09",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 25 procent av 96",
-"mode": "text",
-"expect_any": [
-"tjugofyra"
-]
-}
-]
-},
-{
-"id": "rakna-10",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 12,5 procent av 4800",
-"mode": "text",
-"expect_any": [
-"sexhundra"
-]
-}
-]
-},
-{
-"id": "rakna-11",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 1234 delat med 4",
-"mode": "text",
-"expect_any": [
-"trehundraåtta komma fem"
-]
-}
-]
-},
-{
-"id": "rakna-12",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 8100 delat med 27",
-"mode": "tutor",
-"expect_any": [
-"trehundra"
-]
-}
-]
-},
-{
-"id": "rakna-13",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 1000 delat med 8",
-"mode": "text",
-"expect_any": [
-"hundratjugofem"
-]
-}
-]
-},
-{
-"id": "rakna-14",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 7 delat med 3",
-"mode": "text",
-"expect_any": [
-"två komma tre tre"
-]
-}
-]
-},
-{
-"id": "rakna-15",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 2 upphöjt till 10",
-"mode": "text",
-"expect_any": [
-"tusen tjugofyra"
-]
-}
-]
-},
-{
-"id": "rakna-16",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 3 upphöjt till 5",
-"mode": "tutor",
-"expect_any": [
-"tvåhundrafyrtiotre"
-]
-}
-]
-},
-{
-"id": "rakna-17",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 12 i kvadrat",
-"mode": "text",
-"expect_any": [
-"hundrafyrtiofyra"
-]
-}
-]
-},
-{
-"id": "rakna-18",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är 15 i kubik",
-"mode": "text",
-"expect_any": [
-"tretusen trehundrasjuttiofem"
-]
-}
-]
-},
-{
-"id": "rakna-19",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad är roten ur 625",
-"mode": "text",
-"expect_any": [
-"tjugofem"
-]
-}
-]
-},
-{
-"id": "rakna-20",
-"cat": "räkna",
-"turns": [
-{
-"q": "vad blir 48 gånger 25 plus 300",
-"mode": "tutor",
-"expect_any": [
-"femtonhundra"
-]
-}
-]
-},
-{
-"id": "meta-01",
-"cat": "metasvar",
-"context_qa": [
-{
-"q": "vad är y om x är ett i y lika med fem x plus tio",
-"a": "Om x är ett blir y lika med fem gånger ett plus tio, alltså femton. Du sätter in ett i formeln, gångrar med fem och lägger till tio."
-}
-],
-"turns": [
-{
-"q": "Du sätter in ett i formeln, gångrar med fem och lägger till ut till tio. Gud- Om x ökar från ett till två är- Två är krympning.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "meta-02",
-"cat": "metasvar",
-"turns": [
-{
-"q": "Let it log. Ska du inte... Stop. Stop.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "meta-03",
-"cat": "metasvar",
-"turns": [
-{
-"q": "Jo, visst var det. Kom då så är det frågan. Kolla här, den ser här vad som är fråga. Det här är allting den uppfattar och sen så kollar den vad som är fråga. Är",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "meta-04",
-"cat": "metasvar",
-"turns": [
-{
-"q": "Fråga en fråga som kan komma på prov. Oh, what the hell? How's the hair? Let's say P Diddy. Hey. Hey P Diddy.",
-"mode": "tutor",
-"expect": "either",
-"forbid_any": [
-"vilket ämne",
-"inte en fråga",
-"mikrofon",
-"fragment"
-]
-}
-]
-},
-{
-"id": "meta-05",
-"cat": "metasvar",
-"turns": [
-{
-"q": "Vad heter jag? Det är skönt.",
-"mode": "tutor",
-"expect": "either",
-"forbid_any": [
-"[["
-]
-}
-]
-},
-{
-"id": "okant-01",
-"cat": "metasvar",
-"turns": [
-{
-"q": "Vartom.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "okant-02",
-"cat": "metasvar",
-"turns": [
-{
-"q": "Det är en köttjätte. Så. Det är så, det är orange, det är inte det. Nej.",
-"mode": "tutor",
-"expect": "silent"
-}
-]
-},
-{
-"id": "klocka-01",
-"cat": "klocka",
-"turns": [
-{
-"q": "Hej, vad är 20:20?",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"tjugo och tjugo",
-"tjugo över åtta"
-],
-"forbid_any": [
-"komma",
-"bara går till tolv",
-"fyrtio"
-]
-},
-{
-"q": "är det samma som tjugo över åtta på kvällen",
-"mode": "tutor",
-"expect": "answer",
-"expect_any": [
-"ja",
-"samma",
-"stämmer"
-],
-"forbid_any": [
-"bara går till tolv",
-"komma"
-]
-}
-]
-},
-{
-"id": "klocka-02",
-"cat": "klocka",
-"turns": [
-{
-"q": "vad är 07:45",
-"mode": "text",
-"expect_any": [
-"kvart i åtta"
-],
-"forbid_any": [
-"komma"
-]
-}
-]
-},
-{
-"id": "profil-01",
-"cat": "profil",
-"turns": [
-{
-"q": "förklara fotosyntesen",
-"profile": "Prov i Biologi fredag 13 november 2026 (om 5 dagar). Årskurs: Åk 7. Kontrollfrågor: Ja–nej-frågor (svara med rösten eller nicka). Förklaringar: mellanlånga förklaringar.",
-"expect_any": [
-"ljus",
-"socker",
-"syre"
-],
-"forbid_any": [
-"calvin",
-"nadph",
-"tylakoid",
-"ribulos",
-"rubisco"
-],
-"allow_question": true
-}
-]
-},
-{
-"id": "profil-02",
-"cat": "profil",
-"turns": [
-{
-"q": "förklara fotosyntesen",
-"profile": "Prov i Biologi fredag 13 november 2026 (om 5 dagar). Årskurs: Gymnasiet 3, kurs Biologi 2. Kontrollfrågor: Svåra frågor. Förklaringar: mellanlånga förklaringar.",
-"expect_any": [
-"ljusreaktion",
-"calvin",
-"atp",
-"nadph",
-"tylakoid"
-],
-"allow_question": true
-}
-]
-},
-{
-"id": "profil-03",
-"cat": "profil",
-"turns": [
-{
-"q": "vad är en jonbindning",
-"profile": "Årskurs: Åk 8. Ämne: Kemi. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar.",
-"max_words": 70,
-"forbid_any": [
-"?"
-],
-"allow_question": true
-}
-]
-},
-{
-"id": "cv-01",
-"cat": "intervju",
-"setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger, kundservice och noggrannhet. CV: Utbildning: Ekonomiprogrammet, Polhemsgymnasiet 2023–2026. Arbete: Extrajobb på ett kafé i Lund 2024–2025, kassa och stängning. Övrigt: Ledare i en fotbollsskola för barn sommaren 2025. Språk: svenska, engelska, arabiska.",
-"turns": [
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"q": "berätta om dig själv",
-"expect_any": [
-"ekonomi",
-"kafé",
-"fotboll"
-]
-}
-]
-},
-{
-"id": "cv-02",
-"cat": "intervju",
-"setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger, kundservice och noggrannhet. CV: Utbildning: Ekonomiprogrammet, Polhemsgymnasiet 2023–2026. Arbete: Extrajobb på ett kafé i Lund 2024–2025, kassa och stängning. Övrigt: Ledare i en fotbollsskola för barn sommaren 2025. Språk: svenska, engelska, arabiska.",
-"turns": [
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"q": "har du jobbat med kassa förut",
-"expect_any": [
-"kafé",
-"kassa"
-]
-}
-]
-},
-{
-"id": "cv-03",
-"cat": "intervju",
-"setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger, kundservice och noggrannhet. CV: Utbildning: Ekonomiprogrammet, Polhemsgymnasiet 2023–2026. Arbete: Extrajobb på ett kafé i Lund 2024–2025, kassa och stängning. Övrigt: Ledare i en fotbollsskola för barn sommaren 2025. Språk: svenska, engelska, arabiska.",
-"turns": [
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"q": "vilka språk talar du",
-"expect_any": [
-"arabiska"
-],
-"forbid_any": [
-"franska",
-"tyska",
-"spanska"
-]
-}
-]
-},
-{
-"id": "cv-04",
-"cat": "intervju",
-"setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger.",
-"turns": [
-{
-"interview": true,
-"ttft_budget_ms": 3000,
-"q": "har du jobbat med kassa förut",
-"no_invented_facts": true
-}
-]
-},
-{
-"id": "amne-01",
-"cat": "ämne",
-"turns": [
-{
-"q": "syntes",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"allow_question": true,
-"expect_any": [
-"fotosyntes"
-],
-"forbid_any": [
-"menar du",
-"tolkar"
-]
-}
-]
-},
-{
-"id": "amne-02",
-"cat": "ämne",
-"turns": [
-{
-"q": "fo syntes",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"allow_question": true,
-"expect_any": [
-"fotosyntes"
-]
-}
-]
-},
-{
-"id": "amne-03",
-"cat": "ämne",
-"turns": [
-{
-"q": "syntes",
-"mode": "tutor",
-"expect": "either",
-"forbid_any": [
-"menar du",
-"tolkar"
-]
-}
-]
-},
-{
-"id": "text-01",
-"cat": "texter",
-"turns": [
-{
-"q": "sjung en snapsvisa",
-"mode": "text",
-"allow_question": true,
-"max_words": 200,
-"expect_any": [
-"helan",
-"hej tomtegubbar",
-"tycker"
-],
-"forbid_any": [
-"kan inte sjunga",
-"upphovsrätt"
-]
-}
-]
-},
-{
-"id": "text-02",
-"cat": "texter",
-"turns": [
-{
-"q": "sjung helan går",
-"mode": "text",
-"allow_question": true,
-"max_words": 200,
-"expect_any": [
-"halvan går"
-],
-"forbid_any": [
-"kan inte sjunga"
-]
-}
-]
-},
-{
-"id": "text-03",
-"cat": "texter",
-"turns": [
-{
-"q": "citera Strindberg om kärlek",
-"mode": "text",
-"allow_question": true,
-"max_words": 160,
-"expect_any": [
-"strindberg"
-]
-}
-]
-},
-{
-"id": "text-04",
-"cat": "texter",
-"turns": [
-{
-"q": "sjung Tattoo med Loreen",
-"mode": "text",
-"allow_question": true,
-"max_words": 90,
-"expect_any": [
-"loreen"
-]
-}
-]
-},
-{
-"id": "amne-k12-kemi-syntes",
-"cat": "ämne",
-"turns": [
-{
-"q": "syntes",
-"profile": "Årskurs: Åk 9. Ämne: Kemi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
-"prep_terms": [
-"atom",
-"molekyl",
-"jon",
-"syra",
-"bas",
-"kemisk reaktion"
-],
-"expect_any": [
-"syntesreaktion",
-"förening",
-"bildar",
-"sätts ihop",
-"sammanfogas"
-],
-"forbid_any": [
-"kemiord",
-"din lista",
-"i din",
-"listan",
-"jag tar det",
-"ämnesord",
-"är nog",
-"tolkar",
-"menar du",
-"du menar",
-"närliggande",
-"låter likt",
-"fotosyntes"
-],
-"expect": "either"
-}
-]
-},
-{
-"id": "amne-k12-kemi-syntes-2",
-"cat": "ämne",
-"turns": [
-{
-"q": "vad är syntes",
-"profile": "Årskurs: Åk 9. Ämne: Kemi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
-"prep_terms": [
-"atom",
-"molekyl",
-"jon",
-"syra",
-"bas",
-"kemisk reaktion"
-],
-"expect_any": [
-"syntesreaktion",
-"förening",
-"bildar",
-"sätts ihop",
-"sammanfogas",
-"ny"
-],
-"forbid_any": [
-"kemiord",
-"din lista",
-"i din",
-"listan",
-"jag tar det",
-"ämnesord",
-"är nog",
-"tolkar",
-"menar du",
-"du menar",
-"närliggande",
-"låter likt",
-"fotosyntes"
-]
-}
-]
-},
-{
-"id": "amne-k12-bio-syntes",
-"cat": "ämne",
-"turns": [
-{
-"q": "syntes",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
-"prep_terms": [
-"cell",
-"fotosyntes",
-"cellandning",
-"mitos",
-"enzym"
-],
-"expect_any": [
-"fotosyntes"
-],
-"forbid_any": [
-"kemiord",
-"din lista",
-"i din",
-"listan",
-"jag tar det",
-"ämnesord",
-"är nog",
-"tolkar",
-"menar du",
-"du menar",
-"närliggande",
-"låter likt"
-]
-}
-]
-},
-{
-"id": "amne-k12-bio-enzym",
-"cat": "ämne",
-"turns": [
-{
-"q": "enn simer",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
-"prep_terms": [
-"cell",
-"fotosyntes",
-"cellandning",
-"mitos",
-"enzym"
-],
-"expect_any": [
-"enzym"
-],
-"forbid_any": [
-"kemiord",
-"din lista",
-"i din",
-"listan",
-"jag tar det",
-"ämnesord",
-"är nog",
-"tolkar",
-"menar du",
-"du menar",
-"närliggande",
-"låter likt"
-],
-"expect": "either"
-}
-]
-},
-{
-"id": "k7-niva-01",
-"cat": "nivå",
-"turns": [
-{
-"q": "vad är en derivata",
-"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"lutning",
-"förändr",
-"ändras"
-],
-"forbid_any": [
-" åk ",
-"årskurs",
-"grundskolenivå",
-"gymnasienivå",
-"här är idén",
-"förklarar jag",
-"på den nivån"
-]
-}
-]
-},
-{
-"id": "k7-niva-02",
-"cat": "nivå",
-"turns": [
-{
-"q": "vad är en derivata",
-"profile": "Årskurs: Åk 6. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"lutning",
-"förändr",
-"ändras",
-"snabbt"
-],
-"forbid_any": [
-" åk ",
-"årskurs",
-"grundskolenivå",
-"gymnasienivå",
-"här är idén",
-"förklarar jag",
-"på den nivån"
-]
-}
-]
-},
-{
-"id": "k7-niva-03",
-"cat": "nivå",
-"turns": [
-{
-"q": "vad är en integral",
-"profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"area",
-"summa"
-],
-"forbid_any": [
-" åk ",
-"årskurs",
-"grundskolenivå",
-"gymnasienivå",
-"här är idén",
-"förklarar jag",
-"på den nivån"
-]
-}
-]
-},
-{
-"id": "k7-o6-01",
-"cat": "tystnad",
-"turns": [
-{
-"q": "Och stallandning då?",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "either",
-"forbid_any": [
-"stallandning är",
-"Stallandning"
-]
-}
-],
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi bygger socker av koldioxid och vatten, och syre bildas."
-}
-]
-},
-{
-"id": "k7-o6-02",
-"cat": "tystnad",
-"turns": [
-{
-"q": "mm ja nä",
-"profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
-"expect": "silent",
-"forbid_any": [
-"skärmljud",
-"håller mig tyst",
-"hör inget",
-"säg gärna"
-]
-}
-]
-},
-{
-"id": "k7-o6-03",
-"cat": "tystnad",
-"turns": [
-{
-"q": "Franska revolutionen, Afrika och klassrummet igen.",
-"profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar.",
-"expect": "either",
-"forbid_any": [
-"tre olika saker",
-"så jag tar",
-"verkar vara"
-]
-}
-]
-},
-{
-"id": "k7-o6-04",
-"cat": "tystnad",
-"turns": [
-{
-"q": "hormoner",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"hormon"
-],
-"forbid_any": [
-"hör inget",
-"håller mig tyst"
-]
-}
-],
-"context_qa": [
-{
-"q": "vad gör insulin",
-"a": "Insulin är ett hormon som sänker blodsockret genom att hjälpa cellerna att ta upp socker."
-}
-]
-},
-{
-"id": "k7-logik-01",
-"cat": "logik",
-"turns": [
-{
-"q": "Anna och Fredrik går hem till varandra, Anna går dubbelt så snabbt som Fredrik men de möttes ändå halvvägs, hur kan det komma sig",
-"profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"tidigare",
-"före",
-"försprång"
-],
-"forbid_any": [
-"tredjedel",
-"räcker det"
-]
-}
-]
-},
-{
-"id": "k9-example-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "Lumen, ge ett exempel",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"exempel",
-"till exempel",
-"som",
-"när"
-]
-}
-]
-},
-{
-"id": "k9-example-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "kan du ge mig ett exempel tack",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"exempel",
-"till exempel",
-"som",
-"när"
-]
-}
-]
-},
-{
-"id": "k9-example-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "har du något exempel?",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"exempel",
-"till exempel",
-"som",
-"när"
-]
-}
-]
-},
-{
-"id": "k9-summary-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "sammanfatta det viktigaste",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"fotosyntes",
-"socker",
-"ljus"
-]
-}
-]
-},
-{
-"id": "k9-summary-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "Lumen, summera",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"fotosyntes",
-"socker",
-"ljus"
-]
-}
-]
-},
-{
-"id": "k9-summary-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "vad är det viktigaste",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"fotosyntes",
-"socker",
-"ljus"
-]
-}
-]
-},
-{
-"id": "k9-a_level-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "förklara på a-nivå",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"kloroplast",
-"klorofyll",
-"glukos",
-"socker"
-],
-"forbid_any": [
-"a-nivå",
-"ett a-svar"
-]
-}
-]
-},
-{
-"id": "k9-a_level-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "Lumen, som ett A-svar",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"kloroplast",
-"klorofyll",
-"glukos",
-"socker"
-],
-"forbid_any": [
-"a-nivå",
-"ett a-svar"
-]
-}
-]
-},
-{
-"id": "k9-a_level-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "hur får jag ett A på det här",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"kloroplast",
-"klorofyll",
-"glukos",
-"socker"
-],
-"forbid_any": [
-"a-nivå",
-"ett a-svar"
-]
-}
-]
-},
-{
-"id": "k9-harder_question-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "ställ en svår fråga",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-harder_question-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "Lumen, en svårare fråga",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-harder_question-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "utmana mig",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-quick_quiz-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "snabbförhör",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-quick_quiz-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "ge mig fem snabba frågor",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-quick_quiz-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "Lumen, kör fem frågor i rad",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-yes_no_quiz-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "ja eller nej frågor",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-yes_no_quiz-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "ställ ja nej frågor",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-yes_no_quiz-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "förhör mig med ja och nej",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-quiz_topic-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "förhör mig på cellandning",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-quiz_topic-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "Lumen, testa mig om klorofyll",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-quiz_topic-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "fråga ut mig om kloroplaster",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-weak_areas-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "testa mina svagaste områden",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-weak_areas-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "vad kan jag sämst",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-weak_areas-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "vad behöver jag öva mer på",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-self_assessment-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "hur bra kan jag det här",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer"
-}
-]
-},
-{
-"id": "k9-self_assessment-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "Lumen, hur ligger jag till",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer"
-}
-]
-},
-{
-"id": "k9-self_assessment-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "kan jag det här?",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer"
-}
-]
-},
-{
-"id": "k9-careful-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "var säker",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"ttft_budget_ms": 9000
-}
-]
-},
-{
-"id": "k9-careful-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "Lumen, dubbelkolla det",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"ttft_budget_ms": 9000
-}
-]
-},
-{
-"id": "k9-careful-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "är du säker på det?",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"ttft_budget_ms": 9000
-}
-]
-},
-{
-"id": "k9-brief_style-1",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "hjälp mig diskret",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer"
-}
-]
-},
-{
-"id": "k9-brief_style-2",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "kort och diskret",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer"
-}
-]
-},
-{
-"id": "k9-brief_style-3",
-"cat": "kommando",
-"context_qa": [
-{
-"q": "fotosyntes",
-"a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
-}
-],
-"turns": [
-{
-"q": "bara en mening",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer"
-}
-]
-},
-{
-"id": "k9-ih-professional-1",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "hjälp mig svara professionellt",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-professional-2",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "vad borde jag säga",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-professional-3",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "Lumen, vad ska jag säga",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-better-1",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "ge mig ett bättre svar",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-better-2",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "gör svaret bättre",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-better-3",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "förbättra det",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-confident-1",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "mer självsäkert",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-confident-2",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "låt mer säker",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-confident-3",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "mer övertygande",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-counter_question-1",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "ge mig en motfråga",
-"interview": true,
-"ttft_budget_ms": 3500,
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-ih-counter_question-2",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "vad kan jag fråga tillbaka",
-"interview": true,
-"ttft_budget_ms": 3500,
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-ih-counter_question-3",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "en bra fråga att ställa",
-"interview": true,
-"ttft_budget_ms": 3500,
-"allow_question": true
-}
-]
-},
-{
-"id": "k9-ih-stuck-1",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "hjälp, jag fastnar",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-stuck-2",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "jag har fastnat",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-ih-stuck-3",
-"cat": "kommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
-"context_qa": [
-{
-"q": "varför vill du jobba här",
-"a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
-}
-],
-"turns": [
-{
-"q": "jag vet inte vad jag ska säga",
-"interview": true,
-"ttft_budget_ms": 3500
-}
-]
-},
-{
-"id": "k9-regel-1",
-"cat": "kommando",
-"turns": [
-{
-"q": "fortsätt att du i framtiden bara ska ställa korta svar under en mening alltså det är minnet",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"okej"
-]
-}
-]
-},
-{
-"id": "k9-regel-2",
-"cat": "kommando",
-"turns": [
-{
-"q": "från och med nu ska du svara med ett exempel",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"okej"
-]
-}
-]
-},
-{
-"id": "k9-regel-3",
-"cat": "kommando",
-"turns": [
-{
-"q": "svara alltid enklare i framtiden",
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
-"expect": "answer",
-"expect_any": [
-"okej"
-]
-}
-]
-},
-{
-"id": "k9-neg-1",
-"cat": "kommando",
-"turns": [
-{
-"q": "ge ett exempel på en exoterm reaktion",
-"expect": "answer",
-"forbid_any": [
-"okej, korta",
-"fråga ett"
-]
-}
-]
-},
-{
-"id": "k9-neg-2",
-"cat": "kommando",
-"turns": [
-{
-"q": "sammanfatta franska revolutionens orsaker",
-"expect": "answer",
-"forbid_any": [
-"okej, korta",
-"fråga ett"
-]
-}
-]
-},
-{
-"id": "k9-neg-3",
-"cat": "kommando",
-"turns": [
-{
-"q": "vad menade Marx med klasskamp",
-"expect": "answer",
-"forbid_any": [
-"okej, korta",
-"fråga ett"
-]
-}
-]
-},
-{
-"id": "k9-neg-4",
-"cat": "kommando",
-"turns": [
-{
-"q": "är du säker på att mitokondrien gör energi",
-"expect": "answer",
-"forbid_any": [
-"okej, korta",
-"fråga ett"
-]
-}
-]
-},
-{
-"id": "k9-neg-5",
-"cat": "kommando",
-"turns": [
-{
-"q": "vad händer med klimatet i framtiden",
-"expect": "answer",
-"forbid_any": [
-"okej, korta",
-"fråga ett"
-]
-}
-]
-},
-{
-"id": "k9-neg-6",
-"cat": "kommando",
-"turns": [
-{
-"q": "en mening med bisats, vad är det",
-"expect": "answer",
-"forbid_any": [
-"okej, korta",
-"fråga ett"
-]
-}
-]
-},
-{
-"id": "k10-pos-01",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "kan vi köra vanliga frågor nu",
-"app_command": {
-"action": "switch_mode",
-"mode": "fragor"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-02",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag vill öva inför provet",
-"app_command": {
-"action": "switch_mode",
-"mode": "prov"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-03",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "sluta lyssna en stund",
-"app_command": {
-"action": "pause"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-04",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "kan vi gå över till provläget",
-"app_command": {
-"action": "switch_mode",
-"mode": "prov"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-05",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "byt till frågeläget",
-"app_command": {
-"action": "switch_mode",
-"mode": "fragor"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-06",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "nu kör vi provläget",
-"app_command": {
-"action": "switch_mode",
-"mode": "prov"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-07",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "ska vi plugga lite",
-"app_command": {
-"action": "switch_mode",
-"mode": "prov"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-08",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "dags att plugga",
-"app_command": {
-"action": "switch_mode",
-"mode": "prov"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-09",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag vill öva på en jobbintervju",
-"app_command": {
-"action": "switch_mode",
-"mode": "intervju"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-10",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "kan vi öva inför min intervju",
-"app_command": {
-"action": "switch_mode",
-"mode": "intervju"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-11",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "starta intervjuläget",
-"app_command": {
-"action": "switch_mode",
-"mode": "intervju"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-12",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag vill bara ställa vanliga frågor",
-"app_command": {
-"action": "switch_mode",
-"mode": "fragor"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-13",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "sluta förhöra mig",
-"app_command": {
-"action": "switch_mode",
-"mode": "fragor"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-14",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "låt oss köra socialt läge",
-"app_command": {
-"action": "switch_mode",
-"mode": "socialt"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-15",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "kör rizzläget",
-"app_command": {
-"action": "switch_mode",
-"mode": "rizz"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-16",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "pausa lite",
-"app_command": {
-"action": "pause"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-17",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "ta en paus",
-"app_command": {
-"action": "pause"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-18",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "du kan sluta lyssna nu",
-"app_command": {
-"action": "pause"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-19",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "var tyst en stund",
-"app_command": {
-"action": "pause"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-20",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "avsluta sessionen",
-"app_command": {
-"action": "stop"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-21",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "vi är klara för idag",
-"app_command": {
-"action": "stop"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-22",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "det var allt för idag",
-"app_command": {
-"action": "stop"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-23",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "lyssna igen",
-"app_command": {
-"action": "resume"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-24",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "du kan lyssna igen",
-"app_command": {
-"action": "resume"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-25",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "Lumen, byt till frågeläget",
-"app_command": {
-"action": "switch_mode",
-"mode": "fragor"
-},
-"ttft_budget_ms": 8000,
-"interview": true
-}
-]
-},
-{
-"id": "k10-pos-27",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag skulle vilja köra provläget",
-"app_command": {
-"action": "switch_mode",
-"mode": "prov"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-pos-28",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "tillbaka till vanliga frågor",
-"app_command": {
-"action": "switch_mode",
-"mode": "fragor"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-29",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "kan vi testa intervjuläget",
-"app_command": {
-"action": "switch_mode",
-"mode": "intervju"
-},
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-pos-30",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag vill plugga nu",
-"app_command": {
-"action": "switch_mode",
-"mode": "prov"
-},
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-01",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "vad är provläget",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-02",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "hur fungerar intervjuläget",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-03",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "ska vi köra frågor om fotosyntes",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-04",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "kan vi köra frågor",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-05",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag vill öva på derivator",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-06",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag vill öva inför provet",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-07",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "eleverna slutade lyssna på läraren",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-08",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "varför ska man ta en paus när man pluggar",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-09",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "min intervju gick bra igår",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-10",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "vi pratade om sociala medier",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-11",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "han sa att jag skulle sluta lyssna på musik",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-12",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "vad betyder rizz",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-13",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "avsluta meningen med en punkt",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-14",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "vad är skillnaden mellan väder och klimat",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-15",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag har prov på fredag",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-16",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "kan vi prata om andra världskriget",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-17",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "sluta lyssna",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"interview": true
-}
-]
-},
-{
-"id": "k10-neg-19",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "vi kör frågor om ekvationer",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-20",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag vill bli bättre på intervjuer",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-21",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "är provläget bra för matte",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-22",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "pausa filmen",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-23",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "hur långa pauser ska man ta",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-24",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "vad sa du om provet",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-25",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "frågor",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
-}
-]
-},
-{
-"id": "k10-neg-27",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag vill plugga till läkare",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-28",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "lyssna på den här låten",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-},
-{
-"id": "k10-neg-29",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "kan du förklara intervjuteknik",
-"app_command": null,
-"ttft_budget_ms": 8000,
-"interview": true
-}
-]
-},
-{
-"id": "k10-neg-30",
-"cat": "appkommando",
-"setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
-"turns": [
-{
-"q": "jag tycker om att plugga",
-"app_command": null,
-"ttft_budget_ms": 8000
-}
-]
-}
+ {
+  "id": "fakta-01",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vad är huvudstaden i Australien",
+    "expect_any": [
+     "canberra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-02",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vem skrev Pippi Långstrump",
+    "expect_any": [
+     "lindgren"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-03",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "hur många planeter finns i solsystemet",
+    "expect_any": [
+     "åtta"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-04",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "när började andra världskriget",
+    "expect_any": [
+     "nittonhundratrettionio"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-05",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vilken är världens längsta flod",
+    "expect_any": [
+     "nilen",
+     "amazonas"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-06",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vad är en mitokondrie",
+    "expect_any": [
+     "cell"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-07",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vad är BNP",
+    "expect_any": [
+     "brutto"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-08",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vem var Gustav Vasa",
+    "expect_any": [
+     "femtonhundra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-09",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "hur många ledamöter har riksdagen",
+    "expect_any": [
+     "trehundrafyrtionio"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-10",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vad är fotosyntes",
+    "expect_any": [
+     "ljus"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-11",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vad betyder ambivalent",
+    "expect_any": [
+     "motstridig",
+     "tvehågsen",
+     "blandade"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-12",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vad är pi",
+    "expect_any": [
+     "tre komma ett fyra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-13",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vem målade Mona Lisa",
+    "expect_any": [
+     "leonardo"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "fakta-14",
+  "cat": "fakta",
+  "turns": [
+   {
+    "q": "vad är skillnaden mellan virus och bakterie",
+    "expect_any": [
+     "värdcell",
+     "levande",
+     "antibiotika"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-01",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "andra världskriget"
+   },
+   {
+    "q": "varför började det",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "kortare",
+    "shorter": true,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-02",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "vad är inflation"
+   },
+   {
+    "q": "enklare",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "ge ett exempel",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-03",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "hur fungerar ett batteri"
+   },
+   {
+    "q": "anod, katod och elektrolyt",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "mer detaljer",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-04",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "vad är fotosyntes"
+   },
+   {
+    "q": "vad behöver växten?",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "varför då?",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-05",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "franska revolutionen"
+   },
+   {
+    "q": "Bastiljen",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "vad hände 1792?",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-06",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "vad är en mol"
+   },
+   {
+    "q": "och vad är avogadros tal",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "förklara enklare",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-07",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "vad är demokrati"
+   },
+   {
+    "q": "fördelar och nackdelar",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "kortare",
+    "shorter": true,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-08",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "pythagoras sats"
+   },
+   {
+    "q": "exempel",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "och i en annan triangel",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-09",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "mitokondrien"
+   },
+   {
+    "q": "vad gör den",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "mer",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-10",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "vad är energi"
+   },
+   {
+    "q": "joule, kalori och kilowattimme",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "enklare",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-11",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "skillnad virus bakterie"
+   },
+   {
+    "q": "hur behandlas de",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "kortare",
+    "shorter": true,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-12",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "vad är aktier"
+   },
+   {
+    "q": "vad är utdelning",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "ge ett exempel",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-13",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "Gustav Vasa"
+   },
+   {
+    "q": "vad hände 1523",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "varför då?",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "följdfråga-14",
+  "cat": "följdfråga",
+  "turns": [
+   {
+    "q": "riksdagens uppgift"
+   },
+   {
+    "q": "budgeten, lagarna och kontrollen av regeringen",
+    "shorter": false,
+    "follow": true
+   },
+   {
+    "q": "förklara det enklare",
+    "shorter": false,
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-01",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "vad är joniserande strålning"
+   },
+   {
+    "q": "hur gör man pannkakor",
+    "forbid_any": [
+     "strålning"
+    ],
+    "expect_any": [
+     "mjöl",
+     "ägg",
+     "smet"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "strålning"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-02",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "grekiska filosofer"
+   },
+   {
+    "q": "vad är inflation",
+    "forbid_any": [
+     "filosof",
+     "platon"
+    ],
+    "expect_any": [
+     "pris",
+     "pengar"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "filosof",
+     "platon"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-03",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "hur fungerar ett batteri"
+   },
+   {
+    "q": "vem var Gustav Vasa",
+    "forbid_any": [
+     "batteri",
+     "anod"
+    ],
+    "expect_any": [
+     "vasa",
+     "kung"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "batteri",
+     "anod"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-04",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "vad är demokrati"
+   },
+   {
+    "q": "hur räknar man ut procent",
+    "forbid_any": [
+     "demokrati"
+    ],
+    "expect_any": [
+     "procent",
+     "hundra"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "demokrati"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-05",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "vad är fotosyntes"
+   },
+   {
+    "q": "vad är huvudstaden i Frankrike",
+    "forbid_any": [
+     "fotosyntes",
+     "växt"
+    ],
+    "expect_any": [
+     "paris"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "fotosyntes",
+     "växt"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-06",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "andra världskriget"
+   },
+   {
+    "q": "hur byter man däck",
+    "forbid_any": [
+     "krig"
+    ],
+    "expect_any": [
+     "däck",
+     "domkraft"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "krig"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-07",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "vad är energi"
+   },
+   {
+    "q": "till engelska: jag blir sen",
+    "forbid_any": [
+     "energi"
+    ],
+    "expect_any": [
+     "late"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "energi"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-08",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "vad är en mol"
+   },
+   {
+    "q": "vem skrev Pippi Långstrump",
+    "forbid_any": [
+     "mol"
+    ],
+    "expect_any": [
+     "lindgren"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "mol"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-09",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "vad är aktier"
+   },
+   {
+    "q": "hur lagar man ris",
+    "forbid_any": [
+     "aktie"
+    ],
+    "expect_any": [
+     "ris",
+     "vatten"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "aktie"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "ämnesbyte-10",
+  "cat": "ämnesbyte",
+  "turns": [
+   {
+    "q": "franska revolutionen"
+   },
+   {
+    "q": "vad är skillnaden mellan virus och bakterie",
+    "forbid_any": [
+     "revolution"
+    ],
+    "expect_any": [
+     "virus",
+     "bakter"
+    ]
+   },
+   {
+    "q": "varför då?",
+    "forbid_any": [
+     "revolution"
+    ],
+    "follow": true
+   }
+  ]
+ },
+ {
+  "id": "beräkning-01",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "17 gånger 24",
+    "expect_any": [
+     "fyrahundraåtta"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-02",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "vad är 15 procent av 80",
+    "expect_any": [
+     "tolv"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-03",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "hur mycket är 250 delat med 4",
+    "expect_any": [
+     "sextiotvå komma fem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-04",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "roten ur 144",
+    "expect_any": [
+     "tolv"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-05",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "3 upphöjt till 5",
+    "expect_any": [
+     "tvåhundrafyrtiotre"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-06",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "vad är 1250 plus 3475",
+    "expect_any": [
+     "fyratusensjuhundratjugofem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-07",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "2 liter i deciliter",
+    "expect_any": [
+     "tjugo"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-08",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "hur många gram är 3 kilo",
+    "expect_any": [
+     "tretusen"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-09",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "20 grader celsius i fahrenheit",
+    "expect_any": [
+     "sextioåtta"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-10",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "99 minus 57",
+    "expect_any": [
+     "fyrtiotvå"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-11",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "tiotusen genom fyra hundra",
+    "expect_any": [
+     "tjugofem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-12",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "8 gånger 7",
+    "expect_any": [
+     "femtiosex"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-13",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "vad är 20 procent av 350",
+    "expect_any": [
+     "sjuttio"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-14",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "1000 genom 8",
+    "expect_any": [
+     "hundratjugofem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-15",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "hur långt är 5 mil i kilometer",
+    "expect_any": [
+     "femtio"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-16",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "36 delat med 9 plus 2",
+    "expect_any": [
+     "sex"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "beräkning-17",
+  "cat": "beräkning",
+  "turns": [
+   {
+    "q": "vad är 0,5 gånger 18",
+    "expect_any": [
+     "nio"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tid-01",
+  "cat": "tid",
+  "turns": [
+   {
+    "q": "vad är klockan i tokyo när den är 12 här",
+    "tz": {
+     "zone": "Asia/Tokyo",
+     "hour": 12
+    },
+    "forbid_any": [
+     "det beror på"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tid-02",
+  "cat": "tid",
+  "turns": [
+   {
+    "q": "vad är klockan i new york när den är 15 här",
+    "tz": {
+     "zone": "America/New_York",
+     "hour": 15
+    },
+    "forbid_any": [
+     "det beror på"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tid-03",
+  "cat": "tid",
+  "turns": [
+   {
+    "q": "vad är klockan i london när den är 18 här",
+    "tz": {
+     "zone": "Europe/London",
+     "hour": 18
+    },
+    "forbid_any": [
+     "det beror på"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tid-04",
+  "cat": "tid",
+  "turns": [
+   {
+    "q": "vad är klockan i sydney när den är 8 här",
+    "tz": {
+     "zone": "Australia/Sydney",
+     "hour": 8
+    },
+    "forbid_any": [
+     "det beror på"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tid-05",
+  "cat": "tid",
+  "turns": [
+   {
+    "q": "vad är klockan i los angeles när den är 12 här",
+    "tz": {
+     "zone": "America/Los_Angeles",
+     "hour": 12
+    },
+    "forbid_any": [
+     "det beror på"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tid-06",
+  "cat": "tid",
+  "turns": [
+   {
+    "q": "vad är klockan i dubai när den är 9 här",
+    "tz": {
+     "zone": "Asia/Dubai",
+     "hour": 9
+    },
+    "forbid_any": [
+     "det beror på"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tid-07",
+  "cat": "tid",
+  "turns": [
+   {
+    "q": "vad är klockan i bangkok när den är 22 här",
+    "tz": {
+     "zone": "Asia/Bangkok",
+     "hour": 22
+    },
+    "forbid_any": [
+     "det beror på"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tid-08",
+  "cat": "tid",
+  "turns": [
+   {
+    "q": "vad är klockan i delhi när den är 14 här",
+    "tz": {
+     "zone": "Asia/Kolkata",
+     "hour": 14
+    },
+    "forbid_any": [
+     "det beror på"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-01",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "e=mc2",
+    "expect_any": [
+     "i kvadrat"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-02",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "kemisk formel för koksalt",
+    "expect_any": [
+     "natriumklorid",
+     "enn a se ell"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-03",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "kemisk formel för vatten",
+    "expect_any": [
+     "ha två o",
+     "vatten"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-04",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "vad är ljusets hastighet",
+    "expect_any": [
+     "kilometer per sekund",
+     "meter per sekund"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-05",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "vad är avogadros tal",
+    "expect_any": [
+     "upphöjt till"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-06",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "vad säger pythagoras sats",
+    "expect_any": [
+     "i kvadrat"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-07",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "när föll västromerska riket",
+    "expect_any": [
+     "efter kristus",
+     "fyrahundra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-08",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "hur lyder andragradsformeln",
+    "expect_any": [
+     "roten ur",
+     "i kvadrat"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-09",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "ohms lag",
+    "expect_any": [
+     "gånger",
+     "delat",
+     "är lika med"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "symboler-10",
+  "cat": "symboler",
+  "turns": [
+   {
+    "q": "kemisk formel för socker",
+    "expect_any": [
+     "se tolv ha tjugotvå o elva"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "praktiskt-01",
+  "cat": "praktiskt",
+  "turns": [
+   {
+    "q": "hur gör man pannkakor",
+    "expect_any": [
+     "mjöl",
+     "ägg"
+    ],
+    "forbid_any": [
+     "jag kan inte hjälpa",
+     "jag är inte läkare",
+     "som ai"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "praktiskt-02",
+  "cat": "praktiskt",
+  "turns": [
+   {
+    "q": "jag har tappat nycklarna",
+    "expect_any": [],
+    "forbid_any": [
+     "jag kan inte hjälpa",
+     "jag är inte läkare",
+     "som ai"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "praktiskt-03",
+  "cat": "praktiskt",
+  "turns": [
+   {
+    "q": "hur byter man däck",
+    "expect_any": [
+     "domkraft"
+    ],
+    "forbid_any": [
+     "jag kan inte hjälpa",
+     "jag är inte läkare",
+     "som ai"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "praktiskt-04",
+  "cat": "praktiskt",
+  "turns": [
+   {
+    "q": "recept på köttbullar",
+    "expect_any": [
+     "köttfärs"
+    ],
+    "forbid_any": [
+     "jag kan inte hjälpa",
+     "jag är inte läkare",
+     "som ai"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "praktiskt-05",
+  "cat": "praktiskt",
+  "turns": [
+   {
+    "q": "hur lagar man ris",
+    "expect_any": [
+     "vatten"
+    ],
+    "forbid_any": [
+     "jag kan inte hjälpa",
+     "jag är inte läkare",
+     "som ai"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "praktiskt-06",
+  "cat": "praktiskt",
+  "turns": [
+   {
+    "q": "jag har ont i halsen",
+    "expect_any": [],
+    "forbid_any": [
+     "jag kan inte hjälpa",
+     "jag är inte läkare",
+     "som ai"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "praktiskt-07",
+  "cat": "praktiskt",
+  "turns": [
+   {
+    "q": "hur skriver jag ett cv",
+    "expect_any": [
+     "erfarenhet",
+     "utbildning"
+    ],
+    "forbid_any": [
+     "jag kan inte hjälpa",
+     "jag är inte läkare",
+     "som ai"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "praktiskt-08",
+  "cat": "praktiskt",
+  "turns": [
+   {
+    "q": "hur tvättar jag en ylletröja",
+    "expect_any": [
+     "handtvätt",
+     "kallt",
+     "ylle",
+     "tvätt"
+    ],
+    "forbid_any": [
+     "jag kan inte hjälpa",
+     "jag är inte läkare",
+     "som ai"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "socialt-01",
+  "cat": "socialt",
+  "turns": [
+   {
+    "q": "Kalle sa att jag är tråkig vad säger jag",
+    "max_words": 16
+   }
+  ]
+ },
+ {
+  "id": "socialt-02",
+  "cat": "socialt",
+  "turns": [
+   {
+    "q": "hon skrev hej vad svarar jag",
+    "max_words": 16
+   }
+  ]
+ },
+ {
+  "id": "socialt-03",
+  "cat": "socialt",
+  "turns": [
+   {
+    "q": "min kompis frågade om jag vill hänga ikväll vad säger jag",
+    "max_words": 16
+   }
+  ]
+ },
+ {
+  "id": "rizz-01",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "P1",
+    "style": "flirt"
+   }
+  ]
+ },
+ {
+  "id": "rizz-02",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "P3",
+    "style": "social"
+   }
+  ]
+ },
+ {
+  "id": "rizz-03",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "S1",
+    "style": "flirt"
+   }
+  ]
+ },
+ {
+  "id": "rizz-04",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "G1",
+    "style": "social"
+   }
+  ]
+ },
+ {
+  "id": "rizz-05",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "C1",
+    "style": "flirt"
+   }
+  ]
+ },
+ {
+  "id": "rizz-06",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "T1",
+    "style": "social"
+   }
+  ]
+ },
+ {
+  "id": "rizz-07",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "A1",
+    "style": "flirt"
+   }
+  ]
+ },
+ {
+  "id": "rizz-08",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "N1",
+    "style": "social"
+   }
+  ]
+ },
+ {
+  "id": "minne-01",
+  "cat": "minne",
+  "turns": [
+   {
+    "q": "vad har du gjort i sommar",
+    "memories": [
+     "Jag har varit och åkt skidor"
+    ],
+    "expect_any": [
+     "skidor"
+    ],
+    "forbid_any": [
+     "berätta för mig först"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "minne-02",
+  "cat": "minne",
+  "turns": [
+   {
+    "q": "vad tycker jag om för mat",
+    "memories": [
+     "Jag älskar italiensk mat"
+    ],
+    "expect_any": [
+     "italiensk"
+    ],
+    "forbid_any": []
+   }
+  ]
+ },
+ {
+  "id": "minne-03",
+  "cat": "minne",
+  "turns": [
+   {
+    "q": "var bor jag",
+    "memories": [
+     "Jag bor i Göteborg"
+    ],
+    "expect_any": [
+     "göteborg"
+    ],
+    "forbid_any": []
+   }
+  ]
+ },
+ {
+  "id": "minne-04",
+  "cat": "minne",
+  "turns": [
+   {
+    "q": "föreslå en present till min syster",
+    "memories": [
+     "Min syster gillar att baka"
+    ],
+    "expect_any": [
+     "bak"
+    ],
+    "forbid_any": []
+   }
+  ]
+ },
+ {
+  "id": "minne-05",
+  "cat": "minne",
+  "turns": [
+   {
+    "q": "vad heter min hund",
+    "memories": [
+     "Min hund heter Bella"
+    ],
+    "expect_any": [
+     "bella"
+    ],
+    "forbid_any": []
+   }
+  ]
+ },
+ {
+  "id": "minne-06",
+  "cat": "minne",
+  "turns": [
+   {
+    "q": "hur gammal är min hund",
+    "memories": [
+     "Min hund Bella är 4 år"
+    ],
+    "expect_any": [
+     "fyra"
+    ],
+    "forbid_any": []
+   }
+  ]
+ },
+ {
+  "id": "webb-01",
+  "cat": "webb",
+  "turns": [
+   {
+    "q": "vem vann senaste fotbolls VM",
+    "web": true
+   }
+  ]
+ },
+ {
+  "id": "webb-02",
+  "cat": "webb",
+  "turns": [
+   {
+    "q": "vad är vädret idag i Stockholm",
+    "web": true
+   }
+  ]
+ },
+ {
+  "id": "webb-03",
+  "cat": "webb",
+  "turns": [
+   {
+    "q": "vem är Sveriges statsminister just nu",
+    "web": true
+   }
+  ]
+ },
+ {
+  "id": "webb-04",
+  "cat": "webb",
+  "turns": [
+   {
+    "q": "nyheter om Sverige idag",
+    "web": true
+   }
+  ]
+ },
+ {
+  "id": "webb-05",
+  "cat": "webb",
+  "turns": [
+   {
+    "q": "kolla scb.se hur många bor i Sverige",
+    "web": true
+   }
+  ]
+ },
+ {
+  "id": "rizz-09",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "P1",
+    "style": "flirt",
+    "no_adult": true,
+    "expect_error": "adult_confirmation_required"
+   }
+  ]
+ },
+ {
+  "id": "rizz-10",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "C2",
+    "style": "flirt",
+    "calibrate": "lite mindre kaxig, och hon gillar fotboll",
+    "expect_all": [
+     "fotboll"
+    ]
+   },
+   {
+    "q": "",
+    "rizz_ref": "C2",
+    "style": "flirt"
+   }
+  ]
+ },
+ {
+  "id": "rizz-11",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "S2",
+    "style": "social",
+    "calibrate": "mer skämt, vi är på jobbet",
+    "expect_all": [
+     "jobb"
+    ]
+   },
+   {
+    "q": "",
+    "rizz_ref": "S2",
+    "style": "social",
+    "calibrate": "glöm allt och börja om",
+    "expect_empty": true
+   },
+   {
+    "q": "",
+    "rizz_ref": "S2",
+    "style": "social"
+   }
+  ]
+ },
+ {
+  "id": "rizz-12",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "A1",
+    "style": "social"
+   }
+  ]
+ },
+ {
+  "id": "rizz-13",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "P4",
+    "style": "flirt"
+   }
+  ]
+ },
+ {
+  "id": "rizz-14",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "C1",
+    "style": "flirt",
+    "calibrate": "ge mig tre pickup lines",
+    "expect_count": 3
+   },
+   {
+    "q": "",
+    "rizz_ref": "C1",
+    "style": "flirt"
+   }
+  ]
+ },
+ {
+  "id": "rizz-15",
+  "cat": "rizz",
+  "turns": [
+   {
+    "q": "",
+    "rizz_ref": "S2",
+    "style": "social",
+    "calibrate": "ge mig fem skämt",
+    "expect_count": 5
+   },
+   {
+    "q": "",
+    "rizz_ref": "S2",
+    "style": "social",
+    "calibrate": "ge mig en till",
+    "expect_count": 1
+   },
+   {
+    "q": "",
+    "rizz_ref": "S2",
+    "style": "social",
+    "calibrate": "nästa",
+    "expect_count": 1
+   }
+  ]
+ },
+ {
+  "id": "intervju-01",
+  "cat": "intervju",
+  "setup": "Kassapersonal i livsmedelsbutik, kvällar och helger, kundservice, noggrannhet.",
+  "turns": [
+   {
+    "q": "berätta lite om dig själv",
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true
+   }
+  ]
+ },
+ {
+  "id": "intervju-02",
+  "cat": "intervju",
+  "setup": "Barnskötare på förskola, heltid.",
+  "turns": [
+   {
+    "q": "berätta om en gång du löste en konflikt",
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true
+   }
+  ]
+ },
+ {
+  "id": "intervju-03",
+  "cat": "intervju",
+  "setup": "Junior utvecklare, React och TypeScript, agilt team.",
+  "turns": [
+   {
+    "q": "vad är din största svaghet",
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true
+   },
+   {
+    "q": "jag är ibland för noggrann och blir inte klar i tid",
+    "interview": true,
+    "user_answer": true,
+    "ttft_budget_ms": 3000
+   }
+  ]
+ },
+ {
+  "id": "intervju-04",
+  "cat": "intervju",
+  "setup": "Lagerarbetare, truckkort.",
+  "turns": [
+   {
+    "q": "har du några frågor till oss",
+    "interview": true,
+    "allow_question": true,
+    "no_person_check": true,
+    "ttft_budget_ms": 3000
+   },
+   {
+    "q": "klar",
+    "interview": true,
+    "no_person_check": true,
+    "allow": [
+     "sammanfattningsvis",
+     "lycka till",
+     "struktur"
+    ],
+    "max_words": 120
+   }
+  ]
+ },
+ {
+  "id": "tyst-01",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är fotosyntes",
+    "a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+   },
+   {
+    "q": "klorofyll",
+    "a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Äh, syntes. Det är det enda jag vet.",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "fotosyntes"
+    ],
+    "forbid_any": [
+     "tolkar",
+     "menar du",
+     "låter som"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tyst-02",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "Äh, syntes. Det är det enda jag vet.",
+    "mode": "tutor",
+    "expect": "either"
+   }
+  ]
+ },
+ {
+  "id": "tyst-03",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är fotosyntes",
+    "a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+   },
+   {
+    "q": "klorofyll",
+    "a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Det är en annan. Ja, obrutet. Kom igen.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-04",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är fotosyntes",
+    "a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+   },
+   {
+    "q": "klorofyll",
+    "a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Nej men vänta, var la jag, äh.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-05",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är fotosyntes",
+    "a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+   },
+   {
+    "q": "klorofyll",
+    "a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Mm. Okej. Ja.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-06",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "Kom igen nu, vi tar det sen.",
+    "mode": "auto",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-07",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "Ja men det var ju det han sa i och för sig.",
+    "mode": "auto",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-08",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är kovalent bindning",
+    "a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Och sen så, eh, typ, ja du vet.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-09",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är kovalent bindning",
+    "a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Vänta lite, jag ska bara hämta laddaren.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-10",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är fotosyntes",
+    "a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+   },
+   {
+    "q": "klorofyll",
+    "a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Det där med, nej glöm det.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-11",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "Så att, ja. Precis. Mm.",
+    "mode": "auto",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-12",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "Äh, sluta, du är så jobbig.",
+    "mode": "auto",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-13",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är kovalent bindning",
+    "a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Okej, okej, jag lyssnar ju.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "tyst-14",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "vad är mitos",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "cell"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tyst-15",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är fotosyntes",
+    "a": "Fotosyntes är processen där växter bygger socker av koldioxid och vatten med hjälp av ljus. Den sker i kloroplasterna. Vad heter det gröna ämnet som fångar ljuset?"
+   },
+   {
+    "q": "klorofyll",
+    "a": "Rätt, klorofyll fångar ljuset. Syret som bildas släpps ut genom klyvöppningarna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "eh, kan du förklara typ, cellandning",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "energi",
+     "syre",
+     "glukos",
+     "socker"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tyst-16",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är kovalent bindning",
+    "a": "En kovalent bindning är när två atomer delar elektroner. Den finns till exempel i vattenmolekylen."
+   }
+  ],
+  "turns": [
+   {
+    "q": "jon bindning",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "jonbindning",
+     "joner",
+     "jon"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tyst-17",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är fotosyntes",
+    "a": "Fotosyntes är när växter bygger socker av koldioxid och vatten med hjälp av ljus. Vad heter organellen där fotosyntesen sker?"
+   }
+  ],
+  "turns": [
+   {
+    "q": "kloroplast",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "kloroplast"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tyst-18",
+  "cat": "tystnad",
+  "context_qa": [
+   {
+    "q": "vad är fotosyntes",
+    "a": "Fotosyntes är när växter bygger socker av koldioxid och vatten med hjälp av ljus. Vad heter organellen där fotosyntesen sker?"
+   }
+  ],
+  "turns": [
+   {
+    "q": "vet inte",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "kloroplast"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tyst-19",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "vad är huvudstaden i Norge",
+    "mode": "auto",
+    "expect": "answer",
+    "expect_any": [
+     "oslo"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "tyst-20",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "hur många ben har en spindel",
+    "mode": "auto",
+    "expect": "answer",
+    "expect_any": [
+     "åtta"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "intervju-05",
+  "cat": "intervju",
+  "setup": "Sommarjobb som butiksbiträde i en matbutik",
+  "turns": [
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true,
+    "q": "berätta om dig själv"
+   },
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true,
+    "q": "varför vill du jobba här"
+   },
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true,
+    "q": "hur hanterar du en arg kund"
+   },
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true,
+    "q": "vad är din största svaghet"
+   }
+  ]
+ },
+ {
+  "id": "intervju-06",
+  "cat": "intervju",
+  "setup": "Extrajobb som vårdbiträde på ett äldreboende, helger.",
+  "turns": [
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true,
+    "q": "berätta om en gång du hjälpte någon som var ledsen"
+   },
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true,
+    "q": "vad har du för erfarenhet av vård"
+   }
+  ]
+ },
+ {
+  "id": "intervju-07",
+  "cat": "intervju",
+  "setup": "Sommarjobb på ett lager, plock och packning.",
+  "turns": [
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "no_invented_facts": true,
+    "q": "hur gammal är du och vad pluggar du"
+   }
+  ]
+ },
+ {
+  "id": "intervju-08",
+  "cat": "intervju",
+  "setup": "Sommarjobb som cafébiträde. Om mig: 16 år, går naturvetenskapsprogrammet, tränar ett fotbollslag för barn.",
+  "turns": [
+   {
+    "q": "berätta om dig själv",
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "expect_any": [
+     "16",
+     "sexton",
+     "natur",
+     "fotboll"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "intervju-09",
+  "cat": "intervju",
+  "setup": "Butiksbiträde i en klädbutik.",
+  "turns": [
+   {
+    "q": "vad har du för erfarenhet av butik",
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "memories": [
+     "Jag har jobbat två somrar i min mosters klädbutik."
+    ],
+    "expect_any": [
+     "klädbutik",
+     "två somrar",
+     "moster"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-01",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "få tes",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "fotosyntes"
+    ],
+    "forbid_any": [
+     "menar du",
+     "tolkar"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-02",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "vad är få tes",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "fotosyntes"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-03",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "pytt a go ras sats",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "pythagoras"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-04",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "sel andning",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "cellandning"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-05",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "ko valent bindning",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "kovalent"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-06",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "förklara evo lusion",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "evolution"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-07",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "vad är få tes",
+    "mode": "auto",
+    "expect": "answer",
+    "expect_any": [
+     "fotosyntes"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-08",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "glas och bröd i lådan",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "felhor-09",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "blå fyra nio sen",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "felhor-10",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "ka ve sa",
+    "mode": "tutor",
+    "expect": "either",
+    "forbid_any": [
+     "menar du",
+     "tolkar"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-11",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "klo ro plast",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "kloroplast"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "felhor-12",
+  "cat": "felhörning",
+  "turns": [
+   {
+    "q": "ni tons lagar",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "newton"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-01",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "270 gånger 270",
+    "mode": "text",
+    "expect_any": [
+     "sjuttiotvåtusen niohundra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-02",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 345 gånger 678",
+    "mode": "text",
+    "expect_any": [
+     "tvåhundratrettiotretusen niohundratio"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-03",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 123 gånger 456",
+    "mode": "text",
+    "expect_any": [
+     "femtiosextusen åttioåtta"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-04",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "999 gånger 999",
+    "mode": "tutor",
+    "expect_any": [
+     "niohundranittioåttatusen ett"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-05",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad blir 512 gånger 384",
+    "mode": "text",
+    "expect_any": [
+     "hundranittiosextusen sexhundraåtta"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-06",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 807 gånger 305",
+    "mode": "text",
+    "expect_any": [
+     "tvåhundrafyrtiosextusen hundratrettiofem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-07",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "hur mycket är 15 procent av 840",
+    "mode": "text",
+    "expect_any": [
+     "hundratjugosex"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-08",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 7 procent av 2350",
+    "mode": "tutor",
+    "expect_any": [
+     "hundrasextiofyra komma fem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-09",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 25 procent av 96",
+    "mode": "text",
+    "expect_any": [
+     "tjugofyra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-10",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 12,5 procent av 4800",
+    "mode": "text",
+    "expect_any": [
+     "sexhundra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-11",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 1234 delat med 4",
+    "mode": "text",
+    "expect_any": [
+     "trehundraåtta komma fem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-12",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 8100 delat med 27",
+    "mode": "tutor",
+    "expect_any": [
+     "trehundra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-13",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 1000 delat med 8",
+    "mode": "text",
+    "expect_any": [
+     "hundratjugofem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-14",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 7 delat med 3",
+    "mode": "text",
+    "expect_any": [
+     "två komma tre tre"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-15",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 2 upphöjt till 10",
+    "mode": "text",
+    "expect_any": [
+     "tusen tjugofyra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-16",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 3 upphöjt till 5",
+    "mode": "tutor",
+    "expect_any": [
+     "tvåhundrafyrtiotre"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-17",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 12 i kvadrat",
+    "mode": "text",
+    "expect_any": [
+     "hundrafyrtiofyra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-18",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är 15 i kubik",
+    "mode": "text",
+    "expect_any": [
+     "tretusen trehundrasjuttiofem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-19",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad är roten ur 625",
+    "mode": "text",
+    "expect_any": [
+     "tjugofem"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "rakna-20",
+  "cat": "räkna",
+  "turns": [
+   {
+    "q": "vad blir 48 gånger 25 plus 300",
+    "mode": "tutor",
+    "expect_any": [
+     "femtonhundra"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "meta-01",
+  "cat": "metasvar",
+  "context_qa": [
+   {
+    "q": "vad är y om x är ett i y lika med fem x plus tio",
+    "a": "Om x är ett blir y lika med fem gånger ett plus tio, alltså femton. Du sätter in ett i formeln, gångrar med fem och lägger till tio."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Du sätter in ett i formeln, gångrar med fem och lägger till ut till tio. Gud- Om x ökar från ett till två är- Två är krympning.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "meta-02",
+  "cat": "metasvar",
+  "turns": [
+   {
+    "q": "Let it log. Ska du inte... Stop. Stop.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "meta-03",
+  "cat": "metasvar",
+  "turns": [
+   {
+    "q": "Jo, visst var det. Kom då så är det frågan. Kolla här, den ser här vad som är fråga. Det här är allting den uppfattar och sen så kollar den vad som är fråga. Är",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "meta-04",
+  "cat": "metasvar",
+  "turns": [
+   {
+    "q": "Fråga en fråga som kan komma på prov. Oh, what the hell? How's the hair? Let's say P Diddy. Hey. Hey P Diddy.",
+    "mode": "tutor",
+    "expect": "either",
+    "forbid_any": [
+     "vilket ämne",
+     "inte en fråga",
+     "mikrofon",
+     "fragment"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "meta-05",
+  "cat": "metasvar",
+  "turns": [
+   {
+    "q": "Vad heter jag? Det är skönt.",
+    "mode": "tutor",
+    "expect": "either",
+    "forbid_any": [
+     "[["
+    ]
+   }
+  ]
+ },
+ {
+  "id": "okant-01",
+  "cat": "metasvar",
+  "turns": [
+   {
+    "q": "Vartom.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "okant-02",
+  "cat": "metasvar",
+  "turns": [
+   {
+    "q": "Det är en köttjätte. Så. Det är så, det är orange, det är inte det. Nej.",
+    "mode": "tutor",
+    "expect": "silent"
+   }
+  ]
+ },
+ {
+  "id": "klocka-01",
+  "cat": "klocka",
+  "turns": [
+   {
+    "q": "Hej, vad är 20:20?",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "tjugo och tjugo",
+     "tjugo över åtta"
+    ],
+    "forbid_any": [
+     "komma",
+     "bara går till tolv",
+     "fyrtio"
+    ]
+   },
+   {
+    "q": "är det samma som tjugo över åtta på kvällen",
+    "mode": "tutor",
+    "expect": "answer",
+    "expect_any": [
+     "ja",
+     "samma",
+     "stämmer"
+    ],
+    "forbid_any": [
+     "bara går till tolv",
+     "komma"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "klocka-02",
+  "cat": "klocka",
+  "turns": [
+   {
+    "q": "vad är 07:45",
+    "mode": "text",
+    "expect_any": [
+     "kvart i åtta"
+    ],
+    "forbid_any": [
+     "komma"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "profil-01",
+  "cat": "profil",
+  "turns": [
+   {
+    "q": "förklara fotosyntesen",
+    "profile": "Prov i Biologi fredag 13 november 2026 (om 5 dagar). Årskurs: Åk 7. Kontrollfrågor: Ja–nej-frågor (svara med rösten eller nicka). Förklaringar: mellanlånga förklaringar.",
+    "expect_any": [
+     "ljus",
+     "socker",
+     "syre"
+    ],
+    "forbid_any": [
+     "calvin",
+     "nadph",
+     "tylakoid",
+     "ribulos",
+     "rubisco"
+    ],
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "profil-02",
+  "cat": "profil",
+  "turns": [
+   {
+    "q": "förklara fotosyntesen",
+    "profile": "Prov i Biologi fredag 13 november 2026 (om 5 dagar). Årskurs: Gymnasiet 3, kurs Biologi 2. Kontrollfrågor: Svåra frågor. Förklaringar: mellanlånga förklaringar.",
+    "expect_any": [
+     "ljusreaktion",
+     "calvin",
+     "atp",
+     "nadph",
+     "tylakoid"
+    ],
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "profil-03",
+  "cat": "profil",
+  "turns": [
+   {
+    "q": "vad är en jonbindning",
+    "profile": "Årskurs: Åk 8. Ämne: Kemi. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar.",
+    "max_words": 70,
+    "forbid_any": [
+     "?"
+    ],
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "cv-01",
+  "cat": "intervju",
+  "setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger, kundservice och noggrannhet. CV: Utbildning: Ekonomiprogrammet, Polhemsgymnasiet 2023–2026. Arbete: Extrajobb på ett kafé i Lund 2024–2025, kassa och stängning. Övrigt: Ledare i en fotbollsskola för barn sommaren 2025. Språk: svenska, engelska, arabiska.",
+  "turns": [
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "q": "berätta om dig själv",
+    "expect_any": [
+     "ekonomi",
+     "kafé",
+     "fotboll"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "cv-02",
+  "cat": "intervju",
+  "setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger, kundservice och noggrannhet. CV: Utbildning: Ekonomiprogrammet, Polhemsgymnasiet 2023–2026. Arbete: Extrajobb på ett kafé i Lund 2024–2025, kassa och stängning. Övrigt: Ledare i en fotbollsskola för barn sommaren 2025. Språk: svenska, engelska, arabiska.",
+  "turns": [
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "q": "har du jobbat med kassa förut",
+    "expect_any": [
+     "kafé",
+     "kassa"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "cv-03",
+  "cat": "intervju",
+  "setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger, kundservice och noggrannhet. CV: Utbildning: Ekonomiprogrammet, Polhemsgymnasiet 2023–2026. Arbete: Extrajobb på ett kafé i Lund 2024–2025, kassa och stängning. Övrigt: Ledare i en fotbollsskola för barn sommaren 2025. Språk: svenska, engelska, arabiska.",
+  "turns": [
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "q": "vilka språk talar du",
+    "expect_any": [
+     "arabiska"
+    ],
+    "forbid_any": [
+     "franska",
+     "tyska",
+     "spanska"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "cv-04",
+  "cat": "intervju",
+  "setup": "Jobbannons: Kassabiträde i matbutik, kvällar och helger.",
+  "turns": [
+   {
+    "interview": true,
+    "ttft_budget_ms": 3000,
+    "q": "har du jobbat med kassa förut",
+    "no_invented_facts": true
+   }
+  ]
+ },
+ {
+  "id": "amne-01",
+  "cat": "ämne",
+  "turns": [
+   {
+    "q": "syntes",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "allow_question": true,
+    "expect_any": [
+     "fotosyntes"
+    ],
+    "forbid_any": [
+     "menar du",
+     "tolkar"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "amne-02",
+  "cat": "ämne",
+  "turns": [
+   {
+    "q": "fo syntes",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "allow_question": true,
+    "expect_any": [
+     "fotosyntes"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "amne-03",
+  "cat": "ämne",
+  "turns": [
+   {
+    "q": "syntes",
+    "mode": "tutor",
+    "expect": "either",
+    "forbid_any": [
+     "menar du",
+     "tolkar"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "text-01",
+  "cat": "texter",
+  "turns": [
+   {
+    "q": "sjung en snapsvisa",
+    "mode": "text",
+    "allow_question": true,
+    "max_words": 200,
+    "expect_any": [
+     "helan",
+     "hej tomtegubbar",
+     "tycker"
+    ],
+    "forbid_any": [
+     "kan inte sjunga",
+     "upphovsrätt"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "text-02",
+  "cat": "texter",
+  "turns": [
+   {
+    "q": "sjung helan går",
+    "mode": "text",
+    "allow_question": true,
+    "max_words": 200,
+    "expect_any": [
+     "halvan går"
+    ],
+    "forbid_any": [
+     "kan inte sjunga"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "text-03",
+  "cat": "texter",
+  "turns": [
+   {
+    "q": "citera Strindberg om kärlek",
+    "mode": "text",
+    "allow_question": true,
+    "max_words": 160,
+    "expect_any": [
+     "strindberg"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "text-04",
+  "cat": "texter",
+  "turns": [
+   {
+    "q": "sjung Tattoo med Loreen",
+    "mode": "text",
+    "allow_question": true,
+    "max_words": 90,
+    "expect_any": [
+     "loreen"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "amne-k12-kemi-syntes",
+  "cat": "ämne",
+  "turns": [
+   {
+    "q": "syntes",
+    "profile": "Årskurs: Åk 9. Ämne: Kemi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
+    "prep_terms": [
+     "atom",
+     "molekyl",
+     "jon",
+     "syra",
+     "bas",
+     "kemisk reaktion"
+    ],
+    "expect_any": [
+     "syntesreaktion",
+     "förening",
+     "bildar",
+     "sätts ihop",
+     "sammanfogas"
+    ],
+    "forbid_any": [
+     "kemiord",
+     "din lista",
+     "i din",
+     "listan",
+     "jag tar det",
+     "ämnesord",
+     "är nog",
+     "tolkar",
+     "menar du",
+     "du menar",
+     "närliggande",
+     "låter likt",
+     "fotosyntes"
+    ],
+    "expect": "either"
+   }
+  ]
+ },
+ {
+  "id": "amne-k12-kemi-syntes-2",
+  "cat": "ämne",
+  "turns": [
+   {
+    "q": "vad är syntes",
+    "profile": "Årskurs: Åk 9. Ämne: Kemi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
+    "prep_terms": [
+     "atom",
+     "molekyl",
+     "jon",
+     "syra",
+     "bas",
+     "kemisk reaktion"
+    ],
+    "expect_any": [
+     "syntesreaktion",
+     "förening",
+     "bildar",
+     "sätts ihop",
+     "sammanfogas",
+     "ny"
+    ],
+    "forbid_any": [
+     "kemiord",
+     "din lista",
+     "i din",
+     "listan",
+     "jag tar det",
+     "ämnesord",
+     "är nog",
+     "tolkar",
+     "menar du",
+     "du menar",
+     "närliggande",
+     "låter likt",
+     "fotosyntes"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "amne-k12-bio-syntes",
+  "cat": "ämne",
+  "turns": [
+   {
+    "q": "syntes",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
+    "prep_terms": [
+     "cell",
+     "fotosyntes",
+     "cellandning",
+     "mitos",
+     "enzym"
+    ],
+    "expect_any": [
+     "fotosyntes"
+    ],
+    "forbid_any": [
+     "kemiord",
+     "din lista",
+     "i din",
+     "listan",
+     "jag tar det",
+     "ämnesord",
+     "är nog",
+     "tolkar",
+     "menar du",
+     "du menar",
+     "närliggande",
+     "låter likt"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "amne-k12-bio-enzym",
+  "cat": "ämne",
+  "turns": [
+   {
+    "q": "enn simer",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar. Prov: fredag 13 november.",
+    "prep_terms": [
+     "cell",
+     "fotosyntes",
+     "cellandning",
+     "mitos",
+     "enzym"
+    ],
+    "expect_any": [
+     "enzym"
+    ],
+    "forbid_any": [
+     "kemiord",
+     "din lista",
+     "i din",
+     "listan",
+     "jag tar det",
+     "ämnesord",
+     "är nog",
+     "tolkar",
+     "menar du",
+     "du menar",
+     "närliggande",
+     "låter likt"
+    ],
+    "expect": "either"
+   }
+  ]
+ },
+ {
+  "id": "k7-niva-01",
+  "cat": "nivå",
+  "turns": [
+   {
+    "q": "vad är en derivata",
+    "profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "lutning",
+     "förändr",
+     "ändras"
+    ],
+    "forbid_any": [
+     " åk ",
+     "årskurs",
+     "grundskolenivå",
+     "gymnasienivå",
+     "här är idén",
+     "förklarar jag",
+     "på den nivån"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k7-niva-02",
+  "cat": "nivå",
+  "turns": [
+   {
+    "q": "vad är en derivata",
+    "profile": "Årskurs: Åk 6. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "lutning",
+     "förändr",
+     "ändras",
+     "snabbt"
+    ],
+    "forbid_any": [
+     " åk ",
+     "årskurs",
+     "grundskolenivå",
+     "gymnasienivå",
+     "här är idén",
+     "förklarar jag",
+     "på den nivån"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k7-niva-03",
+  "cat": "nivå",
+  "turns": [
+   {
+    "q": "vad är en integral",
+    "profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "area",
+     "summa"
+    ],
+    "forbid_any": [
+     " åk ",
+     "årskurs",
+     "grundskolenivå",
+     "gymnasienivå",
+     "här är idén",
+     "förklarar jag",
+     "på den nivån"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k7-o6-01",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "Och stallandning då?",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "either",
+    "forbid_any": [
+     "stallandning är",
+     "Stallandning"
+    ]
+   }
+  ],
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi bygger socker av koldioxid och vatten, och syre bildas."
+   }
+  ]
+ },
+ {
+  "id": "k7-o6-02",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "mm ja nä",
+    "profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
+    "expect": "silent",
+    "forbid_any": [
+     "skärmljud",
+     "håller mig tyst",
+     "hör inget",
+     "säg gärna"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k7-o6-03",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "Franska revolutionen, Afrika och klassrummet igen.",
+    "profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar.",
+    "expect": "either",
+    "forbid_any": [
+     "tre olika saker",
+     "så jag tar",
+     "verkar vara"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k7-o6-04",
+  "cat": "tystnad",
+  "turns": [
+   {
+    "q": "hormoner",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "hormon"
+    ],
+    "forbid_any": [
+     "hör inget",
+     "håller mig tyst"
+    ]
+   }
+  ],
+  "context_qa": [
+   {
+    "q": "vad gör insulin",
+    "a": "Insulin är ett hormon som sänker blodsockret genom att hjälpa cellerna att ta upp socker."
+   }
+  ]
+ },
+ {
+  "id": "k7-logik-01",
+  "cat": "logik",
+  "turns": [
+   {
+    "q": "Anna och Fredrik går hem till varandra, Anna går dubbelt så snabbt som Fredrik men de möttes ändå halvvägs, hur kan det komma sig",
+    "profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "tidigare",
+     "före",
+     "försprång"
+    ],
+    "forbid_any": [
+     "tredjedel",
+     "räcker det"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-example-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Lumen, ge ett exempel",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "exempel",
+     "till exempel",
+     "som",
+     "när"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-example-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "kan du ge mig ett exempel tack",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "exempel",
+     "till exempel",
+     "som",
+     "när"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-example-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "har du något exempel?",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "exempel",
+     "till exempel",
+     "som",
+     "när"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-summary-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "sammanfatta det viktigaste",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "fotosyntes",
+     "socker",
+     "ljus"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-summary-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Lumen, summera",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "fotosyntes",
+     "socker",
+     "ljus"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-summary-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "vad är det viktigaste",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "fotosyntes",
+     "socker",
+     "ljus"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-a_level-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "förklara på a-nivå",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "kloroplast",
+     "klorofyll",
+     "glukos",
+     "socker"
+    ],
+    "forbid_any": [
+     "a-nivå",
+     "ett a-svar"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-a_level-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Lumen, som ett A-svar",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "kloroplast",
+     "klorofyll",
+     "glukos",
+     "socker"
+    ],
+    "forbid_any": [
+     "a-nivå",
+     "ett a-svar"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-a_level-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "hur får jag ett A på det här",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "kloroplast",
+     "klorofyll",
+     "glukos",
+     "socker"
+    ],
+    "forbid_any": [
+     "a-nivå",
+     "ett a-svar"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-harder_question-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "ställ en svår fråga",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-harder_question-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Lumen, en svårare fråga",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-harder_question-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "utmana mig",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-quick_quiz-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "snabbförhör",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-quick_quiz-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "ge mig fem snabba frågor",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-quick_quiz-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Lumen, kör fem frågor i rad",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-yes_no_quiz-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "ja eller nej frågor",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-yes_no_quiz-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "ställ ja nej frågor",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-yes_no_quiz-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "förhör mig med ja och nej",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-quiz_topic-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "förhör mig på cellandning",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-quiz_topic-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Lumen, testa mig om klorofyll",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-quiz_topic-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "fråga ut mig om kloroplaster",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-weak_areas-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "testa mina svagaste områden",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-weak_areas-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "vad kan jag sämst",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-weak_areas-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "vad behöver jag öva mer på",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-self_assessment-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "hur bra kan jag det här",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer"
+   }
+  ]
+ },
+ {
+  "id": "k9-self_assessment-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Lumen, hur ligger jag till",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer"
+   }
+  ]
+ },
+ {
+  "id": "k9-self_assessment-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "kan jag det här?",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer"
+   }
+  ]
+ },
+ {
+  "id": "k9-careful-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "var säker",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "ttft_budget_ms": 9000
+   }
+  ]
+ },
+ {
+  "id": "k9-careful-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Lumen, dubbelkolla det",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "ttft_budget_ms": 9000
+   }
+  ]
+ },
+ {
+  "id": "k9-careful-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "är du säker på det?",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "ttft_budget_ms": 9000
+   }
+  ]
+ },
+ {
+  "id": "k9-brief_style-1",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "hjälp mig diskret",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer"
+   }
+  ]
+ },
+ {
+  "id": "k9-brief_style-2",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "kort och diskret",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer"
+   }
+  ]
+ },
+ {
+  "id": "k9-brief_style-3",
+  "cat": "kommando",
+  "context_qa": [
+   {
+    "q": "fotosyntes",
+    "a": "Fotosyntes är när växter med ljusenergi gör socker av koldioxid och vatten, och syre bildas. Det sker i kloroplasterna."
+   }
+  ],
+  "turns": [
+   {
+    "q": "bara en mening",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer"
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-professional-1",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "hjälp mig svara professionellt",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-professional-2",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "vad borde jag säga",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-professional-3",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "Lumen, vad ska jag säga",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-better-1",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "ge mig ett bättre svar",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-better-2",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "gör svaret bättre",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-better-3",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "förbättra det",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-confident-1",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "mer självsäkert",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-confident-2",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "låt mer säker",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-confident-3",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "mer övertygande",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-counter_question-1",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "ge mig en motfråga",
+    "interview": true,
+    "ttft_budget_ms": 3500,
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-counter_question-2",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "vad kan jag fråga tillbaka",
+    "interview": true,
+    "ttft_budget_ms": 3500,
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-counter_question-3",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "en bra fråga att ställa",
+    "interview": true,
+    "ttft_budget_ms": 3500,
+    "allow_question": true
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-stuck-1",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "hjälp, jag fastnar",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-stuck-2",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "jag har fastnat",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-ih-stuck-3",
+  "cat": "kommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik, kvällar och helger. CV: Gymnasieelev, innebandytränare för barn, sommarjobb på kafé.",
+  "context_qa": [
+   {
+    "q": "varför vill du jobba här",
+    "a": "Jag gillar att möta människor och har jobbat på kafé, så jag är van vid tempo och kunder."
+   }
+  ],
+  "turns": [
+   {
+    "q": "jag vet inte vad jag ska säga",
+    "interview": true,
+    "ttft_budget_ms": 3500
+   }
+  ]
+ },
+ {
+  "id": "k9-regel-1",
+  "cat": "kommando",
+  "turns": [
+   {
+    "q": "fortsätt att du i framtiden bara ska ställa korta svar under en mening alltså det är minnet",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "okej"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-regel-2",
+  "cat": "kommando",
+  "turns": [
+   {
+    "q": "från och med nu ska du svara med ett exempel",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "okej"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-regel-3",
+  "cat": "kommando",
+  "turns": [
+   {
+    "q": "svara alltid enklare i framtiden",
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+    "expect": "answer",
+    "expect_any": [
+     "okej"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-neg-1",
+  "cat": "kommando",
+  "turns": [
+   {
+    "q": "ge ett exempel på en exoterm reaktion",
+    "expect": "answer",
+    "forbid_any": [
+     "okej, korta",
+     "fråga ett"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-neg-2",
+  "cat": "kommando",
+  "turns": [
+   {
+    "q": "sammanfatta franska revolutionens orsaker",
+    "expect": "answer",
+    "forbid_any": [
+     "okej, korta",
+     "fråga ett"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-neg-3",
+  "cat": "kommando",
+  "turns": [
+   {
+    "q": "vad menade Marx med klasskamp",
+    "expect": "answer",
+    "forbid_any": [
+     "okej, korta",
+     "fråga ett"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-neg-4",
+  "cat": "kommando",
+  "turns": [
+   {
+    "q": "är du säker på att mitokondrien gör energi",
+    "expect": "answer",
+    "forbid_any": [
+     "okej, korta",
+     "fråga ett"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-neg-5",
+  "cat": "kommando",
+  "turns": [
+   {
+    "q": "vad händer med klimatet i framtiden",
+    "expect": "answer",
+    "forbid_any": [
+     "okej, korta",
+     "fråga ett"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k9-neg-6",
+  "cat": "kommando",
+  "turns": [
+   {
+    "q": "en mening med bisats, vad är det",
+    "expect": "answer",
+    "forbid_any": [
+     "okej, korta",
+     "fråga ett"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-01",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "kan vi köra vanliga frågor nu",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "fragor"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-02",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag vill öva inför provet",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "prov"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-03",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "sluta lyssna en stund",
+    "app_command": {
+     "action": "pause"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-04",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "kan vi gå över till provläget",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "prov"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-05",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "byt till frågeläget",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "fragor"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-06",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "nu kör vi provläget",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "prov"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-07",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "ska vi plugga lite",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "prov"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-08",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "dags att plugga",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "prov"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-09",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag vill öva på en jobbintervju",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "intervju"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-10",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "kan vi öva inför min intervju",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "intervju"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-11",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "starta intervjuläget",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "intervju"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-12",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag vill bara ställa vanliga frågor",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "fragor"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-13",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "sluta förhöra mig",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "fragor"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-14",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "låt oss köra socialt läge",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "socialt"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-15",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "kör rizzläget",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "rizz"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-16",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "pausa lite",
+    "app_command": {
+     "action": "pause"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-17",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "ta en paus",
+    "app_command": {
+     "action": "pause"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-18",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "du kan sluta lyssna nu",
+    "app_command": {
+     "action": "pause"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-19",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "var tyst en stund",
+    "app_command": {
+     "action": "pause"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-20",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "avsluta sessionen",
+    "app_command": {
+     "action": "stop"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-21",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "vi är klara för idag",
+    "app_command": {
+     "action": "stop"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-22",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "det var allt för idag",
+    "app_command": {
+     "action": "stop"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-23",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "lyssna igen",
+    "app_command": {
+     "action": "resume"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-24",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "du kan lyssna igen",
+    "app_command": {
+     "action": "resume"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-25",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "Lumen, byt till frågeläget",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "fragor"
+    },
+    "ttft_budget_ms": 8000,
+    "interview": true
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-27",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag skulle vilja köra provläget",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "prov"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-28",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "tillbaka till vanliga frågor",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "fragor"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-29",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "kan vi testa intervjuläget",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "intervju"
+    },
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-pos-30",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag vill plugga nu",
+    "app_command": {
+     "action": "switch_mode",
+     "mode": "prov"
+    },
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-01",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "vad är provläget",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-02",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "hur fungerar intervjuläget",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-03",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "ska vi köra frågor om fotosyntes",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-04",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "kan vi köra frågor",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-05",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag vill öva på derivator",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-06",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag vill öva inför provet",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-07",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "eleverna slutade lyssna på läraren",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-08",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "varför ska man ta en paus när man pluggar",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-09",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "min intervju gick bra igår",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-10",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "vi pratade om sociala medier",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-11",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "han sa att jag skulle sluta lyssna på musik",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-12",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "vad betyder rizz",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-13",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "avsluta meningen med en punkt",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-14",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "vad är skillnaden mellan väder och klimat",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-15",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag har prov på fredag",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-16",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "kan vi prata om andra världskriget",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-17",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "sluta lyssna",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "interview": true
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-19",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "vi kör frågor om ekvationer",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-20",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag vill bli bättre på intervjuer",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-21",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "är provläget bra för matte",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-22",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "pausa filmen",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-23",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "hur långa pauser ska man ta",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-24",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "vad sa du om provet",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-25",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "frågor",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar."
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-27",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag vill plugga till läkare",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-28",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "lyssna på den här låten",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-29",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "kan du förklara intervjuteknik",
+    "app_command": null,
+    "ttft_budget_ms": 8000,
+    "interview": true
+   }
+  ]
+ },
+ {
+  "id": "k10-neg-30",
+  "cat": "appkommando",
+  "setup": "Jobbannons: Kassapersonal i livsmedelsbutik. CV: Gymnasieelev.",
+  "turns": [
+   {
+    "q": "jag tycker om att plugga",
+    "app_command": null,
+    "ttft_budget_ms": 8000
+   }
+  ]
+ },
+ {
+  "id": "k20-01",
+  "cat": "om-lumen",
+  "turns": [
+   {
+    "q": "Lumen är du en robot",
+    "expect": "answer",
+    "expect_any": [
+     "ai-assistent",
+     "ai"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k20-02",
+  "cat": "om-lumen",
+  "turns": [
+   {
+    "q": "Lyssnar du hela tiden?",
+    "mode": "auto",
+    "expect": "answer",
+    "expect_all": [
+     "startat",
+     "ljud sparas inte"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k20-03",
+  "cat": "om-lumen",
+  "turns": [
+   {
+    "q": "Sparar du det jag säger?",
+    "expect": "answer",
+    "expect_all": [
+     "ljud sparas inte",
+     "server",
+     "ai-modell"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k20-04",
+  "cat": "provläge",
+  "turns": [
+   {
+    "q": "jag vet inte ens vad jag ska fråga",
+    "mode": "tutor",
+    "profile": "Prov i Biologi på fredag om cellen. Årskurs: Åk 8. Ämne: Biologi.",
+    "expect": "answer",
+    "expect_any": [
+     "cell"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k20-05",
+  "cat": "provläge",
+  "turns": [
+   {
+    "q": "ge mig en svår fråga",
+    "mode": "tutor",
+    "profile": "Prov i Biologi på fredag om cellen. Årskurs: Åk 8. Ämne: Biologi.",
+    "expect": "answer",
+    "expect_any": [
+     "cell",
+     "mitokond",
+     "membran",
+     "kärna",
+     "fotosyntes",
+     "organell"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k20-06",
+  "cat": "uttal",
+  "turns": [
+   {
+    "q": "vem var Erik XIV",
+    "expect": "answer",
+    "expect_any": [
+     "den fjortonde"
+    ],
+    "forbid_any": [
+     "den fjorton "
+    ]
+   }
+  ]
+ },
+ {
+  "id": "k20-07",
+  "cat": "aktuellt",
+  "turns": [
+   {
+    "q": "vem är statsminister i Sverige just nu",
+    "web": true,
+    "expect": "answer",
+    "expect_any": [
+     "kristersson",
+     "statsminister"
+    ]
+   }
+  ]
+ }
 ]

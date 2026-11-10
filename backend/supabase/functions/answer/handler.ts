@@ -24,6 +24,7 @@ import {
   resourceTopic,
   spokenFor,
 } from "./resource.ts";
+import { selfAnswer } from "./self.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation } from "./length.ts";
@@ -532,6 +533,38 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               model: "report",
             },
             summary: null,
+            memory_add: null,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
+
+      // K20: a question about Lumen itself ("är du en robot", "lyssnar du hela tiden", "sparar du det jag säger") gets
+      // the honest answer of "Om appen", in code (where others talk only with "Lumen" first)
+      const selfText = !demo && (!(body.persona === "social" || body.persona === "interview") || /^\s*(?:hej\s+|okej\s+)?lumen\b/iu.test(body.fragment))
+        ? selfAnswer(body.fragment)
+        : null;
+      if (selfText) {
+        const totalMs = Math.round(now() - t0);
+        const frames = [
+          sseFrame("meta", { reconstructed_question: body.fragment, confidence: 1, is_question: true, needs_confirmation: false, answer_type: "fact", relation: null }),
+          sseFrame("delta", { text: selfText }),
+          sseFrame("done", {
+            answered: true,
+            timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "self" },
+            summary: null,
+            relation: null,
+            source: null,
             memory_add: null,
           }),
         ];
