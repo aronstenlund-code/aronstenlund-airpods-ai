@@ -176,6 +176,9 @@ struct FirstQuestionView: View {
     /// A26 R4: "Lyssna igen" when the microphone is not on (it says "Pausad" then, never "Startar …" for ever).
     var onListen: () -> Void = {}
     let onContinue: () -> Void
+    /// A33 (D109): after the first answer has been spoken, the first start goes on by itself to "Har du prov snart?",
+    /// which Lumen asks aloud.
+    @State private var advanced = false
     @Environment(AppearanceSettings.self) private var appearance
 
     var body: some View {
@@ -227,6 +230,18 @@ struct FirstQuestionView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 16)
             .background(LumenColor.background)
+        }
+        .onChange(of: model.speaker.status) { _, status in
+            guard status == .idle, hasAnswer, !advanced, model.conversation.streamingAnswer == nil else { return }
+            advanced = true
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(1.5))
+                guard model.conversation.streamingAnswer == nil, !model.speaker.isSpeaking else {
+                    advanced = false // a second question came: wait for its answer
+                    return
+                }
+                onContinue()
+            }
         }
     }
 

@@ -26,6 +26,8 @@ struct AddExamView: View {
                                                          (.gy1, "Gy 1"), (.gy2, "Gy 2"), (.gy3, "Gy 3"), (.university, "Högskola")]
 
     @State private var pickedSubject = false
+    /// A33 (D109): in the first start the voice comes first; the form is the fallback behind "Skriv i stället".
+    @State private var showsForm = false
 
     /// The first start's short form (A22).
     private var isQuick: Bool { isFirstStart && editing == nil }
@@ -62,8 +64,56 @@ struct AddExamView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
                 .accessibilityElement(children: .combine)
+                if !showsForm {
+                    Button("Skriv i stället") { withAnimation(.easeOut(duration: 0.2)) { showsForm = true } }
+                        .font(LumenFont.text(16, .semibold))
+                        .foregroundStyle(LumenColor.blue)
+                        .frame(minHeight: 44)
+                }
+                if showsForm { quickForm }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 24)
+            .padding(.bottom, 12)
+        }
+        .scrollDismissesKeyboard(.interactively)
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: 4) {
+                if showsForm {
+                    Button("Spara prov", action: save)
+                        .buttonStyle(LumenButtonStyle())
+                        .disabled(!pickedSubject || subjectName.isEmpty)
+                }
+                Button("Inte nu", action: onClose)
+                    .font(LumenFont.text(16, .medium))
+                    .foregroundStyle(LumenColor.muted)
+                    .frame(maxWidth: .infinity, minHeight: 44)
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 12)
+            .background(LumenColor.background)
+        }
+        .lumenScreen()
+        .onAppear {
+            load()
+            // A33 (D109): Lumen asks aloud and listens; "biologi på fredag" saves the exam (via /study-profile) and
+            // closes this. A22's form stays as the fallback.
+            listeningForVoice = true
+            Task { await model.askAboutExamByVoice() }
+        }
+        .onChange(of: model.examPlans?.plans.count ?? 0) { old, new in
+            if new > old { onClose() }
+        }
+        .onChange(of: model.examQuestionDeclined) { _, declined in
+            if declined, !showsForm { onClose() } // A33: "nej" is "Inte nu"
+        }
+    }
+
+    /// A22's quick form: one row of areas, date and grade.
+    private var quickForm: some View {
+        VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Eller välj ämne").font(LumenFont.text(16, .semibold)).accessibilityAddTraits(.isHeader)
+                    Text("Välj ämne").font(LumenFont.text(16, .semibold)).accessibilityAddTraits(.isHeader)
                     FlowChips(items: Self.quickAreas.map { ($0.title, pickedSubject && area == $0) }) { index in
                         area = Self.quickAreas[index]
                         subject = ""
@@ -101,35 +151,6 @@ struct AddExamView: View {
                     Rectangle().fill(LumenColor.line).frame(height: 1)
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 24)
-            .padding(.bottom, 12)
-        }
-        .scrollDismissesKeyboard(.interactively)
-        .safeAreaInset(edge: .bottom) {
-            VStack(spacing: 4) {
-                Button("Spara prov", action: save)
-                    .buttonStyle(LumenButtonStyle())
-                    .disabled(!pickedSubject || subjectName.isEmpty)
-                Button("Inte nu", action: onClose)
-                    .font(LumenFont.text(16, .medium))
-                    .foregroundStyle(LumenColor.muted)
-                    .frame(maxWidth: .infinity, minHeight: 44)
-            }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 12)
-            .background(LumenColor.background)
-        }
-        .lumenScreen()
-        .onAppear {
-            load()
-            // Lumen already listens: "jag har prov i biologi på fredag" saves the exam and closes this.
-            listeningForVoice = true
-            Task { await model.listenForExamStatement() }
-        }
-        .onChange(of: model.examPlans?.plans.count ?? 0) { old, new in
-            if new > old { onClose() }
-        }
     }
 
     // MARK: The full form

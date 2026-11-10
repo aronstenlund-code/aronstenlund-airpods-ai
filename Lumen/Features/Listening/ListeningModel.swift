@@ -948,6 +948,18 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         askForQuiz()
     }
 
+    /// A33 (D109): the first start asks aloud after the first answer; the next utterance is the answer (a short one
+    /// is enough: "biologi på fredag"), read on the phone and by `/study-profile`. "Nej" declines.
+    @ObservationIgnored private var examAskedAloud = false
+    private(set) var examQuestionDeclined = false
+
+    func askAboutExamByVoice() async {
+        examQuestionDeclined = false
+        await listenForExamStatement()
+        examAskedAloud = true
+        say("Har du prov snart? Säg vilket ämne och när.")
+    }
+
     /// "Lägg till prov" → "Eller säg det": listen, and the next sentence about an exam is saved as one.
     func listenForExamStatement() async {
         awaitingExamStatement = true
@@ -3330,6 +3342,20 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         finalObserver?(segment.text)
         sessionObserver?(.heard(segment.text), date)
         if isComparing || isEnrollingVoice { return }
+        if awaitingExamStatement, examAskedAloud, !segment.overlapsPlayback {
+            // A33: the answer to the question Lumen asked aloud.
+            awaitingExamStatement = false
+            examAskedAloud = false
+            discardAhead(reason: "the answer about an exam")
+            study.discardTurnText()
+            if ExamAnswer.isDecline(segment.text) {
+                examQuestionDeclined = true
+                say("Okej. Du kan lägga till ett prov på Start när du vill.")
+            } else {
+                profileStatement(ExamAnswer.statement(segment.text))
+            }
+            return
+        }
         if awaitingExamStatement, ProfileStatement.isAboutSchool(segment.text) {
             awaitingExamStatement = false
             discardAhead(reason: "an exam said aloud")

@@ -201,3 +201,27 @@ final class StudyProfileClient {
         }
     }
 }
+
+/// A33 (D109): the answer to "Har du prov snart? Säg vilket ämne och när." asked aloud in the first start. A short
+/// answer ("biologi på fredag", "ja, matte nästa tisdag") becomes a statement the phone and `/study-profile` read; "nej"
+/// declines. Pure.
+enum ExamAnswer {
+    static func isDecline(_ text: String) -> Bool {
+        let words = VoiceChannel.normalized(text)
+        if ["nej", "nä", "nää", "nope", "inte nu", "nej tack", "inget prov", "inga prov", "jag har inget prov",
+            "jag har inga prov", "inte än", "nej inte än", "nej det har jag inte"].contains(words) { return true }
+        return words.hasPrefix("nej ") && !words.contains("prov i") && !words.contains(" på ")
+    }
+
+    /// The answer as a statement about an exam.
+    static func statement(_ text: String) -> String {
+        if ProfileStatement.isAboutSchool(text) { return text }
+        var words = VoiceChannel.normalized(text)
+        for lead in ["ja ", "japp ", "jo ", "ja det har jag ", "ja jag har ", "det är ", "i "] where words.hasPrefix(lead) {
+            words = String(words.dropFirst(lead.count))
+        }
+        if words.hasPrefix("prov i ") { words = String(words.dropFirst("prov i ".count)) }
+        return "jag har prov i " + words
+    }
+}
+
