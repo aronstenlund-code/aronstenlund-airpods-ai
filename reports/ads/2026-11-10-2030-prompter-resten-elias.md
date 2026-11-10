@@ -136,3 +136,9 @@ Trappan gick fel för att prompten bad om rörelser som inte stämde med startbi
 ## 20:45 Köksklippet klart i Flow, brödklippet förberett
 - V1 genererat i Flow (720p, 8 s, 24 krediter). Ingen synlig vattenstämpel i spelaren (kontrollera i nedladdad fil). Sista bildrutan: två skivor i brödrosten (AI:n la i två), köket oförändrat, hörluren syns.
 - V2 anpassad: båda skivorna hoppar upp, han lyfter ur en. Startbild = sparad sista bildruta från V1 i Flow. 5 s, 15 krediter (11 kvar i dag).
+
+## 21:35 Komplett annons v3 (46,2 s)
+Ordning: fotosyntes 10,5 → fest 8,7 → "Dagen efter" hallen 5,5 → köket 7,2 → glimtar (intervju 3,8 med fråga + Adams tips, förhör, träning, vägbeskrivning, sammanfatta mejlet, påminnelse: drick vatten, ca 1 s var) → brödet hoppar upp 2,2 → slutbild 3.
+- Glimtarna: Nano Banana 2.1 i Flow (0 krediter), granskade en och en; träningsbildens sken förstärkt med gratis redigering.
+- Brödklippet bara 0–2,2 s (mackan svävade i luften efter det). Lärdom: aldrig två handrörelser samtidigt.
+- Saknas för slutversion: Adams frukostsvar (text ligger som undertext), förhörsrepliken från ElevenLabs, Arons inspelningar (Filip) för "Vad ska jag ha till frukost?" och "Då behöver jag en lärare.", musik i plattformen.
