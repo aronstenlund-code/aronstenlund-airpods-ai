@@ -1,0 +1,289 @@
+{
+ "sum_requests": "5/15",
+ "sum_not_requests": "8/8",
+ "sum_topic": "7/8",
+ "sum_domains": "9/9",
+ "fails": [
+  {
+   "t": "kan du hitta en film om cellen",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "jag vill se en film om vulkaner",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "visa en video om Pythagoras sats",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "har du något klipp om franska revolutionen",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "finns det nån bra sida om det här",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "kan du länka något om DNA",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "var kan jag läsa mer om klimatförändringar",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "har du nåt bra på UR om demokrati",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "någon youtube om derivata",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "kan du rekommendera en film om fotosyntesen",
+   "got": false,
+   "ok": false
+  },
+  {
+   "f": "finns det en film om det här på UR Play",
+   "lastQ": "vad är cellandning",
+   "topic": "på UR Play",
+   "ok": false
+  }
+ ],
+ "ask": [
+  {
+   "t": "har du en film om fotosyntes",
+   "got": true,
+   "ok": true
+  },
+  {
+   "t": "finns det någon bra video om andra världskriget",
+   "got": true,
+   "ok": true
+  },
+  {
+   "t": "tipsa om en sida om bråk",
+   "got": true,
+   "ok": true
+  },
+  {
+   "t": "kan du hitta en film om cellen",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "jag vill se en film om vulkaner",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "visa en video om Pythagoras sats",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "har du något klipp om franska revolutionen",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "finns det nån bra sida om det här",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "kan du länka något om DNA",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "skicka en länk om ekvationer",
+   "got": true,
+   "ok": true
+  },
+  {
+   "t": "ge mig en film om Shakespeare",
+   "got": true,
+   "ok": true
+  },
+  {
+   "t": "var kan jag läsa mer om klimatförändringar",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "har du nåt bra på UR om demokrati",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "någon youtube om derivata",
+   "got": false,
+   "ok": false
+  },
+  {
+   "t": "kan du rekommendera en film om fotosyntesen",
+   "got": false,
+   "ok": false
+  }
+ ],
+ "notAsk": [
+  {
+   "t": "vilken film vann Oscar 2020",
+   "got": false,
+   "ok": true
+  },
+  {
+   "t": "vad handlar filmen Titanic om",
+   "got": false,
+   "ok": true
+  },
+  {
+   "t": "hur gör man en film i skolan",
+   "got": false,
+   "ok": true
+  },
+  {
+   "t": "vad är en webbsida",
+   "got": false,
+   "ok": true
+  },
+  {
+   "t": "jag såg en film om hajar igår",
+   "got": false,
+   "ok": true
+  },
+  {
+   "t": "finns det liv på Mars",
+   "got": false,
+   "ok": true
+  },
+  {
+   "t": "har du sett Harry Potter",
+   "got": false,
+   "ok": true
+  },
+  {
+   "t": "skicka hälsningar till mamma",
+   "got": false,
+   "ok": true
+  }
+ ],
+ "topic": [
+  {
+   "f": "har du en film om fotosyntes",
+   "lastQ": "",
+   "topic": "fotosyntes",
+   "ok": true
+  },
+  {
+   "f": "finns det någon bra sida om det här",
+   "lastQ": "vad är fotosyntes",
+   "topic": "fotosyntes",
+   "ok": true
+  },
+  {
+   "f": "har du en film om det",
+   "lastQ": "förklara hur vulkaner bildas",
+   "topic": "hur vulkaner bildas",
+   "ok": true
+  },
+  {
+   "f": "finns det en video på engelska om DNA",
+   "lastQ": "",
+   "topic": "engelska om DNA",
+   "ok": true
+  },
+  {
+   "f": "har du en film om andra världskriget för åk 9",
+   "lastQ": "",
+   "topic": "andra världskriget för åk 9",
+   "ok": true
+  },
+  {
+   "f": "skicka en länk om bråk tack",
+   "lastQ": "",
+   "topic": "bråk tack",
+   "ok": true
+  },
+  {
+   "f": "har du en bra sida om hur man räknar procent",
+   "lastQ": "",
+   "topic": "hur man räknar procent",
+   "ok": true
+  },
+  {
+   "f": "finns det en film om det här på UR Play",
+   "lastQ": "vad är cellandning",
+   "topic": "på UR Play",
+   "ok": false
+  }
+ ],
+ "dom": [
+  {
+   "u": "https://urplay.se/program/123-fotosyntes",
+   "want": "urplay.se",
+   "got": "urplay.se",
+   "ok": true
+  },
+  {
+   "u": "https://www.ne.se/uppslagsverk/x",
+   "want": "ne.se",
+   "got": "ne.se",
+   "ok": true
+  },
+  {
+   "u": "https://urplay.se.evil.example/x",
+   "want": null,
+   "got": null,
+   "ok": true
+  },
+  {
+   "u": "https://evilurplay.se/x",
+   "want": null,
+   "got": null,
+   "ok": true
+  },
+  {
+   "u": "https://urplay.se@evil.example/x",
+   "want": null,
+   "got": null,
+   "ok": true
+  },
+  {
+   "u": "https://khanacademy.org.evil.example/x",
+   "want": null,
+   "got": null,
+   "ok": true
+  },
+  {
+   "u": "http://sv.khanacademy.org/math",
+   "want": "sv.khanacademy.org",
+   "got": "sv.khanacademy.org",
+   "ok": true
+  },
+  {
+   "u": "javascript:alert(1)//urplay.se",
+   "want": null,
+   "got": null,
+   "ok": true
+  },
+  {
+   "u": "https://xn--urply-lra.se/x",
+   "want": null,
+   "got": null,
+   "ok": true
+  }
+ ]
+}

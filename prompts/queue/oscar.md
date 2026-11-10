@@ -104,3 +104,5 @@
 - [x] klar 2026-11-10 11:06 → `reports/qa/2026-11-10-1106-oscar-o29-telefonnummer.md` (telefonskyddet 17/22: 'Bris nås på 116 111' läses 'hundrasextontusen hundraelva', 90101 som 'nittiotusen hundraett', kortnummer och Swish-nummer släpps igenom) **O29 – Telefonnummer i svar (D65/K13), offline (stående uppgift, PLAN 2b)** (effort: medium). `node --experimental-transform-types scripts/qa/o29_phone_guard_offline.mjs`, 0 USD.
 
 - [x] klar 2026-11-10 11:07 → `reports/qa/2026-11-10-1108-oscar-o30-ekofilter.md` (ekofiltret 8/12: riktigt eko bort 4/4, men 4 av 8 följdfrågor som citerar svaret förlorar innehållet, 'vad menar du med i form av glukos' blir 'vad menar du med') **O30 – Ekofiltret (D82), offline (stående uppgift, PLAN 2b)** (effort: medium). `node scripts/qa/o30_echo_offline.mjs`, 0 USD.
+
+- [x] klar 2026-11-10 11:08 → `reports/qa/2026-11-10-1109-oscar-o31-k19-lank.md` (K19 offline: länkbegäran känns igen 5/15, inga falska 8/8, ämne 7/8, falska domäner stoppas 9/9) **O31 – Oberoende test av K19 (läromedelslänk), offline (stående uppgift, PLAN 2b)** (effort: medium). `node scripts/qa/o31_k19_resource_offline.mjs`, 0 USD.
