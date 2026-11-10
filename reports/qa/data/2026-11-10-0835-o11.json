@@ -1,0 +1,532 @@
+{
+ "stamp": "2026-11-10-0835",
+ "spent_usd": 0.3073,
+ "cases": [
+  {
+   "q": "vad gör de vita blodkropparna",
+   "subject": "Biologi",
+   "status": 200,
+   "short": "De vita blodkropparna skyddar kroppen mot sjukdomar genom att hitta och oskadliggöra virus, bakterier och andra inkräktare.\n\n",
+   "more": "\nDe vita blodkropparna är en del av immunförsvaret och bildas i benmärgen. Vissa av dem, fagocyterna, fungerar som städare: de omsluter bakterier och förstör dem. Andra, lymfocyterna, bildar antikroppar som fastnar på en specifik inkräktare och märker ut den så att den lätt kan oskadliggöras. Efter en infektion sparas minnesceller, och därför blir du ofta inte sjuk i samma sjukdom två gånger. Det är också därför kroppen kan bli immun efter ett vaccin. Ett exempel är att antalet vita blodkroppar ökar när du har en infektion, eftersom kroppen då behöver fler försvarare. På provet: skriv att de vita blodkropparna är en del av immunförsvaret, att fagocyter äter inkräktare och att lymfocyter bildar antikroppar.",
+   "short_words": 17,
+   "more_words": 113,
+   "t_first": 1981,
+   "t_short_end": 1981,
+   "t_more_end": 5407,
+   "t_done": 5407,
+   "more_ready_after_short_ms": 3426,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "varför behöver vi sova",
+   "subject": "Biologi",
+   "status": 200,
+   "short": "Sömnen gör att kroppen och hjärnan kan återhämta sig och laga sig själva.\n\n\n",
+   "more": "\n\nUnder sömnen vilar musklerna, och kroppen bygger upp och reparerar vävnader med hjälp av tillväxthormon, som mest frisätts när vi sover djupt. Hjärnan sorterar dagens intryck och lagrar viktiga minnen, så sömnen är avgörande för att lära sig något. Immunförsvaret stärks också, och därför blir man lättare sjuk av sömnbrist. Hjärnan hinner dessutom städa bort avfallsämnen som samlats under dagen. Tonåringar behöver omkring åtta till tio timmars sömn, eftersom kroppen då växer och utvecklas extra mycket. Ett konkret exempel är att man som sömnig tappar koncentrationen och reagerar långsammare. På provet bör du nämna både kroppens återhämtning och hjärnans minnesbearbetning. Vilket hormon frisätts mest under djup sömn?",
+   "short_words": 13,
+   "more_words": 107,
+   "t_first": 2315,
+   "t_short_end": 2315,
+   "t_more_end": 6154,
+   "t_done": 6154,
+   "more_ready_after_short_ms": 3839,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "hur fungerar naturligt urval",
+   "subject": "Biologi",
+   "status": 200,
+   "short": "Naturligt urval betyder att individer med egenskaper som passar miljön bäst överlever och får fler ungar än andra.\n\n\n",
+   "more": "\n\nDet bygger på tre saker. För det första varierar individer inom en art, till exempel i färg, storlek eller hur snabba de är. För det andra ärver ungarna egenskaper från sina föräldrar. För det tredje föds det fler ungar än det finns mat och plats för, så alla kan inte överleva. De individer vars egenskaper passar miljön bäst klarar sig oftare och för därför vidare sina anlag till nästa generation. Efter många generationer blir den fördelaktiga egenskapen vanligare i hela populationen, och på lång sikt kan en ny art uppstå. Ett exempel är björkmätaren, en fjäril. När träden sotades ner av industrin överlevde mörka fjärilar bättre, eftersom fåglarna hade svårare att se dem, och då blev de mörka vanligare. Viktigt är att en enskild individ inte förändras under sin livstid, det är populationen som förändras över generationer. På provet: skriv variation, ärftlighet och överlevnad, och ge alltid ett exempel.",
+   "short_words": 18,
+   "more_words": 149,
+   "t_first": 1170,
+   "t_short_end": 1170,
+   "t_more_end": 5596,
+   "t_done": 5596,
+   "more_ready_after_short_ms": 4426,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "vad är en exoterm reaktion",
+   "subject": "Kemi",
+   "status": 200,
+   "short": "En exoterm reaktion är en kemisk reaktion som avger energi till omgivningen, oftast som värme, så att omgivningen blir varmare.\n\n",
+   "more": "\nDet beror på att bindningarna i produkterna är starkare än bindningarna i reaktanterna. Det går åt energi för att bryta bindningar i reaktanterna, men mer energi frigörs när nya bindningar bildas i produkterna. Mellanskillnaden lämnar systemet som värme, och därför har reaktionen ett negativt värde på entalpiändringen, delta H. Produkterna ligger alltså lägre i energi än reaktanterna. Ett vardagligt exempel är förbränning av metan, där värme och ljus frigörs. Även när du löser natriumhydroxid i vatten blir lösningen kännbart varm. Motsatsen är en endoterm reaktion, som tar upp värme och får omgivningen att kallna. På provet: skriv att en exoterm reaktion avger energi, att delta H är mindre än noll, och att produkterna har lägre energiinnehåll än reaktanterna.",
+   "short_words": 20,
+   "more_words": 118,
+   "t_first": 2180,
+   "t_short_end": 2180,
+   "t_more_end": 5538,
+   "t_done": 5538,
+   "more_ready_after_short_ms": 3358,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "varför leder saltvatten ström",
+   "subject": "Kemi",
+   "status": 200,
+   "short": "Saltvatten leder ström för att det innehåller fria joner som kan röra sig. När salt, till exempel natriumklorid, löser sig i vatten delas det upp i positiva natriumjoner och negativa kloridjoner, som omges av vattenmolekyler.",
+   "more": "Elektrisk ström är laddade partiklar i rörelse. I en saltlösning rör sig jonerna mot motsatt laddade poler, och på så sätt transporteras laddningen. Rent vatten leder nästan inte ström eftersom det knappt har några joner, och fast salt leder inte heller, eftersom jonerna sitter fast i kristallgittret. Sockerlösning leder inte ström, eftersom socker löser sig som hela molekyler utan laddning. På provet: skriv att ämnet dissocierar till fria, rörliga joner som bär laddningen.\n\n\n\n\nJu fler joner per liter, desto bättre leder lösningen, så starkare saltlösning har högre ledningsförmåga. Ämnen som bildar joner i vatten kallas elektrolyter. Starka elektrolyter som natriumklorid dissocierar nästan helt, medan svaga elektrolyter som ättiksyra bara delar upp sig delvis och leder sämre. Jonbundna föreningar leder alltså ström bara när de är smälta eller lösta, eftersom jonerna då kan röra sig fritt. Det skiljer sig från metaller, där fria elektroner bär strömmen och inget material transporteras. På provet kan du jämföra: i metall rör sig elektroner, i saltlösning rör sig joner.",
+   "short_words": 35,
+   "more_words": 164,
+   "t_first": 1007,
+   "t_short_end": 1320,
+   "t_more_end": 6239,
+   "t_done": 6239,
+   "more_ready_after_short_ms": 4919,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "vad är skillnaden mellan ett grundämne och en kemisk förening",
+   "subject": "Kemi",
+   "status": 200,
+   "short": "Ett grundämne består av bara en sorts atomer och kan inte delas upp i enklare ämnen med kemiska metoder, till exempel syre, järn och guld. En kemisk förening består av två eller flera olika grundämnen som är kemiskt bundna till varandra i ett bestämt förhållande, till exempel vatten, som alltid har två väteatomer för varje syreatom.",
+   "more": "\nDet viktiga är att en förening har helt andra egenskaper än grundämnena den består av. Natrium är en mjuk, reaktiv metall och klor är en giftig gas, men tillsammans bildar de natriumklorid, vanligt bordssalt, som vi kan äta. En förening kan delas upp i sina grundämnen med kemiska metoder, till exempel kan vatten delas till väte och syre med hjälp av elektricitet. Grundämnena hittar du i periodiska systemet, och i en kemisk formel kan du se skillnaden: en bokstav eller en bokstav med en liten siffra, som O med tvåan efter, är ett grundämne, medan flera olika bokstäver, som H med tvåan och sedan O, är en förening. Observera att syrgas, som består av två syreatomer, fortfarande är ett grundämne, eftersom det bara innehåller en sorts atomer. På provet: skriv att ett grundämne har en sorts atomer, att en förening har flera sorters atomer bundna till varandra, och ge ett exempel på båda.",
+   "short_words": 56,
+   "more_words": 153,
+   "t_first": 3018,
+   "t_short_end": 3397,
+   "t_more_end": 7770,
+   "t_done": 7771,
+   "more_ready_after_short_ms": 4373,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "varför flyter en båt av stål",
+   "subject": "Fysik",
+   "status": 200,
+   "short": "En stålbåt flyter för att vattnet trycker uppåt på den med en kraft som är lika stor som tyngden av det vatten båten tränger undan.\n\n",
+   "more": "\nDet här kallas Arkimedes princip, och kraften är lyftkraften. Massivt stål är ungefär åtta gånger tätare än vatten och sjunker. Men en båt är byggd som ett skal fyllt med luft, så dess medeldensitet blir lägre än vattnets. Därför behöver båten bara sjunka så djupt att den trängt undan vatten som väger lika mycket som hela båten, och då är lyftkraften lika stor som tyngdkraften. Lastar du mer i båten sjunker den djupare, tills lyftkraften igen väger upp tyngden. Först när skrovet fylls med vatten ökar medeldensiteten över vattnets, och då sjunker den. På provet skriver du att flytförmågan beror på medeldensiteten och att lyftkraften är lika stor som tyngden av det undanträngda vattnet.",
+   "short_words": 25,
+   "more_words": 114,
+   "t_first": 1605,
+   "t_short_end": 1605,
+   "t_more_end": 5242,
+   "t_done": 5243,
+   "more_ready_after_short_ms": 3637,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "vad är skillnaden mellan fart och hastighet",
+   "subject": "Fysik",
+   "status": 200,
+   "short": "Fart säger bara hur snabbt något rör sig, till exempel femtio kilometer i timmen, medan hastighet också säger i vilken riktning.\n\n",
+   "more": "\nFart är en skalär storhet, alltså bara ett tal med enhet. Hastighet är en vektor, den har både storlek och riktning. Storleken på hastigheten är farten. Skillnaden syns när något byter riktning: en bil som kör ett varv på en rund bana med konstant fart tjugo meter per sekund har hela tiden samma fart, men hastigheten ändras hela tiden eftersom riktningen ändras. Därför är medelhastigheten för ett helt varv noll, medan medelfarten fortfarande är tjugo meter per sekund. Medelfart räknas som sträcka delat med tid, medan medelhastighet räknas som förflyttning delat med tid, och förflyttning är sträckan i rät linje från start till mål med riktning. På provet: skriv att hastighet är en vektor och fart en skalär, och ge gärna exemplet med rörelse i cirkel. Stämmer det att en bil som kör runt en rondell med konstant fart ändrar sin hastighet?",
+   "short_words": 21,
+   "more_words": 142,
+   "t_first": 2261,
+   "t_short_end": 2261,
+   "t_more_end": 5825,
+   "t_done": 5826,
+   "more_ready_after_short_ms": 3564,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "hur fungerar en elmotor",
+   "subject": "Fysik",
+   "status": 200,
+   "short": "En elmotor förvandlar elektrisk energi till rörelseenergi med hjälp av magnetism.\n\n\n",
+   "more": "\n\nInuti finns en spole av tråd som kan vridas, och runt den sitter fasta magneter. När det går ström genom spolen blir den en elektromagnet med en nordpol och en sydpol. Magneterna runt omkring drar och trycker på spolens poler, så att spolen börjar vrida sig. Just när spolen är på väg att stanna byter strömmen riktning i den, och då byter spolens poler plats. Därför trycks den vidare åt samma håll och fortsätter snurra hela tiden. Det är en liten omkastare som sköter bytet, och den heter kommutator. Ett exempel är en eldriven tandborste, där elmotorn snurrar och sätter borsthuvudet i rörelse. På provet: skriv att strömmen skapar ett magnetfält i spolen, att det växelverkar med magneterna och att det ger en kraft som vrider axeln. Vad heter delen som byter strömriktning i spolen?",
+   "short_words": 11,
+   "more_words": 135,
+   "t_first": 1560,
+   "t_short_end": 1560,
+   "t_more_end": 6123,
+   "t_done": 6124,
+   "more_ready_after_short_ms": 4563,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "varför började den industriella revolutionen i England",
+   "subject": "Historia",
+   "status": 200,
+   "short": "Den industriella revolutionen började i England för att flera saker föll på plats där före resten av Europa.\n\n\n",
+   "more": "\n\nEngland hade först och främst gott om kol och järn, som behövdes till ångmaskiner och maskiner. Jordbruket hade effektiviserats genom nya metoder och inhägnader, så färre bönder kunde föda fler människor, och många flyttade till städerna för att arbeta i fabriker. Landet hade också kapital från den stora handeln med kolonierna, och pengarna kunde investeras i fabriker och maskiner. England var politiskt stabilt, och parlamentet skyddade äganderätten, vilket gjorde det tryggt att satsa pengar. Dessutom fanns kolonierna som råvarukälla, till exempel bomull, och som marknad för färdiga varor. Ett tydligt exempel är textilindustrin, där bomull från kolonierna vävdes i maskiner drivna av ångkraft. På provet: nämn flera orsaker, till exempel jordbruksrevolutionen, naturtillgångar, kapital, kolonier och stabilitet, och förklara hur de hänger ihop.",
+   "short_words": 18,
+   "more_words": 122,
+   "t_first": 1556,
+   "t_short_end": 1556,
+   "t_more_end": 5457,
+   "t_done": 5457,
+   "more_ready_after_short_ms": 3901,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "vad var apartheid",
+   "subject": "Historia",
+   "status": 200,
+   "short": "Apartheid var Sydafrikas system för rassegregation, där staten delade in människor efter hudfärg och gav vita alla politiska och ekonomiska fördelar.\n\n",
+   "more": "\nSystemet infördes officiellt nittonhundrafyrtioåtta, när Nationalistpartiet vann valet, och varade fram till början av nittonhundranittiotalet. Människor delades in som vita, svarta, färgade och indier, och svarta fick inte rösta, bo i vita områden eller gå i samma skolor. Svarta var tvungna att bära passerkort och tvångsförflyttades till så kallade hemländer. Motståndet leddes av bland andra ANC och Nelson Mandela, som satt i fängelse i tjugosju år. Omvärlden införde bojkotter och sanktioner mot Sydafrika. Mandela frigavs nittonhundranittio, och nittonhundranittiofyra hölls de första fria valen, där han blev president. På provet: skriv att apartheid var lagstadgad rassegregation i Sydafrika nittonhundrafyrtioåtta till nittonhundranittiofyra, och nämn ANC, Mandela och de fria valen nittonhundranittiofyra.",
+   "short_words": 21,
+   "more_words": 109,
+   "t_first": 1397,
+   "t_short_end": 1397,
+   "t_more_end": 4654,
+   "t_done": 4654,
+   "more_ready_after_short_ms": 3257,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "vad var Marshallplanen",
+   "subject": "Historia",
+   "status": 200,
+   "short": "Marshallplanen var ett amerikanskt hjälpprogram för att bygga upp Västeuropas ekonomi efter andra världskriget. Utrikesminister George Marshall lade fram idén nittonhundrafyrtiosju, och under fyra år, nittonhundrafyrtioåtta till nittonhundrafemtiotvå, gav USA omkring tretton miljarder dollar i bidrag och lån till sexton länder, bland andra Storbritannien, Frankrike, Västtyskland och Sverige.",
+   "more": "Syftet var dubbelt: skapa tillväxt och handel, och samtidigt stoppa kommunismens spridning genom att göra människor mindre mottagliga när fattigdomen minskade. Sovjetunionen avvisade planen och tvingade de östeuropeiska länderna att tacka nej, vilket förstärkte uppdelningen av Europa under kalla kriget. Sverige fick bland annat dollar för att köpa maskiner och råvaror. På provet: skriv att planen både var ekonomisk hjälp och ett led i USA:s inneslutningspolitik, Trumandoktrinen.",
+   "short_words": 48,
+   "more_words": 68,
+   "t_first": 1072,
+   "t_short_end": 1930,
+   "t_more_end": 4616,
+   "t_done": 4616,
+   "more_ready_after_short_ms": 2686,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "vad gör en kommun",
+   "subject": "Samhällskunskap",
+   "status": 200,
+   "short": "En kommun styr över det som sker nära medborgarna i ett område, och den bestämmer själv över sin verksamhet genom det som kallas det kommunala självstyret.\n\n\n",
+   "more": "\n\nKommunens viktigaste uppgift är att ordna välfärd och service. Den driver förskola, grundskola och gymnasium, äldreomsorg och hemtjänst, socialtjänst, räddningstjänst, vatten och avlopp, sophämtning och bibliotek. Kommunen planerar också hur mark och byggande ska användas, ett så kallat planmonopol. Pengarna kommer främst från kommunalskatt, som är ungefär tjugo kronor på varje intjänad hundralapp, och från statsbidrag. Det demokratiska inslaget är att invånarna väljer kommunfullmäktige vart fjärde år, samtidigt som riksdagsval och regionval hålls. Fullmäktige är kommunens högsta beslutande organ, och nämnder och förvaltningar sköter sedan det dagliga arbetet. Ett exempel är skolan i din egen kommun, där politikerna bestämmer hur mycket pengar skolorna får. På provet: skriv att kommunen sköter service och välfärd nära medborgarna, finansieras av skatt och styrs av folkvalda i fullmäktige.",
+   "short_words": 26,
+   "more_words": 124,
+   "t_first": 1750,
+   "t_short_end": 1750,
+   "t_more_end": 5512,
+   "t_done": 5513,
+   "more_ready_after_short_ms": 3762,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "vad är skillnaden mellan höger och vänster i politiken",
+   "subject": "Samhällskunskap",
+   "status": 200,
+   "short": "Skillnaden gäller främst hur mycket staten ska göra i ekonomin och samhället. Vänstern vill ha större offentlig sektor, högre skatter, omfördelning och mer jämlikhet, medan högern vill ha lägre skatter, mer marknad och privata lösningar samt större frihet för individen.",
+   "more": "\nOrdet kommer från franska revolutionen, där de som ville förändra samhället satt till vänster och de som ville bevara det gamla satt till höger. Idag handlar vänster–högerskalan mest om ekonomisk politik. Vänstern ser jämlikhet som viktigast och vill att staten, genom skatter och välfärd, jämnar ut skillnader mellan människor. Högern ser frihet och eget ansvar som viktigast och tror att marknaden och konkurrens skapar tillväxt och valfrihet. Ett exempel är skolan: vänstern vill ofta begränsa vinster i friskolor, högern vill behålla valfrihet och privata aktörer. Skalan är dock förenklad, eftersom partier också skiljer sig i värderingsfrågor som invandring och lag och ordning, och Sverige brukar därför beskrivas med två dimensioner. På provet bör du ange både ekonomisk fördelning och statens roll, och gärna nämna att Socialdemokraterna och Vänsterpartiet placeras till vänster och Moderaterna och Kristdemokraterna till höger.",
+   "short_words": 40,
+   "more_words": 138,
+   "t_first": 2297,
+   "t_short_end": 3019,
+   "t_more_end": 6808,
+   "t_done": 6808,
+   "more_ready_after_short_ms": 3789,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "vad är en krönika",
+   "subject": "Svenska",
+   "status": 200,
+   "short": "En krönika är en personligt hållen text i en tidning eller tidskrift, skriven av en återkommande skribent, kallad krönikör. Den är en subjektiv genre: skribenten ger sin egen åsikt eller sin egen vinkel på något aktuellt, ofta med humor, ironi eller värme.",
+   "more": "\nKrönikan skiljer sig från en vanlig nyhetsartikel, som ska vara saklig och neutral, och från en ledare, som uttrycker tidningens linje. Krönikan uttrycker i stället krönikörens eget perspektiv, och därför finns ofta ett tydligt jag, en personlig ton och ett talspråkligt, ledigt språk. Strukturen är fri, men ofta börjar den med en vardaglig iakttagelse eller en anekdot och leder sedan fram till en bredare poäng. Ett exempel är en krönikör som utgår från en köbildning i mataffären och därifrån resonerar om hur stressade vi har blivit. Retoriskt använder krönikören gärna ironi, överdrifter och direkt tilltal för att väcka läsarens känslor och engagera. På provet ska du kunna ange genretrick som personlig ton, subjektivitet, aktuellt ämne och ett tydligt budskap, och visa med ett citat eller exempel hur just den krönikan gör det. Vilken genre är en krönika närmast, subjektiv eller objektiv?",
+   "short_words": 42,
+   "more_words": 141,
+   "t_first": 2648,
+   "t_short_end": 3099,
+   "t_more_end": 8006,
+   "t_done": 8006,
+   "more_ready_after_short_ms": 4907,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "när använder man some och any",
+   "subject": "Engelska",
+   "status": 200,
+   "short": "\"Some\" används i jakande meningar, och \"any\" i nekande meningar och frågor. Exempel: \"I have some apples\" men \"I don't have any apples\" och \"Do you have any apples?\"\n\n\n",
+   "more": "\n\nBåda orden betyder ungefär \"några\" eller \"lite\" och används med flertalsord och ord som inte går att räkna, som \"water\" eller \"milk\". Det gäller alltså både \"some books\" och \"some water\". Det finns två viktiga undantag. När du erbjuder något eller ber om något använder man \"some\" även i frågor, eftersom du förväntar dig ett ja: \"Would you like some tea?\" och \"Can I have some water?\" Med \"any\" i en jakande mening får ordet en annan betydelse, nämligen \"vilken som helst\": \"You can take any book.\" Här betyder det alltså inte \"några\" utan \"vilken bok som helst\". Samma mönster gäller sammansättningarna: \"something\" och \"someone\" i jakande meningar, \"anything\" och \"anyone\" i nekande meningar och frågor, som i \"I don't know anything.\" På provet: skriv \"some\" i påståenden och erbjudanden, och \"any\" i frågor och negationer.",
+   "short_words": 30,
+   "more_words": 137,
+   "t_first": 1301,
+   "t_short_end": 1554,
+   "t_more_end": 4941,
+   "t_done": 4941,
+   "more_ready_after_short_ms": 3387,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "vad är en logaritm",
+   "subject": "Matematik",
+   "status": 200,
+   "short": "En logaritm svarar på frågan: vilket tal ska jag upphöja basen till för att få ett visst tal? Tiologaritmen av tusen är tre, eftersom tio upphöjt till tre är tusen.",
+   "more": "\nAllmänt gäller att om a upphöjt till x är lika med y, så är x lika med logaritmen av y med basen a. Logaritmen är alltså det omvända till att upphöja, på samma sätt som division är det omvända till multiplikation. Två baser används mest: tio, som skrivs lg, och e, ungefär två komma sju ett åtta, som skrivs ln och kallas den naturliga logaritmen. Logaritmen av ett tal är bara definierad när talet är större än noll, eftersom en positiv bas aldrig ger ett negativt tal eller noll när man upphöjer den. Lagarna du behöver kunna är att lg av a gånger b är lg a plus lg b, att lg av a delat med b är lg a minus lg b, och att lg av a upphöjt till n är n gånger lg a. Den sista lagen använder du för att lösa ekvationer där x står i exponenten, till exempel två upphöjt till x är lika med femtio, som ger x är lika med lg femtio delat med lg två, ungefär fem komma sex fyra. På provet visar du fullt att du skriver ut sambandet mellan potens och logaritm och anger vilken logaritmlag du använder i varje steg.",
+   "short_words": 30,
+   "more_words": 200,
+   "t_first": 1199,
+   "t_short_end": 1497,
+   "t_more_end": 5740,
+   "t_done": 5740,
+   "more_ready_after_short_ms": 4243,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  },
+  {
+   "q": "hur räknar man ut medelvärde och median",
+   "subject": "Matematik",
+   "status": 200,
+   "short": "Medelvärde är summan av alla tal delat med hur många tal det är, och median är det mittersta talet när talen står i storleksordning.\n\n",
+   "more": "\nTa talen tre, sju, fyra, tio och sex. För medelvärdet lägger du ihop dem: tre plus sju plus fyra plus tio plus sex blir trettio. Sedan delar du med antalet tal, fem, och får trettio delat med fem, alltså sex. För medianen sorterar du först talen från minst till störst: tre, fyra, sex, sju, tio. Det mittersta är sex, så medianen är sex. Är antalet tal jämnt, finns det två mittental, och då tar du medelvärdet av dem. Med tre, fyra, sex och sju är mittentalen fyra och sex, och medianen blir fem. Skillnaden syns när ett tal sticker ut. Lägger du till talet hundra flyttas medelvärdet upp mycket, men medianen ändras knappt. På provet: skriv alltid ut summan och divisionen för medelvärdet, och glöm inte att sortera talen innan du hittar medianen.",
+   "short_words": 24,
+   "more_words": 133,
+   "t_first": 2568,
+   "t_short_end": 2568,
+   "t_more_end": 6092,
+   "t_done": 6092,
+   "more_ready_after_short_ms": 3524,
+   "model": "claude-sonnet-5-5",
+   "err": null
+  }
+ ],
+ "learn": [
+  {
+   "step": "vad är en enzym",
+   "subject": "Biologi",
+   "settings_sent": [],
+   "short_words": 34,
+   "more_words": 236,
+   "two_level_split": true,
+   "short": "Ett enzym är ett protein som fungerar som katalysator i cellen: det gör att en kemisk reaktion går mycket snabbare, utan att själva förbrukas.\n\nVarje enzym har ett aktivt säte med en särskild form.",
+   "status": 200,
+   "after_signal": {
+    "settings": [
+     {
+      "key": "more",
+      "value": "y",
+      "scope": {
+       "mode": "prov",
+       "subject": "Biologi"
+      },
+      "n": 1
+     }
+    ],
+    "long_first": false
+   }
+  },
+  {
+   "step": "vad gör levern",
+   "subject": "Biologi",
+   "settings_sent": [
+    {
+     "key": "more",
+     "value": "y",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1
+    }
+   ],
+   "short_words": 17,
+   "more_words": 126,
+   "two_level_split": true,
+   "short": "Levern är kroppens kemifabrik och reningsverk: den bryter ner gifter och läkemedel, bildar galla och reglerar blodsockret.\n\n\n",
+   "status": 200,
+   "after_signal": {
+    "settings": [
+     {
+      "key": "more",
+      "value": "",
+      "scope": {
+       "mode": "prov",
+       "subject": "Biologi"
+      },
+      "n": 1
+     },
+     {
+      "key": "length",
+      "value": "longer",
+      "scope": {
+       "mode": "prov",
+       "subject": "Biologi"
+      },
+      "n": 1
+     }
+    ],
+    "long_first": true
+   }
+  },
+  {
+   "step": "vad är fotosyntesens motsats",
+   "subject": "Biologi",
+   "settings_sent": [
+    {
+     "key": "more",
+     "value": "",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1
+    },
+    {
+     "key": "length",
+     "value": "longer",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1
+    }
+   ],
+   "short_words": 164,
+   "more_words": 0,
+   "two_level_split": false,
+   "short": "Fotosyntesens motsats är cellandningen. I fotosyntesen bygger växter socker av koldioxid och vatten med hjälp av ljusenergi, och syre bildas som restprodukt. I cellandningen sker det omvända: sockret bryts ner tillsammans med syre, och det bildas koldioxid och vatten. Skillnaden är att energin går åt i fotosyntesen, medan den frigörs i cellandningen och används av cellen som energi, bland annat till rörelse, värme och tillväxt. Fotosyntesen sker i växternas kloroplaster, där klorofyllet fångar ljuset. Cellandningen sker i mitokondrierna och finns i alla levande celler, alltså hos både växter, djur och svampar. Ett konkret exempel är att en växt fotosyntetiserar på dagen när det är ljust, men andas hela tiden, även på natten. Därför är den en nettoproducent av syre bara när fotosyntesen är större än cellandningen. Kretsloppet hänger ihop: det som är slutprodukt i den ena processen är utgångsämne i den andra. På provet: skriv båda reaktionerna med sina utgångsämnen och slutprodukter, och förklara att den ena binder energi och den andra frigör den.",
+   "status": 200
+  },
+  {
+   "step": "vad är en syra",
+   "subject": "Kemi",
+   "settings_sent": [
+    {
+     "key": "more",
+     "value": "",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1
+    },
+    {
+     "key": "length",
+     "value": "longer",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1
+    }
+   ],
+   "short_words": 32,
+   "more_words": 198,
+   "two_level_split": true,
+   "short": "En syra är ett ämne som avger vätejoner, H plus, när det löses i vatten. Det är de fria vätejonerna som gör att lösningen blir sur och får ett pH under sju.",
+   "status": 200
+  },
+  {
+   "step": "efter 'kortare': vad är en cellkärna",
+   "settings_sent": [
+    {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1
+    }
+   ],
+   "two_level_split": true,
+   "short_words": 26,
+   "more_words": 90,
+   "short": "Cellkärnan är cellens styrcentral, som innehåller DNA med cellens arvsanlag. Den bestämmer vilka proteiner cellen ska tillverka och styr därmed hur cellen fungerar och delar sig.",
+   "status": 200,
+   "correction_reply": {
+    "add": [],
+    "update": [],
+    "remove": [],
+    "settings": [
+     {
+      "key": "length",
+      "value": "shorter",
+      "scope": {
+       "mode": "prov",
+       "subject": "Biologi"
+      },
+      "n": 1
+     }
+    ],
+    "setting": {
+     "key": "length",
+     "value": "shorter",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1,
+     "text": "Kortare svar i biologi"
+    },
+    "widened": false,
+    "profile": "Användaren vill ha: kortare svar i biologi."
+   }
+  }
+ ],
+ "no": [
+  {
+   "q": "vad är en art",
+   "settings_sent": [],
+   "split": true,
+   "short_words": 23,
+   "more_words": 135,
+   "short": "En art är en grupp individer som kan para sig med varandra och få fertila ungar, alltså ungar som själva kan få avkomma.\n\n\n"
+  },
+  {
+   "q": "vad är en näringskedja",
+   "settings_sent": [
+    {
+     "key": "more",
+     "value": "n",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1
+    }
+   ],
+   "split": true,
+   "short_words": 19,
+   "more_words": 117,
+   "short": "En näringskedja visar vem som äter vem i naturen, och hur energi förs vidare från en organism till nästa.\n\n"
+  },
+  {
+   "q": "vad är ett ekosystem",
+   "settings_sent": [
+    {
+     "key": "more",
+     "value": "nn",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1
+    }
+   ],
+   "split": true,
+   "short_words": 25,
+   "more_words": 138,
+   "short": "Ett ekosystem är ett område där levande organismer och den livlösa miljön samspelar, till exempel en skog med växter, djur, mikroorganismer, jord, vatten och solljus.\n\n"
+  },
+  {
+   "q": "vad är biologisk mångfald",
+   "settings_sent": [
+    {
+     "key": "more",
+     "value": "nnn",
+     "scope": {
+      "mode": "prov",
+      "subject": "Biologi"
+     },
+     "n": 1
+    }
+   ],
+   "split": true,
+   "short_words": 28,
+   "more_words": 132,
+   "short": "Biologisk mångfald är variationen av liv på jorden: hur många olika arter som finns, hur olika generna är inom varje art, och hur många olika naturtyper som finns.\n\n"
+  }
+ ]
+}
