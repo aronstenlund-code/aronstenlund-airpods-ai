@@ -1,0 +1,3 @@
+# Oscar QA (D120): generated test speech is cached here and reused; audio never goes to git.
+*
+!.gitignore

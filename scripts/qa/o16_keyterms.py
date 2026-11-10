@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Oscar QA, O16: which keyterms make Scribe v2 Realtime close the socket (1008 invalid_request)?
 Each probe opens a socket like the app (stt-token, Provläge VAD values) with ONE variable keyterm set, sends ~1.5 s
-of speech (a cached /tts clip from O12, scratch only) and records: session started, error messages, close code.
+of speech (a cached /tts clip from O12, scratch only; D120: 1.0 s by default, --secs) and records: session started, error messages, close code.
   O6_LIB=<scipy+websockets> python -I scripts/qa/o16_keyterms.py --clip <file.npy> [--probe]   -> reports/qa/data/<stamp>-o16.json
 --probe runs only the baseline (no keyterms) to see if Scribe works at all. Uses Scribe seconds only, no /answer."""
 import argparse, asyncio, base64, datetime as dt, importlib.util, json, os, pathlib, sys, time, urllib.parse
@@ -94,7 +94,7 @@ async def probe(tok, audio, keyterms):
                     await asyncio.sleep(0.1)
             except websockets.ConnectionClosed as ce:
                 res["close"] = res["close"] or [ce.code, (ce.reason or "")[:200]]
-            await asyncio.sleep(2.5)
+            await asyncio.sleep(1.5)
             try:
                 await ws.close()
             except Exception:
@@ -109,21 +109,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--clip", required=True)
     ap.add_argument("--probe", action="store_true")
+    ap.add_argument("--secs", type=float, default=1.0)
     a = ap.parse_args()
     x = np.load(a.clip)
-    audio = resample_poly(x, 2, 3).astype(np.float32)[: int(16000 * 2.0)]  # 24 -> 16 kHz, first 2 s
-    audio = np.concatenate([np.zeros(4000, dtype=np.float32), audio, np.zeros(8000, dtype=np.float32)])
+    audio = resample_poly(x, 2, 3).astype(np.float32)[: int(16000 * a.secs)]  # 24 -> 16 kHz, first --secs s
+    audio = np.concatenate([np.zeros(1600, dtype=np.float32), audio, np.zeros(4800, dtype=np.float32)])
     tok = O15.signup()
-    rows = []
+    rows, secs = [], 0.0
     for name, kt in (PROBES[:1] if a.probe else PROBES):
         r = asyncio.run(probe(tok, audio, kt))
         ok = r["started"] and not (r["close"] and r["close"][0] not in (1000, 1005)) and not any("error" in m for m in r["msgs"])
+        secs += len(audio) / 16000
         rows.append({"probe": name, "keyterms": kt, "ok": ok, **r})
         print(name, "OK" if ok else "FAIL", r.get("close"), r["msgs"][:2], r.get("exc", ""), "|", (r["commits"] or [""])[0][:60], flush=True)
-        time.sleep(0.5)
+        time.sleep(10.5)  # stt-token allows 6 per user per minute
     stamp = dt.datetime.now().strftime("%Y-%m-%d-%H%M")
     out = ROOT / "reports/qa/data" / f"{stamp}-o16{'-probe' if a.probe else ''}.json"
-    out.write_text(json.dumps({"stamp": stamp, "rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
+    out.write_text(json.dumps({"stamp": stamp, "scribe_audio_seconds": round(secs, 1), "clip": pathlib.Path(a.clip).name, "rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
     print("->", out)
 
 

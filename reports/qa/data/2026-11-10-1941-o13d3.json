@@ -1,0 +1,194 @@
+{
+ "stamp": "2026-11-10-1941",
+ "summary": {
+  "terms": 20,
+  "right": 0,
+  "wrong": [],
+  "errors": [
+   "bio-ribosomer",
+   "bio-homeostas",
+   "bio-glykolys",
+   "bio-kromosomer",
+   "bio-evolution",
+   "kem-avogadro",
+   "kem-katalysator",
+   "kem-elektroneg",
+   "kem-isotoper",
+   "kem-chatelier",
+   "fys-kirchhoff",
+   "fys-arkimedes",
+   "mat-logaritm",
+   "mat-cosinus",
+   "mat-fibonacci",
+   "his-mesopotamien",
+   "his-hammurabi",
+   "his-machiavelli",
+   "sv-lagerlof",
+   "sv-konjunktiv"
+  ],
+  "elevenlabs_chars_new": 501,
+  "scribe_seconds": 0.0
+ },
+ "rows": [
+  {
+   "id": "bio-ribosomer",
+   "term": "ribosomerna",
+   "text": "Nu tar vi ribosomerna.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.0,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "bio-homeostas",
+   "term": "homeostas",
+   "text": "Nu tar vi homeostas.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.0,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "bio-glykolys",
+   "term": "glykolysen",
+   "text": "Nu tar vi glykolysen.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 1.92,
+   "error": "scribe None b''"
+  },
+  {
+   "id": "bio-kromosomer",
+   "term": "kromosomerna",
+   "text": "Nu tar vi kromosomerna.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 1.84,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "bio-evolution",
+   "term": "Darwins evolutionsteori",
+   "text": "Nu tar vi Darwins evolutionsteori.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.72,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "kem-avogadro",
+   "term": "Avogadros konstant",
+   "text": "Nu tar vi Avogadros konstant.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.48,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "kem-katalysator",
+   "term": "katalysatorer",
+   "text": "Nu tar vi katalysatorer.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.08,
+   "error": "scribe None b''"
+  },
+  {
+   "id": "kem-elektroneg",
+   "term": "elektronegativitet",
+   "text": "Nu tar vi elektronegativitet.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.48,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "kem-isotoper",
+   "term": "isotoper",
+   "text": "Nu tar vi isotoper.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 1.92,
+   "error": "scribe None b''"
+  },
+  {
+   "id": "kem-chatelier",
+   "term": "Le Chateliers princip",
+   "text": "Nu tar vi Le Chateliers princip.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.48,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "fys-kirchhoff",
+   "term": "Kirchhoffs lagar",
+   "text": "Nu tar vi Kirchhoffs lagar.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.16,
+   "error": "scribe None b''"
+  },
+  {
+   "id": "fys-arkimedes",
+   "term": "Arkimedes princip",
+   "text": "Nu tar vi Arkimedes princip.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.32,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "mat-logaritm",
+   "term": "logaritmer",
+   "text": "Nu tar vi logaritmer.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 1.84,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "mat-cosinus",
+   "term": "cosinussatsen",
+   "text": "Nu tar vi cosinussatsen.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.08,
+   "error": "scribe None b''"
+  },
+  {
+   "id": "mat-fibonacci",
+   "term": "Fibonaccis talföljd",
+   "text": "Nu tar vi Fibonaccis talföljd.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.48,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "his-mesopotamien",
+   "term": "Mesopotamien",
+   "text": "Nu tar vi Mesopotamien.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.08,
+   "error": "scribe None b''"
+  },
+  {
+   "id": "his-hammurabi",
+   "term": "Hammurabis lagar",
+   "text": "Nu tar vi Hammurabis lagar.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.32,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "his-machiavelli",
+   "term": "Machiavelli",
+   "text": "Nu tar vi Machiavelli.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 1.84,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  },
+  {
+   "id": "sv-lagerlof",
+   "term": "Selma Lagerlöf",
+   "text": "Nu tar vi Selma Lagerlöf.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 2.08,
+   "error": "scribe None b''"
+  },
+  {
+   "id": "sv-konjunktiv",
+   "term": "konjunktiv",
+   "text": "Nu tar vi konjunktiv.",
+   "tts_model": "eleven_v4_turbo",
+   "audio_s": 1.76,
+   "error": "scribe 413 b'{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 65536 bytes\",\"fallback\":false}}'"
+  }
+ ]
+}
