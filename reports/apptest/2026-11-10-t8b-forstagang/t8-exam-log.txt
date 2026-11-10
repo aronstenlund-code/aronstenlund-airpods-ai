@@ -1,0 +1,68 @@
+path: exam
+taps: 8
+screens: 10
+
+Milestones:
+  18.9 s,  0 taps,  0 screens: app opened
+  34.6 s,  2 taps,  3 screens: first question screen
+  36.6 s,  2 taps,  3 screens: first question: Lyssnar
+ 131.5 s,  6 taps,  8 screens: start screen
+ 159.0 s,  8 taps,  9 screens: Provläge: listening
+ 253.6 s,  8 taps, 10 screens: done
+
+Log:
+MILESTONE   18.9 s,  0 taps,  0 screens: app opened
+shot at   20.5 s: t8-exam-01-intro — Intro: the first thing a new user sees
+SCREEN t8-exam-01-intro — Intro: the first thing a new user sees
+  texts (7): Inget konto. Testa nu betyder att du godkänner punkterna ovan. | Lumen | Fråga högt. Få svaret i örat. | Telefonen stannar i fickan. | Lyssnar bara när du har startat den | Du ser alltid när den lyssnar | Ljud sparas inte
+  buttons (2): Testa nu | Läs mer
+TAP  1 at   22.2 s: intro → Testa nu
+SYSTEM ALERT: “Lumen” would like to access the Microphone. — “Lumen” would like to access the Microphone. / Lumen listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.
+shot at   25.0 s: t8-exam-02-systemfraga — System alert: “Lumen” would like to access the Microphone.
+TAP  2 at   25.9 s: system alert → allow
+shot at   31.4 s: t8-exam-03-forsta-fragan — First question, before speaking
+SCREEN t8-exam-03-forsta-fragan — First question, before speaking
+  texts (6): iOS frågar om mikrofonen första gången. Lumen sparar aldrig ljud. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Lyssnar | Till exempel: Vad är fotosyntes? | Lyssnar
+  buttons (1): Hoppa över
+MILESTONE   34.6 s,  2 taps,  3 screens: first question screen
+MILESTONE   36.6 s,  2 taps,  3 screens: first question: Lyssnar
+shot at   98.4 s: t8-exam-04-forsta-svaret-saknas — Frågor: no answer within 60 s
+SCREEN t8-exam-04-forsta-svaret-saknas — Frågor: no answer within 60 s
+  texts (6): iOS frågar om mikrofonen första gången. Lumen sparar aldrig ljud. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Lyssnar | Till exempel: Vad är fotosyntes? | Lyssnar
+  buttons (1): Hoppa över
+MISS: Frågor: no answer containing 'Canberra' within 60 s
+TAP  3 at  106.5 s: first question → Fortsätt/Hoppa över
+shot at  111.8 s: t8-exam-05-prov-steget — First start: add an exam or skip
+SCREEN t8-exam-05-prov-steget — First start: add an exam or skip
+  texts (9): Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Säg till exempel, Jag har prov i biologi på fredag | Eller välj ämne | Datum | Årskurs | Säg till exempel | Jag har prov i biologi på fredag | Välj
+  buttons (9): Spara prov | Inte nu | Matte | NO | SO | Språk | Annat | Årskurs, Välj | Datumväljare
+TAP  4 at  120.1 s: exam step → NO
+shot at  121.3 s: t8-exam-06-prov-steget-no — Exam step, NO chosen
+SCREEN t8-exam-06-prov-steget-no — Exam step, NO chosen
+  texts (9): Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Säg till exempel, Jag har prov i biologi på fredag | Eller välj ämne | Datum | Årskurs | Säg till exempel | Jag har prov i biologi på fredag | Välj
+  buttons (13): Spara prov | Inte nu | Matte | NO | SO | Språk | Annat | Biologi | Fysik | Kemi | Teknik | Årskurs, Välj | Datumväljare
+TAP  5 at  125.4 s: exam step → Spara prov
+shot at  126.7 s: t8-exam-07-dela-historik — Share history prompt
+SCREEN t8-exam-07-dela-historik — Share history prompt
+  texts (10): Vill du hjälpa till att förbättra Lumen? | Du kan dela dina egna frågor och Lumens svar med utvecklarna, utan ditt namn, i högst 12 månader. Andra personers tal skickas aldrig. Du kan ändra dig när som helst i Inställningar, och då raderas det som delats. | Frågor, Svarar när någon frågar | Hör inte, försöker igen | Säg ”Lumen, upprepa” | Frågor | Svarar när någon frågar | Svaren hörs i örat och syns här. | Jag hör inte just nu | Taligenkänningen gick ner. Lumen försöker igen av sig själv.
+  buttons (7): Dela inte | Dela historik | Tillbaka till start | Mer | Kommandon | Pausa | Avsluta
+TAP  6 at  128.7 s: share prompt → Dela inte
+shot at  130.9 s: t8-exam-08-start — The start screen after the first start
+SCREEN t8-exam-08-start — The start screen after the first start
+  texts (8): Frågor, Svarar när någon frågar | Hör inte, försöker igen | Säg ”Lumen, upprepa” | Frågor | Svarar när någon frågar | Svaren hörs i örat och syns här. | Jag hör inte just nu | Taligenkänningen gick ner. Lumen försöker igen av sig själv.
+  buttons (5): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta
+MILESTONE  131.5 s,  6 taps,  8 screens: start screen
+note: a Frågor session is still on (Lyssnar) after the first start
+TAP  7 at  139.3 s: Lyssnar → Avsluta (session from the first start)
+TAP  8 at  144.4 s: start → Få A-svar till provet
+shot at  157.0 s: t8-exam-09-provlage-lyssnar — Lyssnar in Provläge, before the question
+SCREEN t8-exam-09-provlage-lyssnar — Lyssnar in Provläge, before the question
+  texts (19): Noprovet, Provläge, tis 17 nov | Lyssnar | Säg ”Lumen, förhör mig” | Noprovet | Provläge, tis 17 nov | Lyssnar | Fråga om det du pluggar, eller bli förhörd. | Ämnesord: NO, ekosystem, näringskedja, näringsväv, producent, konsument, nedbrytare, fotosyntes | Eller säg ”Lumen, förhör mig”. | Rösten fungerar inte just nu | Svaren läses med iPhonens röst tills den fungerar igen. | NO | ekosystem | näringskedja | näringsväv | producent | konsument | nedbrytare | fotosyntes
+  buttons (7): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Förhör mig | Tyst förhör: svara genom att nicka
+MILESTONE  159.0 s,  8 taps,  9 screens: Provläge: listening
+shot at  250.5 s: t8-exam-10-provlage-svaret-saknas — Provläge: no answer within 90 s
+SCREEN t8-exam-10-provlage-svaret-saknas — Provläge: no answer within 90 s
+  texts (18): Noprovet, Provläge, tis 17 nov | Hör inte, försöker igen | Säg ”Lumen, förhör mig” | Noprovet | Provläge, tis 17 nov | Fråga om det du pluggar, eller bli förhörd. | Ämnesord: NO, ekosystem, näringskedja, näringsväv, producent, konsument, nedbrytare, fotosyntes | Eller säg ”Lumen, förhör mig”. | Jag hör inte just nu | Taligenkänningen gick ner. Lumen försöker igen av sig själv. | NO | ekosystem | näringskedja | näringsväv | producent | konsument | nedbrytare | fotosyntes
+  buttons (7): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Förhör mig | Tyst förhör: svara genom att nicka
+MISS: Provläge: no answer containing 'Canberra' within 90 s
+MILESTONE  253.6 s,  8 taps, 10 screens: done

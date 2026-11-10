@@ -1,6 +1,6 @@
-# Överlämning Toby (apptest), 2026-11-10 10:05
-Sessionen har gjort T7 och T8 i dag (efter T4, T1, T2, T3, T6 och T5 i går) och har komprimerats. **T9 pågår**
-(skärmrunda efter A18/A22) på grenen `toby/t9-screens`.
+# Överlämning Toby (apptest), 2026-11-10 17:10
+Sessionen har gjort T7, T8 och T9 i dag (efter T4, T1, T2, T3, T6 och T5 i går) och har komprimerats. Kön har T5b,
+T7b och T8b (alla väntar på ElevenLabs-kvoten) samt T10.
 
 ## Det som inte står i rapporterna
 - **Windows utan Xcode.** CI är kompilatorn. Pusha till `toby/<punkt>` och läs körningarna via GitHub API med
@@ -24,8 +24,13 @@ Sessionen har gjort T7 och T8 i dag (efter T4, T1, T2, T3, T6 och T5 i går) och
   `screens_index.py` tar bort de tecknen.
 
 ## Öppna trådar
-- **T9:** run på `toby/t9-screens`. Jämför med T3:s 12 avvikelser, med A13-rapporten och med Kellys
-  Ke12-skisser. Skriv rapporten och merga sedan testfixarna till main.
-- **T8b (del):** firstuser på samma gren. A25 rättade fynd 1, så kontrollera "Lyssnar". Svaren väntar på kvoten.
-- **T5b och T7b:** A21 rättade både T5-fynden och T7:s döva fönster. Kör `apptest-retest` och `apptest-more` när
-  kvoten är tillbaka (Kevins `credits-ready.yml` visar när den är det).
+- **Fullrundan på dagens main.** Kör `apptest-screens` via workflow_dispatch utan input. Den tar 80–150 min.
+  - A35, A37, A41, A42 och A47 kom efter T9:s gröna körning. Turens fixar för A33 och A35 körde bara på push (två
+    lägen) 17:06.
+  - Kontrollera också om "Lägg till prov" från Start (A47) fortfarande täcker Datum.
+- **Efter A33** går första startens Frågor-session vidare bakom Start. Turen avslutar den före "Bara fråga".
+- **T10** (ElevenLabs nere) kan göras nu, eftersom kvoten är slut. T8-körningen 42825446414 visar redan A45:s rad
+  "Lumen hör och pratar lite sämre just nu" och kortet "Jag hör inte just nu".
+  - iPhone-igenkänningen fungerar inte i simulatorn, så "blir inte döv" går bara att se på telefon.
+- **T5b och T7b:** kör `apptest-retest` och `apptest-more` när kvoten är tillbaka (Kevins `credits-ready.yml`).
+- Den gamla grenen `toby/t9-screens` är ersatt av `toby/t9b-screens` (samma fixar, flyttad till main).

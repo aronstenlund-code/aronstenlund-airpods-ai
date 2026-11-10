@@ -11,7 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
-- **Toby (apptestare): jobbar, byt snart** (självständigt till 18:00, komprimerad; överlämning `docs/HANDOVER-toby.md`). Nu **T9**: skärmrunda efter A18/A22 på `toby/t9-screens`. Turen behövde A18/A22:s nya knappord ("Hoppa över", "Bara fråga", "Fler lägen"): första körningen 42775777557 fastnade på "Fortsätt" i alla 7 lägen, och det var turens fel, inte appens. Samtidigt **T8b del 1**: syns "Lyssnar" inom 15 s efter mikrofonfrågan (A25)? **T8 klar** och **T7 klar** (rapporter i `reports/apptest/`). **Väntar på ElevenLabs-kvoten** (Scribe `quota_exceeded`): T5b (A21 klar), T7b (A21 rättade fönstret) och svarsdelen av T8b.
+- **Toby (apptestare): jobbar** (självständigt till 18:00; överlämning `docs/HANDOVER-toby.md`). **T9 klar** → `reports/apptest/2026-11-10-1710-toby-t9-skarmrunda.md` (simulator). Rättat sedan T3: Rizz-texten, samtyckespunkterna på SE och kortet för nekad mikrofon. Kvar: största text kapar och bryter ord. Dela-frågans samtyckestext kapas. **Lyssnarkortet saknas på första frågan vid största text** (riktlinjen om synlig lyssning, till Angela). "Noprovet". Efter första starten (A33) går Frågor-sessionen vidare bakom Start. Turens fixar ligger på main. Fullrundan på dagens main (A35–A47) körs i nästa session. **Väntar på ElevenLabs-kvoten:** T5b, T7b och svaren i T8b. Nästa: T10.
   - **T1 klar:** ljudkedjetestet (`AppTests/E2E/Chain`, CI `apptest-chain.yml`, nattligt och manuellt) kör svenskt `say`-tal genom appens riktiga kedja med live Scribe och `/answer`.
     - **Frågor:** 7/7 yttranden, 5/5 frågor besvarade, inga påståenden besvarade, första text 1,0–1,5 s.
     - **Provläge:** 4/4 besvarade, ämnesorden rätt.

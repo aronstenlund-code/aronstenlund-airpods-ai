@@ -1,0 +1,93 @@
+path: skip
+taps: 13
+screens: 15
+
+Milestones:
+  18.5 s,  0 taps,  0 screens: app opened
+  33.7 s,  2 taps,  3 screens: first question screen
+  33.8 s,  2 taps,  3 screens: first question: Lyssnar
+ 123.1 s,  5 taps,  7 screens: start screen
+ 191.6 s, 13 taps, 14 screens: Provläge: listening
+ 285.9 s, 13 taps, 15 screens: done
+
+Log:
+MILESTONE   18.5 s,  0 taps,  0 screens: app opened
+shot at   22.0 s: t8-skip-01-intro — Intro: the first thing a new user sees
+SCREEN t8-skip-01-intro — Intro: the first thing a new user sees
+  texts (7): Inget konto. Testa nu betyder att du godkänner punkterna ovan. | Lumen | Fråga högt. Få svaret i örat. | Telefonen stannar i fickan. | Lyssnar bara när du har startat den | Du ser alltid när den lyssnar | Ljud sparas inte
+  buttons (2): Testa nu | Läs mer
+TAP  1 at   24.4 s: intro → Testa nu
+SYSTEM ALERT: “Lumen” would like to access the Microphone. — “Lumen” would like to access the Microphone. / Lumen listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.
+shot at   27.5 s: t8-skip-02-systemfraga — System alert: “Lumen” would like to access the Microphone.
+TAP  2 at   28.5 s: system alert → allow
+shot at   32.6 s: t8-skip-03-forsta-fragan — First question, before speaking
+SCREEN t8-skip-03-forsta-fragan — First question, before speaking
+  texts (6): iOS frågar om mikrofonen första gången. Lumen sparar aldrig ljud. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Lyssnar | Till exempel: Vad är fotosyntes? | Lyssnar
+  buttons (1): Hoppa över
+MILESTONE   33.7 s,  2 taps,  3 screens: first question screen
+MILESTONE   33.8 s,  2 taps,  3 screens: first question: Lyssnar
+shot at   96.0 s: t8-skip-04-forsta-svaret-saknas — Frågor: no answer within 60 s
+SCREEN t8-skip-04-forsta-svaret-saknas — Frågor: no answer within 60 s
+  texts (6): iOS frågar om mikrofonen första gången. Lumen sparar aldrig ljud. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Lyssnar | Till exempel: Vad är fotosyntes? | Lyssnar
+  buttons (1): Hoppa över
+MISS: Frågor: no answer containing 'Canberra' within 60 s
+TAP  3 at  104.8 s: first question → Fortsätt/Hoppa över
+shot at  110.5 s: t8-skip-05-prov-steget — First start: add an exam or skip
+SCREEN t8-skip-05-prov-steget — First start: add an exam or skip
+  texts (9): Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Säg till exempel, Jag har prov i biologi på fredag | Eller välj ämne | Datum | Årskurs | Säg till exempel | Jag har prov i biologi på fredag | Välj
+  buttons (9): Spara prov | Inte nu | Matte | NO | SO | Språk | Annat | Årskurs, Välj | Datumväljare
+TAP  4 at  116.0 s: exam step → Inte nu
+shot at  117.5 s: t8-skip-06-dela-historik — Share history prompt
+SCREEN t8-skip-06-dela-historik — Share history prompt
+  texts (9): Vill du hjälpa till att förbättra Lumen? | Du kan dela dina egna frågor och Lumens svar med utvecklarna, utan ditt namn, i högst 12 månader. Andra personers tal skickas aldrig. Du kan ändra dig när som helst i Inställningar, och då raderas det som delats. | Frågor, Svarar när någon frågar | Lyssnar | Säg ”Lumen, upprepa” | Frågor | Svarar när någon frågar | Lyssnar | Svaren hörs i örat och syns här.
+  buttons (7): Dela inte | Dela historik | Tillbaka till start | Mer | Kommandon | Pausa | Avsluta
+TAP  5 at  120.2 s: share prompt → Dela inte
+shot at  122.4 s: t8-skip-07-start — The start screen after the first start
+SCREEN t8-skip-07-start — The start screen after the first start
+  texts (7): Frågor, Svarar när någon frågar | Lyssnar | Säg ”Lumen, upprepa” | Frågor | Svarar när någon frågar | Lyssnar | Svaren hörs i örat och syns här.
+  buttons (5): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta
+MILESTONE  123.1 s,  5 taps,  7 screens: start screen
+note: a Frågor session is still on (Lyssnar) after the first start
+TAP  6 at  129.6 s: Lyssnar → Avsluta (session from the first start)
+TAP  7 at  133.1 s: start → Fler lägen
+shot at  135.3 s: t8-skip-08-fler-lagen — Fler lägen
+SCREEN t8-skip-08-fler-lagen — Fler lägen
+  texts (16): Fler lägen | Lumen | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Lumen | Lägg till prov | Provläge | Pluggar till provet | Intervju | Färdiga svar på intervjufrågor | Socialt | Ett förslag i pausen | Rizz 18+ | Flörtig wingman
+  buttons (9): Klar | Inställningar | Lägg till prov | Bara fråga | Fler lägen | Provläge, Pluggar till provet | Intervju, Färdiga svar på intervjufrågor | Socialt, Ett förslag i pausen | Rizz 18+, Flörtig wingman
+TAP  8 at  141.7 s: Fler lägen → Provläge
+shot at  147.1 s: t8-skip-09-provlage-introfragor — Provläge's own first-start questions
+SCREEN t8-skip-09-provlage-introfragor — Provläge's own first-start questions
+  texts (9): Provläge | Lumen | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | När har du ditt prov? | Lumen | Lägg till prov
+  buttons (11): Inställningar | Lägg till prov | Bara fråga | Fler lägen | Hoppa över allt | Hoppa över | Idag | Imorgon | Inom en vecka | Senare | Inget prov just nu
+TAP  9 at  149.6 s: Provläge questions → Hoppa över
+shot at  152.1 s: t8-skip-10-provlage-introfragor-2 — Provläge question 2
+SCREEN t8-skip-10-provlage-introfragor-2 — Provläge question 2
+  texts (9): Provläge | Lumen | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Vilken årskurs går du i? | Lumen | Lägg till prov
+  buttons (15): Inställningar | Lägg till prov | Bara fråga | Fler lägen | Hoppa över allt | Hoppa över | Åk 6 | Åk 7 | Åk 8 | Åk 9 | Gymnasiet 1 | Gymnasiet 2 | Gymnasiet 3 | Högskola | Annat
+TAP 10 at  155.9 s: Provläge questions → Hoppa över
+shot at  158.3 s: t8-skip-11-provlage-introfragor-3 — Provläge question 3
+SCREEN t8-skip-11-provlage-introfragor-3 — Provläge question 3
+  texts (9): Provläge | Lumen | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Vilket ämne? | Lumen | Lägg till prov
+  buttons (21): Inställningar | Lägg till prov | Bara fråga | Fler lägen | Hoppa över allt | Hoppa över | Matematik | Svenska | Engelska | Biologi | Fysik | Kemi | Historia | Samhällskunskap | Geografi | Religion | Spanska | Tyska | Franska | Teknik | Programmering
+TAP 11 at  163.7 s: Provläge questions → Hoppa över
+shot at  167.0 s: t8-skip-12-provlage-introfragor-4 — Provläge question 4
+SCREEN t8-skip-12-provlage-introfragor-4 — Provläge question 4
+  texts (9): Provläge | Lumen | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Kontrollfrågor? | Lumen | Lägg till prov
+  buttons (10): Inställningar | Lägg till prov | Bara fråga | Fler lägen | Hoppa över allt | Hoppa över | Inga kontrollfrågor | Ja–nej-frågor (svara med rösten eller nicka) | Korta frågor | Svåra frågor
+TAP 12 at  176.7 s: Provläge questions → Hoppa över
+shot at  179.1 s: t8-skip-13-provlage-introfragor-5 — Provläge question 5
+SCREEN t8-skip-13-provlage-introfragor-5 — Provläge question 5
+  texts (9): Provläge | Lumen | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Hur långa förklaringar? | Lumen | Lägg till prov
+  buttons (9): Inställningar | Lägg till prov | Bara fråga | Fler lägen | Hoppa över allt | Hoppa över | Korta förklaringar | Mellanlånga förklaringar | Utförliga förklaringar
+TAP 13 at  182.5 s: Provläge questions → Hoppa över
+shot at  190.7 s: t8-skip-14-provlage-lyssnar — Lyssnar in Provläge, before the question
+SCREEN t8-skip-14-provlage-lyssnar — Lyssnar in Provläge, before the question
+  texts (8): Provläge, Pluggar till provet | Lyssnar | Säg ”Lumen, förhör mig” | Provläge | Pluggar till provet | Lyssnar | Fråga om det du pluggar, eller bli förhörd. | Eller säg ”Lumen, förhör mig”.
+  buttons (7): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Förhör mig | Tyst förhör: svara genom att nicka
+MILESTONE  191.6 s, 13 taps, 14 screens: Provläge: listening
+shot at  283.4 s: t8-skip-15-provlage-svaret-saknas — Provläge: no answer within 90 s
+SCREEN t8-skip-15-provlage-svaret-saknas — Provläge: no answer within 90 s
+  texts (9): Provläge, Pluggar till provet | Hör inte, försöker igen | Säg ”Lumen, förhör mig” | Provläge | Pluggar till provet | Fråga om det du pluggar, eller bli förhörd. | Eller säg ”Lumen, förhör mig”. | Jag hör inte just nu | Taligenkänningen gick ner. Lumen försöker igen av sig själv.
+  buttons (7): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Förhör mig | Tyst förhör: svara genom att nicka
+MISS: Provläge: no answer containing 'Canberra' within 90 s
+MILESTONE  285.9 s, 13 taps, 15 screens: done

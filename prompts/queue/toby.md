@@ -22,7 +22,7 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 - [ ] **T5b – Omtest av T5 efter Angelas A21** (effort: medium). Beror på: A21 (klar 2026-11-10) och påfylld ElevenLabs-kvot (Scribe `quota_exceeded` sedan 07:45). Samma fall som T5.
 
-- [~] pågår 2026-11-10 09:55 **T9 – Skärmrunda efter A22 och A18** (effort: medium). Beror på: A23 (sedan igen efter A18). Samma sju lägen som T3. Lägg bilderna sida vid sida med Kellys Ke12-skisser och skriv avvikelserna till Angela och Kelly.
+- [x] klar 2026-11-10 17:10 → `reports/apptest/2026-11-10-1710-toby-t9-skarmrunda.md` **T9 – Skärmrunda efter A22 och A18** (effort: medium). Beror på: A23 (sedan igen efter A18). Samma sju lägen som T3. Lägg bilderna sida vid sida med Kellys Ke12-skisser och skriv avvikelserna till Angela och Kelly.
 
 - [ ] **T7b – Omtest av Mer-fönstret** (effort: medium). Beror på: Angelas rättning av T7-fynd 1 (fönstret öppnas innan mikrofonen hör) och påfylld ElevenLabs-kvot. Kör `apptest-more` på `toby/t7-more` (eller main): ordlogiken (ja, mer, gärna, ja mitt i mening, annan röst, ny fråga) och tid till långt svar under 1 s (K13).
 

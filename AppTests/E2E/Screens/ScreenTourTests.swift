@@ -38,7 +38,7 @@ final class ScreenTourTests: XCTestCase {
         firstStart(micDenied: micDenied)
         sharePrompt()
         // With the microphone on, the first start's Frågor session goes on and Lyssnar is shown.
-        if waitFor(["Byt läge"], timeout: 2) != nil {
+        if waitFor(["Tillbaka till start"], timeout: 2) != nil {
             shoot("lyssnar-efter-forsta-start", note: "Lyssnar right after the first start")
             endSession()
         }
@@ -90,20 +90,35 @@ final class ScreenTourTests: XCTestCase {
         }
 
         dismissSystemAlerts()
-        if waitFor(["Fråga vad som helst"], timeout: 10) != nil {
+        // A18: with the microphone denied the whole screen is "Lumen hör dig inte" (Ke10), and before the first
+        // answer the button is "Hoppa över" (Fortsätt only after an answer, Ke9).
+        if waitFor(["Fråga vad som helst", "Lumen hör dig inte"], timeout: 10) != nil {
             pause(3) // let "Startar …" become "Lyssnar" (or the microphone error card)
             dismissSystemAlerts()
             shoot(micDenied ? "forsta-fragan-mikrofon-nekad" : "forsta-fragan", note: "First question (sketch 2)")
-            tap(["Fortsätt"], step: "first question → Fortsätt")
+            if micDenied, waitFor(["Lumen hör dig inte"], timeout: 1) == nil {
+                miss("APP: microphone denied, the first question does not show 'Lumen hör dig inte'")
+            }
+            tap(["Fortsätt", "Hoppa över"], step: "first question → Fortsätt/Hoppa över")
+            pause(1.5)
         } else {
             miss("'Fråga vad som helst' not shown")
         }
 
-        if waitFor(["Hoppa över"], timeout: 8) != nil {
+        // A22: the first start's exam step is "Har du prov snart?" with "Inte nu" (was "Hoppa över").
+        if waitFor(["Inte nu", "Hoppa över"], timeout: 8) != nil {
             shoot("lagg-till-prov-forsta", note: "Add exam at first start (sketch 3)")
             app.swipeUp()
             shoot("lagg-till-prov-forsta-slut", note: "Add exam at first start, scrolled")
-            tap(["Hoppa över"], step: "add exam → Hoppa över")
+            // A33: the form is behind "Skriv i stället" (Lumen asks aloud first).
+            if let write = find(["Skriv i stället"]) {
+                write.tap()
+                pause(1)
+                shoot("lagg-till-prov-forsta-formular", note: "Add exam at first start, the form (A33)")
+                app.swipeUp()
+                shoot("lagg-till-prov-forsta-formular-slut", note: "Add exam at first start, the form, scrolled")
+            }
+            tap(["Inte nu", "Hoppa över"], step: "add exam → Inte nu")
         } else {
             miss("add-exam step of the first start not shown")
         }
@@ -160,27 +175,46 @@ final class ScreenTourTests: XCTestCase {
             ("forberedelser", ["Förberedelser"]),
             ("egna-kommandon", ["Egna kommandon"]),
             ("integritet", ["Integritet och samtycke", "Privacy & consent"]),
-            ("ra-transkription", ["Rå transkription och svar"]),
-            ("diagnostik", ["Diagnostik", "Diagnostics"]),
             ("historik", ["Historik", "History"]),
             ("minne", ["Minne"]),
             ("studiekort", ["Studiekort"]),
-            ("feedback", ["Feedback & förslag", "Feedback & suggestions"]),
+            ("feedback", ["Feedback och förslag", "Feedback & förslag", "Feedback & suggestions"]),
+            ("rostkommandon", ["Röstkommandon"]),
+            ("om-appen", ["Om appen"]),
         ]
         for page in pages {
             openFromSettings(page.labels, name: page.name)
         }
+        // A13: "Avancerat" folds out its sections in place (not a page); the diagnostics rows are inside it.
+        expandAdvanced()
+        openFromSettings(["Rå transkription och svar"], name: "ra-transkription", advanced: true)
+        openFromSettings(["Diagnostik", "Diagnostics"], name: "diagnostik", advanced: true)
         tap(["Klar"], step: "settings → Klar")
         pause(1)
     }
 
+    /// Folds out "Avancerat" in Settings (once per sheet) and shoots the first screen of it.
+    private func expandAdvanced() {
+        guard let row = scrollTo(["Avancerat*"], buttonsOnly: true) else {
+            miss("settings row Avancerat not found")
+            return
+        }
+        row.tap()
+        pause(1)
+        app.swipeUp()
+        shoot("installningar-avancerat", note: "Settings › Avancerat folded out")
+        app.swipeUp()
+        shoot("installningar-avancerat-2", note: "Settings › Avancerat, scrolled")
+    }
+
     /// Scrolls the settings list up or down until the row is there, opens it, shoots it and goes back.
-    private func openFromSettings(_ labels: [String], name: String) {
+    private func openFromSettings(_ labels: [String], name: String, advanced: Bool = false) {
         // If going back from the previous page closed the whole sheet (seen after Förberedelser), open Settings again.
         if !app.navigationBars.buttons["Klar"].exists {
             log.append("note: Settings sheet closed before \(labels[0]), opening it again")
             tap(["Inställningar"], step: "start → Inställningar (again)")
             pause(1)
+            if advanced { expandAdvanced() }
         }
         // Buttons only: a section header with the same words ("Diagnostik") is not the row.
         guard let row = scrollTo(labels, buttonsOnly: true) else {
@@ -191,10 +225,17 @@ final class ScreenTourTests: XCTestCase {
         let back = app.navigationBars.buttons.matching(NSPredicate(format: "label != 'Klar'")).firstMatch
         row.tap()
         pause(1.5)
-        if !back.exists, let again = scrollTo(labels, buttonsOnly: true) {
-            // The last rows sit at the sheet's bottom edge, where a tap can miss: scroll once more and tap again.
-            app.swipeUp()
-            (find(labels, buttonsOnly: true) ?? again).tap()
+        // The last rows sit at the sheet's bottom edge, where a tap can miss (seen at the largest text size):
+        // look the row up again each time and tap it only when it is hittable, never a stale element.
+        var attempt = 0
+        while !back.exists, attempt < 3 {
+            attempt += 1
+            log.append("note: \(labels[0]) tap missed, retry \(attempt)")
+            if let again = scrollTo(labels, buttonsOnly: true), again.isHittable {
+                again.tap()
+            } else {
+                app.swipeDown()
+            }
             pause(1.5)
         }
         shoot("installningar-\(name)", note: "Settings › \(labels[0])")
@@ -211,12 +252,25 @@ final class ScreenTourTests: XCTestCase {
     // MARK: Modes (sketches 5 and 8)
 
     private func modesTour() {
-        if tap(["Frågor"], step: "start → Frågor") {
+        // A22: Start has "Bara fråga" (Frågor) and "Fler lägen" (Provläge, Intervju, Socialt, Rizz 18+).
+        // A33: the first start's Frågor session can still be on behind Start ("Lyssnar … Avsluta" on top, seen in T8 on
+        // the A33 build); a new mode does not open while it runs, so end it first.
+        if let running = find(["Avsluta"]), running.isHittable {
+            log.append("note: a session was still on at Start, ending it before Bara fråga")
+            running.tap()
+            pause(2)
             dismissSystemAlerts()
-            if waitFor(["Byt läge"], timeout: 10) != nil {
+            for label in ["Klar", "Stäng"] where app.buttons[label].exists { app.buttons[label].tap(); pause(1); break }
+        }
+        if tap(["Bara fråga", "Frågor"], step: "start → Bara fråga") {
+            dismissSystemAlerts()
+            if waitFor(["Tillbaka till start"], timeout: 10) != nil {
                 pause(2)
                 dismissSystemAlerts()
                 shoot("lyssnar-fragor", note: "Lyssnar in Frågor (sketch 5)")
+                // A18: "Byt läge" sits in the ⋯ menu ("Mer").
+                tap(["Mer"], step: "lyssnar → ⋯")
+                pause(0.5)
                 tap(["Byt läge"], step: "lyssnar → Byt läge")
                 if waitFor(["Klar"], timeout: 5) != nil {
                     pause(1)
@@ -236,30 +290,46 @@ final class ScreenTourTests: XCTestCase {
 
         sheetFromMode(["Intervju"], name: "intervju-setup", close: ["Avbryt", "Cancel"])
         sheetFromMode(["Socialt"], name: "socialt-start", close: ["Avbryt", "Cancel"])
-        sheetFromMode(["Rizz 18+"], name: "rizz-aldersgrans", close: ["Avbryt", "Cancel"])
+        sheetFromMode(["Rizz 18+", "Rizz"], name: "rizz-aldersgrans", close: ["Avbryt", "Cancel"])
     }
 
+    /// A22: the other modes sit in the "Fler lägen" sheet. Opens it (and shoots it once) when the mode is not on Start.
+    private func openMoreModes(for labels: [String]) {
+        if let onStart = find(labels), onStart.isHittable { return }
+        guard tap(["Fler lägen"], step: "start → Fler lägen") else { return }
+        pause(1)
+        if !shotMoreModes {
+            shoot("fler-lagen", note: "Fler lägen (A22)")
+            shotMoreModes = true
+        }
+    }
+
+    private var shotMoreModes = false
+
     private func sheetFromMode(_ labels: [String], name: String, close: [String]) {
+        openMoreModes(for: labels)
         guard tap(labels, step: "start → \(labels[0])") else { return }
         pause(2)
         dismissSystemAlerts()
         shoot(name, note: "\(labels[0]) first screen")
         if waitFor(close, timeout: 2) != nil {
             tap(close, step: "\(name) → close")
-        } else if waitFor(["Byt läge"], timeout: 1) != nil {
+        } else if waitFor(["Tillbaka till start"], timeout: 1) != nil {
             // It went straight to Lyssnar.
             endSession()
         } else {
             app.swipeDown(velocity: .fast) // pull the sheet down
         }
         pause(1)
-        if waitFor(["Byt läge"], timeout: 1) != nil { endSession() }
+        if waitFor(["Tillbaka till start"], timeout: 1) != nil { endSession() }
     }
 
     // MARK: Provläge
 
     private func provTour() {
-        guard tap(["Få A-svar till provet"], step: "start → Få A-svar till provet") else { return }
+        // A22 (D97): with an exam, "Få A-svar till provet" on Start; Provläge also sits in "Fler lägen".
+        if find(["Få A-svar till provet"]) == nil { openMoreModes(for: ["Provläge"]) }
+        guard tap(["Få A-svar till provet", "Provläge"], step: "start → Få A-svar till provet") else { return }
         pause(2)
         dismissSystemAlerts()
         if waitFor(["Hoppa över allt"], timeout: 5) != nil {
@@ -271,7 +341,7 @@ final class ScreenTourTests: XCTestCase {
             pause(2)
         }
         dismissSystemAlerts()
-        if waitFor(["Byt läge"], timeout: 8) != nil {
+        if waitFor(["Tillbaka till start"], timeout: 8) != nil {
             pause(1)
             shoot("lyssnar-provlage", note: "Lyssnar in Provläge (sketch 5)")
             endSession()
