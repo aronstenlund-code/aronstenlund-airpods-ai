@@ -1,30 +1,31 @@
-# Överlämning Toby (apptest), 2026-11-09 23:50
-Sessionen gjorde 6 punkter (T4, T1, T2, T3, T6, T5) och har komprimerats. Nästa i kön: **T7** (A15 är klar), **T8**, och **T5b** när A21 är klar.
+# Överlämning Toby (apptest), 2026-11-10 10:05
+Sessionen har gjort T7 och T8 i dag (efter T4, T1, T2, T3, T6 och T5 i går) och har komprimerats. **T9 pågår**
+(skärmrunda efter A18/A22) på grenen `toby/t9-screens`.
 
 ## Det som inte står i rapporterna
-- **Windows-maskin utan Xcode.** CI är kompilatorn. Pusha till en egen gren `toby/<punkt>` och läs körningarna via GitHub API med git-uppgifterna, inte `gh`.
-- **Utlösare för workflows:**
-  - En push till `toby/**` som rör `AppTests/E2E/Chain/**` startar T1, som kostar (live Scribe och /answer). `AppTests/E2E/**` startar T3. Avbryt de körningar du inte behöver.
-  - På main körs bara screens.
-  - `apptest-long.yml` kör 5 min på push. 60 min körs manuellt med input `minutes: "60"`.
-- **Delad utcheckning.** `D:\OneDrive\Airpods ai` har andra sessioners filer som inte är incheckade. Jobba i en egen worktree, `fetch` före push, och stage bara egna filer.
-  - I STATUS och BOARD: byt bara din egen rad, med skript eller Edit.
-- **Python på Windows:**
-  - Använd `PYTHONIOENCODING=utf-8 python -I -X utf8`.
-  - Skriv inte `\n` i heredoc-redigeringar av Python-filer, där blir det en riktig radbrytning. Använd `chr(92)` eller Edit.
-- **WAV-kroken:**
-  - `LUMEN_AUDIO_FILES`, `_GAP` och `_LOOP`. Den inledande tystnaden är fil 0 och loopas också.
-  - Avgränsa varje fall med `currentFile` (se `ListeningE2ETests`/`CommandsE2ETests`).
-  - Fortsättningar efter paus: två `say`-filer ihopfogade med python `wave` (`scripts/apptest/retest.sh`).
-- **Apples röst i stället för ElevenLabs:** spara `VoiceChoice.appleDefault` under `voice.choice`. Då kostar uppläsningen ingenting.
-- **Var försiktig med:**
-  - "Lyssnar" på skärmen är `isListening && isHearing` (A11).
-  - D74: läget visar standard medan appen är pausad. Det är avsiktligt och inget fel.
-  - D82 stänger igenkänningen medan Lumen pratar. Långtestet läser inte upp svar, så det prövar inte D82.
-- **429 från /answer:** körs flera lägen i följd i T6 kommer cirka 30 "Instruction failed" per läge. Lägg in en paus eller kör färre lägen per körning.
-- **CI-krasch utan testkoppling:** "Test crashed with signal abrt before establishing connection" är ett fel i simulatorn. Kör om via API:t (`rerun`).
+- **Windows utan Xcode.** CI är kompilatorn. Pusha till `toby/<punkt>` och läs körningarna via GitHub API med
+  token från `git credential fill`.
+  - Jobbloggar och artefakter svarar med en omdirigering. Följ den **utan** auth-huvudet, annars får du 401.
+- **Utlösare:** en push till `toby/**` som rör `AppTests/E2E/**` startar T3 (screens, cirka 80 min för 7 lägen) och
+  T8 (firstuser). En push till main startar screens, men andras pushar avbryter den. Kör därför på egen gren.
+- **Delad utcheckning.** Jobba i en egen worktree. På main byter du bara dina egna rader (STATUS, BOARD,
+  `prompts/queue/toby.md`), från `origin/main` och om igen vid krock.
+- **Python på Windows:** Bash-verktyget gör om `\\` i heredoc. Skriv Python-filer med Write/Edit, inte heredoc.
+- **ElevenLabs-kvoten är slut sedan 07:45.** Scribe svarar `quota_exceeded`, och iPhone-igenkänningen fungerar inte i
+  simulatorn. Alla ljudtest står därför (T5b, T7b, A17-omtest).
+  - Det som går är UI: skärmturen, och förstagångstestets kontroll av "Lyssnar" inom 15 s.
+- **A18/A22 bytte knappord:**
+  - "Hoppa över" före första svaret ("Fortsätt" bara efter ett svar).
+  - "Lumen hör dig inte" när mikrofonen är nekad.
+  - Provsteget heter "Har du prov snart?" och har knappen "Inte nu".
+  - Start har "Bara fråga" och "Fler lägen" (Provläge, Intervju, Socialt och Rizz 18+).
+  - Inställningar har "Feedback och förslag", "Röstkommandon" och "Avancerat".
+- **upload-artifact** vägrar filnamn med `"`. XCTest döper bilagor till `Debug description for "…"`, så
+  `screens_index.py` tar bort de tecknen.
 
 ## Öppna trådar
-- T5-fynd 1–4 till Angela (A21): Provläge-segment under en tur, svar i förväg på en halv fråga, mikrofonen stängd efter långt svar, 6–17 s väntan. T5b kör samma fall med `apptest-retest.yml`.
-- T6-fynd: Angela har rättat dem i A14, men ingen har testat om dem. Kör om `apptest-commands` någon gång.
-- `docs/DEVICE-TEST-QUICK.md` saknar Frågor med en fortsättning efter paus. Lägg in det när A21 är klar.
+- **T9:** run på `toby/t9-screens`. Jämför med T3:s 12 avvikelser, med A13-rapporten och med Kellys
+  Ke12-skisser. Skriv rapporten och merga sedan testfixarna till main.
+- **T8b (del):** firstuser på samma gren. A25 rättade fynd 1, så kontrollera "Lyssnar". Svaren väntar på kvoten.
+- **T5b och T7b:** A21 rättade både T5-fynden och T7:s döva fönster. Kör `apptest-retest` och `apptest-more` när
+  kvoten är tillbaka (Kevins `credits-ready.yml` visar när den är det).

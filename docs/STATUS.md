@@ -11,7 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
-- **Toby (apptestare): jobbar** (självständigt till 18:00). Nu **T9 stående uppgift**: omtest av A13 (designgranskningen) och A22 med T3-skärmturen på main (behöver inte Scribe). **T8 klar** (`reports/apptest/2026-11-10-0830-toby-t8-forstagangsanvandaren.md`, simulatorn, **inte enhet**): ny användare når aldrig första svaret ("Startar …" efter mikrofonfrågan, 3/3), Provläge 1 tryck med prov, 6 utan, 9 fynd. **T7 klar**: Mer-fönstret dövt (mikrofonen öppnar 2,8–13,3 s efter tonen). Väntar: T5b (A21), T7b och T8b (ElevenLabs-kvoten).
+- **Toby (apptestare): jobbar, byt snart** (självständigt till 18:00, komprimerad; överlämning `docs/HANDOVER-toby.md`). Nu **T9**: skärmrunda efter A18/A22 på `toby/t9-screens`. Turen behövde A18/A22:s nya knappord ("Hoppa över", "Bara fråga", "Fler lägen"): första körningen 42775777557 fastnade på "Fortsätt" i alla 7 lägen, och det var turens fel, inte appens. Samtidigt **T8b del 1**: syns "Lyssnar" inom 15 s efter mikrofonfrågan (A25)? **T8 klar** och **T7 klar** (rapporter i `reports/apptest/`). **Väntar på ElevenLabs-kvoten** (Scribe `quota_exceeded`): T5b (A21 klar), T7b (A21 rättade fönstret) och svarsdelen av T8b.
   - **T1 klar:** ljudkedjetestet (`AppTests/E2E/Chain`, CI `apptest-chain.yml`, nattligt och manuellt) kör svenskt `say`-tal genom appens riktiga kedja med live Scribe och `/answer`.
     - **Frågor:** 7/7 yttranden, 5/5 frågor besvarade, inga påståenden besvarade, första text 1,0–1,5 s.
     - **Provläge:** 4/4 besvarade, ämnesorden rätt.
