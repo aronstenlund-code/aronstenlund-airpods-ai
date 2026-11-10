@@ -126,7 +126,7 @@ struct ListeningScreen: View {
         if let quiz = model.silentQuiz {
             return "Tyst förhör, fråga \(max(1, quiz.asked)) av \(SilentQuiz.questions). Nicka för ja, skaka för nej." // A20.2
         }
-        switch model.state {
+        return switch model.state {
         case .paused: "Tryck Lyssna igen eller säg ”Lumen, fortsätt”"
         default: mode.isLive ? "Lumen ger ett förslag i pausen" : "Ställ en fråga när du vill"
         }

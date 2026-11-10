@@ -2,6 +2,9 @@ import SwiftUI
 
 /// D86 screen 2: "Lägg till prov". Grade, area → subject, a real date, optionally what is on the exam, or say it.
 /// Several exams are kept (`ExamPlanStore`); saving one makes it Provläge's profile.
+/// A22 (Kelly Ke9, PLAN 2b): in the first start it is "Har du prov snart?": the voice first (Lumen already listens),
+/// then one row of subjects, the date and the grade on one line each (the grade remembered), "Inte nu" to skip.
+/// The full form stays for "Lägg till prov" from Start and for editing.
 struct AddExamView: View {
     @Bindable var model: ListeningModel
     var isFirstStart = false
@@ -22,7 +25,116 @@ struct AddExamView: View {
     static let grades: [(StudyProfile.Grade, String)] = [(.y6, "Åk 6"), (.y7, "Åk 7"), (.y8, "Åk 8"), (.y9, "Åk 9"),
                                                          (.gy1, "Gy 1"), (.gy2, "Gy 2"), (.gy3, "Gy 3"), (.university, "Högskola")]
 
+    @State private var pickedSubject = false
+
+    /// The first start's short form (A22).
+    private var isQuick: Bool { isFirstStart && editing == nil }
+
     var body: some View {
+        if isQuick { quickBody } else { fullBody }
+    }
+
+    // MARK: A22 the first start: "Har du prov snart?"
+
+    private static let quickAreas: [ExamPlan.Area] = [.matte, .no, .so, .sprak, .annat]
+
+    private var quickBody: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 22) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Har du prov snart?")
+                        .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
+                        .accessibilityAddTraits(.isHeader)
+                    Text("Säg det, så förhör Lumen dig inför provet.")
+                        .font(LumenFont.text(16))
+                        .foregroundStyle(LumenColor.muted)
+                }
+                HStack(spacing: 14) {
+                    ListeningRings(size: 40, active: model.isListening)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(model.isListening ? "Säg till exempel" : "Startar …").font(LumenFont.text(15, .semibold))
+                        Text("Jag har prov i biologi på fredag")
+                            .font(appearance.questionFont(19))
+                            .foregroundStyle(LumenColor.blue)
+                    }
+                }
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
+                .accessibilityElement(children: .combine)
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Eller välj ämne").font(LumenFont.text(16, .semibold)).accessibilityAddTraits(.isHeader)
+                    FlowChips(items: Self.quickAreas.map { ($0.title, pickedSubject && area == $0) }) { index in
+                        area = Self.quickAreas[index]
+                        subject = ""
+                        pickedSubject = true
+                    }
+                    if pickedSubject, !area.subjects.isEmpty {
+                        // Optional: without a choice the exam is called by the area ("NO") and Provläge asks.
+                        FlowChips(items: area.subjects.map { ($0, subject == $0) }) { index in subject = area.subjects[index] }
+                            .padding(12)
+                            .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
+                    }
+                    if pickedSubject, area == .annat {
+                        labeledField("Vilket ämne?", placeholder: "T.ex. Teknik eller Filosofi", text: $otherSubject)
+                    }
+                }
+                VStack(spacing: 0) {
+                    Rectangle().fill(LumenColor.line).frame(height: 1)
+                    DatePicker("Datum", selection: $date, in: Calendar.current.startOfDay(for: Date())..., displayedComponents: .date)
+                        .font(LumenFont.text(17, .semibold))
+                        .environment(\.locale, Locale(identifier: "sv_SE"))
+                        .frame(minHeight: 52)
+                    Rectangle().fill(LumenColor.line).frame(height: 1)
+                    HStack {
+                        Text("Årskurs").font(LumenFont.text(17, .semibold))
+                        Spacer()
+                        Picker("Årskurs", selection: $grade) {
+                            Text("Välj").tag(nil as StudyProfile.Grade?)
+                            ForEach(Self.grades.indices, id: \.self) { index in
+                                Text(Self.grades[index].1).tag(StudyProfile.Grade?.some(Self.grades[index].0))
+                            }
+                        }
+                        .labelsHidden()
+                    }
+                    .frame(minHeight: 52)
+                    Rectangle().fill(LumenColor.line).frame(height: 1)
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 24)
+            .padding(.bottom, 12)
+        }
+        .scrollDismissesKeyboard(.interactively)
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: 4) {
+                Button("Spara prov", action: save)
+                    .buttonStyle(LumenButtonStyle())
+                    .disabled(!pickedSubject || subjectName.isEmpty)
+                Button("Inte nu", action: onClose)
+                    .font(LumenFont.text(16, .medium))
+                    .foregroundStyle(LumenColor.muted)
+                    .frame(maxWidth: .infinity, minHeight: 44)
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 12)
+            .background(LumenColor.background)
+        }
+        .lumenScreen()
+        .onAppear {
+            load()
+            // Lumen already listens: "jag har prov i biologi på fredag" saves the exam and closes this.
+            listeningForVoice = true
+            Task { await model.listenForExamStatement() }
+        }
+        .onChange(of: model.examPlans?.plans.count ?? 0) { old, new in
+            if new > old { onClose() }
+        }
+    }
+
+    // MARK: The full form
+
+    private var fullBody: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 header
@@ -177,7 +289,7 @@ struct AddExamView: View {
         switch area {
         case .matte: "Matematik"
         case .annat: otherSubject.trimmingCharacters(in: .whitespacesAndNewlines)
-        default: subject
+        default: subject.isEmpty ? area.title : subject // A22: "NO" until Provläge knows more
         }
     }
 
