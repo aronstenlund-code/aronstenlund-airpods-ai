@@ -56,11 +56,14 @@ final class TranscriptionCoordinator {
     /// True while our own speech plays in Provläge: capture chunks are dropped before the recogniser (D36).
     private(set) var isInputGated = false
     private var gateTask: Task<Void, Never>?
+    /// A29 (Toby T7): told every time the recogniser closes (true) or opens (false).
+    @ObservationIgnored var onInputGate: (@MainActor (Bool) -> Void)?
 
     func setInputGated(_ gated: Bool) {
         guard gated != isInputGated else { return }
         isInputGated = gated
         controller.log(gated ? "STT input gated (own speech)" : "STT input open")
+        onInputGate?(gated)
     }
     private var resultsTask: Task<Void, Never>?
     private var lifecycleTask: Task<Void, Never>?

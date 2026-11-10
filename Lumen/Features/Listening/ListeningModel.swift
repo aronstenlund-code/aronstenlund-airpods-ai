@@ -86,6 +86,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case spoke(String)
     }
     var sessionObserver: (@MainActor (SessionEvent, Date) -> Void)?
+    /// A29 (Toby T7): moments a test can wait for instead of reading log text. A separate observer, so the switches
+    /// over `SessionEvent` in the tests and the study recording stay exhaustive.
+    enum ListeningEvent: String, Sendable {
+        case micOpen = "mic open"
+        case micGated = "mic gated"
+        case moreWindowOpen = "more window open"
+        case moreWindowClosed = "more window closed"
+    }
+    var listeningEventObserver: (@MainActor (ListeningEvent, Date) -> Void)?
     /// D87: the wearer's Provläge turns (answered or not), for `context.recent_turns`; the exam they belong to.
     private(set) var studyTurns: [AnswerContext.Turn] = []
     private(set) var activeExamID: UUID?
@@ -332,6 +341,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 // Watch the level for a barge-in (D36).
                 self.study.speechStarted()
             }
+        }
+        transcription.onInputGate = { [weak self] gated in
+            self?.listeningEventObserver?(gated ? .micGated : .micOpen, Date()) // A29
         }
         speaker.onSpeak = { [weak self] text in
             self?.ownSpeechStarted(text)
@@ -1359,6 +1371,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         moreOfferedFor = answered
         isOfferingMore = true
         controller.log("More? window open (A15)")
+        listeningEventObserver?(.moreWindowOpen, Date()) // A29
         if speaker.settings.moreTone {
             try? controller.playback.playTestTone(frequency: 1_320, duration: 0.12)
         }
@@ -1382,6 +1395,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         moreTask?.cancel()
         moreTask = nil
         controller.log("More? window closed (\(why))")
+        listeningEventObserver?(.moreWindowClosed, Date()) // A29
     }
 
     /// "ja" / nod / AirPods press in the window: the developed answer. Until K13's cache, through `continue_more`.

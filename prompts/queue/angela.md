@@ -106,6 +106,8 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   3. Skicka signalerna (tackade ja/nej/tystnad, rättelse) med sammanhang till /memory som K13 beskriver. När standarden blivit "långt direkt" visas det i Minne som en läsbar rad, till exempel "Utvecklade svar i Historia", och går att ändra.
   4. Tester: fönstret, nick kontra skakning, ett "ja" mitt i en mening räknas inte. Toby kör i simulatorn. **Ej verifierat på enhet** tills Aron har testat.
 
+- [~] pågår (Angela, 14:00, CI) **A29 – Stående uppgift (PLAN 2b): händelser för mikrofonen och Mer?-fönstret (Tobys T7 fynd 3)** (effort: low). Egen punkt enligt 2b. `listeningEventObserver` ger `micGated`, `micOpen`, `moreWindowOpen` och `moreWindowClosed`, så att testerna inte behöver läsa loggtext.
+
 - [~] pågår (Angela, 13:40, CI) **A28 – Stående uppgift (PLAN 2b): Oscars O30 i appen, ekot efter tiden** (effort: low). Egen punkt enligt 2b. Appens ekofilter räknar bara det som börjar medan Lumen talar eller inom 1,5 s efter som eko. En följdfråga som citerar svaret ("så fotosyntesen omvandlar ljusenergi till kemisk energi?") och sägs senare är elevens fråga.
 
 - [x] klar 2026-11-10 13:25 → reports/2026-11-10-angela-a27-o28-o24.md **A27 – Stående uppgift (PLAN 2b): Oscars O28 och O24 i appen** (effort: low). Egen punkt enligt 2b. (1) O28: appens `SensitiveFilter` stoppar O28:s 27 känsliga minnen och släpper igenom de 20 vanliga (studieord som "Läser religionskunskap", ordgränser för "lånat", "sjukt", "brottslighet"). (2) O24: "Om appen" säger var frågorna sparas (Historik på telefonen i högst två år, och på servern i högst 12 månader med "Dela historik").
