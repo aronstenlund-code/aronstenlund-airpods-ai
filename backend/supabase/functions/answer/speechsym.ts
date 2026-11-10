@@ -154,14 +154,20 @@ const ABBREVIATIONS: [RegExp, string][] = [
 // phone number next to a phone cue is replaced. The prompt says the same; this is the safety net.
 // K13 (Oscar O10 #6: "omkring 800 000 människor" became the placeholder: "ring" in "omkring"): whole words only
 const PHONE_CUE =
-  /(?<![\p{L}])(?:ring|ringa|ringer|ringde|ringt|nummer|numret|numren|telefon(?:nummer|numret|en)?|tel|växel(?:n)?|jour(?:en|numret|nummer)?|spärr(?:a|tjänst|tjänsten|linjen)?|larmnummer|larmnumret|larmcentral(?:en)?|hjälplinje(?:n)?|support(?:en)?|kundtjänst(?:en)?|sms)(?![\p{L}])/iu;
+  /(?<![\p{L}])(?:ring|ringa|ringer|ringde|ringt|nummer|numret|numren|telefon(?:nummer|numret|en)?|tel|växel(?:n)?|jour(?:en|numret|nummer)?|spärr(?:a|tjänst|tjänsten|linjen)?|larmnummer|larmnumret|larmcentral(?:en)?|hjälplinje(?:n)?|support(?:en)?|kundtjänst(?:en)?|sms|sms:a|smsa|messa|swish(?:a|nummer|numret)?|skriv till|nås på|nå (?:dem|oss|honom|henne) på|stödlinje(?:n)?)(?![\p{L}])/iu;
 /** "800 000", "1 000 000", "12 000": a number grouped in thousands, never a phone number. */
 const THOUSANDS = /^[1-9]\d{0,2}(?: \d{3})+$/;
 const PHONE_RE =
-  /(?<![\p{L}\d.,:+/-])(?:\+\d[\d -]{6,14}\d|0\d{1,3}[ -]?\d{2,3}(?:[ -]?\d{2,4}){1,3}|\d{2,5}(?:[ -]\d{2,4}){1,4})(?![\p{L}\d]|[.,]\d)/gu;
+  /(?<![\p{L}\d.,:+/-])(?:\+\d[\d -]{6,14}\d|0\d{1,3}[ -]?\d{2,3}(?:[ -]?\d{2,4}){1,3}|\d{2,5}(?:[ -]\d{2,4}){1,4}|\d{5,8})(?![\p{L}\d]|[.,]\d)/gu;
 export const PHONE_PLACEHOLDER = "numret som står på deras webbplats";
 
-/** The three numbers the assistant may give are spoken the way people say them. */
+/**
+ * The numbers the assistant may give are spoken the way people say them: 112, 1177, 114 14 and (K23, checked
+ * against bris.se, mind.se and 1177.se on 2026-11-10) the support lines 90101 (Självmordslinjen, Mind) and
+ * 116 111 (Bris, under 18).
+ */
+const SOS_CUE = /(?<![\p{L}])(?:ring|ringa|ringer|larma|larmar|nödnummer(?:et)?|akut|akuten|i fara|sos|nödläge)(?![\p{L}])/iu;
+const SUPPORT_CUE = /(?<![\p{L}])(?:ring|ringa|ringer|nås|nå|självmordslinjen|mind|bris|stödlinje(?:n)?|hjälplinje(?:n)?|chatta|sms|numret|nummer)(?![\p{L}])/iu;
 function speakKnownNumbers(text: string, ctx: string): string {
   const full = ctx + text;
   let out = text;
@@ -172,7 +178,10 @@ function speakKnownNumbers(text: string, ctx: string): string {
       return cue(ctx.length + off, cueRe) && (!extra || extra(before)) ? words : m;
     });
   };
-  swap(/(?<![\d.,:\-+/])112(?![\d]|[.,]\d)/g, "ett ett två", PHONE_CUE);
+  // Oscar O29: "Nummer 112 i listan är Kina" is not the emergency number: only with a call or danger cue
+  swap(/(?<![\d.,:\-+/])112(?![\d]|[.,]\d)/g, "ett ett två", SOS_CUE);
+  swap(/(?<![\d.,:\-+/])90 ?101(?![\d]|[.,]\d)/g, "nittio ett noll ett", SUPPORT_CUE);
+  swap(/(?<![\d.,:\-+/])116 ?111(?![\d]|[.,]\d)/g, "ett ett sex ett ett ett", SUPPORT_CUE);
   swap(
     /(?<![\d.,:\-+/])1177(?![\d]|[.,]\d)/g,
     "elva sjuttiosju",

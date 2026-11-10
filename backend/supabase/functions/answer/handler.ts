@@ -1274,7 +1274,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           const emitText = (raw: string) => {
             // K16: a late search marker ("… femtusen invånare. [[SÖK]]", live 3/10) is never read aloud
             if (/\[\[S[ÖO]K\]\]/iu.test(raw)) console.warn("search_marker_late", JSON.stringify({ mode: body.mode }));
-            let t = raw.replace(/\s*\[\[(?:S[ÖO]K|VET)\]\]\s*/giu, " ").replace(/\s*\[+\s*$/u, "");
+            if (/\[\[KRIS\]\]/iu.test(raw)) crisisLate = true; // K23: the crisis answer follows what was said
+            let t = raw.replace(/\s*\[\[(?:S[ÖO]K|VET|KRIS)\]\]\s*/giu, " ").replace(/\s*\[+\s*$/u, "");
             // Oscar O13: raw search text was read aloud ("| Arjeplog |", "Nickname: …"): table bars and English
             // field labels never reach the voice
             if (webOn || searched || textOn) {
@@ -1325,7 +1326,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let calibBuf = "";
           let calibration: string | null = null;
           let rizzBuf = "";
-          let headBuf: string | null = askSearch ? "" : null;
+          // K23: the head is held in every direct answer until it is clear it is not a marker ([[KRIS]], [[SÖK]], [[VET]]);
+          // an answer that does not start with "[" passes at once
+          let headBuf: string | null = askSearch || (direct && !plan) ? "" : null;
+          let crisisMarked = false;
+          let crisisLate = false;
           // K13.1: the developed answer after [[MER]]: its own post-processing, sent as more_delta, kept for done
           let inMore = false;
           let markBuf = "";
@@ -1377,6 +1382,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let previewSent = false;
           let previewText: string | null = null;
           const emit = (ev: ParserEvent) => {
+            if (ev.type === "meta" && ev.meta.self_harm_risk) {
+              crisisMarked = true; // K23: the model's own flag (Auto): the crisis answer, whatever is_question says
+              stop = true;
+              return;
+            }
             if (ev.type === "meta") {
               const m = {
                 reconstructed_question: ev.meta.reconstructed_question,
@@ -1476,7 +1486,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               const head0 = headBuf.replace(/^\s*\[\[REL [^\]]*\]\]\s*/u, "");
               if (/^\s*\[\[REL/u.test(headBuf) && !headBuf.includes("]]")) return; // the relation tag is not complete yet
               if (/^\s*\[\[(?:V(?:E(?:T(?:\])?)?)?)?$/iu.test(head0)) return; // the [[VET]] marker is not complete yet
-              if (/^\s*\[\[S[ÖO]K\]\]/iu.test(head0)) {
+              if (/^\s*\[\[KRIS\]\]/iu.test(head0)) {
+                crisisMarked = true; // K23: the model's own safety layer (direct modes)
+                headBuf = null;
+                stop = true;
+              } else if (/^\s*\[\[S[ÖO]K\]\]/iu.test(head0) && askSearch) {
                 searchMarked = true;
                 headBuf = null;
                 stop = true;
@@ -1495,6 +1509,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 if (stop || closed || post.duplicate) break;
                 r = await it.next();
               }
+              if (crisisMarked) break;
               if (rizz || calib || closed) break;
               let note: string | null = null;
               let history = body.context.recent_qa;
@@ -1630,6 +1645,21 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (inMore) sendMore(morePost.finish());
             }
             flushNear();
+            // K23: the model flagged a crisis (Auto meta or [[KRIS]]): the fixed caring answer, never silence
+            if (crisisMarked || crisisLate) {
+              const crisisText = aboutOther(body.fragment) || plan ? CRISIS_OTHER : CRISIS_SELF;
+              if (crisisMarked && ttftMs === null) {
+                pendingMeta = null;
+                metaMs = now() - t0;
+                send("meta", {
+                  reconstructed_question: body.fragment, confidence: 1, is_question: true, needs_confirmation: false,
+                  answer_type: "fact", relation: null, safety: "crisis",
+                });
+              }
+              status = "ok";
+              emitText((crisisLate ? " " : "") + crisisText);
+              console.warn(JSON.stringify({ event: "crisis_answer", mode: body.mode, who: "model", late: crisisLate && !crisisMarked }));
+            }
             if (stop) abortAll();
             if (parser.headerFailed) {
               console.warn(JSON.stringify({ evt: "header_parse_failed", mode: body.mode }));
@@ -1689,7 +1719,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 model: modelUsed,
                 est_cost_usd: usage("ok").est_cost_usd,
               },
-              summary: noSummary ? null : post.summary ?? (twoLevel ? morePost.summary : null),
+              summary: noSummary || crisisMarked || crisisLate ? null : post.summary ?? (twoLevel ? morePost.summary : null),
+              ...(crisisMarked || crisisLate ? { safety: "crisis" } : {}),
               ...(twoLevel ? { more: moreText.trim() || null } : {}),
               relation: post.relation ?? parser.meta?.relation ?? null,
               source: post.source,

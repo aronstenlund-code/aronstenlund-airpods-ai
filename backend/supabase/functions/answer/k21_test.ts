@@ -7,8 +7,8 @@ import { type LLMChunk, type LLMRequest } from "./llm/types.ts";
 import CASES from "../../../../scripts/k21-crisis-cases.json" with { type: "json" };
 
 Deno.test("K21 code layer: every crisis case is strong or weak (never nothing); no everyday case is strong", () => {
-  const pos = [...CASES.positive, ...CASES.positive_o17];
-  const neg = [...CASES.negative, ...CASES.negative_o17];
+  const pos = [...CASES.positive, ...CASES.positive_o17, ...CASES.positive_o17b];
+  const neg = [...CASES.negative, ...CASES.negative_o17, ...CASES.negative_o17b];
   assertEquals(pos.filter((t: string) => !crisisLevel(t)), [], "missed by both layers");
   assertEquals(neg.filter((t: string) => crisisLevel(t) === "strong"), [], "strong false alarms");
   const strong = pos.filter((t: string) => crisisLevel(t) === "strong").length;
@@ -63,7 +63,7 @@ Deno.test("K21 strong: Auto, Frågor, Provläge, the demo: the warm answer at on
 
 Deno.test("K21 weak: the small model's 'ja' gives the answer, 'nej' the normal path, a failed check the answer", async () => {
   const yes = h("ja");
-  const ev = await events(await yes.handler(post({ fragment: "jag pallar inte mer, jag vill bara försvinna", mode: "auto" })));
+  const ev = await events(await yes.handler(post({ fragment: "jag vill bara försvinna", mode: "auto" })));
   assertEquals(said(ev), CRISIS_SELF);
   assertEquals(yes.seen.length, 1, "only the check");
   const no = h("nej");
@@ -96,4 +96,59 @@ Deno.test("K21 'min kompis säger att han inte vill leva' gives the line on how 
   const { handler } = h();
   const ev = await events(await handler(post({ fragment: "min kompis säger att han inte vill leva längre", mode: "push_to_talk" })));
   assertEquals(said(ev), CRISIS_OTHER);
+});
+
+/** A fake model that answers `reply` to everything except the yes/no check ("nej"). */
+function model(reply: string) {
+  const seen: LLMRequest[] = [];
+  const handler = createHandler({
+    authenticate: () => Promise.resolve({ id: "u-k23", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(),
+    provider: {
+      name: "s",
+      model: "s",
+      stream: (r) => {
+        seen.push(r);
+        const isCheck = r.system.startsWith("You check ONE utterance");
+        return (async function* (): AsyncGenerator<LLMChunk> {
+          const t = isCheck ? "nej" : reply;
+          for (let k = 0; k < t.length; k += 6) yield { type: "text", text: t.slice(k, k + 6) };
+        })();
+      },
+    },
+    recordUsage: () => {},
+    config: DEFAULT_CONFIG,
+  });
+  return { handler, seen };
+}
+
+Deno.test("K23 the model's own layer: [[KRIS]] in a direct mode gives the crisis answer, also in Provläge", async () => {
+  for (const b of [
+    { fragment: "jag tänker på något som jag inte vill säga", mode: "push_to_talk" },
+    { fragment: "jag tänker på något som jag inte vill säga", mode: "tutor", persona: "tutor", persona_setup: "Prov i Biologi. Årskurs: Åk 9." },
+  ]) {
+    const { handler } = model("[[KRIS]]");
+    const ev = await events(await handler(post(b)));
+    assertEquals(said(ev), CRISIS_SELF, b.mode);
+    assertEquals(ev.find((e) => e.event === "done")!.data.safety, "crisis");
+    assertEquals(ev.find((e) => e.event === "done")!.data.summary, null);
+  }
+});
+
+Deno.test("K23 Auto: the self_harm_risk flag gives the crisis answer even when is_question is false", async () => {
+  const { handler } = model('{"is_question":false,"self_harm_risk":true,"reconstructed_question":"x","confidence":0.9}\n');
+  const ev = await events(await handler(post({ fragment: "jag har skrivit ett brev som ingen får läsa än", mode: "auto" })));
+  assertEquals(said(ev), CRISIS_SELF);
+  assert(ev.some((e) => e.event === "meta" && e.data.safety === "crisis"));
+});
+
+Deno.test("K23 a late [[KRIS]] is never read aloud; the crisis answer follows", async () => {
+  const { handler } = model("Det låter tungt. [[KRIS]]");
+  const out = said(await events(await handler(post({ fragment: "allt känns meningslöst nu", mode: "push_to_talk" }))));
+  assert(!out.includes("[[") && out.includes("nittio ett noll ett"), out);
+});
+
+Deno.test("K23 an ordinary answer is not held or changed by the marker check", async () => {
+  const { handler } = model("Fotosyntes är när växter gör socker av ljus.");
+  assertEquals(said(await events(await handler(post({ fragment: "vad är fotosyntes", mode: "push_to_talk" })))), "Fotosyntes är när växter gör socker av ljus.");
 });

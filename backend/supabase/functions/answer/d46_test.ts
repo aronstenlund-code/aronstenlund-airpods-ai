@@ -671,7 +671,7 @@ Deno.test("D65 safety: allergy / health memories add a binding <safety> rule; th
   assert(!buildDirectUserMessage(mk(["jag gillar skidor"])).includes("<safety>"));
   assert(!buildDirectUserMessage(mk([])).includes("<safety>"));
   for (const p of [SYSTEM_PROMPT_DIRECT_FACT, SYSTEM_PROMPT_DIRECT_TUTOR]) {
-    assertStringIncludes(p, "112 (emergency), 1177 (healthcare advice) and 114 14 (police");
+    assertStringIncludes(p, "112 (emergency), 1177 (healthcare advice), 114 14 (police, not an emergency), 90101 (Självmordslinjen, Mind) and 116 111 (Bris");
     assertStringIncludes(p, "<safety>");
   }
 });

@@ -25,12 +25,14 @@ const I = String.raw`(?:jag|ja|jaa|jg)`;
 /** to live, also misheard ("läva", "lefva"). */
 const LIVE = String.raw`(?:leva|läva|lefva|leeva)`;
 const CAN = String.raw`(?:orkar|orka|orkade|vill|ville|klarar|klara|pallar|palla|kan|kunde)`;
+/** "inte", also spoken ("int", "inge"). */
+const NOT = String.raw`(?:inte|int|inge|inte ens)`;
 
 /** Clear signs: the speaker does not want to live, wants to die, plans to hurt or kill themself. */
 const STRONG = [
   // not wanting to live / to exist, straight and inverted word order, with fillers
-  String.raw`${CAN} (?:${I} )?${F}inte ${F}(?:att )?${LIVE}`,
-  String.raw`inte ${F}${CAN} ${F}(?:att )?${LIVE}`,
+  String.raw`${CAN} (?:${I} )?${F}${NOT} ${F}(?:att )?(?:${LIVE}|lever)`,
+  String.raw`${NOT} ${F}${CAN} ${F}(?:att )?${LIVE}`,
   String.raw`${CAN} (?:${I} )?inte ${F}(?:finnas|finnas kvar|vara kvar)`,
   String.raw`(?:orkar|orka|pallar|palla) inte (?:mer|längre) med (?:livet|att leva|allt|mig själv)`,
   String.raw`(?:vill|ville|skulle vilja|vell) (?:${I} )?${F}(?:dö|vara död|inte vakna|sluta finnas|inte finnas|försvinna för alltid)`,
@@ -43,27 +45,68 @@ const STRONG = [
   String.raw`livet är inte värt att ${LIVE}`,
   String.raw`(?:så |helt |jätte)?trött på att ${LIVE}`,
   // suicide, plans
-  String.raw`${I} (?:ska|vill|tänker|kommer att|funderar på att|har tänkt|har tänkt på att|planerar att|tänkt|har funderat på att|ville) ${F}(?:ta livet av mig|ta mitt (?:eget )?liv|döda mig själv|avsluta mitt liv|göra slut på mig själv|göra slut på mitt liv|göra slut på allt|hoppa (?:från|framför) \p{L}+)`,
+  String.raw`${I} (?:ska|vill|tänker|kommer att|funderar på att|har tänkt|har tänkt på att|planerar att|tänkt|har funderat på att|ville) ${F}(?:ta livet av mig|ta mitt (?:eget )?liv|döda mig själv|avsluta mitt liv|göra slut på mig själv|göra slut på mitt liv|göra slut på allt|hoppa (?:från (?:bron|taket|ett tak|en bro|balkongen|fönstret)|framför (?:tåget|ett tåg|bussen|en buss|en bil|bilen|tunnelbanan|pendeln)))`,
   String.raw`(?:vill|ska|tänker) (?:${I} )?(?:ta livet av mig|göra slut på allt|göra slut på mig själv|avsluta allt)`,
   String.raw`ta livet av mig själv`,
+  String.raw`(?:vill|ska|tänker) (?:${I} )?(?:tal|ta) livet av mig`,
+  // Oscar O17b: direct words the first lists missed
+  String.raw`önskar (?:att )?(?:${I} )?(?:var|vore) död|önskar (?:${I} )?(?:att )?(?:${I} )?aldrig (?:hade )?(?:fötts|blivit född|funnits)|önskar (?:att )?(?:${I} )?inte fanns`,
+  String.raw`(?:vill|ska|tänker) (?:${I} )?(?:hänga|dränka|skjuta|förgifta) mig`,
+  String.raw`(?:vill|ska) (?:${I} )?(?:ta|äta) en överdos`,
+  String.raw`vill (?:bara )?sluta andas`,
+  String.raw`ingen (?:lust|ork|vilja) (?:att|till att) ${LIVE}`,
+  String.raw`(?:allt|livet) vore (?:lättare|enklare|bättre) om (?:${I} )?(?:bara )?(?:dog|var död|försvann|inte fanns)`,
+  String.raw`spelar ingen roll om (?:${I} )?(?:lever|dör)`,
+  String.raw`livet (?:är inte|inte är|känns inte) värt (?:det|att leva)`,
+  String.raw`inte att livet är värt (?:det|att leva)`,
+  String.raw`(?:orkar|pallar|orka|palla) inte mer (?:${I} )?(?:vill|ska) (?:bara )?(?:försvinna|dö|sova för alltid)`,
+  String.raw`(?:tänkt|tänker|funderat|funderar) (?:mycket |ofta |mer )?på att (?:dö|ta livet av mig|inte finnas)`,
+  String.raw`(?:försökt|försökte|har försökt) (?:att )?(?:ta livet av mig|ta mitt liv|dö|döda mig)`,
+  String.raw`vill dö på riktigt`,
+  String.raw`(?:funderat|funderar|tänkt|tänker) på självmord`,
+  String.raw`(?:googlade|googlat|sökte|sökt) (?:på )?hur man (?:begår självmord|tar livet av sig|dör)`,
+  String.raw`(?:ser|hittar) ingen (?:anledning|mening) (?:att|med att) (?:fortsätta|${LIVE}|finnas)`,
+  // warning signs without the words
+  String.raw`(?:skrivit|skriver|skrev) (?:ett )?(?:avskedsbrev|självmordsbrev|brev till alla (?:innan|ifall))`,
+  String.raw`(?:sparat|sparar|samlar|samlat) (?:på )?(?:tabletter|piller|mediciner)`,
+  String.raw`(?:jag är|är jag) (?:bara )?en börda`,
+  String.raw`(?:gett|ger|gav) bort (?:alla )?mina saker`,
+  String.raw`köra (?:av vägen|in i (?:en vägg|ett träd|en lastbil)) med flit`,
+  // method questions: strong without first person (Oscar O17b)
+  String.raw`(?:hur många|hur mycket) \p{L}+ (?:måste|behöver|ska|bör) man (?:ta|äta|svälja) för att dö`,
+  String.raw`vad händer om man (?:tar|äter|sväljer) (?:\d+|tjugo|trettio|fyrtio|femtio|hundra|många|massa|en hel burk) (?:\p{L}+ )?(?:alvedon|ipren|tabletter|piller|paracetamol|sömntabletter)`,
+  String.raw`(?:vilken|hur hög) höjd (?:\p{L}+ ){0,4}för att dö`,
+  String.raw`dödlig dos|dödliga dosen|smärtfritt sätt att dö|enklaste sättet att dö|hur (?:hänger|dränker|skjuter|förgiftar) man sig`,
   String.raw`(?:har|får|går runt med|får ofta) självmordstankar`,
   String.raw`(?:tänker|funderar|tänkt|har tänkt) (?:ofta |mycket )?på (?:att ta )?självmord`,
   String.raw`självmord (?:känns|verkar|är) (?:som )?(?:den )?(?:enda|bästa|en) (?:utvägen|utväg|lösningen|lösning)`,
   String.raw`(?:${I} )?(?:vill|ska|tänker) begå självmord`,
   // self-harm, every tense
-  String.raw`(?:${I} )?(?:skadar|skadade|skadat|har skadat|brukar skada|vill skada|ska skada|börjat skada|skada) mig själv`,
+  String.raw`(?:${I} )?(?:skadar|skadat|har skadat|brukar skada|vill skada|ska skada|börjat skada) mig själv`,
+  String.raw`(?:skadade|skadar) mig själv med flit`,
+  String.raw`(?:rispar|rispade|rispat|ristar|skärrit|skurrit|skuri) mig`,
+  String.raw`(?:bränner|brände|bränt) mig (?:med (?:cigaretter|cigarett|en tändare)|med flit)`,
+  String.raw`slår mig själv (?:tills|med flit|när)`,
+  String.raw`skär mig när (?:jag|ja) (?:får|mår|blir|har)`,
   String.raw`(?:skär|skar|skurit|har skurit|skära) mig (?:igen|ofta|varje (?:dag|kväll|natt)|när jag mår|i armen|i armarna|på armen|på armarna|i benen)`,
   String.raw`(?:har börjat|brukar|har|vill|ska|måste) (?:skära|skurit|skär) mig(?! (?:en|ett|på papper|i fingret|i tummen|när jag rakar|med kniven när))`,
   String.raw`självskadar|självskada mig|självskadat`,
   // English and slang
-  String.raw`kill myself|want to die|wanna die|end my life|suicidal|kms|unalive myself|don'?t want to live|wanna kms`,
+  String.raw`kill myself|want to die|wanna die|end my life|suicidal|kms|unalive myself|don'?t want to live|wanna kms|dont wanna be alive|don'?t want to be alive|want to end it|end it all|been cutting|i cut myself|self harm`,
+  // someone else (the user gets the line on how to help, see aboutOther)
+  String.raw`(?:han|hon|hen|min \p{L}+|mitt ex|någon) (?:\p{L}+ ){0,2}(?:skär sig|skadar sig själv|vill ta livet av sig|ska ta livet av sig|tänker ta livet av sig|vill dö|har självmordstankar|pratar om att dö)`,
+  String.raw`hjälper man någon som vill (?:ta livet av sig|dö)`,
 ];
 
 /** The everyday reading of a strong pattern: then it is only a weak hit (the yes/no check decides). */
 const EXCEPT = [
-  String.raw`inte ${F}(?:att )?${LIVE} (?:i|på|som|med att|utan|så här i|i en|där|här|hos|ihop med|nära)`,
+  String.raw`inte ${F}(?:att )?${LIVE} (?:i|på|som|med att|utan|så här i|i en|där|här|hos|ihop med|nära|upp till)`,
+  String.raw`${LIVE} upp till`,
+  String.raw`(?:inte|aldrig|slippa) (?:mer )?vakna (?:tidigt|före|klockan|kl|innan|så tidigt|på morgonen|\d)`,
+  String.raw`vakna (?:tidigt|klockan|kl|före|innan) `,
+  String.raw`dö (?:gammal|som gammal|lycklig|i sömnen när jag är gammal)`,
   String.raw`(?:kan|klarar|orkar) inte ${LIVE} (?:utan|med att)`,
-  String.raw`(?:vill|skulle vilja) (?:${I} )?dö (?:i|på|när jag (?:är|blir) gammal|som gammal|av ålder|i sömnen när)`,
+  String.raw`(?:vill|skulle vilja) (?:${I} )?dö (?:i|på (?!riktigt)|när jag (?:är|blir) gammal|som gammal|av ålder|i sömnen när)`,
   String.raw`dö av (?:skratt|skam|tristess|längtan|nyfikenhet|värme|tråkighet)`,
   String.raw`(?:heter|låten|boken|filmen|serien|dikten) (?:heter )?\p{L}* ?jag vill dö`,
   String.raw`kms (?:lol|haha|xd|asså det var)`,
@@ -80,7 +123,7 @@ const EXCEPT = [
 ];
 
 /** Words that may be about the speaker's life or harm: first person plus one of these = ask the small model. */
-const RISK = /(?<![\p{L}])(?:leva|läva|lever|livet|liv|dö|död|döda|dog|dör|vakna|försvinna|försvann|sakna mig|självmord\p{L}*|självskad\p{L}*|skada mig|skadar mig|skär mig|skar mig|skurit mig|ta slut|göra slut|hoppa framför|kms|kill myself|die|dying)(?![\p{L}])/iu;
+const RISK = /(?<![\p{L}])(?:leva|läva|lever|livet|liv|dö|död|döda|dog|dör|vakna|försvinna|försvann|sakna mig|skadade mig|hoppa från|börda|vara här längre|vara kvar längre|avsked\p{L}*|tabletter|överdos|hänga mig|andas|självmord\p{L}*|självskad\p{L}*|skada mig|skadar mig|skär mig|skar mig|skurit mig|ta slut|göra slut|hoppa framför|kms|kill myself|die|dying)(?![\p{L}])/iu;
 const FIRST = /(?<![\p{L}])(?:jag|ja|mig|mitt|min|jg|i|me|my)(?![\p{L}])/iu;
 
 const STRONG_RE = RE(STRONG);
@@ -100,7 +143,7 @@ export function crisisLevel(text: string): CrisisLevel {
 }
 
 /** "min kompis säger att han inte vill leva": about someone else, so the user gets the line on how to help. */
-const ABOUT_OTHER = /(?<![\p{L}])(?:min (?:kompis|vän|bästis|bror|syster|polare|tjej|kille|flickvän|pojkvän|klasskompis)|mitt ex|han|hon|hen|dom|de)(?: \p{L}+){0,2} (?:säger|sa|sade|skrev|skriver|har sagt|berättade|tycker|messade|sms:ade) att/iu;
+const ABOUT_OTHER = /(?<![\p{L}])(?:min (?:kompis|vän|bästis|bror|syster|polare|tjej|kille|flickvän|pojkvän|klasskompis)|mitt ex|han|hon|hen|dom|de)(?: \p{L}+){0,2} (?:säger|sa|sade|skrev|skriver|har sagt|berättade|tycker|messade|sms:ade) att|(?<![\p{L}])(?:han|hon|hen|min \p{L}+|mitt ex|någon) (?:\p{L}+ ){0,2}(?:skär sig|skadar sig själv|vill ta livet av sig|ska ta livet av sig|tänker ta livet av sig|vill dö|har självmordstankar|pratar om att dö)|hjälper man någon som/iu;
 export function aboutOther(text: string): boolean {
   return ABOUT_OTHER.test(text ?? "");
 }

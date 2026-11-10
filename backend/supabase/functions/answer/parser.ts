@@ -9,6 +9,8 @@ export interface Meta {
   answer_type: "fact" | "study";
   /** D53: relation of the fragment to the active topic (header mode), else null. */
   relation?: Relation | null;
+  /** K23: the model's own safety flag (Auto header): the speaker expresses suicide, self-harm or not wanting to live. */
+  self_harm_risk?: boolean;
 }
 
 export type ParserEvent = { type: "meta"; meta: Meta } | { type: "delta"; text: string };
@@ -133,6 +135,7 @@ export class ResponseParser {
     };
     const rel = parseRelation(h?.relation);
     if (rel) this._meta.relation = rel;
+    if (h?.self_harm_risk === true) this._meta.self_harm_risk = true;
     const out: ParserEvent[] = [{ type: "meta", meta: this._meta }];
     if (rest) out.push(...this.delta(rest));
     return out;
