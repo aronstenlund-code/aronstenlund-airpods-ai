@@ -16,7 +16,7 @@ Arbetssätt för sessionen:
 8. **Nattläge** (står överst på tavlan med en sluttid, Aron sover):
    - Jobba igenom kön utan att avsluta din tur mellan punkterna. Rapport, STATUS, kö och tavla pushas efter varje punkt som vanligt.
    - Tom kö eller bara punkter som väntar: ta din stående uppgift (`docs/PLAN.md` 2b), skriv den som en egen punkt i din kö och gör den.
-   - Punkt 7 stoppar inte arbetet: skriv överlämningen när du når gränsen men fortsätt jobba.
+   - Punkt 7 stoppar inte arbetet: skriv överlämningen när du når gränsen men fortsätt jobba. Efter **två** komprimeringar: gör klart pågående punkt och sluta (PLAN 2e).
    - Vänta aldrig på Aron. Det som är hans beslut skrivs under "Till Aron" i rapporten, och du tar nästa punkt.
    - Har du `send_later`: schemalägg "kolla kön" om 30 min innan du avslutar en tur, fram till sluttiden.
    - Kör du i molnet och ett verktyg saknas (simulator, gh, MCP): skriv det under "Till Aron" och ta nästa punkt som går att göra. Pusha alltid allt innan turen tar slut.

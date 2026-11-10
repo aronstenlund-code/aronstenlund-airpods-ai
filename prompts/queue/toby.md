@@ -21,3 +21,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 - [ ] **T8 – Förstagångsanvändaren** (effort: medium). Gör efter T7. Aron 2026-11-09: lätt att komma igång och aldrig överväldigande. I simulatorn, från helt ny installation till första upplästa svaret i Frågor och i Provläge: räkna tryck, skärmar och sekunder, och skriv ner varje text eller knapp som är oklar eller onödig. Skärmbilder av varje steg till `reports/apptest/`. Fynd till Angela och Kelly (Ke9). Ändra ingen appkod.
 
 - [ ] **T5b – Omtest av T5 efter Angelas A21** (effort: medium). Beror på: A21. Samma fall som T5.
+
+- [ ] **T9 – Skärmrunda efter A22 och A18** (effort: medium). Beror på: A22 (sedan igen efter A18). Samma sju lägen som T3. Lägg bilderna sida vid sida med Kellys Ke12-skisser och skriv avvikelserna till Angela och Kelly.

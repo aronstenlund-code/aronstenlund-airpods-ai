@@ -1,4 +1,4 @@
-# Plan: struktur för arbetet (Deangelo, 2026-11-09)
+# Plan: struktur för arbetet (Deangelo, 2026-11-09, rättad 2026-11-10)
 
 Planen är regler, inte en lista med punkter. **Ordningen finns bara i köerna** (`prompts/queue/`), målen i faserna nedan. Inget i planen får stoppa arbetet: en session som inte kan ta en punkt tar nästa.
 
@@ -17,12 +17,24 @@ Planen är regler, inte en lista med punkter. **Ordningen finns bara i köerna**
 Så många sessioner som möjligt jobbar samtidigt. Är kön tom tar sessionen sin **stående uppgift** och skriver den som en egen punkt i sin kö:
 | Session | Stående uppgift |
 |---|---|
-| Angela | Gör appen enklare: kortare väg från start till första svar, färre knappar per skärm, avancerat bakom Inställningar. |
+| Angela | Bygg nästa sak ur Kellys underlag i `docs/design/` (aldrig en egen omdesign vid sidan av). Finns inget: gör appen enklare, färre knappar per skärm, avancerat bakom en rad "Avancerat". |
 | Kevin | K4-loopen: kör eval, rätta det sämsta fallet, mät igen. |
-| Kelly | Demosidan och appen ska se ut som samma produkt: förbättra sidan, och skriv designunderlag för appen i `docs/design/` som Angela bygger. |
+| Kelly | Äger designsystemet (`docs/design/SYSTEM.md`). Granska Angelas och Tobys senaste skärmbilder mot systemet och mot riktiga pluggappar, skriv fynden som underlag. Sedan demosidan. |
 | Oscar | Oberoende test av den senaste klara K-punkten som saknar O-punkt, annars väx verklighetsbanken (O15): fler kreativa, felformulerade och verkliga fall. |
-| Toby | Omtest av den senaste klara A-punkten, annars förstagångsanvändaren i simulatorn. |
+| Toby | Omtest av den senaste klara A-punkten med skärmbilder (ljust, mörkt, iPhone SE, största text), annars förstagångsanvändaren i simulatorn. |
 Fokus för allt som syns: **lätt att förstå, lätt att komma igång, aldrig överväldigande, en tydlig väg framåt.**
+
+## 2c. Design (Aron 2026-11-10: ska se ut som andra pluggappar, inte som en vibe-kodad app)
+- Kelly äger designsystemet, Angela bygger det. Ingen ändrar utseendet utan underlag i `docs/design/`.
+- En A-punkt som ändrar utseendet är klar först när skärmbilderna (ljust, mörkt, iPhone SE) finns i rapporten och Kelly har granskat dem.
+- Jämförelse: Quizlet, Speak, Duolingo, Apple Anteckningar/Fitness. Det som aldrig får finnas: platshållarbilder, utvecklartext för eleven (licenser, modellnamn, "1.00×"), dubbla negationer, handstil som dekoration, röda knappar utom vid fel, ständiga instruktionsrader.
+
+## 2d. Ägarbeslut och kostnad
+- Alla frågor till Aron samlas i `docs/TILL-ARON.md` (Deangelo håller den, kortast möjligt, med "rekommenderar"). Sessionerna skriver "Till Aron" i sina rapporter; Deangelo flyttar dit.
+- API-kostnad: varje session skriver kostnaden per punkt på tavlan. Totalt högst **5 USD per dag** för test och eval utan Arons ja. Anledning: Console-krediten är 100 USD/mån (ej verifierat om den räcker till appens egen trafik också).
+
+## 2e. Kontext i självständigt läge
+"Byt snart" stoppar inte arbetet, men efter **två** komprimeringar gör sessionen klart pågående punkt, skriver överlämningen och slutar. Deangelo ger Aron en startprompt när han är tillbaka.
 
 ## 3. Verifiering på telefon
 - Allt märks verifierat på enhet / i CI / i simulator / ej verifierat.
@@ -31,7 +43,7 @@ Fokus för allt som syns: **lätt att förstå, lätt att komma igång, aldrig �
 ## 4. Faser (mål, inte punkter)
 | Fas | Mål | Klart när |
 |---|---|---|
-| 1 | Provläge stabilt på telefon | 20 min Provläge på iPhone + AirPods utan döv mikrofon, "första svaret räcker" enligt Aron |
+| 1 | Provläge stabilt på telefon, och appen ser proffsig ut | 20 min Provläge på iPhone + AirPods utan döv mikrofon, "första svaret räcker" enligt Aron, och Aron tycker att de 5 viktigaste skärmarna ser ut som en riktig pluggapp |
 | 2 | Pluggfunktionerna (övningsprov, repetition, plan, uttal, länkar) | Alla godkända K/A-punkter för det klara och testade av Oscar/Toby |
 | 3 | Inför beta | Developer-konto, TestFlight, integritetspolicy, kostnad per timme mätt, namn beslutat |
 | 4 | Beta | 10–20 elever på TestFlight, användning och kostnad mätt |
