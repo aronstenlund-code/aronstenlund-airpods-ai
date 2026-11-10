@@ -167,30 +167,46 @@ final class ScreenTourTests: XCTestCase {
             ("forberedelser", ["Förberedelser"]),
             ("egna-kommandon", ["Egna kommandon"]),
             ("integritet", ["Integritet och samtycke", "Privacy & consent"]),
-            ("ra-transkription", ["Rå transkription och svar"]),
-            ("diagnostik", ["Diagnostik", "Diagnostics"]),
             ("historik", ["Historik", "History"]),
             ("minne", ["Minne"]),
             ("studiekort", ["Studiekort"]),
             ("feedback", ["Feedback och förslag", "Feedback & förslag", "Feedback & suggestions"]),
             ("rostkommandon", ["Röstkommandon"]),
             ("om-appen", ["Om appen"]),
-            ("avancerat", ["Avancerat"]),
         ]
         for page in pages {
             openFromSettings(page.labels, name: page.name)
         }
+        // A13: "Avancerat" folds out its sections in place (not a page); the diagnostics rows are inside it.
+        expandAdvanced()
+        openFromSettings(["Rå transkription och svar"], name: "ra-transkription", advanced: true)
+        openFromSettings(["Diagnostik", "Diagnostics"], name: "diagnostik", advanced: true)
         tap(["Klar"], step: "settings → Klar")
         pause(1)
     }
 
+    /// Folds out "Avancerat" in Settings (once per sheet) and shoots the first screen of it.
+    private func expandAdvanced() {
+        guard let row = scrollTo(["Avancerat*"], buttonsOnly: true) else {
+            miss("settings row Avancerat not found")
+            return
+        }
+        row.tap()
+        pause(1)
+        app.swipeUp()
+        shoot("installningar-avancerat", note: "Settings › Avancerat folded out")
+        app.swipeUp()
+        shoot("installningar-avancerat-2", note: "Settings › Avancerat, scrolled")
+    }
+
     /// Scrolls the settings list up or down until the row is there, opens it, shoots it and goes back.
-    private func openFromSettings(_ labels: [String], name: String) {
+    private func openFromSettings(_ labels: [String], name: String, advanced: Bool = false) {
         // If going back from the previous page closed the whole sheet (seen after Förberedelser), open Settings again.
         if !app.navigationBars.buttons["Klar"].exists {
             log.append("note: Settings sheet closed before \(labels[0]), opening it again")
             tap(["Inställningar"], step: "start → Inställningar (again)")
             pause(1)
+            if advanced { expandAdvanced() }
         }
         // Buttons only: a section header with the same words ("Diagnostik") is not the row.
         guard let row = scrollTo(labels, buttonsOnly: true) else {
