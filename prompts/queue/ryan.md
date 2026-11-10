@@ -8,3 +8,5 @@
 - [ ] **R3 – Daglig uppföljning** (stående uppgift). Läs resultaten varje dag, stäng av det som inte fungerar, skala upp det som gör det, inom budgeten. Kort rapport i `reports/ads/ÅÅÅÅ-MM-DD.md` och en rad i `docs/ADS.md`.
 
 - [ ] **R4 – Budskapet D121 i alla manus** (effort: medium). Aron: "Ladda ner med ett tryck, så finns AI:n alltid i dina AirPods och hjälper dig i vardagen, i skolan och på jobbet. Säg 'Lumen' så vaknar den." Lägg in det som slutreplik/sluttext i alla 7 koncept, men så att det stämmer (D121: "Starta Lumen en gång, sen finns den i örat hela dagen", inte att den vaknar när appen inte är startad). Uppdatera Gemini/Veo-prompterna.
+
+- [ ] **R5 – Budskap D125 i annonserna** (effort: medium). "Som Siri, fast den faktiskt förstår dig och svarar i dina AirPods" som möjlig hook. Inga påståenden som "1000 gånger starkare" (går inte att belägga). Visa flera användningar: plugg, träning, kalender, Spotify, samtal.
