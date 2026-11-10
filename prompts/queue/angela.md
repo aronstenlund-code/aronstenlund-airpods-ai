@@ -161,3 +161,13 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [ ] **A34 – U3: ljudsignal i AirPods** (effort: medium). Ägarbeslut D109. En kort, diskret signal när Lumen börjar lyssna och när den slutar, och ett mjukt "hm" när den hörde tal men valde att vara tyst. Allt går att stänga av i Inställningar (en rad). Signalerna lokalt i appen, inga nya anrop, får inte trigga ekofiltret eller VAD. Kelly väljer ljudens karaktär i SYSTEM.md.
 
 - [ ] **A35 – D112/D113: ta bort 18+-spärren före Rizzläget, och appens onödiga minnesstopp** (effort: low). Enligt `docs/RESTRIKTIONER.md` A4 och A5: appens känsliga-minnen-nät (A27) stoppar bara hälsa, kris och ID-nummer. Samtycke och lyssningsindikatorn finns kvar (B2). Ägarbeslut: Rizzläget är flirtigt men aldrig sexuellt och för alla åldrar. Ta bort åldersfrågan/spärren och texter om 18+ i appen och på demosidan (säg till Kelly). Samtyckespunkterna för lyssning finns kvar.
+
+- [ ] **A36 – U4: fota sidan du pluggar** (effort: high). D115. En knapp på provkortet "Fota sidan" → kameran → `/exam` (läser redan bilder, D84) → ämnesord, övningsfrågor och förhör på det fotade. Skärmbilder, Kelly granskar.
+
+- [ ] **A37 – D115: "Frågor" heter "Standardläge", och lägesbytet** (effort: medium). Byt namnet överallt (app, röstkommandon "byt till standardläge", COMMANDS.md, säg till Kelly för sidan). Kontrollera att man alltid själv kan byta läge, både med knappen och med rösten, från alla skärmar. Toby testar.
+
+- [ ] **A38 – C2 + C3: notiser och streak som Duolingo** (effort: high). D115. Streak synlig på Start (liten, en siffra + låga), förloras om en dag missas. Notiser: nedräkning till provet och "5 snabba frågor" (eleven slår på dem, en gång per dag, tid valbar). Bygger på K31.
+
+- [ ] **A39 – D116: samtyckestext om att frågor och svar skickas för analys** (effort: low). En tydlig rad i samtyckessteget och i Om appen: "Dina frågor och Lumens svar skickas till oss så att vi kan göra Lumen bättre. Ljud sparas aldrig, och texten raderas när vi har läst den." Texten från Kevin (K30). Integritetspolicyn uppdateras när den skrivs (Fas 3).
+
+- [ ] **A40 – T2: svar utan nät på iPhone 15 Pro och senare** (effort: medium). D115. Bara när nätet saknas och bara på enheter med Apple Intelligence: kort svar från Foundation Models och "Jag svarar kort, nätet är borta". Andra iPhones fungerar exakt som i dag och får "Nätet är borta" som nu. Aldrig ett krav.

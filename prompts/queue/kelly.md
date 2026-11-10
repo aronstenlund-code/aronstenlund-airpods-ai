@@ -83,3 +83,7 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-10 11:33 → reports/2026-11-10-1133-kelly-granskning-a26.md (A26 godkänd, R1–R6 stängda, 4 nya fynd varav 1 skyddsräcke) **Ke20 – Granska A26:s skärmbilder** (effort: low, PLAN 2c, Aron 2026-11-10).
 
 - [x] klar 2026-11-10 12:40 (Kelly, `reports/2026-11-10-1240-kelly-ke21-d112-sidan.md`; granskningen av A28–A30 följer när bilderna är pushade) **Ke21 – Demosidan efter D112/D113** (effort: medium). Ta bort allt om 18+ och åldersgräns för Rizzläget på sidan (D112: flirtigt men aldrig sexuellt, för alla åldrar). Om sidan beskriver vad Lumen inte gör: håll det till de åtta skydden i `docs/RESTRIKTIONER.md` del B (t.ex. samtycke och lyssningsindikator), inga andra spärrar. Granska sedan Angelas A28–A30-bilder när de är pushade.
+
+- [ ] **Ke22 – Annonser, start** (effort: high). D117: annonserna ska börja snart. Ta fram 3 korta annonsidéer (9:16, 15 s) för Instagram/TikTok med Elias, med manus och bildplan, och två stillbilder. Läs varje manus noga (naturlig svenska, längd) innan något genereras i ElevenLabs. Använd de två knapparna (D97) och "Standardläge" (D115).
+
+- [ ] **Ke23 – Namn och logga** (effort: medium). D117: namnkandidater Proviska, Testvisk, Pod Whisper, Whisper Pod. Gör en sida i `docs/design/namn.md` med varje namn ihop med loggan A, B och C (Aron väljer logga), och kontrollera kort om namnen redan används av en app eller ett varumärke i App Store / EUIPO (skriv vad du hittade och var).
