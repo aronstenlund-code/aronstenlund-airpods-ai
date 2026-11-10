@@ -46,4 +46,4 @@ Om `/exam parse` med en vanlig lärobokssida ger noll uppgifter kan den kanske f
 Se över knappen "Fota sidan du pluggar" på provkortet. Den har samma stil som Minitest-länken.
 
 ## CI
-Se slutet av rapporten när körningen är klar.
+Grönt i CI: iOS build 42827029467 (`c59356c`). Bygget för enhet räknar varningar som fel, och alla LumenTests är gröna, A36Tests inräknade. Vision läste den ritade sidan i simulatorn.

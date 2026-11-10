@@ -29,6 +29,14 @@ struct AddExamView: View {
     /// A33 (D109): in the first start the voice comes first; the form is the fallback behind "Skriv i stället".
     @State private var showsForm = false
 
+    /// Listening as shown: the model's, or "listening" in a screenshot (A46, Kelly Ke18: the Simulator has no microphone).
+    private var listeningShown: Bool {
+        #if DEBUG
+        if model.screenshotShows != nil { return true }
+        #endif
+        return model.isListening
+    }
+
     /// The first start's short form (A22).
     private var isQuick: Bool { isFirstStart && editing == nil }
 
@@ -52,9 +60,9 @@ struct AddExamView: View {
                         .foregroundStyle(LumenColor.muted)
                 }
                 HStack(spacing: 14) {
-                    ListeningRings(size: 40, active: model.isListening)
+                    ListeningRings(size: 40, active: listeningShown)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(model.isListening ? "Säg till exempel" : "Startar …").font(LumenFont.text(15, .semibold))
+                        Text(listeningShown ? "Säg till exempel" : "Startar …").font(LumenFont.text(15, .semibold))
                         Text("Jag har prov i biologi på fredag")
                             .font(appearance.questionFont(19))
                             .foregroundStyle(LumenColor.blue)
@@ -365,9 +373,9 @@ struct Chip: View {
                 .padding(.horizontal, 14)
                 .frame(maxWidth: fill ? .infinity : nil, minHeight: 44)
                 .foregroundStyle(selected ? LumenColor.blue : LumenColor.ink)
-                .background(selected ? LumenColor.soft : LumenColor.background, in: RoundedRectangle(cornerRadius: 10))
+                .background(selected ? LumenColor.soft : LumenColor.background, in: Capsule()) // A46 (SYSTEM.md §3): chips are round
                 .overlay {
-                    RoundedRectangle(cornerRadius: 10)
+                    Capsule()
                         .strokeBorder(selected ? LumenColor.blue : LumenColor.line, lineWidth: selected ? 1.5 : 1)
                 }
         }

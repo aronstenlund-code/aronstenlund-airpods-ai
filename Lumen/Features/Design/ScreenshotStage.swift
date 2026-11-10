@@ -24,6 +24,7 @@ struct ScreenshotStage: View {
         // A30: Lyssnar while listening in Provläge, before the first frame (the stage is not observed).
         switch name {
         case "listeningProv": model.screenshotShows = .prov
+        case "addExamFirst": model.screenshotShows = .standard // A46: "Säg till exempel", not "Startar …"
         case "practice": model.stagePracticeForScreenshot(PracticeDemo.run, result: nil)
         case "practiceResult": model.stagePracticeForScreenshot(nil, result: PracticeDemo.result)
         default: break
@@ -90,10 +91,13 @@ struct ScreenshotStage: View {
 /// A16: demo questions for the practice exam's screenshots.
 private enum PracticeDemo {
     static var tasks: [ExamTask] {
-        [ExamTask(no: "1", text: "Beräkna 15 % av 840 kr.", points: .init(E: 1, C: 0, A: 0), answer: "126 kr", assessment: "", topic: "procent"),
-         ExamTask(no: "2", text: "Lös ekvationen 3x + 5 = 20.", points: .init(E: 1, C: 1, A: 0), answer: "x = 5", assessment: "", topic: "ekvationer"),
-         ExamTask(no: "3", text: "Förklara varför första världskriget bröt ut. Använd begreppen allianser och nationalism.",
-                  points: .init(E: 1, C: 1, A: 1), answer: "", assessment: "", topic: "första världskriget", answerSource: "eget svar")]
+        // A46 (Kelly Ke18): biology, like the demo exam ("Biologiprovet").
+        [ExamTask(no: "1", text: "Vad behöver en växt för att fotosyntesen ska fungera?", points: .init(E: 1, C: 0, A: 0),
+                  answer: "Ljus, koldioxid och vatten", assessment: "", topic: "fotosyntes"),
+         ExamTask(no: "2", text: "Var i cellen sker cellandningen, och vad bildas?", points: .init(E: 1, C: 1, A: 0),
+                  answer: "I mitokondrierna; koldioxid, vatten och energi", assessment: "", topic: "cellandning"),
+         ExamTask(no: "3", text: "Förklara hur fotosyntes och cellandning hänger ihop. Använd begreppen glukos och syre.",
+                  points: .init(E: 1, C: 1, A: 1), answer: "", assessment: "", topic: "kolets kretslopp", answerSource: "eget svar")]
     }
 
     static var run: PracticeRun? {
@@ -101,7 +105,7 @@ private enum PracticeDemo {
         run.graded(points: 1, max: 1)
         run.move(to: 1)
         run.graded(points: 1, max: 2)
-        run.lastFeedback = "Delvis rätt. x är fem: dra bort fem från båda sidor och dela med tre."
+        run.lastFeedback = "Delvis rätt. Cellandningen sker i mitokondrierna. Det som bildas är koldioxid, vatten och energi."
         run.lastFeedbackNo = "2"
         run.move(to: 2)
         return run

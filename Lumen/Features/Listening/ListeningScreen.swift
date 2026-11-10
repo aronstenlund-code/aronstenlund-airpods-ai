@@ -278,12 +278,10 @@ struct ListeningScreen: View {
 
     private var footer: some View {
         VStack(spacing: 14) {
-            HStack(alignment: .firstTextBaseline, spacing: 12) {
-                Text(commandsLine)
-                    .font(LumenFont.text(15))
-                    .foregroundStyle(LumenColor.muted)
-                    .fixedSize(horizontal: false, vertical: true) // A12: the whole line, never "…"
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            // A46 (Kelly Ke18, SYSTEM.md §4): voice commands are shown once (the first-time tip), not on every screen;
+            // the Kommandon link is enough here. The practice run and the silent quiz say what to do under the badge.
+            HStack {
+                Spacer()
                 Button("Kommandon") { isShowingCommands = true }
                     .font(LumenFont.text(15, .semibold))
                     .foregroundStyle(LumenColor.blue)
@@ -327,12 +325,6 @@ struct ListeningScreen: View {
         .background(LumenColor.background)
     }
 
-    /// A9.1 / A18: from the command table (the user's own phrases show here too), one command at a time.
-    private var commandsLine: String {
-        if model.silentQuiz != nil { return "Säg ”Lumen, sluta” för att avsluta förhöret" } // A20.2
-        if model.practice != nil { return "Svara högt, eller säg nästa, förra eller avsluta" } // A16 / A30
-        return CommandTips.firstLine(for: mode, table: CommandBook.shared.table)
-    }
 
     private var isReporting: Binding<Bool> {
         Binding(get: { reportingTurn != nil }, set: { if !$0 { reportingTurn = nil } })

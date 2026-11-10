@@ -162,9 +162,11 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-10 13:13 → reports/2026-11-10-angela-a41-a42-a35-consent-exam-restrictions.md **A35 – D112/D113: ta bort 18+-spärren före Rizzläget, och appens onödiga minnesstopp** (effort: low). Enligt `docs/RESTRIKTIONER.md` A4 och A5: appens känsliga-minnen-nät (A27) stoppar bara hälsa, kris och ID-nummer. Samtycke och lyssningsindikatorn finns kvar (B2). Ägarbeslut: Rizzläget är flirtigt men aldrig sexuellt och för alla åldrar. Ta bort åldersfrågan/spärren och texter om 18+ i appen och på demosidan (säg till Kelly). Samtyckespunkterna för lyssning finns kvar.
 
-- [~] pågår (Angela, 15:00, CI) **A36 – U4: fota sidan du pluggar** (effort: high). D115. En knapp på provkortet "Fota sidan" → kameran → `/exam` (läser redan bilder, D84) → ämnesord, övningsfrågor och förhör på det fotade. Skärmbilder, Kelly granskar.
+- [x] klar 2026-11-10 15:25 → reports/2026-11-10-angela-a36-photo-page.md **A36 – U4: fota sidan du pluggar** (effort: high). D115. En knapp på provkortet "Fota sidan" → kameran → `/exam` (läser redan bilder, D84) → ämnesord, övningsfrågor och förhör på det fotade. Skärmbilder, Kelly granskar.
 
 - [x] klar 2026-11-10 13:49 → reports/2026-11-10-angela-a45-a37-fallback-standardlage.md **A37 – D115: "Frågor" heter "Standardläge", och lägesbytet** (effort: medium). Byt namnet överallt (app, röstkommandon "byt till standardläge", COMMANDS.md, säg till Kelly för sidan). Kontrollera att man alltid själv kan byta läge, både med knappen och med rösten, från alla skärmar. Toby testar.
+
+- [~] pågår (Angela, 15:25, CI) **A46 – Stående uppgift (PLAN 2b): Kellys Ke18-fynd 1–5** (effort: low). Egen punkt enligt 2b. addExamFirst visar lyssnande i skärmbilden, runda ämneschips, ingen kommandorad på Lyssnar, biologi i övningsprovets demo, en iPhone-röst på röstsidan.
 
 - [ ] **A38 – C2 + C3: notiser och streak som Duolingo** (effort: high). D115. Streak synlig på Start (liten, en siffra + låga), förloras om en dag missas. Notiser: nedräkning till provet och "5 snabba frågor" (eleven slår på dem, en gång per dag, tid valbar). Bygger på K31.
 

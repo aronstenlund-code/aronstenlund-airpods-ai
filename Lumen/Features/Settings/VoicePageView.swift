@@ -53,7 +53,8 @@ struct VoicePageView: View {
         let service = model.voices.voices.sorted { a, b in
             (a.voiceID == model.voices.defaultID ? 0 : 1) < (b.voiceID == model.voices.defaultID ? 0 : 1)
         }
-        let all = service + [VoiceChoice.appleDefault] + model.appleVoices
+        // A46 (Kelly Ke18): one iPhone voice, not the default and "Alva" as two look-alike rows.
+        let all = service + [VoiceChoice.appleDefault]
         let chosen = model.speaker.settings.voice
         return all.contains(chosen) ? all : [chosen] + all
     }
