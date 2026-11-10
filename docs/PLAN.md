@@ -21,6 +21,7 @@ Så många sessioner som möjligt jobbar samtidigt. Är kön tom tar sessionen s
 | Kevin | K4-loopen: kör eval, rätta det sämsta fallet, mät igen. När det finns användare: utgå från deras delade frågor (2d). |
 | Kelly | Äger designsystemet (`docs/design/SYSTEM.md`). Granska Angelas och Tobys senaste skärmbilder mot systemet och mot riktiga pluggappar, skriv fynden som underlag. Sedan demosidan. |
 | Oscar | Oberoende test av den senaste klara K-punkten som saknar O-punkt, annars väx verklighetsbanken (O15): fler kreativa, felformulerade och verkliga fall. |
+| Ryan | Läs annonsresultaten, stäng av det som inte fungerar, skala upp det som gör det, inom budgeten i `docs/ADS.md`. |
 | Toby | Omtest av den senaste klara A-punkten med skärmbilder (ljust, mörkt, iPhone SE, största text), annars förstagångsanvändaren i simulatorn. |
 Fokus för allt som syns: **lätt att förstå, lätt att komma igång, aldrig överväldigande, en tydlig väg framåt.**
 
