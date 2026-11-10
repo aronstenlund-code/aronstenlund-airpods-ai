@@ -103,7 +103,7 @@ final class FirstUserTests: XCTestCase {
         pause(1)
         screen("start", "The start screen after the first start")
         milestone("start screen")
-        if wait(["Byt läge"], 1) != nil {
+        if wait(["Tillbaka till start"], 1) != nil {
             log.append("note: a Frågor session is still on (Lyssnar) after the first start")
         }
 
@@ -122,7 +122,8 @@ final class FirstUserTests: XCTestCase {
             }
         }
         systemAlerts()
-        if wait(["Byt läge", "Avsluta"], 10) != nil {
+        if wait(["Tillbaka till start"], 10) != nil {
+            if waitText(containing: "Prov", 2) == nil { fail("the Lyssnar screen is not Provläge") }
             screen("provlage-lyssnar", "Lyssnar in Provläge, before the question")
             milestone("Provläge: listening")
             let before = Date()
@@ -145,7 +146,7 @@ final class FirstUserTests: XCTestCase {
 
     private func startProv() {
         // End a session that is still on, as a user would before choosing something else.
-        if wait(["Avsluta"], 1) != nil, wait(["Byt läge"], 1) != nil {
+        if wait(["Avsluta"], 1) != nil, wait(["Tillbaka till start"], 1) != nil {
             tap(["Avsluta"], "Lyssnar → Avsluta (session from the first start)")
             pause(2)
             if wait(["Lägg till prov", "Få A-svar till provet", "Fler lägen"], 3) == nil {
@@ -163,7 +164,7 @@ final class FirstUserTests: XCTestCase {
             screen("fler-lagen", "Fler lägen")
             if !tap(["Provläge*", "Prov*"], "Fler lägen → Provläge") { fail("no Provläge under Fler lägen") }
             pause(1)
-            if wait(["Byt läge", "Hoppa över allt"], 2) == nil {
+            if wait(["Tillbaka till start", "Hoppa över allt"], 2) == nil {
                 screen("provlage-val", "After choosing Provläge")
                 for label in ["Starta*", "Start*", "Börja*", "Fortsätt", "Lägg till prov"] where find([label]) != nil {
                     tap([label], "Provläge → \(label)")
@@ -263,6 +264,7 @@ final class FirstUserTests: XCTestCase {
     /// Screenshot, and every text and button on the screen written down (the report's "unclear or unnecessary").
     private func screen(_ name: String, _ note: String) {
         shots += 1
+        pause(1) // let the transition finish: reading labels mid-animation failed the test once
         let fileName = String(format: "t8-%@-%02d-%@", path, shots, name)
         attachShot(fileName, note)
         let texts = app.staticTexts.allElementsBoundByIndex.prefix(60).map(\.label).filter { !$0.isEmpty }
