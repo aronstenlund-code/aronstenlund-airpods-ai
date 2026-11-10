@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<title>Sömnläget (Ke27)</title>
+<!-- Kelly, Ke27 (D123, A49). Fyra skärmar: Sov i Byt läge, första gången, natten, morgonrapporten. Demodata, påhittad natt.
+     Rendera från repots rot: python -m http.server 8790, sedan puppeteer eller Chrome headless
+     ".../docs/design/_src/sovlage.html[?dark=1]" i 1660×900. -->
+<style>
+  @font-face { font-family: "Familjen Grotesk"; src: url("../../../site/fonts/familjen-grotesk.woff2") format("woff2"); font-weight: 400 700; }
+  :root {
+    --bg: #FFFFFF; --surface: #F4F6FA; --raised: #FFFFFF; --ink: #141A2E; --mut: #5E6779; --line: #E4E8EF;
+    --blue: #2346C8; --on-blue: #FFFFFF; --soft: #EAF0FF; --stage: #E9EDF3;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 20px rgba(16,24,40,.07);
+  }
+  .dark {
+    --bg: #0F1218; --surface: #181C26; --raised: #1D2230; --ink: #EEF1F7; --mut: #9AA3B5; --line: #272D3B;
+    --blue: #7F9BFF; --on-blue: #0E1630; --soft: #1E2A4F; --stage: #07090D; --shadow: none;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Familjen Grotesk", system-ui, sans-serif; background: var(--stage); color: var(--ink); padding: 26px 28px; }
+  .row4 { display: flex; gap: 26px; justify-content: center; }
+  .col { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .tag { font-weight: 700; font-size: 17px; }
+  .cap { font-size: 13px; color: var(--mut); width: 375px; text-align: center; line-height: 1.35; }
+  .phone { width: 375px; height: 780px; border-radius: 38px; overflow: hidden; background: var(--bg); position: relative; display: flex; flex-direction: column;
+           border: 1px solid var(--line); box-shadow: 0 10px 40px rgba(16,24,40,.16); }
+  .status { height: 46px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; font-weight: 600; font-size: 15px; flex: none; }
+  .ico { width: 22px; height: 22px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .btn { display: flex; align-items: center; justify-content: center; height: 54px; border-radius: 14px; background: var(--blue); color: var(--on-blue); font-weight: 600; font-size: 17px; }
+  .btn.sec { background: var(--surface); color: var(--ink); }
+  .bottom { margin-top: auto; padding: 0 20px 28px; display: flex; flex-direction: column; gap: 12px; }
+  .mut { color: var(--mut); }
+  .live { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px 7px 10px; border-radius: 999px; background: var(--soft); color: var(--blue); font-weight: 600; font-size: 15px; }
+  .live i { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 22%, transparent); }
+  /* blad */
+  .under { flex: 1; background: var(--surface); filter: brightness(.7); }
+  .dark .under { filter: brightness(.6); }
+  .sheetv { position: absolute; left: 0; right: 0; bottom: 0; background: var(--bg); border-radius: 22px 22px 0 0; padding: 8px 0 26px; display: flex; flex-direction: column; }
+  .dark .sheetv { background: var(--raised); }
+  .grab { width: 38px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto 12px; }
+  .sheethead { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 8px; }
+  .sheethead b { font-size: 20px; } .sheethead span { color: var(--blue); font-weight: 600; }
+  .mrow { display: flex; align-items: center; gap: 14px; padding: 12px 20px; border-bottom: 1px solid var(--line); }
+  .mrow:last-of-type { border-bottom: 0; }
+  .mrow .ic { width: 38px; height: 38px; border-radius: 10px; background: var(--surface); color: var(--blue); display: grid; place-items: center; flex: none; }
+  .mrow .t { font-weight: 600; font-size: 17px; } .mrow .d { color: var(--mut); font-size: 14px; }
+  .mrow.new { background: color-mix(in srgb, var(--soft) 60%, transparent); }
+  .check { margin-left: auto; color: var(--blue); font-weight: 700; }
+  .sheetnote { font-size: 13px; color: var(--mut); padding: 10px 20px 0; line-height: 1.4; }
+  /* första gången */
+  .pt { display: flex; gap: 14px; align-items: flex-start; }
+  .pt .ic { width: 36px; height: 36px; border-radius: 50%; background: var(--soft); color: var(--blue); display: grid; place-items: center; flex: none; }
+  .pt b { display: block; font-size: 16px; margin-bottom: 2px; } .pt p { font-size: 14px; color: var(--mut); line-height: 1.4; }
+  .moon { width: 64px; height: 64px; border-radius: 50%; background: var(--soft); color: var(--blue); display: grid; place-items: center; }
+  /* natten: alltid mörk, svart för OLED och sovrummet */
+  .night { background: #000; color: #8A93A8; border-color: #1a1d24; }
+  .night .live { background: #10162B; color: #7F9BFF; } .night .live i { background: #7F9BFF; }
+  .clock { font-size: 92px; font-weight: 500; letter-spacing: -.03em; color: #5B6377; text-align: center; margin-top: 150px; font-variant-numeric: tabular-nums; }
+  .night .btn { background: #141821; color: #C9D0DE; }
+  /* morgonrapporten */
+  .scroll { padding: 4px 20px 0; display: flex; flex-direction: column; gap: 14px; overflow: hidden; }
+  .card { background: var(--raised); border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--line); }
+  .dark .card { border-color: transparent; }
+  .kpis { display: flex; gap: 10px; }
+  .kpi { flex: 1; background: var(--surface); border-radius: 14px; padding: 10px 12px; }
+  .kpi b { font-size: 22px; display: block; } .kpi span { font-size: 13px; color: var(--mut); }
+  .tl { padding: 14px 16px 12px; }
+  .lane { position: relative; height: 22px; margin: 6px 0; }
+  .lane .base { position: absolute; left: 0; right: 0; top: 10px; height: 2px; background: var(--line); border-radius: 2px; }
+  .lane i { position: absolute; top: 3px; height: 16px; border-radius: 5px; }
+  .lane .sp { background: var(--blue); width: 8px; border-radius: 50%; height: 8px; top: 7px; box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 25%, transparent); }
+  .lane .sn { background: color-mix(in srgb, var(--blue) 35%, var(--surface)); }
+  .lane .rs { background: var(--mut); opacity: .45; }
+  .lanes { display: grid; grid-template-columns: 74px 1fr; column-gap: 8px; align-items: center; font-size: 13px; color: var(--mut); }
+  .axis { display: flex; justify-content: space-between; font-size: 12px; color: var(--mut); margin-left: 82px; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .clip { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .clip:last-child { border-bottom: 0; }
+  .play { width: 36px; height: 36px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; color: var(--blue); flex: none; }
+  .clip .tm { font-size: 13px; color: var(--mut); font-variant-numeric: tabular-nums; }
+  .clip .tx { font-size: 16px; line-height: 1.35; margin-top: 1px; }
+  .clip .tx.unk { color: var(--mut); font-style: normal; }
+  .h3 { font-size: 13px; font-weight: 600; color: var(--mut); margin: 4px 0 -6px 4px; }
+  .fine { font-size: 13px; color: var(--mut); line-height: 1.4; text-align: center; }
+  .del { color: var(--blue); font-weight: 600; font-size: 15px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="row4">
+
+  <!-- 1. Sov i Byt läge -->
+  <div class="col"><div class="tag">1. Sov i Byt läge</div>
+  <div class="phone"><div class="status"><span>22:41</span><span>●●●</span></div><div class="under"></div>
+    <div class="sheetv"><div class="grab"></div>
+      <div class="sheethead"><b>Byt läge</b><span>Stäng</span></div>
+      <div class="mrow"><div class="ic"><svg class="ico" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></div><div><div class="t">Provläge</div><div class="d">Pluggar till provet</div></div><span class="check">✓</span></div>
+      <div class="mrow"><div class="ic"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17h.01"/></svg></div><div><div class="t">Standardläge</div><div class="d">Svarar när någon frågar</div></div></div>
+      <div class="mrow"><div class="ic"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><div><div class="t">Intervju</div><div class="d">Färdiga svar på intervjufrågor</div></div></div>
+      <div class="mrow"><div class="ic"><svg class="ico" viewBox="0 0 24 24"><path d="M4 5h11v8H8l-4 3z"/><path d="M15 9h5v8l-3-2h-6v-2"/></svg></div><div><div class="t">Socialt</div><div class="d">Ett förslag i pausen</div></div></div>
+      <div class="mrow"><div class="ic"><svg class="ico" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div><div><div class="t">Rizz</div><div class="d">Flörtig wingman</div></div></div>
+      <div class="mrow new"><div class="ic"><svg class="ico" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></div><div><div class="t">Sov</div><div class="d">Telefonen på nattduksbordet</div></div></div>
+      <p class="sheetnote">Sov är inget samtalsläge: Lumen svarar inte, den bara lyssnar tills du trycker Godmorgon.</p>
+    </div>
+  </div><p class="cap">Sist i listan, med samma rad som de andra lägena. Kan också läggas som kontroll eller widget (A49).</p></div>
+
+  <!-- 2. Första gången -->
+  <div class="col"><div class="tag">2. Första gången</div>
+  <div class="phone"><div class="status"><span>22:41</span><span>●●●</span></div>
+    <div style="padding: 26px 22px 0; display:flex; flex-direction:column; gap: 20px;">
+      <div class="moon"><svg class="ico" style="width:30px;height:30px" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></div>
+      <div><h2 style="font-size:30px;line-height:1.1;letter-spacing:-.015em">Sov med Lumen</h2>
+      <p class="mut" style="font-size:17px;line-height:1.4;margin-top:8px">På morgonen ser du om du pratade i sömnen, snarkade eller sov oroligt.</p></div>
+      <div class="pt"><div class="ic"><svg class="ico" style="width:18px;height:18px" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div><div><b>Lyssnar hela natten</b><p>Mikrofonsymbolen syns hela tiden. Allt räknas ut på telefonen.</p></div></div>
+      <div class="pt"><div class="ic"><svg class="ico" style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M3 12h2l2-5 3 10 3-14 3 12 2-3h3"/></svg></div><div><b>Sparar korta klipp, bara här</b><p>När du pratar eller snarkar sparas några sekunder på telefonen. De skickas aldrig och raderas efter 30 dagar.</p></div></div>
+      <div class="pt"><div class="ic"><svg class="ico" style="width:18px;height:18px" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.5A5 5 0 0 1 21 19"/></svg></div><div><b>Den som sover bredvid hörs också</b><p>Berätta det för hen innan du startar.</p></div></div>
+      <div class="pt"><div class="ic"><svg class="ico" style="width:18px;height:18px" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M12 8l-2 4h4l-2 4"/></svg></div><div><b>Sätt i laddaren</b><p>En natt tar mycket batteri.</p></div></div>
+    </div>
+    <div class="bottom"><div class="btn">Sov</div><div class="btn sec">Inte nu</div></div>
+  </div><p class="cap">Visas en gång (egen samtyckesversion). Introts "Ljud sparas inte" behöver ett undantag för Sov, se sovlage.md.</p></div>
+
+  <!-- 3. Natten -->
+  <div class="col"><div class="tag">3. Natten</div>
+  <div class="phone night"><div class="status" style="color:#4A5164"><span></span><span>●●●</span></div>
+    <div style="display:flex;justify-content:center;margin-top:14px"><span class="live"><i></i>Lyssnar · laddar</span></div>
+    <div class="clock">02:14</div>
+    <p style="text-align:center;font-size:16px;margin-top:6px;color:#5B6377">Sov gott. Skärmen släcks om en stund.</p>
+    <div class="bottom"><div class="btn">Godmorgon</div><p style="text-align:center;font-size:13px;color:#4A5164">Avslutar natten och visar vad som hände</p></div>
+  </div><p class="cap">Alltid svart, även i ljust läge, och så mörk som det går. Lyssnar-brickan syns hela tiden. Utan laddare: "Lyssnar · 64 %" i stället för "laddar".</p></div>
+
+  <!-- 4. Morgonrapporten -->
+  <div class="col"><div class="tag">4. Morgonrapporten</div>
+  <div class="phone"><div class="status"><span>07:02</span><span>●●●</span></div>
+    <div class="scroll">
+      <div><p class="mut" style="font-size:14px">Natten till onsdag · 23:40–06:55</p>
+      <h2 style="font-size:28px;line-height:1.12;letter-spacing:-.015em;margin-top:4px">Du pratade 3 gånger i sömnen.</h2></div>
+      <div class="kpis"><div class="kpi"><b>24 min</b><span>snarkning</span></div><div class="kpi"><b>2</b><span>oroliga stunder</span></div><div class="kpi"><b>7 h 15</b><span>natten</span></div></div>
+      <div class="card tl">
+        <div class="lanes">
+          <span>Pratade</span><div class="lane"><span class="base"></span><i class="sp" style="left:31%"></i><i class="sp" style="left:37%"></i><i class="sp" style="left:78%"></i></div>
+          <span>Snarkade</span><div class="lane"><span class="base"></span><i class="sn" style="left:14%;width:9%"></i><i class="sn" style="left:52%;width:6%"></i></div>
+          <span>Orolig</span><div class="lane"><span class="base"></span><i class="rs" style="left:30%;width:5%"></i><i class="rs" style="left:76%;width:4%"></i></div>
+        </div>
+        <div class="axis"><span>00</span><span>02</span><span>04</span><span>06</span></div>
+      </div>
+      <p class="h3">I sömnen</p>
+      <div class="card">
+        <div class="clip"><div class="play"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg></div><div><div class="tm">01:52 · 6 s</div><div class="tx">”Nej, det är min tur att ta bollen.”</div></div></div>
+        <div class="clip"><div class="play"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg></div><div><div class="tm">02:10 · 3 s</div><div class="tx unk">Gick inte att höra vad du sa</div></div></div>
+        <div class="clip"><div class="play"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg></div><div><div class="tm">05:31 · 4 s</div><div class="tx">”Fem minuter till.”</div></div></div>
+      </div>
+      <p class="fine">Klippen finns bara på den här telefonen och raderas efter 30 dagar.</p>
+      <p class="del">Radera natten</p>
+    </div>
+  </div><p class="cap">En mening överst, tre siffror, tidslinjen och klippen. Ingen röd färg: inget här är ett fel. Påhittad natt.</p></div>
+
+</div>
+<script>if (new URLSearchParams(location.search).has('dark')) document.body.classList.add('dark');</script>
+</body>
+</html>

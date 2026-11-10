@@ -99,4 +99,4 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [x] klar 2026-11-10 20:24 → reports/2026-11-10-2024-kelly-ke26-d121-sidan.md ("hela dagen" utelämnat, batteri ej mätt) **Ke26 – D121 på demosidan** (effort: low). Huvudbudskapet på sidan: AI:n i dina AirPods för vardagen, skolan och jobbet; "Starta Lumen en gång, sen finns den i örat hela dagen. Säg 'Lumen' så svarar den." Sant formulerat (D121).
 
-- [~] pågår 2026-11-10 20:25 **Ke27 – Sömnläget: start och morgonrapport (D123)** (effort: medium). En knapp "Sov", inget mer att ställa in. Morgonrapporten: en mening överst ("Du pratade 3 gånger i sömnen"), tidslinje för natten, klipp att trycka på. Lugnt och snyggt, som Apples Hälsa/Sleep Cycle.
+- [x] klar 2026-11-10 20:28 → reports/2026-11-10-2028-kelly-ke27-sovlage.md (underlag docs/design/sovlage.md; "Ljud sparas inte" måste lösas före A49) **Ke27 – Sömnläget: start och morgonrapport (D123)** (effort: medium). En knapp "Sov", inget mer att ställa in. Morgonrapporten: en mening överst ("Du pratade 3 gånger i sömnen"), tidslinje för natten, klipp att trycka på. Lugnt och snyggt, som Apples Hälsa/Sleep Cycle.
