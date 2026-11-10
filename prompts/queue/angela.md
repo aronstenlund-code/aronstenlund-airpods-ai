@@ -168,7 +168,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-10 15:23 → reports/2026-11-10-angela-a46-kelly-ke18.md **A46 – Stående uppgift (PLAN 2b): Kellys Ke18-fynd 1–5** (effort: low). Egen punkt enligt 2b. addExamFirst visar lyssnande i skärmbilden, runda ämneschips, ingen kommandorad på Lyssnar, biologi i övningsprovets demo, en iPhone-röst på röstsidan.
 
-- [~] pågår (Angela, 15:35, CI) **A47 – Stående uppgift (PLAN 2b): "Lägg till prov" med snabbformen (Kellys Ke14/Ke18 fynd 6)** (effort: low). Egen punkt enligt 2b. Lägg till prov från Start: tre val (område, datum, årskurs) plus valfritt "Vad handlar provet om?" (behövs för A19), rösten ett tryck bort ("Säg det i stället"), aldrig mikrofonen av sig själv. Fullt formulär bara för att ändra ett prov.
+- [x] klar 2026-11-10 15:48 → reports/2026-11-10-angela-a47-add-exam-short.md **A47 – Stående uppgift (PLAN 2b): "Lägg till prov" med snabbformen (Kellys Ke14/Ke18 fynd 6)** (effort: low). Egen punkt enligt 2b. Lägg till prov från Start: tre val (område, datum, årskurs) plus valfritt "Vad handlar provet om?" (behövs för A19), rösten ett tryck bort ("Säg det i stället"), aldrig mikrofonen av sig själv. Fullt formulär bara för att ändra ett prov.
 
 - [ ] **A38 – C2 + C3: notiser och streak som Duolingo** (effort: high). D115. Streak synlig på Start (liten, en siffra + låga), förloras om en dag missas. Notiser: nedräkning till provet och "5 snabba frågor" (eleven slår på dem, en gång per dag, tid valbar). Bygger på K31.
 
