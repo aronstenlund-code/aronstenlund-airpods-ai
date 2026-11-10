@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import UIKit
 import UserNotifications
 
 /// Drives the Listening screen (MVP items 1–9). No business logic in views.
@@ -2563,6 +2564,48 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
     #endif
 
+
+    // MARK: - A photographed page (A36, D115)
+
+    /// What "Fota sidan" is doing, for the exam card ("Läser sidan …"); nil when nothing is.
+    private(set) var pagePhotoStatus: String?
+    private(set) var isReadingPage = false
+
+    /// The page is read on the phone (Vision); its key terms go to Förberedelser (they follow every question); K15
+    /// makes practice questions of it when there is no practice exam to replace; then Provläge quizzes on it.
+    func studyPhotographedPage(_ image: UIImage, for plan: ExamPlan) async {
+        isReadingPage = true
+        defer { isReadingPage = false }
+        pagePhotoStatus = "Läser sidan …"
+        let text = await PagePhoto.text(of: image)
+        guard text.count >= PagePhoto.minimumCharacters else {
+            pagePhotoStatus = "Jag kunde inte läsa sidan. Fota den rakt uppifrån, i bra ljus."
+            controller.log("Page photo: too little text (\(text.count) characters) (A36)")
+            return
+        }
+        let title = PagePhoto.title()
+        let terms = prep.add(title: title, text: text)?.terms.count ?? 0
+        refreshKeyterms()
+        controller.log("Page photo: \(text.count) characters, \(terms) terms (A36)")
+        if let examMaterials, let examClient, PagePhoto.mayReplace(examMaterials.paper) {
+            pagePhotoStatus = "Gör övningsfrågor av sidan …"
+            let profile = studyProfile.profile
+            await examMaterials.read(text: text, name: title, with: examClient,
+                                     subject: profile.subject.isEmpty ? plan.subject : profile.subject,
+                                     grade: (profile.grade ?? plan.grade)?.rawValue)
+        }
+        pagePhotoStatus = nil
+        if let examMaterials, examMaterials.isReady, examMaterials.paper.name == title {
+            useExamPlan(plan)
+            await startPracticeExam() // the page's own questions, one at a time
+        } else {
+            await startQuiz(for: plan) // the quiz, with the page's terms in every question
+        }
+    }
+
+    func clearPagePhotoStatus() {
+        pagePhotoStatus = nil
+    }
 
     // MARK: - Study plan, summary and links (A19: K17, K19)
 

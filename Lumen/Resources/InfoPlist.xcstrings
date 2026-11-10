@@ -18,6 +18,23 @@
         }
       }
     },
+    "NSCameraUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take a photo of the page you are studying, so Lumen can quiz you on it. The text is read on the iPhone; the photo is not saved."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fota sidan du pluggar på, så förhör Lumen dig på den. Texten läses på telefonen, och bilden sparas inte."
+          }
+        }
+      }
+    },
     "NSMicrophoneUsageDescription": {
       "extractionState": "manual",
       "localizations": {

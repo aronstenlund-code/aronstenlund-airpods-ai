@@ -40,4 +40,4 @@ telefonen är inte provad: simulatorn har ingen Apple Intelligence.**
 Prova på telefonen: slå på flygplansläget i ett pass och fråga något enkelt, till exempel "vad är fotosyntes".
 
 ## CI
-Se slutet av rapporten när körningen är klar.
+Grönt i CI: iOS build 42825071257 (`f557d2a`). Bygget för enhet räknar varningar som fel, och alla LumenTests är gröna. Foundation Models kompilerar alltså mot iOS 26-SDK:n.

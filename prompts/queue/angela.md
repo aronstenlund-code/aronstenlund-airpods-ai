@@ -162,7 +162,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-10 13:13 → reports/2026-11-10-angela-a41-a42-a35-consent-exam-restrictions.md **A35 – D112/D113: ta bort 18+-spärren före Rizzläget, och appens onödiga minnesstopp** (effort: low). Enligt `docs/RESTRIKTIONER.md` A4 och A5: appens känsliga-minnen-nät (A27) stoppar bara hälsa, kris och ID-nummer. Samtycke och lyssningsindikatorn finns kvar (B2). Ägarbeslut: Rizzläget är flirtigt men aldrig sexuellt och för alla åldrar. Ta bort åldersfrågan/spärren och texter om 18+ i appen och på demosidan (säg till Kelly). Samtyckespunkterna för lyssning finns kvar.
 
-- [ ] **A36 – U4: fota sidan du pluggar** (effort: high). D115. En knapp på provkortet "Fota sidan" → kameran → `/exam` (läser redan bilder, D84) → ämnesord, övningsfrågor och förhör på det fotade. Skärmbilder, Kelly granskar.
+- [~] pågår (Angela, 15:00, CI) **A36 – U4: fota sidan du pluggar** (effort: high). D115. En knapp på provkortet "Fota sidan" → kameran → `/exam` (läser redan bilder, D84) → ämnesord, övningsfrågor och förhör på det fotade. Skärmbilder, Kelly granskar.
 
 - [x] klar 2026-11-10 13:49 → reports/2026-11-10-angela-a45-a37-fallback-standardlage.md **A37 – D115: "Frågor" heter "Standardläge", och lägesbytet** (effort: medium). Byt namnet överallt (app, röstkommandon "byt till standardläge", COMMANDS.md, säg till Kelly för sidan). Kontrollera att man alltid själv kan byta läge, både med knappen och med rösten, från alla skärmar. Toby testar.
 
@@ -170,7 +170,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-10 13:13 → reports/2026-11-10-angela-a41-a42-a35-consent-exam-restrictions.md **A39 – D116: samtyckestext om att frågor och svar skickas för analys** (effort: low). En tydlig rad i samtyckessteget och i Om appen: "Dina frågor och Lumens svar skickas till oss så att vi kan göra Lumen bättre. Ljud sparas aldrig, och texten raderas när vi har läst den." Texten från Kevin (K30). Integritetspolicyn uppdateras när den skrivs (Fas 3).
 
-- [~] pågår (Angela, 14:35, CI) **A40 – T2: svar utan nät på iPhone 15 Pro och senare** (effort: medium). D115. Bara när nätet saknas och bara på enheter med Apple Intelligence: kort svar från Foundation Models och "Jag svarar kort, nätet är borta". Andra iPhones fungerar exakt som i dag och får "Nätet är borta" som nu. Aldrig ett krav.
+- [x] klar 2026-11-10 15:00 → reports/2026-11-10-angela-a40-offline-on-device.md **A40 – T2: svar utan nät på iPhone 15 Pro och senare** (effort: medium). D115. Bara när nätet saknas och bara på enheter med Apple Intelligence: kort svar från Foundation Models och "Jag svarar kort, nätet är borta". Andra iPhones fungerar exakt som i dag och får "Nätet är borta" som nu. Aldrig ett krav.
 
 - [x] klar 2026-11-10 13:13 → reports/2026-11-10-angela-a41-a42-a35-consent-exam-restrictions.md **A41 – Samtyckestexten ska stämma (G1)** (effort: high). Gör före A33. Underlag: `reports/2026-11-10-1300-deangelo-granskning-appen.md` G1. Skriv om ConsentView och de svenska texterna: AI i örat för vardagen och plugget (D118; inte föreläsningar/möten), blå indikator, att frågor och svar skickas till oss för analys och raderas efteråt (D116, ersätter "delning avstängd"), att andras tal som Lumen svarar på (t.ex. lärarens fråga i Standardläge) också skrivs ut och skickas, ljudet till ElevenLabs, texten till Claude via Lumens server, ljud sparas aldrig. Kort, på svenska, i samma ton som introt. Kevin bekräftar det tekniska (K30).
 

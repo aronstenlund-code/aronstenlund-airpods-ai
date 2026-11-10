@@ -10,6 +10,8 @@ import SwiftUI
 struct HomeView: View {
     @Bindable var model: ListeningModel
     @State private var isShowingMoreModes = false
+    /// A36: the exam whose page is being photographed.
+    @State private var photographing: ExamPlan?
     /// A24 (Kelly Ke10, T3 finding 3): a start with the microphone off shows the screen that fixes it.
     @State private var isShowingMicrophoneDenied = false
 
@@ -49,6 +51,15 @@ struct HomeView: View {
             if denied { isShowingMicrophoneDenied = true }
         }
         .task { await model.refreshStudyPlan() } // A19: today's pass and the reminders
+        .fullScreenCover(item: $photographing) { plan in
+            PagePhotoPicker { image in
+                photographing = nil
+                Task { await model.studyPhotographedPage(image, for: plan) }
+            } onCancel: {
+                photographing = nil
+            }
+            .ignoresSafeArea()
+        }
     }
 
     private var topBar: some View {
@@ -130,6 +141,28 @@ struct HomeView: View {
                     TwoLineLabel(title: "Få A-svar till provet", detail: "Lumen svarar bara när du frågar")
                 }
                 .buttonStyle(LumenButtonStyle(kind: .secondary, height: 62))
+                // A36 (D115): photograph the page you study; Lumen quizzes on it.
+                if model.isReadingPage || model.pagePhotoStatus != nil {
+                    HStack(spacing: 10) {
+                        if model.isReadingPage { ProgressView() }
+                        Text(model.pagePhotoStatus ?? "").font(LumenFont.text(15)).foregroundStyle(LumenColor.muted)
+                        Spacer(minLength: 0)
+                        if !model.isReadingPage {
+                            Button("Stäng") { model.clearPagePhotoStatus() }.font(LumenFont.text(15, .semibold))
+                        }
+                    }
+                    .frame(minHeight: 44)
+                } else {
+                    Button {
+                        photographing = plan
+                    } label: {
+                        Label("Fota sidan du pluggar", systemImage: "camera")
+                    }
+                    .font(LumenFont.text(16, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+                    .frame(minHeight: 44)
+                    .accessibilityHint("Lumen läser sidan och förhör dig på den")
+                }
                 if let cards = model.studyCards, !cards.current().isEmpty {
                     // D81: five questions by voice from the study cards.
                     Button("Minitest, 5 frågor") { Task { await model.startMiniTest() } }

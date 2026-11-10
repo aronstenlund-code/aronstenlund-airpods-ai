@@ -39,6 +39,8 @@
 	<string>$(SPOTIFY_CLIENT_ID)</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Lumen can skip and pause songs in Apple Music when you say "Lumen, nästa låt".</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take a photo of the page you are studying, so Lumen can quiz you on it. The text is read on the iPhone; the photo is not saved.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Lumen listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.</string>
 	<key>UIAppFonts</key>
