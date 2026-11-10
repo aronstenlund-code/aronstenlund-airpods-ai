@@ -51,6 +51,10 @@ final class FakeSTTProvider: STTProvider {
     func setContextualStrings(_ strings: [String]) {
         contextualStrings = strings
     }
+
+    /// A21.4: how often the coordinator asked for the final.
+    private(set) var commits = 0
+    func commit() { commits += 1 }
 }
 
 @MainActor

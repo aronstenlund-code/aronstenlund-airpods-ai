@@ -110,6 +110,20 @@ final class TranscriptionCoordinator {
     /// A14: when someone else's speech was last muted; the forced final is only for a turn drowned in chatter.
     private var otherSpokeAt: Date?
     private var commitRequestedAt: Date?
+    /// A21.4 (Toby T5 finding 4): words that stay uncommitted after the speaker went quiet. Scribe is asked for the
+    /// final; if none comes, the last partial is used as the final. A question never waits for the session to close.
+    private var staleTask: Task<Void, Never>?
+    private var lastPartialText = ""
+    /// The partial used as a final, so Scribe's own final (or partials) of the same words later are not a new turn.
+    private var usedPartial: (key: String, at: Date)?
+    /// A21.4: how often the final was asked for, and how often the partial had to be used, for Diagnostics.
+    private(set) var staleCommits = 0
+    private(set) var partialsUsedAsFinal = 0
+    /// No new words for the pause plus this: the speaker is done, ask Scribe for its final.
+    static let staleMargin: TimeInterval = 0.8
+    /// No final this long after asking for it: the last partial is the final.
+    static let commitWait: TimeInterval = 1.5
+    static let usedPartialWindow: TimeInterval = 15
 
     /// D82.2: Silero, not the input level, says whether someone is talking, so background noise is not speech.
     /// Nil when no VAD runs (the caller falls back to the level).
@@ -367,11 +381,19 @@ final class TranscriptionCoordinator {
     }
 
     /// D78: finals become whole utterances before the question gate and the backend see them.
-    private func deliver(_ result: STTResult) {
+    private func deliver(_ incoming: STTResult) {
+        guard let result = strippingUsedWords(incoming) else { return }
         if result.isFinal {
             partialSince = nil
-        } else if partialSince == nil, !result.text.isEmpty {
-            partialSince = Date()
+            staleTask?.cancel()
+            staleTask = nil
+            lastPartialText = ""
+        } else if !result.text.isEmpty {
+            if partialSince == nil { partialSince = Date() }
+            if result.text != lastPartialText {
+                lastPartialText = result.text
+                scheduleStaleCommit()
+            }
         }
         guard joinsUtterances else {
             if result.isFinal {
@@ -393,6 +415,64 @@ final class TranscriptionCoordinator {
             sink?.receivePartialTranscript(assembler.display(partial: result.text), at: Date())
         }
         scheduleFlush()
+    }
+
+    /// A21.4: Scribe's result for words already used from a partial: dropped, or only its new words after them.
+    private func strippingUsedWords(_ result: STTResult) -> STTResult? {
+        guard let used = usedPartial else { return result }
+        guard Date().timeIntervalSince(used.at) < Self.usedPartialWindow else {
+            usedPartial = nil
+            return result
+        }
+        guard let rest = UsedWords.remainder(of: result.text, after: used.key) else {
+            if result.isFinal { usedPartial = nil } // other words: Scribe has moved on
+            return result
+        }
+        if result.isFinal {
+            usedPartial = nil
+            controller.log("Scribe's final had words already used from the partial: \(rest.isEmpty ? "dropped" : "only the rest kept") (A21)")
+        }
+        if rest.isEmpty { return nil }
+        var trimmed = result
+        trimmed.text = rest
+        return trimmed
+    }
+
+    /// A21.4: no new partial for the pause + `staleMargin` while words wait uncommitted: ask for the final, then use
+    /// the partial if it still does not come. Scribe only (the phone's recognisers finalise by themselves).
+    private func scheduleStaleCommit() {
+        staleTask?.cancel()
+        guard joinsUtterances, case .running(.scribe) = status else { return }
+        let wait = pauseSeconds + Self.staleMargin
+        staleTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(wait))
+            guard let self, !Task.isCancelled, self.partialSince != nil, !self.lastPartialText.isEmpty else { return }
+            if self.isInputGated { return } // Lumen speaks: the words wait for the recogniser to open again
+            if self.vadSpeaking() == true { // someone still talks: look again later
+                self.scheduleStaleCommit()
+                return
+            }
+            self.staleCommits += 1
+            self.controller.log("No final from Scribe \(String(format: "%.1f", wait)) s after the last words: final asked for (A21)")
+            self.provider?.commit()
+            try? await Task.sleep(for: .seconds(Self.commitWait))
+            guard !Task.isCancelled, self.partialSince != nil, !self.lastPartialText.isEmpty else { return }
+            self.usePartialAsFinal()
+        }
+    }
+
+    private func usePartialAsFinal() {
+        let text = lastPartialText
+        partialsUsedAsFinal += 1
+        controller.log("Scribe did not commit: the last partial is used as the final (A21): \(text)")
+        usedPartial = (AheadAnswer.key(text), Date())
+        partialSince = nil
+        lastPartialText = ""
+        staleTask = nil
+        for utterance in assembler.final(text) {
+            sink?.receiveFinalTranscript(utterance, at: Date())
+        }
+        flushPending() // the speaker is done: what is pending is one utterance
     }
 
     /// No new words for `utteranceHold`: the speaker is done, so what is pending is one utterance.
@@ -572,6 +652,13 @@ final class TranscriptionCoordinator {
     func stopTranscribing() async {
         vadIsRunning = false
         partialSince = nil
+        staleTask?.cancel()
+        staleTask = nil
+        lastPartialText = ""
+        usedPartial = nil
+        if staleCommits > 0 {
+            controller.log("Stale words: \(staleCommits) finals asked for, \(partialsUsedAsFinal) partials used as finals (A21)")
+        }
         if focusMutedSeconds > 0 || ownEndsOfTurn > 0 {
             controller.log("Wearer focus: \(Int(focusMutedSeconds)) s of others muted, \(ownEndsOfTurn) own ends of turn")
         }
@@ -615,3 +702,28 @@ final class TranscriptionCoordinator {
         provider?.setContextualStrings(contextualStrings)
     }
 }
+
+/// A21.4: the words of a result that come after the ones already used as a final.
+enum UsedWords {
+    /// Nil: the text does not start with the used words. Empty: nothing new.
+    static func remainder(of text: String, after usedKey: String) -> String? {
+        let usedWords = usedKey.split(separator: " ")
+        guard !usedWords.isEmpty else { return nil }
+        let words = text.split(separator: " ")
+        var index = 0
+        var matched = 0
+        while index < words.count, matched < usedWords.count {
+            let keys = AheadAnswer.key(String(words[index])).split(separator: " ") // "250×250" is two words
+            index += 1
+            for key in keys where matched < usedWords.count {
+                guard key == usedWords[matched] else { return nil }
+                matched += 1
+            }
+        }
+        guard matched > 0 else { return nil }
+        // Only a part of the used words (Scribe's partials grow): they are all used already.
+        let rest = words[index...].joined(separator: " ").trimmingCharacters(in: .whitespacesAndNewlines)
+        return AheadAnswer.key(rest).isEmpty ? "" : rest
+    }
+}
+

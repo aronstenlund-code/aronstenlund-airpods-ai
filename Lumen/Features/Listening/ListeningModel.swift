@@ -118,6 +118,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private var currentPersona: String?
     /// Reopens the recogniser 0.7 s after Lumen's voice has stopped.
     private var ungateTask: Task<Void, Never>?
+    /// A21.3: when Lumen's own speech should be over at the latest; the recogniser opens then even without its end.
+    @ObservationIgnored private var ownSpeech = OwnSpeechDeadline()
+    @ObservationIgnored private var gateWatchdog: Task<Void, Never>?
+    /// A21.3: how often the safety timer had to open the recogniser, for Diagnostics.
+    private(set) var gateWatchdogOpens = 0
     static let echoTail: TimeInterval = 0.7
     /// The Diagnostics recording (D78) sees every final as it arrives.
     var finalObserver: (@MainActor (String) -> Void)?
@@ -303,6 +308,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             }
         }
         speaker.onSpeak = { [weak self] text in
+            self?.ownSpeechStarted(text)
             self?.echo.record(text, at: Date())
             self?.sessionObserver?(.spoke(text), Date())
             self?.spokenAnswer += text + " "
@@ -468,6 +474,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         answers.sessionLength = nil
         activation.cancelPending()
         studyQueue.removeAll()
+        ownSpeechEnded()
         answers.cancel()
         speaker.interrupt()
         conversation.cancelAnswer()
@@ -643,6 +650,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.interrupt()
         conversation.cancelAnswer()
         study.endpointSilence = modeSettings.pause(for: newMode) // D80: the user's pause ends the turn
+        study.unfinishedHold = newMode == .prov || newMode == .standard ? UnfinishedQuestion.hold : 0 // A21.2
         if newMode == .prov { await transcription.applyKeytermsNow() } // D87: the exam's words from the first one
         if let style = newMode.liveStyle {
             rizz = RizzSession(style: style)
@@ -942,7 +950,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 var parts = QuestionSplitter.split(text)
                 let first = parts.isEmpty ? text : parts.removeFirst()
                 if !parts.isEmpty { controller.log("\(mode.rawValue): one turn split into \(parts.count + 1) parts") }
-                studyQueue = parts
+                studyQueue = parts + studyQueue // A21.1: turns heard while the last one was answered stay queued
                 activated(ActivationRequest(query: first, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
                 if mode == .prov { recordStudyTurn(first) }
             }
@@ -1209,6 +1217,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         do {
             transcription.setInputGated(true) // our own voice again: the recogniser must not hear it
+            ownSpeechStarted(conversation.answers.last?.answer ?? "") // A21.3
             if try controller.playback.replayRecordedSpeech() {
                 controller.log("Repeat: the last answer from memory")
                 reopenRecognizerAfterSpeech()
@@ -1571,6 +1580,25 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         activation.fireNextQueued(now: Date())
     }
 
+    /// A21.1 (Toby T5 finding 1): Scribe delivered several segments at once and the first one ended the turn; the
+    /// others arrive while it is answered. Each becomes its own turn, asked when the answer before is over.
+    private func queueStudyTurn(_ text: String) {
+        let parts = QuestionSplitter.split(text).map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty && !FillerFilter.isOnlyFiller($0) }
+        guard !parts.isEmpty else { return }
+        studyQueue += parts
+        controller.log("\(mode.rawValue): heard while a turn was answered, queued as \(parts.count) turn(s) (A21): \(text)")
+        if study.phase == .listening || (!speaker.isSpeaking && !speaker.hasPendingSpeech && !isAnswerInFlight) {
+            // Nothing is being answered after all (silent answer, failure): ask it now.
+            if askNextStudyPart() { return }
+        }
+    }
+
+    private var isAnswerInFlight: Bool {
+        if case .answering = answers.status { return true }
+        return false
+    }
+
     /// A8.4: the next turn split from the same utterance, instead of listening again. True: it was asked.
     private func askNextStudyPart() -> Bool {
         guard study.isActive, mode == .prov || mode == .standard, !studyQueue.isEmpty else { return false }
@@ -1609,9 +1637,56 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 waited += 1
             }
             try? await Task.sleep(for: .seconds(Self.echoTail))
-            guard !Task.isCancelled, !self.speaker.isSpeaking else { return }
+            guard !Task.isCancelled, !self.speaker.isSpeaking else { return } // A21.3: the safety timer opens it then
+            self.ownSpeechEnded()
             self.transcription.setInputGated(false)
             if self.study.isActive, !self.askNextStudyPart() { self.study.resumeListening() }
+        }
+    }
+
+    // MARK: - A21.3 the recogniser never stays closed for Lumen's voice longer than that voice should last
+
+    private func ownSpeechStarted(_ text: String) {
+        ownSpeech.spoke(text, rate: Double(speaker.settings.rate), at: Date())
+        armGateWatchdog()
+    }
+
+    private func ownSpeechEnded() {
+        ownSpeech.reset()
+        gateWatchdog?.cancel()
+        gateWatchdog = nil
+    }
+
+    private func armGateWatchdog() {
+        gateWatchdog?.cancel()
+        gateWatchdog = Task { [weak self] in
+            while true {
+                guard let deadline = self?.ownSpeech.deadline else { return }
+                let wait = deadline.timeIntervalSinceNow
+                if wait <= 0 { break }
+                try? await Task.sleep(for: .seconds(wait))
+                if Task.isCancelled { return }
+            }
+            self?.ownSpeechOverdue()
+        }
+    }
+
+    /// The voice did not report its end within its estimated length + 2 s: open the recogniser anyway (A21.3).
+    private func ownSpeechOverdue() {
+        let started = ownSpeech.startedAt
+        ownSpeech.reset()
+        gateWatchdog = nil
+        guard isListening, transcription.isInputGated else { return }
+        gateWatchdogOpens += 1
+        let seconds = started.map { Int(Date().timeIntervalSince($0).rounded()) } ?? 0
+        controller.log("STT input opened by the safety timer: no end of Lumen's speech after \(seconds) s "
+            + "(playback speaking \(controller.playback.isSpeaking), speaker speaking \(speaker.isSpeaking)) (A21)")
+        ungateTask?.cancel()
+        transcription.setInputGated(false)
+        if study.isActive {
+            if study.phase != .listening, !askNextStudyPart() { study.resumeListening() }
+        } else {
+            askWaitingQuestionIfIdle()
         }
     }
 
@@ -2240,6 +2315,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard isListening, !isComparing, !isEnrollingVoice, instructing == nil, !text.isEmpty, !FillerFilter.isOnlyFiller(text),
               VoiceChannel.parse(text).intent == nil, !VoiceCommand.isMusicHandOff(text), !VoiceCommand.isComplaint(text),
               CommandMatcher.parseSaveCommand(text) == nil else { return }
+        if rizz == nil, UnfinishedQuestion.looksUnfinished(text) { return } // A21.2: the rest may still come
         if rizz != nil {
             liveSuggestionAhead(for: text)
             return
@@ -2663,6 +2739,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if study.isActive { study.transcriptPartial(text) }
         guard !controller.playback.isSpeaking else { return }
         lastHeardAt = date
+        if !text.isEmpty { activation.speechContinues(now: date) } // A21.2: a held half question waits for the rest
         schedulePrefetch()
         // A partial that already ends a sentence is enough to start the answer (D80).
         if let last = text.trimmingCharacters(in: .whitespacesAndNewlines).last, last == "?" || last == "!" {
@@ -2786,12 +2863,20 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return // "spara kommando …" is handled on the phone, never sent as a question
         }
         if study.isActive {
+            if study.phase != .listening, mode == .prov || mode == .standard, exam == nil, miniTest == nil,
+               !study.isPartOfLastTurn(segment.text, at: date) {
+                queueStudyTurn(segment.text) // A21.1: never dropped because a turn is being answered
+                return
+            }
             // Provläge decides turns by silence, not by the question gate.
             study.transcriptFinal(segment.text, at: date)
             return
         }
         activation.segmentFinalized(segment, conversation: conversation, language: language,
                                     isPlaybackSpeaking: controller.playback.isSpeaking, now: date)
+        if activation.pendingIsUnfinished {
+            controller.log("Frågor: half a question, waiting up to \(UnfinishedQuestion.hold) s for the rest (A21)")
+        }
         scheduleQuestionTimer()
         if activation.pendingDueAt == nil { discardAhead(reason: "no question when the pause came") }
     }

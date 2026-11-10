@@ -109,7 +109,7 @@ import Testing
         let provider = FakeAnswerProvider(events: [.meta(AnswerMeta(isQuestion: false)), .done(AnswerDone(answered: false))])
         let (h, model) = makeModel(provider)
         await model.startListening()
-        model.receiveFinalTranscript("vilka är de största")
+        model.receiveFinalTranscript("hur många invånare har") // A21: "vilka är de största" waits for its rest now
 
         #expect(await waitUntil { h.controller.turns.records.last?.outcome == .silent })
         #expect(h.controller.turns.records.last?.status == "not_question")
@@ -121,13 +121,13 @@ import Testing
         let provider = FakeAnswerProvider(events: [.meta(AnswerMeta(isQuestion: false)), .done(AnswerDone(answered: false))])
         let (h, model) = makeModel(provider)
         await model.startListening()
-        model.receiveFinalTranscript("vilka är de största")
+        model.receiveFinalTranscript("hur många invånare har")
         #expect(await waitUntil { h.controller.turns.records.last?.outcome == .silent })
 
-        provider.events = [.meta(AnswerMeta(isQuestion: true)), .delta("Mount Everest."), .done(AnswerDone(answered: true))]
-        model.receiveFinalTranscript("bergen i världen")
+        provider.events = [.meta(AnswerMeta(isQuestion: true)), .delta("Cirka 10,5 miljoner."), .done(AnswerDone(answered: true))]
+        model.receiveFinalTranscript("Sverige ungefär")
 
         #expect(await waitUntil { h.controller.turns.records.last?.outcome == .answered })
-        #expect(provider.requests.map(\.fragment) == ["vilka är de största", "vilka är de största bergen i världen"])
+        #expect(provider.requests.map(\.fragment) == ["hur många invånare har", "hur många invånare har Sverige ungefär"])
     }
 }

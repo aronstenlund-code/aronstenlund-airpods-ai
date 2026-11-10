@@ -16,6 +16,8 @@ final class StudySessionController {
     var stallSilence: TimeInterval?
     /// The user's pause for the mode (D80); nil keeps the Provläge setting.
     var endpointSilence: TimeInterval?
+    /// A21.2: extra wait for a turn that stops mid-thought (0: off, the live modes).
+    var unfinishedHold: TimeInterval = 0
     /// D82.2: Socialt läge and Rizzläge ask Silero whether someone is talking (nil: no VAD, use the level).
     /// Only while listening: while Lumen speaks the recogniser is closed, and barge-in goes by the level.
     var speechDetector: (@MainActor () -> Bool?)?
@@ -37,12 +39,15 @@ final class StudySessionController {
     var currentTurnLevelDBFS: Double? { machine.currentTurnLevelDBFS }
     var turnText: String { machine.turnText }
 
+    func isPartOfLastTurn(_ text: String, at now: Date = Date()) -> Bool { machine.isPartOfLastTurn(text, at: now) }
+
     func someoneIsTalking(at now: Date = Date()) -> Bool { machine.someoneIsTalking(at: now) }
 
     func start(at now: Date = Date()) {
         machine.tuning = settings.tuning
         machine.tuning.stallSilence = stallSilence
         if let endpointSilence { machine.tuning.endpointSilence = endpointSilence }
+        machine.tuning.unfinishedHold = unfinishedHold
         endedBySilence = false
         machine.start(at: now)
         subscribeToLevels()

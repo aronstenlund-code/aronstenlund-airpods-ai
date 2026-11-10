@@ -43,6 +43,8 @@ final class ActivationController {
         var gate: GateDecision
         var dueAt: Date
         var language: TranscriptionLanguage
+        /// A21.2: it stops mid-thought ("vilka är de största?"), so it waits `UnfinishedQuestion.hold` for the rest.
+        var unfinished = false
     }
 
     // MARK: - Final segments (Frågor, auto)
@@ -67,13 +69,15 @@ final class ActivationController {
             let decision = gate.evaluate(held.text, overlapsPlayback: segment.overlapsPlayback)
             lastDecision = decision
             held.gate = decision
-            held.dueAt = now.addingTimeInterval(settings.questionDebounce)
+            held.unfinished = UnfinishedQuestion.looksUnfinished(held.text)
+            held.dueAt = now.addingTimeInterval(held.unfinished ? UnfinishedQuestion.hold : settings.questionDebounce)
             pending = held
             return
         }
 
         let parts = QuestionSplitter.split(segment.text)
-        if parts.count == 1, let last = lastFired, now.timeIntervalSince(last.at) <= Self.continuationWindow, !last.text.hasSuffix("?"),
+        if parts.count == 1, let last = lastFired, now.timeIntervalSince(last.at) <= Self.continuationWindow,
+           !last.text.hasSuffix("?") || UnfinishedQuestion.looksUnfinished(last.text),
            !gate.evaluate(segment.text, overlapsPlayback: segment.overlapsPlayback).fires, !segment.overlapsPlayback {
             // A8.2: the words went on after the question was sent ("vilka är de största" … "bergen i världen").
             // The answer to the first half is replaced by one to the whole.
@@ -96,7 +100,12 @@ final class ActivationController {
                 onDrop?(part, "question gate " + String(format: "%.2f", decision.score) + " < " + String(format: "%.2f", decision.threshold))
             }
         }
-        guard let first = accepted.first else { return }
+        guard var first = accepted.first else { return }
+        if accepted.count == 1, UnfinishedQuestion.looksUnfinished(first.text) {
+            // A21.2: wait for the rest of the question instead of answering its first half.
+            first.unfinished = true
+            first.dueAt = max(first.dueAt, now.addingTimeInterval(UnfinishedQuestion.hold))
+        }
         queued += accepted.dropFirst()
         pending = first
         if let last = lastAutoFiredAt, now.timeIntervalSince(last) < settings.cooldown {
@@ -119,6 +128,17 @@ final class ActivationController {
         fire(query: held.text, trigger: .auto, language: held.language, gate: held.gate, now: now)
         return true
     }
+
+    /// A21.2: someone is still talking while a half question waits: the rest is coming, keep waiting for it.
+    func speechContinues(now: Date = Date()) {
+        guard let held = pending, held.unfinished else { return }
+        pending?.dueAt = max(held.dueAt, now.addingTimeInterval(Self.continuesHold))
+    }
+
+    /// While words keep coming after a held half question, it waits at least this long after the latest ones.
+    static let continuesHold: TimeInterval = 1.5
+
+    var pendingIsUnfinished: Bool { pending?.unfinished == true }
 
     /// A8.4: the answer before is over; the next question split from the same utterance goes now.
     @discardableResult

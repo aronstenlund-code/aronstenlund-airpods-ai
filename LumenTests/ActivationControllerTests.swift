@@ -105,9 +105,10 @@ func makeTestActivation(sensitivity: GateSensitivity = .medium, debounce: TimeIn
         let controller = makeTestActivation()
         let fired = recording(controller)
         var conversation = Conversation()
-        say("vilka är de största", at: 0, to: controller, in: &conversation)
-        say("bergen i världen", at: 1.4, to: controller, in: &conversation)
-        #expect(fired().map(\.query) == ["vilka är de största", "vilka är de största bergen i världen"])
+        // A21: "vilka är de största" now waits for its rest (UnfinishedQuestion); Toby's c2 still goes at once.
+        say("hur många invånare har", at: 0, to: controller, in: &conversation)
+        say("Sverige ungefär", at: 1.4, to: controller, in: &conversation)
+        #expect(fired().map(\.query) == ["hur många invånare har", "hur många invånare har Sverige ungefär"])
     }
 
     @Test func noContinuationAfterTheAnswerWasDelivered() {

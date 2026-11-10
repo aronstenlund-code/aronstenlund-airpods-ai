@@ -23,6 +23,9 @@ struct StudyTuning: Equatable, Sendable {
     var stallSilence: TimeInterval?
     /// Input this recent means someone is talking: suggestions wait for a pause.
     var talkingWindow: TimeInterval = 0.4
+    /// A21.2: a turn that stops mid-thought ("Vilka är de största?") waits this much longer for its rest. Provläge
+    /// and Frågor only (the live modes answer other people and must stay quick).
+    var unfinishedHold: TimeInterval = 0
 }
 
 enum StudyPhase: Equatable, Sendable {
@@ -133,7 +136,7 @@ struct StudyMachine: Equatable, Sendable {
                 loudRunStart = nil
                 if isUserSpeaking, let last = lastSpeechAt {
                     let silence = now.timeIntervalSince(last)
-                    if silence >= tuning.endpointSilence {
+                    if silence >= endpointSilenceNeeded {
                         if !turnFinals.isEmpty || silence >= tuning.endpointSilence + tuning.finalGrace {
                             return endTurnIfPossible(now: now)
                         }
@@ -190,10 +193,24 @@ struct StudyMachine: Equatable, Sendable {
         }
         turnPartial = nil
         if !trimmed.isEmpty { turnFinals.append(trimmed) }
-        if isUserSpeaking, let last = lastSpeechAt, now.timeIntervalSince(last) >= tuning.endpointSilence {
+        if isUserSpeaking, let last = lastSpeechAt, now.timeIntervalSince(last) >= endpointSilenceNeeded {
             return endTurnIfPossible(now: now)
         }
         return nil
+    }
+
+    /// The silence that ends the current turn: longer when its words stop mid-thought (A21.2).
+    var endpointSilenceNeeded: TimeInterval {
+        guard tuning.unfinishedHold > 0, UnfinishedQuestion.looksUnfinished(turnText) else { return tuning.endpointSilence }
+        return tuning.endpointSilence + tuning.unfinishedHold
+    }
+
+    /// A21.1: a final heard while a turn is answered is its own turn, unless it is the late final of the turn that just
+    /// ended (finals arrive at the pause, D80) or part of its words.
+    func isPartOfLastTurn(_ text: String, at now: Date, within window: TimeInterval = 15) -> Bool {
+        guard let lastText = lastTurnText, let lastAt = lastTurnAt, now.timeIntervalSince(lastAt) < window else { return false }
+        let key = Self.key(text)
+        return key.isEmpty || Self.key(lastText).contains(key)
     }
 
     // MARK: Answer / speech lifecycle
