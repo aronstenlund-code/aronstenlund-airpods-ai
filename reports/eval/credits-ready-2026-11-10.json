@@ -1,6 +1,10 @@
 {
  "date": "2026-11-10",
  "k18": {
-  "error": "see the log"
+  "terms": 30,
+  "right": 29,
+  "wrong": [
+   "plattektonik"
+  ]
  }
 }

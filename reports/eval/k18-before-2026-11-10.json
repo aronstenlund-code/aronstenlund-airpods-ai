@@ -1,0 +1,221 @@
+{
+ "summary": {
+  "terms": 30,
+  "right": 29,
+  "wrong": [
+   "plattektonik"
+  ]
+ },
+ "rows": [
+  {
+   "term": "Ohms lag",
+   "sentence": "Enligt Ohms lag är spänningen lika med strömmen gånger resistansen.",
+   "heard": "Enligt Ohms lag är spänningen lika med strömmen gånger resistansen",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "Pythagoras sats",
+   "sentence": "Med Pythagoras sats räknar du ut hypotenusan i en rätvinklig triangel.",
+   "heard": "Med Pythagoras sats räknar du ut hypotenusan i en rätvinklig triangel",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "cellandning",
+   "sentence": "Vid cellandning bryts druvsocker ner i mitokondrierna.",
+   "heard": "Vid cellandning bryts druvsocker ner i mitokondrierna",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "mitokondrierna",
+   "sentence": "Energin frigörs i mitokondrierna, cellens kraftverk.",
+   "heard": "Energin frigörs i mitokondrierna, cellens kraftverk",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "fotosyntes",
+   "sentence": "Fotosyntes sker i kloroplasterna med hjälp av ljus.",
+   "heard": "Fotosyntes sker i kloroplasterna med hjälp av ljus",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "kloroplasterna",
+   "sentence": "Klorofyllet finns i kloroplasterna i bladens celler.",
+   "heard": "Klorofyllet finns i kloroplasterna i bladens celler",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "osmos",
+   "sentence": "Osmos är vattnets rörelse genom ett halvgenomsläppligt membran.",
+   "heard": "Osmos är vattnets rörelse genom ett halvgenomsläppligt membran",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "meios",
+   "sentence": "Vid meios bildas könsceller med halva antalet kromosomer.",
+   "heard": "Vid meios bildas könsceller med halva antalet kromosomer",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "DNA",
+   "sentence": "DNA bär ärftlig information i form av gener.",
+   "heard": "DNA bär ärftlig information i form av gener",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "pH-värde",
+   "sentence": "Ett lågt pH-värde betyder att lösningen är sur.",
+   "heard": "Ett lågt pH-värde betyder att lösningen är sur",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "koldioxid",
+   "sentence": "Växterna tar upp koldioxid ur luften.",
+   "heard": "Växterna tar upp koldioxid ur luften",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "kovalent bindning",
+   "sentence": "I en kovalent bindning delar atomerna på elektronpar.",
+   "heard": "I en kovalent bindning delar atomerna på elektronpar",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "joner",
+   "sentence": "Salter är uppbyggda av positiva och negativa joner.",
+   "heard": "Salter är uppbyggda av positiva och negativa joner",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "entalpi",
+   "sentence": "Entalpi är ett mått på energiinnehållet i ett system.",
+   "heard": "Entalpi är ett mått på energiinnehållet i ett system",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "Newtons tredje lag",
+   "sentence": "Newtons tredje lag säger att varje kraft har en motkraft.",
+   "heard": "Newtons tredje lag säger att varje kraft har en motkraft",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "acceleration",
+   "sentence": "Acceleration är hur snabbt hastigheten ändras.",
+   "heard": "Acceleration är hur snabbt hastigheten ändras",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "derivata",
+   "sentence": "Derivatan visar lutningen på kurvan i en punkt.",
+   "heard": "Derivatan visar lutningen på kurvan i en punkt",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "ekvationssystem",
+   "sentence": "Ett ekvationssystem har två ekvationer med två obekanta.",
+   "heard": "Ett ekvationssystem har två ekvationer med två obekanta",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "sannolikhet",
+   "sentence": "Sannolikheten att få en sexa är en sjättedel.",
+   "heard": "Sannolikheten att få en sexa är en sjättedel",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "Gustav Vasa",
+   "sentence": "Gustav Vasa blev kung år femtonhundratjugotre.",
+   "heard": "Gustav Vasa blev kung år 1523",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "Westfaliska freden",
+   "sentence": "Westfaliska freden avslutade trettioåriga kriget.",
+   "heard": "Westfaliska freden avslutade trettioåriga kriget",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "upplysningen",
+   "sentence": "Under upplysningen betonades förnuftet och de mänskliga rättigheterna.",
+   "heard": "Under upplysningen betonades förnuftet och de mänskliga rättigheterna",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "Versaillesfreden",
+   "sentence": "Versaillesfreden lade skulden för kriget på Tyskland.",
+   "heard": "Versaillesfreden lade skulden för kriget på Tyskland",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "Napoleon",
+   "sentence": "Napoleon kröntes till kejsare i Notre-Dame.",
+   "heard": "Napoleon kröntes till kejsare i Notre-Dame",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "demokrati",
+   "sentence": "I en demokrati väljer folket sina företrädare.",
+   "heard": "I en demokrati väljer folket sina företrädare",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "Riksdagen",
+   "sentence": "Riksdagen stiftar lagar och beslutar om skatter.",
+   "heard": "Riksdagen stiftar lagar och beslutar om skatter",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "plattektonik",
+   "sentence": "Plattektonik förklarar varför jordbävningar uppstår.",
+   "heard": "Plattektronik förklarar varför jordbävningar uppstår",
+   "ok": false,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "Golfströmmen",
+   "sentence": "Golfströmmen gör att Norden har ett mildare klimat.",
+   "heard": "Golfströmmen gör att Norden har ett mildare klimat",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "preteritum",
+   "sentence": "Preteritum av verbet springa är sprang.",
+   "heard": "Preteritum av verbet springa är sprang",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  },
+  {
+   "term": "Shakespeare",
+   "sentence": "Shakespeare skrev pjäsen Romeo och Julia.",
+   "heard": "Shakespeare skrev pjäsen Romeo och Julia",
+   "ok": true,
+   "model": "eleven_v4_turbo"
+  }
+ ]
+}
