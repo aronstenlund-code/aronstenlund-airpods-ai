@@ -1,0 +1,136 @@
+{
+ "n": 12,
+ "ok": 8,
+ "fails": [
+  {
+   "answer": "Fotosyntesen omvandlar ljusenergi till kemisk energi i form av glukos.",
+   "fragment": "vad menar du med i form av glukos",
+   "want": "vad menar du med i form av glukos",
+   "rest": "vad menar du med",
+   "echoed": 4,
+   "ok": false
+  },
+  {
+   "answer": "Fotosyntesen omvandlar ljusenergi till kemisk energi i form av glukos.",
+   "fragment": "så fotosyntesen omvandlar ljusenergi till kemisk energi?",
+   "want": "fotosyntesen|kemisk",
+   "rest": "så",
+   "echoed": 6,
+   "ok": false
+  },
+  {
+   "answer": "Mitokondrien är cellens kraftverk och gör energi av socker och syre.",
+   "fragment": "vad betyder gör energi av socker och syre",
+   "want": "socker|syre",
+   "rest": "vad betyder",
+   "echoed": 6,
+   "ok": false
+  },
+  {
+   "answer": "Andra världskriget började den första september nittonhundratrettionio när Tyskland anföll Polen.",
+   "fragment": "vänta, när Tyskland anföll Polen, vad hände sen",
+   "want": "Polen|hände",
+   "rest": "vänta, vad hände sen",
+   "echoed": 4,
+   "ok": false
+  }
+ ],
+ "rows": [
+  {
+   "answer": "Fotosyntesen omvandlar ljusenergi till kemisk energi i form av glukos.",
+   "fragment": "fotosyntesen omvandlar ljusenergi till kemisk energi i form av glukos",
+   "want": "echo",
+   "rest": "",
+   "echoed": 10,
+   "ok": true
+  },
+  {
+   "answer": "Du sätter in ett i formeln, gångrar med fem och lägger till tio.",
+   "fragment": "du sätter in ett i formeln gånger med fem",
+   "want": "echo",
+   "rest": "gånger med fem",
+   "echoed": 6,
+   "ok": true
+  },
+  {
+   "answer": "Du sätter in ett i formeln, gångrar med fem och lägger till tio.",
+   "fragment": "och lägger till tio. Gud- ehm",
+   "want": "echo",
+   "rest": "Gud- ehm",
+   "echoed": 4,
+   "ok": true
+  },
+  {
+   "answer": "Mitokondrien är cellens kraftverk och gör energi av socker och syre.",
+   "fragment": "cellens kraftverk och gör energi av socker",
+   "want": "echo",
+   "rest": "",
+   "echoed": 7,
+   "ok": true
+  },
+  {
+   "answer": "Fotosyntesen omvandlar ljusenergi till kemisk energi i form av glukos.",
+   "fragment": "vad menar du med i form av glukos",
+   "want": "vad menar du med i form av glukos",
+   "rest": "vad menar du med",
+   "echoed": 4,
+   "ok": false
+  },
+  {
+   "answer": "Fotosyntesen omvandlar ljusenergi till kemisk energi i form av glukos.",
+   "fragment": "så fotosyntesen omvandlar ljusenergi till kemisk energi?",
+   "want": "fotosyntesen|kemisk",
+   "rest": "så",
+   "echoed": 6,
+   "ok": false
+  },
+  {
+   "answer": "Mitokondrien är cellens kraftverk och gör energi av socker och syre.",
+   "fragment": "varför kallas mitokondrien för cellens kraftverk",
+   "want": "kraftverk",
+   "rest": "varför kallas mitokondrien för cellens kraftverk",
+   "echoed": 0,
+   "ok": true
+  },
+  {
+   "answer": "Mitokondrien är cellens kraftverk och gör energi av socker och syre.",
+   "fragment": "vad betyder gör energi av socker och syre",
+   "want": "socker|syre",
+   "rest": "vad betyder",
+   "echoed": 6,
+   "ok": false
+  },
+  {
+   "answer": "Andra världskriget började den första september nittonhundratrettionio när Tyskland anföll Polen.",
+   "fragment": "vänta, när Tyskland anföll Polen, vad hände sen",
+   "want": "Polen|hände",
+   "rest": "vänta, vad hände sen",
+   "echoed": 4,
+   "ok": false
+  },
+  {
+   "answer": "Andra världskriget började den första september nittonhundratrettionio när Tyskland anföll Polen.",
+   "fragment": "började andra världskriget den första september eller den tredje",
+   "want": "september|tredje",
+   "rest": "började andra världskriget den första september eller den tredje",
+   "echoed": 0,
+   "ok": true
+  },
+  {
+   "answer": "Du sätter in ett i formeln, gångrar med fem och lägger till tio.",
+   "fragment": "varför lägger man till tio",
+   "want": "tio",
+   "rest": "varför lägger man till tio",
+   "echoed": 0,
+   "ok": true
+  },
+  {
+   "answer": "Fotosyntesen omvandlar ljusenergi till kemisk energi i form av glukos.",
+   "fragment": "kan du säga det igen fast enklare",
+   "want": "igen|enklare",
+   "rest": "kan du säga det igen fast enklare",
+   "echoed": 0,
+   "ok": true
+  }
+ ]
+}
