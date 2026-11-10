@@ -28,3 +28,12 @@ Förhör mig · Provläge · Frågor · Lyssnar · Fler lägen. "Tryck på Start
 Sidan följer nu samma väg: demo → "Så kommer du igång" (Testa nu och fråga högt, säg vilket prov du har, säg "Lumen,
 förhör mig") → en knapp. Resten ligger hopfällt under "Mer när du vill". Före/efter: `reports/2026-11-10-ke9-sida/`.
 När Angela byggt A18 byts skärmbilderna i stegen mot de nya (samma tre steg).
+
+## Resten av den vanliga vägen (Ke10, 2026-11-10)
+Samma regel: en blå knapp per skärm och rött bara för fel.
+| Skärm | Bild | Förslag |
+|---|---|---|
+| Start utan prov | `bilder/tom-fore-efter.png`, `-dark.png` | Samma kort som när ett prov finns, rubrik "Har du prov snart?", "Lägg till prov" som enda blå knapp, "Eller säg" i handstil. Under kortet samma två tysta val som med prov: "Bara fråga" och "Fler lägen". Inga färgade cirklar. |
+| Lyssnar, pausat | `bilder/pass-fore-efter.png`, `-dark.png` | Rubriken säger det som gäller: "Pausad" (i dag "Startar …" fast knappen säger Fortsätt, se A13-bilden). Fortsätt är blå, "Klar för nu" tyst text. Tummen ned (D57) kvar på senaste svaret; äldre svar tonas ned. |
+| Lyssnar, lyssnar | (samma bild, texten) | Rubrik "Lyssnar" eller A11:s "Hör inte, försöker igen". Längst ner Pausa och Klar, lika tysta (inte röd Avsluta). Röstraden visar ett kommando, inte tre. |
+| Mikrofon nekad | `bilder/nekad-fore-efter.png` | Egen skärm "Lumen hör dig inte" med tre korta steg och "Öppna Inställningar" som enda blå knapp, "Hoppa över" tyst. När mikrofonen är på igen går appen direkt till "Fråga vad som helst". Samma skärm när man trycker på ett läge på Start med mikrofonen avstängd (T3 avvikelse 3: "inget händer"). |
