@@ -1,0 +1,143 @@
+{
+ "summary": {
+  "n": 10,
+  "answered": 10,
+  "correct": 10,
+  "natural": 10,
+  "slips": 0,
+  "cost_mean_usd": 0.00277,
+  "first_ms_p50": 2276
+ },
+ "rows": [
+  {
+   "q": "vad är fotosyntes",
+   "status": 200,
+   "answer": "Fotosyntesen är processen där växter, alger och vissa bakterier använder ljusenergi för att göra socker av koldioxid och vatten, och då bildas syre som restprodukt. Den sker i kloroplasterna, där klorofyllet fångar upp solljuset.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.00996,
+   "ms": 2807
+  },
+  {
+   "q": "varför är himlen blå",
+   "status": 200,
+   "answer": "Solljuset sprids av luftens molekyler, och kortvågigt blått ljus sprids mycket mer än rött, så blått når ögat från alla håll på himlen. Det kallas Rayleighspridning, och vid solnedgången går ljuset genom mer luft så det blå sprids bort och himlen blir röd.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Kort och korrekt. Detaljen om solnedgången förenklas men stämmer (blått sprids bort längs den långa vägen, röda toner blir kvar).",
+   "cost": 0.0020207000000000003,
+   "ms": 2313
+  },
+  {
+   "q": "hur fungerar en vaccin",
+   "status": 200,
+   "answer": "Ett vaccin visar immunförsvaret en ofarlig bit av en sjukdomsalstrare, till exempel ett ytprotein eller ett avdödat virus. Kroppen bildar då antikroppar och minnesceller, så att den vid en riktig infektion känner igen smittan direkt och bekämpar den snabbt.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0020782,
+   "ms": 1280
+  },
+  {
+   "q": "vem var Gustav Vasa",
+   "status": 200,
+   "answer": "Gustav Vasa var Sveriges kung från femtonhundratjugotre till femtonhundrasextio och grundade den svenska vasadynastin. Han ledde upproret mot den danske kungen Kristian den andre efter Stockholms blodbad femtonhundratjugo, och han införde reformationen i Sverige på femtonhundratjugotalet och femtonhundratrettiotalet.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0019882,
+   "ms": 2276
+  },
+  {
+   "q": "vad är skillnaden mellan väder och klimat",
+   "status": 200,
+   "answer": "Väder är hur atmosfären är just nu eller under några dagar, som regn, vind och temperatur. Klimat är medelvädret över lång tid, vanligen minst trettio år, så en kall vecka ändrar inte klimatet.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0017532,
+   "ms": 1475
+  },
+  {
+   "q": "hur räknar man ut procent",
+   "status": 200,
+   "answer": "Dela delen med helheten och gångra med hundra. Till exempel är femton av sextio lika med femton delat med sextio, alltså noll komma två fem, gånger hundra, vilket blir tjugofem procent.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Korrekt. Enda smolk: 'gångra' är något ovanligt, 'multiplicera' eller 'gånger' är vanligare, men fungerar ändå talat.",
+   "cost": 0.0016057,
+   "ms": 2174
+  },
+  {
+   "q": "varför har vi skottår",
+   "status": 200,
+   "answer": "Jorden tar ungefär trehundrasextiofem komma två fyra dagar på sig att kretsa runt solen, så ett kalenderår på trehundrasextiofem dagar halkar efter. Genom att lägga till en extra dag, den tjugonio februari, vart fjärde år håller vi kalendern i takt med årstiderna.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Kort och korrekt. Förenklingen utelämnar att århundradesår inte är skottår om de inte är delbara med 400, men det är inte nödvändigt här.",
+   "cost": 0.0019107,
+   "ms": 1073
+  },
+  {
+   "q": "vad är en atom",
+   "status": 200,
+   "answer": "En atom är den minsta byggstenen i ett grundämne som fortfarande behåller ämnets egenskaper. Den består av en positivt laddad kärna av protoner och neutroner, med negativt laddade elektroner som rör sig runt kärnan. Atomer är nästan helt tomma rum, eftersom nästan hela massan sitter i den pyttelilla kärnan.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0022157,
+   "ms": 2396
+  },
+  {
+   "q": "hur uppstår regnbågar",
+   "status": 200,
+   "answer": "Solljus bryts när det går in i en regndroppe, reflekteras mot droppens insida och bryts igen när det går ut. Eftersom olika färger bryts olika mycket sprids ljuset i färger, med rött ytterst och violett innerst, och du ser bågen när solen är bakom dig och regnet framför.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0020182000000000004,
+   "ms": 1200
+  },
+  {
+   "q": "vad betyder demokrati",
+   "status": 200,
+   "answer": "Demokrati kommer från grekiskans \"demos\", folket, och \"kratos\", styre, alltså folkstyre. Det är ett styrelseskick där makten utgår från medborgarna, som väljer sina representanter i fria och lika val. Till demokratin hör också yttrandefrihet, majoritetsstyre och skydd för minoriteters rättigheter.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0021532,
+   "ms": 2647
+  }
+ ]
+}
