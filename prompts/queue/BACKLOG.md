@@ -8,3 +8,4 @@
 
 - **C1 veckobrev:** bara när användaren ber om det, tar ingen plats (D115).
 - **C4 klassens ordlista:** kanske (D115).
+- **Dela upp ListeningModel (G7):** 3 442 rader styr alla lägen; en styrning per läge bakom ett protokoll. Görs när fas 1 är klar, före beta.
