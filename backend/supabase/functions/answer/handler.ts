@@ -17,7 +17,7 @@ import { classifyAnswerType, detectContinuation } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
-import { commandTask, detectRule, socialRequest } from "./commands.ts";
+import { type CommandTask, commandTask, detectRule, socialRequest } from "./commands.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
 import { applicable, describe, detectCorrection, profileOf } from "../memory/settings.ts";
 
@@ -37,6 +37,9 @@ export const TWO_LEVEL_RULE = `
 
 TWO LEVELS (K13, this request; it replaces the length rules above): first the SHORT answer: one or two sentences, at most 30 words, correct, with the single most important point, no check question. Then a line with only [[MER]]. Then the DEVELOPED answer at A level for the student: the concepts, how they connect, one concrete example and the nuance that matters, in four to seven sentences. The developed answer continues from the short one and never repeats or rephrases it; it may end with one check question when the style rules allow one. Nothing is said about the two parts.`;
 const MORE_MARK = "[[MER]]";
+/** K17.2: the end-of-session summary (the app keeps it as study cards, D81, and in Anteckningar). */
+const SESSION_END_RULE =
+  "The student just ended the study session. Say, in four short spoken sentences and nothing else: the three most important points of what was studied in <recent_qa> (one sentence each, with the key terms), then one sentence that starts with \"Det du var osäker på var\" and names the concepts the student got wrong or was unsure of (from <concept_stats> and the graded replies in <recent_qa>; when there were none, say \"Du hade allt rätt i dag\"). Nothing new, no question.";
 const QUIZ_TASKS = new Set(["harder_question", "quick_quiz", "yes_no_quiz", "quiz_topic", "weak_areas"]);
 import { missingFact, missingFactNote } from "./interviewfacts.ts";
 import { nowContext } from "./datecalc.ts";
@@ -490,7 +493,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
 
       // K10.1: a request to control the app in the user's own words. Sure (>= 0.8): no answer, the app does it.
-      const appCmd = demo ? null : detectAppCommand(body.fragment, currentMode(body));
+      const appCmd = demo || body.sessionEnd ? null : detectAppCommand(body.fragment, currentMode(body)); // K17.2: the summary is asked for
       if (appCmd && appCmd.confidence >= APP_COMMAND_SURE) {
         const totalMs = Math.round(now() - t0);
         const frames = [
@@ -631,7 +634,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : null;
       const tutor = body.mode === "tutor";
       // K9: a spoken instruction from the command table ("ge ett exempel", "sammanfatta", "var säker" …)
-      const command = demo || continuation
+      const command: CommandTask | null = body.sessionEnd && !demo && !personaPlan(body)
+        ? { task: "session_summary", rule: SESSION_END_RULE }
+        : demo || continuation
         ? null
         : !plan && body.mode !== "auto" && body.mode !== "interview_prep"
         ? commandTask(body.fragment, "study")

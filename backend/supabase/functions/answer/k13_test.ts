@@ -111,3 +111,9 @@ Deno.test("K13 the short answer is sent before the developed one starts (never h
   const firstMore = ev.findIndex((e) => e.event === "more_delta");
   assert(firstDelta >= 0 && firstDelta < firstMore, ev.map((e) => e.event).join(","));
 });
+
+Deno.test("K17.2 session_end: the end-of-session summary task goes to the model", async () => {
+  const { h, seen } = two("Fotosyntes gör socker av ljus. Det sker i kloroplasterna. Syre bildas. Det du var osäker på var cellandning.");
+  await events(await h(post(tutorBody({ fragment: "avsluta", session_end: true, context: { recent_qa: [{ q: "vad är fotosyntes", a: "Fotosyntes är …" }] } }))));
+  assert(seen[0].user.includes("<task>session_summary</task>"), seen[0].user.slice(0, 300));
+});

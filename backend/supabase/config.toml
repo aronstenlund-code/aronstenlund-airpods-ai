@@ -28,6 +28,9 @@ verify_jwt = true                  # D84 spoken study profile + term list
 [functions.exam]
 verify_jwt = true                  # D84 exam session (parse, hint, grade, summary)
 
+[functions.study-plan]
+verify_jwt = true                  # K17 spaced repetition + plan up to the exam (code only, user JWT)
+
 [functions.provlage-eval]
 verify_jwt = true                  # D87 Provläge test bank (answers + grading, capped)
 
