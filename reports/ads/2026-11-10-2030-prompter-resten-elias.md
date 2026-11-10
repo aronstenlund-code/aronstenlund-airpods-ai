@@ -6,6 +6,7 @@ Status: v2 är ihopklippt (27,7 s: fotosyntes → fest → hallen → slutbild).
 1. En plats och en handling per klipp. Statisk kamera. Aldrig kameraåk mellan rum (hallklippen blev två dörrar och en försvunnen trappa).
 2. Ingen ålder på figurerna, inga laddade ord (teasingly, playful, flirty, secret, whisper i smyg).
 3. AI-rösten genereras aldrig av Gemini. Munnen stängd och hörluren lyser medan AI:n "pratar", rösten (Adam Composer) läggs på efteråt.
+3b. Han står aldrig still medan AI:n pratar (Aron 20:27): han gör hela tiden något vardagligt med händerna och kroppen (tar brödet, tar emot pizzan, går), bara munnen är stängd.
 4. Elias repliker: Gemini får göra läpprörelserna, rösten byts mot Arons inspelning via Voice Changer (Filip). Geminis egen röst låter för ung.
 5. Repliker överlappar aldrig. Ingen musik i klippen (läggs på i plattformen).
 6. Ingen text, inga loggor, inga muggar/flaskor. All text läggs på i redigeringen.
@@ -31,7 +32,7 @@ Animate the attached image as the first frame. Keep the exact same character, cl
 
 0–0.5 s: He stands at the counter. Nobody speaks.
 0.5–2.2 s: He says casually in Swedish: "Vad ska jag ha till frukost?"
-2.2–5.2 s: Nobody speaks. The white earbud that is visible to the camera lights up with a faint, steady soft white-blue glow. He keeps his mouth fully closed the whole time and listens, eyes shifting slightly to the side, then a small nod. While listening, he calmly picks up one slice of bread from the loaf with one hand and holds it just above the toaster. Only this one slice moves; the rest of the loaf stays on the board.
+2.2–5.2 s: Nobody speaks. The white earbud that is visible to the camera lights up with a faint, steady soft white-blue glow. He keeps his mouth fully closed the whole time, but he never stands still: while listening he reaches for the loaf, picks up one slice of bread with one hand, glances at it, gives a small nod as if agreeing with what he hears, and brings the slice over until he holds it just above the toaster. Only this one slice moves; the rest of the loaf stays on the board.
 5.2–6.6 s: The glow fades out. Holding the slice directly above the toaster, he flicks it a short distance straight up with a confident little motion; it flips once and drops straight down into the toaster slot nearest to him.
 6.6–7.3 s: He presses the toaster lever down with one finger.
 7.3–8.0 s: The inside of the toaster slots glows warm orange. He gives a satisfied half-smile, mouth closed.
@@ -88,8 +89,8 @@ Animate the attached image as the first frame. Keep the exact same characters, c
 
 0–0.5 s: They look at each other. Nobody speaks.
 0.5–3.3 s: The delivery man holds out the pizza box and says in Spanish, friendly: "Hola. Solo hablo español. Su pizza, con extra de queso." The young man does not speak.
-3.3–5.6 s: Nobody speaks. The white earbud facing the camera lights up with a faint, steady soft white-blue glow. The young man keeps his mouth fully closed and listens, then a small nod.
-5.6–8.4 s: The glow fades out. The young man smiles and says in Spanish, relaxed and fluent: "¡Perfecto, muchas gracias! ¡Que tenga un buen día!" and takes the pizza box. The delivery man does not speak.
+3.3–5.6 s: Nobody speaks. The white earbud facing the camera lights up with a faint, steady soft white-blue glow. The young man keeps his mouth fully closed the whole time, but he never stands still: while listening he takes the pizza box from the delivery man with both hands, lifts the lid a little to look inside, and gives a small, pleased nod.
+5.6–8.4 s: The glow fades out. Holding the pizza box, the young man smiles and says in Spanish, relaxed and fluent: "¡Perfecto, muchas gracias! ¡Que tenga un buen día!" The delivery man does not speak.
 8.4–10.0 s: The delivery man smiles, surprised and impressed, and gives a thumbs up. Nobody speaks.
 
 Audio: only the two spoken lines above, each spoken once, never overlapping. Soft street ambience from outside. No music, no other voices, no voice from the earbud. No text, subtitles, captions or logos anywhere.
@@ -120,3 +121,8 @@ Trappan gick fel för att prompten bad om rörelser som inte stämde med startbi
 - **Alla klipp:** "one continuous shot from the same static camera position: no zoom, no cuts, no close-ups".
 - **Kvar som risk:** Omni kan ändå lägga till en egen röst i örat eller prata för länge. Det går att rätta i ljudmixen utan ny generering, så länge munnen är stängd.
 - **Ordning:** V1 måste köras före V2 (V2 börjar på V1:s sista bildruta). Glimtarna och pizzans startbild är oberoende.
+
+## Ändring 20:27 (Aron): ingen ska stå still medan AI:n pratar
+- V1: under skenet sträcker han sig efter brödet, tar en skiva, tittar på den, nickar och för den till brödrosten.
+- V3: under skenet tar han emot pizzakartongen, lyfter locket lite och nickar nöjt. Pizzan har därför bytt plats från efter repliken till under skenet.
+- V2 och glimtarna har ingen AI-replik som behöver ett tyst fönster.
