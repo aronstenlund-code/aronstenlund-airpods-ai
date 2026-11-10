@@ -2749,6 +2749,25 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
+    // MARK: - A46 (N6): flip cards, on the screen without the voice
+
+    /// The exam's study cards as flip cards, nil when there is none.
+    func flipDeck(for plan: ExamPlan) -> FlipDeck? {
+        guard let cards = studyCards?.current() else { return nil }
+        return FlipDeck(from: cards, subject: plan.subject)
+    }
+
+    /// One flip card answered: it counts like a quiz answer (the card, the tutor's concept stats, the study plan).
+    func recordFlip(_ card: StudyCard, knew: Bool, for plan: ExamPlan) {
+        studyCards?.mark(card.id, right: knew)
+        let concept = FlipDeck.concept(for: card, topics: plan.topics)
+        conceptStats.record(concept, right: knew)
+        conceptStats.save()
+        studyHistory.record(concept, ok: knew, exam: plan.id)
+        studyHistory.save()
+        controller.log("Flip card: \(knew ? "knew" : "missed") (A46)")
+    }
+
     /// Five questions by voice, inside Provläge (the backend's test for the last session, else its cards first).
     func startMiniTest() async {
         guard let studyCards else { return }

@@ -81,7 +81,7 @@ jobs:
           mkdir -p shots
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"
-            for screen in intro first home empty addExam listening cannotAnswer switch errors settings voice practice practiceResult listeningProv addExamFirst about interview live; do
+            for screen in intro first home empty addExam listening cannotAnswer switch errors settings voice practice practiceResult listeningProv addExamFirst flipCards flipCardsBack flipCardsDone about interview live; do
               # Swedish, as on Aron's phone (the strings' Swedish translations).
               xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" -AppleLanguages "(sv)" -AppleLocale sv_SE
               sleep 9

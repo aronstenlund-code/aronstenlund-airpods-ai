@@ -45,6 +45,10 @@ struct ScreenshotStage: View {
         if !model.memory.facts.contains(where: { $0.text.hasPrefix("Provträning") }) {
             model.memory.add("Provträning: öva på uppgifter som \"Cellandning och klorofyll\"", kind: .fact, source: .automatic)
         }
+        // A46: study cards, so Start shows "Öva med 3 vändkort".
+        if model.studyCards?.current().isEmpty == true {
+            for card in FlipDemo.cards { model.studyCards?.add(question: card.question, answer: card.answer, profile: profile) }
+        }
         if model.conversation.answers.isEmpty {
             model.receiveAnswer(question: "Vad är klorofyll?", answer: "Klorofyll är det gröna ämnet i bladen som fångar ljuset.", source: "cloud")
             model.receiveAnswer(question: "Vad är fotosyntes?",
@@ -80,6 +84,9 @@ struct ScreenshotStage: View {
             // result, and the first start's exam step.
             case "listeningProv", "practice", "practiceResult": ListeningScreen(model: model) {} // set up in `seed`
             case "addExamFirst": AddExamView(model: model, isFirstStart: true) {}.lumenScreen()
+            // A46 (N6): the flip cards, the question, the answer with Kunde / Kunde inte, and the end.
+            case "flipCards", "flipCardsBack", "flipCardsDone":
+                FlipCardsView(plan: FlipDemo.plan, deck: FlipDemo.deck(name), onMark: { _, _ in }, onClose: {})
             case "about": NavigationStack { AboutView() } // A13.1
             case "interview": NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
             case "live": NavigationStack { LiveStartView(model: model, settings: model.modeSettings, mode: .social) }
@@ -88,6 +95,31 @@ struct ScreenshotStage: View {
         }
     }
 }
+/// A46: demo flip cards, biology like the demo exam.
+private enum FlipDemo {
+    static let plan = ExamPlan(grade: .y9, area: .no, subject: "Biologi", date: Date().addingTimeInterval(5 * 86_400),
+                               topics: "fotosyntes, cellandning")
+    static let cards = [
+        StudyCard(question: "Vad behöver en växt för fotosyntesen?",
+                  answer: "Ljus, koldioxid och vatten. Klorofyllet i bladen fångar ljuset.", subject: "Biologi", examDate: nil),
+        StudyCard(question: "Var i cellen sker cellandningen?",
+                  answer: "I mitokondrierna. Där blir socker och syre till energi, koldioxid och vatten.", subject: "Biologi", examDate: nil),
+        StudyCard(question: "Vad är klorofyll?",
+                  answer: "Det gröna ämnet i bladen som fångar ljusets energi.", subject: "Biologi", examDate: nil),
+    ]
+
+    static func deck(_ name: String) -> FlipDeck {
+        var deck = FlipDeck(cards: cards)
+        if name == "flipCardsBack" {
+            deck.flip(); deck.mark(knew: true)
+            deck.flip()
+        } else if name == "flipCardsDone" {
+            for knew in [true, false, true] { deck.flip(); deck.mark(knew: knew) }
+        }
+        return deck
+    }
+}
+
 /// A16: demo questions for the practice exam's screenshots.
 private enum PracticeDemo {
     static var tasks: [ExamTask] {

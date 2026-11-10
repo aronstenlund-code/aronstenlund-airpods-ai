@@ -12,6 +12,8 @@ struct HomeView: View {
     @State private var isShowingMoreModes = false
     /// A36: the exam whose page is being photographed.
     @State private var photographing: ExamPlan?
+    /// A46: the flip cards being tapped through.
+    @State private var flipping: FlipSession?
     /// A24 (Kelly Ke10, T3 finding 3): a start with the microphone off shows the screen that fixes it.
     @State private var isShowingMicrophoneDenied = false
 
@@ -51,6 +53,14 @@ struct HomeView: View {
             if denied { isShowingMicrophoneDenied = true }
         }
         .task { await model.refreshStudyPlan() } // A19: today's pass and the reminders
+        .fullScreenCover(item: $flipping) { session in
+            FlipCardsView(plan: session.plan, deck: session.deck) { card, knew in
+                model.recordFlip(card, knew: knew, for: session.plan)
+            } onClose: {
+                flipping = nil
+                Task { await model.refreshStudyPlan() } // A19: today's pass follows the answers
+            }
+        }
         .fullScreenCover(item: $photographing) { plan in
             PagePhotoPicker { image in
                 photographing = nil
@@ -162,6 +172,18 @@ struct HomeView: View {
                     .foregroundStyle(LumenColor.blue)
                     .frame(minHeight: 44)
                     .accessibilityHint("Lumen läser sidan och förhör dig på den")
+                }
+                if let deck = model.flipDeck(for: plan) {
+                    // A46 (N6): the cards on the screen, without the voice.
+                    Button {
+                        flipping = FlipSession(plan: plan, deck: deck)
+                    } label: {
+                        Label("Öva med \(deck.cards.count) vändkort", systemImage: "rectangle.on.rectangle")
+                    }
+                    .font(LumenFont.text(16, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+                    .frame(minHeight: 44)
+                    .accessibilityHint("Frågan på ett kort, tryck för svaret, utan ljud")
                 }
                 if let cards = model.studyCards, !cards.current().isEmpty {
                     // D81: five questions by voice from the study cards.
@@ -338,4 +360,11 @@ struct MoreModesSheet: View {
             }
         }
     }
+}
+
+/// A46: one round of flip cards from the exam card.
+struct FlipSession: Identifiable {
+    let id = UUID()
+    let plan: ExamPlan
+    let deck: FlipDeck
 }
