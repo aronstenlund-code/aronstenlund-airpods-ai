@@ -1,0 +1,70 @@
+{
+ "plan": {
+  "today": "2026-11-10",
+  "exams": [
+   {
+    "name": "Biologiprovet",
+    "date": "2026-11-13",
+    "days_left": 3,
+    "due": [
+     {
+      "concept": "cellandning",
+      "last": "2026-11-09",
+      "box": 0,
+      "next": "2026-11-10",
+      "reason": "missed"
+     },
+     {
+      "concept": "mitos",
+      "last": "2026-11-09",
+      "box": 0,
+      "next": "2026-11-10",
+      "reason": "missed"
+     },
+     {
+      "concept": "osmos",
+      "last": "2026-11-07",
+      "box": 1,
+      "next": "2026-11-10",
+      "reason": "review"
+     }
+    ],
+    "prompt": "I går missade du cellandning och mitos. Ska vi ta dem nu?",
+    "plan": [
+     {
+      "date": "2026-11-10",
+      "minutes": 10,
+      "concepts": [
+       "cellandning",
+       "mitos",
+       "osmos"
+      ],
+      "note": "Det du missade först."
+     },
+     {
+      "date": "2026-11-11",
+      "minutes": 10,
+      "concepts": [
+       "mitos",
+       "cellandning",
+       "osmos"
+      ],
+      "note": "Förhör på det som är svårast."
+     },
+     {
+      "date": "2026-11-12",
+      "minutes": 15,
+      "concepts": [
+       "fotosyntes",
+       "mitos",
+       "cellandning",
+       "osmos"
+      ],
+      "note": "Blandat förhör på det viktigaste, dagen före provet."
+     }
+    ]
+   }
+  ]
+ },
+ "session_end": "Fotosyntes: växter gör druvsocker och syre av koldioxid och vatten med hjälp av ljus, i kloroplasterna. Cellandning: cellen bryter ner druvsocker med syre till koldioxid, vatten och energi, i mitokondrierna. Processerna är varandras motsatser, eftersom det ena bildar det som det andra använder. Det du var osäker på var vad som bildas vid cellandning, nämligen koldioxid och vatten, medan syre är något som förbrukas."
+}
