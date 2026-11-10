@@ -87,3 +87,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [ ] **Ke22 – Annonser, start** (effort: high). D117: annonserna ska börja snart. Ta fram 3 korta annonsidéer (9:16, 15 s) för Instagram/TikTok med Elias, med manus och bildplan, och två stillbilder. Läs varje manus noga (naturlig svenska, längd) innan något genereras i ElevenLabs. Använd de två knapparna (D97) och "Standardläge" (D115).
 
 - [ ] **Ke23 – Namn och logga** (effort: medium). D117: namnkandidater Proviska, Testvisk, Pod Whisper, Whisper Pod. Gör en sida i `docs/design/namn.md` med varje namn ihop med loggan A, B och C (Aron väljer logga), och kontrollera kort om namnen redan används av en app eller ett varumärke i App Store / EUIPO (skriv vad du hittade och var).
+
+- [ ] **Ke24 – Logga från ChatGPT-förslagen** (effort: medium). Aron gillade inte A/B/C och tog fram sex förslag i ChatGPT: `docs/design/logo/chatgpt-forslag-2026-11-10.jpg`. När Aron har valt nummer (Deangelo skriver det här): rita om det valda som ren vektor (SVG appikon 1024 + enfärgad symbol), ljust och mörkt, kontrollera i 29 pt, och ersätt radiovågorna i appen (Angela) och på sidan. Ingen Apple-lik hörlur.
