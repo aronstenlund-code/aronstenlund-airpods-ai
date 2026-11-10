@@ -96,3 +96,5 @@
 - [x] klar 2026-11-10 10:57 → `reports/qa/2026-11-10-1057-oscar-o24-k20.md` (frågor om Lumen 5/20 fångas, inga falska träffar 10/10; kungars nummer 5/5 men vanliga namn med siffror blir ordningstal 8/10: "Erik den fjortonde poäng") **O24 – Oberoende test av K20, offline (stående uppgift, PLAN 2b)** (effort: medium). `node scripts/qa/o24_k20_offline.mjs`, 0 USD.
 
 - [x] klar 2026-11-10 11:01 → `reports/qa/2026-11-10-1101-oscar-o26-siffror.md` (uppläsning av tal 34/45: "6/6" blir "sex/sex", "den 20 juni" blir "den tjugo juni", "1 bok/katt/hund" blir "ett", "12,50 kr" blir "tolv komma fem noll kronor") **O26 – Uppläsning av siffror (K4-loopen), offline (stående uppgift, PLAN 2b)** (effort: medium). `node --experimental-transform-types scripts/qa/o26_numbers_offline.mjs`, 0 USD.
+
+- [x] klar 2026-11-10 11:03 → `reports/qa/2026-11-10-1103-oscar-o27-rizz-skyddsnat.md` (kodens filter stoppar 0/25 nya olämpliga Rizz/Socialt-rader: press, nedvärdering, sexuellt, ett nej; inga falska stopp 10/10; skyddet vilar på modellen) **O27 – Rizz/Socialt: kodens skyddsnät, offline (stående uppgift, PLAN 2b)** (effort: medium). `node scripts/qa/o27_rizz_filter_offline.mjs`, 0 USD.
