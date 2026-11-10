@@ -954,11 +954,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var examAskedAloud = false
     private(set) var examQuestionDeclined = false
 
-    func askAboutExamByVoice() async {
+    func askAboutExamByVoice(firstStart: Bool = true) async {
         examQuestionDeclined = false
         await listenForExamStatement()
         examAskedAloud = true
-        say("Har du prov snart? Säg vilket ämne och när.")
+        // A47: from Start the student asked to add one; the first start asks whether there is one at all.
+        say(firstStart ? "Har du prov snart? Säg vilket ämne och när." : "Vilket prov? Säg ämnet och när det är.")
     }
 
     /// "Lägg till prov" → "Eller säg det": listen, and the next sentence about an exam is saved as one.

@@ -37,8 +37,9 @@ struct AddExamView: View {
         return model.isListening
     }
 
-    /// The first start's short form (A22).
-    private var isQuick: Bool { isFirstStart && editing == nil }
+    /// The short form (A22): the first start, and since A47 (Kelly Ke14/Ke18) "Lägg till prov" from Start too. The full
+    /// form stays for changing an exam.
+    private var isQuick: Bool { editing == nil }
 
     var body: some View {
         if isQuick { quickBody } else { fullBody }
@@ -52,13 +53,14 @@ struct AddExamView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Har du prov snart?")
+                    Text(isFirstStart ? "Har du prov snart?" : "Lägg till prov")
                         .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
                         .accessibilityAddTraits(.isHeader)
                     Text("Säg det, så förhör Lumen dig inför provet.")
                         .font(LumenFont.text(16))
                         .foregroundStyle(LumenColor.muted)
                 }
+                if listeningForVoice {
                 HStack(spacing: 14) {
                     ListeningRings(size: 40, active: listeningShown)
                     VStack(alignment: .leading, spacing: 2) {
@@ -72,6 +74,18 @@ struct AddExamView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
                 .accessibilityElement(children: .combine)
+                } else {
+                    // A47: from Start the microphone starts only when the student asks for it.
+                    Button {
+                        listeningForVoice = true
+                        Task { await model.askAboutExamByVoice(firstStart: false) }
+                    } label: {
+                        Label("Säg det i stället", systemImage: "mic")
+                    }
+                    .font(LumenFont.text(16, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+                    .frame(minHeight: 44)
+                }
                 if !showsForm {
                     Button("Skriv i stället") { withAnimation(.easeOut(duration: 0.2)) { showsForm = true } }
                         .font(LumenFont.text(16, .semibold))
@@ -92,7 +106,7 @@ struct AddExamView: View {
                         .buttonStyle(LumenButtonStyle())
                         .disabled(!pickedSubject || subjectName.isEmpty)
                 }
-                Button("Inte nu", action: onClose)
+                Button(isFirstStart ? "Inte nu" : "Avbryt", action: onClose)
                     .font(LumenFont.text(16, .medium))
                     .foregroundStyle(LumenColor.muted)
                     .frame(maxWidth: .infinity, minHeight: 44)
@@ -104,10 +118,15 @@ struct AddExamView: View {
         .lumenScreen()
         .onAppear {
             load()
-            // A33 (D109): Lumen asks aloud and listens; "biologi på fredag" saves the exam (via /study-profile) and
-            // closes this. A22's form stays as the fallback.
-            listeningForVoice = true
-            Task { await model.askAboutExamByVoice() }
+            // A33 (D109): in the first start (already listening) Lumen asks aloud; "biologi på fredag" saves the exam
+            // (via /study-profile) and closes this. A22's form stays as the fallback. A47: from Start the form shows
+            // at once, and the voice is one tap away.
+            if isFirstStart {
+                listeningForVoice = true
+                Task { await model.askAboutExamByVoice(firstStart: true) }
+            } else {
+                showsForm = true
+            }
         }
         .onChange(of: model.examPlans?.plans.count ?? 0) { old, new in
             if new > old { onClose() }
@@ -135,6 +154,10 @@ struct AddExamView: View {
                     }
                     if pickedSubject, area == .annat {
                         labeledField("Vilket ämne?", placeholder: "T.ex. Teknik eller Filosofi", text: $otherSubject)
+                    }
+                    if pickedSubject {
+                        // A47: optional; the study plan (A19) and the quiz use it.
+                        labeledField("Vad handlar provet om? (valfritt)", placeholder: "T.ex. cellandning och fotosyntes", text: $topics)
                     }
                 }
                 VStack(spacing: 0) {
