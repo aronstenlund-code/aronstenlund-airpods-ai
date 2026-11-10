@@ -1,27 +1,28 @@
-# Överlämning: Kevin (backend), 2026-11-09 23:55
+# Överlämning: Kevin (backend), 2026-11-10 10:50
 
-Sessionen har gjort K2, K7, K9, K10, K8, K11 och K14 och har komprimerats. Den fortsätter i nattläget. Det här står inte i rapporterna.
+Sessionen har gjort cirka 20 punkter (K2–K22) och har komprimerats. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Det här står inte i rapporterna.
 
-**Verktyg och fällor**
-- Det finns ingen Deno lokalt. Testerna körs med Node-shimmen (minnet `backend-tests-without-deno`).
-- Shimmen typkontrollerar inte. En ny medlem i `LLMChunk`-unionen bröt fem andra funktioner i Actions (K11). Sök efter `c.type === "text"` och smalna av till `usage`.
-- Skriv aldrig patchskript med `\b` eller `\n` i Python-strängar som inte är råa, och inte i heredoc med citattecken i bash heller. Det blev kontrolltecken, och en gång en trasig bash-heredoc. Skriv skriptet med Write-verktyget och använd `r'''…'''`. Kontrollera sedan med `grep -c $'\x08'`.
-- `ci.py <sha>` går ibland över 10 min. Kör den hellre med en egen pollingslinga som tittar på "Deploy backend" för HEAD, och glöm inte `git pull --rebase` före push. Push kan misslyckas tyst när main har rört sig.
-- Live-eval: använd token-platserna 0 och 1 i `scratchpad/tokens.json` (`PE.signup(file, i)`). Täta intervjuanrop ger 429 efter cirka 6 per minut (det är K12-problemet).
+**Arbetssätt som sparar tid**
+- Lokala tester körs med Node-shimmen (minnet `backend-tests-without-deno`). Shimmen typkontrollerar inte, så nya fält eller nya medlemmar i `LLMChunk` måste kontrolleras för hand. Actions är grinden.
+- Skriv patchskript med Write-verktyget och `r'''…'''`. Bash-heredoc med citattecken eller `$` och Python-f-strängar med `{…}` i text har gått fel flera gånger. Använd `%`-formatering eller strängsammanfogning för STATUS- och DECISIONS-rader.
+- Committa med pathspec, `git commit -m … -- <mina sökvägar>`, eftersom indexet delas med andra sessioner. Nya filer måste få `git add` först. Kör sedan `git fetch` och `git rebase --autostash origin/main` och pusha.
+- Tider: använd `date`. Några av dagens rapportnamn ligger för sent (1015–1230 skrevs runt 09:30).
+- Regressionen (K4.1) körs för varje driftsättning som rör `answer/` och kostar cirka 0,3 USD. `[skip eval]` i commit-meddelandet hoppar över den.
+- Webbtaket är 20 per användare och dag. Mätningar med sökning behöver nya token-platser i `scratchpad/tokens.json`, och nya anonyma inloggningar stoppas efter cirka 30 per timme och IP.
 
-**Siffror och läge**
-- Provläge går på Sonnet 5.5 (D90). Textuppgifter tänker med adaptive och effort high (p95 6,6 s till första text). Vid tidsgräns går anropet om till Haiku (D95).
-- TTS: v4 Turbo kostar lika mycket som Flash på planen (42 `character-cost` för 209 tecken). ElevenLabs-nyckeln får inte läsa `/v1/models` eller `/v1/user/subscription` (401).
-- Citatkontrollen (D95) bygger på `citations_delta.cited_text` från webbsökningen. Det fungerar bara på textvägen (`needsText`).
+**Läge**
+- API i dag cirka 6,1 USD (riktmärket är 6). ElevenLabs-krediterna har varit slut sedan 07:45.
+- **När krediterna finns:** `python scripts/dispatch.py credits-ready.yml` (K18 del 2 och K6). Det stannar utan kostnad om de fortfarande är slut.
+- Efter uttalsmätningen: lägg in alias för de felhörda ämnesorden i `/tts` (ingen ändring i kontot behövs) och kör `… tag=after`.
 
-**Öppna trådar**
-- Aron:
-  - Ska Rizz 18+ få ge komplimanger om utseende (K8)?
-  - Vill han lägga till de fyra svenska rösterna i ElevenLabs (K14-rapporten)?
-- Angela: samma ändring av minnesfiltret i `MemoryExtraction.swift` (K8), inkoppling av A9 `app_command` och `voice_instruction` (K9 och K10).
-- Pris i Auto går fortfarande inte. Med sökning blev svaret tomt, eftersom modellen kallade frågan "inte en fråga" (K8).
-- Oscars O10 säger att K10 inte räknas som klar förrän rättelser med egna ord når 18/20. Det tas i K13.
+**Öppna trådar (Aron)**
+- Hemligheten `SUPABASE_SERVICE_ROLE_KEY` i GitHub låser upp K4.3 (felrapporter varje natt), K22 (riktiga användare) och förhandsproven i K6.
+- Godkänna texten i krissvaret (K21). Godkänna Sonnet i demon (K5). Radera Oscars testrad i väntelistan (K5).
+- Komplimanger om utseende i Rizz 18+ (K8). De svenska rösterna i ElevenLabs (K14).
 
-**Pausad 2026-11-10 00:35 mitt i K16:** koden är driftsatt (commit 552319d, deploy 42706487639). Kvar: kör `python -X utf8 -I scripts/k16-eval.py --tokens <scratchpad>/tokens.json` (4 token-platser, eftersom webben tillåter 3/min och 20/dag per användare), läs svaren för hand (mängder mot källan, motsägelser i kedjorna), skriv rapporten och D97, och be Angela skicka `done.source` som `recent_qa[].source`.
-
-**2026-11-10:** rapporterna `…-1015-…`, `-1100-`, `-1135-` och `-1230-` och tavlans tider fick klockslag som låg före den verkliga tiden (det var cirka 09:20 när K18 skrevs). Använd `date`. Innehållet stämmer. Committa alltid med pathspec (`git commit -- <paths>`): en vanlig commit tog med Kellys filer (de2fd5f).
+**Öppna trådar (teknik)**
+- Auto söker aldrig på webben (D46). Aktuella frågor i Auto besvaras ur minnet. Att ändra det kräver att metasteget inte kallar frågan "inte en fråga" (K8 W1), och att det mäts.
+- Oscars fall i K21 finns nu i mina tester. Be honom om en ny, oberoende uppsättning (O17b).
+- Angela: `two_level` och `more` (K13), `done.source` som `recent_qa[].source` (K16), `meta.safety` (K21), `done.resource` (K19), `/study-plan` och `session_end` (K17), övningsprov (K15), A9 `app_command`.
+- `self.ts` (K20) använder exakt texten i `AboutView.swift`. Ändras "Om appen" måste båda ändras.
+- Två beslut heter "D98" (mitt och ägarens, "D98 (owner)"). Det rör jag inte.
