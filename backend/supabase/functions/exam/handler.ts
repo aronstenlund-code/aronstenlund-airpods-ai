@@ -205,9 +205,15 @@ export function numericCheck(correct: string, answer: string): { expected: numbe
   if (/[+\-−*/^]\s*\(?[a-zåäö]\)?\s*$|^\s*[a-zåäö]\s*[+\-−*/^]/i.test(correct.trim())) return null;
   const expected = finalNumber(correct);
   if (expected === null) return null;
+  const tol = Number.isInteger(expected) ? 1e-9 : Math.max(0.005, Math.abs(expected) * 0.0005);
+  // K15 (live: "trehundrasjuttiofem kronor, för tjugofem procent av trehundra är sjuttiofem" was read as 75): a
+  // spoken answer often gives the result first and the reason after "för"/"eftersom": the result is the last number
+  // before the reason
+  const head = answer.split(/,?\s+(?:för att|för|eftersom|därför att|på grund av|alltså för|because|since)\s+/iu)[0];
+  const lead = head !== answer ? finalNumber(head) : null;
+  if (lead !== null && Math.abs(lead - expected) <= tol) return { expected, given: lead, equal: true };
   const given = finalNumber(answer);
   if (given === null) return { expected, given: null, equal: false };
-  const tol = Number.isInteger(expected) ? 1e-9 : Math.max(0.005, Math.abs(expected) * 0.0005);
   return { expected, given, equal: Math.abs(given - expected) <= tol };
 }
 

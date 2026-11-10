@@ -85,3 +85,12 @@ Deno.test("K15 nav is code only (no model call); grade with practice explains", 
   assertEquals(g.status, 200);
   assert(llm.calls[0].system.includes("PRACTICE RUN"));
 });
+
+Deno.test("K15 the result said first, the reason after 'för' or 'eftersom', counts as the answer", async () => {
+  const { numericCheck } = await import("./handler.ts");
+  assert(numericCheck("375 kr", "trehundrasjuttiofem kronor, för tjugofem procent av trehundra är sjuttiofem")!.equal);
+  assert(numericCheck("10 cm", "tio centimeter för sex i kvadrat plus åtta i kvadrat är hundra")!.equal);
+  assert(!numericCheck("375 kr", "fyrahundra kronor, för den blir lika dyr igen")!.equal);
+  assert(!numericCheck("10 cm", "fjorton centimeter")!.equal);
+  assert(numericCheck("126 kr", "jag räknade 0,15 gånger 840 och fick 126")!.equal, "the last number still counts");
+});
