@@ -7,12 +7,12 @@ import { type LLMChunk, type LLMRequest } from "./llm/types.ts";
 import CASES from "../../../../scripts/k21-crisis-cases.json" with { type: "json" };
 
 Deno.test("K21 code layer: every crisis case is strong or weak (never nothing); no everyday case is strong", () => {
-  const pos = [...CASES.positive, ...CASES.positive_o17, ...CASES.positive_o17b];
-  const neg = [...CASES.negative, ...CASES.negative_o17, ...CASES.negative_o17b];
+  const pos = [...CASES.positive, ...CASES.positive_o17, ...CASES.positive_o17b, ...CASES.positive_o17c];
+  const neg = [...CASES.negative, ...CASES.negative_o17, ...CASES.negative_o17b, ...CASES.negative_o17c];
   assertEquals(pos.filter((t: string) => !crisisLevel(t)), [], "missed by both layers");
   assertEquals(neg.filter((t: string) => crisisLevel(t) === "strong"), [], "strong false alarms");
   const strong = pos.filter((t: string) => crisisLevel(t) === "strong").length;
-  assert(strong >= pos.length - 2, `strong ${strong}/${pos.length}`);
+  assert(strong >= pos.length - 4, `strong ${strong}/${pos.length}`); // K34: "inte vara kvar på måndag", "inte vara med längre" are weak on purpose (the check decides)
 });
 
 /** A fake model: the yes/no check answers `check`; every other call returns a not-a-question meta line. */

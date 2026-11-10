@@ -5,6 +5,7 @@ import { networkKey } from "../_shared/demo.ts";
 import { readLimitedJson } from "../answer/validate.ts";
 import { nowContext } from "../answer/datecalc.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
+import { crisisLevel } from "../answer/crisis.ts";
 import type { LLMProvider } from "../answer/llm/types.ts";
 import { SETTINGS_LIMITS, applyCorrection, applySignal, describe, detectCorrection, profileOf, readContext, readSettings } from "./settings.ts";
 
@@ -58,13 +59,14 @@ const SELF =
   /(?<!\p{L})(jag|mig|min|mitt|mina|vi|oss|vår|vårt|våra|me|my|mine|we|our|i am|i'm|i've|i have|i will|i'll|i need|i want|i study|i go|i like|i prefer|always|never|from now on|alltid|aldrig|i fortsättningen|från och med nu|framöver|kortare|längre)(?!\p{L})/iu;
 
 /**
- * Never kept even if the model returns it (GDPR art. 9 categories and similar). K26 (Oscar O28: 2/27 stopped): health,
- * crisis, sexuality and relationships, faith, politics, origin, crime, other people, contact details, money and where
- * someone lives; short stems have word boundaries ("lånat", "sjukt", "brottslighet", "judeförföljelsen" are kept).
- * Kept on one line: Oscar's O28 test reads the literal from this file.
+ * Never kept even if the model returns it. D113 B5 (K34/K28): only health, crisis and ID numbers (personnummer,
+ * samordningsnummer, card and account numbers, passwords and PIN codes); everything else (faith, politics, origin,
+ * interests, friends) is no longer stopped in code (D113 A5). Oscar O36: illnesses as stems, crisis in the third
+ * person as the model writes memories ("Brukar rispa sig"), and the crisis layer of /answer on top (isCrisisMemory).
+ * Kept on one line: Oscar's O28/O36 tests read the literal from this file.
  */
 const SENSITIVE_RAW =
-  /allerg|(?<![\p{L}])sjuk(?:dom\p{L}*|skriv\p{L}*|hus\p{L}*|a)?(?![\p{L}])|diagnos|adhd|add(?![\p{L}])|autism|asperger|diabet|astma|epilep|celiaki|gluten|laktos|intolerans|dyslexi|dyskalkyli|depress|ångest|panikångest|ätstörning|anorexi|bulimi|(?<![\p{L}])väger(?![\p{L}])|\d+ ?kilo(?![\p{L}])|gå ner i vikt|(?<![\p{L}])mens(?![\p{L}])|mensvärk|medicin|concerta|elvanse|ritalin|medikinet|sertralin|gravid|psyk|terapi|kurator|bup(?![\p{L}])|självmord|självskad|(?<![\p{L}])skär (?:sig|mig)|ta livet|vill dö|vill inte leva|orkar inte leva|sexuell|homosex|bisex|(?<![\p{L}])(?:är|som) bi(?![\p{L}])|(?<![\p{L}])gay(?![\p{L}])|lesbisk|queer|transperson|(?<![\p{L}])trans(?![\p{L}])|pojkvän|flickvän|kär i|dejtar|ihop med|religiös|troende|(?<![\p{L}])tror på gud|(?<![\p{L}])kristen(?![\p{L}])|muslim|(?<![\p{L}])(?:jude|judinna|judar|judisk)(?![\p{L}])|ateist|ramadan|(?<![\p{L}])fast(?:ar|ade|a)(?![\p{L}])|kyrkan|(?<![\p{L}])kyrka(?![\p{L}])|moské|synagog|ber till gud|(?<![\p{L}])(?:bön|bönen|ber varje)(?![\p{L}])|politi|(?<![\p{L}])parti(?:et)?(?![\p{L}])|\p{L}+partiet(?![\p{L}])|röst(?:ar|ade|a) på|ungdomsförbund|ungsocialist|(?<![\p{L}])(?:muf|ssu|cuf|kdu|luf)(?![\p{L}])|fackförening|etnisk|ursprung|kommer (?:ursprungligen )?från (?!skolan|jobbet|träning|stan)|(?<![\p{L}])romsk|(?<![\p{L}])(?:same|samer|samisk\p{L}*)(?![\p{L}])|flykting|asyl|uppehållstillstånd|(?<![\p{L}])brott(?![\p{L}])|dömd|polisanmäl|snatta|(?<![\p{L}])stal(?![\p{L}])|stöld|fängelse|gripen|anhållen|häktad|(?<![\p{L}])(?:mamma|pappa|morsa|farsa|bror|brorsa|syster|syrra|bästis|kompis\p{L}*|mormor|morfar|farmor|farfar|kusin\p{L}*|styvpappa|styvmamma)(?![\p{L}])|heter [A-ZÅÄÖ]|\S+@\S+|(?<![\p{L}])mejl(?![\p{L}])|e-?post|telefon|mobilnummer|(?:\+46|0\d{1,3})[ -]?\d{2,3}[ -]?\d{2}[ -]?\d{2}(?!\d)|instagram|(?<![\p{L}])insta(?![\p{L}])|snapchat|(?<![\p{L}])snap(?![\p{L}])|tiktok|discord|användarnamn|\p{L}_\d{2,}|biometri|health|religious|sexual|ethnic|adress|bor på|(?<![\p{L}])bor (?:i|vid|nära|utanför)(?![\p{L}])|gatan|vägen \d|postnummer|skuld|(?<![\p{L}])lån(?:et|en|ar)?(?![\p{L}])|studielån|sms-?lån|kredit|inkasso|kronofogd|betalningsanmärk|(?<![\p{L}])lön(?:en)?(?![\p{L}])|månadslön|inkomst|tjänar|ekonomi|hyra|bidrag|csn|pengar|\d+ ?kr(?![\p{L}])|kronor|på kortet|förmögenhet|sparpengar|bankkonto|kontonummer|personnummer|lösenord|address|i live at|debt|loan|credit|salary|income|bank account|password/iu;
+  /allerg|(?<![\p{L}])sjuk(?:dom\p{L}*|skriv\p{L}*|hus\p{L}*|a|domar)?(?![\p{L}])|diagnos|adhd|(?<![\p{L}])add(?![\p{L}])|autism|asperger|diabet|astma|epilep|celiaki|gluten|laktos|intolerans|dyslexi|dyskalkyli|depress|ångest|ätstörning|anorexi|bulimi|migrän|insulin|psoriasis|eksem|reuma|crohn|(?<![\p{L}])ibs(?![\p{L}])|cancer|tumör|leukemi|hjärtfel|hjärtsjuk|hjärtproblem|hjärtsvikt|blodtryck|hörapparat|cochlea|(?<![\p{L}])döv\p{L}*|hörselskad|nedsatt (?:hörsel|syn)|synskad|(?<![\p{L}])blind(?![\p{L}])|rullstol|funktionsnedsätt|funktionsvariation|(?<![\p{L}])npf(?![\p{L}])|tourette|(?<![\p{L}])ocd(?![\p{L}])|tvångssyndrom|bipolär|schizofren|psykos|(?<![\p{L}])ptsd(?![\p{L}])|(?<![\p{L}])hiv(?![\p{L}])|kronisk|tinnitus|narkolepsi|sömnstörning|sömnproblem|insomni|pacemaker|opererad|opererats|opereras|operation|(?<![\p{L}])gips(?![\p{L}])|hjärnskakning|vårdcentral|läkarbesök|läkartid|hos läkaren|går (?:till|hos) (?:en )?läkare|(?<![\p{L}])ont i |värk|(?<![\p{L}])väger(?![\p{L}])|\d+ ?kilo(?![\p{L}])|gå ner i vikt|(?<![\p{L}])mens(?![\p{L}])|medicin(?:er|en|erar)?(?![\p{L}])|tabletter|concerta|elvanse|ritalin|medikinet|sertralin|gravid|psyk|terapi|kurator|(?<![\p{L}])bup(?![\p{L}])|habilitering|logoped|health|medication|diagnosed|självmord|självskad|(?<![\p{L}])skär (?:sig|mig)|skurit (?:sig|mig)|(?<![\p{L}])rispa\p{L}*|(?<![\p{L}])rist(?:ar|a|ade) sig|river upp (?:sår|såren)|ta livet|ta sitt (?:eget )?liv|tagit sitt liv|vill dö|vill inte leva|orkar inte leva|dödstankar|överdos|skada(?:r)? sig själv|svälter sig|suicid|self.?harm|personnummer|samordningsnummer|(?<!\d)(?:19|20)?\d{6}[- +]?\d{4}(?!\d)|kontonummer|kortnummer|clearingnummer|(?<!\d)\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{4}(?!\d)|lösenord|password|pinkod|pin-kod|(?<![\p{L}])pin(?![\p{L}])|passnummer|bank ?id-?kod|biometri/iu;
 
 /**
  * K8 (Oscar O7 item 8): the categories are about the user's own faith, health, politics …, not the subjects
@@ -72,8 +74,15 @@ const SENSITIVE_RAW =
  * and study words are taken out before the check.
  */
 const STUDY_WORDS =
-  /\b(?:religionskunskap\p{L}*|religionsprov\p{L}*|religion(?:en)? (?:som ämne|prov\p{L}*)|samhällskunskap\p{L}*|partikl\p{L}*|partikel\p{L}*|företagsekonomi\p{L}*|privatekonomi(?:kurs\p{L}*)?|nationalekonomi\p{L}*|ekonomiprov\p{L}*|långa? förklaring\p{L}*|lång\p{L}* svar|psykologiprov\p{L}*|psykologi(?:kurs\p{L}*)?|medicinsk\p{L}* ämne|politikprov\p{L}*|statsvetenskap\p{L}*|(?:prov|läxa|test|uppsats|kurs|lektion)(?:en)? (?:i|på|om) (?:religion|psykologi|politik|ekonomi|medicin|sexualkunskap|sex och samlevnad)\p{L}*|(?:uppsats|arbete|redovisning|fördjupning|prov|läxa)(?:en)? (?:i \p{L}+ )?om \p{L}+|läser om \p{L}+|(?:i|om) religion(?:en)?(?![\p{L}]))/giu;
-const SENSITIVE = { test: (t: string) => SENSITIVE_RAW.test(t.replace(STUDY_WORDS, " ")) };
+  /\b(?:religionskunskap\p{L}*|religionsprov\p{L}*|religion(?:en)? (?:som ämne|prov\p{L}*)|samhällskunskap\p{L}*|partikl\p{L}*|partikel\p{L}*|företagsekonomi\p{L}*|privatekonomi(?:kurs\p{L}*)?|nationalekonomi\p{L}*|ekonomiprov\p{L}*|långa? förklaring\p{L}*|lång\p{L}* svar|psykologiprov\p{L}*|psykologi(?:kurs\p{L}*)?|medicinsk\p{L}* ämne|politikprov\p{L}*|statsvetenskap\p{L}*|(?:prov|läxa|test|uppsats|kurs|lektion)(?:en)? (?:i|på|om) (?:religion|psykologi|politik|ekonomi|medicin|sexualkunskap|sex och samlevnad)\p{L}*|(?:uppsats|arbete|redovisning|fördjupning|prov|läxa)(?:en)? (?:i \p{L}+ )?om \p{L}+|läser om \p{L}+|(?:i|om) religion(?:en)?(?![\p{L}])|skriv\p{L}* om \p{L}+(?= (?:som|i|till|för) \p{L}*(?:uppsats|ämne|arbete|redovisning|kurs|lektion|prov))|\p{L}+ som (?:uppsats|redovisnings|arbets|fördjupnings)?ämne|(?:plugga|läsa|studera|bli) (?:till )?(?:medicin|läkare|psykolog|sjuksköterska)\p{L}*)/giu;
+/** K34: a memory is written in the third person ("Har tänkt på att ta sitt liv"); in the first person the /answer
+ * crisis layer (crisis.ts) recognises it, so the two lists cannot drift apart. */
+export function isCrisisMemory(t: string): boolean {
+  const first = t.replace(/(?<![\p{L}])sig(?![\p{L}])/giu, "mig").replace(/(?<![\p{L}])sitt(?![\p{L}])/giu, "mitt")
+    .replace(/(?<![\p{L}])sin(?![\p{L}])/giu, "min").replace(/(?<![\p{L}])sina(?![\p{L}])/giu, "mina");
+  return crisisLevel("jag " + first) === "strong";
+}
+const SENSITIVE = { test: (t: string) => SENSITIVE_RAW.test(t.replace(STUDY_WORDS, " ")) || isCrisisMemory(t) };
 /** K26: for the tests (Oscar O28). */
 export const isSensitiveMemory = (t: string): boolean => SENSITIVE.test(t);
 
@@ -85,7 +94,7 @@ Return ONLY a JSON object: {"add": [...], "update": [{"old": "...", "new": "..."
 - Dates are always absolute: turn "på fredag", "nästa vecka", "imorgon" into weekday, day, month and year from <now>.
 - Several exams can be in <memories> (D86): a change to an exam (date, topics) updates only the exam with the same subject; a new exam in another subject is a new item, never an update of another exam.
 - update: a fact in <memories> that the wearer changed (old = the exact memory text, new = the new sentence). remove: a memory the wearer said is no longer true (exact text).
-- Write every item in Swedish, whatever language the turn is in. Never: a home address, debts, loans, salary or other money matters, facts about other people, small talk, one-off questions ("vad är fotosyntes" is not a fact about the wearer), guesses, anything already in <memories>, and never sensitive categories (health, allergies, diagnoses, religion, politics, sexuality, ethnicity, union membership, crime).
+- Write every item in Swedish, whatever language the turn is in. Never: facts about other people, small talk, one-off questions ("vad är fotosyntes" is not a fact about the wearer), guesses, anything already in <memories>. NEVER anything about health (illnesses, diagnoses, allergies, medicines, injuries, aids such as a hearing aid, care visits), about crisis (suicide, self-harm, not wanting to live), or ID numbers, card or account numbers, passwords and PIN codes: a list of illnesses is never complete, so leave out every fact about the body or mental health even when it is not named here.
 - At most ${MEMORY_LIMITS.items} items in total, each at most 160 characters. Nothing worth keeping: {"add": [], "update": [], "remove": []}.`;
 
 function clean(s: unknown, max: number): string | null {

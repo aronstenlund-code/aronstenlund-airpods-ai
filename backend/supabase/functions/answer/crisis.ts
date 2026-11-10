@@ -19,7 +19,7 @@ const RE = (alts: string[]) => new RegExp(alts.map(W).join("|"), "iu");
 const RE_G = (alts: string[]) => new RegExp(alts.map(W).join("|"), "giu");
 
 /** Filler words teenagers put in the middle ("jag vill typ inte leva", "orkar inte ens leva"). */
-const F = String.raw`(?:(?:typ|ens|liksom|asså|alltså|bara|fan|jävla|helt|seriöst|ärligt talat|nog|nästan|egentligen|längre) )*`;
+const F = String.raw`(?:(?:typ|ens|liksom|asså|alltså|bara|fan|jävla|helt|seriöst|ärligt talat|nog|nästan|egentligen|längre|ändå|verkligen|faktiskt|nog inte) )*`;
 /** I, also spoken and misheard ("ja", "jaa"). */
 const I = String.raw`(?:jag|ja|jaa|jg)`;
 /** to live, also misheard ("läva", "lefva"). */
@@ -34,7 +34,7 @@ const STRONG = [
   String.raw`${CAN} (?:${I} )?${F}${NOT} ${F}(?:att )?(?:${LIVE}|lever)`,
   String.raw`${NOT} ${F}${CAN} ${F}(?:att )?${LIVE}`,
   String.raw`${CAN} (?:${I} )?inte ${F}(?:finnas|finnas kvar|vara kvar)`,
-  String.raw`(?:orkar|orka|pallar|palla) inte (?:mer|längre) med (?:livet|att leva|allt|mig själv)`,
+  String.raw`(?:orkar|orka|pallar|palla) ${NOT} (?:mer|längre) med (?:livet|att leva|allt|mig själv)`,
   String.raw`(?:vill|ville|skulle vilja|vell) (?:${I} )?${F}(?:dö|vara död|inte vakna|sluta finnas|inte finnas|försvinna för alltid)`,
   String.raw`(?:aldrig|slippa) (?:mer )?vakna(?: igen| mer)?`,
   String.raw`(?:sova|somna) och (?:aldrig|inte) vakna`,
@@ -91,8 +91,53 @@ const STRONG = [
   String.raw`(?:skär|skar|skurit|har skurit|skära) mig (?:igen|ofta|varje (?:dag|kväll|natt)|när jag mår|i armen|i armarna|på armen|på armarna|i benen)`,
   String.raw`(?:har börjat|brukar|har|vill|ska|måste) (?:skära|skurit|skär) mig(?! (?:en|ett|på papper|i fingret|i tummen|när jag rakar|med kniven när))`,
   String.raw`självskadar|självskada mig|självskadat`,
+  // K34 (Oscar O17c): forms the earlier lists missed. Kinds, not single sentences: being gone / not being here any
+  // more, others better off, arrangements and goodbyes, methods and doses without first person, wounds on purpose.
+  String.raw`(?:klarar sig|har det|mår|får det|skulle ha det|skulle må) (?:\p{L}+ )?bättre (?:när|om|utan att) (?:${I} )?(?:är|var|vore|blir) (?:borta|död)`,
+  String.raw`(?:när|efter att|om) (?:${I} )?(?:är|har gått|blir) borta(?: för (?:gott|alltid))?(?! (?:i|på|över|under|från|hemifrån|en|ett|två|tre|några|nästa|resten|hela|imorgon|ikväll|sommar\p{L}*|helgen|veckan))`,
+  String.raw`när (?:${I} )?inte (?:finns|lever) (?:kvar|längre|mer)`,
+  String.raw`(?:${I} )?(?:kommer|ska|tänker) ${F}inte (?:att )?(?:finnas kvar|finnas|${LIVE}) (?:tills|längre|så länge|mycket längre|länge till)`,
+  String.raw`(?:det finns|finns) (?:inget|ingenting) kvar för (?:mig|mej) (?:här|längre|att leva för)?`,
+  String.raw`(?:inget|ingenting) (?:kvar )?att leva för`,
+  String.raw`ingen (?:behöver|kommer (?:att )?behöva|kommer (?:att )?) ${F}(?:bry sig om|oroa sig för|tänka på|sakna) (?:mig|mej) (?:längre|mer|snart)`,
+  String.raw`snart (?:behöver|kommer) ingen (?:\p{L}+ ){0,2}(?:bry sig om|oroa sig för|sakna) (?:mig|mej)`,
+  String.raw`ingen (?:\p{L}+ ){0,3}(?:på|till|vid) min begravning`,
+  String.raw`(?:förlåt|ledsen) för allt .{0,80}(?:sista gången|farväl|hejdå för alltid|för sista gången)`,
+  String.raw`(?:vad som ska hända med|vem som ska ta hand om|vem som får) (?:min|mitt|mina) \p{L}+ (?:när|efter att|om) (?:${I} )?(?:är|blir|har gått) (?:borta|död)`,
+  String.raw`(?:river|rev|rivit|kliar|klöser) (?:upp )?(?:såren|sår|mina sår|mig|mej) (?:igen|varje|med flit|tills|när)?`,
+  String.raw`river upp (?:såren|mina sår|sår)`,
+  String.raw`(?:blöder|blödde) .{0,40}(?:med flit|gjorde det själv|gjorde det med flit)`,
+  String.raw`(?:kniv|kniven|rakblad|rakbladet|ett blad|glasbit) mot (?:handleden|handlederna|halsen|armen|strupen)`,
+  String.raw`(?:skär|skar|skurit|skära) (?:mig|mej) i (?:handleden|handlederna|halsen)`,
+  String.raw`(?:står|sitter|är) (?:uppe )?på (?:taket|bron|kanten|balkongen|räcket|perrongen) .{0,40}(?:hoppa|släppa taget)`,
+  String.raw`(?:slutat äta|svälter mig|äter inte) .{0,30}(?:straffa mig|för att dö|tills jag dör|för att försvinna)`,
+  String.raw`(?:${I} )?(?:\p{L}+ ){0,2}(?:tänker|ska|vill|kommer (?:att )?|planerar att|har tänkt) (?:ta|äta|svälja) (?:en )?överdos`,
+  String.raw`(?:tänker|ska|vill|kommer (?:att )?|har tänkt|tänkt) (?:att )?(?:hänga|dränka|skjuta|förgifta|strypa|kväva|bränna) (?:mig|mej)(?! (?:i|på|med solkräm|i solen))`,
+  String.raw`${I} (?:\p{L}+ ){0,2}(?:kommer (?:att )?|ska |tänker |vill )(?:göra slut på (?:mig|mej) själv|ta (?:livet|live|lifvet) av (?:mig|mej)|avsluta mitt liv|ta mitt liv)`,
+  String.raw`(?:vill|ska|tänker) (?:${I} )?(?:ta|tal) (?:live|lifvet) av (?:mig|mej)`,
+  String.raw`(?:mitt liv|livet) .{0,40}(?:vill|ska|tänker) (?:${I} )?avsluta det`,
+  String.raw`(?:vill|ska|tänker|kommer (?:att )?) (?:${I} )?${F}skada (?:mig|mej)(?: själv)?(?! (?:i|på|när jag tränar))`,
+  String.raw`(?:drömmer|fantiserar|tänker ofta) om att (?:dö|vara död|inte finnas|ta livet av mig)`,
+  String.raw`(?:somna|sova) (?:in )?för (?:alltid|gott)`,
+  String.raw`varför ska (?:${I} )?${F}(?:fortsätta (?:att )?)?(?:${LIVE}|finnas)`,
+  String.raw`(?:försvinna|vara borta) (?:för gott|för alltid)(?! (?:från|ur) (?:skolan|klassen|chatten|appen|gruppen|instagram|tiktok|snap))`,
+  String.raw`(?:en|har en|gjort en|har gjort en) plan (?:för att|att|på hur (?:jag|ja) ska) (?:dö|ta livet av mig|ta mitt liv|göra slut)`,
+  String.raw`(?:räknat ut|kollat|googlat|letat upp|vet) hur många (?:\p{L}+ )?(?:tabletter|piller|alvedon|ipren) (?:som )?(?:behövs|krävs|man behöver)`,
+  String.raw`(?:ska|tänker|vill) ta alla (?:\p{L}+ )?(?:tabletter|piller|mediciner|medicin)`,
+  // method questions without first person: every question on how to hurt oneself or die (Oscar O17c)
+  String.raw`(?:vilka|vilken|vad för) (?:tabletter|piller|mediciner|medicin|läkemedel) (?:är|blir) (?:farligast|dödligast|mest dödliga|mest farliga|farliga) (?:att ta|att äta|att svälja|om man tar)`,
+  String.raw`farligast att (?:ta|äta|svälja) (?:många|mycket|för många|för mycket) av`,
+  String.raw`hur (?:djupt|långt in|hårt) (?:måste|ska|behöver|bör) man (?:skära|sticka|trycka)`,
+  String.raw`hur (?:länge|lång tid) (?:tar det|dröjer det) (?:innan man dör|att dö|att förblöda|att svälta ihjäl|att frysa ihjäl|att drunkna|att kvävas)`,
+  String.raw`(?:dö|svälta ihjäl) av att (?:inte äta|svälta|inte dricka)`,
+  String.raw`(?:smärtfritt|ont|snabbt|skönt|fridfullt) (?:sätt )?att (?:dö|frysa ihjäl|förblöda|drunkna|svälta ihjäl|kvävas|hänga sig|somna in för alltid)`,
+  String.raw`(?:är det|gör det) (?:\p{L}+ )?(?:smärtfritt|ont) att (?:frysa|svälta|blöda|förblöda|drunkna|kvävas|dö)`,
+  String.raw`hur (?:hänger|dränker|skjuter|förgiftar|kväver|stryper) man sig själv`,
+  // someone else: wounds, plans, talk (the user gets the line on how to help)
+  String.raw`(?:sina|hennes|hans|hens) (?:sår|ärr|skärsår) .{0,60}(?:gör det själv|med flit|gjort det själv|skär sig)`,
+  String.raw`(?:pratar|pratade|snackar|skriver) om att (?:hoppa från|ta livet av sig|dö|skada sig|inte vilja leva)`,
   // English and slang
-  String.raw`kill myself|want to die|wanna die|end my life|suicidal|kms|unalive myself|don'?t want to live|wanna kms|dont wanna be alive|don'?t want to be alive|want to end it|end it all|been cutting|i cut myself|self harm`,
+  String.raw`(?:gonna|going to|will|want to|wanna|about to) end it(?: all| tonight| today| now)?|end it tonight|life (?:is ?n'?t|is not|aint|ain'?t) worth (?:it|living)|(?:i'?m|im) (?:gonna|going to) (?:kill|unalive) myself|kill myself|want to die|wanna die|end my life|suicidal|kms|unalive myself|don'?t want to live|wanna kms|dont wanna be alive|don'?t want to be alive|want to end it|end it all|been cutting|i cut myself|self harm`,
   // someone else (the user gets the line on how to help, see aboutOther)
   String.raw`(?:han|hon|hen|min \p{L}+|mitt ex|någon) (?:\p{L}+ ){0,2}(?:skär sig|skadar sig själv|vill ta livet av sig|ska ta livet av sig|tänker ta livet av sig|vill dö|har självmordstankar|pratar om att dö)`,
   String.raw`hjälper man någon som vill (?:ta livet av sig|dö)`,
@@ -123,21 +168,34 @@ const EXCEPT = [
 ];
 
 /** Words that may be about the speaker's life or harm: first person plus one of these = ask the small model. */
-const RISK = /(?<![\p{L}])(?:leva|läva|lever|livet|liv|dö|död|döda|dog|dör|vakna|försvinna|försvann|sakna mig|skadade mig|hoppa från|börda|vara här längre|vara kvar längre|avsked\p{L}*|tabletter|överdos|hänga mig|andas|självmord\p{L}*|självskad\p{L}*|skada mig|skadar mig|skär mig|skar mig|skurit mig|ta slut|göra slut|hoppa framför|kms|kill myself|die|dying)(?![\p{L}])/iu;
-const FIRST = /(?<![\p{L}])(?:jag|ja|mig|mitt|min|jg|i|me|my)(?![\p{L}])/iu;
+const RISK = /(?<![\p{L}])(?:leva|läva|lever|livet|liv|dö|död|döda|dog|dör|vakna|försvinna|försvann|sakna mig|skadade mig|hoppa från|börda|vara här längre|vara kvar längre|avsked\p{L}*|tabletter|överdos|hänga mig|andas|självmord\p{L}*|självskad\p{L}*|skada mig|skadar mig|skär mig|skar mig|skurit mig|ta slut|göra slut|hoppa framför|kms|kill myself|die|dying|vara kvar|finnas kvar|inget kvar|ingenting kvar|vara med längre|vara med mer|sår|såren|ärr|handleden|kniv|rakblad|begravning|ihjäl|sista gången|straffa mig|end it|worth it)(?![\p{L}])/iu;
+const FIRST = /(?<![\p{L}])(?:jag|ja|mig|mitt|min|jg|i|me|my|im|i'm)(?![\p{L}])/iu;
+/** K34: questions about how to hurt oneself or die, without first person, go to the check too (never to a list). */
+const METHOD_Q = /(?<![\p{L}])(?:hur|vilka|vilken|vad|är det|går det)(?![\p{L}]).{0,60}(?<![\p{L}])(?:dö|dör|dödlig\p{L}*|ihjäl|skära|skär sig|förblöda|överdos|tabletter|piller|hänga sig|dränka sig|kvävas|självmord|ta livet av sig)(?![\p{L}])/iu;
 
 const STRONG_RE = RE(STRONG);
 const EXCEPT_G = RE_G(EXCEPT);
 
 export type CrisisLevel = "strong" | "weak" | null;
 
+/** Lower case, no punctuation, and K34's spoken forms: "mej"/"dej" = mig/dig, "me livet" = med livet, "döö" = dö,
+ * "live av mig" = livet av mig, three or more of one letter = one ("jaaa"). */
+export function normalize(text: string): string {
+  return (text ?? "").toLowerCase().replace(/[,.!?;:]+/g, " ").replace(/\s+/g, " ").trim()
+    .replace(/(?<![\p{L}])mej(?![\p{L}])/gu, "mig").replace(/(?<![\p{L}])dej(?![\p{L}])/gu, "dig")
+    .replace(/(?<![\p{L}])me (livet|allt|mig själv)(?![\p{L}])/gu, "med $1")
+    .replace(/([åäö])\1+/gu, "$1").replace(/(\p{L})\1{2,}/gu, "$1")
+    .replace(/(?<![\p{L}])ta live av/gu, "ta livet av");
+}
+
 export function crisisLevel(text: string): CrisisLevel {
-  const t = (text ?? "").toLowerCase().replace(/[,.!?;:]+/g, " ").replace(/\s+/g, " ").trim();
+  const t = normalize(text);
   if (!t) return null;
   // an everyday reading is removed first: strong only if a clear sign is left; weak if risk words are left
   const rest = t.replace(EXCEPT_G, " ");
   if (STRONG_RE.test(rest)) return "strong";
   if (FIRST.test(rest) && RISK.test(rest)) return "weak";
+  if (METHOD_Q.test(rest)) return "weak";
   // a strong pattern that only an everyday reading explains: the check decides (never silence by itself)
   return STRONG_RE.test(t) ? "weak" : null;
 }
@@ -155,7 +213,7 @@ export function isCrisis(text: string): boolean {
 
 /** The yes/no check for a weak hit (small model, a few tokens). */
 export const CRISIS_CHECK_PROMPT =
-  `You check ONE utterance that a young person (13-19) said, picked up by a microphone. Does the SPEAKER express thoughts of suicide, of not wanting to live, of wanting to die or disappear for good, or of hurting themself, now or recently? Answer "ja" for any such sign, also when it is said casually, with slang, in passing or half as a joke. Answer "nej" for everyday figures of speech and exaggerations ("dör av skratt", "jag dör om jag inte får mat", "provet tar livet av mig", "jag vill dö av skam", "jag kan inte leva med att ha fel", "jag vill inte leva utan min hund", "jag ska hoppa framför de andra i kön", "jag vill bara försvinna under täcket idag"), wishes about where or how to live, dying old one day, games, cutting food or shaving, titles of books and songs, school work and other people's stories in the news or history. Answer "ja" when the words could mean that the speaker does not want to live or wants to hurt themself and nothing in the sentence makes it an everyday expression. Reply with one word: ja or nej.`;
+  `You check ONE utterance that a young person (13-19) said, picked up by a microphone. Does the SPEAKER express thoughts of suicide, of not wanting to live, of wanting to die or disappear for good, or of hurting themself, now or recently? Answer "ja" for any such sign, also when it is said casually, with slang, in passing or half as a joke. Also "ja" for indirect signs (being gone or not being here any more, others better off without them, arranging things or saying goodbye for after they are gone, saving or counting pills, wounds made on purpose) and for ANY question about how to hurt oneself or die (a method, a dose, which pills are most dangerous, how deep to cut, how long it takes, whether it hurts), also without "I", unless it is plainly about an animal, a game, a story or why something happens in society. Answer "nej" for everyday figures of speech and exaggerations ("dör av skratt", "jag dör om jag inte får mat", "provet tar livet av mig", "jag vill dö av skam", "jag kan inte leva med att ha fel", "jag vill inte leva utan min hund", "jag ska hoppa framför de andra i kön", "jag vill bara försvinna under täcket idag"), wishes about where or how to live, dying old one day, games, cutting food or shaving, titles of books and songs, school work and other people's stories in the news or history. Answer "ja" when the words could mean that the speaker does not want to live or wants to hurt themself and nothing in the sentence makes it an everyday expression. Reply with one word: ja or nej.`;
 
 export function crisisVerdict(reply: string): boolean {
   return !/^\s*nej\b/iu.test(reply);

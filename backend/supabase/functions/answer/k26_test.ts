@@ -52,6 +52,7 @@ Deno.test("K26 O27: pressure, a no not respected, negging, manipulation, sex, li
   for (const t of SAFE) assert(shown(t), `stopped: ${t}`);
 });
 
+// D113 B5 (K34): only health, crisis and ID numbers are stopped in code; Oscar O28 + O36 (new 14).
 const DROP = [
   "Har epilepsi",
   "Har celiaki och äter glutenfritt",
@@ -62,26 +63,38 @@ const DROP = [
   "Har mens och ont i magen",
   "Skär sig ibland när det är jobbigt",
   "Har haft självmordstankar",
+  "Bästa kompisen Elin har ADHD",
+  "Har migrän ofta",
+  "Tar insulin",
+  "Har psoriasis",
+  "Har en hjärtfel sedan födseln",
+  "Har tänkt på att ta sitt liv",
+  "Brukar rispa sig",
+  "Personnummer 090314-1234",
+  "Samordningsnummer 091314-1234",
+  "Har hörapparat",
+  "Går på BUP varje vecka",
+  "Har opererats i knät",
+  "Går till kuratorn varje tisdag",
+  "Vill inte leva längre",
+  "Lösenordet till skolkontot är sommar123",
+  "Kortnummer 4111 1111 1111 1111",
+];
+// D113 A5: no longer stopped in code (faith, politics, origin, relationships, contact details, money, place)
+const KEEP_A5 = [
   "Är gay",
-  "Är bi",
   "Har en pojkvän som heter Ali",
   "Fastar under ramadan",
   "Går i kyrkan varje söndag",
   "Röstade på Vänsterpartiet i skolvalet",
   "Är med i Ungsocialisterna",
   "Kommer från Syrien",
-  "Är romsk",
-  "Har snattat",
-  "Pappa sitter i fängelse",
-  "Mamma heter Karin och jobbar på ICA",
-  "Bästa kompisen Elin har ADHD",
-  "Telefonnummer 070 123 45 67",
-  "Mejl elin.k@gmail.com",
-  "Instagram lisa_2009",
   "Har 2000 kr på kortet",
   "Bor i Rinkeby",
+  "Instagram lisa_2009",
 ];
 const KEEP = [
+  ...KEEP_A5,
   "Har prov i biologi på fredag",
   "Gillar korta svar",
   "Går i årskurs 9",
@@ -102,9 +115,15 @@ const KEEP = [
   "Gillar att laga mat",
   "Har prov om partiklar",
   "Tränar på hälsning på spanska",
+  "Har prov i biologi om hjärtat",
+  "Läser om migration i samhällskunskap",
+  "Gillar att springa",
+  "Ska skriva om diabetes som uppsatsämne",
+  "Vill plugga medicin",
+  "Har prov fredag 13 november 2026",
 ];
 
-Deno.test("K26 O28: sensitive memories are dropped, study subjects and ordinary facts are kept", () => {
+Deno.test("K34 B5: health, crisis and ID numbers are dropped; other categories (D113 A5), study subjects and ordinary facts are kept", () => {
   for (const t of DROP) assert(isSensitiveMemory(t), `kept: ${t}`);
   for (const t of KEEP) assert(!isSensitiveMemory(t), `dropped: ${t}`);
 });
