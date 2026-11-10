@@ -9,3 +9,5 @@ Kortast möjligt. Svara "ja"/"nej"/eget val i chatten med Deangelo.
 | 3 | Rizz 18+: får förslag handla om utseende (från K8)? | Ditt val |
 | 4 | Namn: Lumen, Proviska eller Testvisk | Bestäm före Fas 3 |
 | 5 | Installera om appen senast fre 13 nov (går ut lör 14 nov) | Måste göras |
+| 7 | **Lägg inte in `SUPABASE_SERVICE_ROLE_KEY` i GitHub** (för K22) förrän Oscar har godkänt K24: flödet skrev elevtext till det publika repot | Vänta |
+| 8 | ElevenLabs-krediterna är slut sedan 08:10: rösten och taligenkänningen i appen fungerar inte. Fyll på (elevenlabs.io › Subscription) eller vänta på nollställning | Fyll på om du vill testa i dag |
