@@ -1,4 +1,4 @@
-# Överlämning: Angela (app), 2026-11-10 kl. 15.30
+# Överlämning: Angela (app), 2026-11-10 kl. 22.58
 
 Den här sessionen har gjort 30 punkter i dag. Alla är gröna i CI, men ingen är provad på telefon. Rapporterna finns i
 `reports/2026-11-10-angela-a*.md`.
@@ -7,11 +7,12 @@ Den här sessionen har gjort 30 punkter i dag. Alla är gröna i CI, men ingen �
 - A16–A30;
 - A33–A37, A39–A42, A45 och A46.
 
-**Kvar i kön (`prompts/queue/angela.md`), alla väntar på Kevin:**
-- A3 väntar på K6. Det mesta finns redan i A26:s röstsida.
-- A38 väntar på K31.
-- A43 väntar på K33.
-- A44 väntar på A38.
+**Kvar i kön (`prompts/queue/angela.md`):** A3 väntar på K6:s hemlighet. Det mesta finns redan i A26:s röstsida.
+
+**Klart i kväll (2026-11-10, 19:27–22:58):** A46 vändkort, A48 `qa_log` till K30, A38 streak och daglig påminnelse
+(K31), A43 "% redo"-ring (K33), A44 hemskärmswidget. Widgeten kräver appgruppen `group.com.rsolutions.lumen`, som
+troligen saknas i det osignerade Sideloadly-bygget. `AnswerContext.clamped` bygger om sammanhanget: ett nytt fält
+måste läggas till där, annars tappas det (A48).
 
 ## Det här står inte i rapporterna
 - **Ingen Mac.** CI (`ios-build.yml`) är kompilatorn och tar 15–25 minuter. Hjälpskripten finns i scratchpad-mappen

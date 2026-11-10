@@ -170,7 +170,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-10 15:48 → reports/2026-11-10-angela-a47-add-exam-short.md **A47 – Stående uppgift (PLAN 2b): "Lägg till prov" med snabbformen (Kellys Ke14/Ke18 fynd 6)** (effort: low). Egen punkt enligt 2b. Lägg till prov från Start: tre val (område, datum, årskurs) plus valfritt "Vad handlar provet om?" (behövs för A19), rösten ett tryck bort ("Säg det i stället"), aldrig mikrofonen av sig själv. Fullt formulär bara för att ändra ett prov.
 
-- [ ] pågår 2026-11-10 21:15 (Angela) **A38 – C2 + C3: notiser och streak som Duolingo** (effort: high). D115. Streak synlig på Start (liten, en siffra + låga), förloras om en dag missas. Notiser: nedräkning till provet och "5 snabba frågor" (eleven slår på dem, en gång per dag, tid valbar). Bygger på K31.
+- [x] klar 2026-11-10 22:58 → reports/2026-11-10-angela-a38-streak-reminders.md **A38 – C2 + C3: notiser och streak som Duolingo** (effort: high). D115. Streak synlig på Start (liten, en siffra + låga), förloras om en dag missas. Notiser: nedräkning till provet och "5 snabba frågor" (eleven slår på dem, en gång per dag, tid valbar). Bygger på K31.
 
 - [x] klar 2026-11-10 13:13 → reports/2026-11-10-angela-a41-a42-a35-consent-exam-restrictions.md **A39 – D116: samtyckestext om att frågor och svar skickas för analys** (effort: low). En tydlig rad i samtyckessteget och i Om appen: "Dina frågor och Lumens svar skickas till oss så att vi kan göra Lumen bättre. Ljud sparas aldrig, och texten raderas när vi har läst den." Texten från Kevin (K30). Integritetspolicyn uppdateras när den skrivs (Fas 3).
 
@@ -180,9 +180,9 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-10 13:13 → reports/2026-11-10-angela-a41-a42-a35-consent-exam-restrictions.md **A42 – Prov bara på Start, och en översättning (G2, G4)** (effort: low). Ta bort avsnittet Prov ur Inställningar (provdatum och årskurs ändras från provkortet på Start), samma datumformat överallt. Översätt "Using the iPhone's speech recognition: …".
 
-- [ ] pågår 2026-11-10 21:34 (Angela) **A43 – Framsteg per prov (N1)** (effort: high). En ring på provkortet ("68 % redo") och en sida "Så redo är du" med det du kan, det du ska öva på och dagens pass. Data från K33. Följ SYSTEM.md, Kelly granskar.
+- [x] klar 2026-11-10 22:58 → reports/2026-11-10-angela-a43-readiness.md **A43 – Framsteg per prov (N1)** (effort: high). En ring på provkortet ("68 % redo") och en sida "Så redo är du" med det du kan, det du ska öva på och dagens pass. Data från K33. Följ SYSTEM.md, Kelly granskar.
 
-- [ ] pågår 2026-11-10 22:14 (Angela) **A44 – Hemskärmswidget (N2)** (effort: medium). Beror på: A38. WidgetKit: dagar kvar till nästa prov, streak, och en knapp "Förhör mig" som startar Provläget (App Intent).
+- [x] klar 2026-11-10 22:58 → reports/2026-11-10-angela-a44-widget.md **A44 – Hemskärmswidget (N2)** (effort: medium). Beror på: A38. WidgetKit: dagar kvar till nästa prov, streak, och en knapp "Förhör mig" som startar Provläget (App Intent).
 
 - [x] klar 2026-11-10 13:49 → reports/2026-11-10-angela-a45-a37-fallback-standardlage.md **A45 – Säg till när reservmotorn används (N3)** (effort: low). När Scribe eller ElevenLabs-rösten inte går (t.ex. kvoten slut) och appen faller tillbaka till iPhonens egna: en lugn rad en gång per pass ("Lumen hör och pratar lite sämre just nu"), ingen felruta. Toby testar (T10).
 
