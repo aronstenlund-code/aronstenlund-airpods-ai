@@ -492,6 +492,10 @@ def main():
     ap.add_argument("--dry", action="store_true", help="print the report instead of writing files")
     a = ap.parse_args()
     cases = json.load(open(os.path.join(ROOT, "scripts", "live-eval-cases.json"), encoding="utf-8"))
+    # K22: questions real users shared (D57 opt-in, scrubbed, asked by at least two installs), added weekly
+    real = os.path.join(ROOT, "scripts", "real-user-cases.json")
+    if os.path.exists(real):
+        cases += json.load(open(real, encoding="utf-8"))
     rizz = {s["id"]: s for s in json.load(open(os.path.join(ROOT, "testdata", "rizz-scenarios.json"), encoding="utf-8"))}
     now = datetime.datetime.now(datetime.timezone.utc)
     try:
