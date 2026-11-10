@@ -1,0 +1,55 @@
+name: Apptest ElevenLabs down (T10)
+
+# Toby's T10 part 2: /stt-token and /tts answer 503 inside the test process (no app hook, no ElevenLabs credits,
+# D120); Frågor must go on with the iPhone's recogniser and voice, say A45's line once and never go silent.
+# /answer is live, so manual, and on Toby's branch when the test changes. Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Outage/**"
+      - "scripts/apptest/outage*"
+      - ".github/workflows/apptest-outage.yml"
+
+concurrency:
+  group: apptest-outage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  outage:
+    name: T10 ElevenLabs down (Simulator)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Outage test
+        run: |
+          bash scripts/apptest/outage.sh
+          STATUS=$?
+          cat apptest-out/outage/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-outage
+          path: |
+            apptest-out/outage
+            !apptest-out/outage/audio/*.wav
+            !apptest-out/outage/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
