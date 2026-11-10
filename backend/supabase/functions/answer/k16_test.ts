@@ -140,3 +140,9 @@ Deno.test("K16 the [[VET]] marker is never spoken, also after a relation tag", a
   })));
   assertEquals(out.trim(), "Ja.");
 });
+
+Deno.test("K16 an English 'the sources do not say' sentence is never spoken in a web answer", async () => {
+  const { isEnglishSentence } = await import("./speech.ts");
+  assert(isEnglishSentence("The sources don't give a founding year for IFK Kalmar."));
+  assert(!isEnglishSentence("Källorna anger inget grundår för IFK Kalmar."));
+});
