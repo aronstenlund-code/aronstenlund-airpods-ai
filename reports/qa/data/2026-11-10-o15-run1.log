@@ -1,0 +1,191 @@
+g1-01 answer ok 200 claude-sonnet-5-5 | fotosyntes | recon: fotosyntes | Fotosyntesen är processen där växter, alger och vissa bakterier gör socker av koldioxid och vatten med hjälp a
+g1-02 answer ok 200 claude-sonnet-5-5 | andra världskriget orsaker | recon: andra världskriget orsaker | Andra världskriget bröt ut nittonhundratrettionio av flera sammanhängande orsaker. Efter första världskriget f
+g1-03 answer ok 200 claude-sonnet-5-5 | derivata x i kvadrat | recon: derivata x i kvadrat | Derivatan av x i kvadrat är två x. Derivatan säger hur snabbt funktionen växer i en punkt, alltså lutningen på
+g1-04 answer ok 200 claude-sonnet-5-5 | mitokondrien | recon: mitokondrien | Mitokondrien är cellens energifabrik: där omvandlas energin i socker och syre till energi som cellen kan använ
+g1-05 answer ok 200 claude-sonnet-5-5 | molmassa | recon: molmassa | Molmassa är massan av en mol av ett ämne, alltså av sex komma noll två gånger tio upphöjt till tjugotre partik
+g1-06 answer ok 200 claude-sonnet-5-5 | kovalent bindning jonbindning skillnad | recon: kovalent bindning jonbindning skillnad | Vid en kovalent bindning delar två atomer elektroner, vanligen mellan två icke-metaller, till exempel i vatten
+g1-07 answer ok 200 claude-sonnet-5-5 | newtons tredje lag | recon: newtons tredje lag | Newtons tredje lag säger att när ett föremål påverkar ett annat med en kraft, påverkar det andra föremålet det
+g1-08 answer ok 200 claude-sonnet-5-5 | romantiken kännetecken | recon: romantiken kännetecken | Romantiken, ungefär artonhundra till artonhundrafemtio, är en reaktion mot upplysningens tro på förnuft. Istäl
+g1-09 answer ok 200 claude-sonnet-5-5 | present perfect | recon: present perfect | Present perfect används när något har hänt förut och har betydelse nu, och man säger inte när det hände. Det b
+g1-10 answer ok 200 claude-sonnet-5-5 | inflation | recon: inflation | Inflation betyder att priserna i samhället stiger generellt, så att en krona räcker till mindre än förut. Det 
+g1-11 answer ok 200 claude-sonnet-5-5 | växthuseffekten | recon: växthuseffekten | Växthuseffekten är att vissa gaser i atmosfären fångar värme från jorden, så att planeten blir tillräckligt va
+g1-12 answer ok 200 claude-sonnet-5-5 | pythagoras sats | recon: pythagoras sats | Pythagoras sats gäller i rätvinkliga trianglar och säger att kvadraten på hypotenusan är lika med summan av kv
+g1-13 answer ok 200 claude-sonnet-5-5 | kalla kriget | recon: kalla kriget | Kalla kriget var en spänd konflikt mellan USA och Sovjetunionen efter andra världskriget, ungefär nittonhundra
+g1-14 answer ok 200 claude-sonnet-5-5 | dna | recon: dna | DNA är cellens ritning, en lång molekyl som innehåller arvsanlagen, alltså gener, för hur en organism byggs oc
+g1-15 answer ok 200 claude-sonnet-5-5 | procent av | recon: procent av | Procent av betyder att du tar en del av ett tal. Procent är hundradelar, så tjugofem procent är tjugofem hundr
+g1-16 answer ok 200 claude-sonnet-5-5 | rörelseenergi formel | recon: rörelseenergi formel | Rörelseenergi är den energi ett föremål har på grund av sin fart, och formeln är E k är lika med en halv gånge
+g1-17 answer ok 200 claude-sonnet-5-5 | ph | recon: ph | pH är ett mått på hur sur eller basisk en lösning är. Det visar koncentrationen av oxoniumjoner, ha tre o plus
+g1-18 answer ok 200 claude-sonnet-5-5 | metafor | recon: metafor | En metafor är en bildlig jämförelse där du säger att något är något annat, utan ordet "som" eller "liksom". Po
+g1-19 answer ok 200 claude-haiku-5-5 | huvudstad australien | recon: Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra.
+g1-20 answer ok 200 claude-haiku-5-5 | kebnekaise höjd | recon: Vad är Kebnekaises höjd? | Kebnekaise är Sveriges högsta berg och är tvåtusen nittionio meter högt.
+g1-21 answer ok 200 claude-haiku-5-5 | gustav vasa | recon: Vem var Gustav Vasa? | Gustav Vasa var kung i Sverige från femtonhundratjugotre till femtonhundrasextio och grundade den svenska nati
+g1-22 answer ok 200 claude-haiku-5-5 | svarta hål | recon: Vad är svarta hål? | Ett svart hål är ett område i rymden där gravitationen är så stark att inget, inte ens ljus, kan slippa ut när
+g1-23 answer ok 200 claude-haiku-5-5 | empati betydelse | recon: Vad betyder empati? | Empati är förmågan att förstå och känna in hur en annan person har det, och att kunna se en situation utifrån 
+g1-24 answer ok 200 claude-haiku-5-5 | omelett recept | recon: Hur gör man en omelett? Recept. | En klassisk omelett för en person gör du av två ägg, en matsked smör, en nypa salt och lite svartpeppar. Vispa
+g1-25 answer ok 200 claude-haiku-5-5 | skottår varför | recon: Varför har vi skottår? | Skottår finns för att kalenderåret inte stämmer exakt med jorden tid runt solen. Ett varv runt solen tar ungef
+g1-26 answer ok 200 claude-haiku-5-5 | maraton längd | recon: Hur lång är ett maraton? | Ett maraton är fyrtiotvå kilometer och hundranittiofem meter.
+g1-27 answer FAIL 200 claude-haiku-5-5 | fn | recon: fn | 
+g1-28 answer ok 200 claude-haiku-5-5 | pi | recon: Vad är pi? | Pi är förhållandet mellan en cirkels omkrets och dess diameter, ungefär tre komma ett fyra ett fem nio.
+g1-29 answer ok 200 claude-haiku-5-5 | värmepump | recon: Vad är en värmepump och hur fungerar den? | En värmepump flyttar värme från en plats till en annan istället för att skapa den, och det är därför den kan g
+g1-30 answer ok 200 claude-haiku-5-5 | vaccin | recon: Vad är ett vaccin? | Ett vaccin är ett preparat som tränar immunförsvaret att känna igen en sjukdomsframkallande mikrob utan att ma
+g1-31 answer ok 200 claude-haiku-5-5 | ozonlagret | recon: Vad är ozonlagret? | Ozonlagret är ett skikt av ozongas i stratosfären, ungefär femton till trettiofem kilometer över marken, som f
+g1-32 answer ok 200 claude-haiku-5-5 | spindel ben | recon: Hur många ben har en spindel? | En spindel har åtta ben.
+g1-33 answer ok 200 claude-haiku-5-5 | eiffeltornet | recon: Hur högt är Eiffeltornet? | Eiffeltornet är cirka trehundratrettio meter högt, med antennen ungefär trehundratrettio meter och utan antenn
+g1-34 answer ok 200 claude-haiku-5-5 | algoritm | recon: Vad är en algoritm? | En algoritm är en tydlig, steg-för-steg-beskrivning av hur man löser ett problem eller utför en uppgift, till 
+g1-35 answer ok 200 calc | kvadratroten ur 144 | recon: kvadratroten ur 144 | Roten ur hundrafyrtiofyra är tolv.
+g2-01 answer ok 200 claude-sonnet-5-5 | vad är den där… alltså grejen i cellen som gör ene | recon: vad är den där… alltså grejen i cellen som gör energi | Mitokondrien är den del i cellen som gör energi. Där bryts socker ner med hjälp av syre, och det kallas cellan
+g2-02 answer ok 200 claude-sonnet-5-5 | hur funkar det när… nej vänta, vad är skillnaden p | recon: hur funkar det när… nej vänta, vad är skillnaden på gen och  | En gen är en bit av DNA som innehåller ritningen för en egenskap, till exempel ögonfärg. En allel är en varian
+g2-03 answer ok 200 claude-sonnet-5-5 | vad heter det när atomer delar elektroner eller va | recon: vad heter det när atomer delar elektroner eller vad det nu v | Det heter kovalent bindning. Två atomer, oftast icke-metaller, delar på ett eller flera elektronpar så att båd
+g2-04 answer FAIL 200 claude-sonnet-5-5 | vem var det som sköts i Sarajevo, den där ärkehert | recon: vem var det som sköts i Sarajevo, den där ärkehertigen | Ärkehertig Frans Ferdinand, österrikisk-ungersk tronföljare, sköts den tjugoåtta juni nittonhundrafjorton i Sa
+g2-05 answer ok 200 claude-sonnet-5-5 | om man har en triangel och vill veta den långa sid | recon: om man har en triangel och vill veta den långa sidan, hur gö | Den längsta sidan i en rätvinklig triangel kallas hypotenusan, och den räknar du ut med Pythagoras sats. Satse
+g2-06 answer ok 200 claude-sonnet-5-5 | derivatan av, eh, typ tre x upphöjt till… till två | recon: derivatan av, eh, typ tre x upphöjt till… till två | Derivatan av tre x i kvadrat är sex x. Enligt potensregeln flyttar du ner exponenten två och multiplicerar med
+g2-07 answer ok 200 claude-sonnet-5-5 | kraften är massan gånger nåt, vad var det | recon: kraften är massan gånger nåt, vad var det | Kraften är massan gånger accelerationen, alltså F är lika med m gånger a. Det är Newtons andra lag: ju större 
+g2-08 answer ok 200 claude-sonnet-5-5 | han som skrev Röda rummet, vad hette han nu igen | recon: han som skrev Röda rummet, vad hette han nu igen | August Strindberg skrev Röda rummet, och romanen kom ut artonhundrasjuttionio. Den räknas ofta som Sveriges fö
+g2-09 answer ok 200 claude-sonnet-5-5 | är det I have saw eller I have seen eller | recon: är det I have saw eller I have seen eller | Rätt är "I have seen". Efter "have" använder man alltid particip, alltså verbets tredje form, och för "see" är
+g2-10 answer ok 200 claude-sonnet-5-5 | vad är det riksbanken gör med räntan när allt blir | recon: vad är det riksbanken gör med räntan när allt blir dyrt | När priserna stiger snabbt, alltså vid hög inflation, höjer Riksbanken styrräntan, som kallas reporäntan. Då b
+g2-11 answer ok 200 claude-sonnet-5-5 | varför är det kallare uppe på berg än nere fast ma | recon: varför är det kallare uppe på berg än nere fast man är närma | Solens strålar värmer främst marken, och luften värms sedan underifrån. Därför är det inte avståndet till sole
+g2-12 answer ok 200 claude-sonnet-5-5 | fotosyntesen den blir ju… den gör ju socker av, av | recon: fotosyntesen den blir ju… den gör ju socker av, av vad | Fotosyntesen gör socker, alltså druvsocker som kallas glukos, av koldioxid och vatten. Växten tar upp koldioxi
+g2-13 answer ok 200 claude-sonnet-5-5 | mol det är ju ett antal men hur många | recon: mol det är ju ett antal men hur många | En mol är sex komma noll två två gånger tio upphöjt till tjugotre partiklar, ett tal som kallas Avogadros kons
+g2-14 answer ok 200 claude-sonnet-5-5 | när föll muren alltså den i Berlin | recon: när föll muren alltså den i Berlin | Berlinmuren föll den nio november nittonhundraåttionio, alltså för precis trettiosju år sedan i går. Östtyska 
+g2-15 answer ok 200 claude-sonnet-5-5 | hur räknar man ut arean på en cirkel, är det pi r  | recon: hur räknar man ut arean på en cirkel, är det pi r eller | Arean på en cirkel är pi gånger r i kvadrat, alltså pi gånger radien gånger radien. Det är inte bara pi gånger
+g2-16 answer ok 200 claude-sonnet-5-5 | tjugo procent rabatt på femhundra blir det… vad bl | recon: tjugo procent rabatt på femhundra blir det… vad blir det | Tjugo procent rabatt på femhundra kronor blir hundra kronor i rabatt, så du betalar fyrahundra kronor. Du räkn
+g2-17 answer ok 200 claude-sonnet-5-5 | en bil som kör, alltså om den bromsar, vart tar en | recon: en bil som kör, alltså om den bromsar, vart tar energin väge | När bilen bromsar omvandlas rörelseenergin till värmeenergi. Bromsbeläggen gnids mot bromsskivorna, och frikti
+g2-18 answer ok 200 claude-sonnet-5-5 | vad är skillnaden mellan, ja men du vet, liknelse  | recon: vad är skillnaden mellan, ja men du vet, liknelse och den an | Skillnaden mellan liknelse och metafor är att liknelsen jämför två saker med ett jämförelseord som "som" eller
+g2-19 answer ok 200 claude-haiku-5-5 | vem var det som uppfann, nej upptäckte penicillin | recon: Vem upptäckte penicillin? | Penicillin upptäcktes nittonhundratjugoåtta av den skotske forskaren Alexander Fleming, som märkte att en möge
+g2-20 answer ok 200 claude-haiku-5-5 | hur många, eller hur lång är kinesiska muren | recon: Hur lång är kinesiska muren? | Kinesiska muren är omkring tjugoetttusen kilometer lång, om man räknar alla sektioner och grenar. De delar som
+g2-21 answer ok 200 claude-haiku-5-5 | vad heter den största planeten, inte solen alltså | recon: Vad heter den största planeten i solsystemet? | Den största planeten i solsystemet är Jupiter.
+g2-22 answer FAIL 200 claude-haiku-5-5 | den där målningen med kvinnan som ler, vem gjorde  | recon: Vem målade tavlan med kvinnan som ler? | 
+g2-23 answer ok 200 claude-haiku-5-5 | när var det människan landade på månen typ sextion | recon: När landade människan på månen för första gången? | Första människor landade på månen nittonhundrasextionio, den tjugonde juli, under Apollo elva.
+g2-24 answer ok 200 claude-haiku-5-5 | vad betyder, vad var ordet, ironi | recon: Vad betyder ordet ironi? | Ironi är när man säger något som motsatt betydelse av det man egentligen menar, ofta för att skämta eller för 
+g2-25 answer ok 200 claude-haiku-5-5 | hur lång tid tar det för ljuset från solen att… at | recon: Hur lång tid tar det för ljuset från solen att komma till jo | Ljuset från solen tar ungefär åtta minuter och tjugo sekunder att nå jorden. Det motsvarar cirka hundrafemtio 
+g2-26 answer ok 200 claude-haiku-5-5 | varför flyter is fast det är fast | recon: Varför flyter is när vatten är fast? | Is flyter för att det är mindre tätt än flytande vatten, och det beror på hur vattenmolekylerna packar sig. Nä
+g2-27 answer ok 200 claude-haiku-5-5 | kan man, nej men hur gör man pannkakor | recon: Hur gör man pannkakor? | Pannkakor gör man av ägg, mjöl, mjölk och lite salt, som blandas till en tunn smet. Till fyra pannkakor behöve
+g2-28 answer ok 200 claude-haiku-5-5 | vilket land är störst till ytan, är det Kanada ell | recon: Vilket land är störst till ytan, Kanada eller Ryssland? | Ryssland är störst till ytan, med cirka sjutton komma ett miljoner kvadratkilometer. Kanada är på andra plats 
+g2-29 answer ok 200 claude-haiku-5-5 | hur många ben, skelettben alltså, har en vuxen män | recon: Hur många skelettben har en vuxen människa? | En vuxen människa har tvåhundrasex ben i skelettet.
+g2-30 answer ok 200 claude-haiku-5-5 | det heter ju fotosyntes men vad heter motsatsen | recon: Vad heter motsatsen till fotosyntes? | Motsatsen till fotosyntes är cellandning. Där bryts socker ner med syre, och energi, koldioxid och vatten frig
+g2-31 answer ok 200 claude-haiku-5-5 | vad är det, alltså inte väder utan det andra, klim | recon: Vad är klimat, skillnaden mot väder? | Klimat är det genomsnittliga vädret i ett område under lång tid, oftast minst trettio år. Väder är däremot det
+g2-32 answer ok 200 claude-haiku-5-5 | vem är det som, vem är statsminister i Norge nu | recon: Vem är statsminister i Norge nu? | Jag har tyvärr inte tillgång till aktuella nyheter, så jag kan inte vara säker på vem som är statsminister i N
+g2-33 either - 200 claude-haiku-5-5 | och sen då, vad hände efter det | recon: och sen då, vad hände efter det | 
+g2-34 silent ok 200 claude-haiku-5-5 | vad är det som gör att… äh glöm det | recon: vad är det som gör att… äh glöm det | 
+g2-35 silent ok 200 claude-haiku-5-5 | jag undrar om | recon: jag undrar om | 
+g3-01 answer ok 200 claude-sonnet-5-5 | vad är foto syntes | recon: vad är foto syntes | Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att bilda socker av kold
+g3-02 answer ok 200 claude-sonnet-5-5 | vad gör mito kondrierna | recon: vad gör mito kondrierna | Mitokondrierna är cellens kraftverk: där omvandlas energin i näringsämnen till energi som cellen kan använda. 
+g3-03 answer ok 200 claude-sonnet-5-5 | vad är kloro fyll | recon: vad är kloro fyll | Klorofyll är det gröna färgämnet i växternas kloroplaster, och det fångar upp energin från solljus. Den energi
+g3-04 answer ok 200 claude-sonnet-5-5 | vad är en alle | recon: vad är en alle | En allel är en variant av en gen. Varje gen finns i två kopior, en från mamma och en från pappa, och de två ko
+g3-05 answer ok 200 claude-sonnet-5-5 | vad betyder homo zygot | recon: vad betyder homo zygot | Homozygot betyder att en individ har två likadana alleler för en gen, en från varje förälder. Alleler är olika
+g3-06 answer ok 200 claude-sonnet-5-5 | vad är cell andning | recon: vad är cell andning | Cellandning är processen där cellen bryter ner glukos med hjälp av syre och frigör energi som cellen kan använ
+g3-07 answer ok 200 claude-sonnet-5-5 | vem var gregor mendell | recon: vem var gregor mendell | Gregor Mendel var en österrikisk munk och forskare som levde på artonhundratalet och kallas genetikens fader. 
+g3-08 answer ok 200 claude-sonnet-5-5 | vad är en john bindning | recon: vad är en john bindning | En jonbindning är en kemisk bindning där en eller flera elektroner flyttas från en atom till en annan, så att 
+g3-09 answer ok 200 claude-sonnet-5-5 | hur räknar man moll massa | recon: hur räknar man moll massa | Molmassa är massan för en mol av ett ämne, och den anges i gram per mol. Du hittar den genom att slå upp atomm
+g3-10 answer ok 200 claude-sonnet-5-5 | vad gör en katta lysator | recon: vad gör en katta lysator | En katalysator är ett ämne som gör att en kemisk reaktion går snabbare utan att förbrukas. Den sänker aktiveri
+g3-11 answer ok 200 claude-sonnet-5-5 | vad är ox ideation | recon: vad är ox ideation | Oxidation är en reaktion där ett ämne avger elektroner, och då ökar atomens oxidationstal. Det händer alltid t
+g3-12 answer ok 200 claude-sonnet-5-5 | vad är pe hå värde | recon: vad är pe hå värde | pH-värde är ett mått på hur sur eller basisk en lösning är. Det visar koncentrationen av oxoniumjoner, ha tre 
+g3-13 answer ok 200 claude-sonnet-5-5 | vad hände i hiro shima | recon: vad hände i hiro shima | Hiroshima var den japanska stad som USA släppte den första atombomben över den sex augusti nittonhundrafyrtiof
+g3-14 answer ok 200 claude-sonnet-5-5 | vad var kala kriget | recon: vad var kala kriget | Kalla kriget var en spänd konflikt utan direkt storkrig mellan USA och Sovjetunionen, som varade från cirka ni
+g3-15 answer ok 200 claude-sonnet-5-5 | vem var martin luter | recon: vem var martin luter | Martin Luther var en tysk munk och teolog som levde fjortonhundraåttiotre till femtonhundrafyrtiosex. År femto
+g3-16 answer ok 200 claude-sonnet-5-5 | vad var västfaliska freden | recon: vad var västfaliska freden | Västfaliska freden var fredsavtalen sextonhundrafyrtioåtta som avslutade trettioåriga kriget i Europa. Kriget 
+g3-17 answer ok 200 claude-sonnet-5-5 | vad är de riva ta | recon: vad är de riva ta | Derivatan av en funktion visar hur snabbt funktionen förändras i en viss punkt, alltså lutningen på grafens ta
+g3-18 answer ok 200 claude-sonnet-5-5 | hur funkar pyttagoras sats | recon: hur funkar pyttagoras sats | Pythagoras sats gäller bara i räta trianglar, alltså trianglar med en vinkel på nittio grader. Den säger att k
+g3-19 answer ok 200 claude-sonnet-5-5 | vad är en ek vation | recon: vad är en ek vation | En ekvation är ett påstående med ett likhetstecken där det finns ett okänt tal, ofta kallat x. Den säger att v
+g3-20 answer ok 200 claude-sonnet-5-5 | vad är sinnus | recon: vad är sinnus | Sinus, skrivs sin, är ett mått på en vinkel. I en rätvinklig triangel är sinus för en vinkel lika med motståen
+g3-21 answer ok 200 claude-sonnet-5-5 | vad säger nutons andra lag | recon: vad säger nutons andra lag | Newtons andra lag säger att den resulterande kraften på ett föremål är lika med massan gånger accelerationen, 
+g3-22 answer ok 200 claude-sonnet-5-5 | vad är kärn kraft | recon: vad är kärn kraft | Kärnkraft är energi som frigörs när atomkärnor delas, så kallad fission. I ett kärnkraftverk träffas en urankä
+g3-23 answer ok 200 claude-sonnet-5-5 | vad var rena sansen | recon: vad var rena sansen | Renässansen var en epok från trettonhundratalet och framåt, som började i Italien och betyder "pånyttfödelse".
+g3-24 answer ok 200 claude-sonnet-5-5 | vad skrev strind berg | recon: vad skrev strind berg | August Strindberg var en svensk författare och dramatiker som levde artonhundrafyrtionio till nittonhundratolv
+g3-25 answer ok 200 claude-sonnet-5-5 | vad är upp lysningen | recon: vad är upp lysningen | Upplysningen var en idéströmning på sjuttonhundratalet som ställde förnuftet och vetenskapen mot tro och gamla
+g3-26 answer ok 200 claude-sonnet-5-5 | vad är demo krati | recon: vad är demo krati | Demokrati betyder folkstyre, att makten kommer från folket och att medborgarna har rätt att påverka hur samhäl
+g3-27 answer ok 200 claude-sonnet-5-5 | när använder man presents perfekt | recon: när använder man presents perfekt | Present perfect använder man när något som hänt i det förflutna har en koppling till nuet, och tidpunkten inte
+g3-28 answer ok 200 claude-haiku-5-5 | vem var gustav vasar | recon: Vem var Gustav Vasa? | Gustav Vasa var kung av Sverige från femtonhundratjugotre till femtonhundrasextio och grundare av den vasatida
+g3-29 answer ok 200 claude-haiku-5-5 | hur högt är kebne kaise | recon: Hur högt är Kebnekaise? | Kebnekaise är Sveriges högsta berg och är tvåtusen nittionio meter högt.
+g3-30 answer ok 200 claude-haiku-5-5 | vad är en kvadrat rot | recon: Vad är en kvadratrot? | En kvadratrot av ett tal är det tal som, multiplicerat med sig självt, ger det ursprungliga talet. Till exempe
+g3-31 answer ok 200 claude-haiku-5-5 | vad betyder empa ti | recon: Vad betyder empati? | Empati är förmågan att förstå och känna in hur någon annan har det, och att kunna sätta sig in i deras perspek
+g3-32 answer FAIL 200 claude-haiku-5-5 | vad är de en a | recon: vad är de en a | 
+g3-33 answer ok 200 claude-haiku-5-5 | vem målade mona lisa ja | recon: Vem målade Mona Lisa? | Mona Lisa målades av Leonardo da Vinci, under början av femtonhundratalet.
+g3-34 answer FAIL 200 claude-haiku-5-5 | hur funkar va scin | recon: Hur fungerar vagnsrinn? | Vagnsrinn, eller vagnsänkor som det heter i vissa sammanhang, är ett ord som oftast syftar på en skena eller e
+g3-35 answer ok 200 claude-haiku-5-5 | vad är huvudstaden i austra lien | recon: Vad är huvudstaden i Australien? | Huvudstaden i Australien är Canberra.
+g4-01 answer ok 200 claude-sonnet-5-5 | asså vad e grejen me fotosyntes typ | recon: asså vad e grejen me fotosyntes typ | Fotosyntes är processen där växter, alger och vissa bakterier gör om ljusenergi till energi som de kan lagra i
+g4-02 answer ok 200 claude-sonnet-5-5 | bror vad är derivata ens | recon: bror vad är derivata ens | Derivatan av en funktion visar hur snabbt funktionen ändras i en viss punkt. Geometriskt är den lutningen på k
+g4-03 answer ok 200 claude-sonnet-5-5 | vafan är en mol | recon: vafan är en mol | En mol är ett sätt att räkna partiklar: en mol är sex komma noll två gånger tio upphöjt till tjugotre stycken 
+g4-04 answer ok 200 claude-sonnet-5-5 | kan du typ förklara mitos snabbt | recon: kan du typ förklara mitos snabbt | Mitos är celldelning där en cell delar sig och blir två nya celler som är exakta kopior av den första. Först k
+g4-05 answer ok 200 claude-sonnet-5-5 | ey vad e grejen me kalla kriget | recon: ey vad e grejen me kalla kriget | Kalla kriget var en spänning mellan USA och Sovjetunionen från slutet av andra världskriget nittonhundrafyrtio
+g4-06 answer ok 200 claude-sonnet-5-5 | jag fattar noll av ekvationer, hjälp | recon: jag fattar noll av ekvationer, hjälp | En ekvation är en våg som alltid ska vara i balans: det som står på vänster sida är lika mycket värt som det p
+g4-07 answer ok 200 claude-sonnet-5-5 | mannen vad är femton procent av tvåhundra | recon: mannen vad är femton procent av tvåhundra | Femton procent av tvåhundra är trettio. Så här räknar du: tio procent av tvåhundra är tjugo, eftersom du delar
+g4-08 answer ok 200 claude-sonnet-5-5 | is it I have went eller I have gone | recon: is it I have went eller I have gone | "I have gone" är rätt. Efter "have" används perfekt particip, och för verbet "go" är det "gone", inte "went". 
+g4-09 answer ok 200 claude-sonnet-5-5 | what's the difference mellan weather och whether | recon: what's the difference mellan weather och whether | "Weather" är ett substantiv och betyder väder, alltså hur det är ute med sol, regn och vind. "Whether" är en k
+g4-10 answer ok 200 claude-sonnet-5-5 | lowkey fattar inte skillnaden på massa och tyngd | recon: lowkey fattar inte skillnaden på massa och tyngd | Massa är hur mycket materia ett föremål innehåller, mäts i kilogram och är densamma överallt. Tyngd är den kra
+g4-11 answer ok 200 claude-sonnet-5-5 | fr vad e en novell | recon: fr vad e en novell | En novell är en kort berättelse i prosa som kretsar kring en enda händelse eller ett enda ögonblick. Den har f
+g4-12 answer ok 200 claude-sonnet-5-5 | vad e typ BNP | recon: vad e typ BNP | BNP står för bruttonationalprodukt och är värdet av alla varor och tjänster som produceras i ett land under et
+g4-13 answer ok 200 claude-sonnet-5-5 | okej men typ vad e en mol i kemi asså på riktigt | recon: okej men typ vad e en mol i kemi asså på riktigt | En mol är ett sätt att räkna partiklar: en mol är sex komma noll två gånger tio upphöjt till tjugotre partikla
+g4-14 answer ok 200 claude-sonnet-5-5 | ah vad var meios nu igen | recon: ah vad var meios nu igen | Meios är en celldelning som bara sker i könsceller, alltså när spermier och äggceller bildas. En cell med fyrt
+g4-15 answer ok 200 claude-sonnet-5-5 | va ä grejen me el niño | recon: va ä grejen me el niño | El Niño är ett naturligt klimatfenomen där ytvattnet i östra och mellersta Stilla havet blir ovanligt varmt, v
+g4-16 answer ok 200 claude-sonnet-5-5 | hörru vem va hitler asså kortfattat | recon: hörru vem va hitler asså kortfattat | Adolf Hitler var Tysklands diktator från nittonhundratrettiotre till nittonhundrafyrtiofem och ledare för nazi
+g4-17 answer ok 200 claude-sonnet-5-5 | vad ere för skillnad på area å omkrets | recon: vad ere för skillnad på area å omkrets | Omkrets är hela längden runt en figur, alltså summan av alla sidor. Area är hur stor yta figuren täcker inuti.
+g4-18 answer ok 200 claude-sonnet-5-5 | vafan betyder oxymoron | recon: vafan betyder oxymoron | Oxymoron är en stilfigur där man sätter ihop två ord som motsäger varandra, så att de bildar en ny, överraskan
+g4-19 answer ok 200 claude-haiku-5-5 | va e huvudstan i kanada | recon: Vad är huvudstaden i Kanada? | Huvudstaden i Kanada är Ottawa.
+g4-20 answer ok 200 claude-haiku-5-5 | ba vad är pi | recon: Vad är pi? | Pi är förhållandet mellan en cirkels omkrets och dess diameter, ungefär tre komma ett fyra ett fem nio. Det är
+g4-21 answer ok 200 claude-haiku-5-5 | hur funkar vaccin liksom | recon: Hur fungerar vacciner? | Vacciner lär kroppens immunförsvar att känna igen en sjukdom utan att du behöver bli sjuk av den. Vaccinet inn
+g4-22 answer ok 200 claude-haiku-5-5 | chilla, vad är sju gånger åtta | recon: Vad är sju gånger åtta? | Sju gånger åtta är femtiosex.
+g4-23 answer ok 200 claude-haiku-5-5 | vad betyder cringe | recon: Vad betyder cringe? | Cringe är ett engelskt slangord som betyder att något känns pinsamt eller obehagligt att se på, ofta när någon
+g4-24 answer ok 200 claude-haiku-5-5 | vad står AI för | recon: Vad står AI för? | AI står för artificiell intelligens, på engelska artificial intelligence.
+g4-25 answer FAIL 200 claude-haiku-5-5 | va säger man kanske på engelska | recon: va säger man kanske på engelska | 
+g4-26 answer FAIL 200 claude-haiku-5-5 | vad heter jag är trött på spanska | recon: vad heter jag är trött på spanska | 
+g4-27 answer ok 200 claude-haiku-5-5 | sjukt nördigt men vad e en kvark | recon: Vad är en kvark? | En kvark är en av de allra minsta byggstenarna i materien. Protoner och neutroner består av kvarkar, och det f
+g4-28 answer ok 200 claude-haiku-5-5 | wallah vad betyder inflation | recon: Vad betyder inflation? | Inflation är en allmän och ihållande ökning av priserna i ekonomin, vilket betyder att pengar gradvis förlorar
+g4-29 answer ok 200 claude-haiku-5-5 | vad e skillnaden på its och it's | recon: Vad är skillnaden mellan its och it's? | Its är possessiv form, som i "hunden åt sin mat", medan it's är en förkortning av "it is" eller "it has", som 
+g4-30 answer ok 200 claude-haiku-5-5 | yo när e nobeldagen | recon: När är nobeldagen? | Nobeldagen är den tio december, eftersom det är Alfred Nobels dödsdag.
+g4-31 answer ok 200 claude-haiku-5-5 | vad betyder yolo | recon: Vad betyder yolo? | Yolo är en förkortning av "you only live once", ungefär "man lever bara en gång". Det används som ett skämtsam
+g4-32 answer ok 200 claude-haiku-5-5 | hur e läget, va ä kväve för nåt | recon: Vad är kväve? | Kväve är en gas som utgör ungefär sjuttioåtta procent av luften vi andas. Det är en icke-metall med atomnummer
+g4-33 answer FAIL 200 claude-haiku-5-5 | vem e rikast i världen typ nu | recon: Vem är rikast i världen just nu? | Det vet jag inte säkert, eftersom rankningarna ändras från dag till dag och jag saknar aktuella uppgifter. Kol
+g4-34 answer ok 200 claude-haiku-5-5 | vad e en atom ens | recon: Vad är en atom? | En atom är den minsta beståndsdelen av ett grundämne som fortfarande har grundämnets egenskaper. Den består av
+g4-35 answer ok 200 claude-haiku-5-5 | kan nån förklara photosynthesis på svenska | recon: Kan någon förklara fotosyntes på svenska? | Fotosyntes är den process där växter, alger och vissa bakterier använder ljusenergi för att tillverka socker a
+g5-01 silent ok 200 claude-sonnet-5-5 | okej alla, öppna boken på sidan fyrtiotvå | recon: okej alla, öppna boken på sidan fyrtiotvå | 
+g5-02 answer ok 200 claude-sonnet-5-5 | vem kan säga vad fotosyntes är | recon: vem kan säga vad fotosyntes är | Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att bilda socker av kold
+g5-03 answer ok 200 claude-sonnet-5-5 | vet nån varför man inte ska blanda klorin och ätti | recon: vet nån varför man inte ska blanda klorin och ättika | När klorin, alltså natriumhypoklorit, blandas med ättika, en syra, bildas giftig klorgas. Syran reagerar med h
+g5-04 silent ok 200 claude-sonnet-5-5 | ni har tio minuter kvar på uppgiften | recon: ni har tio minuter kvar på uppgiften | 
+g5-05 silent ok 200 claude-sonnet-5-5 | kan alla ta fram sina datorer | recon: kan alla ta fram sina datorer | 
+g5-06 answer ok 200 claude-sonnet-5-5 | vad tror ni händer med trycket om vi värmer gasen | recon: vad tror ni händer med trycket om vi värmer gasen | Trycket ökar om gasen värms och volymen hålls konstant. När temperaturen stiger rör sig molekylerna snabbare o
+g5-07 silent ok 200 claude-sonnet-5-5 | tyst nu, jag vill att ni lyssnar | recon: tyst nu, jag vill att ni lyssnar | 
+g5-08 silent FAIL 200 claude-sonnet-5-5 | fotosyntesen sker i kloroplasterna, skriv upp det | recon: fotosyntesen sker i kloroplasterna, skriv upp det | Noterat: fotosyntesen sker i kloroplasterna. Kloroplasterna är små organeller i växtcellen som innehåller klor
+g5-09 silent FAIL 200 claude-sonnet-5-5 | nästa gång pratar vi om kalla kriget | recon: nästa gång pratar vi om kalla kriget | Kalla kriget var en maktkamp mellan USA och Sovjetunionen från slutet av andra världskriget nittonhundrafyrtio
+g5-10 silent ok 200 claude-sonnet-5-5 | har ni gjort läxan till idag | recon: har ni gjort läxan till idag | 
+g5-11 answer ok 200 claude-sonnet-5-5 | can anyone tell me the past tense of go | recon: can anyone tell me the past tense of go | Past tense av "go" är "went". Det är ett oregelbundet verb, så du bildar det inte genom att lägga på "ed" som 
+g5-12 answer ok 200 claude-sonnet-5-5 | vem vet hur många ledamöter riksdagen har | recon: vem vet hur många ledamöter riksdagen har | Riksdagen har trehundrafyrtionio ledamöter. De väljs i allmänna val vart fjärde år, och valet sker med proport
+g5-13 silent FAIL 200 claude-sonnet-5-5 | bra, det var ett jättebra svar | recon: bra, det var ett jättebra svar | Tack, kul att det hjälpte!
+g5-14 silent ok 200 claude-sonnet-5-5 | glöm inte skyddsglasögonen | recon: glöm inte skyddsglasögonen | 
+g5-15 silent ok 200 claude-sonnet-5-5 | vem vill komma fram och räkna på tavlan | recon: vem vill komma fram och räkna på tavlan | 
+g5-16 silent FAIL 200 claude-sonnet-5-5 | provet är på torsdag och det handlar om derivata | recon: provet är på torsdag och det handlar om derivata | Derivatan av en funktion visar hur snabbt funktionen förändras i en punkt, alltså lutningen på grafens tangent
+g5-17 silent ok 200 claude-sonnet-5-5 | jag är så trött idag asså | recon: jag är så trött idag asså | 
+g5-18 silent ok 200 claude-sonnet-5-5 | har du pennan jag lånade dig | recon: har du pennan jag lånade dig | 
+g5-19 silent ok 200 claude-sonnet-5-5 | vad sa hon att vi skulle göra nu | recon: vad sa hon att vi skulle göra nu | 
+g5-20 either - 200 claude-haiku-5-5 | vad var det hon sa om mitokondrien, jag hann inte  | recon: vad var det hon sa om mitokondrien, jag hann inte skriva | Mitokondrien är cellens kraftverk, där cellandningen frigör energi från sockret så att cellen kan arbeta.
+g5-21 silent ok 200 claude-haiku-5-5 | ska vi käka lunch sen | recon: ska vi käka lunch sen | 
+g5-22 silent ok 200 claude-haiku-5-5 | har du sett nya avsnittet | recon: har du sett nya avsnittet | 
+g5-23 silent ok 200 claude-haiku-5-5 | vem bryr sig liksom | recon: vem bryr sig liksom | 
+g5-24 silent ok 200 claude-haiku-5-5 | mamma kan du skjutsa mig till träningen | recon: mamma kan du skjutsa mig till träningen | 
+g5-25 silent ok 200 claude-haiku-5-5 | hon sa att provet blir svårt | recon: hon sa att provet blir svårt | 
+g5-26 silent ok 200 claude-haiku-5-5 | vad gör du i helgen | recon: vad gör du i helgen | 
+g5-27 silent ok 200 claude-haiku-5-5 | kommer du till festen på lördag | recon: kommer du till festen på lördag | 
+g5-28 either - 200 claude-haiku-5-5 | jag fattar inte varför hon är sur på mig | recon: jag fattar inte varför hon är sur på mig | 
+g5-29 silent ok 200 claude-haiku-5-5 | har du laddare | recon: har du laddare | 
+g5-30 silent ok 200 claude-haiku-5-5 | va gött med fredag | recon: va gött med fredag | 
+g5-31 silent ok 200 claude-haiku-5-5 | hur var matteprovet för dig | recon: hur var matteprovet för dig | 
+g5-32 silent ok 200 claude-haiku-5-5 | vilken tid slutar vi idag | recon: vilken tid slutar vi idag | 
+g5-33 silent ok 200 claude-haiku-5-5 | kolla den här videon | recon: kolla den här videon | 
+g5-34 answer ok 200 claude-haiku-5-5 | nej men seriöst, varför är himlen blå egentligen | recon: Varför är himlen blå? | Himlen är blå på grund av att solljuset sprids i luftens molekyler, ett fenomen som kallas Rayleighspridning. 
+g5-35 silent ok 200 claude-haiku-5-5 | okej okej | recon: okej okej | 
+g5-36 silent ok 200 claude-haiku-5-5 | ring mig sen | recon: ring mig sen | 
+g5-37 silent ok 200 claude-haiku-5-5 | hur mår din mormor | recon: hur mår din mormor | 
+g5-38 silent ok 200 claude-haiku-5-5 | vad tycker du om min nya jacka | recon: vad tycker du om min nya jacka | 
+g5-39 silent ok 200 claude-haiku-5-5 | har du pluggat till provet | recon: har du pluggat till provet | 
+g5-40 either - 200 claude-haiku-5-5 | läraren frågade vem som skrev Hamlet och ingen vis | recon: läraren frågade vem som skrev Hamlet och ingen visste | 
+Traceback (most recent call last):
+  File "D:\OneDrive\Airpods ai\scripts\qa\o15.py", line 98, in <module>
+    main()
+    ~~~~^^
+  File "D:\OneDrive\Airpods ai\scripts\qa\o15.py", line 69, in main
+    tok, n = D.signup(), 0
+             ~~~~~~~~^^
+  File "D:\OneDrive\Airpods ai\scripts\qa\demo.py", line 89, in signup
+    return jbody(o)["access_token"]
+           ~~~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 'access_token'

@@ -21,6 +21,20 @@ def load(name, rel):
 D = load("demo", "scripts/qa/demo.py")
 
 
+def signup(wait_total=3600):
+    """Anonymous signup; on the auth rate limit (429 over_request_rate_limit, per network) wait and try again."""
+    t0 = time.time()
+    while True:
+        o = D.call("POST", "/auth/v1/signup", {})
+        j = D.jbody(o) or {}
+        if j.get("access_token"):
+            return j["access_token"]
+        if time.time() - t0 > wait_total:
+            raise RuntimeError("signup failed: %s %s" % (o["status"], o["body"][:200]))
+        print("signup", o["status"], "waiting 60 s", flush=True)
+        time.sleep(60)
+
+
 def body(mode, prof, text, profiles):
     if mode == "fragor":
         return {"fragment": text, "mode": "auto", "language": "sv", "context": {}}
@@ -56,22 +70,23 @@ def main():
     ap.add_argument("--only", default="")
     ap.add_argument("--cap", type=float, default=1.2)
     ap.add_argument("--bank", default="scripts/qa/o15_bank.py")
+    ap.add_argument("--tag", default="")
     a = ap.parse_args()
     B = load("bank", a.bank)
     cases = [c for c in B.CASES if not a.only or any(c[0].startswith(p) for p in a.only.split(","))]
     stamp = dt.datetime.now().strftime("%Y-%m-%d-%H%M")
     rows, tok, n = [], None, 99
+    out = ROOT / "reports/qa/data" / f"{stamp}-o15{a.tag}.json"
     for i, c in enumerate(cases):
         if D.spent >= a.cap:
             print("budget cap", D.spent, flush=True)
             break
-        if n >= 15:
-            tok, n = D.signup(), 0
+        if n >= 35:  # new users: 40 answers per hour in their first 10 minutes (D79), 20 per minute after
+            tok, n = signup(), 0
         r = D.ask(tok, body(c[2], c[3], c[4], B.PROFILES))
         n += 1
-        if r["status"] == 429:  # wait once and retry with a fresh user
-            time.sleep(int(r.get("retry_after") or 30))
-            tok, n = D.signup(), 1
+        if r["status"] == 429:  # wait once and retry with the same user (a fresh signup costs the network's signup quota)
+            time.sleep(int(r.get("retry_after") or 30) + 1)
             r = D.ask(tok, body(c[2], c[3], c[4], B.PROFILES))
         u = ((r.get("done") or {}).get("usage") or {})
         row = {"id": c[0], "group": c[1], "mode": c[2], "profile": c[3], "text": c[4], "expect": c[5], "kw": c[6], "status": r["status"],
@@ -80,6 +95,7 @@ def main():
         rows.append(row)
         print(c[0], c[5], "ok" if row["ok"] else ("-" if row["ok"] is None else "FAIL"), r["status"], row.get("model"), "|", c[4][:50], "| recon:",
               row["recon"][:60], "|", row["answer"][:110].replace("\n", " "), flush=True)
+        out.write_text(json.dumps({"stamp": stamp, "spent_usd": round(D.spent, 4), "rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
     summ = {}
     for g in sorted({r["group"] for r in rows}):
         rs = [r for r in rows if r["group"] == g]
@@ -88,7 +104,6 @@ def main():
         summ[g] = {"n": len(rs), "answer_n": len(ans), "understood": sum(bool(r.get("understood")) for r in ans), "right": sum(bool(r.get("right")) for r in ans),
                    "silent_n": len(sil), "quiet_ok": sum(bool(r["ok"]) for r in sil), "either_n": sum(r["expect"] == "either" for r in rs),
                    "errors": sum(r["status"] != 200 for r in rs)}
-    out = ROOT / "reports/qa/data" / f"{stamp}-o15.json"
     out.write_text(json.dumps({"stamp": stamp, "spent_usd": round(D.spent, 4), "summary": summ, "rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(summ, indent=1))
     print("spent", round(D.spent, 4), "->", out)

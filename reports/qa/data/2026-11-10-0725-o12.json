@@ -1,0 +1,2395 @@
+{
+ "stamp": "2026-11-10-0725",
+ "weighted_chars": 18396,
+ "scribe_audio_s": 951.9,
+ "summary": {
+  "eleven_flash_v2_5/Adam": {
+   "n": 17,
+   "first_byte_p50": 354,
+   "first_byte_p90": 478,
+   "total_p50": 502,
+   "wer_mean": 0.123,
+   "cer_mean": 0.077,
+   "pauses_over_ends": 7,
+   "cut_end": 0,
+   "repeats": 0,
+   "fallback_header": 0,
+   "sec_per_char": 0.0708
+  },
+  "eleven_multilingual_v2/Adam": {
+   "n": 17,
+   "first_byte_p50": 1049,
+   "first_byte_p90": 1536,
+   "total_p50": 1146,
+   "wer_mean": 0.064,
+   "cer_mean": 0.015,
+   "pauses_over_ends": 4,
+   "cut_end": 0,
+   "repeats": 1,
+   "fallback_header": 0,
+   "sec_per_char": 0.0743
+  },
+  "eleven_v4_turbo/Adam": {
+   "n": 17,
+   "first_byte_p50": 420,
+   "first_byte_p90": 1222,
+   "total_p50": 1568,
+   "wer_mean": 0.034,
+   "cer_mean": 0.002,
+   "pauses_over_ends": 0,
+   "cut_end": 0,
+   "repeats": 0,
+   "fallback_header": 0,
+   "sec_per_char": 0.0756
+  },
+  "eleven_v4_turbo/Max": {
+   "n": 8,
+   "first_byte_p50": 412,
+   "first_byte_p90": 863,
+   "total_p50": 1515,
+   "wer_mean": 0.044,
+   "cer_mean": 0.001,
+   "pauses_over_ends": 5,
+   "cut_end": 0,
+   "repeats": 0,
+   "fallback_header": 0,
+   "sec_per_char": 0.0742
+  },
+  "eleven_v4_turbo/Saga": {
+   "n": 9,
+   "first_byte_p50": 382,
+   "first_byte_p90": 1350,
+   "total_p50": 1496,
+   "wer_mean": 0.052,
+   "cer_mean": 0.006,
+   "pauses_over_ends": 3,
+   "cut_end": 0,
+   "repeats": 0,
+   "fallback_header": 0,
+   "sec_per_char": 0.0743
+  }
+ },
+ "rows": [
+  {
+   "id": "pl-117",
+   "kind": "engelska",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1536,
+   "total_ms": 1595,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 695484,
+   "dur_s": 14.49,
+   "pauses_400": [
+    860
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 860,
+   "trail_ms": 200,
+   "lead_ms": 0,
+   "tail_db": -41.4,
+   "cut_end": false,
+   "scribe": "Third conditional är if plus past perfect och would have plus participe för något som skulle ha hänt men aldrig hände. Det- Mm ...handlar alltså om det förflutna och går inte att ändra längre.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.061,
+   "cer": 0.02,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-121",
+   "kind": "tal",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1222,
+   "total_ms": 2183,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 610560,
+   "dur_s": 12.72,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 200,
+   "lead_ms": 40,
+   "tail_db": -81.3,
+   "cut_end": false,
+   "scribe": "Procent betyder hundradel, alltså ett tal delat med hundra. 25 procent är därför 25 hundradelar, alltså 0,25 eller en fjärdedel.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-121",
+   "kind": "tal",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 200,
+   "first_byte_ms": 979,
+   "total_ms": 2039,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 602880,
+   "dur_s": 12.56,
+   "pauses_400": [
+    760
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 760,
+   "trail_ms": 180,
+   "lead_ms": 40,
+   "tail_db": -78.6,
+   "cut_end": false,
+   "scribe": "Procent betyder hundradel, alltså ett tal delat med hundra. 25 procent är därför 25 hundradelar, alltså 0,25 eller en fjärdedel.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-045",
+   "kind": "formel",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 416,
+   "total_ms": 1097,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 506880,
+   "dur_s": 10.56,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 240,
+   "lead_ms": 80,
+   "tail_db": -83.9,
+   "cut_end": false,
+   "scribe": "Ohms lag beskriver hur spänning, ström och resistans hänger ihop i en krets. Spänningen U är lika med resistansen R gånger strömmen I.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-089",
+   "kind": "fakta",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 306,
+   "total_ms": 511,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 657590,
+   "dur_s": 13.7,
+   "pauses_400": [
+    460
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 460,
+   "trail_ms": 160,
+   "lead_ms": 60,
+   "tail_db": -45.6,
+   "cut_end": false,
+   "scribe": "Platttektonik är teorin om att jordskorpan är uppdelad i stora plattor som sakta rör sig ovanpå den heta segamanten. Plattorna flyttar sig bara några centimeter om året, u-ungefär lika fort som dina naglar växer.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.114,
+   "cer": 0.017,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-065",
+   "kind": "namn",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 449,
+   "total_ms": 691,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 853752,
+   "dur_s": 17.79,
+   "pauses_400": [
+    480,
+    960
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 960,
+   "trail_ms": 240,
+   "lead_ms": 20,
+   "tail_db": -36.8,
+   "cut_end": false,
+   "scribe": "Upplysningen var en idéströmning på 1700-talet som hävdade att förnuft, vetenskap och fria studier skulle ersätta vidskepelse, tradition och kyrkans och kungens auktoritet. Tänk- Mm ...tänkare som Voltaire, Montesquieu och Rousseau kritiserade envälde och religiös intolerans. Mm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.147,
+   "cer": 0.034,
+   "repeats": 0,
+   "len_diff": 4
+  },
+  {
+   "id": "pl-065",
+   "kind": "namn",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1312,
+   "total_ms": 1440,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 1007560,
+   "dur_s": 20.99,
+   "pauses_400": [
+    420,
+    700
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 700,
+   "trail_ms": 220,
+   "lead_ms": 0,
+   "tail_db": -45.1,
+   "cut_end": false,
+   "scribe": "Upplysningen var en idéströmning på 1700-talet som hävdade att förnuft, vetenskap och fria studier skulle ersätta vidskepelse, tradition och kyrkans och kungens auktoritet. Tänkare som Voltaire, Montesquieu och Rousseau kritiserade envälde och religiös intolerans.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.059,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-113",
+   "kind": "engelska",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1422,
+   "total_ms": 2454,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 537600,
+   "dur_s": 11.2,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 180,
+   "lead_ms": 60,
+   "tail_db": -78.6,
+   "cut_end": false,
+   "scribe": "Oregelbundna verb är verb som inte följer den vanliga regeln för dåtid, att man lägger till -ed. Istället ändras de på ett eget sätt som man måste lära sig utantill.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.065,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -1
+  },
+  {
+   "id": "pl-161",
+   "kind": "årtal",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 846,
+   "total_ms": 935,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 550592,
+   "dur_s": 11.47,
+   "pauses_400": [
+    980
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 980,
+   "trail_ms": 0,
+   "lead_ms": 20,
+   "tail_db": -28.3,
+   "cut_end": false,
+   "scribe": "Medeltiden är tiden mellan antiken och nya tiden, ungefär från år 500 till 1500. I Sverige brukar man räkna den från omkring 1050 till 1520. Mm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.115,
+   "cer": 0.014,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-061",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 200,
+   "first_byte_ms": 349,
+   "total_ms": 1217,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 445440,
+   "dur_s": 9.28,
+   "pauses_400": [
+    440
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 440,
+   "trail_ms": 220,
+   "lead_ms": 80,
+   "tail_db": -68.2,
+   "cut_end": false,
+   "scribe": "Franska revolutionen var en omvälvning i Frankrike som började 1789 och som ändrade kungens envälde och ståndssamhället.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.059,
+   "cer": 0.008,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-189",
+   "kind": "tal",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 410,
+   "total_ms": 599,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 755670,
+   "dur_s": 15.74,
+   "pauses_400": [
+    600,
+    1060,
+    520
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 1060,
+   "trail_ms": 180,
+   "lead_ms": 0,
+   "tail_db": -58.8,
+   "cut_end": false,
+   "scribe": "Derivatan av tre x i kvadrat plus två x minus fem är sex x plus två. Man deriverar term för term med potensregeln: x upphöjt till en blir en gånger x upphöjt till en minus ett. Mm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.111,
+   "cer": 0.037,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-189",
+   "kind": "tal",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 200,
+   "first_byte_ms": 262,
+   "total_ms": 1496,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 725760,
+   "dur_s": 15.12,
+   "pauses_400": [
+    620,
+    480
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 620,
+   "trail_ms": 100,
+   "lead_ms": 20,
+   "tail_db": -59.3,
+   "cut_end": false,
+   "scribe": "Derivatan av tre x i kvadrat plus två x minus fem är sex x plus två. Man deriverar term för term med potensregeln. X upphöjt till n blir n gånger x upphöjt till n minus ett.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-065",
+   "kind": "namn",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 200,
+   "first_byte_ms": 437,
+   "total_ms": 2051,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 960000,
+   "dur_s": 20.0,
+   "pauses_400": [
+    800
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 800,
+   "trail_ms": 140,
+   "lead_ms": 40,
+   "tail_db": -76.1,
+   "cut_end": false,
+   "scribe": "Upplysningen var en idéströmning på 1700-talet som hävdade att förnuft, vetenskap och fria studier skulle ersätta vidskepelse, tradition och kyrkans och kungens auktoritet. Tänkare som Voltaire, Montesquieu och Rousseau kritiserade envälde och religiös intolerans.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.059,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-069",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 564,
+   "total_ms": 1611,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 698880,
+   "dur_s": 14.56,
+   "pauses_400": [
+    740
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 740,
+   "trail_ms": 220,
+   "lead_ms": 60,
+   "tail_db": -83.0,
+   "cut_end": false,
+   "scribe": "Renässansen var en kulturepok i Europa från ungefär 1300-talet till 1500-talet som började i Italien. Ordet betyder återfödelse eftersom man ville väcka antikens ideal till liv igen.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.148,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 2
+  },
+  {
+   "id": "pl-121",
+   "kind": "tal",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 295,
+   "total_ms": 404,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 555050,
+   "dur_s": 11.56,
+   "pauses_400": [
+    720
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 720,
+   "trail_ms": 200,
+   "lead_ms": 60,
+   "tail_db": -43.9,
+   "cut_end": false,
+   "scribe": "Procent betyder hundradel, alltså ett talatal delat med hundra. 25 procent är därför 25 hundradelar, alltså 0,25 eller en fjärdedel.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.043,
+   "cer": 0.031,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-053",
+   "kind": "fakta",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 350,
+   "total_ms": 383,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 434678,
+   "dur_s": 9.06,
+   "pauses_400": [
+    620
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 620,
+   "trail_ms": 160,
+   "lead_ms": 40,
+   "tail_db": -50.0,
+   "cut_end": false,
+   "scribe": "Elektrisk resistans är ett mått på hur mycket en komponent eller en ledning motverkar att elektrisk ström går igenom. Den mäts i ohm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-045",
+   "kind": "formel",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1392,
+   "total_ms": 1461,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 510468,
+   "dur_s": 10.63,
+   "pauses_400": [
+    460
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 460,
+   "trail_ms": 260,
+   "lead_ms": 40,
+   "tail_db": -44.5,
+   "cut_end": false,
+   "scribe": "Omslag beskriver hur spänning, ström och resistans hänger ihop i en krets. Sp- Spänningen U är lika med resistansen R gånger strömmen I.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.13,
+   "cer": 0.028,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-117",
+   "kind": "engelska",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 408,
+   "total_ms": 502,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 548362,
+   "dur_s": 11.42,
+   "pauses_400": [
+    560,
+    420
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 560,
+   "trail_ms": 180,
+   "lead_ms": 0,
+   "tail_db": -49.7,
+   "cut_end": false,
+   "scribe": "Third conditional är if plus past perfect och would have plus participe för nåt som skulle ha hänt men aldrig hände. Det handlar alltså om det förflutna och går inte att ändra längre.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.061,
+   "cer": 0.02,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-017",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 3562,
+   "total_ms": 3599,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 387840,
+   "dur_s": 8.08,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 200,
+   "lead_ms": 60,
+   "tail_db": -83.0,
+   "cut_end": false,
+   "scribe": "Proteinsyntes är processen där cellen bygger proteiner utifrån informationen i generna. Den sker i två steg. Mm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.062,
+   "cer": 0.022,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-001",
+   "kind": "fakta",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1124,
+   "total_ms": 1231,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 699942,
+   "dur_s": 14.58,
+   "pauses_400": [
+    400,
+    960
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 960,
+   "trail_ms": 380,
+   "lead_ms": 0,
+   "tail_db": -45.1,
+   "cut_end": false,
+   "scribe": "Fotosyntesen är växternas sätt att göra sin egen mat, socker, av koldioxid och vatten med hjälp på-- med hjälp av ljus. Det sker i bladens gröna delar där ämnet klorofyll fångar upp solljuset.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.1,
+   "cer": 0.069,
+   "repeats": 0,
+   "len_diff": 3
+  },
+  {
+   "id": "pl-189",
+   "kind": "tal",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 200,
+   "first_byte_ms": 863,
+   "total_ms": 2065,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 725760,
+   "dur_s": 15.12,
+   "pauses_400": [
+    780,
+    400
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 780,
+   "trail_ms": 140,
+   "lead_ms": 20,
+   "tail_db": -76.7,
+   "cut_end": false,
+   "scribe": "Derivatan av 3x i kvadrat plus 2x minus 5 är 6x plus 2. Man deriverar term för term med potensregeln. x upphöjt till n blir n gånger x upphöjt till n minus 1.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.167,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -3
+  },
+  {
+   "id": "pl-053",
+   "kind": "fakta",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 753,
+   "total_ms": 846,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 419074,
+   "dur_s": 8.73,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 20,
+   "lead_ms": 40,
+   "tail_db": -34.5,
+   "cut_end": false,
+   "scribe": "Elektrisk resistans är ett mått på hur mycket en komponent eller en ledning motverkar att elektrisk ström går igenom. Den mäts i ohm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-089",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 273,
+   "total_ms": 1567,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 721920,
+   "dur_s": 15.04,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 240,
+   "lead_ms": 40,
+   "tail_db": -81.3,
+   "cut_end": false,
+   "scribe": "Plattektonik är teorin om att jordskorpan är uppdelad i stora plattor som sakta rör sig ovanpå den heta sega manteln. Plattorna flyttar sig bara några centimeter om året, ungefär lika fort som dina naglar växer.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-069",
+   "kind": "årtal",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1049,
+   "total_ms": 1127,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 722234,
+   "dur_s": 15.05,
+   "pauses_400": [
+    1260
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 1260,
+   "trail_ms": 340,
+   "lead_ms": 20,
+   "tail_db": -54.8,
+   "cut_end": false,
+   "scribe": "Renässansen var en kulturepok i Europa från ungefär 1300-talet till 1500-talet som började i Italien. Ordet betyder återfödelse eftersom man ville väcka antikens ideal till liv igen. Mm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.185,
+   "cer": 0.012,
+   "repeats": 0,
+   "len_diff": 3
+  },
+  {
+   "id": "pl-161",
+   "kind": "årtal",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 306,
+   "total_ms": 441,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 561738,
+   "dur_s": 11.7,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 140,
+   "lead_ms": 0,
+   "tail_db": -67.7,
+   "cut_end": false,
+   "scribe": "Medeltiden är tiden mellan antiken och nya tiden, ungefär från år 500 till 1500. I Sverige brukar man räkna den från omkring 1050 till 1520.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.077,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -1
+  },
+  {
+   "id": "pl-053",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 420,
+   "total_ms": 1281,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 449280,
+   "dur_s": 9.36,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 180,
+   "lead_ms": 20,
+   "tail_db": -81.6,
+   "cut_end": false,
+   "scribe": "Elektrisk resistans är ett mått på hur mycket en komponent eller en ledning motverkar att elektrisk ström går igenom. Den mäts i ohm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-113",
+   "kind": "engelska",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 200,
+   "first_byte_ms": 323,
+   "total_ms": 1325,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 549120,
+   "dur_s": 11.44,
+   "pauses_400": [
+    740
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 740,
+   "trail_ms": 220,
+   "lead_ms": 40,
+   "tail_db": -77.3,
+   "cut_end": false,
+   "scribe": "Oregelbundna verb är verb som inte följer den vanliga regeln för dåtid, att man lägger till -ed. Istället ändras de på ett eget sätt som man måste lära sig utantill.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.065,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -1
+  },
+  {
+   "id": "pl-177",
+   "kind": "engelska",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 465,
+   "total_ms": 856,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 280320,
+   "dur_s": 5.84,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 180,
+   "lead_ms": 60,
+   "tail_db": -80.8,
+   "cut_end": false,
+   "scribe": "Whose är ett relativt pronomen som visar ägande, alltså vars på svenska.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-081",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 200,
+   "first_byte_ms": 905,
+   "total_ms": 2017,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 614400,
+   "dur_s": 12.8,
+   "pauses_400": [
+    740,
+    420
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 740,
+   "trail_ms": 260,
+   "lead_ms": 80,
+   "tail_db": -83.3,
+   "cut_end": false,
+   "scribe": "Högre styrränta gör det dyrare att låna pengar eftersom bankerna höjer sina utlåningsräntor. Hushåll och företag lånar och konsumerar då mindre, så efterfrågan i ekonomin minskar.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-061",
+   "kind": "årtal",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 426,
+   "total_ms": 478,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 399012,
+   "dur_s": 8.31,
+   "pauses_400": [
+    400,
+    440
+   ],
+   "pauses_over_ends": 2,
+   "max_pause_ms": 440,
+   "trail_ms": 240,
+   "lead_ms": 0,
+   "tail_db": -44.8,
+   "cut_end": false,
+   "scribe": "Franska revolutionen var en omvälvning i Frankrike som började 1789 och som ändade kungens envälde och ståndssamhället.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-061",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 200,
+   "first_byte_ms": 412,
+   "total_ms": 1027,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 430080,
+   "dur_s": 8.96,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 160,
+   "lead_ms": 80,
+   "tail_db": -77.0,
+   "cut_end": false,
+   "scribe": "Franska revolutionen var en omvälvning i Frankrike som började 1789 och som ändade kungens envälde och ståndssamhället.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-153",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 491,
+   "total_ms": 1938,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 814080,
+   "dur_s": 16.96,
+   "pauses_400": [
+    420
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 420,
+   "trail_ms": 220,
+   "lead_ms": 80,
+   "tail_db": -83.3,
+   "cut_end": false,
+   "scribe": "Kalla kriget var en spänning mellan USA och Sovjetunionen från 1945 till 1991, där de aldrig stred direkt mot varandra. USA stod för demokrati och kapitalism, Sovjetunionen för kommunism och enpartistat.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-113",
+   "kind": "engelska",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 200,
+   "first_byte_ms": 604,
+   "total_ms": 1515,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 537600,
+   "dur_s": 11.2,
+   "pauses_400": [
+    680
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 680,
+   "trail_ms": 180,
+   "lead_ms": 20,
+   "tail_db": -78.0,
+   "cut_end": false,
+   "scribe": "Oregelbundna verb är verb som inte följer den vanliga regeln för dåtid, att man lägger till -ed. Istället ändras de på ett eget sätt som man måste lära sig utantill.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.065,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -1
+  },
+  {
+   "id": "pl-153",
+   "kind": "årtal",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 314,
+   "total_ms": 528,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 844834,
+   "dur_s": 17.6,
+   "pauses_400": [
+    580,
+    600
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 600,
+   "trail_ms": 60,
+   "lead_ms": 40,
+   "tail_db": -42.9,
+   "cut_end": false,
+   "scribe": "Kalla kriget var en spänning mellan USA och Sovjetunionen från 1945 till 1991, där de aldrig stred direkt mot varandra. USA stod för demokrati och kapitalism, Sovjetunionen för kommunism och enpartistat.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-045",
+   "kind": "formel",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 354,
+   "total_ms": 442,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 439136,
+   "dur_s": 9.15,
+   "pauses_400": [
+    680
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 680,
+   "trail_ms": 220,
+   "lead_ms": 20,
+   "tail_db": -50.2,
+   "cut_end": false,
+   "scribe": "Omslag beskriver hur spänning, ström och resistans hänger ihop i en krets. Spänningen U är lika med resistansen R gånger strömmen I.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.087,
+   "cer": 0.009,
+   "repeats": 0,
+   "len_diff": -1
+  },
+  {
+   "id": "pl-045",
+   "kind": "formel",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 200,
+   "first_byte_ms": 281,
+   "total_ms": 1145,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 499200,
+   "dur_s": 10.4,
+   "pauses_400": [
+    680
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 680,
+   "trail_ms": 200,
+   "lead_ms": 40,
+   "tail_db": -82.1,
+   "cut_end": false,
+   "scribe": "Oms lag beskriver hur spänning, ström och resistans hänger ihop i en krets. Spänningen U är lika med resistansen R gånger strömmen I.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.043,
+   "cer": 0.009,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-081",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 200,
+   "first_byte_ms": 382,
+   "total_ms": 1453,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 625920,
+   "dur_s": 13.04,
+   "pauses_400": [
+    720
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 720,
+   "trail_ms": 140,
+   "lead_ms": 40,
+   "tail_db": -72.9,
+   "cut_end": false,
+   "scribe": "Hög restyrränta gör det dyrare att låna pengar eftersom bankerna höjer sina utlåningsräntor. Hushåll och företag lånar och konsumerar då mindre, så efterfrågan i ekonomin minskar.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.077,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-017",
+   "kind": "fakta",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 631,
+   "total_ms": 718,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 354430,
+   "dur_s": 7.38,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 320,
+   "lead_ms": 60,
+   "tail_db": -44.1,
+   "cut_end": false,
+   "scribe": "Proteinsyntes är processen där cellen bygger proteiner utifrån informationen i generna. Den sker i två steg. Mm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.062,
+   "cer": 0.022,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-121",
+   "kind": "tal",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 770,
+   "total_ms": 804,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 517154,
+   "dur_s": 10.77,
+   "pauses_400": [
+    740
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 740,
+   "trail_ms": 260,
+   "lead_ms": 80,
+   "tail_db": -41.5,
+   "cut_end": false,
+   "scribe": "Procent betyder hundradel, alltså ett tal delat med hundra. 25 procent är därför 25 hundradelar, alltså 0,25 eller en fjärdedel.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-017",
+   "kind": "fakta",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 309,
+   "total_ms": 404,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 387866,
+   "dur_s": 8.08,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 220,
+   "lead_ms": 60,
+   "tail_db": -43.6,
+   "cut_end": false,
+   "scribe": "Proteinsyntes är processen där cellen bygger proteiner utifrån informationen i generna. Den sker i två steg. Mm.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.062,
+   "cer": 0.022,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-081",
+   "kind": "fakta",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 294,
+   "total_ms": 476,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 635298,
+   "dur_s": 13.24,
+   "pauses_400": [
+    660
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 660,
+   "trail_ms": 300,
+   "lead_ms": 0,
+   "tail_db": -44.9,
+   "cut_end": false,
+   "scribe": "Högre styrränta gör det dyrare att låna pengar eftersom bankerna höjer sina utlåningsräntor. Hushåll och företag lånar och konsumerar då mindre, så efterfrågan i ekonomin minskar, om du konsumerar då.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.154,
+   "cer": 0.106,
+   "repeats": 0,
+   "len_diff": 4
+  },
+  {
+   "id": "pl-081",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 438,
+   "total_ms": 1568,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 614400,
+   "dur_s": 12.8,
+   "pauses_400": [
+    620
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 620,
+   "trail_ms": 220,
+   "lead_ms": 40,
+   "tail_db": -81.9,
+   "cut_end": false,
+   "scribe": "Högre styrränta gör det dyrare att låna pengar eftersom bankerna höjer sina utlåningsräntor. Hushåll och företag lånar och konsumerar då mindre, så efterfrågan i ekonomin minskar.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-161",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 200,
+   "first_byte_ms": 1350,
+   "total_ms": 2417,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 610560,
+   "dur_s": 12.72,
+   "pauses_400": [
+    740
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 740,
+   "trail_ms": 240,
+   "lead_ms": 40,
+   "tail_db": -74.2,
+   "cut_end": false,
+   "scribe": "Medeltiden är tiden mellan antiken och nya tiden, ungefär från år 500 till 1500. I Sverige brukar man räkna den från omkring 1050 till 1520.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.077,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -1
+  },
+  {
+   "id": "pl-049",
+   "kind": "formel",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1046,
+   "total_ms": 1146,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 773504,
+   "dur_s": 16.11,
+   "pauses_400": [
+    480
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 480,
+   "trail_ms": 340,
+   "lead_ms": 0,
+   "tail_db": -43.1,
+   "cut_end": false,
+   "scribe": "Rörelseenergi är den energi ett föremål har på grund av att det rör sig. Det- Mm. Den beräknas som ek är lika med en halv gånger m gånger v i kvadrat, där m är massan i kilogram och v är hastigheten i meter per sekund.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.093,
+   "cer": 0.03,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-189",
+   "kind": "tal",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 397,
+   "total_ms": 1602,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 714240,
+   "dur_s": 14.88,
+   "pauses_400": [
+    540
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 540,
+   "trail_ms": 200,
+   "lead_ms": 20,
+   "tail_db": -49.4,
+   "cut_end": false,
+   "scribe": "Derivatan av 3x i kvadrat plus 2x minus 5 är 6x plus 2. Man deriverar term för term med potensregeln. X upphöjt till n blir n gånger x upphöjt till n minus 1.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.167,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -3
+  },
+  {
+   "id": "pl-133",
+   "kind": "tal",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 403,
+   "total_ms": 1206,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 476160,
+   "dur_s": 9.92,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 200,
+   "lead_ms": 20,
+   "tail_db": -81.3,
+   "cut_end": false,
+   "scribe": "Lös x i kvadrat plus sex x minus 16 är lika med noll. Här är p lika med sex och q lika med minus 16.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-077",
+   "kind": "lång",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 413,
+   "err": "{\"error\":{\"code\":\"payload_too_large\",\"message\":\"text exceeds 500 characters\",\"fallback\":false}}"
+  },
+  {
+   "id": "pl-153",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 200,
+   "first_byte_ms": 356,
+   "total_ms": 1820,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 810240,
+   "dur_s": 16.88,
+   "pauses_400": [
+    420,
+    760,
+    480
+   ],
+   "pauses_over_ends": 2,
+   "max_pause_ms": 760,
+   "trail_ms": 160,
+   "lead_ms": 60,
+   "tail_db": -82.0,
+   "cut_end": false,
+   "scribe": "Kalla kriget var en spänning mellan USA och Sovjetunionen från 1945 till 1991, där de aldrig stred direkt mot varandra. USA stod för demokrati och kapitalism, Sovjetunionen för kommunism och enpartistat.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-009",
+   "kind": "fakta",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1822,
+   "total_ms": 1916,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 575112,
+   "dur_s": 11.98,
+   "pauses_400": [
+    620,
+    440
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 620,
+   "trail_ms": 320,
+   "lead_ms": 20,
+   "tail_db": -79.7,
+   "cut_end": false,
+   "scribe": "För att göra fotosyntes behöver växten tre saker: ljus, vatten och koldioxid. Ljuset fångas upp av klorofyll, det gröna ämnet i bladens gröna delar.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-069",
+   "kind": "årtal",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 447,
+   "total_ms": 742,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 664276,
+   "dur_s": 13.84,
+   "pauses_400": [
+    460
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 460,
+   "trail_ms": 200,
+   "lead_ms": 0,
+   "tail_db": -42.1,
+   "cut_end": false,
+   "scribe": "Renässansen var en kulturepok i Europa från ungefär 1300-talet till 1500-talet som började i Italien. Ordet betyder återfödelse eftersom man ville väcka antikens ideal till liv igen.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.148,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 2
+  },
+  {
+   "id": "pl-177",
+   "kind": "engelska",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 633,
+   "total_ms": 675,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 269722,
+   "dur_s": 5.62,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 360,
+   "lead_ms": 20,
+   "tail_db": -37.2,
+   "cut_end": false,
+   "scribe": "Hus är ett relativt pronomen som visar ägande, alltså vars på svenska.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.083,
+   "cer": 0.051,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-045",
+   "kind": "formel",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 200,
+   "first_byte_ms": 330,
+   "total_ms": 1209,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 506880,
+   "dur_s": 10.56,
+   "pauses_400": [
+    600
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 600,
+   "trail_ms": 180,
+   "lead_ms": 40,
+   "tail_db": -78.1,
+   "cut_end": false,
+   "scribe": "Omslag beskriver hur spänning, ström och resistans hänger ihop i en krets. Spän- Spänningen U är lika med resistansen R gånger strömmen I.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.13,
+   "cer": 0.046,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-121",
+   "kind": "tal",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 200,
+   "first_byte_ms": 367,
+   "total_ms": 1395,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 599040,
+   "dur_s": 12.48,
+   "pauses_400": [
+    440,
+    800,
+    400
+   ],
+   "pauses_over_ends": 2,
+   "max_pause_ms": 800,
+   "trail_ms": 220,
+   "lead_ms": 40,
+   "tail_db": -81.4,
+   "cut_end": false,
+   "scribe": "Procent betyder hundradel, alltså ett tal delat med hundra. 25 procent är därför 25 hundradelar, alltså 0,25 eller en fjärdedel.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-133",
+   "kind": "tal",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 485,
+   "total_ms": 558,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 419074,
+   "dur_s": 8.73,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 220,
+   "lead_ms": 0,
+   "tail_db": -43.9,
+   "cut_end": false,
+   "scribe": "Lös x i kvadrat plus sex x minus 16 är lika med noll. Här är p lika med sex och q lika med minus 16.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-089",
+   "kind": "fakta",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1220,
+   "total_ms": 1367,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 724462,
+   "dur_s": 15.09,
+   "pauses_400": [
+    500,
+    580
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 580,
+   "trail_ms": 340,
+   "lead_ms": 60,
+   "tail_db": -42.0,
+   "cut_end": false,
+   "scribe": "Plattektonik är teorin om att jordskorpan är uppdelad i stora plattor som sakta rör sig ovanpå den heta, sega manteln. Plattorna flyttar sig bara några centimeter om året, ungefär lika fort som dina naglar växer.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-009",
+   "kind": "fakta",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1353,
+   "total_ms": 1461,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 548362,
+   "dur_s": 11.42,
+   "pauses_400": [
+    520,
+    840
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 840,
+   "trail_ms": 300,
+   "lead_ms": 0,
+   "tail_db": -44.1,
+   "cut_end": false,
+   "scribe": "För att göra fotosyntes behöver växten tre saker: ljus, vatten och koldioxid. Ljus- ljuset fångas upp av klorofyll, det gröna ämnet i bladens gröna delar.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.042,
+   "cer": 0.033,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-049",
+   "kind": "formel",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 343,
+   "total_ms": 1773,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 802560,
+   "dur_s": 16.72,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 200,
+   "lead_ms": 40,
+   "tail_db": -80.8,
+   "cut_end": false,
+   "scribe": "Rörelseenergi är den energi ett föremål har på grund av att det rör sig. Den beräknas som EK är lika med en halv gånger m gånger v i kvadrat, där m är massan i kilogram och v är hastigheten i meter per sekund.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.047,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -1
+  },
+  {
+   "id": "pl-177",
+   "kind": "engelska",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 297,
+   "total_ms": 341,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 234058,
+   "dur_s": 4.88,
+   "pauses_400": [
+    620
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 620,
+   "trail_ms": 100,
+   "lead_ms": 40,
+   "tail_db": -47.4,
+   "cut_end": false,
+   "scribe": "",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 1.0,
+   "cer": 1.0,
+   "repeats": 0,
+   "len_diff": -12
+  },
+  {
+   "id": "pl-117",
+   "kind": "engelska",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 459,
+   "total_ms": 1440,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 625920,
+   "dur_s": 13.04,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 200,
+   "lead_ms": 20,
+   "tail_db": -80.1,
+   "cut_end": false,
+   "scribe": "Third conditional är if plus past perfect och would have plus participle för något som skulle ha hänt men aldrig hände. Det handlar alltså om det förflutna och går inte att ändra längre.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.03,
+   "cer": 0.013,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-009",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 408,
+   "total_ms": 1300,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 572160,
+   "dur_s": 11.92,
+   "pauses_400": [
+    560
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 560,
+   "trail_ms": 200,
+   "lead_ms": 60,
+   "tail_db": -82.0,
+   "cut_end": false,
+   "scribe": "För att göra fotosyntes behöver växten tre saker: ljus, vatten och koldioxid. Ljuset fångas upp av klorofyll, det gröna ämnet i bladens gröna delar.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-049",
+   "kind": "formel",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 478,
+   "total_ms": 592,
+   "x_tts_model": "eleven_flash_v2_5",
+   "bytes": 699942,
+   "dur_s": 14.58,
+   "pauses_400": [
+    1140
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 1140,
+   "trail_ms": 220,
+   "lead_ms": 0,
+   "tail_db": -41.5,
+   "cut_end": false,
+   "scribe": "Rörelseenergi är den energi ett föremål har på grund av att det rör sig. Den beräknas som ek är lika med en halv gånger m gånger v i kvadrat, där m är massan i kilogram och v är hastigheten i meter per sekund.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.047,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -1
+  },
+  {
+   "id": "pl-077",
+   "kind": "lång",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 413,
+   "err": "{\"error\":{\"code\":\"payload_too_large\",\"message\":\"text exceeds 500 characters\",\"fallback\":false}}"
+  },
+  {
+   "id": "pl-065",
+   "kind": "namn",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 295,
+   "total_ms": 1887,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 963840,
+   "dur_s": 20.08,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 200,
+   "lead_ms": 40,
+   "tail_db": -82.8,
+   "cut_end": false,
+   "scribe": "Upplysningen var en idéströmning på 1700-talet som hävdade att förnuft, vetenskap och fria studier skulle ersätta vidskepelse, tradition och kyrkans och kungens auktoritet. Tänkare som Voltaire, Montesquieu och Rousseau kritiserade envälde och religiös intolerans.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.059,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-061",
+   "kind": "årtal",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1855,
+   "total_ms": 1925,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 427990,
+   "dur_s": 8.92,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 300,
+   "lead_ms": 20,
+   "tail_db": -39.2,
+   "cut_end": false,
+   "scribe": "Franska revolutionen var en omvälvning i Frankrike som började 1789 och som ändade kungens envälde och ståndssamhället.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-153",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 200,
+   "first_byte_ms": 1472,
+   "total_ms": 2814,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 783360,
+   "dur_s": 16.32,
+   "pauses_400": [
+    420,
+    700,
+    400
+   ],
+   "pauses_over_ends": 2,
+   "max_pause_ms": 700,
+   "trail_ms": 140,
+   "lead_ms": 40,
+   "tail_db": -64.2,
+   "cut_end": false,
+   "scribe": "Kalla kriget var en spänning mellan USA och Sovjetunionen från 1945 till 1991, där de aldrig stred direkt mot varandra. USA stod för demokrati och kapitalism, Sovjetunionen för kommunism och enpartistat.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-189",
+   "kind": "tal",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 1116,
+   "total_ms": 1221,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 748982,
+   "dur_s": 15.6,
+   "pauses_400": [
+    580
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 580,
+   "trail_ms": 340,
+   "lead_ms": 40,
+   "tail_db": -48.8,
+   "cut_end": false,
+   "scribe": "Derivatan av 3x i kvadrat plus 2x minus 5 är 6x plus 2. Man deriverar term för term med potensregeln. X upphöjt till n blir n gånger x upphöjt till n minus 1.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.167,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -3
+  },
+  {
+   "id": "pl-161",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 200,
+   "first_byte_ms": 373,
+   "total_ms": 1402,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 614400,
+   "dur_s": 12.8,
+   "pauses_400": [
+    820
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 820,
+   "trail_ms": 300,
+   "lead_ms": 40,
+   "tail_db": -83.7,
+   "cut_end": false,
+   "scribe": "Medeltiden är tiden mellan antiken och nya tiden, ungefär från år 500 till 1500. I Sverige brukar man räkna den från omkring 1050 till 1520.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.077,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": -1
+  },
+  {
+   "id": "pl-001",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 349,
+   "total_ms": 1476,
+   "x_tts_model": "eleven_v4_turbo",
+   "bytes": 633600,
+   "dur_s": 13.2,
+   "pauses_400": [],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 0,
+   "trail_ms": 160,
+   "lead_ms": 60,
+   "tail_db": -73.2,
+   "cut_end": false,
+   "scribe": "Fotosyntesen är växternas sätt att göra sin egen mat, socker, av koldioxid och vatten med hjälp av ljus. Det sker i bladens gröna delar, där ämnet klorofyll fångar upp solljuset.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-081",
+   "kind": "fakta",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 917,
+   "total_ms": 1024,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 599632,
+   "dur_s": 12.49,
+   "pauses_400": [
+    800,
+    580
+   ],
+   "pauses_over_ends": 1,
+   "max_pause_ms": 800,
+   "trail_ms": 320,
+   "lead_ms": 40,
+   "tail_db": -42.3,
+   "cut_end": false,
+   "scribe": "Högre styrränta gör det dyrare att låna pengar eftersom bankerna höjer sina utlåningsräntor. Hushåll och företag lånar och konsumerar då mindre, så efterfrågan i ekonomin minskar.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.0,
+   "cer": 0.0,
+   "repeats": 0,
+   "len_diff": 0
+  },
+  {
+   "id": "pl-077",
+   "kind": "lång",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 413,
+   "err": "{\"error\":{\"code\":\"payload_too_large\",\"message\":\"text exceeds 500 characters\",\"fallback\":false}}"
+  },
+  {
+   "id": "pl-113",
+   "kind": "engelska",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 200,
+   "first_byte_ms": 834,
+   "total_ms": 912,
+   "x_tts_model": "eleven_multilingual_v2",
+   "bytes": 510468,
+   "dur_s": 10.63,
+   "pauses_400": [
+    920
+   ],
+   "pauses_over_ends": 0,
+   "max_pause_ms": 920,
+   "trail_ms": 240,
+   "lead_ms": 0,
+   "tail_db": -80.7,
+   "cut_end": false,
+   "scribe": "Oregelbundna verb är verb som inte följer den vanliga regeln för dåtid, att man lägger till -ed. I- I stället ändras de på ett eget sätt som man måste lära sig utantill.",
+   "scribe_errors": [
+    [
+     0.0,
+     "warning",
+     "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+    ]
+   ],
+   "wer": 0.032,
+   "cer": 0.008,
+   "repeats": 1,
+   "len_diff": 1
+  },
+  {
+   "id": "pl-001",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 503,
+   "err": "{\"error\":{\"code\":\"provider_quota\",\"message\":\"TTS credits exhausted\",\"fallback\":true}}"
+  },
+  {
+   "id": "pl-153",
+   "kind": "årtal",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 429,
+   "err": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"TTS budget reached\",\"fallback\":true}}"
+  },
+  {
+   "id": "pl-001",
+   "kind": "fakta",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 503,
+   "err": "{\"error\":{\"code\":\"provider_quota\",\"message\":\"TTS credits exhausted\",\"fallback\":true}}"
+  },
+  {
+   "id": "pl-161",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 503,
+   "err": "{\"error\":{\"code\":\"provider_quota\",\"message\":\"TTS credits exhausted\",\"fallback\":true}}"
+  },
+  {
+   "id": "pl-061",
+   "kind": "årtal",
+   "model": "eleven_v4_turbo",
+   "voice": "Adam",
+   "status": 429,
+   "err": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"TTS budget reached\",\"fallback\":true}}"
+  },
+  {
+   "id": "pl-133",
+   "kind": "tal",
+   "model": "eleven_multilingual_v2",
+   "voice": "Adam",
+   "status": 429,
+   "err": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"TTS budget reached\",\"fallback\":true}}"
+  },
+  {
+   "id": "pl-065",
+   "kind": "namn",
+   "model": "eleven_v4_turbo",
+   "voice": "Max",
+   "status": 429,
+   "err": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"TTS budget reached\",\"fallback\":true}}"
+  },
+  {
+   "id": "pl-113",
+   "kind": "engelska",
+   "model": "eleven_flash_v2_5",
+   "voice": "Adam",
+   "status": 429,
+   "err": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"TTS budget reached\",\"fallback\":true}}"
+  },
+  {
+   "id": "pl-001",
+   "kind": "fakta",
+   "model": "eleven_v4_turbo",
+   "voice": "Saga",
+   "status": 429,
+   "err": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"TTS budget reached\",\"fallback\":true}}"
+  }
+ ]
+}
