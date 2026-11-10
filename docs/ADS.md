@@ -142,5 +142,6 @@ Gås igenom för varje koncept innan det läggs upp, och igen när resultaten l�
 |---|---|---|---|---|---|
 
 ## Logg
+- 2026-11-10 14:00: manus till 7 koncept klara (`reports/ads/2026-11-10-1400-manus-7-koncept.md`), Aron genererar i Gemini. Fantasy (b) inte skriven, väntar på beslut.
 - 2026-11-10 13:30: checklista för annonser tillagd (Aron). Inspiration söks alltid på nätet före nytt koncept.
 - 2026-11-10: R1 påbörjad. Inga annonser igång (budget tom). Väntar på: budget, Arons inloggning på Meta, TikTok-konto, Ke22, Ke26.
