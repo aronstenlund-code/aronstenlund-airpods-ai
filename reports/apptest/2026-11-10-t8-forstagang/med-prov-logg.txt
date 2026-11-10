@@ -1,0 +1,64 @@
+path: exam
+taps: 7
+screens: 10
+
+Milestones:
+  27.3 s,  0 taps,  0 screens: app opened
+  42.4 s,  2 taps,  3 screens: first question screen
+ 128.3 s,  6 taps,  8 screens: start screen
+ 144.9 s,  7 taps,  9 screens: Provläge: listening
+ 240.3 s,  7 taps, 10 screens: done
+
+Log:
+MILESTONE   27.3 s,  0 taps,  0 screens: app opened
+shot at   28.6 s: t8-exam-01-intro — Intro: the first thing a new user sees
+SCREEN t8-exam-01-intro — Intro: the first thing a new user sees
+  texts (7): Genom att trycka Testa nu godkänner du att Lumen lyssnar bara när du har startat den, att du alltid ser när den lyssnar och att ljud inte sparas. Inget konto. | Lumen | Fråga högt. Få svaret i örat. | Telefonen stannar i fickan. Lumen pluggar med dig på din nivå, och du styr allt med rösten. | Lumen lyssnar bara när du har startat den. | Du ser alltid när den lyssnar. | Ljud sparas inte.
+  buttons (2): Testa nu | Läs mer
+TAP  1 at   31.6 s: intro → Testa nu
+SYSTEM ALERT: “Lumen” would like to access the Microphone. — “Lumen” would like to access the Microphone. / Lumen listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.
+shot at   35.7 s: t8-exam-02-systemfraga — System alert: “Lumen” would like to access the Microphone.
+TAP  2 at   36.7 s: system alert → allow
+shot at   39.8 s: t8-exam-03-forsta-fragan — First question, before speaking
+SCREEN t8-exam-03-forsta-fragan — First question, before speaking
+  texts (9): iOS frågar om mikrofonen första gången. Lumen sparar aldrig ljud. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Startar … | Till exempel: Vad är fotosyntes? | Prova också | Vad är 270 gånger 270? | Hur böjer man ”att vara” på spanska? | Startar …
+  buttons (1): Fortsätt
+MILESTONE   42.4 s,  2 taps,  3 screens: first question screen
+shot at  103.2 s: t8-exam-04-forsta-svaret-saknas — Frågor: no answer within 60 s
+SCREEN t8-exam-04-forsta-svaret-saknas — Frågor: no answer within 60 s
+  texts (9): iOS frågar om mikrofonen första gången. Lumen sparar aldrig ljud. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Startar … | Till exempel: Vad är fotosyntes? | Prova också | Vad är 270 gånger 270? | Hur böjer man ”att vara” på spanska? | Startar …
+  buttons (1): Fortsätt
+MISS: Frågor: no answer containing 'Canberra' within 60 s
+TAP  3 at  106.7 s: first question → Fortsätt
+shot at  110.6 s: t8-exam-05-prov-steget — First start: add an exam or skip
+SCREEN t8-exam-05-prov-steget — First start: add an exam or skip
+  texts (10): Lägg till prov | Då pratar Lumen på din nivå, hör dina ämnesord rätt och vet vad du ska öva på. | Eller säg det | Jag har prov i biologi på fredag, om fotosyntes | Årskurs | Ämne | Datum | Tis 17 nov, om 7 dagar | Vad kommer på provet? | Valfritt. Kapitel, områden eller begrepp.
+  buttons (24): Spara prov | Hoppa över | Stäng | Berätta med rösten | Åk 6 | Åk 7 | Åk 8 | Åk 9 | Gy 1 | Gy 2 | Gy 3 | Högskola | Biologi | Fysik | Kemi | Teknik | Imorgon | Matte | NO | SO | Språk | Praktiskt | Annat | Datumväljare
+TAP  4 at  113.3 s: exam step → NO
+shot at  113.5 s: t8-exam-06-prov-steget-no — Exam step, NO chosen
+SCREEN t8-exam-06-prov-steget-no — Exam step, NO chosen
+  texts (10): Lägg till prov | Då pratar Lumen på din nivå, hör dina ämnesord rätt och vet vad du ska öva på. | Eller säg det | Jag har prov i biologi på fredag, om fotosyntes | Årskurs | Ämne | Datum | Tis 17 nov, om 7 dagar | Vad kommer på provet? | Valfritt. Kapitel, områden eller begrepp.
+  buttons (24): Spara prov | Hoppa över | Stäng | Berätta med rösten | Åk 6 | Åk 7 | Åk 8 | Åk 9 | Gy 1 | Gy 2 | Gy 3 | Högskola | Biologi | Fysik | Kemi | Teknik | Imorgon | Matte | NO | SO | Språk | Praktiskt | Annat | Datumväljare
+TAP  5 at  118.1 s: exam step → Spara prov
+shot at  118.6 s: t8-exam-07-dela-historik — Share history prompt
+SCREEN t8-exam-07-dela-historik — Share history prompt
+  texts (15): Vill du hjälpa till att förbättra Lumen? | Du kan dela dina egna frågor och Lumens svar med utvecklarna, utan ditt namn, i högst 12 månader. Andra personers tal skickas aldrig. Du kan ändra dig när som helst i Inställningar, och då raderas det som delats. | Lumen | Biologiprovet | Tis 17 nov, 7 dagar kvar | Andra lägen | Byt läge utan att ta upp telefonen. Säg ”Lumen, byt till intervju”. | Lumen | Tis 17 nov | 7 dagar kvar | Få A-svar till provet | Lägg till prov | Frågor | Provläge | Fler lägen
+  buttons (8): Dela inte | Dela historik | Inställningar | Få A-svar till provet | Lägg till prov | Frågor | Provläge | Fler lägen
+TAP  6 at  124.7 s: share prompt → Dela inte
+shot at  126.0 s: t8-exam-08-start — The start screen after the first start
+SCREEN t8-exam-08-start — The start screen after the first start
+  texts (13): Lumen | Biologiprovet | Tis 17 nov, 7 dagar kvar | Andra lägen | Byt läge utan att ta upp telefonen. Säg ”Lumen, byt till intervju”. | Lumen | Tis 17 nov | 7 dagar kvar | Få A-svar till provet | Lägg till prov | Frågor | Provläge | Fler lägen
+  buttons (6): Inställningar | Få A-svar till provet | Lägg till prov | Frågor | Provläge | Fler lägen
+MILESTONE  128.3 s,  6 taps,  8 screens: start screen
+TAP  7 at  132.7 s: start → Få A-svar till provet
+shot at  143.5 s: t8-exam-09-provlage-lyssnar — Lyssnar in Provläge, before the question
+SCREEN t8-exam-09-provlage-lyssnar — Lyssnar in Provläge, before the question
+  texts (21): Biologiprovet, Provläge, tis 17 nov | Lyssnar, Ställ en fråga när du vill | Säg ”Lumen, förhör mig”, ”Lumen, svara kortare” eller ”Lumen, pausa”. | Biologiprovet | Provläge, tis 17 nov | Byt läge | Lyssnar | Ställ en fråga när du vill | Pausa | Avsluta | Ställ en fråga om det du pluggar. Svaret hörs i örat. | Ämnesord: Biologi, cell, cellmembran, cellkärna, cellorganell, mitokondrie, kloroplast, ribosom | Biologi | cell | cellmembran | cellkärna | cellorganell | mitokondrie | kloroplast | ribosom | Förhör mig
+  buttons (5): Tillbaka till start | Byt läge | Pausa | Avsluta | Förhör mig
+MILESTONE  144.9 s,  7 taps,  9 screens: Provläge: listening
+shot at  235.5 s: t8-exam-10-provlage-svaret-saknas — Provläge: no answer within 90 s
+SCREEN t8-exam-10-provlage-svaret-saknas — Provläge: no answer within 90 s
+  texts (23): Biologiprovet, Provläge, tis 17 nov | Hör inte, försöker igen, Ställ en fråga när du vill | Säg ”Lumen, förhör mig”, ”Lumen, svara kortare” eller ”Lumen, pausa”. | Biologiprovet | Provläge, tis 17 nov | Byt läge | Hör inte, försöker igen | Ställ en fråga när du vill | Pausa | Avsluta | Ställ en fråga om det du pluggar. Svaret hörs i örat. | Ämnesord: Biologi, cell, cellmembran, cellkärna, cellorganell, mitokondrie, kloroplast, ribosom | Jag hör inte just nu | Taligenkänningen gick ner. Lumen försöker igen av sig själv. | Biologi | cell | cellmembran | cellkärna | cellorganell | mitokondrie | kloroplast | ribosom | Förhör mig
+  buttons (5): Tillbaka till start | Byt läge | Pausa | Avsluta | Förhör mig
+MISS: Provläge: no answer containing 'Canberra' within 90 s
+MILESTONE  240.3 s,  7 taps, 10 screens: done
