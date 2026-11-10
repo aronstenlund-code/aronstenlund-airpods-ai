@@ -28,21 +28,24 @@ def get(url, headers):
 def anonymize(t):
     t = re.sub(r"\S+@\S+", "[e-post]", t or "")
     t = re.sub(r"\+?\d[\d \-]{6,}\d", "[nummer]", t)
-    t = re.sub(r"(?i)\b(jag heter|mitt namn är|heter)\s+\p{L}+" if False else r"(?i)\b(jag heter|mitt namn är)\s+\w+", r"\1 [namn]", t)
+    t = re.sub(r"(?i)\b(jag heter|mitt namn är)\s+\w+", r"\1 [namn]", t)
     return t
 
 
 def main():
+    # the repo secret SUPABASE_SERVICE_ROLE_KEY (owner); else try the Management API with SUPABASE_ACCESS_TOKEN
+    svc = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or None
     tok = os.environ.get("SUPABASE_ACCESS_TOKEN")
-    if not tok:
-        print("no SUPABASE_ACCESS_TOKEN: skipped")
+    if not svc and not tok:
+        print("::warning::no SUPABASE_SERVICE_ROLE_KEY secret: skipped (owner: GitHub > Settings > Secrets > Actions)")
         return 0
-    try:
-        keys = get(f"https://api.supabase.com/v1/projects/{REF}/api-keys?reveal=true", {"authorization": "Bearer " + tok})
-    except Exception as e:
-        print(f"::warning::cannot read the service key with SUPABASE_ACCESS_TOKEN ({getattr(e, 'code', e)}): skipped")
-        return 0
-    svc = next((k.get("api_key") for k in keys if k.get("name") in ("service_role",) or k.get("type") == "secret"), None)
+    if not svc:
+        try:
+            keys = get(f"https://api.supabase.com/v1/projects/{REF}/api-keys?reveal=true", {"authorization": "Bearer " + tok})
+            svc = next((k.get("api_key") for k in keys if k.get("name") in ("service_role",) or k.get("type") == "secret"), None)
+        except Exception as e:
+            print(f"::warning::no SUPABASE_SERVICE_ROLE_KEY secret, and the access token cannot read the key ({getattr(e, 'code', e)}): skipped")
+            return 0
     if not svc:
         print("::warning::no service key in the Management API answer: skipped")
         return 0

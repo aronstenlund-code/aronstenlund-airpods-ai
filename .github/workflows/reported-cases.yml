@@ -25,6 +25,7 @@ jobs:
           python-version: "3.12"
       - name: Ask the reported questions again
         env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: python3 scripts/reported-cases.py
       - name: Commit the numbers
