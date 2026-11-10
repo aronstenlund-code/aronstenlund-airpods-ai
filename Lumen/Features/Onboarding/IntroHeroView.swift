@@ -7,7 +7,7 @@ import UIKit
 /// so the navy jumper never melts into a dark background. Without the file a placeholder stands in.
 struct IntroHeroView: View {
     /// Where the earbud is in the picture (0…1 of the picture's own width and height): the rings start here.
-    static let ringOrigin = UnitPoint(x: 0.32, y: 0.37)
+    nonisolated static let ringOrigin = UnitPoint(x: 0.32, y: 0.37)
     /// The placeholder's earbud, in the hero's own frame.
     static let placeholderOrigin = UnitPoint(x: 0.62, y: 0.46)
     static let imageName = "IntroElias"
@@ -71,7 +71,7 @@ struct IntroHeroView: View {
     /// The top stays in view unless the focus (the earbud) would then sit low in the card: the picture moves up until
     /// the focus is at 60 % of the card's height (the SE's short card), never so far that white shows below it.
     /// Returns the picture's size and top-left corner in the card, and where the focus is in the card.
-    static func fill(card: CGSize, picture: CGSize, focus: UnitPoint) -> (size: CGSize, origin: CGPoint, focus: CGPoint) {
+    nonisolated static func fill(card: CGSize, picture: CGSize, focus: UnitPoint) -> (size: CGSize, origin: CGPoint, focus: CGPoint) {
         guard card.width > 0, card.height > 0, picture.width > 0, picture.height > 0 else { return (card, .zero, .zero) }
         let scale = max(card.width / picture.width, card.height / picture.height)
         let size = CGSize(width: picture.width * scale, height: picture.height * scale)

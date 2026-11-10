@@ -132,7 +132,7 @@ struct IntroView: View {
     }
 
     /// The hero's height from the visible height: smaller on the SE so the three promises stay above the button.
-    static func heroHeight(for visible: CGFloat) -> CGFloat {
+    nonisolated static func heroHeight(for visible: CGFloat) -> CGFloat {
         visible < 600 ? visible * 0.34 : min(320, visible * 0.42)
     }
 }

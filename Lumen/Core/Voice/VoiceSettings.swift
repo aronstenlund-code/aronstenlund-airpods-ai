@@ -132,7 +132,7 @@ final class VoiceCatalog {
     }
 
     /// The optional `description` of each voice (absent today; Kevin can add it to `/voices`).
-    static func descriptions(_ data: Data) -> [String: String] {
+    nonisolated static func descriptions(_ data: Data) -> [String: String] {
         struct Listing: Decodable {
             struct Entry: Decodable {
                 var id: String
