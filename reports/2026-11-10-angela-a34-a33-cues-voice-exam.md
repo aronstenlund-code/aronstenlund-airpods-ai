@@ -59,4 +59,4 @@ Se över bilden av provsidan. Den har nu rösten först och "Skriv i stället". 
   står kvar, och formuläret finns där.
 
 ## CI
-A33: se slutet av rapporten när körningen är klar.
+A33: grönt i CI, iOS build 42821993253 (`95c50e0`). Bygget för enhet räknar varningar som fel, och alla LumenTests är gröna.

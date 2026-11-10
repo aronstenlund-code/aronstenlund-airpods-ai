@@ -58,6 +58,7 @@ final class AppContainer {
         })
         let cloud = CloudAnswerProvider(config: .lumen, auth: auth, http: http)
         let answers = AnswerEngine(provider: cloud)
+        answers.offline = OnDeviceAnswerProvider() // A40: only answers on iPhones with Apple Intelligence
         let speaker = Speaker(settings: voiceSettings,
                               apple: AppleTTSProvider(playback: playback),
                               premium: ElevenLabsTTSProvider(config: .lumen, auth: auth, http: http, playback: playback),

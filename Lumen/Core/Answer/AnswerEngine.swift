@@ -58,6 +58,11 @@ final class AnswerEngine {
 
     var activeProvider: any AnswerProvider { useMock ? mock : cloud }
 
+    /// A40 (D115): asked once when the network is gone (`AnswerError.offline`), for questions only (not the live
+    /// modes' suggestions). In the app: `OnDeviceAnswerProvider`, which fails with `.offline` itself on iPhones
+    /// without Apple Intelligence, so they behave exactly as before.
+    var offline: (any AnswerProvider)?
+
     init(provider: any AnswerProvider, mock: any AnswerProvider = MockAnswerProvider(), settings: AnswerSettings = AnswerSettings()) {
         self.settings = settings
         self.cloud = provider
@@ -139,6 +144,11 @@ final class AnswerEngine {
             if Task.isCancelled { return }
             let answerError = AnswerError.from(error)
             if answerError == .cancelled { return }
+            if answerError == .offline, let offline, provider !== offline, persona.map({ $0.persona == "tutor" }) ?? true {
+                Log.answer.info("answer: offline, asking the on-device model (A40)")
+                await run(request, context: context, persona: persona, provider: offline)
+                return
+            }
             Log.answer.error("answer failed: \(answerError.localizedDescription, privacy: .public)")
             status = .failed(answerError.localizedDescription)
             lastError = answerError
