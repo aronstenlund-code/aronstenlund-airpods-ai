@@ -1027,7 +1027,9 @@ export class NumberStream {
     }
     let cut = lastWs + 1;
     const head = this.buf.slice(0, cut);
-    const m = /((?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*|[=≈≠]|\S*\^\S*)\s+$/.exec(head) ?? // incl. "1 " of "1 789"
+    // eval 2026-11-11: "1,4 – " must wait for "5,7" (a spaced range is read "ett komma fyra till fem komma sju")
+    const m = /\S*\d\S*\s+[–—-]\s+$/.exec(head) ??
+      /((?:\S*\d\S*\s+[–—-]\s+)?(?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*|[=≈≠]|\S*\^\S*)\s+$/.exec(head) ?? // incl. "1 " of "1 789"
       // D72 live test: "Karl " must wait for a possible "XV" (a regnal number is read as a pair with the
       // name), and a "Karl XV." pair is passed on together.
       /(?:\p{Lu}\p{L}+\s+)?(?:XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)[.,!?;:]?\s+$|\p{Lu}\p{L}+\s+$/u
