@@ -905,6 +905,63 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         }
       }
 
+      // O42: a help line ("ring Bris") or plain music ("spela musik") is answered by code with the tool call at once:
+      // no model (it was silent, or said "Jag kan inte spela musik" and then opened it). iOS asks before a call.
+      const early = !demo && !body.social && (body.persona ?? "tutor") === "tutor" && !body.toolRound && !body.sessionEnd &&
+          (body.mode === "auto" ? isAddressedAction(body.fragment, !!body.voiceInstruction) : body.mode !== "interview_prep") &&
+          isShortPhoneCommand(body.fragment)
+        ? (body.toolsAvailable?.includes("call_contact") && helpLineCall(body.fragment)
+          ? { name: "call_contact" as const, input: { number: helpLineCall(body.fragment)! } }
+          : body.toolsAvailable?.includes("music_open") && plainMusicRequest(body.fragment)
+          ? { name: "music_open" as const, input: { query: plainMusicRequest(body.fragment)! } }
+          : null)
+        : null;
+      if (early) {
+        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        if (!rl.allowed) {
+          throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
+        }
+        const totalMs = Math.round(now() - t0);
+        try {
+          await deps.recordUsage({
+            user_id: user.id, endpoint: "answer", mode: body.mode, language: body.language, provider: "local", model: "tool_code",
+            is_question: false, confidence: 1, input_tokens: null, output_tokens: null, ttft_ms: totalMs, total_ms: totalMs,
+            est_cost_usd: 0, status: "ok", category: "övrigt", persona: body.persona,
+          });
+        } catch (e) {
+          console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+        }
+        console.log(JSON.stringify({ event: "tool_call", name: early.name, mode: body.mode, by: "code" }));
+        const frames = [
+          sseFrame("meta", { reconstructed_question: body.fragment, confidence: 1, is_question: false, needs_confirmation: false, answer_type: "fact" }),
+          sseFrame("tool_call", {
+            id: `toolu_lumen${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`,
+            name: early.name,
+            input: early.input,
+            confirm: null,
+            kind: toolKind(early.name),
+          }),
+          sseFrame("done", {
+            answered: false,
+            tool_pending: true,
+            timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "tool_code" },
+            summary: null,
+            memory_add: null,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
+
       // K10.2 (measured: "kortare" was ignored 0/6 when only a line in the prompt said it): a learned length setting
       // drives the real length controls, the Provläge profile's explanation length or `length`
       const earlySubject = body.prefContext?.subject ?? /(?:^|\.\s*)Ämne:\s*([^.]+)/u.exec(body.personaSetup)?.[1]?.trim();
