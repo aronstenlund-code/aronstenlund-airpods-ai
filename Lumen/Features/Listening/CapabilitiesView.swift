@@ -132,12 +132,20 @@ enum CapabilityAccess: Equatable, Sendable {
 /// A52: the screen, pushed from "Allt Lumen kan ›" on Start and from the sheet after the first answer.
 struct CapabilitiesView: View {
     @State private var access: [LumenCapability.Permission: CapabilityAccess] = [:]
+    /// Ke37 §10.4: at the largest sizes the big title is text in the list (it wraps) and the bar gets the small one.
+    @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         List {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
+                    if typeSize.isAccessibilitySize {
+                        Text("Vad kan Earmind?")
+                            .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityAddTraits(.isHeader)
+                    }
                     Text("Som Siri, fast den förstår vad du frågar och svarar direkt i dina AirPods.")
                         .font(LumenFont.text(17))
                     Text("Säg ”Lumen” och sedan vad du vill. Det som behöver ställas in står på raden.")
@@ -157,7 +165,7 @@ struct CapabilitiesView: View {
         }
         .lumenForm()
         .navigationTitle("Vad kan Earmind?")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(typeSize.isAccessibilitySize ? .inline : .large)
         .toolbar(.visible, for: .navigationBar)
         .task { refresh() }
         .onChange(of: scenePhase) { _, phase in if phase == .active { refresh() } } // back from Settings

@@ -26,6 +26,9 @@ struct HomeView: View {
     @State private var showsLogoVote = false
     @State private var logoOrder: [LogoChoice] = LogoChoice.allCases
     @Environment(\.scenePhase) private var scenePhase
+    /// Ke37 (SYSTEM.md §10): at the five largest text sizes, two-part rows stack.
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @ScaledMetric(relativeTo: .title2) private var logoSize: CGFloat = 24
     /// A36: the exam whose page is being photographed.
     @State private var photographing: ExamPlan?
     /// A46: the flip cards being tapped through.
@@ -145,7 +148,7 @@ struct HomeView: View {
     private var topBar: some View {
         HStack {
             HStack(spacing: 8) {
-                LumenLogo(size: 24)
+                LumenLogo(size: logoSize) // Ke37 §10.6: follows the text size
                 Text("Earmind").font(LumenFont.text(24, .bold, relativeTo: .title2))
             }
             .accessibilityElement(children: .combine)
@@ -245,14 +248,19 @@ struct HomeView: View {
             Button {
                 isPickingMode = true
             } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: model.selectedMode.symbol)
-                        .font(.system(size: 15, weight: .regular))
-                        .foregroundStyle(LumenColor.muted)
-                    Text(model.selectedMode.shortName)
-                        .font(LumenFont.text(16, .semibold))
-                        .foregroundStyle(LumenColor.ink)
-                    Text("·").font(LumenFont.text(16)).foregroundStyle(LumenColor.muted)
+                let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 2)) : AnyLayout(HStackLayout(spacing: 6))
+                layout {
+                    HStack(spacing: 6) {
+                        Image(systemName: model.selectedMode.symbol)
+                            .font(.system(size: 15, weight: .regular))
+                            .foregroundStyle(LumenColor.muted)
+                        Text(model.selectedMode.shortName)
+                            .font(LumenFont.text(16, .semibold))
+                            .foregroundStyle(LumenColor.ink)
+                    }
+                    if !typeSize.isAccessibilitySize {
+                        Text("·").font(LumenFont.text(16)).foregroundStyle(LumenColor.muted)
+                    }
                     Text("Byt")
                         .font(LumenFont.text(16, .semibold))
                         .foregroundStyle(LumenColor.blue)
@@ -298,9 +306,12 @@ struct HomeView: View {
 
     private func examCard(_ plan: ExamPlan) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .center) {
+            // Ke37: the badge goes under the heading at the largest sizes.
+            let header = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+                : AnyLayout(HStackLayout(alignment: .center))
+            header {
                 SectionLabel("Nästa prov")
-                Spacer(minLength: 8)
+                if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
                 RedPenRing(text: ExamPlan.daysLeftText(plan.daysLeft()))
             }
             HStack(alignment: .center, spacing: 12) {
@@ -321,11 +332,13 @@ struct HomeView: View {
                 }
             }
             .padding(.top, 10)
-            HStack(alignment: .firstTextBaseline) {
+            let dateRow = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 0))
+                : AnyLayout(HStackLayout(alignment: .firstTextBaseline))
+            dateRow {
                 Text(plan.dateLine())
                     .font(LumenFont.text(15))
                     .foregroundStyle(LumenColor.muted)
-                Spacer(minLength: 8)
+                if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
                 // A42 (Deangelo G2): the exam's date and grade are changed here, not in Inställningar.
                 Button("Ändra") { model.editingExam = plan }
                     .font(LumenFont.text(15, .semibold))
@@ -375,14 +388,20 @@ struct HomeView: View {
                     Button {
                         model.showingMyAnswers = MyAnswersRoute(examID: plan.id)
                     } label: {
-                        HStack {
+                        let row = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2))
+                            : AnyLayout(HStackLayout())
+                        row { // Ke37: two lines at the largest sizes
                             Text("Mina svar").font(LumenFont.text(16, .semibold)).foregroundStyle(LumenColor.ink)
-                            Spacer()
-                            Text(count == 0 ? "Lägg till" : "\(count) sparade")
-                                .font(LumenFont.text(15))
-                                .foregroundStyle(LumenColor.muted)
-                            Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundStyle(LumenColor.muted)
+                            if !typeSize.isAccessibilitySize { Spacer() }
+                            HStack(spacing: 4) {
+                                Text(count == 0 ? "Lägg till" : "\(count) sparade")
+                                    .font(LumenFont.text(15))
+                                    .foregroundStyle(LumenColor.muted)
+                                Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundStyle(LumenColor.muted)
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, typeSize.isAccessibilitySize ? 8 : 0)
                         .padding(.horizontal, 14)
                         .frame(minHeight: 48)
                         .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
@@ -531,6 +550,10 @@ struct TwoLineLabel: View {
             Text(detail)
                 .font(LumenFont.text(13, relativeTo: .footnote))
                 .opacity(0.85)
+                .lineLimit(nil) // Ke37 §10.5: the line wraps and the button grows (the style says one line)
+                .minimumScaleFactor(1)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.vertical, 8)
         .accessibilityElement(children: .combine)
@@ -547,6 +570,8 @@ struct SectionLabel: View {
         Text(text.uppercased())
             .font(LumenFont.text(13, .semibold, relativeTo: .footnote))
             .foregroundStyle(LumenColor.muted)
+            .lineLimit(1) // Ke37 §10.3: never broken, may shrink a little
+            .minimumScaleFactor(0.8)
             .accessibilityAddTraits(.isHeader)
     }
 }
