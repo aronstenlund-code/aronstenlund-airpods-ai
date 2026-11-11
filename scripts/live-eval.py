@@ -157,7 +157,8 @@ def case_checks(text, prev_answer, turn, now):
         h12 = h24 % 12 or 12
         exp = [sv(h24), sv(h12)]
         if there.minute:
-            exp = [sv(h24) + " " + sv(there.minute), sv(h12) + " " + sv(there.minute)]
+            exp = [sv(h24) + " " + sv(there.minute), sv(h12) + " " + sv(there.minute),
+                   sv(h24) + " och " + sv(there.minute)]  # the code says "arton och trettio" (2026-11-11)
     if exp and not any(norm(e) in re.sub(r"[^a-zåäö0-9]", "", low) or e in low for e in exp):
         out.append(f"väntat svar saknas (något av: {', '.join(exp)})")
     for f in turn.get("forbid_any", []):

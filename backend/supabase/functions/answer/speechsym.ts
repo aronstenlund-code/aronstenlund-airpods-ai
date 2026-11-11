@@ -135,6 +135,8 @@ export const regnal = (n: number) => REGNAL[n] ?? String(n);
 const ABBREVIATIONS: [RegExp, string][] = [
   // Oscar O36/O34: "Läs s. 23" was "läs s. tjugotre"; "1 299,50 kronor" was "… komma fem noll kronor"
   [/(?<![\p{L}])(?:s|sid)\.\s?(?=\d)/gu, "sidan "],
+  // live eval 2026-11-11: the model wrote "sextiotta" itself (words, not digits)
+  [/(?<![\p{L}])(tjugo|trettio|fyrtio|femtio|sextio|sjuttio|åttio|nittio)tta(?![\p{L}])/giu, "$1åtta"],
   [/(\d[.,]\d{1,2})\s?kronor(?![\p{L}])/gu, "$1 kr"],
   [/(?<![\p{L}])f\.\s?Kr\.?/gu, "före Kristus"],
   [/(?<![\p{L}])e\.\s?Kr\.?/gu, "efter Kristus"],
