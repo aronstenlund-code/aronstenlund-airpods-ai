@@ -1,0 +1,681 @@
+{
+ "groups": {
+  "hit": {
+   "n": 10,
+   "sure": 2,
+   "maybe": 6,
+   "none": 2,
+   "codeFalse": 0,
+   "codeMissed": 3
+  },
+  "scribe": {
+   "n": 4,
+   "sure": 3,
+   "maybe": 1,
+   "none": 0,
+   "codeFalse": 0,
+   "codeMissed": 0
+  },
+  "near": {
+   "n": 12,
+   "sure": 0,
+   "maybe": 2,
+   "none": 10,
+   "codeFalse": 0,
+   "codeMissed": 0
+  },
+  "neg": {
+   "n": 4,
+   "sure": 0,
+   "maybe": 3,
+   "none": 1,
+   "codeFalse": 0,
+   "codeMissed": 0
+  },
+  "other_exam": {
+   "n": 3,
+   "sure": 0,
+   "maybe": 0,
+   "none": 3,
+   "codeFalse": 0,
+   "codeMissed": 0
+  },
+  "homonym": {
+   "n": 4,
+   "sure": 0,
+   "maybe": 1,
+   "none": 3,
+   "codeFalse": 0,
+   "codeMissed": 0
+  },
+  "statement": {
+   "n": 3,
+   "sure": 0,
+   "maybe": 0,
+   "none": 3,
+   "codeFalse": 0,
+   "codeMissed": 0
+  },
+  "other_user": {
+   "n": 1,
+   "sure": 1,
+   "maybe": 0,
+   "none": 0,
+   "codeFalse": 1,
+   "codeMissed": 0
+  }
+ },
+ "codeFalse": [
+  [
+   "usr-01",
+   "vad är en cell",
+   {
+    "id": "u2-bio-cell",
+    "score": 1
+   }
+  ]
+ ],
+ "codeMissed": [
+  [
+   "hit-02",
+   "hur funkar fotosyntes"
+  ],
+  [
+   "hit-05",
+   "hur ser DNA-molekylen ut"
+  ],
+  [
+   "hit-10",
+   "varför blev det krig 1914"
+  ]
+ ],
+ "rows": [
+  {
+   "id": "hit-01",
+   "group": "hit",
+   "exam": "bio",
+   "ask": "kan du förklara fotosyntesen",
+   "expect": "bio-foto",
+   "path": "sure",
+   "top": {
+    "id": "bio-foto",
+    "score": 0.979
+   },
+   "cands": [
+    "bio-foto"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hit-02",
+   "group": "hit",
+   "exam": "bio",
+   "ask": "hur funkar fotosyntes",
+   "expect": "bio-foto",
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": true
+  },
+  {
+   "id": "hit-03",
+   "group": "hit",
+   "exam": "bio",
+   "ask": "vad har mitokondrien för funktion i cellen",
+   "expect": "bio-mito",
+   "path": "maybe",
+   "top": {
+    "id": "bio-mito",
+    "score": 0.342
+   },
+   "cands": [
+    "bio-mito"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hit-04",
+   "group": "hit",
+   "exam": "bio",
+   "ask": "vad skiljer meios från mitos",
+   "expect": "bio-mitos",
+   "path": "maybe",
+   "top": {
+    "id": "bio-mitos",
+    "score": 0.55
+   },
+   "cands": [
+    "bio-mitos"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hit-05",
+   "group": "hit",
+   "exam": "bio",
+   "ask": "hur ser DNA-molekylen ut",
+   "expect": "bio-dna",
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": true
+  },
+  {
+   "id": "hit-06",
+   "group": "hit",
+   "exam": "bio",
+   "ask": "förklara naturligt urval",
+   "expect": "bio-evol",
+   "path": "maybe",
+   "top": {
+    "id": "bio-evol",
+    "score": 0.564
+   },
+   "cands": [
+    "bio-evol"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hit-07",
+   "group": "hit",
+   "exam": "hist",
+   "ask": "varför startade första världskriget",
+   "expect": "his-fv1",
+   "path": "maybe",
+   "top": {
+    "id": "his-fv1",
+    "score": 0.578
+   },
+   "cands": [
+    "his-fv1"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hit-08",
+   "group": "hit",
+   "exam": "hist",
+   "ask": "vilka orsaker låg bakom franska revolutionen",
+   "expect": "his-frrev",
+   "path": "maybe",
+   "top": {
+    "id": "his-frrev",
+    "score": 0.446
+   },
+   "cands": [
+    "his-frrev"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hit-09",
+   "group": "hit",
+   "exam": "hist",
+   "ask": "vad menas med kalla kriget",
+   "expect": "his-kalla",
+   "path": "sure",
+   "top": {
+    "id": "his-kalla",
+    "score": 1
+   },
+   "cands": [
+    "his-kalla"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hit-10",
+   "group": "hit",
+   "exam": "hist",
+   "ask": "varför blev det krig 1914",
+   "expect": "his-fv1",
+   "path": "maybe",
+   "top": {
+    "id": "his-kalla",
+    "score": 0.34
+   },
+   "cands": [
+    "his-kalla"
+   ],
+   "codeFalse": false,
+   "codeMissed": true
+  },
+  {
+   "id": "scr-01",
+   "group": "scribe",
+   "exam": "bio",
+   "ask": "vad är foto syntes",
+   "expect": "bio-foto",
+   "path": "sure",
+   "top": {
+    "id": "bio-foto",
+    "score": 1
+   },
+   "cands": [
+    "bio-foto"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "scr-02",
+   "group": "scribe",
+   "exam": "bio",
+   "ask": "vad gör mito kondrierna",
+   "expect": "bio-mito",
+   "path": "sure",
+   "top": {
+    "id": "bio-mito",
+    "score": 1
+   },
+   "cands": [
+    "bio-mito"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "scr-03",
+   "group": "scribe",
+   "exam": "bio",
+   "ask": "skillnaden mellan mitos och mejos",
+   "expect": "bio-mitos",
+   "path": "maybe",
+   "top": {
+    "id": "bio-mitos",
+    "score": 0.625
+   },
+   "cands": [
+    "bio-mitos"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "scr-04",
+   "group": "scribe",
+   "exam": "hist",
+   "ask": "vad var kalle kriget",
+   "expect": "his-kalla",
+   "path": "sure",
+   "top": {
+    "id": "his-kalla",
+    "score": 0.922
+   },
+   "cands": [
+    "his-kalla"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-01",
+   "group": "near",
+   "exam": "bio",
+   "ask": "var i cellen sker fotosyntesen och vad heter pigmentet",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-02",
+   "group": "near",
+   "exam": "bio",
+   "ask": "vad är cellandning",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-03",
+   "group": "near",
+   "exam": "bio",
+   "ask": "hur många kromosomer har en människa",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-04",
+   "group": "near",
+   "exam": "bio",
+   "ask": "vad är RNA",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-05",
+   "group": "near",
+   "exam": "bio",
+   "ask": "vad är skillnaden mellan DNA och RNA",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-06",
+   "group": "near",
+   "exam": "bio",
+   "ask": "vad är artificiellt urval",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-07",
+   "group": "near",
+   "exam": "hist",
+   "ask": "vilka var följderna av första världskriget",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-08",
+   "group": "near",
+   "exam": "hist",
+   "ask": "hur slutade franska revolutionen",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-09",
+   "group": "near",
+   "exam": "hist",
+   "ask": "vilka var orsakerna till andra världskriget",
+   "expect": null,
+   "path": "maybe",
+   "top": {
+    "id": "his-fv1",
+    "score": 0.585
+   },
+   "cands": [
+    "his-fv1"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-10",
+   "group": "near",
+   "exam": "hist",
+   "ask": "när föll Berlinmuren",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-11",
+   "group": "near",
+   "exam": "hist",
+   "ask": "vem var Lenin",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "near-12",
+   "group": "near",
+   "exam": "bio",
+   "ask": "vad är fotosyntesens formel",
+   "expect": null,
+   "path": "maybe",
+   "top": {
+    "id": "bio-foto",
+    "score": 0.558
+   },
+   "cands": [
+    "bio-foto"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "neg-01",
+   "group": "neg",
+   "exam": "bio",
+   "ask": "vad är inte fotosyntes, alltså vad händer i mörker",
+   "expect": null,
+   "path": "maybe",
+   "top": {
+    "id": "bio-foto",
+    "score": 0.343
+   },
+   "cands": [
+    "bio-foto"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "neg-02",
+   "group": "neg",
+   "exam": "bio",
+   "ask": "vad är likheterna mellan mitos och meios",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "neg-03",
+   "group": "neg",
+   "exam": "hist",
+   "ask": "vad var inte en orsak till första världskriget",
+   "expect": null,
+   "path": "maybe",
+   "top": {
+    "id": "his-fv1",
+    "score": 0.602
+   },
+   "cands": [
+    "his-fv1"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "neg-04",
+   "group": "neg",
+   "exam": "bio",
+   "ask": "vilka kritiserade Darwins naturliga urval",
+   "expect": null,
+   "path": "maybe",
+   "top": {
+    "id": "bio-evol",
+    "score": 0.635
+   },
+   "cands": [
+    "bio-evol"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "oex-01",
+   "group": "other_exam",
+   "exam": "bio",
+   "ask": "vad var kalla kriget",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "oex-02",
+   "group": "other_exam",
+   "exam": "hist",
+   "ask": "vad är fotosyntes",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "oex-03",
+   "group": "other_exam",
+   "exam": "hist",
+   "ask": "vad gör mitokondrierna",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hom-01",
+   "group": "homonym",
+   "exam": "hist",
+   "ask": "vad är den industriella revolutionen",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hom-02",
+   "group": "homonym",
+   "exam": "bio",
+   "ask": "vad är en fängelsecell",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hom-03",
+   "group": "homonym",
+   "exam": "hist",
+   "ask": "vad är ett kallt krig mellan kompisar",
+   "expect": null,
+   "path": "maybe",
+   "top": {
+    "id": "his-kalla",
+    "score": 0.528
+   },
+   "cands": [
+    "his-kalla"
+   ],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "hom-04",
+   "group": "homonym",
+   "exam": "bio",
+   "ask": "vad är ett urval i statistik",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "stm-01",
+   "group": "statement",
+   "exam": "bio",
+   "ask": "fotosyntes är så tråkigt asså",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "stm-02",
+   "group": "statement",
+   "exam": "hist",
+   "ask": "läraren sa att vi ska läsa om kalla kriget till fredag",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "stm-03",
+   "group": "statement",
+   "exam": "bio",
+   "ask": "jag har redan pluggat mitos och meios",
+   "expect": null,
+   "path": "none",
+   "top": null,
+   "cands": [],
+   "codeFalse": false,
+   "codeMissed": false
+  },
+  {
+   "id": "usr-01",
+   "group": "other_user",
+   "exam": "bio",
+   "ask": "vad är en cell",
+   "expect": null,
+   "path": "sure",
+   "top": {
+    "id": "u2-bio-cell",
+    "score": 1
+   },
+   "cands": [
+    "u2-bio-cell"
+   ],
+   "codeFalse": true,
+   "codeMissed": false
+  }
+ ]
+}
