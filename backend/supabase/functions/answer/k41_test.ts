@@ -58,3 +58,10 @@ Deno.test("O41: a meta sentence about the request is never spoken first", () => 
   assertEquals(rewriteLeadIn("Det är en fråga om vem Alexander Graham Bell ringde till först.", "x"), "");
   assertEquals(rewriteLeadIn("Det låter kul!", "x"), "Det låter kul!");
 });
+
+Deno.test("O41: digits said as words count as said (B6 guard), articles do not", async () => {
+  const { spokenDigits } = await import("./phonetools.ts");
+  assertEquals(spokenDigits("ring noll sju tre, fyra fem sex, sjuttioåtta nittio"), "0734567890");
+  assertEquals(validatePhoneInput("call_contact", { number: "073-456 78 90" }, "ring noll sju tre, fyra fem sex, sjuttioåtta nittio"), { number: "073-456 78 90" });
+  assertEquals(validatePhoneInput("call_contact", { number: "0701234567" }, "ring en kompis"), null);
+});

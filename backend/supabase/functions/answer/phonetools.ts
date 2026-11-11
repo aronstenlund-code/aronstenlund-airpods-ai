@@ -1,3 +1,5 @@
+import { wordsToNumber } from "./svnum.ts";
+
 /**
  * K35 (D122): phone tools the app runs (calendar, reminders, timer, alarm, notes), offered to the model through
  * Claude tool use. Protocol (docs/AGENT.md):
@@ -71,7 +73,7 @@ const DEFS: Record<PhoneToolName, { description: string; input_schema: unknown; 
   // the user to confirm the call (one tap), so there is no confirm question from Lumen as well
   call_contact: {
     write: true,
-    description: "Start a phone call. Use whenever the user asks you to call someone or something NOW ('ring mamma', 'ring Elin', 'ring tandläkaren', 'ring skolan'): the app looks `name` up in the user's own contacts, so a name is always enough and you never need or look up a number. `name` is exactly as the user said it; `number` only when the user said the digits themself, and always for an emergency or help number the user asks for (112, 1177, 116 111, 90101): call it, never refuse. Not when the user only tells you that someone called or that they will call later ('mamma ringde nyss', 'jag ska ringa sen'). Never make up a number.",
+    description: "Start a phone call. Use whenever the user asks you to call someone or something NOW ('ring mamma', 'ring Elin', 'ring tandläkaren', 'ring skolan'): the app looks `name` up in the user's own contacts, so a name is always enough and you never need or look up a number. `name` is exactly as the user said it; `number` only when the user said the digits themself (digits said as words count: 'noll sju tre fyra' = 0734), and always for an emergency or help number the user asks for (112, 1177, 116 111, 90101): call it, never refuse. Not when the user only tells you that someone called or that they will call later ('mamma ringde nyss', 'jag ska ringa sen'). Never make up a number.",
     input_schema: obj({
       name: { type: "string", description: "The contact's name as said, e.g. mamma" },
       number: { type: "string", description: "Only digits the user said, e.g. 0701234567" },
@@ -101,6 +103,20 @@ const DT = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2})?)?$/;
 const s = (v: unknown, max: number) => typeof v === "string" && v.trim().length > 0 && v.length <= max;
 
 const digits = (v: string) => v.replace(/\D/g, "");
+/** O41: the digits the user said, also as words ("noll sju tre, fyra fem sex, sjuttioåtta nittio" = 073456 7890). */
+export function spokenDigits(heard: string): string {
+  let out = "";
+  for (const w of heard.toLowerCase().split(/[^\p{L}\d]+/u)) {
+    if (!w) continue;
+    if (/^\d+$/.test(w)) {
+      out += w;
+      continue;
+    }
+    const n = w === "en" || w === "ett" ? null : wordsToNumber(w); // "en"/"ett" are usually articles
+    if (n !== null && n >= 0 && n < 1000) out += String(n);
+  }
+  return out;
+}
 
 /** Checks a model's tool input; returns a clean copy or null (never run, never sent to the app). `heard` (the user's
  *  words) is given for a new call: a phone number is kept only when its digits were said (B6: no invented numbers). */
@@ -131,7 +147,7 @@ export function validatePhoneInput(name: string, input: unknown, heard?: string)
     case "call_contact": {
       const nm = s(i.name, 80) ? String(i.name).trim() : "";
       let num = typeof i.number === "string" && /^\+?[\d\s-]{3,20}$/.test(i.number.trim()) ? i.number.trim() : "";
-      if (num && heard !== undefined && !digits(heard).includes(digits(num))) num = ""; // not said: never dialled
+      if (num && heard !== undefined && !spokenDigits(heard).includes(digits(num))) num = ""; // not said: never dialled
       if (!nm && !num) return null;
       return { ...(nm ? { name: nm } : {}), ...(num ? { number: num } : {}) };
     }
