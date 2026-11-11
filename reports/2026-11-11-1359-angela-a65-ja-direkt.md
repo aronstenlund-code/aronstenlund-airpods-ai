@@ -14,7 +14,7 @@ T12 fynd 1, kommer den först när sessionen stängs.
 - Loggraden är "More? window closed (yes, voice, before the final (A65))".
 
 ## Testresultat
-- **iOS-bygge och enhetstester:** CI RESULT65.
+- **iOS-bygge och enhetstester:** CI 43025162865 (1633580) är **grön**: device-bygget, alla enhetstester och `Lumen-unsigned.ipa`.
 - **Ej verifierat:** tiden från ja till svar. Toby kör T7b igen. Målet är under 1 s med `done.more`.
 
 ## Risk

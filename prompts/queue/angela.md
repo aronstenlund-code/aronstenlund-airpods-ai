@@ -226,4 +226,4 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-11 13:59 → reports/2026-11-11-1324-angela-a64-storsta-text.md **A64 – Stående uppgift (PLAN 2b): Kellys Ke37, största text (Tobys T11)** (effort: low). SYSTEM.md avsnitt 10: lägesraden, kortets huvud, datumraden och Mina svar staplas vid de fem största storlekarna; små versalrubriker på en rad; "Vad kan Earmind?" kapas inte; förklaringsraden under knapparna får gå på flera rader; loggan följer textstorleken.
 
-- [~] pågår 2026-11-11 13:59 **A65 – Egen punkt (README 8): "ja" i Mer?-fönstret utan att vänta på Scribes final (Toby T7b/T12)** (effort: low). Ett "ja" som står still 0,7 s som obekräftade ord tas direkt; Scribes final av samma ord används inte en gång till.
+- [x] klar 2026-11-11 14:17 → reports/2026-11-11-1359-angela-a65-ja-direkt.md **A65 – Egen punkt (README 8): "ja" i Mer?-fönstret utan att vänta på Scribes final (Toby T7b/T12)** (effort: low). Ett "ja" som står still 0,7 s som obekräftade ord tas direkt; Scribes final av samma ord används inte en gång till.
