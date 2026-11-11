@@ -1,5 +1,5 @@
 {
- "_about": "K44 (Aron 21:16, D118): THE one list of what Earmind can do, read by the app (CapabilitiesView, Angela A77) and the server (backend/supabase/functions/_shared/capabilities.ts, a copy checked by a test). status: finns | kommer. permission: what the phone must allow first (the app sends the granted ones as context.capabilities). tool: the phone tool or app command that does it. ask: Swedish words that name the capability in a 'kan du …?' question (regex fragments, lower case).",
+ "_about": "K44 (Aron 21:16, D118): THE one list of what Earmind can do, read by the app (CapabilitiesView, Angela A77) and the server (backend/supabase/functions/_shared/capabilities.ts, a copy checked by a test). status: finns | kommer. permission: what the phone must allow first (the app sends the granted ones as context.capabilities). tool: the phone tool or app command that does it. model: true = the model carries out a concrete request itself ('kan du ge mig ett träningspass'). instead: what to offer while a capability is coming. Order matters: the first matching entry wins. ask: Swedish words that name the capability in a 'kan du …?' question (regex fragments, lower case).",
  "name": "Earmind",
  "identity": "Earmind är en AI-agent i dina AirPods för vardag, skola och jobb. Du säger Lumen och vad du vill, och jag svarar eller gör det direkt.",
  "capabilities": [
@@ -14,7 +14,8 @@
     "svara på (?:mina |en )?fråg",
     "förklara",
     "hjälpa (?:mig )?med (?:läxan|läxor|skolan|plugget)"
-   ]
+   ],
+   "model": true
   },
   {
    "id": "quiz",
@@ -29,7 +30,8 @@
     "plugga med mig",
     "hjälpa mig (?:att )?plugga",
     "öva (?:inför|på) (?:ett )?prov"
-   ]
+   ],
+   "model": true
   },
   {
    "id": "myAnswers",
@@ -128,7 +130,8 @@
     "styrkepass",
     "löppass",
     "träna"
-   ]
+   ],
+   "model": true
   },
   {
    "id": "call",
@@ -145,6 +148,22 @@
    ]
   },
   {
+   "id": "spotify",
+   "group": "musik och samtal",
+   "name": "Styra Spotify (spela, pausa, nästa låt)",
+   "say": "Lumen, kör spellistan Plugg",
+   "status": "kommer",
+   "ask": [
+    "styra spotify",
+    "pausa (?:musiken|låten|spotify)",
+    "nästa låt",
+    "byta låt",
+    "hoppa (?:över )?(?:en )?låt",
+    "spola"
+   ],
+   "instead": "I dag kan jag öppna musik åt dig: säg Lumen, spela lugn pluggmusik."
+  },
+  {
    "id": "music",
    "group": "musik och samtal",
    "name": "Öppna musik",
@@ -155,21 +174,9 @@
     "spela musik",
     "spela (?:en )?låt",
     "musik",
-    "spotify",
-    "spellista"
-   ]
-  },
-  {
-   "id": "spotify",
-   "group": "musik och samtal",
-   "name": "Styra Spotify (spela, pausa, nästa låt)",
-   "say": "Lumen, kör spellistan Plugg",
-   "status": "kommer",
-   "ask": [
-    "pausa (?:musiken|låten)",
-    "nästa låt",
-    "byta låt",
-    "styra spotify"
+    "spellista",
+    "öppna spotify",
+    "spotify"
    ]
   },
   {
@@ -182,7 +189,8 @@
     "intervju",
     "anställningsintervju",
     "jobbintervju"
-   ]
+   ],
+   "model": true
   },
   {
    "id": "social",
@@ -195,7 +203,8 @@
     "flörta",
     "rizz",
     "samtalsämne"
-   ]
+   ],
+   "model": true
   },
   {
    "id": "sleep",
@@ -206,7 +215,8 @@
    "ask": [
     "sömn",
     "sova",
-    "morgonrapport"
+    "morgonrapport",
+    "sov(?:it)? bra"
    ]
   },
   {
@@ -218,7 +228,8 @@
    "ask": [
     "översätt",
     "översätta"
-   ]
+   ],
+   "model": true
   },
   {
    "id": "web",
@@ -231,7 +242,8 @@
     "googla",
     "kolla vädret",
     "väder"
-   ]
+   ],
+   "model": true
   }
  ],
  "not_yet": [

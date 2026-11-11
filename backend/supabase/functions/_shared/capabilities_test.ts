@@ -31,3 +31,13 @@ Deno.test("K44 live: 'kan du skicka ett mejl', 'kan du ta en bild' are an honest
   for (const q of ["kan du skicka ett mejl", "kan du ta en bild", "kan du swisha pengar", "kan du tända lampan", "kan du boka en resa"]) assert(notYetAsked(q), q);
   assert(!notYetAsked("kan du sätta en timer"));
 });
+
+Deno.test("Oscar O52 after K44: sleep report, Spotify control (coming) and no '?.'", () => {
+  assertEquals(capabilityAsked("kan du ge mig en morgonrapport om min sömn")?.id, "sleep");
+  const sp = capabilityAsked("kan du styra Spotify och byta låt")!;
+  assertEquals(sp.id, "spotify");
+  assert(capabilityAnswer(sp).startsWith("Det kommer snart") && capabilityAnswer(sp).includes("öppna musik"));
+  assertEquals(capabilityAsked("kan du öppna spotify")?.id, "music");
+  assertEquals(capabilityAnswer(capabilityAsked("kan du kolla vädret")!), "Ja. Säg till exempel: Lumen, vad blir vädret i morgon?");
+  assertEquals(capabilityAsked("kan du ge mig ett träningspass"), null);
+});

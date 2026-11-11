@@ -18,6 +18,10 @@ export interface Capability {
   status: "finns" | "kommer";
   permission?: string;
   tool?: string;
+  /** the model carries out a concrete request itself */
+  model?: boolean;
+  /** offered while the capability is coming */
+  instead?: string;
   ask: string[];
 }
 export const CAPS = LIST.capabilities as Capability[];
@@ -46,9 +50,10 @@ export function capabilityAsked(text: string): Capability | null {
   for (const { c, re } of CAP_RE) {
     const m = re.exec(rest);
     if (!m) continue;
-    if (c.tool && c.tool !== "switch_mode") return c;
+    if ((c.tool && c.tool !== "switch_mode") || !c.model) return c; // only what the model can do needs a bare question
     // "kan du ge mig ett träningspass", "kan du göra ett förhör": a request the model carries out
-    if (/(?<![\p{L}])(?:ge mig|gör|göra|skriv|skriva|skapa|hitta på|föreslå|ta fram)(?![\p{L}])/iu.test(rest)) return null;
+    // (only where the model can: not "kan du ge mig en morgonrapport om min sömn", Oscar O52)
+    if (c.model && /(?<![\p{L}])(?:ge mig|gör|göra|skriv|skriva|skapa|hitta på|föreslå|ta fram)(?![\p{L}])/iu.test(rest)) return null;
     const after = rest.slice(m.index + m[0].length).replace(/^\p{L}*/u, "").replace(GENERIC, " ").replace(/[,]/g, " ").trim();
     return after ? null : c;
   }
@@ -61,11 +66,12 @@ export function notYetAsked(text: string): boolean {
 
 export function capabilityAnswer(c: Capability, granted?: string[]): string {
   const say = c.say.replace(/\.$/, "");
-  if (c.status === "kommer") return `Det kommer snart. ${c.name} går inte än.`;
+  const end = /[?!]$/.test(say) ? "" : "."; // Oscar O52: never "i morgon?."
+  if (c.status === "kommer") return `Det kommer snart. ${c.name} går inte än.${c.instead ? ` ${c.instead}` : ""}`;
   if (c.permission && granted && !granted.includes(c.permission)) {
-    return `Ja, men du behöver tillåta ${PERM_NAME[c.permission] ?? c.permission} i appen först. Sedan säger du till exempel: ${say}.`;
+    return `Ja, men du behöver tillåta ${PERM_NAME[c.permission] ?? c.permission} i appen först. Sedan säger du till exempel: ${say}${end}`;
   }
-  return /^Lumen,/.test(say) ? `Ja. Säg till exempel: ${say}.` : `Ja. ${say}.`;
+  return /^Lumen,/.test(say) ? `Ja. Säg till exempel: ${say}${end}` : `Ja. ${say}${end}`;
 }
 
 export const NOT_YET_ANSWER = "Nej, det kan jag inte än. Jag kan svara på frågor, förhöra dig, sätta timer och larm, påminna dig, lägga in i kalendern, ringa och öppna musik.";
