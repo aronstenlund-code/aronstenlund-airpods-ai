@@ -3,9 +3,9 @@
 Fynd från kvällens live-eval och mina egna livekontroller efter omgång 16. Kostnad: cirka 0,8 USD (två regressioner och livefrågor).
 
 ## Ändringar (alla i `answer/`, test i `k_standing16_test.ts`)
-1. **"Källorna är bara en vägledning, och jag ger de viktigaste stegen …"** var första meningen i svaret på "hur byter man däck". Nu sägs den aldrig (`LEAD_META`). En mening som börjar med en källa och ett faktum sägs fortfarande ("Källan är Livsmedelsverket, som …"). 
-2. **"portioner. femhundra gram"**: ett tal som börjar en mening sägs nu med stor bokstav ("Femhundra gram"). Det gäller även över chunkgränser, men inte efter förkortningar som "kl." eller "nr.". 
-3. **"tre dl vetemjöl", "en halv dl"**: en köksenhet efter ett talord läses nu ut ("tre deciliter", "en tesked", "tre matskedar"). "dl-mått" och "det står dl" lämnas som de är. 
+1. **"Källorna är bara en vägledning, och jag ger de viktigaste stegen …"** var första meningen i svaret på "hur byter man däck". Nu sägs den aldrig (`LEAD_META`). En mening som börjar med en källa och ett faktum sägs fortfarande ("Källan är Livsmedelsverket, som …"). (`7580cdd`)
+2. **"portioner. femhundra gram"**: ett tal som börjar en mening sägs nu med stor bokstav ("Femhundra gram"). Det gäller även över chunkgränser, men inte efter förkortningar som "kl." eller "nr.". (`4718b16`)
+3. **"tre dl vetemjöl", "en halv dl"**: en köksenhet efter ett talord läses nu ut ("tre deciliter", "en tesked", "tre matskedar"). "dl-mått" och "det står dl" lämnas som de är. (`72a0390`)
 
 ## Tester
 - `deno task test`: **484 gröna**. `check` är ren.
