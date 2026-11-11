@@ -377,20 +377,36 @@ struct CommandsSheet: View {
     }
 }
 
-/// "Byt läge": every mode, the current one marked. Listening goes on while switching.
+/// "Byt läge": every mode, the current one marked. Listening goes on while switching. A50 (D124): the same sheet
+/// behind Start's "Byt", where a tap only chooses the mode the big Start button starts (`onPick`), with "Sov" under it.
 struct ModeSwitchSheet: View {
     @Bindable var model: ListeningModel
     let current: ConversationMode
+    /// Start: choose without starting. Nil on Lyssnar: switch the running session.
+    var onPick: ((ConversationMode) -> Void)?
+    /// Start: Sömnläge (A49), not a listening mode, under the modes.
+    var onSleep: (() -> Void)?
     @Environment(\.dismiss) private var dismiss
+
+    /// A50: Standardläge first on Start (the default); Provläge first on Lyssnar, as before.
+    private var order: [ConversationMode] {
+        onPick == nil ? [.prov, .standard, .interview, .social, .rizz] : [.standard, .prov, .interview, .social, .rizz]
+    }
+
+    private var footnote: String {
+        onPick == nil
+            ? "Lumen lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
+            : "Startknappen startar läget du väljer. Medan Lumen lyssnar kan du också säga ”Lumen, byt till provläge”."
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 8) {
-                    ForEach([ConversationMode.prov, .standard, .interview, .social, .rizz]) { mode in
+                    ForEach(order) { mode in
                         Button {
                             dismiss()
-                            Task { await model.switchMode(to: mode) }
+                            if let onPick { onPick(mode) } else { Task { await model.switchMode(to: mode) } }
                         } label: {
                             HStack(spacing: 14) {
                                 Image(systemName: mode.symbol)
@@ -414,7 +430,32 @@ struct ModeSwitchSheet: View {
                         .buttonStyle(.plain)
                         .accessibilityAddTraits(mode == current ? .isSelected : [])
                     }
-                    Text("Lumen lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”.")
+                    if let onSleep {
+                        // A49 (D123): the phone on the bedside table all night; it starts at once.
+                        Button {
+                            dismiss()
+                            onSleep()
+                        } label: {
+                            HStack(spacing: 14) {
+                                Image(systemName: "moon.stars")
+                                    .font(.system(size: 18, weight: .regular))
+                                    .foregroundStyle(LumenColor.blue)
+                                    .frame(width: 44, height: 44)
+                                    .background(LumenColor.soft, in: Circle())
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Sov").font(LumenFont.text(17, .semibold))
+                                    Text("Prat i sömnen och snarkning, bara på telefonen").font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
+                                }
+                                Spacer()
+                            }
+                            .padding(12)
+                            .frame(minHeight: 60)
+                            .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.top, 12)
+                    }
+                    Text(footnote)
                         .font(LumenFont.text(15))
                         .foregroundStyle(LumenColor.muted)
                         .frame(maxWidth: .infinity, alignment: .leading)

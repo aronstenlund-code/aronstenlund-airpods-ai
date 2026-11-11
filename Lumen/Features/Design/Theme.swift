@@ -25,7 +25,7 @@ extension ConversationMode {
         case .interview: "Färdiga svar på intervjufrågor"
         case .social: "Ett förslag i pausen"
         case .rizz: "Flörtig wingman"
-        case .prov: "Pluggar till provet"
+        case .prov: "För dina prov" // D126 (owner)
         }
     }
 
