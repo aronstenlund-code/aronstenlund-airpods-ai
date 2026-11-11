@@ -381,6 +381,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         } catch (e) {
           console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
         }
+        const crisisCall = crisisSelf && !demo && !body0.toolRound && (body0.toolsAvailable ?? []).includes("call_contact") ? helpLineCall(body0.fragment) : null;
         const frames = [
           sseFrame("meta", {
             reconstructed_question: body0.fragment,
@@ -394,9 +395,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ...(body0.persona === "social" && body0.social
             ? [sseFrame("suggestions", [text])]
             : [sseFrame("delta", { text })]),
+          // O42: "ring Bris, jag vill inte leva": the crisis answer AND the call the student asked for (an addition,
+          // B1; iOS asks before the call; verified numbers only)
+          ...(crisisCall
+            ? [sseFrame("tool_call", { id: `toolu_lumen${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`, name: "call_contact", input: { number: crisisCall }, confirm: null, kind: "write" })]
+            : []),
           sseFrame("done", {
             answered: true,
             safety: "crisis",
+            ...(crisisCall ? { tool_pending: true } : {}),
             timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
             breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
             usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "crisis" },

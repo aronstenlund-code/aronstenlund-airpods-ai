@@ -139,3 +139,16 @@ Deno.test("O42: a stray crisis marker on a short phone command is ignored; a rea
   const said2 = ev2.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
   assert(/112|Självmordslinjen|90101|nittio/i.test(said2), said2);
 });
+
+Deno.test("O42: 'ring Bris, jag vill inte leva' gets the crisis answer AND the call; not again in the tool round", async () => {
+  const s = setup([{ type: "text", text: "x" }]);
+  const ev = await events(await s.handler(post({ fragment: "ring Bris, jag vill inte leva", mode: "push_to_talk" })));
+  assert(ev.some((e) => e.event === "delta" && /tungt|Bris|nittio/i.test(e.data.text)));
+  assertEquals(ev.find((e) => e.event === "tool_call")?.data.input, { number: "116111" });
+  const r = setup([{ type: "text", text: "x" }]);
+  const ev2 = await events(await r.handler(post({
+    fragment: "ring Bris, jag vill inte leva", mode: "push_to_talk",
+    tool_round: { call: { id: "toolu_lumenabc", name: "call_contact", input: { number: "116111" } }, status: "ok", result: { ok: true } },
+  })));
+  assert(!ev2.some((e) => e.event === "tool_call"), "no second call");
+});
