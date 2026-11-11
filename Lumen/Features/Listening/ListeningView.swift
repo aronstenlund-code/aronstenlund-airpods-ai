@@ -40,7 +40,7 @@ struct ListeningView: View {
         .sheet(isPresented: $model.isShowingAddExam, onDismiss: {
             Task { await model.startProvAfterExamStep() } // Ke35: Starta in Provläge asked for the exam first
         }) {
-            AddExamView(model: model) { model.isShowingAddExam = false }
+            AddExamView(model: model, forProvlage: model.startsProvAfterExamStep) { model.isShowingAddExam = false }
         }
         .sheet(item: $model.editingExam) { plan in
             AddExamView(model: model, editing: plan) { model.editingExam = nil } // A42

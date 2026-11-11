@@ -807,6 +807,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
+    /// A66 (Toby T8c finding 1): at most one sheet each time the app is opened. The first start's share question is
+    /// that opening's sheet; "Earmind kan mer än svara" and the logo vote wait for later openings.
+    @ObservationIgnored var openingSheetShown = false
+
     /// Ke35: Provläge asked for the exam once in this run of the app.
     @ObservationIgnored private var provAskedForExam = false
     /// Ke35: the exam step was opened by Starta in Provläge; when it closes (saved or "Inte nu"), Provläge starts.

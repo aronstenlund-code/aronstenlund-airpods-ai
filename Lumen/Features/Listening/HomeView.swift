@@ -87,7 +87,10 @@ struct HomeView: View {
         .task { await model.refreshStudyPlan() } // A19: today's pass and the reminders
         .navigationDestination(isPresented: $showsCapabilities) { CapabilitiesView() }
         .task { await showSheetOnOpen() }
-        .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await showSheetOnOpen() } } }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background { model.openingSheetShown = false } // A66: the next opening may have its sheet
+            if phase == .active { Task { await showSheetOnOpen() } }
+        }
         .sheet(isPresented: $showsCapabilitiesIntro) { CapabilitiesIntroSheet() }
         .sheet(isPresented: $showsLogoVote) {
             LogoVoteSheet(order: logoOrder) { choice in
@@ -166,12 +169,13 @@ struct HomeView: View {
         if ScreenshotStage.requested != nil { return }
         #endif
         let hasAnswered = !model.history.entries.isEmpty || !model.conversation.answers.isEmpty
-        guard hasAnswered, !showsCapabilitiesIntro, !showsLogoVote else { return }
+        guard hasAnswered, !showsCapabilitiesIntro, !showsLogoVote, !model.openingSheetShown else { return } // A66
         try? await Task.sleep(for: .seconds(1))
         guard !Task.isCancelled, !model.isShowingAddExam, model.showingMyAnswers == nil, !model.isShowingSettings,
               !(model.isActiveSession && model.showsListeningScreen) else { return }
         if !capabilitiesIntroShown {
             capabilitiesIntroShown = true
+            model.openingSheetShown = true
             showsCapabilitiesIntro = true
             return
         }
@@ -181,6 +185,7 @@ struct HomeView: View {
         schedule.ensureOrder(using: &generator) // Ke31: the place should not steer the vote
         schedule.save()
         logoOrder = schedule.order
+        model.openingSheetShown = true
         showsLogoVote = true
     }
 

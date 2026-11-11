@@ -8,6 +8,9 @@ import SwiftUI
 struct AddExamView: View {
     @Bindable var model: ListeningModel
     var isFirstStart = false
+    /// A66 (Toby T8c finding 2, Ke35): Starta in Provläge without an exam: "Har du prov snart?" and "Inte nu", which
+    /// starts Provläge anyway.
+    var forProvlage = false
     var editing: ExamPlan?
     let onClose: () -> Void
     @Environment(AppearanceSettings.self) private var appearance
@@ -57,7 +60,7 @@ struct AddExamView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(isFirstStart ? "Har du prov snart?" : "Lägg till prov")
+                    Text(isFirstStart || forProvlage ? "Har du prov snart?" : "Lägg till prov")
                         .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
                         .accessibilityAddTraits(.isHeader)
                     Text("Säg det, så förhör Earmind dig inför provet.")
@@ -110,7 +113,7 @@ struct AddExamView: View {
                         .buttonStyle(LumenButtonStyle())
                         .disabled(!pickedSubject || subjectName.isEmpty)
                 }
-                Button(isFirstStart ? "Inte nu" : "Avbryt", action: onClose)
+                Button(isFirstStart || forProvlage ? "Inte nu" : "Avbryt", action: onClose)
                     .font(LumenFont.text(16, .medium))
                     .foregroundStyle(LumenColor.muted)
                     .frame(maxWidth: .infinity, minHeight: 44)
