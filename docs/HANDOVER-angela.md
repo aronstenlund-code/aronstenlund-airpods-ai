@@ -6,8 +6,8 @@ Sessionen 2026-11-11 gjorde A50–A64:
 - Kellys Ke28, Ke34, Ke35 och Ke37;
 - ring och musik, Spotify för testare och `quiz_key` (K40).
 
-A50–A54 är gröna i CI 42999877208. Inget är provat på telefon. Rapporterna heter `reports/2026-11-11-1100-angela-a5*.md`
-och `reports/2026-11-11-1130-angela-a55-earmind.md`.
+Alla är gröna i CI (senast 43019231188 med A63). Inget är provat på telefon. Rapporterna heter `reports/2026-11-11-*-angela-a5*.md`
+och `reports/2026-11-11-*-angela-a6*.md`.
 
 **Kvar i kön:**
 - A51 (loggan): hoppas över tills röstningen har avgjort den (D127).
