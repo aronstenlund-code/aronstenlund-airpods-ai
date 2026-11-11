@@ -43,6 +43,7 @@ final class ScreenTourTests: XCTestCase {
             endSession()
         }
         shoot("start-utan-prov", note: "Start without an exam (sketch 7)")
+        a50Start()
         addExamFromHome()
         settingsTour()
         modesTour()
@@ -145,7 +146,8 @@ final class ScreenTourTests: XCTestCase {
             shoot("lagg-till-prov-no", note: "Add exam, NO chosen")
             tap(["Spara prov"], step: "add exam → Spara prov")
             pause(1)
-            if waitFor(["Få A-svar till provet"], timeout: 5) != nil {
+            // A50: the exam card has "Förhör mig"; "Få A-svar till provet" left Start.
+            if waitFor(["Förhör mig", "Få A-svar till provet"], timeout: 5) != nil {
                 shoot("start-med-prov", note: "Start with an exam (sketch 4)")
                 app.swipeUp()
                 shoot("start-med-prov-slut", note: "Start with an exam, scrolled")
@@ -156,6 +158,44 @@ final class ScreenTourTests: XCTestCase {
         } else {
             miss("add-exam sheet not shown")
         }
+    }
+
+    // MARK: A50 Start (D124, D126)
+
+    /// A50: "Starta Lumen" at the top, the mode under it ("Läge: Standardläge. Byt läge"), "Lumen kan allt" with
+    /// examples, and the Byt sheet (Sov under the modes). "APP:" marks a finding about the app, not the tour.
+    private var a50: Bool { find(["Starta Lumen", "Tillbaka till Lumen"], buttonsOnly: true) != nil }
+
+    private func a50Start() {
+        guard waitFor(["Starta Lumen", "Tillbaka till Lumen"], timeout: 3) != nil else {
+            log.append("note: no 'Starta Lumen' on Start (a build before A50)")
+            return
+        }
+        if find(["Starta Lumen"], buttonsOnly: true)?.isHittable != true {
+            miss("APP: A50 'Starta Lumen' is not on the first screen without scrolling")
+        }
+        if find(["Läge:*"]) == nil { miss("APP: A50 no mode line ('Läge: … Byt läge') under Starta Lumen") }
+        if find(["Lumen kan allt*"]) == nil { miss("APP: A50 no 'Lumen kan allt' on Start") }
+        for gone in ["Få A-svar till provet", "Bara fråga", "Fler lägen"] where find([gone]) != nil {
+            miss("APP: A50 '\(gone)' is still on Start")
+        }
+        pause(3) // the examples change every few seconds: a second shot shows the next one
+        shoot("start-lumen-kan-allt", note: "A50: Start a few seconds later (the next example)")
+        guard tap(["Läge:*"], step: "start → Byt (mode line)") else { return }
+        pause(1)
+        shoot("byt-fran-start", note: "A50: Byt from Start (the modes and Sov)")
+        if find(["Provläge*"]) == nil { miss("APP: A50 no Provläge in the Byt sheet") }
+        closeSheet()
+    }
+
+    private func closeSheet() {
+        for label in ["Klar", "Stäng", "Avbryt", "Done", "Close", "Cancel"] where app.buttons[label].exists {
+            app.buttons[label].tap()
+            pause(1)
+            return
+        }
+        app.swipeDown(velocity: .fast)
+        pause(1)
     }
 
     // MARK: Settings and everything under it
@@ -262,7 +302,8 @@ final class ScreenTourTests: XCTestCase {
             dismissSystemAlerts()
             for label in ["Klar", "Stäng"] where app.buttons[label].exists { app.buttons[label].tap(); pause(1); break }
         }
-        if tap(["Bara fråga", "Frågor"], step: "start → Bara fråga") {
+        // A50: one "Starta Lumen" starts the chosen mode (Standardläge after the first start).
+        if tap(["Starta Lumen", "Bara fråga", "Frågor"], step: "start → Starta Lumen / Bara fråga") {
             dismissSystemAlerts()
             if waitFor(["Tillbaka till start"], timeout: 10) != nil {
                 pause(2)
@@ -296,7 +337,9 @@ final class ScreenTourTests: XCTestCase {
     /// A22: the other modes sit in the "Fler lägen" sheet. Opens it (and shoots it once) when the mode is not on Start.
     private func openMoreModes(for labels: [String]) {
         if let onStart = find(labels), onStart.isHittable { return }
-        guard tap(["Fler lägen"], step: "start → Fler lägen") else { return }
+        // A50: "Fler lägen" is gone; the mode line under Starta Lumen opens the same list.
+        let opener = a50 ? ["Läge:*"] : ["Fler lägen"]
+        guard tap(opener, step: "start → \(opener[0])") else { return }
         pause(1)
         if !shotMoreModes {
             shoot("fler-lagen", note: "Fler lägen (A22)")
@@ -307,8 +350,15 @@ final class ScreenTourTests: XCTestCase {
     private var shotMoreModes = false
 
     private func sheetFromMode(_ labels: [String], name: String, close: [String]) {
+        let newStart = a50
         openMoreModes(for: labels)
-        guard tap(labels, step: "start → \(labels[0])") else { return }
+        // A50's sheet shows "Intervju, <tagline>": match the start of the label.
+        guard tap(newStart ? labels.map { $0.hasSuffix("*") ? $0 : $0 + "*" } : labels, step: "start → \(labels[0])") else { return }
+        pause(1)
+        // A50: a tap in the sheet only chooses the mode; Starta Lumen starts it (unless the mode asked first).
+        if newStart, waitFor(close, timeout: 1) == nil, find(["Starta Lumen"], buttonsOnly: true) != nil {
+            tap(["Starta Lumen"], step: "start → Starta Lumen (\(labels[0]))")
+        }
         pause(2)
         dismissSystemAlerts()
         shoot(name, note: "\(labels[0]) first screen")
@@ -328,8 +378,18 @@ final class ScreenTourTests: XCTestCase {
 
     private func provTour() {
         // A22 (D97): with an exam, "Få A-svar till provet" on Start; Provläge also sits in "Fler lägen".
-        if find(["Få A-svar till provet"]) == nil { openMoreModes(for: ["Provläge"]) }
-        guard tap(["Få A-svar till provet", "Provläge"], step: "start → Få A-svar till provet") else { return }
+        if a50 {
+            // A50: Byt → Provläge ("För dina prov"), then Starta Lumen.
+            openMoreModes(for: ["Provläge, För dina prov"])
+            guard tap(["Provläge*"], step: "Byt → Provläge") else { return }
+            pause(1)
+            if find(["Läge: Provläge*"]) == nil { miss("APP: A50 the mode line does not say Provläge after choosing it") }
+            shoot("start-provlage-valt", note: "A50: Start with Provläge chosen")
+            guard tap(["Starta Lumen"], step: "start → Starta Lumen (Provläge)") else { return }
+        } else {
+            if find(["Få A-svar till provet"]) == nil { openMoreModes(for: ["Provläge"]) }
+            guard tap(["Få A-svar till provet", "Provläge"], step: "start → Få A-svar till provet") else { return }
+        }
         pause(2)
         dismissSystemAlerts()
         if waitFor(["Hoppa över allt"], timeout: 5) != nil {
@@ -370,7 +430,7 @@ final class ScreenTourTests: XCTestCase {
         pause(2)
         dismissSystemAlerts()
         // Whatever follows the session (a summary, study cards) is a screen too.
-        if waitFor(["Lägg till prov", "Få A-svar till provet"], timeout: 3) == nil {
+        if waitFor(["Starta Lumen", "Lägg till prov", "Få A-svar till provet"], timeout: 3) == nil {
             shoot("efter-avsluta-\(shotNumber)", note: "After Avsluta")
             for label in ["Klar", "Stäng", "Done", "Close"] where app.buttons[label].exists {
                 app.buttons[label].tap()

@@ -7,12 +7,18 @@ import XCTest
 /// step is timed, every tap counted, every screen photographed and its texts and buttons written down, so the report
 /// can say what is unclear or unnecessary.
 ///
-/// The question is a WAV file through the app's own hook (`LUMEN_AUDIO_FILES`, looped with a long gap, so a session
-/// started later also hears it). Live Scribe and /answer, the voice the app picks for a new user.
+/// The questions are WAV files through the app's own hook (`LUMEN_AUDIO_FILES`, looped with a long gap, so a session
+/// started later also hears them). Two different questions take turns (2026-11-11): one question asked again in a
+/// later session can be skipped as already answered, which hid whether Lumen heard at all. Live Scribe and /answer,
+/// the voice the app picks for a new user.
 ///
 /// `LUMEN_T8_PATH` (from `scripts/apptest/firstuser.sh`):
 /// - `skip`: "Hoppa över" at the exam step, then find Provläge from the start screen.
 /// - `exam`: add an exam at the first start (the step offers it), then Provläge from its card.
+///
+/// A50 (D124, 2026-11-11): after the first start the user goes back to Start and presses the big **Starta Lumen**
+/// (Aron on the phone: "man förstår inte hur man börjar ställa frågor"); the same question must be answered there.
+/// Provläge is then chosen with the mode line under the button ("Standardläge · Byt") and started with Starta Lumen.
 ///
 /// Simulator only: never a verification on a device. "Svar visat" is what the screen shows; whether it was spoken
 /// is not visible to a UI test (the T5 test counts spoken answers).
@@ -27,9 +33,11 @@ final class FirstUserTests: XCTestCase {
     private var log: [String] = []
     private var milestones: [String] = []
 
-    /// The answer to the WAV file's question ("Vad är huvudstaden i Australien?").
-    private let answerKey = "Canberra"
-    private let questionKey = "Australien"
+    /// The answers to the WAV files' questions ("Vad är huvudstaden i Australien?", "Hur många ben har en spindel?").
+    /// A step passes when *more* texts hold one of them than before it: Lyssnar keeps the earlier sessions' answers on
+    /// the screen (seen 2026-11-11), so "a text contains Canberra" is not an answer in this session.
+    private let answerKeys = ["Canberra", "åtta"]
+    private var answerKey: String { answerKeys.joined(separator: "' or '") }
 
     func testFirstUser() throws {
         continueAfterFailure = true
@@ -66,13 +74,12 @@ final class FirstUserTests: XCTestCase {
                 screen("forsta-fragan-startar", "First question: no 'Lyssnar' within 15 s")
                 fail("first question: no 'Lyssnar' within 15 s (A25)")
             }
-            if let shown = waitText(containing: answerKey, 60) {
+            if waitNew(more: 0, 90) {
                 milestone("Frågor: answer shown")
-                log.append("answer shown: \(shown.prefix(200))")
                 screen("forsta-svaret", "Frågor: the first answer on the screen")
             } else {
                 screen("forsta-svaret-saknas", "Frågor: no answer within 60 s")
-                fail("Frågor: no answer containing '\(answerKey)' within 60 s")
+                fail("Frågor: no answer containing '\(answerKey)' within 90 s")
             }
             // A18: "Fortsätt" only after an answer, "Hoppa över" before it.
             tap(["Fortsätt", "Hoppa över"], "first question → Fortsätt/Hoppa över")
@@ -109,7 +116,10 @@ final class FirstUserTests: XCTestCase {
             log.append("note: a Frågor session is still on (Lyssnar) after the first start")
         }
 
-        // 4. Provläge, the obvious way from here
+        // 4. A50: Starta Lumen, the obvious way to ask a question from Start
+        startButton()
+
+        // 5. Provläge, the obvious way from here
         startProv()
         systemAlerts()
         if wait(["Hoppa över allt"], 6) != nil {
@@ -126,12 +136,11 @@ final class FirstUserTests: XCTestCase {
         systemAlerts()
         if wait(["Tillbaka till start"], 10) != nil {
             if waitText(containing: "Prov", 2) == nil { fail("the Lyssnar screen is not Provläge") }
+            let baseline = answerCount()
             screen("provlage-lyssnar", "Lyssnar in Provläge, before the question")
             milestone("Provläge: listening")
-            let before = Date()
-            if let shown = waitText(containing: answerKey, 90, after: before) {
+            if waitNew(more: baseline, 90) {
                 milestone("Provläge: answer shown")
-                log.append("Provläge answer shown: \(shown.prefix(200))")
                 screen("provlage-svaret", "Provläge: the first answer on the screen")
             } else {
                 screen("provlage-svaret-saknas", "Provläge: no answer within 90 s")
@@ -144,17 +153,93 @@ final class FirstUserTests: XCTestCase {
         finish()
     }
 
+    // MARK: A50 Starta Lumen
+
+    /// The big button at the top of Start: one tap, Lyssnar within 15 s, and the looped question answered.
+    private func startButton() {
+        endRunningSession()
+        guard wait(["Starta Lumen"], 3) != nil else {
+            log.append("note: no 'Starta Lumen' on Start (a build before A50)")
+            return
+        }
+        if find(["Starta Lumen"])?.isHittable != true { log.append("A50: Starta Lumen is not on screen without scrolling") }
+        let mode = find(["Läge:*"])?.label ?? "(no mode line)"
+        log.append("A50: mode line = \(mode)")
+        if find(["Lumen kan allt*"]) == nil { fail("A50: no 'Lumen kan allt' on Start") }
+        screen("start-starta-lumen", "A50: Start before pressing Starta Lumen")
+        milestone("Start: Starta Lumen visible")
+        tap(["Starta Lumen"], "start → Starta Lumen")
+        systemAlerts()
+        guard wait(["Tillbaka till start"], 10) != nil else {
+            screen("starta-lumen-startade-inte", "Starta Lumen did not open Lyssnar")
+            return fail("Starta Lumen: no Lyssnar screen within 10 s")
+        }
+        let baseline = answerCount()
+        if waitText(containing: "Lyssnar", 15) != nil {
+            milestone("Starta Lumen: Lyssnar")
+        } else {
+            screen("starta-lumen-startar", "Starta Lumen: no 'Lyssnar' within 15 s")
+            fail("Starta Lumen: no 'Lyssnar' within 15 s")
+        }
+        screen("starta-lumen-lyssnar", "A50: Lyssnar after Starta Lumen, before the answer")
+        if waitNew(more: baseline, 90) {
+            milestone("Starta Lumen: answer shown")
+            screen("starta-lumen-svaret", "A50: the answer after Starta Lumen")
+        } else {
+            screen("starta-lumen-svaret-saknas", "Starta Lumen: no answer within 60 s")
+            fail("Starta Lumen: no new answer containing '\(answerKey)' within 90 s")
+        }
+        endRunningSession()
+    }
+
+    /// End a session that is still on, as a user would before choosing something else.
+    private func endRunningSession() {
+        guard wait(["Avsluta"], 1) != nil, wait(["Tillbaka till start"], 1) != nil else { return }
+        tap(["Avsluta"], "Lyssnar → Avsluta")
+        pause(2)
+        if wait(["Starta Lumen", "Lägg till prov", "Få A-svar till provet", "Fler lägen"], 3) == nil {
+            screen("efter-avsluta", "After Avsluta")
+            for label in ["Klar", "Stäng"] where app.buttons[label].exists { tapElement(app.buttons[label], "after Avsluta → \(label)"); break }
+        }
+    }
+
+    private var answerPredicate: NSPredicate {
+        NSCompoundPredicate(orPredicateWithSubpredicates: answerKeys.map { NSPredicate(format: "label CONTAINS[c] %@", $0) })
+    }
+
+    /// Texts on the screen holding one of the answers.
+    private func answerCount() -> Int { app.staticTexts.matching(answerPredicate).count }
+
+    /// True when more texts than `more` hold an answer (a new answer, not one already on the screen).
+    private func waitNew(more: Int, _ timeout: TimeInterval) -> Bool {
+        let end = Date().addingTimeInterval(timeout)
+        repeat {
+            let now = answerCount()
+            if now > more {
+                // One element by index, checked first: a list read while the screen changes failed the run (10:32).
+                let last = app.staticTexts.matching(answerPredicate).element(boundBy: now - 1)
+                log.append("answer shown (\(more) → \(now)): " + (last.exists ? String(last.label.prefix(160)) : "(changed)"))
+                return true
+            }
+            pause(0.5)
+        } while Date() < end
+        return false
+    }
+
     // MARK: Provläge from the start screen
 
     private func startProv() {
-        // End a session that is still on, as a user would before choosing something else.
-        if wait(["Avsluta"], 1) != nil, wait(["Tillbaka till start"], 1) != nil {
-            tap(["Avsluta"], "Lyssnar → Avsluta (session from the first start)")
-            pause(2)
-            if wait(["Lägg till prov", "Få A-svar till provet", "Fler lägen"], 3) == nil {
-                screen("efter-avsluta", "After Avsluta")
-                for label in ["Klar", "Stäng"] where app.buttons[label].exists { tapElement(app.buttons[label], "after Avsluta → \(label)"); break }
-            }
+        endRunningSession()
+        // A50: choose Provläge with the mode line ("Standardläge · Byt"), then the one Start button.
+        if find(["Läge:*"]) != nil {
+            tap(["Läge:*"], "start → Byt (mode line)")
+            pause(1)
+            screen("byt-lage", "A50: Byt from Start")
+            guard tap(["Provläge*"], "Byt → Provläge") else { return }
+            pause(1)
+            log.append("A50: mode line after choosing = \(find(["Läge:*"])?.label ?? "(none)")")
+            tap(["Starta Lumen"], "start → Starta Lumen (Provläge)")
+            return
         }
         if find(["Få A-svar till provet"]) != nil {
             tap(["Få A-svar till provet"], "start → Få A-svar till provet")

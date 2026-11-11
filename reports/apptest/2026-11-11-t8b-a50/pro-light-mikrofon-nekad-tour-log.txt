@@ -1,0 +1,88 @@
+config: pro-light-mikrofon-nekad
+screenshots: 56
+unreachable: 0
+
+shot: pro-light-mikrofon-nekad-01-intro — Intro (sketch 1)
+shot: pro-light-mikrofon-nekad-02-intro-slut — Intro, scrolled (the consent card)
+tap: intro → Läs mer
+shot: pro-light-mikrofon-nekad-03-las-mer — Läs mer (full consent)
+shot: pro-light-mikrofon-nekad-04-las-mer-slut — Läs mer, scrolled
+tap: Läs mer → Klar
+tap: intro → Testa nu
+note: no separate consent screen (A2: Testa nu is the consent)
+shot: pro-light-mikrofon-nekad-05-forsta-fragan-mikrofon-nekad — First question (sketch 2)
+tap: first question → Fortsätt/Hoppa över
+shot: pro-light-mikrofon-nekad-06-lagg-till-prov-forsta — Add exam at first start (sketch 3)
+shot: pro-light-mikrofon-nekad-07-lagg-till-prov-forsta-slut — Add exam at first start, scrolled
+shot: pro-light-mikrofon-nekad-08-lagg-till-prov-forsta-formular — Add exam at first start, the form (A33)
+shot: pro-light-mikrofon-nekad-09-lagg-till-prov-forsta-formular-slut — Add exam at first start, the form, scrolled
+tap: add exam → Inte nu
+shot: pro-light-mikrofon-nekad-10-dela-historik — Share history prompt
+tap: share prompt → Dela inte
+shot: pro-light-mikrofon-nekad-11-start-utan-prov — Start without an exam (sketch 7)
+shot: pro-light-mikrofon-nekad-12-start-lumen-kan-allt — A50: Start a few seconds later (the next example)
+tap: start → Byt (mode line)
+shot: pro-light-mikrofon-nekad-13-byt-fran-start — A50: Byt from Start (the modes and Sov)
+tap: start → Lägg till prov
+shot: pro-light-mikrofon-nekad-14-lagg-till-prov — Add exam sheet
+tap: add exam → NO
+shot: pro-light-mikrofon-nekad-15-lagg-till-prov-no — Add exam, NO chosen
+tap: add exam → Spara prov
+shot: pro-light-mikrofon-nekad-16-start-med-prov — Start with an exam (sketch 4)
+shot: pro-light-mikrofon-nekad-17-start-med-prov-slut — Start with an exam, scrolled
+tap: start → Inställningar
+shot: pro-light-mikrofon-nekad-18-installningar-1 — Settings, top
+shot: pro-light-mikrofon-nekad-19-installningar-2 — Settings, scrolled 1
+shot: pro-light-mikrofon-nekad-20-installningar-3 — Settings, scrolled 2
+shot: pro-light-mikrofon-nekad-21-installningar-4 — Settings, scrolled 3
+shot: pro-light-mikrofon-nekad-22-installningar-5 — Settings, scrolled 4
+shot: pro-light-mikrofon-nekad-23-installningar-6 — Settings, scrolled 5
+shot: pro-light-mikrofon-nekad-24-installningar-anteckningar — Settings › Anteckningar
+shot: pro-light-mikrofon-nekad-25-installningar-anteckningar-slut — Settings › Anteckningar, scrolled
+shot: pro-light-mikrofon-nekad-26-installningar-forberedelser — Settings › Förberedelser
+shot: pro-light-mikrofon-nekad-27-installningar-forberedelser-slut — Settings › Förberedelser, scrolled
+shot: pro-light-mikrofon-nekad-28-installningar-egna-kommandon — Settings › Egna kommandon
+shot: pro-light-mikrofon-nekad-29-installningar-egna-kommandon-slut — Settings › Egna kommandon, scrolled
+shot: pro-light-mikrofon-nekad-30-installningar-integritet — Settings › Integritet och samtycke
+shot: pro-light-mikrofon-nekad-31-installningar-integritet-slut — Settings › Integritet och samtycke, scrolled
+shot: pro-light-mikrofon-nekad-32-installningar-historik — Settings › Historik
+shot: pro-light-mikrofon-nekad-33-installningar-historik-slut — Settings › Historik, scrolled
+shot: pro-light-mikrofon-nekad-34-installningar-minne — Settings › Minne
+shot: pro-light-mikrofon-nekad-35-installningar-minne-slut — Settings › Minne, scrolled
+shot: pro-light-mikrofon-nekad-36-installningar-studiekort — Settings › Studiekort
+shot: pro-light-mikrofon-nekad-37-installningar-studiekort-slut — Settings › Studiekort, scrolled
+shot: pro-light-mikrofon-nekad-38-installningar-feedback — Settings › Feedback och förslag
+shot: pro-light-mikrofon-nekad-39-installningar-feedback-slut — Settings › Feedback och förslag, scrolled
+shot: pro-light-mikrofon-nekad-40-installningar-rostkommandon — Settings › Röstkommandon
+shot: pro-light-mikrofon-nekad-41-installningar-rostkommandon-slut — Settings › Röstkommandon, scrolled
+shot: pro-light-mikrofon-nekad-42-installningar-om-appen — Settings › Om appen
+shot: pro-light-mikrofon-nekad-43-installningar-om-appen-slut — Settings › Om appen, scrolled
+shot: pro-light-mikrofon-nekad-44-installningar-avancerat — Settings › Avancerat folded out
+shot: pro-light-mikrofon-nekad-45-installningar-avancerat-2 — Settings › Avancerat, scrolled
+shot: pro-light-mikrofon-nekad-46-installningar-ra-transkription — Settings › Rå transkription och svar
+shot: pro-light-mikrofon-nekad-47-installningar-ra-transkription-slut — Settings › Rå transkription och svar, scrolled
+shot: pro-light-mikrofon-nekad-48-installningar-diagnostik — Settings › Diagnostik
+shot: pro-light-mikrofon-nekad-49-installningar-diagnostik-slut — Settings › Diagnostik, scrolled
+tap: settings → Klar
+tap: start → Starta Lumen / Bara fråga
+shot: pro-light-mikrofon-nekad-50-fragor-startade-inte — Frågor did not open Lyssnar
+ok: Frågor with the microphone denied shows 'Lumen hör dig inte'
+tap: start → Läge:*
+shot: pro-light-mikrofon-nekad-51-fler-lagen — Fler lägen (A22)
+tap: start → Intervju
+tap: start → Starta Lumen (Intervju)
+shot: pro-light-mikrofon-nekad-52-intervju-setup — Intervju first screen
+tap: start → Läge:*
+tap: start → Socialt
+tap: start → Starta Lumen (Socialt)
+shot: pro-light-mikrofon-nekad-53-socialt-start — Socialt first screen
+tap: start → Läge:*
+tap: start → Rizz 18+
+tap: start → Starta Lumen (Rizz 18+)
+shot: pro-light-mikrofon-nekad-54-rizz-aldersgrans — Rizz 18+ first screen
+tap: start → Läge:*
+tap: Byt → Provläge
+shot: pro-light-mikrofon-nekad-55-start-provlage-valt — A50: Start with Provläge chosen
+tap: start → Starta Lumen (Provläge)
+shot: pro-light-mikrofon-nekad-56-provlage-startade-inte — Provläge did not open Lyssnar
+ok: Provläge with the microphone denied shows 'Lumen hör dig inte'
