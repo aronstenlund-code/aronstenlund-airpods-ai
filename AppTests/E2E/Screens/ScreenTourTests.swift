@@ -48,6 +48,7 @@ final class ScreenTourTests: XCTestCase {
         settingsTour()
         modesTour()
         provTour()
+        homeScreen()
 
         finish()
     }
@@ -478,6 +479,13 @@ final class ScreenTourTests: XCTestCase {
                 break
             }
         }
+    }
+
+    /// T16 (A71, D129): the app icon on the home screen. The tour ends here, so the app is not opened again.
+    private func homeScreen() {
+        XCUIDevice.shared.press(.home)
+        pause(2)
+        shoot("hemskarm", note: "A71: the home screen with the app icon")
     }
 
     // MARK: Helpers
