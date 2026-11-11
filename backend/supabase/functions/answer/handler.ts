@@ -97,6 +97,7 @@ export function isRepeatedQuestion(text: string, asked: string[]): boolean {
   return asked.some((a) => similarity(a, q) >= 0.8);
 }
 import { stripEcho } from "./echo.ts";
+import { isSpotifyTool, MUSIC_REQUEST, SPOTIFY_RULE, type SpotifyResult, type SpotifyToolName, spotifyToolDefs, validateSpotifyInput } from "./spotifytools.ts";
 import { parseSavedCheck, rankSaved, SAVED_CHECK_PROMPT, type SavedAnswer, savedCheckUser } from "./savedanswers.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import {
@@ -224,6 +225,8 @@ export interface Deps {
   warm?: () => void;
   /** K19: fetch used to check a resource link (tests). */
   fetchImpl?: typeof fetch;
+  /** K36: runs a Spotify server tool for the user (token lookup, refresh, Web API); absent = no Spotify tools. */
+  runSpotify?: (userId: string, name: SpotifyToolName, input: Record<string, unknown>) => Promise<SpotifyResult>;
 }
 
 export function providerErrorToHttp(e: unknown): HttpError {
@@ -1220,7 +1223,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       });
       // K35 (D122): phone tools the app can run, in the direct modes (Standardläge, Provläge), never in the demo
       const phoneOffer = [...(body.toolsAvailable ?? []), ...(body.toolRound ? [body.toolRound.call.name] : [])];
-      const phoneTools = !demo && !plan && direct && body.mode !== "auto" && phoneOffer.length ? phoneToolDefs(phoneOffer) : undefined;
+      const phoneTools0 = !demo && !plan && direct && body.mode !== "auto" && phoneOffer.length ? phoneToolDefs(phoneOffer) : undefined;
+      // K36: Spotify server tools when the app says Spotify is connected (the server runs them, no round to the app)
+      const spotifyOn = !demo && !plan && direct && body.mode !== "auto" && !body.toolRound && !!deps.runSpotify &&
+        (body.connections ?? []).includes("spotify");
+      const phoneTools = spotifyOn ? [...(phoneTools0 ?? []), ...spotifyToolDefs()] : phoneTools0;
       const noSummary = plan?.kind === "rizz" || plan?.kind === "calibrate" || demo;
       const relationTag = direct && !plan && body.context.recent_qa.length > 0;
       // K16.1: in Frågor (push to talk, text) the model may answer only [[SÖK]] when it is not sure of a specific fact
@@ -1233,7 +1240,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
         (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "") +
-        (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools ? PHONE_TOOLS_RULE : "");
+        (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
@@ -1300,7 +1307,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           tools: allTools,
           // K35: the second call of a tool round: the user's turn, the tool call and the app's result
           ...(body.toolRound && phoneTools ? { messages: toolRoundMessages(userFor(body, baseExtras), body.toolRound) } : {}),
-          ...(phoneTools && !body.toolRound && ACTION_REQUEST.test(body.fragment) ? { holdTextBeforeTool: true } : {}),
+          ...(phoneTools && !body.toolRound && (ACTION_REQUEST.test(body.fragment) || (spotifyOn && MUSIC_REQUEST.test(body.fragment)))
+            ? { holdTextBeforeTool: true }
+            : {}),
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
@@ -1451,6 +1460,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let crisisMarked = false;
           let crisisLate = false;
           let toolPending = false; // K35: a phone tool call was sent; the app runs it and sends a tool_round
+          let serverTool: { name: SpotifyToolName; input: Record<string, unknown> } | null = null; // K36, run after the turn
+          let serverToolDone: { name: string; status: string; playing?: string } | null = null;
           // K13.1: the developed answer after [[MER]]: its own post-processing, sent as more_delta, kept for done
           let inMore = false;
           let markBuf = "";
@@ -1573,9 +1584,18 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               post.addCited(chunk.cited);
               return;
             }
+            if (chunk.type === "tool_use" && isSpotifyTool(chunk.name)) {
+              const input = spotifyOn ? validateSpotifyInput(chunk.name, chunk.input) : null;
+              if (!input || toolPending || serverTool) {
+                console.warn(JSON.stringify({ event: "tool_call_dropped", name: chunk.name, valid: !!input }));
+                return;
+              }
+              serverTool = { name: chunk.name, input };
+              return;
+            }
             if (chunk.type === "tool_use") {
               // K35: validated before anything reaches the app; an unknown tool or bad input is dropped (logged)
-              const input = isPhoneTool(chunk.name) ? validatePhoneInput(chunk.name, chunk.input) : null;
+              const input = isPhoneTool(chunk.name) ? validatePhoneInput(chunk.name, chunk.input, body.fragment) : null;
               if (!input || !isPhoneTool(chunk.name) || toolPending) {
                 console.warn(JSON.stringify({ event: "tool_call_dropped", name: chunk.name.slice(0, 40), valid: !!input }));
                 return;
@@ -1779,6 +1799,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (inMore) sendMore(morePost.finish());
             }
             flushNear();
+            // K36: a Spotify tool the model chose runs now; Lumen says one sentence written in code
+            const st = serverTool as { name: SpotifyToolName; input: Record<string, unknown> } | null; // set in handle()
+            if (st && !closed && !crisisMarked && !crisisLate) {
+              const res = await deps.runSpotify!(user.id, st.name, st.input);
+              console.log(JSON.stringify({ event: "server_tool", name: st.name, status: res.status }));
+              status = "ok";
+              emitText((answerChars ? " " : "") + res.say);
+              serverToolDone = { name: st.name, status: res.status, ...(res.playing ? { playing: res.playing } : {}) };
+            }
             // K23: the model flagged a crisis (Auto meta or [[KRIS]]): the fixed caring answer, never silence
             if (crisisMarked || crisisLate) {
               const crisisText = aboutOther(body.fragment) || plan ? CRISIS_OTHER : CRISIS_SELF;
@@ -1861,6 +1890,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               memory_add: null,
               calibration,
               ...(toolPending ? { tool_pending: true } : {}),
+              ...(serverToolDone ? { server_tool: serverToolDone } : {}),
             });
             doneSent = !closed;
           } catch (e) {

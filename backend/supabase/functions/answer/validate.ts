@@ -82,6 +82,8 @@ export interface AnswerRequest {
   prefContext?: { subject?: string; exam?: string };
   /** K37 (D126): the student's own saved answers for the current exam ("Mina svar"), kept on the phone. */
   savedAnswers?: SavedAnswer[];
+  /** K36: the services the user has connected (from GET /connect), e.g. ["spotify"]: their server tools are offered. */
+  connections?: string[];
 }
 
 export const LIMITS = {
@@ -360,6 +362,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       ...(concept_stats.length ? { concept_stats } : {}),
     },
     ...(o.voice_instruction === true ? { voiceInstruction: true } : {}),
+    ...(Array.isArray(o.connections) && o.connections.includes("spotify") ? { connections: ["spotify"] } : {}),
     ...(() => {
       const s = readSavedAnswers(o.saved_answers);
       return s.length ? { savedAnswers: s } : {};
