@@ -169,3 +169,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 - [x] **K-stående – omgång 16 (K4-loopen, PLAN 2b): eval, sämsta fallet** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:17 (Kevin): `reports/2026-11-11-1917-kevin-standing16-number-range.md`_
 
 - [x] **K-stående – omgång 17 (K4-loopen): recept och webbsvar** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:34 (Kevin): `reports/2026-11-11-1934-kevin-standing17-recipes-speech.md`_
+
+- [x] **K-stående – omgång 18 (K4-loopen): intervjuläget hittade på arbetserfarenhet** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:37 (Kevin): `reports/2026-11-11-1937-kevin-standing18-interview-experience.md`_
