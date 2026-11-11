@@ -1,0 +1,164 @@
+{
+ "summary": {
+  "g13_self": 10,
+  "g14_links": 3,
+  "g14_total": 10
+ },
+ "rows": [
+  {
+   "group": "g13",
+   "q": "Lumen, är du en människa eller en robot",
+   "said": "Jag är Lumen, en AI-assistent, alltså ingen människa. Frågor och svar går via Lumens server till en AI-modell.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g13",
+   "q": "är det chatgpt",
+   "said": "Nej, Lumen är inte ChatGPT. Svaren skrivs av en AI-modell från Anthropic som heter Claude.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g13",
+   "q": "vem har gjort dig",
+   "said": "Lumen är en svensk app från ett litet team. Svaren skrivs av en AI-modell, Claude från Anthropic.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g13",
+   "q": "lyssnar du på mig nu",
+   "said": "Lumen lyssnar bara när du har startat den, och du ser alltid när den lyssnar. Lumen sparar inget ljud, men ElevenLabs, som skriver ut talet, kan spara det enligt sina villkor.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g13",
+   "q": "spelar du in lektionen",
+   "said": "Lumen lyssnar bara när du har startat den, och du ser alltid när den lyssnar. Lumen sparar inget ljud, men ElevenLabs, som skriver ut talet, kan spara det enligt sina villkor.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g13",
+   "q": "lyssnar du när appen är stängd",
+   "said": "Lumen lyssnar bara när du har startat den, och du ser alltid när den lyssnar. Lumen sparar inget ljud, men ElevenLabs, som skriver ut talet, kan spara det enligt sina villkor.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g13",
+   "q": "kan läraren se vad jag frågar",
+   "said": "Din lärare och dina föräldrar kan inte se dina frågor. Om du har godkänt det i samtycket läser utvecklaren av Lumen frågor och svar för att göra appen bättre, och de raderas inom 14 dagar.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g13",
+   "q": "kan mina föräldrar läsa mina frågor",
+   "said": "Din lärare och dina föräldrar kan inte se dina frågor. Om du har godkänt det i samtycket läser utvecklaren av Lumen frågor och svar för att göra appen bättre, och de raderas inom 14 dagar.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g13",
+   "q": "säljer ni min data",
+   "said": "Nej, vi säljer ingen data. Frågor och svar används bara för att svara dig, och om du har godkänt det, för att göra appen bättre.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g13",
+   "q": "vart skickas ljudet",
+   "said": "Lumen sparar inget ljud. Talet skickas till ElevenLabs, som skriver ut det och kan spara det en tid enligt sina villkor. Frågan går sedan via Lumens server till AI-modellen.",
+   "model": "self",
+   "resource": null
+  },
+  {
+   "group": "g14",
+   "q": "kan du hitta en film om cellen",
+   "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+   "model": "resource",
+   "resource": null
+  },
+  {
+   "group": "g14",
+   "q": "jag vill se en film om vulkaner",
+   "said": "Jag skickade en länk till en film om vulkaner från UR Play, säg till om du vill ha en annan.",
+   "model": "resource",
+   "resource": {
+    "url": "https://urplay.se/program/236867-surtsey-en-vulkano-blir-till",
+    "title": "Surtsey - en vulkanö blir till",
+    "source": "UR Play",
+    "login_likely": false
+   }
+  },
+  {
+   "group": "g14",
+   "q": "visa en video om Pythagoras sats",
+   "said": "Jag skickade en länk till en film om Pythagoras sats från UR Play, säg till om du vill ha en annan.",
+   "model": "resource",
+   "resource": {
+    "url": "https://urplay.se/program/183062-kalkyl-pythagoras-sats",
+    "title": "Kalkyl: Pythagoras sats",
+    "source": "UR Play",
+    "login_likely": false
+   }
+  },
+  {
+   "group": "g14",
+   "q": "finns det nån bra sida om fotosyntes",
+   "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+   "model": "resource",
+   "resource": null
+  },
+  {
+   "group": "g14",
+   "q": "kan du länka något om DNA",
+   "said": "Jag skickade en länk till en sida om DNA från UR Play, säg till om du vill ha en annan.",
+   "model": "resource",
+   "resource": {
+    "url": "https://urplay.se/program/221747-naturkunskap-forklarad-dna",
+    "title": "Naturkunskap förklarad: Dna",
+    "source": "UR Play",
+    "login_likely": false
+   }
+  },
+  {
+   "group": "g14",
+   "q": "var kan jag läsa mer om klimatförändringar",
+   "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+   "model": "resource",
+   "resource": null
+  },
+  {
+   "group": "g14",
+   "q": "någon youtube om derivata",
+   "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+   "model": "resource",
+   "resource": null
+  },
+  {
+   "group": "g14",
+   "q": "har du nåt bra på UR om demokrati",
+   "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+   "model": "resource",
+   "resource": null
+  },
+  {
+   "group": "g14p",
+   "q": "har du något klipp om franska revolutionen",
+   "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+   "model": "resource",
+   "resource": null
+  },
+  {
+   "group": "g14p",
+   "q": "kan du rekommendera en film om derivata",
+   "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+   "model": "resource",
+   "resource": null
+  }
+ ]
+}

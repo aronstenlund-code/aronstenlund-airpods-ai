@@ -670,14 +670,21 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         // A URL the search returned may pass a blocked check; a URL only the model wrote must answer 200.
         const found0 = parseResource(text);
         const listed = sources.filter((s) => domainOf(s.url) && aboutTopic(topic, s.title, "", s.url));
-        const found = found0 && domainOf(found0.url) ? found0 : listed[0] ? { url: listed[0].url, title: listed[0].title } : null;
-        let resource = found ? resourceOf(found.url, found.title) : null;
+        // the model's pick first, then up to two more search results on the list that are about the topic
+        const picks = [...(found0 && domainOf(found0.url) ? [found0] : []), ...listed.filter((s) => !(found0 && sameUrl(s.url, found0.url)))]
+          .slice(0, 3);
+        let resource: ReturnType<typeof resourceOf> = null;
         let check: { ok: boolean; status: number; pageTitle: string } | null = null;
-        if (resource) {
-          const fromSearch = sources.some((s) => sameUrl(s.url, resource!.url));
-          check = await checkLink(resource.url, deps.fetchImpl ?? fetch);
+        for (const pk of picks) {
+          const r = resourceOf(pk.url, pk.title);
+          if (!r) continue;
+          const fromSearch = sources.some((s) => sameUrl(s.url, r.url));
+          check = await checkLink(r.url, deps.fetchImpl ?? fetch);
           const reachable = check.ok || (fromSearch && BLOCKED_CHECK.has(check.status));
-          if (!reachable || !aboutTopic(topic, resource.title, check.pageTitle, resource.url)) resource = null;
+          if (reachable && aboutTopic(topic, r.title, check.pageTitle, r.url)) {
+            resource = r;
+            break;
+          }
         }
         const said = text.replace(/LÄNK:[^\n]*\n?/iu, "").trim();
         const spoken = numbersToSpeech(resource ? spokenFor(resource, topic, said) : wl.allowed ? NO_RESOURCE : RESOURCE_BUSY);

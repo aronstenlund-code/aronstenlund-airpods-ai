@@ -56,7 +56,9 @@ export const BLOCKED_CHECK = new Set([401, 403, 429, 503]);
 
 /** The topic: the words after "om"/"på" in the request, else the last question studied. */
 export function resourceTopic(fragment: string, lastQ?: string): string {
-  const m = /(?:om|på|kring|angående) (.{3,80}?)\s*[?.!]?$/iu.exec(fragment.trim());
+  // the words after the LAST "om" ("har du nåt bra på UR om demokrati" = demokrati), else after "på"/"kring"
+  const m = /(?:^|\s)(?:om|kring|angående) ((?:(?!\som\s).){3,80}?)\s*[?.!]?$/iu.exec(fragment.trim()) ??
+    /(?:på|kring|angående) (.{3,80}?)\s*[?.!]?$/iu.exec(fragment.trim());
   const t = m?.[1]?.replace(/\s*(?:på|från|i) (?:ur play|ur|youtube|binogi|sli|ne|khan academy)\s*$/iu, "")
     .replace(/^(?:det här|det|detta|den här)\s*/iu, "").replace(/^(?:på|från) (?:ur play|ur|youtube|binogi)\s*$/iu, "").trim();
   return t && t.length >= 3 ? t : (lastQ ?? "").replace(/^(?:vad är|vad betyder|förklara|hur fungerar)\s+/iu, "").trim();
