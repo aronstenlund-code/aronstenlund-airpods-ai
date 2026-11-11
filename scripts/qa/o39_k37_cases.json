@@ -1,0 +1,87 @@
+{
+ "_doc": "Oscar O39: oberoende fall för K37 'Mina svar' (D126). Skrivna 2026-11-11 10:30 INNAN Kevins kod lästes, så att de inte formas efter implementationen. Varje elev har sparade svar per prov; 'ask' är vad Scribe hör i Provläget med det provet aktivt. expect = id på sparat svar som SKA läsas upp ordagrant, eller null = får INTE läsas upp (modellen svarar som vanligt eller är tyst). Grupper: hit (omformulerat, ska träffa), scribe (hörfel, ska träffa), near (samma ämne men annan fråga, falsk träff), neg (negation/motsats, falsk träff), other_exam (sparat under ett annat prov), homonym (samma ord, annan betydelse), statement (inte en fråga, nämner ämnet), other_user (en annan användares sparade svar). Inga riktiga elevdata.",
+ "saved": {
+  "bio": [
+   {"id": "bio-foto", "q": "Vad är fotosyntes?", "a": "Fotosyntes är när växter gör socker av koldioxid och vatten med hjälp av solljus. Syre bildas som restprodukt. Det sker i kloroplasterna."},
+   {"id": "bio-mito", "q": "Vad gör mitokondrierna?", "a": "Mitokondrierna är cellens kraftverk. De gör ATP genom cellandning, där socker och syre blir koldioxid, vatten och energi."},
+   {"id": "bio-mitos", "q": "Vad är skillnaden mellan mitos och meios?", "a": "Mitos ger två likadana celler med fullt antal kromosomer. Meios ger fyra könsceller med halva antalet, och de är olika varandra."},
+   {"id": "bio-dna", "q": "Hur är DNA uppbyggt?", "a": "DNA är en dubbelspiral av två strängar. Baserna A och T, och G och C, sitter ihop parvis i mitten."},
+   {"id": "bio-evol", "q": "Vad menade Darwin med naturligt urval?", "a": "Individer som passar bäst i sin miljö överlever och får fler ungar. Deras egenskaper blir då vanligare i nästa generation."}
+  ],
+  "hist": [
+   {"id": "his-fv1", "q": "Vilka var orsakerna till första världskriget?", "a": "Militarism, allianser, imperialism och nationalism. Gnistan var skotten i Sarajevo 1914."},
+   {"id": "his-frrev", "q": "Varför bröt franska revolutionen ut?", "a": "Staten var bankrutt, brödet var dyrt och tredje ståndet betalade all skatt. Upplysningens idéer om frihet och jämlikhet spreds."},
+   {"id": "his-kalla", "q": "Vad var kalla kriget?", "a": "En konflikt mellan USA och Sovjetunionen 1947 till 1991 utan direkt krig mellan dem. Det handlade om kapitalism mot kommunism och kapprustning."}
+  ]
+ },
+ "other_user_saved": {
+  "bio": [
+   {"id": "u2-bio-cell", "q": "Vad är en cell?", "a": "ANDRA ANVÄNDARENS SVAR: en cell är livets minsta byggsten."}
+  ]
+ },
+ "cases": [
+  {"id": "hit-01", "group": "hit", "exam": "bio", "ask": "kan du förklara fotosyntesen", "expect": "bio-foto"},
+  {"id": "hit-02", "group": "hit", "exam": "bio", "ask": "hur funkar fotosyntes", "expect": "bio-foto"},
+  {"id": "hit-03", "group": "hit", "exam": "bio", "ask": "vad har mitokondrien för funktion i cellen", "expect": "bio-mito"},
+  {"id": "hit-04", "group": "hit", "exam": "bio", "ask": "vad skiljer meios från mitos", "expect": "bio-mitos"},
+  {"id": "hit-05", "group": "hit", "exam": "bio", "ask": "hur ser DNA-molekylen ut", "expect": "bio-dna"},
+  {"id": "hit-06", "group": "hit", "exam": "bio", "ask": "förklara naturligt urval", "expect": "bio-evol"},
+  {"id": "hit-07", "group": "hit", "exam": "hist", "ask": "varför startade första världskriget", "expect": "his-fv1"},
+  {"id": "hit-08", "group": "hit", "exam": "hist", "ask": "vilka orsaker låg bakom franska revolutionen", "expect": "his-frrev"},
+  {"id": "hit-09", "group": "hit", "exam": "hist", "ask": "vad menas med kalla kriget", "expect": "his-kalla"},
+  {"id": "hit-10", "group": "hit", "exam": "hist", "ask": "varför blev det krig 1914", "expect": "his-fv1"},
+
+  {"id": "scr-01", "group": "scribe", "exam": "bio", "ask": "vad är foto syntes", "expect": "bio-foto"},
+  {"id": "scr-02", "group": "scribe", "exam": "bio", "ask": "vad gör mito kondrierna", "expect": "bio-mito"},
+  {"id": "scr-03", "group": "scribe", "exam": "bio", "ask": "skillnaden mellan mitos och mejos", "expect": "bio-mitos"},
+  {"id": "scr-04", "group": "scribe", "exam": "hist", "ask": "vad var kalle kriget", "expect": "his-kalla"},
+
+  {"id": "near-01", "group": "near", "exam": "bio", "ask": "var i cellen sker fotosyntesen och vad heter pigmentet", "expect": null},
+  {"id": "near-02", "group": "near", "exam": "bio", "ask": "vad är cellandning", "expect": null},
+  {"id": "near-03", "group": "near", "exam": "bio", "ask": "hur många kromosomer har en människa", "expect": null},
+  {"id": "near-04", "group": "near", "exam": "bio", "ask": "vad är RNA", "expect": null},
+  {"id": "near-05", "group": "near", "exam": "bio", "ask": "vad är skillnaden mellan DNA och RNA", "expect": null},
+  {"id": "near-06", "group": "near", "exam": "bio", "ask": "vad är artificiellt urval", "expect": null},
+  {"id": "near-07", "group": "near", "exam": "hist", "ask": "vilka var följderna av första världskriget", "expect": null},
+  {"id": "near-08", "group": "near", "exam": "hist", "ask": "hur slutade franska revolutionen", "expect": null},
+  {"id": "near-09", "group": "near", "exam": "hist", "ask": "vilka var orsakerna till andra världskriget", "expect": null},
+  {"id": "near-10", "group": "near", "exam": "hist", "ask": "när föll Berlinmuren", "expect": null},
+  {"id": "near-11", "group": "near", "exam": "hist", "ask": "vem var Lenin", "expect": null},
+  {"id": "near-12", "group": "near", "exam": "bio", "ask": "vad är fotosyntesens formel", "expect": null},
+
+  {"id": "neg-01", "group": "neg", "exam": "bio", "ask": "vad är inte fotosyntes, alltså vad händer i mörker", "expect": null},
+  {"id": "neg-02", "group": "neg", "exam": "bio", "ask": "vad är likheterna mellan mitos och meios", "expect": null},
+  {"id": "neg-03", "group": "neg", "exam": "hist", "ask": "vad var inte en orsak till första världskriget", "expect": null},
+  {"id": "neg-04", "group": "neg", "exam": "bio", "ask": "vilka kritiserade Darwins naturliga urval", "expect": null},
+
+  {"id": "oex-01", "group": "other_exam", "exam": "bio", "ask": "vad var kalla kriget", "expect": null},
+  {"id": "oex-02", "group": "other_exam", "exam": "hist", "ask": "vad är fotosyntes", "expect": null},
+  {"id": "oex-03", "group": "other_exam", "exam": "hist", "ask": "vad gör mitokondrierna", "expect": null},
+
+  {"id": "hom-01", "group": "homonym", "exam": "hist", "ask": "vad är den industriella revolutionen", "expect": null},
+  {"id": "hom-02", "group": "homonym", "exam": "bio", "ask": "vad är en fängelsecell", "expect": null},
+  {"id": "hom-03", "group": "homonym", "exam": "hist", "ask": "vad är ett kallt krig mellan kompisar", "expect": null},
+  {"id": "hom-04", "group": "homonym", "exam": "bio", "ask": "vad är ett urval i statistik", "expect": null},
+
+  {"id": "stm-01", "group": "statement", "exam": "bio", "ask": "fotosyntes är så tråkigt asså", "expect": null},
+  {"id": "stm-02", "group": "statement", "exam": "hist", "ask": "läraren sa att vi ska läsa om kalla kriget till fredag", "expect": null},
+  {"id": "stm-03", "group": "statement", "exam": "bio", "ask": "jag har redan pluggat mitos och meios", "expect": null},
+
+  {"id": "usr-01", "group": "other_user", "exam": "bio", "ask": "vad är en cell", "expect": null}
+ ],
+ "spelling": {
+  "_doc": "Stavningsrättning när ett svar sparas: fel ska rättas, fackord och namn får aldrig ändras, och innehållet får inte bytas.",
+  "fix": [
+   {"in": "Fotosyntes är när växter gör sokker av koldioxid och vatten med hjälp av solljus.", "must_contain": ["socker", "Fotosyntes", "koldioxid"]},
+   {"in": "Mitokondrierna är cellens kraftvärk och gör ATP.", "must_contain": ["kraftverk", "Mitokondrierna", "ATP"]},
+   {"in": "Gnistan var skotten i Sarajevo 1914 när Franz Ferdinand dödades.", "must_contain": ["när", "Sarajevo", "1914", "Franz Ferdinand"]}
+  ],
+  "keep": [
+   {"in": "Le Chateliers princip säger att jämvikten motverkar en ändring.", "must_contain": ["Le Chateliers princip"]},
+   {"in": "Meios ger fyra haploida könsceller.", "must_contain": ["Meios", "haploida"]},
+   {"in": "Kirchhoffs lagar gäller för strömmar i en nod.", "must_contain": ["Kirchhoffs"]},
+   {"in": "Svaret är 6,02·10^23 partiklar per mol.", "must_contain": ["6,02", "10^23"]},
+   {"in": "Hammurabis lagar skrevs i Babylon cirka 1750 f.Kr.", "must_contain": ["Hammurabis", "1750", "f.Kr."]}
+  ]
+ }
+}

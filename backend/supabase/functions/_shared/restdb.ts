@@ -113,6 +113,22 @@ export class RestDb {
     return m ? Number(m[1]) : 0;
   }
 
+  /** PATCH /rest/v1/<table>?<filter> with `patch`; returns the number of changed rows. */
+  async updateWhere(table: string, filter: string, patch: object): Promise<number> {
+    const r = await this.fetchImpl(`${this.baseUrl}/rest/v1/${table}?${filter}`, {
+      method: "PATCH",
+      headers: this.headers({ prefer: "return=minimal,count=exact" }),
+      body: JSON.stringify(patch),
+    });
+    if (!r.ok) {
+      await r.body?.cancel();
+      throw new Error(`update ${table} failed: HTTP ${r.status}`);
+    }
+    await r.body?.cancel();
+    const m = /\/(\d+)$/.exec(r.headers.get("content-range") ?? "");
+    return m ? Number(m[1]) : 0;
+  }
+
   /** GET /rest/v1/<table>?<query>; returns the parsed rows. */
   async select(table: string, query: string): Promise<unknown[]> {
     const r = await this.fetchImpl(`${this.baseUrl}/rest/v1/${table}?${query}`, {

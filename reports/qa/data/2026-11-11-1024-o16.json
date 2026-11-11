@@ -1,0 +1,877 @@
+{
+ "stamp": "2026-11-11-1024",
+ "scribe_audio_seconds": 50.4,
+ "clip": "o16_espeak_sv_24k.npy",
+ "rows": [
+  {
+   "probe": "none",
+   "keyterms": [],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 336
+  },
+  {
+   "probe": "one short",
+   "keyterms": [
+    "fotosyntes"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är fotosynt-"
+   ],
+   "url_len": 356
+  },
+  {
+   "probe": "len 20",
+   "keyterms": [
+    "abcdefghijklmnopqrst"
+   ],
+   "ok": false,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": [
+    1006,
+    ""
+   ],
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 366
+  },
+  {
+   "probe": "len 21",
+   "keyterms": [
+    "abcdefghijklmnopqrstu"
+   ],
+   "ok": false,
+   "started": false,
+   "msgs": [
+    "{'message_type': 'invalid_request', 'error': \"Each keyterm must be at most 20 characters. 'abcdefghijklmnopqrstu' is 21 characters.\"}"
+   ],
+   "close": [
+    1008,
+    "invalid_request"
+   ],
+   "commits": [],
+   "url_len": 367
+  },
+  {
+   "probe": "len 20 with å/ä/ö",
+   "keyterms": [
+    "kärnkraftsolyckornaö"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 376
+  },
+  {
+   "probe": "len 21 with å/ä/ö (bytes > chars)",
+   "keyterms": [
+    "kärnkraftsolyckornaöö"
+   ],
+   "ok": false,
+   "started": false,
+   "msgs": [
+    "{'message_type': 'invalid_request', 'error': \"Each keyterm must be at most 20 characters. 'kärnkraftsolyckornaöö' is 21 characters.\"}"
+   ],
+   "close": [
+    1008,
+    "invalid_request"
+   ],
+   "commits": [],
+   "url_len": 382
+  },
+  {
+   "probe": "2 words",
+   "keyterms": [
+    "kalla kriget"
+   ],
+   "ok": false,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": [
+    1006,
+    ""
+   ],
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 360
+  },
+  {
+   "probe": "3 words",
+   "keyterms": [
+    "x i kvadrat"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 361
+  },
+  {
+   "probe": "4 words 20 chars",
+   "keyterms": [
+    "Gustav II Adolf dogx"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 372
+  },
+  {
+   "probe": "4 words short",
+   "keyterms": [
+    "a b c d"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 359
+  },
+  {
+   "probe": "5 words short",
+   "keyterms": [
+    "a b c d e"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 363
+  },
+  {
+   "probe": "6 words short",
+   "keyterms": [
+    "a b c d e f"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 367
+  },
+  {
+   "probe": "digits",
+   "keyterms": [
+    "1789"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 350
+  },
+  {
+   "probe": "digit + word",
+   "keyterms": [
+    "Ma 3c"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 353
+  },
+  {
+   "probe": "hyphen",
+   "keyterms": [
+    "syra-bas"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för typ?"
+   ],
+   "url_len": 354
+  },
+  {
+   "probe": "slash",
+   "keyterms": [
+    "km/h"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 350
+  },
+  {
+   "probe": "ampersand",
+   "keyterms": [
+    "Q&A"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är födels-"
+   ],
+   "url_len": 351
+  },
+  {
+   "probe": "parentheses",
+   "keyterms": [
+    "DNA (arvsmassa)"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är fötus?"
+   ],
+   "url_len": 367
+  },
+  {
+   "probe": "colon",
+   "keyterms": [
+    "kap: 3"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 356
+  },
+  {
+   "probe": "apostrophe",
+   "keyterms": [
+    "Newton's lag"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 362
+  },
+  {
+   "probe": "comma",
+   "keyterms": [
+    "mitos, meios"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 362
+  },
+  {
+   "probe": "period",
+   "keyterms": [
+    "t.ex."
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 351
+  },
+  {
+   "probe": "percent",
+   "keyterms": [
+    "20 %"
+   ],
+   "ok": false,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": [
+    1006,
+    ""
+   ],
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 354
+  },
+  {
+   "probe": "plus/equals",
+   "keyterms": [
+    "E=mc2"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 353
+  },
+  {
+   "probe": "question mark",
+   "keyterms": [
+    "vad?"
+   ],
+   "ok": false,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": [
+    1006,
+    ""
+   ],
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 352
+  },
+  {
+   "probe": "emoji",
+   "keyterms": [
+    "cell 🧬"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 365
+  },
+  {
+   "probe": "leading space",
+   "keyterms": [
+    " mitos"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 354
+  },
+  {
+   "probe": "empty string",
+   "keyterms": [
+    ""
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 346
+  },
+  {
+   "probe": "duplicate",
+   "keyterms": [
+    "mitos",
+    "mitos"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 366
+  },
+  {
+   "probe": "uppercase",
+   "keyterms": [
+    "FRANSKA REVOLUTIONEN"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är för tusen-"
+   ],
+   "url_len": 368
+  },
+  {
+   "probe": "20 terms",
+   "keyterms": [
+    "term0",
+    "term1",
+    "term2",
+    "term3",
+    "term4",
+    "term5",
+    "term6",
+    "term7",
+    "term8",
+    "term9",
+    "term10",
+    "term11",
+    "term12",
+    "term13",
+    "term14",
+    "term15",
+    "term16",
+    "term17",
+    "term18",
+    "term19"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 646
+  },
+  {
+   "probe": "50 terms",
+   "keyterms": [
+    "term0",
+    "term1",
+    "term2",
+    "term3",
+    "term4",
+    "term5",
+    "term6",
+    "term7",
+    "term8",
+    "term9",
+    "term10",
+    "term11",
+    "term12",
+    "term13",
+    "term14",
+    "term15",
+    "term16",
+    "term17",
+    "term18",
+    "term19",
+    "term20",
+    "term21",
+    "term22",
+    "term23",
+    "term24",
+    "term25",
+    "term26",
+    "term27",
+    "term28",
+    "term29",
+    "term30",
+    "term31",
+    "term32",
+    "term33",
+    "term34",
+    "term35",
+    "term36",
+    "term37",
+    "term38",
+    "term39",
+    "term40",
+    "term41",
+    "term42",
+    "term43",
+    "term44",
+    "term45",
+    "term46",
+    "term47",
+    "term48",
+    "term49"
+   ],
+   "ok": false,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": [
+    1006,
+    ""
+   ],
+   "commits": [
+    "Vad är det för"
+   ],
+   "url_len": 1126
+  },
+  {
+   "probe": "100 terms",
+   "keyterms": [
+    "term0",
+    "term1",
+    "term2",
+    "term3",
+    "term4",
+    "term5",
+    "term6",
+    "term7",
+    "term8",
+    "term9",
+    "term10",
+    "term11",
+    "term12",
+    "term13",
+    "term14",
+    "term15",
+    "term16",
+    "term17",
+    "term18",
+    "term19",
+    "term20",
+    "term21",
+    "term22",
+    "term23",
+    "term24",
+    "term25",
+    "term26",
+    "term27",
+    "term28",
+    "term29",
+    "term30",
+    "term31",
+    "term32",
+    "term33",
+    "term34",
+    "term35",
+    "term36",
+    "term37",
+    "term38",
+    "term39",
+    "term40",
+    "term41",
+    "term42",
+    "term43",
+    "term44",
+    "term45",
+    "term46",
+    "term47",
+    "term48",
+    "term49",
+    "term50",
+    "term51",
+    "term52",
+    "term53",
+    "term54",
+    "term55",
+    "term56",
+    "term57",
+    "term58",
+    "term59",
+    "term60",
+    "term61",
+    "term62",
+    "term63",
+    "term64",
+    "term65",
+    "term66",
+    "term67",
+    "term68",
+    "term69",
+    "term70",
+    "term71",
+    "term72",
+    "term73",
+    "term74",
+    "term75",
+    "term76",
+    "term77",
+    "term78",
+    "term79",
+    "term80",
+    "term81",
+    "term82",
+    "term83",
+    "term84",
+    "term85",
+    "term86",
+    "term87",
+    "term88",
+    "term89",
+    "term90",
+    "term91",
+    "term92",
+    "term93",
+    "term94",
+    "term95",
+    "term96",
+    "term97",
+    "term98",
+    "term99"
+   ],
+   "ok": false,
+   "started": false,
+   "msgs": [
+    "{'message_type': 'invalid_request', 'error': 'Number of keyterms cannot exceed 50. You provided 100 keyterms.'}"
+   ],
+   "close": [
+    1008,
+    "invalid_request"
+   ],
+   "commits": [],
+   "url_len": 1926
+  },
+  {
+   "probe": "101 terms",
+   "keyterms": [
+    "term0",
+    "term1",
+    "term2",
+    "term3",
+    "term4",
+    "term5",
+    "term6",
+    "term7",
+    "term8",
+    "term9",
+    "term10",
+    "term11",
+    "term12",
+    "term13",
+    "term14",
+    "term15",
+    "term16",
+    "term17",
+    "term18",
+    "term19",
+    "term20",
+    "term21",
+    "term22",
+    "term23",
+    "term24",
+    "term25",
+    "term26",
+    "term27",
+    "term28",
+    "term29",
+    "term30",
+    "term31",
+    "term32",
+    "term33",
+    "term34",
+    "term35",
+    "term36",
+    "term37",
+    "term38",
+    "term39",
+    "term40",
+    "term41",
+    "term42",
+    "term43",
+    "term44",
+    "term45",
+    "term46",
+    "term47",
+    "term48",
+    "term49",
+    "term50",
+    "term51",
+    "term52",
+    "term53",
+    "term54",
+    "term55",
+    "term56",
+    "term57",
+    "term58",
+    "term59",
+    "term60",
+    "term61",
+    "term62",
+    "term63",
+    "term64",
+    "term65",
+    "term66",
+    "term67",
+    "term68",
+    "term69",
+    "term70",
+    "term71",
+    "term72",
+    "term73",
+    "term74",
+    "term75",
+    "term76",
+    "term77",
+    "term78",
+    "term79",
+    "term80",
+    "term81",
+    "term82",
+    "term83",
+    "term84",
+    "term85",
+    "term86",
+    "term87",
+    "term88",
+    "term89",
+    "term90",
+    "term91",
+    "term92",
+    "term93",
+    "term94",
+    "term95",
+    "term96",
+    "term97",
+    "term98",
+    "term99",
+    "term100"
+   ],
+   "ok": false,
+   "started": false,
+   "msgs": [
+    "{'message_type': 'invalid_request', 'error': 'Number of keyterms cannot exceed 50. You provided 101 keyterms.'}"
+   ],
+   "close": [
+    1008,
+    "invalid_request"
+   ],
+   "commits": [],
+   "url_len": 1943
+  },
+  {
+   "probe": "Deangelo history-like",
+   "keyterms": [
+    "Westfaliska freden",
+    "trettioåriga kriget",
+    "Gustav II Adolf",
+    "Versaillesfreden",
+    "Kalla kriget"
+   ],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 481
+  },
+  {
+   "probe": "Deangelo samhälle-like",
+   "keyterms": [
+    "riksdagen",
+    "regeringen",
+    "grundlagarna",
+    "tryckfrihetsförordningen",
+    "BNP"
+   ],
+   "ok": false,
+   "started": false,
+   "msgs": [
+    "{'message_type': 'invalid_request', 'error': \"Each keyterm must be at most 20 characters. 'tryckfrihetsförordningen' is 24 characters.\"}"
+   ],
+   "close": [
+    1008,
+    "invalid_request"
+   ],
+   "commits": [],
+   "url_len": 449
+  }
+ ]
+}

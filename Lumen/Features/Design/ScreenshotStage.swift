@@ -72,6 +72,7 @@ struct ScreenshotStage: View {
             case "listening": ListeningScreen(model: model) {}
             case "cannotAnswer": ListeningScreen(model: model) {}.onAppear { model.showProblemForScreenshot(.overloaded) }
             case "switch": ModeSwitchSheet(model: model, current: .prov)
+            case "pickMode": ModeSwitchSheet(model: model, current: .standard, onPick: { _ in }, onSleep: {}) // A50: Start's "Byt"
             case "errors":
                 ScrollView {
                     VStack(spacing: 12) {

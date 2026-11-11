@@ -86,6 +86,8 @@ använder `raised` i stället. **Ikoner:** SF Symbols i vikt regular, 20–22 pt
 - Citat och exempel på svenska skrivs med ”…” (samma tecken på båda sidor), inte med raka "…".
 
 ## 5. Logga och appikon: symbol 4, bock med ljudvågor (Aron 2026-11-10 21:18, Ke24)
+**D127 (2026-11-11): användarna röstar** mellan A Klotet, B Den gröna formen och C Den orange ringen. Rena vektorer med samma ram och ljus: `logo/rostning/vektor/` (README där, källa `logo/_src/rostning.py`). Symbol 4 nedan gäller tills röstningen avgjort; vinnaren ersätter detta avsnitt.
+
 Aron valde nummer 4 bland sina sex ChatGPT-förslag (`logo/chatgpt-forslag-2026-11-10.jpg`). A/B/C från Ke12 är avvisade.
 Kontroll i alla storlekar: `logo/symbol4-kontroll.png`. Källa: `logo/_src/symbol4.py` (ändra bara där).
 
@@ -136,3 +138,6 @@ Bilder i `bilder/system/`, ljust till vänster och mörkt till höger.
 | Byt läge (blad) | `bytlage.png` | Förhör mig, Få A-svar till provet och Bara fråga överst, och under dem FLER LÄGEN. Ikonerna är grå SF Symbols; det valda läget har blå ikon och ✓. Röstkommandot står en gång, längst ner. |
 | Kommandon (blad) | `kommandon.png` | "Säg till Lumen" med fem kommandon och vad som händer, plus "Alla kommandon ›". |
 | Lumen hör dig inte | `nekad2.png` | En ikon i en mjuk cirkel, tre numrerade steg i en brunn, "Öppna Inställningar" blå och "Hoppa över" tyst. |
+
+## 9. Ny Start och Vad kan Lumen? (Ke29, D124–D126)
+Underlag: `start-vadkan.md`, bilder `bilder/start2/`. Start har en blå knapp, "Starta Lumen", med läget och Byt under. Under den finns "Lumen kan allt" med exempel och "Allt Lumen kan ›", och sist provkortet med Förhör mig som grå knapp. Vad kan Lumen? är en grupperad lista där varje rad säger vad man säger och om något behöver ställas in.

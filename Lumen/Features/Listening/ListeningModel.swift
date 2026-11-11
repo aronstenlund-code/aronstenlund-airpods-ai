@@ -2283,6 +2283,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         showsListeningScreen = problem != .microphoneDenied || isActiveSession
     }
 
+    /// A50 (D124): Start's big button starts the chosen mode. Provläge goes to the nearest exam when there is one,
+    /// like "Förhör mig" without the quiz's first question.
+    func startSelectedMode() async {
+        if selectedMode == .prov, !(study.isActive || isListening), let plan = examPlans?.upcoming().first {
+            await startProv(for: plan)
+            showsListeningScreen = problem != .microphoneDenied || isActiveSession
+            return
+        }
+        await startMode(selectedMode)
+    }
+
     /// "Byt läge": the same checks as the screen and the voice; listening goes on.
     func switchMode(to target: ConversationMode) async {
         if target == .rizz, !modeSettings.isAdultConfirmed {

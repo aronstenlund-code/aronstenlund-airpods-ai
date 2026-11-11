@@ -1,15 +1,18 @@
 import SwiftUI
 
-/// D86 screen 3: Start, in the system of `docs/design/SYSTEM.md` (A18, Kelly Ke12). The nearest exam as a card ("NÄSTA
-/// PROV", a badge with the days left, the name, the date, a well with "Öva mer på", and D97's two buttons: **Förhör
-/// mig** (blue: Lumen quizzes and answers) and **Få A-svar till provet** (secondary: answers only), each with a line
-/// that says the difference). The other exams as a list without microphones, "+ Lägg till prov", then two secondary
-/// buttons: "Bara fråga" (Frågor) and "Fler lägen" (a sheet: Provläge, Intervju, Socialt, Rizz 18+). Without an exam:
-/// "Har du prov snart?" with "Lägg till prov" as the one blue button. No instruction line (the voice commands show up
-/// when they are needed).
+/// D86 screen 3: Start, in the system of `docs/design/SYSTEM.md` (A18, Kelly Ke12). A50 (D124, D126, Aron's first
+/// phone test: "man förstår inte hur man börjar ställa frågor"): the one blue button is **Starta Lumen** at the top,
+/// with the chosen mode under it ("Standardläge · Byt"; "Byt" opens the modes and Sov). Under it "Lumen kan allt" with
+/// examples that change. Then the nearest exam as a card ("NÄSTA PROV", the days left, the name, the date, a well
+/// with "Öva mer på", and **Förhör mig** as a secondary button with its line), the other exams as a list and
+/// "+ Lägg till prov". "Få A-svar till provet" is gone from Start (it becomes "Mina svar" inside Provläge, A53), and
+/// so are "Bara fråga" and "Fler lägen" (the Start button and "Byt" do both). Without an exam: "Har du prov snart?"
+/// with a secondary "Lägg till prov". No instruction line (the voice commands show up when they are needed).
 struct HomeView: View {
     @Bindable var model: ListeningModel
-    @State private var isShowingMoreModes = false
+    /// A50: "Byt" under the Start button.
+    @State private var isPickingMode = false
+    @State private var pickedMode: ConversationMode?
     /// A36: the exam whose page is being photographed.
     @State private var photographing: ExamPlan?
     /// A46: the flip cards being tapped through.
@@ -29,14 +32,15 @@ struct HomeView: View {
                     // A12: a start that cannot get the microphone says so here (it did nothing before).
                     ErrorCard(problem: .microphoneDenied) { ErrorCard.openSettings() }
                 }
+                startCard
+                LumenCanDoAll()
+                lastNight
                 if let nearest = plans.first {
                     examCard(nearest)
                     otherExams(Array(plans.dropFirst()))
                 } else {
                     emptyCard
                 }
-                lastNight
-                modes
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
@@ -44,9 +48,18 @@ struct HomeView: View {
         }
         .lumenScreen()
         .toolbar(.hidden, for: .navigationBar)
-        .sheet(isPresented: $isShowingMoreModes) {
-            MoreModesSheet(model: model)
-                .presentationDetents([.medium])
+        .sheet(isPresented: $isPickingMode, onDismiss: {
+            // After the sheet is gone: ListeningView's onChange may present Rizz's age question (D63), and a sheet
+            // cannot open while another is closing.
+            if let picked = pickedMode { model.selectedMode = picked }
+            pickedMode = nil
+        }) {
+            ModeSwitchSheet(model: model, current: model.selectedMode) { mode in
+                pickedMode = mode
+            } onSleep: {
+                Task { await model.startSleep() }
+            }
+            .presentationDetents([.large])
         }
         .sheet(isPresented: $isShowingMicrophoneDenied) {
             MicrophoneDeniedView { isShowingMicrophoneDenied = false }
@@ -110,6 +123,50 @@ struct HomeView: View {
             Spacer()
             if model.streak.current > 0 { StreakBadge(streak: model.streak) }
             IconButton(systemName: "gearshape", label: "Inställningar") { model.isShowingSettings = true }
+        }
+    }
+
+    // MARK: Start (A50, D124)
+
+    /// The one blue button, and the mode it starts under it. While a session runs it goes back to Lyssnar.
+    private var startCard: some View {
+        VStack(spacing: 6) {
+            Button {
+                if model.isActiveSession {
+                    model.showsListeningScreen = true
+                } else {
+                    Task { await model.startSelectedMode() }
+                }
+            } label: {
+                Label(model.isActiveSession ? "Tillbaka till Lumen" : "Starta Lumen", systemImage: "waveform")
+                    .font(LumenFont.text(20, .bold, relativeTo: .title3))
+            }
+            .buttonStyle(LumenButtonStyle(height: 64))
+            .accessibilityHint(model.isActiveSession
+                ? "Visar Lyssnar"
+                : "Lumen börjar lyssna i \(model.selectedMode.shortName.lowercased())")
+            Button {
+                isPickingMode = true
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: model.selectedMode.symbol)
+                        .font(.system(size: 15, weight: .regular))
+                        .foregroundStyle(LumenColor.muted)
+                    Text(model.selectedMode.shortName)
+                        .font(LumenFont.text(16, .semibold))
+                        .foregroundStyle(LumenColor.ink)
+                    Text("·").font(LumenFont.text(16)).foregroundStyle(LumenColor.muted)
+                    Text("Byt")
+                        .font(LumenFont.text(16, .semibold))
+                        .foregroundStyle(LumenColor.blue)
+                }
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Läge: \(model.selectedMode.shortName). Byt läge")
+            .accessibilityAddTraits(.isButton)
         }
     }
 
@@ -211,15 +268,10 @@ struct HomeView: View {
                 } label: {
                     TwoLineLabel(title: "Förhör mig", detail: "Lumen frågar ut dig och svarar på dina frågor")
                 }
-                .buttonStyle(LumenButtonStyle(height: 62))
-                .accessibilityHint("Startar förhöret inför \(plan.name.lowercased())")
-                // D97 (owner, final): the second button answers questions and never quizzes. Its name is Aron's.
-                Button {
-                    Task { await model.startAnswersOnly(for: plan) }
-                } label: {
-                    TwoLineLabel(title: "Få A-svar till provet", detail: "Lumen svarar bara när du frågar")
-                }
+                // A50 (D124): secondary, the Start button is the screen's one blue button. "Få A-svar till provet"
+                // moved into Provläge ("Mina svar", A53, D126).
                 .buttonStyle(LumenButtonStyle(kind: .secondary, height: 62))
+                .accessibilityHint("Startar förhöret inför \(plan.name.lowercased())")
                 // A36 (D115): photograph the page you study; Lumen quizzes on it.
                 if model.isReadingPage || model.pagePhotoStatus != nil {
                     HStack(spacing: 10) {
@@ -331,7 +383,7 @@ struct HomeView: View {
             } label: {
                 Label("Lägg till prov", systemImage: "plus")
             }
-            .buttonStyle(LumenButtonStyle(height: 54))
+            .buttonStyle(LumenButtonStyle(kind: .secondary, height: 54)) // A50: Start is the one blue button
             .padding(.top, 8)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Eller säg").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
@@ -345,20 +397,6 @@ struct HomeView: View {
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .gridPaper()
-    }
-
-    // MARK: Modes
-
-    /// Two secondary buttons. "Bara fråga" is Frågor; Provläge (without a quiz) and the other modes are in "Fler
-    /// lägen". The voice commands reach every mode as before (A13.5).
-    private var modes: some View {
-        HStack(spacing: 10) {
-            Button("Bara fråga") { Task { await model.startMode(.standard) } }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 50))
-                .accessibilityHint("Lumen svarar kort på frågor, utan prov")
-            Button("Fler lägen") { isShowingMoreModes = true }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 50))
-        }
     }
 }
 
@@ -393,62 +431,6 @@ struct SectionLabel: View {
     }
 }
 
-/// "Fler lägen" on Start: Provläge (without a quiz) and the modes for other situations, as plain rows.
-struct MoreModesSheet: View {
-    @Bindable var model: ListeningModel
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach([ConversationMode.prov, .interview, .social, .rizz]) { mode in
-                    Button {
-                        dismiss()
-                        Task { await model.startMode(mode) }
-                    } label: {
-                        HStack(spacing: 14) {
-                            Image(systemName: mode.symbol)
-                                .font(.system(size: 17, weight: .regular))
-                                .foregroundStyle(LumenColor.blue)
-                                .frame(width: 36, height: 36)
-                                .background(LumenColor.soft, in: Circle())
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(mode.shortName).font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.ink)
-                                Text(mode.tagline).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
-                            }
-                        }
-                        .padding(.vertical, 4)
-                    }
-                }
-                // A49 (D123): Sömnläge, not a listening mode: the phone on the bedside table all night.
-                Button {
-                    dismiss()
-                    Task { await model.startSleep() }
-                } label: {
-                    HStack(spacing: 14) {
-                        Image(systemName: "moon.stars")
-                            .font(.system(size: 17, weight: .regular))
-                            .foregroundStyle(LumenColor.blue)
-                            .frame(width: 36, height: 36)
-                            .background(LumenColor.soft, in: Circle())
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Sov").font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.ink)
-                            Text("Prat i sömnen och snarkning, bara på telefonen").font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
-                        }
-                    }
-                    .padding(.vertical, 4)
-                }
-            }
-            .lumenForm()
-            .navigationTitle("Fler lägen")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } }
-            }
-        }
-    }
-}
-
 /// A38 (K31): the streak, small, next to the settings: a flame and the number of days in a row (SYSTEM.md badge,
 /// `soft` and blue). While today's question is not done the flame is hollow and VoiceOver says what keeps it.
 struct StreakBadge: View {
@@ -477,4 +459,76 @@ struct FlipSession: Identifiable {
     let id = UUID()
     let plan: ExamPlan
     let deck: FlipDeck
+}
+
+/// A50 (D126): "Lumen kan allt" under the Start button, three things to say that change every few seconds. With
+/// Reduce Motion they stand still. VoiceOver reads the first three once, not the changes.
+struct LumenCanDoAll: View {
+    /// Aron's three (D126) first; what they ask for is built (A6 Spotify, A48 calendar, reminders and timers,
+    /// Minne for the recipe, Provläge's quiz).
+    nonisolated static let examples = [
+        "”Lumen, kör spellistan Plugg”",
+        "”Lumen, kolla min kalender, vad har jag i dag?”",
+        "”Lumen, vad är mitt favoritrecept för pannkakor?”",
+        "”Lumen, sätt en timer på 10 minuter”",
+        "”Lumen, förhör mig på fotosyntes”",
+        "”Lumen, påminn mig om träningen kl. 18”",
+    ]
+    nonisolated static let shown = 3
+
+    /// The examples on screen at `step`: a window of `shown` that moves one at a time and wraps.
+    nonisolated static func window(at step: Int) -> [String] {
+        let start = ((step % examples.count) + examples.count) % examples.count
+        return (0..<shown).map { examples[(start + $0) % examples.count] }
+    }
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var step = 0
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Lumen kan allt")
+                    .font(LumenFont.text(20, .bold, relativeTo: .title3))
+                    .accessibilityAddTraits(.isHeader)
+                Text("Säg ”Lumen” och vad du vill.")
+                    .font(LumenFont.text(15))
+                    .foregroundStyle(LumenColor.muted)
+            }
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(Self.window(at: step), id: \.self) { line in
+                    Text(line)
+                        .font(LumenFont.text(16, .semibold))
+                        .foregroundStyle(LumenColor.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .transition(.opacity)
+                }
+            }
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.35), value: step)
+            .accessibilityHidden(true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 16))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Lumen kan allt. Säg Lumen och vad du vill, till exempel: "
+            + Self.window(at: 0).map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "”")) }.joined(separator: ", "))
+        .task(id: reduceMotion) {
+            guard !reduceMotion, !Self.isScreenshot else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(4))
+                if Task.isCancelled { return }
+                step += 1
+            }
+        }
+    }
+
+    /// The Simulator screenshots stand still at the first three.
+    private static var isScreenshot: Bool {
+        #if DEBUG
+        ScreenshotStage.requested != nil
+        #else
+        false
+        #endif
+    }
 }

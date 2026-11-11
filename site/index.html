@@ -577,6 +577,17 @@
 
 
   /* Ke9: Så kommer du igång (tre steg) och Mer när du vill (hopfällt). */
+  /* Ke29 (D125): Vad kan Lumen? En lugn lista, inga knappar. */
+  .can { padding-top: 8px; padding-bottom: 48px; }
+  .can .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
+  .can-list { list-style: none; padding: 0; margin-top: 22px; display: grid; gap: 10px; }
+  .can-list li { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; background: var(--surface); border-radius: 16px; }
+  .can-list svg { width: 22px; height: 22px; flex: none; color: var(--blue); margin-top: 2px; }
+  .can-list h3 { font-size: 1.0625rem; line-height: 1.3; }
+  .can-list p { margin-top: 2px; color: var(--mut); line-height: 1.35; }
+  .can-list .soon { display: inline-block; margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: var(--soft); color: var(--blue); font-size: .75rem; font-weight: 600; vertical-align: 2px; }
+  @media (min-width: 720px) { .can-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .can-list { grid-template-columns: repeat(4, minmax(0, 1fr)); } .can { padding-bottom: 72px; } }
   .start { padding-top: 8px; padding-bottom: 56px; }
   .start .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
   .steps .hand { color: var(--ink); }
@@ -645,12 +656,12 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></svg>
         Prova här. Svaret läses upp.
       </p>
-      <!-- Ke19 (D97): samma två val som provkortet i appen, samma namn och rader. Få A-svar är livedemon. -->
-      <div class="seg" role="group" aria-label="Två sätt att plugga">
+      <!-- Ke29 (D124, D126): samma ord som appens Start. Standardläge är livedemon, Förhör mig är Provläget. -->
+      <div class="seg" role="group" aria-label="Två sätt att använda Lumen">
+        <button class="seg-b" id="m-ask" type="button" aria-pressed="true">Standardläge</button>
         <button class="seg-b" id="m-quiz" type="button" aria-pressed="false">Förhör mig</button>
-        <button class="seg-b" id="m-ask" type="button" aria-pressed="true">Få A-svar till provet</button>
       </div>
-      <p class="seg-line" id="segline">Lumen svarar bara när du frågar.</p>
+      <p class="seg-line" id="segline">Lumen svarar när någon frågar.</p>
       <div class="quiz" id="quiz" hidden>
         <p class="ex-meta" id="qz-meta"></p>
         <p class="quiz-q" id="qz-q" tabindex="-1"></p>
@@ -724,6 +735,24 @@
     </figure>
   </section>
 
+  <!-- Ke29 (D125): vad Lumen kan, samma rader som appens "Vad kan Lumen?" (docs/design/start-vadkan.md).
+       "Kommer snart" tas bort per rad när funktionen är provad på telefon (sajtens regel sedan Ke1). -->
+  <section class="can wrap" id="kan" aria-labelledby="kan-h">
+    <h2 id="kan-h">Vad kan <span data-app></span>?</h2>
+    <p class="lead">Som Siri, fast den förstår vad du frågar och svarar direkt i dina AirPods. Säg ”Lumen” och vad du vill.</p>
+    <ul class="can-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><div><h3>Förhör</h3><p>”Lumen, förhör mig på fotosyntes”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><div><h3>Svar på frågor</h3><p>”Lumen, vad betyder ambivalent?”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 13h18"/></svg><div><h3>Intervju</h3><p>Färdiga svar på intervjufrågor</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="14" cy="4" r="2"/><path d="M6 21l3-6 3 2v4M9 15l2-5 4 3 3-1M11 10l-3 1-2 3"/></svg><div><h3>Träning</h3><p>”Lumen, ge mig ett styrkepass på 20 minuter”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><div><h3>Kalender <span class="soon">Kommer snart</span></h3><p>”Lumen, vad har jag i dag?”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4"/></svg><div><h3>Timer och påminnelser <span class="soon">Kommer snart</span></h3><p>”Lumen, sätt en timer på 10 minuter”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><div><h3>Spotify <span class="soon">Kommer snart</span></h3><p>”Lumen, kör spellistan Plugg”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><div><h3>Sömn <span class="soon">Kommer snart</span></h3><p>Vad du sa i sömnen, på morgonen</p></div></li>
+    </ul>
+    <p class="shot-note">Siri är ett varumärke som tillhör Apple Inc. <span data-app></span> är inte gjord av eller kopplad till Apple.</p>
+  </section>
+
   <!-- Ke9: en enda väg. Demo ovanför, tre steg här, och en knapp (väntelistan) direkt efter. Samma ord som appen. -->
   <section class="start wrap" id="kom-igang" aria-labelledby="start-h">
     <h2 id="start-h">Så kommer du igång</h2>
@@ -731,7 +760,7 @@
     <ol class="steps">
       <li class="paper"><h3>Tryck Testa nu och fråga högt</h3><p>Inget konto. Sätt i AirPods och fråga vad som helst. Svaret hörs i örat.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/fraga-dark.webp"><img class="shot" src="img/fraga-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Fråga vad som helst i appen: frågan Vad är fotosyntes? och svaret i ett kort, med knappen Fortsätt."></picture></li>
       <li class="paper"><h3>Säg vilket prov du har</h3><p>Till exempel <span class="hand">”Jag har prov i biologi på fredag”</span>. Du kan också välja ämne och datum.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg1-dark.webp"><img class="shot" src="img/steg1-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Har du prov snart? i appen: säg till exempel Jag har prov i biologi på fredag, eller välj ämne, datum och årskurs. Knappen Spara prov."></picture></li>
-      <li class="paper"><h3>Säg ”Lumen, förhör mig”</h3><p>Lumen ställer frågor om det du pluggar och svarar på dina. Vill du bara ha svar trycker du Få A-svar till provet.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget i appen med brickan Lyssnar: frågan Vad är fotosyntes? och svaret, med knapparna Pausa och Avsluta."></picture></li>
+      <li class="paper"><h3>Säg ”Lumen, förhör mig”</h3><p>Lumen ställer frågor om det du pluggar och svarar på dina. Vill du bara ha svar, starta Lumen och fråga.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget i appen med brickan Lyssnar: frågan Vad är fotosyntes? och svaret, med knapparna Pausa och Avsluta."></picture></li>
     </ol>
     <p class="shot-note">Skärmbilder från en testversion av appen.</p>
   </section>
@@ -1402,7 +1431,7 @@ const QUIZ = [
   {"meta": "Åk 9 · Biologi", "q": "Vad händer i en näringskedja om rovdjuren försvinner?", "a": "Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan. Rovdjuren håller nere antalet växtätare, så när de är borta ökar växtätarna snabbt. Fler växtätare äter upp mer av växterna, och antalet växter kan då minska kraftigt. Det leder till att växtätarna så småningom också får brist på mat och deras antal sjunker igen. Ett klassiskt exempel är när vargen försvann från Yellowstone i USA: hjortarna blev fler, de åt upp unga träd och buskar, och det drabbade även bävrar och fåglar som levde i området. På provet bör du skriva att rovdjur reglerar populationen av växtätare och att borttagandet ger en kedjereaktion genom näringsväven.", "src": "audio/pl-022.mp3"},
   {"meta": "Åk 9 · Samhällskunskap", "q": "Förklara vad globalisering är.", "a": "Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna. Det sker genom handel, investeringar, resor och internet, och att varor, pengar och idéer rör sig allt lättare mellan länder. Ett vanligt exempel är att en tröja kan designas i Sverige, sys i Bangladesh och säljas i flera länder samtidigt. Fördelarna är billigare varor och fler jobb i vissa länder, men det finns också nackdelar, som att jobb kan försvinna i andra länder när produktionen flyttas. På provet kan du visa att du förstår det genom att ge både fördelar och nackdelar och ett konkret exempel.", "src": "audio/pl-079.mp3"}
 ];
-const LINES = { quiz: "Lumen frågar ut dig och svarar på dina frågor.", ask: "Lumen svarar bara när du frågar." };
+const LINES = { quiz: "Lumen frågar ut dig och svarar på dina frågor.", ask: "Lumen svarar när någon frågar." };
 let qi = 0, exPlayer = null, qzPlaying = false;
 const PLAY = '<path d="M7 4.5v15l12.5-7.5z"/>', STOP = '<rect x="6" y="6" width="12" height="12" rx="2"/>';
 function qzButton(text, icon, primary) {
