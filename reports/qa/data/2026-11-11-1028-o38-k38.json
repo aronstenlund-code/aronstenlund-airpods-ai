@@ -1,0 +1,120 @@
+{
+ "stamp": "2026-11-11-1028",
+ "ok": "19/19",
+ "rows": [
+  {
+   "check": "REST select (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.real_user_candidates TO anon;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "REST count (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.real_user_candidates TO anon;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "REST insert (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.real_user_candidates TO anon;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "REST update (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT, UPDATE ON public.real_user_candidates TO anon;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "REST delete (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT, DELETE ON public.real_user_candidates TO anon;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "RPC purge (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for function purge_real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "graphql reachable (public key only, info)",
+   "status": 404,
+   "body": "{\"code\":\"PGRST202\",\"details\":\"Searched for the function public.graphql with parameter query, but no matches were found i",
+   "ok": true
+  },
+  {
+   "check": "REST select (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.real_user_candidates TO authenticated;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "REST count (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.real_user_candidates TO authenticated;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "REST insert (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.real_user_candidates TO authenticated;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "REST update (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT, UPDATE ON public.real_user_candidates TO authenticated;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "REST delete (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT, DELETE ON public.real_user_candidates TO authenticated;\",\"message\":\"permission denied for table real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "RPC purge (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for function purge_real_user_candidates\"}",
+   "ok": true
+  },
+  {
+   "check": "graphql reachable (anonymous user, info)",
+   "status": 404,
+   "body": "{\"code\":\"PGRST202\",\"details\":\"Searched for the function public.graphql with parameter query, but no matches were found i",
+   "ok": true
+  },
+  {
+   "check": "GraphQL select (anonymous user)",
+   "status": 200,
+   "body": "{\"errors\": [{\"message\": \"pg_graphql extension is not enabled.\"}]}",
+   "ok": true
+  },
+  {
+   "check": "admin GET without user token",
+   "status": 401,
+   "body": "{\"error\":{\"code\":\"unauthorized\",\"message\":\"Missing bearer token\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "admin GET anonymous user",
+   "status": 403,
+   "body": "{\"error\":{\"code\":\"forbidden\",\"message\":\"Owner only\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "admin POST anonymous user",
+   "status": 403,
+   "body": "{\"error\":{\"code\":\"forbidden\",\"message\":\"Owner only\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "qa-log GET anonymous user (shared owner check)",
+   "status": 403,
+   "body": "{\"error\":{\"code\":\"forbidden\",\"message\":\"Owner only\",\"fallback\":false}}",
+   "ok": true
+  }
+ ]
+}
