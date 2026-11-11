@@ -1,4 +1,4 @@
-# Överlämning: Kelly, session 2026-11-11 (Ke29–Ke39)
+# Överlämning: Kelly, session 2026-11-11 (Ke29–Ke42)
 
 Det här står inte i rapporterna (`reports/*kelly*`).
 
@@ -17,14 +17,13 @@ Det här står inte i rapporterna (`reports/*kelly*`).
 - Angela läser mina underlag inom minuter (S2 rättades 537ea48). Kolla `git log 0d2346e..HEAD -- Lumen` innan fynd.
 
 ## Öppna trådar
-- **G3 "Ljud sparas inte" är osant** (Sov sparar klipp i 30 dagar). Ordagranna texter i Ke36-rapporten. Ingen punkt
-  hos Angela eller Kevin ännu; Deangelo måste lägga den. Högsta prio före nästa testare.
-- Små fynd utan punkt: K1 "Dela historik" grå (Ke38), S1 lägesikonen skalar inte, S2 Lyssnars underrubrik kapas (Ke39).
-- **Väckningsordet:** appen och sajten heter Earmind men säger ”Lumen”. Aron avgör.
-- **"Kommer snart"** på sajten (Kalender, Timer och påminnelser, Spotify, Sömn): ta bort per rad när Aron provat på
-  telefon (`site/index.html`, `class="soon"`). Spotify och Ring finns nu i appen (A58, A59) men är inte provade.
-- **Loggan:** röstningen (A54) är byggd och granskad. Vinnaren blir AppIcon och ersätter SYSTEM.md avsnitt 5.
-- Granskat och godkänt i dag: A50, A52, A53, A54, A55–A61, A64 (största text) och Tobys T8c/T13 (Ke35 fungerar).
-- Domänen earmind.app: canonical, og:url, og:image och sitemap byts när den finns.
-- Elias vita hörlur (Ke28 F1) syns på delningsbilden `og-earmind.png`.
+- **Loggan (D139):** ikonerna är EXAKT ChatGPT-bilderna, aldrig omritade. `_src/exakt.py` beskär 2,6–3,1 % inåt så
+  att iOS-maskens hörn hamnar innanför originalens. Mina vektorer (`rostning/vektor/`) används inte.
+- **A71** (AppIcon + röstning med sex) granskas mot `rostning/exakt/README.md` när skärmbilderna finns.
+- **Väckningsordet:** appen och sajten heter Earmind men säger ”Lumen”. Aron avgör. Annonserna (Ke22) undviker ordet.
+- **Ke22:** bildplan och bilder i `docs/marketing/annonser/ke22/`. Cookiebanner + pixlar (Ryans B1) blockerar
+  annonserna; ingen punkt hos mig än (behöver pixel-ID från Ryan och Arons ja till kakor).
+- **"Kommer snart"** på sajten: ta bort per rad när Aron provat på telefon (`class="soon"`).
+- A73 godkänd; kvar L1: licensraden säger att ElevenLabs inte sparar ljud (motsäger D135).
+- Delningsbilden `og-earmind.png` byts när röstningen avgjort loggan. Domänen earmind.app: canonical m.m.
 - Safari och iPhone är fortfarande inte provade för sidan.
