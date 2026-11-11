@@ -52,9 +52,10 @@ jobs:
           REF: ${{ github.ref }}
           EVENT: ${{ github.event_name }}
         run: |
-          # Toby's branch pushes run two configs only (fast iteration); main, nightly and manual runs do all of them.
+          # Toby's branch pushes run three configs (light, dark at the largest text, the small iPhone: PLAN 2b in
+          # under an hour); main, nightly and manual runs do all seven.
           if [ "$EVENT" = "push" ] && [ "$REF" != "refs/heads/main" ] && [ -z "$CONFIGS" ]; then
-            CONFIGS="pro-light pro-light-mikrofon-nekad"
+            CONFIGS="pro-light pro-dark-storsta-text liten-light"
           fi
           # shellcheck disable=SC2086
           bash scripts/apptest/screens.sh $CONFIGS
