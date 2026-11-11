@@ -47,5 +47,5 @@ Angela, 2026-11-11. Kö: `prompts/queue/angela.md` A72 (Deangelo).
   utan ändring. **Ej verifierat på enhet.**
 - **Tester:** `LumenTests/A72Tests.swift` har 2 tester: ord som aldrig tar slut, och en fortsättning som skickas
   strax efter.
-- **iOS-bygge och enhetstester:** CI RESULT72B.
+- **iOS-bygge och enhetstester:** CI 43083430294 (17d2937) är **grön**: device-bygget, alla enhetstester och `Lumen-unsigned.ipa`.
 - **Toby:** kör T15b. Kravet är att 0 av 10 frågor väntar över 4 s.

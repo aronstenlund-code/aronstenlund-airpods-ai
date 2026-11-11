@@ -52,6 +52,7 @@ struct SettingsView: View {
             studyProfileSection
             myAnswersSection
             spotifySection
+            testModeSection
             appearanceSection
             languageSection
             Section {
@@ -190,6 +191,26 @@ struct SettingsView: View {
         case .interview: "Intervju"
         case .social: "Socialt"
         case .rizz: "Rizz"
+        }
+    }
+
+    /// A76 (D140): "Testläge: skicka ljud för felsökning". Off unless switched on (or a test account, K43).
+    @ViewBuilder
+    private var testModeSection: some View {
+        if let testMode = model.testMode {
+            @Bindable var settings = testMode
+            Section {
+                Toggle("Testläge: skicka ljud för felsökning", isOn: $settings.isEnabled)
+                    .onChange(of: settings.isEnabled) { _, _ in Task { await model.testModeSwitched() } }
+            } header: {
+                Text("Testläge")
+            } footer: {
+                Text(settings.isEnabled && settings.serverRefused
+                     ? "Servern tar inte emot testljud från det här kontot ännu. Inget ljud sparas eller skickas."
+                     : settings.isEnabled
+                     ? TestModeSettings.soundNote + " Lyssnarraden visar ”Testläge, ljud skickas” så länge det pågår."
+                     : "Av. Slå bara på det om du testar Earmind åt oss: då skickas allt ljud medan Earmind lyssnar, så att vi kan höra om frågan urskildes rätt.")
+            }
         }
     }
 

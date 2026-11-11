@@ -54,3 +54,6 @@ verify_jwt = false                 # K6 voice design previews, does its own stri
 
 [functions.usage-stats]
 verify_jwt = false                 # does its own strict service-role check (new sb_secret keys are not JWTs)
+
+[functions.debug-audio]
+verify_jwt = false                 # K43 test-mode audio; code verifies the user JWT; ?action=purge needs no login (only > 14 days)

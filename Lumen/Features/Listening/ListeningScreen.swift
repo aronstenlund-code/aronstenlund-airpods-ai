@@ -119,6 +119,12 @@ struct ListeningScreen: View {
                     .foregroundStyle(LumenColor.muted)
                     .multilineTextAlignment(.center)
             }
+            if model.isRecordingDebugAudio {
+                // A76 (D140): the test mode keeps the audio; it is said on Lyssnar all the time, in its own colour.
+                Label("Testläge · ljud skickas", systemImage: "record.circle")
+                    .font(LumenFont.text(13, .semibold, relativeTo: .footnote))
+                    .foregroundStyle(Color.orange)
+            }
         }
         .padding(.horizontal, 12)
         .padding(.top, 4)

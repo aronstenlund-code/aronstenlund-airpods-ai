@@ -33,6 +33,7 @@ Det gemensamma är luft, typografi och en accentfärg. Illustrationer ligger i e
 | `blue` (accent) | #2346C8 | #7F9BFF | huvudknapp, länkar, Lyssnar-brickan |
 | `soft` | #EAF0FF | #1E2A4F | brickor ("5 dagar kvar", "Lyssnar") |
 | `red` | #D9342B | #FF6F61 | **bara** fel och "radera" |
+| `test` / `testsoft` | #B45309 / #FEF3E2 | #FBBF6A / #3A2A12 | **bara** testläget (D140, Ke45, `testlage.md`) |
 
 Lägesfärgerna (grön, orange, magenta, grafit) tas bort ur gränssnittet. Rutpappret tas bort helt i appen.
 

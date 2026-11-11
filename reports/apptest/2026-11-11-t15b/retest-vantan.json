@@ -1,0 +1,523 @@
+{
+  "cases" : [
+    {
+      "answered" : [
+        "Vad är 23 gånger 4?"
+      ],
+      "asked" : [
+        "Vad är 23 gånger 4?"
+      ],
+      "heard" : [
+        "Vad är 23 gånger 4?"
+      ],
+      "id" : "q4a",
+      "key" : "23",
+      "kind" : "question",
+      "spoken" : 1,
+      "text" : "Vad är tjugotre gånger fyra?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Vilka är de största haven i världen?"
+      ],
+      "asked" : [
+        "Vilka är de största? Varje i världen."
+      ],
+      "heard" : [
+        "Vilka är de största?",
+        "Varje i världen."
+      ],
+      "id" : "c1a",
+      "key" : "bergen",
+      "kind" : "continuation",
+      "spoken" : 3,
+      "text" : "Vilka är de största | bergen i världen?",
+      "verdict" : "asked without the continuation"
+    },
+    {
+      "answered" : [
+
+      ],
+      "asked" : [
+
+      ],
+      "heard" : [
+        "Och en bakterie."
+      ],
+      "id" : "c3a",
+      "key" : "bakterie",
+      "kind" : "continuation",
+      "spoken" : 0,
+      "text" : "Vad är skillnaden mellan ett virus | och en bakterie?",
+      "verdict" : "not asked"
+    },
+    {
+      "answered" : [
+        "Vad är 23 gånger fyra?"
+      ],
+      "asked" : [
+        "Vad är 23 gånger fyra?"
+      ],
+      "heard" : [
+        "Vad är 23 gånger fyra?"
+      ],
+      "id" : "q4b",
+      "key" : "23",
+      "kind" : "question",
+      "spoken" : 1,
+      "text" : "Vad är tjugotre gånger fyra?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Vilka är de största haven i världen?"
+      ],
+      "asked" : [
+        "Vilka är de största? Varian i världen."
+      ],
+      "heard" : [
+        "Vilka är de största?",
+        "Varian i världen."
+      ],
+      "id" : "c1b",
+      "key" : "bergen",
+      "kind" : "continuation",
+      "spoken" : 2,
+      "text" : "Vilka är de största | bergen i världen?",
+      "verdict" : "asked without the continuation"
+    },
+    {
+      "answered" : [
+        "Vad är skillnaden mellan ett virus och en bakterie?"
+      ],
+      "asked" : [
+        "Vad är skillnaden mellan ett virus?"
+      ],
+      "heard" : [
+        "Vad är skillnaden mellan ett virus?",
+        "Och en bakterie."
+      ],
+      "id" : "c3b",
+      "key" : "bakterie",
+      "kind" : "continuation",
+      "spoken" : 2,
+      "text" : "Vad är skillnaden mellan ett virus | och en bakterie?",
+      "verdict" : "asked without the continuation"
+    },
+    {
+      "answered" : [
+        "Vad är tjugotre gånger fyra?"
+      ],
+      "asked" : [
+        "Vad är tjugotre gånger fyra?"
+      ],
+      "heard" : [
+        "Vad är tjugotre gånger fyra?"
+      ],
+      "id" : "q4c",
+      "key" : "23",
+      "kind" : "question",
+      "spoken" : 1,
+      "text" : "Vad är tjugotre gånger fyra?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Vilka är de största haven i världen?"
+      ],
+      "asked" : [
+        "Vilka är de största? Varian i världen."
+      ],
+      "heard" : [
+        "Vilka är de största?",
+        "Varian i världen."
+      ],
+      "id" : "c1c",
+      "key" : "bergen",
+      "kind" : "continuation",
+      "spoken" : 2,
+      "text" : "Vilka är de största | bergen i världen?",
+      "verdict" : "asked without the continuation"
+    },
+    {
+      "answered" : [
+        "Vad är skillnaden mellan ett virus och en bakterie?"
+      ],
+      "asked" : [
+        "Vad är skillnaden mellan ett virus?"
+      ],
+      "heard" : [
+        "Vad är skillnaden mellan ett virus?",
+        "Och en bakterie?"
+      ],
+      "id" : "c3c",
+      "key" : "bakterie",
+      "kind" : "continuation",
+      "spoken" : 2,
+      "text" : "Vad är skillnaden mellan ett virus | och en bakterie?",
+      "verdict" : "asked without the continuation"
+    },
+    {
+      "answered" : [
+        "Vad är tjugotre gånger fyra?"
+      ],
+      "asked" : [
+        "Vad är tjugotre gånger fyra?"
+      ],
+      "heard" : [
+        "Vad är tjugotre gånger fyra?"
+      ],
+      "id" : "q4d",
+      "key" : "23",
+      "kind" : "question",
+      "spoken" : 1,
+      "text" : "Vad är tjugotre gånger fyra?",
+      "verdict" : "ok"
+    },
+    {
+      "answered" : [
+        "Vilka är de största haven i världen?"
+      ],
+      "asked" : [
+        "Vilka är de största? Barien i världen."
+      ],
+      "heard" : [
+        "Vilka är de största?",
+        "Barien i världen."
+      ],
+      "id" : "c1d",
+      "key" : "bergen",
+      "kind" : "continuation",
+      "spoken" : 2,
+      "text" : "Vilka är de största | bergen i världen?",
+      "verdict" : "asked without the continuation"
+    },
+    {
+      "answered" : [
+        "Vad är skillnaden mellan ett virus och en bakterie?"
+      ],
+      "asked" : [
+        "Vad är skillnaden mellan ett virus?"
+      ],
+      "heard" : [
+        "Vad är skillnaden mellan ett virus?",
+        "Och en bakterie."
+      ],
+      "id" : "c3d",
+      "key" : "bakterie",
+      "kind" : "continuation",
+      "spoken" : 2,
+      "text" : "Vad är skillnaden mellan ett virus | och en bakterie?",
+      "verdict" : "asked without the continuation"
+    }
+  ],
+  "endState" : "answering=false speaking=false listening=true",
+  "keytermLines" : [
+    "Scribe keyterms: 4, longest 7 characters (kortare)",
+    "Scribe keyterms changed: reconnecting in a pause",
+    "Scribe keyterms: 19, longest 10 characters (Atlantiska)",
+    "Scribe keyterms: 19, longest 10 characters (Atlantiska)",
+    "Scribe keyterms: 20, longest 15 characters (ämnesomsättning)",
+    "Scribe keyterms: 15, longest 15 characters (ämnesomsättning)"
+  ],
+  "log" : [
+    "   0.00 log State Idle → Listening",
+    "   0.06 log Cue: start (A34)",
+    "   0.87 log Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]",
+    "   0.87 log Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   0.87 log Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false",
+    "   1.21 log Capture started · engine input WAV files (13) · 16000 Hz · 1 ch · Int16",
+    "   1.21 log Microphone airPods for standard · B-HQ · MicrophoneBuiltIn · iPhone mic",
+    "   1.44 log Scribe keyterms: 4, longest 7 characters (kortare)",
+    "   2.45 log Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)",
+    "   4.32 log Local VAD not ready: all audio goes to Scribe",
+    "   4.32 log STT running: Scribe · sv-SE",
+    "  30.58 log Scribe: words heard, not committed yet (A63)",
+    "  30.65 log Answer ahead discarded (the words went on) · ahead 1 · used 0 · discarded 1 (2.0/min) · TTS ahead 0, wasted 0",
+    "  31.83 log Answer ahead discarded (the words went on) · ahead 2 · used 0 · discarded 2 (3.8/min) · TTS ahead 0, wasted 0",
+    "  32.02 heard Vad är 23 gånger 4?",
+    "  32.03 log Activation (auto) · answered ahead: Vad är 23 gånger 4?",
+    "  32.03 asked Vad är 23 gånger 4?",
+    "  32.03 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    "  32.77 spoke Tjugotre gånger fyra är nittiotvå.",
+    "  33.15 speech-start ",
+    "  33.17 answered Vad är 23 gånger 4?",
+    "  33.18 log Answer · first text after 929 ms · calc",
+    "  38.99 log Turn timing · answered ahead · heard→call 0 ms · call→first token 930 ms · call→done 1334 ms · heard→pause over 193 ms · pause over→first sound 6963 ms · ahead 3 · used 1 · discarded 2 (3.1/min) · TTS ahead 0, wasted 0",
+    "  38.99 log STT input gated (own speech)",
+    "  39.07 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    "  41.51 log Recogniser reopens: voice done 81 ms after its last sentence began, player quiet 2350 ms later, + 700 ms tail (A72)",
+    "  41.55 speech-end ",
+    "  42.24 log STT input open",
+    "  42.24 log More? window open (A15)",
+    "  47.26 log More? window closed (silence)",
+    "  56.03 log Scribe: words heard, not committed yet (A63)",
+    "  57.87 heard Vilka är de största?",
+    "  57.87 log Frågor: half a question, waiting up to 3.0 s for the rest (A21)",
+    "  59.03 log Scribe: words heard, not committed yet (A63)",
+    "  59.04 log Answer ahead discarded (the words went on) · ahead 4 · used 1 · discarded 3 (3.0/min) · TTS ahead 0, wasted 0",
+    "  59.67 log Half a question: Scribe asked for the rest now, words waiting: true (A63)",
+    "  60.28 heard Varje i världen.",
+    "  61.30 log Answer ahead discarded (a different turn) · ahead 5 · used 1 · discarded 4 (3.9/min) · TTS ahead 0, wasted 0",
+    "  68.54 log Activation (auto): Vilka är de största? Varje i världen.",
+    "  68.54 asked Vilka är de största? Varje i världen.",
+    "  68.54 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    "  70.36 spoke De största haven är Stilla havet, Atlantiska oceanen och Indiska oceanen.",
+    "  70.45 speech-start ",
+    "  71.69 log Turn timing · answered at the pause · heard→call 8672 ms · call→first token 1819 ms · call→done – · heard→pause over 8672 ms · pause over→first sound 3153 ms · ahead 5 · used 1 · discarded 4 (3.3/min) · TTS ahead 0, wasted 0",
+    "  71.69 log STT input gated (own speech)",
+    "  71.81 spoke Därefter kommer Södra ishavet och Norra ishavet, och Stilla havet är störst med ungefär hälften av världens havsyta.",
+    "  72.00 log Röst: 2 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    "  73.18 answered Vilka är de största haven i världen?",
+    "  73.18 log Answer · first text after 1815 ms · claude-sonnet-5-5",
+    "  84.80 speech-end ",
+    "  84.83 log Recogniser reopens: voice done 141 ms after its last sentence began, player quiet 12200 ms later, + 700 ms tail (A72)",
+    "  85.54 log STT input open",
+    "  85.54 log More? window open (A15)",
+    "  89.59 log Tip: shorter",
+    "  89.61 spoke Tips: säg ”Lumen, svara kortare” om svaren är för långa.",
+    "  89.61 speech-start ",
+    "  89.65 log STT input gated (own speech)",
+    "  89.74 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    "  90.54 log More? window closed (silence)",
+    "  94.29 speech-end ",
+    "  94.32 log Recogniser reopens: voice done 91 ms after its last sentence began, player quiet 4400 ms later, + 700 ms tail (A72)",
+    "  95.02 log STT input open",
+    "  96.72 log Scribe: words heard, not committed yet (A63)",
+    "  98.76 heard Och en bakterie.",
+    " 121.27 log Scribe: words heard, not committed yet (A63)",
+    " 122.05 log Answer ahead discarded (the words went on) · ahead 6 · used 1 · discarded 5 (2.5/min) · TTS ahead 0, wasted 0",
+    " 123.24 log Answer ahead discarded (the words went on) · ahead 7 · used 1 · discarded 6 (2.9/min) · TTS ahead 0, wasted 0",
+    " 123.65 heard Vad är 23 gånger fyra?",
+    " 123.66 log Activation (auto) · answered ahead: Vad är 23 gånger fyra?",
+    " 123.66 asked Vad är 23 gånger fyra?",
+    " 123.66 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 124.43 spoke Tjugotre gånger fyra är nittiotvå.",
+    " 124.45 speech-start ",
+    " 124.45 answered Vad är 23 gånger fyra?",
+    " 124.45 log Answer · first text after 1193 ms · calc",
+    " 124.53 log Turn timing · answered ahead · heard→call 0 ms · call→first token 1194 ms · call→done 1207 ms · heard→pause over 419 ms · pause over→first sound 873 ms · ahead 8 · used 2 · discarded 6 (2.9/min) · TTS ahead 0, wasted 0",
+    " 124.53 log STT input gated (own speech)",
+    " 124.59 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 127.00 log Recogniser reopens: voice done 58 ms after its last sentence began, player quiet 2300 ms later, + 700 ms tail (A72)",
+    " 127.04 speech-end ",
+    " 127.46 log Scribe keyterms changed: reconnecting in a pause",
+    " 127.70 log STT input open",
+    " 127.70 log More? window open (A15)",
+    " 128.45 log Scribe keyterms: 19, longest 10 characters (Atlantiska)",
+    " 129.39 log Local VAD in front of Scribe",
+    " 129.39 log Wearer focus in front of Scribe (A10)",
+    " 129.39 log STT running: Scribe · sv-SE",
+    " 132.71 log More? window closed (silence)",
+    " 147.47 log Scribe: words heard, not committed yet (A63)",
+    " 148.31 heard Vilka är de största?",
+    " 148.31 log Frågor: half a question, waiting up to 3.0 s for the rest (A21)",
+    " 149.38 log Scribe: words heard, not committed yet (A63)",
+    " 149.38 log Answer ahead discarded (the words went on) · ahead 9 · used 2 · discarded 7 (2.8/min) · TTS ahead 0, wasted 0",
+    " 150.12 log Half a question: Scribe asked for the rest now, words waiting: true (A63)",
+    " 150.65 heard Varian i världen.",
+    " 151.16 log Answer ahead discarded (a different turn) · ahead 10 · used 2 · discarded 8 (3.2/min) · TTS ahead 0, wasted 0",
+    " 170.84 log Activation (auto): Vilka är de största? Varian i världen.",
+    " 170.84 asked Vilka är de största? Varian i världen.",
+    " 170.84 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 170.85 log Scribe session ended after 41 s (closed 1000 ): reconnecting",
+    " 170.85 log Wearer focus: 0 s of others muted, 0 own ends of turn",
+    " 172.09 spoke De största haven är Stilla havet, Atlantiska oceanen och Indiska oceanen.",
+    " 172.12 speech-start ",
+    " 172.16 log Scribe keyterms: 19, longest 10 characters (Atlantiska)",
+    " 172.23 log Turn timing · answered at the pause · heard→call 20607 ms · call→first token 1249 ms · call→done – · heard→pause over 20607 ms · pause over→first sound 1384 ms · ahead 10 · used 2 · discarded 8 (2.8/min) · TTS ahead 0, wasted 0",
+    " 172.23 log STT input gated (own speech)",
+    " 172.35 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 172.39 spoke Därefter kommer Södra ishavet och Norra ishavet.",
+    " 172.52 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 172.54 log Recogniser reopens: voice done -78 ms after its last sentence began, player quiet 30000 ms later, + 700 ms tail (A72)",
+    " 172.87 log Local VAD in front of Scribe",
+    " 172.87 log Wearer focus in front of Scribe (A10)",
+    " 172.87 log STT running: Scribe · sv-SE",
+    " 174.76 answered Vilka är de största haven i världen?",
+    " 174.77 log Answer · first text after 1242 ms · claude-sonnet-5-5",
+    " 181.19 log Recogniser reopens: voice done 94 ms after its last sentence began, player quiet 8300 ms later, + 700 ms tail (A72)",
+    " 181.23 speech-end ",
+    " 181.91 log STT input open",
+    " 181.91 log More? window open (A15)",
+    " 186.93 log More? window closed (silence)",
+    " 194.74 log Scribe: words heard, not committed yet (A63)",
+    " 196.11 heard Vad är skillnaden mellan ett virus?",
+    " 196.11 log Frågor: half a question, waiting up to 3.0 s for the rest (A21)",
+    " 197.92 log Half a question: Scribe asked for the rest now, words waiting: false (A63)",
+    " 199.11 log Answer ahead discarded (a different turn) · ahead 11 · used 2 · discarded 9 (2.7/min) · TTS ahead 0, wasted 0",
+    " 206.84 log Activation (auto): Vad är skillnaden mellan ett virus?",
+    " 206.84 asked Vad är skillnaden mellan ett virus?",
+    " 206.84 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 207.31 log Scribe: words heard, not committed yet (A63)",
+    " 209.38 heard Och en bakterie.",
+    " 209.75 spoke Ett virus är mycket mindre än en bakterie och kan inte föröka sig på egen hand, utan måste ta över en levande cells maskineri för att göra kopior av sig själv.",
+    " 209.88 speech-start ",
+    " 209.91 log Turn timing · answered at the pause · heard→call 11027 ms · call→first token 2908 ms · call→done – · heard→pause over 11027 ms · pause over→first sound 3068 ms · ahead 11 · used 2 · discarded 9 (2.6/min) · TTS ahead 0, wasted 0",
+    " 209.91 log STT input gated (own speech)",
+    " 210.11 spoke En bakterie är en fullständig encellig organism med egen cellvägg, egen ämnesomsättning och förmåga att dela sig av sig själv.",
+    " 210.35 log Röst: 2 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 212.19 answered Vad är skillnaden mellan ett virus och en bakterie?",
+    " 212.20 log Answer · first text after 2907 ms · claude-haiku-5-5",
+    " 227.52 log Recogniser reopens: voice done 185 ms after its last sentence began, player quiet 16350 ms later, + 700 ms tail (A72)",
+    " 227.58 speech-end ",
+    " 228.24 log STT input open",
+    " 232.01 log Scribe: words heard, not committed yet (A63)",
+    " 232.79 log Answer ahead discarded (the words went on) · ahead 12 · used 2 · discarded 10 (2.6/min) · TTS ahead 0, wasted 0",
+    " 233.89 log Answer ahead discarded (the words went on) · ahead 13 · used 2 · discarded 11 (2.8/min) · TTS ahead 0, wasted 0",
+    " 234.40 heard Vad är tjugotre gånger fyra?",
+    " 234.40 log Activation (auto) · answered ahead: Vad är tjugotre gånger fyra?",
+    " 234.40 asked Vad är tjugotre gånger fyra?",
+    " 234.40 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 234.48 spoke Tjugotre gånger fyra är nittiotvå.",
+    " 234.48 answered Vad är tjugotre gånger fyra?",
+    " 234.48 log Answer · first text after 580 ms · calc",
+    " 234.55 log Turn timing · answered ahead · heard→call 0 ms · call→first token 581 ms · call→done 585 ms · heard→pause over 507 ms · pause over→first sound 145 ms · ahead 14 · used 3 · discarded 11 (2.8/min) · TTS ahead 0, wasted 0",
+    " 234.55 log STT input gated (own speech)",
+    " 234.60 speech-start ",
+    " 234.62 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 237.09 log Recogniser reopens: voice done 77 ms after its last sentence began, player quiet 2350 ms later, + 700 ms tail (A72)",
+    " 237.18 speech-end ",
+    " 237.81 log STT input open",
+    " 237.81 log More? window open (A15)",
+    " 242.82 log More? window closed (silence)",
+    " 257.50 log Scribe: words heard, not committed yet (A63)",
+    " 259.41 heard Vilka är de största?",
+    " 259.41 log Frågor: half a question, waiting up to 3.0 s for the rest (A21)",
+    " 260.60 log Scribe: words heard, not committed yet (A63)",
+    " 260.60 log Answer ahead discarded (the words went on) · ahead 15 · used 3 · discarded 12 (2.8/min) · TTS ahead 0, wasted 0",
+    " 261.25 log Half a question: Scribe asked for the rest now, words waiting: true (A63)",
+    " 261.79 heard Varian i världen.",
+    " 262.31 log Answer ahead discarded (a different turn) · ahead 16 · used 3 · discarded 13 (3.0/min) · TTS ahead 0, wasted 0",
+    " 282.59 log Activation (auto): Vilka är de största? Varian i världen.",
+    " 282.59 asked Vilka är de största? Varian i världen.",
+    " 282.59 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 282.60 log Scribe session ended after 109 s (closed 1000 ): reconnecting",
+    " 282.60 log Wearer focus: 1 s of others muted, 0 own ends of turn",
+    " 283.46 log Scribe keyterms: 20, longest 15 characters (ämnesomsättning)",
+    " 284.36 spoke De största haven är Stilla havet, Atlantiska oceanen och Indiska oceanen.",
+    " 284.45 log Turn timing · answered at the pause · heard→call 21238 ms · call→first token 1768 ms · call→done – · heard→pause over 21238 ms · pause over→first sound 1854 ms · ahead 16 · used 3 · discarded 13 (2.7/min) · TTS ahead 0, wasted 0",
+    " 284.45 log STT input gated (own speech)",
+    " 284.47 speech-start ",
+    " 284.56 log Local VAD in front of Scribe",
+    " 284.56 log Wearer focus in front of Scribe (A10)",
+    " 284.56 log STT running: Scribe · sv-SE",
+    " 284.66 spoke Därefter kommer Södra ishavet och Norra ishavet.",
+    " 284.81 log Röst: 2 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 286.56 answered Vilka är de största haven i världen?",
+    " 286.56 log Answer · first text after 1765 ms · claude-sonnet-5-5",
+    " 293.38 speech-end ",
+    " 293.40 log Recogniser reopens: voice done 124 ms after its last sentence began, player quiet 8200 ms later, + 700 ms tail (A72)",
+    " 294.11 log STT input open",
+    " 294.11 log More? window open (A15)",
+    " 299.12 log More? window closed (silence)",
+    " 306.43 log Scribe: words heard, not committed yet (A63)",
+    " 307.85 heard Vad är skillnaden mellan ett virus?",
+    " 307.85 log Frågor: half a question, waiting up to 3.0 s for the rest (A21)",
+    " 309.68 log Half a question: Scribe asked for the rest now, words waiting: false (A63)",
+    " 310.87 log Answer ahead discarded (a different turn) · ahead 17 · used 3 · discarded 14 (2.7/min) · TTS ahead 0, wasted 0",
+    " 319.77 log Activation (auto): Vad är skillnaden mellan ett virus?",
+    " 319.77 asked Vad är skillnaden mellan ett virus?",
+    " 319.77 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 320.27 log Scribe: words heard, not committed yet (A63)",
+    " 320.94 spoke Ett virus och en bakterie är båda mycket små smittämnen, men de är olika till sin natur.",
+    " 321.03 speech-start ",
+    " 321.04 log Turn timing · answered at the pause · heard→call 12222 ms · call→first token 1167 ms · call→done – · heard→pause over 12222 ms · pause over→first sound 1268 ms · ahead 17 · used 3 · discarded 14 (2.6/min) · TTS ahead 0, wasted 0",
+    " 321.04 log STT input gated (own speech)",
+    " 321.18 spoke En bakterie är en fullständig encellig organism med egen cellvägg och egen ämnesomsättning, och den kan dela sig på egen hand.",
+    " 321.40 log Röst: 2 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 323.61 answered Vad är skillnaden mellan ett virus och en bakterie?",
+    " 323.62 log Answer · first text after 1154 ms · claude-haiku-5-5",
+    " 334.90 log Recogniser reopens: voice done 199 ms after its last sentence began, player quiet 12850 ms later, + 700 ms tail (A72)",
+    " 334.93 speech-end ",
+    " 335.61 log STT input open",
+    " 335.61 log Words waited while Lumen spoke: the final is looked for again (A56)",
+    " 335.61 log More? window open (A15)",
+    " 336.23 heard Och en bakterie?",
+    " 336.26 log Echo filtered: 100 % of the words were Lumen's own",
+    " 340.61 log More? window closed (silence)",
+    " 344.64 log Scribe: words heard, not committed yet (A63)",
+    " 345.73 log Answer ahead discarded (the words went on) · ahead 18 · used 3 · discarded 15 (2.6/min) · TTS ahead 0, wasted 0",
+    " 346.84 log Answer ahead discarded (the words went on) · ahead 19 · used 3 · discarded 16 (2.8/min) · TTS ahead 0, wasted 0",
+    " 347.35 heard Vad är tjugotre gånger fyra?",
+    " 347.35 log Activation (auto) · answered ahead: Vad är tjugotre gånger fyra?",
+    " 347.35 asked Vad är tjugotre gånger fyra?",
+    " 347.35 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 347.47 spoke Tjugotre gånger fyra är nittiotvå.",
+    " 347.47 answered Vad är tjugotre gånger fyra?",
+    " 347.47 log Answer · first text after 623 ms · calc",
+    " 347.53 log Turn timing · answered ahead · heard→call 0 ms · call→first token 624 ms · call→done 629 ms · heard→pause over 508 ms · pause over→first sound 178 ms · ahead 20 · used 4 · discarded 16 (2.8/min) · TTS ahead 0, wasted 0",
+    " 347.53 log STT input gated (own speech)",
+    " 347.55 speech-start ",
+    " 347.56 log Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 350.04 log Recogniser reopens: voice done 32 ms after its last sentence began, player quiet 2350 ms later, + 700 ms tail (A72)",
+    " 350.06 speech-end ",
+    " 350.75 log STT input open",
+    " 350.76 log More? window open (A15)",
+    " 355.76 log More? window closed (silence)",
+    " 370.20 log Scribe: words heard, not committed yet (A63)",
+    " 372.11 heard Vilka är de största?",
+    " 372.11 log Frågor: half a question, waiting up to 3.0 s for the rest (A21)",
+    " 373.25 log Scribe: words heard, not committed yet (A63)",
+    " 373.25 log Answer ahead discarded (the words went on) · ahead 21 · used 4 · discarded 17 (2.7/min) · TTS ahead 0, wasted 0",
+    " 373.93 log Half a question: Scribe asked for the rest now, words waiting: true (A63)",
+    " 374.53 heard Barien i världen.",
+    " 374.53 log Answer ahead discarded (a different turn) · ahead 22 · used 4 · discarded 18 (2.9/min) · TTS ahead 0, wasted 0",
+    " 391.23 log Activation (auto): Vilka är de största? Barien i världen.",
+    " 391.23 asked Vilka är de största? Barien i världen.",
+    " 391.24 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 391.24 log Scribe session ended after 106 s (closed 1000 ): reconnecting",
+    " 391.24 log Wearer focus: 2 s of others muted, 0 own ends of turn",
+    " 392.37 log Scribe keyterms: 15, longest 15 characters (ämnesomsättning)",
+    " 392.83 spoke De fem största haven är Stilla havet, Atlantiska oceanen, Indiska oceanen, Södra ishavet och Norra ishavet.",
+    " 392.93 log Turn timing · answered at the pause · heard→call 17117 ms · call→first token 1591 ms · call→done – · heard→pause over 17117 ms · pause over→first sound 1699 ms · ahead 22 · used 4 · discarded 18 (2.7/min) · TTS ahead 0, wasted 0",
+    " 392.93 log STT input gated (own speech)",
+    " 392.94 speech-start ",
+    " 393.17 spoke Stilla havet är störst och täcker ungefär en tredjedel av jordens yta.",
+    " 393.32 log Local VAD in front of Scribe",
+    " 393.32 log Wearer focus in front of Scribe (A10)",
+    " 393.33 log STT running: Scribe · sv-SE",
+    " 393.39 log Röst: 2 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 395.35 answered Vilka är de största haven i världen?",
+    " 395.36 log Answer · first text after 1586 ms · claude-sonnet-5-5",
+    " 406.20 log Recogniser reopens: voice done 145 ms after its last sentence began, player quiet 12200 ms later, + 700 ms tail (A72)",
+    " 406.22 speech-end ",
+    " 406.91 log STT input open",
+    " 406.91 log More? window open (A15)",
+    " 411.92 log More? window closed (silence)",
+    " 415.50 log Scribe: words heard, not committed yet (A63)",
+    " 417.12 heard Vad är skillnaden mellan ett virus?",
+    " 417.12 log Frågor: half a question, waiting up to 3.0 s for the rest (A21)",
+    " 418.93 log Half a question: Scribe asked for the rest now, words waiting: false (A63)",
+    " 420.13 log Answer ahead discarded (a different turn) · ahead 23 · used 4 · discarded 19 (2.7/min) · TTS ahead 0, wasted 0",
+    " 434.34 log Activation (auto): Vad är skillnaden mellan ett virus?",
+    " 434.34 asked Vad är skillnaden mellan ett virus?",
+    " 434.34 log Turn · standard · STT Scribe · mic airPods · B-HQ",
+    " 434.44 log Scribe: words heard, not committed yet (A63)",
+    " 435.29 spoke Ett virus och en bakterie är båda mycket små smittämnen, men de är helt olika till sin natur.",
+    " 435.38 speech-start ",
+    " 435.39 log Turn timing · answered at the pause · heard→call 17788 ms · call→first token 943 ms · call→done – · heard→pause over 17788 ms · pause over→first sound 1045 ms · ahead 23 · used 4 · discarded 19 (2.6/min) · TTS ahead 0, wasted 0",
+    " 435.39 log STT input gated (own speech)",
+    " 435.52 spoke En bakterie är en fullständig encellig organism med egen cellvägg och egen ämnesomsättning, och den kan dela sig av egen kraft.",
+    " 435.73 log Röst: 2 meningar, 0 avbrott, 0 ms tystnad, startbuffert 0 ms, 0 förhämtade",
+    " 437.30 answered Vad är skillnaden mellan ett virus och en bakterie?",
+    " 437.31 log Answer · first text after 938 ms · claude-haiku-5-5",
+    " 449.83 speech-end ",
+    " 449.88 log Recogniser reopens: voice done 172 ms after its last sentence began, player quiet 13450 ms later, + 700 ms tail (A72)",
+    " 450.60 log STT input open",
+    " 450.60 log Words waited while Lumen spoke: the final is looked for again (A56)",
+    " 450.60 log More? window open (A15)",
+    " 451.54 heard Och en bakterie.",
+    " 451.54 log Echo filtered: 100 % of the words were Lumen's own",
+    " 455.60 log More? window closed (silence)",
+    " 485.27 log State Listening → Idle"
+  ],
+  "longestKeyterm" : 15,
+  "mode" : "standard",
+  "refusedOrFellBack" : [
+
+  ],
+  "seconds" : 473.6465139389038,
+  "set" : "vantan"
+}

@@ -236,7 +236,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     static let undoWindow: TimeInterval = 5
     /// A14: when a lone "Lumen." was heard; the next segment within `loneNameWindow` is its command.
     @ObservationIgnored private var loneNameAt: Date?
-    static let loneNameWindow: TimeInterval = 4
+    static let loneNameWindow: TimeInterval = 8 // A75: "Ja?" and 8 s for the question
     /// The tip on the screen, until the next answer.
     private(set) var tipNotice: String?
     private var tipTask: Task<Void, Never>?
@@ -455,6 +455,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         await useMicrophone(for: mode)
         await controller.start()
         logMicrophone()
+        updateDebugAudio() // A76
         if !isListening, case .error(let message) = state, message.localizedCaseInsensitiveContains("permission") {
             problem = .microphoneDenied // A12: shown on Start as well, not only on the first-question screen
         }
@@ -531,7 +532,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .social, .rizz: ["rizz", "cringe", "flirtig", "flirtigare"]
         case .interview: []
         }
-        transcription.setContextualStrings(ExamKeyterms.merged(exam: exam, rest: spoken + rest))
+        // A75: the name first, with the most weight Scribe and the phone's recogniser give (the first keyterms).
+        transcription.setContextualStrings(ExamKeyterms.merged(exam: [WakeWord.name] + exam, rest: spoken + rest))
     }
 
     /// Raw capture for the Diagnostics recording (D78), the same audio the recogniser gets before any gate.
@@ -546,6 +548,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func stopListening() async {
         if isListening { cue(.stop) } // A34: before the graph stops
         listeningStoppedAt = Date() // A60 (Toby T8b finding 1): what Scribe hands over after this is not used
+        stopDebugAudio() // A76: the last, shorter piece is finished
         stopListeningForExamStatement()
         answers.sessionLength = nil
         activation.cancelPending()
@@ -559,6 +562,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func resume() async {
         await controller.resume()
+        updateDebugAudio() // A76
     }
 
     /// One tap to switch to music and back (D33): screen button, Live Activity and Control. Never starts a
@@ -2235,6 +2239,123 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         return parts.isEmpty ? "nothing" : parts.joined(separator: ", ")
     }
 
+    // MARK: - A76 (D140) the test mode: the audio and what happened, for us
+
+    /// The test mode switch (Inställningar, or on for a test account by K43's flag).
+    var testMode: TestModeSettings?
+    /// True while the microphone's audio is being kept for us (the indicator says "Testläge · ljud skickas").
+    private(set) var isRecordingDebugAudio = false
+    @ObservationIgnored private var debugSubscription: UUID?
+    @ObservationIgnored private var debugTask: Task<Void, Never>?
+    @ObservationIgnored private var debugWriter: DebugAudioWriter?
+    @ObservationIgnored let debugStore = DebugPieceStore()
+
+    var debugAudioClient: DebugAudioClient?
+    @ObservationIgnored private var debugFlagChecked = false
+    @ObservationIgnored private var debugUploading = false
+
+    /// Starts or stops keeping the audio to match the switch, the server and the listening.
+    func updateDebugAudio() {
+        if !debugFlagChecked, debugAudioClient != nil {
+            debugFlagChecked = true
+            Task { await refreshTestModeFlag() }
+        }
+        let wanted = (testMode?.isEnabled ?? false) && !(testMode?.serverRefused ?? false) && isListening
+        if wanted, debugSubscription == nil {
+            let store = debugStore
+            let writer = DebugAudioWriter(store: store) { [weak self] url, start, end in
+                Task { @MainActor in self?.debugPieceFinished(url: url, start: start, end: end) }
+            }
+            let (id, stream) = controller.subscribeToChunks()
+            debugSubscription = id
+            debugWriter = writer
+            debugTask = Task.detached {
+                for await chunk in stream { await writer.append(chunk.samples) }
+                await writer.close()
+            }
+            isRecordingDebugAudio = true
+            controller.log("Test mode: the audio is kept and sent for debugging (A76, D140)")
+        } else if !wanted, debugSubscription != nil {
+            stopDebugAudio()
+        }
+    }
+
+    private func stopDebugAudio() {
+        guard let id = debugSubscription else { return }
+        debugSubscription = nil
+        controller.unsubscribeFromChunks(id) // ends the stream; the writer closes the last piece
+        debugTask = nil
+        debugWriter = nil
+        isRecordingDebugAudio = false
+    }
+
+    /// A finished minute: what was heard, what the turns became and the log lines in it, next to the audio.
+    private func debugPieceFinished(url: URL, start: Date, end: Date) {
+        let inside = { (date: Date) in date >= start.addingTimeInterval(-1) && date <= end.addingTimeInterval(1) }
+        var piece = DebugPiece(id: url.deletingPathExtension().lastPathComponent, startedAt: start, endedAt: end,
+                               audioFile: url.lastPathComponent, mode: mode.rawValue)
+        piece.heard = conversation.finalSegments.filter { inside($0.startedAt) }.map { .init(at: $0.startedAt, text: $0.text) }
+        piece.turns = controller.turns.records.filter { inside($0.at) }.map {
+            .init(at: $0.at, heard: $0.fragment, outcome: $0.outcome.rawValue, reason: $0.reason, status: $0.status)
+        }
+        piece.log = controller.eventLog.filter { inside($0.time) }.suffix(200).map {
+            String(format: "%.2f ", $0.time.timeIntervalSince(start)) + $0.text
+        }
+        piece.answers = conversation.answers.filter { inside($0.createdAt) }.map {
+            .init(at: $0.createdAt, text: "\($0.question) → \($0.answer)")
+        }
+        debugStore.save(piece)
+        controller.log("Test mode: a piece of \(Int(end.timeIntervalSince(start))) s is waiting for upload (A76)")
+        Task { await uploadDebugPieces() }
+    }
+
+    /// K43's flag once per launch: a test account is switched on, an account the server refuses is told so.
+    private func refreshTestModeFlag() async {
+        guard let client = debugAudioClient, let testMode, let flag = await client.flag() else { return }
+        testMode.applyServerFlag(flag)
+        if flag { await uploadDebugPieces() }
+        updateDebugAudio()
+    }
+
+    /// The switch in Settings: the tester's own choice goes to the server (K43 `opt_in`/`opt_out`).
+    func testModeSwitched() async {
+        guard let testMode else { return }
+        let on = testMode.isEnabled
+        if !on {
+            testMode.serverRefused = false
+            updateDebugAudio()
+        }
+        if let client = debugAudioClient, let flag = await client.setOptIn(on) {
+            testMode.serverRefused = on && !flag
+            if testMode.serverRefused {
+                controller.log("Test mode: the server does not take audio from this account (K43 needs an email sign-in)")
+                for piece in debugStore.pending() { debugStore.delete(piece) } // never kept when it cannot be sent
+            }
+        }
+        updateDebugAudio()
+    }
+
+    /// Sends the waiting pieces one at a time, oldest first; a sent piece leaves the phone (D140 point 4).
+    func uploadDebugPieces() async {
+        guard let client = debugAudioClient, !debugUploading else { return }
+        debugUploading = true
+        defer { debugUploading = false }
+        for piece in debugStore.pending() {
+            switch await client.upload(DebugTurnBody(piece: piece, audio: debugStore.audio(of: piece))) {
+            case .sent:
+                debugStore.delete(piece)
+            case .refused:
+                testMode?.serverRefused = true
+                for piece in debugStore.pending() { debugStore.delete(piece) }
+                controller.log("Test mode: the server refused the upload; the pieces are deleted and nothing more is kept (A76)")
+                updateDebugAudio()
+                return
+            case .failed:
+                return // no network: the pieces wait (at most 120 or 48 h)
+            }
+        }
+    }
+
     /// A74: the questions asked in the last minute (Standardläge), so a late copy is not answered again.
     @ObservationIgnored private var repeatGuard = RepeatGuard()
 
@@ -3280,6 +3401,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     private func activated(_ request: ActivationRequest, persona: PersonaRequest? = nil) {
+        let activatedAt = Date() // A72 part 3: how long it takes from here to the request
         if VoiceCommand.isMusicHandOff(request.query) { return } // the final result already paused the session
         // A8 (owner, 2026-11-08): Frågor answers the wearer's own questions too. D81's "Auto never answers the
         // wearer" made Lumen silent when Aron asked, with a voice profile. The voice is only logged now.
@@ -3304,9 +3426,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         pendingQuestion = request
         answerNotice = nil
         // A new question interrupts the current answer and its speech (assignment item 5).
+        let interruptAt = Date()
         speaker.interrupt()
+        let interruptMs = Int(Date().timeIntervalSince(interruptAt) * 1000)
         spokenAnswer = ""
         latency.begin(request)
+        let totalMs = Int(Date().timeIntervalSince(activatedAt) * 1000)
+        if totalMs >= 200 {
+            // A72 part 3 (Toby T15b): 8–20 s passed between "a different turn" and this line with nothing logged.
+            controller.log("Activation was held \(totalMs) ms on the phone: stopping the voice \(interruptMs) ms"
+                           + (controller.playback.lastSlowStop.map { " (\($0))" } ?? "") + " (A72)")
+        }
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
         sessionObserver?(.asked(query: request.query, trigger: request.trigger.rawValue), Date())
         if !study.isActive { logTurn() }
@@ -3931,15 +4061,23 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         // A14: Scribe sometimes puts "Lumen." in a segment of its own; the command is the next segment.
-        if VoiceChannel.normalized(segment.text) == WakeWord.name.lowercased() {
+        if WakeWord.matches(VoiceChannel.normalized(segment.text)), !segment.overlapsPlayback {
+            // A75 (Aron 20:41): the name alone (as heard: "Lumin.") always gets an answer: "Ja?", then 8 s for the question.
             loneNameAt = date
-            controller.log("Name alone: waiting for the command")
+            controller.log("Name alone: \"Ja?\", waiting for the question (A75)")
             study.discardTurnText()
+            discardAhead(reason: "the name alone")
+            say(language == .swedish ? "Ja?" : "Yes?")
             return
+        }
+        if VoiceChannel.parse(segment.text).intent == nil, let miss = VoiceChannel.nearMissName(in: segment.text) {
+            controller.log("Name-like word not taken: \(miss) (A75)") // grows WakeWord.variantsByName
         }
         if let lone = loneNameAt {
             loneNameAt = nil
-            if date.timeIntervalSince(lone) <= Self.loneNameWindow, !segment.overlapsPlayback,
+            // A75: the question after "Ja?" may overlap its end; only an echo of "Ja?" itself is not the question.
+            let isEchoOfYes = ["ja", "yes"].contains(VoiceChannel.normalized(segment.text))
+            if date.timeIntervalSince(lone) <= Self.loneNameWindow, !isEchoOfYes,
                handleVoice(in: WakeWord.name + ", " + segment.text, at: date) {
                 discardAhead(reason: "a voice command")
                 return

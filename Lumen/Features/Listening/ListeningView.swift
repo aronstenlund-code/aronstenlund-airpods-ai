@@ -17,7 +17,8 @@ struct ListeningView: View {
                     ListeningIndicatorBar(state: model.state,
                                           onStop: { Task { await model.endSession() } },
                                           onResume: { Task { await model.resume() } },
-                                          onOpen: { model.showsListeningScreen = true })
+                                          onOpen: { model.showsListeningScreen = true },
+                                          testMode: model.isRecordingDebugAudio) // A76
                     HomeView(model: model)
                 }
             }

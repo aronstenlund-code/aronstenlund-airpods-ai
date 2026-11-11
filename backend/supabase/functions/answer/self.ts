@@ -51,14 +51,18 @@ const SEE_EXTRA = /^kan (?:någon|andra|någon annan) (?:läsa|se|höra) (?:det 
 // K42.1 (Aron's phone test: "Vad heter du?" -> "har inget eget namn … studiehjälpen")
 const NAME = /^(?:vad heter du|vad är ditt namn|har du (?:ett |något |nåt )?(?:särskilt )?namn|vad (?:ska|kan) jag kalla dig|vem är du|hur heter du|heter du (?:något|nåt)|vad heter (?:den här |denna )?(?:appen|app)|vad är (?:appens|appen s) namn|vilken app är (?:det här|detta|du)|what(?: s|s| is) your name)$/u;
 
-export type SelfTopic = "name" | "robot" | "who_made" | "which_ai" | "listen" | "who_sees" | "sell" | "audio" | "save";
+// K44: "Vad är Earmind?" was "en studieassistent"
+const WHAT_APP = /^(?:vad är (?:earmind|lumen|du(?: för (?:något|nåt|en app|en ai|för app))?|det här för (?:en )?app|det för (?:en )?app|det här)|vad är du för (?:en )?(?:app|ai|grej|sak)|berätta om (?:dig själv|dig|appen|earmind))$/u;
+
+export type SelfTopic = "name" | "what" | "robot" | "who_made" | "which_ai" | "listen" | "who_sees" | "sell" | "audio" | "save";
 
 /** Spoken answers. True today: Lumen stores no audio, but ElevenLabs (speech to text) may keep it under its terms
  *  (zero retention needs their enterprise tier, O16); questions and answers go through Lumen's server to Anthropic's
  *  model; with consent v5 (K30) the developer reads questions and answers to improve the app, deleted within 14 days. */
 export const SELF_TEXT: Record<SelfTopic, string> = {
-  name: "Jag heter {N}. Jag är en AI-assistent som svarar i dina AirPods.",
-  robot: "Jag heter {N} och är en AI-assistent, alltså ingen människa. Frågor och svar går via {N}s server till en AI-modell.",
+  name: "Jag heter {N}. Jag är en AI-agent i dina AirPods för vardag, skola och jobb.",
+  what: "{N} är en AI-agent i dina AirPods för vardag, skola och jobb. Du säger Lumen och vad du vill, och jag svarar eller gör det direkt: frågor, förhör, timer, larm, påminnelser, kalender, samtal och musik.",
+  robot: "Jag heter {N} och är en AI-agent, alltså ingen människa. Frågor och svar går via {N}s server till en AI-modell.",
   who_made: "{N} är en svensk app från ett litet team. Svaren skrivs av en AI-modell, Claude från Anthropic.",
   which_ai: "Nej, {N} är inte ChatGPT. Svaren skrivs av en AI-modell från Anthropic som heter Claude.",
   listen: "{N} lyssnar bara när du har startat den, och du ser alltid när den lyssnar. {N} sparar inget ljud, men ElevenLabs, som skriver ut talet, kan spara det enligt sina villkor.",
@@ -74,6 +78,9 @@ export function selfTopic(text: string): SelfTopic | null {
   if (!t || t.split(" ").length > 12) return null;
   if (WHO_MADE.test(t)) return "who_made";
   if (NAME.test(t)) return "name";
+  // "vad är Earmind": the name at the end is the subject here, so test before N() drops it
+  const raw = text.toLowerCase().replace(/[^\p{L}\s]/gu, " ").replace(/\s+/g, " ").trim().replace(/^(?:(?:hej|okej|ok|men) )*(?:lumen |earmind )?/u, "");
+  if (WHAT_APP.test(t) || WHAT_APP.test(raw)) return "what";
   if (ROBOT.test(t) || BOT_EXTRA.test(t)) return WHICH_AI.test(t) ? "which_ai" : "robot";
   if (LISTEN.test(t) || LISTEN_EXTRA.test(t)) return /bakgrunden|tar du upp/u.test(t) ? "audio" : "listen";
   if (SEE_EXTRA.test(t)) return "who_sees";

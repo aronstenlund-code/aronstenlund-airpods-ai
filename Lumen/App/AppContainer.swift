@@ -94,6 +94,8 @@ final class AppContainer {
         listening.myAnswers = MyAnswerStore() // A53 (D126)
         listening.myAnswersClient = MyAnswersClient(config: .lumen, auth: auth, http: http)
         listening.logoVoteClient = LogoVoteClient(config: .lumen, auth: auth, http: http) // A54 (D127)
+        listening.testMode = TestModeSettings() // A76 (D140): off unless switched on
+        listening.debugAudioClient = DebugAudioClient(config: .lumen, auth: auth, http: http) // A76 (K43)
         listening.spotifyConnection = SpotifyConnection(client: ConnectClient(config: .lumen, auth: auth, http: http)) // A59
         listening.phoneTools = LivePhoneTools { [weak listening] text in listening?.notes.add(text: text) }
         ListeningRemote.pause = { [weak listening] in await listening?.pauseFromShortcut() }

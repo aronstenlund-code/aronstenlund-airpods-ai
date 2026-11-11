@@ -61,7 +61,7 @@ import Testing
                                    modeSettings: ModeSettings(defaults: defaults))
         await model.startListening()
         model.receiveFinalTranscript("Lumen.")
-        #expect(h.controller.eventLog.contains { $0.text == "Name alone: waiting for the command" })
+        #expect(h.controller.eventLog.contains { $0.text.hasPrefix("Name alone:") }) // A75: "Ja?" and 8 s
         model.receiveFinalTranscript("Spara det.")
         #expect(h.controller.eventLog.contains { $0.text == "Voice: command saveAnswer" })
     }

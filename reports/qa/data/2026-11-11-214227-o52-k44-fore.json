@@ -1,0 +1,618 @@
+{
+ "tag": "fore",
+ "rows": [
+  {
+   "id": "c01",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du sätta timers",
+   "status": 200,
+   "said": "Jag kan inte sätta timers här, men du kan säga till din telefon eller klocka att göra det.",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "DENIES: Jag kan inte"
+   ]
+  },
+  {
+   "id": "c02",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du ställa en väckarklocka åt mig",
+   "status": 200,
+   "said": "Jag kan inte ställa en väckarklocka, men du kan säga till din telefon eller klocka att väcka dig, till exempel klockan sju i morgon.",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "DENIES: Jag kan inte"
+   ]
+  },
+  {
+   "id": "c03",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du påminna mig om saker",
+   "status": 200,
+   "said": "Ja, säg vad du vill att jag ska påminna dig om och när, så lägger jag in det.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c04",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du läsa min kalender",
+   "status": 200,
+   "said": "Jag kan inte läsa din kalender, eftersom jag inte har tillgång till den. Öppna kalenderappen i telefonen så ser du dina händelser.",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "DENIES: Jag kan inte"
+   ]
+  },
+  {
+   "id": "c05",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du ringa folk åt mig",
+   "status": 200,
+   "said": "Ja, det kan jag. Säg vem du vill ringa, till exempel \"ring mamma\", så startar jag samtalet.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c06",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du spela musik",
+   "status": 200,
+   "said": "",
+   "tool": "music_open",
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c07",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du översätta",
+   "status": 200,
+   "said": "",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "SILENT"
+   ]
+  },
+  {
+   "id": "c08",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du kolla vädret",
+   "status": 200,
+   "said": "",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "SILENT"
+   ]
+  },
+  {
+   "id": "c09",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du söka på nätet",
+   "status": 200,
+   "said": "Jag kan inte söka på nätet, men jag kan svara på frågor från det jag vet.",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "DENIES: Jag kan inte"
+   ]
+  },
+  {
+   "id": "c10",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du hjälpa mig plugga",
+   "status": 200,
+   "said": "Ja, det kan jag. ",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "n01",
+   "kind": "name",
+   "mode": "auto",
+   "fragment": "Lumen, vem är du",
+   "status": 200,
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "g01",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, vad kan du göra",
+   "status": 200,
+   "said": "Jag heter Earmind, men jag kan hjälpa dig att studera. Jag svarar på frågor, förklarar begrepp, räknar och hjälper dig förstå ämnen som du går igenom.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c11",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du förhöra mig",
+   "status": 200,
+   "said": "Ja, gärna. ",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c12",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du hjälpa mig inför en jobbintervju",
+   "status": 200,
+   "said": "Ja, gärna. Berätta vilket jobb det gäller och när intervjun är, så kan vi gå igenom de vanligaste frågorna och hur du svarar på dem.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c13",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du hjälpa mig med vad jag ska säga till en tjej",
+   "status": 200,
+   "said": "Gärna, det beror lite på vad du vill säga och vad som redan har hänt mellan er. Om du berättar kort om situationen, till exempel om du vill fråga ut henne, be om ursäkt eller bara börja prata, kan jag ge dig några enkla formuleringar som låter naturliga. Det viktigaste är oftast att vara ärlig, lyssna på vad hon säger och inte pressa henne.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c14",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du ge mig en morgonrapport om min sömn",
+   "status": 200,
+   "said": "",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "SILENT"
+   ]
+  },
+  {
+   "id": "c15",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du ge mig ett träningspass",
+   "status": 200,
+   "said": "Ett enkelt pass hemma på ungefär tjugo minuter: börja med fem minuters lätt uppvärmning, till exempel hopp jack och armcirklar. Gör sedan tre omgångar med tio knäböj, tio armhävningar mot en bänk eller ett bord och tjugo sekunders plankan, med tjugo sekunders vila mellan övningarna. Avsluta med fem minuters lugn gång och några sträckningar för lår, vader och bröst. Kvällen är sen, så välj gärna en intensitet där du kan prata i hela meningar.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c16",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du spara anteckningar",
+   "status": 200,
+   "said": "Jag heter Earmind, inte Lumen. Jag kan inte spara anteckningar åt dig, men du kan säga din anteckning högt nu och skriva ner den själv.",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "DENIES: Jag kan inte"
+   ]
+  },
+  {
+   "id": "c17",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du komma ihåg saker åt mig",
+   "status": 200,
+   "said": "Jag kan spara saker om dig, till exempel din nivå, dina intressen eller hur du vill ha svaren, om du säger till mig vad jag ska komma ihåg. Jag heter Earmind, så det är lika bra att säga att du vill att jag ska minnas något.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c18",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du läsa upp mina egna svar",
+   "status": 200,
+   "said": "",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "SILENT"
+   ]
+  },
+  {
+   "id": "c19",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du ta tid när jag springer",
+   "status": 200,
+   "said": "Jag kan inte ta tid i realtid, men du kan starta en stoppur-app i telefonen eller säga \"starta stoppur\" till din klocka.",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "DENIES: Jag kan inte"
+   ]
+  },
+  {
+   "id": "c20",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, kan du hjälpa mig med matteläxan",
+   "status": 200,
+   "said": "Ja, gärna. Säg vilket område det gäller och vad uppgiften lyder, så tar vi den steg för steg.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "s01",
+   "kind": "coming",
+   "mode": "auto",
+   "fragment": "Lumen, kan du styra Spotify och byta låt",
+   "status": 200,
+   "said": "",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "SILENT"
+   ]
+  },
+  {
+   "id": "g02",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, vad kan du hjälpa mig med",
+   "status": 200,
+   "said": "Jag heter Earmind, inte Lumen, men jag kan hjälpa dig med de flesta studieämnen. Du kan fråga mig om begrepp och fakta, be mig förklara något så att det sitter, jämföra saker, räkna ut uppgifter och få hjälp att förstå hur något fungerar. Svaren läses upp för dig, så du kan hålla i dina anteckningar eller boken samtidigt. Säg bara vad du behöver så börjar vi.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "g03",
+   "kind": "name",
+   "mode": "auto",
+   "fragment": "Lumen, vad är Earmind",
+   "status": 200,
+   "said": "Jag heter Earmind. Jag är en AI-assistent som hjälper dig att svara på frågor och förklara ämnen medan du studerar.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "g04",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, vad är du för något",
+   "status": 200,
+   "said": "Jag heter Earmind och är en AI-assistent, alltså ingen människa. Frågor och svar går via Earminds server till en AI-modell.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "g05",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, är du bara för skolan",
+   "status": 200,
+   "said": "Nej, jag hjälper till med det mesta som rör studier, men jag är inte bara till för skolan. Du kan fråga mig om vad som helst, så länge det är något du vill förstå bättre.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "g06",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, vad är du bra på",
+   "status": 200,
+   "said": "Jag är bra på att förklara skolämnen, svara på faktafrågor och hjälpa dig att förstå ett ämne steg för steg, även när du bara säger ett kort ord.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "g07",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, berätta vad du kan",
+   "status": 200,
+   "said": "Jag heter Earmind. Jag kan svara på frågor om skolämnen, förklara begrepp, räkna ut uppgifter och hjälpa dig repetera inför prov. Säg bara till när du vill ha något.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "g08",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, vad gör den här appen",
+   "status": 200,
+   "said": "Jag heter Earmind, och jag är en studieassistent som svarar på frågor du säger högt, till exempel fakta, begrepp och förklaringar av ämnen du studerar.",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "STUDY-ONLY: studieassistent"
+   ]
+  },
+  {
+   "id": "n02",
+   "kind": "name",
+   "mode": "auto",
+   "fragment": "Lumen, vad heter du",
+   "status": 200,
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "h01",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, hur gör jag för att sätta en timer",
+   "status": 200,
+   "said": "Det beror på enheten. På en iPhone säger du \"Hej Siri, ställ en timer på tio minuter\", eller öppnar Klocka-appen och väljer fliken Timer. På en Android-telefon säger du \"Ok Google, ställ en timer på tio minuter\", eller öppnar appen Klocka. Vill du att timern ska gå på ett visst klockslag, säg då till exempel \"ställ en alarm till klockan sju på morgonen\".",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "h02",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, hur byter jag läge",
+   "status": 200,
+   "said": "Det beror på vilken enhet du menar. Säg vilken det är, så får du rätt svar.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "h03",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, hur gör jag för att få en morgonrapport",
+   "status": 200,
+   "said": "En morgonrapport är en sammanfattning av nyheter, väder och dagens schema som levereras tidigt på morgonen. Det enklaste sättet är att använda röstassistenten i din telefon eller smarta högtalare och ställa in en rutin, till exempel genom att säga att den ska läsa upp morgonnyheterna klockan sju. Många nyhetsappar och podcaster erbjuder också en daglig briefing som du kan prenumerera på. Om du vill ha en rapport om just dina studier kan du skapa en påminnelse eller ett schema i kalenderappen som läses upp varje morgon. Kolla vilka alternativ din enhet stödjer, eftersom inställningarna skiljer sig mellan system.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "h04",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, hur får jag dig att förhöra mig",
+   "status": 200,
+   "said": "Säg bara \"förhöra mig på\" följt av ämnet, till exempel \"förhöra mig på verben i franska\", så ställer jag frågor en i taget och du svarar med din röst.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "h05",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, hur sparar jag en anteckning",
+   "status": 200,
+   "said": "Det beror på appen du använder. Oftast trycker du på spara-ikonen, eller på de tre pricken-menyn och väljer spara. I många appar sparas anteckningen automatiskt när du lämnar skärmen.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "h06",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, hur ringer jag med dig",
+   "status": 200,
+   "said": "",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "SILENT"
+   ]
+  },
+  {
+   "id": "h07",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, hur pausar jag dig",
+   "status": 200,
+   "said": "",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "SILENT"
+   ]
+  },
+  {
+   "id": "h08",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, hur lägger jag till ett prov",
+   "status": 200,
+   "said": "Det beror på vilken app eller vilket schema du använder. Öppna kalendern eller planeringsfunktionen, välj den dag provet ska vara, skriv in ämnet och tiden, och spara.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "h09",
+   "kind": "cap",
+   "mode": "auto",
+   "fragment": "Lumen, hur pratar jag med dig",
+   "status": 200,
+   "said": "Du pratar med mig som med en vanlig person, rakt av, till exempel \"vad är fotosyntes?\". Jag svarar lika högt i dina AirPods. Vill du ha mer kan du säga det direkt efter svaret.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c01",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du sätta timers",
+   "status": 200,
+   "said": "Ja, jag kan starta en timer på telefonen. Säg bara hur lång tid den ska vara, till exempel \"timer på tjugofem minuter\".",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c02",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du ställa en väckarklocka åt mig",
+   "status": 200,
+   "said": "Vilken tid ska väckarklockan ringa? Säg klockslaget, till exempel sju och femton, så ställer jag den.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c03",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du påminna mig om saker",
+   "status": 200,
+   "said": "Ja, säg bara vad du vill bli påmind om och när, till exempel \"påminn mig i morgon klockan åtta om att plugga kemi\", så lägger jag in det.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c04",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du läsa min kalender",
+   "status": 200,
+   "said": "Jag tittar på kalendern för i kväll och de närmaste dagarna.",
+   "tool": "calendar_list",
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c05",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du ringa folk åt mig",
+   "status": 200,
+   "said": "Ja, säg bara vem du vill ringa, till exempel \"ring mamma\", så ringer jag upp ur dina kontakter.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c06",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du spela musik",
+   "status": 200,
+   "said": "",
+   "tool": "music_open",
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c07",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du översätta",
+   "status": 200,
+   "said": "",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "SILENT"
+   ]
+  },
+  {
+   "id": "c08",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du kolla vädret",
+   "status": 200,
+   "said": "Jag har ingen väderdata, så jag kan inte kolla vädret. Öppna väderappen på telefonen eller fråga SMHI:s app för en prognos för din ort ikväll och i morgon.",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "DENIES: jag kan inte"
+   ]
+  },
+  {
+   "id": "c09",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du söka på nätet",
+   "status": 200,
+   "said": "Ja, jag kan söka på nätet. Säg bara vad du vill ha reda på, till exempel ett provämne, ett pris eller ett datum.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "c10",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, kan du hjälpa mig plugga",
+   "status": 200,
+   "said": "Ja, gärna. Du kan också bara säga ett begrepp, till exempel \"fotosyntes\" eller \"andra världskriget\", så börjar jag där.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "n01",
+   "kind": "name",
+   "mode": "tutor",
+   "fragment": "Lumen, vem är du",
+   "status": 200,
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "tool": null,
+   "ok": true,
+   "notes": []
+  },
+  {
+   "id": "g01",
+   "kind": "cap",
+   "mode": "tutor",
+   "fragment": "Lumen, vad kan du göra",
+   "status": 200,
+   "said": "Jag heter Earmind, och jag är din studieassistent i öronen. Jag förklarar begrepp och ämnen på provnivå, löser textproblem steg för steg och ställer kontrollfrågor så att du får öva. Jag kan också sätta kalenderhändelser, påminnelser, timer och väckarklockor, spara anteckningar, ringa kontakter och öppna musik. Säg bara ett ämne eller en uppgift så sätter vi igång.",
+   "tool": null,
+   "ok": false,
+   "notes": [
+    "STUDY-ONLY: studieassistent"
+   ]
+  }
+ ],
+ "summary": {
+  "auto": "26/40",
+  "tutor": "9/12",
+  "denials": 7,
+  "study_only": 2,
+  "silent": 8
+ }
+}

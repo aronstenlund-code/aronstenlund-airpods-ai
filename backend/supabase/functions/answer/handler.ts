@@ -31,6 +31,7 @@ import {
 import { selfAnswer } from "./self.ts";
 import { complaintAnswer, isComplaint } from "./complaint.ts";
 import { MORE_START, weakLoneCommand } from "./lonecmd.ts";
+import { capabilitiesRule, capabilityAnswer, capabilityAsked, type Capability, helpAnswer, NOT_YET_ANSWER, notYetAsked, overview } from "../_shared/capabilities.ts";
 import { askedLength, lengthCaps, lengthNote } from "./asklength.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
@@ -98,6 +99,26 @@ import { AnswerPost, NumberStream, similarity } from "./speech.ts";
 /** K1.4: a short reply grades the check question only within this many seconds of the answer that asked it. */
 export const GRADE_REPLY_MAX_AGE_SEC = 120;
 
+/** Live eval meta-01: does a text (what is left after an echo) ask or request anything? */
+const ASK_START = /^(?:och |men |så |lumen,? |earmind,? )?(?:vad|vem|vilk(?:en|et|a)|hur|när|var|varför|vart|kan|kunde|får|ska|skulle|finns|är det|är du|har du|stämmer|förklara|berätta|säg|ge|visa|hjälp|räkna|beskriv|jämför|nämn|översätt|förhör|fråga|utveckla|upprepa|ta|gör|vill)(?![\p{L}])/iu;
+export function askLike(text: string): boolean {
+  if (/\?/.test(text)) return true;
+  if (/(?<![\p{L}])(?:och )?om [^.]{1,60}(?<![\p{L}])då\s*$/iu.test(text.trim())) return true; // "och om x är två då"
+  if (/(?<![\p{L}])(?:förstår inte|fattar inte|hänger inte med|en gång till|igen|enklare|ett exempel|mer om)(?![\p{L}])/iu.test(text)) return true;
+  return text.split(/[.!;:]+|\s[-–—]\s|-\s/u).map((x) => x.trim()).some((x) => ASK_START.test(x));
+}
+/** K44: "vad kan du (göra)?", "vad kan Earmind?", "vad mer kan du?" */
+const WHAT_CAN = /^(?:(?:hej|okej|ok)\s+)?(?:(?:lumen|earmind),?\s+)?(?:vad (?:mer )?kan (?:du|earmind|lumen|appen)(?: göra| hjälpa (?:mig )?med)?(?: mer)?|vad (?:gör|är) du bra på|vad kan jag (?:be dig om|fråga dig om|använda dig till)|vilka funktioner (?:har|finns)\b.*)\s*[?.!]?$/iu;
+/** K44: a concrete request ("… en timer på tio minuter", "… ringa mamma") with the wake word and the tool on the phone. */
+function isCapRequest(c: Capability, text: string, tools: string[], voiceInstruction: boolean): boolean {
+  if (!c.tool || c.status !== "finns" || !tools.includes(c.tool)) return false;
+  if (!/^(?:(?:hej|okej|ok)\s+)?(?:lumen|earmind)[,!.]?\s/iu.test(text.trim()) && !voiceInstruction) return false;
+  if (/\d|(?<![\p{L}])(?:minut\p{L}*|timm\p{L}*|sekund\p{L}*|klockan|kl|morgon|i dag|idag|i kväll|ikväll|måndag|tisdag|onsdag|torsdag|fredag|lördag|söndag|halv|kvart|om att|tio|fem|tjugo|trettio|femton)(?![\p{L}])/iu.test(text)) return true;
+  if (c.id === "call") return /(?<![\p{L}])ring(?:a|er)?\s+\p{L}+/iu.test(text);
+  if (c.id === "music") return /(?<![\p{L}])spela\s+(?!musik\s*[?.!]?$)\p{L}+/iu.test(text);
+  if (c.id === "notes") return /(?<![\p{L}])(?:spara|anteckna|skriv(?:a)? ner)\s+(?:att|det|\p{L}+\s+\p{L}+)/iu.test(text);
+  return false;
+}
 const countWords = (t: string): number => (t.match(/[\p{L}\d]+/gu) ?? []).length;
 /** The first n words of a text (no sentence end fits the asked word cap). */
 function firstWords(t: string, n: number): string {
@@ -468,7 +489,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
         );
       }
-      if (echo.echoed && echo.rest.split(/\s+/).filter((w) => /\p{L}{2,}/u.test(w)).length < 2) {
+      // live eval meta-01: the echo of the last answer plus a garbled rest ("ut till tio. Gud- Om x ökar … Två är
+      // krympning") was answered; a rest with no question or request in it is silence too
+      if (echo.echoed && (echo.rest.split(/\s+/).filter((w) => /\p{L}{2,}/u.test(w)).length < 2 || !askLike(echo.rest))) {
         const totalMs = Math.round(now() - t0);
         try {
           await deps.recordUsage({
@@ -616,7 +639,17 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const aboutMe = !demo && (!(body.persona === "social" || body.persona === "interview") || /^\s*(?:hej\s+|okej\s+)?lumen\b/iu.test(body.fragment));
       // K42.4: a complaint about Lumen ("varför upprepar du") is answered honestly in code, never with a promise
       const complaint = aboutMe && isComplaint(body.fragment);
-      const selfText = complaint ? complaintAnswer(body.qaLog === true) : aboutMe ? selfAnswer(body.fragment, body.assistantName ?? "Earmind") : null;
+      // K44: "kan du …?" from the one list (Shared/capabilities.json), "vad kan du göra?", "hur stänger jag av dig?".
+      // A concrete request with the wake word and the tool on the phone ("Lumen, kan du sätta en timer på tio minuter")
+      // goes on to the tool instead (capRequest)
+      const capAsk = aboutMe ? capabilityAsked(body.fragment) : null;
+      const capRequest = !!capAsk && isCapRequest(capAsk, body.fragment, body.toolsAvailable ?? [], !!body.voiceInstruction || body.mode !== "auto");
+      const capText = !aboutMe || complaint ? null
+        : capAsk && !capRequest ? capabilityAnswer(capAsk, body.context.capabilities)
+        : !capAsk && notYetAsked(body.fragment) ? NOT_YET_ANSWER
+        : WHAT_CAN.test(body.fragment.trim()) ? overview()
+        : helpAnswer(body.fragment);
+      const selfText = complaint ? complaintAnswer(body.qaLog === true) : capText ? capText : aboutMe ? selfAnswer(body.fragment, body.assistantName ?? "Earmind") : null;
       if (selfText) {
         const totalMs = Math.round(now() - t0);
         const frames = [
@@ -626,7 +659,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             answered: true,
             timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
             breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
-            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: complaint ? "complaint" : "self" },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: complaint ? "complaint" : capText ? "capabilities" : "self" },
             ...(complaint ? { complaint: true } : {}),
             summary: null,
             relation: null,
@@ -1141,7 +1174,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // (as push to talk) so the phone tools and Spotify are offered there too
       const autoAction = !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" &&
         ((body.toolsAvailable?.length ?? 0) > 0 || (body.connections ?? []).includes("spotify")) &&
-        isAddressedAction(body.fragment, !!body.voiceInstruction);
+        (isAddressedAction(body.fragment, !!body.voiceInstruction) || capRequest);
       const direct = !!funCmd || (cfg.directModes && (body.mode !== "auto" || autoAction)) || !!personaPlan(body);
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
       const plan = funCmd ? null : personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
@@ -1494,7 +1527,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "") +
         (!plan && (tutor || quiz) && !noSummary ? QUIZ_KEY_RULE : "") +
         // K42.1 (D128): the assistant has a name; it never says it has none
-        (!plan ? `\n- Your name is ${body.assistantName ?? "Earmind"}. Asked your name or who you are, say "Jag heter ${body.assistantName ?? "Earmind"}"; never say that you have no name or call yourself anything else.` : "");
+        (!plan ? `\n- Your name is ${body.assistantName ?? "Earmind"}. Asked your name or who you are, say "Jag heter ${body.assistantName ?? "Earmind"}"; never say that you have no name or call yourself anything else.` + capabilitiesRule(body.assistantName ?? "Earmind", body.context.capabilities) : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo

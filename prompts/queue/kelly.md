@@ -134,3 +134,7 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-11 20:08 → reports/2026-11-11-2008-kelly-ke43-granskning-a71.md (godkänd) **Ke43 – Granska A71 (exakt AppIcon, märket i rubriken och röstningen med sex)** (effort: low, Kelly själv, enligt Arons prompt). Mot `docs/design/logo/rostning/exakt/README.md`. Bilder: CI "Simulator screenshots" 43079705733.
 
 - [x] klar 2026-11-11 20:10 → reports/2026-11-11-2010-kelly-ke44-stegbilder.md **Ke44 – Stående uppgift (PLAN 2b): sajtens stegbilder från appen i dag** (effort: low, Kelly själv). Steg 1 visar "Ljud sparas inte." (osant, D138), steg 2 "förhör Lumen dig". Byt mot CI 43079705733 (e35e472), samma storlek. `site/` ≤ 2 MB, Lighthouse ≥ 95.
+
+- [x] klar 2026-11-11 20:44 → reports/2026-11-11-2044-kelly-ke45-testlage.md **Ke45 – Stående uppgift (PLAN 2c): design för testläget (D140, A76)** (effort: low, Kelly själv). Bricka på Lyssnar ("Testläge · ljud skickas", inte röd), raden i Inställningar, bekräftelse när det slås på, och vad ljudtexten (D138) säger när testläget är på. Underlag till Angela innan A76 byggs.
+
+- [x] klar 2026-11-11 21:16 → reports/2026-11-11-2116-kelly-ke46-granskning-a76.md **Ke46 – Stående uppgift (PLAN 2c): granska A76 (testläget) mot Ke45** (effort: low, Kelly själv). Godkänd med T1–T4; T2 (bekräftelseblad som nämner andras röster) hög.

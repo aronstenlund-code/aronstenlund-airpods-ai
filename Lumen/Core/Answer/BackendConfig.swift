@@ -21,6 +21,7 @@ struct BackendConfig: Sendable, Equatable {
     var connectURL: URL { projectURL.appending(path: "functions/v1/connect") } // A59 (K36)
     var logoVoteURL: URL { projectURL.appending(path: "functions/v1/logo-vote") } // A54 (K39)
     var myAnswersURL: URL { projectURL.appending(path: "functions/v1/my-answers") } // A53 (K37)
+    var debugAudioURL: URL { projectURL.appending(path: "functions/v1/debug-audio") } // A76 (K43)
     var studyPlanURL: URL { projectURL.appending(path: "functions/v1/study-plan") } // A19 (K17)
     var sharedHistoryURL: URL { projectURL.appending(path: "functions/v1/shared-history") }
     var signUpURL: URL { projectURL.appending(path: "auth/v1/signup") }

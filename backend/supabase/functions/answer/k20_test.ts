@@ -19,7 +19,7 @@ Deno.test("K20 kings' numbers are ordinals, also as digits or cardinal words", (
 });
 
 Deno.test("K20 questions about Lumen: honest (O16: ElevenLabs may keep the audio)", () => {
-  assert(selfAnswer("Lumen är du en robot")!.includes("AI-assistent"));
+  assert(selfAnswer("Lumen är du en robot")!.includes("AI-agent"));
   assert(selfAnswer("lyssnar du hela tiden?")!.includes("lyssnar bara när du har startat den"));
   const save = selfAnswer("sparar du mina frågor")!;
   assert(save.includes("Earmind sparar inget ljud") && save.includes("Earminds server till en AI-modell") && save.includes("på den här telefonen"));

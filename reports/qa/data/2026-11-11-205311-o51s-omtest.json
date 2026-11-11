@@ -1,0 +1,165 @@
+{
+ "cut_silent": "14/18",
+ "full_answered": "12/12",
+ "missed_cut": [
+  "vad är huvudstaden i",
+  "när började det andra",
+  "vilken är den största",
+  "vad heter Sveriges"
+ ],
+ "false_cut": [],
+ "cut": [
+  {
+   "t": "hur många invånare har Sverige och",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vem var det som",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "kan du förklara vad en",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "hur fungerar en",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "varför är det så att",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "hur lång är",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "är det sant att",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vilken av dem är",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vad hette kungen som",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "hur mycket väger ett",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vad är huvudstaden i",
+   "cut": false,
+   "ok": false
+  },
+  {
+   "t": "när började det andra",
+   "cut": false,
+   "ok": false
+  },
+  {
+   "t": "vilken är den största",
+   "cut": false,
+   "ok": false
+  },
+  {
+   "t": "vad heter Sveriges",
+   "cut": false,
+   "ok": false
+  },
+  {
+   "t": "hur många ben har en spindel och",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "hur vet man vilken",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vad är det för väder som",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vad är en",
+   "cut": true,
+   "ok": true
+  }
+ ],
+ "full": [
+  {
+   "t": "vad tror du att svaret är",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "hur gammal tror du att jag är",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "vem tror du att mördaren är",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "vad tror du det blir",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "hur svårt tror du provet blir",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "hur många katter tror du att hon har",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "vad betyder ordet och",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "vad är skillnaden mellan som och att",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "kan du ge exempel på en mening med som",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "vad heter det på engelska när man säger än",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "vilken månad är det",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "var ligger Mälaren",
+   "cut": false,
+   "ok": true
+  }
+ ]
+}
