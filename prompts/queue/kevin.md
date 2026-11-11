@@ -152,3 +152,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 - [x] **K-stående – omgång 12: Oscars O43 (falskt 'Rätt' när Scribe läser upp termlistan)** (effort: medium). Lagd av Kevin 2026-11-11. _klar 2026-11-11 14:22 (Kevin): `reports/2026-11-11-1422-kevin-standing12-o43-term-list.md`_
 
 - [x] **K-stående – omgång 13: Oscars O47 (rättelser med nya ord via modellkontroll)** (effort: medium). Lagd av Kevin 2026-11-11. _klar 2026-11-11 15:38 (Kevin): `reports/2026-11-11-1538-kevin-standing13-correction-check.md` (5/20 → 18/20, 0 falska)_
+
+- [x] **K-stående – omgång 14: Oscars O48 (falska rättelser i Haiku-kontrollen)** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 16:15 (Kevin): `reports/2026-11-11-1615-kevin-standing14-correction-false.md` (0/30 falska, 18/20)_
