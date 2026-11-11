@@ -132,3 +132,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-11 19:05 → reports/2026-11-11-1905-kelly-ke42-sajtens-ikon.md **Ke42 – Stående uppgift (PLAN 2b): sajten med appens ikon (D129/D139)** (effort: low, Kelly själv). Sidhuvudet, favicon och apple-touch-icon visar symbol 4; byt till den exakta glasklot-ikonen. `site/` ≤ 2 MB, Lighthouse ≥ 95.
 
 - [x] klar 2026-11-11 20:08 → reports/2026-11-11-2008-kelly-ke43-granskning-a71.md (godkänd) **Ke43 – Granska A71 (exakt AppIcon, märket i rubriken och röstningen med sex)** (effort: low, Kelly själv, enligt Arons prompt). Mot `docs/design/logo/rostning/exakt/README.md`. Bilder: CI "Simulator screenshots" 43079705733.
+
+- [x] klar 2026-11-11 20:10 → reports/2026-11-11-2010-kelly-ke44-stegbilder.md **Ke44 – Stående uppgift (PLAN 2b): sajtens stegbilder från appen i dag** (effort: low, Kelly själv). Steg 1 visar "Ljud sparas inte." (osant, D138), steg 2 "förhör Lumen dig". Byt mot CI 43079705733 (e35e472), samma storlek. `site/` ≤ 2 MB, Lighthouse ≥ 95.
