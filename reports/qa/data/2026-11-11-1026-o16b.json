@@ -1,0 +1,144 @@
+{
+ "stamp": "2026-11-11-1026",
+ "scribe_audio_seconds": 9.8,
+ "clip": "o16_espeak_sv_24k.npy",
+ "rows": [
+  {
+   "probe": "NFC 20 graphemes (control)",
+   "keyterms": [
+    "kärnkraftsolyckornaö"
+   ],
+   "code_points": [
+    20
+   ],
+   "rejected": null,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 376
+  },
+  {
+   "probe": "NFD 20 graphemes = 23 code points",
+   "keyterms": [
+    "kärnkraftsolyckornaö"
+   ],
+   "code_points": [
+    22
+   ],
+   "rejected": true,
+   "started": false,
+   "msgs": [
+    "{'message_type': 'invalid_request', 'error': \"Each keyterm must be at most 20 characters. 'kärnkraftsolyckornaö' is 22 characters.\"}"
+   ],
+   "close": [
+    1008,
+    "invalid_request"
+   ],
+   "commits": [],
+   "url_len": 378
+  },
+  {
+   "probe": "NFD 17 graphemes = 20 code points",
+   "keyterms": [
+    "kärnkraftsolyckorn"
+   ],
+   "code_points": [
+    19
+   ],
+   "rejected": null,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för"
+   ],
+   "url_len": 370
+  },
+  {
+   "probe": "emoji ZWJ family 1 grapheme + 15 letters",
+   "keyterms": [
+    "abcdefghijklmno👨‍👩‍👧"
+   ],
+   "code_points": [
+    20
+   ],
+   "rejected": null,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 415
+  },
+  {
+   "probe": "emoji single 🧬 + 19 letters",
+   "keyterms": [
+    "abcdefghijklmnopqrs🧬"
+   ],
+   "code_points": [
+    20
+   ],
+   "rejected": null,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 377
+  },
+  {
+   "probe": "rerun len 20",
+   "keyterms": [
+    "abcdefghijklmnopqrst"
+   ],
+   "code_points": [
+    20
+   ],
+   "rejected": false,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": [
+    1006,
+    ""
+   ],
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 366
+  },
+  {
+   "probe": "rerun 2 words",
+   "keyterms": [
+    "kalla kriget"
+   ],
+   "code_points": [
+    12
+   ],
+   "rejected": null,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 360
+  }
+ ]
+}
