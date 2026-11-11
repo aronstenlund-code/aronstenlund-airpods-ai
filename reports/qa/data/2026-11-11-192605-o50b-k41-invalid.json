@@ -1,0 +1,26 @@
+[
+ {
+  "choice": "AB",
+  "status": 400,
+  "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | ... | \\\"F\\\"}\",\"fallback\":false}}",
+  "ok": true
+ },
+ {
+  "choice": 7,
+  "status": 400,
+  "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | ... | \\\"F\\\"}\",\"fallback\":false}}",
+  "ok": true
+ },
+ {
+  "choice": "Ö",
+  "status": 400,
+  "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | ... | \\\"F\\\"}\",\"fallback\":false}}",
+  "ok": true
+ },
+ {
+  "check": "GET no vote",
+  "status": 200,
+  "body": "{\"choice\":null}",
+  "ok": true
+ }
+]
