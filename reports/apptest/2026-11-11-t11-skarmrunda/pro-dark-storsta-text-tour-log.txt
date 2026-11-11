@@ -1,0 +1,97 @@
+config: pro-dark-storsta-text
+screenshots: 61
+unreachable: 1
+
+shot: pro-dark-storsta-text-01-intro — Intro (sketch 1)
+shot: pro-dark-storsta-text-02-intro-slut — Intro, scrolled (the consent card)
+tap: intro → Läs mer
+shot: pro-dark-storsta-text-03-las-mer — Läs mer (full consent)
+shot: pro-dark-storsta-text-04-las-mer-slut — Läs mer, scrolled
+tap: Läs mer → Klar
+tap: intro → Testa nu
+note: no separate consent screen (A2: Testa nu is the consent)
+shot: pro-dark-storsta-text-05-forsta-fragan — First question (sketch 2)
+tap: first question → Fortsätt/Hoppa över
+shot: pro-dark-storsta-text-06-lagg-till-prov-forsta — Add exam at first start (sketch 3)
+shot: pro-dark-storsta-text-07-lagg-till-prov-forsta-slut — Add exam at first start, scrolled
+shot: pro-dark-storsta-text-08-lagg-till-prov-forsta-formular — Add exam at first start, the form (A33)
+shot: pro-dark-storsta-text-09-lagg-till-prov-forsta-formular-slut — Add exam at first start, the form, scrolled
+tap: add exam → Inte nu
+shot: pro-dark-storsta-text-10-dela-historik — Share history prompt
+tap: share prompt → Dela inte
+shot: pro-dark-storsta-text-11-start-utan-prov — Start without an exam (sketch 7)
+shot: pro-dark-storsta-text-12-start-lumen-kan-allt — A50: Start a few seconds later (the next example)
+tap: start → Byt (mode line)
+shot: pro-dark-storsta-text-13-byt-fran-start — A50: Byt from Start (the modes and Sov)
+tap: start → Allt Lumen kan
+shot: pro-dark-storsta-text-14-vad-kan — A52: Vad kan Lumen?
+shot: pro-dark-storsta-text-15-vad-kan-2 — A52: Vad kan Lumen?, scrolled 1
+shot: pro-dark-storsta-text-16-vad-kan-3 — A52: Vad kan Lumen?, scrolled 2
+tap: start → Lägg till prov
+shot: pro-dark-storsta-text-17-lagg-till-prov — Add exam sheet
+tap: add exam → NO
+shot: pro-dark-storsta-text-18-lagg-till-prov-no — Add exam, NO chosen
+tap: add exam → Spara prov
+shot: pro-dark-storsta-text-19-start-med-prov — Start with an exam (sketch 4)
+shot: pro-dark-storsta-text-20-start-med-prov-slut — Start with an exam, scrolled
+tap: start → Mina svar
+shot: pro-dark-storsta-text-21-mina-svar — A53: Mina svar, first time
+tap: Mina svar → Skriv en fråga
+shot: pro-dark-storsta-text-22-mina-svar-skriv — A53: Skriv en fråga (empty)
+tap: Skriv en fråga → Avbryt
+tap: start → Inställningar
+shot: pro-dark-storsta-text-23-installningar-1 — Settings, top
+shot: pro-dark-storsta-text-24-installningar-2 — Settings, scrolled 1
+shot: pro-dark-storsta-text-25-installningar-3 — Settings, scrolled 2
+shot: pro-dark-storsta-text-26-installningar-4 — Settings, scrolled 3
+shot: pro-dark-storsta-text-27-installningar-5 — Settings, scrolled 4
+shot: pro-dark-storsta-text-28-installningar-6 — Settings, scrolled 5
+shot: pro-dark-storsta-text-29-installningar-anteckningar — Settings › Anteckningar
+shot: pro-dark-storsta-text-30-installningar-anteckningar-slut — Settings › Anteckningar, scrolled
+shot: pro-dark-storsta-text-31-installningar-forberedelser — Settings › Förberedelser
+shot: pro-dark-storsta-text-32-installningar-forberedelser-slut — Settings › Förberedelser, scrolled
+shot: pro-dark-storsta-text-33-installningar-egna-kommandon — Settings › Egna kommandon
+shot: pro-dark-storsta-text-34-installningar-egna-kommandon-slut — Settings › Egna kommandon, scrolled
+shot: pro-dark-storsta-text-35-installningar-integritet — Settings › Integritet och samtycke
+shot: pro-dark-storsta-text-36-installningar-integritet-slut — Settings › Integritet och samtycke, scrolled
+shot: pro-dark-storsta-text-37-installningar-historik — Settings › Historik
+shot: pro-dark-storsta-text-38-installningar-historik-slut — Settings › Historik, scrolled
+shot: pro-dark-storsta-text-39-installningar-minne — Settings › Minne
+shot: pro-dark-storsta-text-40-installningar-minne-slut — Settings › Minne, scrolled
+shot: pro-dark-storsta-text-41-installningar-studiekort — Settings › Studiekort
+shot: pro-dark-storsta-text-42-installningar-studiekort-slut — Settings › Studiekort, scrolled
+shot: pro-dark-storsta-text-43-installningar-feedback — Settings › Feedback och förslag
+shot: pro-dark-storsta-text-44-installningar-feedback-slut — Settings › Feedback och förslag, scrolled
+shot: pro-dark-storsta-text-45-installningar-rostkommandon — Settings › Röstkommandon
+shot: pro-dark-storsta-text-46-installningar-rostkommandon-slut — Settings › Röstkommandon, scrolled
+shot: pro-dark-storsta-text-47-installningar-om-appen — Settings › Om appen
+shot: pro-dark-storsta-text-48-installningar-om-appen-slut — Settings › Om appen, scrolled
+shot: pro-dark-storsta-text-49-installningar-avancerat — Settings › Avancerat folded out
+shot: pro-dark-storsta-text-50-installningar-avancerat-2 — Settings › Avancerat, scrolled
+shot: pro-dark-storsta-text-51-installningar-ra-transkription — Settings › Rå transkription och svar
+shot: pro-dark-storsta-text-52-installningar-ra-transkription-slut — Settings › Rå transkription och svar, scrolled
+shot: pro-dark-storsta-text-53-installningar-diagnostik — Settings › Diagnostik
+shot: pro-dark-storsta-text-54-installningar-diagnostik-slut — Settings › Diagnostik, scrolled
+tap: settings → Klar
+tap: start → Starta Lumen / Bara fråga
+shot: pro-dark-storsta-text-55-fragor-startade-inte — Frågor did not open Lyssnar
+MISS: Lyssnar did not open for Frågor
+tap: start → Läge:*
+shot: pro-dark-storsta-text-56-fler-lagen — Fler lägen (A22)
+tap: start → Intervju
+tap: start → Starta Lumen (Intervju)
+shot: pro-dark-storsta-text-57-intervju-setup — Intervju first screen
+tap: start → Läge:*
+tap: start → Socialt
+tap: start → Starta Lumen (Socialt)
+shot: pro-dark-storsta-text-58-socialt-start — Socialt first screen
+tap: start → Läge:*
+tap: start → Rizz 18+
+tap: start → Starta Lumen (Rizz 18+)
+shot: pro-dark-storsta-text-59-rizz-aldersgrans — Rizz 18+ first screen
+tap: start → Läge:*
+tap: Byt → Provläge
+shot: pro-dark-storsta-text-60-start-provlage-valt — A50: Start with Provläge chosen
+tap: start → Starta Lumen (Provläge)
+shot: pro-dark-storsta-text-61-lyssnar-provlage — Lyssnar in Provläge (sketch 5)
+tap: lyssnar → Avsluta
