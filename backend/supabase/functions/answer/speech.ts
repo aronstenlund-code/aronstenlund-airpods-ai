@@ -3,8 +3,16 @@ import { numbersToSpeech } from "./svnum.ts";
 import { afterNumbers, beforeNumbers } from "./speechsym.ts";
 
 /** Digits, symbols, formulas and abbreviations -> speakable Swedish (D46/D54). */
-export const toSpeech = (t: string, ctx = ""): string =>
-  afterNumbers(numbersToSpeech(beforeNumbers(t, ctx)));
+export const toSpeech = (t: string, ctx = ""): string => {
+  // eval 2026-11-11: "portioner. 500 gram" was "portioner. femhundra gram": a number that starts a sentence
+  // starts with a capital letter when it is said as words
+  // (not after an abbreviation: "kl. 14.30", "nr. 5"; a sentence end is a word of 4+ letters or a digit before it)
+  const END = /(?:\p{L}{4}|[\d)])[.!?]\s*$/u;
+  const atStart = END.test(ctx);
+  const marked = t.replace(/(^|(?<=(?:\p{L}{4}|[\d)])[.!?])\s+|\n\s*)(?=\d)/gu, (m, pre: string, off: number) => (off === 0 && !pre && !atStart) ? m : `${pre}\u2063`);
+  const out = afterNumbers(numbersToSpeech(beforeNumbers(marked, ctx)));
+  return out.replace(/\u2063(\p{Ll})/gu, (_m, c: string) => c.toUpperCase()).replace(/\u2063/g, "");
+};
 
 /**
  * D46 post-processing of the streamed answer text, in code instead of more prompt text:

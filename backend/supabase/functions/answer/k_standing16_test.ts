@@ -1,5 +1,5 @@
 // Kevin standing round 16 (live eval 2026-11-11): a spaced range split across chunks was "ett komma fyra – fem till sju".
-import { assertEquals } from "jsr:@std/assert@1.0.8";
+import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { NumberStream } from "./speech.ts";
 
 Deno.test("standing16: a spaced number range is read as one range in every chunk size", () => {
@@ -21,4 +21,12 @@ Deno.test("standing16b: a first sentence about the sources is not spoken; a fact
   assertEquals(rewriteLeadIn(fact, "blir det regn"), fact);
   const src = "Källan är Livsmedelsverket, som rekommenderar fem frukter om dagen. ";
   assertEquals(rewriteLeadIn(src, "hur mycket frukt"), src);
+});
+
+import { toSpeech } from "./speech.ts";
+Deno.test("standing16c: a number that starts a sentence starts with a capital letter; not after 'kl.'", () => {
+  assertEquals(toSpeech("för fyra portioner. 500 gram färs. 2 ägg."), "för fyra portioner. Femhundra gram färs. Två ägg.");
+  assertEquals(toSpeech("500 gram färs.", "fyra portioner. "), "Femhundra gram färs.");
+  assertEquals(toSpeech("500 gram färs.", "ungefär "), "femhundra gram färs.");
+  assert(!/Fjorton/.test(toSpeech("Lektionen börjar kl. 14.30.")));
 });
