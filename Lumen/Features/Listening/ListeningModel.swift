@@ -1530,6 +1530,26 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if why == "no" || why == "silence" || why == "shake" { sendLengthSignal(yes: false) } // A56 (K13.2)
     }
 
+    /// A65 (Toby T7b/T12): "ja" in the Mer? window is taken from the partial once it has stood still for
+    /// `morePartialHold`, instead of waiting for Scribe's final after the pause (3 s and more). A partial that goes on
+    /// ("Ja men vad är fotosyntes?") is an ordinary turn, as before.
+    @ObservationIgnored private var morePartialTask: Task<Void, Never>?
+    @ObservationIgnored private var moreTakenFromPartial: (text: String, at: Date)?
+    static let morePartialHold: TimeInterval = 0.7
+
+    private func takeMoreFromPartialIfStable(_ text: String) {
+        morePartialTask?.cancel()
+        guard isOfferingMore, MoreOffer.verdict(text) == true, isOtherVoice(near: Date()) != true else { return }
+        morePartialTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Self.morePartialHold))
+            guard let self, !Task.isCancelled, self.isOfferingMore,
+                  self.conversation.partial?.text == text else { return }
+            self.moreTakenFromPartial = (text, Date())
+            self.discardAhead(reason: "more")
+            self.takeMore(by: "voice, before the final (A65)")
+        }
+    }
+
     /// A62 (K40): the answer key of the last answer, sent back with the next call in Provläge; its words go first among
     /// Scribe's keyterms while the question is asked ("Nilen", not "Nilan").
     @ObservationIgnored private var lastQuizKey: QuizKey?
@@ -3745,6 +3765,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard !controller.playback.isSpeaking else { return }
         lastHeardAt = date
         if !text.isEmpty { activation.speechContinues(now: date) } // A21.2: a held half question waits for the rest
+        takeMoreFromPartialIfStable(text)
         schedulePrefetch()
         // A partial that already ends a sentence is enough to start the answer (D80).
         if let last = text.trimmingCharacters(in: .whitespacesAndNewlines).last, last == "?" || last == "!" {
@@ -3818,6 +3839,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 discardAhead(reason: "a voice command")
                 return
             }
+        }
+        // A65: the "ja" was already taken from the partial; Scribe's final of the same word is not a turn of its own.
+        if let taken = moreTakenFromPartial, date.timeIntervalSince(taken.at) < 6, MoreOffer.verdict(segment.text) == true {
+            moreTakenFromPartial = nil
+            discardAhead(reason: "more, already taken")
+            study.discardTurnText()
+            return
         }
         // A15: in the "Mer?" window "ja" / "mer" from the wearer gets the long answer; "nej" or anything else closes it.
         if isOfferingMore {

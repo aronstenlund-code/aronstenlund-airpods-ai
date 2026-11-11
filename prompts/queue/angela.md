@@ -225,3 +225,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [x] klar 2026-11-11 13:38 → reports/2026-11-11-1325-angela-a63-toby-t12.md **A63 – Egen punkt (README 8): Tobys T12 (omtest av A56)** (effort: medium). `reports/apptest/2026-11-11-1300-toby-t12-omtest-a56.md`: fortsättningen på en halv fråga väntar fortfarande till Scribes sessionsslut (11–17 s), och A56:s vakt löste aldrig ut (med `two_level` strömmar svaret vidare efter det korta svaret).
 
 - [x] klar 2026-11-11 13:59 → reports/2026-11-11-1324-angela-a64-storsta-text.md **A64 – Stående uppgift (PLAN 2b): Kellys Ke37, största text (Tobys T11)** (effort: low). SYSTEM.md avsnitt 10: lägesraden, kortets huvud, datumraden och Mina svar staplas vid de fem största storlekarna; små versalrubriker på en rad; "Vad kan Earmind?" kapas inte; förklaringsraden under knapparna får gå på flera rader; loggan följer textstorleken.
+
+- [~] pågår 2026-11-11 13:59 **A65 – Egen punkt (README 8): "ja" i Mer?-fönstret utan att vänta på Scribes final (Toby T7b/T12)** (effort: low). Ett "ja" som står still 0,7 s som obekräftade ord tas direkt; Scribes final av samma ord används inte en gång till.
