@@ -1,0 +1,110 @@
+[
+ {
+  "id": "c08",
+  "mode": "auto",
+  "fragment": "Lumen, kan du kolla vädret",
+  "said": "Ja. Säg till exempel: Lumen, vad blir vädret i morgon?",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "c08",
+  "mode": "tutor",
+  "fragment": "Lumen, kan du kolla vädret",
+  "said": "Ja. Säg till exempel: Lumen, vad blir vädret i morgon?",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "g01",
+  "mode": "auto",
+  "fragment": "Lumen, vad kan du göra",
+  "said": "Jag är en AI-agent i dina AirPods för vardag, skola och jobb. I skolan: svar på frågor, förhör, mina svar. I vardagen: kalender, påminnelser, timer, larm, anteckningar, träning. Jag kan också ringa, öppna musik, översätta, söka på webben och hjälpa dig i intervjuer och samtal. Säg Lumen och vad du vill.",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "g01",
+  "mode": "tutor",
+  "fragment": "Lumen, vad kan du göra",
+  "said": "Jag är en AI-agent i dina AirPods för vardag, skola och jobb. I skolan: svar på frågor, förhör, mina svar. I vardagen: kalender, påminnelser, timer, larm, anteckningar, träning. Jag kan också ringa, öppna musik, översätta, söka på webben och hjälpa dig i intervjuer och samtal. Säg Lumen och vad du vill.",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "c14",
+  "mode": "auto",
+  "fragment": "Lumen, kan du ge mig en morgonrapport om min sömn",
+  "said": "Ja. Tryck Sov på kvällen, så får du en morgonrapport när du vaknar.",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "c14",
+  "mode": "tutor",
+  "fragment": "Lumen, kan du ge mig en morgonrapport om min sömn",
+  "said": "Ja. Tryck Sov på kvällen, så får du en morgonrapport när du vaknar.",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "c16",
+  "mode": "auto",
+  "fragment": "Lumen, kan du spara anteckningar",
+  "said": "Ja. Säg till exempel: Lumen, spara det.",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "c16",
+  "mode": "tutor",
+  "fragment": "Lumen, kan du spara anteckningar",
+  "said": "Ja. Säg till exempel: Lumen, spara det.",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "s01",
+  "mode": "auto",
+  "fragment": "Lumen, kan du styra Spotify och byta låt",
+  "said": "Det kommer snart. Styra Spotify (spela, pausa, nästa låt) går inte än. I dag kan jag öppna musik åt dig: säg Lumen, spela lugn pluggmusik.",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "s01",
+  "mode": "tutor",
+  "fragment": "Lumen, kan du styra Spotify och byta låt",
+  "said": "Det kommer snart. Styra Spotify (spela, pausa, nästa låt) går inte än. I dag kan jag öppna musik åt dig: säg Lumen, spela lugn pluggmusik.",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "h03",
+  "mode": "auto",
+  "fragment": "Lumen, hur gör jag för att få en morgonrapport",
+  "said": "En morgonrapport är en sammanfattning av dagens väder, kalender och viktiga nyheter som du kan få när du vaknar. Den får du genom att skapa en påminnelse eller ett larm i Lumen, där du säger vilken tid rapporten ska komma. Sedan kan du i Lumen säga vad du vill ha med, till exempel väder, dagens händelser och påminnelser. Om du vill ha den varje morgon kan du spara den som en återkommande rutin så att den startar automatiskt.",
+  "tool": null,
+  "deny": false,
+  "qdot": false
+ },
+ {
+  "id": "h03",
+  "mode": "tutor",
+  "fragment": "Lumen, hur gör jag för att få en morgonrapport",
+  "said": "En morgonrapport kan jag inte skapa som en återkommande funktion än, men du kan få ungefär samma sak på begäran. Säg på morgonen \"Lumen, vad har jag i kalendern i dag\" så läser jag upp dina händelser. Du kan också säga \"Lumen, hur blir vädret i dag\" eller \"Lumen, vad är det för nyheter\" så söker jag på webben åt dig. För att vakna i tid säger du \"Lumen, ställ ett larm klockan sju\".",
+  "tool": null,
+  "deny": true,
+  "qdot": false
+ }
+]

@@ -42,3 +42,10 @@ Uppgift: O52 i `prompts/queue/oscar.md` (Deangelo 21:20). K44 (`1d5237a`, `8d91f
 ## Till Aron
 - "Vad är klockan?" svarar nu rätt.
 - "Vad kan du?" beskriver hela Earmind och förnekar inte timers, kalender eller väder längre.
+
+## Tillägg 2026-11-12 00:02: omtest efter Kevins K44b (`9e0e85b`, driftsatt 23:57)
+Rådata: `reports/qa/data/2026-11-12-000238-o52-k44-efter2.json`. Sex frågor körs i Standardläge och Provläge (12 anrop, under 0,01 USD).
+- **Morgonrapport:** "kan du ge mig en morgonrapport om min sömn" ger "Ja. Tryck Sov på kvällen, så får du en morgonrapport när du vaknar." (2/2) **Rättat.**
+- **Spotify:** "kan du styra Spotify och byta låt" ger "Det kommer snart. Styra Spotify (spela, pausa, nästa låt) går inte än. I dag kan jag öppna musik åt dig …" (2/2) **Rättat.**
+- **Skiljetecken:** "?." 0 gånger. **Rättat.**
+- **Ny, prio 3:** "**hur gör jag** för att få en morgonrapport" går inte genom listan. I Standardläge hittar modellen på att det är "en sammanfattning av dagens väder, kalender och viktiga nyheter". I Provläge säger den "En morgonrapport kan jag inte skapa som en återkommande funktion än". Frågor av typen "hur gör jag …" om något som finns i listan bör få listans `say` (här: "Tryck Sov på kvällen").
