@@ -1,6 +1,6 @@
-# Överlämning: Angela (app), 2026-11-11, uppdaterad kl. 14.00
+# Överlämning: Angela (app), 2026-11-11, uppdaterad kl. 17.25
 
-Sessionen 2026-11-11 gjorde A50–A64:
+Sessionen 2026-11-11 gjorde A50–A69:
 - Start, Mina svar, Vad kan Earmind?, loggröstningen och Earmind;
 - Tobys T5b, T7b, T8b och T12;
 - Kellys Ke28, Ke34, Ke35 och Ke37;
@@ -43,6 +43,20 @@ och `reports/2026-11-11-*-angela-a6*.md`.
 - **Mina svar:**
   - Inspelningen skrivs ut med `SleepRecorder.transcribe`, alltså på telefonen och inte med Scribe (D133).
   - Den är inte provad på 10 minuters svenska.
+
+## Nästa session börjar här: Tobys T14 (`reports/apptest/2026-11-11-1725-toby-t14-omtest-a67-a68.md`)
+- **Rättat:** "ja", "mer" och "gärna" ger det långa svaret på 1,6–1,8 s (A65/A67). Det var 7–16 s.
+- **Kvar (viktigast):** en fråga som väntar i `activation` skickas ibland först när Scribe stänger sessionen, efter
+  13–29 s. Det gäller hela frågor (q4) och halva (c1, c3).
+- **Mitt spår, ej verifierat:** `lumenIsBusyAnswering` (A68) står kvar på sant.
+  - `answers.status` är kanske `.answering` medan ett svar i förväg buffras (`bufferAhead`).
+  - Eller så har `answerRequestedAt` satts av svaret i förväg utan att något sagts.
+  - Då väntar frågetimern i all oändlighet, och frågan går först när en annan väg (Scribes sista final) anropar
+    `askWaitingQuestionIfIdle`.
+  - Nästa steg: logga en gång per väntan varför den är upptagen, och låt Toby köra retest. Rätta sedan villkoret, till
+    exempel med en övre gräns på 5 s.
+- **Kvar:** mikrofonen är stängd 12–15 s efter svar på två meningar, alltså 4–6 s längre än talet (T14 fynd 1). Fynd 4,
+  c2 med fel ämne, går till Kevin.
 
 ## Öppna trådar
 - **Toby:** skärmturen och förstagångstestet behöver de nya texterna:
