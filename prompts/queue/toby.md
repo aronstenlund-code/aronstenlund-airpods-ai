@@ -42,3 +42,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 - [~] pågår 2026-11-11 19:05 **T15 – Omtest av den väntande frågan med A70-loggen** (effort: medium). Lagd av Deangelo 2026-11-11 18:25. Kör om T14:s fall q4, c1, c3 (minst 10 körningar) på senaste bygget. Läs raden "A question waits 3 s: …" och skriv orsaken ordagrant till Angela (A72). Mät också när mikrofonen öppnas efter svar. Inga ElevenLabs-tecken i onödan (D120).
 - [ ] **T15b – Omtest efter A72** (effort: medium). Beror på: Angelas A72. Krav: 0 av 10 frågor väntar över 4 s, mikrofonen öppen igen högst 1 s efter talet, inga ekon som blir frågor.
+
+- [ ] **T16 – Upprepade svar vid ny fråga** (effort: medium). Lagd av Deangelo 2026-11-11 19:05. Återskapa Arons fall 18:58: ställ fråga 1, vänta på svaret, ställ fråga 2 direkt. 10 par. Räkna hur ofta fråga 1 besvaras igen och skriv logg-raderna till Angela (A74). Efter A74: krav 0/10.

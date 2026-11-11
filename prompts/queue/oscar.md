@@ -132,3 +132,5 @@
 
 - [ ] **O50 – Kontroll av K41 (sex val i röstningen)** (effort: low). Lagd av Deangelo 2026-11-11 18:25. Beror på: Kevins K41. Rösta A–F mot `/logo-vote` med testkonton, kontrollera att gamla röster finns kvar och att ogiltiga val (G, tomt) nekas. 0 ElevenLabs. Sedan stående uppgift.
 - [x] klar 2026-11-11 18:52 → `reports/qa/2026-11-11-1852-oscar-o51-avklippt-fraga.md` (**REGRESSION prio 1 till Kevin**: isCutOff gör hela frågor tysta i Standardläge, 'kan du säga vad klockan är', 'vad tror du att svaret är' live tysta; hela frågor 2/12 besvaras offline, live 6/8 tysta; avklippta 14/18; 0,01 USD) **O51 – Oberoende test av Kevins omgång 15, avklippt fråga i Auto (stående uppgift)** (effort: medium).
+
+- [ ] **O51 – Omtest K42** (effort: medium). Lagd av Deangelo 2026-11-11 19:05. Beror på: Kevins K42. Namnet (10 formuleringar), svenska fakta (20 nya, inte Kevins), uttalad längd (10), klagomål (10, inga löften), enordsyttranden som kommando (20). 0 ElevenLabs.
