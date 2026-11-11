@@ -95,7 +95,9 @@ import Testing
         return defaults
     }
 
-    @Test func theFirstStartAsksTheQuestionsThenSendsTheProfile() async {
+    /// Ke35 (Toby T8b finding 6): no five questions first; without an exam one question ("Har du prov snart?"), and
+    /// "Inte nu" starts Provläge anyway. The profile set in Inställningar goes with every call.
+    @Test func provlageAsksAtMostOneThingThenSendsTheProfile() async {
         let h = ControllerHarness()
         let provider = FakeAnswerProvider(name: "cloud", events: [.delta("Bra fråga. "), .done(AnswerDone(answered: true))])
         let defaults = freshDefaults()
@@ -107,17 +109,22 @@ import Testing
                                    memory: memory, modeSettings: ModeSettings(defaults: defaults),
                                    studyProfile: StudyProfileStore(defaults: defaults))
 
-        await model.startProvFromCard()
-        #expect(model.isShowingStudyOnboarding, "D83: the questions come first")
-        #expect(!model.study.isActive)
-
         var answers = StudyProfile()
         answers.subject = "Biologi"
         answers.examDate = Calendar.current.date(byAdding: .day, value: 3, to: Calendar.current.startOfDay(for: Date()))
         answers.explanations = .short
-        await model.finishStudyOnboarding(answers)
+        model.studyProfile.profile = answers
+        model.studyProfileChanged()
 
-        #expect(model.study.isActive)
+        await model.startProvFromCard()
+        #expect(!model.isShowingStudyOnboarding, "Ke35: no five questions")
+        #expect(model.isShowingAddExam, "Ke35: one question, only without an exam")
+        #expect(!model.study.isActive)
+        model.isShowingAddExam = false
+        await model.startProvAfterExamStep() // "Inte nu"
+
+        #expect(model.study.isActive, "Inte nu starts Provläge anyway")
+        #expect(model.studyProfile.profile.onboarded)
         #expect(memory.facts.contains { $0.text.hasPrefix("Provprofil: prov i Biologi") })
 
         model.study.level(-70, at: Date())
@@ -133,6 +140,6 @@ import Testing
 
         model.endStudy(bySilence: false)
         await model.startProvFromCard()
-        #expect(model.study.isActive, "only the first time")
+        #expect(model.study.isActive, "the exam question only once")
     }
 }

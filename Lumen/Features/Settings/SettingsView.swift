@@ -276,7 +276,6 @@ struct SettingsView: View {
                 ForEach(StudyProfile.Explanations.allCases, id: \.self) { Text(StudyProfile.explanationName($0)).tag(StudyProfile.Explanations?.some($0)) }
             }
             Button("Spara i minnet") { model.studyProfileChanged() }
-            Button("Visa frågorna igen vid nästa start") { store.profile.onboarded = false }
         } header: {
             Text("Förhör och förklaringar")
         } footer: {

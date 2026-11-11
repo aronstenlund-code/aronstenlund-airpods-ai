@@ -171,7 +171,7 @@ struct LumenButtonStyle: ButtonStyle {
 
     private var foreground: Color {
         guard isEnabled else { return LumenColor.muted }
-        switch kind {
+        return switch kind {
         case .primary: LumenColor.onBlue
         case .secondary: LumenColor.ink
         case .danger: LumenColor.onRed
@@ -180,7 +180,7 @@ struct LumenButtonStyle: ButtonStyle {
 
     private var background: Color {
         guard isEnabled else { return LumenColor.surface }
-        switch kind {
+        return switch kind {
         case .primary: LumenColor.blue
         case .secondary: LumenColor.surface
         case .danger: LumenColor.red

@@ -62,9 +62,14 @@ struct FirstStartView: View {
         await container.listening.startListening()
     }
 
+    /// Ke35 (Kelly, Toby T8b finding 5): the first start ends on Start with Lumen not listening, so the new user sees
+    /// the Start button (and "Här startar du Earmind" once) before Lumen listens on its own the next time.
     private func finish() {
-        UserDefaults.standard.set(true, forKey: Self.doneKey)
-        onDone()
+        Task {
+            await container.listening.stopListening()
+            UserDefaults.standard.set(true, forKey: Self.doneKey)
+            onDone()
+        }
     }
 }
 
