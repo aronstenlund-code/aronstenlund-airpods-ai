@@ -71,7 +71,7 @@ const DEFS: Record<PhoneToolName, { description: string; input_schema: unknown; 
   // the user to confirm the call (one tap), so there is no confirm question from Lumen as well
   call_contact: {
     write: true,
-    description: "Start a phone call. Use only when the user asks to call someone. `name` is the contact as the user said it ('mamma', 'Elin'); `number` only when the user said the digits themself. Never make up a number.",
+    description: "Start a phone call. Use whenever the user asks to call someone or something ('ring mamma', 'ring Elin', 'ring tandläkaren', 'ring skolan'): the app looks `name` up in the user's own contacts, so a name is always enough and you never need or look up a number. `name` is exactly as the user said it; `number` only when the user said the digits themself. Never make up a number.",
     input_schema: obj({
       name: { type: "string", description: "The contact's name as said, e.g. mamma" },
       number: { type: "string", description: "Only digits the user said, e.g. 0701234567" },
