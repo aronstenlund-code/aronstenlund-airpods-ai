@@ -74,7 +74,10 @@ export function lengthNote(a: AskedLength): string {
   }
   if (a.words) {
     const lo = a.atLeast ? a.words : Math.round(a.words * 0.9), hi = a.atMost ? a.words : Math.round(a.words * (a.atLeast ? 1.4 : 1.1));
-    return `LENGTH (K42): the user asked for ${a.atLeast ? "at least " : a.atMost ? "at most " : "about "}${a.words} words. Write between ${lo} and ${hi} words in full sentences (count them as you go); this overrides every other length rule, also "short" and the two-level rule. Never mention the word count.`;
+    // live: "femtio ord" got 74, "trettio ord" 41: short targets get a sentence budget too (about 12 words each)
+    const sents = Math.max(1, Math.round((a.atLeast ? lo : hi) / 13));
+    const budget = a.words <= 80 && !a.atLeast ? ` That is ${sents} short ${sents === 1 ? "sentence" : "sentences"} and nothing more: no example, no "På provet" sentence, no extra clause.` : "";
+    return `LENGTH (K42): the user asked for ${a.atLeast ? "at least " : a.atMost ? "at most " : "about "}${a.words} words. Write between ${lo} and ${hi} words in full sentences (count them as you go); this overrides every other length rule, also "short" and the two-level rule.${budget} Never mention the word count.`;
   }
   if (a.short) return "LENGTH (K42): the user asked for a short answer: one or two short sentences, at most about 30 words.";
   return "";
