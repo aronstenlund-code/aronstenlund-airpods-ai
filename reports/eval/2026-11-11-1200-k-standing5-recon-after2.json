@@ -1,0 +1,42 @@
+{
+ "ok": 6,
+ "n": 6,
+ "rows": [
+  {
+   "fragment": "Vilka är de största? Bargern i världen.",
+   "recon": "Vilka är de största bergen i världen?",
+   "said": "De högsta bergen i världen är Mount Everest i Himalaya, åttatusen åttahundrafyrtionio meter, följt av K2 och Kangchenjunga, som båda ligger i Himalaya och Karakoram.",
+   "ok": true
+  },
+  {
+   "fragment": "Hur långa är de? Floderna i Afrika.",
+   "recon": "Hur långa är Afrikas största floder?",
+   "said": "Afrikas längsta flod är Nilen, som är cirka sextusen sexhundrafemtio kilometer lång, och Kongofloden är en av de största efter vattenvolym.",
+   "ok": true
+  },
+  {
+   "fragment": "Vilken är den äldsta? Stan i Sverige.",
+   "recon": "Vilken är den äldsta staden i Sverige?",
+   "said": "Den äldsta staden i Sverige är Sigtuna, grundad omkring niohundraåttio. Sigtuna är alltså äldre än Stockholm.",
+   "ok": true
+  },
+  {
+   "fragment": "Hur många finns det? Benen i kroppen.",
+   "recon": "Hur många ben finns det i kroppen?",
+   "said": "Den vuxna människan har tvåhundrasex ben.",
+   "ok": true
+  },
+  {
+   "fragment": "Vilka är de största?",
+   "recon": "Vilka är de största öknarna?",
+   "said": "De tre största öknarna är Antarktis, Arktis och Sahara.",
+   "ok": true
+  },
+  {
+   "fragment": "Och den minsta då?",
+   "recon": "Vilken är den minsta planeten?",
+   "said": "Den minsta planeten är Merkurius.",
+   "ok": true
+  }
+ ]
+}

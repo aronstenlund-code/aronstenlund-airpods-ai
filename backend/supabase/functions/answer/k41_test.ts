@@ -56,5 +56,32 @@ Deno.test("O41: a meta sentence about the request is never spoken first", () => 
   assertEquals(rewriteLeadIn("The request is to play music, so I'll open the music app with a lofi search.", "kör lofi"), "");
   assertEquals(rewriteLeadIn("Det är en statement, inte en fråga eller uppgift, så jag svarar kort och vänligt.", "att spela teater är roligt"), "");
   assertEquals(rewriteLeadIn("Det är en fråga om vem Alexander Graham Bell ringde till först.", "x"), "");
+  assertEquals(rewriteLeadIn("Det här är en musikförfrågan, så jag öppnar musikappen med lofi.", "kör lofi"), "");
   assertEquals(rewriteLeadIn("Det låter kul!", "x"), "Det låter kul!");
+});
+
+Deno.test("O41: digits said as words count as said (B6 guard), articles do not", async () => {
+  const { spokenDigits } = await import("./phonetools.ts");
+  assertEquals(spokenDigits("ring noll sju tre, fyra fem sex, sjuttioåtta nittio"), "0734567890");
+  assertEquals(validatePhoneInput("call_contact", { number: "073-456 78 90" }, "ring noll sju tre, fyra fem sex, sjuttioåtta nittio"), { number: "073-456 78 90" });
+  assertEquals(validatePhoneInput("call_contact", { number: "0701234567" }, "ring en kompis"), null);
+});
+
+Deno.test("O41: 'ett' next to numbers is a digit", async () => {
+  const { spokenDigits } = await import("./phonetools.ts");
+  assertEquals(spokenDigits("ring noll åtta, ett två tre fyra fem sex sju"), "081234567");
+  assertEquals(spokenDigits("ring noll sju noll, ett två tre, fyrtiofem sextiosju"), "0701234567");
+  assertEquals(spokenDigits("ring en kompis"), "");
+});
+
+Deno.test("O41: +46 written by the model is the 0 the user said", () => {
+  assertEquals(validatePhoneInput("call_contact", { number: "+46701234567" }, "Lumen, ring noll sju noll, ett två tre, fyrtiofem sextiosju"), { number: "0701234567" });
+  assertEquals(validatePhoneInput("call_contact", { number: "+46701234567" }, "ring mamma"), null);
+});
+
+Deno.test("O41: with phone tools in Swedish, the model's English reasoning is not spoken", async () => {
+  const { AnswerPost } = await import("./speech.ts");
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, dropEnglish: true });
+  const out = p.push("The user asks to call a friend, but gave no name. I need a name to call, so I should ask who. Vem vill du att jag ska ringa? ") + p.finish();
+  assertEquals(out.trim(), "Vem vill du att jag ska ringa?");
 });

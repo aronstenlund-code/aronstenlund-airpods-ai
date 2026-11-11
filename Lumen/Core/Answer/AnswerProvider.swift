@@ -45,6 +45,8 @@ struct AnswerContext: Equatable, Sendable {
     var savedAnswers: [SavedAnswerPayload] = []
     /// A56 (K13, D100): short answer first, the developed one in `done.more` (Standardläge and Provläge).
     var twoLevel = false
+    /// A59 (K36): the services the user has connected ("spotify"), for the server's tools.
+    var connections: [String] = []
 
     struct ConceptStat: Equatable, Sendable, Codable {
         var concept: String
@@ -104,7 +106,8 @@ struct AnswerContext: Equatable, Sendable {
                           SavedAnswerPayload(id: String($0.id.prefix(64)), q: String($0.q.prefix(SavedAnswerPayload.questionLimit)),
                                              a: String($0.a.prefix(SavedAnswerPayload.answerLimit)))
                       },
-                      twoLevel: twoLevel)
+                      twoLevel: twoLevel,
+                      connections: Array(connections.prefix(5)))
     }
 }
 
@@ -246,6 +249,8 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var savedAnswer: SavedAnswerHit? = nil
     /// A56 (K13): with `two_level`, the developed answer after the short one; not spoken until "ja".
     var more: String? = nil
+    /// A59 (K36): a tool the server ran (Spotify); the sentence about it is the answer.
+    var serverTool: ServerToolResult? = nil
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.

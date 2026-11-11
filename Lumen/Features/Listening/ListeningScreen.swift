@@ -270,9 +270,13 @@ struct ListeningScreen: View {
                     .frame(minHeight: 44)
             }
         } else {
-            Text("Svaren hörs i örat och syns här.")
-                .font(LumenFont.text(18))
-                .foregroundStyle(LumenColor.muted)
+            // Ke35: every start begins empty, with this in the middle.
+            VStack(spacing: 6) {
+                Text("Fråga vad du vill.").font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.muted)
+                Text("Svaret kommer i örat och här.").font(LumenFont.text(15)).foregroundStyle(LumenColor.muted)
+            }
+            .frame(maxWidth: .infinity)
+            .multilineTextAlignment(.center)
         }
     }
 

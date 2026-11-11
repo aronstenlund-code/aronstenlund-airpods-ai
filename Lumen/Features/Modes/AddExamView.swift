@@ -42,7 +42,11 @@ struct AddExamView: View {
     private var isQuick: Bool { editing == nil }
 
     var body: some View {
-        if isQuick { quickBody } else { fullBody }
+        Group {
+            if isQuick { quickBody } else { fullBody }
+        }
+        // A60 (Toby T8b finding 1): once the exam step is gone, the next sentence is an ordinary one again.
+        .onDisappear { model.stopListeningForExamStatement() }
     }
 
     // MARK: A22 the first start: "Har du prov snart?"

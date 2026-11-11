@@ -149,6 +149,8 @@ struct LumenButtonStyle: ButtonStyle {
     enum Kind { case primary, secondary, danger }
     var kind: Kind = .primary
     var height: CGFloat = 56
+    /// Kelly Ke34 V1: a disabled button looks disabled (`surface` and `muted`), not tappable.
+    @Environment(\.isEnabled) private var isEnabled
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -168,7 +170,8 @@ struct LumenButtonStyle: ButtonStyle {
     }
 
     private var foreground: Color {
-        switch kind {
+        guard isEnabled else { return LumenColor.muted }
+        return switch kind {
         case .primary: LumenColor.onBlue
         case .secondary: LumenColor.ink
         case .danger: LumenColor.onRed
@@ -176,7 +179,8 @@ struct LumenButtonStyle: ButtonStyle {
     }
 
     private var background: Color {
-        switch kind {
+        guard isEnabled else { return LumenColor.surface }
+        return switch kind {
         case .primary: LumenColor.blue
         case .secondary: LumenColor.surface
         case .danger: LumenColor.red

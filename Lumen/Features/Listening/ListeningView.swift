@@ -37,7 +37,9 @@ struct ListeningView: View {
         .sheet(item: $model.showingMyAnswers) { route in
             MyAnswersView(model: model, route: route) // A53 (D126)
         }
-        .sheet(isPresented: $model.isShowingAddExam) {
+        .sheet(isPresented: $model.isShowingAddExam, onDismiss: {
+            Task { await model.startProvAfterExamStep() } // Ke35: Starta in Provläge asked for the exam first
+        }) {
             AddExamView(model: model) { model.isShowingAddExam = false }
         }
         .sheet(item: $model.editingExam) { plan in

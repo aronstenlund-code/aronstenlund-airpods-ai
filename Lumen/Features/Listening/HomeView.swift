@@ -18,6 +18,10 @@ struct HomeView: View {
     /// A52: the sheet after the first answer, once.
     @State private var showsCapabilitiesIntro = false
     @AppStorage(CapabilitiesIntroSheet.shownKey) private var capabilitiesIntroShown = false
+    /// Ke35: "Här startar du Earmind" once, until the first Starta or ×.
+    @AppStorage("ke35.startHintShown") private var startHintShown = false
+    /// Toby T8b finding 4: the last Starta did not start anything.
+    @State private var startFailed = false
     /// A54 (D127): the logo vote when the app opens, after the first answer.
     @State private var showsLogoVote = false
     @State private var logoOrder: [LogoChoice] = LogoChoice.allCases
@@ -182,20 +186,62 @@ struct HomeView: View {
     /// The one blue button, and the mode it starts under it. While a session runs it goes back to Lyssnar.
     private var startCard: some View {
         VStack(spacing: 6) {
+            if !startHintShown, !model.isActiveSession {
+                // Ke35: once, after the first start: where Lumen starts.
+                HStack(alignment: .top, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Här startar du Earmind").font(LumenFont.text(17, .semibold))
+                        Text("Sen lyssnar den tills du trycker Avsluta. Du ser alltid när den lyssnar.")
+                            .font(LumenFont.text(15))
+                            .foregroundStyle(LumenColor.muted)
+                    }
+                    Spacer(minLength: 0)
+                    Button {
+                        startHintShown = true
+                    } label: {
+                        Image(systemName: "xmark").font(.system(size: 14, weight: .semibold)).foregroundStyle(LumenColor.muted)
+                            .frame(width: 44, height: 44)
+                    }
+                    .accessibilityLabel("Stäng")
+                }
+                .padding(.leading, 16)
+                .padding(.vertical, 6)
+                .background(LumenColor.soft, in: RoundedRectangle(cornerRadius: 16))
+                .padding(.bottom, 6)
+            }
             Button {
                 if model.isActiveSession {
                     model.showsListeningScreen = true
                 } else {
-                    Task { await model.startSelectedMode() }
+                    startHintShown = true
+                    startFailed = false
+                    Task {
+                        await model.startSelectedMode()
+                        // Toby T8b finding 4: a start that did not take says so (the microphone card says it itself).
+                        startFailed = !model.isActiveSession && model.problem == nil && !model.isShowingAgeGate
+                            && !model.isShowingLiveStart && !model.isShowingInterviewSetup && !model.isShowingAddExam && !model.isShowingStudyOnboarding
+                    }
                 }
             } label: {
                 Label(model.isActiveSession ? "Tillbaka till Earmind" : "Starta Earmind", systemImage: "waveform")
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
             }
             .buttonStyle(LumenButtonStyle(height: 64))
+            .overlay {
+                if !startHintShown, !model.isActiveSession {
+                    RoundedRectangle(cornerRadius: 18).strokeBorder(LumenColor.soft, lineWidth: 4).padding(-4) // Ke35
+                }
+            }
             .accessibilityHint(model.isActiveSession
                 ? "Visar Lyssnar"
                 : "Earmind börjar lyssna i \(model.selectedMode.shortName.lowercased())")
+            if startFailed {
+                Text("Earmind kom inte igång. Tryck igen om en stund.")
+                    .font(LumenFont.text(15))
+                    .foregroundStyle(LumenColor.red)
+                    .frame(maxWidth: .infinity)
+                    .multilineTextAlignment(.center)
+            }
             Button {
                 isPickingMode = true
             } label: {
@@ -213,11 +259,11 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, minHeight: 44)
                 .contentShape(Rectangle())
+                // Toby T8b finding 7, Ke35: one element, no "punkt".
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Läge: \(model.selectedMode.shortName). Byt läge")
             }
             .buttonStyle(.plain)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Läge: \(model.selectedMode.shortName). Byt läge")
-            .accessibilityAddTraits(.isButton)
         }
     }
 

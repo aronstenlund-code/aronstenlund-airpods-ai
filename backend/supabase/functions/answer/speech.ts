@@ -243,7 +243,7 @@ export class SourceTap {
 }
 
 const EN = new Set(
-  "the of and is are was were he she it they to in since as with for by that this has have had been who which serves served from at on be an or his her their its not but also king queen ruler rulers reigned ruled succeeded succeeding became born died during until years sources source don doesn didn give gives given year founding founded information available about any find found provide provides mention mentions results search there no exact date"
+  "the of and is are was were he she it they to in since as with for by that this has have had been who which serves served from at on be an or his her their its not but also king queen ruler rulers reigned ruled succeeded succeeding became born died during until years sources source don doesn didn give gives given year founding founded information available about any find found provide provides mention mentions results search there no exact date need needs should ask asks user users so would will can cannot me you your my what how however friend number name call calls open play request"
     .split(" "),
 );
 const SV = new Set(
@@ -673,7 +673,7 @@ export function similarity(a: string, b: string): number {
   for (const [k, v] of x) both += Math.min(v, y.get(k) ?? 0);
   return nx + ny ? (2 * both) / (nx + ny) : 0;
 }
-const LEAD_META = /^(?:fragmentet|det du sa|orden|ordet)\b[^.]{0,160}\b(?:låter som|liknar|är nog|är troligen|tolkar|uppfattar)\b|^(?:the (?:request|user|utterance|statement|fragment)\b|this is (?:a|an) (?:request|statement|question)\b|i'?ll (?:open|call|start|set|play)\b|det (?:här )?är (?:en statement|ett påstående, inte en fråga)\b|det (?:här )?är en fråga om (?:vem|vad|hur|när|var|varför|vilken|vilket|vilka)\b)/iu;
+const LEAD_META = /^(?:fragmentet|det du sa|orden|ordet)\b[^.]{0,160}\b(?:låter som|liknar|är nog|är troligen|tolkar|uppfattar)\b|^(?:the (?:request|user|utterance|statement|fragment)\b|this is (?:a|an) (?:request|statement|question)\b|i'?ll (?:open|call|start|set|play)\b|det (?:här )?är (?:en statement|ett påstående, inte en fråga)\b|det (?:här )?är en fråga om (?:vem|vad|hur|när|var|varför|vilken|vilket|vilka)\b|det (?:här )?är en \p{L}*(?:förfrågan|begäran)\b)/iu;
 /** "Och jag svarar på det: …" before the real answer. */
 const LEAD_PREFIX = /^(?:och\s+|så\s+)?(?:jag svarar på det|då svarar jag|här är svaret)\s*[:,]?\s*/iu;
 /** A first sentence that guesses ("som du kanske menar", "jag är inte säker"): rather silence than a wrong subject. */
@@ -1028,6 +1028,8 @@ export interface PostOptions {
   relationTag?: boolean;
   /** D65: web answer: `källa:` line to `source`, English sentences dropped. */
   web?: boolean;
+  /** O41: phone tools offered in Swedish: the model's English reasoning ("The user asks to call…") is dropped. */
+  dropEnglish?: boolean;
   /** D75: Provläge / Auto: the `[[TYST]]` marker and meta comments mean "say nothing". */
   silence?: boolean;
   /** D77: interview answer: sentences that say facts are missing are dropped. */
@@ -1205,7 +1207,7 @@ export class AnswerPost {
     });
     this.quizOnly = opts.quizOnly === true;
     this.src = new SourceTap(opts.web === true || opts.source === true);
-    this.en = new EnglishGate(opts.web === true);
+    this.en = new EnglishGate(opts.web === true || opts.dropEnglish === true);
   }
 
   /** K11: text the web search returned (citations), used to check a verbatim quote. */

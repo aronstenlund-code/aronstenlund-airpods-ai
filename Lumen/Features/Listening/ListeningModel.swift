@@ -122,6 +122,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A53 (D126, K37): "Mina svar", on the phone only, and the endpoint that helps write them.
     var myAnswers: MyAnswerStore?
     @ObservationIgnored var myAnswersClient: MyAnswersClient?
+    /// A59 (K36): Spotify control through the server, for testers.
+    var spotifyConnection: SpotifyConnection?
     /// A54 (D127, K39): the logo vote.
     @ObservationIgnored var logoVoteClient: LogoVoteClient?
     /// A53: Mina svar is open (from Start's exam card or Inställningar), for this exam; the editor for one answer.
@@ -539,6 +541,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func stopListening() async {
         if isListening { cue(.stop) } // A34: before the graph stops
+        listeningStoppedAt = Date() // A60 (Toby T8b finding 1): what Scribe hands over after this is not used
+        stopListeningForExamStatement()
         answers.sessionLength = nil
         activation.cancelPending()
         studyQueue.removeAll()
@@ -782,10 +786,41 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func startProvFromCard() async {
         selectedMode = .prov
         if !studyProfile.profile.onboarded {
-            isShowingStudyOnboarding = true // D83: the questions come first, once
+            // Ke35 (Toby T8b finding 6): no five questions first. Defaults (Automatiskt), changed in Inställningar
+            // or by voice ("kortare"); the subject is asked in the first quiz (A22).
+            var profile = studyProfile.profile
+            profile.onboarded = true
+            studyProfile.profile = profile
+        }
+        if examPlans?.upcoming().isEmpty != false, !provAskedForExam {
+            // Ke35: at most one question, and only without an exam: "Har du prov snart?". "Inte nu" starts anyway.
+            provAskedForExam = true
+            startsProvAfterExamStep = true
+            isShowingAddExam = true
             return
         }
-        await startStudy()
+        if let plan = examPlans?.upcoming().first {
+            await startProv(for: plan)
+        } else {
+            await startStudy()
+        }
+    }
+
+    /// Ke35: Provläge asked for the exam once in this run of the app.
+    @ObservationIgnored private var provAskedForExam = false
+    /// Ke35: the exam step was opened by Starta in Provläge; when it closes (saved or "Inte nu"), Provläge starts.
+    @ObservationIgnored var startsProvAfterExamStep = false
+
+    /// Ke35: after "Har du prov snart?" from Starta in Provläge: with the exam if one was saved, else without.
+    func startProvAfterExamStep() async {
+        guard startsProvAfterExamStep else { return }
+        startsProvAfterExamStep = false
+        if let plan = examPlans?.upcoming().first {
+            await startProv(for: plan)
+        } else {
+            await startStudy()
+        }
+        showsListeningScreen = problem != .microphoneDenied || isActiveSession
     }
 
     /// D83: the first-start questions were answered (or skipped): save, put the exam in Minne, start.
@@ -960,6 +995,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A18 (Kelly Ke9): Start's one blue button says what it does, "Förhör mig", the same words as the voice command.
     /// Provläge for the exam, and the first quiz question at once.
     func startQuiz(for plan: ExamPlan) async {
+        beginFreshPass()
         await startProv(for: plan, sayPlan: false)
         guard study.isActive, mode == .prov else { return }
         if awaitingSubject != nil {
@@ -978,8 +1014,32 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         examQuestionDeclined = false
         await listenForExamStatement()
         examAskedAloud = true
+        examAskedAt = Date()
         // A47: from Start the student asked to add one; the first start asks whether there is one at all.
         say(firstStart ? "Har du prov snart? Säg vilket ämne och när." : "Vilket prov? Säg ämnet och när det är.")
+    }
+
+    /// A60 (Toby T8b finding 1): when the question was asked; the answer must come within `examAnswerWindow`.
+    @ObservationIgnored private var examAskedAt: Date?
+    static let examAnswerWindow: TimeInterval = 30
+    /// A60: when listening was stopped. Scribe's last words arrive after that and are not a turn, a command or a
+    /// profile (they became "Hur, sparat" and a word in the ear after Avsluta).
+    @ObservationIgnored private var listeningStoppedAt: Date?
+
+    /// A60: the exam step was closed (skipped, saved or "Inte nu"): the next sentence is an ordinary one again.
+    func stopListeningForExamStatement() {
+        awaitingExamStatement = false
+        examAskedAloud = false
+        examAskedAt = nil
+    }
+
+    /// The utterance answers "Har du prov snart?": in time, and not a question of its own ("Hur många ben har en
+    /// spindel?"), unless it is about school.
+    nonisolated static func answersExamQuestion(_ text: String, askedAt: Date?, at date: Date) -> Bool {
+        guard let askedAt, date.timeIntervalSince(askedAt) < examAnswerWindow else { return false }
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.hasSuffix("?"), !ProfileStatement.isAboutSchool(trimmed) { return false }
+        return true
     }
 
     /// "Lägg till prov" → "Eller säg det": listen, and the next sentence about an exam is saved as one.
@@ -2346,9 +2406,18 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                        terms: Array((profile.terms ?? []).prefix(50)))
     }
 
+    /// Ke35 (Toby T8b finding 3): a new start from Start begins with an empty Lyssnar; the old answers are in Historik.
+    /// Switching mode while Lumen listens keeps them.
+    func beginFreshPass() {
+        guard !isActiveSession else { return }
+        conversation.clear()
+        developedAnswer = nil
+    }
+
     /// A50 (D124): Start's big button starts the chosen mode. Provläge goes to the nearest exam when there is one,
     /// like "Förhör mig" without the quiz's first question.
     func startSelectedMode() async {
+        beginFreshPass()
         if selectedMode == .prov, !(study.isActive || isListening), let plan = examPlans?.upcoming().first {
             await startProv(for: plan)
             showsListeningScreen = problem != .microphoneDenied || isActiveSession
@@ -3114,6 +3183,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         // A56 (K13, D100, Toby T7b): the short answer is spoken and the developed one comes in the same call, ready
         // for "ja" in the Mer? window without a new call.
         context.twoLevel = mode == .standard || mode == .prov
+        context.connections = spotifyConnection?.connections ?? [] // A59 (K36)
         // A53 (K37, D126): "Mina svar" for the exam, in Provläge only, when "Säg mina svar" is on.
         if mode == .prov, let myAnswers {
             context.savedAnswers = myAnswers.payload(for: currentExamID())
@@ -3468,6 +3538,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             } else {
                 developedAnswer = nil
             }
+            if let tool = done?.serverTool { controller.log("Server tool: \(tool.name) \(tool.status) (A59, K36)") }
             if let saved = done?.savedAnswer {
                 conversation.markSaved(saved.id, text: saved.text, on: turn.id) // A53: "Ditt svar" on Lyssnar
                 controller.log("Mina svar: the saved answer was said (\(saved.via ?? "?"))")
@@ -3668,10 +3739,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         finalObserver?(segment.text)
         sessionObserver?(.heard(segment.text), date)
         if isComparing || isEnrollingVoice { return }
-        if awaitingExamStatement, examAskedAloud, !segment.overlapsPlayback {
+        if !isListening, let stopped = listeningStoppedAt, date.timeIntervalSince(stopped) < 10 {
+            controller.log("Words handed over after listening stopped: not used (A60)")
+            return
+        }
+        if awaitingExamStatement, examAskedAloud, !segment.overlapsPlayback,
+           Self.answersExamQuestion(segment.text, askedAt: examAskedAt, at: date) {
             // A33: the answer to the question Lumen asked aloud.
-            awaitingExamStatement = false
-            examAskedAloud = false
+            stopListeningForExamStatement()
             discardAhead(reason: "the answer about an exam")
             study.discardTurnText()
             if ExamAnswer.isDecline(segment.text) {
