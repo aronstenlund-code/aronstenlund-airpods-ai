@@ -1,4 +1,4 @@
-# K38: K22-kandidaterna ligger i en privat tabell, inte i en publik artefakt (Kevin, 2026-11-11 10:45)
+# K38: K22-kandidaterna ligger i en privat tabell, inte i en publik artefakt (Kevin, 2026-11-11 10:25)
 
 Uppgift: `prompts/queue/kevin.md` K38, efter Oscars O36 (`reports/qa/2026-11-10-1257-oscar-o36-k24-k27-omtest.md` avsnitt 1). Kostnad: **0 USD** (inga modellanrop, ingen ElevenLabs).
 
