@@ -138,3 +138,6 @@ Bilder i `bilder/system/`, ljust till vänster och mörkt till höger.
 | Byt läge (blad) | `bytlage.png` | Förhör mig, Få A-svar till provet och Bara fråga överst, och under dem FLER LÄGEN. Ikonerna är grå SF Symbols; det valda läget har blå ikon och ✓. Röstkommandot står en gång, längst ner. |
 | Kommandon (blad) | `kommandon.png` | "Säg till Lumen" med fem kommandon och vad som händer, plus "Alla kommandon ›". |
 | Lumen hör dig inte | `nekad2.png` | En ikon i en mjuk cirkel, tre numrerade steg i en brunn, "Öppna Inställningar" blå och "Hoppa över" tyst. |
+
+## 9. Ny Start och Vad kan Lumen? (Ke29, D124–D126)
+Underlag: `start-vadkan.md`, bilder `bilder/start2/`. Start har en blå knapp, "Starta Lumen", med läget och Byt under. Under den finns "Lumen kan allt" med exempel och "Allt Lumen kan ›", och sist provkortet med Förhör mig som grå knapp. Vad kan Lumen? är en grupperad lista där varje rad säger vad man säger och om något behöver ställas in.
