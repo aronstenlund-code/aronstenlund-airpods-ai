@@ -1,0 +1,57 @@
+[
+ {
+  "mode": "auto",
+  "fragment": "Lumen, ring mamma",
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, sätt en timer på fem minuter",
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": "Jag kan inte starta timern här, så ställ den i din telefon eller klocka."
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, spela lite musik",
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": "Jag kan inte spela upp musik, men jag kan svara på frågor om dina studier."
+ },
+ {
+  "mode": "tutor",
+  "fragment": "Lumen, ring mamma",
+  "status": 200,
+  "tool": "call_contact",
+  "input": {
+   "name": "mamma"
+  },
+  "said": ""
+ },
+ {
+  "mode": "tutor",
+  "fragment": "Lumen, sätt en timer på fem minuter",
+  "status": 200,
+  "tool": "timer_start",
+  "input": {
+   "seconds": 300,
+   "label": "Timer"
+  },
+  "said": ""
+ },
+ {
+  "mode": "tutor",
+  "fragment": "Lumen, spela lite musik",
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ }
+]
