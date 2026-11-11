@@ -171,3 +171,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 - [x] **K-stående – omgång 17 (K4-loopen): recept och webbsvar** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:34 (Kevin): `reports/2026-11-11-1934-kevin-standing17-recipes-speech.md`_
 
 - [x] **K-stående – omgång 18 (K4-loopen): intervjuläget hittade på arbetserfarenhet** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:37 (Kevin): `reports/2026-11-11-1937-kevin-standing18-interview-experience.md`_
+
+- [x] **O51 (prio 1, Oscar): hela frågor blev tysta i Standardläge (isCutOff)** (effort: low). Lagd av Kevin 2026-11-11 efter Oscars rapport. _klar 2026-11-11 20:16 (Kevin): `reports/2026-11-11-2016-kevin-o51-cut-off-fix.md`_
