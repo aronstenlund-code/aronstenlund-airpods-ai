@@ -198,7 +198,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-11 11:15 → reports/2026-11-11-1100-angela-a50-ny-start.md **A50 – Ny Start efter första telefontestet (D124)** (effort: high). Gör först. Aron på telefonen: "man förstår inte hur man börjar ställa frågor". (1) En stor tydlig **Start-knapp överst** ("Starta Lumen") med valt läge under ("Standardläge · Byt") ; ett tryck och Lumen lyssnar. (2) Provkortet flyttas ner under knappen. (3) "Få A-svar till provet" bort från Start (blir "Mina svar" inne i Provläget, A53). (4) Provlägets beskrivning exakt: **"För dina prov"**. (5) Under Start-knappen: **"Lumen kan allt"** och 2–3 exempel som byts: "Lumen, kör spellista X", "Lumen, kolla min kalender, vad har jag idag?", "Lumen, vad är mitt favoritrecept för pannkakor?" (D126). (5) Följ Kellys Ke29-skiss om den finns, men vänta inte. Skärmbilder, Toby testar.
 
-- [ ] **A51 – Lägg in den nya loggan (Ke24, nummer 4)** (effort: low). AppIcon (ljus/mörk/tonad), symbolen i appens rubrik i stället för radiovågorna, och i introt. Filerna finns från Kelly Ke24.
+- [x] ersatt av A71 (D129) **A51 – Lägg in den nya loggan (Ke24, nummer 4)** (effort: low). AppIcon (ljus/mörk/tonad), symbolen i appens rubrik i stället för radiovågorna, och i introt. Filerna finns från Kelly Ke24.
 
 - [x] klar 2026-11-11 11:15 → reports/2026-11-11-1100-angela-a52-a54-vad-kan-lumen-logga.md **A52 – "Vad Lumen kan" (D125)** (effort: high). En sida/rad på Start "Vad kan Lumen?" + ett kort genomgångssteg efter första svaret: förhör, svar på frågor, träning, kalender, påminnelser, timers, Spotify, samtal, sömn. Varje rad säger vad man säger ("Lumen, sätt en timer på 10 min") och **om den behöver ställas in** (t.ex. "Kräver: koppla Spotify" / "Inget att ställa in"). Kelly ritar (Ke29).
 
@@ -237,3 +237,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [x] klar 2026-11-11 16:55 → reports/2026-11-11-1634-angela-a69-kelly-ke39.md **A69 – Stående uppgift (PLAN 2b): Kellys Ke39 S1–S2** (effort: low). Lägesikonen på Start följer textstorleken; underrubriken på Lyssnar döljs vid de största storlekarna (läget står redan i rubriken).
 
 - [x] klar 2026-11-11 17:44 → reports/2026-11-11-1744-angela-a70-diagnostik-vantande-fraga.md **A70 – Egen punkt (README 8): diagnostik för Tobys T14 fynd 2–3** (effort: low). En fråga som väntar mer än 3 s loggar en gång varför Lumen räknas som upptagen (ljud, väntande tal, ström: när Lumen senast talade, när anropet gick, om det var ett svar i förväg). Ingen ändring av beteendet.
+
+- [ ] **A71 – Glasklotet som appikon nu, och sex val i röstningen (D129)** (effort: medium). Beror på: Kellys Ke40. (1) AppIcon och symbolen i rubriken/introt = D glasklotet (ersätter radiovågorna och nummer 4; A51 är ersatt). (2) Röstningen (A54) får sex val A–F i ett rutnät 2×3. Skärmbilder, Kelly granskar.

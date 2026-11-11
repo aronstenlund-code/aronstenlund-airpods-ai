@@ -124,3 +124,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-11 14:57 → reports/2026-11-11-1457-kelly-ke38-granskning-t8c.md **Ke38 – Stående uppgift (PLAN 2c): granska Tobys T8c (första användningen efter Ke35) och A66** (effort: low, Kelly själv). Ke35 fungerar; ett litet fynd (K1).
 
 - [x] klar 2026-11-11 16:31 → reports/2026-11-11-1631-kelly-ke39-granskning-a64.md **Ke39 – Stående uppgift (PLAN 2c): granska A64 (största text) på Tobys T13-tur** (effort: low, Kelly själv). Godkänd; S1 ikonen och S2 underrubriken är låga.
+
+- [ ] **Ke40 – Glasklotet som ikon nu + sex kandidater (D129)** (effort: high). Gör först. (1) Rita D glasklotet (`docs/design/logo/rostning/D-glasklotet.png`) som riktig appikon: 1024 px ljus, mörk och tonad, och en enfärgad symbol för appens rubrik; kontrollera i 29 och 60 pt. (2) Rena versioner av alla sex (A–F) i samma storlek till röstningen, i `docs/design/logo/rostning/vektor/`. Säg till Angela.
