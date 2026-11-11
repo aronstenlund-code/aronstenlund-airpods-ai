@@ -15,8 +15,8 @@ C = json.loads((ROOT / "scripts/qa/o51_k42_cases.json").read_text(encoding="utf-
 import urllib.request, urllib.error
 
 
-def ask(tok, frag, recent=None):
-    body = {"fragment": frag, "mode": "auto", "language": "sv", "context": {"recent_qa": recent or []}}
+def ask(tok, frag, recent=None, stt=None):
+    body = {"fragment": frag, "mode": "auto", "language": "sv", "context": {"recent_qa": recent or [], **(stt or {})}}
     req = urllib.request.Request(M.D.URL + "/functions/v1/answer", data=json.dumps(body).encode(), method="POST",
                                  headers={"apikey": M.D.KEY, "content-type": "application/json", "authorization": "Bearer " + tok})
     try:
@@ -49,15 +49,15 @@ def main():
     out = ROOT / "reports/qa/data" / (dt.datetime.now().strftime("%Y-%m-%d-%H%M%S") + f"-o51-k42-{a.tag}.json")
     tok, n, rows = M.O.signup(), 0, []
 
-    def run(group, frag, grade, recent=None, extra=None):
+    def run(group, frag, grade, recent=None, extra=None, stt=None):
         nonlocal tok, n
         if n >= 30:
             tok, n = M.O.signup(), 0
         time.sleep(3.2)
-        r = ask(tok, frag, recent)
+        r = ask(tok, frag, recent, stt)
         n += 1
         ok, note = grade(r["said"], r)
-        rows.append({"group": group, "fragment": frag, **(extra or {}), "said": r["said"], "words": words(r["said"]), "ok": ok, "note": note,
+        rows.append({"group": group, "fragment": frag, **(extra or {}), "stt": stt, "said": r["said"], "words": words(r["said"]), "ok": ok, "note": note,
                      **{k: r.get(k) for k in ("status", "app_command", "continuation", "qa_flag", "done_keys", "err")}})
         print(group, "OK " if ok else "BAD", "|", frag, "|", note, "|", r["said"][:90].replace("\n", " "), flush=True)
         out.write_text(json.dumps({"tag": a.tag, "rows": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -92,9 +92,12 @@ def main():
     if "oneword" in groups:
         ow = C["oneword"]; prev = [ow["previous"]]
         for f in ow["none"]:
-            run("oneword_none", f, lambda s, r: (words(s) < 20 and not r.get("app_command"), f"{words(s)} words, cmd {r.get('app_command')}"), recent=prev)
+            run("oneword_none", f, lambda s, r: (words(s) < 20 and not r.get("app_command"), f"{words(s)} words, cmd {r.get('app_command')}"), recent=prev, stt={"stt_confidence": 0.9, "utterance_ms": 450})
         for f in ow["more"]:
-            run("oneword_more", f, lambda s, r: (words(s) >= 20, f"{words(s)} words"), recent=prev)
+            run("oneword_more", f, lambda s, r: (words(s) >= 20, f"{words(s)} words"), recent=prev, stt={"stt_confidence": 0.95, "utterance_ms": 750})
+        # K42.5 (Aron's "jaha" heard as "utveckla"): the command word with low confidence and too short to be said = silence
+        for f in ("utveckla", "berätta mer", "fortsätt", "utveckla det", "säg mer"):
+            run("misheard_cmd", f, lambda s, r: (words(s) < 20 and not r.get("app_command"), f"{words(s)} words"), recent=prev, stt={"stt_confidence": 0.45, "utterance_ms": 280})
     summ = {}
     for g in sorted({r["group"] for r in rows}):
         rs = [r for r in rows if r["group"] == g]; summ[g] = f"{sum(r['ok'] for r in rs)}/{len(rs)}"
