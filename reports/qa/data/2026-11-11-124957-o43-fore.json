@@ -2369,9 +2369,53 @@
      ]
     }
    }
+  },
+  {
+   "id": "b04",
+   "exam": "bio",
+   "cond": "quiet",
+   "question": "Vilken del av cellen bygger proteiner?",
+   "right": "Ribosomen",
+   "said_by_student": "Ribosomen",
+   "keyterms": [
+    "Biologi",
+    "cellen",
+    "fotosyntesen",
+    "genetik",
+    "kroppen",
+    "cell",
+    "cellmembran",
+    "cellvägg",
+    "cellkärna",
+    "cytoplasma",
+    "mitokondrie",
+    "kloroplast",
+    "organell",
+    "fotosyntes",
+    "klorofyll",
+    "koldioxid",
+    "syre",
+    "glukos",
+    "cellandning",
+    "gen"
+   ],
+   "heard": "Ribosomen.",
+   "heard_ok": true,
+   "scribe_msgs": [],
+   "reply": "Rätt. Ribosomerna bygger proteiner genom att läsa av mRNA och sätta ihop aminosyror i rätt ordning. De sitter fria i cytoplasman eller på det skrovliga endoplasmatiska nätverket.",
+   "verdict": "right",
+   "graded_right": true,
+   "model": "claude-sonnet-5-5",
+   "cost": 0.00929,
+   "ms": 3801,
+   "status": 200,
+   "done_extra": {
+    "answered": true,
+    "calibration": null
+   }
   }
  ],
- "elevenlabs_chars_new": 187,
- "scribe_seconds": 85.2,
- "est_cost_usd": 0.4434
+ "elevenlabs_chars_new": 197,
+ "scribe_seconds": 87.0,
+ "est_cost_usd": 0.4527
 }
