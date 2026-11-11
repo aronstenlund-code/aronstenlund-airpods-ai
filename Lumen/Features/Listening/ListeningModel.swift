@@ -1021,7 +1021,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// A60 (Toby T8b finding 1): when the question was asked; the answer must come within `examAnswerWindow`.
     @ObservationIgnored private var examAskedAt: Date?
-    static let examAnswerWindow: TimeInterval = 30
+    nonisolated static let examAnswerWindow: TimeInterval = 30
     /// A60: when listening was stopped. Scribe's last words arrive after that and are not a turn, a command or a
     /// profile (they became "Hur, sparat" and a word in the ear after Avsluta).
     @ObservationIgnored private var listeningStoppedAt: Date?

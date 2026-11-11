@@ -64,7 +64,7 @@ Deno.test("K35 a tool call reaches the app with its confirmation; done says a to
   assert(!ev2.some((e) => e.event === "tool_call"));
   // without tools_available: as before, no tools, no rule
   const plain = setup([{ type: "text", text: "Hej." }]);
-  await (await plain.handler(post({ fragment: "vad är klockan i Tokyo" }))).text();
+  await (await plain.handler(post({ fragment: "vad är huvudstaden i Japan" }))).text(); // (a zone clock is now said by code)
   assertEquals(plain.seen[0].tools, undefined);
   assert(!plain.seen[0].system.includes("Phone tools (K35)"));
 });

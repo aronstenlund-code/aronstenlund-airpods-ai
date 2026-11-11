@@ -1,6 +1,6 @@
-# Överlämning: Kevin (backend), 2026-11-11 11:30
+# Överlämning: Kevin (backend), 2026-11-11 13:00
 
-Sessionen (molnet) gjorde K38, K37, K39, K36 och stående omgång 2, och är inte komprimerad. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom utom K6, som väntar på `SUPABASE_SERVICE_ROLE_KEY`.
+Sessionen (molnet) gjorde K38, K37, K39, K36, K40 (O41 BLOCKER) och stående omgång 2–7, och är inte komprimerad. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom utom K6, som väntar på `SUPABASE_SERVICE_ROLE_KEY`.
 
 **Arbetssätt som sparar tid (molnet)**
 - **Riktig Deno går att installera:** `npm i deno@2` i scratchpad, sedan länka `node_modules/.bin/deno` till `/usr/local/bin/deno`. Då fungerar `deno task test` och `deno task check`, med typkontroll. Node-shimmen behövs inte.
@@ -10,9 +10,12 @@ Sessionen (molnet) gjorde K38, K37, K39, K36 och stående omgång 2, och är int
 - `delete` via `execute_sql` och `create_edge_function_secret` frågar Aron och fastnar när han inte är där. Undvik dem i självständigt läge.
 - Webbsidor med bot-skydd (UR Play ger 403) ska inte kringgås. K19 litar i stället på webbsökningens egna resultat.
 - Avbrutna `/answer`-anrop loggas inte i `answer_usage`, så kostnaden får uppskattas.
+- **Kör `deno task check` före push.** Testlistan i deploy-flödet typkontrollerar, så ett typfel stoppar driftsättningen. Det hände en gång i dag (`d41c139`).
+- Regressionens rader finns som artefakten `answer-regress`: `gh run download <id> -n answer-regress`.
+- Appen skickar Standardläge som `mode: "auto"`. Testa verktyg och liknande i `auto` med "Lumen, …", inte bara med `push_to_talk` (O41).
 
 **Läge**
-- API i dag: cirka 0,7 USD (K37 0,2, regressionen 0,32, länktester 0,12, K36 0,02).
+- API i dag: cirka 2,4 USD. Det mesta är regressionerna, 0,32 USD styck, sex gånger.
 - Regressionen på 21 fall varierar mellan 81 och 100 % utan att koden ändrats, så en enskild körning säger lite.
 
 **Öppna trådar**

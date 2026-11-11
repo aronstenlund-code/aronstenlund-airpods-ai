@@ -85,3 +85,22 @@ Deno.test("O41: with phone tools in Swedish, the model's English reasoning is no
   const out = p.push("The user asks to call a friend, but gave no name. I need a name to call, so I should ask who. Vem vill du att jag ska ringa? ") + p.finish();
   assertEquals(out.trim(), "Vem vill du att jag ska ringa?");
 });
+
+Deno.test("O41: a question about a number never starts a call", () => {
+  assertEquals(validatePhoneInput("call_contact", { name: "pappa" }, "vad är numret till pappa"), null);
+  assertEquals(validatePhoneInput("call_contact", { name: "mamma" }, "vad har mamma för nummer"), null);
+  assertEquals(validatePhoneInput("call_contact", { name: "pappa" }, "ring pappa, vad är numret till honom förresten"), { name: "pappa" });
+});
+
+Deno.test("O41: a phone request that ends in nothing gets one Swedish question, not silence", async () => {
+  const { handler } = setup([{ type: "text", text: "The user asks to call a friend, but gave no name. I need a name to call, so I should ask who." }]);
+  const ev = await events(await handler(post({ fragment: "ring en kompis", mode: "push_to_talk" })));
+  assertEquals(ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("").trim(), "Vem vill du att jag ska ringa?");
+});
+
+Deno.test("O41: a short English note is dropped in the tool path; Swedish with English names stays", async () => {
+  const { AnswerPost } = await import("./speech.ts");
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, dropEnglish: true });
+  const out = p.push("A brief reply is needed.\n\nVilken kompis vill du ringa? Spela The Weeknd nu. ") + p.finish();
+  assertEquals(out.trim(), "Vilken kompis vill du ringa? Spela The Weeknd nu.");
+});

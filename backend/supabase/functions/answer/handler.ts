@@ -1840,6 +1840,17 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               emitText((answerChars ? " " : "") + res.say);
               serverToolDone = { name: st.name, status: res.status, ...(res.playing ? { playing: res.playing } : {}) };
             }
+            // O41: a request to the phone that ended in nothing said and no tool (the English reasoning was dropped):
+            // one short Swedish question instead of silence
+            if (
+              phoneTools && !toolPending && !st && !closed && answerChars === 0 && !crisisMarked && !crisisLate &&
+              (status === "ok" || status === "filtered") && ACTION_REQUEST.test(body.fragment)
+            ) {
+              status = "ok";
+              emitText(/(?<![\p{L}])(?:ring|ringa|slå en signal)(?![\p{L}])/iu.test(body.fragment)
+                ? "Vem vill du att jag ska ringa?"
+                : "Jag uppfattade inte riktigt vad jag skulle göra. Säg det en gång till.");
+            }
             // K23: the model flagged a crisis (Auto meta or [[KRIS]]): the fixed caring answer, never silence
             if (crisisMarked || crisisLate) {
               const crisisText = aboutOther(body.fragment) || plan ? CRISIS_OTHER : CRISIS_SELF;

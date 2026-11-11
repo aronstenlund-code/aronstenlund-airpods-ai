@@ -15,7 +15,7 @@ export interface Computed {
   /**
    * History fix (2026-11-08, "270 gånger 270" was said as 7 900): arithmetic and percentages are not only
    * computed but also SPOKEN by code (`spokenComputed`), no model call; the model never phrases numbers it
-   * could get wrong. Unit conversions, dates and zone clocks keep the model (kind undefined).
+   * could get wrong. Other unit conversions and dates keep the model (kind undefined); zone clocks and temperatures are spoken by code too.
    */
   kind?: "arith" | "percent" | "clock";
   /** The spoken expression with digits ("270 gånger 270"), set for arith / percent. */
@@ -402,6 +402,24 @@ function twelveHour(h: number, m: number): string {
  * null = let the model phrase it (conversions, dates).
  */
 export function spokenComputed(c: Computed, tutor = false): string | null {
+  // live eval 2026-11-11: the model said "tjugo över sex" for 18:30 (Delhi) and "sextiotta" for 68 °F although the
+  // code had the right result: a zone clock and a temperature conversion are now spoken by code as well
+  if (!c.kind) {
+    const half = (s: string) => s.replace(/(\d+),5 timmar/u, "$1 och en halv timme");
+    if (/^Klockan \d{2}:\d{2} i Sverige.* är klockan \d{2}:\d{2} i .+\(.+\)$/u.test(c.text)) {
+      const s = half(c.text.replace(/\s*\((.+)\)$/u, ". $1."));
+      // "Klockan 12:25 i Sverige just nu är klockan 20:25 i Tokyo" -> "Just nu är klockan 12:25 i Sverige och 20:25 i Tokyo"
+      return s.replace(/^Klockan (\d{2}:\d{2}) i Sverige just nu är klockan (\d{2}:\d{2}) i /u, "Just nu är klockan $1 i Sverige och $2 i ");
+    }
+    const temp = /^(-?\d+(?:,\d+)?) °([CF]) = (-?\d+(?:,\d+)?) °([CF])$/u.exec(c.text);
+    if (temp) {
+      const name = (u: string) => (u === "C" ? "Celsius" : "Fahrenheit");
+      const v = Number(temp[3].replace(",", "."));
+      const r = Math.round(v * 10) / 10;
+      const out = String(r).replace(".", ",");
+      return `${temp[1]} grader ${name(temp[2])} är ${r === v ? "" : "ungefär "}${out} grader ${name(temp[4])}.`;
+    }
+  }
   if (c.kind === "clock" && c.clock) {
     const { h, m } = c.clock;
     const twentyFour = m === 0 ? `klockan ${cardinal(h)}` : `klockan ${cardinal(h)} och ${cardinal(m)}`;

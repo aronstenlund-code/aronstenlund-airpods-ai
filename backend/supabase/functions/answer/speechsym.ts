@@ -132,9 +132,18 @@ const REGNAL = [
 /** "den förste", "den andre", "den tredje" ... (masculine, as for kings and popes). */
 export const regnal = (n: number) => REGNAL[n] ?? String(n);
 
-const ABBREVIATIONS: [RegExp, string][] = [
+const PARTY: Record<string, string> = { M: "Moderaterna", S: "Socialdemokraterna", SD: "Sverigedemokraterna", C: "Centerpartiet", V: "Vänsterpartiet", KD: "Kristdemokraterna", L: "Liberalerna", MP: "Miljöpartiet" };
+// deno-lint-ignore no-explicit-any
+const ABBREVIATIONS: [RegExp, string | ((...m: any[]) => string)][] = [
   // Oscar O36/O34: "Läs s. 23" was "läs s. tjugotre"; "1 299,50 kronor" was "… komma fem noll kronor"
   [/(?<![\p{L}])(?:s|sid)\.\s?(?=\d)/gu, "sidan "],
+  // live eval 2026-11-11 (webb-03): "Ulf Kristersson (M)" read the letter; the party is said (after a full name only)
+  [/(\p{Lu}\p{Ll}+ \p{Lu}[\p{L}-]+)\s?\((M|S|SD|C|V|KD|L|MP)\)(\s*[.!?,;:]|$)?/gu,
+    (_m: string, who: string, p: string, end?: string) => `${who}, ${PARTY[p]}${end ?? ","}`],
+  // webb-04: an English connective at the start of a Swedish sentence ("Also, SMHI har …")
+  [/(^|[.!?]\s+)(?:Also|However|Moreover|Additionally|Furthermore),\s+(\p{L})/gu, (_m: string, a: string, c: string) => a + c.toUpperCase()],
+  // live eval 2026-11-11: the model wrote "sextiotta" itself (words, not digits)
+  [/(?<![\p{L}])(tjugo|trettio|fyrtio|femtio|sextio|sjuttio|åttio|nittio)tta(?![\p{L}])/giu, "$1åtta"],
   [/(\d[.,]\d{1,2})\s?kronor(?![\p{L}])/gu, "$1 kr"],
   [/(?<![\p{L}])f\.\s?Kr\.?/gu, "före Kristus"],
   [/(?<![\p{L}])e\.\s?Kr\.?/gu, "efter Kristus"],
@@ -310,7 +319,7 @@ export function beforeNumbers(text: string, ctx = ""): string {
   );
   s = s.replace(/(?<![\p{L}\d.,])(\d+)\s?X(?![\p{L}\d])/gu, "$1 gånger");
   s = s.replace(/(?<![\p{L}\d.,])(\d+)([A-Z]{1,2})(?![\p{L}\d])/gu, "$1 $2");
-  for (const [re, to] of ABBREVIATIONS) s = s.replace(re, to);
+  for (const [re, to] of ABBREVIATIONS) s = typeof to === "string" ? s.replace(re, to) : s.replace(re, to as (...m: string[]) => string);
   // powers: 10^23, x^2, 10^{-3}
   s = s.replace(
     /([\p{L}\d)]+)\s?\^\s?\{?(-?[\p{L}\d]+)\}?/gu,

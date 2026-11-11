@@ -1,0 +1,87 @@
+[
+ {
+  "id": "g14-05",
+  "text": "finns det nån bra sida om fotosyntes",
+  "status": 200,
+  "said": "Jag skickade en länk till en film om fotosyntes från UR Play, säg till om du vill ha en annan.",
+  "source": "urplay.se",
+  "urls": [
+   {
+    "url": "https://urplay.se/program/238612-no-naturligtvis-fotosyntes",
+    "status": 403,
+    "title": "",
+    "on_topic": false
+   }
+  ],
+  "usage": {
+   "input_tokens": 3128,
+   "output_tokens": 320,
+   "cache_read_tokens": 0,
+   "web_searches": 1,
+   "model": "resource",
+   "est_cost_usd": 0.0104728
+  }
+ },
+ {
+  "id": "g14-07",
+  "text": "var kan jag läsa mer om klimatförändringar",
+  "status": 200,
+  "said": "Jag skickade en länk till en sida om klimatförändringar från Skolverket, säg till om du vill ha en annan.",
+  "source": "skolverket.se",
+  "urls": [
+   {
+    "url": "https://www.skolverket.se/download/18.472714ce16b70ab98273020/1571321098701/10_Klimatf%C3%B6r%C3%A4ndringar%20p%C3%A5%20g%C3%A5ng.pdf",
+    "status": 200,
+    "title": "",
+    "on_topic": false
+   }
+  ],
+  "usage": {
+   "input_tokens": 3131,
+   "output_tokens": 250,
+   "cache_read_tokens": 0,
+   "web_searches": 1,
+   "model": "resource",
+   "est_cost_usd": 0.0104381
+  }
+ },
+ {
+  "id": "g14-08",
+  "text": "någon youtube om derivata",
+  "status": 200,
+  "said": "Jag skickade en länk till en sida om derivata från Khan Academy, säg till om du vill ha en annan.",
+  "source": "khanacademy.org",
+  "urls": [
+   {
+    "url": "https://en.khanacademy.org/math/differential-calculus/taking-derivatives",
+    "status": 200,
+    "title": "Client Challenge",
+    "on_topic": false
+   }
+  ],
+  "usage": {
+   "input_tokens": 3118,
+   "output_tokens": 301,
+   "cache_read_tokens": 0,
+   "web_searches": 2,
+   "model": "resource",
+   "est_cost_usd": 0.0204623
+  }
+ },
+ {
+  "id": "g14-09",
+  "text": "kan du rekommendera en film om derivata",
+  "status": 200,
+  "said": "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.",
+  "source": null,
+  "urls": [],
+  "usage": {
+   "input_tokens": 3123,
+   "output_tokens": 147,
+   "cache_read_tokens": 0,
+   "web_searches": 1,
+   "model": "resource",
+   "est_cost_usd": 0.0103858
+  }
+ }
+]
