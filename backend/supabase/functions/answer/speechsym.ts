@@ -319,7 +319,7 @@ export function beforeNumbers(text: string, ctx = ""): string {
   );
   s = s.replace(/(?<![\p{L}\d.,])(\d+)\s?X(?![\p{L}\d])/gu, "$1 gånger");
   s = s.replace(/(?<![\p{L}\d.,])(\d+)([A-Z]{1,2})(?![\p{L}\d])/gu, "$1 $2");
-  for (const [re, to] of ABBREVIATIONS) s = s.replace(re, to);
+  for (const [re, to] of ABBREVIATIONS) s = typeof to === "string" ? s.replace(re, to) : s.replace(re, to as (...m: string[]) => string);
   // powers: 10^23, x^2, 10^{-3}
   s = s.replace(
     /([\p{L}\d)]+)\s?\^\s?\{?(-?[\p{L}\d]+)\}?/gu,
