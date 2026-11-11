@@ -141,3 +141,21 @@ Bilder i `bilder/system/`, ljust till vänster och mörkt till höger.
 
 ## 9. Ny Start och Vad kan Lumen? (Ke29, D124–D126)
 Underlag: `start-vadkan.md`, bilder `bilder/start2/`. Start har en blå knapp, "Starta Lumen", med läget och Byt under. Under den finns "Lumen kan allt" med exempel och "Allt Lumen kan ›", och sist provkortet med Förhör mig som grå knapp. Vad kan Lumen? är en grupperad lista där varje rad säger vad man säger och om något behöver ställas in.
+
+## 10. Största text (Ke37, efter Tobys T11)
+Alla storlekar följer Dynamic Type, också de fem största (`.accessibility1`–`.accessibility5`). Då gäller:
+1. **Ett ord bryts aldrig mitt i.** Får två saker inte plats bredvid varandra, ställs de under varandra (`ViewThatFits`
+   med `HStack` först och `VStack` som reserv, eller `dynamicTypeSize >= .accessibility1`).
+2. **Rader med två delar staplas:** lägesraden blir ikon + läget på första raden och "Byt" på egen rad under. Kortets
+   huvud ("NÄSTA PROV" + brickan "7 dagar kvar") blir rubriken överst och brickan under. "Mina svar" + "Lägg till ›"
+   blir två rader. Datumet + "Ändra" likaså.
+3. **Små versalrubriker** ("NÄSTA PROV", "FRÅGA", "ANDRA PROV") står alltid på en rad: `lineLimit(1)` med
+   `minimumScaleFactor(0.8)`. De får krympa lite, men aldrig brytas.
+4. **Stora rubriker kapas inte.** En stor navigationsrubrik som inte får plats ("Vad kan Earmind?") visas som vanlig
+   text överst i innehållet, med radbrytning, och navigationsraden får den lilla rubriken.
+5. **Hjälptext kapas inte:** raden under en knapp med förklaring ("Earmind frågar ut dig och svarar på dina frågor")
+   får gå på två eller fler rader, och knappen blir högre. Bara värden i listor (till exempel "Lugn berättarröst") får
+   kortas med "…".
+6. **Loggan i rubriken** följer textstorleken (`@ScaledMetric`), så att den inte blir en prick bredvid ett stort namn.
+
+Provas på Tobys tur med största text och på iPhone SE. Ett fynd vid största text räknas som ett vanligt fynd.

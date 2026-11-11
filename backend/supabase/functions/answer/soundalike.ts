@@ -105,13 +105,43 @@ export function matchAnswer(heard: string, key: QuizKey): { verdict: AnswerVerdi
   return { verdict: "none", score: Math.max(right, alt.s) };
 }
 
+/** O43 (prio 3): an alternative that is a form of the answer ("Kloroplast" for "Kloroplasten", "Celldelning" for
+ *  "Mitos") is dropped; the same sound stem, or one contains the other. */
+function sameThing(alt: string, answer: string): boolean {
+  const a = svKey(alt), b = svKey(answer);
+  if (!a || !b) return false;
+  if (a === b || a.includes(b) || b.includes(a)) return true;
+  return lev(a, b) <= 1 && Math.min(a.length, b.length) >= 6;
+}
+
+/**
+ * O43 (BUG prio 2): in classroom noise Scribe sometimes reads the keyterm list back ("Viktoriasjön, Tanganyikasjön,
+ * Malawisjön, …"). With the answer first in the list that became a false "Rätt". The reply is "nothing heard" when it
+ * is mostly the terms sent (3+ list items that are terms), or names the answer AND 2+ alternatives.
+ */
+export function isTermListEcho(heard: string, key: QuizKey | null, terms: string[] = []): boolean {
+  const all = [...(key ? [key.answer, ...key.alternatives] : []), ...terms].map((x) => svKey(x)).filter((x) => x.length >= 2);
+  if (!all.length) return false;
+  const items = heard.split(/[,;]+/).map((x) => x.trim()).filter(Boolean);
+  const isTerm = (s: string) => {
+    const k = svKey(s);
+    return k.length >= 2 && all.some((x) => x === k || (k.length >= 5 && lev(x, k) <= 1));
+  };
+  if (items.length >= 3 && items.filter(isTerm).length >= 3) return true;
+  if (key) {
+    const named = [key.answer, ...key.alternatives].filter((x) => soundScore(heard, x) >= 0.9).length;
+    if (named >= 3) return true;
+  }
+  return false;
+}
+
 /** `[[SVAR]] Nilen | Kongo, Niger, Zambezi` (the model's line after a check question) -> the key. */
 export function parseQuizKey(line: string): QuizKey | null {
   const t = line.replace(/^[\s:\]\-–—*]+/, "").split("\n")[0].trim();
   const [a, rest] = t.split("|");
   const answer = (a ?? "").replace(/["“”«»]/g, "").trim().slice(0, 80);
   if (!answer) return null;
-  const alternatives = (rest ?? "").split(/[,;]/).map((x) => x.replace(/["“”«»]/g, "").trim()).filter((x) => x && x.toLowerCase() !== answer.toLowerCase())
+  const alternatives = (rest ?? "").split(/[,;]/).map((x) => x.replace(/["“”«»]/g, "").trim()).filter((x) => x && !sameThing(x, answer))
     .slice(0, 6).map((x) => x.slice(0, 80));
   return { answer, alternatives };
 }
@@ -123,7 +153,7 @@ export function readQuizKey(raw: unknown): QuizKey | null {
   const answer = typeof o.answer === "string" ? o.answer.replace(/[<>\u0000-\u001f]/g, " ").trim().slice(0, 80) : "";
   if (!answer) return null;
   const alternatives = Array.isArray(o.alternatives)
-    ? o.alternatives.filter((x): x is string => typeof x === "string").map((x) => x.replace(/[<>\u0000-\u001f]/g, " ").trim().slice(0, 80)).filter(Boolean).slice(0, 6)
+    ? o.alternatives.filter((x): x is string => typeof x === "string").map((x) => x.replace(/[<>\u0000-\u001f]/g, " ").trim().slice(0, 80)).filter((x) => x && !sameThing(x, answer)).slice(0, 6)
     : [];
   return { answer, alternatives };
 }

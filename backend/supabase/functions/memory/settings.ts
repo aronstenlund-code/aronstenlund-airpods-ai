@@ -33,13 +33,17 @@ export const SETTINGS_LIMITS = { settings: 30, field: 80, text: 200 };
 
 // K13 (Oscar O10: own words 3/20): whole utterances after the wrapper is removed ("Lumen", "nej", "kan du", "lite",
 // "tack", "i fortsättningen" …); never a question about something else ("vad är kortare, en mil eller …").
+// Oscar O22 (new phrasings 4/20): more forms of each correction, still anchored (the whole utterance is the correction,
+// so "det var för långt att cykla till skolan" is not one), and fillers ("asså", "typ", "ju") are removed anywhere.
 const C: [RegExp, SettingKey, string][] = [
-  [/^(?:kortare(?: svar)?|svara kortare|korta ner(?: det| svaret)?|(?:det (?:blev|var|är) )?(?:alldeles )?för långt|för långa svar|(?:du )?pratar för mycket|för mycket(?: text| prat)?|mindre text|inte så långt|kortfattat|kortfattare|korta svar|håll det kort(?:are)?|snabbare|fatta dig kort(?:are)?)$/u, "length", "shorter"],
-  [/^(?:längre(?: svar)?|svara längre|(?:förklara|berätta) mer|utveckla(?: mer| det)?|(?:det (?:blev|var|är) )?för kort(?: utveckla(?: mer)?)?|mer detaljer|mer utförligt|utförligare|mer djup)$/u, "length", "longer"],
-  [/^(?:enklare(?: ord)?|(?:förklara|säg) det enklare|förklara enklare|säg det på ett enklare sätt|(?:det (?:var|är|blev) )?för svårt|jag (?:förstår|fattar) inte(?: alls| vad du menar| ett ord)?|för svåra ord|(?:förklara )?som för en (?:tioåring|femåring|åttaåring|tolvåring|nybörjare|ett barn)|lättare|(?:det (?:var|är) )?för krångligt|inte så krångligt|mindre krångligt)$/u, "simplicity", "simpler"],
-  [/^(?:mer exempel|fler exempel|(?:ge|ta) (?:mig )?(?:ett|några|fler|något) exempel|ge exempel|med exempel|ett exempel till|exempel|jag behöver exempel|(?:ett )?exempel (?:hade|skulle) (?:hjälpt|vara bra|hjälpa))$/u, "examples", "more"],
-  [/^(?:(?:det )?(?:där )?(?:var|är) fel|fel|inte rätt|det (?:där )?stämmer inte(?: alls)?|du har fel|det (?:där )?är inte sant|det var inte sant)$/u, "accuracy", "careful"],
+  [/^(?:(?:det (?:där )?(?:blev|var|är) )?(?:alldeles |lite |väldigt |mycket )?för lång(?:t|a)(?: svar)?|kortare(?: svar)?|svara kortare|korta ner(?: det| svaret)?|(?:du )?(?:pratar|snackar|babblar|pladdrar) för mycket|för mycket(?: text| prat| snack)?|mindre (?:text|prat|snack)|inte så långt|kortfattat|kortfattare|korta svar|håll det kort(?:are)?|snabbare|fatta dig kort(?:are)?|(?:säg|svara|ta)(?: det)? (?:på|i|med) (?:en|ett par|två) (?:mening(?:ar)?|ord)|orka(?:r)?(?: inte)? lyssna på (?:så|sånt|sådana) långa(?: svar)?)$/u, "length", "shorter"],
+  [/^(?:längre(?: svar)?|svara längre|(?:förklara|berätta)(?: lite| ännu| gärna)? mer|utveckla(?: mer| det)?|(?:det (?:där )?(?:blev|var|är) )?(?:alldeles )?för (?:kort|lite)(?: utveckla(?: mer)?)?|mer detaljer|mer utförligt|utförligare|mer djup|(?:gå )?(?:in )?(?:mer |lite mer )?på djupet|(?:gå )?djupare)$/u, "length", "longer"],
+  [/^(?:enklare(?: ord)?|(?:med|på) (?:ett )?enklare (?:ord|sätt)|(?:förklara|säg) det enklare|förklara enklare|säg det på ett enklare sätt|(?:det (?:där )?(?:var|är|blev) )?(?:alldeles )?för (?:svårt|avancerat|krångligt|komplicerat)|jag (?:förstår|fattar|hänger) inte(?: med)?(?: alls| vad du menar| ett ord| någonting)?|(?:jag )?(?:fattar|förstår) ingenting|hänger inte med|för svåra ord|(?:förklara )?som (?:för en|om jag (?:var|vore)) \p{L}+|lättare|inte så krångligt|mindre krångligt)$/u, "simplicity", "simpler"],
+  [/^(?:mer exempel|fler exempel|(?:ge|ta)(?: mig)? (?:ett|några|fler|något) exempel|ge exempel|med exempel|ett exempel till|exempel|jag behöver (?:ett )?exempel|(?:ett )?exempel (?:hade|skulle)(?: ha)? (?:hjälpt|varit (?:bra|nice|skönt|najs)|vara bra|hjälpa))$/u, "examples", "more"],
+  [/^(?:(?:det )?(?:där )?(?:var|är) fel|fel|inte rätt|det (?:där )?stämmer inte(?: alls)?|du har fel|(?:du )?(?:sa|säger) fel|det (?:där )?(?:är|var) inte sant)$/u, "accuracy", "careful"],
 ];
+/** O22: fillers that may stand anywhere ("säg det på typ en mening", "det är ju inte sant", "asså det där …"). */
+const FILLER = /(?<![\p{L}])(?:asså|alltså|typ|ju|liksom|ba|väl)(?![\p{L}])/gu;
 
 const LEAD = /^(?:(?:hej|okej|ok|nej|men|äh|alltså|du|hörru) )+/u;
 const POLITE = /^(?:(?:kan|kunde|skulle) (?:du|ni)(?: snälla)? |snälla |jag vill att du |vill du )/u;
@@ -48,7 +52,7 @@ const TAIL = / (?:tack|snälla|nästa gång|i fortsättningen|framöver|i framti
 
 /** The setting a spoken correction stands for, or null. */
 export function detectCorrection(text: string): { key: SettingKey; value: string } | null {
-  let t = text.toLowerCase().replace(/[^\p{L}\s]/gu, " ").replace(/\s+/g, " ").trim();
+  let t = text.toLowerCase().replace(/[^\p{L}\s]/gu, " ").replace(FILLER, " ").replace(/\s+/g, " ").trim();
   for (let i = 0; i < 3; i++) {
     t = t.replace(/^lumen /u, "").replace(LEAD, "").replace(/^lumen /u, "").replace(POLITE, "").replace(TAIL, "").trim();
   }

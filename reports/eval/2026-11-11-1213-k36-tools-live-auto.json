@@ -1,0 +1,185 @@
+{
+ "summary": {
+  "cases": 16,
+  "right": 16,
+  "spoken_before_tool": 0
+ },
+ "rows": [
+  {
+   "fragment": "Lumen, ring mamma",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "mamma"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "Lumen, kan du ringa Elin",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "Elin"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "Lumen, ring 070 123 45 67",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "number": "0701234567"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "Lumen, slå en signal till pappa",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "pappa"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "Lumen, ring tandläkaren",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "tandläkaren"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "Lumen, spela lugn pluggmusik",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "lugn pluggmusik"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "Lumen, sätt på lite musik av Veronica Maggio",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "Veronica Maggio"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "vad är huvudstaden i Norge",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Huvudstaden i Norge är Oslo."
+  },
+  {
+   "fragment": "vem ringde Graham Bell först",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Den första telefonsamtalet som Alexander Graham Bell gjorde var till sin assistent Thomas Watson år artonhundrasjuttiosex, och han sa då orden \"Mr Watson, kom hit, jag vill träffa dig\"."
+  },
+  {
+   "fragment": "vad betyder ordet signal",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Signal betyder ett tecken eller en impuls som förmedlar information, till exempel ljud, ljus eller elektriska pulser mellan människor, djur, maskiner eller nervceller."
+  },
+  {
+   "fragment": "hur spelar man gitarr",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Att spela gitarr handlar i grunden om två händer: den ena trycker ner strängarna mot greppbrädan, den andra slår eller plockar dem. Börja med att stämma gitarren och lära dig några enkla ackord, till exempel G, C, D och Em, eftersom många sånger bygger på dem. Öva sedan att byta mellan ackorden i en lugn takt, även om det låter tafatt i början. Plocka eller slå med en jämn rytm, och håll tummen bakom greppet på gitarrhalsens baksida för bättre kontroll. Öva i korta pass varje dag, gärna tjugo minuter, så går det snabbare än i långa sällsynta sessioner."
+  },
+  {
+   "fragment": "min kompis ringde mig i går",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "Lumen, sätt en timer på tio minuter",
+   "want": "timer_start",
+   "got": "timer_start",
+   "ok": true,
+   "input": {
+    "seconds": 600,
+    "label": "Tio minuter"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "Lumen, ring 112",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "number": "112"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "mamma ringde nyss",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "Lumen, kör lite lofi",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "lofi"
+   },
+   "confirm": null,
+   "said": ""
+  }
+ ],
+ "connect": {
+  "post_unconfigured": 503,
+  "list": {
+   "connections": [],
+   "available": {
+    "spotify": false
+   }
+  },
+  "no_jwt": 401,
+  "callback_forged": "lumen://connect?provider=spotify&status=error"
+ }
+}

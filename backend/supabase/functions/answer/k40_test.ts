@@ -72,3 +72,27 @@ Deno.test("K40 the reply is graded by sound: 'Nilan' is right, 'såg en' is 'Men
     assert(seen[0].user.includes("never treat the reply as a remark or a command"));
   }
 });
+
+Deno.test("O43: a keyterm list read back by Scribe is 'nothing heard' (no 'Rätt'); the key is kept for the next try", async () => {
+  const { handler, seen } = setup([{ type: "text", text: "Rätt." }]);
+  const key = { answer: "Viktoriasjön", alternatives: ["Tanganyikasjön", "Malawisjön", "Tchadsjön"] };
+  const ev = await events(await handler(post({ fragment: "Viktoriasjön, Tanganyikasjön, Malawisjön,", context: { recent_qa: [{ q: "förhör mig", a: "Vilken är Afrikas största sjö?" }], last_answer_age_sec: 5, quiz_key: key } })));
+  assertEquals(seen.length, 0, "no model call");
+  assertEquals(ev.filter((e) => e.event === "delta").map((e) => e.data.text).join(""), "Jag hörde inte riktigt. Vad sa du?");
+  assertEquals(ev.find((e) => e.event === "done")!.data.quiz_key, key);
+  // a real one-word answer is still graded
+  const r = setup([{ type: "text", text: "Rätt." }]);
+  await events(await r.handler(post({ fragment: "Viktoriasjön", context: { recent_qa: [{ q: "förhör mig", a: "Vilken är Afrikas största sjö?" }], last_answer_age_sec: 5, quiz_key: key } })));
+  assertEquals(r.seen.length, 1);
+});
+
+Deno.test("O43: an alternative that is a form of the answer is dropped from the key; real wrong answers stay", () => {
+  assertEquals(parseQuizKey("Kloroplasten | Kloroplast, Mitokondrien")!.alternatives, ["Mitokondrien"]);
+  assertEquals(parseQuizKey("Mitos | Meios, Mitos och cytokines")!.alternatives, ["Meios"]);
+});
+
+Deno.test("O43: a list is a real answer when the question asks for several", async () => {
+  const r = setup([{ type: "text", text: "Rätt." }]);
+  await events(await r.handler(post({ fragment: "Rhen, Donau, Elbe", context: { recent_qa: [{ q: "förhör mig", a: "Nämn tre floder i Europa?" }], last_answer_age_sec: 5, prep_terms: ["Rhen", "Donau", "Elbe", "Seine"] } })));
+  assertEquals(r.seen.length, 1, "graded by the model");
+});

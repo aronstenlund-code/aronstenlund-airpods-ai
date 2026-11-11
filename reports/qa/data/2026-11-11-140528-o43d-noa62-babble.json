@@ -1,0 +1,395 @@
+{
+ "stamp": "2026-11-11-140528",
+ "a62": false,
+ "rows": [
+  {
+   "id": "g01",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Nilen",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag vill inte ha så långt.",
+   "reply": "Då kör jag korta svar. Den flod som rinner genom Egypten är Nilen, den längsta i Afrika, och den mynnar ut i Medelhavet.",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g02",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Seine",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag har inte hört talas om de här sjöarna.",
+   "reply": "Frågan gällde en flod, inte en sjö: det är Seine som rinner genom Paris. Den är cirka sjuhundraåttio kilometer lång, mynnar i Engelska kanalen och Eiffeltornet ligger vid dess strand. Sjöarna kommer senare i förhöret.\n\nVilken flod rinner genom London?",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g03",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Loire",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag vill inte prata mer. Jag vill bara ha ett par timmar.",
+   "reply": "",
+   "verdict": "silent",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g04",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Rhen",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Mälaren, Vättern, Mälaren,",
+   "reply": "Inte riktigt. Det är Rhen som rinner genom både Köln och Basel. Mälaren och Vättern är sjöar i Sverige, inte floder. Rhen börjar i Alperna och mynnar i Nordsjön i Nederländerna.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g05",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Donau",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag vill stanna hos dig och prata lite grann.",
+   "reply": "",
+   "verdict": "silent",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g06",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Volga",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vad är det för ställen som finns i Europa, där jag bor?",
+   "reply": "Europas mest kända sjöar är Ladoga i Ryssland, Onega, Vänern och Vättern i Sverige samt Balatonsjön i Ungern. De största floderna är Volga, Donau, Rhen, Elbe och Seine. Kända kuststäder är London, Lissabon, Barcelona, Marseille, Neapel, Hamburg, Köpenhamn och Stockholm. På provet gäller det att kunna placera dem på kartan och veta vilket hav eller land de ligger vid.",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g07",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Amazonas",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag kan inte prata engelska.",
+   "reply": "Inte riktigt. Rätt svar är Amazonfloden, som rinner genom Brasiliens regnskog och är världens vattenrikaste flod. Du behöver ingen engelska här, svenska namnet Amazonfloden duger på provet.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g08",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Mississippi",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Det är ju allt jag inte har gjort.",
+   "reply": "Inte riktigt. Svaret är Mississippifloden, som mynnar i Mexikanska golfen vid New Orleans och är USA:s längsta flod. Den bildar ett stort delta söder om staden.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g09",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Themsen",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag kan inte hitta någon.",
+   "reply": "Inte riktigt, men det är okej. Det är Themsen som rinner genom London, och den mynnar ut i Nordsjön. Kom ihåg att Themsen heter Thames på engelska, men uttalas \"tems\".",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g10",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Ganges",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Så att jag kan inte gå på det.",
+   "reply": "Inte riktigt. Svaret är Ganges, som hinduer kallar Gangā och ser som en gudinna. Den rinner genom norra Indien och ut i Bengaliska viken, och i staden Varanasi badar pilgrimer i den för att rena sig. Nästa fråga: Vilken flod rinner genom Paris?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g11",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Ladoga",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag kan inte hitta några städer.",
+   "reply": "Det räcker med en sjö nu: Europas största sjö är Ladoga i Ryssland, och den är ungefär sjuttontusen sjuhundra kvadratkilometer stor. Näst störst är Onega, också i Ryssland, och störst i Sverige är Vänern. Städer tar vi i nästa steg, till exempel kuststäder som Göteborg, Hamburg och Marseille. Vilken är Sveriges näst största sjö?",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g12",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Viktoriasjön",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag har glömt min vän.",
+   "reply": "Inte riktigt. Afrikas största sjö är Victoriasjön, som ligger mellan Uganda, Kenya och Tanzania. Den är också världens näst största sötvattensjö.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g13",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Marseille",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag har glömt mina frågor.",
+   "reply": "Då tar vi frågan igen: vilken är Frankrikes största hamnstad vid Medelhavet? Svaret är Marseille, som ligger vid Lejonbukten och är Frankrikes äldsta stad, grundad av greker för cirka tvåtusen sexhundra år sedan.",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g14",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Vänern",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vad är det för ställe?",
+   "reply": "Sveriges största sjö är Vänern, så frågan gällde en sjö, inte ett ställe. Den ligger i sydvästra Sverige, är cirka femtusen sexhundra kvadratkilometer stor och är Europas tredje största sjö. Göta älv rinner ut ur Vänern och mynnar vid Göteborg. Vilken är Sveriges näst största sjö?",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g15",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Bajkalsjön",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag har inte lyssnat på något av svaren heller.",
+   "reply": "Då tar vi det från början. Världens djupaste sjö är Bajkalsjön i Ryssland, nästan sextonhundrafemtio meter djup. Den är också världens äldsta sjö och rymmer ungefär en femtedel av jordens sötvatten på ytan. Säg \"förhör mig\" när du vill ha nästa fråga.",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g16",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Neapel",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vill ni skriva ut 50 av dem?",
+   "reply": "",
+   "verdict": "silent",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g17",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Lissabon",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vadå, vadå, vadå?",
+   "reply": "Frågan var: vilken är Portugals huvudstad vid Atlanten? Svaret är Lissabon. Staden ligger där floden Tejo mynnar ut i Atlanten och är en av Europas största hamnstäder.\nVilken flod mynnar ut vid Lissabon?",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g18",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Kaspiska havet",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vänern, Vättern, Mälaren, Hjälmaren, Storsjön, Siljan, Ladoga, Onega, Peipus, Bajkalsjön, Viktoriasjön, Tanganyikasjön, Michigansjön, Superior, Baltikum.",
+   "reply": "Svaret på frågan är Kaspiska havet, som räknas som världens största insjö med cirka trehundrasjuttioetttusen kvadratkilometer. Av dina sjöar är Övre sjön, Lake Superior, störst bland de stora sjöarna i Nordamerika, Bajkalsjön är djupast i världen, Ladoga är Europas största sjö och Vänern är Sveriges största. Baltikum är inte en sjö utan en region vid Östersjön med Estland, Lettland och Litauen. Vilken sjö är Sveriges näst största?",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g19",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Göteborg",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag är så stolt över er.",
+   "reply": "Tack, det är kul att höra! Fortsätt så, du är på god väg inför provet. Sveriges största hamnstad är Göteborg, med Nordens största hamn.",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  },
+  {
+   "id": "g20",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Gdańsk",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag vet inte vad det är för ställe.",
+   "reply": "Inte riktigt. Svaret är Gdańsk, hamnstaden i norra Polen där Lech Wałęsa ledde strejken på Leninvarvet nittonhundraåttio och fackförbundet Solidaritet bildades. Staden ligger vid Östersjön, nära mynningen av floden Wisła.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Geografi",
+    "de 50 mest kända",
+    "sjöarna",
+    "floderna",
+    "kuststäderna"
+   ]
+  }
+ ],
+ "elevenlabs_chars_new": 0,
+ "scribe_seconds": 38.2,
+ "summary": {
+  "silence": {
+   "n": 20,
+   "false_right": 0,
+   "heard_nothing": 0
+  }
+ }
+}

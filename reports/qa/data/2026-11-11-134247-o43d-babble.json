@@ -1,0 +1,674 @@
+{
+ "stamp": "2026-11-11-134247",
+ "a62": true,
+ "rows": [
+  {
+   "id": "g01",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Nilen",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag vill inte ha så långt.",
+   "reply": "Nilen rinner genom Egypten. Det är världens längsta flod, cirka sextusen sexhundrafemtio kilometer, och den mynnar ut i Medelhavet.",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Nilen",
+    "Kongo",
+    "Niger",
+    "Zambezi",
+    "Eufrat"
+   ]
+  },
+  {
+   "id": "g01",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Nilen",
+   "student_said": "Vänern",
+   "heard": "Vänern.",
+   "reply": "Inte riktigt. Det är Nilen som rinner genom Egypten, medan Vänern är Sveriges största sjö. Nilen är ungefär sextusen sexhundrafemtio kilometer lång och mynnar ut i Medelhavet.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Nilen",
+    "Kongo",
+    "Niger",
+    "Zambezi",
+    "Eufrat"
+   ]
+  },
+  {
+   "id": "g02",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Seine",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag har inte hört det här.",
+   "reply": "Inte riktigt. Svaret är Seine, floden som rinner genom Paris och mynnar ut i Engelska kanalen. Nästa fråga: Vilken stad ligger vid Themsen?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Seine",
+    "Loire",
+    "Rhône",
+    "Garonne",
+    "Themsen"
+   ]
+  },
+  {
+   "id": "g02",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Seine",
+   "student_said": "Themsen",
+   "heard": "Themsen.",
+   "reply": "Inte riktigt. Floden som rinner genom Paris är Seine, medan Themsen rinner genom London. Seine mynnar ut i Engelska kanalen, och Themsen i Nordsjön.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "alternative",
+    "answer": "Themsen"
+   },
+   "keyterms_first": [
+    "Seine",
+    "Loire",
+    "Rhône",
+    "Garonne",
+    "Themsen"
+   ]
+  },
+  {
+   "id": "g03",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Loire",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag vill inte prata med dig. Jag vill bara prata med dig.",
+   "reply": "",
+   "verdict": "silent",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Loire",
+    "Seine",
+    "Rhône",
+    "Garonne",
+    "Rhen"
+   ]
+  },
+  {
+   "id": "g03",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Loire",
+   "student_said": "Donau",
+   "heard": "Dunau.",
+   "reply": "Inte riktigt. Frankrikes längsta flod är Loire, cirka tusen kilometer lång, och den mynnar ut i Atlanten vid Saint-Nazaire. Donau är Europas näst längsta flod och rinner genom Tyskland, Österrike och Ungern till Svarta havet, men den rinner inte genom Frankrike.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Loire",
+    "Seine",
+    "Rhône",
+    "Garonne",
+    "Rhen"
+   ]
+  },
+  {
+   "id": "g04",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Rhen",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vättern, Vänern, Mälaren, Hjälmaren, Storsjön, Siljan, Ladoga, Onega, Bajkalsjön, Viktoriasjön.",
+   "reply": "Inte riktigt. Frågan gällde en flod, och svaret är Rhen, som rinner genom både Köln och Basel. Allt du nämnde är sjöar, och dem kan du ändå: Vänern, Vättern, Mälaren och Hjälmaren är Sveriges fyra största, Ladoga och Onega Europas största, Bajkalsjön världens djupaste och Viktoriasjön Afrikas största. Fråga: Vilken flod rinner genom Paris?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Rhen",
+    "Donau",
+    "Elbe",
+    "Main",
+    "Rhône"
+   ]
+  },
+  {
+   "id": "g04",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Rhen",
+   "student_said": "Volga",
+   "heard": "Volga.",
+   "reply": "Inte riktigt. Det är Rhen som rinner genom både Köln och Basel. Volga ligger i Ryssland och är Europas längsta flod, och den mynnar i Kaspiska havet.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Rhen",
+    "Donau",
+    "Elbe",
+    "Main",
+    "Rhône"
+   ]
+  },
+  {
+   "id": "g05",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Donau",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag vill ha ett stort ställe på 15 år.",
+   "reply": "Inte riktigt. Rätt svar är Donau, som rinner genom både Wien och Budapest. Den är Europas näst längsta flod och mynnar ut i Svarta havet.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Donau",
+    "Rhen",
+    "Elbe",
+    "Volga",
+    "Oder"
+   ]
+  },
+  {
+   "id": "g05",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Donau",
+   "student_said": "Rhen",
+   "heard": "Jag vill ha en kaffe.",
+   "reply": "",
+   "verdict": "silent",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Donau",
+    "Rhen",
+    "Elbe",
+    "Volga",
+    "Oder"
+   ]
+  },
+  {
+   "id": "g06",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Volga",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vad är det för städer i Europa, där jag inte har varit?",
+   "reply": "Lissabon ligger vid Atlanten, Barcelona och Marseille vid Medelhavet, Neapel och Venedig i Italien, Aten i Grekland. Vid Nordsjön ligger Rotterdam och Hamburg, och vid Östersjön ligger Stockholm, Köpenhamn, Gdansk och Sankt Petersburg. På provet: lär dig vilket hav varje stad ligger vid.\n\nVid vilket hav ligger Barcelona?",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Volga",
+    "Donau",
+    "Dnepr",
+    "Ural",
+    "Rhen"
+   ]
+  },
+  {
+   "id": "g06",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Volga",
+   "student_said": "Donau",
+   "heard": "Donau.",
+   "reply": "Inte riktigt. Europas längsta flod är Volga, cirka tretusen femhundratrettio kilometer, och den rinner genom Ryssland ut i Kaspiska havet. Donau är Europas näst längsta flod, cirka tvåtusen åttahundrafemtio kilometer, och den flyter genom tio länder ut i Svarta havet. Vilken flod rinner genom Paris?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "alternative",
+    "answer": "Donau"
+   },
+   "keyterms_first": [
+    "Volga",
+    "Donau",
+    "Dnepr",
+    "Ural",
+    "Rhen"
+   ]
+  },
+  {
+   "id": "g07",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Amazonas",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag kan inte prata engelska.",
+   "reply": "",
+   "verdict": "silent",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Amazonas",
+    "Orinoco",
+    "Paraná",
+    "Mississippi",
+    "Nilen"
+   ]
+  },
+  {
+   "id": "g07",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Amazonas",
+   "student_said": "Ganges",
+   "heard": "Ganges.",
+   "reply": "Inte riktigt. Det är Amazonfloden som rinner genom Brasiliens regnskog. Ganges ligger i Indien och rinner från Himalaya ut i Bengaliska viken, och den är helig för hinduerna.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Amazonas",
+    "Orinoco",
+    "Paraná",
+    "Mississippi",
+    "Nilen"
+   ]
+  },
+  {
+   "id": "g08",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Mississippi",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag har inte gjort det.",
+   "reply": "Inte riktigt. Floden som mynnar vid New Orleans är Mississippi. Den är USA:s längsta flod och rinner genom landet söderut ut i Mexikanska golfen, där New Orleans ligger i deltat. På provet kan du skriva att Mississippi mynnar i Mexikanska golfen.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Mississippi",
+    "Missouri",
+    "Ohio",
+    "Colorado",
+    "Hudson"
+   ]
+  },
+  {
+   "id": "g08",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Mississippi",
+   "student_said": "Amazonas",
+   "heard": "Amazonas.",
+   "reply": "Inte riktigt. Det är Mississippi som mynnar vid New Orleans, i Mexikanska golfen. Amazonas ligger i Sydamerika och mynnar i Atlanten vid Brasiliens kust.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Mississippi",
+    "Missouri",
+    "Ohio",
+    "Colorado",
+    "Hudson"
+   ]
+  },
+  {
+   "id": "g09",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Themsen",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vad är det för någon?",
+   "reply": "Temsen. Den rinner genom London och mynnar ut i Nordsjön. Nästa fråga: Vilken flod rinner genom Paris?",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Themsen",
+    "Seine",
+    "Severn",
+    "Mersey",
+    "Rhen"
+   ]
+  },
+  {
+   "id": "g09",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Themsen",
+   "student_said": "Seine",
+   "heard": "Seine.",
+   "reply": "Inte riktigt. Seine rinner genom Paris, medan London ligger vid Themsen, som mynnar ut i Nordsjön. Nästa fråga: Vilken flod rinner genom Paris?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "alternative",
+    "answer": "Seine"
+   },
+   "keyterms_first": [
+    "Themsen",
+    "Seine",
+    "Severn",
+    "Mersey",
+    "Rhen"
+   ]
+  },
+  {
+   "id": "g10",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Ganges",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vad är det för något?",
+   "reply": "Floden som hinduer anser helig är Ganges i Indien. Den rinner från Himalaya genom norra Indien ut i Bengaliska viken, och den kallas också Ganga. Hinduer badar i den för att rena sig, och den heliga staden Varanasi ligger vid dess strand. På provet: skriv Ganges, Indien och Varanasi.\n\nVilken stad vid Ganges är helig?",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Ganges",
+    "Indus",
+    "Brahmaputra",
+    "Mekong",
+    "Nilen"
+   ]
+  },
+  {
+   "id": "g10",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Ganges",
+   "student_said": "Nilen",
+   "heard": "Nylänna.",
+   "reply": "Inte riktigt. Ganges är den heliga floden för hinduer, och många badar i den för att rena sig. Den rinner genom norra Indien och mynnar i Bengaliska viken. Vilken flod rinner genom Paris?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "alternative",
+    "answer": "Nilen"
+   },
+   "keyterms_first": [
+    "Ganges",
+    "Indus",
+    "Brahmaputra",
+    "Mekong",
+    "Nilen"
+   ]
+  },
+  {
+   "id": "g11",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Ladoga",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vänern, Mälaren, Hjälmaren, Storsjön, Siljan, Bajkalsjön, Viktoriasjön, Tanganyikasjön, Michigansjön, Victoriasjön.",
+   "reply": "Inte riktigt. Europas största sjö är Ladoga i Ryssland, med ungefär sjuttontusen sjuhundra kvadratkilometer. Vänern är störst i Sverige och Västeuropa, och Bajkalsjön är världens djupaste, men ligger i Asien. Nästa fråga: vilken är Sveriges näst största sjö?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "alternative",
+    "answer": "Vänern"
+   },
+   "keyterms_first": [
+    "Ladoga",
+    "Onega",
+    "Vänern",
+    "Peipus",
+    "Saimen"
+   ]
+  },
+  {
+   "id": "g11",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Ladoga",
+   "student_said": "Vänern",
+   "heard": "Vänern.",
+   "reply": "Inte riktigt. Europas största sjö är Ladoga i Ryssland, med ungefär sjuttontusen sjuhundra kvadratkilometer. Vänern är Sveriges och EU:s största sjö, och Europas tredje största, med omkring femtusen sexhundra kvadratkilometer.\n\nVilken är Europas näst största sjö?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "alternative",
+    "answer": "Vänern"
+   },
+   "keyterms_first": [
+    "Ladoga",
+    "Onega",
+    "Vänern",
+    "Peipus",
+    "Saimen"
+   ]
+  },
+  {
+   "id": "g12",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Viktoriasjön",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Viktoriasjön, Tanganyikasjön, Malawisjön, Tchadsjön, Turkanasjön, Geografi, de 50 mest kända, sjöarna, floderna, kuststäderna, Vättern, Vänern, Mälaren, Hjälmaren, Storsjön, Siljan, Ladoga, Onega, Bajkalsjön, Michigansjön.",
+   "reply": "Rätt, Viktoriasjön är Afrikas största sjö, och den ligger mellan Uganda, Kenya och Tanzania. Tanganyikasjön är Afrikas djupaste sjö, och Malawisjön är känd för sina många arter av ciklider. Bajkalsjön i Ryssland är världens djupaste sjö, och Vänern är Sveriges största. Vilken är Sveriges näst största sjö?",
+   "verdict": "right",
+   "false_right": true,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Viktoriasjön",
+    "Tanganyikasjön",
+    "Malawisjön",
+    "Tchadsjön",
+    "Turkanasjön"
+   ]
+  },
+  {
+   "id": "g12",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Viktoriasjön",
+   "student_said": "Ladoga",
+   "heard": "Ladoga.",
+   "reply": "Inte riktigt. Afrikas största sjö är Victoriasjön, som ligger i Östafrika och delas av Uganda, Kenya och Tanzania. Ladoga är Europas största sjö och ligger i Ryssland, nära Sankt Petersburg.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Viktoriasjön",
+    "Tanganyikasjön",
+    "Malawisjön",
+    "Tchadsjön",
+    "Turkanasjön"
+   ]
+  },
+  {
+   "id": "g13",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Marseille",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag har aldrig hört om Viktoriasjön.",
+   "reply": "Viktoriasjön är Afrikas största sjö och världens näst största sötvattenssjö efter Övre sjön i Nordamerika. Den ligger i Östafrika och delas av Uganda, Kenya och Tanzania. Nilens källflöde, Victorianilen, rinner ut ur den vid Jinja i Uganda. På provet kan du skriva att Viktoriasjön är Nilens viktigaste källsjö.",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Marseille",
+    "Nice",
+    "Toulon",
+    "Bordeaux",
+    "Lyon"
+   ]
+  },
+  {
+   "id": "g13",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Marseille",
+   "student_said": "Lissabon",
+   "heard": "Lissabon",
+   "reply": "Inte riktigt. Lissabon ligger i Portugal och vid Atlanten. Frankrikes största hamnstad vid Medelhavet är Marseille, som ligger vid floden Rhônes mynningsområde.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Marseille",
+    "Nice",
+    "Toulon",
+    "Bordeaux",
+    "Lyon"
+   ]
+  },
+  {
+   "id": "g14",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Vänern",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vänern, Vättern, Mälaren, Hjälmaren, Storsjön, Geografi, de 50 mest kända, sjöarna, floderna, kuststäderna, Siljan, Ladoga, Onega, Bajkalsjön, Viktoriasjön,",
+   "reply": "Vänern är Sveriges största sjö, sedan följer Vättern, Mälaren och Hjälmaren. Storsjön i Jämtland är femte största, och Siljan i Dalarna är känd för sin meteoritkrater. Ladoga är Europas största sjö, följd av Onega, båda i Ryssland. Bajkalsjön i Sibirien är världens djupaste, och Viktoriasjön i Afrika är den största i Afrika. På provet: skriv ut största sjön först och placera den sedan i rätt land eller världsdel.\nVilken är Europas största sjö?",
+   "verdict": "other",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Vänern",
+    "Vättern",
+    "Mälaren",
+    "Hjälmaren",
+    "Storsjön"
+   ]
+  },
+  {
+   "id": "g14",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Vänern",
+   "student_said": "Ladoga",
+   "heard": "Ladoga.",
+   "reply": "Inte riktigt. Sveriges största sjö är Vänern, med en yta på cirka femtusen sexhundra kvadratkilometer. Ladoga ligger i Ryssland och är Europas största sjö, så den svarar du på om frågan gäller hela Europa.\n\nVilken är Sveriges näst största sjö?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Vänern",
+    "Vättern",
+    "Mälaren",
+    "Hjälmaren",
+    "Storsjön"
+   ]
+  },
+  {
+   "id": "g15",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Bajkalsjön",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Jag har aldrig hört om några sådana spännande platser.",
+   "reply": "Inte riktigt. Världens djupaste sjö är Bajkalsjön i Ryssland, med över sextonhundra meters djup. Den är också världens äldsta sjö och rymmer ungefär en femtedel av jordens sötvatten. På provet kan du skriva att den ligger i Sibirien.\n\nVill du höra en fråga till?",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Bajkalsjön",
+    "Tanganyikasjön",
+    "Kaspiska havet",
+    "Ladoga",
+    "Övre sjön"
+   ]
+  },
+  {
+   "id": "g15",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Bajkalsjön",
+   "student_said": "Viktoriasjön",
+   "heard": "Viktoria sjön.",
+   "reply": "Inte riktigt. Världens djupaste sjö är Bajkalsjön i Ryssland, nästan sextonhundrafemtio meter djup. Victoriasjön i Afrika är i stället Afrikas största sjö till ytan, men den är bara omkring åttio meter djup.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Bajkalsjön",
+    "Tanganyikasjön",
+    "Kaspiska havet",
+    "Ladoga",
+    "Övre sjön"
+   ]
+  },
+  {
+   "id": "g16",
+   "cond": "silence",
+   "noise": "babble",
+   "right": "Neapel",
+   "student_said": "(inget, bara sorl)",
+   "heard": "Vill ni skriva ett betyg på det ni har läst?",
+   "reply": "",
+   "verdict": "silent",
+   "false_right": false,
+   "quiz_sound": null,
+   "keyterms_first": [
+    "Neapel",
+    "Rom",
+    "Genua",
+    "Venedig",
+    "Palermo"
+   ]
+  },
+  {
+   "id": "g16",
+   "cond": "wrong",
+   "noise": "babble",
+   "right": "Neapel",
+   "student_said": "Lissabon",
+   "heard": "Lissabon",
+   "reply": "Inte riktigt. Kuststaden vid Vesuvius är Neapel, som ligger i Italien vid Neapelbukten. Lissabon ligger i Portugal, vid floden Tejos mynning.",
+   "verdict": "wrong",
+   "false_right": false,
+   "quiz_sound": {
+    "verdict": "none"
+   },
+   "keyterms_first": [
+    "Neapel",
+    "Rom",
+    "Genua",
+    "Venedig",
+    "Palermo"
+   ]
+  }
+ ],
+ "elevenlabs_chars_new": 0,
+ "scribe_seconds": 59.8
+}

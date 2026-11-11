@@ -118,3 +118,7 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-11 12:01 → reports/2026-11-11-1201-kelly-ke35-forsta-passet.md **Ke35 – Stående uppgift (PLAN 2c): designbeslut på Tobys A50-runda, fynd 3, 5 och 6** (effort: medium, Kelly själv). `reports/apptest/2026-11-11-1200-toby-t8b-a50-forstagang.md`: (3) Lyssnar visar förra sessionens svar, (5) förstagångsanvändaren hamnar i Lyssnar och ser aldrig nya Start, (6) Provläge frågar 5 saker första gången. Underlag till Angela i `docs/design/`.
 
 - [x] klar 2026-11-11 12:45 → reports/2026-11-11-1245-kelly-ke36-granskning-a55-a61.md (godkända; G3 öppet) **Ke36 – Stående uppgift (PLAN 2c): granska A55–A61** (effort: low, Kelly själv). Angelas bilder A55–A58 (CI 43005804732, "till Kelly") och den nyare körningen 43011221122 (A59 V1, A60 Ke35, A61). Mot `docs/design/forsta-passet.md`, Ke34 och SYSTEM.md.
+
+- [x] klar 2026-11-11 13:21 → reports/2026-11-11-1321-kelly-ke37-storsta-text.md **Ke37 – Stående uppgift (PLAN 2c): regel för största text (Tobys T11 fynd 1–4)** (effort: low, Kelly själv). `reports/apptest/2026-11-11-1310-toby-t11-skarmrunda.md`: ord som bryts mitt i, rubrik som kapas, trånga två spalter. En regel i SYSTEM.md som Angela kan följa överallt.
+
+- [x] klar 2026-11-11 14:57 → reports/2026-11-11-1457-kelly-ke38-granskning-t8c.md **Ke38 – Stående uppgift (PLAN 2c): granska Tobys T8c (första användningen efter Ke35) och A66** (effort: low, Kelly själv). Ke35 fungerar; ett litet fynd (K1).

@@ -1,6 +1,6 @@
-# Överlämning: Kevin (backend), 2026-11-11 13:00
+# Överlämning: Kevin (backend), 2026-11-11 13:10
 
-Sessionen (molnet) gjorde K38, K37, K39, K36, K40 (O41 BLOCKER) och stående omgång 2–7, och är inte komprimerad. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom utom K6, som väntar på `SUPABASE_SERVICE_ROLE_KEY`.
+Sessionen (molnet) gjorde K38, K37, K39, K36, K40b (O41 BLOCKER), Deangelos K40 (förhörssvar efter ljud) och stående omgång 2–10, och är inte komprimerad. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom utom K6, som väntar på `SUPABASE_SERVICE_ROLE_KEY`.
 
 **Arbetssätt som sparar tid (molnet)**
 - **Riktig Deno går att installera:** `npm i deno@2` i scratchpad, sedan länka `node_modules/.bin/deno` till `/usr/local/bin/deno`. Då fungerar `deno task test` och `deno task check`, med typkontroll. Node-shimmen behövs inte.
@@ -20,8 +20,9 @@ Sessionen (molnet) gjorde K38, K37, K39, K36, K40 (O41 BLOCKER) och stående omg
 
 **Öppna trådar**
 - **Aron:** `SUPABASE_SERVICE_ROLE_KEY` (efter Oscars godkännande av K38) låser upp K6 och K22. Spotify-appen (klickväg i `docs/AGENT.md`). O16: ElevenLabs med zero retention före beta. En teströst (C) från Kevin ligger i `logo_votes`; den raderas när Aron kan bekräfta.
-- **Angela:** A53 (Mina svar), A54 (`/logo-vote`), samtal, `music_open` och Spotify (protokollen i rapporterna och i `docs/AGENT.md`). Om appen bör säga samma sak som `self.ts` om ElevenLabs.
+- **Angela:** A62: `done.quiz_key` till Scribe och tillbaka som `context.quiz_key` (K40-rapporten). A53 (Mina svar), A54 (`/logo-vote`), samtal, `music_open` och Spotify (protokollen i rapporterna och i `docs/AGENT.md`). Om appen bör säga samma sak som `self.ts` om ElevenLabs.
 - **Oscar:** omtest av K38, grupp 13 och 14. Hans `o24`- och `o36`-skript känner igen svaren på de gamla texterna.
 - **Concern (Oscar O39, Kevin instämmer):** Mina svar kan fungera som fusk under ett prov. Det är Architects beslut.
 - Shopify (K35 fas 2) kan byggas på `connections` (`provider` får ett nytt värde) när Partner-appen finns.
 - Två beslut heter "D98", och D124 och D125 finns två gånger, både som owner-beslut och som Kevin-beslut. Rör det inte.
+- **Kris och verktyg (O42):** en sen krismarkör från modellen räknas inte för korta, riktade telefonkommandon utan krissignal i koden. "ring Bris, jag vill inte leva" ger krissvaret och samtalet. Rör det försiktigt.

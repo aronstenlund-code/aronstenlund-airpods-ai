@@ -131,6 +131,8 @@ final class TranscriptionCoordinator {
     private var usedPartial: (key: String, at: Date)?
     /// A56: when the VAD first held a stale final back, and when the final was last asked for (to log Scribe's reply).
     private var staleDeferredSince: Date?
+    /// A63: how many uncommitted runs of words began this session (only the first 30 are logged).
+    private var partialsSeen = 0
     private var staleCommitAskedAt: Date?
     /// A21.4: how often the final was asked for, and how often the partial had to be used, for Diagnostics.
     private(set) var staleCommits = 0
@@ -412,7 +414,11 @@ final class TranscriptionCoordinator {
             staleDeferredSince = nil
             lastPartialText = ""
         } else if !result.text.isEmpty {
-            if partialSince == nil { partialSince = Date() }
+            if partialSince == nil {
+                partialSince = Date()
+                partialsSeen += 1
+                if partialsSeen <= 30 { controller.log("Scribe: words heard, not committed yet (A63)") } // for Toby's runs
+            }
             if result.text != lastPartialText {
                 lastPartialText = result.text
                 staleDeferredSince = nil

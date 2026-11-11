@@ -370,6 +370,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             self?.listeningEventObserver?(gated ? .micGated : .micOpen, Date()) // A29
         }
         speaker.onSpeak = { [weak self] text in
+            self?.lastSpokeTextAt = Date() // A63
             self?.ownSpeechStarted(text)
             self?.echo.record(text, at: Date())
             self?.sessionObserver?(.spoke(text), Date())
@@ -805,6 +806,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             await startStudy()
         }
     }
+
+    /// A66 (Toby T8c finding 1): at most one sheet each time the app is opened. The first start's share question is
+    /// that opening's sheet; "Earmind kan mer än svara" and the logo vote wait for later openings.
+    @ObservationIgnored var openingSheetShown = false
 
     /// Ke35: Provläge asked for the exam once in this run of the app.
     @ObservationIgnored private var provAskedForExam = false
@@ -1529,6 +1534,26 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if why == "no" || why == "silence" || why == "shake" { sendLengthSignal(yes: false) } // A56 (K13.2)
     }
 
+    /// A65 (Toby T7b/T12): "ja" in the Mer? window is taken from the partial once it has stood still for
+    /// `morePartialHold`, instead of waiting for Scribe's final after the pause (3 s and more). A partial that goes on
+    /// ("Ja men vad är fotosyntes?") is an ordinary turn, as before.
+    @ObservationIgnored private var morePartialTask: Task<Void, Never>?
+    @ObservationIgnored private var moreTakenFromPartial: (text: String, at: Date)?
+    static let morePartialHold: TimeInterval = 0.7
+
+    private func takeMoreFromPartialIfStable(_ text: String) {
+        morePartialTask?.cancel()
+        guard isOfferingMore, MoreOffer.verdict(text) == true, isOtherVoice(near: Date()) != true else { return }
+        morePartialTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Self.morePartialHold))
+            guard let self, !Task.isCancelled, self.isOfferingMore,
+                  self.conversation.partial?.text == text else { return }
+            self.moreTakenFromPartial = (text, Date())
+            self.discardAhead(reason: "more")
+            self.takeMore(by: "voice, before the final (A65)")
+        }
+    }
+
     /// A62 (K40): the answer key of the last answer, sent back with the next call in Provläge; its words go first among
     /// Scribe's keyterms while the question is asked ("Nilen", not "Nilan").
     @ObservationIgnored private var lastQuizKey: QuizKey?
@@ -2118,11 +2143,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     static let quietToReopen: TimeInterval = 1.0
 
     /// The input is gated for Lumen's voice, but nothing plays or waits to be said, and no answer streams.
+    /// A63 (Toby T12): with `two_level` the stream goes on after the short answer is spoken (`more_delta`, never
+    /// spoken), so a streaming answer counts as over when Lumen has had nothing new to say for `streamQuiet`.
     private var ownSpeechLooksOver: Bool {
         guard transcription.isInputGated, !controller.playback.isSpeaking, !speaker.isSpeaking, !speaker.hasPendingSpeech else { return false }
-        if case .answering = answers.status { return false }
+        if case .answering = answers.status {
+            return lastSpokeTextAt.map { Date().timeIntervalSince($0) >= Self.streamQuiet } ?? false
+        }
         return true
     }
+
+    /// A63: when Lumen was last given text to say.
+    @ObservationIgnored private var lastSpokeTextAt: Date?
+    static let streamQuiet: TimeInterval = 2.5
 
     /// The voice did not report its end within its estimated length + 2 s: open the recogniser anyway (A21.3).
     private func ownSpeechOverdue() {
@@ -3736,6 +3769,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard !controller.playback.isSpeaking else { return }
         lastHeardAt = date
         if !text.isEmpty { activation.speechContinues(now: date) } // A21.2: a held half question waits for the rest
+        takeMoreFromPartialIfStable(text)
         schedulePrefetch()
         // A partial that already ends a sentence is enough to start the answer (D80).
         if let last = text.trimmingCharacters(in: .whitespacesAndNewlines).last, last == "?" || last == "!" {
@@ -3809,6 +3843,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 discardAhead(reason: "a voice command")
                 return
             }
+        }
+        // A65: the "ja" was already taken from the partial; Scribe's final of the same word is not a turn of its own.
+        if let taken = moreTakenFromPartial, date.timeIntervalSince(taken.at) < 6, MoreOffer.verdict(segment.text) == true {
+            moreTakenFromPartial = nil
+            discardAhead(reason: "more, already taken")
+            study.discardTurnText()
+            return
         }
         // A15: in the "Mer?" window "ja" / "mer" from the wearer gets the long answer; "nej" or anything else closes it.
         if isOfferingMore {
@@ -3912,10 +3953,25 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                     isPlaybackSpeaking: controller.playback.isSpeaking, now: date)
         if activation.pendingIsUnfinished {
             controller.log("Frågor: half a question, waiting up to \(UnfinishedQuestion.hold) s for the rest (A21)")
+            askForTheRestBeforeTheHoldEnds()
         }
         scheduleQuestionTimer()
         if activation.pendingDueAt == nil { discardAhead(reason: "no question when the pause came") }
     }
+
+    /// A63 (Toby T12 finding 1): the rest of a half question came, but Scribe kept it uncommitted until its session
+    /// ended (11–17 s). Before the hold is over, Scribe is asked for its final, so the rest arrives in time to be joined.
+    private func askForTheRestBeforeTheHoldEnds() {
+        halfQuestionTask?.cancel()
+        halfQuestionTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(max(0.5, UnfinishedQuestion.hold - 1.2)))
+            guard let self, !Task.isCancelled, self.isListening, self.activation.pendingIsUnfinished else { return }
+            self.controller.log("Half a question: Scribe asked for the rest now, words waiting: \(self.transcription.hasWaitingWords) (A63)")
+            self.transcription.commit()
+        }
+    }
+
+    @ObservationIgnored private var halfQuestionTask: Task<Void, Never>?
 
     /// Voice-created command (D37): "spara kommando <ord>: <instruktion>". Confirms by voice.
     @discardableResult

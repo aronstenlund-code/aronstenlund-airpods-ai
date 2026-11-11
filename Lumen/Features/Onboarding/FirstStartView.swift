@@ -67,6 +67,7 @@ struct FirstStartView: View {
     private func finish() {
         Task {
             await container.listening.stopListening()
+            container.listening.openingSheetShown = true // A66: the share question is this opening's sheet
             UserDefaults.standard.set(true, forKey: Self.doneKey)
             onDone()
         }

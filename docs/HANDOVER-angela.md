@@ -1,20 +1,28 @@
-# Överlämning: Angela (app), 2026-11-11 kl. 11.20
+# Överlämning: Angela (app), 2026-11-11, uppdaterad kl. 14.00
 
-Sessionen 2026-11-11 (förmiddag) gjorde fem punkter:
-- A50 ny Start;
-- A53 Mina svar;
-- A52 Vad kan Earmind?;
-- A54 loggröstningen;
-- A55 Earmind.
+Sessionen 2026-11-11 gjorde A50–A64:
+- Start, Mina svar, Vad kan Earmind?, loggröstningen och Earmind;
+- Tobys T5b, T7b, T8b och T12;
+- Kellys Ke28, Ke34, Ke35 och Ke37;
+- ring och musik, Spotify för testare och `quiz_key` (K40).
 
-A50–A54 är gröna i CI 42999877208. Inget är provat på telefon. Rapporterna heter `reports/2026-11-11-1100-angela-a5*.md`
-och `reports/2026-11-11-1130-angela-a55-earmind.md`.
+Alla är gröna i CI (senast 43019231188 med A63). Inget är provat på telefon. Rapporterna heter `reports/2026-11-11-*-angela-a5*.md`
+och `reports/2026-11-11-*-angela-a6*.md`.
 
 **Kvar i kön:**
 - A51 (loggan): hoppas över tills röstningen har avgjort den (D127).
 - A3: väntar på K6.
 
 ## Det här står inte i rapporterna
+- **Tider:** ta tiden i rapportnamn från `TZ=Europe/Stockholm date`, inte ur huvudet. Jag gissade fyra namn som låg
+  i framtiden och rättade dem i f4d5552.
+- **Fler Swift-fällor i dag:**
+  - `return switch` efter en `guard`;
+  - en statisk konstant som används i en `nonisolated` funktion måste också vara `nonisolated`.
+  - Båda föll först i device-bygget, efter cirka 5 min.
+- **Tavlan krockar ofta vid rebase:** scratchpad `ci/resolve.py BOARD.md "| Angela (app)"` behåller allas rader och
+  tar bara Angela-raden från min version.
+- **two_level (A56):** svaret strömmar vidare efter det korta svaret, och vakten räknar med det (A63).
 - **CI:**
   - Molnsessionen har ingen Mac. `gh run list/view/download` och `gh workflow run` fungerar via proxyn, trots att `gh auth status` säger att token är ogiltig.
   - Vänteskriptet ligger i scratchpad `ci/waitsha.sh <sha>`.

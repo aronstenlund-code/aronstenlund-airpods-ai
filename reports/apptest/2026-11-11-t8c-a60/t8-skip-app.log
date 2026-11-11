@@ -1,0 +1,123 @@
+getpwuid_r did not find a match for uid 501
+Filtering the log data using "subsystem == "com.rsolutions.lumen""
+Timestamp               Ty Process[PID:TID]
+2026-11-11 13:42:58.340 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Microphone permission request → granted
+2026-11-11 13:42:58.812 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] State Idle → Listening
+2026-11-11 13:42:58.821 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] AVAudioEngine started
+2026-11-11 13:42:58.834 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] Test tone 880 Hz, 0.070000 s
+2026-11-11 13:42:58.834 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Cue: start (A34)
+2026-11-11 13:42:59.215 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Activating B-HQ: mode=default options=bluetoothHighQualityRecording,allowBluetoothHFP
+2026-11-11 13:42:59.435 E  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]
+2026-11-11 13:42:59.435 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]
+2026-11-11 13:42:59.435 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:42:59.435 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:42:59.435 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:42:59.639 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Capture started · engine input WAV files (3) · 16000 Hz · 1 ch · Int16
+2026-11-11 13:42:59.640 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Microphone airPods for standard · B-HQ · MicrophoneBuiltIn · iPhone mic
+2026-11-11 13:42:59.654 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Scribe keyterms: 4, longest 7 characters (kortare)
+2026-11-11 13:43:00.351 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] play requested → first buffer rendered: 204.9 ms (+ output latency 0.1 ms)
+2026-11-11 13:43:00.655 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Route 1 s after activation: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:43:00.656 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)
+2026-11-11 13:43:01.244 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] warm answer: HTTP 204
+2026-11-11 13:43:02.281 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] warm tts: HTTP 204
+2026-11-11 13:43:03.975 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Local VAD not ready: all audio goes to Scribe
+2026-11-11 13:43:03.988 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT running: Scribe · sv-SE
+2026-11-11 13:43:33.655 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Answer ahead discarded (the words went on) · ahead 1 · used 0 · discarded 1 (1.4/min) · TTS ahead 0, wasted 0
+2026-11-11 13:43:35.223 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Answer ahead discarded (the words went on) · ahead 2 · used 0 · discarded 2 (2.6/min) · TTS ahead 1, wasted 1
+2026-11-11 13:43:35.490 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Activation (auto) · answered ahead: Vad är huvudstaden i Australien?
+2026-11-11 13:43:35.490 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Turn · standard · STT Scribe · mic airPods · B-HQ
+2026-11-11 13:43:36.778 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] latency: first text after 1287 ms (cloud)
+2026-11-11 13:43:37.351 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] answer done · first delta 1537.200666 ms · provider cloud
+2026-11-11 13:43:37.358 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Answer · first text after 1537 ms · claude-haiku-5-5
+2026-11-11 13:43:38.004 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] latency: first speech after 2514 ms (elevenlabs)
+2026-11-11 13:43:38.004 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Turn timing · answered ahead · heard→call 0 ms · call→first token 1538 ms · call→done 2112 ms · heard→pause over 251 ms · pause over→first sound 2514 ms · ahead 3 · used 1 · discarded 2 (2.5/min) · TTS ahead 1, wasted 1
+2026-11-11 13:43:38.004 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT input gated (own speech)
+2026-11-11 13:43:38.032 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] ElevenLabs: 37 chars → 67200 samples, 0 underruns, 0 ms silence, start wait 1 ms
+2026-11-11 13:43:38.033 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 2 ms, 0 förhämtade
+2026-11-11 13:43:38.759 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] play requested → first buffer rendered: 123.4 ms (+ output latency 0.1 ms)
+2026-11-11 13:43:41.568 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT input open
+2026-11-11 13:43:41.568 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] More? window open (A15)
+2026-11-11 13:43:41.569 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] Test tone 1320 Hz, 0.120000 s
+2026-11-11 13:43:43.015 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] play requested → first buffer rendered: 161.1 ms (+ output latency 0.1 ms)
+2026-11-11 13:43:45.176 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT input gated (own speech)
+2026-11-11 13:43:45.235 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] ElevenLabs: 43 chars → 82560 samples, 0 underruns, 0 ms silence, start wait 1 ms
+2026-11-11 13:43:45.235 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 2 ms, 0 förhämtade
+2026-11-11 13:43:45.886 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] play requested → first buffer rendered: 149.6 ms (+ output latency 0.1 ms)
+2026-11-11 13:43:46.585 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] More? window closed (silence)
+2026-11-11 13:43:49.342 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT input opened by the safety timer: no end of Lumen's speech after 5 s (playback speaking false, speaker speaking false) (A21)
+2026-11-11 13:43:49.346 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT input open
+2026-11-11 13:43:51.795 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] State Listening → Idle
+2026-11-11 13:43:51.862 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Session deactivated
+2026-11-11 13:43:52.829 E  Lumen[20934:fc50] [com.rsolutions.lumen:transcription] Scribe connection ended: closed 1000
+2026-11-11 13:44:53.376 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] State Idle → Listening
+2026-11-11 13:44:53.469 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Activating B-HQ: mode=default options=bluetoothHighQualityRecording,allowBluetoothHFP
+2026-11-11 13:44:53.810 E  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]
+2026-11-11 13:44:53.811 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]
+2026-11-11 13:44:53.812 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:44:53.812 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:44:53.812 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:44:53.905 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Capture started · engine input WAV files (3) · 16000 Hz · 1 ch · Int16
+2026-11-11 13:44:53.906 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Microphone airPods for standard · B-HQ · MicrophoneBuiltIn · iPhone mic
+2026-11-11 13:44:54.124 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Scribe keyterms: 4, longest 7 characters (kortare)
+2026-11-11 13:44:54.323 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] warm answer: HTTP 204
+2026-11-11 13:44:54.435 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] warm tts: HTTP 204
+2026-11-11 13:44:55.119 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Route 1 s after activation: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:44:55.119 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)
+2026-11-11 13:44:55.592 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Local VAD in front of Scribe
+2026-11-11 13:44:55.592 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Wearer focus in front of Scribe (A10)
+2026-11-11 13:44:55.593 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT running: Scribe · sv-SE
+2026-11-11 13:45:23.786 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Answer ahead discarded (the words went on) · ahead 1 · used 0 · discarded 1 (0.7/min) · TTS ahead 0, wasted 0
+2026-11-11 13:45:24.896 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Answer ahead discarded (the words went on) · ahead 2 · used 0 · discarded 2 (1.3/min) · TTS ahead 0, wasted 0
+2026-11-11 13:45:25.717 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Activation (auto) · answered ahead: Vad är huvudstaden i Australien?
+2026-11-11 13:45:25.718 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Turn · standard · STT Scribe · mic airPods · B-HQ
+2026-11-11 13:45:26.323 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] latency: first text after 605 ms (cloud)
+2026-11-11 13:45:26.900 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] answer done · first delta 1426.176833 ms · provider cloud
+2026-11-11 13:45:26.903 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Answer · first text after 1426 ms · claude-haiku-5-5
+2026-11-11 13:45:26.968 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] latency: first speech after 1250 ms (elevenlabs)
+2026-11-11 13:45:26.968 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Turn timing · answered ahead · heard→call 0 ms · call→first token 1426 ms · call→done 2004 ms · heard→pause over 821 ms · pause over→first sound 1251 ms · ahead 3 · used 1 · discarded 2 (1.3/min) · TTS ahead 0, wasted 0
+2026-11-11 13:45:26.968 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT input gated (own speech)
+2026-11-11 13:45:27.059 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] ElevenLabs: 34 chars → 61440 samples, 0 underruns, 0 ms silence, start wait 1 ms
+2026-11-11 13:45:27.059 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 2 ms, 0 förhämtade
+2026-11-11 13:45:27.672 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] play requested → first buffer rendered: 168.1 ms (+ output latency 0.1 ms)
+2026-11-11 13:45:28.633 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] State Listening → Idle
+2026-11-11 13:45:28.706 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Session deactivated
+2026-11-11 13:45:28.743 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Wearer focus: 0 s of others muted, 0 own ends of turn
+2026-11-11 13:45:28.754 E  Lumen[20934:fc50] [com.rsolutions.lumen:transcription] Scribe connection ended: closed 1000
+2026-11-11 13:45:29.463 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT input open
+2026-11-11 13:46:19.085 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] State Idle → Listening
+2026-11-11 13:46:19.114 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Activating B-HQ: mode=default options=bluetoothHighQualityRecording,allowBluetoothHFP
+2026-11-11 13:46:19.272 E  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]
+2026-11-11 13:46:19.272 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Warning: No Bluetooth input available. Inputs: MicrophoneBuiltIn [MicrophoneBuiltIn]
+2026-11-11 13:46:19.272 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:46:19.272 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Activated → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:46:19.272 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Session active: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:46:19.350 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Capture started · engine input WAV files (3) · 16000 Hz · 1 ch · Int16
+2026-11-11 13:46:19.350 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Microphone airPods for prov · B-HQ · MicrophoneBuiltIn · iPhone mic
+2026-11-11 13:46:19.368 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Provläge started · endpoint 1.200000 s · auto-end never
+2026-11-11 13:46:19.368 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Hands-free prov started
+2026-11-11 13:46:19.452 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Wearer focus: 0 s of others muted, 0 own ends of turn
+2026-11-11 13:46:19.454 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Scribe keyterms: 4, longest 7 characters (kortare)
+2026-11-11 13:46:19.641 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] warm answer: HTTP 204
+2026-11-11 13:46:19.784 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] warm tts: HTTP 204
+2026-11-11 13:46:20.463 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.session] Route 1 s after activation: MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false
+2026-11-11 13:46:20.463 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Route 1 s after activation → MicrophoneBuiltIn · iPhone mic · mode=default · 48 kHz · HQ supported=false enabled=false · HQ supported=false enabled=false (no BT mic extension)
+2026-11-11 13:46:20.620 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Local VAD in front of Scribe
+2026-11-11 13:46:20.620 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Wearer focus in front of Scribe (A10)
+2026-11-11 13:46:20.621 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT running: Scribe · sv-SE
+2026-11-11 13:46:49.544 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Answer ahead discarded (the words went on) · ahead 1 · used 0 · discarded 1 (0.7/min) · TTS ahead 0, wasted 0
+2026-11-11 13:46:50.563 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Answer ahead discarded (the words went on) · ahead 2 · used 0 · discarded 2 (1.5/min) · TTS ahead 0, wasted 0
+2026-11-11 13:46:51.479 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Turn · prov · STT Scribe · mic airPods · B-HQ
+2026-11-11 13:46:51.480 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Activation (tutor) · answered ahead: Vad är huvudstaden i Australien?
+2026-11-11 13:46:51.481 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Turn · prov · STT Scribe · mic airPods · B-HQ
+2026-11-11 13:46:51.515 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] latency: first text after 34 ms (cloud)
+2026-11-11 13:46:52.445 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] latency: first speech after 964 ms (elevenlabs)
+2026-11-11 13:46:52.445 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Turn timing · answered ahead · heard→call 0 ms · call→first token 952 ms · call→done – · heard→pause over 918 ms · pause over→first sound 964 ms · ahead 3 · used 1 · discarded 2 (1.4/min) · TTS ahead 0, wasted 0
+2026-11-11 13:46:52.445 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT input gated (own speech)
+2026-11-11 13:46:52.708 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] ElevenLabs: 81 chars → 128640 samples, 0 underruns, 0 ms silence, start wait 1 ms
+2026-11-11 13:46:52.708 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Röst: 1 meningar, 0 avbrott, 0 ms tystnad, startbuffert 1 ms, 0 förhämtade
+2026-11-11 13:46:53.160 I  Lumen[20934:fc50] [com.rsolutions.lumen:audio.playback] play requested → first buffer rendered: 188.2 ms (+ output latency 0.1 ms)
+2026-11-11 13:46:54.892 I  Lumen[20934:fc50] [com.rsolutions.lumen:answer] answer done · first delta 949.676625 ms · provider cloud
+2026-11-11 13:46:54.907 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Study card saved (1 in all)
+2026-11-11 13:46:54.907 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] Answer · first text after 949 ms · claude-sonnet-5-5
+2026-11-11 13:46:54.907 I  Lumen[20934:fc50] [com.rsolutions.lumen:diagnostics] STT input open
+Child process terminated with signal 15: Terminated
