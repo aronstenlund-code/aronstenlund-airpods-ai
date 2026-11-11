@@ -105,16 +105,19 @@ const s = (v: unknown, max: number) => typeof v === "string" && v.trim().length 
 const digits = (v: string) => v.replace(/\D/g, "");
 /** O41: the digits the user said, also as words ("noll sju tre, fyra fem sex, sjuttioåtta nittio" = 073456 7890). */
 export function spokenDigits(heard: string): string {
+  const toks = heard.toLowerCase().split(/[^\p{L}\d]+/u).filter(Boolean);
+  const val = (w: string) => (/^\d+$/.test(w) ? w : (() => {
+    const n = wordsToNumber(w);
+    return n !== null && n >= 0 && n < 1000 ? String(n) : null;
+  })());
+  const isNum = (w?: string) => !!w && w !== "en" && w !== "ett" && val(w) !== null;
   let out = "";
-  for (const w of heard.toLowerCase().split(/[^\p{L}\d]+/u)) {
-    if (!w) continue;
-    if (/^\d+$/.test(w)) {
-      out += w;
-      continue;
-    }
-    const n = w === "en" || w === "ett" ? null : wordsToNumber(w); // "en"/"ett" are usually articles
-    if (n !== null && n >= 0 && n < 1000) out += String(n);
-  }
+  toks.forEach((w, i) => {
+    // "en"/"ett" is 1 only next to another number ("ett två tre"), otherwise an article ("ring en kompis")
+    if ((w === "en" || w === "ett") && !isNum(toks[i - 1]) && !isNum(toks[i + 1])) return;
+    const v = val(w);
+    if (v !== null) out += v;
+  });
   return out;
 }
 

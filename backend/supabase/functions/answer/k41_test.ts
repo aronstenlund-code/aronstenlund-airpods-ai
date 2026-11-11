@@ -65,3 +65,10 @@ Deno.test("O41: digits said as words count as said (B6 guard), articles do not",
   assertEquals(validatePhoneInput("call_contact", { number: "073-456 78 90" }, "ring noll sju tre, fyra fem sex, sjuttioåtta nittio"), { number: "073-456 78 90" });
   assertEquals(validatePhoneInput("call_contact", { number: "0701234567" }, "ring en kompis"), null);
 });
+
+Deno.test("O41: 'ett' next to numbers is a digit", async () => {
+  const { spokenDigits } = await import("./phonetools.ts");
+  assertEquals(spokenDigits("ring noll åtta, ett två tre fyra fem sex sju"), "081234567");
+  assertEquals(spokenDigits("ring noll sju noll, ett två tre, fyrtiofem sextiosju"), "0701234567");
+  assertEquals(spokenDigits("ring en kompis"), "");
+});
