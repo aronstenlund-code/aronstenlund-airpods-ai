@@ -272,6 +272,29 @@ struct HomeView: View {
                 // moved into Provläge ("Mina svar", A53, D126).
                 .buttonStyle(LumenButtonStyle(kind: .secondary, height: 62))
                 .accessibilityHint("Startar förhöret inför \(plan.name.lowercased())")
+                if let store = model.myAnswers {
+                    // A53 (D126, Kelly Ke30): the student's own answers for this exam, always here (also with 0).
+                    let count = store.count(for: plan.id)
+                    Button {
+                        model.showingMyAnswers = MyAnswersRoute(examID: plan.id)
+                    } label: {
+                        HStack {
+                            Text("Mina svar").font(LumenFont.text(16, .semibold)).foregroundStyle(LumenColor.ink)
+                            Spacer()
+                            Text(count == 0 ? "Lägg till" : "\(count) sparade")
+                                .font(LumenFont.text(15))
+                                .foregroundStyle(LumenColor.muted)
+                            Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundStyle(LumenColor.muted)
+                        }
+                        .padding(.horizontal, 14)
+                        .frame(minHeight: 48)
+                        .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(count == 0 ? "Mina svar, inga sparade" : "Mina svar, \(count) sparade")
+                    .accessibilityHint("Bestäm själv vad Lumen säger på provfrågor")
+                }
                 // A36 (D115): photograph the page you study; Lumen quizzes on it.
                 if model.isReadingPage || model.pagePhotoStatus != nil {
                     HStack(spacing: 10) {

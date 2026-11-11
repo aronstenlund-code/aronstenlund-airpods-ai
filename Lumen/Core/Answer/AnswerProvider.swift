@@ -41,6 +41,8 @@ struct AnswerContext: Equatable, Sendable {
     var toolsAvailable: [String] = []
     /// A48 (K35): the second call after a tool ran (or was declined).
     var toolRound: ToolRound?
+    /// A53 (K37, D126): the student's own answers for the exam, in Provläge ("Mina svar"); empty = none.
+    var savedAnswers: [SavedAnswerPayload] = []
 
     struct ConceptStat: Equatable, Sendable, Codable {
         var concept: String
@@ -95,7 +97,11 @@ struct AnswerContext: Equatable, Sendable {
                       sessionEnd: sessionEnd,
                       qaLog: qaLog, // A48: dropped here at first (the unit test caught it)
                       toolsAvailable: toolsAvailable,
-                      toolRound: toolRound)
+                      toolRound: toolRound,
+                      savedAnswers: savedAnswers.prefix(SavedAnswerPayload.itemLimit).map { // A53: in `clamped` too (A48's lesson)
+                          SavedAnswerPayload(id: String($0.id.prefix(64)), q: String($0.q.prefix(SavedAnswerPayload.questionLimit)),
+                                             a: String($0.a.prefix(SavedAnswerPayload.answerLimit)))
+                      })
     }
 }
 
@@ -233,6 +239,8 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var appCommand: AppCommand? = nil
     /// K19 / A19: a checked link to a film or page about what is studied.
     var resource: LearningLink? = nil
+    /// A53 (K37): the student's saved answer was said word for word ("Ditt svar" on Lyssnar).
+    var savedAnswer: SavedAnswerHit? = nil
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.

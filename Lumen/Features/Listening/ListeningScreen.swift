@@ -188,6 +188,16 @@ struct ListeningScreen: View {
             }
         } else if let turn = model.conversation.streamingAnswer ?? model.conversation.answers.last {
             VStack(alignment: .leading, spacing: 12) {
+                if turn.savedAnswerID != nil {
+                    // A53 (Kelly Ke30): the answer is the student's own, said word for word.
+                    Text("Ditt svar")
+                        .font(LumenFont.text(13, .semibold, relativeTo: .footnote))
+                        .foregroundStyle(LumenColor.blue)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(LumenColor.soft, in: Capsule())
+                        .accessibilityLabel("Ditt sparade svar")
+                }
                 if !turn.question.isEmpty {
                     Text(turn.question).font(appearance.questionFont(20)).foregroundStyle(LumenColor.muted)
                         .accessibilityLabel("Fråga: \(turn.question)")
@@ -208,6 +218,15 @@ struct ListeningScreen: View {
                 }
                 if model.conversation.streamingAnswer == nil {
                     HStack {
+                        if let savedID = turn.savedAnswerID.flatMap(UUID.init(uuidString:)),
+                           let saved = model.myAnswers?.answer(savedID) {
+                            Button("Ändra svaret") {
+                                model.showingMyAnswers = MyAnswersRoute(examID: saved.examID, editing: saved.id) // A53
+                            }
+                            .font(LumenFont.text(15, .semibold))
+                            .foregroundStyle(LumenColor.blue)
+                            .frame(minHeight: 44)
+                        }
                         Spacer()
                         Button {
                             reportComment = ""

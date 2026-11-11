@@ -119,6 +119,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored let sleep = SleepController()
     /// A48 (D122, K35): the phone tools (set by AppContainer; nil in most tests: no tools offered).
     @ObservationIgnored var phoneTools: (any PhoneToolRunning)?
+    /// A53 (D126, K37): "Mina svar", on the phone only, and the endpoint that helps write them.
+    var myAnswers: MyAnswerStore?
+    @ObservationIgnored var myAnswersClient: MyAnswersClient?
+    /// A53: Mina svar is open (from Start's exam card or Inställningar), for this exam; the editor for one answer.
+    var showingMyAnswers: MyAnswersRoute?
     /// A48: the question Lumen asked before a tool changes something ("Ska jag lägga in …?"); shown with Ja / Nej.
     private(set) var pendingToolConfirm: String?
     @ObservationIgnored private var pendingTool: (call: PhoneToolCall, request: ActivationRequest, persona: PersonaRequest?)?
@@ -2283,6 +2288,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         showsListeningScreen = problem != .microphoneDenied || isActiveSession
     }
 
+    /// A53 (K37): what `/my-answers suggest` knows about the exam (subject, grade, name, course goals, its terms).
+    func myAnswersContext(for examID: UUID?) -> MyAnswersClient.Context {
+        let plan = examPlans?.plans.first { $0.id == examID } ?? examPlans?.nearest()
+        let profile = studyProfile.profile
+        return MyAnswersClient.Context(subject: plan?.subject ?? (profile.subject.isEmpty ? nil : profile.subject),
+                                       grade: (plan?.grade ?? profile.grade)?.rawValue,
+                                       exam: plan?.name,
+                                       goals: goals.compact,
+                                       terms: Array((profile.terms ?? []).prefix(50)))
+    }
+
     /// A50 (D124): Start's big button starts the chosen mode. Provläge goes to the nearest exam when there is one,
     /// like "Förhör mig" without the quiz's first question.
     func startSelectedMode() async {
@@ -3048,6 +3064,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             context.toolsAvailable = phoneTools.available.map(\.rawValue)
         }
         if let round = toolRoundFor, round.id == request.id { context.toolRound = round.round }
+        // A53 (K37, D126): "Mina svar" for the exam, in Provläge only, when "Säg mina svar" is on.
+        if mode == .prov, let myAnswers {
+            context.savedAnswers = myAnswers.payload(for: currentExamID())
+        }
         return context
     }
 
@@ -3375,6 +3395,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 studyTurns[index].answered = true
             }
             if let link = done?.resource { linkArrived(link, for: turn) }
+            if let saved = done?.savedAnswer {
+                conversation.markSaved(saved.id, text: saved.text, on: turn.id) // A53: "Ditt svar" on Lyssnar
+                controller.log("Mina svar: the saved answer was said (\(saved.via ?? "?"))")
+            }
             if summaryRequestID != nil { summaryArrived(turn) }
         }
         if let fact = done?.memoryAdd {

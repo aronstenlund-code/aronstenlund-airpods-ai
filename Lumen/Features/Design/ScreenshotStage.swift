@@ -59,6 +59,21 @@ struct ScreenshotStage: View {
                                 answer: "Fotosyntesen är när växter använder ljusenergi för att göra socker av koldioxid och vatten. Syre bildas som en restprodukt.",
                                 source: "cloud")
         }
+        // A53: three of the student's own answers for the nearest exam (one recorded); none for "myAnswersEmpty".
+        if let store = model.myAnswers, let nearest = model.examPlans?.upcoming().first {
+            for item in store.answers { store.delete(item.id) } // left by an earlier screen
+            if name == "myAnswers" || name == "myAnswerEdit" || name == "home" {
+                store.save(examID: nearest.id, question: "Vad är fotosyntes?",
+                           answer: "Växter tar upp koldioxid och vatten och gör glukos med hjälp av solljus. Klorofyllet fångar ljuset. Syre bildas som en restprodukt.",
+                           author: .mine, suggestion: "Fotosyntes är när växter gör socker av koldioxid och vatten med ljusenergi. Syre blir över.")
+                store.save(examID: nearest.id, question: "Vad är skillnaden mellan fotosyntes och cellandning?",
+                           answer: "Fotosyntesen bygger upp glukos och lagrar energi. Cellandningen bryter ner glukos och frigör energin. De är varandras motsats.",
+                           author: .lumen)
+                store.save(examID: nearest.id, question: "Varför behöver cellen mitokondrier?",
+                           answer: "Mitokondrierna är cellens kraftverk. Där sker cellandningen som ger energi i form av ATP.",
+                           author: .recording, recorded: true)
+            }
+        }
     }
 
     var body: some View {
@@ -72,6 +87,14 @@ struct ScreenshotStage: View {
             case "listening": ListeningScreen(model: model) {}
             case "cannotAnswer": ListeningScreen(model: model) {}.onAppear { model.showProblemForScreenshot(.overloaded) }
             case "switch": ModeSwitchSheet(model: model, current: .prov)
+            // A53 (Ke30): Mina svar, the list, the first time, and the editor with Lumen's suggestion.
+            case "myAnswers", "myAnswersEmpty":
+                MyAnswersView(model: model, route: MyAnswersRoute(examID: model.examPlans?.upcoming().first?.id))
+            case "myAnswerEdit":
+                NavigationStack {
+                    MyAnswerEditor(model: model, examID: model.examPlans?.upcoming().first?.id,
+                                   existing: model.myAnswers?.answers.first { $0.question == "Vad är fotosyntes?" }, draft: nil) {}
+                }
             case "pickMode": ModeSwitchSheet(model: model, current: .standard, onPick: { _ in }, onSleep: {}) // A50: Start's "Byt"
             case "errors":
                 ScrollView {

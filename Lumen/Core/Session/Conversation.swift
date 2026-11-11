@@ -28,6 +28,8 @@ struct AnswerTurn: Identifiable, Equatable, Sendable, Codable {
     var interrupted: Bool?
     /// A19 (K19): the link Lumen sent with this answer (opens in Safari).
     var link: LearningLink?
+    /// A53 (K37): the student's own saved answer ("Mina svar"), said word for word. Its `MyAnswer.id`.
+    var savedAnswerID: String?
 
     init(id: UUID = UUID(), question: String, answer: String, createdAt: Date = Date(), latencyMs: Double? = nil, source: String,
          isOwnQuestion: Bool = true) {
@@ -97,6 +99,14 @@ struct Conversation: Equatable, Sendable {
     mutating func attach(_ link: LearningLink, to id: UUID) {
         guard let index = answers.lastIndex(where: { $0.id == id }) else { return }
         answers[index].link = link
+    }
+
+    /// A53: the answer was the student's own ("Ditt svar"). `text` is their exact text (the spoken form has numbers
+    /// as words, K37), shown instead.
+    mutating func markSaved(_ savedID: String, text: String? = nil, on id: UUID) {
+        guard let index = answers.lastIndex(where: { $0.id == id }) else { return }
+        answers[index].savedAnswerID = savedID
+        if let text, !text.isEmpty { answers[index].answer = text }
     }
 
     /// D81: the wearer broke in. What had been said stays as an interrupted turn, so the next answer never repeats it.

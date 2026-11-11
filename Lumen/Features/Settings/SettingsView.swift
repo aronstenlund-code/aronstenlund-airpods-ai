@@ -47,6 +47,7 @@ struct SettingsView: View {
                 NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences, paces: model.paces) }
             }
             studyProfileSection
+            myAnswersSection
             appearanceSection
             languageSection
             Section {
@@ -184,6 +185,36 @@ struct SettingsView: View {
         case .interview: "Intervju"
         case .social: "Socialt"
         case .rizz: "Rizz"
+        }
+    }
+
+    /// A53 (D126, Kelly Ke30): "Säg mina svar" on or off, and the list. Off: Lumen answers itself; nothing is deleted.
+    @ViewBuilder
+    private var myAnswersSection: some View {
+        if let myAnswers = model.myAnswers {
+            @Bindable var store = myAnswers
+            Section {
+                Toggle("Säg mina svar", isOn: $store.isEnabled)
+                Button {
+                    model.isShowingSettings = false
+                    // After Inställningar has closed: a sheet cannot open while another is closing.
+                    Task {
+                        try? await Task.sleep(for: .milliseconds(600))
+                        model.showingMyAnswers = MyAnswersRoute(examID: model.examPlans?.nearest()?.id)
+                    }
+                } label: {
+                    HStack {
+                        Text("Mina svar").foregroundStyle(LumenColor.ink)
+                        Spacer()
+                        Text("\(store.answers.count) sparade").foregroundStyle(LumenColor.muted)
+                        Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundStyle(LumenColor.muted)
+                    }
+                }
+            } header: {
+                Text("Mina svar")
+            } footer: {
+                Text("När en fråga du har sparat kommer i Provläget säger Lumen ditt svar, ordagrant. Av betyder att Lumen svarar själv; inget raderas.")
+            }
         }
     }
 
