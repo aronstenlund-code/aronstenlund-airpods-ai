@@ -3401,6 +3401,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     private func activated(_ request: ActivationRequest, persona: PersonaRequest? = nil) {
+        let activatedAt = Date() // A72 part 3: how long it takes from here to the request
         if VoiceCommand.isMusicHandOff(request.query) { return } // the final result already paused the session
         // A8 (owner, 2026-11-08): Frågor answers the wearer's own questions too. D81's "Auto never answers the
         // wearer" made Lumen silent when Aron asked, with a voice profile. The voice is only logged now.
@@ -3425,9 +3426,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         pendingQuestion = request
         answerNotice = nil
         // A new question interrupts the current answer and its speech (assignment item 5).
+        let interruptAt = Date()
         speaker.interrupt()
+        let interruptMs = Int(Date().timeIntervalSince(interruptAt) * 1000)
         spokenAnswer = ""
         latency.begin(request)
+        let totalMs = Int(Date().timeIntervalSince(activatedAt) * 1000)
+        if totalMs >= 200 {
+            // A72 part 3 (Toby T15b): 8–20 s passed between "a different turn" and this line with nothing logged.
+            controller.log("Activation was held \(totalMs) ms on the phone: stopping the voice \(interruptMs) ms"
+                           + (controller.playback.lastSlowStop.map { " (\($0))" } ?? "") + " (A72)")
+        }
         controller.log("Activation (\(request.trigger.rawValue)): \(request.query)")
         sessionObserver?(.asked(query: request.query, trigger: request.trigger.rawValue), Date())
         if !study.isActive { logTurn() }

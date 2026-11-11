@@ -22,6 +22,9 @@ protocol PlaybackServicing: AnyObject {
     /// Schedules raw 16-bit mono PCM (streamed cloud TTS, item 5) into the playback graph.
     func play(samples: [Int16], sampleRate: Double) throws(AudioError)
     func stop()
+    /// A72 part 3 (Toby T15b): the last `stop()` that took 200 ms or more, split up ("synthesizer 19 650 ms, player
+    /// 3 ms"); nil when it was quick.
+    var lastSlowStop: String? { get }
     func clearLatencySamples()
     /// A4: seconds of speech scheduled but not played yet.
     var queuedSeconds: Double { get }
@@ -38,6 +41,7 @@ protocol PlaybackServicing: AnyObject {
 }
 
 extension PlaybackServicing {
+    var lastSlowStop: String? { nil }
     func speak(_ text: String, language: String) async throws(AudioError) {
         try await speak(text, language: language, voiceIdentifier: nil)
     }
@@ -393,10 +397,20 @@ final class PlaybackService: PlaybackServicing {
         onAudioScheduled?()
     }
 
+    private(set) var lastSlowStop: String?
+
     func stop() {
-        synthesizer.stopSpeaking(at: .immediate)
+        // A72 part 3 (Toby T15b): a new question waited 8–20 s right here when nothing was playing. The synthesizer and
+        // the player are only stopped when they have something to stop, and a slow stop is reported.
+        let started = Date()
+        if activeStreams > 0 { synthesizer.stopSpeaking(at: .immediate) }
+        let synthesizerDone = Date()
         scheduleGeneration += 1
-        player.stop()
+        if pendingBuffers > 0 { player.stop() }
+        let synthesizerMs = Int(synthesizerDone.timeIntervalSince(started) * 1000)
+        let playerMs = Int(Date().timeIntervalSince(synthesizerDone) * 1000)
+        lastSlowStop = synthesizerMs + playerMs >= 200 ? "synthesizer \(synthesizerMs) ms, player \(playerMs) ms" : nil
+        if let lastSlowStop { Log.playback.error("Slow stop: \(lastSlowStop, privacy: .public)") }
         pendingBuffers = 0
         queuedFrames = 0
         drainedAt = nil
