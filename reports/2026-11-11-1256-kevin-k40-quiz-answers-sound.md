@@ -41,7 +41,7 @@ Uppgift: `prompts/queue/kevin.md` K40 (Arons telefontest 2026-11-11).
 
 ## Tester
 - **Ljudbanken** `backend/testdata/k40-quiz-sound.json`: **43 fall** (Nilen, Seine, Loire, Rhen, Donau, Volga, Mississippi, Amazonas, Ladoga, Viktoriasjön, Bajkalsjön, Vänern, Marseille, Bordeaux, Göteborg, Lissabon, Themsen; felhörda rätta svar och felaktiga svar): **43/43**. Fallen är skrivna av mig, så Oscars O43 är det oberoende provet.
-- `deno task test`: **471 gröna** (ny `answer/k40_test.ts`; `study-profile/handler_test.ts` uppdaterad). `deno task check` är ren.
+- `deno task test`: **470 gröna** (ny `answer/k40_test.ts`; `study-profile/handler_test.ts` uppdaterad). `deno task check` är ren.
 - **Live, driftsatt (`259f3f8`, `56ee5b9`), Provläge Geografi åk 8:**
   - Svarsnyckeln kom 3/3, och 0 gånger lästes den upp ("Vilken flod rinner genom Kairo …?" gav `{answer: "Nilen", alternatives: [Kongo, Niger, Zambezi, Amazonas]}`).
   - Med nyckeln: **7/7**:
