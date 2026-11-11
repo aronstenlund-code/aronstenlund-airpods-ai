@@ -1,0 +1,21 @@
+{
+ "stamp": "2026-11-11-0915",
+ "scribe_audio_seconds": 1.4,
+ "clip": "o16_espeak_sv_24k.npy",
+ "rows": [
+  {
+   "probe": "none",
+   "keyterms": [],
+   "ok": true,
+   "started": true,
+   "msgs": [
+    "{'message_type': 'warning', 'warning': 'Zero retention mode was requested (enable_logging=false) but was not applied. Only users from the enterprise or trial tier can use ZRM mode. This session is still being logged.'}"
+   ],
+   "close": null,
+   "commits": [
+    "Vad är det för tusen-"
+   ],
+   "url_len": 336
+  }
+ ]
+}
