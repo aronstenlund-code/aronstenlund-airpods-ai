@@ -1,0 +1,138 @@
+{
+ "stamp": "2026-11-11-1052",
+ "ok": "22/22",
+ "rows": [
+  {
+   "check": "GET without user token",
+   "status": 401,
+   "body": "{\"error\":{\"code\":\"unauthorized\",\"message\":\"Missing bearer token\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST without user token",
+   "status": 401,
+   "body": "{\"error\":{\"code\":\"unauthorized\",\"message\":\"Missing bearer token\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "GET new anonymous user: own vote null, no results",
+   "status": 200,
+   "body": "{\"choice\":null}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid choice 'D'",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | \\\"B\\\" | \\\"C\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid choice ''",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | \\\"B\\\" | \\\"C\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid choice 'AB'",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | \\\"B\\\" | \\\"C\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid choice 'A;drop'",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | \\\"B\\\" | \\\"C\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid choice 1",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | \\\"B\\\" | \\\"C\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid choice None",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | \\\"B\\\" | \\\"C\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid choice ['A']",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | \\\"B\\\" | \\\"C\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid choice 'Ä'",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | \\\"B\\\" | \\\"C\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST body over 1 KB refused (no vote)",
+   "status": 413,
+   "body": "{\"error\":{\"code\":\"payload_too_large\",\"message\":\"Body exceeds 1024 bytes\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "after invalid posts: still no vote",
+   "status": 200,
+   "body": "{\"choice\":null}",
+   "ok": true
+  },
+  {
+   "check": "owner view as anonymous user",
+   "status": 403,
+   "body": "{\"error\":{\"code\":\"forbidden\",\"message\":\"Owner only\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "REST select logo_votes (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.logo_votes TO anon;\",\"message\":\"permission denied for table logo_votes\"}",
+   "ok": true
+  },
+  {
+   "check": "REST insert logo_votes (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.logo_votes TO anon;\",\"message\":\"permission denied for table logo_votes\"}",
+   "ok": true
+  },
+  {
+   "check": "RPC cast_logo_vote for another id (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for function cast_logo_vote\"}",
+   "ok": true
+  },
+  {
+   "check": "RPC logo_vote_counts (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for function logo_vote_counts\"}",
+   "ok": true
+  },
+  {
+   "check": "REST select logo_votes (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.logo_votes TO authenticated;\",\"message\":\"permission denied for table logo_votes\"}",
+   "ok": true
+  },
+  {
+   "check": "REST insert logo_votes (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.logo_votes TO authenticated;\",\"message\":\"permission denied for table logo_votes\"}",
+   "ok": true
+  },
+  {
+   "check": "RPC cast_logo_vote for another id (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for function cast_logo_vote\"}",
+   "ok": true
+  },
+  {
+   "check": "RPC logo_vote_counts (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":null,\"message\":\"permission denied for function logo_vote_counts\"}",
+   "ok": true
+  }
+ ]
+}
