@@ -64,6 +64,9 @@ export interface AnswerRequest {
     already_asked?: string[];
     /** K1.4: seconds since the last answer ended; a short reply counts as an answer only shortly after it. */
     last_answer_age_sec?: number;
+    /** K42.5 (A74): Scribe's confidence for this utterance (0-1) and how long it was spoken (ms). */
+    stt_confidence?: number;
+    utterance_ms?: number;
     /** K40: the answer key of the check question (done.quiz_key of the last answer), sent back by the app (A62). */
     quiz_key?: QuizKey;
     /** K9: quiz results per concept from the app (weak_areas, self_assessment), <= 30. */
@@ -369,6 +372,9 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       prep_terms,
       ...(already_asked.length ? { already_asked } : {}),
       ...(typeof ageRaw === "number" ? { last_answer_age_sec: ageRaw } : {}),
+      // K42.5: lenient (a wrong value is ignored, never a 400)
+      ...(typeof c.stt_confidence === "number" && c.stt_confidence >= 0 && c.stt_confidence <= 1 ? { stt_confidence: c.stt_confidence } : {}),
+      ...(typeof c.utterance_ms === "number" && c.utterance_ms >= 0 && c.utterance_ms < 600_000 ? { utterance_ms: c.utterance_ms } : {}),
       ...(concept_stats.length ? { concept_stats } : {}),
       ...(() => {
         const k = readQuizKey(c.quiz_key);

@@ -30,6 +30,7 @@ import {
 } from "./resource.ts";
 import { selfAnswer } from "./self.ts";
 import { complaintAnswer, isComplaint } from "./complaint.ts";
+import { weakLoneCommand } from "./lonecmd.ts";
 import { askedLength, lengthCaps, lengthNote } from "./asklength.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
@@ -627,7 +628,32 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
 
       // K10.1: a request to control the app in the user's own words. Sure (>= 0.8): no answer, the app does it.
-      const appCmd = demo || body.sessionEnd ? null : detectAppCommand(body.fragment, currentMode(body)); // K17.2: the summary is asked for
+      const appCmd0 = demo || body.sessionEnd ? null : detectAppCommand(body.fragment, currentMode(body)); // K17.2: the summary is asked for
+      // K42.5: a lone command word after an answer ("utveckla" that was really "jaha") needs Scribe's confidence
+      // and the time it takes to say; else silence
+      const loneWeak = !demo && !body.toolRound && (body.persona ?? "tutor") === "tutor" &&
+        (!!appCmd0 || detectContinuation(body.fragment) !== null) && weakLoneCommand(body.fragment, body.context);
+      if (loneWeak) {
+        const totalMs = Math.round(now() - t0);
+        console.log(JSON.stringify({ event: "lone_command_weak", conf: body.context.stt_confidence ?? null, ms: body.context.utterance_ms ?? null }));
+        const frames = [
+          sseFrame("meta", { reconstructed_question: body.fragment, confidence: 0.2, is_question: false, needs_confirmation: false, answer_type: "fact" }),
+          sseFrame("done", {
+            answered: false,
+            timing: { meta_ms: totalMs, ttft_ms: null, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "lone_command_weak" },
+            summary: null,
+            memory_add: null,
+            lone_command_weak: true,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({ start(c) { for (const f of frames) c.enqueue(f); c.close(); } }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
+      const appCmd = appCmd0;
       if (appCmd && appCmd.confidence >= APP_COMMAND_SURE) {
         const totalMs = Math.round(now() - t0);
         const frames = [

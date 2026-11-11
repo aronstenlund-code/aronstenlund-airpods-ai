@@ -44,3 +44,28 @@ Deno.test("K42.4 a complaint about the app: honest answer in code, no promise, m
   await new Promise((r) => setTimeout(r, 20));
   assertEquals(rows[0]?.kind, "complaint");
 });
+
+Deno.test("K42.5 a lone 'utveckla' after an answer: unsure or too short = silence; sure and long enough = carried out", async () => {
+  const recent = [{ q: "vad är fotosyntes", a: "Fotosyntes är när växter bildar socker av ljus." }];
+  const send = (conf?: number, ms?: number, fragment = "utveckla") =>
+    new Request("http://x/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fragment, mode: "auto", language: "sv", context: { transcript: fragment, recent_qa: recent, ...(conf !== undefined ? { stt_confidence: conf } : {}), ...(ms !== undefined ? { utterance_ms: ms } : {}) } }) });
+  // "jaha"/"ja"/"aha"/"okej" misheard as "utveckla": short (200-330 ms) or unsure (< 0.85): 20 combinations
+  let asCommand = 0;
+  for (const [c, ms] of [[0.4, 300], [0.6, 250], [0.7, 330], [0.8, 280], [0.84, 600], [0.5, 900], [0.95, 200], [0.99, 250], [0.9, 300], [0.97, 330]].flatMap((x) => [x, [x[0] * 0.95, x[1]]])) {
+    const { handler, seen } = setup();
+    await (await handler(send(c, ms))).text();
+    if (seen.length) asCommand++;
+  }
+  assertEquals(asCommand, 0, "jaha as utveckla: 0/20");
+  // a real "utveckla": sure and long enough
+  let done = 0;
+  for (let i = 0; i < 20; i++) {
+    const { handler, seen } = setup();
+    await (await handler(send(0.86 + (i % 14) / 100, 420 + i * 20))).text();
+    if (seen.length) done++;
+  }
+  assert(done >= 19, `utveckla ${done}/20`);
+  // without the app's data nothing changes; "Lumen, utveckla" is always carried out
+  const a = setup(); await (await a.handler(send())).text(); assertEquals(a.seen.length, 1);
+  const b = setup(); await (await b.handler(send(0.3, 100, "Lumen, utveckla"))).text(); assertEquals(b.seen.length, 1);
+});
