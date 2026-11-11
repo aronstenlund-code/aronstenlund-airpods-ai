@@ -15,3 +15,15 @@ keyterm	k1	question	0	ljusberoende	Vad händer i fotosyntesens ljusberoende reak
 keyterm	k2	question	0	calvincykeln	Vad är Calvincykeln?
 keyterm	k3	question	0	elektrontransportkedja	Hur fungerar mitokondriernas elektrontransportkedja?
 keyterm	k4	question	0	kloroplast	Var i cellen finns kloroplasterna?
+vantan	q4a	question	0	23	Vad är tjugotre gånger fyra?
+vantan	c1a	continuation	1.5	bergen	Vilka är de största | bergen i världen?
+vantan	c3a	continuation	3.5	bakterie	Vad är skillnaden mellan ett virus | och en bakterie?
+vantan	q4b	question	0	23	Vad är tjugotre gånger fyra?
+vantan	c1b	continuation	1.5	bergen	Vilka är de största | bergen i världen?
+vantan	c3b	continuation	3.5	bakterie	Vad är skillnaden mellan ett virus | och en bakterie?
+vantan	q4c	question	0	23	Vad är tjugotre gånger fyra?
+vantan	c1c	continuation	1.5	bergen	Vilka är de största | bergen i världen?
+vantan	c3c	continuation	3.5	bakterie	Vad är skillnaden mellan ett virus | och en bakterie?
+vantan	q4d	question	0	23	Vad är tjugotre gånger fyra?
+vantan	c1d	continuation	1.5	bergen	Vilka är de största | bergen i världen?
+vantan	c3d	continuation	3.5	bakterie	Vad är skillnaden mellan ett virus | och en bakterie?

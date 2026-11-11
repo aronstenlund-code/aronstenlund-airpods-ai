@@ -17,7 +17,7 @@ import Testing
 ///
 /// The long run (part 4 of T5) is `LongRunE2ETests`. Output: `<LUMEN_E2E_OUT>/retest-<set>.json`.
 /// Live and paid (Scribe, /answer): only when `scripts/apptest/retest.sh` sets `LUMEN_E2E_RETEST_DIR`.
-/// Simulator only: never a verification on a device. Runs: T5 2026-11-09, T5b 2026-11-11 (after A21), T12 2026-11-11 (after A56; build fixed in 1f39214).
+/// Simulator only: never a verification on a device. Runs: T5 2026-11-09, T5b 2026-11-11 (after A21), T12 2026-11-11 (after A56), T13 2026-11-11 (after A63), T14 2026-11-11 (after A67/A68), T15 2026-11-11 (set vantan, A70 log).
 enum RetestEnvironment {
     static var audioDir: URL? {
         ProcessInfo.processInfo.environment["LUMEN_E2E_RETEST_DIR"].map { URL(fileURLWithPath: $0) }
@@ -112,6 +112,16 @@ struct RetestE2ETests {
         #expect(answered >= result.cases.count - 1, "answered \(answered) of \(result.cases.count)")
     }
 
+    /// T15 (2026-11-11): T14's waiting questions q4, c1 and c3, four times each, in Frågor with a 22 s gap (two-sentence
+    /// answers fit, so a closed microphone does not eat the next question). `scripts/apptest/vantan_summary.py` reads
+    /// A70's "A question waits 3 s" lines, heard → call per turn, and speech end → "STT input open".
+    @Test(.enabled(if: RetestEnvironment.includes("vantan"))) func aWaitingQuestionIsAskedAtOnce() async throws {
+        let result = try await run(set: "vantan", mode: .standard, speak: true, topics: nil, gap: 22)
+        #expect(result.stoppedEarly == nil, "stopped early: \(result.stoppedEarly ?? "")")
+        let answered = result.cases.filter { !$0.answered.isEmpty }.count
+        #expect(answered == result.cases.count, "answered \(answered) of \(result.cases.count) questions")
+    }
+
     // MARK: One set in one session
 
     /// A turn shows as `asked`, or only as `answered` on a path that does not report `asked`.
@@ -171,8 +181,15 @@ struct RetestE2ETests {
         var fileStart: [Int: Double] = [:]
         let deadline = start.addingTimeInterval(audioSeconds * 1.3 + 60)
         var quietSince: Date?
+        var wasSpeaking = false
         while Date() < deadline {
             try await Task.sleep(for: .milliseconds(100))
+            // T15: when Lumen's voice starts and stops (the app logs no end of speech), to time "STT input open".
+            let speakingNow = model.speaker.isSpeaking
+            if speakingNow != wasSpeaking {
+                events.append(Event(t: Date().timeIntervalSince(start), kind: speakingNow ? "speech-start" : "speech-end", text: ""))
+                wasSpeaking = speakingNow
+            }
             let current = capture.currentFile
             if fileStart[current] == nil, current >= (fileStart.keys.max() ?? -1) {
                 fileStart[current] = Date().timeIntervalSince(start)
