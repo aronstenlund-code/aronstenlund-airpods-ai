@@ -64,7 +64,17 @@ final class TranscriptionCoordinator {
         isInputGated = gated
         controller.log(gated ? "STT input gated (own speech)" : "STT input open")
         onInputGate?(gated)
+        // A56 (Toby T5b finding 1): words that waited uncommitted while Lumen spoke are looked at again now. Before,
+        // the stale timer gave up while the input was gated and the words waited for Scribe to end its session
+        // (12–22 s after the question).
+        if !gated, hasWaitingWords {
+            controller.log("Words waited while Lumen spoke: the final is looked for again (A56)")
+            scheduleStaleCommit()
+        }
     }
+
+    /// Words heard that Scribe has not committed yet (someone is in the middle of saying something).
+    var hasWaitingWords: Bool { partialSince != nil && !lastPartialText.isEmpty }
     private var resultsTask: Task<Void, Never>?
     private var lifecycleTask: Task<Void, Never>?
     /// Scribe's pause detection for the current mode (D78).
@@ -119,6 +129,9 @@ final class TranscriptionCoordinator {
     private var lastPartialText = ""
     /// The partial used as a final, so Scribe's own final (or partials) of the same words later are not a new turn.
     private var usedPartial: (key: String, at: Date)?
+    /// A56: when the VAD first held a stale final back, and when the final was last asked for (to log Scribe's reply).
+    private var staleDeferredSince: Date?
+    private var staleCommitAskedAt: Date?
     /// A21.4: how often the final was asked for, and how often the partial had to be used, for Diagnostics.
     private(set) var staleCommits = 0
     private(set) var partialsUsedAsFinal = 0
@@ -126,6 +139,8 @@ final class TranscriptionCoordinator {
     static let staleMargin: TimeInterval = 0.8
     /// No final this long after asking for it: the last partial is the final.
     static let commitWait: TimeInterval = 1.5
+    /// A56: the VAD may hold the final back this long after the pause (others talking, noise), then it is asked for.
+    static let maxVADDefer: TimeInterval = 3
     static let usedPartialWindow: TimeInterval = 15
 
     /// D82.2: Silero, not the input level, says whether someone is talking, so background noise is not speech.
@@ -387,14 +402,20 @@ final class TranscriptionCoordinator {
     private func deliver(_ incoming: STTResult) {
         guard let result = strippingUsedWords(incoming) else { return }
         if result.isFinal {
+            if let asked = staleCommitAskedAt, Date().timeIntervalSince(asked) < Self.commitWait + 1 {
+                controller.log("Scribe answered the final asked for, after \(String(format: "%.1f", Date().timeIntervalSince(asked))) s (A56)")
+            }
+            staleCommitAskedAt = nil
             partialSince = nil
             staleTask?.cancel()
             staleTask = nil
+            staleDeferredSince = nil
             lastPartialText = ""
         } else if !result.text.isEmpty {
             if partialSince == nil { partialSince = Date() }
             if result.text != lastPartialText {
                 lastPartialText = result.text
+                staleDeferredSince = nil
                 scheduleStaleCommit()
             }
         }
@@ -450,12 +471,22 @@ final class TranscriptionCoordinator {
         staleTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(wait))
             guard let self, !Task.isCancelled, self.partialSince != nil, !self.lastPartialText.isEmpty else { return }
-            if self.isInputGated { return } // Lumen speaks: the words wait for the recogniser to open again
-            if self.vadSpeaking() == true { // someone still talks: look again later
-                self.scheduleStaleCommit()
-                return
+            if self.isInputGated { return } // Lumen speaks: `setInputGated(false)` looks again (A56)
+            if self.vadSpeaking() == true { // someone still talks: look again later, at most `maxVADDefer` (A56)
+                let since = self.staleDeferredSince ?? Date()
+                if self.staleDeferredSince == nil {
+                    self.staleDeferredSince = since
+                    self.controller.log("Words wait uncommitted, the VAD still hears speech: waiting up to \(Int(Self.maxVADDefer)) s more (A56)")
+                }
+                if Date().timeIntervalSince(since) < Self.maxVADDefer {
+                    self.scheduleStaleCommit()
+                    return
+                }
+                self.controller.log("The VAD still hears speech after \(Int(Self.maxVADDefer)) s: the final is asked for anyway (A56)")
             }
+            self.staleDeferredSince = nil
             self.staleCommits += 1
+            self.staleCommitAskedAt = Date()
             self.controller.log("No final from Scribe \(String(format: "%.1f", wait)) s after the last words: final asked for (A21)")
             self.provider?.commit()
             try? await Task.sleep(for: .seconds(Self.commitWait))

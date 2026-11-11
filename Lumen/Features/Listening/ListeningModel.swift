@@ -1289,6 +1289,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             let quietFor = self.lastHeardAt.map { Date().timeIntervalSince($0) } ?? .infinity
             var busy = self.exam != nil || self.practice != nil || self.miniTest != nil || self.speaker.isSpeaking || self.speaker.hasPendingSpeech
                 || self.activation.pendingDueAt != nil || self.activation.hasQueued || quietFor < Self.tipPause
+                || self.transcription.hasWaitingWords || self.transcription.vadSpeaking() == true // A56 (Toby T5b finding 3)
             if case .answering = self.answers.status { busy = true }
             guard let action = self.tips.next(for: self.mode, busy: busy) else { return }
             let text = CommandTips.tip(action, table: CommandBook.shared.table)
@@ -1465,12 +1466,30 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         moreTask = nil
         controller.log("More? window closed (\(why))")
         listeningEventObserver?(.moreWindowClosed, Date()) // A29
+        if why == "no" || why == "silence" || why == "shake" { sendLengthSignal(yes: false) } // A56 (K13.2)
     }
 
-    /// "ja" / nod / AirPods press in the window: the developed answer. Until K13's cache, through `continue_more`.
+    /// A56 (K13): the developed answer that came with the last short one (`done.more`), for about 2 minutes.
+    @ObservationIgnored private var developedAnswer: (text: String, at: Date, answerID: UUID)?
+
+    /// "ja" / nod / AirPods press in the window: the developed answer. A56: K13's `done.more` at once, without a new
+    /// call (Toby T7b: 7–15 s before); `continue_more` only when it did not come.
     private func takeMore(by how: String) {
         closeMoreOffer(why: "yes, \(how)")
         tips.markUsed(.moreDetail)
+        sendLengthSignal(yes: true)
+        if let cached = developedAnswer, Date().timeIntervalSince(cached.at) < MoreOffer.cacheLife,
+           let last = conversation.answers.last, last.id == cached.answerID {
+            developedAnswer = nil
+            controller.log("More: the developed answer from the same call, no new call (A56, K13)")
+            let turn = AnswerTurn(question: last.question, answer: cached.text, source: "cloud", isOwnQuestion: last.isOwnQuestion)
+            conversation.append(turn)
+            lastAnswerAt = Date()
+            history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
+                                        answer: turn.answer, summary: nil, mode: mode.rawValue, persona: currentPersona))
+            say(cached.text)
+            return
+        }
         instruct(MoreOffer.instruction)
     }
 
@@ -1990,15 +2009,41 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func armGateWatchdog() {
         gateWatchdog?.cancel()
         gateWatchdog = Task { [weak self] in
+            var quietSince: Date?
             while true {
                 guard let deadline = self?.ownSpeech.deadline else { return }
                 let wait = deadline.timeIntervalSinceNow
                 if wait <= 0 { break }
-                try? await Task.sleep(for: .seconds(wait))
+                try? await Task.sleep(for: .seconds(min(wait, ListeningModel.quietPoll)))
                 if Task.isCancelled { return }
+                // A56 (Toby T5b finding 2): the voice may report its end before its last sentence started (the
+                // gate closed again and nothing opened it until this deadline, 56 s). When nothing plays, nothing
+                // waits to be said and no answer streams, for `quietToReopen`, the recogniser opens as usual.
+                guard let model = self else { return }
+                if model.ownSpeechLooksOver {
+                    let since = quietSince ?? Date()
+                    quietSince = since
+                    if Date().timeIntervalSince(since) >= ListeningModel.quietToReopen {
+                        model.controller.log("Lumen's voice is quiet but the input stayed gated: opened as after speech (A56)")
+                        model.reopenRecognizerAfterSpeech()
+                        return
+                    }
+                } else {
+                    quietSince = nil
+                }
             }
             self?.ownSpeechOverdue()
         }
+    }
+
+    static let quietPoll: TimeInterval = 0.5
+    static let quietToReopen: TimeInterval = 1.0
+
+    /// The input is gated for Lumen's voice, but nothing plays or waits to be said, and no answer streams.
+    private var ownSpeechLooksOver: Bool {
+        guard transcription.isInputGated, !controller.playback.isSpeaking, !speaker.isSpeaking, !speaker.hasPendingSpeech else { return false }
+        if case .answering = answers.status { return false }
+        return true
     }
 
     /// The voice did not report its end within its estimated length + 2 s: open the recogniser anyway (A21.3).
@@ -3066,6 +3111,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             context.toolsAvailable = phoneTools.available.map(\.rawValue)
         }
         if let round = toolRoundFor, round.id == request.id { context.toolRound = round.round }
+        // A56 (K13, D100, Toby T7b): the short answer is spoken and the developed one comes in the same call, ready
+        // for "ja" in the Mer? window without a new call.
+        context.twoLevel = mode == .standard || mode == .prov
         // A53 (K37, D126): "Mina svar" for the exam, in Provläge only, when "Säg mina svar" is on.
         if mode == .prov, let myAnswers {
             context.savedAnswers = myAnswers.payload(for: currentExamID())
@@ -3115,14 +3163,32 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         return examPlans?.plans.first { $0.id == id }?.name
     }
 
+    /// The context of the last answer, for a learned setting's scope (K10.2, K13.2).
+    private var lastAnswerScope: PrefScope {
+        let subject = prefSubject
+        let kind: String? = subject.map { $0.lowercased().hasPrefix("matem") } == true
+            ? "math" : answers.lastAnswerType.map { $0 == "study" ? "explanation" : "fact" }
+        return PrefScope(mode: mode.backendName, subject: subject, exam: prefExam, answerType: kind)
+    }
+
+    /// A56 (K13.2): the answer to "Mer?" teaches the backend the default length for this context.
+    private func sendLengthSignal(yes: Bool) {
+        guard let extractor = memoryExtractor else { return }
+        let context = lastAnswerScope
+        let current = preferences.settings
+        Task { [weak self] in
+            guard let reply = await extractor.lengthSignal(yes: yes, context: context, settings: current), let self,
+                  let settings = reply.settings else { return }
+            self.preferences.replace(with: settings)
+            if let learned = reply.setting?.text { self.controller.log("Learned length: \(learned) (A56, K13)") }
+        }
+    }
+
     /// A9.3: "kortare", "enklare", "mer exempel", "det där var fel" right after an answer become a learned setting
     /// for the context of that answer (K10.2). The phone's own effect (A7) happens as before.
     func learnCorrection(_ text: String) {
         guard let extractor = memoryExtractor, let last = lastAnswerAt, Date().timeIntervalSince(last) < 120 else { return }
-        let subject = prefSubject
-        let kind: String? = subject.map { $0.lowercased().hasPrefix("matem") } == true
-            ? "math" : answers.lastAnswerType.map { $0 == "study" ? "explanation" : "fact" }
-        let context = PrefScope(mode: mode.backendName, subject: subject, exam: prefExam, answerType: kind)
+        let context = lastAnswerScope
         let current = preferences.settings
         Task { [weak self] in
             guard let reply = await extractor.correct(text: text, context: context, settings: current), let self else { return }
@@ -3397,6 +3463,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 studyTurns[index].answered = true
             }
             if let link = done?.resource { linkArrived(link, for: turn) }
+            if let more = done?.more?.trimmingCharacters(in: .whitespacesAndNewlines), !more.isEmpty {
+                developedAnswer = (more, Date(), turn.id) // A56 (K13): said at once on "ja"
+            } else {
+                developedAnswer = nil
+            }
             if let saved = done?.savedAnswer {
                 conversation.markSaved(saved.id, text: saved.text, on: turn.id) // A53: "Ditt svar" on Lyssnar
                 controller.log("Mina svar: the saved answer was said (\(saved.via ?? "?"))")

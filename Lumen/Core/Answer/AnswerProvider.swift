@@ -43,6 +43,8 @@ struct AnswerContext: Equatable, Sendable {
     var toolRound: ToolRound?
     /// A53 (K37, D126): the student's own answers for the exam, in Provläge ("Mina svar"); empty = none.
     var savedAnswers: [SavedAnswerPayload] = []
+    /// A56 (K13, D100): short answer first, the developed one in `done.more` (Standardläge and Provläge).
+    var twoLevel = false
 
     struct ConceptStat: Equatable, Sendable, Codable {
         var concept: String
@@ -101,7 +103,8 @@ struct AnswerContext: Equatable, Sendable {
                       savedAnswers: savedAnswers.prefix(SavedAnswerPayload.itemLimit).map { // A53: in `clamped` too (A48's lesson)
                           SavedAnswerPayload(id: String($0.id.prefix(64)), q: String($0.q.prefix(SavedAnswerPayload.questionLimit)),
                                              a: String($0.a.prefix(SavedAnswerPayload.answerLimit)))
-                      })
+                      },
+                      twoLevel: twoLevel)
     }
 }
 
@@ -241,6 +244,8 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var resource: LearningLink? = nil
     /// A53 (K37): the student's saved answer was said word for word ("Ditt svar" on Lyssnar).
     var savedAnswer: SavedAnswerHit? = nil
+    /// A56 (K13): with `two_level`, the developed answer after the short one; not spoken until "ja".
+    var more: String? = nil
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.
