@@ -1,0 +1,32 @@
+[
+ {
+  "question": "Lumen, vad är klockan",
+  "stockholm_time": "20:57",
+  "said": "Klockan är tjugo över nio på kvällen.",
+  "model": "claude-haiku-5-5"
+ },
+ {
+  "question": "Lumen, hur mycket är klockan",
+  "stockholm_time": "20:57",
+  "said": "Klockan är tjugo över nio på kvällen, alltså tjugoett och tjugo... nej, rätt tid: klockan är tjugo i tio på kvällen, det vill säga tjugoett och femtiosju — klockan är tjugo i tio... Klockan är femtiosju minuter över tjugo, alltså tjugo och femtiosju.",
+  "model": "claude-haiku-5-5"
+ },
+ {
+  "question": "kan du säga vad klockan är",
+  "stockholm_time": "20:57",
+  "said": "Klockan är tjugo över nio på kvällen.",
+  "model": "claude-haiku-5-5"
+ },
+ {
+  "question": "Lumen, vad är klockan nu",
+  "stockholm_time": "20:57",
+  "said": "Klockan är tjugo över nio på kvällen.",
+  "model": "claude-haiku-5-5"
+ },
+ {
+  "question": "Lumen, vet du vad klockan är",
+  "stockholm_time": "20:57",
+  "said": "Klockan är tjugo över åtta på kvällen.",
+  "model": "claude-haiku-5-5"
+ }
+]
