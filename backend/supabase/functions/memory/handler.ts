@@ -57,11 +57,11 @@ export interface MemoryResult {
 /** O47: the small model's check of a short utterance the code did not recognise as a correction. */
 export const CORRECTION_CHECK_PROMPT =
   `A Swedish student just heard an answer from their study assistant and said <said>. Decide whether it is feedback on HOW the assistant answers, and which kind. Reply with exactly one word:
-shorter (the answers are too long, wants less),
+shorter (the answers are too long, too much talk, wants less or only the answer),
 longer (wants more, more detail, develop),
 simpler (too hard, wants easier words, does not understand),
-examples (wants examples),
-careful (says the answer was wrong or not true),
+examples (wants examples, also from real life),
+careful (says or doubts that the answer was right: it was wrong, false, not true, made up, "det var fel", "stämmer det verkligen?"),
 none (anything else: a question, a statement about something else, talk to someone else, a command such as pause or stop).
 When unsure, reply none.`;
 
