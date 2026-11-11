@@ -435,11 +435,12 @@ struct ModeSwitchSheet: View {
                             if let onPick { onPick(mode) } else { Task { await model.switchMode(to: mode) } }
                         } label: {
                             HStack(spacing: 14) {
+                                // SYSTEM.md / Kelly Ke33 G2: grey icons, the chosen mode's blue.
                                 Image(systemName: mode.symbol)
                                     .font(.system(size: 18, weight: .regular))
-                                    .foregroundStyle(LumenColor.blue)
+                                    .foregroundStyle(mode == current ? LumenColor.blue : LumenColor.muted)
                                     .frame(width: 44, height: 44)
-                                    .background(LumenColor.soft, in: Circle())
+                                    .background(mode == current ? LumenColor.soft : Color.clear, in: Circle())
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(mode.shortName).font(LumenFont.text(17, .semibold))
                                     Text(mode.tagline).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
@@ -465,9 +466,8 @@ struct ModeSwitchSheet: View {
                             HStack(spacing: 14) {
                                 Image(systemName: "moon.stars")
                                     .font(.system(size: 18, weight: .regular))
-                                    .foregroundStyle(LumenColor.blue)
+                                    .foregroundStyle(LumenColor.muted)
                                     .frame(width: 44, height: 44)
-                                    .background(LumenColor.soft, in: Circle())
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text("Sov").font(LumenFont.text(17, .semibold))
                                     Text("Prat i sömnen och snarkning, bara på telefonen").font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
