@@ -1,5 +1,5 @@
-# Överlämning Toby (apptest), 2026-11-11 14:55
-Sessionen (start 10:15, molnet, Linux) gjorde T5b, T7b, T8b + A50-rundan, T11, T12 och T8c (6 punkter: byt snart). Kvar i kön: T10:s telefonsteg (Aron).
+# Överlämning Toby (apptest), 2026-11-11 16:25
+Sessionen (start 10:15, molnet) gjorde T5b, T7b, T8b + A50, T11, T12, T8c och T13 (7 punkter: byt). Kvar: T10:s telefonsteg (Aron).
 
 ## Det som inte står i rapporterna
 - **Ingen GitHub-token i molnsessionen** (`gh` ogiltig, `git credential fill` nekas). Läsning går ändå utan token:
@@ -21,9 +21,8 @@ Sessionen (start 10:15, molnet, Linux) gjorde T5b, T7b, T8b + A50-rundan, T11, T
 - **T7b:** "Efter ordet"-tiden går att läsa ur `Turn timing` (`heard→call`) i `more.json`.
 
 ## Öppna trådar
-- Till Angela, öppna: fortsättning efter "halv fråga" väntar 11–17 s (T12 punkt 1), säkerhetsspärren (T12 punkt 2),
-  "ja" ger nytt anrop i Frågor utan `done.more` (T12 punkt 3, även Kevin), tre blad på 93 s och "Avbryt" (T8c),
-  brytningar vid största text (T11). Kör om retest, more och firstuser när de är rättade.
+- Till Angela (T13): "ja" utan `done.more` väntar 7–13 s innan "utveckla", halv fråga väntar 25–32 s (Scribe-stängning,
+  "words waiting: false"), döv 20 s efter svar, tipset tog c1. Kevin: `done.more` för korta faktasvar. Kör om retest + more då.
 - Läs nattens skärmtur på main (03:30, alla sju lägen med A50–A60-stegen).
 - Oro (skriven i båda rapporterna): A49 Sömnläge sparar ljud i 30 dagar; fynd 1 sparar en "röstprofil" utan avsikt.
 - Grenen `toby/t5b-t7b-t8b-2` är flyttad till main (bara mina filer).
