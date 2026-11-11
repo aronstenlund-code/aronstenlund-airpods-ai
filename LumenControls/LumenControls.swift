@@ -19,11 +19,11 @@ struct StartListeningControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: "com.rsolutions.lumen.controls.start") {
             ControlWidgetButton(action: StartListeningIntent()) {
-                Label("Start Lumen", systemImage: "mic.fill")
+                Label("Start Earmind", systemImage: "mic.fill")
             }
         }
-        .displayName("Start Lumen")
-        .description("Opens Lumen and starts listening.")
+        .displayName("Start Earmind")
+        .description("Opens Earmind and starts listening.")
     }
 }
 
@@ -35,7 +35,7 @@ struct ListeningLiveActivity: Widget {
                 HStack(spacing: 10) {
                     LumenLogo(size: 24)
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(verbatim: context.state.title ?? "Lumen")
+                        Text(verbatim: context.state.title ?? "Earmind")
                             .font(LumenFont.text(17, .bold))
                             .lineLimit(1)
                         ListeningStatus(isPaused: context.state.isPaused)
@@ -61,7 +61,7 @@ struct ListeningLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.leading) {
                     HStack(spacing: 8) {
                         LumenLogo(size: 22)
-                        Text(verbatim: context.state.title ?? "Lumen").font(LumenFont.text(15, .bold)).lineLimit(1)
+                        Text(verbatim: context.state.title ?? "Earmind").font(LumenFont.text(15, .bold)).lineLimit(1)
                     }
                 }
                 DynamicIslandExpandedRegion(.trailing) {
@@ -99,7 +99,7 @@ struct ListeningControl: ControlWidget {
                 Label("Pause or resume", systemImage: "waveform")
             }
         }
-        .displayName("Lumen listening")
+        .displayName("Earmind listening")
         .description("Pause listening to play music, resume with one tap.")
     }
 }

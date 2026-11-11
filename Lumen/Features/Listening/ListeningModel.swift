@@ -1368,7 +1368,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .whisper, .louder:
             let settings = speaker.settings
             if action == .louder, settings.speechGain >= 1 {
-                confirm("Det är redan högsta volymen i Lumen. Höj på telefonen.")
+                confirm("Det är redan högsta volymen i Earmind. Höj på telefonen.")
                 return
             }
             settings.speechGain = action == .whisper ? settings.speechGain * 0.6 : settings.speechGain / 0.6
@@ -2257,7 +2257,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A45: "Lumen hör och pratar lite sämre just nu", once per session, while a stand-in engine is used.
     private(set) var fallbackNotice: String?
     @ObservationIgnored private var fallbackNotedThisSession = false
-    static let fallbackLine = "Lumen hör och pratar lite sämre just nu"
+    static let fallbackLine = "Earmind hör och pratar lite sämre just nu"
 
     private func noteFallback(what: String) {
         guard !fallbackNotedThisSession else { return }
@@ -2571,7 +2571,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             current.lastFeedback = graded.feedback
             current.lastFeedbackNo = task.no
             var spoken = graded.feedback
-            if task.isOwnAnswer, !right { spoken += " Provet hade inget facit, så det rätta svaret är Lumens eget." }
+            if task.isOwnAnswer, !right { spoken += " Provet hade inget facit, så det rätta svaret är Earminds eget." }
             self.controller.log("Practice exam: question \(task.no) graded \(graded.points.total)/\(max)")
             if let next = current.nextOpenIndex {
                 current.move(to: next)

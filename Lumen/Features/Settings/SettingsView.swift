@@ -133,7 +133,7 @@ struct SettingsView: View {
         } header: {
             Text("Utseende")
         } footer: {
-            Text("Som standard följer Lumen iPhonens ljusa eller mörka läge.")
+            Text("Som standard följer Earmind iPhonens ljusa eller mörka läge.")
         }
     }
 
@@ -213,7 +213,7 @@ struct SettingsView: View {
             } header: {
                 Text("Mina svar")
             } footer: {
-                Text("När en fråga du har sparat kommer i Provläget säger Lumen ditt svar, ordagrant. Av betyder att Lumen svarar själv; inget raderas.")
+                Text("När en fråga du har sparat kommer i Provläget säger Earmind ditt svar, ordagrant. Av betyder att Earmind svarar själv; inget raderas.")
             }
         }
     }
@@ -289,10 +289,10 @@ struct SettingsView: View {
             Toggle("Ekoreducering i iPhonens högtalare", isOn: echoBinding)
             Toggle("Pausa när AirPods kopplas bort", isOn: Binding(get: { model.microphone.pauseWhenAirPodsLost },
                                                                   set: { model.microphone.pauseWhenAirPodsLost = $0 }))
-            Text("Av: Lumen lyssnar vidare och svaren hörs i telefonens högtalare.")
+            Text("Av: Earmind lyssnar vidare och svaren hörs i telefonens högtalare.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-            Text("När ljudet går ut i iPhonens egen högtalare hör mikrofonen annars Lumen. Med AirPods eller hörlurar används den aldrig, så mikrofonen behåller sin kvalitet.")
+            Text("När ljudet går ut i iPhonens egen högtalare hör mikrofonen annars Earmind. Med AirPods eller hörlurar används den aldrig, så mikrofonen behåller sin kvalitet.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -330,7 +330,7 @@ struct SettingsView: View {
                 Text("Medium").tag(GateSensitivity.medium)
                 Text("High").tag(GateSensitivity.high)
             }
-            Text("Every mode is hands-free: Lumen listens for questions in the room. Higher sensitivity answers more, and more often by mistake. The text field is the fallback.")
+            Text("Every mode is hands-free: Earmind listens for questions in the room. Higher sensitivity answers more, and more often by mistake. The text field is the fallback.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -366,9 +366,9 @@ struct SettingsView: View {
                 }
             }
         } header: {
-            Text("Paus innan Lumen svarar")
+            Text("Paus innan Earmind svarar")
         } footer: {
-            Text("Hur länge du ska vara tyst innan svaret läses upp. Lumen börjar arbeta på svaret redan när meningen är hörd, så kortare paus ger snabbare svar men fler avbrutna försök.")
+            Text("Hur länge du ska vara tyst innan svaret läses upp. Earmind börjar arbeta på svaret redan när meningen är hörd, så kortare paus ger snabbare svar men fler avbrutna försök.")
         }
         Section("Provläge") {
             Stepper(value: $study.autoEndMinutes, in: 0...60) {
@@ -392,7 +392,7 @@ struct SettingsView: View {
                     .font(.footnote.monospacedDigit())
                     .frame(width: 52, alignment: .trailing)
             }
-            Text("Lumen tells you from the other person by input level. Tuned on device.")
+            Text("Earmind tells you from the other person by input level. Tuned on device.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -420,7 +420,7 @@ struct SettingsView: View {
         } header: {
             Text("Kalibrering")
         } footer: {
-            Text("Under en session: säg \"\(WakeWord.name), lite mindre kaxig\" eller \"\(WakeWord.name), mer skämt\". Lumen kommer ihåg det här på telefonen och skickar det med varje förslag. \"\(WakeWord.name), ge mig tre\" ger fler förslag en gång.")
+            Text("Under en session: säg \"\(WakeWord.name), lite mindre kaxig\" eller \"\(WakeWord.name), mer skämt\". Earmind kommer ihåg det här på telefonen och skickar det med varje förslag. \"\(WakeWord.name), ge mig tre\" ger fler förslag en gång.")
         }
     }
 

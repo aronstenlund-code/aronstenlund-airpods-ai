@@ -64,10 +64,10 @@ struct MyAnswersView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 examPicker
-                Text("Bestäm själv vad Lumen säger")
+                Text("Bestäm själv vad Earmind säger")
                     .font(LumenFont.text(28, .bold, relativeTo: .title))
                     .accessibilityAddTraits(.isHeader)
-                Text("Skriv en provfråga och hur du vill svara. När frågan kommer i Provläget säger Lumen ditt svar, ordagrant.")
+                Text("Skriv en provfråga och hur du vill svara. När frågan kommer i Provläget säger Earmind ditt svar, ordagrant.")
                     .font(LumenFont.text(17))
                     .foregroundStyle(LumenColor.muted)
                 Button {
@@ -126,7 +126,7 @@ struct MyAnswersView: View {
                     }
                 }
             } header: {
-                Text("När frågan kommer i Provläget säger Lumen ditt svar, ordagrant.")
+                Text("När frågan kommer i Provläget säger Earmind ditt svar, ordagrant.")
                     .textCase(nil)
                     .font(LumenFont.text(15))
                     .foregroundStyle(LumenColor.muted)
@@ -147,7 +147,7 @@ struct MyAnswersView: View {
                 .disabled(model.isActiveSession)
             } footer: {
                 if model.isActiveSession {
-                    Text("Avsluta Lumen för att spela in.")
+                    Text("Avsluta Earmind för att spela in.")
                 }
             }
         }
@@ -164,7 +164,7 @@ struct MyAnswersView: View {
             .buttonStyle(LumenButtonStyle(kind: .secondary, height: 54))
             .disabled(model.isActiveSession)
             if model.isActiveSession {
-                Text("Avsluta Lumen för att spela in.")
+                Text("Avsluta Earmind för att spela in.")
                     .font(LumenFont.text(13, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
             }
@@ -172,7 +172,7 @@ struct MyAnswersView: View {
     }
 
     private var offLine: some View {
-        Text("”Säg mina svar” är av i Inställningar. Lumen svarar själv tills du sätter på det.")
+        Text("”Säg mina svar” är av i Inställningar. Earmind svarar själv tills du sätter på det.")
             .font(LumenFont.text(13, relativeTo: .footnote))
             .foregroundStyle(LumenColor.muted)
     }
@@ -270,7 +270,7 @@ struct MyAnswerEditor: View {
                             .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
                     }
                 } else if let suggestion, !suggestion.isEmpty {
-                    field("Lumens förslag") {
+                    field("Earminds förslag") {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(suggestion)
                                 .font(LumenFont.text(15))
@@ -287,7 +287,7 @@ struct MyAnswerEditor: View {
                         .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
                     }
                 }
-                field("Ditt svar · det här säger Lumen") {
+                field("Ditt svar · det här säger Earmind") {
                     ZStack(alignment: .topLeading) {
                         TextEditor(text: $answer)
                             .font(LumenFont.text(17))
@@ -295,7 +295,7 @@ struct MyAnswerEditor: View {
                             .frame(minHeight: 160)
                             .focused($focus, equals: .answer)
                         if answer.isEmpty {
-                            Text(isSuggesting ? "Lumen skriver ett förslag …" : "Skriv hur du vill svara")
+                            Text(isSuggesting ? "Earmind skriver ett förslag …" : "Skriv hur du vill svara")
                                 .font(LumenFont.text(17))
                                 .foregroundStyle(LumenColor.muted)
                                 .padding(.top, 8)
@@ -510,7 +510,7 @@ struct MyAnswerRecordView: View {
             VStack(spacing: 14) {
                 if isCompressing || recorder.state == .transcribing {
                     ProgressView()
-                    Text("Lumen gör ett svar …").font(LumenFont.text(17, .semibold))
+                    Text("Earmind gör ett svar …").font(LumenFont.text(17, .semibold))
                 } else if recorder.state == .recording {
                     HStack(spacing: 8) {
                         Circle().fill(LumenColor.red).frame(width: 12, height: 12) // Ke30: iOS's sign for recording
@@ -526,7 +526,7 @@ struct MyAnswerRecordView: View {
                         .font(LumenFont.text(17))
                         .multilineTextAlignment(.center)
                 }
-                Text("Lumen gör inget med ljudet förrän du trycker Klar. Ljudet stannar på telefonen och raderas sedan; bara texten skickas.")
+                Text("Earmind gör inget med ljudet förrän du trycker Klar. Ljudet stannar på telefonen och raderas sedan; bara texten skickas.")
                     .font(LumenFont.text(13, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
                     .multilineTextAlignment(.center)
@@ -555,7 +555,7 @@ struct MyAnswerRecordView: View {
     }
 
     private var failure: String? {
-        if model.isActiveSession { return "Avsluta Lumen för att spela in." }
+        if model.isActiveSession { return "Avsluta Earmind för att spela in." }
         if case .failed(let message) = recorder.state { return message }
         return nil
     }
@@ -568,7 +568,7 @@ struct MyAnswerRecordView: View {
         let reply = await model.myAnswersClient?.compress(transcript: transcript, question: question, subject: plan?.subject)
         isCompressing = false
         guard let reply, !reply.answer.isEmpty else {
-            problem = reply == nil ? "Lumen kunde inte göra ett svar just nu. Försök igen." : "Lumen hörde inget svar i inspelningen."
+            problem = reply == nil ? "Earmind kunde inte göra ett svar just nu. Försök igen." : "Earmind hörde inget svar i inspelningen."
             return
         }
         onDone(MyAnswerDraft(question: reply.q.isEmpty ? question : reply.q, answer: reply.answer,

@@ -145,7 +145,7 @@ struct CapabilitiesView: View {
             }
         }
         .lumenForm()
-        .navigationTitle("Vad kan Lumen?")
+        .navigationTitle("Vad kan Earmind?")
         .navigationBarTitleDisplayMode(.large)
         .toolbar(.visible, for: .navigationBar)
         .task { refresh() }
@@ -213,7 +213,7 @@ struct CapabilitiesIntroSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Lumen kan mer än svara")
+                        Text("Earmind kan mer än svara")
                             .font(LumenFont.text(28, .bold, relativeTo: .title))
                             .accessibilityAddTraits(.isHeader)
                             .accessibilityFocused($titleFocused)
@@ -240,7 +240,7 @@ struct CapabilitiesIntroSheet: View {
                     .padding(16)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 16))
-                    Button("Visa allt Lumen kan") { showsAll = true }
+                    Button("Visa allt Earmind kan") { showsAll = true }
                         .buttonStyle(LumenButtonStyle(height: 54))
                 }
                 .padding(20)

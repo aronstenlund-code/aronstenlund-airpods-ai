@@ -20,7 +20,7 @@ struct MyAnswer: Identifiable, Codable, Equatable, Sendable {
         var title: String {
             switch self {
             case .mine: "Din"
-            case .lumen: "Lumens förslag"
+            case .lumen: "Earminds förslag"
             case .recording: "Från inspelning"
             }
         }

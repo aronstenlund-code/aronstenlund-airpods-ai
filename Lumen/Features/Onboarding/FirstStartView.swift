@@ -87,7 +87,7 @@ struct IntroView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack(spacing: 8) {
                         LumenLogo(size: 22)
-                        Text("Lumen").font(LumenFont.text(18, .bold, relativeTo: .title3))
+                        Text("Earmind").font(LumenFont.text(18, .bold, relativeTo: .title3))
                     }
                     Text("Fråga högt. Få svaret i örat.")
                         .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))

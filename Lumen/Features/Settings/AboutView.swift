@@ -6,11 +6,11 @@ struct AboutView: View {
     var body: some View {
         List {
             Section {
-                Text("Lumen lyssnar bara när du har startat den, du ser alltid när den lyssnar, och ljud sparas inte.")
-                Text("Frågor och svar går via Lumens server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen.")
+                Text("Earmind lyssnar bara när du har startat den, du ser alltid när den lyssnar, och ljud sparas inte.")
+                Text("Frågor och svar går via Earminds server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen.")
                     .foregroundStyle(.secondary)
                 // A27 (Oscar O24) and A39/A41 (D116): where the questions go and are kept, said plainly.
-                Text("Dina frågor och Lumens svar skickas till oss så att vi kan göra Lumen bättre. Ljud sparas aldrig, och texten raderas när vi har läst den. På telefonen sparas de i Historik i högst två år, och du kan radera dem där.")
+                Text("Dina frågor och Earminds svar skickas till oss så att vi kan göra Earmind bättre. Ljud sparas aldrig, och texten raderas när vi har läst den. På telefonen sparas de i Historik i högst två år, och du kan radera dem där.")
                     .foregroundStyle(.secondary)
             }
             Section {

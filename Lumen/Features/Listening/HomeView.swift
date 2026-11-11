@@ -142,7 +142,7 @@ struct HomeView: View {
         HStack {
             HStack(spacing: 8) {
                 LumenLogo(size: 24)
-                Text("Lumen").font(LumenFont.text(24, .bold, relativeTo: .title2))
+                Text("Earmind").font(LumenFont.text(24, .bold, relativeTo: .title2))
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
@@ -189,13 +189,13 @@ struct HomeView: View {
                     Task { await model.startSelectedMode() }
                 }
             } label: {
-                Label(model.isActiveSession ? "Tillbaka till Lumen" : "Starta Lumen", systemImage: "waveform")
+                Label(model.isActiveSession ? "Tillbaka till Earmind" : "Starta Earmind", systemImage: "waveform")
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
             }
             .buttonStyle(LumenButtonStyle(height: 64))
             .accessibilityHint(model.isActiveSession
                 ? "Visar Lyssnar"
-                : "Lumen börjar lyssna i \(model.selectedMode.shortName.lowercased())")
+                : "Earmind börjar lyssna i \(model.selectedMode.shortName.lowercased())")
             Button {
                 isPickingMode = true
             } label: {
@@ -317,7 +317,7 @@ struct HomeView: View {
                 Button {
                     Task { await model.startQuiz(for: plan) }
                 } label: {
-                    TwoLineLabel(title: "Förhör mig", detail: "Lumen frågar ut dig och svarar på dina frågor")
+                    TwoLineLabel(title: "Förhör mig", detail: "Earmind frågar ut dig och svarar på dina frågor")
                 }
                 // A50 (D124): secondary, the Start button is the screen's one blue button. "Få A-svar till provet"
                 // moved into Provläge ("Mina svar", A53, D126).
@@ -344,7 +344,7 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(count == 0 ? "Mina svar, inga sparade" : "Mina svar, \(count) sparade")
-                    .accessibilityHint("Bestäm själv vad Lumen säger på provfrågor")
+                    .accessibilityHint("Bestäm själv vad Earmind säger på provfrågor")
                 }
                 // A36 (D115): photograph the page you study; Lumen quizzes on it.
                 if model.isReadingPage || model.pagePhotoStatus != nil {
@@ -366,7 +366,7 @@ struct HomeView: View {
                     .font(LumenFont.text(16, .semibold))
                     .foregroundStyle(LumenColor.blue)
                     .frame(minHeight: 44)
-                    .accessibilityHint("Lumen läser sidan och förhör dig på den")
+                    .accessibilityHint("Earmind läser sidan och förhör dig på den")
                 }
                 if let deck = model.flipDeck(for: plan) {
                     // A46 (N6): the cards on the screen, without the voice.
@@ -449,7 +449,7 @@ struct HomeView: View {
             Text("Har du prov snart?")
                 .font(LumenFont.text(28, .bold, relativeTo: .title))
                 .accessibilityAddTraits(.isHeader)
-            Text("Säg det, så förhör Lumen dig inför provet.")
+            Text("Säg det, så förhör Earmind dig inför provet.")
                 .font(LumenFont.text(16))
                 .foregroundStyle(LumenColor.muted)
             Button {
@@ -567,7 +567,7 @@ struct LumenCanDoAll: View {
             if let onShowAll {
                 Button(action: onShowAll) {
                     HStack(spacing: 4) {
-                        Text("Allt Lumen kan")
+                        Text("Allt Earmind kan")
                         Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold))
                     }
                     .font(LumenFont.text(16, .semibold))
@@ -596,7 +596,7 @@ struct LumenCanDoAll: View {
     private var examplesBox: some View {
         VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Lumen kan allt")
+                Text("Earmind kan allt")
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
                     .accessibilityAddTraits(.isHeader)
                 Text("Säg ”Lumen” och vad du vill.")
@@ -617,7 +617,7 @@ struct LumenCanDoAll: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Lumen kan allt. Säg Lumen och vad du vill, till exempel: "
+        .accessibilityLabel("Earmind kan allt. Säg Lumen och vad du vill, till exempel: "
             + Self.window(at: 0).map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "”")) }.joined(separator: ", "))
     }
 

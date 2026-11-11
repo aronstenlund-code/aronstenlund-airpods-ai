@@ -154,7 +154,7 @@ struct ListeningScreen: View {
         }
         return switch state {
         case .paused: "Tryck Lyssna igen eller säg ”Lumen, fortsätt”"
-        default: mode.isLive ? "Lumen ger ett förslag i pausen" : ""
+        default: mode.isLive ? "Earmind ger ett förslag i pausen" : ""
         }
     }
 
@@ -414,7 +414,7 @@ struct ModeSwitchSheet: View {
 
     private var footnote: String {
         onPick == nil
-            ? "Lumen lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
+            ? "Earmind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
             : "Valet gäller Starta-knappen. Du kan också säga ”Lumen, byt till provläge”." // Ke29
     }
 
