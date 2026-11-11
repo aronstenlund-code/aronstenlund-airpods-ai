@@ -1,4 +1,4 @@
-# Överlämning: Kelly, session 2026-11-11 (Ke29–Ke42)
+# Överlämning: Kelly, session 2026-11-11 (Ke29–Ke48)
 
 Det här står inte i rapporterna (`reports/*kelly*`).
 
@@ -19,7 +19,7 @@ Det här står inte i rapporterna (`reports/*kelly*`).
 ## Öppna trådar
 - **Loggan (D139):** ikonerna är EXAKT ChatGPT-bilderna, aldrig omritade. `_src/exakt.py` beskär 2,6–3,1 % inåt så
   att iOS-maskens hörn hamnar innanför originalens. Mina vektorer (`rostning/vektor/`) används inte.
-- **A71** (AppIcon + röstning med sex) granskas mot `rostning/exakt/README.md` när skärmbilderna finns.
+- A71 godkänd (Ke43). Kvar: hemskärmsikonen efter steg 2 (Tobys natttur) och testlägets skärmar på bild (A76, Ke46/Ke48).
 - **Väckningsordet:** appen och sajten heter Earmind men säger ”Lumen”. Aron avgör. Annonserna (Ke22) undviker ordet.
 - **Ke22:** bildplan och bilder i `docs/marketing/annonser/ke22/`. Cookiebanner + pixlar (Ryans B1) blockerar
   annonserna; ingen punkt hos mig än (behöver pixel-ID från Ryan och Arons ja till kakor).
