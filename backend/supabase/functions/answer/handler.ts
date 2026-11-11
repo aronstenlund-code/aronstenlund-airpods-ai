@@ -97,6 +97,7 @@ export function isRepeatedQuestion(text: string, asked: string[]): boolean {
   return asked.some((a) => similarity(a, q) >= 0.8);
 }
 import { stripEcho } from "./echo.ts";
+import { parseSavedCheck, rankSaved, SAVED_CHECK_PROMPT, type SavedAnswer, savedCheckUser } from "./savedanswers.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import {
   filterReasons,
@@ -774,6 +775,107 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           }),
           { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
         );
+      }
+
+      // K37 (D126): "Mina svar". A question that asks the same thing as one of the student's saved questions gets the
+      // saved answer word for word (spoken form in the delta, the exact text in done.saved_answer). Sure in code = no
+      // model call; a maybe = one short check by the small model of the best three; a failed check = the normal answer.
+      const savedList = !demo && body.savedAnswers?.length && !body.social && (body.persona ?? "tutor") === "tutor" &&
+          body.turn !== "user_answer" && !body.sessionEnd && !body.toolRound && !body.voiceInstruction
+        ? body.savedAnswers
+        : null;
+      if (savedList) {
+        const ranked = rankSaved(body.fragment, savedList, body.mode === "tutor" || body.mode === "auto");
+        let pick: { item: SavedAnswer; via: "code" | "check" } | null = ranked[0]?.sure ? { item: ranked[0].item, via: "code" } : null;
+        let checkIn = 0, checkOut = 0;
+        if (!pick && ranked.length) {
+          const cands = ranked.slice(0, 3);
+          let reply = "";
+          try {
+            for await (const c of provider.stream({
+              system: SAVED_CHECK_PROMPT,
+              user: savedCheckUser(body.fragment, cands, sanitizeTagged),
+              maxTokens: 4,
+              cacheSystem: true,
+              noThinking: true,
+              signal: AbortSignal.timeout(2500),
+            })) {
+              if (c.type === "text") reply += c.text;
+              else if (c.type === "usage") {
+                checkIn = c.inputTokens ?? checkIn;
+                checkOut = c.outputTokens ?? checkOut;
+              }
+            }
+          } catch (e) {
+            console.warn("saved_check_failed", e instanceof Error ? e.message.slice(0, 120) : String(e)); // no hit
+            reply = "";
+          }
+          const k = parseSavedCheck(reply, cands.length);
+          if (k !== null) pick = { item: cands[k].item, via: "check" };
+          console.log(JSON.stringify({ event: "saved_check", n: cands.length, top: Number(cands[0].score.toFixed(2)), hit: k !== null }));
+        }
+        if (pick) {
+          const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+          if (!rl.allowed) {
+            throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
+          }
+          const ns = new NumberStream();
+          const spoken = ns.push(pick.item.a) + ns.finish();
+          const totalMs = Math.round(now() - t0);
+          const cost = (checkIn * cfg.priceInPerMTok + checkOut * cfg.priceOutPerMTok) / 1e6;
+          try {
+            await deps.recordUsage({
+              user_id: user.id,
+              endpoint: "answer",
+              mode: body.mode,
+              language: body.language,
+              provider: pick.via === "check" ? provider.name : "local",
+              model: "saved_answer",
+              is_question: true,
+              confidence: 1,
+              input_tokens: checkIn || null,
+              output_tokens: checkOut || null,
+              ttft_ms: totalMs,
+              total_ms: totalMs,
+              est_cost_usd: cost,
+              status: "ok",
+              category: "övrigt",
+              persona: body.persona,
+            });
+          } catch (e) {
+            console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+          }
+          const frames = [
+            sseFrame("meta", {
+              reconstructed_question: body.fragment,
+              confidence: 1,
+              is_question: true,
+              needs_confirmation: false,
+              answer_type: "fact",
+            }),
+            sseFrame("delta", { text: spoken }),
+            sseFrame("done", {
+              answered: true,
+              timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
+              breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+              usage: { input_tokens: checkIn, output_tokens: checkOut, cache_read_tokens: 0, web_searches: 0, model: "saved_answer" },
+              summary: null,
+              relation: null,
+              source: null,
+              memory_add: null,
+              saved_answer: { id: pick.item.id, text: pick.item.a, via: pick.via },
+            }),
+          ];
+          return new Response(
+            new ReadableStream<Uint8Array>({
+              start(c) {
+                for (const f of frames) c.enqueue(f);
+                c.close();
+              },
+            }),
+            { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+          );
+        }
       }
 
       // K10.2 (measured: "kortare" was ignored 0/6 when only a line in the prompt said it): a learned length setting

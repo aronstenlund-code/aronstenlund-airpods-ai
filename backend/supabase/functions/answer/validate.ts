@@ -1,5 +1,6 @@
 import { isPhoneTool, type ToolRound, validatePhoneInput } from "./phonetools.ts";
 import { HttpError } from "../_shared/errors.ts";
+import { readSavedAnswers, type SavedAnswer } from "./savedanswers.ts";
 import { readContext, readSettings, type Setting } from "../memory/settings.ts";
 
 export type Mode = "push_to_talk" | "auto" | "text" | "tutor" | "interview_prep";
@@ -79,10 +80,12 @@ export interface AnswerRequest {
   situation?: { othersTalking?: boolean };
   /** K10.2: the context the settings are matched against (subject and exam of the current study profile). */
   prefContext?: { subject?: string; exam?: string };
+  /** K37 (D126): the student's own saved answers for the current exam ("Mina svar"), kept on the phone. */
+  savedAnswers?: SavedAnswer[];
 }
 
 export const LIMITS = {
-  bodyBytes: 64 * 1024,
+  bodyBytes: 160 * 1024, // K37: up to 60 saved answers of 1 500 characters
   fragment: 1000,
   transcript: 6000,
   recentQa: 6,
@@ -357,6 +360,10 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       ...(concept_stats.length ? { concept_stats } : {}),
     },
     ...(o.voice_instruction === true ? { voiceInstruction: true } : {}),
+    ...(() => {
+      const s = readSavedAnswers(o.saved_answers);
+      return s.length ? { savedAnswers: s } : {};
+    })(),
     ...toolFields(o),
     ...prefs(o),
     ...(o.two_level === true ? { twoLevel: true } : {}),
