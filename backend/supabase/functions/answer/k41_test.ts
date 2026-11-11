@@ -24,13 +24,36 @@ async function events(res: Response) {
   return (await res.text()).split("\n\n").filter(Boolean).map((f) => ({ event: /^event: (.*)$/m.exec(f)![1], data: JSON.parse(/^data: (.*)$/m.exec(f)![1]) }));
 }
 
-Deno.test("O41: addressed or leading requests are actions; things said in passing are not", () => {
-  for (const t of ["Lumen, ring mamma", "Lumen, sätt en timer på fem minuter", "Lumen, kan du spela lite musik", "ring mamma",
-    "sätt en timer på tio minuter", "kan du påminna mig om läxan i morgon", "Lumen, kör lite Håkan Hellström", "Lumen, sätt på lite musik av Veronica Maggio"]) assert(isAddressedAction(t), t);
-  for (const t of ["mamma ringde nyss", "igår sa hon att jag skulle ringa mamma", "vi ska spela teater", "vad är en timer",
-    "läraren sa att vi ska sätta en timer"]) assert(!isAddressedAction(t), t);
-  assert(isAddressedAction("sätt en timer", false) && isAddressedAction("igår sa hon att jag skulle ringa mamma", true), "voice instruction");
+Deno.test("O41 + O42: in Auto only requests addressed to Lumen are actions", () => {
+  for (const t of ["Lumen, ring mamma", "Lumen, sätt en timer på fem minuter", "Lumen, kan du spela lite musik",
+    "Lumen, kör lite Håkan Hellström", "Lumen, sätt på lite musik av Veronica Maggio", "okej Lumen, påminn mig om läxan"]) assert(isAddressedAction(t), t);
+  // O42: Auto hears everyone; without the wake word nothing is done (a friend saying "ring mamma" to someone else)
+  for (const t of ["ring mamma", "sätt en timer på tio minuter", "mamma ringde nyss", "igår sa hon att jag skulle ringa mamma",
+    "vi ska spela teater", "vad är en timer", "läraren sa att vi ska sätta en timer"]) assert(!isAddressedAction(t), t);
+  assert(isAddressedAction("sätt en timer", true), "the app's voice instruction counts as addressed");
   assertEquals(validatePhoneInput("call_contact", { number: "112" }, "Lumen, ring 112"), { number: "112" });
+});
+
+Deno.test("O42: help lines and plain music are recognised for the code's own call", async () => {
+  const { helpLineCall, plainMusicRequest } = await import("./phonetools.ts");
+  assertEquals([helpLineCall("ring Bris"), helpLineCall("Lumen, ring självmordslinjen"), helpLineCall("ring 1177"), helpLineCall("kan du ringa 112")],
+    ["116111", "90101", "1177", "112"]);
+  assertEquals(helpLineCall("vad är Bris"), null);
+  assertEquals(helpLineCall("ring mamma"), null);
+  assertEquals([plainMusicRequest("spela musik"), plainMusicRequest("Lumen, spela lite musik"), plainMusicRequest("sätt på musik av Veronica Maggio")],
+    ["musik", "musik", "Veronica Maggio"]);
+  assertEquals(plainMusicRequest("vilken musik spelar de"), null);
+});
+
+Deno.test("O42: 'ring Bris' where the model does nothing: the code sends call_contact 116111", async () => {
+  const { handler } = setup([{ type: "text", text: "" }]);
+  const ev = await events(await handler(post({ fragment: "ring Bris", mode: "push_to_talk" })));
+  const tc = ev.find((e) => e.event === "tool_call")!;
+  assertEquals([tc.data.name, tc.data.input, tc.data.confirm], ["call_contact", { number: "116111" }, null]);
+  assertEquals(ev.find((e) => e.event === "done")!.data.tool_pending, true);
+  const m = setup([{ type: "text", text: "Jag öppnar musikappen." }]);
+  const ev2 = await events(await m.handler(post({ fragment: "Lumen, spela musik", mode: "auto" })));
+  assertEquals(ev2.find((e) => e.event === "tool_call")?.data.input, { query: "musik" }, "what was said is now true");
 });
 
 Deno.test("O41: Standardläge (auto) offers the phone tools for 'Lumen, sätt en timer…' and runs the tool round", async () => {
@@ -103,4 +126,29 @@ Deno.test("O41: a short English note is dropped in the tool path; Swedish with E
   const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, dropEnglish: true });
   const out = p.push("A brief reply is needed.\n\nVilken kompis vill du ringa? Spela The Weeknd nu. ") + p.finish();
   assertEquals(out.trim(), "Vilken kompis vill du ringa? Spela The Weeknd nu.");
+});
+
+Deno.test("O42: a stray crisis marker on a short phone command is ignored; a real crisis sign still gets the crisis answer", async () => {
+  const s = setup([{ type: "text", text: "[[KRIS]]" }]);
+  const ev = await events(await s.handler(post({ fragment: "Lumen, spela musik", mode: "auto" })));
+  const said = ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
+  assert(!/tungt|Självmordslinjen|112/.test(said), said);
+  assertEquals(ev.find((e) => e.event === "tool_call")?.data.name, "music_open");
+  const c = setup([{ type: "text", text: "Hej." }]);
+  const ev2 = await events(await c.handler(post({ fragment: "Lumen, ring mamma, jag vill inte leva längre", mode: "auto" })));
+  const said2 = ev2.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
+  assert(/112|Självmordslinjen|90101|nittio/i.test(said2), said2);
+});
+
+Deno.test("O42: 'ring Bris, jag vill inte leva' gets the crisis answer AND the call; not again in the tool round", async () => {
+  const s = setup([{ type: "text", text: "x" }]);
+  const ev = await events(await s.handler(post({ fragment: "ring Bris, jag vill inte leva", mode: "push_to_talk" })));
+  assert(ev.some((e) => e.event === "delta" && /tungt|Bris|nittio/i.test(e.data.text)));
+  assertEquals(ev.find((e) => e.event === "tool_call")?.data.input, { number: "116111" });
+  const r = setup([{ type: "text", text: "x" }]);
+  const ev2 = await events(await r.handler(post({
+    fragment: "ring Bris, jag vill inte leva", mode: "push_to_talk",
+    tool_round: { call: { id: "toolu_lumenabc", name: "call_contact", input: { number: "116111" } }, status: "ok", result: { ok: true } },
+  })));
+  assert(!ev2.some((e) => e.event === "tool_call"), "no second call");
 });

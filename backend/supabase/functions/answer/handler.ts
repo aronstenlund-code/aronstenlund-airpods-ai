@@ -36,7 +36,7 @@ import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./per
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
 import { type CommandTask, commandTask, detectRule, funCommand, socialRequest } from "./commands.ts";
-import { ACTION_REQUEST, confirmText, isAddressedAction, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
+import { ACTION_REQUEST, confirmText, helpLineCall, isAddressedAction, isShortPhoneCommand, plainMusicRequest, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
 import { applicable, describe, detectCorrection, profileOf } from "../memory/settings.ts";
 
@@ -101,6 +101,7 @@ export function isRepeatedQuestion(text: string, asked: string[]): boolean {
   return asked.some((a) => similarity(a, q) >= 0.8);
 }
 import { stripEcho } from "./echo.ts";
+import { matchAnswer, parseQuizKey } from "./soundalike.ts";
 import { isSpotifyTool, MUSIC_REQUEST, SPOTIFY_RULE, type SpotifyResult, type SpotifyToolName, spotifyToolDefs, validateSpotifyInput } from "./spotifytools.ts";
 import { parseSavedCheck, rankSaved, SAVED_CHECK_PROMPT, type SavedAnswer, savedCheckUser } from "./savedanswers.ts";
 import { numbersToSpeech } from "./svnum.ts";
@@ -120,7 +121,7 @@ import {
   RELATION_RULE,
   SUMMARY_RULE,
   SYSTEM_PROMPT,
-  systemPromptFor, GRADE_NOTE, isQuizRequest, lastQuestion, QUIZ_NOTE, askedQuestions, looksLikeQuestion, sanitizeTagged,
+  systemPromptFor, GRADE_NOTE, isQuizRequest, lastQuestion, QUIZ_NOTE, QUIZ_KEY_RULE, soundNote, askedQuestions, looksLikeQuestion, sanitizeTagged,
 } from "./prompt.ts";
 import { type AnswerRequest, LIMITS, readLimitedJson, validateAnswerRequest } from "./validate.ts";
 
@@ -381,6 +382,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         } catch (e) {
           console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
         }
+        const crisisCall = crisisSelf && !demo && !body0.toolRound && (body0.toolsAvailable ?? []).includes("call_contact") ? helpLineCall(body0.fragment) : null;
         const frames = [
           sseFrame("meta", {
             reconstructed_question: body0.fragment,
@@ -394,9 +396,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ...(body0.persona === "social" && body0.social
             ? [sseFrame("suggestions", [text])]
             : [sseFrame("delta", { text })]),
+          // O42: "ring Bris, jag vill inte leva": the crisis answer AND the call the student asked for (an addition,
+          // B1; iOS asks before the call; verified numbers only)
+          ...(crisisCall
+            ? [sseFrame("tool_call", { id: `toolu_lumen${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`, name: "call_contact", input: { number: crisisCall }, confirm: null, kind: "write" })]
+            : []),
           sseFrame("done", {
             answered: true,
             safety: "crisis",
+            ...(crisisCall ? { tool_pending: true } : {}),
             timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
             breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
             usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "crisis" },
@@ -905,6 +913,63 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         }
       }
 
+      // O42: a help line ("ring Bris") or plain music ("spela musik") is answered by code with the tool call at once:
+      // no model (it was silent, or said "Jag kan inte spela musik" and then opened it). iOS asks before a call.
+      const early = !demo && !body.social && (body.persona ?? "tutor") === "tutor" && !body.toolRound && !body.sessionEnd &&
+          (body.mode === "auto" ? isAddressedAction(body.fragment, !!body.voiceInstruction) : body.mode !== "interview_prep") &&
+          isShortPhoneCommand(body.fragment)
+        ? (body.toolsAvailable?.includes("call_contact") && helpLineCall(body.fragment)
+          ? { name: "call_contact" as const, input: { number: helpLineCall(body.fragment)! } }
+          : body.toolsAvailable?.includes("music_open") && plainMusicRequest(body.fragment)
+          ? { name: "music_open" as const, input: { query: plainMusicRequest(body.fragment)! } }
+          : null)
+        : null;
+      if (early) {
+        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        if (!rl.allowed) {
+          throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
+        }
+        const totalMs = Math.round(now() - t0);
+        try {
+          await deps.recordUsage({
+            user_id: user.id, endpoint: "answer", mode: body.mode, language: body.language, provider: "local", model: "tool_code",
+            is_question: false, confidence: 1, input_tokens: null, output_tokens: null, ttft_ms: totalMs, total_ms: totalMs,
+            est_cost_usd: 0, status: "ok", category: "övrigt", persona: body.persona,
+          });
+        } catch (e) {
+          console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+        }
+        console.log(JSON.stringify({ event: "tool_call", name: early.name, mode: body.mode, by: "code" }));
+        const frames = [
+          sseFrame("meta", { reconstructed_question: body.fragment, confidence: 1, is_question: false, needs_confirmation: false, answer_type: "fact" }),
+          sseFrame("tool_call", {
+            id: `toolu_lumen${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`,
+            name: early.name,
+            input: early.input,
+            confirm: null,
+            kind: toolKind(early.name),
+          }),
+          sseFrame("done", {
+            answered: false,
+            tool_pending: true,
+            timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "tool_code" },
+            summary: null,
+            memory_add: null,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
+
       // K10.2 (measured: "kortare" was ignored 0/6 when only a line in the prompt said it): a learned length setting
       // drives the real length controls, the Provläge profile's explanation length or `length`
       const earlySubject = body.prefContext?.subject ?? /(?:^|\.\s*)Ämne:\s*([^.]+)/u.exec(body.personaSetup)?.[1]?.trim();
@@ -1155,6 +1220,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const gradeReply = tutor && !plan && !quiz && !command && !!lastQ && !!lastQuestion(lastQ.a) &&
         lastQ.a.trim().endsWith("?") && body.fragment.trim().split(/\s+/).length <= 12 &&
         !looksLikeQuestion(body.fragment) && (replyAge === undefined || replyAge <= GRADE_REPLY_MAX_AGE_SEC);
+      // K40: the reply to a check question is compared by SOUND with the answer key the app sent back (A62)
+      const soundVerdict = gradeReply && body.context.quiz_key ? matchAnswer(body.fragment, body.context.quiz_key) : null;
+      if (soundVerdict) console.log(JSON.stringify({ event: "quiz_sound", verdict: soundVerdict.verdict, score: Number(soundVerdict.score.toFixed(2)) }));
       // K2: with a profile, a check question only when the profile asks for one (a "Kontrollfrågor" line that is not "inga")
       const noChecks = !quiz && tutor && body.persona === "tutor" && !!body.personaSetup &&
         (!/kontrollfrågor\s*:/i.test(body.personaSetup) || /inga kontrollfrågor/i.test(body.personaSetup)) &&
@@ -1163,7 +1231,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K13.1: short first unless the learned default here is the long answer (2 of the last 3 "ja", K13.2)
       const longFirst = applicableHere.some((x) => x.key === "length" && x.value === "longer");
       const twoLevel = body.twoLevel === true && !demo && !plan && !command && !continuation && !computed &&
-        !textReq && !need && !quiz && !gradeReply && (tutor || answerTypeBase === "study") && !longFirst;
+        !textReq && !need && !quiz && !gradeReply && !longFirst &&
+        // Toby T12: Standardläge (auto, push to talk) gets the developed answer ready for "ja" also after a short fact
+        // answer, so "ja" plays at once (T7: under 1 s); Haiku there, so the extra part costs almost nothing
+        (tutor || answerTypeBase === "study" || body.mode === "auto" || body.mode === "push_to_talk" || body.mode === "text");
 
       // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz
       const isRizz = plan?.kind === "rizz" || textReq || careful; // K9: "var säker" = the stronger model, one answer
@@ -1269,7 +1340,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
         (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "") +
-        (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "");
+        (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "") +
+        (!plan && (tutor || quiz) && !noSummary ? QUIZ_KEY_RULE : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
@@ -1298,7 +1370,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ? buildDirectUserMessage(b, continuation, {
             ...extras,
             ...(command ? { command } : {}),
-            note: extras.note ?? echoNote ?? (quiz ? QUIZ_NOTE : gradeReply ? GRADE_NOTE : freeInstruction ? FREE_INSTRUCTION_NOTE : undefined),
+            note: extras.note ?? echoNote ??
+              (quiz ? QUIZ_NOTE : gradeReply ? [GRADE_NOTE, soundVerdict ? soundNote(soundVerdict.verdict, soundVerdict.answer) : ""].filter(Boolean).join(" ") : freeInstruction ? FREE_INSTRUCTION_NOTE : undefined),
           })
           : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, {
             ...extras,
@@ -1840,6 +1913,33 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               emitText((answerChars ? " " : "") + res.say);
               serverToolDone = { name: st.name, status: res.status, ...(res.playing ? { playing: res.playing } : {}) };
             }
+            // O42 (live 1/6): the model wrote its crisis marker for "Lumen, spela musik". A short, addressed phone command in
+            // which the code layer finds no crisis sign at all (crisis.ts, also the other speakers) is not a crisis; any real
+            // crisis word is caught by the code layer before the model (B1 unchanged)
+            if ((crisisMarked || crisisLate) && phoneTools && fragLevel === null && !otherLevels.some(Boolean) &&
+              isShortPhoneCommand(body.fragment)) {
+              console.warn(JSON.stringify({ event: "crisis_marker_ignored", mode: body.mode, reason: "phone_command" }));
+              crisisMarked = false;
+              crisisLate = false;
+            }
+            // O42: a help line ("ring Bris") or plain music ("spela musik") the model did not act on: code makes the
+            // call (the app runs it; iOS asks before a call, B6 numbers only)
+            const offered = (name: string) => phoneOffer.includes(name);
+            const codeCall = phoneTools && !toolPending && !st && !closed && !crisisMarked && !crisisLate && !body.toolRound
+              ? (offered("call_contact") && helpLineCall(body.fragment)
+                ? { name: "call_contact" as const, input: { number: helpLineCall(body.fragment)! } }
+                : offered("music_open") && plainMusicRequest(body.fragment)
+                ? { name: "music_open" as const, input: { query: plainMusicRequest(body.fragment)! } }
+                : null)
+              : null;
+            if (codeCall) {
+              toolPending = true;
+              flushMeta();
+              if (ttftMs === null) ttftMs = now() - t0;
+              status = "ok";
+              send("tool_call", { id: `toolu_lumen${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`, name: codeCall.name, input: codeCall.input, confirm: null, kind: toolKind(codeCall.name) });
+              console.log(JSON.stringify({ event: "tool_call", name: codeCall.name, mode: body.mode, by: "code" }));
+            }
             // O41: a request to the phone that ended in nothing said and no tool (the English reasoning was dropped):
             // one short Swedish question instead of silence
             if (
@@ -1934,6 +2034,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               calibration,
               ...(toolPending ? { tool_pending: true } : {}),
               ...(serverToolDone ? { server_tool: serverToolDone } : {}),
+              // K40: the check question's answer key for the app (Scribe keyterms, A62) and for grading the reply
+              ...((() => {
+                const k = post.quizKeyLine ? parseQuizKey(post.quizKeyLine) : null;
+                return k ? { quiz_key: k } : {};
+              })()),
+              ...(soundVerdict ? { quiz_sound: { verdict: soundVerdict.verdict, ...(soundVerdict.answer ? { answer: soundVerdict.answer } : {}) } } : {}),
             });
             doneSent = !closed;
           } catch (e) {

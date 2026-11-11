@@ -520,7 +520,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                          prep: (studyProfile.profile.terms ?? []) + prep.sttTerms)
         let rest = terms + prep.sttTerms + (studyProfile.profile.terms ?? [])
         // D87: in Provläge the active exam's words go first, so Scribe hears them right from the first word.
-        let exam = mode == .prov ? ExamKeyterms.terms(profile: studyProfile.profile) : []
+        let exam = mode == .prov ? quizTerms + ExamKeyterms.terms(profile: studyProfile.profile) : [] // A62: the quiz answer first
         // A14 (Toby T6): alone, these short words are what Scribe mishears most ("kortare" heard as "högre").
         let spoken: [String] = switch mode {
         case .prov, .standard: ["kortare", "upprepa", "viska", "högre"]
@@ -1529,6 +1529,23 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if why == "no" || why == "silence" || why == "shake" { sendLengthSignal(yes: false) } // A56 (K13.2)
     }
 
+    /// A62 (K40): the answer key of the last answer, sent back with the next call in Provläge; its words go first among
+    /// Scribe's keyterms while the question is asked ("Nilen", not "Nilan").
+    @ObservationIgnored private var lastQuizKey: QuizKey?
+    @ObservationIgnored private var quizTerms: [String] = []
+
+    private func quizKeyArrived(_ key: QuizKey?) {
+        lastQuizKey = key
+        guard mode == .prov, let key else {
+            quizTerms = [] // taken out at the next reconnect, no reconnect for that
+            return
+        }
+        quizTerms = key.terms
+        refreshKeyterms()
+        guard !transcription.isConnectedKeyterm(key.answer) else { return } // already heard right: no reconnect
+        Task { await transcription.applyQuizKeytermsNow() }
+    }
+
     /// A56 (K13): the developed answer that came with the last short one (`done.more`), for about 2 minutes.
     @ObservationIgnored private var developedAnswer: (text: String, at: Date, answerID: UUID)?
 
@@ -1621,6 +1638,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         } else {
             await startHandsFree(target)
         }
+        if current != nil { conversation.markModeSwitch(to: target.shortName) } // Ke35: "Bytte till …" on Lyssnar
         say(VoiceChannel.spokenName(target))
     }
 
@@ -3184,6 +3202,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         // for "ja" in the Mer? window without a new call.
         context.twoLevel = mode == .standard || mode == .prov
         context.connections = spotifyConnection?.connections ?? [] // A59 (K36)
+        if mode == .prov { context.quizKey = lastQuizKey } // A62 (K40): the student's answer is compared by sound
         // A53 (K37, D126): "Mina svar" for the exam, in Provläge only, when "Säg mina svar" is on.
         if mode == .prov, let myAnswers {
             context.savedAnswers = myAnswers.payload(for: currentExamID())
@@ -3533,6 +3552,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 studyTurns[index].answered = true
             }
             if let link = done?.resource { linkArrived(link, for: turn) }
+            quizKeyArrived(done?.quizKey) // A62 (K40)
             if let more = done?.more?.trimmingCharacters(in: .whitespacesAndNewlines), !more.isEmpty {
                 developedAnswer = (more, Date(), turn.id) // A56 (K13): said at once on "ja"
             } else {

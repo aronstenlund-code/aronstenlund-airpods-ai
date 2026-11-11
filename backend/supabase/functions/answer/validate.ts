@@ -1,6 +1,7 @@
 import { isPhoneTool, type ToolRound, validatePhoneInput } from "./phonetools.ts";
 import { HttpError } from "../_shared/errors.ts";
 import { readSavedAnswers, type SavedAnswer } from "./savedanswers.ts";
+import { type QuizKey, readQuizKey } from "./soundalike.ts";
 import { readContext, readSettings, type Setting } from "../memory/settings.ts";
 
 export type Mode = "push_to_talk" | "auto" | "text" | "tutor" | "interview_prep";
@@ -59,6 +60,8 @@ export interface AnswerRequest {
     already_asked?: string[];
     /** K1.4: seconds since the last answer ended; a short reply counts as an answer only shortly after it. */
     last_answer_age_sec?: number;
+    /** K40: the answer key of the check question (done.quiz_key of the last answer), sent back by the app (A62). */
+    quiz_key?: QuizKey;
     /** K9: quiz results per concept from the app (weak_areas, self_assessment), <= 30. */
     concept_stats?: { concept: string; right: number; wrong: number }[];
   };
@@ -360,6 +363,10 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       ...(already_asked.length ? { already_asked } : {}),
       ...(typeof ageRaw === "number" ? { last_answer_age_sec: ageRaw } : {}),
       ...(concept_stats.length ? { concept_stats } : {}),
+      ...(() => {
+        const k = readQuizKey(c.quiz_key);
+        return k ? { quiz_key: k } : {};
+      })(),
     },
     ...(o.voice_instruction === true ? { voiceInstruction: true } : {}),
     ...(Array.isArray(o.connections) && o.connections.includes("spotify") ? { connections: ["spotify"] } : {}),

@@ -29,6 +29,8 @@ export interface StudyProfileOut {
   /** ISO date (YYYY-MM-DD), absolute; null when no date was said. */
   exam_date: string | null;
   no_exam: boolean;
+  /** K40: what the exam covers when the student said it ("50 mest kända sjöar, floder och kuststäder"), else null. */
+  topic?: string | null;
 }
 
 export interface ProfileConfig {
@@ -58,11 +60,12 @@ export const SYSTEM_PROMPT_PROFILE =
   `You set up the study profile of a student in Sweden. You get <now> (today in Sweden), <current> (the profile so far, may be empty) and <said> (what the student just said about themselves, may be empty).
 
 Return ONLY a JSON object:
-{"profile": {"grade": ..., "course": ..., "subject": ..., "exam_date": ..., "no_exam": ...}, "terms": [...]}
+{"profile": {"grade": ..., "course": ..., "subject": ..., "exam_date": ..., "no_exam": ..., "topic": ...}, "terms": [...]}
 - grade: one of "y6","y7","y8","y9" (åk 6-9, also "sexan", "nian"), "gy1","gy2","gy3" (gymnasiet år 1-3, "ettan/tvåan/trean på gymnasiet"), "university" (högskola, universitet), "other", or null when not said. Keep <current> values that <said> does not change.
 - course: the gymnasium or university course if said ("Biologi 1", "Matematik 2c"), else null. subject: the school subject in Swedish with a capital letter ("Biologi", "Matematik"), else null.
 - exam_date: the exam date as YYYY-MM-DD, always absolute from <now> ("på fredag", "nästa vecka" = Monday next week, "om två veckor"); "snart" without a day = null. no_exam: true only when the student says there is no exam.
-- terms: 30-50 central Swedish terms of that subject for exactly that grade (and course), as in Skolverket's central content for it: the words a student meets in lessons and on tests, single terms or short compounds, most important first, no explanations, no duplicates. No subject known: [].`;
+- topic: what the exam covers when said ("50 mest kända sjöar, floder och kuststäder", "andra världskriget"), in a few Swedish words, else the one in <current>, else null.
+- terms: 30-50 terms, most important first, no explanations, no duplicates. When the topic is a set of NAMES (rivers, lakes, seas, cities, countries, mountains, people, works), the terms are first those names themselves, spelled as in Swedish school books (the 30-50 most likely for that grade: "Nilen", "Amazonas", "Mississippi", "Donau", "Rhen", "Seine", "Loire", "Volga", "Ladoga", "Viktoriasjön", "Bajkalsjön", "Marseille", "Lissabon" …), then a few subject terms. Otherwise: central Swedish terms of that subject for exactly that grade (and course), as in Skolverket's central content for it: the words a student meets in lessons and on tests, single terms or short compounds. No subject and no topic known: [].`;
 
 function clean(s: unknown, max: number): string | null {
   if (typeof s !== "string") return null;
@@ -74,10 +77,20 @@ export function parseProfileReply(text: string): { profile: StudyProfileOut; ter
   const empty = { profile: { grade: null, course: null, subject: null, exam_date: null, no_exam: false }, terms: [] };
   const m = /\{[\s\S]*\}/.exec(text);
   if (!m) return empty;
-  let j: Record<string, unknown>;
-  try {
-    j = JSON.parse(m[0]);
-  } catch {
+  let j: Record<string, unknown> | null = null;
+  // K40 (live: a topic of 50 names gave an empty profile): trailing commas, comments or a cut list are repaired
+  const tries = [m[0], m[0].replace(/\/\/[^\n]*/g, "").replace(/,\s*([\]}])/g, "$1")];
+  const all = text.slice(text.indexOf("{"));
+  const cut = all.lastIndexOf('",');
+  if (cut > 0 && /"terms"\s*:\s*\[/.test(all)) tries.push(all.slice(0, cut + 1) + "]}");
+  for (const s of tries) {
+    try {
+      j = JSON.parse(s);
+      break;
+    } catch { /* next repair */ }
+  }
+  if (!j) {
+    console.warn(JSON.stringify({ event: "profile_parse_failed", chars: text.length }));
     return empty;
   }
   const p = (j.profile ?? {}) as Record<string, unknown>;
@@ -98,6 +111,7 @@ export function parseProfileReply(text: string): { profile: StudyProfileOut; ter
       subject: clean(p.subject, PROFILE_LIMITS.field),
       exam_date: date,
       no_exam: p.no_exam === true,
+      topic: clean(p.topic, 120),
     },
     terms,
   };
@@ -119,7 +133,7 @@ export function createProfileHandler(deps: ProfileDeps) {
       const b = (await readLimitedJson(req, PROFILE_LIMITS.bodyBytes)) as Record<string, unknown> | null;
       const said = clean(b?.text, PROFILE_LIMITS.text) ?? "";
       const cur = (b?.profile ?? {}) as Record<string, unknown>;
-      const current = ["grade", "course", "subject", "exam_date"]
+      const current = ["grade", "course", "subject", "exam_date", "topic"]
         .map((k) => [k, clean(cur[k], PROFILE_LIMITS.field)])
         .filter(([, v]) => v)
         .map(([k, v]) => `${k}: ${v}`).join("; ");
@@ -144,7 +158,7 @@ export function createProfileHandler(deps: ProfileDeps) {
         const c of deps.provider.stream({
           system: SYSTEM_PROMPT_PROFILE,
           user: user_,
-          maxTokens: 700,
+          maxTokens: 1200, // K40: a topic of names gives 50 names
           cacheSystem: true,
           model: cfg.model,
           signal: req.signal,

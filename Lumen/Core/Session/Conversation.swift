@@ -30,6 +30,8 @@ struct AnswerTurn: Identifiable, Equatable, Sendable, Codable {
     var link: LearningLink?
     /// A53 (K37): the student's own saved answer ("Mina svar"), said word for word. Its `MyAnswer.id`.
     var savedAnswerID: String?
+    /// Ke35: the mode was switched after this turn, while Lumen listened ("Bytte till Provläge" on Lyssnar).
+    var switchedAfter: String?
 
     init(id: UUID = UUID(), question: String, answer: String, createdAt: Date = Date(), latencyMs: Double? = nil, source: String,
          isOwnQuestion: Bool = true) {
@@ -99,6 +101,12 @@ struct Conversation: Equatable, Sendable {
     mutating func attach(_ link: LearningLink, to id: UUID) {
         guard let index = answers.lastIndex(where: { $0.id == id }) else { return }
         answers[index].link = link
+    }
+
+    /// Ke35: a mode switch while listening keeps the answers, with a divider after the last one.
+    mutating func markModeSwitch(to title: String) {
+        guard !answers.isEmpty else { return }
+        answers[answers.count - 1].switchedAfter = title
     }
 
     /// A53: the answer was the student's own ("Ditt svar"). `text` is their exact text (the spoken form has numbers

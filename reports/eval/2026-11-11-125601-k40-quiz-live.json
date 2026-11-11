@@ -1,0 +1,210 @@
+{
+ "summary": {
+  "keys": 3,
+  "keys_spoken": 0,
+  "graded_ok": "7/7"
+ },
+ "rows": [
+  {
+   "step": "quiz",
+   "said": "Vilken flod rinner genom Kairo och ut i Medelhavet?",
+   "quiz_key": {
+    "answer": "Nilen",
+    "alternatives": [
+     "Kongo",
+     "Niger",
+     "Zambezi",
+     "Amazonas"
+    ]
+   },
+   "key_spoken": false
+  },
+  {
+   "step": "quiz",
+   "said": "Vilken flod rinner genom Kairo och mynnar ut i Medelhavet?",
+   "quiz_key": {
+    "answer": "Nilen",
+    "alternatives": [
+     "Kongo",
+     "Niger",
+     "Zambezi",
+     "Amazonas"
+    ]
+   },
+   "key_spoken": false
+  },
+  {
+   "step": "quiz",
+   "said": "Vilken flod rinner genom Kairo och mynnar ut i Medelhavet?",
+   "quiz_key": {
+    "answer": "Nilen",
+    "alternatives": [
+     "Kongo",
+     "Niger",
+     "Zambezi",
+     "Amazonas"
+    ]
+   },
+   "key_spoken": false
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Egypten?",
+   "heard": "Nilan",
+   "want": "right",
+   "got": "right",
+   "ok": true,
+   "said": "Rätt. Nilen är världens längsta flod med cirka sextusen sexhundrafemtio kilometer och rinner genom Egypten ut i Medelhavet. Dess källflöden ligger i Östafrika, och vid mynningen bildar den ett stort delta. Vilken flod rinner genom Paris?",
+   "sound": {
+    "verdict": "correct",
+    "answer": "Nilen"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Egypten?",
+   "heard": "ni len",
+   "want": "right",
+   "got": "right",
+   "ok": true,
+   "said": "Rätt. Nilen rinner genom Egypten och är världens längsta flod, cirka sextusen sexhundrafemtio kilometer lång. Den rinner norrut och mynnar i Medelhavet, där Alexandria och Port Said ligger nära deltat. Kairo ligger vid Nilen, och nästan hela Egyptens befolkning bor längs floden.\n\nVill du ha nästa fråga? Säg bara \"förhör mig\".",
+   "sound": {
+    "verdict": "correct",
+    "answer": "Nilen"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Paris?",
+   "heard": "såg en",
+   "want": "near",
+   "got": "near",
+   "ok": true,
+   "said": "Menade du Seine? Rätt i så fall. Seine rinner genom Paris och mynnar ut i Engelska kanalen vid Le Havre. Den är cirka sjuhundraåttio kilometer lång och en av Frankrikes viktigaste floder.",
+   "sound": {
+    "verdict": "near",
+    "answer": "Seine"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Paris?",
+   "heard": "sän",
+   "want": "right",
+   "got": "right",
+   "ok": true,
+   "said": "Rätt. Seine rinner genom Paris och mynnar ut i Engelska kanalen vid Le Havre. Nästa: Vilken flod rinner genom Wien?",
+   "sound": {
+    "verdict": "correct",
+    "answer": "Seine"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Paris?",
+   "heard": "Loire",
+   "want": "wrong",
+   "got": "wrong",
+   "ok": true,
+   "said": "Inte riktigt. Det är Seine som rinner genom Paris. Loire är Frankrikes längsta flod, och den rinner genom bland annat Nantes och mynnar i Atlanten. Seine mynnar i Engelska kanalen vid Le Havre. Vilken flod rinner genom London?",
+   "sound": {
+    "verdict": "alternative",
+    "answer": "Loire"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken stad ligger vid Rhônes mynning?",
+   "heard": "mar säj",
+   "want": "right",
+   "got": "right",
+   "ok": true,
+   "said": "Rätt. Marseille ligger vid Medelhavet, väster om Rhônes mynning, och är Frankrikes största hamnstad. Rhône rinner från Alperna genom Genèvesjön och Lyon ut i Medelhavet. Vilken flod rinner genom Paris?",
+   "sound": {
+    "verdict": "correct",
+    "answer": "Marseille"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken är Europas största sjö?",
+   "heard": "Vänern",
+   "want": "wrong",
+   "got": "wrong",
+   "ok": true,
+   "said": "Inte riktigt. Europas största sjö är Ladoga i Ryssland, ungefär sjuttontusen sjuhundra kvadratkilometer. Vänern är Sveriges och Västeuropas största sjö, med cirka femtusen sexhundra kvadratkilometer. På provet: skilj på Europas största, Ladoga, och Sveriges största, Vänern.\n\nVilken är Sveriges näst största sjö?",
+   "sound": {
+    "verdict": "alternative",
+    "answer": "Vänern"
+   }
+  },
+  {
+   "step": "nokey",
+   "heard": "om ni har redan svarat",
+   "said": "Menade du Nilen? Rätt i så fall. Nilen rinner genom Egypten och mynnar ut i Medelhavet, där den bildar ett stort delta. Vilken stad ligger vid Nilens delta nära Medelhavet?"
+  },
+  {
+   "step": "profile",
+   "profile": {
+    "grade": "y8",
+    "course": null,
+    "subject": "Geografi",
+    "exam_date": "2026-11-13",
+    "no_exam": false,
+    "topic": "50 mest kända sjöar, floder och kuststäder"
+   },
+   "terms": [
+    "Vättern",
+    "Vänern",
+    "Mälaren",
+    "Hjälmaren",
+    "Siljan",
+    "Storsjön",
+    "Ladoga",
+    "Onega",
+    "Bajkalsjön",
+    "Viktoriasjön",
+    "Tanganyika",
+    "Titicacasjön",
+    "Michigansjön",
+    "Eriesjön",
+    "Superiorsjön",
+    "Donau",
+    "Rhen",
+    "Elbe",
+    "Oder",
+    "Wisla",
+    "Volga",
+    "Dnepr",
+    "Don",
+    "Ob",
+    "Lena",
+    "Jenisej",
+    "Loire",
+    "Seine",
+    "Rhône",
+    "Po",
+    "Ebro",
+    "Tajo",
+    "Nilen",
+    "Kongofloden",
+    "Niger",
+    "Zambezi",
+    "Amazonas",
+    "Mississippi",
+    "Missouri",
+    "Yangtze",
+    "Gula floden",
+    "Mekong",
+    "Ganges",
+    "Indus",
+    "Tigris",
+    "Eufrat",
+    "Stockholm",
+    "Göteborg",
+    "Malmö",
+    "Helsingfors"
+   ]
+  }
+ ]
+}

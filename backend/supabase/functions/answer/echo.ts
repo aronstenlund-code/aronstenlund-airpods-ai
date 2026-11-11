@@ -12,7 +12,10 @@ const norm = (w: string) => w.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
  */
 const ASKS_ABOUT_IT =
   /(?<![\p{L}])(?:vad|varför|hur|när|vem|vilken|vilket|vilka|menar|betyder|stämmer|förklara|eller|igen|hände|händer|alltså)(?![\p{L}])/iu;
-const SO_QUESTION = /^(?:så|alltså|va|vänta|menar du att|är det så att)$/iu;
+const SO_QUESTION = /^(?:så|alltså|va|vänta|menar du att|är det så att|så det|så det är)$/iu;
+// live eval klocka-01: "är det samma som tjugo över åtta på kvällen" lost its quote and got silence; a yes/no frame
+// about the quoted words is a follow-up question
+const ASK_FRAME = /^(?:och |men |så )?(?:är det|är de|blir det|stämmer det|gäller det|betyder det|samma som|lika med)(?![\p{L}])/iu;
 
 export function stripEcho(fragment: string, lastAnswer: string | undefined, minRun = 4): {
   rest: string;
@@ -39,7 +42,7 @@ export function stripEcho(fragment: string, lastAnswer: string | undefined, minR
   if (!echoed) return { rest: fragment, echoed: 0 };
   const rest = words.filter((_, i) => keep[i]).join(" ").replace(/^[\s,.;:!?-]+/, "").trim();
   const own = rest.replace(/[,.;:!?-]+/g, " ").replace(/\s+/g, " ").trim();
-  if (own && (ASKS_ABOUT_IT.test(own) || (SO_QUESTION.test(own) && /\?\s*$/.test(fragment)))) {
+  if (own && (ASKS_ABOUT_IT.test(own) || ASK_FRAME.test(own) || (SO_QUESTION.test(own) && /\?\s*$/.test(fragment)))) {
     return { rest: fragment, echoed, quoted: true };
   }
   return { rest, echoed };

@@ -288,6 +288,14 @@ struct ListeningScreen: View {
         if model.rizz == nil, answers.count > skip {
             let earlier = Array(answers.dropLast(skip).suffix(30).reversed())
             ForEach(Array(earlier.enumerated()), id: \.offset) { _, turn in
+                if let switched = turn.switchedAfter {
+                    // Ke35: newest first, so the switch after this turn sits above it.
+                    Text("Bytte till \(switched)")
+                        .font(LumenFont.text(13, relativeTo: .footnote))
+                        .foregroundStyle(LumenColor.muted)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 14)
+                }
                 VStack(alignment: .leading, spacing: 8) {
                     if !turn.question.isEmpty {
                         Text(turn.question).font(appearance.questionFont(18)).foregroundStyle(LumenColor.muted)
