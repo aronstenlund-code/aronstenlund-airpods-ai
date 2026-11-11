@@ -1,4 +1,4 @@
-# Överlämning: Angela (app), 2026-11-11, uppdaterad kl. 17.25
+# Överlämning: Angela (app), 2026-11-11, uppdaterad kl. 21.08
 
 Sessionen 2026-11-11 gjorde A50–A69:
 - Start, Mina svar, Vad kan Earmind?, loggröstningen och Earmind;
@@ -43,6 +43,14 @@ och `reports/2026-11-11-*-angela-a6*.md`.
 - **Mina svar:**
   - Inspelningen skrivs ut med `SleepRecorder.transcribe`, alltså på telefonen och inte med Scribe (D133).
   - Den är inte provad på 10 minuters svenska.
+
+## Läget kl. 21.08: A75, A76 och A72 del 3 pushade (CI e437b5b)
+- **A72 del 3:** T15b:s väntande frågor väntade inte i timern. Huvudtråden stod still 7–20 s mellan "Answer ahead
+  discarded (a different turn)" och "Activation" i `activated()`, troligen i `PlaybackService.stop()` (Apples
+  syntes). Nu stoppas bara det som spelar, och "Activation was held X ms …" loggas. Läs den raden i T15c.
+- **A76:** testläget är byggt, men K43 tar bara e-postkonton och appen har bara anonym inloggning. Väg (a) eller (b)
+  står i `reports/2026-11-11-2100-angela-a76-testlage.md`. AAC skrivs från Int16. Om filerna blir tomma, byt till Float32.
+- **A75:** varianterna finns i `WakeWord.variantsByName`. Lägg till nya från loggraderna "Name-like word not taken".
 
 ## Läget kl. 20.30: A71–A74 klara. T15 visade orsaken till den väntande frågan (A72 del 2 rättad, Toby kör T15b). Äldre: Tobys T14 (`reports/apptest/2026-11-11-1725-toby-t14-omtest-a67-a68.md`)
 - **Rättat:** "ja", "mer" och "gärna" ger det långa svaret på 1,6–1,8 s (A65/A67). Det var 7–16 s.
