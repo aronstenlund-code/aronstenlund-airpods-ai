@@ -1,0 +1,369 @@
+{
+ "corrections": "20/20",
+ "not_corrections": "15/15",
+ "commands": "9/10",
+ "not_commands": "10/10",
+ "fails": [
+  {
+   "m": "socialt",
+   "t": "stäng av",
+   "want": "stop",
+   "got": null,
+   "conf": null,
+   "ok": false
+  }
+ ],
+ "corr": [
+  {
+   "t": "asså det där var alldeles för långt",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "ok": true
+  },
+  {
+   "t": "kortare tack",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "ok": true
+  },
+  {
+   "t": "orka lyssna på så långa svar",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "ok": true
+  },
+  {
+   "t": "säg det på typ en mening",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "ok": true
+  },
+  {
+   "t": "Lumen, du snackar för mycket",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "ok": true
+  },
+  {
+   "t": "mindre prat",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "ok": true
+  },
+  {
+   "t": "kan du förklara lite mer",
+   "want": "length:longer",
+   "got": "length:longer",
+   "ok": true
+  },
+  {
+   "t": "det där var för lite",
+   "want": "length:longer",
+   "got": "length:longer",
+   "ok": true
+  },
+  {
+   "t": "gå in mer på djupet",
+   "want": "length:longer",
+   "got": "length:longer",
+   "ok": true
+  },
+  {
+   "t": "jag hänger inte med",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "ok": true
+  },
+  {
+   "t": "förklara som om jag var tio",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "ok": true
+  },
+  {
+   "t": "med enklare ord tack",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "ok": true
+  },
+  {
+   "t": "fattar ingenting",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "ok": true
+  },
+  {
+   "t": "det var för avancerat",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "ok": true
+  },
+  {
+   "t": "kan du ge ett exempel nästa gång",
+   "want": "examples:more",
+   "got": "examples:more",
+   "ok": true
+  },
+  {
+   "t": "exempel hade varit nice",
+   "want": "examples:more",
+   "got": "examples:more",
+   "ok": true
+  },
+  {
+   "t": "nej det där är fel",
+   "want": "accuracy:careful",
+   "got": "accuracy:careful",
+   "ok": true
+  },
+  {
+   "t": "det stämmer inte",
+   "want": "accuracy:careful",
+   "got": "accuracy:careful",
+   "ok": true
+  },
+  {
+   "t": "du sa fel",
+   "want": "accuracy:careful",
+   "got": "accuracy:careful",
+   "ok": true
+  },
+  {
+   "t": "det är ju inte sant",
+   "want": "accuracy:careful",
+   "got": "accuracy:careful",
+   "ok": true
+  }
+ ],
+ "notCorr": [
+  {
+   "t": "vilken är längst, Nilen eller Amazonas",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "vad är ett bra exempel på en metafor",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "hur kan jag förklara det för min lillebror",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "jag fattar inte varför hon är sur",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "är det fel att fuska",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "det var för långt att cykla till skolan",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "kan du säga det på engelska",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "hur långt är det till månen",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "mindre än eller lika med",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "det stämmer inte att jorden är platt, eller hur",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "jag hänger inte med i matten i skolan, vad ska jag göra",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "säg ett exempel på ett däggdjur",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "du har fel strumpor på dig",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "för kort kjol enligt mamma",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "det där var ett bra svar",
+   "got": null,
+   "ok": true
+  }
+ ],
+ "cmd": [
+  {
+   "m": "fragor",
+   "t": "Lumen, kör provläget",
+   "want": "switch_mode:prov",
+   "got": "switch_mode:prov",
+   "conf": 0.9,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "byt till frågor",
+   "want": "switch_mode:fragor",
+   "got": "switch_mode:fragor",
+   "conf": 0.9,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "nu ska jag plugga",
+   "want": "switch_mode:prov",
+   "got": "switch_mode:prov",
+   "conf": 0.8,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "vänta lite",
+   "want": "pause",
+   "got": "pause",
+   "conf": 0.9,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "Lumen, tyst en stund",
+   "want": "pause",
+   "got": "pause",
+   "conf": 0.9,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "du kan sluta nu",
+   "want": "stop",
+   "got": "stop",
+   "conf": 0.85,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "lyssna igen",
+   "want": "resume",
+   "got": "resume",
+   "conf": 0.85,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "jag ska på intervju, kan vi öva",
+   "want": "switch_mode:intervju",
+   "got": "switch_mode:intervju",
+   "conf": 0.8,
+   "ok": true
+  },
+  {
+   "m": "socialt",
+   "t": "stäng av",
+   "want": "stop",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "prov",
+   "t": "paus",
+   "want": "pause",
+   "got": "pause",
+   "conf": 0.9,
+   "ok": true
+  }
+ ],
+ "notCmd": [
+  {
+   "m": "fragor",
+   "t": "vad betyder paus i musik",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "vad hände när Sverige bytte till högertrafik",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "när stänger affären",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "provet är på fredag",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "jag ska plugga till provet imorgon, vad är fotosyntes",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "vänta, var det tre eller fyra",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "kan man sluta röka själv",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "lyssna på den här frågan: vad är DNA",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "socialt",
+   "t": "han sa stäng av musiken",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "hur länge varar en paus i fotboll",
+   "got": null,
+   "conf": null,
+   "ok": true
+  }
+ ]
+}
