@@ -1,0 +1,82 @@
+{
+ "summary": {
+  "n": 10,
+  "ok": 10,
+  "median_total_ms": 1499.5,
+  "max_total_ms": 2128,
+  "median_token_ms": 1332.0
+ },
+ "rows": [
+  {
+   "token_ms": 1656,
+   "open_ms": 178,
+   "started_ms": 0,
+   "total_ms": 1834,
+   "started": true
+  },
+  {
+   "token_ms": 1237,
+   "open_ms": 180,
+   "started_ms": 0,
+   "total_ms": 1417,
+   "started": true
+  },
+  {
+   "token_ms": 1353,
+   "open_ms": 163,
+   "started_ms": 0,
+   "total_ms": 1516,
+   "started": true
+  },
+  {
+   "token_ms": 1385,
+   "open_ms": 241,
+   "started_ms": 0,
+   "total_ms": 1627,
+   "started": true
+  },
+  {
+   "token_ms": 1417,
+   "open_ms": 152,
+   "started_ms": 0,
+   "total_ms": 1569,
+   "started": true
+  },
+  {
+   "token_ms": 1943,
+   "open_ms": 184,
+   "started_ms": 0,
+   "total_ms": 2128,
+   "started": true
+  },
+  {
+   "token_ms": 983,
+   "open_ms": 165,
+   "started_ms": 0,
+   "total_ms": 1148,
+   "started": true
+  },
+  {
+   "token_ms": 1311,
+   "open_ms": 171,
+   "started_ms": 0,
+   "total_ms": 1483,
+   "started": true
+  },
+  {
+   "token_ms": 1301,
+   "open_ms": 175,
+   "started_ms": 0,
+   "total_ms": 1476,
+   "started": true
+  },
+  {
+   "token_ms": 1204,
+   "open_ms": 167,
+   "started_ms": 0,
+   "total_ms": 1371,
+   "started": true
+  }
+ ],
+ "note": "cloud container (EU), not a phone on 4G/wifi"
+}

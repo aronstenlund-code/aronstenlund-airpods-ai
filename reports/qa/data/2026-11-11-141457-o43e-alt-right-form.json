@@ -1,0 +1,59 @@
+[
+ {
+  "question": "Vilken organell i växtcellen gör fotosyntes?",
+  "heard": "kloroplast",
+  "quiz_key": {
+   "answer": "Kloroplasten",
+   "alternatives": [
+    "Kloroplast",
+    "Grönkorn",
+    "Mitokondrien",
+    "Cellkärnan",
+    "Ribosomen"
+   ]
+  },
+  "reply": "Rätt. Kloroplasten innehåller klorofyll, som fångar ljusenergi och gör om koldioxid och vatten till druvsocker och syre. Vad heter den gröna färgen i kloroplasten?",
+  "quiz_sound": {
+   "verdict": "alternative",
+   "answer": "Kloroplast"
+  }
+ },
+ {
+  "question": "Vad kallas den process där en cell delar sig och bildar två identiska dotterceller?",
+  "heard": "mitos",
+  "quiz_key": {
+   "answer": "Mitos",
+   "alternatives": [
+    "Meios",
+    "Celldelning",
+    "Mitos och cytokines",
+    "Knoppning",
+    "Befruktning"
+   ]
+  },
+  "reply": "Rätt. Mitos är celldelningen som ger två identiska dotterceller med lika många kromosomer som modercellen, och den används vid tillväxt och när kroppen ersätter skadade celler. Vid mitos kopieras DNA:t först, sedan delas kromosomerna lika mellan de två nya cellerna.",
+  "quiz_sound": {
+   "verdict": "correct",
+   "answer": "Mitos"
+  }
+ },
+ {
+  "question": "Vad kallas den process där en cell delar sig och bildar två identiska dotterceller?",
+  "heard": "celldelning",
+  "quiz_key": {
+   "answer": "Mitos",
+   "alternatives": [
+    "Meios",
+    "Celldelning",
+    "Mitos och cytokines",
+    "Knoppning",
+    "Befruktning"
+   ]
+  },
+  "reply": "Nästan. Det korrekta ordet är mitos, som är den celldelning där en cell blir två identiska dotterceller med samma arvsmassa. Celldelning är det övergripande begreppet, och mitos är den sort som ger kroppsceller. Meios är den andra sorten, och den ger könsceller med hälften så många kromosomer.\n\nVilken sorts celldelning ger könsceller?",
+  "quiz_sound": {
+   "verdict": "alternative",
+   "answer": "Celldelning"
+  }
+ }
+]
