@@ -1,0 +1,510 @@
+{
+ "summary": {
+  "corr": "19/20",
+  "not_corr": "10/15",
+  "new_not": "9/15",
+  "by_model": 25
+ },
+ "rows": [
+  {
+   "group": "corr",
+   "t": "kan du korta ner svaren lite",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "för långa svar, seriöst",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "snabbare, bara det viktigaste",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "bara svaret, inget mer",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "jag orkar inte höra hela föreläsningen",
+   "want": "length:shorter",
+   "got": "length:shorter",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "mer detaljer tack",
+   "want": "length:longer",
+   "got": "length:longer",
+   "by": "code",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "utveckla gärna mer",
+   "want": "length:longer",
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "kan du ta det lite längre nästa gång",
+   "want": "length:longer",
+   "got": "length:longer",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "säg det enklare",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "by": "code",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "för svåra ord",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "by": "code",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "kan du förklara det mer basic",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "jag förstår inte vad du menar",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "by": "code",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "förenkla",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "ge alltid ett exempel",
+   "want": "examples:more",
+   "got": "examples:more",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "fler exempel tack",
+   "want": "examples:more",
+   "got": "examples:more",
+   "by": "code",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "typ ett exempel från verkligheten skulle hjälpa",
+   "want": "examples:more",
+   "got": "examples:more",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "det där stämde inte alls",
+   "want": "accuracy:careful",
+   "got": "accuracy:careful",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "fel svar",
+   "want": "accuracy:careful",
+   "got": "accuracy:careful",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "nej nej, det var helt galet",
+   "want": "accuracy:careful",
+   "got": "accuracy:careful",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "corr",
+   "t": "är du säker? det låter fel",
+   "want": "accuracy:careful",
+   "got": "accuracy:careful",
+   "by": "model",
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "vad är det längsta ordet på svenska",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "kan du ge exempel på ädelgaser",
+   "want": null,
+   "got": "examples:more",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "varför är det fel att plagiera",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "jag förstår inte vad tyska verb är för något, kan du förklara",
+   "want": null,
+   "got": "simplicity:simpler",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "hur långt hoppar en känguru",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "korta ner en text, hur gör man en sammanfattning",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "är det enklare att lära sig spanska eller franska",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "mer eller mindre än hälften",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "fel på bussen idag, vi kom sent",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "är du säker på att du vill veta",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "det stämde inte med vad läraren sa om Gustav Vasa, vem hade rätt",
+   "want": null,
+   "got": "accuracy:careful",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "exempel på en dikt av Karin Boye",
+   "want": null,
+   "got": "examples:more",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "vad betyder detaljer",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "det var ett galet bra svar",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "not_corr",
+   "t": "förenkla bråket tolv sextondelar",
+   "want": null,
+   "got": "simplicity:simpler",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "läraren pratar för mycket",
+   "want": null,
+   "got": "length:shorter",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "boken är för svår",
+   "want": null,
+   "got": "simplicity:simpler",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "mamma säger att jag ska plugga mer",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "filmen var alldeles för lång",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "ge mig ett exempel på en metafor",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "kan du pausa",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "stopp",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "säg det igen",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "vad betyder enklare",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "provet var för svårt",
+   "want": null,
+   "got": "simplicity:simpler",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "min kompis förklarar alltid för krångligt",
+   "want": null,
+   "got": "simplicity:simpler",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "det där stämmer, tack",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "ja, precis så",
+   "want": null,
+   "got": null,
+   "by": null,
+   "status": 200,
+   "ok": true,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "jag fattar inte varför Napoleon förlorade",
+   "want": null,
+   "got": "simplicity:simpler",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  },
+  {
+   "group": "new_not",
+   "t": "det var fel av Sverige att gå med i kriget",
+   "want": null,
+   "got": "accuracy:careful",
+   "by": "model",
+   "status": 200,
+   "ok": false,
+   "err": null
+  }
+ ]
+}

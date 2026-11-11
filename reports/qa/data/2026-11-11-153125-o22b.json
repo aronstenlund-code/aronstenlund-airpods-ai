@@ -1,0 +1,507 @@
+{
+ "corrections": "5/20",
+ "not_corrections": "15/15",
+ "commands": "3/10",
+ "not_commands": "10/10",
+ "fails": [
+  {
+   "t": "kan du korta ner svaren lite",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "för långa svar, seriöst",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "snabbare, bara det viktigaste",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "bara svaret, inget mer",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "jag orkar inte höra hela föreläsningen",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "utveckla gärna mer",
+   "want": "length:longer",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan du ta det lite längre nästa gång",
+   "want": "length:longer",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan du förklara det mer basic",
+   "want": "simplicity:simpler",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "förenkla",
+   "want": "simplicity:simpler",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "ge alltid ett exempel",
+   "want": "examples:more",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "typ ett exempel från verkligheten skulle hjälpa",
+   "want": "examples:more",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "det där stämde inte alls",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "fel svar",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "nej nej, det var helt galet",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "är du säker? det låter fel",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  },
+  {
+   "m": "prov",
+   "t": "tillbaka till vanliga läget",
+   "want": "switch_mode:fragor",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "fragor",
+   "t": "dags att plugga inför provet nu",
+   "want": "switch_mode:prov",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "prov",
+   "t": "pausa en sekund",
+   "want": "pause",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "fragor",
+   "t": "Lumen, håll tyst lite",
+   "want": "pause",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "prov",
+   "t": "sluta lyssna nu",
+   "want": "stop",
+   "got": "pause",
+   "conf": 0.9,
+   "ok": false
+  },
+  {
+   "m": "prov",
+   "t": "jag har anställningsintervju imorgon, öva med mig",
+   "want": "switch_mode:intervju",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "fragor",
+   "t": "stopp",
+   "want": "stop",
+   "got": null,
+   "conf": null,
+   "ok": false
+  }
+ ],
+ "corr": [
+  {
+   "t": "kan du korta ner svaren lite",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "för långa svar, seriöst",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "snabbare, bara det viktigaste",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "bara svaret, inget mer",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "jag orkar inte höra hela föreläsningen",
+   "want": "length:shorter",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "mer detaljer tack",
+   "want": "length:longer",
+   "got": "length:longer",
+   "ok": true
+  },
+  {
+   "t": "utveckla gärna mer",
+   "want": "length:longer",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "kan du ta det lite längre nästa gång",
+   "want": "length:longer",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "säg det enklare",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "ok": true
+  },
+  {
+   "t": "för svåra ord",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "ok": true
+  },
+  {
+   "t": "kan du förklara det mer basic",
+   "want": "simplicity:simpler",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "jag förstår inte vad du menar",
+   "want": "simplicity:simpler",
+   "got": "simplicity:simpler",
+   "ok": true
+  },
+  {
+   "t": "förenkla",
+   "want": "simplicity:simpler",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "ge alltid ett exempel",
+   "want": "examples:more",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "fler exempel tack",
+   "want": "examples:more",
+   "got": "examples:more",
+   "ok": true
+  },
+  {
+   "t": "typ ett exempel från verkligheten skulle hjälpa",
+   "want": "examples:more",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "det där stämde inte alls",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "fel svar",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "nej nej, det var helt galet",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  },
+  {
+   "t": "är du säker? det låter fel",
+   "want": "accuracy:careful",
+   "got": null,
+   "ok": false
+  }
+ ],
+ "notCorr": [
+  {
+   "t": "vad är det längsta ordet på svenska",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "kan du ge exempel på ädelgaser",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "varför är det fel att plagiera",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "jag förstår inte vad tyska verb är för något, kan du förklara",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "hur långt hoppar en känguru",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "korta ner en text, hur gör man en sammanfattning",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "är det enklare att lära sig spanska eller franska",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "mer eller mindre än hälften",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "fel på bussen idag, vi kom sent",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "är du säker på att du vill veta",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "det stämde inte med vad läraren sa om Gustav Vasa, vem hade rätt",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "exempel på en dikt av Karin Boye",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "vad betyder detaljer",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "det var ett galet bra svar",
+   "got": null,
+   "ok": true
+  },
+  {
+   "t": "förenkla bråket tolv sextondelar",
+   "got": null,
+   "ok": true
+  }
+ ],
+ "cmd": [
+  {
+   "m": "fragor",
+   "t": "Lumen, provläge",
+   "want": "switch_mode:prov",
+   "got": "switch_mode:prov",
+   "conf": 0.7,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "tillbaka till vanliga läget",
+   "want": "switch_mode:fragor",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "fragor",
+   "t": "dags att plugga inför provet nu",
+   "want": "switch_mode:prov",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "prov",
+   "t": "pausa en sekund",
+   "want": "pause",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "fragor",
+   "t": "Lumen, håll tyst lite",
+   "want": "pause",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "prov",
+   "t": "sluta lyssna nu",
+   "want": "stop",
+   "got": "pause",
+   "conf": 0.9,
+   "ok": false
+  },
+  {
+   "m": "fragor",
+   "t": "fortsätt lyssna",
+   "want": "resume",
+   "got": "resume",
+   "conf": 0.85,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "jag har anställningsintervju imorgon, öva med mig",
+   "want": "switch_mode:intervju",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "fragor",
+   "t": "stopp",
+   "want": "stop",
+   "got": null,
+   "conf": null,
+   "ok": false
+  },
+  {
+   "m": "socialt",
+   "t": "Lumen, stäng av dig",
+   "want": "stop",
+   "got": "stop",
+   "conf": 0.85,
+   "ok": true
+  }
+ ],
+ "notCmd": [
+  {
+   "m": "fragor",
+   "t": "vad betyder paus på engelska",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "när stängde Berlinmuren gränsen",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "vad är en intervjustudie",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "provläget i matte, vad kommer på provet",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "fortsätt med samma ämne, vad är cellandning",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "stopp i blodet, vad heter det",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "varför håller man tyst en minut vid sorg",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "prov",
+   "t": "läraren sa att vi ska sluta lyssna på musik när vi pluggar",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "socialt",
+   "t": "hon stängde av telefonen",
+   "got": null,
+   "conf": null,
+   "ok": true
+  },
+  {
+   "m": "fragor",
+   "t": "hur länge ska man pausa mellan träningspassen",
+   "got": null,
+   "conf": null,
+   "ok": true
+  }
+ ]
+}

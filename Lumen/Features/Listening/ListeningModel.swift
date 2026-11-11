@@ -1295,11 +1295,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         questionTimer = Task { [weak self] in
             let wait = due.timeIntervalSinceNow
             if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
-            guard let self, !Task.isCancelled else { return }
-            // A8: Lumen is speaking: the question waits for the end of the answer (speechFinished), never dropped.
-            if self.controller.playback.isSpeaking || self.speaker.hasPendingSpeech { return }
-            if case .answering = self.answers.status { return } // asked when this answer is over
-            if !self.activation.fireDue(now: Date()) { self.scheduleQuestionTimer() } // the cooldown moved it
+            // A8: Lumen is speaking: the question waits for the end of the answer, never dropped. A68 (Toby T13
+            // finding 2): it looks again every 0.5 s instead of trusting that something asks it later; a held half
+            // question waited 21 s for Scribe's session to end after the answer fetched ahead for it was dropped.
+            while true {
+                guard let model = self, !Task.isCancelled else { return }
+                if !model.lumenIsBusyAnswering {
+                    if !model.activation.fireDue(now: Date()) { model.scheduleQuestionTimer() } // the cooldown moved it
+                    return
+                }
+                try? await Task.sleep(for: .milliseconds(500))
+            }
         }
     }
 
@@ -1592,7 +1598,36 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             say(cached.text)
             return
         }
+        if case .answering = answers.status, conversation.answers.last != nil {
+            // A67 (Toby T13 finding 1): the developed answer is still streaming in the same call (two_level). A new
+            // "utveckla" would queue behind it (7–13 s); it is said the moment `done.more` arrives instead.
+            moreWantedWhileStreaming = Date()
+            controller.log("More: waiting for the developed answer still streaming (A67)")
+            return
+        }
         instruct(MoreOffer.instruction)
+    }
+
+    /// A67: "ja" came while the short answer's call was still streaming its developed part.
+    @ObservationIgnored private var moreWantedWhileStreaming: Date?
+
+    /// A67: the call ended; say its developed answer, or ask for one when it had none.
+    private func sayMoreIfWanted() {
+        guard let wanted = moreWantedWhileStreaming else { return }
+        moreWantedWhileStreaming = nil
+        guard Date().timeIntervalSince(wanted) < 60 else { return }
+        if let cached = developedAnswer, let last = conversation.answers.last, last.id == cached.answerID {
+            developedAnswer = nil
+            controller.log("More: the developed answer said as soon as it came (A67)")
+            let turn = AnswerTurn(question: last.question, answer: cached.text, source: "cloud", isOwnQuestion: last.isOwnQuestion)
+            conversation.append(turn)
+            lastAnswerAt = Date()
+            history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
+                                        answer: turn.answer, summary: nil, mode: mode.rawValue, persona: currentPersona))
+            say(cached.text)
+        } else {
+            instruct(MoreOffer.instruction)
+        }
     }
 
     /// A17: the voice profile says someone else spoke (nil without a profile or when unknown).
@@ -2152,6 +2187,21 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         return true
     }
+
+    /// A68: Lumen is saying something, or an answer streams that still gives it things to say (a stream that only
+    /// sends the developed part, `more_delta`, for `streamQuiet` is not in the way of a new question).
+    private var lumenIsBusyAnswering: Bool {
+        if controller.playback.isSpeaking || speaker.hasPendingSpeech { return true }
+        if case .answering = answers.status {
+            // Nothing said yet for this call: its answer is coming, the question waits for it.
+            guard let spoke = lastSpokeTextAt, let asked = answerRequestedAt, spoke >= asked else { return true }
+            return Date().timeIntervalSince(spoke) < Self.streamQuiet
+        }
+        return false
+    }
+
+    /// A68: when the current `/answer` call was sent.
+    @ObservationIgnored private var answerRequestedAt: Date?
 
     /// A63: when Lumen was last given text to say.
     @ObservationIgnored private var lastSpokeTextAt: Date?
@@ -3218,6 +3268,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         lastSent = (request, persona) // A48: a tool call belongs to this request
         currentTurnID = controller.turns.begin(fragment: request.query, mode: mode.rawValue, trigger: request.trigger.rawValue,
                                                transcript: sent.transcript)
+        answerRequestedAt = Date() // A68
         answers.answer(request, context: sent, persona: persona)
     }
 
@@ -3370,6 +3421,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let sent = self.context(for: request)
         aheadTurnID = controller.turns.begin(fragment: request.query, mode: mode.rawValue, trigger: request.trigger.rawValue,
                                              transcript: sent.transcript, ahead: true)
+        answerRequestedAt = Date() // A68
         answers.answer(request, context: sent, persona: persona)
     }
 
@@ -3591,6 +3643,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             } else {
                 developedAnswer = nil
             }
+            sayMoreIfWanted() // A67
             if let tool = done?.serverTool { controller.log("Server tool: \(tool.name) \(tool.status) (A59, K36)") }
             if let saved = done?.savedAnswer {
                 conversation.markSaved(saved.id, text: saved.text, on: turn.id) // A53: "Ditt svar" on Lyssnar

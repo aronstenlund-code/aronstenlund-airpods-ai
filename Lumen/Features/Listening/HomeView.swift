@@ -257,7 +257,7 @@ struct HomeView: View {
                 layout {
                     HStack(spacing: 6) {
                         Image(systemName: model.selectedMode.symbol)
-                            .font(.system(size: 15, weight: .regular))
+                            .font(LumenFont.text(15, relativeTo: .subheadline)) // Ke39 S1: follows the text size
                             .foregroundStyle(LumenColor.muted)
                         Text(model.selectedMode.shortName)
                             .font(LumenFont.text(16, .semibold))

@@ -1,4 +1,4 @@
-# Överlämning: Kelly, session 2026-11-11 förmiddag (Ke29–Ke33)
+# Överlämning: Kelly, session 2026-11-11 (Ke29–Ke39)
 
 Det här står inte i rapporterna (`reports/*kelly*`).
 
@@ -17,13 +17,14 @@ Det här står inte i rapporterna (`reports/*kelly*`).
 - Angela läser mina underlag inom minuter (S2 rättades 537ea48). Kolla `git log 0d2346e..HEAD -- Lumen` innan fynd.
 
 ## Öppna trådar
-- **Väckningsordet:** sajten heter Earmind men säger ”Lumen”. Aron avgör; då ändras citaten på sajten och i skisserna.
-- **"Kommer snart"** på sajtens Vad kan Earmind? (Kalender, Timer och påminnelser, Spotify, Sömn): ta bort per rad
-  när Aron provat på telefon (`site/index.html`, `class="soon"`).
-- **Röstningen (A54):** granska när den är byggd mot `docs/design/logo/rostning/vektor/README.md`. Vinnaren ska bli
-  AppIcon och ersätta SYSTEM.md avsnitt 5.
-- **A52 och A53** byggs efter `start-vadkan.md` och `mina-svar.md`; granska skärmbilderna.
-- **"Ljud sparas inte"** (Ke28 F2, Ke33 G3) måste lösas före A53.
+- **G3 "Ljud sparas inte" är osant** (Sov sparar klipp i 30 dagar). Ordagranna texter i Ke36-rapporten. Ingen punkt
+  hos Angela eller Kevin ännu; Deangelo måste lägga den. Högsta prio före nästa testare.
+- Små fynd utan punkt: K1 "Dela historik" grå (Ke38), S1 lägesikonen skalar inte, S2 Lyssnars underrubrik kapas (Ke39).
+- **Väckningsordet:** appen och sajten heter Earmind men säger ”Lumen”. Aron avgör.
+- **"Kommer snart"** på sajten (Kalender, Timer och påminnelser, Spotify, Sömn): ta bort per rad när Aron provat på
+  telefon (`site/index.html`, `class="soon"`). Spotify och Ring finns nu i appen (A58, A59) men är inte provade.
+- **Loggan:** röstningen (A54) är byggd och granskad. Vinnaren blir AppIcon och ersätter SYSTEM.md avsnitt 5.
+- Granskat och godkänt i dag: A50, A52, A53, A54, A55–A61, A64 (största text) och Tobys T8c/T13 (Ke35 fungerar).
 - Domänen earmind.app: canonical, og:url, og:image och sitemap byts när den finns.
-- Elias vita hörlur (Ke28 F1) syns fortfarande på delningsbilden `og-earmind.png`.
+- Elias vita hörlur (Ke28 F1) syns på delningsbilden `og-earmind.png`.
 - Safari och iPhone är fortfarande inte provade för sidan.

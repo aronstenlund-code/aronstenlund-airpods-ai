@@ -16,7 +16,7 @@ Klart i dag: O38 (K38), O16 del 2, O39 (K37), O13 del 2 (K17), O34, O40 (K39), O
 - **Scribe läser upp keyterms i sorl** (O43). Räkna listuppläsningar (3 eller fler keyterms med kommatecken) separat, annars blåser de upp "hörde rätt".
 
 ## Öppna trådar
-- **O43d omtest** när Kevin eller Angela hanterar listuppläsningen: `O6_LIB=… python -I scripts/qa/o43d_false_right.py --cond silence,wrong`. Krav: 0/20 falskt Rätt.
+- **O43/O45 klara:** falskt Rätt 0/20 efter d8a24d3. Kör om `o43d_false_right.py` och `o43_short_answers.py --a62 --quiz-key` efter ändringar i `soundalike.ts`, `gradeReply` eller A62 (cirka 1,2 USD, 0 tecken om cachen finns).
 - **Aron:** lägg in `SUPABASE_SERVICE_ROLE_KEY` (K38 godkänd). Första veckan med kandidater: testa hela kedjan (tabell → Godkänn → approve → commit).
 - **Aron-beslut (O16/O34):** "ljud sparas inte" i appen och i självsvaren är inte sant för ElevenLabs Scribe utan enterprise-nivå.
 - **Rättat och omtestat (O42/O44):** K17 `planDays` 19/19, självsvaren 11/11, länkar 9/10, K36 29/29. Kör om `o13_del2_k17_offline.mjs`, `o41_k36_live.py` och `o34b_k19_links.py` efter nästa ändring i de delarna.

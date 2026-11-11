@@ -22,5 +22,5 @@ I alla storlekar gäller:
 
 ## Testresultat
 - **iOS-bygge och enhetstester:** CI 43022112299 (7ebed2e) är **grön**: device-bygget, alla enhetstester och `Lumen-unsigned.ipa`.
-- **Ej verifierat:** Tobys tur med största text och SE (T11) behöver köras igen. Kelly granskar bilderna. Det finns
+- **Simulatorn (Toby T13, 16:25):** alla fyra T11-fynd är rättade vid största text, med 0 missar i Pro ljust och mörkt. Det är inte verifierat på enhet. Kelly granskar bilderna. Det finns
   inga enhetstester för layouten.
