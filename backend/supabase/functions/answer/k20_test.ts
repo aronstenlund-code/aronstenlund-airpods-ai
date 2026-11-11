@@ -18,12 +18,12 @@ Deno.test("K20 kings' numbers are ordinals, also as digits or cardinal words", (
   assertEquals(spoken("Karl är 12 år."), "Karl är tolv år.");
 });
 
-Deno.test("K20 questions about Lumen: honest, exactly as 'Om appen'", () => {
+Deno.test("K20 questions about Lumen: honest (O16: ElevenLabs may keep the audio)", () => {
   assert(selfAnswer("Lumen är du en robot")!.includes("AI-assistent"));
   assert(selfAnswer("lyssnar du hela tiden?")!.includes("lyssnar bara när du har startat den"));
-  const save = selfAnswer("sparar du det jag säger")!;
-  assert(save.includes("Ljud sparas inte") && save.includes("Lumens server till en AI-modell") && save.includes("på den här telefonen"));
-  assert(selfAnswer("spelar du in det här")!.includes("ljud sparas inte"));
+  const save = selfAnswer("sparar du mina frågor")!;
+  assert(save.includes("Lumen sparar inget ljud") && save.includes("Lumens server till en AI-modell") && save.includes("på den här telefonen"));
+  assert(selfAnswer("spelar du in det här")!.includes("Lumen sparar inget ljud"));
   for (const t of ["vad är en robot", "lyssnar du på musik", "sparar du pengar", "hur fungerar en AI"]) assertEquals(selfAnswer(t), null, t);
 });
 

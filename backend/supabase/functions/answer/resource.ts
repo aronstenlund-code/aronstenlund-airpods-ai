@@ -35,6 +35,25 @@ export function isResourceRequest(fragment: string): boolean {
     (ASK_CONTENT.test(f) && !/(?<![\p{L}])(?:såg|sett|tittade på|gjorde|gjort|läste)(?![\p{L}])/iu.test(f));
 }
 
+/** K-stående (Oscar O34 grupp 14, Auto): in Auto (hands-free, it also hears other people) only a request that STARTS the
+ *  utterance, addressed to Lumen, goes to the link search ("kan du hitta en film om …", "någon youtube om …",
+ *  "jag vill se en film om …"). Auto still never searches the web for answers (D46); this is only the K19 link. */
+export function isDirectResourceRequest(fragment: string): boolean {
+  const f = (fragment ?? "").trim().replace(/^(?:(?:hej|okej|ok)\s+)?lumen[,!.]?\s*/iu, "");
+  return isResourceRequest(f) &&
+    /^(?:kan du|kan jag få|har du|finns det|visa|hitta|länka|ge mig|skicka|rekommendera|tipsa|jag vill (?:se|titta på|läsa)|var kan jag|någon|nån|nåt|något|en (?:film|video))(?![\p{L}])/iu.test(f);
+}
+
+/** K-stående (O34): a URL as the search gave it, for comparing ("https://www.x.se/a/" = "https://x.se/a"). */
+export function sameUrl(a: string, b: string): boolean {
+  const n = (u: string) => u.trim().toLowerCase().replace(/^https?:\/\/(?:www\.)?/, "").replace(/[#?].*$/, "").replace(/\/+$/, "");
+  return n(a) === n(b);
+}
+
+/** Sites that answer automated checks with 403/429 (bot protection) although the page is there (UR Play, 2026-11-11):
+ *  such a status counts only for a URL the web search itself returned, never for a URL the model wrote alone. */
+export const BLOCKED_CHECK = new Set([401, 403, 429, 503]);
+
 /** The topic: the words after "om"/"på" in the request, else the last question studied. */
 export function resourceTopic(fragment: string, lastQ?: string): string {
   const m = /(?:om|på|kring|angående) (.{3,80}?)\s*[?.!]?$/iu.exec(fragment.trim());

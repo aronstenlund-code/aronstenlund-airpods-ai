@@ -319,6 +319,16 @@ export class AnthropicProvider implements LLMProvider {
           }
           continue;
         }
+        if (req.wantSources && ev.type === "content_block_start") {
+          const cb = ev.content_block as { type?: string; content?: unknown } | undefined;
+          if (cb?.type === "web_search_tool_result" && Array.isArray(cb.content)) {
+            for (const r of cb.content as { type?: string; url?: unknown; title?: unknown }[]) {
+              if (r?.type === "web_search_result" && typeof r.url === "string") {
+                yield { type: "source", url: r.url, title: typeof r.title === "string" ? r.title : "" };
+              }
+            }
+          }
+        }
         const chunk = mapAnthropicEvent(ev);
         const out = gate ? gate.filter(ev, chunk) : chunk ? [chunk] : [];
         for (const c of out) {

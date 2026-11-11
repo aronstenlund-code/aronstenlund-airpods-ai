@@ -15,7 +15,10 @@ import {
   aboutTopic,
   checkLink,
   domainOf,
+  isDirectResourceRequest,
   isResourceRequest,
+  BLOCKED_CHECK,
+  sameUrl,
   NO_RESOURCE,
   parseResource,
   RESOURCE_DOMAINS,
@@ -622,7 +625,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
 
       // K19: "har du en film om fotosyntes?": one checked link from Swedish learning resources, and one sentence
-      if (!demo && !personaPlan(body) && body.mode !== "auto" && body.mode !== "interview_prep" && isResourceRequest(body.fragment)) {
+      if (
+        !demo && !personaPlan(body) && body.mode !== "interview_prep" &&
+        (body.mode === "auto" ? isDirectResourceRequest(body.fragment) : isResourceRequest(body.fragment))
+      ) {
         const wl = await enforceLimits(deps.rateLimiter, "answer-web", user.id, cfg.webLimits ?? DEFAULT_CONFIG.webLimits!);
         const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
         if (!rl.allowed) {
@@ -632,6 +638,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         const grade = /Årskurs:\s*([^.]+)/u.exec(body.personaSetup)?.[1]?.trim();
         let text = "";
         let inTok = 0, outTok = 0, searches = 0;
+        const sources: { url: string; title: string }[] = [];
         if (wl.allowed) {
           try {
             for await (const c of provider.stream({
@@ -641,9 +648,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               cacheSystem: true,
               tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 2, allowed_domains: RESOURCE_DOMAINS }],
               timeoutMs: 25_000,
+              wantSources: true,
               signal: req.signal,
             })) {
               if (c.type === "text") text += c.text;
+              else if (c.type === "source") sources.push({ url: c.url, title: c.title });
               else if (c.type === "usage") {
                 inTok = c.inputTokens ?? inTok;
                 outTok = c.outputTokens ?? outTok;
@@ -655,16 +664,23 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           }
         }
         // the link is checked in code: on the list, answers 200, about the topic; otherwise no link is passed on
-        const found = parseResource(text);
-        let resource = found && domainOf(found.url) ? resourceOf(found.url, found.title) : null;
+        // O34 (franska revolutionen, derivata: "hittade ingen"): UR Play answers automated checks with 403 although
+        // the page is there, and the model sometimes writes INGEN LÄNK although the search found a page on the list.
+        // A URL the search returned may pass a blocked check; a URL only the model wrote must answer 200.
+        const found0 = parseResource(text);
+        const listed = sources.filter((s) => domainOf(s.url) && aboutTopic(topic, s.title, "", s.url));
+        const found = found0 && domainOf(found0.url) ? found0 : listed[0] ? { url: listed[0].url, title: listed[0].title } : null;
+        let resource = found ? resourceOf(found.url, found.title) : null;
         let check: { ok: boolean; status: number; pageTitle: string } | null = null;
         if (resource) {
+          const fromSearch = sources.some((s) => sameUrl(s.url, resource!.url));
           check = await checkLink(resource.url, deps.fetchImpl ?? fetch);
-          if (!check.ok || !aboutTopic(topic, resource.title, check.pageTitle, resource.url)) resource = null;
+          const reachable = check.ok || (fromSearch && BLOCKED_CHECK.has(check.status));
+          if (!reachable || !aboutTopic(topic, resource.title, check.pageTitle, resource.url)) resource = null;
         }
         const said = text.replace(/LÄNK:[^\n]*\n?/iu, "").trim();
         const spoken = numbersToSpeech(resource ? spokenFor(resource, topic, said) : NO_RESOURCE);
-        console.log(JSON.stringify({ event: "resource", found: !!found, ok: !!resource, status: check?.status ?? null }));
+        console.log(JSON.stringify({ event: "resource", found: !!found0, sources: sources.length, listed: listed.length, ok: !!resource, status: check?.status ?? null }));
         const totalMs = Math.round(now() - t0);
         const cost = ((inTok * cfg.priceInPerMTok) + outTok * cfg.priceOutPerMTok) / 1e6 + searches * WEB_SEARCH_USD;
         try {
@@ -1584,6 +1600,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               post.addCited(chunk.cited);
               return;
             }
+            if (chunk.type === "source") return; // only the K19 link search asks for sources
             if (chunk.type === "tool_use" && isSpotifyTool(chunk.name)) {
               const input = spotifyOn ? validateSpotifyInput(chunk.name, chunk.input) : null;
               if (!input || toolPending || serverTool) {

@@ -121,7 +121,7 @@ function sameWord(a: string, b: string): boolean {
 const FOLLOW_UP = /(?:^|\s)(?:mer|mera|djupare|utförligare|noggrannare|igen|också|annars|sen|sedan|efter|före|innan)(?:\s|$)/u;
 
 /** Kinds that can be the same question in other words ("förklara fotosyntes" = "vad är fotosyntes"). */
-const COMPATIBLE = new Set(["what|explain", "why|explain", "how|explain", "list|what"]);
+const COMPATIBLE = new Set(["what|explain", "why|explain", "how|explain", "list|what", "how|what"]); // O39: "hur funkar X" = "vad är X"
 
 /** Speech recognition splits compounds ("foto syntes", "cell andning"): two heard words that together are a saved
  *  content word count as that word. */

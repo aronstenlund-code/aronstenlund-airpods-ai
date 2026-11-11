@@ -113,3 +113,14 @@ Deno.test("K37 no saved answer in the demo, in Socialt/Rizz, for the student's o
     assertEquals(ev.find((e) => e.event === "done")?.data.saved_answer, undefined, JSON.stringify(extra));
   }
 });
+
+Deno.test("K37 Oscar O39 hold-out (written before reading the code, never used to tune): no sure false hit", () => {
+  const o = JSON.parse(Deno.readTextFileSync(new URL("../../../../scripts/qa/o39_k37_cases.json", import.meta.url))) as {
+    saved: Record<string, SavedAnswer[]>;
+    cases: { id: string; exam: string; ask: string; expect: string | null }[];
+  };
+  for (const c of o.cases) {
+    const r = rankSaved(c.ask, o.saved[c.exam] ?? [], true);
+    if (r[0]?.sure) assertEquals(r[0].item.id, c.expect, `${c.id}: "${c.ask}" -> ${r[0].item.id}`);
+  }
+});

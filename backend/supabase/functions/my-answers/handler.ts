@@ -55,7 +55,7 @@ export interface MyAnswersDeps {
 export const SYSTEM_PROMPT_SUGGEST =
   `A Swedish student is writing their own answers for an upcoming exam ("Mina svar"). You get <context> (subject, grade, exam, course goals and subject terms, all optional) and <question> (typed by the student, may have spelling mistakes). Return ONLY a JSON object {"q": "...", "answer": "..."}:
 - "q": the question with spelling and capitals fixed, otherwise word for word (do not rephrase it).
-- "answer": exactly how to answer it on the exam to reach A level for that grade, in Swedish: the key facts, the course's own subject terms, how they connect, and one example or reason when it helps. Two to five short sentences that sound natural when read aloud in an earbud. For a calculation: the method in short steps and the final answer with its unit, numbers as digits.
+- "answer": exactly how to answer it on the exam to reach A level for that grade, in Swedish: the key facts, the course's own subject terms, how they connect, and one example or reason when it helps. Two to four short sentences, at most 60 words, that sound natural when read aloud in an earbud: plain words only, no arrows, plus signs, equals signs, parentheses or formulas in symbols (write "koldioxid och vatten blir glukos och syre", not "CO2 + H2O → glukos"). For a calculation: the method in short steps and the final answer with its unit, numbers as digits.
 - Be correct above all. When the question cannot be answered without material you do not have (a figure, a text, a teacher's definition), say so in one sentence in "answer".
 No markdown, no other text.`;
 
@@ -68,6 +68,12 @@ export const SYSTEM_PROMPT_COMPRESS =
 - "answer": the recording compressed to one exam answer in Swedish: the key facts, terms, steps and examples that are said, in two to six short sentences that sound natural when read aloud. Fix obvious misheard words from the context. Use ONLY what is said in the transcript: never add a fact, number, name or example that is not there, and leave out greetings, repetitions and side talk.
 - When the transcript contains no answer to anything (silence, noise, only side talk), "answer" is "" and "q" is "".
 No markdown, no other text.`;
+
+/** O39: an answer that is read aloud has no arrows, plus signs or parentheses (the voice reads them out). */
+export function speakable(s: string): string {
+  return s.replace(/\s*(?:→|->|=>)\s*/gu, " blir ").replace(/(?<=\p{L})\s*\+\s*(?=\p{L})/gu, " och ")
+    .replace(/\s*\(([^()]{1,80})\)/gu, ", $1,").replace(/,\s*([.,!?])/gu, "$1").replace(/\s{2,}/g, " ").trim();
+}
 
 function clean(s: unknown, max: number): string {
   if (typeof s !== "string") return "";
@@ -227,7 +233,7 @@ export function createMyAnswersHandler(deps: MyAnswersDeps) {
         const okQ = onlySpelling(q, q2), okA = onlySpelling(a, a2);
         return json({ q: okQ ? q2 : q, a: okA ? a2 : a, changed: { q: okQ && q2 !== q, a: okA && a2 !== a }, usage });
       }
-      const outQ = clean(j.q, L.q), outA = clean(j.answer, L.a);
+      const outQ = clean(j.q, L.q), outA = speakable(clean(j.answer, L.a));
       if (action === "suggest") {
         if (!outA) throw new HttpError(502, "no_answer", "Inget förslag just nu. Försök igen.");
         // the question stays the student's own unless the fix is only spelling

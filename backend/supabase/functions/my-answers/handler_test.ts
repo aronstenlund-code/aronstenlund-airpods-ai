@@ -69,3 +69,10 @@ Deno.test("K37 compress: transcript in, one answer out; the student's own questi
     assertEquals((await setup("{}").h(post(bad))).status, 400, JSON.stringify(bad));
   }
 });
+
+Deno.test("K37 O39: a suggested answer is speakable (no arrows, plus signs, parentheses)", async () => {
+  const { speakable } = await import("./handler.ts");
+  assertEquals(speakable("Koldioxid + vatten → glukos (druvsocker) och syre."), "Koldioxid och vatten blir glukos, druvsocker, och syre.");
+  assertEquals(speakable("Det sker i kloroplasterna (i bladen)."), "Det sker i kloroplasterna, i bladen.");
+  assertEquals(speakable("3 + 4 = 7"), "3 + 4 = 7", "a sum between numbers is left");
+});
