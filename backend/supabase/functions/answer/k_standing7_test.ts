@@ -24,3 +24,9 @@ Deno.test("Standing 7: 'just nu' reads naturally", () => {
   assertEquals(say(spokenComputed(zoneClock("vad är klockan i tokyo", now)!)!),
     "Just nu är klockan elva i Sverige och nitton i Tokyo. Tokyo är åtta timmar före Sverige.");
 });
+
+Deno.test("Standing 7: '(M)' after a name is the party; 'Also,' is dropped; other parentheses stay", () => {
+  assertEquals(beforeNumbers("Sveriges statsminister är Ulf Kristersson (M)."), "Sveriges statsminister är Ulf Kristersson, Moderaterna.");
+  assertEquals(beforeNumbers("Publicerad idag. Also, SMHI har utfärdat gula varningar."), "Publicerad idag. SMHI har utfärdat gula varningar.");
+  assertEquals(beforeNumbers("Storleken (M) på tröjan"), "Storleken (M) på tröjan");
+});
