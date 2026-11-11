@@ -1,0 +1,53 @@
+{
+ "_doc": "Oscar O51 (Deangelo 19:05, omtest K42 efter Arons telefontest 18:58). Fallen skrevs 2026-11-11 19:30, INNAN Kevins K42-kod och testdata fanns, och är oberoende av dem. Standardläge = mode auto (riktat med 'Lumen, ...' där det behövs). Grupper: name (svaret ska innehålla 'Earmind', D128), facts (svaret ska innehålla expect, 'Vättern som största sjö' tas inte med eftersom Kevin får det fallet), length (antal ord/meningar inom ±20 %), complaint (inga löften om ändring, kort och ärligt), oneword (direkt efter ett svar i Standardläge: 'none' = ingen utveckling/inget kommando, 'more' = utvecklat svar).",
+ "name": [
+  "Lumen, vad heter du", "Lumen, har du något namn", "Lumen, vem är du", "Lumen, vad ska jag kalla dig", "Lumen, vad är ditt namn",
+  "Lumen, heter du Siri", "Lumen, presentera dig", "Lumen, vem pratar jag med", "Lumen, what's your name", "Lumen, vad heter appen"
+ ],
+ "facts": [
+  ["Lumen, vilken är Sveriges näst största sjö", "Vättern"],
+  ["Lumen, vilken är Sveriges största ö", "Gotland"],
+  ["Lumen, vilket är Sveriges högsta berg", "Kebnekaise"],
+  ["Lumen, vilket är Sveriges nordligaste landskap", "Lappland"],
+  ["Lumen, vilket är Sveriges sydligaste landskap", "Skåne"],
+  ["Lumen, vad är Norges huvudstad", "Oslo"],
+  ["Lumen, vad är Finlands huvudstad", "Helsingfors"],
+  ["Lumen, vad är Islands huvudstad", "Reykjavik"],
+  ["Lumen, vad är Estlands huvudstad", "Tallinn"],
+  ["Lumen, vad är Lettlands huvudstad", "Riga"],
+  ["Lumen, vilket år gick Sverige med i EU", "1995|nittonhundranittiofem"],
+  ["Lumen, vilket år bytte Sverige till högertrafik", "1967|nittonhundrasextiosju"],
+  ["Lumen, vilket år dog Gustav II Adolf", "1632|sextonhundratrettiotvå"],
+  ["Lumen, vilket år hade Stockholm sommar-OS första gången", "1912|nittonhundratolv"],
+  ["Lumen, vilken är Sveriges näst största stad", "Göteborg"],
+  ["Lumen, hur många landskap har Sverige", "25|tjugofem"],
+  ["Lumen, vem var Sveriges första kvinnliga statsminister", "Magdalena Andersson"],
+  ["Lumen, hur många ledamöter har riksdagen", "349|trehundrafyrtionio"],
+  ["Lumen, vilket år blev Finland självständigt", "1917|nittonhundrasjutton"],
+  ["Lumen, vilken är Sveriges djupaste sjö", "Hornavan"]
+ ],
+ "length": [
+  ["Lumen, förklara fotosyntes med hundra ord", {"words": 100}],
+  ["Lumen, berätta om vulkaner med ungefär sjuttio ord", {"words": 70}],
+  ["Lumen, ge mig tvåhundra ord om franska revolutionen", {"words": 200}],
+  ["Lumen, förklara demokrati med max tjugo ord", {"max_words": 20}],
+  ["Lumen, vad är DNA, svara på en mening", {"sentences": 1}],
+  ["Lumen, säg det med tre meningar: varför har vi årstider", {"sentences": 3}],
+  ["Lumen, svara med ett ord: vad heter Norges huvudstad", {"max_words": 2}],
+  ["Lumen, förklara utförligt vad som orsakade första världskriget", {"min_words": 80}],
+  ["Lumen, kort: vad är en atom", {"max_words": 30}],
+  ["Lumen, förklara Pythagoras sats med femtio ord", {"words": 50}]
+ ],
+ "complaint": [
+  "Lumen, varför upprepar du dig", "Lumen, varför svarar du inte när jag pratar med dig", "Lumen, du hörde fel igen",
+  "Lumen, varför sa du samma sak två gånger", "Lumen, du är så dålig", "Lumen, varför tar det så lång tid",
+  "Lumen, appen är buggig", "Lumen, du missförstod mig", "Lumen, sluta svara på allt jag säger", "Lumen, varför svarade du på engelska"
+ ],
+ "complaint_promise_patterns": ["jag ska inte", "jag lovar", "ska inte hända igen", "jag ska bli bättre", "från och med nu", "nästa gång ska jag", "jag ska se till", "jag ska försöka", "det ska jag", "i fortsättningen"],
+ "oneword": {
+  "_doc": "Skickas i Standardläge (mode auto) direkt efter ett svar om fotosyntes (recent_qa), utan 'Lumen'. none = ska inte ge ett utvecklat svar eller kommando; more = ska ge det utvecklade svaret.",
+  "previous": {"q": "vad är fotosyntes", "a": "Fotosyntes är när växter gör socker av koldioxid och vatten med hjälp av solljus, och syre bildas."},
+  "none": ["jaha", "ja", "aha", "okej", "mm", "jasså", "aha okej", "nähä", "jaha ja", "okej tack", "jaså", "aha ja", "jaha okej", "mhm", "jo", "jajamän", "ah", "okej okej", "jaha, coolt", "ja precis"],
+  "more": ["utveckla", "utveckla det", "kan du utveckla", "berätta mer", "säg mer", "utveckla gärna", "mer detaljer", "fortsätt", "förklara mer", "ja, utveckla"]
+ }
+}
