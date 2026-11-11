@@ -1,0 +1,763 @@
+{
+ "summary": {
+  "hits": "29/29",
+  "false_hits": "0/36",
+  "wrong_id": 0,
+  "via_code": 23,
+  "via_check": 6,
+  "ms_saved_median": 684
+ },
+ "rows": [
+  {
+   "t": "vad är fotosyntes",
+   "expect": "bio1",
+   "kind": "para",
+   "saved": "bio1",
+   "via": "code",
+   "first": "Fotosyntes är när växter använder solljus, vatten och koldioxid för att bilda glukos och syre. Det sker i kloroplasterna.",
+   "ms": 693,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "Lumen, vad är fotosyntesen?",
+   "expect": "bio1",
+   "kind": "para",
+   "saved": "bio1",
+   "via": "code",
+   "first": "Fotosyntes är när växter använder solljus, vatten och koldioxid för att bilda glukos och syre. Det sker i kloroplasterna.",
+   "ms": 466,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "kan du förklara vad fotosyntes är",
+   "expect": "bio1",
+   "kind": "para",
+   "saved": "bio1",
+   "via": "code",
+   "first": "Fotosyntes är när växter använder solljus, vatten och koldioxid för att bilda glukos och syre. Det sker i kloroplasterna.",
+   "ms": 658,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad betyder fotosyntes",
+   "expect": "bio1",
+   "kind": "para",
+   "saved": "bio1",
+   "via": "code",
+   "first": "Fotosyntes är när växter använder solljus, vatten och koldioxid för att bilda glukos och syre. Det sker i kloroplasterna.",
+   "ms": 684,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är foto syntes",
+   "expect": "bio1",
+   "kind": "stt",
+   "saved": "bio1",
+   "via": "code",
+   "first": "Fotosyntes är när växter använder solljus, vatten och koldioxid för att bilda glukos och syre. Det sker i kloroplasterna.",
+   "ms": 735,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är fotosyntesis",
+   "expect": "bio1",
+   "kind": "stt",
+   "saved": "bio1",
+   "via": "code",
+   "first": "Fotosyntes är när växter använder solljus, vatten och koldioxid för att bilda glukos och syre. Det sker i kloroplasterna.",
+   "ms": 465,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "fotosyntes vad är det",
+   "expect": "bio1",
+   "kind": "para",
+   "saved": "bio1",
+   "via": "code",
+   "first": "Fotosyntes är när växter använder solljus, vatten och koldioxid för att bilda glukos och syre. Det sker i kloroplasterna.",
+   "ms": 444,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "varför behöver växterna ljus",
+   "expect": "bio2",
+   "kind": "para",
+   "saved": "bio2",
+   "via": "code",
+   "first": "Ljuset ger energin som krävs för att bygga glukos av koldioxid och vatten i fotosyntesen.",
+   "ms": 704,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "varför behöver en växt ljus",
+   "expect": "bio2",
+   "kind": "para",
+   "saved": "bio2",
+   "via": "code",
+   "first": "Ljuset ger energin som krävs för att bygga glukos av koldioxid och vatten i fotosyntesen.",
+   "ms": 700,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad behöver växter ljus till",
+   "expect": "bio2",
+   "kind": "para",
+   "saved": "bio2",
+   "via": "code",
+   "first": "Ljuset ger energin som krävs för att bygga glukos av koldioxid och vatten i fotosyntesen.",
+   "ms": 483,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är cell andning",
+   "expect": "bio3",
+   "kind": "stt",
+   "saved": "bio3",
+   "via": "code",
+   "first": "Cellandning är när cellerna bryter ner glukos med syre och får energi. Det bildas koldioxid och vatten.",
+   "ms": 664,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad menas med cellandning",
+   "expect": "bio3",
+   "kind": "para",
+   "saved": "bio3",
+   "via": "code",
+   "first": "Cellandning är när cellerna bryter ner glukos med syre och får energi. Det bildas koldioxid och vatten.",
+   "ms": 514,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad skiljer fotosyntes från cellandning",
+   "expect": "bio4",
+   "kind": "para",
+   "saved": "bio4",
+   "via": "check",
+   "first": "Fotosyntesen bygger glukos och lagrar energi, cellandningen bryter ner glukos och frigör energi. De är varandras motsats.",
+   "ms": 1126,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "skillnaden mellan cellandning och fotosyntes",
+   "expect": "bio4",
+   "kind": "para",
+   "saved": "bio4",
+   "via": "code",
+   "first": "Fotosyntesen bygger glukos och lagrar energi, cellandningen bryter ner glukos och frigör energi. De är varandras motsats.",
+   "ms": 706,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "var sker cellandningen",
+   "expect": "bio5",
+   "kind": "para",
+   "saved": "bio5",
+   "via": "check",
+   "first": "Cellandningen sker i mitokondrierna.",
+   "ms": 1047,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "var i cellen sker cellandning",
+   "expect": "bio5",
+   "kind": "para",
+   "saved": "bio5",
+   "via": "code",
+   "first": "Cellandningen sker i mitokondrierna.",
+   "ms": 442,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är näringskedjor",
+   "expect": "bio6",
+   "kind": "para",
+   "saved": "bio6",
+   "via": "code",
+   "first": "En näringskedja visar vem som äter vem, från producent till konsumenter, till exempel gräs, hare, räv.",
+   "ms": 1328,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "ge exempel på nedbrytare",
+   "expect": "bio7",
+   "kind": "para",
+   "saved": "bio7",
+   "via": "code",
+   "first": "Svampar och maskar, till exempel daggmaskar, är nedbrytare.",
+   "ms": 492,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "när började första världskriget",
+   "expect": "his1",
+   "kind": "para",
+   "saved": "his1",
+   "via": "code",
+   "first": "Första världskriget började nittonhundrafjorton.",
+   "ms": 1517,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vilket år började första världskriget",
+   "expect": "his1",
+   "kind": "para",
+   "saved": "his1",
+   "via": "code",
+   "first": "Första världskriget började nittonhundrafjorton.",
+   "ms": 544,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "när bröt första världskriget ut",
+   "expect": "his1",
+   "kind": "para",
+   "saved": "his1",
+   "via": "check",
+   "first": "Första världskriget började nittonhundrafjorton.",
+   "ms": 1059,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "varför bröt första världskriget ut",
+   "expect": "his2",
+   "kind": "para",
+   "saved": "his2",
+   "via": "check",
+   "first": "Skotten i Sarajevo nittonhundrafjorton utlöste kriget, men orsakerna var allianserna, kapprustningen, imperialismen och nationalismen.",
+   "ms": 1691,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vilka var orsakerna till första världskriget",
+   "expect": "his2",
+   "kind": "para",
+   "saved": "his2",
+   "via": "check",
+   "first": "Skotten i Sarajevo nittonhundrafjorton utlöste kriget, men orsakerna var allianserna, kapprustningen, imperialismen och nationalismen.",
+   "ms": 1301,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad var versailles freden",
+   "expect": "his3",
+   "kind": "stt",
+   "saved": "his3",
+   "via": "code",
+   "first": "Versaillesfreden nittonhundranitton avslutade första världskriget. Tyskland fick skulden, förlorade land och fick betala skadestånd.",
+   "ms": 487,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vem var gustav vasa",
+   "expect": "his4",
+   "kind": "para",
+   "saved": "his4",
+   "via": "code",
+   "first": "Gustav Vasa var Sveriges kung från femtonhundratjugotre och grundade det svenska nationalstaten.",
+   "ms": 514,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad hände 1523",
+   "expect": "his5",
+   "kind": "para",
+   "saved": "his5",
+   "via": "code",
+   "first": "År femtonhundratjugotre valdes Gustav Vasa till kung, och Sverige lämnade Kalmarunionen.",
+   "ms": 747,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "hur räknar man arean på en cirkel",
+   "expect": "ma1",
+   "kind": "para",
+   "saved": "ma1",
+   "via": "code",
+   "first": "Arean är pi gånger radien i kvadrat.",
+   "ms": 479,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "hur får man fram en cirkels area",
+   "expect": "ma1",
+   "kind": "para",
+   "saved": "ma1",
+   "via": "check",
+   "first": "Arean är pi gånger radien i kvadrat.",
+   "ms": 1295,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "hur räknar man ut omkretsen på en cirkel",
+   "expect": "ma2",
+   "kind": "para",
+   "saved": "ma2",
+   "via": "code",
+   "first": "Omkretsen är pi gånger diametern.",
+   "ms": 456,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "varför är fotosyntes viktig",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Fotosyntesen är viktig eftersom den är grunden för nästan allt liv på jorden. ",
+   "ms": 1080,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "var sker fotosyntesen",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Fotosyntesen sker i växtcellernas kloroplaster, som finns mest i bladens celler. ",
+   "ms": 1075,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad bildas vid fotosyntes",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Vid fotosyntesen bildas druvsocker, glukos, och syre. ",
+   "ms": 1741,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "hur fungerar fotosyntes",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Fotosyntesen är processen där växter, alger och vissa bakterier använder ljusenergi för att göra socker av koldioxid och vatten. ",
+   "ms": 1463,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är kemosyntes",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Kemosyntes är när organismer bildar socker av koldioxid och vatten med energi från kemiska reaktioner, inte från solljus. ",
+   "ms": 1173,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "varför behöver växter vatten",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Växter behöver vatten framför allt för fotosyntesen, där vatten och koldioxid med hjälp av solljus blir socker och syre. ",
+   "ms": 2439,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "varför behöver djur ljus",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Djur behöver ljus av flera skäl, och det viktigaste är att många använder det för att se. ",
+   "ms": 1803,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "varför sker cellandning",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Cellandning sker för att cellerna behöver energi för att leva, växa och röra sig. ",
+   "ms": 1063,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "var i cellen sker fotosyntesen",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Fotosyntesen sker i kloroplasterna, små gröna organeller i växtcellerna. ",
+   "ms": 1783,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är en näringsväv",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "En näringsväv är flera födokedjor som hänger ihop i ett ekosystem, eftersom de flesta djur äter mer än en sorts föda. ",
+   "ms": 1418,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "ge ett exempel på en producent",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Ett exempel på en producent är en grön växt, till exempel en gran. ",
+   "ms": 1282,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "när slutade första världskriget",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Första världskriget slutade klockan elva den elfte november nittonhundraarton, då vapenstilleståndet mellan Tyskland och ententen trädde i kraft. ",
+   "ms": 3118,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "när började andra världskriget",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Andra världskriget började den första september nittonhundratrettionio, när Tyskland anföll Polen. ",
+   "ms": 1958,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "varför började andra världskriget",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Andra världskriget började nittonhundratrettionio när Tyskland under Hitler anföll Polen den första september, och Storbritannien och Frankrike svarade med krig",
+   "ms": 1950,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad hände efter första världskriget",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Första världskriget slutade den elfte november nittonhundraarton med vapenvila, och året därpå tvingades Tyskland skriva under Versaillesfreden. ",
+   "ms": 2315,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vem var Gustav II Adolf",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Gustav den andre Adolf var Sveriges kung från sextonhundraelva till sextonhundratrettiotvå och byggde upp Sverige som stormakt. ",
+   "ms": 1050,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad hände 1525",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "År femtonhundratjugofem var slutet på det tyska bondekriget, när tusentals bönder reste sig mot furstar och godsägare och kämpade för lägre skatter och mindre l",
+   "ms": 2290,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad hände 1798",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "År sjuttonhundranittioåtta landsteg Napoleon Bonaparte med en fransk armé i Egypten, i ett försök att hota Storbritanniens väg till Indien. ",
+   "ms": 3346,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "hur räknar man ut arean av en kvadrat",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Arean av en kvadrat får du genom att multiplicera sidans längd med sig själv, alltså sidan gånger sidan. ",
+   "ms": 1890,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "hur räknar man ut volymen av en cylinder",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Volymen av en cylinder räknar du ut genom att multiplicera basytan med höjden. ",
+   "ms": 1129,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "hur räknar man ut radien av en cirkel",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Radien är avståndet från cirkelns mitt till kanten, och hur du räknar ut den beror på vad du känner till. ",
+   "ms": 1761,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "förklara mer om fotosyntes",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Fotosyntesen sker i kloroplasterna i bladens celler, där klorofyllet fångar upp solljus. ",
+   "ms": 2222,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är fotosyntes för något och varför är den viktig för människan",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Fotosyntes är processen där växter, alger och vissa bakterier använder solljus för att göra socker av koldioxid och vatten, och då bildas syre som restprodukt. ",
+   "ms": 2319,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är huvudstaden i Kanada",
+   "expect": null,
+   "kind": "other",
+   "saved": null,
+   "via": null,
+   "first": "Kanadas huvudstad är Ottawa, och den ligger i provinsen Ontario, vid gränsen mot Québec. ",
+   "ms": 1029,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "hur många ben har en spindel",
+   "expect": null,
+   "kind": "other",
+   "saved": null,
+   "via": null,
+   "first": "En spindel har åtta ben, fyra på varje sida av kroppen. ",
+   "ms": 1149,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är en metafor",
+   "expect": null,
+   "kind": "other",
+   "saved": null,
+   "via": null,
+   "first": "En metafor är en bild där du säger att något är något annat, utan att använda ordet som eller liksom. ",
+   "ms": 1696,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "nästa fråga",
+   "expect": null,
+   "kind": "notq",
+   "saved": null,
+   "via": null,
+   "first": "Fotosyntesen är processen där växter, alger och vissa bakterier använder ljusenergi för att göra socker av koldioxid och vatten. ",
+   "ms": 1383,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "fotosyntesen sker i kloroplasterna",
+   "expect": null,
+   "kind": "notq",
+   "saved": null,
+   "via": null,
+   "first": "Ja, det stämmer. ",
+   "ms": 857,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "idag ska vi prata om cellandning",
+   "expect": null,
+   "kind": "notq",
+   "saved": null,
+   "via": null,
+   "first": "Cellandning är processen där cellerna bryter ner glukos med hjälp av syre och frigör energi i form av ATP. Den sker i mitokondrierna, och som restprodukter bild",
+   "ms": 3395,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "första världskriget började 1914",
+   "expect": null,
+   "kind": "notq",
+   "saved": null,
+   "via": null,
+   "first": "Ja, första världskriget började nittonhundrafjorton, när Österrike-Ungern förklarade krig mot Serbien den tjugoåttonde juli, en dryg månad efter mordet på tronf",
+   "ms": 1540,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är andning",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Andning är när du tar in luft med syre och släpper ut luft med koldioxid, så att kroppens celler får syre. ",
+   "ms": 1183,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är syntes",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Syntes betyder att sätta ihop delar till en helhet, motsatsen till analys som delar upp något i sina beståndsdelar. ",
+   "ms": 1350,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är en kedja",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "En kedja är en rad av länkar som hänger ihop, där varje länk är fast i nästa. ",
+   "ms": 1071,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vad är en nedbrytning",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Nedbrytning är när döda växter, djur och avfall bryts ner till enklare ämnen som kan användas på nytt. ",
+   "ms": 1252,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "när började kriget",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Andra världskriget började den första september nittonhundratrettionio, när Tyskland angrep Polen. ",
+   "ms": 1704,
+   "status": 200,
+   "ok": true
+  },
+  {
+   "t": "vem var Vasa",
+   "expect": null,
+   "kind": "near",
+   "saved": null,
+   "via": null,
+   "first": "Gustav Vasa var Sveriges kung från femtonhundratjugotre till femtonhundrasextio och räknas som den svenska nationalstatens grundare. ",
+   "ms": 1675,
+   "status": 200,
+   "ok": true
+  }
+ ],
+ "my_answers": {
+  "suggest": {
+   "q": "Vad är skillnaden mellan fotosyntes och cellandning?",
+   "answer": "Fotosyntesen sker i växternas kloroplaster och bygger upp druvsocker (glukos) av koldioxid och vatten med hjälp av energi från solljus, och då bildas syre. Cellandningen sker i alla levande celler, främst i mitokondrierna, och bryter ner glukos med hjälp av syre till koldioxid och vatten, och då frigörs energi som cellen kan använda. Alltså är de motsatta processer: fotosyntesen lagrar energi i glukos, cellandningen frigör den. Fotosyntesen är dessutom bara hos växter och alger, medan cellandning finns hos både växter, djur och människor.",
+   "usage": {
+    "input_tokens": 384,
+    "output_tokens": 261,
+    "est_cost_usd": 0.003378
+   },
+   "ms": 3868
+  },
+  "proofread": {
+   "q": "När började första världskriget?",
+   "a": "Första världskriget började 1914 när skotten i Sarajevo avlossades.",
+   "changed": {
+    "q": true,
+    "a": true
+   },
+   "usage": {
+    "input_tokens": 211,
+    "output_tokens": 48,
+    "est_cost_usd": 4.51e-05
+   },
+   "ms": 1252
+  },
+  "compress": {
+   "q": "Vad är cellandning?",
+   "answer": "Cellandning är det som händer i varje cell i kroppen, i mitokondrierna. Cellen bryter ner glukos (socker) och syre, och då frigörs energi som cellen kan använda. Det som blir över är koldioxid och vatten, som vi andas ut. Man kan säga att cellandning är fotosyntesen baklänges.",
+   "usage": {
+    "input_tokens": 563,
+    "output_tokens": 139,
+    "est_cost_usd": 0.002516
+   },
+   "ms": 1831
+  }
+ }
+}
