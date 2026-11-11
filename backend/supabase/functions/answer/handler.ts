@@ -30,7 +30,7 @@ import {
 } from "./resource.ts";
 import { selfAnswer } from "./self.ts";
 import { complaintAnswer, isComplaint } from "./complaint.ts";
-import { weakLoneCommand } from "./lonecmd.ts";
+import { MORE_START, weakLoneCommand } from "./lonecmd.ts";
 import { askedLength, lengthCaps, lengthNote } from "./asklength.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
@@ -98,6 +98,13 @@ import { AnswerPost, NumberStream, similarity } from "./speech.ts";
 /** K1.4: a short reply grades the check question only within this many seconds of the answer that asked it. */
 export const GRADE_REPLY_MAX_AGE_SEC = 120;
 
+const countWords = (t: string): number => (t.match(/[\p{L}\d]+/gu) ?? []).length;
+/** The first n words of a text (no sentence end fits the asked word cap). */
+function firstWords(t: string, n: number): string {
+  let k = 0;
+  for (const m of t.matchAll(/[\p{L}\d]+/gu)) if (++k === n) return t.slice(0, m.index! + m[0].length) + ".";
+  return t;
+}
 /** Toby T14: a question that stops on a word that needs more ("Hur många invånare har", "Vad är skillnaden mellan"). */
 // prepositions are not here: Swedish questions often end on one ("vad ska jag plugga på", "vad handlar det om")
 // Oscar O51 (prio 1): a verb at the end is the normal word order of a Swedish subordinate clause ("kan du säga vad
@@ -643,7 +650,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K42.5: a lone command word after an answer ("utveckla" that was really "jaha") needs Scribe's confidence
       // and the time it takes to say; else silence
       const loneWeak = !demo && !body.toolRound && (body.persona ?? "tutor") === "tutor" &&
-        (!!appCmd0 || detectContinuation(body.fragment) !== null) && weakLoneCommand(body.fragment, body.context);
+        (!!appCmd0 || detectContinuation(body.fragment) !== null || MORE_START.test(body.fragment.trim().replace(/^(?:hej\s+)?(?:lumen|earmind),?\s+/iu, ""))) && weakLoneCommand(body.fragment, body.context);
       if (loneWeak) {
         const totalMs = Math.round(now() - t0);
         console.log(JSON.stringify({ event: "lone_command_weak", conf: body.context.stt_confidence ?? null, ms: body.context.utterance_ms ?? null }));
@@ -1339,6 +1346,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let ttftMs: number | null = null;
       let limitsMs: number | null = null;
       let answerChars = 0;
+      let answerWords = 0;
+      const wordCap = askedCaps?.maxWords;
       let closed = false;
       let doneSent = false; // D80: the client got the whole answer (else a client abort is not counted)
       let retries = 0;
@@ -1661,10 +1670,32 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             flushMeta();
             if (ttftMs === null) ttftMs = now() - t0;
             answerChars += t.length;
+            answerWords += countWords(t);
             send("delta", { text: t });
           };
           const deliver = (t: string) => {
             if (!t || closed || status === "truncated") return;
+            // K42.3 (O51): an asked word count is a cap in words; only whole sentences are passed on
+            if (wordCap) {
+              nearBuf += t;
+              let end = -1;
+              for (const m of nearBuf.matchAll(/[.!?](?=\s|$)/gu)) {
+                if (answerWords + countWords(nearBuf.slice(0, m.index! + 1)) <= wordCap) end = m.index! + 1;
+              }
+              if (answerWords + countWords(nearBuf) > wordCap) {
+                const out = end > 0 ? nearBuf.slice(0, end) : answerWords === 0 ? firstWords(nearBuf, wordCap) : "";
+                nearBuf = "";
+                emitText(out);
+                status = "truncated";
+                stop = true;
+                return;
+              }
+              if (end > 0) {
+                emitText(nearBuf.slice(0, end));
+                nearBuf = nearBuf.slice(end);
+              }
+              return;
+            }
             if (answerChars + nearBuf.length + t.length <= maxChars - 200) {
               emitText(t);
               return;

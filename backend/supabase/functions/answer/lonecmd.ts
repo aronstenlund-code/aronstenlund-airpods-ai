@@ -12,10 +12,13 @@ export function minSpokenMs(text: string): number {
   return Math.max(250, (text.match(VOWELS)?.length ?? 1) * 120);
 }
 
+/** O51: "utveckla det", "berätta mer", "säg mer" are command words too (detectContinuation only knows bare forms). */
+export const MORE_START = /^(?:och\s+)?(?:utveckla|fortsätt|berätta mer|säg mer|mer|förklara mer|mera)(?:\s+(?:det|då|tack|om det))?\s*[?.!]?\s*$/iu;
+
 export function isLoneCommandWord(fragment: string): boolean {
   const t = fragment.trim().replace(/[?.!,]+$/u, "");
   if (/^(?:hej\s+)?(?:lumen|earmind)\b/iu.test(t)) return false;
-  return t.split(/\s+/).length <= 2 && t.length > 0;
+  return t.split(/\s+/).length <= 3 && t.length > 0;
 }
 
 /** True when a lone command word should be ignored (said quietly, short or unsure). */

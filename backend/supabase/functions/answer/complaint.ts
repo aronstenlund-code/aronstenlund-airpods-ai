@@ -22,7 +22,15 @@ const COMPLAINT = new RegExp([
   String.raw`^varför (?:tar det|är du) så (?:lång tid|långsam)(?: .*)?$`,
   String.raw`^du (?:har|hörde) (?:hört )?fel(?: igen)?$`,
   String.raw`^varför (?:hör|uppfattar) du fel(?: .*)?$`,
+  // Oscar O51 (after K42): more ways of saying it
+  String.raw`^varför (?:sa|sade|säger|svarade|svarar|gjorde|pratade|pratar|upprepade) du (?:samma (?:sak|svar)|det (?:igen|två gånger)|två gånger|på engelska|på fel språk|inget|ingenting|inte|så konstigt|så långt|fel|när jag inte frågade)(?: .*)?$`,
+  String.raw`^du (?:är|var) (?:så |jätte|väldigt |helt |ju )?(?:dålig|kass|värdelös|seg|långsam|dum|usel|störig|irriterande|trög|buggig)$`,
+  String.raw`^(?:appen|den här appen|earmind|lumen) (?:är|var|funkar|fungerar) (?:så |jätte|helt |inte |ju )?(?:buggig|dålig|kass|seg|trasig|värdelös|inte|bra)?(?: alls| längre)?$`,
+  String.raw`^du (?:missförstod|missuppfattade|missförstår)(?: mig| det| vad jag sa)?(?: igen)?$`,
+  String.raw`^du (?:förstår|fattar|hör) (?:ju )?(?:inte|ingenting)(?: vad jag (?:säger|menar))?$`,
+  String.raw`^sluta (?:svara|prata|avbryta|upprepa|säga)(?: .*)?$`,
 ].join("|"), "u");
+
 
 export function isComplaint(text: string): boolean {
   const t = N(text);

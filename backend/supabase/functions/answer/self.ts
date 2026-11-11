@@ -49,7 +49,7 @@ const BOT_EXTRA = /^är du (?:typ |liksom |alltså )?(?:en )?(?:bot|robot|ai|mä
 const SEE_EXTRA = /^kan (?:någon|andra|någon annan) (?:läsa|se|höra) (?:det här|detta|det)$/u;
 
 // K42.1 (Aron's phone test: "Vad heter du?" -> "har inget eget namn … studiehjälpen")
-const NAME = /^(?:vad heter du|vad är ditt namn|har du (?:ett |något )?namn|vad (?:ska|kan) jag kalla dig|vem är du|hur heter du|heter du (?:något|nåt))$/u;
+const NAME = /^(?:vad heter du|vad är ditt namn|har du (?:ett |något |nåt )?(?:särskilt )?namn|vad (?:ska|kan) jag kalla dig|vem är du|hur heter du|heter du (?:något|nåt)|vad heter (?:den här |denna )?(?:appen|app)|vad är (?:appens|appen s) namn|vilken app är (?:det här|detta|du)|what(?: s|s| is) your name)$/u;
 
 export type SelfTopic = "name" | "robot" | "who_made" | "which_ai" | "listen" | "who_sees" | "sell" | "audio" | "save";
 

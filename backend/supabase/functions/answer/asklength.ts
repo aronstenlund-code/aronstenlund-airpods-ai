@@ -84,10 +84,13 @@ export function lengthNote(a: AskedLength): string {
 }
 
 /** Output limits for the asked length (tokens about 2 per Swedish word plus the summary line; chars about 7 per word). */
-export function lengthCaps(a: AskedLength): { maxTokens: number; maxChars: number; exact: boolean } | null {
+export function lengthCaps(a: AskedLength): { maxTokens: number; maxChars: number; exact: boolean; maxWords?: number } | null {
   const words = a.words ? Math.round(a.words * (a.atLeast ? 1.5 : 1.25)) : a.sentences ? a.sentences * 30 : 0;
   if (!words) return null;
-  // "about"/"at most" N words: the spoken text is cut at the last sentence end within ~1.2 N words (live: 121 for 100; 1.1 N cut "femtio ord" to 32)
-  if (a.words && !a.atLeast) return { maxTokens: Math.max(256, words * 3 + 120), maxChars: Math.round(a.words * 1.2 * 6.8) + 20, exact: true };
+  // "about"/"at most" N words: the spoken text is cut at the last sentence end within 1.15 N words (at most: N);
+  // counted in words, not chars (Oscar O51: "Pythagoras med femtio ord" was 71 short words within the char cap)
+  if (a.words && !a.atLeast) {
+    return { maxTokens: Math.max(256, words * 3 + 120), maxChars: Math.round(a.words * 1.6 * 7) + 40, exact: true, maxWords: a.atMost ? a.words : Math.round(a.words * 1.15) };
+  }
   return { maxTokens: Math.max(256, words * 3 + 120), maxChars: Math.max(600, words * 9), exact: false };
 }

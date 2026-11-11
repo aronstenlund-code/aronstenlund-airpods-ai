@@ -69,3 +69,32 @@ Deno.test("K42.5 a lone 'utveckla' after an answer: unsure or too short = silenc
   const a = setup(); await (await a.handler(send())).text(); assertEquals(a.seen.length, 1);
   const b = setup(); await (await b.handler(send(0.3, 100, "Lumen, utveckla"))).text(); assertEquals(b.seen.length, 1);
 });
+
+Deno.test("O51 after K42: more complaints, 'vad heter appen', 'utveckla det' and a word cap", async () => {
+  for (const q of ["varför sa du samma sak två gånger", "du är så dålig", "appen är buggig", "du missförstod mig", "sluta svara på allt jag säger", "varför svarade du på engelska", "Lumen, du förstår inte"]) assert(isComplaint(q), q);
+  for (const q of ["varför sa du att Vänern är störst", "du är bäst", "appen för matte", "vad betyder missförstånd"]) assert(!isComplaint(q), q);
+  const { selfAnswer } = await import("./self.ts");
+  assert(selfAnswer("Lumen, vad heter appen")!.startsWith("Jag heter Earmind"));
+  const { weakLoneCommand } = await import("./lonecmd.ts");
+  assert(weakLoneCommand("utveckla det", { stt_confidence: 0.45, utterance_ms: 280, recent_qa: [{}] }));
+  const { lengthCaps } = await import("./asklength.ts");
+  assertEquals(lengthCaps({ words: 20, atMost: true })!.maxWords, 20);
+  assertEquals(lengthCaps({ words: 50 })!.maxWords, Math.round(50 * 1.15));
+});
+
+Deno.test("K42.3 the word cap passes whole sentences only and stops within it", async () => {
+  const seen: LLMRequest[] = [];
+  const long = Array.from({ length: 12 }, (_, i) => `Mening nummer ${["ett", "två", "tre", "fyra", "fem", "sex", "sju", "åtta", "nio", "tio", "elva", "tolv"][i]} har sju ord här.`).join(" ");
+  const handler = createHandler({
+    authenticate: () => Promise.resolve({ id: "u-k42b", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(),
+    provider: { name: "s", model: "claude-haiku-5-5", stream: (r) => { seen.push(r); return (async function* () { for (const w of long.split(/(?<= )/)) yield { type: "text" as const, text: w }; })(); } },
+    recordUsage: () => {},
+    config: DEFAULT_CONFIG,
+  });
+  const res = await handler(new Request("http://x/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fragment: "Förklara fotosyntes med max trettio ord", mode: "push_to_talk", language: "sv", context: {} }) }));
+  const said = (await res.text()).split("\n\n").filter((f) => f.startsWith("event: delta")).map((f) => JSON.parse(f.split("data: ")[1]).text).join("");
+  const words = (said.match(/[\p{L}\d]+/gu) ?? []).length;
+  assert(words <= 30 && words >= 21, `${words}: ${said}`);
+  assert(/[.!?]\s*$/.test(said), said);
+});
