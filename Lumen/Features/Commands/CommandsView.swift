@@ -23,7 +23,7 @@ struct CommandsView: View {
             } header: {
                 Text("Nytt kommando")
             } footer: {
-                Text("Säg ordet i en fråga, så följer Earmind instruktionen i det svaret. Du kan också säga: \"spara kommando fission: förklara fission och jämför med fusion\".")
+                Text("Säg ordet i en fråga, så följer Earmind instruktionen i det svaret. Du kan också säga: ”spara kommando fission: förklara fission och jämför med fusion”.")
             }
 
             Section("Sparade kommandon") {

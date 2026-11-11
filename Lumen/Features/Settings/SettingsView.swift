@@ -226,11 +226,11 @@ struct SettingsView: View {
             // A42 (Deangelo G2): the exam itself (subject, date, grade) is only on Start's exam card; here the way
             // Lumen quizzes and explains.
             Picker("Kontrollfrågor", selection: $store.profile.checkQuestions) {
-                Text("Inte angivet").tag(nil as StudyProfile.CheckQuestions?)
+                Text("Automatiskt").tag(nil as StudyProfile.CheckQuestions?)
                 ForEach(StudyProfile.CheckQuestions.allCases, id: \.self) { Text(StudyProfile.checkName($0)).tag(StudyProfile.CheckQuestions?.some($0)) }
             }
             Picker("Förklaringar", selection: $store.profile.explanations) {
-                Text("Inte angivet").tag(nil as StudyProfile.Explanations?)
+                Text("Automatiskt").tag(nil as StudyProfile.Explanations?)
                 ForEach(StudyProfile.Explanations.allCases, id: \.self) { Text(StudyProfile.explanationName($0)).tag(StudyProfile.Explanations?.some($0)) }
             }
             Button("Spara i minnet") { model.studyProfileChanged() }
@@ -239,8 +239,8 @@ struct SettingsView: View {
             Text("Förhör och förklaringar")
         } footer: {
             Text("Provet, datumet och årskursen ändrar du på provkortet på Start. " + (model.headMotion.isAvailable
-                 ? "Ja–nej-frågor kan besvaras med en nick eller en skakning med huvudet. Du kan också säga \"Lumen, korta förklaringar\" eller \"Lumen, provet är på fredag\"."
-                 : "Dina AirPods stöder inte huvudrörelser just nu: svara på ja–nej-frågor med rösten. Du kan också säga \"Lumen, korta förklaringar\" eller \"Lumen, provet är på fredag\"."))
+                 ? "Ja–nej-frågor kan besvaras med en nick eller en skakning med huvudet. Du kan också säga ”Lumen, korta förklaringar” eller ”Lumen, provet är på fredag”."
+                 : "Dina AirPods stöder inte huvudrörelser just nu: svara på ja–nej-frågor med rösten. Du kan också säga ”Lumen, korta förklaringar” eller ”Lumen, provet är på fredag”."))
         }
     }
 

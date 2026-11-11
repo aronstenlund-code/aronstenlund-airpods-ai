@@ -209,3 +209,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [~] pågår 2026-11-11 11:15 **A55 – Byt namn till Earmind (D128)** (effort: medium). Appens visningsnamn, rubriker, intro, samtyckestext, Om appen och notiser: Lumen → Earmind. Väckningsordet "Lumen" och röstkommandona behålls tills Aron bestämt något annat (fråga Deangelo). Bundle-id ändras inte.
 
 - [~] pågår 2026-11-11 11:20 **A56 – Egen punkt (README 8): Tobys T5b/T7b-fynd** (effort: high). Från `reports/apptest/2026-11-11-1045-toby-t5b-t7b.md`: (1) en fråga med paus väntar 12–22 s (orden väntar okommitterade medan Lumen talar, och väntetimern ger upp); (2) döv i 56 s efter ett långt svar (rösten säger klar före sista meningen); (3) tipset talar mitt i en fråga; (4) "ja" → långt svar tar 7–15 s: använd K13 `two_level` och `done.more`, utan nytt anrop.
+
+- [~] pågår 2026-11-11 11:22 **A57 – Stående uppgift (PLAN 2b): Kellys Ke28 F3–F5** (effort: low). F3 "Inte angivet" → "Automatiskt"; F4 rött bara när Lumen inte kan svara (rösten och AirPods neutrala kort); F5 svenska ”…” i exempeltexterna.

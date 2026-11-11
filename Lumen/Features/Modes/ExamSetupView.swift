@@ -72,7 +72,7 @@ struct ExamSetupView: View {
                     Button("Starta provsession med provtid") { Task { await model.startExam() } }
                     Button("Rensa provet", role: .destructive) { materials.clear() }
                 } footer: {
-                    Text("Provsessionen är som på riktigt: Earmind svarar bara på \"Lumen, …\": uppgift sju, ledtråd, rätta jag fick …, nästa, starta provtid nittio minuter, hur gick det, avsluta provet.")
+                    Text("Provsessionen är som på riktigt: Earmind svarar bara på ”Lumen, …”: uppgift sju, ledtråd, rätta jag fick …, nästa, starta provtid nittio minuter, hur gick det, avsluta provet.")
                 }
             }
         }

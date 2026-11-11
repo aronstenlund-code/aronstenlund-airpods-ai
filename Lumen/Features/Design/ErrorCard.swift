@@ -73,6 +73,17 @@ enum LumenProblem: Equatable, Sendable {
     }
 }
 
+extension LumenProblem {
+    /// Kelly Ke28 F4: Lumen cannot answer (no network, the service, the microphone, the recogniser). The voice falling
+    /// back to the iPhone's, or the AirPods going, still gets answers: no red.
+    nonisolated var stopsAnswers: Bool {
+        switch self {
+        case .voiceUnavailable, .airPodsDisconnected: false
+        default: true
+        }
+    }
+}
+
 struct ErrorCard: View {
     let problem: LumenProblem
     var action: (() -> Void)?
@@ -86,7 +97,7 @@ struct ErrorCard: View {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: problem.symbol)
                     .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(LumenColor.red)
+                    .foregroundStyle(problem.stopsAnswers ? LumenColor.red : LumenColor.muted)
                     .frame(width: 28)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 4) {
@@ -102,7 +113,11 @@ struct ErrorCard: View {
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(LumenColor.background, in: RoundedRectangle(cornerRadius: 10))
-        .overlay { RoundedRectangle(cornerRadius: 10).strokeBorder(LumenColor.red.opacity(0.5), lineWidth: 1.5) }
+        // Kelly Ke28 F4: red only when Lumen cannot answer; the voice or the AirPods get a neutral card.
+        .overlay {
+            RoundedRectangle(cornerRadius: 10)
+                .strokeBorder(problem.stopsAnswers ? LumenColor.red.opacity(0.5) : LumenColor.line, lineWidth: problem.stopsAnswers ? 1.5 : 1)
+        }
         .accessibilityElement(children: .contain)
     }
 }

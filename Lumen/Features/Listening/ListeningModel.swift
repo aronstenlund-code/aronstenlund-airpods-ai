@@ -2951,7 +2951,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
               studyCards.current().contains(where: { $0.createdAt >= start }) else { return }
         fetchStudyCards(since: start)
         studyNotice = language == .swedish
-            ? "Minitest: fem frågor om det du nyss frågade. Tryck på Minitest eller säg \"Lumen, minitest\"."
+            ? "Minitest: fem frågor om det du nyss frågade. Tryck på Minitest eller säg ”Lumen, minitest”."
             : "Mini test: five questions on what you just asked. Tap Mini test or say \"Lumen, mini test\"."
     }
 
