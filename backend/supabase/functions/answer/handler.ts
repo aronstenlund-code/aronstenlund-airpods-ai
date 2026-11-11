@@ -101,7 +101,7 @@ export function isRepeatedQuestion(text: string, asked: string[]): boolean {
   return asked.some((a) => similarity(a, q) >= 0.8);
 }
 import { stripEcho } from "./echo.ts";
-import { matchAnswer, parseQuizKey } from "./soundalike.ts";
+import { isTermListEcho, matchAnswer, parseQuizKey } from "./soundalike.ts";
 import { isSpotifyTool, MUSIC_REQUEST, SPOTIFY_RULE, type SpotifyResult, type SpotifyToolName, spotifyToolDefs, validateSpotifyInput } from "./spotifytools.ts";
 import { parseSavedCheck, rankSaved, SAVED_CHECK_PROMPT, type SavedAnswer, savedCheckUser } from "./savedanswers.ts";
 import { numbersToSpeech } from "./svnum.ts";
@@ -911,6 +911,44 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
           );
         }
+      }
+
+      // O43 (BUG prio 2): in the answer window after a check question, Scribe sometimes reads the keyterm list back in
+      // classroom noise ("Viktoriasjön, Tanganyikasjön, Malawisjön, …") and the answer, first in the list, got "Rätt".
+      // Mostly the terms sent = nothing was heard: Lumen asks again instead of grading (code, no model).
+      const lastCheck = body.context.recent_qa.at(-1);
+      if (
+        !demo && body.mode === "tutor" && !body.social && !!lastCheck && lastCheck.a.trim().endsWith("?") &&
+        (body.context.last_answer_age_sec === undefined || body.context.last_answer_age_sec <= GRADE_REPLY_MAX_AGE_SEC) &&
+        // a question that asks for several things ("Nämn tre floder …") may get a real list as the answer
+        !/(?<![\p{L}])(?:nämn|vilka|räkna upp|ge (?:två|tre|fyra|fem|några)|några|två|tre|fyra|fem)(?![\p{L}])/iu.test(lastCheck.a.split(/(?<=[.!])\s+/).at(-1) ?? "") &&
+        isTermListEcho(body.fragment, body.context.quiz_key ?? null, body.context.prep_terms)
+      ) {
+        const totalMs = Math.round(now() - t0);
+        console.log(JSON.stringify({ event: "quiz_sound", verdict: "term_list" }));
+        const frames = [
+          sseFrame("meta", { reconstructed_question: body.fragment, confidence: 1, is_question: false, needs_confirmation: false, answer_type: "fact" }),
+          sseFrame("delta", { text: "Jag hörde inte riktigt. Vad sa du?" }),
+          sseFrame("done", {
+            answered: true,
+            timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "quiz_unclear" },
+            summary: null,
+            memory_add: null,
+            quiz_sound: { verdict: "unclear" },
+            ...(body.context.quiz_key ? { quiz_key: body.context.quiz_key } : {}),
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
       }
 
       // O42: a help line ("ring Bris") or plain music ("spela musik") is answered by code with the tool call at once:
