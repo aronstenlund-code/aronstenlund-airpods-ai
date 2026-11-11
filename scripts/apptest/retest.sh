@@ -88,5 +88,9 @@ grep -E "error:|✘|✔|Test run|T5 result|passed|failed" "$OUT/logs/retest-test
 echo "::endgroup::"
 
 python3 -I "$ROOT/scripts/apptest/retest_summary.py" "$OUT" > "$OUT/summary.md" || true
+# T15: the waiting question (set vantan), its own summary after the others.
+if ls "$OUT"/retest-vantan.json >/dev/null 2>&1; then
+  python3 -I "$ROOT/scripts/apptest/vantan_summary.py" "$OUT" >> "$OUT/summary.md" || true
+fi
 cat "$OUT/summary.md"
 exit $STATUS

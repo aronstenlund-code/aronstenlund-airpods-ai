@@ -44,8 +44,14 @@ jobs:
 
       - name: Retest
         env:
-          RETEST_SETS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.sets || 'fragor,block' }}
+          RETEST_SETS: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.sets || '' }}
         run: |
+          # Toby's branch pushes run the sets in scripts/apptest/retest-branch-sets (T15: vantan), else fragor,block.
+          if [ -z "$RETEST_SETS" ]; then
+            RETEST_SETS="$(tr -d ' \n' < scripts/apptest/retest-branch-sets 2>/dev/null || true)"
+            export RETEST_SETS="${RETEST_SETS:-fragor,block}"
+          fi
+          echo "Sets: $RETEST_SETS"
           bash scripts/apptest/retest.sh
           STATUS=$?
           cat apptest-out/retest/summary.md >> "$GITHUB_STEP_SUMMARY" || true
