@@ -26,7 +26,7 @@ async function events(res: Response) {
 
 Deno.test("O41: addressed or leading requests are actions; things said in passing are not", () => {
   for (const t of ["Lumen, ring mamma", "Lumen, sätt en timer på fem minuter", "Lumen, kan du spela lite musik", "ring mamma",
-    "sätt en timer på tio minuter", "kan du påminna mig om läxan i morgon", "Lumen, kör lite Håkan Hellström"]) assert(isAddressedAction(t), t);
+    "sätt en timer på tio minuter", "kan du påminna mig om läxan i morgon", "Lumen, kör lite Håkan Hellström", "Lumen, sätt på lite musik av Veronica Maggio"]) assert(isAddressedAction(t), t);
   for (const t of ["mamma ringde nyss", "igår sa hon att jag skulle ringa mamma", "vi ska spela teater", "vad är en timer",
     "läraren sa att vi ska sätta en timer"]) assert(!isAddressedAction(t), t);
   assert(isAddressedAction("sätt en timer", false) && isAddressedAction("igår sa hon att jag skulle ringa mamma", true), "voice instruction");
@@ -55,5 +55,6 @@ Deno.test("O41: Standardläge (auto) offers the phone tools for 'Lumen, sätt en
 Deno.test("O41: a meta sentence about the request is never spoken first", () => {
   assertEquals(rewriteLeadIn("The request is to play music, so I'll open the music app with a lofi search.", "kör lofi"), "");
   assertEquals(rewriteLeadIn("Det är en statement, inte en fråga eller uppgift, så jag svarar kort och vänligt.", "att spela teater är roligt"), "");
+  assertEquals(rewriteLeadIn("Det är en fråga om vem Alexander Graham Bell ringde till först.", "x"), "");
   assertEquals(rewriteLeadIn("Det låter kul!", "x"), "Det låter kul!");
 });

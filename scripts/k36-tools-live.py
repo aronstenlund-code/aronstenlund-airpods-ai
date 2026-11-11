@@ -6,6 +6,9 @@ Writes reports/eval/<stamp>-k36-tools-live.json.
 import datetime, json, pathlib, urllib.error, urllib.request, zoneinfo
 U = "https://xjczbzfkmbjdebwlccki.supabase.co"; K = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8"  # public by design
 TA = ["calendar_add", "calendar_list", "reminder_add", "timer_start", "alarm_set", "note_add", "call_contact", "music_open"]
+import os
+MODE = os.environ.get("MODE", "push_to_talk")  # O41: the app sends Standardläge as "auto"
+PREFIX = "Lumen, " if MODE == "auto" else ""
 CASES = [  # [utterance, expected tool or None, expected input subset]
     ["ring mamma", "call_contact", {"name": "mamma"}],
     ["kan du ringa Elin", "call_contact", {"name": "Elin"}],
@@ -20,6 +23,9 @@ CASES = [  # [utterance, expected tool or None, expected input subset]
     ["hur spelar man gitarr", None, {}],
     ["min kompis ringde mig i går", None, {}],
     ["sätt en timer på tio minuter", "timer_start", {}],
+    ["ring 112", "call_contact", {"number": True}],
+    ["mamma ringde nyss", None, {}],
+    ["kör lite lofi", "music_open", {}],
 ]
 
 
@@ -48,7 +54,9 @@ def evs(t):
 tok = json.loads(req("POST", "/auth/v1/signup", {})[1])["access_token"]
 rows = []
 for frag, want, sub in CASES:
-    e = evs(req("POST", "/functions/v1/answer", {"fragment": frag, "mode": "push_to_talk", "language": "sv", "context": {}, "tools_available": TA}, tok)[1])
+    if MODE == "auto" and want:
+        frag = PREFIX + frag  # an addressed request in Standardläge
+    e = evs(req("POST", "/functions/v1/answer", {"fragment": frag, "mode": MODE, "language": "sv", "context": {}, "tools_available": TA}, tok)[1])
     tc = next((d for n, d in e if n == "tool_call"), None)
     said = "".join(d.get("text", "") for n, d in e if n == "delta")
     got = tc["name"] if tc else None
@@ -69,6 +77,6 @@ print(json.dumps(connect, ensure_ascii=False))
 s = {"cases": len(rows), "right": sum(r["ok"] for r in rows), "spoken_before_tool": sum(1 for r in rows if r["got"] and r["said"].strip())}
 print(s)
 stamp = datetime.datetime.now(zoneinfo.ZoneInfo("Europe/Stockholm")).strftime("%Y-%m-%d-%H%M")
-out = pathlib.Path(__file__).resolve().parents[1] / "reports" / "eval" / f"{stamp}-k36-tools-live.json"
+out = pathlib.Path(__file__).resolve().parents[1] / "reports" / "eval" / f"{stamp}-k36-tools-live-{MODE}.json"
 out.write_text(json.dumps({"summary": s, "rows": rows, "connect": connect}, ensure_ascii=False, indent=1), encoding="utf-8")
 print(out)
