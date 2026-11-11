@@ -12,3 +12,13 @@ Deno.test("standing16: a spaced number range is read as one range in every chunk
     assertEquals(o, "öka mellan ett komma fyra till fem komma sju grader. Sidorna tolv till femton och två till tre timmar, minus tre - inte mer.", `step ${step}`);
   }
 });
+
+import { rewriteLeadIn } from "./speech.ts";
+Deno.test("standing16b: a first sentence about the sources is not spoken; a fact from a source is", () => {
+  assertEquals(rewriteLeadIn("Källorna är bara en vägledning, och jag ger de viktigaste stegen i ordning. ", "hur byter man däck"), "");
+  assertEquals(rewriteLeadIn("Källorna säger olika saker om tiden. ", "hur länge kokar man ägg"), "");
+  const fact = "Enligt SMHI blir det regn i morgon. ";
+  assertEquals(rewriteLeadIn(fact, "blir det regn"), fact);
+  const src = "Källan är Livsmedelsverket, som rekommenderar fem frukter om dagen. ";
+  assertEquals(rewriteLeadIn(src, "hur mycket frukt"), src);
+});
