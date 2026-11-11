@@ -103,6 +103,7 @@ const DT = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2})?)?$/;
 const s = (v: unknown, max: number) => typeof v === "string" && v.trim().length > 0 && v.length <= max;
 
 const digits = (v: string) => v.replace(/\D/g, "");
+const NUMBER_QUESTION = /(?<![\p{L}])(?:vad|vilket) (?:är|har) [\p{L}\s]{0,30}?(?:nummer|numret|telefonnummer|mobilnummer)|(?:numret|telefonnumret|mobilnumret) till(?![\p{L}])/iu;
 /** O41: the digits the user said, also as words ("noll sju tre, fyra fem sex, sjuttioåtta nittio" = 073456 7890). */
 export function spokenDigits(heard: string): string {
   const toks = heard.toLowerCase().split(/[^\p{L}\d]+/u).filter(Boolean);
@@ -148,6 +149,8 @@ export function validatePhoneInput(name: string, input: unknown, heard?: string)
     case "note_add":
       return s(i.text, 1000) ? { text: String(i.text).trim() } : null;
     case "call_contact": {
+      // O41: "vad är numret till pappa" asks for a number, it does not ask to call (code, not only the prompt)
+      if (heard !== undefined && NUMBER_QUESTION.test(heard) && !/(?<![\p{L}])(?:ring|ringa|ringer|slå en signal)(?![\p{L}])/iu.test(heard)) return null;
       const nm = s(i.name, 80) ? String(i.name).trim() : "";
       let num = typeof i.number === "string" && /^\+?[\d\s-]{3,20}$/.test(i.number.trim()) ? i.number.trim() : "";
       if (num && heard !== undefined) {

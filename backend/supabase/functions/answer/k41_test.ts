@@ -85,3 +85,9 @@ Deno.test("O41: with phone tools in Swedish, the model's English reasoning is no
   const out = p.push("The user asks to call a friend, but gave no name. I need a name to call, so I should ask who. Vem vill du att jag ska ringa? ") + p.finish();
   assertEquals(out.trim(), "Vem vill du att jag ska ringa?");
 });
+
+Deno.test("O41: a question about a number never starts a call", () => {
+  assertEquals(validatePhoneInput("call_contact", { name: "pappa" }, "vad är numret till pappa"), null);
+  assertEquals(validatePhoneInput("call_contact", { name: "mamma" }, "vad har mamma för nummer"), null);
+  assertEquals(validatePhoneInput("call_contact", { name: "pappa" }, "ring pappa, vad är numret till honom förresten"), { name: "pappa" });
+});
