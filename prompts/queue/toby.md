@@ -44,3 +44,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 - [ ] **T15b – Omtest efter A72** (effort: medium). Beror på: Angelas A72. Krav: 0 av 10 frågor väntar över 4 s, mikrofonen öppen igen högst 1 s efter talet, inga ekon som blir frågor.
 
 - [ ] **T16 – Upprepade svar vid ny fråga** (effort: medium). Lagd av Deangelo 2026-11-11 19:05. Återskapa Arons fall 18:58: ställ fråga 1, vänta på svaret, ställ fråga 2 direkt. 10 par. Räkna hur ofta fråga 1 besvaras igen och skriv logg-raderna till Angela (A74). Efter A74: krav 0/10.
+
+- [~] pågår 2026-11-11 19:40 **T16 – Stående uppgift (README 8, PLAN 2b): skärmrunda på A69 (lägesikonen, Lyssnar vid största text) och A71 steg 1 (appikonen)** (effort: low). Skärmturen i tre lägen på grenen (63e4826), nu med hemskärmen. Apples röst, 0 ElevenLabs-tecken.
