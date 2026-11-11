@@ -20,6 +20,7 @@ import {
   BLOCKED_CHECK,
   sameUrl,
   NO_RESOURCE,
+  RESOURCE_BUSY,
   parseResource,
   RESOURCE_DOMAINS,
   RESOURCE_PROMPT,
@@ -679,7 +680,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           if (!reachable || !aboutTopic(topic, resource.title, check.pageTitle, resource.url)) resource = null;
         }
         const said = text.replace(/LÄNK:[^\n]*\n?/iu, "").trim();
-        const spoken = numbersToSpeech(resource ? spokenFor(resource, topic, said) : NO_RESOURCE);
+        const spoken = numbersToSpeech(resource ? spokenFor(resource, topic, said) : wl.allowed ? NO_RESOURCE : RESOURCE_BUSY);
         console.log(JSON.stringify({ event: "resource", found: !!found0, sources: sources.length, listed: listed.length, ok: !!resource, status: check?.status ?? null }));
         const totalMs = Math.round(now() - t0);
         const cost = ((inTok * cfg.priceInPerMTok) + outTok * cfg.priceOutPerMTok) / 1e6 + searches * WEB_SEARCH_USD;

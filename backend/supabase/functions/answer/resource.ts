@@ -90,7 +90,12 @@ export function domainOf(url: string): string | null {
   }
 }
 
-const stem = (w: string) => w.toLowerCase().normalize("NFC").replace(/[^\p{L}]/gu, "").slice(0, 6);
+// O34 ("cellen" vs a page about "celler"): the definite/plural ending off first, then at most six letters
+const stem = (w: string) => {
+  const x = w.toLowerCase().normalize("NFC").replace(/[^\p{L}]/gu, "");
+  const s = x.replace(/(?:erna|arna|orna|en|et|er|ar|or|na|n)$/u, "");
+  return (s.length >= 4 ? s : x).slice(0, 6);
+};
 
 /** Is the page about the topic? A topic word (its first six letters) in the title, the page title or the address. */
 export function aboutTopic(topic: string, title: string, pageTitle: string, url: string): boolean {
@@ -126,6 +131,8 @@ export function spokenFor(r: Resource, topic: string, said: string): string {
     : `Jag skickade en länk till ${film ? "en film" : "en sida"} om ${topic} från ${r.source}, säg till om du vill ha en annan.`;
   return r.login_likely ? `${base} Den kan kräva att du loggar in med ditt skolkonto.` : base;
 }
+
+export const RESOURCE_BUSY = "Jag kan inte leta upp fler länkar just nu. Fråga igen om en liten stund.";
 
 export const NO_RESOURCE =
   "Jag hittade ingen bra film eller sida om det just nu. Fråga gärna din lärare, eller sök på UR Play.";
