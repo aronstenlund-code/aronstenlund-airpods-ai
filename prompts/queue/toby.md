@@ -20,11 +20,11 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 - [x] klar 2026-11-10 08:30 → `reports/apptest/2026-11-10-0830-toby-t8-forstagangsanvandaren.md` **T8 – Förstagångsanvändaren** (effort: medium). Gör efter T7. Aron 2026-11-09: lätt att komma igång och aldrig överväldigande. I simulatorn, från helt ny installation till första upplästa svaret i Frågor och i Provläge: räkna tryck, skärmar och sekunder, och skriv ner varje text eller knapp som är oklar eller onödig. Skärmbilder av varje steg till `reports/apptest/`. Fynd till Angela och Kelly (Ke9). Ändra ingen appkod.
 
-- [~] pausad 2026-11-11 00:00, inte körd (/stt-token 429 i kväll; kör `apptest-retest sets=fragor,block` på main) **T5b – Omtest av T5 efter Angelas A21** (effort: medium). Beror på: A21 (klar 2026-11-10) och påfylld ElevenLabs-kvot (Scribe `quota_exceeded` sedan 07:45). Samma fall som T5.
+- [~] pågår 2026-11-11 09:30 **T5b – Omtest av T5 efter Angelas A21** (effort: medium). Beror på: A21 (klar 2026-11-10) och påfylld ElevenLabs-kvot (Scribe `quota_exceeded` sedan 07:45). Samma fall som T5.
 
 - [x] klar 2026-11-10 17:10 → `reports/apptest/2026-11-10-1710-toby-t9-skarmrunda.md` **T9 – Skärmrunda efter A22 och A18** (effort: medium). Beror på: A23 (sedan igen efter A18). Samma sju lägen som T3. Lägg bilderna sida vid sida med Kellys Ke12-skisser och skriv avvikelserna till Angela och Kelly.
 
-- [~] pågår 2026-11-10 19:38 **T7b – Omtest av Mer-fönstret** (effort: medium). Beror på: Angelas rättning av T7-fynd 1 (fönstret öppnas innan mikrofonen hör) och påfylld ElevenLabs-kvot. Kör `apptest-more` på `toby/t7-more` (eller main): ordlogiken (ja, mer, gärna, ja mitt i mening, annan röst, ny fråga) och tid till långt svar under 1 s (K13).
+- [~] pågår 2026-11-11 09:30 **T7b – Omtest av Mer-fönstret** (effort: medium). Beror på: Angelas rättning av T7-fynd 1 (fönstret öppnas innan mikrofonen hör) och påfylld ElevenLabs-kvot. Kör `apptest-more` på `toby/t7-more` (eller main): ordlogiken (ja, mer, gärna, ja mitt i mening, annan röst, ny fråga) och tid till långt svar under 1 s (K13).
 
 - [~] pågår 2026-11-10 19:38 (vägen Hoppa över enligt D120) **T8b – Omtest av förstagångsanvändaren** (effort: medium). Beror på: påfylld ElevenLabs-kvot, och Angela har tittat på T8-fynd 1 ("Startar …" efter mikrofonfrågan). Kör `apptest-firstuser`: tid och tryck till första svaret i Frågor och Provläge.
 
