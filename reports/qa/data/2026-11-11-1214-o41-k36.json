@@ -1,0 +1,737 @@
+{
+ "stamp": "2026-11-11-1214",
+ "summary": {
+  "cases": 29,
+  "ok": 27,
+  "spoken_before_tool": 0,
+  "security": "4/4",
+  "est_cost_usd": 0.2046
+ },
+ "rows": [
+  {
+   "id": "c01",
+   "mode": "push_to_talk",
+   "fragment": "Lumen, ring Moa",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "name": "Moa"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6562,
+    "output_tokens": 50,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 6348,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.0008399000000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "c02",
+   "mode": "push_to_talk",
+   "fragment": "kan du ringa upp farmor",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "name": "farmor"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6563,
+    "output_tokens": 50,
+    "cache_read_tokens": 6348,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00010998000000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "c03",
+   "mode": "push_to_talk",
+   "fragment": "ring Ahmed på jobbet",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "name": "Ahmed på jobbet"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6564,
+    "output_tokens": 57,
+    "cache_read_tokens": 6348,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00011358000000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "c04",
+   "mode": "push_to_talk",
+   "fragment": "ring noll sju tre, fyra fem sex, sjuttioåtta nittio",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "number": "0734567890"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6580,
+    "output_tokens": 125,
+    "cache_read_tokens": 6348,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00014918
+   },
+   "status": 200
+  },
+  {
+   "id": "c05",
+   "mode": "push_to_talk",
+   "fragment": "ring 112",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "number": "112"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6556,
+    "output_tokens": 48,
+    "cache_read_tokens": 6348,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00010828000000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "c06",
+   "mode": "push_to_talk",
+   "fragment": "ring pizzerian",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "name": "pizzerian"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6559,
+    "output_tokens": 52,
+    "cache_read_tokens": 6348,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00011058000000000002
+   },
+   "status": 200
+  },
+  {
+   "id": "c07",
+   "mode": "push_to_talk",
+   "fragment": "ring Systembolaget",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "name": "Systembolaget"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6560,
+    "output_tokens": 53,
+    "cache_read_tokens": 6348,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00011118
+   },
+   "status": 200
+  },
+  {
+   "id": "c08",
+   "mode": "push_to_talk",
+   "fragment": "ring Skatteverket",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "name": "Skatteverket"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6599,
+    "output_tokens": 53,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 6387,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.0008460750000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "c09",
+   "mode": "push_to_talk",
+   "fragment": "ring vårdcentralen i Tensta",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "name": "vårdcentralen i Tensta"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6605,
+    "output_tokens": 66,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00011867000000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "c10",
+   "mode": "push_to_talk",
+   "fragment": "ring min mentor och säg att jag är sjuk",
+   "want": "call_contact",
+   "got": "call_contact",
+   "input": {
+    "name": "min mentor"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6608,
+    "output_tokens": 113,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00014247000000000004
+   },
+   "status": 200
+  },
+  {
+   "id": "c11",
+   "mode": "push_to_talk",
+   "fragment": "ring Bris",
+   "want": "call_contact",
+   "got": null,
+   "input": {},
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": false,
+   "notes": [
+    "tool None (want call_contact)"
+   ],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6596,
+    "output_tokens": 69,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00011927000000000002
+   },
+   "status": 200
+  },
+  {
+   "id": "m01",
+   "mode": "push_to_talk",
+   "fragment": "spela musik",
+   "want": "music_open",
+   "got": null,
+   "input": {},
+   "said": "Jag har inget verktyg för att starta musik i den här appen, så du får öppna musikappen själv.",
+   "spoken_before_tool": false,
+   "ok": false,
+   "notes": [
+    "tool None (want music_open)"
+   ],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 4812,
+    "output_tokens": 37,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 4630,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00070712
+   },
+   "status": 200
+  },
+  {
+   "id": "m02",
+   "mode": "push_to_talk",
+   "fragment": "kör lite Håkan Hellström",
+   "want": "music_open",
+   "got": "music_open",
+   "input": {
+    "query": "Håkan Hellström"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6603,
+    "output_tokens": 54,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00011247000000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "m03",
+   "mode": "push_to_talk",
+   "fragment": "jag vill lyssna på lofi när jag pluggar",
+   "want": "music_open",
+   "got": "music_open",
+   "input": {
+    "query": "lofi"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6610,
+    "output_tokens": 79,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00012567
+   },
+   "status": 200
+  },
+  {
+   "id": "n01",
+   "mode": "push_to_talk",
+   "fragment": "ring inte mamma",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "Okej, jag ringer inte mamma.",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6598,
+    "output_tokens": 67,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00011847000000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "n02",
+   "mode": "push_to_talk",
+   "fragment": "mamma ringde nyss",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "Det låter som att du berättar att din mamma ringde, inte att du vill ringa henne. ",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6600,
+    "output_tokens": 82,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00012617000000000002
+   },
+   "status": 200
+  },
+  {
+   "id": "n03",
+   "mode": "push_to_talk",
+   "fragment": "jag måste ringa mamma sen",
+   "want": "either",
+   "got": null,
+   "input": {},
+   "said": "Det är bra att du tänker på det. Säg till när du vill att jag ringer henne nu, eller så kan jag lägga en påminnelse till senare.",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6603,
+    "output_tokens": 54,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00011247000000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "n04",
+   "mode": "push_to_talk",
+   "fragment": "vad har mamma för nummer",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "Jag kan tyvärr inte läsa dina kontakter, så jag kan inte säga vad mammas nummer är. Men jag kan ringa mamma åt dig direkt om du vill.",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6601,
+    "output_tokens": 128,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00014927
+   },
+   "status": 200
+  },
+  {
+   "id": "n05",
+   "mode": "push_to_talk",
+   "fragment": "vad är numret till pizzerian på hörnet",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "Jag kan inte läsa upp nummer ur dina kontakter, men jag kan ringa pizzerian åt dig om du säger namnet som det står i kontakterna.",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6607,
+    "output_tokens": 60,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00011587
+   },
+   "status": 200
+  },
+  {
+   "id": "n06",
+   "mode": "push_to_talk",
+   "fragment": "vad är telefonnumret till Skatteverket",
+   "want": "either",
+   "got": null,
+   "input": {},
+   "said": "Skatteverkets allmänna telefonnummer, Skatteupplysningen, är sjuhundrasjuttioett-femhundrasextiosjutusen femhundrasextiosju. Öppet måndag–fredag klockan åtta till sexton. Från utlandet ringer du plus fyrtiosex åtta numret som står på deras webbplats. Källa: Skatteverket.",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 7926,
+    "output_tokens": 305,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 7684,
+    "web_searches": 1,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.01122507
+   },
+   "status": 200
+  },
+  {
+   "id": "n07",
+   "mode": "push_to_talk",
+   "fragment": "när skickade Titanic sitt nödanrop",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "Titanic skickade sitt nödanrop på natten mellan den fjorton och femtonde april nittonhundratolv, efter att fartyget träffat ett isberg. RMS Carpathia tog emot nödsignalerna klockan noll och tjugo och styrde mot platsen för att hjälpa till. Enligt Britannica angavs positionen i nödsignalerna som fyrtioen graderfyrtiosex’ N femtio graderfjorton’ W. Källa: Britannica.",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 7926,
+    "output_tokens": 340,
+    "cache_read_tokens": 7684,
+    "cache_write_tokens": 0,
+    "web_searches": 1,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.01035841
+   },
+   "status": 200
+  },
+  {
+   "id": "n08",
+   "mode": "push_to_talk",
+   "fragment": "vilken låt spelas mest på Spotify",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "Det finns ingen enda årslista i sökresultaten som svarar för hela tvåtusen tjugosex, så jag redovisar det senaste jag hittat. Enligt Spotifys sommarlista tvåtusen tjugosex i Sverige var \"Dai dai\" med Burna Boy och Shakira den mest spelade låten, och sommarens topp tio hade starkt samband med fotbolls-VM. Hela listan med de mest spelade låtarna sommaren tvåtusen tjugosex på strömningstjänsten Spotify finns i samma artikel. Förra årets sammanfattning för tvåtusen tjugofem gav \"Bara bada bastu\" som mest spelad i Sverige. Källa: Sverigesradio.",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 7925,
+    "output_tokens": 456,
+    "cache_read_tokens": 7684,
+    "cache_write_tokens": 0,
+    "web_searches": 1,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.01041621
+   },
+   "status": 200
+  },
+  {
+   "id": "n09",
+   "mode": "push_to_talk",
+   "fragment": "att spela teater är roligt",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "Det stämmer, teater är roligt, särskilt när man får leka med karaktärer och känna publikens reaktion direkt. ",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6600,
+    "output_tokens": 128,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00014917
+   },
+   "status": 200
+  },
+  {
+   "id": "n10",
+   "mode": "push_to_talk",
+   "fragment": "vad betyder det att ringa in ett svar",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "Att ringa in ett svar betyder att markera det i en text eller ett prov, till exempel genom att dra en ring runt det, så att det syns vad du menar eller vad som är rätt. Det används ofta när man ska lyfta fram det viktigaste i en fråga eller ett alternativ.",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6606,
+    "output_tokens": 171,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00017127
+   },
+   "status": 200
+  },
+  {
+   "id": "n11",
+   "mode": "push_to_talk",
+   "fragment": "musik är mitt favoritämne",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "Det låter fint, vad gillar du mest med musik, teori, historia eller att spela själv?",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6602,
+    "output_tokens": 92,
+    "cache_read_tokens": 6387,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00013137
+   },
+   "status": 200
+  },
+  {
+   "id": "a01",
+   "mode": "auto",
+   "fragment": "ring mamma",
+   "want": "either",
+   "got": "call_contact",
+   "input": {
+    "name": "mamma"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6340,
+    "output_tokens": 50,
+    "cache_read_tokens": 6131,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00010721000000000001
+   },
+   "status": 200
+  },
+  {
+   "id": "a02",
+   "mode": "auto",
+   "fragment": "mamma ringde nyss",
+   "want": null,
+   "got": null,
+   "input": {},
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 5643,
+    "output_tokens": 8,
+    "cache_read_tokens": 5446,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 7.816000000000001e-05
+   },
+   "status": 200
+  },
+  {
+   "id": "a03",
+   "mode": "auto",
+   "fragment": "spela musik",
+   "want": "either",
+   "got": null,
+   "input": {},
+   "said": "Det här kan jag inte göra utan ett verktyg för att öppna musik, och jag har inte något sådant just nu.",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 4556,
+    "output_tokens": 43,
+    "cache_read_tokens": 0,
+    "cache_write_tokens": 4374,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00069656
+   },
+   "status": 200
+  },
+  {
+   "id": "a04",
+   "mode": "auto",
+   "fragment": "kan du ringa 112, hon har ramlat",
+   "want": "either",
+   "got": "call_contact",
+   "input": {
+    "number": "112"
+   },
+   "said": "",
+   "spoken_before_tool": false,
+   "ok": true,
+   "notes": [],
+   "model": "claude-haiku-5-5",
+   "usage": {
+    "input_tokens": 6351,
+    "output_tokens": 48,
+    "cache_read_tokens": 6131,
+    "cache_write_tokens": 0,
+    "web_searches": 0,
+    "model": "claude-haiku-5-5",
+    "est_cost_usd": 0.00010731
+   },
+   "status": 200
+  }
+ ],
+ "security": [
+  {
+   "check": "connections select (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.connections TO anon;\",\"message\":\"permissio",
+   "ok": true
+  },
+  {
+   "check": "connections insert (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.connections TO anon;\",\"message\":\"permissio",
+   "ok": true
+  },
+  {
+   "check": "connections select (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.connections TO authenticated;\",\"message\":\"",
+   "ok": true
+  },
+  {
+   "check": "connections insert (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.connections TO authenticated;\",\"message\":\"",
+   "ok": true
+  }
+ ]
+}

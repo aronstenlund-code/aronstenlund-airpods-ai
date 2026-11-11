@@ -1,0 +1,149 @@
+[
+ {
+  "mode": "push_to_talk",
+  "fragment": "ring Bris",
+  "try": 1,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "ring Bris",
+  "try": 2,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "ring Bris",
+  "try": 3,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "spela musik",
+  "try": 1,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "spela musik",
+  "try": 2,
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "spela musik",
+  "try": 3,
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "spela musik",
+  "try": 1,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": "Jag öppnar musikappen."
+ },
+ {
+  "mode": "auto",
+  "fragment": "spela musik",
+  "try": 2,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": "Jag kan inte spela upp musik direkt, men jag kan öppna musikappen åt dig om du säger vilken."
+ },
+ {
+  "mode": "auto",
+  "fragment": "spela musik",
+  "try": 3,
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, spela musik",
+  "try": 1,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": "Vilken musik vill du höra?\nmusik\n"
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, spela musik",
+  "try": 2,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": "Vilken musik vill du höra?\nmusik\n"
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, spela musik",
+  "try": 3,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": "Jag öppnar musik på din telefon nu."
+ },
+ {
+  "mode": "auto",
+  "fragment": "ring mamma",
+  "try": 1,
+  "status": 200,
+  "tool": "call_contact",
+  "input": {
+   "name": "mamma"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "ring mamma",
+  "try": 2,
+  "status": 200,
+  "tool": "call_contact",
+  "input": {
+   "name": "mamma"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "ring mamma",
+  "try": 3,
+  "status": 200,
+  "tool": "call_contact",
+  "input": {
+   "name": "mamma"
+  },
+  "said": ""
+ }
+]

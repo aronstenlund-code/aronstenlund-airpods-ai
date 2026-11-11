@@ -1,0 +1,64 @@
+[
+ {
+  "mode": "auto",
+  "fragment": "Lumen, ring mamma",
+  "status": 200,
+  "tool": "call_contact",
+  "input": {
+   "name": "mamma"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, sätt en timer på fem minuter",
+  "status": 200,
+  "tool": "timer_start",
+  "input": {
+   "seconds": 300,
+   "label": "Fem minuter"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, spela lite musik",
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "lite musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "tutor",
+  "fragment": "Lumen, ring mamma",
+  "status": 200,
+  "tool": "call_contact",
+  "input": {
+   "name": "mamma"
+  },
+  "said": ""
+ },
+ {
+  "mode": "tutor",
+  "fragment": "Lumen, sätt en timer på fem minuter",
+  "status": 200,
+  "tool": "timer_start",
+  "input": {
+   "seconds": 300,
+   "label": "Timer 5 minuter"
+  },
+  "said": ""
+ },
+ {
+  "mode": "tutor",
+  "fragment": "Lumen, spela lite musik",
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ }
+]
