@@ -124,6 +124,16 @@
   .listrow:last-child { border-bottom: 0; }
   .listrow .v { color: var(--mut); }
   .gfoot { font-size: 13px; color: var(--mut); padding: 6px 16px 0; line-height: 1.35; }
+  /* Ke45: testläget (D140). Egen färg, inte röd (rött = fel) och inte blå (vanligt Lyssnar). */
+  :root, .light { --test: #B45309; --testsoft: #FEF3E2; --ontest: #FFFFFF; }
+  .dark { --test: #FBBF6A; --testsoft: #3A2A12; --ontest: #2A1A05; }
+  .live.test { background: var(--testsoft); color: var(--test); }
+  .live.test i { background: var(--test); box-shadow: 0 0 0 4px color-mix(in srgb, var(--test) 25%, transparent); }
+  .chiptest { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: var(--testsoft); color: var(--test); font-size: 13px; font-weight: 600; }
+  .chiptest i { width: 7px; height: 7px; border-radius: 50%; background: var(--test); }
+  .toggle.off { background: var(--line); }
+  .toggle.off::after { right: auto; left: 2px; }
+  .ttoggle { background: var(--test); }
 </style>
 </head>
 <body>
@@ -152,7 +162,7 @@
 </svg>
 <div id="screens"></div>
 <script>
-const APP = 'Lumen';     // A55 byter visningsnamnet till Earmind; väckningsordet är kvar (D128)
+const APP = 'Earmind';   // A55/D128: appen heter Earmind; väckningsordet ”Lumen” står kvar i citaten
 const I = (id, cls = 'ico') => `<svg class="${cls}"><use href="#${id}"/></svg>`;
 const status = () => `<div class="status"><span>9:41</span><span>●●●</span></div>`;
 const topBar = () => `<div class="row between"><div class="brand"><svg><use href="#logo"/></svg>${APP}</div>
@@ -356,7 +366,50 @@ const lyssnarTom = (mode = 'Standardläge', line = 'Svarar när någon frågar',
   <div style="margin-top:auto;padding:0 16px 30px;display:flex;gap:10px"><div class="btn" style="flex:1;height:54px">Pausa</div><div class="btn" style="flex:1;height:54px">Avsluta</div></div>
 </div>`;
 
+const lyssnarTest = () => `<div class="phone">${status()}
+  <div class="scroll" style="gap:14px">
+    <div class="row between"><span style="color:var(--blue);font-size:17px">‹</span><div style="text-align:center"><b style="font-size:17px">Standardläge</b><div class="sub" style="font-size:12px">Svarar när någon frågar</div></div><span style="color:var(--blue)">⋯</span></div>
+    <div style="display:flex;justify-content:center;margin-top:6px"><span class="live test"><i></i>Testläge · ljud skickas</span></div>
+    <div class="card ans"><div class="q">Vad är fotosyntes?</div><div class="a">Fotosyntesen är när växter använder ljusenergi för att göra socker av koldioxid och vatten.</div></div>
+  </div>
+  <div style="margin-top:auto;padding:0 16px 30px;display:flex;gap:10px"><div class="btn" style="flex:1;height:54px">Pausa</div><div class="btn" style="flex:1;height:54px">Avsluta</div></div>
+</div>`;
+const instTest = (on) => `<div class="phone grouped">${status()}
+  <div class="navb"><span class="l">‹ Inställningar</span><span></span><span></span></div>
+  <div class="large" style="font-size:28px">Felsökning</div>
+  <div style="padding:0 16px">
+    <div class="gtitle">Testläge</div>
+    <div class="group"><div class="listrow"><span>Skicka ljud för felsökning</span><span class="toggle ${on ? 'ttoggle' : 'off'}"></span></div></div>
+    <div class="gfoot">${on ? 'På. Medan Earmind lyssnar skickas ljudet till oss och sparas i 14 dagar, så att vi kan höra om frågan uppfattades rätt. Stäng av när du vill; det som redan skickats raderas efter 14 dagar.' : 'Av. Slå på om du testar Earmind åt oss: då skickas ljudet till oss och sparas i 14 dagar.'}</div>
+  </div>
+</div>`;
+const testSheet = () => `<div class="phone grouped">${status()}
+  <div class="scroll">${topBar()}</div>
+  <div class="dimmed"></div>
+  <div class="sheet"><div class="grab"></div>
+    <div style="padding:6px 20px 0"><b style="font-size:22px">Slå på testläget?</b></div>
+    <div style="padding:10px 20px 0;font-size:16px;line-height:1.42">Medan Earmind lyssnar skickas <b>allt ljud</b> till oss, också andras röster och bakgrundsljud. Vi lyssnar för att se om frågan uppfattades rätt.</div>
+    <div class="ex" style="padding:4px 20px 0;gap:10px;font-weight:500">
+      <div style="font-weight:500">${I('timer')}<span>Ljudet sparas i 14 dagar, sedan raderas det.</span></div>
+      <div style="font-weight:500">${I('wave')}<span>Du ser ”Testläge · ljud skickas” så länge det pågår.</span></div>
+      <div style="font-weight:500">${I('gear')}<span>Stäng av under Inställningar › Felsökning.</span></div>
+    </div>
+    <div style="padding:18px 20px 0;display:flex;flex-direction:column;gap:10px"><div class="btn" style="height:54px;background:var(--test);color:var(--ontest)">Slå på testläget</div><div class="tlink" style="text-align:center;font-size:17px;color:var(--ink);padding:8px">Inte nu</div></div>
+  </div>
+</div>`;
+const startTest = () => `<div class="phone">${status()}<div class="scroll">
+  <div class="row between"><div class="brand"><svg><use href="#logo"/></svg>${APP}</div>
+  <div class="row"><span class="chiptest"><i></i>Testläge</span><div class="iconbtn">${I('gear')}</div></div></div>
+  <div class="start">${I('wave')}Starta ${APP}</div>
+  <div class="mode">${I('qmark')}<span>Standardläge</span><span class="m">·</span><span class="b">Byt</span></div>
+  ${canDo()}
+</div></div>`;
+
 const SCREENS = [
+  ['ke45-lyssnar-test', 'Testläge: Lyssnar (Ke45, D140)', lyssnarTest, 'Brickan byter färg och text så länge ljud skickas. Orange: syns direkt, men är inte felets röda eller vanliga Lyssnars blå.'],
+  ['ke45-start-test', 'Testläge: Start (Ke45)', startTest, 'En liten bricka ”Testläge” bredvid inställningarna så länge testläget är på, också när Earmind inte lyssnar.'],
+  ['ke45-bekrafta', 'Slå på testläget (Ke45)', testSheet, 'Kommer när man slår på brytaren, och en gång för konton där testläget slås på automatiskt (Arons). Säger rakt ut att andras röster kommer med.'],
+  ['ke45-inst', 'Inställningar › Felsökning (Ke45)', () => instTest(true), 'Raden och en förklaring som säger vad som händer, i nuläge (på).'],
   ['ke35-start-forsta', 'Första gången på Start (Ke35, Toby fynd 5)', startForsta, 'Efter introt landar man här och Lumen lyssnar inte. Rutan förklarar knappen en gång och försvinner efter första trycket eller ×.'],
   ['ke35-lyssnar-tom', 'Ny start: Lyssnar börjar tomt (Ke35, fynd 3)', () => lyssnarTom('Provläge', 'För dina prov'), 'Varje Starta börjar tomt, i alla lägen. Gamla svar finns i Historik, inte här.'],
   ['ke35-lyssnar-bytt', 'Byte mitt i ett pass (Ke35, fynd 3)', () => lyssnarTom('Provläge', 'För dina prov', true), 'Byter man läge medan Lumen lyssnar står svaren kvar, med en avdelare som säger bytet.'],
