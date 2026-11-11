@@ -56,6 +56,7 @@ Deno.test("O41: a meta sentence about the request is never spoken first", () => 
   assertEquals(rewriteLeadIn("The request is to play music, so I'll open the music app with a lofi search.", "kör lofi"), "");
   assertEquals(rewriteLeadIn("Det är en statement, inte en fråga eller uppgift, så jag svarar kort och vänligt.", "att spela teater är roligt"), "");
   assertEquals(rewriteLeadIn("Det är en fråga om vem Alexander Graham Bell ringde till först.", "x"), "");
+  assertEquals(rewriteLeadIn("Det här är en musikförfrågan, så jag öppnar musikappen med lofi.", "kör lofi"), "");
   assertEquals(rewriteLeadIn("Det låter kul!", "x"), "Det låter kul!");
 });
 
