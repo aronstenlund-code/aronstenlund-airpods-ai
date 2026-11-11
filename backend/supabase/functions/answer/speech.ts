@@ -32,6 +32,8 @@ const MARKERS: RegExp[] = [
   /[[<]{1,2}\s*sammanfattning\s*[\]>]{1,2}\s*:?/i,
   /(?:^|\n)[ \t]*(?:\*\*)?sammanfattning(?:\*\*)?[ \t]*[:\-–—]/i,
   /(?<![[<][ \t]*)SAMMANFATTNING\b[ \t]*:?/,
+  // K40: the answer key after a check question ("[[SVAR]] Nilen | Kongo, Niger") is never read aloud
+  /[[<]{1,2}\s*svar\s*[\]>]{1,2}\s*:?/i,
 ];
 
 /** First marker in `s`: [index where the spoken text ends, index where the summary starts]. */
@@ -52,7 +54,7 @@ function markerHold(buf: string): number {
   const tail = buf.slice(-24);
   for (let br = tail.search(/[[<]/); br !== -1; br = tail.slice(br + 1).search(/[[<]/) === -1 ? -1 : br + 1 + tail.slice(br + 1).search(/[[<]/)) {
     const t = tail.slice(br).toLowerCase().replace(/\s+/g, "").replace(/</g, "[").replace(/>/g, "]");
-    if ("[[sammanfattning]]:".startsWith(t) || "[sammanfattning]:".startsWith(t)) {
+    if ("[[sammanfattning]]:".startsWith(t) || "[sammanfattning]:".startsWith(t) || "[[svar]]".startsWith(t)) {
       hold = tail.length - br;
       break;
     }
@@ -74,6 +76,7 @@ export class SummaryTap {
   private buf = "";
   private sum = "";
   private inSummary = false;
+  private firstIsKey = false;
 
   push(text: string): string {
     if (this.inSummary) {
@@ -85,6 +88,7 @@ export class SummaryTap {
     if (f) {
       const spoken = this.buf.slice(0, f[0]).replace(/\s+$/, "");
       this.sum = this.buf.slice(f[1]);
+      this.firstIsKey = /svar/i.test(this.buf.slice(f[0], f[1]));
       this.buf = "";
       this.inSummary = true;
       return spoken;
@@ -103,9 +107,25 @@ export class SummaryTap {
     return out;
   }
 
+  /** K40: the hidden text split into the summary and the answer key line. */
+  private parts(): { summary: string; key: string } {
+    const raw = this.sum;
+    if (this.firstIsKey) {
+      const m = findSummaryMarker(raw);
+      return m ? { key: raw.slice(0, m[0]), summary: raw.slice(m[1]) } : { key: raw, summary: "" };
+    }
+    const k = /[[<]{1,2}\s*svar\s*[\]>]{1,2}\s*:?/i.exec(raw);
+    return k ? { summary: raw.slice(0, k.index), key: raw.slice(k.index + k[0].length) } : { summary: raw, key: "" };
+  }
+
+  /** K40: the answer key the model wrote after a check question, or "". */
+  get keyLine(): string {
+    return this.inSummary ? this.parts().key.trim() : "";
+  }
+
   /** Cleaned summary (no quotes, one line, <= 300 chars) or null. */
   get summary(): string | null {
-    const t = this.sum.replace(/^[\s:\]\-–—*]+/, "").replace(/["“”«»]/g, "").replace(/\s+/g, " ")
+    const t = this.parts().summary.replace(/^[\s:\]\-–—*]+/, "").replace(/["“”«»]/g, "").replace(/\s+/g, " ")
       .trim()
       .slice(0, 300);
     return t.length >= 5 ? t : null;
@@ -1248,6 +1268,11 @@ ${text}`;
   /** D48 summary of this exchange (from the trailer line), or null. */
   get summary(): string | null {
     return this.silent ? null : this.tap.summary;
+  }
+
+  /** K40: the answer key line after a check question ("Nilen | Kongo, Niger"), or "". */
+  get quizKeyLine(): string {
+    return this.tap.keyLine;
   }
 
   /** D75: the model chose silence, or every sentence was a meta comment (nothing was spoken). */

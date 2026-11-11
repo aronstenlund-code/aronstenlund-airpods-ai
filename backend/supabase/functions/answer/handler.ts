@@ -101,6 +101,7 @@ export function isRepeatedQuestion(text: string, asked: string[]): boolean {
   return asked.some((a) => similarity(a, q) >= 0.8);
 }
 import { stripEcho } from "./echo.ts";
+import { matchAnswer, parseQuizKey } from "./soundalike.ts";
 import { isSpotifyTool, MUSIC_REQUEST, SPOTIFY_RULE, type SpotifyResult, type SpotifyToolName, spotifyToolDefs, validateSpotifyInput } from "./spotifytools.ts";
 import { parseSavedCheck, rankSaved, SAVED_CHECK_PROMPT, type SavedAnswer, savedCheckUser } from "./savedanswers.ts";
 import { numbersToSpeech } from "./svnum.ts";
@@ -120,7 +121,7 @@ import {
   RELATION_RULE,
   SUMMARY_RULE,
   SYSTEM_PROMPT,
-  systemPromptFor, GRADE_NOTE, isQuizRequest, lastQuestion, QUIZ_NOTE, askedQuestions, looksLikeQuestion, sanitizeTagged,
+  systemPromptFor, GRADE_NOTE, isQuizRequest, lastQuestion, QUIZ_NOTE, QUIZ_KEY_RULE, soundNote, askedQuestions, looksLikeQuestion, sanitizeTagged,
 } from "./prompt.ts";
 import { type AnswerRequest, LIMITS, readLimitedJson, validateAnswerRequest } from "./validate.ts";
 
@@ -1219,6 +1220,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const gradeReply = tutor && !plan && !quiz && !command && !!lastQ && !!lastQuestion(lastQ.a) &&
         lastQ.a.trim().endsWith("?") && body.fragment.trim().split(/\s+/).length <= 12 &&
         !looksLikeQuestion(body.fragment) && (replyAge === undefined || replyAge <= GRADE_REPLY_MAX_AGE_SEC);
+      // K40: the reply to a check question is compared by SOUND with the answer key the app sent back (A62)
+      const soundVerdict = gradeReply && body.context.quiz_key ? matchAnswer(body.fragment, body.context.quiz_key) : null;
+      if (soundVerdict) console.log(JSON.stringify({ event: "quiz_sound", verdict: soundVerdict.verdict, score: Number(soundVerdict.score.toFixed(2)) }));
       // K2: with a profile, a check question only when the profile asks for one (a "Kontrollfrågor" line that is not "inga")
       const noChecks = !quiz && tutor && body.persona === "tutor" && !!body.personaSetup &&
         (!/kontrollfrågor\s*:/i.test(body.personaSetup) || /inga kontrollfrågor/i.test(body.personaSetup)) &&
@@ -1333,7 +1337,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
         (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "") +
-        (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "");
+        (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "") +
+        (!plan && (tutor || quiz) && !noSummary ? QUIZ_KEY_RULE : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
@@ -1362,7 +1367,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ? buildDirectUserMessage(b, continuation, {
             ...extras,
             ...(command ? { command } : {}),
-            note: extras.note ?? echoNote ?? (quiz ? QUIZ_NOTE : gradeReply ? GRADE_NOTE : freeInstruction ? FREE_INSTRUCTION_NOTE : undefined),
+            note: extras.note ?? echoNote ??
+              (quiz ? QUIZ_NOTE : gradeReply ? [GRADE_NOTE, soundVerdict ? soundNote(soundVerdict.verdict, soundVerdict.answer) : ""].filter(Boolean).join(" ") : freeInstruction ? FREE_INSTRUCTION_NOTE : undefined),
           })
           : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, {
             ...extras,
@@ -2025,6 +2031,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               calibration,
               ...(toolPending ? { tool_pending: true } : {}),
               ...(serverToolDone ? { server_tool: serverToolDone } : {}),
+              // K40: the check question's answer key for the app (Scribe keyterms, A62) and for grading the reply
+              ...((() => {
+                const k = post.quizKeyLine ? parseQuizKey(post.quizKeyLine) : null;
+                return k ? { quiz_key: k } : {};
+              })()),
+              ...(soundVerdict ? { quiz_sound: { verdict: soundVerdict.verdict, ...(soundVerdict.answer ? { answer: soundVerdict.answer } : {}) } } : {}),
             });
             doneSent = !closed;
           } catch (e) {

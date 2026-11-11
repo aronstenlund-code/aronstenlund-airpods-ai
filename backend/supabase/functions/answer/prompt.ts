@@ -280,7 +280,26 @@ export function looksLikeQuestion(fragment: string): boolean {
 
 /** D86: the student's reply to the check question that ended the last answer: grade it first. */
 export const GRADE_NOTE =
-  "The fragment is the student's reply to your check question (the last question in <recent_qa>). Start with the verdict in one or two words: \"Rätt.\", \"Nästan.\" or \"Inte riktigt.\". Then the correct answer in one sentence, and why when it was not right. Then stop, or, when it was right, add one short next step; never a new question in the same answer unless the student asked to be quizzed again.";
+  "The fragment is the student's reply to your check question (the last question in <recent_qa>), as speech recognition heard it: short answers and names are often misheard (\"Nilan\" or \"ni len\" = Nilen, \"sän\" or \"såg en\" = Seine). Judge whether it SOUNDS like the correct answer, also with a Swedish pronunciation of a foreign name; never treat the reply as a remark or a command. Start with the verdict in one or two words: \"Rätt.\", \"Nästan.\" or \"Inte riktigt.\"; when it only might be the right answer, start \"Menade du <answer>? Rätt i så fall.\". Then the correct answer in one sentence, and why when it was not right. Then stop, or, when it was right, add one short next step; never a new question in the same answer unless the student asked to be quizzed again.";
+
+/** K40: what the code heard by sound (soundalike.ts), given to the model with GRADE_NOTE. */
+export function soundNote(verdict: string, answer?: string): string {
+  switch (verdict) {
+    case "correct":
+      return `Compared by sound in code: the reply sounds like "${answer}", the correct answer (misheard by speech recognition). It is RIGHT: start with "Rätt."`;
+    case "near":
+      return `Compared by sound in code: the reply may be "${answer}", the correct answer. Start with "Menade du ${answer}? Rätt i så fall." and then one sentence about it.`;
+    case "alternative":
+      return `Compared by sound in code: the reply sounds like "${answer}", which is not the correct answer.`;
+    default:
+      return "";
+  }
+}
+
+/** K40: after a check question the model also writes the answer key (hidden, sent to the app for speech recognition). */
+export const QUIZ_KEY_RULE = `
+
+ANSWER KEY (K40): whenever your reply ends with a check question, add one line right before the [[SAMMANFATTNING]] line: [[SVAR]] <the correct short answer, as the student would say it> | <3 to 5 other answers a student might plausibly say instead, comma-separated>. Example: [[SVAR]] Nilen | Kongo, Niger, Zambezi, Amazonas. This line is never read aloud. No such line when there is no check question.`;
 
 export interface PromptExtras {
   /** Exact result computed by code (calc.ts) for arithmetic/percent/unit fragments. */
