@@ -84,7 +84,9 @@ struct ListeningScreen: View {
             ZStack {
                 VStack(spacing: 0) {
                     Text(title).font(LumenFont.text(17, .bold, relativeTo: .headline)).lineLimit(1).minimumScaleFactor(0.7)
-                    Text(subtitle).font(LumenFont.text(13, relativeTo: .footnote)).foregroundStyle(LumenColor.muted).lineLimit(1).minimumScaleFactor(0.7)
+                    if !typeSize.isAccessibilitySize { // Ke39 S2: at the largest sizes the title says the mode already
+                        Text(subtitle).font(LumenFont.text(13, relativeTo: .footnote)).foregroundStyle(LumenColor.muted).lineLimit(1).minimumScaleFactor(0.7)
+                    }
                 }
                 .padding(.horizontal, 56)
                 .accessibilityElement(children: .combine)

@@ -233,3 +233,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [x] klar 2026-11-11 16:11 → reports/2026-11-11-1551-angela-a67-toby-t13.md **A67 – Egen punkt (README 8): Tobys T13 fynd 1** (effort: low). `reports/apptest/2026-11-11-1555-toby-t13-omtest-a63-a66.md`: "ja" medan det korta svarets anrop fortfarande strömmar (two_level) köade "utveckla" i 7–13 s; vänta på `done.more` och säg det direkt.
 
 - [x] klar 2026-11-11 16:11 → reports/2026-11-11-1551-angela-a67-toby-t13.md **A68 – Egen punkt (README 8): Tobys T13 fynd 2** (effort: low). En hållen halv fråga skickades först när Scribe stängde (25 s): frågetimern gav upp när ett svar strömmade och litade på att något frågade senare. Nu tittar den igen var 0,5 s.
+
+- [~] pågår 2026-11-11 16:34 **A69 – Stående uppgift (PLAN 2b): Kellys Ke39 S1–S2** (effort: low). Lägesikonen på Start följer textstorleken; underrubriken på Lyssnar döljs vid de största storlekarna (läget står redan i rubriken).
