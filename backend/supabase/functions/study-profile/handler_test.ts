@@ -55,3 +55,9 @@ Deno.test("K40 study profile: the exam's topic is kept, and a topic of names put
   assertEquals(r.terms.slice(0, 2), ["Nilen", "Seine"]);
   assert(SYSTEM_PROMPT_PROFILE.includes("the terms are first those names themselves"));
 });
+
+Deno.test("K40 study profile: a reply with a trailing comma or a cut-off term list still parses", async () => {
+  const { parseProfileReply } = await import("./handler.ts");
+  assertEquals(parseProfileReply('{"profile": {"grade": "y8", "subject": "Geografi",}, "terms": ["Nilen", "Seine",]}').terms, ["Nilen", "Seine"]);
+  assertEquals(parseProfileReply('{"profile": {"grade": "y8", "subject": "Geografi"}, "terms": ["Nilen", "Seine", "Loi').profile.subject, "Geografi");
+});

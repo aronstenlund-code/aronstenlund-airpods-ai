@@ -77,10 +77,20 @@ export function parseProfileReply(text: string): { profile: StudyProfileOut; ter
   const empty = { profile: { grade: null, course: null, subject: null, exam_date: null, no_exam: false }, terms: [] };
   const m = /\{[\s\S]*\}/.exec(text);
   if (!m) return empty;
-  let j: Record<string, unknown>;
-  try {
-    j = JSON.parse(m[0]);
-  } catch {
+  let j: Record<string, unknown> | null = null;
+  // K40 (live: a topic of 50 names gave an empty profile): trailing commas, comments or a cut list are repaired
+  const tries = [m[0], m[0].replace(/\/\/[^\n]*/g, "").replace(/,\s*([\]}])/g, "$1")];
+  const all = text.slice(text.indexOf("{"));
+  const cut = all.lastIndexOf('",');
+  if (cut > 0 && /"terms"\s*:\s*\[/.test(all)) tries.push(all.slice(0, cut + 1) + "]}");
+  for (const s of tries) {
+    try {
+      j = JSON.parse(s);
+      break;
+    } catch { /* next repair */ }
+  }
+  if (!j) {
+    console.warn(JSON.stringify({ event: "profile_parse_failed", chars: text.length }));
     return empty;
   }
   const p = (j.profile ?? {}) as Record<string, unknown>;
@@ -148,7 +158,7 @@ export function createProfileHandler(deps: ProfileDeps) {
         const c of deps.provider.stream({
           system: SYSTEM_PROMPT_PROFILE,
           user: user_,
-          maxTokens: 700,
+          maxTokens: 1200, // K40: a topic of names gives 50 names
           cacheSystem: true,
           model: cfg.model,
           signal: req.signal,

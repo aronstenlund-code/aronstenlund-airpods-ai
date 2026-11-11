@@ -1,0 +1,161 @@
+{
+ "summary": {
+  "keys": 3,
+  "keys_spoken": 0,
+  "graded_ok": "7/7"
+ },
+ "rows": [
+  {
+   "step": "quiz",
+   "said": "Vilken organell i cellen sköter cellandningen?",
+   "quiz_key": {
+    "answer": "Mitokondrien",
+    "alternatives": [
+     "Kloroplasten",
+     "Cellkärnan",
+     "Ribosomen",
+     "Golgiapparaten",
+     "Cellväggen"
+    ]
+   },
+   "key_spoken": false
+  },
+  {
+   "step": "quiz",
+   "said": "Vilken organell i cellen omvandlar energin från maten till energi som cellen kan använda?",
+   "quiz_key": {
+    "answer": "Mitokondrien",
+    "alternatives": [
+     "Cellkärnan",
+     "Kloroplasten",
+     "Ribosomen",
+     "Cellväggen",
+     "Golgiapparaten"
+    ]
+   },
+   "key_spoken": false
+  },
+  {
+   "step": "quiz",
+   "said": "Vad kallas den process där växter använder solljus, vatten och koldioxid för att bilda socker och syre?",
+   "quiz_key": {
+    "answer": "Fotosyntes",
+    "alternatives": [
+     "Cellandning",
+     "Förbränning",
+     "Jäsning",
+     "Transpiration",
+     "Osmos"
+    ]
+   },
+   "key_spoken": false
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Egypten?",
+   "heard": "Nilan",
+   "want": "right",
+   "got": "right",
+   "ok": true,
+   "said": "Rätt. Nilen rinner genom Egypten, från söder till norr, och mynnar ut i Medelhavet. Nästan hela Egyptens befolkning bor längs floden, eftersom resten av landet är öken. Nilens årliga översvämningar gav bördig jord redan i det forntida Egypten. På provet kan du skriva att Nilen är Egyptens livsnerv.",
+   "sound": {
+    "verdict": "correct",
+    "answer": "Nilen"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Egypten?",
+   "heard": "ni len",
+   "want": "right",
+   "got": "right",
+   "ok": true,
+   "said": "Rätt. Nilen rinner genom Egypten, från söder till norr, och mynnar ut i Medelhavet i ett stort delta. Nästan hela befolkningen bor längs floden eftersom resten av landet är öken, och översvämningarna gav fruktbar jord redan under forntiden.",
+   "sound": {
+    "verdict": "correct",
+    "answer": "Nilen"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Paris?",
+   "heard": "såg en",
+   "want": "near",
+   "got": "near",
+   "ok": true,
+   "said": "Menade du Seine? Rätt i så fall. Seine rinner genom Paris och mynnar ut i Engelska kanalen vid Le Havre. På provet kan du nämna att floden är ungefär sjuhundraåttio kilometer lång och att Notre-Dame ligger på en ö i den, Île de la Cité.",
+   "sound": {
+    "verdict": "near",
+    "answer": "Seine"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Paris?",
+   "heard": "sän",
+   "want": "right",
+   "got": "right",
+   "ok": true,
+   "said": "Rätt. Seine rinner genom Paris och mynnar ut i Engelska kanalen vid Le Havre. Floden delar staden i en norra och en södra del, den högra och den vänstra stranden, och Eiffeltornet ligger precis vid dess strand. Vilken flod rinner genom London?",
+   "sound": {
+    "verdict": "correct",
+    "answer": "Seine"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken flod rinner genom Paris?",
+   "heard": "Loire",
+   "want": "wrong",
+   "got": "wrong",
+   "ok": true,
+   "said": "Inte riktigt. Det är Seine som rinner genom Paris. Loire är Frankrikes längsta flod och rinner förbi bland annat Orléans och Nantes, men inte genom huvudstaden.",
+   "sound": {
+    "verdict": "alternative",
+    "answer": "Loire"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken stad ligger vid Rhônes mynning?",
+   "heard": "mar säj",
+   "want": "right",
+   "got": "right",
+   "ok": true,
+   "said": "Rätt. Marseille ligger vid Rhônes mynning i Medelhavet och är Frankrikes näst största stad. Rhône rinner från Alperna genom Lyon och bildar ett stort delta, Camargue, strax väster om staden. På provet kan du skriva att Marseille är Frankrikes viktigaste hamn.",
+   "sound": {
+    "verdict": "correct",
+    "answer": "Marseille"
+   }
+  },
+  {
+   "step": "grade",
+   "q": "Vilken är Europas största sjö?",
+   "heard": "Vänern",
+   "want": "wrong",
+   "got": "wrong",
+   "ok": true,
+   "said": "Inte riktigt. Europas största sjö är Ladoga i Ryssland, med ungefär sjuttontusen sjuhundra kvadratkilometer. Vänern är störst i Sverige och västra Europa, med omkring femtusen sexhundra kvadratkilometer, alltså ungefär en tredjedel av Ladogas yta.",
+   "sound": {
+    "verdict": "alternative",
+    "answer": "Vänern"
+   }
+  },
+  {
+   "step": "nokey",
+   "heard": "om ni har redan svarat",
+   "said": "Menade du Nilen? Rätt i så fall. Nilen rinner genom Egypten och går från söder till norr ut i Medelhavet. Nästan all befolkning bor längs floden eftersom resten av landet är öken, och det är därför Egypten kallas Nilens gåva."
+  },
+  {
+   "step": "profile",
+   "profile": {
+    "grade": null,
+    "course": null,
+    "subject": null,
+    "exam_date": null,
+    "no_exam": false
+   },
+   "terms": []
+  }
+ ]
+}
