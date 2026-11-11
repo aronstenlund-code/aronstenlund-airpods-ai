@@ -54,7 +54,7 @@ const PREF_RULE: Record<string, string> = {
 /** K13.1: short answer first, then the developed answer after a marker (the app keeps it for "ja"/"mer"/a nod). */
 export const TWO_LEVEL_RULE = `
 
-TWO LEVELS (K13, this request; it replaces the length rules above): first the SHORT answer: one or two sentences, at most 30 words, correct, with the single most important point, no check question. Then a line with only [[MER]]. Then the DEVELOPED answer at A level for the student: the concepts, how they connect, one concrete example and the nuance that matters, in four to seven sentences. The developed answer continues from the short one and never repeats or rephrases it; it may end with one check question when the style rules allow one. Nothing is said about the two parts.`;
+TWO LEVELS (K13, this request; it replaces the length rules above): first the SHORT answer: one or two sentences, at most 30 words, correct, with the single most important point, no check question. Then a line with only [[MER]]. Then the DEVELOPED answer at A level for the student: the concepts, how they connect, one concrete example and the nuance that matters, in four to seven sentences. The developed answer continues from the short one and never repeats or rephrases it; it may end with one check question when the style rules allow one. Nothing is said about the two parts. This applies to EVERY answer in this request, also a one-sentence fact ("Canberra", "åtta ben"): the [[MER]] line and the developed part are always written (for a fact: the background, why, and one detail that helps it stick).`;
 const MORE_MARK = "[[MER]]";
 /** K17.2: the end-of-session summary (the app keeps it as study cards, D81, and in Anteckningar). */
 const SESSION_END_RULE =
