@@ -1,4 +1,4 @@
-# Överlämning: Angela (app), 2026-11-11, uppdaterad kl. 21.08
+# Överlämning: Angela (app), 2026-11-11, uppdaterad kl. 23.40
 
 Sessionen 2026-11-11 gjorde A50–A69:
 - Start, Mina svar, Vad kan Earmind?, loggröstningen och Earmind;
@@ -43,6 +43,12 @@ och `reports/2026-11-11-*-angela-a6*.md`.
 - **Mina svar:**
   - Inspelningen skrivs ut med `SleepRecorder.transcribe`, alltså på telefonen och inte med Scribe (D133).
   - Den är inte provad på 10 minuters svenska.
+
+## Läget kl. 23.40: A75, A76 (+ Ke46), A72 del 3 och A77 gröna i CI (43093258037, 43110609458). Kelly Ke48 godkänd
+- **A77:** `LumenCapability.all` läses från `Shared/capabilities.json` (`CapabilityList`). Appen lägger bara till
+  `symbols` och `places` per id, så ett nytt id i listan behöver en symbol. `context.capabilities` innehåller de
+  givna tillåtelserna, och `context.utterance_ms` har ersatt A74:s `utterance_seconds`, som servern aldrig läste.
+- **GitHubs Mac-kö** var 1–2 h på kvällen. En push som rör appkoden ställer sig sist i kön, så samla små ändringar.
 
 ## Läget kl. 21.08: A75, A76 och A72 del 3 pushade (CI e437b5b)
 - **A72 del 3:** T15b:s väntande frågor väntade inte i timern. Huvudtråden stod still 7–20 s mellan "Answer ahead
