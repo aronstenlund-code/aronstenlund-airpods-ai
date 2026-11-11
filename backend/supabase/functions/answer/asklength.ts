@@ -87,7 +87,7 @@ export function lengthNote(a: AskedLength): string {
 export function lengthCaps(a: AskedLength): { maxTokens: number; maxChars: number; exact: boolean } | null {
   const words = a.words ? Math.round(a.words * (a.atLeast ? 1.5 : 1.25)) : a.sentences ? a.sentences * 30 : 0;
   if (!words) return null;
-  // "about"/"at most" N words: the spoken text is cut at the last sentence end within ~1.1 N words (live: 121 for 100)
-  if (a.words && !a.atLeast) return { maxTokens: Math.max(256, words * 3 + 120), maxChars: Math.round(a.words * 1.1 * 6.8) + 20, exact: true };
+  // "about"/"at most" N words: the spoken text is cut at the last sentence end within ~1.2 N words (live: 121 for 100; 1.1 N cut "femtio ord" to 32)
+  if (a.words && !a.atLeast) return { maxTokens: Math.max(256, words * 3 + 120), maxChars: Math.round(a.words * 1.2 * 6.8) + 20, exact: true };
   return { maxTokens: Math.max(256, words * 3 + 120), maxChars: Math.max(600, words * 9), exact: false };
 }

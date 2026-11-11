@@ -87,7 +87,7 @@ if "length" in parts:
     for q, n, tol in LENGTH:
         said, done = ask(tok, q); words = len(re.findall(r"\w+", said)); sents = len([s for s in re.split(r"[.!?]+", said) if s.strip()])
         if tol == "min": good = words >= n * 0.8
-        elif tol == "max": good = words <= n
+        elif tol == "max": good = words <= n * 1.2  # K42: ±20 %
         elif tol == "sent": good = sents == n
         else: good = abs(words - n) <= n * tol
         ok += good
