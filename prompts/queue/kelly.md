@@ -105,8 +105,8 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [x] klar 2026-11-11 10:28 → reports/2026-11-11-1028-kelly-ke29-start-vadkan.md **Ke29 – Ny Start + "Vad Lumen kan" (D124, D125)** (effort: high). Gör först. Skiss: stor Start-knapp överst med läget under, provkortet nedanför, "Få A-svar" inne i Provläget. Sidan "Vad kan Lumen?" med rader för förhör, frågor, träning, kalender, timers, Spotify, samtal, sömn: vad man säger och om något behöver ställas in. Text: "Som Siri, fast den faktiskt förstår vad du frågar och svarar direkt i dina AirPods." Samma budskap på sajten.
 
-- [~] pågår 2026-11-11 10:29 **Ke30 – "Mina svar" och "Lumen kan allt" (D126)** (effort: medium). Skissa listan Mina svar per prov, redigeringen (Lumens förslag → din text), inspelningen med Klar-knapp, och raden "Lumen kan allt" med exempelfraser under Start-knappen. Uppdatera Ke29.
+- [x] klar 2026-11-11 10:28 → reports/2026-11-11-1028-kelly-ke30-mina-svar.md **Ke30 – "Mina svar" och "Lumen kan allt" (D126)** (effort: medium). Skissa listan Mina svar per prov, redigeringen (Lumens förslag → din text), inspelningen med Klar-knapp, och raden "Lumen kan allt" med exempelfraser under Start-knappen. Uppdatera Ke29.
 
 - [x] klar 2026-11-11 10:18 → reports/2026-11-11-1018-kelly-ke31-rostning-vektor.md **Ke31 – Tre loggkandidater för röstningen (D127)** (effort: medium). Gör först. Rita om A klotet, B den gröna formen och C den orange ringen (`docs/design/logo/rostning/`) som rena vektorer i samma storlek och ljus, så att röstningen blir rättvis. Ljust och mörkt, kontrollera i 60 pt. Lägg dem i `docs/design/logo/rostning/vektor/` till Angela (A54).
 
-- [ ] **Ke32 – Earmind på sajten (D128)** (effort: low). Byt Lumen → Earmind i sajtens texter och titel. Väckningsordet i exemplen behålls tills vidare.
+- [~] pågår 2026-11-11 10:28 **Ke32 – Earmind på sajten (D128)** (effort: low). Byt Lumen → Earmind i sajtens texter och titel. Väckningsordet i exemplen behålls tills vidare.
