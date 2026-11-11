@@ -148,3 +148,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 - [x] **K-stående – omgång 10: ekofiltret och följdfrågor (live eval klocka-01)** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 13:05 (Kevin): `reports/2026-11-11-1305-kevin-standing10-echo-followup.md`_
 
 - [x] **K-stående – omgång 11: Oscars O22 (rättelser och appkommandon med egna ord)** (effort: medium). Lagd av Kevin 2026-11-11. _klar 2026-11-11 13:36 (Kevin): `reports/2026-11-11-1336-kevin-standing11-corrections-commands.md` (20/20, 9/10, 0 falska)_
+
+- [x] **K-stående – omgång 12: Oscars O43 (falskt 'Rätt' när Scribe läser upp termlistan)** (effort: medium). Lagd av Kevin 2026-11-11. _klar 2026-11-11 14:22 (Kevin): `reports/2026-11-11-1422-kevin-standing12-o43-term-list.md`_
