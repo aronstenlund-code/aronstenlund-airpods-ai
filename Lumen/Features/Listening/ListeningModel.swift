@@ -370,6 +370,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             self?.listeningEventObserver?(gated ? .micGated : .micOpen, Date()) // A29
         }
         speaker.onSpeak = { [weak self] text in
+            self?.lastSpokeTextAt = Date() // A63
             self?.ownSpeechStarted(text)
             self?.echo.record(text, at: Date())
             self?.sessionObserver?(.spoke(text), Date())
@@ -2118,11 +2119,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     static let quietToReopen: TimeInterval = 1.0
 
     /// The input is gated for Lumen's voice, but nothing plays or waits to be said, and no answer streams.
+    /// A63 (Toby T12): with `two_level` the stream goes on after the short answer is spoken (`more_delta`, never
+    /// spoken), so a streaming answer counts as over when Lumen has had nothing new to say for `streamQuiet`.
     private var ownSpeechLooksOver: Bool {
         guard transcription.isInputGated, !controller.playback.isSpeaking, !speaker.isSpeaking, !speaker.hasPendingSpeech else { return false }
-        if case .answering = answers.status { return false }
+        if case .answering = answers.status {
+            return lastSpokeTextAt.map { Date().timeIntervalSince($0) >= Self.streamQuiet } ?? false
+        }
         return true
     }
+
+    /// A63: when Lumen was last given text to say.
+    @ObservationIgnored private var lastSpokeTextAt: Date?
+    static let streamQuiet: TimeInterval = 2.5
 
     /// The voice did not report its end within its estimated length + 2 s: open the recogniser anyway (A21.3).
     private func ownSpeechOverdue() {
@@ -3912,10 +3921,25 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                     isPlaybackSpeaking: controller.playback.isSpeaking, now: date)
         if activation.pendingIsUnfinished {
             controller.log("Frågor: half a question, waiting up to \(UnfinishedQuestion.hold) s for the rest (A21)")
+            askForTheRestBeforeTheHoldEnds()
         }
         scheduleQuestionTimer()
         if activation.pendingDueAt == nil { discardAhead(reason: "no question when the pause came") }
     }
+
+    /// A63 (Toby T12 finding 1): the rest of a half question came, but Scribe kept it uncommitted until its session
+    /// ended (11–17 s). Before the hold is over, Scribe is asked for its final, so the rest arrives in time to be joined.
+    private func askForTheRestBeforeTheHoldEnds() {
+        halfQuestionTask?.cancel()
+        halfQuestionTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(max(0.5, UnfinishedQuestion.hold - 1.2)))
+            guard let self, !Task.isCancelled, self.isListening, self.activation.pendingIsUnfinished else { return }
+            self.controller.log("Half a question: Scribe asked for the rest now, words waiting: \(self.transcription.hasWaitingWords) (A63)")
+            self.transcription.commit()
+        }
+    }
+
+    @ObservationIgnored private var halfQuestionTask: Task<Void, Never>?
 
     /// Voice-created command (D37): "spara kommando <ord>: <instruktion>". Confirms by voice.
     @discardableResult
