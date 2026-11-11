@@ -32,13 +32,13 @@ struct ConsentView: View {
                           text: "Du startar och stoppar själv. När mikrofonen är på syns en blå lyssnarbricka i appen, och iOS visar sin egen mikrofonsymbol.")
                     point(symbol: "waveform",
                           title: "Talet skrivs ut av ElevenLabs",
-                          text: "Medan Earmind lyssnar skickas ljudet till ElevenLabs, som skriver ut det. Svaren läses också upp med en röst från ElevenLabs. Earmind sparar aldrig ljud.")
+                          text: "Medan Earmind lyssnar skickas ljudet till ElevenLabs, som skriver ut det. Svaren läses också upp med en röst från ElevenLabs. Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon.")
                     point(symbol: "cloud",
                           title: "Svaren kommer från Claude",
                           text: "Texten skickas via Earminds server till Claude från Anthropic, som tar fram svaret. Utan nät blir det inga svar.")
                     point(symbol: "paperplane",
                           title: "Frågor och svar skickas till oss",
-                          text: "Dina frågor och Earminds svar skickas till oss så att vi kan göra Earmind bättre. Ljud sparas aldrig, och texten raderas när vi har läst den.")
+                          text: "Dina frågor och Earminds svar skickas till oss så att vi kan göra Earmind bättre. Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon. Texten raderas när vi har läst den.")
                     point(symbol: "person.2",
                           title: "Andras ord kan också komma med",
                           text: "I Standardläge svarar Earmind också på frågor som någon annan ställer, till exempel läraren. Då skrivs deras ord ut och skickas på samma sätt. Berätta för dem runt dig att du använder Lumen, och använd den inte där inspelning inte är tillåten, till exempel på prov.")

@@ -4,7 +4,8 @@ import Observation
 /// Consent policy (ARCHITECTURE §12). Bump `currentVersion` whenever the consent text changes in substance;
 /// the app then shows the consent screen again before the next session.
 enum ConsentPolicy {
-    static let currentVersion = 5 // A41: D116 (questions and answers sent for analysis), other people's words
+    /// A73 (D138): 6, the text about sound is true now (the sleep mode keeps clips on the phone).
+    static let currentVersion = 6 // A41: D116 (questions and answers sent for analysis), other people's words
     /// A48 (D116, K30): the first version whose text says questions and answers are sent to us.
     static let qaLogVersion = 5
 

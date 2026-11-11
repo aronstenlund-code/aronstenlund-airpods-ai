@@ -1,0 +1,176 @@
+{
+ "cut_silent": "14/18",
+ "full_answered": "2/12",
+ "missed_cut": [
+  "vad är huvudstaden i",
+  "när började det andra",
+  "vilken är den största",
+  "vad heter Sveriges"
+ ],
+ "false_cut": [
+  "vad tror du att svaret är",
+  "hur gammal tror du att jag är",
+  "vem tror du att mördaren är",
+  "vad tror du det blir",
+  "hur svårt tror du provet blir",
+  "hur många katter tror du att hon har",
+  "vad betyder ordet och",
+  "vad är skillnaden mellan som och att",
+  "kan du ge exempel på en mening med som",
+  "vad heter det på engelska när man säger än"
+ ],
+ "cut": [
+  {
+   "t": "hur många invånare har Sverige och",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vem var det som",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "kan du förklara vad en",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "hur fungerar en",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "varför är det så att",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "hur lång är",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "är det sant att",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vilken av dem är",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vad hette kungen som",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "hur mycket väger ett",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vad är huvudstaden i",
+   "cut": false,
+   "ok": false
+  },
+  {
+   "t": "när började det andra",
+   "cut": false,
+   "ok": false
+  },
+  {
+   "t": "vilken är den största",
+   "cut": false,
+   "ok": false
+  },
+  {
+   "t": "vad heter Sveriges",
+   "cut": false,
+   "ok": false
+  },
+  {
+   "t": "hur många ben har en spindel och",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "hur vet man vilken",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vad är det för väder som",
+   "cut": true,
+   "ok": true
+  },
+  {
+   "t": "vad är en",
+   "cut": true,
+   "ok": true
+  }
+ ],
+ "full": [
+  {
+   "t": "vad tror du att svaret är",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "hur gammal tror du att jag är",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "vem tror du att mördaren är",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "vad tror du det blir",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "hur svårt tror du provet blir",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "hur många katter tror du att hon har",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "vad betyder ordet och",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "vad är skillnaden mellan som och att",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "kan du ge exempel på en mening med som",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "vad heter det på engelska när man säger än",
+   "cut": true,
+   "ok": false
+  },
+  {
+   "t": "vilken månad är det",
+   "cut": false,
+   "ok": true
+  },
+  {
+   "t": "var ligger Mälaren",
+   "cut": false,
+   "ok": true
+  }
+ ]
+}

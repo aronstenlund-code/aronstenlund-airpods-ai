@@ -92,13 +92,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved."
+            "value": "Earmind listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio becomes text and is not saved by Earmind. Sleep mode keeps its clips only on your phone."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind lyssnar genom mikrofonen för att skriva ut tal och svara på frågor i dina AirPods. Ljudet strömmas för utskrift och sparas inte."
+            "value": "Earmind lyssnar genom mikrofonen för att skriva ut tal och svara på frågor i dina AirPods. Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon."
           }
         }
       }

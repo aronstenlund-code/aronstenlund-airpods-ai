@@ -149,7 +149,7 @@ extension IntroView {
         VStack(alignment: .leading, spacing: 4) {
             point("mic", "Lyssnar bara när du har startat den")
             point("eye", "Du ser alltid när den lyssnar")
-            point("waveform.slash", "Ljud sparas inte")
+            point("waveform.slash", "Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon.") // A73 (D138)
             // A41 (D116): what is sent for analysis is part of what "Testa nu" agrees to.
             point("paperplane", "Frågor och svar skickas till oss")
             Button("Läs mer") { isReadingMore = true } // the word Toby's screen tour looks for
@@ -228,7 +228,7 @@ struct FirstQuestionView: View {
                         .foregroundStyle(LumenColor.muted)
                         .frame(maxWidth: .infinity, minHeight: 50)
                 }
-                Text("iOS frågar om mikrofonen första gången. Ljud sparas inte.") // A30 (Kelly Ke20): the intro's words
+                Text("iOS frågar om mikrofonen första gången. Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon.") // A73 (D138) // A30 (Kelly Ke20): the intro's words
                     .font(LumenFont.text(14, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
                     .multilineTextAlignment(.center)

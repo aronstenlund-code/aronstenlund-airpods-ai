@@ -6,15 +6,15 @@ import { readLimitedJson } from "../answer/validate.ts";
 
 /**
  * K39 (D127, owner): the logo vote (A54). One vote per user (the anonymous Supabase user id), can be changed.
- *   POST /logo-vote {"choice": "A" | "B" | "C"} -> {"choice", "results"?}
+ *   POST /logo-vote {"choice": "A" | ... | "F"} -> {"choice", "results"?}
  *   GET  /logo-vote                              -> {"choice": "A" | null, "results"?}   (only the caller's own vote)
- *   GET  /logo-vote?view=owner                   -> {"results": {"A", "B", "C", "total"}} (Aron only, as K30)
+ *   GET  /logo-vote?view=owner                   -> {"results": {"A" … "F", "total"}} (Aron only, as K30)
  * `results` (percent per logo) goes to a user only after they have voted and only when there are at least
  * RESULTS_MIN votes (A54: "procent per logga om det finns ≥ 20 röster"), so early votes are not steered.
  * No other personal data: no install id, no network, no device.
  */
 export const RESULTS_MIN = 20;
-export const CHOICES = ["A", "B", "C"] as const;
+export const CHOICES = ["A", "B", "C", "D", "E", "F"] as const;
 export type Choice = typeof CHOICES[number];
 
 export interface LogoVoteDeps {
@@ -28,17 +28,13 @@ export interface LogoVoteDeps {
 }
 export const LOGO_VOTE_LIMITS: Limits = { perMinute: 10, perDay: 50, globalPerDay: 50_000 };
 
-export interface Results {
-  A: number;
-  B: number;
-  C: number;
-  total: number;
-  percent: Record<Choice, number>;
-}
+export type Results = Record<Choice, number> & { total: number; percent: Record<Choice, number> };
 export function results(c: Record<Choice, number>): Results {
-  const total = c.A + c.B + c.C;
+  const total = CHOICES.reduce((n, k) => n + (c[k] ?? 0), 0);
   const pct = (n: number) => (total ? Math.round((1000 * n) / total) / 10 : 0);
-  return { A: c.A, B: c.B, C: c.C, total, percent: { A: pct(c.A), B: pct(c.B), C: pct(c.C) } };
+  const out = { total, percent: {} } as Results;
+  for (const k of CHOICES) { out[k] = c[k] ?? 0; out.percent[k] = pct(c[k] ?? 0); }
+  return out;
 }
 
 export function createLogoVoteHandler(deps: LogoVoteDeps) {
@@ -69,7 +65,7 @@ export function createLogoVoteHandler(deps: LogoVoteDeps) {
       const b = (await readLimitedJson(req, 1024)) as { choice?: unknown } | null;
       const choice = typeof b?.choice === "string" ? b.choice.trim().toUpperCase() : "";
       if (!(CHOICES as readonly string[]).includes(choice)) {
-        throw new HttpError(400, "invalid_request", 'Send {"choice": "A" | "B" | "C"}');
+        throw new HttpError(400, "invalid_request", 'Send {"choice": "A" | ... | "F"}');
       }
       await deps.cast(user.id, choice as Choice);
       return json(await forUser(choice as Choice));
