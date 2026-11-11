@@ -130,3 +130,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-11 19:00 → reports/2026-11-11-1900-kelly-ke41-granskning-a73.md **Ke41 – Granska A73 (rätt text om ljud, D138)** (effort: low, Kelly själv, enligt Arons prompt). Godkänd; L1 licensraden om ElevenLabs (medel), L2–L3 låga. G3 stängd.
 
 - [x] klar 2026-11-11 19:05 → reports/2026-11-11-1905-kelly-ke42-sajtens-ikon.md **Ke42 – Stående uppgift (PLAN 2b): sajten med appens ikon (D129/D139)** (effort: low, Kelly själv). Sidhuvudet, favicon och apple-touch-icon visar symbol 4; byt till den exakta glasklot-ikonen. `site/` ≤ 2 MB, Lighthouse ≥ 95.
+
+- [~] pågår 2026-11-11 20:06 **Ke43 – Granska A71 (exakt AppIcon, märket i rubriken och röstningen med sex)** (effort: low, Kelly själv, enligt Arons prompt). Mot `docs/design/logo/rostning/exakt/README.md`. Bilder: CI "Simulator screenshots" 43079705733.
