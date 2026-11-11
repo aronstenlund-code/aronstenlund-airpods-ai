@@ -81,8 +81,13 @@ final class FirstUserTests: XCTestCase {
                 screen("forsta-svaret-saknas", "Frågor: no answer within 60 s")
                 fail("Frågor: no answer containing '\(answerKey)' within 90 s")
             }
-            // A18: "Fortsätt" only after an answer, "Hoppa över" before it.
-            tap(["Fortsätt", "Hoppa över"], "first question → Fortsätt/Hoppa över")
+            // A18: "Fortsätt" only after an answer, "Hoppa över" before it. A60: after the answer the first start can
+            // move on by itself (straight to "Har du prov snart?").
+            if wait(["Inte nu", "Spara prov"], 3) != nil {
+                log.append("A60: the first question moved on by itself after the answer")
+            } else {
+                tap(["Fortsätt", "Hoppa över"], "first question → Fortsätt/Hoppa över")
+            }
             pause(1.5)
             systemAlerts()
         } else {
@@ -105,11 +110,9 @@ final class FirstUserTests: XCTestCase {
         } else {
             log.append("note: no exam step")
         }
-        if wait(["Dela inte", "Don't share"], 5) != nil {
-            screen("dela-historik", "Share history prompt")
-            tap(["Dela inte", "Don't share"], "share prompt → Dela inte")
-        }
+        // The sheets after the first start, in whatever order they come (share prompt, A52, A54): T8c had two in a row.
         pause(1)
+        startSheets()
         screen("start", "The start screen after the first start")
         milestone("start screen")
         if wait(["Tillbaka till start"], 1) != nil {
@@ -214,25 +217,37 @@ final class FirstUserTests: XCTestCase {
     /// A52: once, after the first answer, "Lumen kan mer än svara" (Earmind after A55). A54: the logo vote, when it is
     /// due. A new user answers the obvious way: Klar, and Senare for the vote.
     private func startSheets() {
+        var count = 0
+        for round in 0..<5 {
+            if wait(["Lumen kan mer än svara", "Earmind kan mer än svara"], round == 0 ? 4 : 2) != nil {
+                screen("kan-mer-an-svara", "A52: the sheet after the first answer")
+                milestone("A52 sheet shown")
+                tap(["Klar"], "A52 sheet → Klar")
+            } else if wait(["Dela inte", "Don't share"], 1) != nil {
+                screen("dela-historik", "Share history prompt")
+                milestone("share prompt shown")
+                tap(["Dela inte", "Don't share"], "share prompt → Dela inte")
+            } else if wait(["Hjälp oss välja logga"], 1) != nil {
+                screen("rosta-logga", "A54: the logo vote")
+                milestone("A54 vote shown")
+                tap(["Senare"], "A54 vote → Senare")
+            } else {
+                break
+            }
+            count += 1
+            pause(1.5)
+        }
+        if count > 1 { log.append("FINDING: \(count) sheets in a row over Start") }
         // A60 (Ke35): the first pass ends on Start with "Här startar du Earmind" once, by the button. Left as it is: a
         // new user reads it and presses the button.
-        if wait(["Här startar du*"], 2) != nil {
+        if !shownHint, wait(["Här startar du*"], 1) != nil {
+            shownHint = true
             screen("har-startar-du", "A60: 'Här startar du' on Start")
             milestone("A60 hint shown")
         }
-        if wait(["Lumen kan mer än svara", "Earmind kan mer än svara"], 4) != nil {
-            screen("kan-mer-an-svara", "A52: the sheet after the first answer")
-            milestone("A52 sheet shown")
-            tap(["Klar"], "A52 sheet → Klar")
-            pause(1)
-        }
-        if wait(["Hjälp oss välja logga"], 3) != nil {
-            screen("rosta-logga", "A54: the logo vote")
-            milestone("A54 vote shown")
-            tap(["Senare"], "A54 vote → Senare")
-            pause(1)
-        }
     }
+
+    private var shownHint = false
 
     private var answerPredicate: NSPredicate {
         NSCompoundPredicate(orPredicateWithSubpredicates: answerKeys.map { NSPredicate(format: "label CONTAINS[c] %@", $0) })
