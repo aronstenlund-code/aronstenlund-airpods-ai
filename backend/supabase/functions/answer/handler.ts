@@ -193,6 +193,15 @@ export interface HandlerConfig {
   priceOutPerMTok: number;
 }
 
+/** K42.2: "Vilken är Sveriges tredje största stad?", "världens längsta flod", "näst högsta berget": a rank fact. */
+const RANK = /(?<![\p{L}])(?:störst[a-z]*|minst[a]?|längst[a]?|högst[a]?|lägst[a]?|äldst[a]?|yngst[a]?|djupast[e]?|tätast[e]?|kallast[e]?|varmast[e]?|näst|tredje|fjärde|femte|först[a]?|sist[a]?)(?![\p{L}])/iu;
+export function isRankQuestion(t: string): boolean {
+  const w = t.trim().split(/\s+/);
+  return w.length >= 3 && w.length <= 14 && RANK.test(t) &&
+    /^(?:(?:lumen|earmind),?\s+)?(?:vilk(?:en|et|a)|vad|vem|var|hur|när|vilket år|nämn|säg)\b/iu.test(t.trim()) &&
+    !/(?<![\p{L}])(?:jag|mig|min|mitt|mina|vi|vår|våra|du|din|ditt|dina)(?![\p{L}])/iu.test(t);
+}
+
 export const DEFAULT_CONFIG: HandlerConfig = {
   confidenceThreshold: 0.45,
   maxTokens: 256,
@@ -1326,7 +1335,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K29 (D115 T1): a short fact question in Provläge can go to the cheaper default model (TUTOR_FACT_ROUTE=1)
       const factRoute = !isRizz && tutor && !plan && !demo && !!cfg.tutorModel && cfg.tutorFactRoute === true &&
         !continuation && !computed && isShortFactQuestion(body.fragment);
-      const tutorModel = !isRizz && tutor && !plan && !demo && cfg.tutorModel && !factRoute
+      // K42.2 (Aron's phone test: "Vättern är Sveriges största sjö"; live 19/21 on Haiku: "tredje största stad är
+      // Helsingborg", "största nationalpark är Stora Sjöfallet"): a short rank question goes to the stronger model
+      const rankFact = !isRizz && !tutor && !plan && !demo && !!cfg.tutorModel && !computed && isRankQuestion(body.fragment);
+      const tutorModel = (!isRizz && tutor && !plan && !demo && cfg.tutorModel && !factRoute) || rankFact
         ? cfg.tutorModel
         : demo && cfg.demoModel // K5: the demo runs on the stronger model (priced like Provläge)
         ? cfg.demoModel

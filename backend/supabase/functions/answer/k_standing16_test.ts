@@ -57,3 +57,9 @@ Deno.test("K42.1: the name is Earmind (or the app's name); never 'inget eget nam
   assert(selfAnswer("är du en robot")!.includes("Jag heter Earmind och är en AI-assistent"));
   for (const q of ["vad heter du i efternamn på provet", "vad heter huvudstaden", "vad heter det"]) assertEquals(selfAnswer(q), null, q);
 });
+
+import { isRankQuestion } from "./handler.ts";
+Deno.test("K42.2: short rank fact questions are recognised (they go to the stronger model)", () => {
+  for (const q of ["Vilken är Sveriges största sjö?", "Vilken är Sveriges tredje största stad?", "Vad är världens längsta flod?", "Vilket är Sveriges högsta berg?", "Vem var Sveriges första statsminister?", "Lumen, vilken är Sveriges näst största ö?"]) assert(isRankQuestion(q), q);
+  for (const q of ["Vad ska jag plugga först?", "Vilken är din största svaghet?", "största sjön", "Hur fungerar fotosyntes?", "Vad heter du?"]) assert(!isRankQuestion(q), q);
+});
