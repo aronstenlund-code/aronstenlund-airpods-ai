@@ -1,6 +1,6 @@
-# Överlämning: Oscar (QA), 2026-11-11 14:17 (molnsession, 11 punkter, inte komprimerad)
+# Överlämning: Oscar (QA), 2026-11-11 17:25 (molnsession, 16 punkter, inte komprimerad, klar för dagen)
 
-Klart i dag: O38 (K38), O16 del 2, O39 (K37), O13 del 2 (K17), O34, O40 (K39), O41 (K36, BLOCKER rättad i K40), O42 (omtest), O44 (K36 godkänd), O43 (enordssvar, BUGG falskt Rätt i sorl). Rapporter i `reports/qa/2026-11-11-*`.
+Klart i dag: O38 (K38), O16 del 2, O39 (K37), O13 del 2 (K17), O34, O40 (K39), O41 (K36, BLOCKER rättad i K40), O42, O44 (K36 godkänd), O43 + O45 (enordssvar i förhör), O46, O47, O48, O49 (rättelser). Slutläge i `docs/STATUS.md`. Nästa session: O13 del 3 (där cachen finns), O22b-kommandona (4/10) när Kevin rättat, hela K22-kedjan när nyckeln finns, och nya hållouts för det som Kevin lagt in i sina tester.
 
 ## Det som inte står i rapporterna
 - **Molnsessionen saknar det git-ignorerade ljudet:** `scripts/qa/audio-cache/` (O13d3, O12-klipp) finns bara på Arons Windows-dator. O13 del 3 måste köras där (`O6_LIB=<pylib> python -I scripts/qa/o13_del3_terms.py --realtime`) eller med Arons ja till att generera 501 tecken igen. Generera inget utan det (D120).
