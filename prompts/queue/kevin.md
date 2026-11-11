@@ -130,3 +130,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 - [x] **K-stående – K4-loopen, omgång 3** (effort: medium). Stående uppgift (PLAN 2b), lagd av Kevin 2026-11-11. (1) Talform: "s. 23" och "299,50 kronor" (O36, O34). (2) Regressionen sparar sina rader som artefakt, så att ett fall som faller går att se. (3) Det sämsta fallet i regressionen, om det går att rätta. _klar 2026-11-11 11:39 (Kevin): `reports/2026-11-11-1139-kevin-standing3-speech-misheard.md` (talform, regressionens rader, felhörda 5/8 → 7/8)_
 
 - [x] **K40 – BLOCKER (Oscar O41): telefonverktygen i Standardläge** (effort: high). Lagd av Kevin 2026-11-11 efter Oscars O41 (prio 1). _klar 2026-11-11 11:49 (Kevin): `reports/2026-11-11-1149-kevin-o41-blocker-tools-standard.md` (riktad begäran i `auto` får verktygen; live 16/16 och 6/6)_
+
+- [x] **K-stående – K4-loopen, omgång 4: Oscars O13 del 2 (K17-planen) och O38 (K38-filtret)** (effort: medium). Stående uppgift (PLAN 2b), lagd av Kevin 2026-11-11. _klar 2026-11-11 11:53 (Kevin): `reports/2026-11-11-1153-kevin-standing4-plan-filter.md` (19/19; 26/26 och 17/20)_
