@@ -28,3 +28,8 @@ Fynd: Tobys T12 (`reports/apptest/2026-11-11-1300-toby-t12-omtest-a56.md` fynd 3
 
 ## Till Angela
 Spela `done.more` på "ja" eller "mer" även i Standardläge, när det finns.
+
+## Tillägg 15:48 (Tobys T13: fortfarande inget `done.more` för korta fakta)
+- Appen skickar `two_level` i Standardläge (`ListeningModel.swift`), men i Auto skrev modellen ingen `[[MER]]` efter faktasvar på en mening: **1/8** ("Canberra", "åtta ben").
+- Regeln säger nu uttryckligen att `[[MER]]` och den utvecklade delen skrivs i **varje** svar, också efter ett faktasvar på en mening (`9663b51`).
+- **Live i Auto: 8/8** med `done.more` (32–90 ord).
