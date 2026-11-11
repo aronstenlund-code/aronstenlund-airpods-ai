@@ -122,7 +122,13 @@ final class FirstUserTests: XCTestCase {
         // 5. Provläge, the obvious way from here
         startProv()
         systemAlerts()
-        if wait(["Hoppa över allt"], 6) != nil {
+        // A60 (Ke35): Provläge asks at most one thing, and only without an exam: "Har du prov snart?" with "Inte nu".
+        if wait(["Inte nu"], 4) != nil {
+            screen("provlage-har-du-prov", "A60: Provläge's one question")
+            tap(["Inte nu"], "Provläge question → Inte nu")
+            pause(1)
+        }
+        if wait(["Hoppa över allt"], 3) != nil {
             screen("provlage-introfragor", "Provläge's own first-start questions")
             // A new user answers what is asked; Hoppa över is the quickest honest choice, step by step.
             var steps = 0
@@ -158,17 +164,17 @@ final class FirstUserTests: XCTestCase {
     /// The big button at the top of Start: one tap, Lyssnar within 15 s, and the looped question answered.
     private func startButton() {
         endRunningSession()
-        guard wait(["Starta Lumen"], 3) != nil else {
+        guard wait(["Starta Lumen", "Starta Earmind"], 3) != nil else {
             log.append("note: no 'Starta Lumen' on Start (a build before A50)")
             return
         }
-        if find(["Starta Lumen"])?.isHittable != true { log.append("A50: Starta Lumen is not on screen without scrolling") }
+        if find(["Starta Lumen", "Starta Earmind"])?.isHittable != true { log.append("A50: Starta Lumen is not on screen without scrolling") }
         let mode = find(["Läge:*"])?.label ?? "(no mode line)"
         log.append("A50: mode line = \(mode)")
-        if find(["Lumen kan allt*"]) == nil { fail("A50: no 'Lumen kan allt' on Start") }
+        if find(["Lumen kan allt*", "Earmind kan allt*"]) == nil { fail("A50: no 'Lumen kan allt' on Start") }
         screen("start-starta-lumen", "A50: Start before pressing Starta Lumen")
         milestone("Start: Starta Lumen visible")
-        tap(["Starta Lumen"], "start → Starta Lumen")
+        tap(["Starta Lumen", "Starta Earmind"], "start → Starta Lumen")
         systemAlerts()
         guard wait(["Tillbaka till start"], 10) != nil else {
             screen("starta-lumen-startade-inte", "Starta Lumen did not open Lyssnar")
@@ -192,14 +198,39 @@ final class FirstUserTests: XCTestCase {
         endRunningSession()
     }
 
-    /// End a session that is still on, as a user would before choosing something else.
+    /// End a session that is still on, as a user would before choosing something else. Then the sheets Start shows
+    /// after an answer.
     private func endRunningSession() {
+        defer { startSheets() }
         guard wait(["Avsluta"], 1) != nil, wait(["Tillbaka till start"], 1) != nil else { return }
         tap(["Avsluta"], "Lyssnar → Avsluta")
         pause(2)
-        if wait(["Starta Lumen", "Lägg till prov", "Få A-svar till provet", "Fler lägen"], 3) == nil {
+        if wait(["Starta Lumen", "Starta Earmind", "Lägg till prov", "Få A-svar till provet", "Fler lägen"], 3) == nil {
             screen("efter-avsluta", "After Avsluta")
             for label in ["Klar", "Stäng"] where app.buttons[label].exists { tapElement(app.buttons[label], "after Avsluta → \(label)"); break }
+        }
+    }
+
+    /// A52: once, after the first answer, "Lumen kan mer än svara" (Earmind after A55). A54: the logo vote, when it is
+    /// due. A new user answers the obvious way: Klar, and Senare for the vote.
+    private func startSheets() {
+        // A60 (Ke35): the first pass ends on Start with "Här startar du Earmind" once, by the button. Left as it is: a
+        // new user reads it and presses the button.
+        if wait(["Här startar du*"], 2) != nil {
+            screen("har-startar-du", "A60: 'Här startar du' on Start")
+            milestone("A60 hint shown")
+        }
+        if wait(["Lumen kan mer än svara", "Earmind kan mer än svara"], 4) != nil {
+            screen("kan-mer-an-svara", "A52: the sheet after the first answer")
+            milestone("A52 sheet shown")
+            tap(["Klar"], "A52 sheet → Klar")
+            pause(1)
+        }
+        if wait(["Hjälp oss välja logga"], 3) != nil {
+            screen("rosta-logga", "A54: the logo vote")
+            milestone("A54 vote shown")
+            tap(["Senare"], "A54 vote → Senare")
+            pause(1)
         }
     }
 
@@ -238,7 +269,7 @@ final class FirstUserTests: XCTestCase {
             guard tap(["Provläge*"], "Byt → Provläge") else { return }
             pause(1)
             log.append("A50: mode line after choosing = \(find(["Läge:*"])?.label ?? "(none)")")
-            tap(["Starta Lumen"], "start → Starta Lumen (Provläge)")
+            tap(["Starta Lumen", "Starta Earmind"], "start → Starta Lumen (Provläge)")
             return
         }
         if find(["Få A-svar till provet"]) != nil {
