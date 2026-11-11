@@ -216,8 +216,9 @@ final class FirstUserTests: XCTestCase {
         repeat {
             let now = answerCount()
             if now > more {
-                let labels = app.staticTexts.matching(answerPredicate).allElementsBoundByIndex.map(\.label)
-                log.append("answer shown (\(more) → \(now)): " + labels.map { String($0.prefix(120)) }.joined(separator: " | "))
+                // One element by index, checked first: a list read while the screen changes failed the run (10:32).
+                let last = app.staticTexts.matching(answerPredicate).element(boundBy: now - 1)
+                log.append("answer shown (\(more) → \(now)): " + (last.exists ? String(last.label.prefix(160)) : "(changed)"))
                 return true
             }
             pause(0.5)
