@@ -455,6 +455,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         await useMicrophone(for: mode)
         await controller.start()
         logMicrophone()
+        updateDebugAudio() // A76
         if !isListening, case .error(let message) = state, message.localizedCaseInsensitiveContains("permission") {
             problem = .microphoneDenied // A12: shown on Start as well, not only on the first-question screen
         }
@@ -547,6 +548,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func stopListening() async {
         if isListening { cue(.stop) } // A34: before the graph stops
         listeningStoppedAt = Date() // A60 (Toby T8b finding 1): what Scribe hands over after this is not used
+        stopDebugAudio() // A76: the last, shorter piece is finished
         stopListeningForExamStatement()
         answers.sessionLength = nil
         activation.cancelPending()
@@ -560,6 +562,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func resume() async {
         await controller.resume()
+        updateDebugAudio() // A76
     }
 
     /// One tap to switch to music and back (D33): screen button, Live Activity and Control. Never starts a
@@ -2234,6 +2237,123 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             parts.append("answer streaming (spoke \(spoke), call \(asked), ahead \(ahead != nil))")
         }
         return parts.isEmpty ? "nothing" : parts.joined(separator: ", ")
+    }
+
+    // MARK: - A76 (D140) the test mode: the audio and what happened, for us
+
+    /// The test mode switch (Inställningar, or on for a test account by K43's flag).
+    var testMode: TestModeSettings?
+    /// True while the microphone's audio is being kept for us (the indicator says "Testläge · ljud skickas").
+    private(set) var isRecordingDebugAudio = false
+    @ObservationIgnored private var debugSubscription: UUID?
+    @ObservationIgnored private var debugTask: Task<Void, Never>?
+    @ObservationIgnored private var debugWriter: DebugAudioWriter?
+    @ObservationIgnored let debugStore = DebugPieceStore()
+
+    var debugAudioClient: DebugAudioClient?
+    @ObservationIgnored private var debugFlagChecked = false
+    @ObservationIgnored private var debugUploading = false
+
+    /// Starts or stops keeping the audio to match the switch, the server and the listening.
+    func updateDebugAudio() {
+        if !debugFlagChecked, debugAudioClient != nil {
+            debugFlagChecked = true
+            Task { await refreshTestModeFlag() }
+        }
+        let wanted = (testMode?.isEnabled ?? false) && !(testMode?.serverRefused ?? false) && isListening
+        if wanted, debugSubscription == nil {
+            let store = debugStore
+            let writer = DebugAudioWriter(store: store) { [weak self] url, start, end in
+                Task { @MainActor in self?.debugPieceFinished(url: url, start: start, end: end) }
+            }
+            let (id, stream) = controller.subscribeToChunks()
+            debugSubscription = id
+            debugWriter = writer
+            debugTask = Task.detached {
+                for await chunk in stream { await writer.append(chunk.samples) }
+                await writer.close()
+            }
+            isRecordingDebugAudio = true
+            controller.log("Test mode: the audio is kept and sent for debugging (A76, D140)")
+        } else if !wanted, debugSubscription != nil {
+            stopDebugAudio()
+        }
+    }
+
+    private func stopDebugAudio() {
+        guard let id = debugSubscription else { return }
+        debugSubscription = nil
+        controller.unsubscribeFromChunks(id) // ends the stream; the writer closes the last piece
+        debugTask = nil
+        debugWriter = nil
+        isRecordingDebugAudio = false
+    }
+
+    /// A finished minute: what was heard, what the turns became and the log lines in it, next to the audio.
+    private func debugPieceFinished(url: URL, start: Date, end: Date) {
+        let inside = { (date: Date) in date >= start.addingTimeInterval(-1) && date <= end.addingTimeInterval(1) }
+        var piece = DebugPiece(id: url.deletingPathExtension().lastPathComponent, startedAt: start, endedAt: end,
+                               audioFile: url.lastPathComponent, mode: mode.rawValue)
+        piece.heard = conversation.finalSegments.filter { inside($0.startedAt) }.map { .init(at: $0.startedAt, text: $0.text) }
+        piece.turns = controller.turns.records.filter { inside($0.at) }.map {
+            .init(at: $0.at, heard: $0.fragment, outcome: $0.outcome.rawValue, reason: $0.reason, status: $0.status)
+        }
+        piece.log = controller.eventLog.filter { inside($0.time) }.suffix(200).map {
+            String(format: "%.2f ", $0.time.timeIntervalSince(start)) + $0.text
+        }
+        piece.answers = conversation.answers.filter { inside($0.createdAt) }.map {
+            .init(at: $0.createdAt, text: "\($0.question) → \($0.answer)")
+        }
+        debugStore.save(piece)
+        controller.log("Test mode: a piece of \(Int(end.timeIntervalSince(start))) s is waiting for upload (A76)")
+        Task { await uploadDebugPieces() }
+    }
+
+    /// K43's flag once per launch: a test account is switched on, an account the server refuses is told so.
+    private func refreshTestModeFlag() async {
+        guard let client = debugAudioClient, let testMode, let flag = await client.flag() else { return }
+        testMode.applyServerFlag(flag)
+        if flag { await uploadDebugPieces() }
+        updateDebugAudio()
+    }
+
+    /// The switch in Settings: the tester's own choice goes to the server (K43 `opt_in`/`opt_out`).
+    func testModeSwitched() async {
+        guard let testMode else { return }
+        let on = testMode.isEnabled
+        if !on {
+            testMode.serverRefused = false
+            updateDebugAudio()
+        }
+        if let client = debugAudioClient, let flag = await client.setOptIn(on) {
+            testMode.serverRefused = on && !flag
+            if testMode.serverRefused {
+                controller.log("Test mode: the server does not take audio from this account (K43 needs an email sign-in)")
+                for piece in debugStore.pending() { debugStore.delete(piece) } // never kept when it cannot be sent
+            }
+        }
+        updateDebugAudio()
+    }
+
+    /// Sends the waiting pieces one at a time, oldest first; a sent piece leaves the phone (D140 point 4).
+    func uploadDebugPieces() async {
+        guard let client = debugAudioClient, !debugUploading else { return }
+        debugUploading = true
+        defer { debugUploading = false }
+        for piece in debugStore.pending() {
+            switch await client.upload(DebugTurnBody(piece: piece, audio: debugStore.audio(of: piece))) {
+            case .sent:
+                debugStore.delete(piece)
+            case .refused:
+                testMode?.serverRefused = true
+                for piece in debugStore.pending() { debugStore.delete(piece) }
+                controller.log("Test mode: the server refused the upload; the pieces are deleted and nothing more is kept (A76)")
+                updateDebugAudio()
+                return
+            case .failed:
+                return // no network: the pieces wait (at most 120 or 48 h)
+            }
+        }
     }
 
     /// A74: the questions asked in the last minute (Standardläge), so a late copy is not answered again.

@@ -32,7 +32,7 @@ Angela, 2026-11-11. Kö: `prompts/queue/angela.md` A75 (Deangelo, högsta priori
   - en nära miss loggas;
   - listan per namn.
 - `A14Tests` och `VoiceChannelTests` är uppdaterade.
-- **iOS-bygge och enhetstester:** CI RESULT75.
+- **iOS-bygge och enhetstester:** CI 43090031944 fick ingen Mac-runner (GitHubs kapacitet, inte kompilering); byggs om tillsammans med A76.
 - **Ej verifierat:** Tobys T17 har kraven 48/50 "Lumen, <fråga>" och högst 1/50 falska väckningar. På telefon är inget
   provat.
 

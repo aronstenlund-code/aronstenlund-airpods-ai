@@ -3,10 +3,16 @@ import SwiftUI
 /// A13.1: Inställningar › Mer › Om appen: the promises and one line about the AI server. A23 (Deangelo): the licences
 /// moved one level down, to "Licenser". The full texts are in `THIRD_PARTY_NOTICES.md` and in the app bundle.
 struct AboutView: View {
+    /// A76 (D140): D138's text gets the test mode's addition only while it is on.
+    @AppStorage(TestModeSettings.enabledKey) private var testModeOn = false
+
     var body: some View {
         List {
             Section {
                 Text("Earmind lyssnar bara när du har startat den, och du ser alltid när den lyssnar. Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon.") // A73 (D138)
+                if testModeOn {
+                    Text(TestModeSettings.soundNote).foregroundStyle(.orange)
+                }
                 Text("Frågor och svar går via Earminds server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen.")
                     .foregroundStyle(.secondary)
                 // A27 (Oscar O24) and A39/A41 (D116): where the questions go and are kept, said plainly.

@@ -8,11 +8,13 @@ struct ListeningIndicatorBar: View {
     let onStop: () -> Void
     let onResume: () -> Void
     var onOpen: (() -> Void)?
+    /// A76 (D140): the test mode keeps the audio; the line says so, in its own colour, all the time.
+    var testMode = false
 
     var body: some View {
         switch state {
         case .listening:
-            bar(title: "Lyssnar", active: true, action: "Avsluta", perform: onStop)
+            bar(title: testMode ? "Lyssnar · Testläge, ljud skickas" : "Lyssnar", active: true, action: "Avsluta", perform: onStop)
         case .paused(let reason):
             bar(title: pausedTitle(reason), active: false, action: "Fortsätt", perform: onResume)
         case .idle, .error:
@@ -37,7 +39,7 @@ struct ListeningIndicatorBar: View {
                 HStack(spacing: 8) {
                     Image(systemName: "circle.fill")
                         .font(.system(size: 8))
-                        .foregroundStyle(active ? LumenColor.blue : LumenColor.muted) // A18 (Kelly): red only for errors
+                        .foregroundStyle(active ? (testMode ? Color.orange : LumenColor.blue) : LumenColor.muted) // A18 (Kelly): red only for errors
                         .symbolEffect(.pulse, isActive: active)
                         .accessibilityHidden(true)
                     Text(title)
