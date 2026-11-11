@@ -1,6 +1,6 @@
 # Tavla: vem gör vad
 
-**Självständigt läge (README punkt 8): på till 2026-11-11 18:00.** Plan för dagen: `docs/PLAN-2026-11-11.md`.
+**Självständigt läge (README punkt 8): på till 2026-11-12 07:30.** Aron sover. Ordning: kön, sedan stående uppgift.
 
 Deangelo läser tavlan före varje statusrapport till Aron. **Varje session uppdaterar bara sin egen rad**:
 - när den tar en punkt,
