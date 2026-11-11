@@ -89,3 +89,17 @@ Deno.test("standing19: after an echo, a rest that asks nothing is silence", () =
   assert(!askLike("och sen lägger man till fem. Okej alla, sidan tolv."));
   for (const t of ["men varför blir det femton", "förklara det enklare", "jag förstår inte", "Kan du ta ett exempel", "och om x är två då?", "och om x är två då", "räkna ut y när x är tre"]) assert(askLike(t), t);
 });
+
+Deno.test("standing20: without a CV the setup is the job ad, never the user's facts", () => {
+  assertEquals(missingFact("vad har du för erfarenhet av vård", "Extrajobb som vårdbiträde på ett äldreboende, helger."), "arbetserfarenhet");
+  assertEquals(missingFact("har du körkort", "Lagerarbetare, B-körkort krävs."), "körkort");
+  assertEquals(missingFact("har du körkort", "Jobbannons: Lager. CV: B-körkort sedan 2025."), null);
+});
+
+import { stripInterviewMeta } from "./speech.ts";
+Deno.test("standing20b: 'Det är en bra fråga att svara på.' is not said in an interview answer", () => {
+  assertEquals(stripInterviewMeta("Det är en bra fråga att svara på. "), "");
+  assertEquals(stripInterviewMeta("Bra fråga! "), "");
+  const keep = "Jag ställer gärna en bra fråga om rutinerna. ";
+  assertEquals(stripInterviewMeta(keep), keep);
+});

@@ -43,7 +43,9 @@ const TOPICS: Topic[] = [
 /** The CV part of persona_setup ("Jobbannons: … CV: …"): the ad is the job, never the user's facts. */
 function userFacts(setup: string): string {
   const m = /\bCV\s*:/iu.exec(setup);
-  if (!m) return /jobbannons\s*:/iu.test(setup) ? "" : setup;
+  // live eval intervju-06: without a CV the app sends the job ad alone, with no prefix (InterviewProfile.swift), so
+  // "Extrajobb som vårdbiträde" is the job, never the user's own experience
+  if (!m) return "";
   return setup.slice(m.index);
 }
 

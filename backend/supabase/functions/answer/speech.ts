@@ -498,6 +498,8 @@ const INTERVIEW_META = new RegExp(
   [
     String.raw`\b(?:jag har|jag inte har|det finns|det inte finns) (?:inte |ingen |inga )?(?:någon |något |en |ett |några )?(?:konkret|egen|specifik|faktisk|verklig)\w* (?:\w+ )?(?:upplevelse|händelse|situation|erfarenhet|exempel|uppgift|uppgifter|information)`,
     String.raw`\bjag (?:har (?:inte|inga)|inte har) (?:några )?uppgifter om\b`,
+    // live eval k9-ih-professional-2: "Det är en bra fråga att svara på." before the answer
+    String.raw`^(?:det (?:är|var) )?(?:en )?(?:jätte|riktigt |väldigt )?(?:bra|intressant|klok|svår) fråga(?: att (?:svara på|få|fundera på))?[.!,]?\s*$`,
     String.raw`\b(?:så )?(?:jag|då) svarar (?:jag )?(?:med|utifrån|genom) (?:hur|vad|det|att)\b`,
     String.raw`\bsvarar jag (?:med|utifrån|genom) (?:hur|vad|det|att)\b`,
     String.raw`\b(?:så )?jag börjar med (?:vem|vad|att berätta)\b`,
