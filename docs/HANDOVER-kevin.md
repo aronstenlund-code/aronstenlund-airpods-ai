@@ -1,6 +1,6 @@
-# Överlämning: Kevin (backend), 2026-11-11 13:10
+# Överlämning: Kevin (backend), 2026-11-11 17:46
 
-Sessionen (molnet) gjorde K38, K37, K39, K36, K40b (O41 BLOCKER), Deangelos K40 (förhörssvar efter ljud) och stående omgång 2–10, och är inte komprimerad. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom utom K6, som väntar på `SUPABASE_SERVICE_ROLE_KEY`.
+Sessionen (molnet) gjorde K38, K37, K39, K36, K40b (O41 BLOCKER), Deangelos K40 (förhörssvar efter ljud) och stående omgång 2–15, och är inte komprimerad. Kön är tom utom K6. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom utom K6, som väntar på `SUPABASE_SERVICE_ROLE_KEY`.
 
 **Arbetssätt som sparar tid (molnet)**
 - **Riktig Deno går att installera:** `npm i deno@2` i scratchpad, sedan länka `node_modules/.bin/deno` till `/usr/local/bin/deno`. Då fungerar `deno task test` och `deno task check`, med typkontroll. Node-shimmen behövs inte.
@@ -15,7 +15,7 @@ Sessionen (molnet) gjorde K38, K37, K39, K36, K40b (O41 BLOCKER), Deangelos K40 
 - Appen skickar Standardläge som `mode: "auto"`. Testa verktyg och liknande i `auto` med "Lumen, …", inte bara med `push_to_talk` (O41).
 
 **Läge**
-- API i dag: cirka 2,4 USD. Det mesta är regressionerna, 0,32 USD styck, sex gånger.
+- API i dag: cirka 4,3 USD (regressioner cirka 2,2, live-eval 1,0, K37/K40 0,8, resten Haiku-kontroller).
 - Regressionen på 21 fall varierar mellan 81 och 100 % utan att koden ändrats, så en enskild körning säger lite.
 
 **Öppna trådar**
@@ -26,3 +26,4 @@ Sessionen (molnet) gjorde K38, K37, K39, K36, K40b (O41 BLOCKER), Deangelos K40 
 - Shopify (K35 fas 2) kan byggas på `connections` (`provider` får ett nytt värde) när Partner-appen finns.
 - Två beslut heter "D98", och D124 och D125 finns två gånger, både som owner-beslut och som Kevin-beslut. Rör det inte.
 - **Kris och verktyg (O42):** en sen krismarkör från modellen räknas inte för korta, riktade telefonkommandon utan krissignal i koden. "ring Bris, jag vill inte leva" ger krissvaret och samtalet. Rör det försiktigt.
+- **Auto mot Provläge:** en avklippt fråga är tystnad i Auto men besvaras i Provläge (D87 "half"). Rättelser går till `/memory` med en Haiku-reserv (0/30 falska enligt O49). Appen skickar i dag bara fasta ord dit.
