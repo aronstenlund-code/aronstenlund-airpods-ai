@@ -63,7 +63,7 @@ simpler (your answer was too hard, wants easier words, did not understand your a
 examples (wants examples in your answers),
 careful (says or doubts that your answer was right: it was wrong, false, made up),
 none (anything else).
-It is none when <said> is about something other than your answer: a book, a test, a teacher, a friend, history, the student's own problem ("boken är för svår", "läraren pratar för mycket", "det var fel av kungen"); when it is a question or a request for content, also when it contains "exempel", "fel" or "förklara" ("kan du ge exempel på ädelgaser", "jag förstår inte vad X är, kan du förklara", "förenkla bråket"); or when it is a command such as pause or stop.
+It is none when <said> is about something other than your answer: a book, a test, a teacher, a friend, history, the student's own problem ("filmen var för lång", "mamma tjatar för mycket", "det var fel av Hitler"); when it is a question or a request for content, also when it contains "exempel", "fel" or "förklara" ("ge exempel på däggdjur", "jag förstår inte vad fotosyntes är, förklara", "förenkla uttrycket"); or when it is a command such as pause or stop.
 When unsure, reply none.`;
 
 export function correctionFromCheck(reply: string): { key: "length" | "simplicity" | "examples" | "accuracy"; value: string } | null {
