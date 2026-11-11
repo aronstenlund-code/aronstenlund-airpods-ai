@@ -6,14 +6,17 @@ import SwiftUI
 /// after 2 days, at most 3 times, then never again. After the vote: thanks, and the percent per logo when there are at
 /// least 20 votes (the server decides, K39). One vote per user; nothing else about the user is sent.
 enum LogoChoice: String, CaseIterable, Codable, Sendable {
-    case a = "A", b = "B", c = "C"
+    case a = "A", b = "B", c = "C", d = "D", e = "E", f = "F" // A71 (D129/D130): six candidates, K41
 
-    /// Ke31: the names under the icons, nothing that favours one.
+    /// Ke31/Ke40: the names under the icons, nothing that favours one.
     var name: String {
         switch self {
         case .a: "Klotet"
         case .b: "Den gröna formen"
         case .c: "Den orange ringen"
+        case .d: "Glasklotet"
+        case .e: "Glasringen"
+        case .f: "Glasvågen"
         }
     }
 
@@ -165,8 +168,10 @@ struct LogoVoteSheet: View {
                     .font(LumenFont.text(17))
                     .foregroundStyle(LumenColor.muted)
             }
-            let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 16)) : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
-            layout {
+            // A71: six in a grid, three to a row (two at the largest text sizes).
+            let columns = Array(repeating: GridItem(.flexible(), spacing: 12, alignment: .top),
+                                count: typeSize.isAccessibilitySize ? 2 : 3)
+            LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(order, id: \.self) { choice in candidate(choice) }
             }
             .frame(maxWidth: .infinity)
@@ -282,6 +287,25 @@ struct LogoVoteSheet: View {
                 .font(LumenFont.text(17))
                 .foregroundStyle(LumenColor.muted)
         }
+    }
+}
+
+/// A71 (Ke40): the app's mark in the header and the intro: the exact app icon, small, with iOS's mask corners (a
+/// one-colour symbol could not be the exact picture). Follows the text size where the caller scales `size`.
+struct AppMark: View {
+    let size: CGFloat
+
+    var body: some View {
+        Group {
+            if let image = UIImage(named: "AppMark") {
+                Image(uiImage: image).resizable().interpolation(.high)
+            } else {
+                LumenColor.surface
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(RoundedRectangle(cornerRadius: size * 0.2237, style: .continuous))
+        .accessibilityHidden(true)
     }
 }
 

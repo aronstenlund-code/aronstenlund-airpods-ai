@@ -43,7 +43,7 @@ import Testing
         var generator = Fixed(state: 42)
         schedule.ensureOrder(using: &generator)
         let first = schedule.order
-        #expect(Set(first) == Set(LogoChoice.allCases) && first.count == 3)
+        #expect(Set(first) == Set(LogoChoice.allCases) && first.count == 6) // A71: six
         schedule.ensureOrder(using: &generator)
         #expect(schedule.order == first, "shuffled once per user")
         let defaults = UserDefaults(suiteName: "a54-\(UUID().uuidString)")!
@@ -54,7 +54,7 @@ import Testing
     }
 
     @Test func theNamesFavourNone() {
-        #expect(LogoChoice.allCases.map(\.name) == ["Klotet", "Den gröna formen", "Den orange ringen"])
+        #expect(LogoChoice.allCases.map(\.name) == ["Klotet", "Den gröna formen", "Den orange ringen", "Glasklotet", "Glasringen", "Glasvågen"])
         #expect(LogoChoice.allCases.allSatisfy { !$0.imageName.isEmpty })
     }
 }

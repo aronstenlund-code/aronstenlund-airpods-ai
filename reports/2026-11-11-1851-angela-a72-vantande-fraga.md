@@ -25,7 +25,7 @@ Angela, 2026-11-11. Kö: `prompts/queue/angela.md` A72 (Deangelo).
   säkerhetsspärren. Då rättas villkoret i del 2.
 
 ## Testresultat
-- **iOS-bygge och enhetstester:** CI RESULT72.
+- **iOS-bygge och enhetstester:** CI 43076491531 (9791ce0, A72 och A74) är **grön**: device-bygget, alla enhetstester och `Lumen-unsigned.ipa`.
 - **Ej verifierat:** Toby mäter i T15 och T15b. Kravet är att 0 av 10 frågor väntar över 4 s och att inget eko blir
   en fråga.
 

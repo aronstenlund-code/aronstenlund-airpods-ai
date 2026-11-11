@@ -151,7 +151,7 @@ struct HomeView: View {
     private var topBar: some View {
         HStack {
             HStack(spacing: 8) {
-                LumenLogo(size: logoSize) // Ke37 §10.6: follows the text size
+                AppMark(size: logoSize + 4) // A71 (Ke40): the app icon; Ke37 §10.6: follows the text size
                 Text("Earmind").font(LumenFont.text(24, .bold, relativeTo: .title2))
             }
             .accessibilityElement(children: .combine)

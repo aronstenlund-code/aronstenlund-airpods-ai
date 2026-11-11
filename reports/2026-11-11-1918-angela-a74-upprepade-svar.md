@@ -27,5 +27,5 @@ Angela, 2026-11-11. Kö: `prompts/queue/angela.md` A74 (Deangelo). Underlag: `re
   - samma fråga stoppas;
   - en annan fråga, en fråga efter 60 s och "igen" släpps igenom;
   - `utterance_seconds` går genom `clamped` och kroppen.
-- **iOS-bygge och enhetstester:** CI RESULT74.
+- **iOS-bygge och enhetstester:** CI 43076491531 (9791ce0, A72 och A74) är **grön**: device-bygget, alla enhetstester och `Lumen-unsigned.ipa`.
 - **Ej verifierat:** Toby provar i T16. På telefon är inget provat.
