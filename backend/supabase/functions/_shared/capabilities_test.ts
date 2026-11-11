@@ -26,3 +26,8 @@ Deno.test("K44 'kan du …?' is answered from the list; things not on it are an 
   assert(helpAnswer("Hur stänger jag av dig?")!.includes("Stoppa"));
   assertEquals(helpAnswer("hur stänger man av en dator"), null);
 });
+
+Deno.test("K44 live: 'kan du skicka ett mejl', 'kan du ta en bild' are an honest no", () => {
+  for (const q of ["kan du skicka ett mejl", "kan du ta en bild", "kan du swisha pengar", "kan du tända lampan", "kan du boka en resa"]) assert(notYetAsked(q), q);
+  assert(!notYetAsked("kan du sätta en timer"));
+});

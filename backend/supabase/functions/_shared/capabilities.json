@@ -235,18 +235,25 @@
   }
  ],
  "not_yet": [
-  "skicka sms",
-  "skicka meddelanden",
-  "skicka mejl",
-  "läsa mejl",
-  "läsa notiser",
+  "skicka (?:ett |en |några )?(?:sms|meddelanden?|mejl|mail|e-post|e-mail)",
+  "läsa (?:mina )?(?:mejl|mail|e-post|sms|meddelanden)",
+  "läsa (?:mina )?notiser",
   "betala",
+  "swisha",
   "beställa",
+  "boka (?:en )?resa",
   "boka resor",
-  "ta bilder",
+  "boka (?:ett )?(?:hotell|flyg|tåg)",
+  "ta (?:en |ett |några )?(?:bild|bilder|foto|foton|selfie)",
+  "fotografera",
   "filma",
-  "styra lampor",
-  "vägbeskrivning"
+  "spela in (?:en )?video",
+  "styra (?:mina |lamporna|lampor|lampan|tv|tv:n|värmen)",
+  "tända (?:lampan|lamporna)",
+  "släcka (?:lampan|lamporna)",
+  "vägbeskrivning",
+  "navigera",
+  "köra mig"
  ],
  "help": [
   {
