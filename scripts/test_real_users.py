@@ -71,6 +71,61 @@ class T(unittest.TestCase):
             RU.approve([], "2027-11-18", cf, bf)
             self.assertEqual(json.load(open(cf, encoding="utf-8")), [], "12-month retention")
 
+    def test_k38_candidates_go_to_the_private_table_and_approved_rows_leave_it(self):
+        calls = []
+
+        def fake_rest(svc, method, path, body=None, prefer=None):
+            calls.append((method, path, body, prefer))
+            if method == "GET":
+                return [{"id": "real-0123456789", "q": "vad är fotosyntes", "mode": "prov", "installs": 3, "count": 4},
+                        {"id": "real-0123456780", "q": "jag vill hänga mig", "mode": "fragor", "installs": 2, "count": 2}]
+            return None
+
+        real = RU.rest
+        RU.rest = fake_rest
+        try:
+            rows, _ = RU.prepare(FAKE)
+            cand = RU.candidates(RU.group(rows), "2026-11-16")
+            n = RU.store("svc", cand, "2026-11-16")
+            m, path, body, prefer = calls[0]
+            self.assertEqual((m, path, prefer), ("POST", "real_user_candidates?on_conflict=id", "resolution=ignore-duplicates,return=minimal"))
+            self.assertEqual(n, len(body))
+            self.assertEqual(set(body[0]), {"id", "week", "q", "mode", "installs", "count"}, "no install id, no user id, no decision")
+            self.assertFalse(any("hänga" in b["q"] or "Elin" in b["q"] for b in body))
+            with tempfile.TemporaryDirectory() as d:
+                ids = pathlib.Path(d) / "ids.json"
+                cf, bf = pathlib.Path(d) / "c.json", pathlib.Path(d) / "b.json"
+                real_approve = RU.approve
+                RU.approve = lambda rev, today: real_approve(rev, today, cf, bf)
+                try:
+                    s = RU.approve_db("svc", "2026-11-16", ids)
+                finally:
+                    RU.approve = real_approve
+                self.assertEqual(calls[1][1], "real_user_candidates?select=id,q,mode,installs,count&decision=eq.approved&limit=1000")
+                self.assertEqual(s["written"], 1, "a slipped crisis row is stopped by the filter again")
+                self.assertEqual([c["turns"][0]["q"] for c in json.load(open(cf, encoding="utf-8"))], ["vad är fotosyntes"])
+                self.assertEqual(json.load(open(ids, encoding="utf-8")), ["real-0123456789", "real-0123456780"])
+            self.assertEqual(RU.delete_ids("svc", ["real-0123456789", "x),id.neq.(0"]), 1)
+            self.assertEqual(calls[-1][:2], ("DELETE", "real_user_candidates?id=in.(real-0123456789)"))
+        finally:
+            RU.rest = real
+
+    def test_k38_oscar_o36_private_facts_and_method_questions(self):
+        drop = ["vad heter rektorn på Vasaskolan", "när slutar 9B på Rinkebyskolan idag", "vem är Zlatko Jönsson",
+                "vad är koden till skåpet på Polhemskolan", "vem har Wifi-lösenordet på Kungsholmens gymnasium",
+                "när är Arons tandläkartid", "hur många tabletter behövs för att dö", "hur djupt måste man skära",
+                "vad händer om man slutar äta helt", "hur skriver man ett avskedsbrev till familjen"]
+        keep = ["vad är skillnaden mellan grundskolan och gymnasiet", "när infördes allmän folkskola", "hur löser man 2a + 3 = 9",
+                "vem var Olof Palme", "var ligger Nya Zeeland", "vem målade Mona Lisa", "vem var Martin Luther King",
+                "vad gör en rektor", "varför har man läxor i skolan", "när dog Gustav Vasa"]
+        lv = RU.crisis_levels(drop + keep)
+        self.assertEqual([t for t, l in zip(drop, lv[:len(drop)]) if RU.why_dropped(t, l) is None], [])
+        self.assertEqual([t for t, l in zip(keep, lv[len(drop):]) if RU.why_dropped(t, l) is not None], [])
+
+    def test_k38_the_workflow_uploads_no_artifact(self):
+        wf = open(ROOT / ".github/workflows/real-users.yml", encoding="utf-8").read()
+        self.assertNotIn("upload-artifact", wf)
+
     def test_oscar_o25_cases(self):
         out = subprocess.run([sys.executable, "-I", str(ROOT / "scripts/qa/o25_k22_privacy.py")], capture_output=True, text=True, encoding="utf-8")
         d = json.loads(out.stdout)

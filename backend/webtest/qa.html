@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lumen frågor och svar</title>
 <!-- K30 (D116): Aron's private view of every question and answer. No data is in this file: the rows come from
-     /functions/v1/qa-log only after Aron has signed in with his email (one-time code or link), and the server checks
+     /functions/v1/qa-log (and K38's candidates from /functions/v1/real-users-admin) only after Aron has signed in with his email (one-time code or link), and the server checks
      that the address is OWNER_EMAIL. The publishable key below is public by design. -->
 <style>
   :root { --bg:#fbfaf7; --fg:#1d1b18; --muted:#6b665e; --line:#e3ded5; --accent:#2f5d8a; --card:#fff; }
@@ -26,7 +26,7 @@
 <body>
 <main>
   <h1>Frågor och svar</h1>
-  <p class="muted">Bara för Aron. Raderas när du trycker Hämtat, och senast efter 14 dagar.</p>
+  <p class="muted">Bara för Aron. Frågorna raderas när du trycker Hämtat, och senast efter 14 dagar. Kandidaterna längre ner raderas efter 30 dagar.</p>
 
   <section id="login">
     <div class="row"><input id="email" type="email" placeholder="Din e-post" autocomplete="email" size="28"><button id="send">Skicka kod</button></div>
@@ -41,6 +41,9 @@
       <button id="logout" class="ghost">Logga ut</button>
     </div>
     <div id="list"></div>
+    <h2 id="cand-h">Riktiga användare: kandidater till testbanken</h2>
+    <p class="muted">Allmänna frågor som minst två installationer har delat (Dela historik), redan filtrerade. Godkänn bara frågor utan något om en verklig person, skola eller klass. Det godkända hamnar i repot först när arbetsflödet "Real users" körs med approve.</p>
+    <div id="cand"></div>
   </section>
   <p id="msg" class="muted"></p>
 </main>
@@ -63,7 +66,27 @@
     if (!r.ok) { msg(r.status === 403 ? "Den här adressen har inte behörighet." : `Fel: ${j.message || r.status}`); return show(false); }
     rows = j.rows || []; newest = j.newest; show(true); render();
     msg(rows.length ? `${rows.length} rader${rows.length >= j.max ? " (de senaste " + j.max + ")" : ""}.` : "Inga rader just nu.");
+    loadCand();
   }
+  // K38: the weekly K22 candidates (private table, never an artifact)
+  const DEC = { approved: "Godkänd", rejected: "Struken" };
+  let cand = [];
+  async function loadCand() {
+    const r = await fetch(`${URL_}/functions/v1/real-users-admin`, { headers: { apikey: KEY, authorization: `Bearer ${await token()}` } });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { $("cand").innerHTML = `<p class="muted">Kunde inte hämta kandidaterna (${esc(j.message || r.status)}).</p>`; return; }
+    cand = j.rows || []; renderCand();
+  }
+  function renderCand() {
+    if (!cand.length) { $("cand").innerHTML = '<p class="muted">Inga kandidater just nu.</p>'; return; }
+    $("cand").innerHTML = cand.map((c, i) => `<div class="qa"><div class="t">vecka ${esc(c.week)} · ${c.mode === "prov" ? "Provläge" : "Standardläge"} · ${esc(c.installs)} installationer, ${esc(c.count)} gånger${c.decision ? " · <b>" + DEC[c.decision] + "</b>" : ""}</div><div class="q">${esc(c.q)}</div><div class="row"><button data-i="${i}" data-d="approved">Godkänn</button><button class="ghost" data-i="${i}" data-d="rejected">Stryk</button>${c.decision ? `<button class="ghost" data-i="${i}" data-d="">Ångra</button>` : ""}</div></div>`).join("");
+  }
+  $("cand").onclick = async (e) => {
+    const b = e.target.closest("button[data-i]"); if (!b) return;
+    const c = cand[+b.dataset.i]; const decision = b.dataset.d || null;
+    const r = await fetch(`${URL_}/functions/v1/real-users-admin`, { method: "POST", headers: { apikey: KEY, authorization: `Bearer ${await token()}`, "content-type": "application/json" }, body: JSON.stringify({ id: c.id, decision }) });
+    if (r.ok) { c.decision = decision; renderCand(); } else msg("Kunde inte spara beslutet.");
+  };
   function show(on) { $("login").hidden = on; $("view").hidden = !on; }
   function esc(s) { return String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`); }
   function render() {

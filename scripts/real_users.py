@@ -11,13 +11,16 @@ files): learn from real users every week WITHOUT ever writing a user's words to 
    politics) or any crisis sign (the same `answer/crisis.ts` as the app, through Node).
 3. Group without a model (Jaccard >= 0.6 on stemmed words) and keep a group only when at least K_MIN different installs
    asked it.
-4. Write the groups as CANDIDATES (`--out`, an Actions artifact), never to the repo. A person (Oscar) reads them, sets
-   "approved": true on the ones that may be published, and runs `--approve <file>`: only then do they go to live-eval
-   (scripts/real-user-cases.json) and the reality bank (scripts/real-user-bank.json). Cases older than 12 months are
-   removed again.
+4. Write the groups as CANDIDATES to the private table `real_user_candidates` (K38, Oscar O36: no longer an Actions
+   artifact, which anyone signed in to GitHub can download from a public repo). A person decides per row on Aron's
+   private page (backend/webtest/qa.html -> /functions/v1/real-users-admin) or Oscar through the Supabase MCP. Only the
+   "approve" run of the workflow (`--approve-db`) moves approved rows to live-eval (scripts/real-user-cases.json) and
+   the reality bank (scripts/real-user-bank.json), filtered once more, and then deletes them from the table. Cases
+   older than 12 months are removed again.
 
-  SUPABASE_SERVICE_ROLE_KEY=... python3 scripts/real_users.py --out /tmp/real-users     (weekly workflow)
-  python3 scripts/real_users.py --approve reviewed.json                                (after a person's review)
+  SUPABASE_SERVICE_ROLE_KEY=... python3 scripts/real_users.py                       (weekly workflow -> the table)
+  SUPABASE_SERVICE_ROLE_KEY=... python3 scripts/real_users.py --approve-db ids.json (workflow "approve" run)
+  python3 scripts/real_users.py --approve reviewed.json                             (a local file, after a review)
   python3 scripts/test_real_users.py   (invented data, no network, no model)"""
 import argparse, datetime, json, os, pathlib, re, subprocess, sys, urllib.parse, urllib.request
 from collections import Counter
@@ -32,7 +35,7 @@ BANK_FILE = ROOT / "scripts" / "real-user-bank.json"
 
 # ---------------------------------------------------------------- personal data
 FIRST_NAMES = set("""
-adam albin alexander alice alva alma amanda anders andreas anna anton arvid astrid axel bella benjamin camilla
+adam albin aron alexander alice alva alma amanda anders andreas anna anton arvid astrid axel bella benjamin camilla
 carl caroline casper cornelia daniel david ebba edvin elias elin ella ellen elliot elsa emil emilia emma erik
 ester felicia felix filip frida gabriel hampus hanna hannes hedda hugo ida isak isabelle jakob jessica joel johan
 johanna jonas jonathan josefin julia karin kevin klara lars leo liam lina linnea lisa liv loke love lovisa lucas
@@ -112,6 +115,56 @@ SENSITIVE = re.compile(
 # a public figure or a work may keep its capital ("Röda rummet", "Ungern"); a first name never does
 PUBLIC_OK_AFTER = re.compile(r"^(?:[IVX]{1,5}|den|Vasa|Adolf|Bernadotte|Lindgren|Strindberg|Lagerlöf|Linné|Nobel|Celsius|Einstein|Newton|Darwin|Curie)$")
 
+# K38 (Oscar O36): private facts without a first person. A school, a class, a code, a password or an appointment is
+# about real people in the asker's life, never a knowledge question; a "Förnamn Efternamn" pair is a private person
+# unless the surname is a well-known public one. Dropping a real knowledge question here costs only one candidate.
+GENERIC_SCHOOL = set("grund hög för folk folkhög real lär flick pojk privat friskola gymnasie sär yrkes sommar musik kultur dans körs trafik språk rid sjuk "
+                     "simm söndags fri förskole låg mellan hög stadie lekskola".split())
+SCHOOL = re.compile(r"(?i)(?<![\wåäö])([\wåäö]*?)(skolan|skola|gymnasiet|gymnasium)(?![\wåäö])")
+SCHOOL_NAMED = re.compile(r"(?<![\wåäö])[A-ZÅÄÖ][\wåäö]+s (?:gymnasium|gymnasiet|skola|skolan)(?![\wåäö])")
+CLASS = re.compile(r"(?<![\wåäö\d])[1-9](?:[A-Fa-f]| [A-F])(?![\wåäö])(?!\s*[-+*/=^²³])|(?<![\wåäö])[PFpf]\d{2}(?![\wåäö\d])")
+PRIVATE_THING = re.compile(
+    r"(?i)(?<![\wåäö])(?:rektorn|\w*koden|koder till|kod till|lösen\w*|\w*lösenord\w*|wi-?fi\w*|skåp\w*|tandläkar\w*|läkartid\w*|"
+    r"\w*tid hos|telefonnummr?\w*|numret till|adressen till|personnummer\w*)(?![\wåäö])")
+PUBLIC_SURNAMES = set("""vasa adolf bernadotte lindgren strindberg lagerlöf linné nobel celsius einstein newton darwin curie
+palme hitler napoleon bonaparte luther columbus galilei shakespeare mozart beethoven bach marx lenin stalin churchill
+roosevelt kennedy lincoln washington king mandela gandhi freud tesla edison obama trump biden putin zelensky jobs gates
+musk swift ibrahimović zlatan bergman garbo hammarskjöld wallenberg söderberg boye fröding tegnér runeberg bellman
+taube jansson rowling tolkien orwell dickens austen hemingway picasso gogh vinci michelangelo rembrandt""".split())
+PUBLIC_PAIRS = ("mona lisa", "anne frank", "pippi långstrump", "emil i lönneberga", "karl xii", "gustav ii adolf")
+PLACE_FIRST = set("nya förenta svarta röda döda norra södra östra västra stilla saudi sri costa puerto san sankt el la los "
+                  "new great kap".split())
+# K38 (O36): method questions without "jag" that answer/crisis.ts (written for spoken crisis signs) lets through
+METHOD = re.compile(
+    r"(?i)(?<![\wåäö])(?:tablett\w*|piller|överdos\w*|dödlig dos|för att dö|dö av|döda sig|ta sitt liv|hur djupt|skära sig|skär sig|"
+    r"skära upp|avskedsbr\w*|självmordsbr\w*|slutar? äta|sluta dricka|svält\w*|hänga sig|hängning|dränka sig|hoppa från|"
+    r"strypa|kväva sig)(?![\wåäö])")
+
+
+def private_school(text: str) -> bool:
+    if SCHOOL_NAMED.search(text):
+        return True
+    for m in SCHOOL.finditer(text):
+        pre = m.group(1).lower().rstrip("s")
+        if len(pre) >= 3 and pre not in GENERIC_SCHOOL:
+            return True
+    return False
+
+
+def full_name(text: str) -> bool:
+    """Two capitalised words in a row ("Zlatko Jönsson", "Elvira Johansson") or a capitalised genitive of a first name
+    ("Arons"): a private person unless the second word is a public surname or the pair is a place ("Nya Zeeland")."""
+    words = re.findall(r"[\wåäöÅÄÖéü-]+", text)
+    cap = lambda w: len(w) > 1 and w[0].isupper() and w[1:].islower()
+    for i, w in enumerate(words):
+        if cap(w) and w.endswith("s") and w[:-1].lower() in FIRST_NAMES:
+            return True
+        if i + 1 < len(words) and cap(w) and cap(words[i + 1]):
+            if words[i + 1].lower() in PUBLIC_SURNAMES or w.lower() in PLACE_FIRST:
+                continue
+            return True
+    return False
+
 
 def crisis_levels(texts: list[str]) -> list[str | None]:
     """The app's own crisis filter (answer/crisis.ts) through Node; any failure = every row counts as a crisis row."""
@@ -131,7 +184,7 @@ def has_first_name(text: str) -> bool:
     for i, w in enumerate(words):
         if w.lower() in FIRST_NAMES:
             nxt = words[i + 1] if i + 1 < len(words) else ""
-            if not PUBLIC_OK_AFTER.match(nxt):
+            if not PUBLIC_OK_AFTER.match(nxt) and nxt.lower() not in PUBLIC_SURNAMES:
                 return True
     return False
 
@@ -141,13 +194,18 @@ def why_dropped(text: str, crisis: str | None = None) -> str | None:
     t = text or ""
     if crisis:
         return "crisis"
+    for pair in PUBLIC_PAIRS:  # a famous work or person named like a private one ("Mona Lisa")
+        t = re.sub(rf"(?i)\b{pair}\b", "verket", t)
     t_six = without_six(t)  # the number six is not the topic sex
     for name, rx, txt in (("first_person", FIRST_PERSON, t), ("person", PERSON_PRONOUN, t), ("relation", RELATION, t),
                           ("sensitive", SENSITIVE, t_six), ("number", NUMBERY, t), ("address", ADDRESS, t),
-                          ("person_verb", PERSON_VERB, t), ("self_named", SELF_NAMED, t)):
+                          ("person_verb", PERSON_VERB, t), ("self_named", SELF_NAMED, t), ("method", METHOD, t),
+                          ("private_thing", PRIVATE_THING, t), ("class", CLASS, t)):
         if rx.search(txt):
             return name
-    if has_first_name(t):
+    if private_school(t):
+        return "school"
+    if has_first_name(t) or full_name(t):
         return "name"
     return None
 
@@ -289,8 +347,8 @@ def candidates(groups: list[dict], today: str) -> list[dict]:
 
 
 def run(raw: list[dict], today: str, cases_file=None, bank_file=None, dry=False, out_file=None) -> dict:
-    """K24: the weekly run writes CANDIDATES only (out_file, an artifact). For Oscar's O25 test, cases_file is where the
-    candidates go when given (a temporary file there); the repo files are written only by approve()."""
+    """Tests only (invented data): the candidates go to out_file (a temporary file). The weekly run puts them in the
+    private table instead (K38, main -> store); the repo files are written only by approve()."""
     rows, skipped = prepare(raw)
     groups = group(rows)
     cand = candidates(groups, today)
@@ -319,11 +377,50 @@ def approve(reviewed: list[dict], today: str, cases_file=CASES_FILE, bank_file=B
     return {"approved": len(ok), "written": len(groups), "cases": len(cases)}
 
 
+TABLE = "real_user_candidates"  # K38: service role only (RLS on, no client grants); never an artifact, never git
+
+
+def rest(svc: str, method: str, path: str, body=None, prefer: str | None = None):
+    h = {"apikey": svc, "authorization": "Bearer " + svc, "content-type": "application/json"}
+    if prefer:
+        h["prefer"] = prefer
+    data = json.dumps(body, ensure_ascii=False).encode() if body is not None else None
+    with urllib.request.urlopen(urllib.request.Request(f"{URL}/rest/v1/{path}", data=data, method=method, headers=h), timeout=60) as r:
+        raw = r.read()
+    return json.loads(raw) if raw else None
+
+
+def store(svc: str, cand: list[dict], today: str) -> int:
+    """K38: the week's candidates go to the private table. A row that is already there (waiting, approved or rejected)
+    is left as it is, so a rejected question is not offered again."""
+    rows = [{"id": c["id"], "week": today, "q": c["q"][:300], "mode": c["mode"], "installs": c["installs"], "count": c["count"]} for c in cand]
+    if rows:
+        rest(svc, "POST", f"{TABLE}?on_conflict=id", rows, "resolution=ignore-duplicates,return=minimal")
+    return len(rows)
+
+
+def approve_db(svc: str, today: str, ids_file: pathlib.Path) -> dict:
+    """K38: rows a person marked approved (Aron's page or Oscar via MCP) -> the repo files, filtered once more. The ids
+    are written to ids_file so the workflow deletes them from the table only after the commit is pushed."""
+    rows = rest(svc, "GET", f"{TABLE}?select=id,q,mode,installs,count&decision=eq.approved&limit=1000") or []
+    s = approve([{**r, "approved": True} for r in rows], today)
+    ids_file.write_text(json.dumps([r["id"] for r in rows]), encoding="utf-8")
+    return s
+
+
+def delete_ids(svc: str, ids: list[str]) -> int:
+    ids = [i for i in ids if re.fullmatch(r"real-[0-9a-f]{10}", i)]
+    if ids:
+        rest(svc, "DELETE", f"{TABLE}?id=in.({','.join(ids)})", prefer="return=minimal")
+    return len(ids)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--days", type=int, default=7)
-    ap.add_argument("--out", default="/tmp/real-users", help="folder for the candidates (an artifact, never the repo)")
-    ap.add_argument("--approve", help="a reviewed candidates file: rows with approved=true go to the repo files")
+    ap.add_argument("--approve", help="a reviewed candidates file (local): rows with approved=true go to the repo files")
+    ap.add_argument("--approve-db", metavar="IDS_FILE", help="K38: approved rows in the private table -> the repo files")
+    ap.add_argument("--delete-ids", metavar="IDS_FILE", help="K38: delete these rows from the table (after the push)")
     a = ap.parse_args()
     today = datetime.date.today().isoformat()
     if a.approve:
@@ -331,13 +428,21 @@ def main():
         return 0
     svc = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
     if not svc:
-        print("::warning::no SUPABASE_SERVICE_ROLE_KEY secret: skipped (owner: only after Oscar's approval of K24)")
+        print("::warning::no SUPABASE_SERVICE_ROLE_KEY secret: skipped (owner: only after Oscar's approval of K38)")
         return 0
     print("::add-mask::" + svc)
-    out = pathlib.Path(a.out)
-    out.mkdir(parents=True, exist_ok=True)
-    s = run(fetch(svc, a.days), today, out_file=out / f"real-user-candidates-{today}.json")
-    print(json.dumps(s))  # numbers only: no user text in the log
+    if a.approve_db:
+        print(json.dumps(approve_db(svc, today, pathlib.Path(a.approve_db))))
+        return 0
+    if a.delete_ids:
+        print(json.dumps({"deleted": delete_ids(svc, json.load(open(a.delete_ids, encoding="utf-8")))}))
+        return 0
+    rows, skipped = prepare(fetch(svc, a.days))
+    groups = group(rows)
+    cand = candidates(groups, today)
+    stored = store(svc, cand, today)
+    # numbers only: no user text in the log
+    print(json.dumps({"kept": len(rows), "skipped": skipped, "groups": len(groups), "candidates": stored}))
     return 0
 
 

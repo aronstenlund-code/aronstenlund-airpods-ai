@@ -1,5 +1,6 @@
 import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
+import { requireOwner } from "../_shared/owner.ts";
 
 /**
  * K30 (D116, owner): Aron's private view of every question and answer (table `qa_log`, written by /answer).
@@ -29,14 +30,7 @@ export function createQaLogHandler(deps: QaLogDeps) {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
     try {
       if (req.method !== "GET" && req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use GET or POST");
-      const user = await deps.authenticate(req);
-      const owners = deps.ownerEmails.map((e) => e.trim().toLowerCase()).filter(Boolean);
-      const byEmail = (user.amr ?? []).some((m) => m === "otp" || m === "magiclink");
-      if (user.isAnonymous || !user.email || !byEmail) throw new HttpError(403, "forbidden", "Owner only");
-      if (!owners.length) throw new HttpError(503, "unconfigured", "OWNER_EMAIL is not set");
-      if (!owners.includes(user.email.toLowerCase())) {
-        throw new HttpError(403, "forbidden", "Owner only");
-      }
+      await requireOwner(req, deps.authenticate, deps.ownerEmails);
       if (req.method === "POST") {
         let b: { fetched_until?: unknown };
         try {

@@ -1,27 +1,40 @@
 name: Real users (weekly)
 
-# K22 + K24: questions real users chose to share (D57 opt-in, shared_history) become CANDIDATES every week: only general
-# knowledge questions (nothing with a first person, a name, a relation, a number, a sensitive topic or a crisis sign),
-# grouped without a model, asked by at least two installs. The candidates are an ARTIFACT (14 days), never committed:
-# a person (Oscar) reviews them, sets "approved": true and runs `python3 scripts/real_users.py --approve <file>`;
-# only that writes to the repo. No model call. Needs the repo secret SUPABASE_SERVICE_ROLE_KEY (owner, only after
-# Oscar has approved K24); without it the run says so and stops.
+# K22 + K24 + K38: questions real users chose to share (D57 opt-in, shared_history) become CANDIDATES every week: only
+# general knowledge questions (nothing with a first person, a name, a relation, a number, a school or class, a code,
+# a sensitive topic, a method question or a crisis sign), grouped without a model, asked by at least two installs.
+# K38 (Oscar O36): the candidates go to the private Supabase table `real_user_candidates` (service role only), NOT to
+# an Actions artifact, which anyone signed in to GitHub can download from a public repo. Nothing with user text is
+# printed to the log (numbers only).
+# A person decides per row: Aron on his private page (backend/webtest/qa.html, "Riktiga användare"), or Oscar through
+# the Supabase MCP (`update real_user_candidates set decision = 'approved' where id = …`). Then run this workflow by
+# hand with "approve" ticked: only rows marked approved are filtered once more, committed to scripts/real-user-*.json
+# and deleted from the table. No model call. Needs the repo secret SUPABASE_SERVICE_ROLE_KEY; without it the run says
+# so and stops.
 on:
   schedule:
     - cron: "23 4 * * 1" # Mondays 04:23 UTC
   workflow_dispatch:
+    inputs:
+      approve:
+        description: "Move the rows a person approved into the repo (otherwise: fetch this week's candidates)"
+        type: boolean
+        default: false
 
 permissions:
-  contents: read # never writes to the repo
+  contents: read
 
 concurrency:
   group: real-users
   cancel-in-progress: false
 
 jobs:
-  run:
+  candidates:
+    if: ${{ !inputs.approve }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read # never writes to the repo
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -32,13 +45,43 @@ jobs:
           node-version: "24" # runs answer/crisis.ts directly (type stripping)
       - name: Tests (invented data)
         run: python3 scripts/test_real_users.py
-      - name: Fetch and filter (candidates only)
+      - name: Fetch, filter, store candidates in the private table
         env:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: python3 scripts/real_users.py --days 7 --out /tmp/real-users
-      - uses: actions/upload-artifact@v4
+        run: python3 scripts/real_users.py --days 7
+
+  approve:
+    if: ${{ inputs.approve }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # only approved, re-filtered general questions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          name: real-user-candidates
-          path: /tmp/real-users/*.json
-          retention-days: 14
-          if-no-files-found: ignore
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Tests (invented data)
+        run: python3 scripts/test_real_users.py
+      - name: Approved rows -> repo files
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/real_users.py --approve-db /tmp/approved-ids.json
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898208+github-actions[bot]@users.noreply.github.com"
+          git add scripts/real-user-cases.json scripts/real-user-bank.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "nothing approved"; exit 0; fi
+          git commit -m "Real users: approved general questions $(date -u +%F) [skip eval]"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep $((i*5)); done
+          exit 1
+      - name: Delete the moved rows from the table
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          [ -f /tmp/approved-ids.json ] || { echo "no ids"; exit 0; }
+          python3 scripts/real_users.py --delete-ids /tmp/approved-ids.json
