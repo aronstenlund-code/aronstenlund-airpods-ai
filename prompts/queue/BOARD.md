@@ -1,6 +1,6 @@
 # Tavla: vem gör vad
 
-**Självständigt läge (README punkt 8): på till 2026-11-12 07:30.** Aron sover. Ordning: kön, sedan stående uppgift.
+**Självständigt läge (README punkt 8): på till 2026-11-12 07:30.** Aron är vaken till ca 23 och testar appen, sedan sover han. Vänta ändå inte på honom: frågor skrivs under "Till Aron". Ordning: kön, sedan stående uppgift.
 
 Deangelo läser tavlan före varje statusrapport till Aron. **Varje session uppdaterar bara sin egen rad**:
 - när den tar en punkt,
