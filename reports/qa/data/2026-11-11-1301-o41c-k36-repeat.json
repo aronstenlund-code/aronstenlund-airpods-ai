@@ -1,0 +1,155 @@
+[
+ {
+  "mode": "push_to_talk",
+  "fragment": "ring Bris",
+  "try": 1,
+  "status": 200,
+  "tool": "call_contact",
+  "input": {
+   "number": "116111"
+  },
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "ring Bris",
+  "try": 2,
+  "status": 200,
+  "tool": "call_contact",
+  "input": {
+   "number": "116111"
+  },
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "ring Bris",
+  "try": 3,
+  "status": 200,
+  "tool": "call_contact",
+  "input": {
+   "number": "116111"
+  },
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "spela musik",
+  "try": 1,
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "spela musik",
+  "try": 2,
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "push_to_talk",
+  "fragment": "spela musik",
+  "try": 3,
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "spela musik",
+  "try": 1,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "spela musik",
+  "try": 2,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "spela musik",
+  "try": 3,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, spela musik",
+  "try": 1,
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, spela musik",
+  "try": 2,
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "Lumen, spela musik",
+  "try": 3,
+  "status": 200,
+  "tool": "music_open",
+  "input": {
+   "query": "musik"
+  },
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "ring mamma",
+  "try": 1,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "ring mamma",
+  "try": 2,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ },
+ {
+  "mode": "auto",
+  "fragment": "ring mamma",
+  "try": 3,
+  "status": 200,
+  "tool": null,
+  "input": null,
+  "said": ""
+ }
+]
