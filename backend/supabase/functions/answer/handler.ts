@@ -31,6 +31,7 @@ import {
 import { selfAnswer } from "./self.ts";
 import { complaintAnswer, isComplaint } from "./complaint.ts";
 import { MORE_START, weakLoneCommand } from "./lonecmd.ts";
+import { localClockAnswer } from "./localclock.ts";
 import { capabilitiesRule, capabilityAnswer, capabilityAsked, type Capability, helpAnswer, NOT_YET_ANSWER, notYetAsked, overview } from "../_shared/capabilities.ts";
 import { askedLength, lengthCaps, lengthNote } from "./asklength.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
@@ -649,7 +650,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : !capAsk && notYetAsked(body.fragment) ? NOT_YET_ANSWER
         : WHAT_CAN.test(body.fragment.trim()) ? overview()
         : helpAnswer(body.fragment);
-      const selfText = complaint ? complaintAnswer(body.qaLog === true) : capText ? capText : aboutMe ? selfAnswer(body.fragment, body.assistantName ?? "Earmind") : null;
+      // Oscar O52 (prio 1): the local time is said by code (the model read "20:57" as "tjugo över åtta")
+      const clockText = !demo ? localClockAnswer(body.fragment, (deps.clock ?? (() => new Date()))()) : null;
+      const selfText = clockText ? clockText : complaint ? complaintAnswer(body.qaLog === true) : capText ? capText : aboutMe ? selfAnswer(body.fragment, body.assistantName ?? "Earmind") : null;
       if (selfText) {
         const totalMs = Math.round(now() - t0);
         const frames = [
@@ -659,7 +662,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             answered: true,
             timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
             breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
-            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: complaint ? "complaint" : capText ? "capabilities" : "self" },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: clockText ? "clock" : complaint ? "complaint" : capText ? "capabilities" : "self" },
             ...(complaint ? { complaint: true } : {}),
             summary: null,
             relation: null,

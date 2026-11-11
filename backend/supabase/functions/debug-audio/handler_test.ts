@@ -74,3 +74,11 @@ Deno.test("K43: bad audio is refused; the purge removes only folders older than 
   assertEquals(await (await p.h(post({}, "?action=purge"))).json(), { removed: 3 });
   assertEquals(p.removed, ["2026-10-20"]);
 });
+
+Deno.test("O53: a password sign-up (no email code) cannot turn test mode on", async () => {
+  const pw: AuthedUser = { id: "p1", isAnonymous: false, email: "p@example.com", amr: ["password"] };
+  const s = setup(pw);
+  assertEquals((await s.h(post({}, "?action=opt_in"))).status, 403);
+  assertEquals(s.t.size, 0);
+  assertEquals(await (await setup(pw, ["p1"]).h(new Request("http://x/debug-audio"))).json(), { debug_audio: false });
+});

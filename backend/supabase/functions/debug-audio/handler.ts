@@ -98,7 +98,8 @@ export function createDebugAudioHandler(deps: DebugAudioDeps) {
   const uuid = deps.uuid ?? (() => crypto.randomUUID());
   const json = (body: unknown, status = 200) =>
     new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", "cache-control": "no-store", ...CORS_HEADERS } });
-  const enabled = async (u: AuthedUser) => isOwner(u, deps.ownerEmails) || (!u.isAnonymous && await deps.isTester(u.id));
+  const byEmailCode = (u: AuthedUser) => !u.isAnonymous && !!u.email && (u.amr ?? []).some((m) => m === "otp" || m === "magiclink");
+  const enabled = async (u: AuthedUser) => isOwner(u, deps.ownerEmails) || (byEmailCode(u) && await deps.isTester(u.id));
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
@@ -122,7 +123,10 @@ export function createDebugAudioHandler(deps: DebugAudioDeps) {
       if (req.method === "GET") return json({ debug_audio: await enabled(user) });
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use GET or POST");
       if (action === "opt_in" || action === "opt_out") {
-        if (user.isAnonymous || !user.email) throw new HttpError(403, "forbidden", "Testläget kräver inloggning med e-post.");
+        // Oscar O53: signed in by an email code or link (as the owner check), never only a password sign-up
+        if (user.isAnonymous || !user.email || !(user.amr ?? []).some((m) => m === "otp" || m === "magiclink")) {
+          throw new HttpError(403, "forbidden", "Testläget kräver inloggning med e-postkod.");
+        }
         await deps.setTester(user.id, action === "opt_in");
         return json({ debug_audio: await enabled(user) });
       }

@@ -118,3 +118,18 @@ Deno.test("K44 'kan du …?', 'vad kan du göra?', 'vad är Earmind?' and help a
   // a real question is the model's
   assertEquals((await ask("kan du förklara fotosyntes")).calls, 1);
 });
+
+import { localClockAnswer, sayClock } from "./localclock.ts";
+Deno.test("O52 (prio 1): the local time is said by code, right, for 5 phrasings and 3 times", () => {
+  const times: [string, string][] = [
+    ["2026-11-11T19:57:00Z", "Klockan är tre minuter i nio på kvällen, alltså tjugo och femtiosju."],
+    ["2026-11-12T07:15:00Z", "Klockan är kvart över åtta på morgonen, alltså åtta och femton."],
+    ["2026-07-01T12:30:00Z", "Klockan är halv tre på eftermiddagen, alltså fjorton och trettio."], // summer time
+  ];
+  for (const q of ["vad är klockan", "Lumen, vad är klockan?", "kan du säga vad klockan är", "vet du vad klockan är", "hur mycket är klockan nu"]) {
+    for (const [iso, want] of times) assertEquals(localClockAnswer(q, new Date(iso)), want, `${q} ${iso}`);
+  }
+  for (const q of ["vad är klockan i Tokyo", "när börjar lektionen", "vad är en klocka"]) assertEquals(localClockAnswer(q, new Date()), null, q);
+  assertEquals(sayClock(9, 25), "Klockan är fem i halv tio på morgonen, alltså nio och tjugofem.");
+  assertEquals(sayClock(23, 45), "Klockan är kvart i tolv på kvällen, alltså tjugotre och fyrtiofem.");
+});
