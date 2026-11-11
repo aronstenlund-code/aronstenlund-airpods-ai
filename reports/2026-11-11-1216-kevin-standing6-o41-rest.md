@@ -20,7 +20,7 @@ Fynd: Oscars O41 (`reports/qa/2026-11-11-1131-oscar-o41-k36-ringa-musik.md`), de
   - "ring noll åtta, ett två tre fyra fem sex sju" ger 081234567.
 - "kör lofi" ger `music_open` utan meta-mening.
 - "vad är numret till pappa" ger inget samtal, och "ring pappa" ger ett samtal.
-- **Kvar:** "ring en kompis" (inget namn) blir tyst, eftersom det engelska resonemanget stryks och inget svenskt kommer efter. Det är bättre än engelska. En svensk följdfråga ("Vem vill du att jag ska ringa?") kräver en egen regel.
+- "ring en kompis" (inget namn): Lumen frågar nu "Vem vill du att jag ska ringa?". När en begäran till telefonen slutar utan verktyg och utan något sagt, ger koden en kort fråga på svenska (`e807f72` och senare).
 
 ## Tester
 `deno task test`: **455 gröna** (`answer/k41_test.ts` har nu 10 tester). `deno task check` är ren.
