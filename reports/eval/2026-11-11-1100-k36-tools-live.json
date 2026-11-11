@@ -1,0 +1,152 @@
+{
+ "summary": {
+  "cases": 13,
+  "right": 12,
+  "spoken_before_tool": 0
+ },
+ "rows": [
+  {
+   "fragment": "ring mamma",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "mamma"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "kan du ringa Elin",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "Elin"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "ring 070 123 45 67",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "number": "0701234567"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "slå en signal till pappa",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "pappa"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "ring tandläkaren",
+   "want": "call_contact",
+   "got": null,
+   "ok": false,
+   "input": {},
+   "confirm": null,
+   "said": "I can't look up the dentist's number from memory, and I don't have a saved contact called tandläkaren. Would you like me to call a contact by name, for example \"mamma\"? If you give me the digits yourself, I can call that number."
+  },
+  {
+   "fragment": "spela lugn pluggmusik",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "lugn pluggmusik"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "sätt på lite musik av Veronica Maggio",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "Veronica Maggio"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "vad är huvudstaden i Norge",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Huvudstaden i Norge är Oslo."
+  },
+  {
+   "fragment": "vem ringde Graham Bell först",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Alexander Graham Bell fick patent på telefonen artonhundrasjuttiosex, och det första tydliga telefonsamtalet, med meningen \"Mr Watson, come here, I want to see you\", gjordes samma år. Han ringde alltså sin assistent Thomas Watson, i rummet bredvid."
+  },
+  {
+   "fragment": "vad betyder ordet signal",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Ordet signal betyder ett tecken eller en impuls som bär information, till exempel en ljudsignal, en elektrisk signal i en krets eller en kemisk signal mellan celler. I skolan används det ofta om ett meddelande som överförs från en sändare till en mottagare."
+  },
+  {
+   "fragment": "hur spelar man gitarr",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Det viktigaste för nybörjare är tålamod, allt går inte av sig självt. Man får testa sitt tålamod när man börjar med ett instrument, men känslan när man väl klarar av att spela är mycket värd. Börja med att öva enkla ackord, och när du kommer till barréackord får du räkna med att få kramp i fingrarna. Fingrarna vänjer sig till slut. Ett bra knep är att ha handen nära kroppen på gitarren och sedan gå uppåt. Det är lite lättare att få ner strängarna där. Källa: SVT."
+  },
+  {
+   "fragment": "min kompis ringde mig i går",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Det låter som att du vill berätta om något, men jag förstår inte vad du vill att jag ska göra med det. "
+  },
+  {
+   "fragment": "sätt en timer på tio minuter",
+   "want": "timer_start",
+   "got": "timer_start",
+   "ok": true,
+   "input": {
+    "seconds": 600,
+    "label": "Tio minuter"
+   },
+   "confirm": null,
+   "said": ""
+  }
+ ],
+ "connect": {
+  "post_unconfigured": 503,
+  "list": {
+   "connections": [],
+   "available": {
+    "spotify": false
+   }
+  },
+  "no_jwt": 401,
+  "callback_forged": "lumen://connect?provider=spotify&status=error"
+ }
+}

@@ -1,0 +1,154 @@
+{
+ "summary": {
+  "cases": 13,
+  "right": 13,
+  "spoken_before_tool": 0
+ },
+ "rows": [
+  {
+   "fragment": "ring mamma",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "mamma"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "kan du ringa Elin",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "Elin"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "ring 070 123 45 67",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "number": "0701234567"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "slå en signal till pappa",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "pappa"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "ring tandläkaren",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "tandläkaren"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "spela lugn pluggmusik",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "lugn pluggmusik"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "sätt på lite musik av Veronica Maggio",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "Veronica Maggio"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "vad är huvudstaden i Norge",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Huvudstaden i Norge är Oslo."
+  },
+  {
+   "fragment": "vem ringde Graham Bell först",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Alexander Graham Bell fick patent på telefonen artonhundrasjuttiosex, men det finns en omstridd historia: Elisha Gray lämnade in en patentansökan samma dag. Bell brukar krediteras som den som först fick ett fungerande telefonpatent, och hans första tydliga ord i telefon var \"Mr Watson, come here, I want to see you\" den tionde mars artonhundrasjuttiosex."
+  },
+  {
+   "fragment": "vad betyder ordet signal",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Signal betyder en förutbestämd sändning eller ett tecken som bär information, till exempel ljudet från en klocka eller en signal i en elektrisk krets. I fysiken är en signal en tidsberoende storhet, som spänning eller ljudtryck, som överför information."
+  },
+  {
+   "fragment": "hur spelar man gitarr",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Börja med att lära dig hålla gitarren: sitt med den lutad mot höger lår, halsen uppåt cirka fyrtiofem grader, och håll handen lätt runt halsen. Lär dig sedan de tre enklaste ackorden, G, C och D, och byt mellan dem i takt med en metronom, långsamt, tills det flyter. Öva femton till tjugo minuter varje dag, så märker du framsteg redan efter ett par veckor."
+  },
+  {
+   "fragment": "min kompis ringde mig i går",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Det låter som att du vill berätta något om ditt samtal med din kompis, men jag förstår inte vad du vill att jag ska göra med det. "
+  },
+  {
+   "fragment": "sätt en timer på tio minuter",
+   "want": "timer_start",
+   "got": "timer_start",
+   "ok": true,
+   "input": {
+    "seconds": 600,
+    "label": "Tio minuter"
+   },
+   "confirm": null,
+   "said": ""
+  }
+ ],
+ "connect": {
+  "post_unconfigured": 503,
+  "list": {
+   "connections": [],
+   "available": {
+    "spotify": false
+   }
+  },
+  "no_jwt": 401,
+  "callback_forged": "lumen://connect?provider=spotify&status=error"
+ }
+}

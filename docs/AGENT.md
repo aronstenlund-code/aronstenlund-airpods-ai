@@ -6,7 +6,8 @@ Kevin, 2026-11-10. D122 säger att Lumen ska kunna **göra saker**, inte bara sv
 | Sort | Var den körs | Exempel | Status |
 |---|---|---|---|
 | **Telefonverktyg** | i appen (EventKit, AlarmKit, appens anteckningar) | kalender, påminnelser, timer, larm, anteckning | **Servern klar** (K35, fas 1). Appen bygger A48 |
-| **Serververktyg** | på servern | webbsökning (finns), kopplingar till tjänster | Webbsökning finns. Shopify: designad nedan, inte byggd |
+| **Serververktyg** | på servern | webbsökning (finns), kopplingar till tjänster | Webbsökning finns. **Spotify byggd (K36)** men väntar på Arons Spotify-app. Shopify: designad nedan, inte byggd |
+| **Samtal och musik-appen** (K36) | i appen | `call_contact`, `music_open` | **Servern klar och live 13/13** (K36). Appen bygger dem |
 
 Allt går genom Claudes tool use i `/answer`. Modellen väljer ett verktyg och fyller i det. **Koden kontrollerar indata innan något händer** (`answer/phonetools.ts` `validatePhoneInput`), och **användaren bekräftar alltid innan något ändras eller skickas**.
 
@@ -44,12 +45,47 @@ Modellen svarar då med en kort mening ("Klart, tandläkaren ligger på torsdag 
 | `timer_start` | `seconds` (1–86 400), `label?` | nej | `{ok: true}` |
 | `alarm_set` | `time` ("HH:MM"), `label?` | ja | `{alarm_id}` |
 | `note_add` | `text` | nej | `{ok: true}` |
+| `call_contact` (K36) | `name?`, `number?` (minst ett) | **iOS frågar** (inte Lumen) | `{ok: true}` eller `{error: "no_contact"}` |
+| `music_open` (K36) | `query` | nej | `{ok: true}` |
 
 **Regler i koden:**
 - Servern validerar varje indata. Ett okänt verktyg, ett fel format, ett datum som inte är ISO eller en timer på 0 s skickas aldrig till appen (`tool_call_dropped` i loggen).
 - `tool_round` valideras på samma sätt (400 vid fel).
 - Bara ett verktyg per tur.
 - Inga verktyg i demon.
+
+## K36: samtal och musik (Kevin, 2026-11-11)
+Märkning: **möjligt**, **med begränsningar** och **inte möjligt**.
+
+| Vad | Hur | Läge |
+|---|---|---|
+| **Ringa någon** ("ring mamma", "ring tandläkaren") | Telefonverktyget `call_contact`. Appen slår upp `name` i Kontakter, och läser dem bara med tillåtelse, som frågas första gången. Sedan öppnar appen `tel:`. | **Med begränsningar:** iOS visar själv en fråga ("Ring …?") som kräver **ett tryck på skärmen**. Någon app kan inte ringa utan den, enligt utvecklarforum och inte Apples dokumentation (ej verifierat på enhet). Lumen frågar därför inte själv, för då kommer två frågor. Med telefonen i fickan måste användaren alltså ta upp den. |
+| Ringa ett nummer man säger ("ring 070 …") | `call_contact` med `number` | **Möjligt.** Servern tar bara ett nummer **vars siffror användaren själv sa** (B6). Ett påhittat nummer slås aldrig. |
+| **Öppna musik** ("spela lugn pluggmusik") | Telefonverktyget `music_open`. Appen öppnar Spotify med en sökning (`spotify:search:…`). | **Möjligt för alla, utan koppling**, men användaren trycker själv på spela. Fungerar inte om Spotify-appen saknas; då kan appen öppna webben. |
+| **Styra Spotify** (spela låt, spellista eller album, pausa, nästa, förra) | Serververktyg (`spotify_play`, `spotify_pause`, `spotify_next`, `spotify_previous`) via Spotify Web API med OAuth. Servern kör verktyget direkt i `/answer` och säger en mening ("Nu spelas spellistan Plugg."). Ingen rundtur via appen. | **Med stora begränsningar** (verifierat i Spotifys dokumentation 2026-11-11): uppspelning styrs **bara med Premium**. En app i Development Mode får **högst 5 användare**, som Aron lägger in, och appens ägare måste ha Premium. Extended quota ges bara till organisationer med cirka 250 000 användare. **Det är alltså en pilot för Aron och några testare, inte för alla elever.** För alla andra gäller `music_open`. |
+| Styra Apple Music eller annan musik som redan spelar | – | **Inte möjligt** för en vanlig app (iOS har inget öppet API för att styra en annan apps uppspelning). |
+
+**Spotify, protokollet (för Angela):**
+1. **Koppla:** `POST /functions/v1/connect {"provider": "spotify"}` ger `{url}`. Öppna den i `ASWebAuthenticationSession` med callback-schemat `lumen`.
+   - Spotify skickar tillbaka till `…/connect/callback`, och servern skickar vidare till `lumen://connect?provider=spotify&status=ok|premium_required|denied|error`.
+   - Adressen går att byta med `CONNECT_RETURN_URL` om appens schema blir ett annat.
+2. **Status:** `GET /connect` ger `{"connections": [{"provider": "spotify", "premium": true}], "available": {"spotify": true|false}}`. `available: false` betyder att servern saknar Spotify-nycklarna; visa då inte "Koppla Spotify".
+3. **Använda:** skicka `"connections": ["spotify"]` i `/answer` när eleven har kopplat. Svaret är vanliga `delta` med en mening, och `done.server_tool` = `{name, status, playing?}`.
+   - `status`: `ok`, `not_connected`, `premium_required`, `no_device`, `not_found` eller `error`.
+   - Spotify måste ha varit öppet på telefonen någon gång, annars finns ingen enhet att spela på.
+4. **Koppla bort:** `DELETE /connect?provider=spotify`. Raden raderas.
+
+**Säkerhet:**
+- Tokens krypteras med AES-GCM innan de sparas i `connections`, som bara tjänstenyckeln når.
+- Nyckeln är `CONNECTIONS_KEY` om den sätts, annars härledd ur tjänstenyckeln. Byts tjänstenyckeln måste användarna koppla igen.
+- OAuth-`state` är signerad med användarens id och går ut efter 10 minuter.
+- Inget e-post, inget namn och inget Spotify-konto-id sparas, bara `premium` och tokens.
+
+**Kvar för Aron (Spotify), cirka 10 min:**
+1. developer.spotify.com › Dashboard › Create app. Namn "Earmind", Redirect URI `https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/connect/callback`, API: **Web API**. Kontot måste ha **Premium**.
+2. Appen › Settings: kopiera **Client ID** och **Client secret**.
+3. Supabase › projektet › Edge Functions › Secrets › lägg till `SPOTIFY_CLIENT_ID` och `SPOTIFY_CLIENT_SECRET`.
+4. Spotify-appen › User Management: lägg till de (högst 5) Spotify-konton som ska få prova.
 
 ## Serververktyg och kopplingar (plan, inte byggt)
 **Shopify-pilot: "Lumen, hur går det i butiken i dag?"**
