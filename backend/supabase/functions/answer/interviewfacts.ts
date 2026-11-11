@@ -28,6 +28,12 @@ const TOPICS: Topic[] = [
     known: rx(String.raw`alkohol|<sprit>|<öl>|<vin>|bartender|<bar>|serveringstillstånd|<krog|restaurang`),
   },
   {
+    // eval 2026-11-11 (cv-04, ad only): "har du jobbat med kassa förut" -> "Jag har inte jobbat med kassa tidigare"
+    topic: "arbetserfarenhet",
+    q: rx(String.raw`<har du (?:jobbat|arbetat|extrajobbat|sommarjobbat)>|<vad har du för (?:arbets)?erfarenhet>|<har du (?:någon )?(?:tidigare )?(?:arbets)?erfarenhet>|<har du haft (?:något|ett) (?:jobb|extrajobb|sommarjobb)>`),
+    known: rx(String.raw`<arbete\s*:|<erfarenhet\s*:|<extrajobb|<sommarjobb|<jobbat>|<arbetat>|<jobbar>|<arbetar>|<praktik|<anställ|<ideell|<ledare>|<tränare>|<barnvakt`),
+  },
+  {
     topic: "pendling",
     q: rx(String.raw`pendla|<tar? (?:du )?dig (?:hit|till (?:jobbet|arbetet))|<resa (?:hit|till (?:jobbet|arbetet))|<bor du (?:nära|långt)|hur långt bor|<hur kommer du (?:hit|till)`),
     known: rx(String.raw`pendl|<bor (?:i|på|nära)>|kollektivtrafik|<cykel|<bil>|körkort`),
@@ -54,6 +60,7 @@ const CLAIM: Record<string, RegExp> = {
   ålder: rx(String.raw`<(?:jag är|jag har fyllt|jag fyllde|jag fyller)\s+(?:över\s+|under\s+)?${AGE_WORD}>|<år gammal>|<min ålder>`),
   // K8: a claim of own experience, not a sentence that only names the word ("jag kontrollerar legitimation")
   alkohol: rx(String.raw`<jag har (?:jobbat|arbetat|sålt|serverat|hållit på)(?: [\p{L}]+){0,2} (?:med |i |på )?(?:alkohol|sprit|öl|vin|bar)|<jag dricker>|<jag har serveringstillstånd>|<jag är van vid (?:att )?(?:sälja|servera)`),
+  arbetserfarenhet: rx(String.raw`<jag har (?:inte |aldrig |redan )?(?:jobbat|arbetat|extrajobbat|sommarjobbat)>|<jag har (?:ingen|någon|lite|mycket) (?:tidigare )?(?:arbets)?erfarenhet>|<när jag (?:jobbade|arbetade)>|<på mitt (?:förra|tidigare|senaste|nuvarande) (?:jobb|arbete)>`),
   pendling: rx(String.raw`<jag bor>|<bor (?:i|på|nära)>|kollektivtrafik|<buss(?:en)?>|<tåg(?:et)?>|<cykl|<med bil>|<pendla`),
 };
 export function claimsMissing(topic: string, sentence: string): boolean {

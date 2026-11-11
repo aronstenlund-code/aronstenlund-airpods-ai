@@ -36,3 +36,14 @@ Deno.test("standing16d: a kitchen unit after a number word is said in full", () 
   assertEquals(toSpeech("tre msk smör, en tsk salt. Sex dl."), "tre matskedar smör, en tesked salt. Sex deciliter.");
   assertEquals(toSpeech("det står dl på ett dl-mått"), "det står dl på ett dl-mått");
 });
+
+import { claimsMissing, missingFact } from "./interviewfacts.ts";
+Deno.test("standing18: work experience the CV does not give is never claimed either way", () => {
+  const ad = "Jobbannons: Kassabiträde i matbutik, kvällar och helger.";
+  assertEquals(missingFact("har du jobbat med kassa förut", ad), "arbetserfarenhet");
+  assertEquals(missingFact("har du jobbat med kassa förut", ad + " CV: Arbete: Extrajobb på ett kafé, kassa."), null);
+  assertEquals(missingFact("har du jobbat med alkohol", ad), "alkohol");
+  assertEquals(missingFact("varför vill du jobba här", ad), null);
+  assert(claimsMissing("arbetserfarenhet", "Jag har inte jobbat med kassa tidigare."));
+  assert(!claimsMissing("arbetserfarenhet", "Jag är noggrann och van vid att möta människor."));
+});
