@@ -100,15 +100,26 @@ export const GRADE_REPLY_MAX_AGE_SEC = 120;
 
 /** Toby T14: a question that stops on a word that needs more ("Hur många invånare har", "Vad är skillnaden mellan"). */
 // prepositions are not here: Swedish questions often end on one ("vad ska jag plugga på", "vad handlar det om")
-const DANGLING = new Set(("har hade är blir blev mellan och eller som att en ett " +
-  "min mitt mina din ditt dina sin sitt vilken vilket vilka än").split(" "));
+// Oscar O51 (prio 1): a verb at the end is the normal word order of a Swedish subordinate clause ("kan du säga vad
+// klockan är", "vad tror du att svaret är"), so a final verb counts only in a main clause with no subject or clause
+// before it ("hur många invånare har"); "än" is gone; a word asked ABOUT ("ordet och", "mellan som och att") never counts
+const DANGLING_WORD = new Set(("mellan och eller som att en ett min mitt mina din ditt dina sin sitt vilken vilket vilka").split(" "));
+const DANGLING_VERB = new Set("har hade är blir blev".split(" "));
+const CLAUSE_BEFORE = new Set(("du jag det den hon han hen vi ni de man dom mig dig att som om tror tycker säga säger vet " +
+  "veta undrar kolla berätta förklara visa").split(" "));
+const ASKED_ABOUT = /(?<![\p{L}])(?:ordet|orden|order|betyder|betyda|betydelse|mening med|meningar med|exempel på|på engelska|på svenska|stavas|stavar|uttalas|uttalar|ordklass|skillnaden mellan \p{L}+ och \p{L}+)(?![\p{L}])/u;
 export function isCutOff(fragment: string): boolean {
   const f = (fragment ?? "").trim();
   if (!f || /[?!.]$/.test(f)) return false;
   const w = f.toLowerCase().replace(/[^\p{L}\s]/gu, " ").trim().split(/\s+/);
   if (w.length < 3) return false; // "Vad är?" / one word: other rules decide
-  const isQ = /^(?:(?:och|men|så|lumen)\s+)?(?:vad|vem|vilken|vilket|vilka|hur|när|var|varför|kan|finns|är)(?![\p{L}])/u.test(w.join(" "));
-  return isQ && DANGLING.has(w[w.length - 1]);
+  const joined = w.join(" ");
+  const isQ = /^(?:(?:och|men|så|lumen)\s+)?(?:vad|vem|vilken|vilket|vilka|hur|när|var|varför|kan|finns|är)(?![\p{L}])/u.test(joined);
+  if (!isQ || ASKED_ABOUT.test(joined)) return false;
+  const last = w[w.length - 1];
+  if (DANGLING_WORD.has(last)) return true;
+  // a final verb: only when nothing before it opens a clause or names a subject ("hur många invånare har")
+  return DANGLING_VERB.has(last) && !w.slice(1, -1).some((x) => CLAUSE_BEFORE.has(x));
 }
 /** K1.4: the new check question is (almost) one already asked in this session. */
 export function isRepeatedQuestion(text: string, asked: string[]): boolean {

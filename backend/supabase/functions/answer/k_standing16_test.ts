@@ -75,3 +75,10 @@ Deno.test("K42.3: a spoken length is read in code", () => {
   assertEquals([numberWord("hundrafemtio"), numberWord("tvåhundra"), numberWord("trettiofem"), numberWord("120")], [150, 200, 35, 120]);
   assert(lengthNote({ words: 100, atLeast: true }).includes("between 100 and 140 words"));
 });
+
+import { isCutOff } from "./handler.ts";
+Deno.test("O51 (prio 1): a final verb in a subordinate clause is a whole question; a word asked about never counts", () => {
+  // my own phrasings (Oscar's 12 are his hold-out)
+  for (const q of ["Hur många invånare har", "Vad är skillnaden mellan", "vad är skillnaden mellan riksdag och", "Hur många barn hade", "vilken stad är störst av Malmö eller", "vad är en"]) assert(isCutOff(q), q);
+  for (const q of ["vet du hur lång tid resan blir", "kan du förklara vad en vektor är", "hur dyr tror du att boken är", "vad heter ordet för att", "vilka meningar med eller finns", "vad är skillnaden mellan en och ett", "hur många år tror du hon blev", "vad ska jag plugga på", "vad betyder ordet som"]) assert(!isCutOff(q), q);
+});
