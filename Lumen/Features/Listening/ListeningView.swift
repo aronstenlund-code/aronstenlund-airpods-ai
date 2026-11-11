@@ -34,6 +34,9 @@ struct ListeningView: View {
         .navigationDestination(isPresented: $model.isShowingDiagnostics) {
             DiagnosticsView(model: diagnostics)
         }
+        .sheet(item: $model.showingMyAnswers) { route in
+            MyAnswersView(model: model, route: route) // A53 (D126)
+        }
         .sheet(isPresented: $model.isShowingAddExam) {
             AddExamView(model: model) { model.isShowingAddExam = false }
         }

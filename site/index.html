@@ -3,23 +3,23 @@
 <head>
 <script>
   // Byt namn här, och bara här. Sidan hämtar namnet från den här variabeln.
-  const APP_NAME = "Lumen";
+  const APP_NAME = "Earmind"; // D128. Väckningsordet ”Lumen” står i citaten och byts bara om Aron säger det.
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
-<title>Fråga högt. Få svaret i örat. AI i dina AirPods för skolan och vardagen</title>
-<meta name="description" content="Starta Lumen en gång, sen finns AI:n i dina hörlurar. Fråga högt och hör svaret i örat, i vardagen, i skolan och på jobbet. Plugga inför prov och bli förhörd. Prova direkt här.">
+<title>Earmind: fråga högt, få svaret i örat. AI i dina AirPods</title>
+<meta name="description" content="Starta Earmind en gång, sen finns AI:n i dina hörlurar. Fråga högt och hör svaret i örat, i vardagen, i skolan och på jobbet. Plugga inför prov och bli förhörd. Prova direkt här.">
 <link rel="canonical" href="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="sv_SE">
-<meta property="og:site_name" content="Lumen">
+<meta property="og:site_name" content="Earmind">
 <meta property="og:url" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
 <meta property="og:title" content="Fråga högt. Få svaret i örat.">
 <meta property="og:description" content="AI:n i dina AirPods, för vardagen, skolan och jobbet. Prova här, svaret läses upp.">
-<meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og-lumen.png">
+<meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og-earmind.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Lumen. Fråga högt. Få svaret i örat. Elias, en påhittad elev, med en hörlur i örat.">
+<meta property="og:image:alt" content="Earmind. Fråga högt. Få svaret i örat. Elias, en påhittad elev, med en hörlur i örat.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1218">
@@ -29,7 +29,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Säg vilket prov du har och sedan ”Lumen, förhör mig”. Lumen ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan."}}, {"@type": "Question", "name": "Kan jag bli förhörd inför ett prov?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Lumen frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Säg vilket prov du har och sedan ”Lumen, förhör mig”. Earmind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan."}}, {"@type": "Question", "name": "Kan jag bli förhörd inför ett prov?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Earmind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
 <style>
   /* Ke13: samma system som appen (docs/design/SYSTEM.md). Familjen Grotesk överallt, ingen handstil, inget rutpapper. */
   @font-face {
@@ -648,7 +648,7 @@
       <!-- Ke26 (D121): vardagen, skolan och jobbet. Sant formulerat: Lumen lyssnar efter "Lumen" så länge den är
            startad (även med låst skärm). Inget "hela dagen", eftersom batteriet inte är mätt. -->
       <p class="pitch">AI:n i dina AirPods. För vardagen, skolan och jobbet.</p>
-      <p class="pitch-sub">Starta Lumen en gång, sen finns den i örat. Säg ”Lumen” så svarar den.</p>
+      <p class="pitch-sub">Starta <span data-app></span> en gång, sen finns den i örat. Säg ”Lumen” så svarar den.</p>
     </div>
 
     <div class="demo paper" id="demo" role="region" aria-label="Prova demon">
@@ -657,22 +657,22 @@
         Prova här. Svaret läses upp.
       </p>
       <!-- Ke29 (D124, D126): samma ord som appens Start. Standardläge är livedemon, Förhör mig är Provläget. -->
-      <div class="seg" role="group" aria-label="Två sätt att använda Lumen">
+      <div class="seg" role="group" aria-label="Två sätt att använda Earmind">
         <button class="seg-b" id="m-ask" type="button" aria-pressed="true">Standardläge</button>
         <button class="seg-b" id="m-quiz" type="button" aria-pressed="false">Förhör mig</button>
       </div>
-      <p class="seg-line" id="segline">Lumen svarar när någon frågar.</p>
+      <p class="seg-line" id="segline"><span data-app></span> svarar när någon frågar.</p>
       <div class="quiz" id="quiz" hidden>
         <p class="ex-meta" id="qz-meta"></p>
         <p class="quiz-q" id="qz-q" tabindex="-1"></p>
-        <p class="quiz-hint" id="qz-hint">Svara högt för dig själv. Sedan hör du hur Lumen svarar.</p>
+        <p class="quiz-hint" id="qz-hint">Svara högt för dig själv. Sedan hör du hur <span data-app></span> svarar.</p>
         <p class="ex-a clamp" id="qz-a" aria-live="polite" hidden></p>
         <div class="ex-row">
-          <button class="pill" id="qz-play" type="button"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Hör Lumens svar</span></button>
+          <button class="pill" id="qz-play" type="button"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Hör svaret</span></button>
           <button class="pill quiet" id="qz-next" type="button" hidden>Nästa fråga</button>
           <button class="ex-more" id="qz-more" type="button" aria-expanded="false" aria-controls="qz-a" hidden>Visa hela svaret</button>
         </div>
-        <p class="mini-fine" id="qz-end" hidden>I appen förhör Lumen dig på ditt eget prov. <a href="#vantelista">Mejla mig när appen finns</a></p>
+        <p class="mini-fine" id="qz-end" hidden>I appen förhör <span data-app></span> dig på ditt eget prov. <a href="#vantelista">Mejla mig när appen finns</a></p>
         <p class="mini-fine">Svaren är ordagranna från vårt test av Provläget den 8 november, med samma röst som i appen.</p>
       </div>
       <div class="convo" id="convo" hidden>
@@ -760,7 +760,7 @@
     <ol class="steps">
       <li class="paper"><h3>Tryck Testa nu och fråga högt</h3><p>Inget konto. Sätt i AirPods och fråga vad som helst. Svaret hörs i örat.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/fraga-dark.webp"><img class="shot" src="img/fraga-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Fråga vad som helst i appen: frågan Vad är fotosyntes? och svaret i ett kort, med knappen Fortsätt."></picture></li>
       <li class="paper"><h3>Säg vilket prov du har</h3><p>Till exempel <span class="hand">”Jag har prov i biologi på fredag”</span>. Du kan också välja ämne och datum.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg1-dark.webp"><img class="shot" src="img/steg1-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Har du prov snart? i appen: säg till exempel Jag har prov i biologi på fredag, eller välj ämne, datum och årskurs. Knappen Spara prov."></picture></li>
-      <li class="paper"><h3>Säg ”Lumen, förhör mig”</h3><p>Lumen ställer frågor om det du pluggar och svarar på dina. Vill du bara ha svar, starta Lumen och fråga.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget i appen med brickan Lyssnar: frågan Vad är fotosyntes? och svaret, med knapparna Pausa och Avsluta."></picture></li>
+      <li class="paper"><h3>Säg ”Lumen, förhör mig”</h3><p><span data-app></span> ställer frågor om det du pluggar och svarar på dina. Vill du bara ha svar, starta <span data-app></span> och fråga.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget i appen med brickan Lyssnar: frågan Vad är fotosyntes? och svaret, med knapparna Pausa och Avsluta."></picture></li>
     </ol>
     <p class="shot-note">Skärmbilder från en testversion av appen.</p>
   </section>
@@ -817,8 +817,8 @@
       <details>
         <summary>Vanliga frågor</summary>
         <dl class="faq">
-          <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Säg vilket prov du har och sedan ”Lumen, förhör mig”. Lumen ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan.</dd>
-          <dt>Kan jag bli förhörd inför ett prov?</dt><dd>Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Lumen frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon.</dd>
+          <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Säg vilket prov du har och sedan ”Lumen, förhör mig”. Earmind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan.</dd>
+          <dt>Kan jag bli förhörd inför ett prov?</dt><dd>Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Earmind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon.</dd>
           <dt>Funkar det för nationella provet och A-nivå?</dt><dd>Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok.</dd>
           <dt>Kan jag prova utan att ladda ner något?</dt><dd>Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns.</dd>
         </dl>
@@ -855,7 +855,7 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, v); } catch {} },
 };
 
-document.title = APP_NAME + ": fråga högt, få svaret i örat";
+document.title = APP_NAME + ": fråga högt, få svaret i örat. AI i dina AirPods";
 document.querySelectorAll("[data-app]").forEach((el) => { el.textContent = APP_NAME; });
 
 // ---------- vyer ----------
@@ -1431,7 +1431,7 @@ const QUIZ = [
   {"meta": "Åk 9 · Biologi", "q": "Vad händer i en näringskedja om rovdjuren försvinner?", "a": "Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan. Rovdjuren håller nere antalet växtätare, så när de är borta ökar växtätarna snabbt. Fler växtätare äter upp mer av växterna, och antalet växter kan då minska kraftigt. Det leder till att växtätarna så småningom också får brist på mat och deras antal sjunker igen. Ett klassiskt exempel är när vargen försvann från Yellowstone i USA: hjortarna blev fler, de åt upp unga träd och buskar, och det drabbade även bävrar och fåglar som levde i området. På provet bör du skriva att rovdjur reglerar populationen av växtätare och att borttagandet ger en kedjereaktion genom näringsväven.", "src": "audio/pl-022.mp3"},
   {"meta": "Åk 9 · Samhällskunskap", "q": "Förklara vad globalisering är.", "a": "Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna. Det sker genom handel, investeringar, resor och internet, och att varor, pengar och idéer rör sig allt lättare mellan länder. Ett vanligt exempel är att en tröja kan designas i Sverige, sys i Bangladesh och säljas i flera länder samtidigt. Fördelarna är billigare varor och fler jobb i vissa länder, men det finns också nackdelar, som att jobb kan försvinna i andra länder när produktionen flyttas. På provet kan du visa att du förstår det genom att ge både fördelar och nackdelar och ett konkret exempel.", "src": "audio/pl-079.mp3"}
 ];
-const LINES = { quiz: "Lumen frågar ut dig och svarar på dina frågor.", ask: "Lumen svarar när någon frågar." };
+const LINES = { quiz: APP_NAME + " frågar ut dig och svarar på dina frågor.", ask: APP_NAME + " svarar när någon frågar." };
 let qi = 0, exPlayer = null, qzPlaying = false;
 const PLAY = '<path d="M7 4.5v15l12.5-7.5z"/>', STOP = '<rect x="6" y="6" width="12" height="12" rx="2"/>';
 function qzButton(text, icon, primary) {
@@ -1462,7 +1462,7 @@ function showQuestion(i, focus) {
   $("qz-more").hidden = true;
   $("qz-more").setAttribute("aria-expanded", "false");
   $("qz-more").textContent = "Visa hela svaret";
-  qzButton("Hör Lumens svar", PLAY, true);
+  qzButton("Hör svaret", PLAY, true);
   $("qz-next").hidden = true;
   $("qz-next").textContent = i === QUIZ.length - 1 ? "Börja om" : "Nästa fråga";
   $("qz-end").hidden = true;

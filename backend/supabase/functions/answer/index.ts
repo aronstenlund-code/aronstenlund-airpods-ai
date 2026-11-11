@@ -8,6 +8,10 @@ import { envInt, supabaseUsageSink } from "../_shared/usage.ts";
 import { createHandler, DEFAULT_CONFIG } from "./handler.ts";
 import { providerFromEnv } from "./llm/factory.ts";
 import { withQaLog } from "./qalog.ts";
+import { TokenCrypto } from "../_shared/crypto.ts";
+import { restConnectionStore } from "../_shared/connections.ts";
+import { accessToken } from "../_shared/spotify.ts";
+import { runSpotify } from "./spotifytools.ts";
 
 const env = Deno.env;
 
@@ -21,6 +25,20 @@ warmUpstream();
 const supabaseUrl = env.get("SUPABASE_URL")!;
 const db = restDbFromEnv();
 
+// K36: Spotify server tools only when SPOTIFY_CLIENT_ID/SECRET are set (key: CONNECTIONS_KEY or derived)
+const spotifyConfigured = () => !!(env.get("SPOTIFY_CLIENT_ID") && env.get("SPOTIFY_CLIENT_SECRET"));
+let tokenCrypto: TokenCrypto | null = null;
+try {
+  tokenCrypto = spotifyConfigured() ? await TokenCrypto.fromEnv(env) : null;
+} catch {
+  console.warn("answer: CONNECTIONS_KEY invalid, no Spotify tools");
+}
+const spotifyId = env.get("SPOTIFY_CLIENT_ID"), spotifySecret = env.get("SPOTIFY_CLIENT_SECRET");
+const spotifyApp = spotifyId && spotifySecret
+  ? { clientId: spotifyId, clientSecret: spotifySecret, redirectUri: `${supabaseUrl.replace(/\/+$/, "")}/functions/v1/connect/callback` }
+  : null;
+const connStore = restConnectionStore(db);
+
 const handler = createHandler({
   authenticate: createJwtAuthenticator({
     supabaseUrl,
@@ -31,6 +49,12 @@ const handler = createHandler({
   warm: warmUpstream,
   provider: providerFromEnv(env),
   recordUsage: supabaseUsageSink(db),
+  ...(tokenCrypto && spotifyApp
+    ? {
+      runSpotify: async (userId: string, name: Parameters<typeof runSpotify>[0], input: Record<string, unknown>) =>
+        runSpotify(name, input, await accessToken(userId, { store: connStore, crypto: tokenCrypto!, app: spotifyApp })),
+    }
+    : {}),
   config: {
     demo: demoCapsFromEnv(env),
     ...DEFAULT_CONFIG,

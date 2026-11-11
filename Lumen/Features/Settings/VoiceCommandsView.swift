@@ -39,7 +39,7 @@ struct VoiceCommandsView: View {
                 } header: {
                     Text("De viktigaste")
                 } footer: {
-                    Text("Börja med \"Lumen\", till exempel \"Lumen, förhör mig\". Du kan lägga till egna fraser.")
+                    Text("Börja med ”Lumen”, till exempel ”Lumen, förhör mig”. Du kan lägga till egna fraser.")
                 }
                 Section {
                     NavigationLink("Alla kommandon") {
@@ -67,13 +67,13 @@ private struct AllVoiceCommandsView: View {
     var body: some View {
         List {
             Section {
-                Text("Säg frasen som hela meningen. Med \"Lumen\" först fungerar alla, utan \"Lumen\" bara musik och \"det där var fel\".")
+                Text("Säg frasen som hela meningen. Med ”Lumen” först fungerar alla, utan ”Lumen” bara musik och ”det där var fel”.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                 Toggle("Tips om kommandon (högst ett om dagen)", isOn: $tips.enabled)
                 Toggle("Ton när du kan säga \"ja\" för mer", isOn: $voice.moreTone)
-                Toggle("Ljud när Lumen börjar och slutar lyssna", isOn: $voice.listeningCues) // A34
-                Toggle("Korta ord utan \"Lumen\" i Provläge och Standardläge", isOn: $voice.universalCommands)
+                Toggle("Ljud när Earmind börjar och slutar lyssna", isOn: $voice.listeningCues) // A34
+                Toggle("Korta ord utan ”Lumen” i Provläge och Standardläge", isOn: $voice.universalCommands)
                 Text("\"Upprepa\", \"viska\", \"högre\", \"kortare\", \"snabbare\" och \"utveckla\" som hela meningen.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -131,7 +131,7 @@ private struct PhraseSection: View {
             }
         } footer: {
             if action == .backToLumen {
-                Text("När musiken spelar hör Lumen inget. Säg \"Hej Siri, starta Lumen\" eller använd kontrollen på låsskärmen.")
+                Text("När musiken spelar hör Earmind inget. Säg ”Hej Siri, starta Earmind” eller använd kontrollen på låsskärmen.")
             }
         }
     }

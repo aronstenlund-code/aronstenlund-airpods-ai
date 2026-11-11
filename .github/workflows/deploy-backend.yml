@@ -52,11 +52,11 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
           set -e
-          for f in answer tts stt-token voices feedback shared-history memory study-cards study-profile exam study-plan provlage-eval qa-log real-users-admin; do
+          for f in answer tts stt-token voices feedback shared-history memory study-cards study-profile exam study-plan provlage-eval qa-log real-users-admin my-answers logo-vote; do
             supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes
           done
           # These do their own auth (service key / public endpoint with caps), as documented in backend/README.md.
-          for f in usage-stats feedback-admin waitlist voice-lab; do
+          for f in usage-stats feedback-admin waitlist voice-lab connect; do
             supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes --no-verify-jwt
           done
           # Retired lab functions: 410 stubs that do nothing (no keys, no model calls).
@@ -111,6 +111,14 @@ jobs:
         if: steps.changed.outputs.run == '1'
         continue-on-error: true
         run: python3 scripts/provlage-eval.py --model sonnet --judge sonnet --workers 4 --every 10 --users 3 --tag regress --out /tmp/regress
+      # Standing round 3: the per-case rows, so a drop can be checked case by case (invented test bank, no user text)
+      - uses: actions/upload-artifact@v4
+        if: steps.changed.outputs.run == '1'
+        with:
+          name: answer-regress
+          path: /tmp/regress
+          retention-days: 14
+          if-no-files-found: ignore
       - name: Comment on the commit
         if: steps.changed.outputs.run == '1'
         env:

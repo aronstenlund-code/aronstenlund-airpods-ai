@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Lumen</string>
+	<string>Earmind</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -31,6 +31,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSContactsUsageDescription</key>
+	<string>When you say "Lumen, call Mum", Earmind looks the name up in your contacts to find the number. Nothing from your contacts is sent anywhere.</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>spotify</string>
@@ -38,17 +40,17 @@
 	<key>LumenSpotifyClientID</key>
 	<string>$(SPOTIFY_CLIENT_ID)</string>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Lumen can skip and pause songs in Apple Music when you say "Lumen, nästa låt".</string>
+	<string>Earmind can skip and pause songs in Apple Music when you say "Lumen, nästa låt".</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>When you ask, Lumen adds events to your calendar and tells you what is in it. It always asks before it adds something.</string>
+	<string>When you ask, Earmind adds events to your calendar and tells you what is in it. It always asks before it adds something.</string>
 	<key>NSRemindersFullAccessUsageDescription</key>
-	<string>When you ask, Lumen adds reminders. It always asks before it adds one.</string>
+	<string>When you ask, Earmind adds reminders. It always asks before it adds one.</string>
 	<key>NSAlarmKitUsageDescription</key>
-	<string>When you ask, Lumen sets timers and alarms. It asks before it sets an alarm.</string>
+	<string>When you ask, Earmind sets timers and alarms. It asks before it sets an alarm.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Take a photo of the page you are studying, so Lumen can quiz you on it. The text is read on the iPhone; the photo is not saved.</string>
+	<string>Take a photo of the page you are studying, so Earmind can quiz you on it. The text is read on the iPhone; the photo is not saved.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Lumen listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.</string>
+	<string>Earmind listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>FamiljenGrotesk.ttf</string>
@@ -58,7 +60,7 @@
 	<key>NSMotionUsageDescription</key>
 	<string>In Provläge you can answer a yes/no check question by nodding or shaking your head with your AirPods. Only used then.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Lumen can use the iPhone's own speech recognition, as a fallback or when you switch off cloud recognition in Settings.</string>
+	<string>Earmind can use the iPhone's own speech recognition, as a fallback or when you switch off cloud recognition in Settings.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>UIBackgroundModes</key>

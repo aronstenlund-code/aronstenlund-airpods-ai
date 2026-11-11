@@ -1,4 +1,5 @@
 import AlarmKit
+@preconcurrency import Contacts
 import EventKit
 import Foundation
 import SwiftUI
@@ -43,6 +44,35 @@ final class LivePhoneTools: PhoneToolRunning {
             guard let text = input["text"]?.string, !text.isEmpty else { return (.error, nil) }
             addNote(text)
             return (.ok, .object(["ok": .bool(true)]))
+        case .callContact:
+            // A58 (K36): a number the user said (the server keeps only digits that were said, B6), else the contact.
+            let number: String
+            if let said = input["number"]?.string, let dialable = PhoneCall.dialable(said) {
+                number = dialable
+            } else if let name = input["name"]?.string, !name.isEmpty {
+                switch await Self.lookUpContact(name) {
+                case .found(let found): number = found
+                case .several(let names): return (.error, .object(["error": .string("several"), "names": .array(names.map { .string($0) })]))
+                case .none: return (.error, .object(["error": .string("no_contact")]))
+                case .noPermission: return (.error, .object(["error": .string("no_permission")]))
+                }
+            } else {
+                return (.error, .object(["error": .string("no_contact")]))
+            }
+            guard let url = PhoneCall.url(number), await UIApplication.shared.open(url) else {
+                return (.error, .object(["error": .string("cannot_call")]))
+            }
+            return (.ok, .object(["ok": .bool(true)]))
+        case .musicOpen:
+            guard let query = input["query"]?.string, !query.isEmpty else { return (.error, nil) }
+            let app = MusicSearch.spotifyURL(query)
+            if let app, UIApplication.shared.canOpenURL(app), await UIApplication.shared.open(app) {
+                return (.ok, .object(["ok": .bool(true)]))
+            }
+            if let web = MusicSearch.webURL(query), await UIApplication.shared.open(web) {
+                return (.ok, .object(["ok": .bool(true), "web": .bool(true)]))
+            }
+            return (.error, .object(["error": .string("cannot_open")]))
         case nil:
             return (.error, nil)
         }
@@ -101,6 +131,36 @@ final class LivePhoneTools: PhoneToolRunning {
         }
     }
 
+    // MARK: Contacts (A58)
+
+    enum ContactMatch: Sendable {
+        case found(String)
+        case several([String])
+        case none
+        case noPermission
+    }
+
+    /// The name as said ("mamma", "Elin", "tandläkaren") against the contacts' names and nicknames. One match: its
+    /// mobile number first. Several: their names, so Lumen can ask which one.
+    nonisolated private static func lookUpContact(_ name: String) async -> ContactMatch {
+        let store = CNContactStore()
+        guard (try? await store.requestAccess(for: .contacts)) == true else { return .noPermission }
+        let keys: [CNKeyDescriptor] = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactNicknameKey,
+                                       CNContactOrganizationNameKey, CNContactPhoneNumbersKey].map { $0 as CNKeyDescriptor }
+        var all: [PhoneCall.Contact] = []
+        let request = CNContactFetchRequest(keysToFetch: keys)
+        try? store.enumerateContacts(with: request) { contact, _ in
+            let numbers = contact.phoneNumbers.map { (label: $0.label ?? "", number: $0.value.stringValue) }
+            guard !numbers.isEmpty else { return }
+            all.append(PhoneCall.Contact(given: contact.givenName, family: contact.familyName, nickname: contact.nickname,
+                                         organization: contact.organizationName, numbers: numbers))
+        }
+        let matches = PhoneCall.matches(name, in: all)
+        if matches.count == 1, let number = matches[0].bestNumber { return .found(number) }
+        if matches.count > 1 { return .several(Array(matches.prefix(4).map(\.displayName))) }
+        return .none
+    }
+
     // MARK: AlarmKit
 
     nonisolated private static func alarmAllowed() async -> Bool {
@@ -114,7 +174,7 @@ final class LivePhoneTools: PhoneToolRunning {
 
     nonisolated private static func attributes(_ label: String?) -> AlarmAttributes<LumenAlarmMetadata> {
         let stop = AlarmButton(text: "Stopp", textColor: .white, systemImageName: "stop.fill")
-        let alert = AlarmPresentation.Alert(title: LocalizedStringResource(stringLiteral: label ?? "Lumen"), stopButton: stop)
+        let alert = AlarmPresentation.Alert(title: LocalizedStringResource(stringLiteral: label ?? "Earmind"), stopButton: stop)
         return AlarmAttributes(presentation: AlarmPresentation(alert: alert), tintColor: LumenColor.blue)
     }
 

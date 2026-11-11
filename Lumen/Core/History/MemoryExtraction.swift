@@ -131,6 +131,34 @@ final class MemoryExtractor {
         }
     }
 
+    /// A56 (K13.2, D100): "ja" or "nej"/silence in the Mer? window after a short answer. Code only on the server; two
+    /// yes of the last three in the same context make "longer first" a setting. Same reply as a correction.
+    func lengthSignal(yes: Bool, context: PrefScope, settings: [PrefSetting]) async -> CorrectionReply? {
+        struct Body: Encodable {
+            struct Signal: Encodable {
+                var signal: String
+                var context: PrefScope
+            }
+            var length_signal: Signal
+            var settings: [PrefSetting]
+        }
+        do {
+            let token = try await auth.accessToken()
+            var request = URLRequest(url: config.memoryURL)
+            request.httpMethod = "POST"
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.timeoutInterval = 15
+            request.httpBody = try JSONEncoder().encode(Body(length_signal: .init(signal: yes ? "yes" : "no", context: context), settings: settings))
+            let (response, data) = try await http.data(for: request)
+            guard response.statusCode == 200 else { return nil }
+            return try JSONDecoder().decode(CorrectionReply.self, from: data)
+        } catch {
+            return nil
+        }
+    }
+
     func extract(_ body: MemoryExtraction.Body) async -> [String] {
         do {
             let token = try await auth.accessToken()

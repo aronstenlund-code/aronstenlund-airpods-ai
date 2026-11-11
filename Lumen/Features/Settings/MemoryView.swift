@@ -18,14 +18,14 @@ struct MemoryView: View {
         List {
             Section {
                 HStack {
-                    TextField("Något Lumen ska komma ihåg", text: $newMemory)
+                    TextField("Något Earmind ska komma ihåg", text: $newMemory)
                         .submitLabel(.done)
                         .onSubmit(add)
                     Button("Lägg till", action: add)
                         .disabled(newMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             } footer: {
-                Text("Säg \"Lumen, kom ihåg …\", \"Lumen, glöm …\" eller \"Lumen, regel: …\". Efter varje tur sparar Lumen också viktiga saker du säger om dig själv, med datum. Känsliga uppgifter (hälsa, tro, politik och liknande) sparas aldrig av sig själva. Allt ligger på den här iPhonen, skickas med dina frågor och går ut efter 2 år.")
+                Text("Säg ”Lumen, kom ihåg …”, ”Lumen, glöm …” eller ”Lumen, regel: …”. Efter varje tur sparar Earmind också viktiga saker du säger om dig själv, med datum. Känsliga uppgifter (hälsa, tro, politik och liknande) sparas aldrig av sig själva. Allt ligger på den här iPhonen, skickas med dina frågor och går ut efter 2 år.")
             }
             if let preferences {
                 Section {
@@ -50,12 +50,12 @@ struct MemoryView: View {
                 } header: {
                     Text("Inlärda inställningar")
                 } footer: {
-                    Text("Lumen lär sig av dina rättelser och gäller dem där du gav dem. Svep för att ta bort eller låta en gälla överallt.")
+                    Text("Earmind lär sig av dina rättelser och gäller dem där du gav dem. Svep för att ta bort eller låta en gälla överallt.")
                 }
             }
             Section("Regler") {
                 if store.rules.isEmpty {
-                    Text("Inga regler. Säg till exempel \"Lumen, regel: svara alltid kort\".").foregroundStyle(.secondary)
+                    Text("Inga regler. Säg till exempel ”Lumen, regel: svara alltid kort”.").foregroundStyle(.secondary)
                 }
                 ForEach(store.rules) { item in row(item) }
                     .onDelete { offsets in
@@ -75,7 +75,7 @@ struct MemoryView: View {
             }
             Section("Egna kommandon") {
                 if commands.commands.isEmpty {
-                    Text("Inga kommandon. Säg \"spara kommando ord: instruktion\".").foregroundStyle(.secondary)
+                    Text("Inga kommandon. Säg ”spara kommando ord: instruktion”.").foregroundStyle(.secondary)
                 }
                 ForEach(commands.commands) { command in
                     VStack(alignment: .leading, spacing: 2) {
@@ -128,7 +128,7 @@ struct MemoryView: View {
         let source = switch item.source {
         case .voice: "sagt"
         case .manual: "skrivet"
-        case .automatic: "hittat av Lumen"
+        case .automatic: "hittat av Earmind"
         }
         return "\(item.createdAt.formatted(date: .abbreviated, time: .omitted)), \(source)"
     }

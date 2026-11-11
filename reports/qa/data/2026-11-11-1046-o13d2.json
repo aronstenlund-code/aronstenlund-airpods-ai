@@ -1,0 +1,249 @@
+{
+ "ok": "16/19",
+ "fails": [
+  {
+   "name": "whenSaid 3 weeks ago is not 'Förra veckan'",
+   "ok": false,
+   "got": "Förra veckan"
+  },
+  {
+   "name": "meios is in the plan on its due day 2026-11-17",
+   "ok": false,
+   "got": {
+    "date": "2026-11-17",
+    "minutes": 10,
+    "concepts": [
+     "RNA"
+    ],
+    "note": "Förhör på det som är svårast."
+   }
+  },
+  {
+   "name": "exam in 20 days: the 'dagen före provet' day is 2026-11-30 (or no such note)",
+   "ok": false,
+   "got": {
+    "days": 14,
+    "last": {
+     "date": "2026-11-24",
+     "minutes": 15,
+     "concepts": [
+      "b"
+     ],
+     "note": "Blandat förhör på det viktigaste, dagen före provet."
+    }
+   }
+  }
+ ],
+ "rows": [
+  {
+   "name": "simulated student comes back after 1,3,7,1,3,7 days",
+   "ok": true,
+   "got": {
+    "shown": [
+     "2026-11-01",
+     "2026-11-02",
+     "2026-11-05",
+     "2026-11-12",
+     "2026-11-13",
+     "2026-11-16",
+     "2026-11-23"
+    ],
+    "gaps": [
+     1,
+     3,
+     7,
+     1,
+     3,
+     7
+    ]
+   }
+  },
+  {
+   "name": "right answer: not due after 2 days",
+   "ok": true
+  },
+  {
+   "name": "right answer: due on day 3",
+   "ok": true
+  },
+  {
+   "name": "overdue stays due (10 days later)",
+   "ok": true
+  },
+  {
+   "name": "unsorted history sorted, bad date ignored (wrong then right = box 1, next +3)",
+   "ok": true,
+   "got": {
+    "box": 1,
+    "last": "2026-11-09",
+    "next": "2026-11-12",
+    "lastOk": true
+   }
+  },
+  {
+   "name": "whenSaid yesterday",
+   "ok": true,
+   "got": "I går"
+  },
+  {
+   "name": "whenSaid Monday (9 nov 2026 is a Monday)",
+   "ok": true,
+   "got": "I måndags"
+  },
+  {
+   "name": "whenSaid 3 weeks ago is not 'Förra veckan'",
+   "ok": false,
+   "got": "Förra veckan"
+  },
+  {
+   "name": "prompt two missed",
+   "ok": true,
+   "got": "I går missade du cellandning och fotosyntes. Ska vi ta dem nu?"
+  },
+  {
+   "name": "plan has one day per day up to the day before the exam",
+   "ok": true,
+   "got": [
+    "2026-11-11",
+    "2026-11-12",
+    "2026-11-13",
+    "2026-11-14",
+    "2026-11-15",
+    "2026-11-16",
+    "2026-11-17",
+    "2026-11-18",
+    "2026-11-19",
+    "2026-11-20"
+   ]
+  },
+  {
+   "name": "due-today concepts first on day 0",
+   "ok": true,
+   "got": {
+    "date": "2026-11-11",
+    "minutes": 10,
+    "concepts": [
+     "RNA",
+     "DNA",
+     "protein"
+    ],
+    "note": "Det du missade först."
+   }
+  },
+  {
+   "name": "mitos is in the plan on its due day 2026-11-13",
+   "ok": true,
+   "got": {
+    "date": "2026-11-13",
+    "minutes": 10,
+    "concepts": [
+     "mitos",
+     "meios",
+     "RNA"
+    ],
+    "note": "Förhör på det som är svårast."
+   }
+  },
+  {
+   "name": "meios is in the plan on its due day 2026-11-17",
+   "ok": false,
+   "got": {
+    "date": "2026-11-17",
+    "minutes": 10,
+    "concepts": [
+     "RNA"
+    ],
+    "note": "Förhör på det som är svårast."
+   }
+  },
+  {
+   "name": "every concept comes back at least once",
+   "ok": true,
+   "got": [
+    [
+     "RNA",
+     "DNA",
+     "protein"
+    ],
+    [
+     "RNA",
+     "DNA",
+     "protein"
+    ],
+    [
+     "mitos",
+     "meios",
+     "RNA"
+    ],
+    [
+     "DNA",
+     "protein",
+     "mitos"
+    ],
+    [
+     "meios",
+     "RNA",
+     "DNA"
+    ],
+    [
+     "protein",
+     "mitos",
+     "meios"
+    ],
+    [
+     "RNA"
+    ],
+    [
+     "DNA"
+    ],
+    [
+     "protein"
+    ],
+    [
+     "mitos"
+    ]
+   ]
+  },
+  {
+   "name": "exam in 20 days: the 'dagen före provet' day is 2026-11-30 (or no such note)",
+   "ok": false,
+   "got": {
+    "days": 14,
+    "last": {
+     "date": "2026-11-24",
+     "minutes": 15,
+     "concepts": [
+      "b"
+     ],
+     "note": "Blandat förhör på det viktigaste, dagen före provet."
+    }
+   }
+  },
+  {
+   "name": "exam tomorrow: one 15-min mixed day today with the missed concept",
+   "ok": true,
+   "got": [
+    {
+     "date": "2026-11-11",
+     "minutes": 15,
+     "concepts": [
+      "a"
+     ],
+     "note": "Blandat förhör på det viktigaste, dagen före provet."
+    }
+   ]
+  },
+  {
+   "name": "exam today: no plan",
+   "ok": true
+  },
+  {
+   "name": "exam in the past: no plan",
+   "ok": true
+  },
+  {
+   "name": "never-quizzed concept is not 'due' (no history)",
+   "ok": true
+  }
+ ]
+}

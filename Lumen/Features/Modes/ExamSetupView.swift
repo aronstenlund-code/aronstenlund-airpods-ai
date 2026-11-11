@@ -20,7 +20,7 @@ struct ExamSetupView: View {
                     Button("Kör övningsprovet") { Task { await model.startPracticeExam() } }
                         .font(LumenFont.text(17, .semibold))
                 } footer: {
-                    Text("Lumen läser upp en fråga i taget, du svarar högt och Lumen rättar och förklarar. Säg nästa, förra, fråga sju, hoppa över, upprepa eller avsluta.")
+                    Text("Earmind läser upp en fråga i taget, du svarar högt och Earmind rättar och förklarar. Säg nästa, förra, fråga sju, hoppa över, upprepa eller avsluta.")
                 }
                 Section("Frågor (\(materials.paper.tasks.count))") {
                     ForEach(materials.paper.tasks) { task in
@@ -32,8 +32,8 @@ struct ExamSetupView: View {
                                 }
                                 Spacer()
                                 if task.isOwnAnswer {
-                                    Text("Lumens svar").font(LumenFont.text(12, .semibold)).foregroundStyle(LumenColor.muted)
-                                        .accessibilityLabel("Facit saknas, Lumen har skrivit svaret")
+                                    Text("Earminds svar").font(LumenFont.text(12, .semibold)).foregroundStyle(LumenColor.muted)
+                                        .accessibilityLabel("Facit saknas, Earmind har skrivit svaret")
                                 }
                             }
                             Text(task.text).font(LumenFont.text(15)).lineLimit(3)
@@ -65,14 +65,14 @@ struct ExamSetupView: View {
                     Text(status).font(.footnote).foregroundStyle(.secondary)
                 }
             } footer: {
-                Text("Provet skickas till Lumens server för att läsas en gång, och bara frågorna sparas, på den här telefonen. Saknas facit skriver Lumen egna svar och säger det.")
+                Text("Provet skickas till Earminds server för att läsas en gång, och bara frågorna sparas, på den här telefonen. Saknas facit skriver Earmind egna svar och säger det.")
             }
             if materials.isReady {
                 Section {
                     Button("Starta provsession med provtid") { Task { await model.startExam() } }
                     Button("Rensa provet", role: .destructive) { materials.clear() }
                 } footer: {
-                    Text("Provsessionen är som på riktigt: Lumen svarar bara på \"Lumen, …\": uppgift sju, ledtråd, rätta jag fick …, nästa, starta provtid nittio minuter, hur gick det, avsluta provet.")
+                    Text("Provsessionen är som på riktigt: Earmind svarar bara på ”Lumen, …”: uppgift sju, ledtråd, rätta jag fick …, nästa, starta provtid nittio minuter, hur gick det, avsluta provet.")
                 }
             }
         }

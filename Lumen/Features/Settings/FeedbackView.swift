@@ -38,7 +38,7 @@ struct FeedbackView: View {
                 Section {
                     Toggle("Share history to improve the app", isOn: Binding(get: { share.isSharing }, set: { model.setSharing($0) }))
                 } footer: {
-                    Text("Off by default. When on, your own questions and Lumen's answers are uploaded without your name and kept for at most 12 months. Other people's speech is never sent. Turning it off deletes what was shared.")
+                    Text("Off by default. When on, your own questions and Earmind's answers are uploaded without your name and kept for at most 12 months. Other people's speech is never sent. Turning it off deletes what was shared.")
                 }
             }
         }
@@ -54,9 +54,9 @@ struct ShareHistoryPromptView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Help improve Lumen?")
+            Text("Help improve Earmind?")
                 .font(.title.bold())
-            Text("You can share your own questions and Lumen's answers with the developers, without your name, for at most 12 months. Other people's speech is never sent. You can change your mind at any time in Settings, and what was shared is then deleted.")
+            Text("You can share your own questions and Earmind's answers with the developers, without your name, for at most 12 months. Other people's speech is never sent. You can change your mind at any time in Settings, and what was shared is then deleted.")
             Spacer()
             Button {
                 onAnswer(false)

@@ -5,6 +5,8 @@ import Foundation
 /// window is open. "Nej", silence or a new question close it. Pure parts, unit-tested.
 enum MoreOffer {
     static let window: TimeInterval = 5
+    /// A56 (K13): how long the developed answer from the same call is kept for "ja" (COMMANDS.md: about 2 minutes).
+    static let cacheLife: TimeInterval = 120
     /// What the long answer is asked for with until Kevin's K13 cache lands (`continue_more`, existing).
     static let instruction = "utveckla"
 

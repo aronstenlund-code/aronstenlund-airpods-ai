@@ -12,6 +12,16 @@ on:
       - "site/**"
       - "scripts/**"
       - ".github/workflows/pages.yml"
+      # Angela 2026-11-11: backend deploys and QA/eval workflows never change the app (Kevin's K37/K39/K36 pushes
+      # cancelled four app builds in a row).
+      - ".github/workflows/deploy-backend.yml"
+      - ".github/workflows/nightly-eval.yml"
+      - ".github/workflows/real-users.yml"
+      - ".github/workflows/reported-cases.yml"
+      - ".github/workflows/auth-rate-limit.yml"
+      - ".github/workflows/credits-ready.yml"
+      - ".github/workflows/audio-eval.yml"
+      - ".github/workflows/oscar-ab-audio.yml"
       - "AppTests/**"
       - ".github/workflows/apptest-*.yml"
       - "**/*.md"
@@ -25,6 +35,16 @@ on:
       - "site/**"
       - "scripts/**"
       - ".github/workflows/pages.yml"
+      # Angela 2026-11-11: backend deploys and QA/eval workflows never change the app (Kevin's K37/K39/K36 pushes
+      # cancelled four app builds in a row).
+      - ".github/workflows/deploy-backend.yml"
+      - ".github/workflows/nightly-eval.yml"
+      - ".github/workflows/real-users.yml"
+      - ".github/workflows/reported-cases.yml"
+      - ".github/workflows/auth-rate-limit.yml"
+      - ".github/workflows/credits-ready.yml"
+      - ".github/workflows/audio-eval.yml"
+      - ".github/workflows/oscar-ab-audio.yml"
       - "AppTests/**"
       - ".github/workflows/apptest-*.yml"
       - "**/*.md"

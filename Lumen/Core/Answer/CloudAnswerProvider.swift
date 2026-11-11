@@ -130,6 +130,8 @@ final class CloudAnswerProvider: AnswerProvider {
             var qa_log: Bool?
             var tools_available: [String]?
             var tool_round: ToolRound?
+            var saved_answers: [SavedAnswerPayload]?
+            var two_level: Bool?
         }
         struct PrefContext: Encodable {
             var subject: String?
@@ -155,7 +157,9 @@ final class CloudAnswerProvider: AnswerProvider {
                         session_end: request.context.sessionEnd ? true : nil,
                         qa_log: request.context.qaLog ? true : nil,
                         tools_available: request.context.toolsAvailable.isEmpty ? nil : request.context.toolsAvailable,
-                        tool_round: request.context.toolRound)
+                        tool_round: request.context.toolRound,
+                        saved_answers: request.context.savedAnswers.isEmpty ? nil : request.context.savedAnswers,
+                        two_level: request.context.twoLevel ? true : nil)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return (try? encoder.encode(body)) ?? Data("{}".utf8)

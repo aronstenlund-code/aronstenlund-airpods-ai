@@ -27,7 +27,7 @@ struct Note: Identifiable, Codable, Equatable, Sendable {
 
     var markdown: String {
         var out: [String] = []
-        out.append("# Lumen — \(createdAt.formatted(date: .long, time: .shortened))")
+        out.append("# Earmind — \(createdAt.formatted(date: .long, time: .shortened))")
         out.append("")
         if !answers.isEmpty {
             out.append("## Questions and answers")

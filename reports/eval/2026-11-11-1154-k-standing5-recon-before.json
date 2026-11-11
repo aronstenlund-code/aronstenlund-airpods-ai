@@ -1,0 +1,42 @@
+{
+ "ok": 5,
+ "n": 6,
+ "rows": [
+  {
+   "fragment": "Vilka är de största? Bargern i världen.",
+   "recon": "Vilka är de största planeterna i solsystemet?",
+   "said": "De största planeterna är Jupiter, Saturnus, Uranus och Neptunus, där Jupiter är störst av alla.",
+   "ok": false
+  },
+  {
+   "fragment": "Hur långa är de? Floderna i Afrika.",
+   "recon": "Hur långa är Afrikas floder?",
+   "said": "Afrikas längsta flod är Nilen, som är omkring sextusen sexhundrafemtio kilometer lång, och Kongofloden är den djupaste och en av världens mest vattenrika. Amazonas är visserligen längre än Nilen i vissa mätningar, men den ligger i Sydamerika.",
+   "ok": true
+  },
+  {
+   "fragment": "Vilken är den äldsta? Stan i Sverige.",
+   "recon": "Vilken är den äldsta staden i Sverige?",
+   "said": "Den äldsta staden i Sverige är Sigtuna, grundad omkring niohundraåttio.",
+   "ok": true
+  },
+  {
+   "fragment": "Hur många finns det? Benen i kroppen.",
+   "recon": "Hur många ben finns det i kroppen?",
+   "said": "Den vuxna kroppen har tvåhundrasex ben.",
+   "ok": true
+  },
+  {
+   "fragment": "Vilka är de största?",
+   "recon": "Vilka är de största öknarna?",
+   "said": "Det beror på hur man mäter. Räknat efter areal är Antarktis och Arktis störst, och Sahara är den största varma öknen.",
+   "ok": true
+  },
+  {
+   "fragment": "Och den minsta då?",
+   "recon": "Vilken är den minsta planeten?",
+   "said": "Merkurius är den minsta planeten.",
+   "ok": true
+  }
+ ]
+}

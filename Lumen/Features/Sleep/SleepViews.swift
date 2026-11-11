@@ -14,7 +14,7 @@ struct SleepView: View {
                 .foregroundStyle(LumenColor.blue)
                 .accessibilityHidden(true)
             Text("Sov gott").font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
-            Text("Lumen lyssnar på telefonen i natt: om du pratar i sömnen, snarkar eller sover oroligt.")
+            Text("Earmind lyssnar på telefonen i natt: om du pratar i sömnen, snarkar eller sover oroligt.")
                 .font(LumenFont.text(17))
                 .multilineTextAlignment(.center)
             VStack(alignment: .leading, spacing: 10) {

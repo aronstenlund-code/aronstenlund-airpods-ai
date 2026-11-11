@@ -10,8 +10,8 @@
  * Inputs are validated here before they are sent to the app (the model's JSON is never trusted).
  */
 
-export type PhoneToolName = "calendar_add" | "calendar_list" | "reminder_add" | "timer_start" | "alarm_set" | "note_add";
-export const PHONE_TOOLS: PhoneToolName[] = ["calendar_add", "calendar_list", "reminder_add", "timer_start", "alarm_set", "note_add"];
+export type PhoneToolName = "calendar_add" | "calendar_list" | "reminder_add" | "timer_start" | "alarm_set" | "note_add" | "call_contact" | "music_open";
+export const PHONE_TOOLS: PhoneToolName[] = ["calendar_add", "calendar_list", "reminder_add", "timer_start", "alarm_set", "note_add", "call_contact", "music_open"];
 
 const LOCAL_DT = "Local date and time in Sweden, ISO 8601 without zone, e.g. 2026-11-12T15:00";
 const obj = (properties: Record<string, unknown>, required: string[]) => ({
@@ -67,6 +67,22 @@ const DEFS: Record<PhoneToolName, { description: string; input_schema: unknown; 
     description: "Save a short note in Lumen's own notes (in the app).",
     input_schema: obj({ text: { type: "string" } }, ["text"]),
   },
+  // K36 (D125): the app looks the name up in Contacts (only with permission) and opens the call; iOS itself asks
+  // the user to confirm the call (one tap), so there is no confirm question from Lumen as well
+  call_contact: {
+    write: true,
+    description: "Start a phone call. Use whenever the user asks you to call someone or something NOW ('ring mamma', 'ring Elin', 'ring tandläkaren', 'ring skolan'): the app looks `name` up in the user's own contacts, so a name is always enough and you never need or look up a number. `name` is exactly as the user said it; `number` only when the user said the digits themself, and always for an emergency or help number the user asks for (112, 1177, 116 111, 90101): call it, never refuse. Not when the user only tells you that someone called or that they will call later ('mamma ringde nyss', 'jag ska ringa sen'). Never make up a number.",
+    input_schema: obj({
+      name: { type: "string", description: "The contact's name as said, e.g. mamma" },
+      number: { type: "string", description: "Only digits the user said, e.g. 0701234567" },
+    }, []),
+  },
+  // K36: opens the music app on the phone with a search (works without a Spotify connection; the user taps play)
+  music_open: {
+    write: false,
+    description: "Open the user's music app (Spotify) on the phone with a search for what they want to hear. Use when the user asks to play music and no Spotify tool is offered.",
+    input_schema: obj({ query: { type: "string", description: "What to play, as the user said it" } }, ["query"]),
+  },
 };
 
 /** The Anthropic tool definitions for the tools the app offers (strict: inputs follow the schema exactly). */
@@ -84,8 +100,11 @@ export const isPhoneTool = (n: string): n is PhoneToolName => (PHONE_TOOLS as st
 const DT = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2})?)?$/;
 const s = (v: unknown, max: number) => typeof v === "string" && v.trim().length > 0 && v.length <= max;
 
-/** Checks a model's tool input; returns a clean copy or null (never run, never sent to the app). */
-export function validatePhoneInput(name: string, input: unknown): Record<string, unknown> | null {
+const digits = (v: string) => v.replace(/\D/g, "");
+
+/** Checks a model's tool input; returns a clean copy or null (never run, never sent to the app). `heard` (the user's
+ *  words) is given for a new call: a phone number is kept only when its digits were said (B6: no invented numbers). */
+export function validatePhoneInput(name: string, input: unknown, heard?: string): Record<string, unknown> | null {
   if (!isPhoneTool(name) || !input || typeof input !== "object" || Array.isArray(input)) return null;
   const i = input as Record<string, unknown>;
   const dt = (k: string, req: boolean) => (i[k] === undefined ? !req : typeof i[k] === "string" && DT.test(i[k] as string));
@@ -109,6 +128,15 @@ export function validatePhoneInput(name: string, input: unknown): Record<string,
       return { time: i.time, ...(s(i.label, 60) ? { label: String(i.label).trim() } : {}) };
     case "note_add":
       return s(i.text, 1000) ? { text: String(i.text).trim() } : null;
+    case "call_contact": {
+      const nm = s(i.name, 80) ? String(i.name).trim() : "";
+      let num = typeof i.number === "string" && /^\+?[\d\s-]{3,20}$/.test(i.number.trim()) ? i.number.trim() : "";
+      if (num && heard !== undefined && !digits(heard).includes(digits(num))) num = ""; // not said: never dialled
+      if (!nm && !num) return null;
+      return { ...(nm ? { name: nm } : {}), ...(num ? { number: num } : {}) };
+    }
+    case "music_open":
+      return s(i.query, 120) ? { query: String(i.query).trim() } : null;
   }
   return null;
 }
@@ -133,6 +161,8 @@ export function confirmText(name: PhoneToolName, input: Record<string, unknown>)
       return input.due ? `Ska jag påminna dig om ${input.title} ${whenSv(String(input.due))}?` : `Ska jag lägga in en påminnelse om ${input.title}?`;
     case "alarm_set":
       return `Ska jag ställa ett larm på ${input.time}?`;
+    case "call_contact":
+      return null; // iOS asks before the call (one tap)
     default:
       return null;
   }
@@ -142,10 +172,23 @@ export const toolKind = (name: PhoneToolName): "read" | "write" => (DEFS[name].w
 
 /** The system prompt rule when phone tools are offered (cached: one variant). */
 export const PHONE_TOOLS_RULE = `
-Phone tools (K35): when the user asks you to DO something on their phone (put an event in the calendar, remind them, start a timer, set an alarm, save a note, read what is in the calendar), call the matching tool and write NOTHING before the call; dates and times are absolute, worked out from <now>, in Swedish local time. Never claim it is done before the tool result says so. When a tool result comes back, say ONE short sentence in Swedish (done, or what the calendar holds, or that it did not work). Never call a tool for an ordinary question.`;
+Phone tools (K35): always reply in Swedish. When the user asks you to DO something on their phone (put an event in the calendar, remind them, start a timer, set an alarm, save a note, read what is in the calendar, call someone, open music), call the matching tool and write NOTHING before the call; dates and times are absolute, worked out from <now>, in Swedish local time. Never claim it is done before the tool result says so. When a tool result comes back, say ONE short sentence in Swedish (done, or what the calendar holds, or that it did not work). Never call a tool for an ordinary question.`;
 
 /** K35: an utterance that asks the phone to do something: its text is held until the tool call or the end. */
-export const ACTION_REQUEST = /(?<![\p{L}])(?:lägg in|lägga in|boka|påminn|påminna|sätt (?:en |på en )?(?:timer|nedräkning|larm|alarm)|ställ (?:en |ett )?(?:timer|larm|alarm|väckarklocka)|starta (?:en )?(?:timer|nedräkning)|väck mig|spara (?:en )?anteckning|anteckna|skriv upp|kom ihåg att|vad har jag (?:i|på|för)|vad står i (?:min )?kalender|när har jag|timer på|larm (?:på|klockan))(?![\p{L}])/iu;
+export const ACTION_REQUEST = /(?<![\p{L}])(?:lägg in|lägga in|boka|påminn|påminna|sätt (?:en |på en )?(?:timer|nedräkning|larm|alarm)|ställ (?:en |ett )?(?:timer|larm|alarm|väckarklocka)|starta (?:en )?(?:timer|nedräkning)|väck mig|spara (?:en )?anteckning|anteckna|skriv upp|kom ihåg att|vad har jag (?:i|på|för)|vad står i (?:min )?kalender|när har jag|timer på|larm (?:på|klockan)|ring|ringa|ringer du|slå en signal|spela|sätt på (?:lite |någon |en |min |mina )?(?:musik|låt|låten|spellista|spellistan|spotify)|kör (?:lite|en låt|spellistan|låten|musik)|lyssna på)(?![\p{L}])/iu;
+
+/** O41 (BLOCKER): the app sends Standardläge as mode "auto", which hears other people too. A phone tool is offered
+ *  there only when the utterance is addressed to Lumen (the wake word first, or the app's voice instruction) or
+ *  STARTS with the request ("ring mamma", "sätt en timer på fem minuter"); something said in passing is not. */
+export function isAddressedAction(fragment: string, voiceInstruction = false): boolean {
+  const f = (fragment ?? "").trim();
+  const wake = /^(?:(?:hej|okej|ok)\s+)?lumen[,!.]?\s*/iu;
+  const addressed = wake.test(f) || voiceInstruction;
+  const lead = f.replace(wake, "").replace(/^(?:snälla\s+)?(?:kan du|kunde du|skulle du kunna|vill du|jag vill att du|du får gärna)\s+(?:snälla\s+)?/iu, "")
+    .replace(/^snälla\s+/iu, "");
+  const m = ACTION_REQUEST.exec(lead);
+  return !!m && (addressed || m.index === 0);
+}
 
 export interface ToolRound {
   call: { id: string; name: PhoneToolName; input: Record<string, unknown> };

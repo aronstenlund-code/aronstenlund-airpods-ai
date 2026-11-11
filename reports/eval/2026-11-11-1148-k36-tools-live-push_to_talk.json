@@ -1,0 +1,185 @@
+{
+ "summary": {
+  "cases": 16,
+  "right": 16,
+  "spoken_before_tool": 0
+ },
+ "rows": [
+  {
+   "fragment": "ring mamma",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "mamma"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "kan du ringa Elin",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "Elin"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "ring 070 123 45 67",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "number": "0701234567"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "slå en signal till pappa",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "pappa"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "ring tandläkaren",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "name": "tandläkaren"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "spela lugn pluggmusik",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "lugn pluggmusik"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "sätt på lite musik av Veronica Maggio",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "Veronica Maggio"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "vad är huvudstaden i Norge",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Huvudstaden i Norge är Oslo."
+  },
+  {
+   "fragment": "vem ringde Graham Bell först",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Alexander Graham Bell fick patent på telefonen artonhundrasjuttiosex, men det är inte säkert vem som ringde först i historisk mening. Bell och Elisha Gray lämnade in patentansökningar samma dag, och Bell fick patentet. Det är Bell som brukar krediteras för den första fungerande telefonen."
+  },
+  {
+   "fragment": "vad betyder ordet signal",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Signal betyder ett tecken eller meddelande som bär information, till exempel ljud, ljus eller elektriska impulser. I skolan används det också om en förändring i en mätbar storhet som sänder information, till exempel en radiosignal eller en nervsignal."
+  },
+  {
+   "fragment": "hur spelar man gitarr",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Börja med att stämma gitarren och lär dig de öppna ackorden G, C, D, Em och Am. Öva ett ackord i taget, byt mellan dem långsamt med ett metronomslag, och spela sedan enkla strumningsmönster med handen nedåt och uppåt. Öva femton minuter varje dag, så märker du framsteg redan efter någon vecka."
+  },
+  {
+   "fragment": "min kompis ringde mig i går",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Det låter som att du berättar något om din kompis, inte att du vill ha hjälp med något. "
+  },
+  {
+   "fragment": "sätt en timer på tio minuter",
+   "want": "timer_start",
+   "got": "timer_start",
+   "ok": true,
+   "input": {
+    "seconds": 600,
+    "label": "Tio minuter"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "ring 112",
+   "want": "call_contact",
+   "got": "call_contact",
+   "ok": true,
+   "input": {
+    "number": "112"
+   },
+   "confirm": null,
+   "said": ""
+  },
+  {
+   "fragment": "mamma ringde nyss",
+   "want": null,
+   "got": null,
+   "ok": true,
+   "input": {},
+   "confirm": null,
+   "said": "Det låter som att din mamma ringde nyss. "
+  },
+  {
+   "fragment": "kör lite lofi",
+   "want": "music_open",
+   "got": "music_open",
+   "ok": true,
+   "input": {
+    "query": "lofi"
+   },
+   "confirm": null,
+   "said": ""
+  }
+ ],
+ "connect": {
+  "post_unconfigured": 503,
+  "list": {
+   "connections": [],
+   "available": {
+    "spotify": false
+   }
+  },
+  "no_jwt": 401,
+  "callback_forged": "lumen://connect?provider=spotify&status=error"
+ }
+}

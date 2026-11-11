@@ -105,8 +105,12 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [x] klar 2026-11-11 10:28 → reports/2026-11-11-1028-kelly-ke29-start-vadkan.md **Ke29 – Ny Start + "Vad Lumen kan" (D124, D125)** (effort: high). Gör först. Skiss: stor Start-knapp överst med läget under, provkortet nedanför, "Få A-svar" inne i Provläget. Sidan "Vad kan Lumen?" med rader för förhör, frågor, träning, kalender, timers, Spotify, samtal, sömn: vad man säger och om något behöver ställas in. Text: "Som Siri, fast den faktiskt förstår vad du frågar och svarar direkt i dina AirPods." Samma budskap på sajten.
 
-- [~] pågår 2026-11-11 10:29 **Ke30 – "Mina svar" och "Lumen kan allt" (D126)** (effort: medium). Skissa listan Mina svar per prov, redigeringen (Lumens förslag → din text), inspelningen med Klar-knapp, och raden "Lumen kan allt" med exempelfraser under Start-knappen. Uppdatera Ke29.
+- [x] klar 2026-11-11 10:28 → reports/2026-11-11-1028-kelly-ke30-mina-svar.md **Ke30 – "Mina svar" och "Lumen kan allt" (D126)** (effort: medium). Skissa listan Mina svar per prov, redigeringen (Lumens förslag → din text), inspelningen med Klar-knapp, och raden "Lumen kan allt" med exempelfraser under Start-knappen. Uppdatera Ke29.
 
 - [x] klar 2026-11-11 10:18 → reports/2026-11-11-1018-kelly-ke31-rostning-vektor.md **Ke31 – Tre loggkandidater för röstningen (D127)** (effort: medium). Gör först. Rita om A klotet, B den gröna formen och C den orange ringen (`docs/design/logo/rostning/`) som rena vektorer i samma storlek och ljus, så att röstningen blir rättvis. Ljust och mörkt, kontrollera i 60 pt. Lägg dem i `docs/design/logo/rostning/vektor/` till Angela (A54).
 
-- [ ] **Ke32 – Earmind på sajten (D128)** (effort: low). Byt Lumen → Earmind i sajtens texter och titel. Väckningsordet i exemplen behålls tills vidare.
+- [x] klar 2026-11-11 10:30 → reports/2026-11-11-1030-kelly-ke32-earmind-sajten.md **Ke32 – Earmind på sajten (D128)** (effort: low). Byt Lumen → Earmind i sajtens texter och titel. Väckningsordet i exemplen behålls tills vidare.
+
+- [x] klar 2026-11-11 10:39 → reports/2026-11-11-1039-kelly-ke33-granskning-a50.md (godkänd) **Ke33 – Stående uppgift (PLAN 2b/2c): granska A50:s skärmbilder** (effort: low, Kelly själv). Kön är tom. CI "Simulator screenshots" 42993726421 (main efter A50) mot SYSTEM.md och `docs/design/start-vadkan.md` (S1–S3), ljust och mörkt. A54 granskas när den är byggd.
+
+- [x] klar 2026-11-11 11:28 → reports/2026-11-11-1128-kelly-ke34-granskning-a52-a54.md (A52 godkänd, A54 med V1, A53 med M1) **Ke34 – Stående uppgift (PLAN 2c): granska A52 och A54** (effort: low, Kelly själv). Angela 7444c47: Vad kan Lumen? och bladet efter första svaret mot `docs/design/start-vadkan.md`, röstningsarket mot `docs/design/logo/rostning/vektor/README.md`. Bilder: CI "Simulator screenshots" 42999887377.

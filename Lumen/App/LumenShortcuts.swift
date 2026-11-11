@@ -2,7 +2,7 @@ import AppIntents
 
 /// "Fråga Lumen": one hands-free question, then the microphone goes off again.
 struct AskLumenIntent: AppIntent {
-    static let title: LocalizedStringResource = "Ask Lumen"
+    static let title: LocalizedStringResource = "Ask Earmind"
     static let supportedModes: IntentModes = .foreground
 
     init() {}
@@ -29,7 +29,7 @@ struct StartProvlageIntent: AppIntent {
 
 /// Lets go of the audio like the Pause button (D33). Needs no screen.
 struct PauseLumenIntent: AppIntent {
-    static let title: LocalizedStringResource = "Pause Lumen"
+    static let title: LocalizedStringResource = "Pause Earmind"
     static let supportedModes: IntentModes = .background
 
     init() {}
@@ -47,15 +47,15 @@ struct LumenShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(intent: StartListeningIntent(),
                     phrases: ["Starta \(.applicationName)", "Start \(.applicationName)"],
-                    shortTitle: "Start Lumen", systemImageName: "mic.fill")
+                    shortTitle: "Start Earmind", systemImageName: "mic.fill")
         AppShortcut(intent: AskLumenIntent(),
                     phrases: ["Fråga \(.applicationName)", "Ask \(.applicationName)"],
-                    shortTitle: "Ask Lumen", systemImageName: "questionmark.bubble")
+                    shortTitle: "Ask Earmind", systemImageName: "questionmark.bubble")
         AppShortcut(intent: StartProvlageIntent(),
                     phrases: ["Starta provläge med \(.applicationName)"],
                     shortTitle: "Start Provläge", systemImageName: "graduationcap")
         AppShortcut(intent: PauseLumenIntent(),
                     phrases: ["Pausa \(.applicationName)", "Pause \(.applicationName)"],
-                    shortTitle: "Pause Lumen", systemImageName: "pause.circle")
+                    shortTitle: "Pause Earmind", systemImageName: "pause.circle")
     }
 }

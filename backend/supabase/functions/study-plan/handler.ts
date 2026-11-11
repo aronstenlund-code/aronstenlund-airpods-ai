@@ -58,6 +58,7 @@ export function schedule(history: HistoryItem[]): { box: number; last: string; n
   return { box, last: last.date, next: iso(parse(last.date)! + wait * DAY), lastOk: last.ok };
 }
 
+const MONTHS_SV = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
 const WEEKDAY = ["söndags", "måndags", "tisdags", "onsdags", "torsdags", "fredags", "lördags"];
 /** "I går", "I förrgår", "I måndags", "Den 2 november". */
 export function whenSaid(last: string, today: string): string {
@@ -66,7 +67,10 @@ export function whenSaid(last: string, today: string): string {
   if (d === 1) return "I går";
   if (d === 2) return "I förrgår";
   if (d < 7) return `I ${WEEKDAY[new Date(parse(last)!).getUTCDay()]}`;
-  return `Förra veckan`;
+  if (d < 14) return "Förra veckan";
+  if (d < 21) return "För två veckor sedan"; // O13 del 2 fynd 4
+  const dt = new Date(parse(last)!);
+  return `Den ${dt.getUTCDate()} ${MONTHS_SV[dt.getUTCMonth()]}`;
 }
 
 export function dueConcepts(concepts: ConceptIn[], today: string): Due[] {
@@ -98,29 +102,43 @@ export function promptFor(due: Due[], today: string): string | null {
 export function planDays(concepts: ConceptIn[], today: string, examDate: string): { date: string; minutes: number; concepts: string[]; note: string }[] {
   const t0 = parse(today)!, tE = parse(examDate);
   if (tE === null || tE <= t0) return [];
+  // the next 14 days at most; the mixed review is only on the real day before the exam (Oscar O13 del 2, bugg 2)
   const days = Math.min(14, Math.round((tE - t0) / DAY));
+  const dayBefore = iso(tE - DAY);
   const weak = concepts
     .map((c) => ({ c: c.concept, wrong: c.history.filter((x) => !x.ok).length, right: c.history.filter((x) => x.ok).length }))
     .sort((a, b) => b.wrong - a.wrong || a.right - b.right);
+  // O13 del 2 fynd 3: a concept comes back on the day its repetition is due (not only by chance in the rotation)
+  const nextOf = new Map<string, string>();
+  for (const c of concepts) {
+    const s = schedule(c.history);
+    if (s) nextOf.set(c.concept, s.next);
+  }
   const plan: { date: string; minutes: number; concepts: string[]; note: string }[] = [];
-  const due = new Set(dueConcepts(concepts, today).map((x) => x.concept));
   let k = 0;
   for (let d = 0; d < days; d++) {
     const date = iso(t0 + d * DAY);
-    const last = d === days - 1;
+    const last = date === dayBefore;
+    const size = last ? 4 : 3;
     const pick: string[] = [];
-    if (d === 0) for (const c of due) if (pick.length < 3) pick.push(c);
-    while (pick.length < (last ? 4 : 3) && weak.length) {
+    const dueToday = [...nextOf].filter(([, n]) => (d === 0 ? n <= date : n === date)).map(([c]) => c);
+    for (const c of dueToday) if (pick.length < size) pick.push(c);
+    // the rest from the weakest, in turn; the counter is per day (bugg 1: it ran over all days and emptied the last ones)
+    let tries = 0;
+    while (pick.length < size && weak.length && tries++ < weak.length * 2) {
       const c = weak[k % weak.length].c;
       k++;
       if (!pick.includes(c)) pick.push(c);
-      if (k > weak.length * 3) break;
     }
     plan.push({
       date,
       minutes: last ? 15 : 10,
       concepts: pick,
-      note: last ? "Blandat förhör på det viktigaste, dagen före provet." : d === 0 && due.size ? "Det du missade först." : "Förhör på det som är svårast.",
+      note: last
+        ? "Blandat förhör på det viktigaste, dagen före provet."
+        : dueToday.length
+        ? d === 0 ? "Det du missade först." : "Repetition av det som ska tillbaka i dag."
+        : "Förhör på det som är svårast.",
     });
   }
   return plan;

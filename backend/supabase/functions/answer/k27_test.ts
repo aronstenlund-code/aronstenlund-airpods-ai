@@ -1,24 +1,29 @@
 // K27: Oscar's O24 (questions about Lumen), O30 (echo vs a quote in a follow-up) and O31 (link requests), offline.
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
-import { selfAnswer } from "./self.ts";
+import { selfAnswer, SELF_TEXT, selfTopic } from "./self.ts";
 import { stripEcho } from "./echo.ts";
 import { isResourceRequest, resourceTopic } from "./resource.ts";
 
-Deno.test("K27 O24: questions about Lumen are recognised by content", () => {
-  const topic = (t: string) => {
-    const a = selfAnswer(t);
-    return !a ? null : /AI-assistent/.test(a) ? "robot" : /lyssnar bara/.test(a) ? "listen" : /sparas inte/.test(a) ? "save" : "?";
-  };
+Deno.test("K27 O24 + O34: questions about Lumen are recognised by content and answered by what is asked", () => {
+  const topic = selfTopic;
   for (const [t, want] of [
-    ["är du en AI", "robot"], ["Lumen, är du en människa eller en robot", "robot"], ["är det chatgpt", "robot"],
-    ["vilken AI är du", "robot"], ["vem har gjort dig", "robot"], ["är du på riktigt eller", "robot"],
+    ["är du en AI", "robot"], ["Lumen, är du en människa eller en robot", "robot"], ["är det chatgpt", "which_ai"],
+    ["vilken AI är du", "which_ai"], ["vem har gjort dig", "who_made"], ["är du på riktigt eller", "robot"],
     ["lyssnar du på mig nu", "listen"], ["hör du allt jag säger", "listen"], ["spelar du in lektionen", "listen"],
     ["lyssnar du när appen är stängd", "listen"], ["kan du höra mig när skärmen är släckt", "listen"],
     ["spelar du in det här", "listen"], ["asså lyssnar du hela tiden", "listen"],
-    ["sparar du mina frågor", "save"], ["vem ser det jag frågar", "save"], ["kan läraren se vad jag frågar", "save"],
-    ["sparas det jag säger", "save"], ["säljer ni min data", "save"], ["vart skickas ljudet", "save"],
-    ["kan mina föräldrar läsa mina frågor", "save"],
+    ["sparar du mina frågor", "save"], ["vem ser det jag frågar", "who_sees"], ["kan läraren se vad jag frågar", "who_sees"],
+    ["sparas det jag säger", "audio"], ["säljer ni min data", "sell"], ["vart skickas ljudet", "audio"],
+    ["kan mina föräldrar läsa mina frågor", "who_sees"],
+    // O36 misses
+    ["hör du vad min lärare säger", "listen"], ["är du typ en bot", "robot"], ["vem programmerade dig", "who_made"],
+    ["kan någon annan läsa det här", "who_sees"], ["tar du upp ljud i bakgrunden", "audio"],
   ]) assertEquals(topic(t), want, t);
+  // O16: never "ljud sparas inte" (ElevenLabs keeps Scribe sessions on our plan); every audio answer names ElevenLabs
+  for (const k of ["listen", "audio", "save"] as const) assert(SELF_TEXT[k].includes("ElevenLabs"), k);
+  assert(!Object.values(SELF_TEXT).some((x) => /ljud sparas inte/i.test(x)));
+  assert(SELF_TEXT.sell.startsWith("Nej, vi säljer ingen data"));
+  assert(SELF_TEXT.which_ai.startsWith("Nej, Lumen är inte ChatGPT"));
   for (const t of ["är en robot levande", "vad är AI", "vem har gjort Mona Lisa", "lyssnar hundar på musik", "spelar du piano",
     "sparar man pengar på att cykla", "hör fladdermöss ultraljud", "vad är en chattbot", "vem är du i Hamlet, Horatio eller Hamlet",
     "är det sant att robotar tar jobb", "lyssnar du på musik", "spelar du in en låt", "sparar du pengar", "hör du vad läraren sa",

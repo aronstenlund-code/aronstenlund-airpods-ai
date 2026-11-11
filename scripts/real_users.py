@@ -124,24 +124,28 @@ SCHOOL = re.compile(r"(?i)(?<![\wåäö])([\wåäö]*?)(skolan|skola|gymnasiet|g
 SCHOOL_NAMED = re.compile(r"(?<![\wåäö])[A-ZÅÄÖ][\wåäö]+s (?:gymnasium|gymnasiet|skola|skolan)(?![\wåäö])")
 CLASS = re.compile(r"(?<![\wåäö\d])[1-9](?:[A-Fa-f]| [A-F])(?![\wåäö])(?!\s*[-+*/=^²³])|(?<![\wåäö])[PFpf]\d{2}(?![\wåäö\d])")
 PRIVATE_THING = re.compile(
-    r"(?i)(?<![\wåäö])(?:rektorn|\w*koden|koder till|kod till|lösen\w*|\w*lösenord\w*|wi-?fi\w*|skåp\w*|tandläkar\w*|läkartid\w*|"
+    r"(?i)(?<![\wåäö])(?:rektorn|(?:port|larm|dörr|pin|wifi|skåp|lås|grind)koden|koden (?:till|på|för)|koder till|kod till|lösenordet|lösenord (?:till|på|för)|\w+lösenord\w*|wi-?fi\w*|skåp\w*|tandläkar\w*|läkartid\w*|"
     r"\w*tid hos|telefonnummr?\w*|numret till|adressen till|personnummer\w*)(?![\wåäö])")
 PUBLIC_SURNAMES = set("""vasa adolf bernadotte lindgren strindberg lagerlöf linné nobel celsius einstein newton darwin curie
 palme hitler napoleon bonaparte luther columbus galilei shakespeare mozart beethoven bach marx lenin stalin churchill
 roosevelt kennedy lincoln washington king mandela gandhi freud tesla edison obama trump biden putin zelensky jobs gates
 musk swift ibrahimović zlatan bergman garbo hammarskjöld wallenberg söderberg boye fröding tegnér runeberg bellman
-taube jansson rowling tolkien orwell dickens austen hemingway picasso gogh vinci michelangelo rembrandt""".split())
+taube jansson rowling tolkien orwell dickens austen hemingway picasso gogh vinci michelangelo rembrandt kamprad caesar
+augustus nero cleopatra kleopatra aristoteles platon sokrates galileo kopernikus kepler mendel pasteur fleming hawking""".split())
 PUBLIC_PAIRS = ("mona lisa", "anne frank", "pippi långstrump", "emil i lönneberga", "karl xii", "gustav ii adolf")
 PLACE_FIRST = set("nya förenta svarta röda döda norra södra östra västra stilla saudi sri costa puerto san sankt el la los "
-                  "new great kap".split())
+                  "new great kap big".split())  # "Big Bang"
+# academic schools of thought, not a school someone goes to (Oscar O38: "Atens skola", "frankfurtskolan")
+ACADEMIC_SCHOOL = re.compile(r"(?i)(?:atens skola|frankfurt\w*skolan|chicagoskolan|wienskolan|stoiska skolan|pragskolan)")
 # K38 (O36): method questions without "jag" that answer/crisis.ts (written for spoken crisis signs) lets through
 METHOD = re.compile(
-    r"(?i)(?<![\wåäö])(?:tablett\w*|piller|överdos\w*|dödlig dos|för att dö|dö av|döda sig|ta sitt liv|hur djupt|skära sig|skär sig|"
+    r"(?i)(?<![\wåäö])(?:\w*tablett\w*|\w*piller|överdos\w*|alvedon\w*|panodil\w*|ipren\w*|sobril\w*|propavan\w*|imovane\w*|citodon\w*|tramadol\w*|oxikodon\w*|paracetamol\w*|dödlig dos|för att dö|dö av|döda sig|ta sitt liv|hur djupt|skära sig|skär sig|"
     r"skära upp|avskedsbr\w*|självmordsbr\w*|slutar? äta|sluta dricka|svält\w*|hänga sig|hängning|dränka sig|hoppa från|"
     r"strypa|kväva sig)(?![\wåäö])")
 
 
 def private_school(text: str) -> bool:
+    text = ACADEMIC_SCHOOL.sub(" ", text)
     if SCHOOL_NAMED.search(text):
         return True
     for m in SCHOOL.finditer(text):

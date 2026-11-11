@@ -113,6 +113,19 @@ export class RestDb {
     return m ? Number(m[1]) : 0;
   }
 
+  /** Insert one row, or replace the row with the same unique key `onConflict` (K36: a reconnect). */
+  async upsert(table: string, row: object, onConflict: string): Promise<void> {
+    const r = await this.fetchImpl(
+      `${this.baseUrl}/rest/v1/${table}?on_conflict=${encodeURIComponent(onConflict)}`,
+      { method: "POST", headers: this.headers({ prefer: "resolution=merge-duplicates,return=minimal" }), body: JSON.stringify(row) },
+    );
+    if (!r.ok) {
+      await r.body?.cancel();
+      throw new Error(`upsert ${table} failed: HTTP ${r.status}`);
+    }
+    await r.body?.cancel();
+  }
+
   /** PATCH /rest/v1/<table>?<filter> with `patch`; returns the number of changed rows. */
   async updateWhere(table: string, filter: string, patch: object): Promise<number> {
     const r = await this.fetchImpl(`${this.baseUrl}/rest/v1/${table}?${filter}`, {

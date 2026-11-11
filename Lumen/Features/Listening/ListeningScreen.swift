@@ -154,7 +154,7 @@ struct ListeningScreen: View {
         }
         return switch state {
         case .paused: "Tryck Lyssna igen eller säg ”Lumen, fortsätt”"
-        default: mode.isLive ? "Lumen ger ett förslag i pausen" : ""
+        default: mode.isLive ? "Earmind ger ett förslag i pausen" : ""
         }
     }
 
@@ -188,6 +188,16 @@ struct ListeningScreen: View {
             }
         } else if let turn = model.conversation.streamingAnswer ?? model.conversation.answers.last {
             VStack(alignment: .leading, spacing: 12) {
+                if turn.savedAnswerID != nil {
+                    // A53 (Kelly Ke30): the answer is the student's own, said word for word.
+                    Text("Ditt svar")
+                        .font(LumenFont.text(13, .semibold, relativeTo: .footnote))
+                        .foregroundStyle(LumenColor.blue)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(LumenColor.soft, in: Capsule())
+                        .accessibilityLabel("Ditt sparade svar")
+                }
                 if !turn.question.isEmpty {
                     Text(turn.question).font(appearance.questionFont(20)).foregroundStyle(LumenColor.muted)
                         .accessibilityLabel("Fråga: \(turn.question)")
@@ -208,6 +218,15 @@ struct ListeningScreen: View {
                 }
                 if model.conversation.streamingAnswer == nil {
                     HStack {
+                        if let savedID = turn.savedAnswerID.flatMap(UUID.init(uuidString:)),
+                           let saved = model.myAnswers?.answer(savedID) {
+                            Button("Ändra svaret") {
+                                model.showingMyAnswers = MyAnswersRoute(examID: saved.examID, editing: saved.id) // A53
+                            }
+                            .font(LumenFont.text(15, .semibold))
+                            .foregroundStyle(LumenColor.blue)
+                            .frame(minHeight: 44)
+                        }
                         Spacer()
                         Button {
                             reportComment = ""
@@ -395,8 +414,8 @@ struct ModeSwitchSheet: View {
 
     private var footnote: String {
         onPick == nil
-            ? "Lumen lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
-            : "Startknappen startar läget du väljer. Medan Lumen lyssnar kan du också säga ”Lumen, byt till provläge”."
+            ? "Earmind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
+            : "Valet gäller Starta-knappen. Du kan också säga ”Lumen, byt till provläge”." // Ke29
     }
 
     var body: some View {
@@ -404,16 +423,24 @@ struct ModeSwitchSheet: View {
             ScrollView {
                 VStack(spacing: 8) {
                     ForEach(order) { mode in
+                        if onPick != nil, mode == .interview {
+                            // Ke29: Standardläge and Provläge first, then FLER LÄGEN with Sov last.
+                            SectionLabel("Fler lägen")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.top, 14)
+                                .padding(.leading, 4)
+                        }
                         Button {
                             dismiss()
                             if let onPick { onPick(mode) } else { Task { await model.switchMode(to: mode) } }
                         } label: {
                             HStack(spacing: 14) {
+                                // SYSTEM.md / Kelly Ke33 G2: grey icons, the chosen mode's blue.
                                 Image(systemName: mode.symbol)
                                     .font(.system(size: 18, weight: .regular))
-                                    .foregroundStyle(LumenColor.blue)
+                                    .foregroundStyle(mode == current ? LumenColor.blue : LumenColor.muted)
                                     .frame(width: 44, height: 44)
-                                    .background(LumenColor.soft, in: Circle())
+                                    .background(mode == current ? LumenColor.soft : Color.clear, in: Circle())
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(mode.shortName).font(LumenFont.text(17, .semibold))
                                     Text(mode.tagline).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
@@ -439,9 +466,8 @@ struct ModeSwitchSheet: View {
                             HStack(spacing: 14) {
                                 Image(systemName: "moon.stars")
                                     .font(.system(size: 18, weight: .regular))
-                                    .foregroundStyle(LumenColor.blue)
+                                    .foregroundStyle(LumenColor.muted)
                                     .frame(width: 44, height: 44)
-                                    .background(LumenColor.soft, in: Circle())
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text("Sov").font(LumenFont.text(17, .semibold))
                                     Text("Prat i sömnen och snarkning, bara på telefonen").font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
@@ -453,7 +479,6 @@ struct ModeSwitchSheet: View {
                             .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
                         }
                         .buttonStyle(.plain)
-                        .padding(.top, 12)
                     }
                     Text(footnote)
                         .font(LumenFont.text(15))
@@ -464,7 +489,7 @@ struct ModeSwitchSheet: View {
                 .padding(20)
             }
             .lumenScreen()
-            .navigationTitle("Byt läge")
+            .navigationTitle(onPick == nil ? "Byt läge" : "Välj läge") // Ke29: Start chooses, Lyssnar switches
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } }

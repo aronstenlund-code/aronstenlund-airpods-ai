@@ -9,7 +9,7 @@ struct HistoryView: View {
         List {
             Section {
                 if store.entries.isEmpty {
-                    Text("No history yet. Your questions and Lumen's answers appear here.")
+                    Text("No history yet. Your questions and Earmind's answers appear here.")
                         .foregroundStyle(.secondary)
                 }
                 ForEach(store.entries) { entry in
@@ -62,7 +62,7 @@ struct HistoryDetailView: View {
                 Section("You") { Text(question).textSelection(.enabled) }
             }
             if !entry.answer.isEmpty {
-                Section("Lumen") { Text(entry.answer).textSelection(.enabled) }
+                Section("Earmind") { Text(entry.answer).textSelection(.enabled) }
             }
             if let link = entry.link {
                 Section("Länk") { LinkRow(link: link) } // A19 (K19), opens in Safari

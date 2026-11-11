@@ -79,7 +79,7 @@ struct ReadinessView: View {
             }
             .safeAreaInset(edge: .bottom) {
                 Button(action: onQuiz) {
-                    TwoLineLabel(title: "Förhör mig", detail: "Lumen börjar med det du behöver öva på")
+                    TwoLineLabel(title: "Förhör mig", detail: "Earmind börjar med det du behöver öva på")
                 }
                 .buttonStyle(LumenButtonStyle(height: 62))
                 .padding(.horizontal, 20)

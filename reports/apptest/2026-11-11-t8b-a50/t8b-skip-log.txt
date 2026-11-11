@@ -1,0 +1,121 @@
+path: skip
+taps: 16
+screens: 18
+
+Milestones:
+  51.0 s,  0 taps,  0 screens: app opened
+  67.4 s,  2 taps,  3 screens: first question screen
+  67.5 s,  2 taps,  3 screens: first question: Lyssnar
+  97.1 s,  2 taps,  3 screens: Frågor: answer shown
+ 130.8 s,  5 taps,  7 screens: start screen
+ 140.9 s,  6 taps,  8 screens: Start: Starta Lumen visible
+ 145.2 s,  7 taps,  8 screens: Starta Lumen: Lyssnar
+ 175.7 s,  7 taps,  9 screens: Starta Lumen: answer shown
+ 240.1 s, 16 taps, 17 screens: Provläge: listening
+ 265.8 s, 16 taps, 17 screens: Provläge: answer shown
+ 268.6 s, 16 taps, 18 screens: done
+
+Log:
+MILESTONE   51.0 s,  0 taps,  0 screens: app opened
+shot at   53.0 s: t8-skip-01-intro — Intro: the first thing a new user sees
+SCREEN t8-skip-01-intro — Intro: the first thing a new user sees
+  texts (8): Inget konto. Testa nu betyder att du godkänner punkterna ovan. | Lumen | Fråga högt. Få svaret i örat. | Telefonen stannar i fickan. | Lyssnar bara när du har startat den | Du ser alltid när den lyssnar | Ljud sparas inte | Frågor och svar skickas till oss
+  buttons (2): Testa nu | Läs mer
+TAP  1 at   59.2 s: intro → Testa nu
+SYSTEM ALERT: “Lumen” would like to access the Microphone. — “Lumen” would like to access the Microphone. / Lumen listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.
+shot at   61.9 s: t8-skip-02-systemfraga — System alert: “Lumen” would like to access the Microphone.
+TAP  2 at   62.8 s: system alert → allow
+shot at   66.7 s: t8-skip-03-forsta-fragan — First question, before speaking
+SCREEN t8-skip-03-forsta-fragan — First question, before speaking
+  texts (6): iOS frågar om mikrofonen första gången. Ljud sparas inte. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Lyssnar | Till exempel: Vad är fotosyntes? | Lyssnar
+  buttons (1): Hoppa över
+MILESTONE   67.4 s,  2 taps,  3 screens: first question screen
+MILESTONE   67.5 s,  2 taps,  3 screens: first question: Lyssnar
+answer shown (0 → 1): Australiens huvudstad är Canberra.
+MILESTONE   97.1 s,  2 taps,  3 screens: Frågor: answer shown
+shot at   98.4 s: t8-skip-04-forsta-svaret — Frågor: the first answer on the screen
+SCREEN t8-skip-04-forsta-svaret — Frågor: the first answer on the screen
+  texts (7): iOS frågar om mikrofonen första gången. Ljud sparas inte. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Lyssnar | Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra. | Lyssnar
+  buttons (1): Fortsätt
+TAP  3 at  101.2 s: first question → Fortsätt/Hoppa över
+shot at  107.9 s: t8-skip-05-prov-steget — First start: add an exam or skip
+SCREEN t8-skip-05-prov-steget — First start: add an exam or skip
+  texts (5): Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Säg till exempel, Jag har prov i biologi på fredag | Säg till exempel | Jag har prov i biologi på fredag
+  buttons (2): Inte nu | Skriv i stället
+TAP  4 at  116.1 s: exam step → Inte nu
+shot at  119.7 s: t8-skip-06-dela-historik — Share history prompt
+SCREEN t8-skip-06-dela-historik — Share history prompt
+  texts (9): Vill du hjälpa till att förbättra Lumen? | Du kan dela dina egna frågor och Lumens svar med utvecklarna, utan ditt namn, i högst 12 månader. Andra personers tal skickas aldrig. Du kan ändra dig när som helst i Inställningar, och då raderas det som delats. | Standardläge, Svarar när någon frågar | Lyssnar | Standardläge | Svarar när någon frågar | Lyssnar | Fråga: Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra.
+  buttons (8): Dela inte | Dela historik | Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Fel svar, skicka till utvecklarna
+TAP  5 at  127.6 s: share prompt → Dela inte
+shot at  129.7 s: t8-skip-07-start — The start screen after the first start
+SCREEN t8-skip-07-start — The start screen after the first start
+  texts (7): Standardläge, Svarar när någon frågar | Lyssnar | Standardläge | Svarar när någon frågar | Lyssnar | Fråga: Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra.
+  buttons (6): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Fel svar, skicka till utvecklarna
+MILESTONE  130.8 s,  5 taps,  7 screens: start screen
+note: a Frågor session is still on (Lyssnar) after the first start
+TAP  6 at  133.3 s: Lyssnar → Avsluta
+A50: mode line = Läge: Standardläge. Byt läge
+shot at  137.7 s: t8-skip-08-start-starta-lumen — A50: Start before pressing Starta Lumen
+SCREEN t8-skip-08-start-starta-lumen — A50: Start before pressing Starta Lumen
+  texts (17): Lumen | Lumen kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kör spellistan Plugg, Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor? | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Lumen | Starta Lumen | Lumen kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, kolla min kalender, vad har jag i dag?” | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, sätt en timer på 10 minuter” | Lägg till prov | Standardläge | · | Byt
+  buttons (5): Inställningar | Starta Lumen | Läge: Standardläge. Byt läge | Lägg till prov | Standardläge, ·, Byt
+MILESTONE  140.9 s,  6 taps,  8 screens: Start: Starta Lumen visible
+TAP  7 at  142.7 s: start → Starta Lumen
+MILESTONE  145.2 s,  7 taps,  8 screens: Starta Lumen: Lyssnar
+shot at  146.4 s: t8-skip-09-starta-lumen-lyssnar — A50: Lyssnar after Starta Lumen, before the answer
+SCREEN t8-skip-09-starta-lumen-lyssnar — A50: Lyssnar after Starta Lumen, before the answer
+  texts (7): Standardläge, Svarar när någon frågar | Lyssnar | Standardläge | Svarar när någon frågar | Lyssnar | Fråga: Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra.
+  buttons (6): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Fel svar, skicka till utvecklarna
+answer shown (1 → 2): Australiens huvudstad är Canberra.
+MILESTONE  175.7 s,  7 taps,  9 screens: Starta Lumen: answer shown
+shot at  176.9 s: t8-skip-10-starta-lumen-svaret — A50: the answer after Starta Lumen
+SCREEN t8-skip-10-starta-lumen-svaret — A50: the answer after Starta Lumen
+  texts (9): Standardläge, Svarar när någon frågar | Lyssnar | Standardläge | Svarar när någon frågar | Lyssnar | Fråga: Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra. | Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra.
+  buttons (6): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Fel svar, skicka till utvecklarna
+TAP  8 at  180.3 s: Lyssnar → Avsluta
+TAP  9 at  184.6 s: start → Byt (mode line)
+shot at  186.8 s: t8-skip-11-byt-lage — A50: Byt from Start
+SCREEN t8-skip-11-byt-lage — A50: Byt from Start
+  texts (31): Byt läge | Lumen | Lumen kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kör spellistan Plugg, Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor? | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Lumen | Starta Lumen | Lumen kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, kolla min kalender, vad har jag i dag?” | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, sätt en timer på 10 minuter” | Lägg till prov | Standardläge | · | Byt | Startknappen startar läget du väljer. Medan Lumen lyssnar kan du också säga ”Lumen, byt till provläge”. | Standardläge | Svarar när någon frågar | Provläge | För dina prov | Intervju | Färdiga svar på intervjufrågor | Socialt | Ett förslag i pausen | Rizz | Flörtig wingman | Sov | Prat i sömnen och snarkning, bara på telefonen
+  buttons (12): Klar | Inställningar | Starta Lumen | Läge: Standardläge. Byt läge | Lägg till prov | Standardläge, ·, Byt | Standardläge, Svarar när någon frågar | Provläge, För dina prov | Intervju, Färdiga svar på intervjufrågor | Socialt, Ett förslag i pausen | Rizz, Flörtig wingman | Sov, Prat i sömnen och snarkning, bara på telefonen
+TAP 10 at  195.1 s: Byt → Provläge
+A50: mode line after choosing = Läge: Provläge. Byt läge
+TAP 11 at  198.1 s: start → Starta Lumen (Provläge)
+shot at  201.9 s: t8-skip-12-provlage-introfragor — Provläge's own first-start questions
+SCREEN t8-skip-12-provlage-introfragor — Provläge's own first-start questions
+  texts (19): Provläge | Lumen | Lumen kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kör spellistan Plugg, Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor? | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | När har du ditt prov? | Lumen | Starta Lumen | Lumen kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, påminn mig om träningen kl. 18” | ”Lumen, kör spellistan Plugg” | ”Lumen, kolla min kalender, vad har jag i dag?” | Lägg till prov | Provläge | · | Byt
+  buttons (12): Inställningar | Starta Lumen | Läge: Provläge. Byt läge | Lägg till prov | Hoppa över allt | Hoppa över | Provläge, ·, Byt | Idag | Imorgon | Inom en vecka | Senare | Inget prov just nu
+TAP 12 at  206.6 s: Provläge questions → Hoppa över
+shot at  208.8 s: t8-skip-13-provlage-introfragor-2 — Provläge question 2
+SCREEN t8-skip-13-provlage-introfragor-2 — Provläge question 2
+  texts (19): Provläge | Lumen | Lumen kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kör spellistan Plugg, Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor? | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Vilken årskurs går du i? | Lumen | Starta Lumen | Lumen kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, kolla min kalender, vad har jag i dag?” | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, sätt en timer på 10 minuter” | Lägg till prov | Provläge | · | Byt
+  buttons (16): Inställningar | Starta Lumen | Läge: Provläge. Byt läge | Lägg till prov | Hoppa över allt | Hoppa över | Provläge, ·, Byt | Åk 6 | Åk 7 | Åk 8 | Åk 9 | Gymnasiet 1 | Gymnasiet 2 | Gymnasiet 3 | Högskola | Annat
+TAP 13 at  211.8 s: Provläge questions → Hoppa över
+shot at  214.1 s: t8-skip-14-provlage-introfragor-3 — Provläge question 3
+SCREEN t8-skip-14-provlage-introfragor-3 — Provläge question 3
+  texts (19): Provläge | Lumen | Lumen kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kör spellistan Plugg, Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor? | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Vilket ämne? | Lumen | Starta Lumen | Lumen kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, sätt en timer på 10 minuter” | ”Lumen, förhör mig på fotosyntes” | Lägg till prov | Provläge | · | Byt
+  buttons (22): Inställningar | Starta Lumen | Läge: Provläge. Byt läge | Lägg till prov | Hoppa över allt | Hoppa över | Provläge, ·, Byt | Matematik | Svenska | Engelska | Biologi | Fysik | Kemi | Historia | Samhällskunskap | Geografi | Religion | Spanska | Tyska | Franska | Teknik | Programmering
+TAP 14 at  217.4 s: Provläge questions → Hoppa över
+shot at  219.6 s: t8-skip-15-provlage-introfragor-4 — Provläge question 4
+SCREEN t8-skip-15-provlage-introfragor-4 — Provläge question 4
+  texts (19): Provläge | Lumen | Lumen kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kör spellistan Plugg, Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor? | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Kontrollfrågor? | Lumen | Starta Lumen | Lumen kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, sätt en timer på 10 minuter” | ”Lumen, förhör mig på fotosyntes” | ”Lumen, påminn mig om träningen kl. 18” | Lägg till prov | Provläge | · | Byt
+  buttons (11): Inställningar | Starta Lumen | Läge: Provläge. Byt läge | Lägg till prov | Hoppa över allt | Hoppa över | Provläge, ·, Byt | Inga kontrollfrågor | Ja–nej-frågor (svara med rösten eller nicka) | Korta frågor | Svåra frågor
+TAP 15 at  223.5 s: Provläge questions → Hoppa över
+shot at  225.9 s: t8-skip-16-provlage-introfragor-5 — Provläge question 5
+SCREEN t8-skip-16-provlage-introfragor-5 — Provläge question 5
+  texts (19): Provläge | Lumen | Lumen kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kör spellistan Plugg, Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor? | Har du prov snart? | Säg det, så förhör Lumen dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Hur långa förklaringar? | Lumen | Starta Lumen | Lumen kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, påminn mig om träningen kl. 18” | ”Lumen, kör spellistan Plugg” | ”Lumen, kolla min kalender, vad har jag i dag?” | Lägg till prov | Provläge | · | Byt
+  buttons (10): Inställningar | Starta Lumen | Läge: Provläge. Byt läge | Lägg till prov | Hoppa över allt | Hoppa över | Provläge, ·, Byt | Korta förklaringar | Mellanlånga förklaringar | Utförliga förklaringar
+TAP 16 at  231.3 s: Provläge questions → Hoppa över
+shot at  239.3 s: t8-skip-17-provlage-lyssnar — Lyssnar in Provläge, before the question
+SCREEN t8-skip-17-provlage-lyssnar — Lyssnar in Provläge, before the question
+  texts (9): Provläge, För dina prov | Lyssnar | Provläge | För dina prov | Lyssnar | Fråga: Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra. | Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra.
+  buttons (6): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Fel svar, skicka till utvecklarna
+MILESTONE  240.1 s, 16 taps, 17 screens: Provläge: listening
+answer shown (2 → 3): Australiens huvudstad är Canberra.
+MILESTONE  265.8 s, 16 taps, 17 screens: Provläge: answer shown
+shot at  267.0 s: t8-skip-18-provlage-svaret — Provläge: the first answer on the screen
+SCREEN t8-skip-18-provlage-svaret — Provläge: the first answer on the screen
+  texts (10): Provläge, För dina prov | Svarar | Provläge | För dina prov | Fråga: Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra. Den ligger i sydöstra Australien, mellan storstäderna Sydney och Melbourne, och byggdes särskilt för att vara huvudstad. Många tror att Sydney är huvudstaden eftersom den är störst, men det stämmer inte. | Vad är huvudstaden i Australien? | Australiens huvudstad är Canberra. | Vad är huvudstaden i Australien? | Vad är huvudstaden i Australien?
+  buttons (6): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Fel svar, skicka till utvecklarna
+MILESTONE  268.6 s, 16 taps, 18 screens: done

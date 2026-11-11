@@ -102,7 +102,7 @@ Deno.test("all prompts carry the general principles and the no-filler rule", () 
     assertStringIncludes(p, "<commands>");
     assertStringIncludes(p, "continue_more");
   }
-  assert(SYSTEM_PROMPT.length < 15500); // K34 indirect signs + method questions, D75 silence + misheard terms, D80 sound-alike terms, K8 dose rule, K16 consistency, K23 safety flag (cached, so ~free)
+  assert(SYSTEM_PROMPT.length < 15650); // Toby T5b: own misheard subject words are repaired; K34 indirect signs + method questions, D75 silence + misheard terms, D80 sound-alike terms, K8 dose rule, K16 consistency, K23 safety flag (cached, so ~free)
   assert(SYSTEM_PROMPT_DIRECT.length < 12250); // K34 indirect signs + method questions, D80 sound-alike terms, 2026-11-08 clock + unknown words, K8 dose rule, K16 consistency, K23 safety marker
 });
 

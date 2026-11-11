@@ -15,8 +15,12 @@ import {
   aboutTopic,
   checkLink,
   domainOf,
+  isDirectResourceRequest,
   isResourceRequest,
+  BLOCKED_CHECK,
+  sameUrl,
   NO_RESOURCE,
+  RESOURCE_BUSY,
   parseResource,
   RESOURCE_DOMAINS,
   RESOURCE_PROMPT,
@@ -32,7 +36,7 @@ import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./per
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
 import { type CommandTask, commandTask, detectRule, funCommand, socialRequest } from "./commands.ts";
-import { ACTION_REQUEST, confirmText, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
+import { ACTION_REQUEST, confirmText, isAddressedAction, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
 import { applicable, describe, detectCorrection, profileOf } from "../memory/settings.ts";
 
@@ -97,6 +101,8 @@ export function isRepeatedQuestion(text: string, asked: string[]): boolean {
   return asked.some((a) => similarity(a, q) >= 0.8);
 }
 import { stripEcho } from "./echo.ts";
+import { isSpotifyTool, MUSIC_REQUEST, SPOTIFY_RULE, type SpotifyResult, type SpotifyToolName, spotifyToolDefs, validateSpotifyInput } from "./spotifytools.ts";
+import { parseSavedCheck, rankSaved, SAVED_CHECK_PROMPT, type SavedAnswer, savedCheckUser } from "./savedanswers.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import {
   filterReasons,
@@ -223,6 +229,8 @@ export interface Deps {
   warm?: () => void;
   /** K19: fetch used to check a resource link (tests). */
   fetchImpl?: typeof fetch;
+  /** K36: runs a Spotify server tool for the user (token lookup, refresh, Web API); absent = no Spotify tools. */
+  runSpotify?: (userId: string, name: SpotifyToolName, input: Record<string, unknown>) => Promise<SpotifyResult>;
 }
 
 export function providerErrorToHttp(e: unknown): HttpError {
@@ -618,7 +626,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
 
       // K19: "har du en film om fotosyntes?": one checked link from Swedish learning resources, and one sentence
-      if (!demo && !personaPlan(body) && body.mode !== "auto" && body.mode !== "interview_prep" && isResourceRequest(body.fragment)) {
+      if (
+        !demo && !personaPlan(body) && body.mode !== "interview_prep" &&
+        (body.mode === "auto" ? isDirectResourceRequest(body.fragment) : isResourceRequest(body.fragment))
+      ) {
         const wl = await enforceLimits(deps.rateLimiter, "answer-web", user.id, cfg.webLimits ?? DEFAULT_CONFIG.webLimits!);
         const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
         if (!rl.allowed) {
@@ -628,6 +639,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         const grade = /Årskurs:\s*([^.]+)/u.exec(body.personaSetup)?.[1]?.trim();
         let text = "";
         let inTok = 0, outTok = 0, searches = 0;
+        const sources: { url: string; title: string }[] = [];
         if (wl.allowed) {
           try {
             for await (const c of provider.stream({
@@ -637,9 +649,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               cacheSystem: true,
               tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 2, allowed_domains: RESOURCE_DOMAINS }],
               timeoutMs: 25_000,
+              wantSources: true,
               signal: req.signal,
             })) {
               if (c.type === "text") text += c.text;
+              else if (c.type === "source") sources.push({ url: c.url, title: c.title });
               else if (c.type === "usage") {
                 inTok = c.inputTokens ?? inTok;
                 outTok = c.outputTokens ?? outTok;
@@ -651,16 +665,30 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           }
         }
         // the link is checked in code: on the list, answers 200, about the topic; otherwise no link is passed on
-        const found = parseResource(text);
-        let resource = found && domainOf(found.url) ? resourceOf(found.url, found.title) : null;
+        // O34 (franska revolutionen, derivata: "hittade ingen"): UR Play answers automated checks with 403 although
+        // the page is there, and the model sometimes writes INGEN LÄNK although the search found a page on the list.
+        // A URL the search returned may pass a blocked check; a URL only the model wrote must answer 200.
+        const found0 = parseResource(text);
+        const listed = sources.filter((s) => domainOf(s.url) && aboutTopic(topic, s.title, "", s.url));
+        // the model's pick first, then up to two more search results on the list that are about the topic
+        const picks = [...(found0 && domainOf(found0.url) ? [found0] : []), ...listed.filter((s) => !(found0 && sameUrl(s.url, found0.url)))]
+          .slice(0, 3);
+        let resource: ReturnType<typeof resourceOf> = null;
         let check: { ok: boolean; status: number; pageTitle: string } | null = null;
-        if (resource) {
-          check = await checkLink(resource.url, deps.fetchImpl ?? fetch);
-          if (!check.ok || !aboutTopic(topic, resource.title, check.pageTitle, resource.url)) resource = null;
+        for (const pk of picks) {
+          const r = resourceOf(pk.url, pk.title);
+          if (!r) continue;
+          const fromSearch = sources.some((s) => sameUrl(s.url, r.url));
+          check = await checkLink(r.url, deps.fetchImpl ?? fetch);
+          const reachable = check.ok || (fromSearch && BLOCKED_CHECK.has(check.status));
+          if (reachable && aboutTopic(topic, r.title, check.pageTitle, r.url)) {
+            resource = r;
+            break;
+          }
         }
         const said = text.replace(/LÄNK:[^\n]*\n?/iu, "").trim();
-        const spoken = numbersToSpeech(resource ? spokenFor(resource, topic, said) : NO_RESOURCE);
-        console.log(JSON.stringify({ event: "resource", found: !!found, ok: !!resource, status: check?.status ?? null }));
+        const spoken = numbersToSpeech(resource ? spokenFor(resource, topic, said) : wl.allowed ? NO_RESOURCE : RESOURCE_BUSY);
+        console.log(JSON.stringify({ event: "resource", found: !!found0, sources: sources.length, listed: listed.length, ok: !!resource, status: check?.status ?? null }));
         const totalMs = Math.round(now() - t0);
         const cost = ((inTok * cfg.priceInPerMTok) + outTok * cfg.priceOutPerMTok) / 1e6 + searches * WEB_SEARCH_USD;
         try {
@@ -776,6 +804,107 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         );
       }
 
+      // K37 (D126): "Mina svar". A question that asks the same thing as one of the student's saved questions gets the
+      // saved answer word for word (spoken form in the delta, the exact text in done.saved_answer). Sure in code = no
+      // model call; a maybe = one short check by the small model of the best three; a failed check = the normal answer.
+      const savedList = !demo && body.savedAnswers?.length && !body.social && (body.persona ?? "tutor") === "tutor" &&
+          body.turn !== "user_answer" && !body.sessionEnd && !body.toolRound && !body.voiceInstruction
+        ? body.savedAnswers
+        : null;
+      if (savedList) {
+        const ranked = rankSaved(body.fragment, savedList, body.mode === "tutor" || body.mode === "auto");
+        let pick: { item: SavedAnswer; via: "code" | "check" } | null = ranked[0]?.sure ? { item: ranked[0].item, via: "code" } : null;
+        let checkIn = 0, checkOut = 0;
+        if (!pick && ranked.length) {
+          const cands = ranked.slice(0, 3);
+          let reply = "";
+          try {
+            for await (const c of provider.stream({
+              system: SAVED_CHECK_PROMPT,
+              user: savedCheckUser(body.fragment, cands, sanitizeTagged),
+              maxTokens: 4,
+              cacheSystem: true,
+              noThinking: true,
+              signal: AbortSignal.timeout(2500),
+            })) {
+              if (c.type === "text") reply += c.text;
+              else if (c.type === "usage") {
+                checkIn = c.inputTokens ?? checkIn;
+                checkOut = c.outputTokens ?? checkOut;
+              }
+            }
+          } catch (e) {
+            console.warn("saved_check_failed", e instanceof Error ? e.message.slice(0, 120) : String(e)); // no hit
+            reply = "";
+          }
+          const k = parseSavedCheck(reply, cands.length);
+          if (k !== null) pick = { item: cands[k].item, via: "check" };
+          console.log(JSON.stringify({ event: "saved_check", n: cands.length, top: Number(cands[0].score.toFixed(2)), hit: k !== null }));
+        }
+        if (pick) {
+          const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+          if (!rl.allowed) {
+            throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
+          }
+          const ns = new NumberStream();
+          const spoken = ns.push(pick.item.a) + ns.finish();
+          const totalMs = Math.round(now() - t0);
+          const cost = (checkIn * cfg.priceInPerMTok + checkOut * cfg.priceOutPerMTok) / 1e6;
+          try {
+            await deps.recordUsage({
+              user_id: user.id,
+              endpoint: "answer",
+              mode: body.mode,
+              language: body.language,
+              provider: pick.via === "check" ? provider.name : "local",
+              model: "saved_answer",
+              is_question: true,
+              confidence: 1,
+              input_tokens: checkIn || null,
+              output_tokens: checkOut || null,
+              ttft_ms: totalMs,
+              total_ms: totalMs,
+              est_cost_usd: cost,
+              status: "ok",
+              category: "övrigt",
+              persona: body.persona,
+            });
+          } catch (e) {
+            console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+          }
+          const frames = [
+            sseFrame("meta", {
+              reconstructed_question: body.fragment,
+              confidence: 1,
+              is_question: true,
+              needs_confirmation: false,
+              answer_type: "fact",
+            }),
+            sseFrame("delta", { text: spoken }),
+            sseFrame("done", {
+              answered: true,
+              timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
+              breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+              usage: { input_tokens: checkIn, output_tokens: checkOut, cache_read_tokens: 0, web_searches: 0, model: "saved_answer" },
+              summary: null,
+              relation: null,
+              source: null,
+              memory_add: null,
+              saved_answer: { id: pick.item.id, text: pick.item.a, via: pick.via },
+            }),
+          ];
+          return new Response(
+            new ReadableStream<Uint8Array>({
+              start(c) {
+                for (const f of frames) c.enqueue(f);
+                c.close();
+              },
+            }),
+            { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+          );
+        }
+      }
+
       // K10.2 (measured: "kortare" was ignored 0/6 when only a line in the prompt said it): a learned length setting
       // drives the real length controls, the Provläge profile's explanation length or `length`
       const earlySubject = body.prefContext?.subject ?? /(?:^|\.\s*)Ämne:\s*([^.]+)/u.exec(body.personaSetup)?.[1]?.trim();
@@ -801,7 +930,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K32 (D115): "sjung", "rappa", "berätta ett skämt", "säg det som en pirat" in every mode, answered to the user
       const funCmd = demo || body.sessionEnd ? null : funCommand(body.social?.calibrate || body.fragment,
         body.mode === "auto" || !!personaPlan(body));
-      const direct = !!funCmd || (cfg.directModes && body.mode !== "auto") || !!personaPlan(body);
+      // O41 (BLOCKER): Standardläge is mode "auto" in the app; an addressed request to the phone takes the direct path
+      // (as push to talk) so the phone tools and Spotify are offered there too
+      const autoAction = !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" &&
+        ((body.toolsAvailable?.length ?? 0) > 0 || (body.connections ?? []).includes("spotify")) &&
+        isAddressedAction(body.fragment, !!body.voiceInstruction);
+      const direct = !!funCmd || (cfg.directModes && (body.mode !== "auto" || autoAction)) || !!personaPlan(body);
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
       const plan = funCmd ? null : personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
       const continuation = !plan && body.context.recent_qa.length
@@ -1118,7 +1252,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       });
       // K35 (D122): phone tools the app can run, in the direct modes (Standardläge, Provläge), never in the demo
       const phoneOffer = [...(body.toolsAvailable ?? []), ...(body.toolRound ? [body.toolRound.call.name] : [])];
-      const phoneTools = !demo && !plan && direct && body.mode !== "auto" && phoneOffer.length ? phoneToolDefs(phoneOffer) : undefined;
+      const phoneTools0 = !demo && !plan && direct && (body.mode !== "auto" || autoAction) && phoneOffer.length ? phoneToolDefs(phoneOffer) : undefined;
+      // K36: Spotify server tools when the app says Spotify is connected (the server runs them, no round to the app)
+      const spotifyOn = !demo && !plan && direct && (body.mode !== "auto" || autoAction) && !body.toolRound && !!deps.runSpotify &&
+        (body.connections ?? []).includes("spotify");
+      const phoneTools = spotifyOn ? [...(phoneTools0 ?? []), ...spotifyToolDefs()] : phoneTools0;
       const noSummary = plan?.kind === "rizz" || plan?.kind === "calibrate" || demo;
       const relationTag = direct && !plan && body.context.recent_qa.length > 0;
       // K16.1: in Frågor (push to talk, text) the model may answer only [[SÖK]] when it is not sure of a specific fact
@@ -1131,7 +1269,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
         (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "") +
-        (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools ? PHONE_TOOLS_RULE : "");
+        (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
@@ -1198,7 +1336,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           tools: allTools,
           // K35: the second call of a tool round: the user's turn, the tool call and the app's result
           ...(body.toolRound && phoneTools ? { messages: toolRoundMessages(userFor(body, baseExtras), body.toolRound) } : {}),
-          ...(phoneTools && !body.toolRound && ACTION_REQUEST.test(body.fragment) ? { holdTextBeforeTool: true } : {}),
+          ...(phoneTools && !body.toolRound && (ACTION_REQUEST.test(body.fragment) || (spotifyOn && MUSIC_REQUEST.test(body.fragment)))
+            ? { holdTextBeforeTool: true }
+            : {}),
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
@@ -1349,6 +1489,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let crisisMarked = false;
           let crisisLate = false;
           let toolPending = false; // K35: a phone tool call was sent; the app runs it and sends a tool_round
+          let serverTool: { name: SpotifyToolName; input: Record<string, unknown> } | null = null; // K36, run after the turn
+          let serverToolDone: { name: string; status: string; playing?: string } | null = null;
           // K13.1: the developed answer after [[MER]]: its own post-processing, sent as more_delta, kept for done
           let inMore = false;
           let markBuf = "";
@@ -1471,9 +1613,19 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               post.addCited(chunk.cited);
               return;
             }
+            if (chunk.type === "source") return; // only the K19 link search asks for sources
+            if (chunk.type === "tool_use" && isSpotifyTool(chunk.name)) {
+              const input = spotifyOn ? validateSpotifyInput(chunk.name, chunk.input) : null;
+              if (!input || toolPending || serverTool) {
+                console.warn(JSON.stringify({ event: "tool_call_dropped", name: chunk.name, valid: !!input }));
+                return;
+              }
+              serverTool = { name: chunk.name, input };
+              return;
+            }
             if (chunk.type === "tool_use") {
               // K35: validated before anything reaches the app; an unknown tool or bad input is dropped (logged)
-              const input = isPhoneTool(chunk.name) ? validatePhoneInput(chunk.name, chunk.input) : null;
+              const input = isPhoneTool(chunk.name) ? validatePhoneInput(chunk.name, chunk.input, body.fragment) : null;
               if (!input || !isPhoneTool(chunk.name) || toolPending) {
                 console.warn(JSON.stringify({ event: "tool_call_dropped", name: chunk.name.slice(0, 40), valid: !!input }));
                 return;
@@ -1677,6 +1829,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (inMore) sendMore(morePost.finish());
             }
             flushNear();
+            // K36: a Spotify tool the model chose runs now; Lumen says one sentence written in code
+            const st = serverTool as { name: SpotifyToolName; input: Record<string, unknown> } | null; // set in handle()
+            if (st && !closed && !crisisMarked && !crisisLate) {
+              const res = await deps.runSpotify!(user.id, st.name, st.input);
+              console.log(JSON.stringify({ event: "server_tool", name: st.name, status: res.status }));
+              status = "ok";
+              emitText((answerChars ? " " : "") + res.say);
+              serverToolDone = { name: st.name, status: res.status, ...(res.playing ? { playing: res.playing } : {}) };
+            }
             // K23: the model flagged a crisis (Auto meta or [[KRIS]]): the fixed caring answer, never silence
             if (crisisMarked || crisisLate) {
               const crisisText = aboutOther(body.fragment) || plan ? CRISIS_OTHER : CRISIS_SELF;
@@ -1759,6 +1920,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               memory_add: null,
               calibration,
               ...(toolPending ? { tool_pending: true } : {}),
+              ...(serverToolDone ? { server_tool: serverToolDone } : {}),
             });
             doneSent = !closed;
           } catch (e) {

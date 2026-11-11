@@ -8,7 +8,7 @@ enum ResultsMarkdown {
         f.dateFormat = "yyyy-MM-dd HH:mm:ss"
         var out: [String] = []
 
-        out.append("# Lumen diagnostics — \(f.string(from: Date()))")
+        out.append("# Earmind diagnostics — \(f.string(from: Date()))")
         out.append("")
         out.append("- Device: \(DeviceInfo.summary)")
         out.append("- Selected config: \(model.selectedConfig.rawValue)")

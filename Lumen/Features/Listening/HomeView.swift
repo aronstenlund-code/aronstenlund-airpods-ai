@@ -13,6 +13,15 @@ struct HomeView: View {
     /// A50: "Byt" under the Start button.
     @State private var isPickingMode = false
     @State private var pickedMode: ConversationMode?
+    /// A52 (Ke29 S1): "Allt Lumen kan ›" pushes "Vad kan Lumen?".
+    @State private var showsCapabilities = false
+    /// A52: the sheet after the first answer, once.
+    @State private var showsCapabilitiesIntro = false
+    @AppStorage(CapabilitiesIntroSheet.shownKey) private var capabilitiesIntroShown = false
+    /// A54 (D127): the logo vote when the app opens, after the first answer.
+    @State private var showsLogoVote = false
+    @State private var logoOrder: [LogoChoice] = LogoChoice.allCases
+    @Environment(\.scenePhase) private var scenePhase
     /// A36: the exam whose page is being photographed.
     @State private var photographing: ExamPlan?
     /// A46: the flip cards being tapped through.
@@ -33,7 +42,7 @@ struct HomeView: View {
                     ErrorCard(problem: .microphoneDenied) { ErrorCard.openSettings() }
                 }
                 startCard
-                LumenCanDoAll()
+                LumenCanDoAll { showsCapabilities = true }
                 lastNight
                 if let nearest = plans.first {
                     examCard(nearest)
@@ -69,6 +78,23 @@ struct HomeView: View {
             if denied { isShowingMicrophoneDenied = true }
         }
         .task { await model.refreshStudyPlan() } // A19: today's pass and the reminders
+        .navigationDestination(isPresented: $showsCapabilities) { CapabilitiesView() }
+        .task { await showSheetOnOpen() }
+        .onChange(of: scenePhase) { _, phase in if phase == .active { Task { await showSheetOnOpen() } } }
+        .sheet(isPresented: $showsCapabilitiesIntro) { CapabilitiesIntroSheet() }
+        .sheet(isPresented: $showsLogoVote) {
+            LogoVoteSheet(order: logoOrder) { choice in
+                await model.logoVoteClient?.vote(choice)
+            } onVoted: {
+                var schedule = LogoVoteSchedule.load()
+                schedule.voted = true
+                schedule.save()
+            } onLater: {
+                var schedule = LogoVoteSchedule.load()
+                schedule.later(now: Date())
+                schedule.save()
+            }
+        }
         .sheet(item: $readinessPlan) { plan in
             if let readiness = model.readiness(for: plan) {
                 ReadinessView(plan: plan, readiness: readiness, known: model.knownConcepts(for: plan),
@@ -116,7 +142,7 @@ struct HomeView: View {
         HStack {
             HStack(spacing: 8) {
                 LumenLogo(size: 24)
-                Text("Lumen").font(LumenFont.text(24, .bold, relativeTo: .title2))
+                Text("Earmind").font(LumenFont.text(24, .bold, relativeTo: .title2))
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
@@ -124,6 +150,31 @@ struct HomeView: View {
             if model.streak.current > 0 { StreakBadge(streak: model.streak) }
             IconButton(systemName: "gearshape", label: "Inställningar") { model.isShowingSettings = true }
         }
+    }
+
+    /// When Start opens, at most one sheet, and only after the first answer (the first start ends with it, or Lumen
+    /// has answered before): A52's "Lumen kan mer än svara" once (Ke29), else A54's logo vote when it is due (D127).
+    private func showSheetOnOpen() async {
+        #if DEBUG
+        if ScreenshotStage.requested != nil { return }
+        #endif
+        let hasAnswered = !model.history.entries.isEmpty || !model.conversation.answers.isEmpty
+        guard hasAnswered, !showsCapabilitiesIntro, !showsLogoVote else { return }
+        try? await Task.sleep(for: .seconds(1))
+        guard !Task.isCancelled, !model.isShowingAddExam, model.showingMyAnswers == nil, !model.isShowingSettings,
+              !(model.isActiveSession && model.showsListeningScreen) else { return }
+        if !capabilitiesIntroShown {
+            capabilitiesIntroShown = true
+            showsCapabilitiesIntro = true
+            return
+        }
+        var schedule = LogoVoteSchedule.load()
+        guard model.logoVoteClient != nil, schedule.shouldShow(now: Date(), hasAnswered: hasAnswered) else { return }
+        var generator = SystemRandomNumberGenerator()
+        schedule.ensureOrder(using: &generator) // Ke31: the place should not steer the vote
+        schedule.save()
+        logoOrder = schedule.order
+        showsLogoVote = true
     }
 
     // MARK: Start (A50, D124)
@@ -138,13 +189,13 @@ struct HomeView: View {
                     Task { await model.startSelectedMode() }
                 }
             } label: {
-                Label(model.isActiveSession ? "Tillbaka till Lumen" : "Starta Lumen", systemImage: "waveform")
+                Label(model.isActiveSession ? "Tillbaka till Earmind" : "Starta Earmind", systemImage: "waveform")
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
             }
             .buttonStyle(LumenButtonStyle(height: 64))
             .accessibilityHint(model.isActiveSession
                 ? "Visar Lyssnar"
-                : "Lumen börjar lyssna i \(model.selectedMode.shortName.lowercased())")
+                : "Earmind börjar lyssna i \(model.selectedMode.shortName.lowercased())")
             Button {
                 isPickingMode = true
             } label: {
@@ -266,12 +317,35 @@ struct HomeView: View {
                 Button {
                     Task { await model.startQuiz(for: plan) }
                 } label: {
-                    TwoLineLabel(title: "Förhör mig", detail: "Lumen frågar ut dig och svarar på dina frågor")
+                    TwoLineLabel(title: "Förhör mig", detail: "Earmind frågar ut dig och svarar på dina frågor")
                 }
                 // A50 (D124): secondary, the Start button is the screen's one blue button. "Få A-svar till provet"
                 // moved into Provläge ("Mina svar", A53, D126).
                 .buttonStyle(LumenButtonStyle(kind: .secondary, height: 62))
                 .accessibilityHint("Startar förhöret inför \(plan.name.lowercased())")
+                if let store = model.myAnswers {
+                    // A53 (D126, Kelly Ke30): the student's own answers for this exam, always here (also with 0).
+                    let count = store.count(for: plan.id)
+                    Button {
+                        model.showingMyAnswers = MyAnswersRoute(examID: plan.id)
+                    } label: {
+                        HStack {
+                            Text("Mina svar").font(LumenFont.text(16, .semibold)).foregroundStyle(LumenColor.ink)
+                            Spacer()
+                            Text(count == 0 ? "Lägg till" : "\(count) sparade")
+                                .font(LumenFont.text(15))
+                                .foregroundStyle(LumenColor.muted)
+                            Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundStyle(LumenColor.muted)
+                        }
+                        .padding(.horizontal, 14)
+                        .frame(minHeight: 48)
+                        .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(count == 0 ? "Mina svar, inga sparade" : "Mina svar, \(count) sparade")
+                    .accessibilityHint("Bestäm själv vad Earmind säger på provfrågor")
+                }
                 // A36 (D115): photograph the page you study; Lumen quizzes on it.
                 if model.isReadingPage || model.pagePhotoStatus != nil {
                     HStack(spacing: 10) {
@@ -292,7 +366,7 @@ struct HomeView: View {
                     .font(LumenFont.text(16, .semibold))
                     .foregroundStyle(LumenColor.blue)
                     .frame(minHeight: 44)
-                    .accessibilityHint("Lumen läser sidan och förhör dig på den")
+                    .accessibilityHint("Earmind läser sidan och förhör dig på den")
                 }
                 if let deck = model.flipDeck(for: plan) {
                     // A46 (N6): the cards on the screen, without the voice.
@@ -375,7 +449,7 @@ struct HomeView: View {
             Text("Har du prov snart?")
                 .font(LumenFont.text(28, .bold, relativeTo: .title))
                 .accessibilityAddTraits(.isHeader)
-            Text("Säg det, så förhör Lumen dig inför provet.")
+            Text("Säg det, så förhör Earmind dig inför provet.")
                 .font(LumenFont.text(16))
                 .foregroundStyle(LumenColor.muted)
             Button {
@@ -464,14 +538,16 @@ struct FlipSession: Identifiable {
 /// A50 (D126): "Lumen kan allt" under the Start button, three things to say that change every few seconds. With
 /// Reduce Motion they stand still. VoiceOver reads the first three once, not the changes.
 struct LumenCanDoAll: View {
-    /// Aron's three (D126) first; what they ask for is built (A6 Spotify, A48 calendar, reminders and timers,
-    /// Minne for the recipe, Provläge's quiz).
+    /// A52 (Ke29 S1): "Allt Lumen kan ›" at the end of the box.
+    var onShowAll: (() -> Void)?
+    /// Aron's examples (D126), only for what works today (Kelly Ke29 S2): calendar, reminders and timers (A48), Minne
+    /// for the recipe, Provläge's quiz. ”Lumen, kör spellistan Plugg” goes back first when Spotify playlists work
+    /// (K36), and ”ring” when calls do.
     nonisolated static let examples = [
-        "”Lumen, kör spellistan Plugg”",
         "”Lumen, kolla min kalender, vad har jag i dag?”",
         "”Lumen, vad är mitt favoritrecept för pannkakor?”",
-        "”Lumen, sätt en timer på 10 minuter”",
         "”Lumen, förhör mig på fotosyntes”",
+        "”Lumen, sätt en timer på 10 minuter”",
         "”Lumen, påminn mig om träningen kl. 18”",
     ]
     nonisolated static let shown = 3
@@ -486,9 +562,41 @@ struct LumenCanDoAll: View {
     @State private var step = 0
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            examplesBox
+            if let onShowAll {
+                Button(action: onShowAll) {
+                    HStack(spacing: 4) {
+                        Text("Allt Earmind kan")
+                        Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold))
+                    }
+                    .font(LumenFont.text(16, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.top, 16)
+        .padding(.bottom, onShowAll == nil ? 16 : 4)
+        .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 16))
+        .task(id: reduceMotion) {
+            guard !reduceMotion, !Self.isScreenshot else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(4))
+                if Task.isCancelled { return }
+                step += 1
+            }
+        }
+    }
+
+    private var examplesBox: some View {
         VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Lumen kan allt")
+                Text("Earmind kan allt")
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
                     .accessibilityAddTraits(.isHeader)
                 Text("Säg ”Lumen” och vad du vill.")
@@ -508,19 +616,9 @@ struct LumenCanDoAll: View {
             .accessibilityHidden(true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 16))
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Lumen kan allt. Säg Lumen och vad du vill, till exempel: "
+        .accessibilityLabel("Earmind kan allt. Säg Lumen och vad du vill, till exempel: "
             + Self.window(at: 0).map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "”")) }.joined(separator: ", "))
-        .task(id: reduceMotion) {
-            guard !reduceMotion, !Self.isScreenshot else { return }
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(4))
-                if Task.isCancelled { return }
-                step += 1
-            }
-        }
     }
 
     /// The Simulator screenshots stand still at the first three.

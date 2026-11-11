@@ -91,6 +91,39 @@
   .ans .a { font-size: 20px; line-height: 1.4; margin-top: 6px; }
   .live { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px 7px 10px; border-radius: 999px; background: var(--soft); color: var(--blue); font-weight: 600; font-size: 15px; }
   .live i { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px color-mix(in srgb, var(--blue) 22%, transparent); }
+  /* Ke30: Mina svar */
+  .field { background: var(--surface); border-radius: 14px; padding: 12px 14px; font-size: 17px; line-height: 1.4; }
+  .flabel { font-size: 13px; font-weight: 600; color: var(--mut); letter-spacing: .02em; margin: 0 2px 6px; text-transform: uppercase; }
+  .editor { border: 2px solid var(--blue); background: var(--raised); min-height: 150px; }
+  .dark .editor { background: var(--surface); }
+  .caret { display: inline-block; width: 2px; height: 20px; background: var(--blue); vertical-align: -4px; margin-left: 1px; }
+  .sugg { background: var(--surface); border-radius: 14px; padding: 12px 14px; font-size: 15px; line-height: 1.4; color: var(--mut); }
+  .tlink { color: var(--blue); font-weight: 600; font-size: 15px; }
+  .navb { display: flex; justify-content: space-between; align-items: center; padding: 4px 20px 0; height: 44px; font-size: 17px; }
+  .navb .l, .navb .r { color: var(--blue); } .navb .r { font-weight: 600; } .navb b { font-size: 17px; }
+  .ma { display: block; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .ma:last-child { border-bottom: 0; }
+  .ma .t { font-size: 17px; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+  .ma .s { font-size: 15px; color: var(--mut); margin-top: 2px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; background: var(--soft); color: var(--blue); font-size: 12px; font-weight: 600; flex: none; align-self: center; }
+  .examsel { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; background: var(--surface); font-weight: 600; font-size: 15px; }
+  .rec { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 70px; }
+  .recdot { width: 14px; height: 14px; border-radius: 50%; background: #D9342B; box-shadow: 0 0 0 6px rgba(217,52,43,.18); }
+  .dark .recdot { background: #FF6F61; }
+  .time { font-size: 56px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .meter { display: flex; gap: 4px; align-items: center; height: 46px; color: var(--blue); }
+  .meter b { width: 5px; border-radius: 3px; background: currentColor; }
+  .vrow { display: flex; gap: 12px; align-items: flex-start; padding: 12px 20px; border-bottom: 1px solid var(--line); }
+  .vrow .t { font-size: 15px; font-weight: 600; } .vrow .s { font-size: 15px; color: var(--mut); line-height: 1.35; margin-top: 2px; }
+  .vrow .act { margin-left: auto; color: var(--blue); font-weight: 600; font-size: 15px; flex: none; }
+  .grouped .btn:not(.blue), .grouped .examsel { background: var(--raised); }
+  .dark .grouped .btn:not(.blue), .dark .grouped .examsel { background: var(--surface); }
+  .toggle { width: 51px; height: 31px; border-radius: 999px; background: var(--blue); position: relative; flex: none; }
+  .toggle::after { content: ""; position: absolute; right: 2px; top: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .listrow { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 10px 16px; border-bottom: 1px solid var(--line); font-size: 17px; }
+  .listrow:last-child { border-bottom: 0; }
+  .listrow .v { color: var(--mut); }
+  .gfoot { font-size: 13px; color: var(--mut); padding: 6px 16px 0; line-height: 1.35; }
 </style>
 </head>
 <body>
@@ -134,7 +167,8 @@ const canDo = (ex = EX) => `<div class="well">
 const examCard = () => `<div class="card">
   <div class="row between"><span class="cap13">NÄSTA PROV</span><span class="badge">5 dagar kvar</span></div>
   <h2 style="margin-top:10px">Biologiprovet</h2><div class="sub" style="margin-top:4px">lör 14 nov · åk 9 · 62 % redo</div>
-  <div class="btn" style="margin-top:14px">Förhör mig<small>Startar Provläget med det här provet</small></div></div>`;
+  <div class="btn" style="margin-top:14px">Förhör mig<small>Startar Provläget med det här provet</small></div>
+  <div class="row between" style="margin-top:12px;padding:0 2px"><span class="tlink" style="font-size:16px">Mina svar</span><span class="sub" style="display:flex;align-items:center;gap:4px">4 sparade ${I('chev', 'ico" style="width:16px;height:16px')}</span></div></div>`;
 
 const startScreen = (mode = ['qmark', 'Standardläge']) => `<div class="phone">${status()}<div class="scroll">
   ${topBar()}
@@ -220,7 +254,95 @@ const bytlage = () => `<div class="phone">${status()}
   </div>
 </div>`;
 
+const QA = [
+  ['Vad är fotosyntes?', 'Växterna tar upp koldioxid och vatten och gör socker med hjälp av solljus. Syre blir över.', false],
+  ['Vad händer i mitokondrien?', 'Cellandningen: socker och syre blir energi, koldioxid och vatten.', true],
+  ['Varför är klorofyll grönt?', 'Det tar upp rött och blått ljus och speglar det gröna.', false],
+  ['Skillnad mellan växtcell och djurcell?', 'Växtceller har cellvägg, kloroplaster och en stor vakuol.', false],
+];
+const minaSvar = () => `<div class="phone grouped">${status()}
+  <div class="navb"><span class="l">‹ Start</span><span></span><span class="r">Välj</span></div>
+  <div class="large">Mina svar</div>
+  <div style="padding:10px 16px 0"><span class="examsel">Biologiprovet ${I('chev', 'ico" style="width:14px;height:14px;transform:rotate(90deg)')}</span></div>
+  <div class="lead2">När frågan kommer i Provläget säger Lumen ditt svar, ordagrant.</div>
+  <div style="padding:14px 16px 0"><div class="group">${QA.map(([q, a, rec]) => `<div class="ma"><div class="t"><span>${q}</span>${rec ? '<span class="chip">Inspelat</span>' : ''}</div><div class="s">${a}</div></div>`).join('')}</div></div>
+  <div style="margin-top:auto;padding:0 16px 30px;display:flex;flex-direction:column;gap:10px">
+    <div class="btn blue">Skriv en fråga</div><div class="btn" style="height:54px">Spela in ett svar</div></div>
+</div>`;
+const minaTom = () => `<div class="phone grouped">${status()}
+  <div class="navb"><span class="l">‹ Start</span><span></span><span></span></div>
+  <div class="large">Mina svar</div>
+  <div style="padding:10px 16px 0"><span class="examsel">Biologiprovet ${I('chev', 'ico" style="width:14px;height:14px;transform:rotate(90deg)')}</span></div>
+  <div style="margin:60px 24px 0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px">
+    <div style="width:64px;height:64px;border-radius:50%;background:var(--soft);color:var(--blue);display:grid;place-items:center">${I('cards', 'ico" style="width:30px;height:30px')}</div>
+    <div class="h3">Bestäm själv vad Lumen säger</div>
+    <div class="sub" style="font-size:17px">Skriv en provfråga. Lumen föreslår ett svar, och du ändrar det tills det låter som du. När frågan kommer säger Lumen ditt svar i örat.</div>
+  </div>
+  <div style="margin-top:auto;padding:0 16px 30px;display:flex;flex-direction:column;gap:10px">
+    <div class="btn blue">Skriv en fråga</div><div class="btn" style="height:54px">Spela in ett svar</div></div>
+</div>`;
+const redigera = (src = null) => `<div class="phone">${status()}
+  <div class="navb"><span class="l">Avbryt</span><b>${src ? 'Nytt svar' : 'Ändra svar'}</b><span class="r">${src ? '' : '<span style="font-weight:700;margin-right:16px">⋯</span>'}Spara</span></div>
+  <div class="scroll" style="gap:16px;padding-top:10px">
+    <div><div class="flabel">Fråga</div><div class="field">Vad händer i mitokondrien?</div></div>
+    ${src ? `<div><div class="flabel">${src}</div><div class="sugg">”… och då har vi mitokondrien, som är cellens kraftverk. Där sker cellandningen, alltså att glukos och syre blir till energi, ATP, och så blir det koldioxid och vatten över …”</div></div>`
+          : `<div><div class="flabel">Lumens förslag</div><div class="sugg">I mitokondrien sker cellandningen. Glukos och syre omvandlas till energi i form av ATP, och koldioxid och vatten bildas.</div><div class="tlink" style="margin-top:8px">Använd förslaget igen</div></div>`}
+    <div><div class="flabel">Ditt svar · det här säger Lumen</div><div class="field editor">Cellandningen: socker och syre blir energi, ATP, och koldioxid och vatten blir över. Mitokondrien är cellens kraftverk.<span class="caret"></span></div></div>
+    <div class="sub" style="font-size:13px">Stavfel rättas när du sparar.${src ? '' : ' Tidigare versioner: ⋯ uppe till höger.'}</div>
+  </div>
+</div>`;
+const spelaIn = () => `<div class="phone">${status()}
+  <div class="navb"><span class="l">Avbryt</span><b>Spela in ett svar</b><span></span></div>
+  <div style="padding:6px 20px 0"><div class="flabel">Fråga</div><div class="field">Vad händer i mitokondrien?</div></div>
+  <div class="rec">
+    <div class="row" style="gap:10px"><span class="recdot"></span><b style="font-size:17px">Spelar in</b></div>
+    <div class="time">02:14</div>
+    <div class="meter">${[10, 22, 34, 18, 40, 28, 14, 30, 44, 24, 12, 26, 36, 16, 8].map(h => `<b style="height:${h}px"></b>`).join('')}</div>
+    <div class="sub" style="text-align:center;max-width:290px">Spela in när du hör ett bra svar, till exempel lärarens genomgång. Lumen gör ett kort svar av det när du trycker Klar.</div>
+  </div>
+  <div style="margin-top:auto;padding:0 16px 30px"><div class="btn blue">Klar</div></div>
+</div>`;
+const versioner = () => `<div class="phone">${status()}
+  <div class="scroll"><div class="navb" style="padding:0"><span class="l">Avbryt</span><b>Ändra svar</b><span class="r"><span style="font-weight:700;margin-right:16px">⋯</span>Spara</span></div></div>
+  <div class="dimmed"></div>
+  <div class="sheet"><div class="grab"></div>
+    <div class="shead"><b>Tidigare versioner</b><span>Klar</span></div>
+    ${[['Nu', 'Cellandningen: socker och syre blir energi, ATP, och koldioxid …', ''],
+       ['I går 18:02 · din', 'Socker och syre blir energi. Koldioxid och vatten blir över.', 'Återställ'],
+       ['I går 17:55 · Lumens förslag', 'I mitokondrien sker cellandningen. Glukos och syre omvandlas …', 'Återställ']]
+      .map(([t, x, a]) => `<div class="vrow"><div><div class="t">${t}</div><div class="s">${x}</div></div>${a ? `<span class="act">${a}</span>` : ''}</div>`).join('')}
+    <div style="padding:14px 20px 0;font-size:15px;font-weight:600;color:var(--red, #D9342B)">Radera svaret</div>
+  </div>
+</div>`;
+const instMina = () => `<div class="phone grouped">${status()}
+  <div class="navb"><span class="l">‹ Inställningar</span><span></span><span></span></div>
+  <div class="large" style="font-size:28px">Provläge</div>
+  <div style="padding:0 16px">
+    <div class="gtitle">Mina svar</div>
+    <div class="group"><div class="listrow"><span>Säg mina svar</span><span class="toggle"></span></div>
+      <div class="listrow"><span>Mina svar</span><span class="v">4 sparade ›</span></div></div>
+    <div class="gfoot">När en fråga liknar en du har sparat säger Lumen ditt svar i stället för ett nytt. Stäng av för att alltid få Lumens svar. Dina sparade svar finns kvar.</div>
+  </div>
+</div>`;
+const lyssnarMitt = () => `<div class="phone">${status()}
+  <div class="scroll" style="gap:14px">
+    <div class="row between"><span style="color:var(--blue);font-size:17px">‹</span><b style="font-size:17px">Biologiprovet</b><span style="color:var(--blue)">⋯</span></div>
+    <div style="display:flex;justify-content:center;margin-top:6px"><span class="live"><i></i>Lyssnar</span></div>
+    <div class="card ans"><div class="row between"><div class="q">Vad händer i mitokondrien?</div><span class="chip">Ditt svar</span></div>
+      <div class="a">Cellandningen: socker och syre blir energi, ATP, och koldioxid och vatten blir över. Mitokondrien är cellens kraftverk.</div>
+      <div class="tlink" style="margin-top:12px">Ändra svaret</div></div>
+  </div>
+</div>`;
+
 const SCREENS = [
+  ['minasvar-tom', 'Mina svar, första gången (Ke30)', minaTom, 'En mening om vad det är. Skriv en fråga är huvudknappen, Spela in ett svar sekundär.'],
+  ['minasvar', 'Mina svar, per prov (Ke30)', minaSvar, 'Ett prov i taget (byt överst). Frågan och början av svaret. Inspelade svar har en bricka. Välj för att radera flera.'],
+  ['minasvar-redigera', 'Lumens förslag → ditt svar (Ke30)', () => redigera(), 'Förslaget står kvar ovanför, ditt svar är det Lumen säger. Spara uppe till höger, stavfel rättas då.'],
+  ['minasvar-spelain', 'Spela in ett perfekt svar (Ke30)', spelaIn, 'Synlig inspelning med röd punkt och tid. Lumen gör svaret först när du trycker Klar.'],
+  ['minasvar-efterinspelning', 'Efter Klar: svaret från inspelningen (Ke30)', () => redigera('Från din inspelning · 2:14'), 'Samma redigering. Utdraget ur inspelningen står där Lumens förslag annars står.'],
+  ['minasvar-versioner', 'Tidigare versioner och ångra (Ke30)', versioner, 'Under ⋯ på Ändra svar. Återställ en version, eller radera svaret (rött bara här).'],
+  ['minasvar-inst', 'Stänga av Mina svar (Ke30)', instMina, 'Inställningar › Provläge. Av betyder att Lumen svarar själv; inget raderas.'],
+  ['minasvar-lyssnar', 'När frågan kommer i Provläget (Ke30)', lyssnarMitt, 'Brickan Ditt svar visar att det är det sparade svaret. Ändra svaret öppnar redigeringen.'],
   ['start', 'Start (A50 + rättelser)', startScreen, 'En blå knapp, läget under med Byt. ”Lumen kan allt” med tre exempel och en väg till allt Lumen kan. Provkortet med Förhör mig som grå knapp.'],
   ['start-prov', 'Start med Provläge valt', () => startScreen(['cap', 'Provläge']), 'Bara raden under knappen ändras. Knappen säger alltid samma sak.'],
   ['start-se', 'Start på iPhone SE', startSE, 'Starta, läget och exemplen syns utan att scrolla. Provkortet börjar i underkanten.'],

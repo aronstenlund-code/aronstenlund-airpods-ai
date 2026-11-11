@@ -1,0 +1,407 @@
+{
+ "_about": "K37 (D126) Mina svar: invented saved questions (two exams) and what a student might say. expect = the saved id that must be answered, or null (never a saved answer). kind: para (same question, other words), stt (misheard), near (same topic, other question: a false hit would be wrong), other (unrelated), notq (not a question).",
+ "saved": [
+  {
+   "id": "bio1",
+   "q": "Vad är fotosyntes?",
+   "a": "Fotosyntes är när växter använder solljus, vatten och koldioxid för att bilda glukos och syre. Det sker i kloroplasterna."
+  },
+  {
+   "id": "bio2",
+   "q": "Varför behöver växter ljus?",
+   "a": "Ljuset ger energin som krävs för att bygga glukos av koldioxid och vatten i fotosyntesen."
+  },
+  {
+   "id": "bio3",
+   "q": "Vad är cellandning?",
+   "a": "Cellandning är när cellerna bryter ner glukos med syre och får energi. Det bildas koldioxid och vatten."
+  },
+  {
+   "id": "bio4",
+   "q": "Vad är skillnaden mellan fotosyntes och cellandning?",
+   "a": "Fotosyntesen bygger glukos och lagrar energi, cellandningen bryter ner glukos och frigör energi. De är varandras motsats."
+  },
+  {
+   "id": "bio5",
+   "q": "Var i cellen sker cellandningen?",
+   "a": "Cellandningen sker i mitokondrierna."
+  },
+  {
+   "id": "bio6",
+   "q": "Vad är en näringskedja?",
+   "a": "En näringskedja visar vem som äter vem, från producent till konsumenter, till exempel gräs, hare, räv."
+  },
+  {
+   "id": "bio7",
+   "q": "Ge ett exempel på en nedbrytare",
+   "a": "Svampar och maskar, till exempel daggmaskar, är nedbrytare."
+  },
+  {
+   "id": "his1",
+   "q": "När började första världskriget?",
+   "a": "Första världskriget började 1914."
+  },
+  {
+   "id": "his2",
+   "q": "Varför började första världskriget?",
+   "a": "Skotten i Sarajevo 1914 utlöste kriget, men orsakerna var allianserna, kapprustningen, imperialismen och nationalismen."
+  },
+  {
+   "id": "his3",
+   "q": "Vad var Versaillesfreden?",
+   "a": "Versaillesfreden 1919 avslutade första världskriget. Tyskland fick skulden, förlorade land och fick betala skadestånd."
+  },
+  {
+   "id": "his4",
+   "q": "Vem var Gustav Vasa?",
+   "a": "Gustav Vasa var Sveriges kung från 1523 och grundade det svenska nationalstaten."
+  },
+  {
+   "id": "his5",
+   "q": "Vad hände 1523?",
+   "a": "År 1523 valdes Gustav Vasa till kung, och Sverige lämnade Kalmarunionen."
+  },
+  {
+   "id": "his6",
+   "q": "Vad hände 1789?",
+   "a": "År 1789 började franska revolutionen med stormningen av Bastiljen."
+  },
+  {
+   "id": "ma1",
+   "q": "Hur räknar man ut arean av en cirkel?",
+   "a": "Arean är pi gånger radien i kvadrat."
+  },
+  {
+   "id": "ma2",
+   "q": "Hur räknar man ut omkretsen av en cirkel?",
+   "a": "Omkretsen är pi gånger diametern."
+  }
+ ],
+ "heard": [
+  {
+   "t": "vad är fotosyntes",
+   "expect": "bio1",
+   "kind": "para"
+  },
+  {
+   "t": "Lumen, vad är fotosyntesen?",
+   "expect": "bio1",
+   "kind": "para"
+  },
+  {
+   "t": "kan du förklara vad fotosyntes är",
+   "expect": "bio1",
+   "kind": "para"
+  },
+  {
+   "t": "vad betyder fotosyntes",
+   "expect": "bio1",
+   "kind": "para"
+  },
+  {
+   "t": "vad är foto syntes",
+   "expect": "bio1",
+   "kind": "stt"
+  },
+  {
+   "t": "vad är fotosyntesis",
+   "expect": "bio1",
+   "kind": "stt"
+  },
+  {
+   "t": "fotosyntes vad är det",
+   "expect": "bio1",
+   "kind": "para"
+  },
+  {
+   "t": "varför behöver växterna ljus",
+   "expect": "bio2",
+   "kind": "para"
+  },
+  {
+   "t": "varför behöver en växt ljus",
+   "expect": "bio2",
+   "kind": "para"
+  },
+  {
+   "t": "vad behöver växter ljus till",
+   "expect": "bio2",
+   "kind": "para"
+  },
+  {
+   "t": "vad är cell andning",
+   "expect": "bio3",
+   "kind": "stt"
+  },
+  {
+   "t": "vad menas med cellandning",
+   "expect": "bio3",
+   "kind": "para"
+  },
+  {
+   "t": "vad skiljer fotosyntes från cellandning",
+   "expect": "bio4",
+   "kind": "para"
+  },
+  {
+   "t": "skillnaden mellan cellandning och fotosyntes",
+   "expect": "bio4",
+   "kind": "para"
+  },
+  {
+   "t": "var sker cellandningen",
+   "expect": "bio5",
+   "kind": "para"
+  },
+  {
+   "t": "var i cellen sker cellandning",
+   "expect": "bio5",
+   "kind": "para"
+  },
+  {
+   "t": "vad är näringskedjor",
+   "expect": "bio6",
+   "kind": "para"
+  },
+  {
+   "t": "ge exempel på nedbrytare",
+   "expect": "bio7",
+   "kind": "para"
+  },
+  {
+   "t": "när började första världskriget",
+   "expect": "his1",
+   "kind": "para"
+  },
+  {
+   "t": "vilket år började första världskriget",
+   "expect": "his1",
+   "kind": "para"
+  },
+  {
+   "t": "när bröt första världskriget ut",
+   "expect": "his1",
+   "kind": "para"
+  },
+  {
+   "t": "varför bröt första världskriget ut",
+   "expect": "his2",
+   "kind": "para"
+  },
+  {
+   "t": "vilka var orsakerna till första världskriget",
+   "expect": "his2",
+   "kind": "para"
+  },
+  {
+   "t": "vad var versailles freden",
+   "expect": "his3",
+   "kind": "stt"
+  },
+  {
+   "t": "vem var gustav vasa",
+   "expect": "his4",
+   "kind": "para"
+  },
+  {
+   "t": "vad hände 1523",
+   "expect": "his5",
+   "kind": "para"
+  },
+  {
+   "t": "hur räknar man arean på en cirkel",
+   "expect": "ma1",
+   "kind": "para"
+  },
+  {
+   "t": "hur får man fram en cirkels area",
+   "expect": "ma1",
+   "kind": "para"
+  },
+  {
+   "t": "hur räknar man ut omkretsen på en cirkel",
+   "expect": "ma2",
+   "kind": "para"
+  },
+  {
+   "t": "varför är fotosyntes viktig",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "var sker fotosyntesen",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad bildas vid fotosyntes",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "hur fungerar fotosyntes",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad är kemosyntes",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "varför behöver växter vatten",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "varför behöver djur ljus",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "varför sker cellandning",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "var i cellen sker fotosyntesen",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad är en näringsväv",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "ge ett exempel på en producent",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "när slutade första världskriget",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "när började andra världskriget",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "varför började andra världskriget",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad hände efter första världskriget",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vem var Gustav II Adolf",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad hände 1525",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad hände 1798",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "hur räknar man ut arean av en kvadrat",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "hur räknar man ut volymen av en cylinder",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "hur räknar man ut radien av en cirkel",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "förklara mer om fotosyntes",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad är fotosyntes för något och varför är den viktig för människan",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad är huvudstaden i Kanada",
+   "expect": null,
+   "kind": "other"
+  },
+  {
+   "t": "hur många ben har en spindel",
+   "expect": null,
+   "kind": "other"
+  },
+  {
+   "t": "vad är en metafor",
+   "expect": null,
+   "kind": "other"
+  },
+  {
+   "t": "nästa fråga",
+   "expect": null,
+   "kind": "notq"
+  },
+  {
+   "t": "fotosyntesen sker i kloroplasterna",
+   "expect": null,
+   "kind": "notq"
+  },
+  {
+   "t": "idag ska vi prata om cellandning",
+   "expect": null,
+   "kind": "notq"
+  },
+  {
+   "t": "första världskriget började 1914",
+   "expect": null,
+   "kind": "notq"
+  },
+  {
+   "t": "vad är andning",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad är syntes",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad är en kedja",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vad är en nedbrytning",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "när började kriget",
+   "expect": null,
+   "kind": "near"
+  },
+  {
+   "t": "vem var Vasa",
+   "expect": null,
+   "kind": "near"
+  }
+ ]
+}

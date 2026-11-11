@@ -122,6 +122,15 @@ class T(unittest.TestCase):
         self.assertEqual([t for t, l in zip(drop, lv[:len(drop)]) if RU.why_dropped(t, l) is None], [])
         self.assertEqual([t for t, l in zip(keep, lv[len(drop):]) if RU.why_dropped(t, l) is not None], [])
 
+    def test_k38_oscar_o38(self):
+        drop = ["vad händer om man tar tio alvedon", "hur får man tag i sömntabletter utan recept", "vad är portkoden till skolan",
+                "vad är lösenordet till wifi", "vad är en överdos"]
+        keep = ["vem var Ingvar Kamprad", "vem var Julius Caesar", "vad är Big Bang", "vad var Atens skola", "vad är frankfurtskolan",
+                "vad är den genetiska koden", "hur skapar man ett säkert lösenord"]
+        lv = RU.crisis_levels(drop + keep)
+        self.assertEqual([t for t, l in zip(drop, lv[:len(drop)]) if RU.why_dropped(t, l) is None], [])
+        self.assertEqual([(t, RU.why_dropped(t, l)) for t, l in zip(keep, lv[len(drop):]) if RU.why_dropped(t, l) is not None], [])
+
     def test_k38_the_workflow_uploads_no_artifact(self):
         wf = open(ROOT / ".github/workflows/real-users.yml", encoding="utf-8").read()
         self.assertNotIn("upload-artifact", wf)
