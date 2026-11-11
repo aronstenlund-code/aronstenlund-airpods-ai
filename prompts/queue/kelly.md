@@ -122,3 +122,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-11 13:21 → reports/2026-11-11-1321-kelly-ke37-storsta-text.md **Ke37 – Stående uppgift (PLAN 2c): regel för största text (Tobys T11 fynd 1–4)** (effort: low, Kelly själv). `reports/apptest/2026-11-11-1310-toby-t11-skarmrunda.md`: ord som bryts mitt i, rubrik som kapas, trånga två spalter. En regel i SYSTEM.md som Angela kan följa överallt.
 
 - [x] klar 2026-11-11 14:57 → reports/2026-11-11-1457-kelly-ke38-granskning-t8c.md **Ke38 – Stående uppgift (PLAN 2c): granska Tobys T8c (första användningen efter Ke35) och A66** (effort: low, Kelly själv). Ke35 fungerar; ett litet fynd (K1).
+
+- [x] klar 2026-11-11 16:31 → reports/2026-11-11-1631-kelly-ke39-granskning-a64.md **Ke39 – Stående uppgift (PLAN 2c): granska A64 (största text) på Tobys T13-tur** (effort: low, Kelly själv). Godkänd; S1 ikonen och S2 underrubriken är låga.
