@@ -23,7 +23,7 @@ Datum: 2026-11-11, 20:53–20:58 (svensk tid). Stående uppgift (PLAN 2b) och om
 
 ## Omtest O51s: hela frågor tysta i Standardläge, **RÄTTAD**
 Kevins `59bf5f6`: ett verb sist räknas bara som avklippt i en huvudsats utan subjekt. "än" och ord som eleven frågar om räknas aldrig.
-- Offline (`o51_cutoff_offline.mjs`, `…-205338-o51s-omtest.json`):
+- Offline (`o51_cutoff_offline.mjs`, `…-205311-o51s-omtest.json`):
   - **hela frågor 12/12 besvaras** (var 2/12);
   - avklippta 14/18 blir tysta (oförändrat).
 - Live (`o51b_cutoff_live.py`, `…-205357-o51b.json`): **`cut_off` 0/8** (var 5/8).
