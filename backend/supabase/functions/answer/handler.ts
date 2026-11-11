@@ -94,6 +94,19 @@ import { AnswerPost, NumberStream, similarity } from "./speech.ts";
 
 /** K1.4: a short reply grades the check question only within this many seconds of the answer that asked it. */
 export const GRADE_REPLY_MAX_AGE_SEC = 120;
+
+/** Toby T14: a question that stops on a word that needs more ("Hur många invånare har", "Vad är skillnaden mellan"). */
+// prepositions are not here: Swedish questions often end on one ("vad ska jag plugga på", "vad handlar det om")
+const DANGLING = new Set(("har hade är blir blev mellan och eller som att en ett " +
+  "min mitt mina din ditt dina sin sitt vilken vilket vilka än").split(" "));
+export function isCutOff(fragment: string): boolean {
+  const f = (fragment ?? "").trim();
+  if (!f || /[?!.]$/.test(f)) return false;
+  const w = f.toLowerCase().replace(/[^\p{L}\s]/gu, " ").trim().split(/\s+/);
+  if (w.length < 3) return false; // "Vad är?" / one word: other rules decide
+  const isQ = /^(?:(?:och|men|så|lumen)\s+)?(?:vad|vem|vilken|vilket|vilka|hur|när|var|varför|kan|finns|är)(?![\p{L}])/u.test(w.join(" "));
+  return isQ && DANGLING.has(w[w.length - 1]);
+}
 /** K1.4: the new check question is (almost) one already asked in this session. */
 export function isRepeatedQuestion(text: string, asked: string[]): boolean {
   const q = text.trim();
@@ -911,6 +924,39 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
           );
         }
+      }
+
+      // Toby T14 c2: "Hur många invånare har" (the rest still being said) was completed from the last answer
+      // ("Canberra har …"). An Auto fragment that ends on a word needing more and has no "?" is cut off: silence
+      // without a model call, so the app waits for the rest (A21/A63)
+      if (
+        // Auto only: in Provläge a half question is answered from its own words (D87 kind "half", K2)
+        !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" &&
+        !body.voiceInstruction && !body.toolRound && isCutOff(body.fragment)
+      ) {
+        const totalMs = Math.round(now() - t0);
+        console.log(JSON.stringify({ event: "cut_off", mode: body.mode }));
+        const frames = [
+          sseFrame("meta", { reconstructed_question: body.fragment, confidence: 0.2, is_question: false, needs_confirmation: false, answer_type: "fact" }),
+          sseFrame("done", {
+            answered: false,
+            timing: { meta_ms: totalMs, ttft_ms: null, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "cut_off" },
+            summary: null,
+            memory_add: null,
+            cut_off: true,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(c) {
+              for (const f of frames) c.enqueue(f);
+              c.close();
+            },
+          }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
       }
 
       // O43 (BUG prio 2): in the answer window after a check question, Scribe sometimes reads the keyterm list back in

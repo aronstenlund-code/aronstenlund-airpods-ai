@@ -37,3 +37,29 @@ Deno.test("Standing 10 (live eval klocka-01): a yes/no follow-up that quotes the
   assertEquals(stripEcho("är det samma som tjugo över åtta på kvällen", a).quoted, true);
   assertEquals(stripEcho("tjugo över åtta på kvällen", a).rest, "", "a bare echo is still removed");
 });
+
+Deno.test("Toby T14: a cut-off question is silence (the app waits for the rest); a complete one is not", async () => {
+  const { isCutOff } = await import("./handler.ts");
+  for (const f of ["Hur många invånare har", "Vad är skillnaden mellan", "vad är skillnaden mellan katter och", "hur många ben har en"]) assertEquals(isCutOff(f), true, f);
+  for (const f of ["Vad är skillnaden mellan ett virus", "Och hur många bor där?", "hur många bor där", "vad är det", "Vilka är de största?",
+    "vem skrev Röda rummet", "Lumen, sätt en timer på", "är det sant", "vad ska jag plugga på", "vad handlar boken om"]) assertEquals(isCutOff(f), false, f);
+});
+
+Deno.test("Toby T14: the cut-off rule is for Auto only; Provläge still answers a half question (D87 'half')", async () => {
+  const { createHandler, DEFAULT_CONFIG } = await import("./handler.ts");
+  const { MemoryRateLimiter } = await import("../_shared/ratelimit.ts");
+  const calls: unknown[] = [];
+  const h = createHandler({
+    authenticate: () => Promise.resolve({ id: "u-t14", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(),
+    provider: { name: "s", model: "m", stream: (r) => { calls.push(r); return (async function* () { yield { type: "text" as const, text: "Riksdagen stiftar lagar." }; })(); } },
+    recordUsage: () => {},
+    config: DEFAULT_CONFIG,
+  });
+  const req = (mode: string) => new Request("http://x/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fragment: "vad är skillnaden mellan riksdag och", mode, language: "sv", context: {} }) });
+  const auto = await (await h(req("auto"))).text();
+  assertEquals(calls.length, 0, "Auto: silence without a model call");
+  assertEquals(/"cut_off":true/.test(auto), true);
+  await (await h(req("tutor"))).text();
+  assertEquals(calls.length, 1, "Provläge: answered");
+});
