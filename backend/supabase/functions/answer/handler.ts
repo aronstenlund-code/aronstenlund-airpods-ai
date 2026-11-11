@@ -98,6 +98,14 @@ import { AnswerPost, NumberStream, similarity } from "./speech.ts";
 /** K1.4: a short reply grades the check question only within this many seconds of the answer that asked it. */
 export const GRADE_REPLY_MAX_AGE_SEC = 120;
 
+/** Live eval meta-01: does a text (what is left after an echo) ask or request anything? */
+const ASK_START = /^(?:och |men |så |lumen,? |earmind,? )?(?:vad|vem|vilk(?:en|et|a)|hur|när|var|varför|vart|kan|kunde|får|ska|skulle|finns|är det|är du|har du|stämmer|förklara|berätta|säg|ge|visa|hjälp|räkna|beskriv|jämför|nämn|översätt|förhör|fråga|utveckla|upprepa|ta|gör|vill)(?![\p{L}])/iu;
+export function askLike(text: string): boolean {
+  if (/\?/.test(text)) return true;
+  if (/(?<![\p{L}])(?:och )?om [^.]{1,60}(?<![\p{L}])då\s*$/iu.test(text.trim())) return true; // "och om x är två då"
+  if (/(?<![\p{L}])(?:förstår inte|fattar inte|hänger inte med|en gång till|igen|enklare|ett exempel|mer om)(?![\p{L}])/iu.test(text)) return true;
+  return text.split(/[.!;:]+|\s[-–—]\s|-\s/u).map((x) => x.trim()).some((x) => ASK_START.test(x));
+}
 const countWords = (t: string): number => (t.match(/[\p{L}\d]+/gu) ?? []).length;
 /** The first n words of a text (no sentence end fits the asked word cap). */
 function firstWords(t: string, n: number): string {
@@ -468,7 +476,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
         );
       }
-      if (echo.echoed && echo.rest.split(/\s+/).filter((w) => /\p{L}{2,}/u.test(w)).length < 2) {
+      // live eval meta-01: the echo of the last answer plus a garbled rest ("ut till tio. Gud- Om x ökar … Två är
+      // krympning") was answered; a rest with no question or request in it is silence too
+      if (echo.echoed && (echo.rest.split(/\s+/).filter((w) => /\p{L}{2,}/u.test(w)).length < 2 || !askLike(echo.rest))) {
         const totalMs = Math.round(now() - t0);
         try {
           await deps.recordUsage({

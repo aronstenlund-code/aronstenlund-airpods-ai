@@ -82,3 +82,10 @@ Deno.test("O51 (prio 1): a final verb in a subordinate clause is a whole questio
   for (const q of ["Hur många invånare har", "Vad är skillnaden mellan", "vad är skillnaden mellan riksdag och", "Hur många barn hade", "vilken stad är störst av Malmö eller", "vad är en"]) assert(isCutOff(q), q);
   for (const q of ["vet du hur lång tid resan blir", "kan du förklara vad en vektor är", "hur dyr tror du att boken är", "vad heter ordet för att", "vilka meningar med eller finns", "vad är skillnaden mellan en och ett", "hur många år tror du hon blev", "vad ska jag plugga på", "vad betyder ordet som"]) assert(!isCutOff(q), q);
 });
+
+import { askLike } from "./handler.ts";
+Deno.test("standing19: after an echo, a rest that asks nothing is silence", () => {
+  assert(!askLike("ut till tio. Gud- Om x ökar från ett till två är- Två är krympning."));
+  assert(!askLike("och sen lägger man till fem. Okej alla, sidan tolv."));
+  for (const t of ["men varför blir det femton", "förklara det enklare", "jag förstår inte", "Kan du ta ett exempel", "och om x är två då?", "och om x är två då", "räkna ut y när x är tre"]) assert(askLike(t), t);
+});
