@@ -206,9 +206,14 @@ Deno.test("K36 /answer: Spotify tools only with connections: [spotify]; the serv
   assert(!ev.some((e) => e.event === "tool_call"), "nothing for the app to run");
   assert((seen[0].tools as { name: string }[]).some((t) => t.name === "spotify_play"));
   assert(seen[0].system.includes("Spotify tools (K36)"));
-  for (const extra of [{}, { connections: ["spotify"], source: "demo", mode: "text" }, { connections: ["spotify"], mode: "auto" }]) {
+  // O41: Standardläge is "auto" in the app: an addressed request gets Spotify there, something said in passing does not
+  const a = setup([{ type: "text", text: "Hej." }], []);
+  await events(await a.handler(post({ fragment: "Lumen, kör spellistan plugg", connections: ["spotify"], mode: "auto" })));
+  assert(((a.seen[0]?.tools ?? []) as { name: string }[]).some((t) => t.name === "spotify_play"), "auto, addressed");
+  for (const [frag, extra] of [["kör spellistan plugg", {}], ["kör spellistan plugg", { connections: ["spotify"], source: "demo", mode: "text" }],
+    ["vi lyssnade på spellistan plugg i går", { connections: ["spotify"], mode: "auto" }]] as [string, Record<string, unknown>][]) {
     const s = setup([{ type: "text", text: "Hej." }], []);
-    await events(await s.handler(post({ fragment: "kör spellistan plugg", ...extra })));
+    await events(await s.handler(post({ fragment: frag, ...extra })));
     assert(!((s.seen[0]?.tools ?? []) as { name: string }[]).some((t) => t.name.startsWith("spotify")), JSON.stringify(extra));
   }
 });

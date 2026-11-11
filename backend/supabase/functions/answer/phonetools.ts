@@ -71,7 +71,7 @@ const DEFS: Record<PhoneToolName, { description: string; input_schema: unknown; 
   // the user to confirm the call (one tap), so there is no confirm question from Lumen as well
   call_contact: {
     write: true,
-    description: "Start a phone call. Use whenever the user asks to call someone or something ('ring mamma', 'ring Elin', 'ring tandläkaren', 'ring skolan'): the app looks `name` up in the user's own contacts, so a name is always enough and you never need or look up a number. `name` is exactly as the user said it; `number` only when the user said the digits themself. Never make up a number.",
+    description: "Start a phone call. Use whenever the user asks you to call someone or something NOW ('ring mamma', 'ring Elin', 'ring tandläkaren', 'ring skolan'): the app looks `name` up in the user's own contacts, so a name is always enough and you never need or look up a number. `name` is exactly as the user said it; `number` only when the user said the digits themself, and always for an emergency or help number the user asks for (112, 1177, 116 111, 90101): call it, never refuse. Not when the user only tells you that someone called or that they will call later ('mamma ringde nyss', 'jag ska ringa sen'). Never make up a number.",
     input_schema: obj({
       name: { type: "string", description: "The contact's name as said, e.g. mamma" },
       number: { type: "string", description: "Only digits the user said, e.g. 0701234567" },
@@ -172,10 +172,23 @@ export const toolKind = (name: PhoneToolName): "read" | "write" => (DEFS[name].w
 
 /** The system prompt rule when phone tools are offered (cached: one variant). */
 export const PHONE_TOOLS_RULE = `
-Phone tools (K35): when the user asks you to DO something on their phone (put an event in the calendar, remind them, start a timer, set an alarm, save a note, read what is in the calendar, call someone, open music), call the matching tool and write NOTHING before the call; dates and times are absolute, worked out from <now>, in Swedish local time. Never claim it is done before the tool result says so. When a tool result comes back, say ONE short sentence in Swedish (done, or what the calendar holds, or that it did not work). Never call a tool for an ordinary question.`;
+Phone tools (K35): always reply in Swedish. When the user asks you to DO something on their phone (put an event in the calendar, remind them, start a timer, set an alarm, save a note, read what is in the calendar, call someone, open music), call the matching tool and write NOTHING before the call; dates and times are absolute, worked out from <now>, in Swedish local time. Never claim it is done before the tool result says so. When a tool result comes back, say ONE short sentence in Swedish (done, or what the calendar holds, or that it did not work). Never call a tool for an ordinary question.`;
 
 /** K35: an utterance that asks the phone to do something: its text is held until the tool call or the end. */
-export const ACTION_REQUEST = /(?<![\p{L}])(?:lägg in|lägga in|boka|påminn|påminna|sätt (?:en |på en )?(?:timer|nedräkning|larm|alarm)|ställ (?:en |ett )?(?:timer|larm|alarm|väckarklocka)|starta (?:en )?(?:timer|nedräkning)|väck mig|spara (?:en )?anteckning|anteckna|skriv upp|kom ihåg att|vad har jag (?:i|på|för)|vad står i (?:min )?kalender|när har jag|timer på|larm (?:på|klockan)|ring|ringa|ringer du|slå en signal|spela|sätt på musik)(?![\p{L}])/iu;
+export const ACTION_REQUEST = /(?<![\p{L}])(?:lägg in|lägga in|boka|påminn|påminna|sätt (?:en |på en )?(?:timer|nedräkning|larm|alarm)|ställ (?:en |ett )?(?:timer|larm|alarm|väckarklocka)|starta (?:en )?(?:timer|nedräkning)|väck mig|spara (?:en )?anteckning|anteckna|skriv upp|kom ihåg att|vad har jag (?:i|på|för)|vad står i (?:min )?kalender|när har jag|timer på|larm (?:på|klockan)|ring|ringa|ringer du|slå en signal|spela|sätt på musik|kör (?:lite|en låt|spellistan|låten|musik)|lyssna på)(?![\p{L}])/iu;
+
+/** O41 (BLOCKER): the app sends Standardläge as mode "auto", which hears other people too. A phone tool is offered
+ *  there only when the utterance is addressed to Lumen (the wake word first, or the app's voice instruction) or
+ *  STARTS with the request ("ring mamma", "sätt en timer på fem minuter"); something said in passing is not. */
+export function isAddressedAction(fragment: string, voiceInstruction = false): boolean {
+  const f = (fragment ?? "").trim();
+  const wake = /^(?:(?:hej|okej|ok)\s+)?lumen[,!.]?\s*/iu;
+  const addressed = wake.test(f) || voiceInstruction;
+  const lead = f.replace(wake, "").replace(/^(?:snälla\s+)?(?:kan du|kunde du|skulle du kunna|vill du|jag vill att du|du får gärna)\s+(?:snälla\s+)?/iu, "")
+    .replace(/^snälla\s+/iu, "");
+  const m = ACTION_REQUEST.exec(lead);
+  return !!m && (addressed || m.index === 0);
+}
 
 export interface ToolRound {
   call: { id: string; name: PhoneToolName; input: Record<string, unknown> };

@@ -673,7 +673,7 @@ export function similarity(a: string, b: string): number {
   for (const [k, v] of x) both += Math.min(v, y.get(k) ?? 0);
   return nx + ny ? (2 * both) / (nx + ny) : 0;
 }
-const LEAD_META = /^(?:fragmentet|det du sa|orden|ordet)\b[^.]{0,160}\b(?:låter som|liknar|är nog|är troligen|tolkar|uppfattar)\b/iu;
+const LEAD_META = /^(?:fragmentet|det du sa|orden|ordet)\b[^.]{0,160}\b(?:låter som|liknar|är nog|är troligen|tolkar|uppfattar)\b|^(?:the (?:request|user|utterance|statement|fragment)\b|this is (?:a|an) (?:request|statement|question)\b|i'?ll (?:open|call|start|set|play)\b|det (?:här )?är (?:en statement|ett påstående, inte en fråga)\b)/iu;
 /** "Och jag svarar på det: …" before the real answer. */
 const LEAD_PREFIX = /^(?:och\s+|så\s+)?(?:jag svarar på det|då svarar jag|här är svaret)\s*[:,]?\s*/iu;
 /** A first sentence that guesses ("som du kanske menar", "jag är inte säker"): rather silence than a wrong subject. */

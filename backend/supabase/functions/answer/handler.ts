@@ -36,7 +36,7 @@ import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./per
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
 import { type CommandTask, commandTask, detectRule, funCommand, socialRequest } from "./commands.ts";
-import { ACTION_REQUEST, confirmText, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
+import { ACTION_REQUEST, confirmText, isAddressedAction, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
 import { applicable, describe, detectCorrection, profileOf } from "../memory/settings.ts";
 
@@ -930,7 +930,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K32 (D115): "sjung", "rappa", "berätta ett skämt", "säg det som en pirat" in every mode, answered to the user
       const funCmd = demo || body.sessionEnd ? null : funCommand(body.social?.calibrate || body.fragment,
         body.mode === "auto" || !!personaPlan(body));
-      const direct = !!funCmd || (cfg.directModes && body.mode !== "auto") || !!personaPlan(body);
+      // O41 (BLOCKER): Standardläge is mode "auto" in the app; an addressed request to the phone takes the direct path
+      // (as push to talk) so the phone tools and Spotify are offered there too
+      const autoAction = !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" &&
+        ((body.toolsAvailable?.length ?? 0) > 0 || (body.connections ?? []).includes("spotify")) &&
+        isAddressedAction(body.fragment, !!body.voiceInstruction);
+      const direct = !!funCmd || (cfg.directModes && (body.mode !== "auto" || autoAction)) || !!personaPlan(body);
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
       const plan = funCmd ? null : personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
       const continuation = !plan && body.context.recent_qa.length
@@ -1247,9 +1252,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       });
       // K35 (D122): phone tools the app can run, in the direct modes (Standardläge, Provläge), never in the demo
       const phoneOffer = [...(body.toolsAvailable ?? []), ...(body.toolRound ? [body.toolRound.call.name] : [])];
-      const phoneTools0 = !demo && !plan && direct && body.mode !== "auto" && phoneOffer.length ? phoneToolDefs(phoneOffer) : undefined;
+      const phoneTools0 = !demo && !plan && direct && (body.mode !== "auto" || autoAction) && phoneOffer.length ? phoneToolDefs(phoneOffer) : undefined;
       // K36: Spotify server tools when the app says Spotify is connected (the server runs them, no round to the app)
-      const spotifyOn = !demo && !plan && direct && body.mode !== "auto" && !body.toolRound && !!deps.runSpotify &&
+      const spotifyOn = !demo && !plan && direct && (body.mode !== "auto" || autoAction) && !body.toolRound && !!deps.runSpotify &&
         (body.connections ?? []).includes("spotify");
       const phoneTools = spotifyOn ? [...(phoneTools0 ?? []), ...spotifyToolDefs()] : phoneTools0;
       const noSummary = plan?.kind === "rizz" || plan?.kind === "calibrate" || demo;
