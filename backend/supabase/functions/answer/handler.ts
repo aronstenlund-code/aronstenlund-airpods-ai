@@ -1282,7 +1282,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const maxChars0 = (demo ? demoCaps.answerMaxChars : undefined) ?? plan?.maxChars ??
         (textReq ? 2400 : undefined) ?? (webOn ? 800 : undefined) ??
         (answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars);
-      const maxChars = askedCaps ? Math.max(maxChars0, askedCaps.maxChars) : maxChars0;
+      const maxChars = askedCaps ? (askedCaps.exact ? askedCaps.maxChars : Math.max(maxChars0, askedCaps.maxChars)) : maxChars0;
       const parser = new ResponseParser(
         body.mode,
         body.fragment,
