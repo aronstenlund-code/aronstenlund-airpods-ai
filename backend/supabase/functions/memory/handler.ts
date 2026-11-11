@@ -56,13 +56,14 @@ export interface MemoryResult {
 
 /** O47: the small model's check of a short utterance the code did not recognise as a correction. */
 export const CORRECTION_CHECK_PROMPT =
-  `A Swedish student just heard an answer from their study assistant and said <said>. Decide whether it is feedback on HOW the assistant answers, and which kind. Reply with exactly one word:
-shorter (the answers are too long, too much talk, wants less or only the answer),
-longer (wants more, more detail, develop),
-simpler (too hard, wants easier words, does not understand),
-examples (wants examples, also from real life),
-careful (says or doubts that the answer was right: it was wrong, false, not true, made up, "det var fel", "stämmer det verkligen?"),
-none (anything else: a question, a statement about something else, talk to someone else, a command such as pause or stop).
+  `A Swedish student just heard an answer from their study assistant (you) and said <said>. Decide whether <said> is feedback about YOUR LAST ANSWER, the way you answered: its length, how hard it was, examples in it, or whether it was right. Reply with exactly one word:
+shorter (your answer was too long, too much talk, wants less or only the answer),
+longer (wants more of your answer, more detail, develop it),
+simpler (your answer was too hard, wants easier words, did not understand your answer),
+examples (wants examples in your answers),
+careful (says or doubts that your answer was right: it was wrong, false, made up),
+none (anything else).
+It is none when <said> is about something other than your answer: a book, a test, a teacher, a friend, history, the student's own problem ("boken är för svår", "läraren pratar för mycket", "det var fel av kungen"); when it is a question or a request for content, also when it contains "exempel", "fel" or "förklara" ("kan du ge exempel på ädelgaser", "jag förstår inte vad X är, kan du förklara", "förenkla bråket"); or when it is a command such as pause or stop.
 When unsure, reply none.`;
 
 export function correctionFromCheck(reply: string): { key: "length" | "simplicity" | "examples" | "accuracy"; value: string } | null {
