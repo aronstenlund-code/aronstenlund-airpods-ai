@@ -98,3 +98,23 @@ Deno.test("K42.3 the word cap passes whole sentences only and stops within it", 
   assert(words <= 30 && words >= 21, `${words}: ${said}`);
   assert(/[.!?]\s*$/.test(said), said);
 });
+
+Deno.test("K44 'kan du …?', 'vad kan du göra?', 'vad är Earmind?' and help are answered from the list, without a model call", async () => {
+  const ask = async (fragment: string, extra: Record<string, unknown> = {}) => {
+    const { handler, seen } = setup();
+    const t = await (await handler(new Request("http://x/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fragment, mode: "auto", language: "sv", context: {}, ...extra }) }))).text();
+    return { said: t.split("\n\n").filter((f) => f.startsWith("event: delta")).map((f) => JSON.parse(f.split("data: ")[1]).text).join(""), calls: seen.length };
+  };
+  assert((await ask("Kan du sätta en timer på tio minuter?")).said.startsWith("Ja"));
+  assert((await ask("Kan du spela musik?")).said.startsWith("Ja"));
+  assert((await ask("Kan du lägga in ett möte i min kalender?")).said.startsWith("Ja"));
+  assert((await ask("Vad kan du göra?")).said.includes("AI-agent"));
+  assert(/AI-agent/.test((await ask("Vad är Earmind?")).said));
+  assert((await ask("Hur stänger jag av dig?")).said.includes("Stoppa"));
+  assert((await ask("kan du skicka sms")).said.startsWith("Nej"));
+  // with the wake word and the tool on the phone, a concrete request goes on to the model with the tool
+  const r = await ask("Lumen, kan du sätta en timer på tio minuter", { tools_available: ["timer_start"] });
+  assertEquals(r.calls, 1);
+  // a real question is the model's
+  assertEquals((await ask("kan du förklara fotosyntes")).calls, 1);
+});

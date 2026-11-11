@@ -1,0 +1,318 @@
+{
+ "_about": "K44 (Aron 21:16, D118): THE one list of what Earmind can do, read by the app (CapabilitiesView, Angela A77) and the server (backend/supabase/functions/_shared/capabilities.ts, a copy checked by a test). status: finns | kommer. permission: what the phone must allow first (the app sends the granted ones as context.capabilities). tool: the phone tool or app command that does it. ask: Swedish words that name the capability in a 'kan du …?' question (regex fragments, lower case).",
+ "name": "Earmind",
+ "identity": "Earmind är en AI-agent i dina AirPods för vardag, skola och jobb. Du säger Lumen och vad du vill, och jag svarar eller gör det direkt.",
+ "capabilities": [
+  {
+   "id": "questions",
+   "group": "skola",
+   "name": "Svar på frågor",
+   "say": "Lumen, vad betyder ambivalent?",
+   "status": "finns",
+   "ask": [
+    "svara på frågor",
+    "svara på (?:mina |en )?fråg",
+    "förklara",
+    "hjälpa (?:mig )?med (?:läxan|läxor|skolan|plugget)"
+   ]
+  },
+  {
+   "id": "quiz",
+   "group": "skola",
+   "name": "Förhör",
+   "say": "Lumen, förhör mig på fotosyntes",
+   "status": "finns",
+   "tool": "switch_mode",
+   "ask": [
+    "förhöra",
+    "förhör",
+    "plugga med mig",
+    "hjälpa mig (?:att )?plugga",
+    "öva (?:inför|på) (?:ett )?prov"
+   ]
+  },
+  {
+   "id": "myAnswers",
+   "group": "skola",
+   "name": "Mina svar",
+   "say": "Spela in dina egna svar på provfrågorna i Provläget",
+   "status": "finns",
+   "ask": [
+    "mina (?:egna )?svar",
+    "läsa upp mina svar"
+   ]
+  },
+  {
+   "id": "calendar",
+   "group": "vardag",
+   "name": "Kalender",
+   "say": "Lumen, vad har jag i dag?",
+   "status": "finns",
+   "permission": "calendar",
+   "tool": "calendar_add",
+   "ask": [
+    "kalender",
+    "lägga in (?:ett )?(?:möte|mötet|en tid|ett event|en händelse)",
+    "boka (?:in )?(?:ett )?möte",
+    "vad (?:jag )?har (?:jag )?(?:i dag|idag|i morgon|imorgon)",
+    "schema"
+   ]
+  },
+  {
+   "id": "reminders",
+   "group": "vardag",
+   "name": "Påminnelser",
+   "say": "Lumen, påminn mig om träningen klockan 18",
+   "status": "finns",
+   "permission": "reminders",
+   "tool": "reminder_add",
+   "ask": [
+    "påminn",
+    "påminnelse"
+   ]
+  },
+  {
+   "id": "timer",
+   "group": "vardag",
+   "name": "Timer",
+   "say": "Lumen, sätt en timer på 10 minuter",
+   "status": "finns",
+   "permission": "alarms",
+   "tool": "timer_start",
+   "ask": [
+    "timer",
+    "timern",
+    "äggklocka",
+    "ta tid"
+   ]
+  },
+  {
+   "id": "alarm",
+   "group": "vardag",
+   "name": "Larm",
+   "say": "Lumen, väck mig kvart i sju",
+   "status": "finns",
+   "permission": "alarms",
+   "tool": "alarm_set",
+   "ask": [
+    "larm",
+    "alarm",
+    "väcka mig",
+    "väckarklocka",
+    "väckning"
+   ]
+  },
+  {
+   "id": "notes",
+   "group": "vardag",
+   "name": "Anteckningar",
+   "say": "Lumen, spara det",
+   "status": "finns",
+   "tool": "note_add",
+   "ask": [
+    "anteckn",
+    "spara (?:det|en anteckning|något)",
+    "komma ihåg (?:det|saker)",
+    "skriva ner"
+   ]
+  },
+  {
+   "id": "training",
+   "group": "vardag",
+   "name": "Träning",
+   "say": "Lumen, ge mig ett styrkepass på 20 minuter",
+   "status": "finns",
+   "ask": [
+    "träningspass",
+    "träning",
+    "styrkepass",
+    "löppass",
+    "träna"
+   ]
+  },
+  {
+   "id": "call",
+   "group": "musik och samtal",
+   "name": "Ring",
+   "say": "Lumen, ring mamma",
+   "status": "finns",
+   "permission": "contacts",
+   "tool": "call_contact",
+   "ask": [
+    "ringa",
+    "ring ",
+    "samtal"
+   ]
+  },
+  {
+   "id": "music",
+   "group": "musik och samtal",
+   "name": "Öppna musik",
+   "say": "Lumen, spela lugn pluggmusik",
+   "status": "finns",
+   "tool": "music_open",
+   "ask": [
+    "spela musik",
+    "spela (?:en )?låt",
+    "musik",
+    "spotify",
+    "spellista"
+   ]
+  },
+  {
+   "id": "spotify",
+   "group": "musik och samtal",
+   "name": "Styra Spotify (spela, pausa, nästa låt)",
+   "say": "Lumen, kör spellistan Plugg",
+   "status": "kommer",
+   "ask": [
+    "pausa (?:musiken|låten)",
+    "nästa låt",
+    "byta låt",
+    "styra spotify"
+   ]
+  },
+  {
+   "id": "interview",
+   "group": "mer",
+   "name": "Intervju",
+   "say": "Byt till Intervju så får du färdiga svar på intervjufrågor",
+   "status": "finns",
+   "ask": [
+    "intervju",
+    "anställningsintervju",
+    "jobbintervju"
+   ]
+  },
+  {
+   "id": "social",
+   "group": "mer",
+   "name": "Socialt och Rizz",
+   "say": "Byt till Socialt eller Rizz så föreslår jag vad du kan säga",
+   "status": "finns",
+   "ask": [
+    "vad jag ska säga",
+    "flörta",
+    "rizz",
+    "samtalsämne"
+   ]
+  },
+  {
+   "id": "sleep",
+   "group": "mer",
+   "name": "Sömn",
+   "say": "Tryck Sov på kvällen, så får du en morgonrapport när du vaknar",
+   "status": "finns",
+   "ask": [
+    "sömn",
+    "sova",
+    "morgonrapport"
+   ]
+  },
+  {
+   "id": "translate",
+   "group": "mer",
+   "name": "Översätta",
+   "say": "Lumen, vad heter fjäril på engelska?",
+   "status": "finns",
+   "ask": [
+    "översätt",
+    "översätta"
+   ]
+  },
+  {
+   "id": "web",
+   "group": "mer",
+   "name": "Söka på webben",
+   "say": "Lumen, vad blir vädret i morgon?",
+   "status": "finns",
+   "ask": [
+    "söka på (?:nätet|webben|internet|google)",
+    "googla",
+    "kolla vädret",
+    "väder"
+   ]
+  }
+ ],
+ "not_yet": [
+  "skicka sms",
+  "skicka meddelanden",
+  "skicka mejl",
+  "läsa mejl",
+  "läsa notiser",
+  "betala",
+  "beställa",
+  "boka resor",
+  "ta bilder",
+  "filma",
+  "styra lampor",
+  "vägbeskrivning"
+ ],
+ "help": [
+  {
+   "id": "stop",
+   "ask": [
+    "stänga av (?:dig|appen|earmind|lumen)",
+    "stäng av (?:dig|appen)",
+    "sluta lyssna",
+    "få dig att sluta lyssna",
+    "stänger (?:jag |man )?av (?:dig|appen|earmind|lumen)",
+    "stäng (?:jag |man )?av"
+   ],
+   "answer": "Säg Lumen, stopp, eller tryck på Stoppa i appen. Då slutar jag lyssna."
+  },
+  {
+   "id": "pause",
+   "ask": [
+    "pausa (?:dig|appen|earmind|lumen)",
+    "ta en paus",
+    "få dig att vänta",
+    "pausar (?:jag |man )?(?:dig|appen|earmind|lumen)"
+   ],
+   "answer": "Säg Lumen, paus, så väntar jag. Säg Lumen, fortsätt, när du vill igen."
+  },
+  {
+   "id": "mode",
+   "ask": [
+    "byta läge",
+    "byter (?:jag )?läge",
+    "byta till provläge",
+    "vilka lägen"
+   ],
+   "answer": "Säg till exempel Lumen, byt till Provläge, eller välj läge under Starta Lumen i appen. Lägena är Standardläge, Provläge, Socialt, Rizz och Intervju."
+  },
+  {
+   "id": "voice",
+   "ask": [
+    "byta röst",
+    "byter (?:jag )?röst",
+    "annan röst",
+    "ändra rösten",
+    "din röst"
+   ],
+   "answer": "Rösten byter du i appens inställningar under Röst."
+  },
+  {
+   "id": "start",
+   "ask": [
+    "starta (?:dig|appen|earmind|lumen)",
+    "sätta på dig",
+    "väcka dig",
+    "komma igång",
+    "startar (?:jag |man )?(?:dig|appen|earmind|lumen)"
+   ],
+   "answer": "Tryck Starta Lumen i appen. Sedan säger du Lumen och vad du vill."
+  },
+  {
+   "id": "volume",
+   "ask": [
+    "volym",
+    "prata högre",
+    "prata lägre",
+    "höja ljudet",
+    "sänka ljudet"
+   ],
+   "answer": "Volymen ändrar du med knapparna på telefonen eller på AirPods."
+  }
+ ]
+}

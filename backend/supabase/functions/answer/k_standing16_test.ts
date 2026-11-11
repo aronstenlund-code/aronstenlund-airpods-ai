@@ -54,7 +54,7 @@ Deno.test("K42.1: the name is Earmind (or the app's name); never 'inget eget nam
     assert(selfAnswer(q)!.startsWith("Jag heter Earmind"), q);
   }
   assert(selfAnswer("vad heter du", "Nova")!.startsWith("Jag heter Nova"));
-  assert(selfAnswer("är du en robot")!.includes("Jag heter Earmind och är en AI-assistent"));
+  assert(selfAnswer("är du en robot")!.includes("Jag heter Earmind och är en AI-agent"));
   for (const q of ["vad heter du i efternamn på provet", "vad heter huvudstaden", "vad heter det"]) assertEquals(selfAnswer(q), null, q);
 });
 

@@ -66,6 +66,8 @@ export interface AnswerRequest {
     last_answer_age_sec?: number;
     /** K42.5 (A74): Scribe's confidence for this utterance (0-1) and how long it was spoken (ms). */
     stt_confidence?: number;
+    /** K44: the permissions granted on the phone ("calendar", "reminders", "alarms", "contacts"). */
+    capabilities?: string[];
     utterance_ms?: number;
     /** K40: the answer key of the check question (done.quiz_key of the last answer), sent back by the app (A62). */
     quiz_key?: QuizKey;
@@ -372,6 +374,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       prep_terms,
       ...(already_asked.length ? { already_asked } : {}),
       ...(typeof ageRaw === "number" ? { last_answer_age_sec: ageRaw } : {}),
+      ...(Array.isArray(c.capabilities) ? { capabilities: [...new Set(c.capabilities.filter((x): x is string => typeof x === "string" && /^[a-z_]{2,24}$/.test(x)))].slice(0, 12) } : {}),
       // K42.5: lenient (a wrong value is ignored, never a 400)
       ...(typeof c.stt_confidence === "number" && c.stt_confidence >= 0 && c.stt_confidence <= 1 ? { stt_confidence: c.stt_confidence } : {}),
       ...(typeof c.utterance_ms === "number" && c.utterance_ms >= 0 && c.utterance_ms < 600_000 ? { utterance_ms: c.utterance_ms } : {}),
