@@ -23,6 +23,8 @@ echo "::group::Speech file"
 VOICE="$(say -v '?' | grep -E '[[:space:]]sv_SE[[:space:]]' | head -n 1 | sed -E 's/[[:space:]]+sv_SE.*$//')"
 test -n "$VOICE" || { echo "::error::no Swedish voice"; exit 1; }
 say -v "$VOICE" --file-format=WAVE --data-format=LEI16@16000 -o "$AUDIO/question.wav" "Vad är huvudstaden i Australien?"
+# 2026-11-11: a second question takes turns with the first, so a later session is not judged on a repeated question.
+say -v "$VOICE" --file-format=WAVE --data-format=LEI16@16000 -o "$AUDIO/question2.wav" "Hur många ben har en spindel?"
 python3 -I -c "import sys, wave; w = wave.open(sys.argv[1], 'wb'); w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000); w.writeframes(bytes(2 * 16000 * 6)); w.close()" "$AUDIO/lead.wav"
 ls -la "$AUDIO"
 echo "::endgroup::"
@@ -68,10 +70,16 @@ for P in "${PATHS[@]}"; do
   xcrun simctl bootstatus "$UDID" -b >/dev/null
   xcrun simctl ui "$UDID" appearance light
   xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
+  # The app's own diagnostics (Log.diagnostics), so a missing answer can be explained. The app logs its lines as
+  # private; private data is asked for in the Simulator, and the log says <private> if the Simulator refuses.
+  xcrun simctl spawn "$UDID" log config --mode "private_data:on" >/dev/null 2>&1 || echo "note: private_data not allowed"
+  xcrun simctl spawn "$UDID" log stream --style compact --level info \
+    --predicate 'subsystem == "com.rsolutions.lumen"' > "$OUT/logs/$P-app.log" 2>&1 &
+  LOGPID=$!
   RESULT="$OUT/logs/$P.xcresult"
   rm -rf "$RESULT"
   TEST_RUNNER_LUMEN_T8_PATH="$P" \
-  TEST_RUNNER_LUMEN_AUDIO_FILES="$AUDIO/lead.wav:$AUDIO/question.wav" \
+  TEST_RUNNER_LUMEN_AUDIO_FILES="$AUDIO/lead.wav:$AUDIO/question.wav:$AUDIO/question2.wav" \
   TEST_RUNNER_LUMEN_AUDIO_GAP="20" \
   xcodebuild test-without-building \
     -project LumenE2E.xcodeproj \
@@ -83,6 +91,8 @@ for P in "${PATHS[@]}"; do
     CODE_SIGNING_ALLOWED=NO \
     > "$OUT/logs/$P-test.log" 2>&1
   STATUS=$?
+  kill "$LOGPID" >/dev/null 2>&1 || true
+  echo "app log: $(wc -l < "$OUT/logs/$P-app.log") lines"
   grep -E "error:|XCTAssert|failed|passed|skipped" "$OUT/logs/$P-test.log" | tail -n 30
   mkdir -p "$OUT/$P"
   xcrun xcresulttool export attachments --path "$RESULT" --output-path "$OUT/$P" || echo "::warning::attachment export failed for $P"

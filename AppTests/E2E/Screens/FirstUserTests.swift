@@ -7,8 +7,10 @@ import XCTest
 /// step is timed, every tap counted, every screen photographed and its texts and buttons written down, so the report
 /// can say what is unclear or unnecessary.
 ///
-/// The question is a WAV file through the app's own hook (`LUMEN_AUDIO_FILES`, looped with a long gap, so a session
-/// started later also hears it). Live Scribe and /answer, the voice the app picks for a new user.
+/// The questions are WAV files through the app's own hook (`LUMEN_AUDIO_FILES`, looped with a long gap, so a session
+/// started later also hears them). Two different questions take turns (2026-11-11): one question asked again in a
+/// later session can be skipped as already answered, which hid whether Lumen heard at all. Live Scribe and /answer,
+/// the voice the app picks for a new user.
 ///
 /// `LUMEN_T8_PATH` (from `scripts/apptest/firstuser.sh`):
 /// - `skip`: "Hoppa över" at the exam step, then find Provläge from the start screen.
@@ -31,9 +33,11 @@ final class FirstUserTests: XCTestCase {
     private var log: [String] = []
     private var milestones: [String] = []
 
-    /// The answer to the WAV file's question ("Vad är huvudstaden i Australien?").
-    private let answerKey = "Canberra"
-    private let questionKey = "Australien"
+    /// The answers to the WAV files' questions ("Vad är huvudstaden i Australien?", "Hur många ben har en spindel?").
+    /// A step passes when *more* texts hold one of them than before it: Lyssnar keeps the earlier sessions' answers on
+    /// the screen (seen 2026-11-11), so "a text contains Canberra" is not an answer in this session.
+    private let answerKeys = ["Canberra", "åtta"]
+    private var answerKey: String { answerKeys.joined(separator: "' or '") }
 
     func testFirstUser() throws {
         continueAfterFailure = true
@@ -70,13 +74,12 @@ final class FirstUserTests: XCTestCase {
                 screen("forsta-fragan-startar", "First question: no 'Lyssnar' within 15 s")
                 fail("first question: no 'Lyssnar' within 15 s (A25)")
             }
-            if let shown = waitText(containing: answerKey, 60) {
+            if waitNew(more: 0, 90) {
                 milestone("Frågor: answer shown")
-                log.append("answer shown: \(shown.prefix(200))")
                 screen("forsta-svaret", "Frågor: the first answer on the screen")
             } else {
                 screen("forsta-svaret-saknas", "Frågor: no answer within 60 s")
-                fail("Frågor: no answer containing '\(answerKey)' within 60 s")
+                fail("Frågor: no answer containing '\(answerKey)' within 90 s")
             }
             // A18: "Fortsätt" only after an answer, "Hoppa över" before it.
             tap(["Fortsätt", "Hoppa över"], "first question → Fortsätt/Hoppa över")
@@ -133,12 +136,11 @@ final class FirstUserTests: XCTestCase {
         systemAlerts()
         if wait(["Tillbaka till start"], 10) != nil {
             if waitText(containing: "Prov", 2) == nil { fail("the Lyssnar screen is not Provläge") }
+            let baseline = answerCount()
             screen("provlage-lyssnar", "Lyssnar in Provläge, before the question")
             milestone("Provläge: listening")
-            let before = Date()
-            if let shown = waitText(containing: answerKey, 90, after: before) {
+            if waitNew(more: baseline, 90) {
                 milestone("Provläge: answer shown")
-                log.append("Provläge answer shown: \(shown.prefix(200))")
                 screen("provlage-svaret", "Provläge: the first answer on the screen")
             } else {
                 screen("provlage-svaret-saknas", "Provläge: no answer within 90 s")
@@ -172,7 +174,7 @@ final class FirstUserTests: XCTestCase {
             screen("starta-lumen-startade-inte", "Starta Lumen did not open Lyssnar")
             return fail("Starta Lumen: no Lyssnar screen within 10 s")
         }
-        let baseline = count(containing: answerKey)
+        let baseline = answerCount()
         if waitText(containing: "Lyssnar", 15) != nil {
             milestone("Starta Lumen: Lyssnar")
         } else {
@@ -180,12 +182,12 @@ final class FirstUserTests: XCTestCase {
             fail("Starta Lumen: no 'Lyssnar' within 15 s")
         }
         screen("starta-lumen-lyssnar", "A50: Lyssnar after Starta Lumen, before the answer")
-        if waitNew(containing: answerKey, more: baseline, 60) {
+        if waitNew(more: baseline, 90) {
             milestone("Starta Lumen: answer shown")
             screen("starta-lumen-svaret", "A50: the answer after Starta Lumen")
         } else {
             screen("starta-lumen-svaret-saknas", "Starta Lumen: no answer within 60 s")
-            fail("Starta Lumen: no new answer containing '\(answerKey)' within 60 s")
+            fail("Starta Lumen: no new answer containing '\(answerKey)' within 90 s")
         }
         endRunningSession()
     }
@@ -201,18 +203,21 @@ final class FirstUserTests: XCTestCase {
         }
     }
 
-    private func count(containing key: String) -> Int {
-        app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] %@", key)).count
+    private var answerPredicate: NSPredicate {
+        NSCompoundPredicate(orPredicateWithSubpredicates: answerKeys.map { NSPredicate(format: "label CONTAINS[c] %@", $0) })
     }
 
-    /// True when more texts than `more` contain `key` (a new answer, not one already on the screen).
-    private func waitNew(containing key: String, more: Int, _ timeout: TimeInterval) -> Bool {
+    /// Texts on the screen holding one of the answers.
+    private func answerCount() -> Int { app.staticTexts.matching(answerPredicate).count }
+
+    /// True when more texts than `more` hold an answer (a new answer, not one already on the screen).
+    private func waitNew(more: Int, _ timeout: TimeInterval) -> Bool {
         let end = Date().addingTimeInterval(timeout)
         repeat {
-            if count(containing: key) > more {
-                if let label = app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] %@", key)).allElementsBoundByIndex.last?.label {
-                    log.append("answer shown: \(label.prefix(200))")
-                }
+            let now = answerCount()
+            if now > more {
+                let labels = app.staticTexts.matching(answerPredicate).allElementsBoundByIndex.map(\.label)
+                log.append("answer shown (\(more) → \(now)): " + labels.map { String($0.prefix(120)) }.joined(separator: " | "))
                 return true
             }
             pause(0.5)
