@@ -407,7 +407,9 @@ export function spokenComputed(c: Computed, tutor = false): string | null {
   if (!c.kind) {
     const half = (s: string) => s.replace(/(\d+),5 timmar/u, "$1 och en halv timme");
     if (/^Klockan \d{2}:\d{2} i Sverige.* är klockan \d{2}:\d{2} i .+\(.+\)$/u.test(c.text)) {
-      return half(c.text.replace(/\s*\((.+)\)$/u, ". $1."));
+      const s = half(c.text.replace(/\s*\((.+)\)$/u, ". $1."));
+      // "Klockan 12:25 i Sverige just nu är klockan 20:25 i Tokyo" -> "Just nu är klockan 12:25 i Sverige och 20:25 i Tokyo"
+      return s.replace(/^Klockan (\d{2}:\d{2}) i Sverige just nu är klockan (\d{2}:\d{2}) i /u, "Just nu är klockan $1 i Sverige och $2 i ");
     }
     const temp = /^(-?\d+(?:,\d+)?) °([CF]) = (-?\d+(?:,\d+)?) °([CF])$/u.exec(c.text);
     if (temp) {

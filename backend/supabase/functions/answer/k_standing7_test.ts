@@ -19,3 +19,8 @@ Deno.test("Standing 7: Delhi 18:30 and 68 °F are said by code, right", () => {
   assertEquals(spokenComputed(zoneClock("vad är tidsskillnaden mellan sverige och tokyo", now)!), null, "a difference only keeps the model");
   assertEquals(beforeNumbers("sextiotta grader och åttiotta"), "sextioåtta grader och åttioåtta");
 });
+
+Deno.test("Standing 7: 'just nu' reads naturally", () => {
+  assertEquals(say(spokenComputed(zoneClock("vad är klockan i tokyo", now)!)!),
+    "Just nu är klockan elva i Sverige och nitton i Tokyo. Tokyo är åtta timmar före Sverige.");
+});
