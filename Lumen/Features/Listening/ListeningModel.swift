@@ -1295,11 +1295,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         questionTimer = Task { [weak self] in
             let wait = due.timeIntervalSinceNow
             if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
-            guard let self, !Task.isCancelled else { return }
-            // A8: Lumen is speaking: the question waits for the end of the answer (speechFinished), never dropped.
-            if self.controller.playback.isSpeaking || self.speaker.hasPendingSpeech { return }
-            if case .answering = self.answers.status { return } // asked when this answer is over
-            if !self.activation.fireDue(now: Date()) { self.scheduleQuestionTimer() } // the cooldown moved it
+            // A8: Lumen is speaking: the question waits for the end of the answer, never dropped. A68 (Toby T13
+            // finding 2): it looks again every 0.5 s instead of trusting that something asks it later; a held half
+            // question waited 21 s for Scribe's session to end after the answer fetched ahead for it was dropped.
+            while true {
+                guard let model = self, !Task.isCancelled else { return }
+                if !model.lumenIsBusyAnswering {
+                    if !model.activation.fireDue(now: Date()) { model.scheduleQuestionTimer() } // the cooldown moved it
+                    return
+                }
+                try? await Task.sleep(for: .milliseconds(500))
+            }
         }
     }
 
@@ -2181,6 +2187,21 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         return true
     }
+
+    /// A68: Lumen is saying something, or an answer streams that still gives it things to say (a stream that only
+    /// sends the developed part, `more_delta`, for `streamQuiet` is not in the way of a new question).
+    private var lumenIsBusyAnswering: Bool {
+        if controller.playback.isSpeaking || speaker.hasPendingSpeech { return true }
+        if case .answering = answers.status {
+            // Nothing said yet for this call: its answer is coming, the question waits for it.
+            guard let spoke = lastSpokeTextAt, let asked = answerRequestedAt, spoke >= asked else { return true }
+            return Date().timeIntervalSince(spoke) < Self.streamQuiet
+        }
+        return false
+    }
+
+    /// A68: when the current `/answer` call was sent.
+    @ObservationIgnored private var answerRequestedAt: Date?
 
     /// A63: when Lumen was last given text to say.
     @ObservationIgnored private var lastSpokeTextAt: Date?
@@ -3247,6 +3268,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         lastSent = (request, persona) // A48: a tool call belongs to this request
         currentTurnID = controller.turns.begin(fragment: request.query, mode: mode.rawValue, trigger: request.trigger.rawValue,
                                                transcript: sent.transcript)
+        answerRequestedAt = Date() // A68
         answers.answer(request, context: sent, persona: persona)
     }
 
@@ -3399,6 +3421,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let sent = self.context(for: request)
         aheadTurnID = controller.turns.begin(fragment: request.query, mode: mode.rawValue, trigger: request.trigger.rawValue,
                                              transcript: sent.transcript, ahead: true)
+        answerRequestedAt = Date() // A68
         answers.answer(request, context: sent, persona: persona)
     }
 

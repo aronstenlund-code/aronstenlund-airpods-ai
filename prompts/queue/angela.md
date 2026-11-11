@@ -231,3 +231,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [x] klar 2026-11-11 15:13 → reports/2026-11-11-1451-angela-a66-toby-t8c.md **A66 – Egen punkt (README 8): Tobys T8c fynd 1–2** (effort: low). `reports/apptest/2026-11-11-1455-toby-t8c-forstagang-a60.md`: högst ett blad per gång appen öppnas (första användningen hade tre på 93 s), och Provläge utan prov visar "Har du prov snart?" med "Inte nu" i stället för formuläret med "Avbryt".
 
 - [~] pågår 2026-11-11 15:51 **A67 – Egen punkt (README 8): Tobys T13 fynd 1** (effort: low). `reports/apptest/2026-11-11-1555-toby-t13-omtest-a63-a66.md`: "ja" medan det korta svarets anrop fortfarande strömmar (two_level) köade "utveckla" i 7–13 s; vänta på `done.more` och säg det direkt.
+
+- [~] pågår 2026-11-11 15:52 **A68 – Egen punkt (README 8): Tobys T13 fynd 2** (effort: low). En hållen halv fråga skickades först när Scribe stängde (25 s): frågetimern gav upp när ett svar strömmade och litade på att något frågade senare. Nu tittar den igen var 0,5 s.
