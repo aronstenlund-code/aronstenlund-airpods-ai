@@ -122,6 +122,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A53 (D126, K37): "Mina svar", on the phone only, and the endpoint that helps write them.
     var myAnswers: MyAnswerStore?
     @ObservationIgnored var myAnswersClient: MyAnswersClient?
+    /// A59 (K36): Spotify control through the server, for testers.
+    var spotifyConnection: SpotifyConnection?
     /// A54 (D127, K39): the logo vote.
     @ObservationIgnored var logoVoteClient: LogoVoteClient?
     /// A53: Mina svar is open (from Start's exam card or Inställningar), for this exam; the editor for one answer.
@@ -3114,6 +3116,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         // A56 (K13, D100, Toby T7b): the short answer is spoken and the developed one comes in the same call, ready
         // for "ja" in the Mer? window without a new call.
         context.twoLevel = mode == .standard || mode == .prov
+        context.connections = spotifyConnection?.connections ?? [] // A59 (K36)
         // A53 (K37, D126): "Mina svar" for the exam, in Provläge only, when "Säg mina svar" is on.
         if mode == .prov, let myAnswers {
             context.savedAnswers = myAnswers.payload(for: currentExamID())
@@ -3468,6 +3471,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             } else {
                 developedAnswer = nil
             }
+            if let tool = done?.serverTool { controller.log("Server tool: \(tool.name) \(tool.status) (A59, K36)") }
             if let saved = done?.savedAnswer {
                 conversation.markSaved(saved.id, text: saved.text, on: turn.id) // A53: "Ditt svar" on Lyssnar
                 controller.log("Mina svar: the saved answer was said (\(saved.via ?? "?"))")

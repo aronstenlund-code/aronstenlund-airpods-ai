@@ -1,3 +1,4 @@
+import AuthenticationServices
 import SwiftUI
 
 /// Language, activation, voice and speed (items 2, 3, 5). Presented as a sheet from the Listening screen.
@@ -26,6 +27,8 @@ struct SettingsView: View {
         }
     }
 
+    @Environment(\.webAuthenticationSession) private var webAuthenticationSession
+
     var body: some View {
         Form {
             // Vanliga
@@ -48,6 +51,7 @@ struct SettingsView: View {
             }
             studyProfileSection
             myAnswersSection
+            spotifySection
             appearanceSection
             languageSection
             Section {
@@ -121,6 +125,7 @@ struct SettingsView: View {
         .navigationTitle("Inställningar")
         .navigationBarTitleDisplayMode(.inline)
         .task { await model.voices.refreshIfNeeded() }
+        .task { await model.spotifyConnection?.refresh() } // A59: is Spotify available, is it connected
     }
 
     /// D86: light, dark or as the iPhone; handwriting for the user's questions.
@@ -185,6 +190,43 @@ struct SettingsView: View {
         case .interview: "Intervju"
         case .social: "Socialt"
         case .rizz: "Rizz"
+        }
+    }
+
+    /// A59 (K36): Spotify control through the server, only when the server has Spotify's keys (or it is connected).
+    /// A pilot: Premium, at most 5 accounts Aron adds (docs/AGENT.md).
+    @ViewBuilder
+    private var spotifySection: some View {
+        if let spotify = model.spotifyConnection, spotify.isAvailable || spotify.isConnected {
+            Section {
+                if spotify.isConnected {
+                    HStack {
+                        Text("Spotify")
+                        Spacer()
+                        Text(spotify.hasPremium == false ? "Kräver Premium" : "Kopplat").foregroundStyle(LumenColor.muted)
+                    }
+                    Button("Koppla bort Spotify", role: .destructive) { Task { await spotify.disconnect() } }
+                } else {
+                    Button("Koppla Spotify") { Task { await connectSpotify(spotify) } }
+                }
+                if let notice = spotify.notice {
+                    Text(notice).foregroundStyle(LumenColor.muted)
+                }
+            } header: {
+                Text("Spotify (för testare)")
+            } footer: {
+                Text("Kräver Spotify Premium. Då kan du säga ”Lumen, spela spellistan Plugg”, ”pausa” eller ”nästa”. Spotify måste ha varit öppet på telefonen.")
+            }
+        }
+    }
+
+    private func connectSpotify(_ spotify: SpotifyConnection) async {
+        guard let url = await spotify.connectURL() else { return }
+        do {
+            let callback = try await webAuthenticationSession.authenticate(using: url, callbackURLScheme: "lumen")
+            await spotify.finish(callback)
+        } catch {
+            await spotify.refresh() // cancelled: nothing changed
         }
     }
 
