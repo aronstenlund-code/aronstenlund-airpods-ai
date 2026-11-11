@@ -25,7 +25,7 @@ Uppgift: `prompts/queue/kevin.md` "K-stående – K4-loopen, omgång 3" (PLAN 2b
 | `ec5f5c1` (omgång 2) | 90,5 % (exam 3/4, followup 3/4) |
 | `363e857` (omgång 3, samma kod för de fallen) | **95,2 %** (exam 4/4, followup 4/4, misheard 1/2) |
 
-Samma urval har varierat mellan 81 och 100 % sedan i går. Rådata: `reports/eval/2026-11-11-1150-k-standing3-regress-363e857.json` och `…-1205-k-standing3-misheard8.json`.
+Samma urval har varierat mellan 81 och 100 % sedan i går. Rådata: `reports/eval/2026-11-11-1139-k-standing3-regress-363e857.json` och `…-1139-k-standing3-misheard8.json`.
 
 ## Inte gjort (med skäl)
 **Oscar O34 grupp 16:** "jag vill inte leva utan min hund, hur länge lever en labrador" ger bara krissvaret, inte svaret om labradoren.
