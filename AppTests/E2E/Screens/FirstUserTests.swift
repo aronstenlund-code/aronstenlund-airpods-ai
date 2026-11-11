@@ -14,6 +14,10 @@ import XCTest
 /// - `skip`: "Hoppa över" at the exam step, then find Provläge from the start screen.
 /// - `exam`: add an exam at the first start (the step offers it), then Provläge from its card.
 ///
+/// A50 (D124, 2026-11-11): after the first start the user goes back to Start and presses the big **Starta Lumen**
+/// (Aron on the phone: "man förstår inte hur man börjar ställa frågor"); the same question must be answered there.
+/// Provläge is then chosen with the mode line under the button ("Standardläge · Byt") and started with Starta Lumen.
+///
 /// Simulator only: never a verification on a device. "Svar visat" is what the screen shows; whether it was spoken
 /// is not visible to a UI test (the T5 test counts spoken answers).
 @MainActor
@@ -109,7 +113,10 @@ final class FirstUserTests: XCTestCase {
             log.append("note: a Frågor session is still on (Lyssnar) after the first start")
         }
 
-        // 4. Provläge, the obvious way from here
+        // 4. A50: Starta Lumen, the obvious way to ask a question from Start
+        startButton()
+
+        // 5. Provläge, the obvious way from here
         startProv()
         systemAlerts()
         if wait(["Hoppa över allt"], 6) != nil {
@@ -144,17 +151,89 @@ final class FirstUserTests: XCTestCase {
         finish()
     }
 
+    // MARK: A50 Starta Lumen
+
+    /// The big button at the top of Start: one tap, Lyssnar within 15 s, and the looped question answered.
+    private func startButton() {
+        endRunningSession()
+        guard wait(["Starta Lumen"], 3) != nil else {
+            log.append("note: no 'Starta Lumen' on Start (a build before A50)")
+            return
+        }
+        if find(["Starta Lumen"])?.isHittable != true { log.append("A50: Starta Lumen is not on screen without scrolling") }
+        let mode = find(["Läge:*"])?.label ?? "(no mode line)"
+        log.append("A50: mode line = \(mode)")
+        if find(["Lumen kan allt*"]) == nil { fail("A50: no 'Lumen kan allt' on Start") }
+        screen("start-starta-lumen", "A50: Start before pressing Starta Lumen")
+        milestone("Start: Starta Lumen visible")
+        tap(["Starta Lumen"], "start → Starta Lumen")
+        systemAlerts()
+        guard wait(["Tillbaka till start"], 10) != nil else {
+            screen("starta-lumen-startade-inte", "Starta Lumen did not open Lyssnar")
+            return fail("Starta Lumen: no Lyssnar screen within 10 s")
+        }
+        let baseline = count(containing: answerKey)
+        if waitText(containing: "Lyssnar", 15) != nil {
+            milestone("Starta Lumen: Lyssnar")
+        } else {
+            screen("starta-lumen-startar", "Starta Lumen: no 'Lyssnar' within 15 s")
+            fail("Starta Lumen: no 'Lyssnar' within 15 s")
+        }
+        screen("starta-lumen-lyssnar", "A50: Lyssnar after Starta Lumen, before the answer")
+        if waitNew(containing: answerKey, more: baseline, 60) {
+            milestone("Starta Lumen: answer shown")
+            screen("starta-lumen-svaret", "A50: the answer after Starta Lumen")
+        } else {
+            screen("starta-lumen-svaret-saknas", "Starta Lumen: no answer within 60 s")
+            fail("Starta Lumen: no new answer containing '\(answerKey)' within 60 s")
+        }
+        endRunningSession()
+    }
+
+    /// End a session that is still on, as a user would before choosing something else.
+    private func endRunningSession() {
+        guard wait(["Avsluta"], 1) != nil, wait(["Tillbaka till start"], 1) != nil else { return }
+        tap(["Avsluta"], "Lyssnar → Avsluta")
+        pause(2)
+        if wait(["Starta Lumen", "Lägg till prov", "Få A-svar till provet", "Fler lägen"], 3) == nil {
+            screen("efter-avsluta", "After Avsluta")
+            for label in ["Klar", "Stäng"] where app.buttons[label].exists { tapElement(app.buttons[label], "after Avsluta → \(label)"); break }
+        }
+    }
+
+    private func count(containing key: String) -> Int {
+        app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] %@", key)).count
+    }
+
+    /// True when more texts than `more` contain `key` (a new answer, not one already on the screen).
+    private func waitNew(containing key: String, more: Int, _ timeout: TimeInterval) -> Bool {
+        let end = Date().addingTimeInterval(timeout)
+        repeat {
+            if count(containing: key) > more {
+                if let label = app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] %@", key)).allElementsBoundByIndex.last?.label {
+                    log.append("answer shown: \(label.prefix(200))")
+                }
+                return true
+            }
+            pause(0.5)
+        } while Date() < end
+        return false
+    }
+
     // MARK: Provläge from the start screen
 
     private func startProv() {
-        // End a session that is still on, as a user would before choosing something else.
-        if wait(["Avsluta"], 1) != nil, wait(["Tillbaka till start"], 1) != nil {
-            tap(["Avsluta"], "Lyssnar → Avsluta (session from the first start)")
-            pause(2)
-            if wait(["Lägg till prov", "Få A-svar till provet", "Fler lägen"], 3) == nil {
-                screen("efter-avsluta", "After Avsluta")
-                for label in ["Klar", "Stäng"] where app.buttons[label].exists { tapElement(app.buttons[label], "after Avsluta → \(label)"); break }
-            }
+        endRunningSession()
+        // A50: choose Provläge with the mode line ("Standardläge · Byt"), then the one Start button.
+        if find(["Läge:*"]) != nil {
+            tap(["Läge:*"], "start → Byt (mode line)")
+            pause(1)
+            screen("byt-lage", "A50: Byt from Start")
+            guard tap(["Provläge*"], "Byt → Provläge") else { return }
+            pause(1)
+            log.append("A50: mode line after choosing = \(find(["Läge:*"])?.label ?? "(none)")")
+            tap(["Starta Lumen"], "start → Starta Lumen (Provläge)")
+            return
         }
         if find(["Få A-svar till provet"]) != nil {
             tap(["Få A-svar till provet"], "start → Få A-svar till provet")
