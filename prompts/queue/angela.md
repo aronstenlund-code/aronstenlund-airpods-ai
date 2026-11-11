@@ -236,4 +236,4 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] klar 2026-11-11 16:55 → reports/2026-11-11-1634-angela-a69-kelly-ke39.md **A69 – Stående uppgift (PLAN 2b): Kellys Ke39 S1–S2** (effort: low). Lägesikonen på Start följer textstorleken; underrubriken på Lyssnar döljs vid de största storlekarna (läget står redan i rubriken).
 
-- [~] pågår 2026-11-11 17:23 **A70 – Egen punkt (README 8): diagnostik för Tobys T14 fynd 2–3** (effort: low). En fråga som väntar mer än 3 s loggar en gång varför Lumen räknas som upptagen (ljud, väntande tal, ström: när Lumen senast talade, när anropet gick, om det var ett svar i förväg). Ingen ändring av beteendet.
+- [x] klar 2026-11-11 17:44 → reports/2026-11-11-1744-angela-a70-diagnostik-vantande-fraga.md **A70 – Egen punkt (README 8): diagnostik för Tobys T14 fynd 2–3** (effort: low). En fråga som väntar mer än 3 s loggar en gång varför Lumen räknas som upptagen (ljud, väntande tal, ström: när Lumen senast talade, när anropet gick, om det var ett svar i förväg). Ingen ändring av beteendet.
