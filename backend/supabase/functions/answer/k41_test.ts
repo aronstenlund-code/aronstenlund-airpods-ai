@@ -91,3 +91,9 @@ Deno.test("O41: a question about a number never starts a call", () => {
   assertEquals(validatePhoneInput("call_contact", { name: "mamma" }, "vad har mamma för nummer"), null);
   assertEquals(validatePhoneInput("call_contact", { name: "pappa" }, "ring pappa, vad är numret till honom förresten"), { name: "pappa" });
 });
+
+Deno.test("O41: a phone request that ends in nothing gets one Swedish question, not silence", async () => {
+  const { handler } = setup([{ type: "text", text: "The user asks to call a friend, but gave no name. I need a name to call, so I should ask who." }]);
+  const ev = await events(await handler(post({ fragment: "ring en kompis", mode: "push_to_talk" })));
+  assertEquals(ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("").trim(), "Vem vill du att jag ska ringa?");
+});
