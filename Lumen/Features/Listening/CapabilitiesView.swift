@@ -68,7 +68,7 @@ struct LumenCapability: Identifiable, Equatable, Sendable {
         "social": "person.2.wave.2", "sleep": "moon.stars", "translate": "character.bubble", "web": "globe",
     ]
     static let places: [String: String] = [
-        "myAnswers": "I Provläget", "music": "Öppnar Spotify med sökningen", "interview": "Byt läge", "social": "Byt läge",
+        "music": "Öppnar Spotify med sökningen", "interview": "Byt läge", "social": "Byt läge",
     ]
 
     /// Ke29's rows, the list before A77 (used only without the file).

@@ -18,8 +18,9 @@
   - tillåtelserna hamnar i `context.capabilities` och i `clamped`, och utan lista skickas inget.
 - `A74Tests`: `context.utterance_ms` = 420.
 - `A52Tests` är oförändrade och ska fortfarande hålla.
-- CI: se STATUS. **Inte provat på telefon.**
+- CI 43110609458 (8d91f5a): device-bygge och enhetstester gröna. Skärmbilder: körning 43098721442 (`canDo` visar listan). **Inte provat på telefon.**
 
 ## Till Kelly
 - Vad kan Earmind? har nu Översätta, Söka på webben och Socialt och Rizz. Symbolerna är `character.bubble`, `globe` och `person.2.wave.2`. Raderna har listans ordning: Svar på frågor före Förhör.
 - Granska gärna, med scenen `canDo`.
+- Efter skärmbilden (körning 43098721442): Mina svar fick ingen egen plats, eftersom listans text redan säger "i Provläget". Raden säger nu "Inget att ställa in".
