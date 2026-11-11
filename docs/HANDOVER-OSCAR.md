@@ -1,6 +1,6 @@
 # Överlämning: Oscar (QA), 2026-11-11 14:17 (molnsession, 11 punkter, inte komprimerad)
 
-Klart i dag: O38 (K38 godkänd), O16 del 2, O39 (K37 godkänd), O13 del 2 (BUGG i K17 `planDays`), O34. Rapporter i `reports/qa/2026-11-11-*`.
+Klart i dag: O38 (K38), O16 del 2, O39 (K37), O13 del 2 (K17), O34, O40 (K39), O41 (K36, BLOCKER rättad i K40), O42 (omtest), O44 (K36 godkänd), O43 (enordssvar, BUGG falskt Rätt i sorl). Rapporter i `reports/qa/2026-11-11-*`.
 
 ## Det som inte står i rapporterna
 - **Molnsessionen saknar det git-ignorerade ljudet:** `scripts/qa/audio-cache/` (O13d3, O12-klipp) finns bara på Arons Windows-dator. O13 del 3 måste köras där (`O6_LIB=<pylib> python -I scripts/qa/o13_del3_terms.py --realtime`) eller med Arons ja till att generera 501 tecken igen. Generera inget utan det (D120).
@@ -19,7 +19,7 @@ Klart i dag: O38 (K38 godkänd), O16 del 2, O39 (K37 godkänd), O13 del 2 (BUGG 
 - **O43d omtest** när Kevin eller Angela hanterar listuppläsningen: `O6_LIB=… python -I scripts/qa/o43d_false_right.py --cond silence,wrong`. Krav: 0/20 falskt Rätt.
 - **Aron:** lägg in `SUPABASE_SERVICE_ROLE_KEY` (K38 godkänd). Första veckan med kandidater: testa hela kedjan (tabell → Godkänn → approve → commit).
 - **Aron-beslut (O16/O34):** "ljud sparas inte" i appen och i självsvaren är inte sant för ElevenLabs Scribe utan enterprise-nivå.
-- **Kevin:** BUGG K17 `planDays` (räknaren nollställs aldrig, 14-dagarsgränsen). Självsvaren svarar på fel fråga och länkvägen ger 0/10 (O34). Sedan omtest: `node --experimental-strip-types scripts/qa/o13_del2_k17_offline.mjs` och `o15.py --bank scripts/qa/o15c_bank.py --only g13,g14`.
+- **Rättat och omtestat (O42/O44):** K17 `planDays` 19/19, självsvaren 11/11, länkar 9/10, K36 29/29. Kör om `o13_del2_k17_offline.mjs`, `o41_k36_live.py` och `o34b_k19_links.py` efter nästa ändring i de delarna.
 - **K37:** mina 41 fall i `scripts/qa/o39_k37_cases.json` är en hållout. Om Kevin ändrar matchningen: kör `o39_k37_live.py` igen (cirka 0,30 USD) och skriv nya fall om han har lagt in mina i sina tester.
 - **A53 finns nu (Angela d846660):** omtest av appens del (bara valt prov skickas, avstängningen) passar Toby.
 - **Concern till Architect (O39):** Mina svar läser förberedda svar i örat när läraren frågar.
