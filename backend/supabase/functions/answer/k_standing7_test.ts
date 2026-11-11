@@ -30,3 +30,10 @@ Deno.test("Standing 7: '(M)' after a name is the party; 'Also,' is dropped; othe
   assertEquals(beforeNumbers("Publicerad idag. Also, SMHI har utfärdat gula varningar."), "Publicerad idag. SMHI har utfärdat gula varningar.");
   assertEquals(beforeNumbers("Storleken (M) på tröjan"), "Storleken (M) på tröjan");
 });
+
+Deno.test("Standing 10 (live eval klocka-01): a yes/no follow-up that quotes the last answer keeps its words", async () => {
+  const { stripEcho } = await import("./echo.ts");
+  const a = "Klockan tjugo och tjugo är tjugo över åtta på kvällen.";
+  assertEquals(stripEcho("är det samma som tjugo över åtta på kvällen", a).quoted, true);
+  assertEquals(stripEcho("tjugo över åtta på kvällen", a).rest, "", "a bare echo is still removed");
+});
