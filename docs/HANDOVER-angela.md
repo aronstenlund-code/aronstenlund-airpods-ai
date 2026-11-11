@@ -44,7 +44,7 @@ och `reports/2026-11-11-*-angela-a6*.md`.
   - Inspelningen skrivs ut med `SleepRecorder.transcribe`, alltså på telefonen och inte med Scribe (D133).
   - Den är inte provad på 10 minuters svenska.
 
-## Nästa session börjar här: Tobys T14 (`reports/apptest/2026-11-11-1725-toby-t14-omtest-a67-a68.md`)
+## Läget kl. 20.30: A71–A74 klara. T15 visade orsaken till den väntande frågan (A72 del 2 rättad, Toby kör T15b). Äldre: Tobys T14 (`reports/apptest/2026-11-11-1725-toby-t14-omtest-a67-a68.md`)
 - **Rättat:** "ja", "mer" och "gärna" ger det långa svaret på 1,6–1,8 s (A65/A67). Det var 7–16 s.
 - **Kvar (viktigast):** en fråga som väntar i `activation` skickas ibland först när Scribe stänger sessionen, efter
   13–29 s. Det gäller hela frågor (q4) och halva (c1, c3).
