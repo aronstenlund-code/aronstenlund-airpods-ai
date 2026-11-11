@@ -86,6 +86,8 @@ använder `raised` i stället. **Ikoner:** SF Symbols i vikt regular, 20–22 pt
 - Citat och exempel på svenska skrivs med ”…” (samma tecken på båda sidor), inte med raka "…".
 
 ## 5. Logga och appikon: symbol 4, bock med ljudvågor (Aron 2026-11-10 21:18, Ke24)
+**D129/D139 (2026-11-11 kväll): appikonen är nu D glasklotet, exakt ChatGPT-bilden** tills röstningen (sex kandidater A–F) avgjort. Filer: `logo/rostning/exakt/` (README där, Ke40). Symbol 4 nedan är ersatt.
+
 **D127 (2026-11-11): användarna röstar** mellan A Klotet, B Den gröna formen och C Den orange ringen. Rena vektorer med samma ram och ljus: `logo/rostning/vektor/` (README där, källa `logo/_src/rostning.py`). Symbol 4 nedan gäller tills röstningen avgjort; vinnaren ersätter detta avsnitt.
 
 Aron valde nummer 4 bland sina sex ChatGPT-förslag (`logo/chatgpt-forslag-2026-11-10.jpg`). A/B/C från Ke12 är avvisade.

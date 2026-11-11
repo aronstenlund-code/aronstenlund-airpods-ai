@@ -1,0 +1,6 @@
+A A-klotet: källa 280×272, ruta 268 px, hörnradie 71 px (26.4%), utanför vitt, indrag 7 px per sida (2.6%), uppskalning ×4.03
+B B-grona-formen: källa 265×270, ruta 260 px, hörnradie 68 px (26.3%), utanför vitt, indrag 7 px per sida (2.7%), uppskalning ×4.16
+C C-orange-ringen: källa 275×270, ruta 269 px, hörnradie 73 px (27.3%), utanför vitt, indrag 8 px per sida (3.0%), uppskalning ×4.05
+D D-glasklotet: källa 410×410, ruta 386 px, hörnradie 102 px (26.5%), utanför svart, indrag 10 px per sida (2.6%), uppskalning ×2.80
+E E-glasringen: källa 410×405, ruta 397 px, hörnradie 109 px (27.5%), utanför svart, indrag 11 px per sida (2.8%), uppskalning ×2.73
+F F-glasvagen: källa 415×400, ruta 391 px, hörnradie 112 px (28.6%), utanför svart, indrag 12 px per sida (3.1%), uppskalning ×2.79

@@ -218,7 +218,141 @@ def c_motif(mode):
     return defs, shape, motif
 
 
-MOTIFS = {"A": a_motif, "B": b_motif, "C": c_motif}
+# --- D, E, F (Ke40, D129/D130): glasversionerna ----------------------------------------------------
+# Samma ram som A–C. Glas = genomskinliga ytor (opacitet), ljusa kanter (tunna vita streck) och samma ljusfält.
+# I mörkt läggs ytorna med mix-blend-mode screen (de lyser där de överlappar), i ljust med normal blandning.
+GLOW_OPACITY["svart"] = GLOW_OPACITY["mork"]
+
+PALETTE["D"] = {
+    "namn": "glasklotet",
+    "mork": dict(bg=("#1E1024", "#050307"), spot="#4A2456", bars_l=("#FFB070", "#E8784C"),
+                 bars_r=("#F08AD8", "#A764EC"), glow="#D46FC8"),
+    "ljus": dict(bg=("#FBF4FA", "#EFE3F3"), spot="#FFFFFF", bars_l=("#F59C5C", "#DE6A42"),
+                 bars_r=("#DE74C9", "#9A55E2"), glow="#D46FC8"),
+    # iOS mörkt läge: motivet på nästan svart, utan färgad bakgrund
+    "svart": dict(bg=("#0E0B10", "#000000"), spot="#2A1830", bars_l=("#FFB070", "#E8784C"),
+                  bars_r=("#F08AD8", "#A764EC"), glow="#D46FC8"),
+}
+PALETTE["E"] = {
+    "namn": "glasringen",
+    "mork": dict(bg=("#2A1A12", "#0A0605"), spot="#6A3A1E", bars_l=("#FFAE5C", "#E8702E"),
+                 bars_r=("#FFAE5C", "#E8702E"), glow="#FF8A3D"),
+    "ljus": dict(bg=("#FCF5EE", "#F3E5D8"), spot="#FFFFFF", bars_l=("#F5953F", "#D95A1E"),
+                 bars_r=("#F5953F", "#D95A1E"), glow="#FF8A3D"),
+}
+PALETTE["F"] = {
+    "namn": "glasvagen",
+    "mork": dict(bg=("#0F2430", "#03080D"), spot="#1E4F66", bars_l=("#000", "#000"), bars_r=("#000", "#000"),
+                 glow="#4FC3D9"),
+    "ljus": dict(bg=("#F0F8FB", "#DFEEF4"), spot="#FFFFFF", bars_l=("#000", "#000"), bars_r=("#000", "#000"),
+                 glow="#4FC3D9"),
+}
+NO_BARS = {"F"}   # glasvågen har inga staplar i förlagan; vågen fyller samma bredd som staplarna (810 px)
+
+def _blend(mode):
+    return "screen" if mode in ("mork", "svart") else "normal"
+
+def _hl(d, w=3, op=0.38):
+    return f'<path d="{d}" fill="none" stroke="#FFFFFF" stroke-opacity="{op}" stroke-width="{w}"/>'
+
+def _circle_d(cx, cy, r):
+    return f"M{cx - r:.1f} {cy:.1f}a{r} {r} 0 1 0 {2 * r} 0a{r} {r} 0 1 0 {-2 * r} 0Z"
+
+def d_motif(mode):
+    """Glasklotet: en orange halvmåne uppe till vänster och en rosa–lila nere till höger runt en mörk, ihålig
+    mitt, ett brett S-band i glas genom mitten och en genomskinlig bubbla vid högerkanten (som förlagan)."""
+    bl = _blend(mode)
+    defs = ('<linearGradient id="dTop" x1="0.1" y1="0" x2="0.9" y2="1"><stop offset="0" stop-color="#FFC888"/>'
+            '<stop offset="0.5" stop-color="#F7844C"/><stop offset="1" stop-color="#E2589A"/></linearGradient>'
+            '<linearGradient id="dBot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EE4E98"/>'
+            '<stop offset="0.55" stop-color="#A444D8"/><stop offset="1" stop-color="#6232C8"/></linearGradient>'
+            '<linearGradient id="dBand" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF8A6A"/>'
+            '<stop offset="0.45" stop-color="#F0559E"/><stop offset="1" stop-color="#A060EE"/></linearGradient>'
+            f'<clipPath id="dClip"><circle cx="{CX}" cy="{CY}" r="{R}"/></clipPath>')
+    top = _circle_d(CX, CY, R) + _circle_d(CX + 58, CY + 70, R - 22)
+    bot = _circle_d(CX, CY, R) + _circle_d(CX - 50, CY - 62, R - 22)
+    up, lo = [], []
+    n = 90
+    for k in range(n + 1):
+        t = k / n
+        x = CX - R * 0.96 + t * (R * 2.12)
+        c = CY + 48 + 82 * math.sin(2 * math.pi * (t - 0.15))
+        th = 150 * math.sin(math.pi * t) ** 0.6 + 8
+        up.append((x, c - th / 2)); lo.append((x, c + th / 2))
+    band = "M" + "L".join(f"{x:.1f} {y:.1f}" for x, y in up + lo[::-1]) + "Z"
+    band_up = "M" + "L".join(f"{x:.1f} {y:.1f}" for x, y in up)
+    band_lo = "M" + "L".join(f"{x:.1f} {y:.1f}" for x, y in lo)
+    bubble = _circle_d(CX + R - 18, CY - 4, 92)
+    motif = (f'<path d="{bubble}" fill="#B46CF0" fill-opacity="0.28" style="mix-blend-mode:{bl}"/>'
+             f'{_hl(bubble, 2.5, 0.28)}'
+             f'<circle cx="{CX}" cy="{CY}" r="{R}" fill="{'#0B0610' if bl == 'screen' else '#3A2246'}" fill-opacity="0.88"/>'
+             f'<g clip-path="url(#dClip)"><path d="{bot}" fill="url(#dBot)" fill-rule="evenodd" opacity="0.95"/>'
+             f'<path d="{top}" fill="url(#dTop)" fill-rule="evenodd" opacity="0.97"/></g>'
+             f'<path d="{band}" fill="url(#dBand)" fill-opacity="0.78" style="mix-blend-mode:{bl}"/>'
+             f'{_hl(band_up, 3, 0.5)}{_hl(band_lo, 2, 0.25)}'
+             f'<g clip-path="url(#dClip)"><path d="{top}" fill="url(#light)" fill-rule="evenodd"/>'
+             f'<path d="{bot}" fill="url(#light)" fill-rule="evenodd"/></g>'
+             f'{_hl(_circle_d(CX, CY, R - 1.5), 2.5, 0.3)}')
+    shape = f'<circle cx="{CX}" cy="{CY}" r="{R}"/>'
+    return defs, shape, motif
+
+def e_motif(mode):
+    """Glasringen: en tjock ring i glas med ljusa kanter innanför och utanför, varmast uppe till vänster."""
+    w = 56
+    r = R - w / 2
+    dark = mode in ("mork", "svart")
+    defs = (f'<radialGradient id="eRing" gradientUnits="userSpaceOnUse" cx="{CX}" cy="{CY}" r="{R}">'
+            f'<stop offset="{(R - w) / R:.3f}" stop-color="#FFC47A"/>'
+            f'<stop offset="{(R - w * 0.78) / R:.3f}" stop-color="#E06A22" stop-opacity="0.8"/>'
+            f'<stop offset="{(R - w * 0.5) / R:.3f}" stop-color="#7A300C" stop-opacity="0.6"/>'
+            f'<stop offset="{(R - w * 0.2) / R:.3f}" stop-color="#D86A24" stop-opacity="0.85"/>'
+            f'<stop offset="1" stop-color="#FFC27A"/></radialGradient>'
+            '<linearGradient id="eTint" x1="0.1" y1="0.1" x2="0.9" y2="0.95"><stop offset="0" stop-color="#FFE0A8"/>'
+            '<stop offset="1" stop-color="#E0561E"/></linearGradient>')
+    inner = f'<circle cx="{CX}" cy="{CY}" r="{R - w}" fill="#070404"/>' if dark else ""
+    ring = (f'<circle cx="{CX}" cy="{CY}" r="{r}" fill="none" stroke="url(#eRing)" stroke-width="{w}"/>'
+            f'<circle cx="{CX}" cy="{CY}" r="{r}" fill="none" stroke="url(#eTint)" stroke-width="{w}" '
+            f'stroke-opacity="0.22" style="mix-blend-mode:{_blend(mode)}"/>')
+    edges = _hl(_circle_d(CX, CY, R - 1.5), 2.5, 0.45) + _hl(_circle_d(CX, CY, R - w + 1.5), 2.5, 0.35)
+    light = f'<circle cx="{CX}" cy="{CY}" r="{r}" fill="none" stroke="url(#light)" stroke-width="{w}"/>'
+    shape = f'<circle cx="{CX}" cy="{CY}" r="{r}" fill="none" stroke-width="{w * 1.4}"/>'
+    return defs, shape, inner + ring + edges + light
+
+def f_motif(mode):
+    """Glasvågen: tre breda, genomskinliga vågband som fyller ikonen som i förlagan (900 px), högsta toppen till
+    höger om mitten. Förlagan saknar staplar."""
+    bl = _blend(mode)
+    x0, x1 = CX - 450, CX + 450
+    defs = ('<linearGradient id="fW1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3DBBA6"/>'
+            '<stop offset="0.55" stop-color="#8AD2F4"/><stop offset="1" stop-color="#4A7EE2"/></linearGradient>'
+            '<linearGradient id="fW2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2FA79C"/>'
+            '<stop offset="1" stop-color="#3C6CD2"/></linearGradient>'
+            f'<linearGradient id="fLight" gradientUnits="userSpaceOnUse" x1="{CX}" y1="{CY - 200}" x2="{CX}" y2="{CY + 260}">'
+            '<stop offset="0" stop-color="#FFFFFF" stop-opacity="0.35"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>')
+    waves = [  # (topp-x, topphöjd, bas-y, tjocklek i toppen, tjocklek annars, gradient, opacitet)
+        (CX - 330, 150, CY + 200, 130, 80, "fW2", 0.55),
+        (CX + 250, 140, CY + 170, 110, 80, "fW2", 0.45),
+        (CX + 60, 330, CY + 190, 160, 90, "fW1", 0.80),
+    ]
+    out = []
+    for px, hgt, base, tp, te, grad, op in waves:
+        up, lo = [], []
+        n = 100
+        for k in range(n + 1):
+            x = x0 + (x1 - x0) * k / n
+            g = math.exp(-((x - px) / 175) ** 2)
+            y = base - hgt * g + 22 * math.sin((x - x0) / 140)
+            t = te + (tp - te) * g
+            up.append((x, y - t / 2)); lo.append((x, y + t / 2))
+        d = "M" + "L".join(f"{x:.1f} {y:.1f}" for x, y in up + lo[::-1]) + "Z"
+        hl = "M" + "L".join(f"{x:.1f} {y:.1f}" for x, y in up)
+        out.append(f'<path d="{d}" fill="url(#{grad})" fill-opacity="{op}" style="mix-blend-mode:{bl}"/>'
+                   f'<path d="{d}" fill="url(#fLight)"/>{_hl(hl, 3, 0.55 * op + 0.1)}')
+    shape = (f'<path d="M{x0} {CY + 150}C{CX - 150} {CY + 160} {CX - 60} {CY - 160} {CX + 60} {CY - 150}'
+             f'C{CX + 160} {CY - 140} {CX + 260} {CY + 150} {x1} {CY + 150}" fill="none" stroke-width="90"/>')
+    return defs, shape, "".join(out)
+
+MOTIFS = {"A": a_motif, "B": b_motif, "C": c_motif, "D": d_motif, "E": e_motif, "F": f_motif}
 
 
 def icon(key, mode):
@@ -226,11 +360,19 @@ def icon(key, mode):
     mdefs, shape, motif = MOTIFS[key](mode)
     return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">'
             f'<defs>{frame_defs(p)}{mdefs}</defs>'
-            f'{frame_back()}{glow(shape, mode, p["glow"])}{bars()}{motif}</svg>\n')
+            f'{frame_back()}{glow(shape, mode, p["glow"])}{"" if key in NO_BARS else bars()}{motif}</svg>\n')
 
 
 for key, spec in PALETTE.items():
-    for mode in ("mork", "ljus"):
+    for mode in [m for m in ("mork", "ljus", "svart") if m in spec]:
         name = f'{key}-{spec["namn"]}-{mode}.svg'
         (OUT / name).write_text(icon(key, mode), encoding="utf-8")
         print("skrev", OUT / name)
+
+# Symbolen för appens rubrik (D129): glasklotet förenklat till en enfärgad ring med ett S-band, currentColor.
+# Ruta 100 × 100. Läsbar i 20–24 pt; ska följa textstorleken (SYSTEM.md avsnitt 10.6).
+(OUT / "D-glasklotet-symbol.svg").write_text(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" '
+    'stroke-linecap="round"><circle cx="50" cy="50" r="39" stroke-width="9"/>'
+    '<path d="M14 58C30 30 46 34 54 52S76 72 86 42" stroke-width="11"/></g></svg>\n', encoding="utf-8")
+print("skrev symbol")
