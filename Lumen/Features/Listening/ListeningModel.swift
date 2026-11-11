@@ -1298,12 +1298,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             // A8: Lumen is speaking: the question waits for the end of the answer, never dropped. A68 (Toby T13
             // finding 2): it looks again every 0.5 s instead of trusting that something asks it later; a held half
             // question waited 21 s for Scribe's session to end after the answer fetched ahead for it was dropped.
+            var waited = 0
             while true {
                 guard let model = self, !Task.isCancelled else { return }
                 if !model.lumenIsBusyAnswering {
                     if !model.activation.fireDue(now: Date()) { model.scheduleQuestionTimer() } // the cooldown moved it
                     return
                 }
+                waited += 1
+                if waited == 6 { model.controller.log("A question waits 3 s: \(model.busyReason) (A70)") } // Toby T14
                 try? await Task.sleep(for: .milliseconds(500))
             }
         }
@@ -2198,6 +2201,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return Date().timeIntervalSince(spoke) < Self.streamQuiet
         }
         return false
+    }
+
+    /// A70 (Toby T14): why a waiting question is held, for the log.
+    private var busyReason: String {
+        var parts: [String] = []
+        if controller.playback.isSpeaking { parts.append("playback speaking") }
+        if speaker.hasPendingSpeech { parts.append("speech pending") }
+        if case .answering = answers.status {
+            let spoke = lastSpokeTextAt.map { String(format: "%.1f s ago", Date().timeIntervalSince($0)) } ?? "never"
+            let asked = answerRequestedAt.map { String(format: "%.1f s ago", Date().timeIntervalSince($0)) } ?? "never"
+            parts.append("answer streaming (spoke \(spoke), call \(asked), ahead \(ahead != nil))")
+        }
+        return parts.isEmpty ? "nothing" : parts.joined(separator: ", ")
     }
 
     /// A68: when the current `/answer` call was sent.

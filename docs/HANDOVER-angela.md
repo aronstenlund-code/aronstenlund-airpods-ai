@@ -53,7 +53,7 @@ och `reports/2026-11-11-*-angela-a6*.md`.
   - Eller så har `answerRequestedAt` satts av svaret i förväg utan att något sagts.
   - Då väntar frågetimern i all oändlighet, och frågan går först när en annan väg (Scribes sista final) anropar
     `askWaitingQuestionIfIdle`.
-  - Nästa steg: logga en gång per väntan varför den är upptagen, och låt Toby köra retest. Rätta sedan villkoret, till
+  - Nästa steg: A70 loggar "A question waits 3 s: …" med orsaken. Låt Toby köra retest och läs raden. Rätta sedan villkoret, till
     exempel med en övre gräns på 5 s.
 - **Kvar:** mikrofonen är stängd 12–15 s efter svar på två meningar, alltså 4–6 s längre än talet (T14 fynd 1). Fynd 4,
   c2 med fel ämne, går till Kevin.
