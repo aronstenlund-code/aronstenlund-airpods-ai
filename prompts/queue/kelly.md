@@ -138,3 +138,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-11 20:44 → reports/2026-11-11-2044-kelly-ke45-testlage.md **Ke45 – Stående uppgift (PLAN 2c): design för testläget (D140, A76)** (effort: low, Kelly själv). Bricka på Lyssnar ("Testläge · ljud skickas", inte röd), raden i Inställningar, bekräftelse när det slås på, och vad ljudtexten (D138) säger när testläget är på. Underlag till Angela innan A76 byggs.
 
 - [x] klar 2026-11-11 21:16 → reports/2026-11-11-2116-kelly-ke46-granskning-a76.md **Ke46 – Stående uppgift (PLAN 2c): granska A76 (testläget) mot Ke45** (effort: low, Kelly själv). Godkänd med T1–T4; T2 (bekräftelseblad som nämner andras röster) hög.
+
+- [x] klar 2026-11-11 21:48 → reports/2026-11-11-2148-kelly-ke47-vad-kan-capabilities.md **Ke47 – Stående uppgift (PLAN 2b): sajtens Vad kan Earmind? efter Shared/capabilities.json (K44)** (effort: low, Kelly själv). Samma namn och fraser som listan; Översätta och Söka på webben läggs till; "Kommer snart" kvar på det som inte är provat på telefon.
