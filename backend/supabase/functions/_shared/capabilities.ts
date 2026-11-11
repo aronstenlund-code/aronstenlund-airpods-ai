@@ -47,6 +47,8 @@ export function capabilityAsked(text: string): Capability | null {
     const m = re.exec(rest);
     if (!m) continue;
     if (c.tool && c.tool !== "switch_mode") return c;
+    // "kan du ge mig ett träningspass", "kan du göra ett förhör": a request the model carries out
+    if (/(?<![\p{L}])(?:ge mig|gör|göra|skriv|skriva|skapa|hitta på|föreslå|ta fram)(?![\p{L}])/iu.test(rest)) return null;
     const after = rest.slice(m.index + m[0].length).replace(/^\p{L}*/u, "").replace(GENERIC, " ").replace(/[,]/g, " ").trim();
     return after ? null : c;
   }
