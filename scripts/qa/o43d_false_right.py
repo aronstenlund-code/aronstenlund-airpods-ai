@@ -65,7 +65,8 @@ def main():
             res = M.answer(tok, exam, q, heard, None if a.no_a62 else qk) if heard else {"status": None, "said": "", "note": "nothing heard"}
             n += 1
             v = M.verdict(res.get("said", ""))
-            false_right = v == "right" or res.get("said", "").lower().startswith(right.lower() + " är rätt") or "stämmer" in res.get("said", "")[:40].lower()
+            rl = res.get("said", "").lower()
+            false_right = (v == "right" or rl.startswith(right.lower() + " är rätt") or "stämmer" in rl[:40]) and not rl.startswith("inte riktigt")
             rows.append({"id": cid, "cond": cond, "noise": a.noise, "right": right, "student_said": said, "heard": heard, "reply": res.get("said", ""),
                          "verdict": v, "false_right": false_right, "quiz_sound": ((res.get("done") or {}).get("quiz_sound")), "keyterms_first": kt[:5]})
             print(cid, cond, "FALSE RIGHT" if false_right else "ok", "| said:", said, "| heard:", heard[:60], "| reply:", res.get("said", "")[:70].replace("\n", " "), flush=True)
