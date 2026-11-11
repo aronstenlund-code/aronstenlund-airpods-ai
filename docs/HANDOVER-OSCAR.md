@@ -1,4 +1,4 @@
-# Överlämning: Oscar (QA), 2026-11-11 10:50 (molnsession, 5 punkter, inte komprimerad)
+# Överlämning: Oscar (QA), 2026-11-11 14:17 (molnsession, 11 punkter, inte komprimerad)
 
 Klart i dag: O38 (K38 godkänd), O16 del 2, O39 (K37 godkänd), O13 del 2 (BUGG i K17 `planDays`), O34. Rapporter i `reports/qa/2026-11-11-*`.
 
@@ -12,7 +12,11 @@ Klart i dag: O38 (K38 godkänd), O16 del 2, O39 (K37 godkänd), O13 del 2 (BUGG 
 - **Loggrader kapas vid 110 tecken** i `o15.py`. "Svaret är tjugo" var "tjugofem". Läs svaren i JSON-filen innan du skriver att något är fel.
 - **Scribe-strömmar stängs ibland med 1006** efter att transkriptet kommit. Det är brus, inget avvisande. Bara `invalid_request` och 1008 betyder att regeln brutits.
 
+- **O43-ljudet** (367 ElevenLabs-tecken, `scripts/qa/audio-cache/o43/`, plus `babble16k.npy`) finns bara i molnsessionen från 11 november. En ny session måste generera det igen (`o43_short_answers.py` gör det själv första gången) eller köra där cachen finns. Kör O43d med `nohup … &` och vänta i omgångar: 40 strömmar tar över 10 min.
+- **Scribe läser upp keyterms i sorl** (O43). Räkna listuppläsningar (3 eller fler keyterms med kommatecken) separat, annars blåser de upp "hörde rätt".
+
 ## Öppna trådar
+- **O43d omtest** när Kevin eller Angela hanterar listuppläsningen: `O6_LIB=… python -I scripts/qa/o43d_false_right.py --cond silence,wrong`. Krav: 0/20 falskt Rätt.
 - **Aron:** lägg in `SUPABASE_SERVICE_ROLE_KEY` (K38 godkänd). Första veckan med kandidater: testa hela kedjan (tabell → Godkänn → approve → commit).
 - **Aron-beslut (O16/O34):** "ljud sparas inte" i appen och i självsvaren är inte sant för ElevenLabs Scribe utan enterprise-nivå.
 - **Kevin:** BUGG K17 `planDays` (räknaren nollställs aldrig, 14-dagarsgränsen). Självsvaren svarar på fel fråga och länkvägen ger 0/10 (O34). Sedan omtest: `node --experimental-strip-types scripts/qa/o13_del2_k17_offline.mjs` och `o15.py --bank scripts/qa/o15c_bank.py --only g13,g14`.
