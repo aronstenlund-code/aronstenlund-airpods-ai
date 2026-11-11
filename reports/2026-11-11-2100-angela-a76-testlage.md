@@ -42,7 +42,7 @@
   - gamla bitar raderas, och en skickad bit försvinner;
   - en minut blir K43:s tur (text, beslut, `meta` under 4000 tecken med de nyaste loggraderna kvar);
   - ett nekat konto sparar inget.
-- CI: se STATUS. Det förra bygget, för A75, fick ingen Mac-runner ("not acquired"). Den här pushen bygger A75 och A76 tillsammans.
+- CI 43093258037 (e437b5b): device-bygge, enhetstester och arkiv gröna. Det förra bygget, för A75, fick ingen Mac-runner ("not acquired"). Den här pushen bygger A75 och A76 tillsammans.
 - **Inte provat på telefon**:
   - att AAC-filen spelas rätt på Arons sida;
   - att ljudflödet räcker till både Scribe och skrivaren;
