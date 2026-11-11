@@ -129,6 +129,33 @@ def sanitize(terms):
     return out
 
 
+# Oscar's own plausible wrong answers per case (written 2026-11-11 12:55, not taken from backend/testdata/k40-quiz-sound.json):
+# the quiz_key the model's [[SVAR]] line would give, sent back as context.quiz_key with --quiz-key (A62) and put in the
+# keyterms with --a62.
+ALTS = {
+    "g01": ["Kongo", "Niger", "Zambezi", "Eufrat"], "g02": ["Loire", "Rhône", "Garonne", "Themsen"],
+    "g03": ["Seine", "Rhône", "Garonne", "Rhen"], "g04": ["Donau", "Elbe", "Main", "Rhône"],
+    "g05": ["Rhen", "Elbe", "Volga", "Oder"], "g06": ["Donau", "Dnepr", "Ural", "Rhen"],
+    "g07": ["Orinoco", "Paraná", "Mississippi", "Nilen"], "g08": ["Missouri", "Ohio", "Colorado", "Hudson"],
+    "g09": ["Seine", "Severn", "Mersey", "Rhen"], "g10": ["Indus", "Brahmaputra", "Mekong", "Nilen"],
+    "g11": ["Onega", "Vänern", "Peipus", "Saimen"], "g12": ["Tanganyikasjön", "Malawisjön", "Tchadsjön", "Turkanasjön"],
+    "g13": ["Nice", "Toulon", "Bordeaux", "Lyon"], "g14": ["Vättern", "Mälaren", "Hjälmaren", "Storsjön"],
+    "g15": ["Tanganyikasjön", "Kaspiska havet", "Ladoga", "Övre sjön"], "g16": ["Rom", "Genua", "Venedig", "Palermo"],
+    "g17": ["Porto", "Madrid", "Sevilla", "Faro"], "g18": ["Övre sjön", "Bajkalsjön", "Aralsjön", "Victoriasjön"],
+    "g19": ["Malmö", "Stockholm", "Helsingborg", "Gävle"], "g20": ["Szczecin", "Gdynia", "Warszawa", "Kaliningrad"],
+    "b01": ["Ribosomen", "Cellkärnan", "Kloroplasten", "Golgiapparaten"], "b02": ["Cellandning", "Fotolys", "Osmos", "Jäsning"],
+    "b03": ["Mitokondrien", "Cellkärnan", "Vakuolen", "Cellväggen"], "b04": ["Mitokondrien", "Cellkärnan", "Golgiapparaten", "Lysosomen"],
+    "b05": ["Cytoplasman", "Mitokondrien", "Ribosomen", "Cellmembranet"], "b06": ["Koldioxid", "Kväve", "Väte", "Vattenånga"],
+    "b07": ["Glukagon", "Adrenalin", "Kortisol", "Tyroxin"], "b08": ["Mitos", "Delning", "Knoppning", "Klyvning"],
+    "b09": ["Myoglobin", "Insulin", "Plasma", "Järn"], "b10": ["Mendel", "Lamarck", "Linné", "Wallace"],
+    "h01": ["Gustav II Adolf", "Karl XII", "Kristian II", "Erik XIV"], "h02": ["1776", "1799", "1815", "1689"],
+    "h03": ["Ludvig XVI", "Robespierre", "Karl den store", "Ludvig XIV"], "h04": ["Breitenfeld", "Narva", "Poltava", "Lund"],
+    "h05": ["Egypten", "Grekland", "Indusdalen", "Persien"], "h06": ["Calvin", "Zwingli", "Olaus Petri", "Erasmus"],
+    "h07": ["1918", "1939", "1944", "1946"], "h08": ["Stalin", "Trotskij", "Tsar Nikolaj", "Kerenskij"],
+    "h09": ["Kalmarkriget", "Hansan", "Nordiska rådet", "Unionen"], "h10": ["Nebukadnessar", "Sargon", "Gilgamesh", "Kyros"],
+}
+
+
 def exam_terms(tok, exam):
     e = EXAMS[exam]
     o = D.call("POST", "/functions/v1/study-profile", {"text": e["setup"], "profile": {"subject": e["subject"], "grade": "y9"}, "language": "sv"}, tok)
@@ -198,9 +225,11 @@ def sse(text):
     return ev
 
 
-def answer(tok, exam, question, heard):
+def answer(tok, exam, question, heard, quiz_key=None):
     body = {"fragment": heard, "mode": "tutor", "language": "sv", "persona": "tutor", "persona_setup": EXAMS[exam]["setup"],
             "context": {"recent_qa": [{"q": "Förhör mig", "a": question}], "last_answer_age_sec": 6}}
+    if quiz_key:
+        body["context"]["quiz_key"] = quiz_key
     req = urllib.request.Request(D.URL + "/functions/v1/answer", data=json.dumps(body).encode(), method="POST",
                                  headers={"apikey": D.KEY, "content-type": "application/json", "authorization": "Bearer " + tok})
     t0 = time.time()
@@ -234,6 +263,7 @@ def main():
     ap.add_argument("--cond", default="quiet,babble")
     ap.add_argument("--snr", type=float, default=10.0)
     ap.add_argument("--a62", action="store_true", help="put the right answer (+ K40 alternatives) first in the keyterms")
+    ap.add_argument("--quiz-key", action="store_true", help="send context.quiz_key {answer, alternatives} back like the app after A62")
     ap.add_argument("--cap", type=float, default=0.60)
     a = ap.parse_args()
     stamp = dt.datetime.now().strftime("%Y-%m-%d-%H%M%S")
@@ -260,13 +290,14 @@ def main():
             audio = with_babble(speech, k, a.snr) if cond == "babble" else np.concatenate(
                 [np.zeros(1600, dtype=np.float32), speech, np.zeros(8000, dtype=np.float32)])
             kt = terms[exam]["keyterms"]
+            qk = {"answer": right, "alternatives": ALTS[cid]}
             if a.a62:
-                kt = sanitize([right] + kt)
+                kt = sanitize([right] + ALTS[cid] + kt)
             r = asyncio.run(K.probe(tok, audio, kt))
             secs += len(audio) / 16000
             heard = " ".join(c or "" for c in r["commits"]).strip()
             heard_ok = heard_match(heard, [letters(right)] + acc)
-            res = answer(tok, exam, q, heard) if heard else {"status": None, "said": "", "note": "nothing heard"}
+            res = answer(tok, exam, q, heard, qk if a.quiz_key else None) if heard else {"status": None, "said": "", "note": "nothing heard"}
             n += 1
             u = (res.get("done") or {}).get("usage") or {}
             m = u.get("model") or ""
@@ -279,7 +310,7 @@ def main():
                          "ms": res.get("ms"), "status": res.get("status"),
                          "done_extra": {kk: vv for kk, vv in (res.get("done") or {}).items() if kk not in ("timing", "breakdown", "usage", "summary", "relation", "source", "memory_add")}})
             print(cid, cond, "RIGHT" if v == "right" else v.upper(), "| heard:", heard[:40], "| reply:", res.get("said", "")[:70].replace("\n", " "), flush=True)
-            out.write_text(json.dumps({"stamp": stamp, "tag": a.tag, "a62": a.a62, "snr_db": a.snr, "terms": terms, "rows": rows,
+            out.write_text(json.dumps({"stamp": stamp, "tag": a.tag, "a62": a.a62, "quiz_key": a.quiz_key, "snr_db": a.snr, "terms": terms, "rows": rows,
                                        "elevenlabs_chars_new": chars[0], "scribe_seconds": round(secs, 1), "est_cost_usd": round(cost, 4)},
                                       ensure_ascii=False, indent=1), encoding="utf-8")
             time.sleep(10.5)  # stt-token: 6 per user per minute
