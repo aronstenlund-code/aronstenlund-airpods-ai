@@ -75,8 +75,8 @@ Underlag:
   - `LumenTests/A52Tests.swift` har 4 tester: grupperna, Kommer snart, statusraden och de tre i bladet.
   - `LumenTests/A54Tests.swift` har 5 tester: inte före första svaret, Senare 2 dagar och 3 gånger, aldrig efter röst,
     ordningen sparad, och namnen.
-- **iOS-bygge med alla tester (A50–A54):** CI-körning **42999877208**, **grön**: device-bygget utan varningar och alla enhetstester, också A50Tests, A52Tests, A53Tests och A54Tests.
-- **Simulatorbilder:** körning **SHOT_RUN**, bilder i `reports/2026-11-11-a50-a54-skarmbilder/`.
+- **iOS-bygge med alla tester (A50–A54):** CI-körning 42999877208: device-bygget utan varningar och alla enhetstester gröna, också A50Tests, A52Tests, A53Tests och A54Tests. Körningen avbröts sedan i arkiveringssteget av nästa push, så ipa:n kommer från en senare körning.
+- **Simulatorbilder:** körning 42999887377 (grön), bilder i `reports/2026-11-11-a50-a54-skarmbilder/` (före A55, därför "Lumen").
 - **Ej verifierat på enhet:**
   - behörighetsfrågorna;
   - att röstningen når servern från appen. Oscar har provat K39 med curl (O40, 22/22).
