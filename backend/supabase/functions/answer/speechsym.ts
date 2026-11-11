@@ -406,8 +406,18 @@ export function rulerNumbers(text: string): string {
 }
 
 /** After digits became words. */
+// eval 2026-11-11: the model writes "tre dl vetemjöl", "en halv dl grädde": a kitchen unit after a number WORD
+const WORD_UNIT: Record<string, [string, string]> = {
+  dl: ["deciliter", "deciliter"], cl: ["centiliter", "centiliter"], ml: ["milliliter", "milliliter"], kg: ["kilo", "kilo"],
+  msk: ["matsked", "matskedar"], tsk: ["tesked", "teskedar"], krm: ["kryddmått", "kryddmått"],
+};
+const NUM_WORD = String.raw`(?:en|ett|halv|halva|två|tre|fyra|fem|sex|sju|åtta|nio|tio|elva|tolv|femton|tjugo|trettio|fyrtio|femtio|hundra|\p{L}+hundra|\p{L}+tio|\p{L}+ton)`;
+const WORD_UNIT_RE = new RegExp(String.raw`(?<![\p{L}])(${NUM_WORD})\s+(dl|cl|ml|kg|msk|tsk|krm)(?![\p{L}\d-])`, "giu");
 export function afterNumbers(text: string): string {
-  let s = text;
+  let s = text.replace(WORD_UNIT_RE, (_m, n: string, u: string) => {
+    const [one, many] = WORD_UNIT[u.toLowerCase()];
+    return `${n} ${/^(?:en|ett|halv|halva)$/i.test(n) ? one : many}`;
+  });
   s = s.replace(RULER_WORD, (_m, name: string, w: string) => `${name} den ${CARD_TO_ORD[w] ?? w}`);
   // "mol" is an en-word ("en mol"), a recurring slip in the model's Swedish
   s = s.replace(/(?<![\p{L}])([Ee])tt mol(?![\p{L}])/gu, (_m, e: string) => `${e}n mol`);

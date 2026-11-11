@@ -30,3 +30,9 @@ Deno.test("standing16c: a number that starts a sentence starts with a capital le
   assertEquals(toSpeech("500 gram färs.", "ungefär "), "femhundra gram färs.");
   assert(!/Fjorton/.test(toSpeech("Lektionen börjar kl. 14.30.")));
 });
+
+Deno.test("standing16d: a kitchen unit after a number word is said in full", () => {
+  assertEquals(toSpeech("Blanda tre dl vetemjöl och en halv dl grädde."), "Blanda tre deciliter vetemjöl och en halv deciliter grädde.");
+  assertEquals(toSpeech("tre msk smör, en tsk salt. Sex dl."), "tre matskedar smör, en tesked salt. Sex deciliter.");
+  assertEquals(toSpeech("det står dl på ett dl-mått"), "det står dl på ett dl-mått");
+});
