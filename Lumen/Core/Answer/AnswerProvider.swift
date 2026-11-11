@@ -49,6 +49,8 @@ struct AnswerContext: Equatable, Sendable {
     var connections: [String] = []
     /// A62 (K40): the answer key of the last check question (`done.quiz_key`), sent back with the student's answer.
     var quizKey: QuizKey?
+    /// A74 (K42.5): how long the last utterance was spoken, first heard word to last (nil when unknown).
+    var utteranceSeconds: Double?
 
     struct ConceptStat: Equatable, Sendable, Codable {
         var concept: String
@@ -111,7 +113,8 @@ struct AnswerContext: Equatable, Sendable {
                       twoLevel: twoLevel,
                       connections: Array(connections.prefix(5)),
                       quizKey: quizKey.map { QuizKey(answer: String($0.answer.prefix(120)),
-                                                      alternatives: $0.alternatives.map { Array($0.prefix(6).map { String($0.prefix(120)) }) }) })
+                                                      alternatives: $0.alternatives.map { Array($0.prefix(6).map { String($0.prefix(120)) }) }) },
+                      utteranceSeconds: utteranceSeconds.map { min(max($0, 0), 120) })
     }
 }
 

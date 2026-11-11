@@ -2235,6 +2235,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         return parts.isEmpty ? "nothing" : parts.joined(separator: ", ")
     }
 
+    /// A74: the questions asked in the last minute (Standardläge), so a late copy is not answered again.
+    @ObservationIgnored private var repeatGuard = RepeatGuard()
+
     /// A68: when the current `/answer` call was sent.
     @ObservationIgnored private var answerRequestedAt: Date?
 
@@ -3285,6 +3288,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.turns.dropped(request.query, mode: mode.rawValue, trigger: request.trigger.rawValue, reason: "filler")
             return
         } // D74
+        if request.trigger == .auto {
+            // A74 (Aron's phone test): the same question within 60 s is not answered a second time.
+            if let earlier = repeatGuard.repeats(request.query, at: Date()) {
+                controller.log("Auto: the same question as \"\(earlier)\" within 60 s, not asked again (A74)")
+                controller.turns.dropped(request.query, mode: mode.rawValue, trigger: request.trigger.rawValue, reason: "repeat")
+                return
+            }
+            repeatGuard.record(request.query, at: Date())
+        }
         if persona?.social == nil, deliverAhead(for: request) { return } // D80: ready the moment the pause is over
         discardAhead(reason: "a different turn")
         controller.turns.finish(currentTurnID, outcome: .interrupted, reason: "a newer turn: \(request.query)")
@@ -3321,6 +3333,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         // for "ja" in the Mer? window without a new call.
         context.twoLevel = mode == .standard || mode == .prov
         context.connections = spotifyConnection?.connections ?? [] // A59 (K36)
+        context.utteranceSeconds = transcription.lastUtteranceSeconds // A74 (K42.5)
         if mode == .prov { context.quizKey = lastQuizKey } // A62 (K40): the student's answer is compared by sound
         // A53 (K37, D126): "Mina svar" for the exam, in Provläge only, when "Säg mina svar" is on.
         if mode == .prov, let myAnswers {

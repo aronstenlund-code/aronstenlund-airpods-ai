@@ -131,6 +131,9 @@ final class TranscriptionCoordinator {
     private var usedPartial: (key: String, at: Date)?
     /// A56: when the VAD first held a stale final back, and when the final was last asked for (to log Scribe's reply).
     private var staleDeferredSince: Date?
+    /// A74 (K42.5): how long the last final was spoken (first heard word to the last change), nil without partials.
+    private(set) var lastUtteranceSeconds: Double?
+    private var lastPartialChangeAt: Date?
     /// A63: how many uncommitted runs of words began this session (only the first 30 are logged).
     private var partialsSeen = 0
     private var staleCommitAskedAt: Date?
@@ -404,6 +407,9 @@ final class TranscriptionCoordinator {
     private func deliver(_ incoming: STTResult) {
         guard let result = strippingUsedWords(incoming) else { return }
         if result.isFinal {
+            // A74 (K42.5): first heard word to the last change of the words, for the backend's command check.
+            if let since = partialSince { lastUtteranceSeconds = max(0, (lastPartialChangeAt ?? since).timeIntervalSince(since)) }
+            else { lastUtteranceSeconds = nil }
             if let asked = staleCommitAskedAt, Date().timeIntervalSince(asked) < Self.commitWait + 1 {
                 controller.log("Scribe answered the final asked for, after \(String(format: "%.1f", Date().timeIntervalSince(asked))) s (A56)")
             }
@@ -421,6 +427,7 @@ final class TranscriptionCoordinator {
             }
             if result.text != lastPartialText {
                 lastPartialText = result.text
+                lastPartialChangeAt = Date() // A74
                 staleDeferredSince = nil
                 scheduleStaleCommit()
             }
