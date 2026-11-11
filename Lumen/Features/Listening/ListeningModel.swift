@@ -1592,7 +1592,36 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             say(cached.text)
             return
         }
+        if case .answering = answers.status, conversation.answers.last != nil {
+            // A67 (Toby T13 finding 1): the developed answer is still streaming in the same call (two_level). A new
+            // "utveckla" would queue behind it (7–13 s); it is said the moment `done.more` arrives instead.
+            moreWantedWhileStreaming = Date()
+            controller.log("More: waiting for the developed answer still streaming (A67)")
+            return
+        }
         instruct(MoreOffer.instruction)
+    }
+
+    /// A67: "ja" came while the short answer's call was still streaming its developed part.
+    @ObservationIgnored private var moreWantedWhileStreaming: Date?
+
+    /// A67: the call ended; say its developed answer, or ask for one when it had none.
+    private func sayMoreIfWanted() {
+        guard let wanted = moreWantedWhileStreaming else { return }
+        moreWantedWhileStreaming = nil
+        guard Date().timeIntervalSince(wanted) < 60 else { return }
+        if let cached = developedAnswer, let last = conversation.answers.last, last.id == cached.answerID {
+            developedAnswer = nil
+            controller.log("More: the developed answer said as soon as it came (A67)")
+            let turn = AnswerTurn(question: last.question, answer: cached.text, source: "cloud", isOwnQuestion: last.isOwnQuestion)
+            conversation.append(turn)
+            lastAnswerAt = Date()
+            history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
+                                        answer: turn.answer, summary: nil, mode: mode.rawValue, persona: currentPersona))
+            say(cached.text)
+        } else {
+            instruct(MoreOffer.instruction)
+        }
     }
 
     /// A17: the voice profile says someone else spoke (nil without a profile or when unknown).
@@ -3591,6 +3620,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             } else {
                 developedAnswer = nil
             }
+            sayMoreIfWanted() // A67
             if let tool = done?.serverTool { controller.log("Server tool: \(tool.name) \(tool.status) (A59, K36)") }
             if let saved = done?.savedAnswer {
                 conversation.markSaved(saved.id, text: saved.text, on: turn.id) // A53: "Ditt svar" on Lyssnar

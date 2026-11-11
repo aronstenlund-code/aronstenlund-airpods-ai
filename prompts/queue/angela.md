@@ -229,3 +229,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [x] klar 2026-11-11 14:17 → reports/2026-11-11-1359-angela-a65-ja-direkt.md **A65 – Egen punkt (README 8): "ja" i Mer?-fönstret utan att vänta på Scribes final (Toby T7b/T12)** (effort: low). Ett "ja" som står still 0,7 s som obekräftade ord tas direkt; Scribes final av samma ord används inte en gång till.
 
 - [x] klar 2026-11-11 15:13 → reports/2026-11-11-1451-angela-a66-toby-t8c.md **A66 – Egen punkt (README 8): Tobys T8c fynd 1–2** (effort: low). `reports/apptest/2026-11-11-1455-toby-t8c-forstagang-a60.md`: högst ett blad per gång appen öppnas (första användningen hade tre på 93 s), och Provläge utan prov visar "Har du prov snart?" med "Inte nu" i stället för formuläret med "Avbryt".
+
+- [~] pågår 2026-11-11 15:51 **A67 – Egen punkt (README 8): Tobys T13 fynd 1** (effort: low). `reports/apptest/2026-11-11-1555-toby-t13-omtest-a63-a66.md`: "ja" medan det korta svarets anrop fortfarande strömmar (two_level) köade "utveckla" i 7–13 s; vänta på `done.more` och säg det direkt.
