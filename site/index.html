@@ -26,8 +26,8 @@
 <meta name="color-scheme" content="light dark">
 <link rel="preload" href="fonts/familjen-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://xjczbzfkmbjdebwlccki.supabase.co" crossorigin>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Säg vilket prov du har och sedan ”Lumen, förhör mig”. Earmind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan."}}, {"@type": "Question", "name": "Kan jag bli förhörd inför ett prov?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Earmind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
 <style>
@@ -148,7 +148,7 @@
     letter-spacing: -.02em;
     text-decoration: none;
   }
-  .name svg { width: 32px; height: 20px; color: var(--blue); flex: none; }
+  .name img { width: 32px; height: 32px; border-radius: 7px; flex: none; }
 
   /* ---------- Första skärmen ---------- */
   .hero {
@@ -636,8 +636,8 @@
 <body data-view="idle">
 <header class="top wrap">
   <a class="name" href="#">
-    <!-- Ke24: Arons symbol 4 (bock med ljudvågor), docs/design/logo/lumen-symbol.svg -->
-    <svg viewBox="7 27 89 56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 51 31 68 53 42" stroke-width="12"/><path d="M71.5 42.05A18 18 0 0 1 71.5 67.95" stroke-width="10"/><path d="M81.23 31.98A32 32 0 0 1 81.23 78.02" stroke-width="10"/></svg>
+    <!-- Ke42 (D129/D139): appens ikon, glasklotet, exakt ChatGPT-bilden (docs/design/logo/rostning/exakt/) -->
+    <img src="img/ikon-64.webp" width="32" height="32" alt="">
     <span data-app></span>
   </a>
 </header>
