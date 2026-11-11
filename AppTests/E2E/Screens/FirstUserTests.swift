@@ -126,10 +126,17 @@ final class FirstUserTests: XCTestCase {
         startProv()
         systemAlerts()
         // A60 (Ke35): Provläge asks at most one thing, and only without an exam: "Har du prov snart?" with "Inte nu".
+        // T8c (12:38): without an exam, Starta opened the "Lägg till prov" form (Spara prov / Avbryt) instead. A new
+        // user without an exam closes it: Avbryt. Does Provläge then start?
         if wait(["Inte nu"], 4) != nil {
             screen("provlage-har-du-prov", "A60: Provläge's one question")
             tap(["Inte nu"], "Provläge question → Inte nu")
             pause(1)
+        } else if wait(["Spara prov"], 1) != nil, find(["Avbryt"]) != nil {
+            screen("provlage-lagg-till-prov", "Provläge without an exam: the add-exam form")
+            milestone("Provläge: add-exam form")
+            tap(["Avbryt"], "add-exam form → Avbryt")
+            pause(2)
         }
         if wait(["Hoppa över allt"], 3) != nil {
             screen("provlage-introfragor", "Provläge's own first-start questions")
