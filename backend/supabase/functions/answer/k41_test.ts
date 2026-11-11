@@ -127,3 +127,15 @@ Deno.test("O41: a short English note is dropped in the tool path; Swedish with E
   const out = p.push("A brief reply is needed.\n\nVilken kompis vill du ringa? Spela The Weeknd nu. ") + p.finish();
   assertEquals(out.trim(), "Vilken kompis vill du ringa? Spela The Weeknd nu.");
 });
+
+Deno.test("O42: a stray crisis marker on a short phone command is ignored; a real crisis sign still gets the crisis answer", async () => {
+  const s = setup([{ type: "text", text: "[[KRIS]]" }]);
+  const ev = await events(await s.handler(post({ fragment: "Lumen, spela musik", mode: "auto" })));
+  const said = ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
+  assert(!/tungt|Självmordslinjen|112/.test(said), said);
+  assertEquals(ev.find((e) => e.event === "tool_call")?.data.name, "music_open");
+  const c = setup([{ type: "text", text: "Hej." }]);
+  const ev2 = await events(await c.handler(post({ fragment: "Lumen, ring mamma, jag vill inte leva längre", mode: "auto" })));
+  const said2 = ev2.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
+  assert(/112|Självmordslinjen|90101|nittio/i.test(said2), said2);
+});

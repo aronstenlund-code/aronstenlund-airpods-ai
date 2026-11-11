@@ -215,6 +215,12 @@ export function isAddressedAction(fragment: string, voiceInstruction = false): b
   return ACTION_REQUEST.test(f.replace(wake, ""));
 }
 
+/** O42: a short phone command ("Lumen, spela musik", "ring mamma"): the request and at most 8 words. */
+export function isShortPhoneCommand(fragment: string): boolean {
+  const f = (fragment ?? "").trim().replace(/^(?:(?:hej|okej|ok)\s+)?lumen[,!.]?\s*/iu, "");
+  return ACTION_REQUEST.test(f) && f.split(/\s+/).filter(Boolean).length <= 8;
+}
+
 /** O42: help lines are dialled by code when the model does nothing ("ring Bris" was silent 3/3). Only the numbers
  *  checked against their sources (crisis.ts, B6): 112, Självmordslinjen 90101, Bris 116 111, and 1177. */
 const HELP_LINES: [RegExp, string][] = [

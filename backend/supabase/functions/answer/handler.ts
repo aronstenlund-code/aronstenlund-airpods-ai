@@ -36,7 +36,7 @@ import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./per
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
 import { type CommandTask, commandTask, detectRule, funCommand, socialRequest } from "./commands.ts";
-import { ACTION_REQUEST, confirmText, helpLineCall, isAddressedAction, plainMusicRequest, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
+import { ACTION_REQUEST, confirmText, helpLineCall, isAddressedAction, isShortPhoneCommand, plainMusicRequest, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
 import { applicable, describe, detectCorrection, profileOf } from "../memory/settings.ts";
 
@@ -1839,6 +1839,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               status = "ok";
               emitText((answerChars ? " " : "") + res.say);
               serverToolDone = { name: st.name, status: res.status, ...(res.playing ? { playing: res.playing } : {}) };
+            }
+            // O42 (live 1/6): the model wrote its crisis marker for "Lumen, spela musik". A short, addressed phone command in
+            // which the code layer finds no crisis sign at all (crisis.ts, also the other speakers) is not a crisis; any real
+            // crisis word is caught by the code layer before the model (B1 unchanged)
+            if ((crisisMarked || crisisLate) && phoneTools && fragLevel === null && !otherLevels.some(Boolean) &&
+              isShortPhoneCommand(body.fragment)) {
+              console.warn(JSON.stringify({ event: "crisis_marker_ignored", mode: body.mode, reason: "phone_command" }));
+              crisisMarked = false;
+              crisisLate = false;
             }
             // O42: a help line ("ring Bris") or plain music ("spela musik") the model did not act on: code makes the
             // call (the app runs it; iOS asks before a call, B6 numbers only)
