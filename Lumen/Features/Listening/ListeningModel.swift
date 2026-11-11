@@ -122,6 +122,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A53 (D126, K37): "Mina svar", on the phone only, and the endpoint that helps write them.
     var myAnswers: MyAnswerStore?
     @ObservationIgnored var myAnswersClient: MyAnswersClient?
+    /// A54 (D127, K39): the logo vote.
+    @ObservationIgnored var logoVoteClient: LogoVoteClient?
     /// A53: Mina svar is open (from Start's exam card or Inställningar), for this exam; the editor for one answer.
     var showingMyAnswers: MyAnswersRoute?
     /// A48: the question Lumen asked before a tool changes something ("Ska jag lägga in …?"); shown with Ja / Nej.

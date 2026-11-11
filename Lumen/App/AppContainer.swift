@@ -93,6 +93,7 @@ final class AppContainer {
         // A48 (D122): calendar, reminders, timers, alarms and notes for the agent.
         listening.myAnswers = MyAnswerStore() // A53 (D126)
         listening.myAnswersClient = MyAnswersClient(config: .lumen, auth: auth, http: http)
+        listening.logoVoteClient = LogoVoteClient(config: .lumen, auth: auth, http: http) // A54 (D127)
         listening.phoneTools = LivePhoneTools { [weak listening] text in listening?.notes.add(text: text) }
         ListeningRemote.pause = { [weak listening] in await listening?.pauseFromShortcut() }
         ListeningRemote.stop = { [weak listening] in await listening?.endSession() }

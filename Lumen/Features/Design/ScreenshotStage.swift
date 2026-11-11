@@ -95,6 +95,14 @@ struct ScreenshotStage: View {
                     MyAnswerEditor(model: model, examID: model.examPlans?.upcoming().first?.id,
                                    existing: model.myAnswers?.answers.first { $0.question == "Vad är fotosyntes?" }, draft: nil) {}
                 }
+            // A52 (Ke29): "Vad kan Lumen?" and the sheet after the first answer.
+            case "canDo": NavigationStack { CapabilitiesView() }
+            case "canDoIntro": CapabilitiesIntroSheet()
+            // A54 (Ke31): the logo vote, and the thanks with the percent (demo numbers, no network).
+            case "logoVote": LogoVoteSheet(order: [.b, .a, .c], vote: { _ in nil }, onVoted: {}, onLater: {})
+            case "logoVoteDone":
+                LogoVoteSheet(order: [.b, .a, .c], vote: { _ in nil }, onVoted: {}, onLater: {},
+                              demoReply: .init(choice: "A", results: .init(total: 24, percent: ["A": 45.8, "B": 33.3, "C": 20.8])))
             case "pickMode": ModeSwitchSheet(model: model, current: .standard, onPick: { _ in }, onSleep: {}) // A50: Start's "Byt"
             case "errors":
                 ScrollView {
