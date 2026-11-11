@@ -2280,6 +2280,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
+    #if DEBUG
+    /// The screenshots (Kelly Ke48): Lyssnar as it looks while the audio is sent; nothing is recorded.
+    func stageTestModeForScreenshot() { isRecordingDebugAudio = true }
+    #endif
+
     private func stopDebugAudio() {
         guard let id = debugSubscription else { return }
         debugSubscription = nil

@@ -27,6 +27,12 @@ struct ScreenshotStage: View {
         case "addExamFirst": model.screenshotShows = .standard // A46: "Säg till exempel", not "Startar …"
         case "practice": model.stagePracticeForScreenshot(PracticeDemo.run, result: nil)
         case "practiceResult": model.stagePracticeForScreenshot(nil, result: PracticeDemo.result)
+        case "listeningTest", "homeTest":
+            // A76 (Kelly Ke48): the test mode on the picture, in its own defaults so no later screen has it.
+            let settings = TestModeSettings(defaults: UserDefaults(suiteName: "screenshot-testmode") ?? .standard)
+            settings.isEnabled = true
+            model.testMode = settings
+            model.stageTestModeForScreenshot()
         default: break
         }
         let today = Calendar.current.startOfDay(for: Date())
@@ -98,6 +104,9 @@ struct ScreenshotStage: View {
             // A52 (Ke29): "Vad kan Lumen?" and the sheet after the first answer.
             case "canDo": NavigationStack { CapabilitiesView() }
             case "canDoIntro": CapabilitiesIntroSheet()
+            case "testModeSheet": TestModeSheet {} onCancel: {} // A76 (Ke45 ke45-bekrafta.png)
+            case "listeningTest": ListeningScreen(model: model) {} // A76: the badge itself says "Testläge · ljud skickas"
+            case "homeTest": NavigationStack { HomeView(model: model) } // A76: "Testläge" next to the gear
             // A54 (Ke31): the logo vote, and the thanks with the percent (demo numbers, no network).
             case "logoVote": LogoVoteSheet(order: [.e, .b, .d, .a, .f, .c], vote: { _ in nil }, onVoted: {}, onLater: {})
             case "logoVoteDone":
