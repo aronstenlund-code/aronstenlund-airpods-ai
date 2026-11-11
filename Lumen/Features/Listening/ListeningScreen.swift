@@ -396,7 +396,7 @@ struct ModeSwitchSheet: View {
     private var footnote: String {
         onPick == nil
             ? "Lumen lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
-            : "Startknappen startar läget du väljer. Medan Lumen lyssnar kan du också säga ”Lumen, byt till provläge”."
+            : "Valet gäller Starta-knappen. Du kan också säga ”Lumen, byt till provläge”." // Ke29
     }
 
     var body: some View {
@@ -404,6 +404,13 @@ struct ModeSwitchSheet: View {
             ScrollView {
                 VStack(spacing: 8) {
                     ForEach(order) { mode in
+                        if onPick != nil, mode == .interview {
+                            // Ke29: Standardläge and Provläge first, then FLER LÄGEN with Sov last.
+                            SectionLabel("Fler lägen")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.top, 14)
+                                .padding(.leading, 4)
+                        }
                         Button {
                             dismiss()
                             if let onPick { onPick(mode) } else { Task { await model.switchMode(to: mode) } }
@@ -453,7 +460,6 @@ struct ModeSwitchSheet: View {
                             .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
                         }
                         .buttonStyle(.plain)
-                        .padding(.top, 12)
                     }
                     Text(footnote)
                         .font(LumenFont.text(15))
@@ -464,7 +470,7 @@ struct ModeSwitchSheet: View {
                 .padding(20)
             }
             .lumenScreen()
-            .navigationTitle("Byt läge")
+            .navigationTitle(onPick == nil ? "Byt läge" : "Välj läge") // Ke29: Start chooses, Lyssnar switches
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } }

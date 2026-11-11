@@ -6,12 +6,13 @@ import Testing
 /// is described "För dina prov".
 @MainActor
 @Suite struct A50Tests {
-    @Test func theExamplesStartWithAronsThree() {
+    @Test func theExamplesStartWithAronsAndPromiseOnlyWhatWorks() {
         let first = LumenCanDoAll.window(at: 0)
         #expect(first.count == 3)
-        #expect(first[0].contains("spellistan"))
-        #expect(first[1].contains("kalender"))
-        #expect(first[2].contains("pannkakor"))
+        #expect(first[0].contains("kalender"))
+        #expect(first[1].contains("pannkakor"))
+        // Ke29 S2: no Spotify playlist or call before K36 works in the app.
+        #expect(!LumenCanDoAll.examples.contains { $0.contains("spellista") || $0.contains("ring ") })
     }
 
     @Test func theWindowMovesOneAtATimeAndWraps() {

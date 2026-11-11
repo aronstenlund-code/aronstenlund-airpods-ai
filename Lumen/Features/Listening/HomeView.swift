@@ -464,14 +464,14 @@ struct FlipSession: Identifiable {
 /// A50 (D126): "Lumen kan allt" under the Start button, three things to say that change every few seconds. With
 /// Reduce Motion they stand still. VoiceOver reads the first three once, not the changes.
 struct LumenCanDoAll: View {
-    /// Aron's three (D126) first; what they ask for is built (A6 Spotify, A48 calendar, reminders and timers,
-    /// Minne for the recipe, Provläge's quiz).
+    /// Aron's examples (D126), only for what works today (Kelly Ke29 S2): calendar, reminders and timers (A48), Minne
+    /// for the recipe, Provläge's quiz. ”Lumen, kör spellistan Plugg” goes back first when Spotify playlists work
+    /// (K36), and ”ring” when calls do.
     nonisolated static let examples = [
-        "”Lumen, kör spellistan Plugg”",
         "”Lumen, kolla min kalender, vad har jag i dag?”",
         "”Lumen, vad är mitt favoritrecept för pannkakor?”",
-        "”Lumen, sätt en timer på 10 minuter”",
         "”Lumen, förhör mig på fotosyntes”",
+        "”Lumen, sätt en timer på 10 minuter”",
         "”Lumen, påminn mig om träningen kl. 18”",
     ]
     nonisolated static let shown = 3
