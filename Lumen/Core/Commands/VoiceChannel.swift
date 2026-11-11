@@ -3,6 +3,59 @@ import Foundation
 /// The name the wearer says to talk to the app (D74). One constant, so a new app name changes one line.
 enum WakeWord {
     static let name = "Lumen"
+
+    /// A75 (Aron 20:41): how Scribe and the phone mishear the name, per name, so a new name (Earmind?) is one row.
+    /// Grows from the A76 recordings and the "Name-like word not taken" log lines.
+    static let variantsByName: [String: [String]] = [
+        "lumen": ["lumen", "lumin", "lummen", "lomen", "lymen", "limen", "loomen", "lumens", "lumén", "luman", "lumon",
+                  "lumne", "lumem", "lumel", "lumet", "lune", "lumi", "loumen", "luumen", "lu men", "lu-men"],
+        "earmind": ["earmind", "earmand", "irmind", "ir mind", "ear mind", "iirmind", "ermind", "earminde"],
+    ]
+    /// Real Swedish words one letter from the name that must never wake it.
+    static let notTheName: Set<String> = ["lumpen", "tumen", "rummen", "lumpa", "limmen", "lumes", "linen", "lunen", "luren", "lumpe", "humen"]
+
+    static var variants: [String] { variantsByName[name.lowercased()] ?? [name.lowercased()] }
+
+    /// A75: a word (or two, "lu men") that is the name as heard: a known variant, or one edit from the name.
+    static func matches(_ heard: String) -> Bool {
+        let word = fold(heard)
+        guard !word.isEmpty, !notTheName.contains(word) else { return false }
+        if variants.map(fold).contains(word) { return true }
+        let target = fold(name)
+        guard !word.contains(" "), abs(word.count - target.count) <= 1, word.first == target.first else { return false }
+        return editDistance(word, target) <= 1
+    }
+
+    /// A75: close to the name but not taken (two edits), for the log that grows the list.
+    static func isNearMiss(_ heard: String) -> Bool {
+        let word = fold(heard)
+        guard !word.isEmpty, !matches(word), !word.contains(" ") else { return false }
+        let target = fold(name)
+        return word.first == target.first && abs(word.count - target.count) <= 2 && editDistance(word, target) == 2
+    }
+
+    static func fold(_ text: String) -> String {
+        text.lowercased().folding(options: .diacriticInsensitive, locale: Locale(identifier: "sv_SE"))
+            .replacingOccurrences(of: "-", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+    }
+
+    static func editDistance(_ a: String, _ b: String) -> Int {
+        let a = Array(a), b = Array(b)
+        guard !a.isEmpty else { return b.count }
+        guard !b.isEmpty else { return a.count }
+        var row = Array(0...b.count)
+        for i in 1...a.count {
+            var previous = row[0]
+            row[0] = i
+            for j in 1...b.count {
+                let old = row[j]
+                row[j] = min(row[j] + 1, row[j - 1] + 1, previous + (a[i - 1] == b[j - 1] ? 0 : 1))
+                previous = old
+            }
+        }
+        return row[b.count]
+    }
 }
 
 /// What the wearer asked for after the name (D74).
@@ -139,16 +192,40 @@ enum VoiceChannel {
         return greetings.contains(normalized(before))
     }
 
-    /// The name as a word of its own, any case, with or without an accent ("Lumén"). "Lumens" is not the name.
-    private static func wakeWord(in text: String) -> Range<String.Index>? {
-        var from = text.startIndex
-        while let range = text.range(of: WakeWord.name, options: [.caseInsensitive, .diacriticInsensitive], range: from..<text.endIndex) {
-            let startsWord = range.lowerBound == text.startIndex || !text[text.index(before: range.lowerBound)].isLetter
-            let endsWord = range.upperBound == text.endIndex || !text[range.upperBound].isLetter
-            if startsWord, endsWord { return range }
-            from = range.upperBound
+    /// The name as a word of its own (A75: or as it is misheard, "Lumin", "Lummen", "Lu men"), any case, with or
+    /// without an accent. Only where it addresses Lumen counts (`isAddress`); the first such word wins.
+    static func wakeWord(in text: String) -> Range<String.Index>? {
+        let words = wordRanges(in: text)
+        for (index, range) in words.enumerated() {
+            if index + 1 < words.count {
+                let pair = text[range.lowerBound..<words[index + 1].upperBound]
+                // "Lu men": two short words with only a space or hyphen between them.
+                if pair.count <= 8, WakeWord.matches(String(pair)), String(text[range]).count <= 3 {
+                    return range.lowerBound..<words[index + 1].upperBound
+                }
+            }
+            if WakeWord.matches(String(text[range])) { return range }
         }
         return nil
+    }
+
+    /// A75: the first word, when it looks like the name but was not taken (for the log).
+    static func nearMissName(in text: String) -> String? {
+        guard let first = wordRanges(in: text).first else { return nil }
+        let word = String(text[first])
+        return WakeWord.isNearMiss(word) ? word : nil
+    }
+
+    private static func wordRanges(in text: String) -> [Range<String.Index>] {
+        var ranges: [Range<String.Index>] = []
+        var index = text.startIndex
+        while index < text.endIndex {
+            guard text[index].isLetter else { index = text.index(after: index); continue }
+            let start = index
+            while index < text.endIndex, text[index].isLetter { index = text.index(after: index) }
+            ranges.append(start..<index)
+        }
+        return ranges
     }
 
     static func normalized(_ text: String) -> String {

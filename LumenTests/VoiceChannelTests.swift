@@ -29,7 +29,7 @@ import Testing
 
     @Test func noNameNoIntent() {
         #expect(VoiceChannel.parse("byt till provläge").intent == nil, "only with the name")
-        #expect(VoiceChannel.parse("Lumens ljus är starkt").intent == nil)
+        #expect(VoiceChannel.parse("Det här är Lumens ljus").intent == nil) // A75: "Lumens" first in an utterance wakes it now (a mishearing)
         #expect(VoiceChannel.parse("Lumen.") == VoiceUtterance(before: nil, intent: nil))
         #expect(VoiceChannel.parse("Vad är fotosyntes?") == VoiceUtterance(before: "Vad är fotosyntes?", intent: nil))
     }

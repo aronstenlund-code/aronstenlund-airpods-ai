@@ -236,7 +236,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     static let undoWindow: TimeInterval = 5
     /// A14: when a lone "Lumen." was heard; the next segment within `loneNameWindow` is its command.
     @ObservationIgnored private var loneNameAt: Date?
-    static let loneNameWindow: TimeInterval = 4
+    static let loneNameWindow: TimeInterval = 8 // A75: "Ja?" and 8 s for the question
     /// The tip on the screen, until the next answer.
     private(set) var tipNotice: String?
     private var tipTask: Task<Void, Never>?
@@ -531,7 +531,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .social, .rizz: ["rizz", "cringe", "flirtig", "flirtigare"]
         case .interview: []
         }
-        transcription.setContextualStrings(ExamKeyterms.merged(exam: exam, rest: spoken + rest))
+        // A75: the name first, with the most weight Scribe and the phone's recogniser give (the first keyterms).
+        transcription.setContextualStrings(ExamKeyterms.merged(exam: [WakeWord.name] + exam, rest: spoken + rest))
     }
 
     /// Raw capture for the Diagnostics recording (D78), the same audio the recogniser gets before any gate.
@@ -3931,15 +3932,23 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         // A14: Scribe sometimes puts "Lumen." in a segment of its own; the command is the next segment.
-        if VoiceChannel.normalized(segment.text) == WakeWord.name.lowercased() {
+        if WakeWord.matches(VoiceChannel.normalized(segment.text)), !segment.overlapsPlayback {
+            // A75 (Aron 20:41): the name alone (as heard: "Lumin.") always gets an answer: "Ja?", then 8 s for the question.
             loneNameAt = date
-            controller.log("Name alone: waiting for the command")
+            controller.log("Name alone: \"Ja?\", waiting for the question (A75)")
             study.discardTurnText()
+            discardAhead(reason: "the name alone")
+            say(language == .swedish ? "Ja?" : "Yes?")
             return
+        }
+        if VoiceChannel.parse(segment.text).intent == nil, let miss = VoiceChannel.nearMissName(in: segment.text) {
+            controller.log("Name-like word not taken: \(miss) (A75)") // grows WakeWord.variantsByName
         }
         if let lone = loneNameAt {
             loneNameAt = nil
-            if date.timeIntervalSince(lone) <= Self.loneNameWindow, !segment.overlapsPlayback,
+            // A75: the question after "Ja?" may overlap its end; only an echo of "Ja?" itself is not the question.
+            let isEchoOfYes = ["ja", "yes"].contains(VoiceChannel.normalized(segment.text))
+            if date.timeIntervalSince(lone) <= Self.loneNameWindow, !isEchoOfYes,
                handleVoice(in: WakeWord.name + ", " + segment.text, at: date) {
                 discardAhead(reason: "a voice command")
                 return
