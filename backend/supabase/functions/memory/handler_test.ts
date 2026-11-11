@@ -118,3 +118,29 @@ Deno.test("D113 A5 (K34): address, debts and money are no longer stopped in code
   assertEquals((await res.json()).add, ["Har prov i kemi fredag 13 november 2026."]);
   assertEquals(llm.calls.length, 1, "an English first-person turn is not skipped");
 });
+
+Deno.test("O47: a correction the code does not know is checked once by the small model; 'none' or junk changes nothing", async () => {
+  {
+    const { h, llm } = mk("shorter");
+    const j = await (await h(post({ correction: { text: "bara svaret, inget mer", context: { mode: "auto" } }, settings: [] }))).json();
+    assertEquals(j.setting?.key, "length");
+    assertEquals(j.setting?.value, "shorter");
+    assertEquals(j.by, "model");
+    assertEquals(llm.calls[0].maxTokens, 4);
+  }
+  for (const reply of ["none", "kanske kortare?", ""]) {
+    const { h } = mk(reply);
+    const j = await (await h(post({ correction: { text: "vad ska vi äta i kväll", context: {} }, settings: [] }))).json();
+    assertEquals(j.skipped, "not_a_correction", reply);
+  }
+  {
+    const { h, llm } = mk("longer");
+    const j = await (await h(post({ correction: { text: "kortare tack", context: {} }, settings: [] }))).json();
+    assertEquals([j.setting?.value, j.by, llm.calls.length], ["shorter", "code", 0], "the code's own match needs no model");
+  }
+  {
+    const { h, llm } = mk("shorter");
+    await (await h(post({ correction: { text: "en lång mening ".repeat(6), context: {} }, settings: [] }))).json();
+    assertEquals(llm.calls.length, 0, "a long utterance is not checked");
+  }
+});

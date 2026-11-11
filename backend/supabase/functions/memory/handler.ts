@@ -54,6 +54,28 @@ export interface MemoryResult {
   remove: string[];
 }
 
+/** O47: the small model's check of a short utterance the code did not recognise as a correction. */
+export const CORRECTION_CHECK_PROMPT =
+  `A Swedish student just heard an answer from their study assistant and said <said>. Decide whether it is feedback on HOW the assistant answers, and which kind. Reply with exactly one word:
+shorter (the answers are too long, wants less),
+longer (wants more, more detail, develop),
+simpler (too hard, wants easier words, does not understand),
+examples (wants examples),
+careful (says the answer was wrong or not true),
+none (anything else: a question, a statement about something else, talk to someone else, a command such as pause or stop).
+When unsure, reply none.`;
+
+export function correctionFromCheck(reply: string): { key: "length" | "simplicity" | "examples" | "accuracy"; value: string } | null {
+  switch (reply.trim().toLowerCase().replace(/[^a-z]/g, "")) {
+    case "shorter": return { key: "length", value: "shorter" };
+    case "longer": return { key: "length", value: "longer" };
+    case "simpler": return { key: "simplicity", value: "simpler" };
+    case "examples": return { key: "examples", value: "more" };
+    case "careful": return { key: "accuracy", value: "careful" };
+    default: return null;
+  }
+}
+
 /** Words that show the wearer speaks about themselves; without one the model is not called at all. */
 const SELF =
   /(?<!\p{L})(jag|mig|min|mitt|mina|vi|oss|vår|vårt|våra|me|my|mine|we|our|i am|i'm|i've|i have|i will|i'll|i need|i want|i study|i go|i like|i prefer|always|never|from now on|alltid|aldrig|i fortsättningen|från och med nu|framöver|kortare|längre)(?!\p{L})/iu;
@@ -200,7 +222,44 @@ export function createMemoryHandler(deps: MemoryDeps) {
       if (corr && typeof corr === "object") {
         const text = typeof corr.text === "string" ? corr.text.slice(0, SETTINGS_LIMITS.text) : "";
         const settings = readSettings((raw as Record<string, unknown>).settings);
-        const c = detectCorrection(text);
+        let c = detectCorrection(text);
+        let by: "code" | "model" = "code";
+        // Oscar O47 (new phrasings 5/20 in code, 0 false): a short utterance the code does not know goes to one tiny
+        // Haiku check ("shorter | longer | simpler | examples | careful | none"); anything else = not a correction
+        if (!c && deps.provider && text.trim() && text.trim().split(/\s+/).length <= 15) {
+          const rl = await enforceLimits(deps.rateLimiter, "memory", user.id, cfg.limits, 1, []);
+          if (rl.allowed) {
+            let reply = "";
+            let inT = 0, outT = 0;
+            try {
+              for await (const ch of deps.provider.stream({
+                system: CORRECTION_CHECK_PROMPT,
+                user: `<said>${sanitizeTagged(text)}</said>`,
+                maxTokens: 4,
+                cacheSystem: true,
+                noThinking: true,
+                signal: AbortSignal.timeout(3000),
+              })) {
+                if (ch.type === "text") reply += ch.text;
+                else if (ch.type === "usage") {
+                  inT = ch.inputTokens ?? inT;
+                  outT = ch.outputTokens ?? outT;
+                }
+              }
+            } catch (e) {
+              console.warn("correction_check_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
+            }
+            c = correctionFromCheck(reply);
+            if (c) by = "model";
+            try {
+              await deps.recordUsage?.({
+                user_id: user.id, endpoint: "memory-correction", provider: deps.provider.name, model: deps.provider.model,
+                input_tokens: inT, output_tokens: outT, total_ms: Date.now() - t0,
+                est_cost_usd: (inT * cfg.priceInPerMTok + outT * cfg.priceOutPerMTok) / 1e6, status: "ok",
+              });
+            } catch { /* metadata only */ }
+          }
+        }
         if (!c) return json({ add: [], update: [], remove: [], settings, profile: profileOf(settings), skipped: "not_a_correction" });
         const r = applyCorrection(settings, c, readContext(corr.context));
         return json({
@@ -209,6 +268,7 @@ export function createMemoryHandler(deps: MemoryDeps) {
           setting: { ...r.changed, text: describe(r.changed) },
           widened: r.widened,
           profile: profileOf(r.settings),
+          by,
         });
       }
       const body = validateMemoryRequest(raw);
