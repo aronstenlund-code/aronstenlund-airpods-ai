@@ -282,9 +282,20 @@ export function isSearchMeta(sentence: string): boolean {
 
 /** Drops whole English sentences (web mode only, unless the user asked for a translation), and sentences
  *  that only narrate the search decision. */
+/** O41: in the phone-tool path even a short English sentence ("A brief reply is needed.") is the model's own note. */
+export function isShortEnglish(sentence: string): boolean {
+  const w = sentence.toLowerCase().match(/\p{L}+/gu) ?? [];
+  if (w.length < 3 || /[åäö]/iu.test(sentence)) return false;
+  return w.filter((x) => EN.has(x) || EN_SHORT.has(x)).length >= 2 && !w.some((x) => SV.has(x));
+}
+const EN_SHORT = new Set("a brief reply needed short answer response here now".split(" "));
+
 export class EnglishGate {
   private buf = "";
-  constructor(private readonly enabled: boolean) {}
+  constructor(private readonly enabled: boolean, private readonly strict = false) {}
+  private english(s: string): boolean {
+    return isEnglishSentence(s) || (this.strict && isShortEnglish(s));
+  }
   push(text: string): string {
     if (!this.enabled) return text;
     this.buf += text;
@@ -297,13 +308,13 @@ export class EnglishGate {
       const end = m.index + m[0].length;
       const sentence = this.buf.slice(0, end);
       this.buf = this.buf.slice(end);
-      if (!isEnglishSentence(sentence) && !isSearchMeta(sentence)) out += sentence;
+      if (!this.english(sentence) && !isSearchMeta(sentence)) out += sentence;
     }
     return out;
   }
   finish(): string {
     if (!this.enabled) return "";
-    const r = isEnglishSentence(this.buf) || isSearchMeta(this.buf) ? "" : this.buf;
+    const r = this.english(this.buf) || isSearchMeta(this.buf) ? "" : this.buf;
     this.buf = "";
     return r;
   }
@@ -1207,7 +1218,7 @@ export class AnswerPost {
     });
     this.quizOnly = opts.quizOnly === true;
     this.src = new SourceTap(opts.web === true || opts.source === true);
-    this.en = new EnglishGate(opts.web === true || opts.dropEnglish === true);
+    this.en = new EnglishGate(opts.web === true || opts.dropEnglish === true, opts.dropEnglish === true);
   }
 
   /** K11: text the web search returned (citations), used to check a verbatim quote. */

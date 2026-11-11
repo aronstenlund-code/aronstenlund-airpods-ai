@@ -97,3 +97,10 @@ Deno.test("O41: a phone request that ends in nothing gets one Swedish question, 
   const ev = await events(await handler(post({ fragment: "ring en kompis", mode: "push_to_talk" })));
   assertEquals(ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("").trim(), "Vem vill du att jag ska ringa?");
 });
+
+Deno.test("O41: a short English note is dropped in the tool path; Swedish with English names stays", async () => {
+  const { AnswerPost } = await import("./speech.ts");
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, dropEnglish: true });
+  const out = p.push("A brief reply is needed.\n\nVilken kompis vill du ringa? Spela The Weeknd nu. ") + p.finish();
+  assertEquals(out.trim(), "Vilken kompis vill du ringa? Spela The Weeknd nu.");
+});
