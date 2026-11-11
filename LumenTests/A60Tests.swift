@@ -19,3 +19,19 @@ import Testing
         #expect(!ListeningModel.answersExamQuestion("Biologi på fredag", askedAt: nil, at: asked))
     }
 }
+
+/// A61 (Ke35): a mode switch while listening keeps the answers and marks where it happened.
+@MainActor
+@Suite struct A61Tests {
+    @Test func theSwitchIsMarkedAfterTheLastAnswer() {
+        var conversation = Conversation()
+        conversation.markModeSwitch(to: "Provläge")
+        #expect(conversation.answers.isEmpty, "nothing to mark yet")
+        conversation.beginAnswer(question: "Vad är en cell?", source: "cloud")
+        conversation.appendAnswerText("Livets minsta byggsten.")
+        _ = conversation.completeAnswer(latencyMs: nil)
+        conversation.markModeSwitch(to: "Provläge")
+        #expect(conversation.answers.last?.switchedAfter == "Provläge")
+        #expect(conversation.answers.count == 1, "the answers stay")
+    }
+}

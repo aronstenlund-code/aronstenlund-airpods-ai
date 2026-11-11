@@ -1621,6 +1621,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         } else {
             await startHandsFree(target)
         }
+        if current != nil { conversation.markModeSwitch(to: target.shortName) } // Ke35: "Bytte till …" on Lyssnar
         say(VoiceChannel.spokenName(target))
     }
 
