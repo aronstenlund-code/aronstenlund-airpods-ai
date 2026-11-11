@@ -20,6 +20,7 @@ import XCTest
 /// (Aron on the phone: "man förstår inte hur man börjar ställa frågor"); the same question must be answered there.
 /// Provläge is then chosen with the mode line under the button ("Standardläge · Byt") and started with Starta Lumen.
 ///
+/// Runs: T8 2026-11-10, T8b/T8c 2026-11-11, T13 2026-11-11 (after A66: one sheet per opening).
 /// Simulator only: never a verification on a device. "Svar visat" is what the screen shows; whether it was spoken
 /// is not visible to a UI test (the T5 test counts spoken answers).
 @MainActor

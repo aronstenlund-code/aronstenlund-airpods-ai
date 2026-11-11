@@ -20,7 +20,7 @@ import Testing
 ///
 /// Output: `<LUMEN_E2E_OUT>/more.json`. Live and paid (Scribe, /answer): only when `scripts/apptest/more.sh` sets
 /// `LUMEN_E2E_MORE_DIR`. Simulator only: never a verification on a device (nod and AirPods press are Aron's).
-/// Runs: T7 2026-11-10, T7b 2026-11-11 (after the T7 finding 1 fix), T12 2026-11-11 (after A56: done.more; build fixed in 1f39214).
+/// Runs: T7 2026-11-10, T7b 2026-11-11 (after the T7 finding 1 fix), T12 2026-11-11 (after A56: done.more), T13 2026-11-11 (after A63/A65).
 enum MoreEnvironment {
     static var audioDir: URL? {
         ProcessInfo.processInfo.environment["LUMEN_E2E_MORE_DIR"].map { URL(fileURLWithPath: $0) }
@@ -257,6 +257,9 @@ struct MoreE2ETests {
 
     private func run(_ item: Case, dir: URL) async throws -> CaseResult {
         let defaults = UserDefaults.standard
+        // T12 (2026-11-11): a "ja" teaches a longer default (A56, K13.2), and it carried over to the next case. Every
+        // case starts from no learned setting, as a new user.
+        defaults.removeObject(forKey: PreferenceStore.key)
         defaults.set(true, forKey: VoiceSettings.speakKey)
         defaults.set(try JSONEncoder().encode(VoiceChoice.appleDefault), forKey: VoiceSettings.voiceKey)
 
