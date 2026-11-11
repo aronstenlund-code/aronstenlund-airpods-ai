@@ -167,3 +167,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   5. **"jaha" hördes som "utveckla" igen** (Standardläge, se även K40/A62). Ett ensamt kommandoord direkt efter ett svar utan "Lumen" utförs bara om Scribes säkerhet är hög och yttrandet är minst lika långt som ordet tar att säga; annars tyst. Ta emot `confidence`/tider från appen (Angela A74). Krav: "jaha", "ja", "aha", "okej" 0/20 som kommando, "utveckla" 19/20.
 
 - [x] **K-stående – omgång 16 (K4-loopen, PLAN 2b): eval, sämsta fallet** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:17 (Kevin): `reports/2026-11-11-1917-kevin-standing16-number-range.md`_
+
+- [x] **K-stående – omgång 17 (K4-loopen): recept och webbsvar** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:34 (Kevin): `reports/2026-11-11-1934-kevin-standing17-recipes-speech.md`_
