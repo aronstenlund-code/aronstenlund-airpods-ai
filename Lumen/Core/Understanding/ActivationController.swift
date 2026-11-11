@@ -45,7 +45,20 @@ final class ActivationController {
         var language: TranscriptionLanguage
         /// A21.2: it stops mid-thought ("vilka är de största?"), so it waits `UnfinishedQuestion.hold` for the rest.
         var unfinished = false
+        /// A72 (Toby T15): when it was first heard, and when its last continuation came (nil: none yet).
+        var heardAt: Date = .distantPast
+        var continuedAt: Date?
+
+        /// A72: the latest it may be sent, whatever words keep coming (VAD and wearer focus in front of Scribe kept
+        /// it 14–26 s): `maxHeld` after it was heard, or `continuedHold` after its continuation was merged.
+        var latestDue: Date {
+            if let continuedAt { return continuedAt.addingTimeInterval(ActivationController.continuedHold) }
+            return heardAt.addingTimeInterval(ActivationController.maxHeld)
+        }
     }
+
+    nonisolated static let maxHeld: TimeInterval = 6
+    nonisolated static let continuedHold: TimeInterval = 1.5
 
     // MARK: - Final segments (Frågor, auto)
 
@@ -70,7 +83,8 @@ final class ActivationController {
             lastDecision = decision
             held.gate = decision
             held.unfinished = UnfinishedQuestion.looksUnfinished(held.text)
-            held.dueAt = now.addingTimeInterval(held.unfinished ? UnfinishedQuestion.hold : settings.questionDebounce)
+            held.continuedAt = now // A72: the rest came; at most `continuedHold` more
+            held.dueAt = min(now.addingTimeInterval(held.unfinished ? UnfinishedQuestion.hold : settings.questionDebounce), held.latestDue)
             pending = held
             return
         }
@@ -95,7 +109,7 @@ final class ActivationController {
             lastDecision = decision
             if decision.fires {
                 accepted.append(PendingQuestion(text: part, gate: decision, dueAt: now.addingTimeInterval(settings.questionDebounce),
-                                                language: language))
+                                                language: language, heardAt: now))
             } else if part.split(separator: " ").count >= 2 {
                 onDrop?(part, "question gate " + String(format: "%.2f", decision.score) + " < " + String(format: "%.2f", decision.threshold))
             }
@@ -132,7 +146,7 @@ final class ActivationController {
     /// A21.2: someone is still talking while a half question waits: the rest is coming, keep waiting for it.
     func speechContinues(now: Date = Date()) {
         guard let held = pending, held.unfinished else { return }
-        pending?.dueAt = max(held.dueAt, now.addingTimeInterval(Self.continuesHold))
+        pending?.dueAt = min(max(held.dueAt, now.addingTimeInterval(Self.continuesHold)), max(held.dueAt, held.latestDue)) // A72
     }
 
     /// While words keep coming after a held half question, it waits at least this long after the latest ones.

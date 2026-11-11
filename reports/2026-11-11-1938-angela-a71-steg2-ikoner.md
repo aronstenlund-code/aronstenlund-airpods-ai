@@ -16,7 +16,7 @@ Angela, 2026-11-11. Underlag: `reports/2026-11-11-1859-kelly-ke40-exakta-ikoner.
 
 ## Testresultat
 - **Enhetstester:** `A54Tests` är uppdaterat för sex namn och en ordning med sex.
-- **iOS-bygge och enhetstester:** CI RESULT71.
+- **iOS-bygge och enhetstester:** CI 43079695710 (e35e472) är **grön**: device-bygget, alla enhetstester och `Lumen-unsigned.ipa`.
 - **Ej verifierat på enhet.** Kelly granskar bilderna.
 
 ## Till Aron
