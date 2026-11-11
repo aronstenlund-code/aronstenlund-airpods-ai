@@ -1,0 +1,194 @@
+{
+ "summary": {
+  "name": "10/10",
+  "facts": "20/21"
+ },
+ "rows": [
+  {
+   "part": "name",
+   "q": "Vad heter du?",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "name",
+   "q": "vad är ditt namn",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "name",
+   "q": "har du ett namn",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "name",
+   "q": "Lumen, vad heter du?",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "name",
+   "q": "vad ska jag kalla dig",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "name",
+   "q": "vem är du",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "name",
+   "q": "hur heter du",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "name",
+   "q": "vad heter du egentligen",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "name",
+   "q": "heter du något",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "name",
+   "q": "Lumen vem är du",
+   "said": "Jag heter Earmind. Jag är en AI-assistent som svarar i dina AirPods.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges största sjö?",
+   "said": "Sveriges största sjö är Vänern, med en yta på cirka femtusen sexhundrafemtio kvadratkilometer. Näst störst är Vättern.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges näst största sjö?",
+   "said": "Sveriges näst största sjö är Vättern, efter Vänern som är störst. Vättern är ungefär nittonhundra kvadratkilometer stor och mycket djup.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges längsta flod?",
+   "said": "Sveriges längsta flod är Klarälven–Göta älv, cirka sjuhundratjugo kilometer lång. Räknar man bara älvar som ligger helt i Sverige är Indalsälven, Ångermanälven och Dalälven bland de längsta.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket är Sveriges högsta berg?",
+   "said": "Kebnekaise är Sveriges högsta berg. Sydtoppen når cirka tvåtusen hundra meter över havet, men höjden varierar eftersom glaciären på toppen smälter.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges största ö?",
+   "said": "Sveriges största ö är Gotland, med en yta på cirka tretusen hundrafyrtio kvadratkilometer. Näst störst är Öland.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges näst största stad?",
+   "said": "Göteborg är Sveriges näst största stad, efter Stockholm och före Malmö.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges tredje största stad?",
+   "said": "Sveriges största städer är Stockholm, Göteborg och Malmö, så den tredje största är Malmö, med omkring trehundrasextiotusen invånare.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vad är Norges huvudstad?",
+   "said": "Norges huvudstad är Oslo.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vad är Finlands huvudstad?",
+   "said": "Finlands huvudstad är Helsingfors.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vad är Australiens huvudstad?",
+   "said": "Australiens huvudstad är Canberra.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vad är Kanadas huvudstad?",
+   "said": "Kanadas huvudstad är Ottawa.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket år blev Gustav Vasa kung?",
+   "said": "Gustav Vasa blev kung femtonhundratjugotre.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket år började andra världskriget?",
+   "said": "Andra världskriget började nittonhundratrettionio.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "När fick kvinnor rösträtt i Sverige?",
+   "said": "Kvinnor fick rösträtt i Sverige nittonhundranitton, då allmän rösträtt infördes för både män och kvinnor som var myndiga.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket år gick Sverige med i EU?",
+   "said": "Sverige gick med i EU år nittonhundranittiofem.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket år gick Sverige med i Nato?",
+   "said": "Sverige gick med i Nato år tvåtusen tjugofyra.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket är Sveriges största landskap?",
+   "said": "Sveriges största landskap är Lappland, med en yta på cirka hundraniotusen kvadratkilometer. Det är ungefär en fjärdedel av landets yta.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket är Sveriges minsta landskap?",
+   "said": "Sveriges minsta landskap är Öland, som är en ö i Östersjön utanför Kalmar. Det är cirka trettonhundrafyrtio kvadratkilometer stort.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges största nationalpark?",
+   "said": "Sarek är Sveriges största nationalpark, med en yta på ungefär nittonhundrasjuttio kvadratkilometer i Lappland. Tillsammans med Padjelanta och Stora Sjöfallet ingår den i världsarvet Laponia.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Hur många landskap har Sverige?",
+   "said": "Sverige har tjugoett landskap.",
+   "ok": false
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är världens längsta flod?",
+   "said": "Nilen i Afrika brukar anges som världens längsta flod, cirka sextusen sexhundrafemtio kilometer. Amazonfloden är störst i vattenmängd, och vissa mätningar har gjort anspråk på att den är längre.",
+   "ok": true
+  }
+ ]
+}

@@ -1,0 +1,87 @@
+{
+ "summary": {
+  "length": "9/10"
+ },
+ "rows": [
+  {
+   "part": "length",
+   "q": "Förklara fotosyntes med hundra ord eller mer",
+   "words": 169,
+   "sentences": 10,
+   "said": "Fotosyntes är den process med vilken gröna växter, alger och vissa bakterier använder ljusenergi för att tillverka socker av koldioxid och vatten, och samtidigt frigöra syre. Processen sker främst i kloroplasterna, som innehåller det gröna pigmentet klorofyll, och den delas in i två huvudsteg som hänger ihop. Det första steget kallas ljusreaktionerna och sker i tylakoidmembranen. Här fångar klorofyllet ljus, och ljusenergin används för att spjälka vattenmolekyler, vilket frigör syrgas som lämnar växten genom bladens klyftöppningar. Energin lagras i de energirika molekylerna ATP och NADPH. Det andra steget kallas Calvincykeln och sker i kloroplastens stroma. Här används ATP och NADPH från ljusreaktionerna för att binda koldioxid från luften. Enzymet rubisco fäster koldioxiden vid en femkolig sockerförening, och via flera reaktioner bildas till slut glukos. Växten kan sedan använda glukosen direkt, omvandla den till stärkelse som lagringsämne eller bygga den till cellulosa för sina cellväggar. Fotosyntesen är grunden för nästan allt liv på jorden, eftersom den både producerar det syre vi andas och binder energi som hela näringskedjan bygger på.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara fotosyntes med ungefär hundra ord",
+   "words": 121,
+   "sentences": 8,
+   "said": "Fotosyntes är den process med vilken växter, alger och vissa bakterier använder ljusenergi för att tillverka sockerarten glukos av koldioxid och vatten. Processen sker i kloroplasterna, som innehåller det gröna pigmentet klorofyll. Den första delen kallas ljusreaktionerna, och där fångar klorofyllet solljus och använder energin till att spjälka vattenmolekyler. Därvid frigörs syrgas som vi andas ut i luften. Energin lagras i kemiska bärare som sedan används i den andra delen, Calvincykeln, som sker i kloroplastens inre vätska. Där binds koldioxid från luften och omvandlas steg för steg till glukos. Växten använder glukosen som energikälla och som byggsten för cellulosa, stärkelse och andra ämnen. Utan fotosyntesen skulle det knappast finnas syre i atmosfären eller föda för större delen av livet på jorden.",
+   "ok": false
+  },
+  {
+   "part": "length",
+   "q": "Berätta om andra världskriget med cirka hundrafemtio ord",
+   "words": 128,
+   "sentences": 6,
+   "said": "Andra världskriget var en global väpnad konflikt som pågick från nittonhundratrettionio till nittonhundrafyrtiofem och omfattade de flesta världens stormakter. Kriget startade när Tyskland under Adolf Hitler anföll Polen den första september nittonhundratrettionio, vilket fick Storbritannien och Frankrike att förklara krig mot Tyskland. Under de följande åren expanderade konflikten över Europa, Nordafrika och Asien, och Japan kom att kriga mot Kina och senare mot USA efter attacken mot Pearl Harbor nittonhundrafyrtioett. Förintelsen, där nazistregimen systematiskt mördade cirka sex miljoner judar, var en av krigets mest bestialiska delar. Vändpunkter som slaget vid Stalingrad och slaget vid Midway gjorde att de allierade till slut fick övertaget. Kriget slutade med Tysklands kapitulation i maj nittonhundrafyrtiofem och Japans i september samma år, och det efterföljdes av kalla kriget och bildandet av Förenta nationerna.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara cellandning med femtio ord",
+   "words": 51,
+   "sentences": 3,
+   "said": "Cellandning är processen där cellerna omvandlar glukos och syre till energi i form av ATP. Den sker främst i mitokondrierna, där glukosen bryts ned stegvis och koldioxid och vatten bildas som restprodukter. Energin som frigörs används sedan av cellen för att utföra arbete, till exempel muskelrörelser och uppbyggnad av nya ämnen.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara demokrati i en mening",
+   "words": 23,
+   "sentences": 1,
+   "said": "Demokrati är ett styrelseskick där folket utövar makten, direkt eller genom valda företrädare, och där alla har lika rätt att delta och påverka.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Säg kort vad en atom är",
+   "words": 28,
+   "sentences": 1,
+   "said": "En atom är den minsta beståndsdelen av ett grundämne som fortfarande har ämnets egenskaper, och den består av en kärna med protoner och neutroner samt elektroner runt om.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara utförligt hur ett vaccin fungerar",
+   "words": 189,
+   "sentences": 9,
+   "said": "Ett vaccin är ett läkemedel som lär kroppens immunförsvar att känna igen en viss sjukdomsorsakande mikrob utan att man behöver bli sjuk först. Det innehåller vanligtvis en försvagad eller död form av mikroben, en del av den, eller en instruktion, till exempel mRNA, som gör att kroppen själv tillverkar en harmlös bit av mikroben. När vaccinet ges känner immunsystemet av detta främmande material och startar en immunrespons. Vita blodkroppar, särskilt B-celler, tillverkar antikroppar som binder till just den mikroben. Vissa T-celler hjälper till att döda infekterade celler, och en del av cellerna blir minnesceller som ligger kvar i kroppen under lång tid. Om man senare utsätts för den riktiga mikroben känner minnescellerna igen den direkt och svarar snabbt och kraftfullt, så att infektionen stoppas innan den hinner ge sjukdom. Det är därför vaccin kan skydda utan att man har haft sjukdomen. Vissa vaccin behöver flera doser eller boosters för att bygga upp ett tillräckligt starkt och långvarigt skydd. Man talar ofta om flockimmunitet, vilket innebär att när tillräckligt många är vaccinerade blir smittspridningen svår för sjukdomen att hålla igång, vilket också skyddar dem som inte kan vaccineras.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara gravitation med två meningar",
+   "words": 49,
+   "sentences": 2,
+   "said": "Gravitation är den kraft som får föremål med massa att dras mot varandra, och det är den som håller ihop planeterna i banor runt solen och får saker att falla mot marken. Ju mer massa ett föremål har, desto starkare är dragningen, och den minskar med avståndet mellan föremålen.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara fotosyntes med trettio ord",
+   "words": 24,
+   "sentences": 2,
+   "said": "Fotosyntes är när växter använder ljusenergi för att omvandla koldioxid och vatten till socker och syre. Processen sker i kloroplasterna, där klorofyllet fångar solljuset.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Beskriv franska revolutionen med minst åttio ord",
+   "words": 127,
+   "sentences": 7,
+   "said": "Den franska revolutionen var en omvälvande period i Frankrike mellan sjuttonhundraåttionio och sjuttonhundranittionio som förändrade landets politik, samhälle och idéer för gott. Bakgrunden var en svår statsskuld, dyr hovstat och en orättvis ståndsordning där adeln och prästerskapet slapp skatt medan den stora bondeklassen bar bördan. Den fjortonde juli sjuttonhundraåttionio stormade folket Bastiljen i Paris, vilket blev början på revolutionen och ett symboliskt slut på kungamakten. Nationalförsamlingen antog därefter Människans och medborgarens rättigheter, som slog fast idéerna om frihet, jämlikhet och broderskap. Kungen avrättades sjuttonhundranittiotre och under skräckväldet dömdes tusentals människor till döden, medan Robespierre styrde landet. Revolutionen banade väg för moderna begrepp som medborgarskap, nationalism och demokrati, och den inspirerade många andra länder i Europa. Napoleon Bonaparte tog makten sjuttonhundranittionio och avslutade i praktiken revolutionens första fas.",
+   "ok": true
+  }
+ ]
+}

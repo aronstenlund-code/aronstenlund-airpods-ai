@@ -1,0 +1,214 @@
+{
+ "summary": {
+  "facts": "21/21",
+  "length": "8/10"
+ },
+ "rows": [
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges största sjö?",
+   "said": "Sveriges största sjö är Vänern, med en yta på ungefär femtusen sexhundrafemtio kvadratkilometer. Den är också den tredje största sjön i Europa.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges näst största sjö?",
+   "said": "Sveriges näst största sjö är Vättern, efter Vänern. Vättern är cirka nittonhundra kvadratkilometer stor och mycket djup, som mest omkring hundratjugoåtta meter.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges längsta flod?",
+   "said": "Sveriges längsta flod är Klarälven–Göta älv, ungefär sjuhundratjugo kilometer lång från källan i Norge till mynningen i Göteborg. Räknar man bara sträckan inom Sverige är Torneälven–Muonioälven med omkring femhundrasjuttio kilometer ofta den som anges som längst.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket är Sveriges högsta berg?",
+   "said": "Sveriges högsta berg är Kebnekaise i Lappland. Sydtoppen når cirka tvåtusen hundra meter över havet, men glaciären på toppen smälter, så höjden varierar något från år till år.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges största ö?",
+   "said": "Sveriges största ö är Gotland, med en yta på ungefär tretusen hundrafyrtio kvadratkilometer. Näst störst är Öland.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges näst största stad?",
+   "said": "Göteborg är Sveriges näst största stad, efter Stockholm och före Malmö.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges tredje största stad?",
+   "said": "Sveriges tre största städer är Stockholm, Göteborg och Malmö, så den tredje största är Malmö, med drygt trehundrafemtiotusen invånare i kommunen.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vad är Norges huvudstad?",
+   "said": "Norges huvudstad är Oslo.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vad är Finlands huvudstad?",
+   "said": "Finlands huvudstad är Helsingfors.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vad är Australiens huvudstad?",
+   "said": "Australiens huvudstad är Canberra.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vad är Kanadas huvudstad?",
+   "said": "Kanadas huvudstad är Ottawa.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket år blev Gustav Vasa kung?",
+   "said": "Gustav Vasa blev kung femtonhundratjugotre.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket år började andra världskriget?",
+   "said": "Andra världskriget började nittonhundratrettionio.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "När fick kvinnor rösträtt i Sverige?",
+   "said": "Kvinnor fick rösträtt i Sverige nittonhundranitton, genom en reform som gällde både kommunal- och riksdagsval.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket år gick Sverige med i EU?",
+   "said": "Sverige gick med i EU år nittonhundranittiofem.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket år gick Sverige med i Nato?",
+   "said": "Sverige blev medlem i Nato tvåtusen tjugofyra.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket är Sveriges största landskap?",
+   "said": "Sveriges största landskap är Lappland, med en yta på ungefär hundraniotusen kvadratkilometer, alltså nästan en fjärdedel av landets yta.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilket är Sveriges minsta landskap?",
+   "said": "Sveriges minsta landskap är Öland, med en yta på ungefär trettonhundra kvadratkilometer. Det är dock Gotland som är minst bland de stora öarna, medan Öland räknas som mindre i landskapssammanhang.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är Sveriges största nationalpark?",
+   "said": "Sveriges största nationalpark är Sarek i Lappland, på ungefär tvåtusen kvadratkilometer. Räknar man alla skyddade områden i Laponia tillsammans blir området ännu större.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Hur många landskap har Sverige?",
+   "said": "Sverige har tjugofem landskap, fördelade på tre landsdelar: Norrland med nio, Svealand med sex och Götaland med tio.",
+   "ok": true
+  },
+  {
+   "part": "facts",
+   "q": "Vilken är världens längsta flod?",
+   "said": "Världens längsta flod är Nilen i Afrika, med en längd på cirka sextusen sexhundrafemtio kilometer. Amazonfloden kommer strax efter och räknas ibland som längre, beroende på hur man mäter källan.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara fotosyntes med hundra ord eller mer",
+   "words": 155,
+   "sentences": 10,
+   "said": "Fotosyntes är den process med vilken växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi som lagras i socker. Processen sker främst i kloroplasterna, som innehåller det gröna pigmentet klorofyll. Klorofyllet fångar upp ljus, oftast från solen, och använder energin för att driva två huvudsteg. Det första steget kallas ljusreaktionerna och sker i tylakoidmembranen. Där spjälkas vatten, och syre frigörs till luften som en restprodukt. Energin från ljuset lagras tillfälligt i molekylerna ATP och NADPH. Det andra steget är Calvincykeln, som sker i kloroplasternas vätska, stroma. Här används ATP och NADPH för att binda koldioxid från luften och bygga upp sockermolekyler, till exempel glukos. Växten använder sedan sockret som bränsle för sin tillväxt och lagrar överskottet som stärkelse. Sammantaget gör fotosyntesen att växter kan leva på ljus, vatten och koldioxid, och den är grunden för nästan allt liv på jorden, eftersom den både förser oss med syre och utgör början på de flesta näringskedjor.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara fotosyntes med ungefär hundra ord",
+   "words": 99,
+   "sentences": 6,
+   "said": "Fotosyntes är den process med vilken växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi i form av socker. Processen sker främst i kloroplasterna, som innehåller det gröna pigmentet klorofyll. Klorofyllet fångar solljus, och energin används för att spjälka vattenmolekyler, vilket frigör syrgas som en biprodukt. Den energi som fångas används sedan i den så kallade Calvincykeln, där koldioxid från luften binds och omvandlas till glukos. Glukosen används som bränsle för växtens egen ämnesomsättning eller lagras som stärkelse. Sammanfattningsvis är fotosyntesen grunden för nästan allt liv på jorden, eftersom den både producerar syre och binder energi i födokedjan.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Berätta om andra världskriget med cirka hundrafemtio ord",
+   "words": 154,
+   "sentences": 8,
+   "said": "Andra världskriget var den största väpnade konflikten i historien och pågick från nittonhundratrettionio till nittonhundrafyrtiofem. Kriget började när Tyskland under Adolf Hitler anföll Polen den första september nittonhundratrettionio, varpå Storbritannien och Frankrike förklarade krig mot Tyskland. Snart drogs stora delar av världen in, och på ena sidan stod axelmakterna Tyskland, Italien och Japan, på andra sidan de allierade, bland dem Sovjetunionen, Storbritannien, Frankrike och senare USA. Tyskland erövrade stora områden i Europa, men vändpunkter kom med slaget vid Stalingrad och de allierades landstigning i Normandie nittonhundrafyrtiofyra. Förintelsen, där nazisterna systematiskt mördade cirka sex miljoner judar, är en av krigets mörkaste delar. Kriget i Asien och Stillahavsområdet avgjordes bland annat genom USA:s atombombningar av Hiroshima och Nagasaki i augusti nittonhundrafyrtiofem. Japan kapitulerade i september nittonhundrafyrtiofem, och kriget i Europa hade då redan avslutats i maj. Kriget kostade uppskattningsvis sjuttio till åttiofem miljoner människor livet och lade grunden för FN och den kalla krigets världsordning.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara cellandning med femtio ord",
+   "words": 74,
+   "sentences": 5,
+   "said": "Cellandning är processen där celler omvandlar glukos och syre till energi i form av ATP. Den sker i tre steg. Först bryts glukos ner i cellens cytoplasma till pyruvat, vilket ger en liten mängd energi. Därefter tar citronsyracykeln i mitokondriernas inre hålrum vid, där pyruvatet bryts ner vidare och bildar koldioxid samt energibärare. Till sist ger elektrontransportkedjan i mitokondriernas inre membran den största delen av energin, eftersom syret tar emot elektroner och bildar vatten.",
+   "ok": false
+  },
+  {
+   "part": "length",
+   "q": "Förklara demokrati i en mening",
+   "words": 14,
+   "sentences": 1,
+   "said": "Demokrati är ett styre där folket har makten, antingen direkt eller genom valda representanter.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Säg kort vad en atom är",
+   "words": 24,
+   "sentences": 1,
+   "said": "En atom är den minsta beståndsdelen av ett grundämne, uppbyggd av en kärna med protoner och neutroner samt elektroner som rör sig runt kärnan.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara utförligt hur ett vaccin fungerar",
+   "words": 178,
+   "sentences": 9,
+   "said": "Ett vaccin får kroppens immunförsvar att lära sig att känna igen en sjukdomsframkallande mikrob, utan att man behöver bli sjuk först. Vaccinet innehåller antingen en försvagad eller avdödad form av mikroben, eller bara en del av den, till exempel ett protein från dess yta. Det kan också innehålla instruktioner, som i mRNA-vacciner, som gör att kroppens egna celler tillverkar just den delen. När vaccinet kommer in i kroppen känner immunförsvaret av att något främmande finns där och sätter igång en försvarsreaktion. Vissa vita blodkroppar, så kallade antigenpresenterande celler, tar upp delarna och visar upp dem för T-celler och B-celler. B-cellerna börjar tillverka antikroppar, små proteiner som kan binda till mikroben och göra den ofarlig. En del av cellerna blir minnesceller som ligger kvar i kroppen under lång tid. Om man senare utsätts för den riktiga mikroben kan minnescellerna snabbt sätta igång en kraftig försvarsreaktion innan man hinner bli allvarligt sjuk. Det är därför vaccin ofta ger ett långvarigt skydd, och varför vissa vacciner behöver upprepas med booster-doser för att hålla minnet vid liv.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara gravitation med två meningar",
+   "words": 47,
+   "sentences": 2,
+   "said": "Gravitation är den kraft som får föremål med massa att dras mot varandra, och det är den som håller ner oss på jorden och får månen att kretsa runt den. Ju större massa föremålen har och ju kortare avstånd det är mellan dem, desto starkare är dragningen.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara fotosyntes med trettio ord",
+   "words": 41,
+   "sentences": 3,
+   "said": "Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att omvandla koldioxid och vatten till socker och syrgas. Det sker i kloroplasterna, där klorofyllet fångar ljuset. Energin används för att bygga glukos, och syret släpps ut i luften.",
+   "ok": false
+  },
+  {
+   "part": "length",
+   "q": "Beskriv franska revolutionen med minst åttio ord",
+   "words": 102,
+   "sentences": 6,
+   "said": "Franska revolutionen var en omvälvande period i Frankrike mellan sjuttonhundraåttionio och sjuttonhundranittionio som avskaffade adelns privilegier och kungamakten. Den började med en djup ekonomisk kris, dåliga skördar och statens stora skulder, vilket ledde till att generalständerna kallades samman sjuttonhundraåttionio. Tredje ståndet förklarade sig då till nationalförsamling, och den fjortonde juli stormades Bastiljen i Paris, något som blev en symbol för folkets makt. Nationalförsamlingen antog människans och medborgarens rättigheter, med idéer om frihet, jämlikhet och broderskap. Kungen avsattes sjuttonhundranittiotvå, och under skräckväldet avrättades tusentals människor, bland dem Ludvig den sextonde år sjuttonhundranittiotre. Revolutionen förändrade Frankrikes samhälle djupt och spred sina ideal över Europa.",
+   "ok": true
+  }
+ ]
+}

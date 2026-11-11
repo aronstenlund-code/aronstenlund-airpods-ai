@@ -1,0 +1,87 @@
+{
+ "summary": {
+  "length": "9/10"
+ },
+ "rows": [
+  {
+   "part": "length",
+   "q": "Förklara fotosyntes med hundra ord eller mer",
+   "words": 154,
+   "sentences": 9,
+   "said": "Fotosyntes är den process med vilken växter, alger och vissa bakterier använder ljusenergi för att tillverka socker av koldioxid och vatten, och samtidigt släppa ut syre. Den sker främst i bladens celler, i organeller som kallas kloroplaster. Där finns det gröna färgämnet klorofyll, som fångar upp ljus, oftast från solen. Processen delas in i två steg. I de ljusberoende reaktionerna, som sker i tylakoidmembranen, används ljusenergin för att spjälka vattenmolekyler. Då frigörs syre som lämnar växten, och energirika molekyler som ATP och NADPH bildas. I det andra steget, Calvincykeln, som sker i kloroplastens inre vätska, stroma, används dessa energibärare för att binda koldioxid från luften och bygga upp glukos. Växten använder sedan sockret både som energikälla och som byggsten för att växa, till exempel för att bilda cellulosa i sina cellväggar. Fotosyntesen är grunden för nästan allt liv på jorden, eftersom den både ger syre och binder energi som hela näringskedjan är beroende av.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara fotosyntes med ungefär hundra ord",
+   "words": 109,
+   "sentences": 6,
+   "said": "Fotosyntes är det sätt som växter, alger och vissa bakterier använder för att tillverka sin egen föda med hjälp av ljus. Processen sker i kloroplasterna, som innehåller det gröna pigmentet klorofyll. Klorofyllet fångar solens energi, och den används för att spjälka vattenmolekyler, vilket frigör syrgas som lämnar växten. Med den infångade energin binds sedan koldioxid från luften samman till socker, som växten kan använda som energi eller lagra som stärkelse. Reaktionerna delas i två steg: ljusberoende reaktioner, där energi lagras, och den ljusoberoende Calvincykeln, där sockret byggs. Fotosyntesen är grunden för nästan all föda på jorden, eftersom den omvandlar solenergi till kemisk energi och samtidigt försörjer atmosfären med syre.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Berätta om andra världskriget med cirka hundrafemtio ord",
+   "words": 143,
+   "sentences": 8,
+   "said": "Andra världskriget var en global väpnad konflikt som pågick från nittonhundratrettionio till nittonhundrafyrtiofem och involverade de flesta av världens stormakter. Kriget började när Nazityskland under Adolf Hitler invaderade Polen den första september nittonhundratrettionio, vilket fick Storbritannien och Frankrike att förklara krig mot Tyskland. Under de följande åren expanderade konflikten genom tyska erövringar i Europa, japanska framstötar i Asien och Stilla havet samt Italiens inträde på tysk sida. Sovjetunionen och USA drogs senare in i kriget, och avgörande slag som Stalingrad och Midway vände krigslyckan mot de allierade. Förintelsen, där nazisterna systematiskt mördade cirka sex miljoner judar, är en av krigets mörkaste delar. Kriget tog runt sjuttio miljoner människoliv, de flesta civila. Det slutade nittonhundrafyrtiofem med Tysklands kapitulation i maj och Japans i september efter atombomberna över Hiroshima och Nagasaki. Efterkrigstiden präglades av Förenta nationernas bildande och en kall konflikt mellan Öst och Väst.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara cellandning med femtio ord",
+   "words": 51,
+   "sentences": 4,
+   "said": "Cellandning är processen där cellerna omvandlar glukos och syre till energi i form av ATP. Den sker i mitokondrierna och har tre steg: glykolys, citronsyracykeln och elektrontransportkedjan. Syre tar emot elektroner i slutet av kedjan och bildar vatten. Koldioxid bildas som avfallsprodukt, och energin används sedan för att driva cellens processer.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara demokrati i en mening",
+   "words": 21,
+   "sentences": 1,
+   "said": "Demokrati är ett styrelseskick där folket utövar makten, antingen direkt eller genom valda företrädare som väljs i fria och återkommande val.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Säg kort vad en atom är",
+   "words": 19,
+   "sentences": 1,
+   "said": "En atom är den minsta byggstenen i ett grundämne, med en kärna av protoner och neutroner omgiven av elektroner.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara utförligt hur ett vaccin fungerar",
+   "words": 158,
+   "sentences": 8,
+   "said": "Ett vaccin får kroppens immunförsvar att lära sig igenkänna en sjukdom utan att man först måste bli sjuk på riktigt. Vaccinet innehåller antingen försvagade eller avdödade mikrober, delar av mikroben, eller en genetisk instruktion, till exempel mRNA, som får kroppen att själv tillverka en ofarlig del av mikroben, ofta ett ytprotein. Det som immunförsvaret känner igen kallas antigen, och när kroppen möter det startar den en immunreaktion. Vita blodkroppar, så kallade B-celler, börjar då tillverka antikroppar, som är proteiner som binder till antigenet och märker ut det för att förstöras. Samtidigt bildas minnesceller, som finns kvar i kroppen långt efter att reaktionen är över. Om man senare utsätts för den riktiga mikroben känner minnescellerna igen den och kan snabbt sätta igång ett kraftfullt försvar, innan sjukdomen hinner göra någon större skada. Därför blir man oftast inte sjuk, eller får en mycket mildare sjukdom. Vaccinet fungerar alltså genom att träna immunförsvaret i förväg, utan att själva orsaka sjukdomen.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara gravitation med två meningar",
+   "words": 45,
+   "sentences": 2,
+   "said": "Gravitation är den kraft som drar två massor mot varandra, och ju större massorna är och ju närmare de ligger varandra, desto starkare är dragningen. Det är gravitationen som håller oss kvar på jorden och får månen att kretsa runt jorden och jorden runt solen.",
+   "ok": true
+  },
+  {
+   "part": "length",
+   "q": "Förklara fotosyntes med trettio ord",
+   "words": 43,
+   "sentences": 3,
+   "said": "Fotosyntes är processen där växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi. Med hjälp av klorofyll tar de upp koldioxid och vatten och bildar glukos, samtidigt som syrgas frigörs. Glukosen används som energi eller lagras, och syret släpps ut i luften.",
+   "ok": false
+  },
+  {
+   "part": "length",
+   "q": "Beskriv franska revolutionen med minst åttio ord",
+   "words": 107,
+   "sentences": 7,
+   "said": "Franska revolutionen var en omvälvande period i Frankrike mellan sjuttonhundraåttionio och sjuttonhundranittionio som avskaffade kungamakten och adelns privilegier. Den började med att Ludvig den sextonde kallade till generalständerna sjuttonhundraåttionio för att lösa statens ekonomiska kris. Tredje ståndet, de vanliga medborgarna, bildade då nationalförsamlingen och svor att inte skiljas åt förrän Frankrike fått en grundlag. Stormningen av Bastiljen den fjortonde juli sjuttonhundraåttionio blev ett symbolbildande ögonblick för folkets revolt. Deklarationen om människans och medborgarens rättigheter slog fast idéer om frihet, jämlikhet och broderskap. Under skräckväldet sjuttonhundranittiotre och sjuttonhundranittiofyra avrättades tusentals människor, bland dem kungen och drottningen. Revolutionen slutade med att Napoleon Bonaparte tog makten genom en statskupp sjuttonhundranittionio.",
+   "ok": true
+  }
+ ]
+}

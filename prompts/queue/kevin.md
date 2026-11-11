@@ -159,7 +159,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 
 - [x] **K41 – Röstningen tar sex val (D129)** (effort: low). `logo_votes` och `/logo-vote` tar A–F i stället för A–C; resultatsidan visar alla sex. Behåll redan lagda röster. _klar 2026-11-11 18:53 (Kevin): `reports/2026-11-11-1853-kevin-k41-logo-six.md`_
 
-- [ ] **K42 – Arons telefontest 18:58 (Standardläge)** (effort: high). Lagd av Deangelo 2026-11-11 19:05. Skärmbilder i Deangelos rapport `reports/2026-11-11-1905-deangelo-telefontest.md`.
+- [x] **K42 – Arons telefontest 18:58 (Standardläge)** (effort: high). Lagd av Deangelo 2026-11-11 19:05. Skärmbilder i Deangelos rapport `reports/2026-11-11-1905-deangelo-telefontest.md`. _klar 2026-11-11 20:11 (Kevin): `reports/2026-11-11-2011-kevin-k42-phone-test.md` (namn 10/10, fakta 21/21, längd 10/10 ×2, klagomål 3/3, K42.5 väntar på A74-data)_
   1. **Namnet:** "Vad heter du?" gav "Jag är en AI-assistent och har inget eget namn, men du kan kalla mig studiehjälpen." Rätt: "Jag heter Earmind." (namn enligt D128; skicka namnet från appen om väckningsordet ändras). Lägg namnet i systemprompten och i `self.ts` (vad heter du, vem är du, har du ett namn). 0 av 10 svar utan namnet.
   2. **Faktafel:** "Vättern är Sveriges största sjö" (det är Vänern). Lägg fallet och 20 liknande svenska fakta (största/längsta/högsta, huvudstäder, årtal) i live-eval. Krav 20/20. Om Haiku missar: webbsökning eller Sonnet för svenska superlativ.
   3. **Längd:** "Förklara fotosyntes med hundra ord eller mer" fick cirka 50 ord. En uttalad längd ("hundra ord", "en mening", "kort", "utförligt") följs alltid, i alla lägen. 10 fall, krav 10/10 inom ±20 %.
