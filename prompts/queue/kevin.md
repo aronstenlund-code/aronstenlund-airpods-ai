@@ -157,4 +157,4 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 
 - [x] **K-stående – omgång 15: Tobys T14 (avklippt fråga i Auto fylldes i från förra svaret)** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 17:46 (Kevin): `reports/2026-11-11-1746-kevin-standing15-cut-off.md`_
 
-- [ ] **K41 – Röstningen tar sex val (D129)** (effort: low). `logo_votes` och `/logo-vote` tar A–F i stället för A–C; resultatsidan visar alla sex. Behåll redan lagda röster.
+- [x] **K41 – Röstningen tar sex val (D129)** (effort: low). `logo_votes` och `/logo-vote` tar A–F i stället för A–C; resultatsidan visar alla sex. Behåll redan lagda röster. _klar 2026-11-11 18:53 (Kevin): `reports/2026-11-11-1853-kevin-k41-logo-six.md`_
