@@ -1,0 +1,368 @@
+{
+ "summary": {
+  "can": "30/30",
+  "cannot": "8/10",
+  "identity": "6/6",
+  "help": "5/5",
+  "studieassistent": 0
+ },
+ "rows": [
+  {
+   "part": "can",
+   "q": "Kan du sätta en timer på tio minuter?",
+   "said": "Ja. Säg till exempel: Lumen, sätt en timer på 10 minuter.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "Kan du spela musik?",
+   "said": "Ja. Säg till exempel: Lumen, spela lugn pluggmusik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "Kan du lägga in ett möte i min kalender?",
+   "said": "Ja. Säg till exempel: Lumen, vad har jag i dag?.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du påminna mig om saker",
+   "said": "Ja. Säg till exempel: Lumen, påminn mig om träningen klockan 18.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du väcka mig i morgon bitti",
+   "said": "Ja. Säg till exempel: Lumen, väck mig kvart i sju.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du ringa folk",
+   "said": "Ja. Säg till exempel: Lumen, ring mamma.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du förhöra mig",
+   "said": "Ja. Säg till exempel: Lumen, förhör mig på fotosyntes.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du spara en anteckning",
+   "said": "Ja. Säg till exempel: Lumen, spara det.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du översätta saker",
+   "said": "Ja. Säg till exempel: Lumen, vad heter fjäril på engelska?.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du hjälpa mig med läxan",
+   "said": "Ja. Säg till exempel: Lumen, vad betyder ambivalent?.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du ge mig ett träningspass",
+   "said": "Här är ett enkelt träningspass utan redskap, som tar ungefär tjugo minuter. Börja med fem minuter lätt uppvärmning, till exempel hopprep eller att gå på stället med armsvängar. Gör sedan tre omgångar av tio armhävningar, tjugo knäböj och trettio sekunders plankning, med en minuts vila mellan varven. Avsluta med fem minuter utsträckning, där du håller varje sträckning i trettio sekunder. Eftersom klockan är över elva på kvällen kan du välja att hoppa över hopprepet och göra uppvärmningen lugnare.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du ställa ett larm",
+   "said": "Ja. Säg till exempel: Lumen, väck mig kvart i sju.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "har du en timer",
+   "said": "Ja, jag har en timer. Säg till exempel: Lumen, sätt en timer på tio minuter.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "går det att boka in ett möte",
+   "said": "Ja. Säg till exempel: Lumen, vad har jag i dag?.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du söka på nätet",
+   "said": "Ja. Säg till exempel: Lumen, vad blir vädret i morgon?.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du kolla vädret",
+   "said": "Ja. Säg till exempel: Lumen, vad blir vädret i morgon?.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du hjälpa mig inför en jobbintervju",
+   "said": "Ja. Byt till Intervju så får du färdiga svar på intervjufrågor.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du hjälpa mig att plugga",
+   "said": "Ja. Säg till exempel: Lumen, förhör mig på fotosyntes.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du komma ihåg saker åt mig",
+   "said": "Ja. Säg till exempel: Lumen, spara det.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du ringa mamma",
+   "said": "Ja. Säg till exempel: Lumen, ring mamma.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du spela en låt",
+   "said": "Ja. Säg till exempel: Lumen, spela lugn pluggmusik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du svara på frågor",
+   "said": "Ja. Säg till exempel: Lumen, vad betyder ambivalent?.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du ta tid när jag springer",
+   "said": "Ja. Säg till exempel: Lumen, sätt en timer på 10 minuter.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du skriva ner det jag säger",
+   "said": "Ja. Säg till exempel: Lumen, spara det.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du hjälpa mig med vad jag ska säga",
+   "said": "Ja. Byt till Socialt eller Rizz så föreslår jag vad du kan säga.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du se vad jag har i dag",
+   "said": "Ja. Säg till exempel: Lumen, vad har jag i dag?.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "går det att få en påminnelse",
+   "said": "Ja. Säg till exempel: Lumen, påminn mig om träningen klockan 18.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du öppna spotify",
+   "said": "Ja. Säg till exempel: Lumen, spela lugn pluggmusik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "klarar du att sätta en äggklocka",
+   "said": "Ja. Säg till exempel: Lumen, sätt en timer på 10 minuter.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "can",
+   "q": "kan du väcka mig",
+   "said": "Ja. Säg till exempel: Lumen, väck mig kvart i sju.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "cannot",
+   "q": "kan du skicka sms till Elin",
+   "said": "Nej, det kan jag inte än. Jag kan svara på frågor, förhöra dig, sätta timer och larm, påminna dig, lägga in i kalendern, ringa och öppna musik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "cannot",
+   "q": "kan du skicka ett mejl",
+   "said": "Ja, säg till exempel: Lumen, skicka ett mejl, så hjälper jag dig med det.",
+   "acted": false,
+   "ok": false
+  },
+  {
+   "part": "cannot",
+   "q": "kan du läsa mina mejl",
+   "said": "Nej, jag kan inte läsa dina mejl. Jag kan svara på frågor, sätta timers och påminnelser, och hantera kalendern. Säg till exempel: Lumen, sätt en påminnelse imorgon klockan åtta.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "cannot",
+   "q": "kan du betala",
+   "said": "Nej, det kan jag inte än. Jag kan svara på frågor, förhöra dig, sätta timer och larm, påminna dig, lägga in i kalendern, ringa och öppna musik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "cannot",
+   "q": "kan du beställa pizza",
+   "said": "Nej, det kan jag inte än. Jag kan svara på frågor, förhöra dig, sätta timer och larm, påminna dig, lägga in i kalendern, ringa och öppna musik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "cannot",
+   "q": "kan du ta en bild",
+   "said": "",
+   "acted": false,
+   "ok": false
+  },
+  {
+   "part": "cannot",
+   "q": "kan du styra lamporna",
+   "said": "Ja, men det kommer snart. Styrning av smarta lampor är på väg, och just nu kan jag inte göra det än.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "cannot",
+   "q": "kan du ge mig vägbeskrivning",
+   "said": "Nej, det kan jag inte än. Jag kan svara på frågor, förhöra dig, sätta timer och larm, påminna dig, lägga in i kalendern, ringa och öppna musik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "cannot",
+   "q": "kan du läsa mina notiser",
+   "said": "Jag kan inte läsa upp dina anteckningar ännu, men du kan säga: Lumen, anteckningar, så hjälper jag dig att skriva eller hitta något i dem.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "cannot",
+   "q": "kan du boka resor",
+   "said": "Nej, det kan jag inte än. Jag kan svara på frågor, förhöra dig, sätta timer och larm, påminna dig, lägga in i kalendern, ringa och öppna musik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "identity",
+   "q": "Vad är Earmind?",
+   "said": "Earmind är en AI-agent i dina AirPods för vardag, skola och jobb. Du säger Lumen och vad du vill, och jag svarar eller gör det direkt: frågor, förhör, timer, larm, påminnelser, kalender, samtal och musik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "identity",
+   "q": "Vad kan du göra?",
+   "said": "Jag är en AI-agent i dina AirPods för vardag, skola och jobb. I skolan: svar på frågor, förhör, mina svar. I vardagen: kalender, påminnelser, timer, larm, anteckningar, träning. Jag kan också ringa, öppna musik, översätta, söka på webben och hjälpa dig i intervjuer och samtal. Säg Lumen och vad du vill.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "identity",
+   "q": "vem är du",
+   "said": "Jag heter Earmind. Jag är en AI-agent i dina AirPods för vardag, skola och jobb.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "identity",
+   "q": "vad är du för app",
+   "said": "Earmind är en AI-agent i dina AirPods för vardag, skola och jobb. Du säger Lumen och vad du vill, och jag svarar eller gör det direkt: frågor, förhör, timer, larm, påminnelser, kalender, samtal och musik.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "identity",
+   "q": "vad kan du hjälpa mig med",
+   "said": "Jag är en AI-agent i dina AirPods för vardag, skola och jobb. I skolan: svar på frågor, förhör, mina svar. I vardagen: kalender, påminnelser, timer, larm, anteckningar, träning. Jag kan också ringa, öppna musik, översätta, söka på webben och hjälpa dig i intervjuer och samtal. Säg Lumen och vad du vill.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "identity",
+   "q": "vad heter du",
+   "said": "Jag heter Earmind. Jag är en AI-agent i dina AirPods för vardag, skola och jobb.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "help",
+   "q": "Hur stänger jag av dig?",
+   "said": "Säg Lumen, stopp, eller tryck på Stoppa i appen. Då slutar jag lyssna.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "help",
+   "q": "hur pausar jag dig",
+   "said": "Säg Lumen, paus, så väntar jag. Säg Lumen, fortsätt, när du vill igen.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "help",
+   "q": "hur byter jag läge",
+   "said": "Säg till exempel Lumen, byt till Provläge, eller välj läge under Starta Lumen i appen. Lägena är Standardläge, Provläge, Socialt, Rizz och Intervju.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "help",
+   "q": "hur byter jag röst",
+   "said": "Rösten byter du i appens inställningar under Röst.",
+   "acted": false,
+   "ok": true
+  },
+  {
+   "part": "help",
+   "q": "hur startar jag appen",
+   "said": "Tryck Starta Lumen i appen. Sedan säger du Lumen och vad du vill.",
+   "acted": false,
+   "ok": true
+  }
+ ]
+}

@@ -1,6 +1,6 @@
 # Oscars O52 (prio 1, fel klockslag) och O53 (prio 2, opt_in) (Kevin, 2026-11-11 23:13)
 
-**Status:** koden är klar och pushad (`b1e9305`), men **den är inte driftsatt.** GitHub Actions har stått i kö sedan 21:24 (se K44-delrapporten). Ett bakgrundsjobb kör livetestet när kön släpper.
+**Status: driftsatt** (`b1e9305` 23:16). **Live 23:19:** "vad är klockan", "Lumen, vet du vad klockan är", "kan du säga vad klockan är", "hur mycket är klockan nu" och "vilken tid är det" gav alla "Klockan är nitton minuter över elva på kvällen, alltså tjugotre och nitton", vilket var rätt (5/5). "Vad är klockan i Tokyo" går som förut till zonklockan. Regression: 90,5 %.
 
 ## O52: "Vad är klockan?" gav fel tid
 - **Fynd** (`reports/qa/2026-11-11-2058-oscar-o52-klockan-och-omtest.md`): Haiku läste "20:57" som "tjugo över åtta" eller "tjugo över nio". Svaren var rätt 0/5 gånger.
@@ -24,4 +24,4 @@
 Omtest av O52 och O53 när Deploy backend har kört `b1e9305`.
 
 ## Till Aron
-Fråga inte Earmind vad klockan är förrän GitHub Actions kör igen. Se K44-delrapporten.
+Klockan är rätt igen.
