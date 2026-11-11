@@ -29,6 +29,7 @@ import {
   spokenFor,
 } from "./resource.ts";
 import { selfAnswer } from "./self.ts";
+import { complaintAnswer, isComplaint } from "./complaint.ts";
 import { askedLength, lengthCaps, lengthNote } from "./asklength.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
@@ -593,9 +594,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
 
       // K20: a question about Lumen itself ("är du en robot", "lyssnar du hela tiden", "sparar du det jag säger") gets
       // the honest answer of "Om appen", in code (where others talk only with "Lumen" first)
-      const selfText = !demo && (!(body.persona === "social" || body.persona === "interview") || /^\s*(?:hej\s+|okej\s+)?lumen\b/iu.test(body.fragment))
-        ? selfAnswer(body.fragment, body.assistantName ?? "Earmind")
-        : null;
+      const aboutMe = !demo && (!(body.persona === "social" || body.persona === "interview") || /^\s*(?:hej\s+|okej\s+)?lumen\b/iu.test(body.fragment));
+      // K42.4: a complaint about Lumen ("varför upprepar du") is answered honestly in code, never with a promise
+      const complaint = aboutMe && isComplaint(body.fragment);
+      const selfText = complaint ? complaintAnswer(body.qaLog === true) : aboutMe ? selfAnswer(body.fragment, body.assistantName ?? "Earmind") : null;
       if (selfText) {
         const totalMs = Math.round(now() - t0);
         const frames = [
@@ -605,7 +607,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             answered: true,
             timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
             breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
-            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "self" },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: complaint ? "complaint" : "self" },
+            ...(complaint ? { complaint: true } : {}),
             summary: null,
             relation: null,
             source: null,

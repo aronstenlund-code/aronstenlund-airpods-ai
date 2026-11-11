@@ -43,6 +43,8 @@ export interface AnswerRequest {
   personaSetup: string;
   /** K42.1 (D128): the assistant's name, from the app (wake word); default Earmind. */
   assistantName?: string;
+  /** K30/K42.4: the app logs this turn to qa_log (consent v5). */
+  qaLog?: boolean;
   /** Interview persona: is the fragment the interviewer's question or the user's own answer? */
   turn: Turn;
   /** D43: present => Rizzläge fast path (persona social): returns a `suggestions` event. */
@@ -382,6 +384,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     ...toolFields(o),
     ...prefs(o),
     ...(o.two_level === true ? { twoLevel: true } : {}),
+    ...(o.qa_log === true ? { qaLog: true } : {}),
     ...(o.session_end === true ? { sessionEnd: true } : {}),
     ...(o.situation && typeof o.situation === "object" && (o.situation as Record<string, unknown>).others_talking === true
       ? { situation: { othersTalking: true } }

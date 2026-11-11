@@ -27,3 +27,20 @@ Deno.test("K42.3 'hundra ord eller mer': note, larger limits, no two-level", asy
   await (await r.handler(post("Förklara fotosyntes"))).text();
   assertEquals(r.seen[0].user.includes("LENGTH (K42)"), false);
 });
+
+import { complaintAnswer, isComplaint } from "./complaint.ts";
+import { withQaLog } from "./qalog.ts";
+Deno.test("K42.4 a complaint about the app: honest answer in code, no promise, marked in qa_log", async () => {
+  for (const q of ["varför upprepar du", "Varför svarar du inte när jag pratar med dig?", "Lumen varför upprepar du dig", "du lyssnar inte", "sluta upprepa", "varför säger du samma sak", "du hörde fel"]) assert(isComplaint(q), q);
+  for (const q of ["varför upprepar man ett experiment", "varför svarar inte min kompis", "hur fungerar ett eko", "upprepa frågan", "varför är himlen blå"]) assert(!isComplaint(q), q);
+  assert(!/ska inte|kommer inte|lovar/.test(complaintAnswer(true) + complaintAnswer(false)));
+  const { handler, seen } = setup();
+  const rows: Record<string, unknown>[] = [];
+  const h = withQaLog(handler, (r) => { rows.push(r as unknown as Record<string, unknown>); return Promise.resolve(); }, (p) => void p);
+  const res = await h(new Request("http://x/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fragment: "varför upprepar du", mode: "auto", language: "sv", qa_log: true, context: {} }) }));
+  const text = await res.text();
+  assert(text.includes("Jag har sparat det så att det kan rättas"), text);
+  assertEquals(seen.length, 0, "no model call");
+  await new Promise((r) => setTimeout(r, 20));
+  assertEquals(rows[0]?.kind, "complaint");
+});
