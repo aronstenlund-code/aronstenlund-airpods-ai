@@ -60,6 +60,18 @@ Deno.test("K42.1: the name is Earmind (or the app's name); never 'inget eget nam
 
 import { isRankQuestion } from "./handler.ts";
 Deno.test("K42.2: short rank fact questions are recognised (they go to the stronger model)", () => {
-  for (const q of ["Vilken är Sveriges största sjö?", "Vilken är Sveriges tredje största stad?", "Vad är världens längsta flod?", "Vilket är Sveriges högsta berg?", "Vem var Sveriges första statsminister?", "Lumen, vilken är Sveriges näst största ö?"]) assert(isRankQuestion(q), q);
-  for (const q of ["Vad ska jag plugga först?", "Vilken är din största svaghet?", "största sjön", "Hur fungerar fotosyntes?", "Vad heter du?"]) assert(!isRankQuestion(q), q);
+  for (const q of ["Vilken är Sveriges största sjö?", "Vilken är Sveriges tredje största stad?", "Vad är världens längsta flod?", "Vilket är Sveriges högsta berg?", "Vem var Sveriges första statsminister?", "Lumen, vilken är Sveriges näst största ö?", "Hur många landskap har Sverige?"]) assert(isRankQuestion(q), q);
+  for (const q of ["Vad ska jag plugga först?", "Vilken är din största svaghet?", "största sjön", "Hur fungerar fotosyntes?", "Vad heter du?", "Hur många äpplen har jag?"]) assert(!isRankQuestion(q), q);
+});
+
+import { askedLength, lengthNote, numberWord } from "./asklength.ts";
+Deno.test("K42.3: a spoken length is read in code", () => {
+  assertEquals(askedLength("Förklara fotosyntes med hundra ord eller mer"), { words: 100, atLeast: true, atMost: false });
+  assertEquals(askedLength("Berätta om kriget med cirka hundrafemtio ord")?.words, 150);
+  assertEquals(askedLength("Förklara demokrati i en mening"), { sentences: 1 });
+  assertEquals(askedLength("Säg kort vad en atom är"), { short: true });
+  assertEquals(askedLength("Förklara utförligt hur ett vaccin fungerar")?.atLeast, true);
+  for (const q of ["vad betyder ordet kort", "spela kort", "hur många ord finns det", "vad är ett ord", "förklara fotosyntes"]) assertEquals(askedLength(q), null, q);
+  assertEquals([numberWord("hundrafemtio"), numberWord("tvåhundra"), numberWord("trettiofem"), numberWord("120")], [150, 200, 35, 120]);
+  assert(lengthNote({ words: 100, atLeast: true }).includes("between 100 and 140 words"));
 });

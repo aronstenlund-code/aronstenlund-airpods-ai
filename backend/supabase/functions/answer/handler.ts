@@ -29,6 +29,7 @@ import {
   spokenFor,
 } from "./resource.ts";
 import { selfAnswer } from "./self.ts";
+import { askedLength, lengthCaps, lengthNote } from "./asklength.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation, isShortFactQuestion } from "./length.ts";
@@ -197,7 +198,8 @@ export interface HandlerConfig {
 const RANK = /(?<![\p{L}])(?:störst[a-z]*|minst[a]?|längst[a]?|högst[a]?|lägst[a]?|äldst[a]?|yngst[a]?|djupast[e]?|tätast[e]?|kallast[e]?|varmast[e]?|näst|tredje|fjärde|femte|först[a]?|sist[a]?)(?![\p{L}])/iu;
 export function isRankQuestion(t: string): boolean {
   const w = t.trim().split(/\s+/);
-  return w.length >= 3 && w.length <= 14 && RANK.test(t) &&
+  const counted = /(?<![\p{L}])hur många(?![\p{L}])/iu.test(t) && /(?<![\p{L}])(?:sverige|sveriges|svenska|världen|världens|europa|europas|norden)(?![\p{L}])/iu.test(t);
+  return w.length >= 3 && w.length <= 14 && (RANK.test(t) || counted) &&
     /^(?:(?:lumen|earmind),?\s+)?(?:vilk(?:en|et|a)|vad|vem|var|hur|när|vilket år|nämn|säg)\b/iu.test(t.trim()) &&
     !/(?<![\p{L}])(?:jag|mig|min|mitt|mina|vi|vår|våra|du|din|ditt|dina)(?![\p{L}])/iu.test(t);
 }
@@ -1274,9 +1276,13 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const systemTail = profileText
         ? `<user_profile>${sanitizeTagged(profileText)}</user_profile> How this user wants answers in this context, learned from their corrections: follow it unless the request asks otherwise.`
         : undefined;
-      const maxChars = (demo ? demoCaps.answerMaxChars : undefined) ?? plan?.maxChars ??
+      // K42.3: a length the user says ("hundra ord eller mer", "i en mening", "kort") is always followed
+      const asked = !demo && !plan ? askedLength(body.fragment) : null;
+      const askedCaps = asked ? lengthCaps(asked) : null;
+      const maxChars0 = (demo ? demoCaps.answerMaxChars : undefined) ?? plan?.maxChars ??
         (textReq ? 2400 : undefined) ?? (webOn ? 800 : undefined) ??
         (answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars);
+      const maxChars = askedCaps ? Math.max(maxChars0, askedCaps.maxChars) : maxChars0;
       const parser = new ResponseParser(
         body.mode,
         body.fragment,
@@ -1324,7 +1330,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K13.1: short first unless the learned default here is the long answer (2 of the last 3 "ja", K13.2)
       const longFirst = applicableHere.some((x) => x.key === "length" && x.value === "longer");
       const twoLevel = body.twoLevel === true && !demo && !plan && !command && !continuation && !computed &&
-        !textReq && !need && !quiz && !gradeReply && !longFirst &&
+        !textReq && !need && !quiz && !gradeReply && !longFirst && !asked &&
         // Toby T12: Standardläge (auto, push to talk) gets the developed answer ready for "ja" also after a short fact
         // answer, so "ja" plays at once (T7: under 1 s); Haiku there, so the extra part costs almost nothing
         (tutor || answerTypeBase === "study" || body.mode === "auto" || body.mode === "push_to_talk" || body.mode === "text");
@@ -1444,7 +1450,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
         ? demoCaps.answerMaxTokens + (relationTag ? 12 : 0)
-        : baseTokens + (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
+        : Math.max(baseTokens, askedCaps?.maxTokens ?? 0) + (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
       const tools = textOn ? textTools() : webOn && need ? webTools(need) : undefined;
       const allTools = tools && phoneTools ? [...tools, ...phoneTools] : tools ?? phoneTools;
       // D82: after the echo of the last answer was removed, only a complete new question gets an answer.
@@ -1484,8 +1490,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         now: nowContext((deps.clock ?? (() =>
           new Date()))()),
         ...(computed ? { computed: computed.text } : {}),
-        ...(webNote || ordinal
-          ? { note: [webNote, ordinal ? ORDINAL_NOTE : ""].filter(Boolean).join(" ") }
+        ...(webNote || ordinal || asked
+          ? { note: [webNote, ordinal ? ORDINAL_NOTE : "", asked ? lengthNote(asked) : ""].filter(Boolean).join(" ") }
           : {}),
       };
       // K11 (Oscar O5: a Sonnet call hung for 90 s): first text within 5 s (7.5 s with thinking), else the same
