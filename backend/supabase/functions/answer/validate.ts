@@ -41,6 +41,8 @@ export interface AnswerRequest {
   persona: Persona;
   /** Role / pasted job ad / scenario for interview and social personas and interview_prep (user data). */
   personaSetup: string;
+  /** K42.1 (D128): the assistant's name, from the app (wake word); default Earmind. */
+  assistantName?: string;
   /** Interview persona: is the fragment the interviewer's question or the user's own answer? */
   turn: Turn;
   /** D43: present => Rizzläge fast path (persona social): returns a `suggestions` event. */
@@ -252,6 +254,8 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     throw bad('persona must be "tutor", "interview" or "social"');
   }
   const personaSetup = str(o.persona_setup, "persona_setup", LIMITS.personaSetup);
+  const rawName = typeof o.assistant_name === "string" ? o.assistant_name.trim() : "";
+  const assistantName = /^[\p{L}][\p{L} -]{0,19}$/u.test(rawName) ? rawName : "Earmind";
   if (mode === "interview_prep" && !personaSetup) {
     throw bad("persona_setup (the role or job ad) is required for interview_prep");
   }
@@ -352,6 +356,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     goals,
     persona,
     personaSetup,
+    assistantName,
     turn,
     social,
     commands,

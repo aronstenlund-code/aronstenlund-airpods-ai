@@ -583,7 +583,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K20: a question about Lumen itself ("är du en robot", "lyssnar du hela tiden", "sparar du det jag säger") gets
       // the honest answer of "Om appen", in code (where others talk only with "Lumen" first)
       const selfText = !demo && (!(body.persona === "social" || body.persona === "interview") || /^\s*(?:hej\s+|okej\s+)?lumen\b/iu.test(body.fragment))
-        ? selfAnswer(body.fragment)
+        ? selfAnswer(body.fragment, body.assistantName ?? "Earmind")
         : null;
       if (selfText) {
         const totalMs = Math.round(now() - t0);
@@ -1425,7 +1425,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
         (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "") +
         (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "") +
-        (!plan && (tutor || quiz) && !noSummary ? QUIZ_KEY_RULE : "");
+        (!plan && (tutor || quiz) && !noSummary ? QUIZ_KEY_RULE : "") +
+        // K42.1 (D128): the assistant has a name; it never says it has none
+        (!plan ? `\n- Your name is ${body.assistantName ?? "Earmind"}. Asked your name or who you are, say "Jag heter ${body.assistantName ?? "Earmind"}"; never say that you have no name or call yourself anything else.` : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo

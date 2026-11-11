@@ -23,7 +23,7 @@ Deno.test("K27 O24 + O34: questions about Lumen are recognised by content and an
   for (const k of ["listen", "audio", "save"] as const) assert(SELF_TEXT[k].includes("ElevenLabs"), k);
   assert(!Object.values(SELF_TEXT).some((x) => /ljud sparas inte/i.test(x)));
   assert(SELF_TEXT.sell.startsWith("Nej, vi säljer ingen data"));
-  assert(SELF_TEXT.which_ai.startsWith("Nej, Lumen är inte ChatGPT"));
+  assert(SELF_TEXT.which_ai.startsWith("Nej, {N} är inte ChatGPT"));
   for (const t of ["är en robot levande", "vad är AI", "vem har gjort Mona Lisa", "lyssnar hundar på musik", "spelar du piano",
     "sparar man pengar på att cykla", "hör fladdermöss ultraljud", "vad är en chattbot", "vem är du i Hamlet, Horatio eller Hamlet",
     "är det sant att robotar tar jobb", "lyssnar du på musik", "spelar du in en låt", "sparar du pengar", "hör du vad läraren sa",
