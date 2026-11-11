@@ -191,3 +191,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 - [x] **O52 (prio 1, Oscar): fel klockslag; O53 (prio 2): opt_in utan e-postkod** (effort: low). Lagd av Kevin 2026-11-11 efter Oscars rapporter. _klar och driftsatt 2026-11-11 23:13 (Kevin): `reports/2026-11-11-2313-kevin-o52-clock-o53-optin.md`_
 
 - [x] **K44b – Oscars rester efter K44 (sömn, Spotify, '?.')** (effort: low). Lagd av Kevin 2026-11-12. _klar 2026-11-12 23:58 (Kevin): `reports/2026-11-12-2358-kevin-k44b-oscar-rest.md`_
+
+- [x] **K-stående – omgång 20 (K4-loopen): intervjuläget utan CV** (effort: low). Lagd av Kevin 2026-11-12. _klar 2026-11-12 00:50 (Kevin): `reports/2026-11-12-0050-kevin-standing20-interview-ad.md`_
