@@ -1,0 +1,143 @@
+{
+ "ok": "23/23",
+ "rows": [
+  {
+   "check": "REST select debug_turns (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.debug_turns TO anon;\",\"message\":\"permission denied for table debug_turns\"}",
+   "ok": true
+  },
+  {
+   "check": "REST insert debug_turns (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.debug_turns TO anon;\",\"message\":\"permission denied for table debug_turns\"}",
+   "ok": true
+  },
+  {
+   "check": "REST select debug_testers (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.debug_testers TO anon;\",\"message\":\"permission denied for table debug_testers\"}",
+   "ok": true
+  },
+  {
+   "check": "REST insert debug_testers (public key only)",
+   "status": 401,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.debug_testers TO anon;\",\"message\":\"permission denied for table debug_testers\"}",
+   "ok": true
+  },
+  {
+   "check": "storage list debug_audio (public key only)",
+   "status": 200,
+   "body": "[]",
+   "ok": true
+  },
+  {
+   "check": "storage public URL (public key only)",
+   "status": 400,
+   "body": "{\"statusCode\":\"404\",\"error\":\"Bucket not found\",\"message\":\"Bucket not found\",\"code\":\"NoSuchBucket\"}",
+   "ok": true
+  },
+  {
+   "check": "storage direct upload (public key only)",
+   "status": 400,
+   "body": "{\"statusCode\":\"403\",\"error\":\"Unauthorized\",\"message\":\"new row violates row-level security policy\",\"code\":\"AccessDenied\"}",
+   "ok": true
+  },
+  {
+   "check": "storage bucket info (public key only)",
+   "status": 400,
+   "body": "{\"statusCode\":\"404\",\"error\":\"Bucket not found\",\"message\":\"Bucket not found\",\"code\":\"NoSuchBucket\"}",
+   "ok": true
+  },
+  {
+   "check": "REST select debug_turns (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.debug_turns TO authenticated;\",\"message\":\"permission denied for table debug_turns\"",
+   "ok": true
+  },
+  {
+   "check": "REST insert debug_turns (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.debug_turns TO authenticated;\",\"message\":\"permission denied for table debug_turns\"",
+   "ok": true
+  },
+  {
+   "check": "REST select debug_testers (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.debug_testers TO authenticated;\",\"message\":\"permission denied for table debug_test",
+   "ok": true
+  },
+  {
+   "check": "REST insert debug_testers (anonymous user)",
+   "status": 403,
+   "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT INSERT ON public.debug_testers TO authenticated;\",\"message\":\"permission denied for table debug_test",
+   "ok": true
+  },
+  {
+   "check": "storage list debug_audio (anonymous user)",
+   "status": 200,
+   "body": "[]",
+   "ok": true
+  },
+  {
+   "check": "storage public URL (anonymous user)",
+   "status": 400,
+   "body": "{\"statusCode\":\"404\",\"error\":\"Bucket not found\",\"message\":\"Bucket not found\",\"code\":\"NoSuchBucket\"}",
+   "ok": true
+  },
+  {
+   "check": "storage direct upload (anonymous user)",
+   "status": 400,
+   "body": "{\"statusCode\":\"403\",\"error\":\"Unauthorized\",\"message\":\"new row violates row-level security policy\",\"code\":\"AccessDenied\"}",
+   "ok": true
+  },
+  {
+   "check": "storage bucket info (anonymous user)",
+   "status": 400,
+   "body": "{\"statusCode\":\"404\",\"error\":\"Bucket not found\",\"message\":\"Bucket not found\",\"code\":\"NoSuchBucket\"}",
+   "ok": true
+  },
+  {
+   "check": "GET flag without token",
+   "status": 401,
+   "body": "{\"error\":{\"code\":\"unauthorized\",\"message\":\"Missing bearer token\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "GET flag with forged token",
+   "status": 401,
+   "body": "{\"error\":{\"code\":\"unauthorized\",\"message\":\"Invalid or expired token\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "GET flag anonymous: false",
+   "status": 200,
+   "body": "{\"debug_audio\":false}",
+   "ok": true
+  },
+  {
+   "check": "opt_in anonymous",
+   "status": 403,
+   "body": "{\"error\":{\"code\":\"forbidden\",\"message\":\"Testläget kräver inloggning med e-postkod.\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "upload turn anonymous",
+   "status": 403,
+   "body": "{\"error\":{\"code\":\"forbidden\",\"message\":\"Testläget är inte på för det här kontot.\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "owner view anonymous",
+   "status": 403,
+   "body": "{\"error\":{\"code\":\"forbidden\",\"message\":\"Owner only\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "purge ignores days/folder parameters (removes only > 14 days)",
+   "status": 200,
+   "body": "{\"removed\":0}",
+   "ok": true
+  }
+ ]
+}

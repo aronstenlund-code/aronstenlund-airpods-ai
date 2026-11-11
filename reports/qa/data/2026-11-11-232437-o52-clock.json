@@ -1,0 +1,32 @@
+[
+ {
+  "question": "Lumen, vad är klockan",
+  "stockholm_time": "23:24",
+  "said": "Klockan är sex minuter i halv tolv på kvällen, alltså tjugotre och tjugofyra.",
+  "model": "clock"
+ },
+ {
+  "question": "Lumen, hur mycket är klockan",
+  "stockholm_time": "23:24",
+  "said": "Klockan är sex minuter i halv tolv på kvällen, alltså tjugotre och tjugofyra.",
+  "model": "clock"
+ },
+ {
+  "question": "kan du säga vad klockan är",
+  "stockholm_time": "23:24",
+  "said": "Klockan är sex minuter i halv tolv på kvällen, alltså tjugotre och tjugofyra.",
+  "model": "clock"
+ },
+ {
+  "question": "Lumen, vad är klockan nu",
+  "stockholm_time": "23:24",
+  "said": "Klockan är sex minuter i halv tolv på kvällen, alltså tjugotre och tjugofyra.",
+  "model": "clock"
+ },
+ {
+  "question": "Lumen, vet du vad klockan är",
+  "stockholm_time": "23:24",
+  "said": "Klockan är sex minuter i halv tolv på kvällen, alltså tjugotre och tjugofyra.",
+  "model": "clock"
+ }
+]
