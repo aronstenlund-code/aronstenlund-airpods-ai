@@ -108,6 +108,7 @@ final class CloudAnswerProvider: AnswerProvider {
                 var prep_terms: [String]?
                 var recent_turns: [AnswerContext.Turn]?
                 var concept_stats: [AnswerContext.ConceptStat]?
+                var quiz_key: QuizKey?
             }
             var fragment: String
             var mode: String
@@ -143,7 +144,8 @@ final class CloudAnswerProvider: AnswerProvider {
                                    recent_qa: request.context.recentQA.isEmpty ? nil : request.context.recentQA,
                                    prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms,
                                    recent_turns: request.context.recentTurns.isEmpty ? nil : request.context.recentTurns,
-                                   concept_stats: request.context.conceptStats.isEmpty ? nil : request.context.conceptStats)
+                                   concept_stats: request.context.conceptStats.isEmpty ? nil : request.context.conceptStats,
+                                   quiz_key: request.context.quizKey)
         let body = Body(fragment: request.fragment, mode: request.mode, language: request.language, context: context, length: request.length,
                         goals: request.context.goals,
                         commands: request.context.commands.isEmpty ? nil : request.context.commands,

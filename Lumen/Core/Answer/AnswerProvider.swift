@@ -47,6 +47,8 @@ struct AnswerContext: Equatable, Sendable {
     var twoLevel = false
     /// A59 (K36): the services the user has connected ("spotify"), for the server's tools.
     var connections: [String] = []
+    /// A62 (K40): the answer key of the last check question (`done.quiz_key`), sent back with the student's answer.
+    var quizKey: QuizKey?
 
     struct ConceptStat: Equatable, Sendable, Codable {
         var concept: String
@@ -107,8 +109,19 @@ struct AnswerContext: Equatable, Sendable {
                                              a: String($0.a.prefix(SavedAnswerPayload.answerLimit)))
                       },
                       twoLevel: twoLevel,
-                      connections: Array(connections.prefix(5)))
+                      connections: Array(connections.prefix(5)),
+                      quizKey: quizKey.map { QuizKey(answer: String($0.answer.prefix(120)),
+                                                      alternatives: $0.alternatives.map { Array($0.prefix(6).map { String($0.prefix(120)) }) }) })
     }
+}
+
+/// A62 (K40): `done.quiz_key` and `context.quiz_key`: the right answer and the likely wrong ones.
+struct QuizKey: Codable, Equatable, Sendable {
+    var answer: String
+    var alternatives: [String]?
+
+    /// The words for Scribe's keyterms, the answer first.
+    var terms: [String] { Array(([answer] + (alternatives ?? [])).filter { !$0.isEmpty }.prefix(4)) }
 }
 
 /// `social` in the request (D43): what Rizzläge sends instead of a question.
@@ -251,6 +264,8 @@ struct AnswerDone: Equatable, Sendable, Codable {
     var more: String? = nil
     /// A59 (K36): a tool the server ran (Spotify); the sentence about it is the answer.
     var serverTool: ServerToolResult? = nil
+    /// A62 (K40): after a check question, its answer and likely alternatives (never spoken).
+    var quizKey: QuizKey? = nil
 }
 
 /// `event: error` after the stream started, or the JSON error body before it.

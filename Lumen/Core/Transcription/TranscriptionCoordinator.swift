@@ -589,6 +589,26 @@ final class TranscriptionCoordinator {
         await startTranscribing()
     }
 
+    /// A62: the term is among the keyterms the running Scribe session was opened with.
+    func isConnectedKeyterm(_ term: String) -> Bool {
+        connectedKeyterms.contains { $0.caseInsensitiveCompare(term) == .orderedSame }
+    }
+
+    /// A62 (K40): the quiz answer's words reach Scribe now, while Lumen still asks the question (the input is gated
+    /// then, and words said while it connects wait in the stream). The time is logged so Oscar can measure the cost.
+    private(set) var lastQuizReconnectMs: Int?
+
+    func applyQuizKeytermsNow() async {
+        guard case .running(.scribe) = status, controller.isCapturing,
+              !scribeKeytermsDropped, scribeKeyterms != connectedKeyterms else { return }
+        let started = Date()
+        controller.log("Scribe keyterms for the quiz answer: reconnecting while Lumen asks (A62)")
+        await startTranscribing()
+        let ms = Int(Date().timeIntervalSince(started) * 1000)
+        lastQuizReconnectMs = ms
+        controller.log("Scribe reconnected for the quiz answer in \(ms) ms, input gated: \(isInputGated) (A62)")
+    }
+
     /// D87: Provläge starts: a running Scribe session takes the exam's keyterms now, before the first word (no wait
     /// for a pause; the user has not started yet).
     func applyKeytermsNow() async {
