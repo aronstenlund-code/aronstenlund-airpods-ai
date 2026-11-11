@@ -36,7 +36,7 @@ import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./per
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
 import { computeMath, isWordProblem } from "./mathcheck.ts";
 import { type CommandTask, commandTask, detectRule, funCommand, socialRequest } from "./commands.ts";
-import { ACTION_REQUEST, confirmText, isAddressedAction, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
+import { ACTION_REQUEST, confirmText, helpLineCall, isAddressedAction, plainMusicRequest, isPhoneTool, PHONE_TOOLS_RULE, phoneToolDefs, toolKind, toolRoundMessages, validatePhoneInput } from "./phonetools.ts";
 import { APP_COMMAND_SURE, currentMode, detectAppCommand } from "./appcommand.ts";
 import { applicable, describe, detectCorrection, profileOf } from "../memory/settings.ts";
 
@@ -1839,6 +1839,24 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               status = "ok";
               emitText((answerChars ? " " : "") + res.say);
               serverToolDone = { name: st.name, status: res.status, ...(res.playing ? { playing: res.playing } : {}) };
+            }
+            // O42: a help line ("ring Bris") or plain music ("spela musik") the model did not act on: code makes the
+            // call (the app runs it; iOS asks before a call, B6 numbers only)
+            const offered = (name: string) => phoneOffer.includes(name);
+            const codeCall = phoneTools && !toolPending && !st && !closed && !crisisMarked && !crisisLate && !body.toolRound
+              ? (offered("call_contact") && helpLineCall(body.fragment)
+                ? { name: "call_contact" as const, input: { number: helpLineCall(body.fragment)! } }
+                : offered("music_open") && plainMusicRequest(body.fragment)
+                ? { name: "music_open" as const, input: { query: plainMusicRequest(body.fragment)! } }
+                : null)
+              : null;
+            if (codeCall) {
+              toolPending = true;
+              flushMeta();
+              if (ttftMs === null) ttftMs = now() - t0;
+              status = "ok";
+              send("tool_call", { id: `toolu_lumen${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`, name: codeCall.name, input: codeCall.input, confirm: null, kind: toolKind(codeCall.name) });
+              console.log(JSON.stringify({ event: "tool_call", name: codeCall.name, mode: body.mode, by: "code" }));
             }
             // O41: a request to the phone that ended in nothing said and no tool (the English reasoning was dropped):
             // one short Swedish question instead of silence

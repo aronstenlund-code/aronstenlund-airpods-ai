@@ -205,17 +205,35 @@ Phone tools (K35): always reply in Swedish. When the user asks you to DO somethi
 /** K35: an utterance that asks the phone to do something: its text is held until the tool call or the end. */
 export const ACTION_REQUEST = /(?<![\p{L}])(?:lägg in|lägga in|boka|påminn|påminna|sätt (?:en |på en )?(?:timer|nedräkning|larm|alarm)|ställ (?:en |ett )?(?:timer|larm|alarm|väckarklocka)|starta (?:en )?(?:timer|nedräkning)|väck mig|spara (?:en )?anteckning|anteckna|skriv upp|kom ihåg att|vad har jag (?:i|på|för)|vad står i (?:min )?kalender|när har jag|timer på|larm (?:på|klockan)|ring|ringa|ringer du|slå en signal|spela|sätt på (?:lite |någon |en |min |mina )?(?:musik|låt|låten|spellista|spellistan|spotify)|kör (?:lite|en låt|spellistan|låten|musik)|lyssna på)(?![\p{L}])/iu;
 
-/** O41 (BLOCKER): the app sends Standardläge as mode "auto", which hears other people too. A phone tool is offered
- *  there only when the utterance is addressed to Lumen (the wake word first, or the app's voice instruction) or
- *  STARTS with the request ("ring mamma", "sätt en timer på fem minuter"); something said in passing is not. */
+/** O41 (BLOCKER) + O42: the app sends Standardläge as mode "auto", which hears everyone in the room. A phone tool is
+ *  offered there only when the utterance is addressed to Lumen: the wake word first, or the app's voice instruction
+ *  (O42: "ring mamma" said by a friend to someone else must not call). */
 export function isAddressedAction(fragment: string, voiceInstruction = false): boolean {
   const f = (fragment ?? "").trim();
   const wake = /^(?:(?:hej|okej|ok)\s+)?lumen[,!.]?\s*/iu;
-  const addressed = wake.test(f) || voiceInstruction;
-  const lead = f.replace(wake, "").replace(/^(?:snälla\s+)?(?:kan du|kunde du|skulle du kunna|vill du|jag vill att du|du får gärna)\s+(?:snälla\s+)?/iu, "")
-    .replace(/^snälla\s+/iu, "");
-  const m = ACTION_REQUEST.exec(lead);
-  return !!m && (addressed || m.index === 0);
+  if (!wake.test(f) && !voiceInstruction) return false;
+  return ACTION_REQUEST.test(f.replace(wake, ""));
+}
+
+/** O42: help lines are dialled by code when the model does nothing ("ring Bris" was silent 3/3). Only the numbers
+ *  checked against their sources (crisis.ts, B6): 112, Självmordslinjen 90101, Bris 116 111, and 1177. */
+const HELP_LINES: [RegExp, string][] = [
+  [/(?<![\p{L}])bris(?![\p{L}])/iu, "116111"],
+  [/självmordslinjen|(?<![\p{L}])mind(?![\p{L}])/iu, "90101"],
+  [/(?<![\d])1177(?![\d])|vårdguiden|sjukvårdsrådgivning\p{L}*/iu, "1177"],
+  [/(?<![\d])112(?![\d])|larmcentralen|sos alarm/iu, "112"],
+];
+export function helpLineCall(fragment: string): string | null {
+  const f = fragment ?? "";
+  if (!/(?<![\p{L}])(?:ring|ringa|slå en signal till|koppla mig till)(?![\p{L}])/iu.test(f)) return null;
+  for (const [rx, n] of HELP_LINES) if (rx.test(f)) return n;
+  return null;
+}
+
+/** O42: "spela musik" (no artist) left the model without a search: the query, "musik" when nothing else was said. */
+export function plainMusicRequest(fragment: string): string | null {
+  const m = /(?<![\p{L}])(?:spela|sätt på|kör|starta)\s+(?:lite\s+|någon\s+|min\s+)?musik(?:\s+(?:av|med|från)\s+(.{2,60}?))?\s*[.!?]?$/iu.exec(fragment ?? "");
+  return m ? (m[1]?.trim() || "musik") : null;
 }
 
 export interface ToolRound {
