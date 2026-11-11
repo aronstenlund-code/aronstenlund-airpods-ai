@@ -279,6 +279,7 @@ struct MyAnswerEditor: View {
                             if answer != suggestion {
                                 Button("Använd förslaget igen") { answer = suggestion }
                                     .font(LumenFont.text(15, .semibold))
+                                    .foregroundStyle(LumenColor.blue)
                                     .frame(minHeight: 44)
                             }
                         }

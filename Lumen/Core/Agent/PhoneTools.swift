@@ -64,6 +64,11 @@ enum PhoneTool: String, CaseIterable, Sendable {
     case timerStart = "timer_start"
     case alarmSet = "alarm_set"
     case noteAdd = "note_add"
+    /// A58 (K36): "ring mamma": the contact's number from Kontakter (asked the first time), then `tel:`; iOS asks
+    /// "Ring …?" itself (one tap), so Lumen does not ask too.
+    case callContact = "call_contact"
+    /// A58 (K36): "spela lugn pluggmusik": Spotify opens with a search; the user taps play.
+    case musicOpen = "music_open"
 }
 
 /// SSE `tool_call`: `{id, name, input, confirm, kind}`. The server writes `confirm` (Swedish yes/no question) for the

@@ -54,7 +54,7 @@ func makeTestPrep() -> PrepStore { PrepStore(directory: temporaryDirectory()) }
         let note = Note(createdAt: t0, language: "sv-SE",
                         answers: [AnswerTurn(question: "Q?", answer: "A.", createdAt: t0, source: "cloud")])
         let markdown = note.markdown
-        #expect(markdown.hasPrefix("# Lumen — "))
+        #expect(markdown.hasPrefix("# Earmind — ")) // A55 (D128)
         #expect(markdown.contains("## Questions and answers\n\n**Q?**\n\nA.\n"))
         let longAnswerOnly = Note(createdAt: t0, language: "sv-SE",
                                   answers: [AnswerTurn(question: "", answer: String(repeating: "x", count: 80), createdAt: t0, source: "cloud")])

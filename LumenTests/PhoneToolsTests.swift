@@ -30,7 +30,7 @@ import Testing
         context.toolRound = ToolRound(call: call, status: .ok, result: .object(["alarm_id": .string("A")]))
         let data = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "väck mig halv sju", mode: "push_to_talk", language: "sv", context: context))
         let json = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
-        #expect((json["tools_available"] as? [String])?.count == 6)
+        #expect((json["tools_available"] as? [String])?.count == PhoneTool.allCases.count) // A58: 8 with call_contact and music_open
         let round = try #require(json["tool_round"] as? [String: Any])
         #expect(round["status"] as? String == "ok")
         let sentCall = try #require(round["call"] as? [String: Any])

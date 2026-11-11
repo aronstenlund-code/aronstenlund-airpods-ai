@@ -69,6 +69,23 @@
         }
       }
     },
+    "NSContactsUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When you say \"Lumen, call Mum\", Earmind looks the name up in your contacts to find the number. Nothing from your contacts is sent anywhere."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "När du säger ”Lumen, ring mamma” letar Earmind upp namnet i dina kontakter för att hitta numret. Inget från kontakterna skickas någonstans."
+          }
+        }
+      }
+    },
     "NSMicrophoneUsageDescription": {
       "extractionState": "manual",
       "localizations": {

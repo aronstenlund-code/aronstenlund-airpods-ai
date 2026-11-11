@@ -1,4 +1,5 @@
 import AlarmKit
+@preconcurrency import Contacts
 import EventKit
 import SwiftUI
 
@@ -28,6 +29,8 @@ struct LumenCapability: Identifiable, Equatable, Sendable {
         case reminders = "Påminnelser"
         /// AlarmKit: timers and alarms (iOS asks the first time).
         case alarms = "Alarm"
+        /// A58: "ring mamma" looks the name up in Kontakter.
+        case contacts = "Kontakter"
     }
 
     let id: String
@@ -50,7 +53,8 @@ struct LumenCapability: Identifiable, Equatable, Sendable {
         .init(id: "notes", group: .everyday, title: "Anteckningar", symbol: "note.text", say: "”Lumen, spara det”", setup: .nothing),
         .init(id: "training", group: .everyday, title: "Träning", symbol: "figure.run", say: "”Lumen, ge mig ett styrkepass på 20 minuter”", setup: .nothing),
         .init(id: "spotify", group: .musicAndCalls, title: "Spotify", symbol: "music.note", say: "”Lumen, kör spellistan Plugg”", setup: .soon),
-        .init(id: "call", group: .musicAndCalls, title: "Ring", symbol: "phone", say: "”Lumen, ring mamma”", setup: .soon),
+        .init(id: "call", group: .musicAndCalls, title: "Ring", symbol: "phone", say: "”Lumen, ring mamma”", setup: .permission(.contacts)), // A58
+        .init(id: "music", group: .musicAndCalls, title: "Öppna musik", symbol: "music.note.list", say: "”Lumen, spela lugn pluggmusik”", setup: .place("Öppnar Spotify med sökningen")), // A58
         .init(id: "interview", group: .more, title: "Intervju", symbol: "briefcase", say: "Färdiga svar på intervjufrågor", setup: .place("Byt läge")),
         .init(id: "sleep", group: .more, title: "Sömn", symbol: "moon.stars", say: "Tryck Sov på kvällen. Morgonrapport när du vaknar", setup: .nothing),
     ]
@@ -82,6 +86,12 @@ enum CapabilityAccess: Equatable, Sendable {
             case .denied: .denied
             default: .notAsked
             }
+        case .contacts:
+            switch CNContactStore.authorizationStatus(for: .contacts) {
+            case .authorized, .limited: .allowed
+            case .notDetermined: .notAsked
+            default: .denied
+            }
         }
     }
 
@@ -99,6 +109,7 @@ enum CapabilityAccess: Equatable, Sendable {
         case .calendar: return (try? await EKEventStore().requestFullAccessToEvents()) == true
         case .reminders: return (try? await EKEventStore().requestFullAccessToReminders()) == true
         case .alarms: return (try? await AlarmManager.shared.requestAuthorization()) == .authorized
+        case .contacts: return (try? await CNContactStore().requestAccess(for: .contacts)) == true
         }
     }
 
@@ -153,7 +164,7 @@ struct CapabilitiesView: View {
     }
 
     private func refresh() {
-        for permission in [LumenCapability.Permission.calendar, .reminders, .alarms] {
+        for permission in [LumenCapability.Permission.calendar, .reminders, .alarms, .contacts] {
             access[permission] = CapabilityAccess.current(permission)
         }
     }

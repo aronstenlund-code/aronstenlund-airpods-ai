@@ -31,6 +31,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSContactsUsageDescription</key>
+	<string>When you say "Lumen, call Mum", Earmind looks the name up in your contacts to find the number. Nothing from your contacts is sent anywhere.</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>spotify</string>

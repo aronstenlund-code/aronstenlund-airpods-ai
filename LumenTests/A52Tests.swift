@@ -14,10 +14,11 @@ import Testing
         for item in LumenCapability.all { #expect(!item.say.isEmpty && !item.title.isEmpty) }
     }
 
-    @Test func spotifyAndCallsAreComingSoonUntilTheyWork() {
+    @Test func spotifyIsComingSoonAndCallsNeedTheContacts() {
         let spotify = LumenCapability.all.first { $0.id == "spotify" }
         let call = LumenCapability.all.first { $0.id == "call" }
-        #expect(spotify?.setup == .soon && call?.setup == .soon)
+        #expect(spotify?.setup == .soon)
+        #expect(call?.setup == .permission(.contacts), "A58: call_contact is built")
         let line = CapabilityAccess.line(for: .soon, access: nil)
         #expect(line.text == "Kommer snart" && !line.needsAction)
     }
