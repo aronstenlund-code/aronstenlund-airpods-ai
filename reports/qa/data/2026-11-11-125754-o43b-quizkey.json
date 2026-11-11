@@ -1,0 +1,96 @@
+[
+ {
+  "exam": "geo",
+  "said": "Vilken flod rinner genom Kairo?",
+  "quiz_key": {
+   "answer": "Nilen",
+   "alternatives": [
+    "Kongo",
+    "Niger",
+    "Zambezi",
+    "Amazonas"
+   ]
+  },
+  "svar_line_spoken": false,
+  "usage": {
+   "input_tokens": 9459,
+   "output_tokens": 120,
+   "cache_read_tokens": 7236,
+   "cache_write_tokens": 0,
+   "web_searches": 0,
+   "model": "claude-sonnet-5-5",
+   "est_cost_usd": 0.0070932
+  }
+ },
+ {
+  "exam": "bio",
+  "said": "Vilken organell i växtcellen gör fotosyntes?",
+  "quiz_key": {
+   "answer": "Kloroplasten",
+   "alternatives": [
+    "Kloroplast",
+    "Grönkorn",
+    "Mitokondrien",
+    "Cellkärnan",
+    "Ribosomen"
+   ]
+  },
+  "svar_line_spoken": false,
+  "usage": {
+   "input_tokens": 9455,
+   "output_tokens": 144,
+   "cache_read_tokens": 7236,
+   "cache_write_tokens": 0,
+   "web_searches": 0,
+   "model": "claude-sonnet-5-5",
+   "est_cost_usd": 0.0073252
+  }
+ },
+ {
+  "exam": "geo",
+  "said": "Vilken sjö är Sveriges största?",
+  "quiz_key": {
+   "answer": "Vänern",
+   "alternatives": [
+    "Vättern",
+    "Mälaren",
+    "Hjälmaren",
+    "Storsjön"
+   ]
+  },
+  "svar_line_spoken": false,
+  "usage": {
+   "input_tokens": 9757,
+   "output_tokens": 123,
+   "cache_read_tokens": 7410,
+   "cache_write_tokens": 0,
+   "web_searches": 0,
+   "model": "claude-sonnet-5-5",
+   "est_cost_usd": 0.007406
+  }
+ },
+ {
+  "exam": "bio",
+  "said": "Vad kallas den process där en cell delar sig och bildar två identiska dotterceller?",
+  "quiz_key": {
+   "answer": "Mitos",
+   "alternatives": [
+    "Meios",
+    "Celldelning",
+    "Mitos och cytokines",
+    "Knoppning",
+    "Befruktning"
+   ]
+  },
+  "svar_line_spoken": false,
+  "usage": {
+   "input_tokens": 9763,
+   "output_tokens": 151,
+   "cache_read_tokens": 7410,
+   "cache_write_tokens": 0,
+   "web_searches": 0,
+   "model": "claude-sonnet-5-5",
+   "est_cost_usd": 0.007698
+  }
+ }
+]
