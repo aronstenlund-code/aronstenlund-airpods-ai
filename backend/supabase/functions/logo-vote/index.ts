@@ -3,7 +3,7 @@ import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
-import { type Choice, createLogoVoteHandler } from "./handler.ts";
+import { CHOICES, type Choice, createLogoVoteHandler } from "./handler.ts";
 
 const env = Deno.env;
 const db = restDbFromEnv();
@@ -22,7 +22,7 @@ Deno.serve(withCors(
     },
     counts: async () => {
       const rows = await db.rpc("logo_vote_counts", {}) as { choice: Choice; votes: number }[];
-      const out = { A: 0, B: 0, C: 0 } as Record<Choice, number>;
+      const out = Object.fromEntries(CHOICES.map((k) => [k, 0])) as Record<Choice, number>;
       for (const r of rows) if (r.choice in out) out[r.choice] = Number(r.votes) || 0;
       return out;
     },

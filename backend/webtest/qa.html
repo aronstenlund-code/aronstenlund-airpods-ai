@@ -71,13 +71,13 @@
     loadCand(); loadLogo();
   }
   // K39: the logo vote totals (D127); the logos are in docs/design/logo/rostning/
-  const LOGO = { A: "A klotet", B: "B den gröna formen", C: "C den orange ringen" };
+  const LOGO = { A: "A klotet", B: "B den gröna formen", C: "C den orange ringen", D: "D glasklotet", E: "E glasringen", F: "F glasvågen" };
   async function loadLogo() {
     const r = await fetch(`${URL_}/functions/v1/logo-vote?view=owner`, { headers: { apikey: KEY, authorization: `Bearer ${await token()}` } });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) { $("logo").textContent = `Kunde inte hämta rösterna (${j.message || r.status}).`; return; }
     const v = j.results;
-    $("logo").innerHTML = `<div class="qa">${["A", "B", "C"].map((k) => `<div class="q">${esc(LOGO[k])}: ${v[k]} röster (${v.percent[k]} %)</div>`).join("")}<div class="t">Totalt ${v.total} röster, en per användare.</div></div>`;
+    $("logo").innerHTML = `<div class="qa">${Object.keys(LOGO).map((k) => `<div class="q">${esc(LOGO[k])}: ${v[k]} röster (${v.percent[k]} %)</div>`).join("")}<div class="t">Totalt ${v.total} röster, en per användare.</div></div>`;
   }
   // K38: the weekly K22 candidates (private table, never an artifact)
   const DEC = { approved: "Godkänd", rejected: "Struken" };
