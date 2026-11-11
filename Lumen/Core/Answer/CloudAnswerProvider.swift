@@ -134,6 +134,7 @@ final class CloudAnswerProvider: AnswerProvider {
             var saved_answers: [SavedAnswerPayload]?
             var two_level: Bool?
             var connections: [String]?
+            var utterance_seconds: Double?
         }
         struct PrefContext: Encodable {
             var subject: String?
@@ -163,7 +164,8 @@ final class CloudAnswerProvider: AnswerProvider {
                         tool_round: request.context.toolRound,
                         saved_answers: request.context.savedAnswers.isEmpty ? nil : request.context.savedAnswers,
                         two_level: request.context.twoLevel ? true : nil,
-                        connections: request.context.connections.isEmpty ? nil : request.context.connections)
+                        connections: request.context.connections.isEmpty ? nil : request.context.connections,
+                        utterance_seconds: request.context.utteranceSeconds.map { ($0 * 100).rounded() / 100 })
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return (try? encoder.encode(body)) ?? Data("{}".utf8)

@@ -41,6 +41,10 @@ export interface AnswerRequest {
   persona: Persona;
   /** Role / pasted job ad / scenario for interview and social personas and interview_prep (user data). */
   personaSetup: string;
+  /** K42.1 (D128): the assistant's name, from the app (wake word); default Earmind. */
+  assistantName?: string;
+  /** K30/K42.4: the app logs this turn to qa_log (consent v5). */
+  qaLog?: boolean;
   /** Interview persona: is the fragment the interviewer's question or the user's own answer? */
   turn: Turn;
   /** D43: present => Rizzläge fast path (persona social): returns a `suggestions` event. */
@@ -60,6 +64,9 @@ export interface AnswerRequest {
     already_asked?: string[];
     /** K1.4: seconds since the last answer ended; a short reply counts as an answer only shortly after it. */
     last_answer_age_sec?: number;
+    /** K42.5 (A74): Scribe's confidence for this utterance (0-1) and how long it was spoken (ms). */
+    stt_confidence?: number;
+    utterance_ms?: number;
     /** K40: the answer key of the check question (done.quiz_key of the last answer), sent back by the app (A62). */
     quiz_key?: QuizKey;
     /** K9: quiz results per concept from the app (weak_areas, self_assessment), <= 30. */
@@ -252,6 +259,8 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     throw bad('persona must be "tutor", "interview" or "social"');
   }
   const personaSetup = str(o.persona_setup, "persona_setup", LIMITS.personaSetup);
+  const rawName = typeof o.assistant_name === "string" ? o.assistant_name.trim() : "";
+  const assistantName = /^[\p{L}][\p{L} -]{0,19}$/u.test(rawName) ? rawName : "Earmind";
   if (mode === "interview_prep" && !personaSetup) {
     throw bad("persona_setup (the role or job ad) is required for interview_prep");
   }
@@ -352,6 +361,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     goals,
     persona,
     personaSetup,
+    assistantName,
     turn,
     social,
     commands,
@@ -362,6 +372,9 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
       prep_terms,
       ...(already_asked.length ? { already_asked } : {}),
       ...(typeof ageRaw === "number" ? { last_answer_age_sec: ageRaw } : {}),
+      // K42.5: lenient (a wrong value is ignored, never a 400)
+      ...(typeof c.stt_confidence === "number" && c.stt_confidence >= 0 && c.stt_confidence <= 1 ? { stt_confidence: c.stt_confidence } : {}),
+      ...(typeof c.utterance_ms === "number" && c.utterance_ms >= 0 && c.utterance_ms < 600_000 ? { utterance_ms: c.utterance_ms } : {}),
       ...(concept_stats.length ? { concept_stats } : {}),
       ...(() => {
         const k = readQuizKey(c.quiz_key);
@@ -377,6 +390,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
     ...toolFields(o),
     ...prefs(o),
     ...(o.two_level === true ? { twoLevel: true } : {}),
+    ...(o.qa_log === true ? { qaLog: true } : {}),
     ...(o.session_end === true ? { sessionEnd: true } : {}),
     ...(o.situation && typeof o.situation === "object" && (o.situation as Record<string, unknown>).others_talking === true
       ? { situation: { othersTalking: true } }

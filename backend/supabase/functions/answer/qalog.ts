@@ -41,12 +41,20 @@ export interface QaRow {
   persona: string | null;
   question: string;
   answer: string;
+  /** K42.4: "complaint" when the user complained about the app ("varför upprepar du"). */
+  kind?: "complaint";
 }
 
 const CRISIS_WORDS = /Självmordslinjen|nittio ett noll ett/u;
 
 /** Reads one SSE stream to the end and returns the answer text, or null when nothing should be logged. */
 export async function collectAnswer(stream: ReadableStream<Uint8Array>): Promise<string | null> {
+  return (await collectTurn(stream))?.answer ?? null;
+}
+
+/** The answer and whether the turn was a complaint (K42.4: done.complaint). */
+export async function collectTurn(stream: ReadableStream<Uint8Array>): Promise<{ answer: string; complaint: boolean } | null> {
+  let complaint = false;
   const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
   let buf = "";
   let text = "";
@@ -79,12 +87,13 @@ export async function collectAnswer(stream: ReadableStream<Uint8Array>): Promise
         answered = data.answered === true && data.retract !== true;
         if (data.safety === "crisis") crisis = true;
         if (typeof data.more === "string" && !more) more = data.more;
+        if (data.complaint === true) complaint = true;
       }
     }
   }
   const answer = (text.trim() || suggestions.join(" / ")).trim();
   if (!answered || crisis || !answer || CRISIS_WORDS.test(answer)) return null;
-  return more.trim() ? `${answer}\n\n[utvecklat] ${more.trim()}` : answer;
+  return { answer: more.trim() ? `${answer}\n\n[utvecklat] ${more.trim()}` : answer, complaint };
 }
 
 export function withQaLog(
@@ -104,13 +113,15 @@ export function withQaLog(
     if (!on || !res.body || !(res.headers.get("content-type") ?? "").includes("text/event-stream")) return res;
     const [toApp, toLog] = res.body.tee();
     const q = maskNumbers(String(body!.fragment)).slice(0, 1000);
-    waitUntil(collectAnswer(toLog).then(async (a) => {
-      if (a === null || !q.trim()) return;
+    waitUntil(collectTurn(toLog).then(async (turn) => {
+      if (turn === null || !q.trim()) return;
+      const a = turn.answer;
       await log({
         mode: typeof body!.mode === "string" ? String(body!.mode).slice(0, 32) : null,
         persona: typeof body!.persona === "string" ? String(body!.persona).slice(0, 32) : null,
         question: q,
         answer: maskNumbers(a).slice(0, 6000),
+        ...(turn.complaint ? { kind: "complaint" as const } : {}),
       });
     }).catch((e) => console.error("qa_log_failed", e instanceof Error ? e.message.slice(0, 120) : String(e))));
     return new Response(toApp, { status: res.status, statusText: res.statusText, headers: res.headers });

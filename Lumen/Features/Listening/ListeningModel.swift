@@ -180,6 +180,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private(set) var silentQuiz: SilentQuiz?
     @ObservationIgnored private var silentQuizSeenAnswers = 0
     static let echoTail: TimeInterval = 0.7
+    /// A72: when Lumen's last sentence began playing.
+    @ObservationIgnored private var lastSentenceStartedAt: Date?
     /// The Diagnostics recording (D78) sees every final as it arrives.
     var finalObserver: (@MainActor (String) -> Void)?
     /// An instruction is on its way to the backend for this mode (D69): what comes back is a calibration, or the
@@ -356,6 +358,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         answers.sink = self
         speaker.onSentenceStarted = { [weak self] provider in
             guard let self else { return }
+            self.lastSentenceStartedAt = Date() // A72
             self.latency.markFirstSpeech(provider: provider)
             self.logTimeline()
             // D82: in every mode the recogniser is closed while Lumen speaks, and 0.7 s after.
@@ -1299,9 +1302,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             // finding 2): it looks again every 0.5 s instead of trusting that something asks it later; a held half
             // question waited 21 s for Scribe's session to end after the answer fetched ahead for it was dropped.
             var waited = 0
+            var quietSince: Date? // A72: when Lumen's voice last went quiet
             while true {
                 guard let model = self, !Task.isCancelled else { return }
-                if !model.lumenIsBusyAnswering {
+                let speaking = model.controller.playback.isSpeaking || model.speaker.hasPendingSpeech
+                quietSince = speaking ? nil : (quietSince ?? Date())
+                // A72 (Toby T14 finding 2–3): never more than `quietMaxWait` after Lumen went quiet, whatever streams.
+                let overdue = quietSince.map { Date().timeIntervalSince($0) >= Self.quietMaxWait } ?? false
+                if !model.lumenIsBusyAnswering || overdue {
+                    if overdue, model.lumenIsBusyAnswering {
+                        model.controller.log("A question waited \(Int(Self.quietMaxWait)) s after Lumen went quiet: asked now (A72) · \(model.busyReason)")
+                    }
                     if !model.activation.fireDue(now: Date()) { model.scheduleQuestionTimer() } // the cooldown moved it
                     return
                 }
@@ -1311,6 +1322,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             }
         }
     }
+
+    /// A72: a waiting question goes at most this long after Lumen's voice went quiet.
+    static let quietMaxWait: TimeInterval = 3
 
     /// "Lumen, …" in every mode. True when the words were for Lumen: they are never conversation.
     @discardableResult
@@ -2012,11 +2026,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         ungateTask?.cancel()
         ungateTask = Task { [weak self] in
             guard let self else { return }
+            // A72 (Toby T14 finding 1): how long the player still plays after the voice's queue is done, logged so
+            // T15 shows where the 4–6 s after the speech go (the player's real end, or a late `onFinished`).
+            let finishedAt = Date()
             var waited = 0
             while self.controller.playback.isSpeaking, waited < 600 {
                 try? await Task.sleep(for: .milliseconds(50))
                 waited += 1
             }
+            let sinceSentence = self.lastSentenceStartedAt.map { Int(finishedAt.timeIntervalSince($0) * 1000) } ?? -1
+            self.controller.log("Recogniser reopens: voice done \(sinceSentence) ms after its last sentence began, player quiet \(waited * 50) ms later, + \(Int(Self.echoTail * 1000)) ms tail (A72)")
             try? await Task.sleep(for: .seconds(Self.echoTail))
             guard !Task.isCancelled, !self.speaker.isSpeaking else { return } // A21.3: the safety timer opens it then
             self.ownSpeechEnded()
@@ -2215,6 +2234,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         return parts.isEmpty ? "nothing" : parts.joined(separator: ", ")
     }
+
+    /// A74: the questions asked in the last minute (Standardläge), so a late copy is not answered again.
+    @ObservationIgnored private var repeatGuard = RepeatGuard()
 
     /// A68: when the current `/answer` call was sent.
     @ObservationIgnored private var answerRequestedAt: Date?
@@ -3266,6 +3288,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.turns.dropped(request.query, mode: mode.rawValue, trigger: request.trigger.rawValue, reason: "filler")
             return
         } // D74
+        if request.trigger == .auto {
+            // A74 (Aron's phone test): the same question within 60 s is not answered a second time.
+            if let earlier = repeatGuard.repeats(request.query, at: Date()) {
+                controller.log("Auto: the same question as \"\(earlier)\" within 60 s, not asked again (A74)")
+                controller.turns.dropped(request.query, mode: mode.rawValue, trigger: request.trigger.rawValue, reason: "repeat")
+                return
+            }
+            repeatGuard.record(request.query, at: Date())
+        }
         if persona?.social == nil, deliverAhead(for: request) { return } // D80: ready the moment the pause is over
         discardAhead(reason: "a different turn")
         controller.turns.finish(currentTurnID, outcome: .interrupted, reason: "a newer turn: \(request.query)")
@@ -3302,6 +3333,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         // for "ja" in the Mer? window without a new call.
         context.twoLevel = mode == .standard || mode == .prov
         context.connections = spotifyConnection?.connections ?? [] // A59 (K36)
+        context.utteranceSeconds = transcription.lastUtteranceSeconds // A74 (K42.5)
         if mode == .prov { context.quizKey = lastQuizKey } // A62 (K40): the student's answer is compared by sound
         // A53 (K37, D126): "Mina svar" for the exam, in Provläge only, when "Säg mina svar" is on.
         if mode == .prov, let myAnswers {

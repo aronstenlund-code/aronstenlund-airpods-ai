@@ -1,0 +1,138 @@
+{
+ "test_user_id": "f8fca959-c575-4788-a434-6b840bd3a687",
+ "ok": "19/22",
+ "rows": [
+  {
+   "check": "GET before voting: null",
+   "status": 200,
+   "body": "{\"choice\":null}",
+   "ok": true
+  },
+  {
+   "check": "POST A",
+   "status": 200,
+   "body": "{\"choice\":\"A\"}",
+   "ok": true
+  },
+  {
+   "check": "GET after A",
+   "status": 200,
+   "body": "{\"choice\":\"A\"}",
+   "ok": true
+  },
+  {
+   "check": "POST B",
+   "status": 200,
+   "body": "{\"choice\":\"B\"}",
+   "ok": true
+  },
+  {
+   "check": "GET after B",
+   "status": 200,
+   "body": "{\"choice\":\"B\"}",
+   "ok": true
+  },
+  {
+   "check": "POST C",
+   "status": 200,
+   "body": "{\"choice\":\"C\"}",
+   "ok": true
+  },
+  {
+   "check": "GET after C",
+   "status": 200,
+   "body": "{\"choice\":\"C\"}",
+   "ok": true
+  },
+  {
+   "check": "POST D",
+   "status": 200,
+   "body": "{\"choice\":\"D\"}",
+   "ok": true
+  },
+  {
+   "check": "GET after D",
+   "status": 200,
+   "body": "{\"choice\":\"D\"}",
+   "ok": true
+  },
+  {
+   "check": "POST E",
+   "status": 200,
+   "body": "{\"choice\":\"E\"}",
+   "ok": true
+  },
+  {
+   "check": "GET after E",
+   "status": 200,
+   "body": "{\"choice\":\"E\"}",
+   "ok": true
+  },
+  {
+   "check": "POST F",
+   "status": 200,
+   "body": "{\"choice\":\"F\"}",
+   "ok": true
+  },
+  {
+   "check": "GET after F",
+   "status": 200,
+   "body": "{\"choice\":\"F\"}",
+   "ok": true
+  },
+  {
+   "check": "POST lowercase 'd' accepted as D",
+   "status": 200,
+   "body": "{\"choice\":\"D\"}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid 'G'",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | ... | \\\"F\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid ''",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | ... | \\\"F\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid 'a b'",
+   "status": 400,
+   "body": "{\"error\":{\"code\":\"invalid_request\",\"message\":\"Send {\\\"choice\\\": \\\"A\\\" | ... | \\\"F\\\"}\",\"fallback\":false}}",
+   "ok": true
+  },
+  {
+   "check": "POST invalid 'AB'",
+   "status": 429,
+   "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök just nu.\",\"fallback\":false}}",
+   "ok": false
+  },
+  {
+   "check": "POST invalid 7",
+   "status": 429,
+   "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök just nu.\",\"fallback\":false}}",
+   "ok": false
+  },
+  {
+   "check": "POST invalid 'Ö'",
+   "status": 429,
+   "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök just nu.\",\"fallback\":false}}",
+   "ok": false
+  },
+  {
+   "check": "GET after invalid posts: still D",
+   "status": 200,
+   "body": "{\"choice\":\"D\"}",
+   "ok": true
+  },
+  {
+   "check": "owner view as anonymous user",
+   "status": 403,
+   "body": "{\"error\":{\"code\":\"forbidden\",\"message\":\"Owner only\",\"fallback\":false}}",
+   "ok": true
+  }
+ ]
+}

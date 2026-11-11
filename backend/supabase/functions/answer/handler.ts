@@ -29,6 +29,9 @@ import {
   spokenFor,
 } from "./resource.ts";
 import { selfAnswer } from "./self.ts";
+import { complaintAnswer, isComplaint } from "./complaint.ts";
+import { MORE_START, weakLoneCommand } from "./lonecmd.ts";
+import { askedLength, lengthCaps, lengthNote } from "./asklength.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
 import { type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation, isShortFactQuestion } from "./length.ts";
@@ -95,17 +98,35 @@ import { AnswerPost, NumberStream, similarity } from "./speech.ts";
 /** K1.4: a short reply grades the check question only within this many seconds of the answer that asked it. */
 export const GRADE_REPLY_MAX_AGE_SEC = 120;
 
+const countWords = (t: string): number => (t.match(/[\p{L}\d]+/gu) ?? []).length;
+/** The first n words of a text (no sentence end fits the asked word cap). */
+function firstWords(t: string, n: number): string {
+  let k = 0;
+  for (const m of t.matchAll(/[\p{L}\d]+/gu)) if (++k === n) return t.slice(0, m.index! + m[0].length) + ".";
+  return t;
+}
 /** Toby T14: a question that stops on a word that needs more ("Hur många invånare har", "Vad är skillnaden mellan"). */
 // prepositions are not here: Swedish questions often end on one ("vad ska jag plugga på", "vad handlar det om")
-const DANGLING = new Set(("har hade är blir blev mellan och eller som att en ett " +
-  "min mitt mina din ditt dina sin sitt vilken vilket vilka än").split(" "));
+// Oscar O51 (prio 1): a verb at the end is the normal word order of a Swedish subordinate clause ("kan du säga vad
+// klockan är", "vad tror du att svaret är"), so a final verb counts only in a main clause with no subject or clause
+// before it ("hur många invånare har"); "än" is gone; a word asked ABOUT ("ordet och", "mellan som och att") never counts
+const DANGLING_WORD = new Set(("mellan och eller som att en ett min mitt mina din ditt dina sin sitt vilken vilket vilka").split(" "));
+const DANGLING_VERB = new Set("har hade är blir blev".split(" "));
+const CLAUSE_BEFORE = new Set(("du jag det den hon han hen vi ni de man dom mig dig att som om tror tycker säga säger vet " +
+  "veta undrar kolla berätta förklara visa").split(" "));
+const ASKED_ABOUT = /(?<![\p{L}])(?:ordet|orden|order|betyder|betyda|betydelse|mening med|meningar med|exempel på|på engelska|på svenska|stavas|stavar|uttalas|uttalar|ordklass|skillnaden mellan \p{L}+ och \p{L}+)(?![\p{L}])/u;
 export function isCutOff(fragment: string): boolean {
   const f = (fragment ?? "").trim();
   if (!f || /[?!.]$/.test(f)) return false;
   const w = f.toLowerCase().replace(/[^\p{L}\s]/gu, " ").trim().split(/\s+/);
   if (w.length < 3) return false; // "Vad är?" / one word: other rules decide
-  const isQ = /^(?:(?:och|men|så|lumen)\s+)?(?:vad|vem|vilken|vilket|vilka|hur|när|var|varför|kan|finns|är)(?![\p{L}])/u.test(w.join(" "));
-  return isQ && DANGLING.has(w[w.length - 1]);
+  const joined = w.join(" ");
+  const isQ = /^(?:(?:och|men|så|lumen)\s+)?(?:vad|vem|vilken|vilket|vilka|hur|när|var|varför|kan|finns|är)(?![\p{L}])/u.test(joined);
+  if (!isQ || ASKED_ABOUT.test(joined)) return false;
+  const last = w[w.length - 1];
+  if (DANGLING_WORD.has(last)) return true;
+  // a final verb: only when nothing before it opens a clause or names a subject ("hur många invånare har")
+  return DANGLING_VERB.has(last) && !w.slice(1, -1).some((x) => CLAUSE_BEFORE.has(x));
 }
 /** K1.4: the new check question is (almost) one already asked in this session. */
 export function isRepeatedQuestion(text: string, asked: string[]): boolean {
@@ -191,6 +212,16 @@ export interface HandlerConfig {
   /** USD per million tokens, for the cost estimate only (prices as stated in the assignment). */
   priceInPerMTok: number;
   priceOutPerMTok: number;
+}
+
+/** K42.2: "Vilken är Sveriges tredje största stad?", "världens längsta flod", "näst högsta berget": a rank fact. */
+const RANK = /(?<![\p{L}])(?:störst[a-z]*|minst[a]?|längst[a]?|högst[a]?|lägst[a]?|äldst[a]?|yngst[a]?|djupast[e]?|tätast[e]?|kallast[e]?|varmast[e]?|näst|tredje|fjärde|femte|först[a]?|sist[a]?)(?![\p{L}])/iu;
+export function isRankQuestion(t: string): boolean {
+  const w = t.trim().split(/\s+/);
+  const counted = /(?<![\p{L}])hur många(?![\p{L}])/iu.test(t) && /(?<![\p{L}])(?:sverige|sveriges|svenska|världen|världens|europa|europas|norden)(?![\p{L}])/iu.test(t);
+  return w.length >= 3 && w.length <= 14 && (RANK.test(t) || counted) &&
+    /^(?:(?:lumen|earmind),?\s+)?(?:vilk(?:en|et|a)|vad|vem|var|hur|när|vilket år|nämn|säg)\b/iu.test(t.trim()) &&
+    !/(?<![\p{L}])(?:jag|mig|min|mitt|mina|vi|vår|våra|du|din|ditt|dina)(?![\p{L}])/iu.test(t);
 }
 
 export const DEFAULT_CONFIG: HandlerConfig = {
@@ -582,9 +613,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
 
       // K20: a question about Lumen itself ("är du en robot", "lyssnar du hela tiden", "sparar du det jag säger") gets
       // the honest answer of "Om appen", in code (where others talk only with "Lumen" first)
-      const selfText = !demo && (!(body.persona === "social" || body.persona === "interview") || /^\s*(?:hej\s+|okej\s+)?lumen\b/iu.test(body.fragment))
-        ? selfAnswer(body.fragment)
-        : null;
+      const aboutMe = !demo && (!(body.persona === "social" || body.persona === "interview") || /^\s*(?:hej\s+|okej\s+)?lumen\b/iu.test(body.fragment));
+      // K42.4: a complaint about Lumen ("varför upprepar du") is answered honestly in code, never with a promise
+      const complaint = aboutMe && isComplaint(body.fragment);
+      const selfText = complaint ? complaintAnswer(body.qaLog === true) : aboutMe ? selfAnswer(body.fragment, body.assistantName ?? "Earmind") : null;
       if (selfText) {
         const totalMs = Math.round(now() - t0);
         const frames = [
@@ -594,7 +626,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             answered: true,
             timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
             breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
-            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "self" },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: complaint ? "complaint" : "self" },
+            ...(complaint ? { complaint: true } : {}),
             summary: null,
             relation: null,
             source: null,
@@ -613,7 +646,32 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       }
 
       // K10.1: a request to control the app in the user's own words. Sure (>= 0.8): no answer, the app does it.
-      const appCmd = demo || body.sessionEnd ? null : detectAppCommand(body.fragment, currentMode(body)); // K17.2: the summary is asked for
+      const appCmd0 = demo || body.sessionEnd ? null : detectAppCommand(body.fragment, currentMode(body)); // K17.2: the summary is asked for
+      // K42.5: a lone command word after an answer ("utveckla" that was really "jaha") needs Scribe's confidence
+      // and the time it takes to say; else silence
+      const loneWeak = !demo && !body.toolRound && (body.persona ?? "tutor") === "tutor" &&
+        (!!appCmd0 || detectContinuation(body.fragment) !== null || MORE_START.test(body.fragment.trim().replace(/^(?:hej\s+)?(?:lumen|earmind),?\s+/iu, ""))) && weakLoneCommand(body.fragment, body.context);
+      if (loneWeak) {
+        const totalMs = Math.round(now() - t0);
+        console.log(JSON.stringify({ event: "lone_command_weak", conf: body.context.stt_confidence ?? null, ms: body.context.utterance_ms ?? null }));
+        const frames = [
+          sseFrame("meta", { reconstructed_question: body.fragment, confidence: 0.2, is_question: false, needs_confirmation: false, answer_type: "fact" }),
+          sseFrame("done", {
+            answered: false,
+            timing: { meta_ms: totalMs, ttft_ms: null, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "lone_command_weak" },
+            summary: null,
+            memory_add: null,
+            lone_command_weak: true,
+          }),
+        ];
+        return new Response(
+          new ReadableStream<Uint8Array>({ start(c) { for (const f of frames) c.enqueue(f); c.close(); } }),
+          { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } },
+        );
+      }
+      const appCmd = appCmd0;
       if (appCmd && appCmd.confidence >= APP_COMMAND_SURE) {
         const totalMs = Math.round(now() - t0);
         const frames = [
@@ -1265,9 +1323,13 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const systemTail = profileText
         ? `<user_profile>${sanitizeTagged(profileText)}</user_profile> How this user wants answers in this context, learned from their corrections: follow it unless the request asks otherwise.`
         : undefined;
-      const maxChars = (demo ? demoCaps.answerMaxChars : undefined) ?? plan?.maxChars ??
+      // K42.3: a length the user says ("hundra ord eller mer", "i en mening", "kort") is always followed
+      const asked = !demo && !plan ? askedLength(body.fragment) : null;
+      const askedCaps = asked ? lengthCaps(asked) : null;
+      const maxChars0 = (demo ? demoCaps.answerMaxChars : undefined) ?? plan?.maxChars ??
         (textReq ? 2400 : undefined) ?? (webOn ? 800 : undefined) ??
         (answerType === "study" ? cfg.maxAnswerCharsStudy : cfg.maxAnswerChars);
+      const maxChars = askedCaps ? (askedCaps.exact ? askedCaps.maxChars : Math.max(maxChars0, askedCaps.maxChars)) : maxChars0;
       const parser = new ResponseParser(
         body.mode,
         body.fragment,
@@ -1284,6 +1346,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let ttftMs: number | null = null;
       let limitsMs: number | null = null;
       let answerChars = 0;
+      let answerWords = 0;
+      const wordCap = askedCaps?.maxWords;
       let closed = false;
       let doneSent = false; // D80: the client got the whole answer (else a client abort is not counted)
       let retries = 0;
@@ -1315,7 +1379,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K13.1: short first unless the learned default here is the long answer (2 of the last 3 "ja", K13.2)
       const longFirst = applicableHere.some((x) => x.key === "length" && x.value === "longer");
       const twoLevel = body.twoLevel === true && !demo && !plan && !command && !continuation && !computed &&
-        !textReq && !need && !quiz && !gradeReply && !longFirst &&
+        !textReq && !need && !quiz && !gradeReply && !longFirst && !asked &&
         // Toby T12: Standardläge (auto, push to talk) gets the developed answer ready for "ja" also after a short fact
         // answer, so "ja" plays at once (T7: under 1 s); Haiku there, so the extra part costs almost nothing
         (tutor || answerTypeBase === "study" || body.mode === "auto" || body.mode === "push_to_talk" || body.mode === "text");
@@ -1326,7 +1390,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K29 (D115 T1): a short fact question in Provläge can go to the cheaper default model (TUTOR_FACT_ROUTE=1)
       const factRoute = !isRizz && tutor && !plan && !demo && !!cfg.tutorModel && cfg.tutorFactRoute === true &&
         !continuation && !computed && isShortFactQuestion(body.fragment);
-      const tutorModel = !isRizz && tutor && !plan && !demo && cfg.tutorModel && !factRoute
+      // K42.2 (Aron's phone test: "Vättern är Sveriges största sjö"; live 19/21 on Haiku: "tredje största stad är
+      // Helsingborg", "största nationalpark är Stora Sjöfallet"): a short rank question goes to the stronger model
+      const rankFact = !isRizz && !tutor && !plan && !demo && !!cfg.tutorModel && !computed && isRankQuestion(body.fragment);
+      const tutorModel = (!isRizz && tutor && !plan && !demo && cfg.tutorModel && !factRoute) || rankFact
         ? cfg.tutorModel
         : demo && cfg.demoModel // K5: the demo runs on the stronger model (priced like Provläge)
         ? cfg.demoModel
@@ -1425,12 +1492,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
         (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "") +
         (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "") +
-        (!plan && (tutor || quiz) && !noSummary ? QUIZ_KEY_RULE : "");
+        (!plan && (tutor || quiz) && !noSummary ? QUIZ_KEY_RULE : "") +
+        // K42.1 (D128): the assistant has a name; it never says it has none
+        (!plan ? `\n- Your name is ${body.assistantName ?? "Earmind"}. Asked your name or who you are, say "Jag heter ${body.assistantName ?? "Earmind"}"; never say that you have no name or call yourself anything else.` : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo
         ? demoCaps.answerMaxTokens + (relationTag ? 12 : 0)
-        : baseTokens + (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
+        : Math.max(baseTokens, askedCaps?.maxTokens ?? 0) + (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
       const tools = textOn ? textTools() : webOn && need ? webTools(need) : undefined;
       const allTools = tools && phoneTools ? [...tools, ...phoneTools] : tools ?? phoneTools;
       // D82: after the echo of the last answer was removed, only a complete new question gets an answer.
@@ -1470,8 +1539,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         now: nowContext((deps.clock ?? (() =>
           new Date()))()),
         ...(computed ? { computed: computed.text } : {}),
-        ...(webNote || ordinal
-          ? { note: [webNote, ordinal ? ORDINAL_NOTE : ""].filter(Boolean).join(" ") }
+        ...(webNote || ordinal || asked
+          ? { note: [webNote, ordinal ? ORDINAL_NOTE : "", asked ? lengthNote(asked) : ""].filter(Boolean).join(" ") }
           : {}),
       };
       // K11 (Oscar O5: a Sonnet call hung for 90 s): first text within 5 s (7.5 s with thinking), else the same
@@ -1601,10 +1670,32 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             flushMeta();
             if (ttftMs === null) ttftMs = now() - t0;
             answerChars += t.length;
+            answerWords += countWords(t);
             send("delta", { text: t });
           };
           const deliver = (t: string) => {
             if (!t || closed || status === "truncated") return;
+            // K42.3 (O51): an asked word count is a cap in words; only whole sentences are passed on
+            if (wordCap) {
+              nearBuf += t;
+              let end = -1;
+              for (const m of nearBuf.matchAll(/[.!?](?=\s|$)/gu)) {
+                if (answerWords + countWords(nearBuf.slice(0, m.index! + 1)) <= wordCap) end = m.index! + 1;
+              }
+              if (answerWords + countWords(nearBuf) > wordCap) {
+                const out = end > 0 ? nearBuf.slice(0, end) : answerWords === 0 ? firstWords(nearBuf, wordCap) : "";
+                nearBuf = "";
+                emitText(out);
+                status = "truncated";
+                stop = true;
+                return;
+              }
+              if (end > 0) {
+                emitText(nearBuf.slice(0, end));
+                nearBuf = nearBuf.slice(end);
+              }
+              return;
+            }
             if (answerChars + nearBuf.length + t.length <= maxChars - 200) {
               emitText(t);
               return;

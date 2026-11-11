@@ -99,10 +99,10 @@ struct ScreenshotStage: View {
             case "canDo": NavigationStack { CapabilitiesView() }
             case "canDoIntro": CapabilitiesIntroSheet()
             // A54 (Ke31): the logo vote, and the thanks with the percent (demo numbers, no network).
-            case "logoVote": LogoVoteSheet(order: [.b, .a, .c], vote: { _ in nil }, onVoted: {}, onLater: {})
+            case "logoVote": LogoVoteSheet(order: [.e, .b, .d, .a, .f, .c], vote: { _ in nil }, onVoted: {}, onLater: {})
             case "logoVoteDone":
-                LogoVoteSheet(order: [.b, .a, .c], vote: { _ in nil }, onVoted: {}, onLater: {},
-                              demoReply: .init(choice: "A", results: .init(total: 24, percent: ["A": 45.8, "B": 33.3, "C": 20.8])))
+                LogoVoteSheet(order: [.e, .b, .d, .a, .f, .c], vote: { _ in nil }, onVoted: {}, onLater: {},
+                              demoReply: .init(choice: "A", results: .init(total: 24, percent: ["A": 12.5, "B": 8.3, "C": 4.2, "D": 41.7, "E": 20.8, "F": 12.5])))
             case "pickMode": ModeSwitchSheet(model: model, current: .standard, onPick: { _ in }, onSleep: {}) // A50: Start's "Byt"
             case "errors":
                 ScrollView {

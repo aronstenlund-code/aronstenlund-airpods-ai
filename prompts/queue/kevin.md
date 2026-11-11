@@ -159,9 +159,19 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 
 - [x] **K41 – Röstningen tar sex val (D129)** (effort: low). `logo_votes` och `/logo-vote` tar A–F i stället för A–C; resultatsidan visar alla sex. Behåll redan lagda röster. _klar 2026-11-11 18:53 (Kevin): `reports/2026-11-11-1853-kevin-k41-logo-six.md`_
 
-- [ ] **K42 – Arons telefontest 18:58 (Standardläge)** (effort: high). Lagd av Deangelo 2026-11-11 19:05. Skärmbilder i Deangelos rapport `reports/2026-11-11-1905-deangelo-telefontest.md`.
+- [x] **K42 – Arons telefontest 18:58 (Standardläge)** (effort: high). Lagd av Deangelo 2026-11-11 19:05. Skärmbilder i Deangelos rapport `reports/2026-11-11-1905-deangelo-telefontest.md`. _klar 2026-11-11 20:11 (Kevin): `reports/2026-11-11-2011-kevin-k42-phone-test.md` (namn 10/10, fakta 21/21, längd 10/10 ×2, klagomål 3/3, K42.5 väntar på A74-data)_
   1. **Namnet:** "Vad heter du?" gav "Jag är en AI-assistent och har inget eget namn, men du kan kalla mig studiehjälpen." Rätt: "Jag heter Earmind." (namn enligt D128; skicka namnet från appen om väckningsordet ändras). Lägg namnet i systemprompten och i `self.ts` (vad heter du, vem är du, har du ett namn). 0 av 10 svar utan namnet.
   2. **Faktafel:** "Vättern är Sveriges största sjö" (det är Vänern). Lägg fallet och 20 liknande svenska fakta (största/längsta/högsta, huvudstäder, årtal) i live-eval. Krav 20/20. Om Haiku missar: webbsökning eller Sonnet för svenska superlativ.
   3. **Längd:** "Förklara fotosyntes med hundra ord eller mer" fick cirka 50 ord. En uttalad längd ("hundra ord", "en mening", "kort", "utförligt") följs alltid, i alla lägen. 10 fall, krav 10/10 inom ±20 %.
   4. **Klagomål på Lumen** ("varför upprepar du", "varför svarar du inte") fick tomma löften ("jag ska inte upprepa det"). Svara ärligt och kort ("Det låter som ett fel, jag har sparat det så att vi kan rätta det"), lova aldrig en ändring, och markera turen i `qa_log` som `complaint` så att den syns på Arons sida.
   5. **"jaha" hördes som "utveckla" igen** (Standardläge, se även K40/A62). Ett ensamt kommandoord direkt efter ett svar utan "Lumen" utförs bara om Scribes säkerhet är hög och yttrandet är minst lika långt som ordet tar att säga; annars tyst. Ta emot `confidence`/tider från appen (Angela A74). Krav: "jaha", "ja", "aha", "okej" 0/20 som kommando, "utveckla" 19/20.
+
+- [x] **K-stående – omgång 16 (K4-loopen, PLAN 2b): eval, sämsta fallet** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:17 (Kevin): `reports/2026-11-11-1917-kevin-standing16-number-range.md`_
+
+- [x] **K-stående – omgång 17 (K4-loopen): recept och webbsvar** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:34 (Kevin): `reports/2026-11-11-1934-kevin-standing17-recipes-speech.md`_
+
+- [x] **K-stående – omgång 18 (K4-loopen): intervjuläget hittade på arbetserfarenhet** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 19:37 (Kevin): `reports/2026-11-11-1937-kevin-standing18-interview-experience.md`_
+
+- [x] **O51 (prio 1, Oscar): hela frågor blev tysta i Standardläge (isCutOff)** (effort: low). Lagd av Kevin 2026-11-11 efter Oscars rapport. _klar 2026-11-11 20:16 (Kevin): `reports/2026-11-11-2016-kevin-o51-cut-off-fix.md`_
+
+- [x] **K42b – Oscars rester efter K42 (O51-omtest, prio 2)** (effort: low). Lagd av Kevin 2026-11-11. _klar 2026-11-11 20:26 (Kevin): `reports/2026-11-11-2026-kevin-k42b-oscar-o51-rest.md`_

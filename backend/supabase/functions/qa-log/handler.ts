@@ -46,7 +46,7 @@ export function createQaLogHandler(deps: QaLogDeps) {
         return json({ deleted });
       }
       const rows = await deps.select(
-        `select=id,created_at,mode,persona,question,answer&order=created_at.desc&limit=${QA_LOG_MAX_ROWS}`,
+        `select=id,created_at,mode,persona,question,answer,kind&order=created_at.desc&limit=${QA_LOG_MAX_ROWS}`,
       ) as { created_at: string }[];
       return json({ rows, newest: rows[0]?.created_at ?? null, max: QA_LOG_MAX_ROWS });
     } catch (e) {

@@ -22,7 +22,7 @@ om Earmind. Den är inte ändrad.
 
 ## Testresultat
 - **Enhetstester:** `LumenTests/A73Tests.swift` har 1 test, för versionen och `qa_log`.
-- **iOS-bygge och enhetstester:** CI RESULT73.
+- **iOS-bygge och enhetstester:** CI 43071994761 (8afb5bc) är **grön**: device-bygget, alla enhetstester och `Lumen-unsigned.ipa`.
 - **Ej verifierat på enhet.**
 - Kelly granskar texterna i introt och på Första frågan. Punkten i introt är nu två meningar.
 

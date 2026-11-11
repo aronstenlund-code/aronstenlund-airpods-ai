@@ -3,8 +3,16 @@ import { numbersToSpeech } from "./svnum.ts";
 import { afterNumbers, beforeNumbers } from "./speechsym.ts";
 
 /** Digits, symbols, formulas and abbreviations -> speakable Swedish (D46/D54). */
-export const toSpeech = (t: string, ctx = ""): string =>
-  afterNumbers(numbersToSpeech(beforeNumbers(t, ctx)));
+export const toSpeech = (t: string, ctx = ""): string => {
+  // eval 2026-11-11: "portioner. 500 gram" was "portioner. femhundra gram": a number that starts a sentence
+  // starts with a capital letter when it is said as words
+  // (not after an abbreviation: "kl. 14.30", "nr. 5"; a sentence end is a word of 4+ letters or a digit before it)
+  const END = /(?:\p{L}{4}|[\d)])[.!?]\s*$/u;
+  const atStart = END.test(ctx);
+  const marked = t.replace(/(^|(?<=(?:\p{L}{4}|[\d)])[.!?])\s+|\n\s*)(?=\d)/gu, (m, pre: string, off: number) => (off === 0 && !pre && !atStart) ? m : `${pre}\u2063`);
+  const out = afterNumbers(numbersToSpeech(beforeNumbers(marked, ctx)));
+  return out.replace(/\u2063(\p{Ll})/gu, (_m, c: string) => c.toUpperCase()).replace(/\u2063/g, "");
+};
 
 /**
  * D46 post-processing of the streamed answer text, in code instead of more prompt text:
@@ -704,7 +712,7 @@ export function similarity(a: string, b: string): number {
   for (const [k, v] of x) both += Math.min(v, y.get(k) ?? 0);
   return nx + ny ? (2 * both) / (nx + ny) : 0;
 }
-const LEAD_META = /^(?:fragmentet|det du sa|orden|ordet)\b[^.]{0,160}\b(?:låter som|liknar|är nog|är troligen|tolkar|uppfattar)\b|^(?:the (?:request|user|utterance|statement|fragment)\b|this is (?:a|an) (?:request|statement|question)\b|i'?ll (?:open|call|start|set|play)\b|det (?:här )?är (?:en statement|ett påstående, inte en fråga)\b|det (?:här )?är en fråga om (?:vem|vad|hur|när|var|varför|vilken|vilket|vilka)\b|det (?:här )?är en \p{L}*(?:förfrågan|begäran)\b)/iu;
+const LEAD_META = /^(?:källorna|källan|sökresultaten|resultaten|sökningen|webbsökningen)\b[^.]{0,80}\b(?:vägledning|ungefärlig|varierar|säger olika|är olika|inte helt överens)\b|^jag ger (?:dig )?(?:de viktigaste|stegen|en kort)\b|^(?:fragmentet|det du sa|orden|ordet)\b[^.]{0,160}\b(?:låter som|liknar|är nog|är troligen|tolkar|uppfattar)\b|^(?:the (?:request|user|utterance|statement|fragment)\b|this is (?:a|an) (?:request|statement|question)\b|i'?ll (?:open|call|start|set|play)\b|det (?:här )?är (?:en statement|ett påstående, inte en fråga)\b|det (?:här )?är en fråga om (?:vem|vad|hur|när|var|varför|vilken|vilket|vilka)\b|det (?:här )?är en \p{L}*(?:förfrågan|begäran)\b)/iu;
 /** "Och jag svarar på det: …" before the real answer. */
 const LEAD_PREFIX = /^(?:och\s+|så\s+)?(?:jag svarar på det|då svarar jag|här är svaret)\s*[:,]?\s*/iu;
 /** A first sentence that guesses ("som du kanske menar", "jag är inte säker"): rather silence than a wrong subject. */
@@ -1027,7 +1035,9 @@ export class NumberStream {
     }
     let cut = lastWs + 1;
     const head = this.buf.slice(0, cut);
-    const m = /((?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*|[=≈≠]|\S*\^\S*)\s+$/.exec(head) ?? // incl. "1 " of "1 789"
+    // eval 2026-11-11: "1,4 – " must wait for "5,7" (a spaced range is read "ett komma fyra till fem komma sju")
+    const m = /\S*\d\S*\s+[–—-]\s+$/.exec(head) ??
+      /((?:\S*\d\S*\s+[–—-]\s+)?(?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*|[=≈≠]|\S*\^\S*)\s+$/.exec(head) ?? // incl. "1 " of "1 789"
       // D72 live test: "Karl " must wait for a possible "XV" (a regnal number is read as a pair with the
       // name), and a "Karl XV." pair is passed on together.
       /(?:\p{Lu}\p{L}+\s+)?(?:XVIII|XVII|XIII|XIV|XVI|XIX|VIII|VII|III|XII|XV|XI|IX|IV|II|VI|XX|V|X|I)[.,!?;:]?\s+$|\p{Lu}\p{L}+\s+$/u
