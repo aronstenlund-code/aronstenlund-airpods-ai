@@ -12,6 +12,7 @@ import Testing
         #expect(!settings.isEnabled, "no audio kept by default (CLAUDE.md)")
         settings.applyServerFlag(true)
         #expect(settings.isEnabled)
+        #expect(settings.needsServerNotice, "Ke46 T2: switched on by the server, the sheet is shown once")
         settings.isEnabled = false
         settings.applyServerFlag(true)
         #expect(!settings.isEnabled, "turned off by the tester, it stays off")
@@ -57,5 +58,12 @@ import Testing
         settings.isEnabled = true
         settings.applyServerFlag(false)
         #expect(settings.serverRefused, "switched on but the server says no: Settings tells, nothing is kept")
+    }
+
+    @Test func theSoundSentenceIsReplacedNotAdded() {
+        // Ke46 T4: D138's "sparas inte av Earmind" is not true in the test mode; the note replaces it.
+        #expect(!TestModeSettings.soundNote.contains("sparas inte"))
+        #expect(TestModeSettings.soundNote.contains("14 dagar"))
+        #expect(TestModeSettings.soundNote.hasSuffix("Sömnläget sparar klippen bara på din telefon."))
     }
 }

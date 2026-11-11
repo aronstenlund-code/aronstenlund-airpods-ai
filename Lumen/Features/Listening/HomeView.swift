@@ -92,6 +92,11 @@ struct HomeView: View {
             if phase == .active { Task { await showSheetOnOpen() } }
         }
         .sheet(isPresented: $showsCapabilitiesIntro) { CapabilitiesIntroSheet() }
+        .sheet(isPresented: Binding(get: { model.testMode?.needsServerNotice == true && !model.isShowingSettings },
+                                    set: { if !$0 { model.testMode?.needsServerNotice = false } })) {
+            // A76 (Ke46 T2): the server switched the test mode on for this account: said once, with "Okej".
+            TestModeSheet(isNotice: true) { model.testMode?.needsServerNotice = false } onCancel: {}
+        }
         .sheet(isPresented: $showsLogoVote) {
             LogoVoteSheet(order: logoOrder) { choice in
                 await model.logoVoteClient?.vote(choice)
@@ -158,6 +163,18 @@ struct HomeView: View {
             .accessibilityAddTraits(.isHeader)
             Spacer()
             if model.streak.current > 0 { StreakBadge(streak: model.streak) }
+            if let testMode = model.testMode, testMode.isEnabled, !testMode.serverRefused {
+                // A76 (Ke45/Ke46 T3): as long as the test mode is on, also when Earmind is not listening.
+                Button { model.isShowingSettings = true } label: {
+                    Text("Testläge")
+                        .font(LumenFont.text(13, .semibold, relativeTo: .footnote))
+                        .foregroundStyle(LumenColor.test)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(LumenColor.testSoft, in: Capsule())
+                }
+                .accessibilityLabel("Testläget är på. Öppna inställningar")
+            }
             IconButton(systemName: "gearshape", label: "Inställningar") { model.isShowingSettings = true }
         }
     }

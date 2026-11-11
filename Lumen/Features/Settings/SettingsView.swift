@@ -9,6 +9,8 @@ struct SettingsView: View {
     @AppStorage("debug.latencyOverlay") private var showsLatencyOverlay = false
     /// A13.1: the technical settings are folded away; the choice is remembered.
     @AppStorage("settings.showsAdvanced") private var showsAdvanced = false
+    /// A76 (Ke46 T2): the sheet before the test mode is switched on.
+    @State private var isConfirmingTestMode = false
     /// A19 (K17): the study plan's reminders; Aron wants them, and they can be turned off.
     @AppStorage(LumenNotifications.enabledKey) private var studyReminders = true
     /// A38: the reminder's time, minutes after midnight.
@@ -200,15 +202,32 @@ struct SettingsView: View {
         if let testMode = model.testMode {
             @Bindable var settings = testMode
             Section {
-                Toggle("Testläge: skicka ljud för felsökning", isOn: $settings.isEnabled)
-                    .onChange(of: settings.isEnabled) { _, _ in Task { await model.testModeSwitched() } }
+                // Ke46 T2: on only after the sheet; off at once.
+                Toggle("Testläge: skicka ljud för felsökning", isOn: Binding(
+                    get: { settings.isEnabled },
+                    set: { on in
+                        if on { isConfirmingTestMode = true } else {
+                            settings.isEnabled = false
+                            Task { await model.testModeSwitched() }
+                        }
+                    }))
+                    .tint(LumenColor.test)
+                    .sheet(isPresented: $isConfirmingTestMode) {
+                        TestModeSheet {
+                            isConfirmingTestMode = false
+                            settings.isEnabled = true
+                            Task { await model.testModeSwitched() }
+                        } onCancel: {
+                            isConfirmingTestMode = false
+                        }
+                    }
             } header: {
                 Text("Testläge")
             } footer: {
                 Text(settings.isEnabled && settings.serverRefused
                      ? "Servern tar inte emot testljud från det här kontot ännu. Inget ljud sparas eller skickas."
                      : settings.isEnabled
-                     ? TestModeSettings.soundNote + " Lyssnarraden visar ”Testläge, ljud skickas” så länge det pågår."
+                     ? TestModeSettings.soundNote + " Brickan visar ”Testläge · ljud skickas” så länge ljud skickas."
                      : "Av. Slå bara på det om du testar Earmind åt oss: då skickas allt ljud medan Earmind lyssnar, så att vi kan höra om frågan urskildes rätt.")
             }
         }

@@ -34,11 +34,15 @@ final class TestModeSettings {
         if isTester, !defaults.bool(forKey: askedKey) {
             defaults.set(true, forKey: askedKey)
             isEnabled = true
+            needsServerNotice = true // Ke46 T2: a test account sees the sheet once, with "Okej"
         }
     }
 
-    /// D138's text gets this addition only while the test mode is on.
-    nonisolated static let soundNote = "Testläget är på: allt ljud medan Earmind lyssnar skickas till oss för felsökning och raderas efter 14 dagar."
+    /// Ke46 T2: switched on by the server, not by the user: Start shows the sheet once.
+    var needsServerNotice = false
+
+    /// Ke45/Ke46 T4: D138's sentence is not true while the test mode is on; this replaces it then.
+    nonisolated static let soundNote = "Testläget är på: ljudet skickas till oss och sparas i 14 dagar. Sömnläget sparar klippen bara på din telefon."
 }
 
 /// One finished minute, waiting for upload: the audio and what happened in it.

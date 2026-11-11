@@ -110,20 +110,15 @@ struct ListeningScreen: View {
                     .accessibilityLabel("Mer")
                 }
             }
-            StatusBadge(title: stateTitle,
+            StatusBadge(title: model.isRecordingDebugAudio ? "Testläge · ljud skickas" : stateTitle,
                         active: listening && hearing && model.speaker.status == .idle,
-                        levelDBFS: listening && hearing ? model.controller.level.rmsDBFS : nil)
+                        levelDBFS: listening && hearing ? model.controller.level.rmsDBFS : nil,
+                        testMode: model.isRecordingDebugAudio) // A76 (Ke46 T1): one indicator, in the test colour
             if !stateDetail.isEmpty {
                 Text(stateDetail)
                     .font(LumenFont.text(13, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
                     .multilineTextAlignment(.center)
-            }
-            if model.isRecordingDebugAudio {
-                // A76 (D140): the test mode keeps the audio; it is said on Lyssnar all the time, in its own colour.
-                Label("Testläge · ljud skickas", systemImage: "record.circle")
-                    .font(LumenFont.text(13, .semibold, relativeTo: .footnote))
-                    .foregroundStyle(Color.orange)
             }
         }
         .padding(.horizontal, 12)
@@ -572,21 +567,25 @@ struct StatusBadge: View {
     let title: String
     let active: Bool
     let levelDBFS: Double?
+    /// A76 (Ke45/Ke46 T1): the audio is being sent: the badge itself says so, in `test` on `testSoft`, whatever it hears.
+    var testMode = false
+
+    private var tint: Color { testMode ? LumenColor.test : (active ? LumenColor.blue : LumenColor.muted) }
 
     var body: some View {
         HStack(spacing: 8) {
             ZStack {
-                Circle().stroke((active ? LumenColor.blue : LumenColor.muted).opacity(0.35), lineWidth: 2).frame(width: 16, height: 16)
-                Circle().fill(active ? LumenColor.blue : LumenColor.muted).frame(width: 9, height: 9)
+                Circle().stroke(tint.opacity(0.35), lineWidth: 2).frame(width: 16, height: 16)
+                Circle().fill(tint).frame(width: 9, height: 9)
             }
             Text(title)
                 .font(LumenFont.text(15, .semibold, relativeTo: .subheadline))
-                .foregroundStyle(active ? LumenColor.blue : LumenColor.ink)
+                .foregroundStyle(testMode ? LumenColor.test : (active ? LumenColor.blue : LumenColor.ink))
             if active { LevelMeter(levelDBFS: levelDBFS).frame(height: 18) }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 8)
-        .background(active ? LumenColor.soft : LumenColor.surface, in: Capsule())
+        .background(testMode ? LumenColor.testSoft : (active ? LumenColor.soft : LumenColor.surface), in: Capsule())
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.updatesFrequently)
     }

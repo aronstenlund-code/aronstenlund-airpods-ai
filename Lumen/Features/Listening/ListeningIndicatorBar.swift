@@ -39,7 +39,7 @@ struct ListeningIndicatorBar: View {
                 HStack(spacing: 8) {
                     Image(systemName: "circle.fill")
                         .font(.system(size: 8))
-                        .foregroundStyle(active ? (testMode ? Color.orange : LumenColor.blue) : LumenColor.muted) // A18 (Kelly): red only for errors
+                        .foregroundStyle(active ? (testMode ? LumenColor.test : LumenColor.blue) : LumenColor.muted) // A18 (Kelly): red only for errors
                         .symbolEffect(.pulse, isActive: active)
                         .accessibilityHidden(true)
                     Text(title)

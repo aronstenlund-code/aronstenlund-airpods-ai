@@ -30,6 +30,11 @@ enum LumenColor {
     static let green = dynamic(0x1E7A4C, 0x4FC28A)
     static let orange = dynamic(0xE0731B, 0xF59A4A)
     static let magenta = dynamic(0xC2307A, 0xF26BAE)
+
+    // A76 (Kelly Ke45/Ke46): the test mode only, orange so it is seen at once without looking like an error.
+    static let test = dynamic(0xB45309, 0xFBBF6A)
+    static let testSoft = dynamic(0xFEF3E2, 0x3A2A12)
+    static let onTest = dynamic(0xFFFFFF, 0x2A1A05)
 }
 
 extension UIColor {
