@@ -132,3 +132,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
 - [x] **K40 – BLOCKER (Oscar O41): telefonverktygen i Standardläge** (effort: high). Lagd av Kevin 2026-11-11 efter Oscars O41 (prio 1). _klar 2026-11-11 11:49 (Kevin): `reports/2026-11-11-1149-kevin-o41-blocker-tools-standard.md` (riktad begäran i `auto` får verktygen; live 16/16 och 6/6)_
 
 - [x] **K-stående – K4-loopen, omgång 4: Oscars O13 del 2 (K17-planen) och O38 (K38-filtret)** (effort: medium). Stående uppgift (PLAN 2b), lagd av Kevin 2026-11-11. _klar 2026-11-11 11:53 (Kevin): `reports/2026-11-11-1153-kevin-standing4-plan-filter.md` (19/19; 26/26 och 17/20)_
+
+- [x] **K-stående – K4-loopen, omgång 5: Tobys T5b c1 (Auto byter ämne)** (effort: low). Stående uppgift (PLAN 2b), lagd av Kevin 2026-11-11. _klar 2026-11-11 12:00 (Kevin): `reports/2026-11-11-1200-kevin-standing5-auto-recon.md` (live 5/6 → 6/6)_
