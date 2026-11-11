@@ -3464,6 +3464,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         context.twoLevel = mode == .standard || mode == .prov
         context.connections = spotifyConnection?.connections ?? [] // A59 (K36)
         context.utteranceSeconds = transcription.lastUtteranceSeconds // A74 (K42.5)
+        context.capabilities = LumenCapability.grantedPermissions() // A77 (K44): "kan du …?" answered from what is allowed
         if mode == .prov { context.quizKey = lastQuizKey } // A62 (K40): the student's answer is compared by sound
         // A53 (K37, D126): "Mina svar" for the exam, in Provläge only, when "Säg mina svar" is on.
         if mode == .prov, let myAnswers {

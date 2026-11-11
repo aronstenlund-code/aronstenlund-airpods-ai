@@ -109,6 +109,10 @@ final class CloudAnswerProvider: AnswerProvider {
                 var recent_turns: [AnswerContext.Turn]?
                 var concept_stats: [AnswerContext.ConceptStat]?
                 var quiz_key: QuizKey?
+                /// A74 (K42.5): the server reads `context.utterance_ms` (A74 sent `utterance_seconds` at the top, unread).
+                var utterance_ms: Int?
+                /// A77 (K44): the permissions granted on the phone ("calendar", "reminders", "alarms", "contacts").
+                var capabilities: [String]?
             }
             var fragment: String
             var mode: String
@@ -134,7 +138,6 @@ final class CloudAnswerProvider: AnswerProvider {
             var saved_answers: [SavedAnswerPayload]?
             var two_level: Bool?
             var connections: [String]?
-            var utterance_seconds: Double?
         }
         struct PrefContext: Encodable {
             var subject: String?
@@ -146,7 +149,9 @@ final class CloudAnswerProvider: AnswerProvider {
                                    prep_terms: request.context.prepTerms.isEmpty ? nil : request.context.prepTerms,
                                    recent_turns: request.context.recentTurns.isEmpty ? nil : request.context.recentTurns,
                                    concept_stats: request.context.conceptStats.isEmpty ? nil : request.context.conceptStats,
-                                   quiz_key: request.context.quizKey)
+                                   quiz_key: request.context.quizKey,
+                                   utterance_ms: request.context.utteranceSeconds.map { Int(($0 * 1000).rounded()) },
+                                   capabilities: request.context.capabilities)
         let body = Body(fragment: request.fragment, mode: request.mode, language: request.language, context: context, length: request.length,
                         goals: request.context.goals,
                         commands: request.context.commands.isEmpty ? nil : request.context.commands,
@@ -164,8 +169,7 @@ final class CloudAnswerProvider: AnswerProvider {
                         tool_round: request.context.toolRound,
                         saved_answers: request.context.savedAnswers.isEmpty ? nil : request.context.savedAnswers,
                         two_level: request.context.twoLevel ? true : nil,
-                        connections: request.context.connections.isEmpty ? nil : request.context.connections,
-                        utterance_seconds: request.context.utteranceSeconds.map { ($0 * 100).rounded() / 100 })
+                        connections: request.context.connections.isEmpty ? nil : request.context.connections)
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         return (try? encoder.encode(body)) ?? Data("{}".utf8)

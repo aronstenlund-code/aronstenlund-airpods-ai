@@ -24,13 +24,28 @@ struct LumenCapability: Identifiable, Equatable, Sendable {
         case place(String)
     }
 
-    enum Permission: String, Sendable {
+    enum Permission: String, CaseIterable, Sendable {
         case calendar = "Kalender"
         case reminders = "Påminnelser"
         /// AlarmKit: timers and alarms (iOS asks the first time).
         case alarms = "Alarm"
         /// A58: "ring mamma" looks the name up in Kontakter.
         case contacts = "Kontakter"
+
+        /// A77 (K44): the name in `Shared/capabilities.json` and in `context.capabilities`.
+        var key: String {
+            switch self {
+            case .calendar: "calendar"
+            case .reminders: "reminders"
+            case .alarms: "alarms"
+            case .contacts: "contacts"
+            }
+        }
+
+        init?(key: String) {
+            guard let match = Self.allCases.first(where: { $0.key == key }) else { return nil }
+            self = match
+        }
     }
 
     let id: String
@@ -41,8 +56,23 @@ struct LumenCapability: Identifiable, Equatable, Sendable {
     let say: String
     let setup: Setup
 
-    /// Ke29's rows, in order. Spotify and calls stay "Kommer snart" until K36 works in the app (Ke29 S2).
-    static let all: [LumenCapability] = [
+    /// A77 (K44, D118): the one list, `Shared/capabilities.json`, shared with the server, so the screen and the spoken
+    /// "kan du …?" answer say the same thing. `fallback` only if the file is missing from the bundle.
+    static let all: [LumenCapability] = CapabilityList.load().map(\.rows) ?? fallback
+
+    /// The app's own part of a row: the symbol, and the place for rows that are done in the app, not said.
+    static let symbols: [String: String] = [
+        "questions": "questionmark.bubble", "quiz": "graduationcap", "myAnswers": "text.badge.checkmark", "calendar": "calendar",
+        "reminders": "checklist", "timer": "timer", "alarm": "alarm", "notes": "note.text", "training": "figure.run",
+        "call": "phone", "music": "music.note.list", "spotify": "music.note", "interview": "briefcase",
+        "social": "person.2.wave.2", "sleep": "moon.stars", "translate": "character.bubble", "web": "globe",
+    ]
+    static let places: [String: String] = [
+        "myAnswers": "I Provläget", "music": "Öppnar Spotify med sökningen", "interview": "Byt läge", "social": "Byt läge",
+    ]
+
+    /// Ke29's rows, the list before A77 (used only without the file).
+    static let fallback: [LumenCapability] = [
         .init(id: "quiz", group: .study, title: "Förhör", symbol: "graduationcap", say: "”Lumen, förhör mig på fotosyntes”", setup: .nothing),
         .init(id: "questions", group: .study, title: "Svar på frågor", symbol: "questionmark.bubble", say: "”Lumen, vad betyder ambivalent?”", setup: .nothing),
         .init(id: "myAnswers", group: .study, title: "Mina svar", symbol: "text.badge.checkmark", say: "Dina egna svar på provfrågor, i örat", setup: .place("I Provläget")),
@@ -66,6 +96,58 @@ struct LumenCapability: Identifiable, Equatable, Sendable {
 
     /// The three that work without connecting anything, for the sheet after the first answer (Ke29).
     static let firstExamples = ["quiz", "calendar", "timer"]
+
+    /// A77: the granted permissions for `context.capabilities` (K44), so the server never says "allow it first" about
+    /// something already allowed, nor "ja" about something that needs a permission.
+    @MainActor
+    static func grantedPermissions() -> [String] {
+        Permission.allCases.filter { CapabilityAccess.current($0) == .allowed }.map(\.key)
+    }
+}
+
+/// A77 (K44): `Shared/capabilities.json` as the app reads it.
+struct CapabilityList: Decodable, Sendable {
+    struct Item: Decodable, Sendable {
+        var id: String
+        var group: String
+        var name: String
+        var say: String
+        var status: String
+        var permission: String?
+    }
+    var capabilities: [Item]
+
+    static func load(bundle: Bundle = .main) -> CapabilityList? {
+        guard let url = bundle.url(forResource: "capabilities", withExtension: "json"),
+              let data = try? Data(contentsOf: url) else { return nil }
+        return try? JSONDecoder().decode(CapabilityList.self, from: data)
+    }
+
+    var rows: [LumenCapability] { capabilities.compactMap(Self.row) }
+
+    static func row(_ item: Item) -> LumenCapability? {
+        let group: LumenCapability.Group
+        switch item.group {
+        case "skola": group = .study
+        case "vardag": group = .everyday
+        case "musik och samtal": group = .musicAndCalls
+        case "mer": group = .more
+        default: return nil
+        }
+        let setup: LumenCapability.Setup
+        if item.status == "kommer" { setup = .soon }
+        else if let key = item.permission, let permission = LumenCapability.Permission(key: key) { setup = .permission(permission) }
+        else if let place = LumenCapability.places[item.id] { setup = .place(place) }
+        else { setup = .nothing }
+        return LumenCapability(id: item.id, group: group, title: item.name, symbol: LumenCapability.symbols[item.id] ?? "sparkles",
+                               say: spoken(item.say), setup: setup)
+    }
+
+    /// "Lumen, …" is said, so it is quoted, with the wake word as it is now (A75: a new name is one line).
+    static func spoken(_ say: String) -> String {
+        guard say.hasPrefix("Lumen,") else { return say }
+        return "”" + WakeWord.name + String(say.dropFirst("Lumen".count)) + "”"
+    }
 }
 
 /// What a permission is right now.

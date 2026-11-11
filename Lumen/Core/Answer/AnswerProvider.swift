@@ -51,6 +51,9 @@ struct AnswerContext: Equatable, Sendable {
     var quizKey: QuizKey?
     /// A74 (K42.5): how long the last utterance was spoken, first heard word to last (nil when unknown).
     var utteranceSeconds: Double?
+    /// A77 (K44): the permissions granted on the phone, so "kan du sätta en timer?" is answered truthfully. Nil: not
+    /// known (no list is sent and the server does not guess).
+    var capabilities: [String]?
 
     struct ConceptStat: Equatable, Sendable, Codable {
         var concept: String
@@ -114,7 +117,8 @@ struct AnswerContext: Equatable, Sendable {
                       connections: Array(connections.prefix(5)),
                       quizKey: quizKey.map { QuizKey(answer: String($0.answer.prefix(120)),
                                                       alternatives: $0.alternatives.map { Array($0.prefix(6).map { String($0.prefix(120)) }) }) },
-                      utteranceSeconds: utteranceSeconds.map { min(max($0, 0), 120) })
+                      utteranceSeconds: utteranceSeconds.map { min(max($0, 0), 120) },
+                      capabilities: capabilities.map { Array($0.prefix(12)) })
     }
 }
 

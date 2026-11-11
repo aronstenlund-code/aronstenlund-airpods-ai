@@ -30,6 +30,8 @@ import Testing
         #expect(context.clamped.utteranceSeconds == 0.42, "A48's lesson: a new field must be in `clamped`")
         let data = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "utveckla", mode: "auto", language: "sv", context: context.clamped))
         let json = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
-        #expect((json["utterance_seconds"] as? Double) == 0.42)
+        let inner = try #require(json["context"] as? [String: Any])
+        #expect((inner["utterance_ms"] as? Int) == 420, "A77: the server reads context.utterance_ms (K42.5)")
+        #expect(json["utterance_seconds"] == nil)
     }
 }
