@@ -17,7 +17,7 @@ import Testing
 ///
 /// The long run (part 4 of T5) is `LongRunE2ETests`. Output: `<LUMEN_E2E_OUT>/retest-<set>.json`.
 /// Live and paid (Scribe, /answer): only when `scripts/apptest/retest.sh` sets `LUMEN_E2E_RETEST_DIR`.
-/// Simulator only: never a verification on a device. Runs: T5 2026-11-09, T5b 2026-11-11 (after A21).
+/// Simulator only: never a verification on a device. Runs: T5 2026-11-09, T5b 2026-11-11 (after A21), T12 2026-11-11 (after A56; build fixed in 1f39214).
 enum RetestEnvironment {
     static var audioDir: URL? {
         ProcessInfo.processInfo.environment["LUMEN_E2E_RETEST_DIR"].map { URL(fileURLWithPath: $0) }

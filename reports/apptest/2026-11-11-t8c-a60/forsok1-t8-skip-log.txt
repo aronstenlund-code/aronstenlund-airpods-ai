@@ -1,0 +1,109 @@
+path: skip
+taps: 12
+screens: 15
+
+Milestones:
+  11.5 s,  0 taps,  0 screens: app opened
+  24.5 s,  2 taps,  3 screens: first question screen
+  25.2 s,  2 taps,  3 screens: first question: Lyssnar
+  60.6 s,  2 taps,  3 screens: Frågor: answer shown
+ 120.7 s,  4 taps,  6 screens: A52 sheet shown
+ 128.5 s,  5 taps,  7 screens: share prompt shown
+ 138.6 s,  6 taps,  8 screens: A60 hint shown
+ 140.9 s,  6 taps,  9 screens: start screen
+ 162.2 s,  6 taps, 10 screens: Start: Starta Lumen visible
+ 166.5 s,  7 taps, 10 screens: Starta Lumen: Lyssnar
+ 196.1 s,  7 taps, 11 screens: Starta Lumen: answer shown
+ 210.9 s,  8 taps, 13 screens: A54 vote shown
+ 262.9 s, 12 taps, 15 screens: done
+
+Log:
+MILESTONE   11.5 s,  0 taps,  0 screens: app opened
+shot at   12.9 s: t8-skip-01-intro — Intro: the first thing a new user sees
+SCREEN t8-skip-01-intro — Intro: the first thing a new user sees
+  texts (8): Inget konto. Testa nu betyder att du godkänner punkterna ovan. | Earmind | Fråga högt. Få svaret i örat. | Telefonen stannar i fickan. | Lyssnar bara när du har startat den | Du ser alltid när den lyssnar | Ljud sparas inte | Frågor och svar skickas till oss
+  buttons (2): Testa nu | Läs mer
+TAP  1 at   16.1 s: intro → Testa nu
+SYSTEM ALERT: “Earmind” would like to access the Microphone. — “Earmind” would like to access the Microphone. / Earmind listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio is streamed for transcription and is not saved.
+shot at   17.9 s: t8-skip-02-systemfraga — System alert: “Earmind” would like to access the Microphone.
+TAP  2 at   18.7 s: system alert → allow
+shot at   22.6 s: t8-skip-03-forsta-fragan — First question, before speaking
+SCREEN t8-skip-03-forsta-fragan — First question, before speaking
+  texts (6): iOS frågar om mikrofonen första gången. Ljud sparas inte. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Lyssnar | Till exempel: Vad är fotosyntes? | Lyssnar
+  buttons (1): Hoppa över
+MILESTONE   24.5 s,  2 taps,  3 screens: first question screen
+MILESTONE   25.2 s,  2 taps,  3 screens: first question: Lyssnar
+answer shown (0 → 1): Huvudstaden i Australien är Canberra.
+MILESTONE   60.6 s,  2 taps,  3 screens: Frågor: answer shown
+shot at   61.9 s: t8-skip-04-forsta-svaret — Frågor: the first answer on the screen
+SCREEN t8-skip-04-forsta-svaret — Frågor: the first answer on the screen
+  texts (7): iOS frågar om mikrofonen första gången. Ljud sparas inte. | Fråga vad som helst | Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen. | Lyssnar | Vad är huvudstaden i Australien? | Huvudstaden i Australien är Canberra. | Lyssnar
+  buttons (1): Fortsätt
+TAP  3 at  104.9 s: first question → Fortsätt/Hoppa över
+shot at  109.9 s: t8-skip-05-prov-steget — First start: add an exam or skip
+SCREEN t8-skip-05-prov-steget — First start: add an exam or skip
+  texts (5): Har du prov snart? | Säg det, så förhör Earmind dig inför provet. | Säg till exempel, Jag har prov i biologi på fredag | Säg till exempel | Jag har prov i biologi på fredag
+  buttons (2): Inte nu | Skriv i stället
+TAP  4 at  113.5 s: exam step → Inte nu
+shot at  118.3 s: t8-skip-06-kan-mer-an-svara — A52: the sheet after the first answer
+SCREEN t8-skip-06-kan-mer-an-svara — A52: the sheet after the first answer
+  texts (31): Earmind | Här startar du Earmind | Sen lyssnar den tills du trycker Avsluta. Du ser alltid när den lyssnar. | Earmind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | Har du prov snart? | Säg det, så förhör Earmind dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Earmind | Starta Earmind | Standardläge | · | Byt | Earmind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, förhör mig på fotosyntes” | ”Lumen, sätt en timer på 10 minuter” | Allt Earmind kan | Lägg till prov | Earmind kan mer än svara | Säg ”Lumen” och vad du vill, när du vill. | Förhör, ”Lumen, förhör mig på fotosyntes” | Kalender, ”Lumen, vad har jag i dag?” | Timer, ”Lumen, sätt en timer på 10 minuter” | Förhör | ”Lumen, förhör mig på fotosyntes” | Kalender | ”Lumen, vad har jag i dag?” | Timer | ”Lumen, sätt en timer på 10 minuter”
+  buttons (8): Klar | Inställningar | Stäng | Starta Earmind | Läge: Standardläge. Byt läge | Allt Earmind kan | Lägg till prov | Visa allt Earmind kan
+MILESTONE  120.7 s,  4 taps,  6 screens: A52 sheet shown
+TAP  5 at  122.2 s: A52 sheet → Klar
+shot at  127.0 s: t8-skip-07-dela-historik — Share history prompt
+SCREEN t8-skip-07-dela-historik — Share history prompt
+  texts (22): Vill du hjälpa till att förbättra Earmind? | Du kan dela dina egna frågor och Earminds svar med utvecklarna, utan ditt namn, i högst 12 månader. Andra personers tal skickas aldrig. Du kan ändra dig när som helst i Inställningar, och då raderas det som delats. | Earmind | Här startar du Earmind | Sen lyssnar den tills du trycker Avsluta. Du ser alltid när den lyssnar. | Earmind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | Har du prov snart? | Säg det, så förhör Earmind dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Earmind | Starta Earmind | Standardläge | · | Byt | Earmind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, sätt en timer på 10 minuter” | ”Lumen, påminn mig om träningen kl. 18” | ”Lumen, kolla min kalender, vad har jag i dag?” | Allt Earmind kan | Lägg till prov
+  buttons (8): Dela inte | Dela historik | Inställningar | Stäng | Starta Earmind | Läge: Standardläge. Byt läge | Allt Earmind kan | Lägg till prov
+MILESTONE  128.5 s,  5 taps,  7 screens: share prompt shown
+TAP  6 at  129.3 s: share prompt → Dela inte
+FINDING: 2 sheets in a row over Start
+shot at  137.5 s: t8-skip-08-har-startar-du — A60: 'Här startar du' on Start
+SCREEN t8-skip-08-har-startar-du — A60: 'Här startar du' on Start
+  texts (20): Earmind | Här startar du Earmind | Sen lyssnar den tills du trycker Avsluta. Du ser alltid när den lyssnar. | Earmind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | Har du prov snart? | Säg det, så förhör Earmind dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Earmind | Starta Earmind | Standardläge | · | Byt | Earmind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, kolla min kalender, vad har jag i dag?” | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, sätt en timer på 10 minuter” | Allt Earmind kan | Lägg till prov
+  buttons (6): Inställningar | Stäng | Starta Earmind | Läge: Standardläge. Byt läge | Allt Earmind kan | Lägg till prov
+MILESTONE  138.6 s,  6 taps,  8 screens: A60 hint shown
+shot at  139.8 s: t8-skip-09-start — The start screen after the first start
+SCREEN t8-skip-09-start — The start screen after the first start
+  texts (20): Earmind | Här startar du Earmind | Sen lyssnar den tills du trycker Avsluta. Du ser alltid när den lyssnar. | Earmind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | Har du prov snart? | Säg det, så förhör Earmind dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Earmind | Starta Earmind | Standardläge | · | Byt | Earmind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, förhör mig på fotosyntes” | ”Lumen, sätt en timer på 10 minuter” | Allt Earmind kan | Lägg till prov
+  buttons (6): Inställningar | Stäng | Starta Earmind | Läge: Standardläge. Byt läge | Allt Earmind kan | Lägg till prov
+MILESTONE  140.9 s,  6 taps,  9 screens: start screen
+A50: mode line = Läge: Standardläge. Byt läge
+shot at  160.7 s: t8-skip-10-start-starta-lumen — A50: Start before pressing Starta Lumen
+SCREEN t8-skip-10-start-starta-lumen — A50: Start before pressing Starta Lumen
+  texts (20): Earmind | Här startar du Earmind | Sen lyssnar den tills du trycker Avsluta. Du ser alltid när den lyssnar. | Earmind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | Har du prov snart? | Säg det, så förhör Earmind dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Earmind | Starta Earmind | Standardläge | · | Byt | Earmind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, kolla min kalender, vad har jag i dag?” | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, förhör mig på fotosyntes” | Allt Earmind kan | Lägg till prov
+  buttons (6): Inställningar | Stäng | Starta Earmind | Läge: Standardläge. Byt läge | Allt Earmind kan | Lägg till prov
+MILESTONE  162.2 s,  6 taps, 10 screens: Start: Starta Lumen visible
+TAP  7 at  164.0 s: start → Starta Lumen
+MILESTONE  166.5 s,  7 taps, 10 screens: Starta Lumen: Lyssnar
+shot at  167.6 s: t8-skip-11-starta-lumen-lyssnar — A50: Lyssnar after Starta Lumen, before the answer
+SCREEN t8-skip-11-starta-lumen-lyssnar — A50: Lyssnar after Starta Lumen, before the answer
+  texts (7): Standardläge, Svarar när någon frågar | Lyssnar | Standardläge | Svarar när någon frågar | Lyssnar | Fråga vad du vill. | Svaret kommer i örat och här.
+  buttons (5): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta
+answer shown (0 → 1): Huvudstaden i Australien är Canberra.
+MILESTONE  196.1 s,  7 taps, 11 screens: Starta Lumen: answer shown
+shot at  197.2 s: t8-skip-12-starta-lumen-svaret — A50: the answer after Starta Lumen
+SCREEN t8-skip-12-starta-lumen-svaret — A50: the answer after Starta Lumen
+  texts (7): Standardläge, Svarar när någon frågar | Lyssnar | Standardläge | Svarar när någon frågar | Lyssnar | Fråga: Vad är huvudstaden i Australien? | Huvudstaden i Australien är Canberra.
+  buttons (6): Tillbaka till start | Mer | Kommandon | Pausa | Avsluta | Fel svar, skicka till utvecklarna
+TAP  8 at  198.5 s: Lyssnar → Avsluta
+shot at  209.2 s: t8-skip-13-rosta-logga — A54: the logo vote
+SCREEN t8-skip-13-rosta-logga — A54: the logo vote
+  texts (23): Earmind | Earmind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | Har du prov snart? | Säg det, så förhör Earmind dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Earmind | Starta Earmind | Standardläge | · | Byt | Earmind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, förhör mig på fotosyntes” | ”Lumen, sätt en timer på 10 minuter” | ”Lumen, påminn mig om träningen kl. 18” | Allt Earmind kan | Lägg till prov | Hjälp oss välja logga | Vilken tycker du bäst om? Tryck på en. | Den gröna formen | Klotet | Den orange ringen
+  buttons (10): Inställningar | Starta Earmind | Läge: Standardläge. Byt läge | Allt Earmind kan | Lägg till prov | Rösta | Senare | Logga B, Den gröna formen | Logga A, Klotet | Logga C, Den orange ringen
+MILESTONE  210.9 s,  8 taps, 13 screens: A54 vote shown
+TAP  9 at  212.0 s: A54 vote → Senare
+TAP 10 at  227.8 s: start → Byt (mode line)
+shot at  230.0 s: t8-skip-14-byt-lage — A50: Byt from Start
+SCREEN t8-skip-14-byt-lage — A50: Byt from Start
+  texts (33): Välj läge | Earmind | Earmind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | Har du prov snart? | Säg det, så förhör Earmind dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Earmind | Starta Earmind | Standardläge | · | Byt | Earmind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, förhör mig på fotosyntes” | ”Lumen, sätt en timer på 10 minuter” | ”Lumen, påminn mig om träningen kl. 18” | Allt Earmind kan | Lägg till prov | FLER LÄGEN | Valet gäller Starta-knappen. Du kan också säga ”Lumen, byt till provläge”. | Standardläge | Svarar när någon frågar | Provläge | För dina prov | Intervju | Färdiga svar på intervjufrågor | Socialt | Ett förslag i pausen | Rizz | Flörtig wingman | Sov | Prat i sömnen och snarkning, bara på telefonen
+  buttons (12): Klar | Inställningar | Starta Earmind | Läge: Standardläge. Byt läge | Allt Earmind kan | Lägg till prov | Standardläge, Svarar när någon frågar | Provläge, För dina prov | Intervju, Färdiga svar på intervjufrågor | Socialt, Ett förslag i pausen | Rizz, Flörtig wingman | Sov, Prat i sömnen och snarkning, bara på telefonen
+TAP 11 at  234.7 s: Byt → Provläge
+A50: mode line after choosing = Läge: Provläge. Byt läge
+TAP 12 at  236.5 s: start → Starta Lumen (Provläge)
+shot at  260.1 s: t8-skip-15-provlage-startade-inte — Provläge did not open Lyssnar
+SCREEN t8-skip-15-provlage-startade-inte — Provläge did not open Lyssnar
+  texts (25): Lägg till prov | Säg det, så förhör Earmind dig inför provet. | Välj ämne | Datum | Årskurs | Säg det i stället | Välj | Earmind | Earmind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | Har du prov snart? | Säg det, så förhör Earmind dig inför provet. | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Earmind | Starta Earmind | Provläge | · | Byt | Earmind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, påminn mig om träningen kl. 18” | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, förhör mig på fotosyntes” | Allt Earmind kan | Lägg till prov
+  buttons (15): Spara prov | Avbryt | Säg det i stället | Matte | NO | SO | Språk | Annat | Årskurs, Välj | Datumväljare | Inställningar | Starta Earmind | Läge: Provläge. Byt läge | Allt Earmind kan | Lägg till prov
+MISS: Provläge: no Lyssnar screen
+MILESTONE  262.9 s, 12 taps, 15 screens: done

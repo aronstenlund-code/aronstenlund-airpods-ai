@@ -1,0 +1,103 @@
+config: liten-light
+screenshots: 63
+unreachable: 0
+
+shot: liten-light-01-intro — Intro (sketch 1)
+shot: liten-light-02-intro-slut — Intro, scrolled (the consent card)
+tap: intro → Läs mer
+shot: liten-light-03-las-mer — Läs mer (full consent)
+shot: liten-light-04-las-mer-slut — Läs mer, scrolled
+tap: Läs mer → Klar
+tap: intro → Testa nu
+note: no separate consent screen (A2: Testa nu is the consent)
+shot: liten-light-05-forsta-fragan — First question (sketch 2)
+tap: first question → Fortsätt/Hoppa över
+shot: liten-light-06-lagg-till-prov-forsta — Add exam at first start (sketch 3)
+shot: liten-light-07-lagg-till-prov-forsta-slut — Add exam at first start, scrolled
+shot: liten-light-08-lagg-till-prov-forsta-formular — Add exam at first start, the form (A33)
+shot: liten-light-09-lagg-till-prov-forsta-formular-slut — Add exam at first start, the form, scrolled
+tap: add exam → Inte nu
+shot: liten-light-10-dela-historik — Share history prompt
+tap: share prompt → Dela inte
+shot: liten-light-11-start-utan-prov — Start without an exam (sketch 7)
+shot: liten-light-12-start-lumen-kan-allt — A50: Start a few seconds later (the next example)
+tap: start → Byt (mode line)
+shot: liten-light-13-byt-fran-start — A50: Byt from Start (the modes and Sov)
+tap: start → Allt Lumen kan
+shot: liten-light-14-vad-kan — A52: Vad kan Lumen?
+shot: liten-light-15-vad-kan-2 — A52: Vad kan Lumen?, scrolled 1
+shot: liten-light-16-vad-kan-3 — A52: Vad kan Lumen?, scrolled 2
+tap: start → Lägg till prov
+shot: liten-light-17-lagg-till-prov — Add exam sheet
+tap: add exam → NO
+shot: liten-light-18-lagg-till-prov-no — Add exam, NO chosen
+tap: add exam → Spara prov
+shot: liten-light-19-start-med-prov — Start with an exam (sketch 4)
+shot: liten-light-20-start-med-prov-slut — Start with an exam, scrolled
+tap: start → Mina svar
+shot: liten-light-21-mina-svar — A53: Mina svar, first time
+tap: Mina svar → Skriv en fråga
+shot: liten-light-22-mina-svar-skriv — A53: Skriv en fråga (empty)
+tap: Skriv en fråga → Avbryt
+tap: start → Inställningar
+shot: liten-light-23-installningar-1 — Settings, top
+shot: liten-light-24-installningar-2 — Settings, scrolled 1
+shot: liten-light-25-installningar-3 — Settings, scrolled 2
+shot: liten-light-26-installningar-4 — Settings, scrolled 3
+shot: liten-light-27-installningar-5 — Settings, scrolled 4
+shot: liten-light-28-installningar-6 — Settings, scrolled 5
+shot: liten-light-29-installningar-anteckningar — Settings › Anteckningar
+shot: liten-light-30-installningar-anteckningar-slut — Settings › Anteckningar, scrolled
+shot: liten-light-31-installningar-forberedelser — Settings › Förberedelser
+shot: liten-light-32-installningar-forberedelser-slut — Settings › Förberedelser, scrolled
+shot: liten-light-33-installningar-egna-kommandon — Settings › Egna kommandon
+shot: liten-light-34-installningar-egna-kommandon-slut — Settings › Egna kommandon, scrolled
+shot: liten-light-35-installningar-integritet — Settings › Integritet och samtycke
+shot: liten-light-36-installningar-integritet-slut — Settings › Integritet och samtycke, scrolled
+shot: liten-light-37-installningar-historik — Settings › Historik
+shot: liten-light-38-installningar-historik-slut — Settings › Historik, scrolled
+shot: liten-light-39-installningar-minne — Settings › Minne
+shot: liten-light-40-installningar-minne-slut — Settings › Minne, scrolled
+shot: liten-light-41-installningar-studiekort — Settings › Studiekort
+shot: liten-light-42-installningar-studiekort-slut — Settings › Studiekort, scrolled
+shot: liten-light-43-installningar-feedback — Settings › Feedback och förslag
+shot: liten-light-44-installningar-feedback-slut — Settings › Feedback och förslag, scrolled
+shot: liten-light-45-installningar-rostkommandon — Settings › Röstkommandon
+shot: liten-light-46-installningar-rostkommandon-slut — Settings › Röstkommandon, scrolled
+shot: liten-light-47-installningar-om-appen — Settings › Om appen
+shot: liten-light-48-installningar-om-appen-slut — Settings › Om appen, scrolled
+shot: liten-light-49-installningar-avancerat — Settings › Avancerat folded out
+shot: liten-light-50-installningar-avancerat-2 — Settings › Avancerat, scrolled
+shot: liten-light-51-installningar-ra-transkription — Settings › Rå transkription och svar
+shot: liten-light-52-installningar-ra-transkription-slut — Settings › Rå transkription och svar, scrolled
+shot: liten-light-53-installningar-diagnostik — Settings › Diagnostik
+shot: liten-light-54-installningar-diagnostik-slut — Settings › Diagnostik, scrolled
+tap: settings → Klar
+tap: start → Starta Lumen / Bara fråga
+shot: liten-light-55-lyssnar-fragor — Lyssnar in Frågor (sketch 5)
+tap: lyssnar → ⋯
+tap: lyssnar → Byt läge
+shot: liten-light-56-byt-lage — Byt läge (sketch 8)
+tap: byt läge → Klar
+tap: lyssnar → Tillbaka till start
+shot: liten-light-57-start-medan-lyssnar — Start with the indicator line while listening
+tap: lyssnar → Avsluta
+tap: start → Läge:*
+shot: liten-light-58-fler-lagen — Fler lägen (A22)
+tap: start → Intervju
+tap: start → Starta Lumen (Intervju)
+shot: liten-light-59-intervju-setup — Intervju first screen
+tap: start → Läge:*
+tap: start → Socialt
+tap: start → Starta Lumen (Socialt)
+shot: liten-light-60-socialt-start — Socialt first screen
+tap: start → Läge:*
+tap: start → Rizz 18+
+tap: start → Starta Lumen (Rizz 18+)
+shot: liten-light-61-rizz-aldersgrans — Rizz 18+ first screen
+tap: start → Läge:*
+tap: Byt → Provläge
+shot: liten-light-62-start-provlage-valt — A50: Start with Provläge chosen
+tap: start → Starta Lumen (Provläge)
+shot: liten-light-63-lyssnar-provlage — Lyssnar in Provläge (sketch 5)
+tap: lyssnar → Avsluta
