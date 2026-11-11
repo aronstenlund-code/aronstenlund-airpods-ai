@@ -30,8 +30,11 @@ Underlag: `reports/eval/2026-11-11.md`, nattens live-eval: 388 turer, 36 med anm
 ## Andra anmärkningar i nattens eval (inte tagna nu)
 - **"Långsamt"** (16): recept och "hur gör man" går över 2,5 s, eftersom webbsökningen tar tid. Det är känt sedan K16.
 - **"Källrad saknas"** (5, webb): det är en kontroll i eval-skriptet. Svaren säger källan i texten ("Källa: SVT").
-- **webb-04:** svaret innehöll "Also," på engelska.
-- **webb-03:** "(M)" i talad text.
+- **webb-04** ("Also," på engelska) och **webb-03** ("(M)" i talad text) är **rättade efteråt** (`d41c139`, `f0e754b`):
+  - ett engelskt "Also,", "However," och liknande i början av en svensk mening tas bort;
+  - "(M)", "(S)" och så vidare efter ett namn i formen Förnamn Efternamn läses som partiet ("Ulf Kristersson, Moderaterna");
+  - annars lämnas parentesen.
+  - **Obs:** `d41c139` hade ett typfel som stoppade driftsättningen; `f0e754b` rättade det, och inget trasigt nådde servern.
 - **socialt/minne:** "fråga tillbaka" (4). Det är avsiktligt i Socialt ("Vill du ta en fika?").
 
 ## Tester
