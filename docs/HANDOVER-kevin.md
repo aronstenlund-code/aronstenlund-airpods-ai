@@ -1,6 +1,6 @@
-# Överlämning: Kevin (backend), 2026-11-11 17:46
+# Överlämning: Kevin (backend), 2026-11-11 20:11
 
-Sessionen (molnet) gjorde K38, K37, K39, K36, K40b (O41 BLOCKER), Deangelos K40 (förhörssvar efter ljud) och stående omgång 2–15, och är inte komprimerad. Kön är tom utom K6. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom utom K6, som väntar på `SUPABASE_SERVICE_ROLE_KEY`.
+Sessionen (molnet, komprimerad en gång) gjorde K36–K42, K40b och stående omgång 2–18. Nattpass till 2026-11-12 07:30. Nästa session: `git pull`, tavlan, `prompts/queue/kevin.md`. K6 väntar på `SUPABASE_SERVICE_ROLE_KEY`.
 
 **Arbetssätt som sparar tid (molnet)**
 - **Riktig Deno går att installera:** `npm i deno@2` i scratchpad, sedan länka `node_modules/.bin/deno` till `/usr/local/bin/deno`. Då fungerar `deno task test` och `deno task check`, med typkontroll. Node-shimmen behövs inte.
@@ -9,13 +9,12 @@ Sessionen (molnet) gjorde K38, K37, K39, K36, K40b (O41 BLOCKER), Deangelos K40 
 - Supabase MCP: `apply_migration` kan ge Bad Gateway utan att något ändrats. Kontrollera med SQL och kör igen.
 - `delete` via `execute_sql` och `create_edge_function_secret` frågar Aron och fastnar när han inte är där. Undvik dem i självständigt läge.
 - Webbsidor med bot-skydd (UR Play ger 403) ska inte kringgås. K19 litar i stället på webbsökningens egna resultat.
-- Avbrutna `/answer`-anrop loggas inte i `answer_usage`, så kostnaden får uppskattas.
 - **Kör `deno task check` före push.** Testlistan i deploy-flödet typkontrollerar, så ett typfel stoppar driftsättningen. Det hände en gång i dag (`d41c139`).
 - Regressionens rader finns som artefakten `answer-regress`: `gh run download <id> -n answer-regress`.
 - Appen skickar Standardläge som `mode: "auto"`. Testa verktyg och liknande i `auto` med "Lumen, …", inte bara med `push_to_talk` (O41).
 
-**Läge**
-- API i dag: cirka 4,3 USD (regressioner cirka 2,2, live-eval 1,0, K37/K40 0,8, resten Haiku-kontroller).
+**Läge** (K42: `isRankQuestion` skickar rangordningsfakta till Sonnet, `asklength.ts` följer en uttalad längd, `lonecmd.ts` väntar på A74:s `stt_confidence`/`utterance_ms`)
+- API: dagen cirka 4,3 USD, i kväll hittills cirka 2,5 USD (taket i natt är 6). Regression 0,33 USD per körning.
 - Regressionen på 21 fall varierar mellan 81 och 100 % utan att koden ändrats, så en enskild körning säger lite.
 
 **Öppna trådar**
@@ -24,6 +23,7 @@ Sessionen (molnet) gjorde K38, K37, K39, K36, K40b (O41 BLOCKER), Deangelos K40 
 - **Oscar:** omtest av K38, grupp 13 och 14. Hans `o24`- och `o36`-skript känner igen svaren på de gamla texterna.
 - **Concern (Oscar O39, Kevin instämmer):** Mina svar kan fungera som fusk under ett prov. Det är Architects beslut.
 - Shopify (K35 fas 2) kan byggas på `connections` (`provider` får ett nytt värde) när Partner-appen finns.
-- Två beslut heter "D98", och D124 och D125 finns två gånger, både som owner-beslut och som Kevin-beslut. Rör det inte.
 - **Kris och verktyg (O42):** en sen krismarkör från modellen räknas inte för korta, riktade telefonkommandon utan krissignal i koden. "ring Bris, jag vill inte leva" ger krissvaret och samtalet. Rör det försiktigt.
 - **Auto mot Provläge:** en avklippt fråga är tystnad i Auto men besvaras i Provläge (D87 "half"). Rättelser går till `/memory` med en Haiku-reserv (0/30 falska enligt O49). Appen skickar i dag bara fasta ord dit.
+
+- **Akta filnamn:** `answer/length.ts` finns redan (svarstyp och fortsättning). Den uttalade längden ligger i `asklength.ts`. Kontrollera alltid med `ls` innan du skapar en ny fil.
