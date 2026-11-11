@@ -1,0 +1,120 @@
+[
+ {
+  "fragment": "kan du säga vad klockan är",
+  "status": 200,
+  "said": "",
+  "cut_off": true,
+  "is_question": false,
+  "usage": {
+   "input_tokens": 0,
+   "output_tokens": 0,
+   "cache_read_tokens": 0,
+   "web_searches": 0,
+   "model": "cut_off"
+  }
+ },
+ {
+  "fragment": "vad tror du att svaret är",
+  "status": 200,
+  "said": "",
+  "cut_off": true,
+  "is_question": false,
+  "usage": {
+   "input_tokens": 0,
+   "output_tokens": 0,
+   "cache_read_tokens": 0,
+   "web_searches": 0,
+   "model": "cut_off"
+  }
+ },
+ {
+  "fragment": "hur svårt tror du provet blir",
+  "status": 200,
+  "said": "",
+  "cut_off": true,
+  "is_question": false,
+  "usage": {
+   "input_tokens": 0,
+   "output_tokens": 0,
+   "cache_read_tokens": 0,
+   "web_searches": 0,
+   "model": "cut_off"
+  }
+ },
+ {
+  "fragment": "kan du kolla hur varmt det blir i morgon",
+  "status": 200,
+  "said": "Jag har tyvärr ingen tillgång till väderprognoser just nu, så det kan jag inte kolla. Titta i en väderapp eller på smhi.se för morgondagens temperatur.",
+  "cut_off": null,
+  "is_question": true,
+  "usage": {
+   "input_tokens": 5653,
+   "output_tokens": 186,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 5446,
+   "web_searches": 0,
+   "model": "claude-haiku-5-5",
+   "est_cost_usd": 0.00079445
+  }
+ },
+ {
+  "fragment": "vad betyder ordet och",
+  "status": 200,
+  "said": "",
+  "cut_off": true,
+  "is_question": false,
+  "usage": {
+   "input_tokens": 0,
+   "output_tokens": 0,
+   "cache_read_tokens": 0,
+   "web_searches": 0,
+   "model": "cut_off"
+  }
+ },
+ {
+  "fragment": "hur gammal tror du att jag är",
+  "status": 200,
+  "said": "",
+  "cut_off": true,
+  "is_question": false,
+  "usage": {
+   "input_tokens": 0,
+   "output_tokens": 0,
+   "cache_read_tokens": 0,
+   "web_searches": 0,
+   "model": "cut_off"
+  }
+ },
+ {
+  "fragment": "Lumen, vet du vad klockan är",
+  "status": 200,
+  "said": "Klockan är arton och femtioett på kvällen.",
+  "cut_off": null,
+  "is_question": true,
+  "usage": {
+   "input_tokens": 5649,
+   "output_tokens": 121,
+   "cache_read_tokens": 5446,
+   "cache_write_tokens": 0,
+   "web_searches": 0,
+   "model": "claude-haiku-5-5",
+   "est_cost_usd": 0.00013526
+  }
+ },
+ {
+  "fragment": "när tror du att bussen kommer",
+  "status": 200,
+  "said": "",
+  "cut_off": null,
+  "is_question": false,
+  "usage": {
+   "input_tokens": 5646,
+   "output_tokens": 8,
+   "cache_read_tokens": 5446,
+   "cache_write_tokens": 0,
+   "web_searches": 0,
+   "model": "claude-haiku-5-5",
+   "est_cost_usd": 7.846e-05
+  }
+ }
+]
