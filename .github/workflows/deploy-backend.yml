@@ -111,6 +111,14 @@ jobs:
         if: steps.changed.outputs.run == '1'
         continue-on-error: true
         run: python3 scripts/provlage-eval.py --model sonnet --judge sonnet --workers 4 --every 10 --users 3 --tag regress --out /tmp/regress
+      # Standing round 3: the per-case rows, so a drop can be checked case by case (invented test bank, no user text)
+      - uses: actions/upload-artifact@v4
+        if: steps.changed.outputs.run == '1'
+        with:
+          name: answer-regress
+          path: /tmp/regress
+          retention-days: 14
+          if-no-files-found: ignore
       - name: Comment on the commit
         if: steps.changed.outputs.run == '1'
         env:

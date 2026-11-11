@@ -853,9 +853,12 @@ Deno.test("Oscar round 2 M04.2: a clock time split from 'klockan' by the stream 
       assert(!out.includes("komma"), `${size}: ${out}`);
     }
   }
-  assert(!toSpeech("Det kostar 17,40 kronor.").includes("och fyrtio"), "prices stay prices");
+  // a price is never read as a clock time; since standing round 3 it is "sjutton kronor och fyrtio öre"
+  const price = toSpeech("Det kostar 17,40 kronor.");
+  assert(!/sjutton och fyrtio/.test(price) && price.includes("kronor och fyrtio öre"), `prices stay prices: ${price}`);
   const s = new NumberStream();
-  assert(!(s.push("Det kostar ") + s.push("17,40 kronor.") + s.finish()).includes("och fyrtio"));
+  const streamed = s.push("Det kostar ") + s.push("17,40 kronor.") + s.finish();
+  assert(!/sjutton och fyrtio/.test(streamed), streamed);
 });
 
 Deno.test("Oscar round 2 F16: web-mode sentences that narrate the search decision are never spoken", () => {

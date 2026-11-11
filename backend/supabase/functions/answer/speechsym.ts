@@ -133,6 +133,9 @@ const REGNAL = [
 export const regnal = (n: number) => REGNAL[n] ?? String(n);
 
 const ABBREVIATIONS: [RegExp, string][] = [
+  // Oscar O36/O34: "Läs s. 23" was "läs s. tjugotre"; "1 299,50 kronor" was "… komma fem noll kronor"
+  [/(?<![\p{L}])(?:s|sid)\.\s?(?=\d)/gu, "sidan "],
+  [/(\d[.,]\d{1,2})\s?kronor(?![\p{L}])/gu, "$1 kr"],
   [/(?<![\p{L}])f\.\s?Kr\.?/gu, "före Kristus"],
   [/(?<![\p{L}])e\.\s?Kr\.?/gu, "efter Kristus"],
   [/(?<![\p{L}])t\.ex\.?/giu, "till exempel"],
