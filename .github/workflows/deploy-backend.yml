@@ -52,7 +52,7 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
           set -e
-          for f in answer tts stt-token voices feedback shared-history memory study-cards study-profile exam study-plan provlage-eval qa-log real-users-admin my-answers; do
+          for f in answer tts stt-token voices feedback shared-history memory study-cards study-profile exam study-plan provlage-eval qa-log real-users-admin my-answers logo-vote; do
             supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes
           done
           # These do their own auth (service key / public endpoint with caps), as documented in backend/README.md.

@@ -40,6 +40,9 @@ verify_jwt = true                  # K30 Aron's question-and-answer log (owner e
 [functions.my-answers]
 verify_jwt = true                  # K37 Mina svar: suggest, proofread, compress (user JWT, nothing stored)
 
+[functions.logo-vote]
+verify_jwt = true                  # K39 logo vote (own vote; ?view=owner for Aron only)
+
 [functions.real-users-admin]
 verify_jwt = true                  # K38 Aron's review of the K22 candidates (owner email + email sign-in only)
 
