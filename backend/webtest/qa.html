@@ -41,6 +41,10 @@
       <button id="logout" class="ghost">Logga ut</button>
     </div>
     <div id="list"></div>
+    <h2 id="dbg-h">Testljud (testläget, D140)</h2>
+    <p class="muted">Bara ditt konto och testare som själva har slagit på testläget. Lyssna på biten och se vad Lumen hörde och gjorde bredvid. Allt raderas efter 14 dagar. Länkarna gäller en timme.</p>
+    <div class="row"><button id="dbg-load" class="ghost">Visa testljud</button></div>
+    <div id="dbg"></div>
     <h2>Logga-röstning</h2>
     <div id="logo" class="muted">Hämtar …</div>
     <h2 id="cand-h">Riktiga användare: kandidater till testbanken</h2>
@@ -72,6 +76,22 @@
   }
   // K39: the logo vote totals (D127); the logos are in docs/design/logo/rostning/
   const LOGO = { A: "A klotet", B: "B den gröna formen", C: "C den orange ringen", D: "D glasklotet", E: "E glasringen", F: "F glasvågen" };
+  // K43 (D140): test-mode turns with the audio next to what Lumen heard and did
+  async function loadDbg() {
+    $("dbg").textContent = "Hämtar …";
+    const r = await fetch(`${URL_}/functions/v1/debug-audio?view=owner`, { headers: { apikey: KEY, authorization: `Bearer ${await token()}` } });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { $("dbg").textContent = `Kunde inte hämta testljudet (${j.message || r.status}).`; return; }
+    const turns = j.turns || [];
+    if (!turns.length) { $("dbg").textContent = "Inget testljud ännu."; return; }
+    $("dbg").innerHTML = turns.map((t) => {
+      const words = (t.words || []).map((w) => `${esc(w.w)}<span class="muted"> ${(w.start_ms / 1000).toFixed(1)}s${w.conf != null ? " " + Math.round(w.conf * 100) + "%" : ""}</span>`).join(" ");
+      return `<div class="qa"><div class="t">${esc(new Date(t.created_at).toLocaleString("sv-SE"))} · ${esc(MODE[t.mode] || t.mode || "")} · beslut: <b>${esc(t.decision || "–")}</b></div>` +
+        (t.audio_url ? `<audio controls preload="none" src="${esc(t.audio_url)}"></audio>` : `<div class="muted">(inget ljud)</div>`) +
+        `<div class="q">Hörde: ${esc(t.transcript || "")}</div>${words ? `<div class="muted">${words}</div>` : ""}<div class="a">${esc(t.answer || "")}</div></div>`;
+    }).join("");
+  }
+  $("dbg-load").onclick = loadDbg;
   async function loadLogo() {
     const r = await fetch(`${URL_}/functions/v1/logo-vote?view=owner`, { headers: { apikey: KEY, authorization: `Bearer ${await token()}` } });
     const j = await r.json().catch(() => ({}));

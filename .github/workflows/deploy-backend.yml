@@ -56,7 +56,7 @@ jobs:
             supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes
           done
           # These do their own auth (service key / public endpoint with caps), as documented in backend/README.md.
-          for f in usage-stats feedback-admin waitlist voice-lab connect; do
+          for f in usage-stats feedback-admin waitlist voice-lab connect debug-audio; do
             supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes --no-verify-jwt
           done
           # Retired lab functions: 410 stubs that do nothing (no keys, no model calls).
