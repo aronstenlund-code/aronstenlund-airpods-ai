@@ -1231,7 +1231,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K13.1: short first unless the learned default here is the long answer (2 of the last 3 "ja", K13.2)
       const longFirst = applicableHere.some((x) => x.key === "length" && x.value === "longer");
       const twoLevel = body.twoLevel === true && !demo && !plan && !command && !continuation && !computed &&
-        !textReq && !need && !quiz && !gradeReply && (tutor || answerTypeBase === "study") && !longFirst;
+        !textReq && !need && !quiz && !gradeReply && !longFirst &&
+        // Toby T12: Standardläge (auto, push to talk) gets the developed answer ready for "ja" also after a short fact
+        // answer, so "ja" plays at once (T7: under 1 s); Haiku there, so the extra part costs almost nothing
+        (tutor || answerTypeBase === "study" || body.mode === "auto" || body.mode === "push_to_talk" || body.mode === "text");
 
       // D84: texts and quotes need the exact words: they use the stronger model (Rizz's), like Rizz
       const isRizz = plan?.kind === "rizz" || textReq || careful; // K9: "var säker" = the stronger model, one answer
