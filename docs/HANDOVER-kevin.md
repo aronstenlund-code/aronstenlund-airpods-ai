@@ -1,27 +1,24 @@
-# Överlämning: Kevin (backend), 2026-11-10 12:20
+# Överlämning: Kevin (backend), 2026-11-11 11:30
 
-Sessionen har gjort cirka 25 punkter (K2–K27), har komprimerats två gånger och slutar därför enligt PLAN 2e. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom. Nästa steg är den stående uppgiften (K4-loopen, kostar API).
+Sessionen (molnet) gjorde K38, K37, K39, K36 och stående omgång 2, och är inte komprimerad. Nästa session börjar med `git pull`, tavlan och `prompts/queue/kevin.md`. Kön är tom utom K6, som väntar på `SUPABASE_SERVICE_ROLE_KEY`.
 
-**Arbetssätt som sparar tid**
-- Lokala tester körs med Node-shimmen (minnet `backend-tests-without-deno`). Shimmen typkontrollerar inte, så Actions är grinden. Oscars offlineskript i `scripts/qa/o2*_offline.mjs` och `o3*_offline.mjs` körs direkt med `node --experimental-transform-types` och kostar inget. Ge dem `< /dev/null`.
-- Skriv patchskript med Write-verktyget. Bash-heredoc med `\p` eller citattecken och Python-f-strängar med `{…}` har gått fel flera gånger.
-- Committa med pathspec, `git commit -m … -- <mina sökvägar>`, eftersom indexet delas och andras ändringar ligger ostagade (`git pull --rebase` vägrar då). Kör `git fetch`, kontrollera `HEAD..origin/main` och pusha.
-- `[skip eval]` i commit-meddelandet hoppar över regressionen (cirka 0,3 USD).
-- `memory/handler.ts` `SENSITIVE_RAW` måste stå på en rad, eftersom Oscars O28 läser det ur filen.
+**Arbetssätt som sparar tid (molnet)**
+- **Riktig Deno går att installera:** `npm i deno@2` i scratchpad, sedan länka `node_modules/.bin/deno` till `/usr/local/bin/deno`. Då fungerar `deno task test` och `deno task check`, med typkontroll. Node-shimmen behövs inte.
+- Tavlan krockar ofta med andra sessioner. Lös det med `git checkout --ours prompts/queue/BOARD.md`, skriv in din rad igen och kör `rebase --continue`.
+- Containerns klocka är UTC. Rapportnamn och tider på tavlan ska vara i svensk tid: `TZ=Europe/Stockholm date`.
+- Supabase MCP: `apply_migration` kan ge Bad Gateway utan att något ändrats. Kontrollera med SQL och kör igen.
+- `delete` via `execute_sql` och `create_edge_function_secret` frågar Aron och fastnar när han inte är där. Undvik dem i självständigt läge.
+- Webbsidor med bot-skydd (UR Play ger 403) ska inte kringgås. K19 litar i stället på webbsökningens egna resultat.
+- Avbrutna `/answer`-anrop loggas inte i `answer_usage`, så kostnaden får uppskattas.
 
 **Läge**
-- API i dag: bara K23:s live-test (0,004 USD av de godkända 0,50). K25–K27 gjordes helt offline.
-- **När ElevenLabs-krediterna finns:** `python scripts/dispatch.py credits-ready.yml` (K18 del 2 och K6).
-- Oscar bör köra om O24, O26–O28, O30–O32 och O17c (kris).
+- API i dag: cirka 0,7 USD (K37 0,2, regressionen 0,32, länktester 0,12, K36 0,02).
+- Regressionen på 21 fall varierar mellan 81 och 100 % utan att koden ändrats, så en enskild körning säger lite.
 
-**Öppna trådar (Aron)**
-- `SUPABASE_SERVICE_ROLE_KEY` för K22, men först efter Oscars godkännande av K24. Samma hemlighet behövs för K4.3 och K6.
-- Godkänna krissvarets text (K21/K23), Sonnet i demon (K5) och raderingen av Oscars testrad i väntelistan (K5).
-- Komplimanger om utseende i Rizz 18+ (K8). De svenska rösterna (K14).
-
-**Öppna trådar (teknik)**
-- Angela: appens `SensitiveFilter` ska följa serverlistan (`answer/k26_test.ts`). `echo.quoted` (K27) finns bara på servern.
-- Oscars förslag om en Haiku-kontroll av Rizz-raderna är inte byggt (D107). Ta det om O27-omtestet hittar nya luckor.
-- Auto söker aldrig på webben (D46).
-- `self.ts`: svarstexterna är ordagrant ur `AboutView.swift`, så båda måste ändras tillsammans.
-- Två beslut heter "D98". Rör det inte.
+**Öppna trådar**
+- **Aron:** `SUPABASE_SERVICE_ROLE_KEY` (efter Oscars godkännande av K38) låser upp K6 och K22. Spotify-appen (klickväg i `docs/AGENT.md`). O16: ElevenLabs med zero retention före beta. En teströst (C) från Kevin ligger i `logo_votes`; den raderas när Aron kan bekräfta.
+- **Angela:** A53 (Mina svar), A54 (`/logo-vote`), samtal, `music_open` och Spotify (protokollen i rapporterna och i `docs/AGENT.md`). Om appen bör säga samma sak som `self.ts` om ElevenLabs.
+- **Oscar:** omtest av K38, grupp 13 och 14. Hans `o24`- och `o36`-skript känner igen svaren på de gamla texterna.
+- **Concern (Oscar O39, Kevin instämmer):** Mina svar kan fungera som fusk under ett prov. Det är Architects beslut.
+- Shopify (K35 fas 2) kan byggas på `connections` (`provider` får ett nytt värde) när Partner-appen finns.
+- Två beslut heter "D98", och D124 och D125 finns två gånger, både som owner-beslut och som Kevin-beslut. Rör det inte.
