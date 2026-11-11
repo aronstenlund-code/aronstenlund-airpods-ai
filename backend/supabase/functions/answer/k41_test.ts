@@ -72,3 +72,15 @@ Deno.test("O41: 'ett' next to numbers is a digit", async () => {
   assertEquals(spokenDigits("ring noll sju noll, ett två tre, fyrtiofem sextiosju"), "0701234567");
   assertEquals(spokenDigits("ring en kompis"), "");
 });
+
+Deno.test("O41: +46 written by the model is the 0 the user said", () => {
+  assertEquals(validatePhoneInput("call_contact", { number: "+46701234567" }, "Lumen, ring noll sju noll, ett två tre, fyrtiofem sextiosju"), { number: "0701234567" });
+  assertEquals(validatePhoneInput("call_contact", { number: "+46701234567" }, "ring mamma"), null);
+});
+
+Deno.test("O41: with phone tools in Swedish, the model's English reasoning is not spoken", async () => {
+  const { AnswerPost } = await import("./speech.ts");
+  const p = new AnswerPost({ previousAnswers: [], trimQuestion: false, dropEnglish: true });
+  const out = p.push("The user asks to call a friend, but gave no name. I need a name to call, so I should ask who. Vem vill du att jag ska ringa? ") + p.finish();
+  assertEquals(out.trim(), "Vem vill du att jag ska ringa?");
+});

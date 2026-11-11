@@ -1407,6 +1407,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             firstLineOnly: plan?.kind === "socialline",
             relationTag,
             web: webOn || !!need,
+            dropEnglish: !!phoneTools && body.language === "sv",
             source: textReq, // D84: texts and quotes split off their källa line
             tutor,
             silence: silenceOn,
@@ -1776,6 +1777,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 firstLineOnly: plan?.kind === "socialline",
                 relationTag,
                 web: webOn || !!need || searched,
+                dropEnglish: !!phoneTools && body.language === "sv",
                 source: textReq,
                 tutor,
                 silence: silenceOn,

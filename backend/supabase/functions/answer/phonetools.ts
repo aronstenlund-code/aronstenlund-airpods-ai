@@ -150,7 +150,13 @@ export function validatePhoneInput(name: string, input: unknown, heard?: string)
     case "call_contact": {
       const nm = s(i.name, 80) ? String(i.name).trim() : "";
       let num = typeof i.number === "string" && /^\+?[\d\s-]{3,20}$/.test(i.number.trim()) ? i.number.trim() : "";
-      if (num && heard !== undefined && !spokenDigits(heard).includes(digits(num))) num = ""; // not said: never dialled
+      if (num && heard !== undefined) {
+        // not said: never dialled; "+46 70 …" is the same number as "070 …" said aloud
+        const d = digits(num), said = spokenDigits(heard);
+        const local = d.startsWith("46") && !said.includes(d) ? "0" + d.slice(2) : d;
+        if (!said.includes(local)) num = "";
+        else if (local !== d) num = local;
+      }
       if (!nm && !num) return null;
       return { ...(nm ? { name: nm } : {}), ...(num ? { number: num } : {}) };
     }
