@@ -1,0 +1,103 @@
+{
+ "rows": [
+  {
+   "ad": "cafe",
+   "q": "har du jobbat med det här förut",
+   "status": 200,
+   "said": "Jag är lugn i stressiga lägen, noggrann med detaljer och gillar att möta nya människor. Det jag ser mest fram emot med jobbet på caféet är att lära mig kaffemaskinen ordentligt och att göra varje gäst glad under helgerna.",
+   "flags": [],
+   "cost": 0.00053
+  },
+  {
+   "ad": "cafe",
+   "q": "vad har du för erfarenhet som passar för jobbet",
+   "status": 200,
+   "said": "Det jag tar med mig till caféet är att jag gillar att ha många saker igång samtidigt och att jag trivs när det är fullt i lokalen. Jag är noggrann med detaljer, så jag dubbelkollar ordrar och kassan innan jag lämnar disken. Jag tycker också om att prata med gäster och få dem att känna sig välkomna, och det är precis den delen av jobbet jag ser mest fram emot. Helgerna passar mig bra, och jag vill gärna lära mig kaffemaskinen ordentligt och bli en trygg barista i ert team.",
+   "flags": [],
+   "cost": 0.00022
+  },
+  {
+   "ad": "cafe",
+   "q": "har du truckkort eller körkort",
+   "status": 200,
+   "said": "Till helgerna kan jag verkligen bidra, för jag gillar att möta gäster, hålla humöret uppe och se till att kaffet blir lika gott även när det är fullt i lokalen. Jag ser fram emot att lära mig er kaffemaskin och ert sätt att jobba.",
+   "flags": [],
+   "cost": 0.00018
+  },
+  {
+   "ad": "cafe",
+   "q": "berätta om dig själv",
+   "status": 200,
+   "said": "Jag är en glad och social person som gillar att möta nya människor, och det är något jag tar med mig till ett café. Jag trivs med att ha många saker igång samtidigt och tycker om att få gäster att känna sig välkomna. Jag är snabb och noggrann, vilket passar bra när det är mycket folk i kön. Kaffe och bakning intresserar mig, och jag vill lära mig kaffemaskinen ordentligt och utvecklas i rollen. Helgerna passar mig bra, och jag ser fram till att bidra till en bra stämning i caféet.",
+   "flags": [],
+   "cost": 0.00019
+  },
+  {
+   "ad": "lager",
+   "q": "har du jobbat med det här förut",
+   "status": 200,
+   "said": "Jag är noggrann med att kontrollera att rätt saker kommer ut och in, och jag tar gärna ansvar för min del av arbetet. Det jag ser mest fram emot i den här rollen är att snabbt lära mig lagrets rutiner och bidra till en bra arbetsmiljö under sommaren.",
+   "flags": [],
+   "cost": 0.00019
+  },
+  {
+   "ad": "lager",
+   "q": "vad har du för erfarenhet som passar för jobbet",
+   "status": 200,
+   "said": "Jag gillar att jobba fysiskt och ha ordning på saker, och det passar bra i ett lager. Jag är noggrann med att kontrollera att rätt varor kommer ut till rätt plats, och jag tar gärna ansvar för mina uppgifter från början till slut. Tunga lyft är inget jag tvekar inför, och jag lyfter alltid säkert med rätt teknik. Jag ser fram till att lära mig just det här lagret och att bidra till ett smidigt sommararbete i Jönköping.",
+   "flags": [],
+   "cost": 0.00021
+  },
+  {
+   "ad": "lager",
+   "q": "har du truckkort eller körkort",
+   "status": 200,
+   "said": "Jag har tidigare jobbat i lager och är van vid tunga lyft, så jag kan snabbt sätta mig in i rutinerna. Jag är noggrann med att följa säkerhetsregler och tycker om att hålla ordning i hyllorna.",
+   "flags": [],
+   "cost": 0.00017
+  },
+  {
+   "ad": "lager",
+   "q": "berätta om dig själv",
+   "status": 200,
+   "said": "Jag är van vid fysiskt arbete och tunga lyft, och jag vet hur viktigt det är att arbeta säkert och ta hand om varorna. Jag har ett intresse för lagerarbete och ser fram till att bidra med goda rutiner under sommaren. Jag trivs också i team och gillar när arbetsdagen flyter på tillsammans med kollegorna.",
+   "flags": [],
+   "cost": 0.00019
+  },
+  {
+   "ad": "barnvakt",
+   "q": "har du jobbat med det här förut",
+   "status": 200,
+   "said": "Det jag tar med mig till den här rollen är att jag är trygg kring barn och gillar att hitta lugna rutiner, till exempel kvällsrutinen med mat, bad och godnattsaga. Jag är noggrann och planerar gärna i förväg, så jag vet vad som ska hända och kan vara en stabil person för barnen. Jag kan simma, vilket gör mig extra trygg när barnen är i eller nära vatten. Det jag ser mest fram emot är att lära känna just era två barn och bygga ett förtroende som gör kvällarna trygga för alla.",
+   "flags": [],
+   "cost": 0.00021
+  },
+  {
+   "ad": "barnvakt",
+   "q": "vad har du för erfarenhet som passar för jobbet",
+   "status": 200,
+   "said": "Det jag tar med mig till jobbet är att jag gillar att ha ordning och reda, och att jag lätt får kontakt med barn. Jag har erfarenhet av barn och kan simma, vilket jag tror är viktigt när man har små barn i vattnet. Jag är trygg med att ta ansvar för två barn på en gång, planera kvällen med läggning och läxor, och hålla lugnet om något oväntat händer. Det jag ser mest fram emot är att bygga en god relation med barnen så att de känner sig trygga med mig.",
+   "flags": [
+    "CLAIM"
+   ],
+   "cost": 0.00021
+  },
+  {
+   "ad": "barnvakt",
+   "q": "har du truckkort eller körkort",
+   "status": 200,
+   "said": "Det som är viktigast för mig i det här jobbet är att barnen känner sig trygga med mig, att jag kan hålla koll på simningen och att jag följer era rutiner för kvällen. Jag tycker om att ha tydliga planer för leken och läggningen, och jag lyssnar på vad föräldrarna vill ha så att allt känns lugnt för både barnen och er.",
+   "flags": [],
+   "cost": 0.00019
+  },
+  {
+   "ad": "barnvakt",
+   "q": "berätta om dig själv",
+   "status": 200,
+   "said": "Jag är en trygg och engagerad person som tycker om att umgås med barn. Jag är lugn i vardagen, tar ansvar och har lätt att skapa en nära och rolig kontakt med små barn genom lek, sagor och enkla rutiner. Jag kan också simma, vilket känns bra när man ansvarar för barn i och kring vatten. Jag ser fram till att lära känna era barn och skapa en trygg kväll för dem och er.",
+   "flags": [],
+   "cost": 0.00016
+  }
+ ],
+ "spent": 0.0027
+}
