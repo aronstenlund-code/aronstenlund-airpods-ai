@@ -1,0 +1,143 @@
+{
+ "summary": {
+  "n": 10,
+  "answered": 10,
+  "correct": 10,
+  "natural": 9,
+  "slips": 0,
+  "cost_mean_usd": 0.00311,
+  "first_ms_p50": 1534
+ },
+ "rows": [
+  {
+   "q": "vad är fotosyntes",
+   "status": 200,
+   "answer": "Fotosyntes är processen där växter, alger och vissa bakterier använder solljus för att göra socker av koldioxid och vatten, och släpper ut syre. Det sker i kloroplasterna, där klorofyllet fångar ljuset.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.01199,
+   "ms": 1682
+  },
+  {
+   "q": "varför är himlen blå",
+   "status": 200,
+   "answer": "Solljuset består av alla färger, och luftens molekyler sprider det korta, blå ljuset mycket mer än det långa, röda. Det blå ljuset studsar därför runt i hela atmosfären och når ögat från alla håll, så himlen ser blå ut.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0020119,
+   "ms": 1227
+  },
+  {
+   "q": "hur fungerar en vaccin",
+   "status": 200,
+   "answer": "Ett vaccin visar immunförsvaret en ofarlig bit av en sjukdomsframkallare, till exempel ett smittämne som är dödat, försvagat eller bara en del av det. Kroppen bildar då antikroppar och minnesceller, så när du senare möter det riktiga smittämnet reagerar immunförsvaret snabbt och starkt innan du hinner bli sjuk.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0024694,
+   "ms": 1181
+  },
+  {
+   "q": "vem var Gustav Vasa",
+   "status": 200,
+   "answer": "Gustav Vasa var Sveriges kung från femtonhundratjugotre till femtonhundrasextio och grundade det moderna svenska riket. Han ledde upproret mot den danske kungen Kristian den andre efter Stockholms blodbad femtonhundratjugo och införde reformationen i Sverige.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Faktamässigt korrekt: kung 1523–1560, ledde upproret efter blodbadet 1520, reformationen (Västerås riksdag 1527). Kort och naturligt.",
+   "cost": 0.0019994,
+   "ms": 1271
+  },
+  {
+   "q": "vad är skillnaden mellan väder och klimat",
+   "status": 200,
+   "answer": "Väder är hur det är ute just nu eller de närmaste dagarna, som regn, temperatur och vind. Klimat är det genomsnittliga vädret på en plats under lång tid, vanligen trettio år.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0018444000000000002,
+   "ms": 2034
+  },
+  {
+   "q": "hur räknar man ut procent",
+   "status": 200,
+   "answer": "Procent betyder hundradelar. För att räkna ut en procentandel av ett tal gör du så att du delar procenten med hundra och multiplicerar med talet, så är tjugo procent av hundrafemtio lika med noll komma två noll gånger hundrafemtio, alltså trettio.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Fine for a demo visitor; only covers percent of a number, not change or part-of-whole, but short answer was requested.",
+   "cost": 0.0025769,
+   "ms": 1267
+  },
+  {
+   "q": "varför har vi skottår",
+   "status": 200,
+   "answer": "Jorden tar ungefär trehundrasextiofem komma två fem dygn på sig att gå ett varv runt solen, alltså ett kvarts dygn mer än de trehundrasextiofem som ett vanligt år har. Därför lägger vi till en extra dag, den tjugonionde februari, vart fjärde år så att kalendern inte glider ur takt med årstiderna.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Fakta stämmer (ca 365,25 dygn, 29 februari vart fjärde år). Förenklat men tillräckligt för en demo, och två meningar på naturlig svenska.",
+   "cost": 0.0022218999999999997,
+   "ms": 1556
+  },
+  {
+   "q": "vad är en atom",
+   "status": 200,
+   "answer": "En atom är det minsta byggstenen hos ett grundämne som behåller ämnets egenskaper. Den har en liten kärna av protoner och neutroner, omgiven av elektroner, och det mesta av atomen är tomrum.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 0,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Grammar error: \"det minsta byggstenen\" should be \"den minsta byggstenen\" (byggsten is en-word).",
+   "cost": 0.0018869,
+   "ms": 1674
+  },
+  {
+   "q": "hur uppstår regnbågar",
+   "status": 200,
+   "answer": "Solljus bryts när det går in i regndroppar, reflekteras mot droppens insida och bryts igen när det går ut, och då delas det upp i sina färger eftersom rött bryts minst och violett mest. Du ser regnbågen när solen är bakom dig och regnet framför, med rött överst och violett underst.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0021794,
+   "ms": 1170
+  },
+  {
+   "q": "vad betyder demokrati",
+   "status": 200,
+   "answer": "Demokrati kommer från grekiskans demos, folk, och kratos, styre, alltså folkstyre. Det betyder att makten utgår från folket, som väljer sina företrädare i fria val och har rätt att yttra sig och bilda opinion.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0019544000000000002,
+   "ms": 1534
+  }
+ ]
+}
