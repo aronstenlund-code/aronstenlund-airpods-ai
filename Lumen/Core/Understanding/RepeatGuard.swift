@@ -24,6 +24,9 @@ struct RepeatGuard: Sendable {
         let key = Self.contentWords(query)
         guard key.count >= 2 else { return nil } // "ja", "Nilen": short answers may well come twice
         for earlier in recent.reversed() where date.timeIntervalSince(earlier.at) <= Self.window {
+            // Toby 1 T17 finding 3: a half question cut in a word ("… Barnen är-") is replaced by its longer version,
+            // which is the question at last, not a copy.
+            if Self.isCut(earlier.text), earlier.key.isSubset(of: key) { continue }
             let shared = Double(key.intersection(earlier.key).count)
             let all = Double(key.union(earlier.key).count)
             if all > 0, shared / all >= Self.sameShare { return earlier.text }
@@ -36,6 +39,12 @@ struct RepeatGuard: Sendable {
         "en", "ett", "i", "på", "av", "till", "för", "med", "om", "och", "som", "att", "har", "kan", "du", "jag", "mig",
         "säg", "berätta", "förklara", "the", "a", "an", "is", "what", "how", "of",
     ]
+
+    /// A question that stopped in the middle of a word or a sentence ("är-", "…").
+    static func isCut(_ text: String) -> Bool {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        return ["-", "–", "…", "..."].contains { trimmed.hasSuffix($0) }
+    }
 
     static func contentWords(_ text: String) -> Set<String> {
         let words = text.lowercased().components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty }

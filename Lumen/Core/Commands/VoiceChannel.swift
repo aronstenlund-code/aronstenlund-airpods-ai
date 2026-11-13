@@ -16,6 +16,19 @@ enum WakeWord {
 
     static var variants: [String] { variantsByName[name.lowercased()] ?? [name.lowercased()] }
 
+    /// Toby 1 T17 finding 1: variants that are (or sound like) real Swedish words. Like any one-edit match they wake
+    /// only when the name clearly addresses Lumen (alone, before a pause, or before a question or instruction).
+    static let wordLikeVariants: Set<String> = ["limen", "lune", "lumi", "lumet", "lumel"]
+
+    /// The exact name or a variant that is no Swedish word ("Lumin", "Lummen", "Lu men"): wakes like the name.
+    /// One edit from the name ("Lusen", "Limen") is only a guess.
+    static func isConfident(_ heard: String) -> Bool {
+        let word = fold(heard)
+        guard matches(word) else { return false }
+        if word == fold(name) { return true }
+        return variants.map(fold).contains(word) && !wordLikeVariants.contains(word)
+    }
+
     /// A75: a word (or two, "lu men") that is the name as heard: a known variant, or one edit from the name.
     static func matches(_ heard: String) -> Bool {
         let word = fold(heard)
@@ -187,10 +200,34 @@ enum VoiceChannel {
 
     static func isAddress(_ text: String, nameAt name: Range<String.Index>) -> Bool {
         let before = text[..<name.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines.union(CharacterSet(charactersIn: ",;:-–")))
-        if before.isEmpty { return true }
-        if let last = before.last, ".?!".contains(last) { return true }
-        return greetings.contains(normalized(before))
+        let placed = before.isEmpty || before.last.map { ".?!".contains($0) } == true || greetings.contains(normalized(before))
+        guard placed else { return false }
+        return WakeWord.isConfident(String(text[name])) || addressesAfterGuess(text, nameAt: name)
     }
+
+    /// Toby 1 T17 finding 1 ("Lusen kom tillbaka efter en vecka." woke Lumen): a guessed name wakes only when it
+    /// stands alone, is followed by a pause (",", ".", "!", "?"), or the rest is a question or an instruction.
+    static func addressesAfterGuess(_ text: String, nameAt name: Range<String.Index>) -> Bool {
+        let rest = text[name.upperBound...]
+        let trimmed = rest.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty { return true }
+        if let first = trimmed.first, ",.!?:;".contains(first) { return true }
+        if trimmed.hasSuffix("?") { return true }
+        let words = normalized(String(trimmed)).split(separator: " ").map(String.init)
+        guard let first = words.first else { return false }
+        if addressStarters.contains(first) { return true }
+        // "kan du …", "skulle du …": a question to Lumen, not "Lusen kan sprida sig".
+        return words.count > 1 && askingVerbs.contains(first) && ["du", "ni"].contains(words[1])
+    }
+
+    /// Question words and clear instructions. Never verbs that start an ordinary sentence ("kom", "är", "har").
+    private static let addressStarters: Set<String> = [
+        "vad", "vem", "vems", "var", "vart", "varifrån", "när", "hur", "varför", "vilken", "vilket", "vilka",
+        "sätt", "starta", "stoppa", "stäng", "pausa", "spela", "ring", "skicka", "byt", "berätta", "förklara", "säg",
+        "upprepa", "hjälp", "visa", "skriv", "översätt", "räkna", "påminn", "glöm", "sluta", "fortsätt", "nästa",
+        "viska", "regel", "hitta", "sök", "läs",
+    ]
+    private static let askingVerbs: Set<String> = ["kan", "kunde", "skulle", "vill", "har", "är", "får", "vet", "minns"]
 
     /// The name as a word of its own (A75: or as it is misheard, "Lumin", "Lummen", "Lu men"), any case, with or
     /// without an accent. Only where it addresses Lumen counts (`isAddress`); the first such word wins.
