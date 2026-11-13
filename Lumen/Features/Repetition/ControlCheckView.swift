@@ -126,7 +126,7 @@ struct ControlCheckView: View {
                 .foregroundStyle(.secondary)
                 .padding(.leading, 12)
             VStack(spacing: 0) {
-                row(.one, "Tryck 1 gång för frågans A-svar.")
+                row(.one, "tryck 1 gång för frågans A-svar.") // Kelly K1: lower case after the colon, as Aron wrote it
                 Divider().padding(.leading, 52)
                 row(.two, "Tryck 2 gånger för ett kort A-svar på en till två meningar.")
                 Divider().padding(.leading, 52)
