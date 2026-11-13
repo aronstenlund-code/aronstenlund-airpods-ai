@@ -302,7 +302,8 @@ final class RepetitionModel {
         }
         session.start(drill, count: drill.items.count, at: index,
                       onePressPausesAnswer: ControlCheck.usesEarbudLayout(defaults),
-                      firstLap: firstLap, cue: audio.cue(for: drill), tempo: tempo) { i in
+                      firstLap: firstLap, cue: audio.cue(for: drill), tempo: tempo,
+                      pauseMusic: pauseMusicEnabled ? pauseMusic : nil) { i in
             audio.track(for: store.drill(id) ?? drill, at: i)
         }
         showsPlayer = true
@@ -314,6 +315,14 @@ final class RepetitionModel {
     // MARK: Voice, tempo and the limit (A84, D151, D152, D155)
 
     static let tempoKey = "repetition.tempo"
+    /// A91 (D164): music during the pause, on by default when there is music in the app.
+    static let pauseMusicKey = "repetition.pauseMusic"
+    @ObservationIgnored let pauseMusic: any RepetitionPauseMusic = BundledPauseMusic()
+
+    var pauseMusicEnabled: Bool {
+        get { defaults.object(forKey: Self.pauseMusicKey) as? Bool ?? true }
+        set { defaults.set(newValue, forKey: Self.pauseMusicKey) }
+    }
     /// A89 (D162): "Längd på långa svar" lives in Inställningar › Avancerat; Nytt prov has no choice any more.
     static let longAnswerLengthKey = "repetition.longAnswerLength"
 

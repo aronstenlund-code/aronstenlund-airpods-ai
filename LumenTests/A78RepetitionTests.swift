@@ -23,6 +23,7 @@ import Testing
 
         func play(until: TimeInterval?) { self.until = until; isPlaying = true; plays += 1 }
         func pause() { isPlaying = false }
+        func seek(to time: TimeInterval) { currentTime = time }
         func stop() { stopped = true; isPlaying = false; onFinish = nil }
 
         /// The file plays `seconds` further.
@@ -143,7 +144,8 @@ import Testing
 
     // MARK: Pause
 
-    @Test func pauseGoesOnFromTheSameWordWithAnyPress() {
+    @Test func pauseGoesOnFromTheStartOfTheSentenceWithAnyPress() {
+        // D164 (Aron 23:38): after the user's pause, from the start of the sentence, not in the middle of a word.
         for resumeWith in RepetitionEvent.allCases {
             let (player, source, _) = make()
             player.start()
@@ -156,7 +158,7 @@ import Testing
             player.handle(resumeWith)
             #expect(!player.isPaused, "\(resumeWith)")
             #expect(long.isPlaying, "the same file goes on (\(resumeWith))")
-            #expect(long.currentTime == 7.3, "from the same position (\(resumeWith))")
+            #expect(long.currentTime == 2.5, "from the start of the sentence: here the short answer's end (\(resumeWith))")
             #expect(source.made.count == 2, "no new file was opened (\(resumeWith))")
             #expect(player.phase == .answer(0, .long), "\(resumeWith)")
         }
@@ -461,5 +463,49 @@ import Testing
         player.tempo = 1.5
         player.start()
         #expect(source.last.rate == 1.5)
+    }
+
+    @MainActor final class MockMusic: RepetitionPauseMusic {
+        var isAvailable = true
+        var playing = false
+        func start() { playing = true }
+        func stop() { playing = false }
+    }
+
+    @Test func theUsersPauseIsMusicAndGoesOnFromTheSentence() {
+        // A91 (D164): 3 presses = music; 3 again = the music stops and the answer goes on from its sentence's start.
+        let (player, source, _) = make()
+        let music = MockMusic()
+        player.pauseMusic = music
+        player.start()
+        player.handle(.long)
+        let long = source.last
+        long.advance(1.2)
+        player.handle(.pauseToggle)
+        #expect(music.playing)
+        player.handle(.pauseToggle)
+        #expect(!music.playing)
+        #expect(long.currentTime == 0, "the first sentence from its start")
+    }
+
+    @Test func iOSOwnPauseHasNoMusicAndGoesOnFromTheWord() {
+        let (player, source, _) = make()
+        let music = MockMusic()
+        player.pauseMusic = music
+        player.start()
+        player.handle(.long)
+        source.last.advance(7.3)
+        player.systemPaused("call")
+        #expect(!music.playing, "never during a call or Siri")
+        player.systemResumed("call ended")
+        #expect(source.last.currentTime == 7.3)
+    }
+
+    @Test func sentenceStartsFromTheServerWin() {
+        var track = RepetitionTrack(question: Self.url("q"), long: Self.url("l"), short: .prefix(ofLongUntil: 2.5))
+        #expect(track.longSentenceStart(at: 7.3) == 2.5)
+        track.longSentenceStarts = [0, 2.5, 5.1, 8.0]
+        #expect(track.longSentenceStart(at: 7.3) == 5.1)
+        #expect(track.longSentenceStart(at: 0.4) == 0)
     }
 }

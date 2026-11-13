@@ -16,6 +16,47 @@ protocol RepetitionAudioPlayer: AnyObject {
     func play(until: TimeInterval?)
     func pause()
     func stop()
+    /// A91 (D164): back to the start of a sentence before going on.
+    func seek(to time: TimeInterval)
+}
+
+/// A91 (D164): music while the repetition is paused, played by Earmind itself so the AirPods' presses still reach
+/// Earmind (Spotify would take them). Stopping it is quick, so the questions go on well within 10 s.
+@MainActor
+protocol RepetitionPauseMusic: AnyObject {
+    var isAvailable: Bool { get }
+    func start()
+    func stop()
+}
+
+/// Bundled, licence-free study music (`Resources/PauseMusic/*.mp3`, K56), looped. Without a file: a quiet pause.
+@MainActor
+final class BundledPauseMusic: RepetitionPauseMusic {
+    private var player: AVAudioPlayer?
+    private let url: URL?
+
+    init(bundle: Bundle = .main) {
+        url = (bundle.urls(forResourcesWithExtension: "mp3", subdirectory: "PauseMusic") ?? [])
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }.first
+            ?? bundle.url(forResource: "pausmusik", withExtension: "mp3")
+    }
+
+    var isAvailable: Bool { url != nil }
+
+    func start() {
+        guard let url else { return }
+        if player == nil {
+            player = try? AVAudioPlayer(contentsOf: url)
+            player?.numberOfLoops = -1
+            player?.volume = 0.5
+            player?.prepareToPlay()
+        }
+        player?.play()
+    }
+
+    func stop() {
+        player?.pause() // the music goes on from where it was at the next pause
+    }
 }
 
 @MainActor
@@ -63,6 +104,10 @@ final class FileRepetitionPlayer: RepetitionAudioPlayer {
     var rate: Float {
         get { player.rate }
         set { player.rate = newValue }
+    }
+
+    func seek(to time: TimeInterval) {
+        player.currentTime = max(0, min(time, player.duration))
     }
 
     func play(until: TimeInterval?) {

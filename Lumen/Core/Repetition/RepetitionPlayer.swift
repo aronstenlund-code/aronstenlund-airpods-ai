@@ -50,6 +50,8 @@ final class RepetitionPlayer {
     /// silence after each file, so a file takes as long as the chosen tempo says. (At sentence ends once K46 gives
     /// the sentences' times.)
     var tempo: Double = 1
+    /// A91 (D164): what plays while the user has paused (3 presses). Nil: a quiet pause.
+    var pauseMusic: (any RepetitionPauseMusic)?
 
     static let lowestVoiceRate = 0.7
 
@@ -265,12 +267,21 @@ final class RepetitionPlayer {
         timer.cancel()
         current?.pause()
         step(bySystem ? "paused by iOS" : "paused")
+        // D164: the user's own pause is music time (never during a call or Siri).
+        if !bySystem, let pauseMusic, pauseMusic.isAvailable {
+            pauseMusic.start()
+            step("pause music on")
+        }
     }
 
     private func resume(by why: String) {
+        let byUser = !pausedBySystem
         isPaused = false
         pausedBySystem = false
+        pauseMusic?.stop()
         step("go on (\(why))")
+        // D164: after the user's pause, from the start of the sentence (iOS's own short pause goes on from the word).
+        if byUser, let current { current.seek(to: sentenceStart(at: current.currentTime)) }
         switch phase {
         case .idle:
             break
@@ -288,6 +299,12 @@ final class RepetitionPlayer {
                 next()
             }
         }
+    }
+
+    /// The sentence the current file was in: a question is one sentence; an answer has the long file's sentences.
+    private func sentenceStart(at time: TimeInterval) -> TimeInterval {
+        guard case .answer(let i, _) = phase, let track = trackAt(i) else { return 0 }
+        return track.longSentenceStart(at: time)
     }
 
     private func untilForCurrentPhase() -> TimeInterval? {

@@ -98,6 +98,19 @@ struct RepetitionTrack: Equatable, Sendable {
     let question: URL
     let long: URL
     let short: Short
+    /// A91 (D164): where the long file's sentences start, in seconds (K46's sentence times when the server sends
+    /// them). Without them: the start, and the short answer's end (D145: the first sentence).
+    var longSentenceStarts: [TimeInterval] = []
+
+    /// The start of the sentence that was playing at `time` in the long file.
+    func longSentenceStart(at time: TimeInterval) -> TimeInterval {
+        var starts = longSentenceStarts
+        if starts.isEmpty {
+            starts = [0]
+            if case .prefix(let end) = short, end.isFinite, end > 0 { starts.append(end) }
+        }
+        return starts.filter { $0 <= time + 0.05 }.max() ?? 0
+    }
 
     enum Short: Equatable, Sendable {
         /// D145: the long file from the start up to this second.

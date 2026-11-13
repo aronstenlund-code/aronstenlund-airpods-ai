@@ -52,6 +52,7 @@ final class RepetitionSession {
     /// order); a question without sound yet is waited for.
     func start(_ drill: Drill, count: Int, at index: Int = 0, onePressPausesAnswer: Bool = false,
                firstLap: Bool = false, cue: URL? = nil, tempo: Double = 1,
+               pauseMusic: (any RepetitionPauseMusic)? = nil,
                track: @escaping @MainActor (Int) -> RepetitionTrack?) {
         stop()
         guard count > 0 else { return }
@@ -62,6 +63,7 @@ final class RepetitionSession {
         player.onePressPausesAnswer = onePressPausesAnswer
         player.isFirstLap = firstLap
         player.tempo = tempo
+        player.pauseMusic = pauseMusic
         player.cue = firstLap ? cue : nil
         let defaults = self.defaults
         let id = drill.id
