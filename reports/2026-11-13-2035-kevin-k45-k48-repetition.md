@@ -90,7 +90,7 @@ Status för varje påstående: **verifierat live** (mot den driftsatta backenden
   - **Antagande, ej testat:** universal link kräver att earmind.ai serverar en apple-app-site-association-fil. Till dess finns `earmind://prov/<kod>`.
 - **Krav:** delning kräver att allt ljud är klart. Annars kommer 409 med förloppet, "Delas när ljudet är klart (54 av 90)".
 - **Kopian:** den är mottagarens egen och har samma ljudhashar. Mottagarens ändringar gör bara nya filer för det som ändras och rör aldrig originalet. Testat i `drill/handler_test.ts`.
-- **Vem som får importera:** alla inloggade konton. Kravet på e-postkonto avgörs i appen (D151).
+- **Vem som får importera:** alla inloggade konton. Kravet på e-postkonto avgörs i appen (D153).
 
 ## Tester
 - `deno task test`: **530 gröna** och `deno task check` ren. Körda med riktig Deno 2.9.6 (npm), inte med Node-shimmen.
@@ -121,7 +121,7 @@ Status för varje påstående: **verifierat live** (mot den driftsatta backenden
 - Raderas ett prov ligger dess ljud kvar, eftersom andra konton kan använda det. Det finns ännu ingen gallring av filer som ingen använder.
 - `status` måste anropas för att kön ska fortsätta om bakgrundsjobbet stoppas. Appen gör det redan medan förloppet visas.
 - Anonyma konton kan spara och importera. Ett nytt prov per konto och dygn begränsas av teckentaket, inte av antalet konton.
-- Andra sessioners autostash gav två konflikter i DECISIONS i dag. Mitt beslut fick numret D151, eftersom D148–D150 togs medan jag arbetade.
+- Andra sessioners autostash gav två konflikter i DECISIONS i dag. Mitt beslut fick numret D153, eftersom D148–D150 togs medan jag arbetade.
 
 ## Nästa
 1. Oscar O55: R2, R4 och R10 på hela banken. Underlaget finns i `scripts/k45-measure.py` och `scripts/k46-live.py`.

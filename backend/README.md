@@ -322,7 +322,7 @@ Tests: `supabase/functions/_shared/demo_test.ts`, `answer/d48_test.ts`.
 - **Tutor mode:** `<already_asked count=N>` is built from the session's earlier answers; one short check question (two-part and long ones are dropped).
 - **`done` fields:** `relation` (D53), `summary` (D48), `memory_add` (D49), `source` (web), `report` (spoken report command, D57).
 
-## Repetitionsläget (K45–K47, D142–D151): contract for the app
+## Repetitionsläget (K45–K47, D142–D153): contract for the app
 
 All calls are `POST` with the user's JWT, like `/answer`.
 
