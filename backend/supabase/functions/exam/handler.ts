@@ -7,7 +7,7 @@ import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 import { practiceNav, spokenTask } from "./practice.ts";
-import { DEFAULT_DRILL_CONFIG, docxText, DRILL_WEIGHT, type DrillConfig, handleDrill } from "./drill.ts";
+import { DEFAULT_DRILL_CONFIG, docxText, DRILL_WEIGHT, type DrillConfig, handleDrill, type MaterialStore, uploadUrls } from "./drill.ts";
 
 /**
  * D84 (owner): exam session. `POST /exam` with one of four actions. The exam and its assessment instructions are
@@ -99,6 +99,8 @@ export interface ExamDeps {
   provider: LLMProvider | null;
   config?: ExamConfig;
   recordUsage?: (rec: Record<string, unknown>) => void | Promise<void>;
+  /** K53: the private bucket for uploaded photos. */
+  material?: MaterialStore | null;
 }
 
 export const SYSTEM_PROMPT_EXAM_PARSE =
@@ -318,6 +320,13 @@ export function createExamHandler(deps: ExamDeps) {
         const current = Math.max(0, Math.min(nos.length - 1, Math.floor(Number(b?.current) || 0)));
         return json(practiceNav(clean(b?.utterance, 300), current, nos));
       }
+      if (action === "upload_urls") {
+        // K53: signed upload URLs for many photos (no model, no cost); counted lightly in the exam limit
+        if (!deps.material) throw new HttpError(503, "unconfigured", "Uploads are not configured");
+        const rl = await enforceLimits(deps.rateLimiter, "exam_upload", user.id, { perMinute: 10, perDay: 200, globalPerDay: 100_000 }, 1);
+        if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många försök just nu. Vänta en liten stund.", { retryAfterSec: rl.retryAfterSec });
+        return json(await uploadUrls(user.id, (b ?? {}) as Record<string, unknown>, deps.material));
+      }
       if (action === "doc_text") {
         // K45: a Word file's text, read in code (iOS cannot read .docx); no model, no cost, nothing kept
         return json({ text: await docxText(String(b?.data ?? "")) });
@@ -345,6 +354,7 @@ export function createExamHandler(deps: ExamDeps) {
           deps.provider,
           cfg.drill ?? DEFAULT_DRILL_CONFIG,
           req.signal,
+          { userId: user.id, store: deps.material ?? null },
         );
         for (const st of steps) {
           try {

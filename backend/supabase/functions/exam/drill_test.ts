@@ -361,3 +361,87 @@ Deno.test("K52 questions that point at the material go first; a rewrite may grow
   const r = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, ["Varför behövs klorofyll?", "Hur löser du 3x + 5 = 20?", "Hur bildas kostnaden i gymexemplet?"], { subject: "", grade: "", covers: "" });
   assertEquals(r.questions, ["Varför behövs klorofyll?", "Lös tre x plus fem lika med tjugo?", "Hur ställer man upp en linjär kostnadsmodell?"]);
 });
+
+// ---------- K53: photos uploaded one by one ----------
+const U = "11111111-1111-1111-1111-111111111111";
+function fakeStore(files: Record<string, string>) {
+  const removed: string[] = [];
+  return {
+    removed,
+    store: {
+      sign: (paths: string[]) => Promise.resolve(paths.map((path) => ({ path, url: `https://up/${path}?token=t` }))),
+      get: (path: string) => Promise.resolve(files[path] ?? null),
+      remove: (paths: string[]) => {
+        removed.push(...paths);
+        return Promise.resolve();
+      },
+    },
+  };
+}
+const mkUp = (plan: unknown, files: Record<string, string>) => {
+  const llm = new PlanLLM(plan);
+  const fs = fakeStore(files);
+  const h = createExamHandler({ authenticate: () => Promise.resolve({ id: U, isAnonymous: true }), rateLimiter: new MemoryRateLimiter(), provider: llm, material: fs.store });
+  return { h, llm, fs };
+};
+const JPG = "/9j/4AAQSkZJRgABAQ==";
+
+Deno.test("K53 upload_urls: signed PUT URLs under the user's own folder, at most 40", async () => {
+  const { h } = mkUp({}, {});
+  const j = await (await h(post({ action: "upload_urls", count: 3 }))).json();
+  assertEquals(j.uploads.length, 3);
+  assert(j.uploads.every((u: { path: string; method: string; content_type: string }) => u.path.startsWith(`${U}/`) && u.path.endsWith(".jpg") && u.method === "PUT" && u.content_type === "image/jpeg"));
+  assertEquals((await (await h(post({ action: "upload_urls", count: 99 }))).json()).uploads.length, 40);
+});
+
+Deno.test("K53 drill with page_paths: the user's own photos only; deleted after the analysis, also when it fails", async () => {
+  const paths = Array.from({ length: 3 }, (_, i) => `${U}/${String(i).repeat(8)}-0000-0000-0000-000000000000.jpg`);
+  const files = Object.fromEntries(paths.map((p) => [p, JPG]));
+  const ok = mkUp({ summary: {}, notes: "n", questions: ["Varför A?", "Varför B?"] }, files);
+  const r = await ok.h(post({ action: "drill", page_paths: paths, answers: false }));
+  assertEquals(r.status, 200);
+  assertEquals(ok.llm.calls[0].images?.length, 3, "three photos, one plan call with images");
+  assertEquals(ok.fs.removed.sort(), [...paths].sort(), "deleted right after the analysis (B4)");
+  // someone else's photo
+  const other = "22222222-2222-2222-2222-222222222222/00000000-0000-0000-0000-000000000000.jpg";
+  const no = mkUp({}, { [other]: JPG });
+  assertEquals((await no.h(post({ action: "drill", page_paths: [other] }))).status, 403);
+  assertEquals(no.llm.calls.length, 0);
+  // the analysis fails: still deleted
+  const bad = mkUp({ unreadable: "Går inte att läsa." }, files);
+  assertEquals((await bad.h(post({ action: "drill", page_paths: paths }))).status, 422);
+  assertEquals(bad.fs.removed.length, 3);
+  // a photo that never arrived: a clear error, the others deleted
+  const gone = mkUp({}, { [paths[0]]: JPG });
+  const g = await gone.h(post({ action: "drill", page_paths: paths }));
+  assertEquals(g.status, 422);
+  assertEquals((await g.json()).error.message, "2 av 3 bilder kom inte fram. Ladda upp dem igen.");
+  assertEquals(gone.fs.removed.length, 3);
+});
+
+Deno.test("K53 more than 10 photos: written out in parallel batches of 10, then planned from the text", async () => {
+  const paths = Array.from({ length: 23 }, (_, i) => `${U}/${String(i % 10).repeat(8)}-0000-0000-0000-${String(i).padStart(12, "0")}.jpg`);
+  const llm: LLMProvider & { calls: LLMRequest[] } = {
+    name: "f",
+    model: "x",
+    calls: [],
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      this.calls.push(req);
+      if (req.system.includes("You write out study material")) {
+        yield { type: "text", text: `text for ${req.images?.length} pages` };
+      } else if (req.system.includes("revision list")) {
+        yield { type: "text", text: JSON.stringify({ summary: {}, notes: "n", questions: ["Varför A?"] }) };
+      } else yield { type: "text", text: JSON.stringify({ questions: [] }) };
+    },
+  };
+  const fs = fakeStore(Object.fromEntries(paths.map((p) => [p, JPG])));
+  const h = createExamHandler({ authenticate: () => Promise.resolve({ id: U, isAnonymous: true }), rateLimiter: new MemoryRateLimiter(), provider: llm, material: fs.store });
+  const r = await h(post({ action: "drill", page_paths: paths, answers: false }));
+  assertEquals(r.status, 200);
+  const tr = llm.calls.filter((c) => c.system.includes("You write out study material"));
+  assertEquals(tr.map((c) => c.images?.length), [10, 10, 3]);
+  const plan = llm.calls.find((c) => c.system.includes("revision list"))!;
+  assertEquals(plan.images, undefined, "the plan reads the text, not the photos");
+  assert(plan.user.includes("text for 10 pages") && plan.user.includes("[Sidor 21-23]"));
+  assertEquals(fs.removed.length, 23);
+});

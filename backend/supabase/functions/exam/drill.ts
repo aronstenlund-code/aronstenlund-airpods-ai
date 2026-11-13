@@ -466,6 +466,80 @@ export async function docxText(base64: string): Promise<string> {
   return docxXmlToText(new TextDecoder().decode(xml)).slice(0, DRILL_LIMITS.text);
 }
 
+// ---------- K53: many photos, uploaded one by one ----------
+
+/** The private bucket drill_material: signed upload URLs, reading a photo, deleting after the analysis (B4). */
+export interface MaterialStore {
+  /** One signed upload URL per path (PUT the image bytes with its content-type), valid for two hours. */
+  sign(paths: string[]): Promise<{ path: string; url: string }[]>;
+  /** The photo as base64, or null when it is not there. */
+  get(path: string): Promise<string | null>;
+  remove(paths: string[]): Promise<void>;
+}
+export const MATERIAL = { maxPhotos: 40, perTranscription: 10, concurrency: 8 };
+const MATERIAL_PATH = /^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(?:jpg|png|webp)$/;
+
+/** K53: `{"action":"upload_urls","count":30,"type"?:"jpg"|"png"|"webp"}` -> paths under the user's own folder. */
+export async function uploadUrls(userId: string, b: Record<string, unknown>, store: MaterialStore) {
+  const n = intIn(b.count, 1, MATERIAL.maxPhotos, 1);
+  const ext = b.type === "png" || b.type === "webp" ? b.type : "jpg";
+  const paths = Array.from({ length: n }, () => `${userId}/${crypto.randomUUID()}.${ext}`);
+  const signed = await store.sign(paths);
+  return {
+    uploads: signed.map((x) => ({ path: x.path, url: x.url, method: "PUT", content_type: ext === "jpg" ? "image/jpeg" : `image/${ext}` })),
+    expires_in: 7200,
+  };
+}
+
+/** The user's own uploaded photos as images; another account's path or a missing photo is refused. */
+export async function materialImages(userId: string, paths: unknown, store: MaterialStore): Promise<{ images: Img[]; paths: string[] }> {
+  const list = Array.isArray(paths) ? paths.map(String) : [];
+  if (list.length > MATERIAL.maxPhotos) throw new HttpError(400, "invalid_request", `page_paths: at most ${MATERIAL.maxPhotos} photos`);
+  for (const p of list) {
+    if (!MATERIAL_PATH.test(p) || !p.startsWith(`${userId}/`)) throw new HttpError(403, "forbidden", "Bilden tillhör inte det här kontot.");
+  }
+  const out: (Img | null)[] = new Array(list.length).fill(null);
+  for (let i = 0; i < list.length; i += MATERIAL.concurrency) {
+    await Promise.all(list.slice(i, i + MATERIAL.concurrency).map(async (p, k) => {
+      const data = await store.get(p);
+      if (!data) return;
+      const real = sniffImage(data);
+      if (real === "unsupported" || real === null) return;
+      out[i + k] = { mediaType: real, data };
+    }));
+  }
+  const missing = out.filter((x) => !x).length;
+  if (missing) {
+    throw new HttpError(422, "material_missing", `${missing} av ${list.length} bilder kom inte fram. Ladda upp dem igen.`);
+  }
+  return { images: out as Img[], paths: list };
+}
+
+export const SYSTEM_PROMPT_DRILL_TRANSCRIBE =
+  `You write out study material from photos for a Swedish student. You get page photos (notes, textbook pages, screens, whiteboards). Write out EVERYTHING that is on them, in reading order, as plain text: headings, all body text, every row of a table, formulas as written, and a one-line description of each figure in [brackets]. Keep the original language. No comments, no summary, no markdown. If a page cannot be read at all, write [oläslig sida].`;
+
+/** K53: more than 10 photos are written out as text in parallel batches of 10 (Haiku), then planned from the text. */
+export async function transcribe(provider: LLMProvider, cfg: DrillConfig, images: Img[], signal?: AbortSignal) {
+  const batches: Img[][] = [];
+  for (let i = 0; i < images.length; i += MATERIAL.perTranscription) batches.push(images.slice(i, i + MATERIAL.perTranscription));
+  const results = await Promise.all(batches.map((batch, k) =>
+    runLLM(provider, {
+      system: SYSTEM_PROMPT_DRILL_TRANSCRIBE,
+      user: `Write out these ${batch.length} pages (pages ${k * MATERIAL.perTranscription + 1}-${k * MATERIAL.perTranscription + batch.length}).`,
+      images: batch,
+      maxTokens: 6000,
+      cacheSystem: true,
+      model: cfg.planModel,
+      timeoutMs: 90_000,
+      signal,
+    }, cfg.planPriceIn, cfg.planPriceOut)
+  ));
+  return {
+    text: results.map((r, k) => `[Sidor ${k * MATERIAL.perTranscription + 1}-${k * MATERIAL.perTranscription + batches[k].length}]\n${r.text.trim()}`).join("\n\n"),
+    usage: results.map((r) => r.usage),
+  };
+}
+
 // ---------- the actions ----------
 
 type Img = { mediaType: "image/jpeg" | "image/png" | "image/webp"; data: string };
@@ -518,14 +592,38 @@ export async function handleDrill(
   provider: LLMProvider,
   cfg: DrillConfig,
   signal?: AbortSignal,
+  material?: { userId: string; store: MaterialStore | null },
 ): Promise<{ body: Record<string, unknown>; steps: StepUsage[] }> {
+  // K53: uploaded photos are read by path and deleted right after the analysis, also when it fails (B4)
+  const paths = Array.isArray(b.page_paths) ? b.page_paths : [];
+  if (action === "drill" && paths.length) {
+    if (!material?.store) throw new HttpError(503, "unconfigured", "Uploads are not configured");
+    const got = await materialImages(material.userId, paths, material.store).catch(async (e) => {
+      await material.store!.remove(paths.map(String).filter((p) => p.startsWith(`${material.userId}/`))).catch(() => {});
+      throw e;
+    });
+    try {
+      return await handleDrill(action, { ...b, page_paths: undefined, uploaded: got.images }, provider, cfg, signal);
+    } finally {
+      await material.store.remove(got.paths).catch((e) => console.warn("drill_material_remove_failed", e instanceof Error ? e.message : String(e)));
+    }
+  }
   const longWords = intIn(b.long_words, DRILL_LIMITS.longWordsMin, DRILL_LIMITS.longWordsMax, DRILL_LIMITS.longWordsDefault);
   const subjectIn = oneLine(b.subject, 60);
   const gradeIn = gradeName(oneLine(b.grade, 60));
   if (action === "drill") {
     const count = intIn(b.questions, DRILL_LIMITS.questionsMin, DRILL_LIMITS.questionsMax, DRILL_LIMITS.questionsDefault);
-    const images = drillImages(b.pages);
-    const text = clean(b.text, DRILL_LIMITS.text);
+    let images = [...drillImages(b.pages), ...((b.uploaded as Img[] | undefined) ?? [])];
+    if (images.length > MATERIAL.maxPhotos) throw new HttpError(400, "invalid_request", `at most ${MATERIAL.maxPhotos} photos`);
+    let text = clean(b.text, DRILL_LIMITS.text);
+    const transcribed: StepUsage[] = [];
+    if (images.length > MATERIAL.perTranscription) {
+      // K53: many photos: written out as text in parallel batches first, then planned from the text
+      const t = await transcribe(provider, cfg, images, signal);
+      text = [text, t.text].filter(Boolean).join("\n\n").slice(0, DRILL_LIMITS.text);
+      transcribed.push(...t.usage);
+      images = [];
+    }
     if (!images.length && !text) throw new HttpError(400, "invalid_request", "pages or text is required");
     const correction = oneLine(b.correction, DRILL_LIMITS.correction);
     const t0 = Date.now();
@@ -558,7 +656,7 @@ export async function handleDrill(
     const summary = { subject: p.summary.subject || subjectIn, grade: gradeIn && !correction ? gradeIn : p.summary.grade || gradeIn, covers: p.summary.covers };
     const sh = await shortenQuestions(provider, cfg, p.questions, summary, signal);
     const base = trimQuestions(sh.questions, possible).map((question, i) => ({ id: `q${i + 1}`, question }));
-    const steps = [plan.usage, ...(sh.usage ? [sh.usage] : [])];
+    const steps = [...transcribed, plan.usage, ...(sh.usage ? [sh.usage] : [])];
     let items: DrillItem[] = base;
     let answers: StepUsage | null = null;
     if (b.answers !== false) {
@@ -577,10 +675,11 @@ export async function handleDrill(
         items,
         long_words: longWords,
         usage: {
+          ...(transcribed.length ? { transcribe: sumUsage(transcribed, cfg.planModel ?? "default") } : {}),
           plan: plan.usage,
           ...(sh.usage ? { shorten: sh.usage } : {}),
           ...(answers ? { answers } : {}),
-          est_cost_usd: plan.usage.est_cost_usd + (sh.usage?.est_cost_usd ?? 0) + (answers?.est_cost_usd ?? 0),
+          est_cost_usd: transcribed.reduce((n, u) => n + u.est_cost_usd, 0) + plan.usage.est_cost_usd + (sh.usage?.est_cost_usd ?? 0) + (answers?.est_cost_usd ?? 0),
           ms: Date.now() - t0,
         },
       },
