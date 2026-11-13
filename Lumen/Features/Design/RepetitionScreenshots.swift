@@ -8,7 +8,9 @@ enum RepetitionDemo {
     static let scenes: Set<String> = ["repHome", "repHomeEmpty", "repMaterial", "repList", "repEdit", "repControls",
                                       "repControlsDone", "repControlsMissing", "repShareReady", "repMakeError", "repPlayFirst",
                                       "repPlayThink", "repPlayAnswer", "repPaused", "repWaiting",
-                                      "repShare", "moreModes"]
+                                      "repShare", "moreModes",
+                                      // A83/A84 (Angela Fable's request): Publicera prov, Prov från din skola, the voice.
+                                      "repPublish", "repSchools", "repSchoolsEmpty", "repPublication", "repVoice"]
 
     static let items: [DrillItem] = [
         ("Varför behövs klorofyll?", "Klorofyll fångar ljuset som fotosyntesen behöver.",
@@ -34,6 +36,10 @@ enum RepetitionDemo {
     /// Once, before the first frame.
     static func seed(_ model: RepetitionModel, for name: String) {
         for old in model.store.drills { model.store.delete(old.id) } // left by an earlier screen
+        // A83: demo schools and publications instead of the server; my school is set except for the empty list.
+        model.publishing = DemoPublishing(empty: name == "repSchoolsEmpty")
+        model.mySchool = name == "repSchoolsEmpty" ? nil : DemoPublishing.school
+        if name == "repSchoolsEmpty" { model.mySchoolAsked = true }
         guard name != "repHomeEmpty", name != "moreModes" else { return }
         // The newest is Start's "Nästa prov": Historia first, so Biologiprovet is on the card.
         model.store.save(history)
@@ -91,6 +97,15 @@ enum RepetitionDemo {
             case "repShare": NavigationStack { DrillView(model: model, drillID: history.id, showsShare: true) }
             case "repShareReady": NavigationStack { DrillView(model: model, drillID: drill.id, showsShare: true) }
             case "repEdit": DrillItemEditor(model: model, drill: drill, itemID: drill.items[0].id)
+            case "repPublish": PublishSheet(model: model, drill: drill)
+            case "repSchools", "repSchoolsEmpty": NavigationStack { SchoolExamsView(model: model) }
+            case "repPublication": PublicationView(model: model, publication: DemoPublishing.results[0])
+            case "repVoice":
+                NavigationStack {
+                    Form { DrillVoiceChoice(voice: .constant("A")) }
+                        .navigationTitle("Stämmer det här?")
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             case "repControls":
                 ControlCheckView(hub: RemoteCommandHub(), sound: nil, waitSeconds: 3600, onStart: {}, onLater: {})
             case "repControlsDone", "repControlsMissing": ControlCheckView(staged: stagedCheck(allWork: name == "repControlsDone"))
@@ -102,5 +117,37 @@ enum RepetitionDemo {
             Text(verbatim: "Inget repetitionsläge")
         }
     }
+}
+/// A83: Publicera prov's server in the screenshots (made-up schools and exams, no account, no network).
+@MainActor
+final class DemoPublishing: DrillPublishingService {
+    static let school = DrillSchool(code: "10000001", name: "Kungsholmens gymnasium", locality: "Stockholm")
+    static let results: [DrillPublicationView] = [
+        DrillPublicationView(id: "p1", title: "Biologiprovet", subject: "Biologi", school: school,
+                             exam_date: DrillPublishing.dayString(Date().addingTimeInterval(5 * 86_400)), items: 20,
+                             display_name: "plugghajen"),
+        DrillPublicationView(id: "p2", title: "Andra världskriget", subject: "Historia", school: school,
+                             exam_date: DrillPublishing.dayString(Date().addingTimeInterval(12 * 86_400)), items: 15,
+                             display_name: nil),
+        DrillPublicationView(id: "p3", title: "Ekvationer", subject: "Matematik", school: school,
+                             exam_date: DrillPublishing.dayString(Date().addingTimeInterval(-40 * 86_400)), items: 12,
+                             display_name: nil),
+    ]
+    let empty: Bool
+
+    init(empty: Bool) { self.empty = empty }
+
+    func schools(matching query: String) async throws(DrillCloudError) -> [DrillSchool] { [Self.school] }
+    func publish(drillID: String, school: DrillSchool, subject: String, examDate: Date,
+                 displayName: String?) async throws(DrillCloudError) -> DrillPublicationView { Self.results[0] }
+    func unpublish(drillID: String) async throws(DrillCloudError) {}
+    func search(school: DrillSchool?, subject: String?, mySchool: DrillSchool?) async throws(DrillCloudError) -> [DrillPublicationView] {
+        empty ? [] : Self.results
+    }
+    func importPublication(id: String) async throws(DrillCloudError) -> DrillCloudView {
+        throw .offline("screenshots")
+    }
+    func report(publicationID: String, reason: DrillReportReason) async throws(DrillCloudError) {}
+    func played(drillID: String) async {}
 }
 #endif
