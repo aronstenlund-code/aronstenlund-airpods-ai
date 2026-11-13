@@ -261,6 +261,50 @@ add('fs-flode', 'Hela vägen till första frågan', 'Skärm 1–3 före kameran,
     ['', 'Första frågan i örat', '']].map(([n, t, b]) => `<div class="row" style="--inset:52px"><span style="width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:700;${n ? 'background:var(--tint);color:var(--ontint)' : 'border:1.5px solid var(--ter);color:var(--sec)'}">${n || '·'}</span><div>${t}${b ? `<div class="sub">${b}</div>` : ''}</div></div>`).join('')}</div>
   <div class="sf">Inga lyssnande lägen, ingen mikrofon, inga notiser och inget konto i första starten.</div></div>`);
 
+
+// ===== Ke57: Hjälp-AI:n (D166). Som Meddelanden, utan dekor. =====
+const me = t => `<div style="align-self:flex-end;max-width:76%;background:var(--tint);color:var(--ontint);padding:8px 13px;border-radius:18px;font-size:17px;line-height:1.3;margin-top:6px">${t}</div>`;
+const it = t => `<div style="align-self:flex-start;max-width:80%;background:var(--fill);padding:8px 13px;border-radius:18px;font-size:17px;line-height:1.3;margin-top:6px">${t}</div>`;
+const inputBar = (txt = '', ph = 'Fråga om Earmind') => `<div style="display:flex;gap:8px;align-items:center;padding:8px 12px 30px;background:var(--bar);border-top:.5px solid var(--sep)">
+  <div style="flex:1;min-height:36px;border:1px solid var(--sep);border-radius:18px;padding:7px 14px;font-size:17px;color:${txt ? 'var(--label)' : 'var(--ter)'}">${txt || ph}</div>
+  <span style="width:32px;height:32px;border-radius:50%;background:${txt ? 'var(--tint)' : 'var(--fill2)'};display:grid;place-items:center;color:#fff;font-weight:700">↑</span></div>`;
+const helpNav = `<div class="nav"><span style="width:50px"></span><span class="t">Fråga om Earmind</span><a class="b">Klar</a></div>`;
+
+add('hjalp-tom', 'Hjälp: tom', 'Ett blad med Klar. Tomt läge: en mening om vad den kan, tre förslag som rader (ett tryck skickar frågan) och Prova på en kort text som egen rad med symbol. Inget maskot, ingen gradient, ingen "AI"-gnista.',
+  () => `<div class="phone g">${status}${helpNav}<div class="content" style="padding-top:20px">
+  <div style="text-align:center;font-size:15px;color:var(--sec);padding:0 40px;line-height:1.35">Fråga hur något i Earmind fungerar. Svaren handlar bara om appen.</div>
+  <div class="sh">Förslag</div>
+  <div class="sec">${['Hur fungerar trycken?', 'Hur delar jag ett prov?', 'Varför blev det färre frågor?'].map(q => `<div class="row tintc">${q}</div>`).join('')}</div>
+  <div class="sh">Prova</div>
+  <div class="sec"><div class="row ic"><span class="sym" style="background:#2346C8">${I('txt')}</span><div>Prova på en kort text<div class="sub">Earmind gör 3 frågor med svar. Räknas mot dina frågor.</div></div><span class="v">${chev}</span></div></div>
+  </div>${inputBar()}</div>`);
+
+add('hjalp-svar', 'Hjälp: ett svar', 'Bubblor som i Meddelanden: din fråga till höger i accentfärgen, svaret till vänster i grått. Korta svar med stegen som en numrerad lista, och en länk när svaret pekar på en plats i appen.',
+  () => `<div class="phone g">${status}${helpNav}<div class="content" style="padding:12px 14px 0;display:flex;flex-direction:column">
+  ${me('Hur fungerar trycken?')}
+  ${it('Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.')}
+  ${it('Vill du prova trycken? <span style="color:var(--tint)">Öppna Styr med dina AirPods</span>')}
+  ${me('Hur delar jag ett prov?')}
+  ${it('1. Öppna provet.<br>2. Tryck på dela-symbolen uppe till höger.<br>3. Välj Meddelanden eller en annan app.<br>Det går när allt ljud är klart.')}
+  </div>${inputBar()}</div>`);
+
+add('hjalp-annat', 'Hjälp: utanför appen', 'Frågor om annat får samma korta svar (D166) och ett förslag på vad den kan i stället. Inget "Som en AI kan jag inte …".',
+  () => `<div class="phone g">${status}${helpNav}<div class="content" style="padding:12px 14px 0;display:flex;flex-direction:column">
+  ${me('Vad blir det för väder i morgon?')}
+  ${it('Det kan jag inte svara på. Jag svarar bara på hur Earmind fungerar, till exempel hur du gör ett nytt prov.')}
+  ${me('Varför blev det färre frågor?')}
+  ${it('Earmind gör högst så många frågor som materialet räcker till, och tar bort frågor som bara testar att du minns ett ord. Lägg till fler sidor eller mer text så blir det fler.')}
+  </div>${inputBar('Hur')}</div>`);
+
+add('hjalp-prova', 'Prova på en kort text', 'Ett vanligt formulär: en textruta, en rad om kvoten och Gör frågor fast nederst. Resultatet visas som tre rader med fråga och kort svar, och Spara som prov.',
+  () => `<div class="phone g">${status}<div class="nav">${back('Fråga om Earmind')}<span></span><span></span></div>
+  <div class="lt" style="font-size:28px">Prova på en kort text</div><div class="content">
+  <div class="sec"><div class="row" style="min-height:150px;align-items:flex-start;font-size:16px;line-height:1.4">Fotosyntesen sker i kloroplasterna. Med hjälp av solljus bygger växten glukos av koldioxid och vatten, och syre blir över.</div></div>
+  <div class="sf">Klistra in eller skriv några meningar. Räknas som 3 av dina frågor.</div>
+  <div class="sh">Frågor</div>
+  <div class="sec">${[['Var sker fotosyntesen?', 'I kloroplasterna.'], ['Vad bygger växten av koldioxid och vatten?', 'Glukos, med hjälp av solljus.'], ['Varför bildas syre?', 'Syret blir över när vatten delas.']].map(([q, a]) => `<div class="row q"><div><div class="t">${q}</div><div class="sub">${a}</div></div></div>`).join('')}</div>
+  </div><div class="bottom"><div class="btnp">Spara som prov</div><div class="btnt" style="font-size:15px">Gör om</div></div></div>`);
+
 const root = document.getElementById('screens');
 for (const s of S) {
   const side = th => `<div class="side ${th}"><div class="tag">${s.tag}</div>${s.f(th === 'dark')}<div class="cap">${s.cap}</div></div>`;
