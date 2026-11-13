@@ -377,3 +377,13 @@ All calls are `POST` with the user's JWT, like `/answer`.
 - `{"action":"report","publication_id","reason":"fel"|"krankande"|"upphovsratt"|"annat"}` → `{"reports","hidden"}`. One report per account; 3 reports hide the drill.
 - `{"action":"played","id":"<the user's copy>"}`: call it once when a repetition session of a downloaded drill starts. At most 3 plays per copy and day are counted, as a number with no identity.
 - `{"action":"moderate","publication_id","hidden":false}`: Aron only. It shows a hidden drill again.
+
+**Voice and limit (K50, D151).**
+- `save` takes `drill.voice_model`: `"A"` (`eleven_multilingual_v2`, the default), `"B"` (`eleven_v3`) or `"C"` (`eleven_flash_v2_5`). The full model id works too.
+  - The voice is locked from the first save, because the audio is made right away. Asking for another voice gives 409 `voice_locked`; make a new drill instead.
+  - `get` and `list` return `voice_model`.
+- **Limit:** at most 30 generated questions per account. The value is in `drill_settings.free_generated_questions` and can be changed there.
+  - A question counts when one of its two audio files is new. Questions from drills downloaded from others (shared or published) and text that already has audio never count.
+  - Over the limit you get **402** `quota_exceeded` with `used`, `limit` and `needed` and the message "Köp ett abonnemang eller hämta andras prov". Nothing is saved.
+  - `save` returns `generated_questions`, and `list` returns `quota: {used, limit}`.
+- **Cost:** `audio.credits` is what ElevenLabs charged for the drill's files (`character-cost`), next to `chars` and `est_usd` (list price).

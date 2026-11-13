@@ -1,0 +1,48 @@
+{
+ "save_A": {
+  "status": 200,
+  "new_chars": 1679,
+  "generated_questions": 3
+ },
+ "A": {
+  "done": 6,
+  "total": 6,
+  "failed": 0,
+  "chars": 1679,
+  "credits": null,
+  "credits_chars": null,
+  "est_usd": 0.13,
+  "bytes": 905972,
+  "model": "eleven_multilingual_v2"
+ },
+ "B": {
+  "status": 200,
+  "done": 2,
+  "total": 2,
+  "failed": 0,
+  "chars": 70,
+  "credits": null,
+  "model": "eleven_v3",
+  "short_end_ms": 1920,
+  "duration_ms": 5120
+ },
+ "C": {
+  "status": 200,
+  "done": 2,
+  "total": 2,
+  "failed": 0,
+  "chars": 70,
+  "credits": null,
+  "model": "eleven_flash_v2_5",
+  "short_end_ms": 1823,
+  "duration_ms": 3390
+ },
+ "lock": {
+  "status": 409,
+  "code": "voice_locked"
+ },
+ "quota": {
+  "used": 5,
+  "limit": 30
+ }
+}
