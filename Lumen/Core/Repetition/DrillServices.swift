@@ -68,6 +68,60 @@ final class DrillClient: DrillMaking {
         var item: Item?
         var text: String?
         var note: String?
+        struct Upload: Decodable { var path: String; var url: String }
+        var uploads: [Upload]?
+    }
+
+    /// K53: up to 4 photos go as base64 in the drill itself; more are uploaded first (at most 40).
+    static let inlinePages = 4
+    static let maxPages = 40
+    static let parallelUploads = 4
+
+    /// K53: pre-signed URLs from `/exam upload_urls`, a PUT per photo (4 at a time, no auth headers), each tried twice.
+    /// Returns the paths in the photos' order.
+    private func upload(_ pages: [Data]) async throws(DrillMakingError) -> [String] {
+        let reply = try await call(["action": "upload_urls", "count": pages.count], timeout: 30)
+        let uploads = reply.uploads ?? []
+        guard uploads.count >= pages.count else { throw .server("upload_urls gave \(uploads.count) of \(pages.count)") }
+        let http = self.http
+        let started = Date()
+        var failed = 0
+        var next = 0
+        await withTaskGroup(of: Bool.self) { group in
+            func add(_ i: Int) {
+                let url = URL(string: uploads[i].url)
+                let page = pages[i]
+                group.addTask {
+                    guard let url else { return false }
+                    for _ in 0..<2 {
+                        var request = URLRequest(url: url)
+                        request.httpMethod = "PUT"
+                        request.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
+                        request.timeoutInterval = 60
+                        request.httpBody = page
+                        if let result = try? await http.data(for: request), (200..<300).contains(result.0.statusCode) {
+                            return true
+                        }
+                    }
+                    return false
+                }
+            }
+            while next < min(Self.parallelUploads, pages.count) { add(next); next += 1 }
+            for await ok in group {
+                if !ok { failed += 1 }
+                if next < pages.count { add(next); next += 1 }
+            }
+        }
+        let bytes = pages.reduce(0) { $0 + $1.count }
+        let ms = Int(Date().timeIntervalSince(started) * 1000)
+        let missing = failed
+        let count = pages.count
+        Log.repetition.info("exam upload: \(count, privacy: .public) photos, \(bytes, privacy: .public) bytes, \(missing, privacy: .public) failed, \(ms, privacy: .public) ms")
+        guard missing == 0 else {
+            if !NetworkStatus.shared.isOnline { throw .offline }
+            throw .refused("\(missing) av \(count) bilder kom inte fram. Försök igen.")
+        }
+        return uploads.prefix(pages.count).map(\.path)
     }
 
     func make(_ material: DrillMaterial, subject: String?, grade: String?, correction: String?,
@@ -76,8 +130,11 @@ final class DrillClient: DrillMaking {
         // Step 1 only (Haiku: summary, notes, questions); the answers come with `answers(for:)` (K45 "answers": false).
         var body: [String: Any] = ["action": "drill", "questions": min(max(questions, 3), 60),
                                    "long_words": min(max(longWords, 40), 200), "answers": false]
-        if !material.pages.isEmpty {
-            body["pages"] = material.pages.prefix(20).map { ["media_type": "image/jpeg", "data": $0.base64EncodedString()] }
+        if material.pages.count > Self.inlinePages {
+            // K53: many photos go one by one to Storage first, and the drill names their paths.
+            body["page_paths"] = try await upload(Array(material.pages.prefix(Self.maxPages)))
+        } else if !material.pages.isEmpty {
+            body["pages"] = material.pages.map { ["media_type": "image/jpeg", "data": $0.base64EncodedString()] }
         }
         let text = material.text.trimmingCharacters(in: .whitespacesAndNewlines)
         if !text.isEmpty { body["text"] = String(text.prefix(40_000)) }

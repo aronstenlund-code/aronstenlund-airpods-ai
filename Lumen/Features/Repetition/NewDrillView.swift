@@ -103,7 +103,7 @@ struct NewDrillView: View {
             Section {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
                     tile("Fota sidor", "Flera i följd", "camera") { isTakingPhotos = true }
-                    PhotosPicker(selection: $photoItems, maxSelectionCount: 10, matching: .images) {
+                    PhotosPicker(selection: $photoItems, maxSelectionCount: 20, matching: .images) {
                         Self.tileLabel("Välj bilder", "Ur bildbiblioteket", "photo.on.rectangle")
                     }
                     .buttonStyle(.plain)
