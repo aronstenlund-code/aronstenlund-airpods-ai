@@ -166,3 +166,11 @@ Namnet "Starta prov". ElevenLabs med hög kvalitet, inte Turbo. Betänketid cirk
 ### Senare (Aron 20:32, inte nu)
 - **Kreditsystem:** varje användare har krediter så att ingen kan dra obegränsat på Arons konto. Den som publicerar ett prov som andra faktiskt använder får krediter påfyllda. Byggs när betalning och App Store förbereds. Arkitekturen ska inte omöjliggöra det: logga redan nu hämtningar och uppspelningar per publicerat prov (antal, inte vem).
 - **Regel mot lärarens riktiga prov och facit** (fusk och upphovsrätt) i villkoren och som rapportorsak: införs inför App Store, inte nu.
+
+## 12. Röst, tempo och gräns (D151, Aron 2026-11-13 20:47 efter blindtestet)
+- **Blindtestet:** A = Multilingual v2, B = v3, C = Flash v2.5. Aron gillade A mest. A och C lät nästan likadant och båda snabbt. B har bäst tempo att skriva i, men låter sorgsen.
+- **Tre röstval:** användaren väljer rösten (A, B eller C, med namn som Kelly sätter) **innan** ljudet genereras. Efter genereringen är rösten låst för det provet. Den genereras aldrig om (0 extra tecken). Standard: A.
+- **Tempo utan kostnad:** uppspelningshastighet 0,50 / 0,65 / 0,70 / 0,75 / 0,85 / 0,90 / 1,0 / 1,5, ändras på telefonen med samma fil. **Möjligt** (`AVAudioPlayer.rate` med `enableRate`, tonhöjden behålls). Vid 0,50–0,65 kan rösten låta konstgjord: **möjligt med begränsningar**, Aron lyssnar.
+- **Pauser mellan meningar:** ett val "Längre pauser" (till exempel 1, 2 eller 3 s) lägger tystnad vid meningsslut med hjälp av ordtidsstämplarna. Samma fil, 0 tecken. **Möjligt.**
+- **Gräns:** högst 30 genererade frågor per användare innan man behöver ett abonnemang. Publicerade och delade prov från andra kostar inget och räknas inte. Räknas på servern. Abonnemang och betalning byggs senare (App Store).
+- **Faktisk kostnad i blindtestet:** ElevenLabs debiterade 198 krediter för 496 tecken med v2 och v3, och 99 med Flash (`character-cost`). Det är cirka 40 % av listpriset. Om det håller blir ett prov med 20 frågor cirka 0,4 USD med A i stället för 1,0. **Ej verifierat** varför (plan, rabatt eller räknesätt). Kevin kontrollerar på nästa riktiga prov.
