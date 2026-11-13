@@ -103,12 +103,24 @@ final class FileRepetitionPlayer: RepetitionAudioPlayer {
 @MainActor
 final class TaskRepetitionTimer: RepetitionTimer {
     private var task: Task<Void, Never>?
+    /// D148: the thinking time is part of what plays. With the screen locked iOS suspends an audio app soon after its
+    /// sound stops, and a suspended app's timer never fires, so the next question would never come. A silent file
+    /// plays while the timer runs. It never plays during a pause (3 presses): the timer is cancelled then, and iOS
+    /// wakes the app for the next press like a paused podcast (spec §3, guideline 2.5.4).
+    private let keepsPlaying: Bool
+    private var silence: AVAudioPlayer?
+
+    init(keepsPlaying: Bool = false) {
+        self.keepsPlaying = keepsPlaying
+    }
 
     func start(seconds: Double, _ fire: @escaping @MainActor () -> Void) {
         task?.cancel()
-        task = Task {
+        if keepsPlaying { playSilence() }
+        task = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(Int(seconds * 1000)))
             guard !Task.isCancelled else { return }
+            self?.silence?.stop()
             fire()
         }
     }
@@ -116,5 +128,29 @@ final class TaskRepetitionTimer: RepetitionTimer {
     func cancel() {
         task?.cancel()
         task = nil
+        silence?.stop()
+    }
+
+    private func playSilence() {
+        if silence == nil, let url = Self.silenceFile() {
+            silence = try? AVAudioPlayer(contentsOf: url)
+            silence?.numberOfLoops = -1
+            silence?.prepareToPlay()
+        }
+        silence?.currentTime = 0
+        silence?.play()
+    }
+
+    /// One second of silence, written once to Caches.
+    static func silenceFile() -> URL? {
+        guard let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first else { return nil }
+        let url = caches.appendingPathComponent("repetition-silence-1s.wav")
+        if FileManager.default.fileExists(atPath: url.path) { return url }
+        do {
+            try WAVWriter.write(samples: [Int16](repeating: 0, count: 22_050), sampleRate: 22_050, to: url)
+            return url
+        } catch {
+            return nil
+        }
     }
 }

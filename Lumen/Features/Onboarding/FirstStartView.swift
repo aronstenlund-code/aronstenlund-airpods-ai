@@ -23,7 +23,13 @@ struct FirstStartView: View {
                 IntroView {
                     // "Testa nu" under the consent card is the consent (the card's three points, "Läs mer" for all).
                     if !container.consent.isGranted { container.consent.grant() }
-                    step = .firstQuestion
+                    // A80 (D142): the first path is Nytt prov → Starta prov, without the microphone. Start opens with
+                    // "Plugga med AirPods" and Nytt prov; iOS asks for the microphone only when a BETA mode starts.
+                    if container.listening.repetition != nil {
+                        finish()
+                    } else {
+                        step = .firstQuestion
+                    }
                 }
             case .consent:
                 ConsentView(mode: .onboarding {

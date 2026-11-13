@@ -22,6 +22,8 @@ struct DrillDraft: Sendable, Equatable {
 
 enum DrillMakingError: Error, Equatable {
     case noMaterial
+    /// No network (Ke50 §13: "Ingen internetanslutning …").
+    case offline
     /// The server did not answer as K45 says (not deployed yet, offline, an error).
     case server(String)
 }
@@ -29,9 +31,12 @@ enum DrillMakingError: Error, Equatable {
 /// K45 (`POST /exam` `drill`, `drill_answers`, `drill_one`, `doc_text`). `MockDrillMaker` stands in until it is live
 /// and in the Simulator tests.
 @MainActor
-protocol DrillMaking: AnyObject {
+protocol DrillMaking: AnyObject, Sendable {
     func make(_ material: DrillMaterial, subject: String?, grade: String?, correction: String?,
               questions: Int, longWords: Int) async throws(DrillMakingError) -> DrillDraft
+    /// K45 `drill_answers`: the short and long answers of questions that have none yet (step 2, while the user reads
+    /// the summary). Returns the same items in the same order with their answers.
+    func answers(for items: [DrillItem], summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> [DrillItem]
     /// A new or edited question: its short and long answer.
     func answer(_ question: String, summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> DrillItem
     /// .docx: iOS cannot read Word (only macOS can), so the server does (K45 `doc_text`).
@@ -63,7 +68,9 @@ final class DrillClient: DrillMaking {
     func make(_ material: DrillMaterial, subject: String?, grade: String?, correction: String?,
               questions: Int, longWords: Int) async throws(DrillMakingError) -> DrillDraft {
         guard !material.isEmpty else { throw .noMaterial }
-        var body: [String: Any] = ["action": "drill", "questions": questions, "long_words": longWords]
+        // Step 1 only (Haiku: summary, notes, questions); the answers come with `answers(for:)` (K45 "answers": false).
+        var body: [String: Any] = ["action": "drill", "questions": min(max(questions, 3), 60),
+                                   "long_words": min(max(longWords, 40), 200), "answers": false]
         if !material.pages.isEmpty {
             body["pages"] = material.pages.prefix(20).map { ["media_type": "image/jpeg", "data": $0.base64EncodedString()] }
         }
@@ -83,9 +90,29 @@ final class DrillClient: DrillMaking {
         return DrillDraft(summary: summary, items: items, notes: reply.notes ?? "")
     }
 
+    func answers(for items: [DrillItem], summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> [DrillItem] {
+        let missing = items.filter { $0.short.isEmpty }
+        guard !missing.isEmpty else { return items }
+        let body: [String: Any] = ["action": "drill_answers", "subject": summary.subject, "grade": summary.grade,
+                                   "notes": String(notes.prefix(12_000)), "long_words": min(max(longWords, 40), 200),
+                                   "items": missing.map { ["id": $0.id.uuidString, "question": $0.question] }]
+        let reply = try await call(body, timeout: 150)
+        var byID: [String: Reply.Item] = [:]
+        for item in reply.items ?? [] { if let id = item.id { byID[id] = item } }
+        let filled = items.map { item -> DrillItem in
+            guard item.short.isEmpty, let made = byID[item.id.uuidString], let short = made.short, !short.isEmpty else { return item }
+            var item = item
+            item.short = short
+            item.long = DrillItem.long(made.long ?? "", startingWith: short)
+            return item
+        }
+        guard filled.contains(where: { !$0.short.isEmpty }) else { throw .server("no answers") }
+        return filled
+    }
+
     func answer(_ question: String, summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> DrillItem {
         let body: [String: Any] = ["action": "drill_one", "question": question, "subject": summary.subject,
-                                   "grade": summary.grade, "notes": String(notes.prefix(20_000)), "long_words": longWords]
+                                   "grade": summary.grade, "notes": String(notes.prefix(12_000)), "long_words": min(max(longWords, 40), 200)]
         let reply = try await call(body, timeout: 60)
         guard let item = reply.item else { throw .server("no item") }
         let short = item.short ?? ""
@@ -94,7 +121,8 @@ final class DrillClient: DrillMaking {
     }
 
     func documentText(docx: Data) async throws(DrillMakingError) -> String {
-        let reply = try await call(["action": "doc_text", "docx": docx.base64EncodedString()], timeout: 60)
+        // K45 drill.ts: {"action":"doc_text", "data": "<base64 .docx>"}
+        let reply = try await call(["action": "doc_text", "data": docx.base64EncodedString()], timeout: 60)
         guard let text = reply.text, !text.isEmpty else { throw .server("no text") }
         return text
     }
@@ -118,8 +146,23 @@ final class DrillClient: DrillMaking {
             return try JSONDecoder().decode(Reply.self, from: data)
         } catch let error as DrillMakingError {
             throw error
+        } catch let error as URLError where [.notConnectedToInternet, .networkConnectionLost, .dataNotAllowed].contains(error.code) {
+            throw .offline
         } catch {
             throw .server(error.localizedDescription)
+        }
+    }
+}
+
+extension DrillMakingError {
+    /// Kelly Ke50 §2, §13.
+    var userMessage: String {
+        switch self {
+        case .noMaterial: "Lägg till material först."
+        case .offline: "Ingen internetanslutning. Frågorna görs när du är uppkopplad igen."
+        case .server(let why) where why == "no questions":
+            "Earmind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text."
+        case .server: "Earmind kunde inte göra frågor just nu. Försök igen om en stund."
         }
     }
 }
@@ -152,6 +195,20 @@ final class MockDrillMaker: DrillMaking {
         return DrillDraft(summary: DrillSummary(subject: subject ?? "Biologi", grade: grade ?? "åk 8",
                                                 covers: "Exempel (testläge): \(topic)."),
                           items: items, notes: material.text)
+    }
+
+    func answers(for items: [DrillItem], summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> [DrillItem] {
+        if delay > .zero { try? await Task.sleep(for: delay) }
+        var out: [DrillItem] = []
+        for item in items {
+            if !item.short.isEmpty { out.append(item); continue }
+            let made = try await answer(item.question, summary: summary, notes: notes, longWords: longWords)
+            var filled = item
+            filled.short = made.short
+            filled.long = made.long
+            out.append(filled)
+        }
+        return out
     }
 
     func answer(_ question: String, summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> DrillItem {
@@ -223,13 +280,17 @@ struct DrillAudioKey: Hashable, Sendable {
 /// voice writes the files on the phone: free, offline, 0 ElevenLabs characters. The short answer then has a file
 /// of its own (no word timestamps from Apple's voice).
 @MainActor
-protocol DrillAudioProviding: AnyObject {
+protocol DrillAudioProviding: AnyObject, Sendable {
     /// Ready and total files for the exam ("Ljud: 54 av 90 klara").
     func progress(for drill: Drill) -> (ready: Int, total: Int)
     /// Makes what is missing, in playing order. Safe to call again: made files are kept.
     func prepare(_ drill: Drill) async
     /// All tracks, or nil while a file is missing.
     func tracks(for drill: Drill) -> [RepetitionTrack]?
+    /// One question's track, or nil while its sound is not made yet (the player then waits, Kelly Ke49 "Gör ljud …").
+    func track(for drill: Drill, at index: Int) -> RepetitionTrack?
+    /// What went wrong making the sound, said on the exam's screen.
+    func problem(for drill: Drill) -> String?
 }
 
 @MainActor
@@ -266,15 +327,21 @@ final class DeviceVoiceDrillAudio: DrillAudioProviding {
     }
 
     func tracks(for drill: Drill) -> [RepetitionTrack]? {
-        let tracks = drill.items.map { item in
-            RepetitionTrack(question: url(text: item.question), long: url(text: item.long), short: .file(url(text: item.short)))
-        }
-        let all = tracks.flatMap { track -> [URL] in
-            if case .file(let short) = track.short { return [track.question, track.long, short] }
-            return [track.question, track.long]
-        }
-        return all.allSatisfy({ FileManager.default.fileExists(atPath: $0.path) }) && !tracks.isEmpty ? tracks : nil
+        let all = drill.items.indices.compactMap { track(for: drill, at: $0) }
+        return all.count == drill.items.count && !all.isEmpty ? all : nil
     }
+
+    func track(for drill: Drill, at index: Int) -> RepetitionTrack? {
+        _ = made
+        guard drill.items.indices.contains(index) else { return nil }
+        let item = drill.items[index]
+        let track = RepetitionTrack(question: url(text: item.question), long: url(text: item.long),
+                                    short: .file(url(text: item.short)))
+        let files = [track.question, track.long, url(text: item.short)]
+        return files.allSatisfy({ FileManager.default.fileExists(atPath: $0.path) }) ? track : nil
+    }
+
+    func problem(for drill: Drill) -> String? { nil }
 
     func prepare(_ drill: Drill) async {
         guard !preparing.contains(drill.id) else { return }

@@ -128,18 +128,27 @@ final class AppContainer {
         self.remote = remote
         let repetitionSession = RepetitionSession(inputs: [AirPodsRepetitionInput(hub: remote)])
         self.repetition = repetitionSession
-        // A79–A81 (D142): K45 for questions and answers (the mock with -RepetitionMock YES in Debug), the exams on the
-        // phone until K46, the iPhone's own voice for the sound until K46 (0 ElevenLabs characters), K47 for sharing.
+        // A79–A81 (D142): K45 for questions and answers, K46 for the exams per account and their ElevenLabs sound,
+        // K47 for sharing. The mock mode (-RepetitionMock YES, Debug only: the Simulator tests and screenshots) uses
+        // fixed questions, the phone only and the iPhone's own voice: 0 model calls and 0 ElevenLabs characters.
+        let drillStore = DrillStore()
         #if DEBUG
-        let maker: any DrillMaking = UserDefaults.standard.bool(forKey: "RepetitionMock")
-            ? MockDrillMaker() as any DrillMaking : DrillClient(config: .lumen, auth: auth, http: http)
+        let mock = UserDefaults.standard.bool(forKey: "RepetitionMock") || ScreenshotStage.requested != nil
         #else
-        let maker: any DrillMaking = DrillClient(config: .lumen, auth: auth, http: http)
+        let mock = false
         #endif
-        let repetitionModel = RepetitionModel(store: DrillStore(), session: repetitionSession, maker: maker,
-                                              audio: DeviceVoiceDrillAudio(),
-                                              sharing: DrillShareClient(config: .lumen, auth: auth, http: http),
-                                              remote: remote)
+        let cloud: (any DrillCloudSyncing)? = mock ? nil : DrillCloudClient(config: .lumen, auth: auth, http: http) as any DrillCloudSyncing
+        let maker: any DrillMaking = mock ? MockDrillMaker() as any DrillMaking
+            : DrillClient(config: .lumen, auth: auth, http: http) as any DrillMaking
+        let drillAudio: any DrillAudioProviding
+        if let cloud {
+            drillAudio = CloudDrillAudio(cloud: cloud, store: drillStore)
+        } else {
+            drillAudio = DeviceVoiceDrillAudio()
+        }
+        let repetitionModel = RepetitionModel(store: drillStore, session: repetitionSession, maker: maker,
+                                              audio: drillAudio, sharing: DrillShareClient(cloud: cloud),
+                                              remote: remote, cloud: cloud)
         repetitionModel.stopListening = { [weak listening] in
             if listening?.isActiveSession == true { await listening?.endSession() }
         }

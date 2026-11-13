@@ -26,7 +26,7 @@ final class RepetitionSession {
 
     init(inputs: [any RepetitionInput],
          makeSource: @escaping @MainActor () -> any RepetitionAudioSource = { FileRepetitionAudioSource() },
-         makeTimer: @escaping @MainActor () -> any RepetitionTimer = { TaskRepetitionTimer() },
+         makeTimer: @escaping @MainActor () -> any RepetitionTimer = { TaskRepetitionTimer(keepsPlaying: true) },
          defaults: UserDefaults = .standard, activatesAudioSession: Bool = true) {
         self.inputs = inputs
         self.makeSource = makeSource
@@ -45,12 +45,20 @@ final class RepetitionSession {
     }
 
     func start(_ drill: Drill, tracks: [RepetitionTrack], at index: Int = 0) {
+        start(drill, count: tracks.count, at: index) { tracks.indices.contains($0) ? tracks[$0] : nil }
+    }
+
+    /// `track` is asked at every question, so sound that arrives while the list plays is used (K46 makes it in play
+    /// order); a question without sound yet is waited for.
+    func start(_ drill: Drill, count: Int, at index: Int = 0, onePressPausesAnswer: Bool = false,
+               track: @escaping @MainActor (Int) -> RepetitionTrack?) {
         stop()
-        guard !tracks.isEmpty else { return }
+        guard count > 0 else { return }
         if activatesAudioSession { activatePlayback() }
-        let thinking = ThinkingTime.seconds(questionCount: tracks.count, defaults: defaults)
-        let player = RepetitionPlayer(tracks: tracks, source: makeSource(), timer: makeTimer(),
+        let thinking = ThinkingTime.seconds(questionCount: count, defaults: defaults)
+        let player = RepetitionPlayer(count: count, track: track, source: makeSource(), timer: makeTimer(),
                                       thinkingSeconds: thinking, startAt: index)
+        player.onePressPausesAnswer = onePressPausesAnswer
         let defaults = self.defaults
         let id = drill.id
         player.onProgress = { next in RepetitionProgress(drillID: id, index: next, savedAt: Date()).save(defaults) }
@@ -143,9 +151,11 @@ final class RepetitionSession {
     private func updateNowPlaying() {
         guard activatesAudioSession, let player, let drill else { return }
         let item = drill.items.indices.contains(player.index) ? drill.items[player.index] : nil
+        // Kelly Ke49 "Låsskärmen": title = the question, artist = "Earmind · <exam> · 7 av 20".
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [
             MPMediaItemPropertyTitle: item?.question ?? drill.title,
-            MPMediaItemPropertyArtist: "\(drill.title) · fråga \(player.index + 1) av \(player.tracks.count)",
+            MPMediaItemPropertyArtist: "Earmind · \(drill.title) · \(player.index + 1) av \(player.count)",
+            MPMediaItemPropertyAlbumTitle: drill.title,
             MPNowPlayingInfoPropertyPlaybackRate: player.isPaused ? 0.0 : 1.0,
         ]
     }
@@ -153,6 +163,16 @@ final class RepetitionSession {
     private func record(_ line: String) {
         steps.append(line)
         if steps.count > 40 { steps.removeFirst(steps.count - 40) }
-        if line.hasPrefix("question") { updateNowPlaying() }
+        if line.hasPrefix("question") || line.hasPrefix("waiting") { updateNowPlaying() }
     }
 }
+
+#if DEBUG
+extension RepetitionSession {
+    /// The Simulator screenshots: a session that shows `drill` without sound, Now Playing or the AirPods.
+    func stageForScreenshot(_ drill: Drill, player: RepetitionPlayer) {
+        self.player = player
+        self.drill = drill
+    }
+}
+#endif

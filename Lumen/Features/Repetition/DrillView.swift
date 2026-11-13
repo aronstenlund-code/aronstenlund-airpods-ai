@@ -1,18 +1,20 @@
 import SwiftUI
 
-/// A79–A81 (D142, Kelly Ke49): one exam. "Starta prov" (through "Styr med dina AirPods" the first time), the sound's
-/// progress ("Ljud: 36 av 40 klara"), the summary, the questions in playing order (drag to reorder, swipe to delete,
-/// tap to edit), "Lägg till fråga" and "Dela med klassen" (only when all the sound is ready, D143).
+/// A79–A81 (D142, Kelly Ke49 "Frågelistan"): one exam. "Starta prov" (through "Styr med dina AirPods" the first
+/// time), the sound's progress ("Ljud: 36 av 40 klara · Görs i spelordning"), the questions in playing order (Ändra:
+/// drag to reorder, delete; tap to edit), "Lägg till fråga" and Dela (only when all the sound is ready, D143).
 struct DrillView: View {
     let model: RepetitionModel
     let drillID: UUID
     @State private var editing: EditTarget?
     @State private var checkingControls = false
     @State private var resumeAsk = false
-    @State private var shareURL: URL?
+    @State private var share: DrillShareResult?
     @State private var shareProblem: String?
     @State private var isSharing = false
+    @State private var confirmDelete = false
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
+    @Environment(\.dismiss) private var dismiss
 
     struct EditTarget: Identifiable, Equatable {
         let id: UUID
@@ -27,7 +29,7 @@ struct DrillView: View {
         }
         .lumenScreen()
         .navigationTitle(drill?.title ?? "Prov")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
         .toolbar { EditButton() }
         .sheet(item: $editing) { target in
             if let drill {
@@ -51,38 +53,46 @@ struct DrillView: View {
                 Button("Börja från fråga 1") { Task { await model.start(drill) } }
             }
         }
-        .task { if let drill, !model.isAudioReady(drill) { model.prepareAudio(drill) } }
+        .alert("Ta bort \(drill?.title ?? "provet")?", isPresented: $confirmDelete) {
+            Button("Ta bort", role: .destructive) {
+                if let drill { model.delete(drill) }
+                dismiss()
+            }
+            Button("Avbryt", role: .cancel) {}
+        } message: {
+            Text("Frågorna, svaren och ljudet försvinner från alla dina enheter. Kopior som du har delat finns kvar hos de andra.")
+        }
+        .task { if let drill, !model.isAudioReady(drill) || drill.needsUpload == true { model.prepareAudio(drill) } }
     }
 
     private func content(_ drill: Drill) -> some View {
         List {
             Section {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("\(drill.items.count) frågor · \(drill.summary.grade)")
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("\(DrillText.questions(drill.items.count))\(drill.summary.grade.isEmpty ? "" : " · \(drill.summary.grade)")")
                         .font(LumenFont.text(15))
                         .foregroundStyle(LumenColor.muted)
                     audioLine(drill)
                     Button {
                         startTapped(drill)
                     } label: {
-                        Label("Starta prov", systemImage: "play.fill")
-                            .font(LumenFont.text(20, .bold, relativeTo: .title3))
+                        Label(model.canStart(drill) ? "Starta prov" : "Gör ljud …", systemImage: "play.fill")
+                            .font(LumenFont.text(22, .bold, relativeTo: .title2))
                     }
-                    .buttonStyle(LumenButtonStyle(height: 60))
-                    .disabled(!model.isAudioReady(drill))
-                    .accessibilityHint("Spelar frågorna i dina AirPods. Earmind använder inte mikrofonen.")
-                    if !model.isAudioReady(drill) {
-                        Text("Starta prov går när ljudet är klart.")
-                            .font(LumenFont.text(14))
-                            .foregroundStyle(LumenColor.muted)
-                    }
+                    .buttonStyle(LumenButtonStyle(height: 72))
+                    .disabled(!model.canStart(drill))
+                    Text("Spelar frågorna i dina AirPods. Earmind använder inte mikrofonen.")
+                        .font(LumenFont.text(14))
+                        .foregroundStyle(LumenColor.muted)
                 }
                 .listRowBackground(Color.clear)
             }
 
-            Section {
-                Text(drill.summary.covers)
-            } header: { Text("Sammanfattning") }
+            if !drill.summary.covers.isEmpty {
+                Section {
+                    Text(drill.summary.covers)
+                } header: { Text("Sammanfattning") }
+            }
 
             Section {
                 ForEach(Array(drill.items.enumerated()), id: \.element.id) { number, item in
@@ -92,11 +102,12 @@ struct DrillView: View {
                         HStack(alignment: .firstTextBaseline, spacing: 10) {
                             Text("\(number + 1)").monospacedDigit().foregroundStyle(LumenColor.muted)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(item.question).foregroundStyle(LumenColor.ink)
-                                Text(item.short).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted).lineLimit(2)
+                                Text(item.question).font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.ink)
+                                Text(item.short).font(LumenFont.text(15)).foregroundStyle(LumenColor.muted).lineLimit(1)
                             }
                         }
                     }
+                    .accessibilityHint("Ändrar frågan")
                 }
                 .onMove { from, to in
                     var changed = drill
@@ -106,6 +117,7 @@ struct DrillView: View {
                 .onDelete { offsets in
                     var changed = drill
                     changed.items.remove(atOffsets: offsets)
+                    guard !changed.items.isEmpty else { return }
                     model.save(changed)
                 }
                 Button {
@@ -113,18 +125,18 @@ struct DrillView: View {
                 } label: {
                     Label("Lägg till fråga", systemImage: "plus")
                 }
-            } header: { Text("Frågor") } footer: {
+            } header: { Text("Frågor och svar") } footer: {
                 Text("Dra för att ändra ordning. Ordningen är den du hör.")
             }
 
             Section {
                 shareRow(drill)
             } header: { Text("Dela med klassen") } footer: {
-                Text("Frågor, svar och ljud delas. Foton och dokument delas inte. Ändrar någon en fråga i sin kopia ändras inte ditt prov.")
+                Text("Ändrar någon en fråga i sin kopia ändras inte ditt prov.")
             }
 
             Section {
-                Button("Ta bort provet", role: .destructive) { model.delete(drill) }
+                Button("Ta bort provet", role: .destructive) { confirmDelete = true }
             }
         }
         .listStyle(.insetGrouped)
@@ -133,12 +145,23 @@ struct DrillView: View {
 
     private func audioLine(_ drill: Drill) -> some View {
         let p = model.progress(drill)
-        return HStack(spacing: 8) {
-            Image(systemName: p.ready == p.total && p.total > 0 ? "checkmark.circle.fill" : "waveform")
-                .foregroundStyle(p.ready == p.total ? LumenColor.green : LumenColor.blue)
-            Text(p.ready == p.total && p.total > 0 ? "Ljud klart" : "Ljud: \(p.ready) av \(p.total) klara")
-                .font(LumenFont.text(15, .semibold))
-                .monospacedDigit()
+        let ready = p.total > 0 && p.ready == p.total
+        return VStack(alignment: .leading, spacing: 6) {
+            if ready {
+                Label("Ljud klart", systemImage: "checkmark.circle.fill")
+                    .font(LumenFont.text(15, .semibold))
+                    .foregroundStyle(LumenColor.ok)
+            } else {
+                ProgressView(value: Double(p.ready), total: Double(max(p.total, 1)))
+                    .tint(LumenColor.blue)
+                Text("Ljud: \(p.ready) av \(p.total) klara · Görs i spelordning")
+                    .font(LumenFont.text(14))
+                    .foregroundStyle(LumenColor.muted)
+                    .monospacedDigit()
+            }
+            if let problem = model.audio.problem(for: drill) {
+                Text(problem).font(LumenFont.text(14)).foregroundStyle(LumenColor.ink)
+            }
         }
         .accessibilityElement(children: .combine)
     }
@@ -146,23 +169,35 @@ struct DrillView: View {
     @ViewBuilder
     private func shareRow(_ drill: Drill) -> some View {
         let p = model.progress(drill)
-        if let shareURL {
-            ShareLink(item: shareURL, subject: Text(drill.title), message: Text("Plugga \(drill.title) med Earmind")) {
-                Label("Skicka länken", systemImage: "square.and.arrow.up")
+        Text("Kompisarna får samma frågor, svar och ljud. De behöver ett gratis Earmind-konto.")
+            .font(LumenFont.text(15))
+        LabeledContent("Frågor och svar", value: "\(drill.items.count)")
+        LabeledContent("Ljud", value: "\(p.ready) av \(p.total)").monospacedDigit()
+        LabeledContent("Foton och dokument", value: "delas inte").foregroundStyle(LumenColor.muted)
+        if let share {
+            ShareLink(item: share.url, subject: Text(drill.title),
+                      message: Text("Plugga \(drill.title) med mig i Earmind: \(share.url.absoluteString)")) {
+                Label("Dela", systemImage: "square.and.arrow.up")
             }
         } else if p.total == 0 || p.ready < p.total {
             // D143: otherwise the receiver would make the same sound again.
-            Label("Delas när ljudet är klart (\(p.ready) av \(p.total))", systemImage: "square.and.arrow.up")
-                .foregroundStyle(LumenColor.muted)
+            VStack(alignment: .leading, spacing: 4) {
+                Label("Dela", systemImage: "square.and.arrow.up").foregroundStyle(LumenColor.muted)
+                Text("Delas när ljudet är klart (\(p.ready) av \(p.total))")
+                    .font(LumenFont.text(14))
+                    .foregroundStyle(LumenColor.muted)
+                    .monospacedDigit()
+            }
+            .accessibilityElement(children: .combine)
         } else {
             Button {
                 isSharing = true
                 shareProblem = nil
                 Task {
                     do throws(DrillShareError) {
-                        shareURL = try await model.shareLink(drill)
+                        share = try await model.shareLink(drill)
                     } catch {
-                        shareProblem = error == .notAvailable ? "Delning kommer snart." : "Det gick inte att dela just nu."
+                        shareProblem = error.userMessage
                     }
                     isSharing = false
                 }
@@ -185,24 +220,26 @@ struct DrillView: View {
     }
 
     private func firstQuestionSound(_ drill: Drill) -> URL? {
-        model.audio.tracks(for: drill)?.first?.question
+        model.audio.track(for: drill, at: 0)?.question
     }
 }
 
-/// A79: one question with its short and long answer. D145: the first sentence of the answer is the short answer; a
-/// saved change makes new sound for this question only (the files are named by their text).
+/// A79 (Kelly Ke49 "Redigera en fråga"): two fields, the question and the answer. D145: the answer's first sentence is
+/// the short answer (shown under the field), so the short and the long answer can never disagree. A saved change makes
+/// new sound for this question only.
 struct DrillItemEditor: View {
     let model: RepetitionModel
     let drill: Drill
     let itemID: UUID?
     @Environment(\.dismiss) private var dismiss
     @State private var question = ""
-    @State private var short = ""
-    @State private var long = ""
+    @State private var answer = ""
     @State private var isWriting = false
     @State private var problem: String?
 
     private static func words(_ s: String) -> Int { s.split(whereSeparator: \.isWhitespace).count }
+
+    private var short: String { DrillItem.firstSentence(answer) }
 
     var body: some View {
         NavigationStack {
@@ -210,26 +247,34 @@ struct DrillItemEditor: View {
                 Section {
                     TextField("Fråga", text: $question, axis: .vertical)
                 } header: { Text("Fråga · \(Self.words(question)) ord") } footer: {
-                    Text("Helst högst fem ord.")
+                    if Self.words(question) > 5 { Text("Helst högst fem ord.").foregroundStyle(LumenColor.muted) }
                 }
                 Section {
-                    TextField("Kort svar", text: $short, axis: .vertical)
-                } header: { Text("Kort svar (2 tryck)") }
-                Section {
-                    TextField("Långt svar", text: $long, axis: .vertical).lineLimit(4...14)
-                } header: { Text("Långt svar (1 tryck) · \(Self.words(DrillItem.long(long, startingWith: short))) ord") } footer: {
-                    Text("Det långa svaret börjar alltid med det korta. Sparar du en ändring görs nytt ljud bara för den här frågan.")
-                }
-                if itemID == nil || short.isEmpty {
-                    Section {
-                        Button(isWriting ? "Skriver svar …" : "Låt Earmind skriva svaren") { writeAnswers() }
-                            .disabled(question.trimmingCharacters(in: .whitespaces).isEmpty || isWriting)
+                    TextField("Svar", text: $answer, axis: .vertical).lineLimit(4...16)
+                } header: { Text("Svar · \(Self.words(answer)) ord") } footer: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        if !short.isEmpty {
+                            Text(short)
+                                .font(LumenFont.text(14, .semibold))
+                                .padding(6)
+                                .background(LumenColor.soft, in: RoundedRectangle(cornerRadius: 6))
+                                .accessibilityLabel("Kort svar: \(short)")
+                        }
+                        Text("Första meningen är det korta svaret (2 tryck). Hela svaret är det långa (1 tryck).")
                     }
                 }
-                if let problem { Section { Text(problem).foregroundStyle(LumenColor.red) } }
+                Section {
+                    Button(isWriting ? "Skriver svaret …" : (answer.isEmpty ? "Låt Earmind skriva svaret" : "Nytt förslag")) {
+                        writeAnswers()
+                    }
+                    .disabled(question.trimmingCharacters(in: .whitespaces).isEmpty || isWriting)
+                } footer: {
+                    Text("Sparar du en ändring görs nytt ljud bara för den här frågan.")
+                }
+                if let problem { Section { Text(problem) } }
             }
             .lumenForm()
-            .navigationTitle(itemID == nil ? "Ny fråga" : "Ändra fråga")
+            .navigationTitle(itemID.flatMap { id in drill.items.firstIndex { $0.id == id } }.map { "Fråga \($0 + 1)" } ?? "Ny fråga")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Avbryt") { dismiss() } }
@@ -241,9 +286,7 @@ struct DrillItemEditor: View {
             .onAppear {
                 if let itemID, let item = drill.items.first(where: { $0.id == itemID }) {
                     question = item.question
-                    short = item.short
-                    long = String(item.long.dropFirst(item.long.hasPrefix(item.short) ? item.short.count : 0))
-                        .trimmingCharacters(in: .whitespaces)
+                    answer = DrillItem.long(item.long, startingWith: item.short)
                 }
             }
         }
@@ -253,13 +296,11 @@ struct DrillItemEditor: View {
         isWriting = true
         problem = nil
         Task {
-            do {
+            do throws(DrillMakingError) {
                 let item = try await model.newAnswer(for: question, in: drill)
-                short = item.short
-                long = String(item.long.dropFirst(item.long.hasPrefix(item.short) ? item.short.count : 0))
-                    .trimmingCharacters(in: .whitespaces)
+                answer = DrillItem.long(item.long, startingWith: item.short)
             } catch {
-                problem = "Earmind kunde inte skriva svaren just nu. Skriv dem själv eller försök igen."
+                problem = "Earmind kunde inte skriva svaret just nu. Skriv det själv eller försök igen."
             }
             isWriting = false
         }
@@ -267,15 +308,22 @@ struct DrillItemEditor: View {
 
     private func save() {
         guard var changed = model.store.drill(drill.id) else { dismiss(); return }
-        let item = DrillItem(id: itemID ?? UUID(), question: question.trimmingCharacters(in: .whitespacesAndNewlines),
-                             short: short.trimmingCharacters(in: .whitespacesAndNewlines),
-                             long: DrillItem.long(long, startingWith: short))
+        let text = answer.trimmingCharacters(in: .whitespacesAndNewlines)
+        let first = DrillItem.firstSentence(text)
+        var item = DrillItem(id: itemID ?? UUID(), question: question.trimmingCharacters(in: .whitespacesAndNewlines),
+                             short: first, long: text)
         if let itemID, let i = changed.items.firstIndex(where: { $0.id == itemID }) {
+            let old = changed.items[i]
+            item.serverID = old.serverID
+            if old.sameText(as: item) { dismiss(); return }
+            item.questionAudio = old.questionAudio
+            item.longAudio = old.longAudio
+            item.shortEndMs = old.shortEndMs
             changed.items[i] = item
         } else {
             changed.items.append(item)
         }
-        model.save(changed)
+        model.save(changed) // clears the sound whose text changed (only this question's)
         dismiss()
     }
 }

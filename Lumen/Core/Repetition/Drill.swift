@@ -14,9 +14,16 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     var longWords: Int = Drill.defaultLongWords
     /// A81 (D143): the share code this copy came from, if any.
     var sharedFrom: String?
+    /// K46: the exam's id on the server (per account). Nil until the first save reached the server.
+    var serverID: String?
+    /// K46: changed on the phone since the server last saw it (an edit made offline is sent on the next open).
+    var needsUpload: Bool?
 
     static let defaultQuestionCount = 20
     static let defaultLongWords = 90
+
+    /// "Ljud: 36 av 40 klara" (Kelly Ke49 §4.7): with D145 two files per question, the question and the long answer.
+    var audioFileCount: Int { items.count * 2 }
 }
 
 /// What Earmind made of the material (K45 `summary`). The user may correct it with a line of text.
@@ -31,6 +38,40 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
     var question: String
     var short: String
     var long: String
+    /// K46: the item's id on the server, kept so a saved list keeps its rows.
+    var serverID: String?
+    /// K46: the downloaded files in the phone's cache (`<hash>.mp3`), and where the short answer ends in the long file
+    /// (D145, from ElevenLabs' character timestamps). Nil until downloaded; a changed text gets new ones.
+    var questionAudio: String?
+    var longAudio: String?
+    var shortEndMs: Int?
+
+    init(id: UUID = UUID(), question: String, short: String, long: String, serverID: String? = nil) {
+        self.id = id
+        self.question = question
+        self.short = short
+        self.long = long
+        self.serverID = serverID
+    }
+
+    /// The same texts (an item whose texts did not change keeps its sound).
+    func sameText(as other: DrillItem) -> Bool {
+        question == other.question && short == other.short && long == other.long
+    }
+
+    /// D145 in the editor (Kelly Ke49 "Redigera en fråga": two fields): the short answer is the answer's first
+    /// sentence. A sentence ends at ".", "!" or "?" followed by a space or the end.
+    static func firstSentence(_ answer: String) -> String {
+        let text = answer.trimmingCharacters(in: .whitespacesAndNewlines)
+        var previous: Character?
+        for (offset, char) in text.enumerated() {
+            if let p = previous, ".!?".contains(p), char.isWhitespace {
+                return String(text.prefix(offset)).trimmingCharacters(in: .whitespaces)
+            }
+            previous = char
+        }
+        return text
+    }
 
     /// D145: the long answer with the short one in front, word for word. Applied when the user edits either.
     static func long(_ long: String, startingWith short: String) -> String {
@@ -92,5 +133,17 @@ struct RepetitionProgress: Codable, Equatable, Sendable {
 
     static func clear(_ defaults: UserDefaults = .standard) {
         defaults.removeObject(forKey: key)
+    }
+}
+
+/// Kelly Ke50: the repetition mode's counted words ("1 fråga" / "20 frågor", never "1 frågor").
+enum DrillText {
+    static func questions(_ n: Int) -> String { n == 1 ? "1 fråga" : "\(n) frågor" }
+    static func things(_ n: Int) -> String { n == 1 ? "1 sak" : "\(n) saker" }
+
+    /// "cirka {m} min per varv": the question (about 3 s) and the thinking time, without answers.
+    static func minutesPerLap(_ drill: Drill) -> Int {
+        let seconds = Double(drill.items.count) * (3 + ThinkingTime.seconds(questionCount: drill.items.count))
+        return max(1, Int((seconds / 60).rounded(.up)))
     }
 }

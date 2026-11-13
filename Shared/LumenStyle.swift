@@ -35,6 +35,10 @@ enum LumenColor {
     static let test = dynamic(0xB45309, 0xFBBF6A)
     static let testSoft = dynamic(0xFEF3E2, 0x3A2A12)
     static let onTest = dynamic(0xFFFFFF, 0x2A1A05)
+
+    // A80 (Kelly Ke49 §4.5): green only for a finished check mark (the AirPods check, "Läser materialet").
+    static let ok = dynamic(0x1F7A4D, 0x5FD39A)
+    static let okSoft = dynamic(0xE5F4EC, 0x15301F)
 }
 
 extension UIColor {

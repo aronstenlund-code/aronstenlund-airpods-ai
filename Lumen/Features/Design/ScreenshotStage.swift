@@ -21,6 +21,8 @@ struct ScreenshotStage: View {
             return
         }
         guard name != "intro" else { return }
+        // A79–A81 (Kelly Ke49 §7): the repetition mode's scenes (the mock mode, see AppContainer).
+        if RepetitionDemo.scenes.contains(name), let repetition = model.repetition { RepetitionDemo.seed(repetition, for: name) }
         // A30: Lyssnar while listening in Provläge, before the first frame (the stage is not observed).
         switch name {
         case "listeningProv": model.screenshotShows = .prov
@@ -144,6 +146,7 @@ struct ScreenshotStage: View {
             case "about": NavigationStack { AboutView() } // A13.1
             case "interview": NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
             case "live": NavigationStack { LiveStartView(model: model, settings: model.modeSettings, mode: .social) }
+            case _ where RepetitionDemo.scenes.contains(name): RepetitionDemo.view(name, listening: model)
             default: Text(verbatim: "Okänd skärm: \(name)")
             }
         }

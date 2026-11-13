@@ -330,4 +330,88 @@ import Testing
         session.interruption(typeRaw: 0, optionsRaw: 1) // ended + shouldResume: only iOS's own pause comes back
         #expect(session.player?.isPaused == false)
     }
+
+    // MARK: Angela: sound that arrives while the list plays (K46), AirPods 1/2
+
+    @Test func aQuestionWithoutSoundYetIsWaitedFor() {
+        // K46 makes the files in play order: question 2 may not be downloaded when question 1 ends.
+        let source = MockSource()
+        let timer = MockTimer()
+        let all = Self.tracks(2)
+        var ready = 1
+        let player = RepetitionPlayer(count: 2, track: { $0 < ready ? all[$0] : nil }, source: source, timer: timer,
+                                      thinkingSeconds: 6)
+        player.start()
+        source.last.finish()
+        timer.fire() // the thinking time ends
+        #expect(player.phase == .waitingForAudio(1))
+        #expect(timer.pending?.seconds == RepetitionPlayer.audioRetrySeconds)
+        player.handle(.long)
+        #expect(player.phase == .waitingForAudio(1), "nothing to answer yet")
+        timer.fire()
+        #expect(player.phase == .waitingForAudio(1))
+        ready = 2
+        timer.fire()
+        #expect(player.phase == .question(1))
+        #expect(source.last.url.lastPathComponent == "q1.mp3")
+    }
+
+    @Test func aPauseWhileWaitingGoesOnWhenTheSoundIsThere() {
+        let source = MockSource()
+        let timer = MockTimer()
+        let all = Self.tracks(1)
+        var ready = false
+        let player = RepetitionPlayer(count: 1, track: { _ in ready ? all[0] : nil }, source: source, timer: timer,
+                                      thinkingSeconds: 6)
+        player.start()
+        #expect(player.phase == .waitingForAudio(0))
+        player.handle(.pauseToggle)
+        #expect(player.isPaused && timer.pending == nil)
+        ready = true
+        player.handle(.short) // D143: any press goes on
+        #expect(!player.isPaused)
+        #expect(player.phase == .question(0))
+    }
+
+    @Test func earbudLayoutOnePressPausesAnAnswer() {
+        // Spec §3, AirPods 1/2: right earbud play/pause = the long answer, and pause while an answer plays.
+        let (player, source, _) = make()
+        player.onePressPausesAnswer = true
+        player.start()
+        player.handle(.long)
+        #expect(player.phase == .answer(0, .long))
+        let answer = source.last
+        player.handle(.long)
+        #expect(player.isPaused, "1 press during an answer pauses")
+        #expect(!answer.isPlaying)
+        player.handle(.long)
+        #expect(!player.isPaused && answer.isPlaying, "and goes on from the same word")
+        #expect(player.phase == .answer(0, .long))
+    }
+
+    @Test func anInfiniteShortEndPlaysTheWholeFile() {
+        // No short_end_ms from the server: the short answer is the whole long file rather than nothing.
+        let source = MockSource()
+        let tracks = [RepetitionTrack(question: Self.url("q0"), long: Self.url("l0"), short: .prefix(ofLongUntil: .infinity))]
+        let player = RepetitionPlayer(tracks: tracks, source: source, timer: MockTimer(), thinkingSeconds: 6)
+        player.start()
+        player.handle(.short)
+        #expect(source.last.until == nil)
+    }
+
+    @Test func theSessionStartsWithATrackProvider() {
+        let source = MockSource()
+        let session = RepetitionSession(inputs: [], makeSource: { source }, makeTimer: { MockTimer() },
+                                        defaults: UserDefaults(suiteName: "A78p-\(UUID().uuidString)") ?? .standard,
+                                        activatesAudioSession: false)
+        let drill = Drill(title: "T", summary: DrillSummary(subject: "", grade: "", covers: ""),
+                          items: [DrillItem(question: "F?", short: "K.", long: "K. L.")])
+        let tracks = Self.tracks(1)
+        session.start(drill, count: 1, onePressPausesAnswer: true) { tracks[$0] }
+        #expect(session.isActive)
+        #expect(session.player?.onePressPausesAnswer == true)
+        #expect(session.player?.count == 1)
+        session.stop()
+        #expect(!session.isActive)
+    }
 }

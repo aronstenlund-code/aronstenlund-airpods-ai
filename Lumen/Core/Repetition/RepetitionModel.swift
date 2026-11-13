@@ -37,95 +37,107 @@ enum DrillShareError: Error, Equatable {
     case audioNotReady(ready: Int, total: Int)
     case notAvailable
     case server(String)
+
+    var userMessage: String {
+        switch self {
+        case .audioNotReady(let ready, let total): "Delas när ljudet är klart (\(ready) av \(total))."
+        case .notAvailable: "Delning kommer snart."
+        case .server(let message): message
+        }
+    }
 }
 
-/// K47 (`/drill-share`, `/drill-import`). Until it is deployed `notAvailable` is the honest answer.
+/// What the share sheet sends and what opens a shared exam.
+struct DrillShareResult: Equatable, Sendable {
+    /// The link to send (`https://earmind.ai/p/<code>`, or `earmind://prov/<code>` without it).
+    var url: URL
+    var code: String
+}
+
+/// K47 (`/drill` "share" and "import"): a link to the exam, and a copy in the receiver's account with the same sound
+/// (0 new ElevenLabs characters, D143).
 @MainActor
-protocol DrillSharing: AnyObject {
-    func link(for drill: Drill) async throws(DrillShareError) -> URL
+protocol DrillSharing: AnyObject, Sendable {
+    func link(for drill: Drill) async throws(DrillShareError) -> DrillShareResult
     func importDrill(code: String) async throws(DrillShareError) -> Drill
 }
 
 @MainActor
 final class DrillShareClient: DrillSharing {
-    private let config: BackendConfig
-    private let auth: SupabaseAuth
-    private let http: any HTTPStreaming
+    private let cloud: (any DrillCloudSyncing)?
 
-    init(config: BackendConfig, auth: SupabaseAuth, http: any HTTPStreaming) {
-        self.config = config
-        self.auth = auth
-        self.http = http
+    /// Without a cloud (the Simulator's mock mode) sharing honestly says it is not available.
+    init(cloud: (any DrillCloudSyncing)?) {
+        self.cloud = cloud
     }
 
     static func url(code: String) -> URL? { URL(string: "earmind://prov/\(code)") }
 
-    /// `earmind://prov/<code>` → the code.
+    /// `earmind://prov/<code>`, `https://earmind.ai/p/<code>` or a pasted text with one of them, or a bare code.
     static func code(in url: URL) -> String? {
-        guard url.scheme == "earmind", url.host() == "prov" else { return nil }
-        let code = url.lastPathComponent
-        return code.isEmpty || code == "/" ? nil : code
+        if url.scheme == "earmind" {
+            guard url.host() == "prov" else { return nil }
+            return clean(url.lastPathComponent)
+        }
+        if url.scheme == "https", url.host()?.hasSuffix("earmind.ai") == true {
+            let parts = url.pathComponents
+            guard let p = parts.firstIndex(of: "p"), parts.indices.contains(p + 1) else { return nil }
+            return clean(parts[p + 1])
+        }
+        return nil
     }
 
-    func link(for drill: Drill) async throws(DrillShareError) -> URL {
-        struct Reply: Decodable { var code: String }
-        let items = drill.items.map { ["id": $0.id.uuidString, "question": $0.question, "short": $0.short, "long": $0.long] }
-        let body: [String: Any] = ["drill_id": drill.id.uuidString, "title": drill.title, "items": items,
-                                   "summary": ["subject": drill.summary.subject, "grade": drill.summary.grade,
-                                               "covers": drill.summary.covers]]
-        let reply: Reply = try await call("drill-share", body)
-        guard let url = Self.url(code: reply.code) else { throw .server("bad code") }
-        return url
+    /// What the user pasted in "Har du fått ett prov?": a link or the code itself.
+    static func code(inText text: String) -> String? {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        for word in trimmed.split(whereSeparator: \.isWhitespace) {
+            if let url = URL(string: String(word)), url.scheme != nil, let code = code(in: url) { return code }
+        }
+        return clean(trimmed)
+    }
+
+    /// K47: codes are 8–16 letters and digits, lower case.
+    private static func clean(_ raw: String) -> String? {
+        let code = raw.lowercased().filter { $0.isASCII && ($0.isLetter || $0.isNumber) }
+        return (8...16).contains(code.count) ? code : nil
+    }
+
+    func link(for drill: Drill) async throws(DrillShareError) -> DrillShareResult {
+        guard let cloud else { throw .notAvailable }
+        guard let id = drill.serverID else { throw .audioNotReady(ready: 0, total: drill.audioFileCount) }
+        do throws(DrillCloudError) {
+            let link = try await cloud.share(id: id)
+            let url = link.url.flatMap { URL(string: $0) } ?? link.app_url.flatMap { URL(string: $0) } ?? Self.url(code: link.code)
+            guard let url else { throw DrillCloudError.offline("bad link") }
+            return DrillShareResult(url: url, code: link.code)
+        } catch {
+            if case .refused(let status, let code, let message) = error {
+                if code == "audio_not_ready" { throw .server(message) }
+                if status == 404 && code == "not_found" { throw .server(message) }
+                if status == 400 { throw .notAvailable } // a server without K47's "share" yet
+            }
+            throw .server(error.userMessage)
+        }
     }
 
     func importDrill(code: String) async throws(DrillShareError) -> Drill {
-        struct Reply: Decodable {
-            struct Item: Decodable { var question: String; var short: String; var long: String }
-            struct Summary: Decodable { var subject: String?; var grade: String?; var covers: String? }
-            var title: String
-            var summary: Summary?
-            var items: [Item]
-        }
-        let reply: Reply = try await call("drill-import", ["code": code])
-        return Drill(title: reply.title,
-                     summary: DrillSummary(subject: reply.summary?.subject ?? "", grade: reply.summary?.grade ?? "",
-                                           covers: reply.summary?.covers ?? ""),
-                     items: reply.items.map { DrillItem(question: $0.question, short: $0.short, long: $0.long) },
-                     questionCount: reply.items.count, sharedFrom: code)
-    }
-
-    private func call<Reply: Decodable>(_ function: String, _ body: [String: Any]) async throws(DrillShareError) -> Reply {
-        do {
-            let token = try await auth.accessToken()
-            var request = URLRequest(url: config.projectURL.appending(path: "functions/v1/\(function)"))
-            request.httpMethod = "POST"
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.timeoutInterval = 20
-            request.httpBody = try JSONSerialization.data(withJSONObject: body)
-            let (response, data) = try await http.data(for: request)
-            switch response.statusCode {
-            case 200: return try JSONDecoder().decode(Reply.self, from: data)
-            case 404: throw DrillShareError.notAvailable // K47 not deployed yet
-            case 409:
-                struct Progress: Decodable { var ready: Int?; var total: Int? }
-                let progress = try? JSONDecoder().decode(Progress.self, from: data)
-                throw DrillShareError.audioNotReady(ready: progress?.ready ?? 0, total: progress?.total ?? 0)
-            default: throw DrillShareError.server("HTTP \(response.statusCode)")
-            }
-        } catch let error as DrillShareError {
-            throw error
+        guard let cloud else { throw .notAvailable }
+        do throws(DrillCloudError) {
+            let view = try await cloud.importShared(code: code)
+            var drill = Drill.from(view)
+            drill.sharedFrom = code
+            return drill
         } catch {
-            throw .server(error.localizedDescription)
+            if case .refused(let status, _, _) = error, status == 400 { throw .notAvailable }
+            throw .server(error.userMessage)
         }
     }
 }
 
 // MARK: - The mode
 
-/// D142 (A79–A81): the repetition mode for the screens. Exams, making them (K45), their sound (K46), the AirPods
-/// check (R11), Starta prov and sharing (K47).
+/// D142 (A79–A81): the repetition mode for the screens. Exams, making them (K45), their sound and their place on
+/// the server (K46), the AirPods check (R11), Starta prov and sharing (K47).
 @MainActor
 @Observable
 final class RepetitionModel {
@@ -135,8 +147,11 @@ final class RepetitionModel {
     let audio: any DrillAudioProviding
     let sharing: any DrillSharing
     let remote: RemoteCommandHub
+    /// K46: the exams per account. Nil in the mock mode (`-RepetitionMock YES`): only the phone.
+    @ObservationIgnored let cloud: (any DrillCloudSyncing)?
     /// Ends a listening mode before the repetition takes the audio and the AirPods buttons.
     @ObservationIgnored var stopListening: (@MainActor () async -> Void)?
+    @ObservationIgnored private let defaults: UserDefaults
 
     /// The playing screen is up.
     var showsPlayer = false
@@ -145,6 +160,8 @@ final class RepetitionModel {
     /// A share link opened in the app: the exam to add.
     var incomingCode: String?
     var importMessage: String?
+    /// The exam to open after an import or a new exam (Start shows it).
+    var openDrill: UUID?
 
     struct ResumeOffer: Identifiable, Equatable {
         var id: UUID { drill.id }
@@ -153,13 +170,16 @@ final class RepetitionModel {
     }
 
     init(store: DrillStore, session: RepetitionSession, maker: any DrillMaking, audio: any DrillAudioProviding,
-         sharing: any DrillSharing, remote: RemoteCommandHub) {
+         sharing: any DrillSharing, remote: RemoteCommandHub, cloud: (any DrillCloudSyncing)? = nil,
+         defaults: UserDefaults = .standard) {
         self.store = store
         self.session = session
         self.maker = maker
         self.audio = audio
         self.sharing = sharing
         self.remote = remote
+        self.cloud = cloud
+        self.defaults = defaults
     }
 
     var drills: [Drill] { store.drills }
@@ -172,15 +192,24 @@ final class RepetitionModel {
                              questions: settings.questions, longWords: settings.length.words)
     }
 
-    /// Saves and starts the sound in the background (D143: when the exam is saved).
+    /// Saves on the phone at once, then on the server, which starts the sound in the background (D143: when the exam
+    /// is saved). Items whose texts changed lose their old sound; the others keep it.
     @discardableResult
     func save(_ drill: Drill) -> Drill {
         var drill = drill
+        let before = store.drill(drill.id)
         drill.items = drill.items.map { item in
             var item = item
             item.long = DrillItem.long(item.long, startingWith: item.short) // D145
+            if let old = before?.items.first(where: { $0.id == item.id }), !old.sameText(as: item) {
+                item.questionAudio = old.question == item.question ? old.questionAudio : nil
+                item.longAudio = nil
+                item.shortEndMs = nil
+            }
             return item
         }
+        drill.questionCount = drill.items.count
+        if cloud != nil { drill.needsUpload = true }
         store.save(drill)
         prepareAudio(drill)
         return drill
@@ -189,6 +218,9 @@ final class RepetitionModel {
     func delete(_ drill: Drill) {
         if session.drill?.id == drill.id { end() }
         store.delete(drill.id)
+        if let cloud, let id = drill.serverID {
+            Task { try? await cloud.delete(id: id) }
+        }
     }
 
     func prepareAudio(_ drill: Drill) {
@@ -196,9 +228,29 @@ final class RepetitionModel {
         Task { await audio.prepare(drill) }
     }
 
-    /// The sound of every exam that is not ready, on opening.
+    /// On opening: the exams of this account on the server (R5: another phone), then the sound of every exam that is
+    /// not ready.
+    func refresh() async {
+        if let cloud {
+            do throws(DrillCloudError) {
+                let remote = try await cloud.list()
+                let ids = Set(remote.map(\.id))
+                for entry in remote where !store.drills.contains(where: { $0.serverID == entry.id }) {
+                    if let view = try? await cloud.status(id: entry.id) { store.save(Drill.from(view)) }
+                }
+                // Deleted on another phone: gone here too, unless it has changes the server has not seen.
+                for drill in store.drills {
+                    if let id = drill.serverID, !ids.contains(id), drill.needsUpload != true { store.delete(drill.id) }
+                }
+            } catch {
+                Log.repetition.info("Drill list: \(error.userMessage, privacy: .public)")
+            }
+        }
+        for drill in store.drills where audio.tracks(for: drill) == nil || drill.needsUpload == true { prepareAudio(drill) }
+    }
+
     func prepareAllAudio() {
-        for drill in store.drills where audio.tracks(for: drill) == nil { prepareAudio(drill) }
+        Task { await refresh() }
     }
 
     func progress(_ drill: Drill) -> (ready: Int, total: Int) { audio.progress(for: drill) }
@@ -206,6 +258,11 @@ final class RepetitionModel {
     func isAudioReady(_ drill: Drill) -> Bool {
         let p = progress(drill)
         return p.total > 0 && p.ready == p.total
+    }
+
+    /// Kelly Ke49: Starta prov works as soon as the first question has its sound; the player waits for the rest.
+    func canStart(_ drill: Drill) -> Bool {
+        audio.track(for: drill, at: 0) != nil
     }
 
     func newAnswer(for question: String, in drill: Drill) async throws(DrillMakingError) -> DrillItem {
@@ -217,10 +274,17 @@ final class RepetitionModel {
     func savedIndex(_ drill: Drill) -> Int? { session.savedIndex(for: drill) }
 
     func start(_ drill: Drill, at index: Int = 0) async {
-        guard let tracks = audio.tracks(for: drill) else { return }
+        guard !drill.items.isEmpty, canStart(drill) || audio.track(for: drill, at: index) != nil else { return }
         await stopListening?()
-        session.start(drill, tracks: tracks, at: index)
+        let audio = self.audio
+        let store = self.store
+        let id = drill.id
+        session.start(drill, count: drill.items.count, at: index,
+                      onePressPausesAnswer: ControlCheck.usesEarbudLayout(defaults)) { i in
+            audio.track(for: store.drill(id) ?? drill, at: i)
+        }
         showsPlayer = true
+        resumeOffer = nil
     }
 
     func end() {
@@ -230,7 +294,7 @@ final class RepetitionModel {
 
     /// On opening: the last run's exam and question, if iOS closed the app while it played.
     func checkResume() {
-        guard !session.isActive, resumeOffer == nil, let saved = RepetitionProgress.load(),
+        guard !session.isActive, resumeOffer == nil, let saved = RepetitionProgress.load(defaults),
               let drill = store.drill(saved.drillID), saved.index > 0, saved.index < drill.items.count,
               Date().timeIntervalSince(saved.savedAt) < 24 * 3600 else { return }
         resumeOffer = ResumeOffer(drill: drill, index: saved.index)
@@ -238,7 +302,7 @@ final class RepetitionModel {
 
     // MARK: Sharing (A81)
 
-    func shareLink(_ drill: Drill) async throws(DrillShareError) -> URL {
+    func shareLink(_ drill: Drill) async throws(DrillShareError) -> DrillShareResult {
         let p = progress(drill)
         guard p.total > 0, p.ready == p.total else { throw .audioNotReady(ready: p.ready, total: p.total) }
         return try await sharing.link(for: drill)
@@ -246,20 +310,28 @@ final class RepetitionModel {
 
     func handle(_ url: URL) -> Bool {
         guard let code = DrillShareClient.code(in: url) else { return false }
+        open(code: code)
+        return true
+    }
+
+    /// "Har du fått ett prov?": a pasted link or code.
+    func open(code: String) {
         incomingCode = code
         Task { await importIncoming() }
-        return true
     }
 
     private func importIncoming() async {
         guard let code = incomingCode else { return }
         incomingCode = nil
         do throws(DrillShareError) {
-            let drill = try await sharing.importDrill(code: code)
-            save(drill)
+            var drill = try await sharing.importDrill(code: code)
+            drill.needsUpload = nil
+            store.save(drill)
+            prepareAudio(drill)
+            openDrill = drill.id
             importMessage = "\(drill.title) är tillagt."
         } catch {
-            importMessage = error == .notAvailable ? "Delade prov går inte att öppna än." : "Provet gick inte att öppna."
+            importMessage = error == .notAvailable ? "Delade prov går inte att öppna än." : error.userMessage
         }
     }
 }
@@ -310,9 +382,19 @@ final class ControlCheck {
     @ObservationIgnored private var timeout: Task<Void, Never>?
     @ObservationIgnored private var player: AVAudioPlayer?
     private let waitSeconds: Double
+    @ObservationIgnored private let defaults: UserDefaults
+
+    /// Spec §3, AirPods 1/2: three presses never came, so 1 press (play/pause) pauses during an answer. Saved by
+    /// the last check that finished; the player reads it at Starta prov.
+    static let earbudLayoutKey = "repetition.earbudLayout"
+
+    static func usesEarbudLayout(_ defaults: UserDefaults = .standard) -> Bool {
+        defaults.bool(forKey: earbudLayoutKey)
+    }
     private let activatesAudio: Bool
 
-    init(hub: RemoteCommandHub, waitSeconds: Double = 10, activatesAudio: Bool = true) {
+    init(hub: RemoteCommandHub, waitSeconds: Double = 8, activatesAudio: Bool = true, defaults: UserDefaults = .standard) {
+        self.defaults = defaults
         self.hub = hub
         self.waitSeconds = waitSeconds
         self.activatesAudio = activatesAudio
@@ -375,7 +457,14 @@ final class ControlCheck {
     private func advance() {
         guard let current = step else { return }
         step = Step(rawValue: current.rawValue + 1)
-        if step == nil { timeout?.cancel() } else { armTimeout() }
+        if step == nil {
+            timeout?.cancel()
+            // Only a real answer from the AirPods counts: "Hoppa över" on all three says nothing about the earbuds.
+            if passed.contains(.one) { defaults.set(missed.contains(.three), forKey: Self.earbudLayoutKey) }
+            Log.repetition.info("Control check done: \(self.heard.joined(separator: ", "), privacy: .public)")
+        } else {
+            armTimeout()
+        }
     }
 
     private func armTimeout() {

@@ -1,103 +1,207 @@
 import SwiftUI
 
-/// A80 (D142, Kelly Ke49): the playing screen. "Fråga 7 av 20 · Varv 2", the question, what happens now ("Tänk",
-/// "Långt svar", "Pausad: tryck på AirPods för att fortsätta"), the three controls as buttons on the phone (the same
-/// path as AirPods), and a big Avsluta: the only way to end. The screen may be locked; the AirPods keep working.
+/// A80 (D142, Kelly Ke49 "Uppspelning"): "Fråga 7 av 20 · Varv 2", a mark per question, the question big, what
+/// happens now (a ring for "Tänk", "Långt svar"/"Kort svar", "Gör ljud …", "Pausad"), the three presses as a quiet row
+/// and a big neutral Avsluta: the only way to end. No buttons for the answers (rule 2): the AirPods steer, the phone
+/// ends. While paused the whole screen is a button that goes on.
 struct RepetitionPlayerView: View {
     let model: RepetitionModel
 
     private var session: RepetitionSession { model.session }
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             if let player = session.player, let drill = session.drill {
                 header(player, drill)
                 Spacer(minLength: 0)
                 question(player, drill)
                 status(player)
                 Spacer(minLength: 0)
-                controls(player)
+                PressesRow(paused: player.isPaused, lit: lit(player))
             } else {
                 Spacer()
-                Text("Provet är avslutat.").foregroundStyle(LumenColor.muted)
+                Text(endedLine).foregroundStyle(LumenColor.muted)
                 Spacer()
             }
-            Button(role: .destructive) {
+            Button {
                 model.end()
             } label: {
                 Text("Avsluta").font(LumenFont.text(20, .bold, relativeTo: .title3)).frame(maxWidth: .infinity)
             }
-            .buttonStyle(LumenButtonStyle(kind: .danger, height: 64))
-            .accessibilityHint("Det enda som avslutar. Annars börjar listan om.")
+            .buttonStyle(LumenButtonStyle(kind: .secondary, height: 64))
+            .accessibilityHint("Avslutar provet. Du kan fortsätta där du var nästa gång.")
         }
         .padding(20)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            // Kelly Ke49: while paused, a tap anywhere but Avsluta goes on.
+            if session.player?.isPaused == true { session.press(.long) }
+        }
         .lumenScreen()
     }
 
+    /// Ke50 §8: "Sparat på fråga {7}." after Avsluta.
+    private var endedLine: String {
+        if let saved = RepetitionProgress.load() { return "Sparat på fråga \(saved.index + 1)." }
+        return "Provet är avslutat."
+    }
+
+    private func lit(_ player: RepetitionPlayer) -> RepetitionEvent? {
+        switch player.phase {
+        case .answer(_, .long): .long
+        case .answer(_, .short): .short
+        default: player.isPaused ? .pauseToggle : nil
+        }
+    }
+
     private func header(_ player: RepetitionPlayer, _ drill: Drill) -> some View {
-        HStack {
-            Text("Fråga \(player.index + 1) av \(player.tracks.count)")
-                .font(LumenFont.text(17, .semibold))
-                .monospacedDigit()
-            Spacer()
-            if player.lap > 0 {
-                Text("Varv \(player.lap + 1)")
-                    .font(LumenFont.text(15, .semibold))
-                    .padding(.horizontal, 10).padding(.vertical, 4)
-                    .background(LumenColor.soft, in: Capsule())
+        VStack(spacing: 10) {
+            HStack {
+                Text("Fråga \(player.index + 1) av \(player.count)")
+                    .font(LumenFont.text(17, .semibold))
+                    .monospacedDigit()
+                Spacer()
+                if player.lap > 0 { // Kelly R-granskning: "Varv" from lap 2
+                    Text("Varv \(player.lap + 1)")
+                        .font(LumenFont.text(15, .semibold))
+                        .monospacedDigit()
+                        .padding(.horizontal, 10).padding(.vertical, 4)
+                        .background(LumenColor.surface, in: Capsule())
+                }
             }
+            if player.count <= 60 {
+                HStack(spacing: 3) {
+                    ForEach(0..<player.count, id: \.self) { i in
+                        Capsule()
+                            .fill(i < player.index ? LumenColor.blue.opacity(0.5) : i == player.index ? LumenColor.blue : LumenColor.line)
+                            .frame(height: 4)
+                    }
+                }
+                .accessibilityHidden(true)
+            }
+            Text(drill.title)
+                .font(LumenFont.text(13, .semibold))
+                .foregroundStyle(LumenColor.muted)
+                .padding(.horizontal, 10).padding(.vertical, 4)
+                .background(LumenColor.surface, in: Capsule())
         }
         .accessibilityElement(children: .combine)
     }
 
     private func question(_ player: RepetitionPlayer, _ drill: Drill) -> some View {
         let item = drill.items.indices.contains(player.index) ? drill.items[player.index] : nil
-        return Text(item?.question ?? "")
-            .font(LumenFont.handwriting(34, bold: true, relativeTo: .largeTitle))
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: .infinity)
+        return VStack(spacing: 14) {
+            Text(item?.question ?? "")
+                .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
+                .foregroundStyle(player.isPaused ? LumenColor.muted : LumenColor.ink)
+                .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.7)
+                .frame(maxWidth: .infinity)
+                // Kelly R4: no answer buttons on the screen; VoiceOver still has the three as actions.
+                .accessibilityAction(named: "Långt svar") { session.press(.long) }
+                .accessibilityAction(named: "Kort svar") { session.press(.short) }
+                .accessibilityAction(named: player.isPaused ? "Fortsätt" : "Paus") { session.press(.pauseToggle) }
+            if case .answer(_, let kind) = player.phase, let item, !player.isPaused {
+                Text(kind == .short ? item.short : item.long)
+                    .font(LumenFont.text(17))
+                    .foregroundStyle(LumenColor.muted)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(8)
+            }
+        }
     }
 
+    @ViewBuilder
     private func status(_ player: RepetitionPlayer) -> some View {
-        let text: String
         if player.isPaused {
-            text = "Pausad. Tryck på AirPods för att fortsätta. Fortsätter från samma ord."
+            VStack(spacing: 8) {
+                Image(systemName: "pause.circle.fill").font(.system(size: 56)).foregroundStyle(LumenColor.muted)
+                Text("Pausad")
+                    .font(LumenFont.text(15, .semibold))
+                    .foregroundStyle(LumenColor.muted)
+                    .padding(.horizontal, 10).padding(.vertical, 4)
+                    .background(LumenColor.surface, in: Capsule())
+                Text("Tryck på AirPods för att fortsätta")
+                    .font(LumenFont.text(20, .bold, relativeTo: .title3))
+                    .multilineTextAlignment(.center)
+                Text("Fortsätter från samma ord")
+                    .font(LumenFont.text(15))
+                    .foregroundStyle(LumenColor.muted)
+            }
+            .accessibilityElement(children: .combine)
         } else {
             switch player.phase {
-            case .idle: text = ""
-            case .question: text = "Frågan"
-            case .thinking: text = "Tänk"
-            case .answer(_, .long): text = "Långt svar"
-            case .answer(_, .short): text = "Kort svar"
-            }
-        }
-        return Text(text)
-            .font(LumenFont.text(20, .semibold, relativeTo: .title3))
-            .foregroundStyle(player.isPaused ? LumenColor.red : LumenColor.muted)
-            .multilineTextAlignment(.center)
-            .accessibilityAddTraits(.updatesFrequently)
-    }
-
-    private func controls(_ player: RepetitionPlayer) -> some View {
-        HStack(spacing: 12) {
-            control("Långt", "1 tryck", "text.alignleft") { model.session.press(.long) }
-            control("Kort", "2 tryck", "text.append") { model.session.press(.short) }
-            control(player.isPaused ? "Fortsätt" : "Paus", "3 tryck", player.isPaused ? "play.fill" : "pause.fill") {
-                model.session.press(.pauseToggle)
+            case .thinking:
+                ThinkingRing(started: player.thinkingStarted ?? Date(), seconds: player.thinkingSeconds)
+            case .answer(_, let kind):
+                Label(kind == .long ? "Långt svar" : "Kort svar", systemImage: "waveform")
+                    .font(LumenFont.text(17, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+                    .padding(.horizontal, 14).padding(.vertical, 6)
+                    .background(LumenColor.soft, in: Capsule())
+            case .waitingForAudio:
+                HStack(spacing: 8) { ProgressView(); Text("Gör ljud …") }
+                    .font(LumenFont.text(17))
+                    .foregroundStyle(LumenColor.muted)
+            case .question, .idle:
+                Color.clear.frame(height: 1)
             }
         }
     }
+}
 
-    private func control(_ title: String, _ press: String, _ symbol: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: 4) {
-                Image(systemName: symbol).font(.system(size: 22, weight: .semibold))
-                Text(title).font(LumenFont.text(16, .semibold))
-                Text(press).font(LumenFont.text(12)).foregroundStyle(LumenColor.muted)
+/// The thinking time counting down, with the seconds in the middle and "Tänk" under.
+private struct ThinkingRing: View {
+    let started: Date
+    let seconds: Double
+
+    var body: some View {
+        TimelineView(.periodic(from: started, by: 0.1)) { context in
+            let left = max(0, seconds - context.date.timeIntervalSince(started))
+            VStack(spacing: 6) {
+                ZStack {
+                    Circle().stroke(LumenColor.line, lineWidth: 6)
+                    Circle()
+                        .trim(from: 0, to: seconds > 0 ? left / seconds : 0)
+                        .stroke(LumenColor.blue, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                    Text("\(Int(left.rounded(.up)))")
+                        .font(LumenFont.text(28, .bold))
+                        .monospacedDigit()
+                }
+                .frame(width: 84, height: 84)
+                Text("Tänk").font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.muted)
             }
-            .frame(maxWidth: .infinity, minHeight: 84)
         }
-        .buttonStyle(LumenButtonStyle(kind: .secondary, height: 84))
-        .accessibilityLabel("\(title), som \(press) på AirPods")
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Tänk")
+    }
+}
+
+/// Kelly Ke49 §4.1: the presses in the same order everywhere, dots as the symbol (no AirPods pictures, 5.2.5).
+struct PressesRow: View {
+    var paused = false
+    var lit: RepetitionEvent?
+    @Environment(\.dynamicTypeSize) private var size
+
+    var body: some View {
+        let layout = size >= .accessibility1 ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+            : AnyLayout(HStackLayout(spacing: 14))
+        layout {
+            item(.long, 1, "Långt svar")
+            item(.short, 2, "Kort svar")
+            item(.pauseToggle, 3, paused ? "Fortsätt" : "Paus")
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func item(_ event: RepetitionEvent, _ dots: Int, _ title: String) -> some View {
+        HStack(spacing: 6) {
+            Text(String(repeating: "●", count: dots)).font(.system(size: 8))
+            Text(title).font(LumenFont.text(14, .semibold))
+        }
+        .foregroundStyle(lit == event ? LumenColor.blue : LumenColor.muted)
+        .accessibilityLabel("\(title), \(dots) tryck på AirPods")
     }
 }
