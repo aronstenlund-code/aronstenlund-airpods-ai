@@ -70,6 +70,8 @@ struct RepetitionE2ETests {
 
     // MARK: Set-up
 
+    @MainActor final class ReadySet { var items: Set<Int> = [0] }
+
     @MainActor struct Run {
         let session: RepetitionSession
         let hub: RemoteCommandHub
@@ -288,14 +290,15 @@ struct RepetitionE2ETests {
     // MARK: Sound that is not made yet (K46 in play order)
 
     @Test func aQuestionWithoutSoundIsWaitedFor() async throws {
-        var ready: Set<Int> = [0]
-        let run = try begin { ready.contains($0) ? Self.track($0) : nil }
+        // A reference, not a captured var: the track closure is Sendable (Swift 6).
+        let ready = ReadySet()
+        let run = try begin { ready.items.contains($0) ? Self.track($0) : nil }
         defer { run.session.stop() }
         let waiting = await wait(12) { phase(run) == .waitingForAudio(1) }
         try await Task.sleep(for: .seconds(2))
         let stillWaiting = phase(run) == .waitingForAudio(1) && run.session.isActive
         let category = AVAudioSession.sharedInstance().category
-        ready.insert(1)
+        ready.items.insert(1)
         let played = await wait(3) { phase(run) == .question(1) }
         save(run, "waiting")
         #expect(waiting != nil && stillWaiting && played != nil)
