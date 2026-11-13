@@ -224,6 +224,20 @@
   .empty { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 8px 4px; }
   .empty .bigic { width: 72px; height: 72px; border-radius: 22px; background: var(--soft); color: var(--blue); display: grid; place-items: center; }
   .empty .bigic .ico { width: 34px; height: 34px; }
+  /* Ke52: Publicera prov */
+  .toggle { width: 51px; height: 31px; border-radius: 999px; background: var(--blue); position: relative; flex: none; }
+  .toggle::after { content: ""; position: absolute; right: 2px; top: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .toggle.off { background: var(--line); }
+  .toggle.off::after { right: auto; left: 2px; }
+  .datepill { background: var(--surface); color: var(--blue); border-radius: 8px; padding: 5px 10px; font-size: 16px; }
+  .dark .datepill { background: var(--bg); }
+  .addbtn { margin-left: auto; flex: none; align-self: center; background: var(--soft); color: var(--blue); font-weight: 600; font-size: 15px; padding: 7px 14px; border-radius: 999px; }
+  .chips { display: flex; gap: 8px; overflow: hidden; }
+  .chips span { flex: none; padding: 7px 14px; border-radius: 999px; background: var(--raised); font-size: 15px; font-weight: 600; }
+  .dark .chips span { background: var(--surface); }
+  .chips span.on { background: var(--ink); color: var(--bg); }
+  .searchf { display: flex; align-items: center; gap: 8px; }
+  .listrow .v { white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -254,6 +268,9 @@
   <symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
   <symbol id="pp" viewBox="0 0 24 24"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></symbol>
   <symbol id="fwd" viewBox="0 0 24 24"><path d="M3 6l9 6-9 6zM12 6l9 6-9 6z"/></symbol>
+  <symbol id="school" viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-5 7 5v11"/><path d="M10 21v-5h4v5M12 10.5v.01"/></symbol>
+  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
   <symbol id="rew" viewBox="0 0 24 24"><path d="M21 6l-9 6 9 6zM12 6l-9 6 9 6z"/></symbol>
 </svg>
 <div id="screens"></div>
@@ -610,6 +627,187 @@ S('fler-lagen', 'Fler lägen (BETA)',
     <div class="gfoot">Lyssnande lägen använder mikrofonen. Starta prov gör det aldrig.</div>
   </div>
 </div>`);
+
+
+// ===== Ke52: Publicera prov och Prov från din skola (D149, D150). Ordet "övningsprov" används aldrig. =====
+const SCHOOL = 'Kungsholmens gymnasium';
+const pubRow = (t, sub, meta, name = '') => `<div class="exrow"><div style="min-width:0"><div class="t">${t}</div>
+  <div class="s">${sub}</div><div class="s" style="margin-top:3px">${meta}${name ? ` · ${name}` : ''}</div></div>
+  <span class="addbtn">Lägg till</span></div>`;
+const lockRow = (ic, t, v, off = false) => `<div class="listrow"><span class="ic" ${off ? 'style="background:var(--surface);color:var(--mut)"' : ''}>${I(ic)}</span><span ${off ? 'style="color:var(--mut)"' : ''}>${t}</span><span class="v">${v}</span></div>`;
+
+S('pub-provet', 'Provet: Publicera prov',
+  'Publicera prov ligger på provet, under Dela, som en sekundär knapp. Raden under säger vad det ger, en gång. Starta prov är fortfarande den enda blå knappen.',
+  () => `<div class="phone grouped">${status()}${nav('Hem', '', 'Ändra')}
+  <div class="large" style="padding-top:0">Biologiprovet</div>
+  <div class="lead2" style="padding-bottom:12px">20 frågor · åk 9 · Ljud klart</div>
+  <div class="scroll" style="padding-top:0;gap:12px">
+    <div class="btn blue big">${I('play')}Starta prov</div>
+    <div class="group">
+      <div class="listrow"><span class="ic">${I('share')}</span>Dela med klassen<span class="v">${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow" style="align-items:flex-start"><span class="ic">${I('school')}</span><div><div>Publicera prov</div><div class="sub" style="font-size:14px;margin-top:2px">Alla som söker på din skola kan plugga på det.</div></div><span class="v" style="align-self:center">${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+    </div>
+    <div class="gtitle" style="padding-left:2px;margin-top:6px">Frågor</div>
+    <div class="group">${QS.slice(0, 4).map((q, i) => qRow(q, i)).join('')}</div>
+  </div></div>`);
+
+S('pub-formular', 'Publicera prov',
+  'Tre rader som måste fyllas i (skola, ämne, provdatum) och en brytare för användarnamn, av från början (D150). Överst vad som publiceras och vad som aldrig gör det. Knappen är grå tills allt finns.',
+  () => `<div class="phone grouped">${status()}${nav('', 'Publicera prov', 'Avbryt')}
+  <div class="scroll" style="padding-top:8px;gap:14px">
+    <div class="note" style="display:flex;gap:10px;align-items:flex-start">${I('people', 'ico', 'color:var(--blue);flex:none')}<div>Alla som söker på skolan kan lägga till provet och plugga på det. <b>Frågor, svar och ljud</b> publiceras. Aldrig foton, dokument eller ditt namn.</div></div>
+    <div class="group">
+      <div class="listrow">Skola<span class="v">${SCHOOL} ${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow">Ämne<span class="v">Biologi ${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow">Provdatum<span class="v"><span class="datepill">Välj datum</span></span></div>
+    </div>
+    <div>
+      <div class="group"><div class="listrow">Visa ett användarnamn<span class="toggle off" style="margin-left:auto"></span></div></div>
+      <div class="gfoot">Av: provet visas utan namn.</div>
+    </div>
+  </div>
+  <div class="bottom"><div class="sub" style="text-align:center">Saknas: provdatum</div><div class="btn off">Publicera prov</div></div>
+</div>`);
+
+S('pub-namn', 'Publicera prov: med användarnamn',
+  'Slår man på brytaren kommer ett fält. Raden under säger att det syns för alla och att man inte ska skriva sitt riktiga namn (många användare är under 18).',
+  () => `<div class="phone grouped">${status()}${nav('', 'Publicera prov', 'Avbryt')}
+  <div class="scroll" style="padding-top:8px;gap:14px">
+    <div class="group">
+      <div class="listrow">Skola<span class="v">${SCHOOL} ${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow">Ämne<span class="v">Biologi ${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow">Provdatum<span class="v" style="color:var(--ink)">fre 20 nov</span></div>
+    </div>
+    <div>
+      <div class="group">
+        <div class="listrow">Visa ett användarnamn<span class="toggle" style="margin-left:auto"></span></div>
+        <div class="listrow"><span style="color:var(--ink)">plugghajen<span class="caret"></span></span></div>
+      </div>
+      <div class="gfoot">Syns för alla som hittar provet. Skriv inte ditt riktiga namn.</div>
+    </div>
+  </div>
+  <div class="bottom"><div class="btn blue">Publicera prov</div></div>
+</div>`);
+
+S('pub-skola', 'Välj skola',
+  'Skolor ur Skolverkets register, inte fritext. Sök på namn eller ort från två bokstäver. Ort under namnet, eftersom många skolor heter nästan samma sak.',
+  () => `<div class="phone grouped">${status()}${nav('', 'Välj skola', 'Avbryt')}
+  <div class="scroll" style="padding-top:8px;gap:12px">
+    <div class="field searchf">${I('search', 'ico', 'width:18px;height:18px;color:var(--mut)')}<span>kungsh<span class="caret"></span></span></div>
+    <div class="group">
+      <div class="exrow"><div><div class="t">${SCHOOL}</div><div class="s">Stockholm</div></div><span class="v" style="margin-left:auto;color:var(--blue);font-size:20px">✓</span></div>
+      <div class="exrow"><div><div class="t">Kungsholmens grundskola</div><div class="s">Stockholm</div></div></div>
+      <div class="exrow"><div><div class="t">Kungshamns skola</div><div class="s">Sotenäs</div></div></div>
+      <div class="exrow"><div><div class="t">Kungshögaskolan</div><div class="s">Mjölby</div></div></div>
+    </div>
+    <div class="gfoot">Hittar du inte skolan? Sök på orten.</div>
+  </div>
+</div>`);
+
+S('pub-klart', 'Provet är publicerat',
+  'Bekräftelsen är en lugn rad på provet, ingen konfetti. Där syns också hur många som lagt till det (antal, aldrig vem). Ta bort publiceringen ligger här, i rött bara i bekräftelsen.',
+  () => `<div class="phone grouped">${status()}${nav('Hem', '', 'Ändra')}
+  <div class="large" style="padding-top:0">Biologiprovet</div>
+  <div class="lead2" style="padding-bottom:12px">20 frågor · åk 9 · Ljud klart</div>
+  <div class="scroll" style="padding-top:0;gap:12px">
+    <div class="btn blue big">${I('play')}Starta prov</div>
+    <div class="card" style="padding:16px">
+      <div class="row" style="gap:10px"><span class="okdot" style="flex:none">✓</span><div style="font-weight:700;font-size:17px">Publicerat</div></div>
+      <div class="sub" style="margin-top:6px">${SCHOOL} · Biologi · fre 20 nov · utan namn</div>
+      <div class="sub" style="margin-top:2px">12 har lagt till provet.</div>
+      <div class="row" style="gap:18px;margin-top:12px"><span class="tlink">Ändra</span><span class="tlink" style="color:var(--mut)">Ta bort publiceringen</span></div>
+    </div>
+    <div class="group">
+      <div class="listrow"><span class="ic">${I('share')}</span>Dela med klassen<span class="v">${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+    </div>
+  </div></div>`);
+
+S('pub-lista', 'Prov från din skola',
+  'Din skola först (frågas en gång, går att byta). Ämnen som chips, närmaste provdatum först. Varje rad: titel, ämne och datum, antal frågor och användarnamnet bara om personen valt det. Lägg till är en liten knapp på raden.',
+  () => `<div class="phone grouped">${status()}${nav('Hem', '', '')}
+  <div class="large" style="padding-top:0">Prov från din skola</div>
+  <div class="lead2" style="display:flex;align-items:center;gap:6px">${I('school', 'ico', 'width:16px;height:16px')}${SCHOOL} · <span style="color:var(--blue);font-weight:600">Byt</span></div>
+  <div class="scroll" style="padding-top:14px;gap:12px;overflow:hidden">
+    <div class="chips"><span class="on">Alla</span><span>Biologi</span><span>Historia</span><span>Engelska</span><span>Matte</span></div>
+    <div class="gtitle" style="padding-left:2px">Kommande prov</div>
+    <div class="group">
+      ${pubRow('Biologiprovet', 'Biologi · fre 20 nov', '20 frågor', 'plugghajen')}
+      ${pubRow('Industrialiseringen', 'Historia · tis 24 nov', '18 frågor')}
+      ${pubRow('Glosor v. 48', 'Engelska · ons 25 nov', '30 frågor')}
+    </div>
+    <div class="gtitle" style="padding-left:2px">Tidigare</div>
+    <div class="group">${pubRow('Celler och organeller', 'Biologi · 2 okt', '20 frågor')}</div>
+  </div></div>`);
+
+S('pub-forhand', 'Ett publicerat prov',
+  'Innan man lägger till: skola, ämne, datum, frågorna och ett ▶ för att höra den första. ”Lägg till i mina prov” är blå. Rapportera ligger längst ner, tyst, och kostar inget att hitta.',
+  () => `<div class="phone grouped">${status()}${nav('Prov', '', '')}
+  <div class="large" style="padding-top:0">Biologiprovet</div>
+  <div class="lead2">Biologi · fre 20 nov · ${SCHOOL}</div>
+  <div class="lead2" style="padding-top:2px;padding-bottom:12px">20 frågor · plugghajen</div>
+  <div class="scroll" style="padding-top:0;gap:12px;overflow:hidden">
+    <div class="group">${QS.slice(0, 4).map((q, i) => qRow(q, i)).join('')}
+      <div class="q"><span class="n"></span><div class="t" style="color:var(--mut);font-weight:500;font-size:15px">och 16 frågor till</div></div></div>
+    <div class="tlink" style="display:flex;gap:6px;align-items:center;padding:0 2px">${I('play', 'ico', 'width:16px;height:16px')}Lyssna på första frågan</div>
+  </div>
+  <div class="bottom"><div class="btn blue">Lägg till i mina prov</div><div class="row" style="justify-content:center;gap:6px;color:var(--mut);font-size:15px">${I('flag', 'ico', 'width:16px;height:16px')}Rapportera</div></div>
+</div>`);
+
+S('pub-rapport', 'Rapportera',
+  'Fyra skäl, ett tryck och Skicka. Inget fritextfält som kräver att man förklarar sig. Efteråt en rad: ”Tack. Vi tittar på det.”',
+  () => `<div class="phone">${status()}<div class="scroll" style="opacity:.35"><div class="large" style="padding:0">Biologiprovet</div></div>
+  <div class="dimmed"></div>
+  <div class="sheet"><div class="grab"></div>
+    <div class="row between"><h2 style="font-size:22px">Rapportera provet</h2><span class="tlink" style="font-size:17px">Avbryt</span></div>
+    <div class="sub" style="font-size:15px">Vad är fel?</div>
+    <div class="group" style="background:var(--surface)">
+      <div class="listrow">Fel i frågor eller svar<span class="v" style="color:var(--blue);font-size:20px">✓</span></div>
+      <div class="listrow">Kränkande innehåll</div>
+      <div class="listrow">Någon annans material</div>
+      <div class="listrow">Något annat</div>
+    </div>
+    <div class="btn blue">Skicka</div>
+  </div></div>`);
+
+S('pub-tom', 'Inga prov från skolan än',
+  'Tomt läge som uppmuntrar en gång, utan att tjata: en mening och en knapp till det man ändå har. Samma ruta på Hem visas inte igen om man trycker Inte nu.',
+  () => `<div class="phone grouped">${status()}${nav('Hem', '', '')}
+  <div class="large" style="padding-top:0">Prov från din skola</div>
+  <div class="lead2" style="display:flex;align-items:center;gap:6px">${I('school', 'ico', 'width:16px;height:16px')}${SCHOOL} · <span style="color:var(--blue);font-weight:600">Byt</span></div>
+  <div class="scroll" style="padding-top:20px">
+    <div class="card"><div class="empty">
+      <div class="bigic">${I('school')}</div>
+      <h2 style="font-size:22px">Inga prov här än</h2>
+      <div class="sub" style="font-size:16px;max-width:270px">Publicera ditt nästa prov, så kan klasskompisarna plugga på samma frågor.</div>
+      <div class="btn" style="width:100%;margin-top:8px">Mina prov</div>
+    </div></div>
+  </div></div>`);
+
+S('pub-hem', 'Hem: vägen till skolans prov',
+  'Utan egna prov: en textlänk i det tomma kortet, under Nytt prov. Att hämta ett prov som andra gjort är gratis (D151). Med egna prov blir det en rad under Andra prov: ”Prov från din skola · 3 nya ›”.',
+  () => `<div class="phone">${status()}<div class="scroll">
+  ${topBar()}
+  <div class="card"><div class="empty">
+    <div class="bigic">${I('cards')}</div>
+    <h2 style="font-size:24px">Plugga med AirPods</h2>
+    <div class="sub" style="font-size:16px;max-width:280px">Fota ditt material. ${APP} gör frågor och svar och läser upp dem i örat.</div>
+    <div class="btn blue big" style="width:100%;margin-top:10px">${I('plus')}Nytt prov</div>
+    <div class="tlink" style="margin-top:6px">Hitta prov från din skola</div>
+  </div></div>
+  <div style="flex:1"></div>
+  <div class="row between" style="padding:2px 2px 30px"><span class="sub" style="font-size:16px;color:var(--ink);font-weight:600">Fler lägen<span class="beta">BETA</span></span>${I('chev', 'ico', 'color:var(--mut)')}</div>
+</div></div>`);
+
+S('pub-tabort', 'Ta bort publiceringen',
+  'Bekräftelse som säger exakt vad som händer: provet försvinner från skolans lista, de som redan lagt till det behåller sin kopia, ditt eget prov finns kvar.',
+  () => `<div class="phone">${status()}<div class="scroll" style="opacity:.35"><div class="large" style="padding:0">Biologiprovet</div></div>
+  <div class="dimmed"></div>
+  <div class="sheet" style="gap:12px"><div class="grab"></div>
+    <h2 style="font-size:22px;margin-top:4px">Ta bort publiceringen?</h2>
+    <div class="sub" style="font-size:16px">Provet försvinner från listan för ${SCHOOL}. De 12 som redan lagt till det behåller sin kopia. Ditt eget prov finns kvar.</div>
+    <div class="btn" style="color:var(--red)">Ta bort publiceringen</div>
+    <div class="btn">Avbryt</div>
+  </div></div>`);
 
 const root = document.getElementById('screens');
 for (const s of screens) {
