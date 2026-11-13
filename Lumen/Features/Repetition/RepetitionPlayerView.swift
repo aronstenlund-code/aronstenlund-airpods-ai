@@ -9,20 +9,46 @@ struct RepetitionPlayerView: View {
     let model: RepetitionModel
 
     private var session: RepetitionSession { model.session }
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        VStack(spacing: 20) {
-            if let player = session.player, let drill = session.drill {
-                header(player, drill)
-                Spacer(minLength: 0)
-                question(player, drill)
-                status(player)
-                Spacer(minLength: 0)
+        // The question and what happens now scroll when they are taller than the screen (the largest text cut them
+        // off, CI 43521636730); the presses and Avsluta stay at the bottom.
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: 20) {
+                    if let player = session.player, let drill = session.drill {
+                        header(player, drill)
+                        Spacer(minLength: 0)
+                        question(player, drill)
+                        status(player)
+                        Spacer(minLength: 0)
+                    } else {
+                        Spacer()
+                        Text(verbatim: endedLine).foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+                .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+        .safeAreaInset(edge: .bottom) { bottom }
+        .background(Color(.systemBackground))
+        .contentShape(Rectangle())
+        .onTapGesture {
+            // Kelly Ke49: while paused, a tap anywhere but Avsluta goes on.
+            if session.player?.isPaused == true { session.press(.long) }
+        }
+    }
+
+    /// The three presses and Avsluta, fixed at the bottom and capped like the system's bars.
+    private var bottom: some View {
+        VStack(spacing: 16) {
+            if let player = session.player, session.drill != nil {
                 PressesRow(paused: player.isPaused, lit: lit(player))
-            } else {
-                Spacer()
-                Text(verbatim: endedLine).foregroundStyle(.secondary)
-                Spacer()
             }
             Button {
                 model.end()
@@ -34,14 +60,12 @@ struct RepetitionPlayerView: View {
             .tint(Color.primary)
             .accessibilityHint("Avslutar provet. Du kan fortsätta där du var nästa gång.")
         }
-        .padding(20)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 8)
+        .frame(maxWidth: .infinity)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .background(Color(.systemBackground))
-        .contentShape(Rectangle())
-        .onTapGesture {
-            // Kelly Ke49: while paused, a tap anywhere but Avsluta goes on.
-            if session.player?.isPaused == true { session.press(.long) }
-        }
     }
 
     /// Ke50 §8: "Sparat på fråga {7}." after Avsluta.
@@ -62,10 +86,17 @@ struct RepetitionPlayerView: View {
         // Kelly R-granskning: "Varv" from lap 2.
         let place = "Fråga \(player.index + 1) av \(player.count)" + (player.lap > 0 ? " · Varv \(player.lap + 1)" : "")
         return VStack(spacing: 8) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(verbatim: place).fontWeight(.semibold).monospacedDigit()
-                Spacer(minLength: 8)
-                Text(verbatim: drill.title).lineLimit(1)
+            Group {
+                if typeSize.isAccessibilitySize {
+                    Text(verbatim: place).fontWeight(.semibold).monospacedDigit()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(verbatim: place).fontWeight(.semibold).monospacedDigit()
+                        Spacer(minLength: 8)
+                        Text(verbatim: drill.title).lineLimit(1)
+                    }
+                }
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
@@ -84,6 +115,7 @@ struct RepetitionPlayerView: View {
                 .foregroundStyle(player.isPaused ? Color.secondary : Color.primary)
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.7)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
                 // Kelly R4: no answer buttons on the screen; VoiceOver still has the three as actions.
                 .accessibilityAction(named: "Långt svar") { session.press(.long) }
@@ -107,7 +139,12 @@ struct RepetitionPlayerView: View {
                 Text("Tryck på AirPods för att fortsätta")
                     .font(.title3.bold())
                     .multilineTextAlignment(.center)
-                Text("Fortsätter från början av meningen").font(.subheadline).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("Fortsätter från början av meningen")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityElement(children: .combine)
         } else {

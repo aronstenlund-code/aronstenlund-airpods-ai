@@ -292,6 +292,9 @@ struct MainActionBar: View {
                         Image(systemName: systemImage)
                     }
                     Text(verbatim: title)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.7)
+                        .multilineTextAlignment(.center)
                 }
                 .font(.headline)
                 .frame(maxWidth: .infinity)
@@ -311,6 +314,9 @@ struct MainActionBar: View {
         .padding(.top, 12)
         .padding(.bottom, 8)
         .frame(maxWidth: .infinity)
+        // Like the system's bars, the bar stops growing at the first accessibility size: with the largest text it
+        // took half the screen and the list above it could not be read (CI 43521643151, iPhone SE).
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .background(.bar)
     }
 }

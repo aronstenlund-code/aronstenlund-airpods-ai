@@ -10,6 +10,7 @@ struct ControlCheckView: View {
     let onStart: () -> Void
     let onLater: () -> Void
     @State private var check: ControlCheck
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     /// False for a check set up by the screenshots (Kelly Ke49 §7): it is shown as it is, not started again.
     private let beginsOnAppear: Bool
@@ -40,7 +41,8 @@ struct ControlCheckView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
-                    hero
+                    // With the accessibility sizes the instruction itself comes first: the picture only repeats it.
+                    if !typeSize.isAccessibilitySize { hero }
                     VStack(spacing: 8) {
                         Text(verbatim: title)
                             .font(.title.bold())
@@ -208,6 +210,7 @@ struct ControlCheckView: View {
         .padding(.top, 12)
         .padding(.bottom, 8)
         .frame(maxWidth: .infinity)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as `MainActionBar`
         .background(.bar)
     }
 }

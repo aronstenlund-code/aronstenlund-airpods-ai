@@ -112,6 +112,15 @@ struct RepetitionHomeSection: View {
     // MARK: Without an exam
 
     private var emptyState: some View {
+        GeometryReader { proxy in
+            ScrollView {
+                emptyContent.frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+    }
+
+    private var emptyContent: some View {
         ContentUnavailableView {
             Label("Kom förberedd till provet", systemImage: "book.closed") // A86 (Aron 22:19)
         } description: {
@@ -198,6 +207,9 @@ struct RepetitionHomeSection: View {
                 HStack(spacing: 8) {
                     Image(systemName: "play.fill")
                     Text(saved == nil ? "Starta prov" : "Fortsätt")
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.6)
+                        .multilineTextAlignment(.center)
                 }
                 .font(.headline)
                 .frame(maxWidth: .infinity)
