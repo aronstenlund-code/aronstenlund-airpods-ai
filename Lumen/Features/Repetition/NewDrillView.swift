@@ -25,6 +25,9 @@ struct NewDrillView: View {
     @State private var documents: [(name: String, text: String)] = []
     @State private var scannedPDFPages: [Data] = []
     @State private var settings = DrillSettings()
+    /// A88 (D161): "Vilken årskurs?", the profile's grade chosen again.
+    @State private var grade: StudyProfile.Grade?
+    @State private var gradeLoaded = false
     @State private var photoItems: [PhotosPickerItem] = []
     @State private var isTakingPhotos = false
     @State private var isImporting = false
@@ -152,6 +155,8 @@ struct NewDrillView: View {
                      : "Cirka \(settings.length.words) ord. Det korta svaret är första meningen.")
             }
 
+            GradeChoice(grade: $grade) // A88
+
             if let problem {
                 Section {
                     Text(problem).foregroundStyle(LumenColor.ink)
@@ -174,6 +179,7 @@ struct NewDrillView: View {
         }
         .lumenForm()
         .onAppear {
+            if !gradeLoaded { grade = model.preferredGrade; gradeLoaded = true } // A88
             if let stagedProblem, problem == nil {
                 problem = stagedProblem
                 if pasted.isEmpty { pasted = "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi." }
@@ -349,6 +355,8 @@ struct NewDrillView: View {
         let material = correction != nil && draft != nil ? DrillMaterial(text: draft?.notes ?? "") : self.material
         let settings = self.settings
         let summary = draft?.summary
+        model.preferredGrade = grade // A88: chosen again next time
+        let gradeCode = grade?.rawValue ?? summary?.grade // K52: the profile's code, or what the summary found
         making = Task {
             // K45 step 1 is one call: the first two marks follow the clock, "Gör frågor" ends with the answer.
             let ticks = Task {
@@ -362,7 +370,7 @@ struct NewDrillView: View {
             defer { ticks.cancel() }
             do throws(DrillMakingError) {
                 let made = try await model.make(material, settings: settings, correction: correction,
-                                                subject: summary?.subject, grade: summary?.grade)
+                                                subject: summary?.subject, grade: gradeCode)
                 guard !Task.isCancelled else { return }
                 stepsDone = 3
                 draft = made

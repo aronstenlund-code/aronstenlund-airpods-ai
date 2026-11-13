@@ -154,6 +154,7 @@ final class AppContainer {
         let repetitionModel = RepetitionModel(store: drillStore, session: repetitionSession, maker: maker,
                                               audio: drillAudio, sharing: DrillShareClient(cloud: drillCloud),
                                               remote: remote, cloud: drillCloud)
+        repetitionModel.profile = listening.studyProfile // A88
         repetitionModel.stopListening = { [weak listening] in
             if listening?.isActiveSession == true { await listening?.endSession() }
         }

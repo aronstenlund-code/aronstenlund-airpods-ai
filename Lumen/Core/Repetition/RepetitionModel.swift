@@ -151,6 +151,17 @@ final class RepetitionModel {
     @ObservationIgnored let cloud: (any DrillCloudSyncing)?
     /// Ends a listening mode before the repetition takes the audio and the AirPods buttons.
     @ObservationIgnored var stopListening: (@MainActor () async -> Void)?
+    /// A88 (D161): the profile, where Nytt prov's "Vilken årskurs?" is kept.
+    @ObservationIgnored var profile: StudyProfileStore?
+
+    /// A88: the grade chosen last time (nil = skipped, or never asked).
+    var preferredGrade: StudyProfile.Grade? {
+        get { profile?.profile.grade }
+        set {
+            guard let profile, profile.profile.grade != newValue, let newValue else { return }
+            profile.profile.grade = newValue // "Hoppa över" keeps what the profile had
+        }
+    }
     @ObservationIgnored private let defaults: UserDefaults
 
     /// The playing screen is up.
