@@ -79,6 +79,14 @@ enum DrillCloudError: Error, Equatable {
     case refused(status: Int, code: String, message: String)
     case offline(String)
 
+    /// The server's code ("rate_limited", "share_not_found" …), for the log.
+    var errorCode: String {
+        switch self {
+        case .refused(_, let code, _): code
+        case .offline: "offline"
+        }
+    }
+
     var userMessage: String {
         switch self {
         case .refused(_, _, let message): message
@@ -186,7 +194,7 @@ final class DrillCloudClient: DrillCloudSyncing {
         }
         guard response.statusCode == 200 else {
             let refusal = Self.refusal(status: response.statusCode, data: data)
-            Log.repetition.error("drill \(action, privacy: .public): HTTP \(response.statusCode, privacy: .public) \(refusal.code, privacy: .public)")
+            Log.repetition.error("drill \(action, privacy: .public): HTTP \(response.statusCode, privacy: .public) \(refusal.errorCode, privacy: .public)")
             throw refusal
         }
         do {
