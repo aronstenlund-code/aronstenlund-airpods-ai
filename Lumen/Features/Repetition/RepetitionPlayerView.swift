@@ -107,7 +107,7 @@ struct RepetitionPlayerView: View {
                 Text("Tryck på AirPods för att fortsätta")
                     .font(.title3.bold())
                     .multilineTextAlignment(.center)
-                Text("Fortsätter från samma ord").font(.subheadline).foregroundStyle(.secondary)
+                Text("Fortsätter från början av meningen").font(.subheadline).foregroundStyle(.secondary)
             }
             .accessibilityElement(children: .combine)
         } else {
