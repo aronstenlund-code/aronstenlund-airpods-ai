@@ -7,6 +7,7 @@ import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 import { practiceNav, spokenTask } from "./practice.ts";
+import { DEFAULT_DRILL_CONFIG, docxText, DRILL_WEIGHT, type DrillConfig, handleDrill } from "./drill.ts";
 
 /**
  * D84 (owner): exam session. `POST /exam` with one of four actions. The exam and its assessment instructions are
@@ -26,6 +27,7 @@ import { practiceNav, spokenTask } from "./practice.ts";
  * "own_answers": false). {"action":"nav","utterance","current","nos":[...]} -> {"action","index"?} in code only:
  * next, prev, goto ("fråga sju"), skip, repeat, stop, results, or "answer" (grade it). "grade" with "practice": true
  * explains the right answer too.
+ * K45 (D142): Repetitionsläget: "drill", "drill_answers", "drill_one" and "doc_text", see drill.ts.
  */
 export const EXAM_LIMITS = {
   bodyBytes: 24 * 1024 * 1024,
@@ -77,6 +79,8 @@ export interface ExamConfig {
   solveModel?: string;
   solvePriceInPerMTok?: number;
   solvePriceOutPerMTok?: number;
+  /** K45: Repetitionsläget (drill, drill_answers, drill_one). */
+  drill?: DrillConfig;
 }
 
 export const DEFAULT_EXAM_CONFIG: ExamConfig = {
@@ -314,21 +318,53 @@ export function createExamHandler(deps: ExamDeps) {
         const current = Math.max(0, Math.min(nos.length - 1, Math.floor(Number(b?.current) || 0)));
         return json(practiceNav(clean(b?.utterance, 300), current, nos));
       }
-      if (!["parse", "hint", "grade"].includes(action)) {
-        throw new HttpError(400, "invalid_request", "action must be parse, hint, grade, summary or nav");
+      if (action === "doc_text") {
+        // K45: a Word file's text, read in code (iOS cannot read .docx); no model, no cost, nothing kept
+        return json({ text: await docxText(String(b?.data ?? "")) });
+      }
+      const drill = action === "drill" || action === "drill_answers" || action === "drill_one";
+      if (!drill && !["parse", "hint", "grade"].includes(action)) {
+        throw new HttpError(400, "invalid_request", "action must be parse, hint, grade, summary, nav, drill, drill_answers, drill_one or doc_text");
       }
       const extra = appChecks("exam", await networkKey(req), user, {
         networkPerDay: cfg.networkPerDay,
         newUserAgeSec: 0,
         newUserPerHour: 0,
       });
-      const rl = await enforceLimits(deps.rateLimiter, "exam", user.id, cfg.limits, 1, extra);
+      const rl = await enforceLimits(deps.rateLimiter, "exam", user.id, cfg.limits, drill ? DRILL_WEIGHT[action] : 1, extra);
       if (!rl.allowed) {
         throw new HttpError(429, "rate_limited", "För många försök just nu. Vänta en liten stund och försök igen.", {
           retryAfterSec: rl.retryAfterSec,
         });
       }
       if (!deps.provider) throw new HttpError(503, "provider_unconfigured", "LLM provider not configured");
+      if (drill) {
+        const { body, steps } = await handleDrill(
+          action as "drill" | "drill_answers" | "drill_one",
+          (b ?? {}) as Record<string, unknown>,
+          deps.provider,
+          cfg.drill ?? DEFAULT_DRILL_CONFIG,
+          req.signal,
+        );
+        for (const st of steps) {
+          try {
+            await deps.recordUsage?.({
+              user_id: user.id,
+              endpoint: `exam-${action}`,
+              provider: deps.provider.name,
+              model: st.model,
+              input_tokens: st.input_tokens,
+              output_tokens: st.output_tokens,
+              total_ms: Date.now() - t0,
+              est_cost_usd: st.est_cost_usd,
+              status: "ok",
+            });
+          } catch (e) {
+            console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+          }
+        }
+        return json(body);
+      }
 
       let llm: LLMRequest;
       let numeric: ReturnType<typeof numericCheck> = null;
