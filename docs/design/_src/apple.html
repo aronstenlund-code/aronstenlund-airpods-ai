@@ -133,7 +133,7 @@ add('hem', 'Hem med prov', 'En lista, som Podcaster. Överst nästa prov med den
   <div class="sec"><div class="row"><div>Lyssnande lägen<div class="sub">Beta · använder mikrofonen</div></div><span class="v">${chev}</span></div></div>
   </div><div class="tb"><span>${I('plus', 'ico', 'width:24px;height:24px;stroke:none')}Nytt prov</span><span></span></div></div>`);
 
-add('nytt', 'Nytt prov (Form)', 'Ett vanligt formulär i ett blad. Materialet som rader med symbol, inte ett rutnät av kort. Inställningar med systemets Stepper och segmentväljare. Skapa frågor står alltid synlig nederst och säger varför den är grå.',
+add('nytt', 'Nytt prov (Form)', 'Ett vanligt formulär i ett blad. Materialet som rader med symbol, inte ett rutnät av kort. Antal frågor med systemets Stepper och årskursen som en meny (A88, Hoppa över finns i menyn). Inget val av svarslängd (D162). Skapa frågor står alltid synlig nederst och säger varför den är grå.',
   () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Nytt prov</span><span style="width:50px"></span></div>
   <div class="content" style="padding-top:8px">
   <div class="sec"><div class="row" style="color:var(--ter)">Provets namn</div></div>
@@ -145,8 +145,8 @@ add('nytt', 'Nytt prov (Form)', 'Ett vanligt formulär i ett blad. Materialet so
   <div class="sf">Fotona och dokumenten sparas inte.</div>
   <div class="sh">Frågor</div>
   <div class="sec"><div class="row">Antal frågor<span class="v" style="gap:12px;color:var(--label)">20<span class="stepper"><span>−</span><span>+</span></span></span></div>
-    <div class="row" style="flex-direction:column;align-items:stretch;gap:8px">Långa svar<div class="seg"><span>Kortare</span><span class="on">Normal</span><span>Längre</span></div></div></div>
-  <div class="sf">Normal är ett fullt svar på cirka 90 ord.</div>
+    <div class="row">Vilken årskurs?<span class="v" style="color:var(--label)">åk 9 ${chev}</span></div></div>
+  <div class="sf">Varje fråga får ett kort och ett långt svar. Hoppa över årskursen om du vill.</div>
   </div><div class="bottom"><div class="btnp dis">Skapa frågor</div><div class="note">Lägg till minst en sida, bild eller text.</div></div></div>`);
 
 add('fragor', 'Frågelistan', 'Stor rubrik, vanliga listrader och systemets Dela-symbol och ⋯-meny uppe till höger (Publicera prov, Ändra ordning, Ta bort). Starta prov ligger fast nederst och syns alltid, oavsett hur många frågor provet har.',
@@ -160,13 +160,14 @@ add('fragor', 'Frågelistan', 'Stor rubrik, vanliga listrader och systemets Dela
   <div class="sec"><div class="row" style="font-size:15px">Fotosyntes, cellandning, kolets kretslopp och näringskedjor.</div></div>
   </div><div class="bottom"><div class="btnp">${I('play', 'ico', 'width:16px;height:16px;stroke:none')}Starta prov</div><div class="note">Spelas i dina AirPods. Mikrofonen används inte.</div></div></div>`);
 
-add('kontroller', 'Styr med dina AirPods', 'Som när man parkopplar AirPods eller lägger in Face ID: en bild, en instruktion och en rad per steg. Inga färgade rutor. Hoppa över är en textknapp under huvudknappen, som i Apples egna introduktioner.',
+add('kontroller', 'Styr med dina AirPods', 'Som när man parkopplar AirPods eller lägger in Face ID: en bild, en instruktion, Arons text ordagrant (A90) och en rad per steg. Inga färgade rutor. Hoppa över är en textknapp under huvudknappen, som i Apples egna introduktioner.',
   () => `<div class="phone">${status}<div class="nav"><a>Avbryt</a><span></span><span></span></div>
   <div class="content">
   <div class="ctl-ill"><span class="dots"><i></i><i></i></span></div>
   <div style="text-align:center;font-size:28px;font-weight:700;margin-top:24px">Tryck två gånger</div>
-  <div style="text-align:center;font-size:17px;color:var(--sec);margin-top:6px;padding:0 40px">på skaftet, som när du byter låt. Frågan spelas så att trycken kommer fram.</div>
-  <div class="sec" style="margin-top:28px;background:var(--gbg)">
+  <div style="text-align:center;font-size:17px;color:var(--sec);margin-top:6px;padding:0 40px">på skaftet, som när du byter låt.</div>
+  <div style="margin:22px 32px 0;font-size:15px;line-height:1.45"><b>Medan frågan spelas:</b><br>tryck 1 gång för frågans A-svar.<br>Tryck 2 gånger för ett kort A-svar på en till två meningar.<br>Tryck 3 gånger för att pausa.<br>Tryck igen för att fortsätta.</div>
+  <div class="sec" style="margin-top:18px;background:var(--gbg)">
     <div class="row"><span class="check">✓</span><div>Långt svar<div class="sub">Tryck en gång</div></div></div>
     <div class="row"><span class="spin"></span><div>Kort svar<div class="sub">Tryck två gånger</div></div></div>
     <div class="row"><span class="ring0"></span><div style="color:var(--sec)">Paus<div class="sub">Tryck tre gånger</div></div></div></div>

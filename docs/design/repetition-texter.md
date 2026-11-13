@@ -47,8 +47,8 @@ skrivs alltid i samma ordning: 1 tryck = långt svar, 2 tryck = kort svar, 3 try
 | Rubrik över miniatyrerna | TILLAGT · {n} saker | Tillagt: {n} … |
 | VoiceOver på × | Ta bort {sida 3 / namn.pdf} | |
 | Rad | Antal frågor · {20} | Antal frågor: {20} |
-| Rad | Långa svar · Kortare / Normal / Längre | |
-| Fotnot | Normal är ett fullt A-svar på cirka {90} ord. Det korta svaret är första meningen. | Långa svar är ett fullständigt A-svar, omkring {90} ord. Det korta svaret är alltid den första meningen. |
+| Rad (A88, D161) | Vilken årskurs? · åk 7 · åk 8 · åk 9 · Gy 1 · Gy 2 · Gy 3 · Högskola · *textknapp:* Hoppa över | |
+| Fotnot | Varje fråga får ett kort och ett långt svar. | *(raden Långa svar är borttagen, D162/A89)* |
 | Fotnot 2 | Foton, dokument och text skickas en gång för att göra frågorna och sparas inte. | |
 | Huvudknapp | Skapa frågor | |
 | Huvudknapp utan material (avstängd) | Skapa frågor *(grå)* | |
@@ -124,15 +124,27 @@ skrivs alltid i samma ordning: 1 tryck = långt svar, 2 tryck = kort svar, 3 try
 | Lämna med osparade ändringar | **Spara ändringarna?** · Spara · Släng ändringarna *(röd)* · Avbryt | |
 
 ## 7. Styr med dina AirPods (kontrollskärmen)
+**A90, Aron 23:13, ordagrant. Ändra inget ord:** "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta." Samma text på kontrollskärmen och i hjälpen. Rubriken "Medan frågan spelas:" står först, och därefter en mening per rad:
+
+| Rad | Text |
+|---|---|
+| Rubrik över raderna | Medan frågan spelas: |
+| 1 (●) | tryck 1 gång för frågans A-svar. |
+| 2 (●●) | Tryck 2 gånger för ett kort A-svar på en till två meningar. |
+| 3 (●●●) | Tryck 3 gånger för att pausa. |
+| 4 | Tryck igen för att fortsätta. |
+
+Raderna nedan med etiketterna Långt svar, Kort svar och Paus gäller bara testets bockar och statusen (Väntar …, ✓, Kom inte fram). Förklaringen av trycken är alltid Arons text ovan.
+
 | Ställe | Text | I koden nu |
 |---|---|---|
 | Rubrik | Styr med dina AirPods | |
 | Rad under rubriken (bara innan första trycket) | Frågan spelas en gång så att trycken kommer fram. | *(saknas, D147 punkt 5)* |
 | Stor instruktion | Tryck en gång nu · Tryck två gånger nu · Tryck tre gånger nu | |
 | Rad under | på skaftet, som när du pausar musik · … byter låt · … går tillbaka en låt | |
-| Rad 1 | Långt svar · *Hela svaret* | 1 tryck · Långt svar |
-| Rad 2 | Kort svar · *Bara första meningen* | 2 tryck · Kort svar |
-| Rad 3 | Paus · *Vilket tryck som helst fortsätter* | Paus, och 3 igen för att fortsätta |
+| Rad 1 (status) | Långt svar · *Hela svaret* | 1 tryck · Långt svar |
+| Rad 2 (status) | Kort svar · *En till två meningar* | 2 tryck · Kort svar |
+| Rad 3 (status) | Paus · *Tryck igen för att fortsätta* | Paus, och 3 igen för att fortsätta |
 | Status | Väntar … · Sen · ✓ | |
 | Status när inget kom inom 8 s | Kom inte fram | |
 | Uppe till höger | Hoppa över | |
