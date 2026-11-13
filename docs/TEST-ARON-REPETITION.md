@@ -4,8 +4,16 @@ Toby, 2026-11-13. Gäller A78 (spelaren) och A80/A81 (kontrollskärmen). Spec: `
 Allt annat (ordningen i tre varv, betänketiden, att listan börjar om) testar Toby i simulatorn. Det här är bara det som kräver
 din iPhone och dina AirPods.
 
-**Före start (räknas inte i tiden):** senaste bygget installerat, ett prov med minst 5 frågor där ljudet är klart
-("Ljud: … av … klara" visar allt klart), båda AirPods i öronen, ingen annan app spelar (pausa Spotify).
+**Kör inte listan än.** Toby säger till i STATUS när Angelas bygge med A82 är grönt och har passerat simulatortestet (T18).
+
+**Före start (räknas inte i tiden):**
+- Senaste bygget är installerat. Appen öppnar nu direkt på Start med "Plugga med AirPods" och **Nytt prov**.
+- Skapa ett prov med **Nytt prov**. Klistra in texten nedan, ställ antal frågor på **5** och tryck **Skapa frågor**, sedan **Ser rätt ut**.
+- Vänta tills provet visar "Ljud klart". Ljudet görs på servern med ElevenLabs: 5 frågor är ungefär 3 000 tecken, cirka 0,25 USD (knappt 3 kr, specen §6, variant B).
+- Båda AirPods är i öronen och ingen annan app spelar (pausa Spotify).
+
+Text att klistra in:
+> Fotosyntes. Växter tillverkar socker av koldioxid och vatten med hjälp av solljus. Klorofyllet i bladen fångar ljuset. Syre bildas och släpps ut. Sockret ger växten energi och byggmaterial.
 
 | Steg | Tid | Gör så här | Det här ska hända | Skicka tillbaka |
 |---|---|---|---|---|
@@ -24,7 +32,11 @@ Skriv också iPhone-modell, iOS-version och vilka AirPods du använde.
 ## För Toby
 - **R9, andra halvan:** med klockslaget från steg 2 läser Toby serverloggen och ser att inget `stt-token`-anrop kommer i det tidsfönstret.
 - **R7:** "samma ord" bedöms här efter gehör. En exakt mätning kräver en diagnostikrad från Angela med ordet vid paus och ordet vid fortsätt (ElevenLabs-tidsstämpeln mot spelarens position).
-- Knappnamnen kommer från specen (§2, A80) och är en **untested assumption** tills A78–A81 är byggda.
+- Knappnamnen kommer från Kellys texter (Ke50) och Angelas A82. På telefonen är de en **untested assumption**.
+- **AirPods 1 och 2:** om kontrollskärmen visar "Dina AirPods har dubbeltryck per lur" ställer appen in att 1 tryck pausar
+  under ett svar (`onePressPausesAnswer`). Steg 3 och 6 gäller då vänster lur (kort svar) och höger lur (långt svar, paus).
+- **Det som simulatorn redan har kontrollerat (T18)** står i Tobys rapport. Telefonen behövs för AirPods, låst skärm,
+  den orange pricken och riktiga avbrott.
 
 ## Inte med i de 10 minuterna (Toby tar dem senare eller i beta)
 - 60 minuter med pauser på 15 och 30 min, ett riktigt samtal och AirPods ur fodralet och tillbaka (resten av R8).
