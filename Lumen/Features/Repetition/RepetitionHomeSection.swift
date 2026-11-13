@@ -96,9 +96,11 @@ struct RepetitionHomeSection: View {
                 Button {
                     isCreating = true
                 } label: {
-                    Label("Nytt prov", systemImage: "plus.circle.fill")
-                        .labelStyle(.titleAndIcon)
-                        .fontWeight(.semibold)
+                    HStack(spacing: 6) {
+                        Image(systemName: "plus.circle.fill")
+                        Text("Nytt prov")
+                    }
+                    .fontWeight(.semibold)
                 }
                 Spacer()
                 Button("Öppna länk") { askingCode = true }
@@ -193,9 +195,12 @@ struct RepetitionHomeSection: View {
             Button {
                 start(drill)
             } label: {
-                Label(saved == nil ? "Starta prov" : "Fortsätt", systemImage: "play.fill")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
+                HStack(spacing: 8) {
+                    Image(systemName: "play.fill")
+                    Text(saved == nil ? "Starta prov" : "Fortsätt")
+                }
+                .font(.headline)
+                .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
@@ -203,6 +208,7 @@ struct RepetitionHomeSection: View {
             .accessibilityHint("Spelar frågorna i dina AirPods. Earmind använder inte mikrofonen.")
         }
         .padding(.vertical, 6)
+        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
     }
 
     /// "Du var på fråga 3 av 5", "5 frågor · cirka 1 min per varv" or the sound's progress.
@@ -260,15 +266,15 @@ struct RepetitionHomeSection: View {
         Button(action: action) {
             HStack(spacing: 8) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(verbatim: title).foregroundStyle(.primary)
+                    Text(verbatim: title).foregroundStyle(Color.primary)
                     if let detail {
-                        Text(verbatim: detail).font(.subheadline).foregroundStyle(.secondary)
+                        Text(verbatim: detail).font(.subheadline).foregroundStyle(Color.secondary)
                     }
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(Color(.tertiaryLabel))
                     .accessibilityHidden(true)
             }
             .contentShape(Rectangle())

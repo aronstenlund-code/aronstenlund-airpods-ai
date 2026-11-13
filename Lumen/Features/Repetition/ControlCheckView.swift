@@ -50,11 +50,11 @@ struct ControlCheckView: View {
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                     }
-                    steps
                     if check.isDone, !check.allWork, check.needsEarbudSettings {
                         Button("Öppna Inställningar") { ErrorCard.openSettings() }
                             .buttonStyle(.bordered)
                     }
+                    steps
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 8)

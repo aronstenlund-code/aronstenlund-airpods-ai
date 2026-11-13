@@ -102,6 +102,13 @@ struct NewDrillView: View {
 
     private var materialForm: some View {
         Form {
+            if let problem { // first, so it is seen without scrolling
+                Section {
+                    Text(verbatim: problem)
+                    if !material.isEmpty { Button("Försök igen") { create(correction: nil) } } // A85
+                }
+            }
+
             Section {
                 TextField("Provets namn", text: $title)
             }
@@ -146,13 +153,6 @@ struct NewDrillView: View {
             }
 
             GradeChoice(grade: $grade) // A88
-
-            if let problem {
-                Section {
-                    Text(verbatim: problem)
-                    if !material.isEmpty { Button("Försök igen") { create(correction: nil) } } // A85
-                }
-            }
         }
         .safeAreaInset(edge: .bottom) {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.

@@ -164,9 +164,9 @@ struct SchoolPicker: View {
                         Button { onPick(school) } label: {
                             HStack {
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(school.name).bold().foregroundStyle(.primary)
+                                    Text(school.name).bold().foregroundStyle(Color.primary)
                                     if let locality = school.locality, !locality.isEmpty {
-                                        Text(locality).font(.subheadline).foregroundStyle(.secondary)
+                                        Text(locality).font(.subheadline).foregroundStyle(Color.secondary)
                                     }
                                 }
                                 Spacer()
@@ -228,7 +228,7 @@ struct SchoolExamsView: View {
             Section {
                 Button { choosingSchool = true } label: {
                     HStack {
-                        Text(school?.name ?? "Alla skolor").foregroundStyle(.primary)
+                        Text(school?.name ?? "Alla skolor").foregroundStyle(Color.primary)
                         Spacer()
                         Text("Byt").foregroundStyle(.tint)
                     }
@@ -457,7 +457,7 @@ struct ReportSheet: View {
                     ForEach(DrillReportReason.allCases, id: \.self) { r in
                         Button { reason = r } label: {
                             HStack {
-                                Text(r.label).foregroundStyle(.primary)
+                                Text(r.label).foregroundStyle(Color.primary)
                                 Spacer()
                                 if reason == r { Image(systemName: "checkmark").foregroundStyle(.tint) }
                             }

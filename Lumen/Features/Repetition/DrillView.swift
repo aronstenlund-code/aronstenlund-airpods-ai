@@ -146,15 +146,16 @@ struct DrillView: View {
                         editing = EditTarget(id: item.id, isNew: false)
                     } label: {
                         HStack(alignment: .firstTextBaseline, spacing: 12) {
-                            Text(verbatim: "\(number + 1)").monospacedDigit().foregroundStyle(.secondary)
+                            // In a button's label `.primary` is the tint: the rows are the label colour.
+                            Text(verbatim: "\(number + 1)").monospacedDigit().foregroundStyle(Color.secondary)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(verbatim: item.question).fontWeight(.semibold).foregroundStyle(.primary)
-                                Text(verbatim: item.short).font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
+                                Text(verbatim: item.question).fontWeight(.semibold).foregroundStyle(Color.primary)
+                                Text(verbatim: item.short).font(.subheadline).foregroundStyle(Color.secondary).lineLimit(1)
                             }
                             Spacer(minLength: 0)
                             Image(systemName: "chevron.right")
                                 .font(.footnote.weight(.semibold))
-                                .foregroundStyle(.tertiary)
+                                .foregroundStyle(Color(.tertiaryLabel))
                                 .accessibilityHidden(true)
                         }
                     }
