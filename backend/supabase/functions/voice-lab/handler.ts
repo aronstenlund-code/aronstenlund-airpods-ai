@@ -102,7 +102,8 @@ export function createVoiceLabHandler(deps: VoiceLabDeps) {
       const j = await r.json().catch(() => ({}));
       if (!r.ok) {
         const quota = r.status === 401 || r.status === 402 || /quota|credit/i.test(JSON.stringify(j));
-        throw new HttpError(quota ? 503 : 502, quota ? "provider_quota" : "provider_error", `ElevenLabs answered ${r.status}`);
+        // service role only: the reason is shown to the caller (K6 live 2026-11-13: five 503s without a reason)
+        throw new HttpError(quota ? 503 : 502, quota ? "provider_quota" : "provider_error", `ElevenLabs answered ${r.status}: ${JSON.stringify(j).slice(0, 200)}`);
       }
       const previews = (Array.isArray(j.previews) ? j.previews : []).map((p: Record<string, unknown>) => ({
         generated_voice_id: p.generated_voice_id,

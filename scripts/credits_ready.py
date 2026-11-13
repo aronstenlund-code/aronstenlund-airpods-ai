@@ -42,8 +42,12 @@ def previews(out: pathlib.Path, svc: str) -> list[dict]:
         try:
             j = json.loads(urllib.request.urlopen(req, timeout=120).read())
         except urllib.error.HTTPError as e:
-            rows.append({"id": c["id"], "error": e.code})
-            print(c["id"], "error", e.code)
+            reason = e.read()[:300].decode("utf-8", "replace")
+            rows.append({"id": c["id"], "error": e.code, "reason": reason})
+            print(c["id"], "error", e.code, reason)
+            if len(rows) == 1 and e.code in (401, 403, 503):
+                print("stopping: the same error would repeat for every character")
+                break
             continue
         for i, p in enumerate(j.get("previews", [])):
             f = out / f"k6-{c['id']}-{i + 1}.mp3"
