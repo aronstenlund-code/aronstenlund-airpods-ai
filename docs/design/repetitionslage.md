@@ -176,5 +176,10 @@ Namnet "Starta prov". ElevenLabs med hög kvalitet, inte Turbo. Betänketid cirk
 - **Gräns:** högst **15 genererade frågor per användare och månad** (D155, Aron 21:18, "för nu") innan man behöver ett abonnemang. Publicerade och delade prov från andra kostar inget och räknas inte. Räknas på servern. Abonnemang och betalning byggs senare (App Store).
 - **Faktisk kostnad i blindtestet:** ElevenLabs debiterade 198 krediter för 496 tecken med v2 och v3, och 99 med Flash (`character-cost`). Det är cirka 40 % av listpriset. Om det håller blir ett prov med 20 frågor cirka 0,4 USD med A i stället för 1,0. **Ej verifierat** varför (plan, rabatt eller räknesätt). Kevin kontrollerar på nästa riktiga prov.
 
-## 13. Priser (D156, senare)
-Gratis 15 frågor per månad. Premium 89 kr per vecka med upp till 120 frågor per månad. Extra frågor 10 kr styck i krediter. Andras prov är alltid gratis. Byggs med betalningen (Apples köp i appen) inför App Store. Arkitekturen ska redan nu räkna genererade frågor per konto och månad (K50), så att planerna bara blir nya gränser i tabellen.
+## 13. Priser och tokens (D157, byggs senare)
+- 1 genererad fråga = 40 tokens. 160 tokens kostar 35 kr (4 frågor).
+- Varje gång ens prov delas och används (en annan riktig användare hämtar och spelar minst 5 frågor, en gång per mottagare, tak per dag): +120 tokens.
+- Premium 65 kr per månad: upp till 30 genererade frågor per vecka.
+- Gratis: 15 per månad (D155, kanske 20). Andras prov alltid gratis.
+- **Konton:** appen skapar redan i dag automatiskt ett anonymt konto vid första start (verifierat i koden, ). För tokens, premium och publicering med användarnamn behövs ett riktigt konto (Logga in med Apple), så att köp och prov följer med till en ny telefon. Det anonyma kontot uppgraderas då och behåller allt.
+- Arkitekturen ska redan nu räkna genererade frågor per konto (K50), så att tokens blir en saldotabell senare.
