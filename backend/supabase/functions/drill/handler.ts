@@ -26,6 +26,18 @@ import { composeLong, spokenText } from "../exam/drill.ts";
  *  {"action":"share_info", "code"} -> {"title","subject","grade","items"}   what the link holds, before importing
  *  {"action":"import", "code"} -> the copy as "get" returns it   questions and answers copied, the same audio files
  *     (0 ElevenLabs calls); the recipient's edits make files only for what they change and never touch the original.
+ * K49 (D149, D150), Publicera prov (spec §11):
+ *  {"action":"schools", "q"} -> {"schools": [{"code","name","locality"}]}   active units of Skolverket's register
+ *  {"action":"publish", "id", "school_code", "subject", "exam_date": "YYYY-MM-DD", "show_name"?, "display_name"?}
+ *     -> {"publication"}   409 "publish_incomplete" with "missing": ["school","subject","date","audio"] otherwise
+ *  {"action":"unpublish", "id"}   the publisher removes it at any time
+ *  {"action":"search", "school_code"?, "subject"?, "my_school"?, "from"?, "to"?}
+ *     -> {"results": [{"id","title","subject","school":{"code","name","locality"},"exam_date","items","display_name"?}]}
+ *     the student's own school first, then exams at most 30 days back, then older; hidden ones never; no account ever
+ *  {"action":"import", "publication_id"} -> the copy (as "get"), 0 characters; counted (number only)
+ *  {"action":"report", "publication_id", "reason": "fel"|"krankande"|"upphovsratt"|"annat"} -> {"reports","hidden"}
+ *  {"action":"played", "id"} (the user's own copy) -> {"counted"}   one play counted on the publication it came from
+ *  {"action":"moderate", "publication_id", "hidden": false}   Aron only
  * The material is never stored (B4). Characters for NEW files count against a daily limit per account and globally.
  */
 export const DRILL_STORE_LIMITS = {
@@ -95,6 +107,36 @@ export interface DrillDb {
   createShare(row: ShareRow): Promise<void>;
   revokeShares(drillId: string): Promise<number>;
   countImport(code: string): Promise<void>;
+  /** K49 */
+  schools(q: string, limit: number): Promise<SchoolRow[]>;
+  school(code: string): Promise<SchoolRow | null>;
+  publicationOf(drillId: string): Promise<PublicationRow | null>;
+  publication(id: string): Promise<PublicationRow | null>;
+  savePublication(row: PublicationRow): Promise<void>;
+  deletePublication(drillId: string): Promise<void>;
+  searchPublications(f: { school?: string; subject?: string; from?: string; to?: string }): Promise<PublicationRow[]>;
+  report(publicationId: string, userId: string, reason: string): Promise<{ reports: number; hidden: boolean }>;
+  bump(publicationId: string, field: "imports" | "plays"): Promise<void>;
+  setHidden(publicationId: string, hidden: boolean): Promise<void>;
+}
+export interface SchoolRow {
+  code: string;
+  name: string;
+  locality?: string | null;
+  status?: string;
+}
+export interface PublicationRow {
+  id: string;
+  drill_id: string;
+  user_id: string;
+  school_code: string;
+  subject: string;
+  exam_date: string;
+  display_name: string | null;
+  hidden?: boolean;
+  reports?: number;
+  imports?: number;
+  plays?: number;
 }
 export interface ShareRow {
   code: string;
@@ -135,6 +177,8 @@ export interface DrillDeps {
   /** Runs the generator after the response (EdgeRuntime.waitUntil); tests await it. */
   background?: (p: Promise<unknown>) => void;
   now?: () => number;
+  /** K49: Aron (OWNER_EMAIL, signed in by e-mail) shows a hidden publication again. */
+  ownerEmails?: string[];
 }
 
 // ---------- text and hashes ----------
@@ -173,6 +217,30 @@ export function timings(text: string, starts: number[], ends: number[], shortCha
   const last = ends.length ? ends[ends.length - 1] : 0;
   const shortEnd = shortChars && shortChars > 0 && shortChars <= ends.length ? Math.round(ends[shortChars - 1] * 1000) : null;
   return { words, duration_ms: Math.round(last * 1000), short_end_ms: shortEnd };
+}
+
+// ---------- K49 helpers ----------
+
+/** "YYYY-MM-DD" within two years back and one year ahead of `nowMs`, or null. */
+export function validDate(v: unknown, nowMs: number): string | null {
+  if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return null;
+  const t = Date.parse(`${v}T00:00:00Z`);
+  if (!Number.isFinite(t) || new Date(t).toISOString().slice(0, 10) !== v) return null;
+  return t > nowMs - 2 * 365 * 864e5 && t < nowMs + 366 * 864e5 ? v : null;
+}
+export const daysBetween = (a: string, b: string) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 864e5);
+
+/** What anyone may see of a published drill: never the account, photos or documents (B4, D149/D150). */
+export function publicView(r: PublicationRow, school: SchoolRow, title: string, items: number) {
+  return {
+    id: r.id,
+    title,
+    subject: r.subject,
+    school: { code: school.code, name: school.name, locality: school.locality ?? null },
+    exam_date: r.exam_date,
+    items,
+    ...(r.display_name ? { display_name: r.display_name } : {}),
+  };
 }
 
 // ---------- the handler ----------
@@ -264,6 +332,33 @@ export function createDrillHandler(deps: DrillDeps) {
     };
   }
 
+  /** K47/K49: the recipient's own copy; questions, answers and hashes copied (the same audio, 0 new characters). */
+  async function copyDrill(src: DrillRow, userId: string) {
+    const rl = await enforceLimits(deps.rateLimiter, "drill_import", userId, { perMinute: 10, perDay: 50, globalPerDay: 50_000 }, 1);
+    if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många prov på kort tid. Vänta en stund.", { retryAfterSec: rl.retryAfterSec });
+    if ((await deps.db.drills(userId)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
+      throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
+    }
+    const copy: DrillRow = {
+      id: crypto.randomUUID(), user_id: userId, title: src.title, subject: src.subject, grade: src.grade,
+      covers: src.covers, long_words: src.long_words, shared_from: src.id,
+    };
+    const its = (await deps.db.items([src.id])).sort((a, b) => a.position - b.position);
+    await deps.db.saveDrill(copy, true);
+    await deps.db.replaceItems(copy.id, [], its.map((i) => ({
+      drill_id: copy.id, user_id: userId, position: i.position, question: i.question, short: i.short, long: i.long,
+      question_hash: i.question_hash, long_hash: i.long_hash,
+    })));
+    return { ...(await view((await deps.db.drill(copy.id)) ?? copy)), new_chars: 0 };
+  }
+
+  async function publicationFor(id: unknown, includeHidden = false): Promise<PublicationRow> {
+    const s = typeof id === "string" ? id : "";
+    const p = UUID.test(s) ? await deps.db.publication(s) : null;
+    if (!p || (p.hidden && !includeHidden)) throw new HttpError(404, "not_found", "Provet finns inte längre.");
+    return p;
+  }
+
   async function owned(userId: string, id: unknown): Promise<DrillRow> {
     const s = typeof id === "string" ? id : "";
     if (!UUID.test(s)) throw new HttpError(400, "invalid_request", "id is required");
@@ -325,6 +420,18 @@ export function createDrillHandler(deps: DrillDeps) {
         const d = await owned(user.id, b?.id);
         return json({ revoked: await deps.db.revokeShares(d.id) });
       }
+      if (action === "import" && b?.publication_id !== undefined) {
+        const pub = await publicationFor(b.publication_id);
+        const src = await deps.db.drill(pub.drill_id);
+        if (!src) throw new HttpError(404, "not_found", "Provet finns inte längre.");
+        const v = await view(src);
+        if (v.audio.done < v.audio.total) {
+          throw new HttpError(409, "audio_not_ready", `Delas när ljudet är klart (${v.audio.done} av ${v.audio.total})`);
+        }
+        const body = await copyDrill(src, user.id);
+        await deps.db.bump(pub.id, "imports").catch(() => {});
+        return json(body);
+      }
       if (action === "share_info" || action === "import") {
         const code = typeof b?.code === "string" ? b.code.trim().toLowerCase().replace(/^.*\/(?:p|prov)\//, "").replace(/[^a-z0-9]/g, "") : "";
         const sh = /^[a-z0-9]{8,16}$/.test(code) ? await deps.db.shareByCode(code) : null;
@@ -337,31 +444,113 @@ export function createDrillHandler(deps: DrillDeps) {
         if (v.audio.done < v.audio.total) {
           throw new HttpError(409, "audio_not_ready", `Delas när ljudet är klart (${v.audio.done} av ${v.audio.total})`);
         }
-        const rl = await enforceLimits(deps.rateLimiter, "drill_import", user.id, { perMinute: 10, perDay: 50, globalPerDay: 50_000 }, 1);
-        if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många prov på kort tid. Vänta en stund.", { retryAfterSec: rl.retryAfterSec });
-        if ((await deps.db.drills(user.id)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
-          throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
-        }
-        // the copy: the recipient's own drill; questions, answers and hashes copied (the same audio, 0 new characters)
-        const copy: DrillRow = {
-          id: crypto.randomUUID(), user_id: user.id, title: src.title, subject: src.subject, grade: src.grade,
-          covers: src.covers, long_words: src.long_words, shared_from: src.id,
-        };
-        const its = (await deps.db.items([src.id])).sort((a, b) => a.position - b.position);
-        await deps.db.saveDrill(copy, true);
-        await deps.db.replaceItems(copy.id, [], its.map((i) => ({
-          drill_id: copy.id, user_id: user.id, position: i.position, question: i.question, short: i.short, long: i.long,
-          question_hash: i.question_hash, long_hash: i.long_hash,
-        })));
+        const body = await copyDrill(src, user.id);
         await deps.db.countImport(sh.code).catch(() => {});
-        return json({ ...(await view((await deps.db.drill(copy.id)) ?? copy)), new_chars: 0 });
+        return json(body);
+      }
+      if (action === "schools") {
+        const q = clean(b?.q, 60);
+        if (q.length < 2) return json({ schools: [] });
+        const rows = await deps.db.schools(q, 20);
+        return json({ schools: rows.map((r) => ({ code: r.code, name: r.name, locality: r.locality ?? null })) });
+      }
+      if (action === "publish") {
+        const d = await owned(user.id, b?.id);
+        const v = await view(d);
+        const code = typeof b?.school_code === "string" ? b.school_code.trim() : "";
+        const school = /^[0-9]{6,10}$/.test(code) ? await deps.db.school(code) : null;
+        const subject = clean(b?.subject, 60) || d.subject;
+        const date = validDate(b?.exam_date, now());
+        const missing = [
+          ...(!school || school.status !== "AKTIV" ? ["school"] : []),
+          ...(!subject ? ["subject"] : []),
+          ...(!date ? ["date"] : []),
+          ...(v.audio.total === 0 || v.audio.done < v.audio.total ? ["audio"] : []),
+        ];
+        if (missing.length) {
+          const names: Record<string, string> = { school: "skola", subject: "ämne", date: "provdatum", audio: "färdigt ljud" };
+          return json({
+            error: { code: "publish_incomplete", message: `Saknas: ${missing.map((m) => names[m]).join(", ")}`, fallback: false },
+            missing,
+            ...(missing.includes("audio") ? { done: v.audio.done, total: v.audio.total } : {}),
+          }, 409);
+        }
+        // D150: the name only when the user chose to show it; nothing else about the account is ever published
+        const name = b?.show_name === true ? clean(b?.display_name, 40).replace(/[^\p{L}\p{N} .'-]/gu, "").trim() : "";
+        const prev = await deps.db.publicationOf(d.id);
+        const row: PublicationRow = {
+          id: prev?.id ?? crypto.randomUUID(), drill_id: d.id, user_id: user.id, school_code: school!.code, subject,
+          exam_date: date!, display_name: name || null,
+        };
+        await deps.db.savePublication(row);
+        return json({ publication: publicView(row, school!, d.title, v.items.length) });
+      }
+      if (action === "unpublish") {
+        const d = await owned(user.id, b?.id);
+        await deps.db.deletePublication(d.id);
+        return json({ unpublished: true });
+      }
+      if (action === "search") {
+        const school = typeof b?.school_code === "string" && /^[0-9]{6,10}$/.test(b.school_code) ? b.school_code : undefined;
+        const mine = typeof b?.my_school === "string" ? b.my_school : undefined;
+        const from = validDate(b?.from, now()) ?? undefined, to = validDate(b?.to, now()) ?? undefined;
+        const rows = (await deps.db.searchPublications({ school, subject: clean(b?.subject, 60) || undefined, from, to }))
+          .filter((r) => !r.hidden);
+        const drills = new Map<string, DrillRow>();
+        for (const r of rows.slice(0, 200)) {
+          const d = await deps.db.drill(r.drill_id);
+          if (d) drills.set(r.drill_id, d);
+        }
+        const its = drills.size ? await deps.db.items([...drills.keys()]) : [];
+        const schools = new Map<string, SchoolRow>();
+        for (const c of new Set(rows.map((r) => r.school_code))) {
+          const sc = await deps.db.school(c);
+          if (sc) schools.set(c, sc);
+        }
+        const today = new Date(now()).toISOString().slice(0, 10);
+        const old = (r: PublicationRow) => daysBetween(r.exam_date, today) > 30; // more than 30 days back sinks
+        const results = rows
+          .filter((r) => drills.has(r.drill_id) && schools.has(r.school_code))
+          .sort((x, y) =>
+            Number(y.school_code === mine) - Number(x.school_code === mine) || Number(old(x)) - Number(old(y)) ||
+            y.exam_date.localeCompare(x.exam_date)
+          )
+          .slice(0, 50)
+          .map((r) => publicView(r, schools.get(r.school_code)!, drills.get(r.drill_id)!.title, its.filter((i) => i.drill_id === r.drill_id).length));
+        return json({ results });
+      }
+      if (action === "report") {
+        const pub = await publicationFor(b?.publication_id);
+        const reason = ["fel", "krankande", "upphovsratt", "annat"].includes(String(b?.reason)) ? String(b?.reason) : "annat";
+        const rl = await enforceLimits(deps.rateLimiter, "drill_report", user.id, { perMinute: 10, perDay: 30, globalPerDay: 20_000 }, 1);
+        if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många rapporter på kort tid.", { retryAfterSec: rl.retryAfterSec });
+        return json(await deps.db.report(pub.id, user.id, reason));
+      }
+      if (action === "played") {
+        const d = await owned(user.id, b?.id);
+        const pub = d.shared_from ? await deps.db.publicationOf(d.shared_from) : null;
+        if (!pub) return json({ counted: false });
+        // at most three plays a day per copy are counted (a number only, never who)
+        const rl = await enforceLimits(deps.rateLimiter, `drill_play:${d.id}`, user.id, { perMinute: 1, perDay: 3, globalPerDay: 1_000_000 }, 1);
+        if (rl.allowed) await deps.db.bump(pub.id, "plays");
+        return json({ counted: rl.allowed });
+      }
+      if (action === "moderate") {
+        const owners = (deps.ownerEmails ?? []).map((e) => e.trim().toLowerCase()).filter(Boolean);
+        const byEmail = (user.amr ?? []).some((m) => m === "otp" || m === "magiclink");
+        if (user.isAnonymous || !user.email || !byEmail || !owners.includes(user.email.toLowerCase())) {
+          throw new HttpError(403, "forbidden", "Owner only");
+        }
+        const pub = await publicationFor(b?.publication_id, true);
+        await deps.db.setHidden(pub.id, b?.hidden === true);
+        return json({ hidden: b?.hidden === true });
       }
       if (action === "delete") {
         const d = await owned(user.id, b?.id);
         await deps.db.deleteDrill(d.id); // the shared audio stays (other accounts may use it)
         return json({ deleted: true });
       }
-      if (action !== "save") throw new HttpError(400, "invalid_request", "action must be save, get, status, list, delete, share, unshare, share_info or import");
+      if (action !== "save") throw new HttpError(400, "invalid_request", "unknown action");
 
       // ---------- save ----------
       const di = (b?.drill ?? {}) as Record<string, unknown>;

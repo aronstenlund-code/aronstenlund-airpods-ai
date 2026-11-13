@@ -1,13 +1,20 @@
 // K46 (D142-D145): drills and audio per account, with an in-memory database, storage and voice. Invented text only.
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
-import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type ShareRow, timings, voiceText } from "./handler.ts";
+import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
 function world(opts: { perDay?: number; noSynth?: boolean } = {}) {
   const drills = new Map<string, DrillRow>();
   const items = new Map<string, ItemRow & { id: string }>();
   const audio = new Map<string, AudioRow>();
   const shares = new Map<string, ShareRow>();
+  const schools = new Map<string, SchoolRow>([
+    ["11111111", { code: "11111111", name: "Påhittade skolan", locality: "Nyköping", status: "AKTIV" }],
+    ["22222222", { code: "22222222", name: "Andra skolan", locality: "Umeå", status: "AKTIV" }],
+    ["33333333", { code: "33333333", name: "Nedlagda skolan", locality: "Umeå", status: "UPPHORT" }],
+  ]);
+  const pubs = new Map<string, PublicationRow>();
+  const reports = new Map<string, Set<string>>();
   const uploads: string[] = [];
   const spoken: string[] = [];
   const db = {
@@ -62,11 +69,46 @@ function world(opts: { perDay?: number; noSynth?: boolean } = {}) {
       return Promise.resolve(n);
     },
     countImport: () => Promise.resolve(),
+    schools: (q: string, n: number) => Promise.resolve([...schools.values()].filter((x) => x.status === "AKTIV" && x.name.toLowerCase().includes(q.toLowerCase())).slice(0, n)),
+    school: (c: string) => Promise.resolve(schools.get(c) ?? null),
+    publicationOf: (id: string) => Promise.resolve([...pubs.values()].find((x) => x.drill_id === id) ?? null),
+    publication: (id: string) => Promise.resolve(pubs.get(id) ?? null),
+    savePublication: (row: PublicationRow) => {
+      pubs.set(row.id, { hidden: false, reports: 0, imports: 0, plays: 0, ...pubs.get(row.id), ...row });
+      return Promise.resolve();
+    },
+    deletePublication: (id: string) => {
+      for (const [k, v] of pubs) if (v.drill_id === id) pubs.delete(k);
+      return Promise.resolve();
+    },
+    searchPublications: (f: { school?: string; subject?: string }) =>
+      Promise.resolve([...pubs.values()].filter((x) => !x.hidden && (!f.school || x.school_code === f.school) && (!f.subject || x.subject.toLowerCase().includes(f.subject.toLowerCase())))),
+    report: (id: string, u: string) => {
+      const set = reports.get(id) ?? new Set<string>();
+      set.add(u);
+      reports.set(id, set);
+      const pb = pubs.get(id)!;
+      pb.reports = set.size;
+      pb.hidden = pb.hidden || set.size >= 3;
+      return Promise.resolve({ reports: pb.reports, hidden: pb.hidden! });
+    },
+    bump: (id: string, field: "imports" | "plays") => {
+      const pb = pubs.get(id)!;
+      pb[field] = (pb[field] ?? 0) + 1;
+      return Promise.resolve();
+    },
+    setHidden: (id: string, hidden: boolean) => {
+      pubs.get(id)!.hidden = hidden;
+      return Promise.resolve();
+    },
   };
-  const h = (user: string) =>
+  const limiter = new MemoryRateLimiter(); // one per world, like the real database
+  const h = (user: string, owner = false) =>
     createDrillHandler({
-      authenticate: () => Promise.resolve({ id: user, isAnonymous: true }),
-      rateLimiter: new MemoryRateLimiter(),
+      authenticate: () => Promise.resolve(owner ? { id: user, isAnonymous: false, email: "owner@example.com", amr: ["otp"] } : { id: user, isAnonymous: true }),
+      ownerEmails: ["owner@example.com"],
+      now: () => Date.parse("2026-11-13T12:00:00Z"),
+      rateLimiter: limiter,
       db,
       storage: {
         upload: (p) => {
@@ -91,7 +133,7 @@ function world(opts: { perDay?: number; noSynth?: boolean } = {}) {
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, drills, items, audio, uploads, spoken, shares };
+  return { h, drills, items, audio, uploads, spoken, shares, pubs };
 }
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
 const ITEMS = [
@@ -226,4 +268,80 @@ Deno.test("K47 R5c: import copies questions, answers and audio with 0 new charac
   assertEquals(Object.keys(b.drill).sort(), ["covers", "created_at", "grade", "id", "long_words", "shared_from", "subject", "title", "updated_at"]);
   assertEquals((await w.h("u3")(post({ action: "import", code: "nosuchcode1" }))).status, 404);
   assertEquals((await (await w.h("u2")(post({ action: "import", code: `earmind://prov/${code}` }))).json()).new_chars, 0);
+});
+
+Deno.test("K49 R12: publishing is refused without school, subject, date or finished audio (4/4), with what is missing", async () => {
+  const w = world({ noSynth: true });
+  const j = await (await w.h("u1")(post({ action: "save", drill: { title: "Ekologi" }, items: ITEMS }))).json();
+  const ok = { action: "publish", id: j.drill.id, school_code: "11111111", subject: "Biologi", exam_date: "2026-11-20" };
+  const missing = async (b: Record<string, unknown>) => {
+    const r = await w.h("u1")(post(b));
+    assertEquals(r.status, 409);
+    return (await r.json()).missing;
+  };
+  assertEquals(await missing(ok), ["audio"], "audio not ready");
+  for (const a of w.audio.values()) a.status = "done";
+  assertEquals(await missing({ ...ok, school_code: "" }), ["school"]);
+  assertEquals(await missing({ ...ok, school_code: "33333333" }), ["school"], "a closed school is not offered");
+  assertEquals(await missing({ ...ok, subject: "" }), ["subject"], "no subject on the drill either");
+  assertEquals(await missing({ ...ok, exam_date: "13/11" }), ["date"]);
+  assertEquals(await missing({ ...ok, exam_date: "2026-02-30" }), ["date"]);
+  const r = await w.h("u1")(post(ok));
+  assertEquals(r.status, 200);
+  assertEquals((await w.h("u2")(post(ok))).status, 404, "only the owner publishes");
+});
+
+Deno.test("K49 search: own school first, old exams sink, hidden never; no account, photos or name unless chosen", async () => {
+  const w = world();
+  const mk = async (user: string, title: string, school: string, date: string, extra: Record<string, unknown> = {}) => {
+    const j = await (await w.h(user)(post({ action: "save", drill: { title }, items: [{ question: `Varför ${title}?`, short: `Därför ${title}.`, long: `Därför ${title}. Mer.` }] }))).json();
+    const p = await (await w.h(user)(post({ action: "publish", id: j.drill.id, school_code: school, subject: "Biologi", exam_date: date, ...extra }))).json();
+    return { drill: j.drill.id, pub: p.publication.id };
+  };
+  await mk("u1", "gammalt", "22222222", "2026-09-01");
+  await mk("u2", "nytt", "22222222", "2026-11-20", { show_name: true, display_name: "Sara <script>" });
+  await mk("u3", "egen", "11111111", "2026-10-01");
+  const res = (await (await w.h("u9")(post({ action: "search", my_school: "11111111" }))).json()).results;
+  assertEquals(res.map((x: { title: string }) => x.title), ["egen", "nytt", "gammalt"]);
+  const json = JSON.stringify(res);
+  for (const bad of ["u1", "u2", "u3", "user_id", "drill_id"]) assert(!json.includes(`"${bad}"`) && !json.includes(bad + '"'), bad);
+  assertEquals(res[1].display_name, "Sara script");
+  assertEquals("display_name" in res[0], false, "no name unless chosen (D150)");
+  assertEquals(res[0].school, { code: "11111111", name: "Påhittade skolan", locality: "Nyköping" });
+  const one = (await (await w.h("u9")(post({ action: "search", school_code: "22222222" }))).json()).results;
+  assertEquals(one.length, 2);
+  assertEquals((await (await w.h("u9")(post({ action: "schools", q: "påhitt" }))).json()).schools, [{ code: "11111111", name: "Påhittade skolan", locality: "Nyköping" }]);
+  assertEquals((await (await w.h("u9")(post({ action: "schools", q: "nedlagd" }))).json()).schools, []);
+});
+
+Deno.test("K49 import a published drill: 0 characters, counted; plays counted at most 3 a day; 3 reports hide it; Aron shows it again", async () => {
+  const w = world();
+  const j = await (await w.h("u1")(post({ action: "save", drill: { title: "Ekologi" }, items: ITEMS }))).json();
+  const pub = (await (await w.h("u1")(post({ action: "publish", id: j.drill.id, school_code: "11111111", subject: "Biologi", exam_date: "2026-11-20" }))).json()).publication;
+  const n = w.spoken.length;
+  const copy = await (await w.h("u2")(post({ action: "import", publication_id: pub.id }))).json();
+  assertEquals([copy.new_chars, copy.audio.done, w.spoken.length], [0, 4, n]);
+  assertEquals(w.pubs.get(pub.id)!.imports, 1);
+  for (let i = 0; i < 5; i++) await w.h("u2")(post({ action: "played", id: copy.drill.id }));
+  assertEquals(w.pubs.get(pub.id)!.plays, 1, "the minute limit: one per minute, at most three a day");
+  assertEquals((await (await w.h("u1")(post({ action: "played", id: j.drill.id }))).json()).counted, false, "the original is not a copy");
+  for (const u of ["r1", "r1", "r2"]) await w.h(u)(post({ action: "report", publication_id: pub.id, reason: "krankande" }));
+  assertEquals(w.pubs.get(pub.id)!.hidden, false, "the same account twice counts once");
+  const third = await (await w.h("r3")(post({ action: "report", publication_id: pub.id, reason: "fel" }))).json();
+  assertEquals(third, { reports: 3, hidden: true });
+  assertEquals((await (await w.h("u9")(post({ action: "search", school_code: "11111111" }))).json()).results, []);
+  assertEquals((await w.h("u9")(post({ action: "import", publication_id: pub.id }))).status, 404);
+  assertEquals((await w.h("u1")(post({ action: "moderate", publication_id: pub.id, hidden: false }))).status, 403);
+  assertEquals((await w.h("aron", true)(post({ action: "moderate", publication_id: pub.id, hidden: false }))).status, 200);
+  assertEquals((await (await w.h("u9")(post({ action: "search", school_code: "11111111" }))).json()).results.length, 1);
+  assertEquals((await w.h("u1")(post({ action: "unpublish", id: j.drill.id }))).status, 200);
+  assertEquals(w.pubs.size, 0);
+});
+
+Deno.test("K49 dates", () => {
+  const now = Date.parse("2026-11-13T12:00:00Z");
+  assertEquals(validDate("2026-11-20", now), "2026-11-20");
+  assertEquals(validDate("2026-02-30", now), null);
+  assertEquals(validDate("2020-01-01", now), null);
+  assertEquals(validDate("2028-01-01", now), null);
 });

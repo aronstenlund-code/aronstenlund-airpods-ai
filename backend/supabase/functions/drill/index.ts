@@ -5,7 +5,7 @@ import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
-import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type ShareRow } from "./handler.ts";
+import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type PublicationRow, type SchoolRow, type ShareRow } from "./handler.ts";
 
 const env = Deno.env;
 const db = restDbFromEnv();
@@ -62,6 +62,7 @@ Deno.serve(withCors(
       globalPerDay: envInt("DRILL_TTS_GLOBAL_CHARS_PER_DAY", 600_000),
     },
     background: rt?.waitUntil ? (p) => rt.waitUntil!(p) : undefined,
+    ownerEmails: (env.get("OWNER_EMAIL") ?? "").split(","),
     db: {
       drill: async (id) => ((await db.select("drills", `select=*&id=eq.${encodeURIComponent(id)}&limit=1`)) as DrillRow[])[0] ?? null,
       drills: async (u) => (await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&order=updated_at.desc&limit=500`)) as DrillRow[],
@@ -100,6 +101,37 @@ Deno.serve(withCors(
       shareByCode: async (code) => ((await db.select("drill_shares", `select=*&code=eq.${encodeURIComponent(code)}&limit=1`)) as ShareRow[])[0] ?? null,
       createShare: (row) => db.insert("drill_shares", row),
       revokeShares: (id) => db.updateWhere("drill_shares", `drill_id=eq.${encodeURIComponent(id)}&revoked_at=is.null`, { revoked_at: new Date().toISOString() }),
+      // ---------- K49 ----------
+      schools: async (q, limit) => {
+        // name or locality, active units only; the name match first (PostgREST "or" with ilike)
+        const like = encodeURIComponent(`*${q.replace(/[*,()]/g, " ").trim()}*`);
+        return (await db.select("schools", `select=code,name,locality,status&status=eq.AKTIV&or=(name.ilike.${like},locality.ilike.${like})&order=name.asc&limit=${limit}`)) as SchoolRow[];
+      },
+      school: async (code) => ((await db.select("schools", `select=code,name,locality,status&code=eq.${encodeURIComponent(code)}&limit=1`)) as SchoolRow[])[0] ?? null,
+      publicationOf: async (id) => ((await db.select("drill_publications", `select=*&drill_id=eq.${encodeURIComponent(id)}&limit=1`)) as PublicationRow[])[0] ?? null,
+      publication: async (id) => ((await db.select("drill_publications", `select=*&id=eq.${encodeURIComponent(id)}&limit=1`)) as PublicationRow[])[0] ?? null,
+      savePublication: (row) => db.upsert("drill_publications", { ...row, updated_at: new Date().toISOString() }, "drill_id"),
+      deletePublication: async (id) => {
+        await db.deleteWhere("drill_publications", `drill_id=eq.${encodeURIComponent(id)}`);
+      },
+      searchPublications: async (f) => {
+        const q = ["select=*", "hidden=eq.false", "order=exam_date.desc", "limit=200"];
+        if (f.school) q.push(`school_code=eq.${encodeURIComponent(f.school)}`);
+        if (f.subject) q.push(`subject=ilike.${encodeURIComponent(`*${f.subject.replace(/[*,()]/g, " ").trim()}*`)}`);
+        if (f.from) q.push(`exam_date=gte.${f.from}`);
+        if (f.to) q.push(`exam_date=lte.${f.to}`);
+        return (await db.select("drill_publications", q.join("&"))) as PublicationRow[];
+      },
+      report: async (id, u, reason) => {
+        const r = (await db.rpc("report_publication", { p_id: id, p_user: u, p_reason: reason })) as { reports: number; hidden: boolean }[];
+        return r[0] ?? { reports: 0, hidden: false };
+      },
+      bump: async (id, field) => {
+        await db.rpc("bump_publication", { p_id: id, p_field: field });
+      },
+      setHidden: async (id, hidden) => {
+        await db.updateWhere("drill_publications", `id=eq.${encodeURIComponent(id)}`, { hidden });
+      },
       countImport: async (code) => {
         const r = (await db.select("drill_shares", `select=imports&code=eq.${encodeURIComponent(code)}&limit=1`)) as { imports: number }[];
         await db.updateWhere("drill_shares", `code=eq.${encodeURIComponent(code)}`, { imports: (r[0]?.imports ?? 0) + 1 });
