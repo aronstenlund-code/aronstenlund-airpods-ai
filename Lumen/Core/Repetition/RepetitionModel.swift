@@ -151,6 +151,9 @@ final class RepetitionModel {
     @ObservationIgnored let cloud: (any DrillCloudSyncing)?
     /// Ends a listening mode before the repetition takes the audio and the AirPods buttons.
     @ObservationIgnored var stopListening: (@MainActor () async -> Void)?
+    /// A92 (D166, K57): "Fråga om Earmind". Nil: the row and the ? button are not shown.
+    @ObservationIgnored var help: (any HelpAnswering)?
+
     /// A83 (K49): Publicera prov and Prov från din skola. Nil in the mock mode.
     @ObservationIgnored var publishing: (any DrillPublishingService)?
 

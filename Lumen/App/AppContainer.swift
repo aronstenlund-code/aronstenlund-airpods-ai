@@ -156,6 +156,8 @@ final class AppContainer {
                                               remote: remote, cloud: drillCloud)
         repetitionModel.profile = listening.studyProfile // A88
         repetitionModel.publishing = drillCloud as? DrillCloudClient // A83 (K49)
+        repetitionModel.help = mock ? MockHelp() as any HelpAnswering
+            : HelpClient(config: .lumen, auth: auth, http: http) as any HelpAnswering // A92 (K57)
         repetitionModel.stopListening = { [weak listening] in
             if listening?.isActiveSession == true { await listening?.endSession() }
         }
