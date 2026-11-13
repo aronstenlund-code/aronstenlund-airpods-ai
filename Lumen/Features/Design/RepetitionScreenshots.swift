@@ -7,7 +7,7 @@ import SwiftUI
 enum RepetitionDemo {
     static let scenes: Set<String> = ["repHome", "repHomeEmpty", "repMaterial", "repList", "repEdit", "repControls",
                                       "repControlsDone", "repControlsMissing", "repShareReady", "repMakeError", "repPlayFirst",
-                                      "repPlayThink", "repPlayAnswer", "repPaused", "repWaiting", "repResume",
+                                      "repPlayThink", "repPlayAnswer", "repPaused", "repWaiting",
                                       "repShare", "moreModes"]
 
     static let items: [DrillItem] = [
@@ -95,8 +95,6 @@ enum RepetitionDemo {
                 ControlCheckView(hub: RemoteCommandHub(), sound: nil, waitSeconds: 3600, onStart: {}, onLater: {})
             case "repControlsDone", "repControlsMissing": ControlCheckView(staged: stagedCheck(allWork: name == "repControlsDone"))
             case "repPlayThink", "repPlayFirst", "repPlayAnswer", "repPaused", "repWaiting": RepetitionPlayerView(model: model)
-            case "repResume":
-                ResumeSheet(model: model, offer: RepetitionModel.ResumeOffer(drill: drill, index: 3)) // Kelly B1
             case "moreModes": ModeSwitchSheet(model: listening, current: .standard, onPick: { _ in }, onSleep: {})
             default: Text(verbatim: "Okänd skärm: \(name)")
             }
