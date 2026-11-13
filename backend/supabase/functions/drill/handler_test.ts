@@ -3,7 +3,8 @@ import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: number } = {}) {
+function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: number; busy?: number } = {}) {
+  let busy = opts.busy ?? 0;
   const quota = new Map<string, number>();
   const models: string[] = [];
   const drills = new Map<string, DrillRow>();
@@ -99,6 +100,14 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       pb[field] = (pb[field] ?? 0) + 1;
       return Promise.resolve();
     },
+    pending: () => Promise.resolve([...audio.values()].some((a) => a.status === "pending" || a.status === "working")),
+    requeue: (hs: string[]) => {
+      for (const h of hs) {
+        const a = audio.get(h);
+        if (a?.status === "failed") Object.assign(a, { status: "pending", attempts: 0 });
+      }
+      return Promise.resolve();
+    },
     useQuota: (u: string, n: number) => {
       const used = quota.get(u) ?? 0, lim = opts.freeQuestions ?? 30;
       if (n > 0 && used + n > lim) return Promise.resolve({ ok: false, used, lim });
@@ -116,6 +125,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       authenticate: () => Promise.resolve(owner ? { id: user, isAnonymous: false, email: "owner@example.com", amr: ["otp"] } : { id: user, isAnonymous: true }),
       ownerEmails: ["owner@example.com"],
       now: () => Date.parse("2026-11-13T12:00:00Z"),
+      sleep: () => Promise.resolve(),
       rateLimiter: limiter,
       db,
       storage: {
@@ -127,6 +137,10 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       },
       synth: opts.noSynth ? null : {
         speak: (text, model) => {
+          if (busy > 0) {
+            busy--;
+            return Promise.reject(new Error("elevenlabs 429: concurrent_limit_exceeded"));
+          }
           spoken.push(text);
           models.push(model);
           // 0.05 s per character
@@ -143,7 +157,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, models };
+  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, models, setBusy: (n: number) => (busy = n) };
 }
 const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
@@ -421,4 +435,17 @@ Deno.test("Cue: 'Tryck en gång för svaret.' in the drill's own voice, made onc
   const c = await (await w.h("u3")(post({ action: "save", drill: { voice_model: "C" }, items: ITEMS }))).json();
   await w.h("u3")(post({ action: "get", id: c.drill.id }));
   assertEquals(w.spoken.filter((t) => t === "Tryck en gång för svaret.").length, 2);
+});
+
+Deno.test("K55 ElevenLabs busy (429): back in the queue without counting a try; a failed file is made again on the next save", async () => {
+  const w = world({ busy: 5 });
+  const j = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(j.audio.done, 4, "five 429s and still everything made (none counted as a try)");
+  assert([...w.audio.values()].every((a) => (a.attempts ?? 0) <= 1));
+  // an old failure (not a 429) is queued again when the text is saved again
+  const one = [...w.audio.values()][0];
+  Object.assign(one, { status: "failed", attempts: 3 });
+  const again = await (await w.h("u2")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(again.audio.failed, 0);
+  assertEquals(one.status, "done");
 });

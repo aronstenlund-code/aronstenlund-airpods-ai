@@ -122,6 +122,10 @@ export interface DrillDb {
   report(publicationId: string, userId: string, reason: string): Promise<{ reports: number; hidden: boolean }>;
   bump(publicationId: string, field: "imports" | "plays"): Promise<void>;
   setHidden(publicationId: string, hidden: boolean): Promise<void>;
+  /** K55: is anything still waiting or being made? (the generator waits instead of stopping while others work) */
+  pending(): Promise<boolean>;
+  /** K55: files that failed are queued again when someone saves the same text. */
+  requeue(hashes: string[]): Promise<void>;
   /** K50: adds n generated questions when within the limit (n = 0 only reads); atomic in the database. */
   useQuota(userId: string, n: number): Promise<{ ok: boolean; used: number; lim: number }>;
 }
@@ -183,6 +187,8 @@ export interface DrillDeps {
   /** Runs the generator after the response (EdgeRuntime.waitUntil); tests await it. */
   background?: (p: Promise<unknown>) => void;
   now?: () => number;
+  /** K55: waiting between tries when ElevenLabs is busy (tests pass a no-op). */
+  sleep?: (ms: number) => Promise<void>;
   /** K49: Aron (OWNER_EMAIL, signed in by e-mail) shows a hidden publication again. */
   ownerEmails?: string[];
 }
@@ -290,10 +296,16 @@ export function createDrillHandler(deps: DrillDeps) {
     if (!deps.synth) return 0;
     const t0 = now();
     let made = 0;
+    const sleep = deps.sleep ?? ((ms: number) => new Promise<void>((r) => setTimeout(r, ms)));
     try {
       while (now() - t0 < budgetMs) {
+        // K55: the database keeps at most drill_settings.tts_concurrency files in the making, for all instances
         const jobs = await deps.db.claim(3);
-        if (!jobs.length) break;
+        if (!jobs.length) {
+          if (!(await deps.db.pending())) break;
+          await sleep(1500); // others are making files: wait for a free slot instead of stopping
+          continue;
+        }
         await Promise.all(jobs.map(async (j) => {
           try {
             const r = await deps.synth!.speak(j.text, j.model, j.voice_id);
@@ -313,6 +325,12 @@ export function createDrillHandler(deps: DrillDeps) {
             made++;
           } catch (e) {
             const msg = e instanceof Error ? e.message.slice(0, 300) : String(e).slice(0, 300);
+            if (/\b429\b|concurrent_limit|rate_limit/i.test(msg)) {
+              // K55: ElevenLabs is busy (plan: 3 at a time): back in the queue, not counted as a try
+              await deps.db.finish(j.hash, { status: "pending", attempts: Math.max(0, (j.attempts ?? 1) - 1), error: null }).catch(() => {});
+              await sleep(1500);
+              return;
+            }
             console.error("drill_audio_failed", j.hash.slice(0, 12), msg);
             await deps.db.finish(j.hash, { status: (j.attempts ?? 1) >= 3 ? "failed" : "pending", error: msg }).catch(() => {});
             if (/quota|credit|401|402/i.test(msg)) throw e; // out of credits: stop, the queue waits
@@ -676,7 +694,11 @@ export function createDrillHandler(deps: DrillDeps) {
         rows.push({ ...(id ? { id } : {}), drill_id: drill.id, user_id: user.id, position: pos, question, short, long, question_hash: qh, long_hash: lh });
       }
       // D144: only files no account has yet are generated and counted
-      const have = new Set((await deps.db.audio([...files.keys()])).map((a) => a.hash));
+      const existingAudio = await deps.db.audio([...files.keys()]);
+      const have = new Set(existingAudio.map((a) => a.hash));
+      // K55: a file that failed earlier is made again now (the text is wanted again); free, it was paid for nothing
+      const failed = existingAudio.filter((a) => a.status === "failed").map((a) => a.hash);
+      if (failed.length) await deps.db.requeue(failed);
       const fresh = [...files.values()].filter((f) => !have.has(f.hash));
       const newChars = fresh.reduce((n, f) => n + f.text.length, 0);
       if (newChars > 0) {
@@ -719,7 +741,7 @@ export function createDrillHandler(deps: DrillDeps) {
       }
       await deps.db.saveDrill(drill, !existing);
       await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
-      if (fresh.length) deps.background ? deps.background(pump()) : await pump();
+      if (fresh.length || failed.length) deps.background ? deps.background(pump()) : await pump();
       const saved = await deps.db.drill(drill.id);
       return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated });
     } catch (e) {

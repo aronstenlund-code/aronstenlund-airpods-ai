@@ -129,6 +129,11 @@ Deno.serve(withCors(
       bump: async (id, field) => {
         await db.rpc("bump_publication", { p_id: id, p_field: field });
       },
+      pending: async () => (await db.select("drill_audio_files", "select=hash&status=in.(pending,working)&attempts=lt.3&limit=1")).length > 0,
+      requeue: async (hashes) => {
+        if (!hashes.length) return;
+        await db.updateWhere("drill_audio_files", `status=eq.failed&hash=in.(${list(hashes)})`, { status: "pending", attempts: 0, error: null });
+      },
       useQuota: async (u, n) => {
         const r = (await db.rpc("use_drill_quota", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[];
         return r[0] ?? { ok: false, used: 0, lim: 0 };
