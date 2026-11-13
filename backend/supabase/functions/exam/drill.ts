@@ -65,8 +65,9 @@ export const SYSTEM_PROMPT_DRILL_PLAN =
 - summary: "subject" the school subject in Swedish; "grade" the school year or course as Swedes say it ("åk 8", "Matematik 1b", "Svenska 1"), from <context> when given, else your best reading of the material; "covers" one or two Swedish sentences on what the exam covers (the main areas, in order).
 - notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact Swedish plain text in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.
 - questions: exactly the number asked for in <count> (the longest are removed afterwards, so make most of them short), in Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
-  - as short as possible: five words or fewer (count them: "Varför behövs klorofyll?" is three), never more than eight; cut filler such as "i naturen", "egentligen", "man", "det att" and leave out what the subject makes obvious ("Varför bevaras massan?", not "Varför bevaras massan vid en kemisk reaktion i ett slutet system?");
-  - tests understanding, not only recall: most questions ask why, how, what happens if, compare, or explain a connection ("Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Skillnad mellan väder och klimat?"); a plain "Vad är X?" only for a key term the material defines and that matters for the rest;
+  - short: five words or fewer (count them: "Varför behövs klorofyll?" is three) as long as the question is clear when it is only HEARD, with no text in front of the student; up to eight words when that is what it takes. Never a fragment that needs the material to make sense ("Vad säger m?", "Mol metan i 16 g?" are wrong; "Vad visar m i en rät linje?", "Hur många mol är 16 gram metan?" are right). Cut filler such as "i naturen", "egentligen", "det att";
+  - written as it is said: no symbols, formulas, units or abbreviations as signs ("syre", not "O2"; "kubikdecimeter", not "dm³"; "procent", not "%");
+  - tests understanding, not only recall: at least three of every four questions ask why, how, what happens if, or compare ("Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Vad händer om pH sjunker?", "Skillnad mellan väder och klimat?"); "Vad är X?", "Vad betyder X?" or "Vilka ...?" at most one in five, only for a key term the material defines;
   - is answered by the material (never a question the material does not cover, never a fact from outside it);
   - a real exam question a teacher would ask: no yes/no, no multiple choice, no "enligt texten", no page or task numbers, no question about the material itself;
   - different from every other question (no two that ask the same thing).
@@ -132,6 +133,11 @@ export function cleanQuestion(q: unknown): string {
   return s[0].toUpperCase() + s.slice(1);
 }
 
+/** A question that asks only for a fact or a definition (R3 wants at least 70 % understanding questions). */
+export function isRecall(q: string): boolean {
+  return /^(?:vad (?:är|var|heter|betyder|kallas|står)|vilk(?:a|en|et) |när |vem |vilket år|enhet för|nämn )/i.test(q.trim());
+}
+
 /** Step 1 reply: the summary, the notes and at most `count` questions within the word limit (R3), no duplicates. */
 export function parsePlan(text: string, count: number): { summary: DrillSummary; notes: string; questions: string[] } {
   const j = firstJson(text) ?? {};
@@ -145,11 +151,13 @@ export function parsePlan(text: string, count: number): { summary: DrillSummary;
     seen.add(key);
     questions.push(c);
   }
-  // R3 (live 2026-11-13: 8 of 19 at most five words): the model writes a few extra; the longest go, the order stays
+  // R3 (live 2026-11-13: 8 of 19 at most five words, then 59 of 100 understanding questions): the model writes a few
+  // extra; plain recall questions go first, then the longest; the order stays
+  const score = (q: string) => (isRecall(q) ? 100 : 0) + words(q);
   while (questions.length > count) {
     let worst = 0;
     questions.forEach((q, i) => {
-      if (words(q) >= words(questions[worst])) worst = i;
+      if (score(q) >= score(questions[worst])) worst = i;
     });
     questions.splice(worst, 1);
   }
