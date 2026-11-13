@@ -175,3 +175,6 @@ Namnet "Starta prov". ElevenLabs med hög kvalitet, inte Turbo. Betänketid cirk
 - **Pauser mellan meningar (extra val):** ett val "Längre pauser" (till exempel 1, 2 eller 3 s) lägger tystnad vid meningsslut med hjälp av ordtidsstämplarna. Samma fil, 0 tecken. **Möjligt.**
 - **Gräns:** högst **15 genererade frågor per användare och månad** (D155, Aron 21:18, "för nu") innan man behöver ett abonnemang. Publicerade och delade prov från andra kostar inget och räknas inte. Räknas på servern. Abonnemang och betalning byggs senare (App Store).
 - **Faktisk kostnad i blindtestet:** ElevenLabs debiterade 198 krediter för 496 tecken med v2 och v3, och 99 med Flash (`character-cost`). Det är cirka 40 % av listpriset. Om det håller blir ett prov med 20 frågor cirka 0,4 USD med A i stället för 1,0. **Ej verifierat** varför (plan, rabatt eller räknesätt). Kevin kontrollerar på nästa riktiga prov.
+
+## 13. Priser (D156, senare)
+Gratis 15 frågor per månad. Premium 89 kr per vecka med upp till 120 frågor per månad. Extra frågor 10 kr styck i krediter. Andras prov är alltid gratis. Byggs med betalningen (Apples köp i appen) inför App Store. Arkitekturen ska redan nu räkna genererade frågor per konto och månad (K50), så att planerna bara blir nya gränser i tabellen.
