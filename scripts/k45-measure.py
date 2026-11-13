@@ -13,6 +13,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 BANK = ROOT / "scripts" / "qa" / "repetition_bank"
 URL = "https://xjczbzfkmbjdebwlccki.supabase.co"
 KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8"  # public by design
+INTRO = re.compile(r"^(?:[\w-]+\s+){0,6}?(?:är en (?:viktig|central|grundläggande|komplex|intressant|avgörande)|handlar om|det finns (?:flera|många|olika|tre|två)|det beror på (?:flera|många)|det är (?:viktigt|intressant) att|det här är|man kan säga att|svaret är att|frågan handlar)(?!\w)", re.I)
 UNDERSTANDING = re.compile(r"^(varför|hur|vad händer|vad hände|vad skiljer|jämför|skillnad|förklara|vilken roll|vad betyder .* för|vad gör att|på vilket sätt)", re.I)
 
 
@@ -82,6 +83,9 @@ def main():
             "long_words_p50": sorted(len(l.split()) for l in longs)[len(longs) // 2] if longs else 0,
             "long_words_max": max((len(l.split()) for l in longs), default=0),
             "short_words_max": max((len(s.split()) for s in shorts), default=0),
+            "short_words_p50": sorted(len(s.split()) for s in shorts)[len(shorts) // 2] if shorts else 0,
+            "short_le25": sum(1 for s in shorts if s and len(s.split()) <= 25),
+            "short_intro": sum(1 for s in shorts if s and INTRO.search(s)),
             "chars_short": sum(len(s) for s in shorts), "chars_long": sum(len(l) for l in longs), "chars_questions": sum(len(q) for q in qs),
             "cost_plan_usd": plan["usage"]["plan"]["est_cost_usd"], "cost_answers_usd": ans["usage"]["est_cost_usd"],
             "items": [{"question": q, "short": s, "long": l} for q, s, l in zip(qs, shorts, longs)],
@@ -91,6 +95,7 @@ def main():
         out.write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"{id_}: {len(qs)} frågor på {t_plan:.1f} s, svar {t_ans:.1f} s (totalt {total:.1f} s), "
               f"<=5 ord {row['q_le5']}/{len(qs)}, förståelse {row['q_understanding']}/{len(qs)}, D145 {row['d145']}/{row['answered']}, "
+              f"kort p50 {row['short_words_p50']} ord, <=25 {row['short_le25']}/{row['answered']}, inledningar {row['short_intro']}, "
               f"årskurs {plan['summary'].get('grade')!r} (rätt {e['grade']!r}), tomma svar {sum(1 for s_ in shorts if not s_)}, "
               f"långt p50 {row['long_words_p50']} ord (max {row['long_words_max']}), Claude {row['cost_claude_usd']:.3f} USD")
     print("->", out)

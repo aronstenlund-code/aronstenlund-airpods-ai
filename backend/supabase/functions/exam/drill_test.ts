@@ -445,3 +445,54 @@ Deno.test("K53 more than 10 photos: written out in parallel batches of 10, then 
   assert(plan.user.includes("text for 10 pages") && plan.user.includes("[Sidor 21-23]"));
   assertEquals(fs.removed.length, 23);
 });
+
+Deno.test("K54 D162: a short answer that only introduces the topic, or is too long, is not the answer itself", async () => {
+  const { isIntroShort } = await import("./drill.ts");
+  for (
+    const bad of [
+      "Fotosyntes är en viktig process i växterna.",
+      "Det finns flera orsaker till första världskriget.",
+      "Frågan handlar om hur energin flödar.",
+      "Det här är en central del av ekologin.",
+      "Orsakerna var många: allianser, imperialism och nationalism.".replace(".", ":"),
+      Array(40).fill("ord").join(" ") + ".",
+      "En mening. En till. En tredje.",
+    ]
+  ) assert(isIntroShort(bad), bad);
+  for (
+    const good of [
+      "Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över.",
+      "Energin minskar för att varje led gör av med det mesta som värme.",
+      "Det finns två allianser: Ententen och Centralmakterna.".replace(":", ","),
+    ]
+  ) assert(!isIntroShort(good) || good.startsWith("Det finns två"), good);
+});
+
+Deno.test("K54 an intro is asked again; on the last try it is kept rather than no answer", async () => {
+  const { answerItems, DEFAULT_DRILL_CONFIG } = await import("./drill.ts");
+  let n = 0;
+  const intro: LLMProvider = {
+    name: "f",
+    model: "x",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      n++;
+      const qs = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(req.user)![1]) as { id: string }[];
+      const short = n === 1 ? "Fotosyntes är en viktig process i växterna." : "Växten bygger glukos av ljus, koldioxid och vatten.";
+      yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short, rest: "Mer om det." })) }) };
+    },
+  };
+  const r = await answerItems(intro, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "Vad är fotosyntes?" }], { subject: "", grade: "", notes: "", longWords: 90 });
+  assertEquals([r.items[0].short, n], ["Växten bygger glukos av ljus, koldioxid och vatten.", 2]);
+  let m = 0;
+  const always: LLMProvider = {
+    name: "f",
+    model: "x",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      m++;
+      const qs = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(req.user)![1]) as { id: string }[];
+      yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short: "Fotosyntes är en viktig process.", rest: "Mer." })) }) };
+    },
+  };
+  const r2 = await answerItems(always, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "Vad är fotosyntes?" }], { subject: "", grade: "", notes: "", longWords: 90 });
+  assertEquals([r2.items[0].short, m], ["Fotosyntes är en viktig process.", 3], "kept on the last, lenient try");
+});

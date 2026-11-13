@@ -78,8 +78,8 @@ No markdown, no other text.`;
 
 export const SYSTEM_PROMPT_DRILL_ANSWERS =
   `You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words> and <questions> (JSON: id and question). Return ONLY a JSON object {"answers": [{"id": "q1", "short": "...", "rest": "..."}]} with one entry per question, in the same order.
-- "short": the short answer: one or two sentences (at most about 30 words) that answer the question correctly and completely on their own.
-- "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: the right concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Do not repeat the short answer. Short + rest together are about <long_words> words or fewer (count them); go over only when the answer would otherwise miss a concept or connection an A-level answer needs, and then by at most a fifth. Never pad an answer to reach the number.
+- "short": the short answer (D162): ONE sentence, two only when one cannot hold it, at most 25 words, that on its own is a full, correct A-level answer: it states the answer itself (the cause, the mechanism, the fact, the difference), never an introduction that only names the topic. Wrong: "Fotosyntes är en viktig process i växterna." Right: "Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över."
+- "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words or fewer (count them); go over only when the answer would otherwise miss a concept or connection an A-level answer needs, and then by at most a fifth. Never pad an answer to reach the number.
 - The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).
 - Base the answers on <notes>. Add school knowledge only where the notes are too thin, only facts you are certain of (textbook-level, widely known), and never contradict the notes; leave out a detail rather than guess it (O55: "stäppgräs har korta rötter" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for.
 - The text is read aloud: plain spoken Swedish sentences, no markdown, lists, headings, brackets, abbreviations or symbols. Write chemical formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"). Never mention the notes, the material, the exam or the grade.
@@ -275,7 +275,18 @@ export function composeLong(short: string, rest: string): string {
   return `${/[.!?]$/.test(sh) ? sh : `${sh}.`} ${r}`;
 }
 
-export function parseAnswers(text: string): Map<string, { short: string; long: string }> {
+/**
+ * K54 (D162): a short answer that only introduces the topic ("Fotosyntes är en viktig process i växterna.",
+ * "Det finns flera orsaker.") or is longer than about 35 words is not the answer itself.
+ */
+const INTRO = /^(?:[\p{L}\p{N}-]+\s+){0,6}?(?:är en (?:viktig|central|grundläggande|komplex|intressant|avgörande)(?![\p{L}\p{N}])|handlar om(?![\p{L}\p{N}])|det finns (?:flera|många|olika|tre|två)(?![\p{L}\p{N}])|det beror på (?:flera|många)(?![\p{L}\p{N}])|det är (?:viktigt|intressant) att(?![\p{L}\p{N}])|det här är(?![\p{L}\p{N}])|man kan säga att(?![\p{L}\p{N}])|svaret är att(?![\p{L}\p{N}])|frågan handlar(?![\p{L}\p{N}]))/iu;
+export function isIntroShort(short: string): boolean {
+  const s = short.trim();
+  const sentences = s.split(/(?<=[.!?])\s+/).filter(Boolean).length;
+  return INTRO.test(s) || words(s) > 35 || sentences > 2 || /[:]$/.test(s);
+}
+
+export function parseAnswers(text: string, strict = false): Map<string, { short: string; long: string }> {
   const out = new Map<string, { short: string; long: string }>();
   const j = firstJson(text);
   for (const a of Array.isArray(j?.answers) ? j!.answers as Record<string, unknown>[] : []) {
@@ -284,6 +295,7 @@ export function parseAnswers(text: string): Map<string, { short: string; long: s
     const rest = spokenText(a?.rest, 3000);
     // K52 (O55: one empty answer): an empty, one-word or cut-off answer is not accepted; the question is asked again
     if (!id || words(short) < 2 || (rest && !/[.!?]["”')]?$/.test(rest))) continue;
+    if (strict && isIntroShort(short)) continue; // K54: asked again; accepted on the last try rather than no answer
     if (!/[.!?]$/.test(short)) short += ".";
     out.set(id, { short, long: composeLong(short, rest) });
   }
@@ -335,7 +347,7 @@ export async function answerItems(
 ): Promise<{ items: DrillItem[]; usage: StepUsage }> {
   const steps: StepUsage[] = [];
   const got = new Map<string, { short: string; long: string }>();
-  const ask = async (batch: { id: string; question: string }[]) => {
+  const ask = async (batch: { id: string; question: string }[], strict = true) => {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_ANSWERS,
       user: `<context>${sanitizeTagged(contextLine(ctx.subject, ctx.grade))}</context>\n<notes>\n${
@@ -349,18 +361,18 @@ export async function answerItems(
       signal,
     }, cfg.answerPriceIn, cfg.answerPriceOut);
     steps.push(r.usage);
-    for (const [id, a] of parseAnswers(r.text)) if (batch.some((b) => b.id === id)) got.set(id, a);
+    for (const [id, a] of parseAnswers(r.text, strict)) if (batch.some((b) => b.id === id)) got.set(id, a);
   };
   const batches: { id: string; question: string }[][] = [];
   for (let i = 0; i < items.length; i += DRILL_LIMITS.batch) batches.push(items.slice(i, i + DRILL_LIMITS.batch));
-  const first = await Promise.allSettled(batches.map(ask));
+  const first = await Promise.allSettled(batches.map((x) => ask(x)));
   // K52: missing, empty or cut-off answers are asked again, first in batches, then one by one
   for (const size of [DRILL_LIMITS.batch, 1]) {
     const missing = items.filter((it) => !got.has(it.id));
     if (!missing.length) break;
     const again: { id: string; question: string }[][] = [];
     for (let i = 0; i < missing.length; i += size) again.push(missing.slice(i, i + size));
-    await Promise.allSettled(again.map(ask));
+    await Promise.allSettled(again.map((x) => ask(x, size !== 1)));
   }
   if (!got.size) {
     const err = first.find((r) => r.status === "rejected") as PromiseRejectedResult | undefined;
