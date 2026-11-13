@@ -687,8 +687,13 @@ final class TranscriptionCoordinator {
         case .failed, .unavailable:
             // Toby 1 T17 finding 2: the phone's recogniser did not start either ("no analyzer audio format"), and the
             // doubled retry delay left Lumen deaf for 76 s. Nothing listens now, so Scribe is tried again at once.
-            controller.log("The iPhone's speech recognition did not start (\(status)): Scribe again in 1 s (T17)")
-            scribeRetryAttempt = 0
+            controller.log("The iPhone's speech recognition did not start (\(status)): Scribe again soon (T17)")
+            if scribeRetryAttempt > 1 {
+                // The waits had doubled: start over at 1 s.
+                retryTask?.cancel()
+                retryTask = nil
+                scribeRetryAttempt = 0
+            }
             scheduleScribeRetry(reason: "the phone's recognition did not start")
         default:
             // A11: the phone is a stopgap; Scribe is tried again later.

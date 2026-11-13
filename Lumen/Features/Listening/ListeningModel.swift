@@ -3661,7 +3661,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard var current = ahead, !current.delivered else { return false }
         // Toby 1 T17 finding 5: an answer ahead that ended without a word ("empty_answer") would be delivered as
         // silence at the pause. Drop it, so the turn is asked again the normal way, as a failed one is.
-        if case .completed(_, let done) = event, done?.answered != false, !current.events.contains(where: \.carriesWords) {
+        // Socialt and Rizz answer with suggestions, not text: only ordinary answers can be "empty".
+        if case .completed(_, let done) = event, done?.answered != false, current.persona?.social == nil,
+           !current.events.contains(where: \.carriesWords) {
             ahead = nil
             answers.cancel()
             aheadStats.discarded += 1
