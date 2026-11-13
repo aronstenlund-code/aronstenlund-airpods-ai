@@ -1,0 +1,101 @@
+id	expect	voice	rate	cond	key	text
+w01	wake	0	175	tyst	stockholm	Lumen, berätta om Stockholm.
+w02	wake	1	175	tyst	planeter	Lumen, hur många planeter finns det?
+w03	wake	2	175	tyst	fotosyntes	Lumen, förklara fotosyntes kort.
+w04	wake	0	140	tyst	maraton	Lumen, hur långt är ett maraton?
+w05	wake	1	140	tyst	australien	Lumen, vad är huvudstaden i Australien?
+w06	wake	2	140	tyst	empati	Lumen, vad betyder empati?
+w07	wake	0	230	tyst	nilen	Lumen, hur lång är Nilen?
+w08	wake	1	230	tyst	strindberg	Lumen, vem var August Strindberg?
+w09	wake	2	230	tyst	92	Lumen, vad är tjugotre gånger fyra?
+w10	wake	0	175	tyst	mount everest	Hej Lumen, hur hög är Mount Everest?
+w11	wake	1	175	tyst	vulkan	Okej Lumen, berätta om en vulkan.
+w12	wake	2	175	tyst	cellandning	Lumen, vad är cellandning?
+w13	wake	0	200	tyst	månen	Lumen, hur långt bort är månen?
+w14	wake	1	200	tyst	demokrati	Lumen, vad är demokrati?
+w15	wake	2	200	tyst	vasa	Lumen, när sjönk regalskeppet Vasa?
+w16	wake	0	160	tyst	pythagoras	Lumen, förklara Pythagoras sats.
+w17	wake	1	160	tyst	dna	Lumen, vad är DNA?
+w18	wake	2	160	tyst	kanin	Lumen, hur länge lever en kanin?
+w19	wake	0	175	tyst	vikingar	Lumen, ge mig tre fakta om vikingar.
+w20	wake	1	175	tyst	inflation	Lumen, vad betyder inflation?
+w21	wake	2	175	en-meter	ljus	Lumen, hur snabbt färdas ljus?
+w22	wake	0	175	en-meter	grönland	Lumen, hur stort är Grönland?
+w23	wake	1	175	en-meter	syre	Lumen, vad är syre?
+w24	wake	2	140	en-meter	newton	Lumen, vem var Isaac Newton?
+w25	wake	0	140	en-meter	koldioxid	Lumen, varför ökar koldioxiden?
+w26	wake	1	140	en-meter	sverige	Lumen, hur många bor i Sverige?
+w27	wake	2	230	en-meter	evolution	Lumen, förklara evolution enkelt.
+w28	wake	0	230	en-meter	franska	Lumen, vad heter hund på franska?
+w29	wake	1	230	en-meter	vatten	Lumen, vid hur många grader kokar vatten?
+w30	wake	2	200	en-meter	hjärtat	Lumen, hur fungerar hjärtat?
+w31	wake	0	200	en-meter	berlinmuren	Lumen, när föll Berlinmuren?
+w32	wake	1	200	en-meter	atom	Lumen, vad är en atom?
+w33	wake	2	160	en-meter	solen	Hej Lumen, hur varm är solen?
+w34	wake	0	160	en-meter	ekvator	Lumen, vad är ekvatorn?
+w35	wake	1	160	en-meter	reformationen	Lumen, vad var reformationen?
+w36	wake	2	175	sorl	gravitation	Lumen, vad är gravitation?
+w37	wake	0	175	sorl	japan	Lumen, vad är huvudstaden i Japan?
+w38	wake	1	175	sorl	bin	Lumen, varför är bin viktiga?
+w39	wake	2	140	sorl	verb	Lumen, vad är ett verb?
+w40	wake	0	140	sorl	norrsken	Lumen, hur uppstår norrsken?
+w41	wake	1	140	sorl	procent	Lumen, hur räknar man procent?
+w42	wake	2	230	sorl	shakespeare	Lumen, vem skrev Hamlet?
+w43	wake	0	230	sorl	hajar	Lumen, hur länge har hajar funnits?
+w44	wake	1	230	sorl	riksdagen	Lumen, hur många sitter i riksdagen?
+w45	wake	2	200	sorl	regnbåge	Lumen, hur bildas en regnbåge?
+w46	wake	0	200	sorl	mitokondrie	Lumen, vad gör mitokondrien?
+w47	wake	1	200	sorl	kina	Okej Lumen, hur många bor i Kina?
+w48	wake	2	160	sorl	jordbävning	Lumen, vad orsakar en jordbävning?
+w49	wake	0	160	sorl	insulin	Lumen, vad gör insulin?
+w50	wake	1	160	sorl	första världskriget	Lumen, när började första världskriget?
+n01	nowake	0	175	tyst	-	Jag gick till affären i morse.
+n02	nowake	1	175	tyst	-	Bussen var sen igen i dag.
+n03	nowake	2	175	tyst	-	Vi ska äta pasta till middag.
+n04	nowake	0	140	tyst	-	Mina byxor ligger i lumpen.
+n05	nowake	1	140	tyst	-	Han lade på luren utan att säga hej.
+n06	nowake	2	140	tyst	-	Limmet torkade alldeles för fort.
+n07	nowake	0	230	tyst	-	Jag läste om ljus i fysikboken.
+n08	nowake	1	230	tyst	-	Lampan i köket har gått sönder.
+n09	nowake	2	230	tyst	-	Rummen på hotellet var små.
+n10	nowake	0	175	tyst	-	Tumen på linjalen är nästan borta.
+n11	nowake	1	175	tyst	-	Hon heter Lina och bor i Umeå.
+n12	nowake	2	175	tyst	-	Lugn, vi hinner till tåget.
+n13	nowake	0	200	tyst	-	Luften är kall i dag.
+n14	nowake	1	200	tyst	-	Lumpen gjorde jag i Boden.
+n15	nowake	2	200	tyst	-	Vi tittade på en film i går kväll.
+n16	nowake	0	160	tyst	-	Kan du skicka saltet?
+n17	nowake	1	160	tyst	-	Jag måste pausa och dricka vatten.
+n18	nowake	2	160	tyst	-	Han sa att han skulle byta läge på jobbet.
+n19	nowake	0	175	tyst	-	Lumpna ursäkter hjälper inte.
+n20	nowake	1	175	tyst	-	Det var lummigt och varmt i parken.
+n21	nowake	2	175	en-meter	-	Min syster börjar skolan i augusti.
+n22	nowake	0	175	en-meter	-	Lunchen var god i dag.
+n23	nowake	1	175	en-meter	-	Vi ses på måndag.
+n24	nowake	2	140	en-meter	-	Lusen kom tillbaka efter en vecka.
+n25	nowake	0	140	en-meter	-	Jag har lånat en bok om Rom.
+n26	nowake	1	140	en-meter	-	Lumpen var den bästa tiden i mitt liv.
+n27	nowake	2	230	en-meter	-	Det regnar nog i morgon.
+n28	nowake	0	230	en-meter	-	Kaffet är slut igen.
+n29	nowake	1	230	en-meter	-	Lugna ner dig lite.
+n30	nowake	2	200	en-meter	-	Han spelar fotboll varje tisdag.
+n31	nowake	0	200	en-meter	-	Vi borde åka till Lund i sommar.
+n32	nowake	1	200	en-meter	-	Glöm inte att stänga fönstret.
+n33	nowake	2	160	en-meter	-	Watt står på kartongen.
+n34	nowake	0	160	en-meter	-	Jag tycker om att läsa på kvällen.
+n35	nowake	1	160	en-meter	-	Luren låg kvar på bordet.
+n36	nowake	2	175	sorl	-	Mamma ringer senare i kväll.
+n37	nowake	0	175	sorl	-	Vi har prov i matte på fredag.
+n38	nowake	1	175	sorl	-	Lumpen är inte obligatorisk längre.
+n39	nowake	2	140	sorl	-	Det var många människor på torget.
+n40	nowake	0	140	sorl	-	Hon målade rummet blått.
+n41	nowake	1	140	sorl	-	Limen i drinken var för sur.
+n42	nowake	2	230	sorl	-	Han sprang hela vägen hem.
+n43	nowake	0	230	sorl	-	Jag fick en ny cykel i present.
+n44	nowake	1	230	sorl	-	Luckan på bilen går inte att stänga.
+n45	nowake	2	200	sorl	-	Hunden skäller på brevbäraren.
+n46	nowake	0	200	sorl	-	Vi lyssnade på musik hela kvällen.
+n47	nowake	1	200	sorl	-	Lux är en enhet för belysning.
+n48	nowake	2	160	sorl	-	Tåget till Göteborg är inställt.
+n49	nowake	0	160	sorl	-	Jag behöver nya skor till vintern.
+n50	nowake	1	160	sorl	-	Lunden bakom skolan är full av svamp.
