@@ -9,6 +9,10 @@ struct SettingsView: View {
     @AppStorage("debug.latencyOverlay") private var showsLatencyOverlay = false
     /// A13.1: the technical settings are folded away; the choice is remembered.
     @AppStorage("settings.showsAdvanced") private var showsAdvanced = false
+    /// A84 (D151, D152): the repetition's tempo, on the phone, no new calls.
+    @AppStorage(RepetitionModel.tempoKey) private var repetitionTempo: Double = 1
+    /// A89 (D162): the long answers' length, only here.
+    @AppStorage(RepetitionModel.longAnswerLengthKey) private var longAnswerLength = DrillSettings.Length.normal.rawValue
     /// A76 (Ke46 T2): the sheet before the test mode is switched on.
     @State private var isConfirmingTestMode = false
     /// A19 (K17): the study plan's reminders; Aron wants them, and they can be turned off.
@@ -83,6 +87,17 @@ struct SettingsView: View {
                 NavigationLink("Feedback och förslag") { FeedbackView(model: model) }
                 NavigationLink("Om appen") { AboutView() }
             }
+            if model.repetition != nil {
+                Section { // A84
+                    Picker("Tempo", selection: $repetitionTempo) {
+                        ForEach(RepetitionModel.tempos, id: \.self) { Text(RepetitionModel.tempoLabel($0)).tag($0) }
+                    }
+                } header: { Text("Starta prov") } footer: {
+                    Text(repetitionTempo < RepetitionPlayer.lowestVoiceRate
+                         ? "Rösten läser i 0,70 och resten av tiden blir pauser."
+                         : "Hur fort frågor och svar läses upp. Gäller nästa gång du startar ett prov.")
+                }
+            }
             // Avancerat
             Section {
                 Button {
@@ -98,6 +113,15 @@ struct SettingsView: View {
                 Text("Mikrofon, pauser, känslighet, taligenkänning, röstprofil, kalibrering och diagnostik.")
             }
             if showsAdvanced {
+                if model.repetition != nil {
+                    Section { // A89 (D162)
+                        Picker("Längd på långa svar", selection: $longAnswerLength) {
+                            ForEach(DrillSettings.Length.allCases, id: \.self) { Text($0.label).tag($0.rawValue) }
+                        }
+                    } footer: {
+                        Text("Gäller nya prov. Varje fråga får alltid ett kort och ett långt svar. Normal är cirka 90 ord.")
+                    }
+                }
                 microphoneSection
                 activationSection
                 recognitionSection

@@ -12,6 +12,8 @@ import Testing
         let url: URL
         var onFinish: (@MainActor () -> Void)?
         var currentTime: TimeInterval = 0
+        var duration: TimeInterval = 4
+        var rate: Float = 1
         var until: TimeInterval?
         var isPlaying = false
         var stopped = false
@@ -436,5 +438,28 @@ import Testing
         source.last.finish()
         timer.fire()
         #expect(player.phase == .question(2), "the cue plays only once")
+    }
+
+    @Test func aSlowTempoPlaysTheVoiceAt070AndAddsTheRestAsSilence() {
+        // A84 (D151, D152): 0.50 = the voice at 0.70, then 4/0.5 − 4/0.7 ≈ 2.29 s of silence after a 4 s file.
+        let (player, source, timer) = make(2)
+        player.tempo = 0.5
+        player.start()
+        #expect(source.last.rate == 0.7)
+        source.last.finish()
+        #expect(player.phase == .question(0), "still the question while the rest of its time passes")
+        let pause = timer.pending?.seconds ?? 0
+        #expect(abs(pause - (4 / 0.5 - 4 / 0.7)) < 0.01)
+        timer.fire()
+        #expect(player.phase == .thinking(0))
+        #expect(RepetitionPlayer.extraPause(seconds: 4, tempo: 0.9) == 0)
+        #expect(RepetitionPlayer.extraPause(seconds: 4, tempo: 1.5) == 0)
+    }
+
+    @Test func aFastTempoIsTheVoicesRate() {
+        let (player, source, _) = make(1)
+        player.tempo = 1.5
+        player.start()
+        #expect(source.last.rate == 1.5)
     }
 }

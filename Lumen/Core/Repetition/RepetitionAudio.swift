@@ -8,6 +8,10 @@ protocol RepetitionAudioPlayer: AnyObject {
     /// Called once when the file (or the part up to `until`) has played to its end. Never after `stop()`.
     var onFinish: (@MainActor () -> Void)? { get set }
     var currentTime: TimeInterval { get }
+    /// The file's length in seconds.
+    var duration: TimeInterval { get }
+    /// A84 (D151): the speed, pitch kept (`AVAudioPlayer.enableRate`).
+    var rate: Float { get set }
     /// Plays from the current position; `until` stops there and counts as the end (D145's short answer).
     func play(until: TimeInterval?)
     func pause()
@@ -49,10 +53,17 @@ final class FileRepetitionPlayer: RepetitionAudioPlayer {
 
     init(url: URL) throws {
         player = try AVAudioPlayer(contentsOf: url)
+        player.enableRate = true // A84: tempo without changing the pitch
         player.prepareToPlay()
     }
 
     var currentTime: TimeInterval { player.currentTime }
+    var duration: TimeInterval { player.duration }
+
+    var rate: Float {
+        get { player.rate }
+        set { player.rate = newValue }
+    }
 
     func play(until: TimeInterval?) {
         guard !stopped else { return }

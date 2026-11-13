@@ -302,7 +302,7 @@ final class RepetitionModel {
         }
         session.start(drill, count: drill.items.count, at: index,
                       onePressPausesAnswer: ControlCheck.usesEarbudLayout(defaults),
-                      firstLap: firstLap, cue: audio.cue(for: drill)) { i in
+                      firstLap: firstLap, cue: audio.cue(for: drill), tempo: tempo) { i in
             audio.track(for: store.drill(id) ?? drill, at: i)
         }
         showsPlayer = true
@@ -310,6 +310,53 @@ final class RepetitionModel {
     }
 
     static let playedKey = "repetition.hasPlayed"
+
+    // MARK: Voice, tempo and the limit (A84, D151, D152, D155)
+
+    static let tempoKey = "repetition.tempo"
+    /// A89 (D162): "Längd på långa svar" lives in Inställningar › Avancerat; Nytt prov has no choice any more.
+    static let longAnswerLengthKey = "repetition.longAnswerLength"
+
+    /// What Nytt prov sends as `long_words` (D162: Normal = about 90 words unless changed in Avancerat).
+    var longAnswerLength: DrillSettings.Length {
+        get { DrillSettings.Length(rawValue: defaults.string(forKey: Self.longAnswerLengthKey) ?? "") ?? .normal }
+        set { defaults.set(newValue.rawValue, forKey: Self.longAnswerLengthKey) }
+    }
+
+    /// A89: Nytt prov's settings, the length from Avancerat.
+    var newDrillSettings: DrillSettings {
+        var settings = DrillSettings()
+        settings.length = longAnswerLength
+        return settings
+    }
+    /// D151: the tempos on offer; below 0.70 the voice stays at 0.70 and the rest is silence (D152).
+    static let tempos: [Double] = [0.5, 0.65, 0.7, 0.75, 0.85, 0.9, 1.0, 1.5]
+    /// D151: the three voices (the blind test's A, B and C, the model names never shown).
+    static let voices = ["A", "B", "C"]
+
+    var tempo: Double {
+        get {
+            let saved = defaults.double(forKey: Self.tempoKey)
+            return Self.tempos.contains(saved) ? saved : 1
+        }
+        set { defaults.set(newValue, forKey: Self.tempoKey) }
+    }
+
+    static func tempoLabel(_ tempo: Double) -> String {
+        tempo == 1 ? "Normal" : String(format: "%.2f", tempo).replacingOccurrences(of: ".", with: ",") + "×"
+    }
+
+    /// The bundled sample of a voice (the blind test's three sentences, `Resources/VoiceSamples`).
+    static func voiceSample(_ voice: String) -> URL? {
+        Bundle.main.url(forResource: "rost-\(voice)", withExtension: "mp3")
+    }
+
+    /// D155: "x av 15 frågor kvar den här månaden", from the last `list`.
+    var quota: DrillQuota? { (cloud as? DrillCloudClient)?.lastQuota }
+
+    func quotaExceeded(_ drill: Drill) -> Bool {
+        (audio as? CloudDrillAudio)?.quotaExceeded.contains(drill.id) ?? false
+    }
 
     // MARK: Publicera prov (A83, D149, D150, K49)
 

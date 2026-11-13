@@ -46,6 +46,18 @@ final class RepetitionPlayer {
     /// svaret.") plays once after the first thinking time that passes without a press.
     var isFirstLap = false
     var cue: URL?
+    /// A84 (D151, D152): the chosen tempo. The voice plays at `max(0.7, tempo)`; below 0.70 the rest of the time is
+    /// silence after each file, so a file takes as long as the chosen tempo says. (At sentence ends once K46 gives
+    /// the sentences' times.)
+    var tempo: Double = 1
+
+    static let lowestVoiceRate = 0.7
+
+    /// Seconds of silence after a stretch of `seconds` of sound at normal speed.
+    static func extraPause(seconds: TimeInterval, tempo: Double) -> TimeInterval {
+        guard tempo > 0, tempo < lowestVoiceRate, seconds.isFinite, seconds > 0 else { return 0 }
+        return seconds / tempo - seconds / lowestVoiceRate
+    }
     /// Called after every step with the index to come back to (R8: "Fortsätt där du var?").
     var onProgress: (@MainActor (Int) -> Void)?
     /// Every step as one line, for the log and the Simulator tests.
@@ -221,7 +233,17 @@ final class RepetitionPlayer {
         do {
             let player = try source.player(for: url)
             failuresInARow = 0
-            player.onFinish = done
+            player.rate = Float(max(Self.lowestVoiceRate, tempo))
+            let pause = Self.extraPause(seconds: until ?? player.duration, tempo: tempo)
+            if pause > 0 {
+                // D152: the slow tempo's rest as silence after the file (the timer keeps the app awake).
+                player.onFinish = { [weak self] in
+                    guard let self else { return }
+                    self.timer.start(seconds: pause) { done() }
+                }
+            } else {
+                player.onFinish = done
+            }
             current = player
             player.play(until: until)
         } catch {

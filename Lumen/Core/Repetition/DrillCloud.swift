@@ -13,6 +13,7 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var covers: String?
         var long_words: Int?
         var shared_from: String?
+        var voice_model: String? = nil
     }
 
     struct File: Decodable, Sendable, Equatable {
@@ -63,6 +64,18 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
     var audio: Totals
     /// K51: fixed lines in the exam's voice, free and outside the progress.
     var cue: Cue? = nil
+}
+
+/// D155: generated questions this calendar month (`list` → `quota`).
+struct DrillQuota: Decodable, Sendable, Equatable {
+    var used: Int
+    var limit: Int
+    var per: String?
+    var resets: String?
+
+    var left: Int { max(0, limit - used) }
+    /// "x av 15 frågor kvar den här månaden".
+    var line: String { "\(left) av \(limit) frågor kvar den här månaden" }
 }
 
 struct DrillCloudListEntry: Decodable, Sendable, Equatable {
@@ -129,6 +142,7 @@ final class DrillCloudClient: DrillCloudSyncing {
         var info: [String: Any] = ["title": drill.title, "subject": drill.summary.subject, "grade": drill.summary.grade,
                                    "covers": String(drill.summary.covers.prefix(400)), "long_words": drill.longWords]
         if let id = drill.serverID { info["id"] = id }
+        if drill.serverID == nil, let voice = drill.voiceModel { info["voice_model"] = voice } // K50: locked after
         let items: [[String: Any]] = drill.items.map { item in
             var row: [String: Any] = ["question": item.question, "short": item.short, "long": item.long]
             if let id = item.serverID { row["id"] = id }
@@ -146,10 +160,14 @@ final class DrillCloudClient: DrillCloudSyncing {
     }
 
     func list() async throws(DrillCloudError) -> [DrillCloudListEntry] {
-        struct Reply: Decodable { var drills: [DrillCloudListEntry] }
+        struct Reply: Decodable { var drills: [DrillCloudListEntry]; var quota: DrillQuota? }
         let reply: Reply = try await call(["action": "list"], timeout: 20)
+        lastQuota = reply.quota
         return reply.drills
     }
+
+    /// A84 (D155): the month's limit from the last `list`.
+    private(set) var lastQuota: DrillQuota?
 
     func delete(id: String) async throws(DrillCloudError) {
         struct Reply: Decodable { var deleted: Bool? }
@@ -250,6 +268,7 @@ extension Drill {
                                      grade: view.drill.grade ?? drill.summary.grade,
                                      covers: view.drill.covers ?? drill.summary.covers)
         if let words = view.drill.long_words { drill.longWords = words }
+        if let voice = view.drill.voice_model { drill.voiceModel = voice }
         drill.items = items
         drill.questionCount = items.count
         return drill
@@ -270,6 +289,8 @@ final class CloudDrillAudio: DrillAudioProviding {
     /// The last thing that went wrong per exam, for the exam's screen ("Du har gjort mycket ljud i dag …").
     private(set) var problems: [UUID: String] = [:]
     private(set) var failedFiles: [UUID: Int] = [:]
+    /// A84 (D155): exams whose save hit the month's limit (402 `quota_exceeded`).
+    private(set) var quotaExceeded: Set<UUID> = []
 
     @ObservationIgnored private let cloud: any DrillCloudSyncing
     @ObservationIgnored private let store: DrillStore
@@ -340,6 +361,9 @@ final class CloudDrillAudio: DrillAudioProviding {
                     return
                 }
             } catch {
+                if case .refused(_, let code, _) = error, code == "quota_exceeded" {
+                    quotaExceeded.insert(drill.id) // A84: the way to others' exams is shown
+                }
                 if case .refused(_, let code, _) = error, code == "rate_limited" {
                     // Ke50 §13: K46's daily limit for new sound.
                     problems[drill.id] = "Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu."

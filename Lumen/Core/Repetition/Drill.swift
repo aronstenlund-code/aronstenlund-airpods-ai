@@ -24,6 +24,8 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     var publication: DrillPublication?
     /// A83: the publication this copy was added from ("played" is counted on it).
     var fromPublication: String?
+    /// A84 (D151): "A", "B" or "C", chosen before the sound is made; locked after the first save (K50).
+    var voiceModel: String?
 
     static let defaultQuestionCount = 20
     static let defaultLongWords = 90
