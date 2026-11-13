@@ -52,7 +52,9 @@ on:
 
 concurrency:
   group: ios-build-${{ github.ref }}
-  cancel-in-progress: true
+  # Deangelo 2026-11-13 (D167): on main a running build always finishes (two app builders pushed so often that
+  # every build was cancelled and Aron got no ipa for an hour). GitHub keeps only the newest waiting run.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   build-and-test:
