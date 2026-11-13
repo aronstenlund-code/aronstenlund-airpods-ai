@@ -6,7 +6,7 @@ import SwiftUI
 @MainActor
 enum RepetitionDemo {
     static let scenes: Set<String> = ["repHome", "repHomeEmpty", "repMaterial", "repList", "repEdit", "repControls",
-                                      "repControlsDone", "repControlsMissing", "repShareReady",
+                                      "repControlsDone", "repControlsMissing", "repShareReady", "repMakeError", "repPlayFirst",
                                       "repPlayThink", "repPlayAnswer", "repPaused", "repWaiting", "repResume",
                                       "repShare", "moreModes"]
 
@@ -50,6 +50,9 @@ enum RepetitionDemo {
                                       timer: TaskRepetitionTimer(), thinkingSeconds: 6)
         switch name {
         case "repPlayThink": player.stageForScreenshot(.thinking(1), index: 1, lap: 1)
+        case "repPlayFirst":
+            player.isFirstLap = true // Kelly N1: "Tryck på AirPods för svaret"
+            player.stageForScreenshot(.thinking(0), index: 0)
         case "repPlayAnswer": player.stageForScreenshot(.answer(1, .long), index: 1, lap: 1)
         case "repPaused": player.stageForScreenshot(.answer(1, .long), index: 1, lap: 1, paused: true)
         case "repWaiting": player.stageForScreenshot(.waitingForAudio(3), index: 3)
@@ -80,6 +83,9 @@ enum RepetitionDemo {
             switch name {
             case "repHome", "repHomeEmpty": NavigationStack { HomeView(model: listening) }
             case "repMaterial": NewDrillView(model: model) { _ in }
+            case "repMakeError":
+                NewDrillView(model: model, onSaved: { _ in },
+                             stagedProblem: DrillMakingError.server("URLError -1005").userMessage)
             case "repList": NavigationStack { DrillView(model: model, drillID: drill.id) }
             // Kelly B5: the Dela row in view, off (sound not ready) and ready.
             case "repShare": NavigationStack { DrillView(model: model, drillID: history.id, showsShare: true) }
@@ -88,7 +94,7 @@ enum RepetitionDemo {
             case "repControls":
                 ControlCheckView(hub: RemoteCommandHub(), sound: nil, waitSeconds: 3600, onStart: {}, onLater: {})
             case "repControlsDone", "repControlsMissing": ControlCheckView(staged: stagedCheck(allWork: name == "repControlsDone"))
-            case "repPlayThink", "repPlayAnswer", "repPaused", "repWaiting": RepetitionPlayerView(model: model)
+            case "repPlayThink", "repPlayFirst", "repPlayAnswer", "repPaused", "repWaiting": RepetitionPlayerView(model: model)
             case "repResume":
                 ResumeSheet(model: model, offer: RepetitionModel.ResumeOffer(drill: drill, index: 3)) // Kelly B1
             case "moreModes": ModeSwitchSheet(model: listening, current: .standard, onPick: { _ in }, onSleep: {})

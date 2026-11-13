@@ -18,6 +18,8 @@ struct DrillDraft: Sendable, Equatable {
     var items: [DrillItem]
     /// The material as compact text (K45 `notes`), sent again for edited questions; kept only in memory.
     var notes: String
+    /// K51 (D159): "Materialet räckte till 4 frågor." when the material carried fewer than asked.
+    var note: String? = nil
 }
 
 enum DrillMakingError: Error, Equatable {
@@ -65,6 +67,7 @@ final class DrillClient: DrillMaking {
         var items: [Item]?
         var item: Item?
         var text: String?
+        var note: String?
     }
 
     func make(_ material: DrillMaterial, subject: String?, grade: String?, correction: String?,
@@ -89,7 +92,8 @@ final class DrillClient: DrillMaking {
             return DrillItem(question: item.question, short: short, long: DrillItem.long(item.long ?? "", startingWith: short))
         }
         guard !items.isEmpty else { throw .server("no questions") }
-        return DrillDraft(summary: summary, items: items, notes: reply.notes ?? "")
+        let note = reply.note?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return DrillDraft(summary: summary, items: items, notes: reply.notes ?? "", note: note?.isEmpty == false ? note : nil)
     }
 
     func answers(for items: [DrillItem], summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> [DrillItem] {
@@ -338,6 +342,8 @@ protocol DrillAudioProviding: AnyObject, Sendable {
     func track(for drill: Drill, at index: Int) -> RepetitionTrack?
     /// What went wrong making the sound, said on the exam's screen.
     func problem(for drill: Drill) -> String?
+    /// Kelly N1: "Tryck en gång för svaret." in the exam's voice, if there is one.
+    func cue(for drill: Drill) -> URL?
 }
 
 @MainActor
@@ -394,6 +400,8 @@ final class DeviceVoiceDrillAudio: DrillAudioProviding {
     }
 
     func problem(for drill: Drill) -> String? { nil }
+
+    func cue(for drill: Drill) -> URL? { nil } // the mock has no fixed line
 
     func prepare(_ drill: Drill) async {
         guard makesSound, !preparing.contains(drill.id) else { return }

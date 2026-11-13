@@ -42,6 +42,10 @@ final class RepetitionPlayer {
     /// Spec §3, AirPods 1/2 (one function per earbud, no triple press): 1 press during an answer pauses instead of
     /// starting the long answer again. Set from the AirPods check (`ControlCheck.usesEarbudLayout`).
     var onePressPausesAnswer = false
+    /// Kelly N1: a new user's first lap. The screen says "Tryck på AirPods för svaret", and `cue` ("Tryck en gång för
+    /// svaret.") plays once after the first thinking time that passes without a press.
+    var isFirstLap = false
+    var cue: URL?
     /// Called after every step with the index to come back to (R8: "Fortsätt där du var?").
     var onProgress: (@MainActor (Int) -> Void)?
     /// Every step as one line, for the log and the Simulator tests.
@@ -167,6 +171,17 @@ final class RepetitionPlayer {
         step("thinking \(i + 1)")
         timer.start(seconds: thinkingSeconds) { [weak self] in
             guard let self, self.phase == .thinking(i), !self.isPaused else { return }
+            if self.isFirstLap, self.lap == 0, let cue = self.cue {
+                // Kelly N1: once, so the next question does not sound like a skipped answer.
+                self.cue = nil
+                self.step("cue: press for the answer")
+                self.play(cue, until: nil) { [weak self] in
+                    guard let self, self.phase == .thinking(i) else { return }
+                    self.current = nil
+                    self.next()
+                }
+                return
+            }
             self.next()
         }
     }

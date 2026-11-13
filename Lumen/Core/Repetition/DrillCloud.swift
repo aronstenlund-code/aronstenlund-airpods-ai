@@ -54,9 +54,15 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var failed: Int?
     }
 
+    struct Cue: Decodable, Sendable, Equatable {
+        var press_for_answer: File?
+    }
+
     var drill: Info
     var items: [Item]
     var audio: Totals
+    /// K51: fixed lines in the exam's voice, free and outside the progress.
+    var cue: Cue? = nil
 }
 
 struct DrillCloudListEntry: Decodable, Sendable, Equatable {
@@ -404,6 +410,24 @@ final class CloudDrillAudio: DrillAudioProviding {
                 }
             }
         }
+        // Kelly N1: the cue "Tryck en gång för svaret." in the same voice.
+        if let file = view.cue?.press_for_answer, file.isDone, let name = file.fileName, let link = file.url,
+           let url = URL(string: link) {
+            if !exists(name) {
+                do throws(DrillCloudError) {
+                    let data = try await cloud.download(url)
+                    try? data.write(to: fileURL(name), options: .atomic)
+                } catch {
+                    Log.repetition.error("Drill cue download: \(error.userMessage, privacy: .public)")
+                }
+            }
+            if exists(name) { drill.cueAudio = name }
+        }
         return drill
+    }
+
+    func cue(for drill: Drill) -> URL? {
+        guard let name = drill.cueAudio, exists(name) else { return nil }
+        return fileURL(name)
     }
 }

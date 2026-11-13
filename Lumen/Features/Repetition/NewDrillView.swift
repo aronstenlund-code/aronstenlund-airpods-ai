@@ -12,6 +12,8 @@ import UniformTypeIdentifiers
 struct NewDrillView: View {
     let model: RepetitionModel
     let onSaved: (Drill) -> Void
+    /// The screenshots (Kelly: repMakeError): the material form showing this problem.
+    var stagedProblem: String? = nil
     @Environment(\.dismiss) private var dismiss
 
     private enum Stage: Equatable { case material, making, confirm }
@@ -166,9 +168,17 @@ struct NewDrillView: View {
                 .buttonStyle(LumenButtonStyle(height: 54))
                 .disabled(material.isEmpty || readingDocument)
                 .listRowBackground(Color.clear)
+            } footer: {
+                if material.isEmpty { Text("Lägg till minst en sida, bild eller text.") } // Kelly N3
             }
         }
         .lumenForm()
+        .onAppear {
+            if let stagedProblem, problem == nil {
+                problem = stagedProblem
+                if pasted.isEmpty { pasted = "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi." }
+            }
+        }
     }
 
     private var addedCount: Int {
@@ -388,7 +398,12 @@ struct NewDrillView: View {
 
     // MARK: Stämmer det här?
 
-    private var answersMissing: Bool { draft?.items.contains { $0.short.isEmpty } ?? true }
+    private var missingAnswers: Int { draft?.items.filter { $0.short.isEmpty }.count ?? 0 }
+    /// "Ser rätt ut" waits for the answers; once they are written, the questions without one are left out.
+    private var answersMissing: Bool {
+        guard let draft else { return true }
+        return isAnswering || !draft.items.contains { !$0.short.isEmpty }
+    }
 
     private var confirmView: some View {
         Form {
@@ -414,7 +429,18 @@ struct NewDrillView: View {
                     }
                     if draft.items.count > 5 { Text("och \(draft.items.count - 5) till").foregroundStyle(LumenColor.muted) }
                 } footer: {
-                    Text("\(DrillText.questions(draft.items.count)). Du kan ändra, ta bort och lägga till efteråt.")
+                    VStack(alignment: .leading, spacing: 4) {
+                        if let note = draft.note { Text(note) } // K51 (D159)
+                        Text("\(DrillText.questions(draft.items.count)). Du kan ändra, ta bort och lägga till efteråt.")
+                    }
+                }
+
+                // K51: a question whose answer could not be written ("Gör om"); the others can be saved.
+                if !isAnswering, missingAnswers > 0, missingAnswers < draft.items.count, problem == nil {
+                    Section {
+                        Text("\(DrillText.questions(missingAnswers)) fick inget svar.")
+                        Button("Gör om") { writeAnswers() }
+                    }
                 }
 
                 if let problem {

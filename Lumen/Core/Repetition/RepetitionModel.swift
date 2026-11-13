@@ -279,13 +279,19 @@ final class RepetitionModel {
         let audio = self.audio
         let store = self.store
         let id = drill.id
+        // Kelly N1: the first time anyone plays an exam, the first lap explains that the answer comes on a press.
+        let firstLap = !defaults.bool(forKey: Self.playedKey)
+        defaults.set(true, forKey: Self.playedKey)
         session.start(drill, count: drill.items.count, at: index,
-                      onePressPausesAnswer: ControlCheck.usesEarbudLayout(defaults)) { i in
+                      onePressPausesAnswer: ControlCheck.usesEarbudLayout(defaults),
+                      firstLap: firstLap, cue: audio.cue(for: drill)) { i in
             audio.track(for: store.drill(id) ?? drill, at: i)
         }
         showsPlayer = true
         resumeOffer = nil
     }
+
+    static let playedKey = "repetition.hasPlayed"
 
     func end() {
         session.stop()

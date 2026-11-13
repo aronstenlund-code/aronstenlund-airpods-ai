@@ -18,6 +18,8 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     var serverID: String?
     /// K46: changed on the phone since the server last saw it (an edit made offline is sent on the next open).
     var needsUpload: Bool?
+    /// Kelly N1, K51: "Tryck en gång för svaret." in the exam's own voice (`<hash>.mp3` in the cache).
+    var cueAudio: String?
 
     static let defaultQuestionCount = 20
     static let defaultLongWords = 90

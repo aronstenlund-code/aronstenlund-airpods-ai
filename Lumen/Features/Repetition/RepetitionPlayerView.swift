@@ -132,7 +132,14 @@ struct RepetitionPlayerView: View {
         } else {
             switch player.phase {
             case .thinking:
-                ThinkingRing(started: player.thinkingStarted ?? Date(), seconds: player.thinkingSeconds)
+                VStack(spacing: 10) {
+                    ThinkingRing(started: player.thinkingStarted ?? Date(), seconds: player.thinkingSeconds)
+                    if player.isFirstLap, player.lap == 0 {
+                        Text("Tryck på AirPods för svaret") // Kelly N1
+                            .font(LumenFont.text(17, .semibold))
+                            .foregroundStyle(LumenColor.blue)
+                    }
+                }
             case .answer(_, let kind):
                 Label(kind == .long ? "Långt svar" : "Kort svar", systemImage: "waveform")
                     .font(LumenFont.text(17, .semibold))

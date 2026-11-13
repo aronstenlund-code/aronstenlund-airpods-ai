@@ -428,9 +428,9 @@ struct ModeSwitchSheet: View {
     }
 
     private var footnote: String {
-        "Lyssnande lägen använder mikrofonen och är i BETA. Starta prov gör det aldrig. " + (onPick == nil
+        onPick == nil
             ? "Earmind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
-            : "Valet gäller Starta-knappen. Du kan också säga ”Lumen, byt till provläge”.") // Ke29, A80
+            : "Valet gäller Starta Earmind. Starta prov använder aldrig mikrofonen." // Kelly N4
     }
 
     var body: some View {
@@ -461,7 +461,8 @@ struct ModeSwitchSheet: View {
                                         Text(mode.shortName).font(LumenFont.text(17, .semibold))
                                         BetaBadge() // A80 (D142): every listening mode is BETA
                                     }
-                                    Text(mode.tagline).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
+                                    Text(mode == .prov ? "Förhör med rösten" : mode.tagline) // Kelly N4
+                                        .font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
                                 }
                                 Spacer()
                                 if mode == current {

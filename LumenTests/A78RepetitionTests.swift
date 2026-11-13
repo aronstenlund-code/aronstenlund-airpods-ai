@@ -420,4 +420,21 @@ import Testing
         session.stop()
         #expect(!session.isActive)
     }
+
+    @Test func aNewUserHearsTheCueOnceAfterTheFirstThinkingTime() {
+        // Kelly N1: in the first lap of the first exam, "Tryck en gång för svaret." once, then the next question.
+        let (player, source, timer) = make(3)
+        player.isFirstLap = true
+        player.cue = Self.url("cue")
+        player.start()
+        source.last.finish() // question 1
+        timer.fire() // thinking time over, no press
+        #expect(source.last.url.lastPathComponent == "cue.mp3")
+        #expect(player.phase == .thinking(0))
+        source.last.finish()
+        #expect(player.phase == .question(1))
+        source.last.finish()
+        timer.fire()
+        #expect(player.phase == .question(2), "the cue plays only once")
+    }
 }

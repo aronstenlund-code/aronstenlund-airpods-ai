@@ -51,7 +51,7 @@ final class RepetitionSession {
     /// `track` is asked at every question, so sound that arrives while the list plays is used (K46 makes it in play
     /// order); a question without sound yet is waited for.
     func start(_ drill: Drill, count: Int, at index: Int = 0, onePressPausesAnswer: Bool = false,
-               track: @escaping @MainActor (Int) -> RepetitionTrack?) {
+               firstLap: Bool = false, cue: URL? = nil, track: @escaping @MainActor (Int) -> RepetitionTrack?) {
         stop()
         guard count > 0 else { return }
         if activatesAudioSession { activatePlayback() }
@@ -59,6 +59,8 @@ final class RepetitionSession {
         let player = RepetitionPlayer(count: count, track: track, source: makeSource(), timer: makeTimer(),
                                       thinkingSeconds: thinking, startAt: index)
         player.onePressPausesAnswer = onePressPausesAnswer
+        player.isFirstLap = firstLap
+        player.cue = firstLap ? cue : nil
         let defaults = self.defaults
         let id = drill.id
         player.onProgress = { next in RepetitionProgress(drillID: id, index: next, savedAt: Date()).save(defaults) }
