@@ -2365,6 +2365,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// A74: the questions asked in the last minute (Standardläge), so a late copy is not answered again.
     @ObservationIgnored private var repeatGuard = RepeatGuard()
+    /// T17 finding 5: the question asked again after an empty answer ahead (once).
+    @ObservationIgnored private var emptyRetried: String?
 
     /// A68: when the current `/answer` call was sent.
     @ObservationIgnored private var answerRequestedAt: Date?
@@ -3657,6 +3659,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Keeps an event of the answer made ahead. True: it was buffered and must not reach the screen or the voice.
     private func bufferAhead(_ event: AheadAnswer.Event) -> Bool {
         guard var current = ahead, !current.delivered else { return false }
+        // Toby 1 T17 finding 5: an answer ahead that ended without a word ("empty_answer") would be delivered as
+        // silence at the pause. Drop it, so the turn is asked again the normal way, as a failed one is.
+        if case .completed(_, let done) = event, done?.answered != false, !current.events.contains(where: \.carriesWords) {
+            ahead = nil
+            answers.cancel()
+            aheadStats.discarded += 1
+            controller.turns.finish(aheadTurnID, outcome: .failed, reason: "ahead ended empty; asked again at the pause")
+            aheadTurnID = nil
+            controller.log("Answer ahead ended without words: asked again at the pause (T17)")
+            return true
+        }
         current.record(event, at: Date())
         ahead = current
         if case .sentence = event { prefetchIfStable() }
@@ -3983,6 +3996,18 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.turns.finish(aheadTurnID, outcome: .failed, reason: "ahead; asked again at the pause")
             aheadTurnID = nil
             controller.log("Answer ahead failed: \(message)")
+            return
+        }
+        // Toby 1 T17 finding 5: the answer made ahead was already delivered at the pause and then came back empty
+        // (`empty_answer`, after 23 s): ask the turn once more the normal way instead of going quiet.
+        if ahead?.delivered == true, case .backend(_, let failure)? = answers.lastError, failure.code == "empty_answer",
+           let question = pendingQuestion, emptyRetried != question.query {
+            emptyRetried = question.query
+            ahead = nil
+            controller.turns.finish(currentTurnID, outcome: .failed, reason: "empty answer ahead; asked again")
+            controller.log("Answer ahead came back empty: asked again the normal way (T17)")
+            repeatGuard.forget(question.query)
+            activated(question)
             return
         }
         if ahead?.delivered == true { ahead = nil }

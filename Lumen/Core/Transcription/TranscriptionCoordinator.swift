@@ -683,8 +683,17 @@ final class TranscriptionCoordinator {
         onFallback?(reason)
         controller.log("Scribe unavailable (\(reason)): using the iPhone's speech recognition")
         await startTranscribing()
-        // A11: the phone is a stopgap; Scribe is tried again later, whether the phone works or not.
-        scheduleScribeRetry(reason: reason)
+        switch status {
+        case .failed, .unavailable:
+            // Toby 1 T17 finding 2: the phone's recogniser did not start either ("no analyzer audio format"), and the
+            // doubled retry delay left Lumen deaf for 76 s. Nothing listens now, so Scribe is tried again at once.
+            controller.log("The iPhone's speech recognition did not start (\(status)): Scribe again in 1 s (T17)")
+            scribeRetryAttempt = 0
+            scheduleScribeRetry(reason: "the phone's recognition did not start")
+        default:
+            // A11: the phone is a stopgap; Scribe is tried again later.
+            scheduleScribeRetry(reason: reason)
+        }
     }
 
     /// A11: one pending retry at a time; the delay doubles per failed attempt up to 30 s.

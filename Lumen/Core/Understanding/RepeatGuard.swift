@@ -17,6 +17,12 @@ struct RepeatGuard: Sendable {
         recent.append((key, query, date))
     }
 
+    /// T17 finding 5: a question that is asked again on purpose (its first answer came back empty).
+    mutating func forget(_ query: String) {
+        let key = Self.contentWords(query)
+        recent.removeAll { $0.key == key }
+    }
+
     /// The earlier question this one repeats, or nil.
     func repeats(_ query: String, at date: Date) -> String? {
         let lowered = query.lowercased()

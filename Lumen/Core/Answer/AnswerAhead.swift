@@ -12,6 +12,14 @@ struct AheadAnswer {
         case completed(latencyMs: Double?, done: AnswerDone?)
         case skipped(ActivationRequest)
         case report
+
+        /// T17 finding 5: text the user would hear or see.
+        var carriesWords: Bool {
+            switch self {
+            case .delta(let text), .sentence(let text): !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            default: false
+            }
+        }
     }
 
     let key: String
