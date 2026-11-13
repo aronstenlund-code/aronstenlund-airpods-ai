@@ -1,0 +1,25 @@
+{
+ "date": "2026-11-13",
+ "k6": [
+  {
+   "id": "coach",
+   "error": 503
+  },
+  {
+   "id": "sport",
+   "error": 503
+  },
+  {
+   "id": "whisper",
+   "error": 503
+  },
+  {
+   "id": "radio",
+   "error": 503
+  },
+  {
+   "id": "story",
+   "error": 503
+  }
+ ]
+}
