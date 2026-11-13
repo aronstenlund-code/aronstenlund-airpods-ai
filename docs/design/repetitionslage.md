@@ -181,5 +181,5 @@ Namnet "Starta prov". ElevenLabs med hög kvalitet, inte Turbo. Betänketid cirk
 - Varje gång ens prov delas och används (en annan riktig användare hämtar och spelar minst 5 frågor, en gång per mottagare, tak per dag): +120 tokens.
 - Premium 65 kr per månad: upp till 30 genererade frågor per vecka.
 - Gratis: 15 per månad (D155, kanske 20). Andras prov alltid gratis.
-- **Konton:** appen skapar redan i dag automatiskt ett anonymt konto vid första start (verifierat i koden, ). För tokens, premium och publicering med användarnamn behövs ett riktigt konto (Logga in med Apple), så att köp och prov följer med till en ny telefon. Det anonyma kontot uppgraderas då och behåller allt.
+- **Konton:** appen skapar redan i dag automatiskt ett anonymt konto vid första start (verifierat i koden, `Lumen/Core/Answer/SupabaseAuth.swift`). För tokens, premium och publicering med användarnamn behövs ett riktigt konto (Logga in med Apple), så att köp och prov följer med till en ny telefon. Det anonyma kontot uppgraderas då och behåller allt.
 - Arkitekturen ska redan nu räkna genererade frågor per konto (K50), så att tokens blir en saldotabell senare.
