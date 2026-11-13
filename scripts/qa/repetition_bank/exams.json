@@ -1,0 +1,1292 @@
+[
+ {
+  "id": "bio-ak8-fotosyntes",
+  "subject": "Biologi",
+  "grade": "åk 8",
+  "title": "Prov: Ekologi och fotosyntes",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Prov: Ekologi och fotosyntes – Biologi åk 8\n\n1. Vad behöver en växt för att kunna göra fotosyntes? Nämn tre saker. (2/0/0)\n2. Vilka två ämnen bildas vid fotosyntesen? (2/0/0)\n3. Vad kallas de organismer som tillverkar sin egen näring? (1/0/0)\n4. Förklara varför det finns färre rovdjur än växtätare i ett ekosystem. (0/2/0)\n5. Vad gör nedbrytarna i ett ekosystem? Ge ett exempel på en nedbrytare. (1/1/0)\n6. Resonera om vad som kan hända i en sjö om för mycket gödsel rinner ut i den. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Ljus (solljus), koldioxid och vatten. Full poäng för svar som stämmer med facit.\n2. Glukos (socker) och syre. Full poäng för svar som stämmer med facit.\n3. Producenter. Full poäng för svar som stämmer med facit.\n4. Vid varje steg i näringskedjan går det mesta av energin förlorad (ungefär 90 %) som värme och rörelse, så det finns mindre energi kvar till nästa led. Full poäng för svar som stämmer med facit.\n5. De bryter ner döda växter och djur till näringsämnen som växterna kan ta upp igen. Exempel: svampar, bakterier eller daggmaskar. Full poäng för svar som stämmer med facit.\n6. Övergödning: alger växer kraftigt, dör och bryts ner av bakterier som förbrukar syret. Syrebrist gör att fiskar och bottendjur dör. Det kan motverkas med mindre gödsel och skyddszoner vid vatten. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 5 poäng\nC: minst 9 poäng, varav minst 3 C/A-poäng\nA: minst 12 poäng, varav minst 2 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Vad behöver en växt för att kunna göra fotosyntes? Nämn tre saker.",
+     "points": {
+      "E": 2,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Ljus (solljus), koldioxid och vatten.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "fotosyntes",
+     "accept": [
+      "solljus, koldioxid och vatten",
+      "ljusenergi, CO2 och vatten"
+     ],
+     "wrong": [
+      "syre, vatten och jord"
+     ]
+    },
+    {
+     "no": "2",
+     "text": "Vilka två ämnen bildas vid fotosyntesen?",
+     "points": {
+      "E": 2,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Glukos (socker) och syre.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "fotosyntes",
+     "accept": [
+      "socker och syre",
+      "druvsocker och syre"
+     ],
+     "wrong": [
+      "koldioxid och vatten"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "Vad kallas de organismer som tillverkar sin egen näring?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Producenter.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "näringskedja",
+     "accept": [
+      "autotrofa organismer"
+     ],
+     "wrong": [
+      "konsumenter",
+      "nedbrytare"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "Förklara varför det finns färre rovdjur än växtätare i ett ekosystem.",
+     "points": {
+      "E": 0,
+      "C": 2,
+      "A": 0
+     },
+     "answer": "Vid varje steg i näringskedjan går det mesta av energin förlorad (ungefär 90 %) som värme och rörelse, så det finns mindre energi kvar till nästa led.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "energiflöde",
+     "accept": [
+      "bara cirka 10 procent av energin går vidare till nästa nivå"
+     ],
+     "wrong": [
+      "rovdjuren äter upp varandra"
+     ]
+    },
+    {
+     "no": "5",
+     "text": "Vad gör nedbrytarna i ett ekosystem? Ge ett exempel på en nedbrytare.",
+     "points": {
+      "E": 1,
+      "C": 1,
+      "A": 0
+     },
+     "answer": "De bryter ner döda växter och djur till näringsämnen som växterna kan ta upp igen. Exempel: svampar, bakterier eller daggmaskar.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "nedbrytare",
+     "accept": [
+      "maskar",
+      "mögelsvampar"
+     ],
+     "wrong": [
+      "rävar"
+     ]
+    },
+    {
+     "no": "6",
+     "text": "Resonera om vad som kan hända i en sjö om för mycket gödsel rinner ut i den.",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 2
+     },
+     "answer": "Övergödning: alger växer kraftigt, dör och bryts ner av bakterier som förbrukar syret. Syrebrist gör att fiskar och bottendjur dör. Det kan motverkas med mindre gödsel och skyddszoner vid vatten.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "övergödning",
+     "accept": [],
+     "wrong": [
+      "sjön blir renare"
+     ]
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 5
+    },
+    {
+     "grade": "C",
+     "total": 9,
+     "min_ca": 3
+    },
+    {
+     "grade": "A",
+     "total": 12,
+     "min_a": 2
+    }
+   ],
+   "max": {
+    "E": 6,
+    "C": 4,
+    "A": 2
+   }
+  }
+ },
+ {
+  "id": "hist-ak9-forsta-varldskriget",
+  "subject": "Historia",
+  "grade": "åk 9",
+  "title": "Prov: Första världskriget",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Prov: Första världskriget – Historia åk 9\n\n1. Vilka år pågick första världskriget? (1/0/0)\n2. Vilken händelse i Sarajevo brukar räknas som den utlösande orsaken? (1/0/0)\n3. Nämn de två stora allianserna i kriget. (2/0/0)\n4. Beskriv hur skyttegravskriget fungerade på västfronten. (1/1/0)\n5. Varför gick USA med i kriget 1917? Ge två skäl. (0/2/0)\n6. Resonera om hur Versaillesfreden kan ha bidragit till ett nytt krig. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. 1914–1918. Full poäng för svar som stämmer med facit.\n2. Mordet på den österrikiske tronföljaren Franz Ferdinand 1914. Full poäng för svar som stämmer med facit.\n3. Ententen (Storbritannien, Frankrike, Ryssland) och Centralmakterna (Tyskland, Österrike-Ungern). Full poäng för svar som stämmer med facit.\n4. Arméerna grävde ner sig i långa skyttegravar från Nordsjön till Schweiz. Fronten rörde sig nästan inte, anfall över ingenmansland med kulsprutor och taggtråd gav enorma förluster. Full poäng för svar som stämmer med facit.\n5. Tysklands oinskränkta ubåtskrig sänkte amerikanska fartyg, och Zimmermann-telegrammet där Tyskland försökte få Mexiko att anfalla USA. Full poäng för svar som stämmer med facit.\n6. Tyskland fick ta på sig skulden, betala stora skadestånd, förlora land och rusta ner. Det skapade förödmjukelse och ekonomiska problem som nazisterna utnyttjade; samtidigt var det inte freden ensam utan också depressionen på 1930-talet. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 5 poäng\nC: minst 9 poäng, varav minst 3 C/A-poäng\nA: minst 11 poäng, varav minst 2 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Vilka år pågick första världskriget?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "1914–1918.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "årtal",
+     "accept": [
+      "från 1914 till 1918",
+      "nittonhundrafjorton till nittonhundraarton"
+     ],
+     "wrong": [
+      "1939–1945"
+     ]
+    },
+    {
+     "no": "2",
+     "text": "Vilken händelse i Sarajevo brukar räknas som den utlösande orsaken?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Mordet på den österrikiske tronföljaren Franz Ferdinand 1914.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "orsaker",
+     "accept": [
+      "skottet mot Franz Ferdinand",
+      "att ärkehertigen sköts"
+     ],
+     "wrong": [
+      "Hitler invaderade Polen"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "Nämn de två stora allianserna i kriget.",
+     "points": {
+      "E": 2,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Ententen (Storbritannien, Frankrike, Ryssland) och Centralmakterna (Tyskland, Österrike-Ungern).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "allianser",
+     "accept": [
+      "trippelententen och centralmakterna"
+     ],
+     "wrong": [
+      "axelmakterna och de allierade"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "Beskriv hur skyttegravskriget fungerade på västfronten.",
+     "points": {
+      "E": 1,
+      "C": 1,
+      "A": 0
+     },
+     "answer": "Arméerna grävde ner sig i långa skyttegravar från Nordsjön till Schweiz. Fronten rörde sig nästan inte, anfall över ingenmansland med kulsprutor och taggtråd gav enorma förluster.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "skyttegravskriget",
+     "accept": [],
+     "wrong": []
+    },
+    {
+     "no": "5",
+     "text": "Varför gick USA med i kriget 1917? Ge två skäl.",
+     "points": {
+      "E": 0,
+      "C": 2,
+      "A": 0
+     },
+     "answer": "Tysklands oinskränkta ubåtskrig sänkte amerikanska fartyg, och Zimmermann-telegrammet där Tyskland försökte få Mexiko att anfalla USA.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "USA",
+     "accept": [
+      "ubåtskriget",
+      "telegrammet till Mexiko"
+     ],
+     "wrong": [
+      "Pearl Harbor"
+     ]
+    },
+    {
+     "no": "6",
+     "text": "Resonera om hur Versaillesfreden kan ha bidragit till ett nytt krig.",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 2
+     },
+     "answer": "Tyskland fick ta på sig skulden, betala stora skadestånd, förlora land och rusta ner. Det skapade förödmjukelse och ekonomiska problem som nazisterna utnyttjade; samtidigt var det inte freden ensam utan också depressionen på 1930-talet.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "Versaillesfreden",
+     "accept": [],
+     "wrong": []
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 5
+    },
+    {
+     "grade": "C",
+     "total": 9,
+     "min_ca": 3
+    },
+    {
+     "grade": "A",
+     "total": 11,
+     "min_a": 2
+    }
+   ],
+   "max": {
+    "E": 5,
+    "C": 4,
+    "A": 2
+   }
+  }
+ },
+ {
+  "id": "ma1b-ekvationer",
+  "subject": "Matematik",
+  "grade": "Matematik 1b",
+  "title": "Prov: Ekvationer och funktioner",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Prov: Ekvationer och funktioner – Matematik Matematik 1b\n\n1. Lös ekvationen 3x + 5 = 20. (1/0/0)\n2. Lös ekvationen 2(x − 4) = x + 3. (2/0/0)\n3. Vilken lutning har linjen y = −2x + 7? (1/0/0)\n4. En linje går genom punkterna (1, 3) och (3, 11). Bestäm linjens ekvation. (0/2/0)\n5. Ett gym kostar 300 kr i startavgift och 150 kr per månad. Efter hur många månader har man betalat 1 950 kr? (1/1/0)\n6. Två mobilabonnemang: A kostar 99 kr/mån + 2 kr per GB, B kostar 149 kr/mån fritt surf. Vid hur många GB per månad blir B billigast? Motivera. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. x = 5 Full poäng för svar som stämmer med facit.\n2. x = 11 Full poäng för svar som stämmer med facit.\n3. k = −2 Full poäng för svar som stämmer med facit.\n4. k = (11 − 3)/(3 − 1) = 4, m = 3 − 4 = −1, alltså y = 4x − 1. Full poäng för svar som stämmer med facit.\n5. 300 + 150x = 1 950 ger x = 11 månader. Full poäng för svar som stämmer med facit.\n6. 99 + 2x = 149 ger x = 25. Över 25 GB per månad är B billigast (vid exakt 25 GB kostar de lika). Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 4 poäng\nC: minst 8 poäng, varav minst 3 C/A-poäng\nA: minst 11 poäng, varav minst 2 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Lös ekvationen 3x + 5 = 20.",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "x = 5",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "ekvationer",
+     "accept": [
+      "fem"
+     ],
+     "wrong": [
+      "x = 25/3",
+      "x = 15"
+     ]
+    },
+    {
+     "no": "2",
+     "text": "Lös ekvationen 2(x − 4) = x + 3.",
+     "points": {
+      "E": 2,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "x = 11",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "ekvationer",
+     "accept": [
+      "elva"
+     ],
+     "wrong": [
+      "x = 7",
+      "x = 1"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "Vilken lutning har linjen y = −2x + 7?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "k = −2",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "räta linjen",
+     "accept": [
+      "minus två",
+      "-2"
+     ],
+     "wrong": [
+      "7",
+      "2"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "En linje går genom punkterna (1, 3) och (3, 11). Bestäm linjens ekvation.",
+     "points": {
+      "E": 0,
+      "C": 2,
+      "A": 0
+     },
+     "answer": "k = (11 − 3)/(3 − 1) = 4, m = 3 − 4 = −1, alltså y = 4x − 1.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "räta linjen",
+     "accept": [
+      "y = 4x - 1",
+      "y är fyra x minus ett"
+     ],
+     "wrong": [
+      "y = 4x + 3",
+      "y = 8x - 5"
+     ]
+    },
+    {
+     "no": "5",
+     "text": "Ett gym kostar 300 kr i startavgift och 150 kr per månad. Efter hur många månader har man betalat 1 950 kr?",
+     "points": {
+      "E": 1,
+      "C": 1,
+      "A": 0
+     },
+     "answer": "300 + 150x = 1 950 ger x = 11 månader.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "problemlösning",
+     "accept": [
+      "elva månader"
+     ],
+     "wrong": [
+      "13 månader",
+      "10 månader"
+     ]
+    },
+    {
+     "no": "6",
+     "text": "Två mobilabonnemang: A kostar 99 kr/mån + 2 kr per GB, B kostar 149 kr/mån fritt surf. Vid hur många GB per månad blir B billigast? Motivera.",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 2
+     },
+     "answer": "99 + 2x = 149 ger x = 25. Över 25 GB per månad är B billigast (vid exakt 25 GB kostar de lika).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "problemlösning",
+     "accept": [
+      "mer än 25 GB",
+      "fler än tjugofem gigabyte"
+     ],
+     "wrong": [
+      "50 GB",
+      "25 GB eller mindre"
+     ]
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 4
+    },
+    {
+     "grade": "C",
+     "total": 8,
+     "min_ca": 3
+    },
+    {
+     "grade": "A",
+     "total": 11,
+     "min_a": 2
+    }
+   ],
+   "max": {
+    "E": 5,
+    "C": 4,
+    "A": 2
+   }
+  }
+ },
+ {
+  "id": "ke1-mol",
+  "subject": "Kemi",
+  "grade": "Kemi 1",
+  "title": "Prov: Stökiometri och mol",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Prov: Stökiometri och mol – Kemi Kemi 1\n\n1. Vad är molmassan för vatten, H2O? (H = 1,0 g/mol, O = 16,0 g/mol) (1/0/0)\n2. Hur många mol är 88 g koldioxid, CO2? (C = 12,0, O = 16,0) (1/1/0)\n3. Balansera reaktionsformeln: H2 + O2 → H2O (1/0/0)\n4. Vad är koncentrationen om 0,50 mol NaCl löses i 250 ml vatten? (0/2/0)\n5. Hur många gram syrgas behövs för att förbränna 16 g metan? CH4 + 2 O2 → CO2 + 2 H2O (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. 18,0 g/mol Full poäng för svar som stämmer med facit.\n2. M = 44,0 g/mol, n = 88/44 = 2,0 mol. Full poäng för svar som stämmer med facit.\n3. 2 H2 + O2 → 2 H2O Full poäng för svar som stämmer med facit.\n4. c = n/V = 0,50/0,250 = 2,0 mol/dm³ Full poäng för svar som stämmer med facit.\n5. n(CH4) = 16/16 = 1,0 mol, n(O2) = 2,0 mol, m = 2,0 · 32 = 64 g. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 6 poäng, varav minst 2 C/A-poäng\nA: minst 8 poäng, varav minst 1 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Vad är molmassan för vatten, H2O? (H = 1,0 g/mol, O = 16,0 g/mol)",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "18,0 g/mol",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "molmassa",
+     "accept": [
+      "18 gram per mol"
+     ],
+     "wrong": [
+      "17 g/mol",
+      "34 g/mol"
+     ]
+    },
+    {
+     "no": "2",
+     "text": "Hur många mol är 88 g koldioxid, CO2? (C = 12,0, O = 16,0)",
+     "points": {
+      "E": 1,
+      "C": 1,
+      "A": 0
+     },
+     "answer": "M = 44,0 g/mol, n = 88/44 = 2,0 mol.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "substansmängd",
+     "accept": [
+      "två mol"
+     ],
+     "wrong": [
+      "0,5 mol",
+      "4 mol"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "Balansera reaktionsformeln: H2 + O2 → H2O",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "2 H2 + O2 → 2 H2O",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "reaktionsformler",
+     "accept": [
+      "två H2 plus O2 ger två H2O"
+     ],
+     "wrong": [
+      "H2 + O2 → H2O2"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "Vad är koncentrationen om 0,50 mol NaCl löses i 250 ml vatten?",
+     "points": {
+      "E": 0,
+      "C": 2,
+      "A": 0
+     },
+     "answer": "c = n/V = 0,50/0,250 = 2,0 mol/dm³",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "koncentration",
+     "accept": [
+      "2 molar",
+      "två mol per liter"
+     ],
+     "wrong": [
+      "0,125 mol/dm³",
+      "125 mol/dm³"
+     ]
+    },
+    {
+     "no": "5",
+     "text": "Hur många gram syrgas behövs för att förbränna 16 g metan? CH4 + 2 O2 → CO2 + 2 H2O",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 2
+     },
+     "answer": "n(CH4) = 16/16 = 1,0 mol, n(O2) = 2,0 mol, m = 2,0 · 32 = 64 g.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "stökiometri",
+     "accept": [
+      "sextiofyra gram"
+     ],
+     "wrong": [
+      "32 g",
+      "16 g"
+     ]
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 3
+    },
+    {
+     "grade": "C",
+     "total": 6,
+     "min_ca": 2
+    },
+    {
+     "grade": "A",
+     "total": 8,
+     "min_a": 1
+    }
+   ],
+   "max": {
+    "E": 3,
+    "C": 4,
+    "A": 2
+   }
+  }
+ },
+ {
+  "id": "fy-ak9-ellara",
+  "subject": "Fysik",
+  "grade": "åk 9",
+  "title": "Prov: Ellära",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Prov: Ellära – Fysik åk 9\n\n1. Vilken enhet mäts elektrisk ström i? (1/0/0)\n2. Skriv Ohms lag. (1/0/0)\n3. En lampa har resistansen 6 Ω och spänningen 12 V. Hur stor är strömmen? (1/1/0)\n4. Vad är skillnaden mellan serie- och parallellkoppling när en lampa går sönder? (0/2/0)\n5. En vattenkokare på 2 000 W används 3 minuter varje dag i 30 dagar. Hur mycket energi går åt i kWh, och vad kostar det om 1 kWh kostar 2 kr? (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Ampere (A). Full poäng för svar som stämmer med facit.\n2. U = R · I (spänning = resistans gånger ström). Full poäng för svar som stämmer med facit.\n3. I = 12/6 = 2 A Full poäng för svar som stämmer med facit.\n4. I seriekoppling bryts hela kretsen och alla lampor slocknar; i parallellkoppling lyser de andra lamporna eftersom strömmen har andra vägar. Full poäng för svar som stämmer med facit.\n5. Tid: 3 · 30 = 90 min = 1,5 h. Energi: 2 kW · 1,5 h = 3 kWh. Kostnad: 6 kr. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 6 poäng, varav minst 2 C/A-poäng\nA: minst 8 poäng, varav minst 1 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Vilken enhet mäts elektrisk ström i?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Ampere (A).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "ström",
+     "accept": [
+      "ampär"
+     ],
+     "wrong": [
+      "volt",
+      "watt"
+     ]
+    },
+    {
+     "no": "2",
+     "text": "Skriv Ohms lag.",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "U = R · I (spänning = resistans gånger ström).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "Ohms lag",
+     "accept": [
+      "U är lika med R gånger I",
+      "R = U/I"
+     ],
+     "wrong": [
+      "P = U · I"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "En lampa har resistansen 6 Ω och spänningen 12 V. Hur stor är strömmen?",
+     "points": {
+      "E": 1,
+      "C": 1,
+      "A": 0
+     },
+     "answer": "I = 12/6 = 2 A",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "Ohms lag",
+     "accept": [
+      "två ampere"
+     ],
+     "wrong": [
+      "72 A",
+      "0,5 A"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "Vad är skillnaden mellan serie- och parallellkoppling när en lampa går sönder?",
+     "points": {
+      "E": 0,
+      "C": 2,
+      "A": 0
+     },
+     "answer": "I seriekoppling bryts hela kretsen och alla lampor slocknar; i parallellkoppling lyser de andra lamporna eftersom strömmen har andra vägar.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "kopplingar",
+     "accept": [],
+     "wrong": []
+    },
+    {
+     "no": "5",
+     "text": "En vattenkokare på 2 000 W används 3 minuter varje dag i 30 dagar. Hur mycket energi går åt i kWh, och vad kostar det om 1 kWh kostar 2 kr?",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 2
+     },
+     "answer": "Tid: 3 · 30 = 90 min = 1,5 h. Energi: 2 kW · 1,5 h = 3 kWh. Kostnad: 6 kr.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "energi",
+     "accept": [
+      "tre kilowattimmar och sex kronor"
+     ],
+     "wrong": [
+      "180 kWh",
+      "6 000 kWh"
+     ]
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 3
+    },
+    {
+     "grade": "C",
+     "total": 6,
+     "min_ca": 2
+    },
+    {
+     "grade": "A",
+     "total": 8,
+     "min_a": 1
+    }
+   ],
+   "max": {
+    "E": 3,
+    "C": 4,
+    "A": 2
+   }
+  }
+ },
+ {
+  "id": "eng6-grammar",
+  "subject": "Engelska",
+  "grade": "Engelska 6",
+  "title": "Test: Grammar and vocabulary",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Test: Grammar and vocabulary – Engelska Engelska 6\n\n1. Translate to English: 'Jag har bott här i tre år.' (1/0/0)\n2. What is the past tense of 'to seek'? (1/0/0)\n3. Choose the correct word: 'If I ___ rich, I would travel the world.' (was/were) (1/0/0)\n4. Explain the difference between 'affect' and 'effect'. (0/2/0)\n5. Give a synonym for 'ubiquitous' and use it in a sentence. (0/1/1)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. I have lived here for three years. Full poäng för svar som stämmer med facit.\n2. Sought. Full poäng för svar som stämmer med facit.\n3. were Full poäng för svar som stämmer med facit.\n4. 'Affect' is usually a verb (to influence); 'effect' is usually a noun (the result). Full poäng för svar som stämmer med facit.\n5. Omnipresent / everywhere / widespread, e.g. 'Smartphones are ubiquitous today.' Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 5 poäng, varav minst 2 C/A-poäng\nA: minst 7 poäng, varav minst 1 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Translate to English: 'Jag har bott här i tre år.'",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "I have lived here for three years.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "present perfect",
+     "accept": [
+      "I've been living here for three years"
+     ],
+     "wrong": [
+      "I live here since three years"
+     ]
+    },
+    {
+     "no": "2",
+     "text": "What is the past tense of 'to seek'?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Sought.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "irregular verbs",
+     "accept": [],
+     "wrong": [
+      "seeked"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "Choose the correct word: 'If I ___ rich, I would travel the world.' (was/were)",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "were",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "conditionals",
+     "accept": [],
+     "wrong": [
+      "will be"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "Explain the difference between 'affect' and 'effect'.",
+     "points": {
+      "E": 0,
+      "C": 2,
+      "A": 0
+     },
+     "answer": "'Affect' is usually a verb (to influence); 'effect' is usually a noun (the result).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "vocabulary",
+     "accept": [],
+     "wrong": [
+      "they mean exactly the same"
+     ]
+    },
+    {
+     "no": "5",
+     "text": "Give a synonym for 'ubiquitous' and use it in a sentence.",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 1
+     },
+     "answer": "Omnipresent / everywhere / widespread, e.g. 'Smartphones are ubiquitous today.'",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "vocabulary",
+     "accept": [
+      "omnipresent",
+      "everywhere",
+      "widespread"
+     ],
+     "wrong": [
+      "rare",
+      "unique"
+     ]
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 3
+    },
+    {
+     "grade": "C",
+     "total": 5,
+     "min_ca": 2
+    },
+    {
+     "grade": "A",
+     "total": 7,
+     "min_a": 1
+    }
+   ],
+   "max": {
+    "E": 3,
+    "C": 3,
+    "A": 1
+   }
+  }
+ },
+ {
+  "id": "sv1-sprakhistoria",
+  "subject": "Svenska",
+  "grade": "Svenska 1",
+  "title": "Prov: Svensk språkhistoria",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Prov: Svensk språkhistoria – Svenska Svenska 1\n\n1. Vad kallas skriftsystemet som användes i Norden på vikingatiden? (1/0/0)\n2. Vilket språk lånade svenskan många ord från under Hansans tid? (1/0/0)\n3. Ge två exempel på franska lånord i svenskan. (1/0/0)\n4. Varför är Gustav Vasas bibel från 1541 viktig för svenskan? (0/2/0)\n5. Resonera om hur engelskan påverkar svenskan i dag. Ge för- och nackdelar. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Runor (futharken). Full poäng för svar som stämmer med facit.\n2. Lågtyska. Full poäng för svar som stämmer med facit.\n3. T.ex. trottoar, paraply, fåtölj, byrå. Full poäng för svar som stämmer med facit.\n4. Den blev en förebild för stavning och skriftspråk och spreds till kyrkor över hela landet, vilket gjorde skriftspråket mer enhetligt. Full poäng för svar som stämmer med facit.\n5. Många lånord (t.ex. inom teknik och ungdomsspråk) gör språket rikare och underlättar internationell kontakt, men kan leda till domänförlust när svenska inte längre används inom vissa områden. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 5 poäng, varav minst 2 C/A-poäng\nA: minst 7 poäng, varav minst 1 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Vad kallas skriftsystemet som användes i Norden på vikingatiden?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Runor (futharken).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "runsvenska",
+     "accept": [
+      "runalfabetet",
+      "futhark"
+     ],
+     "wrong": [
+      "latin",
+      "kilskrift"
+     ]
+    },
+    {
+     "no": "2",
+     "text": "Vilket språk lånade svenskan många ord från under Hansans tid?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Lågtyska.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "lånord",
+     "accept": [
+      "tyska",
+      "medellågtyska"
+     ],
+     "wrong": [
+      "franska",
+      "engelska"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "Ge två exempel på franska lånord i svenskan.",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "T.ex. trottoar, paraply, fåtölj, byrå.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "lånord",
+     "accept": [
+      "paraply",
+      "trottoar",
+      "fåtölj",
+      "byrå",
+      "nivå",
+      "ateljé"
+     ],
+     "wrong": [
+      "skräp",
+      "dator"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "Varför är Gustav Vasas bibel från 1541 viktig för svenskan?",
+     "points": {
+      "E": 0,
+      "C": 2,
+      "A": 0
+     },
+     "answer": "Den blev en förebild för stavning och skriftspråk och spreds till kyrkor över hela landet, vilket gjorde skriftspråket mer enhetligt.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "nysvenska",
+     "accept": [
+      "den gjorde stavningen enhetlig"
+     ],
+     "wrong": []
+    },
+    {
+     "no": "5",
+     "text": "Resonera om hur engelskan påverkar svenskan i dag. Ge för- och nackdelar.",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 2
+     },
+     "answer": "Många lånord (t.ex. inom teknik och ungdomsspråk) gör språket rikare och underlättar internationell kontakt, men kan leda till domänförlust när svenska inte längre används inom vissa områden.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "engelska lånord",
+     "accept": [
+      "domänförlust"
+     ],
+     "wrong": []
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 3
+    },
+    {
+     "grade": "C",
+     "total": 5,
+     "min_ca": 2
+    },
+    {
+     "grade": "A",
+     "total": 7,
+     "min_a": 1
+    }
+   ],
+   "max": {
+    "E": 3,
+    "C": 3,
+    "A": 2
+   }
+  }
+ },
+ {
+  "id": "ge-ak7-klimat",
+  "subject": "Geografi",
+  "grade": "åk 7",
+  "title": "Prov: Klimat och vegetationszoner",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Prov: Klimat och vegetationszoner – Geografi åk 7\n\n1. Vad är skillnaden mellan väder och klimat? (1/0/0)\n2. Vilken vegetationszon täcker större delen av Norrland? (1/0/0)\n3. Varför är det varmare vid ekvatorn än vid polerna? (1/1/0)\n4. Vad kallas den varma havsström som gör Skandinaviens klimat mildare? (1/0/0)\n5. Förklara varför det regnar mycket på västsidan av den skandinaviska fjällkedjan. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Väder är hur det är just nu eller några dagar; klimat är genomsnittet under lång tid (ungefär 30 år). Full poäng för svar som stämmer med facit.\n2. Barrskogszonen (tajgan). Full poäng för svar som stämmer med facit.\n3. Solstrålarna träffar jorden mer rakt vid ekvatorn och värmer en mindre yta; vid polerna kommer de snett och sprids över en större yta. Full poäng för svar som stämmer med facit.\n4. Golfströmmen. Full poäng för svar som stämmer med facit.\n5. Fuktiga västvindar från Atlanten tvingas upp över fjällen, luften kyls, vattenångan kondenserar och det regnar på lovartsidan (orografisk nederbörd); på östsidan blir det regnskugga. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 6 poäng, varav minst 2 C/A-poäng\nA: minst 8 poäng, varav minst 1 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Vad är skillnaden mellan väder och klimat?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Väder är hur det är just nu eller några dagar; klimat är genomsnittet under lång tid (ungefär 30 år).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "väder och klimat",
+     "accept": [],
+     "wrong": []
+    },
+    {
+     "no": "2",
+     "text": "Vilken vegetationszon täcker större delen av Norrland?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Barrskogszonen (tajgan).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "vegetationszoner",
+     "accept": [
+      "tajga",
+      "barrskog"
+     ],
+     "wrong": [
+      "tundra",
+      "stäpp"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "Varför är det varmare vid ekvatorn än vid polerna?",
+     "points": {
+      "E": 1,
+      "C": 1,
+      "A": 0
+     },
+     "answer": "Solstrålarna träffar jorden mer rakt vid ekvatorn och värmer en mindre yta; vid polerna kommer de snett och sprids över en större yta.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "solinstrålning",
+     "accept": [],
+     "wrong": [
+      "ekvatorn ligger närmare solen"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "Vad kallas den varma havsström som gör Skandinaviens klimat mildare?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Golfströmmen.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "havsströmmar",
+     "accept": [
+      "Nordatlantiska driften"
+     ],
+     "wrong": [
+      "El Niño",
+      "Humboldtströmmen"
+     ]
+    },
+    {
+     "no": "5",
+     "text": "Förklara varför det regnar mycket på västsidan av den skandinaviska fjällkedjan.",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 2
+     },
+     "answer": "Fuktiga västvindar från Atlanten tvingas upp över fjällen, luften kyls, vattenångan kondenserar och det regnar på lovartsidan (orografisk nederbörd); på östsidan blir det regnskugga.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "nederbörd",
+     "accept": [
+      "orografisk nederbörd",
+      "regnskugga"
+     ],
+     "wrong": []
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 3
+    },
+    {
+     "grade": "C",
+     "total": 6,
+     "min_ca": 2
+    },
+    {
+     "grade": "A",
+     "total": 8,
+     "min_a": 1
+    }
+   ],
+   "max": {
+    "E": 4,
+    "C": 2,
+    "A": 2
+   }
+  }
+ },
+ {
+  "id": "sh1b-demokrati",
+  "subject": "Samhällskunskap",
+  "grade": "Samhällskunskap 1b",
+  "title": "Prov: Demokrati och statsskick",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Prov: Demokrati och statsskick – Samhällskunskap Samhällskunskap 1b\n\n1. Hur många ledamöter har Sveriges riksdag? (1/0/0)\n2. Hur ofta är det ordinarie riksdagsval i Sverige? (1/0/0)\n3. Vilken spärr måste ett parti klara för att komma in i riksdagen? (1/0/0)\n4. Förklara maktdelningen mellan riksdag, regering och domstolar. (0/2/0)\n5. Resonera om för- och nackdelar med direktdemokrati jämfört med representativ demokrati. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. 349. Full poäng för svar som stämmer med facit.\n2. Vart fjärde år. Full poäng för svar som stämmer med facit.\n3. 4 procent av rösterna i hela landet (eller 12 procent i en valkrets). Full poäng för svar som stämmer med facit.\n4. Riksdagen stiftar lagar och kontrollerar regeringen, regeringen styr landet och verkställer besluten, domstolarna dömer enligt lagarna och är självständiga. Full poäng för svar som stämmer med facit.\n5. Direktdemokrati ger medborgarna direkt inflytande och legitimitet men är långsam, kräver mycket kunskap av alla och kan ge kortsiktiga beslut; representativ demokrati är effektivare men avståndet till väljarna blir större. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 5 poäng, varav minst 2 C/A-poäng\nA: minst 7 poäng, varav minst 1 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Hur många ledamöter har Sveriges riksdag?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "349.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "riksdagen",
+     "accept": [
+      "trehundrafyrtionio"
+     ],
+     "wrong": [
+      "350",
+      "349 plus talmannen"
+     ]
+    },
+    {
+     "no": "2",
+     "text": "Hur ofta är det ordinarie riksdagsval i Sverige?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Vart fjärde år.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "val",
+     "accept": [
+      "var fjärde år",
+      "fjärde året"
+     ],
+     "wrong": [
+      "vart tredje år",
+      "vart femte år"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "Vilken spärr måste ett parti klara för att komma in i riksdagen?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "4 procent av rösterna i hela landet (eller 12 procent i en valkrets).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "val",
+     "accept": [
+      "fyra procent",
+      "fyraprocentsspärren"
+     ],
+     "wrong": [
+      "5 procent",
+      "10 procent"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "Förklara maktdelningen mellan riksdag, regering och domstolar.",
+     "points": {
+      "E": 0,
+      "C": 2,
+      "A": 0
+     },
+     "answer": "Riksdagen stiftar lagar och kontrollerar regeringen, regeringen styr landet och verkställer besluten, domstolarna dömer enligt lagarna och är självständiga.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "maktdelning",
+     "accept": [],
+     "wrong": []
+    },
+    {
+     "no": "5",
+     "text": "Resonera om för- och nackdelar med direktdemokrati jämfört med representativ demokrati.",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 2
+     },
+     "answer": "Direktdemokrati ger medborgarna direkt inflytande och legitimitet men är långsam, kräver mycket kunskap av alla och kan ge kortsiktiga beslut; representativ demokrati är effektivare men avståndet till väljarna blir större.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "demokratimodeller",
+     "accept": [],
+     "wrong": []
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 3
+    },
+    {
+     "grade": "C",
+     "total": 5,
+     "min_ca": 2
+    },
+    {
+     "grade": "A",
+     "total": 7,
+     "min_a": 1
+    }
+   ],
+   "max": {
+    "E": 3,
+    "C": 3,
+    "A": 2
+   }
+  }
+ },
+ {
+  "id": "re-ak8-varldsreligioner",
+  "subject": "Religionskunskap",
+  "grade": "åk 8",
+  "title": "Prov: Världsreligionerna",
+  "source": "påhittat av Oscar (QA), ingen elevtext",
+  "exam_text": "Prov: Världsreligionerna – Religionskunskap åk 8\n\n1. Vad heter islams heliga skrift? (1/0/0)\n2. Vad kallas judendomens vilodag och vilken dag börjar den? (1/0/0)\n3. Vad betyder karma inom hinduism och buddhism? (1/1/0)\n4. Nämn de fyra ädla sanningarna i buddhismen i korthet. (0/2/0)\n5. Jämför synen på livet efter döden i kristendomen och hinduismen. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Koranen. Full poäng för svar som stämmer med facit.\n2. Sabbaten (shabbat), som börjar vid solnedgången på fredagen. Full poäng för svar som stämmer med facit.\n3. Att handlingar får följder: goda handlingar ger goda följder och dåliga ger dåliga, även i kommande liv. Full poäng för svar som stämmer med facit.\n4. Livet innebär lidande; lidandet orsakas av begär; lidandet kan upphöra (nirvana); vägen dit är den åttafaldiga vägen. Full poäng för svar som stämmer med facit.\n5. Kristendomen: ett liv, sedan uppståndelse och dom (himmel/helvete). Hinduismen: återfödelse (samsara) styrd av karma tills själen (atman) befrias (moksha). Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 5 poäng, varav minst 2 C/A-poäng\nA: minst 7 poäng, varav minst 1 A-poäng",
+  "key": {
+   "tasks": [
+    {
+     "no": "1",
+     "text": "Vad heter islams heliga skrift?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Koranen.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "islam",
+     "accept": [
+      "Qur'an"
+     ],
+     "wrong": [
+      "Toran",
+      "Vedaskrifterna"
+     ]
+    },
+    {
+     "no": "2",
+     "text": "Vad kallas judendomens vilodag och vilken dag börjar den?",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "Sabbaten (shabbat), som börjar vid solnedgången på fredagen.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "judendom",
+     "accept": [
+      "shabbat",
+      "fredag kväll"
+     ],
+     "wrong": [
+      "söndag",
+      "ramadan"
+     ]
+    },
+    {
+     "no": "3",
+     "text": "Vad betyder karma inom hinduism och buddhism?",
+     "points": {
+      "E": 1,
+      "C": 1,
+      "A": 0
+     },
+     "answer": "Att handlingar får följder: goda handlingar ger goda följder och dåliga ger dåliga, även i kommande liv.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "karma",
+     "accept": [],
+     "wrong": [
+      "ödet är bestämt av gudarna från början"
+     ]
+    },
+    {
+     "no": "4",
+     "text": "Nämn de fyra ädla sanningarna i buddhismen i korthet.",
+     "points": {
+      "E": 0,
+      "C": 2,
+      "A": 0
+     },
+     "answer": "Livet innebär lidande; lidandet orsakas av begär; lidandet kan upphöra (nirvana); vägen dit är den åttafaldiga vägen.",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "buddhism",
+     "accept": [
+      "den åttafaldiga vägen"
+     ],
+     "wrong": []
+    },
+    {
+     "no": "5",
+     "text": "Jämför synen på livet efter döden i kristendomen och hinduismen.",
+     "points": {
+      "E": 0,
+      "C": 1,
+      "A": 2
+     },
+     "answer": "Kristendomen: ett liv, sedan uppståndelse och dom (himmel/helvete). Hinduismen: återfödelse (samsara) styrd av karma tills själen (atman) befrias (moksha).",
+     "assessment": "Full poäng för svar som stämmer med facit.",
+     "topic": "liv efter döden",
+     "accept": [
+      "samsara",
+      "moksha",
+      "återfödelse"
+     ],
+     "wrong": []
+    }
+   ],
+   "boundaries": [
+    {
+     "grade": "E",
+     "total": 3
+    },
+    {
+     "grade": "C",
+     "total": 5,
+     "min_ca": 2
+    },
+    {
+     "grade": "A",
+     "total": 7,
+     "min_a": 1
+    }
+   ],
+   "max": {
+    "E": 3,
+    "C": 4,
+    "A": 2
+   }
+  }
+ }
+]
