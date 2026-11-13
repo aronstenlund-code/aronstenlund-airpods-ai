@@ -1,0 +1,54 @@
+name: Apptest repetition mode (T18)
+
+# Toby 2's T18: Angela's A78–A81 in the Simulator with mock sound (quiet tones of known length, 0 ElevenLabs), the
+# real RepetitionSession, AVAudioPlayer and timer, presses through RemoteCommandHub. Free (no backend calls).
+# Manual, and on Toby's branch when the test changes. Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Repetition/**"
+      - "scripts/apptest/repetition*"
+      - ".github/workflows/apptest-repetition.yml"
+
+concurrency:
+  group: apptest-repetition-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repetition:
+    name: T18 repetition (Simulator, mock sound)
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Repetition
+        run: |
+          bash scripts/apptest/repetition.sh
+          STATUS=$?
+          cat apptest-out/repetition/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-repetition
+          path: |
+            apptest-out/repetition
+            !apptest-out/repetition/audio/*.wav
+            !apptest-out/repetition/logs/*.xcresult
+          retention-days: 14
