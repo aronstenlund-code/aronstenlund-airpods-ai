@@ -1,0 +1,777 @@
+[
+ {
+  "id": "bio-ak8-fotosyntes",
+  "photos": 10,
+  "text_chars": 272,
+  "summary": {
+   "subject": "Biologi",
+   "grade": "åk 8",
+   "covers": "Ekologi och begrepp som ekosystem, population och samhälle, fotosyntesen med ord och formel, producenter, konsumenter och nedbrytare, näringskedjor och näringsväv, energiflödet, kolets kretslopp och övergödning samt hur övergödning kan motverkas."
+  },
+  "questions": 20,
+  "t_questions_s": 9.3,
+  "t_answers_s": 13.2,
+  "t_total_s": 22.5,
+  "q_le5": 12,
+  "q_le8": 20,
+  "q_understanding": 14,
+  "answered": 20,
+  "d145": 20,
+  "long_words_p50": 95,
+  "long_words_max": 110,
+  "short_words_max": 26,
+  "chars_short": 2207,
+  "chars_long": 11425,
+  "chars_questions": 676,
+  "cost_plan_usd": 0.0029671,
+  "cost_answers_usd": 0.06596,
+  "items": [
+   {
+    "question": "Varför behövs klorofyll?",
+    "short": "Klorofyll är det gröna färgämnet i bladens kloroplaster som fångar upp ljusenergi, och utan ljusenergi kan växten inte göra fotosyntes.",
+    "long": "Klorofyll är det gröna färgämnet i bladens kloroplaster som fångar upp ljusenergi, och utan ljusenergi kan växten inte göra fotosyntes. Ljusenergin är det som driver hela processen, där koldioxid och vatten omvandlas till glukos och syre. Klorofyllet gör alltså att solens energi kan tas om hand och användas av växten. Det är också klorofyllet som gör bladen gröna. Eftersom växten på så sätt tillverkar sin egen näring kallas den producent. Alla andra organismer i näringskedjan är beroende av det som producenterna bygger upp med hjälp av klorofyll, så färgämnet är grunden för nästan hela ekosystemet."
+   },
+   {
+    "question": "Vad händer med koldioxid vid fotosyntesen?",
+    "short": "Koldioxid tas upp från luften genom klyvöppningarna i bladen och används tillsammans med vatten och ljusenergi för att bilda glukos.",
+    "long": "Koldioxid tas upp från luften genom klyvöppningarna i bladen och används tillsammans med vatten och ljusenergi för att bilda glukos. Koldioxidens kol binds alltså in i glukosen, som sedan kan byggas om till stärkelse och cellulosa. På så sätt tas koldioxid bort ur luften och blir en del av växten. Detta är en viktig del av kolets kretslopp. Kolet följer sedan med när djur äter växten. Det släpps ut som koldioxid igen när organismer andas och när döda växter och djur bryts ner av nedbrytare. Därför minskar växter mängden koldioxid i luften, medan förbränning av fossila bränslen ökar den."
+   },
+   {
+    "question": "Vad bildas vid fotosyntesen?",
+    "short": "Vid fotosyntesen bildas glukos, som är ett sockerämne, och syre.",
+    "long": "Vid fotosyntesen bildas glukos, som är ett sockerämne, och syre. Det sker när koldioxid och vatten reagerar med hjälp av ljusenergi i bladens kloroplaster. I ord blir det koldioxid plus vatten plus ljusenergi ger glukos plus syre. Med kemiska symboler tas sex koldioxidmolekyler och sex vattenmolekyler upp, och det bildas en glukosmolekyl och sex syremolekyler. Glukosen innehåller energi som växten kan använda, medan syret släpps ut i luften. Både glukos och syre är viktiga: glukosen för växtens egen tillväxt och för alla som äter växten, syret för att djur och människor ska kunna andas."
+   },
+   {
+    "question": "Varför släpps syre ut?",
+    "short": "Syret är en restprodukt som växten inte behöver från fotosyntesen, så det släpps ut i luften.",
+    "long": "Syret är en restprodukt som växten inte behöver från fotosyntesen, så det släpps ut i luften. Växten får det som den behöver, glukosen, och syret blir över när koldioxid och vatten har omvandlats. Syret lämnar bladen genom klyvöppningarna. Det är samma små öppningar som koldioxid tas in genom. För andra organismer är syret mycket värdefullt, eftersom djur, människor och nedbrytare behöver det för att andas och få energi. Fotosyntesen fyller därför på luftens syre hela tiden. Syret som gröna växter och alger släpper ut är alltså något som nästan allt liv är beroende av."
+   },
+   {
+    "question": "Vad används glukosen till?",
+    "short": "Glukosen används som energi för växtens liv och som byggmaterial, till exempel till cellulosa och stärkelse.",
+    "long": "Glukosen används som energi för växtens liv och som byggmaterial, till exempel till cellulosa och stärkelse. Energin i glukosen frigörs i växtens celler och driver allt som växten gör, som att växa och bilda nya delar. Som byggmaterial omvandlas glukosen till cellulosa, som bygger upp växtens cellväggar och gör den stadig. Den kan också omvandlas till stärkelse, som är ett förråd av energi som växten sparar till senare, till exempel i potatisknölar och frön. När ett djur äter växten förs energin vidare i näringskedjan. Därför är glukosen från fotosyntesen grunden för all energi i ekosystemet, eftersom växten är en producent."
+   },
+   {
+    "question": "Skillnad mellan förstahands- och andrahandskonsument?",
+    "short": "En förstahandskonsument äter växter och är alltså en växtätare, medan en andrahandskonsument äter växtätare och är ett rovdjur.",
+    "long": "En förstahandskonsument äter växter och är alltså en växtätare, medan en andrahandskonsument äter växtätare och är ett rovdjur. Skillnaden handlar om vilket steg i näringskedjan djuret står på. Växterna är producenter eftersom de tillverkar sin egen näring. Först kommer förstahandskonsumenten, till exempel haren som äter gräs. Sedan kommer andrahandskonsumenten, till exempel räven som äter haren. Äter något i sin tur räven kallas det tredjehandskonsument, och djuret allra högst upp kallas toppkonsument. Varje konsument får alltså sin energi från steget under sig i kedjan."
+   },
+   {
+    "question": "Varför blir kedjorna sällan längre än fem led?",
+    "short": "Kedjorna blir sällan längre än fem led eftersom energin minskar kraftigt för varje steg, så det till slut inte finns tillräckligt kvar för ännu ett led.",
+    "long": "Kedjorna blir sällan längre än fem led eftersom energin minskar kraftigt för varje steg, så det till slut inte finns tillräckligt kvar för ännu ett led. Vid varje steg går ungefär nittio procent av energin förlorad som värme, rörelse och sådant som inte äts upp. Bara cirka tio procent förs vidare till nästa led. Om växterna till exempel har tiotusen energienheter får växtätarna bara tusen, rovdjuren hundra och nästa led bara tio. Då räcker energin inte till att försörja många individer, och därför kan en kedja sällan bära fler än fyra eller fem led."
+   },
+   {
+    "question": "Varför finns färre rovdjur än växtätare?",
+    "short": "Det finns färre rovdjur än växtätare eftersom bara cirka tio procent av energin förs vidare från ett led till nästa.",
+    "long": "Det finns färre rovdjur än växtätare eftersom bara cirka tio procent av energin förs vidare från ett led till nästa. Växtätarna får sin energi från växterna, men största delen går förlorad som värme och rörelse eller finns i sådant som inte äts upp. Rovdjuren som äter växtätarna får därför mycket mindre energi att leva på. Det finns alltså inte mat nog för lika många rovdjur som växtätare. Detta ger en pyramid där växterna är flest, växtätarna färre och rovdjuren allra färst. Ett exempel är att ett område kan ha tusentals harar men bara ett fåtal rävar."
+   },
+   {
+    "question": "Vad händer med energin i kedjan?",
+    "short": "Energin minskar för varje steg: ungefär nittio procent går förlorad och bara cirka tio procent förs vidare till nästa led.",
+    "long": "Energin minskar för varje steg: ungefär nittio procent går förlorad och bara cirka tio procent förs vidare till nästa led. Energin kommer ursprungligen från solen, och växterna fångar upp en del av den genom fotosyntesen och lagrar den i glukos. När en växtätare äter växten används det mesta av energin av djuret själv, och den går förlorad som värme och rörelse. Dessutom finns det delar som inte äts upp eller som inte kan tas upp. Det som blir kvar förs vidare när nästa djur äter. Energin går alltså åt ett håll genom kedjan och minskar hela tiden, till skillnad från näringsämnena som kan återanvändas."
+   },
+   {
+    "question": "Varför bildas en näringsväv?",
+    "short": "En näringsväv bildas eftersom de flesta djur äter mer än en sorts föda, så näringskedjorna hakar i varandra.",
+    "long": "En näringsväv bildas eftersom de flesta djur äter mer än en sorts föda, så näringskedjorna hakar i varandra. En enskild näringskedja visar bara en väg, till exempel gräs, hare, räv. I naturen äter dock räven även andra djur, till exempel möss eller fåglar, och haren är inte den enda födan för flera rovdjur. När samma art ingår i flera kedjor hakar kedjorna i varandra och bildar ett nät, en näringsväv. Den ger en mer verklig bild av naturen. En näringsväv är också stabilare, för om en födokälla försvinner kan djuret ofta äta något annat."
+   },
+   {
+    "question": "Vad gör nedbrytare med döda växter?",
+    "short": "Nedbrytare, till exempel svampar, bakterier och daggmaskar, bryter ner döda växter till näringsämnen som hamnar i jorden.",
+    "long": "Nedbrytare, till exempel svampar, bakterier och daggmaskar, bryter ner döda växter till näringsämnen som hamnar i jorden. Näringsämnena i den döda växten blir på så sätt tillgängliga igen, eftersom levande växter kan ta upp dem med sina rötter. Det gäller även döda djur och rester från andra organismer. Nedbrytarna gör alltså att material från det som dött kan användas på nytt av nya växter, som sedan blir föda åt växtätare. Ett exempel är löv som faller på marken på hösten. Svampar, bakterier och daggmaskar äter och bryter ner dem, och det som blir kvar blir en del av jorden där träden senare kan hämta näring igen."
+   },
+   {
+    "question": "Varför stannar kretsloppet utan nedbrytare?",
+    "short": "Utan nedbrytare skulle näringsämnena ligga låsta i döda växter och djur, så att växterna inte kunde få dem igen och kretsloppet skulle stanna.",
+    "long": "Utan nedbrytare skulle näringsämnena ligga låsta i döda växter och djur, så att växterna inte kunde få dem igen och kretsloppet skulle stanna. Växterna behöver näringsämnen från jorden för att växa. Det är växterna som i sin tur är föda åt växtätarna, och därmed åt hela näringskedjan. Om ingen bröt ner det döda skulle näringen stanna kvar i döda kroppar, och till slut skulle jorden tömmas på det växterna behöver. Då skulle växterna dö, växtätarna få ingen mat och rovdjuren likaså. Nedbrytarna är därför en nödvändig länk som för tillbaka näringen från det döda till jorden och håller kretsloppet igång."
+   },
+   {
+    "question": "Hur kommer kol tillbaka till luften?",
+    "short": "Kol kommer tillbaka till luften som koldioxid när organismer andas och när döda växter och djur bryts ner.",
+    "long": "Kol kommer tillbaka till luften som koldioxid när organismer andas och när döda växter och djur bryts ner. Alla levande organismer andas, och då släpps koldioxid ut. När döda växter och djur bryts ner av nedbrytare frigörs också koldioxid till luften. Även när vi eldar fossila bränslen släpps koldioxid ut. Kolet går på så sätt runt i naturen. Växterna binder koldioxid från luften när de gör fotosyntes och bygger in kolet i sin glukos, sin cellulosa och sin stärkelse. Det kolet förs sedan vidare till djuren som äter växterna. Genom andning och nedbrytning kommer det till slut tillbaka som koldioxid i luften, och då kan växterna ta upp det igen."
+   },
+   {
+    "question": "Varför ökar koldioxidhalten när vi eldar?",
+    "short": "När vi eldar fossila bränslen frigörs kol som legat lagrat i miljontals år, och det släpps ut som koldioxid i luften.",
+    "long": "När vi eldar fossila bränslen frigörs kol som legat lagrat i miljontals år, och det släpps ut som koldioxid i luften. Fossila bränslen som kol, olja och naturgas har bildats av gamla organismer och har hållit kolet instängt under jorden i miljontals år. När vi eldar dem frigörs kolet som koldioxid på mycket kort tid. Naturens kretslopp hinner inte binda så mycket koldioxid så snabbt, eftersom växterna inte kan ta upp allt som släpps ut. Därför blir det mer och mer koldioxid kvar i luften, och halten ökar. Det är ett exempel på hur människans handlingar kan rubba ett kretslopp som annars hade varit i balans."
+   },
+   {
+    "question": "Vad orsakar övergödning i sjöar?",
+    "short": "Övergödning orsakas av att för mycket kväve och fosfor från gödsel och avlopp hamnar i sjön.",
+    "long": "Övergödning orsakas av att för mycket kväve och fosfor från gödsel och avlopp hamnar i sjön. Kväve och fosfor fungerar som näring för alger, som därför börjar växa kraftigt. När algerna sedan dör bryts de ner av bakterier. Bakterierna förbrukar syret i vattnet när de bryter ner algerna, och det blir syrebrist. Fiskar och bottendjur får då inte tillräckligt med syre och dör. Sjön förändras alltså kraftigt av det extra näringstillskottet. Man kan motverka övergödning genom att gödsla mindre och vid rätt tidpunkt, ha skyddszoner med gräs mellan åkrar och vattendrag, anlägga våtmarker som fångar näring och rena avloppsvatten bättre."
+   },
+   {
+    "question": "Varför dör fiskar vid övergödning?",
+    "short": "Fiskar dör vid övergödning eftersom syret i vattnet tar slut och de inte kan andas.",
+    "long": "Fiskar dör vid övergödning eftersom syret i vattnet tar slut och de inte kan andas. Det börjar med att för mycket kväve och fosfor från gödsel och avlopp hamnar i sjön. Då växer algerna kraftigt. När algerna sedan dör bryts de ner av bakterier, och bakterierna förbrukar syret i vattnet. Fiskar och bottendjur får syrebrist, och därför dör de. Det är alltså inte näringsämnena i sig som dödar fiskarna, utan kedjan av algblomning, nedbrytning och syrebrist."
+   },
+   {
+    "question": "Hur bidrar algerna till syrebrist?",
+    "short": "När algerna dör bryts de ner av bakterier som förbrukar syret i vattnet, och då uppstår syrebrist.",
+    "long": "När algerna dör bryts de ner av bakterier som förbrukar syret i vattnet, och då uppstår syrebrist. Näringsämnena gör att algerna växer extremt mycket, så det finns mängder av döda alger när de dör. Ju mer död växtmassa som finns, desto fler bakterier kan leva av den, och desto mer syre går åt när bakterierna andas. Syret förbrukas snabbare än det hinner ersättas, särskilt nära botten. Resultatet blir ett vatten där fiskar och bottendjur inte får tillräckligt med syre."
+   },
+   {
+    "question": "Hur kan man minska övergödning?",
+    "short": "Man kan minska övergödning genom att gödsla mindre och vid rätt tidpunkt, och genom att rena avloppsvatten bättre.",
+    "long": "Man kan minska övergödning genom att gödsla mindre och vid rätt tidpunkt, och genom att rena avloppsvatten bättre. Målet är att färre näringsämnen som kväve och fosfor ska nå sjöar och hav. Man kan också ha skyddszoner med gräs mellan åkrar och vattendrag, och anlägga våtmarker som fångar upp näring. Gödsel som sprids vid rätt tidpunkt, när växterna kan ta upp den, sköljs inte lika lätt bort av regn. Bättre reningsverk gör att mindre näring följer med avloppsvattnet ut i naturen. Tillsammans minskar åtgärderna risken för algblomning och syrebrist."
+   },
+   {
+    "question": "Vad gör en skyddszon med gräs?",
+    "short": "En skyddszon med gräs mellan åkern och vattendraget fångar upp näring som annars skulle rinna ut i vattnet.",
+    "long": "En skyddszon med gräs mellan åkern och vattendraget fångar upp näring som annars skulle rinna ut i vattnet. Gräsets rötter tar upp en del av kvävet och fosforn från marken innan det når sjön eller bäcken. Zonen fungerar också som en broms för vattnet som rinner av från åkern, så att näringsrikt material hinner stanna kvar i marken. På så vis hamnar mindre gödsel i vattnet, och risken för att alger växer okontrollerat minskar. Skyddszonen är därmed ett enkelt sätt för jordbruket att minska övergödningen."
+   },
+   {
+    "question": "Vad gör en våtmark?",
+    "short": "En våtmark fångar upp näring från vattnet innan det når sjöar och hav.",
+    "long": "En våtmark fångar upp näring från vattnet innan det når sjöar och hav. Man anlägger våtmarker, ofta på platser där vatten från åkrar och avlopp passerar. Där rinner vattnet långsamt genom växtlighet och mark. Växterna tar upp kväve och fosfor, och en del av näringen sjunker också till botten och stannar där. Vattnet som lämnar våtmarken är därför renare och innehåller mindre näring. Det gör att risken för algblomning och syrebrist i sjön nedströms blir mindre."
+   }
+  ],
+  "cost_claude_usd": 0.0689
+ },
+ {
+  "id": "ke1-mol",
+  "photos": 0,
+  "text_chars": 1124,
+  "summary": {
+   "subject": "Kemi",
+   "grade": "Kemi 1",
+   "covers": "Substansmängd och molmassa, reaktionsformler och balansering, koncentration och spädning samt stökiometriska beräkningar."
+  },
+  "questions": 20,
+  "t_questions_s": 6.1,
+  "t_answers_s": 14.5,
+  "t_total_s": 20.6,
+  "q_le5": 15,
+  "q_le8": 20,
+  "q_understanding": 15,
+  "answered": 20,
+  "d145": 20,
+  "long_words_p50": 94,
+  "long_words_max": 108,
+  "short_words_max": 27,
+  "chars_short": 2499,
+  "chars_long": 11540,
+  "chars_questions": 570,
+  "cost_plan_usd": 0.0007147999999999999,
+  "cost_answers_usd": 0.061834,
+  "items": [
+   {
+    "question": "Vad är Avogadros konstant?",
+    "short": "Avogadros konstant är antalet partiklar i en mol av ett ämne, cirka sex komma noll två två gånger tio upphöjt till tjugotre.",
+    "long": "Avogadros konstant är antalet partiklar i en mol av ett ämne, cirka sex komma noll två två gånger tio upphöjt till tjugotre. Det är ett enormt tal, eftersom atomer och molekyler är otroligt små. Konstanten gör det möjligt att koppla ihop antalet partiklar med något vi faktiskt kan väga. En mol vatten innehåller alltså lika många molekyler som en mol koldioxid innehåller koldioxidmolekyler, och en mol järn innehåller lika många atomer. Konstanten är själva omräkningstalet mellan substansmängd i mol och antal partiklar."
+   },
+   {
+    "question": "Vad är en mol?",
+    "short": "En mol är enheten för substansmängd, och en mol av ett ämne innehåller cirka sex komma noll två två gånger tio upphöjt till tjugotre partiklar.",
+    "long": "En mol är enheten för substansmängd, och en mol av ett ämne innehåller cirka sex komma noll två två gånger tio upphöjt till tjugotre partiklar. Begreppet används eftersom vi inte kan räkna enskilda atomer och molekyler, men väl väga ämnen. Massan av en mol av ett ämne kallas molmassan och anges i gram per mol. Genom att räkna i mol kan man jämföra mängder av olika ämnen rättvist, eftersom en mol alltid betyder samma antal partiklar. Det är också mol som reaktionsformelns koefficienter anger förhållandet mellan, och därför är mol grunden för alla kemiska beräkningar."
+   },
+   {
+    "question": "Vad är molmassa?",
+    "short": "Molmassan är massan av en mol av ett ämne och anges i gram per mol.",
+    "long": "Molmassan är massan av en mol av ett ämne och anges i gram per mol. Den betecknas stora M. Vatten har till exempel molmassan arton gram per mol, vilket betyder att arton gram vatten innehåller en mol vattenmolekyler. Molmassan är länken mellan massa och substansmängd, och sambandet är att substansmängden är massan delat med molmassan. Åttioåtta gram koldioxid, som har molmassan fyrtiofyra gram per mol, motsvarar därför två mol. Utan molmassan kunde man inte översätta det man väger upp till antalet partiklar som reagerar."
+   },
+   {
+    "question": "Hur räknar man ut molmassan?",
+    "short": "Man räknar ut molmassan genom att addera atommassorna för alla atomer i formeln, och summan blir molmassan i gram per mol.",
+    "long": "Man räknar ut molmassan genom att addera atommassorna för alla atomer i formeln, och summan blir molmassan i gram per mol. Atommassorna hittar man i periodiska systemet. För vatten, där formeln är H två O, blir det två gånger ett komma noll för väte plus sexton komma noll för syre, alltså arton komma noll gram per mol. Man måste ta med indexet, så att varje atomslag räknas lika många gånger som formeln anger. För koldioxid blir det tolv plus två gånger sexton, vilket ger fyrtiofyra gram per mol."
+   },
+   {
+    "question": "Varför används molmassan?",
+    "short": "Molmassan används för att räkna om mellan massa och substansmängd, eftersom man kan väga ämnen men reaktionerna sker mellan bestämda antal partiklar.",
+    "long": "Molmassan används för att räkna om mellan massa och substansmängd, eftersom man kan väga ämnen men reaktionerna sker mellan bestämda antal partiklar. I en reaktionsformel anger koefficienterna förhållandet mellan substansmängderna, inte massorna. Vill man veta hur mycket av ett ämne som går åt eller bildas räknar man först om den givna massan till mol med hjälp av molmassan, använder koefficienterna för att få substansmängden av det sökta ämnet, och räknar sedan tillbaka till massa med molmassan. Sexton gram metan är en mol, som kräver två mol syre, vilket är sextiofyra gram. Utan molmassan går det inte att koppla vågens värden till reaktionen."
+   },
+   {
+    "question": "Hur många mol är 88 gram koldioxid?",
+    "short": "88 gram koldioxid är 2,0 mol. Man delar massan 88 gram med molmassan 44,0 gram per mol.",
+    "long": "88 gram koldioxid är 2,0 mol. Man delar massan 88 gram med molmassan 44,0 gram per mol. Molmassan för koldioxid får man genom att addera atommassorna: en kolatom på 12,0 och två syreatomer på 16,0 vardera, alltså 44,0 gram per mol. Sambandet är att substansmängden är massan delad med molmassan. Eftersom 88 delat med 44 blir två, innehåller proven två mol, vilket motsvarar ungefär tolv komma noll fyra gånger tio upphöjt till tjugotre molekyler. Det här är första steget i nästan alla stökiometriska beräkningar, eftersom reaktionsformeln räknar i mol och inte i gram."
+   },
+   {
+    "question": "Varför balanserar man reaktionsformler?",
+    "short": "Man balanserar reaktionsformler för att atomer varken förstörs eller skapas i en kemisk reaktion, så det måste finnas lika många atomer av varje slag på båda sidor.",
+    "long": "Man balanserar reaktionsformler för att atomer varken förstörs eller skapas i en kemisk reaktion, så det måste finnas lika många atomer av varje slag på båda sidor. I en reaktion omgrupperas atomerna bara till nya ämnen, och därför måste antalet av varje atomslag vara detsamma före och efter. Tar man vätgas och syrgas som bildar vatten, måste det på båda sidor finnas fyra väteatomer och två syreatomer, och det ger två vätgasmolekyler, en syrgasmolekyl och två vattenmolekyler. Först när formeln är balanserad ger den rätt förhållanden mellan ämnena, och då kan man använda den för att räkna ut hur mycket som går åt och hur mycket som bildas."
+   },
+   {
+    "question": "Varför ändrar man bara koefficienterna?",
+    "short": "Man ändrar bara koefficienterna eftersom indexen visar hur ämnet är uppbyggt. Ändrar man ett index får man ett helt annat ämne.",
+    "long": "Man ändrar bara koefficienterna eftersom indexen visar hur ämnet är uppbyggt. Ändrar man ett index får man ett helt annat ämne. Indexet i vatten, H2O, talar om att varje molekyl har två väteatomer och en syreatom. Skulle man ändra det till två syreatomer får man väteperoxid, ett annat ämne med helt andra egenskaper, och då beskriver formeln inte längre samma reaktion. Koefficienten framför formeln däremot säger bara hur många molekyler eller mol av ämnet som deltar. Genom att ändra den kan man få rätt antal atomer utan att ändra vilka ämnen som reagerar. Därför balanserar man alltid med koefficienter och aldrig med index."
+   },
+   {
+    "question": "Vad betyder koefficienterna?",
+    "short": "Koefficienterna anger förhållandet mellan substansmängderna av de ämnen som reagerar och bildas.",
+    "long": "Koefficienterna anger förhållandet mellan substansmängderna av de ämnen som reagerar och bildas. I reaktionen där vätgas och syrgas bildar vatten, två vätgas plus en syrgas ger två vatten, betyder det att två mol vätgas reagerar med en mol syrgas och bildar två mol vatten. Förhållandet är alltså två till ett till två. Det är just detta man utnyttjar i beräkningar: när man vet substansmängden av ett ämne kan man med koefficienterna få fram substansmängden av ett annat. Koefficienterna gäller för substansmängd och inte för massa, så man måste först räkna om massan till mol."
+   },
+   {
+    "question": "Vad är koncentration?",
+    "short": "Koncentration anger hur mycket löst ämne det finns i en viss volym lösning, och räknas som substansmängden delad med volymen.",
+    "long": "Koncentration anger hur mycket löst ämne det finns i en viss volym lösning, och räknas som substansmängden delad med volymen. Enheten är mol per kubikdecimeter, vilket är mol per liter och ibland skrivs som molar. Löser man en halv mol salt i en kvarts liter lösning blir koncentrationen två mol per kubikdecimeter. Koncentrationen säger alltså hur tät lösningen är på lösta partiklar. Vid spädning tillsätter man bara lösningsmedel, så substansmängden är densamma före och efter. Därför gäller att koncentrationen före gånger volymen före är lika med koncentrationen efter gånger volymen efter."
+   },
+   {
+    "question": "Hur räknar man ut koncentration?",
+    "short": "Koncentrationen får man genom att dela substansmängden i mol med volymen i kubikdecimeter, alltså liter. Enheten blir mol per kubikdecimeter.",
+    "long": "Koncentrationen får man genom att dela substansmängden i mol med volymen i kubikdecimeter, alltså liter. Enheten blir mol per kubikdecimeter. Det betyder att koncentrationen anger hur många mol av ämnet som finns i varje liter lösning. Har man bara massan räknar man först om den till mol genom att dela med molmassan. Ett exempel är en halv mol natriumklorid löst så att lösningen blir en fjärdedels liter. Då är koncentrationen en halv mol delat med en fjärdedels liter, alltså två mol per kubikdecimeter. Viktigt är att volymen anges i liter, inte i milliliter, annars blir svaret fel med en faktor tusen."
+   },
+   {
+    "question": "Vad händer vid spädning?",
+    "short": "Vid spädning tillsätter man lösningsmedel, vanligen vatten, så att volymen ökar och koncentrationen minskar, medan substansmängden löst ämne är densamma.",
+    "long": "Vid spädning tillsätter man lösningsmedel, vanligen vatten, så att volymen ökar och koncentrationen minskar, medan substansmängden löst ämne är densamma. Eftersom ingen löst substans tillkommer eller försvinner är substansmängden före och efter spädningen lika stor. Därför gäller att den första koncentrationen gånger den första volymen är lika med den andra koncentrationen gånger den andra volymen. Man kan alltså räkna ut den nya koncentrationen eller hur stor volym man behöver. Späder man till exempel en lösning till dubbel volym halveras koncentrationen, eftersom samma mängd partiklar nu är utspridda i dubbelt så mycket vätska."
+   },
+   {
+    "question": "Varför skriver man reaktionsformeln först?",
+    "short": "Man skriver och balanserar reaktionsformeln först eftersom koefficienterna visar i vilket förhållande ämnena reagerar, och det förhållandet behövs för all vidare beräkning.",
+    "long": "Man skriver och balanserar reaktionsformeln först eftersom koefficienterna visar i vilket förhållande ämnena reagerar, och det förhållandet behövs för all vidare beräkning. Utan en balanserad formel vet man inte hur många mol av det ena ämnet som går åt per mol av det andra. Balanseringen bygger på att atomer varken förstörs eller skapas, så det måste finnas lika många atomer av varje slag på båda sidor. Man ändrar bara koefficienterna framför formlerna, aldrig indexen, eftersom indexen bestämmer vilket ämne det är. Är formeln fel balanserad blir hela beräkningen fel, även om man räknar rätt i övrigt."
+   },
+   {
+    "question": "Varför räknar man om till mol?",
+    "short": "Man räknar om till mol eftersom reaktionsformelns koefficienter anger förhållandet mellan substansmängder, alltså antal partiklar, och inte mellan massor.",
+    "long": "Man räknar om till mol eftersom reaktionsformelns koefficienter anger förhållandet mellan substansmängder, alltså antal partiklar, och inte mellan massor. Ämnen reagerar partikel mot partikel, och ett mol av vilket ämne som helst innehåller lika många partiklar, men massan för ett mol skiljer sig mellan ämnen. Därför kan man inte jämföra massor direkt. Man delar massan med molmassan för att få substansmängden, jämför mol med hjälp av koefficienterna och räknar sedan tillbaka till massa om det behövs. Ett exempel är att sexton gram metan är en mol, som kräver två mol syrgas, vilket är sextiofyra gram, alltså en helt annan massa."
+   },
+   {
+    "question": "Hur använder man koefficienterna?",
+    "short": "Koefficienterna anger förhållandet mellan substansmängderna, så man använder dem för att räkna ut hur många mol av det sökta ämnet som motsvarar den givna substansmängden.",
+    "long": "Koefficienterna anger förhållandet mellan substansmängderna, så man använder dem för att räkna ut hur många mol av det sökta ämnet som motsvarar den givna substansmängden. Man ställer upp förhållandet mellan det givna och det sökta ämnet och multiplicerar eller dividerar därefter. I reaktionen där metan och syrgas bildar koldioxid och vatten är koefficienten för syrgas två och för metan ett. En mol metan kräver alltså två mol syrgas, och en mol koldioxid bildas samtidigt. Har man tre mol metan går det åt sex mol syrgas. När man fått substansmängden av det sökta ämnet gör man om den till massa genom att multiplicera med molmassan."
+   },
+   {
+    "question": "Hur många mol är 16 gram metan?",
+    "short": "16 gram metan är 1,0 mol, eftersom metan har molmassan 16 gram per mol och man delar massan med molmassan.",
+    "long": "16 gram metan är 1,0 mol, eftersom metan har molmassan 16 gram per mol och man delar massan med molmassan. Molmassan för metan räknas ut från atommassorna: kol väger 12 och varje väte väger 1, så med fyra väteatomer blir det 16 gram per mol. Sambandet är substansmängd lika med massa delad med molmassa, alltså 16 delat med 16, vilket ger 1,0 mol. Det är alltid det första steget i en beräkning, eftersom reaktionsformelns koefficienter talar om förhållandet mellan mol och inte mellan gram."
+   },
+   {
+    "question": "Hur många mol syre krävs?",
+    "short": "Det krävs 2,0 mol syre för att 1,0 mol metan ska reagera fullständigt.",
+    "long": "Det krävs 2,0 mol syre för att 1,0 mol metan ska reagera fullständigt. Reaktionsformeln för förbränning av metan är metan plus två syre ger koldioxid plus två vatten. Koefficienten framför metan är ett och framför syre två, så förhållandet mellan substansmängderna är ett till två. Eftersom vi har 1,0 mol metan behövs dubbelt så mycket syre, alltså 2,0 mol. Man använder alltså koefficienterna för att gå från given substansmängd till sökt substansmängd."
+   },
+   {
+    "question": "Varför två mol syre?",
+    "short": "Det behövs två mol syre eftersom reaktionsformeln balanserad har koefficienten två framför syre.",
+    "long": "Det behövs två mol syre eftersom reaktionsformeln balanserad har koefficienten två framför syre. När metan brinner bildas en koldioxid och två vatten. På produktsidan finns då fyra väteatomer och fyra syreatomer, två i koldioxiden och två i vattnet. Varje syremolekyl innehåller två syreatomer, så för att få fyra syreatomer på reaktantsidan krävs två syremolekyler. Atomer varken förstörs eller skapas, och därför måste antalet av varje sort vara lika på båda sidor. Koefficienten två följer alltså direkt av att formeln balanseras."
+   },
+   {
+    "question": "Hur blir mol syre till gram?",
+    "short": "Man multiplicerar substansmängden med molmassan: 2,0 mol syre gånger 32,0 gram per mol blir 64 gram.",
+    "long": "Man multiplicerar substansmängden med molmassan: 2,0 mol syre gånger 32,0 gram per mol blir 64 gram. Syre förekommer som molekylen O2, så molmassan är två gånger 16,0, alltså 32,0 gram per mol. Sambandet n = m delat med M skrivs om till massa lika med substansmängd gånger molmassa. Då får vi 2,0 gånger 32,0, vilket ger 64 gram. Detta är det fjärde och sista steget i den stökiometriska beräkningen: efter att ha använt koefficienterna räknar man om från mol tillbaka till massa, eftersom man i praktiken väger upp ämnen i gram."
+   },
+   {
+    "question": "Vad händer om man inte balanserar?",
+    "short": "Om man inte balanserar reaktionsformeln stämmer inte antalet atomer, och då blir alla beräkningar av substansmängder och massor fel.",
+    "long": "Om man inte balanserar reaktionsformeln stämmer inte antalet atomer, och då blir alla beräkningar av substansmängder och massor fel. En obalanserad formel säger att atomer försvinner eller dyker upp, vilket strider mot att atomer varken förstörs eller skapas. Koefficienterna anger förhållandet mellan substansmängderna, så med fel koefficienter får man fel förhållande. Metan och syre skulle till exempel kunna se ut att reagera i förhållandet ett till ett, och man skulle räkna ut för lite syre, 32 gram i stället för 64 gram. Därför balanserar man alltid först, genom att ändra koefficienterna men aldrig indexen."
+   }
+  ],
+  "cost_claude_usd": 0.0625
+ },
+ {
+  "id": "hist-ak9-forsta-varldskriget",
+  "photos": 3,
+  "text_chars": 0,
+  "summary": {
+   "subject": "Historia",
+   "grade": "åk 9",
+   "covers": "Första världskriget 1914–1918: orsakerna, krigets gång på västfronten och hur kriget blev totalt, samt slutet och freden efter kriget."
+  },
+  "questions": 20,
+  "t_questions_s": 6.7,
+  "t_answers_s": 11.8,
+  "t_total_s": 18.4,
+  "q_le5": 19,
+  "q_le8": 20,
+  "q_understanding": 15,
+  "answered": 20,
+  "d145": 20,
+  "long_words_p50": 80,
+  "long_words_max": 90,
+  "short_words_max": 24,
+  "chars_short": 2513,
+  "chars_long": 10740,
+  "chars_questions": 624,
+  "cost_plan_usd": 0.0012957,
+  "cost_answers_usd": 0.059944,
+  "items": [
+   {
+    "question": "Varför var Europas stormakter konkurrenter?",
+    "short": "Stormakterna konkurrerade om kolonier, handel och makt, och de rustade upp sina arméer och flottor samtidigt som nationalismen växte.",
+    "long": "Stormakterna konkurrerade om kolonier, handel och makt, och de rustade upp sina arméer och flottor samtidigt som nationalismen växte. Industrialiseringen gjorde att länderna behövde råvaror och marknader utanför Europa, och därför tävlade de om kolonier. Varje land ville vara starkast, och när en stat rustade upp kände grannarna sig hotade och gjorde detsamma. Nationalismen gjorde att folk var stolta över sitt land och ofta misstänksamma mot andra. Det skapade en spänd stämning där ett litet motsatsförhållande lätt kunde växa till en stor konflikt."
+   },
+   {
+    "question": "Vad betyder imperialism?",
+    "short": "Imperialism betyder att en stormakt skaffar sig herravälde över andra länder och områden, ofta för att få tillgång till råvaror, handel och makt.",
+    "long": "Imperialism betyder att en stormakt skaffar sig herravälde över andra länder och områden, ofta för att få tillgång till råvaror, handel och makt. I Europa på 1800-talet och början av 1900-talet lade stormakterna under sig stora delar av Afrika och Asien som kolonier. Det gav dem rikedom och prestige, men det skapade också rivalitet mellan länderna, eftersom de konkurrerade om samma områden. Den rivaliteten var en av orsakerna till att spänningarna i Europa ökade inför första världskriget."
+   },
+   {
+    "question": "Vad betyder militarism?",
+    "short": "Militarism betyder att ett land satsar stora resurser på armé och flotta och ser militär styrka som ett viktigt sätt att skaffa sig makt.",
+    "long": "Militarism betyder att ett land satsar stora resurser på armé och flotta och ser militär styrka som ett viktigt sätt att skaffa sig makt. Före första världskriget byggde stormakterna upp stora arméer och flottor och tävlade om vem som var starkast. Det gjorde att länderna blev rädda för varandra, eftersom varje upprustning fick grannarna att rusta upp ännu mer. Militären fick också stort inflytande, och krig sågs av många som ett möjligt sätt att lösa konflikter. Det gjorde Europa farligare och krigsutbrottet mer sannolikt."
+   },
+   {
+    "question": "Vilka var Entente-länderna?",
+    "short": "Entente-länderna var Storbritannien, Frankrike och Ryssland, som bildade en allians mot Centralmakterna Tyskland och Österrike-Ungern.",
+    "long": "Entente-länderna var Storbritannien, Frankrike och Ryssland, som bildade en allians mot Centralmakterna Tyskland och Österrike-Ungern. Alliansen betydde att länderna lovade att hjälpa varandra om något av dem blev angripet. Europa var därför delat i två block som stod emot varandra. När kriget bröt ut 1914 drogs Entente-länderna in på grund av sina löften, och striden mellan två länder växte snabbt till ett stort krig. Senare gick bland andra USA med på Ententes sida. Ryssland lämnade kriget 1917 efter revolutionen."
+   },
+   {
+    "question": "Varför startade kriget 1914?",
+    "short": "Kriget startade när Österrike-Ungerns tronföljare Franz Ferdinand sköts i Sarajevo den 28 juni 1914, vilket ledde till att Österrike-Ungern förklarade krig mot Serbien.",
+    "long": "Kriget startade när Österrike-Ungerns tronföljare Franz Ferdinand sköts i Sarajevo den 28 juni 1914, vilket ledde till att Österrike-Ungern förklarade krig mot Serbien. Mordet var bara gnistan. De djupare orsakerna var imperialism, militarism och nationalism, som hade skapat stora spänningar mellan stormakterna. Europa var dessutom delat i två allianser, Entente och Centralmakterna, som lovat att hjälpa varandra. När Österrike-Ungern angrep Serbien drogs därför den ena stormakten efter den andra in. Ett lokalt krig växte på så sätt till ett världskrig."
+   },
+   {
+    "question": "Varför förklarade Österrike-Ungern krig?",
+    "short": "Österrike-Ungern förklarade krig mot Serbien för att tronföljaren Franz Ferdinand hade blivit skjuten i Sarajevo av en bosnisk serb.",
+    "long": "Österrike-Ungern förklarade krig mot Serbien för att tronföljaren Franz Ferdinand hade blivit skjuten i Sarajevo av en bosnisk serb. Mordet den tjugoåttonde juni nitton hundra fjorton sågs som ett angrepp på själva staten. Österrike-Ungern ville straffa Serbien och samtidigt visa sig stark inför de nationalistiska rörelser som hotade det splittrade riket. Serbien ansågs ha stöd för de krafter som låg bakom attentatet. Eftersom Tyskland var Österrike-Ungerns allierade kunde man räkna med stöd, och det gjorde beslutet om krig lättare att ta."
+   },
+   {
+    "question": "Varför drogs stormakterna in?",
+    "short": "Stormakterna drogs in eftersom de hade bundit sig i två allianser och lovat att hjälpa varandra om någon blev angripen.",
+    "long": "Stormakterna drogs in eftersom de hade bundit sig i två allianser och lovat att hjälpa varandra om någon blev angripen. Europa var delat i Ententen, med Storbritannien, Frankrike och Ryssland, och Centralmakterna, med Tyskland och Österrike-Ungern. När Österrike-Ungern gick mot Serbien ställde sig Ryssland på Serbiens sida, vilket drog in Tyskland och sedan Frankrike och Storbritannien. Redan innan fanns spänningar genom rivalitet om kolonier och handel, rustning av stora arméer och flottor samt stark nationalism. Alliansernas löften gjorde att en konflikt på Balkan växte till ett krig i hela Europa."
+   },
+   {
+    "question": "Varför misslyckades Schlieffenplanen?",
+    "short": "Schlieffenplanen misslyckades eftersom det tyska anfallet genom Belgien stoppades, så Frankrike kunde inte besegras snabbt.",
+    "long": "Schlieffenplanen misslyckades eftersom det tyska anfallet genom Belgien stoppades, så Frankrike kunde inte besegras snabbt. Planen byggde på att Tyskland skulle slå ut Frankrike på kort tid och sedan vända sig mot Ryssland, så att man slapp krig på två fronter samtidigt. När anfallet stoppades blev det inget snabbt avgörande. Arméerna grävde i stället ner sig, och kriget blev ett långt utmattningskrig. Tyskland tvingades därmed ändå kämpa på två fronter, vilket var just det man hade velat undvika."
+   },
+   {
+    "question": "Varför låg fronten stilla?",
+    "short": "Fronten låg stilla eftersom båda sidor grävde ner sig i skyttegravar och försvaret var mycket starkare än anfallet.",
+    "long": "Fronten låg stilla eftersom båda sidor grävde ner sig i skyttegravar och försvaret var mycket starkare än anfallet. Skyttegravarna löpte från Nordsjön till Schweiz, och ingen sida kunde ta sig runt den andra. Kulsprutor, taggtråd och artilleri gjorde det mycket svårt att storma fram över ingenmansland, medan den som försvarade sig skyddades i gravarna. Varje anfall gav därför bara små landvinster, om ens det, och blev ofta ett misslyckande. På så sätt stod västfronten nästan stilla i fyra år."
+   },
+   {
+    "question": "Varför var anfall så dödliga?",
+    "short": "Anfallen var så dödliga eftersom soldaterna måste springa över öppen mark mot kulsprutor, taggtråd, artilleri och giftgas.",
+    "long": "Anfallen var så dödliga eftersom soldaterna måste springa över öppen mark mot kulsprutor, taggtråd, artilleri och giftgas. Ingenmansland mellan skyttegravarna var utan skydd, så anfallande soldater var lätta mål. Kulsprutorna kunde fälla hela led på några minuter, taggtråden stoppade dem så att de blev stående under eld, och artilleriet och giftgasen krävde ännu fler offer. Eftersom försvararna hade så stor fördel kostade även små framryckningar enorma förluster. Slaget vid Somme nitton hundra sexton är ett exempel, där hundratusentals människor dog utan något egentligt genombrott."
+   },
+   {
+    "question": "Vad innebar totalt krig?",
+    "short": "Totalt krig betyder att hela samhället dras in i kriget, inte bara soldaterna vid fronten. Fabriker, resurser och civila arbetar för krigsansträngningen.",
+    "long": "Totalt krig betyder att hela samhället dras in i kriget, inte bara soldaterna vid fronten. Fabriker, resurser och civila arbetar för krigsansträngningen. Fabrikerna tillverkade vapen och ammunition i stället för vanliga varor, och staten styrde ekonomin för att försörja armén. Eftersom miljontals män skickades till fronten tog kvinnorna över deras arbeten i industrin, jordbruket och sjukvården. Det blev därför svårt att skilja mellan soldater och civila, eftersom hela befolkningen bidrog och även drabbades av kriget. Kriget förändrade på så vis hela samhällen, till exempel kvinnornas roll i arbetslivet."
+   },
+   {
+    "question": "Varför gick USA med 1917?",
+    "short": "USA gick med efter att Tyskland börjat föra oinskränkt ubåtskrig och efter att Zimmermann-telegrammet avslöjats.",
+    "long": "USA gick med efter att Tyskland börjat föra oinskränkt ubåtskrig och efter att Zimmermann-telegrammet avslöjats. Tyskland sänkte fartyg utan förvarning, också sådana som förde amerikaner och varor över Atlanten, vilket väckte stor ilska i USA. Dessutom avslöjades Zimmermann-telegrammet, där Tyskland ville få Mexiko att gå i krig mot USA. Tillsammans gjorde det att USA ansåg sig hotat och gick med på Ententens sida. Det var viktigt, eftersom USA hade stora resurser och nya trupper som gav Ententen övertaget mot ett utmattat Tyskland."
+   },
+   {
+    "question": "Varför lämnade Ryssland kriget?",
+    "short": "Ryssland lämnade kriget eftersom bolsjevikerna tog makten 1917 och ville få ett slut på kriget.",
+    "long": "Ryssland lämnade kriget eftersom bolsjevikerna tog makten 1917 och ville få ett slut på kriget. Kriget hade varit mycket kostsamt för Ryssland, med stora förluster, brist på mat och missnöje bland både soldater och civila. Detta bidrog till att bolsjevikerna kunde ta makten under 1917. De nya makthavarna ville koncentrera sig på att bygga upp sitt eget land efter revolutionen och därför lämnade de kriget. Det innebar att Tyskland slapp kriga på två fronter och kunde flytta trupper västerut."
+   },
+   {
+    "question": "Varför kom vapenstilleståndet 1918?",
+    "short": "Vapenstilleståndet kom den 11 november 1918 eftersom Tyskland var utmattat och inte längre kunde vinna kriget.",
+    "long": "Vapenstilleståndet kom den 11 november 1918 eftersom Tyskland var utmattat och inte längre kunde vinna kriget. Efter fyra års skyttegravskrig var Tyskland slitet av stora förluster och brist på resurser. När USA gick med 1917 fick Ententen nya trupper och material, och Tyskland kunde inte längre mäta sig med dem. Fortsatt krig hade bara kostat fler liv utan att ändra utgången, så Tyskland gick med på ett vapenstillestånd. Det blev början på fredsförhandlingarna som ledde till Versaillesfreden året därpå."
+   },
+   {
+    "question": "Vad fick Tyskland ta på sig?",
+    "short": "Tyskland fick ta på sig skulden för kriget, betala stora skadestånd, lämna ifrån sig land och kolonier och rusta ner.",
+    "long": "Tyskland fick ta på sig skulden för kriget, betala stora skadestånd, lämna ifrån sig land och kolonier och rusta ner. Dessa villkor stod i Versaillesfreden 1919. Tyskland förlorade områden och alla sina kolonier, fick bara ha en liten armé och skulle betala stora summor till segrarmakterna. Många tyskar tyckte att freden var orättvis och kände sig förödmjukade. Missnöjet och förbittringen blev ett problem under åren efter kriget. Samtidigt bildades Nationernas förbund för att förhindra nya krig."
+   },
+   {
+    "question": "Varför kände tyskar sig förödmjukade?",
+    "short": "Tyskarna kände sig förödmjukade eftersom Versaillesfreden tvingade Tyskland att ta på sig hela skulden för kriget och straffade landet hårt.",
+    "long": "Tyskarna kände sig förödmjukade eftersom Versaillesfreden tvingade Tyskland att ta på sig hela skulden för kriget och straffade landet hårt. Tyskland fick betala mycket stora skadestånd, lämna ifrån sig land och alla sina kolonier och dessutom rusta ner sin armé. Många tyskar tyckte att freden var orättvis och att den var ett diktat som landet inte fått förhandla om. Eftersom hela folket drabbades av kraven växte bitterheten och viljan till revansch, och det gjorde det lättare för extrema politiska krafter att vinna stöd under åren som följde."
+   },
+   {
+    "question": "Varför bildades Nationernas förbund?",
+    "short": "Nationernas förbund bildades efter kriget för att förhindra att ett nytt krig av samma slag skulle bryta ut.",
+    "long": "Nationernas förbund bildades efter kriget för att förhindra att ett nytt krig av samma slag skulle bryta ut. Det första världskriget hade kostat miljontals människor livet, och många ville skapa en ordning där länder löste sina konflikter genom samarbete och förhandlingar i stället för med vapen. Tanken var att medlemsländerna skulle hjälpa varandra och gemensamt stå upp mot ett land som angrep ett annat. Idén var att alliansernas löften, som hade dragit in hela Europa i kriget 1914, skulle ersättas av en gemensam organisation för fred och trygghet."
+   },
+   {
+    "question": "Varför var ubåtskriget viktigt?",
+    "short": "Ubåtskriget var viktigt eftersom det bidrog till att USA gick med i kriget 1917, vilket förändrade styrkeförhållandet.",
+    "long": "Ubåtskriget var viktigt eftersom det bidrog till att USA gick med i kriget 1917, vilket förändrade styrkeförhållandet. Tyskland sänkte fartyg på haven utan förvarning, också sådana som förde varor och passagerare från neutrala länder. Det retade upp USA, särskilt när amerikaner omkom. Samtidigt avslöjades Zimmermann-telegrammet, där Tyskland föreslog en allians med Mexiko mot USA. När USA gick med i kriget fick ententen nya soldater, resurser och industrikraft, och det hjälpte till att avgöra kriget till Centralmakternas nackdel."
+   },
+   {
+    "question": "Hur påverkade kriget kvinnornas roll?",
+    "short": "Kriget ändrade kvinnornas roll genom att de tog över männens arbeten när männen var vid fronten.",
+    "long": "Kriget ändrade kvinnornas roll genom att de tog över männens arbeten när männen var vid fronten. Eftersom kriget var ett totalt krig behövdes hela samhällets krafter. Kvinnor arbetade i fabriker, bland annat med att tillverka vapen och ammunition, och de tog jobb inom transport, kontor och sjukvård. Det visade att kvinnor kunde klara uppgifter som tidigare setts som mäns, och det gav dem större självförtroende och en starkare ställning i samhället, vilket på sikt stärkte kraven på lika rättigheter."
+   },
+   {
+    "question": "Varför var skyttegravarna viktiga?",
+    "short": "Skyttegravarna var viktiga eftersom de skyddade soldaterna mot den nya, dödliga krigstekniken och gjorde att fronten stod nästan stilla.",
+    "long": "Skyttegravarna var viktiga eftersom de skyddade soldaterna mot den nya, dödliga krigstekniken och gjorde att fronten stod nästan stilla. På västfronten grävde arméerna ner sig från Nordsjön till Schweiz. Kulsprutor, taggtråd, artilleri och giftgas gjorde det mycket farligt att anfalla över ingenmansland mellan gravarna. Försvararen hade därför stor fördel, och varje anfall kostade hundratusentals liv, som vid Somme 1916, utan att fronten flyttades mer än några meter. Därför blev kriget ett långt och utmattande ställningskrig som varade i fyra år."
+   }
+  ],
+  "cost_claude_usd": 0.0612
+ },
+ {
+  "id": "ma1b-ekvationer",
+  "photos": 0,
+  "text_chars": 1121,
+  "summary": {
+   "subject": "Matematik",
+   "grade": "Matematik 1b",
+   "covers": "Ekvationer och hur de löses, räta linjens ekvation med lutning och skärning med y-axeln, samt linjära modeller i problemlösning och jämförelse av abonnemang."
+  },
+  "questions": 19,
+  "t_questions_s": 6.4,
+  "t_answers_s": 13.2,
+  "t_total_s": 19.7,
+  "q_le5": 9,
+  "q_le8": 19,
+  "q_understanding": 12,
+  "answered": 19,
+  "d145": 19,
+  "long_words_p50": 99,
+  "long_words_max": 117,
+  "short_words_max": 27,
+  "chars_short": 2211,
+  "chars_long": 10417,
+  "chars_questions": 645,
+  "cost_plan_usd": 0.0007175,
+  "cost_answers_usd": 0.057184,
+  "items": [
+   {
+    "question": "Vad gör man för att lösa en ekvation?",
+    "short": "Man gör exakt samma sak på båda sidor om likhetstecknet tills det bara står x på ena sidan, så att likheten hela tiden är sann.",
+    "long": "Man gör exakt samma sak på båda sidor om likhetstecknet tills det bara står x på ena sidan, så att likheten hela tiden är sann. Man börjar oftast med att flytta bort termer genom addition eller subtraktion, och sedan dividerar man med talet framför x. Tar du till exempel ekvationen tre x plus fem är lika med tjugo, subtraherar du fem på båda sidor och får tre x är lika med femton. Därefter dividerar du med tre på båda sidor och får att x är lika med fem. Eftersom du alltid behandlar båda sidor lika ändras aldrig ekvationens lösning, och du kan därför lita på att resultatet stämmer."
+   },
+   {
+    "question": "Varför kontrollerar man alltid sitt svar?",
+    "short": "Man kontrollerar för att se att lösningen verkligen stämmer, genom att sätta in den i ursprungsekvationen och se att båda sidor blir lika.",
+    "long": "Man kontrollerar för att se att lösningen verkligen stämmer, genom att sätta in den i ursprungsekvationen och se att båda sidor blir lika. Det är lätt att göra ett slarvfel med ett minustecken eller en division, och då får man ett felaktigt svar utan att märka det. Om man sätter in x lika med fem i tre x plus fem får man tre gånger fem plus fem, alltså tjugo, vilket är lika med högerledet. Då vet man att svaret är rätt. Blir sidorna olika har man räknat fel och måste gå tillbaka och leta felet. Kontrollen tar bara en liten stund men ger full säkerhet."
+   },
+   {
+    "question": "Varför multipliceras parenteser ut först?",
+    "short": "Man multiplicerar ut parenteser först för att få ekvationen på en form där man kan samla x-termer och tal, och då kan lösa den steg för steg.",
+    "long": "Man multiplicerar ut parenteser först för att få ekvationen på en form där man kan samla x-termer och tal, och då kan lösa den steg för steg. Talet utanför parentesen ska multipliceras med varje term innanför, även med minustecknet. Tar du två gånger parentesen x minus fyra blir det två x minus åtta. Ekvationen två x minus åtta är lika med x plus tre kan du sedan lösa genom att subtrahera x och addera åtta på båda sidor, vilket ger x är lika med elva. Om du lät parentesen vara kvar skulle du inte kunna samla x-termerna, och det är lätt att tappa bort en term eller ett tecken."
+   },
+   {
+    "question": "Vad betyder negativt k?",
+    "short": "Ett negativt k betyder att linjen lutar nedåt, så att y minskar när x ökar.",
+    "long": "Ett negativt k betyder att linjen lutar nedåt, så att y minskar när x ökar. Lutningen k talar om hur mycket y förändras när x ökar med ett. Är k positivt ökar y, och linjen går uppåt från vänster till höger. Är k negativt minskar y i stället, och linjen går nedåt. Har linjen till exempel k lika med minus två, sjunker y med två för varje steg som x ökar med ett. Ju större talet är utan hänsyn till tecknet, desto brantare är linjen. Om k är noll är linjen helt vågrät."
+   },
+   {
+    "question": "Hur räknas lutningen mellan två punkter?",
+    "short": "Lutningen k räknas som skillnaden i y-värde delat med skillnaden i x-värde, alltså y två minus y ett delat med x två minus x ett.",
+    "long": "Lutningen k räknas som skillnaden i y-värde delat med skillnaden i x-värde, alltså y två minus y ett delat med x två minus x ett. Man tar alltså hur mycket y har ändrats och dividerar med hur mycket x har ändrats mellan de två punkterna. Det är viktigt att ta punkternas värden i samma ordning i täljaren och nämnaren. För punkterna ett komma tre och tre komma elva blir skillnaden i y åtta och skillnaden i x två, så k är åtta delat med två, alltså fyra. Det betyder att y ökar med fyra för varje steg som x ökar med ett."
+   },
+   {
+    "question": "Hur hittar man m när k är känt?",
+    "short": "Man sätter in koordinaterna för en punkt på linjen i y är lika med k x plus m och löser ut m.",
+    "long": "Man sätter in koordinaterna för en punkt på linjen i y är lika med k x plus m och löser ut m. Om linjen till exempel har lutningen fyra och går genom punkten ett komma tre, får man tre är lika med fyra gånger ett plus m. Då blir m lika med minus ett, och linjens ekvation blir y är lika med fyra x minus ett. Man kan kontrollera genom att sätta in en annan punkt på linjen. Talet m visar var linjen skär y-axeln, alltså vilket y-värde linjen har när x är noll."
+   },
+   {
+    "question": "Vad är en linjär modell?",
+    "short": "En linjär modell är ett matematiskt samband där en storhet ändras lika mycket för varje enhet den andra ökar, så att grafen blir en rät linje.",
+    "long": "En linjär modell är ett matematiskt samband där en storhet ändras lika mycket för varje enhet den andra ökar, så att grafen blir en rät linje. Den skrivs som y är lika med k x plus m. Här är k ändringen per enhet och m startvärdet när x är noll. Modellen passar när något har en fast del och en del som växer jämnt, till exempel en fast avgift plus ett pris per enhet. Man kan då förutsäga värden och jämföra olika alternativ, men modellen gäller bara så länge ökningen verkligen är jämn."
+   },
+   {
+    "question": "Hur skriver man kostnaden för ett gym?",
+    "short": "Kostnaden är den fasta avgiften plus priset per månad gånger antalet månader.",
+    "long": "Kostnaden är den fasta avgiften plus priset per månad gånger antalet månader. Har gymmet en startavgift på trehundra kronor och kostar hundrafemtio kronor i månaden, blir kostnaden y är lika med hundrafemtio x plus trehundra. Här är x antalet månader och y den totala kostnaden i kronor. Hundrafemtio är lutningen, alltså hur mycket kostnaden ökar varje månad, och trehundra är där linjen skär y-axeln. Efter fyra månader blir kostnaden hundrafemtio gånger fyra plus trehundra, alltså niohundra kronor."
+   },
+   {
+    "question": "Varför sätter man uttrycken lika?",
+    "short": "Man sätter uttrycken lika för att ta reda på när de två alternativen kostar exakt lika mycket.",
+    "long": "Man sätter uttrycken lika för att ta reda på när de två alternativen kostar exakt lika mycket. Det är en ekvation där båda sidor beskriver samma totala kostnad. Lösningen av ekvationen ger det värde på x där kostnaderna är identiska. Före och efter det värdet är ett av alternativen billigare. Eftersom man behöver veta var det byter vilket som är billigast, är det just likheten som ger svaret. Man löser ekvationen genom att göra samma sak på båda sidor, och kontrollerar sedan genom att sätta in lösningen i båda uttrycken."
+   },
+   {
+    "question": "Vad är brytpunkten?",
+    "short": "Brytpunkten är det värde där två linjära modeller ger samma resultat, alltså där båda alternativen kostar lika mycket.",
+    "long": "Brytpunkten är det värde där två linjära modeller ger samma resultat, alltså där båda alternativen kostar lika mycket. Den hittas genom att sätta uttrycken lika och lösa ekvationen. Grafiskt är det punkten där de två linjerna skär varandra. På ena sidan om brytpunkten ligger den ena linjen lägst och på andra sidan den andra, så man ser vilket abonnemang som lönar sig för olika antal månader. Har två abonnemang samma lutning blir linjerna parallella och det finns ingen brytpunkt, eftersom ett av dem då alltid är billigare."
+   },
+   {
+    "question": "Varför ritar man linjerna i en jämförelse?",
+    "short": "Man ritar linjerna för att se vilket alternativ som är billigast på varje sida om brytpunkten, alltså där linjerna korsar varandra.",
+    "long": "Man ritar linjerna för att se vilket alternativ som är billigast på varje sida om brytpunkten, alltså där linjerna korsar varandra. Lösningen på ekvationen visar bara vid vilket antal de två abonnemangen kostar lika mycket. Ritar man båda linjerna i samma koordinatsystem ser man direkt vilken linje som ligger lägst till vänster om skärningspunkten och vilken som ligger lägst till höger om den. Den som ligger lägst är billigast. Ett abonnemang med låg startavgift men hög månadskostnad kan alltså vara bäst en kort tid, medan ett med högre startavgift och lägre månadskostnad vinner när man är medlem längre. Bilden gör jämförelsen tydlig och hjälper dig också att kontrollera att ditt räknade svar verkar rimligt."
+   },
+   {
+    "question": "Hur löser man 3x + 5 = 20?",
+    "short": "Man subtraherar 5 från båda sidor, vilket ger 3x = 15, och dividerar sedan båda sidor med 3, vilket ger x = 5.",
+    "long": "Man subtraherar 5 från båda sidor, vilket ger 3x = 15, och dividerar sedan båda sidor med 3, vilket ger x = 5. Det viktiga är att man alltid gör samma sak på båda sidor om likhetstecknet, så att ekvationen hela tiden är sann. Först tar man bort termen som inte hör ihop med x, alltså 5. Sedan tar man bort faktorn framför x genom att dela. Till sist kontrollerar man svaret genom att sätta in fem i den ursprungliga ekvationen: tre gånger fem är femton, och femton plus fem är tjugo. Det stämmer med högerledet, så lösningen är rätt."
+   },
+   {
+    "question": "Varför subtraherar man 5 först?",
+    "short": "Man subtraherar 5 först för att få bort den termen från vänstra sidan, så att bara termen med x blir kvar.",
+    "long": "Man subtraherar 5 först för att få bort den termen från vänstra sidan, så att bara termen med x blir kvar. Ekvationen innehåller tre gånger x plus fem. Man löser ut x genom att ångra räkneoperationerna i omvänd ordning mot hur de gjordes. Räknesättet som utfördes sist var addition av fem, så den tas bort först med subtraktion. Då återstår tre gånger x, som sedan ångras med division med tre. Dividerade man med tre redan i början måste man dela hela vänstra och högra sidan, alltså även femman, vilket är lätt att göra fel. Att ta bort termen först är därför säkrast."
+   },
+   {
+    "question": "Vad är startavgiften i gymexemplet?",
+    "short": "Startavgiften är 300 kronor, och den betalas en gång innan man har betalat några månadsavgifter.",
+    "long": "Startavgiften är 300 kronor, och den betalas en gång innan man har betalat några månadsavgifter. I modellen y = 150x + 300 är 300 den fasta delen, alltså det som man betalar oavsett hur många månader man är medlem. Den motsvarar m i den räta linjens ekvation, där linjen skär y-axeln. Redan vid noll månader har man alltså kostnaden 300 kronor. Siffran 150 är i stället kostnaden per månad och motsvarar lutningen. Efter tio månader blir kostnaden 150 gånger 10 plus 300, alltså 1800 kronor."
+   },
+   {
+    "question": "Vad visar lutningen i verkligheten?",
+    "short": "Lutningen visar hur mycket y ökar när x ökar med ett, till exempel hur mycket kostnaden stiger för varje extra enhet.",
+    "long": "Lutningen visar hur mycket y ökar när x ökar med ett, till exempel hur mycket kostnaden stiger för varje extra enhet. I en linjär modell är lutningen därför ändringstakten, alltså priset per enhet. I gymexemplet är lutningen 150, vilket betyder att kostnaden ökar med 150 kronor för varje ny månad. Är lutningen negativ minskar y när x ökar, till exempel när en vattentank töms med jämn fart. Ju större lutning, desto brantare linje och desto snabbare förändring. När man jämför två abonnemang visar den med högre lutning den som blir dyrare snabbast när tiden går."
+   },
+   {
+    "question": "Hur ser linjen ut om k är negativt?",
+    "short": "Linjen lutar nedåt från vänster till höger. När x ökar med ett minskar y med lika mycket som k anger.",
+    "long": "Linjen lutar nedåt från vänster till höger. När x ökar med ett minskar y med lika mycket som k anger. Det betyder att varje steg åt höger tar dig nedåt i koordinatsystemet. Om k till exempel är minus två, så minskar y med två för varje steg x ökar med ett. Ju större talet är utan minustecknet, desto brantare går linjen nedåt. Om k däremot är positivt lutar linjen uppåt, och om k är noll blir linjen vågrät. Värdet på m påverkar inte lutningen, utan bara var linjen skär y-axeln."
+   },
+   {
+    "question": "Varför är en ekvation lik en balans?",
+    "short": "Likhetstecknet fungerar som en balans: vänster och höger sida väger lika mycket. Gör du något på ena sidan måste du göra samma sak på den andra.",
+    "long": "Likhetstecknet fungerar som en balans: vänster och höger sida väger lika mycket. Gör du något på ena sidan måste du göra samma sak på den andra. Om du tar bort fem från vänster sida måste du ta bort fem från höger sida, annars tippar vågen och likheten stämmer inte längre. Därför kan du subtrahera, addera, dividera och multiplicera, så länge du gör exakt samma sak på båda sidor. Tänk dig ekvationen tre x plus fem är lika med tjugo. Tar du bort fem på båda sidor får du tre x lika med femton, och delar du med tre på båda sidor får du x lika med fem. Hela tiden är balansen kvar, och därför är lösningen rätt."
+   },
+   {
+    "question": "Vad avgör billigaste abonnemanget?",
+    "short": "Det beror på hur länge man ska ha abonnemanget. Före brytpunkten är ett billigast, efter brytpunkten är det andra billigast.",
+    "long": "Det beror på hur länge man ska ha abonnemanget. Före brytpunkten är ett billigast, efter brytpunkten är det andra billigast. Man ställer upp en linjär modell för varje abonnemang, med fast avgift plus pris gånger antal månader. Sedan sätter man uttrycken lika med varandra och löser ekvationen. Lösningen är brytpunkten, alltså den tidpunkt då båda kostar lika mycket. Abonnemanget med låg startavgift men högre månadskostnad är oftast billigast på kort sikt, medan det med hög startavgift men låg månadskostnad blir billigast på lång sikt. Ritar man båda linjerna ser man vilken som ligger lägst på varje sida om brytpunkten."
+   },
+   {
+    "question": "Varför är kontroll viktig efter brytpunkten?",
+    "short": "Kontrollen visar att lösningen verkligen stämmer. Då upptäcker du räknefel innan du drar en felaktig slutsats om vilket abonnemang som är billigast.",
+    "long": "Kontrollen visar att lösningen verkligen stämmer. Då upptäcker du räknefel innan du drar en felaktig slutsats om vilket abonnemang som är billigast. Du sätter in värdet för brytpunkten i båda uttrycken. Om båda ger samma kostnad är lösningen rätt. Ger de olika svar har du räknat fel någonstans, till exempel vid en parentes eller ett tecken. Eftersom hela jämförelsen bygger på brytpunkten blir alla råd om vilket abonnemang man ska välja fel om punkten är fel. Det är också klokt att pröva ett värde före och ett efter brytpunkten, för att se att det billigaste abonnemanget byter plats som det ska."
+   }
+  ],
+  "cost_claude_usd": 0.0579
+ },
+ {
+  "id": "sv1-sprakhistoria",
+  "photos": 0,
+  "text_chars": 1021,
+  "summary": {
+   "subject": "Svenska",
+   "grade": "Svenska 1",
+   "covers": "Svenskans historia från runsvenska via fornsvenska och nysvenska fram till dagens svenska, med fokus på runor, lånord, bibeln och engelska lånord samt risken för domänförlust."
+  },
+  "questions": 20,
+  "t_questions_s": 6.3,
+  "t_answers_s": 12.2,
+  "t_total_s": 18.5,
+  "q_le5": 17,
+  "q_le8": 20,
+  "q_understanding": 17,
+  "answered": 20,
+  "d145": 20,
+  "long_words_p50": 90,
+  "long_words_max": 99,
+  "short_words_max": 29,
+  "chars_short": 2773,
+  "chars_long": 11199,
+  "chars_questions": 664,
+  "cost_plan_usd": 0.0006548999999999999,
+  "cost_answers_usd": 0.058416,
+  "items": [
+   {
+    "question": "Varför skrev man med runor?",
+    "short": "På vikingatiden var runor det skrivsystem man hade, eftersom det latinska alfabetet ännu inte hade kommit till Sverige.",
+    "long": "På vikingatiden var runor det skrivsystem man hade, eftersom det latinska alfabetet ännu inte hade kommit till Sverige. Runorna ristades i sten, trä och metall och användes för korta budskap, till exempel minnesord över döda och markeringar av ägande. Det var alltså inte ett val mellan olika alfabet, utan det skrivsätt som fanns under runsvenskans tid, ungefär från år åttahundra till tolvhundratjugofem. Först när kristendomen kom förändrades det, och då började man skriva med latinska bokstäver i stället."
+   },
+   {
+    "question": "Varför restes runstenar?",
+    "short": "Runstenar restes oftast till minne av döda släktingar, så att deras namn och minne skulle leva kvar.",
+    "long": "Runstenar restes oftast till minne av döda släktingar, så att deras namn och minne skulle leva kvar. Den som lät resa stenen ville visa respekt för den döda och samtidigt visa sin egen ställning i släkten. Stenarna placerades ofta på platser där många människor passerade, till exempel vid vägar och broar, så att budskapet kunde läsas av dem som kom förbi. Texten nämnde vanligtvis vem som lät resa stenen och till minne av vem. Runstenarna är därför en viktig källa till hur människor levde och tänkte under vikingatiden."
+   },
+   {
+    "question": "Vad kallas runalfabetet?",
+    "short": "Runalfabetet kallas futharken, efter de första sex tecknen i raden: f, u, th, a, r och k.",
+    "long": "Runalfabetet kallas futharken, efter de första sex tecknen i raden: f, u, th, a, r och k. Namnet bildas alltså på samma sätt som ordet alfabet, som kommer av de två första grekiska bokstäverna alfa och beta. Det fanns två huvudsakliga varianter. Den äldre futharken hade tjugofyra runor och användes tidigare. Den yngre futharken hade bara sexton runor och användes under vikingatiden. Det är den yngre varianten man främst talar om när det gäller runsvenskan och de svenska runstenarna."
+   },
+   {
+    "question": "Varför har yngre futharken färre runor?",
+    "short": "Den yngre futharken hade bara sexton runor eftersom språket och skriften förenklades, så att en och samma runa fick stå för flera olika ljud.",
+    "long": "Den yngre futharken hade bara sexton runor eftersom språket och skriften förenklades, så att en och samma runa fick stå för flera olika ljud. Den äldre futharken hade tjugofyra runor, men den yngre skars ned till sexton. Eftersom det fanns färre tecken än ljud fick en runa betyda flera ljud. En och samma runa kunde till exempel användas både för k och g, och för t och d. Det gjorde att man ibland fick gissa sig till vilket ord som menades. Förenklingen gjorde skriften lättare att lära sig och att rista, men också mindre exakt."
+   },
+   {
+    "question": "Varför kom latinska alfabetet?",
+    "short": "Det latinska alfabetet kom tillsammans med kristendomen, eftersom kyrkan använde latin och behövde skriva ned texter.",
+    "long": "Det latinska alfabetet kom tillsammans med kristendomen, eftersom kyrkan använde latin och behövde skriva ned texter. När Sverige kristnades kom präster och munkar som kunde skriva med latinska bokstäver. De behövde det för bibeltexter, kyrkliga dokument och lagar, och därför började man skriva svenska med det latinska alfabetet. Det blev början på fornsvenskans tid, ungefär från tolvhundratjugofem. Det latinska alfabetet hade fler tecken och kunde återge ljuden mer exakt än den yngre futharken, och med tiden ersatte det runorna helt som skriftspråk."
+   },
+   {
+    "question": "Varför kom lågtyska lånord?",
+    "short": "Lågtyska lånord kom eftersom tyska köpmän under Hansans tid dominerade handeln i de svenska städerna, och deras språk spreds i vardagen.",
+    "long": "Lågtyska lånord kom eftersom tyska köpmän under Hansans tid dominerade handeln i de svenska städerna, och deras språk spreds i vardagen. Under senmedeltiden bodde många tyska köpmän i städerna, och handeln låg i deras händer. De som ville göra affärer med dem behövde förstå och använda deras ord. Därför följde det lågtyska språket med in i svenskan, särskilt inom handel, hantverk och stadsstyre. Exempel är betala, språk, fönster och borgmästare, och många av orden används fortfarande. Det visar att när en grupp har makt och inflytande i samhället, lånar språket gärna deras ord."
+   },
+   {
+    "question": "Varför påverkade bibeln stavningen?",
+    "short": "Bibeln påverkade stavningen eftersom den lästes upp i kyrkor över hela riket och därför blev en gemensam förebild för hur svenska skulle skrivas.",
+    "long": "Bibeln påverkade stavningen eftersom den lästes upp i kyrkor över hela riket och därför blev en gemensam förebild för hur svenska skulle skrivas. Nya testamentet kom på svenska 1526 och hela Gustav Vasas bibel 1541. Kyrkan var den plats där nästan alla människor mötte skrivet språk, så bibelns sätt att stava och formulera sig nådde ut till många. Eftersom man behövde en enda textversion som alla kunde läsa och höra, blev bibelns stavning ett slags norm. Andra som skrev lärde sig av den, och med tiden blev bibelns skriftspråk en förebild också för vanliga texter."
+   },
+   {
+    "question": "Varför blev språket mer enhetligt?",
+    "short": "Språket blev mer enhetligt eftersom samma bibeltext lästes i kyrkor i hela riket och blev gemensam förebild för stavning och skriftspråk.",
+    "long": "Språket blev mer enhetligt eftersom samma bibeltext lästes i kyrkor i hela riket och blev gemensam förebild för stavning och skriftspråk. Före bibeln skrev folk ofta på olika sätt i olika delar av landet, med skillnader i stavning och ordval. När Gustav Vasas bibel spreds och lästes högt i varje kyrka, mötte människor överallt samma språkbruk. Det gjorde att de gradvis anpassade sig till samma stavning och samma sätt att uttrycka sig i skrift. På så vis minskade skillnaderna mellan landsdelarna i skriftspråket, och ett gemensamt svenskt skriftspråk började växa fram."
+   },
+   {
+    "question": "Varför lånade svenskan franska ord?",
+    "short": "Svenskan lånade många franska ord på sjuttonhundratalet eftersom Frankrike då var ett ledande land i kultur och mode, och det svenska hovet och överklassen såg upp till det.",
+    "long": "Svenskan lånade många franska ord på sjuttonhundratalet eftersom Frankrike då var ett ledande land i kultur och mode, och det svenska hovet och överklassen såg upp till det. Franskan hade hög status i Europa, och många fina människor i Sverige ville följa franska seder och franskt liv. Med nya saker och nya sätt att bo och klä sig kom också de franska orden. Därför fick vi till exempel trottoar, paraply, fåtölj och byrå. Orden handlar ofta om möbler, kläder och stadsliv, det vill säga sådant som kom in i Sverige tillsammans med den franska modet och smaken."
+   },
+   {
+    "question": "Varför lånar svenskan från engelskan?",
+    "short": "Svenskan lånar främst från engelskan eftersom engelskan är ett stort världsspråk som präglar teknik, musik och ungdomskultur, områden där många svenskar är ständigt i kontakt med den.",
+    "long": "Svenskan lånar främst från engelskan eftersom engelskan är ett stort världsspråk som präglar teknik, musik och ungdomskultur, områden där många svenskar är ständigt i kontakt med den. Genom internet, spel, filmer, musik och arbete möter svenskar engelska varje dag, och nya saker får ofta sitt namn på engelska först. Lånorden gör språket rikare och underlättar kontakt med andra länder. Men det finns en risk som kallas domänförlust, vilket betyder att svenskan slutar användas inom vissa områden, till exempel forskning eller stora företag, där man i stället väljer engelska. Då kan svenskan förlora ord och uttryck för just de områdena."
+   },
+   {
+    "question": "Vad innebär domänförlust?",
+    "short": "Domänförlust innebär att svenskan slutar användas inom vissa områden i samhället, till exempel forskning eller stora företag, där man i stället väljer ett annat språk, oftast engelska.",
+    "long": "Domänförlust innebär att svenskan slutar användas inom vissa områden i samhället, till exempel forskning eller stora företag, där man i stället väljer ett annat språk, oftast engelska. Ordet domän betyder här ett område där ett språk används. När svenskan förlorar ett sådant område går den inte under som språk, men den blir mindre användbar. Man kan fortfarande prata svenska hemma, men inte längre arbeta, forska eller undervisa på svenska. Det kan till slut leda till att det saknas svenska ord för det som hör till området, eftersom orden inte längre används och utvecklas."
+   },
+   {
+    "question": "Varför är domänförlust ett problem?",
+    "short": "Det är ett problem eftersom svenskan då inte längre fungerar inom hela samhället, och människor som inte kan engelska riskerar att inte förstå eller kunna delta i viktiga områden.",
+    "long": "Det är ett problem eftersom svenskan då inte längre fungerar inom hela samhället, och människor som inte kan engelska riskerar att inte förstå eller kunna delta i viktiga områden. Ett språk som används överallt kan utvecklas och förnyas hela tiden. När ett område försvinner slutar nya svenska ord att skapas där, och ordförrådet blir fattigare. Det skapar också ojämlikhet, eftersom den som saknar goda kunskaper i engelska kan hamna utanför. Om utvecklingen fortsätter över tid kan svenskan till slut bli ett språk som bara används privat och i vardagen, vilket försvagar både språket och demokratin."
+   },
+   {
+    "question": "Hur kan domänförlust påverka forskning?",
+    "short": "Om forskare publicerar och undervisar enbart på engelska försvinner svenska facktermer, och forskningen blir svårare för allmänheten att ta del av.",
+    "long": "Om forskare publicerar och undervisar enbart på engelska försvinner svenska facktermer, och forskningen blir svårare för allmänheten att ta del av. När forskningen sker på engelska kan svenska ord för nya begrepp utebli, så att man saknar språk för att diskutera vetenskap på svenska. Studenter och journalister får svårare att förklara resultat för vanliga människor, och intresserade utan goda engelskakunskaper hamnar utanför. Samtidigt kan engelska ge forskare internationell räckvidd, så det finns både fördelar och nackdelar. Risken är att svenskan på sikt förlorar rollen som språk för kunskap och vetenskap."
+   },
+   {
+    "question": "Varför underlättar engelska lånord kontakt?",
+    "short": "Engelska lånord underlättar kontakt eftersom människor då känner igen orden och lättare förstår varandra när de möts, reser, arbetar eller använder internet.",
+    "long": "Engelska lånord underlättar kontakt eftersom människor då känner igen orden och lättare förstår varandra när de möts, reser, arbetar eller använder internet. Engelska är ett världsspråk som många runt om i världen kan. När svenskan delar ord med engelskan, till exempel inom teknik och musik, blir det enklare att förstå utländska texter, filmer och samtal. Det gör också att svenskar lättare kan samarbeta med människor från andra länder, både i arbete och på fritiden. Gemensamma ord fungerar alltså som en bro mellan språken och minskar missförstånd."
+   },
+   {
+    "question": "Hur gör lånord språket rikare?",
+    "short": "Lånord gör språket rikare eftersom de ger fler ord att välja mellan och ofta fyller en lucka där det saknades ett bra svenskt ord för något nytt.",
+    "long": "Lånord gör språket rikare eftersom de ger fler ord att välja mellan och ofta fyller en lucka där det saknades ett bra svenskt ord för något nytt. Svenskan har hela tiden lånat ord, till exempel lågtyska ord som fönster och betala från Hansans tid och franska ord som paraply och fåtölj på sjuttonhundratalet. Dessa ord har blivit en naturlig del av språket. Idag kommer många nya ord från engelskan, särskilt inom teknik, musik och ungdomsspråk. Genom lånord kan man uttrycka nyanser, beskriva nya företeelser och variera sitt språk. Ett större ordförråd ger alltså fler sätt att uttrycka sig."
+   },
+   {
+    "question": "Vad hände med svenskan under Gustav Vasa?",
+    "short": "Under Gustav Vasas tid kom bibeln på svenska, först Nya testamentet 1526 och sedan hela Gustav Vasas bibel 1541, och den gjorde språket mer enhetligt.",
+    "long": "Under Gustav Vasas tid kom bibeln på svenska, först Nya testamentet 1526 och sedan hela Gustav Vasas bibel 1541, och den gjorde språket mer enhetligt. Bibeln lästes upp i kyrkorna i hela riket, så människor över hela landet mötte samma stavning och samma skriftspråk. På så sätt blev den en förebild för hur man skulle skriva svenska. Det gjorde att skillnaderna mellan landsdelarna minskade i skrift och att ett gemensamt riksspråk började växa fram. Perioden räknas därför som starten på nysvenskan, som tar vid 1526."
+   },
+   {
+    "question": "Hur skiljer sig fornsvenska från runsvenska?",
+    "short": "Runsvenskan skrevs med runor, medan fornsvenskan skrevs med det latinska alfabetet som kom med kristendomen.",
+    "long": "Runsvenskan skrevs med runor, medan fornsvenskan skrevs med det latinska alfabetet som kom med kristendomen. Runsvenskan talades under vikingatiden, ungefär från år 800 till 1225, och runorna ristades ofta på runstenar som restes till minne av döda släktingar. Den yngre futharken hade bara sexton runor. När kristendomen kom införde kyrkan det latinska alfabetet, och då började fornsvenskan, från 1225 till 1526. I den perioden kom också många lånord från lågtyskan, eftersom tyska köpmän dominerade handeln i städerna. Skillnaden gäller alltså både skriftsystemet och vilka ord språket tog in."
+   },
+   {
+    "question": "Vad skiljer nysvenskan från fornsvenskan?",
+    "short": "Nysvenskan, som börjar 1526, har ett mer enhetligt skriftspråk tack vare bibeln på svenska, och den lånade många franska ord.",
+    "long": "Nysvenskan, som börjar 1526, har ett mer enhetligt skriftspråk tack vare bibeln på svenska, och den lånade många franska ord. Fornsvenskan präglades av det latinska alfabetet och av lågtyska lånord som betala, språk, fönster och borgmästare. I nysvenskan fick språket en gemensam norm genom Nya testamentet 1526 och Gustav Vasas bibel 1541, som lästes i alla kyrkor och blev förebild för stavningen. På 1700-talet kom många franska lånord, till exempel trottoar, paraply, fåtölj och byrå. Skillnaden är alltså ett mer enhetligt språk och andra lånordsinfluenser."
+   },
+   {
+    "question": "Vad betyder futharken?",
+    "short": "Futharken är namnet på runalfabetet, och det kommer av de sex första runtecknens ljud: f, u, th, a, r och k.",
+    "long": "Futharken är namnet på runalfabetet, och det kommer av de sex första runtecknens ljud: f, u, th, a, r och k. Ordet bildas alltså av de första tecknen, på samma sätt som vårt alfabet har fått sitt namn av bokstäverna alfa och beta. Under vikingatiden användes en yngre futhark med bara sexton runor. Eftersom den hade så få tecken fick en och samma runa stå för flera olika ljud, vilket gjorde runstenarnas texter ibland svåra att tolka. Runorna ristades ofta på stenar som restes till minne av döda släktingar."
+   },
+   {
+    "question": "Varför var tyska köpmän viktiga?",
+    "short": "Tyska köpmän dominerade handeln i de svenska städerna under Hansans tid, och därför fick deras språk stort inflytande på svenskan.",
+    "long": "Tyska köpmän dominerade handeln i de svenska städerna under Hansans tid, och därför fick deras språk stort inflytande på svenskan. När människor dagligen handlade med och arbetade tillsammans med tyska köpmän började de använda deras ord. Därför kom många lågtyska lånord in i fornsvenskan, till exempel betala, språk, fönster och borgmästare. Det visar hur handel och kontakter mellan folk kan förändra ett språk. Handeln var alltså inte bara ekonomiskt viktig utan påverkade också ordförrådet i svenskan på ett sätt som syns än i dag."
+   }
+  ],
+  "cost_claude_usd": 0.0591
+ },
+ {
+  "id": "re-ak8-varldsreligioner",
+  "photos": 2,
+  "text_chars": 292,
+  "summary": {
+   "subject": "Religionskunskap",
+   "grade": "åk 8",
+   "covers": "Judendomens och islams heliga skrifter, sabbat och islams fem pelare samt tron på återfödelse, karma och befrielse i hinduism och buddhism. Buddhismens fyra ädla sanningar och kristendomens tro på liv, uppståndelse och dom avslutar."
+  },
+  "questions": 20,
+  "t_questions_s": 5.4,
+  "t_answers_s": 16.1,
+  "t_total_s": 21.6,
+  "q_le5": 20,
+  "q_le8": 20,
+  "q_understanding": 10,
+  "answered": 20,
+  "d145": 20,
+  "long_words_p50": 100,
+  "long_words_max": 118,
+  "short_words_max": 30,
+  "chars_short": 2425,
+  "chars_long": 11488,
+  "chars_questions": 483,
+  "cost_plan_usd": 0.0009548,
+  "cost_answers_usd": 0.059648,
+  "items": [
+   {
+    "question": "Varför är Toran viktig?",
+    "short": "Toran är den viktigaste delen av judendomens heliga skrift Tanach. Den innehåller Guds lag och undervisning till det judiska folket.",
+    "long": "Toran är den viktigaste delen av judendomens heliga skrift Tanach. Den innehåller Guds lag och undervisning till det judiska folket. Toran består av de fem Moseböckerna och beskriver hur judarna ska leva, till exempel genom de tio budorden och många andra regler för vardag och högtider. Därför är den en vägledning för hur man lever ett gott liv enligt Guds vilja. I synagogan läses ur Toran-rullen varje vecka, och den behandlas med stor vördnad. Toran binder också samman judar genom historien eftersom den berättar om förbundet mellan Gud och folket."
+   },
+   {
+    "question": "När börjar sabbat?",
+    "short": "Sabbat börjar vid solnedgången på fredagen och slutar på lördagskvällen.",
+    "long": "Sabbat börjar vid solnedgången på fredagen och slutar på lördagskvällen. Det betyder att den judiska dagen räknas från kväll till kväll. Sabbaten varar alltså ungefär ett dygn, och på fredagskvällen välkomnar man den ofta genom att tända ljus hemma tillsammans med familjen."
+   },
+   {
+    "question": "Vad händer på sabbaten?",
+    "short": "Sabbaten är judendomens vilodag, då man vilar från vardagens arbete och ägnar tiden åt Gud, familjen och gemenskap.",
+    "long": "Sabbaten är judendomens vilodag, då man vilar från vardagens arbete och ägnar tiden åt Gud, familjen och gemenskap. Dagen minner om att Gud vilade den sjunde dagen efter att ha skapat världen. Många troende går till synagogan för att be och lyssna när ur Toran läses. Man brukar äta gemensamma måltider med familjen och umgås lugnt. Mer traditionellt troende undviker arbete, och till exempel att laga mat, resa med bil eller använda elektronik. Sabbaten ger alltså en paus från stress och påminner om vad som är viktigt i livet."
+   },
+   {
+    "question": "Vad är Koranen?",
+    "short": "Koranen är islams heliga skrift, som muslimer tror är Guds ord uppenbarat för profeten Muhammed.",
+    "long": "Koranen är islams heliga skrift, som muslimer tror är Guds ord uppenbarat för profeten Muhammed. Muslimer menar att Gud förmedlade budskapet genom ängeln Gabriel, och att texten är densamma än i dag. Koranen är skriven på arabiska, och troende läser och reciterar den ofta på originalspråket, även om den finns översatt. Den ger vägledning om tro, rättvisa, hur man ska behandla andra människor och hur man lever enligt Guds vilja. Den hanteras med stor respekt, till exempel genom att man tvättar sig innan man tar i den."
+   },
+   {
+    "question": "Vilka är islams fem pelare?",
+    "short": "Islams fem pelare är trosbekännelsen, bönen fem gånger om dagen, allmosan, fastan under ramadan och vallfärden till Mecka.",
+    "long": "Islams fem pelare är trosbekännelsen, bönen fem gånger om dagen, allmosan, fastan under ramadan och vallfärden till Mecka. Trosbekännelsen innebär att man säger att det inte finns någon gud utom Gud och att Muhammed är hans profet. Bönen förrättas fem gånger varje dag riktad mot Mecka. Allmosan är en gåva till behövande, vilket visar solidaritet. Under ramadan fastar man från gryning till solnedgång. Vallfärden till Mecka bör varje muslim göra minst en gång i livet om hälsa och ekonomi tillåter. Tillsammans utgör pelarna grunden för muslimens tro och vardag."
+   },
+   {
+    "question": "Varför fastar muslimer under ramadan?",
+    "short": "Muslimer fastar under ramadan eftersom det är en av islams fem pelare, ett bud från Gud, och för att visa lydnad, självbehärskning och tacksamhet.",
+    "long": "Muslimer fastar under ramadan eftersom det är en av islams fem pelare, ett bud från Gud, och för att visa lydnad, självbehärskning och tacksamhet. Under ramadan äter och dricker muslimer inte från gryning till solnedgång. Det är månaden då Koranen enligt islam först uppenbarades för Muhammed, och därför ses den som en särskild tid. Fastan lär människan att kontrollera sina begär och att tänka mer på Gud. Genom att själv vara hungrig och törstig får man också större förståelse för fattiga människor som saknar mat, och många ger extra mycket till behövande just under ramadan. Månaden avslutas med en stor gemensam fest."
+   },
+   {
+    "question": "Vad innebär allmosan i islam?",
+    "short": "Allmosan är att muslimer ger en del av sina pengar till behövande, och det är en av islams fem pelare.",
+    "long": "Allmosan är att muslimer ger en del av sina pengar till behövande, och det är en av islams fem pelare. Allmosan kallas på arabiska zakat. Den som har tillräckligt med pengar ska varje år ge en bestämd andel av sin förmögenhet till fattiga och andra som behöver hjälp. Tanken är att allt egentligen tillhör Gud och att den som har mer också har ett ansvar för dem som har mindre. Allmosan renar enligt tron både människans ägodelar och hennes hjärta från girighet. På så sätt skapar den solidaritet och rättvisa i samhället, eftersom de rika och de fattiga knyts närmare varandra. Många muslimer ger dessutom frivilliga gåvor utöver den."
+   },
+   {
+    "question": "Varför gör muslimer vallfärden?",
+    "short": "Muslimer gör vallfärden till Mecka för att det är en av islams fem pelare, och varje muslim som har råd och hälsa ska göra den minst en gång i livet.",
+    "long": "Muslimer gör vallfärden till Mecka för att det är en av islams fem pelare, och varje muslim som har råd och hälsa ska göra den minst en gång i livet. Vallfärden kallas hajj och görs under en bestämd månad på året. I Mecka finns Kaba, det heliga huset som muslimer ber mot fem gånger om dagen. Under vallfärden utför pilgrimerna flera ritualer som minner om profeten Abraham och hans familj. Alla bär enkla vita kläder, vilket visar att människor är lika inför Gud, oavsett rikedom eller ställning. Vallfärden är också ett sätt att visa lydnad och be om förlåtelse för sina synder. Många upplever att den stärker både tron och känslan av gemenskap med muslimer över hela världen."
+   },
+   {
+    "question": "Vad är samsara?",
+    "short": "Samsara är hinduismens och buddhismens benämning på kretsloppet av födelse, död och återfödelse som en varelse går igenom om och om igen.",
+    "long": "Samsara är hinduismens och buddhismens benämning på kretsloppet av födelse, död och återfödelse som en varelse går igenom om och om igen. Enligt dessa religioner dör man inte bara för att sedan försvinna, utan föds på nytt i ett nytt liv. Vad man föds som och hur livet blir beror på karma, alltså på vad man gjort i tidigare liv. Samsara ses ofta som något man vill ta sig ur, eftersom livet innebär lidande. I hinduismen är målet att själen, atman, ska befrias från kretsloppet, och det kallas moksha. I buddhismen är målet att nå nirvana, där lidandet och begäret upphör och man inte föds igen."
+   },
+   {
+    "question": "Vad är karma?",
+    "short": "Karma är tanken att alla handlingar får följder, och att de följderna kan märkas både i det här livet och i kommande liv.",
+    "long": "Karma är tanken att alla handlingar får följder, och att de följderna kan märkas både i det här livet och i kommande liv. Karma är en viktig idé i både hinduism och buddhism. Goda handlingar, som att hjälpa andra och vara ärlig, ger goda följder, medan dåliga handlingar, som att skada någon, ger dåliga följder. Karma fungerar tillsammans med samsara, kretsloppet av återfödelse: det man gör i detta liv påverkar hur nästa liv blir. På så sätt har varje människa ett eget ansvar för sitt liv och sina val. Karma gör att många troende försöker leva moraliskt, för att få en bättre framtid och till sist kunna lämna kretsloppet."
+   },
+   {
+    "question": "Hur påverkar karma nästa liv?",
+    "short": "Karma betyder att varje handling får följder. Goda handlingar ger ett bättre nästa liv och onda handlingar ett sämre.",
+    "long": "Karma betyder att varje handling får följder. Goda handlingar ger ett bättre nästa liv och onda handlingar ett sämre. Idén finns i både hinduismen och buddhismen, som tror på återfödelse, kallad samsara. Efter döden föds man på nytt, och hur det nya livet blir beror på hur man har levt tidigare. Den som har varit ärlig och omtänksam kan alltså få bättre villkor i nästa liv. Den som har skadat andra kan få det svårare. På så sätt är människan själv ansvarig för sin framtid, och det är en viktig anledning till att troende försöker leva moraliskt rätt."
+   },
+   {
+    "question": "Vad är moksha?",
+    "short": "Moksha är hinduismens mål: att själen, atman, blir fri från kretsloppet av död och återfödelse.",
+    "long": "Moksha är hinduismens mål: att själen, atman, blir fri från kretsloppet av död och återfödelse. Enligt hinduismen föds människan om och om igen i ett kretslopp som kallas samsara, och karma avgör hur varje nytt liv blir. Moksha betyder att man bryter sig loss från detta kretslopp, så att själen inte behöver födas på nytt. Det ses som den största befrielsen och som själens slutgiltiga frid. Hur man når moksha beskrivs på olika sätt, till exempel genom goda handlingar, andlig kunskap och hängivenhet till Gud. Men alla hinduer är överens om att det är det högsta målet med livet."
+   },
+   {
+    "question": "Vad är atman?",
+    "short": "Atman är hinduismens ord för själen, den eviga delen av en människa som fortsätter leva efter döden.",
+    "long": "Atman är hinduismens ord för själen, den eviga delen av en människa som fortsätter leva efter döden. Kroppen dör, men atman gör det inte. Den föds om i en ny kropp, och det är därför man talar om återfödelse. Hur nästa liv blir beror på karma, alltså på de handlingar man har gjort i sina tidigare liv. Atman är alltså det som hela tiden följer med genom kretsloppet, som kallas samsara. Målet för atman är moksha, att bli fri från kretsloppet. Då behöver själen inte födas på nytt, utan når en slutgiltig frihet och frid."
+   },
+   {
+    "question": "Varför tror buddhister på lidande?",
+    "short": "Buddhister säger att livet innebär lidande eftersom alla människor möter sjukdom, ålderdom, sorg och död, och inget i livet varar för alltid.",
+    "long": "Buddhister säger att livet innebär lidande eftersom alla människor möter sjukdom, ålderdom, sorg och död, och inget i livet varar för alltid. Det är buddhismens första ädla sanning. Den betyder inte att livet aldrig är glatt, utan att allt förändras och förgår, och att det ger oro och smärta. Även sådant som vi tycker om försvinner till slut. Buddhisterna tror dock inte att lidandet är hopplöst. Den andra sanningen säger att lidandet orsakas av begär. Den tredje säger att lidandet kan upphöra, och det kallas nirvana. Den fjärde pekar ut vägen dit, den åttafaldiga vägen. Att se lidandet är alltså första steget mot befrielse."
+   },
+   {
+    "question": "Vad orsakar lidandet enligt buddhismen?",
+    "short": "Enligt buddhismen orsakas lidandet av begär, alltså att vi hela tiden vill ha mer och inte nöjer oss med det vi har.",
+    "long": "Enligt buddhismen orsakas lidandet av begär, alltså att vi hela tiden vill ha mer och inte nöjer oss med det vi har. Det är den andra ädla sanningen. När vi längtar efter saker, framgång eller att något ska vara annorlunda blir vi aldrig riktigt nöjda, och då uppstår oro och missnöje. Begäret kan också hålla fast människan i kretsloppet av återfödelse, samsara. Därför är lösningen att minska begäret. Den tredje sanningen säger att lidandet kan upphöra, och det kallas nirvana. Den fjärde säger att man når dit genom den åttafaldiga vägen, ett sätt att leva med rätt tankar, ord och handlingar."
+   },
+   {
+    "question": "Vad är nirvana?",
+    "short": "Nirvana är i buddhismen det tillstånd där lidandet har upphört, eftersom begäret har släckts. Det är målet för den som följer buddhismens väg.",
+    "long": "Nirvana är i buddhismen det tillstånd där lidandet har upphört, eftersom begäret har släckts. Det är målet för den som följer buddhismens väg. Ordet betyder ungefär att något slocknar, som en låga. Det som slocknar är begäret, hat och okunskap, alltså det som enligt buddhismen håller oss kvar i lidande. Nirvana är den tredje ädla sanningen: lidandet kan upphöra. Den som når nirvana frigörs från kretsloppet av död och återfödelse som kallas samsara. Många buddhister ser det som ett tillstånd av djup frid och frihet, som man kan närma sig redan under livet genom att leva efter den åttafaldiga vägen."
+   },
+   {
+    "question": "Hur kan lidandet upphöra?",
+    "short": "Enligt buddhismen upphör lidandet när begäret upphör, och vägen dit är den åttafaldiga vägen. Den som följer den kan nå nirvana.",
+    "long": "Enligt buddhismen upphör lidandet när begäret upphör, och vägen dit är den åttafaldiga vägen. Den som följer den kan nå nirvana. Buddhismens fyra ädla sanningar förklarar sambandet. Livet innebär lidande, och lidandet orsakas av begär, till exempel längtan efter ägodelar, njutning eller att livet aldrig ska ta slut. Därför måste man minska begäret för att lidandet ska minska. Den åttafaldiga vägen är ett sätt att leva som hjälper till med det. Den handlar om att tänka rätt, handla rätt och träna sitt sinne, till exempel genom meditation. På så sätt kan människan till slut befrias från lidandet och nå nirvana."
+   },
+   {
+    "question": "Varför är återfödelse viktig?",
+    "short": "Återfödelse är viktig i hinduismen och buddhismen eftersom den förklarar varför handlingar får följder och är det som människan vill befrias från.",
+    "long": "Återfödelse är viktig i hinduismen och buddhismen eftersom den förklarar varför handlingar får följder och är det som människan vill befrias från. Idén om återfödelse, samsara, hänger ihop med karma. Det du gör får följder, även i kommande liv. Därför har det betydelse hur man lever: goda handlingar ger goda följder, onda handlingar ger onda. Återfödelsen ger alltså livet och moralen en djup mening. Samtidigt ses den som ett kretslopp man vill ta sig ur. I hinduismen är målet moksha, att själen, atman, befrias från kretsloppet. I buddhismen når man nirvana, där lidandet och återfödelsen upphör."
+   },
+   {
+    "question": "Vad händer efter döden?",
+    "short": "Det beror på religionen. Hinduer och buddhister tror på återfödelse, medan kristna tror på uppståndelse och dom.",
+    "long": "Det beror på religionen. Hinduer och buddhister tror på återfödelse, medan kristna tror på uppståndelse och dom. I hinduismen och buddhismen föds människan på nytt efter döden, och karma avgör hur nästa liv blir. Kretsloppet pågår tills man når moksha eller nirvana. Kristna tror i stället att människan lever ett enda liv. Efter döden väntar uppståndelse och dom, där människan blir dömd för sitt liv. Det visar hur olika religioner ser på livets mening och på hur man bör leva. Inom andra religioner, som islam och judendom, finns också egna föreställningar om vad som väntar efter döden."
+   },
+   {
+    "question": "Varför är uppståndelsen viktig?",
+    "short": "Uppståndelsen är viktig för kristna eftersom Jesus uppstod från de döda, och det ger hopp om att också människan ska uppstå efter döden.",
+    "long": "Uppståndelsen är viktig för kristna eftersom Jesus uppstod från de döda, och det ger hopp om att också människan ska uppstå efter döden. För kristna är Jesu uppståndelse själva kärnan i tron. Den visar att döden inte är slutet och att Gud är starkare än döden. Kristna firar den vid påsk. Eftersom Jesus uppstod tror kristna att alla människor också ska uppstå efter döden. Därefter väntar en dom. Tron på uppståndelsen ger alltså både hopp inför döden och en känsla av att det man gör i livet har betydelse, eftersom människan lever ett enda liv och en dag ska stå till svars för det."
+   }
+  ],
+  "cost_claude_usd": 0.0606
+ }
+]

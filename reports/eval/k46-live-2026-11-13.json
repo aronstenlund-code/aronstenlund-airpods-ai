@@ -1,0 +1,49 @@
+{
+ "source": "bio-ak8-fotosyntes",
+ "items": 3,
+ "text_chars": 1910,
+ "save_status": 200,
+ "save_s": 2.6,
+ "new_chars": 1910,
+ "audio": {
+  "done": 6,
+  "total": 6,
+  "failed": 0,
+  "chars": 1910,
+  "est_usd": 0.15,
+  "bytes": 1104293,
+  "model": "eleven_multilingual_v2"
+ },
+ "all_done_s": 10.4,
+ "long0": {
+  "bytes": 349456,
+  "is_mp3": true,
+  "duration_ms": 43607,
+  "short_end_ms": 8359,
+  "short_before_end": true
+ },
+ "question0_ms": 1486,
+ "second_account": {
+  "status": 200,
+  "new_chars": 0,
+  "done": 6,
+  "total": 6
+ },
+ "share": {
+  "status": 200,
+  "url": "https://earmind.ai/p/achju2hc6j",
+  "import_status": 200,
+  "import_s": 1.4,
+  "new_chars": 0,
+  "done": 6,
+  "total": 6,
+  "shared_from_ok": true,
+  "unshare_by_other": 404
+ },
+ "rls": {
+  "function_get_as_b": 404,
+  "rest_as_b": 0,
+  "rest_as_a": 1,
+  "audio_table_as_b": "HTTP 403"
+ }
+}
