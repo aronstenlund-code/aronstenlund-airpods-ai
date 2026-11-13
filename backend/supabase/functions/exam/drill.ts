@@ -146,6 +146,11 @@ export function cleanQuestion(q: unknown): string {
   return s[0].toUpperCase() + s.slice(1);
 }
 
+/** A question that points at the material ("i texten", "exemplet", "på bilden"): unclear when only heard (O55). */
+export function leansOnMaterial(q: string): boolean {
+  return /\b(?:i texten|enligt texten|nämns|i materialet|på bilden|i bilden|i figuren|i tabellen|i exemplet|\w*exemplet|uppgiften|ovan)\b/i.test(q);
+}
+
 /** A question that asks only for a fact or a definition (R3 wants at least 70 % understanding questions). */
 export function isRecall(q: string): boolean {
   return /^(?:vad (?:är|var|heter|betyder|kallas|står)|vilk(?:a|en|et) |när |vem |vilket år|enhet för|nämn )/i.test(q.trim());
@@ -184,7 +189,7 @@ export function parsePlan(
  */
 export function trimQuestions(list: string[], count: number): string[] {
   const questions = [...list];
-  const score = (q: string) => (isRecall(q) ? 100 : 0) + (words(q) > 5 ? 50 : 0) + words(q);
+  const score = (q: string) => (leansOnMaterial(q) ? 200 : 0) + (isRecall(q) ? 100 : 0) + (words(q) > 5 ? 50 : 0) + words(q);
   while (questions.length > count) {
     let worst = 0;
     questions.forEach((q, i) => {
@@ -200,6 +205,7 @@ export const SYSTEM_PROMPT_DRILL_SHORTEN =
 - A question that only makes sense with the material in front of the student is rewritten so that it is clear when heard alone ("Hur bygger man gymmodellen?" -> "Hur ställer man upp en linjär kostnadsmodell?", "Skillnad mot past simple?" -> "Skillnad mellan present perfect och past simple?").
 - Symbols, formulas, units and abbreviations are written as they are said ("3x + 5 = 20" -> "tre x plus fem är lika med tjugo", "O2" -> "syre", "dm³" -> "kubikdecimeter").
 - Wrong or clumsy Swedish is fixed ("Vad jämför man nysvenska och fornsvenska?" -> "Hur skiljer sig nysvenska från fornsvenska?").
+- Never make a question longer for any other reason; five words or fewer whenever it stays clear.
 - Make each question five words or fewer when it stays clear and unambiguous within THIS exam: drop what the exam's subject already makes obvious and filler ("Varför är bönen viktig för muslimer?" -> "Varför ber muslimer?" in an exam on Islam; but keep "enligt buddhismen" when the exam covers several religions and the question would otherwise be unclear).
 - The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.
 - A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.
@@ -236,8 +242,10 @@ export async function shortenQuestions(
       const i = Number(x?.i);
       const q = cleanQuestion(x?.q);
       if (!Number.isInteger(i) || i < 0 || i >= out.length || !q) continue;
-      // shorter, or a rewrite for clarity/symbols that stays within the limit (never longer than eight words)
-      if (words(q) >= 2 && words(q) <= DRILL_LIMITS.questionWordsMax &&
+      // K52 live: rewrites that only made questions longer cost R3 (65 % at most five words). A longer rewrite is kept
+      // only when the original had signs or leaned on the material; otherwise only a shorter or equal one.
+      const mayGrow = /[=+*/^²³%<>]|\d/.test(out[i]) || leansOnMaterial(out[i]);
+      if (words(q) >= 2 && words(q) <= DRILL_LIMITS.questionWordsMax && (mayGrow || words(q) <= words(out[i])) && !leansOnMaterial(q) &&
         !out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) out[i] = q;
     }
     return { questions: out, usage: r.usage };

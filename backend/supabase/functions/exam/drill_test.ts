@@ -342,3 +342,22 @@ Deno.test("K52 grade: the app's profile codes become what Swedes say; the prompt
   assertEquals([gradeName("y8"), gradeName("gy1"), gradeName("Svenska 1"), gradeName("other")], ["åk 8", "gymnasiet år 1", "Svenska 1", ""]);
   assert(SYSTEM_PROMPT_DRILL_PLAN.includes('never guess "åk 8" by default'));
 });
+
+Deno.test("K52 questions that point at the material go first; a rewrite may grow only to fix signs or such a question", async () => {
+  const { leansOnMaterial, trimQuestions, shortenQuestions, DEFAULT_DRILL_CONFIG } = await import("./drill.ts");
+  assertEquals([leansOnMaterial("Vilka lånord nämns i texten?"), leansOnMaterial("Hur bildas kostnaden i gymexemplet?"), leansOnMaterial("Varför ber muslimer?")], [true, true, false]);
+  assertEquals(trimQuestions(["Vilka lånord nämns i texten?", "Varför regnar det?", "Hur bildas moln?"], 2), ["Varför regnar det?", "Hur bildas moln?"]);
+  const llm: LLMProvider = {
+    name: "f",
+    model: "x",
+    async *stream() {
+      yield { type: "text", text: JSON.stringify({ questions: [
+        { i: 0, q: "Varför behöver växterna klorofyll i sina blad?" }, // longer for no reason: kept as it was
+        { i: 1, q: "Lös tre x plus fem lika med tjugo?" }, // signs: may grow
+        { i: 2, q: "Hur ställer man upp en linjär kostnadsmodell?" }, // leaned on the material: may grow
+      ] }) };
+    },
+  };
+  const r = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, ["Varför behövs klorofyll?", "Hur löser du 3x + 5 = 20?", "Hur bildas kostnaden i gymexemplet?"], { subject: "", grade: "", covers: "" });
+  assertEquals(r.questions, ["Varför behövs klorofyll?", "Lös tre x plus fem lika med tjugo?", "Hur ställer man upp en linjär kostnadsmodell?"]);
+});
