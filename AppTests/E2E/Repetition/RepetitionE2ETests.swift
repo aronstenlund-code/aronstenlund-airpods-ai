@@ -70,7 +70,7 @@ struct RepetitionE2ETests {
 
     // MARK: Set-up
 
-    struct Run {
+    @MainActor struct Run {
         let session: RepetitionSession
         let hub: RemoteCommandHub
         let source: RecordingSource
