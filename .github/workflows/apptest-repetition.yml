@@ -5,6 +5,11 @@ name: Apptest repetition mode (T18)
 # Manual, and on Toby's branch when the test changes. Simulator only: never a device test.
 on:
   workflow_dispatch:
+    inputs:
+      pauses:
+        description: "D163 long pauses in seconds, comma list (e.g. 300,1800). Default 5."
+        required: false
+        default: "5"
   push:
     branches: ["toby/**"]
     paths:
@@ -20,7 +25,7 @@ jobs:
   repetition:
     name: T18 repetition (Simulator, mock sound)
     runs-on: macos-26
-    timeout-minutes: 60
+    timeout-minutes: 80
     steps:
       - uses: actions/checkout@v5
 
@@ -36,6 +41,8 @@ jobs:
         run: brew install xcodegen
 
       - name: Repetition
+        env:
+          LUMEN_E2E_REP_PAUSES: ${{ github.event.inputs.pauses || '5' }}
         run: |
           bash scripts/apptest/repetition.sh
           STATUS=$?

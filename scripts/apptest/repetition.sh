@@ -2,6 +2,7 @@
 # T18 (Toby 2): the repetition mode (A78–A81) in the Simulator with mock sound (AppTests/E2E/Repetition/).
 #
 #   scripts/apptest/repetition.sh
+#   LUMEN_E2E_REP_PAUSES=300,1800 scripts/apptest/repetition.sh   # D163: long pauses, about 32 minutes more
 #
 # Audio: quiet tones with known lengths, made here (no ElevenLabs, no say). Question 2.0 s, long answer 6.0 s with
 # the short answer ending at 2.5 s, short answer file 2.5 s. The test drives the real RepetitionSession with the real
@@ -46,6 +47,7 @@ xcrun simctl bootstatus "$UDID" -b >/dev/null
 echo "::group::Repetition (real time, mock sound)"
 TEST_RUNNER_LUMEN_E2E_REPETITION_DIR="$AUDIO" \
 TEST_RUNNER_LUMEN_E2E_OUT="$OUT" \
+TEST_RUNNER_LUMEN_E2E_REP_PAUSES="${LUMEN_E2E_REP_PAUSES:-5}" \
 xcodebuild test \
   -project Lumen.xcodeproj \
   -scheme LumenE2E \
