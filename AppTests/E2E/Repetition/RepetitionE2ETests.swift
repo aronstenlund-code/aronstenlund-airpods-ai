@@ -55,7 +55,18 @@ struct RepetitionE2ETests {
         func play(until: TimeInterval?) { recorder.add(url, until.map { "play until \($0)" } ?? "play", inner.currentTime); inner.play(until: until) }
         func pause() { inner.pause(); recorder.add(url, "pause", inner.currentTime) }
         func stop() { recorder.add(url, "stop", inner.currentTime); inner.stop() }
+        // A91 (D164): forwarded, or the protocol's empty defaults would hide the real player's seek and speed.
+        var duration: TimeInterval { inner.duration }
+        var rate: Float {
+            get { inner.rate }
+            set { inner.rate = newValue }
+        }
+        func seek(to time: TimeInterval) { recorder.add(url, "seek from", inner.currentTime); inner.seek(to: time); recorder.add(url, "seek to", inner.currentTime) }
     }
+
+    /// D164: after the user's pause (3 presses) the answer goes on from its sentence start. The mock long file has no
+    /// sentence times, so the starts are 0 and the short answer's end, 2.5 s (`RepetitionTrack.longSentenceStart`).
+    static func sentenceStart(_ time: Double) -> Double { track(0).longSentenceStart(at: time) }
 
     @MainActor final class RecordingSource: RepetitionAudioSource {
         let recorder: Recorder
@@ -227,9 +238,11 @@ struct RepetitionE2ETests {
             await run.hub.route(.play)
             #expect(await wait(2) { phase(run) == .answer(0, .long) } != nil)
             try await Task.sleep(for: .milliseconds(2_000 + 300 * n))
+            let word = run.source.last?.currentTime ?? -1 // where the user paused
             await run.hub.route(.previous) // 3 presses
             #expect(await wait(2) { run.player?.isPaused == true } != nil)
             let pausedAt = run.source.last?.currentTime ?? -1
+            let expected = Self.sentenceStart(word)
             try await Task.sleep(for: .seconds(3))
             let stillAt = run.source.last?.currentTime ?? -1
             #expect(abs(stillAt - pausedAt) < 0.05, "moved while paused: \(pausedAt) → \(stillAt)")
@@ -242,16 +255,109 @@ struct RepetitionE2ETests {
             let finished = await wait(8) { phase(run) == .question(1) }
             save(run, "pause-\(resume.rawValue)")
             run.session.stop()
-            let jump = abs(goneOnFrom - pausedAt)
+            let jump = abs(goneOnFrom - expected)
             worst = max(worst, jump)
-            #expect(jump < 0.1, "\(resume): paused at \(pausedAt), went on from \(goneOnFrom)")
+            #expect(jump < 0.1, "\(resume): paused at \(word), went on from \(goneOnFrom), expected the sentence start \(expected)")
             #expect(phaseAfter == .answer(0, .long), "\(resume): \(phaseAfter) after going on")
-            let rest = 6 - pausedAt
+            let rest = 6 - expected
             #expect(finished.map { abs($0 + 0.3 - rest) < 0.8 } == true, "\(resume): the rest took \(finished ?? -1) s, expected \(rest)")
-            rows.append(String(format: "%@: pausad vid %.2f s, fortsatte från %.2f s, resten %.2f s (väntat %.2f)",
-                               resume.rawValue, pausedAt, goneOnFrom, (finished ?? -1) + 0.3, rest))
+            rows.append(String(format: "%@: pausad vid %.2f s, fortsatte från %.2f s (meningens start %.2f), resten %.2f s (väntat %.2f)",
+                               resume.rawValue, word, goneOnFrom, expected, (finished ?? -1) + 0.3, rest))
         }
-        Self.note(String(format: "R7 (proxy) paus → fortsätt med alla fyra kommandon, största hopp %.3f s: ", worst) + rows.joined(separator: "; "))
+        Self.note(String(format: "R7/D164 (proxy) paus med 3 tryck → fortsätt från meningens start med alla fyra kommandon, största fel %.3f s: ", worst) + rows.joined(separator: "; "))
+    }
+
+    // MARK: D163: after a long pause, 1, 2 and 3 presses all go on from the same position
+
+    /// Pauses in seconds from `LUMEN_E2E_REP_PAUSES` (comma list, default 5; D163 asks for 300 and 1800).
+    static var longPauses: [Double] {
+        let raw = ProcessInfo.processInfo.environment["LUMEN_E2E_REP_PAUSES"] ?? "5"
+        let list = raw.split(separator: ",").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }.filter { $0 > 0 }
+        return list.isEmpty ? [5] : list
+    }
+
+    @MainActor struct PausedRun {
+        let run: Run
+        let pause: Double
+        let press: RemoteCommand
+        let label: String
+        let word: Double // where the user paused
+        let at: Double // where the player stood once paused (the sentence start, D164)
+        let since: Date
+        var expected: Double { RepetitionE2ETests.sentenceStart(word) }
+    }
+
+    /// One session per pause and press, all paused at the same time, so 5 and 30 minutes take 30 minutes of wall time
+    /// and not 105. Each is checked every second during the pause (still paused, still active, position still), then
+    /// goes on with its press and is paused again so it stays quiet. Sessions are stopped only at the end, because
+    /// `stop()` deactivates the shared audio session. The Simulator has no locked screen: the app stays in front.
+    @Test func everyPressGoesOnAfterALongPause() async throws {
+        let presses: [(RemoteCommand, String)] = [(.play, "1 tryck"), (.next, "2 tryck"), (.previous, "3 tryck")]
+        var paused: [PausedRun] = []
+        for pause in Self.longPauses {
+            for (k, (press, label)) in presses.enumerated() {
+                let run = try begin()
+                #expect(await wait(5) { phase(run) == .question(0) } != nil)
+                await run.hub.route(.play)
+                #expect(await wait(2) { phase(run) == .answer(0, .long) } != nil)
+                try await Task.sleep(for: .milliseconds(1_500 + 600 * k)) // 1.5, 2.1 and 2.7 s: both sentences
+                let word = run.source.last?.currentTime ?? -1
+                await run.hub.route(.previous) // 3 presses: pause
+                #expect(await wait(2) { run.player?.isPaused == true } != nil, "\(label), \(pause) s: did not pause")
+                paused.append(PausedRun(run: run, pause: pause, press: press, label: label, word: word,
+                                        at: run.source.last?.currentTime ?? -1, since: Date()))
+            }
+        }
+
+        var rows: [String] = []
+        var problems: [String] = []
+        var worst = 0.0
+        var flagged: Set<Int> = []
+        var done: Set<Int> = []
+        while done.count < paused.count {
+            try await Task.sleep(for: .seconds(1))
+            for (i, item) in paused.enumerated() where !done.contains(i) {
+                let now = item.run.source.last?.currentTime ?? -1
+                let stillPaused = item.run.player?.isPaused == true
+                let active = item.run.session.isActive
+                if !flagged.contains(i), !stillPaused || !active || abs(now - item.at) > 0.05 {
+                    flagged.insert(i)
+                    problems.append(String(format: "%@, %.0f s paus: efter %.0f s pausad %@, aktiv %@, position %.2f → %.2f",
+                                           item.label, item.pause, Date().timeIntervalSince(item.since),
+                                           stillPaused ? "ja" : "NEJ", active ? "ja" : "NEJ", item.at, now))
+                }
+                guard Date().timeIntervalSince(item.since) >= item.pause else { continue }
+                done.insert(i)
+                let waited = Date().timeIntervalSince(item.since)
+                await item.run.hub.route(item.press)
+                let wentOn = await wait(2) { item.run.player?.isPaused == false } != nil
+                try await Task.sleep(for: .milliseconds(300))
+                let from = item.run.recorder.events.last { $0.what.hasPrefix("play") }?.position ?? -1
+                let phaseAfter = phase(item.run)
+                let finished = await wait(8) { phase(item.run) == .question(1) }
+                let playback = AVAudioSession.sharedInstance().category == .playback
+                save(item.run, "longpause-\(Int(item.pause))-\(item.press.rawValue)")
+                await item.run.hub.route(.previous) // quiet again until the end
+                let jump = abs(from - item.expected)
+                worst = max(worst, jump)
+                let rest = 6 - item.expected
+                let restOK = finished.map { abs($0 + 0.3 - rest) < 0.8 } == true
+                let ok = wentOn && jump < 0.1 && phaseAfter == .answer(0, .long) && restOK && playback
+                #expect(wentOn, "\(item.label) after \(item.pause) s: did not go on")
+                #expect(jump < 0.1, "\(item.label) after \(item.pause) s: paused at \(item.word), went on from \(from), expected the sentence start \(item.expected)")
+                #expect(phaseAfter == .answer(0, .long), "\(item.label) after \(item.pause) s: \(phaseAfter) after going on")
+                #expect(restOK, "\(item.label) after \(item.pause) s: the rest took \(finished ?? -1) s, expected \(rest)")
+                #expect(playback, "\(item.label) after \(item.pause) s: audio session not .playback")
+                rows.append(String(format: "%@ efter %.0f s paus (väntade %.0f s): pausad vid %.2f s, fortsatte från %.2f s (meningens start %.2f), resten %.2f s (väntat %.2f)%@",
+                                   item.label, item.pause, waited, item.word, from, item.expected, (finished ?? -1) + 0.3, rest, ok ? "" : " FEL"))
+            }
+        }
+        for item in paused { item.run.session.stop() }
+        #expect(problems.isEmpty, "during the pause: \(problems)")
+        let pauses = Self.longPauses.map { String(format: "%.0f s", $0) }.joined(separator: ", ")
+        Self.note(String(format: "D163/D164 lång paus (%@), sedan 1, 2 och 3 tryck från meningens start, största fel %.3f s: ", pauses, worst)
+                  + rows.joined(separator: "; ")
+                  + (problems.isEmpty ? ". Under pauserna: stilla, pausad och aktiv varje sekund" : ". Under pauserna FEL: " + problems.joined(separator: "; ")))
     }
 
     // MARK: R8 proxy: iOS pauses, never ends
@@ -282,8 +388,12 @@ struct RepetitionE2ETests {
         await run.hub.route(.play)
         let pressAfterRoute = await wait(2) { run.player?.isPaused == false } != nil
         save(run, "ios")
+        // D164: only the user's pause goes back to the sentence start; iOS's own pauses go on from the same word.
+        let seeks = run.recorder.events.filter { $0.what.hasPrefix("seek") }.count
 
         #expect(pausedByCall && backAfterCall && waitsWithoutResume && pressAfter && pausedByRoute && stillActive && pressAfterRoute)
+        #expect(seeks == 0, "iOS pauses moved the position (\(seeks / 2) seeks), D164 says same word")
+        Self.note("D164: iOS-pauser (samtal, ljudvägen) fortsätter från samma ord utan hopp till meningens start: \(seeks == 0 ? "ja" : "NEJ, \(seeks / 2) hopp")")
         Self.note("R8 (proxy): samtal pausar \(pausedByCall ? "ja" : "NEJ"), fortsätter av sig själv med shouldResume \(backAfterCall ? "ja" : "NEJ"); utan shouldResume väntar den på tryck \(waitsWithoutResume ? "ja" : "NEJ") och trycket fortsätter \(pressAfter ? "ja" : "NEJ"); ljudvägen borta pausar \(pausedByRoute ? "ja" : "NEJ"), aktiv efter 5 s \(stillActive ? "ja" : "NEJ"), tryck fortsätter \(pressAfterRoute ? "ja" : "NEJ")")
     }
 
