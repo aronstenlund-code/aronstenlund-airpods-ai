@@ -156,9 +156,13 @@ Namnet "Starta prov". ElevenLabs med hög kvalitet, inte Turbo. Betänketid cirk
 - Knappen heter **"Publicera prov"**. Ordet "övningsprov" används ingenstans.
 - **Krav innan man kan publicera:** skola, ämne och datum för provet ifyllda, och allt ljud klart (samma regel som Dela, så att ingen behöver generera ljudet igen).
 - **Vem ser det:** alla. Man hittar prov genom att söka på skolan (och filtrera på ämne och datum). Elever på samma skola får dem först i listan.
-- **Vad publiceras:** frågor, korta och långa svar, ljud, skola, ämne och provdatum. Aldrig foton, dokument eller namn (B4, och användarna kan vara minderåriga). Upphovspersonen visas inte (förslag, se fråga till Aron).
+- **Vad publiceras:** frågor, korta och långa svar, ljud, skola, ämne och provdatum. Aldrig foton, dokument eller namn (B4, och användarna kan vara minderåriga). **Användarnamnet visas om man själv väljer det** (av som standard, Aron 20:32). Inga andra uppgifter.
 - **Den som hämtar** får en egen kopia, som vid delning (0 ElevenLabs-tecken). Ändringar i kopian påverkar aldrig originalet.
 - **Skolor:** väljs ur en lista, inte fritext, så att samma skola inte stavas på tio sätt. Källa: Skolverkets skolenhetsregister (öppet API). **Ej verifierat** att API:t går att använda för detta, Kevin kontrollerar.
 - **Ordning och skydd:** en rapportknapp på varje publicerat prov (fel innehåll, kränkande, upphovsrätt). Ett prov med 3 rapporter döljs tills Aron eller en moderator har tittat. Den som publicerade kan ta bort sitt prov när som helst. Gamla prov (provdatum mer än 30 dagar bakåt) sjunker i listan men finns kvar.
 - **Status:** möjligt. Bygger på K46 (prov per konto) och K47 (kopia med samma ljud).
 - **Acceptans:** R12: publicering nekas utan skola, ämne, datum eller färdigt ljud (4/4). Ett sök på skolan visar provet inom 5 s. Att hämta det kostar 0 tecken. Inga personuppgifter i publicerade data (Oscar kontrollerar fälten). Rapport ×3 döljer provet.
+
+### Senare (Aron 20:32, inte nu)
+- **Kreditsystem:** varje användare har krediter så att ingen kan dra obegränsat på Arons konto. Den som publicerar ett prov som andra faktiskt använder får krediter påfyllda. Byggs när betalning och App Store förbereds. Arkitekturen ska inte omöjliggöra det: logga redan nu hämtningar och uppspelningar per publicerat prov (antal, inte vem).
+- **Regel mot lärarens riktiga prov och facit** (fusk och upphovsrätt) i villkoren och som rapportorsak: införs inför App Store, inte nu.
