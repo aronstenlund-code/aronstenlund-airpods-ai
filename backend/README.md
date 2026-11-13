@@ -393,3 +393,11 @@ All calls are `POST` with the user's JWT, like `/answer`.
 - Unreadable material gives **422** `drill_unreadable` with a Swedish reason. Show `error.message`.
 - The server reads each image's real format from its first bytes. HEIC and GIF give **415** `unsupported_image`.
 - An image over 3 MB gives **413** `payload_too_large`. The whole request may be at most 24 MB, so scale images down to about 1 600 px, JPEG 0.7.
+
+**K52 (O55, D155).**
+- `summary.grade` is `""` when neither the request nor the material says the level. The app then asks the user.
+  - Send the profile's grade (`"y8"`, `"gy1"` or a course name such as `"Svenska 1"`) as `grade`. The server understands the profile codes.
+- An item that still has no answer after two new tries comes back with `error` ("Svaret kunde inte skrivas. Gör om frågan.") and no `short`/`long`. Offer "Gör om" (`drill_one`). An empty answer is never returned.
+- **Limit (D155):** 15 generated questions per account and calendar month (Swedish time). The value is `drill_settings.free_generated_questions`.
+  - `list` gives `quota: {used, limit, per: "month", resets: "YYYY-MM-DD"}`.
+  - 402 `quota_exceeded` has the same `per` and `resets`.
