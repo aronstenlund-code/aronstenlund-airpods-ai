@@ -303,7 +303,12 @@ final class DeviceVoiceDrillAudio: DrillAudioProviding {
     private let voice: String
     @ObservationIgnored private var synthesizer: AVSpeechSynthesizer?
 
-    init(folder: URL? = nil, language: String = "sv-SE") {
+    /// Tests set `makesSound: false`: they write their own silent files and must not keep the main actor busy with
+    /// speech synthesis while other suites measure time.
+    @ObservationIgnored private let makesSound: Bool
+
+    init(folder: URL? = nil, language: String = "sv-SE", makesSound: Bool = true) {
+        self.makesSound = makesSound
         let base = folder ?? (try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
                                                           appropriateFor: nil, create: true))?
             .appendingPathComponent("drill_audio", isDirectory: true) ?? FileManager.default.temporaryDirectory
@@ -344,7 +349,7 @@ final class DeviceVoiceDrillAudio: DrillAudioProviding {
     func problem(for drill: Drill) -> String? { nil }
 
     func prepare(_ drill: Drill) async {
-        guard !preparing.contains(drill.id) else { return }
+        guard makesSound, !preparing.contains(drill.id) else { return }
         preparing.insert(drill.id)
         defer { preparing.remove(drill.id) }
         for text in texts(drill) where !text.isEmpty {

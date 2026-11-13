@@ -98,7 +98,7 @@ import Testing
     }
 
     @Test func tracksWaitForEveryFile() throws {
-        let audio = DeviceVoiceDrillAudio(folder: try Self.folder("drill-audio"))
+        let audio = DeviceVoiceDrillAudio(folder: try Self.folder("drill-audio"), makesSound: false)
         let drill = Drill(title: "T", summary: Self.summary, items: [DrillItem(question: "F?", short: "K.", long: "K. L.")])
         #expect(audio.tracks(for: drill) == nil)
         #expect(audio.progress(for: drill).ready == 0 && audio.progress(for: drill).total == 3)
@@ -227,7 +227,8 @@ import Testing
         let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
         let model = RepetitionModel(store: store,
                                     session: RepetitionSession(inputs: [], defaults: Self.defaults(), activatesAudioSession: false),
-                                    maker: MockDrillMaker(), audio: CloudDrillAudio(cloud: cloud, store: store, folder: folder),
+                                    maker: MockDrillMaker(), audio: CloudDrillAudio(cloud: cloud, store: store, folder: folder,
+                                                                          pollInterval: .milliseconds(1), maxPolls: 5),
                                     sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
         var drill = Self.bio(2)
         for i in 0..<2 {
@@ -274,7 +275,7 @@ import Testing
         let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
         let model = RepetitionModel(store: store,
                                     session: RepetitionSession(inputs: [], defaults: Self.defaults(), activatesAudioSession: false),
-                                    maker: MockDrillMaker(), audio: DeviceVoiceDrillAudio(folder: folder),
+                                    maker: MockDrillMaker(), audio: DeviceVoiceDrillAudio(folder: folder, makesSound: false),
                                     sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
         await model.refresh()
         #expect(store.drills.count == 1)
@@ -339,7 +340,7 @@ import Testing
     func model(folder: URL, sharing: MockSharing = MockSharing()) -> RepetitionModel {
         RepetitionModel(store: DrillStore(url: folder.appendingPathComponent("drills.json")),
                         session: RepetitionSession(inputs: [], defaults: Self.defaults(), activatesAudioSession: false),
-                        maker: MockDrillMaker(), audio: DeviceVoiceDrillAudio(folder: folder),
+                        maker: MockDrillMaker(), audio: DeviceVoiceDrillAudio(folder: folder, makesSound: false),
                         sharing: sharing, remote: RemoteCommandHub())
     }
 
