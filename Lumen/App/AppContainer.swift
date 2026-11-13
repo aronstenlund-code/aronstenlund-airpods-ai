@@ -137,18 +137,18 @@ final class AppContainer {
         #else
         let mock = false
         #endif
-        let cloud: (any DrillCloudSyncing)? = mock ? nil : DrillCloudClient(config: .lumen, auth: auth, http: http) as any DrillCloudSyncing
+        let drillCloud: (any DrillCloudSyncing)? = mock ? nil : DrillCloudClient(config: .lumen, auth: auth, http: http) as any DrillCloudSyncing
         let maker: any DrillMaking = mock ? MockDrillMaker() as any DrillMaking
             : DrillClient(config: .lumen, auth: auth, http: http) as any DrillMaking
         let drillAudio: any DrillAudioProviding
-        if let cloud {
-            drillAudio = CloudDrillAudio(cloud: cloud, store: drillStore)
+        if let drillCloud {
+            drillAudio = CloudDrillAudio(cloud: drillCloud, store: drillStore)
         } else {
             drillAudio = DeviceVoiceDrillAudio()
         }
         let repetitionModel = RepetitionModel(store: drillStore, session: repetitionSession, maker: maker,
-                                              audio: drillAudio, sharing: DrillShareClient(cloud: cloud),
-                                              remote: remote, cloud: cloud)
+                                              audio: drillAudio, sharing: DrillShareClient(cloud: drillCloud),
+                                              remote: remote, cloud: drillCloud)
         repetitionModel.stopListening = { [weak listening] in
             if listening?.isActiveSession == true { await listening?.endSession() }
         }

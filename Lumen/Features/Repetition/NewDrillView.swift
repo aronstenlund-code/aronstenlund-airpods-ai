@@ -102,7 +102,7 @@ struct NewDrillView: View {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
                     tile("Fota sidor", "Flera i följd", "camera") { isTakingPhotos = true }
                     PhotosPicker(selection: $photoItems, maxSelectionCount: 10, matching: .images) {
-                        tileLabel("Välj bilder", "Ur bildbiblioteket", "photo.on.rectangle")
+                        Self.tileLabel("Välj bilder", "Ur bildbiblioteket", "photo.on.rectangle")
                     }
                     .buttonStyle(.plain)
                     tile("Skriv text", "Eller klistra in", "text.alignleft") { isAddingText = true }
@@ -185,10 +185,11 @@ struct NewDrillView: View {
     }
 
     private func tile(_ title: String, _ detail: String, _ symbol: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) { tileLabel(title, detail, symbol) }.buttonStyle(.plain)
+        Button(action: action) { Self.tileLabel(title, detail, symbol) }.buttonStyle(.plain)
     }
 
-    private func tileLabel(_ title: String, _ detail: String, _ symbol: String) -> some View {
+    /// nonisolated: PhotosPicker builds its label outside the main actor (CI 43493961075).
+    nonisolated private static func tileLabel(_ title: String, _ detail: String, _ symbol: String) -> some View {
         VStack(spacing: 6) {
             Image(systemName: symbol).font(.system(size: 24, weight: .semibold)).foregroundStyle(LumenColor.blue)
             Text(title).font(LumenFont.text(16, .semibold)).foregroundStyle(LumenColor.ink)
