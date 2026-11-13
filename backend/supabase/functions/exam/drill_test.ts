@@ -71,7 +71,9 @@ Deno.test("K45 parsePlan: questions cleaned, at most 8 words, no duplicates, at 
     "Varför försvinner energi i kedjan?",
   ]);
   assert(p.questions.every((q) => words(q) <= 8));
-  assertEquals(parsePlan(JSON.stringify(PLAN), 2).questions.length, 2);
+  // over the count: the longest go and the order stays
+  assertEquals(parsePlan(JSON.stringify(PLAN), 2).questions, ["Varför behövs klorofyll?", "Hur bildas en näringsväv?"]);
+  assertEquals(parsePlan(JSON.stringify(PLAN), 3).questions, ["Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Skillnad mellan producent och konsument?"]); // a tie: the later one goes
   assertEquals(p.summary.subject, "Biologi");
   assertEquals(parsePlan("inget json", 20).questions, []);
   assertEquals(cleanQuestion("  - \"varför regnar det.\" "), "Varför regnar det?");
@@ -101,7 +103,7 @@ Deno.test("K45 drill: summary, notes, questions and both answers; Haiku plans, S
   assertEquals(llm.calls.slice(1).map((c) => c.model), ["claude-sonnet-5-5"], "4 questions = one batch on Sonnet");
   assert(llm.calls[1].user.includes("<long_words>70</long_words>"));
   assert(llm.calls[1].user.includes("90 procent"), "the answers are written from the notes");
-  assertEquals(llm.calls[0].user.includes("<count>20</count>"), true, "20 questions by default (D146)");
+  assertEquals(llm.calls[0].user.includes("<count>24</count>"), true, "20 questions by default (D146), 4 extra to drop the longest");
   assertEquals(j.usage.plan.est_cost_usd, (10_000 * 0.10 + 1_500 * 0.50) / 1e6);
   assertEquals(j.usage.answers.est_cost_usd, (2_000 * 2 + 900 * 10) / 1e6);
 });
@@ -112,7 +114,7 @@ Deno.test("K45 drill: answers false = questions only; a batch that fails is aske
   const j = await r.json();
   assertEquals(j.items[0], { id: "q1", question: "Varför behövs klorofyll?" });
   assertEquals(llm.calls.length, 1);
-  assert(llm.calls[0].user.includes("<count>5</count>"));
+  assert(llm.calls[0].user.includes("<count>9</count>"));
   const m = mk();
   m.llm.failFirstAnswerBatch = true;
   const r2 = await m.h(post({ action: "drill_answers", items: j.items, notes: j.notes, grade: "åk 8" }));

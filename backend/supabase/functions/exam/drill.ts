@@ -34,6 +34,8 @@ export const DRILL_LIMITS = {
   /** R3: at most 8 words per question (5 or fewer preferred). */
   questionWordsMax: 8,
   batch: 5,
+  /** R3: questions asked for beyond the count; the longest are dropped in code. */
+  extraQuestions: 4,
   docxBase64: 14 * 1024 * 1024,
 };
 
@@ -62,8 +64,8 @@ export const SYSTEM_PROMPT_DRILL_PLAN =
 {"summary": {"subject": "Biologi", "grade": "åk 8", "covers": "..."}, "notes": "...", "questions": ["Varför behövs klorofyll?", "..."]}
 - summary: "subject" the school subject in Swedish; "grade" the school year or course as Swedes say it ("åk 8", "Matematik 1b", "Svenska 1"), from <context> when given, else your best reading of the material; "covers" one or two Swedish sentences on what the exam covers (the main areas, in order).
 - notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact Swedish plain text in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.
-- questions: exactly the number asked for in <count>, in Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
-  - as short as possible: five words or fewer whenever it can be done, never more than eight;
+- questions: exactly the number asked for in <count> (the longest are removed afterwards, so make most of them short), in Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
+  - as short as possible: five words or fewer (count them: "Varför behövs klorofyll?" is three), never more than eight; cut filler such as "i naturen", "egentligen", "man", "det att" and leave out what the subject makes obvious ("Varför bevaras massan?", not "Varför bevaras massan vid en kemisk reaktion i ett slutet system?");
   - tests understanding, not only recall: most questions ask why, how, what happens if, compare, or explain a connection ("Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Skillnad mellan väder och klimat?"); a plain "Vad är X?" only for a key term the material defines and that matters for the rest;
   - is answered by the material (never a question the material does not cover, never a fact from outside it);
   - a real exam question a teacher would ask: no yes/no, no multiple choice, no "enligt texten", no page or task numbers, no question about the material itself;
@@ -74,7 +76,7 @@ No markdown, no other text.`;
 export const SYSTEM_PROMPT_DRILL_ANSWERS =
   `You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words> and <questions> (JSON: id and question). Return ONLY a JSON object {"answers": [{"id": "q1", "short": "...", "rest": "..."}]} with one entry per question, in the same order.
 - "short": the short answer: one or two sentences (at most about 30 words) that answer the question correctly and completely on their own.
-- "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: the right concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Do not repeat the short answer. Short + rest together are at most about <long_words> words, but a complete A-level answer comes before the word limit: never cut an answer short to fit it, and never pad an answer to reach it.
+- "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: the right concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Do not repeat the short answer. Short + rest together are about <long_words> words or fewer (count them); go over only when the answer would otherwise miss a concept or connection an A-level answer needs, and then by at most a fifth. Never pad an answer to reach the number.
 - The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).
 - Base the answers on <notes>; add well-established school knowledge only where the notes are too thin, and never contradict them. Every fact must be correct: work every number out before you write it.
 - The text is read aloud: plain spoken Swedish sentences, no markdown, lists, headings, brackets, abbreviations or symbols. Write chemical formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"). Never mention the notes, the material, the exam or the grade.
@@ -142,7 +144,14 @@ export function parsePlan(text: string, count: number): { summary: DrillSummary;
     if (!c || words(c) > DRILL_LIMITS.questionWordsMax || seen.has(key)) continue;
     seen.add(key);
     questions.push(c);
-    if (questions.length >= count) break;
+  }
+  // R3 (live 2026-11-13: 8 of 19 at most five words): the model writes a few extra; the longest go, the order stays
+  while (questions.length > count) {
+    let worst = 0;
+    questions.forEach((q, i) => {
+      if (words(q) >= words(questions[worst])) worst = i;
+    });
+    questions.splice(worst, 1);
   }
   return {
     summary: { subject: oneLine(s.subject, 60), grade: oneLine(s.grade, 60), covers: oneLine(s.covers, 400) },
@@ -401,12 +410,12 @@ export async function handleDrill(
       user: [
         (subjectIn || gradeIn) && `<context>${sanitizeTagged(contextLine(subjectIn, gradeIn))}</context>`,
         correction && `<correction>${sanitizeTagged(correction)}</correction>`,
-        `<count>${count}</count>`,
+        `<count>${count + DRILL_LIMITS.extraQuestions}</count>`,
         text && `<material>\n${sanitizeTagged(text)}\n</material>`,
         images.length ? `Read the ${images.length} page images${text ? " and the material above" : ""}.` : "Read the material above.",
       ].filter(Boolean).join("\n"),
       ...(images.length ? { images } : {}),
-      maxTokens: 4000 + count * 40,
+      maxTokens: 4000 + (count + DRILL_LIMITS.extraQuestions) * 40,
       cacheSystem: true,
       model: cfg.planModel,
       timeoutMs: 120_000,
