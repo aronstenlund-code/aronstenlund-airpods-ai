@@ -30,7 +30,7 @@ skrivs alltid i samma ordning: 1 tryck = långt svar, 2 tryck = kort svar, 3 try
 **Hem utan prov**
 | Ställe | Text | I koden nu |
 |---|---|---|
-| Rubrik | Plugga med AirPods | |
+| Rubrik | Kom förberedd till provet *(Aron 22:19, A86)* | |
 | Rad | Fota ditt material. Earmind gör frågor och svar och läser upp dem i örat. Du styr med tryck på AirPods, utan mikrofon. | Fota sidorna eller lägg till text. Earmind gör provfrågor med svar och läser dem i dina AirPods. Du styr med tryck, utan mikrofon. |
 | Huvudknapp | Nytt prov | |
 
@@ -231,7 +231,7 @@ skrivs alltid i samma ordning: 1 tryck = långt svar, 2 tryck = kort svar, 3 try
 | Inget nät när frågorna ska göras | Ingen internetanslutning. Frågorna görs när du är uppkopplad igen. | Försök igen |
 | Inget nät under uppspelning | *(ingen text: ljud som redan är nedladdat spelas som vanligt)* | |
 | Inget nät, nästa ljud saknas | Ingen internetanslutning. Ljudet för fråga {8} kommer när du är uppkopplad. Frågorna med ljud spelas under tiden. | |
-| Frågorna kunde inte göras | Earmind kunde inte göra frågor just nu. Försök igen om en stund. | Försök igen |
+| Frågorna kunde inte göras (nätet finns, anslutningen bröts eller servern svarade fel) | Det gick inte att skapa frågorna. Försök igen. *(A85)* | Försök igen |
 | Materialet räckte inte | Earmind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text. | Lägg till material |
 | Ljud kunde inte göras (rösttjänsten svarar fel) | Ljudet för {3} frågor kunde inte göras. Earmind försöker igen av sig själv. | Försök nu |
 | Dagens gräns för nytt ljud (K46) | Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu. | |
