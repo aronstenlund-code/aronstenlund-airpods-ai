@@ -19,10 +19,15 @@ mkdir -p "$OUT/logs" "$AUDIO"
 if [ -n "${WAKE_APP_REF:-}" ]; then
   echo "::group::App code from $WAKE_APP_REF (baseline)"
   git fetch --quiet --depth=200 origin "$WAKE_APP_REF" 2>/dev/null || git fetch --quiet --unshallow origin || true
-  # Files added since then (A78 and later) must go too, or the old code does not build. The other E2E tests come
-  # from the same commit, so they match its app code; Wake/ and Audio/wake.tsv are not in it and stay.
-  rm -rf Lumen
+  # Files added since then (A78 and later) must go too, or the old code does not build: the app code and every E2E
+  # test come from that commit (2026-11-13: E2E/Repetition/ stayed and broke the baseline build), and only this
+  # test (Wake/) and its cases (Audio/wake.tsv) come back from this checkout.
+  KEEP="$(mktemp -d)"
+  cp -R AppTests/E2E/Wake "$KEEP/Wake" && cp AppTests/E2E/Audio/wake.tsv "$KEEP/wake.tsv" || exit 1
+  rm -rf Lumen AppTests/E2E
   git checkout "$WAKE_APP_REF" -- Lumen project.yml AppTests/E2E || exit 1
+  mkdir -p AppTests/E2E/Audio
+  cp -R "$KEEP/Wake" AppTests/E2E/Wake && cp "$KEEP/wake.tsv" AppTests/E2E/Audio/wake.tsv || exit 1
   git log -1 --format='%h %s' "$WAKE_APP_REF"
   echo "::endgroup::"
 fi
