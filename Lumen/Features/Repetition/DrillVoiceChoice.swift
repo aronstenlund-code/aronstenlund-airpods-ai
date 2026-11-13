@@ -3,7 +3,7 @@ import SwiftUI
 
 /// A84 (D151): the exam's voice, chosen with a sample before the sound is made. The voice cannot be changed afterwards
 /// (K50 `voice_locked`), so the screen says so. The samples are the blind test's three sentences, bundled.
-struct VoiceChoice: View {
+struct DrillVoiceChoice: View {
     @Binding var voice: String
     @State private var player: AVAudioPlayer?
     @State private var playing: String?

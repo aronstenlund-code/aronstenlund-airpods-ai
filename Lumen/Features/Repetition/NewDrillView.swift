@@ -446,7 +446,7 @@ struct NewDrillView: View {
                     }
                 }
 
-                VoiceChoice(voice: $voice) // A84 (D151): before the sound is made, it cannot be changed afterwards
+                DrillVoiceChoice(voice: $voice) // A84 (D151): before the sound is made, it cannot be changed afterwards
             }
         }
         .safeAreaInset(edge: .bottom) {
