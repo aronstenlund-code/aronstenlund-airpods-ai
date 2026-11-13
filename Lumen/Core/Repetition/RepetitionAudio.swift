@@ -20,6 +20,16 @@ protocol RepetitionAudioPlayer: AnyObject {
     func seek(to time: TimeInterval)
 }
 
+/// Defaults so players written before A84/A91 (tests, Toby's E2E `RecordingPlayer`) still conform.
+extension RepetitionAudioPlayer {
+    var duration: TimeInterval { 0 }
+    var rate: Float {
+        get { 1 }
+        set {}
+    }
+    func seek(to time: TimeInterval) {}
+}
+
 /// A91 (D164): music while the repetition is paused, played by Earmind itself so the AirPods' presses still reach
 /// Earmind (Spotify would take them). Stopping it is quick, so the questions go on well within 10 s.
 @MainActor
