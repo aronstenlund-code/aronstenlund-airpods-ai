@@ -142,3 +142,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-11 21:48 → reports/2026-11-11-2148-kelly-ke47-vad-kan-capabilities.md **Ke47 – Stående uppgift (PLAN 2b): sajtens Vad kan Earmind? efter Shared/capabilities.json (K44)** (effort: low, Kelly själv). Samma namn och fraser som listan; Översätta och Söka på webben läggs till; "Kommer snart" kvar på det som inte är provat på telefon.
 
 - [x] klar 2026-11-11 22:22 → reports/2026-11-11-2222-kelly-ke48-a76-rattat-a77.md **Ke48 – Stående uppgift (PLAN 2c): A76:s rättelser och A77** (effort: low, Kelly själv). T1–T4 stängda i koden; A77 godkänd på bild.
+
+- [ ] **Ke49 – Design: repetitionsläget (D142)** (effort: high). Lagd av Deangelo 2026-11-13 17:30. Spec: `docs/design/repetitionslage.md` (D142). Prio 1, före BETA-punkterna (lyssning). Underlag i `docs/design/` för: Nytt prov (material), sammanfattning, frågelista med redigering, kontrollskärmen (1, 2 och 3 tryck, tydligt utan text-väggar), uppspelningsskärmen (låst-skärm-vänlig, en stor Avsluta), BETA-märket. Jämför med riktiga pluggappar (Quizlet, Anki, StudySmarter). Sedan demosidan: "Plugga med AirPods utan att röra mobilen".

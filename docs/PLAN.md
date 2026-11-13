@@ -2,6 +2,9 @@
 
 Planen är regler, inte en lista med punkter. **Ordningen finns bara i köerna** (`prompts/queue/`), målen i faserna nedan. Inget i planen får stoppa arbetet: en session som inte kan ta en punkt tar nästa.
 
+## 0. Huvudspåret från 2026-11-13 (D142)
+**Repetitionsläget är standardprodukten** (`docs/design/repetitionslage.md`). Dess punkter går före allt utom blockerare från test. Lyssnande lägen är BETA och fortsätter efter dem i samma köer; inget annat arbete pausas.
+
 ## 1. Prioritet när något nytt kommer in
 1. **Blockerare från test** (Toby, Oscar eller Aron på telefon): läggs överst i rätt sessions kö.
 2. **Ägarbeslut märkta brådskande.**
