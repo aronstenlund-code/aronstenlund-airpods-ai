@@ -96,7 +96,7 @@ jobs:
           if [ -z "$REQUESTED" ]; then
             SCREENS="$ALL"
           elif [ "$REQUESTED" = "rep" ]; then
-            SCREENS="$(for s in $ALL; do case "$s" in rep*|moreModes) echo "$s";; esac; done | xargs)"
+            SCREENS="$(for s in $ALL; do case "$s" in (rep*|moreModes) echo "$s";; esac; done | xargs)"
           else
             SCREENS="$REQUESTED"
           fi
