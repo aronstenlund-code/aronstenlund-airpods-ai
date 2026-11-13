@@ -151,8 +151,19 @@ export function parsePlan(text: string, count: number): { summary: DrillSummary;
     seen.add(key);
     questions.push(c);
   }
-  // R3 (live 2026-11-13: 8 of 19 at most five words, then 59 of 100 understanding questions): the model writes a few
-  // extra; plain recall questions go first, then the longest; the order stays
+  return {
+    summary: { subject: oneLine(s.subject, 60), grade: oneLine(s.grade, 60), covers: oneLine(s.covers, 400) },
+    notes: clean(j.notes, DRILL_LIMITS.notes),
+    questions: trimQuestions(questions, count),
+  };
+}
+
+/**
+ * R3 (live 2026-11-13: 8 of 19 at most five words, then 59 of 100 understanding questions): the model writes a few
+ * extra; plain recall questions go first, then questions over five words, then the longest; the order stays.
+ */
+export function trimQuestions(list: string[], count: number): string[] {
+  const questions = [...list];
   const score = (q: string) => (isRecall(q) ? 100 : 0) + (words(q) > 5 ? 50 : 0) + words(q);
   while (questions.length > count) {
     let worst = 0;
@@ -161,11 +172,51 @@ export function parsePlan(text: string, count: number): { summary: DrillSummary;
     });
     questions.splice(worst, 1);
   }
-  return {
-    summary: { subject: oneLine(s.subject, 60), grade: oneLine(s.grade, 60), covers: oneLine(s.covers, 400) },
-    notes: clean(j.notes, DRILL_LIMITS.notes),
-    questions,
-  };
+  return questions;
+}
+
+export const SYSTEM_PROMPT_DRILL_SHORTEN =
+  `You shorten Swedish exam questions that a student will only HEAR (no text in front of them). You get <exam> (subject, grade and what the exam covers) and <questions> (JSON: i and q). Return ONLY a JSON object {"questions": [{"i": 0, "q": "..."}]} with every question you got.
+- Make each question five words or fewer when it stays clear and unambiguous within THIS exam: drop what the exam's subject already makes obvious and filler ("Varför är bönen viktig för muslimer?" -> "Varför ber muslimer?" in an exam on Islam; but keep "enligt buddhismen" when the exam covers several religions and the question would otherwise be unclear).
+- The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.
+- A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.
+- If a question cannot be made five words or fewer without becoming unclear, return it unchanged.
+No other text.`;
+
+/** Questions over five words, shortened by a cheap model; a reply that is longer, empty or broken keeps the original. */
+export async function shortenQuestions(
+  provider: LLMProvider,
+  cfg: DrillConfig,
+  questions: string[],
+  exam: DrillSummary,
+  signal?: AbortSignal,
+): Promise<{ questions: string[]; usage: StepUsage | null }> {
+  const long = questions.map((q, i) => ({ i, q })).filter((x) => words(x.q) > 5);
+  if (!long.length) return { questions, usage: null };
+  try {
+    const r = await runLLM(provider, {
+      system: SYSTEM_PROMPT_DRILL_SHORTEN,
+      user: `<exam>${sanitizeTagged(`${contextLine(exam.subject, exam.grade)}. ${exam.covers}`)}</exam>
+<questions>${sanitizeTagged(JSON.stringify(long))}</questions>`,
+      maxTokens: 200 + long.length * 40,
+      cacheSystem: true,
+      model: cfg.planModel,
+      timeoutMs: 30_000,
+      signal,
+    }, cfg.planPriceIn, cfg.planPriceOut);
+    const out = [...questions];
+    const j = firstJson(r.text);
+    for (const x of Array.isArray(j?.questions) ? j!.questions as Record<string, unknown>[] : []) {
+      const i = Number(x?.i);
+      const q = cleanQuestion(x?.q);
+      if (!Number.isInteger(i) || i < 0 || i >= out.length || !q) continue;
+      if (words(q) >= 2 && words(q) < words(out[i]) && !out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) out[i] = q;
+    }
+    return { questions: out, usage: r.usage };
+  } catch (e) {
+    console.warn("drill_shorten_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
+    return { questions, usage: null };
+  }
 }
 
 /** Plain spoken text: no markdown, list marks or doubled spaces (fewer characters for the voice too, D144). */
@@ -429,11 +480,12 @@ export async function handleDrill(
       timeoutMs: 120_000,
       signal,
     }, cfg.planPriceIn, cfg.planPriceOut);
-    const p = parsePlan(plan.text, count);
+    const p = parsePlan(plan.text, Number.MAX_SAFE_INTEGER); // all candidates; trimmed after shortening
     if (!p.questions.length) throw new HttpError(502, "drill_unreadable", "No questions could be made from this material");
     const summary = { subject: p.summary.subject || subjectIn, grade: gradeIn && !correction ? gradeIn : p.summary.grade || gradeIn, covers: p.summary.covers };
-    const base = p.questions.map((question, i) => ({ id: `q${i + 1}`, question }));
-    const steps = [plan.usage];
+    const sh = await shortenQuestions(provider, cfg, p.questions, summary, signal);
+    const base = trimQuestions(sh.questions, count).map((question, i) => ({ id: `q${i + 1}`, question }));
+    const steps = [plan.usage, ...(sh.usage ? [sh.usage] : [])];
     let items: DrillItem[] = base;
     let answers: StepUsage | null = null;
     if (b.answers !== false) {
@@ -450,8 +502,9 @@ export async function handleDrill(
         long_words: longWords,
         usage: {
           plan: plan.usage,
+          ...(sh.usage ? { shorten: sh.usage } : {}),
           ...(answers ? { answers } : {}),
-          est_cost_usd: plan.usage.est_cost_usd + (answers?.est_cost_usd ?? 0),
+          est_cost_usd: plan.usage.est_cost_usd + (sh.usage?.est_cost_usd ?? 0) + (answers?.est_cost_usd ?? 0),
           ms: Date.now() - t0,
         },
       },

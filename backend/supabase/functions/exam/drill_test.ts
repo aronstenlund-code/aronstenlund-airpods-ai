@@ -205,3 +205,26 @@ Deno.test("K45 doc_text: a Word file's text, deflated or stored, in code; no mod
   assertEquals((await h(post({ action: "doc_text", data: b64(new TextEncoder().encode("inte en zip-fil alls, bara text")) }))).status, 422);
   assertEquals(llm.calls.length, 0);
 });
+
+Deno.test("K45 R3: questions over five words are shortened by the cheap model; a longer or broken reply keeps the original", async () => {
+  const { shortenQuestions, DEFAULT_DRILL_CONFIG } = await import("./drill.ts");
+  const calls: string[] = [];
+  const llm: LLMProvider = {
+    name: "fake",
+    model: "haiku-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      calls.push(req.user);
+      yield {
+        type: "text",
+        text: JSON.stringify({ questions: [{ i: 1, q: "Varför ber muslimer?" }, { i: 2, q: "Hur många mol är sexton gram metan egentligen just nu?" }, { i: 9, q: "Fel?" }] }),
+      };
+      yield { type: "usage", inputTokens: 300, outputTokens: 60 };
+    },
+  };
+  const qs = ["Varför behövs klorofyll?", "Varför är bönen viktig för muslimer?", "Hur många mol är 16 gram metan?"];
+  const r = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, qs, { subject: "Religion", grade: "åk 8", covers: "Islam" });
+  assertEquals(r.questions, ["Varför behövs klorofyll?", "Varför ber muslimer?", "Hur många mol är 16 gram metan?"]);
+  assert(!calls[0].includes("Varför behövs klorofyll?"), "only the long questions are sent");
+  const none = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, ["Varför regnar det?"], { subject: "", grade: "", covers: "" });
+  assertEquals([none.usage, calls.length], [null, 1], "no call when every question is short");
+});
