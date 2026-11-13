@@ -401,3 +401,5 @@ All calls are `POST` with the user's JWT, like `/answer`.
 - **Limit (D155):** 15 generated questions per account and calendar month (Swedish time). The value is `drill_settings.free_generated_questions`.
   - `list` gives `quota: {used, limit, per: "month", resets: "YYYY-MM-DD"}`.
   - 402 `quota_exceeded` has the same `per` and `resets`.
+
+**Cue in the drill's voice (Kelly N1).** `get` and `status` return `cue.press_for_answer: {status, url?, duration_ms?}`, which says "Tryck en gång för svaret." in the drill's voice. It is made once per voice, is free and is not counted against the limit.
