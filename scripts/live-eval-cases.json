@@ -4165,7 +4165,8 @@
     "q": "ge mig en motfråga",
     "interview": true,
     "ttft_budget_ms": 3500,
-    "allow_question": true
+    "allow_question": true,
+    "no_person_check": true
    }
   ]
  },
@@ -4184,7 +4185,8 @@
     "q": "vad kan jag fråga tillbaka",
     "interview": true,
     "ttft_budget_ms": 3500,
-    "allow_question": true
+    "allow_question": true,
+    "no_person_check": true
    }
   ]
  },
@@ -4203,7 +4205,8 @@
     "q": "en bra fråga att ställa",
     "interview": true,
     "ttft_budget_ms": 3500,
-    "allow_question": true
+    "allow_question": true,
+    "no_person_check": true
    }
   ]
  },
