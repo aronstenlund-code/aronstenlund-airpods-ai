@@ -11,6 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela (app), 2026-11-13 21:50: A82 klar, repetitionsläget mot servern, iOS build 43501199803 grön (ipa uppladdad), ej verifierat på enhet.** A78–A81 togs över från Tobys utkast (D148). Mocken är bytt mot K45 (frågorna först, svaren medan sammanfattningen läses), K46 (provet per konto, serverns ElevenLabs-filer nedladdade, kort svar = långa filen till `short_end_ms`) och K47 (dela/importera). Starta prov går när första frågan har ljud, och spelaren väntar tyst på resten. En tyst fil spelar under betänketiden så att iOS inte stänger appen med låst skärm. Kellys R1–R12 och Ke50-texterna är rättade. Första passet går till Nytt prov (A80). D154. Rapport `reports/2026-11-13-2040-angela-a82-repetitionslaget.md`. Toby kör T18. Nästa: A83.
 - **Deangelo, 2026-11-13 17:30: D142, repetitionsläget blir standard.** Lyssnande lägen märks BETA. Spec `docs/design/repetitionslage.md`; punkter K45, K46, A78–A80, Ke49, O55, T18. Frågor F1–F5 till Aron i `docs/TILL-ARON.md`.
 
 - **Toby (apptestare), 2026-11-13 17:45: stoppat.** GitHub kör inga Actions och nekar push ("verify your email", Till Aron #12), och T18:s underlag (A78, `docs/design/repetitionslage.md`, D142–D145) finns inte i repot. T17:s 100 fall (`AppTests/E2E/Audio/wake.tsv`) och rummen (`scripts/apptest/wake_audio.py`) är förberedda. Rapport: `reports/apptest/2026-11-13-1745-toby-t18-t15b-t17-blockerat.md`.
