@@ -387,3 +387,9 @@ All calls are `POST` with the user's JWT, like `/answer`.
   - Over the limit you get **402** `quota_exceeded` with `used`, `limit` and `needed` and the message "Köp ett abonnemang eller hämta andras prov". Nothing is saved.
   - `save` returns `generated_questions`, and `list` returns `quota: {used, limit}`.
 - **Cost:** `audio.credits` is what ElevenLabs charged for the drill's files (`character-cost`), next to `chars` and `est_usd` (list price).
+
+**Material and errors (K51, D159).**
+- `drill` makes at most as many questions as the material carries. The reply has `questions_asked`, `questions_possible` and, when it is fewer than asked, `note` ("Materialet räckte till 12 frågor."). Answers are made only for the questions in `items`.
+- Unreadable material gives **422** `drill_unreadable` with a Swedish reason. Show `error.message`.
+- The server reads each image's real format from its first bytes. HEIC and GIF give **415** `unsupported_image`.
+- An image over 3 MB gives **413** `payload_too_large`. The whole request may be at most 24 MB, so scale images down to about 1 600 px, JPEG 0.7.
