@@ -1,0 +1,25 @@
+name: Schools sync (K49)
+
+# Copies Skolverket's school unit register (open data) into public.schools every Monday and on demand.
+# Only new or renamed units are looked up in detail. Never stores head teachers, phone numbers or e-mail.
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Sync
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/schools-sync.py
