@@ -1,0 +1,67 @@
+name: Apptest wake word (T17)
+
+# Toby's T17: 50 "Lumen, <request>" and 50 sentences without the name (three voices, five speeds, quiet / 1 m /
+# babble) through the app's real chain. Live and paid (Scribe, /answer; Apple's voice, answers not spoken), so manual
+# and on Toby's branch when the test changes. `app_ref` builds older app code for the baseline (before A75: ec35d41^).
+# Simulator only: never a device test.
+on:
+  workflow_dispatch:
+    inputs:
+      sets:
+        description: "Sets to run (wake, nowake), comma separated; empty = both"
+        default: ""
+      app_ref:
+        description: "Build the app code from this commit (baseline); empty = this checkout"
+        default: ""
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Wake/**"
+      - "AppTests/E2E/Audio/wake.tsv"
+      - "scripts/apptest/wake*"
+      - ".github/workflows/apptest-wake.yml"
+
+concurrency:
+  group: apptest-wake-${{ github.ref }}-${{ github.event.inputs.app_ref }}
+  cancel-in-progress: true
+
+jobs:
+  wake:
+    name: T17 wake word (Simulator, live)
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Wake
+        env:
+          WAKE_SETS: ${{ github.event.inputs.sets }}
+          WAKE_APP_REF: ${{ github.event.inputs.app_ref }}
+        run: |
+          bash scripts/apptest/wake.sh
+          STATUS=$?
+          cat apptest-out/wake/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-wake-${{ github.event.inputs.app_ref || 'main' }}
+          path: |
+            apptest-out/wake
+            !apptest-out/wake/logs/*.xcresult
+          retention-days: 14
