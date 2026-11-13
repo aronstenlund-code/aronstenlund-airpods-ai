@@ -321,3 +321,44 @@ Tests: `supabase/functions/_shared/demo_test.ts`, `answer/d48_test.ts`.
 - **Web answers:** Swedish only, own words (English sentences are dropped), reliable domains only (no wikis), spoken source "Källa: SCB." and `done.source` = the domain for the screen.
 - **Tutor mode:** `<already_asked count=N>` is built from the session's earlier answers; one short check question (two-part and long ones are dropped).
 - **`done` fields:** `relation` (D53), `summary` (D48), `memory_add` (D49), `source` (web), `report` (spoken report command, D57).
+
+## Repetitionsläget (K45–K47, D142–D150): contract for the app
+
+All calls are `POST` with the user's JWT, like `/answer`.
+
+**`/functions/v1/exam`, material to questions and answers (K45).** Nothing is stored.
+- `{"action":"doc_text","data":"<base64 .docx>"}` → `{"text"}`. The text is read in code (no model, no cost); 422 `docx_unreadable` means the file could not be read.
+- `{"action":"drill","pages":[{"media_type":"image/jpeg","data":"<base64>"}],"text":"<free text + PDF/docx text>","subject"?,"grade"?,"questions"?:20,"long_words"?:90,"answers"?:false}` → `{"summary":{"subject","grade","covers"},"notes","items":[{"id","question"}],"usage"}`
+  - At most 20 pages, each at most 3 MB.
+  - Use `answers:false` to show the questions fast (about 5 s), then call `drill_answers`.
+  - Without `answers:false`, the answers come in the same reply (about 20 s).
+  - To correct the summary, call it again with `{"text": notes, "correction": "<the user's line>"}`. The photos are never sent again.
+- `{"action":"drill_answers","items":[{"id","question"}],"notes","subject","grade","long_words"?}` → `{"items":[{"id","question","short","long"}],"usage"}`
+- `{"action":"drill_one","id","question","notes","subject","grade"}` → `{"item":{...}}`. Use it for one edited or added question.
+- `long` always starts with `short`, word for word (D145).
+- `usage.est_cost_usd` is the Claude cost.
+- Rate limit: a drill weighs 4 and `drill_answers` weighs 3 out of 12 per minute. A 429 has a Swedish message.
+
+**`/functions/v1/drill`, saved drills and their audio (K46).**
+- `{"action":"save","drill":{"id"?,"title","subject","grade","covers","long_words"},"items":[{"id"?,"question","short","long"}]}` → the drill, as `get` returns it, plus `new_chars`.
+  - The order of `items` is the play order.
+  - Send back the `id` of each kept item, so that its audio is reused.
+  - Saving starts the audio in the background.
+  - 429 `rate_limited`: the daily cap for new audio is reached.
+- `{"action":"get"|"status","id"}` → `{"drill","items":[{"id","position","question","short","long","audio":{"question":{"status","url"?,"duration_ms"?},"long":{"status","url"?,"duration_ms"?,"short_end_ms"?}}}],"audio":{"done","total","failed","chars","est_usd","bytes","model"}}`
+  - Poll `status` every few seconds while `done < total`. Each poll also moves the queue on.
+  - `url` is a signed mp3 link, valid for 1 hour. Download the file and keep it on the phone.
+  - **Short answer** = the long file from 0 to `short_end_ms`.
+  - `status` is one of `pending`, `working`, `done` or `failed`.
+- `{"action":"list"}` → `{"drills":[{"id","title","subject","grade","items","audio":{"done","total"},"shared_from","updated_at"}]}`
+- `{"action":"delete","id"}`
+
+**Sharing (K47).**
+- `{"action":"share","id"}` → `{"code","url","app_url"}`.
+  - Works only when `audio.done == audio.total`. Otherwise you get 409 `audio_not_ready` with `done` and `total`; show "Delas när ljudet är klart (54 av 90)".
+  - Asking again gives the same code.
+- `{"action":"unshare","id"}` turns the link off. Only the owner can do this.
+- `{"action":"share_info","code"}` → `{"title","subject","grade","items","audio_ready"}`. Use it for the screen before importing.
+- `{"action":"import","code"}` → the recipient's own copy (as `get`), with `drill.shared_from` set and `new_chars: 0`.
+  - `code` may also be the whole link.
+  - 404 `share_not_found` means the link is dead.

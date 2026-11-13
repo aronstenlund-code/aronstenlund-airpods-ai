@@ -3,7 +3,8 @@
   1. user A saves a small drill (questions and answers from the K45 run on Oscar's invented bank, never student text)
   2. polls "status" until every file is done; downloads one long answer and checks short_end_ms < duration
   3. user B saves the same drill: 0 new characters, the same files (D144, R5b)
-  4. user B cannot get A's drill (404), and A's rows are not readable through PostgREST as B (RLS, R5)
+  4. K47: A shares, B imports (0 new characters, R5c); B cannot unshare A's drill
+  5. user B cannot get A's drill (404), and A's rows are not readable through PostgREST as B (RLS, R5)
   python -X utf8 scripts/k46-live.py [--items 3] [--out reports/eval]"""
 import argparse, datetime, json, pathlib, sys, time, urllib.error, urllib.request
 
@@ -66,6 +67,15 @@ def main():
     # D144 / R5b: the same drill for another account makes nothing new
     st, jb = drill({"action": "save", "drill": {"title": "kopia"}, "items": items}, tb)
     out["second_account"] = {"status": st, "new_chars": jb.get("new_chars"), "done": jb.get("audio", {}).get("done"), "total": jb.get("audio", {}).get("total")}
+    # K47 / R5c: A shares, B imports: the same audio, 0 new characters, under 10 s
+    st, sh = drill({"action": "share", "id": did}, ta)
+    t1 = time.time()
+    st_i, imp = drill({"action": "import", "code": sh.get("code", "")}, tb)
+    out["share"] = {"status": st, "url": sh.get("url"), "import_status": st_i, "import_s": round(time.time() - t1, 1),
+                    "new_chars": imp.get("new_chars"), "done": imp.get("audio", {}).get("done"), "total": imp.get("audio", {}).get("total"),
+                    "shared_from_ok": imp.get("drill", {}).get("shared_from") == did}
+    st_u, _ = drill({"action": "unshare", "id": did}, tb)
+    out["share"]["unshare_by_other"] = st_u
     # R5: B cannot read A's drill, neither through the function nor PostgREST
     st, _ = drill({"action": "get", "id": did}, tb)
     req = urllib.request.Request(f"{URL}/rest/v1/drills?id=eq.{did}&select=id", headers={"apikey": KEY, "authorization": "Bearer " + tb})
@@ -80,8 +90,9 @@ def main():
     out["rls"] = {"function_get_as_b": st, "rest_as_b": len(rows_b), "rest_as_a": len(rows_a), "audio_table_as_b": audio_rows}
     # clean up A's and B's test drills (the shared audio stays)
     drill({"action": "delete", "id": did}, ta)
-    if jb.get("drill"):
-        drill({"action": "delete", "id": jb["drill"]["id"]}, tb)
+    for j_ in (jb, imp):
+        if j_.get("drill"):
+            drill({"action": "delete", "id": j_["drill"]["id"]}, tb)
     p = pathlib.Path(a.out) / f"k46-live-{datetime.date.today().isoformat()}.json"
     p.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(out, ensure_ascii=False, indent=1))
