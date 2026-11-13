@@ -3,7 +3,9 @@ import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { perDay?: number; noSynth?: boolean } = {}) {
+function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: number } = {}) {
+  const quota = new Map<string, number>();
+  const models: string[] = [];
   const drills = new Map<string, DrillRow>();
   const items = new Map<string, ItemRow & { id: string }>();
   const audio = new Map<string, AudioRow>();
@@ -97,6 +99,12 @@ function world(opts: { perDay?: number; noSynth?: boolean } = {}) {
       pb[field] = (pb[field] ?? 0) + 1;
       return Promise.resolve();
     },
+    useQuota: (u: string, n: number) => {
+      const used = quota.get(u) ?? 0, lim = opts.freeQuestions ?? 30;
+      if (n > 0 && used + n > lim) return Promise.resolve({ ok: false, used, lim });
+      quota.set(u, used + n);
+      return Promise.resolve({ ok: true, used: used + n, lim });
+    },
     setHidden: (id: string, hidden: boolean) => {
       pubs.get(id)!.hidden = hidden;
       return Promise.resolve();
@@ -118,10 +126,12 @@ function world(opts: { perDay?: number; noSynth?: boolean } = {}) {
         sign: (ps) => Promise.resolve(Object.fromEntries(ps.map((p) => [p, `https://signed/${p}`]))),
       },
       synth: opts.noSynth ? null : {
-        speak: (text) => {
+        speak: (text, model) => {
           spoken.push(text);
+          models.push(model);
           // 0.05 s per character
           return Promise.resolve({
+            credits: Math.round(text.length * 0.4),
             audio: new Uint8Array(text.length),
             starts: [...text].map((_, i) => i * 0.05),
             ends: [...text].map((_, i) => (i + 1) * 0.05),
@@ -133,7 +143,7 @@ function world(opts: { perDay?: number; noSynth?: boolean } = {}) {
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, drills, items, audio, uploads, spoken, shares, pubs };
+  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, models };
 }
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
 const ITEMS = [
@@ -265,7 +275,7 @@ Deno.test("K47 R5c: import copies questions, answers and audio with 0 new charac
   const orig = await (await w.h("u1")(post({ action: "get", id: a.drill.id }))).json();
   assertEquals(orig.items[0].question, ITEMS[0].question);
   // the photos and documents are never part of a drill, so nothing else can be shared
-  assertEquals(Object.keys(b.drill).sort(), ["covers", "created_at", "grade", "id", "long_words", "shared_from", "subject", "title", "updated_at"]);
+  assertEquals(Object.keys(b.drill).sort(), ["covers", "created_at", "grade", "id", "long_words", "shared_from", "subject", "title", "updated_at", "voice_model"]);
   assertEquals((await w.h("u3")(post({ action: "import", code: "nosuchcode1" }))).status, 404);
   assertEquals((await (await w.h("u2")(post({ action: "import", code: `earmind://prov/${code}` }))).json()).new_chars, 0);
 });
@@ -344,4 +354,46 @@ Deno.test("K49 dates", () => {
   assertEquals(validDate("2026-02-30", now), null);
   assertEquals(validDate("2020-01-01", now), null);
   assertEquals(validDate("2028-01-01", now), null);
+});
+
+Deno.test("K50 voice: chosen before the audio (A/B/C or the model id), locked after (409), another voice = other files", async () => {
+  const w = world();
+  const a = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(a.drill.voice_model, "eleven_multilingual_v2", "A is the default (D151)");
+  const n = w.spoken.length;
+  const c = await (await w.h("u2")(post({ action: "save", drill: { voice_model: "C" }, items: ITEMS }))).json();
+  assertEquals(c.drill.voice_model, "eleven_flash_v2_5");
+  assertEquals(w.spoken.length, n + 4, "the same text with another voice is new audio");
+  assertEquals(new Set(w.models.slice(n)), new Set(["eleven_flash_v2_5"]));
+  const r = await w.h("u1")(post({ action: "save", drill: { id: a.drill.id, voice_model: "eleven_v3" }, items: ITEMS }));
+  assertEquals(r.status, 409);
+  assertEquals((await r.json()).error.code, "voice_locked");
+  assertEquals((await w.h("u1")(post({ action: "save", drill: { id: a.drill.id, voice_model: "A" }, items: ITEMS }))).status, 200, "the same voice again is fine");
+  assertEquals((await w.h("u1")(post({ action: "save", drill: { voice_model: "robot" }, items: ITEMS }))).status, 400);
+  assertEquals(a.audio.est_usd, Math.round(a.audio.chars * 0.08 / 10) / 100);
+  assertEquals(c.audio.est_usd, Math.round(c.audio.chars * 0.04 / 10) / 100, "Flash at half the list price");
+  assertEquals(a.audio.credits, w.spoken.slice(0, 4).reduce((m, t) => m + Math.round(t.length * 0.4), 0), "what ElevenLabs charged is kept");
+});
+
+Deno.test("K50 limit: 30 generated questions per account by default (402 with the numbers); imported and existing audio never count", async () => {
+  const w = world({ freeQuestions: 3 });
+  const two = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(two.generated_questions, 2);
+  const more = [{ question: "Varför regnar det?", short: "Moln släpper vatten.", long: "Moln släpper vatten. Mer." }, { question: "Hur fungerar ett öga?", short: "Ljus bryts.", long: "Ljus bryts. Mer." }];
+  const r = await w.h("u1")(post({ action: "save", items: more }));
+  assertEquals(r.status, 402);
+  const j = await r.json();
+  assertEquals([j.error.code, j.used, j.limit, j.needed], ["quota_exceeded", 2, 3, 2]);
+  assert(j.error.message.includes("hämta andras prov"));
+  assertEquals(w.drills.size, 1, "nothing saved");
+  // the same questions again (audio exists): 0 generated, free
+  assertEquals((await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json()).generated_questions, 0);
+  // someone else's drill, shared: free
+  const { code } = await (await w.h("u1")(post({ action: "share", id: two.drill.id }))).json();
+  const imp = await w.h("u2")(post({ action: "import", code }));
+  assertEquals(imp.status, 200);
+  assertEquals(w.quota.get("u2") ?? 0, 0);
+  // one more own question fits exactly
+  assertEquals((await w.h("u1")(post({ action: "save", items: [more[0]] }))).status, 200);
+  assertEquals((await (await w.h("u1")(post({ action: "list" }))).json()).quota, { used: 3, limit: 3 });
 });

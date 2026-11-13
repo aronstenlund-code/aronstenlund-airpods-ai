@@ -58,6 +58,8 @@ export interface DrillRow {
   covers: string;
   long_words: number;
   shared_from?: string | null;
+  /** K50 (D151): the voice model, chosen before the audio is made and locked after. */
+  voice_model?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -86,6 +88,8 @@ export interface AudioRow {
   duration_ms?: number | null;
   short_end_ms?: number | null;
   words?: number[][] | null;
+  /** K50: what ElevenLabs charged for the file (`character-cost`), when it said. */
+  credits?: number | null;
   seq?: number;
   queued_at?: string;
 }
@@ -118,6 +122,8 @@ export interface DrillDb {
   report(publicationId: string, userId: string, reason: string): Promise<{ reports: number; hidden: boolean }>;
   bump(publicationId: string, field: "imports" | "plays"): Promise<void>;
   setHidden(publicationId: string, hidden: boolean): Promise<void>;
+  /** K50: adds n generated questions when within the limit (n = 0 only reads); atomic in the database. */
+  useQuota(userId: string, n: number): Promise<{ ok: boolean; used: number; lim: number }>;
 }
 export interface SchoolRow {
   code: string;
@@ -158,7 +164,7 @@ export interface AudioStorage {
 }
 export interface Synth {
   /** One file: mp3 bytes and the start/end time of every character of `text` (ElevenLabs "with-timestamps"). */
-  speak(text: string, model: string, voiceId: string): Promise<{ audio: Uint8Array; starts: number[]; ends: number[] }>;
+  speak(text: string, model: string, voiceId: string): Promise<{ audio: Uint8Array; starts: number[]; ends: number[]; credits?: number | null }>;
 }
 
 export interface DrillDeps {
@@ -167,10 +173,10 @@ export interface DrillDeps {
   db: DrillDb;
   storage: AudioStorage;
   synth: Synth | null;
-  /** D143: a high-quality model (Multilingual v2 or newer, never Turbo/Flash). */
+  /** The default voice model (D151: A = Multilingual v2). A drill may choose another of VOICE_MODELS. */
   model: string;
   voiceId: string | null;
-  /** USD per 1 000 characters for `model` (verified 2026-11-13: v2/v3/v4 0.08). */
+  /** USD per 1 000 characters at list price (verified 2026-11-13: v2/v3 0.08, Flash 0.04); see usdPer1k(). */
   usdPer1kChars: number;
   /** Characters of NEW audio per account and day, and for everyone (D144). */
   charLimits: Limits;
@@ -218,6 +224,19 @@ export function timings(text: string, starts: number[], ends: number[], shortCha
   const shortEnd = shortChars && shortChars > 0 && shortChars <= ends.length ? Math.round(ends[shortChars - 1] * 1000) : null;
   return { words, duration_ms: Math.round(last * 1000), short_end_ms: shortEnd };
 }
+
+// ---------- K50 helpers ----------
+
+/** D151: A = Multilingual v2 (default), B = v3, C = Flash v2.5. Also accepted as "A"/"B"/"C" or "v2"/"v3"/"flash". */
+export const VOICE_MODELS = ["eleven_multilingual_v2", "eleven_v3", "eleven_flash_v2_5"] as const;
+export function voiceModel(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const k = v.trim().toLowerCase();
+  const alias: Record<string, string> = { a: VOICE_MODELS[0], v2: VOICE_MODELS[0], b: VOICE_MODELS[1], v3: VOICE_MODELS[1], c: VOICE_MODELS[2], flash: VOICE_MODELS[2] };
+  return (VOICE_MODELS as readonly string[]).includes(k) ? k : alias[k] ?? null;
+}
+/** List price per 1 000 characters (ElevenLabs API page, 2026-11-13): Flash half of v2/v3. */
+export const usdPer1k = (model: string, base: number) => /flash|turbo/i.test(model) ? base / 2 : base;
 
 // ---------- K49 helpers ----------
 
@@ -275,6 +294,7 @@ export function createDrillHandler(deps: DrillDeps) {
               duration_ms: t.duration_ms,
               short_end_ms: t.short_end_ms,
               words: t.words,
+              credits: r.credits ?? null,
               error: null,
               done_at: new Date(now()).toISOString(),
             });
@@ -310,10 +330,14 @@ export function createDrillHandler(deps: DrillDeps) {
       };
     };
     const chars = hashes.reduce((n, h) => n + (audio.get(h)?.text.length ?? 0), 0);
+    const model = drill.voice_model ?? deps.model;
+    // K50: what ElevenLabs actually charged (character-cost), for the files that report it
+    const charged = hashes.map((h) => audio.get(h)).filter((a) => a?.status === "done" && typeof a.credits === "number");
     return {
       drill: {
         id: drill.id, title: drill.title, subject: drill.subject, grade: drill.grade, covers: drill.covers,
-        long_words: drill.long_words, shared_from: drill.shared_from ?? null, created_at: drill.created_at, updated_at: drill.updated_at,
+        long_words: drill.long_words, shared_from: drill.shared_from ?? null, voice_model: model,
+        created_at: drill.created_at, updated_at: drill.updated_at,
       },
       items: items.map((i) => ({
         id: i.id, position: i.position, question: i.question, short: i.short, long: i.long,
@@ -325,9 +349,11 @@ export function createDrillHandler(deps: DrillDeps) {
         failed: hashes.filter((h) => audio.get(h)?.status === "failed").length,
         // R10: what this drill's audio costs (whoever generated it first), and its size
         chars,
-        est_usd: Math.round(chars * deps.usdPer1kChars / 10) / 100,
+        est_usd: Math.round(chars * usdPer1k(model, deps.usdPer1kChars) / 10) / 100,
+        credits: charged.length ? charged.reduce((n, a) => n + (a!.credits ?? 0), 0) : null,
+        credits_chars: charged.length ? charged.reduce((n, a) => n + a!.text.length, 0) : null,
         bytes: done.reduce((n, h) => n + (audio.get(h)?.bytes ?? 0), 0),
-        model: deps.model,
+        model,
       },
     };
   }
@@ -341,7 +367,7 @@ export function createDrillHandler(deps: DrillDeps) {
     }
     const copy: DrillRow = {
       id: crypto.randomUUID(), user_id: userId, title: src.title, subject: src.subject, grade: src.grade,
-      covers: src.covers, long_words: src.long_words, shared_from: src.id,
+      covers: src.covers, long_words: src.long_words, shared_from: src.id, voice_model: src.voice_model ?? deps.model,
     };
     const its = (await deps.db.items([src.id])).sort((a, b) => a.position - b.position);
     await deps.db.saveDrill(copy, true);
@@ -379,13 +405,16 @@ export function createDrillHandler(deps: DrillDeps) {
         const items = drills.length ? await deps.db.items(drills.map((d) => d.id)) : [];
         const hashes = [...new Set(items.flatMap((i) => [i.question_hash, i.long_hash]).filter(Boolean))];
         const doneSet = new Set((hashes.length ? await deps.db.audio(hashes) : []).filter((a) => a.status === "done").map((a) => a.hash));
+        const q = await deps.db.useQuota(user.id, 0);
         return json({
+          quota: { used: q.used, limit: q.lim },
           drills: drills.map((d) => {
             const its = items.filter((i) => i.drill_id === d.id);
             const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
             return {
               id: d.id, title: d.title, subject: d.subject, grade: d.grade, items: its.length, updated_at: d.updated_at,
-              shared_from: d.shared_from ?? null, audio: { done: hs.filter((h) => doneSet.has(h)).length, total: hs.length },
+              shared_from: d.shared_from ?? null, voice_model: d.voice_model ?? deps.model,
+              audio: { done: hs.filter((h) => doneSet.has(h)).length, total: hs.length },
             };
           }),
         });
@@ -564,6 +593,16 @@ export function createDrillHandler(deps: DrillDeps) {
         throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
       }
       const lw = Math.round(Number(di.long_words));
+      // K50 (D151): the voice is chosen before the audio is made; after that it is locked (never regenerated)
+      const asked = di.voice_model === undefined || di.voice_model === null ? null : voiceModel(di.voice_model);
+      if (di.voice_model !== undefined && di.voice_model !== null && !asked) {
+        throw new HttpError(400, "invalid_request", "voice_model must be eleven_multilingual_v2, eleven_v3 or eleven_flash_v2_5 (A, B or C)");
+      }
+      const lockedModel = existing ? existing.voice_model ?? deps.model : null;
+      if (lockedModel && asked && asked !== lockedModel) {
+        throw new HttpError(409, "voice_locked", "Rösten är redan vald för det här provet. Gör ett nytt prov för en annan röst.");
+      }
+      const voice = lockedModel ?? asked ?? deps.model;
       const drill: DrillRow = {
         id: existing?.id ?? crypto.randomUUID(),
         user_id: user.id,
@@ -573,6 +612,7 @@ export function createDrillHandler(deps: DrillDeps) {
         covers: clean(di.covers, 400) || existing?.covers || "",
         long_words: Number.isFinite(lw) && lw >= 40 && lw <= 200 ? lw : existing?.long_words ?? 90,
         shared_from: existing?.shared_from ?? null,
+        voice_model: voice,
       };
       const oldItems = existing ? await deps.db.items([existing.id]) : [];
       const oldIds = new Set(oldItems.map((i) => i.id));
@@ -588,10 +628,10 @@ export function createDrillHandler(deps: DrillDeps) {
         if (!long.startsWith(short)) long = composeLong(short, long).slice(0, DRILL_STORE_LIMITS.long);
         const q = voiceText(question);
         const l = longVoice(short, long);
-        const qh = await audioHash(q, deps.model, deps.voiceId);
-        const lh = await audioHash(l.text, deps.model, deps.voiceId);
-        files.set(qh, files.get(qh) ?? { hash: qh, kind: "question", text: q, model: deps.model, voice_id: deps.voiceId, seq: pos * 2 });
-        files.set(lh, files.get(lh) ?? { hash: lh, kind: "long", text: l.text, short_chars: l.shortChars, model: deps.model, voice_id: deps.voiceId, seq: pos * 2 + 1 });
+        const qh = await audioHash(q, voice, deps.voiceId);
+        const lh = await audioHash(l.text, voice, deps.voiceId);
+        files.set(qh, files.get(qh) ?? { hash: qh, kind: "question", text: q, model: voice, voice_id: deps.voiceId, seq: pos * 2 });
+        files.set(lh, files.get(lh) ?? { hash: lh, kind: "long", text: l.text, short_chars: l.shortChars, model: voice, voice_id: deps.voiceId, seq: pos * 2 + 1 });
         const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
         rows.push({ ...(id ? { id } : {}), drill_id: drill.id, user_id: user.id, position: pos, question, short, long, question_hash: qh, long_hash: lh });
       }
@@ -607,6 +647,25 @@ export function createDrillHandler(deps: DrillDeps) {
           });
         }
       }
+      // K50 (D151): at most N generated questions per account. A question counts when any of its two files is new;
+      // audio another account already made (shared, published, the same text) is free and never counts
+      const freshSet = new Set(fresh.map((f) => f.hash));
+      const generated = rows.filter((r) => freshSet.has(r.question_hash) || freshSet.has(r.long_hash)).length;
+      if (generated > 0) {
+        const q = await deps.db.useQuota(user.id, generated);
+        if (!q.ok) {
+          return json({
+            error: {
+              code: "quota_exceeded",
+              message: `Du har gjort ${q.used} av ${q.lim} frågor med ljud. Köp ett abonnemang eller hämta andras prov, de är gratis.`,
+              fallback: false,
+            },
+            used: q.used,
+            limit: q.lim,
+            needed: generated,
+          }, 402);
+        }
+      }
       // the audio is queued first: a failure leaves no half-saved drill (a queued file nobody uses costs nothing)
       if (fresh.length) {
         const at = new Date(now()).toISOString();
@@ -620,7 +679,7 @@ export function createDrillHandler(deps: DrillDeps) {
       await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
       if (fresh.length) deps.background ? deps.background(pump()) : await pump();
       const saved = await deps.db.drill(drill.id);
-      return json({ ...(await view(saved ?? drill)), new_chars: newChars });
+      return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated });
     } catch (e) {
       return errorResponse(toHttpError(e));
     }

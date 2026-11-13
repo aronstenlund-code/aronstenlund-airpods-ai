@@ -21,8 +21,8 @@ const envInt = (k: string, d: number) => {
   const n = Number(env.get(k));
   return Number.isFinite(n) && n > 0 ? n : d;
 };
+// D151: the default is A (Multilingual v2); a drill may choose B (v3) or C (Flash) before its audio is made
 const model = env.get("DRILL_TTS_MODEL") || "eleven_multilingual_v2";
-if (/turbo|flash/i.test(model)) console.warn("drill_model_not_high_quality", model); // D143: never Turbo/Flash
 
 let creditsLogged = false;
 async function logCredits() {
@@ -55,7 +55,7 @@ Deno.serve(withCors(
     rateLimiter: new SupabaseRateLimiter(db),
     model,
     voiceId: secret(env, "ELEVENLABS_VOICE_ID") ?? parseVoices(env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
-    usdPer1kChars: /flash|turbo/i.test(model) ? 0.04 : 0.08,
+    usdPer1kChars: 0.08,
     charLimits: {
       perMinute: envInt("DRILL_TTS_CHARS_PER_MINUTE", 60_000),
       perDay: envInt("DRILL_TTS_CHARS_PER_DAY", 60_000),
@@ -129,6 +129,10 @@ Deno.serve(withCors(
       bump: async (id, field) => {
         await db.rpc("bump_publication", { p_id: id, p_field: field });
       },
+      useQuota: async (u, n) => {
+        const r = (await db.rpc("use_drill_quota", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[];
+        return r[0] ?? { ok: false, used: 0, lim: 0 };
+      },
       setHidden: async (id, hidden) => {
         await db.updateWhere("drill_publications", `id=eq.${encodeURIComponent(id)}`, { hidden });
       },
@@ -169,7 +173,8 @@ Deno.serve(withCors(
           const r = await fetch(`${xiBase}/v1/text-to-speech/${voice}/with-timestamps?output_format=mp3_44100_64&enable_logging=false`, {
             method: "POST",
             headers: { "xi-api-key": xi, "content-type": "application/json" },
-            body: JSON.stringify({ text, model_id: m, language_code: "sv" }),
+            // v3 takes no language_code (the blind test's voice-lab call sent none for it)
+            body: JSON.stringify({ text, model_id: m, ...(m === "eleven_v3" ? {} : { language_code: "sv" }) }),
             signal: AbortSignal.timeout(60_000),
           });
           if (!r.ok) throw new Error(`elevenlabs ${r.status}: ${(await r.text().catch(() => "")).slice(0, 200)}`);
@@ -178,7 +183,13 @@ Deno.serve(withCors(
             alignment?: { character_start_times_seconds: number[]; character_end_times_seconds: number[] };
           };
           const audio = Uint8Array.from(atob(j.audio_base64), (c) => c.charCodeAt(0));
-          return { audio, starts: j.alignment?.character_start_times_seconds ?? [], ends: j.alignment?.character_end_times_seconds ?? [] };
+          const cost = Number(r.headers.get("character-cost"));
+          return {
+            audio,
+            starts: j.alignment?.character_start_times_seconds ?? [],
+            ends: j.alignment?.character_end_times_seconds ?? [],
+            credits: r.headers.has("character-cost") && Number.isFinite(cost) ? cost : null,
+          };
         },
       }
       : null,
