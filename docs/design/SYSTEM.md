@@ -162,3 +162,11 @@ Alla storlekar följer Dynamic Type, också de fem största (`.accessibility1`�
 6. **Loggan i rubriken** följer textstorleken (`@ScaledMetric`), så att den inte blir en prick bredvid ett stort namn.
 
 Provas på Tobys tur med största text och på iPhone SE. Ett fynd vid största text räknas som ett vanligt fynd.
+
+## 11. Repetitionsläget (Ke49, D142–D146)
+Underlag: `repetition.md`, bilder `bilder/repetition/`. Det nya standardläget: Hem → Starta prov, styrs med tryck på
+AirPods (● långt svar, ●● kort svar, ●●● paus). Nytt i systemet:
+- **BETA-märke:** grå kontur (`muted`), 11 pt bold versaler, hörn 6. Märkning, ingen varning. På alla lyssnande lägen.
+- **`ok` / `okSoft`** #1F7A4D / #E5F4EC (ljust), #5FD39A / #15301F (mörkt): **bara** bockar som är klara (kontrollskärmen).
+- **Tryckprickarna** ●, ●● och ●●● är symbolen för AirPods-trycken överallt. Inga hörlursbilder.
+- **Avsluta på uppspelningen:** 64 pt hög, `surface`, aldrig röd, ingen bekräftelse (platsen sparas).

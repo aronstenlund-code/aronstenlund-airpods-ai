@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repetitionsläget</title>
+<!-- Kelly, Ke49 (D142–D146), 2026-11-13. Underlag: docs/design/repetition.md. Spec: docs/design/repetitionslage.md.
+     Rendera: node docs/design/_src/repetition-render.js
+     Varje <section class="pair" id="…"> blir docs/design/bilder/repetition/<id>.png (ljust till vänster, mörkt till höger). -->
+<style>
+  @font-face { font-family: "Familjen Grotesk"; src: url("../../../site/fonts/familjen-grotesk.woff2") format("woff2"); font-weight: 400 700; }
+  :root, .light {
+    --bg: #FFFFFF; --surface: #F4F6FA; --raised: #FFFFFF; --ink: #141A2E; --mut: #5E6779; --line: #E4E8EF;
+    --blue: #2346C8; --on-blue: #FFFFFF; --soft: #EAF0FF; --stage: #E9EDF3; --dim: rgba(20,26,46,.38);
+    --red: #D9342B; --ok: #1F7A4D; --oksoft: #E5F4EC;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 20px rgba(16,24,40,.07);
+  }
+  .dark {
+    --bg: #0F1218; --surface: #181C26; --raised: #1D2230; --ink: #EEF1F7; --mut: #9AA3B5; --line: #272D3B;
+    --blue: #7F9BFF; --on-blue: #0E1630; --soft: #1E2A4F; --stage: #07090D; --dim: rgba(0,0,0,.55);
+    --red: #FF6F61; --ok: #5FD39A; --oksoft: #15301F;
+    --shadow: none;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Familjen Grotesk", system-ui, sans-serif; background: #ccd; }
+  .pair { display: flex; width: 900px; }
+  .side { flex: 1; background: var(--stage); color: var(--ink); padding: 26px 0 22px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .tag { font-weight: 700; font-size: 17px; color: var(--blue); }
+  .cap { font-size: 13.5px; color: var(--mut); max-width: 380px; text-align: center; line-height: 1.38; }
+  .phone { width: 375px; height: 812px; border-radius: 38px; overflow: hidden; background: var(--bg); position: relative;
+           display: flex; flex-direction: column; border: 1px solid var(--line); box-shadow: 0 10px 40px rgba(16,24,40,.18); }
+  .phone.grouped { background: var(--surface); }
+  .dark .phone.grouped { background: var(--bg); }
+  .status { height: 46px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; font-weight: 600; font-size: 15px; flex: none; }
+  .scroll { padding: 6px 20px 0; display: flex; flex-direction: column; gap: 16px; flex: 1; min-height: 0; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .between { justify-content: space-between; }
+  .ico { width: 22px; height: 22px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .iconbtn { width: 40px; height: 40px; border-radius: 12px; background: var(--surface); display: grid; place-items: center; color: var(--ink); }
+  .brand { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .brand img { width: 30px; height: 30px; border-radius: 7px; }
+  .streak { font-size: 14px; font-weight: 600; color: var(--mut); background: var(--surface); padding: 6px 10px; border-radius: 999px; }
+  .card { background: var(--raised); border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--line); padding: 18px; }
+  .dark .card { border-color: transparent; }
+  .cap13 { font-size: 13px; font-weight: 600; color: var(--mut); letter-spacing: .02em; text-transform: uppercase; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: var(--soft); color: var(--blue); font-weight: 600; font-size: 14px; }
+  .beta { display: inline-flex; padding: 2px 7px; border-radius: 6px; border: 1.5px solid var(--mut); color: var(--mut); font-size: 11px; font-weight: 700; letter-spacing: .06em; vertical-align: 2px; margin-left: 6px; }
+  h1 { font-size: 32px; font-weight: 700; letter-spacing: -.02em; line-height: 1.12; }
+  h2 { font-size: 26px; font-weight: 700; letter-spacing: -.015em; }
+  .sub { color: var(--mut); font-size: 15px; line-height: 1.35; }
+  .body { font-size: 17px; line-height: 1.4; }
+  .btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: 54px; border-radius: 14px; background: var(--surface); color: var(--ink); font-weight: 600; font-size: 17px; flex: none; }
+  .btn small { font-size: 13px; font-weight: 500; color: var(--mut); }
+  .btn.two { height: 64px; }
+  .btn.blue { background: var(--blue); color: var(--on-blue); }
+  .btn.blue small { color: var(--on-blue); opacity: .8; }
+  .btn.big { height: 72px; border-radius: 18px; font-size: 21px; font-weight: 700; flex-direction: row; gap: 10px; }
+  .btn.big .ico { width: 26px; height: 26px; stroke-width: 2.2; }
+  .btn.off { background: var(--surface); color: var(--mut); }
+  .tlink { color: var(--blue); font-weight: 600; font-size: 16px; }
+  .group { background: var(--raised); border-radius: 16px; overflow: hidden; }
+  .dark .group { background: var(--surface); }
+  .gtitle { font-size: 13px; font-weight: 600; color: var(--mut); padding: 0 16px 6px; text-transform: uppercase; letter-spacing: .02em; }
+  .gfoot { font-size: 13px; color: var(--mut); padding: 6px 16px 0; line-height: 1.35; }
+  .listrow { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 10px 16px; border-bottom: 1px solid var(--line); font-size: 17px; }
+  .listrow:last-child { border-bottom: 0; }
+  .listrow .v { color: var(--mut); margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  .listrow .ic { width: 32px; height: 32px; border-radius: 9px; background: var(--soft); color: var(--blue); display: grid; place-items: center; flex: none; }
+  .listrow .ic .ico { width: 19px; height: 19px; }
+  .navb { display: flex; justify-content: space-between; align-items: center; padding: 4px 20px 0; height: 44px; font-size: 17px; flex: none; }
+  .navb .l, .navb .r { color: var(--blue); } .navb .r { font-weight: 600; } .navb b { font-size: 17px; }
+  .navb .r.off { color: var(--mut); font-weight: 500; }
+  .large { font-size: 32px; font-weight: 700; letter-spacing: -.02em; padding: 2px 20px 0; }
+  .lead2 { font-size: 15px; color: var(--mut); padding: 6px 20px 0; line-height: 1.35; }
+  .field { background: var(--surface); border-radius: 14px; padding: 12px 14px; font-size: 17px; line-height: 1.4; }
+  .grouped .field { background: var(--raised); }
+  .dark .grouped .field { background: var(--surface); }
+  .flabel { font-size: 13px; font-weight: 600; color: var(--mut); letter-spacing: .02em; margin: 0 2px 6px; text-transform: uppercase; display: flex; justify-content: space-between; }
+  .flabel span { text-transform: none; letter-spacing: 0; font-weight: 500; }
+  .editor { border: 2px solid var(--blue); }
+  .caret { display: inline-block; width: 2px; height: 20px; background: var(--blue); vertical-align: -4px; margin-left: 1px; }
+  .short { background: var(--soft); color: var(--ink); border-radius: 4px; padding: 1px 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; background: var(--soft); color: var(--blue); font-size: 12px; font-weight: 600; flex: none; }
+  .dimmed { position: absolute; inset: 0; background: var(--dim); }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--bg); border-radius: 22px 22px 0 0; padding: 8px 20px 30px; display: flex; flex-direction: column; gap: 14px; }
+  .dark .sheet { background: var(--raised); }
+  .grab { width: 38px; height: 5px; border-radius: 3px; background: var(--line); margin: 0 auto; }
+
+  /* Material */
+  .addgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .add { background: var(--surface); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; font-weight: 600; font-size: 16px; }
+  .grouped .add { background: var(--raised); }
+  .dark .grouped .add { background: var(--surface); }
+  .add .ico { color: var(--blue); width: 26px; height: 26px; }
+  .add small { font-weight: 500; color: var(--mut); font-size: 13px; margin-top: -6px; }
+  .thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .th { width: 58px; height: 74px; border-radius: 8px; background: #F7F3EA; border: 1px solid var(--line); position: relative; overflow: hidden; }
+  .th::before { content: ""; position: absolute; left: 7px; right: 7px; top: 10px; height: 46px;
+     background: repeating-linear-gradient(#9AA3B5 0 2px, transparent 2px 7px); opacity: .55; }
+  .th.pdf { background: var(--raised); display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--red); }
+  .th.pdf::before { display: none; }
+  .th.txt { background: var(--raised); display: grid; place-items: center; font-size: 11px; font-weight: 700; color: var(--mut); }
+  .th.txt::before { display: none; }
+  .th b { position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border-radius: 50%; background: rgba(20,26,46,.7); color: #fff; font-size: 12px; display: grid; place-items: center; z-index: 1; }
+
+  /* Sammanfattning */
+  .spin { width: 64px; height: 64px; border-radius: 50%; border: 5px solid var(--soft); border-top-color: var(--blue); }
+  .steps { display: flex; flex-direction: column; gap: 12px; }
+  .steps div { display: flex; gap: 10px; align-items: center; font-size: 16px; }
+  .steps .d { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; flex: none; }
+  .steps .done .d { background: var(--blue); color: var(--on-blue); }
+  .steps .now .d { border: 2px solid var(--blue); }
+  .steps .todo { color: var(--mut); } .steps .todo .d { border: 2px solid var(--line); }
+  .kv { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 17px; }
+  .kv:last-child { border-bottom: 0; }
+  .kv span:first-child { color: var(--mut); }
+  .kv span:last-child { font-weight: 600; text-align: right; }
+  .covers { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .covers span { background: var(--surface); border-radius: 999px; padding: 5px 10px; font-size: 14px; font-weight: 600; }
+  .dark .card .covers span { background: var(--bg); }
+
+  /* Frågelista */
+  .q { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .q:last-child { border-bottom: 0; }
+  .q .n { font-size: 15px; font-weight: 600; color: var(--mut); width: 20px; flex: none; padding-top: 1px; font-variant-numeric: tabular-nums; }
+  .q .t { font-size: 17px; font-weight: 600; }
+  .q .s { font-size: 15px; color: var(--mut); margin-top: 2px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px; }
+  .q .r { margin-left: auto; color: var(--mut); align-self: center; display: flex; gap: 12px; align-items: center; }
+  .q .del { width: 22px; height: 22px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font-size: 18px; font-weight: 700; flex: none; align-self: center; line-height: 1; }
+  .q.new .t { color: var(--blue); }
+  .prog { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+  .prog i { display: block; height: 100%; background: var(--blue); border-radius: 3px; }
+  .audiorow { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--mut); }
+  .audiorow b { color: var(--ink); font-weight: 600; }
+  .bottom { margin-top: auto; padding: 12px 20px 30px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); border-top: 1px solid var(--line); }
+  .grouped .bottom { background: var(--surface); }
+  .dark .grouped .bottom { background: var(--bg); }
+  .seg { display: flex; background: var(--surface); border-radius: 12px; padding: 3px; gap: 3px; }
+  .grouped .seg { background: var(--line); }
+  .seg span { flex: 1; text-align: center; padding: 7px 0; border-radius: 9px; font-size: 15px; font-weight: 600; color: var(--mut); }
+  .seg span.on { background: var(--raised); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+  .dark .seg span.on { background: #2B3245; }
+  .stepper { display: flex; align-items: center; gap: 0; border-radius: 9px; background: var(--surface); overflow: hidden; }
+  .dark .grouped .stepper { background: var(--bg); }
+  .stepper span { width: 40px; height: 32px; display: grid; place-items: center; font-size: 20px; color: var(--ink); }
+  .stepper span + span { border-left: 1px solid var(--line); }
+
+  /* Kontroller */
+  .tap { display: flex; gap: 4px; align-items: center; }
+  .tap i { width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
+  .ctl { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  .ctl:last-child { border-bottom: 0; }
+  .ctl .tapbox { width: 56px; height: 40px; border-radius: 12px; background: var(--soft); color: var(--blue); display: grid; place-items: center; flex: none; }
+  .ctl .t { font-size: 17px; font-weight: 600; } .ctl .s { font-size: 14px; color: var(--mut); margin-top: 2px; }
+  .ctl .st { margin-left: auto; flex: none; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .ctl .st.ok { color: var(--ok); }
+  .ctl .st.wait { color: var(--blue); }
+  .ctl .st.idle { color: var(--mut); font-weight: 500; }
+  .ctl .st.no { color: var(--mut); }
+  .okdot { width: 24px; height: 24px; border-radius: 50%; background: var(--ok); color: var(--bg); display: grid; place-items: center; font-size: 15px; font-weight: 700; }
+  .ctl.now { background: var(--soft); }
+  .dark .ctl.now { background: #1B2440; }
+  .ctl.now .tapbox { background: var(--blue); color: var(--on-blue); }
+  .pulse { width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; margin: 4px auto 0; position: relative; color: var(--blue); }
+  .pulse::before, .pulse::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--blue); opacity: .25; }
+  .pulse::after { inset: -16px; opacity: .12; }
+  .pulse .core { width: 84px; height: 84px; border-radius: 50%; background: var(--soft); display: grid; place-items: center; }
+  .pulse .tap i { width: 13px; height: 13px; }
+  .note { background: var(--surface); border-radius: 14px; padding: 12px 14px; font-size: 15px; line-height: 1.4; }
+  .grouped .note { background: var(--raised); }
+  .dark .grouped .note { background: var(--surface); }
+  .note b { font-weight: 600; }
+  .path { font-weight: 600; }
+
+  /* Uppspelning */
+  .player { flex: 1; display: flex; flex-direction: column; padding: 6px 24px 0; }
+  .pmeta { display: flex; justify-content: space-between; align-items: center; font-size: 15px; color: var(--mut); font-weight: 600; }
+  .pbar { display: flex; gap: 3px; margin-top: 10px; }
+  .pbar i { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+  .pbar i.d { background: var(--blue); opacity: .45; } .pbar i.c { background: var(--blue); }
+  .phase { margin-top: 34px; display: flex; justify-content: center; }
+  .bigq { font-size: 34px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; text-align: center; margin-top: 18px; }
+  .ring { width: 112px; height: 112px; margin: 30px auto 0; position: relative; }
+  .ring svg { width: 112px; height: 112px; transform: rotate(-90deg); }
+  .ring .num { position: absolute; inset: 0; display: grid; place-items: center; font-size: 40px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .ring .lbl { position: absolute; left: 0; right: 0; bottom: -28px; text-align: center; font-size: 15px; color: var(--mut); font-weight: 600; }
+  .anstext { margin-top: 22px; font-size: 19px; line-height: 1.45; color: var(--mut); }
+  .anstext .said { color: var(--ink); }
+  .anstext .shortmark { color: var(--ink); font-weight: 600; }
+  .hint { display: flex; justify-content: space-between; gap: 6px; margin-top: auto; padding: 14px 0 6px; }
+  .hint div { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; color: var(--mut); font-weight: 600; text-align: center; }
+  .hint .tap { color: var(--mut); }
+  .hint .on { color: var(--blue); } .hint .on .tap { color: var(--blue); }
+  .endbtn { margin: 6px 24px 30px; height: 64px; border-radius: 18px; background: var(--surface); color: var(--ink); font-weight: 700; font-size: 19px; display: flex; align-items: center; justify-content: center; gap: 8px; flex: none; }
+  .wave { display: inline-flex; gap: 3px; align-items: center; height: 16px; }
+  .wave b { width: 3px; border-radius: 2px; background: currentColor; }
+  .paused .bigq { color: var(--mut); }
+
+  /* Låsskärm */
+  .lock { background: linear-gradient(160deg, #2B3A67 0%, #141A2E 55%, #0B0E15 100%); color: #fff; }
+  .lock.light2 { background: linear-gradient(160deg, #9DB3E8 0%, #5D74B8 55%, #2E3D6E 100%); }
+  .ltime { text-align: center; font-size: 84px; font-weight: 700; letter-spacing: -.03em; margin-top: 18px; line-height: 1; }
+  .ldate { text-align: center; font-size: 19px; font-weight: 600; opacity: .85; margin-top: 30px; }
+  .np { margin: auto 12px 18px; border-radius: 26px; padding: 16px; background: rgba(255,255,255,.16); backdrop-filter: blur(20px); display: flex; flex-direction: column; gap: 12px; }
+  .np .top { display: flex; gap: 12px; align-items: center; }
+  .np img { width: 52px; height: 52px; border-radius: 12px; }
+  .np .t { font-size: 17px; font-weight: 600; } .np .s { font-size: 14px; opacity: .75; }
+  .np .bar { height: 5px; border-radius: 3px; background: rgba(255,255,255,.25); } .np .bar i { display: block; height: 100%; width: 38%; border-radius: 3px; background: rgba(255,255,255,.85); }
+  .np .times { display: flex; justify-content: space-between; font-size: 12px; opacity: .7; margin-top: -6px; }
+  .np .ctrls { display: flex; justify-content: space-around; align-items: center; font-size: 28px; padding: 2px 30px 4px; }
+  .np .ctrls svg { width: 30px; height: 30px; fill: #fff; }
+  .lockhint { text-align: center; font-size: 13px; opacity: .7; margin: 0 20px 26px; }
+
+  /* Hem */
+  .examcard h2 { margin-top: 8px; }
+  .mini { display: flex; gap: 14px; font-size: 14px; color: var(--mut); margin-top: 8px; flex-wrap: wrap; }
+  .mini span { display: inline-flex; align-items: center; gap: 5px; }
+  .mini .ico { width: 16px; height: 16px; }
+  .exrow { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .exrow:last-child { border-bottom: 0; }
+  .exrow .t { font-size: 17px; font-weight: 600; } .exrow .s { font-size: 14px; color: var(--mut); margin-top: 1px; }
+  .exrow .play { margin-left: auto; width: 36px; height: 36px; border-radius: 50%; background: var(--soft); color: var(--blue); display: grid; place-items: center; flex: none; }
+  .exrow .play svg { width: 14px; height: 14px; fill: currentColor; margin-left: 2px; }
+  .empty { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 8px 4px; }
+  .empty .bigic { width: 72px; height: 72px; border-radius: 22px; background: var(--soft); color: var(--blue); display: grid; place-items: center; }
+  .empty .bigic .ico { width: 34px; height: 34px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+  <symbol id="photos" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></symbol>
+  <symbol id="text" viewBox="0 0 24 24"><path d="M5 6h14M5 11h14M5 16h9"/></symbol>
+  <symbol id="doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></symbol>
+  <symbol id="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="grip" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></symbol>
+  <symbol id="share" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+  <symbol id="speaker" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></symbol>
+  <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="cards" viewBox="0 0 24 24"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></symbol>
+  <symbol id="wavei" viewBox="0 0 24 24"><path d="M3 10v4M7 7v10M11 4v16M15 8v8M19 10v4"/></symbol>
+  <symbol id="mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+  <symbol id="brief" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 13h18"/></symbol>
+  <symbol id="people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/></symbol>
+  <symbol id="heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+  <symbol id="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="qmark" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.3M12 17h.01"/></symbol>
+  <symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></symbol>
+  <symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="pp" viewBox="0 0 24 24"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></symbol>
+  <symbol id="fwd" viewBox="0 0 24 24"><path d="M3 6l9 6-9 6zM12 6l9 6-9 6z"/></symbol>
+  <symbol id="rew" viewBox="0 0 24 24"><path d="M21 6l-9 6 9 6zM12 6l-9 6 9 6z"/></symbol>
+</svg>
+<div id="screens"></div>
+<script>
+const APP = 'Earmind';
+const ICON = '../logo/rostning/exakt/AppIcon-1024.png';   // D139: appikonen är exakt ChatGPT-bilden D
+const I = (id, cls = 'ico', style = '') => `<svg class="${cls}" style="${style}"><use href="#${id}"/></svg>`;
+const status = (dark) => `<div class="status"><span>9:41</span><span>●●●</span></div>`;
+const taps = n => `<span class="tap">${'<i></i>'.repeat(n)}</span>`;
+const nav = (l, t, r = '', rOff = false) => `<div class="navb"><span class="l" style="display:flex;align-items:center;gap:2px">${l ? I('back', 'ico', 'width:20px;height:20px') + l : ''}</span><b>${t}</b><span class="r ${rOff ? 'off' : ''}">${r}</span></div>`;
+const topBar = () => `<div class="row between"><div class="brand"><img src="${ICON}" alt="">${APP}</div>
+  <div class="row"><span class="streak">3 dagar i rad</span><div class="iconbtn">${I('gear')}</div></div></div>`;
+
+// Exempelprovet (påhittat, ingen elevtext). Korta frågor, förståelse (D144). Kort svar = första meningen i det långa (D145).
+const QS = [
+  ['Varför behövs klorofyll?', 'Klorofyll fångar ljusenergin som växten behöver för fotosyntesen.'],
+  ['Hur bildas glukos?', 'Växten bygger glukos av koldioxid och vatten med hjälp av solljus.'],
+  ['Varför släpper växter ut syre?', 'Syret blir över när vattenmolekyler delas i fotosyntesen.'],
+  ['Fotosyntes jämfört med cellandning?', 'Fotosyntesen lagrar energi i glukos, cellandningen frigör den igen.'],
+  ['Varför är växter producenter?', 'De tillverkar sin egen näring och blir mat åt alla andra.'],
+  ['Hur påverkar ljuset fotosyntesen?', 'Mer ljus ger snabbare fotosyntes, tills något annat blir begränsande.'],
+  ['Varför finns klyvöppningar?', 'De släpper in koldioxid och ut syre och vattenånga.'],
+];
+const LONG = ['Klorofyll fångar ljusenergin som växten behöver för fotosyntesen.',
+  'Det är ett grönt färgämne i kloroplasterna, främst i bladens celler.',
+  'Klorofyllet tar upp rött och blått ljus och reflekterar grönt, därför ser bladen gröna ut.',
+  'Energin från ljuset används för att dela vattenmolekyler och sedan bygga glukos av koldioxid.',
+  'Utan klorofyll kan växten alltså inte omvandla solenergi till kemisk energi, och då finns ingen näring för växten eller för djuren som äter den.',
+  'Det är därför klorofyll är grunden för nästan alla näringskedjor.'];
+
+const screens = [];
+const S = (id, tag, cap, render, opts = {}) => screens.push({ id, tag, cap, render, opts });
+
+// 1. Hem med prov
+S('hem', 'Hem: första vägen är Starta prov',
+  'Provkortet är det första man ser. Starta prov är den enda blå knappen. Lyssnande lägen ligger under Fler lägen (BETA). Ingen mikrofon på hemskärmen.',
+  () => `<div class="phone">${status()}<div class="scroll">
+  ${topBar()}
+  <div class="card examcard">
+    <div class="row between"><span class="cap13">Nästa prov</span><span class="badge">5 dagar kvar</span></div>
+    <h2>Biologiprovet</h2>
+    <div class="mini"><span>${I('cards')}20 frågor</span><span>${I('clock')}cirka 24 min per varv</span></div>
+    <div class="btn blue big" style="margin-top:16px">${I('play')}Starta prov</div>
+    <div class="row between" style="margin-top:12px;padding:0 2px"><span class="tlink">Frågor och svar</span><span class="tlink" style="display:flex;align-items:center;gap:6px">${I('share', 'ico', 'width:18px;height:18px')}Dela</span></div>
+  </div>
+  <div class="btn" style="flex-direction:row;gap:8px">${I('plus', 'ico', 'width:20px;height:20px')}Nytt prov</div>
+  <div>
+    <div class="gtitle" style="padding-left:2px">Andra prov</div>
+    <div class="group" style="background:var(--surface)">
+      <div class="exrow"><div><div class="t">Historia: industrialiseringen</div><div class="s">18 frågor · ljud klart</div></div><div class="play"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg></div></div>
+      <div class="exrow"><div><div class="t">Engelska glosor v. 46</div><div class="s">Ljud: 31 av 60 klara</div></div><div class="play" style="opacity:.45"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg></div></div>
+    </div>
+  </div>
+  <div class="row between" style="padding:2px 2px 0"><span class="sub" style="font-size:16px;color:var(--ink);font-weight:600">Fler lägen<span class="beta">BETA</span></span>${I('chev', 'ico', 'color:var(--mut)')}</div>
+</div></div>`);
+
+// 2. Hem tom
+S('hem-tom', 'Hem utan prov',
+  'Första gången: en mening om vad det är och en blå knapp. Fler lägen (BETA) ligger kvar längst ner, tyst.',
+  () => `<div class="phone">${status()}<div class="scroll">
+  ${topBar()}
+  <div class="card"><div class="empty">
+    <div class="bigic">${I('cards')}</div>
+    <h2 style="font-size:24px">Plugga med AirPods</h2>
+    <div class="sub" style="font-size:16px;max-width:280px">Fota ditt material. ${APP} gör frågor och svar och läser upp dem i örat. Du styr med tryck på AirPods.</div>
+    <div class="btn blue big" style="width:100%;margin-top:10px">${I('plus')}Nytt prov</div>
+  </div></div>
+  <div style="flex:1"></div>
+  <div class="row between" style="padding:2px 2px 30px"><span class="sub" style="font-size:16px;color:var(--ink);font-weight:600">Fler lägen<span class="beta">BETA</span></span>${I('chev', 'ico', 'color:var(--mut)')}</div>
+</div></div>`);
+
+// 3. Nytt prov: material
+S('material', 'Nytt prov: material',
+  'Fyra sätt att lägga till, i ett rutnät. Allt som är tillagt syns som miniatyrer med ett kryss. Antal frågor och svarens längd har standardvärden (D146) och ändras här. En blå knapp.',
+  () => `<div class="phone grouped">${status()}${nav('Hem', 'Nytt prov', 'Avbryt')}
+  <div class="scroll" style="gap:14px;padding-top:10px">
+  <div class="field" style="font-weight:600">Biologiprovet<span class="caret"></span></div>
+  <div class="addgrid">
+    <div class="add">${I('camera')}Fota sidor<small>Flera i följd</small></div>
+    <div class="add">${I('photos')}Välj bilder<small>Ur bildbiblioteket</small></div>
+    <div class="add">${I('text')}Skriv text<small>Eller klistra in</small></div>
+    <div class="add">${I('doc')}Dokument<small>PDF, Word, text</small></div>
+  </div>
+  <div>
+    <div class="flabel">Tillagt<span>9 saker</span></div>
+    <div class="thumbs">
+      ${'<div class="th"><b>×</b></div>'.repeat(6)}<div class="th pdf"><b>×</b>PDF</div><div class="th txt"><b>×</b>Aa</div><div class="th txt"><b>×</b>DOCX</div>
+    </div>
+  </div>
+  <div>
+    <div class="group">
+      <div class="listrow">Antal frågor<span class="v" style="gap:12px"><b style="color:var(--ink);font-weight:600">20</b><span class="stepper"><span>−</span><span>+</span></span></span></div>
+      <div class="listrow" style="flex-direction:column;align-items:stretch;gap:8px">Långa svar<div class="seg"><span>Kortare</span><span class="on">Normal</span><span>Längre</span></div></div>
+    </div>
+    <div class="gfoot">Normal är ett fullt A-svar på cirka 90 ord. Fotona och dokumenten sparas inte, bara frågorna och svaren.</div>
+  </div>
+  </div>
+  <div class="bottom"><div class="btn blue">Skapa frågor</div></div>
+</div>`);
+
+// 4. Analyserar
+S('analys', 'Earmind läser materialet',
+  'Väntan med steg i stället för en snurra utan slut. Sammanfattningen visas så fort den finns; frågorna och svaren fylls på under tiden (R1: 30 och 90 s).',
+  () => `<div class="phone">${status()}${nav('', 'Biologiprovet', '')}
+  <div class="scroll" style="align-items:center;text-align:center;gap:20px;padding-top:80px">
+    <div class="spin"></div>
+    <h2 style="font-size:24px">Läser ditt material</h2>
+    <div class="sub" style="max-width:270px;font-size:16px">6 foton, 1 PDF, 1 text och 1 Word-fil.</div>
+    <div class="steps" style="text-align:left;margin-top:10px">
+      <div class="done"><span class="d">✓</span>Läser sidorna</div>
+      <div class="now"><span class="d"></span>Tar reda på ämne och årskurs</div>
+      <div class="todo"><span class="d"></span>Gör frågor</div>
+      <div class="todo"><span class="d"></span>Skriver svar</div>
+    </div>
+    <div class="sub" style="margin-top:auto;padding-bottom:40px">Du kan lämna appen. ${APP} säger till när det är klart.</div>
+  </div>
+</div>`);
+
+// 5. Sammanfattning
+S('sammanfattning', 'Sammanfattning: stämmer det här?',
+  'Ämne, årskurs och vad provet omfattar, i ett kort. Rätta med en rad text, inget formulär. ”Ser rätt ut” är den blå knappen.',
+  () => `<div class="phone grouped">${status()}${nav('Material', 'Biologiprovet', '')}
+  <div class="scroll" style="padding-top:10px;gap:14px">
+  <h1 style="font-size:28px">Stämmer det här?</h1>
+  <div class="card">
+    <div class="kv"><span>Ämne</span><span>Biologi</span></div>
+    <div class="kv"><span>Årskurs</span><span>Åk 9</span></div>
+    <div class="kv" style="flex-direction:column;gap:2px;border-bottom:0"><span>Provet handlar om</span>
+      <div class="covers"><span>Fotosyntes</span><span>Cellandning</span><span>Klorofyll</span><span>Producenter</span><span>Näringskedjor</span><span>Klyvöppningar</span></div></div>
+  </div>
+  <div>
+    <div class="flabel">Något fel? Skriv det</div>
+    <div class="field" style="color:var(--mut)">Till exempel ”Det är åk 8” eller ”Ta inte med cellandning”</div>
+  </div>
+  </div>
+  <div class="bottom"><div class="btn blue">Ser rätt ut</div></div>
+</div>`);
+
+// 6. Frågelista
+const qRow = ([q, s], i, edit = false) => `<div class="q">${edit ? '<span class="del">−</span>' : `<span class="n">${i + 1}</span>`}
+  <div style="min-width:0"><div class="t">${q}</div><div class="s">${s}</div></div>
+  <div class="r">${edit ? I('grip') : I('chev', 'ico', 'width:18px;height:18px')}</div></div>`;
+S('fragor', 'Frågelistan',
+  'Korta frågor i fetstil, det korta svaret grått under. Ljudets förlopp syns ovanför knappen. Starta prov går direkt: ljudet görs i spelordning, så början är klar först (R1).',
+  () => `<div class="phone grouped">${status()}${nav('Hem', '', 'Ändra')}
+  <div class="large" style="padding-top:0">Biologiprovet</div>
+  <div class="lead2" style="padding-bottom:12px">20 frågor · åk 9 · <span style="color:var(--blue);font-weight:600">Sammanfattning</span></div>
+  <div class="scroll" style="padding-top:0;overflow:hidden">
+    <div class="group">${QS.map((q, i) => qRow(q, i)).join('')}</div>
+  </div>
+  <div class="bottom">
+    <div class="audiorow">${I('speaker', 'ico', 'width:18px;height:18px')}<span>Ljud: <b>36 av 40</b> klara</span><span style="margin-left:auto">Görs i spelordning</span></div>
+    <div class="prog"><i style="width:90%"></i></div>
+    <div class="btn blue big">${I('play')}Starta prov</div>
+  </div>
+</div>`);
+
+// 7. Frågelista, ändra
+S('fragor-andra', 'Frågelistan: Ändra',
+  'Som iOS-listor: ta bort till vänster, dra i handtaget för att flytta. ”Lägg till fråga” står sist i listan. Klar uppe till höger.',
+  () => `<div class="phone grouped">${status()}${nav('', '', 'Klar')}
+  <div class="large" style="padding-top:0">Biologiprovet</div>
+  <div class="lead2" style="padding-bottom:12px">Dra för att ändra ordning. Ordningen är den du hör.</div>
+  <div class="scroll" style="padding-top:0;overflow:hidden">
+    <div class="group">${QS.slice(0, 6).map((q, i) => qRow(q, i, true)).join('')}
+      <div class="q new"><span class="n" style="color:var(--blue)">${I('plus', 'ico', 'width:20px;height:20px')}</span><div><div class="t">Lägg till fråga</div></div></div>
+    </div>
+  </div>
+</div>`);
+
+// 8. Redigera en fråga
+S('redigera', 'Redigera en fråga',
+  'Två fält, inte tre. Det korta svaret är den markerade första meningen i det långa (D145), så de kan aldrig säga emot varandra. Bara den här frågan får nytt ljud.',
+  () => `<div class="phone grouped">${status()}${nav('', 'Fråga 1', 'Spara')}
+  <div class="scroll" style="padding-top:10px;gap:14px">
+  <div><div class="flabel">Fråga<span>4 ord</span></div><div class="field" style="font-weight:600">Varför behövs klorofyll?</div></div>
+  <div><div class="flabel">Svar<span>88 ord</span></div>
+    <div class="field editor" style="font-size:16px;line-height:1.45"><span class="short">${LONG[0]}</span> ${LONG.slice(1, 5).join(' ')}<span class="caret"></span></div>
+    <div class="gfoot" style="display:flex;gap:8px;align-items:center;padding-top:8px"><span class="short" style="width:14px;height:14px;display:inline-block;border-radius:3px"></span>Första meningen är det korta svaret (2 tryck).</div>
+  </div>
+  <div class="row" style="gap:18px;padding:0 2px"><span class="tlink" style="display:flex;gap:6px;align-items:center">${I('play', 'ico', 'width:16px;height:16px')}Lyssna</span><span class="tlink" style="display:flex;gap:6px;align-items:center">${I('refresh', 'ico', 'width:16px;height:16px')}Nytt förslag</span></div>
+  <div class="note" style="margin-top:auto;margin-bottom:30px">Sparar du en ändring görs nytt ljud bara för den här frågan.</div>
+  </div>
+</div>`);
+
+// 9. Kontrollskärmen, mitt i testet
+const ctl = (n, t, s, st, now = false) => `<div class="ctl ${now ? 'now' : ''}"><div class="tapbox">${taps(n)}</div><div><div class="t">${t}</div><div class="s">${s}</div></div>${st}</div>`;
+const OK = `<span class="st ok"><span class="okdot">✓</span></span>`;
+S('kontroller', 'Kontrollerna: prova innan du startar',
+  'En stor sak i taget: ”Tryck två gånger nu”. Raden som testas är blå, de som fungerar får en grön bock. Ingen fråga om modell (R11). ”Hoppa över” är tyst.',
+  () => `<div class="phone grouped">${status()}${nav('Prov', '', 'Hoppa över')}
+  <div class="scroll" style="padding-top:4px;gap:14px">
+  <h1 style="font-size:28px">Styr med dina AirPods</h1>
+  <div class="pulse"><div class="core">${taps(2)}</div></div>
+  <div style="text-align:center"><div style="font-size:22px;font-weight:700">Tryck två gånger nu</div><div class="sub" style="margin-top:4px">på skaftet, som när du byter låt</div></div>
+  <div class="group">
+    ${ctl(1, 'Långt svar', 'Hela A-svaret', OK)}
+    ${ctl(2, 'Kort svar', 'Bara första meningen', `<span class="st wait">Väntar…</span>`, true)}
+    ${ctl(3, 'Paus', 'Tryck igen för att fortsätta', `<span class="st idle">Sen</span>`)}
+  </div>
+  </div>
+  <div class="bottom"><div class="btn off">Starta prov</div></div>
+</div>`);
+
+// 10. Kontrollskärmen klar
+S('kontroller-klar', 'Kontrollerna: allt fungerar',
+  'Tre bockar, och Starta prov blir blå. Raden om låsskärmen visar reserven en gång, utan att störa.',
+  () => `<div class="phone grouped">${status()}${nav('Prov', '', '')}
+  <div class="scroll" style="padding-top:4px;gap:14px">
+  <h1 style="font-size:28px">Styr med dina AirPods</h1>
+  <div class="pulse"><div class="core" style="background:var(--oksoft);color:var(--ok);font-size:40px;font-weight:700">✓</div></div>
+  <div style="text-align:center"><div style="font-size:22px;font-weight:700">Allt fungerar</div><div class="sub" style="margin-top:4px">Under paus fortsätter vilket tryck som helst.</div></div>
+  <div class="group">
+    ${ctl(1, 'Långt svar', 'Hela A-svaret', OK)}
+    ${ctl(2, 'Kort svar', 'Bara första meningen', OK)}
+    ${ctl(3, 'Paus', 'Tryck igen för att fortsätta', OK)}
+  </div>
+  <div class="gfoot" style="padding:0 4px;display:flex;gap:8px">${I('lock', 'ico', 'width:16px;height:16px;flex:none;margin-top:1px')}Knapparna på låsskärmen gör samma sak.</div>
+  </div>
+  <div class="bottom"><div class="btn blue big">${I('play')}Starta prov</div><div class="sub" style="text-align:center">Avsluta på telefonen. Annars börjar listan om.</div></div>
+</div>`);
+
+// 11. Kontrollskärmen, AirPods 1/2
+S('kontroller-saknas', 'Kontrollerna: ett tryck kom inte fram',
+  'Äldre AirPods har bara dubbeltryck per lur. Appen säger vad som fungerar och exakt var man ställer in resten. Inget fel-rött: det är en inställning, inte ett fel.',
+  () => `<div class="phone grouped">${status()}${nav('Prov', '', '')}
+  <div class="scroll" style="padding-top:4px;gap:14px">
+  <h1 style="font-size:28px">Styr med dina AirPods</h1>
+  <div class="group">
+    ${ctl(1, 'Långt svar', 'Hela A-svaret', OK)}
+    ${ctl(2, 'Kort svar', 'Kom inte fram', `<span class="st no">–</span>`)}
+    ${ctl(3, 'Paus', 'Kom inte fram', `<span class="st no">–</span>`)}
+  </div>
+  <div class="note">
+    <div style="font-weight:700;margin-bottom:6px">Dina AirPods har dubbeltryck per lur</div>
+    Ställ in dem så här, så fungerar alla tre:
+    <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+      <div><b>Vänster:</b> Nästa spår → kort svar</div>
+      <div><b>Höger:</b> Spela/pausa → långt svar och paus</div>
+    </div>
+    <div class="sub" style="margin-top:8px;font-size:14px">Inställningar › Bluetooth › ⓘ vid dina AirPods › Dubbeltryck</div>
+  </div>
+  <div class="btn">Öppna Inställningar</div>
+  <div class="tlink" style="text-align:center">Prova igen</div>
+  </div>
+  <div class="bottom"><div class="btn blue">Starta ändå</div></div>
+</div>`);
+
+// 12. Uppspelning: fråga + betänketid
+const hint = (on) => `<div class="hint">
+  <div class="${on === 1 ? 'on' : ''}">${taps(1)}Långt svar</div>
+  <div class="${on === 2 ? 'on' : ''}">${taps(2)}Kort svar</div>
+  <div class="${on === 3 ? 'on' : ''}">${taps(3)}${on === 3 ? 'Fortsätt' : 'Paus'}</div></div>`;
+const pbar = (cur, total = 20) => `<div class="pbar">${Array.from({ length: total }, (_, i) => `<i class="${i < cur ? 'd' : i === cur ? 'c' : ''}"></i>`).join('')}</div>`;
+const ring = (n, frac) => { const c = 2 * Math.PI * 50; return `<div class="ring"><svg viewBox="0 0 112 112"><circle cx="56" cy="56" r="50" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="56" cy="56" r="50" fill="none" stroke="var(--blue)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c * frac} ${c}"/></svg><div class="num">${n}</div><div class="lbl">Tänk</div></div>`; };
+const wave = () => `<span class="wave">${[6, 12, 16, 10, 14, 7].map(h => `<b style="height:${h}px"></b>`).join('')}</span>`;
+S('spelar-tank', 'Starta prov: betänketid',
+  'Frågan stort, ringen räknar ner (6 s, kortare för långa prov). Inga knappar att missa: de tre trycken visas som en tyst rad. Avsluta är stor och neutral, aldrig röd.',
+  () => `<div class="phone">${status()}<div class="player">
+  <div class="pmeta"><span>Fråga 7 av 20</span><span>Varv 2</span></div>
+  ${pbar(6)}
+  <div class="phase"><span class="badge">${I('wavei', 'ico', 'width:16px;height:16px')}Biologiprovet</span></div>
+  <div class="bigq">${QS[6][0]}</div>
+  ${ring(4, 4 / 6)}
+  ${hint(0)}
+  </div><div class="endbtn">Avsluta</div></div>`);
+
+// 13. Uppspelning: långt svar spelas
+S('spelar-svar', 'Starta prov: svaret spelas',
+  'Svaret som text, med det upplästa i full färg och resten grått, så att man kan läsa med om man tittar. Brickan säger vilket svar som spelas. Raden visar trycket som gjordes.',
+  () => `<div class="phone">${status()}<div class="player">
+  <div class="pmeta"><span>Fråga 1 av 20</span><span>Varv 2</span></div>
+  ${pbar(0)}
+  <div class="phase"><span class="badge">${wave()}Långt svar</span></div>
+  <div class="bigq" style="font-size:28px">${QS[0][0]}</div>
+  <div class="anstext"><span class="said"><span class="shortmark">${LONG[0]}</span> ${LONG[1]} Klorofyllet tar upp rött och blått ljus</span> och reflekterar grönt, därför ser bladen gröna ut. ${LONG[3]}</div>
+  ${hint(1)}
+  </div><div class="endbtn">Avsluta</div></div>`);
+
+// 14. Pausad
+S('spelar-paus', 'Starta prov: pausad',
+  'Pausat syns direkt: grå fråga, stor paussymbol och ”Tryck för att fortsätta”. Vilket tryck som helst fortsätter från samma ord (D143).',
+  () => `<div class="phone paused">${status()}<div class="player">
+  <div class="pmeta"><span>Fråga 7 av 20</span><span>Varv 2</span></div>
+  ${pbar(6)}
+  <div class="phase"><span class="badge" style="background:var(--surface);color:var(--mut)">${I('pp', 'ico', 'width:14px;height:14px;fill:currentColor;stroke:none')}Pausad</span></div>
+  <div class="bigq">${QS[6][0]}</div>
+  <div class="pulse" style="margin-top:34px"><div class="core">${I('pp', 'ico', 'width:34px;height:34px;fill:var(--blue);stroke:none')}</div></div>
+  <div style="text-align:center;margin-top:18px;font-size:19px;font-weight:600">Tryck på AirPods för att fortsätta</div>
+  <div class="sub" style="text-align:center;margin-top:4px">Fortsätter från samma ord</div>
+  ${hint(3)}
+  </div><div class="endbtn">Avsluta</div></div>`);
+
+// 15. Låsskärmen
+S('lasskarm', 'Låsskärmen (Now Playing)',
+  'Det appen sätter i Now Playing: frågan som titel, ”Earmind · Biologiprovet” under, appikonen som bild. Spela/paus = långt svar, ⏭ = kort svar, ⏮ = paus (samma kommandon som trycken).',
+  (dark) => `<div class="phone lock ${dark ? '' : 'light2'}" style="border:0">${status()}
+  <div class="ldate">fredag 13 november</div>
+  <div class="ltime">9:41</div>
+  <div class="np">
+    <div class="top"><img src="${ICON}" alt=""><div><div class="t">${QS[6][0]}</div><div class="s">${APP} · Biologiprovet · 7 av 20</div></div></div>
+    <div class="bar"><i></i></div>
+    <div class="times"><span>Tänk</span><span>Varv 2</span></div>
+    <div class="ctrls"><svg viewBox="0 0 24 24"><path d="M21 6l-9 6 9 6zM12 6l-9 6 9 6z"/></svg><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><svg viewBox="0 0 24 24"><path d="M3 6l9 6-9 6zM12 6l9 6-9 6z"/></svg></div>
+  </div>
+  <div class="lockhint">Skisserna visar innehållet, inte exakt hur iOS ritar spelaren.</div>
+</div>`);
+
+// 16. Fortsätt där du var
+S('fortsatt', 'Fortsätt där du var?',
+  'Efter att iOS stängt appen, eller efter Avsluta. Ett blad med två val; fortsätt är blått. Ingen bekräftelse på Avsluta, eftersom platsen alltid sparas.',
+  () => `<div class="phone">${status()}<div class="scroll" style="opacity:.35">${topBar()}<div class="card" style="height:260px"></div></div>
+  <div class="dimmed"></div>
+  <div class="sheet"><div class="grab"></div>
+    <h2 style="font-size:24px;margin-top:6px">Fortsätt där du var?</h2>
+    <div class="sub" style="font-size:16px">Biologiprovet, fråga 7 av 20.</div>
+    <div class="note" style="font-weight:600">${QS[6][0]}</div>
+    <div class="btn blue big">${I('play')}Fortsätt</div>
+    <div class="btn">Börja från fråga 1</div>
+  </div></div>`);
+
+// 17. Dela
+S('dela', 'Dela provet',
+  'Dela öppnar systemets delningsblad först när allt ljud är klart. Innan dess står knappen grå med förloppet. Det delas frågor, svar och ljud, aldrig fotona.',
+  () => `<div class="phone grouped">${status()}${nav('Prov', 'Dela', '')}
+  <div class="scroll" style="padding-top:10px;gap:14px">
+  <h1 style="font-size:28px">Dela med klassen</h1>
+  <div class="sub" style="font-size:16px;margin-top:-6px">Kompisarna får samma frågor, svar och ljud. De behöver ett gratis ${APP}-konto.</div>
+  <div class="group">
+    <div class="listrow"><span class="ic">${I('cards')}</span>Frågor och svar<span class="v">20</span></div>
+    <div class="listrow"><span class="ic">${I('speaker')}</span>Ljud<span class="v">36 av 40</span></div>
+    <div class="listrow"><span class="ic" style="background:var(--surface);color:var(--mut)">${I('photos')}</span><span style="color:var(--mut)">Foton och dokument</span><span class="v">delas inte</span></div>
+  </div>
+  <div class="gfoot" style="padding-top:0">Ändrar någon en fråga i sin kopia ändras inte ditt prov.</div>
+  </div>
+  <div class="bottom"><div class="prog"><i style="width:90%"></i></div><div class="btn off two" style="flex-direction:row;gap:8px">${I('share', 'ico', 'width:20px;height:20px')}Delas när ljudet är klart</div></div>
+</div>`);
+
+// 18. Fler lägen (BETA)
+S('fler-lagen', 'Fler lägen (BETA)',
+  'Alla lyssnande lägen med samma lilla BETA-märke: grå kontur, inte en färgad varning. En rad överst säger varför, en gång.',
+  () => `<div class="phone grouped">${status()}${nav('Hem', '', '')}
+  <div class="large" style="padding-top:0">Fler lägen</div>
+  <div class="lead2">De här lägena lyssnar på vad du säger. De är i BETA och blir bättre hela tiden.</div>
+  <div class="scroll" style="padding-top:16px">
+    <div class="group">
+      <div class="listrow"><span class="ic">${I('wavei')}</span>Standardläge<span class="beta">BETA</span><span class="v">${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow"><span class="ic">${I('mic')}</span>Förhör med rösten<span class="beta">BETA</span><span class="v">${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow"><span class="ic">${I('brief')}</span>Intervju<span class="beta">BETA</span><span class="v">${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow"><span class="ic">${I('people')}</span>Socialt<span class="beta">BETA</span><span class="v">${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow"><span class="ic">${I('heart')}</span>Rizz<span class="beta">BETA</span><span class="v">${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+      <div class="listrow"><span class="ic">${I('moon')}</span>Sömn<span class="beta">BETA</span><span class="v">${I('chev', 'ico', 'width:18px;height:18px')}</span></div>
+    </div>
+    <div class="gfoot">Lyssnande lägen använder mikrofonen. Starta prov gör det aldrig.</div>
+  </div>
+</div>`);
+
+const root = document.getElementById('screens');
+for (const s of screens) {
+  const side = (theme) => `<div class="side ${theme}"><div class="tag">${s.tag}</div>${s.render(theme === 'dark')}<div class="cap">${s.cap}</div></div>`;
+  root.insertAdjacentHTML('beforeend', `<section class="pair" id="${s.id}">${side('light')}${side('dark')}</section>`);
+}
+</script>
+</body>
+</html>
