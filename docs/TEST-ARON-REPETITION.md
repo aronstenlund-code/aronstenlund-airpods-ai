@@ -4,7 +4,7 @@ Toby, 2026-11-13. Gäller A78 (spelaren) och A80/A81 (kontrollskärmen). Spec: `
 Allt annat (ordningen i tre varv, betänketiden, att listan börjar om) testar Toby i simulatorn. Det här är bara det som kräver
 din iPhone och dina AirPods.
 
-**Kör inte listan än.** Toby säger till i STATUS när Angelas bygge med A82 är grönt och har passerat simulatortestet (T18).
+**Bygget:** iOS-bygge 43501199803 (10bf4a0, grönt) eller senare. Simulatortestet T18 körs samtidigt: Toby skriver resultatet i sin rapport.
 
 **Före start (räknas inte i tiden):**
 - Senaste bygget är installerat. Appen öppnar nu direkt på Start med "Plugga med AirPods" och **Nytt prov**.
