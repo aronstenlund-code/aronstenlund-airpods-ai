@@ -11,6 +11,7 @@ enum Log {
     static let diagnostics = Logger(subsystem: subsystem, category: "diagnostics")
     static let transcription = Logger(subsystem: subsystem, category: "transcription")
     static let answer = Logger(subsystem: subsystem, category: "answer")
+    static let repetition = Logger(subsystem: subsystem, category: "repetition") // A78 (D142)
 
     /// Signposts for latency measurements ("play.requested" -> "play.firstAudio", later STT/LLM/TTS stages).
     static let signposter = OSSignposter(subsystem: subsystem, category: "audio.latency")

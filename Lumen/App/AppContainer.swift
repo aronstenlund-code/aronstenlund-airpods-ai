@@ -26,6 +26,10 @@ final class AppContainer {
     let diagnostics: DiagnosticsModel
     /// D86: light/dark/follow the iPhone, handwriting for questions.
     let appearance = AppearanceSettings()
+    /// D142 (A78): the shared AirPods buttons; the repetition takes them over while it plays.
+    let remote: RemoteCommandHub
+    /// D142 (A78): the repetition mode (no microphone).
+    let repetition: RepetitionSession
 
     init() {
         let graph = AudioGraph()
@@ -67,6 +71,7 @@ final class AppContainer {
         let share = ShareSettings()
         let notes = NotesStore()
         let prep = PrepStore()
+        let remote = RemoteCommandHub()
         let listening = ListeningModel(controller: controller, consent: consent,
                                        transcription: transcription, activation: activation,
                                        answers: answers, speaker: speaker, voices: voices,
@@ -75,7 +80,7 @@ final class AppContainer {
                                        activity: ListeningActivityPresenter(),
                                        history: HistoryStore(), memory: MemoryStore(),
                                        feedback: FeedbackClient(config: .lumen, auth: auth, http: http, settings: share),
-                                       remote: RemoteCommandHub(),
+                                       remote: remote,
                                        memoryExtractor: MemoryExtractor(config: .lumen, auth: auth, http: http),
                                        speakers: SpeakerIdentifier(), studyCards: StudyCardStore(),
                                        studyCardsClient: StudyCardsClient(config: .lumen, auth: auth, http: http),
@@ -120,6 +125,8 @@ final class AppContainer {
         self.notes = notes
         self.prep = prep
         self.listening = listening
+        self.remote = remote
+        self.repetition = RepetitionSession(inputs: [AirPodsRepetitionInput(hub: remote)])
         self.diagnostics = DiagnosticsModel(controller: controller)
         diagnostics.micComparison = MicComparisonModel(listening: listening)
         diagnostics.speechRecording = SpeechRecordingModel(listening: listening)
