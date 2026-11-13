@@ -28,3 +28,11 @@ Mörkt läge har inga fel.
 
 ## Test
 Simulatorbilder, inte telefon.
+
+## Tillägg: iPhone SE (CI 43524701139, 9d3ce32)
+- A83- och A84-scenerna håller på SE, utan kapad text eller överlapp i formulären.
+- **K1 bekräftad:** "tryck 1 gång för frågans A-svar." med litet t (A90 ordagrant).
+- Pausraden säger fortfarande "Fortsätter från samma ord". D164-texten kom i 76e293f och kontrolleras i nästa körning.
+- **P3 (låg):** på Hem (SE) ligger raden Fler lägen delvis under den nedre verktygsraden (Nytt prov / Öppna länk)
+  innan man rullar. Lägg till luft nederst ( eller ) så att sista raden
+  syns helt.
