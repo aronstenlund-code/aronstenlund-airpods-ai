@@ -322,6 +322,18 @@ import Testing
         check.end()
     }
 
+    @Test func skippingIsNotTheSameAsNotArriving() {
+        // Kelly B4: "Hoppa över" is shown as skipped, a press that never came as "Kom inte fram".
+        let check = ControlCheck(hub: RemoteCommandHub(), waitSeconds: 600, activatesAudio: false, defaults: Self.defaults())
+        check.begin(sound: nil)
+        check.received(.toggle)
+        check.skip()
+        check.timedOut()
+        #expect(check.isDone)
+        #expect(check.skipped == [.two] && check.missed == [.two, .three])
+        check.end()
+    }
+
     // MARK: A81 sharing (K47 mocked)
 
     @MainActor final class MockSharing: DrillSharing {

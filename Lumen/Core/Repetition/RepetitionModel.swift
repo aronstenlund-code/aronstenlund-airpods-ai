@@ -375,6 +375,8 @@ final class ControlCheck {
     private(set) var step: Step? = .one
     private(set) var passed: Set<Step> = []
     private(set) var missed: Set<Step> = []
+    /// "Hoppa över" (Kelly B4: "Hoppades över", not "Kom inte fram").
+    private(set) var skipped: Set<Step> = []
     /// What arrived, for the log ("2 tryck → play").
     private(set) var heard: [String] = []
 
@@ -425,6 +427,7 @@ final class ControlCheck {
     func restart() {
         passed = []
         missed = []
+        skipped = []
         heard = []
         step = .one
         armTimeout()
@@ -444,6 +447,13 @@ final class ControlCheck {
         Log.repetition.info("Control check: \(current.rawValue) press(es) asked, \(command.rawValue, privacy: .public) came")
         if current.accepts(command) { passed.insert(current) } else { missed.insert(current) }
         advance()
+    }
+
+    /// "Hoppa över": counts as not arrived for the instructions, but is shown as skipped.
+    func skip() {
+        guard let current = step else { return }
+        skipped.insert(current)
+        timedOut()
     }
 
     /// Nothing came in time (or a test says so).

@@ -144,7 +144,12 @@ final class AppContainer {
         if let drillCloud {
             drillAudio = CloudDrillAudio(cloud: drillCloud, store: drillStore)
         } else {
-            drillAudio = DeviceVoiceDrillAudio()
+            #if DEBUG
+            let makesSound = ScreenshotStage.requested == nil // the screenshots write their own silent files
+            #else
+            let makesSound = true
+            #endif
+            drillAudio = DeviceVoiceDrillAudio(makesSound: makesSound)
         }
         let repetitionModel = RepetitionModel(store: drillStore, session: repetitionSession, maker: maker,
                                               audio: drillAudio, sharing: DrillShareClient(cloud: drillCloud),

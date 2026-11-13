@@ -6,6 +6,8 @@ import SwiftUI
 struct DrillView: View {
     let model: RepetitionModel
     let drillID: UUID
+    /// "Dela" on Start opens the exam at its Dela section (and Kelly's repShare screenshots).
+    var showsShare = false
     @State private var editing: EditTarget?
     @State private var checkingControls = false
     @State private var resumeAsk = false
@@ -66,6 +68,7 @@ struct DrillView: View {
     }
 
     private func content(_ drill: Drill) -> some View {
+        ScrollViewReader { proxy in
         List {
             Section {
                 VStack(alignment: .leading, spacing: 12) {
@@ -141,6 +144,12 @@ struct DrillView: View {
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
+        .task {
+            guard showsShare else { return }
+            try? await Task.sleep(for: .milliseconds(300)) // after the list is laid out
+            withAnimation { proxy.scrollTo("share", anchor: .top) }
+        }
+        }
     }
 
     private func audioLine(_ drill: Drill) -> some View {
@@ -171,6 +180,7 @@ struct DrillView: View {
         let p = model.progress(drill)
         Text("Kompisarna får samma frågor, svar och ljud. De behöver ett gratis Earmind-konto.")
             .font(LumenFont.text(15))
+            .id("share")
         LabeledContent("Frågor och svar", value: "\(drill.items.count)")
         LabeledContent("Ljud", value: "\(p.ready) av \(p.total)").monospacedDigit()
         LabeledContent("Foton och dokument", value: "delas inte").foregroundStyle(LumenColor.muted)

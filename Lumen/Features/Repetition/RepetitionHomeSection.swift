@@ -8,6 +8,8 @@ struct RepetitionHomeSection: View {
     let model: RepetitionModel
     @State private var isCreating = false
     @State private var opened: UUID?
+    /// "Dela" on the card: the exam at its Dela section.
+    @State private var sharing: UUID?
     @State private var askingCode = false
     @State private var pastedCode = ""
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
@@ -36,6 +38,9 @@ struct RepetitionHomeSection: View {
         }
         .navigationDestination(item: $opened) { id in
             DrillView(model: model, drillID: id)
+        }
+        .navigationDestination(item: $sharing) { id in
+            DrillView(model: model, drillID: id, showsShare: true)
         }
         .alert("Öppna ett delat prov", isPresented: $askingCode) {
             TextField("Länk eller kod", text: $pastedCode)
@@ -99,7 +104,7 @@ struct RepetitionHomeSection: View {
             .accessibilityHint("Spelar frågorna i dina AirPods. Earmind använder inte mikrofonen.")
             HStack(spacing: 20) {
                 Button("Frågor och svar") { opened = drill.id }
-                Button("Dela") { opened = drill.id }
+                Button("Dela") { sharing = drill.id }
             }
             .font(LumenFont.text(16, .semibold))
             .foregroundStyle(LumenColor.blue)

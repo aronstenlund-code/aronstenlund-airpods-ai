@@ -9,15 +9,30 @@ struct ControlCheckView: View {
     let onLater: () -> Void
     @State private var check: ControlCheck
 
+    /// False for a check set up by the screenshots (Kelly Ke49 §7): it is shown as it is, not started again.
+    private let beginsOnAppear: Bool
+
     init(hub: RemoteCommandHub, sound: URL?, waitSeconds: Double = 8,
          onStart: @escaping () -> Void, onLater: @escaping () -> Void) {
         self.onStart = onStart
         self.onLater = onLater
+        self.beginsOnAppear = true
         _check = State(initialValue: ControlCheck(hub: hub, waitSeconds: waitSeconds))
         self.sound = sound
     }
 
     private let sound: URL?
+
+    #if DEBUG
+    /// The screenshots: a check already in the state to show.
+    init(staged check: ControlCheck) {
+        self.onStart = {}
+        self.onLater = {}
+        self.beginsOnAppear = false
+        self.sound = nil
+        _check = State(initialValue: check)
+    }
+    #endif
 
     var body: some View {
         NavigationStack {
@@ -46,11 +61,11 @@ struct ControlCheckView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Avbryt") { check.end(); onLater() } }
                 if check.step != nil {
-                    ToolbarItem(placement: .primaryAction) { Button("Hoppa över") { check.timedOut() } }
+                    ToolbarItem(placement: .primaryAction) { Button("Hoppa över") { check.skip() } }
                 }
             }
         }
-        .onAppear { check.begin(sound: sound) }
+        .onAppear { if beginsOnAppear { check.begin(sound: sound) } }
         .onDisappear { check.end() }
     }
 
@@ -78,13 +93,23 @@ struct ControlCheckView: View {
             .font(.system(size: 22))
             VStack(alignment: .leading, spacing: 2) {
                 Text("\(String(repeating: "●", count: step.rawValue))  \(meaning)").font(LumenFont.text(17, .semibold))
-                Text(check.passed.contains(step) ? "\(press) ✓" : check.missed.contains(step) ? "Kom inte fram"
-                     : check.step == step ? "Väntar …" : press)
+                Text(status(step, press))
                     .font(LumenFont.text(14))
                     .foregroundStyle(check.step == step ? LumenColor.blue : LumenColor.muted)
             }
         }
         .accessibilityElement(children: .combine)
+    }
+
+    /// Kelly B4: "Kom inte fram" and "Hoppades över" only once the test is done; during it Väntar … and Sen.
+    private func status(_ step: ControlCheck.Step, _ press: String) -> String {
+        if check.passed.contains(step) { return "\(press) ✓" }
+        if check.isDone {
+            if check.skipped.contains(step) { return "Hoppades över" }
+            if check.missed.contains(step) { return "Kom inte fram" }
+        }
+        if check.step == step { return "Väntar …" }
+        return check.isDone || check.missed.contains(step) ? press : "Sen"
     }
 
     private func waiting(_ step: ControlCheck.Step) -> some View {

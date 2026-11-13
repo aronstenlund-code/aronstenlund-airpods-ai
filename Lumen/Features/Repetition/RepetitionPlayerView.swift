@@ -167,7 +167,7 @@ private struct ThinkingRing: View {
                         .trim(from: 0, to: seconds > 0 ? left / seconds : 0)
                         .stroke(LumenColor.blue, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                         .rotationEffect(.degrees(-90))
-                    Text("\(Int(left.rounded(.up)))")
+                    Text("\(max(1, Int(left.rounded(.up))))") // Kelly B3: counts down to 1, never 0
                         .font(LumenFont.text(28, .bold))
                         .monospacedDigit()
                 }

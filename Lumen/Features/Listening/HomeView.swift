@@ -15,6 +15,8 @@ struct HomeView: View {
     @State private var pickedMode: ConversationMode?
     /// A52 (Ke29 S1): "Allt Lumen kan ›" pushes "Vad kan Lumen?".
     @State private var showsCapabilities = false
+    /// Kelly B2 (D142): the listening modes behind "Fler lägen [BETA] ›".
+    @State private var showsMoreModes = false
     /// A52: the sheet after the first answer, once.
     @State private var showsCapabilitiesIntro = false
     @AppStorage(CapabilitiesIntroSheet.shownKey) private var capabilitiesIntroShown = false
@@ -45,22 +47,13 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 20) {
                 topBar
                 if let repetition = model.repetition {
-                    // A80 (D142): the first path is Nytt prov → Starta prov, without the microphone.
+                    // A80 (D142, Kelly B2): the first path is Nytt prov → Starta prov, without the microphone. The
+                    // listening modes (Starta Earmind, Earmind kan allt, their exams) are behind one row.
                     RepetitionHomeSection(model: repetition)
-                    BetaModesHeader()
-                }
-                if model.problem == .microphoneDenied {
-                    // A12: a start that cannot get the microphone says so here (it did nothing before).
-                    ErrorCard(problem: .microphoneDenied) { ErrorCard.openSettings() }
-                }
-                startCard
-                LumenCanDoAll { showsCapabilities = true }
-                lastNight
-                if let nearest = plans.first {
-                    examCard(nearest)
-                    otherExams(Array(plans.dropFirst()))
+                    lastNight
+                    moreModesRow
                 } else {
-                    emptyCard
+                    listeningContent
                 }
             }
             .padding(.horizontal, 20)
@@ -91,6 +84,7 @@ struct HomeView: View {
         }
         .task { await model.refreshStudyPlan() } // A19: today's pass and the reminders
         .navigationDestination(isPresented: $showsCapabilities) { CapabilitiesView() }
+        .navigationDestination(isPresented: $showsMoreModes) { moreModesPage } // Kelly B2
         .task { await showSheetOnOpen() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { model.openingSheetShown = false } // A66: the next opening may have its sheet
@@ -211,13 +205,69 @@ struct HomeView: View {
         showsLogoVote = true
     }
 
+    /// The listening modes' part of Start: all of Start before D142, and the page behind "Fler lägen" after it.
+    @ViewBuilder
+    private var listeningContent: some View {
+        if model.problem == .microphoneDenied {
+            // A12: a start that cannot get the microphone says so here (it did nothing before).
+            ErrorCard(problem: .microphoneDenied) { ErrorCard.openSettings() }
+        }
+        startCard
+        LumenCanDoAll { showsCapabilities = true }
+        if model.repetition == nil { lastNight }
+        if let nearest = plans.first {
+            examCard(nearest)
+            otherExams(Array(plans.dropFirst()))
+        } else {
+            emptyCard
+        }
+    }
+
+    /// Kelly Ke49 `hem.png`, B2: "Fler lägen [BETA] ›" as one row at the bottom of Start.
+    private var moreModesRow: some View {
+        Button {
+            showsMoreModes = true
+        } label: {
+            HStack(spacing: 8) {
+                Text("Fler lägen").font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.ink)
+                BetaBadge()
+                Spacer()
+                Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundStyle(LumenColor.muted)
+            }
+            .padding(.horizontal, 16)
+            .frame(minHeight: 56)
+            .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 16))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Lägen som lyssnar på vad du säger")
+    }
+
+    /// The page behind "Fler lägen": the ingress, then what Start was before D142.
+    private var moreModesPage: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                BetaModesHeader()
+                listeningContent
+                Text("Lyssnande lägen använder mikrofonen. Starta prov gör det aldrig.")
+                    .font(LumenFont.text(14))
+                    .foregroundStyle(LumenColor.muted)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
+        }
+        .lumenScreen()
+        .navigationTitle("Fler lägen")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
     // MARK: Start (A50, D124)
 
     /// The one blue button, and the mode it starts under it. While a session runs it goes back to Lyssnar.
     private var startCard: some View {
         VStack(spacing: 6) {
-            if !startHintShown, !model.isActiveSession {
-                // Ke35: once, after the first start: where Lumen starts.
+            if !startHintShown, !model.isActiveSession, model.repetition == nil {
+                // Ke35 (before D142 only, Kelly B2): once, after the first start: where Lumen starts.
                 HStack(alignment: .top, spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Här startar du Earmind").font(LumenFont.text(17, .semibold))
@@ -256,10 +306,10 @@ struct HomeView: View {
                 Label(model.isActiveSession ? "Tillbaka till Earmind" : "Starta Earmind", systemImage: "waveform")
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
             }
-            // A80 (D142): secondary under "Fler lägen · BETA"; Starta prov is the screen's one blue button.
-            .buttonStyle(LumenButtonStyle(kind: model.repetition == nil ? .primary : .secondary, height: 64))
+            // Kelly B2: on Start before D142, and behind "Fler lägen" after it; the main action of either page.
+            .buttonStyle(LumenButtonStyle(height: 64))
             .overlay {
-                if !startHintShown, !model.isActiveSession {
+                if !startHintShown, !model.isActiveSession, model.repetition == nil {
                     RoundedRectangle(cornerRadius: 18).strokeBorder(LumenColor.soft, lineWidth: 4).padding(-4) // Ke35
                 }
             }
