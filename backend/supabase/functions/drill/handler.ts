@@ -225,6 +225,11 @@ export function timings(text: string, starts: number[], ends: number[], shortCha
   return { words, duration_ms: Math.round(last * 1000), short_end_ms: shortEnd };
 }
 
+// ---------- Kelly N1 / Angela: fixed cues in the drill's own voice ----------
+
+/** Spoken once per voice ever (the same hash cache): never counted against the limit, about 25 characters each. */
+export const CUES: Record<string, string> = { press_for_answer: "Tryck en gång för svaret." };
+
 // ---------- K50 helpers ----------
 
 /** D151: A = Multilingual v2 (default), B = v3, C = Flash v2.5. Also accepted as "A"/"B"/"C" or "v2"/"v3"/"flash". */
@@ -337,6 +342,7 @@ export function createDrillHandler(deps: DrillDeps) {
       };
     };
     const chars = hashes.reduce((n, h) => n + (audio.get(h)?.text.length ?? 0), 0);
+    const cue = await cueView(drill.voice_model ?? deps.model);
     const model = drill.voice_model ?? deps.model;
     // K50: what ElevenLabs actually charged (character-cost), for the files that report it
     const charged = hashes.map((h) => audio.get(h)).filter((a) => a?.status === "done" && typeof a.credits === "number");
@@ -346,6 +352,7 @@ export function createDrillHandler(deps: DrillDeps) {
         long_words: drill.long_words, shared_from: drill.shared_from ?? null, voice_model: model,
         created_at: drill.created_at, updated_at: drill.updated_at,
       },
+      cue,
       items: items.map((i) => ({
         id: i.id, position: i.position, question: i.question, short: i.short, long: i.long,
         audio: { question: file(i.question_hash), long: file(i.long_hash) },
@@ -363,6 +370,32 @@ export function createDrillHandler(deps: DrillDeps) {
         model,
       },
     };
+  }
+
+  /** The cue files for a voice: {name: {status, url?, duration_ms?}}; missing ones are queued (tiny, free). */
+  async function cueView(model: string) {
+    if (!deps.voiceId) return {};
+    const entries = await Promise.all(Object.entries(CUES).map(async ([name, text]) => {
+      const t = voiceText(text);
+      return { name, text: t, hash: await audioHash(t, model, deps.voiceId!) };
+    }));
+    const have = new Map((await deps.db.audio(entries.map((e) => e.hash))).map((a) => [a.hash, a]));
+    const missing = entries.filter((e) => !have.has(e.hash));
+    if (missing.length) {
+      await deps.db.enqueue(missing.map((e) => ({
+        hash: e.hash, kind: "question" as const, text: e.text, short_chars: null, model, voice_id: deps.voiceId!,
+        status: "pending" as const, seq: -1, queued_at: new Date(now()).toISOString(),
+      }))).catch(() => {});
+      deps.background ? deps.background(pump()) : await pump();
+    }
+    const done = entries.filter((e) => have.get(e.hash)?.status === "done");
+    const urls = done.length ? await deps.storage.sign(done.map((e) => audioPath(e.hash))) : {};
+    return Object.fromEntries(entries.map((e) => {
+      const a = have.get(e.hash);
+      return [e.name, a?.status === "done"
+        ? { status: "done", url: urls[audioPath(e.hash)] ?? null, duration_ms: a.duration_ms ?? null }
+        : { status: a?.status ?? "pending" }];
+    }));
   }
 
   /** K47/K49: the recipient's own copy; questions, answers and hashes copied (the same audio, 0 new characters). */

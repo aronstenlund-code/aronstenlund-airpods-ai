@@ -145,6 +145,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
     });
   return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, models };
 }
+const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
 const ITEMS = [
   { question: "Varför behövs klorofyll?", short: "Klorofyll fångar ljusenergi.", long: "Klorofyll fångar ljusenergi. Utan den kan växten inte bilda glukos." },
@@ -163,7 +164,7 @@ Deno.test("K46 save: two files per question in play order, the short answer ends
   assertEquals(it.audio.question.url.startsWith("https://signed/"), true);
   const short = voiceText(ITEMS[0].short);
   assertEquals(it.audio.long.short_end_ms, short.length * 50, "the short answer stops where it ends in the long file");
-  assertEquals(j.audio.chars, w.spoken.join("").length);
+  assertEquals(j.audio.chars, w.spoken.filter((t) => t !== CUE).join("").length);
   assertEquals(j.audio.est_usd, Math.round(j.audio.chars * 0.08 / 10) / 100);
   assertEquals(j.new_chars, j.audio.chars);
 });
@@ -205,7 +206,7 @@ Deno.test("K46 R5: another account can never read, change or delete a drill; del
   assertEquals(mine[0].audio, { done: 4, total: 4 });
   assertEquals((await w.h("u1")(post({ action: "delete", id: j.drill.id }))).status, 200);
   assertEquals(w.items.size, 0);
-  assertEquals(w.audio.size, 4, "audio stays for other accounts");
+  assertEquals(w.audio.size, 5, "audio stays for other accounts (4 + the voice's cue)");
 });
 
 Deno.test("K46 a daily character limit for new audio; reused audio is free", async () => {
@@ -363,7 +364,7 @@ Deno.test("K50 voice: chosen before the audio (A/B/C or the model id), locked af
   const n = w.spoken.length;
   const c = await (await w.h("u2")(post({ action: "save", drill: { voice_model: "C" }, items: ITEMS }))).json();
   assertEquals(c.drill.voice_model, "eleven_flash_v2_5");
-  assertEquals(w.spoken.length, n + 4, "the same text with another voice is new audio");
+  assertEquals(w.spoken.length, n + 5, "the same text with another voice is new audio (and its cue)");
   assertEquals(new Set(w.models.slice(n)), new Set(["eleven_flash_v2_5"]));
   const r = await w.h("u1")(post({ action: "save", drill: { id: a.drill.id, voice_model: "eleven_v3" }, items: ITEMS }));
   assertEquals(r.status, 409);
@@ -404,4 +405,20 @@ Deno.test("K52 D155: the month the limit starts again, in Swedish time", async (
   assertEquals(nextMonthStart(Date.parse("2026-11-13T12:00:00Z")), "2026-12-01");
   assertEquals(nextMonthStart(Date.parse("2026-12-31T23:30:00Z")), "2027-02-01", "already January in Stockholm");
   assertEquals(nextMonthStart(Date.parse("2026-12-15T12:00:00Z")), "2027-01-01");
+});
+
+Deno.test("Cue: 'Tryck en gång för svaret.' in the drill's own voice, made once per voice, never counted", async () => {
+  const w = world({ freeQuestions: 2 });
+  const a = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  const j = await (await w.h("u1")(post({ action: "get", id: a.drill.id }))).json();
+  assertEquals(j.cue.press_for_answer.status, "done");
+  assert(j.cue.press_for_answer.url.startsWith("https://signed/"));
+  assertEquals(w.spoken.filter((t) => t === "Tryck en gång för svaret.").length, 1);
+  assertEquals(w.quota.get("u1"), 2, "the cue is not a generated question");
+  assertEquals(j.audio.total, 4, "the cue is not part of the drill's progress");
+  // another drill, same voice: no new cue; another voice: its own cue
+  await w.h("u2")(post({ action: "save", items: ITEMS }));
+  const c = await (await w.h("u3")(post({ action: "save", drill: { voice_model: "C" }, items: ITEMS }))).json();
+  await w.h("u3")(post({ action: "get", id: c.drill.id }));
+  assertEquals(w.spoken.filter((t) => t === "Tryck en gång för svaret.").length, 2);
 });
