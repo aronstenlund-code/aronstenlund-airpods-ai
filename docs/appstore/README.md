@@ -12,8 +12,8 @@ efter Arons ja (CLAUDE.md). Ersätter utkastet i `docs/marketing/appstore/` (Ke2
 | 4 | `69-4.jpg` | Tryck för svaret. | 1 gång för A-svaret. 2 för ett kort. 3 för paus. | `repControlsDone` |
 | 5 | `69-5.jpg` | Dela med klassen. | Samma frågor, svar och ljud. | `repShareReady` |
 
-- **Det här är förhandsvisningar.** Skärmbilderna kommer från CI "Simulator screenshots" 43514517449 (fded759, iPhone 17
-  Pro, före A87). De ska göras om med A87:s skärmbilder från **iPhone 17 Pro Max** (exakt 1320 × 2868) och med
+- **Det här är förhandsvisningar.** Skärmbilderna kommer från A87, CI "Simulator screenshots" 43519509067 (3382ae2, iPhone 17
+  Pro, uppskalade). De ska göras om med skärmbilder från **iPhone 17 Pro Max** (exakt 1320 × 2868) och med
   **SF Pro Display** på en Mac. Rubrikerna är satta i Segoe UI, eftersom SF Pro inte finns i Windows.
 - Gör om dem med `python -I docs/appstore/_src/appstore.py <mapp> <SF-Pro-Display-Bold.otf> <SF-Pro-Display-Regular.otf>`.
 - Apple-stil: grå bakgrund (#F5F5F7), rubrik och en rad, telefonen i en enkel mörk ram och ingen skugga eller gradient.

@@ -21,9 +21,8 @@ Ke51:s byggdelar (`build.py`, `hero.html`, `steps.html`, `draft.css`, `draft.js`
 längre bygger på `site/index.html`.
 
 ## Skärmbilderna
-`img/*.webp` (600 px breda, ljust och mörkt) kommer från CI "Simulator screenshots" **43508671912** (kod 4623bc7):
-`repPlayThink`, `repMaterial` och `repList`. **Byt dem mot A87:s bilder** när Angela – Design är klar (samma namn:
-`spelar-`, `material-`, `fragor-` och `hem-` + `light`/`dark`).
+`img/*.webp` (600 px breda, ljust och mörkt) kommer från **A87** (CI "Simulator screenshots" 43519509067, 3382ae2,
+iPhone 17 Pro): `repPlayFirst`, `repMaterial`, `repList` och `repHome`. Byt igen om skärmarna ändras före publicering.
 
 ## Före publicering
 1. Arons ja och T18 godkänt på telefon.
