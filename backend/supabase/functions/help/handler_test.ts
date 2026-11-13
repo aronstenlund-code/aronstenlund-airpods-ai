@@ -1,7 +1,7 @@
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import type { LLMChunk, LLMProvider, LLMRequest } from "../answer/llm/types.ts";
-import { createHelpHandler, OUT_OF_SCOPE, parseHelp, SYSTEM_PROMPT_HELP, UNKNOWN } from "./handler.ts";
+import { createHelpHandler, isPressQuestion, OUT_OF_SCOPE, parseHelp, PRESSES, SYSTEM_PROMPT_HELP, UNKNOWN } from "./handler.ts";
 
 const post = (b: unknown) => new Request("http://x/help", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
 function llm(reply: (req: LLMRequest) => string): LLMProvider & { calls: LLMRequest[] } {
@@ -61,4 +61,13 @@ Deno.test("K57 try: three questions with answers from a short text, counted as 3
   assertEquals(full.status, 402);
   assertEquals((await full.json()).error.message, "Du har inga frågor kvar den här månaden.");
   assertEquals((await mk(p)(post({ action: "try", text: "kort" }))).status, 400);
+});
+
+Deno.test("K57 the presses are always Aron's text word for word (Ke57 rule 3)", async () => {
+  for (const q of ["Hur fungerar trycken?", "Vad händer om jag trycker två gånger?", "Hur pausar jag?", "Hur fortsätter jag efter paus?", "Hur styr jag med AirPods?"]) {
+    assert(isPressQuestion(q), q);
+  }
+  for (const q of ["Vad gör jag om ett tryck inte kommer fram?", "Fungerar det med gamla AirPods?", "Hur delar jag ett prov?"]) assert(!isPressQuestion(q), q);
+  const p = llm(() => JSON.stringify({ in_scope: true, answer: "Under en fråga trycker du en gång ..." }));
+  assertEquals((await (await mk(p)(post({ question: "Hur fungerar trycken?" }))).json()).answer, PRESSES);
 });
