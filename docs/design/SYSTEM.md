@@ -1,4 +1,83 @@
-# Designsystem: Lumen som en riktig pluggapp (Kelly, Ke12, 2026-11-10)
+# Designsystem: Earmind (Kelly, Ke12 2026-11-10, omgjort i Ke53 2026-11-13 efter D160)
+
+## 0. Apple-stil (D160, gäller före allt annat i filen)
+Aron 2026-11-13 22:29: "en ny användare ska alltid veta var den ska trycka. Mer Apple-stil design och mindre generisk
+AI slop." **Där avsnitt 1–11 säger något annat gäller det här.** Appen först, och demosidan följer efter (den behåller
+Familjen Grotesk tills dess). Skisser: `bilder/apple/` (källa `_src/apple.html`). Den prioriterade listan till
+Angela (A87) står i `reports/2026-11-13-2300-kelly-ke53-apple-stil.md`.
+
+**Grundregeln: använd systemets del när det finns en.** Bygg bara en egen del när systemet saknar den (i dag: ringen
+för betänketiden, tryckprickarna ●/●●/●●● och loggan).
+
+### 0.1 Fem frågor för varje skärm
+1. **Var trycker jag?** Exakt en fylld knapp (`.borderedProminent`). Alla andra knappar är `.bordered`, textknappar
+   eller ligger i verktygsraden.
+2. **Syns nästa steg utan att rulla?** På skärmar med en lista eller ett formulär ligger huvudknappen fast nederst
+   (`.safeAreaInset(edge: .bottom)`), eller som Klar/Spara uppe till höger i ett blad.
+3. **Var är jag, och hur kommer jag tillbaka?** `NavigationStack` med rubrik och bakåtknapp. Blad har Avbryt uppe till
+   vänster (`.cancellationAction`) och Klar/Spara uppe till höger (`.confirmationAction`).
+4. **Är det här en systemdel?** Lista, formulär, blad, meny, `Stepper`, `Picker`, `Toggle`, `DatePicker`,
+   `.searchable`, `ShareLink`, `ContentUnavailableView`, `.confirmationDialog`.
+5. **Kan något tas bort?** En mening räcker där det står två. Tips, rutor och emblem bort.
+
+### 0.2 Typsnitt: SF Pro med textstilar (ersätter Familjen Grotesk i appen)
+Använd systemets textstilar, aldrig fasta punktstorlekar. Då följer Dynamic Type, spärrning och radavstånd av sig själva.
+| Användning | Stil |
+|---|---|
+| Skärmens rubrik | navigationsrubrik `.large` (34 bold) |
+| Frågan på uppspelningen | `.largeTitle.bold()` |
+| Rubrik i ett tomt läge eller kort | `.title2.bold()` / `.title3.weight(.semibold)` |
+| Radens titel, knappar | `.body` (knappar: systemet sätter vikten) |
+| Radens undertext, hjälptext | `.subheadline` + `.secondary` |
+| Sektionsrubrik och fotnot | systemets `Section(header:footer:)` |
+| Liten etikett ("Nästa prov · om 5 dagar") | `.footnote` + `.secondary` |
+`LumenFont.text(...)` byts mot textstilarna. Gör ändringen på ett ställe först (`LumenFont`), och ta sedan bort
+storlekarna där de anges.
+
+### 0.3 Färger: systemets semantiska färger
+| Förut | Nu |
+|---|---|
+| `background`, `surface`, `raised` | `systemBackground`, eller `systemGroupedBackground` + `secondarySystemGroupedBackground` i listor (låt listan rita sin bakgrund: ingen `.scrollContentBackground(.hidden)`) |
+| `ink`, `muted` | `.primary`, `.secondary` (och `.tertiary`) |
+| `line` | `Color(.separator)`, eller inget: listan ritar egna avdelare |
+| `blue` | **AccentColor** i Assets (#2346C8 / #7F9BFF) och `.tint`. Appens enda egna färg |
+| `red`, `green`, `orange` | `.red`, `.green`, `.orange` (systemets) |
+| `soft`, `okSoft`, `testSoft` | används inte som bakgrund till rutor. Bort |
+Testläget behåller sin orange (D140), men bara som text eller symbol med `.orange`, inte som en tonad ruta.
+
+### 0.4 Komponenter
+| Behov | Systemets del |
+|---|---|
+| Huvudknapp | `Button` + `.buttonStyle(.borderedProminent)` + `.controlSize(.large)`, full bredd |
+| Andra knappar | `.bordered`, eller textknapp |
+| Tomt läge | `ContentUnavailableView` med en knapp |
+| Lista | `List` (`.insetGrouped`) med `Section` |
+| Formulär | `Form` |
+| Välja ett tal | `Stepper` |
+| Två eller tre val | `Picker` + `.pickerStyle(.segmented)` |
+| Lägg till | rad med `Label("…", systemImage: "plus.circle.fill")`, eller knapp i nedre verktygsraden med text (som Påminnelser) |
+| Dela | `ShareLink` (symbolen `square.and.arrow.up`) i verktygsraden |
+| Fler val på en sak | `Menu` med `ellipsis.circle` i verktygsraden |
+| Ta bort | `.confirmationDialog` med `role: .destructive` |
+| Söka | `.searchable` |
+| Status medan något görs | `ProgressView` med text ("Gör ljud …") |
+| Kvitto på ett tryck som kom fram | `.sensoryFeedback(.success, trigger:)` |
+| Ikoner | SF Symbols i stilen `.regular`. Färgade rutor bakom symbolerna bara i Inställningar-liknande listor |
+
+### 0.5 Det här räknas som "AI slop" och tas bort
+- Tonade rutor med text i (tips, "Här startar du …", förklaringar i blå ruta). En fotnot under en sektion räcker.
+- Kort i kort, egna skuggor och ramar runt knappar. Listans sektioner är korten.
+- Egna knappformer (`LumenButtonStyle`), egna segmentväljare och egna `+`/`−`-knappar.
+- Gradienter, glöd, ringar och pulser som bara är dekoration. Ringen för betänketiden är information och får vara kvar.
+- Emblem som inte förklarar sig själva (flamman "3"). Visa sådant först när det betyder något, och förklara det med text.
+- Versala sektionsrubriker som man skriver själv. Använd `Section("…")`, så att systemet bestämmer utseendet.
+- Mer än två rader text under en rubrik på en skärm som ska användas.
+- Dialoger som frågar något appen kan avgöra själv (till exempel "Fortsätt där du var?": knappen säger "Fortsätt").
+
+### 0.6 Rörelse och känsla
+Systemets standardanimationer: push, blad, `withAnimation(.default)`. Inga egna fjädrar eller kurvor utom där en
+gest styr. Knappar ger själva feedback när man trycker. Haptik bara när något verkligen hände (ett tryck kom fram,
+ljudet blev klart).
 
 Aron 2026-11-10: appen ska se ut som andra pluggappar, inte som en vibe-kodad app. Det här ersätter D86:s skollook
 (rutpapper, handstil, röd lärarpenna). Angela bygger det i A18. Sidan följer efter. `designspec.md` visar hur appen och
