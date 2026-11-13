@@ -140,3 +140,5 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## Architectural decisions
 See `docs/DECISIONS.md`.
+
+- **Deangelo 2026-11-13 23:20, gränser i Supabase (Free):** Edge Functions 29 216 av 500 000 anrop i månaden (6 %), databas 45 av 500 MB, Storage 0 av 1 GB. **Storage tar slut först:** ljudfilerna är cirka 10 MB per prov, så 1 GB räcker till ungefär 100 prov. Kevin följer det. Pro (25 USD/mån) ger 100 GB när det behövs (Arons beslut).
