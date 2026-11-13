@@ -118,18 +118,25 @@ struct ControlCheckView: View {
 
     // MARK: The three steps
 
+    /// A90 (Aron 23:13): the controls in exactly these words, one sentence per row.
     private var steps: some View {
-        VStack(spacing: 0) {
-            row(.one, "Långt svar", "Tryck en gång")
-            Divider().padding(.leading, 52)
-            row(.two, "Kort svar", "Tryck två gånger")
-            Divider().padding(.leading, 52)
-            row(.three, "Paus", "Tryck tre gånger")
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Medan frågan spelas:")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 12)
+            VStack(spacing: 0) {
+                row(.one, "Tryck 1 gång för frågans A-svar.")
+                Divider().padding(.leading, 52)
+                row(.two, "Tryck 2 gånger för ett kort A-svar på en till två meningar.")
+                Divider().padding(.leading, 52)
+                row(.three, "Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.")
+            }
+            .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
         }
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
     }
 
-    private func row(_ step: ControlCheck.Step, _ meaning: String, _ press: String) -> some View {
+    private func row(_ step: ControlCheck.Step, _ text: String) -> some View {
         HStack(spacing: 12) {
             Group {
                 if check.passed.contains(step) {
@@ -145,10 +152,12 @@ struct ControlCheckView: View {
             .font(.title3)
             .frame(width: 28)
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: meaning)
-                Text(verbatim: status(step, press))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                Text(verbatim: text)
+                if let result = outcome(step) {
+                    Text(verbatim: result)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
             Spacer(minLength: 0)
         }
@@ -157,14 +166,13 @@ struct ControlCheckView: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// Kelly B4: "Kom inte fram" and "Hoppades över" only once the test is done; during it the press to make.
-    private func status(_ step: ControlCheck.Step, _ press: String) -> String {
-        if check.passed.contains(step) { return "\(press) · kom fram" }
-        if check.isDone {
-            if check.skipped.contains(step) { return "Hoppades över" }
-            if check.missed.contains(step) { return "Kom inte fram" }
-        }
-        return press
+    /// Kelly B4: "Kom inte fram" and "Hoppades över" only once the test is done; "Kom fram" as soon as it did.
+    private func outcome(_ step: ControlCheck.Step) -> String? {
+        if check.passed.contains(step) { return "Kom fram" }
+        guard check.isDone else { return nil }
+        if check.skipped.contains(step) { return "Hoppades över" }
+        if check.missed.contains(step) { return "Kom inte fram" }
+        return nil
     }
 
     // MARK: The buttons, fixed at the bottom
