@@ -1,0 +1,28 @@
+{
+ "short_text": {
+  "status": 200,
+  "asked": 20,
+  "possible": 4,
+  "note": "Materialet räckte till 4 frågor.",
+  "questions": [
+   "Var sker fotosyntesen?",
+   "Varför behövs klorofyll?",
+   "Vad tar växten upp?",
+   "Vad bildar växten vid fotosyntesen?"
+  ]
+ },
+ "full_exam": {
+  "status": 200,
+  "asked": 20,
+  "possible": 20,
+  "note": null
+ },
+ "heic": {
+  "status": 415,
+  "error": {
+   "code": "unsupported_image",
+   "message": "Bild 1 har ett format som inte stöds (till exempel HEIC). Skicka JPEG, PNG eller WebP.",
+   "fallback": false
+  }
+ }
+}
