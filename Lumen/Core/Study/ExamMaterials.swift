@@ -119,12 +119,27 @@ final class ExamMaterials {
         return jpeg(image).map { [$0] } ?? []
     }
 
+    /// At most 1 600 px on the longest side and JPEG 0.7, about 150–500 KB per page.
+    /// A85 (Aron 22:13): the renderer's default scale is the screen's (3× on an iPhone), so "1 600" became 4 800 px and
+    /// several MB per photo; two photos of a computer screen made a request so big that 5G dropped it. Scale 1 = pixels.
+    nonisolated static let maxPageBytes = 1_200_000
+
     nonisolated static func jpeg(_ image: UIImage) -> Data? {
-        let scale = min(1, longestSide / max(image.size.width, image.size.height, 1))
-        let size = CGSize(width: image.size.width * scale, height: image.size.height * scale)
-        let renderer = UIGraphicsImageRenderer(size: size)
+        let pixelWidth = image.size.width * image.scale
+        let pixelHeight = image.size.height * image.scale
+        let scale = min(1, longestSide / max(pixelWidth, pixelHeight, 1))
+        let size = CGSize(width: (pixelWidth * scale).rounded(), height: (pixelHeight * scale).rounded())
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
         let resized = renderer.image { _ in image.draw(in: CGRect(origin: .zero, size: size)) }
-        return resized.jpegData(compressionQuality: 0.7)
+        // A screen's moiré compresses badly: step the quality down until the page is small enough.
+        for quality in [0.7, 0.55, 0.4] as [CGFloat] {
+            if let data = resized.jpegData(compressionQuality: quality), data.count <= maxPageBytes || quality == 0.4 {
+                return data
+            }
+        }
+        return nil
     }
 }
 

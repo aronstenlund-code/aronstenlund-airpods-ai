@@ -151,7 +151,10 @@ struct NewDrillView: View {
             }
 
             if let problem {
-                Section { Text(problem).foregroundStyle(LumenColor.ink) }
+                Section {
+                    Text(problem).foregroundStyle(LumenColor.ink)
+                    if !material.isEmpty { Button("Försök igen") { create(correction: nil) } } // A85
+                }
             }
 
             Section {

@@ -22,8 +22,10 @@ struct DrillDraft: Sendable, Equatable {
 
 enum DrillMakingError: Error, Equatable {
     case noMaterial
-    /// No network (Ke50 §13: "Ingen internetanslutning …").
+    /// No network (Ke50 §13: "Ingen internetanslutning …"), only when the phone has none (A85).
     case offline
+    /// The server said no with a message for the user (a page too big, the rate limit …).
+    case refused(String)
     /// The server did not answer as K45 says (not deployed yet, offline, an error).
     case server(String)
 }
@@ -127,30 +129,74 @@ final class DrillClient: DrillMaking {
         return text
     }
 
+    /// A85: the real cause is logged (status or URLError code, bytes sent, time, network), a dropped connection is tried
+    /// once more, and "offline" is said only when the phone has no network at all.
     private func call(_ body: [String: Any], timeout: TimeInterval) async throws(DrillMakingError) -> Reply {
         let action = body["action"] as? String ?? ""
+        let payload: Data
         do {
-            let token = try await auth.accessToken()
-            var request = URLRequest(url: config.examURL)
-            request.httpMethod = "POST"
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-            request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.timeoutInterval = timeout
-            request.httpBody = try JSONSerialization.data(withJSONObject: body)
-            let (response, data) = try await http.data(for: request)
-            guard response.statusCode == 200 else {
-                Log.repetition.error("exam \(action, privacy: .public): HTTP \(response.statusCode, privacy: .public)")
-                throw DrillMakingError.server("HTTP \(response.statusCode)")
-            }
-            return try JSONDecoder().decode(Reply.self, from: data)
-        } catch let error as DrillMakingError {
-            throw error
-        } catch let error as URLError where [.notConnectedToInternet, .networkConnectionLost, .dataNotAllowed].contains(error.code) {
-            throw .offline
+            payload = try JSONSerialization.data(withJSONObject: body)
         } catch {
-            throw .server(error.localizedDescription)
+            throw .server("could not encode")
         }
+        var attempt = 0
+        while true {
+            attempt += 1
+            let started = Date()
+            let elapsed = { Int(Date().timeIntervalSince(started) * 1000) }
+            do {
+                let token = try await auth.accessToken()
+                var request = URLRequest(url: config.examURL)
+                request.httpMethod = "POST"
+                request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+                request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.timeoutInterval = timeout
+                request.httpBody = payload
+                let (response, data) = try await http.data(for: request)
+                let ms = elapsed()
+                guard response.statusCode == 200 else {
+                    Log.repetition.error("exam \(action, privacy: .public): HTTP \(response.statusCode, privacy: .public), \(payload.count, privacy: .public) bytes sent, \(ms, privacy: .public) ms")
+                    throw Self.refusal(status: response.statusCode, data: data)
+                }
+                Log.repetition.info("exam \(action, privacy: .public): 200, \(payload.count, privacy: .public) bytes sent, \(ms, privacy: .public) ms")
+                return try JSONDecoder().decode(Reply.self, from: data)
+            } catch let error as DrillMakingError {
+                throw error
+            } catch let error as URLError {
+                let ms = elapsed()
+                let online = NetworkStatus.shared.isOnline
+                let network = NetworkStatus.shared.interface
+                Log.repetition.error("exam \(action, privacy: .public): URLError \(error.code.rawValue, privacy: .public), \(payload.count, privacy: .public) bytes, \(ms, privacy: .public) ms, try \(attempt, privacy: .public), network \(online ? network : "none", privacy: .public)")
+                if !online || error.code == .notConnectedToInternet || error.code == .dataNotAllowed { throw .offline }
+                if attempt < 2, Self.isTransient(error.code) {
+                    try? await Task.sleep(for: .seconds(1))
+                    continue
+                }
+                throw .server("URLError \(error.code.rawValue)")
+            } catch {
+                Log.repetition.error("exam \(action, privacy: .public): \(error.localizedDescription, privacy: .public)")
+                throw .server(error.localizedDescription)
+            }
+        }
+    }
+
+    /// A connection that broke on the way (5G, a server that closed it) is worth one more try.
+    static func isTransient(_ code: URLError.Code) -> Bool {
+        [.networkConnectionLost, .timedOut, .cannotConnectToHost, .secureConnectionFailed].contains(code)
+    }
+
+    /// K45's refusals carry a Swedish message for the user (`{"error": {"code", "message"}}`, 413, 429 …).
+    static func refusal(status: Int, data: Data) -> DrillMakingError {
+        struct Body: Decodable {
+            struct Inner: Decodable { var code: String?; var message: String? }
+            var error: Inner?
+        }
+        if (400..<500).contains(status), status != 401,
+           let message = (try? JSONDecoder().decode(Body.self, from: data))?.error?.message, !message.isEmpty {
+            return .refused(message)
+        }
+        return .server("HTTP \(status)")
     }
 }
 
@@ -162,7 +208,8 @@ extension DrillMakingError {
         case .offline: "Ingen internetanslutning. Frågorna görs när du är uppkopplad igen."
         case .server(let why) where why == "no questions":
             "Earmind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text."
-        case .server: "Earmind kunde inte göra frågor just nu. Försök igen om en stund."
+        case .refused(let message): message
+        case .server: "Det gick inte att skapa frågorna. Försök igen." // A85
         }
     }
 }

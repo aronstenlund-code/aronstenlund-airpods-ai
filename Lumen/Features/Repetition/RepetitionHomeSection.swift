@@ -62,7 +62,7 @@ struct RepetitionHomeSection: View {
 
     private var emptyCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Plugga med AirPods")
+            Text("Kom förberedd till provet") // A86 (Aron 22:19)
                 .font(LumenFont.text(24, .bold, relativeTo: .title2))
                 .accessibilityAddTraits(.isHeader)
             Text("Fota ditt material. Earmind gör frågor och svar och läser upp dem i örat. Du styr med tryck på AirPods, utan mikrofon.")
