@@ -139,7 +139,7 @@ Kontrollskärmens lägen "klar" och "saknas" har inga egna scener än.
     - första meningen;
     - en gammal `drills.json` öppnas.
   - Tobys 20 + 11 tester är kvar (anpassade till `DrillShareResult` och koder på 8–16 tecken).
-- **CI (verifierat):** iOS build **43501199803 grön** på 10bf4a0. Det omfattar device-bygget, alla enhetstester och
+- **CI (verifierat):** iOS build **43501199803 grön** på 10bf4a0, och efter rättningarna av skärmbilderna **43505582385 grön** på 4623bc7. Det omfattar device-bygget, alla enhetstester och
   arkivet, och `Lumen-unsigned.ipa` (15,5 MB) är uppladdad. A78RepetitionTests (25) och A79A81RepetitionTests (22)
   gick igenom. Fyra rundor behövdes före grönt:
   1. `DrillCloudError.code`;
