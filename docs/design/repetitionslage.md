@@ -151,3 +151,14 @@ Namnet "Starta prov". ElevenLabs med hög kvalitet, inte Turbo. Betänketid cirk
 - ~~H1~~ **Beslutat (Aron 17:30): ja.** Det långa svaret börjar alltid med det korta svaret som första mening. Frågan var: Då spelas det från samma ljudfil och kostar 0 extra (sparar cirka 20 %).
 - ~~H2~~ **Beslutat (D146):** högst cirka 90 ord som standard (komplett A+-svar går före ordgränsen), 20 frågor som standard, båda går att ändra. Frågan var: Får de långa svaren vara **högst cirka 90 ord** (ett fullt A-svar på en fråga), och standard **20 frågor** per prov (fler går att lägga till)? Med H1 blir det cirka 1 USD i ElevenLabs per prov.
 - ~~H3~~ **Godkänt (D146).** Frågan var: Vill du **lyssna blint** på samma tre meningar med Multilingual v2, v3 och Flash (cirka 0,24 USD)? Hör du ingen skillnad med Flash halveras kostnaden.
+
+## 11. Publicera prov (D149, Aron 2026-11-13 20:30)
+- Knappen heter **"Publicera prov"**. Ordet "övningsprov" används ingenstans.
+- **Krav innan man kan publicera:** skola, ämne och datum för provet ifyllda, och allt ljud klart (samma regel som Dela, så att ingen behöver generera ljudet igen).
+- **Vem ser det:** alla. Man hittar prov genom att söka på skolan (och filtrera på ämne och datum). Elever på samma skola får dem först i listan.
+- **Vad publiceras:** frågor, korta och långa svar, ljud, skola, ämne och provdatum. Aldrig foton, dokument eller namn (B4, och användarna kan vara minderåriga). Upphovspersonen visas inte (förslag, se fråga till Aron).
+- **Den som hämtar** får en egen kopia, som vid delning (0 ElevenLabs-tecken). Ändringar i kopian påverkar aldrig originalet.
+- **Skolor:** väljs ur en lista, inte fritext, så att samma skola inte stavas på tio sätt. Källa: Skolverkets skolenhetsregister (öppet API). **Ej verifierat** att API:t går att använda för detta, Kevin kontrollerar.
+- **Ordning och skydd:** en rapportknapp på varje publicerat prov (fel innehåll, kränkande, upphovsrätt). Ett prov med 3 rapporter döljs tills Aron eller en moderator har tittat. Den som publicerade kan ta bort sitt prov när som helst. Gamla prov (provdatum mer än 30 dagar bakåt) sjunker i listan men finns kvar.
+- **Status:** möjligt. Bygger på K46 (prov per konto) och K47 (kopia med samma ljud).
+- **Acceptans:** R12: publicering nekas utan skola, ämne, datum eller färdigt ljud (4/4). Ett sök på skolan visar provet inom 5 s. Att hämta det kostar 0 tecken. Inga personuppgifter i publicerade data (Oscar kontrollerar fälten). Rapport ×3 döljer provet.
