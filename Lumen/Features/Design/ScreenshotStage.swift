@@ -227,7 +227,7 @@ private enum PracticeDemo {
     }
 
     static var run: PracticeRun? {
-        guard var run = PracticeRun(paper: ExamPaper(tasks: tasks, name: "Övningsprov")) else { return nil }
+        guard var run = PracticeRun(paper: ExamPaper(tasks: tasks, name: "Provfrågor")) else { return nil }
         run.graded(points: 1, max: 1)
         run.move(to: 1)
         run.graded(points: 1, max: 2)

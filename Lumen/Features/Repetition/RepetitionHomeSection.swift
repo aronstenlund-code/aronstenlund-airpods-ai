@@ -29,6 +29,11 @@ struct RepetitionHomeSection: View {
             } else {
                 emptyCard
             }
+            if model.canPublish { // A83 (Ke52 "Hem")
+                NavigationLink("Hitta prov från din skola") { SchoolExamsView(model: model) }
+                    .font(LumenFont.text(15, .semibold))
+                    .foregroundStyle(LumenColor.blue)
+            }
             Button("Har du fått ett prov? Klistra in länken") { askingCode = true }
                 .font(LumenFont.text(15))
                 .foregroundStyle(LumenColor.blue)

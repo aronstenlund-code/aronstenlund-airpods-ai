@@ -17,7 +17,7 @@ struct ExamSetupView: View {
         Form {
             if materials.isReady {
                 Section {
-                    Button("Kör övningsprovet") { Task { await model.startPracticeExam() } }
+                    Button("Förhör mig på provet") { Task { await model.startPracticeExam() } }
                         .font(LumenFont.text(17, .semibold))
                 } footer: {
                     Text("Earmind läser upp en fråga i taget, du svarar högt och Earmind rättar och förklarar. Säg nästa, förra, fråga sju, hoppa över, upprepa eller avsluta.")
@@ -43,7 +43,7 @@ struct ExamSetupView: View {
                 }
             }
             Section {
-                Button(materials.isReady ? "Byt prov: PDF eller bilder" : "Lägg till övningsprov: PDF eller bilder") { isPicking = true }
+                Button(materials.isReady ? "Byt prov: PDF eller bilder" : "Lägg till prov: PDF eller bilder") { isPicking = true }
                     .disabled(materials.isReading)
                 TextField("Eller klistra in frågorna här", text: $pasted, axis: .vertical)
                     .lineLimit(3...8)
@@ -52,7 +52,7 @@ struct ExamSetupView: View {
                         let text = pasted
                         let profile = model.studyProfile.profile
                         Task {
-                            await materials.read(text: text, name: "Övningsprov", with: client,
+                            await materials.read(text: text, name: "Provfrågor", with: client,
                                                  subject: profile.subject.isEmpty ? nil : profile.subject,
                                                  grade: profile.grade?.rawValue)
                             if materials.isReady { pasted = "" }
@@ -85,7 +85,7 @@ struct ExamSetupView: View {
             }
         }
         .lumenForm()
-        .navigationTitle("Övningsprov")
+        .navigationTitle("Provfrågor")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if isSheet {

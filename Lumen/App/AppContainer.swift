@@ -155,6 +155,7 @@ final class AppContainer {
                                               audio: drillAudio, sharing: DrillShareClient(cloud: drillCloud),
                                               remote: remote, cloud: drillCloud)
         repetitionModel.profile = listening.studyProfile // A88
+        repetitionModel.publishing = drillCloud as? DrillCloudClient // A83 (K49)
         repetitionModel.stopListening = { [weak listening] in
             if listening?.isActiveSession == true { await listening?.endSession() }
         }

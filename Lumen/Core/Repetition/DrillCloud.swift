@@ -180,7 +180,7 @@ final class DrillCloudClient: DrillCloudSyncing {
         }
     }
 
-    private func call<Reply: Decodable>(_ body: [String: Any], timeout: TimeInterval) async throws(DrillCloudError) -> Reply {
+    func call<Reply: Decodable>(_ body: [String: Any], timeout: TimeInterval) async throws(DrillCloudError) -> Reply {
         let action = body["action"] as? String ?? ""
         let response: HTTPURLResponse
         let data: Data

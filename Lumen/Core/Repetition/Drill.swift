@@ -20,6 +20,10 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     var needsUpload: Bool?
     /// Kelly N1, K51: "Tryck en gång för svaret." in the exam's own voice (`<hash>.mp3` in the cache).
     var cueAudio: String?
+    /// A83 (K49): this exam is published at a school (kept on the phone; the server does not say it in `get`).
+    var publication: DrillPublication?
+    /// A83: the publication this copy was added from ("played" is counted on it).
+    var fromPublication: String?
 
     static let defaultQuestionCount = 20
     static let defaultLongWords = 90

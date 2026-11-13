@@ -76,7 +76,7 @@ struct SettingsView: View {
                 }
                 NavigationLink("Förberedelser") { PrepView(store: model.prep, goals: model.goals, model: model) }
                 NavigationLink("Egna kommandon") { CommandsView(store: model.commands) }
-                Button("Övningsprov") {
+                Button("Provfrågor") {
                     model.isShowingSettings = false
                     model.isShowingExamSetup = true
                 }

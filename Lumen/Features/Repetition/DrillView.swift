@@ -15,6 +15,7 @@ struct DrillView: View {
     @State private var shareProblem: String?
     @State private var isSharing = false
     @State private var confirmDelete = false
+    @State private var publishing = false // A83
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @Environment(\.dismiss) private var dismiss
 
@@ -55,6 +56,7 @@ struct DrillView: View {
                 Button("Börja från fråga 1") { Task { await model.start(drill) } }
             }
         }
+        .sheet(isPresented: $publishing) { if let drill { PublishSheet(model: model, drill: drill) } } // A83
         .alert("Ta bort \(drill?.title ?? "provet")?", isPresented: $confirmDelete) {
             Button("Ta bort", role: .destructive) {
                 if let drill { model.delete(drill) }
@@ -134,6 +136,7 @@ struct DrillView: View {
 
             Section {
                 shareRow(drill)
+                publishRow(drill) // A83 (Ke52): in the same group as Dela
             } header: { Text("Dela med klassen") } footer: {
                 Text("Ändrar någon en fråga i sin kopia ändras inte ditt prov.")
             }
@@ -217,6 +220,28 @@ struct DrillView: View {
             .disabled(isSharing)
         }
         if let shareProblem { Text(shareProblem).foregroundStyle(LumenColor.muted) }
+    }
+
+    /// A83 (Ke52 "Provet"): Publicera prov, grey with the sound's progress until it is ready; then the published card.
+    @ViewBuilder
+    private func publishRow(_ drill: Drill) -> some View {
+        if model.canPublish {
+            if let publication = drill.publication {
+                PublishedRow(model: model, drill: drill, publication: publication, editing: $publishing)
+            } else {
+                let p = model.progress(drill)
+                let ready = p.total > 0 && p.ready == p.total
+                Button { publishing = true } label: {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Label("Publicera prov", systemImage: "building.columns")
+                        Text(ready ? "Alla som söker på din skola kan plugga på det."
+                             : "Går när ljudet är klart (\(p.ready) av \(p.total))")
+                            .font(.subheadline).foregroundStyle(.secondary)
+                    }
+                }
+                .disabled(!ready)
+            }
+        }
     }
 
     private func startTapped(_ drill: Drill) {

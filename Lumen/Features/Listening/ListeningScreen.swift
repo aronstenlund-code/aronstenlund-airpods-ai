@@ -98,7 +98,7 @@ struct ListeningScreen: View {
                         Button("Byt läge") { isSwitching = true }
                         Button("Kommandon") { isShowingCommands = true }
                         if mode == .prov, model.practice == nil, model.examMaterials?.isReady == true {
-                            Button("Kör övningsprovet") { Task { await model.startPracticeExam() } } // A16
+                            Button("Förhör mig på provet") { Task { await model.startPracticeExam() } } // A16, A83 (Ke52: never "övningsprov")
                         }
                     } label: {
                         Image(systemName: "ellipsis")
@@ -150,7 +150,7 @@ struct ListeningScreen: View {
 
     private var stateDetail: String {
         if let run = model.practice {
-            return "Övningsprov, " + run.progress.lowercased() + ". Svara högt, eller säg nästa." // A16
+            return "Provfrågor, " + run.progress.lowercased() + ". Svara högt, eller säg nästa." // A16
         }
         if let quiz = model.silentQuiz {
             return "Tyst förhör, fråga \(max(1, quiz.asked)) av \(SilentQuiz.questions). Nicka för ja, skaka för nej." // A20.2

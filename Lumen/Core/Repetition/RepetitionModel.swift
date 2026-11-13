@@ -151,6 +151,9 @@ final class RepetitionModel {
     @ObservationIgnored let cloud: (any DrillCloudSyncing)?
     /// Ends a listening mode before the repetition takes the audio and the AirPods buttons.
     @ObservationIgnored var stopListening: (@MainActor () async -> Void)?
+    /// A83 (K49): Publicera prov and Prov från din skola. Nil in the mock mode.
+    @ObservationIgnored var publishing: (any DrillPublishingService)?
+
     /// A88 (D161): the profile, where Nytt prov's "Vilken årskurs?" is kept.
     @ObservationIgnored var profile: StudyProfileStore?
 
@@ -293,6 +296,10 @@ final class RepetitionModel {
         // Kelly N1: the first time anyone plays an exam, the first lap explains that the answer comes on a press.
         let firstLap = !defaults.bool(forKey: Self.playedKey)
         defaults.set(true, forKey: Self.playedKey)
+        // K49: a play of a copy from a publication is counted there (a number, no identity).
+        if let publishing, drill.fromPublication != nil, let id = drill.serverID {
+            Task { await publishing.played(drillID: id) }
+        }
         session.start(drill, count: drill.items.count, at: index,
                       onePressPausesAnswer: ControlCheck.usesEarbudLayout(defaults),
                       firstLap: firstLap, cue: audio.cue(for: drill)) { i in
@@ -303,6 +310,97 @@ final class RepetitionModel {
     }
 
     static let playedKey = "repetition.hasPlayed"
+
+    // MARK: Publicera prov (A83, D149, D150, K49)
+
+    static let mySchoolKey = "repetition.mySchool"
+    static let schoolListOpenedKey = "repetition.schoolListOpened"
+    static let lastDisplayNameKey = "repetition.lastDisplayName"
+
+    /// Ke52 "Din skola": kept only on the phone, sent as `my_school`, never published.
+    var mySchool: DrillSchool? {
+        get {
+            defaults.data(forKey: Self.mySchoolKey).flatMap { try? JSONDecoder().decode(DrillSchool.self, from: $0) }
+        }
+        set {
+            if let newValue, let data = try? JSONEncoder().encode(newValue) {
+                defaults.set(data, forKey: Self.mySchoolKey)
+            } else {
+                defaults.removeObject(forKey: Self.mySchoolKey)
+            }
+            mySchoolAsked = true
+        }
+    }
+
+    /// "Vilken skola går du på?" was shown (answered or skipped).
+    var mySchoolAsked: Bool {
+        get { defaults.bool(forKey: Self.mySchoolKey + ".asked") }
+        set { defaults.set(newValue, forKey: Self.mySchoolKey + ".asked") }
+    }
+
+    /// Ke52: a user name saved as the suggestion next time (the switch is off again).
+    var lastDisplayName: String {
+        get { defaults.string(forKey: Self.lastDisplayNameKey) ?? "" }
+        set { defaults.set(newValue, forKey: Self.lastDisplayNameKey) }
+    }
+
+    var canPublish: Bool { publishing != nil }
+
+    func schools(matching query: String) async throws(DrillCloudError) -> [DrillSchool] {
+        guard let publishing else { return [] }
+        return try await publishing.schools(matching: query)
+    }
+
+    /// Publishes (or updates) and keeps the publication on the exam.
+    func publish(_ drill: Drill, school: DrillSchool, subject: String, examDate: Date,
+                 displayName: String?) async throws(DrillCloudError) {
+        guard let publishing, let id = drill.serverID else {
+            throw .refused(status: 409, code: "publish_incomplete", message: "Publiceras när ljudet är klart.")
+        }
+        let view = try await publishing.publish(drillID: id, school: school, subject: subject, examDate: examDate,
+                                                displayName: displayName)
+        guard var latest = store.drill(drill.id) else { return }
+        latest.publication = DrillPublication(id: view.id, school: view.school, subject: view.subject,
+                                              examDate: view.examDate ?? examDate, displayName: view.display_name)
+        store.save(latest)
+        if let name = displayName, !name.isEmpty { lastDisplayName = name }
+    }
+
+    func unpublish(_ drill: Drill) async throws(DrillCloudError) {
+        guard let publishing, let id = drill.serverID else { return }
+        try await publishing.unpublish(drillID: id)
+        guard var latest = store.drill(drill.id) else { return }
+        latest.publication = nil
+        store.save(latest)
+    }
+
+    /// Prov från din skola: the student's own school first (K49 orders it).
+    func searchPublications(school: DrillSchool?, subject: String?) async throws(DrillCloudError) -> [DrillPublicationView] {
+        guard let publishing else { return [] }
+        defaults.set(Date(), forKey: Self.schoolListOpenedKey)
+        return try await publishing.search(school: school, subject: subject, mySchool: mySchool)
+    }
+
+    /// "Lägg till i mina prov": the user's own copy with the same sound (0 characters).
+    func addPublication(_ publication: DrillPublicationView) async throws(DrillCloudError) -> Drill {
+        guard let publishing else { throw .refused(status: 400, code: "unavailable", message: "Prov från din skola går inte att öppna än.") }
+        let view = try await publishing.importPublication(id: publication.id)
+        var drill = Drill.from(view)
+        drill.fromPublication = publication.id
+        store.save(drill)
+        prepareAudio(drill)
+        return drill
+    }
+
+    /// The copy of a publication already added, if any.
+    func added(_ publication: DrillPublicationView) -> Drill? {
+        store.drills.first { $0.fromPublication == publication.id }
+    }
+
+    func report(_ publication: DrillPublicationView, reason: DrillReportReason) async throws(DrillCloudError) {
+        guard let publishing else { return }
+        try await publishing.report(publicationID: publication.id, reason: reason)
+    }
 
     func end() {
         session.stop()

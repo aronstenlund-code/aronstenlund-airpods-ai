@@ -2872,7 +2872,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         practiceResult = nil
         practice = run
         controller.log("Practice exam started (\(run.count) questions)")
-        say("Övningsprov, \(run.count) frågor. Svara högt. Säg nästa, förra, fråga sju, hoppa över eller upprepa. "
+        say("Provfrågor, \(run.count) frågor. Svara högt. Säg nästa, förra, fråga sju, hoppa över eller upprepa. "
             + run.spokenQuestion)
     }
 
@@ -2973,7 +2973,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         practiceResult = run.summary
         let practise = run.summary.practise
         if !practise.isEmpty {
-            memory.add("Övningsprov: öva på " + PracticeRun.list(Array(practise.prefix(5))), kind: .fact, source: .automatic)
+            memory.add("Provfrågor: öva på " + PracticeRun.list(Array(practise.prefix(5))), kind: .fact, source: .automatic)
         }
         controller.log("Practice exam ended · \(run.outcomes.count) graded · \(practise.count) to practise")
         if speak { say(run.spokenSummary) }
