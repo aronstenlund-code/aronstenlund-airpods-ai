@@ -10,6 +10,7 @@ Kortast möjligt. Svara "ja"/"nej"/eget val i chatten med Deangelo.
 | 8 | ElevenLabs-krediterna är slut sedan 08:10: rösten och taligenkänningen i appen fungerar inte. Fyll på (elevenlabs.io › Subscription) eller vänta på nollställning | Fyll på om du vill testa i dag |
 | 9 | U5: riktig logga och appikon (Kelly har tre förslag i Ke12) | Ja |
 | 10 | C5 Sömnläge: bygga nu (efter fas 1) eller lägga i backloggen? | Backlog, bygg efter fas 1. Bra för positioneringen "AI för hela vardagen" |
+| 12 | ~~Löst 2026-11-13 (Aron: e-posten verifierad).~~ **GitHub kör inga Actions sedan 13 nov 10:00 (Toby 2026-11-13 17:45).** Varje körning stoppas direkt med "Please verify your email address to run GitHub Actions workflows". Inga byggen, inga simulatortester, ingen ny ipa. Gör: github.com › din profilbild › Settings › Emails › vid din e-postadress: "Resend verification email", öppna mejlet och klicka länken. Säg till i chatten när det är gjort | Måste göras, allt test står still |
 
 ## Repetitionsläget, kostnad (D144, 2026-11-13 17:45)
 - ~~H1~~ **Ja (Aron 17:30):** det långa svaret börjar alltid med det korta svaret som första mening.
