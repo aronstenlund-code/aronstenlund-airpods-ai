@@ -223,7 +223,7 @@ $("wait").addEventListener("submit", async (e) => {
     const [q, short, rest] = Q[i];
     $("rep-n").textContent = "Prova · Fråga " + (i + 1) + " av " + Q.length;
     $("rep-q").textContent = q;
-    $("rep-a").innerHTML = paused ? "Pausad. Tryck för att fortsätta från samma ord."
+    $("rep-a").innerHTML = paused ? "Pausad. Tryck igen för att fortsätta från början av meningen."
       : shown === "long" ? "<b>" + esc(short) + "</b> <span class=\"rest\">" + esc(rest) + "</span>"
       : shown === "short" ? "<b>" + esc(short) + "</b>"
       : "Tänk på svaret. Tryck sedan.";

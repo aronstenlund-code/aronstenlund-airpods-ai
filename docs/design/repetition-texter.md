@@ -182,7 +182,7 @@ Raderna nedan med etiketterna Långt svar, Kort svar och Paus gäller bara teste
 | Under ringen | Tänk | |
 | Väntar på ljud | Gör ljud … | |
 | Pausad, stort | Tryck på AirPods för att fortsätta | Pausad. Tryck på AirPods för att fortsätta. Fortsätter från samma ord. |
-| Pausad, litet | Fortsätter från samma ord | |
+| Pausad, litet | Fortsätter från början av meningen *(D164)* | Fortsätter från samma ord |
 | Tryckraden | ● Långt svar · ●● Kort svar · ●●● Paus *(Fortsätt när pausat)* | Långt / 1 tryck … |
 | VoiceOver på tryckraden | {Långt svar}, {1 tryck} på AirPods | |
 | Knapp | Avsluta | |
