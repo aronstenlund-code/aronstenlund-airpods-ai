@@ -92,6 +92,7 @@ struct SettingsView: View {
                     Picker("Tempo", selection: $repetitionTempo) {
                         ForEach(RepetitionModel.tempos, id: \.self) { Text(RepetitionModel.tempoLabel($0)).tag($0) }
                     }
+                    .font(.body) // A87: the repetition's settings in the system's text style, as its screens
                 } header: { Text("Starta prov") } footer: {
                     Text(repetitionTempo < RepetitionPlayer.lowestVoiceRate
                          ? "Rösten läser i 0,70 och resten av tiden blir pauser."
@@ -118,6 +119,7 @@ struct SettingsView: View {
                         Picker("Längd på långa svar", selection: $longAnswerLength) {
                             ForEach(DrillSettings.Length.allCases, id: \.self) { Text($0.label).tag($0.rawValue) }
                         }
+                        .font(.body) // A87
                     } footer: {
                         Text("Gäller nya prov. Varje fråga får alltid ett kort och ett långt svar. Normal är cirka 90 ord.")
                     }

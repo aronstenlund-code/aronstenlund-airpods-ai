@@ -1,7 +1,9 @@
 import SwiftUI
 
 // A83 (D149, D150, Kelly Ke52): Publicera prov, Välj skola, Prov från din skola, Rapportera. System components
-// (Form, List, .searchable, .sheet), so A87's Apple style needs little here. The word "övningsprov" is never used.
+// (Form, List, .searchable, .sheet). A87 (D160, Kelly Ke53): the one filled button of each screen is fixed at the
+// bottom (`MainActionBar`), explanations are section footers, and an empty list is the system's empty state. The word
+// "övningsprov" is never used.
 
 /// Ke52 "Publicera prov" (the sheet): what is published and what never is, Skola, Ämne, Provdatum, the user-name
 /// switch (off), and what is missing above the button.
@@ -25,10 +27,6 @@ struct PublishSheet: View {
         NavigationStack {
             Form {
                 Section {
-                    Text("Alla som söker på skolan kan lägga till provet och plugga på det. **Frågor, svar och ljud** publiceras. Aldrig foton, dokument eller ditt namn.")
-                        .font(.subheadline)
-                }
-                Section {
                     Button { choosingSchool = true } label: {
                         LabeledContent("Skola", value: school?.name ?? "Välj skola")
                     }
@@ -47,6 +45,8 @@ struct PublishSheet: View {
                         }
                         .foregroundStyle(.primary)
                     }
+                } footer: {
+                    Text("Alla som söker på skolan kan lägga till provet och plugga på det. **Frågor, svar och ljud** publiceras. Aldrig foton, dokument eller ditt namn.")
                 }
                 Section {
                     Toggle("Visa ett användarnamn", isOn: $showsName)
@@ -58,21 +58,15 @@ struct PublishSheet: View {
                 } footer: {
                     Text(showsName ? "Syns för alla som hittar provet. Skriv inte ditt riktiga namn." : "Av: provet visas utan namn.")
                 }
-                Section {
-                    if let line = missingLine {
-                        Text(line).foregroundStyle(.secondary)
-                    }
-                    if let problem { Text(problem) }
-                    Button {
-                        send()
-                    } label: {
-                        Text(isSending ? "Publicerar …" : isUpdate ? "Spara ändringarna" : "Publicera prov")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .disabled(missingLine != nil || isSending)
-                    .listRowBackground(Color.clear)
+                if let problem { Section { Text(verbatim: problem) } }
+            }
+            .safeAreaInset(edge: .bottom) {
+                // Ke52: what is missing, under the button while it is grey.
+                MainActionBar(title: isSending ? "Publicerar …" : isUpdate ? "Spara ändringarna" : "Publicera prov",
+                              note: missingLine,
+                              isBusy: isSending,
+                              isDisabled: missingLine != nil || isSending) {
+                    send()
                 }
             }
             .navigationTitle("Publicera prov")
@@ -251,13 +245,17 @@ struct SchoolExamsView: View {
             } else if !loading, shown.isEmpty {
                 Section {
                     if let subject {
-                        Text("Inga prov i \(subject.lowercased()) här än.")
-                        Button("Visa alla") { self.subject = nil }
+                        ContentUnavailableView {
+                            Label("Inga prov i \(subject.lowercased()) här än", systemImage: "books.vertical")
+                        } actions: {
+                            Button("Visa alla") { self.subject = nil }
+                        }
                     } else {
-                        Text("Inga prov här än").bold()
-                        Text("Publicera ditt nästa prov, så kan klasskompisarna plugga på samma frågor.").foregroundStyle(.secondary)
+                        ContentUnavailableView("Inga prov här än", systemImage: "books.vertical",
+                                               description: Text("Publicera ditt nästa prov, så kan klasskompisarna plugga på samma frågor."))
                     }
                 }
+                .listRowBackground(Color.clear)
             }
             if !upcoming.isEmpty { Section("Kommande prov") { ForEach(upcoming) { row($0) } } }
             if !earlier.isEmpty { Section("Tidigare") { ForEach(earlier) { row($0) } } }
@@ -313,7 +311,7 @@ struct SchoolExamsView: View {
         return HStack(alignment: .center, spacing: 12) {
             Button { opened = p } label: {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(p.title).font(.headline).foregroundStyle(.primary)
+                    Text(p.title).fontWeight(.semibold).foregroundStyle(.primary)
                     Text("\(p.subject) · \(p.examDate.map { DrillPublishing.shortDate($0) } ?? p.exam_date)")
                         .font(.subheadline).foregroundStyle(.secondary)
                     Text(([DrillText.questions(p.items)] + [p.display_name].compactMap { $0 }).joined(separator: " · "))
@@ -324,10 +322,12 @@ struct SchoolExamsView: View {
             }
             .buttonStyle(.plain)
             if added {
-                Text("Tillagt ✓").font(.subheadline).foregroundStyle(.secondary)
+                Label("Tillagt", systemImage: "checkmark").font(.subheadline).foregroundStyle(.secondary)
             } else {
                 Button("Lägg till") { opened = p }
                     .buttonStyle(.bordered)
+                    .buttonBorderShape(.capsule)
+                    .controlSize(.small)
                     .accessibilityLabel("Lägg till \(p.title)")
             }
         }
@@ -374,38 +374,6 @@ struct PublicationView: View {
                     .padding(.vertical, 4)
                 }
                 Section {
-                    if let added {
-                        Text("**\(added.title) är tillagt.** Ljudet är redan klart.")
-                        Button("Starta prov") {
-                            let drill = added
-                            dismiss()
-                            Task {
-                                try? await Task.sleep(for: .milliseconds(600)) // after the sheet is gone
-                                await model.start(drill)
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        Button("Senare") { dismiss() }
-                    } else if let existing = model.added(publication) {
-                        Text("Du har redan lagt till provet.")
-                        Button("Öppna") {
-                            model.openDrill = existing.id
-                            dismiss()
-                        }
-                    } else {
-                        Button {
-                            add()
-                        } label: {
-                            Text(adding ? "Lägger till …" : "Lägg till i mina prov").frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .disabled(adding)
-                        .listRowBackground(Color.clear)
-                    }
-                    if let problem { Text(problem).foregroundStyle(.secondary) }
-                }
-                Section {
                     if reported {
                         Text("Tack. Vi tittar på det.").foregroundStyle(.secondary)
                     } else {
@@ -415,11 +383,41 @@ struct PublicationView: View {
                     }
                 }
             }
+            .safeAreaInset(edge: .bottom) { actionBar }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Stäng") { dismiss() } } }
             .sheet(isPresented: $reporting) {
                 ReportSheet(model: model, publication: publication) { reported = true }
                     .presentationDetents([.medium])
+            }
+        }
+    }
+
+    /// The next step, always in view: Lägg till i mina prov, then Starta prov (Stäng is "Senare"), or Öppna when the
+    /// exam was added before.
+    @ViewBuilder
+    private var actionBar: some View {
+        if let added {
+            MainActionBar(title: "Starta prov", systemImage: "play.fill",
+                          note: "\(added.title) är tillagt. Ljudet är redan klart.") {
+                let drill = added
+                dismiss()
+                Task {
+                    try? await Task.sleep(for: .milliseconds(600)) // after the sheet is gone
+                    await model.start(drill)
+                }
+            }
+        } else if let existing = model.added(publication) {
+            MainActionBar(title: "Öppna", note: "Du har redan lagt till provet.") {
+                model.openDrill = existing.id
+                dismiss()
+            }
+        } else {
+            MainActionBar(title: adding ? "Lägger till …" : "Lägg till i mina prov",
+                          note: problem,
+                          isBusy: adding,
+                          isDisabled: adding) {
+                add()
             }
         }
     }
@@ -510,7 +508,7 @@ struct PublishedRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Label("Publicerat", systemImage: "checkmark.circle.fill").foregroundStyle(LumenColor.ok)
+            Label("Publicerat", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
             Text(DrillPublishing.line(publication)).font(.subheadline).foregroundStyle(.secondary)
             HStack(spacing: 20) {
                 Button("Ändra") { editing = true }

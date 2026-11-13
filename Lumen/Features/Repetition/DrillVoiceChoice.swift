@@ -22,7 +22,10 @@ struct DrillVoiceChoice: View {
                     }
                     .buttonStyle(.plain)
                     Button { toggle(v) } label: {
-                        Image(systemName: playing == v ? "stop.circle" : "play.circle").font(.title2)
+                        // A87: the same ▶ as the exams on Start.
+                        Image(systemName: playing == v ? "stop.circle.fill" : "play.circle.fill")
+                            .font(.title)
+                            .symbolRenderingMode(.hierarchical)
                     }
                     .buttonStyle(.borderless)
                     .accessibilityLabel(playing == v ? "Stoppa röst \(v)" : "Lyssna på röst \(v)")
