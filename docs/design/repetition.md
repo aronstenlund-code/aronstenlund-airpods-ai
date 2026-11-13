@@ -4,7 +4,7 @@ Underlag till Angela för A79 (material och frågelista), A80 (Starta prov, kont
 kontroller för alla AirPods). Specen och tekniken står i `repetitionslage.md` (Deangelo). Den här filen säger bara hur
 det ska se ut och låta. Det som inte står här följer `SYSTEM.md`.
 
-Skisser: `bilder/repetition/<id>.png`, ljust till vänster och mörkt till höger. Källan är `_src/repetition.html`, som
+Alla texter: `repetition-texter.md` (Ke50). Skisser: `bilder/repetition/<id>.png`, ljust till vänster och mörkt till höger. Källan är `_src/repetition.html`, som
 renderas med `node docs/design/_src/repetition-render.js` (en skärm: lägg till id:t som argument). **Det här är
 skisser. Inget är byggt och inget är provat på telefon.** Exempelprovet (biologi åk 9) är påhittat och innehåller
 ingen elevtext.
