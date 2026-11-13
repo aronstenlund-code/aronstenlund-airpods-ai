@@ -181,6 +181,10 @@ struct RepetitionHomeSection: View {
             }
         }
         .listStyle(.insetGrouped)
+        // Kelly P3 (iPhone SE): the last row is not left half under the bottom bar: tighter sections, and room to
+        // scroll it clear of the bar.
+        .listSectionSpacing(.compact)
+        .contentMargins(.bottom, 24, for: .scrollContent)
     }
 
     /// "Nästa prov": the name, one line of facts and the screen's one filled button.
