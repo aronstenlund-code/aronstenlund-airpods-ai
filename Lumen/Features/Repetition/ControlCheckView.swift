@@ -9,10 +9,11 @@ struct ControlCheckView: View {
     let onLater: () -> Void
     @State private var check: ControlCheck
 
-    init(hub: RemoteCommandHub, sound: URL?, onStart: @escaping () -> Void, onLater: @escaping () -> Void) {
+    init(hub: RemoteCommandHub, sound: URL?, waitSeconds: Double = 8,
+         onStart: @escaping () -> Void, onLater: @escaping () -> Void) {
         self.onStart = onStart
         self.onLater = onLater
-        _check = State(initialValue: ControlCheck(hub: hub))
+        _check = State(initialValue: ControlCheck(hub: hub, waitSeconds: waitSeconds))
         self.sound = sound
     }
 

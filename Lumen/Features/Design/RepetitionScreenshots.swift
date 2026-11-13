@@ -57,7 +57,7 @@ enum RepetitionDemo {
                 NavigationStack { DrillView(model: model, drillID: drill.id) }
             case "repEdit": DrillItemEditor(model: model, drill: drill, itemID: drill.items[0].id)
             case "repControls":
-                ControlCheckView(hub: RemoteCommandHub(), sound: nil, onStart: {}, onLater: {})
+                ControlCheckView(hub: RemoteCommandHub(), sound: nil, waitSeconds: 3600, onStart: {}, onLater: {})
             case "repPlayThink", "repPlayAnswer", "repPaused", "repWaiting": RepetitionPlayerView(model: model)
             case "repResume":
                 ResumeSheet(model: model, offer: RepetitionModel.ResumeOffer(drill: drill, index: 6))
