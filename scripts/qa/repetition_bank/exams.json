@@ -5,6 +5,140 @@
   "grade": "åk 8",
   "title": "Prov: Ekologi och fotosyntes",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Ekologi och fotosyntes",
+  "material": {
+   "pages": [
+    "Ekologi – begrepp\nEtt ekosystem är alla levande organismer i ett område tillsammans med den icke levande miljön, till exempel vatten, ljus, jord och temperatur. En population är alla individer av samma art i ett område. Ett samhälle är alla populationer i området.",
+    "Fotosyntes\nGröna växter tillverkar sin egen näring genom fotosyntes. I bladens kloroplaster finns det gröna färgämnet klorofyll som fångar upp ljusenergi. Växten tar upp koldioxid från luften genom klyvöppningarna och vatten genom rötterna.",
+    "Fotosyntesens formel\nkoldioxid + vatten + ljusenergi → glukos + syre\n6 CO2 + 6 H2O → C6H12O6 + 6 O2\nGlukosen används som energi och byggmaterial, till exempel till cellulosa och stärkelse. Syret släpps ut i luften.",
+    "Producenter och konsumenter\nOrganismer som tillverkar sin egen näring kallas producenter. Djur som äter växter är förstahandskonsumenter (växtätare). Djur som äter växtätare är andrahandskonsumenter. Rovdjur högst upp i kedjan kallas toppkonsumenter.",
+    "Näringskedjor och näringsvävar\nEn näringskedja visar vem som äter vem: gräs → hare → räv. I naturen äter de flesta djur mer än en sorts föda. Kedjorna hakar då i varandra och bildar en näringsväv.",
+    "Energiflödet\nVid varje steg i en näringskedja går ungefär 90 procent av energin förlorad som värme, rörelse och sådant som inte äts upp. Bara cirka 10 procent förs vidare. Därför finns det färre rovdjur än växtätare, och därför är kedjorna sällan längre än fyra eller fem led.",
+    "Nedbrytare\nNedbrytare, till exempel svampar, bakterier och daggmaskar, bryter ner döda växter och djur. Näringsämnena hamnar i jorden och kan tas upp av växterna igen. Utan nedbrytare skulle kretsloppet stanna.",
+    "Kolets kretslopp\nKol går runt i naturen. Växterna binder koldioxid vid fotosyntesen. När organismer andas och när döda växter bryts ner släpps koldioxid ut igen. När vi eldar fossila bränslen frigörs kol som legat lagrat i miljontals år, och halten koldioxid i luften ökar.",
+    "Övergödning\nNär för mycket kväve och fosfor från gödsel och avlopp hamnar i en sjö växer alger kraftigt. När algerna dör bryts de ner av bakterier som förbrukar syret i vattnet. Syrebrist gör att fiskar och bottendjur dör.",
+    "Att motverka övergödning\nMan kan minska övergödningen genom att gödsla mindre och vid rätt tidpunkt, ha skyddszoner med gräs mellan åkrar och vattendrag, anlägga våtmarker som fångar näring och rena avloppsvatten bättre.",
+    "Sammanfattning inför provet\nKunna förklara fotosyntesen med ord och formel. Kunna skillnaden mellan producent, konsument och nedbrytare. Kunna förklara varför energin minskar i en näringskedja. Kunna förklara kolets kretslopp och hur övergödning uppstår och kan motverkas."
+   ],
+   "formats": [
+    {
+     "format": "photo",
+     "pages": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ]
+    },
+    {
+     "format": "pdf",
+     "pages": [
+      10
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/bio-ak8-fotosyntes/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "Förklara vad ett ekosystem, en population och ett samhälle är",
+    "keywords": [
+     "ekosystem",
+     "population"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "Förklara vad växten behöver för fotosyntes och var den sker",
+    "keywords": [
+     "klorofyll",
+     "koldioxid",
+     "vatten",
+     "ljus"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Fotosyntesens produkter och formel",
+    "keywords": [
+     "glukos",
+     "syre"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Skillnaden mellan producent, konsument och toppkonsument",
+    "keywords": [
+     "producent",
+     "konsument"
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Näringskedja och näringsväv",
+    "keywords": [
+     "näringskedja",
+     "näringsväv"
+    ]
+   },
+   {
+    "id": "G6",
+    "goal": "Varför energin minskar i en näringskedja (10 %-regeln)",
+    "keywords": [
+     "energi",
+     "10 procent",
+     "värme"
+    ]
+   },
+   {
+    "id": "G7",
+    "goal": "Nedbrytarnas roll i kretsloppet",
+    "keywords": [
+     "nedbrytare",
+     "näringsämnen"
+    ]
+   },
+   {
+    "id": "G8",
+    "goal": "Kolets kretslopp och fossila bränslen",
+    "keywords": [
+     "kol",
+     "koldioxid",
+     "fossila"
+    ]
+   },
+   {
+    "id": "G9",
+    "goal": "Hur övergödning uppstår och leder till syrebrist",
+    "keywords": [
+     "övergödning",
+     "alger",
+     "syrebrist"
+    ]
+   },
+   {
+    "id": "G10",
+    "goal": "Hur övergödning kan motverkas",
+    "keywords": [
+     "skyddszoner",
+     "våtmarker"
+    ]
+   }
+  ],
+  "outside": [
+   "cellandning i detalj",
+   "mitokondrier",
+   "pollinering",
+   "evolution",
+   "människans matspjälkning"
+  ],
   "exam_text": "Prov: Ekologi och fotosyntes – Biologi åk 8\n\n1. Vad behöver en växt för att kunna göra fotosyntes? Nämn tre saker. (2/0/0)\n2. Vilka två ämnen bildas vid fotosyntesen? (2/0/0)\n3. Vad kallas de organismer som tillverkar sin egen näring? (1/0/0)\n4. Förklara varför det finns färre rovdjur än växtätare i ett ekosystem. (0/2/0)\n5. Vad gör nedbrytarna i ett ekosystem? Ge ett exempel på en nedbrytare. (1/1/0)\n6. Resonera om vad som kan hända i en sjö om för mycket gödsel rinner ut i den. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Ljus (solljus), koldioxid och vatten. Full poäng för svar som stämmer med facit.\n2. Glukos (socker) och syre. Full poäng för svar som stämmer med facit.\n3. Producenter. Full poäng för svar som stämmer med facit.\n4. Vid varje steg i näringskedjan går det mesta av energin förlorad (ungefär 90 %) som värme och rörelse, så det finns mindre energi kvar till nästa led. Full poäng för svar som stämmer med facit.\n5. De bryter ner döda växter och djur till näringsämnen som växterna kan ta upp igen. Exempel: svampar, bakterier eller daggmaskar. Full poäng för svar som stämmer med facit.\n6. Övergödning: alger växer kraftigt, dör och bryts ner av bakterier som förbrukar syret. Syrebrist gör att fiskar och bottendjur dör. Det kan motverkas med mindre gödsel och skyddszoner vid vatten. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 5 poäng\nC: minst 9 poäng, varav minst 3 C/A-poäng\nA: minst 12 poäng, varav minst 2 A-poäng",
   "key": {
    "tasks": [
@@ -148,6 +282,101 @@
   "grade": "åk 9",
   "title": "Prov: Första världskriget",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Första världskriget",
+  "material": {
+   "pages": [
+    "Första världskriget 1914–1918\nOrsaker: Europas stormakter konkurrerade om kolonier och handel (imperialism), byggde upp stora arméer och flottor (militarism) och var starkt nationalistiska. De hade bildat två allianser: Ententen (Storbritannien, Frankrike och Ryssland) och Centralmakterna (Tyskland och Österrike-Ungern). Den 28 juni 1914 sköts Österrike-Ungerns tronföljare Franz Ferdinand i Sarajevo av en bosnisk serb. Österrike-Ungern förklarade krig mot Serbien, och alliansernas löften drog in de andra stormakterna.",
+    "Kriget\nTyskland försökte snabbt besegra Frankrike genom Belgien (Schlieffenplanen), men anfallet stoppades. På västfronten grävde arméerna ner sig i skyttegravar från Nordsjön till Schweiz. Fronten stod nästan stilla i fyra år. Kulsprutor, taggtråd, artilleri och giftgas gjorde att anfall över ingenmansland kostade hundratusentals liv, som vid Somme 1916. Kriget var ett totalt krig: hela samhällen, fabriker och kvinnor som tog männens arbeten deltog.",
+    "Slutet och freden\nÅr 1917 gick USA med i kriget, efter Tysklands oinskränkta ubåtskrig och Zimmermann-telegrammet. Samma år tog bolsjevikerna makten i Ryssland, som lämnade kriget. Den 11 november 1918 skrevs ett vapenstillestånd. I Versaillesfreden 1919 fick Tyskland ta på sig skulden för kriget, betala stora skadestånd, lämna ifrån sig land och kolonier och rusta ner. Många tyskar kände sig förödmjukade. Nationernas förbund bildades för att förhindra nya krig."
+   ],
+   "formats": [
+    {
+     "format": "photo",
+     "pages": [
+      0,
+      1,
+      2
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/hist-ak9-forsta-varldskriget/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "Krigets år och långsiktiga orsaker (imperialism, militarism, nationalism)",
+    "keywords": [
+     "1914",
+     "1918",
+     "nationalis"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "Allianserna och vilka länder som ingick",
+    "keywords": [
+     "ententen",
+     "centralmakterna"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Skotten i Sarajevo som utlösande orsak och hur allianserna drog in fler",
+    "keywords": [
+     "Franz Ferdinand",
+     "Sarajevo"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Skyttegravskriget och varför fronten stod still",
+    "keywords": [
+     "skyttegrav",
+     "kulsprut",
+     "ingenmansland"
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Totalt krig och kvinnornas roll",
+    "keywords": [
+     "totalt krig",
+     "kvinnor"
+    ]
+   },
+   {
+    "id": "G6",
+    "goal": "Varför USA gick med och varför Ryssland lämnade kriget",
+    "keywords": [
+     "ubåtskrig",
+     "Zimmermann",
+     "bolsjevikerna"
+    ]
+   },
+   {
+    "id": "G7",
+    "goal": "Versaillesfreden och dess följder",
+    "keywords": [
+     "Versailles",
+     "skadestånd",
+     "skulden"
+    ]
+   },
+   {
+    "id": "G8",
+    "goal": "Nationernas förbund",
+    "keywords": [
+     "Nationernas förbund"
+    ]
+   }
+  ],
+  "outside": [
+   "andra världskriget",
+   "Hitlers maktövertagande",
+   "Förintelsen",
+   "Sveriges neutralitet",
+   "spanska sjukan"
+  ],
   "exam_text": "Prov: Första världskriget – Historia åk 9\n\n1. Vilka år pågick första världskriget? (1/0/0)\n2. Vilken händelse i Sarajevo brukar räknas som den utlösande orsaken? (1/0/0)\n3. Nämn de två stora allianserna i kriget. (2/0/0)\n4. Beskriv hur skyttegravskriget fungerade på västfronten. (1/1/0)\n5. Varför gick USA med i kriget 1917? Ge två skäl. (0/2/0)\n6. Resonera om hur Versaillesfreden kan ha bidragit till ett nytt krig. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. 1914–1918. Full poäng för svar som stämmer med facit.\n2. Mordet på den österrikiske tronföljaren Franz Ferdinand 1914. Full poäng för svar som stämmer med facit.\n3. Ententen (Storbritannien, Frankrike, Ryssland) och Centralmakterna (Tyskland, Österrike-Ungern). Full poäng för svar som stämmer med facit.\n4. Arméerna grävde ner sig i långa skyttegravar från Nordsjön till Schweiz. Fronten rörde sig nästan inte, anfall över ingenmansland med kulsprutor och taggtråd gav enorma förluster. Full poäng för svar som stämmer med facit.\n5. Tysklands oinskränkta ubåtskrig sänkte amerikanska fartyg, och Zimmermann-telegrammet där Tyskland försökte få Mexiko att anfalla USA. Full poäng för svar som stämmer med facit.\n6. Tyskland fick ta på sig skulden, betala stora skadestånd, förlora land och rusta ner. Det skapade förödmjukelse och ekonomiska problem som nazisterna utnyttjade; samtidigt var det inte freden ensam utan också depressionen på 1930-talet. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 5 poäng\nC: minst 9 poäng, varav minst 3 C/A-poäng\nA: minst 11 poäng, varav minst 2 A-poäng",
   "key": {
    "tasks": [
@@ -284,6 +513,84 @@
   "grade": "Matematik 1b",
   "title": "Prov: Ekvationer och funktioner",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Ekvationer och räta linjen",
+  "material": {
+   "pages": [
+    "Ekvationer\nEn ekvation löses genom att man gör samma sak på båda sidor om likhetstecknet. Exempel: 3x + 5 = 20. Subtrahera 5: 3x = 15. Dividera med 3: x = 5. Kontrollera alltid genom att sätta in lösningen: 3 · 5 + 5 = 20.\nParenteser multipliceras först ut: 2(x − 4) = x + 3 ger 2x − 8 = x + 3 och x = 11.",
+    "Räta linjens ekvation\nEn rät linje kan skrivas y = kx + m. k är lutningen (riktningskoefficienten): hur mycket y ökar när x ökar med 1. m är där linjen skär y-axeln. Negativt k betyder att linjen lutar nedåt.\nLutningen mellan två punkter: k = (y2 − y1)/(x2 − x1). Exempel: (1, 3) och (3, 11) ger k = 8/2 = 4. m fås genom att sätta in en punkt: 3 = 4 · 1 + m, alltså m = −1 och y = 4x − 1.",
+    "Problemlösning med linjära modeller\nEn fast avgift plus en kostnad per enhet ger en linjär modell: kostnad = fast avgift + pris · antal. Ett gym med 300 kr i startavgift och 150 kr per månad: y = 150x + 300.\nFör att jämföra två abonnemang sätter man uttrycken lika och löser ekvationen. Lösningen är brytpunkten där båda kostar lika mycket. Rita gärna båda linjerna och se vilken som ligger lägst på var sida om brytpunkten."
+   ],
+   "formats": [
+    {
+     "format": "pdf",
+     "pages": [
+      0,
+      1,
+      2
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/ma1b-ekvationer/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "Lösa linjära ekvationer med balansmetoden och kontrollera svaret",
+    "keywords": [
+     "ekvation",
+     "båda sidor",
+     "kontrollera"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "Ekvationer med parenteser",
+    "keywords": [
+     "parentes"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Tolka k och m i y = kx + m",
+    "keywords": [
+     "lutning",
+     "k",
+     "m",
+     "y-axeln"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Bestämma linjens ekvation från två punkter",
+    "keywords": [
+     "två punkter",
+     "k = "
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Ställa upp en linjär modell med fast avgift och pris per enhet",
+    "keywords": [
+     "fast avgift",
+     "linjär modell"
+    ]
+   },
+   {
+    "id": "G6",
+    "goal": "Hitta och tolka brytpunkten mellan två modeller",
+    "keywords": [
+     "brytpunkt",
+     "lika"
+    ]
+   }
+  ],
+  "outside": [
+   "andragradsekvationer",
+   "pq-formeln",
+   "procentuell förändring",
+   "exponentialfunktioner",
+   "sannolikhet"
+  ],
   "exam_text": "Prov: Ekvationer och funktioner – Matematik Matematik 1b\n\n1. Lös ekvationen 3x + 5 = 20. (1/0/0)\n2. Lös ekvationen 2(x − 4) = x + 3. (2/0/0)\n3. Vilken lutning har linjen y = −2x + 7? (1/0/0)\n4. En linje går genom punkterna (1, 3) och (3, 11). Bestäm linjens ekvation. (0/2/0)\n5. Ett gym kostar 300 kr i startavgift och 150 kr per månad. Efter hur många månader har man betalat 1 950 kr? (1/1/0)\n6. Två mobilabonnemang: A kostar 99 kr/mån + 2 kr per GB, B kostar 149 kr/mån fritt surf. Vid hur många GB per månad blir B billigast? Motivera. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. x = 5 Full poäng för svar som stämmer med facit.\n2. x = 11 Full poäng för svar som stämmer med facit.\n3. k = −2 Full poäng för svar som stämmer med facit.\n4. k = (11 − 3)/(3 − 1) = 4, m = 3 − 4 = −1, alltså y = 4x − 1. Full poäng för svar som stämmer med facit.\n5. 300 + 150x = 1 950 ger x = 11 månader. Full poäng för svar som stämmer med facit.\n6. 99 + 2x = 149 ger x = 25. Över 25 GB per månad är B billigast (vid exakt 25 GB kostar de lika). Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 4 poäng\nC: minst 8 poäng, varav minst 3 C/A-poäng\nA: minst 11 poäng, varav minst 2 A-poäng",
   "key": {
    "tasks": [
@@ -434,6 +741,85 @@
   "grade": "Kemi 1",
   "title": "Prov: Stökiometri och mol",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Stökiometri och mol",
+  "material": {
+   "pages": [
+    "Substansmängd och molmassa\nSubstansmängd mäts i mol. 1 mol innehåller cirka 6,022 · 10^23 partiklar (Avogadros konstant). Molmassan M är massan av 1 mol av ämnet i g/mol och räknas ut från atommassorna. Vatten H2O: 2 · 1,0 + 16,0 = 18,0 g/mol.\nSambandet n = m/M: 88 g koldioxid (M = 44,0 g/mol) är 2,0 mol.",
+    "Reaktionsformler\nEn reaktionsformel balanseras så att det finns lika många atomer av varje slag på båda sidor, eftersom atomer inte förstörs eller skapas. Man ändrar bara koefficienterna framför formlerna, aldrig indexen. Exempel: 2 H2 + O2 → 2 H2O. Koefficienterna anger förhållandet mellan substansmängderna.",
+    "Koncentration\nKoncentrationen c = n/V, där V är volymen i dm³ (liter). Enheten är mol/dm³ (molar, M). 0,50 mol NaCl i 0,250 dm³ ger 2,0 mol/dm³. Vid spädning är substansmängden densamma före och efter: c1 · V1 = c2 · V2.",
+    "Stökiometriska beräkningar\n1. Skriv och balansera reaktionsformeln. 2. Räkna om given massa till mol. 3. Använd koefficienterna för att få substansmängden av det sökta ämnet. 4. Räkna om till massa.\nExempel: CH4 + 2 O2 → CO2 + 2 H2O. 16 g metan = 1,0 mol, som kräver 2,0 mol O2 = 64 g."
+   ],
+   "formats": [
+    {
+     "format": "docx",
+     "pages": [
+      0,
+      1,
+      2,
+      3
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/ke1-mol/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "Vad en mol är och Avogadros konstant",
+    "keywords": [
+     "mol",
+     "Avogadros"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "Räkna molmassa och använda n = m/M",
+    "keywords": [
+     "molmassa",
+     "n = m/M"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Balansera reaktionsformler och varför man gör det",
+    "keywords": [
+     "balansera",
+     "koefficient",
+     "atomer"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Koncentration c = n/V",
+    "keywords": [
+     "koncentration",
+     "mol/dm³"
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Spädning c1V1 = c2V2",
+    "keywords": [
+     "spädning"
+    ]
+   },
+   {
+    "id": "G6",
+    "goal": "Stökiometrisk beräkning i fyra steg",
+    "keywords": [
+     "substansmängd",
+     "koefficienterna",
+     "massa"
+    ]
+   }
+  ],
+  "outside": [
+   "pH och syror",
+   "redoxreaktioner",
+   "gaslagen pV = nRT",
+   "jämvikt",
+   "organisk kemi"
+  ],
   "exam_text": "Prov: Stökiometri och mol – Kemi Kemi 1\n\n1. Vad är molmassan för vatten, H2O? (H = 1,0 g/mol, O = 16,0 g/mol) (1/0/0)\n2. Hur många mol är 88 g koldioxid, CO2? (C = 12,0, O = 16,0) (1/1/0)\n3. Balansera reaktionsformeln: H2 + O2 → H2O (1/0/0)\n4. Vad är koncentrationen om 0,50 mol NaCl löses i 250 ml vatten? (0/2/0)\n5. Hur många gram syrgas behövs för att förbränna 16 g metan? CH4 + 2 O2 → CO2 + 2 H2O (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. 18,0 g/mol Full poäng för svar som stämmer med facit.\n2. M = 44,0 g/mol, n = 88/44 = 2,0 mol. Full poäng för svar som stämmer med facit.\n3. 2 H2 + O2 → 2 H2O Full poäng för svar som stämmer med facit.\n4. c = n/V = 0,50/0,250 = 2,0 mol/dm³ Full poäng för svar som stämmer med facit.\n5. n(CH4) = 16/16 = 1,0 mol, n(O2) = 2,0 mol, m = 2,0 · 32 = 64 g. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 6 poäng, varav minst 2 C/A-poäng\nA: minst 8 poäng, varav minst 1 A-poäng",
   "key": {
    "tasks": [
@@ -562,6 +948,82 @@
   "grade": "åk 9",
   "title": "Prov: Ellära",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Ellära",
+  "material": {
+   "pages": [
+    "Ellära – grunder\nElektrisk ström är laddningar (elektroner) som rör sig i en sluten krets. Strömmen I mäts i ampere (A) med en amperemeter som kopplas i serie. Spänningen U mäts i volt (V) med en voltmeter som kopplas parallellt och är det som driver strömmen. Resistansen R mäts i ohm (Ω) och visar hur mycket en komponent begränsar strömmen.\n\nOhms lag: U = R · I. En lampa med 6 Ω på 12 V får strömmen 12/6 = 2 A.\n\nSerie- och parallellkoppling: i en seriekoppling går samma ström genom alla komponenter. Går en lampa sönder bryts hela kretsen. I en parallellkoppling har strömmen flera vägar, så de andra lamporna lyser vidare. Hemmets eluttag är parallellkopplade.\n\nEffekt och energi: effekten P = U · I mäts i watt. Energin E = P · t. Elräkningen räknas i kilowattimmar: 1 kWh är energin när 1 000 W används i en timme. En vattenkokare på 2 000 W som används 1,5 timmar under en månad drar 3 kWh.\n\nElsäkerhet: säkringen bryter strömmen om den blir för stor, och jordfelsbrytaren bryter om ström läcker ut, till exempel genom en människa."
+   ],
+   "formats": [
+    {
+     "format": "text",
+     "pages": [
+      0
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/fy-ak9-ellara/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "Vad ström är och hur den mäts",
+    "keywords": [
+     "ström",
+     "ampere",
+     "elektroner"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "Spänning och resistans och deras enheter",
+    "keywords": [
+     "spänning",
+     "volt",
+     "resistans",
+     "ohm"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Använda Ohms lag",
+    "keywords": [
+     "Ohms lag",
+     "U = R · I"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Skillnaden mellan serie- och parallellkoppling",
+    "keywords": [
+     "seriekoppling",
+     "parallellkoppling"
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Effekt och energi, kWh och elkostnad",
+    "keywords": [
+     "effekt",
+     "watt",
+     "kWh"
+    ]
+   },
+   {
+    "id": "G6",
+    "goal": "Säkring och jordfelsbrytare",
+    "keywords": [
+     "säkring",
+     "jordfelsbrytare"
+    ]
+   }
+  ],
+  "outside": [
+   "magnetism och elmotorer",
+   "induktion",
+   "kärnkraft",
+   "statisk elektricitet",
+   "halvledare"
+  ],
   "exam_text": "Prov: Ellära – Fysik åk 9\n\n1. Vilken enhet mäts elektrisk ström i? (1/0/0)\n2. Skriv Ohms lag. (1/0/0)\n3. En lampa har resistansen 6 Ω och spänningen 12 V. Hur stor är strömmen? (1/1/0)\n4. Vad är skillnaden mellan serie- och parallellkoppling när en lampa går sönder? (0/2/0)\n5. En vattenkokare på 2 000 W används 3 minuter varje dag i 30 dagar. Hur mycket energi går åt i kWh, och vad kostar det om 1 kWh kostar 2 kr? (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Ampere (A). Full poäng för svar som stämmer med facit.\n2. U = R · I (spänning = resistans gånger ström). Full poäng för svar som stämmer med facit.\n3. I = 12/6 = 2 A Full poäng för svar som stämmer med facit.\n4. I seriekoppling bryts hela kretsen och alla lampor slocknar; i parallellkoppling lyser de andra lamporna eftersom strömmen har andra vägar. Full poäng för svar som stämmer med facit.\n5. Tid: 3 · 30 = 90 min = 1,5 h. Energi: 2 kW · 1,5 h = 3 kWh. Kostnad: 6 kr. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 6 poäng, varav minst 2 C/A-poäng\nA: minst 8 poäng, varav minst 1 A-poäng",
   "key": {
    "tasks": [
@@ -685,6 +1147,87 @@
   "grade": "Engelska 6",
   "title": "Test: Grammar and vocabulary",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Grammar and vocabulary",
+  "material": {
+   "pages": [
+    "Present perfect vs. past simple\nUse the present perfect (have/has + past participle) for something that started in the past and is still true: 'I have lived here for three years.' Use the past simple for a finished time: 'I lived in Lund in 2020.' Swedish speakers often say 'I live here since three years' – this is wrong.",
+    "Irregular verbs and conditionals\nSome verbs are irregular: seek – sought – sought, bring – brought – brought, lie – lay – lain. In the second conditional (unreal present) use 'were' for all persons: 'If I were rich, I would travel the world.'",
+    "Confusing words\n'Affect' is usually a verb (to influence): 'The weather affects my mood.' 'Effect' is usually a noun (a result): 'The effect was huge.' Advanced vocabulary: 'ubiquitous' means found everywhere (synonyms: omnipresent, widespread). 'Ambiguous' means having more than one possible meaning."
+   ],
+   "formats": [
+    {
+     "format": "photo",
+     "pages": [
+      0,
+      1
+     ]
+    },
+    {
+     "format": "text",
+     "pages": [
+      2
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/eng6-grammar/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "When to use present perfect vs. past simple",
+    "keywords": [
+     "present perfect",
+     "past simple"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "The Swedish-speaker mistake 'since three years'",
+    "keywords": [
+     "for three years",
+     "since"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Irregular verbs seek, bring, lie",
+    "keywords": [
+     "sought",
+     "brought"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Second conditional with 'were'",
+    "keywords": [
+     "were",
+     "would"
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Affect vs. effect",
+    "keywords": [
+     "affect",
+     "effect"
+    ]
+   },
+   {
+    "id": "G6",
+    "goal": "Meaning of ubiquitous and ambiguous",
+    "keywords": [
+     "ubiquitous",
+     "ambiguous"
+    ]
+   }
+  ],
+  "outside": [
+   "phrasal verbs",
+   "passive voice",
+   "reported speech",
+   "Shakespeare",
+   "British vs American spelling"
+  ],
   "exam_text": "Test: Grammar and vocabulary – Engelska Engelska 6\n\n1. Translate to English: 'Jag har bott här i tre år.' (1/0/0)\n2. What is the past tense of 'to seek'? (1/0/0)\n3. Choose the correct word: 'If I ___ rich, I would travel the world.' (was/were) (1/0/0)\n4. Explain the difference between 'affect' and 'effect'. (0/2/0)\n5. Give a synonym for 'ubiquitous' and use it in a sentence. (0/1/1)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. I have lived here for three years. Full poäng för svar som stämmer med facit.\n2. Sought. Full poäng för svar som stämmer med facit.\n3. were Full poäng för svar som stämmer med facit.\n4. 'Affect' is usually a verb (to influence); 'effect' is usually a noun (the result). Full poäng för svar som stämmer med facit.\n5. Omnipresent / everywhere / widespread, e.g. 'Smartphones are ubiquitous today.' Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 5 poäng, varav minst 2 C/A-poäng\nA: minst 7 poäng, varav minst 1 A-poäng",
   "key": {
    "tasks": [
@@ -805,6 +1348,83 @@
   "grade": "Svenska 1",
   "title": "Prov: Svensk språkhistoria",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Svensk språkhistoria",
+  "material": {
+   "pages": [
+    "Runsvenska (ca 800–1225)\nPå vikingatiden skrev man med runor. Runalfabetet kallas futharken efter de första tecknen. Den yngre futharken hade bara 16 runor. Runstenar restes ofta till minne av döda släktingar.",
+    "Fornsvenska (1225–1526)\nMed kristendomen kom det latinska alfabetet. Under Hansans tid kom många lågtyska lånord, till exempel betala, språk, fönster och borgmästare, eftersom tyska köpmän dominerade handeln i städerna.",
+    "Nysvenska (från 1526)\nNya testamentet på svenska kom 1526 och Gustav Vasas bibel 1541. Bibeln lästes i kyrkor i hela riket och blev förebild för stavning och skriftspråk, så språket blev mer enhetligt. På 1700-talet lånade svenskan många franska ord, till exempel trottoar, paraply, fåtölj och byrå.",
+    "Svenskan i dag\nI dag lånar svenskan främst från engelskan, till exempel inom teknik, musik och ungdomsspråk. Det gör språket rikare och underlättar kontakt med andra länder. En risk är domänförlust: att svenskan slutar användas inom vissa områden, till exempel forskning eller stora företag."
+   ],
+   "formats": [
+    {
+     "format": "docx",
+     "pages": [
+      0,
+      1,
+      2,
+      3
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/sv1-sprakhistoria/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "Runsvenska och futharken",
+    "keywords": [
+     "runor",
+     "futhark"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "Lågtyska lånord under Hansan och varför",
+    "keywords": [
+     "lågtyska",
+     "Hansan"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Gustav Vasas bibel och skriftspråkets enhetlighet",
+    "keywords": [
+     "Gustav Vasas bibel",
+     "1541"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Franska lånord på 1700-talet",
+    "keywords": [
+     "franska",
+     "paraply"
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Engelska lånord i dag, för- och nackdelar",
+    "keywords": [
+     "engelska",
+     "lånord"
+    ]
+   },
+   {
+    "id": "G6",
+    "goal": "Domänförlust",
+    "keywords": [
+     "domänförlust"
+    ]
+   }
+  ],
+  "outside": [
+   "dialekter i Sverige",
+   "minoritetsspråk",
+   "Strindberg",
+   "grammatik och ordklasser",
+   "nordiska grannspråk"
+  ],
   "exam_text": "Prov: Svensk språkhistoria – Svenska Svenska 1\n\n1. Vad kallas skriftsystemet som användes i Norden på vikingatiden? (1/0/0)\n2. Vilket språk lånade svenskan många ord från under Hansans tid? (1/0/0)\n3. Ge två exempel på franska lånord i svenskan. (1/0/0)\n4. Varför är Gustav Vasas bibel från 1541 viktig för svenskan? (0/2/0)\n5. Resonera om hur engelskan påverkar svenskan i dag. Ge för- och nackdelar. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Runor (futharken). Full poäng för svar som stämmer med facit.\n2. Lågtyska. Full poäng för svar som stämmer med facit.\n3. T.ex. trottoar, paraply, fåtölj, byrå. Full poäng för svar som stämmer med facit.\n4. Den blev en förebild för stavning och skriftspråk och spreds till kyrkor över hela landet, vilket gjorde skriftspråket mer enhetligt. Full poäng för svar som stämmer med facit.\n5. Många lånord (t.ex. inom teknik och ungdomsspråk) gör språket rikare och underlättar internationell kontakt, men kan leda till domänförlust när svenska inte längre används inom vissa områden. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 5 poäng, varav minst 2 C/A-poäng\nA: minst 7 poäng, varav minst 1 A-poäng",
   "key": {
    "tasks": [
@@ -934,6 +1554,76 @@
   "grade": "åk 7",
   "title": "Prov: Klimat och vegetationszoner",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Klimat och vegetationszoner",
+  "material": {
+   "pages": [
+    "Väder och klimat\nVäder är hur det är i atmosfären just nu eller under några dagar. Klimat är medelvärdet av vädret under lång tid, oftast 30 år.\nSolinstrålning: vid ekvatorn träffar solstrålarna jorden nästan rakt och värmer en liten yta. Mot polerna kommer strålarna snett och sprids över en större yta, därför är det kallare där.",
+    "Havsströmmar och nederbörd\nGolfströmmen (Nordatlantiska driften) för varmt vatten från Mexikanska golfen till Nordeuropa och gör Skandinaviens klimat mildare än på samma breddgrad i Kanada.\nVästvindar med fuktig luft från Atlanten tvingas upp över fjällen. Luften kyls, vattenångan kondenserar och det regnar mycket på västsidan (lovartsidan). På östsidan blir det torrare: regnskugga.",
+    "Vegetationszoner\nTundra: kallt, kort sommar, mossor, lavar och dvärgbjörk. Barrskogszonen (tajgan): gran och tall, täcker större delen av Norrland. Lövskogszonen: ek och bok, södra Sverige. Stäpp: gräs, torrt inland. Öken: mycket lite nederbörd. Regnskog: varmt och regn hela året kring ekvatorn."
+   ],
+   "formats": [
+    {
+     "format": "pdf",
+     "pages": [
+      0,
+      1,
+      2
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/ge-ak7-klimat/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "Skillnaden mellan väder och klimat",
+    "keywords": [
+     "väder",
+     "klimat",
+     "30 år"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "Varför det är varmare vid ekvatorn",
+    "keywords": [
+     "solstrålar",
+     "rakt",
+     "yta"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Golfströmmen och Skandinaviens klimat",
+    "keywords": [
+     "Golfströmmen"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Orografisk nederbörd och regnskugga",
+    "keywords": [
+     "regnskugga",
+     "fjällen"
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Vegetationszonerna och var de finns",
+    "keywords": [
+     "tundra",
+     "tajga",
+     "regnskog"
+    ]
+   }
+  ],
+  "outside": [
+   "växthuseffekten",
+   "plattektonik",
+   "befolkningstäthet",
+   "monsun",
+   "vulkaner"
+  ],
   "exam_text": "Prov: Klimat och vegetationszoner – Geografi åk 7\n\n1. Vad är skillnaden mellan väder och klimat? (1/0/0)\n2. Vilken vegetationszon täcker större delen av Norrland? (1/0/0)\n3. Varför är det varmare vid ekvatorn än vid polerna? (1/1/0)\n4. Vad kallas den varma havsström som gör Skandinaviens klimat mildare? (1/0/0)\n5. Förklara varför det regnar mycket på västsidan av den skandinaviska fjällkedjan. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Väder är hur det är just nu eller några dagar; klimat är genomsnittet under lång tid (ungefär 30 år). Full poäng för svar som stämmer med facit.\n2. Barrskogszonen (tajgan). Full poäng för svar som stämmer med facit.\n3. Solstrålarna träffar jorden mer rakt vid ekvatorn och värmer en mindre yta; vid polerna kommer de snett och sprids över en större yta. Full poäng för svar som stämmer med facit.\n4. Golfströmmen. Full poäng för svar som stämmer med facit.\n5. Fuktiga västvindar från Atlanten tvingas upp över fjällen, luften kyls, vattenångan kondenserar och det regnar på lovartsidan (orografisk nederbörd); på östsidan blir det regnskugga. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 6 poäng, varav minst 2 C/A-poäng\nA: minst 8 poäng, varav minst 1 A-poäng",
   "key": {
    "tasks": [
@@ -1053,6 +1743,71 @@
   "grade": "Samhällskunskap 1b",
   "title": "Prov: Demokrati och statsskick",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Demokrati och statsskick",
+  "material": {
+   "pages": [
+    "Sveriges statsskick\nSverige är en parlamentarisk demokrati och en konstitutionell monarki. All offentlig makt utgår från folket (regeringsformen). Riksdagen har 349 ledamöter som väljs vart fjärde år. Ett parti måste få minst 4 procent av rösterna i hela landet, eller 12 procent i en valkrets, för att komma in.\n\nMaktdelning: riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen. Regeringen styr landet och verkställer riksdagens beslut med hjälp av myndigheter. Domstolarna dömer enligt lagarna och är självständiga. Riksdagen kan avsätta en minister eller hela regeringen med misstroendeförklaring.\n\nDirekt och representativ demokrati: i en direktdemokrati röstar medborgarna själva om besluten, till exempel i folkomröstningar. Det ger stort inflytande men är långsamt och kräver mycket kunskap av alla. I en representativ demokrati väljer folket representanter som fattar besluten. Det är effektivare, men avståndet mellan väljare och beslut blir större."
+   ],
+   "formats": [
+    {
+     "format": "text",
+     "pages": [
+      0
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/sh1b-demokrati/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "Parlamentarisk demokrati och konstitutionell monarki",
+    "keywords": [
+     "parlamentarisk",
+     "monarki"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "Riksdagens storlek, val vart fjärde år och spärrarna",
+    "keywords": [
+     "349",
+     "fjärde år",
+     "4 procent"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Maktdelningen mellan riksdag, regering och domstolar",
+    "keywords": [
+     "riksdagen",
+     "regeringen",
+     "domstolar"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Misstroendeförklaring",
+    "keywords": [
+     "misstroendeförklaring"
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Direkt mot representativ demokrati",
+    "keywords": [
+     "direktdemokrati",
+     "representativ"
+    ]
+   }
+  ],
+  "outside": [
+   "EU:s institutioner",
+   "kommunernas ansvar",
+   "partiernas ideologier",
+   "FN",
+   "mediernas roll"
+  ],
   "exam_text": "Prov: Demokrati och statsskick – Samhällskunskap Samhällskunskap 1b\n\n1. Hur många ledamöter har Sveriges riksdag? (1/0/0)\n2. Hur ofta är det ordinarie riksdagsval i Sverige? (1/0/0)\n3. Vilken spärr måste ett parti klara för att komma in i riksdagen? (1/0/0)\n4. Förklara maktdelningen mellan riksdag, regering och domstolar. (0/2/0)\n5. Resonera om för- och nackdelar med direktdemokrati jämfört med representativ demokrati. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. 349. Full poäng för svar som stämmer med facit.\n2. Vart fjärde år. Full poäng för svar som stämmer med facit.\n3. 4 procent av rösterna i hela landet (eller 12 procent i en valkrets). Full poäng för svar som stämmer med facit.\n4. Riksdagen stiftar lagar och kontrollerar regeringen, regeringen styr landet och verkställer besluten, domstolarna dömer enligt lagarna och är självständiga. Full poäng för svar som stämmer med facit.\n5. Direktdemokrati ger medborgarna direkt inflytande och legitimitet men är långsam, kräver mycket kunskap av alla och kan ge kortsiktiga beslut; representativ demokrati är effektivare men avståndet till väljarna blir större. Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 5 poäng, varav minst 2 C/A-poäng\nA: minst 7 poäng, varav minst 1 A-poäng",
   "key": {
    "tasks": [
@@ -1173,6 +1928,90 @@
   "grade": "åk 8",
   "title": "Prov: Världsreligionerna",
   "source": "påhittat av Oscar (QA), ingen elevtext",
+  "topic": "Världsreligionerna",
+  "material": {
+   "pages": [
+    "Judendom och islam\nJudendomens heliga skrift är Tanach, där Toran är den viktigaste delen. Vilodagen sabbat börjar vid solnedgången på fredagen och slutar på lördagskvällen. Islams heliga skrift är Koranen. Islams fem pelare är trosbekännelsen, bönen fem gånger om dagen, allmosan, fastan under ramadan och vallfärden till Mecka.",
+    "Hinduism och buddhism\nI hinduismen och buddhismen finns tron på återfödelse (samsara) och karma: handlingar får följder, även i kommande liv. I hinduismen är målet att själen (atman) befrias från kretsloppet (moksha).",
+    "Buddhismens fyra ädla sanningar\n1. Livet innebär lidande. 2. Lidandet orsakas av begär. 3. Lidandet kan upphöra (nirvana). 4. Vägen dit är den åttafaldiga vägen.\n\nKristendom: kristna tror att människan lever ett liv och att Jesus uppstod från de döda. Efter döden väntar uppståndelse och dom."
+   ],
+   "formats": [
+    {
+     "format": "photo",
+     "pages": [
+      0,
+      1
+     ]
+    },
+    {
+     "format": "docx",
+     "pages": [
+      2
+     ]
+    }
+   ],
+   "files": "scripts/qa/repetition_bank/files/re-ak8-varldsreligioner/ (make_files.py)"
+  },
+  "goals": [
+   {
+    "id": "G1",
+    "goal": "Judendomens skrift och sabbaten",
+    "keywords": [
+     "Tanach",
+     "Toran",
+     "sabbat"
+    ]
+   },
+   {
+    "id": "G2",
+    "goal": "Koranen och islams fem pelare",
+    "keywords": [
+     "Koranen",
+     "fem pelare"
+    ]
+   },
+   {
+    "id": "G3",
+    "goal": "Karma och samsara",
+    "keywords": [
+     "karma",
+     "återfödelse"
+    ]
+   },
+   {
+    "id": "G4",
+    "goal": "Atman och moksha i hinduismen",
+    "keywords": [
+     "atman",
+     "moksha"
+    ]
+   },
+   {
+    "id": "G5",
+    "goal": "Buddhismens fyra ädla sanningar",
+    "keywords": [
+     "lidande",
+     "begär",
+     "nirvana",
+     "åttafaldiga"
+    ]
+   },
+   {
+    "id": "G6",
+    "goal": "Kristendomens syn på livet efter döden jämfört med hinduismen",
+    "keywords": [
+     "uppståndelse",
+     "återfödelse"
+    ]
+   }
+  ],
+  "outside": [
+   "sikhism",
+   "religion och vetenskap",
+   "etiska modeller",
+   "nyandlighet",
+   "kristendomens olika kyrkor"
+  ],
   "exam_text": "Prov: Världsreligionerna – Religionskunskap åk 8\n\n1. Vad heter islams heliga skrift? (1/0/0)\n2. Vad kallas judendomens vilodag och vilken dag börjar den? (1/0/0)\n3. Vad betyder karma inom hinduism och buddhism? (1/1/0)\n4. Nämn de fyra ädla sanningarna i buddhismen i korthet. (0/2/0)\n5. Jämför synen på livet efter döden i kristendomen och hinduismen. (0/1/2)\n\nFACIT OCH BEDÖMNINGSANVISNING\n1. Koranen. Full poäng för svar som stämmer med facit.\n2. Sabbaten (shabbat), som börjar vid solnedgången på fredagen. Full poäng för svar som stämmer med facit.\n3. Att handlingar får följder: goda handlingar ger goda följder och dåliga ger dåliga, även i kommande liv. Full poäng för svar som stämmer med facit.\n4. Livet innebär lidande; lidandet orsakas av begär; lidandet kan upphöra (nirvana); vägen dit är den åttafaldiga vägen. Full poäng för svar som stämmer med facit.\n5. Kristendomen: ett liv, sedan uppståndelse och dom (himmel/helvete). Hinduismen: återfödelse (samsara) styrd av karma tills själen (atman) befrias (moksha). Full poäng för svar som stämmer med facit.\n\nBetygsgränser:\nE: minst 3 poäng\nC: minst 5 poäng, varav minst 2 C/A-poäng\nA: minst 7 poäng, varav minst 1 A-poäng",
   "key": {
    "tasks": [

@@ -17,6 +17,8 @@ import os
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from materials import M  # noqa: E402  O55: materialet, formaten och lärandemålen
 
 
 def t(no, text, E, C, A, answer, topic, accept=(), wrong=(), assessment=""):
@@ -281,11 +283,33 @@ def main():
         out.append({
             "id": e["id"], "subject": e["subject"], "grade": e["grade"], "title": e["title"],
             "source": "påhittat av Oscar (QA), ingen elevtext",
+            "topic": M[e["id"]]["topic"],
+            "material": {"pages": M[e["id"]]["pages"],
+                         "formats": [{"format": f, "pages": i} for f, i in M[e["id"]]["formats"]],
+                         "files": f"scripts/qa/repetition_bank/files/{e['id']}/ (make_files.py)"},
+            "goals": [{"id": g, "goal": t, "keywords": k} for g, t, k in M[e["id"]]["goals"]],
+            "outside": M[e["id"]]["outside"],
             "exam_text": exam_text(e),
             "key": {"tasks": e["tasks"], "boundaries": e["boundaries"],
                     "max": {k: sum(t["points"][k] for t in e["tasks"]) for k in "ECA"}},
         })
     errs = check(EXAMS)
+    for e in EXAMS:
+        m = M.get(e["id"])
+        if not m:
+            errs.append(f"{e['id']}: material saknas")
+            continue
+        text = " ".join(m["pages"]).lower()
+        for g, _, kws in m["goals"]:
+            for kw in kws:
+                if kw.lower() not in text:
+                    errs.append(f"{e['id']} {g}: nyckelordet '{kw}' står inte i materialet")
+        used = sorted(i for _, idx in m["formats"] for i in idx)
+        if used != list(range(len(m["pages"]))):
+            errs.append(f"{e['id']}: formaten täcker inte varje sida exakt en gång")
+        for o in m["outside"]:
+            if o.lower() in text:
+                errs.append(f"{e['id']}: 'utanför' {o} står i materialet")
     if errs:
         print("FEL:\n  " + "\n  ".join(errs))
         sys.exit(1)
