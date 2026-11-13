@@ -222,9 +222,13 @@ struct SchoolExamsView: View {
     @State private var askingMySchool = false
     @State private var opened: DrillPublicationView?
     @State private var loaded = false
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         List {
+            if typeSize.isAccessibilitySize {
+                Section { WrappingTitleRow(title: "Prov från din skola") }
+            }
             Section {
                 Button { choosingSchool = true } label: {
                     HStack {
@@ -262,6 +266,7 @@ struct SchoolExamsView: View {
         }
         .overlay { if loading && results.isEmpty { ProgressView() } }
         .navigationTitle("Prov från din skola")
+        .navigationBarTitleDisplayMode(typeSize.isAccessibilitySize ? .inline : .automatic)
         .refreshable { await load() }
         .task {
             guard !loaded else { return }

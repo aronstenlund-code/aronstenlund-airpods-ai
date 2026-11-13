@@ -23,6 +23,7 @@ struct DrillView: View {
     @State private var editMode: EditMode = .inactive
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     struct EditTarget: Identifiable, Equatable {
         let id: UUID
@@ -40,7 +41,7 @@ struct DrillView: View {
             }
         }
         .navigationTitle(drill?.title ?? "Prov")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(typeSize.isAccessibilitySize ? .inline : .large)
         .toolbar {
             if let drill { barItems(drill) }
         }
@@ -129,9 +130,11 @@ struct DrillView: View {
         let canStart = model.canStart(drill)
         return List {
             Section {
+                if typeSize.isAccessibilitySize { WrappingTitleRow(title: drill.title) }
                 statusLine(drill)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                    .listRowSeparator(.hidden)
             }
 
             if model.quotaExceeded(drill), model.canPublish { // A84 (D155): the month's questions are used up
@@ -269,6 +272,22 @@ struct DrillView: View {
 
     private func firstQuestionSound(_ drill: Drill) -> URL? {
         model.audio.track(for: drill, at: 0)?.question
+    }
+}
+
+/// Kelly (SYSTEM §10 rule 4): a big title is never cut off. With the accessibility sizes the navigation title goes
+/// inline and the title is the list's first row, where it wraps ("Prov från di…", "Biologiprov…" with the largest text).
+struct WrappingTitleRow: View {
+    let title: String
+
+    var body: some View {
+        Text(verbatim: title)
+            .font(.largeTitle.bold())
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityAddTraits(.isHeader)
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+            .listRowSeparator(.hidden)
     }
 }
 
