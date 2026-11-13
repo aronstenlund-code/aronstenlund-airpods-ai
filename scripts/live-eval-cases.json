@@ -568,7 +568,9 @@
     "q": "varför då?",
     "forbid_any": [
      "fotosyntes",
-     "växt"
+     "växten",
+     "växter",
+     "klorofyll"
     ],
     "follow": true
    }
@@ -2981,7 +2983,7 @@
     "allow_question": true,
     "max_words": 200,
     "expect_any": [
-     "halvan går"
+     "halvan får"
     ],
     "forbid_any": [
      "kan inte sjunga"
@@ -3334,7 +3336,8 @@
     "expect_any": [
      "tidigare",
      "före",
-     "försprång"
+     "försprång",
+     "senare"
     ],
     "forbid_any": [
      "tredjedel",

@@ -41,6 +41,8 @@ check("shorter", le.case_checks("Lång lång lång.", "Kort.", {"shorter": True}
 check("web source ok", le.web_checks("Spanien vann.\n\nkälla: fifa.com", ["fifa.com"]) == [])
 check("web source bad", le.web_checks("Spanien vann.\n\nkälla: masterskapssidan.se", ["fifa.com"]) != [])
 check("web source missing", le.web_checks("Spanien vann.", ["fifa.com"]) == ["källrad saknas"])
+check("web source from done", le.web_checks("Spanien vann. Källa: Fifa.", ["fifa.com"], "fifa.com") == [])
+check("web source from done bad", le.web_checks("Spanien vann. Källa: Blogg.", ["fifa.com"], "blogg.se") != [])
 check("rizz ok", le.rizz_checks(["Vad hände sen?"]) == [])  # D72: one suggestion by default
 check("rizz count", le.rizz_checks(["Vad hände sen?", "Berätta mer"]) != [])
 check("rizz asked for 3", le.rizz_checks(["Ett.", "Två.", "Tre."], 3) == [])

@@ -173,8 +173,12 @@ def case_checks(text, prev_answer, turn, now):
     return out
 
 
-def web_checks(text, domains):
+def web_checks(text, domains, done_source=None):
     spoken, source = split_source(text.strip())
+    if not source and done_source:
+        # since D65 the server sends the domain as done.source and speaks "Källa: Britannica." (Kevin, omgång 21)
+        source = done_source
+        spoken = re.sub(r"\s*Källa: [^.]*\.\s*$", "", spoken)
     if not source:
         return ["källrad saknas"]
     s = source.strip(".,;").lower()
@@ -345,7 +349,7 @@ def run(cases, rizz, domains, only, now):
     rows = []
     n_conv = 0
     for case in cases:
-        if only and case["cat"] not in only:
+        if only and case["cat"] not in only and case["id"] not in only:  # a category or a case id
             continue
         u = be.user(n_conv)
         n_conv += 1
@@ -420,7 +424,7 @@ def run(cases, rizz, domains, only, now):
                     problems += interview_checks(text, turn)
                 problems += case_checks(text, answers[-1] if answers else None, turn, now)
                 if turn.get("web"):
-                    problems += web_checks(text, domains)
+                    problems += web_checks(text, domains, (r["done"] or {}).get("source"))
             rel = r["done"].get("relation") if r["done"] else None
             rel_exp = None
             if ti > 0 and turn.get("follow"):

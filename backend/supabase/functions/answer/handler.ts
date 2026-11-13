@@ -1678,6 +1678,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             quizOnly: quiz || counterQ, // D86: only the check question is said; K9: the interview counter question too
             subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
             interview: plan?.kind === "interview", // D77
+            interviewSay: plan?.kind === "interview" && (plan.task === "interview_question" || plan.task === "interview_improve"),
             missingFact: missing ?? undefined,
             quoteCheck,
           });
@@ -2070,6 +2071,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 quizOnly: quiz || counterQ,
                 subjectKnown: tutor && body.persona === "tutor" && !!body.personaSetup,
                 interview: plan?.kind === "interview",
+                interviewSay: plan?.kind === "interview" && (plan.task === "interview_question" || plan.task === "interview_improve"),
                 missingFact: missing ?? undefined,
                 quoteCheck,
               });

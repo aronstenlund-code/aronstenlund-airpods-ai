@@ -529,6 +529,29 @@ export function isInterviewMeta(sentence: string): boolean {
   return INTERVIEW_META.test(sentence);
 }
 
+/**
+ * Standing round 21 (live eval k9-ih-professional-2, two nights in a row): "vad borde jag säga" got coaching in
+ * second person ("Ditt sommarjobb på kafé har gett dig vana … Dessutom är du van …"), which the user cannot say
+ * aloud. Swedish verbs do not change with the person, so swapping the pronouns gives the first-person answer.
+ * Only a statement with no first-person word at all is touched; a question (to the interviewer), thanks and
+ * "som du sa" (about the interviewer) are left as they are.
+ */
+const FIRST_PERSON = /(?<![\p{L}\p{N}])(?:jag|mig|min|mitt|mina|vi|oss|vår|vårt|våra)(?![\p{L}\p{N}])/iu;
+const SECOND_PERSON = /(?<![\p{L}\p{N}])(du|dig|din|ditt|dina)(?![\p{L}\p{N}])/giu;
+const ABOUT_INTERVIEWER = /(?<![\p{L}\p{N}])(?:tack|som du (?:sa|sade|nämnde|frågade|beskrev|berättade)|du frågade)(?![\p{L}\p{N}])/iu;
+const SWAP: Record<string, string> = { du: "jag", dig: "mig", din: "min", ditt: "mitt", dina: "mina" };
+export function interviewFirstPerson(sentence: string): string {
+  const t = sentence.trim();
+  if (!t || /\?\s*$/.test(t) || FIRST_PERSON.test(t) || ABOUT_INTERVIEWER.test(t)) return sentence;
+  SECOND_PERSON.lastIndex = 0;
+  if (!SECOND_PERSON.test(t)) return sentence;
+  SECOND_PERSON.lastIndex = 0;
+  return sentence.replace(SECOND_PERSON, (w) => {
+    const r = SWAP[w.toLowerCase()];
+    return w[0] === w[0].toUpperCase() ? r[0].toUpperCase() + r.slice(1) : r;
+  });
+}
+
 /** D77: the interview sentence without its meta part ("" when nothing worth saying is left). */
 export function stripInterviewMeta(sentence: string): string {
   // "Jag heter och är sexton år" (an empty name): keep the fact
@@ -1077,6 +1100,8 @@ export interface PostOptions {
   silence?: boolean;
   /** D77: interview answer: sentences that say facts are missing are dropped. */
   interview?: boolean;
+  /** Standing round 21: the answer is the user's own words (not feedback or summary): second person becomes first. */
+  interviewSay?: boolean;
   /** D87: a Provläge profile names the subject, so a guessed reading is kept within it. */
   subjectKnown?: boolean;
   /** K1.5: the interviewer asks about a fact the CV does not give. */
@@ -1210,7 +1235,8 @@ export class AnswerPost {
       return stripInterviewMeta(sentence);
     };
     this.imeta = new MetaGate(opts.interview === true, isInterviewMeta, (sentence) => {
-      const r = interviewRewrite(sentence);
+      const r0 = interviewRewrite(sentence);
+      const r = opts.interviewSay === true ? interviewFirstPerson(r0) : r0;
       if (!interviewKept && r.trim()) {
         if (isOpeningStump(r)) return ""; // K11: the answer never opens pointing at something not said
         interviewKept = true;
