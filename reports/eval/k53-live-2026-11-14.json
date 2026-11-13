@@ -1,0 +1,32 @@
+{
+ "photos": 30,
+ "mb": 1.7,
+ "upload_urls": {
+  "status": 200,
+  "s": 1.7
+ },
+ "upload": {
+  "ok": 30,
+  "s": 1.0
+ },
+ "questions": {
+  "status": 200,
+  "s": 19.7,
+  "count": 20,
+  "possible": 20,
+  "subject": "Biologi",
+  "cost": 0.009776700000000001,
+  "error": null
+ },
+ "total_to_questions_s": 22.5,
+ "answers": {
+  "status": 200,
+  "s": 12.3,
+  "answered": 20,
+  "cost": 0.070072
+ },
+ "deleted_after": {
+  "status": 422,
+  "code": "material_missing"
+ }
+}

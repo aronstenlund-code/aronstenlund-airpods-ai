@@ -403,3 +403,14 @@ All calls are `POST` with the user's JWT, like `/answer`.
   - 402 `quota_exceeded` has the same `per` and `resets`.
 
 **Cue in the drill's voice (Kelly N1).** `get` and `status` return `cue.press_for_answer: {status, url?, duration_ms?}`, which says "Tryck en gång för svaret." in the drill's voice. It is made once per voice, is free and is not counted against the limit.
+
+**Many photos (K53).** Use this for more than about 4 photos; base64 `pages` still works for a few.
+1. `/exam {"action":"upload_urls","count":30}` → `{"uploads":[{"path","url","method":"PUT","content_type":"image/jpeg"}], "expires_in":7200}`. At most 40.
+2. Upload each photo with `PUT url`, the body being the JPEG bytes and the header `content-type: image/jpeg`. The url is pre-signed: no apikey and no Authorization.
+   - Run 4–6 at a time, and scale down first (about 1 600 px, JPEG 0.7, at most 5 MB each).
+   - `"type":"png"` or `"webp"` in step 1 gives those types.
+3. `/exam {"action":"drill","page_paths":[...the paths...], "subject"?, "grade"?, "questions"?, "answers"?}`. The reply is the same as with `pages`.
+   - The server deletes the photos right after the analysis, also when it fails (B4). Anything left behind is deleted after one hour.
+   - A path from another account gives 403.
+   - A photo that never arrived gives 422 `material_missing` ("2 av 30 bilder kom inte fram. Ladda upp dem igen."). Upload those again with new URLs.
+- More than 10 photos are written out as text in parallel batches before the questions are made. Measured live: 30 photos to questions in 22.5 s, answers 12 s more.
