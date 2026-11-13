@@ -191,6 +191,76 @@ add('fortsatt', 'Fortsätt (ingen dialog)', 'Som Podcaster och Böcker: appen fr
     <div class="btnp" style="margin-top:14px">${I('play', 'ico', 'width:16px;height:16px;stroke:none')}Fortsätt</div></div>
   </div><div class="tb"><span>${I('plus', 'ico', 'width:24px;height:24px;stroke:none')}Nytt prov</span><span></span></div></div>`);
 
+
+// ===== Ke55: första starten (D160). Högst 3 skärmar innan man fotar. Inga lyssnande lägen. =====
+const feat = (sym, bg, t, s) => `<div style="display:flex;gap:16px;align-items:flex-start;margin-top:26px">
+  <span style="width:40px;height:40px;flex:none;color:${bg};display:grid;place-items:center">${I(sym, 'ico', 'width:34px;height:34px;stroke-width:1.7')}</span>
+  <div><div style="font-size:17px;font-weight:600">${t}</div><div style="font-size:15px;color:var(--sec);margin-top:2px;line-height:1.35">${s}</div></div></div>`;
+
+add('fs-1-valkommen', '1 · Välkommen (och samtycke)', 'Som Apples egna välkomstskärmar (Podcaster, Kondition): appikonen, en rubrik, tre rader med symbol och Fortsätt. Samtycket står ovanför knappen med en Läs mer-länk, som Apples ruta om data och integritet. Ingen Elias, ingen mikrofon.',
+  () => `<div class="phone">${status}<div class="content" style="padding:20px 36px 0">
+  <img src="../logo/rostning/exakt/AppIcon-1024.png" style="width:72px;height:72px;border-radius:16px;margin:18px auto 0;display:block" alt="">
+  <div style="font-size:32px;font-weight:700;text-align:center;line-height:1.12;margin-top:18px">Välkommen till Earmind</div>
+  ${feat('cam', 'var(--tint)', 'Fota materialet', 'Earmind gör provfrågor med A-svar.')}
+  ${feat('wave', 'var(--tint)', 'Lyssna i dina AirPods', 'Frågorna läses upp. Tryck för svaret.')}
+  ${feat('book', 'var(--tint)', 'Plugga utan mobilen', 'Telefonen kan ligga i fickan.')}
+  </div><div class="bottom" style="background:var(--bg);border:0;gap:12px">
+  <div style="font-size:13px;color:var(--sec);text-align:center;line-height:1.4;padding:0 6px">Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen. <span class="tintc">Läs mer</span></div>
+  <div class="btnp">Fortsätt</div></div></div>`);
+
+add('fs-1b-lasmer', 'Läs mer (blad)', 'Hela texten, kort och i punkter, i ett vanligt blad med Klar. Det som gäller de lyssnande lägena visas först när man startar ett av dem (eget samtycke, som i dag).',
+  () => `<div class="phone g">${status}<div class="nav"><span></span><span class="t">Data och integritet</span><a class="b">Klar</a></div>
+  <div class="content" style="padding-top:6px">
+  <div class="sh">Det här skickas</div>
+  <div class="sec"><div class="row" style="font-size:15px;line-height:1.35">Foton, dokument och text du lägger till skickas en gång till vår server och vår AI-leverantör för att göra frågorna. De sparas inte.</div>
+    <div class="row" style="font-size:15px;line-height:1.35">Frågorna och svaren skickas till vår röstleverantör för att bli ljud.</div></div>
+  <div class="sh">Det här sparas</div>
+  <div class="sec"><div class="row" style="font-size:15px;line-height:1.35">Dina prov, med frågor, svar och ljud, sparas på ditt konto tills du tar bort dem.</div></div>
+  <div class="sh">Mikrofonen</div>
+  <div class="sec"><div class="row" style="font-size:15px;line-height:1.35">Starta prov använder aldrig mikrofonen. Lägena som lyssnar finns under Fler lägen och frågar först.</div></div>
+  <div class="sf">Inget konto behövs. Du kan ta bort allt under Inställningar.</div>
+  </div></div>`);
+
+add('fs-2-nytt', '2 · Nytt prov (direkt efter Fortsätt)', 'Första gången öppnas Nytt prov direkt, utan en tom hemskärm emellan. Fota sidor är den första raden och den enda med blå text. iOS frågar om kameran när man trycker; fotnoten säger det i förväg.',
+  () => `<div class="phone g">${status}<div class="nav"><span style="width:50px"></span><span class="t">Nytt prov</span><span style="width:50px"></span></div>
+  <div class="content" style="padding-top:8px">
+  <div style="font-size:15px;color:var(--sec);padding:4px 32px 0;line-height:1.35">Börja med materialet till ditt nästa prov.</div>
+  <div class="sh">Material</div>
+  <div class="sec"><div class="row ic"><span class="sym" style="background:#2346C8">${I('cam')}</span><span class="tintc" style="font-weight:600">Fota sidor</span></div>
+    <div class="row ic"><span class="sym" style="background:#34C759">${I('photo')}</span>Välj bilder</div>
+    <div class="row ic"><span class="sym" style="background:#FF9500">${I('txt')}</span>Skriv text</div>
+    <div class="row ic"><span class="sym" style="background:#8E8E93">${I('doc')}</span>Lägg till dokument</div></div>
+  <div class="sf">iOS frågar om kameran första gången. Fotona sparas inte.</div>
+  <div class="sh">Prov</div>
+  <div class="sec"><div class="row" style="color:var(--ter)">Provets namn (valfritt)</div>
+    <div class="row">Vilken årskurs?<span class="v">Välj ${chev}</span></div>
+    <div class="row">Antal frågor<span class="v" style="gap:12px;color:var(--label)">20<span class="stepper"><span>−</span><span>+</span></span></span></div></div>
+  </div><div class="bottom"><div class="btnp dis">Skapa frågor</div><div class="note">Lägg till minst en sida, bild eller text.</div></div></div>`);
+
+add('fs-3-kamera', '3 · Kameran', 'Systemets dokumentskanner (VNDocumentCameraViewController): den hittar sidan, beskär och tar flera i följd. Spara tar tillbaka till Nytt prov med sidorna som miniatyrer.',
+  () => `<div class="phone" style="background:#111;color:#fff">${status}<div class="nav" style="color:#fff"><a style="color:#fff">Avbryt</a><span></span><span style="font-size:15px;opacity:.8">Auto</span></div>
+  <div style="flex:1;margin:10px 16px;border-radius:12px;background:linear-gradient(#2a2a2a,#1a1a1a);position:relative">
+    <div style="position:absolute;left:14%;right:12%;top:12%;bottom:16%;background:#F2EEE4;transform:rotate(-2deg);border-radius:4px;box-shadow:0 0 0 3px rgba(10,132,255,.9)">
+      <div style="margin:22px;height:70%;background:repeating-linear-gradient(#8E8E93 0 3px,transparent 3px 14px);opacity:.5"></div></div></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 28px 40px">
+    <div style="width:44px;height:58px;border-radius:4px;background:#F2EEE4;opacity:.9"></div>
+    <div style="width:70px;height:70px;border-radius:50%;border:4px solid #fff;display:grid;place-items:center"><div style="width:58px;height:58px;border-radius:50%;background:#fff"></div></div>
+    <span style="font-size:17px;font-weight:600">Spara (1)</span></div></div>`);
+
+add('fs-flode', 'Hela vägen till första frågan', 'Skärm 1–3 före kameran, sedan det som redan finns: Läser materialet, Stämmer det här?, Frågelistan, Styr med dina AirPods (bara första gången) och den första frågan i örat.',
+  () => `<div class="phone g" style="height:auto;padding-bottom:20px">${status}<div class="lt" style="font-size:28px">Första starten</div>
+  <div class="sec">${[
+    ['1', 'Välkommen', 'Fortsätt = samtycke'],
+    ['2', 'Nytt prov', 'Fota sidor'],
+    ['3', 'Kameran', 'Spara'],
+    ['', 'Nytt prov', 'Skapa frågor'],
+    ['', 'Läser ditt material', 'cirka en minut'],
+    ['', 'Stämmer det här?', 'Ser rätt ut'],
+    ['', 'Frågelistan', 'Starta prov'],
+    ['', 'Styr med dina AirPods', 'Starta prov'],
+    ['', 'Första frågan i örat', '']].map(([n, t, b]) => `<div class="row" style="--inset:52px"><span style="width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:700;${n ? 'background:var(--tint);color:var(--ontint)' : 'border:1.5px solid var(--ter);color:var(--sec)'}">${n || '·'}</span><div>${t}${b ? `<div class="sub">${b}</div>` : ''}</div></div>`).join('')}</div>
+  <div class="sf">Inga lyssnande lägen, ingen mikrofon, inga notiser och inget konto i första starten.</div></div>`);
+
 const root = document.getElementById('screens');
 for (const s of S) {
   const side = th => `<div class="side ${th}"><div class="tag">${s.tag}</div>${s.f(th === 'dark')}<div class="cap">${s.cap}</div></div>`;
