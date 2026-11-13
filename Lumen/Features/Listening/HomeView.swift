@@ -43,25 +43,33 @@ struct HomeView: View {
     private var plans: [ExamPlan] { model.examPlans?.upcoming() ?? [] }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                topBar
-                if let repetition = model.repetition {
-                    // A80 (D142, Kelly B2): the first path is Nytt prov → Starta prov, without the microphone. The
-                    // listening modes (Starta Earmind, Earmind kan allt, their exams) are behind one row.
-                    RepetitionHomeSection(model: repetition)
-                    lastNight
-                    moreModesRow
-                } else {
-                    listeningContent
+        Group {
+            if let repetition = model.repetition {
+                // A80 (D142, Kelly B2): the first path is Nytt prov → Starta prov, without the microphone. The
+                // listening modes (Starta Earmind, Earmind kan allt, their exams) are behind one row.
+                // A87 (D160, Kelly Ke53): Start is the system's list with the navigation bar ("Prov", settings), not
+                // a scroll view of cards; the streak, the test mode, last night and Fler lägen are rows and bar items.
+                RepetitionHomeSection(model: repetition,
+                                      streakDays: model.streak.current,
+                                      testModeOn: testModeOn,
+                                      lastNight: lastNightLine,
+                                      onLastNight: { model.sleep.report = model.sleep.store.latest },
+                                      onSettings: { model.isShowingSettings = true },
+                                      onMoreModes: { showsMoreModes = true })
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        topBar
+                        listeningContent
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 12)
+                    .padding(.bottom, 24)
                 }
+                .lumenScreen()
+                .toolbar(.hidden, for: .navigationBar)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 12)
-            .padding(.bottom, 24)
         }
-        .lumenScreen()
-        .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $isPickingMode, onDismiss: {
             // After the sheet is gone: ListeningView's onChange may present Rizz's age question (D63), and a sheet
             // cannot open while another is closing.
@@ -223,24 +231,16 @@ struct HomeView: View {
         }
     }
 
-    /// Kelly Ke49 `hem.png`, B2: "Fler lägen [BETA] ›" as one row at the bottom of Start.
-    private var moreModesRow: some View {
-        Button {
-            showsMoreModes = true
-        } label: {
-            HStack(spacing: 8) {
-                Text("Fler lägen").font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.ink)
-                BetaBadge()
-                Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold)).foregroundStyle(LumenColor.muted)
-            }
-            .padding(.horizontal, 16)
-            .frame(minHeight: 56)
-            .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 16))
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityHint("Lägen som lyssnar på vad du säger")
+    /// A76 (Ke45/Ke46 T3): as long as the test mode is on, Start says so (A87: in the navigation bar).
+    private var testModeOn: Bool {
+        guard let testMode = model.testMode else { return false }
+        return testMode.isEnabled && !testMode.serverRefused
+    }
+
+    /// A49: last night's line for Start's row, for 16 hours after waking.
+    private var lastNightLine: String? {
+        guard let night = model.sleep.store.latest, let end = night.end, Date().timeIntervalSince(end) < 16 * 3600 else { return nil }
+        return night.talkLine
     }
 
     /// The page behind "Fler lägen": the ingress, then what Start was before D142.

@@ -1,51 +1,55 @@
 import SwiftUI
 
-/// A80 (D142, Kelly Ke49 "Hem med prov" / "Hem utan prov"): the top of Start. Without an exam: "Plugga med AirPods"
-/// and the blue Nytt prov. With exams: the latest exam's card with **Starta prov** as the one blue button (one tap the
-/// next time), "Frågor och svar" and "Dela" as text buttons, the other exams in a list, and Nytt prov as a secondary
-/// button. "Har du fått ett prov?" takes a pasted link or code (K47, until universal links exist).
+/// A80 (D142), rebuilt in A87 (D160, Kelly Ke53 `apple/hem-tom.png`, `hem.png`, `fortsatt.png`): Start as the
+/// system's own parts. Without an exam: the system's empty state with **Nytt prov** as the one filled button. With
+/// exams: a list, the next exam first with **Starta prov** (or **Fortsätt** and "Du var på fråga 3 av 5", no dialog),
+/// the other exams as rows with ▶, and Nytt prov in the bottom toolbar, as in Påminnelser. The listening modes are
+/// one row, "Fler lägen". No tip boxes, no cards in cards, and the streak only as a line of text.
 struct RepetitionHomeSection: View {
     let model: RepetitionModel
+    /// The days in a row (A38), shown as text under the next exam once there is one.
+    var streakDays = 0
+    /// A76: the test mode is on (shown in the navigation bar for as long as it is).
+    var testModeOn = false
+    /// A49: last night's line, for 16 hours after waking.
+    var lastNight: String?
+    var onLastNight: () -> Void = {}
+    var onSettings: () -> Void = {}
+    var onMoreModes: () -> Void = {}
+
     @State private var isCreating = false
     @State private var opened: UUID?
-    /// "Dela" on the card: the exam at its Dela section.
-    @State private var sharing: UUID?
+    /// "Styr med dina AirPods" before the first Starta prov, straight from Start (one tap less than through the exam).
+    @State private var checking: Drill?
+    @State private var showsSchool = false
     @State private var askingCode = false
     @State private var pastedCode = ""
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            if let latest = model.drills.first {
-                latestCard(latest)
-                if model.drills.count > 1 { SectionLabel("Andra prov").padding(.top, 4) }
-                ForEach(model.drills.dropFirst()) { drill in row(drill) }
-                Button {
-                    isCreating = true
-                } label: {
-                    Label("Nytt prov", systemImage: "plus").font(LumenFont.text(18, .semibold, relativeTo: .headline))
-                }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 54))
-            } else {
-                emptyCard
-            }
-            if model.canPublish { // A83 (Ke52 "Hem")
-                NavigationLink("Hitta prov från din skola") { SchoolExamsView(model: model) }
-                    .font(LumenFont.text(15, .semibold))
-                    .foregroundStyle(LumenColor.blue)
-            }
-            Button("Har du fått ett prov? Klistra in länken") { askingCode = true }
-                .font(LumenFont.text(15))
-                .foregroundStyle(LumenColor.blue)
+        Group {
+            if model.drills.isEmpty { emptyState } else { examList }
         }
+        .navigationTitle("Prov")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar { barItems }
         .sheet(isPresented: $isCreating) {
             NewDrillView(model: model) { drill in opened = drill.id }
+        }
+        .sheet(item: $checking) { drill in
+            ControlCheckView(hub: model.remote, sound: model.audio.track(for: drill, at: 0)?.question) {
+                controlsChecked = true
+                checking = nil
+                Task { await model.start(drill, at: model.savedIndex(drill) ?? 0) }
+            } onLater: {
+                checking = nil
+            }
         }
         .navigationDestination(item: $opened) { id in
             DrillView(model: model, drillID: id)
         }
-        .navigationDestination(item: $sharing) { id in
-            DrillView(model: model, drillID: id, showsShare: true)
+        .navigationDestination(isPresented: $showsSchool) {
+            SchoolExamsView(model: model) // A83 (Ke52)
         }
         .alert("Öppna ett delat prov", isPresented: $askingCode) {
             TextField("Länk eller kod", text: $pastedCode)
@@ -65,102 +69,214 @@ struct RepetitionHomeSection: View {
         .task { model.prepareAllAudio() }
     }
 
-    private var emptyCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Kom förberedd till provet") // A86 (Aron 22:19)
-                .font(LumenFont.text(24, .bold, relativeTo: .title2))
-                .accessibilityAddTraits(.isHeader)
-            Text("Fota ditt material. Earmind gör frågor och svar och läser upp dem i örat. Du styr med tryck på AirPods, utan mikrofon.")
-                .font(LumenFont.text(16))
-                .foregroundStyle(LumenColor.muted)
+    @ToolbarContentBuilder
+    private var barItems: some ToolbarContent {
+        if testModeOn {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Testläge", action: onSettings)
+                    .tint(.orange) // D140: the test mode's orange, as text only (SYSTEM §0.3)
+                    .accessibilityLabel("Testläget är på. Öppna inställningar")
+            }
+        }
+        ToolbarItem(placement: .topBarTrailing) {
+            Button(action: onSettings) {
+                Label("Inställningar", systemImage: "gearshape")
+            }
+        }
+        ToolbarItemGroup(placement: .bottomBar) {
+            if model.drills.isEmpty {
+                Spacer()
+                Button(action: onMoreModes) {
+                    Text("Fler lägen · Beta")
+                }
+                .accessibilityLabel("Fler lägen")
+                .accessibilityHint("Beta. Lägen som lyssnar på vad du säger")
+                Spacer()
+            } else {
+                Button {
+                    isCreating = true
+                } label: {
+                    Label("Nytt prov", systemImage: "plus.circle.fill")
+                        .labelStyle(.titleAndIcon)
+                        .fontWeight(.semibold)
+                }
+                Spacer()
+                Button("Öppna länk") { askingCode = true }
+                    .accessibilityHint("Öppnar ett prov som någon har delat med dig")
+            }
+        }
+    }
+
+    // MARK: Without an exam
+
+    private var emptyState: some View {
+        ContentUnavailableView {
+            Label("Kom förberedd till provet", systemImage: "book.closed") // A86 (Aron 22:19)
+        } description: {
+            Text("Fota ditt material. Earmind gör frågor och svar och läser upp dem i dina AirPods.")
+        } actions: {
             Button {
                 isCreating = true
             } label: {
-                Label("Nytt prov", systemImage: "plus").font(LumenFont.text(22, .bold, relativeTo: .title2))
+                Text("Nytt prov").font(.headline).frame(minWidth: 200)
             }
-            .buttonStyle(LumenButtonStyle(height: 72))
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            if model.canPublish { // A83 (Ke52 "Hem")
+                Button("Hitta prov från din skola") { showsSchool = true }
+            }
+            Button("Klistra in en länk") { askingCode = true }
+            if let lastNight {
+                Button(action: onLastNight) { Text(verbatim: "I natt: \(lastNight)") }
+            }
         }
-        .padding(16)
-        .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: LumenCard.radius))
     }
 
-    private func latestCard(_ drill: Drill) -> some View {
-        let p = model.progress(drill)
-        let ready = p.total > 0 && p.ready == p.total
+    // MARK: With exams
+
+    private var examList: some View {
+        List {
+            if let next = model.drills.first {
+                Section {
+                    nextExam(next)
+                    navigationRow("Frågor och svar", detail: nil) { opened = next.id }
+                } footer: {
+                    if streakDays > 0 {
+                        Label {
+                            Text(verbatim: streakDays == 1 ? "1 dag i rad" : "\(streakDays) dagar i rad")
+                        } icon: {
+                            Image(systemName: "flame")
+                        }
+                    }
+                }
+            }
+
+            if model.drills.count > 1 {
+                Section("Andra prov") {
+                    ForEach(model.drills.dropFirst()) { drill in otherExam(drill) }
+                }
+            }
+
+            Section {
+                if model.canPublish { // A83 (Ke52 "Hem")
+                    navigationRow("Prov från din skola", detail: nil) { showsSchool = true }
+                }
+                if let lastNight {
+                    navigationRow("I natt", detail: lastNight, action: onLastNight)
+                }
+                navigationRow("Fler lägen", detail: "Beta · använder mikrofonen", action: onMoreModes)
+                    .accessibilityLabel("Fler lägen")
+                    .accessibilityHint("Beta. Lägen som lyssnar på vad du säger")
+            }
+        }
+        .listStyle(.insetGrouped)
+    }
+
+    /// "Nästa prov": the name, one line of facts and the screen's one filled button.
+    private func nextExam(_ drill: Drill) -> some View {
+        let saved = model.savedIndex(drill)
         return VStack(alignment: .leading, spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                SectionLabel("Nästa prov")
-                Text(drill.title)
-                    .font(LumenFont.text(22, .bold, relativeTo: .title2))
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Nästa prov").font(.footnote).foregroundStyle(.secondary)
+                Text(verbatim: drill.title)
+                    .font(.title2.bold())
                     .accessibilityAddTraits(.isHeader)
-                Text(ready ? "\(DrillText.questions(drill.items.count)) · cirka \(DrillText.minutesPerLap(drill)) min per varv"
-                     : "\(DrillText.questions(drill.items.count)) · Ljud: \(p.ready) av \(p.total) klara")
-                    .font(LumenFont.text(15))
-                    .foregroundStyle(LumenColor.muted)
+                Text(verbatim: facts(drill, saved: saved))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
                     .monospacedDigit()
+            }
+            if let saved {
+                ProgressView(value: Double(saved), total: Double(max(drill.items.count, 1)))
+                    .accessibilityHidden(true)
             }
             Button {
                 start(drill)
             } label: {
-                Label("Starta prov", systemImage: "play.fill").font(LumenFont.text(22, .bold, relativeTo: .title2))
+                Label(saved == nil ? "Starta prov" : "Fortsätt", systemImage: "play.fill")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(LumenButtonStyle(height: 72))
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
             .disabled(!model.canStart(drill))
             .accessibilityHint("Spelar frågorna i dina AirPods. Earmind använder inte mikrofonen.")
-            HStack(spacing: 20) {
-                Button("Frågor och svar") { opened = drill.id }
-                Button("Dela") { sharing = drill.id }
-            }
-            .font(LumenFont.text(16, .semibold))
-            .foregroundStyle(LumenColor.blue)
-            .buttonStyle(.plain)
         }
-        .padding(16)
-        .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: LumenCard.radius))
+        .padding(.vertical, 6)
     }
 
-    /// One tap when the AirPods check was done and there is nothing to go on from; otherwise the exam's screen asks.
+    /// "Du var på fråga 3 av 5", "5 frågor · cirka 1 min per varv" or the sound's progress.
+    private func facts(_ drill: Drill, saved: Int?) -> String {
+        if let saved { return "Du var på fråga \(saved + 1) av \(drill.items.count)" }
+        let p = model.progress(drill)
+        if p.total > 0, p.ready == p.total {
+            return "\(DrillText.questions(drill.items.count)) · cirka \(DrillText.minutesPerLap(drill)) min per varv"
+        }
+        return "\(DrillText.questions(drill.items.count)) · Ljud: \(p.ready) av \(p.total) klara"
+    }
+
+    /// Through "Styr med dina AirPods" the first time; after that one tap, from the question the last run stopped at.
     private func start(_ drill: Drill) {
-        if controlsChecked, model.savedIndex(drill) == nil {
-            Task { await model.start(drill) }
+        if controlsChecked {
+            Task { await model.start(drill, at: model.savedIndex(drill) ?? 0) }
         } else {
-            opened = drill.id
+            checking = drill
         }
     }
 
     /// Kelly R7: the row opens the exam, ▶ starts it directly.
-    private func row(_ drill: Drill) -> some View {
+    private func otherExam(_ drill: Drill) -> some View {
         let p = model.progress(drill)
         let ready = p.total > 0 && p.ready == p.total
+        let detail = ready ? "\(DrillText.questions(drill.items.count)) · ljud klart" : "Ljud: \(p.ready) av \(p.total) klara"
         return HStack(spacing: 12) {
-            Button { opened = drill.id } label: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(drill.title).font(LumenFont.text(18, .semibold)).foregroundStyle(LumenColor.ink)
-                    Text(ready ? "\(DrillText.questions(drill.items.count)) · ljud klart" : "Ljud: \(p.ready) av \(p.total) klara")
-                        .font(LumenFont.text(14))
-                        .foregroundStyle(LumenColor.muted)
-                        .monospacedDigit()
+            Button {
+                opened = drill.id
+            } label: {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(verbatim: drill.title).foregroundStyle(.primary)
+                    Text(verbatim: detail).font(.subheadline).foregroundStyle(.secondary).monospacedDigit()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityHint("Öppnar provet")
-            Button { start(drill) } label: {
+            Button {
+                start(drill)
+            } label: {
                 Image(systemName: "play.circle.fill")
-                    .font(.system(size: 30))
-                    .foregroundStyle(LumenColor.blue.opacity(model.canStart(drill) ? 1 : 0.35))
+                    .font(.title)
+                    .symbolRenderingMode(.hierarchical)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.borderless)
             .disabled(!model.canStart(drill))
             .accessibilityLabel("Starta \(drill.title)")
         }
-        .padding(14)
-        .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: LumenCard.radius))
+    }
+
+    /// A row that goes somewhere: the title, at most one line under it and the system's chevron.
+    private func navigationRow(_ title: String, detail: String?, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(verbatim: title).foregroundStyle(.primary)
+                    if let detail {
+                        Text(verbatim: detail).font(.subheadline).foregroundStyle(.secondary)
+                    }
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
+            .contentShape(Rectangle())
+        }
     }
 }
 
-/// A80 (D142): the listening modes are BETA, under the repetition.
+/// A80 (D142): the listening modes are BETA, under the repetition. (The page behind "Fler lägen", not rebuilt in A87.)
 struct BetaModesHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -177,6 +293,7 @@ struct BetaModesHeader: View {
 }
 
 /// Kelly Ke49 §4.4: a grey outline, 11 pt bold capitals, corner 6. A label, not a warning: no colour, no icon.
+/// (Used by the listening modes' screens, not rebuilt in A87.)
 struct BetaBadge: View {
     var body: some View {
         Text("BETA")
@@ -189,8 +306,8 @@ struct BetaBadge: View {
     }
 }
 
-/// A78/A80: the playing screen over everything, "Fortsätt där du var?" after iOS closed the app, and a shared exam
-/// opened from a link (A81).
+/// A78/A80: the playing screen over everything, and a shared exam opened from a link (A81). A87 (Kelly Ke53 point 8):
+/// no "Fortsätt där du var?" when the app opens; Start's button says "Fortsätt" and where the user was.
 struct RepetitionOverlay: ViewModifier {
     let model: RepetitionModel?
     @Environment(\.scenePhase) private var scenePhase
@@ -201,17 +318,11 @@ struct RepetitionOverlay: ViewModifier {
                 .fullScreenCover(isPresented: Binding(get: { model.showsPlayer }, set: { if !$0 { model.showsPlayer = false } })) {
                     RepetitionPlayerView(model: model)
                 }
-                .sheet(item: Binding(get: { model.showsPlayer ? nil : model.resumeOffer },
-                                     set: { if $0 == nil { model.resumeOffer = nil } })) { offer in
-                    ResumeSheet(model: model, offer: offer)
-                        .presentationDetents([.medium])
-                }
                 .alert(model.importMessage ?? "", isPresented: Binding(get: { model.importMessage != nil },
                                                                       set: { if !$0 { model.importMessage = nil } })) {
                     Button("Okej") { model.importMessage = nil }
                 }
                 .onOpenURL { url in _ = model.handle(url) }
-                .task { model.checkResume() }
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .active, !model.session.isActive, model.showsPlayer { model.showsPlayer = false }
                 }
@@ -221,41 +332,36 @@ struct RepetitionOverlay: ViewModifier {
     }
 }
 
-/// Kelly Ke49 "Fortsätt där du var?": a sheet from below with the exam, the question and two buttons.
+/// Kelly Ke49 "Fortsätt där du var?". A87: no longer shown by the app (Start says "Fortsätt"); kept only until the
+/// screenshot scene `repResume` is removed (Angela's file).
 struct ResumeSheet: View {
     let model: RepetitionModel
     let offer: RepetitionModel.ResumeOffer
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("Fortsätt där du var?")
-                .font(LumenFont.text(24, .bold, relativeTo: .title2))
+                .font(.title2.bold())
                 .accessibilityAddTraits(.isHeader)
-            Text("\(offer.drill.title), fråga \(offer.index + 1) av \(offer.drill.items.count).")
-                .font(LumenFont.text(16))
-                .foregroundStyle(LumenColor.muted)
-            if offer.drill.items.indices.contains(offer.index) {
-                Text(offer.drill.items[offer.index].question).font(LumenFont.text(20, .semibold))
-            }
+            Text(verbatim: "\(offer.drill.title), fråga \(offer.index + 1) av \(offer.drill.items.count).")
+                .foregroundStyle(.secondary)
             Spacer(minLength: 0)
             Button {
                 go(at: offer.index)
             } label: {
-                Text("Fortsätt").frame(maxWidth: .infinity)
+                Text("Fortsätt").font(.headline).frame(maxWidth: .infinity)
             }
-            .buttonStyle(LumenButtonStyle(height: 56))
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
             Button {
                 go(at: 0)
             } label: {
                 Text("Börja från fråga 1").frame(maxWidth: .infinity)
             }
-            .buttonStyle(LumenButtonStyle(kind: .secondary, height: 52))
-            Button("Inte nu") { model.resumeOffer = nil }
-                .font(LumenFont.text(16, .semibold))
-                .frame(maxWidth: .infinity)
+            .buttonStyle(.bordered)
+            .controlSize(.large)
         }
         .padding(20)
-        .lumenScreen()
     }
 
     /// The sheet closes first: SwiftUI does not open the playing screen while a sheet is closing (handover).

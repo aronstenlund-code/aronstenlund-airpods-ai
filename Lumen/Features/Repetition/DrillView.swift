@@ -1,21 +1,26 @@
 import SwiftUI
+import UIKit
 
-/// A79–A81 (D142, Kelly Ke49 "Frågelistan"): one exam. "Starta prov" (through "Styr med dina AirPods" the first
-/// time), the sound's progress ("Ljud: 36 av 40 klara · Görs i spelordning"), the questions in playing order (Ändra:
-/// drag to reorder, delete; tap to edit), "Lägg till fråga" and Dela (only when all the sound is ready, D143).
+/// A79–A81 (D142), rebuilt in A87 (D160, Kelly Ke53 `apple/fragor.png`): one exam as the system's list. The title is
+/// the navigation title, the questions are rows in playing order (tap to edit), Dela and a "…" menu sit in the
+/// toolbar (Börja om, Publicera prov, Ändra ordning, Ta bort provet), and **Starta prov** is fixed at the bottom so
+/// the next step shows with 20 questions too. No dialog asks where to start: the button says "Fortsätt" when there is
+/// a place to go on from.
 struct DrillView: View {
     let model: RepetitionModel
     let drillID: UUID
-    /// "Dela" on Start opens the exam at its Dela section (and Kelly's repShare screenshots).
+    /// Kept for the callers (the repShare screenshots). Dela is in the toolbar now.
     var showsShare = false
     @State private var editing: EditTarget?
     @State private var checkingControls = false
-    @State private var resumeAsk = false
+    @State private var pendingIndex = 0
     @State private var share: DrillShareResult?
+    @State private var showsShareSheet = false
     @State private var shareProblem: String?
     @State private var isSharing = false
     @State private var confirmDelete = false
     @State private var publishing = false // A83
+    @State private var editMode: EditMode = .inactive
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @Environment(\.dismiss) private var dismiss
 
@@ -28,12 +33,17 @@ struct DrillView: View {
 
     var body: some View {
         Group {
-            if let drill { content(drill) } else { Text("Provet finns inte längre.").foregroundStyle(LumenColor.muted) }
+            if let drill {
+                content(drill)
+            } else {
+                ContentUnavailableView("Provet finns inte längre", systemImage: "doc")
+            }
         }
-        .lumenScreen()
         .navigationTitle(drill?.title ?? "Prov")
         .navigationBarTitleDisplayMode(.large)
-        .toolbar { EditButton() }
+        .toolbar {
+            if let drill { barItems(drill) }
+        }
         .sheet(item: $editing) { target in
             if let drill {
                 DrillItemEditor(model: model, drill: drill, itemID: target.isNew ? nil : target.id)
@@ -44,21 +54,28 @@ struct DrillView: View {
                 ControlCheckView(hub: model.remote, sound: firstQuestionSound(drill)) {
                     controlsChecked = true
                     checkingControls = false
-                    Task { await model.start(drill) }
+                    let index = pendingIndex
+                    Task { await model.start(drill, at: index) }
                 } onLater: {
                     checkingControls = false
                 }
             }
         }
-        .confirmationDialog("Fortsätt där du var?", isPresented: $resumeAsk, titleVisibility: .visible) {
-            if let drill, let index = model.savedIndex(drill) {
-                Button("Fortsätt från fråga \(index + 1)") { Task { await model.start(drill, at: index) } }
-                Button("Börja från fråga 1") { Task { await model.start(drill) } }
+        .sheet(isPresented: $publishing) { if let drill { PublishSheet(model: model, drill: drill) } } // A83
+        .sheet(isPresented: $showsShareSheet) {
+            if let share, let drill {
+                ActivityView(text: "Plugga \(drill.title) med mig i Earmind", url: share.url)
+                    .presentationDetents([.medium, .large])
             }
         }
-        .sheet(isPresented: $publishing) { if let drill { PublishSheet(model: model, drill: drill) } } // A83
-        .alert("Ta bort \(drill?.title ?? "provet")?", isPresented: $confirmDelete) {
-            Button("Ta bort", role: .destructive) {
+        .alert("Det gick inte att dela", isPresented: Binding(get: { shareProblem != nil },
+                                                              set: { if !$0 { shareProblem = nil } })) {
+            Button("Okej") { shareProblem = nil }
+        } message: {
+            Text(verbatim: shareProblem ?? "")
+        }
+        .confirmationDialog("Ta bort \(drill?.title ?? "provet")?", isPresented: $confirmDelete, titleVisibility: .visible) {
+            Button("Ta bort provet", role: .destructive) {
                 if let drill { model.delete(drill) }
                 dismiss()
             }
@@ -69,34 +86,58 @@ struct DrillView: View {
         .task { if let drill, !model.isAudioReady(drill) || drill.needsUpload == true { model.prepareAudio(drill) } }
     }
 
-    private func content(_ drill: Drill) -> some View {
-        ScrollViewReader { proxy in
-        List {
-            Section {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("\(DrillText.questions(drill.items.count))\(drill.summary.grade.isEmpty ? "" : " · \(drill.summary.grade)")")
-                        .font(LumenFont.text(15))
-                        .foregroundStyle(LumenColor.muted)
-                    audioLine(drill)
+    @ToolbarContentBuilder
+    private func barItems(_ drill: Drill) -> some ToolbarContent {
+        if editMode.isEditing {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Klar") { withAnimation { editMode = .inactive } }
+            }
+        } else {
+            ToolbarItemGroup(placement: .topBarTrailing) {
+                if isSharing {
+                    ProgressView()
+                } else {
                     Button {
-                        startTapped(drill)
+                        shareTapped(drill)
                     } label: {
-                        Label(model.canStart(drill) ? "Starta prov" : "Gör ljud …", systemImage: "play.fill")
-                            .font(LumenFont.text(22, .bold, relativeTo: .title2))
+                        Label("Dela", systemImage: "square.and.arrow.up")
                     }
-                    .buttonStyle(LumenButtonStyle(height: 72))
-                    .disabled(!model.canStart(drill))
-                    Text("Spelar frågorna i dina AirPods. Earmind använder inte mikrofonen.")
-                        .font(LumenFont.text(14))
-                        .foregroundStyle(LumenColor.muted)
+                    .disabled(!model.isAudioReady(drill)) // D143: otherwise the receiver would make the same sound again
                 }
-                .listRowBackground(Color.clear)
+                Menu {
+                    if model.savedIndex(drill) != nil {
+                        Button("Börja om från fråga 1", systemImage: "arrow.counterclockwise") { begin(drill, at: 0) }
+                    }
+                    if model.canPublish, drill.publication == nil { // A83 (Ke52)
+                        Button("Publicera prov", systemImage: "building.columns") { publishing = true }
+                            .disabled(!model.isAudioReady(drill))
+                    }
+                    Button("Ändra ordning", systemImage: "arrow.up.arrow.down") {
+                        withAnimation { editMode = .active }
+                    }
+                    Divider()
+                    Button("Ta bort provet", systemImage: "trash", role: .destructive) { confirmDelete = true }
+                } label: {
+                    Label("Mer", systemImage: "ellipsis.circle")
+                }
+            }
+        }
+    }
+
+    private func content(_ drill: Drill) -> some View {
+        let saved = model.savedIndex(drill)
+        let canStart = model.canStart(drill)
+        return List {
+            Section {
+                statusLine(drill)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
             }
 
-            if !drill.summary.covers.isEmpty {
+            if model.quotaExceeded(drill), model.canPublish { // A84 (D155): the month's questions are used up
                 Section {
-                    Text(drill.summary.covers)
-                } header: { Text("Sammanfattning") }
+                    NavigationLink("Hämta andras prov") { SchoolExamsView(model: model) }
+                }
             }
 
             Section {
@@ -104,12 +145,17 @@ struct DrillView: View {
                     Button {
                         editing = EditTarget(id: item.id, isNew: false)
                     } label: {
-                        HStack(alignment: .firstTextBaseline, spacing: 10) {
-                            Text("\(number + 1)").monospacedDigit().foregroundStyle(LumenColor.muted)
+                        HStack(alignment: .firstTextBaseline, spacing: 12) {
+                            Text(verbatim: "\(number + 1)").monospacedDigit().foregroundStyle(.secondary)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(item.question).font(LumenFont.text(17, .semibold)).foregroundStyle(LumenColor.ink)
-                                Text(item.short).font(LumenFont.text(15)).foregroundStyle(LumenColor.muted).lineLimit(1)
+                                Text(verbatim: item.question).fontWeight(.semibold).foregroundStyle(.primary)
+                                Text(verbatim: item.short).font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
                             }
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.right")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.tertiary)
+                                .accessibilityHidden(true)
                         }
                     }
                     .accessibilityHint("Ändrar frågan")
@@ -128,129 +174,95 @@ struct DrillView: View {
                 Button {
                     editing = EditTarget(id: UUID(), isNew: true)
                 } label: {
-                    Label("Lägg till fråga", systemImage: "plus")
+                    Label("Lägg till fråga", systemImage: "plus.circle.fill")
                 }
-            } header: { Text("Frågor och svar") } footer: {
-                Text("Dra för att ändra ordning. Ordningen är den du hör.")
+            } header: {
+                Text("Frågor")
+            } footer: {
+                Text(verbatim: footnote(drill))
             }
 
-            Section {
-                shareRow(drill)
-                publishRow(drill) // A83 (Ke52): in the same group as Dela
-            } header: { Text("Dela med klassen") } footer: {
-                Text("Ändrar någon en fråga i sin kopia ändras inte ditt prov.")
+            if !drill.summary.covers.isEmpty {
+                Section("Sammanfattning") {
+                    Text(verbatim: drill.summary.covers)
+                }
             }
 
-            Section {
-                Button("Ta bort provet", role: .destructive) { confirmDelete = true }
+            if model.canPublish, let publication = drill.publication { // A83 (Ke52 "Publicerat")
+                Section {
+                    PublishedRow(model: model, drill: drill, publication: publication, editing: $publishing)
+                }
             }
         }
         .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
-        .task {
-            guard showsShare else { return }
-            try? await Task.sleep(for: .milliseconds(300)) // after the list is laid out
-            withAnimation { proxy.scrollTo("share", anchor: .top) }
-        }
+        .environment(\.editMode, $editMode)
+        .safeAreaInset(edge: .bottom) {
+            MainActionBar(title: canStart ? (saved == nil ? "Starta prov" : "Fortsätt") : "Gör ljud …",
+                          systemImage: "play.fill",
+                          note: saved.map { "Du var på fråga \($0 + 1) av \(drill.items.count)." }
+                              ?? "Spelas i dina AirPods. Mikrofonen används inte.",
+                          isBusy: !canStart,
+                          isDisabled: !canStart) {
+                begin(drill, at: saved ?? 0)
+            }
         }
     }
 
-    private func audioLine(_ drill: Drill) -> some View {
+    /// "5 frågor · åk 9 · ljud klart" under the title, or the sound's progress while it is made.
+    private func statusLine(_ drill: Drill) -> some View {
         let p = model.progress(drill)
         let ready = p.total > 0 && p.ready == p.total
+        let facts = DrillText.questions(drill.items.count) + (drill.summary.grade.isEmpty ? "" : " · \(drill.summary.grade)")
         return VStack(alignment: .leading, spacing: 6) {
             if ready {
-                Label("Ljud klart", systemImage: "checkmark.circle.fill")
-                    .font(LumenFont.text(15, .semibold))
-                    .foregroundStyle(LumenColor.ok)
+                Text(verbatim: "\(facts) · ljud klart")
             } else {
+                Text(verbatim: facts)
                 ProgressView(value: Double(p.ready), total: Double(max(p.total, 1)))
-                    .tint(LumenColor.blue)
-                Text("Ljud: \(p.ready) av \(p.total) klara · Görs i spelordning")
-                    .font(LumenFont.text(14))
-                    .foregroundStyle(LumenColor.muted)
-                    .monospacedDigit()
+                Text(verbatim: "Ljud: \(p.ready) av \(p.total) klara · Görs i spelordning").monospacedDigit()
             }
             if let problem = model.audio.problem(for: drill) {
-                Text(problem).font(LumenFont.text(14)).foregroundStyle(LumenColor.ink)
+                Text(verbatim: problem).foregroundStyle(.primary)
             }
         }
+        .font(.footnote)
+        .foregroundStyle(.secondary)
         .accessibilityElement(children: .combine)
     }
 
-    @ViewBuilder
-    private func shareRow(_ drill: Drill) -> some View {
+    /// One line under the questions: how to reorder while reordering, else what Dela gives (or why it is off).
+    private func footnote(_ drill: Drill) -> String {
+        if editMode.isEditing { return "Dra för att ändra ordning. Ordningen är den du hör." }
         let p = model.progress(drill)
-        Text("Kompisarna får samma frågor, svar och ljud. De behöver ett gratis Earmind-konto.")
-            .font(LumenFont.text(15))
-            .id("share")
-        LabeledContent("Frågor och svar", value: "\(drill.items.count)")
-        LabeledContent("Ljud", value: "\(p.ready) av \(p.total)").monospacedDigit()
-        LabeledContent("Foton och dokument", value: "delas inte").foregroundStyle(LumenColor.muted)
-        if let share {
-            ShareLink(item: share.url, subject: Text(drill.title),
-                      message: Text("Plugga \(drill.title) med mig i Earmind: \(share.url.absoluteString)")) {
-                Label("Dela", systemImage: "square.and.arrow.up")
+        if p.total == 0 || p.ready < p.total { return "Delas när ljudet är klart (\(p.ready) av \(p.total))." }
+        return "Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis Earmind-konto."
+    }
+
+    private func shareTapped(_ drill: Drill) {
+        if share != nil {
+            showsShareSheet = true
+            return
+        }
+        isSharing = true
+        shareProblem = nil
+        Task {
+            do throws(DrillShareError) {
+                share = try await model.shareLink(drill)
+                showsShareSheet = true
+            } catch {
+                shareProblem = error.userMessage
             }
-        } else if p.total == 0 || p.ready < p.total {
-            // D143: otherwise the receiver would make the same sound again.
-            VStack(alignment: .leading, spacing: 4) {
-                Label("Dela", systemImage: "square.and.arrow.up").foregroundStyle(LumenColor.muted)
-                Text("Delas när ljudet är klart (\(p.ready) av \(p.total))")
-                    .font(LumenFont.text(14))
-                    .foregroundStyle(LumenColor.muted)
-                    .monospacedDigit()
-            }
-            .accessibilityElement(children: .combine)
+            isSharing = false
+        }
+    }
+
+    /// Through "Styr med dina AirPods" the first time, else straight to the question.
+    private func begin(_ drill: Drill, at index: Int) {
+        if controlsChecked {
+            Task { await model.start(drill, at: index) }
         } else {
-            Button {
-                isSharing = true
-                shareProblem = nil
-                Task {
-                    do throws(DrillShareError) {
-                        share = try await model.shareLink(drill)
-                    } catch {
-                        shareProblem = error.userMessage
-                    }
-                    isSharing = false
-                }
-            } label: {
-                Label(isSharing ? "Gör en länk …" : "Dela", systemImage: "square.and.arrow.up")
-            }
-            .disabled(isSharing)
-        }
-        if let shareProblem { Text(shareProblem).foregroundStyle(LumenColor.muted) }
-    }
-
-    /// A83 (Ke52 "Provet"): Publicera prov, grey with the sound's progress until it is ready; then the published card.
-    @ViewBuilder
-    private func publishRow(_ drill: Drill) -> some View {
-        if model.canPublish {
-            if let publication = drill.publication {
-                PublishedRow(model: model, drill: drill, publication: publication, editing: $publishing)
-            } else {
-                let p = model.progress(drill)
-                let ready = p.total > 0 && p.ready == p.total
-                Button { publishing = true } label: {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Label("Publicera prov", systemImage: "building.columns")
-                        Text(ready ? "Alla som söker på din skola kan plugga på det."
-                             : "Går när ljudet är klart (\(p.ready) av \(p.total))")
-                            .font(.subheadline).foregroundStyle(.secondary)
-                    }
-                }
-                .disabled(!ready)
-            }
-        }
-    }
-
-    private func startTapped(_ drill: Drill) {
-        if model.savedIndex(drill) != nil {
-            resumeAsk = true
-        } else if !controlsChecked {
+            pendingIndex = index
             checkingControls = true
-        } else {
-            Task { await model.start(drill) }
         }
     }
 
@@ -259,9 +271,65 @@ struct DrillView: View {
     }
 }
 
-/// A79 (Kelly Ke49 "Redigera en fråga"): two fields, the question and the answer. D145: the answer's first sentence is
-/// the short answer (shown under the field), so the short and the long answer can never disagree. A saved change makes
-/// new sound for this question only.
+/// A87 (D160, SYSTEM §0.1): the screen's one filled button, fixed at the bottom (`.safeAreaInset(edge: .bottom)`) so
+/// the next step shows without scrolling, with at most one line under it.
+struct MainActionBar: View {
+    let title: String
+    var systemImage: String?
+    var note: String?
+    var isBusy = false
+    var isDisabled = false
+    let action: () -> Void
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Button(action: action) {
+                HStack(spacing: 8) {
+                    if isBusy {
+                        ProgressView()
+                    } else if let systemImage {
+                        Image(systemName: systemImage)
+                    }
+                    Text(verbatim: title)
+                }
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .disabled(isDisabled)
+            if let note {
+                Text(verbatim: note)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 8)
+        .frame(maxWidth: .infinity)
+        .background(.bar)
+    }
+}
+
+/// The system's share sheet for a link that is made when Dela is tapped (a `ShareLink` needs the link beforehand).
+struct ActivityView: UIViewControllerRepresentable {
+    let text: String
+    let url: URL
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let items: [Any] = [text, url]
+        return UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
+}
+
+/// A79 (Kelly Ke49 "Redigera en fråga"), A87: a form with two fields, the question and the answer. D145: the answer's
+/// first sentence is the short answer (shown in the footnote), so the short and the long answer can never disagree.
+/// A saved change makes new sound for this question only.
 struct DrillItemEditor: View {
     let model: RepetitionModel
     let drill: Drill
@@ -281,21 +349,20 @@ struct DrillItemEditor: View {
             Form {
                 Section {
                     TextField("Fråga", text: $question, axis: .vertical)
-                } header: { Text("Fråga · \(Self.words(question)) ord") } footer: {
-                    if Self.words(question) > 5 { Text("Helst högst fem ord.").foregroundStyle(LumenColor.muted) }
+                } header: {
+                    Text("Fråga · \(Self.words(question)) ord")
+                } footer: {
+                    if Self.words(question) > 5 { Text("Helst högst fem ord.") }
                 }
                 Section {
                     TextField("Svar", text: $answer, axis: .vertical).lineLimit(4...16)
-                } header: { Text("Svar · \(Self.words(answer)) ord") } footer: {
-                    VStack(alignment: .leading, spacing: 4) {
-                        if !short.isEmpty {
-                            Text(short)
-                                .font(LumenFont.text(14, .semibold))
-                                .padding(6)
-                                .background(LumenColor.soft, in: RoundedRectangle(cornerRadius: 6))
-                                .accessibilityLabel("Kort svar: \(short)")
-                        }
-                        Text("Första meningen är det korta svaret (2 tryck). Hela svaret är det långa (1 tryck).")
+                } header: {
+                    Text("Svar · \(Self.words(answer)) ord")
+                } footer: {
+                    if short.isEmpty {
+                        Text("Första meningen blir det korta svaret (2 tryck). Hela svaret är det långa (1 tryck).")
+                    } else {
+                        Text(verbatim: "Kort svar (2 tryck): \(short)")
                     }
                 }
                 Section {
@@ -306,9 +373,8 @@ struct DrillItemEditor: View {
                 } footer: {
                     Text("Sparar du en ändring görs nytt ljud bara för den här frågan.")
                 }
-                if let problem { Section { Text(problem) } }
+                if let problem { Section { Text(verbatim: problem) } }
             }
-            .lumenForm()
             .navigationTitle(itemID.flatMap { id in drill.items.firstIndex { $0.id == id } }.map { "Fråga \($0 + 1)" } ?? "Ny fråga")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

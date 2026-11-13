@@ -1,9 +1,11 @@
 import SwiftUI
 
-/// A80/A81 (D142 §3, R11, Kelly Ke49): "Styr med dina AirPods" before the first Starta prov. The user presses once,
-/// twice and three times; the app shows what really arrived and only the controls that work. Two or three presses
-/// that never arrive mean AirPods 1/2 (one function per earbud): then the earbud settings that give all three.
-/// No question about the model.
+/// A80/A81 (D142 §3, R11), rebuilt in A87 (D160, Kelly Ke53 `apple/kontroller.png`): "Styr med dina AirPods" before
+/// the first Starta prov, laid out like the system's own introductions (pairing AirPods, Face ID): a picture with the
+/// presses to make, one instruction, one line under it and the three steps as a list. The user presses once, twice
+/// and three times; the app shows what really arrived. **Starta prov** is fixed at the bottom (grey until the check
+/// is done) with Hoppa över as a text button under it. Two or three presses that never arrive mean AirPods 1/2 (one
+/// function per earbud): then the earbud settings that give all three. No question about the model.
 struct ControlCheckView: View {
     let onStart: () -> Void
     let onLater: () -> Void
@@ -37,143 +39,167 @@ struct ControlCheckView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    Text("Styr med dina AirPods")
-                        .font(LumenFont.text(28, .bold, relativeTo: .title))
-                        .accessibilityAddTraits(.isHeader)
-                    if check.heard.isEmpty, sound != nil {
-                        Text("Frågan spelas en gång så att trycken kommer fram.")
-                            .font(LumenFont.text(16))
-                            .foregroundStyle(LumenColor.muted)
+                VStack(spacing: 24) {
+                    hero
+                    VStack(spacing: 8) {
+                        Text(verbatim: title)
+                            .font(.title.bold())
+                            .multilineTextAlignment(.center)
+                            .accessibilityAddTraits(.isHeader)
+                        Text(verbatim: detail)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
                     }
-                    controlsList
-                    if let step = check.step {
-                        waiting(step)
-                    } else if check.allWork {
-                        done
-                    } else {
-                        missing
+                    steps
+                    if check.isDone, !check.allWork, check.needsEarbudSettings {
+                        Button("Öppna Inställningar") { ErrorCard.openSettings() }
+                            .buttonStyle(.bordered)
                     }
                 }
-                .padding(20)
+                .padding(.horizontal, 24)
+                .padding(.top, 8)
+                .padding(.bottom, 24)
+                .frame(maxWidth: .infinity)
             }
-            .lumenScreen()
+            .safeAreaInset(edge: .bottom) { actions }
+            .navigationTitle("Styr med dina AirPods")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Avbryt") { check.end(); onLater() } }
-                if check.step != nil {
-                    ToolbarItem(placement: .primaryAction) { Button("Hoppa över") { check.skip() } }
-                }
             }
         }
+        // SYSTEM §0.6: haptics only when something really happened: a press arrived.
+        .sensoryFeedback(.success, trigger: check.passed.count) { old, new in new > old }
         .onAppear { if beginsOnAppear { check.begin(sound: sound) } }
         .onDisappear { check.end() }
     }
 
-    private var controlsList: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            row(.one, "Hela svaret", "Långt svar")
-            row(.two, "Bara första meningen", "Kort svar")
-            row(.three, "Vilket tryck som helst fortsätter", "Paus")
+    // MARK: The picture, the instruction and the line under it
+
+    /// The presses to make now as dots (Ke49 §4.1: dots, no AirPods pictures), a check mark when all three arrived.
+    private var hero: some View {
+        ZStack {
+            Circle().fill(Color(.secondarySystemBackground))
+            if let step = check.step {
+                HStack(spacing: 10) {
+                    ForEach(0..<step.rawValue, id: \.self) { _ in
+                        Circle().fill(.tint).frame(width: 16, height: 16)
+                    }
+                }
+            } else {
+                Image(systemName: check.allWork ? "checkmark" : "hand.tap")
+                    .font(.system(size: 44, weight: .semibold))
+                    .foregroundStyle(check.allWork ? Color.green : Color.secondary)
+            }
         }
+        .frame(width: 132, height: 132)
+        .accessibilityHidden(true)
     }
 
-    private func row(_ step: ControlCheck.Step, _ press: String, _ meaning: String) -> some View {
+    private var title: String {
+        if let step = check.step { return step.prompt }
+        if check.allWork { return "Allt fungerar" }
+        return check.needsEarbudSettings ? "Dina AirPods har dubbeltryck per lur" : "Trycken kom inte fram"
+    }
+
+    private var detail: String {
+        if let step = check.step {
+            // Kelly N2: say why a question starts playing.
+            return sound != nil && check.heard.isEmpty ? "\(step.hint). Frågan spelas en gång så att trycken kommer fram."
+                : "\(step.hint)."
+        }
+        if check.allWork { return "Under paus fortsätter vilket tryck som helst. Knapparna på låsskärmen gör samma sak." }
+        if check.needsEarbudSettings {
+            return "Ställ in Vänster på Nästa spår och Höger på Spela/pausa, så fungerar alla tre. "
+                + "Inställningar › Bluetooth › ⓘ vid dina AirPods › Dubbeltryck."
+        }
+        return "Kolla att båda AirPods sitter i öronen och är anslutna. Knapparna på låsskärmen fungerar alltid."
+    }
+
+    // MARK: The three steps
+
+    private var steps: some View {
+        VStack(spacing: 0) {
+            row(.one, "Långt svar", "Tryck en gång")
+            Divider().padding(.leading, 52)
+            row(.two, "Kort svar", "Tryck två gånger")
+            Divider().padding(.leading, 52)
+            row(.three, "Paus", "Tryck tre gånger")
+        }
+        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func row(_ step: ControlCheck.Step, _ meaning: String, _ press: String) -> some View {
         HStack(spacing: 12) {
             Group {
                 if check.passed.contains(step) {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(LumenColor.ok)
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                 } else if check.missed.contains(step) {
-                    Image(systemName: "minus.circle").foregroundStyle(LumenColor.muted)
+                    Image(systemName: "minus.circle").foregroundStyle(.secondary)
                 } else if check.step == step {
-                    Image(systemName: "circle.dotted").foregroundStyle(LumenColor.blue)
+                    ProgressView()
                 } else {
-                    Image(systemName: "circle").foregroundStyle(LumenColor.line)
+                    Image(systemName: "circle").foregroundStyle(.tertiary)
                 }
             }
-            .font(.system(size: 22))
+            .font(.title3)
+            .frame(width: 28)
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(String(repeating: "●", count: step.rawValue))  \(meaning)").font(LumenFont.text(17, .semibold))
-                Text(status(step, press))
-                    .font(LumenFont.text(14))
-                    .foregroundStyle(check.step == step ? LumenColor.blue : LumenColor.muted)
+                Text(verbatim: meaning)
+                Text(verbatim: status(step, press))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
+            Spacer(minLength: 0)
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
         .accessibilityElement(children: .combine)
     }
 
-    /// Kelly B4: "Kom inte fram" and "Hoppades över" only once the test is done; during it Väntar … and Sen.
+    /// Kelly B4: "Kom inte fram" and "Hoppades över" only once the test is done; during it the press to make.
     private func status(_ step: ControlCheck.Step, _ press: String) -> String {
-        if check.passed.contains(step) { return "\(press) ✓" }
+        if check.passed.contains(step) { return "\(press) · kom fram" }
         if check.isDone {
             if check.skipped.contains(step) { return "Hoppades över" }
             if check.missed.contains(step) { return "Kom inte fram" }
         }
-        if check.step == step { return "Väntar …" }
-        return check.isDone || check.missed.contains(step) ? press : "Sen"
+        return press
     }
 
-    private func waiting(_ step: ControlCheck.Step) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(step.prompt).font(LumenFont.text(24, .bold, relativeTo: .title2))
-            Text(step.hint).font(LumenFont.text(17)).foregroundStyle(LumenColor.muted)
-            Text(String(repeating: "●  ", count: step.rawValue).trimmingCharacters(in: .whitespaces))
-                .font(.system(size: 22))
-                .foregroundStyle(LumenColor.blue)
-                .accessibilityHidden(true)
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(LumenColor.soft, in: RoundedRectangle(cornerRadius: LumenCard.radius))
-    }
+    // MARK: The buttons, fixed at the bottom
 
-    private var done: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label("Allt fungerar", systemImage: "checkmark.circle.fill")
-                .font(LumenFont.text(22, .bold, relativeTo: .title2))
-                .foregroundStyle(LumenColor.ok)
-            Text("Under paus fortsätter vilket tryck som helst.")
-                .font(LumenFont.text(17))
-            Label("Knapparna på låsskärmen gör samma sak.", systemImage: "lock")
-                .font(LumenFont.text(15))
-                .foregroundStyle(LumenColor.muted)
-            startButton("Starta prov")
-            Text("Avsluta på telefonen. Annars börjar listan om.")
-                .font(LumenFont.text(15))
-                .foregroundStyle(LumenColor.muted)
-        }
-    }
-
-    private var missing: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            if check.needsEarbudSettings {
-                Text("Dina AirPods har dubbeltryck per lur").font(LumenFont.text(20, .bold, relativeTo: .title3))
-                Text("Ställ in dem så här, så fungerar alla tre:")
-                    .font(LumenFont.text(17))
-                Text("Vänster: Nästa spår → kort svar\nHöger: Spela/pausa → långt svar och paus")
-                    .font(LumenFont.text(17, .semibold))
-                Text("Inställningar › Bluetooth › ⓘ vid dina AirPods › Dubbeltryck")
-                    .font(LumenFont.text(15))
-                    .foregroundStyle(LumenColor.muted)
-                Button("Öppna Inställningar") { ErrorCard.openSettings() }
-                    .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
-            } else {
-                Text("Trycken kom inte fram").font(LumenFont.text(20, .bold, relativeTo: .title3))
-                Text("Kolla att båda AirPods sitter i öronen och är anslutna. Knapparna på låsskärmen fungerar alltid.")
-                    .font(LumenFont.text(17))
+    private var actions: some View {
+        VStack(spacing: 4) {
+            Button {
+                check.end()
+                onStart()
+            } label: {
+                Text(verbatim: check.isDone && !check.allWork ? "Starta ändå" : "Starta prov")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
             }
-            Button("Prova igen") { check.restart() }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
-            startButton("Starta ändå")
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .disabled(!check.isDone)
+            if check.step != nil {
+                Button("Hoppa över") { check.skip() }
+                    .frame(minHeight: 44)
+            } else if check.allWork {
+                Text("Avsluta på telefonen. Annars börjar listan om.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 4)
+            } else {
+                Button("Prova igen") { check.restart() }
+                    .frame(minHeight: 44)
+            }
         }
-    }
-
-    private func startButton(_ title: String) -> some View {
-        Button {
-            check.end()
-            onStart()
-        } label: {
-            Text(title).frame(maxWidth: .infinity)
-        }
-        .buttonStyle(LumenButtonStyle(height: 54))
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 8)
+        .frame(maxWidth: .infinity)
+        .background(.bar)
     }
 }

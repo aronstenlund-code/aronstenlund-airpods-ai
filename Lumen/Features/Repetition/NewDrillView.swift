@@ -3,12 +3,13 @@ import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
 
-/// A79 (D142, Kelly Ke49): "Nytt prov". Material (several pages in a row with the camera, several from the photo
-/// library, pasted text, PDF/Word/text), the number of questions and the long answers' length (D146), then
-/// "Skapa frågor" → "Läser ditt material" (steps, not an endless spinner) → "Stämmer det här?" (the summary,
-/// correctable with one line) → saved. K45 runs in two steps: the questions first (Haiku), the answers while the user
-/// reads the summary (Sonnet). The material is sent once and never kept (B4); a correction is made from K45's notes,
-/// never from the photos again.
+/// A79 (D142, Kelly Ke49), rebuilt in A87 (D160, Kelly Ke53 `apple/nytt.png`): "Nytt prov" as an ordinary form in a
+/// sheet. The material as four rows with a symbol (several pages in a row with the camera, several from the photo
+/// library, pasted text, PDF/Word/text), the number of questions with the system's stepper, then **Skapa frågor**
+/// fixed at the bottom (with the reason while it is grey) → "Läser ditt material" (steps, not an endless spinner) →
+/// "Stämmer det här?" (the summary, correctable with one line, **Ser rätt ut** fixed at the bottom) → saved. K45 runs
+/// in two steps: the questions first (Haiku), the answers while the user reads the summary (Sonnet). The material is
+/// sent once and never kept (B4); a correction is made from K45's notes, never from the photos again.
 struct NewDrillView: View {
     let model: RepetitionModel
     let onSaved: (Drill) -> Void
@@ -24,10 +25,13 @@ struct NewDrillView: View {
     @State private var pasted = ""
     @State private var documents: [(name: String, text: String)] = []
     @State private var scannedPDFPages: [Data] = []
+    /// A89 (D162): the long answers' length comes from Inställningar › Avancerat (`model.newDrillSettings`).
     @State private var settings = DrillSettings()
     /// A88 (D161): "Vilken årskurs?", the profile's grade chosen again.
     @State private var grade: StudyProfile.Grade?
     @State private var gradeLoaded = false
+    /// A84 (D151): the exam's voice, chosen on "Stämmer det här?" before the sound is made.
+    @State private var voice = "A"
     @State private var photoItems: [PhotosPickerItem] = []
     @State private var isTakingPhotos = false
     @State private var isImporting = false
@@ -55,7 +59,6 @@ struct NewDrillView: View {
                 case .confirm: confirmView
                 }
             }
-            .lumenScreen()
             .navigationTitle(stage == .confirm ? "Stämmer det här?" : "Nytt prov")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -100,26 +103,16 @@ struct NewDrillView: View {
     private var materialForm: some View {
         Form {
             Section {
-                TextField("Provets namn, till exempel Biologiprovet", text: $title)
+                TextField("Provets namn", text: $title)
             }
 
             Section {
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-                    tile("Fota sidor", "Flera i följd", "camera") { isTakingPhotos = true }
-                    PhotosPicker(selection: $photoItems, maxSelectionCount: 20, matching: .images) {
-                        Self.tileLabel("Välj bilder", "Ur bildbiblioteket", "photo.on.rectangle")
-                    }
-                    .buttonStyle(.plain)
-                    tile("Skriv text", "Eller klistra in", "text.alignleft") { isAddingText = true }
-                    tile("Dokument", "PDF, Word, text", "doc") { isImporting = true }
+                Button { isTakingPhotos = true } label: { Self.materialRow("Fota sidor", "camera.fill", Color.blue) }
+                PhotosPicker(selection: $photoItems, maxSelectionCount: 20, matching: .images) {
+                    Self.materialRow("Välj bilder", "photo.fill", Color.green)
                 }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets())
-                if addedCount > 0 {
-                    Text("TILLAGT · \(DrillText.things(addedCount))")
-                        .font(LumenFont.text(13, .semibold))
-                        .foregroundStyle(LumenColor.muted)
-                }
+                Button { isAddingText = true } label: { Self.materialRow("Skriv text", "text.alignleft", Color.orange) }
+                Button { isImporting = true } label: { Self.materialRow("Lägg till dokument", "doc.fill", Color.gray) }
                 if !pages.isEmpty { thumbnails }
                 if !pasted.isEmpty {
                     added("Text", "\(pasted.split(whereSeparator: \.isWhitespace).count) ord") { pasted = "" }
@@ -131,8 +124,13 @@ struct NewDrillView: View {
                     added("Skannad PDF", "\(scannedPDFPages.count) sidor") { scannedPDFPages = [] }
                 }
                 if readingDocument {
-                    HStack { ProgressView(); Text("Läser dokumentet …").foregroundStyle(LumenColor.muted) }
+                    HStack(spacing: 8) {
+                        ProgressView()
+                        Text("Läser dokumentet …").foregroundStyle(.secondary)
+                    }
                 }
+            } header: {
+                Text("Material")
             } footer: {
                 Text("Foton, dokument och text skickas en gång för att göra frågorna och sparas inte.")
             }
@@ -141,55 +139,40 @@ struct NewDrillView: View {
                 Stepper(value: $settings.questions, in: DrillSettings.questionRange) {
                     LabeledContent("Antal frågor", value: "\(settings.questions)").monospacedDigit()
                 }
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Långa svar")
-                    Picker("Långa svar", selection: $settings.length) {
-                        ForEach(DrillSettings.Length.allCases, id: \.self) { Text($0.label).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                    .labelsHidden()
-                }
+            } header: {
+                Text("Frågor")
             } footer: {
-                Text(settings.length == .normal
-                     ? "Normal är ett fullt A-svar på cirka \(settings.length.words) ord. Det korta svaret är första meningen."
-                     : "Cirka \(settings.length.words) ord. Det korta svaret är första meningen.")
+                Text("Varje fråga får ett kort och ett långt svar.") // D162: both answers are always made
             }
 
             GradeChoice(grade: $grade) // A88
 
             if let problem {
                 Section {
-                    Text(problem).foregroundStyle(LumenColor.ink)
+                    Text(verbatim: problem)
                     if !material.isEmpty { Button("Försök igen") { create(correction: nil) } } // A85
                 }
             }
-
-            Section {
-                Button {
-                    create(correction: nil)
-                } label: {
-                    Text("Skapa frågor").frame(maxWidth: .infinity)
-                }
-                .buttonStyle(LumenButtonStyle(height: 54))
-                .disabled(material.isEmpty || readingDocument)
-                .listRowBackground(Color.clear)
-            } footer: {
-                if material.isEmpty { Text("Lägg till minst en sida, bild eller text.") } // Kelly N3
+        }
+        .safeAreaInset(edge: .bottom) {
+            // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
+            MainActionBar(title: "Skapa frågor",
+                          note: material.isEmpty ? "Lägg till minst en sida, bild eller text." : model.quota?.line,
+                          isDisabled: material.isEmpty || readingDocument) {
+                create(correction: nil)
             }
         }
-        .lumenForm()
         .onAppear {
-            if !gradeLoaded { grade = model.preferredGrade; gradeLoaded = true } // A88
+            if !gradeLoaded {
+                grade = model.preferredGrade // A88
+                settings = model.newDrillSettings // A89
+                gradeLoaded = true
+            }
             if let stagedProblem, problem == nil {
                 problem = stagedProblem
                 if pasted.isEmpty { pasted = "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi." }
             }
         }
-    }
-
-    private var addedCount: Int {
-        pages.count + documents.count + (pasted.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0 : 1)
-            + (scannedPDFPages.isEmpty ? 0 : 1)
     }
 
     /// Ke50 §3: "{6 foton, 1 PDF och 1 text}."
@@ -203,20 +186,17 @@ struct NewDrillView: View {
         return (parts.isEmpty ? last : parts.joined(separator: ", ") + " och " + last) + "."
     }
 
-    private func tile(_ title: String, _ detail: String, _ symbol: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) { Self.tileLabel(title, detail, symbol) }.buttonStyle(.plain)
-    }
-
+    /// A row of the material list: the symbol on a coloured square, as in Inställningar (SYSTEM §0.4).
     /// nonisolated: PhotosPicker builds its label outside the main actor (CI 43493961075).
-    nonisolated private static func tileLabel(_ title: String, _ detail: String, _ symbol: String) -> some View {
-        VStack(spacing: 6) {
-            Image(systemName: symbol).font(.system(size: 24, weight: .semibold)).foregroundStyle(LumenColor.blue)
-            Text(title).font(LumenFont.text(16, .semibold)).foregroundStyle(LumenColor.ink)
-            Text(detail).font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
+    nonisolated private static func materialRow(_ title: String, _ symbol: String, _ color: Color) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: symbol)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.white)
+                .frame(width: 30, height: 30)
+                .background(color, in: RoundedRectangle(cornerRadius: 7))
+            Text(title)
         }
-        .frame(maxWidth: .infinity, minHeight: 88)
-        .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: LumenCard.radius))
-        .contentShape(Rectangle())
     }
 
     private var thumbnails: some View {
@@ -229,9 +209,10 @@ struct NewDrillView: View {
                                 .frame(width: 64, height: 84).clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                         Button { pages.remove(at: i) } label: {
-                            Image(systemName: "xmark.circle.fill").font(.system(size: 20))
-                                .foregroundStyle(.white, LumenColor.ink.opacity(0.7))
+                            Image(systemName: "xmark.circle.fill").font(.title3)
+                                .foregroundStyle(Color.white, Color.black.opacity(0.6))
                         }
+                        .buttonStyle(.plain)
                         .accessibilityLabel("Ta bort sida \(i + 1)")
                     }
                 }
@@ -242,12 +223,12 @@ struct NewDrillView: View {
 
     private func added(_ title: String, _ detail: String, remove: @escaping () -> Void) -> some View {
         HStack {
-            VStack(alignment: .leading) {
-                Text(title).lineLimit(1)
-                Text(detail).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: title).lineLimit(1)
+                Text(verbatim: detail).font(.subheadline).foregroundStyle(.secondary)
             }
             Spacer()
-            Button(action: remove) { Image(systemName: "xmark.circle.fill").foregroundStyle(LumenColor.muted) }
+            Button(action: remove) { Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary) }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Ta bort \(title)")
         }
@@ -256,8 +237,7 @@ struct NewDrillView: View {
     private var textSheet: some View {
         NavigationStack {
             TextEditor(text: $pasted)
-                .padding(12)
-                .lumenScreen()
+                .padding(.horizontal, 12)
                 .navigationTitle("Skriv text")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -315,34 +295,38 @@ struct NewDrillView: View {
     private static let steps = ["Läser sidorna", "Tar reda på ämne och årskurs", "Gör frågor", "Skriver svar"]
 
     private var makingView: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: 20) {
             Spacer()
-            Text("Läser ditt material").font(LumenFont.text(28, .bold, relativeTo: .title))
-            if !materialLine.isEmpty { Text(materialLine).font(LumenFont.text(17)).foregroundStyle(LumenColor.muted) }
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Läser ditt material").font(.title2.bold()).accessibilityAddTraits(.isHeader)
+                if !materialLine.isEmpty { Text(verbatim: materialLine).foregroundStyle(.secondary) }
+            }
             VStack(alignment: .leading, spacing: 14) {
                 ForEach(Self.steps.indices, id: \.self) { i in
                     HStack(spacing: 12) {
                         Group {
                             if i < stepsDone {
-                                Image(systemName: "checkmark.circle.fill").foregroundStyle(LumenColor.ok)
+                                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
                             } else if i == stepsDone {
                                 ProgressView()
                             } else {
-                                Image(systemName: "circle").foregroundStyle(LumenColor.line)
+                                Image(systemName: "circle").foregroundStyle(.tertiary)
                             }
                         }
-                        .frame(width: 26)
-                        Text(Self.steps[i]).font(LumenFont.text(18))
-                            .foregroundStyle(i <= stepsDone ? LumenColor.ink : LumenColor.muted)
+                        .font(.title3)
+                        .frame(width: 28)
+                        Text(verbatim: Self.steps[i])
+                            .foregroundStyle(i <= stepsDone ? Color.primary : Color.secondary)
                     }
                     .accessibilityElement(children: .combine)
                     .accessibilityValue(i < stepsDone ? "klart" : i == stepsDone ? "pågår" : "")
                 }
             }
-            Text("Det tar ungefär en minut. Du kan lämna appen.").font(LumenFont.text(16)).foregroundStyle(LumenColor.muted)
+            Text("Det tar ungefär en minut. Du kan lämna appen.").font(.subheadline).foregroundStyle(.secondary)
             Spacer()
         }
         .padding(24)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private func create(correction: String?) {
@@ -418,27 +402,31 @@ struct NewDrillView: View {
             if let draft {
                 Section {
                     LabeledContent("Ämne", value: draft.summary.subject)
-                    LabeledContent("Årskurs", value: draft.summary.grade)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Provet handlar om").font(LumenFont.text(13, .semibold)).foregroundStyle(LumenColor.muted)
-                        Text(draft.summary.covers)
-                    }
+                    if !draft.summary.grade.isEmpty { LabeledContent("Årskurs", value: draft.summary.grade) }
+                }
+
+                Section("Provet handlar om") {
+                    Text(verbatim: draft.summary.covers)
                 }
 
                 Section {
                     TextField("Till exempel ”Det är åk 8” eller ”Ta inte med cellandning”", text: $correction, axis: .vertical)
                     Button("Gör om med rättelsen") { create(correction: correction) }
                         .disabled(correction.trimmingCharacters(in: .whitespaces).isEmpty)
-                } header: { Text("Något fel? Skriv det") }
+                } header: {
+                    Text("Något fel? Skriv det")
+                }
 
                 Section {
                     ForEach(draft.items.prefix(5)) { item in
-                        Text(item.question)
+                        Text(verbatim: item.question)
                     }
-                    if draft.items.count > 5 { Text("och \(draft.items.count - 5) till").foregroundStyle(LumenColor.muted) }
+                    if draft.items.count > 5 { Text("och \(draft.items.count - 5) till").foregroundStyle(.secondary) }
+                } header: {
+                    Text("Frågor")
                 } footer: {
                     VStack(alignment: .leading, spacing: 4) {
-                        if let note = draft.note { Text(note) } // K51 (D159)
+                        if let note = draft.note { Text(verbatim: note) } // K51 (D159)
                         Text("\(DrillText.questions(draft.items.count)). Du kan ändra, ta bort och lägga till efteråt.")
                     }
                 }
@@ -453,36 +441,31 @@ struct NewDrillView: View {
 
                 if let problem {
                     Section {
-                        Text(problem)
+                        Text(verbatim: problem)
                         if answersMissing && !isAnswering { Button("Försök igen") { self.problem = nil; writeAnswers() } }
                     }
                 }
 
-                Section {
-                    Button {
-                        save(draft)
-                    } label: {
-                        HStack(spacing: 10) {
-                            if isAnswering { ProgressView().tint(.white) }
-                            Text(isAnswering ? "Skriver svar …" : "Ser rätt ut")
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(LumenButtonStyle(height: 54))
-                    .disabled(answersMissing)
-                    .listRowBackground(Color.clear)
-                }
+                VoiceChoice(voice: $voice) // A84 (D151): before the sound is made, it cannot be changed afterwards
             }
         }
-        .lumenForm()
+        .safeAreaInset(edge: .bottom) {
+            MainActionBar(title: isAnswering ? "Skriver svar …" : "Ser rätt ut",
+                          isBusy: isAnswering,
+                          isDisabled: answersMissing) {
+                if let draft { save(draft) }
+            }
+        }
     }
 
     private func save(_ draft: DrillDraft) {
         let name = title.trimmingCharacters(in: .whitespaces)
         let subject = draft.summary.subject.trimmingCharacters(in: .whitespaces)
-        let drill = model.save(Drill(title: name.isEmpty ? (subject.isEmpty ? "Nytt prov" : "\(subject)provet") : name,
-                                     summary: draft.summary, items: draft.items.filter { !$0.short.isEmpty },
-                                     questionCount: settings.questions, longWords: settings.length.words))
+        var made = Drill(title: name.isEmpty ? (subject.isEmpty ? "Nytt prov" : "\(subject)provet") : name,
+                         summary: draft.summary, items: draft.items.filter { !$0.short.isEmpty },
+                         questionCount: settings.questions, longWords: settings.length.words)
+        made.voiceModel = voice // A84: sent with the first save
+        let drill = model.save(made)
         onSaved(drill)
         dismiss()
     }
