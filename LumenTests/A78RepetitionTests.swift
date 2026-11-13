@@ -333,13 +333,19 @@ import Testing
 
     // MARK: Angela: sound that arrives while the list plays (K46), AirPods 1/2
 
+    /// A value the test changes while the player's track provider (a sendable closure) reads it.
+    @MainActor final class Ref<T> {
+        var value: T
+        init(_ value: T) { self.value = value }
+    }
+
     @Test func aQuestionWithoutSoundYetIsWaitedFor() {
         // K46 makes the files in play order: question 2 may not be downloaded when question 1 ends.
         let source = MockSource()
         let timer = MockTimer()
         let all = Self.tracks(2)
-        var ready = 1
-        let player = RepetitionPlayer(count: 2, track: { $0 < ready ? all[$0] : nil }, source: source, timer: timer,
+        let ready = Ref(1)
+        let player = RepetitionPlayer(count: 2, track: { $0 < ready.value ? all[$0] : nil }, source: source, timer: timer,
                                       thinkingSeconds: 6)
         player.start()
         source.last.finish()
@@ -350,7 +356,7 @@ import Testing
         #expect(player.phase == .waitingForAudio(1), "nothing to answer yet")
         timer.fire()
         #expect(player.phase == .waitingForAudio(1))
-        ready = 2
+        ready.value = 2
         timer.fire()
         #expect(player.phase == .question(1))
         #expect(source.last.url.lastPathComponent == "q1.mp3")
@@ -360,14 +366,14 @@ import Testing
         let source = MockSource()
         let timer = MockTimer()
         let all = Self.tracks(1)
-        var ready = false
-        let player = RepetitionPlayer(count: 1, track: { _ in ready ? all[0] : nil }, source: source, timer: timer,
+        let ready = Ref(false)
+        let player = RepetitionPlayer(count: 1, track: { _ in ready.value ? all[0] : nil }, source: source, timer: timer,
                                       thinkingSeconds: 6)
         player.start()
         #expect(player.phase == .waitingForAudio(0))
         player.handle(.pauseToggle)
         #expect(player.isPaused && timer.pending == nil)
-        ready = true
+        ready.value = true
         player.handle(.short) // D143: any press goes on
         #expect(!player.isPaused)
         #expect(player.phase == .question(0))
