@@ -414,3 +414,16 @@ All calls are `POST` with the user's JWT, like `/answer`.
    - A path from another account gives 403.
    - A photo that never arrived gives 422 `material_missing` ("2 av 30 bilder kom inte fram. Ladda upp dem igen."). Upload those again with new URLs.
 - More than 10 photos are written out as text in parallel batches before the questions are made. Measured live: 30 photos to questions in 22.5 s, answers 12 s more.
+
+## Help AI: `POST /help` (K57, D166): contract for the app (A92)
+- `{"question": "Hur delar jag ett prov?"}` → `{"answer", "in_scope": true, "usage"}`.
+  - The answer is short Swedish (at most 4 sentences or 5 numbered steps) and uses the app's own button names.
+  - Questions on how the presses work always get Aron's A90 text word for word.
+  - When the help text does not say, the answer is "Det vet jag inte. Skriv till oss under Inställningar › Om Earmind."
+- Outside the app: `{"answer": "Det kan jag inte svara på.", "in_scope": false, "hint": "Jag svarar bara på hur Earmind fungerar, till exempel hur du gör ett nytt prov."}`. Show the answer, then the hint.
+- `{"action": "try", "text": "<at least a few sentences>"}` → the same reply as `/exam drill` (3 items with `short` and `long`, `summary`, `notes`), plus `quota: {used, limit}`.
+  - It counts as 3 of the month's questions and is counted only when the questions were made.
+  - 402 `quota_exceeded` ("Du har inga frågor kvar den här månaden."); 400 when the text is too short.
+  - "Spara som prov" saves the items with `/drill save` as usual.
+- Limits: 10 questions per minute, 200 per day; `try` 3 per minute, 20 per day. 429 has a Swedish message.
+- The knowledge is `docs/HJALP.md` and `Shared/capabilities.json`. After editing HJALP.md, run `python -X utf8 scripts/sync-hjalp.py`, or the deploy's test fails.

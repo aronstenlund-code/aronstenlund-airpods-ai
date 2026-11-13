@@ -1,0 +1,288 @@
+{
+ "how_to": "30/30",
+ "outside": "8/10",
+ "forbidden_words": 0,
+ "cost_usd": 0.0173,
+ "rows": [
+  {
+   "q": "Hur gör jag ett nytt prov?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "1. Tryck Nytt prov på startsidan.\n2. Lägg till material med Fota sidor, Välj bilder, Skriv text eller Dokument.\n3. Ge provet ett namn, välj Antal frågor och gärna årskurs.\n4. Tryck Skapa frågor. Du kan lämna appen under tiden.\n5. Under Stämmer det här? trycker du Ser rätt ut, eller skriver en rättelse och trycker Gör om med rättelsen.",
+   "error": null
+  },
+  {
+   "q": "Hur fungerar trycken?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Under en fråga trycker du 1 gång för frågans A-svar. Trycker du 2 gånger får du ett kort A-svar på en till två meningar. Trycker du 3 gånger pausar du, och ett nytt tryck fortsätter. Under paus fortsätter ett vilket tryck som helst från början av meningen där du slutade. Vill du prova trycken i förväg kan du öppna Styr med dina AirPods.",
+   "error": null
+  },
+  {
+   "q": "Vad händer om jag trycker två gånger?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Två tryck ger ett kort A-svar på en till två meningar. Ett tryck ger frågans A-svar, och tre tryck pausar provet.",
+   "error": null
+  },
+  {
+   "q": "Hur pausar jag?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Tryck 3 gånger på en AirPod under en fråga för att pausa. Tryck igen för att fortsätta, och då börjar det från början av meningen där du slutade. Du behöver inte röra telefonen.",
+   "error": null
+  },
+  {
+   "q": "Hur fortsätter jag efter paus?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Tryck på en AirPod så fortsätter provet från början av meningen där du slutade. Du behöver inte röra telefonen.",
+   "error": null
+  },
+  {
+   "q": "Hur avslutar jag provet?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Tryck Avsluta på telefonen. Provet tar slut först då, annars börjar listan om från början när den är slut.",
+   "error": null
+  },
+  {
+   "q": "Varför blev det färre frågor än jag valde?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Earmind gör aldrig fler frågor än materialet räcker till. Är texten kort blir det färre frågor än du valde, och appen säger hur många det blev, till exempel \"Materialet räckte till 12 frågor\".",
+   "error": null
+  },
+  {
+   "q": "Hur delar jag ett prov med en kompis?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Tryck Dela på provet och skicka länken med till exempel Meddelanden. Delar du går först när allt ljud är klart, annars står det Delas när ljudet är klart. Din kompis får en egen kopia med samma frågor, svar och ljud. Foton och dokument delas aldrig, bara frågor, svar och ljud.",
+   "error": null
+  },
+  {
+   "q": "Varför kan jag inte dela mitt prov?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Dela går först när allt ljud är klart. Innan dess står det \"Delas när ljudet är klart\" på provet. Vänta tills ljudet är klart och tryck sedan Dela igen.",
+   "error": null
+  },
+  {
+   "q": "Hur publicerar jag ett prov?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Så här publicerar du ett prov:\n1. Öppna provet och tryck Publicera prov. Ljudet måste vara klart först.\n2. Välj skola, ämne och provdatum.\n3. Fyll i ditt användarnamn bara om du vill att det ska visas.\n4. Tryck Publicera prov igen för att bekräfta.\nAndra som söker på din skola kan då plugga på ditt prov under Prov från din skola.",
+   "error": null
+  },
+  {
+   "q": "Hur hittar jag prov från min skola?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Öppna Prov från din skola. Prov från din egen skola visas först. Tryck Lägg till i mina prov för att få en egen kopia.",
+   "error": null
+  },
+  {
+   "q": "Kan jag byta röst efter att ljudet är gjort?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Nej. När ljudet är gjort går rösten inte att byta för det provet. Vill du ha en annan röst gör du ett nytt prov. Du väljer röst innan ljudet görs, och du kan provlyssna först.",
+   "error": null
+  },
+  {
+   "q": "Hur ändrar jag tempot?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Du ändrar tempot under Inställningar. Det går från 0,50 till 1,5. Det kostar inget och ändrar inte ljudfilerna. Under 0,70 spelas rösten i 0,70 med längre pauser mellan meningarna.",
+   "error": null
+  },
+  {
+   "q": "Hur många frågor kan jag göra?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Du kan göra 15 frågor med ljud per kalendermånad. Gränsen börjar om den första i varje månad, och appen visar hur många du har kvar den här månaden. Prov som andra har delat eller publicerat, och som du lägger till hos dig, räknas inte. Abonnemang kommer senare, men priser finns inte än.",
+   "error": null
+  },
+  {
+   "q": "Räknas andras prov mot mina frågor?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Nej. Prov som andra har delat eller publicerat och som du lägger till hos dig räknas inte mot dina frågor.",
+   "error": null
+  },
+  {
+   "q": "Sparas mina foton?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Nej, dina foton sparas inte. Foton, dokument och text skickas en gång för att göra frågorna, och sedan raderas de.",
+   "error": null
+  },
+  {
+   "q": "Använder Earmind mikrofonen?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Nej, i repetitionsläget använder Earmind aldrig mikrofonen. Du styr provet med tryck på AirPods. Mikrofonen används bara i beta-lägena under Fler lägen, till exempel Förhör med rösten.",
+   "error": null
+  },
+  {
+   "q": "Hur ändrar jag en fråga?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Öppna provet och tryck Ändra. Därifrån kan du ändra en fråga eller ett svar, ta bort frågor, dra för att ändra ordning och trycka Lägg till fråga.",
+   "error": null
+  },
+  {
+   "q": "Hur lägger jag till en egen fråga?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "1. Öppna provet och tryck Ändra.\n2. Tryck Lägg till fråga.\n3. Skriv frågan och svaret. Vill du inte skriva svaret själv trycker du Låt Earmind skriva svaret.\n4. Spara ändringen. Ljud görs då bara för den nya frågan.",
+   "error": null
+  },
+  {
+   "q": "Kan jag lägga till en PDF?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Ja. Tryck Nytt prov, sedan Dokument och välj din PDF. Dokument kan vara PDF, Word eller text.",
+   "error": null
+  },
+  {
+   "q": "Hur många bilder kan jag ta?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Du kan lägga till upp till 40 bilder i ett prov. Fota rakt ovanifrån i bra ljus för bäst resultat.",
+   "error": null
+  },
+  {
+   "q": "Vad är skillnaden mellan kort och långt svar?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Varje fråga får ett kort svar och ett långt svar. Det korta svaret är första meningen i det långa och är ett fullgott svar i sig. Det långa svaret förklarar mer, med begrepp, samband och exempel.",
+   "error": null
+  },
+  {
+   "q": "Hur rättar jag om ämnet blev fel?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Under Stämmer det här? skriver du rättelsen i rutan, till exempel \"Det är åk 8\", och trycker Gör om med rättelsen. Stämmer det trycker du Ser rätt ut.",
+   "error": null
+  },
+  {
+   "q": "Vad gör jag om ett tryck inte kommer fram?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Kolla att båda AirPods sitter i öronen och är anslutna. Knapparna på låsskärmen fungerar alltid.",
+   "error": null
+  },
+  {
+   "q": "Fungerar det med gamla AirPods?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Ja, det fungerar med gamla AirPods, men trycken fungerar lite annorlunda. Gäller det äldre AirPods med dubbeltryck per lur: ställ in vänster lur på Nästa spår (kort svar) och höger på Spela/pausa (långt svar och paus). Gör det under Inställningar › Bluetooth › ⓘ vid dina AirPods. Knapparna på låsskärmen fungerar alltid.",
+   "error": null
+  },
+  {
+   "q": "Vad är Fler lägen?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Fler lägen är extra lägen i Earmind som är i beta. De lyssnar med mikrofonen. Där finns Standardläge, Förhör med rösten, Intervju, Socialt och Rizz samt Sömn. Du hittar dem under Fler lägen.",
+   "error": null
+  },
+  {
+   "q": "Kan Earmind styra Spotify?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Att styra Spotify kommer snart. Det går inte än.",
+   "error": null
+  },
+  {
+   "q": "Kostar det något?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Earmind har en gräns på 15 frågor med ljud per kalendermånad. Appen visar hur många du har kvar den här månaden. Ett abonnemang kommer senare, men priser finns inte än.",
+   "error": null
+  },
+  {
+   "q": "Hur rapporterar jag ett dåligt prov?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Öppna provet under Prov från din skola och tryck Rapportera provet. Efter tre rapporter döljs provet tills det har granskats.",
+   "error": null
+  },
+  {
+   "q": "Kan jag ta bort ett prov jag har publicerat?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Ja, du kan när som helst ta bort din publicering. De som redan har lagt till provet behåller sin kopia.",
+   "error": null
+  },
+  {
+   "q": "Vad är fotosyntes?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Det kan jag inte svara på.",
+   "error": null
+  },
+  {
+   "q": "Hjälp mig med min mattelaxa: vad är 3x + 5 = 20?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Det kan jag inte svara på.",
+   "error": null
+  },
+  {
+   "q": "Vem vann fotbolls-VM?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Det kan jag inte svara på.",
+   "error": null
+  },
+  {
+   "q": "Skriv en dikt om hösten",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Det kan jag inte svara på.",
+   "error": null
+  },
+  {
+   "q": "Hur använder jag Snapchat?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Det kan jag inte svara på.",
+   "error": null
+  },
+  {
+   "q": "Vad är huvudstaden i Frankrike?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Det kan jag inte svara på.",
+   "error": null
+  },
+  {
+   "q": "Kan du göra mina läxor?",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Det kan jag inte svara på.",
+   "error": null
+  },
+  {
+   "q": "Berätta ett skämt",
+   "ok": true,
+   "forbidden_word": false,
+   "answer": "Det kan jag inte svara på.",
+   "error": null
+  },
+  {
+   "q": "Vad tycker du om mig?",
+   "ok": false,
+   "forbidden_word": false,
+   "answer": "",
+   "error": 429
+  },
+  {
+   "q": "Hur mycket väger en elefant?",
+   "ok": false,
+   "forbidden_word": false,
+   "answer": "",
+   "error": 429
+  }
+ ]
+}
