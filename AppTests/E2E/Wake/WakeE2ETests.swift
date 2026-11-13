@@ -91,11 +91,33 @@ struct WakeE2ETests {
         }
     }
 
-    // MARK: One set in one session
+    // MARK: One set, one session per room
 
+    /// Each room is its own session (2026-11-13, first run 43489814229): A10's `WearerFocus` learns the wearer's level
+    /// from the session's own speech and mutes speech 9 dB below it. In one shared session the 1 m files (-14 dB) came
+    /// right after 20 quiet-room files and were muted as "someone else" (9 of 15 not heard, before and after A75).
+    /// The 1 m room means the user talking from 1 m, so it starts its own session, like a real user would.
     private func run(set: String) async throws -> SetResult {
         let dir = try #require(WakeEnvironment.audioDir)
-        let cases = try Self.cases(in: dir).filter { $0.expect == set }
+        let all = try Self.cases(in: dir).filter { $0.expect == set }
+        var rooms: [String] = []
+        for item in all where !rooms.contains(item.cond) { rooms.append(item.cond) }
+        var result = SetResult(set: set)
+        for room in rooms {
+            let part = try await runSession(set: set, cases: all.filter { $0.cond == room })
+            result.cases += part.cases
+            result.log += ["--- room \(room): \(part.cases.count) files, \(Int(part.seconds)) s"] + part.log
+            result.seconds += part.seconds
+            if let stopped = part.stoppedEarly {
+                result.stoppedEarly = (result.stoppedEarly.map { $0 + "; " } ?? "") + "\(room): \(stopped)"
+            }
+        }
+        try write(result)
+        return result
+    }
+
+    private func runSession(set: String, cases: [Case]) async throws -> SetResult {
+        let dir = try #require(WakeEnvironment.audioDir)
         let gap = 12.0
         let lead = dir.appendingPathComponent("lead-silence.wav")
         let files = [lead] + cases.map { dir.appendingPathComponent("\($0.id).wav") }
@@ -174,7 +196,6 @@ struct WakeE2ETests {
             result.cases.append(one)
         }
         result.log = (log + events).sorted { $0.t < $1.t }.map { String(format: "%7.2f ", $0.t) + "\($0.kind) " + $0.text }
-        try write(result)
         return result
     }
 

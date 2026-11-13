@@ -51,7 +51,7 @@ with wave.open(out, 'wb') as w:
   fi
   echo "$SET-$ID ($KIND, pause $PAUSE): $TEXT"
 done
-python3 -I -c "import sys, wave; w = wave.open(sys.argv[1], 'wb'); w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000); w.writeframes(bytes(2 * 16000 * 4)); w.close()" "$AUDIO/lead-silence.wav"
+python3 -I -c "import sys, wave; w = wave.open(sys.argv[1], 'wb'); w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000); w.writeframes(bytes(2 * 16000 * 20)); w.close()" "$AUDIO/lead-silence.wav"
 ls -la "$AUDIO"
 echo "::endgroup::"
 

@@ -42,10 +42,11 @@ fi
 echo "Voices: ${VOICES[*]}"
 cp AppTests/E2E/Audio/wake.tsv "$AUDIO/wake.tsv"
 mk() { say -v "$1" -r "$2" --file-format=WAVE --data-format=LEI16@16000 -o "$3" "$4"; }
-# Babble: three long sentences in the other voices, never the case texts.
+# Babble: three long sentences in the other voices, never the case texts, and never a question (2026-11-13: "Kan du
+# tänka dig att …" was answered as a question in two nowake files, which said nothing about the name).
 mk "${VOICES[0]}" 180 "$AUDIO/babble-0.wav" "Vi pratade länge om semestern och om hur dyrt det har blivit att äta ute på restaurang nu för tiden."
 mk "${VOICES[$((1 % $NV))]}" 170 "$AUDIO/babble-1.wav" "Hon berättade att bilen hade gått sönder igen och att verkstaden inte kunde ta emot den förrän nästa vecka."
-mk "${VOICES[$((2 % $NV))]}" 200 "$AUDIO/babble-2.wav" "Kan du tänka dig att det fortfarande inte finns någon parkering vid stationen trots alla löften från kommunen."
+mk "${VOICES[$((2 % $NV))]}" 200 "$AUDIO/babble-2.wav" "Det finns fortfarande ingen parkering vid stationen trots alla löften från kommunen, så vi tar bussen dit."
 tail -n +2 AppTests/E2E/Audio/wake.tsv | while IFS=$'\t' read -r ID EXPECT VOICE RATE COND KEY TEXT; do
   [ -z "$ID" ] && continue
   V="${VOICES[$((VOICE % $NV))]}"
@@ -56,7 +57,7 @@ tail -n +2 AppTests/E2E/Audio/wake.tsv | while IFS=$'\t' read -r ID EXPECT VOICE
   rm -f "$AUDIO/clean-$ID.wav"
   echo "$ID ($EXPECT, $V, $RATE, $COND): $TEXT"
 done
-python3 -I -c "import sys, wave; w = wave.open(sys.argv[1], 'wb'); w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000); w.writeframes(bytes(2 * 16000 * 4)); w.close()" "$AUDIO/lead-silence.wav"
+python3 -I -c "import sys, wave; w = wave.open(sys.argv[1], 'wb'); w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000); w.writeframes(bytes(2 * 16000 * 20)); w.close()" "$AUDIO/lead-silence.wav"
 ls "$AUDIO" | wc -l
 echo "::endgroup::"
 
