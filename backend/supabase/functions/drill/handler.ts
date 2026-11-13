@@ -235,6 +235,13 @@ export function voiceModel(v: unknown): string | null {
   const alias: Record<string, string> = { a: VOICE_MODELS[0], v2: VOICE_MODELS[0], b: VOICE_MODELS[1], v3: VOICE_MODELS[1], c: VOICE_MODELS[2], flash: VOICE_MODELS[2] };
   return (VOICE_MODELS as readonly string[]).includes(k) ? k : alias[k] ?? null;
 }
+/** K52 (D155): the limit is per calendar month in Swedish time; the first day of the next month, "YYYY-MM-DD". */
+export function nextMonthStart(nowMs: number): string {
+  const ym = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Stockholm", year: "numeric", month: "2-digit" }).format(new Date(nowMs));
+  const [y, m] = ym.split("-").map(Number);
+  return m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, "0")}-01`;
+}
+
 /** List price per 1 000 characters (ElevenLabs API page, 2026-11-13): Flash half of v2/v3. */
 export const usdPer1k = (model: string, base: number) => /flash|turbo/i.test(model) ? base / 2 : base;
 
@@ -407,7 +414,7 @@ export function createDrillHandler(deps: DrillDeps) {
         const doneSet = new Set((hashes.length ? await deps.db.audio(hashes) : []).filter((a) => a.status === "done").map((a) => a.hash));
         const q = await deps.db.useQuota(user.id, 0);
         return json({
-          quota: { used: q.used, limit: q.lim },
+          quota: { used: q.used, limit: q.lim, per: "month", resets: nextMonthStart(now()) },
           drills: drills.map((d) => {
             const its = items.filter((i) => i.drill_id === d.id);
             const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
@@ -657,12 +664,14 @@ export function createDrillHandler(deps: DrillDeps) {
           return json({
             error: {
               code: "quota_exceeded",
-              message: `Du har gjort ${q.used} av ${q.lim} frågor med ljud. Köp ett abonnemang eller hämta andras prov, de är gratis.`,
+              message: `Du har gjort ${q.used} av ${q.lim} frågor med ljud den här månaden. Köp ett abonnemang eller hämta andras prov, de är gratis.`,
               fallback: false,
             },
             used: q.used,
             limit: q.lim,
             needed: generated,
+            per: "month",
+            resets: nextMonthStart(now()),
           }, 402);
         }
       }

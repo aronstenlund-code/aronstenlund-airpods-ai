@@ -35,7 +35,7 @@ export const DRILL_LIMITS = {
   questionWordsMax: 8,
   batch: 5,
   /** R3: questions asked for beyond the count; the longest are dropped in code. */
-  extraQuestions: 4,
+  extraQuestions: 6,
   docxBase64: 14 * 1024 * 1024,
 };
 
@@ -63,10 +63,10 @@ export const SYSTEM_PROMPT_DRILL_PLAN =
   `You prepare a Swedish student's revision list for an exam ("prov") from their study material (page photos, notes, a document's text). The student will listen to the questions and answers in their AirPods. Return ONLY a JSON object:
 {"summary": {"subject": "Biologi", "grade": "åk 8", "covers": "..."}, "notes": "...", "questions_possible": 12, "questions": ["Varför behövs klorofyll?", "..."]}
 When the material cannot be read at all (blurred, cut off, a screen photo you cannot make out, no school content), return ONLY {"unreadable": "<one short Swedish sentence on why, for example 'Texten på bilderna går inte att läsa.'>"}.
-- summary: "subject" the school subject in Swedish; "grade" the school year or course as Swedes say it ("åk 8", "Matematik 1b", "Svenska 1"), from <context> when given, else your best reading of the material; "covers" one or two Swedish sentences on what the exam covers (the main areas, in order).
+- summary: "subject" the school subject in Swedish; "grade" the school year or course as Swedes say it ("åk 8", "Matematik 1b", "Svenska 1", "Engelska 6", "Samhällskunskap 1b"): from <context> when given; else from the material itself: a course name or code, a textbook title, "åk"/"årskurs", or content that only fits one level (a gymnasium course's topics such as derivatives, molar mass or language history are gymnasium; never guess "åk 8" by default); else "" (empty: the app then asks the student, D159/K52); "covers" one or two Swedish sentences on what the exam covers (the main areas, in order).
 - notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact Swedish plain text in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.
 - questions_possible: how many good, different exam questions the material really supports (D159: never more than the material carries; a short text may support 4). Count before you write.
-- questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 4 extra (the longest are removed afterwards, so make most of them short). Never pad with repeated, trivial or outside questions to reach the number. In Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
+- questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 6 extra (the longest are removed afterwards, so make most of them short). Never pad with repeated, trivial or outside questions to reach the number. In Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
   - short: at least four of every five questions have five words or fewer (count them: "Varför behövs klorofyll?" is three). Six to eight words only for a calculation question or when fewer words would not make sense when the question is only HEARD, with no text in front of the student. Never a fragment that needs the material to make sense ("Vad säger m?", "Mol metan i 16 g?" are wrong; "Vad visar m i en rät linje?", "Hur många mol är 16 gram metan?" are right). Cut filler such as "i naturen", "egentligen", "det att";
   - written as it is said: no symbols, formulas, units or abbreviations as signs ("syre", not "O2"; "kubikdecimeter", not "dm³"; "procent", not "%");
   - tests understanding, not only recall: at least three of every four questions ask why, how, what happens if, or compare ("Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Vad händer om pH sjunker?", "Skillnad mellan väder och klimat?"); "Vad är X?", "Vad betyder X?" or "Vilka ...?" at most one in five, only for a key term the material defines;
@@ -81,7 +81,7 @@ export const SYSTEM_PROMPT_DRILL_ANSWERS =
 - "short": the short answer: one or two sentences (at most about 30 words) that answer the question correctly and completely on their own.
 - "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: the right concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Do not repeat the short answer. Short + rest together are about <long_words> words or fewer (count them); go over only when the answer would otherwise miss a concept or connection an A-level answer needs, and then by at most a fifth. Never pad an answer to reach the number.
 - The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).
-- Base the answers on <notes>; add well-established school knowledge only where the notes are too thin, and never contradict them. Every fact must be correct: work every number out before you write it.
+- Base the answers on <notes>. Add school knowledge only where the notes are too thin, only facts you are certain of (textbook-level, widely known), and never contradict the notes; leave out a detail rather than guess it (O55: "stäppgräs har korta rötter" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for.
 - The text is read aloud: plain spoken Swedish sentences, no markdown, lists, headings, brackets, abbreviations or symbols. Write chemical formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"). Never mention the notes, the material, the exam or the grade.
 No other text.`;
 
@@ -95,6 +95,8 @@ export interface DrillItem {
   question: string;
   short?: string;
   long?: string;
+  /** K52: the answer could not be written (never an empty answer). */
+  error?: string;
 }
 export interface StepUsage {
   model: string;
@@ -110,6 +112,15 @@ export function clean(s: unknown, max: number): string {
 }
 const oneLine = (s: unknown, max: number) => clean(s, max).replace(/\s+/g, " ");
 export const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
+
+/** K52: the app's profile codes (StudyProfile.Grade) as Swedes say them; anything else as it is. */
+export function gradeName(g: string): string {
+  const m: Record<string, string> = {
+    y6: "åk 6", y7: "åk 7", y8: "åk 8", y9: "åk 9", gy1: "gymnasiet år 1", gy2: "gymnasiet år 2", gy3: "gymnasiet år 3",
+    university: "högskola", other: "",
+  };
+  return m[g.trim().toLowerCase()] ?? g;
+}
 
 export function intIn(v: unknown, min: number, max: number, dflt: number): number {
   const n = Math.round(Number(v));
@@ -185,14 +196,20 @@ export function trimQuestions(list: string[], count: number): string[] {
 }
 
 export const SYSTEM_PROMPT_DRILL_SHORTEN =
-  `You shorten Swedish exam questions that a student will only HEAR (no text in front of them). You get <exam> (subject, grade and what the exam covers) and <questions> (JSON: i and q). Return ONLY a JSON object {"questions": [{"i": 0, "q": "..."}]} with every question you got.
+  `You check Swedish exam questions that a student will only HEAR (no text in front of them). You get <exam> (subject, grade and what the exam covers) and <questions> (JSON: i and q). Return ONLY a JSON object {"questions": [{"i": 0, "q": "..."}]} with ONLY the questions you changed (none = {"questions": []}).
+- A question that only makes sense with the material in front of the student is rewritten so that it is clear when heard alone ("Hur bygger man gymmodellen?" -> "Hur ställer man upp en linjär kostnadsmodell?", "Skillnad mot past simple?" -> "Skillnad mellan present perfect och past simple?").
+- Symbols, formulas, units and abbreviations are written as they are said ("3x + 5 = 20" -> "tre x plus fem är lika med tjugo", "O2" -> "syre", "dm³" -> "kubikdecimeter").
+- Wrong or clumsy Swedish is fixed ("Vad jämför man nysvenska och fornsvenska?" -> "Hur skiljer sig nysvenska från fornsvenska?").
 - Make each question five words or fewer when it stays clear and unambiguous within THIS exam: drop what the exam's subject already makes obvious and filler ("Varför är bönen viktig för muslimer?" -> "Varför ber muslimer?" in an exam on Islam; but keep "enligt buddhismen" when the exam covers several religions and the question would otherwise be unclear).
 - The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.
 - A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.
 - If a question cannot be made five words or fewer without becoming unclear, return it unchanged.
 No other text.`;
 
-/** Questions over five words, shortened by a cheap model; a reply that is longer, empty or broken keeps the original. */
+/**
+ * K45/K52: every question checked by a cheap model: shortened, made clear without the material, symbols in words,
+ * Swedish fixed. A reply that is empty, broken, a duplicate or longer than eight words keeps the original.
+ */
 export async function shortenQuestions(
   provider: LLMProvider,
   cfg: DrillConfig,
@@ -200,14 +217,14 @@ export async function shortenQuestions(
   exam: DrillSummary,
   signal?: AbortSignal,
 ): Promise<{ questions: string[]; usage: StepUsage | null }> {
-  const long = questions.map((q, i) => ({ i, q })).filter((x) => words(x.q) > 5);
+  const long = questions.map((q, i) => ({ i, q }));
   if (!long.length) return { questions, usage: null };
   try {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_SHORTEN,
       user: `<exam>${sanitizeTagged(`${contextLine(exam.subject, exam.grade)}. ${exam.covers}`)}</exam>
 <questions>${sanitizeTagged(JSON.stringify(long))}</questions>`,
-      maxTokens: 200 + long.length * 40,
+      maxTokens: 300 + long.length * 30,
       cacheSystem: true,
       model: cfg.planModel,
       timeoutMs: 30_000,
@@ -219,7 +236,9 @@ export async function shortenQuestions(
       const i = Number(x?.i);
       const q = cleanQuestion(x?.q);
       if (!Number.isInteger(i) || i < 0 || i >= out.length || !q) continue;
-      if (words(q) >= 2 && words(q) < words(out[i]) && !out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) out[i] = q;
+      // shorter, or a rewrite for clarity/symbols that stays within the limit (never longer than eight words)
+      if (words(q) >= 2 && words(q) <= DRILL_LIMITS.questionWordsMax &&
+        !out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) out[i] = q;
     }
     return { questions: out, usage: r.usage };
   } catch (e) {
@@ -254,9 +273,11 @@ export function parseAnswers(text: string): Map<string, { short: string; long: s
   for (const a of Array.isArray(j?.answers) ? j!.answers as Record<string, unknown>[] : []) {
     const id = oneLine(a?.id, 40);
     let short = spokenText(a?.short, 600);
-    if (short && !/[.!?]$/.test(short)) short += ".";
-    const long = composeLong(short, spokenText(a?.rest, 3000));
-    if (id && short) out.set(id, { short, long });
+    const rest = spokenText(a?.rest, 3000);
+    // K52 (O55: one empty answer): an empty, one-word or cut-off answer is not accepted; the question is asked again
+    if (!id || words(short) < 2 || (rest && !/[.!?]["”')]?$/.test(rest))) continue;
+    if (!/[.!?]$/.test(short)) short += ".";
+    out.set(id, { short, long: composeLong(short, rest) });
   }
   return out;
 }
@@ -325,10 +346,12 @@ export async function answerItems(
   const batches: { id: string; question: string }[][] = [];
   for (let i = 0; i < items.length; i += DRILL_LIMITS.batch) batches.push(items.slice(i, i + DRILL_LIMITS.batch));
   const first = await Promise.allSettled(batches.map(ask));
-  const missing = items.filter((it) => !got.has(it.id));
-  if (missing.length) {
+  // K52: missing, empty or cut-off answers are asked again, first in batches, then one by one
+  for (const size of [DRILL_LIMITS.batch, 1]) {
+    const missing = items.filter((it) => !got.has(it.id));
+    if (!missing.length) break;
     const again: { id: string; question: string }[][] = [];
-    for (let i = 0; i < missing.length; i += DRILL_LIMITS.batch) again.push(missing.slice(i, i + DRILL_LIMITS.batch));
+    for (let i = 0; i < missing.length; i += size) again.push(missing.slice(i, i + size));
     await Promise.allSettled(again.map(ask));
   }
   if (!got.size) {
@@ -337,7 +360,8 @@ export async function answerItems(
     throw new HttpError(502, "drill_failed", "No answers could be written");
   }
   return {
-    items: items.map((it) => ({ ...it, ...(got.get(it.id) ?? {}) })),
+    // an answer that still could not be written says so (the app offers "Gör om"), never an empty answer
+    items: items.map((it) => got.has(it.id) ? { ...it, ...got.get(it.id)! } : { ...it, error: "Svaret kunde inte skrivas. Gör om frågan." }),
     usage: sumUsage(steps, cfg.answerModel),
   };
 }
@@ -489,7 +513,7 @@ export async function handleDrill(
 ): Promise<{ body: Record<string, unknown>; steps: StepUsage[] }> {
   const longWords = intIn(b.long_words, DRILL_LIMITS.longWordsMin, DRILL_LIMITS.longWordsMax, DRILL_LIMITS.longWordsDefault);
   const subjectIn = oneLine(b.subject, 60);
-  const gradeIn = oneLine(b.grade, 60);
+  const gradeIn = gradeName(oneLine(b.grade, 60));
   if (action === "drill") {
     const count = intIn(b.questions, DRILL_LIMITS.questionsMin, DRILL_LIMITS.questionsMax, DRILL_LIMITS.questionsDefault);
     const images = drillImages(b.pages);

@@ -52,6 +52,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ids", default="bio-ak8-fotosyntes,ke1-mol,hist-ak9-forsta-varldskriget")
     ap.add_argument("--out", default=str(ROOT / "reports" / "eval"))
+    ap.add_argument("--no-context", action="store_true", help="send no subject or grade (as O55 did): measures the grade reading")
     a = ap.parse_args()
     bank = {e["id"]: e for e in json.load(open(BANK / "exams.json", encoding="utf-8"))}
     rows = []
@@ -61,7 +62,7 @@ def main():
         tok = token()  # one new user per exam: a drill weighs 4 + 3 in the exam rate limit (12 per minute)
         pages, text = material(e, tok)
         t0 = time.time()
-        plan, t_plan = call("/functions/v1/exam", {"action": "drill", "pages": pages, "text": text, "subject": e["subject"], "grade": e["grade"], "answers": False}, tok)
+        plan, t_plan = call("/functions/v1/exam", {"action": "drill", "pages": pages, "text": text, **({} if a.no_context else {"subject": e["subject"], "grade": e["grade"]}), "answers": False}, tok)
         items = plan["items"]
         ans, t_ans = call("/functions/v1/exam", {"action": "drill_answers", "items": items, "notes": plan["notes"],
                                                 "subject": plan["summary"]["subject"], "grade": plan["summary"]["grade"]}, tok)
@@ -72,7 +73,7 @@ def main():
         shorts = [i.get("short", "") for i in ans["items"]]
         row = {
             "id": id_, "photos": len(pages), "text_chars": len(text),
-            "summary": plan["summary"], "questions": len(qs),
+            "summary": plan["summary"], "grade_expected": e["grade"], "questions": len(qs),
             "t_questions_s": round(t_plan, 1), "t_answers_s": round(t_ans, 1), "t_total_s": round(total, 1),
             "q_le5": sum(w <= 5 for w in wq), "q_le8": sum(w <= 8 for w in wq),
             "q_understanding": sum(bool(UNDERSTANDING.search(q)) for q in qs),
@@ -90,6 +91,7 @@ def main():
         out.write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"{id_}: {len(qs)} frågor på {t_plan:.1f} s, svar {t_ans:.1f} s (totalt {total:.1f} s), "
               f"<=5 ord {row['q_le5']}/{len(qs)}, förståelse {row['q_understanding']}/{len(qs)}, D145 {row['d145']}/{row['answered']}, "
+              f"årskurs {plan['summary'].get('grade')!r} (rätt {e['grade']!r}), tomma svar {sum(1 for s_ in shorts if not s_)}, "
               f"långt p50 {row['long_words_p50']} ord (max {row['long_words_max']}), Claude {row['cost_claude_usd']:.3f} USD")
     print("->", out)
 

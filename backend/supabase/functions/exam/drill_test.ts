@@ -31,6 +31,11 @@ class ScriptLLM implements LLMProvider {
       yield { type: "usage", inputTokens: 10_000, outputTokens: 1_500 };
       return;
     }
+    if (req.system.includes("You check Swedish exam questions")) {
+      yield { type: "text", text: JSON.stringify({ questions: [] }) };
+      yield { type: "usage", inputTokens: 400, outputTokens: 10 };
+      return;
+    }
     const qs = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(req.user)![1]) as { id: string; question: string }[];
     if (this.failFirstAnswerBatch) {
       this.failFirstAnswerBatch = false;
@@ -103,10 +108,12 @@ Deno.test("K45 drill: summary, notes, questions and both answers; Haiku plans, S
     assertEquals(it.long.split(it.short).length, 2, "the short answer is said once");
   }
   assertEquals(llm.calls[0].model, undefined, "step 1 on the provider's default (Haiku)");
-  assertEquals(llm.calls.slice(1).map((c) => c.model), ["claude-sonnet-5-5"], "4 questions = one batch on Sonnet");
-  assert(llm.calls[1].user.includes("<long_words>70</long_words>"));
-  assert(llm.calls[1].user.includes("90 procent"), "the answers are written from the notes");
-  assertEquals(llm.calls[0].user.includes("<count>24</count>"), true, "20 questions by default (D146), 4 extra to drop the longest");
+  const answerCalls = llm.calls.filter((c) => c.system.includes("You write the answers"));
+  assertEquals(answerCalls.map((c) => c.model), ["claude-sonnet-5-5"], "4 questions = one batch on Sonnet");
+  assert(answerCalls[0].user.includes("<long_words>70</long_words>"));
+  assert(answerCalls[0].user.includes("90 procent"), "the answers are written from the notes");
+  assert(llm.calls[1].system.includes("You check Swedish exam questions"), "K52: every question is checked by the cheap model");
+  assertEquals(llm.calls[0].user.includes("<count>26</count>"), true, "20 questions by default (D146), 6 extra to drop recall and long ones");
   assertEquals(j.usage.plan.est_cost_usd, (10_000 * 0.10 + 1_500 * 0.50) / 1e6);
   assertEquals(j.usage.answers.est_cost_usd, (2_000 * 2 + 900 * 10) / 1e6);
 });
@@ -116,8 +123,8 @@ Deno.test("K45 drill: answers false = questions only; a batch that fails is aske
   const r = await h(post({ action: "drill", text: "material", answers: false, questions: 5 }));
   const j = await r.json();
   assertEquals(j.items[0], { id: "q1", question: "Varför behövs klorofyll?" });
-  assertEquals(llm.calls.length, 1);
-  assert(llm.calls[0].user.includes("<count>9</count>"));
+  assertEquals(llm.calls.length, 2, "the plan and the question check, no answers");
+  assert(llm.calls[0].user.includes("<count>11</count>"));
   const m = mk();
   m.llm.failFirstAnswerBatch = true;
   const r2 = await m.h(post({ action: "drill_answers", items: j.items, notes: j.notes, grade: "åk 8" }));
@@ -136,7 +143,7 @@ Deno.test("K45 drill_one and drill_answers: 12 questions = 3 parallel batches; a
   assertEquals(one.item.id, "q7");
   assertEquals(one.item.question, "Hur fungerar en näringsväv?");
   await h(post({ action: "drill", text: PLAN.notes, correction: "Det är Biologi för åk 9, inte åk 8." }));
-  assert(llm.calls.at(-2)!.user.includes("<correction>Det är Biologi för åk 9, inte åk 8.</correction>"));
+  assert(llm.calls.some((c) => c.user.includes("<correction>Det är Biologi för åk 9, inte åk 8.</correction>")));
 });
 
 Deno.test("K45 drill: bad input never reaches the model; a drill weighs 4 in the rate limit", async () => {
@@ -224,9 +231,9 @@ Deno.test("K45 R3: questions over five words are shortened by the cheap model; a
   const qs = ["Varför behövs klorofyll?", "Varför är bönen viktig för muslimer?", "Hur många mol är 16 gram metan?"];
   const r = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, qs, { subject: "Religion", grade: "åk 8", covers: "Islam" });
   assertEquals(r.questions, ["Varför behövs klorofyll?", "Varför ber muslimer?", "Hur många mol är 16 gram metan?"]);
-  assert(!calls[0].includes("Varför behövs klorofyll?"), "only the long questions are sent");
-  const none = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, ["Varför regnar det?"], { subject: "", grade: "", covers: "" });
-  assertEquals([none.usage, calls.length], [null, 1], "no call when every question is short");
+  assert(calls[0].includes("Varför behövs klorofyll?"), "K52: every question is checked (clarity, symbols, Swedish)");
+  const none = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, [], { subject: "", grade: "", covers: "" });
+  assertEquals([none.usage, calls.length], [null, 1], "no call without questions");
 });
 
 /** Plays a plan reply given as JSON (K51), then answers every question it gets. */
@@ -242,8 +249,13 @@ class PlanLLM implements LLMProvider {
       yield { type: "usage", inputTokens: 5_000, outputTokens: 300 };
       return;
     }
+    if (req.system.includes("You check Swedish exam questions")) {
+      yield { type: "text", text: JSON.stringify({ questions: [] }) };
+      yield { type: "usage", inputTokens: 400, outputTokens: 10 };
+      return;
+    }
     const qs = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(req.user)![1]) as { id: string; question: string }[];
-    yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short: "Kort.", rest: "Mer." })) }) };
+    yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short: "Kort svar.", rest: "Mer." })) }) };
     yield { type: "usage", inputTokens: 1_000, outputTokens: 200 };
   }
 }
@@ -293,4 +305,40 @@ Deno.test("K51 images: the real format from the first bytes; HEIC refused with a
   const png = mkPlan({ summary: {}, notes: "", questions: ["Varför A?"] });
   await png.h(post({ action: "drill", pages: [{ media_type: "image/jpeg", data: "iVBORw0KGgoAAAANSUhEUg==" }], answers: false }));
   assertEquals(png.llm.calls[0].images?.[0].mediaType, "image/png");
+});
+
+Deno.test("K52 an empty, one-word or cut-off answer is asked again, one by one; never returned empty", async () => {
+  const { parseAnswers, answerItems, DEFAULT_DRILL_CONFIG } = await import("./drill.ts");
+  const bad = parseAnswers(JSON.stringify({ answers: [
+    { id: "a", short: "", rest: "Något." },
+    { id: "b", short: "Ja", rest: "" },
+    { id: "c", short: "Imperialism är när stater erövrar.", rest: "Det ledde till konflikter mellan" },
+    { id: "d", short: "Imperialism är när stater erövrar.", rest: "Det ledde till konflikter." },
+  ] }));
+  assertEquals([...bad.keys()], ["d"]);
+  let n = 0;
+  const llm: LLMProvider = {
+    name: "fake",
+    model: "x",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      n++;
+      const qs = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(req.user)![1]) as { id: string }[];
+      // "q2" is empty twice, then written when asked alone
+      const ok = (id: string) => id !== "q2" || qs.length === 1;
+      yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short: ok(q.id) ? "Ett riktigt svar." : "", rest: "Mer om det." })) }) };
+    },
+  };
+  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "Varför A?" }, { id: "q2", question: "Vad är imperialism?" }], { subject: "", grade: "", notes: "", longWords: 90 });
+  assertEquals(r.items.map((i) => i.short), ["Ett riktigt svar.", "Ett riktigt svar."]);
+  assertEquals(n, 2, "the empty one is asked again (alone, as it is the only one missing)");
+  const never: LLMProvider = { name: "f", model: "x", async *stream() { yield { type: "text", text: JSON.stringify({ answers: [{ id: "q2", short: "", rest: "" }, { id: "q1", short: "Ett svar här.", rest: "" }] }) }; } };
+  const r2 = await answerItems(never, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "A?" }, { id: "q2", question: "B?" }], { subject: "", grade: "", notes: "", longWords: 90 });
+  assertEquals(r2.items[1].error, "Svaret kunde inte skrivas. Gör om frågan.");
+  assertEquals("short" in r2.items[1], false);
+});
+
+Deno.test("K52 grade: the app's profile codes become what Swedes say; the prompt never defaults to åk 8", async () => {
+  const { gradeName, SYSTEM_PROMPT_DRILL_PLAN } = await import("./drill.ts");
+  assertEquals([gradeName("y8"), gradeName("gy1"), gradeName("Svenska 1"), gradeName("other")], ["åk 8", "gymnasiet år 1", "Svenska 1", ""]);
+  assert(SYSTEM_PROMPT_DRILL_PLAN.includes('never guess "åk 8" by default'));
 });

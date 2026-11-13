@@ -383,7 +383,8 @@ Deno.test("K50 limit: 30 generated questions per account by default (402 with th
   const r = await w.h("u1")(post({ action: "save", items: more }));
   assertEquals(r.status, 402);
   const j = await r.json();
-  assertEquals([j.error.code, j.used, j.limit, j.needed], ["quota_exceeded", 2, 3, 2]);
+  assertEquals([j.error.code, j.used, j.limit, j.needed, j.per, j.resets], ["quota_exceeded", 2, 3, 2, "month", "2026-12-01"]);
+  assert(j.error.message.includes("den här månaden"));
   assert(j.error.message.includes("hämta andras prov"));
   assertEquals(w.drills.size, 1, "nothing saved");
   // the same questions again (audio exists): 0 generated, free
@@ -395,5 +396,12 @@ Deno.test("K50 limit: 30 generated questions per account by default (402 with th
   assertEquals(w.quota.get("u2") ?? 0, 0);
   // one more own question fits exactly
   assertEquals((await w.h("u1")(post({ action: "save", items: [more[0]] }))).status, 200);
-  assertEquals((await (await w.h("u1")(post({ action: "list" }))).json()).quota, { used: 3, limit: 3 });
+  assertEquals((await (await w.h("u1")(post({ action: "list" }))).json()).quota, { used: 3, limit: 3, per: "month", resets: "2026-12-01" });
+});
+
+Deno.test("K52 D155: the month the limit starts again, in Swedish time", async () => {
+  const { nextMonthStart } = await import("./handler.ts");
+  assertEquals(nextMonthStart(Date.parse("2026-11-13T12:00:00Z")), "2026-12-01");
+  assertEquals(nextMonthStart(Date.parse("2026-12-31T23:30:00Z")), "2027-02-01", "already January in Stockholm");
+  assertEquals(nextMonthStart(Date.parse("2026-12-15T12:00:00Z")), "2027-01-01");
 });
