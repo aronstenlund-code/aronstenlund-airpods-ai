@@ -59,3 +59,23 @@ Deno.test("K48 voice-lab sample: service role only, the default voice, the model
   assertEquals((await h(post({ action: "sample", text: "x".repeat(1201), model: "eleven_v3" }))).status, 400);
   assertEquals(calls.length, 3, "refused requests never reach ElevenLabs");
 });
+
+Deno.test("K48 voice-lab: the new secret key (sb_secret_) is accepted only when the database treats it as a service key", async () => {
+  const seen: string[] = [];
+  const h = createVoiceLabHandler({
+    serviceKey: "eyJlegacy.service.role",
+    elevenLabsKey: "xi",
+    voiceId: "VoiceDefault12345",
+    verifyServiceKey: (k) => {
+      seen.push(k);
+      return Promise.resolve(k === "sb_secret_abcdefghijklmnopqrstuvwxyz");
+    },
+    fetchImpl: () => Promise.resolve(new Response(new Uint8Array([1]), { headers: { "content-type": "audio/mpeg" } })),
+  });
+  const body = { action: "sample", text: "Hej.", model: "eleven_v3" };
+  assertEquals((await h(post(body, "sb_secret_abcdefghijklmnopqrstuvwxyz"))).status, 200);
+  assertEquals((await h(post(body, "sb_secret_zzzzzzzzzzzzzzzzzzzzzzzzzz"))).status, 401);
+  assertEquals((await h(post(body, "sb_publishable_UNDoMfEur7nwt4qH8RRanQ"))).status, 401);
+  assertEquals((await h(post(body, "eyJlegacy.service.role"))).status, 200);
+  assertEquals(seen.includes("sb_publishable_UNDoMfEur7nwt4qH8RRanQ"), false, "a key of the wrong shape is never even checked");
+});

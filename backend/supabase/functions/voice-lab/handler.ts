@@ -22,6 +22,12 @@ export interface VoiceLabDeps {
   baseUrl?: string;
   /** K48: the app's default voice (secret ELEVENLABS_VOICE_ID). */
   voiceId?: string | null;
+  /**
+   * K48 (live 2026-11-13: 401 with the key Aron put in GitHub): Supabase has two kinds of service keys, the legacy
+   * service_role JWT (what the function gets as SUPABASE_SERVICE_ROLE_KEY) and the new secret key (sb_secret_...).
+   * A key that is not the function's own is accepted only if the database treats it as a service key.
+   */
+  verifyServiceKey?: (key: string) => Promise<boolean>;
 }
 
 function safeEqual(a: string, b: string): boolean {
@@ -73,7 +79,12 @@ export function createVoiceLabHandler(deps: VoiceLabDeps) {
     try {
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use POST");
       const m = /^Bearer\s+(\S+)$/i.exec(req.headers.get("authorization") ?? "");
-      if (!deps.serviceKey || !m || !safeEqual(m[1], deps.serviceKey)) throw new HttpError(401, "unauthorized", "Service role only");
+      const ok = !!m && (
+        (!!deps.serviceKey && safeEqual(m[1], deps.serviceKey)) ||
+        (!!deps.verifyServiceKey && /^(?:sb_secret_[A-Za-z0-9_-]{20,}|eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/.test(m[1]) &&
+          await deps.verifyServiceKey(m[1]).catch(() => false))
+      );
+      if (!ok) throw new HttpError(401, "unauthorized", "Service role only");
       if (!deps.elevenLabsKey) throw new HttpError(503, "provider_unconfigured", "ElevenLabs key not configured");
       const b = (await req.json().catch(() => null)) as Record<string, unknown> | null;
       if (b?.action === "sample") return json(await sample(b));
