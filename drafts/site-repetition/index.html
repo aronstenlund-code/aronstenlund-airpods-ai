@@ -1,0 +1,1665 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<base href="../../site/">
+<meta name="robots" content="noindex, nofollow">
+<!-- UTKAST (Kelly Ke51). Publiceras inte förrän T18 är godkänt och Aron sagt ja. -->
+<script>
+  // Byt namn här, och bara här. Sidan hämtar namnet från den här variabeln.
+  const APP_NAME = "Earmind"; // D128. Väckningsordet ”Lumen” står i citaten och byts bara om Aron säger det.
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<title>Earmind – Plugga med AirPods utan att röra mobilen (utkast)</title>
+<meta name="description" content="Starta Earmind en gång, sen finns AI:n i dina hörlurar. Fråga högt och hör svaret i örat, i vardagen, i skolan och på jobbet. Plugga inför prov och bli förhörd. Prova direkt här.">
+<link rel="canonical" href="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:site_name" content="Earmind">
+<meta property="og:url" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
+<meta property="og:title" content="Fråga högt. Få svaret i örat.">
+<meta property="og:description" content="AI:n i dina AirPods, för vardagen, skolan och jobbet. Prova här, svaret läses upp.">
+<meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og-earmind.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Earmind. Fråga högt. Få svaret i örat. Elias, en påhittad elev, med en hörlur i örat.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1218">
+<meta name="color-scheme" content="light dark">
+<link rel="preload" href="fonts/familjen-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://xjczbzfkmbjdebwlccki.supabase.co" crossorigin>
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Säg vilket prov du har och sedan ”Lumen, förhör mig”. Earmind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan."}}, {"@type": "Question", "name": "Kan jag bli förhörd inför ett prov?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Earmind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
+<style>
+  /* Ke13: samma system som appen (docs/design/SYSTEM.md). Familjen Grotesk överallt, ingen handstil, inget rutpapper. */
+  @font-face {
+    font-family: "Familjen Grotesk";
+    src: url("fonts/familjen-grotesk.woff2") format("woff2");
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  /* Reservtypsnitt med samma bredd, så att texten inte hoppar när webbtypsnitten laddas. */
+  @font-face {
+    font-family: "FG reserv";
+    src: local("Arial"), local("Helvetica Neue"), local("Helvetica"), local("Roboto");
+    size-adjust: 93.9%;
+    ascent-override: 109.2%;
+    descent-override: 24%;
+    line-gap-override: 0%;
+  }
+
+  /* Ke13: tokens från SYSTEM.md. En accent, rött bara vid fel. Ljust och mörkt följer systemet. */
+  :root {
+    --bg: #FFFFFF;
+    --surface: #F4F6FA;
+    --raised: #FFFFFF;
+    --soft: #EAF0FF;
+    --ink: #141A2E;
+    --mut: #5E6779;
+    --line: #E4E8EF;
+    --chip: #F4F6FA;
+    --seg-on: #FFFFFF;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 20px rgba(16,24,40,.07);
+    --blue: #2346C8;
+    --on-blue: #FFFFFF;
+    --red: #D9342B;
+    --on-red: #FFFFFF;
+    --bad: #B8261E;          /* röd text på papper: mörkare än knappen för läsbarhet */
+    --ease-out: cubic-bezier(.23, 1, .32, 1);
+    --gut: 20px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F1218;
+      --surface: #181C26;
+      --raised: #1D2230;
+      --soft: #1E2A4F;
+      --ink: #EEF1F7;
+      --mut: #9AA3B5;
+      --line: #272D3B;
+      --chip: #181C26;
+      --seg-on: #2B3245;
+      --shadow: none;
+      --blue: #7F9BFF;
+      --on-blue: #0E1630;
+      --red: #FF6F61;
+      --on-red: #2A0B07;
+      --bad: #FF8A7E;
+      color-scheme: dark;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    background: var(--bg);
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1.0625rem/1.5 "Familjen Grotesk", "FG reserv", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  h1, h2, h3, p, ul, ol, figure { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  a { color: inherit; text-underline-offset: .18em; }
+  button, input { font: inherit; color: inherit; }
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+  [hidden] { display: none !important; }
+  .sr {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+  /* Ke13: frågor i vanlig text (halvfet), kort i stället för rutpapper. Klassnamnen finns kvar. */
+  .hand { font-weight: 600; }
+  .paper {
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+  @media (prefers-color-scheme: dark) { .paper { border-color: transparent; } }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gut); }
+
+  /* ---------- Huvud ---------- */
+  .top { padding-top: calc(14px + env(safe-area-inset-top)); }
+  .name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 700;
+    font-size: 1.375rem;
+    letter-spacing: -.02em;
+    text-decoration: none;
+  }
+  .name img { width: 32px; height: 32px; border-radius: 7px; flex: none; }
+
+  /* ---------- Första skärmen ---------- */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    padding-top: 10px;
+    padding-bottom: 56px;
+  }
+  h1 {
+    font-weight: 700;
+    font-size: clamp(2.5rem, 11.4vw, 4.25rem);
+    line-height: 1.02;
+    letter-spacing: -.035em;
+    text-wrap: balance;
+  }
+  .pitch {
+    margin-top: 10px;
+    color: var(--mut);
+    font-size: 1.25rem;
+    line-height: 1.35;
+  }
+  .pitch-sub { margin-top: 8px; color: var(--mut); font-size: 1rem; line-height: 1.45; max-width: 34em; }
+
+
+  .photo {
+    min-height: 240px;
+    background: var(--chip);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 8px;
+    padding: 24px;
+    text-align: center;
+    color: var(--mut);
+    font-size: .9375rem;
+    line-height: 1.4;
+  }
+  .photo svg { width: 28px; height: 28px; }
+  .photo span { max-width: 30ch; }
+
+  /* Ke8: Elias i ett kort med rutpapper runt. Kortet är alltid ljust som ett foto, också i mörkt läge. */
+  .elias-wrap { margin: 0 auto; width: min(100%, 360px); }
+  .elias { position: relative; width: 100%; aspect-ratio: 480 / 600; overflow: hidden; border-radius: 24px; background: #FEFEFE; box-shadow: 0 14px 34px rgba(24,33,58,.20), 0 2px 6px rgba(24,33,58,.10); }
+  .stage { position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 480 / 700; transform-origin: 50% 25%; will-change: transform; }
+  .stage img, .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .elias canvas { visibility: hidden; }
+  .elias.live canvas { visibility: visible; } .elias.live img { visibility: hidden; }
+  .rings { position: absolute; left: var(--ex); top: calc(var(--ey) * 600 / 700); width: 0; height: 0; pointer-events: none; }
+  .rings i { position: absolute; left: -50px; top: -50px; width: 100px; height: 100px; border-radius: 50%; border: 3px solid #2346C8; opacity: 0; transform: scale(.15); }
+  .elias.pulse .rings i { animation: ering 2.4s cubic-bezier(.23,1,.32,1) both; }
+  .elias.pulse .rings i:nth-child(2) { animation-delay: .25s; } .elias.pulse .rings i:nth-child(3) { animation-delay: .5s; }
+  @keyframes ering { 0% { opacity: 0; transform: scale(.15); } 15% { opacity: .9; } 70%, 100% { opacity: 0; transform: scale(1.8); } }
+  @media (prefers-reduced-motion: reduce) { .elias.pulse .rings i { animation: none; opacity: .5; transform: scale(.7); } .elias.pulse .rings i:nth-child(2) { transform: scale(1.1); opacity: .3; } .elias.pulse .rings i:nth-child(3) { display: none; } }
+
+
+  /* ---------- Demorutan ---------- */
+  .demo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding: 18px 18px 20px;
+    min-width: 0;
+  }
+  .demo-label {
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--mut);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .demo-label svg { width: 18px; height: 18px; color: var(--blue); }
+
+  /* Ke19 (D97): lägesväljare som iOS segmentkontroll. Vald del ligger upphöjd på en surface-ränna. */
+  .seg { display: flex; gap: 4px; padding: 4px; background: var(--surface); border-radius: 14px; }
+  .seg-b {
+    flex: 1 1 auto; min-height: 44px; padding: 4px 12px; border: 0; border-radius: 10px;
+    background: transparent; color: var(--mut); font-size: 1rem; font-weight: 600; line-height: 1.2;
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+  .seg-b[aria-pressed="true"] { background: var(--seg-on); color: var(--ink); box-shadow: 0 1px 2px rgba(16,24,40,.08), 0 2px 8px rgba(16,24,40,.06); }
+  @media (max-width: 359px) { .seg-b { font-size: .9375rem; padding: 4px 8px; } }
+  .seg-line { margin-top: -8px; color: var(--mut); font-size: .9375rem; line-height: 1.4; }
+  .quiz { display: grid; gap: 10px; min-width: 0; }
+  .quiz-q { font-size: 1.375rem; line-height: 1.3; font-weight: 600; letter-spacing: -.01em; max-width: 30ch; }
+  .quiz-q:focus { outline: none; }
+  .quiz-hint { color: var(--mut); line-height: 1.4; }
+  .quiz .pill svg { width: 16px; height: 16px; }
+  .quiz .mini-fine a { font-weight: 600; }
+  body[data-mode="quiz"] .controls, body[data-mode="quiz"] .convo { display: none; }
+  .convo { display: flex; flex-direction: column; min-width: 0; }
+  .q {
+    color: var(--ink);
+    font-size: 1.375rem;
+    line-height: 1.3;
+    min-height: 1.3em;
+  }
+  body[data-view="listening"] .q {
+    font-size: clamp(1.75rem, 7.6vw, 2.5rem);
+    line-height: 1.2;
+  }
+  /* Ke13 (SYSTEM.md): när svaret visas står frågan liten och grå ovanför, svaret bär skärmen. */
+  body[data-view="answer"] .q { font-size: .9375rem; line-height: 1.35; color: var(--mut); min-height: 0; }
+  .a {
+    margin-top: 8px;
+    font-size: clamp(1.375rem, 5.8vw, 1.875rem);
+    line-height: 1.32;
+    font-weight: 500;
+    letter-spacing: -.012em;
+    max-width: 34ch;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  .a span { animation: word 260ms var(--ease-out) both; }
+  @keyframes word {
+    from { opacity: 0; filter: blur(3px); }
+    to { opacity: 1; filter: blur(0); }
+  }
+  .a:focus { outline: none; }
+  .a:focus-visible { outline: 3px solid var(--blue); outline-offset: 6px; border-radius: 4px; }
+  .a.err { font-size: 1.25rem; color: var(--bad); font-weight: 600; }
+  .thinking { display: inline-flex; gap: 7px; padding: 14px 0; }
+  .thinking i {
+    width: 10px; height: 10px; border-radius: 50%; background: var(--blue);
+    animation: dot 900ms ease-in-out infinite;
+  }
+  .thinking i:nth-child(2) { animation-delay: 120ms; }
+  .thinking i:nth-child(3) { animation-delay: 240ms; }
+  @keyframes dot {
+    0%, 70%, 100% { opacity: .25; transform: translateY(0); }
+    35% { opacity: 1; transform: translateY(-5px); }
+  }
+  /* Väntelistan direkt efter svaret: en rad, ett fält. */
+  .nudge { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; }
+  .nudge-h { font-weight: 600; line-height: 1.35; max-width: 36ch; }
+  .mini-row { display: flex; gap: 8px; }
+  .mini-row input {
+    flex: 1; min-width: 0; min-height: 50px; padding: 0 14px;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px; font-size: 1.0625rem;
+  }
+  .mini-row input::placeholder { color: var(--mut); opacity: 1; }
+  .mini-row .pill { flex: none; padding: 0 16px; }
+  .mini-row .pill[disabled] { opacity: .6; cursor: progress; }
+  .mini-fine { color: var(--mut); font-size: .875rem; line-height: 1.4; }
+  .mini-fine a { color: var(--blue); }
+  .note { margin-top: 14px; max-width: 40ch; color: var(--mut); font-size: 1rem; line-height: 1.4; }
+
+  .dock {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+  .pill {
+    min-height: 50px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--blue);
+    color: var(--on-blue);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 140ms var(--ease-out);
+  }
+  .pill:active { transform: scale(.97); }
+  /* Ke12: som appens sekundära knapp (LumenButtonStyle .secondary: chip-färg, bläck). Rött bara för fel. Tunn kant så att den syns på rutpappret. */
+  .pill.stop, .pill.quiet { background: var(--surface); color: var(--ink); }   /* SYSTEM.md: sekundär knapp */
+  .bars { display: inline-flex; align-items: center; gap: 3px; height: 16px; }
+  .bars i {
+    width: 3px; height: 100%; border-radius: 2px; background: currentColor;
+    transform-origin: center;
+    animation: bar 800ms ease-in-out infinite alternate;
+  }
+  .bars i:nth-child(2) { animation-delay: -300ms; }
+  .bars i:nth-child(3) { animation-delay: -550ms; }
+  @keyframes bar { from { transform: scaleY(.3); } to { transform: scaleY(1); } }
+  .left { color: var(--mut); font-size: .9375rem; }
+  .left:empty { display: none; }
+
+  /* ---------- Kontroller ---------- */
+  .controls { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; min-width: 0; }
+  body[data-view="answer"] .controls { display: none; }
+  .try { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    min-height: 44px;
+    padding: 2px 14px 0;
+    background: var(--surface);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: left;
+    transition: transform 140ms var(--ease-out), border-color 140ms ease;
+  }
+  .chip:active { transform: scale(.97); border-color: var(--blue); }
+  body[data-view="listening"] .try { visibility: hidden; }
+
+  .pad { display: grid; justify-items: center; }
+  .disc-wrap {
+    --d: clamp(136px, min(42vw, 22svh), 200px);
+    position: relative;
+    width: var(--d);
+    height: var(--d);
+    margin: 6px 0 2px;
+  }
+  .halo, .ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    pointer-events: none;
+    background: var(--blue);
+    opacity: 0;
+  }
+  .halo { transition: transform 130ms linear, opacity 160ms ease; }
+  body[data-view="listening"] .halo { opacity: .14; }
+  .ring { border: 2px solid var(--blue); background: none; }
+  body[data-view="listening"] .ring { animation: ring 1500ms var(--ease-out) infinite; }
+  body[data-view="listening"] .ring + .ring { animation-delay: 500ms; }
+  @keyframes ring {
+    from { opacity: .55; transform: scale(1); }
+    to { opacity: 0; transform: scale(1.24); }
+  }
+  .disc {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 50%;
+    background: var(--blue);
+    color: var(--on-blue);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 18px;
+    font-size: clamp(1.0625rem, 4.6vw, 1.3125rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -.01em;
+    touch-action: none;
+    transition: transform 160ms var(--ease-out);
+    animation: arrive 520ms var(--ease-out) backwards;
+  }
+  .disc svg { width: 26px; height: 26px; flex: none; }
+  .disc:active, .disc.held { transform: scale(1.05); }
+  @keyframes arrive { from { opacity: 0; transform: scale(.92); } }
+
+  .ask { display: flex; gap: 8px; width: 100%; }
+  .ask input {
+    flex: 1;
+    min-width: 0;
+    min-height: 52px;
+    padding: 0 16px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 1.0625rem;
+  }
+  .ask input::placeholder { color: var(--mut); opacity: 1; }
+  .send {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--blue);
+    color: var(--on-blue);
+    display: grid;
+    place-items: center;
+    transition: transform 140ms var(--ease-out);
+  }
+  .send:active { transform: scale(.94); }
+  .send svg { width: 22px; height: 22px; }
+  .hint {
+    min-height: 1.4em;
+    text-align: center;
+    color: var(--mut);
+    font-size: .9375rem;
+    line-height: 1.4;
+    margin-top: 8px;
+  }
+  .hint.err { color: var(--bad); font-weight: 600; }
+
+  /* ---------- Exempel från Provläget ---------- */
+  .ex-meta { font-size: .875rem; font-weight: 600; color: var(--mut); }
+  .ex-a { font-size: 1.0625rem; line-height: 1.5; }
+  .ex-a.clamp { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
+  .ex-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 4px; }
+  .ex-more { border: 0; background: none; padding: 0; min-height: 44px; color: var(--blue); font-weight: 600; text-decoration: underline; text-underline-offset: .18em; }
+
+  /* ---------- Sektioner under vecket ---------- */
+  h2 {
+    font-weight: 700;
+    font-size: clamp(2rem, 8.6vw, 3.5rem);
+    line-height: 1.04;
+    letter-spacing: -.03em;
+    text-wrap: balance;
+  }
+
+  .join { border-top: 1px solid var(--line); }
+  .join .wrap { padding-top: 56px; padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
+  .join h2 { max-width: 16em; font-size: clamp(1.75rem, 7.4vw, 3rem); line-height: 1.06; }
+  .join .lead { margin-top: 12px; max-width: 44ch; color: var(--mut); }
+  form.wait { margin-top: 24px; max-width: 520px; display: grid; gap: 14px; padding: 20px; }
+  .wait label.field { display: grid; gap: 6px; font-weight: 600; }
+  .wait input[type=email] {
+    min-height: 52px;
+    padding: 0 16px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 1.0625rem;
+    font-weight: 400;
+    width: 100%;
+  }
+  .consent { display: flex; gap: 12px; align-items: flex-start; min-height: 44px; padding-top: 2px; cursor: pointer; }
+  /* Rutan ritas 22 px men träffytan är 44×44 (Oscar, Ke2). Negativ marginal håller raden lika hög som förut. */
+  .consent input {
+    -webkit-appearance: none; appearance: none;
+    width: 44px; height: 44px; margin: -10px -8px -10px -10px;
+    flex: none; display: grid; place-items: center;
+    background: none; border: 0; border-radius: 10px; cursor: pointer;
+  }
+  .consent input::before, .consent input::after { content: ""; grid-area: 1 / 1; }
+  .consent input::before {
+    width: 22px; height: 22px; box-sizing: border-box;
+    border: 2px solid var(--mut); border-radius: 5px; background: var(--bg);
+  }
+  .consent input:checked::before { background: var(--blue); border-color: var(--blue); }
+  .consent input:checked::after {
+    width: 6px; height: 11px; margin-top: -3px;
+    border: solid var(--on-blue); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+  }
+  .consent input:focus-visible { outline: 3px solid var(--blue); outline-offset: -6px; }
+  .wait .pill { width: 100%; min-height: 54px; font-size: 1.125rem; }   /* appen: 18 pt semibold, 54 pt på Start */
+  .wait .pill[disabled] { opacity: .6; cursor: progress; }
+  .hp { position: absolute; left: -9999px; }
+  .fieldmsg { color: var(--bad); font-weight: 600; font-size: .9375rem; min-height: 0; }
+  .fieldmsg:empty { display: none; }
+  .formmsg { font-weight: 600; }
+  .formmsg:empty { display: none; }
+  .formmsg.err { color: var(--bad); }
+  .fine { color: var(--mut); font-size: .9375rem; line-height: 1.45; max-width: 60ch; margin-top: 28px; }
+  .fine + .fine { margin-top: 10px; }
+  .fine a { color: var(--blue); }
+  /* Länkar i löptext: 44 px hög träffyta utan att raderna glider isär. */
+  .fine a, .mini-fine a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+
+  /* Endast ett musstyrt hovertillstånd, så att det inte fastnar på touch. */
+  @media (hover: hover) and (pointer: fine) {
+    .chip:hover { border-color: var(--blue); }
+    .pill:hover, .send:hover { transform: scale(1.03); }
+    .pill:active, .send:active { transform: scale(.97); }
+  }
+
+  /* Korta telefoner: skivan och textrutan ska rymmas tidigt. */
+  @media (max-height: 720px) and (max-width: 959px) {
+    h1 { font-size: clamp(2.25rem, 10.4vw, 3rem); }
+    .pitch { font-size: 1.125rem; margin-top: 6px; }
+    .pitch-sub { display: none; } /* Ke26: textrutan ska synas utan att rulla på SE; budskapet står i .pitch */
+    .hero { gap: 16px; }
+    .demo { gap: 12px; padding: 14px 14px 16px; }
+    .chip { font-size: 1rem; padding: 2px 12px 0; }
+    .disc-wrap { --d: clamp(118px, 20svh, 150px); margin: 0; }
+    .disc { font-size: 1rem; gap: 3px; }
+    .disc svg { width: 22px; height: 22px; }
+    .hint { margin-top: 4px; font-size: .875rem; }
+    .ask input, .send { min-height: 48px; height: 48px; }
+    .send { width: 48px; }
+  }
+
+  /* Mobil: exempelfrågorna på en rad som går att svepa, så att knappen och textrutan syns direkt. */
+  @media (max-width: 719px) {
+    .try {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      scrollbar-width: none;
+      margin: 0 -18px;
+      padding: 0 18px;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent);
+      mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 28px), transparent);
+    }
+    .try::-webkit-scrollbar { display: none; }
+    .chip { flex: none; white-space: nowrap; scroll-snap-align: start; scroll-margin-left: 18px; }
+  }
+
+  @media (min-width: 720px) {
+    .ex-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 960px) {
+    :root { --gut: 48px; }
+    .top { padding-top: 24px; }
+    .hero {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+      grid-template-rows: auto 1fr;
+      column-gap: 64px;
+      row-gap: 32px;
+      padding-top: 32px;
+      padding-bottom: 88px;
+    }
+    .intro { grid-column: 1; grid-row: 1; }
+    .elias-wrap { grid-column: 1; grid-row: 2; margin: 0; width: min(100%, 400px); }
+    .demo { grid-column: 2; grid-row: 1 / span 2; align-self: start; position: sticky; top: 24px; padding: 26px 26px 28px; gap: 20px; }
+    h1 { font-size: clamp(3.75rem, 6.2vw, 5.5rem); }
+    .pitch { font-size: 1.5rem; margin-top: 16px; }
+    .pitch-sub { font-size: 1.125rem; margin-top: 12px; }
+    body[data-view="answer"] .controls { display: grid; }
+    .a { font-size: 1.75rem; }
+    .again-only { display: none; }
+    .join .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); column-gap: 64px; padding-top: 88px; padding-bottom: 72px; }
+    .join .side { grid-column: 2; grid-row: 1 / span 2; }
+    form.wait { margin-top: 0; }
+    .first-note { grid-column: 1; }
+  }
+
+
+  /* Ke9: Så kommer du igång (tre steg) och Mer när du vill (hopfällt). */
+  /* Ke29 (D125): Vad kan Lumen? En lugn lista, inga knappar. */
+  .can { padding-top: 8px; padding-bottom: 48px; }
+  .can .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
+  .can-list { list-style: none; padding: 0; margin-top: 22px; display: grid; gap: 10px; }
+  .can-list li { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; background: var(--surface); border-radius: 16px; }
+  .can-list svg { width: 22px; height: 22px; flex: none; color: var(--blue); margin-top: 2px; }
+  .can-list h3 { font-size: 1.0625rem; line-height: 1.3; }
+  .can-list p { margin-top: 2px; color: var(--mut); line-height: 1.35; }
+  .can-list .soon { display: inline-block; margin-left: 6px; padding: 2px 8px; border-radius: 999px; background: var(--soft); color: var(--blue); font-size: .75rem; font-weight: 600; vertical-align: 2px; }
+  @media (min-width: 720px) { .can-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .can-list { grid-template-columns: repeat(4, minmax(0, 1fr)); } .can { padding-bottom: 72px; } }
+  .start { padding-top: 8px; padding-bottom: 56px; }
+  .start .lead { margin-top: 12px; max-width: 52ch; color: var(--mut); }
+  .steps .hand { color: var(--ink); }
+  .start .shot { max-width: 180px; }
+  .more { padding-top: 48px; padding-bottom: calc(56px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); }
+  .more h2 { font-size: clamp(1.5rem, 6vw, 2.25rem); }
+  .acc { margin-top: 16px; max-width: 980px; }
+  .acc details { border-bottom: 1px solid var(--line); }
+  .acc summary { list-style: none; cursor: pointer; min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-weight: 600; font-size: 1.125rem; }
+  .acc summary::-webkit-details-marker { display: none; }
+  .acc summary::after { content: ""; flex: none; width: 10px; height: 10px; margin-right: 6px; border: solid var(--mut); border-width: 0 2px 2px 0; transform: translateY(-3px) rotate(45deg); transition: transform 200ms var(--ease-out); }
+  .acc details[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+  .acc details > p, .acc details > ul { padding-bottom: 18px; color: var(--mut); max-width: 60ch; }
+  .acc .ex-list { margin-top: 0; max-width: none; color: var(--ink); }
+  .modes-list li { padding: 6px 0; }
+  .modes-list b { color: var(--ink); }
+  .faq { padding-bottom: 18px; max-width: 60ch; }
+  .faq dt { font-weight: 600; color: var(--ink); margin-top: 12px; }
+  .faq dt:first-child { margin-top: 0; }
+  .faq dd { margin: 4px 0 0; color: var(--mut); }
+  .steps { display: grid; gap: 14px; margin-top: 24px; counter-reset: st; }
+  .steps li { counter-increment: st; padding: 18px 18px 18px 64px; position: relative; }
+  .steps li::before { content: counter(st); position: absolute; left: 18px; top: 16px; width: 34px; height: 34px; border-radius: 50%; background: var(--blue); color: var(--on-blue); display: grid; place-items: center; font-weight: 700; }
+  .steps h3 { font-size: 1.125rem; line-height: 1.3; }
+  .steps p { margin-top: 4px; color: var(--mut); }
+  .shot { display: block; width: 100%; max-width: 220px; height: auto; margin: 14px auto 0; border-radius: 18px; border: 1px solid var(--line); }
+  .shot-note { margin-top: 10px; font-size: .875rem; color: var(--mut); }
+  @media (min-width: 900px) {
+    .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .start { padding-bottom: 88px; }
+    .more { padding-top: 72px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .disc, .thinking i, .bars i { animation: none; }
+    .a span { animation: fade 160ms ease both; }
+    @keyframes fade { from { opacity: 0; } }
+    body[data-view="listening"] .ring { animation: none; opacity: .4; transform: scale(1.1); }
+    .halo { transition: opacity 160ms ease; }
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+  }
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 180ms; }
+  /* Ke51: repetitionsdemon (utkast). Samma tokens som sidan. */
+  .draft-flag { display: inline-block; font-size: .8125rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--mut); border: 1.5px solid var(--line); border-radius: 6px; padding: 2px 8px; margin-bottom: 14px; }
+  .rep { display: flex; flex-direction: column; gap: 14px; }
+  .rep-top { display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--mut); font-variant-numeric: tabular-nums; }
+  .rep-badge { background: var(--soft); color: var(--blue); border-radius: 999px; padding: 4px 12px; font-size: .875rem; }
+  .rep-badge.paused { background: var(--surface); color: var(--mut); }
+  .rep-q { font-size: clamp(1.6rem, 6vw, 2rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.15; }
+  .rep-q:focus { outline: none; }
+  .rep-a { min-height: 6.2em; font-size: 1.0625rem; line-height: 1.5; color: var(--mut); }
+  .rep-a b { color: var(--ink); font-weight: 600; }
+  .rep-a .rest { color: var(--ink); }
+  .taps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .tap-b { display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 84px; padding: 12px 6px; border: 0; border-radius: 14px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+  .tap-b b { font-size: 1rem; } .tap-b small { font-size: .8125rem; color: var(--mut); }
+  .tap-b[aria-pressed="true"] { background: var(--soft); color: var(--blue); }
+  .tap-b[aria-pressed="true"] small { color: var(--blue); }
+  .dots { display: flex; gap: 4px; height: 12px; align-items: center; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+  #rep-next { align-self: center; }
+  @media (hover: hover) { .tap-b:hover { background: var(--soft); } }
+  .rep { padding: 18px 18px 20px; min-width: 0; }
+  @media (min-width: 960px) { .rep { grid-column: 2; grid-row: 1 / span 2; align-self: start; position: sticky; top: 24px; padding: 26px 26px 28px; gap: 18px; } }
+  .draft-flag.beta { vertical-align: middle; margin: 0 0 0 8px; font-size: .75rem; }
+
+</style>
+</head>
+<body data-view="idle">
+<header class="top wrap">
+  <a class="name" href="#">
+    <!-- Ke42 (D129/D139): appens ikon, glasklotet, exakt ChatGPT-bilden (docs/design/logo/rostning/exakt/) -->
+    <img src="img/ikon-64.webp" width="32" height="32" alt="">
+    <span data-app></span>
+  </a>
+</header>
+<main>
+  <section class="hero wrap" aria-labelledby="hero-h">
+    <div class="intro">
+      <p class="draft-flag">Utkast, inte publicerat</p>
+      <h1 id="hero-h">Plugga med AirPods utan att röra mobilen.</h1>
+      <!-- Ke51 (D142): budskapet tills lyssningen är stabil (spec §7). Inget om svarstid, inget om mikrofonen i
+           repetitionsläget utöver det som är sant: Starta prov använder den aldrig (spec §3, R9). -->
+      <p class="pitch">Fota ditt material. <span data-app></span> gör provfrågor med svar och läser upp dem i örat.</p>
+      <p class="pitch-sub">Du styr med tryck på AirPods. Telefonen kan ligga i fickan.</p>
+    </div>
+
+    <div class="rep paper" id="rep" role="region" aria-label="Så låter ett prov">
+      <p class="demo-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></svg>
+        Prova som med AirPods
+      </p>
+      <div class="rep-top"><span id="rep-n">Fråga 1 av 3</span><span class="rep-badge" id="rep-phase">Tänk</span></div>
+      <p class="rep-q" id="rep-q" tabindex="-1"></p>
+      <p class="rep-a" id="rep-a" aria-live="polite"></p>
+      <div class="taps" role="group" aria-label="Tryck på AirPods">
+        <button class="tap-b" id="t1" type="button"><span class="dots" aria-hidden="true"><i></i></span><b>1 tryck</b><small>Långt svar</small></button>
+        <button class="tap-b" id="t2" type="button"><span class="dots" aria-hidden="true"><i></i><i></i></span><b>2 tryck</b><small>Kort svar</small></button>
+        <button class="tap-b" id="t3" type="button"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><b>3 tryck</b><small id="t3s">Paus</small></button>
+      </div>
+      <button class="ex-more" id="rep-next" type="button">Nästa fråga</button>
+      <p class="mini-fine">Påhittat exempel (biologi åk 9). I appen gör <span data-app></span> frågorna av ditt eget material och läser upp dem.</p>
+    </div>
+
+    <div class="demo paper" id="demo" hidden role="region" aria-label="Prova demon">
+      <p class="demo-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></svg>
+        Prova här. Svaret läses upp.
+      </p>
+      <!-- Ke29 (D124, D126): samma ord som appens Start. Standardläge är livedemon, Förhör mig är Provläget. -->
+      <div class="seg" role="group" aria-label="Två sätt att använda Earmind">
+        <button class="seg-b" id="m-ask" type="button" aria-pressed="true">Standardläge</button>
+        <button class="seg-b" id="m-quiz" type="button" aria-pressed="false">Förhör mig</button>
+      </div>
+      <p class="seg-line" id="segline"><span data-app></span> svarar när någon frågar.</p>
+      <div class="quiz" id="quiz" hidden>
+        <p class="ex-meta" id="qz-meta"></p>
+        <p class="quiz-q" id="qz-q" tabindex="-1"></p>
+        <p class="quiz-hint" id="qz-hint">Svara högt för dig själv. Sedan hör du hur <span data-app></span> svarar.</p>
+        <p class="ex-a clamp" id="qz-a" aria-live="polite" hidden></p>
+        <div class="ex-row">
+          <button class="pill" id="qz-play" type="button"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Hör svaret</span></button>
+          <button class="pill quiet" id="qz-next" type="button" hidden>Nästa fråga</button>
+          <button class="ex-more" id="qz-more" type="button" aria-expanded="false" aria-controls="qz-a" hidden>Visa hela svaret</button>
+        </div>
+        <p class="mini-fine" id="qz-end" hidden>I appen förhör <span data-app></span> dig på ditt eget prov. <a href="#vantelista">Mejla mig när appen finns</a></p>
+        <p class="mini-fine">Svaren är ordagranna från vårt test av Provläget den 8 november, med samma röst som i appen.</p>
+      </div>
+      <div class="convo" id="convo" hidden>
+        <p class="q hand" id="q"></p>
+        <div class="a" id="a" aria-live="polite" tabindex="-1"></div>
+        <p class="note" id="note" role="status" hidden></p>
+        <form class="nudge" id="nudge" novalidate hidden>
+          <p class="nudge-h" id="mini-h">Vill du ha appen? Den är inte ute än, så vi mejlar när den finns.</p>
+          <div class="mini-row">
+            <label class="sr" for="miniemail">E-post</label>
+            <input id="miniemail" type="email" name="email" placeholder="Din e-post" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="send" aria-describedby="mini-h minimsg">
+            <button class="pill" id="minibtn" type="submit">Mejla mig</button>
+          </div>
+          <p class="mini-fine">Vi använder adressen bara till det mejlet. <a href="#integritet">Om dina uppgifter</a></p>
+          <p class="formmsg" id="minimsg" role="status"></p>
+        </form>
+        <div class="dock" id="dock" hidden>
+          <button class="pill stop" id="stop" type="button"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Stoppa</button>
+          <button class="pill quiet again-only" id="again" type="button" hidden>Ställ en ny fråga</button>
+          <span class="left" id="left"></span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="try" role="group" aria-label="Exempelfrågor">
+          <button class="chip" type="button">Orsaker till första världskriget</button>
+          <button class="chip" type="button">Hungrig, ägg, pasta</button>
+          <button class="chip" type="button">Vad betyder low-key?</button>
+        </div>
+        <div class="pad">
+          <div class="disc-wrap">
+            <span class="ring"></span><span class="ring"></span><span class="halo" id="halo"></span>
+            <button class="disc" id="disc" type="button" aria-describedby="hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5"/></svg>
+              <span id="disclabel">Håll in och fråga</span>
+            </button>
+          </div>
+          <p class="hint" id="hint" role="status">Bäst med hörlurarna i.</p>
+        </div>
+        <form class="ask" id="ask">
+          <label class="sr" for="txt">Skriv din fråga</label>
+          <input id="txt" type="text" placeholder="Eller skriv din fråga" autocomplete="off" enterkeyhint="send" maxlength="1000">
+          <button class="send" type="submit" aria-label="Skicka frågan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- Ke8: Elias i ett kort (vit bakgrund i bildrutorna), scrollstyrd sekvens. Bild 1 direkt, resten efter load. -->
+    <figure class="elias-wrap">
+      <div class="elias" id="elias" style="--ex:35%;--ey:38%">
+        <div class="stage" id="elias-stage">
+          <img id="elias-still" src="img/elias-seq/001.webp" width="480" height="700" alt="Elias, 17 år, med en vit trådlös hörlur i örat. AI-genererad figur, ingen verklig person.">
+          <canvas id="elias-cv" width="480" height="700" aria-hidden="true"></canvas>
+          <span class="rings" aria-hidden="true"><i></i><i></i><i></i></span>
+        </div>
+      </div>
+    </figure>
+  </section>
+
+  <!-- Ke29 (D125), Ke47: samma namn och fraser som Shared/capabilities.json (K44), som appen och servern läser.
+       "Kommer snart" tas bort per rad när funktionen är provad på telefon (sajtens regel sedan Ke1). -->
+  <section class="can wrap" id="kan" aria-labelledby="kan-h">
+    <h2 id="kan-h">Mer i <span data-app></span> <span class="draft-flag beta">Beta</span></h2>
+    <p class="lead">Lägen som lyssnar på vad du säger. De är i beta och blir bättre hela tiden. Starta prov använder aldrig mikrofonen.</p>
+    <p class="lead">Som Siri, fast den förstår vad du frågar och svarar direkt i dina AirPods. Säg ”Lumen” och vad du vill.</p>
+    <ul class="can-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><div><h3>Förhör</h3><p>”Lumen, förhör mig på fotosyntes”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><div><h3>Svar på frågor</h3><p>”Lumen, vad betyder ambivalent?”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 13h18"/></svg><div><h3>Intervju</h3><p>Färdiga svar på intervjufrågor</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="14" cy="4" r="2"/><path d="M6 21l3-6 3 2v4M9 15l2-5 4 3 3-1M11 10l-3 1-2 3"/></svg><div><h3>Träning</h3><p>”Lumen, ge mig ett styrkepass på 20 minuter”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h9M8.5 3v2M6 5c1 4 4 7 7 8M11 5c-1 4-4 7-7 8"/><path d="M13 21l4-9 4 9M14.5 18h5"/></svg><div><h3>Översätta</h3><p>”Lumen, vad heter fjäril på engelska?”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><div><h3>Söka på webben</h3><p>”Lumen, vad blir vädret i morgon?”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><div><h3>Kalender <span class="soon">Kommer snart</span></h3><p>”Lumen, vad har jag i dag?”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4"/></svg><div><h3>Timer och påminnelser <span class="soon">Kommer snart</span></h3><p>”Lumen, sätt en timer på 10 minuter”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><div><h3>Spotify <span class="soon">Kommer snart</span></h3><p>”Lumen, kör spellistan Plugg”</p></div></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><div><h3>Sömn <span class="soon">Kommer snart</span></h3><p>Vad du sa i sömnen, på morgonen</p></div></li>
+    </ul>
+    <p class="shot-note">Siri är ett varumärke som tillhör Apple Inc. <span data-app></span> är inte gjord av eller kopplad till Apple.</p>
+  </section>
+
+  <!-- Ke9: en enda väg. Demo ovanför, tre steg här, och en knapp (väntelistan) direkt efter. Samma ord som appen. -->
+  <!-- Ke51: de tre stegen i repetitionsläget. Skärmbilderna kommer från Angelas A82 (CI) när de finns; tills dess
+       inga bilder, eftersom sidan aldrig visar påhittade skärmar (Ke3). -->
+  <section class="start wrap" id="kom-igang" aria-labelledby="start-h">
+    <h2 id="start-h">Så kommer du igång</h2>
+    <p class="lead">Tre steg. Sedan ligger telefonen i fickan.</p>
+    <ol class="steps">
+      <li class="paper"><h3>Fota ditt material</h3><p>Sidor ur boken, bilder, en PDF eller Word-fil eller text du klistrar in. Fotona sparas inte.</p></li>
+      <li class="paper"><h3>Kolla frågorna</h3><p><span data-app></span> gör korta frågor med ett kort och ett långt svar. Ändra, ta bort eller lägg till egna.</p></li>
+      <li class="paper"><h3>Tryck Starta prov</h3><p>Frågorna läses upp i dina AirPods. Ett tryck ger långt svar, två ger kort svar och tre pausar.</p></li>
+    </ol>
+    <p class="shot-note draft-flag">Skärmbilder läggs in från appen när repetitionsläget är testat på telefon.</p>
+    <p class="shot-note">Fungerar med AirPods. <span data-app></span> är inte gjord av eller kopplad till Apple.</p>
+  </section>
+
+
+  <section class="join" id="vantelista" aria-labelledby="join-h">
+    <div class="wrap">
+      <div>
+        <h2 id="join-h">Vill du ha appen?</h2>
+        <p class="lead">Den är inte ute än. Skriv din e-post, så mejlar vi när den finns.</p>
+      </div>
+      <div class="side">
+        <form class="wait paper" id="wait" novalidate>
+          <label class="field">E-post
+            <input id="email" type="email" name="email" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="done" required aria-describedby="emailmsg">
+          </label>
+          <p class="fieldmsg" id="emailmsg"></p>
+          <label class="consent">
+            <input id="consent" type="checkbox" required aria-describedby="consentmsg">
+            <span>Ja, mejla mig när appen finns. Jag har läst integritetstexten här under.</span>
+          </label>
+          <p class="fieldmsg" id="consentmsg"></p>
+          <div class="hp" aria-hidden="true"><label>Webbplats <input id="website" type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <button class="pill" id="waitbtn" type="submit">Mejla mig när appen finns</button>
+          <p class="formmsg" id="waitmsg" role="status"></p>
+        </form>
+      </div>
+      <div class="first-note" id="integritet">
+        <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns. Vi sparar adressen, när du gav ditt samtycke och vilken länk du kom från (till exempel en kanal som tiktok). Vill du bli borttagen, eller har du frågor om dina uppgifter, mejla <a href="mailto:stenlundaron@gmail.com">stenlundaron@gmail.com</a>.</p>
+        <p class="fine">Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ke9: allt som inte behövs för att komma igång, hopfällt. Inga blå knappar förrän man öppnar. -->
+  <section class="more wrap" aria-labelledby="more-h">
+    <h2 id="more-h">Mer när du vill</h2>
+    <div class="acc">
+      <details>
+        <summary>Egna röstkommandon</summary>
+        <p>Säg det du vill. Under Inställningar › Röstkommandon väljer du själv fraserna för att byta läge och pausa. Under Egna kommandon sparar du egna nyckelord med en instruktion till <span data-app></span>.</p>
+      </details>
+      <details>
+        <summary>Lägg in ditt material i förväg</summary>
+        <p>Importera instuderingsmaterial som PDF eller textfil, och kursmål, under Förberedelser. <span data-app></span> känner igen dina ämnesord och svarar på kursens nivå.</p>
+      </details>
+      <details>
+        <summary>Fler lägen</summary>
+        <ul class="modes-list">
+          <li><b>Intervju.</b> Träna inför intervjun med frågor till jobbet du söker, och få kort återkoppling på dina svar.</li>
+          <li><b>Socialt.</b> Förslag på skämt, svar och följdfrågor när samtalet går trögt.</li>
+          <li><b>Rizz.</b> Charmiga förslag när du flirtar.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Vanliga frågor</summary>
+        <dl class="faq">
+          <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Säg vilket prov du har och sedan ”Lumen, förhör mig”. Earmind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan.</dd>
+          <dt>Kan jag bli förhörd inför ett prov?</dt><dd>Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Earmind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon.</dd>
+          <dt>Funkar det för nationella provet och A-nivå?</dt><dd>Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok.</dd>
+          <dt>Kan jag prova utan att ladda ner något?</dt><dd>Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns.</dd>
+        </dl>
+      </details>
+    </div>
+  </section>
+</main>
+<noscript><p style="padding:20px">Demon behöver JavaScript. Väntelistan också.</p></noscript>
+
+<script>
+"use strict";
+// Offentlig med flit: nyckeln ger ingenting utan en användar-JWT (anonym inloggning nedan).
+const SB = "https://xjczbzfkmbjdebwlccki.supabase.co";
+const KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8";
+const DEMO_LIMIT = 5;   // D62: 5 frågor per dag. Servern avgör (backend/README.md); här räknas bara det som visas.
+const CONSENT_VERSION = "2026-11-06";   // Höj när samtyckes- eller integritetstexten ändras.
+
+const $ = (id) => document.getElementById(id);
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+// Ke5: var kom besökaren ifrån? ?utm_source= eller ?ref=, sparas i sessionStorage, annars "direkt". Inga cookies.
+  function waitSource() {
+    const ok = v => (typeof v === "string" && /^[a-z0-9_-]{1,32}$/.test(v)) ? v : null;
+    let v = null;
+    try {
+      const q = new URLSearchParams(location.search);
+      v = ok((q.get("utm_source") || q.get("ref") || "").toLowerCase().trim());
+      if (v) sessionStorage.setItem("lumen_src", v); else v = ok(sessionStorage.getItem("lumen_src"));
+    } catch (e) {}
+    return v || "direkt";
+  }
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+};
+
+document.title = APP_NAME + ": fråga högt, få svaret i örat. AI i dina AirPods";
+document.querySelectorAll("[data-app]").forEach((el) => { el.textContent = APP_NAME; });
+
+// ---------- vyer ----------
+function setView(view, animate) {
+  const apply = () => {
+    document.body.dataset.view = view;
+    $("convo").hidden = view === "idle";
+  };
+  if (animate && !reduced && document.startViewTransition) document.startViewTransition(apply);
+  else apply();
+}
+function hint(text, isErr) { $("hint").textContent = text; $("hint").classList.toggle("err", !!isErr); }
+function discLabel(text) { $("disclabel").textContent = text; }
+const HOLD = "Håll in och fråga";
+
+// ---------- D62: frågor per dag (bara i webbläsaren) ----------
+const dayKey = () => "demo_used_" + new Date().toISOString().slice(0, 10);
+const used = () => parseInt(store.get(dayKey()) || "0", 10) || 0;
+function markUsed() { store.set(dayKey(), String(used() + 1)); showLeft(); }
+function showLeft() {
+  const n = Math.max(0, DEMO_LIMIT - used());
+  $("left").textContent = used() === 0 ? "" : n === 1 ? "1 fråga kvar idag" : n + " frågor kvar idag";
+}
+function showLimit(message) {
+  setView("answer");
+  answerError(message);
+  $("nudge").hidden = false; $("dock").hidden = false; $("stop").hidden = true; $("again").hidden = false; $("left").textContent = "";
+  keepFocus();
+}
+function limitReached() {
+  if (used() < DEMO_LIMIT) return false;
+  $("q").textContent = "";
+  showLimit("Du har ställt dagens " + DEMO_LIMIT + " frågor i demon. Välkommen tillbaka i morgon.");
+  return true;
+}
+
+// ---------- inloggning (anonym Supabase-användare, återanvänds mellan besök) ----------
+let token = null;
+function jwtExp(t) { try { return JSON.parse(atob(t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))).exp * 1000; } catch { return 0; } }
+async function getToken(force) {
+  if (!force) {
+    if (token && jwtExp(token) > Date.now() + 60000) return token;
+    const t = store.get("demo_tok");
+    if (t && jwtExp(t) > Date.now() + 60000) return (token = t);
+  }
+  const r = await fetch(SB + "/auth/v1/signup", { method: "POST", headers: { apikey: KEY, "content-type": "application/json" }, body: "{}" });
+  if (!r.ok) { const e = new Error("signup"); e.status = r.status; throw e; }
+  token = (await r.json()).access_token;
+  store.set("demo_tok", token);
+  return token;
+}
+async function api(path, init, retry = true) {
+  const t = await getToken();
+  const r = await fetch(SB + "/functions/v1/" + path, { ...init, headers: { ...(init.headers || {}), authorization: "Bearer " + t, apikey: KEY, "content-type": "application/json" } });
+  if (r.status === 401 && retry) { await getToken(true); return api(path, init, false); }
+  return r;
+}
+async function errorBody(res) {
+  try { return (await res.json()).error || {}; } catch { return {}; }
+}
+// D62/D77: varje demo_limit_* har en egen svensk text från servern som visas som den är.
+function demoLimitText(err) { return String(err.code || "").startsWith("demo_limit") && err.message ? String(err.message) : null; }
+function limitError(message) { const e = new Error(message); e.demoLimit = message; return e; }
+function friendlyError(e, status, code) {
+  if (status === 429 || code === "rate_limited") return "Det är många som frågar just nu. Vänta en stund och försök igen.";
+  if (status) return "Svaret kunde inte hämtas just nu. Försök igen om en stund.";
+  if (e && e.status) return "Demon kan inte starta just nu. Försök igen om en stund.";
+  return "Ingen kontakt med servern. Kolla uppkopplingen och försök igen.";
+}
+
+// ---------- ljud ----------
+// iOS: Web Audio tystas av ringknappen och fastnar ofta efter mikrofonen, så allt spelas via ett <audio>-element.
+const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=";
+let player = null;
+function setSession(type) { try { if (navigator.audioSession) navigator.audioSession.type = type; } catch {} }
+function unlockAudio() {
+  if (!player) { player = new Audio(); player.playsInline = true; player.preload = "auto"; }
+  try { player.src = SILENT; const p = player.play(); if (p) p.catch(() => {}); } catch {}
+  try { speechSynthesis.speak(new SpeechSynthesisUtterance("")); } catch {}
+}
+function playBlob(blob) {
+  return new Promise((resolve, reject) => {
+    setSession("playback");
+    const url = URL.createObjectURL(blob);
+    const end = (fn) => (arg) => { URL.revokeObjectURL(url); fn(arg); };
+    player.onended = end(resolve);
+    player.onerror = end(() => reject(new Error("uppspelning")));
+    player.src = url;
+    const p = player.play();
+    if (p) p.catch(end(reject));
+  });
+}
+let ttsLimit = null;   // serverns text när uppläsningstaket är nått; då läses inget mer upp i dag
+function showNote() { $("note").textContent = ttsLimit || ""; $("note").hidden = !ttsLimit; }
+async function fetchAudio(text) {
+  const res = await api("tts", { method: "POST", body: JSON.stringify({ text: text.slice(0, 400), source: "demo" }) });
+  if (!res.ok) {
+    const limit = demoLimitText(await errorBody(res));
+    throw limit ? limitError(limit) : new Error("tts " + res.status);
+  }
+  return res.blob();
+}
+function speakFallback(text) {
+  return new Promise((resolve) => {
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "sv-SE"; u.onend = resolve; u.onerror = resolve;
+      speechSynthesis.speak(u);
+    } catch { resolve(); }
+  });
+}
+function speak(sentence, r) {
+  if (ttsLimit) return;
+  const audio = fetchAudio(sentence);
+  audio.catch(() => {});
+  r.chain = r.chain.then(async () => {
+    if (r.cancelled || ttsLimit) return;
+    try {
+      const blob = await audio;
+      if (!r.cancelled) await playBlob(blob);
+    } catch (e) {
+      if (e && e.demoLimit) { ttsLimit = e.demoLimit; if (run === r) showNote(); return; }
+      if (!r.cancelled) await speakFallback(sentence);
+    }
+  });
+}
+// Starta rösten så fort en mening är klar.
+function feedSentences(r, final) {
+  for (;;) {
+    const m = /^(.{6,}?[.!?])(\s|$)/s.exec(r.buf);
+    if (!m) break;
+    speak(m[1].trim(), r);
+    r.buf = r.buf.slice(m[0].length);
+  }
+  if (final && r.buf.trim()) { speak(r.buf.trim(), r); r.buf = ""; }
+}
+
+// ---------- fråga ----------
+let run = null;
+const recent = [];
+
+function answerError(text) { const a = $("a"); a.className = "a err"; a.textContent = text; }
+function showThinking() {
+  const a = $("a");
+  a.className = "a";
+  a.replaceChildren();
+  const t = document.createElement("span");
+  t.className = "thinking"; t.setAttribute("aria-label", "Tänker");
+  t.style.animation = "none";
+  t.append(document.createElement("i"), document.createElement("i"), document.createElement("i"));
+  a.append(t);
+}
+function resetDock(busy) {
+  $("dock").hidden = false;
+  $("stop").hidden = !busy;
+  $("again").hidden = busy;
+  $("nudge").hidden = true;
+}
+function keepFocus() {
+  const el = document.activeElement;
+  const lost = !el || el === document.body || !el.getClientRects().length;
+  if (lost && !$("convo").hidden) $("a").focus({ preventScroll: true });
+}
+function finish(r) {
+  r.busy = false;
+  if (run !== r) return;
+  $("stop").hidden = true;
+  $("again").hidden = false;
+  $("nudge").hidden = !r.answer;
+  keepFocus();
+}
+function cancelRun() {
+  stopExample();
+  const r = run;
+  if (r && r.busy) { r.cancelled = true; r.busy = false; try { r.ac.abort(); } catch {} }
+  try { if (player) player.pause(); } catch {}
+  try { speechSynthesis.cancel(); } catch {}
+}
+
+async function ask(text, mode) {
+  cancelRun();
+  if (limitReached()) return;
+  const r = run = { busy: true, text, answer: "", buf: "", chain: Promise.resolve(), cancelled: false, ac: new AbortController() };
+  setView("answer", document.body.dataset.view === "idle");
+  requestAnimationFrame(keepFocus);
+  $("q").textContent = text;
+  showThinking();
+  resetDock(true);
+  showNote();
+  showLeft();
+  try {
+    const body = { fragment: text, mode, language: "sv", source: "demo", context: { recent_qa: recent.slice(-3) } };
+    const res = await api("answer", { signal: r.ac.signal, method: "POST", body: JSON.stringify(body) });
+    if (!res.ok) {
+      const err = await errorBody(res);
+      const code = String(err.code || "");
+      const limit = demoLimitText(err);
+      if (limit) {
+        if (code === "demo_limit_visitor") store.set(dayKey(), String(DEMO_LIMIT));
+        showLimit(limit);
+        r.busy = false;
+        return;
+      }
+      answerError(code === "demo_unavailable" && err.message ? err.message : friendlyError(null, res.status, code));
+      return finish(r);
+    }
+    markUsed();
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+    let buf = "", first = true;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += value;
+      let i;
+      while ((i = buf.indexOf("\n\n")) !== -1) {
+        const frame = buf.slice(0, i); buf = buf.slice(i + 2);
+        const ev = /^event: (.*)$/m.exec(frame)?.[1];
+        const data = JSON.parse(/^data: (.*)$/m.exec(frame)?.[1] ?? "null");
+        if (ev === "delta") {
+          if (first) { $("a").replaceChildren(); first = false; }
+          const s = document.createElement("span");
+          s.textContent = data.text;
+          $("a").append(s);
+          r.answer += data.text; r.buf += data.text;
+          feedSentences(r, false);
+        } else if (ev === "error") {
+          r.failed = true;
+        }
+      }
+    }
+    // Demon kapar svaret vid 400 tecken. Då slutar vi på senaste hela meningen, i både text och röst.
+    if (r.buf.trim() && r.answer.length >= 340) {
+      const end = r.answer.length - r.buf.length;
+      if (end > 0) { r.answer = r.answer.slice(0, end).trimEnd(); r.buf = ""; $("a").textContent = r.answer; }
+    }
+    if (!r.answer) answerError(r.failed ? "Svaret kunde inte hämtas just nu. Försök igen om en stund." : "Det där går inte att göra i demon. Prova en annan fråga.");
+    feedSentences(r, true);
+    if (r.answer) $("nudge").hidden = false;
+    await r.chain;
+    if (r.answer) recent.push({ q: text, a: r.answer.slice(0, 380) });
+  } catch (e) {
+    if (!r.cancelled) answerError(friendlyError(e));
+  }
+  finish(r);
+}
+
+function backToIdle() {
+  cancelRun();
+  setView("idle", true);
+  hint("Bäst med hörlurarna i.");
+  discLabel(HOLD);
+  $("disc").classList.remove("held");
+  scrollTo({ top: 0 });
+}
+$("stop").addEventListener("click", () => {
+  const r = run;
+  cancelRun();
+  if (r) { r.cancelled = true; if (!r.answer) $("a").replaceChildren(); finish(r); }
+  if (!r || !r.answer) { backToIdle(); }
+});
+$("again").addEventListener("click", backToIdle);
+
+document.querySelectorAll(".chip").forEach((chip) => chip.addEventListener("click", () => {
+  unlockAudio();
+  ask(chip.textContent, "text");
+}));
+$("ask").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const v = $("txt").value.trim();
+  if (!v) { $("txt").focus(); return; }
+  unlockAudio();
+  $("txt").value = "";
+  $("txt").blur();
+  ask(v, "text");
+});
+
+// ---------- håll in och prata ----------
+let current = null, scribeOff = false, voiceLimit = null;
+const MIN_HOLD = 350;
+
+async function fetchStt() {
+  const r = await api("stt-token?source=demo", { method: "GET" });
+  if (!r.ok) {
+    const limit = demoLimitText(await errorBody(r));
+    throw limit ? limitError(limit) : new Error("stt " + r.status);
+  }
+  return r.json();
+}
+function heard(text) { $("q").textContent = text; }
+function level(v) { if (!reduced) $("halo").style.transform = "scale(" + (1.04 + Math.min(1, v * 7) * .2).toFixed(3) + ")"; }
+
+function beginListening() {
+  $("disc").classList.add("held");
+  setView("listening");
+  discLabel("Lyssnar. Släpp när du är klar");
+  hint("Mikrofonen är på medan du håller in.");
+  heard("");
+  $("a").replaceChildren();
+  $("a").className = "a";
+  $("dock").hidden = true; $("nudge").hidden = true;
+}
+function endListening(message, isErr) {
+  $("disc").classList.remove("held");
+  $("halo").style.transform = "";
+  discLabel(HOLD);
+  setView("idle");
+  if (message) hint(message, isErr);
+}
+function micError(e) {
+  const denied = e && (e.name === "NotAllowedError" || e === "not-allowed" || e === "service-not-allowed");
+  return denied ? "Mikrofonen är blockerad. Tillåt den i webbläsaren, eller skriv din fråga." : "Mikrofonen gick inte att starta. Skriv din fråga i stället.";
+}
+function submitHeard(text, st) {
+  if (!text) { endListening(st.failed ? "Hörde inte frågan. Försök igen." : "Hörde ingenting. Försök igen."); return; }
+  $("disc").classList.remove("held");
+  $("halo").style.transform = "";
+  discLabel(HOLD);
+  hint("Bäst med hörlurarna i.");
+  setView("answer");
+  ask(text, "push_to_talk");
+}
+
+// Safari-igenkänning: reserv när Scribe saknas.
+function startSafari() {
+  if (!SR) { endListening("Röst fungerar inte i den här webbläsaren. Skriv din fråga i stället.", true); return; }
+  setSession("play-and-record");
+  const st = current = { kind: "safari", startedAt: performance.now(), released: false, final: "", interim: "", done: false };
+  const rec = st.rec = new SR();
+  rec.lang = "sv-SE"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+  const done = () => {
+    if (st.done || !st.released) return;
+    st.done = true;
+    submitHeard((st.final + " " + st.interim).trim(), st);
+  };
+  rec.onresult = (e) => {
+    st.final = ""; st.interim = "";
+    for (let i = 0; i < e.results.length; i++) {
+      if (e.results[i].isFinal) st.final += " " + e.results[i][0].transcript; else st.interim += " " + e.results[i][0].transcript;
+    }
+    if (!st.done) heard((st.final + " " + st.interim).trim());
+    if (st.released && e.results[e.results.length - 1].isFinal) done();
+  };
+  rec.onerror = (e) => {
+    if (e.error === "no-speech" || e.error === "aborted") return;
+    st.done = true; st.released = true;
+    if (current === st) current = null;
+    endListening(e.error === "not-allowed" || e.error === "service-not-allowed" ? "Röst är blockerad. Tillåt mikrofon och diktering, eller skriv din fråga." : "Taligenkänningen stannade. Försök igen eller skriv din fråga.", true);
+  };
+  rec.onend = () => { if (st.released) done(); };
+  st.stop = () => { st.released = true; try { rec.stop(); } catch {} setTimeout(done, 1500); };
+  st.abort = () => { st.released = true; st.done = true; try { rec.abort(); } catch {} };
+  try { rec.start(); } catch { endListening("Taligenkänningen gick inte att starta. Skriv din fråga i stället.", true); }
+}
+
+// Scribe v2 Realtime: PCM16 mono 16 kHz som base64 över WebSocket.
+function pcm16b64(f32, inRate) {
+  const ratio = inRate / 16000, n = Math.floor(f32.length / ratio), out = new Int16Array(n);
+  for (let i = 0; i < n; i++) {
+    const a = Math.floor(i * ratio), b = Math.min(f32.length, Math.floor((i + 1) * ratio));
+    let sum = 0;
+    for (let k = a; k < b; k++) sum += f32[k];
+    const v = Math.max(-1, Math.min(1, sum / Math.max(1, b - a)));
+    out[i] = v < 0 ? v * 32768 : v * 32767;
+  }
+  const bytes = new Uint8Array(out.buffer);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 8192) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+  return { b64: btoa(bin), samples: n };
+}
+function chunk(b64, commit) { return JSON.stringify({ message_type: "input_audio_chunk", audio_base_64: b64, commit, sample_rate: 16000 }); }
+function closeMic(st) {
+  try {
+    if (st.proc) st.proc.disconnect();
+    if (st.stream) st.stream.getTracks().forEach((t) => t.stop());
+    // Kan anropas två gånger (släpp + tak), så kontexten stängs bara en gång.
+    if (st.ctx && st.ctx.state !== "closed") st.ctx.close().catch(() => {});
+  } catch {}
+}
+function openSocket(st, tok) {
+  const q = new URLSearchParams({ model_id: tok.model_id, token: tok.token, language_code: tok.language_code || "swe", audio_format: "pcm_16000", commit_strategy: "manual" });
+  for (const [k, v] of new URLSearchParams(tok.extra_query || "")) q.set(k, v);
+  try {
+    const ws = st.ws = new WebSocket(tok.ws_url + "?" + q.toString());
+    ws.onopen = () => { st.open = true; for (const m of st.queue) ws.send(m); st.queue = []; };
+    ws.onmessage = (ev) => {
+      let m;
+      try { m = JSON.parse(ev.data); } catch { return; }
+      const t = m.message_type || m.type || "";
+      if (t === "partial_transcript") { st.partial = m.text || ""; if (!st.released) heard((st.final + " " + st.partial).trim()); }
+      else if (t === "committed_transcript" || t === "committed_transcript_with_timestamps") { st.final = (st.final + " " + (m.text || "")).trim(); st.partial = ""; heard(st.final); if (st.waiter) st.waiter(); }
+      else if (/error|quota|limit/i.test(t)) { st.failed = t; if (st.waiter) st.waiter(); }
+    };
+    ws.onerror = () => { st.failed = st.failed || "ws"; if (st.waiter) st.waiter(); };
+    ws.onclose = () => { if (!st.done && !st.final && !st.failed) st.failed = "ws"; if (st.waiter) st.waiter(); };
+  } catch { st.failed = "ws"; }
+}
+async function startScribe() {
+  const st = current = { kind: "scribe", startedAt: performance.now(), released: false, queue: [], open: false, final: "", partial: "", samples: 0, failed: null, waiter: null, done: false };
+  setSession("play-and-record");
+  const mic = navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
+  mic.catch(() => {});
+  // Token är begränsade per dag, så en hämtas först när någon håller in. Ljudet köas tills uttaget är öppet.
+  (async () => {
+    let tok;
+    try { tok = await fetchStt(); }
+    catch (e) {
+      if (e && e.demoLimit) {
+        voiceLimit = st.limitMsg = e.demoLimit;
+        closeMic(st); st.done = true;
+        if (!st.released) { st.released = true; if (current === st) current = null; endListening(voiceLimit, true); }
+        else if (st.waiter) st.waiter();
+        else hint(voiceLimit, true);   // släppte innan svaret kom
+        return;
+      }
+      scribeOff = true; st.failed = "token";
+      if (!st.released && SR) { closeMic(st); st.done = true; st.released = true; startSafari(); }
+      return;
+    }
+    if (!st.done) openSocket(st, tok);
+  })();
+  try {
+    const stream = await mic;
+    // Första gången frågar telefonen om lov. Släpper man under tiden är det inget att lyssna på.
+    if (st.released) {
+      stream.getTracks().forEach((t) => t.stop());
+      if (st.permissionRace) hint("Mikrofonen är på. Håll in och prata nu.");
+      return;
+    }
+    st.stream = stream;
+    const ctx = st.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const src = ctx.createMediaStreamSource(stream), proc = st.proc = ctx.createScriptProcessor(4096, 1, 1);
+    proc.onaudioprocess = (e) => {
+      if (st.released) return;
+      const input = e.inputBuffer.getChannelData(0);
+      let sum = 0;
+      for (let i = 0; i < input.length; i += 16) sum += input[i] * input[i];
+      level(Math.sqrt(sum / (input.length / 16)));
+      const { b64, samples } = pcm16b64(input, ctx.sampleRate);
+      st.samples += samples;
+      const msg = chunk(b64, false);
+      if (st.open) st.ws.send(msg); else st.queue.push(msg);
+    };
+    src.connect(proc); proc.connect(ctx.destination);
+  } catch (e) {
+    st.done = true; st.released = true;
+    try { if (st.ws) st.ws.close(); } catch {}
+    if (current === st) current = null;
+    endListening(micError(e), true);
+  }
+}
+async function stopScribe(st) {
+  if (st.limitMsg) return;   // taket nåddes redan medan knappen hölls; texten visas
+  st.released = true;
+  const held = performance.now() - st.startedAt;
+  closeMic(st);
+  if (!st.stream) {           // släppte innan mikrofonen hann starta, ofta tillståndsrutan
+    st.permissionRace = true; st.done = true;
+    try { if (st.ws) st.ws.close(); } catch {}
+    endListening(held < MIN_HOLD ? "Håll in medan du pratar." : "Tillåt mikrofonen och håll in igen.");
+    return;
+  }
+  if (held < MIN_HOLD) {
+    st.done = true;
+    try { if (st.ws) st.ws.close(); } catch {}
+    endListening("Håll in medan du pratar.");
+    return;
+  }
+  // Direkt svar på släppet: frågan står kvar och prickarna visar att något händer.
+  setView("answer"); showThinking(); $("disc").classList.remove("held");
+  const tail = chunk(pcm16b64(new Float32Array(3200), 16000).b64, true);
+  try { if (st.open) st.ws.send(tail); else st.queue.push(tail); } catch {}
+  await new Promise((res) => { st.waiter = res; setTimeout(res, 2800); });
+  if (st.limitMsg) { endListening(st.limitMsg, true); return; }
+  st.done = true;
+  const text = (st.final + " " + st.partial).trim();
+  try { if (st.ws) st.ws.close(); } catch {}
+  const secs = Math.max(1, Math.round(st.samples / 16000));
+  api("stt-token", { method: "POST", body: JSON.stringify({ seconds: secs }) }).catch(() => {});
+  if (!text) scribeOff = true;
+  submitHeard(text, st);
+}
+
+const disc = $("disc");
+function press() {
+  if (current && !current.released) return;
+  cancelRun();
+  unlockAudio();
+  if (navigator.vibrate) navigator.vibrate(8);
+  if (limitReached()) return;
+  if (voiceLimit) { hint(voiceLimit, true); return; }
+  beginListening();
+  if (!scribeOff && navigator.mediaDevices && window.WebSocket) startScribe();
+  else startSafari();
+}
+function release() {
+  const st = current;
+  if (!st || st.released) return;
+  current = null;
+  if (st.kind === "scribe") { stopScribe(st); return; }
+  if (performance.now() - st.startedAt < MIN_HOLD) { st.abort(); endListening("Håll in medan du pratar."); return; }
+  st.stop();
+}
+disc.addEventListener("pointerdown", (e) => {
+  if (e.button !== 0) return;
+  e.preventDefault();
+  try { disc.setPointerCapture(e.pointerId); } catch {}
+  press();
+});
+disc.addEventListener("pointerup", release);
+disc.addEventListener("pointercancel", release);
+disc.addEventListener("contextmenu", (e) => e.preventDefault());
+disc.addEventListener("keydown", (e) => {
+  if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); press(); }
+});
+disc.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); release(); } });
+disc.addEventListener("blur", release);
+
+// ---------- väntelista ----------
+function waitMsg(text, isErr, id = "waitmsg") { $(id).textContent = text; $(id).classList.toggle("err", !!isErr); }
+const NOT_OPEN = "Väntelistan har inte öppnat än, så din adress är inte sparad. Försök igen om några dagar.";
+$("email").addEventListener("input", () => { $("emailmsg").textContent = ""; });
+$("consent").addEventListener("change", () => { $("consentmsg").textContent = ""; });
+$("wait").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = $("email").value.trim();
+  const valid = okEmail(email);
+  $("emailmsg").textContent = valid ? "" : "Skriv en hel e-postadress, till exempel namn@exempel.se.";
+  $("consentmsg").textContent = $("consent").checked ? "" : "Kryssa i rutan så att vi får mejla dig.";
+  waitMsg("");
+  if (!valid) { $("email").focus(); return; }
+  if (!$("consent").checked) { $("consent").focus(); return; }
+  joinList(email, CONSENT_VERSION, $("waitbtn"), "waitmsg", () => $("wait").reset());
+});
+
+// Sparar adressen. Samtycket är att man själv trycker på knappen; versionen säger vilken text man såg.
+async function joinList(email, version, btn, msgId, onOk) {
+  const label = btn.textContent;
+  btn.disabled = true; btn.textContent = "Skickar";
+  try {
+    const payload = { email, consent: true, consent_version: version, source: waitSource(), website: $("website").value };
+    const r = await fetch(SB + "/functions/v1/waitlist", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
+    if (r.ok) {
+      onOk();
+      waitMsg("Klart. Vi mejlar när appen finns.", false, msgId);
+    } else if (r.status === 404) waitMsg(NOT_OPEN, true, msgId);
+    else if (r.status === 429) waitMsg("För många försök just nu. Vänta en stund och försök igen.", true, msgId);
+    else if (r.status === 400) waitMsg("Adressen gick inte att spara. Kontrollera den och försök igen.", true, msgId);
+    else waitMsg("Det gick inte att spara adressen just nu. Försök igen om en stund.", true, msgId);
+  } catch (err) {
+    // Tills /waitlist är driftsatt svarar gatewayn 404 på preflight, och då ser webbläsaren bara ett nätverksfel.
+    waitMsg(navigator.onLine === false ? "Ingen uppkoppling. Din adress är inte sparad." : NOT_OPEN, true, msgId);
+  }
+  btn.disabled = false; btn.textContent = label;
+}
+const okEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+
+// Raden i demon efter svaret. Egen version, eftersom texten skiljer sig från stora formuläret.
+const CONSENT_VERSION_ROW = "2026-11-10-rad";   // Ke11: radens text ändrad
+$("miniemail").addEventListener("input", () => waitMsg("", false, "minimsg"));
+$("nudge").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const email = $("miniemail").value.trim();
+  if (!okEmail(email)) { waitMsg("Skriv en hel e-postadress, till exempel namn@exempel.se.", true, "minimsg"); $("miniemail").focus(); return; }
+  joinList(email, CONSENT_VERSION_ROW, $("minibtn"), "minimsg", () => { $("miniemail").value = ""; $("miniemail").blur(); });
+});
+
+// ---------- exempel från Provläget (förinspelat ljud, kostar inget anrop) ----------
+// ---------- Ke19 (D97): Förhör mig ----------
+// Demon får inte förhöra på servern (D62), så förhöret är tre frågor ur Provlägestestet den 8 november
+// med de inspelade svaren, ordagrant. Inga anrop, ingen demokvot.
+const QUIZ = [
+  {"meta": "Åk 9 · Biologi", "q": "Förklara varför antibiotika inte hjälper mot virus.", "a": "Antibiotika verkar genom att slå ut eller hindra delar som bakterier har och som vi människor inte har, till exempel bakteriernas egna cellvägg eller deras sätt att tillverka proteiner. Virus är inte celler. De saknar egen ämnesomsättning och en egen cellvägg, och de tar över våra celler för att föröka sig. Eftersom det antibiotikan angriper saknas i virus, har medlet ingen verkan på dem. Ett exempel är förkylning och influensa, som orsakas av virus, där antibiotika alltså inte gör någon nytta. På provet räcker det att skriva att virus saknar cellstruktur och ämnesomsättning, och att antibiotika riktar sig mot bakteriers egna strukturer.", "src": "audio/pl-019.mp3"},
+  {"meta": "Åk 9 · Biologi", "q": "Vad händer i en näringskedja om rovdjuren försvinner?", "a": "Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan. Rovdjuren håller nere antalet växtätare, så när de är borta ökar växtätarna snabbt. Fler växtätare äter upp mer av växterna, och antalet växter kan då minska kraftigt. Det leder till att växtätarna så småningom också får brist på mat och deras antal sjunker igen. Ett klassiskt exempel är när vargen försvann från Yellowstone i USA: hjortarna blev fler, de åt upp unga träd och buskar, och det drabbade även bävrar och fåglar som levde i området. På provet bör du skriva att rovdjur reglerar populationen av växtätare och att borttagandet ger en kedjereaktion genom näringsväven.", "src": "audio/pl-022.mp3"},
+  {"meta": "Åk 9 · Samhällskunskap", "q": "Förklara vad globalisering är.", "a": "Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna. Det sker genom handel, investeringar, resor och internet, och att varor, pengar och idéer rör sig allt lättare mellan länder. Ett vanligt exempel är att en tröja kan designas i Sverige, sys i Bangladesh och säljas i flera länder samtidigt. Fördelarna är billigare varor och fler jobb i vissa länder, men det finns också nackdelar, som att jobb kan försvinna i andra länder när produktionen flyttas. På provet kan du visa att du förstår det genom att ge både fördelar och nackdelar och ett konkret exempel.", "src": "audio/pl-079.mp3"}
+];
+const LINES = { quiz: APP_NAME + " frågar ut dig och svarar på dina frågor.", ask: APP_NAME + " svarar när någon frågar." };
+let qi = 0, exPlayer = null, qzPlaying = false;
+const PLAY = '<path d="M7 4.5v15l12.5-7.5z"/>', STOP = '<rect x="6" y="6" width="12" height="12" rx="2"/>';
+function qzButton(text, icon, primary) {
+  const b = $("qz-play");
+  b.querySelector("span").textContent = text;
+  b.querySelector("svg").innerHTML = icon;
+  b.classList.toggle("quiet", !primary);
+}
+function stopExample() {
+  if (!qzPlaying) return;
+  qzPlaying = false;
+  try { exPlayer.pause(); } catch {}
+  qzButton("Hör igen", PLAY, false);
+  $("qz-next").hidden = false;
+  $("qz-next").classList.remove("quiet");
+  $("qz-end").hidden = qi < QUIZ.length - 1;
+}
+function showQuestion(i, focus) {
+  stopExample();
+  qi = i;
+  const q = QUIZ[i];
+  $("qz-meta").textContent = "Fråga " + (i + 1) + " av " + QUIZ.length + " · " + q.meta;
+  $("qz-q").textContent = q.q;
+  $("qz-hint").hidden = false;
+  $("qz-a").textContent = q.a;
+  $("qz-a").hidden = true;
+  $("qz-a").classList.add("clamp");
+  $("qz-more").hidden = true;
+  $("qz-more").setAttribute("aria-expanded", "false");
+  $("qz-more").textContent = "Visa hela svaret";
+  qzButton("Hör svaret", PLAY, true);
+  $("qz-next").hidden = true;
+  $("qz-next").textContent = i === QUIZ.length - 1 ? "Börja om" : "Nästa fråga";
+  $("qz-end").hidden = true;
+  if (focus) $("qz-q").focus({ preventScroll: true });
+}
+function setMode(mode) {
+  if (document.body.dataset.mode === mode) return;
+  cancelRun();
+  if (document.body.dataset.view !== "idle") setView("idle");
+  document.body.dataset.mode = mode;
+  $("m-quiz").setAttribute("aria-pressed", String(mode === "quiz"));
+  $("m-ask").setAttribute("aria-pressed", String(mode === "ask"));
+  $("segline").textContent = LINES[mode];
+  $("quiz").hidden = mode !== "quiz";
+  if (mode === "quiz") showQuestion(0, false);
+}
+document.body.dataset.mode = "ask";
+$("m-quiz").addEventListener("click", () => setMode("quiz"));
+$("m-ask").addEventListener("click", () => setMode("ask"));
+$("qz-play").addEventListener("click", () => {
+  if (qzPlaying) { stopExample(); return; }
+  cancelRun();
+  if (!exPlayer) { exPlayer = new Audio(); exPlayer.playsInline = true; exPlayer.preload = "none"; }
+  setSession("playback");
+  qzPlaying = true;
+  $("qz-hint").hidden = true;
+  $("qz-a").hidden = false;
+  $("qz-more").hidden = false;
+  $("qz-next").hidden = true;
+  qzButton("Stoppa", STOP, false);
+  exPlayer.onended = stopExample;
+  exPlayer.onerror = stopExample;
+  exPlayer.src = QUIZ[qi].src;
+  const p = exPlayer.play();
+  if (p) p.catch(stopExample);
+});
+$("qz-next").addEventListener("click", () => showQuestion((qi + 1) % QUIZ.length, true));
+$("qz-more").addEventListener("click", () => {
+  const open = $("qz-a").classList.toggle("clamp") === false;
+  $("qz-more").setAttribute("aria-expanded", String(open));
+  $("qz-more").textContent = open ? "Visa mindre" : "Visa hela svaret";
+});
+
+// ---------- uppstart ----------
+showLeft();
+// Väcker funktionerna så att första frågan slipper kallstart. OPTIONS går igenom gatewayn och kostar ingenting.
+for (const fn of ["answer", "tts"]) fetch(SB + "/functions/v1/" + fn, { method: "OPTIONS" }).catch(() => {});
+getToken().catch(() => {});   // Felet visas när någon faktiskt frågar.
+
+// Ke7: scrollstyrd Elias. Visad bildruta glider mot målet (lerp), och vilar aldrig på en dålig vilobild.
+(() => {
+  const fig = document.getElementById("elias"); if (!fig) return;
+  const stage = document.getElementById("elias-stage"), cv = document.getElementById("elias-cv"), still = document.getElementById("elias-still"), ctx = cv.getContext("2d");
+  const N = 120, BAD = [[22, 30], [48, 66], [85, 93]], RING = 39, SKIP = [49, 65]; // udda bildrutor finns; 49–65 (handen) hoppas över och tonas över 47→67
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const step = 2; // Deangelo: bara udda bildrutor finns (site/ max 2 MB)
+  const src = n => "img/elias-seq/" + String(n).padStart(3, "0") + ".webp";
+  if (reduced) { still.src = src(100); fig.classList.add("pulse"); return; }
+  const frames = new Array(N + 1);
+  let cur = 1, target = 1, shown = 1, tmo = 0, last = 0;
+  function load() {
+    const list = []; for (let n = 1; n <= N; n += step) if (n < SKIP[0] || n > SKIP[1]) list.push(n);
+    let i = 0;
+    const next = () => { if (i >= list.length) return; const n = list[i++]; const im = new Image(); im.decoding = "async"; im.onload = () => { frames[n] = im; if (n === 1) { fig.classList.add("live"); draw(1); } next(); }; im.onerror = next; im.src = src(n); };
+    next(); next();
+  }
+  function nearest(f) { for (let d = 0; d < N; d++) { if (frames[f - d]) return frames[f - d]; if (frames[f + d]) return frames[f + d]; } return null; }
+  function draw(f) {
+    ctx.clearRect(0, 0, 480, 700);
+    if (f > 47 && f < 67 && frames[47] && frames[67]) { // kort toning 47→67 över ca 3 bildrutor
+      const t = Math.min(1, Math.max(0, (f - 56) / 3));
+      ctx.globalAlpha = 1; ctx.drawImage(frames[47], 0, 0);
+      ctx.globalAlpha = t; ctx.drawImage(frames[67], 0, 0); ctx.globalAlpha = 1; return;
+    }
+    const im = nearest(f); if (im) ctx.drawImage(im, 0, 0);
+  }
+  function progress() {
+    const r = fig.getBoundingClientRect(), vh = innerHeight;
+    return Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (vh * 0.85)));
+  }
+  function settle() { // scrollen har stannat: glid till närmaste bra vilobild
+    for (const [a, b] of BAD) if (target >= a && target <= b) { target = (target - a < b - target) ? a - 1 : b + 1; }
+  }
+  function onScroll() { target = 1 + progress() * (N - 1); clearTimeout(tmo); tmo = setTimeout(settle, 140); kick(); }
+  let raf = 0; function kick() { if (!raf) raf = requestAnimationFrame(tick); }
+  function tick() {
+    raf = 0; shown += (target - shown) * 0.12;
+    if (Math.abs(target - shown) < 0.02) shown = target;
+    const f = Math.round(shown);
+    if (f !== cur) { cur = f; draw(f); }
+    if (cur >= RING) fig.classList.add("pulse"); else if (cur < RING - 8) fig.classList.remove("pulse");
+    const p = (shown - 1) / (N - 1); const z = 1 + 0.1 * p;
+    stage.style.transform = `scale(${z.toFixed(3)}) translateY(${(-p * 2).toFixed(2)}%)`;
+    if (shown !== target) kick();
+  }
+  addEventListener("scroll", onScroll, { passive: true }); addEventListener("resize", onScroll);
+  const go = () => { load(); onScroll(); };
+  if (document.readyState === "complete") setTimeout(go, 0); else addEventListener("load", () => setTimeout(go, 0));
+})();
+</script>
+<script>
+// Ke51: repetitionsdemon (utkast). Ingen server, inga anrop. Tre påhittade frågor (samma som i Ke49-skisserna).
+// Kort svar = första meningen i det långa (D145). Under paus fortsätter vilket tryck som helst (D143/D147).
+(() => {
+  const Q = [
+    ['Varför behövs klorofyll?',
+     'Klorofyll fångar ljusenergin som växten behöver för fotosyntesen.',
+     'Det är ett grönt färgämne i kloroplasterna. Det tar upp rött och blått ljus och reflekterar grönt, därför ser bladen gröna ut. Energin används för att bygga glukos av koldioxid och vatten. Utan klorofyll ingen fotosyntes, och då ingen näring för växten eller djuren som äter den.'],
+    ['Varför släpper växter ut syre?',
+     'Syret blir över när vattenmolekyler delas i fotosyntesen.',
+     'Växten behöver vätet från vattnet för att bygga glukos, och syret är en restprodukt som går ut genom klyvöppningarna. Det är samma syre som djur och människor sedan använder i cellandningen.'],
+    ['Fotosyntes jämfört med cellandning?',
+     'Fotosyntesen lagrar energi i glukos, cellandningen frigör den igen.',
+     'Fotosyntesen tar koldioxid och vatten och bildar glukos och syre med hjälp av ljus. Cellandningen gör tvärtom: glukos och syre blir koldioxid, vatten och energi. Det ena är det andras råvara, så kol och syre går i ett kretslopp.'],
+  ];
+  const $ = id => document.getElementById(id);
+  const q = $('rep-q'), a = $('rep-a'), n = $('rep-n'), ph = $('rep-phase'), t3s = $('t3s');
+  const btns = [$('t1'), $('t2'), $('t3')];
+  let i = 0, paused = false, shown = '';
+  const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  function render() {
+    const [qq, short, rest] = Q[i];
+    n.textContent = `Fråga ${i + 1} av ${Q.length}`;
+    q.textContent = qq;
+    ph.classList.toggle('paused', paused);
+    ph.textContent = paused ? 'Pausad' : shown === 'long' ? 'Långt svar' : shown === 'short' ? 'Kort svar' : 'Tänk';
+    a.innerHTML = paused ? 'Pausad. Tryck för att fortsätta från samma ord.'
+      : shown === 'long' ? `<b>${esc(short)}</b> <span class="rest">${esc(rest)}</span>`
+      : shown === 'short' ? `<b>${esc(short)}</b>`
+      : 'Tänk på svaret. Tryck en gång för hela svaret eller två gånger för det korta.';
+    btns[0].setAttribute('aria-pressed', String(!paused && shown === 'long'));
+    btns[1].setAttribute('aria-pressed', String(!paused && shown === 'short'));
+    btns[2].setAttribute('aria-pressed', String(paused));
+    t3s.textContent = paused ? 'Fortsätt' : 'Paus';
+  }
+  function press(k) {
+    if (paused) { paused = false; render(); return; }   // vilket tryck som helst fortsätter
+    if (k === 3) { paused = true; } else { shown = k === 1 ? 'long' : 'short'; }
+    render();
+  }
+  btns.forEach((b, k) => b.addEventListener('click', () => press(k + 1)));
+  $('rep-next').addEventListener('click', () => { i = (i + 1) % Q.length; shown = ''; paused = false; render(); q.focus(); });
+  render();
+})();
+
+</script>
+</body>
+</html>

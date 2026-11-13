@@ -1,0 +1,25 @@
+<div class="intro">
+      <p class="draft-flag">Utkast, inte publicerat</p>
+      <h1 id="hero-h">Plugga med AirPods utan att röra mobilen.</h1>
+      <!-- Ke51 (D142): budskapet tills lyssningen är stabil (spec §7). Inget om svarstid, inget om mikrofonen i
+           repetitionsläget utöver det som är sant: Starta prov använder den aldrig (spec §3, R9). -->
+      <p class="pitch">Fota ditt material. <span data-app></span> gör provfrågor med svar och läser upp dem i örat.</p>
+      <p class="pitch-sub">Du styr med tryck på AirPods. Telefonen kan ligga i fickan.</p>
+    </div>
+
+    <div class="rep paper" id="rep" role="region" aria-label="Så låter ett prov">
+      <p class="demo-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></svg>
+        Prova som med AirPods
+      </p>
+      <div class="rep-top"><span id="rep-n">Fråga 1 av 3</span><span class="rep-badge" id="rep-phase">Tänk</span></div>
+      <p class="rep-q" id="rep-q" tabindex="-1"></p>
+      <p class="rep-a" id="rep-a" aria-live="polite"></p>
+      <div class="taps" role="group" aria-label="Tryck på AirPods">
+        <button class="tap-b" id="t1" type="button"><span class="dots" aria-hidden="true"><i></i></span><b>1 tryck</b><small>Långt svar</small></button>
+        <button class="tap-b" id="t2" type="button"><span class="dots" aria-hidden="true"><i></i><i></i></span><b>2 tryck</b><small>Kort svar</small></button>
+        <button class="tap-b" id="t3" type="button"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><b>3 tryck</b><small id="t3s">Paus</small></button>
+      </div>
+      <button class="ex-more" id="rep-next" type="button">Nästa fråga</button>
+      <p class="mini-fine">Påhittat exempel (biologi åk 9). I appen gör <span data-app></span> frågorna av ditt eget material och läser upp dem.</p>
+    </div>
