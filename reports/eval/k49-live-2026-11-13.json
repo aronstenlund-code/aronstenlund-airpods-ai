@@ -1,0 +1,67 @@
+{
+ "schools": {
+  "status": 200,
+  "count": 20,
+  "first": {
+   "code": "74982842",
+   "name": "Bergshammars skola",
+   "locality": "Nyköping"
+  }
+ },
+ "save": {
+  "status": 200,
+  "new_chars": null,
+  "audio": 2,
+  "total": 2
+ },
+ "publish_empty": {
+  "status": 409,
+  "missing": [
+   "school",
+   "subject",
+   "date"
+  ]
+ },
+ "publish": {
+  "status": 200
+ },
+ "search": {
+  "status": 200,
+  "s": 0.42,
+  "found": true,
+  "account_in_result": false,
+  "fields": [
+   "exam_date",
+   "id",
+   "items",
+   "school",
+   "subject",
+   "title"
+  ]
+ },
+ "import": {
+  "status": 200,
+  "new_chars": 0,
+  "done": 2,
+  "total": 2
+ },
+ "played": {
+  "status": 500,
+  "counted": null
+ },
+ "reports": [
+  {
+   "reports": 1,
+   "hidden": false
+  },
+  {
+   "reports": 2,
+   "hidden": false
+  },
+  {
+   "reports": 3,
+   "hidden": true
+  }
+ ],
+ "hidden_from_search": true
+}
