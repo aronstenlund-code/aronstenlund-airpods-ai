@@ -32,3 +32,30 @@ Deno.test("K6 the five planned characters are all allowed", async () => {
   const h = createVoiceLabHandler({ serviceKey: "svc", elevenLabsKey: "xi", fetchImpl: () => Promise.resolve(Response.json({ previews: [] })) });
   for (const c of chars) assertEquals((await h(post({ action: "previews", voice_description: c.description, text: c.text }))).status, 200, c.id);
 });
+
+Deno.test("K48 voice-lab sample: service role only, the default voice, the model asked for, same format, refused models never sent", async () => {
+  const calls: { url: string; body: Record<string, unknown> }[] = [];
+  const h = createVoiceLabHandler({
+    serviceKey: "svc",
+    elevenLabsKey: "xi",
+    voiceId: "VoiceDefault12345",
+    fetchImpl: (url, init) => {
+      calls.push({ url: String(url), body: JSON.parse(String(init?.body)) });
+      return Promise.resolve(new Response(new Uint8Array([1, 2, 3]), { headers: { "content-type": "audio/mpeg", "character-cost": "40" } }));
+    },
+  });
+  const text = "Fotosyntesen sker i kloroplasterna.";
+  assertEquals((await h(post({ action: "sample", text, model: "eleven_v3" }, "anon"))).status, 401);
+  for (const model of ["eleven_multilingual_v2", "eleven_v3", "eleven_flash_v2_5"]) {
+    const r = await h(post({ action: "sample", text, model }));
+    assertEquals(r.status, 200, model);
+    const j = await r.json();
+    assertEquals([j.model, j.audio_base_64, j.chars, j.character_cost], [model, "AQID", text.length, 40]);
+  }
+  assertEquals(calls.map((c) => c.body.model_id), ["eleven_multilingual_v2", "eleven_v3", "eleven_flash_v2_5"]);
+  assertEquals(calls.every((c) => c.url.includes("/v1/text-to-speech/VoiceDefault12345?output_format=mp3_44100_128")), true);
+  assertEquals(calls.every((c) => c.body.text === text), true);
+  assertEquals((await h(post({ action: "sample", text, model: "eleven_v4_turbo" }))).status, 400);
+  assertEquals((await h(post({ action: "sample", text: "x".repeat(1201), model: "eleven_v3" }))).status, 400);
+  assertEquals(calls.length, 3, "refused requests never reach ElevenLabs");
+});

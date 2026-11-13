@@ -1,0 +1,33 @@
+name: Voice blind test (K48)
+
+# Manual: Multilingual v2, v3 and Flash read the same three sentences with the app's default voice through
+# /voice-lab "sample" (service role). Files A/B/C with shuffled models go to docs/rost-blindtest/, which model is
+# which only to FACIT.md. About 1 500 ElevenLabs characters (D146 budget <= 3 000). The log never names the models.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Make A, B and C
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/k48-blindtest.py --out docs/rost-blindtest
+      - name: Commit the files
+        run: |
+          git config user.name "lumen-eval"
+          git config user.email "lumen-eval@users.noreply.github.com"
+          git add docs/rost-blindtest
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "K48: voice blind test A/B/C [skip eval]"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0; sleep $((i*5)); done
+          exit 1
