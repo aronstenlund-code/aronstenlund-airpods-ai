@@ -74,3 +74,20 @@ revoke all on function public.report_publication(uuid, uuid, text) from public, 
 revoke all on function public.bump_publication(uuid, text) from public, anon, authenticated;
 grant execute on function public.report_publication(uuid, uuid, text) to service_role;
 grant execute on function public.bump_publication(uuid, text) to service_role;
+
+-- live 2026-11-13: a void function answers 204 without a body, which the function's JSON reader cannot read;
+-- it returns the new count instead (applied as migration bump_publication_returns_count)
+drop function if exists public.bump_publication(uuid, text);
+create function public.bump_publication(p_id uuid, p_field text) returns integer
+language plpgsql security invoker set search_path = public as $$
+declare n integer;
+begin
+  if p_field = 'imports' then
+    update public.drill_publications set imports = imports + 1 where id = p_id returning imports into n;
+  elsif p_field = 'plays' then
+    update public.drill_publications set plays = plays + 1 where id = p_id returning plays into n;
+  end if;
+  return coalesce(n, 0);
+end $$;
+revoke all on function public.bump_publication(uuid, text) from public, anon, authenticated;
+grant execute on function public.bump_publication(uuid, text) to service_role;
