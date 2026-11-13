@@ -169,19 +169,11 @@ final class RepetitionModel {
 
     /// The playing screen is up.
     var showsPlayer = false
-    /// "Fortsätt där du var?" after iOS closed the app (R8).
-    var resumeOffer: ResumeOffer?
     /// A share link opened in the app: the exam to add.
     var incomingCode: String?
     var importMessage: String?
     /// The exam to open after an import or a new exam (Start shows it).
     var openDrill: UUID?
-
-    struct ResumeOffer: Identifiable, Equatable {
-        var id: UUID { drill.id }
-        let drill: Drill
-        let index: Int
-    }
 
     init(store: DrillStore, session: RepetitionSession, maker: any DrillMaking, audio: any DrillAudioProviding,
          sharing: any DrillSharing, remote: RemoteCommandHub, cloud: (any DrillCloudSyncing)? = nil,
@@ -307,7 +299,6 @@ final class RepetitionModel {
             audio.track(for: store.drill(id) ?? drill, at: i)
         }
         showsPlayer = true
-        resumeOffer = nil
     }
 
     static let playedKey = "repetition.hasPlayed"
@@ -461,14 +452,6 @@ final class RepetitionModel {
     func end() {
         session.stop()
         showsPlayer = false
-    }
-
-    /// On opening: the last run's exam and question, if iOS closed the app while it played.
-    func checkResume() {
-        guard !session.isActive, resumeOffer == nil, let saved = RepetitionProgress.load(defaults),
-              let drill = store.drill(saved.drillID), saved.index > 0, saved.index < drill.items.count,
-              Date().timeIntervalSince(saved.savedAt) < 24 * 3600 else { return }
-        resumeOffer = ResumeOffer(drill: drill, index: saved.index)
     }
 
     // MARK: Sharing (A81)
