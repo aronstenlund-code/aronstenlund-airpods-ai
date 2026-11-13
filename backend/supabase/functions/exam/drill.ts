@@ -61,10 +61,12 @@ export const DEFAULT_DRILL_CONFIG: DrillConfig = {
 
 export const SYSTEM_PROMPT_DRILL_PLAN =
   `You prepare a Swedish student's revision list for an exam ("prov") from their study material (page photos, notes, a document's text). The student will listen to the questions and answers in their AirPods. Return ONLY a JSON object:
-{"summary": {"subject": "Biologi", "grade": "åk 8", "covers": "..."}, "notes": "...", "questions": ["Varför behövs klorofyll?", "..."]}
+{"summary": {"subject": "Biologi", "grade": "åk 8", "covers": "..."}, "notes": "...", "questions_possible": 12, "questions": ["Varför behövs klorofyll?", "..."]}
+When the material cannot be read at all (blurred, cut off, a screen photo you cannot make out, no school content), return ONLY {"unreadable": "<one short Swedish sentence on why, for example 'Texten på bilderna går inte att läsa.'>"}.
 - summary: "subject" the school subject in Swedish; "grade" the school year or course as Swedes say it ("åk 8", "Matematik 1b", "Svenska 1"), from <context> when given, else your best reading of the material; "covers" one or two Swedish sentences on what the exam covers (the main areas, in order).
 - notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact Swedish plain text in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.
-- questions: exactly the number asked for in <count> (the longest are removed afterwards, so make most of them short), in Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
+- questions_possible: how many good, different exam questions the material really supports (D159: never more than the material carries; a short text may support 4). Count before you write.
+- questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 4 extra (the longest are removed afterwards, so make most of them short). Never pad with repeated, trivial or outside questions to reach the number. In Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
   - short: at least four of every five questions have five words or fewer (count them: "Varför behövs klorofyll?" is three). Six to eight words only for a calculation question or when fewer words would not make sense when the question is only HEARD, with no text in front of the student. Never a fragment that needs the material to make sense ("Vad säger m?", "Mol metan i 16 g?" are wrong; "Vad visar m i en rät linje?", "Hur många mol är 16 gram metan?" are right). Cut filler such as "i naturen", "egentligen", "det att";
   - written as it is said: no symbols, formulas, units or abbreviations as signs ("syre", not "O2"; "kubikdecimeter", not "dm³"; "procent", not "%");
   - tests understanding, not only recall: at least three of every four questions ask why, how, what happens if, or compare ("Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Vad händer om pH sjunker?", "Skillnad mellan väder och klimat?"); "Vad är X?", "Vad betyder X?" or "Vilka ...?" at most one in five, only for a key term the material defines;
@@ -139,7 +141,10 @@ export function isRecall(q: string): boolean {
 }
 
 /** Step 1 reply: the summary, the notes and at most `count` questions within the word limit (R3), no duplicates. */
-export function parsePlan(text: string, count: number): { summary: DrillSummary; notes: string; questions: string[] } {
+export function parsePlan(
+  text: string,
+  count: number,
+): { summary: DrillSummary; notes: string; questions: string[]; questionsPossible?: number; unreadable?: string } {
   const j = firstJson(text) ?? {};
   const s = (j.summary ?? {}) as Record<string, unknown>;
   const seen = new Set<string>();
@@ -155,6 +160,10 @@ export function parsePlan(text: string, count: number): { summary: DrillSummary;
     summary: { subject: oneLine(s.subject, 60), grade: oneLine(s.grade, 60), covers: oneLine(s.covers, 400) },
     notes: clean(j.notes, DRILL_LIMITS.notes),
     questions: trimQuestions(questions, count),
+    ...(Number.isFinite(Number(j.questions_possible)) && Number(j.questions_possible) > 0
+      ? { questionsPossible: Math.round(Number(j.questions_possible)) }
+      : {}),
+    ...(typeof j.unreadable === "string" && j.unreadable.trim() ? { unreadable: oneLine(j.unreadable, 200) } : {}),
   };
 }
 
@@ -429,6 +438,23 @@ export async function docxText(base64: string): Promise<string> {
 
 type Img = { mediaType: "image/jpeg" | "image/png" | "image/webp"; data: string };
 
+/** The image format from the first bytes of base64 data: jpeg, png, webp, "unsupported" (HEIC, GIF, PDF ...) or null. */
+export function sniffImage(b64: string): Img["mediaType"] | "unsupported" | null {
+  let head: Uint8Array;
+  try {
+    head = Uint8Array.from(atob(b64.slice(0, 24)), (c) => c.charCodeAt(0));
+  } catch {
+    return null;
+  }
+  const at = (i: number, ...xs: number[]) => xs.every((x, k) => head[i + k] === x);
+  if (at(0, 0xff, 0xd8, 0xff)) return "image/jpeg";
+  if (at(0, 0x89, 0x50, 0x4e, 0x47)) return "image/png";
+  if (at(0, 0x52, 0x49, 0x46, 0x46) && at(8, 0x57, 0x45, 0x42, 0x50)) return "image/webp";
+  if (at(4, 0x66, 0x74, 0x79, 0x70)) return "unsupported"; // ftyp: HEIC/HEIF/AVIF
+  if (at(0, 0x47, 0x49, 0x46) || at(0, 0x25, 0x50, 0x44, 0x46)) return "unsupported"; // GIF, PDF
+  return null;
+}
+
 export function drillImages(pages: unknown): Img[] {
   const list = Array.isArray(pages) ? pages : [];
   if (list.length > DRILL_LIMITS.pages) throw new HttpError(400, "invalid_request", `pages: at most ${DRILL_LIMITS.pages} images per call`);
@@ -439,8 +465,15 @@ export function drillImages(pages: unknown): Img[] {
     if (!["image/jpeg", "image/png", "image/webp"].includes(mediaType) || !data) {
       throw new HttpError(400, "invalid_request", `pages[${i}] needs media_type (jpeg/png/webp) and base64 data`);
     }
-    if (data.length > 3 * 1024 * 1024) throw new HttpError(413, "payload_too_large", `pages[${i}] is larger than 3 MB`);
-    return { mediaType: mediaType as Img["mediaType"], data };
+    if (data.length > 3 * 1024 * 1024) {
+      throw new HttpError(413, "payload_too_large", `Bild ${i + 1} är för stor (högst 3 MB). Förminska bilderna innan de skickas.`);
+    }
+    // K51 (Aron 22:13): the app labels every page image/jpeg; the real format comes from the first bytes
+    const real = sniffImage(data);
+    if (real === "unsupported") {
+      throw new HttpError(415, "unsupported_image", `Bild ${i + 1} har ett format som inte stöds (till exempel HEIC). Skicka JPEG, PNG eller WebP.`);
+    }
+    return { mediaType: (real ?? mediaType) as Img["mediaType"], data };
   });
 }
 
@@ -481,10 +514,18 @@ export async function handleDrill(
       signal,
     }, cfg.planPriceIn, cfg.planPriceOut);
     const p = parsePlan(plan.text, Number.MAX_SAFE_INTEGER); // all candidates; trimmed after shortening
-    if (!p.questions.length) throw new HttpError(502, "drill_unreadable", "No questions could be made from this material");
+    if (!p.questions.length) {
+      // K51 (Aron 22:12, two photos of a screen: 502 after 4 s): not a server error; say why, log only the reason
+      console.warn("drill_unreadable", JSON.stringify({ images: images.length, text_chars: text.length, reply_chars: plan.text.length,
+        reason: p.unreadable?.slice(0, 120) ?? null, in: plan.usage.input_tokens, out: plan.usage.output_tokens }));
+      throw new HttpError(422, "drill_unreadable",
+        `${p.unreadable ?? "Det gick inte att läsa materialet."} Fotografera rakt ovanifrån i bra ljus, eller klistra in texten.`);
+    }
+    // D159: never more questions than the material carries
+    const possible = Math.max(1, Math.min(count, p.questionsPossible ?? count, p.questions.length));
     const summary = { subject: p.summary.subject || subjectIn, grade: gradeIn && !correction ? gradeIn : p.summary.grade || gradeIn, covers: p.summary.covers };
     const sh = await shortenQuestions(provider, cfg, p.questions, summary, signal);
-    const base = trimQuestions(sh.questions, count).map((question, i) => ({ id: `q${i + 1}`, question }));
+    const base = trimQuestions(sh.questions, possible).map((question, i) => ({ id: `q${i + 1}`, question }));
     const steps = [plan.usage, ...(sh.usage ? [sh.usage] : [])];
     let items: DrillItem[] = base;
     let answers: StepUsage | null = null;
@@ -498,6 +539,9 @@ export async function handleDrill(
       body: {
         summary,
         notes: p.notes,
+        questions_asked: count,
+        questions_possible: base.length,
+        ...(base.length < count ? { note: `Materialet räckte till ${base.length} ${base.length === 1 ? "fråga" : "frågor"}.` } : {}),
         items,
         long_words: longWords,
         usage: {

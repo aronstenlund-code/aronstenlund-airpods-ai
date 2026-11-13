@@ -228,3 +228,69 @@ Deno.test("K45 R3: questions over five words are shortened by the cheap model; a
   const none = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, ["Varför regnar det?"], { subject: "", grade: "", covers: "" });
   assertEquals([none.usage, calls.length], [null, 1], "no call when every question is short");
 });
+
+/** Plays a plan reply given as JSON (K51), then answers every question it gets. */
+class PlanLLM implements LLMProvider {
+  readonly name = "fake";
+  readonly model = "haiku-fake";
+  calls: LLMRequest[] = [];
+  constructor(private plan: unknown) {}
+  async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+    this.calls.push(req);
+    if (req.system.includes("revision list")) {
+      yield { type: "text", text: JSON.stringify(this.plan) };
+      yield { type: "usage", inputTokens: 5_000, outputTokens: 300 };
+      return;
+    }
+    const qs = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(req.user)![1]) as { id: string; question: string }[];
+    yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short: "Kort.", rest: "Mer." })) }) };
+    yield { type: "usage", inputTokens: 1_000, outputTokens: 200 };
+  }
+}
+const mkPlan = (plan: unknown) => {
+  const llm = new PlanLLM(plan);
+  const h = createExamHandler({ authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }), rateLimiter: new MemoryRateLimiter(), provider: llm });
+  return { h, llm };
+};
+
+Deno.test("K51 D159: never more questions than the material carries; answers only for those, with the reason", async () => {
+  const { h, llm } = mkPlan({
+    summary: { subject: "Biologi", grade: "åk 8", covers: "Fotosyntes." },
+    notes: "Kort text.",
+    questions_possible: 3,
+    questions: ["Varför behövs ljus?", "Var sker fotosyntesen?", "Vad bildas?", "Vad behöver växten?", "Varför gröna blad?"],
+  });
+  const j = await (await h(post({ action: "drill", text: "kort material", questions: 20 }))).json();
+  assertEquals([j.questions_asked, j.questions_possible, j.items.length], [20, 3, 3]);
+  assertEquals(j.note, "Materialet räckte till 3 frågor.");
+  const asked = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(llm.calls.at(-1)!.user)![1]);
+  assertEquals(asked.length, 3, "no Claude answers for questions that are not made");
+  // when the material carries enough: no note
+  const full = mkPlan({ summary: {}, notes: "", questions_possible: 25, questions: ["Varför A?", "Varför B?", "Varför C?"] });
+  const k = await (await full.h(post({ action: "drill", text: "x", questions: 3, answers: false }))).json();
+  assertEquals([k.questions_possible, "note" in k], [3, false]);
+});
+
+Deno.test("K51 unreadable material: 422 with a Swedish reason, not 502", async () => {
+  const { h } = mkPlan({ unreadable: "Texten på bilderna går inte att läsa." });
+  const r = await h(post({ action: "drill", pages: [{ media_type: "image/jpeg", data: "/9j/4AAQ" }] }));
+  assertEquals(r.status, 422);
+  const e = (await r.json()).error;
+  assertEquals(e.code, "drill_unreadable");
+  assert(e.message.startsWith("Texten på bilderna går inte att läsa. Fotografera rakt ovanifrån"));
+});
+
+Deno.test("K51 images: the real format from the first bytes; HEIC refused with a reason; a mislabeled PNG is fixed", async () => {
+  const { sniffImage } = await import("./drill.ts");
+  assertEquals(sniffImage("/9j/4AAQSkZJRg=="), "image/jpeg");
+  assertEquals(sniffImage("iVBORw0KGgoAAAANSUhEUg=="), "image/png");
+  assertEquals(sniffImage(btoa("RIFF\u0000\u0000\u0000\u0000WEBPVP8 ")), "image/webp");
+  assertEquals(sniffImage(btoa("\u0000\u0000\u0000\u0018ftypheic")), "unsupported");
+  const heic = mkPlan({ questions: ["Varför?"] });
+  const r = await heic.h(post({ action: "drill", pages: [{ media_type: "image/jpeg", data: btoa("\u0000\u0000\u0000\u0018ftypheic....") }] }));
+  assertEquals(r.status, 415);
+  assertEquals(heic.llm.calls.length, 0);
+  const png = mkPlan({ summary: {}, notes: "", questions: ["Varför A?"] });
+  await png.h(post({ action: "drill", pages: [{ media_type: "image/jpeg", data: "iVBORw0KGgoAAAANSUhEUg==" }], answers: false }));
+  assertEquals(png.llm.calls[0].images?.[0].mediaType, "image/png");
+});
