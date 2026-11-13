@@ -228,6 +228,9 @@ Underlag: `start-vadkan.md`, bilder `bilder/start2/`. Start har en blå knapp, "
 Alla storlekar följer Dynamic Type, också de fem största (`.accessibility1`–`.accessibility5`). Då gäller:
 1. **Ett ord bryts aldrig mitt i.** Får två saker inte plats bredvid varandra, ställs de under varandra (`ViewThatFits`
    med `HStack` först och `VStack` som reserv, eller `dynamicTypeSize >= .accessibility1`).
+   *Förtydligat 2026-11-14 (Ke53/A87):* systemets avstavning med bindestreck ("Biologipro-vet") är tillåten när ett
+   enda ord är bredare än raden, som i Apples egna appar. Det som aldrig får hända är en brytning utan bindestreck
+   ("Sta/rta").
 2. **Rader med två delar staplas:** lägesraden blir ikon + läget på första raden och "Byt" på egen rad under. Kortets
    huvud ("NÄSTA PROV" + brickan "7 dagar kvar") blir rubriken överst och brickan under. "Mina svar" + "Lägg till ›"
    blir två rader. Datumet + "Ändra" likaså.
@@ -235,6 +238,8 @@ Alla storlekar följer Dynamic Type, också de fem största (`.accessibility1`�
    `minimumScaleFactor(0.8)`. De får krympa lite, men aldrig brytas.
 4. **Stora rubriker kapas inte.** En stor navigationsrubrik som inte får plats ("Vad kan Earmind?") visas som vanlig
    text överst i innehållet, med radbrytning, och navigationsraden får den lilla rubriken.
+   *I SwiftUI (2026-11-14):* vid `dynamicTypeSize >= .accessibility1` blir rubriken `.navigationBarTitleDisplayMode(.inline)`
+   och står som första rad i listan med `.font(.largeTitle.bold())` och radbrytning (gäller till exempel "Prov från din skola").
 5. **Hjälptext kapas inte:** raden under en knapp med förklaring ("Earmind frågar ut dig och svarar på dina frågor")
    får gå på två eller fler rader, och knappen blir högre. Bara värden i listor (till exempel "Lugn berättarröst") får
    kortas med "…".
