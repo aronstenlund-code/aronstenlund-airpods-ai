@@ -18,6 +18,8 @@ from xml.sax.saxutils import escape
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from materials import M  # noqa: E402
+from materials_holdout import H  # noqa: E402  (O55b)
+M.update(H)
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont  # noqa: E402
 

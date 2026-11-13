@@ -27,6 +27,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 BANK = ROOT / "scripts/qa/repetition_bank"
 sys.path.insert(0, str(BANK))
 from materials import M  # noqa: E402
+from materials_holdout import H  # noqa: E402  (O55b: hållout, inte i exams.json)
+M.update(H)
 
 URL = "https://xjczbzfkmbjdebwlccki.supabase.co"
 KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8"  # publik nyckel (finns i appen och i Kevins skript)
@@ -75,6 +77,9 @@ def code_checks(eid, q, short, long_, mstems):
         "yesno": bool(YESNO.match(q.strip())), "understanding": bool(UNDERSTANDING.match(q.strip())),
         "q_unknown": unknown, "short_grounded": round(grounded_short, 2),
         "outside": bool(unknown) and grounded_short < 0.35,
+        "q_le6": qw <= 6, "short_words": len(words(short)),
+        "short_sentences": len(re.findall(r"[.!?](?:\s|$)", short.strip())) or (1 if short.strip() else 0),
+        "empty": not short.strip() or not long_.strip(),
         "d145": bool(short) and long_.startswith(short.strip()),
         "long_words": lw, "long_len_ok": 40 <= lw <= 108,
     }
@@ -157,7 +162,7 @@ COST = {"judge": 0.0, "claude": 0.0}
 
 def judge(eid, q, answer, expect, kind):
     m = M[eid]
-    case = {"grade": m["grade"], "subject": m["subject"], "q": q, "expect": expect,
+    case = {"grade": m["grade"] or "högstadiet", "subject": m["subject"], "q": q, "expect": expect,
             "profile": "Utförliga förklaringar" if kind == "long" else "Korta förklaringar"}
     time.sleep(1.6)
     j, _ = call("/functions/v1/provlage-eval", {"action": "grade", "judge": "sonnet", "case": case, "answer": answer}, S.token())
@@ -188,6 +193,7 @@ def grade_item(eid, q, short, long_, mstems, goal_id=None, use_judge=True):
         r.update({"long_correct": jl["correct"], "long_a_level": jl["a_level"], "long_note": jl["note"],
                   "short_correct": js["correct"], "short_note": js["note"]})
     fails = []
+    if c["empty"]: fails.append("tomt svar")
     if not c["q_le8"]: fails.append("fråga > 8 ord")
     if c["yesno"]: fails.append("ja/nej-fråga")
     if c["outside"]: fails.append(f"utanför materialet {c['q_unknown']}")
@@ -215,6 +221,16 @@ def coverage(eid, items):
     return covered
 
 
+def grade_ok(m, summary):
+    """K52/O55b: rätt eller tom, aldrig fel. Gamla banken (utan grade_ok) kräver exakt årskurs."""
+    if summary is None:
+        return False
+    g = (summary.get("grade") or "").replace(" ", "").lower()
+    if "grade_ok" not in m:
+        return g == m["grade"].replace(" ", "").lower()
+    return g == "" or g in {x.replace(" ", "").lower() for x in (m["grade_ok"] or [])}
+
+
 def list_report(eid, items, graded, summary=None):
     n = len(items)
     cov = coverage(eid, items)
@@ -222,7 +238,12 @@ def list_report(eid, items, graded, summary=None):
     r = {
         "id": eid, "n": n,
         "subject_ok": summary is not None and summary.get("subject", "").lower() == m["subject"].lower(),
-        "grade_ok": summary is not None and summary.get("grade", "").replace(" ", "").lower() == m["grade"].replace(" ", "").lower(),
+        "grade_ok": grade_ok(m, summary),
+        "grade_read": bool(summary and (summary.get("grade") or "").strip()),
+        "empty": sum(x.get("empty", False) for x in graded),
+        "q_le6": round(sum(x.get("q_le6", False) for x in graded) / n, 2) if n else 0,
+        "short_words_p50": sorted(x.get("short_words", 0) for x in graded)[n // 2] if n else 0,
+        "short_le25": sum(x.get("short_words", 0) <= 25 for x in graded),
         "summary": summary,
         "coverage": round(sum(1 for v in cov.values() if v) / len(cov), 2), "missed_goals": [g for g, v in cov.items() if not v],
         "outside": sum(x["outside"] for x in graded),
@@ -344,14 +365,17 @@ def drill(a):
                           "subject": plan["summary"]["subject"], "grade": plan["summary"]["grade"]}, tok)
         COST["claude"] += ans.get("usage", {}).get("est_cost_usd", 0)
         t_total = time.time() - t0
-        items = [{"question": i["question"], "short": i.get("short", ""), "long": i.get("long", "")} for i in ans["items"]]
+        items = [{"question": i["question"], "short": i.get("short", "") or "", "long": i.get("long", "") or "",
+                  "error": i.get("error")} for i in ans["items"]]
         graded = []
         for it in items:
             g = grade_item(eid, it["question"], it["short"], it["long"], mst, use_judge=not a.no_judge)
             graded.append(g)
             print(f"  {'ok ' if g['item_ok'] else 'BAD'} {it['question'][:55]:55s} | {', '.join(g['fails']) or '-'}", flush=True)
         lr = list_report(eid, items, graded, plan["summary"])
-        lr.update({"photos": len(pages), "text_chars": len(text), "t_questions_s": round(t_plan, 1), "t_answers_s": round(t_ans, 1),
+        lr.update({"questions_asked": plan.get("questions_asked"), "questions_possible": plan.get("questions_possible"),
+                   "note": plan.get("note"), "max_q": M[eid].get("max_q"), "item_errors": sum(bool(i.get("error")) for i in items),
+                   "photos": len(pages), "text_chars": len(text), "t_questions_s": round(t_plan, 1), "t_answers_s": round(t_ans, 1),
                    "t_total_s": round(t_total, 1), "claude_usd": round((plan.get("usage", {}).get("est_cost_usd") or 0) + (ans.get("usage", {}).get("est_cost_usd") or 0), 4),
                    "usage_plan": plan.get("usage"), "usage_answers": ans.get("usage")})
         res.append({"list": lr, "notes": plan.get("notes"), "items": [{**it, **g} for it, g in zip(items, graded)]})
