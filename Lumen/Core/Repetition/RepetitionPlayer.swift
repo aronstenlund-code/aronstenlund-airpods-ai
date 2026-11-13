@@ -273,7 +273,8 @@ extension RepetitionPlayer {
         self.index = index
         self.lap = lap
         self.isPaused = paused
-        if case .thinking = phase { thinkingStarted = Date().addingTimeInterval(-2) }
+        // A picture taken seconds later still shows the ring 2 s in (the view clamps to the thinking time).
+        if case .thinking = phase { thinkingStarted = .distantFuture }
     }
 }
 #endif

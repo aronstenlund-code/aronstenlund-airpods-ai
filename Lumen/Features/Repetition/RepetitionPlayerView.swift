@@ -159,7 +159,7 @@ private struct ThinkingRing: View {
         let started = self.started
         let seconds = self.seconds
         return TimelineView(.periodic(from: started, by: 0.1)) { context in
-            let left = max(0, seconds - context.date.timeIntervalSince(started))
+            let left = min(seconds, max(0, seconds - context.date.timeIntervalSince(started)))
             VStack(spacing: 6) {
                 ZStack {
                     Circle().stroke(LumenColor.line, lineWidth: 6)

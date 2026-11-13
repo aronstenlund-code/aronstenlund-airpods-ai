@@ -31,9 +31,10 @@ enum RepetitionDemo {
     static func seed(_ model: RepetitionModel, for name: String) {
         for old in model.store.drills { model.store.delete(old.id) } // left by an earlier screen
         guard name != "repHomeEmpty", name != "moreModes" else { return }
-        model.store.save(drill)
+        // The newest is Start's "Nästa prov": Historia first, so Biologiprovet is on the card.
         model.store.save(Drill(title: "Historiaprovet", summary: DrillSummary(subject: "Historia", grade: "åk 9", covers: ""),
                                items: Array(items.prefix(2))))
+        model.store.save(drill)
         let player = RepetitionPlayer(count: drill.items.count, track: { _ in nil }, source: FileRepetitionAudioSource(),
                                       timer: TaskRepetitionTimer(), thinkingSeconds: 6)
         switch name {
