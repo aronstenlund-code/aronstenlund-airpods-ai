@@ -59,6 +59,7 @@ def main():
     ap.add_argument("--out", default="/tmp/credits")
     ap.add_argument("--tag", default="before", help="K18 measurement: before (first run) or after (once aliases are in)")
     ap.add_argument("--tokens", default=None)
+    ap.add_argument("--only", choices=["all", "k18", "k6"], default="all", help="k6 = only the voice previews (K18 is measured)")
     a = ap.parse_args()
     out = pathlib.Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -70,16 +71,17 @@ def main():
     date = datetime.date.today().isoformat()
     summary = {"date": date}
     # 2. K18
-    r = subprocess.run([sys.executable, str(ROOT / "scripts/k18-pronunciation.py"), "--tag", a.tag] + (["--tokens", a.tokens] if a.tokens else []),
+    r = None if a.only == "k6" else subprocess.run([sys.executable, str(ROOT / "scripts/k18-pronunciation.py"), "--tag", a.tag] + (["--tokens", a.tokens] if a.tokens else []),
                        capture_output=True, text=True, encoding="utf-8")
-    print(r.stdout[-3000:], r.stderr[-1000:])
-    try:
-        summary["k18"] = json.loads(r.stdout.strip().splitlines()[-1])
-    except Exception:
-        summary["k18"] = {"error": "see the log"}
+    if r is not None:
+        print(r.stdout[-3000:], r.stderr[-1000:])
+        try:
+            summary["k18"] = json.loads(r.stdout.strip().splitlines()[-1])
+        except Exception:
+            summary["k18"] = {"error": "see the log"}
     # 3. K6
     svc = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
-    if svc:
+    if svc and a.only != "k18":
         print("::add-mask::" + svc)
         summary["k6"] = previews(out, svc)
     else:
