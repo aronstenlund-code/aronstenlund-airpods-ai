@@ -1,0 +1,14 @@
+audio session .playback active
+start at 1 of 4, thinking 6.0 s
+question 1
+long answer 1
+system pause: interruption
+paused by iOS
+go on (system: interruption ended)
+system pause: interruption
+paused by iOS
+interruption ended without shouldResume: waits for a press
+go on (press short)
+system pause: output gone
+paused by iOS
+go on (press long)

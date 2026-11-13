@@ -1,0 +1,14 @@
+audio session .playback active
+start at 1 of 4, thinking 6.0 s
+question 1
+long answer 1
+question 2
+thinking 2
+short answer 2
+question 3
+long answer 3
+long answer 3
+question 4
+short answer 4
+lap 1 done, from question 1 again
+question 1

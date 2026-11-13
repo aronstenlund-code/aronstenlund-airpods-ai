@@ -1,0 +1,30 @@
+audio session .playback active
+start at 1 of 4, thinking 6.0 s
+question 1
+thinking 1
+question 2
+thinking 2
+question 3
+thinking 3
+question 4
+thinking 4
+lap 1 done, from question 1 again
+question 1
+thinking 1
+question 2
+thinking 2
+question 3
+thinking 3
+question 4
+thinking 4
+lap 2 done, from question 1 again
+question 1
+thinking 1
+question 2
+thinking 2
+question 3
+thinking 3
+question 4
+thinking 4
+lap 3 done, from question 1 again
+question 1

@@ -1,0 +1,116 @@
+[
+  {
+    "file" : "q0",
+    "position" : 0,
+    "t" : 0.02268195152282715,
+    "what" : "play"
+  },
+  {
+    "file" : "q0",
+    "position" : 0,
+    "t" : 0.040863037109375,
+    "what" : "stop"
+  },
+  {
+    "file" : "l0",
+    "position" : 0,
+    "t" : 0.0581740140914917,
+    "what" : "play"
+  },
+  {
+    "file" : "l0",
+    "position" : 0,
+    "t" : 6.0920809507369995,
+    "what" : "end"
+  },
+  {
+    "file" : "q1",
+    "position" : 0,
+    "t" : 6.109388947486877,
+    "what" : "play"
+  },
+  {
+    "file" : "q1",
+    "position" : 0,
+    "t" : 8.150750994682312,
+    "what" : "end"
+  },
+  {
+    "file" : "l1",
+    "position" : 0,
+    "t" : 8.192235946655273,
+    "what" : "play until 2.5"
+  },
+  {
+    "file" : "l1",
+    "position" : 2.5310625,
+    "t" : 10.785405993461609,
+    "what" : "end"
+  },
+  {
+    "file" : "q2",
+    "position" : 0,
+    "t" : 10.797798991203308,
+    "what" : "play"
+  },
+  {
+    "file" : "q2",
+    "position" : 0,
+    "t" : 10.81922996044159,
+    "what" : "stop"
+  },
+  {
+    "file" : "l2",
+    "position" : 0,
+    "t" : 10.838399052619934,
+    "what" : "play"
+  },
+  {
+    "file" : "l2",
+    "position" : 0,
+    "t" : 10.849902033805847,
+    "what" : "stop"
+  },
+  {
+    "file" : "l2",
+    "position" : 0,
+    "t" : 10.870967030525208,
+    "what" : "play"
+  },
+  {
+    "file" : "l2",
+    "position" : 0,
+    "t" : 16.934551000595093,
+    "what" : "end"
+  },
+  {
+    "file" : "q3",
+    "position" : 0,
+    "t" : 16.953287959098816,
+    "what" : "play"
+  },
+  {
+    "file" : "q3",
+    "position" : 0,
+    "t" : 16.963961005210876,
+    "what" : "stop"
+  },
+  {
+    "file" : "s3",
+    "position" : 0,
+    "t" : 16.98084795475006,
+    "what" : "play"
+  },
+  {
+    "file" : "s3",
+    "position" : 0,
+    "t" : 19.511664986610413,
+    "what" : "end"
+  },
+  {
+    "file" : "q0",
+    "position" : 0,
+    "t" : 19.52257001399994,
+    "what" : "play"
+  }
+]
