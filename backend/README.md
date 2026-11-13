@@ -362,3 +362,18 @@ All calls are `POST` with the user's JWT, like `/answer`.
 - `{"action":"import","code"}` → the recipient's own copy (as `get`), with `drill.shared_from` set and `new_chars: 0`.
   - `code` may also be the whole link.
   - 404 `share_not_found` means the link is dead.
+
+**Publicera prov (K49, D149, D150).** These are also actions in `/functions/v1/drill`.
+- `{"action":"schools","q":"<at least 2 letters>"}` → `{"schools":[{"code","name","locality"}]}`. Active units from Skolverket's register, at most 20, matched on name or town.
+- `{"action":"publish","id","school_code","subject","exam_date":"YYYY-MM-DD","show_name"?:false,"display_name"?}` → `{"publication":{"id","title","subject","school","exam_date","items","display_name"?}}`.
+  - Otherwise you get 409 `publish_incomplete` with `missing` (`school`, `subject`, `date`, `audio`) and a Swedish message ("Saknas: skola, provdatum").
+  - Publishing again updates the publication.
+  - `display_name` is published only when `show_name` is true (D150).
+- `{"action":"unpublish","id"}`
+- `{"action":"search","school_code"?,"subject"?,"my_school"?,"from"?,"to"?}` → `{"results":[...]}` (the same shape as `publication`, at most 50).
+  - Order: `my_school` first, then exams at most 30 days back, then older ones.
+  - Hidden drills are never listed. No account id is ever returned.
+- `{"action":"import","publication_id"}` → the user's own copy, as `get` returns it, with 0 characters.
+- `{"action":"report","publication_id","reason":"fel"|"krankande"|"upphovsratt"|"annat"}` → `{"reports","hidden"}`. One report per account; 3 reports hide the drill.
+- `{"action":"played","id":"<the user's copy>"}`: call it once when a repetition session of a downloaded drill starts. At most 3 plays per copy and day are counted, as a number with no identity.
+- `{"action":"moderate","publication_id","hidden":false}`: Aron only. It shows a hidden drill again.
