@@ -126,7 +126,24 @@ final class AppContainer {
         self.prep = prep
         self.listening = listening
         self.remote = remote
-        self.repetition = RepetitionSession(inputs: [AirPodsRepetitionInput(hub: remote)])
+        let repetitionSession = RepetitionSession(inputs: [AirPodsRepetitionInput(hub: remote)])
+        self.repetition = repetitionSession
+        // A79–A81 (D142): K45 for questions and answers (the mock with -RepetitionMock YES in Debug), the exams on the
+        // phone until K46, the iPhone's own voice for the sound until K46 (0 ElevenLabs characters), K47 for sharing.
+        #if DEBUG
+        let maker: any DrillMaking = UserDefaults.standard.bool(forKey: "RepetitionMock")
+            ? MockDrillMaker() as any DrillMaking : DrillClient(config: .lumen, auth: auth, http: http)
+        #else
+        let maker: any DrillMaking = DrillClient(config: .lumen, auth: auth, http: http)
+        #endif
+        let repetitionModel = RepetitionModel(store: DrillStore(), session: repetitionSession, maker: maker,
+                                              audio: DeviceVoiceDrillAudio(),
+                                              sharing: DrillShareClient(config: .lumen, auth: auth, http: http),
+                                              remote: remote)
+        repetitionModel.stopListening = { [weak listening] in
+            if listening?.isActiveSession == true { await listening?.endSession() }
+        }
+        listening.repetition = repetitionModel
         self.diagnostics = DiagnosticsModel(controller: controller)
         diagnostics.micComparison = MicComparisonModel(listening: listening)
         diagnostics.speechRecording = SpeechRecordingModel(listening: listening)

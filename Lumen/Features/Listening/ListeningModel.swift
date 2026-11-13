@@ -121,6 +121,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored var phoneTools: (any PhoneToolRunning)?
     /// A53 (D126, K37): "Mina svar", on the phone only, and the endpoint that helps write them.
     var myAnswers: MyAnswerStore?
+    /// D142 (A78–A81): the repetition mode, the new standard (no microphone).
+    var repetition: RepetitionModel?
     @ObservationIgnored var myAnswersClient: MyAnswersClient?
     /// A59 (K36): Spotify control through the server, for testers.
     var spotifyConnection: SpotifyConnection?

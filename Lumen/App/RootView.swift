@@ -29,6 +29,7 @@ struct RootView: View {
         .preferredColorScheme(container.appearance.colorScheme) // D86: follows the iPhone unless locked
         .tint(LumenColor.blue)
         .onOpenURL { url in _ = container.listening.music.spotify?.handle(url) } // A6.3: back from Spotify
+        .modifier(RepetitionOverlay(model: container.listening.repetition)) // A78–A81 (D142)
     }
 
     @ViewBuilder

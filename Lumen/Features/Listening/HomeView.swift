@@ -44,6 +44,11 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 topBar
+                if let repetition = model.repetition {
+                    // A80 (D142): the first path is Nytt prov → Starta prov, without the microphone.
+                    RepetitionHomeSection(model: repetition)
+                    BetaModesHeader()
+                }
                 if model.problem == .microphoneDenied {
                     // A12: a start that cannot get the microphone says so here (it did nothing before).
                     ErrorCard(problem: .microphoneDenied) { ErrorCard.openSettings() }
@@ -251,7 +256,8 @@ struct HomeView: View {
                 Label(model.isActiveSession ? "Tillbaka till Earmind" : "Starta Earmind", systemImage: "waveform")
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
             }
-            .buttonStyle(LumenButtonStyle(height: 64))
+            // A80 (D142): secondary under "Fler lägen · BETA"; Starta prov is the screen's one blue button.
+            .buttonStyle(LumenButtonStyle(kind: model.repetition == nil ? .primary : .secondary, height: 64))
             .overlay {
                 if !startHintShown, !model.isActiveSession {
                     RoundedRectangle(cornerRadius: 18).strokeBorder(LumenColor.soft, lineWidth: 4).padding(-4) // Ke35
@@ -398,7 +404,7 @@ struct HomeView: View {
                 Button {
                     Task { await model.startQuiz(for: plan) }
                 } label: {
-                    TwoLineLabel(title: "Förhör mig", detail: "Earmind frågar ut dig och svarar på dina frågor")
+                    TwoLineLabel(title: "Förhör med rösten (BETA)", detail: "Earmind frågar ut dig och svarar på dina frågor") // A80
                 }
                 // A50 (D124): secondary, the Start button is the screen's one blue button. "Få A-svar till provet"
                 // moved into Provläge ("Mina svar", A53, D126).

@@ -428,9 +428,9 @@ struct ModeSwitchSheet: View {
     }
 
     private var footnote: String {
-        onPick == nil
+        "Lyssnande lägen använder mikrofonen och är i BETA. Starta prov gör det aldrig. " + (onPick == nil
             ? "Earmind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
-            : "Valet gäller Starta-knappen. Du kan också säga ”Lumen, byt till provläge”." // Ke29
+            : "Valet gäller Starta-knappen. Du kan också säga ”Lumen, byt till provläge”.") // Ke29, A80
     }
 
     var body: some View {
@@ -457,7 +457,10 @@ struct ModeSwitchSheet: View {
                                     .frame(width: 44, height: 44)
                                     .background(mode == current ? LumenColor.soft : Color.clear, in: Circle())
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(mode.shortName).font(LumenFont.text(17, .semibold))
+                                    HStack(spacing: 6) {
+                                        Text(mode.shortName).font(LumenFont.text(17, .semibold))
+                                        BetaBadge() // A80 (D142): every listening mode is BETA
+                                    }
                                     Text(mode.tagline).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
                                 }
                                 Spacer()
@@ -484,7 +487,10 @@ struct ModeSwitchSheet: View {
                                     .foregroundStyle(LumenColor.muted)
                                     .frame(width: 44, height: 44)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text("Sov").font(LumenFont.text(17, .semibold))
+                                    HStack(spacing: 6) {
+                                        Text("Sov").font(LumenFont.text(17, .semibold))
+                                        BetaBadge()
+                                    }
                                     Text("Prat i sömnen och snarkning, bara på telefonen").font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
                                 }
                                 Spacer()

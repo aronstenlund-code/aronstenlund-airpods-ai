@@ -147,7 +147,7 @@ final class ScreenTourTests: XCTestCase {
             tap(["Spara prov"], step: "add exam → Spara prov")
             pause(1)
             // A50: the exam card has "Förhör mig"; "Få A-svar till provet" left Start.
-            if waitFor(["Förhör mig", "Få A-svar till provet"], timeout: 5) != nil {
+            if waitFor(["Förhör mig", "Förhör med rösten (BETA)", "Få A-svar till provet"], timeout: 5) != nil {
                 shoot("start-med-prov", note: "Start with an exam (sketch 4)")
                 app.swipeUp()
                 shoot("start-med-prov-slut", note: "Start with an exam, scrolled")

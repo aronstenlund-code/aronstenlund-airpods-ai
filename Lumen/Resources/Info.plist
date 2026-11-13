@@ -28,6 +28,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>lumen-spotify</string>
+				<string>earmind</string>
 			</array>
 		</dict>
 	</array>
