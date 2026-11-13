@@ -3,6 +3,7 @@ import SwiftUI
 
 /// A79–A81 (Kelly Ke49 §7): the repetition mode's screens for the Simulator screenshots, with a made-up biology exam
 /// (no student text). The screenshot mode uses the mocks (no network, no ElevenLabs).
+@MainActor
 enum RepetitionDemo {
     static let scenes: Set<String> = ["repHome", "repHomeEmpty", "repMaterial", "repList", "repEdit", "repControls",
                                       "repPlayThink", "repPlayAnswer", "repPaused", "repWaiting", "repResume",
