@@ -19,6 +19,13 @@ import { composeLong, spokenText } from "../exam/drill.ts";
  *     "status" also moves the queue on (if a background run stopped, polling finishes the work).
  *  {"action":"list"} -> {"drills": [{"id","title","subject","grade","items","audio":{"done","total"},"updated_at"}]}
  *  {"action":"delete", "id"} -> {"deleted": true}
+ * K47 (D143), sharing with classmates (spec §9: anyone with the code and an account; the copy is the recipient's own):
+ *  {"action":"share", "id"} -> {"code", "url", "app_url"}   only when 100 % of the audio is done, else 409 with the
+ *     progress ("Delas när ljudet är klart (54 av 90)"). The same code again for the same drill until it is revoked.
+ *  {"action":"unshare", "id"} -> {"revoked": n}               the owner turns the share off
+ *  {"action":"share_info", "code"} -> {"title","subject","grade","items"}   what the link holds, before importing
+ *  {"action":"import", "code"} -> the copy as "get" returns it   questions and answers copied, the same audio files
+ *     (0 ElevenLabs calls); the recipient's edits make files only for what they change and never touch the original.
  * The material is never stored (B4). Characters for NEW files count against a daily limit per account and globally.
  */
 export const DRILL_STORE_LIMITS = {
@@ -82,6 +89,26 @@ export interface DrillDb {
   enqueue(rows: AudioRow[]): Promise<void>;
   claim(n: number): Promise<AudioRow[]>;
   finish(hash: string, patch: Partial<AudioRow> & { status: string; error?: string | null; done_at?: string }): Promise<void>;
+  /** K47 */
+  shareOf(drillId: string): Promise<ShareRow | null>;
+  shareByCode(code: string): Promise<ShareRow | null>;
+  createShare(row: ShareRow): Promise<void>;
+  revokeShares(drillId: string): Promise<number>;
+  countImport(code: string): Promise<void>;
+}
+export interface ShareRow {
+  code: string;
+  drill_id: string;
+  user_id: string;
+  revoked_at?: string | null;
+}
+/** K47: the link that opens Earmind (universal link once earmind.ai serves apple-app-site-association; scheme until then). */
+export const SHARE_URL = (code: string) => `https://earmind.ai/p/${code}`;
+export const SHARE_APP_URL = (code: string) => `earmind://prov/${code}`;
+export function newShareCode(): string {
+  const abc = "abcdefghjkmnpqrstuvwxyz23456789"; // no 0/o, 1/l/i: easy to read aloud and type
+  const b = crypto.getRandomValues(new Uint8Array(10));
+  return Array.from(b, (x) => abc[x % abc.length]).join("");
 }
 export interface AudioStorage {
   upload(path: string, bytes: Uint8Array): Promise<void>;
@@ -276,12 +303,65 @@ export function createDrillHandler(deps: DrillDeps) {
         }
         return json(v);
       }
+      if (action === "share") {
+        const d = await owned(user.id, b?.id);
+        const v = await view(d);
+        if (v.audio.total === 0 || v.audio.done < v.audio.total) {
+          // D143: sharing before the audio is done would make the recipient pay for the same audio again
+          return json({
+            error: { code: "audio_not_ready", message: `Delas när ljudet är klart (${v.audio.done} av ${v.audio.total})`, fallback: false },
+            done: v.audio.done,
+            total: v.audio.total,
+          }, 409);
+        }
+        let sh = await deps.db.shareOf(d.id);
+        if (!sh || sh.revoked_at) {
+          sh = { code: newShareCode(), drill_id: d.id, user_id: user.id };
+          await deps.db.createShare(sh);
+        }
+        return json({ code: sh.code, url: SHARE_URL(sh.code), app_url: SHARE_APP_URL(sh.code) });
+      }
+      if (action === "unshare") {
+        const d = await owned(user.id, b?.id);
+        return json({ revoked: await deps.db.revokeShares(d.id) });
+      }
+      if (action === "share_info" || action === "import") {
+        const code = typeof b?.code === "string" ? b.code.trim().toLowerCase().replace(/^.*\/(?:p|prov)\//, "").replace(/[^a-z0-9]/g, "") : "";
+        const sh = /^[a-z0-9]{8,16}$/.test(code) ? await deps.db.shareByCode(code) : null;
+        const src = sh && !sh.revoked_at ? await deps.db.drill(sh.drill_id) : null;
+        if (!sh || !src) throw new HttpError(404, "share_not_found", "Länken fungerar inte längre. Be om en ny.");
+        const v = await view(src);
+        if (action === "share_info") {
+          return json({ title: src.title, subject: src.subject, grade: src.grade, items: v.items.length, audio_ready: v.audio.done === v.audio.total });
+        }
+        if (v.audio.done < v.audio.total) {
+          throw new HttpError(409, "audio_not_ready", `Delas när ljudet är klart (${v.audio.done} av ${v.audio.total})`);
+        }
+        const rl = await enforceLimits(deps.rateLimiter, "drill_import", user.id, { perMinute: 10, perDay: 50, globalPerDay: 50_000 }, 1);
+        if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många prov på kort tid. Vänta en stund.", { retryAfterSec: rl.retryAfterSec });
+        if ((await deps.db.drills(user.id)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
+          throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
+        }
+        // the copy: the recipient's own drill; questions, answers and hashes copied (the same audio, 0 new characters)
+        const copy: DrillRow = {
+          id: crypto.randomUUID(), user_id: user.id, title: src.title, subject: src.subject, grade: src.grade,
+          covers: src.covers, long_words: src.long_words, shared_from: src.id,
+        };
+        const its = (await deps.db.items([src.id])).sort((a, b) => a.position - b.position);
+        await deps.db.saveDrill(copy, true);
+        await deps.db.replaceItems(copy.id, [], its.map((i) => ({
+          drill_id: copy.id, user_id: user.id, position: i.position, question: i.question, short: i.short, long: i.long,
+          question_hash: i.question_hash, long_hash: i.long_hash,
+        })));
+        await deps.db.countImport(sh.code).catch(() => {});
+        return json({ ...(await view((await deps.db.drill(copy.id)) ?? copy)), new_chars: 0 });
+      }
       if (action === "delete") {
         const d = await owned(user.id, b?.id);
         await deps.db.deleteDrill(d.id); // the shared audio stays (other accounts may use it)
         return json({ deleted: true });
       }
-      if (action !== "save") throw new HttpError(400, "invalid_request", "action must be save, get, status, list or delete");
+      if (action !== "save") throw new HttpError(400, "invalid_request", "action must be save, get, status, list, delete, share, unshare, share_info or import");
 
       // ---------- save ----------
       const di = (b?.drill ?? {}) as Record<string, unknown>;
@@ -338,13 +418,18 @@ export function createDrillHandler(deps: DrillDeps) {
           });
         }
       }
-      await deps.db.saveDrill(drill, !existing);
-      await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
+      // the audio is queued first: a failure leaves no half-saved drill (a queued file nobody uses costs nothing)
       if (fresh.length) {
         const at = new Date(now()).toISOString();
-        await deps.db.enqueue(fresh.map((f) => ({ ...f, status: "pending", queued_at: at })));
-        deps.background ? deps.background(pump()) : await pump();
+        // every row with the same keys (PostgREST bulk insert, live 2026-11-13: HTTP 400 otherwise)
+        await deps.db.enqueue(fresh.map((f) => ({
+          hash: f.hash, kind: f.kind, text: f.text, short_chars: f.short_chars ?? null, model: f.model,
+          voice_id: f.voice_id, status: "pending", seq: f.seq ?? 0, queued_at: at,
+        })));
       }
+      await deps.db.saveDrill(drill, !existing);
+      await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
+      if (fresh.length) deps.background ? deps.background(pump()) : await pump();
       const saved = await deps.db.drill(drill.id);
       return json({ ...(await view(saved ?? drill)), new_chars: newChars });
     } catch (e) {

@@ -5,7 +5,7 @@ import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
-import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow } from "./handler.ts";
+import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type ShareRow } from "./handler.ts";
 
 const env = Deno.env;
 const db = restDbFromEnv();
@@ -94,6 +94,15 @@ Deno.serve(withCors(
       },
       finish: async (hash, patch) => {
         await db.updateWhere("drill_audio_files", `hash=eq.${encodeURIComponent(hash)}`, patch);
+      },
+      shareOf: async (id) =>
+        ((await db.select("drill_shares", `select=*&drill_id=eq.${encodeURIComponent(id)}&revoked_at=is.null&order=created_at.desc&limit=1`)) as ShareRow[])[0] ?? null,
+      shareByCode: async (code) => ((await db.select("drill_shares", `select=*&code=eq.${encodeURIComponent(code)}&limit=1`)) as ShareRow[])[0] ?? null,
+      createShare: (row) => db.insert("drill_shares", row),
+      revokeShares: (id) => db.updateWhere("drill_shares", `drill_id=eq.${encodeURIComponent(id)}&revoked_at=is.null`, { revoked_at: new Date().toISOString() }),
+      countImport: async (code) => {
+        const r = (await db.select("drill_shares", `select=imports&code=eq.${encodeURIComponent(code)}&limit=1`)) as { imports: number }[];
+        await db.updateWhere("drill_shares", `code=eq.${encodeURIComponent(code)}`, { imports: (r[0]?.imports ?? 0) + 1 });
       },
     },
     storage: {
