@@ -19,14 +19,22 @@ mkdir -p "$OUT/logs" "$AUDIO"
 if [ -n "${WAKE_APP_REF:-}" ]; then
   echo "::group::App code from $WAKE_APP_REF (baseline)"
   git fetch --quiet --depth=200 origin "$WAKE_APP_REF" 2>/dev/null || git fetch --quiet --unshallow origin || true
-  git checkout "$WAKE_APP_REF" -- Lumen project.yml || exit 1
+  # Files added since then (A78 and later) must go too, or the old code does not build. The other E2E tests come
+  # from the same commit, so they match its app code; Wake/ and Audio/wake.tsv are not in it and stay.
+  rm -rf Lumen
+  git checkout "$WAKE_APP_REF" -- Lumen project.yml AppTests/E2E || exit 1
   git log -1 --format='%h %s' "$WAKE_APP_REF"
   echo "::endgroup::"
 fi
 
 echo "::group::Speech files"
-mapfile -t VOICES < <(say -v '?' | grep -E '[[:space:]]sv_SE[[:space:]]' | sed -E 's/[[:space:]]+sv_SE.*$//')
-if [ "${#VOICES[@]}" -eq 0 ]; then
+# macOS ships bash 3.2: no mapfile, and an empty array is "unbound" under set -u, so count separately.
+VOICES=()
+NV=0
+while IFS= read -r v; do
+  [ -n "$v" ] && { VOICES+=("$v"); NV=$((NV + 1)); }
+done < <(say -v '?' | grep -E '[[:space:]]sv_SE[[:space:]]' | sed -E 's/[[:space:]]+sv_SE.*$//')
+if [ "$NV" -eq 0 ]; then
   say -v '?' | head -n 40
   echo "::error::no Swedish voice for say on this runner"
   exit 1
@@ -36,11 +44,11 @@ cp AppTests/E2E/Audio/wake.tsv "$AUDIO/wake.tsv"
 mk() { say -v "$1" -r "$2" --file-format=WAVE --data-format=LEI16@16000 -o "$3" "$4"; }
 # Babble: three long sentences in the other voices, never the case texts.
 mk "${VOICES[0]}" 180 "$AUDIO/babble-0.wav" "Vi pratade länge om semestern och om hur dyrt det har blivit att äta ute på restaurang nu för tiden."
-mk "${VOICES[$((1 % ${#VOICES[@]}))]}" 170 "$AUDIO/babble-1.wav" "Hon berättade att bilen hade gått sönder igen och att verkstaden inte kunde ta emot den förrän nästa vecka."
-mk "${VOICES[$((2 % ${#VOICES[@]}))]}" 200 "$AUDIO/babble-2.wav" "Kan du tänka dig att det fortfarande inte finns någon parkering vid stationen trots alla löften från kommunen."
+mk "${VOICES[$((1 % $NV))]}" 170 "$AUDIO/babble-1.wav" "Hon berättade att bilen hade gått sönder igen och att verkstaden inte kunde ta emot den förrän nästa vecka."
+mk "${VOICES[$((2 % $NV))]}" 200 "$AUDIO/babble-2.wav" "Kan du tänka dig att det fortfarande inte finns någon parkering vid stationen trots alla löften från kommunen."
 tail -n +2 AppTests/E2E/Audio/wake.tsv | while IFS=$'\t' read -r ID EXPECT VOICE RATE COND KEY TEXT; do
   [ -z "$ID" ] && continue
-  V="${VOICES[$((VOICE % ${#VOICES[@]}))]}"
+  V="${VOICES[$((VOICE % $NV))]}"
   mk "$V" "$RATE" "$AUDIO/clean-$ID.wav" "$TEXT"
   # Babble never uses the speaker's own voice file twice in a row: the two others plus one more.
   python3 -I "$ROOT/scripts/apptest/wake_audio.py" "$COND" "$AUDIO/clean-$ID.wav" "$AUDIO/$ID.wav" \
