@@ -31,7 +31,14 @@ enum RepetitionDemo {
                              items: items, questionCount: 20)
 
     static let history = Drill(title: "Historiaprovet", summary: DrillSummary(subject: "Historia", grade: "åk 9", covers: "Industriella revolutionen."),
-                               items: Array(items.prefix(2)))
+                               items: [
+                                   DrillItem(question: "Varför började industrialiseringen i England?",
+                                             short: "England hade kol, järn, kapital och kolonier som köpte varorna.",
+                                             long: "England hade kol, järn, kapital och kolonier som köpte varorna. Dessutom fanns många arbetare som flyttat från landsbygden."),
+                                   DrillItem(question: "Vad gjorde ångmaskinen viktig?",
+                                             short: "Den gav kraft till fabriker, tåg och båtar oberoende av vatten och vind.",
+                                             long: "Den gav kraft till fabriker, tåg och båtar oberoende av vatten och vind. Därför kunde fabrikerna ligga nära städerna."),
+                               ])
 
     /// Once, before the first frame.
     static func seed(_ model: RepetitionModel, for name: String) {
@@ -44,12 +51,18 @@ enum RepetitionDemo {
         // The newest is Start's "Nästa prov": Historia first, so Biologiprovet is on the card.
         model.store.save(history)
         model.store.save(drill)
-        // Biologiprovet's sound is ready (silent files), Historiaprovet's is not (the screenshot mode makes none).
+        // Biologiprovet's sound is ready (silent files). Historiaprovet's is not (Kelly K4: "Delas när ljudet är
+        // klart (4 av 6)"): its first question has all its files, the second only its question.
         if let audio = model.audio as? DeviceVoiceDrillAudio {
+            let silence = [Int16](repeating: 0, count: 1_600)
             for item in drill.items {
                 for text in [item.question, item.short, item.long] {
-                    try? WAVWriter.write(samples: [Int16](repeating: 0, count: 1_600), sampleRate: 16_000, to: audio.url(text: text))
+                    try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
                 }
+            }
+            let first = history.items[0]
+            for text in [first.question, first.short, first.long, history.items[1].question] {
+                try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
             }
         }
         let player = RepetitionPlayer(count: drill.items.count, track: { _ in nil }, source: FileRepetitionAudioSource(),
