@@ -1,4 +1,4 @@
-# K51: aldrig fler frågor än materialet räcker till, och Arons misslyckade anrop 22:13 (Kevin, 2026-11-13 22:50)
+# K51: aldrig fler frågor än materialet räcker till, och Arons misslyckade anrop 22:13 (Kevin, 2026-11-13 22:33)
 
 ## Arons anrop 22:12–22:13 (verifierat i Supabase-loggen)
 Båda anropen kom fram till servern. Det var alltså inget nätverksfel, och "Ingen internetanslutning" var appens tolkning.

@@ -1,0 +1,24 @@
+{
+ "exam": "ge-ak7-klimat",
+ "photos": 0,
+ "voice": "A",
+ "questions_s": 5.0,
+ "answers_s": 14.0,
+ "claude_usd": 0.0319,
+ "new_chars": 5405,
+ "first_question_audio_s_after_start": 2.0,
+ "all_audio_s_after_start": 19.8,
+ "audio": {
+  "done": 24,
+  "total": 24,
+  "failed": 0,
+  "chars": 5405,
+  "credits": 2163,
+  "credits_chars": 5405,
+  "est_usd": 0.43,
+  "bytes": 2987965,
+  "model": "eleven_multilingual_v2",
+  "credits_per_char": 0.4
+ },
+ "questions": 12
+}

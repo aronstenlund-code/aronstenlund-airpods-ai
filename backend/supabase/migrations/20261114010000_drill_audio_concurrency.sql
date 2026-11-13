@@ -33,3 +33,7 @@ grant execute on function public.claim_drill_audio(integer) to service_role;
 
 update public.drill_audio_files set status = 'pending', attempts = 0, error = null
  where status = 'failed' and error like 'elevenlabs 429%';
+
+-- K55, the same night (migration drill_audio_first_question_first): every drill's first question and first long answer
+-- (seq 0 and 1) go before the rest of the queue, so a new drill gets its first audio quickly even while another drill
+-- is being made. Same function as above with: order by (seq > 1), queued_at, seq

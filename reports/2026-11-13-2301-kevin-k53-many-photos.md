@@ -1,4 +1,4 @@
-# K53: många foton utan för stora anrop (Kevin, 2026-11-14 00:10)
+# K53: många foton utan för stora anrop (Kevin, 2026-11-13 23:01)
 
 ## Kort
 Appen laddar upp varje foto för sig till en privat bucket och skickar sedan bara sökvägarna till `drill`. **Verifierat live:** 30 foton till frågor på **22,5 s**, målet var 60 s. Svaren tog 12,3 s till, och bilderna var raderade efteråt.
@@ -13,7 +13,7 @@ Appen laddar upp varje foto för sig till en privat bucket och skickar sedan bar
 4. **Fler än 10 bilder:** Haiku skriver först ut bilderna som text, i satser om 10 som körs parallellt. Frågorna görs sedan på texten. Det håller tiden nere och anropen till Claude små.
 5. **`drill-purge`:** körs av pg_cron var 15:e minut och raderar uppladdningar som aldrig analyserades och är äldre än en timme. Den behöver ingen inloggning och kan bara radera gammalt, aldrig läsa. **Verifierat live:** svarar `{"deleted":0}`, och GET ger 405.
 
-## Mätning (live, `scripts/k53-live.py`, `reports/eval/k53-live-2026-11-14.json`)
+## Mätning (live, `scripts/k53-live.py`, `reports/eval/k53-live-2026-11-13.json`)
 Underlaget var 30 foton ur Oscars påhittade bank, 17 olika bilder upprepade till 30, totalt 1,7 MB.
 
 | Steg | Tid |

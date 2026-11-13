@@ -1,4 +1,4 @@
-# K52: Oscars O55-fynd och gränsen 15 frågor per månad (Kevin, 2026-11-13 23:35)
+# K52: Oscars O55-fynd och gränsen 15 frågor per månad (Kevin, 2026-11-13 22:52)
 
 Status för varje påstående: **verifierat live**, **verifierat i docs** eller **antagande, ej testat**.
 
