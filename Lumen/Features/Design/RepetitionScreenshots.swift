@@ -18,7 +18,19 @@ enum RepetitionDemo {
                                       // A93 (Kelly Ke58): Gör med ChatGPT
                                       "gptSteps", "gptFound", "gptWrong",
                                       // A100: Fler lägen only after the first exam; the sound cannot be made (K62)
-                                      "repHomeNew", "repHomeStarted", "repSoundProblem", "repHomeSoundProblem"]
+                                      "repHomeNew", "repHomeStarted", "repSoundProblem", "repHomeSoundProblem",
+                                      // A99 (D175, D176): no questions left this month; longer questions
+                                      "repQuotaUsedUp", "repLength", "repLengthEdit"]
+
+    /// A99: Biologiprovet with its second question a bit longer and its third very long (the server's classes).
+    static var drillWithLengths: Drill {
+        var copy = drill
+        if copy.items.count > 2 {
+            copy.items[1].lengthClass = .longer
+            copy.items[2].lengthClass = .tooLong
+        }
+        return copy
+    }
 
     /// A93: ChatGPT's answer for the found screen, 20 questions and one line that cannot be read.
     static let pastedAnswer: String = {
@@ -75,6 +87,9 @@ enum RepetitionDemo {
         // The newest is Start's "Nästa prov": Historia first, so Biologiprovet is on the card.
         model.store.save(history)
         model.store.save(drill)
+        // A99: the month's questions are used up (D175); the server's length classes (D176).
+        if name == "repQuotaUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
+        if name == "repLength" || name == "repLengthEdit" { model.store.save(drillWithLengths) }
         // A100: Fler lägen shows only after the first exam was started (the control check).
         if name == "repHomeNew" { UserDefaults.standard.set(false, forKey: "repetition.controlsChecked") }
         if name == "repHomeStarted" || name == "repHomeSoundProblem" {
@@ -136,6 +151,9 @@ enum RepetitionDemo {
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem":
                 NavigationStack { HomeView(model: listening) }
             case "repSoundProblem": NavigationStack { DrillView(model: model, drillID: history.id) }
+            case "repQuotaUsedUp": NewDrillView(model: model) { _ in }
+            case "repLength": NavigationStack { DrillView(model: model, drillID: drill.id) }
+            case "repLengthEdit": DrillItemEditor(model: model, drill: drillWithLengths, itemID: drill.items[2].id)
             case "repMaterial": NewDrillView(model: model) { _ in }
             case "fsWelcome": WelcomeView {}
             case "fsReadMore": DataPrivacySheet()
