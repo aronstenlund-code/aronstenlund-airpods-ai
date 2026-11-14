@@ -1,0 +1,55 @@
+name: Apptest new user, first start (T21)
+
+# Toby 2's T21: a new user in A94's first start, from an erased Simulator to the first question of the first exam.
+# Screens before the camera (krav högst 3), BETA text (krav none), taps and time. Live (drill, drill audio for 3
+# questions), so manual, and on Toby's branch when the test changes. Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Screens/NewUserRepetitionTests.swift"
+      - "scripts/apptest/newuser.sh"
+      - "scripts/apptest/material_png.swift"
+      - ".github/workflows/apptest-newuser.yml"
+
+concurrency:
+  group: apptest-newuser-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  newuser:
+    name: T21 new user (Simulator, live)
+    runs-on: macos-26
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: New user
+        run: |
+          bash scripts/apptest/newuser.sh
+          STATUS=$?
+          cat apptest-out/newuser/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-newuser
+          path: |
+            apptest-out/newuser
+            !apptest-out/newuser/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
