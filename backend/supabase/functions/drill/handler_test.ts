@@ -565,3 +565,10 @@ Deno.test("K66 (O63 punkt 4): the display text is stored and returned; the voice
   assert([...w.audio.values()].some((a) => a.text.includes("arton hundrafemtio")), "the voice reads the words");
   assert(![...w.audio.values()].some((a) => a.text.includes("1850")));
 });
+
+Deno.test("K66 (A102): the preview row carries the display text for question and short", async () => {
+  const { previewItem } = await import("./handler.ts");
+  assertEquals(previewItem({ question: "Sedan arton hundrafemtio?", short: "Ja.", screen: { question: "Sedan 1850?", long: "x" } }),
+    { question: "Sedan arton hundrafemtio?", short: "Ja.", screen: { question: "Sedan 1850?" } });
+  assertEquals(previewItem({ question: "A?", short: "B.", screen: null }), { question: "A?", short: "B." });
+});

@@ -313,7 +313,15 @@ export const daysBetween = (a: string, b: string) => Math.round((Date.parse(`${b
 
 /** What anyone may see of a published drill: never the account, photos or documents (B4, D149/D150). */
 /** K65 (Kelly P1, A87 punkt 5): what a publication shows before "Lägg till": the first questions and the first audio. */
-export interface PublicPreview { preview: { question: string; short: string }[]; first_audio_url: string | null }
+export interface PublicPreview {
+  preview: { question: string; short: string; screen?: { question?: string; short?: string } }[];
+  first_audio_url: string | null;
+}
+/** K65 + K66 (A102): a preview row, with the display text for the question and the short answer when it differs. */
+export function previewItem(i: { question: string; short: string; screen?: { question?: string; short?: string; long?: string } | null }) {
+  const sc = { ...(i.screen?.question ? { question: i.screen.question } : {}), ...(i.screen?.short ? { short: i.screen.short } : {}) };
+  return { question: i.question, short: i.short, ...(Object.keys(sc).length ? { screen: sc } : {}) };
+}
 export const PREVIEW_QUESTIONS = 4;
 export function publicView(r: PublicationRow, school: SchoolRow, title: string, items: number, pv?: PublicPreview) {
   return {
@@ -725,7 +733,7 @@ export function createDrillHandler(deps: DrillDeps) {
         await deps.db.savePublication(row);
         return json({
           publication: publicView(row, school!, d.title, v.items.length, {
-            preview: v.items.slice(0, PREVIEW_QUESTIONS).map((i) => ({ question: i.question, short: i.short })),
+            preview: v.items.slice(0, PREVIEW_QUESTIONS).map(previewItem),
             first_audio_url: (v.items[0]?.audio.question as { url?: string | null } | undefined)?.url ?? null,
           }),
         });
@@ -771,7 +779,7 @@ export function createDrillHandler(deps: DrillDeps) {
             const x = firsts.get(r.drill_id) ?? [];
             const h = x[0]?.question_hash;
             return publicView(r, schools.get(r.school_code)!, drills.get(r.drill_id)!.title, x.length, {
-              preview: x.slice(0, PREVIEW_QUESTIONS).map((i) => ({ question: i.question, short: i.short })),
+              preview: x.slice(0, PREVIEW_QUESTIONS).map(previewItem),
               first_audio_url: h && done.has(h) ? urls[audioPath(h)] ?? null : null,
             });
           }),
