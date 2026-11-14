@@ -113,7 +113,7 @@ enum RepetitionDemo {
             case "repShareReady": NavigationStack { DrillView(model: model, drillID: drill.id, showsShare: true) }
             case "repEdit": DrillItemEditor(model: model, drill: drill, itemID: drill.items[0].id)
             case "repHelp": HelpChatView(model: model)
-            case "repHelpAnswer": HelpChatView(model: model, suggestion: "Hur fungerar trycken?")
+            case "repHelpAnswer": HelpChatView(model: model, suggestion: "Hur fungerar trycken?", askNow: true, onOpen: { _ in })
             case "repHelpTry": HelpTryView(model: model) {}
             case "repPublish": PublishSheet(model: model, drill: drill)
             case "repSchools", "repSchoolsEmpty": NavigationStack { SchoolExamsView(model: model) }
