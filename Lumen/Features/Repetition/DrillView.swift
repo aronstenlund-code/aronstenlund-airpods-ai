@@ -52,7 +52,7 @@ struct DrillView: View {
         }
         .sheet(isPresented: $checkingControls) {
             if let drill {
-                ControlCheckView(hub: model.remote, sound: firstQuestionSound(drill)) {
+                ControlCheckView(hub: model.remote, sound: firstQuestionSound(drill), help: model) {
                     controlsChecked = true
                     checkingControls = false
                     let index = pendingIndex

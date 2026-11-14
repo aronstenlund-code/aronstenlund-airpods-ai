@@ -15,22 +15,27 @@ struct ControlCheckView: View {
     /// False for a check set up by the screenshots (Kelly Ke49 §7): it is shown as it is, not started again.
     private let beginsOnAppear: Bool
 
-    init(hub: RemoteCommandHub, sound: URL?, waitSeconds: Double = 8,
+    init(hub: RemoteCommandHub, sound: URL?, waitSeconds: Double = 8, help: RepetitionModel? = nil,
          onStart: @escaping () -> Void, onLater: @escaping () -> Void) {
         self.onStart = onStart
         self.onLater = onLater
+        self.helpModel = help
         self.beginsOnAppear = true
         _check = State(initialValue: ControlCheck(hub: hub, waitSeconds: waitSeconds))
         self.sound = sound
     }
 
     private let sound: URL?
+    /// A92 (D166): the exam mode, for "Fråga om Earmind" in the toolbar. Nil = no ? button.
+    private let helpModel: RepetitionModel?
+    @State private var showsHelp = false
 
     #if DEBUG
     /// The screenshots: a check already in the state to show.
     init(staged check: ControlCheck) {
         self.onStart = {}
         self.onLater = {}
+        self.helpModel = nil
         self.beginsOnAppear = false
         self.sound = nil
         _check = State(initialValue: check)
@@ -68,7 +73,20 @@ struct ControlCheckView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Avbryt") { check.end(); onLater() } }
+                if helpModel?.help != nil { // A92 (Kelly Ke57)
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showsHelp = true
+                        } label: {
+                            Label("Fråga om Earmind", systemImage: "questionmark.circle")
+                        }
+                    }
+                }
             }
+        }
+        // The check waits a few seconds per press: after the help it starts again from the first press.
+        .sheet(isPresented: $showsHelp, onDismiss: { if beginsOnAppear { check.restart() } }) {
+            if let helpModel { HelpChatView(model: helpModel, suggestion: "Hur fungerar trycken?") }
         }
         // SYSTEM §0.6: haptics only when something really happened: a press arrived.
         .sensoryFeedback(.success, trigger: check.passed.count) { old, new in new > old }

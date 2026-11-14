@@ -25,6 +25,7 @@ struct RepetitionHomeSection: View {
     @State private var askingCode = false
     @State private var pastedCode = ""
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         Group {
@@ -37,7 +38,7 @@ struct RepetitionHomeSection: View {
             NewDrillView(model: model) { drill in opened = drill.id }
         }
         .sheet(item: $checking) { drill in
-            ControlCheckView(hub: model.remote, sound: model.audio.track(for: drill, at: 0)?.question) {
+            ControlCheckView(hub: model.remote, sound: model.audio.track(for: drill, at: 0)?.question, help: model) {
                 controlsChecked = true
                 checking = nil
                 Task { await model.start(drill, at: model.savedIndex(drill) ?? 0) }
@@ -83,7 +84,8 @@ struct RepetitionHomeSection: View {
                 Label("Inställningar", systemImage: "gearshape")
             }
         }
-        ToolbarItemGroup(placement: .bottomBar) {
+        if !typeSize.isAccessibilitySize {
+          ToolbarItemGroup(placement: .bottomBar) {
             if model.drills.isEmpty {
                 Spacer()
                 Button(action: onMoreModes) {
@@ -106,6 +108,7 @@ struct RepetitionHomeSection: View {
                 Button("Öppna länk") { askingCode = true }
                     .accessibilityHint("Öppnar ett prov som någon har delat med dig")
             }
+          }
         }
     }
 
@@ -140,6 +143,11 @@ struct RepetitionHomeSection: View {
             if let lastNight {
                 Button(action: onLastNight) { Text(verbatim: "I natt: \(lastNight)") }
             }
+            if typeSize.isAccessibilitySize { // the bottom bar's button, see `barItems`
+                Button(action: onMoreModes) { Text("Fler lägen · Beta") }
+                    .accessibilityLabel("Fler lägen")
+                    .accessibilityHint("Beta. Lägen som lyssnar på vad du säger")
+            }
         }
     }
 
@@ -165,6 +173,17 @@ struct RepetitionHomeSection: View {
             if model.drills.count > 1 {
                 Section("Andra prov") {
                     ForEach(model.drills.dropFirst()) { drill in otherExam(drill) }
+                }
+            }
+
+            if typeSize.isAccessibilitySize { // the bottom bar's buttons, see `barItems`
+                Section {
+                    Button {
+                        isCreating = true
+                    } label: {
+                        Label("Nytt prov", systemImage: "plus.circle.fill")
+                    }
+                    Button("Öppna länk") { askingCode = true }
                 }
             }
 

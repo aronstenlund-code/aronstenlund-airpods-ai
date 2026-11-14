@@ -44,6 +44,8 @@ struct NewDrillView: View {
     @State private var isAnswering = false
     @State private var stepsDone = 0
     @State private var readingDocument = false
+    /// A92 (D166): "Fråga om Earmind" from the toolbar.
+    @State private var showsHelp = false
 
     private var material: DrillMaterial {
         let text = ([pasted] + documents.map(\.text)).filter { !$0.isEmpty }.joined(separator: "\n\n")
@@ -65,8 +67,18 @@ struct NewDrillView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Avbryt") { making?.cancel(); answering?.cancel(); dismiss() }
                 }
+                if model.help != nil { // A92 (Kelly Ke57)
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showsHelp = true
+                        } label: {
+                            Label("Fråga om Earmind", systemImage: "questionmark.circle")
+                        }
+                    }
+                }
             }
         }
+        .sheet(isPresented: $showsHelp) { HelpChatView(model: model, suggestion: "Vad kan jag fota?") }
         .sheet(isPresented: $isTakingPhotos) { camera.ignoresSafeArea() }
         .sheet(isPresented: $isAddingText) { textSheet }
         .fileImporter(isPresented: $isImporting,
