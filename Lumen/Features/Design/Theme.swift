@@ -153,7 +153,7 @@ struct SystemButton: PrimitiveButtonStyle {
 
     @ViewBuilder
     func makeBody(configuration: Configuration) -> some View {
-        let role = configuration.role ?? (kind == .danger ? .destructive : nil)
+        let role: ButtonRole? = configuration.role ?? (kind == .danger ? ButtonRole.destructive : nil)
         switch kind {
         case .primary:
             Button(role: role, action: configuration.trigger) { FilledButtonLabel { label(configuration) } }
