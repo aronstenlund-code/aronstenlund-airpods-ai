@@ -116,7 +116,7 @@ const QS = [['Varför behövs klorofyll?', 'Klorofyll fångar ljusenergin som v�
 add('hem-tom', 'Hem utan prov', 'Systemets tomläge (ContentUnavailableView): en symbol, en rubrik, en mening och en knapp. Inget annat på skärmen. Fler lägen och inställningar ligger i navigationsraden.',
   () => `<div class="phone">${status}<div class="nav"><span></span><span class="tbicons">${I('gear', 'ico', 'width:22px;height:22px;stroke:none')}</span></div>
   <div class="lt">Prov</div>
-  <div class="cu">${I('book', 'ico big', 'stroke-width:1.5;width:64px;height:64px')}<h2>Kom förberedd till provet</h2><p>Fota ditt material. Earmind gör frågor och svar och läser upp dem i dina AirPods.</p>
+  <div class="cu">${I('book', 'ico big', 'stroke-width:1.5;width:64px;height:64px')}<h2>Kom förberedd till provet</h2><p>Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods.</p>
   <div class="btnp" style="width:220px;margin-top:14px">Nytt prov</div><div class="btnt" style="font-size:15px">Hitta prov från din skola</div></div>
   <div class="tb" style="justify-content:center;color:var(--sec);font-size:15px"><span style="font-weight:500">Fler lägen · Beta</span></div></div>`);
 
@@ -200,8 +200,8 @@ const feat = (sym, bg, t, s) => `<div style="display:flex;gap:16px;align-items:f
 add('fs-1-valkommen', '1 · Välkommen (och samtycke)', 'Som Apples egna välkomstskärmar (Podcaster, Kondition): appikonen, en rubrik, tre rader med symbol och Fortsätt. Samtycket står ovanför knappen med en Läs mer-länk, som Apples ruta om data och integritet. Ingen Elias, ingen mikrofon.',
   () => `<div class="phone">${status}<div class="content" style="padding:20px 36px 0">
   <img src="../logo/rostning/exakt/AppIcon-1024.png" style="width:72px;height:72px;border-radius:16px;margin:18px auto 0;display:block" alt="">
-  <div style="font-size:32px;font-weight:700;text-align:center;line-height:1.12;margin-top:18px">Välkommen till Earmind</div>
-  ${feat('cam', 'var(--tint)', 'Fota materialet', 'Earmind gör provfrågor med A-svar.')}
+  <div style="font-size:32px;font-weight:700;text-align:center;line-height:1.12;margin-top:18px">Välkommen till EarMind</div>
+  ${feat('cam', 'var(--tint)', 'Fota materialet', 'EarMind gör provfrågor med A-svar.')}
   ${feat('wave', 'var(--tint)', 'Lyssna i dina AirPods', 'Frågorna läses upp. Tryck för svaret.')}
   ${feat('book', 'var(--tint)', 'Plugga utan mobilen', 'Telefonen kan ligga i fickan.')}
   </div><div class="bottom" style="background:var(--bg);border:0;gap:12px">
@@ -265,18 +265,18 @@ add('fs-flode', 'Hela vägen till första frågan', 'Skärm 1–3 före kameran,
 // ===== Ke57: Hjälp-AI:n (D166). Som Meddelanden, utan dekor. =====
 const me = t => `<div style="align-self:flex-end;max-width:76%;background:var(--tint);color:var(--ontint);padding:8px 13px;border-radius:18px;font-size:17px;line-height:1.3;margin-top:6px">${t}</div>`;
 const it = t => `<div style="align-self:flex-start;max-width:80%;background:var(--fill);padding:8px 13px;border-radius:18px;font-size:17px;line-height:1.3;margin-top:6px">${t}</div>`;
-const inputBar = (txt = '', ph = 'Fråga om Earmind') => `<div style="display:flex;gap:8px;align-items:center;padding:8px 12px 30px;background:var(--bar);border-top:.5px solid var(--sep)">
+const inputBar = (txt = '', ph = 'Fråga om EarMind') => `<div style="display:flex;gap:8px;align-items:center;padding:8px 12px 30px;background:var(--bar);border-top:.5px solid var(--sep)">
   <div style="flex:1;min-height:36px;border:1px solid var(--sep);border-radius:18px;padding:7px 14px;font-size:17px;color:${txt ? 'var(--label)' : 'var(--ter)'}">${txt || ph}</div>
   <span style="width:32px;height:32px;border-radius:50%;background:${txt ? 'var(--tint)' : 'var(--fill2)'};display:grid;place-items:center;color:#fff;font-weight:700">↑</span></div>`;
-const helpNav = `<div class="nav"><span style="width:50px"></span><span class="t">Fråga om Earmind</span><a class="b">Klar</a></div>`;
+const helpNav = `<div class="nav"><span style="width:50px"></span><span class="t">Fråga om EarMind</span><a class="b">Klar</a></div>`;
 
 add('hjalp-tom', 'Hjälp: tom', 'Ett blad med Klar. Tomt läge: en mening om vad den kan, tre förslag som rader (ett tryck skickar frågan) och Prova på en kort text som egen rad med symbol. Inget maskot, ingen gradient, ingen "AI"-gnista.',
   () => `<div class="phone g">${status}${helpNav}<div class="content" style="padding-top:20px">
-  <div style="text-align:center;font-size:15px;color:var(--sec);padding:0 40px;line-height:1.35">Fråga hur något i Earmind fungerar. Svaren handlar bara om appen.</div>
+  <div style="text-align:center;font-size:15px;color:var(--sec);padding:0 40px;line-height:1.35">Fråga hur något i EarMind fungerar. Svaren handlar bara om appen.</div>
   <div class="sh">Förslag</div>
   <div class="sec">${['Hur fungerar trycken?', 'Hur delar jag ett prov?', 'Varför blev det färre frågor?'].map(q => `<div class="row tintc">${q}</div>`).join('')}</div>
   <div class="sh">Prova</div>
-  <div class="sec"><div class="row ic"><span class="sym" style="background:#2346C8">${I('txt')}</span><div>Prova på en kort text<div class="sub">Earmind gör 3 frågor med svar. Räknas mot dina frågor.</div></div><span class="v">${chev}</span></div></div>
+  <div class="sec"><div class="row ic"><span class="sym" style="background:#2346C8">${I('txt')}</span><div>Prova på en kort text<div class="sub">EarMind gör 3 frågor med svar. Räknas mot dina frågor.</div></div><span class="v">${chev}</span></div></div>
   </div>${inputBar()}</div>`);
 
 add('hjalp-svar', 'Hjälp: ett svar', 'Bubblor som i Meddelanden: din fråga till höger i accentfärgen, svaret till vänster i grått. Korta svar med stegen som en numrerad lista, och en länk när svaret pekar på en plats i appen.',
@@ -291,13 +291,13 @@ add('hjalp-svar', 'Hjälp: ett svar', 'Bubblor som i Meddelanden: din fråga til
 add('hjalp-annat', 'Hjälp: utanför appen', 'Frågor om annat får samma korta svar (D166) och ett förslag på vad den kan i stället. Inget "Som en AI kan jag inte …".',
   () => `<div class="phone g">${status}${helpNav}<div class="content" style="padding:12px 14px 0;display:flex;flex-direction:column">
   ${me('Vad blir det för väder i morgon?')}
-  ${it('Det kan jag inte svara på. Jag svarar bara på hur Earmind fungerar, till exempel hur du gör ett nytt prov.')}
+  ${it('Det kan jag inte svara på. Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov.')}
   ${me('Varför blev det färre frågor?')}
-  ${it('Earmind gör högst så många frågor som materialet räcker till, och tar bort frågor som bara testar att du minns ett ord. Lägg till fler sidor eller mer text så blir det fler.')}
+  ${it('EarMind gör högst så många frågor som materialet räcker till, och tar bort frågor som bara testar att du minns ett ord. Lägg till fler sidor eller mer text så blir det fler.')}
   </div>${inputBar('Hur')}</div>`);
 
 add('hjalp-prova', 'Prova på en kort text', 'Ett vanligt formulär: en textruta, en rad om kvoten och Gör frågor fast nederst. Resultatet visas som tre rader med fråga och kort svar, och Spara som prov.',
-  () => `<div class="phone g">${status}<div class="nav">${back('Fråga om Earmind')}<span></span><span></span></div>
+  () => `<div class="phone g">${status}<div class="nav">${back('Fråga om EarMind')}<span></span><span></span></div>
   <div class="lt" style="font-size:28px">Prova på en kort text</div><div class="content">
   <div class="sec"><div class="row" style="min-height:150px;align-items:flex-start;font-size:16px;line-height:1.4">Fotosyntesen sker i kloroplasterna. Med hjälp av solljus bygger växten glukos av koldioxid och vatten, och syre blir över.</div></div>
   <div class="sf">Klistra in eller skriv några meningar. Räknas som 3 av dina frågor.</div>
@@ -328,16 +328,16 @@ add('gpt-rad', 'Nytt prov: raden Gör med ChatGPT', 'En egen rad sist i Material
 add('gpt-steg', 'Gör med ChatGPT: tre steg', 'Ett blad med tre numrerade steg, en knapp i varje. Steg 3 är systemets Klistra in-knapp (PasteButton), så iOS inte frågar om urklipp. Raden längst ner säger vem som hanterar filerna.',
   () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Gör med ChatGPT</span><span style="width:50px"></span></div>
   <div class="content" style="padding-top:8px">
-  <div style="font-size:15px;color:var(--sec);padding:4px 32px 10px;line-height:1.35">ChatGPT gör frågor och svar av dina filer. Sedan läser Earmind upp dem.</div>
+  <div style="font-size:15px;color:var(--sec);padding:4px 32px 10px;line-height:1.35">ChatGPT gör frågor och svar av dina filer. Sedan läser EarMind upp dem.</div>
   <div class="sec">
     ${step(1, 'Kopiera prompten', 'Den säger åt ChatGPT exakt vad som ska göras.', smallBtn('Kopiera prompten', true), true)}
     ${step(2, 'Klistra in i ChatGPT', 'Bifoga dina filer, till exempel foton av sidorna eller en PDF, och skicka.', smallBtn('Öppna ChatGPT'))}
     ${step(3, 'Klistra in svaret här', 'Kopiera hela svaret från ChatGPT.', smallBtn('Klistra in'))}
   </div>
-  <div class="sf">Det du bifogar i ChatGPT hanteras av ChatGPT, inte av Earmind. ChatGPT är en tjänst från OpenAI.</div>
+  <div class="sf">Det du bifogar i ChatGPT hanteras av ChatGPT, inte av EarMind. ChatGPT är en tjänst från OpenAI.</div>
   </div></div>`);
 
-add('gpt-klart', 'Gör med ChatGPT: svaret inklistrat', 'Earmind känner igen formatet och visar vad den hittade innan något sparas. Spara frågorna är den enda fyllda knappen.',
+add('gpt-klart', 'Gör med ChatGPT: svaret inklistrat', 'EarMind känner igen formatet och visar vad den hittade innan något sparas. Spara frågorna är den enda fyllda knappen.',
   () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Gör med ChatGPT</span><span style="width:50px"></span></div>
   <div class="content" style="padding-top:8px">
   <div class="sec"><div class="row" style="gap:12px"><span class="check" style="width:26px;height:26px">✓</span><div><div style="font-weight:600">Hittade 20 frågor med svar</div><div class="sub">Det korta svaret är första meningen i varje svar.</div></div></div></div>
@@ -346,7 +346,7 @@ add('gpt-klart', 'Gör med ChatGPT: svaret inklistrat', 'Earmind känner igen fo
     <div class="row" style="--inset:48px;color:var(--sec);font-size:15px"><span class="num"></span>och 16 frågor till</div></div>
   </div><div class="bottom"><div class="btnp">Spara frågorna</div><div class="note">Ljudet görs som vanligt när frågorna är sparade.</div></div></div>`);
 
-add('gpt-fel', 'Gör med ChatGPT: fel form', 'Känner Earmind inte igen svaret: en mening om vad som gick fel och vad man gör, och Klistra in igen. Inget rött.',
+add('gpt-fel', 'Gör med ChatGPT: fel form', 'Känner EarMind inte igen svaret: en mening om vad som gick fel och vad man gör, och Klistra in igen. Inget rött.',
   () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Gör med ChatGPT</span><span style="width:50px"></span></div>
   <div class="content" style="padding-top:8px">
   <div class="sec"><div class="row" style="flex-direction:column;align-items:flex-start;gap:6px;padding:14px 16px"><div style="font-weight:600">Svaret har inte rätt form</div><div class="sub" style="line-height:1.35">Kopiera hela svaret från ChatGPT, från första ”Fråga:” till sista svaret, och försök igen.</div><div style="margin-top:6px">${smallBtn('Klistra in igen', true)}</div></div></div>

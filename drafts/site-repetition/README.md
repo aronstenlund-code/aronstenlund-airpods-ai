@@ -31,7 +31,7 @@ efter A87, A83 och A92): `repPlayFirst`, `repMaterial`, `repList` och `repHome`.
 3. Skärmbilder från A87.
 4. Flytta till `site/`. Då behövs: `og`-bild med den nya rubriken, FAQ/JSON-LD om repetitionsläget, canonical,
    Lighthouse minst 95 och `site/` högst 2 MB.
-5. Den gamla livedemon (Standardläge och Förhör mig) och "Vad kan Earmind?" finns inte på den här sidan. Ska de vara
+5. Den gamla livedemon (Standardläge och Förhör mig) och "Vad kan EarMind?" finns inte på den här sidan. Ska de vara
    kvar, blir de en egen sida ("Fler lägen, beta") som den här länkar till.
 
 ## Skärmbilder av utkastet

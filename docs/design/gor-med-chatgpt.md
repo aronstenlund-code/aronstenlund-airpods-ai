@@ -32,11 +32,11 @@ numrerade steg i en lista, var och ett med en knapp. Ett steg som är gjort får
 | Rad i Nytt prov | Gör med ChatGPT |
 | Undertext | Låt ChatGPT göra frågorna av dina filer |
 | Bladets rubrik | Gör med ChatGPT |
-| Mening överst | ChatGPT gör frågor och svar av dina filer. Sedan läser Earmind upp dem. |
+| Mening överst | ChatGPT gör frågor och svar av dina filer. Sedan läser EarMind upp dem. |
 | Steg 1 | **Kopiera prompten** · Den säger åt ChatGPT exakt vad som ska göras. · knapp: Kopiera prompten · efter tryck: Kopierad |
 | Steg 2 | **Klistra in i ChatGPT** · Bifoga dina filer, till exempel foton av sidorna eller en PDF, och skicka. · knapp: Öppna ChatGPT |
 | Steg 3 | **Klistra in svaret här** · Kopiera hela svaret från ChatGPT. · knapp: Klistra in |
-| Fotnot | Det du bifogar i ChatGPT hanteras av ChatGPT, inte av Earmind. ChatGPT är en tjänst från OpenAI. |
+| Fotnot | Det du bifogar i ChatGPT hanteras av ChatGPT, inte av EarMind. ChatGPT är en tjänst från OpenAI. |
 | Känns igen | **Hittade {n} frågor med svar** · Det korta svaret är första meningen i varje svar. |
 | … efter fyra frågor | och {n − 4} frågor till |
 | Knapp | Spara frågorna |
@@ -53,7 +53,7 @@ numrerade steg i en lista, var och ett med en knapp. Ett steg som är gjort får
 ## Att tänka på
 - **Namnet ChatGPT** används för att beskriva en tjänst användaren själv använder. Det är okej i appen, men inte i
   appens namn, underrubrik eller nyckelord i App Store (samma regel som för AirPods, D122).
-- **Integritet:** filerna går aldrig via Earmind i det här flödet. Det står i fotnoten och bör stå i Läs mer
+- **Integritet:** filerna går aldrig via EarMind i det här flödet. Det står i fotnoten och bör stå i Läs mer
   (`forsta-starten.md`): "Använder du Gör med ChatGPT skickar du filerna till ChatGPT själv."
 - **Kvoten:** frågor som klistras in får ljud och räknas därför mot gränsen (D155). Det är **ej verifierat** mot K58.
   Kevin bekräftar.

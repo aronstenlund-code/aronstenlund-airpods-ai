@@ -82,9 +82,9 @@ när Aron har provat. Fotnot: "Siri är ett varumärke som tillhör Apple Inc. L
 Apple." Demorutans val heter nu **Standardläge** och **Förhör mig** (D124 tog bort Få A-svar).
 
 ## Öppet
-- **Namnet (D128):** appen heter Earmind, väckningsordet är fortfarande "Lumen". Skisserna säger Lumen, som appen gör
-  i dag; A55 byter visningsnamnet med en konstant. Efter A55 står det "Earmind kan allt" ovanför "Säg ”Lumen” och vad
-  du vill", vilket är begripligt men konstigt. Aron avgör om väckningsordet också blir Earmind.
+- **Namnet (D128):** appen heter EarMind, väckningsordet är fortfarande "Lumen". Skisserna säger Lumen, som appen gör
+  i dag; A55 byter visningsnamnet med en konstant. Efter A55 står det "EarMind kan allt" ovanför "Säg ”Lumen” och vad
+  du vill", vilket är begripligt men konstigt. Aron avgör om väckningsordet också blir EarMind.
 - **Siri i appen:** att nämna Siri i appen kan ge en fråga i App Store-granskningen (Apples varumärke). Det är en
   **ej verifierad bedömning**. På sajten har texten en fotnot. I appen föreslår jag ingressen utan ordet Siri om
   granskningen klagar: "Förstår vad du frågar och svarar direkt i dina AirPods."

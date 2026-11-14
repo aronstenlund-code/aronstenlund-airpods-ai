@@ -17,12 +17,12 @@ testläget.
 | Bild | Var | Det viktigaste |
 |---|---|---|
 | `ke45-lyssnar-test.png` | Lyssnar | Lyssnar-brickan blir **"Testläge · ljud skickas"** i `test`/`testsoft`, med pulserande prick (samma rörelse som vanliga brickan, stilla med Reducera rörelse). Så länge ljud skickas, i alla lägen. |
-| `ke45-start-test.png` | Start | En liten bricka **"Testläge"** bredvid kugghjulet så länge testläget är på, också när Earmind inte lyssnar. Tryck → Inställningar › Felsökning. |
+| `ke45-start-test.png` | Start | En liten bricka **"Testläge"** bredvid kugghjulet så länge testläget är på, också när EarMind inte lyssnar. Tryck → Inställningar › Felsökning. |
 | `ke45-bekrafta.png` | Blad när brytaren slås på | "Slå på testläget?" och vad som händer: **allt ljud**, också andras röster och bakgrundsljud, skickas till oss; sparas i 14 dagar; brickan syns; hur man stänger av. Knappen "Slå på testläget" (`test`), "Inte nu". För konton där testläget slås på automatiskt (Arons) visas bladet en gång, med knappen "Okej" i stället. |
 | `ke45-inst.png` | Inställningar › Felsökning | Raden "Skicka ljud för felsökning" med brytare (`test` när den är på) och en fotnot som säger nuläget. |
 
 ## Texten om ljud (D138) när testläget är på
-D138-meningen ("Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon.") är **inte
+D138-meningen ("Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon.") är **inte
 sann** när testläget är på. Byt den då, på samma ställen (Om appen, Första frågan, samtycket om det visas):
 > **"Testläget är på: ljudet skickas till oss och sparas i 14 dagar. Sömnläget sparar klippen bara på din telefon."**
 Introt för nya användare berörs inte (testläget är av för dem).

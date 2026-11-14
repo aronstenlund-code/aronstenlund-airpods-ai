@@ -32,8 +32,8 @@ loggan, flamman eller tips. Det som är BETA nås först via Fler lägen.
 | Del | Text |
 |---|---|
 | Bild | Appikonen (exakt D, D139), 72 pt med iOS-hörn |
-| Rubrik (`.largeTitle.bold()`, centrerad) | Välkommen till Earmind |
-| Rad 1 (symbol `camera`) | **Fota materialet** · Earmind gör provfrågor med A-svar. |
+| Rubrik (`.largeTitle.bold()`, centrerad) | Välkommen till EarMind |
+| Rad 1 (symbol `camera`) | **Fota materialet** · EarMind gör provfrågor med A-svar. |
 | Rad 2 (symbol `waveform`) | **Lyssna i dina AirPods** · Frågorna läses upp. Tryck för svaret. |
 | Rad 3 (symbol `book.closed`) | **Plugga utan mobilen** · Telefonen kan ligga i fickan. |
 | Rad ovanför knappen (`.footnote`, `.secondary`) | Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen. **Läs mer** |
@@ -50,7 +50,7 @@ Ett blad (`NavigationStack` + `List`) med rubriken **Data och integritet** och *
 | DET HÄR SKICKAS | Foton, dokument och text du lägger till skickas en gång till vår server och vår AI-leverantör för att göra frågorna. De sparas inte. |
 | | Frågorna och svaren skickas till vår röstleverantör för att bli ljud. |
 | | Använder du Gör med ChatGPT skickar du filerna till ChatGPT själv. |
-| DET HÄR SPARAS | Dina prov, med frågor, svar och ljud, sparas hos Earmind tills du tar bort dem. |
+| DET HÄR SPARAS | Dina prov, med frågor, svar och ljud, sparas hos EarMind tills du tar bort dem. |
 | MIKROFONEN | Starta prov använder aldrig mikrofonen. Lägena som lyssnar finns under Fler lägen och frågar först. |
 | Fotnot | Du behöver inte skapa något konto. Du kan ta bort allt under Inställningar. |
 
@@ -66,7 +66,7 @@ Fotnot under materialet: "iOS frågar om kameran första gången. Fotona sparas 
 ## Skärm 3: Kameran
 `VNDocumentCameraViewController` (VisionKit): den hittar sidan, rätar upp den och tar flera i följd. **Spara (n)**
 leder tillbaka till Nytt prov med sidorna som miniatyrer. Ingen egen kamera. Säger iOS nej till kameran:
-"Earmind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket." med knappen
+"EarMind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket." med knappen
 Öppna Inställningar (Ke50 §2).
 
 ## Samtycket (godkänt: D170, Deangelo 2026-11-14 14:15)

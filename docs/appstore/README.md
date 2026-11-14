@@ -25,7 +25,7 @@ efter Arons ja (CLAUDE.md). Ersätter utkastet i `docs/marketing/appstore/` (Ke2
 ## Texter (tecken räknade med Python)
 | Fält | Gräns | Text | Tecken |
 |---|---|---|---|
-| Namn | 30 | Earmind | 7 |
+| Namn | 30 | EarMind | 7 |
 | Underrubrik | 30 | Plugga utan att röra mobilen | 28 |
 | Reklamtext | 170 | Fota materialet och få provfrågor med A-svar. Frågorna läses upp i dina hörlurar, och du styr med tryck. Telefonen kan ligga i fickan. | 134 |
 | Nyckelord | 100 | `prov,plugga,förhör,provfrågor,instudering,repetition,läxor,glosor,hörlurar,quiz,skola,gymnasiet` | 95 |
@@ -35,11 +35,11 @@ bara i beskrivningen och på bild 3, som "fungerar med" och "i dina AirPods".
 
 **Beskrivning** (1536 av 4 000 tecken):
 
-> Plugga med AirPods utan att röra mobilen. Fota materialet till ditt prov, så gör Earmind korta provfrågor med A-svar och läser upp dem i dina hörlurar. Du styr med tryck och kan ha telefonen i fickan.
+> Plugga med AirPods utan att röra mobilen. Fota materialet till ditt prov, så gör EarMind korta provfrågor med A-svar och läser upp dem i dina hörlurar. Du styr med tryck och kan ha telefonen i fickan.
 >
 > FOTA MATERIALET
 > • Fota sidor ur boken, välj bilder, lägg till en PDF eller Word-fil eller klistra in text.
-> • Earmind gör en sammanfattning av vad provet handlar om. Stämmer den inte, skriver du en rad så rättas den.
+> • EarMind gör en sammanfattning av vad provet handlar om. Stämmer den inte, skriver du en rad så rättas den.
 > • Fotona och dokumenten används en gång för att göra frågorna och sparas inte.
 >
 > FRÅGOR MED A-SVAR
@@ -58,9 +58,9 @@ bara i beskrivningen och på bild 3, som "fungerar med" och "i dina AirPods".
 > • Fotona och dokumenten delas aldrig.
 >
 > FLER LÄGEN (BETA)
-> Earmind har också lägen som lyssnar på vad du säger och svarar i örat, till exempel förhör med rösten och intervjuträning. De är i beta och frågar om mikrofonen först när du startar dem.
+> EarMind har också lägen som lyssnar på vad du säger och svarar i örat, till exempel förhör med rösten och intervjuträning. De är i beta och frågar om mikrofonen först när du startar dem.
 >
-> Fungerar med AirPods och andra Bluetooth-hörlurar. Earmind är inte gjord av eller kopplad till Apple. Svar från AI kan vara fel, så kontrollera mot din kursbok.
+> Fungerar med AirPods och andra Bluetooth-hörlurar. EarMind är inte gjord av eller kopplad till Apple. Svar från AI kan vara fel, så kontrollera mot din kursbok.
 
 ## Måste stämma innan inskickning (kontrolleras på telefon)
 | Påstående | Kontroll |

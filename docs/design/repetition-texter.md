@@ -31,7 +31,7 @@ skrivs alltid i samma ordning: 1 tryck = långt svar, 2 tryck = kort svar, 3 try
 | Ställe | Text | I koden nu |
 |---|---|---|
 | Rubrik | Kom förberedd till provet *(Aron 22:19, A86)* | |
-| Rad | Fota ditt material. Earmind gör frågor och svar och läser upp dem i örat. Du styr med tryck på AirPods, utan mikrofon. | Fota sidorna eller lägg till text. Earmind gör provfrågor med svar och läser dem i dina AirPods. Du styr med tryck, utan mikrofon. |
+| Rad | Fota ditt material. EarMind gör frågor och svar och läser upp dem i örat. Du styr med tryck på AirPods, utan mikrofon. | Fota sidorna eller lägg till text. EarMind gör provfrågor med svar och läser dem i dina AirPods. Du styr med tryck, utan mikrofon. |
 | Huvudknapp | Nytt prov | |
 
 ## 2. Nytt prov
@@ -61,7 +61,7 @@ skrivs alltid i samma ordning: 1 tryck = långt svar, 2 tryck = kort svar, 3 try
 | Fil utan text | {namn} har ingen text som går att läsa. Fota sidorna i stället. | {namn} gick inte att läsa. |
 | Word-fil | *(ta bort felet: K45 `doc_text` läser .docx)* | {namn}: Word-filer går inte att läsa än. Spara som PDF … |
 | För många bilder i en omgång | Högst {10} bilder åt gången. Lägg till resten efteråt. | |
-| Kameran nekad | Earmind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket. · knapp: Öppna Inställningar | |
+| Kameran nekad | EarMind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket. · knapp: Öppna Inställningar | |
 
 ## 3. Läser materialet
 | Ställe | Text | I koden nu |
@@ -97,7 +97,7 @@ skrivs alltid i samma ordning: 1 tryck = långt svar, 2 tryck = kort svar, 3 try
 | … klart | Ljud klart | |
 | … medan det görs, höger | Görs i spelordning | |
 | Huvudknapp | Starta prov | |
-| Rad under knappen | Spelar frågorna i dina AirPods. Earmind använder inte mikrofonen. | |
+| Rad under knappen | Spelar frågorna i dina AirPods. EarMind använder inte mikrofonen. | |
 | Knappen innan första frågans ljud finns | Gör ljud … *(grå)* | Starta prov går när ljudet är klart. |
 | Ta bort provet (längst ner, röd text) | Ta bort provet | |
 | Bekräftelse | **Ta bort {Biologiprovet}?** Frågorna, svaren och ljudet försvinner från alla dina enheter. Kopior som du har delat finns kvar hos de andra. · Ta bort *(röd)* · Avbryt | |
@@ -124,9 +124,9 @@ skrivs alltid i samma ordning: 1 tryck = långt svar, 2 tryck = kort svar, 3 try
 | Om det korta och det långa svaret ligger i två fält (D147, tills K46) | KORT SVAR (2 TRYCK) / LÅNGT SVAR (1 TRYCK) · rad: Det långa svaret börjar alltid med det korta. | |
 | Rutan nederst | Sparar du en ändring görs nytt ljud bara för den här frågan. | *(ihop med raden ovan)* |
 | Textknappar | Lyssna · Nytt förslag | |
-| Knapp på en ny fråga utan svar | Låt Earmind skriva svaret | Låt Earmind skriva svaren |
+| Knapp på en ny fråga utan svar | Låt EarMind skriva svaret | Låt EarMind skriva svaren |
 | … medan det görs | Skriver svaret … | Skriver svar … |
-| Fel | Earmind kunde inte skriva svaret just nu. Skriv det själv eller försök igen. | … svaren … Skriv dem själv … |
+| Fel | EarMind kunde inte skriva svaret just nu. Skriv det själv eller försök igen. | … svaren … Skriv dem själv … |
 | Lämna med osparade ändringar | **Spara ändringarna?** · Spara · Släng ändringarna *(röd)* · Avbryt | |
 
 ## 7. Styr med dina AirPods (kontrollskärmen)
@@ -201,7 +201,7 @@ Raderna nedan med etiketterna Långt svar, Kort svar och Paus gäller bara teste
 | Fält | Text |
 |---|---|
 | Titel | {frågan}, till exempel ”Varför behövs klorofyll?” |
-| Artist | Earmind · {Biologiprovet} · {7} av {20} |
+| Artist | EarMind · {Biologiprovet} · {7} av {20} |
 | Album | {Biologiprovet} |
 | Bild | appikonen (exakt D, D139) |
 
@@ -218,13 +218,13 @@ Raderna nedan med etiketterna Långt svar, Kort svar och Paus gäller bara teste
 | Ställe | Text | I koden nu |
 |---|---|---|
 | Rubrik | Dela med klassen | |
-| Rad | Kompisarna får samma frågor, svar och ljud. De behöver ett gratis Earmind-konto. | Frågor, svar och ljud delas. Foton och dokument delas inte. … |
+| Rad | Kompisarna får samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Frågor, svar och ljud delas. Foton och dokument delas inte. … |
 | Lista | Frågor och svar · {20} / Ljud · {36} av {40} / Foton och dokument · delas inte | |
 | Fotnot | Ändrar någon en fråga i sin kopia ändras inte ditt prov. | |
 | Knapp, avstängd | Delas när ljudet är klart ({36} av {40}) | |
 | Knapp, klar | Dela | Skicka länken |
 | Medan länken görs | Gör en länk … | |
-| Text i delningsbladet | Plugga {Biologiprovet} med mig i Earmind: {länk} | Plugga {titel} med Earmind |
+| Text i delningsbladet | Plugga {Biologiprovet} med mig i EarMind: {länk} | Plugga {titel} med EarMind |
 | Utan K47 | Delning kommer snart. | |
 | Fel | Det gick inte att dela just nu. Försök igen om en stund. | Det gick inte att dela just nu. |
 | Mottagaren, klart | {Biologiprovet} är tillagt. | |
@@ -250,8 +250,8 @@ Raderna nedan med etiketterna Långt svar, Kort svar och Paus gäller bara teste
 | Inget nät under uppspelning | *(ingen text: ljud som redan är nedladdat spelas som vanligt)* | |
 | Inget nät, nästa ljud saknas | Ingen internetanslutning. Ljudet för fråga {8} kommer när du är uppkopplad. Frågorna med ljud spelas under tiden. | |
 | Frågorna kunde inte göras (nätet finns, anslutningen bröts eller servern svarade fel) | Det gick inte att skapa frågorna. Försök igen. *(A85)* | Försök igen |
-| Materialet räckte inte | Earmind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text. | Lägg till material |
-| Ljud kunde inte göras (rösttjänsten svarar fel) | Ljudet för {3} frågor kunde inte göras. Earmind försöker igen av sig själv. | Försök nu |
+| Materialet räckte inte | EarMind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text. | Lägg till material |
+| Ljud kunde inte göras (rösttjänsten svarar fel) | Ljudet för {3} frågor kunde inte göras. EarMind försöker igen av sig själv. | Försök nu |
 | Dagens gräns för nytt ljud (K46) | Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu. | |
 | Inloggningen gick ut | Logga in igen för att spara provet. Ingenting har försvunnit. | Logga in |
 | Okänt fel | Något gick fel. Försök igen. | Försök igen |

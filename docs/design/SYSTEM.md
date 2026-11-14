@@ -1,4 +1,4 @@
-# Designsystem: Earmind (Kelly, Ke12 2026-11-10, omgjort i Ke53 2026-11-13 efter D160)
+# Designsystem: EarMind (Kelly, Ke12 2026-11-10, omgjort i Ke53 2026-11-13 efter D160)
 
 ## 0. Apple-stil (D160, gäller före allt annat i filen)
 Aron 2026-11-13 22:29: "en ny användare ska alltid veta var den ska trycka. Mer Apple-stil design och mindre generisk
@@ -241,11 +241,11 @@ Alla storlekar följer Dynamic Type, också de fem största (`.accessibility1`�
    blir två rader. Datumet + "Ändra" likaså.
 3. **Små versalrubriker** ("NÄSTA PROV", "FRÅGA", "ANDRA PROV") står alltid på en rad: `lineLimit(1)` med
    `minimumScaleFactor(0.8)`. De får krympa lite, men aldrig brytas.
-4. **Stora rubriker kapas inte.** En stor navigationsrubrik som inte får plats ("Vad kan Earmind?") visas som vanlig
+4. **Stora rubriker kapas inte.** En stor navigationsrubrik som inte får plats ("Vad kan EarMind?") visas som vanlig
    text överst i innehållet, med radbrytning, och navigationsraden får den lilla rubriken.
    *I SwiftUI (2026-11-14):* vid `dynamicTypeSize >= .accessibility1` blir rubriken `.navigationBarTitleDisplayMode(.inline)`
    och står som första rad i listan med `.font(.largeTitle.bold())` och radbrytning (gäller till exempel "Prov från din skola").
-5. **Hjälptext kapas inte:** raden under en knapp med förklaring ("Earmind frågar ut dig och svarar på dina frågor")
+5. **Hjälptext kapas inte:** raden under en knapp med förklaring ("EarMind frågar ut dig och svarar på dina frågor")
    får gå på två eller fler rader, och knappen blir högre. Bara värden i listor (till exempel "Lugn berättarröst") får
    kortas med "…".
 6. **Loggan i rubriken** följer textstorleken (`@ScaledMetric`), så att den inte blir en prick bredvid ett stort namn.

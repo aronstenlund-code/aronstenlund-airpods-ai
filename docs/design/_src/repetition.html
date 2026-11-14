@@ -275,7 +275,7 @@
 </svg>
 <div id="screens"></div>
 <script>
-const APP = 'Earmind';
+const APP = 'EarMind';
 const ICON = '../logo/rostning/exakt/AppIcon-1024.png';   // D139: appikonen är exakt ChatGPT-bilden D
 const I = (id, cls = 'ico', style = '') => `<svg class="${cls}" style="${style}"><use href="#${id}"/></svg>`;
 const status = (dark) => `<div class="status"><span>9:41</span><span>●●●</span></div>`;
@@ -372,7 +372,7 @@ S('material', 'Nytt prov: material',
 </div>`);
 
 // 4. Analyserar
-S('analys', 'Earmind läser materialet',
+S('analys', 'EarMind läser materialet',
   'Väntan med steg i stället för en snurra utan slut. Sammanfattningen visas så fort den finns; frågorna och svaren fylls på under tiden (R1: 30 och 90 s).',
   () => `<div class="phone">${status()}${nav('', 'Biologiprovet', '')}
   <div class="scroll" style="align-items:center;text-align:center;gap:20px;padding-top:80px">
@@ -566,7 +566,7 @@ S('spelar-paus', 'Starta prov: pausad',
 
 // 15. Låsskärmen
 S('lasskarm', 'Låsskärmen (Now Playing)',
-  'Det appen sätter i Now Playing: frågan som titel, ”Earmind · Biologiprovet” under, appikonen som bild. Spela/paus = långt svar, ⏭ = kort svar, ⏮ = paus (samma kommandon som trycken).',
+  'Det appen sätter i Now Playing: frågan som titel, ”EarMind · Biologiprovet” under, appikonen som bild. Spela/paus = långt svar, ⏭ = kort svar, ⏮ = paus (samma kommandon som trycken).',
   (dark) => `<div class="phone lock ${dark ? '' : 'light2'}" style="border:0">${status()}
   <div class="ldate">fredag 13 november</div>
   <div class="ltime">9:41</div>
