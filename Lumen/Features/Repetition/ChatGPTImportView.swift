@@ -29,6 +29,7 @@ struct ChatGPTImportView: View {
     /// A line under the steps: nothing to paste, the prompt pasted instead of the answer, the month's questions used up.
     @State private var note: String?
     @State private var showsUnreadable = false
+    @State private var showsWarnings = false
     /// D151 (Kelly): the new exam's voice, chosen before the sound is made, as on "Stämmer det här?".
     @State private var voice = "A"
     @Environment(\.dismiss) private var dismiss
@@ -231,6 +232,17 @@ struct ChatGPTImportView: View {
                                         : "\(found.unreadable.count) rader kunde inte läsas och togs inte med.",
                                     isExpanded: $showsUnreadable) {
                         ForEach(Array(found.unreadable.prefix(20).enumerated()), id: \.offset) { _, line in
+                            Text(verbatim: line).font(.subheadline).foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+
+            if !found.warnings.isEmpty { // A96: kept questions with a remark ("Frågan saknade Fråga:.")
+                Section {
+                    DisclosureGroup(found.warnings.count == 1 ? "1 anmärkning" : "\(found.warnings.count) anmärkningar",
+                                    isExpanded: $showsWarnings) {
+                        ForEach(Array(found.warnings.prefix(20).enumerated()), id: \.offset) { _, line in
                             Text(verbatim: line).font(.subheadline).foregroundStyle(.secondary)
                         }
                     }

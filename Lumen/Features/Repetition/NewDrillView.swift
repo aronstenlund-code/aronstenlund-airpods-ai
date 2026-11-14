@@ -66,6 +66,7 @@ struct NewDrillView: View {
     @State private var showsHelp = false
     /// Ke50 §2: iOS has said no to the camera, so Fota sidor says what to do instead of opening a black camera.
     @State private var cameraDenied = false
+    @FocusState private var textFocused: Bool
     /// A93 (D169): "Gör med ChatGPT", from its row (the three steps) or from an answer pasted under Skriv text.
     @State private var chatGPT: ChatGPTStart?
 
@@ -389,9 +390,23 @@ struct NewDrillView: View {
 
     private var textSheet: some View {
         NavigationStack {
-            TextEditor(text: $pasted)
-                .padding(.horizontal, 12)
-                .accessibilityLabel("Text") // A95: the editor had no name
+            // Toby T21: the sheet was a blank page with no cursor. Now the keyboard comes up by itself and an
+            // empty editor says what it is for.
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $pasted)
+                    .focused($textFocused)
+                    .accessibilityLabel("Text") // A95: the editor had no name
+                if pasted.isEmpty {
+                    Text("Skriv eller klistra in text ur ditt material.")
+                        .foregroundStyle(Color(.placeholderText))
+                        .padding(.horizontal, 5)
+                        .padding(.top, 8)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
+            }
+            .padding(.horizontal, 12)
+            .task { textFocused = true }
                 .navigationTitle("Skriv text")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
