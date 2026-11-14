@@ -20,6 +20,7 @@ Per prov (lista):
   python -I -X utf8 scripts/qa/o55_grade.py baseline [--ids a,b,c]  -> dagens /study-cards + /my-answers suggest
   python -I -X utf8 scripts/qa/o55_grade.py drill [--ids ...]       -> K45 /exam drill + drill_answers (R1–R4, R10)
 Resultat: reports/qa/data/<tid>-o55-<läge>.json"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, base64, datetime as dt, json, pathlib, re, sys, time, urllib.error, urllib.request
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -31,6 +32,8 @@ from materials_holdout import H  # noqa: E402  (O55b: hållout, inte i exams.jso
 M.update(H)
 from materials_holdout2 import H2  # noqa: E402  (O60)
 M.update(H2)
+from materials_holdout3 import H3  # noqa: E402  (O63)
+M.update(H3)
 
 URL = "https://xjczbzfkmbjdebwlccki.supabase.co"
 KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8"  # publik nyckel (finns i appen och i Kevins skript)

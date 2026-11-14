@@ -158,3 +158,5 @@
 - [x] _klar 2026-11-14 16:54 (Oscar): `reports/qa/2026-11-14-1654-oscar-o61-testlage-k62b.md` (testläget håller 5/5, D175 ok; prio 1: testanrop startar riktig ljudkö)_ **O61 – K62b testläget live, D175, skripten via testkonton** (effort: medium). Lagd av Deangelo 2026-11-14 i chatten (på Arons uppdrag).
 
 - [x] _klar 2026-11-14 18:16 (Oscar): `reports/qa/2026-11-14-1816-oscar-o62-inga-krediter.md` (JA: inga riktiga ElevenLabs-anrop från tester; K64 och K63 håller)_ **O62 – Kevins rättning av O61 fynd 1, K64 och K63** (effort: medium). Lagd av Deangelo 2026-11-14 i chatten (på Arons uppdrag).
+
+- [x] _klar 2026-11-14 19:10 (Oscar): `reports/qa/2026-11-14-1910-oscar-o63-svarskvalitet.md` (långa rätt 67/69, A 66/69, korta 64/69 för hand; R3 74 %; normal 69/69; 5 sämsta listade)_ **O63 – Svarskvaliteten i repetitionsläget, 6 nya hållout-prov** (effort: medium). Lagd av Deangelo 2026-11-14 i chatten (på Arons uppdrag).
