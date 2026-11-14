@@ -242,7 +242,9 @@ extension RepetitionModel {
     /// Saves a new exam, or adds to `drill` (questions it already has are left out). The sound is made as for any
     /// saved exam. Nil = the month's questions are used up (D155), nothing is saved.
     @discardableResult
-    func saveImport(_ found: ChatGPTImport, title: String, grade: StudyProfile.Grade?, into drill: Drill?) -> Drill? {
+    /// `voice` (D151): "A", "B" or "C" for a new exam, locked at this first save; ignored when adding to `drill`.
+    func saveImport(_ found: ChatGPTImport, title: String, grade: StudyProfile.Grade?, voice: String? = nil,
+                    into drill: Drill?) -> Drill? {
         if let quota, quota.left == 0 { return nil }
         if let grade { preferredGrade = grade }
         if var existing = drill.flatMap({ store.drill($0.id) }) ?? drill {
@@ -251,9 +253,10 @@ extension RepetitionModel {
             return save(existing)
         }
         let name = title.trimmingCharacters(in: .whitespaces)
-        let made = Drill(title: name.isEmpty ? "Nytt prov" : name,
+        var made = Drill(title: name.isEmpty ? "Nytt prov" : name,
                          summary: DrillSummary(subject: "", grade: grade.map { GradeChoice.label($0) } ?? "", covers: ""),
                          items: found.items, questionCount: found.items.count)
+        made.voiceModel = voice
         return save(made)
     }
 

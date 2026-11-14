@@ -3,7 +3,8 @@
 name: Lumen
 options:
   bundleIdPrefix: com.rsolutions
-  developmentLanguage: en
+  # Kelly (A93): system labels in Swedish (PasteButton "Klistra in", Tillbaka, Klar, Sök); the app is Swedish only.
+  developmentLanguage: sv
   deploymentTarget:
     iOS: "26.0"
   createIntermediateGroups: true
