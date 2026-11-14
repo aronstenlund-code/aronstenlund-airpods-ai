@@ -20,3 +20,5 @@ Kortast möjligt. Svara "ja"/"nej"/eget val i chatten med Deangelo.
 - ~~H1~~ **Ja (Aron 17:30):** det långa svaret börjar alltid med det korta svaret som första mening.
 - ~~H2~~ **Beslutat (D146):** långa svar högst cirka 90 ord som standard (ett komplett A+-svar går före ordgränsen), 20 frågor som standard; användaren kan ändra båda.
 - ~~H3~~ **Godkänt (D146):** blindtest A/B/C, cirka 2,50 kr. Kevin K48, Deangelo skickar filerna utan facit.
+
+- **K62 ElevenLabs-krediterna 2026-11: under 20 % kvar** (ElevenLabs-krediter (K62):** 183 av 65 000 kvar (0%)  senast sett 2026-11-14 13:01 UTC (ur felmeddelandet: nyckeln saknar User Read), se reports/storage/latest.md). Testning använder aldrig krediter (D180). Fyll på eller byt plan: elevenlabs.io › Subscription. Att låta servern läsa saldot: elevenlabs.io › Developers › API Keys › nyckeln › User: Read.
