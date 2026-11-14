@@ -15,21 +15,25 @@ struct WelcomeView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                AppMark(size: isLarge ? 48 : 72) // the app icon (D139)
-                    .padding(.top, isLarge ? 16 : 56)
+                // With the largest text the icon gives way to the words, so the first row starts above the bar
+                // with Fortsätt on an iPhone SE (Kelly G2, 10:51).
+                if !isLarge {
+                    AppMark(size: 72) // the app icon (D139)
+                        .padding(.top, 56)
+                }
                 Text("Välkommen till Earmind")
                     .font(.largeTitle.bold())
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
-                    .padding(.top, 20)
+                    .padding(.top, isLarge ? 8 : 20)
                 VStack(alignment: .leading, spacing: isLarge ? 20 : 26) {
                     row("camera", "Fota materialet", "Earmind gör provfrågor med A-svar.")
                     row("waveform", "Lyssna i dina AirPods", "Frågorna läses upp. Tryck för svaret.")
                     row("book.closed", "Plugga utan mobilen", "Telefonen kan ligga i fickan.")
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top, isLarge ? 24 : 36)
+                .padding(.top, isLarge ? 16 : 36)
                 .padding(.bottom, 24)
             }
             .padding(.horizontal, isLarge ? 20 : 36)

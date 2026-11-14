@@ -170,15 +170,7 @@ struct NewDrillView: View {
                 }
             }
 
-            if isFirstStart {
-                Section { // A94: one line of what to do, as text above the list and not a card
-                    Text("Börja med materialet till ditt nästa prov.")
-                        .foregroundStyle(.secondary)
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
-                }
-                .listSectionSpacing(.compact)
-            } else {
+            if !isFirstStart {
                 Section {
                     TextField("Provets namn", text: $title)
                 }
@@ -229,7 +221,19 @@ struct NewDrillView: View {
                     }
                 }
             } header: {
-                Text("Material")
+                if isFirstStart {
+                    // A94: one line of what to do, in the first section's header so it sits right under the
+                    // navigation bar (Kelly 10:51: a row of its own left a gap above it).
+                    VStack(alignment: .leading, spacing: 14) {
+                        Text("Börja med materialet till ditt nästa prov.")
+                            .font(.body)
+                            .fontWeight(.regular)
+                            .textCase(nil)
+                        Text("Material")
+                    }
+                } else {
+                    Text("Material")
+                }
             } footer: {
                 Text(isFirstStart ? "iOS frågar om kameran första gången. Fotona sparas inte."
                                   : "Foton, dokument och text skickas en gång för att göra frågorna och sparas inte.")
