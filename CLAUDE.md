@@ -17,6 +17,7 @@ This repo is the single source of truth for the Lumen (codename) iOS app: an AI 
 4. Do not redo completed work. If something in the assignment conflicts with the docs, stop and report it instead of guessing.
 
 ## While working
+- **ElevenLabs credits are never used for testing (owner rule, D180).** No session, test, CI workflow, nightly eval or test account may call ElevenLabs (TTS, Scribe/STT, voice-lab). Tests use the fake voice/transcript paths. Only real users and the owner's own use on his phone may spend credits. A test that needs real ElevenLabs output requires an explicit yes from Aron in chat first.
 - Swift 6, strict concurrency, iOS 26 minimum, SwiftUI + Observation.
 - No third-party runtime dependencies without an entry in `docs/DECISIONS.md`.
 - Never put API keys, tokens or secrets in the app or in the repo.
