@@ -1,0 +1,142 @@
+[
+ {
+  "q": "vad händer om någon ringer mig under provet",
+  "run": 1,
+  "answer": "Under provet pausar samtal. Provet fortsätter när du trycker på AirPods igen.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag höra svaret på en fråga",
+  "run": 1,
+  "answer": "Tryck 1 gång på AirPods medan frågan spelas för att höra det korta svaret. Tryck 2 gånger för ett kort svar på en till två meningar. Du kan också starta provet med Starta prov och lyssna på frågorna i ordning.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "kan appen påminna mig att plugga varje dag",
+  "run": 1,
+  "answer": "Ja, Earmind kan påminna dig via påminnelser, men du måste tillåta det i appen först. Be Earmind om en påminnelse, till exempel ”Påminn mig att plugga varje dag kl 18”.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur byter jag språk i appen till engelska",
+  "run": 1,
+  "answer": "Det kan jag inte svara på.",
+  "in_scope": false,
+  "error": null
+ },
+ {
+  "q": "vad händer om någon ringer mig under provet",
+  "run": 2,
+  "answer": "Under ett prov pausar samtal provet. Det fortsätter när du trycker igen.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag höra svaret på en fråga",
+  "run": 2,
+  "answer": "Tryck 1 gång på en AirPod medan frågan spelas, så hör du frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Börja med att trycka Starta prov på provet.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "kan appen påminna mig att plugga varje dag",
+  "run": 2,
+  "answer": "Ja, Earmind kan skicka påminnelser. Du behöver tillåta det i appen först.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur byter jag språk i appen till engelska",
+  "run": 2,
+  "answer": "Det kan jag inte svara på.",
+  "in_scope": false,
+  "error": null
+ },
+ {
+  "q": "vad händer om någon ringer mig under provet",
+  "run": 3,
+  "answer": "Under ett prov pausar samtal provet. Det fortsätter när du trycker igen.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag höra svaret på en fråga",
+  "run": 3,
+  "answer": "Tryck Starta prov. Earmind läser en fråga och väntar en stund så att du kan tänka. Tryck 1 gång på en AirPod för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "kan appen påminna mig att plugga varje dag",
+  "run": 3,
+  "answer": "Ja, Earmind kan påminna dig via Påminnelser, men du behöver tillåta det i appen först.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur byter jag språk i appen till engelska",
+  "run": 3,
+  "answer": "Det kan jag inte svara på.",
+  "in_scope": false,
+  "error": null
+ },
+ {
+  "q": "vad händer om någon ringer mig under provet",
+  "run": 4,
+  "answer": "Under provet pausar du inte automatiskt vid samtal, men Earmind pausar när ett samtal kommer in. Provet fortsätter när du trycker på AirPods igen. Vill du att samtalet ska gå före provet, avsluta provet först med Avsluta.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag höra svaret på en fråga",
+  "run": 4,
+  "answer": "Tryck 1 gång medan frågan spelas för det korta svaret. Tryck 2 gånger för ett kort svar på en till två meningar. Vill du höra det långa svaret trycker du på AirPods som du har ställt in för det. Det fungerar utan att du rör telefonen.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "kan appen påminna mig att plugga varje dag",
+  "run": 4,
+  "answer": "Ja, Earmind kan påminna dig via Påminnelser, men du behöver tillåta det i appen först. Be Earmind om en påminnelse, till exempel ”Påminn mig att plugga varje dag kl 18”.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur byter jag språk i appen till engelska",
+  "run": 4,
+  "answer": "Det kan jag inte svara på.",
+  "in_scope": false,
+  "error": null
+ },
+ {
+  "q": "vad händer om någon ringer mig under provet",
+  "run": 5,
+  "answer": "Under provet pausar samtal provet. Det fortsätter när du trycker igen.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag höra svaret på en fråga",
+  "run": 5,
+  "answer": "Tryck 1 gång på en AirPod under frågan för att höra det korta svaret. Tryck 2 gånger för ett kort svar på en till två meningar, eller tryck 2 gånger för det långa svaret enligt din inställning. Du kan också trycka på Avsluta på telefonen när du vill stoppa.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "kan appen påminna mig att plugga varje dag",
+  "run": 5,
+  "answer": "Ja, Earmind kan skicka påminnelser. Du behöver tillåta det i appen först. Be Earmind om en påminnelse, till exempel \"Påminn mig att plugga varje dag kl 17\", och det sätts upp.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur byter jag språk i appen till engelska",
+  "run": 5,
+  "answer": "Det kan jag inte svara på.",
+  "in_scope": false,
+  "error": null
+ }
+]

@@ -1,0 +1,98 @@
+[
+ {
+  "q": "hur får jag det långa svaret",
+  "run": 1,
+  "answer": "Det långa svaret får du med trycket 1 gång under frågan, men det är förstaposten i dina AirPods. Med trycket 2 gånger får du ett kort svar på en till två meningar. För att höra det långa svaret efter frågan trycker du 1 gång under frågan. Har du äldre AirPods med dubbeltryck per lur ställer du höger lur på Spela/pausa under Inställningar › Bluetooth.",
+  "in_scope": true
+ },
+ {
+  "q": "vad gör ett tryck på airpods",
+  "run": 1,
+  "answer": "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true
+ },
+ {
+  "q": "hur hoppar jag över en fråga",
+  "run": 1,
+  "answer": "Det kan jag inte svara på.",
+  "in_scope": false
+ },
+ {
+  "q": "hur får jag det korta svaret",
+  "run": 1,
+  "answer": "Tryck 2 gånger på en AirPod medan frågan spelas. Då får du ett kort svar på en till två meningar. Ett tryck ger frågans A-svar i stället.",
+  "in_scope": true
+ },
+ {
+  "q": "vad händer om jag trycker 3 gånger",
+  "run": 1,
+  "answer": "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true
+ },
+ {
+  "q": "hur styr jag med airpods",
+  "run": 1,
+  "answer": "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true
+ },
+ {
+  "q": "vilka tryck finns det",
+  "run": 1,
+  "answer": "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.",
+  "in_scope": true
+ },
+ {
+  "q": "kan jag gå tillbaka till förra frågan",
+  "run": 1,
+  "answer": "Det kan jag inte svara på.",
+  "in_scope": false
+ },
+ {
+  "q": "hur får jag det långa svaret",
+  "run": 2,
+  "answer": "Det långa svaret får du med ett dubbeltryck på en AirPod under provet. Tryck 2 gånger medan frågan spelas. Det korta svaret får du med 1 tryck. Om du använder äldre AirPods med dubbeltryck per lur ställer du in höger lur på Spela/pausa under Inställningar › Bluetooth.",
+  "in_scope": true
+ },
+ {
+  "q": "vad gör ett tryck på airpods",
+  "run": 2,
+  "answer": "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true
+ },
+ {
+  "q": "hur hoppar jag över en fråga",
+  "run": 2,
+  "answer": "Det kan jag inte svara på.",
+  "in_scope": false
+ },
+ {
+  "q": "hur får jag det korta svaret",
+  "run": 2,
+  "answer": "Under Starta prov trycker du 2 gånger på en AirPod medan frågan spelas. Då får du ett kort svar på en till två meningar. Trycker du 1 gång får du frågans A-svar.",
+  "in_scope": true
+ },
+ {
+  "q": "vad händer om jag trycker 3 gånger",
+  "run": 2,
+  "answer": "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true
+ },
+ {
+  "q": "hur styr jag med airpods",
+  "run": 2,
+  "answer": "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true
+ },
+ {
+  "q": "vilka tryck finns det",
+  "run": 2,
+  "answer": "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.",
+  "in_scope": true
+ },
+ {
+  "q": "kan jag gå tillbaka till förra frågan",
+  "run": 2,
+  "answer": "Det kan jag inte svara på.",
+  "in_scope": false
+ }
+]
