@@ -21,3 +21,6 @@ aldrig med en symbol eller en siffra).
 
 ## Test
 Simulatorbilder, inte telefon. Uppläsningen (talen som ord) har jag inte lyssnat på.
+
+## Tillägg: F1 stängd (CI 43640282082, `reports/2026-11-14-a99-a100-bilder/a102-f1.jpg`)
+Korta svar som bara är tal eller formel visas utan punkt ("a² + b² = c²", "A = π · r²", "1856"), också i redigeringens fotnot, och hela meningar behåller sin punkt. F2 (hur servern skriver svaret) ligger kvar hos Kevin.
