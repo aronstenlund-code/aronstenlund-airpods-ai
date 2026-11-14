@@ -67,7 +67,10 @@ export function parseHelp(text: string): { in_scope: boolean; answer: string } {
   const m = /\{[\s\S]*\}/.exec(text);
   try {
     const j = JSON.parse(m?.[0] ?? "{}");
-    const answer = typeof j.answer === "string" ? j.answer.replace(/\*\*/g, "").trim().slice(0, 1200) : "";
+    // K60 (Oscar O58): no intro line ("Så här börjar du:") before numbered steps, so 5 steps stay 5 sentences
+    const answer = typeof j.answer === "string"
+      ? j.answer.replace(/\*\*/g, "").trim().replace(/^[^\n.!?]{0,60}:\s*(?=1\.\s)/u, "").slice(0, 1200)
+      : "";
     if (j.in_scope === false) return { in_scope: false, answer: OUT_OF_SCOPE };
     if (answer) return { in_scope: true, answer };
   } catch { /* falls through */ }

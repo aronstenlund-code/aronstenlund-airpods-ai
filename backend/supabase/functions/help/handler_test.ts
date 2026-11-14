@@ -42,6 +42,7 @@ Deno.test("K57 outside the app: exactly 'Det kan jag inte svara på.' with a hin
   const j = await (await mk(p)(post({ question: "Vad är fotosyntes?" }))).json();
   assertEquals([j.answer, j.in_scope, typeof j.hint], [OUT_OF_SCOPE, false, "string"]);
   assertEquals(parseHelp("trasigt"), { in_scope: true, answer: UNKNOWN });
+  assertEquals(parseHelp(JSON.stringify({ in_scope: true, answer: "Så här börjar du:\n1. Tryck Nytt prov." })).answer, "1. Tryck Nytt prov.");
   const ok = llm(() => JSON.stringify({ in_scope: true, answer: "Tryck **Dela** på provet." }));
   assertEquals((await (await mk(ok)(post({ question: "Hur delar jag?" }))).json()).answer, "Tryck Dela på provet.");
   assertEquals((await mk(ok)(post({}))).status, 400);
