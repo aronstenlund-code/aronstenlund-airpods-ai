@@ -23,20 +23,35 @@ struct ChatGPTImport: Equatable, Sendable {
 
     /// One question being read: its answer as paragraphs (A96: a blank line no longer ends the answer).
     private struct Reading {
+        struct Paragraph {
+            var line: Int
+            var text: [String]
+            /// Came after a blank line (only such a paragraph can be the sign-off, rule 1).
+            var afterBlankLine: Bool
+        }
+        enum State { case question, answer, closed }
+
         var line: Int
         var question: String
-        var paragraphs: [(line: Int, text: [String])] = []
-        var answerStarted = false
-        var afterBlankLine = false
+        var paragraphs: [Paragraph] = []
+        var state = State.question
+        var blankLine = false
 
-        mutating func add(_ text: String, at line: Int) {
-            if paragraphs.isEmpty || afterBlankLine {
-                paragraphs.append((line, [text]))
+        /// "Svar:" starts a paragraph of its own (also a second "Svar:", and after a heading closed the answer).
+        mutating func answer(_ text: String, at line: Int) {
+            paragraphs.append(Paragraph(line: line, text: text.isEmpty ? [] : [text], afterBlankLine: false))
+            state = .answer
+            blankLine = false
+        }
+
+        /// A line without a label inside the answer: on over more lines, and over a blank line (rule 1).
+        mutating func goOn(_ text: String, at line: Int) {
+            if blankLine || paragraphs.isEmpty {
+                paragraphs.append(Paragraph(line: line, text: [text], afterBlankLine: blankLine))
             } else {
                 paragraphs[paragraphs.count - 1].text.append(text)
             }
-            answerStarted = true
-            afterBlankLine = false
+            blankLine = false
         }
     }
 
@@ -63,10 +78,12 @@ struct ChatGPTImport: Equatable, Sendable {
             // Rule 1: after the last answer, a paragraph of its own that ends in "?" or "!" is ChatGPT's sign-off
             // ("Lycka till på provet! Vill du att jag gör fler frågor?"), not part of the answer.
             if atEnd {
-                while reading.paragraphs.count > 1, let last = reading.paragraphs.last {
-                    let text = last.text.joined(separator: " ").trimmingCharacters(in: .whitespaces)
-                    guard text.hasSuffix("?") || text.hasSuffix("!") else { break }
+                while reading.paragraphs.count > 1, let last = reading.paragraphs.last, last.afterBlankLine {
+                    let text = clean(last.text.joined(separator: " "), limit: Int.max)
+                    let end = text.reversed().first { !"\"”')".contains($0) }
+                    guard let end, end == "?" || end == "!" else { break }
                     skip(last.line, text, "Avslutning, inte en del av svaret.")
+                    warn(last.line, "Texten efter sista svaret lästes inte in.")
                     reading.paragraphs.removeLast()
                 }
             }
@@ -111,7 +128,7 @@ struct ChatGPTImport: Equatable, Sendable {
                     flush()
                     current = Reading(line: number, question: rest)
                 } else if current != nil {
-                    current?.add(rest, at: number)
+                    current?.answer(rest, at: number)
                 } else {
                     skip(number, line, "Ett svar utan fråga före.")
                 }
@@ -119,33 +136,48 @@ struct ChatGPTImport: Equatable, Sendable {
             }
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             if trimmed.isEmpty {
-                if current?.answerStarted == true { current?.afterBlankLine = true }
+                current?.blankLine = true
                 continue
             }
-            // Rule 2: a heading, a code fence or a rule is never answer text, and it ends the answer.
+            // Rule 2: a heading, a code fence or a rule is never answer text. It ends the answer, which stays open
+            // for the sign-off check if it was the last one (as Kevin's `closed`).
             if isFormatting(trimmed) {
                 skip(number, trimmed, "Rubrik eller formatering, inte en del av svaret.")
-                if current?.answerStarted == true { flush() }
+                if current?.state == .answer { current?.state = .closed }
                 continue
             }
             // Rule 3: a question without "Fråga:" ("**1. Vad är magma?**") right before a "Svar:" line.
-            if current == nil || current?.answerStarted == true, index + 1 < lines.count,
+            if current?.state != .question, index + 1 < lines.count,
                label(lines[index + 1])?.0 == .answer, let question = unlabelledQuestion(trimmed) {
                 flush()
                 current = Reading(line: number, question: question)
                 warn(number, "Frågan saknade Fråga:.")
                 continue
             }
-            if current?.answerStarted == true {
-                current?.add(trimmed, at: number) // over more lines, and over a blank line (rule 1)
-            } else if current != nil {
-                current?.question += " " + trimmed // the question wrapped before its answer
+            if current?.state == .answer {
+                current?.goOn(withoutBullet(trimmed), at: number)
+            } else if current?.state == .question, current?.blankLine == false {
+                current?.question += " " + trimmed // the question went on over a second line
             } else {
                 skip(number, trimmed, "Raden börjar inte med Fråga: eller Svar:.")
             }
         }
         flush(atEnd: true)
         return items.isEmpty ? nil : ChatGPTImport(items: items, unreadable: unreadable, warnings: warnings)
+    }
+
+    /// A line inside the answer that ChatGPT made a list item: "- …", "• …", "* …", "1. …".
+    private static func withoutBullet(_ line: String) -> String {
+        var s = Substring(line)
+        if let first = s.first, "-•*".contains(first), s.dropFirst().first?.isWhitespace == true {
+            return String(s.dropFirst().drop { $0.isWhitespace })
+        }
+        let digits = s.prefix { $0.isNumber }
+        if !digits.isEmpty, let after = s.dropFirst(digits.count).first, ".)".contains(after),
+           s.dropFirst(digits.count + 1).first?.isWhitespace == true {
+            s = s.dropFirst(digits.count + 1).drop { $0.isWhitespace }
+        }
+        return String(s)
     }
 
     /// "### Fråga 2", "Fråga 2", "```", "---", "***".

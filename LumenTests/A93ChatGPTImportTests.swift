@@ -145,3 +145,18 @@ struct T15bFindingsTests {
 
 /// A96: finds the test bundle, where `o58-cases.json` is copied (project.yml).
 private final class FixtureToken {}
+
+/// A96: Kevin's `closed` state – a heading or fence after the last answer ends it but the sign-off is still left out.
+struct A96ImportEdgeTests {
+    @Test func signOffBeforeAFenceIsLeftOut() throws {
+        let text = "Fråga: Vad är lava?\nSvar: Lava är smält berg på ytan.\n\nLycka till! Vill du ha fler?\n```"
+        let found = try #require(ChatGPTImport.read(text))
+        #expect(found.items.first?.long == "Lava är smält berg på ytan.")
+        #expect(found.unreadable.contains { $0.contains("Avslutning") })
+    }
+
+    @Test func listItemsInsideTheAnswerLoseTheirBullet() throws {
+        let found = try #require(ChatGPTImport.read("Fråga: Vad finns i en cell?\nSvar: En cell har flera delar.\n- Cellkärnan styr cellen.\n- Mitokondrierna ger energi."))
+        #expect(found.items.first?.long == "En cell har flera delar. Cellkärnan styr cellen. Mitokondrierna ger energi.")
+    }
+}
