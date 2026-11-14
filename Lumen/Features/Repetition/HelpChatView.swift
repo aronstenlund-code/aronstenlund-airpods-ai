@@ -9,6 +9,8 @@ struct HelpChatView: View {
     let model: RepetitionModel
     /// A question offered first: "Hur fungerar trycken?" from the controls, "Vad kan jag fota?" from Nytt prov.
     var suggestion: String?
+    /// Sends `suggestion` at once when the sheet opens (a caller that already knows the question, and the scenes).
+    var askNow = false
     /// Opens the place an answer points at ("Öppna Styr med dina AirPods"). Without it the link is not shown.
     var onOpen: ((HelpPlace) -> Void)?
     @Environment(\.dismiss) private var dismiss
@@ -45,6 +47,9 @@ struct HelpChatView: View {
             }
             .navigationDestination(isPresented: $showsTry) {
                 HelpTryView(model: model) { dismiss() }
+            }
+            .onAppear {
+                if askNow, messages.isEmpty, let suggestion { ask(suggestion) }
             }
         }
     }
