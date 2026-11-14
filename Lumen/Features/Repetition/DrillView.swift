@@ -261,7 +261,11 @@ struct DrillView: View {
     private func footnote(_ drill: Drill) -> String {
         if editMode.isEditing { return "Dra för att ändra ordning. Ordningen är den du hör." }
         let p = model.progress(drill)
-        if p.total == 0 || p.ready < p.total { return "Delas när ljudet är klart (\(p.ready) av \(p.total))." }
+        if p.total == 0 || p.ready < p.total {
+            // A100 (K62): no counter that stands still when the sound cannot be made.
+            if model.audio.problem(for: drill) != nil { return "Delas när ljudet är klart." }
+            return "Delas när ljudet är klart (\(p.ready) av \(p.total))."
+        }
         return "Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis Earmind-konto."
     }
 
