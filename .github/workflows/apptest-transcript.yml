@@ -1,0 +1,52 @@
+name: Apptest transcript (T17c, no ElevenLabs)
+
+# Toby 1's T17c (D180): T16, T17, fynd 8 and A97 with recorded or written transcripts; Scribe off, never ElevenLabs.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Transcript/**"
+      - "AppTests/E2E/Audio/transcript-cases.json"
+      - "scripts/apptest/transcript*"
+      - ".github/workflows/apptest-transcript.yml"
+
+concurrency:
+  group: apptest-transcript-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  transcript:
+    name: T17c transcripts (Simulator, live)
+    runs-on: macos-26
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Transcript
+        run: |
+          bash scripts/apptest/transcript.sh
+          STATUS=$?
+          cat apptest-out/transcript/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-transcript
+          path: |
+            apptest-out/transcript
+            !apptest-out/transcript/logs/*.xcresult
+          retention-days: 14

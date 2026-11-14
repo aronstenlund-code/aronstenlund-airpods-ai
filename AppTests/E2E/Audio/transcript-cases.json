@@ -1,0 +1,3540 @@
+{
+ "sets": {
+  "t17-run1": [
+   {
+    "id": "w01",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, berätta om Stockholm.",
+    "heard": [
+     "Lumen, berätta om Stockholm."
+    ]
+   },
+   {
+    "id": "w02",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur många planeter finns det?",
+    "heard": [
+     "Lumen, hur många planeter finns det?"
+    ]
+   },
+   {
+    "id": "w03",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, förklara fotosyntes kort.",
+    "heard": [
+     "Lumen, förklara fotosyntes, kort."
+    ]
+   },
+   {
+    "id": "w04",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur långt är ett maraton?",
+    "heard": [
+     "Lumen, hur långt är ett maraton?"
+    ]
+   },
+   {
+    "id": "w05",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är huvudstaden i Australien?",
+    "heard": [
+     "Lumen, vad är huvudstaden i Australien?"
+    ]
+   },
+   {
+    "id": "w06",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad betyder empati?",
+    "heard": [
+     "Lumen, vad betyder empati?"
+    ]
+   },
+   {
+    "id": "w07",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur lång är Nilen?",
+    "heard": [
+     "Lumen, hur lång är Nilen?"
+    ]
+   },
+   {
+    "id": "w08",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vem var August Strindberg?",
+    "heard": [
+     "Lumen, vem var August Strindberg?"
+    ]
+   },
+   {
+    "id": "w09",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är tjugotre gånger fyra?",
+    "heard": [
+     "Lumen, vad är tjugotre gånger fyra?"
+    ]
+   },
+   {
+    "id": "w10",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Hej Lumen, hur hög är Mount Everest?",
+    "heard": [
+     "Hej, Lumen.",
+     "Hur hög är man ont är det?"
+    ]
+   },
+   {
+    "id": "w11",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Okej Lumen, berätta om en vulkan.",
+    "heard": [
+     "Okej, Lumen.",
+     "Berätta om en vulkan."
+    ]
+   },
+   {
+    "id": "w12",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är cellandning?",
+    "heard": [
+     "Lumen, vad är cellandning?"
+    ]
+   },
+   {
+    "id": "w13",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur långt bort är månen?",
+    "heard": [
+     "Lumen, hur långt borta är månen?"
+    ]
+   },
+   {
+    "id": "w14",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är demokrati?",
+    "heard": [
+     "Lumen, vad är demokrati?"
+    ]
+   },
+   {
+    "id": "w15",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, när sjönk regalskeppet Vasa?",
+    "heard": [
+     "Lumen, när sjönk regalskeppet Vasa?"
+    ]
+   },
+   {
+    "id": "w16",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, förklara Pythagoras sats.",
+    "heard": [
+     "Lumen, förklara Pythagoras sats."
+    ]
+   },
+   {
+    "id": "w17",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är DNA?",
+    "heard": [
+     "Lumen, vad är DNA?"
+    ]
+   },
+   {
+    "id": "w18",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur länge lever en kanin?",
+    "heard": [
+     "Lumen, hur länge lever en kanin?"
+    ]
+   },
+   {
+    "id": "w19",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, ge mig tre fakta om vikingar.",
+    "heard": [
+     "Lumen, ge mig tre fakta om vikingar."
+    ]
+   },
+   {
+    "id": "w20",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad betyder inflation?",
+    "heard": [
+     "Lumen, vad betyder inflation?"
+    ]
+   },
+   {
+    "id": "w21",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur snabbt färdas ljus?",
+    "heard": [
+     "Lumen, hur snabbt färdas ljus?"
+    ]
+   },
+   {
+    "id": "w22",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur stort är Grönland?",
+    "heard": [
+     "Lumen, hur stor är Grönland?"
+    ]
+   },
+   {
+    "id": "w23",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad är syre?",
+    "heard": [
+     "Lumen, vad är syre?"
+    ]
+   },
+   {
+    "id": "w24",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vem var Isaac Newton?",
+    "heard": [
+     "Lumen, vem var Isaac Newton?"
+    ]
+   },
+   {
+    "id": "w25",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, varför ökar koldioxiden?",
+    "heard": [
+     "Lumen, varför ökar koldioxiden?"
+    ]
+   },
+   {
+    "id": "w26",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "w27",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, förklara evolution enkelt.",
+    "heard": [
+     "Lumen, förklara evolution enkelt."
+    ]
+   },
+   {
+    "id": "w28",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad heter hund på franska?",
+    "heard": [
+     "Lumen, vad heter hund på franska?"
+    ]
+   },
+   {
+    "id": "w29",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vid hur många grader kokar vatten?",
+    "heard": [
+     "Lumen, i hur många grader kokar vatten?"
+    ]
+   },
+   {
+    "id": "w30",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur fungerar hjärtat?",
+    "heard": [
+     "Lumen, hur fungerar hjärtat?"
+    ]
+   },
+   {
+    "id": "w31",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, när föll Berlinmuren?",
+    "heard": [
+     "Lumen, när faller bollmuren?"
+    ]
+   },
+   {
+    "id": "w32",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad är en atom?",
+    "heard": [
+     "Lumen, oj, en atom."
+    ]
+   },
+   {
+    "id": "w33",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Hej Lumen, hur varm är solen?",
+    "heard": [
+     "Hej Lumen, hur var med solen?"
+    ]
+   },
+   {
+    "id": "w34",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad är ekvatorn?",
+    "heard": [
+     "Lumen, vad är kvatorn?"
+    ]
+   },
+   {
+    "id": "w35",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad var reformationen?",
+    "heard": [
+     "Lumen, vad var det formationen?"
+    ]
+   },
+   {
+    "id": "w36",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad är gravitation?",
+    "heard": [
+     "Lumen, vad är gravitationen?"
+    ]
+   },
+   {
+    "id": "w37",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad är huvudstaden i Japan?",
+    "heard": [
+     "Det finns flera faror i den här verkligheten."
+    ]
+   },
+   {
+    "id": "w38",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, varför är bin viktiga?",
+    "heard": [
+     "Det finns fortfarande"
+    ]
+   },
+   {
+    "id": "w39",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad är ett verb?",
+    "heard": []
+   },
+   {
+    "id": "w40",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur uppstår norrsken?",
+    "heard": [
+     "Lumen också.",
+     "Jag har inte hört något sken."
+    ]
+   },
+   {
+    "id": "w41",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur räknar man procent?",
+    "heard": [
+     "Det finns fortfarande"
+    ]
+   },
+   {
+    "id": "w42",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vem skrev Hamlet?",
+    "heard": [
+     "en mängd människor som lever i ett statligt-"
+    ]
+   },
+   {
+    "id": "w43",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur länge har hajar funnits?",
+    "heard": [
+     "Du menar staten Lumen?",
+     "Hur länge har han funnits?"
+    ]
+   },
+   {
+    "id": "w44",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur många sitter i riksdagen?",
+    "heard": [
+     "Det finns fortfarande Lumen i Sverige.",
+     "Hur många sitter i riksdagen?"
+    ]
+   },
+   {
+    "id": "w45",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur bildas en regnbåge?",
+    "heard": [
+     "Prata det längre och lägre."
+    ]
+   },
+   {
+    "id": "w46",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad gör mitokondrien?",
+    "heard": [
+     "Lumen, vad gör mitokondrierna?"
+    ]
+   },
+   {
+    "id": "w47",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Okej Lumen, hur många bor i Kina?",
+    "heard": [
+     "Okej, Lumen, hur många bomb i Kina"
+    ]
+   },
+   {
+    "id": "w48",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad orsakar en jordbävning?",
+    "heard": []
+   },
+   {
+    "id": "w49",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad gör insulin?",
+    "heard": [
+     "?",
+     "Det finns hotfaror i vår regering och i riksdagen.",
+     "Alla lösen från 27-"
+    ]
+   },
+   {
+    "id": "w50",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, när började första världskriget?",
+    "heard": [
+     "Lumen, när började första världskriget?"
+    ]
+   },
+   {
+    "id": "n01",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Jag gick till affären i morse.",
+    "heard": [
+     "Jag gick till affären i morse."
+    ]
+   },
+   {
+    "id": "n02",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Bussen var sen igen i dag.",
+    "heard": [
+     "Bussen, var ser ni igen idag?"
+    ]
+   },
+   {
+    "id": "n03",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Vi ska äta pasta till middag.",
+    "heard": [
+     "Vi ska äta pasta till middag."
+    ]
+   },
+   {
+    "id": "n04",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Mina byxor ligger i lumpen.",
+    "heard": [
+     "Mina byxor ligger i lumpen."
+    ]
+   },
+   {
+    "id": "n05",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Han lade på luren utan att säga hej.",
+    "heard": [
+     "Han la på luren utan att säga hej."
+    ]
+   },
+   {
+    "id": "n06",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Limmet torkade alldeles för fort.",
+    "heard": [
+     "Lima torkade alldeles för fort."
+    ]
+   },
+   {
+    "id": "n07",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Jag läste om ljus i fysikboken.",
+    "heard": [
+     "Jag läste om ljus i fysikboken."
+    ]
+   },
+   {
+    "id": "n08",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lampan i köket har gått sönder.",
+    "heard": [
+     "Lampan i köket har gått sönder."
+    ]
+   },
+   {
+    "id": "n09",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Rummen på hotellet var små.",
+    "heard": [
+     "Rummen på hotellet var små."
+    ]
+   },
+   {
+    "id": "n10",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Tumen på linjalen är nästan borta.",
+    "heard": [
+     "Tummen på linjalen är nästan borta."
+    ]
+   },
+   {
+    "id": "n11",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Hon heter Lina och bor i Umeå.",
+    "heard": [
+     "Hon heter Lina och bor i Umeå."
+    ]
+   },
+   {
+    "id": "n12",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lugn, vi hinner till tåget.",
+    "heard": [
+     "Lugn, vi hinner till tåget."
+    ]
+   },
+   {
+    "id": "n13",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Luften är kall i dag.",
+    "heard": [
+     "Luften är kall idag."
+    ]
+   },
+   {
+    "id": "n14",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lumpen gjorde jag i Boden.",
+    "heard": [
+     "Lumpen gjorde jag i boden."
+    ]
+   },
+   {
+    "id": "n15",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Vi tittade på en film i går kväll.",
+    "heard": [
+     "Vi tittade på en film i går kväll."
+    ]
+   },
+   {
+    "id": "n16",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Kan du skicka saltet?",
+    "heard": [
+     "Kan du skicka saltet?"
+    ]
+   },
+   {
+    "id": "n17",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Jag måste pausa och dricka vatten.",
+    "heard": [
+     "Jag måste pausa och dricka vatten."
+    ]
+   },
+   {
+    "id": "n18",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Han sa att han skulle byta läge på jobbet.",
+    "heard": [
+     "Han sa att han skulle byta läge på jobbet."
+    ]
+   },
+   {
+    "id": "n19",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lumpna ursäkter hjälper inte.",
+    "heard": [
+     "Lumpna ursäkter hjälper inte."
+    ]
+   },
+   {
+    "id": "n20",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Det var lummigt och varmt i parken.",
+    "heard": [
+     "Det var lumit och varmt i parken."
+    ]
+   },
+   {
+    "id": "n21",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Min syster börjar skolan i augusti.",
+    "heard": [
+     "Min syster börjar skolan i augusti."
+    ]
+   },
+   {
+    "id": "n22",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lunchen var god i dag.",
+    "heard": [
+     "Lunchen var god idag."
+    ]
+   },
+   {
+    "id": "n23",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Vi ses på måndag.",
+    "heard": [
+     "Vi ses på måndag."
+    ]
+   },
+   {
+    "id": "n24",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lusen kom tillbaka efter en vecka.",
+    "heard": [
+     "Lusen kom tillbaka efter en vecka."
+    ]
+   },
+   {
+    "id": "n25",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Jag har lånat en bok om Rom.",
+    "heard": [
+     "Jag har lånat en bok om Ron."
+    ]
+   },
+   {
+    "id": "n26",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lumpen var den bästa tiden i mitt liv.",
+    "heard": [
+     "Lumpen var den bästa tiden i mitt liv."
+    ]
+   },
+   {
+    "id": "n27",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Det regnar nog i morgon.",
+    "heard": [
+     "Det regnar nog imorgon."
+    ]
+   },
+   {
+    "id": "n28",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Kaffet är slut igen.",
+    "heard": [
+     "Kaffe till slut igen."
+    ]
+   },
+   {
+    "id": "n29",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lugna ner dig lite.",
+    "heard": [
+     "Lugna ner dig lite."
+    ]
+   },
+   {
+    "id": "n30",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Han spelar fotboll varje tisdag.",
+    "heard": [
+     "Han spelar fotboll varje tisdag."
+    ]
+   },
+   {
+    "id": "n31",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Vi borde åka till Lund i sommar.",
+    "heard": [
+     "Vill du åka till Lund i sommar?"
+    ]
+   },
+   {
+    "id": "n32",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Glöm inte att stänga fönstret.",
+    "heard": [
+     "Glöm inte att stänga fönstren."
+    ]
+   },
+   {
+    "id": "n33",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Watt står på kartongen.",
+    "heard": [
+     "Vad står på kartongen?"
+    ]
+   },
+   {
+    "id": "n34",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Jag tycker om att läsa på kvällen.",
+    "heard": [
+     "Jag tycker om att läsa på kvällen."
+    ]
+   },
+   {
+    "id": "n35",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Luren låg kvar på bordet.",
+    "heard": [
+     "Luren låg kvar på bordet."
+    ]
+   },
+   {
+    "id": "n36",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Mamma ringer senare i kväll.",
+    "heard": [
+     "Du pratade med en person som sa att det har blivit staden Upp-"
+    ]
+   },
+   {
+    "id": "n37",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Vi har prov i matte på fredag.",
+    "heard": [
+     "Det finns fortfarande- Vi har prov på matte på fredag."
+    ]
+   },
+   {
+    "id": "n38",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Lumpen är inte obligatorisk längre.",
+    "heard": [
+     "Det finns fortfarande- Lumen är inte obligatorisk längre."
+    ]
+   },
+   {
+    "id": "n39",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Det var många människor på torget.",
+    "heard": [
+     "Du berättade mängder med saker som inte finns i den utekundes-"
+    ]
+   },
+   {
+    "id": "n40",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Hon målade rummet blått.",
+    "heard": [
+     "Det finns fortfarande målade rum i staden i-"
+    ]
+   },
+   {
+    "id": "n41",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Limen i drinken var för sur.",
+    "heard": [
+     "Det finns fortfarande målade rum i staden i-"
+    ]
+   },
+   {
+    "id": "n42",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Han sprang hela vägen hem.",
+    "heard": [
+     "Hon berättade mängder med- Han sprang hela vägen hem."
+    ]
+   },
+   {
+    "id": "n43",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Jag fick en ny cykel i present.",
+    "heard": [
+     "Jag fick en ny cykel i present."
+    ]
+   },
+   {
+    "id": "n44",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Luckan på bilen går inte att stänga.",
+    "heard": [
+     "Det finns fortfarande mycket att göra."
+    ]
+   },
+   {
+    "id": "n45",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Hunden skäller på brevbäraren.",
+    "heard": [
+     "Hon berättade mängden som har blivit staten ut."
+    ]
+   },
+   {
+    "id": "n46",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Vi lyssnade på musik hela kvällen.",
+    "heard": [
+     "Det finns fortfarande- Vi lyssnade på musik hela kvällen."
+    ]
+   },
+   {
+    "id": "n47",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Lux är en enhet för belysning.",
+    "heard": [
+     "Det finns fortfarande- Låt se en enhet för belysning."
+    ]
+   },
+   {
+    "id": "n48",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Tåget till Göteborg är inställt.",
+    "heard": [
+     "Tåget till Göteborg är inställt."
+    ]
+   },
+   {
+    "id": "n49",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Jag behöver nya skor till vintern.",
+    "heard": [
+     "Det finns fortfarande plats i bussarna till centralstaden och till kommunen."
+    ]
+   },
+   {
+    "id": "n50",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Lunden bakom skolan är full av svamp.",
+    "heard": [
+     "Det finns fortfarande ingen bakom skolan för att svamp."
+    ]
+   }
+  ],
+  "t17-run2": [
+   {
+    "id": "w01",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, berätta om Stockholm.",
+    "heard": [
+     "Lumen, berätta om Stockholm."
+    ]
+   },
+   {
+    "id": "w02",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur många planeter finns det?",
+    "heard": [
+     "Lumen, hur många planeter finns det?"
+    ]
+   },
+   {
+    "id": "w03",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, förklara fotosyntes kort.",
+    "heard": [
+     "Lumen, förklara fotosyntes, kort."
+    ]
+   },
+   {
+    "id": "w04",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur långt är ett maraton?",
+    "heard": [
+     "Lumen, hur långt är ett maraton?"
+    ]
+   },
+   {
+    "id": "w05",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är huvudstaden i Australien?",
+    "heard": [
+     "Lumen, vad är huvudstaden i Australien?"
+    ]
+   },
+   {
+    "id": "w06",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad betyder empati?",
+    "heard": [
+     "Lumen, vad betyder empati?"
+    ]
+   },
+   {
+    "id": "w07",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur lång är Nilen?",
+    "heard": [
+     "Lumen, hur lång är Nilen?"
+    ]
+   },
+   {
+    "id": "w08",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vem var August Strindberg?",
+    "heard": [
+     "Lumen, vem var August Strindberg?"
+    ]
+   },
+   {
+    "id": "w09",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är tjugotre gånger fyra?",
+    "heard": [
+     "Lumen, vad är tjugotre gånger fyra?"
+    ]
+   },
+   {
+    "id": "w10",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Hej Lumen, hur hög är Mount Everest?",
+    "heard": [
+     "Hej Lumen, hur hög är mahon tverre?"
+    ]
+   },
+   {
+    "id": "w11",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Okej Lumen, berätta om en vulkan.",
+    "heard": [
+     "Okej, Lumen, berätta om en vulkan."
+    ]
+   },
+   {
+    "id": "w12",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är cellandning?",
+    "heard": [
+     "Lumen, vad är cellandning?"
+    ]
+   },
+   {
+    "id": "w13",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur långt bort är månen?",
+    "heard": [
+     "Lumen, hur långt borta är månen?"
+    ]
+   },
+   {
+    "id": "w14",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är demokrati?",
+    "heard": [
+     "Lumen, vad är demokrati?"
+    ]
+   },
+   {
+    "id": "w15",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, när sjönk regalskeppet Vasa?",
+    "heard": [
+     "Lumen, när sjönk regalskeppet Vasa?"
+    ]
+   },
+   {
+    "id": "w16",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, förklara Pythagoras sats.",
+    "heard": [
+     "Lumen, förklara Pythagoras sats."
+    ]
+   },
+   {
+    "id": "w17",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är DNA?",
+    "heard": [
+     "Lumen, vad är DNA?"
+    ]
+   },
+   {
+    "id": "w18",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur länge lever en kanin?",
+    "heard": [
+     "Lumen, hur länge lever en kanin?"
+    ]
+   },
+   {
+    "id": "w19",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, ge mig tre fakta om vikingar.",
+    "heard": [
+     "Lumen, ge mig tre fakta om vikingar."
+    ]
+   },
+   {
+    "id": "w20",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad betyder inflation?",
+    "heard": [
+     "Lumen, vad betyder inflation?"
+    ]
+   },
+   {
+    "id": "w21",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur snabbt färdas ljus?",
+    "heard": [
+     "Lumen, hur snabbt färdas ljus?"
+    ]
+   },
+   {
+    "id": "w22",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur stort är Grönland?",
+    "heard": [
+     "Lumen, hur stor är Grönland?"
+    ]
+   },
+   {
+    "id": "w23",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad är syre?",
+    "heard": [
+     "Lumen, vad är syre?"
+    ]
+   },
+   {
+    "id": "w24",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vem var Isaac Newton?",
+    "heard": [
+     "Lumen, vem var Isaac Newton?"
+    ]
+   },
+   {
+    "id": "w25",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, varför ökar koldioxiden?",
+    "heard": [
+     "Lumen, varför ökar koldioxiden?"
+    ]
+   },
+   {
+    "id": "w26",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "w27",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, förklara evolution enkelt.",
+    "heard": [
+     "Klar revolution enkelt."
+    ]
+   },
+   {
+    "id": "w28",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad heter hund på franska?",
+    "heard": [
+     "Lumen, vad heter hund på franska?"
+    ]
+   },
+   {
+    "id": "w29",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vid hur många grader kokar vatten?",
+    "heard": [
+     "Lumen, vid hur många grader kokar vatten?"
+    ]
+   },
+   {
+    "id": "w30",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur fungerar hjärtat?",
+    "heard": [
+     "Lumen, hur fungerar hjärtat?"
+    ]
+   },
+   {
+    "id": "w31",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, när föll Berlinmuren?",
+    "heard": [
+     "Lumen, när föll Berlinmuren?"
+    ]
+   },
+   {
+    "id": "w32",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad är en atom?",
+    "heard": [
+     "Lumen, vajernatom."
+    ]
+   },
+   {
+    "id": "w33",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Hej Lumen, hur varm är solen?",
+    "heard": [
+     "Hej Lumen, hur varm är solen?"
+    ]
+   },
+   {
+    "id": "w34",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad är ekvatorn?",
+    "heard": [
+     "Lumen, på ekvatorn."
+    ]
+   },
+   {
+    "id": "w35",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad var reformationen?",
+    "heard": [
+     "Lumen, vad var deformationen?"
+    ]
+   },
+   {
+    "id": "w36",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad är gravitation?",
+    "heard": [
+     "Lumen, vad är gravitationen?"
+    ]
+   },
+   {
+    "id": "w37",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad är huvudstaden i Japan?",
+    "heard": [
+     "Lumen, vad är huvudstaden i Japan?"
+    ]
+   },
+   {
+    "id": "w38",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, varför är bin viktiga?",
+    "heard": [
+     "Det finns två städer i Japan.",
+     "Lumen, varför är byn viktigad?"
+    ]
+   },
+   {
+    "id": "w39",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad är ett verb?",
+    "heard": [
+     "Du pratade engelska med mig, men du kommer inte igenom.",
+     "Det är för att byn är viktigad."
+    ]
+   },
+   {
+    "id": "w40",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur uppstår norrsken?",
+    "heard": [
+     "Du är enligt förare hur uppstår nordsken?"
+    ]
+   },
+   {
+    "id": "w41",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur räknar man procent?",
+    "heard": [
+     "Det finns folk för att Hur räknar man procent?"
+    ]
+   },
+   {
+    "id": "w42",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vem skrev Hamlet?",
+    "heard": [
+     "Lumen, vem styr hamnet?"
+    ]
+   },
+   {
+    "id": "w43",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur länge har hajar funnits?",
+    "heard": [
+     "Hur länge har hallar funnits?"
+    ]
+   },
+   {
+    "id": "w44",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur många sitter i riksdagen?",
+    "heard": [
+     "Det finns Lumen, hur många sitter i riksdagen?"
+    ]
+   },
+   {
+    "id": "w45",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur bildas en regnbåge?",
+    "heard": [
+     "Du pratade med Lumen, hur bildas en längbåge?"
+    ]
+   },
+   {
+    "id": "w46",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad gör mitokondrien?",
+    "heard": [
+     "Lumen, vad gör mitokondrierna?"
+    ]
+   },
+   {
+    "id": "w47",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Okej Lumen, hur många bor i Kina?",
+    "heard": [
+     "Okej, Lumen, hur många bor i Kina?"
+    ]
+   },
+   {
+    "id": "w48",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad orsakar en jordbävning?",
+    "heard": [
+     "Lumen, vad orsakar en jordbävning?"
+    ]
+   },
+   {
+    "id": "w49",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad gör insulin?",
+    "heard": [
+     "Lumen, vad gör insulin?"
+    ]
+   },
+   {
+    "id": "w50",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, när började första världskriget?",
+    "heard": [
+     "Prata det längre.",
+     "Lumen, när började första världskriget?"
+    ]
+   },
+   {
+    "id": "n01",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Jag gick till affären i morse.",
+    "heard": [
+     "Jag gick till affären i morse."
+    ]
+   },
+   {
+    "id": "n02",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Bussen var sen igen i dag.",
+    "heard": [
+     "Bussen, var ser ni igen idag?"
+    ]
+   },
+   {
+    "id": "n03",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Vi ska äta pasta till middag.",
+    "heard": [
+     "Vi ska äta pasta till middag."
+    ]
+   },
+   {
+    "id": "n04",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Mina byxor ligger i lumpen.",
+    "heard": [
+     "Mina byxor ligger i lumpen."
+    ]
+   },
+   {
+    "id": "n05",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Han lade på luren utan att säga hej.",
+    "heard": [
+     "Han la på luren utan att säga hej."
+    ]
+   },
+   {
+    "id": "n06",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Limmet torkade alldeles för fort.",
+    "heard": [
+     "Lima torkade alldeles för fort."
+    ]
+   },
+   {
+    "id": "n07",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Jag läste om ljus i fysikboken.",
+    "heard": [
+     "Jag läste om ljus i fysikboken."
+    ]
+   },
+   {
+    "id": "n08",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lampan i köket har gått sönder.",
+    "heard": [
+     "Lampan i köket har gått sönder."
+    ]
+   },
+   {
+    "id": "n09",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Rummen på hotellet var små.",
+    "heard": [
+     "Rummen på hotellet var små."
+    ]
+   },
+   {
+    "id": "n10",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Tumen på linjalen är nästan borta.",
+    "heard": [
+     "Tummen på linjalen är nästan borta."
+    ]
+   },
+   {
+    "id": "n11",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Hon heter Lina och bor i Umeå.",
+    "heard": [
+     "Hon heter Lina och bor i Umeå."
+    ]
+   },
+   {
+    "id": "n12",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lugn, vi hinner till tåget.",
+    "heard": [
+     "Lugn, vi hinner till tåget."
+    ]
+   },
+   {
+    "id": "n13",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Luften är kall i dag.",
+    "heard": [
+     "Luften är kall idag."
+    ]
+   },
+   {
+    "id": "n14",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lumpen gjorde jag i Boden.",
+    "heard": [
+     "Lumpen gjorde jag i boden."
+    ]
+   },
+   {
+    "id": "n15",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Vi tittade på en film i går kväll.",
+    "heard": [
+     "Vi tittade på en film i går kväll."
+    ]
+   },
+   {
+    "id": "n16",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Kan du skicka saltet?",
+    "heard": [
+     "Kan du skicka saltet?"
+    ]
+   },
+   {
+    "id": "n17",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Jag måste pausa och dricka vatten.",
+    "heard": [
+     "Jag måste pausa och dricka vatten."
+    ]
+   },
+   {
+    "id": "n18",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Han sa att han skulle byta läge på jobbet.",
+    "heard": [
+     "Han sa att han skulle byta läge på jobbet."
+    ]
+   },
+   {
+    "id": "n19",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lumpna ursäkter hjälper inte.",
+    "heard": [
+     "Lumpna ursäkter hjälper inte."
+    ]
+   },
+   {
+    "id": "n20",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Det var lummigt och varmt i parken.",
+    "heard": [
+     "Det var lumit och varmt i parken."
+    ]
+   },
+   {
+    "id": "n21",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Min syster börjar skolan i augusti.",
+    "heard": [
+     "Min syster börjar skolan i augusti."
+    ]
+   },
+   {
+    "id": "n22",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lunchen var god i dag.",
+    "heard": [
+     "Lunchen var god idag."
+    ]
+   },
+   {
+    "id": "n23",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Vi ses på måndag.",
+    "heard": [
+     "Vi ses på måndag."
+    ]
+   },
+   {
+    "id": "n24",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lusen kom tillbaka efter en vecka.",
+    "heard": [
+     "Lusen kom tillbaka efter en vecka."
+    ]
+   },
+   {
+    "id": "n25",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Jag har lånat en bok om Rom.",
+    "heard": [
+     "Jag har lånat en bok om Ron."
+    ]
+   },
+   {
+    "id": "n26",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lumpen var den bästa tiden i mitt liv.",
+    "heard": [
+     "Lumpen var den bästa tiden i mitt liv."
+    ]
+   },
+   {
+    "id": "n27",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Det regnar nog i morgon.",
+    "heard": [
+     "Det regnar nog imorgon."
+    ]
+   },
+   {
+    "id": "n28",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Kaffet är slut igen.",
+    "heard": [
+     "Kaffe till slut igen."
+    ]
+   },
+   {
+    "id": "n29",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lugna ner dig lite.",
+    "heard": [
+     "Lungan nere lite."
+    ]
+   },
+   {
+    "id": "n30",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Han spelar fotboll varje tisdag.",
+    "heard": [
+     "Han spelar fotboll varje tisdag."
+    ]
+   },
+   {
+    "id": "n31",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Vi borde åka till Lund i sommar.",
+    "heard": [
+     "Vill du åka till Lund i sommar?"
+    ]
+   },
+   {
+    "id": "n32",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Glöm inte att stänga fönstret.",
+    "heard": [
+     "Glöm inte att stänga fönstret."
+    ]
+   },
+   {
+    "id": "n33",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Watt står på kartongen.",
+    "heard": [
+     "Vad står på kartongen?"
+    ]
+   },
+   {
+    "id": "n34",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Jag tycker om att läsa på kvällen.",
+    "heard": [
+     "Jag tycker om att läsa på kvällen."
+    ]
+   },
+   {
+    "id": "n35",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Luren låg kvar på bordet.",
+    "heard": [
+     "Luren låg kvar på bordet."
+    ]
+   },
+   {
+    "id": "n36",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Mamma ringer senare i kväll.",
+    "heard": [
+     "Du pratade med"
+    ]
+   },
+   {
+    "id": "n37",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Vi har prov i matte på fredag.",
+    "heard": [
+     "Vi har provgymnastik på fredag."
+    ]
+   },
+   {
+    "id": "n38",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Lumpen är inte obligatorisk längre.",
+    "heard": [
+     "Det finns fortfarande"
+    ]
+   },
+   {
+    "id": "n39",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Det var många människor på torget.",
+    "heard": [
+     "- Du berättade- Det var många människor på torget."
+    ]
+   },
+   {
+    "id": "n40",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Hon målade rummet blått.",
+    "heard": [
+     "Du är en förtroendevald i det målade rummet i Hjälmarsbäcksladen från-"
+    ]
+   },
+   {
+    "id": "n41",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Limen i drinken var för sur.",
+    "heard": [
+     "Det finns för farlig- Lumen i drinken varför sur?"
+    ]
+   },
+   {
+    "id": "n42",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Han sprang hela vägen hem.",
+    "heard": [
+     "Du pratade med en ljudnivå som var igenomhört, märkligt starkt."
+    ]
+   },
+   {
+    "id": "n43",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Jag fick en ny cykel i present.",
+    "heard": [
+     "Jag fick en ny cykel i present."
+    ]
+   },
+   {
+    "id": "n44",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Luckan på bilen går inte att stänga.",
+    "heard": [
+     "Du frågade länge om du har blivit löst."
+    ]
+   },
+   {
+    "id": "n45",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Hunden skäller på brevbäraren.",
+    "heard": [
+     "Hon berättade mängden- Hunden skäller på brevbäraren."
+    ]
+   },
+   {
+    "id": "n46",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Vi lyssnade på musik hela kvällen.",
+    "heard": [
+     "De finnade ett hot före- Vi lyssnade till musik hela kvällen."
+    ]
+   },
+   {
+    "id": "n47",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Lux är en enhet för belysning.",
+    "heard": [
+     "Vi frågade länge-"
+    ]
+   },
+   {
+    "id": "n48",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Tåget till Göteborg är inställt.",
+    "heard": [
+     "Du berättade mängder med saker som jag sa redan förut."
+    ]
+   },
+   {
+    "id": "n49",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Jag behöver nya skor till vintern.",
+    "heard": [
+     "Jag behöver nya skor till vintern."
+    ]
+   },
+   {
+    "id": "n50",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Lunden bakom skolan är full av svamp.",
+    "heard": [
+     "Prata, förlåt, undan, bakom, skolan, för, av, svamp, öppen, för, du kommer, stora."
+    ]
+   }
+  ],
+  "t17-run3": [
+   {
+    "id": "w01",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, berätta om Stockholm.",
+    "heard": [
+     "Lumen, berätta om Stockholm."
+    ]
+   },
+   {
+    "id": "w02",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur många planeter finns det?",
+    "heard": [
+     "Lumen, hur många planeter finns det?"
+    ]
+   },
+   {
+    "id": "w03",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, förklara fotosyntes kort.",
+    "heard": [
+     "Lumen, förklara fotosyntes, kort."
+    ]
+   },
+   {
+    "id": "w04",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur långt är ett maraton?",
+    "heard": [
+     "Lumen, hur långt är ett maraton?"
+    ]
+   },
+   {
+    "id": "w05",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är huvudstaden i Australien?",
+    "heard": [
+     "Lumen, vad är huvudstaden i Australien?"
+    ]
+   },
+   {
+    "id": "w06",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad betyder empati?",
+    "heard": [
+     "Lumen, vad betyder empati?"
+    ]
+   },
+   {
+    "id": "w07",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur lång är Nilen?",
+    "heard": [
+     "Lumen, hur lång är Nilen?"
+    ]
+   },
+   {
+    "id": "w08",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vem var August Strindberg?",
+    "heard": [
+     "Lumen, vem var August Strindberg?"
+    ]
+   },
+   {
+    "id": "w09",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är tjugotre gånger fyra?",
+    "heard": [
+     "Lumen, vad är tjugotre gånger fyra?"
+    ]
+   },
+   {
+    "id": "w10",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Hej Lumen, hur hög är Mount Everest?",
+    "heard": [
+     "Hej, Lumen.",
+     "Hur hög är Mount Everest?"
+    ]
+   },
+   {
+    "id": "w11",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Okej Lumen, berätta om en vulkan.",
+    "heard": [
+     "Okej, Lumen.",
+     "Berätta om en vulkan."
+    ]
+   },
+   {
+    "id": "w12",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är cellandning?",
+    "heard": [
+     "Lumen, vad är cellandning?"
+    ]
+   },
+   {
+    "id": "w13",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur långt bort är månen?",
+    "heard": [
+     "Lumen, hur långt borta är månen?"
+    ]
+   },
+   {
+    "id": "w14",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är demokrati?",
+    "heard": [
+     "Lumen, vad är demokrati?"
+    ]
+   },
+   {
+    "id": "w15",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, när sjönk regalskeppet Vasa?",
+    "heard": [
+     "Lumen, när sjönk regalskeppets vasa?"
+    ]
+   },
+   {
+    "id": "w16",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, förklara Pythagoras sats.",
+    "heard": [
+     "Lumen, förklara Pythagorasats."
+    ]
+   },
+   {
+    "id": "w17",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad är DNA?",
+    "heard": [
+     "Lumen, vad är DNA?"
+    ]
+   },
+   {
+    "id": "w18",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, hur länge lever en kanin?",
+    "heard": [
+     "Lumen, hur länge lever en kanin?"
+    ]
+   },
+   {
+    "id": "w19",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, ge mig tre fakta om vikingar.",
+    "heard": [
+     "Lumen, ge mig tre fakta om vikingar."
+    ]
+   },
+   {
+    "id": "w20",
+    "expect": "wake",
+    "cond": "tyst",
+    "text": "Lumen, vad betyder inflation?",
+    "heard": [
+     "Lumen, vad betyder inflation?"
+    ]
+   },
+   {
+    "id": "w21",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur snabbt färdas ljus?",
+    "heard": [
+     "Lumen, hur snabbt färdas ljus?"
+    ]
+   },
+   {
+    "id": "w22",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur stort är Grönland?",
+    "heard": [
+     "Lumen, hur stor är Grönland?"
+    ]
+   },
+   {
+    "id": "w23",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad är syre?",
+    "heard": [
+     "Lumen, vad är syre?"
+    ]
+   },
+   {
+    "id": "w24",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vem var Isaac Newton?",
+    "heard": [
+     "Lumen, vem var Isaac Newton?"
+    ]
+   },
+   {
+    "id": "w25",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, varför ökar koldioxiden?",
+    "heard": [
+     "Lumen, varför ökar koldioxiden?"
+    ]
+   },
+   {
+    "id": "w26",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "w27",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, förklara evolution enkelt.",
+    "heard": [
+     "Lumen, förklara evolution enkelt."
+    ]
+   },
+   {
+    "id": "w28",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad heter hund på franska?",
+    "heard": [
+     "Lumen, vad heter hon på franska?"
+    ]
+   },
+   {
+    "id": "w29",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vid hur många grader kokar vatten?",
+    "heard": [
+     "Lumen, visar hur många grader kokar vatten."
+    ]
+   },
+   {
+    "id": "w30",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, hur fungerar hjärtat?",
+    "heard": [
+     "Lumen, hur fungerar hjärtat?"
+    ]
+   },
+   {
+    "id": "w31",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, när föll Berlinmuren?",
+    "heard": [
+     "Lumen, när faller Berlinmuren?"
+    ]
+   },
+   {
+    "id": "w32",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad är en atom?",
+    "heard": [
+     "Lumen, vad är en atom?"
+    ]
+   },
+   {
+    "id": "w33",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Hej Lumen, hur varm är solen?",
+    "heard": [
+     "Hej, Lumen.",
+     "Hur varm är solen?"
+    ]
+   },
+   {
+    "id": "w34",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad är ekvatorn?",
+    "heard": [
+     "Lumen, vad är kvatorn?"
+    ]
+   },
+   {
+    "id": "w35",
+    "expect": "wake",
+    "cond": "en-meter",
+    "text": "Lumen, vad var reformationen?",
+    "heard": [
+     "Lumen, vad var det för formationen?"
+    ]
+   },
+   {
+    "id": "w36",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad är gravitation?",
+    "heard": [
+     "Lumen, vad är gravitationen?"
+    ]
+   },
+   {
+    "id": "w37",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad är huvudstaden i Japan?",
+    "heard": [
+     "Lumen, vad är huvudstaden i Japan?"
+    ]
+   },
+   {
+    "id": "w38",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, varför är bin viktiga?",
+    "heard": [
+     "Det finns två städer i Japan.",
+     "Lumen, varför är byn viktigad?"
+    ]
+   },
+   {
+    "id": "w39",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad är ett verb?",
+    "heard": [
+     "Du pratade engelska med mig, men du kommer inte igenom.",
+     "Det är för att staden utekom-"
+    ]
+   },
+   {
+    "id": "w40",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur uppstår norrsken?",
+    "heard": [
+     "Du är enligt stadsföreningen Lumen också en uppskattad turistattraktion och har alla orden från kommunen."
+    ]
+   },
+   {
+    "id": "w41",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur räknar man procent?",
+    "heard": [
+     "Det finns folkfarlig hur räknar man procent?"
+    ]
+   },
+   {
+    "id": "w42",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vem skrev Hamlet?",
+    "heard": [
+     "Du pratade länge om Lumen, vem styr handlet?"
+    ]
+   },
+   {
+    "id": "w43",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur länge har hajar funnits?",
+    "heard": [
+     "Du vet att det är Lumen och hur länge har han ju funnits?"
+    ]
+   },
+   {
+    "id": "w44",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur många sitter i riksdagen?",
+    "heard": [
+     "Prata, förlåt, Lumen, hur många sitter i riksdagen?"
+    ]
+   },
+   {
+    "id": "w45",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, hur bildas en regnbåge?",
+    "heard": [
+     "Hur många sitter i riksdagen?",
+     "Hur bildas en regnbåge?"
+    ]
+   },
+   {
+    "id": "w46",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad gör mitokondrien?",
+    "heard": [
+     "Du har fel svar.",
+     "Vad gör mitokondrierna?"
+    ]
+   },
+   {
+    "id": "w47",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Okej Lumen, hur många bor i Kina?",
+    "heard": [
+     "Okej, Lumen, hur många bomb i Kina?"
+    ]
+   },
+   {
+    "id": "w48",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad orsakar en jordbävning?",
+    "heard": [
+     "Lumen, vad orsakar en jordbävning?"
+    ]
+   },
+   {
+    "id": "w49",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, vad gör insulin?",
+    "heard": [
+     "Underrättade om att Lumen också gör insulinet."
+    ]
+   },
+   {
+    "id": "w50",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Lumen, när började första världskriget?",
+    "heard": [
+     "Lumen, när började första världskriget?"
+    ]
+   },
+   {
+    "id": "n01",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Jag gick till affären i morse.",
+    "heard": [
+     "Jag gick till affären i morse."
+    ]
+   },
+   {
+    "id": "n02",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Bussen var sen igen i dag.",
+    "heard": [
+     "Bussen, var ser ni igen idag?"
+    ]
+   },
+   {
+    "id": "n03",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Vi ska äta pasta till middag.",
+    "heard": [
+     "Vi ska äta pasta till middag."
+    ]
+   },
+   {
+    "id": "n04",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Mina byxor ligger i lumpen.",
+    "heard": [
+     "Mina byxor ligger i lumpen."
+    ]
+   },
+   {
+    "id": "n05",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Han lade på luren utan att säga hej.",
+    "heard": [
+     "Han la på luren utan att säga hej."
+    ]
+   },
+   {
+    "id": "n06",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Limmet torkade alldeles för fort.",
+    "heard": [
+     "Lima torkade alldeles för fort."
+    ]
+   },
+   {
+    "id": "n07",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Jag läste om ljus i fysikboken.",
+    "heard": [
+     "Jag läste om ljus i fysikboken."
+    ]
+   },
+   {
+    "id": "n08",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lampan i köket har gått sönder.",
+    "heard": [
+     "Lampan i köket har gått sönder."
+    ]
+   },
+   {
+    "id": "n09",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Rummen på hotellet var små.",
+    "heard": [
+     "Rummen på hotellet var små."
+    ]
+   },
+   {
+    "id": "n10",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Tumen på linjalen är nästan borta.",
+    "heard": [
+     "Tummen på linjalen är nästan borta."
+    ]
+   },
+   {
+    "id": "n11",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Hon heter Lina och bor i Umeå.",
+    "heard": [
+     "Hon heter Lina och bor i Umeå."
+    ]
+   },
+   {
+    "id": "n12",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lugn, vi hinner till tåget.",
+    "heard": [
+     "Lugn, vi hinner till tåget."
+    ]
+   },
+   {
+    "id": "n13",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Luften är kall i dag.",
+    "heard": [
+     "Luften är kall idag."
+    ]
+   },
+   {
+    "id": "n14",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lumpen gjorde jag i Boden.",
+    "heard": [
+     "Lumpen gjorde jag i boden."
+    ]
+   },
+   {
+    "id": "n15",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Vi tittade på en film i går kväll.",
+    "heard": [
+     "Vi tittade på en film i går kväll."
+    ]
+   },
+   {
+    "id": "n16",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Kan du skicka saltet?",
+    "heard": [
+     "Kan du skicka saltet?"
+    ]
+   },
+   {
+    "id": "n17",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Jag måste pausa och dricka vatten.",
+    "heard": [
+     "Jag måste pausa och dricka vatten."
+    ]
+   },
+   {
+    "id": "n18",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Han sa att han skulle byta läge på jobbet.",
+    "heard": [
+     "Han sa att han skulle byta läge på jobbet."
+    ]
+   },
+   {
+    "id": "n19",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Lumpna ursäkter hjälper inte.",
+    "heard": [
+     "Lumpna ursäkter hjälper inte."
+    ]
+   },
+   {
+    "id": "n20",
+    "expect": "nowake",
+    "cond": "tyst",
+    "text": "Det var lummigt och varmt i parken.",
+    "heard": [
+     "Det var lumit och varmt i parken."
+    ]
+   },
+   {
+    "id": "n21",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Min syster börjar skolan i augusti.",
+    "heard": [
+     "Min syster börjar skolan i augusti."
+    ]
+   },
+   {
+    "id": "n22",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lunchen var god i dag.",
+    "heard": [
+     "Lunchen var god idag."
+    ]
+   },
+   {
+    "id": "n23",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Vi ses på måndag.",
+    "heard": [
+     "Vi ses på måndag."
+    ]
+   },
+   {
+    "id": "n24",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lusen kom tillbaka efter en vecka.",
+    "heard": [
+     "Lusen kom tillbaka efter en vecka."
+    ]
+   },
+   {
+    "id": "n25",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Jag har lånat en bok om Rom.",
+    "heard": [
+     "Jag har lånat en bok om Ron."
+    ]
+   },
+   {
+    "id": "n26",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lumpen var den bästa tiden i mitt liv.",
+    "heard": [
+     "Lumpen var den bästa tiden i mitt liv."
+    ]
+   },
+   {
+    "id": "n27",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Det regnar nog i morgon.",
+    "heard": [
+     "Det regnar nog imorgon."
+    ]
+   },
+   {
+    "id": "n28",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Kaffet är slut igen.",
+    "heard": [
+     "Kaffe till slut igen."
+    ]
+   },
+   {
+    "id": "n29",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Lugna ner dig lite.",
+    "heard": [
+     "Lungan nere lite."
+    ]
+   },
+   {
+    "id": "n30",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Han spelar fotboll varje tisdag.",
+    "heard": [
+     "Han spelar fotboll varje tisdag."
+    ]
+   },
+   {
+    "id": "n31",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Vi borde åka till Lund i sommar.",
+    "heard": [
+     "Vill du åka till Lund i sommar?"
+    ]
+   },
+   {
+    "id": "n32",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Glöm inte att stänga fönstret.",
+    "heard": [
+     "Glöm inte att stänga fönstret."
+    ]
+   },
+   {
+    "id": "n33",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Watt står på kartongen.",
+    "heard": [
+     "Vad står på kartongen?"
+    ]
+   },
+   {
+    "id": "n34",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Jag tycker om att läsa på kvällen.",
+    "heard": [
+     "Jag tycker om att läsa på kvällen."
+    ]
+   },
+   {
+    "id": "n35",
+    "expect": "nowake",
+    "cond": "en-meter",
+    "text": "Luren låg kvar på bordet.",
+    "heard": [
+     "Luren låg kvar på bordet."
+    ]
+   },
+   {
+    "id": "n36",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Mamma ringer senare i kväll.",
+    "heard": [
+     "Du pratade med"
+    ]
+   },
+   {
+    "id": "n37",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Vi har prov i matte på fredag.",
+    "heard": [
+     "Vi har provgymnastik på fredag."
+    ]
+   },
+   {
+    "id": "n38",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Lumpen är inte obligatorisk längre.",
+    "heard": [
+     "Det finns fortfarande intobligatorisk längd."
+    ]
+   },
+   {
+    "id": "n39",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Det var många människor på torget.",
+    "heard": [
+     "Du berättade längden som är utgångspunkten för att"
+    ]
+   },
+   {
+    "id": "n40",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Hon målade rummet blått.",
+    "heard": [
+     "du vill förändra din stora stora st"
+    ]
+   },
+   {
+    "id": "n41",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Limen i drinken var för sur.",
+    "heard": [
+     "ora stora stora",
+     "Du har ett en fyrtio..."
+    ]
+   },
+   {
+    "id": "n42",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Han sprang hela vägen hem.",
+    "heard": [
+     "Han sprang hela vägen hem."
+    ]
+   },
+   {
+    "id": "n43",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Jag fick en ny cykel i present.",
+    "heard": [
+     "Jag fick en ny cykel i present."
+    ]
+   },
+   {
+    "id": "n44",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Luckan på bilen går inte att stänga.",
+    "heard": [
+     "Det finns fortfarande"
+    ]
+   },
+   {
+    "id": "n45",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Hunden skäller på brevbäraren.",
+    "heard": []
+   },
+   {
+    "id": "n46",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Vi lyssnade på musik hela kvällen.",
+    "heard": [
+     "Vi lyssnade på musik hela kvällen."
+    ]
+   },
+   {
+    "id": "n47",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Lux är en enhet för belysning.",
+    "heard": [
+     "Det finns fortfarande en enhet för belysning."
+    ]
+   },
+   {
+    "id": "n48",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Tåget till Göteborg är inställt.",
+    "heard": [
+     "Du pratade med en tåg- ...tåget till Göteborg är inställt."
+    ]
+   },
+   {
+    "id": "n49",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Jag behöver nya skor till vintern.",
+    "heard": [
+     "Jag behöver nio gånger till Vintag."
+    ]
+   },
+   {
+    "id": "n50",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Lunden bakom skolan är full av svamp.",
+    "heard": [
+     "Det finns folk fara runt i bakom skolan är full av svamp."
+    ]
+   }
+  ],
+  "web": [
+   {
+    "id": "s01",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "s02",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "s03",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "s04",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "s05",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "s06",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "s07",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "s08",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "s09",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "s10",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Sverige?",
+    "heard": [
+     "Lumen, hur många bor i Sverige?"
+    ]
+   },
+   {
+    "id": "f01",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Norge?",
+    "heard": [
+     "Lumen, hur många bor i Norge?"
+    ]
+   },
+   {
+    "id": "f02",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, vem är Finlands president?",
+    "heard": [
+     "Lumen, vem är Finlands president?"
+    ]
+   },
+   {
+    "id": "f03",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur hög är inflationen i Sverige?",
+    "heard": [
+     "Lumen, hur hög är inflationen i Sverige?"
+    ]
+   },
+   {
+    "id": "f04",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många länder finns i EU?",
+    "heard": [
+     "Lumen, hur många länder finns i EU?"
+    ]
+   },
+   {
+    "id": "f05",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många människor finns på jorden?",
+    "heard": [
+     "Lumen, hur många människor finns på jorden?"
+    ]
+   },
+   {
+    "id": "f06",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Malmö?",
+    "heard": [
+     "Lumen, hur många bor i Malmö?"
+    ]
+   },
+   {
+    "id": "f07",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, vad är styrräntan i Sverige?",
+    "heard": [
+     "Lumen, vad är styrräntan i Sverige?"
+    ]
+   },
+   {
+    "id": "f08",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, vem är USA:s president?",
+    "heard": [
+     "Lumen, vem är USA:s president?"
+    ]
+   },
+   {
+    "id": "f09",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, vad heter Sveriges statsminister?",
+    "heard": [
+     "Lumen, vad heter Sveriges statsminister?"
+    ]
+   },
+   {
+    "id": "f10",
+    "expect": "wake",
+    "cond": "web",
+    "text": "Lumen, hur många bor i Göteborg?",
+    "heard": [
+     "Lumen, hur många bor i Göteborg?"
+    ]
+   }
+  ],
+  "fynd8": [
+   {
+    "id": "m01",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Du pratade länge om Lumen, vem styr handlet?",
+    "heard": [
+     "Du pratade länge om Lumen, vem styr handlet?"
+    ]
+   },
+   {
+    "id": "m02",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Du vet att det är Lumen och hur länge har han ju funnits?",
+    "heard": [
+     "Du vet att det är Lumen och hur länge har han ju funnits?"
+    ]
+   },
+   {
+    "id": "m03",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Underrättade om att Lumen. Vad gör insulin?",
+    "heard": [
+     "Underrättade om att Lumen. Vad gör insulin?"
+    ]
+   },
+   {
+    "id": "m04",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Det finns fortfarande trafik. Lumen, vad är gravitation?",
+    "heard": [
+     "Det finns fortfarande trafik. Lumen, vad är gravitation?"
+    ]
+   },
+   {
+    "id": "m05",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Vi tar bussen dit. Lumen, varför är bin viktiga?",
+    "heard": [
+     "Vi tar bussen dit. Lumen, varför är bin viktiga?"
+    ]
+   },
+   {
+    "id": "m06",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Det är dyrt att äta ute nu Lumen, vad är ett verb?",
+    "heard": [
+     "Det är dyrt att äta ute nu Lumen, vad är ett verb?"
+    ]
+   },
+   {
+    "id": "m07",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Hon berättade om bilen. Lumen, hur uppstår norrsken?",
+    "heard": [
+     "Hon berättade om bilen. Lumen, hur uppstår norrsken?"
+    ]
+   },
+   {
+    "id": "m08",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Verkstaden kan inte ta emot den. Lumen, när började första världskriget?",
+    "heard": [
+     "Verkstaden kan inte ta emot den. Lumen, när började första världskriget?"
+    ]
+   },
+   {
+    "id": "m09",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Du pratade om semestern, Lumen, vad orsakar en jordbävning?",
+    "heard": [
+     "Du pratade om semestern, Lumen, vad orsakar en jordbävning?"
+    ]
+   },
+   {
+    "id": "m10",
+    "expect": "wake",
+    "cond": "sorl",
+    "text": "Det finns ingen parkering Lumen. Hur många sitter i riksdagen?",
+    "heard": [
+     "Det finns ingen parkering Lumen. Hur många sitter i riksdagen?"
+    ]
+   },
+   {
+    "id": "q01",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Jag frågade Lumen vad det betyder.",
+    "heard": [
+     "Jag frågade Lumen vad det betyder."
+    ]
+   },
+   {
+    "id": "q02",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Har du hört om Lumen och appen?",
+    "heard": [
+     "Har du hört om Lumen och appen?"
+    ]
+   },
+   {
+    "id": "q03",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Jag tyckte Lumen var bra.",
+    "heard": [
+     "Jag tyckte Lumen var bra."
+    ]
+   },
+   {
+    "id": "q04",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Vi använde Lumen när vi pluggade.",
+    "heard": [
+     "Vi använde Lumen när vi pluggade."
+    ]
+   },
+   {
+    "id": "q05",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Har du testat Lumen pausa?",
+    "heard": [
+     "Har du testat Lumen pausa?"
+    ]
+   },
+   {
+    "id": "q06",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Min syster sa att Lumen kostar pengar.",
+    "heard": [
+     "Min syster sa att Lumen kostar pengar."
+    ]
+   },
+   {
+    "id": "q07",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Det var Lumen som hjälpte mig i går.",
+    "heard": [
+     "Det var Lumen som hjälpte mig i går."
+    ]
+   },
+   {
+    "id": "q08",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Hon pratade om Lumen hela kvällen.",
+    "heard": [
+     "Hon pratade om Lumen hela kvällen."
+    ]
+   },
+   {
+    "id": "q09",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Vi pratade om Lumen men det kom inget mer.",
+    "heard": [
+     "Vi pratade om Lumen men det kom inget mer."
+    ]
+   },
+   {
+    "id": "q10",
+    "expect": "nowake",
+    "cond": "sorl",
+    "text": "Jag laddade ner Lumen förra veckan.",
+    "heard": [
+     "Jag laddade ner Lumen förra veckan."
+    ]
+   }
+  ],
+  "a97": [
+   {
+    "id": "e01",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Earmind, vad är fotosyntes?",
+    "heard": [
+     "Earmind, vad är fotosyntes?"
+    ]
+   },
+   {
+    "id": "e02",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Ear mind, hur många ben har en spindel?",
+    "heard": [
+     "Ear mind, hur många ben har en spindel?"
+    ]
+   },
+   {
+    "id": "e03",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Ear-mind, vem skrev Hamlet?",
+    "heard": [
+     "Ear-mind, vem skrev Hamlet?"
+    ]
+   },
+   {
+    "id": "e04",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Ir mind, vad är en atom?",
+    "heard": [
+     "Ir mind, vad är en atom?"
+    ]
+   },
+   {
+    "id": "e05",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Earmund, hur bildas en regnbåge?",
+    "heard": [
+     "Earmund, hur bildas en regnbåge?"
+    ]
+   },
+   {
+    "id": "e06",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Ear mund, vad betyder demokrati?",
+    "heard": [
+     "Ear mund, vad betyder demokrati?"
+    ]
+   },
+   {
+    "id": "e07",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Hej Earmind, hur hög är Mount Everest?",
+    "heard": [
+     "Hej Earmind, hur hög är Mount Everest?"
+    ]
+   },
+   {
+    "id": "e08",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Okej Earmind, vad betyder empati?",
+    "heard": [
+     "Okej Earmind, vad betyder empati?"
+    ]
+   },
+   {
+    "id": "e09",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Earmine, varför behöver vi syre?",
+    "heard": [
+     "Earmine, varför behöver vi syre?"
+    ]
+   },
+   {
+    "id": "e10",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "EarMind, vad gör mitokondrien?",
+    "heard": [
+     "EarMind, vad gör mitokondrien?"
+    ]
+   },
+   {
+    "id": "e11",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Earmind. Hur långt är ett maraton?",
+    "heard": [
+     "Earmind. Hur långt är ett maraton?"
+    ]
+   },
+   {
+    "id": "e12",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Earmind, förklara evolution enkelt.",
+    "heard": [
+     "Earmind, förklara evolution enkelt."
+    ]
+   },
+   {
+    "id": "e13",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Lumen, vad är gravitation?",
+    "heard": [
+     "Lumen, vad är gravitation?"
+    ]
+   },
+   {
+    "id": "e14",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Lumin, vad heter hund på franska?",
+    "heard": [
+     "Lumin, vad heter hund på franska?"
+    ]
+   },
+   {
+    "id": "e15",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Lummen, när föll Berlinmuren?",
+    "heard": [
+     "Lummen, när föll Berlinmuren?"
+    ]
+   },
+   {
+    "id": "e16",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Lomen, vad är ekvatorn?",
+    "heard": [
+     "Lomen, vad är ekvatorn?"
+    ]
+   },
+   {
+    "id": "e17",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Hej Lumen, hur varm är solen?",
+    "heard": [
+     "Hej Lumen, hur varm är solen?"
+    ]
+   },
+   {
+    "id": "e18",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Lumen. Vad är huvudstaden i Japan?",
+    "heard": [
+     "Lumen. Vad är huvudstaden i Japan?"
+    ]
+   },
+   {
+    "id": "e19",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Earmind, hur många planeter finns i solsystemet?",
+    "heard": [
+     "Earmind, hur många planeter finns i solsystemet?"
+    ]
+   },
+   {
+    "id": "e20",
+    "expect": "wake",
+    "cond": "a97",
+    "text": "Ear mind. Vad var reformationen?",
+    "heard": [
+     "Ear mind. Vad var reformationen?"
+    ]
+   },
+   {
+    "id": "x01",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "I mind the gap when I travel.",
+    "heard": [
+     "I mind the gap when I travel."
+    ]
+   },
+   {
+    "id": "x02",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "Jag har ont i örat i dag.",
+    "heard": [
+     "Jag har ont i örat i dag."
+    ]
+   },
+   {
+    "id": "x03",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "Mind ear protection at the concert.",
+    "heard": [
+     "Mind ear protection at the concert."
+    ]
+   },
+   {
+    "id": "x04",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "Hon köpte nya hörlurar i går.",
+    "heard": [
+     "Hon köpte nya hörlurar i går."
+    ]
+   },
+   {
+    "id": "x05",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "Earth is the third planet.",
+    "heard": [
+     "Earth is the third planet."
+    ]
+   },
+   {
+    "id": "x06",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "Lusen kom tillbaka efter en vecka.",
+    "heard": [
+     "Lusen kom tillbaka efter en vecka."
+    ]
+   },
+   {
+    "id": "x07",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "Limen i drinken var för sur.",
+    "heard": [
+     "Limen i drinken var för sur."
+    ]
+   },
+   {
+    "id": "x08",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "Lumpen är inte obligatorisk längre.",
+    "heard": [
+     "Lumpen är inte obligatorisk längre."
+    ]
+   },
+   {
+    "id": "x09",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "Luren låg på bordet.",
+    "heard": [
+     "Luren låg på bordet."
+    ]
+   },
+   {
+    "id": "x10",
+    "expect": "nowake",
+    "cond": "a97",
+    "text": "Vi gick till lunden efter skolan.",
+    "heard": [
+     "Vi gick till lunden efter skolan."
+    ]
+   }
+  ],
+  "t16": [
+   {
+    "id": "p1a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Vad är huvudstaden i Australien?",
+    "heard": [
+     "Vad är huvudstaden i Australien?"
+    ]
+   },
+   {
+    "id": "p1b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur många ben har en spindel?",
+    "heard": [
+     "Hur många ben har en spindel?"
+    ]
+   },
+   {
+    "id": "p2a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur lång är Nilen?",
+    "heard": [
+     "Hur lång är Nilen?"
+    ]
+   },
+   {
+    "id": "p2b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "När föddes August Strindberg?",
+    "heard": [
+     "När föddes August Strindberg?"
+    ]
+   },
+   {
+    "id": "p3a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur bildas en vulkan?",
+    "heard": [
+     "Hur bildas en vulkan?"
+    ]
+   },
+   {
+    "id": "p3b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Vad gör insulin i kroppen?",
+    "heard": [
+     "Vad gör insulin i kroppen?"
+    ]
+   },
+   {
+    "id": "p4a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur hög är Mount Everest?",
+    "heard": [
+     "Hur hög är Mount Everest?"
+    ]
+   },
+   {
+    "id": "p4b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Vad behövs för fotosyntes?",
+    "heard": [
+     "Vad behövs för fotosyntes?"
+    ]
+   },
+   {
+    "id": "p5a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur långt är ett maraton?",
+    "heard": [
+     "Hur långt är ett maraton?"
+    ]
+   },
+   {
+    "id": "p5b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Vad är huvudstaden i Norge?",
+    "heard": [
+     "Vad är huvudstaden i Norge?"
+    ]
+   },
+   {
+    "id": "p6a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur långt bort är månen?",
+    "heard": [
+     "Hur långt bort är månen?"
+    ]
+   },
+   {
+    "id": "p6b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Vad betyder demokrati?",
+    "heard": [
+     "Vad betyder demokrati?"
+    ]
+   },
+   {
+    "id": "p7a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur många gånger slår hjärtat per minut?",
+    "heard": [
+     "Hur många gånger slår hjärtat per minut?"
+    ]
+   },
+   {
+    "id": "p7b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "När sjönk regalskeppet Vasa?",
+    "heard": [
+     "När sjönk regalskeppet Vasa?"
+    ]
+   },
+   {
+    "id": "p8a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Vad betyder ordet empati?",
+    "heard": [
+     "Vad betyder ordet empati?"
+    ]
+   },
+   {
+    "id": "p8b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur många bor i Kina?",
+    "heard": [
+     "Hur många bor i Kina?"
+    ]
+   },
+   {
+    "id": "p9a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur bildas en regnbåge?",
+    "heard": [
+     "Hur bildas en regnbåge?"
+    ]
+   },
+   {
+    "id": "p9b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Vem skrev Hamlet?",
+    "heard": [
+     "Vem skrev Hamlet?"
+    ]
+   },
+   {
+    "id": "p10a",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Varför behöver vi syre?",
+    "heard": [
+     "Varför behöver vi syre?"
+    ]
+   },
+   {
+    "id": "p10b",
+    "expect": "pair",
+    "cond": "t16",
+    "text": "Hur många planeter finns i solsystemet?",
+    "heard": [
+     "Hur många planeter finns i solsystemet?"
+    ]
+   }
+  ]
+ }
+}
