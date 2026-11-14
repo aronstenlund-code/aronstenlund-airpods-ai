@@ -122,8 +122,14 @@ enum VoiceChannel {
         }
         let before = text[..<name.lowerBound]
             .trimmingCharacters(in: .whitespacesAndNewlines.union(CharacterSet(charactersIn: ",;:-–")))
-        let after = text[name.upperBound...]
+        var after = text[name.upperBound...]
             .trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        if !isPlacedAddress(text, nameAt: name) {
+            // Toby 1 T17 finding 8: the name in the middle, after the room's chatter. The question after the name is
+            // the turn; the chatter before it is not asked.
+            after = withoutLeadingConjunction(after)
+            return VoiceUtterance(before: nil, intent: after.isEmpty ? nil : intent(for: after))
+        }
         return VoiceUtterance(before: before.isEmpty ? nil : before, intent: after.isEmpty ? nil : intent(for: after))
     }
 
@@ -199,10 +205,42 @@ enum VoiceChannel {
     private static let greetings: Set<String> = ["hej", "hallå", "okej", "ok", "ja", "nej", "du", "hörru", "hey", "hi", "okay"]
 
     static func isAddress(_ text: String, nameAt name: Range<String.Index>) -> Bool {
-        let before = text[..<name.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines.union(CharacterSet(charactersIn: ",;:-–")))
-        let placed = before.isEmpty || before.last.map { ".?!".contains($0) } == true || greetings.contains(normalized(before))
-        guard placed else { return false }
+        guard isPlacedAddress(text, nameAt: name) else { return asksMidSentence(text, nameAt: name) }
         return WakeWord.isConfident(String(text[name])) || addressesAfterGuess(text, nameAt: name)
+    }
+
+    /// The name at the start, after a sentence end or after a greeting alone (A14).
+    private static func isPlacedAddress(_ text: String, nameAt name: Range<String.Index>) -> Bool {
+        let before = text[..<name.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines.union(CharacterSet(charactersIn: ",;:-–")))
+        return before.isEmpty || before.last.map { ".?!".contains($0) } == true || greetings.contains(normalized(before))
+    }
+
+    /// Toby 1 T17 finding 8 (in chatter Scribe writes the room first and the name in the middle: "Du pratade länge om
+    /// Lumen, vem styr handlet?", "… det är Lumen och hur länge har han ju funnits?", 5 of 6 misses): the name, exact
+    /// (never a guess), then a question word that starts a question. It must be marked as one: a pause after the name
+    /// or a question mark at the end. Never an instruction here ("har du testat Lumen pausa" stays quiet, A14), and
+    /// "var"/"när" only after a pause ("jag tyckte Lumen var bra").
+    static func asksMidSentence(_ text: String, nameAt name: Range<String.Index>) -> Bool {
+        guard WakeWord.isConfident(String(text[name])) else { return false }
+        let rest = text[name.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
+        let pause = rest.first.map { ",:;–-".contains($0) } == true
+        let question = withoutLeadingConjunction(rest.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters)))
+        let words = normalized(question).split(separator: " ").map(String.init)
+        guard words.count >= 2, let first = words.first else { return false }
+        let marked = pause || text.trimmingCharacters(in: .whitespacesAndNewlines).hasSuffix("?")
+        guard marked else { return false }
+        return midQuestionWords.contains(first) || (pause && ["var", "när"].contains(first))
+    }
+
+    private static let midQuestionWords: Set<String> = ["vad", "vem", "vems", "vart", "varifrån", "hur", "varför", "vilken",
+                                                        "vilket", "vilka"]
+
+    /// "och hur länge …" → "hur länge …".
+    private static func withoutLeadingConjunction(_ text: String) -> String {
+        for word in ["och ", "så ", "men "] where text.lowercased().hasPrefix(word) {
+            return String(text.dropFirst(word.count)).trimmingCharacters(in: .whitespaces)
+        }
+        return text
     }
 
     /// Toby 1 T17 finding 1 ("Lusen kom tillbaka efter en vecka." woke Lumen): a guessed name wakes only when it

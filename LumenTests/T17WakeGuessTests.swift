@@ -27,3 +27,24 @@ import Testing
         #expect(WakeWord.isConfident("Lummen") && !WakeWord.isConfident("Lusen") && !WakeWord.isConfident("Limen"))
     }
 }
+
+/// Toby 1 T17 finding 8: in chatter the name comes in the middle, before the question.
+struct T17NameInTheMiddleTests {
+    @Test func theQuestionAfterTheNameIsAsked() {
+        let first = VoiceChannel.parse("Du pratade länge om Lumen, vem styr handlet?")
+        #expect(first.intent == .instruction("vem styr handlet"))
+        #expect(first.before == nil, "the chatter before the name is not asked")
+        #expect(VoiceChannel.parse("Du vet att det är Lumen och hur länge har han ju funnits?").intent
+            == .instruction("hur länge har han ju funnits"))
+        #expect(VoiceChannel.parse("ja alltså Lumen, när är provet").intent == .instruction("när är provet"))
+    }
+
+    @Test func theNameInAnOrdinarySentenceStaysQuiet() {
+        for sentence in ["Jag berättade om Lumen för min kompis igår.", "har du testat Lumen pausa",
+                         "min kompis sa lumen byt till provläge", "jag tyckte Lumen var bra", "vi använde Lumen när vi pluggade",
+                         "Jag frågade Lumen vad det betyder", "Har du hört om Lumen och appen?",
+                         "min kompis pratade om Lusen, vad heter den"] {
+            #expect(VoiceChannel.parse(sentence).intent == nil, "\(sentence)")
+        }
+    }
+}
