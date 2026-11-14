@@ -162,4 +162,4 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [x] klar 2026-11-14 09:55 → reports/2026-11-14-0955-kelly-ke58-chatgpt.md **Ke58 – "Gör med ChatGPT" (D169)** (effort: low). Lagd av Deangelo 2026-11-14 09:55. Text och plats för knappen och de tre stegen (kopiera prompt, klistra in i ChatGPT med filer, klistra in svaret här). Kort och tydligt. Till Angela Fable.
 
-- [ ] **Ke60 – EarMind med stort M (D179)** (effort: low). Lagd av Deangelo 2026-11-14 16:35. `site/`, demosidans utkast i `drafts/`, `docs/appstore/` och `docs/design/` (texterna som appen följer). Logga eller ordbild med namnet: säg till om den behöver göras om. Inget publiceras.
+- [x] klar 2026-11-14 16:45 → reports/2026-11-14-1645-kelly-ke60-earmind.md (sajten på grenen kelly/ke60-earmind-site, publiceras först med Arons ja) **Ke60 – EarMind med stort M (D179)** (effort: low). Lagd av Deangelo 2026-11-14 16:35. `site/`, demosidans utkast i `drafts/`, `docs/appstore/` och `docs/design/` (texterna som appen följer). Logga eller ordbild med namnet: säg till om den behöver göras om. Inget publiceras.
