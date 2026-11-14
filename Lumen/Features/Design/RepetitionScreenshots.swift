@@ -14,7 +14,25 @@ enum RepetitionDemo {
                                       // A92: the help AI (MockHelp in the screenshot mode)
                                       "repHelp", "repHelpAnswer", "repHelpTry",
                                       // A94 (Kelly Ke55): the first start
-                                      "fsWelcome", "fsReadMore", "fsNewDrill"]
+                                      "fsWelcome", "fsReadMore", "fsNewDrill",
+                                      // A93 (Kelly Ke58): Gör med ChatGPT
+                                      "gptSteps", "gptFound", "gptWrong"]
+
+    /// A93: ChatGPT's answer for the found screen, 20 questions and one line that cannot be read.
+    static let pastedAnswer: String = {
+        let pairs = [
+            ("Varför behöver växter ljus?", "Växter behöver ljus för fotosyntesen, där de gör socker av koldioxid och vatten. Ljuset ger energin, och sockret blir växtens mat."),
+            ("Vad gör klorofyllet?", "Klorofyllet fångar ljusets energi. Det är grönt och sitter i kloroplasterna i bladens celler."),
+            ("Vad är cellandning?", "Cellandning är när cellerna bryter ner socker med syre och får energi. Koldioxid och vatten blir kvar."),
+            ("Varför är bladen gröna?", "Bladen är gröna för att klorofyllet tar upp rött och blått ljus men kastar tillbaka det gröna."),
+        ]
+        var text = "Här är dina frågor!\n\n"
+        for i in 0..<20 {
+            let (question, answer) = pairs[i % pairs.count]
+            text += "Fråga: \(question)\nSvar: \(answer)\n\n"
+        }
+        return text
+    }()
 
     static let items: [DrillItem] = [
         ("Varför behövs klorofyll?", "Klorofyll fångar ljuset som fotosyntesen behöver.",
@@ -109,6 +127,12 @@ enum RepetitionDemo {
             case "fsWelcome": WelcomeView {}
             case "fsReadMore": DataPrivacySheet()
             case "fsNewDrill": NewDrillView(model: model, onLater: {}) { _ in }
+            case "gptSteps": ChatGPTImportView(model: model) { _ in }
+            case "gptFound":
+                if let found = ChatGPTImport.read(pastedAnswer) {
+                    ChatGPTImportView(model: model, start: .found(found)) { _ in }
+                }
+            case "gptWrong": ChatGPTImportView(model: model, start: .wrong) { _ in }
             case "repMakeError":
                 NewDrillView(model: model, onSaved: { _ in },
                              stagedProblem: DrillMakingError.server("URLError -1005").userMessage)
