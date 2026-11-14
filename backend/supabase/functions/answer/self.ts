@@ -51,7 +51,7 @@ const SEE_EXTRA = /^kan (?:någon|andra|någon annan) (?:läsa|se|höra) (?:det 
 // K42.1 (Aron's phone test: "Vad heter du?" -> "har inget eget namn … studiehjälpen")
 const NAME = /^(?:vad heter du|vad är ditt namn|har du (?:ett |något |nåt )?(?:särskilt )?namn|vad (?:ska|kan) jag kalla dig|vem är du|hur heter du|heter du (?:något|nåt)|vad heter (?:den här |denna )?(?:appen|app)|vad är (?:appens|appen s) namn|vilken app är (?:det här|detta|du)|what(?: s|s| is) your name)$/u;
 
-// K44: "Vad är Earmind?" was "en studieassistent"
+// K44: "Vad är EarMind?" was "en studieassistent"
 const WHAT_APP = /^(?:vad är (?:earmind|lumen|du(?: för (?:något|nåt|en app|en ai|för app))?|det här för (?:en )?app|det för (?:en )?app|det här)|vad är du för (?:en )?(?:app|ai|grej|sak)|berätta om (?:dig själv|dig|appen|earmind))$/u;
 
 export type SelfTopic = "name" | "what" | "robot" | "who_made" | "which_ai" | "listen" | "who_sees" | "sell" | "audio" | "save";
@@ -78,7 +78,7 @@ export function selfTopic(text: string): SelfTopic | null {
   if (!t || t.split(" ").length > 12) return null;
   if (WHO_MADE.test(t)) return "who_made";
   if (NAME.test(t)) return "name";
-  // "vad är Earmind": the name at the end is the subject here, so test before N() drops it
+  // "vad är EarMind": the name at the end is the subject here, so test before N() drops it
   const raw = text.toLowerCase().replace(/[^\p{L}\s]/gu, " ").replace(/\s+/g, " ").trim().replace(/^(?:(?:hej|okej|ok|men) )*(?:lumen |earmind )?/u, "");
   if (WHAT_APP.test(t) || WHAT_APP.test(raw)) return "what";
   if (ROBOT.test(t) || BOT_EXTRA.test(t)) return WHICH_AI.test(t) ? "which_ai" : "robot";
@@ -94,7 +94,7 @@ export function selfTopic(text: string): SelfTopic | null {
 }
 
 /** The answer text when the utterance is a question about Lumen itself, else null. */
-export function selfAnswer(text: string, name = "Earmind"): string | null {
+export function selfAnswer(text: string, name = "EarMind"): string | null {
   const k = selfTopic(text);
   return k ? SELF_TEXT[k].replaceAll("{N}", name) : null;
 }

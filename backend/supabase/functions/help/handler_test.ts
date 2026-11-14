@@ -32,7 +32,7 @@ const mk = (p: LLMProvider, used = 0, lim = 15) => {
 
 Deno.test("K57 the help knows the app: the help text and the capability list are in the cached system prompt", () => {
   assert(SYSTEM_PROMPT_HELP.includes("Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus."));
-  assert(SYSTEM_PROMPT_HELP.includes("Det här finns inte i Earmind"));
+  assert(SYSTEM_PROMPT_HELP.includes("Det här finns inte i EarMind"));
   assert(SYSTEM_PROMPT_HELP.includes("Publicera prov"));
   assert(SYSTEM_PROMPT_HELP.includes("Styra Spotify (spela, pausa, nästa låt): kommer snart"));
 });

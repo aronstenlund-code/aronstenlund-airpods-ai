@@ -49,12 +49,12 @@ Deno.test("standing18: work experience the CV does not give is never claimed eit
 });
 
 import { selfAnswer } from "./self.ts";
-Deno.test("K42.1: the name is Earmind (or the app's name); never 'inget eget namn'", () => {
+Deno.test("K42.1: the name is EarMind (or the app's name); never 'inget eget namn'", () => {
   for (const q of ["Vad heter du?", "vad är ditt namn", "har du ett namn", "Lumen, vad heter du", "vad ska jag kalla dig", "vem är du", "hur heter du"]) {
-    assert(selfAnswer(q)!.startsWith("Jag heter Earmind"), q);
+    assert(selfAnswer(q)!.startsWith("Jag heter EarMind"), q);
   }
   assert(selfAnswer("vad heter du", "Nova")!.startsWith("Jag heter Nova"));
-  assert(selfAnswer("är du en robot")!.includes("Jag heter Earmind och är en AI-agent"));
+  assert(selfAnswer("är du en robot")!.includes("Jag heter EarMind och är en AI-agent"));
   for (const q of ["vad heter du i efternamn på provet", "vad heter huvudstaden", "vad heter det"]) assertEquals(selfAnswer(q), null, q);
 });
 

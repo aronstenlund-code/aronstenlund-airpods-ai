@@ -1,7 +1,7 @@
 {
- "_about": "K44 (Aron 21:16, D118): THE one list of what Earmind can do, read by the app (CapabilitiesView, Angela A77) and the server (backend/supabase/functions/_shared/capabilities.ts, a copy checked by a test). status: finns | kommer. permission: what the phone must allow first (the app sends the granted ones as context.capabilities). tool: the phone tool or app command that does it. model: true = the model carries out a concrete request itself ('kan du ge mig ett träningspass'). instead: what to offer while a capability is coming. Order matters: the first matching entry wins. ask: Swedish words that name the capability in a 'kan du …?' question (regex fragments, lower case).",
- "name": "Earmind",
- "identity": "Earmind är en AI-agent i dina AirPods för vardag, skola och jobb. Du säger Lumen och vad du vill, och jag svarar eller gör det direkt.",
+ "_about": "K44 (Aron 21:16, D118): THE one list of what EarMind can do, read by the app (CapabilitiesView, Angela A77) and the server (backend/supabase/functions/_shared/capabilities.ts, a copy checked by a test). status: finns | kommer. permission: what the phone must allow first (the app sends the granted ones as context.capabilities). tool: the phone tool or app command that does it. model: true = the model carries out a concrete request itself ('kan du ge mig ett träningspass'). instead: what to offer while a capability is coming. Order matters: the first matching entry wins. ask: Swedish words that name the capability in a 'kan du …?' question (regex fragments, lower case).",
+ "name": "EarMind",
+ "identity": "EarMind är en AI-agent i dina AirPods för vardag, skola och jobb. Du säger Lumen och vad du vill, och jag svarar eller gör det direkt.",
  "capabilities": [
   {
    "id": "questions",
