@@ -29,6 +29,8 @@ sys.path.insert(0, str(BANK))
 from materials import M  # noqa: E402
 from materials_holdout import H  # noqa: E402  (O55b: hållout, inte i exams.json)
 M.update(H)
+from materials_holdout2 import H2  # noqa: E402  (O60)
+M.update(H2)
 
 URL = "https://xjczbzfkmbjdebwlccki.supabase.co"
 KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8"  # publik nyckel (finns i appen och i Kevins skript)

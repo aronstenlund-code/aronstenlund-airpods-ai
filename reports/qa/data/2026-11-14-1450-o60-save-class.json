@@ -1,0 +1,35 @@
+{
+ "items": [
+  {
+   "question": "Vad kännetecknar regnskogsklimat?",
+   "my_chars": 358,
+   "voice_chars": 358,
+   "length_class": "normal"
+  },
+  {
+   "question": "Vad handlar den åttafaldiga vägen om?",
+   "my_chars": 830,
+   "voice_chars": 830,
+   "length_class": "longer"
+  },
+  {
+   "question": "Vad händer i en lång påhittad krets?",
+   "my_chars": 1717,
+   "voice_chars": 1717,
+   "length_class": "too_long"
+  }
+ ],
+ "audio": {
+  "done": 0,
+  "total": 6,
+  "failed": 0,
+  "chars": 2905,
+  "est_usd": 0.23,
+  "credits": null,
+  "credits_chars": null,
+  "bytes": 0,
+  "model": "eleven_multilingual_v2"
+ },
+ "generated_questions": 3,
+ "drill_id_deleted": true
+}

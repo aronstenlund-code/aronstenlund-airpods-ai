@@ -20,6 +20,8 @@ sys.path.insert(0, HERE)
 from materials import M  # noqa: E402
 from materials_holdout import H  # noqa: E402  (O55b)
 M.update(H)
+from materials_holdout2 import H2  # noqa: E402  (O60)
+M.update(H2)
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont  # noqa: E402
 
