@@ -87,3 +87,28 @@ struct K67MayFixTests {
         #expect(!DrillClient.mayFix([], generated: made))
     }
 }
+
+/// Kelly Ke61 F1: a number or a formula alone is shown without its full stop; sentences keep it.
+struct Ke61ShownShortTests {
+    @Test func numbersAndFormulasLoseTheFullStop() {
+        #expect(DrillItem.shownShort("1856.") == "1856")
+        #expect(DrillItem.shownShort("a² + b² = c².") == "a² + b² = c²")
+        #expect(DrillItem.shownShort("A = π · r².") == "A = π · r²")
+        #expect(DrillItem.shownShort("3,14.") == "3,14")
+    }
+
+    @Test func sentencesKeepIt() {
+        for text in ["Runt 1850.", "Ett ämne.", "pH 7.", "Ja.", "Vad är det?", "Det var 1856 …"] {
+            #expect(DrillItem.shownShort(text) == text, "\(text)")
+        }
+    }
+
+    @Test func theListAndTheEditorAgree() {
+        var item = DrillItem(question: "När?", short: "Artonhundrafemtiosex.", long: "Artonhundrafemtiosex. Örebro.")
+        item.screen = DrillScreenText(question: nil, short: "1856.", long: "1856. Örebro.")
+        #expect(item.shownShort == "1856")
+        #expect(item.shownAnswer == "1856. Örebro.", "the whole answer keeps its sentences")
+        #expect(item.edited(question: "När?", answer: item.shownAnswer) == item)
+        #expect(item.short == "Artonhundrafemtiosex.", "the voice is unchanged")
+    }
+}

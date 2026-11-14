@@ -32,7 +32,7 @@ struct DrillPublicationView: Decodable, Equatable, Sendable, Identifiable {
         var screen: DrillScreenText? = nil
 
         var shownQuestion: String { screen?.question ?? question }
-        var shownShort: String { screen?.short ?? short }
+        var shownShort: String { DrillItem.shownShort(screen?.short ?? short) } // Kelly Ke61 F1
     }
 
     var examDate: Date? { DrillPublishing.date(exam_date) }

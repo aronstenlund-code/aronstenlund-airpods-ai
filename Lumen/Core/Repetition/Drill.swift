@@ -96,7 +96,7 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
 
     /// A102: what the screen shows. Old exams without `screen` show the spoken text, as before.
     var shownQuestion: String { screen?.question ?? question }
-    var shownShort: String { screen?.short ?? short }
+    var shownShort: String { DrillItem.shownShort(screen?.short ?? short) }
     var shownLong: String { screen?.long ?? long }
     /// The whole answer as the editor shows it (the short answer first).
     var shownAnswer: String { DrillItem.long(shownLong, startingWith: shownShort) }
@@ -123,6 +123,22 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
         item.screen = screen.isEmpty ? nil : screen
         if !item.sameText(as: self) { item.lengthClass = nil }
         return item
+    }
+
+    /// Kelly Ke61 F1: a short answer that is only a number or a formula is shown without its full stop, as in a
+    /// maths book ("1856", "a² + b² = c²"); a sentence keeps it ("Runt 1850."). The shown text only, never the voice.
+    static func shownShort(_ text: String) -> String {
+        let t = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard t.hasSuffix("."), !t.hasSuffix("..") else { return t }
+        let body = String(t.dropLast()).trimmingCharacters(in: .whitespaces)
+        guard !body.isEmpty, body.contains(where: { $0.isNumber || "=+−-·×÷/²³√π^<>≈".contains($0) }) else { return t }
+        // A word of two letters or more makes it a sentence ("Runt 1850", "pH 7").
+        var run = 0
+        for char in body {
+            run = char.isLetter ? run + 1 : 0
+            if run >= 2 { return t }
+        }
+        return body
     }
 
     /// The same texts (an item whose texts did not change keeps its sound).
