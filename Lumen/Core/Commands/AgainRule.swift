@@ -27,9 +27,11 @@ enum AgainRule {
     /// `isOtherVoice`: the voice profile says someone else spoke (nil: unknown, counts as the wearer).
     static func judge(_ text: String, lastAnswerAt: Date?, now: Date, isOtherVoice: Bool?) -> Verdict? {
         var words = VoiceChannel.normalized(text)
-        let name = WakeWord.name.lowercased()
-        if words == name { return nil }
-        if words.hasPrefix(name + " ") { words = String(words.dropFirst(name.count + 1)) }
+        // A97: either name.
+        for name in WakeWord.names.map({ $0.lowercased() }) {
+            if words == name { return nil }
+            if words.hasPrefix(name + " ") { words = String(words.dropFirst(name.count + 1)) }
+        }
         let tokens = words.split(separator: " ").map(String.init)
         let isWhole = whole.contains(words)
         let lastClear = tokens.last { !fillers.contains($0) }

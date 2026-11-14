@@ -19,8 +19,9 @@ enum MoreOffer {
     /// true: more; false: no; nil: something else (a new question closes the window too).
     static func verdict(_ text: String) -> Bool? {
         var words = VoiceChannel.normalized(text)
-        let name = WakeWord.name.lowercased()
-        if words.hasPrefix(name + " ") { words = String(words.dropFirst(name.count + 1)) }
+        for name in WakeWord.names.map({ $0.lowercased() }) where words.hasPrefix(name + " ") { // A97: either name
+            words = String(words.dropFirst(name.count + 1))
+        }
         if yes.contains(words) { return true }
         if no.contains(words) { return false }
         return nil

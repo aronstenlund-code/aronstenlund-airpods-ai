@@ -48,3 +48,24 @@ struct T17NameInTheMiddleTests {
         }
     }
 }
+
+/// A97 (D172): "Earmind" wakes too, with its mishearings; false wakes stay out.
+struct A97EarmindTests {
+    @Test func earmindWakesLikeLumen() {
+        for heard in ["Earmind", "earmind", "Ear mind", "ear-mind", "Irmind", "Ir mind", "Ear mund", "Earmund"] {
+            #expect(VoiceChannel.parse("\(heard), vad är fotosyntes?").intent == .instruction("vad är fotosyntes"), "\(heard)")
+        }
+        #expect(VoiceChannel.parse("Mind ear, vad är fotosyntes?").intent == .instruction("vad är fotosyntes"), "two words, reversed")
+        #expect(VoiceChannel.parse("A r mind, hur funkar det?").intent == .instruction("hur funkar det"), "three words")
+        #expect(VoiceChannel.parse("Earmind, pausa").intent == .pause)
+        #expect(VoiceChannel.parse("Lumen, pausa").intent == .pause, "Lumen still wakes")
+        #expect(WakeWord.isConfident("Earmind") && WakeWord.isConfident("Lumen"))
+    }
+
+    @Test func ordinarySentencesStayQuiet() {
+        for sentence in ["Jag har det i mind sen", "Keep it in mind", "Jag berättade om Earmind för min kompis",
+                         "I mind my own business", "Earring är fint", "Ermine är ett djur"] {
+            #expect(VoiceChannel.parse(sentence).intent == nil, "\(sentence)")
+        }
+    }
+}

@@ -3,29 +3,36 @@ import Foundation
 /// The name the wearer says to talk to the app (D74). One constant, so a new app name changes one line.
 enum WakeWord {
     static let name = "Lumen"
+    /// A97 (D172): "Earmind" wakes too, next to "Lumen". `name` is the one the app says and shows.
+    static let names = ["Lumen", "Earmind"]
 
     /// A75 (Aron 20:41): how Scribe and the phone mishear the name, per name, so a new name (Earmind?) is one row.
     /// Grows from the A76 recordings and the "Name-like word not taken" log lines.
     static let variantsByName: [String: [String]] = [
         "lumen": ["lumen", "lumin", "lummen", "lomen", "lymen", "limen", "loomen", "lumens", "lumén", "luman", "lumon",
                   "lumne", "lumem", "lumel", "lumet", "lune", "lumi", "loumen", "luumen", "lu men", "lu-men"],
-        "earmind": ["earmind", "earmand", "irmind", "ir mind", "ear mind", "iirmind", "ermind", "earminde"],
+        "earmind": ["earmind", "earmand", "irmind", "ir mind", "ear mind", "iirmind", "ermind", "earminde", "ear-mind",
+                    "mind ear", "i mind", "a r mind", "ear mund", "earmund", "eer mind", "eermind", "irmund", "earmin"],
     ]
     /// Real Swedish words one letter from the name that must never wake it.
     static let notTheName: Set<String> = ["lumpen", "tumen", "rummen", "lumpa", "limmen", "lumes", "linen", "lunen", "luren", "lumpe", "humen"]
 
-    static var variants: [String] { variantsByName[name.lowercased()] ?? [name.lowercased()] }
+    /// A97: every name's variants ("Lumin", "ear mind" …).
+    static var variants: [String] {
+        names.flatMap { variantsByName[$0.lowercased()] ?? [$0.lowercased()] }
+    }
 
     /// Toby 1 T17 finding 1: variants that are (or sound like) real Swedish words. Like any one-edit match they wake
     /// only when the name clearly addresses Lumen (alone, before a pause, or before a question or instruction).
-    static let wordLikeVariants: Set<String> = ["limen", "lune", "lumi", "lumet", "lumel"]
+    /// A97: "i mind", "mind ear", "a r mind" are ordinary words heard together.
+    static let wordLikeVariants: Set<String> = ["limen", "lune", "lumi", "lumet", "lumel", "i mind", "mind ear", "a r mind"]
 
     /// The exact name or a variant that is no Swedish word ("Lumin", "Lummen", "Lu men"): wakes like the name.
     /// One edit from the name ("Lusen", "Limen") is only a guess.
     static func isConfident(_ heard: String) -> Bool {
         let word = fold(heard)
         guard matches(word) else { return false }
-        if word == fold(name) { return true }
+        if names.map(fold).contains(word) { return true }
         return variants.map(fold).contains(word) && !wordLikeVariants.contains(word)
     }
 
@@ -34,17 +41,25 @@ enum WakeWord {
         let word = fold(heard)
         guard !word.isEmpty, !notTheName.contains(word) else { return false }
         if variants.map(fold).contains(word) { return true }
-        let target = fold(name)
-        guard !word.contains(" "), abs(word.count - target.count) <= 1, word.first == target.first else { return false }
-        return editDistance(word, target) <= 1
+        guard !word.contains(" ") else { return false }
+        return names.map(fold).contains { target in
+            abs(word.count - target.count) <= 1 && word.first == target.first && editDistance(word, target) <= 1
+        }
+    }
+
+    /// A97: "Earmind" with a known two- or three-word spelling ("mind ear", "a r mind").
+    static func isKnownSpelling(_ heard: String) -> Bool {
+        let word = fold(heard)
+        return word.contains(" ") && variants.map(fold).contains(word)
     }
 
     /// A75: close to the name but not taken (two edits), for the log that grows the list.
     static func isNearMiss(_ heard: String) -> Bool {
         let word = fold(heard)
         guard !word.isEmpty, !matches(word), !word.contains(" ") else { return false }
-        let target = fold(name)
-        return word.first == target.first && abs(word.count - target.count) <= 2 && editDistance(word, target) == 2
+        return names.map(fold).contains { target in
+            word.first == target.first && abs(word.count - target.count) <= 2 && editDistance(word, target) == 2
+        }
     }
 
     static func fold(_ text: String) -> String {
@@ -272,6 +287,11 @@ enum VoiceChannel {
     static func wakeWord(in text: String) -> Range<String.Index>? {
         let words = wordRanges(in: text)
         for (index, range) in words.enumerated() {
+            // A97: "a r mind", "mind ear", "ear mind": a known spelling over two or three words.
+            for count in [3, 2] where index + count - 1 < words.count {
+                let span = range.lowerBound..<words[index + count - 1].upperBound
+                if WakeWord.isKnownSpelling(String(text[span])) { return span }
+            }
             if index + 1 < words.count {
                 let pair = text[range.lowerBound..<words[index + 1].upperBound]
                 // "Lu men": two short words with only a space or hyphen between them.

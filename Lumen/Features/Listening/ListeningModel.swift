@@ -564,7 +564,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .interview: []
         }
         // A75: the name first, with the most weight Scribe and the phone's recogniser give (the first keyterms).
-        transcription.setContextualStrings(ExamKeyterms.merged(exam: [WakeWord.name] + exam, rest: spoken + rest))
+        // A97 (D172): both names, "Lumen" and "Earmind".
+        transcription.setContextualStrings(ExamKeyterms.merged(exam: WakeWord.names + exam, rest: spoken + rest))
     }
 
     /// Raw capture for the Diagnostics recording (D78), the same audio the recogniser gets before any gate.
