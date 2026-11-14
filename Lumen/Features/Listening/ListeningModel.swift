@@ -2367,6 +2367,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var repeatGuard = RepeatGuard()
     /// T17 finding 5: the question asked again after an empty answer ahead (once).
     @ObservationIgnored private var emptyRetried: String?
+    /// T15b finding 6: the whole utterance whose first question was asked alone (once per utterance).
+    @ObservationIgnored private var splitRetried: String?
 
     /// A68: when the current `/answer` call was sent.
     @ObservationIgnored private var answerRequestedAt: Date?
@@ -3972,6 +3974,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         controller.turns.setStatus(eventTurnID, status: "not_question", isQuestion: false)
         if bufferAhead(.skipped(request)) { return }
         if ahead?.delivered == true { ahead = nil }
+        // Toby 1 T15b finding 6: "Vilka är de största? Barieneva-" was refused as a whole. Ask the first clear question
+        // on its own once, instead of losing the turn.
+        if let first = QuestionSplitter.firstClearQuestion(in: request.query), splitRetried != request.query {
+            splitRetried = request.query
+            controller.turns.finish(currentTurnID, outcome: .silent, reason: "not a question as a whole; first question asked alone")
+            controller.log("Auto: not a question as a whole; asking the first question alone: \(first)")
+            repeatGuard.forget(request.query)
+            activated(ActivationRequest(query: first, trigger: request.trigger, language: request.language,
+                                        gate: request.gate))
+            return
+        }
         latency.end()
         conversation.cancelAnswer()
         answerNotice = "Not a question — no answer (auto mode)"

@@ -31,6 +31,17 @@ enum QuestionSplitter {
         ["fortsätt", "att"], ["från", "nu", "på"], ["in", "the", "future"], ["from", "now", "on"], ["always", "answer"],
     ]
 
+    /// Toby 1 T15b finding 6: "Vilka är de största? Barieneva-" was refused as a whole ("not a question") and the turn
+    /// was lost. The first clear question on its own ("Vilka är de största?"), when something follows it; else nil.
+    static func firstClearQuestion(in text: String) -> String? {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let mark = trimmed.firstIndex(of: "?") else { return nil }
+        let question = String(trimmed[...mark])
+        let rest = trimmed[trimmed.index(after: mark)...].trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !rest.isEmpty, question.split(whereSeparator: \.isWhitespace).count >= 2 else { return nil }
+        return question
+    }
+
     static func split(_ text: String) -> [String] {
         let words = text.split(whereSeparator: \.isWhitespace).map(String.init)
         guard words.count >= minimumWords * 2 else { return [text.trimmingCharacters(in: .whitespacesAndNewlines)] }

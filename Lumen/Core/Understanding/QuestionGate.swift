@@ -74,6 +74,9 @@ struct QuestionGate: Sendable {
         "jag", "vi", "det", "idag", "nu", "så", "sen", "sedan", "också", "men", "och", "ni", "han", "hon", "dom", "de",
         "i", "we", "today", "now", "so", "then", "also", "but", "and", "let", "lets", "you", "he", "she", "they",
     ]
+    /// Toby 1 T15b finding 7: "Och 23 gånger 4." is a sum to work out, not a statement. A sentence that only opens
+    /// with one of these words and holds a sum is not penalised as a statement.
+    static let openingConjunctions: Set<String> = ["och", "men", "så", "sen", "sedan", "också", "and", "but", "so", "then", "also"]
     static let maxComfortableTokens = 14
     /// A sentence that ends on one of these is not finished ("vad finns det i", "kan du förklara och"): no trigger.
     static let unfinishedEndings: Set<String> = [
@@ -113,9 +116,11 @@ struct QuestionGate: Sendable {
             add(.imperativeCue, 0.5)
         }
 
-        if Self.hasMathPattern(tokens) { add(.mathPattern, 0.6) }
+        let math = Self.hasMathPattern(tokens)
+        if math { add(.mathPattern, 0.6) }
 
         let statement = Self.statementStarts.contains(tokens[0])
+            && !(math && Self.openingConjunctions.contains(tokens[0]))
         if tokens.count <= 3 && !statement { add(.shortFragment, 0.35) }
         if statement && !questionMark { add(.statementCue, -0.3) }
         if tokens.count > Self.maxComfortableTokens { add(.tooLong, -0.25) }
