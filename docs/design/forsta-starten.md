@@ -69,7 +69,7 @@ leder tillbaka till Nytt prov med sidorna som miniatyrer. Ingen egen kamera. Sä
 "Earmind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket." med knappen
 Öppna Inställningar (Ke50 §2).
 
-## Samtycket (beslut som behöver Deangelos ja)
+## Samtycket (godkänt: D170, Deangelo 2026-11-14 14:15)
 I dag godkänns lyssningen i introt ("Testa nu betyder att du godkänner punkterna ovan"). Med D142 lyssnar första
 starten aldrig. **Förslag:**
 1. **Välkommen** är samtycket för repetitionsläget: material och text skickas för att göra frågor och ljud, och prov
@@ -79,8 +79,7 @@ starten aldrig. **Förslag:**
    för lyssningen (samtyckesskärm, synlig indikator, inget ljud sparat som standard).
 3. Den som redan har godkänt i dag behöver inte godkänna igen för lyssningen. Välkomstsamtycket visas en gång vid nästa
    start.
-Det här ändrar var samtycket ges, inte vad det säger om lyssning. **Deangelo bör godkänna det** innan Angela Fable
-bygger punkt 1–3. Skärmarna i övrigt kan byggas direkt.
+Det här ändrar var samtycket ges, inte vad det säger om lyssning. **Godkänt i D170** och byggt i A94.
 
 ## Till Angela Fable
 1. Ersätt `IntroView` med Välkommen enligt tabellen ovan (fast knapp nederst, `.footnote`-raden och Läs mer-bladet).

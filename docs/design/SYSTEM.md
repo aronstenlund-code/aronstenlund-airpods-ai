@@ -45,6 +45,11 @@ storlekarna där de anges.
 | `soft`, `okSoft`, `testSoft` | används inte som bakgrund till rutor. Bort |
 Testläget behåller sin orange (D140), men bara som text eller symbol med `.orange`, inte som en tonad ruta.
 
+**Grå text (D174):** systemets `.secondary` får stå kvar i undertexter, fotnoter och sektionsrubriker. Två undantag
+är i `.primary`, eftersom de måste läsas: samtyckesraden ovanför Fortsätt på Välkommen, och förklaringen under en
+grå huvudknapp ("Lägg till minst en sida, bild eller text."). Fyllda knappar i mörkt läge har mörk text på den ljusa
+accentfärgen (#7F9BFF, 6,9:1).
+
 ### 0.4 Komponenter
 | Behov | Systemets del |
 |---|---|
