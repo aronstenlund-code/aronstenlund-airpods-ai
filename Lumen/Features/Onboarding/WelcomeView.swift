@@ -70,9 +70,10 @@ struct WelcomeView: View {
     /// What Fortsätt agrees to stands at the button (as Apple's line about data above Fortsätt), then the one button.
     private var bottom: some View {
         VStack(spacing: 0) {
+            // Kelly (A95): this line is what Fortsätt agrees to, so it has the text colour, not the grey.
             Text("Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen.")
                 .font(.footnote)
-                .foregroundStyle(Color.secondary)
+                .foregroundStyle(Color.primary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
             Button { isReadingMore = true } label: { // "Läs mer": the words Toby's screen tour looks for

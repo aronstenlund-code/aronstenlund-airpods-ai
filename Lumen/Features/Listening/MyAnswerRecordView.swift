@@ -168,24 +168,39 @@ struct MyAnswerRecordView: View {
                     Spacer(minLength: 8)
                     LevelMeter(levelDBFS: answer.levelDBFS)
                 }
-                Text(verbatim: "\(MyAnswerText.clock(answer.elapsed)) av \(MyAnswerText.clock(AnswerRecorder.limit))")
-                    .font(.largeTitle.bold())
-                    .monospacedDigit()
-                    .accessibilityAddTraits(.updatesFrequently)
+                // Kelly M2: the time on its own line, the limit under it, so nothing breaks with the largest text.
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(verbatim: MyAnswerText.clock(answer.elapsed))
+                        .font(.largeTitle.bold())
+                        .monospacedDigit()
+                    Text(verbatim: "av \(MyAnswerText.clock(AnswerRecorder.limit))")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(.updatesFrequently)
             }
             .padding(.vertical, 4)
         } else if answer.state == .recorded {
-            HStack(spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).accessibilityHidden(true)
-                Text(verbatim: "Svaret är inspelat · \(MyAnswerText.clock(answer.elapsed))").monospacedDigit()
+                VStack(alignment: .leading, spacing: 2) { // Kelly M2: the time under the words
+                    Text("Svaret är inspelat")
+                    Text(verbatim: MyAnswerText.clock(answer.elapsed))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                }
             }
+            .accessibilityElement(children: .combine)
             Button("Spela in igen") { recording.recordAgain() }
         } else {
             if let problem = recording.problem ?? failure {
                 Text(verbatim: problem)
             }
-            Text(recording.hasQuestion ? "Mikrofonen startar när du trycker Spela in svaret."
-                                       : "Välj eller skriv frågan först. Mikrofonen startar inte förrän du trycker Spela in svaret.")
+            // Kelly M1: "Välj eller skriv frågan först." stands under the button only.
+            Text("Mikrofonen startar när du trycker Spela in svaret.")
                 .foregroundStyle(.secondary)
         }
     }
