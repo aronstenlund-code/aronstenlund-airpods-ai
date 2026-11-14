@@ -1,0 +1,312 @@
+{
+ "h3-en-climate": {
+  "status": 200,
+  "subject": "Engelska",
+  "questions": 12,
+  "why": 3,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [
+   {
+    "question": "How has the average temperature changed since 1850?",
+    "screen": {
+     "question": "How has the average temperature changed since 1850?",
+     "short": "Since about 1850, the average temperature of the Earth has risen by roughly 1.2 degrees.",
+     "long": "Since about 1850, the average temperature of the Earth has risen by roughly 1.2 degrees. This may sound like a small change, but it affects the whole planet. Scientists say the warming is mainly caused by humans, because we release more and more greenhouse gases. The rise in temperature leads to melting ice, higher sea levels and more extreme weather, such as heat waves, droughts and heavy rain."
+    }
+   }
+  ],
+  "english_questions": 12,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Why is the Earth's climate getting warmer?",
+    "short": "The climate is getting warmer because humans burn coal, oil and gas, which releases carbon dioxide that traps extra heat in the atmosphere.",
+    "long": "The climate is getting warmer because humans burn coal, oil and gas, which releases carbon dioxide that traps extra heat in the atmosphere. Most scientists agree that people are the main cause. Gases like carbon dioxide work a bit like the glass roof of a greenhouse: they let the sunlight in but hold the heat. The more fossil fuels we burn, the more carbon dioxide ends up in the air, and the more heat stays on Earth. This is called the greenhouse effect, and it is why the average temperature keeps rising."
+   },
+   {
+    "id": "q2",
+    "question": "How has the average temperature changed since 1850?",
+    "short": "Since about eighteen fifty, the average temperature of the Earth has risen by roughly one point two degrees.",
+    "long": "Since about eighteen fifty, the average temperature of the Earth has risen by roughly one point two degrees. This may sound like a small change, but it affects the whole planet. Scientists say the warming is mainly caused by humans, because we release more and more greenhouse gases. The rise in temperature leads to melting ice, higher sea levels and more extreme weather, such as heat waves, droughts and heavy rain.",
+    "screen": {
+     "question": "How has the average temperature changed since 1850?",
+     "short": "Since about 1850, the average temperature of the Earth has risen by roughly 1.2 degrees.",
+     "long": "Since about 1850, the average temperature of the Earth has risen by roughly 1.2 degrees. This may sound like a small change, but it affects the whole planet. Scientists say the warming is mainly caused by humans, because we release more and more greenhouse gases. The rise in temperature leads to melting ice, higher sea levels and more extreme weather, such as heat waves, droughts and heavy rain."
+    }
+   },
+   {
+    "id": "q3",
+    "question": "What is it that traps heat in the atmosphere?",
+    "short": "Greenhouse gases, such as carbon dioxide, trap heat in the atmosphere.",
+    "long": "Greenhouse gases, such as carbon dioxide, trap heat in the atmosphere. These gases act like a blanket around the Earth. Sunlight reaches the ground and warms it, but the greenhouse gases stop some of the heat from escaping back into space. A certain amount of this effect is natural and keeps the planet warm enough to live on. The problem is that humans add more of these gases, mainly by burning coal, oil and gas, so too much heat is trapped."
+   },
+   {
+    "id": "q4",
+    "question": "How does the greenhouse effect work?",
+    "short": "Gases like carbon dioxide trap heat in the atmosphere, in the same way as the glass roof of a greenhouse keeps the warmth inside.",
+    "long": "Gases like carbon dioxide trap heat in the atmosphere, in the same way as the glass roof of a greenhouse keeps the warmth inside. Sunlight passes through the atmosphere and warms the surface of the Earth. Some of that heat would normally escape into space, but greenhouse gases hold on to part of it. This keeps the planet warmer. When humans burn coal, oil and gas, more carbon dioxide is released, so more heat is trapped and the climate gets warmer. That is how a natural effect becomes a global problem."
+   },
+   {
+    "id": "q5",
+    "question": "What happens to the amount of carbon dioxide in the air when we burn coal, oil and gas?",
+    "short": "Burning coal, oil and gas releases carbon dioxide into the air, and the more of it there is, the more heat is trapped in the atmosphere.",
+    "long": "Burning coal, oil and gas releases carbon dioxide into the air, and the more of it there is, the more heat is trapped in the atmosphere. The extra carbon dioxide strengthens the greenhouse effect, because the gas holds on to heat that would otherwise escape into space. As a result the average temperature of the Earth rises. This is why countries made promises in the Paris Agreement to cut their emissions. People can help too, for example by taking the train instead of flying, eating less meat and wasting less food."
+   },
+   {
+    "id": "q6",
+    "question": "What happens to sea levels when the ice on Greenland and Antarctica melts?",
+    "short": "When the ice on Greenland and Antarctica melts, the extra water flows into the oceans and the sea level rises.",
+    "long": "When the ice on Greenland and Antarctica melts, the extra water flows into the oceans and the sea level rises. This happens because the melted ice adds more water to the sea. Rising seas are a direct consequence of global warming, which has made the Earth about one point two degrees warmer since around eighteen fifty. Most scientists agree that humans are the main cause, since burning coal, oil and gas releases carbon dioxide that traps heat in the atmosphere. So the more we warm the planet, the more ice melts and the higher the sea level becomes."
+   },
+   {
+    "id": "q7",
+    "question": "Why does rising sea level threaten cities near the coast?",
+    "short": "Cities near the coast are threatened because higher seas can flood the land they are built on.",
+    "long": "Cities near the coast are threatened because higher seas can flood the land they are built on. When the sea level rises, the water reaches further inland, so low-lying coastal areas are at risk of being covered by water. This is a serious consequence of global warming, since the melting ice on Greenland and Antarctica adds water to the oceans. Many people live in cities close to the coast, so a rising sea can put homes, streets and whole communities in danger. It is one of several consequences of climate change, together with heatwaves, drought and heavy rain."
+   },
+   {
+    "id": "q8",
+    "question": "How are polar bears affected by climate change?",
+    "short": "Polar bears are affected because climate change makes them lose their habitat.",
+    "long": "Polar bears are affected because climate change makes them lose their habitat. As the Earth gets warmer, the ice melts, and this changes the environment where polar bears live. Without their habitat, they struggle to survive. Polar bears are just one example of animals that suffer from global warming. The warming is mainly caused by humans, because burning coal, oil and gas releases carbon dioxide, which traps heat in the atmosphere like the glass roof of a greenhouse. This shows that climate change harms nature as well as people."
+   },
+   {
+    "id": "q9",
+    "question": "Why can it be good to take the train instead of flying?",
+    "short": "Taking the train instead of flying is a way for people to help reduce their emissions and so fight climate change.",
+    "long": "Taking the train instead of flying is a way for people to help reduce their emissions and so fight climate change. Climate change is caused mainly by greenhouse gases like carbon dioxide, which trap heat in the atmosphere. When we use less of the things that cause emissions, less heat is trapped. That is why choosing the train is a good everyday choice. Countries have promised to cut their emissions in the Paris Agreement from twenty fifteen, but ordinary people can help too. Besides taking the train, we can eat less meat and waste less food."
+   },
+   {
+    "id": "q10",
+    "question": "How can you reduce your climate impact through your eating habits?",
+    "short": "You can reduce your climate impact by eating less meat and by wasting less food.",
+    "long": "You can reduce your climate impact by eating less meat and by wasting less food. These are two simple choices that ordinary people can make every day to help the climate. They matter because climate change is mainly caused by human activity, and it can only be slowed down if emissions are reduced. Countries have made promises in the Paris Agreement from twenty fifteen, but individuals can also play a part. Together with other choices, such as taking the train instead of flying, changing our eating habits is one way to help limit global warming."
+   },
+   {
+    "id": "q11",
+    "question": "What would happen if we wasted less food?",
+    "short": "If we wasted less food, we would help the climate, because less food would have to be produced, and so less carbon dioxide would be released.",
+    "long": "If we wasted less food, we would help the climate, because less food would have to be produced, and so less carbon dioxide would be released. Producing food, moving it and growing it takes energy, and much of that energy comes from burning coal, oil and gas. Every meal we throw away has already used up some of that energy for nothing. So when people waste less, less food has to be made, and fewer greenhouse gases go into the air. That means less heat is trapped in the atmosphere. Wasting less food is one simple thing ordinary people can do to slow global warming, together with eating less meat and taking the train instead of flying."
+   },
+   {
+    "id": "q12",
+    "question": "How is the greenhouse effect similar to, and different from, a real greenhouse?",
+    "short": "Both trap heat, but a real greenhouse uses a glass roof, while the greenhouse effect uses gases like carbon dioxide high up in the atmosphere.",
+    "long": "Both trap heat, but a real greenhouse uses a glass roof, while the greenhouse effect uses gases like carbon dioxide high up in the atmosphere. The comparison works because the gases in the atmosphere act like the glass roof of a greenhouse: they let warmth stay near the ground instead of escaping into space. The big difference is that a real greenhouse is small and built on purpose to keep plants warm. The greenhouse effect covers the whole Earth, and it becomes a problem when people burn coal, oil and gas. More carbon dioxide is released, so more heat is trapped, and the climate gets warmer. Since about eighteen fifty the temperature has risen by around one point two degrees."
+   }
+  ],
+  "cost_usd": 0.039403999999999995
+ },
+ "h3-ma-pythagoras": {
+  "status": 200,
+  "subject": "Matematik",
+  "questions": 8,
+  "why": 0,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [
+   {
+    "question": "Hur räknar man ut hypotenusan när kateterna är tre cm och fyra cm?",
+    "screen": {
+     "short": "Man kvadrerar båda kateterna, adderar dem och tar kvadratroten ur summan, vilket ger att hypotenusan är 5 cm.",
+     "long": "Man kvadrerar båda kateterna, adderar dem och tar kvadratroten ur summan, vilket ger att hypotenusan är 5 cm. Pythagoras sats säger att kateternas kvadrater tillsammans är lika med hypotenusans kvadrat. 3² är 9 och 4² är 16. 9 + 16 blir 25, så hypotenusan i kvadrat är 25. Eftersom 5 · 5 är 25 är hypotenusan 5 cm."
+    }
+   },
+   {
+    "question": "Vad säger Pythagoras sats?",
+    "screen": {
+     "long": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat. Med bokstäver skrivs det a² + b² = c², där a och b är kateterna och c är hypotenusan. Satsen gäller bara i rätvinkliga trianglar. Den fungerar också åt andra hållet: om a² + b² = c² för en triangel, så vet man att triangeln är rätvinklig. Med satsen kan man räkna ut en okänd sida när de två andra är kända."
+    }
+   },
+   {
+    "question": "Hur kan man räkna ut en katet om man känner hypotenusan och den andra kateten?",
+    "screen": {
+     "long": "Man tar hypotenusans kvadrat minus den kända katetens kvadrat och drar sedan kvadratroten ur resultatet. Formeln är a² = c² − b², där c är hypotenusan och b är den kända kateten. Den får man genom att flytta över b² i Pythagoras sats. Om hypotenusan är 13 och den ena kateten är 5 blir det 13² − 5², alltså 169 − 25, vilket är 144. Kvadratroten ur 144 är 12, så den andra kateten är 12."
+    }
+   },
+   {
+    "question": "Vad innebär det att satsen gäller omvänt, och hur kan man använda det?",
+    "screen": {
+     "short": "Omvänt betyder att om a² + b² = c² stämmer för sidorna i en triangel, så är triangeln rätvinklig.",
+     "long": "Omvänt betyder att om a² + b² = c² stämmer för sidorna i en triangel, så är triangeln rätvinklig. Man använder det för att kontrollera om en triangel har en rät vinkel när man bara känner sidlängderna. Man kvadrerar de två kortaste sidorna och adderar dem, och sedan kvadrerar man den längsta sidan. Är summan lika med kvadraten på den längsta sidan, är triangeln rätvinklig, och den längsta sidan är då hypotenusan. Ett exempel är en triangel med sidorna 3, 4 och 5 cm. 9 + 16 = 25, och 5² = 25, så triangeln är rätvinklig. Stämmer inte likheten är triangeln inte rätvinklig."
+    }
+   },
+   {
+    "question": "Hur räknar man ut arean av en triangel?",
+    "screen": {
+     "question": "Hur räknar man ut arean av en triangel?",
+     "short": "Arean av en triangel är basen gånger höjden delat med 2: A = b · h / 2.",
+     "long": "Arean av en triangel är basen gånger höjden delat med 2: A = b · h / 2. Basen är en av triangelns sidor, och höjden är det vinkelräta avståndet från basen upp till det hörn som ligger mitt emot. Man multiplicerar alltså basen med höjden och delar sedan produkten med 2, eftersom en triangel är hälften så stor som den rektangel som har samma bas och höjd. Tänk dig en triangel med basen 10 cm och höjden 6 cm. Då blir basen gånger höjden 60, och delar man det med 2 får man en area på 30 cm². Kom ihåg att höjden måste vara vinkelrät mot basen, inte bara en av de lutande sidorna, annars blir svaret fel."
+    }
+   },
+   {
+    "question": "Hur räknar man ut arean av en cirkel, och vad står r för?",
+    "screen": {
+     "short": "Arean av en cirkel är A = π · r², och r står för radien, alltså avståndet från cirkelns mitt ut till kanten.",
+     "long": "Arean av en cirkel är A = π · r², och r står för radien, alltså avståndet från cirkelns mitt ut till kanten. Pi är ungefär 3,14. Du tar alltså radien gånger radien och multiplicerar svaret med pi. Om radien till exempel är 5 cm blir r² = 25, och arean blir ungefär 25 · 3,14 = 78,5 cm². Tänk på att använda radien och inte diametern. Diametern är dubbelt så lång som radien, så om du har diametern måste du först dela den med 2."
+    }
+   }
+  ],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Vilken sida i en rätvinklig triangel kallas hypotenusa?",
+    "short": "Hypotenusan är den längsta sidan i en rätvinklig triangel, och den ligger alltid mitt emot den räta vinkeln.",
+    "long": "Hypotenusan är den längsta sidan i en rätvinklig triangel, och den ligger alltid mitt emot den räta vinkeln. De två andra sidorna, de som bildar den räta vinkeln, kallas kateter. Hypotenusan är alltid längre än var och en av kateterna. När man använder Pythagoras sats är det viktigt att veta vilken sida som är hypotenusa, eftersom den är den som står ensam på ena sidan av likhetstecknet i formeln."
+   },
+   {
+    "id": "q2",
+    "question": "Hur räknar man ut hypotenusan när kateterna är tre cm och fyra cm?",
+    "short": "Man kvadrerar båda kateterna, adderar dem och tar kvadratroten ur summan, vilket ger att hypotenusan är fem centimeter.",
+    "long": "Man kvadrerar båda kateterna, adderar dem och tar kvadratroten ur summan, vilket ger att hypotenusan är fem centimeter. Pythagoras sats säger att kateternas kvadrater tillsammans är lika med hypotenusans kvadrat. Tre i kvadrat är nio och fyra i kvadrat är sexton. Nio plus sexton blir tjugofem, så hypotenusan i kvadrat är tjugofem. Eftersom fem gånger fem är tjugofem är hypotenusan fem centimeter.",
+    "screen": {
+     "short": "Man kvadrerar båda kateterna, adderar dem och tar kvadratroten ur summan, vilket ger att hypotenusan är 5 cm.",
+     "long": "Man kvadrerar båda kateterna, adderar dem och tar kvadratroten ur summan, vilket ger att hypotenusan är 5 cm. Pythagoras sats säger att kateternas kvadrater tillsammans är lika med hypotenusans kvadrat. 3² är 9 och 4² är 16. 9 + 16 blir 25, så hypotenusan i kvadrat är 25. Eftersom 5 · 5 är 25 är hypotenusan 5 cm."
+    }
+   },
+   {
+    "id": "q3",
+    "question": "Vad säger Pythagoras sats?",
+    "short": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat.",
+    "long": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat. Med bokstäver skrivs det a i kvadrat plus b i kvadrat är lika med c i kvadrat, där a och b är kateterna och c är hypotenusan. Satsen gäller bara i rätvinkliga trianglar. Den fungerar också åt andra hållet: om a i kvadrat plus b i kvadrat är lika med c i kvadrat för en triangel, så vet man att triangeln är rätvinklig. Med satsen kan man räkna ut en okänd sida när de två andra är kända.",
+    "screen": {
+     "long": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat. Med bokstäver skrivs det a² + b² = c², där a och b är kateterna och c är hypotenusan. Satsen gäller bara i rätvinkliga trianglar. Den fungerar också åt andra hållet: om a² + b² = c² för en triangel, så vet man att triangeln är rätvinklig. Med satsen kan man räkna ut en okänd sida när de två andra är kända."
+    }
+   },
+   {
+    "id": "q4",
+    "question": "Hur kan man räkna ut en katet om man känner hypotenusan och den andra kateten?",
+    "short": "Man tar hypotenusans kvadrat minus den kända katetens kvadrat och drar sedan kvadratroten ur resultatet.",
+    "long": "Man tar hypotenusans kvadrat minus den kända katetens kvadrat och drar sedan kvadratroten ur resultatet. Formeln är a i kvadrat är lika med c i kvadrat minus b i kvadrat, där c är hypotenusan och b är den kända kateten. Den får man genom att flytta över b i kvadrat i Pythagoras sats. Om hypotenusan är tretton och den ena kateten är fem blir det tretton i kvadrat minus fem i kvadrat, alltså hundrasextionio minus tjugofem, vilket är hundrafyrtiofyra. Kvadratroten ur hundrafyrtiofyra är tolv, så den andra kateten är tolv.",
+    "screen": {
+     "long": "Man tar hypotenusans kvadrat minus den kända katetens kvadrat och drar sedan kvadratroten ur resultatet. Formeln är a² = c² − b², där c är hypotenusan och b är den kända kateten. Den får man genom att flytta över b² i Pythagoras sats. Om hypotenusan är 13 och den ena kateten är 5 blir det 13² − 5², alltså 169 − 25, vilket är 144. Kvadratroten ur 144 är 12, så den andra kateten är 12."
+    }
+   },
+   {
+    "id": "q5",
+    "question": "Vad gäller för Pythagoras sats i en triangel som inte är rätvinklig?",
+    "short": "Satsen gäller bara i rätvinkliga trianglar, så i en triangel utan rät vinkel stämmer inte sambandet mellan sidorna.",
+    "long": "Satsen gäller bara i rätvinkliga trianglar, så i en triangel utan rät vinkel stämmer inte sambandet mellan sidorna. Pythagoras sats bygger på att en av vinklarna är rät, och bara då är hypotenusan och kateterna definierade. I andra trianglar blir kateternas kvadrater tillsammans inte lika med kvadraten på den längsta sidan. Man kan använda detta åt andra hållet: om sambandet inte stämmer är triangeln inte rätvinklig, och om det stämmer är den det."
+   },
+   {
+    "id": "q6",
+    "question": "Vad innebär det att satsen gäller omvänt, och hur kan man använda det?",
+    "short": "Omvänt betyder att om kvadraterna på de två kortare sidorna tillsammans blir lika stora som kvadraten på den längsta sidan, så är triangeln rätvinklig.",
+    "long": "Omvänt betyder att om kvadraterna på de två kortare sidorna tillsammans blir lika stora som kvadraten på den längsta sidan, så är triangeln rätvinklig. Man använder det för att kontrollera om en triangel har en rät vinkel när man bara känner sidlängderna. Man kvadrerar de två kortaste sidorna och adderar dem, och sedan kvadrerar man den längsta sidan. Är summan lika med kvadraten på den längsta sidan, är triangeln rätvinklig, och den längsta sidan är då hypotenusan. Ett exempel är en triangel med sidorna tre, fyra och fem centimeter. Nio plus sexton är tjugofem, och fem i kvadrat är också tjugofem, så triangeln är rätvinklig. Stämmer inte likheten är triangeln inte rätvinklig.",
+    "screen": {
+     "short": "Omvänt betyder att om a² + b² = c² stämmer för sidorna i en triangel, så är triangeln rätvinklig.",
+     "long": "Omvänt betyder att om a² + b² = c² stämmer för sidorna i en triangel, så är triangeln rätvinklig. Man använder det för att kontrollera om en triangel har en rät vinkel när man bara känner sidlängderna. Man kvadrerar de två kortaste sidorna och adderar dem, och sedan kvadrerar man den längsta sidan. Är summan lika med kvadraten på den längsta sidan, är triangeln rätvinklig, och den längsta sidan är då hypotenusan. Ett exempel är en triangel med sidorna 3, 4 och 5 cm. 9 + 16 = 25, och 5² = 25, så triangeln är rätvinklig. Stämmer inte likheten är triangeln inte rätvinklig."
+    }
+   },
+   {
+    "id": "q7",
+    "question": "Hur räknar man ut arean av en triangel?",
+    "short": "Arean av en triangel är basen gånger höjden delat med två.",
+    "long": "Arean av en triangel är basen gånger höjden delat med två. Basen är en av triangelns sidor, och höjden är det vinkelräta avståndet från basen upp till det hörn som ligger mitt emot. Man multiplicerar alltså basen med höjden och delar sedan produkten med två, eftersom en triangel är hälften så stor som den rektangel som har samma bas och höjd. Tänk dig en triangel med basen tio centimeter och höjden sex centimeter. Då blir basen gånger höjden sextio, och delar man det med två får man en area på trettio kvadratcentimeter. Kom ihåg att höjden måste vara vinkelrät mot basen, inte bara en av de lutande sidorna, annars blir svaret fel.",
+    "screen": {
+     "question": "Hur räknar man ut arean av en triangel?",
+     "short": "Arean av en triangel är basen gånger höjden delat med 2: A = b · h / 2.",
+     "long": "Arean av en triangel är basen gånger höjden delat med 2: A = b · h / 2. Basen är en av triangelns sidor, och höjden är det vinkelräta avståndet från basen upp till det hörn som ligger mitt emot. Man multiplicerar alltså basen med höjden och delar sedan produkten med 2, eftersom en triangel är hälften så stor som den rektangel som har samma bas och höjd. Tänk dig en triangel med basen 10 cm och höjden 6 cm. Då blir basen gånger höjden 60, och delar man det med 2 får man en area på 30 cm². Kom ihåg att höjden måste vara vinkelrät mot basen, inte bara en av de lutande sidorna, annars blir svaret fel."
+    }
+   },
+   {
+    "id": "q8",
+    "question": "Hur räknar man ut arean av en cirkel, och vad står r för?",
+    "short": "Arean av en cirkel är pi gånger radien i kvadrat, och r står för radien, alltså avståndet från cirkelns mitt ut till kanten.",
+    "long": "Arean av en cirkel är pi gånger radien i kvadrat, och r står för radien, alltså avståndet från cirkelns mitt ut till kanten. Pi är ungefär tre komma fjorton. Du tar alltså radien gånger radien och multiplicerar svaret med pi. Om radien till exempel är fem centimeter blir radien i kvadrat tjugofem, och arean blir ungefär tjugofem gånger tre komma fjorton, alltså cirka sjuttioåtta komma fem kvadratcentimeter. Tänk på att använda radien och inte diametern. Diametern är dubbelt så lång som radien, så om du har diametern måste du först dela den med två.",
+    "screen": {
+     "short": "Arean av en cirkel är A = π · r², och r står för radien, alltså avståndet från cirkelns mitt ut till kanten.",
+     "long": "Arean av en cirkel är A = π · r², och r står för radien, alltså avståndet från cirkelns mitt ut till kanten. Pi är ungefär 3,14. Du tar alltså radien gånger radien och multiplicerar svaret med pi. Om radien till exempel är 5 cm blir r² = 25, och arean blir ungefär 25 · 3,14 = 78,5 cm². Tänk på att använda radien och inte diametern. Diametern är dubbelt så lång som radien, så om du har diametern måste du först dela den med 2."
+    }
+   }
+  ],
+  "cost_usd": 0.0810858
+ },
+ "h3-bi-anteckningar": {
+  "status": 200,
+  "subject": "Biologi",
+  "questions": 12,
+  "why": 3,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Vad är ett ekosystem?",
+    "short": "Ett ekosystem är alla levande organismer tillsammans med de icke levande delarna, som ljus, vatten och jord, på en och samma plats.",
+    "long": "Ett ekosystem är alla levande organismer tillsammans med de icke levande delarna, som ljus, vatten och jord, på en och samma plats. Det som är viktigt är att de levande och de icke levande delarna hänger ihop och påverkar varandra. Växterna behöver till exempel ljus, vatten och jord för att växa, och djuren äter växterna eller andra djur. Dessutom bryter svampar, bakterier och maskar ner döda växter och djur, så att näringen kommer tillbaka till jorden. En skog, en sjö och en äng är exempel på ekosystem."
+   },
+   {
+    "id": "q2",
+    "question": "Varför är producenterna viktiga för ekosystemet?",
+    "short": "Producenterna, alltså växterna, gör sin egen energi med fotosyntes och bygger socker av solens energi, så de är grunden som alla andra i ekosystemet lever på.",
+    "long": "Producenterna, alltså växterna, gör sin egen energi med fotosyntes och bygger socker av solens energi, så de är grunden som alla andra i ekosystemet lever på. Utan producenter skulle det inte finnas någon energi som kunde föras vidare i näringskedjan. Förstaordningens konsumenter, som haren, äter växterna, och andraordningens konsumenter, som räven, äter i sin tur haren. På så sätt går energin från solen via växterna vidare till alla djur. Dessutom lämnar växterna ifrån sig syre vid fotosyntesen. Försvinner producenterna rasar hela näringsvävet."
+   },
+   {
+    "id": "q3",
+    "question": "Hur omvandlas solenergi till energi som växterna kan använda?",
+    "short": "Växterna omvandlar solens ljusenergi till socker genom fotosyntes, där de tar upp koldioxid och vatten och använder ljuset för att bilda socker och syre.",
+    "long": "Växterna omvandlar solens ljusenergi till socker genom fotosyntes, där de tar upp koldioxid och vatten och använder ljuset för att bilda socker och syre. Sockret är den energi som växten kan använda för att leva och växa. Syret som bildas släpps ut i luften. Det är på just det sättet som solenergin blir till energi som hela näringskedjan kan leva på, eftersom den som äter växten får i sig sockret och energin."
+   },
+   {
+    "id": "q4",
+    "question": "Varför finns det få rovdjur högst upp i en näringskedja?",
+    "short": "Det finns få rovdjur högst upp eftersom bara ungefär tio procent av energin går vidare till nästa steg, så det finns inte energi nog för många djur där.",
+    "long": "Det finns få rovdjur högst upp eftersom bara ungefär tio procent av energin går vidare till nästa steg, så det finns inte energi nog för många djur där. Resten av energin, alltså ungefär nittio procent, blir värme och rörelse i varje steg och går inte vidare. Det finns därför mycket energi i gräset, mindre i harar och ännu mindre i rävar. Ju högre upp i kedjan man kommer, desto mindre energi finns kvar, och därför kan bara ett fåtal rovdjur leva där."
+   },
+   {
+    "id": "q5",
+    "question": "Vad händer med energin när den går från ett steg i näringskedjan till nästa?",
+    "short": "Bara ungefär tio procent av energin går vidare till nästa steg i näringskedjan, medan resten blir värme och rörelse.",
+    "long": "Bara ungefär tio procent av energin går vidare till nästa steg i näringskedjan, medan resten blir värme och rörelse. Det betyder att varje steg får mycket mindre energi än steget före. Haren får till exempel bara en liten del av energin som finns i gräset, och räven får bara en liten del av haren. Pilen i näringskedjan visar att energin går vidare, men det mesta försvinner på vägen som värme och rörelse. Det är därför det finns färre djur för varje steg uppåt."
+   },
+   {
+    "id": "q6",
+    "question": "Vad skiljer en näringsväv från en näringskedja?",
+    "short": "En näringskedja visar en enda väg där energin går vidare från en organism till nästa, medan en näringsväv består av många näringskedjor som hänger ihop.",
+    "long": "En näringskedja visar en enda väg där energin går vidare från en organism till nästa, medan en näringsväv består av många näringskedjor som hänger ihop. I en näringskedja, till exempel gräs, hare och räv, följer man bara ett spår, och pilarna visar att energin förs vidare. I verkligheten äter ett djur ofta flera olika saker och blir själv uppäten av flera olika arter. När man ritar alla de kopplingarna tillsammans får man ett nät, och det är näringsvävet. Det visar därför bättre hur ett ekosystem faktiskt fungerar och hur arterna är beroende av varandra."
+   },
+   {
+    "id": "q7",
+    "question": "Vad händer med näringen i jorden om det inte fanns några nedbrytare?",
+    "short": "Utan nedbrytare skulle döda växter och djur ligga kvar, näringen skulle inte föras tillbaka till jorden och till slut skulle näringen ta slut.",
+    "long": "Utan nedbrytare skulle döda växter och djur ligga kvar, näringen skulle inte föras tillbaka till jorden och till slut skulle näringen ta slut. Nedbrytarna, alltså svampar, bakterier och maskar, bryter ner döda växter och djur så att näringsämnena kommer ut i jorden igen. Där kan växterna ta upp dem. Växterna är producenterna som all annan energi i ekosystemet bygger på. Om näringen inte återfördes skulle växterna få för lite att växa av, och då skulle också de djur som äter växterna och de som äter dem få allt mindre mat. Hela ekosystemet skulle alltså påverkas."
+   },
+   {
+    "id": "q8",
+    "question": "Varför behövs svampar, bakterier och maskar i ett ekosystem?",
+    "short": "De behövs för att de bryter ner döda växter och djur så att näringen återförs till jorden och kan användas på nytt.",
+    "long": "De behövs för att de bryter ner döda växter och djur så att näringen återförs till jorden och kan användas på nytt. Utan nedbrytare skulle näringen ta slut, eftersom den skulle förbli bunden i döda organismer. Tack vare svampar, bakterier och maskar kan växterna ta upp näring ur jorden och växa, och de växterna blir i sin tur mat för konsumenterna. Nedbrytarna sluter alltså kretsloppet, så att ekosystemet kan fortsätta fungera år efter år."
+   },
+   {
+    "id": "q9",
+    "question": "Hur påverkas gräset om rävarna dör?",
+    "short": "Gräset minskar, eftersom färre rävar leder till att antalet harar ökar, och fler harar äter mer gräs.",
+    "long": "Gräset minskar, eftersom färre rävar leder till att antalet harar ökar, och fler harar äter mer gräs. Räven är en andraordningens konsument som äter haren. När rävarna dör finns det inget som håller nere antalet harar, så haren, som är en förstaordningens konsument, blir fler. Fler harar äter mer av gräset, som är producenten, och därför minskar mängden gräs. Det visar att om ett djur försvinner påverkas hela näringsvävet, inte bara det som ligger närmast."
+   },
+   {
+    "id": "q10",
+    "question": "Vad händer med haren om rävarna försvinner?",
+    "short": "Om rävarna försvinner ökar antalet harar, eftersom färre harar blir uppätna.",
+    "long": "Om rävarna försvinner ökar antalet harar, eftersom färre harar blir uppätna. Räven äter haren och håller därmed nere hararnas antal. När räven är borta blir det fler harar. Men det hänger ihop med resten av ekosystemet: fler harar äter mer gräs, så gräset minskar. Om gräset blir för lite kan det på sikt också bli ont om mat för haren. Det visar hur en förändring på ett ställe i näringsvävet påverkar flera andra."
+   },
+   {
+    "id": "q11",
+    "question": "Vad används koldioxid, vatten och ljus till i fotosyntesen?",
+    "short": "Växten använder koldioxid, vatten och ljusenergi som råvaror för att bygga socker, och syre blir över som restprodukt.",
+    "long": "Växten använder koldioxid, vatten och ljusenergi som råvaror för att bygga socker, och syre blir över som restprodukt. Koldioxiden tas upp ur luften och vattnet ur jorden. Ljuset ger energin som behövs för att omvandla dem till socker, och det är så solenergin binds i växten. Därför kallas växter producenter, eftersom de gör sin egen energi. Sockret är växtens energikälla och byggmaterial, och det följer sedan med när växten blir uppäten, så att energin går vidare i näringskedjan."
+   },
+   {
+    "id": "q12",
+    "question": "Vad bildas vid fotosyntesen?",
+    "short": "Vid fotosyntesen bildas socker och syre av koldioxid, vatten och ljus.",
+    "long": "Vid fotosyntesen bildas socker och syre av koldioxid, vatten och ljus. Sockret är det som lagrar solens energi i växten, och växten använder det för att växa och få energi. Syret släpps ut i luften. Hela processen sker i växtens gröna delar och är grunden för nästan alla näringskedjor, eftersom växterna som producenter är de första som gör energin tillgänglig för konsumenterna. Utan fotosyntes skulle varken djur eller människor få mat eller syre."
+   }
+  ],
+  "cost_usd": 0.0379453
+ }
+}

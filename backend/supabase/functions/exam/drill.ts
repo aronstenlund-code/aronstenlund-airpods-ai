@@ -465,7 +465,7 @@ export async function answerItems(
       const out: DrillItem = { ...it, question: a.question ?? it.question, short: a.short, long: a.long };
       // the display question belongs to the question that was answered; dropped when it was fixed without one
       const screen: Screen = { ...(a.screen ?? {}) };
-      if (a.question && screen.question && screen.question === it.question) delete screen.question;
+      if (screen.question && (screen.question === out.question || (a.question && screen.question === it.question))) delete screen.question;
       if (Object.keys(screen).length) out.screen = screen;
       return out;
     }),

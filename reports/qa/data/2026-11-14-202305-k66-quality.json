@@ -1,0 +1,306 @@
+{
+ "h3-hi-franska-revolutionen": {
+  "status": 200,
+  "subject": "Historia",
+  "questions": 12,
+  "why": 2,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [
+   {
+    "question": "Hur påverkade dåliga skördar 1788 folket?",
+    "screen": {
+     "question": "Hur påverkade dåliga skördar 1788 folket?"
+    }
+   },
+   {
+    "question": "Varför kallade Ludvig XVI in generalständerna 1789?",
+    "screen": {
+     "long": "Kungen kallade in generalständerna för att få mer skatt, eftersom staten var nära konkurs. Generalständerna var en församling med representanter för de tre stånden. Ludvig XVI hoppades att de skulle godkänna högre skatter. Det gick inte som han tänkt sig, för tredje ståndet bröt sig ut och bildade nationalförsamlingen i stället. Det blev början på revolutionen, och några veckor senare stormade folket i Paris Bastiljen den 14 juli 1789."
+    }
+   },
+   {
+    "question": "Hur kom Napoleon Bonaparte till makten 1799?",
+    "screen": {
+     "short": "Generalen Napoleon Bonaparte tog makten i Frankrike år 1799, efter revolutionens oroliga år, och krönte sig sedan till kejsare år 1804.",
+     "long": "Generalen Napoleon Bonaparte tog makten i Frankrike år 1799, efter revolutionens oroliga år, och krönte sig sedan till kejsare år 1804. Revolutionen hade först störtat kungen och sedan gått igenom skräckväldet, där tusentals människor avrättades. Landet var splittrat och oroligt. Napoleon var en framgångsrik general och kunde därför ta makten själv. Han avslutade på så sätt revolutionen, och Frankrike gick från att ha en kung till att få en kejsare. Idéerna om frihet, jämlikhet och broderskap hade ändå spridit sig vidare i Europa."
+    }
+   },
+   {
+    "question": "Vad skiljer första och andra ståndet från tredje ståndet?",
+    "screen": {
+     "long": "Första ståndet, prästerna, och andra ståndet, adeln, var få människor, medan tredje ståndet var nästan hela befolkningen och betalade nästan alla skatter. Tredje ståndet bestod av alla andra, alltså bönder, hantverkare och borgare. Trots att de var så många bar de nästan hela skattebördan. Det var orättvist, och det skapade ett stort missnöje. När staten dessutom var nära konkurs och brödet blev dyrt efter dåliga skördar, växte vreden. Därför bröt sig tredje ståndet ut ur generalständerna och bildade nationalförsamlingen år 1789."
+    }
+   }
+  ],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Varför var Frankrikes statsfinanser i dåligt läge före revolutionen?",
+    "short": "Staten var nära konkurs eftersom Frankrike hade fört dyra krig, bland annat genom att stödja den amerikanska revolutionen.",
+    "long": "Staten var nära konkurs eftersom Frankrike hade fört dyra krig, bland annat genom att stödja den amerikanska revolutionen. Krigen kostade enorma summor, och kungens stat hade inte pengar att betala tillbaka. Eftersom staten behövde mer pengar blev frågan om skatter central. Det ledde till att kungen kallade in generalständerna för att få mer skatt, och det blev starten på själva revolutionen. Den dåliga ekonomin var alltså en av de viktigaste orsakerna till att revolutionen bröt ut."
+   },
+   {
+    "id": "q2",
+    "question": "Hur påverkade dåliga skördar 1788 folket?",
+    "short": "De dåliga skördarna gjorde brödet dyrt, så många hade inte råd att köpa mat och svalt.",
+    "long": "De dåliga skördarna gjorde brödet dyrt, så många hade inte råd att köpa mat och svalt. Bröd var den viktigaste maten för vanligt folk, så när priset steg drabbades framför allt tredje ståndet hårt. Hungern gjorde människor missnöjda och arga på kungen och adeln, som levde gott medan folket svalt. Missnöjet var en av orsakerna till att folket i Paris senare var redo att gå man ur huse och storma Bastiljen.",
+    "screen": {
+     "question": "Hur påverkade dåliga skördar 1788 folket?"
+    }
+   },
+   {
+    "id": "q3",
+    "question": "Hur var Frankrike indelat i stånd före revolutionen, och hur fördelades skatterna?",
+    "short": "Frankrike var indelat i tre stånd, och tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter.",
+    "long": "Frankrike var indelat i tre stånd, och tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter. Första ståndet var prästerna, andra ståndet adeln, och tredje ståndet var alla andra: bönder, hantverkare och borgare. Det var alltså orättvist fördelat, eftersom de som var flest betalade nästan allt medan de andra två stånden betalade nästan inget. Den här orättvisan skapade ilska hos tredje ståndet och bidrog till att de bröt sig ut och bildade nationalförsamlingen 1789."
+   },
+   {
+    "id": "q4",
+    "question": "Vad menade Rousseau om makten?",
+    "short": "Rousseau menade att makten borde komma från folket och inte från kungen.",
+    "long": "Rousseau menade att makten borde komma från folket och inte från kungen. Han var en av upplysningens tänkare, som ifrågasatte att kungen styrde med rätt att bestämma över alla. Idén att folket själv var maktens källa påverkade revolutionen starkt. Den gav tredje ståndet ett argument för att kräva inflytande och att störta kungens envälde. Samma tankar syns i deklarationen om människans och medborgarens rättigheter, där alla föds fria och lika."
+   },
+   {
+    "id": "q5",
+    "question": "Varför kallade Ludvig XVI in generalständerna 1789?",
+    "short": "Kungen kallade in generalständerna för att få mer skatt, eftersom staten var nära konkurs.",
+    "long": "Kungen kallade in generalständerna för att få mer skatt, eftersom staten var nära konkurs. Generalständerna var en församling med representanter för de tre stånden. Ludvig sextonde hoppades att de skulle godkänna högre skatter. Det gick inte som han tänkt sig, för tredje ståndet bröt sig ut och bildade nationalförsamlingen i stället. Det blev början på revolutionen, och några veckor senare stormade folket i Paris Bastiljen den fjortonde juli sjutton hundra åttionio.",
+    "screen": {
+     "long": "Kungen kallade in generalständerna för att få mer skatt, eftersom staten var nära konkurs. Generalständerna var en församling med representanter för de tre stånden. Ludvig XVI hoppades att de skulle godkänna högre skatter. Det gick inte som han tänkt sig, för tredje ståndet bröt sig ut och bildade nationalförsamlingen i stället. Det blev början på revolutionen, och några veckor senare stormade folket i Paris Bastiljen den 14 juli 1789."
+    }
+   },
+   {
+    "id": "q6",
+    "question": "Hur bildades nationalförsamlingen?",
+    "short": "Kungen kallade in generalständerna för att få mer skatt, men tredje ståndet bröt sig ut och bildade nationalförsamlingen.",
+    "long": "Kungen kallade in generalständerna för att få mer skatt, men tredje ståndet bröt sig ut och bildade nationalförsamlingen. Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter, och de ville inte längre bara godkänna kungens krav. Genom att lämna generalständerna och bilda en egen församling tog de politisk makt på folkets vägnar. Det var ett första tecken på att makten inte längre bara låg hos kungen, och det blev starten på revolutionen år sjutton hundra åttionio."
+   },
+   {
+    "id": "q7",
+    "question": "Vad var Bastiljen, och vad hände när folket stormade den den 14 juli 1789?",
+    "short": "Bastiljen var ett fängelse och en symbol för kungens makt, och när folket i Paris stormade det visade de öppet att de vågade gå emot kungen.",
+    "long": "Bastiljen var ett fängelse och en symbol för kungens makt, och när folket i Paris stormade det visade de öppet att de vågade gå emot kungen. Stormningen skedde i ett läge där staten var nära konkurs, brödet var dyrt efter dåliga skördar och många svalt. Missnöjet mot kungen och det gamla samhället var stort, och tredje ståndet hade just brutit sig ut och bildat nationalförsamlingen. Att angripa en så tydlig symbol för kungens makt blev ett tecken på att revolutionen hade börjat på riktigt, och dagen firas i Frankrike än i dag."
+   },
+   {
+    "id": "q8",
+    "question": "Vad slogs fast i deklarationen om människans och medborgarens rättigheter?",
+    "short": "Deklarationen slog fast att alla människor föds fria och lika i rättigheter.",
+    "long": "Deklarationen slog fast att alla människor föds fria och lika i rättigheter. Den antogs i augusti sjutton hundra åttionio, strax efter att revolutionen hade börjat. Den byggde på upplysningens idéer om att makten ska komma från folket och inte från kungen. Det var en direkt motsats till det gamla ståndssamhället, där prästerna och adeln hade särskilda privilegier medan tredje ståndet betalade nästan alla skatter. Deklarationen blev en grund för revolutionens ideal om frihet och jämlikhet."
+   },
+   {
+    "id": "q9",
+    "question": "Vad var skräckväldet, och vilka avrättade Robespierre?",
+    "short": "Under skräckväldet sjutton hundra nittiotre till nittiofyra lät Robespierre avrätta tusentals människor som ansågs vara revolutionens fiender.",
+    "long": "Under skräckväldet sjutton hundra nittiotre till nittiofyra lät Robespierre avrätta tusentals människor som ansågs vara revolutionens fiender. Redan sjutton hundra nittiotre hade kungen avrättats, och revolutionen var i ett hårt läge. De som misstänktes för att motarbeta revolutionen dömdes och avrättades. Robespierre ledde detta, och perioden kallas skräckväldet eftersom ingen kunde känna sig säker. Det visar hur revolutionen, som började med ideal om frihet och lika rättigheter, i det här skedet använde våld mot sina egna motståndare."
+   },
+   {
+    "id": "q10",
+    "question": "Hur spreds revolutionens idéer till resten av Europa?",
+    "short": "Idéerna om frihet, jämlikhet och broderskap spreds i Europa som en följd av revolutionen i Frankrike.",
+    "long": "Idéerna om frihet, jämlikhet och broderskap spreds i Europa som en följd av revolutionen i Frankrike. Revolutionen visade att ett folk kunde störta en kung och kräva rättigheter, och det inspirerade människor i andra länder. Många hade redan mött samma tankar hos upplysningens tänkare, men nu hade de blivit verklighet i ett stort land. Sedan tog Napoleon Bonaparte makten år sjutton hundra nittionio och krönte sig själv till kejsare år arton hundra fyra. Under hans tid fick Frankrikes förändringar och idéer ännu större betydelse i Europa."
+   },
+   {
+    "id": "q11",
+    "question": "Hur kom Napoleon Bonaparte till makten 1799?",
+    "short": "Generalen Napoleon Bonaparte tog makten i Frankrike år sjutton hundra nittionio, efter revolutionens oroliga år, och krönte sig sedan till kejsare år arton hundra fyra.",
+    "long": "Generalen Napoleon Bonaparte tog makten i Frankrike år sjutton hundra nittionio, efter revolutionens oroliga år, och krönte sig sedan till kejsare år arton hundra fyra. Revolutionen hade först störtat kungen och sedan gått igenom skräckväldet, där tusentals människor avrättades. Landet var splittrat och oroligt. Napoleon var en framgångsrik general och kunde därför ta makten själv. Han avslutade på så sätt revolutionen, och Frankrike gick från att ha en kung till att få en kejsare. Idéerna om frihet, jämlikhet och broderskap hade ändå spridit sig vidare i Europa.",
+    "screen": {
+     "short": "Generalen Napoleon Bonaparte tog makten i Frankrike år 1799, efter revolutionens oroliga år, och krönte sig sedan till kejsare år 1804.",
+     "long": "Generalen Napoleon Bonaparte tog makten i Frankrike år 1799, efter revolutionens oroliga år, och krönte sig sedan till kejsare år 1804. Revolutionen hade först störtat kungen och sedan gått igenom skräckväldet, där tusentals människor avrättades. Landet var splittrat och oroligt. Napoleon var en framgångsrik general och kunde därför ta makten själv. Han avslutade på så sätt revolutionen, och Frankrike gick från att ha en kung till att få en kejsare. Idéerna om frihet, jämlikhet och broderskap hade ändå spridit sig vidare i Europa."
+    }
+   },
+   {
+    "id": "q12",
+    "question": "Vad skiljer första och andra ståndet från tredje ståndet?",
+    "short": "Första ståndet, prästerna, och andra ståndet, adeln, var få människor, medan tredje ståndet var nästan hela befolkningen och betalade nästan alla skatter.",
+    "long": "Första ståndet, prästerna, och andra ståndet, adeln, var få människor, medan tredje ståndet var nästan hela befolkningen och betalade nästan alla skatter. Tredje ståndet bestod av alla andra, alltså bönder, hantverkare och borgare. Trots att de var så många bar de nästan hela skattebördan. Det var orättvist, och det skapade ett stort missnöje. När staten dessutom var nära konkurs och brödet blev dyrt efter dåliga skördar, växte vreden. Därför bröt sig tredje ståndet ut ur generalständerna och bildade nationalförsamlingen år sjutton hundra åttionio.",
+    "screen": {
+     "long": "Första ståndet, prästerna, och andra ståndet, adeln, var få människor, medan tredje ståndet var nästan hela befolkningen och betalade nästan alla skatter. Tredje ståndet bestod av alla andra, alltså bönder, hantverkare och borgare. Trots att de var så många bar de nästan hela skattebördan. Det var orättvist, och det skapade ett stort missnöje. När staten dessutom var nära konkurs och brödet blev dyrt efter dåliga skördar, växte vreden. Därför bröt sig tredje ståndet ut ur generalständerna och bildade nationalförsamlingen år 1789."
+    }
+   }
+  ],
+  "cost_usd": 0.0714412
+ },
+ "h3-ke-atomer": {
+  "status": 200,
+  "subject": "Kemi",
+  "questions": 10,
+  "why": 3,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Vad finns i atomens kärna?",
+    "short": "I atomens kärna finns protoner, som är positivt laddade, och neutroner, som inte har någon laddning alls.",
+    "long": "I atomens kärna finns protoner, som är positivt laddade, och neutroner, som inte har någon laddning alls. Elektronerna finns inte i kärnan utan rör sig runt omkring den, och de är negativt laddade. Eftersom kärnan bara innehåller protoner och neutroner är kärnan som helhet positivt laddad. Protonerna i kärnan är också det som avgör vilket grundämne atomen är."
+   },
+   {
+    "id": "q2",
+    "question": "Varför är en atom oladdad?",
+    "short": "En atom är oladdad eftersom den har lika många negativt laddade elektroner som positivt laddade protoner, så laddningarna tar ut varandra.",
+    "long": "En atom är oladdad eftersom den har lika många negativt laddade elektroner som positivt laddade protoner, så laddningarna tar ut varandra. Protonerna sitter i kärnan och är positiva, medan elektronerna rör sig runt kärnan och är negativa. Neutronerna saknar laddning och påverkar därför inte balansen. Väteatomen har till exempel en proton och en elektron, och kolatomen har sex protoner och sex elektroner. I båda fallen blir den sammanlagda laddningen noll."
+   },
+   {
+    "id": "q3",
+    "question": "Vad bestämmer vilket grundämne en atom tillhör?",
+    "short": "Antalet protoner i atomens kärna, som kallas atomnumret, bestämmer vilket grundämne atomen tillhör.",
+    "long": "Antalet protoner i atomens kärna, som kallas atomnumret, bestämmer vilket grundämne atomen tillhör. Ett grundämne består av bara ett slags atomer, och alla atomer av samma grundämne har lika många protoner. Väte har en proton, kol har sex och syre har åtta. Om antalet protoner ändras blir det alltså ett helt annat grundämne. I det periodiska systemet står grundämnena just i ordning efter sitt atomnummer."
+   },
+   {
+    "id": "q4",
+    "question": "Hur många protoner har kol?",
+    "short": "Kol har sex protoner i sin atomkärna, och därför har kol atomnummer sex.",
+    "long": "Kol har sex protoner i sin atomkärna, och därför har kol atomnummer sex. Antalet protoner är det som gör atomen till just kol. En kolatom har också sex elektroner, så att laddningarna tar ut varandra och atomen är oladdad. Syre har åtta protoner och väte har en, så det är antalet protoner som skiljer grundämnena åt."
+   },
+   {
+    "id": "q5",
+    "question": "Varför reagerar ämnen i samma grupp på liknande sätt?",
+    "short": "Ämnen i samma grupp har lika många elektroner i det yttersta skalet, och det är de yttersta elektronerna som avgör hur en atom reagerar.",
+    "long": "Ämnen i samma grupp har lika många elektroner i det yttersta skalet, och det är de yttersta elektronerna som avgör hur en atom reagerar. Grupperna är kolumnerna i det periodiska systemet, och ämnena i en kolumn beter sig därför på ett liknande sätt när de möter andra ämnen. Ädelgaserna längst till höger är ett tydligt exempel. De har fullt yttersta skal och reagerar därför nästan inte alls."
+   },
+   {
+    "id": "q6",
+    "question": "Varför reagerar ädelgaserna nästan inte alls?",
+    "short": "Ädelgaserna har fullt yttersta skal med elektroner, så de har inget behov av att ta upp eller lämna ifrån sig elektroner.",
+    "long": "Ädelgaserna har fullt yttersta skal med elektroner, så de har inget behov av att ta upp eller lämna ifrån sig elektroner. Andra ämnen reagerar för att få ett fullt yttersta skal, men ädelgaserna har redan det. Därför binder de nästan aldrig till andra atomer och reagerar mycket sällan. De står längst till höger i periodiska systemet, i samma grupp, och är därför lika varandra i hur de beter sig."
+   },
+   {
+    "id": "q7",
+    "question": "Vad är skillnaden mellan en molekyl och en kemisk förening?",
+    "short": "En molekyl är atomer som bundits ihop, medan en kemisk förening är ett ämne av två eller flera olika grundämnen.",
+    "long": "En molekyl är atomer som bundits ihop, medan en kemisk förening är ett ämne av två eller flera olika grundämnen. Begreppen överlappar, men de betyder inte samma sak. Vatten är både en molekyl och en förening, eftersom två väteatomer och en syreatom sitter ihop och består av två olika grundämnen. Syrgas är också en molekyl, men ingen förening, eftersom den bara består av syreatomer, alltså ett enda grundämne."
+   },
+   {
+    "id": "q8",
+    "question": "Vad är en kemisk förening?",
+    "short": "En kemisk förening är ett ämne som består av två eller flera olika grundämnen som har bundits ihop.",
+    "long": "En kemisk förening är ett ämne som består av två eller flera olika grundämnen som har bundits ihop. Det som skiljer en förening från ett grundämne är att den innehåller flera slags atomer. Ett grundämne har bara ett slags atomer, alltså lika många protoner i varje atom. Ett vanligt exempel är vatten, där väte och syre sitter ihop. Föreningen får då helt andra egenskaper än grundämnena hade var för sig."
+   },
+   {
+    "id": "q9",
+    "question": "Hur många väteatomer och syreatomer finns i vatten?",
+    "short": "I vatten finns två väteatomer och en syreatom i varje molekyl.",
+    "long": "I vatten finns två väteatomer och en syreatom i varje molekyl. Formeln för vatten skrivs H två O. Det betyder att två väteatomer sitter ihop med en syreatom. Väte har en proton i kärnan och syre har åtta protoner. Vatten är därför en kemisk förening, eftersom den består av två olika grundämnen."
+   },
+   {
+    "id": "q10",
+    "question": "Vad händer med atomer när en molekyl bildas?",
+    "short": "När en molekyl bildas binds atomerna ihop med varandra och sitter sedan fast i en och samma enhet.",
+    "long": "När en molekyl bildas binds atomerna ihop med varandra och sitter sedan fast i en och samma enhet. Atomerna finns kvar och förändras inte till andra grundämnen, för antalet protoner i kärnan är detsamma. Det som sker är att atomerna hakar fast i varandra. Två väteatomer och en syreatom som binds ihop bildar till exempel en vattenmolekyl. Ämnet som bildas kan ha helt andra egenskaper än de enskilda atomerna."
+   }
+  ],
+  "cost_usd": 0.026122899999999998
+ },
+ "h3-sh-riksdagen": {
+  "status": 200,
+  "subject": "Samhällskunskap",
+  "questions": 12,
+  "why": 3,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [
+   {
+    "question": "Vad gör riksdagen?",
+    "screen": {
+     "long": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen. Den består av 349 ledamöter som medborgarna har valt. Genom att stifta lagar bestämmer riksdagen vilka regler som gäller i landet. Genom budgeten bestämmer den hur statens pengar ska användas. Och genom att granska regeringen kontrollerar den att regeringen sköter sitt uppdrag. Riksdagen är alltså folkets viktigaste företrädare, och regeringen måste förhålla sig till dess beslut."
+    }
+   }
+  ],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Vad innebär det att Sverige är en representativ demokrati?",
+    "short": "Det innebär att medborgarna inte beslutar själva, utan väljer politiker som fattar besluten åt dem.",
+    "long": "Det innebär att medborgarna inte beslutar själva, utan väljer politiker som fattar besluten åt dem. Valen hålls vart fjärde år, till riksdagen, regionerna och kommunerna. Politikerna företräder alltså väljarna, och om väljarna är missnöjda kan de rösta på någon annan i nästa val. På så sätt får folket inflytande över besluten, även om de inte röstar om varje enskild fråga."
+   },
+   {
+    "id": "q2",
+    "question": "Vad gör riksdagen?",
+    "short": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen.",
+    "long": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen. Den består av trehundrafyrtionio ledamöter som medborgarna har valt. Genom att stifta lagar bestämmer riksdagen vilka regler som gäller i landet. Genom budgeten bestämmer den hur statens pengar ska användas. Och genom att granska regeringen kontrollerar den att regeringen sköter sitt uppdrag. Riksdagen är alltså folkets viktigaste företrädare, och regeringen måste förhålla sig till dess beslut.",
+    "screen": {
+     "long": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen. Den består av 349 ledamöter som medborgarna har valt. Genom att stifta lagar bestämmer riksdagen vilka regler som gäller i landet. Genom budgeten bestämmer den hur statens pengar ska användas. Och genom att granska regeringen kontrollerar den att regeringen sköter sitt uppdrag. Riksdagen är alltså folkets viktigaste företrädare, och regeringen måste förhålla sig till dess beslut."
+    }
+   },
+   {
+    "id": "q3",
+    "question": "Hur styr regeringen landet?",
+    "short": "Regeringen, som leds av statsministern, styr landet genom att genomföra de beslut som riksdagen har fattat.",
+    "long": "Regeringen, som leds av statsministern, styr landet genom att genomföra de beslut som riksdagen har fattat. Regeringen stiftar alltså inte lagarna själv, utan verkställer det riksdagen har bestämt. Det gör att regeringen är beroende av riksdagens förtroende. Om riksdagen inte litar på en minister kan den avsätta honom eller henne genom en misstroendeförklaring. Så hålls regeringens makt under kontroll, och landet styrs i enlighet med det som folkets valda företrädare har beslutat."
+   },
+   {
+    "id": "q4",
+    "question": "Hur kan riksdagen avsätta en minister?",
+    "short": "Riksdagen kan avsätta en minister genom en misstroendeförklaring, alltså genom att visa att den inte längre har förtroende för ministern.",
+    "long": "Riksdagen kan avsätta en minister genom en misstroendeförklaring, alltså genom att visa att den inte längre har förtroende för ministern. Det är ett sätt för riksdagen att granska och kontrollera regeringen. Eftersom regeringen styr landet genom att genomföra riksdagens beslut måste den ha riksdagens förtroende. Möjligheten att avsätta en minister gör att regeringen inte kan agera helt fritt. Den fungerar därför som en spärr mot att makten missbrukas, och är en del av hur makten hålls balanserad i Sverige."
+   },
+   {
+    "id": "q5",
+    "question": "Varför är makten delad i Sverige?",
+    "short": "Makten är delad så att ingen del av staten ska få för mycket makt och kunna missbruka den.",
+    "long": "Makten är delad så att ingen del av staten ska få för mycket makt och kunna missbruka den. Riksdagen stiftar lagarna, regeringen styr landet och domstolarna dömer självständigt. Eftersom varje del har sin egen uppgift kan de begränsa och kontrollera varandra. Riksdagen granskar regeringen, och domstolarna är oberoende av båda. Dessutom granskar fria medier makthavarna och kallas ibland den tredje statsmakten. Tillsammans skyddar delningen demokratin och medborgarnas rättigheter mot att makten samlas hos en enda aktör."
+   },
+   {
+    "id": "q6",
+    "question": "Vad gör domstolarna i maktdelningen?",
+    "short": "Domstolarna dömer självständigt, vilket betyder att varken riksdagen eller regeringen får bestämma hur de ska döma i ett enskilt fall.",
+    "long": "Domstolarna dömer självständigt, vilket betyder att varken riksdagen eller regeringen får bestämma hur de ska döma i ett enskilt fall. Det är en av de tre delarna i maktdelningen. Riksdagen stiftar lagarna, regeringen styr landet genom att genomföra riksdagens beslut, och domstolarna tillämpar lagarna och dömer. Eftersom domstolarna är fristående kan de pröva även politikers och myndigheters handlingar utan att påverkas av dem. Syftet med att dela upp makten på det här sättet är att ingen ska få för mycket makt och att medborgarnas rättigheter skyddas."
+   },
+   {
+    "id": "q7",
+    "question": "Varför kallas medierna den tredje statsmakten?",
+    "short": "Medierna kallas den tredje statsmakten eftersom de granskar dem som har makten, vid sidan av riksdagen, regeringen och domstolarna.",
+    "long": "Medierna kallas den tredje statsmakten eftersom de granskar dem som har makten, vid sidan av riksdagen, regeringen och domstolarna. Fria medier ska ta reda på hur politiker och myndigheter använder sin makt och berätta om det för medborgarna. Då kan väljarna se om makthavarna sköter sitt uppdrag och göra upplysta val i nästa val. Medierna har ingen egen politisk makt att besluta, men genom att granska och avslöja fel bidrar de till att makten inte missbrukas. Det är en viktig del av att Sverige är en demokrati."
+   },
+   {
+    "id": "q8",
+    "question": "Vad händer om ett parti får mindre än 4 procent?",
+    "short": "Ett parti som får mindre än fyra procent av rösterna i hela landet kommer inte in i riksdagen och får därför inga platser där.",
+    "long": "Ett parti som får mindre än fyra procent av rösterna i hela landet kommer inte in i riksdagen och får därför inga platser där. Det gäller även om partiet har fått många röster, så länge de inte når upp till fyra procent av alla röster i landet. De väljare som röstade på partiet får då ingen egen representant i riksdagen. Rösterna räknas alltså inte när platserna fördelas. Fyraprocentsspärren avgör därför vilka partier som får vara med och fatta beslut om lagar och statens budget."
+   },
+   {
+    "id": "q9",
+    "question": "Varför finns fyraprocentsspärren?",
+    "short": "Fyraprocentsspärren finns för att det ska bli lättare att bilda en stabil regering, eftersom färre partier kommer in i riksdagen.",
+    "long": "Fyraprocentsspärren finns för att det ska bli lättare att bilda en stabil regering, eftersom färre partier kommer in i riksdagen. Om väldigt många små partier får platser blir riksdagen splittrad. Då blir det svårt att hitta en majoritet som kan enas om beslut och stödja en regering, och regeringar kan falla oftare. Med en spärr blir det färre partier att förhandla med, så det går lättare att samla en majoritet bakom en regering som kan styra landet under hela mandatperioden."
+   },
+   {
+    "id": "q10",
+    "question": "Vilken nackdel har fyraprocentsspärren för små partier?",
+    "short": "Nackdelen är att små partier får svårare att komma in i riksdagen, även om många väljare har röstat på dem.",
+    "long": "Nackdelen är att små partier får svårare att komma in i riksdagen, även om många väljare har röstat på dem. Ett parti som inte når fyra procent får inga platser, och då får de väljare som röstade på det ingen röst i riksdagen. Det kan göra att nya idéer och mindre grupper i samhället inte blir representerade. Spärren är alltså en avvägning: den ger stabilare regeringar, men på bekostnad av att alla väljares röster inte får lika stort genomslag."
+   },
+   {
+    "id": "q11",
+    "question": "Hur ofta hålls val till riksdagen, regionerna och kommunerna?",
+    "short": "Val till riksdagen, regionerna och kommunerna hålls vart fjärde år, och alla tre valen hålls på samma gång.",
+    "long": "Val till riksdagen, regionerna och kommunerna hålls vart fjärde år, och alla tre valen hålls på samma gång. Det betyder att medborgarna vart fjärde år får chansen att bestämma vilka politiker som ska fatta besluten åt dem. Det är en grundläggande del av en representativ demokrati. Om man är missnöjd med politikerna kan man rösta på andra partier i nästa val, och på så sätt kan makten bytas ut utan våld. Valen är alltså medborgarnas sätt att utkräva ansvar av dem som styr."
+   },
+   {
+    "id": "q12",
+    "question": "Skillnad mellan riksdagen och regeringen?",
+    "short": "Riksdagen stiftar lagar, beslutar om budgeten och granskar regeringen, medan regeringen styr landet genom att genomföra riksdagens beslut.",
+    "long": "Riksdagen stiftar lagar, beslutar om budgeten och granskar regeringen, medan regeringen styr landet genom att genomföra riksdagens beslut. Riksdagen är folkets valda församling med trehundrafyrtionio ledamöter, och det är där de politiska besluten fattas. Regeringen leds av statsministern och verkställer det riksdagen har bestämt. Riksdagen har också makt över regeringen: den kan avsätta en minister genom en misstroendeförklaring. Skillnaden hänger ihop med att makten är delad, så att ingen får för mycket. Riksdagen stiftar, regeringen styr och domstolarna dömer självständigt."
+   }
+  ],
+  "cost_usd": 0.0534717
+ },
+ "h3-en-climate": {
+  "status": 429,
+  "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök just nu. Vänta en liten stund och försök igen.\",\"fallback\":false}}"
+ },
+ "h3-ma-pythagoras": {
+  "status": 429,
+  "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök just nu. Vänta en liten stund och försök igen.\",\"fallback\":false}}"
+ },
+ "h3-bi-anteckningar": {
+  "status": 429,
+  "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök just nu. Vänta en liten stund och försök igen.\",\"fallback\":false}}"
+ }
+}

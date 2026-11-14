@@ -553,4 +553,8 @@ Deno.test("K66 (Oscar O63): circular why-answers and 'materialet' are asked agai
   // the student's own question is never changed
   const own = await answerItems(llm, DEFAULT_DRILL_CONFIG, [items[0]], { subject: "", grade: "", notes: "", longWords: 90 });
   assertEquals(own.items[0].question, items[0].question);
+  // a display question equal to the question is not sent
+  const same: LLMProvider = { name: "f", model: "x", async *stream() { yield { type: "text", text: JSON.stringify({ answers: [{ id: "q1", short: "Brödet blev dyrt och många svalt.", rest: "", display: { question: "Hur påverkade skördarna 1788 folket?" } }] }) }; } };
+  const r3 = await answerItems(same, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "Hur påverkade skördarna 1788 folket?" }], { subject: "", grade: "", notes: "", longWords: 90 });
+  assertEquals(r3.items[0].screen, undefined);
 });
