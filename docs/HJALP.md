@@ -14,7 +14,7 @@ Earmind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
    - **Välj bilder**: ur bildbiblioteket.
    - **Skriv text**: eller klistra in.
    - **Lägg till dokument**: PDF, Word eller text.
-3. Ge provet ett namn, välj **Antal frågor** och gärna årskurs.
+3. Ge provet ett namn, välj **Antal frågor** och gärna **Vilken årskurs?**.
 4. Tryck **Skapa frågor**. Earmind läser materialet, tar reda på ämne och årskurs, gör frågor och skriver svar. Du kan lämna appen under tiden.
 5. Under **Stämmer det här?** ser du ämne, årskurs och vad provet handlar om. Är något fel skriver du det i rutan, till exempel ”Det är åk 8”, och trycker **Gör om med rättelsen**. Stämmer det trycker du **Ser rätt ut**.
 
@@ -27,7 +27,7 @@ Earmind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 ## Frågor och svar
 - **Två svar per fråga:** varje fråga får ett kort svar och ett långt svar. Det korta svaret är första meningen i det långa och är ett fullgott svar i sig. Det långa svaret förklarar mer, med begrepp, samband och exempel.
 - **Ändra en fråga eller ett svar:** öppna provet och tryck på frågan.
-- **Ta bort en fråga:** svep frågan åt vänster i listan och tryck **Radera**.
+- **Ta bort en fråga:** svep frågan åt vänster i listan och tryck **Radera**. Det går också under **Ändra ordning**, med den röda knappen framför frågan. Inne i en fråga finns ingen knapp för att ta bort den.
 - **Ändra ordning:** tryck på menyn med tre punkter uppe till höger i provet, välj **Ändra ordning**, dra frågorna och tryck **Klar**.
 - **Menyn med tre punkter** i provet har bland annat **Ändra ordning**, **Publicera prov** och **Ta bort provet**. Där finns inget val för att ändra ämne eller årskurs.
 - **Fel ämne eller årskurs:** det rättar du under **Stämmer det här?** innan du trycker **Ser rätt ut**. Skriv rättelsen i rutan, till exempel ”Det är åk 9”, och tryck **Gör om med rättelsen**.
