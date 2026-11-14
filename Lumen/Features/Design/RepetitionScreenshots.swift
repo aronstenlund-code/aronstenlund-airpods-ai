@@ -20,7 +20,8 @@ enum RepetitionDemo {
                                       // A100: Fler lägen only after the first exam; the sound cannot be made (K62)
                                       "repHomeNew", "repHomeStarted", "repSoundProblem", "repHomeSoundProblem",
                                       // A99 (D175, D176): no questions left this month; longer questions
-                                      "repQuotaUsedUp", "repLength", "repLengthEdit", "repSoundProblemNone"]
+                                      "repQuotaUsedUp", "repLength", "repLengthEdit", "repSoundProblemNone",
+                                      "repWaitingProblem"]
 
     /// A100: an exam whose sound could not be made at all (the voice service is out): Starta prov is grey.
     static let chemistry = Drill(title: "Kemiprovet", summary: DrillSummary(subject: "Kemi", grade: "åk 9", covers: "Syror och baser."),
@@ -134,6 +135,10 @@ enum RepetitionDemo {
         case "repPlayAnswer": player.stageForScreenshot(.answer(1, .long), index: 1, lap: 1)
         case "repPaused": player.stageForScreenshot(.answer(1, .long), index: 1, lap: 1, paused: true)
         case "repWaiting": player.stageForScreenshot(.waitingForAudio(3), index: 3)
+        case "repWaitingProblem":
+            // A100: the sound stopped coming mid-exam (the voice service is out): the line instead of "Gör ljud …".
+            (model.audio as? DeviceVoiceDrillAudio)?.stagedProblems[drill.id] = CloudDrillAudio.unavailableLine
+            player.stageForScreenshot(.waitingForAudio(3), index: 3)
         default: return
         }
         model.session.stageForScreenshot(drill, player: player)
@@ -204,7 +209,8 @@ enum RepetitionDemo {
             case "repControls":
                 ControlCheckView(hub: RemoteCommandHub(), sound: nil, waitSeconds: 3600, onStart: {}, onLater: {})
             case "repControlsDone", "repControlsMissing": ControlCheckView(staged: stagedCheck(allWork: name == "repControlsDone"))
-            case "repPlayThink", "repPlayFirst", "repPlayAnswer", "repPaused", "repWaiting": RepetitionPlayerView(model: model)
+            case "repPlayThink", "repPlayFirst", "repPlayAnswer", "repPaused", "repWaiting", "repWaitingProblem":
+                RepetitionPlayerView(model: model)
             case "moreModes": ModeSwitchSheet(model: listening, current: .standard, onPick: { _ in }, onSleep: {})
             default: Text(verbatim: "Okänd skärm: \(name)")
             }
