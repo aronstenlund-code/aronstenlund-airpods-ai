@@ -1,0 +1,72 @@
+name: Apptest accessibility audit (A95)
+
+# For Angela Fable's A95: XCTest's accessibility audit (as Accessibility Inspector) and the accessibility tree for
+# each Debug scene (-LumenScreenshot), on iPhone 17 Pro with default text and on iPhone SE with the largest text.
+# Findings never fail the run; the files are the result. Free (no network). Simulator only: never a device test.
+on:
+  workflow_dispatch:
+    inputs:
+      scenes:
+        description: "Scenes, space separated"
+        required: false
+        default: "fsWelcome fsReadMore fsNewDrill repHome repHomeEmpty repMaterial repMakeError repVoice repList repEdit repShare repShareReady repControls repControlsDone repControlsMissing repPlayFirst repPlayThink repPlayAnswer repPaused repWaiting repPublish repSchools repSchoolsEmpty repPublication repHelp repHelpAnswer repHelpTry gptSteps gptFound gptWrong"
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Screens/AccessibilityAuditTests.swift"
+      - "scripts/apptest/a11y.sh"
+      - ".github/workflows/apptest-a11y.yml"
+
+concurrency:
+  group: apptest-a11y-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: A11y ${{ matrix.device }} ${{ matrix.size }}
+    runs-on: macos-26
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - device: "iPhone 17 Pro"
+            size: "default"
+          - device: "iPhone SE (3rd generation)"
+            size: "accessibility-extra-extra-extra-large"
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Audit
+        env:
+          A11Y_DEVICE: ${{ matrix.device }}
+          A11Y_TEXT_SIZE: ${{ matrix.size }}
+          # On a push to Toby's branch: two scenes, only to see that it compiles and runs.
+          A11Y_SCENES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.scenes || 'fsWelcome repList' }}
+        run: |
+          bash scripts/apptest/a11y.sh
+          STATUS=$?
+          cat apptest-out/a11y/*/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-a11y-${{ matrix.size }}
+          path: |
+            apptest-out/a11y
+            !apptest-out/a11y/*/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
