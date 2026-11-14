@@ -231,7 +231,8 @@ final class DemoPublishing: DrillPublishingService {
                              preview: [.init(question: "Vad är fotosyntes?", short: "Växter gör socker av ljus, vatten och koldioxid."),
                                        .init(question: "Var sker fotosyntesen?", short: "I kloroplasterna i bladens celler."),
                                        .init(question: "Vad behövs för cellandning?", short: "Socker och syre."),
-                                       .init(question: "Vad är en ekosystemtjänst?", short: "Något naturen gör som vi har nytta av.")]),
+                                       .init(question: "Vad är en ekosystemtjänst?", short: "Något naturen gör som vi har nytta av.")],
+                             first_audio_url: "https://example.com/demo/forsta-fragan.mp3"), // shown only, never played
         DrillPublicationView(id: "p2", title: "Andra världskriget", subject: "Historia", school: school,
                              exam_date: DrillPublishing.dayString(Date().addingTimeInterval(12 * 86_400)), items: 15,
                              display_name: nil),
