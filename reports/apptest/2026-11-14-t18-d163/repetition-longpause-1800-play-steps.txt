@@ -1,0 +1,7 @@
+audio session .playback active
+start at 1 of 4, thinking 6.0 s
+question 1
+long answer 1
+paused
+go on (press long)
+question 2
