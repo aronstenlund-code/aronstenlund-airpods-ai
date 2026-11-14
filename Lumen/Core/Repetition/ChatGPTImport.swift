@@ -34,6 +34,11 @@ struct ChatGPTImport: Equatable, Sendable {
             guard let q = question else { return }
             let questionText = clean(q.text, limit: maxQuestionChars)
             let answerText = clean(answer.joined(separator: " "), limit: maxAnswerChars)
+            // The prompt's own example ("Fråga: <frågan>") pasted instead of ChatGPT's answer is not a question.
+            if questionText.hasPrefix("<") && questionText.hasSuffix(">") || answerText.hasPrefix("<") && answerText.hasSuffix(">") {
+                skip(q.line, "Fråga: \(questionText) (exemplet ur prompten)")
+                return
+            }
             guard !questionText.isEmpty, !answerText.isEmpty else {
                 skip(q.line, "Fråga: \(questionText)" + (questionText.isEmpty ? "" : " (inget svar)"))
                 return
@@ -246,7 +251,7 @@ extension RepetitionModel {
             return save(existing)
         }
         let name = title.trimmingCharacters(in: .whitespaces)
-        var made = Drill(title: name.isEmpty ? "Nytt prov" : name,
+        let made = Drill(title: name.isEmpty ? "Nytt prov" : name,
                          summary: DrillSummary(subject: "", grade: grade.map { GradeChoice.label($0) } ?? "", covers: ""),
                          items: found.items, questionCount: found.items.count)
         return save(made)

@@ -53,6 +53,8 @@ struct A93ChatGPTImportTests {
         #expect(ChatGPTImport.read("Fotosyntesen sker i kloroplasterna. Svaret är ljus.") == nil)
         #expect(ChatGPTImport.read("Fråga: Bara en fråga utan svar") == nil)
         #expect(!ChatGPTImport.looksLikeImport("Svar: inget"))
+        #expect(ChatGPTImport.read("Fråga: <frågan>\nSvar: <svaret>\n\nFråga: <frågan>\nSvar: <svaret>") == nil,
+                "the prompt pasted instead of the answer")
         #expect(ChatGPTImport.looksLikeImport(Self.pasted))
     }
 
