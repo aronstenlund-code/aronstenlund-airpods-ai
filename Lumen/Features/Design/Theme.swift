@@ -126,65 +126,57 @@ extension View {
         background { GridPaper(cornerRadius: cornerRadius, dashed: dashed) }
     }
 
-    /// List screens (Settings, Diagnostik, Notes …): the system's inset grouped list on `surface` (A18, SYSTEM.md),
-    /// the app's font, the blue accent.
+    /// List screens (Settings, Diagnostik, Notes …): the system's inset grouped list with its own grouped background
+    /// (Ke53 point 5: no hidden scroll background, so they look like Settings in light and dark), the accent.
     func lumenForm() -> some View {
         listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .background(LumenColor.surface.ignoresSafeArea())
-            .font(LumenFont.text(17))
+            .font(.body)
             .tint(LumenColor.blue)
     }
 
-    /// The app's background and ink.
+    /// The system's background and label colour.
     func lumenScreen() -> some View {
         background(LumenColor.background.ignoresSafeArea())
-            .foregroundStyle(LumenColor.ink)
-            .font(LumenFont.text(17))
+            .foregroundStyle(.primary)
+            .font(.body)
             .tint(LumenColor.blue)
     }
 }
 
-struct LumenButtonStyle: ButtonStyle {
+/// Ke53 point 4 (A87): the system's buttons, full width. `.primary` is the screen's filled button
+/// (`.borderedProminent`, with Angela Fable's dark label on the light accent in dark mode), `.secondary` is
+/// `.bordered`, `.danger` the filled red one. All `.controlSize(.large)`; the system draws the pressed and disabled
+/// states. Replaces the app's own button style (Ke53).
+struct SystemButton: PrimitiveButtonStyle {
     enum Kind { case primary, secondary, danger }
     var kind: Kind = .primary
-    var height: CGFloat = 56
-    /// Kelly Ke34 V1: a disabled button looks disabled (`surface` and `muted`), not tappable.
-    @Environment(\.isEnabled) private var isEnabled
 
+    @ViewBuilder
     func makeBody(configuration: Configuration) -> some View {
+        let role = configuration.role ?? (kind == .danger ? .destructive : nil)
+        switch kind {
+        case .primary:
+            Button(role: role, action: configuration.trigger) { FilledButtonLabel { label(configuration) } }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+        case .secondary:
+            Button(role: role, action: configuration.trigger) { label(configuration) }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+        case .danger:
+            Button(role: role, action: configuration.trigger) { label(configuration) }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .tint(LumenColor.red)
+        }
+    }
+
+    private func label(_ configuration: Configuration) -> some View {
         configuration.label
-            .font(LumenFont.text(17, .semibold, relativeTo: .headline))
             // A12: one line that shrinks; two lines broke words in the middle ("Paus/a") at the largest size.
             .lineLimit(1)
             .minimumScaleFactor(0.5)
-            .frame(maxWidth: .infinity, minHeight: height)
-            .padding(.horizontal, 12)
-            .foregroundStyle(foreground)
-            .background(background, in: RoundedRectangle(cornerRadius: 14))
-            .opacity(configuration.isPressed ? 0.85 : 1)
-            // A18: a press is felt, like system buttons: a small scale, quick out, never on the way back.
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.easeOut(duration: configuration.isPressed ? 0.08 : 0.16), value: configuration.isPressed)
-            .contentShape(RoundedRectangle(cornerRadius: 14))
-    }
-
-    private var foreground: Color {
-        guard isEnabled else { return LumenColor.muted }
-        return switch kind {
-        case .primary: LumenColor.onBlue
-        case .secondary: LumenColor.ink
-        case .danger: LumenColor.onRed
-        }
-    }
-
-    private var background: Color {
-        guard isEnabled else { return LumenColor.surface }
-        return switch kind {
-        case .primary: LumenColor.blue
-        case .secondary: LumenColor.surface
-        case .danger: LumenColor.red
-        }
+            .frame(maxWidth: .infinity)
     }
 }
 

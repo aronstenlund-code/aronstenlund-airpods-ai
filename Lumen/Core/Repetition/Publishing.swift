@@ -20,8 +20,20 @@ struct DrillPublicationView: Decodable, Equatable, Sendable, Identifiable {
     var exam_date: String
     var items: Int
     var display_name: String?
+    /// Kelly P1 (A87 point 5, K65): the first four questions with their short answers and a link to the first
+    /// question's sound, when the server sends them. Nil from a server without K65.
+    var preview: [Preview]? = nil
+    var first_audio_url: String? = nil
+
+    struct Preview: Decodable, Equatable, Sendable {
+        var question: String
+        var short: String
+    }
 
     var examDate: Date? { DrillPublishing.date(exam_date) }
+    /// "och 16 frågor till" after the preview.
+    var moreQuestions: Int { max(0, items - (preview?.count ?? 0)) }
+    var firstAudioURL: URL? { first_audio_url.flatMap(URL.init(string:)) }
 }
 
 /// The owner's own publication, kept on the exam on the phone.

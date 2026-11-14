@@ -307,7 +307,7 @@ struct HomeView: View {
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
             }
             // Kelly B2: on Start before D142, and behind "Fler lägen" after it; the main action of either page.
-            .buttonStyle(LumenButtonStyle(height: 64))
+            .buttonStyle(SystemButton())
             .overlay {
                 if !startHintShown, !model.isActiveSession, model.repetition == nil {
                     RoundedRectangle(cornerRadius: 18).strokeBorder(LumenColor.soft, lineWidth: 4).padding(-4) // Ke35
@@ -458,7 +458,7 @@ struct HomeView: View {
                 }
                 // A50 (D124): secondary, the Start button is the screen's one blue button. "Få A-svar till provet"
                 // moved into Provläge ("Mina svar", A53, D126).
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 62))
+                .buttonStyle(SystemButton(kind: .secondary))
                 .accessibilityHint("Startar förhöret inför \(plan.name.lowercased())")
                 if let store = model.myAnswers {
                     // A53 (D126, Kelly Ke30): the student's own answers for this exam, always here (also with 0).
@@ -600,7 +600,7 @@ struct HomeView: View {
             } label: {
                 Label("Lägg till prov", systemImage: "plus")
             }
-            .buttonStyle(LumenButtonStyle(kind: .secondary, height: 54)) // A50: Start is the one blue button
+            .buttonStyle(SystemButton(kind: .secondary)) // A50: Start is the one blue button
             .padding(.top, 8)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Eller säg").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)

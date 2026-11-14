@@ -52,12 +52,6 @@
 	<string>Take a photo of the page you are studying, so EarMind can quiz you on it. The text is read on the iPhone; the photo is not saved.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>EarMind listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio becomes text and is not saved by EarMind. Sleep mode keeps its clips only on your phone.</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>FamiljenGrotesk.ttf</string>
-		<string>Kalam-Regular.ttf</string>
-		<string>Kalam-Bold.ttf</string>
-	</array>
 	<key>NSMotionUsageDescription</key>
 	<string>In Provläge you can answer a yes/no check question by nodding or shaking your head with your AirPods. Only used then.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

@@ -107,7 +107,7 @@ struct ErrorCard: View {
             }
             if let title = problem.actionTitle, let action {
                 Button(title, action: action)
-                    .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+                    .buttonStyle(SystemButton(kind: .secondary))
             }
         }
         .padding(16)

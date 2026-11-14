@@ -64,18 +64,18 @@ struct InterviewSetupView: View {
                     FieldLabel(text: "CV", detail: "Läses på telefonen och sparas bara här. Högst 2 000 tecken skickas, utan e-post, telefonnummer, personnummer och adress.")
                     if settings.interviewCV.isEmpty {
                         Button("Lägg till CV (PDF eller text)") { isPickingCV = true }
-                            .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+                            .buttonStyle(SystemButton(kind: .secondary))
                     } else {
                         Text(settings.interviewCVName.isEmpty ? "CV inläst" : settings.interviewCVName)
                             .font(LumenFont.text(16, .medium))
                         HStack(spacing: 10) {
                             Button("Byt CV") { isPickingCV = true }
-                                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 44))
+                                .buttonStyle(SystemButton(kind: .secondary))
                             Button("Ta bort CV") {
                                 settings.interviewCV = ""
                                 settings.interviewCVName = ""
                             }
-                            .buttonStyle(LumenButtonStyle(kind: .secondary, height: 44))
+                            .buttonStyle(SystemButton(kind: .secondary))
                         }
                     }
                     if let cvNotice { Text(cvNotice).font(LumenFont.text(14)).foregroundStyle(LumenColor.muted) }
@@ -90,12 +90,12 @@ struct InterviewSetupView: View {
                     dismiss()
                     Task { await model.startHandsFree(.interview) }
                 }
-                .buttonStyle(LumenButtonStyle())
+                .buttonStyle(SystemButton())
                 Button("Förbered frågor och svar") {
                     dismiss()
                     model.prepareInterview()
                 }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+                .buttonStyle(SystemButton(kind: .secondary))
             }
             .disabled(!settings.hasInterviewSetup)
             .padding(.horizontal, 20)
@@ -135,9 +135,9 @@ struct AgeGateView: View {
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 12) {
                 Button("Jag är 18 år eller äldre") { onAnswer(true) }
-                    .buttonStyle(LumenButtonStyle())
+                    .buttonStyle(SystemButton())
                 Button("Avbryt") { onAnswer(false) }
-                    .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+                    .buttonStyle(SystemButton(kind: .secondary))
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 16)
@@ -185,7 +185,7 @@ struct LiveStartView: View {
                 dismiss()
                 Task { await model.startHandsFree(mode) }
             }
-            .buttonStyle(LumenButtonStyle())
+            .buttonStyle(SystemButton())
             .padding(.horizontal, 20)
             .padding(.bottom, 12)
             .background(LumenColor.background)

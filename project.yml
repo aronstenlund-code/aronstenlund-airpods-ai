@@ -65,6 +65,8 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         # A71 (D129): the app had no icon at all; glasklotet (D) from the asset catalog until Kelly's Ke40 files land.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # Ke53 point 5 (A87): the accent blue for every system control.
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
         ENABLE_PREVIEWS: YES
@@ -84,9 +86,6 @@ targets:
         excludes:
           - "Info.plist"
       - path: Shared
-      # D86: the app's font on the lock screen too.
-      - path: Lumen/Resources/Fonts/FamiljenGrotesk.ttf
-        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.rsolutions.lumen.controls

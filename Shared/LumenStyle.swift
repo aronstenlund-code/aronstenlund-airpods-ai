@@ -1,8 +1,9 @@
 import SwiftUI
 import UIKit
 
-/// D86: the Swedish-school look. Familjen Grotesk for everything, Kalam (handwriting) only for the user's questions
-/// and the teacher's red pen. Colours follow the iPhone's light/dark unless locked in Settings.
+/// Ke53 point 5 (SYSTEM §0.3, A87): the system's semantic colours. The accent blue (#2346C8 / #7F9BFF, also
+/// AccentColor in Assets) is the app's only colour of its own. Colours follow the iPhone's light/dark unless locked
+/// in Settings.
 enum LumenColor {
     private static func dynamic(_ light: UInt32, _ dark: UInt32) -> Color {
         Color(UIColor { traits in UIColor(hex: traits.userInterfaceStyle == .dark ? dark : light) })
@@ -10,19 +11,21 @@ enum LumenColor {
 
     // A18: the tokens of `docs/design/SYSTEM.md` (Ke12). `paper` and `grid` remain as names for the grouped
     // background and the hairlines; there is no squared paper any more.
-    static let background = dynamic(0xFFFFFF, 0x0F1218)
-    static let surface = dynamic(0xF4F6FA, 0x181C26)
-    static let raised = dynamic(0xFFFFFF, 0x1D2230)
+    // Ke53 point 5: `background`, `surface`, `raised` → the system's backgrounds; `ink`, `muted` → label colours;
+    // `line` → the separator.
+    static let background = Color(uiColor: .systemBackground)
+    static let surface = Color(uiColor: .secondarySystemBackground)
+    static let raised = Color(uiColor: .secondarySystemGroupedBackground)
     static let paper = surface
-    static let grid = dynamic(0xE4E8EF, 0x272D3B)
-    static let ink = dynamic(0x141A2E, 0xEEF1F7)
-    static let muted = dynamic(0x5E6779, 0x9AA3B5)
+    static let grid = Color(uiColor: .separator)
+    static let ink = Color(uiColor: .label)
+    static let muted = Color(uiColor: .secondaryLabel)
     static let blue = dynamic(0x2346C8, 0x7F9BFF)
-    static let red = dynamic(0xD9342B, 0xFF6F61)
+    static let red = Color(uiColor: .systemRed)
     static let onBlue = dynamic(0xFFFFFF, 0x0E1630)
     static let onRed = dynamic(0xFFFFFF, 0x2A0B07)
     static let chip = surface
-    static let line = dynamic(0xE4E8EF, 0x272D3B)
+    static let line = Color(uiColor: .separator)
     static let soft = dynamic(0xEAF0FF, 0x1E2A4F)
 
     // The modes (the sketches' dark variants keep the contrast on the dark background).
@@ -48,18 +51,28 @@ extension UIColor {
     }
 }
 
-/// Fonts that grow with the user's text size (Dynamic Type), falling back to the system font if not registered.
+/// Ke53 point 3 (SYSTEM §0.2, A87): SF Pro with the system's text styles, so Dynamic Type, tracking and leading
+/// follow by themselves. The old point sizes pick the nearest text style ("17" is `.body`, "15" `.subheadline`);
+/// Familjen Grotesk and Kalam are no longer in the app.
 enum LumenFont {
-    static let family = "Familjen Grotesk"
-    static let hand = "Kalam"
-
     static func text(_ size: CGFloat, _ weight: Font.Weight = .regular, relativeTo style: Font.TextStyle = .body) -> Font {
-        Font.custom(family, size: size, relativeTo: style).weight(weight)
+        Font.system(textStyle(for: size), weight: weight)
     }
 
-    /// Handwriting: the user's questions (a setting, on by default) and the red pen.
-    static func handwriting(_ size: CGFloat, bold: Bool = false, relativeTo style: Font.TextStyle = .body) -> Font {
-        Font.custom(bold ? "Kalam-Bold" : "Kalam-Regular", size: size, relativeTo: style)
+    /// The text style nearest a point size at the default text size.
+    static func textStyle(for size: CGFloat) -> Font.TextStyle {
+        switch size {
+        case 33...: .largeTitle   // 34
+        case 26..<33: .title      // 28
+        case 21..<26: .title2     // 22
+        case 19..<21: .title3     // 20
+        case 17..<19: .body       // 17
+        case 16..<17: .callout    // 16
+        case 14..<16: .subheadline // 15
+        case 13..<14: .footnote   // 13
+        case 12..<13: .caption    // 12
+        default: .caption2        // 11
+        }
     }
 }
 

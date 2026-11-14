@@ -79,7 +79,7 @@ struct ConsentView: View {
         case .onboarding(let onAccept):
             VStack(spacing: 8) {
                 Button("Jag förstår, starta EarMind", action: onAccept)
-                    .buttonStyle(LumenButtonStyle())
+                    .buttonStyle(SystemButton())
                 Text("Genom att fortsätta bekräftar du att du har läst punkterna ovan.")
                     .font(LumenFont.text(14, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
@@ -89,7 +89,7 @@ struct ConsentView: View {
             .background(LumenColor.background)
         case .review(_, let onWithdraw):
             Button("Ta tillbaka samtycket") { confirmingWithdrawal = true }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 50))
+                .buttonStyle(SystemButton(kind: .secondary))
                 .padding(20)
                 .background(LumenColor.background)
                 .confirmationDialog("Ta tillbaka samtycket?", isPresented: $confirmingWithdrawal, titleVisibility: .visible) {

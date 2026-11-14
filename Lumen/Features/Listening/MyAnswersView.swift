@@ -75,7 +75,7 @@ struct MyAnswersView: View {
                 } label: {
                     Label("Skriv en fråga", systemImage: "square.and.pencil")
                 }
-                .buttonStyle(LumenButtonStyle(height: 54))
+                .buttonStyle(SystemButton())
                 .padding(.top, 8)
                 recordButton
                 if store?.isEnabled == false { offLine }
@@ -161,7 +161,7 @@ struct MyAnswersView: View {
             } label: {
                 Label("Spela in ett svar", systemImage: "mic")
             }
-            .buttonStyle(LumenButtonStyle(kind: .secondary, height: 54))
+            .buttonStyle(SystemButton(kind: .secondary))
             .disabled(model.isActiveSession)
             if model.isActiveSession {
                 Text("Avsluta EarMind för att spela in.")

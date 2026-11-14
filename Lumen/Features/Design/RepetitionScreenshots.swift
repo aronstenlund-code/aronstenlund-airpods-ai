@@ -226,7 +226,12 @@ final class DemoPublishing: DrillPublishingService {
     static let results: [DrillPublicationView] = [
         DrillPublicationView(id: "p1", title: "Biologiprovet", subject: "Biologi", school: school,
                              exam_date: DrillPublishing.dayString(Date().addingTimeInterval(5 * 86_400)), items: 20,
-                             display_name: "plugghajen"),
+                             display_name: "plugghajen",
+                             // A87 point 5 (Kelly P1, K65): the preview Angela Fable's section shows.
+                             preview: [.init(question: "Vad är fotosyntes?", short: "Växter gör socker av ljus, vatten och koldioxid."),
+                                       .init(question: "Var sker fotosyntesen?", short: "I kloroplasterna i bladens celler."),
+                                       .init(question: "Vad behövs för cellandning?", short: "Socker och syre."),
+                                       .init(question: "Vad är en ekosystemtjänst?", short: "Något naturen gör som vi har nytta av.")]),
         DrillPublicationView(id: "p2", title: "Andra världskriget", subject: "Historia", school: school,
                              exam_date: DrillPublishing.dayString(Date().addingTimeInterval(12 * 86_400)), items: 15,
                              display_name: nil),

@@ -32,7 +32,7 @@ struct MicrophoneDeniedView: View {
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 6) {
                 Button("Öppna Inställningar") { ErrorCard.openSettings() }
-                    .buttonStyle(LumenButtonStyle())
+                    .buttonStyle(SystemButton())
                 Button("Hoppa över", action: onSkip)
                     .font(LumenFont.text(17, .semibold))
                     .foregroundStyle(LumenColor.muted)

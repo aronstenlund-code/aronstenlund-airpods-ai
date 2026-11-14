@@ -31,7 +31,7 @@ struct SleepView: View {
             }
             Spacer()
             Button("Vakna") { sleep.stop() }
-                .buttonStyle(LumenButtonStyle())
+                .buttonStyle(SystemButton())
         }
         .padding(20)
         .lumenScreen()

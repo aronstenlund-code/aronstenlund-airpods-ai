@@ -81,7 +81,7 @@ struct ReadinessView: View {
                 Button(action: onQuiz) {
                     TwoLineLabel(title: "Förhör mig", detail: "EarMind börjar med det du behöver öva på")
                 }
-                .buttonStyle(LumenButtonStyle(height: 62))
+                .buttonStyle(SystemButton())
                 .padding(.horizontal, 20)
                 .padding(.vertical, 12)
                 .background(LumenColor.background)

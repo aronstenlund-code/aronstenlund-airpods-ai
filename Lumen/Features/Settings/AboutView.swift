@@ -50,8 +50,6 @@ struct LicencesView: View {
         Item(name: "fastcluster", licence: "BSD-2", use: "Länkas av FluidAudio."),
         Item(name: "Volocal SentenceBuffer", licence: "MIT", use: "Delar upp hörd text i meningar (ändrad)."),
         Item(name: "Spotify iOS SDK", licence: "Spotify Developer Terms", use: "Styr Spotify när du säger \"nästa låt\" (bara när du kopplat Spotify)."),
-        Item(name: "Familjen Grotesk", licence: "SIL OFL 1.1", use: "Appens typsnitt."),
-        Item(name: "Kalam", licence: "SIL OFL 1.1", use: "Handstilen för dina frågor."),
     ]
 
     var body: some View {

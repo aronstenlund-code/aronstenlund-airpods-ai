@@ -113,13 +113,13 @@ struct FlipCardsView: View {
             if deck.isFlipped {
                 HStack(spacing: 12) {
                     Button("Kunde inte") { mark(false) }
-                        .buttonStyle(LumenButtonStyle(kind: .secondary))
+                        .buttonStyle(SystemButton(kind: .secondary))
                     Button("Kunde") { mark(true) }
-                        .buttonStyle(LumenButtonStyle())
+                        .buttonStyle(SystemButton())
                 }
             } else {
                 Button("Vänd kortet", action: flip)
-                    .buttonStyle(LumenButtonStyle())
+                    .buttonStyle(SystemButton())
             }
         }
         .disabled(isTurning)
@@ -147,12 +147,12 @@ struct FlipCardsView: View {
                 Button("Öva på \(again.cards.count == 1 ? "det" : "de \(again.cards.count)") igen") {
                     withAnimation(.easeOut(duration: 0.2)) { deck = again }
                 }
-                .buttonStyle(LumenButtonStyle())
+                .buttonStyle(SystemButton())
                 Button("Klar", action: onClose)
-                    .buttonStyle(LumenButtonStyle(kind: .secondary))
+                    .buttonStyle(SystemButton(kind: .secondary))
             } else {
                 Button("Klar", action: onClose)
-                    .buttonStyle(LumenButtonStyle())
+                    .buttonStyle(SystemButton())
             }
         }
     }

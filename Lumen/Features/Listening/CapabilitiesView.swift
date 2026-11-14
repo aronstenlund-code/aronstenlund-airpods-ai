@@ -342,7 +342,7 @@ struct CapabilitiesIntroSheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 16))
                     Button("Visa allt EarMind kan") { showsAll = true }
-                        .buttonStyle(LumenButtonStyle(height: 54))
+                        .buttonStyle(SystemButton())
                 }
                 .padding(20)
             }

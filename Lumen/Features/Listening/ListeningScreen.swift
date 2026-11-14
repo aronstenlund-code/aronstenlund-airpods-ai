@@ -171,9 +171,9 @@ struct ListeningScreen: View {
                 Text(confirm).font(LumenFont.text(20, .semibold, relativeTo: .title3))
                 HStack(spacing: 12) {
                     Button("Nej") { model.confirmTool(false) }
-                        .buttonStyle(LumenButtonStyle(kind: .secondary))
+                        .buttonStyle(SystemButton(kind: .secondary))
                     Button("Ja") { model.confirmTool(true) }
-                        .buttonStyle(LumenButtonStyle())
+                        .buttonStyle(SystemButton())
                 }
                 Text("Eller säg ja eller nej.").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
             }
@@ -261,7 +261,7 @@ struct ListeningScreen: View {
                 } label: {
                     Text("Förhör mig")
                 }
-                .buttonStyle(LumenButtonStyle(height: 54))
+                .buttonStyle(SystemButton())
                 .padding(.top, 4)
                 Text("Eller säg ”Lumen, förhör mig”.")
                     .font(LumenFont.text(15))
@@ -356,13 +356,13 @@ struct ListeningScreen: View {
                     Text(listening ? "Pausa" : "Lyssna igen")
                 }
                 // A18 (Kelly Ke10): while paused, going on is the one thing to do, so it is the blue button.
-                .buttonStyle(LumenButtonStyle(kind: listening ? .secondary : .primary, height: 54))
+                .buttonStyle(SystemButton(kind: listening ? .secondary : .primary))
                 Button {
                     Task { await model.endSession() }
                 } label: {
                     Text("Avsluta") // the voice's word ("Lumen, avsluta"); "klar" means something in Intervjuläge
                 }
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 54))
+                .buttonStyle(SystemButton(kind: .secondary))
             }
         }
         .padding(.horizontal, 20)
@@ -673,7 +673,7 @@ struct PracticeResultCard: View {
                 }
             }
             Button("Stäng", action: onClose) // A30 (Kelly Ke20): "klar" is a voice word (D72)
-                .buttonStyle(LumenButtonStyle(kind: .secondary, height: 48))
+                .buttonStyle(SystemButton(kind: .secondary))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(20)

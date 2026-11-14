@@ -220,7 +220,7 @@ struct LogoVoteSheet: View {
             } label: {
                 if isSending { ProgressView().tint(LumenColor.onBlue) } else { Text("Rösta") }
             }
-            .buttonStyle(LumenButtonStyle(height: 54))
+            .buttonStyle(SystemButton())
             .disabled(chosen == nil || isSending)
             Button("Senare") {
                 onLater()

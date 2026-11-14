@@ -112,3 +112,31 @@ import Testing
         #expect(DrillReportReason.allCases.map(\.rawValue) == ["fel", "krankande", "upphovsratt", "annat"])
     }
 }
+
+/// A87 point 5 (Kelly P1, K65): a publication's preview from the server, and a server without it.
+struct A87PublicationPreviewTests {
+    @Test func previewDecodesWhenTheServerSendsIt() throws {
+        let json = #"""
+        {"id":"p1","title":"Bio","subject":"Biologi","school":{"code":"123","name":"Kungsholmens gymnasium","locality":"Stockholm"},
+         "exam_date":"2026-12-01","items":20,"display_name":null,
+         "preview":[{"question":"Vad är fotosyntes?","short":"Växter gör socker."},{"question":"Var?","short":"I bladen."},
+                    {"question":"Vad är cellandning?","short":"Socker blir energi."},{"question":"Vad är klorofyll?","short":"Det gröna."}],
+         "first_audio_url":"https://example.com/a.mp3"}
+        """#
+        let view = try JSONDecoder().decode(DrillPublicationView.self, from: Data(json.utf8))
+        #expect(view.preview?.count == 4)
+        #expect(view.preview?.first?.short == "Växter gör socker.")
+        #expect(view.moreQuestions == 16)
+        #expect(view.firstAudioURL?.absoluteString == "https://example.com/a.mp3")
+    }
+
+    @Test func olderServerHasNoPreview() throws {
+        let json = #"""
+        {"id":"p1","title":"Bio","subject":"Biologi","school":{"code":"123","name":"K","locality":"S"},
+         "exam_date":"2026-12-01","items":20}
+        """#
+        let view = try JSONDecoder().decode(DrillPublicationView.self, from: Data(json.utf8))
+        #expect(view.preview == nil && view.firstAudioURL == nil)
+        #expect(view.moreQuestions == 20)
+    }
+}

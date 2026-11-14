@@ -110,7 +110,7 @@ struct AddExamView: View {
             VStack(spacing: 4) {
                 if showsForm {
                     Button("Spara prov", action: save)
-                        .buttonStyle(LumenButtonStyle())
+                        .buttonStyle(SystemButton())
                         .disabled(!pickedSubject || subjectName.isEmpty)
                 }
                 Button(isFirstStart || forProvlage ? "Inte nu" : "Avbryt", action: onClose)
@@ -211,7 +211,7 @@ struct AddExamView: View {
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 4) {
                 Button("Spara prov", action: save)
-                    .buttonStyle(LumenButtonStyle())
+                    .buttonStyle(SystemButton())
                     .disabled(subjectName.isEmpty)
                 Button(isFirstStart ? "Hoppa över" : "Avbryt", action: onClose)
                     .font(LumenFont.text(16, .medium))

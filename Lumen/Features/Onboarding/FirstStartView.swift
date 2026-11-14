@@ -91,7 +91,7 @@ struct IntroView: View {
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 10) {
                 Button("Testa nu", action: onStart)
-                    .buttonStyle(LumenButtonStyle())
+                    .buttonStyle(SystemButton())
                     .accessibilityHint("Godkänner punkterna ovan och startar mikrofonen")
                 // A12: what the user agrees to sits at the button. A26: the points are above it on every iPhone now,
                 // so the line names them instead of repeating them (Kelly's intro.png).
@@ -191,7 +191,7 @@ struct FirstQuestionView: View {
                 // A18 (Kelly Ke9): no blue button before the first answer, so the question is the obvious thing to do.
                 if hasAnswer {
                     Button("Fortsätt", action: onContinue)
-                        .buttonStyle(LumenButtonStyle())
+                        .buttonStyle(SystemButton())
                         .transition(.opacity)
                 } else {
                     Button("Hoppa över", action: onContinue)
