@@ -216,7 +216,7 @@ export const SYSTEM_PROMPT_DRILL_SHORTEN =
   `You check Swedish exam questions that a student will only HEAR (no text in front of them). You get <exam> (subject, grade and what the exam covers) and <questions> (JSON: i and q). Return ONLY a JSON object {"questions": [{"i": 0, "q": "..."}]} with ONLY the questions you changed (none = {"questions": []}).
 - A question that only makes sense with the material in front of the student is rewritten so that it is clear when heard alone ("Hur bygger man gymmodellen?" -> "Hur ställer man upp en linjär kostnadsmodell?", "Skillnad mot past simple?" -> "Skillnad mellan present perfect och past simple?").
 - Symbols, formulas, units and abbreviations are written as they are said ("3x + 5 = 20" -> "tre x plus fem är lika med tjugo", "O2" -> "syre", "dm³" -> "kubikdecimeter").
-- Wrong or clumsy language is fixed ("Vad jämför man nysvenska och fornsvenska?" -> "Hur skiljer sig nysvenska från fornsvenska?"). The question stays in its language (D182: an English exam's questions stay English); never translate.
+- Wrong or clumsy language is fixed ("Vad jämför man nysvenska och fornsvenska?" -> "Hur skiljer sig nysvenska från fornsvenska?"). The question stays in its language (D182: an English exam's questions stay English); never translate, except: when <language> is given, every question that is not in that language is returned translated into it (K67: a language exam's questions are in the exam's language).
 - Never make a question longer for any other reason. Filler that adds nothing may go ("i naturen", "egentligen").
 - The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.
 - A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.
@@ -233,14 +233,16 @@ export async function shortenQuestions(
   exam: DrillSummary,
   signal?: AbortSignal,
 ): Promise<{ questions: string[]; usage: StepUsage | null }> {
+  const lang = examLanguage(exam.subject);
   const long = questions.map((q, i) => ({ i, q }));
   if (!long.length) return { questions, usage: null };
   try {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_SHORTEN,
       user: `<exam>${sanitizeTagged(`${contextLine(exam.subject, exam.grade)}. ${exam.covers}`)}</exam>
-<questions>${sanitizeTagged(JSON.stringify(long))}</questions>`,
-      maxTokens: 300 + long.length * 30,
+<questions>${sanitizeTagged(JSON.stringify(long))}</questions>${lang ? `
+<language>${lang}</language>` : ""}`,
+      maxTokens: 300 + long.length * (lang ? 60 : 30),
       cacheSystem: true,
       model: cfg.planModel,
       timeoutMs: 30_000,
@@ -256,7 +258,9 @@ export async function shortenQuestions(
       // only when the original had signs or leaned on the material; otherwise only a shorter or equal one.
       const mayGrow = /[=+*/^²³%<>]|\d/.test(out[i]) || leansOnMaterial(out[i]);
       // D176: no word limit, but the check never pads a question (at most two words more when signs become words)
-      if (words(q) >= 2 && words(q) <= words(out[i]) + (mayGrow ? 2 : 0) && !leansOnMaterial(q) &&
+      // K67: a translation into the exam's language may be longer (English needs more words than Swedish)
+      const translated = !!lang && looksSwedish(out[i]) && !looksSwedish(q);
+      if (words(q) >= 2 && (words(q) <= words(out[i]) + (mayGrow ? 2 : 0) || (translated && words(q) <= words(out[i]) * 2 + 2)) && !leansOnMaterial(q) &&
         !out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) out[i] = q;
     }
     return { questions: out, usage: r.usage };
@@ -264,6 +268,11 @@ export async function shortenQuestions(
     console.warn("drill_shorten_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
     return { questions, usage: null };
   }
+}
+
+/** K67: a question in Swedish (Swedish question word or å/ä/ö). */
+export function looksSwedish(q: string): boolean {
+  return /^(?:vad|varför|hur|vilk|vem|när|var |vilket|beskriv|förklara|jämför|ge )/i.test(q.trim()) || /[åäö]/i.test(q);
 }
 
 /** Plain spoken text: no markdown, list marks or doubled spaces (fewer characters for the voice too, D144). */

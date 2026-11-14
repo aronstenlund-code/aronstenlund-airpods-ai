@@ -31,6 +31,13 @@ jobs:
     runs-on: macos-26
     timeout-minutes: 90
     steps:
+      # T17c (Toby 1, D180, owner): testing never uses ElevenLabs credits. This test listens through Scribe, so it is
+      # off; the listening is tested with recorded transcripts in apptest-transcript.yml. A run that needs Scribe
+      # requires Aron's yes in chat first, and then a session turns this step off for that one run.
+      - name: Off (D180, no ElevenLabs credits for tests)
+        run: |
+          echo "::error::Off since 2026-11-14 (D180): testing never uses ElevenLabs credits. Use apptest-transcript.yml, or ask Aron first."
+          exit 1
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0

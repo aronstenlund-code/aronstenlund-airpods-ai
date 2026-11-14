@@ -122,6 +122,25 @@ struct RetestE2ETests {
         #expect(answered == result.cases.count, "answered \(answered) of \(result.cases.count) questions")
     }
 
+    /// T16 (Toby 1, 2026-11-14): Aron's case 2026-11-11 18:58. Question 1, its answer, then question 2 at once (the 24 s
+    /// gap fits a spoken answer of 15-22 s; 14 s let question 2 arrive while Lumen still spoke), ten pairs of different questions. Krav after A74: question 1 is answered
+    /// again 0 of 10 times, neither in question 2's window nor twice in its own.
+    @Test(.enabled(if: RetestEnvironment.includes("upprepa"))) func aNewQuestionDoesNotRepeatTheLastAnswer() async throws {
+        let result = try await run(set: "upprepa", mode: .standard, speak: true, topics: nil, gap: 24)
+        #expect(result.stoppedEarly == nil, "stopped early: \(result.stoppedEarly ?? "")")
+        var repeated = 0
+        for (index, second) in result.cases.enumerated() where second.id.hasSuffix("b") && index > 0 {
+            let first = result.cases[index - 1]
+            let again = second.answered.filter { $0.lowercased().contains(first.key) }.count + max(0, first.answered.count - 1)
+            print("T16 \(first.id)/\(second.id): first answered \(first.answered.count), again \(again), second answered \(second.answered.filter { $0.lowercased().contains(second.key) }.count)")
+            if again > 0 {
+                repeated += 1
+                Issue.record("\(first.id) '\(first.text)' answered again: \(first.answered) / \(second.answered)")
+            }
+        }
+        #expect(repeated == 0, "question 1 answered again in \(repeated) of 10 pairs (krav 0/10)")
+    }
+
     // MARK: One set in one session
 
     /// A turn shows as `asked`, or only as `answered` on a path that does not report `asked`.

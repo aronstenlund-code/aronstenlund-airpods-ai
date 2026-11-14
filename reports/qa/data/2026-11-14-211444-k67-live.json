@@ -1,0 +1,467 @@
+{
+ "h4-fy-hastighet": {
+  "subject": "Fysik",
+  "questions": 12,
+  "fixed": [],
+  "drill_id": "78632152-2e0c-4884-806a-aaf17284c578",
+  "save": 200,
+  "mentions_material": [],
+  "screen": 9,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Vad är hastighet och hur räknar man ut den?",
+    "short": "Hastighet är hur lång sträcka något färdas per tidsenhet, och man räknar ut den genom att dela sträckan med tiden.",
+    "long": "Hastighet är hur lång sträcka något färdas per tidsenhet, och man räknar ut den genom att dela sträckan med tiden. Med bokstäver skriver man att hastigheten v är lika med sträckan s delat med tiden t. Hastighet kan till exempel anges i meter per sekund eller i kilometer per timme, beroende på vilken enhet man använder för sträcka och tid. Om en bil kör hundra kilometer på två timmar är hastigheten femtio kilometer i timmen. Det är då en medelhastighet, eftersom bilen under resan kan ha kört både fortare och långsammare.",
+    "screen": {
+     "long": "Hastighet är hur lång sträcka något färdas per tidsenhet, och man räknar ut den genom att dela sträckan med tiden. Med bokstäver skriver man v = s / t, där v är hastigheten, s är sträckan och t är tiden. Hastighet kan till exempel anges i m/s eller i km/h, beroende på vilken enhet man använder för sträcka och tid. Om en bil kör 100 km på 2 timmar är hastigheten 50 km/h. Det är då en medelhastighet, eftersom bilen under resan kan ha kört både fortare och långsammare."
+    }
+   },
+   {
+    "id": "q2",
+    "question": "Hur räknar man om en meter per sekund till kilometer per timme?",
+    "short": "En meter per sekund är samma sak som tre komma sex kilometer per timme, så man multiplicerar med tre komma sex.",
+    "long": "En meter per sekund är samma sak som tre komma sex kilometer per timme, så man multiplicerar med tre komma sex. Vill man gå åt andra hållet, från kilometer per timme till meter per sekund, delar man i stället med tre komma sex. Tio meter per sekund blir alltså trettiosex kilometer per timme. Talet tre komma sex kommer av att en kilometer är tusen meter och en timme är tretusensexhundra sekunder.",
+    "screen": {
+     "short": "En meter per sekund är samma sak som 3,6 kilometer per timme, så man multiplicerar med 3,6.",
+     "long": "En meter per sekund är samma sak som 3,6 kilometer per timme, så man multiplicerar med 3,6. Vill man gå åt andra hållet, från km/h till m/s, delar man i stället med 3,6. 10 m/s blir alltså 36 km/h. Talet 3,6 kommer av att en kilometer är 1 000 meter och en timme är 3 600 sekunder."
+    }
+   },
+   {
+    "id": "q3",
+    "question": "Om en cyklist cyklar 18 kilometer på 1,5 timmar, vilken är medelhastigheten?",
+    "short": "Medelhastigheten är tolv kilometer i timmen, eftersom man delar sträckan arton kilometer med tiden en och en halv timme.",
+    "long": "Medelhastigheten är tolv kilometer i timmen, eftersom man delar sträckan arton kilometer med tiden en och en halv timme. Man använder formeln för hastighet, att hastigheten är sträckan delat med tiden. Arton delat med en och en halv blir tolv. Det kallas medelhastighet eftersom cyklisten säkert har cyklat fortare i nedförsbackar och långsammare i uppförsbackar, och tolv kilometer i timmen är det genomsnittliga värdet över hela turen.",
+    "screen": {
+     "short": "Medelhastigheten är 12 km/h, eftersom man delar sträckan 18 km med tiden 1,5 timmar.",
+     "long": "Medelhastigheten är 12 km/h, eftersom man delar sträckan 18 km med tiden 1,5 timmar. Man använder formeln för hastighet, v = s / t. 18 / 1,5 blir 12. Det kallas medelhastighet eftersom cyklisten säkert har cyklat fortare i nedförsbackar och långsammare i uppförsbackar, och 12 km/h är det genomsnittliga värdet över hela turen."
+    }
+   },
+   {
+    "id": "q4",
+    "question": "Vad är kraft och vilken enhet mäts den i?",
+    "short": "Kraft är en påverkan som kan sätta något i rörelse, bromsa det eller ändra dess form eller riktning, och den mäts i newton.",
+    "long": "Kraft är en påverkan som kan sätta något i rörelse, bromsa det eller ändra dess form eller riktning, och den mäts i newton. Newton förkortas med bokstaven N. Exempel på krafter är tyngdkraften, som drar föremål mot jorden, och friktionen, som bromsar rörelse mellan två ytor. Friktionen är liten på is, och därför är det lätt att halka. Däckens mönster ökar friktionen mot vägen när det är blött."
+   },
+   {
+    "id": "q5",
+    "question": "Hur räknar man ut tyngdkraften på ett föremål?",
+    "short": "Tyngdkraften räknar man ut genom att multiplicera föremålets massa med g, som är ungefär nio komma åtta newton per kilogram på jorden.",
+    "long": "Tyngdkraften räknar man ut genom att multiplicera föremålets massa med g, som är ungefär nio komma åtta newton per kilogram på jorden. Med bokstäver skriver man att tyngdkraften F är lika med massan m gånger g. En väska på fem kilogram dras alltså mot jorden med ungefär fyrtionio newton. På månen är g bara en komma sex newton per kilogram, så samma väska väger mindre där. Massan är dock fortfarande fem kilogram, eftersom massan inte ändras av var man befinner sig.",
+    "screen": {
+     "short": "Tyngdkraften räknar man ut genom att multiplicera föremålets massa med g, som är ungefär 9,8 N/kg på jorden.",
+     "long": "Tyngdkraften räknar man ut genom att multiplicera föremålets massa med g, som är ungefär 9,8 N/kg på jorden. Med bokstäver skriver man F = m · g. En väska på 5 kg dras alltså mot jorden med ungefär 49 N. På månen är g bara 1,6 N/kg, så samma väska väger mindre där. Massan är dock fortfarande 5 kg, eftersom massan inte ändras av var man befinner sig."
+    }
+   },
+   {
+    "id": "q6",
+    "question": "Varför väger en väska mindre på månen trots att massan är densamma?",
+    "short": "Tyngdkraften beror på både massan och tyngdaccelerationen, och på månen är den bara en och sex tiondels newton per kilogram mot nio komma åtta på jorden.",
+    "long": "Tyngdkraften beror på både massan och tyngdaccelerationen, och på månen är den bara en och sex tiondels newton per kilogram mot nio komma åtta på jorden. Eftersom tyngdkraften är massan gånger tyngdaccelerationen blir kraften mindre på månen, och det är den kraften en våg eller en hand känner som vikt. Massan är ett mått på hur mycket materia väskan innehåller och ändras inte, så den är fem kilogram överallt. Väskan väger alltså ungefär åttio newton på jorden mindre än på månen skulle man kunna tro, men räknat rätt är det bara ungefär åtta newton på månen mot fyrtionio på jorden.",
+    "screen": {
+     "short": "Tyngdkraften beror på både massan och tyngdaccelerationen, och på månen är den bara 1,6 N/kg mot 9,8 N/kg på jorden.",
+     "long": "Tyngdkraften beror på både massan och tyngdaccelerationen, och på månen är den bara 1,6 N/kg mot 9,8 N/kg på jorden. Eftersom tyngdkraften är massan gånger tyngdaccelerationen blir kraften mindre på månen, och det är den kraften en våg eller en hand känner som vikt. Massan är ett mått på hur mycket materia väskan innehåller och ändras inte, så den är 5 kg överallt. På månen blir tyngdkraften på väskan ungefär 8 N, mot ungefär 49 N på jorden."
+    }
+   },
+   {
+    "id": "q7",
+    "question": "Hur stor är tyngdkraften på en väska på fem kilogram på jorden?",
+    "short": "Tyngdkraften på en väska på fem kilogram är ungefär fyrtionio newton, eftersom man multiplicerar massan med nio komma åtta newton per kilogram.",
+    "long": "Tyngdkraften på en väska på fem kilogram är ungefär fyrtionio newton, eftersom man multiplicerar massan med nio komma åtta newton per kilogram. Formeln är tyngdkraften lika med massan gånger tyngdaccelerationen. Här blir det fem gånger nio komma åtta, alltså ungefär fyrtionio newton. Kraften mäts i newton, och den dras alltid mot jordens centrum. Det är den kraften som gör att väskan känns tung när man lyfter den.",
+    "screen": {
+     "short": "Tyngdkraften på en väska på 5 kg är ungefär 49 N, eftersom man multiplicerar massan med 9,8 N/kg.",
+     "long": "Tyngdkraften på en väska på 5 kg är ungefär 49 N, eftersom man multiplicerar massan med 9,8 N/kg. Formeln är F = m · g. Här blir det 5 · 9,8, alltså ungefär 49 N. Kraften mäts i newton, och den dras alltid mot jordens centrum. Det är den kraften som gör att väskan känns tung när man lyfter den."
+    }
+   },
+   {
+    "id": "q8",
+    "question": "Varför är det lätt att halka på is?",
+    "short": "Friktionen mellan skon och isen är väldigt liten, så det finns nästan inget som bromsar skon från att glida.",
+    "long": "Friktionen mellan skon och isen är väldigt liten, så det finns nästan inget som bromsar skon från att glida. Friktion är en kraft som bromsar rörelse mellan två ytor. På is är ytan så hal att kraften blir svag, och då räcker minsta sidorörelse för att foten ska glida iväg. På torr asfalt är friktionen stor, och därför står man stadigt där. Därför kan man halka även om man går försiktigt, och därför använder man broddar eller sand för att öka friktionen på isiga vägar."
+   },
+   {
+    "id": "q9",
+    "question": "Varför har däck mönster?",
+    "short": "Mönstret ökar friktionen mellan däcket och vägen när det är blött, så bilen får bättre grepp.",
+    "long": "Mönstret ökar friktionen mellan däcket och vägen när det är blött, så bilen får bättre grepp. Friktion är den kraft som bromsar rörelse mellan två ytor, och den behövs för att däcket ska greppa vägen vid acceleration, kurvtagning och inbromsning. När vägen är blöt kan ett slätt däck glida på vattenskiktet och friktionen blir liten, ungefär som på is. Mönstrets spår leder bort vatten så att gummit kommer i kontakt med vägen. Då håller bilen bättre och är lättare att styra och stanna."
+   },
+   {
+    "id": "q10",
+    "question": "Varför sjunker man ner i snön med vanliga skor men inte med snöskor?",
+    "short": "Snöskor har större yta, så samma tyngd fördelas över en större area och trycket mot snön blir mindre.",
+    "long": "Snöskor har större yta, så samma tyngd fördelas över en större area och trycket mot snön blir mindre. Tryck är kraft per area, alltså kraften delat med ytan. Din tyngd är kraften och den är densamma oavsett vad du har på fötterna. Med vanliga skor är ytan liten och trycket blir stort, så snön ger efter och du sjunker. Snöskor sprider kraften över en mycket större yta, trycket blir litet, och då bär snön dig.",
+    "screen": {
+     "long": "Snöskor har större yta, så samma tyngd fördelas över en större area och trycket mot snön blir mindre. Tryck är kraft per area: p = F / A. Din tyngd är kraften och den är densamma oavsett vad du har på fötterna. Med vanliga skor är ytan liten och trycket blir stort, så snön ger efter och du sjunker. Snöskor sprider kraften över en mycket större yta, trycket blir litet, och då bär snön dig."
+    }
+   },
+   {
+    "id": "q11",
+    "question": "Vad händer med trycket om samma kraft verkar på en mindre yta?",
+    "short": "Trycket blir större, eftersom tryck är kraft delat med area, så samma kraft på en mindre yta ger ett högre tryck.",
+    "long": "Trycket blir större, eftersom tryck är kraft delat med area, så samma kraft på en mindre yta ger ett högre tryck. Det beror på att kraften då fördelas över en mindre yta, så varje del av ytan får ta emot mer kraft. Trycket mäts i pascal. Därför sjunker man ner i snön med vanliga skor, som har liten yta, men inte med snöskor, som har stor yta. Med snöskorna sprids din tyngd ut, och trycket mot snön blir så litet att snön bär dig. Om ytan blir hälften så stor, blir trycket dubbelt så stort.",
+    "screen": {
+     "short": "Trycket blir större, eftersom tryck är kraft / area (p = F / A), så samma kraft på en mindre yta ger ett högre tryck.",
+     "long": "Trycket blir större, eftersom tryck är kraft / area (p = F / A), så samma kraft på en mindre yta ger ett högre tryck. Det beror på att kraften då fördelas över en mindre yta, så varje del av ytan får ta emot mer kraft. Trycket mäts i pascal (Pa). Därför sjunker man ner i snön med vanliga skor, som har liten yta, men inte med snöskor, som har stor yta. Med snöskorna sprids din tyngd ut, och trycket mot snön blir så litet att snön bär dig. Om ytan blir hälften så stor, blir trycket dubbelt så stort."
+    }
+   },
+   {
+    "id": "q12",
+    "question": "Hur högt är lufttrycket vid havsytan?",
+    "short": "Lufttrycket vid havsytan är ungefär hundraett tusen trehundra pascal.",
+    "long": "Lufttrycket vid havsytan är ungefär hundraett tusen trehundra pascal. Det betyder att luften ovanför oss trycker på varje kvadratmeter med en kraft på ungefär hundraett tusen trehundra newton. Trycket kommer från tyngden av all luft som ligger i ett lager ovanför oss ända upp i atmosfären. Tryck är kraft per area, och det mäts i pascal. Vi märker inte lufttrycket i vardagen, eftersom kroppen trycker lika mycket utåt som luften trycker inåt.",
+    "screen": {
+     "short": "Lufttrycket vid havsytan är ungefär 101 300 Pa.",
+     "long": "Lufttrycket vid havsytan är ungefär 101 300 Pa. Det betyder att luften ovanför oss trycker på varje kvadratmeter med en kraft på ungefär 101 300 newton. Trycket kommer från tyngden av all luft som ligger i ett lager ovanför oss ända upp i atmosfären. Tryck är kraft per area, och det mäts i pascal (Pa). Vi märker inte lufttrycket i vardagen, eftersom kroppen trycker lika mycket utåt som luften trycker inåt."
+    }
+   }
+  ],
+  "cost_usd": 0.0558434
+ },
+ "h3-en-climate": {
+  "subject": "Engelska",
+  "questions": 12,
+  "fixed": [
+   [
+    "Varför blir jordens klimat varmare?",
+    "Why is the Earth's climate getting warmer?"
+   ],
+   [
+    "Vad menas med att medeltemperaturen har stigit med ett komma två grader sedan artonhundrafemtio?",
+    "What does it mean that the average temperature has risen by 1.2 degrees since 1850?"
+   ],
+   [
+    "Vem anses vara huvudorsaken till den globala uppvärmningen enligt de flesta forskare?",
+    "Who do most scientists believe is the main cause of global warming?"
+   ],
+   [
+    "Hur fungerar växthuseffekten?",
+    "How does the greenhouse effect work?"
+   ],
+   [
+    "Varför liknas gaser som koldioxid vid glastaket i ett växthus?",
+    "Why are gases like carbon dioxide compared to the glass roof of a greenhouse?"
+   ],
+   [
+    "Varför släpps mer koldioxid ut när vi bränner kol, olja och gas?",
+    "Why is more carbon dioxide released when we burn coal, oil and gas?"
+   ],
+   [
+    "Hur leder smältande is på Grönland och Antarktis till problem för städer?",
+    "How does melting ice on Greenland and Antarctica cause problems for cities?"
+   ],
+   [
+    "Varför hotas städer nära kusten när havsnivån stiger?",
+    "Why are cities near the coast threatened when the sea level rises?"
+   ],
+   [
+    "Varför förlorar isbjörnar sin livsmiljö?",
+    "Why do polar bears lose their habitat?"
+   ],
+   [
+    "Vad har länderna lovat i Parisavtalet från 2015?",
+    "What did countries promise in the Paris Agreement from 2015?"
+   ],
+   [
+    "Hur kan vanliga människor bidra till att minska klimatförändringarna?",
+    "How can ordinary people help to reduce climate change?"
+   ],
+   [
+    "Varför skulle det hjälpa klimatet om man åt mindre kött och slösade mindre mat?",
+    "What can people do in daily life to help the climate, according to what you have learned?"
+   ]
+  ],
+  "drill_id": "18561c8d-d228-4391-82b9-0832d63870f3",
+  "save": 200,
+  "mentions_material": [],
+  "screen": 1,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Why is the Earth's climate getting warmer?",
+    "short": "The Earth is getting warmer because humans burn coal, oil and gas, which releases carbon dioxide that traps more heat in the atmosphere.",
+    "long": "The Earth is getting warmer because humans burn coal, oil and gas, which releases carbon dioxide that traps more heat in the atmosphere. This is called the greenhouse effect. Gases like carbon dioxide act like the glass roof of a greenhouse: sunlight gets in, but the heat cannot easily escape back into space. The more fossil fuels we burn, the more carbon dioxide there is, so more heat is trapped and the temperature keeps rising. Most scientists agree that people are the main cause of this change."
+   },
+   {
+    "id": "q2",
+    "question": "What does it mean that the average temperature has risen by 1.2 degrees since 1850?",
+    "short": "It means that the Earth's average temperature today is about one point two degrees higher than it was around the year eighteen fifty.",
+    "long": "It means that the Earth's average temperature today is about one point two degrees higher than it was around the year eighteen fifty. This may sound like a small change, but it is an average for the whole planet, so it affects a lot. Even a small rise in the average can melt ice on Greenland and Antarctica, which makes sea levels rise. It also makes heat waves, droughts and heavy rain more common around the world.",
+    "screen": {
+     "short": "It means that the Earth's average temperature today is about 1.2 degrees higher than it was around the year 1850.",
+     "long": "It means that the Earth's average temperature today is about 1.2 degrees higher than it was around the year 1850. This may sound like a small change, but it is an average for the whole planet, so it affects a lot. Even a small rise in the average can melt ice on Greenland and Antarctica, which makes sea levels rise. It also makes heat waves, droughts and heavy rain more common around the world."
+    }
+   },
+   {
+    "id": "q3",
+    "question": "Who do most scientists believe is the main cause of global warming?",
+    "short": "Most scientists agree that humans are the main cause of global warming.",
+    "long": "Most scientists agree that humans are the main cause of global warming. The reason is that human activities, especially burning coal, oil and gas, release large amounts of carbon dioxide into the air. This gas traps heat in the atmosphere, so the more we release, the warmer the Earth becomes. Because people are the cause, people can also be part of the solution, for example by cutting emissions."
+   },
+   {
+    "id": "q4",
+    "question": "How does the greenhouse effect work?",
+    "short": "Gases like carbon dioxide in the atmosphere trap heat from the sun, so the Earth stays warmer than it would be without them.",
+    "long": "Gases like carbon dioxide in the atmosphere trap heat from the sun, so the Earth stays warmer than it would be without them. It works a bit like the glass roof of a greenhouse, which lets sunlight in but keeps the heat inside. When we burn coal, oil and gas, we release more carbon dioxide, so even more heat is trapped. This extra trapped heat is what makes the climate warmer. The effect becomes a problem when humans make it stronger than it naturally is."
+   },
+   {
+    "id": "q5",
+    "question": "Why are gases like carbon dioxide compared to the glass roof of a greenhouse?",
+    "short": "They are compared to a glass roof because both trap heat: a glass roof keeps warmth inside a greenhouse, and carbon dioxide keeps heat in the atmosphere.",
+    "long": "They are compared to a glass roof because both trap heat: a glass roof keeps warmth inside a greenhouse, and carbon dioxide keeps heat in the atmosphere. In a greenhouse, sunlight passes through the glass and warms the air inside, but the heat cannot easily get out again. In the same way, carbon dioxide in the atmosphere lets the sun's energy reach the Earth but holds on to the heat. With more carbon dioxide in the air, more heat is held in, and the planet becomes warmer. This comparison helps us understand why burning fossil fuels warms the Earth."
+   },
+   {
+    "id": "q6",
+    "question": "Why is more carbon dioxide released when we burn coal, oil and gas?",
+    "short": "Coal, oil and gas contain a lot of carbon, and burning them makes that carbon combine with oxygen, so carbon dioxide is released into the air.",
+    "long": "Coal, oil and gas contain a lot of carbon, and burning them makes that carbon combine with oxygen, so carbon dioxide is released into the air. These fuels are called fossil fuels because they were formed from plants and animals that lived millions of years ago, and the carbon in them has been stored underground ever since. When we burn them for electricity, heating or transport, that stored carbon goes into the atmosphere as carbon dioxide. Carbon dioxide is a greenhouse gas that traps heat, so the more we burn, the more heat is trapped and the warmer the Earth becomes."
+   },
+   {
+    "id": "q7",
+    "question": "How does melting ice on Greenland and Antarctica cause problems for cities?",
+    "short": "When the ice on Greenland and Antarctica melts, the water runs into the oceans and makes sea levels rise, which threatens cities close to the coast.",
+    "long": "When the ice on Greenland and Antarctica melts, the water runs into the oceans and makes sea levels rise, which threatens cities close to the coast. The ice on these two huge areas of land holds a lot of water. As the Earth gets warmer, more of it melts, and the extra water ends up in the sea. Higher seas can flood streets and homes in coastal cities, and the problem gets worse with every year of warming. People may have to build walls to keep the water out or even move away from their homes."
+   },
+   {
+    "id": "q8",
+    "question": "Why are cities near the coast threatened when the sea level rises?",
+    "short": "Cities near the coast lie close to the sea, so when the water level rises it can flood them and damage buildings, roads and homes.",
+    "long": "Cities near the coast lie close to the sea, so when the water level rises it can flood them and damage buildings, roads and homes. The higher the sea gets, the further it can reach onto land, especially during storms and heavy rain, which are becoming more common. Many big cities are built by the coast, so millions of people could be affected. Flooding can destroy houses, harm important services and force people to leave. That is why rising seas are seen as one of the most serious results of global warming."
+   },
+   {
+    "id": "q9",
+    "question": "Why do polar bears lose their habitat?",
+    "short": "Polar bears live on sea ice, and as the Earth gets warmer the ice melts, so they lose the place where they live and hunt.",
+    "long": "Polar bears live on sea ice, and as the Earth gets warmer the ice melts, so they lose the place where they live and hunt. Global warming is caused mainly by humans burning fossil fuels, and the extra heat melts the ice in the Arctic. Polar bears need the ice to move around and to hunt, so when it disappears they have less food and less space. This shows how climate change does not only affect people but also animals, some of which may struggle to survive if the ice keeps shrinking."
+   },
+   {
+    "id": "q10",
+    "question": "What did countries promise in the Paris Agreement from 2015?",
+    "short": "In the Paris Agreement from 2015, countries promised to reduce their emissions of greenhouse gases to slow down global warming.",
+    "long": "In the Paris Agreement from 2015, countries promised to reduce their emissions of greenhouse gases to slow down global warming. The idea is that if all the countries cut their emissions, less heat will be trapped in the atmosphere and the temperature will not rise as fast. A promise like this needs countries to work together, because climate change is a problem for the whole world. People can help too, for example by taking the train instead of flying, eating less meat and wasting less food."
+   },
+   {
+    "id": "q11",
+    "question": "How can ordinary people help to reduce climate change?",
+    "short": "Ordinary people can cut their own emissions, for example by taking the train instead of flying, eating less meat and wasting less food.",
+    "long": "Ordinary people can cut their own emissions, for example by taking the train instead of flying, eating less meat and wasting less food. These choices matter because burning fossil fuels releases carbon dioxide, and carbon dioxide traps heat in the atmosphere. Every flight we skip means less fuel burned and less carbon dioxide released. Many people making the same small choices can add up to a real difference. Countries have also promised to lower their emissions in the Paris Agreement, so what people do at home works together with what governments do."
+   },
+   {
+    "id": "q12",
+    "question": "What can people do in daily life to help the climate, according to what you have learned?",
+    "short": "People can take the train instead of flying, eat less meat and waste less food, because all of these help to reduce emissions.",
+    "long": "People can take the train instead of flying, eat less meat and waste less food, because all of these help to reduce emissions. Emissions matter because gases like carbon dioxide trap heat in the atmosphere, a bit like the glass roof of a greenhouse. The more we release, the warmer the Earth becomes. Flying burns a lot of fuel, so travelling by train is a good choice. Choosing less meat and throwing away less food are also ways people can help, and together such choices support what countries promised in the Paris Agreement."
+   }
+  ],
+  "cost_usd": 0.0385883
+ },
+ "h3-hi-franska-revolutionen": {
+  "subject": "Historia",
+  "questions": 12,
+  "fixed": [
+   [
+    "Varför betalade tredje ståndet nästan alla skatter?",
+    "Hur såg skattefördelningen ut mellan de tre stånden i Frankrike före revolutionen?"
+   ],
+   [
+    "Varför stormade folket i Paris Bastiljen den 14 juli 1789?",
+    "Vad var Bastiljen och vad hände när folket stormade den den 14 juli 1789?"
+   ]
+  ],
+  "drill_id": "926baec9-c578-44c3-a3f7-0ece3ae989d7",
+  "save": 200,
+  "mentions_material": [],
+  "screen": 4,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Hur såg skattefördelningen ut mellan de tre stånden i Frankrike före revolutionen?",
+    "short": "Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter, medan prästerna och adeln, som hade mest rikedom och makt, betalade mycket lite.",
+    "long": "Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter, medan prästerna och adeln, som hade mest rikedom och makt, betalade mycket lite. Det gjorde samhället orättvist, eftersom bönder, hantverkare och borgare bar nästan hela bördan utan att få något inflytande över hur pengarna användes. Skatterna blev särskilt tunga när staten var nära konkurs och kungen behövde mer pengar. Missnöjet i tredje ståndet var en av de viktigaste orsakerna till att revolutionen bröt ut."
+   },
+   {
+    "id": "q2",
+    "question": "Vad innebar ståndssamhället i Frankrike före revolutionen?",
+    "short": "Ståndssamhället delade in befolkningen i tre grupper: prästerna, adeln och alla andra, och vilken grupp man föddes in i avgjorde ens rättigheter och skyldigheter.",
+    "long": "Ståndssamhället delade in befolkningen i tre grupper: prästerna, adeln och alla andra, och vilken grupp man föddes in i avgjorde ens rättigheter och skyldigheter. Första ståndet var prästerna, andra ståndet var adeln och tredje ståndet var alla andra, alltså bönder, hantverkare och borgare. Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter. Samhället byggde alltså på ojämlikhet, och det skapade ett stort missnöje som bidrog till att revolutionen bröt ut år sjuttonhundraåttionio."
+   },
+   {
+    "id": "q3",
+    "question": "Varför var den franska staten nära konkurs före revolutionen?",
+    "short": "Staten var nära konkurs eftersom Frankrike hade fört dyra krig, bland annat genom stödet till den amerikanska revolutionen, och därför gick statens utgifter långt över dess inkomster.",
+    "long": "Staten var nära konkurs eftersom Frankrike hade fört dyra krig, bland annat genom stödet till den amerikanska revolutionen, och därför gick statens utgifter långt över dess inkomster. Pengarna tog slut och kungen behövde mer skatt. Eftersom tredje ståndet redan betalade nästan alla skatter var det svårt att hämta mer pengar därifrån. Därför kallade kung Ludvig den sextonde in generalständerna år sjuttonhundraåttionio, och det blev starten på revolutionen."
+   },
+   {
+    "id": "q4",
+    "question": "Hur påverkade det amerikanska revolutionskriget Frankrikes ekonomi?",
+    "short": "Frankrikes stöd till den amerikanska revolutionen kostade mycket pengar och var en av de dyra krigsinsatser som gjorde att staten nästan gick i konkurs.",
+    "long": "Frankrikes stöd till den amerikanska revolutionen kostade mycket pengar och var en av de dyra krigsinsatser som gjorde att staten nästan gick i konkurs. Utgifterna blev större än inkomsterna, och statens ekonomi blev så ansträngd att kungen behövde nya skatteintäkter. Det var en viktig anledning till att han kallade in generalständerna år sjuttonhundraåttionio. Där bröt sig tredje ståndet ut och bildade nationalförsamlingen, vilket satte igång revolutionen."
+   },
+   {
+    "id": "q5",
+    "question": "Hur påverkade de dåliga skördarna 1788 folket?",
+    "short": "De dåliga skördarna år sjuttonhundraåttioåtta gjorde brödet dyrt, så många människor fick det svårt att köpa mat och en del svalt.",
+    "long": "De dåliga skördarna år sjuttonhundraåttioåtta gjorde brödet dyrt, så många människor fick det svårt att köpa mat och en del svalt. Bröd var den viktigaste maten för vanligt folk, så när priset steg drabbades fattiga ur tredje ståndet hårdast. Hungern och ilskan lade sig ovanpå statens ekonomiska kris och det gamla missnöjet över orättvisa skatter. Det gjorde att människor var redo att göra uppror, och året därpå stormade folket i Paris Bastiljen.",
+    "screen": {
+     "short": "De dåliga skördarna år 1788 gjorde brödet dyrt, så många människor fick det svårt att köpa mat och en del svalt.",
+     "long": "De dåliga skördarna år 1788 gjorde brödet dyrt, så många människor fick det svårt att köpa mat och en del svalt. Bröd var den viktigaste maten för vanligt folk, så när priset steg drabbades fattiga ur tredje ståndet hårdast. Hungern och ilskan lade sig ovanpå statens ekonomiska kris och det gamla missnöjet över orättvisa skatter. Det gjorde att människor var redo att göra uppror, och året därpå, 1789, stormade folket i Paris Bastiljen."
+    }
+   },
+   {
+    "id": "q6",
+    "question": "Vad menade Rousseau om makten?",
+    "short": "Rousseau menade att makten borde komma från folket och inte från kungen.",
+    "long": "Rousseau menade att makten borde komma från folket och inte från kungen. Han var en av upplysningens tänkare, som ifrågasatte att kungen styrde med rätt att bestämma över alla. Enligt dem skulle folket själva ha den yttersta makten. Idén blev viktig under revolutionen, när tredje ståndet, som var nästan hela befolkningen men betalade nästan alla skatter, krävde inflytande. Den bidrog därför till att kungens makt började ifrågasättas och att nationalförsamlingen bildades."
+   },
+   {
+    "id": "q7",
+    "question": "Varför kallade kung Ludvig XVI in generalständerna 1789?",
+    "short": "Kungen kallade in generalständerna för att få mer skatt, eftersom staten var nästan i konkurs efter dyra krig.",
+    "long": "Kungen kallade in generalständerna för att få mer skatt, eftersom staten var nästan i konkurs efter dyra krig. Franska staten hade lagt mycket pengar på krig, bland annat stödet till den amerikanska revolutionen. Dessutom hade dåliga skördar gjort brödet dyrt, så att många svalt och missnöjet växte. Kungen behövde nya pengar, och generalständerna var mötet där de tre stånden samlades. Det blev ändå ett misstag för kungen, för mötet blev i stället starten på revolutionen, när tredje ståndet bröt sig ut och bildade nationalförsamlingen."
+   },
+   {
+    "id": "q8",
+    "question": "Vad gjorde tredje ståndet när generalständerna samlades?",
+    "short": "Tredje ståndet bröt sig ut ur generalständerna och bildade en egen nationalförsamling.",
+    "long": "Tredje ståndet bröt sig ut ur generalständerna och bildade en egen nationalförsamling. Tredje ståndet bestod av bönder, hantverkare och borgare, alltså nästan hela befolkningen, men det hade ändå mindre inflytande än prästerna och adeln. De ville därför inte längre vara med på de villkoren. Genom att bryta sig ut tog de makt som kungen inte hade gett dem. Det var ett första tydligt steg mot revolutionen och visade att folket krävde att få styra."
+   },
+   {
+    "id": "q9",
+    "question": "Vad bildade tredje ståndet när det bröt sig ut?",
+    "short": "Tredje ståndet bildade nationalförsamlingen.",
+    "long": "Tredje ståndet bildade nationalförsamlingen. Nationalförsamlingen blev en egen församling som talade för folket i stället för för kungen, prästerna och adeln. Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter, så de ansåg sig ha rätt att bestämma. Bildandet av nationalförsamlingen var början på att makten flyttades från kungen till folket och blev därmed ett avgörande steg i revolutionen."
+   },
+   {
+    "id": "q10",
+    "question": "Vad var Bastiljen och vad hände när folket stormade den den 14 juli 1789?",
+    "short": "Bastiljen var ett fängelse i Paris och en symbol för kungens makt, och när folket stormade det visade de öppet att de vände sig mot kungen.",
+    "long": "Bastiljen var ett fängelse i Paris och en symbol för kungens makt, och när folket stormade det visade de öppet att de vände sig mot kungen. Stormningen skedde den fjortonde juli sjuttonhundraåttionio, medan revolutionen redan hade börjat med att tredje ståndet bildat nationalförsamlingen. Missnöjet var stort efter dåliga skördar och dyrt bröd, och många svalte. Genom att ta ett fängelse som stod för kungens makt visade folket att det inte längre ville lyda honom. Dagen har blivit en av revolutionens viktigaste symboler.",
+    "screen": {
+     "long": "Bastiljen var ett fängelse i Paris och en symbol för kungens makt, och när folket stormade det visade de öppet att de vände sig mot kungen. Stormningen skedde den 14 juli 1789, medan revolutionen redan hade börjat med att tredje ståndet bildat nationalförsamlingen. Missnöjet var stort efter dåliga skördar och dyrt bröd, och många svalte. Genom att ta ett fängelse som stod för kungens makt visade folket att det inte längre ville lyda honom. Dagen har blivit en av revolutionens viktigaste symboler."
+    }
+   },
+   {
+    "id": "q11",
+    "question": "Vad symboliserade Bastiljen?",
+    "short": "Bastiljen var ett fängelse som symboliserade kungens makt, och därför blev stormningen av det ett tecken på att folket vågade gå emot kungen.",
+    "long": "Bastiljen var ett fängelse som symboliserade kungens makt, och därför blev stormningen av det ett tecken på att folket vågade gå emot kungen. Fängelset låg i Paris och stod för att kungen kunde styra över människor som han ville. Den fjortonde juli sjuttonhundraåttionio stormade folket det, vilket blev revolutionens första stora våldsamma handling. Det visade att makten inte längre bara låg hos kungen, utan att vanliga människor tog saken i egna händer. Därför firas den dagen än i dag som en viktig dag i fransk historia.",
+    "screen": {
+     "long": "Bastiljen var ett fängelse som symboliserade kungens makt, och därför blev stormningen av det ett tecken på att folket vågade gå emot kungen. Fängelset låg i Paris och stod för att kungen kunde styra över människor som han ville. Den 14 juli 1789 stormade folket det, vilket blev revolutionens första stora våldsamma handling. Det visade att makten inte längre bara låg hos kungen, utan att vanliga människor tog saken i egna händer. Därför firas den dagen än i dag som en viktig dag i fransk historia."
+    }
+   },
+   {
+    "id": "q12",
+    "question": "Vad innehöll deklarationen om människans och medborgarens rättigheter?",
+    "short": "Deklarationen slog fast att alla människor föds fria och lika i rättigheter, och den antogs i augusti sjuttonhundraåttionio.",
+    "long": "Deklarationen slog fast att alla människor föds fria och lika i rättigheter, och den antogs i augusti sjuttonhundraåttionio. Den kom alltså bara några veckor efter stormningen av Bastiljen. Tanken var att alla medborgare skulle ha samma rättigheter, till skillnad från ståndssamhället där prästerna och adeln hade fördelar medan tredje ståndet betalade nästan alla skatter. Deklarationen bygger på upplysningens idé om att makten ska komma från folket och inte från kungen. Därför blev den en viktig symbol för revolutionen, och idéerna om frihet, jämlikhet och broderskap spred sig sedan vidare i Europa.",
+    "screen": {
+     "short": "Deklarationen slog fast att alla människor föds fria och lika i rättigheter, och den antogs i augusti 1789.",
+     "long": "Deklarationen slog fast att alla människor föds fria och lika i rättigheter, och den antogs i augusti 1789. Den kom alltså bara några veckor efter stormningen av Bastiljen. Tanken var att alla medborgare skulle ha samma rättigheter, till skillnad från ståndssamhället där prästerna och adeln hade fördelar medan tredje ståndet betalade nästan alla skatter. Deklarationen bygger på upplysningens idé om att makten ska komma från folket och inte från kungen. Därför blev den en viktig symbol för revolutionen, och idéerna om frihet, jämlikhet och broderskap spred sig sedan vidare i Europa."
+    }
+   }
+  ],
+  "cost_usd": 0.0968219
+ },
+ "h4-en-lighthouse": {
+  "subject": "Engelska",
+  "questions": 12,
+  "fixed": [
+   [
+    "What does the word keeper mean?",
+    "What does the word keeper mean, and how is it used in the story?"
+   ],
+   [
+    "Why is it important to know that the story is told in the first person?",
+    "Why does it matter that the story is told in the first person?"
+   ]
+  ],
+  "drill_id": "fdf13f7e-a32e-4c83-bfd1-37d4a10c0728",
+  "save": 200,
+  "mentions_material": [],
+  "screen": 3,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Why is Thomas afraid of the sea?",
+    "short": "Thomas is afraid of the sea because his parents died in a storm at sea when he was only six years old.",
+    "long": "Thomas is afraid of the sea because his parents died in a storm at sea when he was only six years old. That loss has stayed with him for nine years, so the sea reminds him of the worst moment of his life. He now lives with his grandfather on a small island, surrounded by the very thing he fears. This shows how a childhood trauma can shape a person's feelings for a long time, and it sets up the challenge he must later face.",
+    "screen": {
+     "short": "Thomas is afraid of the sea because his parents died in a storm at sea when he was only 6 years old.",
+     "long": "Thomas is afraid of the sea because his parents died in a storm at sea when he was only 6 years old. That loss has stayed with him for 9 years, so the sea reminds him of the worst moment of his life. He now lives with his grandfather on a small island, surrounded by the very thing he fears. This shows how a childhood trauma can shape a person's feelings for a long time, and it sets up the challenge he must later face."
+    }
+   },
+   {
+    "id": "q2",
+    "question": "What happens when the electricity fails during the storm?",
+    "short": "When the electricity fails, the lighthouse light goes out, and a fishing boat in the storm is left heading toward the rocks without any warning.",
+    "long": "When the electricity fails, the lighthouse light goes out, and a fishing boat in the storm is left heading toward the rocks without any warning. Without the light, the crew cannot see the danger, so lives are at risk. The failure creates the crisis of the story, because someone must find another way to light the lamp quickly. It also removes every easy solution, since the modern system has stopped working, and the old oil lamp becomes the only hope. This is the turning point where the tension rises."
+   },
+   {
+    "id": "q3",
+    "question": "Why does Thomas have to climb the 120 steps himself?",
+    "short": "Thomas has to climb the steps himself because his grandfather, the keeper, has hurt his leg and cannot climb them.",
+    "long": "Thomas has to climb the steps himself because his grandfather, the keeper, has hurt his leg and cannot climb them. There is nobody else on the island who can do it, and the boat is running out of time. So Thomas has to take on an adult's responsibility, even though he is only a teenager and is scared. The long climb of one hundred and twenty steps in a storm is difficult, and it forces him to choose between staying safe and helping others.",
+    "screen": {
+     "long": "Thomas has to climb the steps himself because his grandfather, the keeper, has hurt his leg and cannot climb them. There is nobody else on the island who can do it, and the boat is running out of time. So Thomas has to take on an adult's responsibility, even though he is only a teenager and is scared. The long climb of 120 steps in a storm is difficult, and it forces him to choose between staying safe and helping others."
+    }
+   },
+   {
+    "id": "q4",
+    "question": "How does Thomas save the boat and its crew?",
+    "short": "Thomas saves the boat by climbing the stairs and lighting the old oil lamp, so the crew can see the rocks and steer away.",
+    "long": "Thomas saves the boat by climbing the stairs and lighting the old oil lamp, so the crew can see the rocks and steer away. He does this in spite of his fear of the storm and the sea. Because the light shines again, the boat avoids the rocks and all four people on board are saved. His action shows that he faced the thing he feared most. The rescue is also the moment when he changes from a frightened boy into someone who takes responsibility for others.",
+    "screen": {
+     "long": "Thomas saves the boat by climbing the stairs and lighting the old oil lamp, so the crew can see the rocks and steer away. He does this in spite of his fear of the storm and the sea. Because the light shines again, the boat avoids the rocks and all 4 people on board are saved. His action shows that he faced the thing he feared most. The rescue is also the moment when he changes from a frightened boy into someone who takes responsibility for others."
+    }
+   },
+   {
+    "id": "q5",
+    "question": "Why is the storm a symbol of Thomas's fear?",
+    "short": "The storm is a symbol of Thomas's fear because the wild, dangerous weather outside matches the fear that is raging inside him.",
+    "long": "The storm is a symbol of Thomas's fear because the wild, dangerous weather outside matches the fear that is raging inside him. The author connects the two, since a storm killed his parents and now another storm tests him. By going out into the storm, Thomas is also facing his own fear. This supports the main theme of courage, because being brave does not mean having no fear, but acting in spite of it. The storm makes his inner struggle easy to see and feel."
+   },
+   {
+    "id": "q6",
+    "question": "What does the theme of courage mean in the story?",
+    "short": "Courage in the story means not the absence of fear but acting in spite of it, as Thomas climbs the lighthouse stairs even though he is afraid.",
+    "long": "Courage in the story means not the absence of fear but acting in spite of it, as Thomas climbs the lighthouse stairs even though he is afraid. Thomas has feared the sea since his parents died in a storm when he was six. When the power fails and a fishing boat is heading for the rocks, he faces that fear instead of running from it. He climbs the stairs and lights the old oil lamp, and the boat and its crew are saved. The author uses the storm as a symbol of his fear, so lighting the lamp shows him beating it. The story shows that a person can be brave and frightened at the same time."
+   },
+   {
+    "id": "q7",
+    "question": "How is the story told, and what does this mean for what we know?",
+    "short": "The story is told in the first person, so we only know what Thomas himself thinks and feels.",
+    "long": "The story is told in the first person, so we only know what Thomas himself thinks and feels. Because we see everything through his eyes, we feel his fear of the sea and his doubts as he climbs the stairs. We cannot know what his grandfather or the fishermen on the boat are thinking, and that limits our view of the events. This makes the story more personal and makes it easier for readers to understand Thomas and share his struggle."
+   },
+   {
+    "id": "q8",
+    "question": "What does the word keeper mean, and how is it used in the story?",
+    "short": "A keeper is a person who takes care of something, and in the story Thomas's grandfather is the keeper of the lighthouse.",
+    "long": "A keeper is a person who takes care of something, and in the story Thomas's grandfather is the keeper of the lighthouse. The word comes from the verb to keep, meaning to look after or protect. A lighthouse keeper looks after the light and makes sure it works, so ships can find their way safely past the rocks. When the grandfather hurts his leg, he can no longer do this job, and Thomas has to take over as keeper for one night. In a way, the word also describes Thomas growing into responsibility."
+   },
+   {
+    "id": "q9",
+    "question": "What does the expression in spite of mean?",
+    "short": "In spite of means despite something, that is, something happens even though another thing is present or tries to stop it.",
+    "long": "In spite of means despite something, that is, something happens even though another thing is present or tries to stop it. It is a preposition, so it is followed by a noun or an ing-form. For example, you can say that Thomas lit the lamp in spite of his fear, or in spite of the storm. It is a useful link word in writing because it shows a contrast, and it is closely tied to the theme of the story. Courage means acting in spite of fear, which is exactly what Thomas does when he climbs the stairs. It means the same as despite."
+   },
+   {
+    "id": "q10",
+    "question": "Why does it matter that the story is told in the first person?",
+    "short": "It matters because the reader sees only Thomas's thoughts and feelings, which makes his fear and his courage feel close and real.",
+    "long": "It matters because the reader sees only Thomas's thoughts and feelings, which makes his fear and his courage feel close and real. In a first-person story the narrator says I, so we experience the storm, the dark stairs and the fear as he does. We understand why the sea frightens him, because we are inside his mind. At the same time we only get his point of view. We do not know what the grandfather or the crew think, and Thomas may not see everything correctly. This choice by the author strengthens the theme of courage, because we feel the fear that Thomas must overcome."
+   },
+   {
+    "id": "q11",
+    "question": "How do Thomas's parents' deaths affect him?",
+    "short": "Thomas's parents died in a storm when he was six, and because of this loss he has grown up afraid of the sea.",
+    "long": "Thomas's parents died in a storm when he was six, and because of this loss he has grown up afraid of the sea. His fear shapes his whole life on the island, where he lives with his grandfather, the lighthouse keeper, right next to the water he dreads. The fear is still there at fifteen, and it becomes the biggest obstacle on the night of the storm, when he has to climb the lighthouse and light the lamp. The storm itself works as a symbol of his fear, so the loss from his childhood and the danger of that night are tied closely together."
+   },
+   {
+    "id": "q12",
+    "question": "What makes Thomas's actions brave even though he is scared?",
+    "short": "His actions are brave because he acts in spite of his fear, and the story shows that courage means doing what is needed while still being afraid.",
+    "long": "His actions are brave because he acts in spite of his fear, and the story shows that courage means doing what is needed while still being afraid. Thomas is terrified of the sea, since a storm killed his parents, yet when the power fails and a fishing boat is heading for the rocks, he does not freeze. His grandfather has hurt his leg, so Thomas must climb the one hundred and twenty steps and light the old oil lamp himself. He faces exactly the kind of danger he fears most, and because he does, the boat and its crew of four people are saved."
+   }
+  ],
+  "cost_usd": 0.0394176
+ }
+}

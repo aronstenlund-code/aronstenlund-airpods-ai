@@ -565,3 +565,14 @@ Deno.test("K67 (O64): 'the notes' on every exam language; drill_answers may fix 
   assert(mentionsMaterial("Según las notas, el clima cambia."));
   assert(!mentionsMaterial("He writes notes to his mother."), "ordinary 'notes' is fine");
 });
+
+Deno.test("K67 (live): a language exam's Swedish questions are translated in the check step", async () => {
+  const { shortenQuestions, DEFAULT_DRILL_CONFIG } = await import("./drill.ts");
+  let user = "";
+  const llm: LLMProvider = { name: "f", model: "x", async *stream(req: LLMRequest) { user = req.user; yield { type: "text", text: JSON.stringify({ questions: [{ i: 0, q: "Why is the Earth's climate getting warmer?" }] }) }; } };
+  const r = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, ["Varför blir klimatet varmare?"], { subject: "Engelska", grade: "åk 8", covers: "" });
+  assertEquals(r.questions, ["Why is the Earth's climate getting warmer?"]);
+  assert(user.includes("<language>English</language>"));
+  const sv = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, ["Varför blir klimatet varmare?"], { subject: "Geografi", grade: "", covers: "" });
+  assertEquals(sv.questions, ["Varför blir klimatet varmare?"], "no translation outside language exams");
+});
