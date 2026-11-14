@@ -10,11 +10,12 @@ efter Arons ja (CLAUDE.md). Ersätter utkastet i `docs/marketing/appstore/` (Ke2
 | 2 | `69-2.jpg` | Frågor med A-svar. | Ett kort och ett långt svar på varje fråga. | `repList` |
 | 3 | `69-3.jpg` | Starta prov. | Frågorna läses upp i dina AirPods. | `repHome` |
 | 4 | `69-4.jpg` | Tryck för svaret. | 1 gång för A-svaret. 2 för ett kort. 3 för paus. | `repControlsDone` |
-| 5 | `69-5.jpg` | Dela med klassen. | Samma frågor, svar och ljud. | `repShareReady` |
+| 5 | `69-5.jpg` | Dela med klassen. | Lägg till prov som kompisarna har gjort. | `repSchools` |
 
-- **Det här är förhandsvisningar.** Skärmbilderna kommer från A87, CI "Simulator screenshots" 43519509067 (3382ae2, iPhone 17
-  Pro, uppskalade). De ska göras om med skärmbilder från **iPhone 17 Pro Max** (exakt 1320 × 2868) och med
-  **SF Pro Display** på en Mac. Rubrikerna är satta i Segoe UI, eftersom SF Pro inte finns i Windows.
+- **Skärmbilderna är exakta:** CI "Simulator screenshots" **43578038498** på **iPhone 17 Pro Max** (1320 × 2868,
+  main 508aeb2, efter A87, A83 och A92), inte uppskalade. **Rubrikerna är fortfarande Segoe UI**, eftersom SF Pro
+  inte finns i Windows. Gör om dem med SF Pro Display på en Mac före inskickning (kommandot nedan).
+- Bild 5 visar Prov från din skola i stället för Dela-scenen, eftersom Dela bara syns som en symbol i verktygsraden.
 - Gör om dem med `python -I docs/appstore/_src/appstore.py <mapp> <SF-Pro-Display-Bold.otf> <SF-Pro-Display-Regular.otf>`.
 - Apple-stil: grå bakgrund (#F5F5F7), rubrik och en rad, telefonen i en enkel mörk ram och ingen skugga eller gradient.
   Varje bild är en oförändrad skärmbild ur appen.

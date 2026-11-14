@@ -28,7 +28,7 @@ SHOTS = [
     ("repList", "Frågor med A-svar.", "Ett kort och ett långt svar på varje fråga."),
     ("repHome", "Starta prov.", "Frågorna läses upp i dina AirPods."),
     ("repControlsDone", "Tryck för svaret.", "1 gång för A-svaret. 2 för ett kort. 3 för paus."),
-    ("repShareReady", "Dela med klassen.", "Samma frågor, svar och ljud."),
+    ("repSchools", "Dela med klassen.", "Lägg till prov som kompisarna har gjort."),
 ]
 
 
