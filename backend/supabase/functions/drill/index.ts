@@ -5,7 +5,7 @@ import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
-import { silentMp3, TEST_VOICE_ID, withTestMode } from "../_shared/testmode.ts";
+import { currentTest, silentMp3, TEST_VOICE_ID, withTestMode } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type PublicationRow, type SchoolRow, type ShareRow } from "./handler.ts";
 
 const env = Deno.env;
@@ -34,7 +34,8 @@ function saveStatus(row: Record<string, unknown>) {
 let creditsLogged = false;
 async function logCredits() {
   // K46: Aron's plan and credits, in the function log only (never the key, never to the app)
-  if (creditsLogged || !xi) return;
+  // K62b (Oscar O61): never from a test request (free, but still a call to ElevenLabs)
+  if (creditsLogged || !xi || currentTest()?.test) return;
   creditsLogged = true;
   try {
     const r = await fetch(`${xiBase}/v1/user/subscription`, { headers: { "xi-api-key": xi } });
@@ -96,7 +97,7 @@ Deno.serve(withCors(withTestMode("drill",
         chunked(hashes, 100, async (p) =>
           (await db.select(
             "drill_audio_files",
-            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits&hash=in.(${list(p)})`,
+            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits,error,done_at,queued_at&hash=in.(${list(p)})`,
           )) as AudioRow[]),
       enqueue: (rows) => db.insertManyIgnoreDuplicates("drill_audio_files", rows, "hash"),
       claim: async (n) => {

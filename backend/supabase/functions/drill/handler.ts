@@ -316,6 +316,36 @@ export function createDrillHandler(deps: DrillDeps) {
   const json = (body: unknown, status = 200) =>
     new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json", "cache-control": "no-store", ...CORS_HEADERS } });
 
+  /**
+   * K62b (Oscar O61 fynd 1): a test request never starts the shared queue (it would make other people's files with
+   * the real voice). It makes only its own files, which all have the silent test voice, right here.
+   */
+  async function testPump(hashes: string[]): Promise<number> {
+    if (!deps.synth || !hashes.length) return 0;
+    let made = 0;
+    for (const j of (await deps.db.audio(hashes)).filter((a) => a.voice_id === TEST_VOICE_ID && a.status !== "done")) {
+      try {
+        const r = await deps.synth.speak(j.text, j.model, j.voice_id);
+        await deps.storage.upload(audioPath(j.hash), r.audio);
+        const t = timings(j.text, r.starts, r.ends, j.short_chars);
+        await deps.db.finish(j.hash, {
+          status: "done", chars: j.text.length, bytes: r.audio.length, duration_ms: t.duration_ms, short_end_ms: t.short_end_ms,
+          words: t.words, credits: 0, error: null, done_at: new Date(now()).toISOString(),
+        });
+        made++;
+      } catch (e) {
+        console.error("drill_test_audio_failed", j.hash.slice(0, 12), e instanceof Error ? e.message.slice(0, 120) : String(e));
+      }
+    }
+    return made;
+  }
+  /** Starts making files: the shared queue for real traffic, only the request's own silent files for a test. */
+  const kick = (hashes: string[], wait = false): Promise<unknown> | void => {
+    const p = currentTest()?.test ? testPump(hashes) : pump();
+    if (deps.background && !wait) deps.background(p);
+    else return p;
+  };
+
   /** Makes queued files until the queue is empty or the time is up. Never throws. */
   async function pump(budgetMs = 110_000): Promise<number> {
     if (!deps.synth) return 0;
@@ -442,7 +472,7 @@ export function createDrillHandler(deps: DrillDeps) {
     }).map((e) => e.hash);
     if (stale.length) {
       await deps.db.requeue(stale).catch(() => {});
-      deps.background ? deps.background(pump()) : void pump();
+      void kick(stale);
     }
     const missing = entries.filter((e) => !have.has(e.hash));
     if (missing.length) {
@@ -450,7 +480,7 @@ export function createDrillHandler(deps: DrillDeps) {
         hash: e.hash, kind: "question" as const, text: e.text, short_chars: null, model, voice_id: vid,
         status: "pending" as const, seq: -1, queued_at: new Date(now()).toISOString(),
       }))).catch(() => {});
-      deps.background ? deps.background(pump()) : await pump();
+      await kick(missing.map((e) => e.hash));
     }
     const done = entries.filter((e) => have.get(e.hash)?.status === "done");
     const urls = done.length ? await deps.storage.sign(done.map((e) => audioPath(e.hash))) : {};
@@ -554,9 +584,7 @@ export function createDrillHandler(deps: DrillDeps) {
             now() - Date.parse(a.done_at ?? a.queued_at ?? "1970-01-01") > UNAVAILABLE_RETRY_MS
           ).map((a) => a.hash);
           if (again.length) await deps.db.requeue(again);
-          if (again.length || v.audio.done + v.audio.failed < v.audio.total) {
-            deps.background ? deps.background(pump()) : await pump();
-          }
+          if (again.length || v.audio.done + v.audio.failed < v.audio.total) await kick(hs);
         }
         return json(v);
       }
@@ -827,7 +855,7 @@ export function createDrillHandler(deps: DrillDeps) {
       if (credited.size) await deps.db.dropTryCredits?.(user.id, [...credited]).catch(() => {});
       await deps.db.saveDrill(drill, !existing);
       await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
-      if (fresh.length || failed.length) deps.background ? deps.background(pump()) : await pump();
+      if (fresh.length || failed.length) await kick([...files.keys()]);
       const saved = await deps.db.drill(drill.id);
       return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, ...(credited.size ? { already_counted: credited.size } : {}) });
     } catch (e) {

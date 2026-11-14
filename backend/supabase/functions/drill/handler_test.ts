@@ -504,3 +504,15 @@ Deno.test("K62: out of ElevenLabs credits = the files say audio_unavailable (the
   assert(files.some((f: { status: string; error?: string }) => f.status === "failed" && f.error === "audio_unavailable"), JSON.stringify(files));
   assert(files.every((f: { status: string; error?: string }) => f.status !== "failed" || f.error === "audio_unavailable"));
 });
+
+Deno.test("K62b (Oscar O61): a test request never makes other people's waiting files with the real voice", async () => {
+  const w = world();
+  w.audio.set("realpending", { hash: "realpending", kind: "question", text: "Någon annans fråga?", model: "eleven_multilingual_v2", voice_id: "voice-1", status: "pending", attempts: 0, seq: 0, queued_at: new Date().toISOString() });
+  await runWithTest({ test: true, reason: "header", userId: "u9" }, async () => {
+    const j = await (await w.h("u9")(post({ action: "save", items: ITEMS }))).json();
+    await (await w.h("u9")(post({ action: "status", id: j.drill.id }))).json();
+  });
+  assertEquals(w.audio.get("realpending")!.status, "pending", "the real file waits for real traffic");
+  assert(!w.spoken.includes("Någon annans fråga?"));
+  assert([...w.audio.values()].filter((a) => a.voice_id === TEST_VOICE_ID).every((a) => a.status === "done"), "the test's own files are made");
+});
