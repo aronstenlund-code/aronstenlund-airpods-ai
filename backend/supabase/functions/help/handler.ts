@@ -129,8 +129,9 @@ export function createHelpHandler(deps: HelpDeps) {
       }
       let r = parseHelp(text);
       // Kelly Ke57 rule 3: the presses are always explained with Aron's text, word for word (not left to the model)
-      if (r.in_scope && isPressQuestion(question)) r = { in_scope: true, answer: PRESSES };
-      else if (r.in_scope && isAnswersQuestion(question)) r = { in_scope: true, answer: ANSWERS_DEF };
+      // these questions are about the app also when the model thought not ("jag vill höra hela förklaringen", O58b)
+      if (isPressQuestion(question)) r = { in_scope: true, answer: PRESSES };
+      else if (isAnswersQuestion(question)) r = { in_scope: true, answer: ANSWERS_DEF };
       const cost = (inTok * PRICE_IN + outTok * PRICE_OUT) / 1e6;
       await Promise.resolve(deps.recordUsage?.({ user_id: user.id, endpoint: "help", provider: deps.provider.name, model: deps.provider.model, input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost, status: "ok" })).catch(() => {});
       return json({ ...r, ...(r.in_scope ? {} : { hint: OUT_OF_SCOPE_HINT }), usage: { input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost } });

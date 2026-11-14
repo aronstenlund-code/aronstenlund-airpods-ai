@@ -81,3 +81,9 @@ Deno.test("K60 what the short and the long answer are is fixed text", async () =
   const p = llm(() => JSON.stringify({ in_scope: true, answer: "Det första svaret i en fråga." }));
   assertEquals((await (await mk(p)(post({ question: "vad är det korta svaret" }))).json()).answer, ANSWERS_DEF);
 });
+
+Deno.test("K60 a press question gets the press text also when the model said out of scope", async () => {
+  const p = llm(() => JSON.stringify({ in_scope: false, answer: "" }));
+  const j = await (await mk(p)(post({ question: "jag vill höra hela förklaringen" }))).json();
+  assertEquals([j.answer, j.in_scope], [PRESSES, true]);
+});
