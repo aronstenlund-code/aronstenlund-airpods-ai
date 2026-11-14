@@ -102,7 +102,8 @@ struct ChatGPTImport: Equatable, Sendable {
 
     /// "Fråga:", "**Fråga 3:**", "1. Fråga:", "- F:", "Svar:", "S:" … and the text after it.
     private static func label(_ line: String) -> (Kind, String)? {
-        var s = Substring(line).drop { $0.isWhitespace }
+        // "**Fråga" is emphasis, not a "*" bullet (Kevin's regex backtracks; here the emphasis is dropped first).
+        var s = dropEmphasis(Substring(line).drop { $0.isWhitespace })
         if let first = s.first, "-*•>".contains(first) { s = s.dropFirst().drop { $0.isWhitespace } }
         let digits = s.prefix { $0.isNumber }
         if !digits.isEmpty, let after = s.dropFirst(digits.count).first, ".)".contains(after) {
