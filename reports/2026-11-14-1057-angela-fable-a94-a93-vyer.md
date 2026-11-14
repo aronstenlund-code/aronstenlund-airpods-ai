@@ -89,3 +89,14 @@ ChatGPT (om iOS har stängt appen får man öppna raden igen och klistra in dire
 ## Nästa session
 Läs Kellys granskning och tavlan, kontrollera bygget på 99c0f9c, och ta nästa punkt märkt Angela Fable i
 `prompts/queue/angela.md`.
+
+## Tillägg 2026-11-14 11:16: grönt bygge med allt, Kelly har stängt A93 och A94
+**Fortfarande inget provat på telefon eller med AirPods.**
+- **iOS build 43582585113 (99c0f9c) är grönt**, med `Lumen-unsigned` (ipa) uppladdad och enhetstesterna gröna. Det
+  innehåller alla vyer i A94 och A93 och Kellys två sista rättningar. Verifierat i CI.
+- De två rättningarna är **sedda på bild av mig** (Simulator screenshots 43582586280 = iPhone 17 Pro, 43582589071 =
+  iPhone SE med största text): glappet ovanför "Börja med materialet till ditt nästa prov." är borta, och på SE med
+  största text står rubriken och första raden (Fota materialet) ovanför raden med Fortsätt.
+- Kelly 11:10: raden om vad som skickas ska stå kvar vid Fortsätt (val 1 i D171), G1 behöver ingen ändring,
+  **A93 och A94 är stängda från hennes sida.**
+- Punkt 1 under Återstår är därmed klar. Punkterna 2–5 står kvar.
