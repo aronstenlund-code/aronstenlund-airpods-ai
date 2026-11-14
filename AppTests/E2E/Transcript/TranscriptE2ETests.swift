@@ -265,6 +265,12 @@ struct TranscriptE2ETests {
             return item.woke ? "woke, no answer" : "name not heard"
         default:
             if item.woke { return "false wake" }
+            // T25: Standard answers questions without the name (auto), so a question that only mentions the name and
+            // gets an auto answer is no wake ("Har du testat Lumen pausa?"). A statement answered is still wrong.
+            if !item.answered.isEmpty, item.text.contains("?"),
+               !item.activation.isEmpty, item.activation.allSatisfy({ $0.hasPrefix("Activation (auto)") }) {
+                return "ok (question, answered as auto)"
+            }
             if !item.answered.isEmpty { return "answered without the name" }
             return "ok"
         }
