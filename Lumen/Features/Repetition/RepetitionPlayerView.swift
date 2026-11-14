@@ -104,7 +104,8 @@ struct RepetitionPlayerView: View {
     /// The three presses and Avsluta, fixed at the bottom and capped like the system's bars.
     private var bottom: some View {
         VStack(spacing: 16) {
-            if !typeSize.isAccessibilitySize, let player = session.player, session.drill != nil {
+            // Kelly Q6: no presses to make while the player waits for a sound that cannot be made.
+            if !typeSize.isAccessibilitySize, !waitsWithoutSound, let player = session.player, session.drill != nil {
                 PressesRow(paused: player.isPaused, lit: lit(player))
             }
             Button {
@@ -130,6 +131,11 @@ struct RepetitionPlayerView: View {
     /// coming (the credits ran out in the middle of an exam).
     private var soundProblem: String? {
         session.drill.flatMap { model.audio.problem(for: $0) }
+    }
+
+    private var waitsWithoutSound: Bool {
+        guard let player = session.player, case .waitingForAudio = player.phase else { return false }
+        return soundProblem != nil
     }
 
     /// Ke50 §8: "Sparat på fråga {7}." after Avsluta.
