@@ -4,7 +4,7 @@ Till Angela Fable (A93, vyn). Bilder: `bilder/apple/gpt-*.png`, ljust till väns
 `_src/apple.html`). SYSTEM.md §0 gäller. **Det här är skisser. Inget är byggt.**
 
 ## Plats
-Sist i sektionen **Material** i Nytt prov, som en egen rad med en neutral symbol (`doc.on.clipboard`, lila ruta som de
+Sist i sektionen **Material** i Nytt prov (inte i första starten, och även i provets ⋯-meny), som en egen rad med en neutral symbol (`doc.on.clipboard`, lila ruta som de
 andra raderna) och undertext. Raden öppnar ett blad. Det finns ingen ChatGPT-logotyp och ingen gnista, och raden står
 efter appens egna sätt, eftersom det är ett alternativ och inte huvudvägen.
 
@@ -14,12 +14,16 @@ numrerade steg i en lista, var och ett med en knapp. Ett steg som är gjort får
 - Steg 1: **Kopiera prompten** (fylld knapp). Prompten kommer från K58 och tar med provets frågor om de finns och en
   lista över vilka filer man ska bifoga. Efter tryck: bock, och knappen säger "Kopierad".
 - Steg 2: **Öppna ChatGPT** (`.bordered`). Öppnar ChatGPT-appen om den finns, annars chatgpt.com i Safari.
-- Steg 3: **Klistra in** som systemets `PasteButton`. Då frågar iOS inte om lov att läsa urklipp.
+- Steg 3: **Klistra in** som systemets `PasteButton`. Då frågar iOS inte om lov att läsa urklipp. iOS bestämmer
+  etiketten, så appen måste vara på svenska (CFBundleDevelopmentRegion sv) för att den ska säga "Klistra in".
+- **En fylld knapp åt gången:** den fyllda knappen flyttar med stegen (Kopiera prompten → Öppna ChatGPT → Klistra in).
 
 ## Efter inklistringen
 - **Känns igen** (`gpt-klart.png`): rad med bock, "Hittade {20} frågor med svar", de fyra första frågorna med kort svar,
   "och {16} frågor till", och **Spara frågorna** fast nederst. Ett tryck sparar och öppnar frågelistan, och ljudet
   görs som vanligt.
+- **Röst (D151):** samma sektion Röst som på Stämmer det här? (Röst A/B/C med ▶ och fotnoten om att rösten inte går
+  att byta efteråt) står mellan frågorna och Spara frågorna, eftersom ljudet görs efter att frågorna sparats.
 - **Känns inte igen** (`gpt-fel.png`): en ruta med förklaring och **Klistra in igen**. Inget rött.
 
 ## Texter (kopiera rakt in)
@@ -40,7 +44,10 @@ numrerade steg i en lista, var och ett med en knapp. Ett steg som är gjort får
 | Känns inte igen | **Svaret har inte rätt form** · Kopiera hela svaret från ChatGPT, från första ”Fråga:” till sista svaret, och försök igen. · knapp: Klistra in igen |
 | Fotnot vid fel | Du kan också klistra in texten under Skriv text i Nytt prov. |
 | Tomt urklipp | Det finns ingen text att klistra in. Kopiera svaret i ChatGPT först. |
-| Gränsen nådd (D155) | *(samma text som när frågorna är slut i Nytt prov)* |
+| Prompten inklistrad i stället för svaret | Det här är prompten, inte svaret. Kopiera svaret i ChatGPT först. |
+| Rader som inte gick att läsa (stängd rad) | {n} rader kunde inte läsas och togs inte med. |
+| Gränsen nådd (D155) | Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 {december}. |
+| Fotnot, kvar (bara när x > 0) | {x} av 15 frågor kvar den här månaden. |
 | VoiceOver, steg med bock | Steg 1, klart. Kopiera prompten. |
 
 ## Att tänka på

@@ -49,9 +49,10 @@ Ett blad (`NavigationStack` + `List`) med rubriken **Data och integritet** och *
 |---|---|
 | DET HÄR SKICKAS | Foton, dokument och text du lägger till skickas en gång till vår server och vår AI-leverantör för att göra frågorna. De sparas inte. |
 | | Frågorna och svaren skickas till vår röstleverantör för att bli ljud. |
-| DET HÄR SPARAS | Dina prov, med frågor, svar och ljud, sparas på ditt konto tills du tar bort dem. |
+| | Använder du Gör med ChatGPT skickar du filerna till ChatGPT själv. |
+| DET HÄR SPARAS | Dina prov, med frågor, svar och ljud, sparas hos Earmind tills du tar bort dem. |
 | MIKROFONEN | Starta prov använder aldrig mikrofonen. Lägena som lyssnar finns under Fler lägen och frågar först. |
-| Fotnot | Inget konto behövs. Du kan ta bort allt under Inställningar. |
+| Fotnot | Du behöver inte skapa något konto. Du kan ta bort allt under Inställningar. |
 
 ## Skärm 2: Nytt prov (första gången)
 Samma `Form` som `apple/nytt.png`, med tre skillnader första gången:
