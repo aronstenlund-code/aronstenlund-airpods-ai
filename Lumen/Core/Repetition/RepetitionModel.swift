@@ -245,18 +245,48 @@ final class RepetitionModel {
                 let remote = try await cloud.list()
                 if let client = cloud as? DrillCloudClient, let latest = client.lastQuota { quota = latest }
                 let ids = Set(remote.map(\.id))
+                let account = await cloud.accountID()
                 for entry in remote where !store.drills.contains(where: { $0.serverID == entry.id }) {
-                    if let view = try? await cloud.status(id: entry.id) { store.save(Drill.from(view)) }
+                    if let view = try? await cloud.status(id: entry.id) {
+                        var drill = Drill.from(view)
+                        drill.ownerID = account
+                        store.save(drill)
+                    }
                 }
-                // Deleted on another phone: gone here too, unless it has changes the server has not seen.
-                for drill in store.drills {
-                    if let id = drill.serverID, !ids.contains(id), drill.needsUpload != true { store.delete(drill.id) }
+                for decision in Self.listDecisions(store.drills, listed: ids, account: account) {
+                    switch decision {
+                    case .stamp(let id):
+                        if var drill = store.drill(id) { drill.ownerID = account; store.save(drill) }
+                    case .delete(let id):
+                        store.delete(id) // deleted on another phone of the same account
+                    case .keepOtherAccount(let id):
+                        Log.repetition.error("Drill \(id.uuidString, privacy: .public) is not in this account's list: another or a new account (T24); kept on the phone")
+                    }
                 }
             } catch {
                 Log.repetition.info("Drill list: \(error.userMessage, privacy: .public)")
             }
         }
         for drill in store.drills where audio.tracks(for: drill) == nil || drill.needsUpload == true { prepareAudio(drill) }
+    }
+
+    enum ListDecision: Equatable { case stamp(UUID), delete(UUID), keepOtherAccount(UUID) }
+
+    /// Toby 2 T24 (lost exams after an account change): what the server's list means for each exam here.
+    /// - In the list: it is this account's (stamped with the account).
+    /// - Not in the list, with this account as its owner and nothing unsent: deleted on another phone, gone here too.
+    /// - Not in the list otherwise (another account, a new anonymous user, an exam from before the owner was kept, or
+    ///   the account unknown): kept. Never deleted because the account changed.
+    nonisolated static func listDecisions(_ drills: [Drill], listed: Set<String>, account: String?) -> [ListDecision] {
+        drills.compactMap { drill in
+            guard let serverID = drill.serverID else { return nil }
+            if listed.contains(serverID) {
+                return drill.ownerID == account || account == nil ? nil : .stamp(drill.id)
+            }
+            guard drill.needsUpload != true else { return nil }
+            if let account, drill.ownerID == account { return .delete(drill.id) }
+            return .keepOtherAccount(drill.id)
+        }
     }
 
     func prepareAllAudio() {

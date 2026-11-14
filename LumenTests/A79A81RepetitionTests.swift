@@ -124,6 +124,9 @@ import Testing
         var views: [String: DrillCloudView] = [:]
         var deleted: [String] = []
         var shareRefusal: DrillCloudError?
+        /// Toby 2 T24: the account the list belongs to.
+        var account: String? = "user-1"
+        func accountID() async -> String? { account }
         private var done = 0
         private var items: [DrillItem] = []
 
@@ -285,6 +288,47 @@ import Testing
         cloud.listed = []
         await model.refresh()
         #expect(store.drills.isEmpty)
+    }
+
+    @Test func anAccountChangeNeverDeletesTheExams() async throws {
+        // Toby 2 T24: a new anonymous user (refused refresh token, no Keychain) sees an empty list; the exams stay.
+        let folder = try Self.folder("t24")
+        let cloud = MockCloud()
+        _ = try await cloud.save(Self.bio(2))
+        cloud.listed = [DrillCloudListEntry(id: "server-1", title: "Bio", items: 2, updated_at: nil)]
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let model = RepetitionModel(store: store,
+                                    session: RepetitionSession(inputs: [], defaults: Self.defaults(), activatesAudioSession: false),
+                                    maker: MockDrillMaker(), audio: DeviceVoiceDrillAudio(folder: folder, makesSound: false),
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        await model.refresh()
+        #expect(store.drills.first?.ownerID == "user-1")
+        cloud.account = "user-2"
+        cloud.listed = []
+        await model.refresh()
+        #expect(store.drills.count == 1, "another account's empty list deletes nothing")
+        cloud.account = nil
+        await model.refresh()
+        #expect(store.drills.count == 1, "an unknown account deletes nothing")
+    }
+
+    @Test func listDecisions() {
+        var mine = Self.bio(1); mine.serverID = "s1"; mine.ownerID = "u1"
+        var old = Self.bio(1); old.serverID = "s2" // from before the owner was kept
+        var unsent = Self.bio(1); unsent.serverID = "s3"; unsent.ownerID = "u1"; unsent.needsUpload = true
+        let local = Self.bio(1) // never uploaded
+        let all = [mine, old, unsent, local]
+        #expect(RepetitionModel.listDecisions(all, listed: [], account: "u1") == [.delete(mine.id), .keepOtherAccount(old.id)])
+        #expect(RepetitionModel.listDecisions(all, listed: ["s1", "s2"], account: "u1") == [.stamp(old.id)])
+        #expect(RepetitionModel.listDecisions(all, listed: [], account: "u2") == [.keepOtherAccount(mine.id), .keepOtherAccount(old.id)])
+    }
+
+    @Test func theUserIDIsTheTokensSubject() {
+        // {"sub":"abc-123","role":"authenticated"} as a JWT payload (base64url, no padding).
+        let payload = Data(#"{"sub":"abc-123","role":"authenticated"}"#.utf8).base64EncodedString()
+            .replacingOccurrences(of: "=", with: "").replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
+        #expect(SupabaseAuth.userID(fromJWT: "eyJhbGciOiJIUzI1NiJ9.\(payload).sig") == "abc-123")
+        #expect(SupabaseAuth.userID(fromJWT: "not-a-token") == nil)
     }
 
     // MARK: The AirPods check (R11)

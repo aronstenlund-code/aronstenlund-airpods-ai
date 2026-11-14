@@ -155,6 +155,12 @@ protocol DrillCloudSyncing: AnyObject, Sendable {
     func share(id: String) async throws(DrillCloudError) -> DrillShareLink
     func importShared(code: String) async throws(DrillCloudError) -> DrillCloudView
     func download(_ url: URL) async throws(DrillCloudError) -> Data
+    /// Toby 2 T24: the account the list belongs to (nil when unknown).
+    func accountID() async -> String?
+}
+
+extension DrillCloudSyncing {
+    func accountID() async -> String? { nil }
 }
 
 @MainActor
@@ -162,6 +168,8 @@ final class DrillCloudClient: DrillCloudSyncing {
     private let config: BackendConfig
     private let auth: SupabaseAuth
     private let http: any HTTPStreaming
+
+    func accountID() async -> String? { auth.userID }
 
     init(config: BackendConfig, auth: SupabaseAuth, http: any HTTPStreaming) {
         self.config = config

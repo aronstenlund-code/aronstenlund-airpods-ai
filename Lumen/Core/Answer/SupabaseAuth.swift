@@ -88,6 +88,20 @@ final class SupabaseAuth {
 
     var hasSession: Bool { session != nil }
 
+    /// Toby 2 T24: the signed-in (anonymous) user, the `sub` of the access token. Nil without a session.
+    var userID: String? { session.flatMap { Self.userID(fromJWT: $0.accessToken) } }
+
+    nonisolated static func userID(fromJWT token: String) -> String? {
+        let parts = token.split(separator: ".")
+        guard parts.count >= 2 else { return nil }
+        var base64 = parts[1].replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
+        while base64.count % 4 != 0 { base64 += "=" }
+        guard let data = Data(base64Encoded: base64),
+              let claims = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let sub = claims["sub"] as? String, !sub.isEmpty else { return nil }
+        return sub
+    }
+
     /// A valid access token: cached, refreshed, or from a fresh anonymous sign-up.
     func accessToken() async throws(AnswerError) -> String {
         if let session, session.isValid(at: now()) {
@@ -118,6 +132,8 @@ final class SupabaseAuth {
             } catch {
                 // Refresh token rejected → start over with a new anonymous user. Offline keeps the session.
                 guard case .unauthorized = AnswerError.from(error) else { throw AnswerError.from(error) }
+                // Toby 2 T24: a new anonymous user cannot see the old one's exams; said in the log, never silent.
+                Log.answer.error("Auth: the refresh token was refused, signing up a new anonymous user (the old one's server data stays with it)")
                 invalidate()
             }
         }

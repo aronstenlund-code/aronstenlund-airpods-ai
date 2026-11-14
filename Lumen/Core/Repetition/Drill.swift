@@ -18,6 +18,9 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     var serverID: String?
     /// K46: changed on the phone since the server last saw it (an edit made offline is sent on the next open).
     var needsUpload: Bool?
+    /// Toby 2 T24: the account that holds `serverID` on the server, set once its list showed the exam. Only that
+    /// account's list may delete the exam here.
+    var ownerID: String?
     /// Kelly N1, K51: "Tryck en gång för svaret." in the exam's own voice (`<hash>.mp3` in the cache).
     var cueAudio: String?
     /// A83 (K49): this exam is published at a school (kept on the phone; the server does not say it in `get`).
