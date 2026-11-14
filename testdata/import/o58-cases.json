@@ -993,5 +993,43 @@
     "long": "Forskare varnar för utbrott genom att mäta jordskalv, att marken höjer sig och att mer gas kommer ut ur vulkanen. Små skalv visar att magma rör sig uppåt. Satelliter kan se att berget sväller några centimeter. Ingen kan säga exakt när ett utbrott kommer, men varningarna har räddat många liv, bl.a. vid Pinatubo."
    }
   ]
+ },
+ {
+  "name": "28 avslutning som eget stycke med punkt",
+  "note": "Angela A96 / Kevin K60: ett stycke som börjar som en avslutning, också med punkt",
+  "text": "Fråga: Vad är magma?\nSvar: Magma är smält berg under jordytan som består av mineraler, gaser och vatten. När magman når ytan kallas den lava. Den bildas där temperaturen är så hög att berget smälter, till exempel där en platta trycks ner under en annan. Magmans innehåll av kiseldioxid avgör hur trögflytande den är, och det påverkar hur vulkanen får utbrott.\n\nFråga: Varför får vissa vulkaner explosiva utbrott?\nSvar: Vissa vulkaner får explosiva utbrott eftersom deras magma är trögflytande och håller kvar gaserna tills trycket blir för stort. Det liknar en skakad läskflaska som öppnas. Sådan magma har mycket kiseldioxid, t.ex. vid Vesuvius. Tunnflytande magma släpper i stället ut gaserna lugnt, och då rinner lavan ut i strömmar som på Hawaii.\n\nFråga: Hur bildas en sköldvulkan?\nSvar: En sköldvulkan bildas när tunnflytande lava rinner ut gång på gång och stelnar i breda, flacka lager. Lavan hinner rinna långt, ofta flera kilometer, innan den stelnar. Därför blir vulkanen bred som en sköld som ligger på marken. Mauna Loa på Hawaii är ett exempel, och den är ca 120 km bred vid basen.\n\nFråga: Var finns de flesta vulkaner?\nSvar: De flesta vulkaner finns längs plattgränserna, särskilt runt Stilla havet i den så kallade eldringen. Där trycks havsplattor ner under andra plattor och smälter. Vulkaner finns också vid heta fläckar mitt på en platta, som Hawaii, och där plattor glider isär, som på Island.\n\nFråga: Hur kan ett utbrott påverka klimatet?\nSvar: Ett stort utbrott kan sänka temperaturen på jorden i några år eftersom svavelgaser bildar små droppar som reflekterar solljus. Efter Pinatubo 1991 sjönk medeltemperaturen med ungefär 0,5 grader. Vulkaner släpper också ut koldioxid, men mycket mindre än människan gör varje år.\n\nFråga: Hur varnar forskare för utbrott?\nSvar: Forskare varnar för utbrott genom att mäta jordskalv, att marken höjer sig och att mer gas kommer ut ur vulkanen. Små skalv visar att magma rör sig uppåt. Satelliter kan se att berget sväller några centimeter. Ingen kan säga exakt när ett utbrott kommer, men varningarna har räddat många liv, bl.a. vid Pinatubo.\n\nHoppas det hjälper.",
+  "status": 200,
+  "items": [
+   {
+    "question": "Vad är magma?",
+    "short": "Magma är smält berg under jordytan som består av mineraler, gaser och vatten.",
+    "long": "Magma är smält berg under jordytan som består av mineraler, gaser och vatten. När magman når ytan kallas den lava. Den bildas där temperaturen är så hög att berget smälter, till exempel där en platta trycks ner under en annan. Magmans innehåll av kiseldioxid avgör hur trögflytande den är, och det påverkar hur vulkanen får utbrott."
+   },
+   {
+    "question": "Varför får vissa vulkaner explosiva utbrott?",
+    "short": "Vissa vulkaner får explosiva utbrott eftersom deras magma är trögflytande och håller kvar gaserna tills trycket blir för stort.",
+    "long": "Vissa vulkaner får explosiva utbrott eftersom deras magma är trögflytande och håller kvar gaserna tills trycket blir för stort. Det liknar en skakad läskflaska som öppnas. Sådan magma har mycket kiseldioxid, t.ex. vid Vesuvius. Tunnflytande magma släpper i stället ut gaserna lugnt, och då rinner lavan ut i strömmar som på Hawaii."
+   },
+   {
+    "question": "Hur bildas en sköldvulkan?",
+    "short": "En sköldvulkan bildas när tunnflytande lava rinner ut gång på gång och stelnar i breda, flacka lager.",
+    "long": "En sköldvulkan bildas när tunnflytande lava rinner ut gång på gång och stelnar i breda, flacka lager. Lavan hinner rinna långt, ofta flera kilometer, innan den stelnar. Därför blir vulkanen bred som en sköld som ligger på marken. Mauna Loa på Hawaii är ett exempel, och den är ca 120 km bred vid basen."
+   },
+   {
+    "question": "Var finns de flesta vulkaner?",
+    "short": "De flesta vulkaner finns längs plattgränserna, särskilt runt Stilla havet i den så kallade eldringen.",
+    "long": "De flesta vulkaner finns längs plattgränserna, särskilt runt Stilla havet i den så kallade eldringen. Där trycks havsplattor ner under andra plattor och smälter. Vulkaner finns också vid heta fläckar mitt på en platta, som Hawaii, och där plattor glider isär, som på Island."
+   },
+   {
+    "question": "Hur kan ett utbrott påverka klimatet?",
+    "short": "Ett stort utbrott kan sänka temperaturen på jorden i några år eftersom svavelgaser bildar små droppar som reflekterar solljus.",
+    "long": "Ett stort utbrott kan sänka temperaturen på jorden i några år eftersom svavelgaser bildar små droppar som reflekterar solljus. Efter Pinatubo 1991 sjönk medeltemperaturen med ungefär 0,5 grader. Vulkaner släpper också ut koldioxid, men mycket mindre än människan gör varje år."
+   },
+   {
+    "question": "Hur varnar forskare för utbrott?",
+    "short": "Forskare varnar för utbrott genom att mäta jordskalv, att marken höjer sig och att mer gas kommer ut ur vulkanen.",
+    "long": "Forskare varnar för utbrott genom att mäta jordskalv, att marken höjer sig och att mer gas kommer ut ur vulkanen. Små skalv visar att magma rör sig uppåt. Satelliter kan se att berget sväller några centimeter. Ingen kan säga exakt när ett utbrott kommer, men varningarna har räddat många liv, bl.a. vid Pinatubo."
+   }
+  ]
  }
 ]

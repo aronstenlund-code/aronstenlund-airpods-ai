@@ -19,6 +19,8 @@ def one_line(text):
 EXTRA = [
     {"name": "27 rubrik med etikett (### Fråga 1: …)", "text": o58.std(o58.P, "### Fråga {i}: {q}"), "count": 6,
      "pairs": o58.P, "status": 200, "note": "Angela A96 / Kevin K60: etiketten kollas före rubrikregeln"},
+    {"name": "28 avslutning som eget stycke med punkt", "text": o58.std(o58.P) + "\n\nHoppas det hjälper.", "count": 6,
+     "pairs": o58.P, "status": 200, "note": "Angela A96 / Kevin K60: ett stycke som börjar som en avslutning, också med punkt"},
 ]
 
 cases = []
