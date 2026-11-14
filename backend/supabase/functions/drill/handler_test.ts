@@ -5,7 +5,7 @@ import { questionKey } from "./length.ts";
 import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: number; busy?: number } = {}) {
+function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: number; busy?: number; outOfCredits?: boolean } = {}) {
   let busy = opts.busy ?? 0;
   const quota = new Map<string, number>();
   const credits = new Set<string>(); // K61 (D177): "user|question key" counted in /help try
@@ -146,6 +146,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       },
       synth: opts.noSynth ? null : {
         speak: (text, model) => {
+          if (opts.outOfCredits) return Promise.reject(new Error('elevenlabs 401: {"detail":{"code":"quota_exceeded"}}'));
           if (busy > 0) {
             busy--;
             return Promise.reject(new Error("elevenlabs 429: concurrent_limit_exceeded"));
@@ -493,4 +494,13 @@ Deno.test("K62b D180: a test account's drill uses the silent test voice, never t
   assertEquals(real.generated_questions, 2);
   assertEquals(test.generated_questions, 2);
   assert([...w.audio.values()].filter((a) => a.voice_id !== TEST_VOICE_ID).length >= 4, "the real files are untouched");
+});
+
+Deno.test("K62: out of ElevenLabs credits = the files say audio_unavailable (the app shows 'Ljudet kan inte göras just nu')", async () => {
+  const w = world({ outOfCredits: true });
+  const saved = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  const st = await (await w.h("u1")(post({ action: "status", id: saved.drill.id }))).json();
+  const files = st.items.flatMap((i: { audio: { question: { status: string; error?: string }; long: { status: string; error?: string } } }) => [i.audio.question, i.audio.long]);
+  assert(files.some((f: { status: string; error?: string }) => f.status === "failed" && f.error === "audio_unavailable"), JSON.stringify(files));
+  assert(files.every((f: { status: string; error?: string }) => f.status !== "failed" || f.error === "audio_unavailable"));
 });

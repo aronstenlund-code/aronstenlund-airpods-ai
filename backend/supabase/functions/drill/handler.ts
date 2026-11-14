@@ -105,7 +105,14 @@ export interface AudioRow {
   credits?: number | null;
   seq?: number;
   queued_at?: string;
+  error?: string | null;
+  done_at?: string | null;
 }
+
+/** K62 (Angela b58678d): the app shows "Ljudet kan inte göras just nu" for this code on a failed file. */
+export const AUDIO_UNAVAILABLE = "audio_unavailable";
+/** K62: files that failed because ElevenLabs had no credits are tried again after this long (when someone looks). */
+export const UNAVAILABLE_RETRY_MS = 10 * 60_000;
 
 export interface DrillDb {
   drill(id: string): Promise<DrillRow | null>;
@@ -350,8 +357,16 @@ export function createDrillHandler(deps: DrillDeps) {
               return;
             }
             console.error("drill_audio_failed", j.hash.slice(0, 12), msg);
+            if (/quota|credit|\b401\b|\b402\b/i.test(msg)) {
+              // K62: out of credits: the file says so (the app shows "Ljudet kan inte göras just nu"), files that are
+              // done stay playable, and it is tried again later (status, after UNAVAILABLE_RETRY_MS) without counting a try
+              await deps.db.finish(j.hash, {
+                status: "failed", attempts: Math.max(0, (j.attempts ?? 1) - 1), error: `${AUDIO_UNAVAILABLE}: ${msg.slice(0, 200)}`,
+                done_at: new Date(now()).toISOString(),
+              }).catch(() => {});
+              throw e; // stop: the other files would fail the same way
+            }
             await deps.db.finish(j.hash, { status: (j.attempts ?? 1) >= 3 ? "failed" : "pending", error: msg }).catch(() => {});
-            if (/quota|credit|401|402/i.test(msg)) throw e; // out of credits: stop, the queue waits
           }
         }));
       }
@@ -372,6 +387,7 @@ export function createDrillHandler(deps: DrillDeps) {
       if (!a) return { status: "missing" };
       return {
         status: a.status,
+        ...(a.status === "failed" ? { error: (a.error ?? "").startsWith(AUDIO_UNAVAILABLE) ? AUDIO_UNAVAILABLE : "audio_failed" } : {}),
         ...(a.status === "done"
           ? { url: urls[audioPath(h)] ?? null, duration_ms: a.duration_ms, ...(a.kind === "long" ? { short_end_ms: a.short_end_ms } : {}) }
           : {}),
@@ -418,6 +434,16 @@ export function createDrillHandler(deps: DrillDeps) {
       return { name, text: t, hash: await audioHash(t, model, vid) };
     }));
     const have = new Map((await deps.db.audio(entries.map((e) => e.hash))).map((a) => [a.hash, a]));
+    // K62: a cue that failed for lack of credits is made again after a while (else it would stay silent)
+    const stale = entries.filter((e) => {
+      const a = have.get(e.hash);
+      return a?.status === "failed" && (a.error ?? "").startsWith(AUDIO_UNAVAILABLE) &&
+        now() - Date.parse(a.done_at ?? a.queued_at ?? "1970-01-01") > UNAVAILABLE_RETRY_MS;
+    }).map((e) => e.hash);
+    if (stale.length) {
+      await deps.db.requeue(stale).catch(() => {});
+      deps.background ? deps.background(pump()) : void pump();
+    }
     const missing = entries.filter((e) => !have.has(e.hash));
     if (missing.length) {
       await deps.db.enqueue(missing.map((e) => ({
@@ -518,8 +544,19 @@ export function createDrillHandler(deps: DrillDeps) {
       if (action === "get" || action === "status") {
         const d = await owned(user.id, b?.id);
         const v = await view(d);
-        if (action === "status" && v.audio.done + v.audio.failed < v.audio.total) {
-          deps.background ? deps.background(pump()) : await pump();
+        if (action === "status") {
+          // K62: files that failed for lack of credits are tried again after a while (when credits are back)
+          const its = await deps.db.items([d.id]);
+          const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
+          // never for test traffic: it must not make real-voice files again (D180)
+          const again = currentTest()?.test ? [] : (await deps.db.audio(hs)).filter((a) =>
+            a.status === "failed" && (a.error ?? "").startsWith(AUDIO_UNAVAILABLE) &&
+            now() - Date.parse(a.done_at ?? a.queued_at ?? "1970-01-01") > UNAVAILABLE_RETRY_MS
+          ).map((a) => a.hash);
+          if (again.length) await deps.db.requeue(again);
+          if (again.length || v.audio.done + v.audio.failed < v.audio.total) {
+            deps.background ? deps.background(pump()) : await pump();
+          }
         }
         return json(v);
       }

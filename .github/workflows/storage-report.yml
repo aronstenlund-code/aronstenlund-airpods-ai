@@ -32,13 +32,26 @@ jobs:
           python3 scripts/storage-report.py | tee out.txt
           code=${PIPESTATUS[0]}
           set -e
-          if [ "$code" = "2" ]; then echo "warn=1" >> "$GITHUB_OUTPUT"; elif [ "$code" != "0" ]; then exit "$code"; fi
+          # bit 2 = storage at 70 %, bit 4 = ElevenLabs credits under 20 % (K62); anything else is an error
+          if [ "$code" -ne 0 ] && [ $((code & ~6)) -ne 0 ]; then exit "$code"; fi
+          [ $((code & 2)) -ne 0 ] && echo "warn=1" >> "$GITHUB_OUTPUT"
+          [ $((code & 4)) -ne 0 ] && echo "credits=1" >> "$GITHUB_OUTPUT"
+          true
           cat reports/storage/latest.md >> "$GITHUB_STEP_SUMMARY"
       - name: Flag for Aron at 70 %
         if: steps.count.outputs.warn == '1'
         run: |
           if ! grep -q "K59 lagringen" docs/TILL-ARON.md; then
             printf '\n- **K59 lagringen har nått 70 %% av 1 GB** (%s, se reports/storage/latest.md). Supabase Pro kostar 25 USD/mån och har 100 GB. Klickväg: supabase.com › projektet › Settings › Billing › Change plan › Pro. Eller ett beslut om att ta bort gammalt ljud (förslaget i reports/2026-11-14-*-kevin-k58-k59*.md).\n' "$(date -u +%F)" >> docs/TILL-ARON.md
+          fi
+      - name: Flag for Aron, ElevenLabs credits under 20 %
+        if: steps.count.outputs.credits == '1'
+        run: |
+          d=$(date -u +%Y-%m)
+          if ! grep -q "K62 ElevenLabs-krediterna $d" docs/TILL-ARON.md; then
+            printf '
+- **K62 ElevenLabs-krediterna %s: under 20 %% kvar** (%s, se reports/storage/latest.md). Testning använder aldrig krediter (D180). Fyll på eller byt plan: elevenlabs.io › Subscription. Att låta servern läsa saldot: elevenlabs.io › Developers › API Keys › nyckeln › User: Read.
+' "$d" "$(grep -o 'ElevenLabs-krediter (K62):.*' reports/storage/latest.md | head -1)" >> docs/TILL-ARON.md
           fi
       - name: Commit
         run: |

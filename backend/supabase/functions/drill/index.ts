@@ -25,6 +25,12 @@ const envInt = (k: string, d: number) => {
 // D151: the default is A (Multilingual v2); a drill may choose B (v3) or C (Flash) before its audio is made
 const model = env.get("DRILL_TTS_MODEL") || "eleven_multilingual_v2";
 
+/** K62: what is known about the ElevenLabs credits, for the morning report's warning under 20 % (service role only). */
+function saveStatus(row: Record<string, unknown>) {
+  return db.upsert("provider_status", { provider: "elevenlabs", ...row, updated_at: new Date().toISOString() }, "provider")
+    .catch((e) => console.warn("provider_status_failed", e instanceof Error ? e.message.slice(0, 80) : String(e)));
+}
+
 let creditsLogged = false;
 async function logCredits() {
   // K46: Aron's plan and credits, in the function log only (never the key, never to the app)
@@ -37,6 +43,9 @@ async function logCredits() {
       status: r.status, tier: j.tier, character_count: j.character_count, character_limit: j.character_limit,
       next_reset_unix: j.next_character_count_reset_unix, can_extend: j.can_extend_character_limit,
     }));
+    await saveStatus(r.ok
+      ? { status: r.status, used: j.character_count ?? null, lim: j.character_limit ?? null, reset_unix: j.next_character_count_reset_unix ?? null }
+      : { status: r.status });
   } catch (e) {
     console.warn("elevenlabs_subscription_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
   }
@@ -202,7 +211,13 @@ Deno.serve(withCors(withTestMode("drill",
             body: JSON.stringify({ text, model_id: m, ...(m === "eleven_v3" ? {} : { language_code: "sv" }) }),
             signal: AbortSignal.timeout(60_000),
           });
-          if (!r.ok) throw new Error(`elevenlabs ${r.status}: ${(await r.text().catch(() => "")).slice(0, 200)}`);
+          if (!r.ok) {
+            const t = (await r.text().catch(() => "")).slice(0, 300);
+            // K62: "exceeds your quota of 65000. You have 183 credits remaining": the only count the key may read
+            const m = /quota of (\d+)\. You have (\d+) credits remaining/.exec(t);
+            if (m) await saveStatus({ lim: Number(m[1]), remaining_hint: Number(m[2]) });
+            throw new Error(`elevenlabs ${r.status}: ${t.slice(0, 200)}`);
+          }
           const j = await r.json() as {
             audio_base64: string;
             alignment?: { character_start_times_seconds: number[]; character_end_times_seconds: number[] };
