@@ -64,7 +64,7 @@ struct A93ChatGPTImportTests {
         }
         let url = try #require(Bundle(for: FixtureToken.self).url(forResource: "o58-cases", withExtension: "json"))
         let cases = try JSONDecoder().decode([Case].self, from: Data(contentsOf: url))
-        #expect(cases.count == 20)
+        #expect(cases.count >= 21, "Oscar's 20 and the cases Kevin and Angela added")
         for c in cases {
             let found = ChatGPTImport.read(c.text)
             if c.status == 422 {

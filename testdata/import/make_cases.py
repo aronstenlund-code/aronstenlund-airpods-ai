@@ -15,8 +15,14 @@ def one_line(text):
     return " ".join(text.split())
 
 
+# A96/K60: cases beyond Oscar's 20, agreed by Kevin and Angela.
+EXTRA = [
+    {"name": "21 rubrik med etikett (### Fråga 1: …)", "text": o58.std(o58.P, "### Fråga {i}: {q}"), "count": 6,
+     "pairs": o58.P, "status": 200, "note": "Angela A96 / Kevin K60: etiketten kollas före rubrikregeln"},
+]
+
 cases = []
-for v in o58.variants():
+for v in o58.variants() + EXTRA:
     items = []
     for q, a in v["pairs"]:
         q = one_line(q)
