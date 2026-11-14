@@ -31,7 +31,8 @@ const mk = (p: LLMProvider, used = 0, lim = 15) => {
 };
 
 Deno.test("K57 the help knows the app: the help text and the capability list are in the cached system prompt", () => {
-  assert(SYSTEM_PROMPT_HELP.includes("Medan frågan spelas: tryck 1 gång för frågans A-svar."));
+  assert(SYSTEM_PROMPT_HELP.includes("Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus."));
+  assert(SYSTEM_PROMPT_HELP.includes("Det här finns inte i Earmind"));
   assert(SYSTEM_PROMPT_HELP.includes("Publicera prov"));
   assert(SYSTEM_PROMPT_HELP.includes("Styra Spotify (spela, pausa, nästa låt): kommer snart"));
 });
@@ -64,10 +65,11 @@ Deno.test("K57 try: three questions with answers from a short text, counted as 3
 });
 
 Deno.test("K57 the presses are always Aron's text word for word (Ke57 rule 3)", async () => {
-  for (const q of ["Hur fungerar trycken?", "Vad händer om jag trycker två gånger?", "Hur pausar jag?", "Hur fortsätter jag efter paus?", "Hur styr jag med AirPods?"]) {
+  for (const q of ["Hur fungerar trycken?", "Vad händer om jag trycker två gånger?", "Hur pausar jag?", "Hur fortsätter jag efter paus?", "Hur styr jag med AirPods?",
+    "hur får jag det långa svaret", "hur får jag höra svaret på en fråga", "hur får jag det korta svaret", "vilka tryck finns det", "hur får jag fram svaret"]) {
     assert(isPressQuestion(q), q);
   }
-  for (const q of ["Vad gör jag om ett tryck inte kommer fram?", "Fungerar det med gamla AirPods?", "Hur delar jag ett prov?"]) assert(!isPressQuestion(q), q);
+  for (const q of ["Vad gör jag om ett tryck inte kommer fram?", "Fungerar det med gamla AirPods?", "Hur delar jag ett prov?", "jag har gamla airpods, hur får jag det korta svaret", "vad är det korta svaret", "kan jag få längre svar"]) assert(!isPressQuestion(q), q);
   const p = llm(() => JSON.stringify({ in_scope: true, answer: "Under en fråga trycker du en gång ..." }));
   assertEquals((await (await mk(p)(post({ question: "Hur fungerar trycken?" }))).json()).answer, PRESSES);
 });

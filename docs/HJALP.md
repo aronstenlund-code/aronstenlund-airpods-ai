@@ -39,7 +39,8 @@ Earmind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 ## Starta prov och styr med AirPods
 Tryck **Starta prov**. Earmind läser en fråga, väntar en stund så att du kan tänka efter, och går sedan till nästa. Väntetiden är cirka 6 sekunder, och kortare i långa prov. När listan är slut börjar den om i samma ordning.
 
-**Trycken** (ordagrant): ”Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.”
+**Trycken** (ordagrant): ”Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta.”
+- **Långa och korta svaret:** det långa A-svaret får du med 1 tryck. Det korta A-svaret, en till två meningar, får du med 2 tryck. Svaren läses bara upp när du trycker, aldrig av sig själva. Trycker du inte går Earmind vidare till nästa fråga.
 
 - **Under paus:** vilket tryck som helst fortsätter från början av meningen där du slutade. Du behöver inte telefonen.
 - **Avsluta:** provet tar slut först när du trycker **Avsluta** på telefonen. Annars börjar listan om.
@@ -47,7 +48,7 @@ Tryck **Starta prov**. Earmind läser en fråga, väntar en stund så att du kan
 - **Kontrollskärmen Styr med dina AirPods:** där provar du trycken innan du börjar. Den visar vilka tryck som kommer fram.
 - **AirPods med dubbeltryck per lur:** gäller äldre AirPods. Ställ in vänster lur på Nästa spår (kort svar) och höger på Spela/pausa (långt svar och paus), under Inställningar › Bluetooth › ⓘ vid dina AirPods.
 - **Om ett tryck inte kommer fram:** kolla att båda AirPods sitter i öronen och är anslutna. Knapparna på låsskärmen fungerar alltid.
-- **Avbrott:** samtal och Siri pausar. Provet fortsätter när du trycker igen.
+- **Avbrott:** ett samtal eller Siri pausar provet. Provet fortsätter inte av sig självt när samtalet är slut, utan när du trycker igen.
 - **Spelar en annan app musik:** då får den appen trycken, och du startar Earmind igen från låsskärmen eller appen.
 
 ## Hur många frågor du kan göra
@@ -80,6 +81,12 @@ De här lägena lyssnar med mikrofonen och är i beta:
 - **Sömn:** sömnprat, snarkning och ljud under natten.
 
 I Standardläget kan Earmind också sätta en timer eller ett larm, lägga in i kalendern eller påminnelser, göra anteckningar, ringa, öppna musik, översätta och söka på webben. Vissa saker kräver att du tillåter dem i appen först. Att styra Spotify kommer snart.
+
+## Det här finns inte i Earmind
+- Egna påminnelser om att plugga. (I Standardläget, som är i beta, kan du be Earmind lägga in en påminnelse i appen Påminnelser.)
+- Flervalsfrågor, svårighetsgrad, att hoppa över en fråga eller gå tillbaka till förra frågan.
+- Export till andra appar eller som PDF, inloggning med Google, en egen röst till svaren och Earmind för Android.
+Frågar du om något som inte står här svarar hjälpen ”Det vet jag inte” och hänvisar till Inställningar › Om Earmind.
 
 ## Integritet
 - Ditt material (foton, dokument, text) sparas inte efter att frågorna är gjorda.
