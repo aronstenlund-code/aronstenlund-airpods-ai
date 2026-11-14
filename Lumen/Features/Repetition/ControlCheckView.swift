@@ -26,7 +26,7 @@ struct ControlCheckView: View {
     }
 
     private let sound: URL?
-    /// A92 (D166): the exam mode, for "Fråga om Earmind" in the toolbar. Nil = no ? button.
+    /// A92 (D166): the exam mode, for "Fråga om EarMind" in the toolbar. Nil = no ? button.
     private let helpModel: RepetitionModel?
     @State private var showsHelp = false
 
@@ -78,7 +78,7 @@ struct ControlCheckView: View {
                         Button {
                             showsHelp = true
                         } label: {
-                            Label("Fråga om Earmind", systemImage: "questionmark.circle")
+                            Label("Fråga om EarMind", systemImage: "questionmark.circle")
                         }
                     }
                 }

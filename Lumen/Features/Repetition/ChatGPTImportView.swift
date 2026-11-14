@@ -6,7 +6,7 @@ import UIKit
 /// ChatGPT, paste the answer. Step 3 is the system's `PasteButton`, so iOS does not ask about the clipboard. A
 /// recognised answer (`ChatGPTImport.read`, on the phone, no server call) is shown before anything is saved:
 /// "Hittade 20 frågor med svar", the first four, and **Spara frågorna** fixed at the bottom. No ChatGPT logo and no
-/// sparkle. The files never pass Earmind on this path; the footnote says so.
+/// sparkle. The files never pass EarMind on this path; the footnote says so.
 struct ChatGPTImportView: View {
     enum Stage: Equatable {
         case steps
@@ -75,7 +75,7 @@ struct ChatGPTImportView: View {
     private var steps: some View {
         List {
             Section {
-                Text("ChatGPT gör frågor och svar av dina filer. Sedan läser Earmind upp dem.")
+                Text("ChatGPT gör frågor och svar av dina filer. Sedan läser EarMind upp dem.")
                     .foregroundStyle(.secondary)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
@@ -98,7 +98,7 @@ struct ChatGPTImportView: View {
             } footer: {
                 VStack(alignment: .leading, spacing: 6) {
                     if let note { Text(verbatim: note).foregroundStyle(Color.primary) }
-                    Text("Det du bifogar i ChatGPT hanteras av ChatGPT, inte av Earmind. ChatGPT är en tjänst från OpenAI.")
+                    Text("Det du bifogar i ChatGPT hanteras av ChatGPT, inte av EarMind. ChatGPT är en tjänst från OpenAI.")
                 }
             }
         }

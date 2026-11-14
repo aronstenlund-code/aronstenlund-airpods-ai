@@ -65,7 +65,7 @@ struct MyAnswerRecordView: View {
             } header: {
                 Text("2. Svar")
             } footer: {
-                Text("Earmind gör inget med ljudet förrän du trycker Klar. Ljudet stannar på telefonen och raderas sedan; bara texten skickas.")
+                Text("EarMind gör inget med ljudet förrän du trycker Klar. Ljudet stannar på telefonen och raderas sedan; bara texten skickas.")
             }
         }
         .safeAreaInset(edge: .bottom) { mainAction }
@@ -95,9 +95,9 @@ struct MyAnswerRecordView: View {
         }
     }
 
-    /// No recording while Earmind listens: one microphone at a time.
+    /// No recording while EarMind listens: one microphone at a time.
     private var blocked: String? {
-        model.isActiveSession ? "Avsluta Earmind för att spela in." : nil
+        model.isActiveSession ? "Avsluta EarMind för att spela in." : nil
     }
 
     // MARK: 1. The question
@@ -157,7 +157,7 @@ struct MyAnswerRecordView: View {
         if isMakingAnswer {
             HStack(spacing: 10) {
                 ProgressView()
-                Text("Earmind gör ett svar …")
+                Text("EarMind gör ett svar …")
             }
             .accessibilityElement(children: .combine)
         } else if answer.state == .recording {

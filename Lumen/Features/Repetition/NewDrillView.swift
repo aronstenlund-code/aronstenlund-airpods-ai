@@ -62,7 +62,7 @@ struct NewDrillView: View {
     @State private var isAnswering = false
     @State private var stepsDone = 0
     @State private var readingDocument = false
-    /// A92 (D166): "Fråga om Earmind" from the toolbar.
+    /// A92 (D166): "Fråga om EarMind" from the toolbar.
     @State private var showsHelp = false
     /// Ke50 §2: iOS has said no to the camera, so Fota sidor says what to do instead of opening a black camera.
     @State private var cameraDenied = false
@@ -106,7 +106,7 @@ struct NewDrillView: View {
                         Button {
                             showsHelp = true
                         } label: {
-                            Label("Fråga om Earmind", systemImage: "questionmark.circle")
+                            Label("Fråga om EarMind", systemImage: "questionmark.circle")
                         }
                     }
                 }
@@ -180,7 +180,7 @@ struct NewDrillView: View {
 
             if cameraDenied {
                 Section {
-                    Text("Earmind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket.")
+                    Text("EarMind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket.")
                     Button("Öppna Inställningar") {
                         if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
                     }
@@ -577,7 +577,7 @@ struct NewDrillView: View {
                 self.draft?.items = items
             } catch {
                 guard !Task.isCancelled else { return }
-                problem = "Earmind kunde inte skriva svaren just nu. Försök igen om en stund."
+                problem = "EarMind kunde inte skriva svaren just nu. Försök igen om en stund."
             }
             isAnswering = false
         }

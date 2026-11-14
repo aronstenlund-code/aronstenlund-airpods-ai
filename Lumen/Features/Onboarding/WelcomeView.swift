@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// A94 (D160, Kelly Ke55 `docs/design/forsta-starten.md`, `bilder/apple/fs-1-valkommen.png`): the first screen of the
-/// first start, built as Apple's own welcome screens: the app icon, "Välkommen till Earmind", three rows with a symbol,
+/// first start, built as Apple's own welcome screens: the app icon, "Välkommen till EarMind", three rows with a symbol,
 /// a bold line and a sentence, and **Fortsätt** fixed at the bottom. What is sent stands in one line above the button,
 /// with "Läs mer" for all of it. Nothing here is about listening: the modes that listen are BETA under Fler lägen and
 /// ask for their own consent (`ConsentView`) when one is started. The view stores nothing; Fortsätt calls `onContinue`.
@@ -21,14 +21,14 @@ struct WelcomeView: View {
                     AppMark(size: 72) // the app icon (D139)
                         .padding(.top, 56)
                 }
-                Text("Välkommen till Earmind")
+                Text("Välkommen till EarMind")
                     .font(.largeTitle.bold())
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                     .padding(.top, isLarge ? 8 : 20)
                 VStack(alignment: .leading, spacing: isLarge ? 20 : 26) {
-                    row("camera", "Fota materialet", "Earmind gör provfrågor med A-svar.")
+                    row("camera", "Fota materialet", "EarMind gör provfrågor med A-svar.")
                     row("waveform", "Lyssna i dina AirPods", "Frågorna läses upp. Tryck för svaret.")
                     row("book.closed", "Plugga utan mobilen", "Telefonen kan ligga i fickan.")
                 }
@@ -122,7 +122,7 @@ struct DataPrivacySheet: View {
                     Text("Använder du Gör med ChatGPT skickar du filerna till ChatGPT själv.")
                 }
                 Section("Det här sparas") {
-                    Text("Dina prov, med frågor, svar och ljud, sparas hos Earmind tills du tar bort dem.")
+                    Text("Dina prov, med frågor, svar och ljud, sparas hos EarMind tills du tar bort dem.")
                 }
                 Section {
                     Text("Starta prov använder aldrig mikrofonen. Lägena som lyssnar finns under Fler lägen och frågar först.")

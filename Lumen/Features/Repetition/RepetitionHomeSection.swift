@@ -160,7 +160,7 @@ struct RepetitionHomeSection: View {
         ContentUnavailableView {
             Label("Kom förberedd till provet", systemImage: "book.closed") // A86 (Aron 22:19)
         } description: {
-            Text("Fota ditt material. Earmind gör frågor och svar och läser upp dem i dina AirPods.")
+            Text("Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods.")
         } actions: {
             Button {
                 isCreating = true
@@ -272,7 +272,7 @@ struct RepetitionHomeSection: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .disabled(!model.canStart(drill))
-            .accessibilityHint("Spelar frågorna i dina AirPods. Earmind använder inte mikrofonen.")
+            .accessibilityHint("Spelar frågorna i dina AirPods. EarMind använder inte mikrofonen.")
         }
         .padding(.vertical, 6)
         .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }

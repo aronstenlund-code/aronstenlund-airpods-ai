@@ -73,7 +73,7 @@ struct DrillView: View {
         }
         .sheet(isPresented: $showsShareSheet) {
             if let share, let drill {
-                ActivityView(text: "Plugga \(drill.title) med mig i Earmind", url: share.url)
+                ActivityView(text: "Plugga \(drill.title) med mig i EarMind", url: share.url)
                     .presentationDetents([.medium, .large])
             }
         }
@@ -266,7 +266,7 @@ struct DrillView: View {
             if model.audio.problem(for: drill) != nil { return "Delas när ljudet är klart." }
             return "Delas när ljudet är klart (\(p.ready) av \(p.total))."
         }
-        return "Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis Earmind-konto."
+        return "Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto."
     }
 
     private func shareTapped(_ drill: Drill) {
@@ -454,7 +454,7 @@ struct DrillItemEditor: View {
                     }
                 }
                 Section {
-                    Button(isWriting ? "Skriver svaret …" : (answer.isEmpty ? "Låt Earmind skriva svaret" : "Nytt förslag")) {
+                    Button(isWriting ? "Skriver svaret …" : (answer.isEmpty ? "Låt EarMind skriva svaret" : "Nytt förslag")) {
                         writeAnswers()
                     }
                     .disabled(question.trimmingCharacters(in: .whitespaces).isEmpty || isWriting)
@@ -489,7 +489,7 @@ struct DrillItemEditor: View {
                 let item = try await model.newAnswer(for: question, in: drill)
                 answer = DrillItem.long(item.long, startingWith: item.short)
             } catch {
-                problem = "Earmind kunde inte skriva svaret just nu. Skriv det själv eller försök igen."
+                problem = "EarMind kunde inte skriva svaret just nu. Skriv det själv eller försök igen."
             }
             isWriting = false
         }

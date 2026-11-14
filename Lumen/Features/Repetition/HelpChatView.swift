@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A92 (D166, Kelly Ke57 `docs/design/hjalp.md`): "Fråga om Earmind", a sheet with Klar. Empty: one line of what it
+/// A92 (D166, Kelly Ke57 `docs/design/hjalp.md`): "Fråga om EarMind", a sheet with Klar. Empty: one line of what it
 /// is, three suggestions as rows (a tap sends the question) and "Prova på en kort text". After a question: bubbles as
 /// in Meddelanden, the question to the right in the accent colour and the answer to the left, whole at once (no
 /// typing animation, so VoiceOver reads one thing at a time). No mascot, no avatar, no sparkle. The answers come from
@@ -40,7 +40,7 @@ struct HelpChatView: View {
                 if messages.isEmpty { start } else { conversation }
             }
             .safeAreaInset(edge: .bottom) { inputBar }
-            .navigationTitle("Fråga om Earmind")
+            .navigationTitle("Fråga om EarMind")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } }
@@ -59,7 +59,7 @@ struct HelpChatView: View {
     private var start: some View {
         List {
             Section {
-                Text("Fråga hur något i Earmind fungerar. Svaren handlar bara om appen.")
+                Text("Fråga hur något i EarMind fungerar. Svaren handlar bara om appen.")
                     .foregroundStyle(.secondary)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
@@ -81,7 +81,7 @@ struct HelpChatView: View {
                         Image(systemName: "text.badge.plus").accessibilityHidden(true) // A95
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Prova på en kort text").foregroundStyle(Color.primary)
-                            Text("Earmind gör 3 frågor med svar. Räknas mot dina frågor.")
+                            Text("EarMind gör 3 frågor med svar. Räknas mot dina frågor.")
                                 .font(.subheadline)
                                 .foregroundStyle(Color.secondary)
                         }
@@ -126,7 +126,7 @@ struct HelpChatView: View {
 
         VStack(alignment: .leading, spacing: 8) {
             if let answer = message.answer {
-                Text(verbatim: answer.text).accessibilityLabel("Earmind: \(answer.text)") // A95: who says it
+                Text(verbatim: answer.text).accessibilityLabel("EarMind: \(answer.text)") // A95: who says it
                 if let hint = answer.hint, !hint.isEmpty {
                     Text(verbatim: hint)
                 }
@@ -141,7 +141,7 @@ struct HelpChatView: View {
                 Text(verbatim: problem)
                 Button("Försök igen") { retry(message) }
             } else {
-                ProgressView().accessibilityLabel("Earmind skriver")
+                ProgressView().accessibilityLabel("EarMind skriver")
             }
         }
         .padding(.horizontal, 14)
@@ -155,7 +155,7 @@ struct HelpChatView: View {
 
     private var inputBar: some View {
         HStack(alignment: .bottom, spacing: 8) {
-            TextField("Fråga om Earmind", text: $draft, axis: .vertical)
+            TextField("Fråga om EarMind", text: $draft, axis: .vertical)
                 .lineLimit(1...4)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 9)
