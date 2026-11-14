@@ -9,7 +9,7 @@ on:
       stop_after:
         description: "D180: 'stammer' stops before Ser rätt ut (no sound made), to check that the run gets fake audio"
         required: false
-        default: ""
+        default: "none"
   push:
     branches: ["toby/**"]
     paths:
@@ -44,7 +44,8 @@ jobs:
       - name: New user
         env:
           # A push to Toby's branch never makes sound: it stops before Ser rätt ut (D180).
-          LUMEN_T21_STOP_AFTER: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.stop_after || 'stammer' }}
+          # An empty input is false in an expression, so a dispatch without one is 'none' (run 43616172769 stopped).
+          LUMEN_T21_STOP_AFTER: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.stop_after || 'none') || 'stammer' }}
         run: |
           bash scripts/apptest/newuser.sh
           STATUS=$?
