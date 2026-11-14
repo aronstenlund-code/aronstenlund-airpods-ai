@@ -29,6 +29,8 @@ struct ChatGPTImportView: View {
     /// A line under the steps: nothing to paste, the prompt pasted instead of the answer, the month's questions used up.
     @State private var note: String?
     @State private var showsUnreadable = false
+    /// D151 (Kelly): the new exam's voice, chosen before the sound is made, as on "Stämmer det här?".
+    @State private var voice = "A"
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -224,6 +226,9 @@ struct ChatGPTImportView: View {
                 }
             }
 
+            // The voice is locked at the first save (K50), so an exam that already exists keeps its own.
+            if drill == nil { DrillVoiceChoice(voice: $voice) }
+
             if let note { Section { Text(verbatim: note) } }
         }
         .listStyle(.insetGrouped)
@@ -235,7 +240,7 @@ struct ChatGPTImportView: View {
     }
 
     private func save(_ found: ChatGPTImport) {
-        guard let saved = model.saveImport(found, title: title, grade: grade, into: drill) else {
+        guard let saved = model.saveImport(found, title: title, grade: grade, voice: voice, into: drill) else {
             note = "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(Self.nextMonth())." // D155
             return
         }
