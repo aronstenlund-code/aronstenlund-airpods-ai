@@ -20,7 +20,12 @@ enum RepetitionDemo {
                                       // A100: Fler lägen only after the first exam; the sound cannot be made (K62)
                                       "repHomeNew", "repHomeStarted", "repSoundProblem", "repHomeSoundProblem",
                                       // A99 (D175, D176): no questions left this month; longer questions
-                                      "repQuotaUsedUp", "repLength", "repLengthEdit"]
+                                      "repQuotaUsedUp", "repLength", "repLengthEdit", "repSoundProblemNone"]
+
+    /// A100: an exam whose sound could not be made at all (the voice service is out): Starta prov is grey.
+    static let chemistry = Drill(title: "Kemiprovet", summary: DrillSummary(subject: "Kemi", grade: "åk 9", covers: "Syror och baser."),
+                                 items: [DrillItem(question: "Vad är en syra?", short: "Ett ämne som lämnar ifrån sig vätejoner i vatten.",
+                                                   long: "Ett ämne som lämnar ifrån sig vätejoner i vatten. Därför sjunker pH-värdet.")])
 
     /// A99: Biologiprovet with its second question a bit longer and its third very long (the server's classes).
     static var drillWithLengths: Drill {
@@ -83,6 +88,8 @@ enum RepetitionDemo {
         model.publishing = DemoPublishing(empty: name == "repSchoolsEmpty")
         model.mySchool = name == "repSchoolsEmpty" ? nil : DemoPublishing.school
         if name == "repSchoolsEmpty" { model.mySchoolAsked = true }
+        // A100: a new user without exams has not started one, so no Fler lägen row (set here, scenes share defaults).
+        if name == "repHomeEmpty" { UserDefaults.standard.set(false, forKey: "repetition.controlsChecked") }
         guard name != "repHomeEmpty", name != "moreModes" else { return }
         // The newest is Start's "Nästa prov": Historia first, so Biologiprovet is on the card.
         model.store.save(history)
@@ -90,6 +97,10 @@ enum RepetitionDemo {
         // A99: the month's questions are used up (D175); the server's length classes (D176).
         if name == "repQuotaUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
         if name == "repLength" || name == "repLengthEdit" { model.store.save(drillWithLengths) }
+        if name == "repSoundProblemNone", let audio = model.audio as? DeviceVoiceDrillAudio {
+            model.store.save(chemistry) // no files at all
+            audio.stagedProblems[chemistry.id] = CloudDrillAudio.unavailableLine
+        }
         // A100: Fler lägen shows only after the first exam was started (the control check).
         if name == "repHomeNew" { UserDefaults.standard.set(false, forKey: "repetition.controlsChecked") }
         if name == "repHomeStarted" || name == "repHomeSoundProblem" {
@@ -151,6 +162,7 @@ enum RepetitionDemo {
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem":
                 NavigationStack { HomeView(model: listening) }
             case "repSoundProblem": NavigationStack { DrillView(model: model, drillID: history.id) }
+            case "repSoundProblemNone": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
             case "repQuotaUsedUp": NewDrillView(model: model) { _ in }
             case "repLength": NavigationStack { DrillView(model: model, drillID: drill.id) }
             case "repLengthEdit": DrillItemEditor(model: model, drill: drillWithLengths, itemID: drill.items[2].id)
