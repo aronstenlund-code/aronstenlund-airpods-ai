@@ -70,7 +70,7 @@ When the material cannot be read at all (blurred, cut off, a screen photo you ca
   - written as it is said: no symbols, formulas, units or abbreviations as signs ("syre", not "O2"; "kubikdecimeter", not "dm³"; "procent", not "%");
   - tests understanding, not only recall: at least three of every four questions ask why, how, what happens if, or compare ("Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Vad händer om pH sjunker?", "Skillnad mellan väder och klimat?"); "Vad är X?", "Vad betyder X?" or "Vilka ...?" at most one in five, only for a key term the material defines;
   - is answered by the material (never a question the material does not cover, never a fact from outside it);
-  - asks "Varför ...?" only when the material gives the cause or the reason; when the material only states that something is so (a rule, a law, a definition), ask "Vad ...?" or "Hur ...?" instead (O63: "Varför bestämmer antalet protoner vilket grundämne atomen är?" has no answer in a material that only says it; the answer becomes circular);
+  - asks "Varför ...?" only when the material itself states the cause or the reason (a "because", "därför att", "eftersom", "leder till", "beror på" or an explained mechanism); a fact stated with no reason ("tredje ståndet betalade nästan alla skatter", "taking the train is better than flying") gets "Vad ...?", "Hur ...?" or "Vilka följder ...?" instead; when the material only states that something is so (a rule, a law, a definition), ask "Vad ...?" or "Hur ...?" instead (O63: "Varför bestämmer antalet protoner vilket grundämne atomen är?" has no answer in a material that only says it; the answer becomes circular);
   - never claims anything the material does not say or that contradicts it (O63: "Varför kallas medierna den fjärde statsmakten?" when the material says "tredje");
   - a real exam question a teacher would ask: no yes/no, no multiple choice, no "enligt texten", no page or task numbers, no question about the material itself;
   - different from every other question (no two that ask the same thing).
@@ -87,7 +87,7 @@ export const SYSTEM_PROMPT_DRILL_ANSWERS =
 - The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).
 - Base the answers on <notes>. Add school knowledge only where the notes are too thin, only facts you are certain of (textbook-level, widely known), and never contradict the notes; leave out a detail rather than guess it (O55: "stäppgräs har korta rötter" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for. Never add a general rule about a whole group ("alla", "alltid", "aldrig", "inga", "kan alltså vara") that the notes do not state (O63: "Alla föreningar kan alltså vara molekyler" is wrong: salt is a compound but not molecules).
 - The text is read aloud: plain spoken sentences, no markdown, lists, headings, brackets, abbreviations or symbols. Write numbers, years, decimals, formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"; "arton hundrafemtio", not "1850"). Never mention the notes, the material, the text, the book, the exam or the grade: the student only hears the answer ("i materialet", "enligt texten" are wrong).
-- "display" (K66): the student also sees the text on screen, where 1850, 3,14, a² + b², CO₂ and 25 % are easier to read than words. When the question, "short" or "rest" has a number, year, decimal, formula, unit or symbol written as words, also return "display": {"question": "...", "short": "...", "rest": "..."} with the same sentences written as a textbook prints them, and only the fields that differ. Small counts in running text stay words ("två orsaker"). No numbers or formulas: leave "display" out.
+- "display" (K66): the student also sees the text on screen, where 1850, 3,14, a² + b², CO₂ and 25 % are easier to read than words. When the question, "short" or "rest" has a number, year, decimal, formula, unit or symbol written as words, also return "display": {"question": "...", "short": "...", "rest": "..."} with the same sentences written as a textbook prints them, and only the fields that differ. Every year, date, percent, decimal, measurement and number above twelve gets its digits there ("den fjortonde juli sjuttonhundraåttionio" -> "den 14 juli 1789", "fyra procent" -> "4 %", "eighteen fifty" -> "1850", "one point two degrees" -> "1.2 degrees"); only small counts in running text stay words ("två orsaker"). Division is "/" or a fraction on screen ("s / t") and "delat med" / "divided by" in the spoken text. No numbers or formulas: leave "display" out.
 No other text.`;
 
 export interface DrillSummary {
@@ -299,7 +299,8 @@ export function isIntroShort(short: string): boolean {
 
 /** K66 (O63): the answer points at the material, which the student never hears ("i materialet", "enligt texten"). */
 export function mentionsMaterial(s: string): boolean {
-  return /(?<![\p{L}])(?:materialet|i texten|enligt texten|anteckningarna|enligt boken|i boken|the material|the text says|according to the text)(?![\p{L}])/iu.test(s);
+  // K67 (O64 punkt 3): on every exam language (D182)
+  return /(?<![\p{L}])(?:materialet|i texten|enligt texten|texten säger|anteckningarna|enligt boken|i boken|the material|the notes|the text|in the text|the passage|the reading|el material|las notas|el texto|das material|die notizen|im text|der text|le matériel|les notes|le texte|dans le texte)(?![\p{L}])/iu.test(s);
 }
 
 /**
@@ -792,7 +793,9 @@ export async function handleDrill(
     ? validItems([{ id: b.id, question: b.question }], 1)
     : validItems(b.items, DRILL_LIMITS.questionsMax);
   const notes = clean(b.notes, DRILL_LIMITS.notes);
-  const r = await answerItems(provider, cfg, items, { subject: subjectIn, grade: gradeIn, notes, longWords }, signal);
+  // K67 (O64): the app's path (drill with answers false, then drill_answers) may let generated questions be fixed too
+  const mayFix = action === "drill_answers" && b.may_fix === true;
+  const r = await answerItems(provider, cfg, items, { subject: subjectIn, grade: gradeIn, notes, longWords, mayFix }, signal);
   const usage = { answers: r.usage, est_cost_usd: r.usage.est_cost_usd };
   return {
     body: action === "drill_one" ? { item: r.items[0], long_words: longWords, usage } : { items: r.items, long_words: longWords, usage },

@@ -572,3 +572,16 @@ Deno.test("K66 (A102): the preview row carries the display text for question and
     { question: "Sedan arton hundrafemtio?", short: "Ja.", screen: { question: "Sedan 1850?" } });
   assertEquals(previewItem({ question: "A?", short: "B.", screen: null }), { question: "A?", short: "B." });
 });
+
+Deno.test("K67 (Oscar O64): '/' in a formula is 'delat med'; an English exam keeps digits and English signs", async () => {
+  const { voiceText, divided } = await import("./handler.ts");
+  const v = voiceText("Hur räknar man ut hastighet med formeln v = s / t?");
+  assert(v.includes("s delat med t"), v);
+  assert(!v.includes("/"), v);
+  assert(voiceText("Arean är A = b · h / 2.").includes("delat med två"), voiceText("Arean är A = b · h / 2."));
+  assertEquals(divided("och/eller", "delat med"), "och/eller");
+  assert(voiceText("Farten är 12 km/h.").includes("kilometer i timmen"));
+  const en = voiceText("Since about 1850 the temperature has risen 1.2 degrees, 4 % and v = s / t.", "English");
+  assert(en.includes("1850") && en.includes("1.2") && en.includes("4 percent") && en.includes("s divided by t") && en.includes("equals"), en);
+  assert(!/arton|komma/.test(en), en);
+});

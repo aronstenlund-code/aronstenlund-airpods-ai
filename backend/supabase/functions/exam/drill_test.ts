@@ -527,7 +527,7 @@ Deno.test("K66 (Oscar O63): circular why-answers and 'materialet' are asked agai
   assert(mentionsMaterial("De kallas i materialet den tredje statsmakten."));
   assert(!mentionsMaterial("Materiel är utrustning."));
   assertEquals([examLanguage("Engelska 6"), examLanguage("Spanska"), examLanguage("Svenska 1"), examLanguage("Historia")], ["English", "Spanish", "", ""]);
-  assert(SYSTEM_PROMPT_DRILL_PLAN.includes('asks "Varför ...?" only when the material gives the cause'));
+  assert(SYSTEM_PROMPT_DRILL_PLAN.includes('asks "Varför ...?" only when the material itself states the cause'));
   // display text: kept only where it differs; long = short + rest on screen too
   const d = parseAnswers(JSON.stringify({ answers: [{ id: "q1", short: "Det började ungefär arton hundrafemtio.", rest: "Pi är ungefär tre komma fjorton.",
     display: { question: "Vad hände kring 1850?", short: "Det började ungefär 1850.", rest: "Pi är ungefär 3,14." } }] })).get("q1")!;
@@ -557,4 +557,11 @@ Deno.test("K66 (Oscar O63): circular why-answers and 'materialet' are asked agai
   const same: LLMProvider = { name: "f", model: "x", async *stream() { yield { type: "text", text: JSON.stringify({ answers: [{ id: "q1", short: "Brödet blev dyrt och många svalt.", rest: "", display: { question: "Hur påverkade skördarna 1788 folket?" } }] }) }; } };
   const r3 = await answerItems(same, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "Hur påverkade skördarna 1788 folket?" }], { subject: "", grade: "", notes: "", longWords: 90 });
   assertEquals(r3.items[0].screen, undefined);
+});
+
+Deno.test("K67 (O64): 'the notes' on every exam language; drill_answers may fix questions only when the app asks", async () => {
+  const { mentionsMaterial } = await import("./drill.ts");
+  assert(mentionsMaterial("The notes list eating less meat as one thing."));
+  assert(mentionsMaterial("Según las notas, el clima cambia."));
+  assert(!mentionsMaterial("He writes notes to his mother."), "ordinary 'notes' is fine");
 });

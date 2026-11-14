@@ -3,8 +3,9 @@ import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/
 import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { readLimitedJson } from "../answer/validate.ts";
 import { toSpeech } from "../answer/speech.ts";
+import { wordsToNumber } from "../answer/svnum.ts";
 import { pronounce } from "../tts/handler.ts";
-import { composeLong, spokenText } from "../exam/drill.ts";
+import { composeLong, examLanguage, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
 import { lengthClass, lengthLimits, questionKey } from "./length.ts";
 import { currentTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
@@ -225,9 +226,33 @@ export interface DrillDeps {
 // ---------- text and hashes ----------
 
 /** Exactly what the voice reads: no markdown, numbers and symbols in words, measured spellings (K18). */
-export function voiceText(s: string): string {
+export function voiceText(s: string, lang = ""): string {
+  if (lang) return foreignVoice(spokenText(s, 4000));
   // a sentence end as the context: each text starts a sentence ("6 koldioxid" -> "Sex koldioxid")
-  return pronounce(toSpeech(spokenText(s, 4000), "Start. "), "sv").replace(/\s+/g, " ").trim();
+  return divided(pronounce(toSpeech(spokenText(s, 4000), "Start. "), "sv"), "delat med").replace(/\s+/g, " ").trim();
+}
+
+/**
+ * K67 (Oscar O64 punkt 1): a "/" left in a formula after toSpeech ("v är lika med s / t", "b gånger h / två") is
+ * "delat med". Units were already said ("km/h" -> "kilometer i timmen"). Two ordinary words ("och/eller") keep it.
+ */
+export function divided(t: string, word: string): string {
+  return t.replace(/([\p{L}\p{N})²³]+)\s*\/\s*([\p{L}\p{N}(]+)/gu, (m, a: string, b: string) => {
+    const plain = (w: string) => /^\p{L}{3,}$/u.test(w) && wordsToNumber(w.toLowerCase()) === null;
+    return plain(a) && plain(b) ? m : `${a} ${word} ${b}`;
+  });
+}
+
+/**
+ * K67 (O64 punkt 3, D182): a language exam's text: digits stay digits (the voice reads them in the text's language;
+ * the Swedish number words made "Since about artonhundrafemtio"), only formula signs become English words.
+ */
+export function foreignVoice(t: string): string {
+  return divided(t, "divided by")
+    .replace(/(\d)\s*%/g, "$1 percent")
+    .replace(/²/g, " squared").replace(/³/g, " cubed")
+    .replace(/\s*[·×]\s*/g, " times ").replace(/\s+=\s+/g, " equals ").replace(/\s+\+\s+/g, " plus ")
+    .replace(/\s+/g, " ").trim();
 }
 /** K66: the display text sent with save (only strings, the store's limits); null when there is none. */
 export function screenOf(v: unknown): { question?: string; short?: string; long?: string } | null {
@@ -239,10 +264,10 @@ export function screenOf(v: unknown): { question?: string; short?: string; long?
 }
 
 /** D145: the long file is the short answer, then the rest; the boundary is known to the character. */
-export function longVoice(short: string, long: string): { text: string; shortChars: number } {
-  const s = voiceText(short);
+export function longVoice(short: string, long: string, lang = ""): { text: string; shortChars: number } {
+  const s = voiceText(short, lang);
   const rest = long.startsWith(short) ? long.slice(short.length) : long;
-  const r = voiceText(rest);
+  const r = voiceText(rest, lang);
   return { text: r ? `${s} ${r}` : s, shortChars: s.length };
 }
 export async function audioHash(text: string, model: string, voiceId: string): Promise<string> {
@@ -865,6 +890,7 @@ export function createDrillHandler(deps: DrillDeps) {
       const rows: (ItemRow & { keep?: string })[] = [];
       const files = new Map<string, AudioRow>();
       const limits = lengthLimits(await deps.db.settings?.().catch(() => null));
+      const lang = examLanguage(drill.subject); // K67 (D182): an English exam is read in English
       for (const [pos, it] of rawItems.entries()) {
         const question = clean(it?.question, DRILL_STORE_LIMITS.question);
         if (!question) throw new HttpError(400, "invalid_request", `items[${pos}].question is required`);
@@ -873,8 +899,8 @@ export function createDrillHandler(deps: DrillDeps) {
         // D145: the long answer starts with the short one; an edited short answer is put in front again
         let long = clean(it?.long, DRILL_STORE_LIMITS.long) || short;
         if (!long.startsWith(short)) long = composeLong(short, long).slice(0, DRILL_STORE_LIMITS.long);
-        const q = voiceText(question);
-        const l = longVoice(short, long);
+        const q = voiceText(question, lang);
+        const l = longVoice(short, long, lang);
         const qh = await audioHash(q, voice, vid);
         const lh = await audioHash(l.text, voice, vid);
         files.set(qh, files.get(qh) ?? { hash: qh, kind: "question", text: q, model: voice, voice_id: vid, seq: pos * 2 });
