@@ -1,6 +1,6 @@
 # Kelly: granskning av docs/HJALP.md (Ke57, K57)
 
-Datum: 2026-11-14 03:20. Underlag: `docs/design/hjalp.md` (tonreglerna), appens knappar på main (A87, A83, A92) och
+Datum: 2026-11-14 03:16. Underlag: `docs/design/hjalp.md` (tonreglerna), appens knappar på main (A87, A83, A92) och
 `Shared/capabilities.json`. Filen är Kevins. Jag har inte ändrat den.
 
 ## Bedömning
