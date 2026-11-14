@@ -64,7 +64,7 @@ struct A93ChatGPTImportTests {
         }
         let url = try #require(Bundle(for: FixtureToken.self).url(forResource: "o58-cases", withExtension: "json"))
         let cases = try JSONDecoder().decode([Case].self, from: Data(contentsOf: url))
-        #expect(cases.count >= 21, "Oscar's 20 and the cases Kevin and Angela added")
+        #expect(cases.count >= 27, "Oscar's 26 and the case Kevin and Angela added")
         for c in cases {
             let found = ChatGPTImport.read(c.text)
             if c.status == 422 {
@@ -81,6 +81,8 @@ struct A93ChatGPTImportTests {
         #expect(long.warnings.contains { $0.contains("långt att lyssna på") })
         let twice = try #require(ChatGPTImport.read(byName["19"] ?? ""))
         #expect(twice.warnings.contains { $0.hasSuffix("Frågan finns redan.") })
+        let lastLine = try #require(ChatGPTImport.read(byName["23"] ?? ""))
+        #expect(lastLine.unreadable.contains { $0.contains("Hoppas det hjälper") }, "the sign-off on the last line")
         let signOff = try #require(ChatGPTImport.read(byName["02"] ?? ""))
         #expect(signOff.unreadable.contains { $0.contains("Avslutning") })
     }

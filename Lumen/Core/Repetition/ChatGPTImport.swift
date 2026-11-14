@@ -28,6 +28,8 @@ struct ChatGPTImport: Equatable, Sendable {
             var text: [String]
             /// Came after a blank line (only such a paragraph can be the sign-off, rule 1).
             var afterBlankLine: Bool
+            /// The line of the paragraph's last text line (Oscar's variant 23: the sign-off on the answer's last line).
+            var lastLine: Int
         }
         enum State { case question, answer, closed }
 
@@ -39,7 +41,7 @@ struct ChatGPTImport: Equatable, Sendable {
 
         /// "Svar:" starts a paragraph of its own (also a second "Svar:", and after a heading closed the answer).
         mutating func answer(_ text: String, at line: Int) {
-            paragraphs.append(Paragraph(line: line, text: text.isEmpty ? [] : [text], afterBlankLine: false))
+            paragraphs.append(Paragraph(line: line, text: text.isEmpty ? [] : [text], afterBlankLine: false, lastLine: line))
             state = .answer
             blankLine = false
         }
@@ -47,9 +49,10 @@ struct ChatGPTImport: Equatable, Sendable {
         /// A line without a label inside the answer: on over more lines, and over a blank line (rule 1).
         mutating func goOn(_ text: String, at line: Int) {
             if blankLine || paragraphs.isEmpty {
-                paragraphs.append(Paragraph(line: line, text: [text], afterBlankLine: blankLine))
+                paragraphs.append(Paragraph(line: line, text: [text], afterBlankLine: blankLine, lastLine: line))
             } else {
                 paragraphs[paragraphs.count - 1].text.append(text)
+                paragraphs[paragraphs.count - 1].lastLine = line
             }
             blankLine = false
         }
@@ -77,14 +80,21 @@ struct ChatGPTImport: Equatable, Sendable {
             current = nil
             // Rule 1: after the last answer, a paragraph of its own that ends in "?" or "!" is ChatGPT's sign-off
             // ("Lycka till på provet! Vill du att jag gör fler frågor?"), not part of the answer.
+            // Oscar's variant 23: also the answer's last line when it opens like a sign-off ("Hoppas det hjälper!"),
+            // with no blank line before it.
             if atEnd {
-                while reading.paragraphs.count > 1, let last = reading.paragraphs.last, last.afterBlankLine {
+                while reading.paragraphs.count > 1, let last = reading.paragraphs.last, last.afterBlankLine,
+                      isSignOff(last.text.joined(separator: " "), afterBlankLine: true) {
                     let text = clean(last.text.joined(separator: " "), limit: Int.max)
-                    let end = text.reversed().first { !"\"”')".contains($0) }
-                    guard let end, end == "?" || end == "!" else { break }
                     skip(last.line, text, "Avslutning, inte en del av svaret.")
                     warn(last.line, "Texten efter sista svaret lästes inte in.")
                     reading.paragraphs.removeLast()
+                }
+                if let last = reading.paragraphs.last, last.text.count > 1, let line = last.text.last,
+                   isSignOff(line, afterBlankLine: false) {
+                    skip(last.lastLine, line, "Avslutning, inte en del av svaret.")
+                    warn(last.lastLine, "Texten efter sista svaret lästes inte in.")
+                    reading.paragraphs[reading.paragraphs.count - 1].text.removeLast()
                 }
             }
             let questionText = clean(reading.question, limit: maxQuestionChars)
@@ -126,7 +136,9 @@ struct ChatGPTImport: Equatable, Sendable {
                 let (kind, rest) = found
                 if kind == .question {
                     flush()
-                    current = Reading(line: number, question: rest)
+                    let (question, answer) = splitAnswer(rest) // Oscar's variant 21: "Fråga: … Svar: …" on one line
+                    current = Reading(line: number, question: question)
+                    if let answer { current?.answer(answer, at: number) }
                 } else if current != nil {
                     current?.answer(rest, at: number)
                 } else {
@@ -164,6 +176,29 @@ struct ChatGPTImport: Equatable, Sendable {
         }
         flush(atEnd: true)
         return items.isEmpty ? nil : ChatGPTImport(items: items, unreadable: unreadable, warnings: warnings)
+    }
+
+    /// Oscar's variant 23: how ChatGPT signs off. A paragraph after a blank line that ends in "?" or "!" is one too.
+    private static let signOffOpeners = ["hoppas", "lycka till", "säg till", "vill du", "behöver du", "om du vill",
+                                         "fråga gärna", "hör av dig", "jag kan också", "har du fler", "skriv om du"]
+
+    private static func isSignOff(_ text: String, afterBlankLine: Bool) -> Bool {
+        let plain = clean(text, limit: Int.max)
+        let lower = plain.lowercased()
+        if signOffOpeners.contains(where: { lower.hasPrefix($0) }) { return true }
+        guard afterBlankLine, let end = plain.reversed().first(where: { !"\"”')".contains($0) }) else { return false }
+        return end == "?" || end == "!"
+    }
+
+    /// "Vad är magma? Svar: Magma är …" → the question and the answer (nil when the line has no "Svar:").
+    private static func splitAnswer(_ rest: String) -> (String, String?) {
+        let padded = rest + " "
+        let pattern = #"\s(?:\*\*|__)?(?:svar|s)(?:\*\*|__)?\s*[:：](?:\*\*|__)?\s"#
+        guard let range = padded.range(of: pattern, options: [.regularExpression, .caseInsensitive]) else {
+            return (rest, nil)
+        }
+        return (String(padded[..<range.lowerBound]).trimmingCharacters(in: .whitespaces),
+                String(padded[range.upperBound...]).trimmingCharacters(in: .whitespaces))
     }
 
     /// A line inside the answer that ChatGPT made a list item: "- …", "• …", "* …", "1. …".
@@ -243,8 +278,15 @@ struct ChatGPTImport: Equatable, Sendable {
         s = s.dropFirst(word).drop { $0 == " " }
         s = s.drop { $0.isNumber }.drop { $0 == " " } // "Fråga 3:"
         s = dropEmphasis(s)
-        guard let colon = s.first, colon == ":" || colon == "：" else { return nil }
-        var rest = dropEmphasis(s.dropFirst().drop { $0.isWhitespace }).drop { $0.isWhitespace }
+        // A colon, or Oscar's variant 25: an en or em dash with a space after it ("**Fråga – …**").
+        if let mark = s.first, mark == ":" || mark == "：" {
+            s = s.dropFirst()
+        } else if let mark = s.first, mark == "–" || mark == "—", s.dropFirst().first == " " {
+            s = s.dropFirst()
+        } else {
+            return nil
+        }
+        var rest = dropEmphasis(s.drop { $0.isWhitespace }).drop { $0.isWhitespace }
         while rest.hasSuffix("**") || rest.hasSuffix("__") { rest = rest.dropLast(2) }
         return (kind, String(rest).trimmingCharacters(in: .whitespaces))
     }
