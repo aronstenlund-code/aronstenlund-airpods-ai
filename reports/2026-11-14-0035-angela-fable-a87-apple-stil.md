@@ -139,3 +139,27 @@ visar om allt är grönt.
 3. Kellys P1 (fält från K49) och P2 (röstnamn från Aron).
 4. Tobys förstagångstest.
 5. Kellys Ke55 (första starten) är inte tilldelad.
+
+## Tillägg 2026-11-14 03:12: grönt bygge, Kellys slutgranskning
+**Fortfarande inget provat på telefon eller med AirPods.**
+
+- **iOS build 43541273166 (fdc5dea) är grönt**, med `Lumen-unsigned` (ipa) uppladdad. Det innehåller A87, A90,
+  Apple-stilen på A83/A84, A92:s vy och rättningarna för största text till och med 8684b6d. Verifierat i CI.
+- Efter fdc5dea har jag pushat ab5f6de (hjälpfältet i största text) och 7e9b749 (Kellys R1). De kompilerar i
+  Simulatorbygget (43543419772, 43543423666). iOS build för dem (43543518435, 662d863) går när det här skrivs:
+  **inte grönt än**.
+- **Kelly (`reports/2026-11-14-0255-kelly-granskning-8684b6d.md` och b0e186b):** A92 godkänd på bild. Stängda på
+  bild: S2, S3 (fast nedre rad på Hem), S4/S5, S1, P3, K4, pausraden, R1 (förloppslinjen under texten) och H2
+  (hjälpfältets platshållare). Kvar hos henne att bekräfta: H1 (scenen `repHelpTry`) och S1b (Välj läge), båda
+  rättade av Angela Schrute och inte på bild än.
+- S3 och A92 har jag själv sett på bild (43541166865 iPhone SE största text, 43541171376 iPhone SE, 43541178241
+  iPhone 17 Pro). Kontaktblad: `reports/2026-11-14-a87-bilder/`.
+
+### Kvar efter A87
+1. Tobys förstagångstest: en ny användare ska hitta nästa steg på varje skärm (klart-kravet i A87 som är Tobys).
+2. Kellys P1 (förhandsvisning av ett publicerat prov, fält från K49) och P2 (namn på rösterna, Aron).
+3. Resten av appen i samma stil (Angela Schrutes kö, punkt 1 i min lista där).
+4. Länkarna i hjälp-AI:ns svar från ?-knapparna (navigeringen är Angela Schrutes).
+5. Enhetstest: haptiken på kontrollskärmen, delningsbladet, bottenraden med tangentbordet uppe, uppspelningen i
+   största text, och att uppspelningen öppnas direkt efter kontrollskärmen från Hem.
+6. Kellys Ke55 (första starten) är inte tilldelad.
