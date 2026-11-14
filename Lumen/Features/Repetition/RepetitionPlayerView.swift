@@ -109,6 +109,7 @@ struct RepetitionPlayerView: View {
             .controlSize(.large)
             .tint(Color.primary)
             .accessibilityHint("Avslutar provet. Du kan fortsätta där du var nästa gång.")
+            .accessibilityShowsLargeContentViewer() // A95: the bar is capped at the first accessibility size
         }
         .padding(.horizontal, 20)
         .padding(.top, 12)

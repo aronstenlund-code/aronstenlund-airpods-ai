@@ -354,10 +354,15 @@ struct MainActionBar: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .disabled(isDisabled)
+            // A95: the bar stops growing at the first accessibility size, so a long press shows the title large
+            // (the system's large content viewer, as for tab bars).
+            .accessibilityShowsLargeContentViewer()
             if let note {
+                // A95 (audit 43590746967): secondary text on the bar's material failed the contrast check; the
+                // note says why the button is grey or that the microphone is off, so it has the text colour.
                 Text(verbatim: note)
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.primary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }

@@ -111,11 +111,12 @@ struct ChatGPTImportView: View {
             Image(systemName: done ? "checkmark.circle.fill" : "\(number).circle.fill")
                 .font(.title2)
                 .foregroundStyle(done ? AnyShapeStyle(Color.green) : AnyShapeStyle(.tint))
-                .accessibilityHidden(true)
+                // A95: the number says "Steg 2" (", klart" when done); the title keeps its own text, so the audit
+                // does not take a longer label for clipped text.
+                .accessibilityLabel(done ? "Steg \(number), klart" : "Steg \(number)")
             VStack(alignment: .leading, spacing: 4) {
                 Text(verbatim: title)
                     .font(.headline)
-                    .accessibilityLabel("Steg \(number)\(done ? ", klart" : ""). \(title).")
                 Text(verbatim: detail)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

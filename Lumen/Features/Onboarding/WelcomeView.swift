@@ -75,10 +75,14 @@ struct WelcomeView: View {
                 .foregroundStyle(Color.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            Button("Läs mer") { isReadingMore = true } // the words Toby's screen tour looks for
-                .font(.footnote)
-                .padding(.horizontal, 16)
-                .frame(minHeight: 44)
+            Button { isReadingMore = true } label: { // "Läs mer": the words Toby's screen tour looks for
+                // A95 (audit: hit area 48 × 15): the whole 44 pt row is the button.
+                Text("Läs mer")
+                    .font(.footnote)
+                    .padding(.horizontal, 24)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
+            }
             Button(action: onContinue) {
                 FilledButtonLabel { // A95: dark label on the light accent in dark mode
                     Text("Fortsätt")
@@ -88,6 +92,7 @@ struct WelcomeView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
+            .accessibilityShowsLargeContentViewer() // A95: the bar is capped at the first accessibility size
             .accessibilityHint("Godkänner att materialet skickas för att göra frågorna.")
         }
         .padding(.horizontal, 20)

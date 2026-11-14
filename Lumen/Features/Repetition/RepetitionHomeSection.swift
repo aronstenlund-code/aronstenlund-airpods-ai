@@ -132,6 +132,7 @@ struct RepetitionHomeSection: View {
         .padding(.vertical, 4)
         .frame(maxWidth: .infinity)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as `MainActionBar`
+        .accessibilityShowsLargeContentViewer() // A95
         .background(.regularMaterial)
         .overlay(alignment: .top) { Divider() }
     }
@@ -161,13 +162,21 @@ struct RepetitionHomeSection: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             if model.canPublish { // A83 (Ke52 "Hem")
-                Button("Hitta prov från din skola") { showsSchool = true }
+                Button { showsSchool = true } label: { Self.textButton("Hitta prov från din skola") }
             }
-            Button("Klistra in en länk") { askingCode = true }
+            Button { askingCode = true } label: { Self.textButton("Klistra in en länk") }
             if let lastNight {
                 Button(action: onLastNight) { Text(verbatim: "I natt: \(lastNight)") }
             }
         }
+    }
+
+    /// A95 (audit: hit area 18 pt high): a text button's whole 44 pt row can be tapped.
+    private static func textButton(_ title: String) -> some View {
+        Text(verbatim: title)
+            .padding(.horizontal, 16)
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
     }
 
     // MARK: With exams
