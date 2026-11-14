@@ -4,7 +4,7 @@ import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import { createHandler, DEFAULT_CONFIG, type Deps, type UsageRecord } from "./handler.ts";
 import { MockProvider } from "./llm/mock.ts";
 const SUMMARY_TOKENS = 80; // D48 trailer budget
-import { type LLMChunk, type LLMProvider, LLMProviderError } from "./llm/types.ts";
+import { type LLMChunk, type LLMProvider, LLMProviderError, type LLMRequest } from "./llm/types.ts";
 
 interface Sse {
   event: string;
@@ -1071,4 +1071,25 @@ Deno.test("D75 auto: an answer that is only a meta comment becomes silence", asy
   assertEquals(ev.map((e) => e.event), ["meta", "done"]);
   assertEquals(ev[0].data.is_question, false);
   assertEquals(ev[1].data.answered, false);
+});
+
+Deno.test("Toby T17 w22: an answer that came out empty is asked for once more without tools, then spoken", async () => {
+  const calls: LLMRequest[] = [];
+  const provider: LLMProvider = {
+    name: "m",
+    model: "m",
+    stream: (req: LLMRequest) => {
+      calls.push(req);
+      const n = calls.length;
+      return (async function* (): AsyncGenerator<LLMChunk> {
+        yield { type: "text", text: n > 1 ? "Grönland är cirka två miljoner kvadratkilometer." : "[[VET]] " };
+      })();
+    },
+  };
+  const { handler } = setup({ provider });
+  const ev = await readSse(await handler(post(body({ mode: "text", fragment: "hur stort är Grönland" }))));
+  assert(!ev.some((e) => e.event === "error"), JSON.stringify(ev));
+  assert(ev.some((e) => e.event === "delta" && String(e.data.text).includes("Grönland")));
+  assertEquals(calls.length, 2);
+  assertEquals(calls[1].tools, undefined);
 });

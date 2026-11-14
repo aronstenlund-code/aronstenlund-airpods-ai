@@ -13,7 +13,7 @@ Earmind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
    - **Fota sidor**: flera i följd.
    - **Välj bilder**: ur bildbiblioteket.
    - **Skriv text**: eller klistra in.
-   - **Dokument**: PDF, Word eller text.
+   - **Lägg till dokument**: PDF, Word eller text.
 3. Ge provet ett namn, välj **Antal frågor** och gärna årskurs.
 4. Tryck **Skapa frågor**. Earmind läser materialet, tar reda på ämne och årskurs, gör frågor och skriver svar. Du kan lämna appen under tiden.
 5. Under **Stämmer det här?** ser du ämne, årskurs och vad provet handlar om. Är något fel skriver du det i rutan, till exempel ”Det är åk 8”, och trycker **Gör om med rättelsen**. Stämmer det trycker du **Ser rätt ut**.
@@ -57,7 +57,7 @@ Tryck **Starta prov**. Earmind läser en fråga, väntar en stund så att du kan
 - **När frågorna är slut:** lägg till andras prov, som är gratis, eller vänta till nästa månad.
 
 ## Dela ett prov
-- Tryck **Dela** på provet och skicka länken med till exempel Meddelanden.
+- Tryck på **Dela** (symbolen med pilen uppåt) uppe till höger i provet och skicka länken med till exempel Meddelanden.
 - Dela går först när allt ljud är klart, så att din vän inte behöver göra samma ljud igen. Innan dess står det ”Delas när ljudet är klart”.
 - Din vän får en egen kopia med samma frågor, svar och ljud. Det räknas inte mot din väns frågor.
 - Ändrar din vän något i sin kopia påverkas inte ditt prov.
@@ -66,15 +66,15 @@ Tryck **Starta prov**. Earmind läser en fråga, väntar en stund så att du kan
 ## Publicera prov
 - Med **Publicera prov** kan alla som söker på din skola plugga på ditt prov.
 - Du väljer skola, ämne och provdatum. Skolan väljer du ur en lista, och ljudet måste vara klart.
-- Ditt användarnamn visas bara om du själv fyller i det.
+- Ditt användarnamn visas bara om du slår på **Visa ett användarnamn**. Skriv inte ditt riktiga namn.
 - Du hittar andras prov under **Prov från din skola**. Prov från din egen skola visas först. Tryck **Lägg till i mina prov** för att få en egen kopia.
-- Är något fel med ett publicerat prov rapporterar du det med **Rapportera provet**. Efter tre rapporter döljs provet tills det har granskats.
+- Är något fel med ett publicerat prov trycker du **Rapportera** längst ner i provet. Efter tre rapporter döljs provet tills det har granskats.
 - Du kan när som helst ta bort din publicering. De som redan har lagt till provet behåller sin kopia.
 
 ## Fler lägen (beta)
 De här lägena lyssnar med mikrofonen och är i beta:
 - **Standardläge:** frågor och svar med rösten.
-- **Förhör med rösten:** Earmind förhör dig, och du svarar högt.
+- **Provläge (förhör med rösten):** Earmind förhör dig, och du svarar högt.
 - **Intervju:** öva på en anställningsintervju.
 - **Socialt och Rizz:** förslag på vad du kan säga.
 - **Sömn:** sömnprat, snarkning och ljud under natten.

@@ -5,6 +5,7 @@ import { readLimitedJson } from "../answer/validate.ts";
 import { toSpeech } from "../answer/speech.ts";
 import { pronounce } from "../tts/handler.ts";
 import { composeLong, spokenText } from "../exam/drill.ts";
+import { importText } from "./import_text.ts";
 
 /**
  * K46 (D142, D143, D144, D145): Repetitionsläget, drills and their audio per account. `POST /drill` with an action:
@@ -38,6 +39,10 @@ import { composeLong, spokenText } from "../exam/drill.ts";
  *  {"action":"report", "publication_id", "reason": "fel"|"krankande"|"upphovsratt"|"annat"} -> {"reports","hidden"}
  *  {"action":"played", "id"} (the user's own copy) -> {"counted"}   one play counted on the publication it came from
  *  {"action":"moderate", "publication_id", "hidden": false}   Aron only
+ * K58 (D169), the answer pasted from ChatGPT under "Skriv text":
+ *  {"action":"import_text", "text"} -> {"items": [{"id","question","short","long"}], "skipped": [{"line","text","reason"}],
+ *     "warnings": [...], "count"}   no Claude call, nothing shortened; save the items with "save" as any drill.
+ *     422 "import_unreadable" (with "skipped") when no question could be read.
  * The material is never stored (B4). Characters for NEW files count against a daily limit per account and globally.
  */
 export const DRILL_STORE_LIMITS = {
@@ -458,6 +463,18 @@ export function createDrillHandler(deps: DrillDeps) {
       const user = await deps.authenticate(req);
       const b = (await readLimitedJson(req, DRILL_STORE_LIMITS.bodyBytes)) as Record<string, unknown> | null;
       const action = String(b?.action ?? "");
+      if (action === "import_text") {
+        const rl = await enforceLimits(deps.rateLimiter, "drill_import_text", user.id, { perMinute: 20, perDay: 200, globalPerDay: 200_000 }, 1);
+        if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många försök just nu. Vänta en liten stund.", { retryAfterSec: rl.retryAfterSec });
+        const r = importText(b?.text);
+        if (!r.items.length) {
+          return json({
+            error: { code: "import_unreadable", message: "Det gick inte att hitta några frågor. Varje fråga ska börja med \"Fråga:\" och svaret med \"Svar:\".", fallback: false },
+            skipped: r.skipped.slice(0, 20),
+          }, 422);
+        }
+        return json({ ...r, count: r.items.length });
+      }
       if (action === "list") {
         const drills = await deps.db.drills(user.id);
         const items = drills.length ? await deps.db.items(drills.map((d) => d.id)) : [];

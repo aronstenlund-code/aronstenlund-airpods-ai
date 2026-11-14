@@ -1,0 +1,51 @@
+name: Storage report (K59)
+
+# Every morning: how much of Supabase Free's 1 GB storage the drill audio uses, per day and in total.
+# Writes reports/storage/latest.md and history.tsv. At 70 % it adds one row to docs/TILL-ARON.md (once).
+on:
+  schedule:
+    - cron: "30 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: storage-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Count
+        id: count
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set +e
+          python3 scripts/storage-report.py | tee out.txt
+          code=${PIPESTATUS[0]}
+          set -e
+          if [ "$code" = "2" ]; then echo "warn=1" >> "$GITHUB_OUTPUT"; elif [ "$code" != "0" ]; then exit "$code"; fi
+          cat reports/storage/latest.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Flag for Aron at 70 %
+        if: steps.count.outputs.warn == '1'
+        run: |
+          if ! grep -q "K59 lagringen" docs/TILL-ARON.md; then
+            printf '\n- **K59 lagringen har nått 70 %% av 1 GB** (%s, se reports/storage/latest.md). Supabase Pro kostar 25 USD/mån och har 100 GB. Klickväg: supabase.com › projektet › Settings › Billing › Change plan › Pro. Eller ett beslut om att ta bort gammalt ljud (förslaget i reports/2026-11-14-*-kevin-k58-k59*.md).\n' "$(date -u +%F)" >> docs/TILL-ARON.md
+          fi
+      - name: Commit
+        run: |
+          git config user.name "storage-report"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/storage docs/TILL-ARON.md
+          git diff --cached --quiet && exit 0
+          git commit -m "Lagring (K59): $(head -c 120 out.txt) [skip eval]"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done
+          exit 1

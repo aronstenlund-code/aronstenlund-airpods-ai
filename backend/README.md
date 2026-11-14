@@ -427,3 +427,19 @@ All calls are `POST` with the user's JWT, like `/answer`.
   - "Spara som prov" saves the items with `/drill save` as usual.
 - Limits: 10 questions per minute, 200 per day; `try` 3 per minute, 20 per day. 429 has a Swedish message.
 - The knowledge is `docs/HJALP.md` and `Shared/capabilities.json`. After editing HJALP.md, run `python -X utf8 scripts/sync-hjalp.py`, or the deploy's test fails.
+
+## Gör med ChatGPT: prompt and `import_text` (K58, D169): contract for the app (A93)
+- **The prompt** is `Shared/chatgpt-prompt.txt`, one copyable Swedish text. The app replaces:
+  - `{{AMNE}}` with the subject in lower case ("biologi"); if unknown, "ämnet".
+  - `{{ARSKURS}}` with the grade ("årskurs 8"); if unknown, "min årskurs".
+  - `{{ANTAL}}` with the number of questions (default 20, but never more than the month's remaining questions).
+  - `{{FRAGOR}}` with one "- question" per line from the exam; if there are none, "Inga ännu."
+- **`POST /drill {"action":"import_text","text":"<what the user pasted>"}`** (JWT, no Claude call, 20/min and 200/day):
+  - Returns `{"items":[{"id","question","short","long"}], "count", "skipped":[{"line","text","reason"}], "warnings":[...]}`.
+  - Nothing is shortened or rewritten. `short` is the first sentence of the answer, `long` is the whole answer, so `long` starts with `short` (D145).
+  - It accepts "Fråga:"/"Svar:" with ChatGPT's usual extras: an intro line, `**bold**`, "Fråga 1:", "1. Fråga:", an answer over several lines and CRLF.
+  - Lines it cannot read are listed in `skipped` with line number and reason: "Raden börjar inte med Fråga: eller Svar:.", "Frågan har inget svar.", "Ett svar utan fråga före.". The app shows them.
+  - `warnings` flags a first sentence over 25 words or a question over 8 words. The item is still kept.
+  - It returns 422 `import_unreadable` (with `skipped`) when no question could be read.
+- **Save:** the app saves `items` with `/drill save` like any drill. Only the ElevenLabs audio costs, and it counts towards the 15 per month (D155) as usual.
+- **Tested once** with Claude in ChatGPT's place on Oscar's test exam bio-ak8-fotosyntes: 10/10 questions read, 0 skipped, questions 3–5 words, first sentences 11–23 words, answers 70–78 words. After that the prompt was changed to say "minst 80" words.

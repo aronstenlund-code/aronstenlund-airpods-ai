@@ -102,6 +102,10 @@ export const GRADE_REPLY_MAX_AGE_SEC = 120;
 
 /** Live eval meta-01: does a text (what is left after an echo) ask or request anything? */
 const ASK_START = /^(?:och |men |så |lumen,? |earmind,? )?(?:vad|vem|vilk(?:en|et|a)|hur|när|var|varför|vart|kan|kunde|får|ska|skulle|finns|är det|är du|har du|stämmer|förklara|berätta|säg|ge|visa|hjälp|räkna|beskriv|jämför|nämn|översätt|förhör|fråga|utveckla|upprepa|ta|gör|vill)(?![\p{L}])/iu;
+/** Toby T17 w22: the last try when an answer came out empty (no markers, no tools). */
+export const EMPTY_RETRY_NOTE =
+  "Your previous reply could not be read aloud. Answer the question now from what you know, in one or two plain Swedish sentences, with \"cirka\" for a number you are not exactly sure of. Write no marker, no source list and no question back.";
+
 export function askLike(text: string): boolean {
   if (/\?/.test(text)) return true;
   if (/(?<![\p{L}])(?:och )?om [^.]{1,60}(?<![\p{L}])då\s*$/iu.test(text.trim())) return true; // "och om x är två då"
@@ -1824,6 +1828,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let retrySystem = systemPrompt;
           let retryTools = tools;
           let searched = false;
+          let emptyRetried = false; // Toby T17 w22: an answer that came out empty is asked for once more, without tools
           const rizzCount = rizz ? suggestionCount(body) : 0; // D72: 1 by default, max 5 when asked
           let previewSent = false;
           let previewText: string | null = null;
@@ -2023,9 +2028,17 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                   // Oscar 2026-11-08: an interview answer is never empty
                   note =
                     "Your previous reply only talked about facts that are not given. Answer the interviewer's question directly in first person with what you bring to the role, and never mention what is missing.";
+                } else if (ttftMs === null && !stop && !closed && !emptyRetried && parser.meta?.is_question && !silenceOn) {
+                  // Toby T17 w22 ("hur stort är Grönland", 2 of 2 after a web search): nothing could be spoken.
+                  // One more try without tools before the app is told empty_answer; the reason is logged (counts only).
+                  console.warn("empty_retry", JSON.stringify({ mode: body.mode, attempt, searched, out: outputTokens ?? 0 }));
+                  emptyRetried = true;
+                  retryTools = undefined;
+                  retrySystem = retrySystem.replace(SEARCH_MARK_RULE, "");
+                  note = EMPTY_RETRY_NOTE;
                 }
               }
-              if (!note || attempt > 0) break;
+              if (!note || (attempt > 0 && !(emptyRetried && note === EMPTY_RETRY_NOTE && attempt < 2))) break;
               // regenerate once (nothing of the first attempt was sent to the client)
               status = "ok";
               carry.input += inputTokens ?? 0;

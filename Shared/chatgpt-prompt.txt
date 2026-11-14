@@ -1,0 +1,22 @@
+Du hjälper mig plugga till ett prov i {{AMNE}} för {{ARSKURS}}. Läs alla filer jag har bifogat. Läs också frågorna nedan som jag redan har övat på.
+
+Frågor jag har övat på:
+{{FRAGOR}}
+
+Gör {{ANTAL}} provfrågor med svar. Regler:
+1. Frågorna ska bara bygga på det som står i filerna och i frågorna ovan. Hitta inte på något som inte står där.
+2. Ta med frågorna ovan om de finns i materialet, och fyll på med nya tills det är {{ANTAL}}. Finns det inte stoff till {{ANTAL}} frågor, gör färre.
+3. Varje fråga ska vara kort, helst högst 5 ord, och fråga efter förståelse: varför, hur, vad betyder, vad är skillnaden. Till exempel "Varför behöver växter ljus?".
+4. Varje svar ska vara ett fullständigt svar som ger högsta betyg, på ungefär 90 ord (minst 80).
+5. Den första meningen i varje svar ska ensam vara ett fullgott kort svar på frågan, högst 25 ord. Den ska svara direkt, inte inleda ("Det finns flera orsaker" räcker inte). Resten av svaret förklarar mer.
+6. Skriv i hela meningar som går att läsa högt. Inga listor, inga punkter, ingen fetstil, inga rubriker, ingen markdown.
+
+Svara BARA i det här formatet, utan något före eller efter (ingen inledning, ingen avslutning):
+
+Fråga: <frågan>
+Svar: <svaret>
+
+Fråga: <frågan>
+Svar: <svaret>
+
+En tom rad mellan varje fråga. Varje svar på en enda rad efter "Svar:".
