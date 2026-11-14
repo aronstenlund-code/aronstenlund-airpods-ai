@@ -29,7 +29,7 @@ struct GradeChoice: View {
                 ForEach(Self.choices, id: \.self) { Text(Self.label($0)).tag(StudyProfile.Grade?.some($0)) }
             }
         } footer: {
-            Text(grade == nil ? "Earmind läser nivån ur materialet." : "Frågorna och svaren passar årskursen.")
+            Text(grade == nil ? "EarMind läser nivån ur materialet." : "Frågorna och svaren passar årskursen.")
         }
     }
 }
