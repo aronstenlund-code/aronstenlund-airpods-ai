@@ -200,7 +200,7 @@ struct RepetitionHomeSection: View {
                         Label {
                             Text(verbatim: streakDays == 1 ? "1 dag i rad" : "\(streakDays) dagar i rad")
                         } icon: {
-                            Image(systemName: "flame")
+                            Image(systemName: "flame").accessibilityHidden(true) // A95 (Toby): not read as "Flamma"
                         }
                     }
                 }

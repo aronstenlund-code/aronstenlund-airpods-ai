@@ -238,6 +238,8 @@ struct RepetitionPlayerView: View {
                 Label(kind == .long ? "Långt svar" : "Kort svar", systemImage: "waveform")
                     .font(.headline)
                     .foregroundStyle(.secondary)
+                    .accessibilityElement(children: .ignore) // A95: the words, not the symbol's name
+                    .accessibilityLabel(kind == .long ? "Långt svar" : "Kort svar")
             case .waitingForAudio:
                 if let soundProblem {
                     // A100 (K62): no spinner that never ends when the sound cannot be made; Avsluta is below.

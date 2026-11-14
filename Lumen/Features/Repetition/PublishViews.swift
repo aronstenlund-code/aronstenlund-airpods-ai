@@ -329,6 +329,8 @@ struct SchoolExamsView: View {
             .buttonStyle(.plain)
             if added {
                 Label("Tillagt", systemImage: "checkmark").font(.subheadline).foregroundStyle(.secondary)
+                    .accessibilityElement(children: .ignore) // A95: the word, not the symbol's name
+                    .accessibilityLabel("Tillagt")
             } else {
                 Button("Lägg till") { opened = p }
                     .buttonStyle(.bordered)
@@ -521,7 +523,7 @@ struct PublishedRow: View {
             Label {
                 Text("Publicerat")
             } icon: {
-                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).accessibilityHidden(true)
             }
             Text(DrillPublishing.line(publication)).font(.subheadline).foregroundStyle(.secondary)
             HStack(spacing: 20) {
