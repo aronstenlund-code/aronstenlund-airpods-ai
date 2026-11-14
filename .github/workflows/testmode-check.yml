@@ -1,0 +1,26 @@
+name: Test mode check (K62b)
+
+# K62b (D180): checks that a request from GitHub Actions gets fake audio even with the app's own user agent (as the
+# simulator app in Toby's runs sends it). 0 ElevenLabs characters: the answer must be the fake.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: tts from Actions with the app's user agent
+        env:
+          U: https://xjczbzfkmbjdebwlccki.supabase.co
+          K: sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8
+        run: |
+          T=$(curl -s -X POST "$U/auth/v1/signup" -H "apikey: $K" -H "content-type: application/json" -d '{}' | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+          curl -s -D h.txt -o a.mp3 -X POST "$U/functions/v1/tts" -A "Lumen/1 CFNetwork/3826 Darwin/25.0.0" \
+            -H "apikey: $K" -H "authorization: Bearer $T" -H "content-type: application/json" -d '{"text":"Hej.","language":"sv"}'
+          cat h.txt | grep -i -E "^HTTP|x-earmind-fake|content-type"
+          grep -qi "x-earmind-fake: 1" h.txt || { echo "::error::not recognised as CI"; exit 1; }
+          echo "fake audio from CI: OK"
