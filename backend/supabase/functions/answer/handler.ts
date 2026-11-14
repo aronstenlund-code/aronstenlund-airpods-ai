@@ -2031,10 +2031,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 } else if (ttftMs === null && !stop && !closed && !emptyRetried && parser.meta?.is_question && !silenceOn) {
                   // Toby T17 w22 ("hur stort är Grönland", 2 of 2 after a web search): nothing could be spoken.
                   // One more try without tools before the app is told empty_answer; the reason is logged (counts only).
-                  console.warn("empty_retry", JSON.stringify({ mode: body.mode, attempt, searched, out: outputTokens ?? 0 }));
+                  console.warn("empty_retry", JSON.stringify({ mode: body.mode, attempt, searched, out: outputTokens ?? 0, chars: post.chars, silent: post.silent, dup: post.duplicate, q_only: post.questionOnly }));
                   emptyRetried = true;
                   retryTools = undefined;
-                  retrySystem = retrySystem.replace(SEARCH_MARK_RULE, "");
+                  // T17 "hur många bor i Sverige": the web prompt (sources, "källa:") made the extra try empty too
+                  retrySystem = systemPrompt.replace(SEARCH_MARK_RULE, "");
                   note = EMPTY_RETRY_NOTE;
                 }
               }
@@ -2074,7 +2075,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 trimQuestion: false,
                 firstLineOnly: plan?.kind === "socialline",
                 relationTag,
-                web: webOn || !!need || searched,
+                web: (webOn || !!need || searched) && !emptyRetried,
                 dropEnglish: !!phoneTools && body.language === "sv",
                 source: textReq,
                 tutor,
@@ -2214,6 +2215,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             flushMeta();
             if (status === "ok" && parser.meta?.is_question && ttftMs === null) {
               status = "empty_answer";
+              console.warn("empty_final", JSON.stringify({ mode: body.mode, persona: body.persona ?? null, searched, retries, chars: post.chars, silent: post.silent, dup: post.duplicate, q_only: post.questionOnly }));
               send("error", {
                 code: "empty_answer",
                 message: "Model returned no answer",

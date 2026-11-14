@@ -173,3 +173,13 @@ Deno.test("O13: table bars and English field labels from a search are never read
   const out = await spoken(await handlerWith(provider)(ask({ fragment: "hur gammal är Arjeplogs kyrka" })));
   assert(!out.includes("|") && !out.includes("Nickname"), out);
 });
+
+Deno.test("Toby T17 (hur många bor i Sverige): search, empty after the search, last try without web tools or web prompt", async () => {
+  const { provider, seen } = scripted("[[SÖK]]", "[[VET]] ", "Cirka tio komma sex miljoner personer bor i Sverige.");
+  const out = await spoken(await handlerWith(provider)(ask({ fragment: "hur många bor i Sverige" })));
+  assertEquals(seen.length, 3);
+  assert(searches(seen[1]), "second call searches");
+  assert(!searches(seen[2]), "the last try has no web tools");
+  assert(!seen[2].system.includes("WEB: you have web tools"), "the last try has no web prompt");
+  assert(out.startsWith("Cirka tio komma sex miljoner"), out);
+});

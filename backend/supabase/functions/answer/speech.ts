@@ -1344,22 +1344,29 @@ ${text}`;
     );
   }
 
+  /** Toby T17 (empty_answer after a web search): characters left after each filter group, counts only, never text. */
+  readonly chars = { raw: 0, tags: 0, source: 0, english: 0, meta: 0, gate: 0, out: 0 };
+
   push(raw: string): string {
-    const a = this.dup.push(
-      this.gate.push(
-        this.imeta.push(
-          this.lead.push(this.level.push(this.input.push(
-            this.meta.push(this.quote.push(this.en.push(this.src.push(this.strip.push(this.tap.push(this.sil.push(this.rel.push(raw)))))))),
-          ))),
-        ),
-      ),
-    );
+    const c = this.chars;
+    c.raw += raw.length;
+    const t1 = this.strip.push(this.tap.push(this.sil.push(this.rel.push(raw))));
+    c.tags += t1.length;
+    const t2 = this.src.push(t1);
+    c.source += t2.length;
+    const t3 = this.en.push(t2);
+    c.english += t3.length;
+    const t4 = this.lead.push(this.level.push(this.input.push(this.meta.push(this.quote.push(t3)))));
+    c.meta += t4.length;
+    const a = this.dup.push(this.gate.push(this.imeta.push(t4)));
+    c.gate += a.length;
     if (!a) return "";
     if (this.quizOnly) {
       this.quizBuf += a; // D86: held until the end, then only the question is said
       return "";
     }
     const out = this.cap(this.nums.push(this.trim.push(a)));
+    c.out += out.length;
     if (out.trim()) this.spoke = true;
     return out;
   }
