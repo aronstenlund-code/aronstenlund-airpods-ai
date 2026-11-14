@@ -14,6 +14,8 @@ final class AnswerRecorder {
     enum State: Equatable {
         case idle
         case recording
+        /// A98 (D173): Stoppa ended the recording; the audio waits on the phone for Klar (or Spela in igen).
+        case recorded
         /// Writing out the words on the phone.
         case transcribing
         case failed(String)
@@ -74,6 +76,15 @@ final class AnswerRecorder {
     }
 
     var reachedLimit: Bool { elapsed >= Self.limit }
+
+    /// A98: Stoppa. The microphone goes off, the audio stays until Klar (written out) or Avbryt (deleted).
+    func stop() {
+        guard state == .recording else { return }
+        ticker?.cancel()
+        tap?.stop()
+        levelDBFS = nil
+        state = .recorded
+    }
 
     /// Klar: stop, write out the words on the phone, delete the audio. Nil when nothing could be made out.
     func finish() async -> String? {
