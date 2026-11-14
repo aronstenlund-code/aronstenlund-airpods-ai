@@ -28,6 +28,11 @@ struct DrillPublicationView: Decodable, Equatable, Sendable, Identifiable {
     struct Preview: Decodable, Equatable, Sendable {
         var question: String
         var short: String
+        /// A102 (K66 point 4): the shown text, when the server sends it; nil shows the spoken text.
+        var screen: DrillScreenText? = nil
+
+        var shownQuestion: String { screen?.question ?? question }
+        var shownShort: String { screen?.short ?? short }
     }
 
     var examDate: Date? { DrillPublishing.date(exam_date) }
