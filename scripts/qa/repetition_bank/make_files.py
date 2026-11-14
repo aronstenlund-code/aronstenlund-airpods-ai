@@ -24,6 +24,8 @@ from materials_holdout2 import H2  # noqa: E402  (O60)
 M.update(H2)
 from materials_holdout3 import H3  # noqa: E402  (O63)
 M.update(H3)
+from materials_holdout4 import H4  # noqa: E402  (O64)
+M.update(H4)
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont  # noqa: E402
 

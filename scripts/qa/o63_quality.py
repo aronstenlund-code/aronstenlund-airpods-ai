@@ -4,7 +4,7 @@ gånger, alltid med studiematerialet i facit (O57: annars underkänns sådant so
   long   rätt fakta (correct), A-nivå för årskursen (a_level), inget påhittat utöver materialet (stod i expect)
   short  är första meningen ensam ett fullgott svar (correct och sufficient)
 Via testkonto (qa_testaccount): inga ElevenLabs-anrop. Domaren är Claude, cirka 0,003 USD per anrop.
-  python -I -X utf8 scripts/qa/o63_quality.py <drill.json>
+  python -I -X utf8 scripts/qa/o63_quality.py <drill.json> [--long-only]
 Resultat: reports/qa/data/<tid>-o63-quality.json"""
 import datetime as dt, json, pathlib, sys, time
 
@@ -47,6 +47,9 @@ def judge(tok, m, q, answer, expect, profile):
     return {}, "429", 0
 
 
+LONG_ONLY = "--long-only" in sys.argv
+
+
 def main():
     d = json.loads(pathlib.Path(sys.argv[1]).read_text(encoding="utf-8"))
     tok, rows, cost = Tok(), [], 0.0
@@ -57,7 +60,10 @@ def main():
         for it in r["items"]:
             q, short, long_ = it["question"], it["short"], it["long"]
             sl, nl, c1 = judge(tok, m, q, long_, LONG_EXPECT.format(grade=m["grade"] or "högstadiet", mat=mat), "Utförliga förklaringar")
-            ss, ns, c2 = judge(tok, m, q, short, SHORT_EXPECT.format(mat=mat), "Korta förklaringar")
+            if LONG_ONLY:  # O64: bara långa svaret (domaren är för sträng på korta, D162 obesvarad)
+                ss, ns, c2 = {}, "", 0
+            else:
+                ss, ns, c2 = judge(tok, m, q, short, SHORT_EXPECT.format(mat=mat), "Korta förklaringar")
             cost += c1 + c2
             chars = len(q) + len(long_)
             row = {"exam": eid, "grade": m["grade"], "question": q, "short": short, "long": long_,

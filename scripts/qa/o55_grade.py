@@ -34,6 +34,8 @@ from materials_holdout2 import H2  # noqa: E402  (O60)
 M.update(H2)
 from materials_holdout3 import H3  # noqa: E402  (O63)
 M.update(H3)
+from materials_holdout4 import H4  # noqa: E402  (O64)
+M.update(H4)
 
 URL = "https://xjczbzfkmbjdebwlccki.supabase.co"
 KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8"  # publik nyckel (finns i appen och i Kevins skript)
@@ -371,7 +373,7 @@ def drill(a):
         COST["claude"] += ans.get("usage", {}).get("est_cost_usd", 0)
         t_total = time.time() - t0
         items = [{"question": i["question"], "short": i.get("short", "") or "", "long": i.get("long", "") or "",
-                  "error": i.get("error")} for i in ans["items"]]
+                  "error": i.get("error"), "screen": i.get("screen")} for i in ans["items"]]  # K66: visningstexten
         graded = []
         for it in items:
             g = grade_item(eid, it["question"], it["short"], it["long"], mst, use_judge=not a.no_judge)

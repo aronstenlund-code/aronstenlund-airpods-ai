@@ -1,0 +1,261 @@
+{
+ "mode": "onecall",
+ "cost": {
+  "judge": 0.0,
+  "claude": 0.13358240000000002
+ },
+ "results": [
+  {
+   "list": {
+    "id": "h3-sh-riksdagen",
+    "summary": {
+     "subject": "Samhällskunskap",
+     "grade": "åk 9",
+     "covers": "Hur Sverige styrs som representativ demokrati, med riksdagens och regeringens uppgifter, maktdelningen mellan riksdag, regering och domstolar samt medierna som granskare. Även fyraprocentsspärren och hur den påverkar små partiers chans att komma in i riksdagen."
+    },
+    "n": 12,
+    "t_s": 57.6
+   },
+   "items": [
+    {
+     "question": "Varför kallas Sverige en representativ demokrati?",
+     "short": "Sverige kallas representativ demokrati eftersom medborgarna inte beslutar själva utan väljer politiker som fattar besluten åt dem.",
+     "long": "Sverige kallas representativ demokrati eftersom medborgarna inte beslutar själva utan väljer politiker som fattar besluten åt dem. Det innebär att folket har makten indirekt, genom att rösta fram representanter. Medborgarna väljer ledamöter till riksdagen, regionerna och kommunerna. Politikerna fattar sedan besluten och kan bytas ut i nästa val om väljarna är missnöjda. På så sätt hålls makthavarna ansvariga inför folket, och landet kan styras effektivt trots att miljontals människor bor här.",
+     "screen": null
+    },
+    {
+     "question": "Vad är riksdagens tre huvudsakliga uppgifter?",
+     "short": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen.",
+     "long": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen. Genom att stifta lagar bestämmer riksdagen vilka regler som ska gälla i samhället. Genom budgeten avgör den hur statens pengar ska fördelas, till exempel till skola, vård och försvar. När riksdagen granskar regeringen kontrollerar den att regeringen sköter sitt arbete och följer riksdagens beslut. Riksdagen har trehundrafyrtionio ledamöter, och den sista uppgiften är viktig eftersom den hindrar regeringen från att få för mycket makt.",
+     "screen": null
+    },
+    {
+     "question": "Hur ofta hålls val till riksdagen, regionerna och kommunerna?",
+     "short": "Val till riksdagen, regionerna och kommunerna hålls vart fjärde år.",
+     "long": "Val till riksdagen, regionerna och kommunerna hålls vart fjärde år. Alla tre valen hålls alltså vid samma tillfälle, och medborgarna kan rösta på olika partier i de olika valen. Att valen återkommer regelbundet ger väljarna chansen att döma ut politiker och partier som de är missnöjda med och att stödja dem som de tycker har gjort ett bra arbete.",
+     "screen": null
+    },
+    {
+     "question": "Hur styr regeringen landet?",
+     "short": "Regeringen, som leds av statsministern, styr landet genom att genomföra de beslut som riksdagen har fattat.",
+     "long": "Regeringen, som leds av statsministern, styr landet genom att genomföra de beslut som riksdagen har fattat. Regeringen bestämmer alltså inte över riksdagen utan verkställer den politik som riksdagen har beslutat om, till exempel lagar och budget. Det är en del av maktdelningen i Sverige: riksdagen stiftar lagarna, regeringen styr landet och domstolarna dömer självständigt. På så sätt får ingen del av makten bli för stor, och regeringen måste hela tiden ha riksdagens förtroende.",
+     "screen": null
+    },
+    {
+     "question": "Hur kan riksdagen avsätta en minister, och varför är det viktigt?",
+     "short": "Riksdagen kan avsätta en minister genom en misstroendeförklaring, vilket visar att regeringen måste ha riksdagens förtroende.",
+     "long": "Riksdagen kan avsätta en minister genom en misstroendeförklaring, vilket visar att regeringen måste ha riksdagens förtroende. Möjligheten är viktig eftersom den är ett sätt för riksdagen att granska och kontrollera regeringen. Om en minister sköter sitt arbete dåligt eller riksdagen inte litar på honom eller henne, kan riksdagen rösta för att ministern ska avgå. Det hör ihop med att makten i Sverige är delad så att ingen får för mycket makt. Regeringen styr, men den är ansvarig inför riksdagen, som i sin tur är vald av folket.",
+     "screen": null
+    },
+    {
+     "question": "Hur är makten delad mellan riksdag, regering och domstolar?",
+     "short": "Riksdagen stiftar lagarna, regeringen styr landet genom att genomföra riksdagens beslut, och domstolarna dömer självständigt.",
+     "long": "Riksdagen stiftar lagarna, regeringen styr landet genom att genomföra riksdagens beslut, och domstolarna dömer självständigt. Fördelningen gör att ingen del av staten får för mycket makt. Riksdagen beslutar också om statens budget och granskar regeringen, och kan avsätta en minister genom misstroendeförklaring. Regeringen leds av statsministern men måste hålla sig inom de lagar riksdagen har stiftat. Domstolarna är fristående från både riksdag och regering, så att de kan döma efter lagen och inte efter vad makthavarna önskar. På så sätt kontrollerar delarna varandra, vilket skyddar demokratin mot maktmissbruk.",
+     "screen": null
+    },
+    {
+     "question": "Varför är det viktigt att domstolarna dömer självständigt?",
+     "short": "Om domstolarna dömde självständigt skulle riksdag och regering inte kunna styra utgången i rättegångar, och därför får ingen för stor makt.",
+     "long": "Om domstolarna dömde självständigt skulle riksdag och regering inte kunna styra utgången i rättegångar, och därför får ingen för stor makt. Makten är delad så att riksdagen stiftar lagarna, regeringen styr och domstolarna dömer. Om politikerna kunde bestämma hur domstolarna dömer, kunde de straffa sina motståndare eller skydda sig själva och sina vänner. Då skulle medborgarna inte kunna lita på att lagen gäller lika för alla. Självständiga domstolar ser till att lagarna tillämpas rättvist, även mot dem som sitter vid makten, och det gör att människor kan känna trygghet och förtroende för rättssystemet.",
+     "screen": null
+    },
+    {
+     "question": "Varför kallas de fria medierna ibland den tredje statsmakten?",
+     "short": "De kallas den tredje statsmakten eftersom de granskar makthavarna, ungefär som riksdag, regering och domstolar var för sig kontrollerar makten.",
+     "long": "De kallas den tredje statsmakten eftersom de granskar makthavarna, ungefär som riksdag, regering och domstolar var för sig kontrollerar makten. Medierna är fria, alltså inte styrda av staten, och kan därför ställa obekväma frågor till politiker och avslöja fel och missbruk. Den granskningen gör att medborgarna får veta vad makthavarna gör, och det är en förutsättning för att de ska kunna välja klokt i valen. Medierna är ingen officiell del av den delade makten, men de fungerar som en extra kontroll som bidrar till att ingen får för mycket makt.",
+     "screen": null
+    },
+    {
+     "question": "Vad är fyraprocentsspärren?",
+     "short": "Fyraprocentsspärren innebär att ett parti måste få minst fyra procent av rösterna i hela landet för att komma in i riksdagen.",
+     "long": "Fyraprocentsspärren innebär att ett parti måste få minst fyra procent av rösterna i hela landet för att komma in i riksdagen. Partier som hamnar under gränsen får alltså inga platser, även om många har röstat på dem. Spärren gäller för hela landet i riksdagsvalet. Den påverkar vilka partier som finns i riksdagen och hur svårt det blir att bilda en regering. Eftersom riksdagen har trehundrafyrtionio ledamöter och mandaten fördelas bara mellan partier som klarar spärren, får små partier svårare att få inflytande, medan större partier har lättare att samarbeta.",
+     "screen": null
+    },
+    {
+     "question": "Vad är syftet med fyraprocentsspärren och vad blir följden för små partier?",
+     "short": "Syftet är att göra det lättare att bilda en stabil regering, men följden är att små partier får svårare att komma in i riksdagen.",
+     "long": "Syftet är att göra det lättare att bilda en stabil regering, men följden är att små partier får svårare att komma in i riksdagen. Utan spärr skulle många små partier kunna få platser, och då blir det svårt att få majoritet bakom en regering. Med färre partier i riksdagen går det lättare att komma överens och att hålla en regering vid makten. Priset är att väljare som röstar på ett litet parti under fyra procent inte får någon representation. Det kan upplevas som mindre rättvist, eftersom deras röster inte leder till några mandat.",
+     "screen": null
+    },
+    {
+     "question": "Hur påverkar fyraprocentsspärren små partier?",
+     "short": "Spärren gör det svårare för små partier att komma in i riksdagen, eftersom de måste få minst fyra procent av rösterna i hela landet.",
+     "long": "Spärren gör det svårare för små partier att komma in i riksdagen, eftersom de måste få minst fyra procent av rösterna i hela landet. Ett parti som får tre procent får alltså inga platser alls, trots att många har röstat på det. Syftet med spärren är att riksdagen inte ska splittras i många små partier, vilket gör det lättare att bilda en stabil regering. Nackdelen är att en del väljares röster inte leder till någon representation, så små åsikter kan få svårare att höras i riksdagen.",
+     "screen": {
+      "short": "Spärren gör det svårare för små partier att komma in i riksdagen, eftersom de måste få minst 4 % av rösterna i hela landet.",
+      "long": "Spärren gör det svårare för små partier att komma in i riksdagen, eftersom de måste få minst 4 % av rösterna i hela landet. Ett parti som får 3 % får alltså inga platser alls, trots att många har röstat på det. Syftet med spärren är att riksdagen inte ska splittras i många små partier, vilket gör det lättare att bilda en stabil regering. Nackdelen är att en del väljares röster inte leder till någon representation, så små åsikter kan få svårare att höras i riksdagen."
+     }
+    },
+    {
+     "question": "Vad är skillnaden mellan riksdagen och regeringen?",
+     "short": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen, medan regeringen styr landet genom att genomföra riksdagens beslut.",
+     "long": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen, medan regeringen styr landet genom att genomföra riksdagens beslut. Riksdagen består av valda ledamöter och är folkets företrädare. Regeringen leds av statsministern och är beroende av riksdagens förtroende, eftersom riksdagen kan avsätta en minister genom misstroendeförklaring. Uppdelningen är en del av maktdelningen, där riksdagen stiftar lagarna, regeringen styr och domstolarna dömer självständigt. På så sätt får ingen del av staten för mycket makt.",
+     "screen": null
+    }
+   ]
+  },
+  {
+   "list": {
+    "id": "h3-ma-pythagoras",
+    "summary": {
+     "subject": "Matematik",
+     "grade": "åk 9",
+     "covers": "Pythagoras sats i rätvinkliga trianglar: begrepp som hypotenusa och kateter, hur satsen används, hur man räknar ut en saknad sida och hur man kontrollerar att en triangel är rätvinklig. Även areaberäkning för trianglar och cirklar."
+    },
+    "n": 7,
+    "t_s": 60.9
+   },
+   "items": [
+    {
+     "question": "Vad är hypotenusan i en rätvinklig triangel och var står den?",
+     "short": "Hypotenusan är den längsta sidan i en rätvinklig triangel, och den står mitt emot den räta vinkeln.",
+     "long": "Hypotenusan är den längsta sidan i en rätvinklig triangel, och den står mitt emot den räta vinkeln. De två andra sidorna kallas kateter, och de ligger närmast den räta vinkeln, som de bildar tillsammans. Hypotenusan är alltid längre än var och en av kateterna. Det är viktigt att kunna peka ut hypotenusan, eftersom den spelar en särskild roll i Pythagoras sats.",
+     "screen": null
+    },
+    {
+     "question": "Vad säger Pythagoras sats?",
+     "short": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat.",
+     "long": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat. Med bokstäver skriver man a i kvadrat plus b i kvadrat är lika med c i kvadrat, där a och b är kateterna och c är hypotenusan. Satsen gäller bara i rätvinkliga trianglar. Den gör det möjligt att räkna ut en okänd sida när de två andra sidorna är kända, vilket man ofta behöver i geometri och vid praktiska längdmätningar.",
+     "screen": {
+      "long": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat. Med bokstäver skriver man a² + b² = c², där a och b är kateterna och c är hypotenusan. Satsen gäller bara i rätvinkliga trianglar. Den gör det möjligt att räkna ut en okänd sida när de två andra sidorna är kända, vilket man ofta behöver i geometri och vid praktiska längdmätningar."
+     }
+    },
+    {
+     "question": "Hur kan man räkna ut hypotenusan om kateterna är 3 cm och 4 cm?",
+     "short": "Man kvadrerar kateterna, lägger ihop kvadraterna till tjugofem och tar kvadratroten, så hypotenusan blir fem centimeter.",
+     "long": "Man kvadrerar kateterna, lägger ihop kvadraterna till tjugofem och tar kvadratroten, så hypotenusan blir fem centimeter. Pythagoras sats ger c i kvadrat är lika med tre i kvadrat plus fyra i kvadrat. Tre i kvadrat är nio och fyra i kvadrat är sexton, och nio plus sexton är tjugofem. Eftersom fem gånger fem är tjugofem är c lika med fem. Hypotenusan blir alltså fem centimeter, vilket är längre än båda kateterna, precis som det ska vara.",
+     "screen": {
+      "short": "Man kvadrerar kateterna, lägger ihop kvadraterna till 25 och tar kvadratroten, så hypotenusan blir 5 cm.",
+      "long": "Man kvadrerar kateterna, lägger ihop kvadraterna till 25 och tar kvadratroten, så hypotenusan blir 5 cm. Pythagoras sats ger c² = 3² + 4². Tre i kvadrat är 9 och fyra i kvadrat är 16, och 9 + 16 = 25. Eftersom 5 · 5 = 25 är c = 5. Hypotenusan blir alltså 5 cm, vilket är längre än båda kateterna, precis som det ska vara."
+     }
+    },
+    {
+     "question": "Hur räknar man ut en saknad katet när hypotenusan och den andra kateten är kända?",
+     "short": "Man kvadrerar hypotenusan, drar bort kvadraten på den kända kateten och tar kvadratroten av resultatet.",
+     "long": "Man kvadrerar hypotenusan, drar bort kvadraten på den kända kateten och tar kvadratroten av resultatet. Det är samma sats, omskriven: a i kvadrat är lika med c i kvadrat minus b i kvadrat. Här är c hypotenusan och b den katet man redan känner till. Kvadratroten av differensen är den saknade kateten. Man subtraherar alltså i stället för att addera, eftersom hypotenusan är den längsta sidan och står ensam på ena sidan om likhetstecknet.",
+     "screen": {
+      "long": "Man kvadrerar hypotenusan, drar bort kvadraten på den kända kateten och tar kvadratroten av resultatet. Det är samma sats, omskriven: a² = c² − b². Här är c hypotenusan och b den katet man redan känner till. Kvadratroten av differensen är den saknade kateten. Man subtraherar alltså i stället för att addera, eftersom hypotenusan är den längsta sidan och står ensam på ena sidan om likhetstecknet."
+     }
+    },
+    {
+     "question": "Varför kan man använda Pythagoras sats för att kontrollera om en triangel är rätvinklig?",
+     "short": "Satsen gäller åt båda hållen: om summan av de två kortare sidornas kvadrater är lika med den längsta sidans kvadrat, är triangeln rätvinklig.",
+     "long": "Satsen gäller åt båda hållen: om summan av de två kortare sidornas kvadrater är lika med den längsta sidans kvadrat, är triangeln rätvinklig. Man kvadrerar alla tre sidorna och kontrollerar om de två mindre kvadraterna tillsammans blir lika med den största. Stämmer det, har triangeln en rät vinkel mitt emot den längsta sidan. Stämmer det inte, är triangeln inte rätvinklig. Tre, fyra och fem fungerar, eftersom nio plus sexton är tjugofem.",
+     "screen": null
+    },
+    {
+     "question": "Hur räknar man ut arean av en triangel?",
+     "short": "Man multiplicerar basen med höjden och delar produkten med två, alltså bas gånger höjd delat med två.",
+     "long": "Man multiplicerar basen med höjden och delar produkten med två, alltså bas gånger höjd delat med två. Höjden är det vinkelräta avståndet från basen till den motstående hörnpunkten, och den måste mätas rakt upp, inte längs en sned sida. Förklaringen är att en triangel alltid är hälften så stor som en rektangel med samma bas och höjd, och därför delar man med två. Har triangeln basen åtta centimeter och höjden fem centimeter blir arean åtta gånger fem delat med två, alltså tjugo kvadratcentimeter. Arean anges alltid i kvadratenheter.",
+     "screen": {
+      "short": "Man multiplicerar basen med höjden och delar produkten med 2, alltså A = b · h / 2.",
+      "long": "Man multiplicerar basen med höjden och delar produkten med 2, alltså A = b · h / 2. Höjden är det vinkelräta avståndet från basen till den motstående hörnpunkten, och den måste mätas rakt upp, inte längs en sned sida. Förklaringen är att en triangel alltid är hälften så stor som en rektangel med samma bas och höjd, och därför delar man med 2. Har triangeln basen 8 cm och höjden 5 cm blir arean 8 · 5 / 2 = 20 cm². Arean anges alltid i kvadratenheter."
+     }
+    },
+    {
+     "question": "Hur räknar man ut arean av en cirkel, och vad betyder r?",
+     "short": "Cirkelns area är pi gånger radien i kvadrat, och r är radien, alltså avståndet från cirkelns mittpunkt ut till kanten.",
+     "long": "Cirkelns area är pi gånger radien i kvadrat, och r är radien, alltså avståndet från cirkelns mittpunkt ut till kanten. Man räknar först ut radien gånger radien och multiplicerar sedan med pi, som är ungefär tre komma ett fyra. Har man bara diametern, som går tvärs över cirkeln genom mittpunkten, halverar man den för att få radien. Är radien till exempel tio centimeter blir arean ungefär tre komma ett fyra gånger hundra, alltså trehundrafjorton kvadratcentimeter. Tänk på att det är radien som kvadreras, inte pi.",
+     "screen": {
+      "short": "Cirkelns area är A = π · r², och r är radien, alltså avståndet från cirkelns mittpunkt ut till kanten.",
+      "long": "Cirkelns area är A = π · r², och r är radien, alltså avståndet från cirkelns mittpunkt ut till kanten. Man räknar först ut r · r och multiplicerar sedan med π, som är ungefär 3,14. Har man bara diametern, som går tvärs över cirkeln genom mittpunkten, halverar man den för att få radien. Är radien till exempel 10 cm blir arean ungefär 3,14 · 100 = 314 cm². Tänk på att det är radien som kvadreras, inte π."
+     }
+    }
+   ]
+  },
+  {
+   "list": {
+    "id": "h3-ke-atomer",
+    "summary": {
+     "subject": "Kemi",
+     "grade": "åk 7",
+     "covers": "Atomens uppbyggnad med protoner, neutroner och elektroner, hur grundämnen skiljer sig åt, hur det periodiska systemet är ordnat och hur atomer binds till molekyler och kemiska föreningar."
+    },
+    "n": 12,
+    "t_s": 67.1
+   },
+   "items": [
+    {
+     "question": "Varför är en atom oladdad trots att den innehåller laddade partiklar?",
+     "short": "En atom har lika många positivt laddade protoner som negativt laddade elektroner, så laddningarna tar ut varandra och atomen blir oladdad.",
+     "long": "En atom har lika många positivt laddade protoner som negativt laddade elektroner, så laddningarna tar ut varandra och atomen blir oladdad. Protonerna sitter i kärnan och är positiva, elektronerna rör sig runt kärnan och är negativa. Neutronerna i kärnan saknar laddning och påverkar därför inte balansen. Tar man som exempel syre, har det åtta protoner och åtta elektroner, så plus åtta och minus åtta blir noll. Därför är atomen oladdad som helhet, även om den innehåller laddade partiklar.",
+     "screen": null
+    },
+    {
+     "question": "Vad händer med atomens laddning om den får fler elektroner än protoner?",
+     "short": "Då överväger de negativa laddningarna, så atomen blir negativt laddad.",
+     "long": "Då överväger de negativa laddningarna, så atomen blir negativt laddad. Normalt tar protonernas positiva laddning och elektronernas negativa laddning ut varandra. Får atomen en extra elektron finns det fler negativa än positiva laddningar, och atomen får en negativ laddning. Antalet protoner ändras inte, så det är fortfarande samma grundämne. Det är bara laddningen som förändras, eftersom balansen mellan protoner och elektroner har rubbats.",
+     "screen": null
+    },
+    {
+     "question": "Vad är det som bestämmer vilket grundämne en atom är?",
+     "short": "Det är antalet protoner i kärnan, atomnumret, som bestämmer vilket grundämne atomen är.",
+     "long": "Det är antalet protoner i kärnan, atomnumret, som bestämmer vilket grundämne atomen är. Väte har en proton, kol har sex och syre har åtta. Har en atom sex protoner är den alltid kol, oavsett något annat. Neutronerna saknar laddning och styr inte vilket grundämne det är. Elektronerna är lika många som protonerna i en oladdad atom, så även de följer av protonantalet. Därför är protonantalet atomens identitet, och grundämnena står i det periodiska systemet i ordning efter just atomnummer.",
+     "screen": null
+    },
+    {
+     "question": "Hur kan man avgöra vilket grundämne en atom är?",
+     "short": "Man räknar antalet protoner i atomen, alltså atomnumret, och slår upp vilket grundämne i det periodiska systemet som har just det numret.",
+     "long": "Man räknar antalet protoner i atomen, alltså atomnumret, och slår upp vilket grundämne i det periodiska systemet som har just det numret. Har atomen en proton är det väte, sex protoner betyder kol och åtta protoner betyder syre. Eftersom en oladdad atom har lika många elektroner som protoner kan man också räkna elektronerna om atomen är oladdad. Neutronerna hjälper inte, eftersom de inte bestämmer grundämnet. I det periodiska systemet står grundämnena i ordning efter atomnummer, så man hittar rätt ruta direkt.",
+     "screen": null
+    },
+    {
+     "question": "Varför har kol och syre olika egenskaper trots att båda är grundämnen?",
+     "short": "Kol och syre har olika antal protoner och därmed olika antal elektroner, och det gör att de reagerar på olika sätt.",
+     "long": "Kol och syre har olika antal protoner och därmed olika antal elektroner, och det gör att de reagerar på olika sätt. Kol har sex protoner och syre har åtta, så de är olika grundämnen med olika atomnummer. Eftersom antalet elektroner följer protonantalet har atomerna olika många elektroner, och det är elektronerna i det yttersta skalet som styr hur en atom reagerar. Ämnen med lika många elektroner i yttersta skalet, alltså i samma grupp, reagerar liknande. Kol och syre står i olika grupper och beter sig därför olika.",
+     "screen": null
+    },
+    {
+     "question": "Hur är grundämnena ordnade i det periodiska systemet?",
+     "short": "Grundämnena står i ordning efter atomnummer, alltså efter antalet protoner i atomkärnan, och det talet bestämmer vilket grundämne det är.",
+     "long": "Grundämnena står i ordning efter atomnummer, alltså efter antalet protoner i atomkärnan, och det talet bestämmer vilket grundämne det är. Väte har en proton, kol har sex och syre har åtta, så systemet växer ett steg i taget. Eftersom en atom har lika många elektroner som protoner ökar också elektronerna med atomnumret. Därför hamnar ämnen med liknande egenskaper i samma kolumn, som kallas grupp, och man kan förutsäga hur ett ämne beter sig utifrån var det står.",
+     "screen": {
+      "long": "Grundämnena står i ordning efter atomnummer, alltså efter antalet protoner i atomkärnan, och det talet bestämmer vilket grundämne det är. Väte har 1 proton, kol har 6 och syre har 8, så systemet växer ett steg i taget. Eftersom en atom har lika många elektroner som protoner ökar också elektronerna med atomnumret. Därför hamnar ämnen med liknande egenskaper i samma kolumn, som kallas grupp, och man kan förutsäga hur ett ämne beter sig utifrån var det står."
+     }
+    },
+    {
+     "question": "Varför reagerar ämnen i samma grupp på liknande sätt?",
+     "short": "Ämnen i samma grupp har lika många elektroner i det yttersta skalet, och det är de yttersta elektronerna som avgör hur en atom reagerar.",
+     "long": "Ämnen i samma grupp har lika många elektroner i det yttersta skalet, och det är de yttersta elektronerna som avgör hur en atom reagerar. När atomer reagerar med varandra är det just elektronerna i det yttersta skalet som tas upp, lämnas eller delas. Har två ämnen samma antal där ute, beter de sig därför på ett liknande sätt i kemiska reaktioner. Det är därför grupperna i det periodiska systemet står som kolumner med ämnen som påminner om varandra.",
+     "screen": null
+    },
+    {
+     "question": "Varför reagerar ädelgaserna nästan inte alls?",
+     "short": "Ädelgaserna reagerar nästan inte alls eftersom de har fullt yttersta skal, så de behöver varken ta upp eller lämna ifrån sig elektroner.",
+     "long": "Ädelgaserna reagerar nästan inte alls eftersom de har fullt yttersta skal, så de behöver varken ta upp eller lämna ifrån sig elektroner. En atom med fullt yttersta skal är stabil och har ingen anledning att binda sig till andra atomer. Därför förekommer ädelgaserna ofta som enskilda atomer och bildar nästan inga föreningar. Ädelgaserna står längst till höger i det periodiska systemet, i den sista gruppen.",
+     "screen": null
+    },
+    {
+     "question": "Hur bildas en molekyl?",
+     "short": "En molekyl bildas när två eller flera atomer binds ihop med varandra.",
+     "long": "En molekyl bildas när två eller flera atomer binds ihop med varandra. Atomerna kan vara av samma grundämne eller av olika. Ett exempel är vatten, där två väteatomer sitter ihop med en syreatom och bildar en vattenmolekyl. Den skrivs med formeln H, 2, O. Det är alltså bindningen mellan atomerna som gör att de bildar en enhet, en molekyl.",
+     "screen": {
+      "long": "En molekyl bildas när två eller flera atomer binds ihop med varandra. Atomerna kan vara av samma grundämne eller av olika. Ett exempel är vatten, där två väteatomer sitter ihop med en syreatom och bildar en vattenmolekyl. Den skrivs med formeln H₂O. Det är alltså bindningen mellan atomerna som gör att de bildar en enhet, en molekyl."
+     }
+    },
+    {
+     "question": "Vad skiljer en kemisk förening från ett grundämne?",
+     "short": "Ett grundämne består av bara ett slags atomer, medan en kemisk förening består av två eller flera olika grundämnen som sitter ihop.",
+     "long": "Ett grundämne består av bara ett slags atomer, medan en kemisk förening består av två eller flera olika grundämnen som sitter ihop. Vilket grundämne det är bestäms av antalet protoner i atomkärnan, till exempel har kol sex protoner. En kemisk förening, som vatten, är i stället uppbyggd av olika slags atomer: två väteatomer och en syreatom. Skillnaden är alltså om det finns ett slags atomer eller flera olika slag som är bundna till varandra.",
+     "screen": {
+      "long": "Ett grundämne består av bara ett slags atomer, medan en kemisk förening består av två eller flera olika grundämnen som sitter ihop. Vilket grundämne det är bestäms av antalet protoner i atomkärnan, till exempel har kol 6 protoner. En kemisk förening, som vatten, är i stället uppbyggd av olika slags atomer: två väteatomer och en syreatom. Skillnaden är alltså om det finns ett slags atomer eller flera olika slag som är bundna till varandra."
+     }
+    },
+    {
+     "question": "Vad består vattenmolekylen H2O av?",
+     "short": "En vattenmolekyl består av två väteatomer som sitter ihop med en syreatom.",
+     "long": "En vattenmolekyl består av två väteatomer som sitter ihop med en syreatom. Det är därför formeln skrivs med stora H, siffran två och stora O: H två O. Väte och syre är två olika grundämnen, och när deras atomer binds ihop bildas en molekyl. Varje väteatom har en proton och en elektron, medan syreatomen har åtta protoner och åtta elektroner. Molekylen är oladdad eftersom varje atom har lika många elektroner som protoner. Vatten är alltså inte ett grundämne utan en kombination av två olika sorters atomer.",
+     "screen": {
+      "long": "En vattenmolekyl består av två väteatomer som sitter ihop med en syreatom. Det är därför formeln skrivs H₂O: stora H, siffran 2 och stora O. Väte och syre är två olika grundämnen, och när deras atomer binds ihop bildas en molekyl. Varje väteatom har 1 proton och 1 elektron, medan syreatomen har 8 protoner och 8 elektroner. Molekylen är oladdad eftersom varje atom har lika många elektroner som protoner. Vatten är alltså inte ett grundämne utan en kombination av två olika sorters atomer."
+     }
+    },
+    {
+     "question": "Varför kallas vatten för en kemisk förening?",
+     "short": "Vatten kallas en kemisk förening eftersom det består av två olika grundämnen, väte och syre, som sitter ihop.",
+     "long": "Vatten kallas en kemisk förening eftersom det består av två olika grundämnen, väte och syre, som sitter ihop. Ett grundämne består av bara ett slags atomer, till exempel bara väte eller bara syre. En kemisk förening har däremot atomer från två eller flera olika grundämnen. I vatten sitter två väteatomer ihop med en syreatom och bildar en molekyl. Att det är två olika sorters atomer är det som gör vatten till en förening och inte ett grundämne. Syre i luften är ett motsatt exempel: det består av bara syreatomer och är därför ett grundämne.",
+     "screen": null
+    }
+   ]
+  }
+ ]
+}
