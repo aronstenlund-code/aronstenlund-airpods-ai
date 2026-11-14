@@ -67,6 +67,7 @@ for ORDER in ${LUMEN_T21_ORDERS:-photo}; do
   rm -rf "$RESULT"
   TEST_RUNNER_LUMEN_T21="1" \
   TEST_RUNNER_LUMEN_T21_ORDER="$ORDER" \
+  TEST_RUNNER_LUMEN_T21_STOP_AFTER="${LUMEN_T21_STOP_AFTER:-}" \
   xcodebuild test-without-building \
     -project LumenE2E.xcodeproj \
     -scheme LumenScreenTour \

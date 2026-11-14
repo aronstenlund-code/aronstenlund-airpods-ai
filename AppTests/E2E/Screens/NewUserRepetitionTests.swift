@@ -30,6 +30,25 @@ final class NewUserRepetitionTests: XCTestCase {
     private var betaSeen: [String] = []
     private var betaAfter: Set<String> = []
     private var inFirstStart = true
+    // T23 (A99, A100)
+    private var moreModesAfter = false
+    private var firstSuggestion: Int?
+    private var firstQuotaLine: String?
+    private var secondSuggestion: Int?
+    private var secondQuotaLine: String?
+
+    /// "x av 15 frågor kvar den här månaden" (A99), or the used-up line, if it is on the screen.
+    private func quotaLine() -> String? {
+        let all = Self.labels(in: app.debugDescription, kind: "StaticText")
+        return all.first { $0.contains("frågor kvar") }
+    }
+
+    /// The x in "x av 15 frågor kvar …"; 0 for "inga frågor kvar".
+    nonisolated static func left(in line: String?) -> Int? {
+        guard let line else { return nil }
+        if line.contains("inga frågor kvar") { return 0 }
+        return line.split(separator: " ").first.flatMap { Int($0) }
+    }
     private var screensBeforeCamera: Int?
 
     private let material = "Fotosyntes. Växter tillverkar socker av koldioxid och vatten med hjälp av solljus. Klorofyllet i bladen fångar ljuset. Syre bildas och släpps ut. Sockret ger växten energi och byggmaterial."
@@ -106,11 +125,17 @@ final class NewUserRepetitionTests: XCTestCase {
         }
         milestone("Stämmer det här?")
         screen("stammer", "Stämmer det här?")
+        // D180: `LUMEN_T21_STOP_AFTER=stammer` stops before Ser rätt ut, which is what makes the sound. Used to see in
+        // the server log that the run is test traffic (fake audio) before any run that saves an exam.
+        if ProcessInfo.processInfo.environment["LUMEN_T21_STOP_AFTER"] == "stammer" {
+            log.append("stopped before Ser rätt ut (LUMEN_T21_STOP_AFTER=stammer): no sound made")
+            return
+        }
         guard waitEnabled(["Ser rätt ut"], 120), tap(["Ser rätt ut"], "Ser rätt ut") else {
             fail("Ser rätt ut not tappable within 120 s")
             return
         }
-        inFirstStart = false // A94's first start ends here; Start follows
+        // A100 (Deangelo 2026-11-14): Start counts to the first start now, until the first exam is started.
 
         // The question list: Starta prov when the sound is made ("Gör ljud …" before)
         guard wait(["Starta prov", "Gör ljud …"], 30) != nil else {
@@ -131,6 +156,8 @@ final class NewUserRepetitionTests: XCTestCase {
         // Styr med dina AirPods (first time): no AirPods in the Simulator, so the three steps are skipped
         if wait(["Styr med dina AirPods", "Medan frågan spelas:"], 10) != nil {
             screen("styr", "Styr med dina AirPods")
+            // From here the exam is being started (A100 shows Fler lägen on Start underneath, out of sight).
+            inFirstStart = false
             for n in 1...3 {
                 guard let skip = wait(["Hoppa över"], 15) else { break }
                 tapElement(skip, "Hoppa över \(n) (Simulator: no AirPods)", counted: false)
@@ -150,7 +177,34 @@ final class NewUserRepetitionTests: XCTestCase {
             screen("ingen-fraga", "No player after Starta")
             fail("the player did not show after Starta")
         }
-        if let end = find(["Avsluta"]) { tapElement(end, "Avsluta (end of the test)", counted: false) }
+        inFirstStart = false
+        if let end = find(["Avsluta"]) { tapElement(end, "Avsluta (end of the first exam)", counted: false) }
+
+        // T23 (1), A100: after the first exam Start shows Fler lägen with its BETA line.
+        if wait(["Nytt prov"], 15) != nil {
+            screen("start-efter-forsta-provet", "Start after the first exam", counts: false)
+            moreModesAfter = find(["Fler lägen"]) != nil
+            log.append("T23: Fler lägen on Start after the first exam: \(moreModesAfter ? "yes" : "NO")")
+            XCTAssertTrue(moreModesAfter, "A100: Fler lägen is not on Start after the first exam")
+
+            // T23 (2), D175: the second Nytt prov suggests at most what is left of the month.
+            tap(["Nytt prov"], "Nytt prov again (T23)", counted: false)
+            if app.buttons["Decrement"].waitForExistence(timeout: 10) {
+                pause(2) // the quota arrives after the form is shown (A99 capQuestions)
+                secondSuggestion = Int("\(app.buttons["Decrement"].value ?? "")")
+                secondQuotaLine = quotaLine()
+                screen("nytt-prov-igen", "Nytt prov a second time (D175)", counts: false)
+                log.append("T23: second Nytt prov suggests \(secondSuggestion.map(String.init) ?? "?"), line '\(secondQuotaLine ?? "none")'")
+                if let left = Self.left(in: secondQuotaLine), let suggested = secondSuggestion {
+                    XCTAssertLessThanOrEqual(suggested, min(left, 20), "D175: suggests more than is left")
+                }
+                tap(["Avbryt", "Senare"], "leave Nytt prov", counted: false, quiet: true)
+            } else {
+                fail("T23: the second Nytt prov did not open")
+            }
+        } else {
+            fail("T23: Start did not come back after Avsluta")
+        }
 
         XCTAssertLessThanOrEqual(screensBeforeCamera ?? 99, 3, "screens before the camera")
         XCTAssertTrue(betaSeen.isEmpty, "BETA in the first start: \(betaSeen)")
@@ -278,6 +332,13 @@ final class NewUserRepetitionTests: XCTestCase {
         let decrement = app.buttons["Decrement"]
         guard decrement.waitForExistence(timeout: 3) else { note("Antal frågor: no stepper"); return }
         let first = "\(decrement.value ?? "?")"
+        // T23 (2), D175: what a new account is offered, against "x av 15 frågor kvar den här månaden".
+        firstSuggestion = Int(first)
+        firstQuotaLine = quotaLine()
+        log.append("T23: first Nytt prov suggests \(first), line '\(firstQuotaLine ?? "none")'")
+        if let left = Self.left(in: firstQuotaLine), let suggested = firstSuggestion {
+            XCTAssertLessThanOrEqual(suggested, min(left, 20), "D175: suggests more than is left")
+        }
         for _ in 0..<60 {
             if "\(decrement.value ?? "")" == "3" { break }
             guard decrement.isEnabled else { break }
@@ -432,7 +493,9 @@ final class NewUserRepetitionTests: XCTestCase {
             "T21 ny användare (simulator, inte enhet)",
             "screens before the camera: \(screensBeforeCamera.map(String.init) ?? "not reached") (krav högst 3)",
             "BETA in the first start: \(betaSeen.isEmpty ? "none" : betaSeen.joined(separator: "; "))",
-            "BETA after it (Start, before the first question): \(betaAfter.isEmpty ? "none" : betaAfter.sorted().joined(separator: "; "))",
+            "BETA after the first exam was started: \(betaAfter.isEmpty ? "none" : betaAfter.sorted().joined(separator: "; "))",
+            "T23 Fler lägen on Start after the first exam: \(moreModesAfter ? "yes" : "no")",
+            "T23 quota: first Nytt prov \(firstSuggestion.map(String.init) ?? "?") ('\(firstQuotaLine ?? "no line")'), second \(secondSuggestion.map(String.init) ?? "?") ('\(secondQuotaLine ?? "no line")')",
             "taps (a user's): \(taps), test taps (not a user's): \(testTaps), screens: \(screens)",
             "", "Not obvious:",
         ] + (unclear.isEmpty ? ["(none)"] : unclear.map { "- " + $0 })
