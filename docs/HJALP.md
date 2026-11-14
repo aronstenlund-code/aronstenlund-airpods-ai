@@ -26,7 +26,10 @@ Earmind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 
 ## Frågor och svar
 - **Två svar per fråga:** varje fråga får ett kort svar och ett långt svar. Det korta svaret är första meningen i det långa och är ett fullgott svar i sig. Det långa svaret förklarar mer, med begrepp, samband och exempel.
-- **Ändra:** öppna provet och tryck **Ändra**. Du kan ändra en fråga eller ett svar, ta bort frågor, dra för att ändra ordning och trycka **Lägg till fråga**. **Låt Earmind skriva svaret** skriver svar till en ny fråga.
+- **Ändra en fråga eller ett svar:** öppna provet och tryck på frågan.
+- **Ta bort en fråga:** svep frågan åt vänster i listan och tryck **Radera**.
+- **Ändra ordning:** tryck på menyn med tre punkter uppe till höger i provet, välj **Ändra ordning**, dra frågorna och tryck **Klar**.
+- **Ny fråga:** tryck **Lägg till fråga** sist i listan. **Låt Earmind skriva svaret** skriver svar till den nya frågan.
 - **Ljudet efter en ändring:** när du sparar en ändring görs nytt ljud bara för den frågan.
 - **Svarens längd:** du ändrar den under Inställningar › Avancerat. Båda svaren görs alltid.
 
@@ -49,7 +52,7 @@ Tryck **Starta prov**. Earmind läser en fråga, väntar en stund så att du kan
 - **AirPods med dubbeltryck per lur:** gäller äldre AirPods. Ställ in vänster lur på Nästa spår (kort svar) och höger på Spela/pausa (långt svar och paus), under Inställningar › Bluetooth › ⓘ vid dina AirPods.
 - **Om ett tryck inte kommer fram:** kolla att båda AirPods sitter i öronen och är anslutna. Knapparna på låsskärmen fungerar alltid.
 - **Avbrott:** ett samtal eller Siri pausar provet. Provet fortsätter inte av sig självt när samtalet är slut, utan när du trycker igen.
-- **Spelar en annan app musik:** då får den appen trycken, och du startar Earmind igen från låsskärmen eller appen.
+- **Spelar en annan app musik, till exempel Spotify:** då går trycken till den appen i stället för till Earmind. Starta Earmind igen från låsskärmen eller appen, så går trycken till Earmind igen.
 
 ## Hur många frågor du kan göra
 - **Gräns:** du kan göra 15 frågor med ljud per kalendermånad, och gränsen börjar om den första i varje månad. Appen visar hur många du har kvar den här månaden.
