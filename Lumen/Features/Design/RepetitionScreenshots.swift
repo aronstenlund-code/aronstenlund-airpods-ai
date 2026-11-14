@@ -12,7 +12,9 @@ enum RepetitionDemo {
                                       // A83/A84 (Angela Fable's request): Publicera prov, Prov från din skola, the voice.
                                       "repPublish", "repSchools", "repSchoolsEmpty", "repPublication", "repVoice",
                                       // A92: the help AI (MockHelp in the screenshot mode)
-                                      "repHelp", "repHelpAnswer", "repHelpTry"]
+                                      "repHelp", "repHelpAnswer", "repHelpTry",
+                                      // A94 (Kelly Ke55): the first start
+                                      "fsWelcome", "fsReadMore", "fsNewDrill"]
 
     static let items: [DrillItem] = [
         ("Varför behövs klorofyll?", "Klorofyll fångar ljuset som fotosyntesen behöver.",
@@ -104,6 +106,9 @@ enum RepetitionDemo {
             switch name {
             case "repHome", "repHomeEmpty": NavigationStack { HomeView(model: listening) }
             case "repMaterial": NewDrillView(model: model) { _ in }
+            case "fsWelcome": WelcomeView {}
+            case "fsReadMore": DataPrivacySheet()
+            case "fsNewDrill": NewDrillView(model: model, onLater: {}) { _ in }
             case "repMakeError":
                 NewDrillView(model: model, onSaved: { _ in },
                              stagedProblem: DrillMakingError.server("URLError -1005").userMessage)
