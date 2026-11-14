@@ -5,6 +5,11 @@ name: Apptest new user, first start (T21)
 # questions), so manual, and on Toby's branch when the test changes. Simulator only: never a device test.
 on:
   workflow_dispatch:
+    inputs:
+      stop_after:
+        description: "D180: 'stammer' stops before Ser rätt ut (no sound made), to check that the run gets fake audio"
+        required: false
+        default: ""
   push:
     branches: ["toby/**"]
     paths:
@@ -37,6 +42,9 @@ jobs:
         run: brew install xcodegen
 
       - name: New user
+        env:
+          # A push to Toby's branch never makes sound: it stops before Ser rätt ut (D180).
+          LUMEN_T21_STOP_AFTER: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.stop_after || 'stammer' }}
         run: |
           bash scripts/apptest/newuser.sh
           STATUS=$?

@@ -106,6 +106,12 @@ final class NewUserRepetitionTests: XCTestCase {
         }
         milestone("Stämmer det här?")
         screen("stammer", "Stämmer det här?")
+        // D180: `LUMEN_T21_STOP_AFTER=stammer` stops before Ser rätt ut, which is what makes the sound. Used to see in
+        // the server log that the run is test traffic (fake audio) before any run that saves an exam.
+        if ProcessInfo.processInfo.environment["LUMEN_T21_STOP_AFTER"] == "stammer" {
+            log.append("stopped before Ser rätt ut (LUMEN_T21_STOP_AFTER=stammer): no sound made")
+            return
+        }
         guard waitEnabled(["Ser rätt ut"], 120), tap(["Ser rätt ut"], "Ser rätt ut") else {
             fail("Ser rätt ut not tappable within 120 s")
             return
