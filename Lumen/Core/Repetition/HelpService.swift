@@ -163,7 +163,7 @@ final class MockHelp: HelpAnswering {
             let text = "1. Tryck Nytt prov.\n2. Tryck Fota sidor och fota alla sidor i följd.\n3. Tryck Skapa frågor.\n4. Kolla sammanfattningen och tryck Ser rätt ut."
             return HelpAnswer(text: text, place: .newDrill)
         }
-        if q.contains("väder") || q.contains("fotboll") {
+        if q.contains("väd") || q.contains("fotboll") {
             return HelpAnswer(text: "Det kan jag inte svara på.", place: nil,
                               hint: "Jag svarar bara på hur Earmind fungerar, till exempel hur du gör ett nytt prov.", inScope: false)
         }
