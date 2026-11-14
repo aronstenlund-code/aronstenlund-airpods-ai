@@ -49,9 +49,7 @@ jobs:
         run: |
           d=$(date -u +%Y-%m)
           if ! grep -q "K62 ElevenLabs-krediterna $d" docs/TILL-ARON.md; then
-            printf '
-- **K62 ElevenLabs-krediterna %s: under 20 %% kvar** (%s, se reports/storage/latest.md). Testning använder aldrig krediter (D180). Fyll på eller byt plan: elevenlabs.io › Subscription. Att låta servern läsa saldot: elevenlabs.io › Developers › API Keys › nyckeln › User: Read.
-' "$d" "$(grep -o 'ElevenLabs-krediter (K62):.*' reports/storage/latest.md | head -1)" >> docs/TILL-ARON.md
+            printf '\n- **K62 ElevenLabs-krediterna %s: under 20 %% kvar** (%s, se reports/storage/latest.md). Testning använder aldrig krediter (D180). Fyll på eller byt plan: elevenlabs.io › Subscription. Att låta servern läsa saldot: elevenlabs.io › Developers › API Keys › nyckeln › User: Read.\n' "$d" "$(grep -o 'ElevenLabs-krediter (K62):.*' reports/storage/latest.md | head -1)" >> docs/TILL-ARON.md
           fi
       - name: Commit
         run: |
