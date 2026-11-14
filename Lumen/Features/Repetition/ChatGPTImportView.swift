@@ -273,7 +273,7 @@ struct ChatGPTImportView: View {
     }
 
     /// "december": the month after this one, in Swedish.
-    private static func nextMonth(after date: Date = Date()) -> String {
+    static func nextMonth(after date: Date = Date()) -> String {
         var calendar = Calendar(identifier: .gregorian)
         calendar.locale = Locale(identifier: "sv_SE")
         let month = calendar.component(.month, from: date) // 1...12

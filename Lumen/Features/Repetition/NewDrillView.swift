@@ -133,6 +133,12 @@ struct NewDrillView: View {
         // A95: the screen changes by itself (Läser ditt material → Stämmer det här?), and a problem appears at the
         // top of the form: VoiceOver is told.
         .onChange(of: stage) { AccessibilityNotification.ScreenChanged().post() }
+        // A99 (D175): the month's questions now, from the server (no sound is made by asking).
+        .task {
+            await model.refreshQuota()
+            capQuestions()
+        }
+        .onChange(of: model.quota) { capQuestions() }
         .onChange(of: problem) { _, now in
             if let now { AccessibilityNotification.Announcement(now).post() }
         }
@@ -166,6 +172,10 @@ struct NewDrillView: View {
                     Text(verbatim: problem)
                     if !material.isEmpty { Button("Försök igen") { create(correction: nil) } } // A85
                 }
+            }
+
+            if model.quotaUsedUp { // A99 (D175, Kelly): said before anything is sent, not as an error afterwards
+                Section { Text(verbatim: Self.usedUpLine) }
             }
 
             if cameraDenied {
@@ -280,8 +290,9 @@ struct NewDrillView: View {
         .safeAreaInset(edge: .bottom) {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
             MainActionBar(title: "Skapa frågor",
-                          note: material.isEmpty ? "Lägg till minst en sida, bild eller text." : model.quota?.line,
-                          isDisabled: material.isEmpty || readingDocument) {
+                          note: model.quotaUsedUp ? Self.usedUpLine
+                              : material.isEmpty ? "Lägg till minst en sida, bild eller text." : model.quota.map { $0.line + "." },
+                          isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp) {
                 create(correction: nil)
             }
         }
@@ -298,8 +309,20 @@ struct NewDrillView: View {
         }
     }
 
+    /// Kelly (A99): "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 december."
+    private static var usedUpLine: String {
+        "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth())."
+    }
+
+    /// The stepper never stands above what is left (the quota may arrive after the form is shown).
+    private func capQuestions() {
+        let range = model.newDrillQuestionRange
+        settings.questions = min(max(settings.questions, range.lowerBound), range.upperBound)
+    }
+
     private var questionStepper: some View {
-        Stepper(value: $settings.questions, in: DrillSettings.questionRange) {
+        // A99 (D175): never more questions than are left of the month's.
+        Stepper(value: $settings.questions, in: model.newDrillQuestionRange) {
             LabeledContent("Antal frågor", value: "\(settings.questions)").monospacedDigit()
         }
     }

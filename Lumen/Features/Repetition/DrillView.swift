@@ -164,6 +164,10 @@ struct DrillView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(verbatim: item.question).fontWeight(.semibold).foregroundStyle(Color.primary)
                                 Text(verbatim: item.short).font(.subheadline).foregroundStyle(Color.secondary).lineLimit(1)
+                                // A99 (D176, Kelly): quiet, and nothing on a question of normal length.
+                                if let length = item.lengthClass?.label {
+                                    Text(verbatim: length).font(.footnote).foregroundStyle(Color.secondary)
+                                }
                             }
                             Spacer(minLength: 0)
                             Image(systemName: "chevron.right")
@@ -414,6 +418,14 @@ struct DrillItemEditor: View {
 
     private var short: String { DrillItem.firstSentence(answer) }
 
+    /// The saved question's length class from the server; gone once the text is changed (it is not known again
+    /// until the server has seen the new text).
+    private var lengthNote: String? {
+        guard let itemID, let item = drill.items.first(where: { $0.id == itemID }),
+              item.question == question, DrillItem.long(item.long, startingWith: item.short) == answer else { return nil }
+        return item.lengthClass?.editorNote
+    }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -421,9 +433,7 @@ struct DrillItemEditor: View {
                     TextField("Fråga", text: $question, axis: .vertical)
                 } header: {
                     Text("Fråga · \(Self.words(question)) ord")
-                } footer: {
-                    if Self.words(question) > 5 { Text("Helst högst fem ord.") }
-                }
+                } // A99 (D176): no five-word rule any more
                 Section {
                     TextField("Svar", text: $answer, axis: .vertical).lineLimit(4...16)
                 } header: {
@@ -432,7 +442,11 @@ struct DrillItemEditor: View {
                     if short.isEmpty {
                         Text("Första meningen blir det korta svaret (2 tryck). Hela svaret är det långa (1 tryck).")
                     } else {
-                        Text(verbatim: "Kort svar (2 tryck): \(short)")
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(verbatim: "Kort svar (2 tryck): \(short)")
+                            // A99 (D176, Kelly): the server's length class for this question, as it was saved.
+                            if let note = lengthNote { Text(verbatim: note) }
+                        }
                     }
                 }
                 Section {
