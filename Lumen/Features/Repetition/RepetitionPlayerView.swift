@@ -56,7 +56,11 @@ struct RepetitionPlayerView: View {
                 case .answer(_, let kind):
                     Text(kind == .long ? "Långt svar" : "Kort svar").foregroundStyle(.secondary)
                 case .waitingForAudio:
-                    Text("Gör ljud …").foregroundStyle(.secondary)
+                    if let soundProblem {
+                        Text(verbatim: soundProblem) // A100 (K62)
+                    } else {
+                        Text("Gör ljud …").foregroundStyle(.secondary)
+                    }
                 case .question, .idle:
                     EmptyView()
                 }
@@ -117,6 +121,12 @@ struct RepetitionPlayerView: View {
         .frame(maxWidth: .infinity)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .background(Color(.systemBackground))
+    }
+
+    /// "Ljudet kan inte göras just nu. Försök igen om en stund." while the player waits for a sound that is not
+    /// coming (the credits ran out in the middle of an exam).
+    private var soundProblem: String? {
+        session.drill.flatMap { model.audio.problem(for: $0) }
     }
 
     /// Ke50 §8: "Sparat på fråga {7}." after Avsluta.
@@ -229,12 +239,20 @@ struct RepetitionPlayerView: View {
                     .font(.headline)
                     .foregroundStyle(.secondary)
             case .waitingForAudio:
-                HStack(spacing: 8) {
-                    ProgressView()
-                    Text("Gör ljud …")
+                if let soundProblem {
+                    // A100 (K62): no spinner that never ends when the sound cannot be made; Avsluta is below.
+                    Text(verbatim: soundProblem)
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                        Text("Gör ljud …")
+                    }
+                    .foregroundStyle(.secondary)
+                    .accessibilityElement(children: .combine)
                 }
-                .foregroundStyle(.secondary)
-                .accessibilityElement(children: .combine)
             case .question, .idle:
                 Color.clear.frame(height: 1)
             }
