@@ -112,6 +112,12 @@ export function askLike(text: string): boolean {
   if (/(?<![\p{L}])(?:förstår inte|fattar inte|hänger inte med|en gång till|igen|enklare|ett exempel|mer om)(?![\p{L}])/iu.test(text)) return true;
   return text.split(/[.!;:]+|\s[-–—]\s|-\s/u).map((x) => x.trim()).some((x) => ASK_START.test(x));
 }
+/** K68: starts with a question word, ends with "?", at least three words ("Hur länge har hallar funnits?"). */
+export function isClearQuestion(text: string): boolean {
+  const t = text.trim();
+  return /\?\s*$/u.test(t) && t.split(/\s+/).filter((w) => /\p{L}/u.test(w)).length >= 3 &&
+    /^(?:(?:och|men|så|okej|ok)[,]?\s+)?(?:vad|vem|vems|vilk(?:en|et|a)|hur|när|var|varför|vart|varifrån|what|who|whose|which|how|when|where|why)(?![\p{L}])/iu.test(t);
+}
 /** K44: "vad kan du (göra)?", "vad kan EarMind?", "vad mer kan du?" */
 const WHAT_CAN = /^(?:(?:hej|okej|ok)\s+)?(?:(?:lumen|earmind),?\s+)?(?:vad (?:mer )?kan (?:du|earmind|lumen|appen)(?: göra| hjälpa (?:mig )?med)?(?: mer)?|vad (?:gör|är) du bra på|vad kan jag (?:be dig om|fråga dig om|använda dig till)|vilka funktioner (?:har|finns)\b.*)\s*[?.!]?$/iu;
 /** K44: a concrete request ("… en timer på tio minuter", "… ringa mamma") with the wake word and the tool on the phone. */
@@ -1187,7 +1193,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const named = new RegExp(`(?<![\\p{L}])(?:lumen|earmind|${(body.assistantName ?? "").replace(/[^\p{L} -]/gu, "").trim() || "earmind"})(?![\\p{L}])`, "iu");
       const namedQuestion = !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" &&
         named.test(body.fragment) && askLike(body.fragment.replace(named, " ").replace(/^[\s,.!]+/u, ""));
-      const direct = !!funCmd || (cfg.directModes && (body.mode !== "auto" || autoAction || namedQuestion)) || !!personaPlan(body);
+      // K68 (Toby T25 w43 "Hur länge har hallar funnits?": "not a question" in one run, answered in another): a sentence
+      // that starts with a question word and ends with "?" is never "not a question" in Standardläge: the direct path,
+      // so the judgement is the same every time (no classifier)
+      const clearQuestion = !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" &&
+        isClearQuestion(body.fragment);
+      const direct = !!funCmd || (cfg.directModes && (body.mode !== "auto" || autoAction || namedQuestion || clearQuestion)) || !!personaPlan(body);
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
       const plan = funCmd ? null : personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
       const continuation = !plan && body.context.recent_qa.length

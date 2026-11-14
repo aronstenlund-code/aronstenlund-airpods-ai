@@ -199,3 +199,17 @@ Deno.test("Toby T17c w43: in Standardläge (auto) a question that names the assi
   const overheard = await spoken(await handlerWith(b.provider)(ask({ fragment: "hur länge har han funnits", mode: "auto" })));
   assertEquals(overheard, "", "no name, no header: Standardläge stays quiet");
 });
+
+Deno.test("K68 (Toby T25 w43): a sentence with a question word and '?' is never 'not a question' in Standardläge, every time", async () => {
+  const { isClearQuestion } = await import("./handler.ts");
+  assert(isClearQuestion("Hur länge har hallar funnits?"));
+  assert(isClearQuestion("Okej, vad betyder inflation?"));
+  assert(!isClearQuestion("hur länge har han funnits"), "no '?'");
+  assert(!isClearQuestion("Vad?"), "too short");
+  assert(!isClearQuestion("Jag undrar om det regnar?"), "no question word first");
+  for (let i = 0; i < 3; i++) {
+    const { provider } = scripted("Hajar har funnits i ungefär fyrahundra miljoner år.");
+    const a = await spoken(await handlerWith(provider)(ask({ fragment: "Hur länge har hallar funnits?", mode: "auto" })));
+    assert(a.startsWith("Hajar har funnits"), a);
+  }
+});
