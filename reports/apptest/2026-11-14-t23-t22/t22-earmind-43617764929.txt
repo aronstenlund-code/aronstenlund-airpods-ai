@@ -1,0 +1,40 @@
+T22 EarMind (Debug scenes, simulator, not a device)
+
+icon: EarMind
+OK  fsWelcome: 4 texts with EarMind
+OK  fsReadMore: 2 texts with EarMind
+OK  fsNewDrill: 2 texts with EarMind
+OK  repHome: 1 texts with EarMind
+OK  repHomeEmpty: 2 texts with EarMind
+OK  repHomeNew: 1 texts with EarMind
+OK  repHomeStarted: 1 texts with EarMind
+OK  repMaterial: 2 texts with EarMind
+OK  repMakeError: 2 texts with EarMind
+OK  repVoice: 1 texts with EarMind
+OK  repList: 2 texts with EarMind
+OK  repEdit: 1 texts with EarMind
+OK  repShare: 1 texts with EarMind
+OK  repShareReady: 2 texts with EarMind
+OK  repControls: 1 texts with EarMind
+OK  repControlsDone: 1 texts with EarMind
+OK  repControlsMissing: 1 texts with EarMind
+OK  repPlayFirst: 1 texts with EarMind
+OK  repPlayThink: 1 texts with EarMind
+OK  repPlayAnswer: 1 texts with EarMind
+OK  repPaused: 1 texts with EarMind
+OK  repWaiting: 1 texts with EarMind
+OK  repPublish: 1 texts with EarMind
+OK  repSchools: 1 texts with EarMind
+OK  repSchoolsEmpty: 1 texts with EarMind
+OK  repPublication: 1 texts with EarMind
+OK  repHelp: 5 texts with EarMind
+OK  repHelpAnswer: 3 texts with EarMind
+OK  repHelpTry: 2 texts with EarMind
+OK  repQuotaUsedUp: 2 texts with EarMind
+OK  repLength: 2 texts with EarMind
+OK  repLengthEdit: 1 texts with EarMind
+OK  repSoundProblem: 1 texts with EarMind
+OK  repHomeSoundProblem: 1 texts with EarMind
+OK  gptSteps: 3 texts with EarMind
+OK  gptFound: 1 texts with EarMind
+OK  gptWrong: 1 texts with EarMind
