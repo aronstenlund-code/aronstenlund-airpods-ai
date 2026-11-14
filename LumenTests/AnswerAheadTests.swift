@@ -161,6 +161,17 @@ import Testing
         #expect(rig.model.aheadStats.delivered == 1)
     }
 
+    /// Toby 1 T25 finding 9b: after "Hej, Lumen." ("Ja?") a question is answered ahead as said to Lumen (mode
+    /// "text"), not as an auto question the server can call "not a question".
+    @Test func aQuestionAfterTheNameAloneIsAnsweredAheadAsAnAddress() async {
+        let rig = makeRig()
+        await rig.model.startListening()
+        rig.model.receiveFinalTranscript("Hej, Lumen.", at: Date())
+        rig.model.receiveSentenceHeard("hur hög är man ont är det?", at: Date())
+        #expect(await waitUntil { rig.provider.requests.contains { $0.fragment.hasPrefix("hur hög") } })
+        #expect(rig.provider.requests.last { $0.fragment.hasPrefix("hur hög") }?.mode == ActivationTrigger.text.backendMode)
+    }
+
     @Test func wordsBeforeThePauseReplaceTheCall() async {
         let rig = makeRig()
         await rig.model.startListening()

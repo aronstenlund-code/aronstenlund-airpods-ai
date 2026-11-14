@@ -3610,6 +3610,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let request: ActivationRequest
         switch mode {
         case .standard:
+            if let lone = loneNameAt, Date().timeIntervalSince(lone) <= Self.loneNameWindow {
+                // Toby 1 T25 finding 9b: after "Ja?" (the name alone) the next sentence is said to Lumen, also when it
+                // ends in "?": answered ahead as an address ("Lumen, …"), not as an auto question the gate can refuse.
+                request = ActivationRequest(query: text, trigger: .text, language: language)
+                break
+            }
             guard !study.isActive, QuestionGate(sensitivity: activation.settings.sensitivity).evaluate(text).fires else { return }
             request = ActivationRequest(query: text, trigger: .auto, language: language)
         case .prov:
