@@ -449,7 +449,7 @@ struct DrillItemEditor: View {
                         Text("Första meningen blir det korta svaret (2 tryck). Hela svaret är det långa (1 tryck).")
                     } else {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(verbatim: "Kort svar (2 tryck): \(short)")
+                            Text(verbatim: "Kort svar (2 tryck): \(DrillItem.shownShort(short))") // Kelly Ke61 F1: no full stop after a formula
                             // A99 (D176, Kelly): the server's length class for this question, as it was saved.
                             if let note = lengthNote { Text(verbatim: note) }
                         }
