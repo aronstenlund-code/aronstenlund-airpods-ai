@@ -449,3 +449,15 @@ All calls are `POST` with the user's JWT, like `/answer`.
   - It returns 422 `import_unreadable` (with `skipped`) when no question could be read.
 - **Save:** the app saves `items` with `/drill save` like any drill. Only the ElevenLabs audio costs, and it counts towards the 15 per month (D155) as usual.
 - **Tested once** with Claude in ChatGPT's place on Oscar's test exam bio-ak8-fotosyntes: 10/10 questions read, 0 skipped, questions 3–5 words, first sentences 11–23 words, answers 70–78 words. After that the prompt was changed to say "minst 80" words.
+
+## K61 (D175–D178): quota left, length class, try counted once
+- **D175, never more than is left:**
+  - `POST /exam {"action":"drill", "questions": N}` makes at most what is left of the month's generated questions. The reply has `quota: {used, limit, left, per: "month", resets}`.
+  - With nothing left it returns 402 `quota_exceeded` ("Du har inga frågor kvar den här månaden. Andras prov är gratis.") with the same fields, before any model call.
+  - `POST /drill {"action":"quota"}` -> `{used, limit, left, suggest, per, resets}`. `suggest` = min(left, 20), the number Nytt prov should propose (A99). `list` also has `quota.left`.
+- **D176, no word limit:**
+  - The "at most 5/8 words" rule is gone from the prompts, the trimming and the tests. The question check never pads a question: at most two words more, and only when signs become words.
+  - Every item from `save`/`get`/`status` has `voice_chars` (question + long answer, the characters sent to ElevenLabs) and `length_class`: `normal` (≤ 800), `longer` (801–1 600) or `too_long` (> 1 600).
+  - The limits are `length_normal_max` and `length_longer_max` in `drill_settings`. Change them there, no new code. Nothing is charged yet (D157).
+- **D177, try counted once:** the 3 questions from `/help try` are stored as `drill_try_credits`. When the same questions (case and punctuation do not matter) are saved with `/drill save`, they are not counted again. The reply has `already_counted: n`, and the credit is used up.
+- **D178, old audio is never deleted:** there is no `last_played_at` and no deletion rule. Storage is watched every morning (K59).

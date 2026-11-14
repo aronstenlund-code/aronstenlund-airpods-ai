@@ -22,7 +22,8 @@ Earmind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 - **Bra foton:** fota rakt ovanifrån i bra ljus. Går texten inte att läsa säger Earmind det. Fota då igen, eller klistra in texten.
 - **Ditt material sparas inte:** foton, dokument och text skickas en gång för att göra frågorna, och sedan raderas de.
 - **Varför det blev färre frågor:** Earmind gör aldrig fler frågor än materialet räcker till. Är texten kort blir det färre frågor än du valde, och appen säger hur många det blev, till exempel ”Materialet räckte till 12 frågor”.
-- **Frågorna:** de är korta, helst högst fem ord. De flesta frågar varför och hur, inte bara vad något heter.
+- **Frågorna:** de är korta och tydliga när man bara hör dem. De flesta frågar varför och hur, inte bara vad något heter.
+- **Hur många frågor:** Earmind gör aldrig fler frågor än du har kvar den här månaden.
 
 ## Frågor och svar
 - **Två svar per fråga:** varje fråga får ett kort svar och ett långt svar. Det korta svaret är första meningen i det långa och är ett fullgott svar i sig. Det långa svaret förklarar mer, med begrepp, samband och exempel.

@@ -1,11 +1,13 @@
 // K46 (D142-D145): drills and audio per account, with an in-memory database, storage and voice. Invented text only.
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
+import { questionKey } from "./length.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
 function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: number; busy?: number } = {}) {
   let busy = opts.busy ?? 0;
   const quota = new Map<string, number>();
+  const credits = new Set<string>(); // K61 (D177): "user|question key" counted in /help try
   const models: string[] = [];
   const drills = new Map<string, DrillRow>();
   const items = new Map<string, ItemRow & { id: string }>();
@@ -118,6 +120,12 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       pubs.get(id)!.hidden = hidden;
       return Promise.resolve();
     },
+    settings: () => Promise.resolve({ length_normal_max: 100, length_longer_max: 200 }),
+    tryCredits: (u: string, keys: string[]) => Promise.resolve(keys.filter((k) => credits.has(`${u}|${k}`))),
+    dropTryCredits: (u: string, keys: string[]) => {
+      for (const k of keys) credits.delete(`${u}|${k}`);
+      return Promise.resolve();
+    },
   };
   const limiter = new MemoryRateLimiter(); // one per world, like the real database
   const h = (user: string, owner = false) =>
@@ -157,7 +165,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, models, setBusy: (n: number) => (busy = n) };
+  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, setBusy: (n: number) => (busy = n) };
 }
 const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
@@ -411,7 +419,7 @@ Deno.test("K50 limit: 30 generated questions per account by default (402 with th
   assertEquals(w.quota.get("u2") ?? 0, 0);
   // one more own question fits exactly
   assertEquals((await w.h("u1")(post({ action: "save", items: [more[0]] }))).status, 200);
-  assertEquals((await (await w.h("u1")(post({ action: "list" }))).json()).quota, { used: 3, limit: 3, per: "month", resets: "2026-12-01" });
+  assertEquals((await (await w.h("u1")(post({ action: "list" }))).json()).quota, { used: 3, limit: 3, left: 0, per: "month", resets: "2026-12-01" });
 });
 
 Deno.test("K52 D155: the month the limit starts again, in Swedish time", async () => {
@@ -448,4 +456,29 @@ Deno.test("K55 ElevenLabs busy (429): back in the queue without counting a try; 
   const again = await (await w.h("u2")(post({ action: "save", items: ITEMS }))).json();
   assertEquals(again.audio.failed, 0);
   assertEquals(one.status, "done");
+});
+
+Deno.test("K61 D176: each question gets its length (question + long answer to ElevenLabs) and class from drill_settings", async () => {
+  const w = world();
+  const long = "Moln släpper vatten. " + "Mer om moln och regn. ".repeat(6);
+  const j = await (await w.h("u1")(post({ action: "save", items: [ITEMS[0], { question: "Varför regnar det?", short: "Moln släpper vatten.", long }] }))).json();
+  const [a, b] = j.items as { voice_chars: number; length_class: string }[];
+  assert(a.voice_chars > 0 && a.voice_chars <= 100, String(a.voice_chars));
+  assertEquals(a.length_class, "normal");
+  assert(b.voice_chars > 100, String(b.voice_chars));
+  assertEquals(b.length_class, b.voice_chars > 200 ? "too_long" : "longer");
+});
+
+Deno.test("K61 D177: questions already counted in /help try are not counted again when saved", async () => {
+  const w = world({ freeQuestions: 15 });
+  w.credits.add("u1|" + questionKey(ITEMS[0].question));
+  const j = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals([j.generated_questions, j.already_counted], [ITEMS.length - 1, 1]);
+  assertEquals(w.credits.size, 0, "the credit is used once");
+});
+
+Deno.test("K61 D175: quota tells the app what is left and what to suggest (never over 20)", async () => {
+  const w = world({ freeQuestions: 15 });
+  const q = await (await w.h("u1")(post({ action: "quota" }))).json();
+  assertEquals([q.used, q.limit, q.left, q.suggest, q.per], [0, 15, 15, 15, "month"]);
 });

@@ -113,7 +113,6 @@ export function importText(raw: unknown): ImportResult {
       if (answer.length > IMPORT_LIMITS.answerWarnChars) {
         warnings.push({ line: answerLine, text: short.slice(0, 160), reason: `Svaret har ${answer.length} tecken, långt att lyssna på.` });
       }
-      if (words(q) > 8) warnings.push({ line: cur.line, text: q.slice(0, 160), reason: `Frågan har ${words(q)} ord.` });
     }
     cur = null;
     mode = "none";

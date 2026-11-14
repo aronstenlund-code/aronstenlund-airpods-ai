@@ -7,6 +7,7 @@ import type { LLMProvider } from "../answer/llm/types.ts";
 import { CAPS } from "../_shared/capabilities.ts";
 import { HJALP } from "../_shared/hjalp.ts";
 import { DEFAULT_DRILL_CONFIG, type DrillConfig, handleDrill } from "../exam/drill.ts";
+import { questionKey } from "../drill/length.ts";
 
 /**
  * K57 (D166): `POST /help`, the help AI inside the app ("Fråga om Earmind").
@@ -64,6 +65,8 @@ export interface HelpDeps {
   /** D155: the month's generated questions (n = 0 only reads). */
   useQuota: (userId: string, n: number) => Promise<{ ok: boolean; used: number; lim: number }>;
   drill?: DrillConfig;
+  /** K61 (D177): the try questions, so that "Spara som prov" does not count them again */
+  addTryCredits?: (userId: string, keys: string[]) => Promise<void>;
   recordUsage?: (rec: Record<string, unknown>) => void | Promise<void>;
 }
 
@@ -110,6 +113,8 @@ export function createHelpHandler(deps: HelpDeps) {
         }
         const { body, steps } = await handleDrill("drill", { text, questions: 3, long_words: 90 }, deps.provider, deps.drill ?? DEFAULT_DRILL_CONFIG, req.signal);
         const q = await deps.useQuota(user.id, 3);
+        const made = Array.isArray(body.items) ? (body.items as { question?: string }[]).map((i) => questionKey(String(i.question ?? ""))).filter(Boolean) : [];
+        await deps.addTryCredits?.(user.id, made).catch((e) => console.warn("try_credits_failed", e instanceof Error ? e.message.slice(0, 120) : String(e)));
         for (const st of steps) {
           await Promise.resolve(deps.recordUsage?.({ user_id: user.id, endpoint: "help-try", provider: deps.provider.name, model: st.model, input_tokens: st.input_tokens, output_tokens: st.output_tokens, est_cost_usd: st.est_cost_usd, status: "ok" })).catch(() => {});
         }

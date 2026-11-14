@@ -101,6 +101,15 @@ export interface ExamDeps {
   recordUsage?: (rec: Record<string, unknown>) => void | Promise<void>;
   /** K53: the private bucket for uploaded photos. */
   material?: MaterialStore | null;
+  /** K61 (D175): the month's generated questions (used, limit); "drill" never makes more than are left. */
+  quota?: (userId: string) => Promise<{ used: number; lim: number }>;
+}
+
+/** K61: the first day of next month in Stockholm time (when the month's questions start again). */
+function monthResets(nowMs: number): string {
+  const ym = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Stockholm", year: "numeric", month: "2-digit" }).format(new Date(nowMs));
+  const [y, m] = ym.split("-").map(Number);
+  return m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, "0")}-01`;
 }
 
 export const SYSTEM_PROMPT_EXAM_PARSE =
@@ -348,9 +357,24 @@ export function createExamHandler(deps: ExamDeps) {
       }
       if (!deps.provider) throw new HttpError(503, "provider_unconfigured", "LLM provider not configured");
       if (drill) {
+        // K61 (D175): never more questions than the month has left; none left = say so before any work
+        const req0 = { ...((b ?? {}) as Record<string, unknown>) };
+        delete req0._max_questions;
+        let quota: { used: number; limit: number; left: number; per: "month"; resets: string } | null = null;
+        if (action === "drill" && deps.quota) {
+          const q = await deps.quota(user.id);
+          quota = { used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), per: "month", resets: monthResets(Date.now()) };
+          if (quota.left <= 0) {
+            return json({
+              error: { code: "quota_exceeded", message: "Du har inga frågor kvar den här månaden. Andras prov är gratis.", fallback: false },
+              ...quota,
+            }, 402);
+          }
+          req0._max_questions = quota.left;
+        }
         const { body, steps } = await handleDrill(
           action as "drill" | "drill_answers" | "drill_one",
-          (b ?? {}) as Record<string, unknown>,
+          req0,
           deps.provider,
           cfg.drill ?? DEFAULT_DRILL_CONFIG,
           req.signal,
@@ -373,7 +397,7 @@ export function createExamHandler(deps: ExamDeps) {
             console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
           }
         }
-        return json(body);
+        return json(quota ? { ...body, quota } : body);
       }
 
       let llm: LLMRequest;

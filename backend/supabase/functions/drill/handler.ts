@@ -6,6 +6,7 @@ import { toSpeech } from "../answer/speech.ts";
 import { pronounce } from "../tts/handler.ts";
 import { composeLong, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
+import { lengthClass, lengthLimits, questionKey } from "./length.ts";
 
 /**
  * K46 (D142, D143, D144, D145): Repetitionsläget, drills and their audio per account. `POST /drill` with an action:
@@ -78,6 +79,9 @@ export interface ItemRow {
   long: string;
   question_hash: string;
   long_hash: string;
+  /** K61 (D176): question + long answer, characters sent to ElevenLabs, and the class */
+  voice_chars?: number | null;
+  length_class?: string | null;
 }
 export interface AudioRow {
   hash: string;
@@ -133,6 +137,11 @@ export interface DrillDb {
   requeue(hashes: string[]): Promise<void>;
   /** K50: adds n generated questions when within the limit (n = 0 only reads); atomic in the database. */
   useQuota(userId: string, n: number): Promise<{ ok: boolean; used: number; lim: number }>;
+  /** K61 (D176): drill_settings (length_normal_max, length_longer_max, ...). */
+  settings?(): Promise<Record<string, number>>;
+  /** K61 (D177): which of these question keys were already counted in /help try, and dropping them once used. */
+  tryCredits?(userId: string, keys: string[]): Promise<string[]>;
+  dropTryCredits?(userId: string, keys: string[]): Promise<void>;
 }
 export interface SchoolRow {
   code: string;
@@ -378,6 +387,7 @@ export function createDrillHandler(deps: DrillDeps) {
       cue,
       items: items.map((i) => ({
         id: i.id, position: i.position, question: i.question, short: i.short, long: i.long,
+        voice_chars: i.voice_chars ?? null, length_class: i.length_class ?? null,
         audio: { question: file(i.question_hash), long: file(i.long_hash) },
       })),
       audio: {
@@ -436,7 +446,7 @@ export function createDrillHandler(deps: DrillDeps) {
     await deps.db.saveDrill(copy, true);
     await deps.db.replaceItems(copy.id, [], its.map((i) => ({
       drill_id: copy.id, user_id: userId, position: i.position, question: i.question, short: i.short, long: i.long,
-      question_hash: i.question_hash, long_hash: i.long_hash,
+      question_hash: i.question_hash, long_hash: i.long_hash, voice_chars: i.voice_chars ?? null, length_class: i.length_class ?? null,
     })));
     return { ...(await view((await deps.db.drill(copy.id)) ?? copy)), new_chars: 0 };
   }
@@ -475,6 +485,12 @@ export function createDrillHandler(deps: DrillDeps) {
         }
         return json({ ...r, count: r.items.length });
       }
+      if (action === "quota") {
+        // K61 (D175, A99): what Nytt prov may suggest (at most what is left, never more than 20)
+        const q = await deps.db.useQuota(user.id, 0);
+        const left = Math.max(0, q.lim - q.used);
+        return json({ used: q.used, limit: q.lim, left, suggest: Math.min(left, 20), per: "month", resets: nextMonthStart(now()) });
+      }
       if (action === "list") {
         const drills = await deps.db.drills(user.id);
         const items = drills.length ? await deps.db.items(drills.map((d) => d.id)) : [];
@@ -482,7 +498,7 @@ export function createDrillHandler(deps: DrillDeps) {
         const doneSet = new Set((hashes.length ? await deps.db.audio(hashes) : []).filter((a) => a.status === "done").map((a) => a.hash));
         const q = await deps.db.useQuota(user.id, 0);
         return json({
-          quota: { used: q.used, limit: q.lim, per: "month", resets: nextMonthStart(now()) },
+          quota: { used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), per: "month", resets: nextMonthStart(now()) },
           drills: drills.map((d) => {
             const its = items.filter((i) => i.drill_id === d.id);
             const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
@@ -693,6 +709,7 @@ export function createDrillHandler(deps: DrillDeps) {
       const oldIds = new Set(oldItems.map((i) => i.id));
       const rows: (ItemRow & { keep?: string })[] = [];
       const files = new Map<string, AudioRow>();
+      const limits = lengthLimits(await deps.db.settings?.().catch(() => null));
       for (const [pos, it] of rawItems.entries()) {
         const question = clean(it?.question, DRILL_STORE_LIMITS.question);
         if (!question) throw new HttpError(400, "invalid_request", `items[${pos}].question is required`);
@@ -708,7 +725,11 @@ export function createDrillHandler(deps: DrillDeps) {
         files.set(qh, files.get(qh) ?? { hash: qh, kind: "question", text: q, model: voice, voice_id: deps.voiceId, seq: pos * 2 });
         files.set(lh, files.get(lh) ?? { hash: lh, kind: "long", text: l.text, short_chars: l.shortChars, model: voice, voice_id: deps.voiceId, seq: pos * 2 + 1 });
         const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
-        rows.push({ ...(id ? { id } : {}), drill_id: drill.id, user_id: user.id, position: pos, question, short, long, question_hash: qh, long_hash: lh });
+        const chars = q.length + l.text.length; // D176: what ElevenLabs gets for this question
+        rows.push({
+          ...(id ? { id } : {}), drill_id: drill.id, user_id: user.id, position: pos, question, short, long, question_hash: qh, long_hash: lh,
+          voice_chars: chars, length_class: lengthClass(chars, limits),
+        });
       }
       // D144: only files no account has yet are generated and counted
       const existingAudio = await deps.db.audio([...files.keys()]);
@@ -729,7 +750,11 @@ export function createDrillHandler(deps: DrillDeps) {
       // K50 (D151): at most N generated questions per account. A question counts when any of its two files is new;
       // audio another account already made (shared, published, the same text) is free and never counts
       const freshSet = new Set(fresh.map((f) => f.hash));
-      const generated = rows.filter((r) => freshSet.has(r.question_hash) || freshSet.has(r.long_hash)).length;
+      const genRows = rows.filter((r) => freshSet.has(r.question_hash) || freshSet.has(r.long_hash));
+      // D177: questions already counted in /help try are not counted again
+      const keys = [...new Set(genRows.map((r) => questionKey(r.question)))];
+      const credited = keys.length ? new Set(await deps.db.tryCredits?.(user.id, keys).catch(() => []) ?? []) : new Set<string>();
+      const generated = genRows.filter((r) => !credited.has(questionKey(r.question))).length;
       if (generated > 0) {
         const q = await deps.db.useQuota(user.id, generated);
         if (!q.ok) {
@@ -756,11 +781,12 @@ export function createDrillHandler(deps: DrillDeps) {
           voice_id: f.voice_id, status: "pending", seq: f.seq ?? 0, queued_at: at,
         })));
       }
+      if (credited.size) await deps.db.dropTryCredits?.(user.id, [...credited]).catch(() => {});
       await deps.db.saveDrill(drill, !existing);
       await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
       if (fresh.length || failed.length) deps.background ? deps.background(pump()) : await pump();
       const saved = await deps.db.drill(drill.id);
-      return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated });
+      return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, ...(credited.size ? { already_counted: credited.size } : {}) });
     } catch (e) {
       return errorResponse(toHttpError(e));
     }

@@ -138,6 +138,17 @@ Deno.serve(withCors(
         const r = (await db.rpc("use_drill_quota", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[];
         return r[0] ?? { ok: false, used: 0, lim: 0 };
       },
+      // ---------- K61 ----------
+      settings: async () => Object.fromEntries(((await db.select("drill_settings", "select=key,value")) as { key: string; value: number }[]).map((r) => [r.key, Number(r.value)])),
+      tryCredits: async (u, keys) => {
+        if (!keys.length) return [];
+        const r = (await db.select("drill_try_credits", `select=question_key&user_id=eq.${encodeURIComponent(u)}&question_key=in.(${keys.map((k) => `"${k.replace(/["\\]/g, "")}"`).map(encodeURIComponent).join(",")})`)) as { question_key: string }[];
+        return r.map((x) => x.question_key);
+      },
+      dropTryCredits: async (u, keys) => {
+        if (!keys.length) return;
+        await db.deleteWhere("drill_try_credits", `user_id=eq.${encodeURIComponent(u)}&question_key=in.(${keys.map((k) => `"${k.replace(/["\\]/g, "")}"`).map(encodeURIComponent).join(",")})`);
+      },
       setHidden: async (id, hidden) => {
         await db.updateWhere("drill_publications", `id=eq.${encodeURIComponent(id)}`, { hidden });
       },

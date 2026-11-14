@@ -31,8 +31,6 @@ export const DRILL_LIMITS = {
   longWordsDefault: 90,
   longWordsMin: 40,
   longWordsMax: 200,
-  /** R3: at most 8 words per question (5 or fewer preferred). */
-  questionWordsMax: 8,
   batch: 5,
   /** R3: questions asked for beyond the count; the longest are dropped in code. */
   extraQuestions: 6,
@@ -66,8 +64,8 @@ When the material cannot be read at all (blurred, cut off, a screen photo you ca
 - summary: "subject" the school subject in Swedish; "grade" the school year or course as Swedes say it ("åk 8", "Matematik 1b", "Svenska 1", "Engelska 6", "Samhällskunskap 1b"): from <context> when given; else from the material itself: a course name or code, a textbook title, "åk"/"årskurs", or content that only fits one level (a gymnasium course's topics such as derivatives, molar mass or language history are gymnasium; never guess "åk 8" by default); else "" (empty: the app then asks the student, D159/K52); "covers" one or two Swedish sentences on what the exam covers (the main areas, in order).
 - notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact Swedish plain text in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.
 - questions_possible: how many good, different exam questions the material really supports (D159: never more than the material carries; a short text may support 4). Count before you write.
-- questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 6 extra (the longest are removed afterwards, so make most of them short). Never pad with repeated, trivial or outside questions to reach the number. In Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
-  - short: at least four of every five questions have five words or fewer (count them: "Varför behövs klorofyll?" is three). Six to eight words only for a calculation question or when fewer words would not make sense when the question is only HEARD, with no text in front of the student. Never a fragment that needs the material to make sense ("Vad säger m?", "Mol metan i 16 g?" are wrong; "Vad visar m i en rät linje?", "Hur många mol är 16 gram metan?" are right). Cut filler such as "i naturen", "egentligen", "det att";
+- questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 6 extra (the weakest are removed afterwards). Never pad with repeated, trivial or outside questions to reach the number. In Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
+  - clear when only HEARD, with no text in front of the student: as short as it can be while it stays clear and natural Swedish (D176: there is no word limit; a long question with a long answer costs more, so do not make it longer than it needs to be). Never a fragment that needs the material to make sense ("Vad säger m?", "Mol metan i 16 g?" are wrong; "Vad visar m i en rät linje?", "Hur många mol är 16 gram metan?" are right). Cut filler such as "i naturen", "egentligen", "det att";
   - written as it is said: no symbols, formulas, units or abbreviations as signs ("syre", not "O2"; "kubikdecimeter", not "dm³"; "procent", not "%");
   - tests understanding, not only recall: at least three of every four questions ask why, how, what happens if, or compare ("Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Vad händer om pH sjunker?", "Skillnad mellan väder och klimat?"); "Vad är X?", "Vad betyder X?" or "Vilka ...?" at most one in five, only for a key term the material defines;
   - is answered by the material (never a question the material does not cover, never a fact from outside it);
@@ -168,7 +166,7 @@ export function parsePlan(
   for (const q of Array.isArray(j.questions) ? j.questions : []) {
     const c = cleanQuestion(q);
     const key = c.toLowerCase().replace(/[^a-zåäö0-9]/g, "");
-    if (!c || words(c) > DRILL_LIMITS.questionWordsMax || seen.has(key)) continue;
+    if (!c || seen.has(key)) continue;
     seen.add(key);
     questions.push(c);
   }
@@ -189,7 +187,8 @@ export function parsePlan(
  */
 export function trimQuestions(list: string[], count: number): string[] {
   const questions = [...list];
-  const score = (q: string) => (leansOnMaterial(q) ? 200 : 0) + (isRecall(q) ? 100 : 0) + (words(q) > 5 ? 50 : 0) + words(q);
+  // D176: no word limit; the weakest go (leaning on the material, then plain recall), the last of equals first
+  const score = (q: string) => (leansOnMaterial(q) ? 200 : 0) + (isRecall(q) ? 100 : 0);
   while (questions.length > count) {
     let worst = 0;
     questions.forEach((q, i) => {
@@ -205,11 +204,9 @@ export const SYSTEM_PROMPT_DRILL_SHORTEN =
 - A question that only makes sense with the material in front of the student is rewritten so that it is clear when heard alone ("Hur bygger man gymmodellen?" -> "Hur ställer man upp en linjär kostnadsmodell?", "Skillnad mot past simple?" -> "Skillnad mellan present perfect och past simple?").
 - Symbols, formulas, units and abbreviations are written as they are said ("3x + 5 = 20" -> "tre x plus fem är lika med tjugo", "O2" -> "syre", "dm³" -> "kubikdecimeter").
 - Wrong or clumsy Swedish is fixed ("Vad jämför man nysvenska och fornsvenska?" -> "Hur skiljer sig nysvenska från fornsvenska?").
-- Never make a question longer for any other reason; five words or fewer whenever it stays clear.
-- Make each question five words or fewer when it stays clear and unambiguous within THIS exam: drop what the exam's subject already makes obvious and filler ("Varför är bönen viktig för muslimer?" -> "Varför ber muslimer?" in an exam on Islam; but keep "enligt buddhismen" when the exam covers several religions and the question would otherwise be unclear).
+- Never make a question longer for any other reason. Filler that adds nothing may go ("i naturen", "egentligen").
 - The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.
 - A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.
-- If a question cannot be made five words or fewer without becoming unclear, return it unchanged.
 No other text.`;
 
 /**
@@ -245,7 +242,8 @@ export async function shortenQuestions(
       // K52 live: rewrites that only made questions longer cost R3 (65 % at most five words). A longer rewrite is kept
       // only when the original had signs or leaned on the material; otherwise only a shorter or equal one.
       const mayGrow = /[=+*/^²³%<>]|\d/.test(out[i]) || leansOnMaterial(out[i]);
-      if (words(q) >= 2 && words(q) <= DRILL_LIMITS.questionWordsMax && (mayGrow || words(q) <= words(out[i])) && !leansOnMaterial(q) &&
+      // D176: no word limit, but the check never pads a question (at most two words more when signs become words)
+      if (words(q) >= 2 && words(q) <= words(out[i]) + (mayGrow ? 2 : 0) && !leansOnMaterial(q) &&
         !out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) out[i] = q;
     }
     return { questions: out, usage: r.usage };
@@ -624,7 +622,10 @@ export async function handleDrill(
   const subjectIn = oneLine(b.subject, 60);
   const gradeIn = gradeName(oneLine(b.grade, 60));
   if (action === "drill") {
-    const count = intIn(b.questions, DRILL_LIMITS.questionsMin, DRILL_LIMITS.questionsMax, DRILL_LIMITS.questionsDefault);
+    // K61 (D175): /exam caps the count at what the month has left (may be fewer than questionsMin)
+    const cap = Number(b._max_questions);
+    const count = Math.min(intIn(b.questions, DRILL_LIMITS.questionsMin, DRILL_LIMITS.questionsMax, DRILL_LIMITS.questionsDefault),
+      Number.isFinite(cap) && cap >= 1 ? Math.floor(cap) : Number.MAX_SAFE_INTEGER);
     let images = [...drillImages(b.pages), ...((b.uploaded as Img[] | undefined) ?? [])];
     if (images.length > MATERIAL.maxPhotos) throw new HttpError(400, "invalid_request", `at most ${MATERIAL.maxPhotos} photos`);
     let text = clean(b.text, DRILL_LIMITS.text);

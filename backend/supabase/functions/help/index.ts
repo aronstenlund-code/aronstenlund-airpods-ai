@@ -20,6 +20,9 @@ Deno.serve(withCors(
       const r = (await db.rpc("use_drill_quota", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[];
       return r[0] ?? { ok: false, used: 0, lim: 0 };
     },
+    addTryCredits: async (u, keys) => {
+      for (const k of keys) await db.upsert("drill_try_credits", { user_id: u, question_key: k }, "user_id,question_key");
+    },
   }),
   extraOriginsFromEnv(),
 ));

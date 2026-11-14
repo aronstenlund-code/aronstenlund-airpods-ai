@@ -12,7 +12,7 @@ const PLAN = {
     "Varför behövs klorofyll?",
     "1. Hur bildas en näringsväv",
     "Varför behövs klorofyll?", // duplicate
-    "Vad händer med energin i varje steg av en lång näringskedja i naturen?", // 13 words: over the limit
+    "Vad händer med energin i varje steg av en lång näringskedja i naturen?", // 13 words: kept, D176 has no word limit
     "Skillnad mellan producent och konsument?",
     "Varför försvinner energi i kedjan?",
   ],
@@ -67,18 +67,19 @@ const post = (b: unknown) =>
     body: JSON.stringify(b),
   });
 
-Deno.test("K45 parsePlan: questions cleaned, at most 8 words, no duplicates, at most the count asked", () => {
+Deno.test("K45/D176 parsePlan: questions cleaned, no word limit, no duplicates, at most the count asked", () => {
   const p = parsePlan(JSON.stringify(PLAN), 20);
   assertEquals(p.questions, [
     "Varför behövs klorofyll?",
     "Hur bildas en näringsväv?",
+    "Vad händer med energin i varje steg av en lång näringskedja i naturen?",
     "Skillnad mellan producent och konsument?",
     "Varför försvinner energi i kedjan?",
   ]);
-  assert(p.questions.every((q) => words(q) <= 8));
-  // over the count: the longest go and the order stays
+  assert(p.questions.some((q) => words(q) > 8), "D176: a long question is not dropped for its length");
+  // over the count: the order stays, and of equals the later ones go
   assertEquals(parsePlan(JSON.stringify(PLAN), 2).questions, ["Varför behövs klorofyll?", "Hur bildas en näringsväv?"]);
-  assertEquals(parsePlan(JSON.stringify(PLAN), 3).questions, ["Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Skillnad mellan producent och konsument?"]); // a tie: the later one goes
+  assertEquals(parsePlan(JSON.stringify(PLAN), 3).questions, ["Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Vad händer med energin i varje steg av en lång näringskedja i naturen?"]);
   assertEquals(p.summary.subject, "Biologi");
   assertEquals(parsePlan("inget json", 20).questions, []);
   assertEquals(cleanQuestion("  - \"varför regnar det.\" "), "Varför regnar det?");
@@ -101,7 +102,7 @@ Deno.test("K45 drill: summary, notes, questions and both answers; Haiku plans, S
   assertEquals(r.status, 200);
   const j = await r.json();
   assertEquals(j.summary, PLAN.summary);
-  assertEquals(j.items.length, 4);
+  assertEquals(j.items.length, 5);
   for (const it of j.items) {
     assert(it.long.startsWith(it.short), it.id); // D145
     assert(!it.short.includes("**"), "markdown stripped");
@@ -109,7 +110,7 @@ Deno.test("K45 drill: summary, notes, questions and both answers; Haiku plans, S
   }
   assertEquals(llm.calls[0].model, undefined, "step 1 on the provider's default (Haiku)");
   const answerCalls = llm.calls.filter((c) => c.system.includes("You write the answers"));
-  assertEquals(answerCalls.map((c) => c.model), ["claude-sonnet-5-5"], "4 questions = one batch on Sonnet");
+  assertEquals(answerCalls.map((c) => c.model), ["claude-sonnet-5-5"], "5 questions = one batch on Sonnet");
   assert(answerCalls[0].user.includes("<long_words>70</long_words>"));
   assert(answerCalls[0].user.includes("90 procent"), "the answers are written from the notes");
   assert(llm.calls[1].system.includes("You check Swedish exam questions"), "K52: every question is checked by the cheap model");
@@ -213,7 +214,7 @@ Deno.test("K45 doc_text: a Word file's text, deflated or stored, in code; no mod
   assertEquals(llm.calls.length, 0);
 });
 
-Deno.test("K45 R3: questions over five words are shortened by the cheap model; a longer or broken reply keeps the original", async () => {
+Deno.test("K45/D176: the cheap model checks every question; a padded or broken reply keeps the original", async () => {
   const { shortenQuestions, DEFAULT_DRILL_CONFIG } = await import("./drill.ts");
   const calls: string[] = [];
   const llm: LLMProvider = {
@@ -495,4 +496,24 @@ Deno.test("K54 an intro is asked again; on the last try it is kept rather than n
   };
   const r2 = await answerItems(always, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "Vad är fotosyntes?" }], { subject: "", grade: "", notes: "", longWords: 90 });
   assertEquals([r2.items[0].short, m], ["Fotosyntes är en viktig process.", 3], "kept on the last, lenient try");
+});
+
+Deno.test("K61 D175: /exam drill never makes more questions than the month has left; none left = 402 before any work", async () => {
+  const llm = new ScriptLLM();
+  const mkQ = (used: number) =>
+    createExamHandler({
+      authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+      rateLimiter: new MemoryRateLimiter(),
+      provider: llm,
+      quota: () => Promise.resolve({ used, lim: 15 }),
+    });
+  const r = await mkQ(13)(post({ action: "drill", text: "Fotosyntes ... (påhittat material)", questions: 20, _max_questions: 99 }));
+  const j = await r.json();
+  assertEquals(j.items.length, 2, "2 left of 15");
+  assertEquals([j.quota.left, j.quota.limit], [2, 15]);
+  const calls = llm.calls.length;
+  const none = await mkQ(15)(post({ action: "drill", text: "material", questions: 20 }));
+  assertEquals(none.status, 402);
+  assertEquals((await none.json()).error.code, "quota_exceeded");
+  assertEquals(llm.calls.length, calls, "no model call when nothing is left");
 });
