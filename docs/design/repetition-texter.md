@@ -112,7 +112,13 @@ skrivs alltid i samma ordning: 1 tryck = långt svar, 2 tryck = kort svar, 3 try
 | Navigationsrubrik | Fråga {1} · Ny fråga | Ändra fråga · Ny fråga |
 | Spara / Avbryt | Spara · Avbryt | |
 | Fältets rubrik | FRÅGA · {4} ord | |
-| … över 5 ord (grått, inte rött) | Helst högst fem ord. | |
+| ~~… över 5 ord~~ | *(borttaget, D176: ingen ordgräns)* | |
+| Längdklass (D176), rad i listan och fotnot i redigeringen | Lite längre än vanligt · Frågan och svaret är lite längre än vanligt. | |
+| … mycket lång | Mycket lång · Frågan och svaret är mycket långa. Korta svaret om du vill. | |
+| Inga frågor kvar (D175), rad överst i Nytt prov | Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 {december}. | |
+| … fotnot vid Antal frågor | {x} av 15 frågor kvar den här månaden. | |
+| Ljudet går inte att göra (A100/K62), under grå Starta prov | Ljudet kan inte göras just nu. Försök igen om en stund. | |
+| … i stället för ljudräknaren | Ljudet kan inte göras just nu | |
 | Fältets rubrik | SVAR · {88} ord | Långt svar (1 tryck) · {88} ord |
 | Rad under svaret | Första meningen är det korta svaret (2 tryck). Hela svaret är det långa (1 tryck). | Det långa svaret börjar alltid med det korta. … |
 | Om det korta och det långa svaret ligger i två fält (D147, tills K46) | KORT SVAR (2 TRYCK) / LÅNGT SVAR (1 TRYCK) · rad: Det långa svaret börjar alltid med det korta. | |
