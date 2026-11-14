@@ -1,0 +1,74 @@
+{
+ "nonce": "090fb8ba",
+ "user": "86269146-118a-4a49-a317-06463e5c49da",
+ "slow_save": {
+  "http": 200,
+  "audio": {
+   "done": 0,
+   "total": 4,
+   "failed": 0,
+   "chars": 166,
+   "est_usd": 0.01,
+   "credits": null,
+   "credits_chars": null,
+   "bytes": 0,
+   "model": "eleven_multilingual_v2"
+  }
+ },
+ "slow_status": {
+  "done": 0,
+  "total": 4,
+  "failed": 0,
+  "chars": 166,
+  "est_usd": 0.01,
+  "credits": null,
+  "credits_chars": null,
+  "bytes": 0,
+  "model": "eleven_multilingual_v2"
+ },
+ "slow_delete": {
+  "deleted": true
+ },
+ "unav_status": {
+  "audio": {
+   "done": 0,
+   "total": 4,
+   "failed": 4,
+   "chars": 174,
+   "est_usd": 0.01,
+   "credits": null,
+   "credits_chars": null,
+   "bytes": 0,
+   "model": "eleven_multilingual_v2"
+  },
+  "item0_audio": {
+   "question": {
+    "status": "failed",
+    "error": "audio_unavailable"
+   },
+   "long": {
+    "status": "failed",
+    "error": "audio_unavailable"
+   }
+  }
+ },
+ "unav_tts": {
+  "http": 503,
+  "body": "{\"error\":{\"code\":\"tts_unavailable\",\"message\":\"TTS credits exhausted (test: x-earmind-test: unavailable)\",\"fallback\":true}}"
+ },
+ "quota_16": {
+  "http": 402,
+  "body": {
+   "error": {
+    "code": "quota_exceeded",
+    "message": "Du har gjort 15 av 15 frågor med ljud den här månaden. Nya frågor går att göra från den 1 december. Andras prov är gratis.",
+    "fallback": false
+   },
+   "used": 15,
+   "limit": 15,
+   "needed": 1,
+   "per": "month",
+   "resets": "2026-12-01"
+  }
+ }
+}

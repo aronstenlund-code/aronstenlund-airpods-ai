@@ -1,0 +1,175 @@
+{
+ "checks": [
+  {
+   "check": "A sparar 2 frågor",
+   "ok": true,
+   "detail": "status 200, new_chars 0 (väntat 998 om texten är ny)"
+  },
+  {
+   "check": "R5c dela före klart ljud ger 409",
+   "ok": false,
+   "detail": "200 {\"code\": \"35uc7subf9\", \"url\": \"https://earmind.ai/p/35uc7subf9\", \"app_url\": \"earmind://prov/35uc7subf9\"}"
+  },
+  {
+   "check": "allt ljud klart",
+   "ok": true,
+   "detail": "{'done': 4, 'total': 4, 'failed': 0, 'chars': 998, 'est_usd': 0.08, 'credits': 0, 'credits_chars': 998, 'bytes': 326094, 'model': 'eleven_multilingual_v2'} på 2 s"
+  },
+  {
+   "check": "varje fråga har fråga- och långt-fil med länk",
+   "ok": true,
+   "detail": "2 frågor"
+  },
+  {
+   "check": "D145 short_end_ms < duration_ms",
+   "ok": true,
+   "detail": "[(2357, 9169), (2198, 9273)]"
+  },
+  {
+   "check": "A:s signerade länk går att hämta",
+   "ok": true,
+   "detail": "200 146367 byte"
+  },
+  {
+   "check": "R5b A sparar igen oförändrat: 0 nya tecken",
+   "ok": true,
+   "detail": "200 new_chars 0"
+  },
+  {
+   "check": "R5b B sparar samma texter i eget prov: 0 nya tecken",
+   "ok": true,
+   "detail": "200 new_chars 0"
+  },
+  {
+   "check": "R5b B:s prov är klart direkt (återanvända filer)",
+   "ok": true,
+   "detail": "{'done': 4, 'total': 4, 'failed': 0, 'chars': 998, 'est_usd': 0.08, 'credits': 0, 'credits_chars': 998, 'bytes': 326094, 'model': 'eleven_multilingual_v2'}"
+  },
+  {
+   "check": "R5b ändrad fråga ger bara den frågans fil",
+   "ok": false,
+   "detail": "new_chars 0 (väntat 37)"
+  },
+  {
+   "check": "R5 B get på A:s prov nekas",
+   "ok": true,
+   "detail": "404 not_found"
+  },
+  {
+   "check": "R5 B status på A:s prov nekas",
+   "ok": true,
+   "detail": "404 not_found"
+  },
+  {
+   "check": "R5 B delete på A:s prov nekas",
+   "ok": true,
+   "detail": "404 not_found"
+  },
+  {
+   "check": "R5 B share på A:s prov nekas",
+   "ok": true,
+   "detail": "404 not_found"
+  },
+  {
+   "check": "R5 B unshare på A:s prov nekas",
+   "ok": true,
+   "detail": "404 not_found"
+  },
+  {
+   "check": "R5 B:s lista saknar A:s prov",
+   "ok": true,
+   "detail": "1 prov"
+  },
+  {
+   "check": "R5 PostgREST drills som B",
+   "ok": true,
+   "detail": "200 []"
+  },
+  {
+   "check": "R5 PostgREST drills som anonym",
+   "ok": true,
+   "detail": "401 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the current role with: "
+  },
+  {
+   "check": "R5 PostgREST drill_items som B",
+   "ok": true,
+   "detail": "200 []"
+  },
+  {
+   "check": "R5 PostgREST drill_items som anonym",
+   "ok": true,
+   "detail": "401 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the current role with: "
+  },
+  {
+   "check": "R5 ljudfilen utan signatur som B nekas",
+   "ok": true,
+   "detail": "400"
+  },
+  {
+   "check": "R5 ljudfilen som publik länk nekas",
+   "ok": true,
+   "detail": "400"
+  },
+  {
+   "check": "R5c A delar när allt ljud är klart",
+   "ok": true,
+   "detail": "200 {'code': '35uc7subf9', 'url': 'https://earmind.ai/p/35uc7subf9', 'app_url': 'earmind://prov/35uc7subf9'}"
+  },
+  {
+   "check": "R5c samma kod igen",
+   "ok": true,
+   "detail": "35uc7subf9"
+  },
+  {
+   "check": "R5c share_info",
+   "ok": true,
+   "detail": "{\"title\": \"O55 testprov (påhittat)\", \"subject\": \"Fysik\", \"grade\": \"åk 9\", \"items\": 2, \"audio_ready\": true}"
+  },
+  {
+   "check": "R5c import <= 10 s och 0 nya tecken",
+   "ok": true,
+   "detail": "200 1.5 s new_chars 0"
+  },
+  {
+   "check": "R5c kopian har allt ljud klart",
+   "ok": true,
+   "detail": "{'done': 4, 'total': 4, 'failed': 0, 'chars': 989, 'est_usd': 0.08, 'credits': 0, 'credits_chars': 989, 'bytes': 326094, 'model': 'eleven_multilingual_v2'}"
+  },
+  {
+   "check": "R5c kopian pekar på samma filer (shared_from)",
+   "ok": true,
+   "detail": "38f97863-dfc4-44b6-ad57-f5bcc6e5e75b"
+  },
+  {
+   "check": "R5c mottagaren kan inte stänga A:s delning",
+   "ok": true,
+   "detail": "404"
+  },
+  {
+   "check": "R5c mottagarens ändring kostar bara den frågan",
+   "ok": false,
+   "detail": "new_chars 0"
+  },
+  {
+   "check": "R5c originalet oförändrat",
+   "ok": true,
+   "detail": "Varför regnar det mer i väst?"
+  },
+  {
+   "check": "R5c A stänger delningen",
+   "ok": true,
+   "detail": "200"
+  },
+  {
+   "check": "R5c import efter stängd delning ger 404",
+   "ok": true,
+   "detail": "404 share_not_found"
+  }
+ ],
+ "elevenlabs_chars": 0,
+ "audio_model": "eleven_multilingual_v2",
+ "audio_est_usd": 0.08,
+ "audio_bytes": 326094,
+ "t_audio_s": 1.9,
+ "t_import_s": 1.5
+}

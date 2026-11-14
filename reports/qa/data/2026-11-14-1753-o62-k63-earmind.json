@@ -1,0 +1,163 @@
+{
+ "help": [
+  {
+   "q": "vad heter du",
+   "answer": "Jag är hjälpen i EarMind. Jag svarar på frågor om hur appen fungerar.",
+   "hint": null,
+   "EarMind": 1,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "vad är earmind",
+   "answer": "EarMind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lägger till ditt material, och EarMind gör provfrågor med svar som läses upp i örat. Du styr med tryck på AirPods, utan att röra telefonen.",
+   "hint": null,
+   "EarMind": 2,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "hur gör jag ett nytt prov",
+   "answer": "1. Tryck Nytt prov på startsidan.\n2. Lägg till material med Fota sidor, Välj bilder, Skriv text eller Lägg till dokument.\n3. Ge provet ett namn, välj Antal frågor och gärna Vilken årskurs?.\n4. Tryck Skapa frågor. Du kan lämna appen under tiden.\n5. Under Stämmer det här? kontrollerar du ämnet och årskursen och trycker Ser rätt ut.",
+   "hint": null,
+   "EarMind": 0,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "finns earmind till android",
+   "answer": "EarMind för Android finns inte i dag. Appen finns bara för iPhone.",
+   "hint": null,
+   "EarMind": 1,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "kan jag byta språk",
+   "answer": "Nej, det går inte att byta språk i EarMind. Frågorna och svaren görs på materialets språk.",
+   "hint": null,
+   "EarMind": 1,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "hur köper jag premium",
+   "answer": "Ett abonnemang kommer senare. Priser finns inte än, och det går inte att köpa något i appen i dag.",
+   "hint": null,
+   "EarMind": 0,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "vem har gjort appen",
+   "answer": "Det kan jag inte svara på.",
+   "hint": "Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov.",
+   "EarMind": 1,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "kan earmind styra spotify",
+   "answer": "Att styra Spotify kommer snart. Det finns inte i EarMind än.",
+   "hint": null,
+   "EarMind": 1,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "vad är fotosyntes",
+   "answer": "Det kan jag inte svara på.",
+   "hint": "Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov.",
+   "EarMind": 1,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "hur funkar trycken",
+   "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta.",
+   "hint": null,
+   "EarMind": 0,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "vad kostar det",
+   "answer": "Ett abonnemang kommer senare. Priser finns inte än, och det går inte att köpa något i appen i dag.",
+   "hint": null,
+   "EarMind": 0,
+   "Earmind": 0,
+   "other": []
+  },
+  {
+   "q": "sparas mina foton",
+   "answer": "Nej, dina foton sparas inte. Foton, dokument och text skickas en gång för att göra frågorna, och sedan raderas de.",
+   "hint": null,
+   "EarMind": 0,
+   "Earmind": 0,
+   "other": []
+  }
+ ],
+ "import": [
+  {
+   "http": 200,
+   "body": {
+    "items": [
+     {
+      "id": "q1",
+      "question": "Vad är EarMind?",
+      "short": "EarMind är en app.",
+      "long": "EarMind är en app."
+     }
+    ],
+    "skipped": [],
+    "warnings": [],
+    "count": 1
+   }
+  },
+  {
+   "http": 422,
+   "body": {
+    "error": {
+     "code": "import_unreadable",
+     "message": "Det gick inte att hitta några frågor. Varje fråga ska börja med \"Fråga:\" och svaret med \"Svar:\".",
+     "fallback": false
+    },
+    "skipped": [
+     {
+      "line": 1,
+      "text": "bara skräp utan etiketter",
+      "reason": "Raden börjar inte med Fråga: eller Svar:."
+     }
+    ]
+   }
+  },
+  {
+   "http": 200,
+   "body": {
+    "items": [
+     {
+      "id": "q1",
+      "question": "Vad är magma?",
+      "short": "Smält berg.",
+      "long": "Smält berg. Mer text."
+     }
+    ],
+    "skipped": [
+     {
+      "line": 4,
+      "text": "Lycka till!",
+      "reason": "Avslutning, inte en del av svaret."
+     }
+    ],
+    "warnings": [
+     {
+      "line": 4,
+      "text": "Lycka till!",
+      "reason": "Texten efter sista svaret lästes inte in."
+     }
+    ],
+    "count": 1
+   }
+  }
+ ]
+}

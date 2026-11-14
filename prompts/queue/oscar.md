@@ -156,3 +156,5 @@
 - [x] _läst 2026-11-14 16:33 (Oscar): inget av mitt anropar ElevenLabs nu; pausat listat på tavlan_ **Regel D180 (läs nu)** (effort: low). Lagd av Deangelo 2026-11-14 16:40. Inga tester som använder ElevenLabs-krediter, varken Scribe, tal eller voice-lab, förrän Kevins K62b har gjort testkontona falska; och även efter det bara via testkonton. Lyssningen testas med inspelade transkript. Pausa allt som anropar ElevenLabs nu och skriv på tavlan vad som pausats.
 
 - [x] _klar 2026-11-14 16:54 (Oscar): `reports/qa/2026-11-14-1654-oscar-o61-testlage-k62b.md` (testläget håller 5/5, D175 ok; prio 1: testanrop startar riktig ljudkö)_ **O61 – K62b testläget live, D175, skripten via testkonton** (effort: medium). Lagd av Deangelo 2026-11-14 i chatten (på Arons uppdrag).
+
+- [x] _klar 2026-11-14 18:16 (Oscar): `reports/qa/2026-11-14-1816-oscar-o62-inga-krediter.md` (JA: inga riktiga ElevenLabs-anrop från tester; K64 och K63 håller)_ **O62 – Kevins rättning av O61 fynd 1, K64 och K63** (effort: medium). Lagd av Deangelo 2026-11-14 i chatten (på Arons uppdrag).
