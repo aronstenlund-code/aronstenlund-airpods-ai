@@ -59,7 +59,7 @@ Tryck **Starta prov**. Earmind läser en fråga, väntar en stund så att du kan
 ## Hur många frågor du kan göra
 - **Gräns:** du kan göra 15 frågor med ljud per kalendermånad, och gränsen börjar om den första i varje månad. Appen visar hur många du har kvar den här månaden.
 - **Det som inte räknas:** prov som andra har delat eller publicerat, och som du lägger till hos dig.
-- **Abonnemang:** det kommer senare. Priser finns inte än.
+- **Abonnemang, premium och priser:** ett abonnemang kommer senare. Priser finns inte än, och det går inte att köpa något i appen i dag.
 - **När frågorna är slut:** lägg till andras prov, som är gratis, eller vänta till nästa månad.
 
 ## Dela ett prov

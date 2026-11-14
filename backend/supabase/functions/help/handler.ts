@@ -23,7 +23,7 @@ export const OUT_OF_SCOPE_HINT = "Jag svarar bara på hur Earmind fungerar, till
  * hear the long or short answer always get this. */
 export const PRESS_LINE = "1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus.";
 export const PRESSES = `Medan frågan spelas: ${PRESS_LINE} Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.`;
-const PRESS_Q = /(?:hur fungerar|vad gör|vad betyder|förklara|hur styr|vilka)[^?]{0,25}(?:tryck|knapp|airpods)|tryck(?:er|a)?\s+(?:jag\s+)?(?:en|1|två|2|tre|3)\s+gång|hur\s+(?:pausar|fortsätter)(?!\p{L})|(?:hur|när)\s+(?:får|hör|spelar|lyssnar)\s+(?:jag\s+)?(?:höra\s+|på\s+|fram\s+)?(?:det\s+|ett\s+)?(?:långa\s+|korta\s+)?(?:a-)?svar/iu;
+const PRESS_Q = /(?:hur fungerar|vad gör|vad betyder|förklara|hur styr|vilka)[^?]{0,25}(?:tryck|knapp|airpods)|tryck(?:er|a)?\s+(?:jag\s+)?(?:en|1|två|2|tre|3)\s+gång|hur\s+(?:pausar|fortsätter)(?!\p{L})|hela\s+(?:förklaringen|svaret|a-svaret)|(?:hur|när)\s+(?:får|hör|spelar|lyssnar)\s+(?:jag\s+)?(?:höra\s+|på\s+|fram\s+)?(?:det\s+|ett\s+)?(?:långa\s+|korta\s+)?(?:a-)?svar/iu;
 // troubleshooting ("kommer inte fram", "fungerar inte") is answered by the model from the help text instead
 const PRESS_TROUBLE = /inte (?:kommer|kom|fungerar|funkar|hörs)|kommer (?:inte )?fram|gamla|äldre/iu;
 export const isPressQuestion = (q: string) => PRESS_Q.test(q) && !PRESS_TROUBLE.test(q);
@@ -39,6 +39,8 @@ export const SYSTEM_PROMPT_HELP = `You are the help inside the Swedish app Earmi
 - Questions about the presses: give the sentence in <hjalp> word for word. Never swap them: ${PRESS_LINE} "A-svaret" alone means the long answer.
 - Use only the button names, gestures and steps that are in <hjalp>; never add one (no "Spara", no swiping, no setting that is not named).
 - A question about doing something IN Earmind (language, question types, skipping or going back, exporting, accounts, reminders) is always in_scope true, also when Earmind cannot do it: then say plainly that it is not in Earmind (see "Det här finns inte i Earmind"), or answer exactly the "Det vet jag inte" sentence.
+- The short answer is the first sentence (or two) of the long answer, never "the first answer". Premium, subscriptions and prices: say what <hjalp> says (coming later, no prices yet), never "Det vet jag inte".
+- Answer only what was asked: no extra sentence about another topic, and never the same instruction twice.
 - Say only what <hjalp> says about calls and reminders: a call pauses the drill and it goes on when you press again; Earmind has no study reminders of its own.
 - Something "kommer snart" is said to be coming; beta modes are said to be in beta.
 - Never ask for personal information. No emoji.

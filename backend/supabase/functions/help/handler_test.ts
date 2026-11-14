@@ -67,7 +67,7 @@ Deno.test("K57 try: three questions with answers from a short text, counted as 3
 
 Deno.test("K57 the presses are always Aron's text word for word (Ke57 rule 3)", async () => {
   for (const q of ["Hur fungerar trycken?", "Vad händer om jag trycker två gånger?", "Hur pausar jag?", "Hur fortsätter jag efter paus?", "Hur styr jag med AirPods?",
-    "hur får jag det långa svaret", "hur får jag höra svaret på en fråga", "hur får jag det korta svaret", "vilka tryck finns det", "hur får jag fram svaret"]) {
+    "hur får jag det långa svaret", "hur får jag höra svaret på en fråga", "hur får jag det korta svaret", "vilka tryck finns det", "hur får jag fram svaret", "jag vill höra hela förklaringen"]) {
     assert(isPressQuestion(q), q);
   }
   for (const q of ["Vad gör jag om ett tryck inte kommer fram?", "Fungerar det med gamla AirPods?", "Hur delar jag ett prov?", "jag har gamla airpods, hur får jag det korta svaret", "vad är det korta svaret", "kan jag få längre svar"]) assert(!isPressQuestion(q), q);

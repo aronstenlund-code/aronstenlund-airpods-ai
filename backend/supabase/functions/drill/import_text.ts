@@ -14,6 +14,8 @@ import { composeLong, spokenText, words } from "../exam/drill.ts";
  *     ("**1. Vad är magma?**") -> warning "Frågan saknade Fråga:.".
  *  4. Nothing is cut: an answer over 3 000 characters is kept with a warning; over 4 000 it is skipped (D120 cost).
  *  5. A question asked twice is kept, with a warning.
+ *  6. (O58b) A sign-off ("Hoppas det hjälper!", "Säg till om …") as the last line of the last answer is skipped too.
+ *  7. (O58b) "Fråga: q Svar: a" on one line is split; "Fråga – q" with an en or em dash counts like a colon.
  */
 export const IMPORT_LIMITS = { textChars: 80_000, items: 60, questionChars: 300, answerWarnChars: 3000, answerChars: 4000, shortWordsMax: 25 };
 
@@ -28,12 +30,16 @@ export interface ImportResult {
 }
 
 // "Fråga 3:", "**Fråga:**", "1. Fråga:", "- Svar:", "F:" – markdown and numbering ChatGPT sometimes adds anyway
-const LABEL = /^\s*(?:#{1,6}\s*)?(?:[-*•>]\s*)?(?:\d+[.)]\s*)?(?:\*\*|__)?\s*(fråga|svar|f|s)(?:\s*\d+)?\s*(?:\*\*|__)?\s*[:：]\s*(?:\*\*|__)?\s*/iu;
+const LABEL = /^\s*(?:#{1,6}\s*)?(?:[-*•>]\s*)?(?:\d+[.)]\s*)?(?:\*\*|__)?\s*(fråga|svar|f|s)(?:\s*\d+)?\s*(?:\*\*|__)?\s*(?:[:：]|[–—](?=\s))\s*(?:\*\*|__)?\s*/iu;
 const HEADING = /^\s*#|^\s*(?:\*\*|__)?\s*fråga\s*\d+\s*\.?\s*(?:\*\*|__)?\s*$/iu;
 const FENCE = /^\s*```/;
 const RULE = /^\s*([-*_=])(?:\s*\1){2,}\s*$/;
 // Swedish abbreviations whose full stop is not the end of a sentence
 const ABBR = /(?:^|\s)(?:t\.ex|bl\.a|t\.o\.m|s\.k|d\.v\.s|dvs|osv|m\.m|m\.fl|ca|kl|nr|resp|jfr|el|o\.d|e\.d|f\.d|f\.Kr|e\.Kr|t\.ex\.|ff|s|st|tex)\.$/iu;
+// rule 6 (Oscar O58b variant 23): a sign-off at the end of the last answer, also without a blank line before it
+const SIGN_OFF = /^(?:hoppas|lycka till|säg till|vill du|behöver du|om du vill|fråga gärna|hör av dig|jag kan också|har du fler|skriv om du)(?![\p{L}])/iu;
+// rule 7 (variant 21): "Fråga: q Svar: a" on one line
+const INLINE_SVAR = /\s(?:\*\*|__)?\s*svar\s*(?:\*\*|__)?\s*(?:[:：]|[–—](?=\s))\s*(?:\*\*|__)?\s*/iu;
 const stripMd = (s: string) => s.replace(/\*\*|__|`/g, "").trim();
 
 /** The first sentence: up to the first ". ", "! " or "? " that is not an abbreviation or a decimal number. */
@@ -48,7 +54,7 @@ export function firstSentence(answer: string): string {
   return s;
 }
 
-interface Para { line: number; lines: string[]; afterBlank: boolean }
+interface Para { line: number; lines: string[]; nums: number[]; afterBlank: boolean; labelled: boolean }
 
 export function importText(raw: unknown): ImportResult {
   const text = typeof raw === "string" ? raw.slice(0, IMPORT_LIMITS.textChars) : "";
@@ -60,14 +66,28 @@ export function importText(raw: unknown): ImportResult {
 
   const flush = (last = false) => {
     if (!cur) return;
-    // rule 1: chatter after the last answer
-    while (last && cur.paras.length > 1) {
+    // rule 1 and 6: chatter after the last answer (a separate paragraph ending in ? or ! or starting like a
+    // sign-off, or the answer's last line starting like a sign-off); a "Svar:" paragraph itself is never chatter
+    const signOff = (line: number, t: string) => {
+      skipped.push({ line, text: t.slice(0, 160), reason: "Avslutning, inte en del av svaret." });
+      warnings.push({ line, text: t.slice(0, 160), reason: "Texten efter sista svaret lästes inte in." });
+    };
+    for (let guard = 0; last && guard < 10; guard++) {
       const p = cur.paras[cur.paras.length - 1];
+      if (!p) break;
       const t = stripMd(p.lines.join(" "));
-      if (!p.afterBlank || !/[?!]["”')]?$/.test(t)) break;
-      cur.paras.pop();
-      skipped.push({ line: p.line, text: t.slice(0, 160), reason: "Avslutning, inte en del av svaret." });
-      warnings.push({ line: p.line, text: t.slice(0, 160), reason: "Texten efter sista svaret lästes inte in." });
+      if (cur.paras.length > 1 && p.afterBlank && !p.labelled && (/[?!]["”')]?$/.test(t) || SIGN_OFF.test(t))) {
+        cur.paras.pop();
+        signOff(p.line, t);
+        continue;
+      }
+      const lastLine = stripMd(p.lines[p.lines.length - 1] ?? "");
+      if (p.lines.length > 1 && SIGN_OFF.test(lastLine)) {
+        p.lines.pop();
+        signOff(p.nums.pop() ?? p.line, lastLine);
+        continue;
+      }
+      break;
     }
     const question = spokenText(cur.question, IMPORT_LIMITS.questionChars);
     const answer = spokenText(cur.paras.map((p) => p.lines.join(" ")).join(" "), 100_000);
@@ -119,11 +139,21 @@ export function importText(raw: unknown): ImportResult {
     if (m) {
       const kind = m[1].toLowerCase().startsWith("f") ? "q" : "a";
       const rest = line.slice(m[0].length).replace(/(?:\*\*|__)\s*$/, "").trim();
-      if (kind === "q") startQuestion(n, rest);
+      if (kind === "q") {
+        const sv = INLINE_SVAR.exec(rest);
+        if (sv && sv.index > 0) {
+          // rule 7: the answer is on the question's own line
+          startQuestion(n, rest.slice(0, sv.index).replace(/(?:\*\*|__)\s*$/, "").trim());
+          const a = rest.slice(sv.index + sv[0].length).replace(/(?:\*\*|__)\s*$/, "").trim();
+          const c = cur as unknown as { paras: Para[]; blank: boolean };
+          c.paras.push({ line: n, lines: a ? [a] : [], nums: a ? [n] : [], afterBlank: false, labelled: true });
+          mode = "a";
+        } else startQuestion(n, rest);
+      }
       else if (!cur) skipped.push({ line: n, text: t.slice(0, 160), reason: "Ett svar utan fråga före." });
       else {
         const c = cur as { paras: Para[]; blank: boolean };
-        c.paras.push({ line: n, lines: rest ? [rest] : [], afterBlank: false });
+        c.paras.push({ line: n, lines: rest ? [rest] : [], nums: rest ? [n] : [], afterBlank: false, labelled: true });
         c.blank = false;
         mode = "a";
       }
@@ -146,8 +176,11 @@ export function importText(raw: unknown): ImportResult {
       // rule 1: the answer goes on, also after a blank line
       const c = cur as { paras: Para[]; blank: boolean };
       const piece = t.replace(/^(?:[-•*]|\d+[.)])\s+/, "");
-      if (c.blank || !c.paras.length) c.paras.push({ line: n, lines: [piece], afterBlank: c.blank });
-      else c.paras[c.paras.length - 1].lines.push(piece);
+      if (c.blank || !c.paras.length) c.paras.push({ line: n, lines: [piece], nums: [n], afterBlank: c.blank, labelled: false });
+      else {
+        c.paras[c.paras.length - 1].lines.push(piece);
+        c.paras[c.paras.length - 1].nums.push(n);
+      }
       c.blank = false;
     } else if (mode === "q" && cur && !(cur as { blank: boolean }).blank) {
       (cur as { question: string }).question += ` ${t}`; // the question went on over a second line
