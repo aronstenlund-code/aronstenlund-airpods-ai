@@ -585,3 +585,11 @@ Deno.test("K67 (Oscar O64): '/' in a formula is 'delat med'; an English exam kee
   assert(en.includes("1850") && en.includes("1.2") && en.includes("4 percent") && en.includes("s divided by t") && en.includes("equals"), en);
   assert(!/arton|komma/.test(en), en);
 });
+
+Deno.test("K67 (Oscar O65): 'ja/nej' stays; English units and fractions are said, not divided", async () => {
+  const { voiceText, divided } = await import("./handler.ts");
+  assertEquals(divided("ja/nej", "delat med"), "ja/nej");
+  assert(voiceText("p = F/A").includes("F delat med A"));
+  const en = voiceText("At 12 km/h, 3/4 of scientists and 7/9 agree that v = s / t.", "English");
+  assert(en.includes("12 kilometres per hour") && en.includes("three quarters") && en.includes("7 over 9") && en.includes("s divided by t"), en);
+});

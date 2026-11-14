@@ -238,7 +238,8 @@ export function voiceText(s: string, lang = ""): string {
  */
 export function divided(t: string, word: string): string {
   return t.replace(/([\p{L}\p{N})²³]+)\s*\/\s*([\p{L}\p{N}(]+)/gu, (m, a: string, b: string) => {
-    const plain = (w: string) => /^\p{L}{3,}$/u.test(w) && wordsToNumber(w.toLowerCase()) === null;
+    // two ordinary words ("och/eller", "ja/nej", "him/her") keep it; a single letter is a variable ("s / t", "F/A")
+    const plain = (w: string) => /^\p{L}{2,}$/u.test(w) && wordsToNumber(w.toLowerCase()) === null;
     return plain(a) && plain(b) ? m : `${a} ${word} ${b}`;
   });
 }
@@ -248,7 +249,14 @@ export function divided(t: string, word: string): string {
  * the Swedish number words made "Since about artonhundrafemtio"), only formula signs become English words.
  */
 export function foreignVoice(t: string): string {
-  return divided(t, "divided by")
+  // O65: units and common fractions first ("12 km/h" was "12 km divided by h", "3/4" was "3 divided by 4")
+  const UNITS: [RegExp, string][] = [[/\bkm\/h\b/g, "kilometres per hour"], [/\bm\/s²/g, "metres per second squared"], [/\bm\/s\b/g, "metres per second"],
+    [/\bkg\/m³/g, "kilograms per cubic metre"], [/\bg\/cm³/g, "grams per cubic centimetre"], [/\bmph\b/g, "miles per hour"]];
+  const FRACTIONS: Record<string, string> = { "1/2": "one half", "1/3": "one third", "2/3": "two thirds", "1/4": "a quarter", "3/4": "three quarters", "1/5": "one fifth", "1/10": "one tenth" };
+  let u = t;
+  for (const [re, w] of UNITS) u = u.replace(re, w);
+  u = u.replace(/(?<![\d/])(\d{1,2})\/(\d{1,2})(?![\d/])/g, (m) => FRACTIONS[m] ?? m.replace("/", " over "));
+  return divided(u, "divided by")
     .replace(/(\d)\s*%/g, "$1 percent")
     .replace(/²/g, " squared").replace(/³/g, " cubed")
     .replace(/\s*[·×]\s*/g, " times ").replace(/\s+=\s+/g, " equals ").replace(/\s+\+\s+/g, " plus ")
