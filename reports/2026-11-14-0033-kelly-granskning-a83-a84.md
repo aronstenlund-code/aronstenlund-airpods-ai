@@ -42,4 +42,4 @@ Ett publicerat prov visar nu sektionen **Frågor** med de fyra första frågorna
 och **Lägg till i mina prov** fast nederst, som `pub-forhand.png` (Ke52). Det håller i ljust, mörkt och största text (SE).
 "Lyssna på första frågan" är byggd men syns inte i scenen än, eftersom demoprovet saknar ljudlänk. Den bekräftas när
 Angela Schrute lagt till länken.
-
+- **Lyssna på första frågan** syns på bild (CI 43625042294, `p1-lyssna.jpg`): sista raden i Frågor, accentfärg med ▶ i en cirkel. Godkänd. Ej provad med riktigt ljud.
