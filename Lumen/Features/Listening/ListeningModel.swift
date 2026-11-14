@@ -432,6 +432,34 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         await voices.refreshIfNeeded()
     }
 
+    // MARK: A94: the listening consent comes when a mode that listens is first started
+
+    /// A94 (Kelly Ke55): the first start no longer asks about listening (it never listens, D142). A mode under
+    /// Fler lägen that is started without the listening consent shows `ConsentView` first (RootView's sheet); the
+    /// microphone starts only after "Jag förstår".
+    var asksForListeningConsent = false
+    @ObservationIgnored private var afterListeningConsent: (@MainActor () async -> Void)?
+
+    private func askForListeningConsent(then start: @escaping @MainActor () async -> Void) {
+        afterListeningConsent = start
+        asksForListeningConsent = true
+    }
+
+    /// "Jag förstår, starta Earmind" on the consent sheet: the consent, then the start that asked for it.
+    func listeningConsentGiven() {
+        consent.grant()
+        asksForListeningConsent = false
+        let start = afterListeningConsent
+        afterListeningConsent = nil
+        if let start { Task { await start() } }
+    }
+
+    /// The sheet was closed without the consent: nothing starts.
+    func listeningConsentDeclined() {
+        asksForListeningConsent = false
+        afterListeningConsent = nil
+    }
+
     /// Primary button: start when idle/error, stop when listening or paused.
     func toggleListening() async {
         if isActiveSession {
@@ -445,6 +473,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         // Consent is checked here as well as in the UI: no microphone without a current consent record.
         guard consent.isGranted else {
             controller.log("Start refused: no consent")
+            askForListeningConsent { await self.startListening() }
             return
         }
         tips.sessionStarted()
@@ -740,6 +769,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func startHandsFree(_ newMode: ConversationMode) async {
         guard consent.isGranted else {
             controller.log("Hands-free \(newMode.rawValue) refused: no consent")
+            askForListeningConsent { await self.startHandsFree(newMode) }
             return
         }
         if !ModeAccess.isOpen(newMode) {

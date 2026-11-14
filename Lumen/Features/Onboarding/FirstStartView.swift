@@ -1,82 +1,47 @@
 import SwiftUI
 import UIKit
 
-/// D86 screen 1: the first start, an answer within 30 s. Intro with the short consent card (A2, approved by the
-/// Architect: listens only when started, always visible, no audio saved, "Läs mer" for the full text) → iOS asks for the
-/// microphone → "Fråga vad som helst", where the first question is answered → "Lägg till prov" (optional).
+/// A94 (Kelly Ke55, `docs/design/forsta-starten.md`): from the download to the first question in the ear, at most
+/// three screens before the camera. Välkommen (the repetition mode's consent: material is sent once to make the
+/// questions and the sound) → Nytt prov, where Fota sidor opens the document camera. Nothing here listens: the modes
+/// that listen are BETA under Fler lägen and ask for the listening consent (`ConsentView`) and the microphone the
+/// first time one is started. Fortsätt never grants the listening consent (CLAUDE.md guardrails).
 struct FirstStartView: View {
-    enum Step { case intro, consent, firstQuestion, addExam }
+    enum Step { case welcome, newDrill }
 
     let container: AppContainer
+    /// Finished the old first start: only Välkommen, once (Ke55's consent point 3), then Start.
+    var returning = false
     let onDone: () -> Void
-    @State private var step: Step = .intro
-    @State private var microphoneDenied = false
-    /// A26 R4: true while the first start is starting the microphone (both tries), so the badge says "Startar …".
-    @State private var starting = false
+    @State private var step: Step = .welcome
 
     static let doneKey = "design.firstStartDone"
 
     var body: some View {
         Group {
             switch step {
-            case .intro:
-                IntroView {
-                    // "Testa nu" under the consent card is the consent (the card's three points, "Läs mer" for all).
-                    if !container.consent.isGranted { container.consent.grant() }
-                    // A80 (D142): the first path is Nytt prov → Starta prov, without the microphone. Start opens with
-                    // "Plugga med AirPods" and Nytt prov; iOS asks for the microphone only when a BETA mode starts.
-                    if container.listening.repetition != nil {
+            case .welcome:
+                WelcomeView {
+                    container.consent.grantWelcome()
+                    if returning || container.listening.repetition == nil { finish() } else { step = .newDrill }
+                }
+            case .newDrill:
+                if let repetition = container.listening.repetition {
+                    NewDrillView(model: repetition, onLater: { finish() }) { drill in
+                        repetition.openDrill = drill.id // Start opens the new exam's question list
                         finish()
-                    } else {
-                        step = .firstQuestion
                     }
                 }
-            case .consent:
-                ConsentView(mode: .onboarding {
-                    container.consent.grant()
-                    step = .firstQuestion
-                })
-            case .firstQuestion:
-                FirstQuestionView(model: container.listening, microphoneDenied: microphoneDenied, starting: starting,
-                                  onListen: { Task { await startListening() } }) {
-                    step = .addExam
-                }
-                .task { await startListening() }
-            case .addExam:
-                AddExamStep(model: container.listening, onDone: finish)
             }
         }
-        .lumenScreen()
         .animation(.default, value: step)
     }
 
-    /// iOS asks for the microphone right here (the session start asks), then Lumen listens in Frågor.
-    private func startListening() async {
-        guard !container.listening.isListening, !starting else { return }
-        starting = true
-        defer { starting = false }
-        let granted = await container.session.requestMicrophonePermission()
-        microphoneDenied = !granted
-        guard granted else { return }
-        // Toby T8 finding 1: right after iOS's microphone question the app may still be inactive, and a start then
-        // never became "Lyssnar" (3/3 in the simulator). Wait for the foreground, and try once more if it did not start.
-        await container.listening.controller.waitForForeground()
-        await container.listening.startListening()
-        try? await Task.sleep(for: .seconds(3))
-        guard !Task.isCancelled, !container.listening.isListening else { return }
-        container.listening.controller.log("First start: not listening 3 s after the microphone was allowed, starting again (T8)")
-        await container.listening.startListening()
-    }
-
-    /// Ke35 (Kelly, Toby T8b finding 5): the first start ends on Start with Lumen not listening, so the new user sees
-    /// the Start button (and "Här startar du Earmind" once) before Lumen listens on its own the next time.
+    /// Start, with nothing listening. The opening's sheets are done (A66).
     private func finish() {
-        Task {
-            await container.listening.stopListening()
-            container.listening.openingSheetShown = true // A66: the share question is this opening's sheet
-            UserDefaults.standard.set(true, forKey: Self.doneKey)
-            onDone()
-        }
+        container.listening.openingSheetShown = true
+        UserDefaults.standard.set(true, forKey: Self.doneKey)
+        onDone()
     }
 }
 

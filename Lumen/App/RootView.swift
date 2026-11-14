@@ -7,7 +7,8 @@ struct RootView: View {
     @AppStorage(FirstStartView.doneKey) private var firstStartDone = false
 
     private var asksAboutSharing: Binding<Bool> {
-        let asking = !container.share.hasAsked // read here, in `body`, so the view follows it
+        // A94: the history question is about listening; it waits until the listening consent is given.
+        let asking = !container.share.hasAsked && container.consent.isGranted // read here, in `body`
         return Binding(get: { asking }, set: { _ in })
     }
 
@@ -32,20 +33,36 @@ struct RootView: View {
         .modifier(RepetitionOverlay(model: container.listening.repetition)) // A78–A81 (D142)
     }
 
+    /// A94: the listening consent is asked when a mode that listens is started (never in the first start).
+    private var asksForListeningConsent: Binding<Bool> {
+        let listening = container.listening
+        return Binding(get: { listening.asksForListeningConsent },
+                       set: { if !$0, listening.asksForListeningConsent { listening.listeningConsentDeclined() } })
+    }
+
     @ViewBuilder
     private var main: some View {
-        if !firstStartDone {
-            FirstStartView(container: container) { firstStartDone = true }
-        } else if container.consent.isGranted {
+        if !firstStartDone || !container.consent.isWelcomeGranted {
+            // A94 (Kelly Ke55): Välkommen → Nytt prov. Someone who finished the old first start sees Välkommen once.
+            FirstStartView(container: container, returning: firstStartDone) { firstStartDone = true }
+        } else {
             // D86: the indicator line is part of the main screen (above Start; Lyssnar is the indicator itself).
             NavigationStack {
                 ListeningView(model: container.listening, diagnostics: container.diagnostics)
+                    .sheet(isPresented: asksForListeningConsent) {
+                        NavigationStack {
+                            ConsentView(mode: .onboarding { container.listening.listeningConsentGiven() })
+                                .toolbar {
+                                    ToolbarItem(placement: .cancellationAction) {
+                                        Button("Avbryt") { container.listening.listeningConsentDeclined() }
+                                    }
+                                }
+                        }
+                    }
             }
             .sheet(isPresented: asksAboutSharing) {
                 ShareHistoryPromptView { container.listening.setSharing($0) }
             }
-        } else {
-            ConsentView(mode: .onboarding { container.consent.grant() })
         }
     }
 }
