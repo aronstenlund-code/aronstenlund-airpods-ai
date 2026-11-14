@@ -27,13 +27,21 @@ struct RepetitionHomeSection: View {
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @Environment(\.dynamicTypeSize) private var typeSize
 
+    /// A100 (Deangelo 2026-11-14, Toby T21 finding 2): "Fler lägen · Beta · använder mikrofonen" is shown only once
+    /// the user has started a first exam (the control check before the first Starta prov sets `controlsChecked`).
+    /// Before that a new user sees the exam and Starta prov, nothing about BETA or the microphone.
+    private var showsMoreModes: Bool { controlsChecked }
+
     var body: some View {
         Group {
             if model.drills.isEmpty { emptyState } else { examList }
         }
         .navigationTitle("Prov")
         .navigationBarTitleDisplayMode(.large)
-        .safeAreaInset(edge: .bottom) { bottomRow } // Kelly S3: a fixed row, nothing floats over the text
+        .safeAreaInset(edge: .bottom) { // Kelly S3: a fixed row, nothing floats over the text
+            // A100: without an exam the row only held Fler lägen, which a new user does not see yet.
+            if !model.drills.isEmpty || showsMoreModes { bottomRow }
+        }
         .toolbar { barItems }
         .sheet(isPresented: $isCreating) {
             NewDrillView(model: model) { drill in opened = drill.id }
@@ -204,16 +212,20 @@ struct RepetitionHomeSection: View {
                 }
             }
 
-            Section {
-                if model.canPublish { // A83 (Ke52 "Hem")
-                    navigationRow("Prov från din skola", detail: nil) { showsSchool = true }
+            if model.canPublish || lastNight != nil || showsMoreModes {
+                Section {
+                    if model.canPublish { // A83 (Ke52 "Hem")
+                        navigationRow("Prov från din skola", detail: nil) { showsSchool = true }
+                    }
+                    if let lastNight {
+                        navigationRow("I natt", detail: lastNight, action: onLastNight)
+                    }
+                    if showsMoreModes { // A100
+                        navigationRow("Fler lägen", detail: "Beta · använder mikrofonen", action: onMoreModes)
+                            .accessibilityLabel("Fler lägen")
+                            .accessibilityHint("Beta. Lägen som lyssnar på vad du säger")
+                    }
                 }
-                if let lastNight {
-                    navigationRow("I natt", detail: lastNight, action: onLastNight)
-                }
-                navigationRow("Fler lägen", detail: "Beta · använder mikrofonen", action: onMoreModes)
-                    .accessibilityLabel("Fler lägen")
-                    .accessibilityHint("Beta. Lägen som lyssnar på vad du säger")
             }
         }
         .listStyle(.insetGrouped)
@@ -269,6 +281,8 @@ struct RepetitionHomeSection: View {
     /// "Du var på fråga 3 av 5", "5 frågor · cirka 1 min per varv" or the sound's progress.
     private func facts(_ drill: Drill, saved: Int?) -> String {
         if let saved { return "Du var på fråga \(saved + 1) av \(drill.items.count)" }
+        // A100 (K62): when the sound cannot be made, say so instead of a counter that stands still.
+        if let problem = model.audio.problem(for: drill) { return "\(DrillText.questions(drill.items.count)) · \(problem)" }
         let p = model.progress(drill)
         if p.total > 0, p.ready == p.total {
             return "\(DrillText.questions(drill.items.count)) · cirka \(DrillText.minutesPerLap(drill)) min per varv"
@@ -289,7 +303,8 @@ struct RepetitionHomeSection: View {
     private func otherExam(_ drill: Drill) -> some View {
         let p = model.progress(drill)
         let ready = p.total > 0 && p.ready == p.total
-        let detail = ready ? "\(DrillText.questions(drill.items.count)) · ljud klart" : "Ljud: \(p.ready) av \(p.total) klara"
+        let detail = ready ? "\(DrillText.questions(drill.items.count)) · ljud klart"
+            : model.audio.problem(for: drill) ?? "Ljud: \(p.ready) av \(p.total) klara" // A100 (K62)
         return HStack(spacing: 12) {
             Button {
                 opened = drill.id

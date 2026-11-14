@@ -211,11 +211,14 @@ struct DrillView: View {
         .listStyle(.insetGrouped)
         .environment(\.editMode, $editMode)
         .safeAreaInset(edge: .bottom) {
-            MainActionBar(title: canStart ? (saved == nil ? "Starta prov" : "Fortsätt") : "Gör ljud …",
+            // A100 (K62): when the sound cannot be made the button is grey with the reason under it, no spinner.
+            let soundProblem = canStart ? nil : model.audio.problem(for: drill)
+            MainActionBar(title: canStart ? (saved == nil ? "Starta prov" : "Fortsätt")
+                              : (soundProblem == nil ? "Gör ljud …" : "Starta prov"),
                           systemImage: "play.fill",
-                          note: saved.map { "Du var på fråga \($0 + 1) av \(drill.items.count)." }
+                          note: soundProblem ?? saved.map { "Du var på fråga \($0 + 1) av \(drill.items.count)." }
                               ?? "Spelas i dina AirPods. Mikrofonen används inte.",
-                          isBusy: !canStart,
+                          isBusy: !canStart && soundProblem == nil,
                           isDisabled: !canStart) {
                 begin(drill, at: saved ?? 0)
             }
@@ -230,6 +233,8 @@ struct DrillView: View {
         return VStack(alignment: .leading, spacing: 6) {
             if ready {
                 Text(verbatim: "\(facts) · ljud klart")
+            } else if model.audio.problem(for: drill) != nil {
+                Text(verbatim: facts) // A100 (K62): no counter that stands still; the problem is the next line
             } else {
                 Text(verbatim: facts)
                 Text(verbatim: "Ljud: \(p.ready) av \(p.total) klara · Görs i spelordning").monospacedDigit()
