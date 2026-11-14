@@ -615,7 +615,7 @@ struct NewDrillView: View {
 
                 Section {
                     ForEach(draft.items.prefix(5)) { item in
-                        Text(verbatim: item.question)
+                        Text(verbatim: item.shownQuestion) // A102
                     }
                     if draft.items.count > 5 { Text("och \(draft.items.count - 5) till").foregroundStyle(.secondary) }
                 } header: {

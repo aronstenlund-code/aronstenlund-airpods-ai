@@ -192,7 +192,7 @@ struct RepetitionPlayerView: View {
     private func question(_ player: RepetitionPlayer, _ drill: Drill, compact: Bool) -> some View {
         let item = drill.items.indices.contains(player.index) ? drill.items[player.index] : nil
         return VStack(spacing: 14) {
-            Text(verbatim: item?.question ?? "")
+            Text(verbatim: item?.shownQuestion ?? "") // A102: as written on the screen
                 .font(.largeTitle.bold())
                 .foregroundStyle(player.isPaused ? Color.secondary : Color.primary)
                 .multilineTextAlignment(.center)
@@ -206,7 +206,7 @@ struct RepetitionPlayerView: View {
                 .accessibilityAction(named: "Kort svar") { session.press(.short) }
                 .accessibilityAction(named: player.isPaused ? "Fortsätt" : "Paus") { session.press(.pauseToggle) }
             if !compact, case .answer(_, let kind) = player.phase, let item, !player.isPaused {
-                Text(verbatim: kind == .short ? item.short : item.long)
+                Text(verbatim: kind == .short ? item.shownShort : item.shownLong) // A102
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .lineLimit(8)

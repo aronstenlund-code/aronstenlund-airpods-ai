@@ -246,8 +246,8 @@ struct HelpTryView: View {
                 Section("Frågor") {
                     ForEach(draft.items) { item in
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(verbatim: item.question).fontWeight(.semibold)
-                            Text(verbatim: item.short).font(.subheadline).foregroundStyle(.secondary)
+                            Text(verbatim: item.shownQuestion).fontWeight(.semibold)
+                            Text(verbatim: item.shownShort).font(.subheadline).foregroundStyle(.secondary)
                         }
                     }
                 }

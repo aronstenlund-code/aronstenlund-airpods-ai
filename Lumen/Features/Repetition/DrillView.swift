@@ -162,8 +162,10 @@ struct DrillView: View {
                             Text(verbatim: "\(number + 1)").monospacedDigit().foregroundStyle(Color.secondary)
                                 .accessibilityLabel("Fråga \(number + 1)") // A95: not a bare number
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(verbatim: item.question).fontWeight(.semibold).foregroundStyle(Color.primary)
-                                Text(verbatim: item.short).font(.subheadline).foregroundStyle(Color.secondary).lineLimit(1)
+                                // A102 (K66): the screen shows numbers and formulas as written; the voice reads the
+                                // spoken text. An exam without the field shows what it always did.
+                                Text(verbatim: item.shownQuestion).fontWeight(.semibold).foregroundStyle(Color.primary)
+                                Text(verbatim: item.shownShort).font(.subheadline).foregroundStyle(Color.secondary).lineLimit(1)
                                 // A99 (D176, Kelly): quiet, and nothing on a question of normal length.
                                 if let length = item.lengthClass?.label {
                                     Text(verbatim: length).font(.footnote).foregroundStyle(Color.secondary)
@@ -426,7 +428,7 @@ struct DrillItemEditor: View {
     /// until the server has seen the new text).
     private var lengthNote: String? {
         guard let itemID, let item = drill.items.first(where: { $0.id == itemID }),
-              item.question == question, DrillItem.long(item.long, startingWith: item.short) == answer else { return nil }
+              item.shownQuestion == question, item.shownAnswer == answer else { return nil }
         return item.lengthClass?.editorNote
     }
 
@@ -474,8 +476,8 @@ struct DrillItemEditor: View {
             }
             .onAppear {
                 if let itemID, let item = drill.items.first(where: { $0.id == itemID }) {
-                    question = item.question
-                    answer = DrillItem.long(item.long, startingWith: item.short)
+                    question = item.shownQuestion // A102: the editor shows and edits what the screen shows
+                    answer = item.shownAnswer
                 }
             }
         }
@@ -487,7 +489,7 @@ struct DrillItemEditor: View {
         Task {
             do throws(DrillMakingError) {
                 let item = try await model.newAnswer(for: question, in: drill)
-                answer = DrillItem.long(item.long, startingWith: item.short)
+                answer = item.shownAnswer // A102
             } catch {
                 problem = "EarMind kunde inte skriva svaret just nu. Skriv det själv eller försök igen."
             }
@@ -498,19 +500,16 @@ struct DrillItemEditor: View {
     private func save() {
         guard var changed = model.store.drill(drill.id) else { dismiss(); return }
         let text = answer.trimmingCharacters(in: .whitespacesAndNewlines)
-        let first = DrillItem.firstSentence(text)
-        var item = DrillItem(id: itemID ?? UUID(), question: question.trimmingCharacters(in: .whitespacesAndNewlines),
-                             short: first, long: text)
         if let itemID, let i = changed.items.firstIndex(where: { $0.id == itemID }) {
+            // A102: `edited` keeps both texts of a field that was not changed, the server id and the sound; a
+            // changed field is spoken and shown as written.
             let old = changed.items[i]
-            item.serverID = old.serverID
-            if old.sameText(as: item) { dismiss(); return }
-            item.questionAudio = old.questionAudio
-            item.longAudio = old.longAudio
-            item.shortEndMs = old.shortEndMs
+            let item = old.edited(question: question, answer: text)
+            if old.sameText(as: item) && old.screen == item.screen { dismiss(); return }
             changed.items[i] = item
         } else {
-            changed.items.append(item)
+            changed.items.append(DrillItem(id: UUID(), question: question.trimmingCharacters(in: .whitespacesAndNewlines),
+                                           short: DrillItem.firstSentence(text), long: text))
         }
         model.save(changed) // clears the sound whose text changed (only this question's)
         dismiss()
