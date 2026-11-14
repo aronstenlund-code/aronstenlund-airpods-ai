@@ -554,3 +554,14 @@ Deno.test("K64 (Oscar O61): x-earmind-test unavailable and slow let tests see 'L
   });
   assertEquals([slow.audio.done, slow.audio.total], [0, 2]);
 });
+
+Deno.test("K66 (O63 punkt 4): the display text is stored and returned; the voice reads the spoken text", async () => {
+  const w = world({ noSynth: true });
+  const items = [{ question: "Vad hände kring arton hundrafemtio?", short: "Industrin växte.", long: "Industrin växte. Mer.",
+    screen: { question: "Vad hände kring 1850?", bogus: 3 } }];
+  const j = await (await w.h("u1")(post({ action: "save", items }))).json();
+  const g = await (await w.h("u1")(post({ action: "get", id: j.drill.id }))).json();
+  assertEquals(g.drill?.items?.[0]?.screen ?? g.items?.[0]?.screen, { question: "Vad hände kring 1850?" });
+  assert([...w.audio.values()].some((a) => a.text.includes("arton hundrafemtio")), "the voice reads the words");
+  assert(![...w.audio.values()].some((a) => a.text.includes("1850")));
+});

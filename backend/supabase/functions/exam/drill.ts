@@ -64,23 +64,30 @@ When the material cannot be read at all (blurred, cut off, a screen photo you ca
 - summary: "subject" the school subject in Swedish; "grade" the school year or course as Swedes say it ("åk 8", "Matematik 1b", "Svenska 1", "Engelska 6", "Samhällskunskap 1b"): from <context> when given; else from the material itself: a course name or code, a textbook title, "åk"/"årskurs", or content that only fits one level (a gymnasium course's topics such as derivatives, molar mass or language history are gymnasium; never guess "åk 8" by default); else "" (empty: the app then asks the student, D159/K52); "covers" one or two Swedish sentences on what the exam covers (the main areas, in order).
 - notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact Swedish plain text in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.
 - questions_possible: how many good, different exam questions the material really supports (D159: never more than the material carries; a short text may support 4). Count before you write.
-- questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 6 extra (the weakest are removed afterwards). Never pad with repeated, trivial or outside questions to reach the number. In Swedish, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
+- Language (D182): when the subject is a foreign language (Engelska, Spanska, Tyska, Franska, Italienska, Kinesiska, Japanska and other modern languages), the exam is in that language: write "covers", the notes and the questions in that language. Every other subject in Swedish, even when the material is in English.
+- questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 6 extra (the weakest are removed afterwards). Never pad with repeated, trivial or outside questions to reach the number. In the exam's language, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
   - clear when only HEARD, with no text in front of the student: as short as it can be while it stays clear and natural Swedish (D176: there is no word limit; a long question with a long answer costs more, so do not make it longer than it needs to be). Never a fragment that needs the material to make sense ("Vad säger m?", "Mol metan i 16 g?" are wrong; "Vad visar m i en rät linje?", "Hur många mol är 16 gram metan?" are right). Cut filler such as "i naturen", "egentligen", "det att";
   - written as it is said: no symbols, formulas, units or abbreviations as signs ("syre", not "O2"; "kubikdecimeter", not "dm³"; "procent", not "%");
   - tests understanding, not only recall: at least three of every four questions ask why, how, what happens if, or compare ("Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Vad händer om pH sjunker?", "Skillnad mellan väder och klimat?"); "Vad är X?", "Vad betyder X?" or "Vilka ...?" at most one in five, only for a key term the material defines;
   - is answered by the material (never a question the material does not cover, never a fact from outside it);
+  - asks "Varför ...?" only when the material gives the cause or the reason; when the material only states that something is so (a rule, a law, a definition), ask "Vad ...?" or "Hur ...?" instead (O63: "Varför bestämmer antalet protoner vilket grundämne atomen är?" has no answer in a material that only says it; the answer becomes circular);
+  - never claims anything the material does not say or that contradicts it (O63: "Varför kallas medierna den fjärde statsmakten?" when the material says "tredje");
   - a real exam question a teacher would ask: no yes/no, no multiple choice, no "enligt texten", no page or task numbers, no question about the material itself;
   - different from every other question (no two that ask the same thing).
 - When <correction> is given, it is the student's correction of your reading (subject, grade or what the exam covers): follow it.
 No markdown, no other text.`;
 
 export const SYSTEM_PROMPT_DRILL_ANSWERS =
-  `You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words> and <questions> (JSON: id and question). Return ONLY a JSON object {"answers": [{"id": "q1", "short": "...", "rest": "..."}]} with one entry per question, in the same order.
+  `You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words>, <questions> (JSON: id and question) and maybe <language> and <may_fix>. Return ONLY a JSON object {"answers": [{"id": "q1", "short": "...", "rest": "..."}]} with one entry per question, in the same order.
+- Language (D182): write in <language> when it is given (a language exam: the questions are in that language too); else in Swedish.
+- When <may_fix> is given and a question cannot be answered well from the notes, put a better question in "question" and answer that one: a question with a claim the notes contradict gets the notes' fact ("fjärde statsmakten" -> "tredje statsmakten" when the notes say so); a "Varför ...?" whose cause the notes do not give becomes a "Vad ...?" or "Hur ...?" question the notes answer. Otherwise leave "question" out.
+- Never answer a why-question by repeating its claim ("Det beror på att sidorna alltid har just det sambandet", "De ansåg att makten skulle komma från folket"): give the reason, or (with <may_fix>) ask a better question.
 - "short": the short answer (D162): ONE sentence, two only when one cannot hold it, at most 25 words, that on its own is a full, correct A-level answer: it states the answer itself (the cause, the mechanism, the fact, the difference), never an introduction that only names the topic. Wrong: "Fotosyntes är en viktig process i växterna." Right: "Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över."
 - "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words or fewer (count them); go over only when the answer would otherwise miss a concept or connection an A-level answer needs, and then by at most a fifth. Never pad an answer to reach the number.
 - The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).
-- Base the answers on <notes>. Add school knowledge only where the notes are too thin, only facts you are certain of (textbook-level, widely known), and never contradict the notes; leave out a detail rather than guess it (O55: "stäppgräs har korta rötter" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for.
-- The text is read aloud: plain spoken Swedish sentences, no markdown, lists, headings, brackets, abbreviations or symbols. Write chemical formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"). Never mention the notes, the material, the exam or the grade.
+- Base the answers on <notes>. Add school knowledge only where the notes are too thin, only facts you are certain of (textbook-level, widely known), and never contradict the notes; leave out a detail rather than guess it (O55: "stäppgräs har korta rötter" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for. Never add a general rule about a whole group ("alla", "alltid", "aldrig", "inga", "kan alltså vara") that the notes do not state (O63: "Alla föreningar kan alltså vara molekyler" is wrong: salt is a compound but not molecules).
+- The text is read aloud: plain spoken sentences, no markdown, lists, headings, brackets, abbreviations or symbols. Write numbers, years, decimals, formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"; "arton hundrafemtio", not "1850"). Never mention the notes, the material, the text, the book, the exam or the grade: the student only hears the answer ("i materialet", "enligt texten" are wrong).
+- "display" (K66): the student also sees the text on screen, where 1850, 3,14, a² + b², CO₂ and 25 % are easier to read than words. When the question, "short" or "rest" has a number, year, decimal, formula, unit or symbol written as words, also return "display": {"question": "...", "short": "...", "rest": "..."} with the same sentences written as a textbook prints them, and only the fields that differ. Small counts in running text stay words ("två orsaker"). No numbers or formulas: leave "display" out.
 No other text.`;
 
 export interface DrillSummary {
@@ -95,7 +102,13 @@ export interface DrillItem {
   long?: string;
   /** K52: the answer could not be written (never an empty answer). */
   error?: string;
+  /**
+   * K66 (O63 punkt 4): the text the app SHOWS, only the fields that differ from the spoken text (numbers and
+   * formulas as a textbook prints them: 1850, 3,14, a² + b²). The voice always reads question/short/long.
+   */
+  screen?: Screen;
 }
+export interface Screen { question?: string; short?: string; long?: string }
 export interface StepUsage {
   model: string;
   input_tokens: number;
@@ -203,7 +216,7 @@ export const SYSTEM_PROMPT_DRILL_SHORTEN =
   `You check Swedish exam questions that a student will only HEAR (no text in front of them). You get <exam> (subject, grade and what the exam covers) and <questions> (JSON: i and q). Return ONLY a JSON object {"questions": [{"i": 0, "q": "..."}]} with ONLY the questions you changed (none = {"questions": []}).
 - A question that only makes sense with the material in front of the student is rewritten so that it is clear when heard alone ("Hur bygger man gymmodellen?" -> "Hur ställer man upp en linjär kostnadsmodell?", "Skillnad mot past simple?" -> "Skillnad mellan present perfect och past simple?").
 - Symbols, formulas, units and abbreviations are written as they are said ("3x + 5 = 20" -> "tre x plus fem är lika med tjugo", "O2" -> "syre", "dm³" -> "kubikdecimeter").
-- Wrong or clumsy Swedish is fixed ("Vad jämför man nysvenska och fornsvenska?" -> "Hur skiljer sig nysvenska från fornsvenska?").
+- Wrong or clumsy language is fixed ("Vad jämför man nysvenska och fornsvenska?" -> "Hur skiljer sig nysvenska från fornsvenska?"). The question stays in its language (D182: an English exam's questions stay English); never translate.
 - Never make a question longer for any other reason. Filler that adds nothing may go ("i naturen", "egentligen").
 - The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.
 - A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.
@@ -284,8 +297,33 @@ export function isIntroShort(short: string): boolean {
   return INTRO.test(s) || words(s) > 35 || sentences > 2 || /[:]$/.test(s);
 }
 
-export function parseAnswers(text: string, strict = false): Map<string, { short: string; long: string }> {
-  const out = new Map<string, { short: string; long: string }>();
+/** K66 (O63): the answer points at the material, which the student never hears ("i materialet", "enligt texten"). */
+export function mentionsMaterial(s: string): boolean {
+  return /(?<![\p{L}])(?:materialet|i texten|enligt texten|anteckningarna|enligt boken|i boken|the material|the text says|according to the text)(?![\p{L}])/iu.test(s);
+}
+
+/**
+ * K66 (O63 punkt 1): a why-question answered by repeating its own claim: the short answer adds fewer than two
+ * content words (five letters or more) that the question does not have, or says "just det sambandet".
+ */
+export function isCircular(question: string, short: string): boolean {
+  if (!/^(?:varför|why)\b/i.test(question.trim())) return false;
+  if (/\b(?:just det sambandet|det är bara så|så är det bara|helt enkelt så)\b/i.test(short)) return true;
+  const stem = (w: string) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "").slice(0, 5);
+  const q = new Set(question.split(/\s+/).map(stem));
+  const fresh = new Set(short.split(/\s+/).map(stem).filter((w) => w.length >= 5 && !q.has(w)));
+  return fresh.size < 2;
+}
+
+/** K66: the display text: only kept when it is a real variant of the spoken text (not empty, not far longer). */
+function screenText(v: unknown, spoken: string, max: number): string | undefined {
+  const s = spokenText(v, max);
+  if (!s || s === spoken || s.length > spoken.length * 1.5 + 20 || s.length < spoken.length * 0.25) return undefined;
+  return s;
+}
+
+export function parseAnswers(text: string, strict = false): Map<string, { short: string; long: string; question?: string; screen?: Screen }> {
+  const out = new Map<string, { short: string; long: string; question?: string; screen?: Screen }>();
   const j = firstJson(text);
   for (const a of Array.isArray(j?.answers) ? j!.answers as Record<string, unknown>[] : []) {
     const id = oneLine(a?.id, 40);
@@ -294,10 +332,42 @@ export function parseAnswers(text: string, strict = false): Map<string, { short:
     // K52 (O55: one empty answer): an empty, one-word or cut-off answer is not accepted; the question is asked again
     if (!id || words(short) < 2 || (rest && !/[.!?]["”')]?$/.test(rest))) continue;
     if (strict && isIntroShort(short)) continue; // K54: asked again; accepted on the last try rather than no answer
+    if (strict && mentionsMaterial(`${short} ${rest}`)) continue; // K66 (O63): asked again
     if (!/[.!?]$/.test(short)) short += ".";
-    out.set(id, { short, long: composeLong(short, rest) });
+    const question = typeof a?.question === "string" ? cleanQuestion(a.question) : "";
+    const long = composeLong(short, rest);
+    const d = (a?.display ?? null) as Record<string, unknown> | null;
+    let screen: Screen | undefined;
+    if (d && typeof d === "object") {
+      const dq = typeof d.question === "string" ? cleanQuestion(d.question) : "";
+      let ds = screenText(d.short, short, 600);
+      if (ds && !/[.!?]$/.test(ds)) ds += ".";
+      const dr = screenText(d.rest, rest, 3000);
+      const dl = ds || dr ? composeLong(ds ?? short, dr ?? rest) : undefined;
+      screen = {
+        ...(dq ? { question: dq } : {}),
+        ...(ds ? { short: ds } : {}),
+        ...(dl && dl !== long ? { long: dl } : {}),
+      };
+      if (!Object.keys(screen).length) screen = undefined;
+    }
+    out.set(id, { short, long, ...(question ? { question } : {}), ...(screen ? { screen } : {}) });
   }
   return out;
+}
+
+/**
+ * D182: the language of a language exam ("Engelska 6" -> "English"), or "" (Swedish). Swedish itself is "".
+ */
+export function examLanguage(subject: string): string {
+  const s = subject.toLowerCase();
+  const m: [RegExp, string][] = [
+    [/engelska|english/, "English"], [/spanska|español|spanish/, "Spanish"], [/tyska|deutsch|german/, "German"],
+    [/franska|français|french/, "French"], [/italienska|italian/, "Italian"], [/kinesiska|chinese/, "Chinese"],
+    [/japanska|japanese/, "Japanese"], [/arabiska|arabic/, "Arabic"], [/finska|finnish/, "Finnish"],
+  ];
+  for (const [re, lang] of m) if (re.test(s)) return lang;
+  return "";
 }
 
 export async function runLLM(provider: LLMProvider, req: LLMRequest, priceIn: number, priceOut: number) {
@@ -340,17 +410,20 @@ export async function answerItems(
   provider: LLMProvider,
   cfg: DrillConfig,
   items: { id: string; question: string }[],
-  ctx: { subject: string; grade: string; notes: string; longWords: number },
+  ctx: { subject: string; grade: string; notes: string; longWords: number; mayFix?: boolean },
   signal?: AbortSignal,
 ): Promise<{ items: DrillItem[]; usage: StepUsage }> {
   const steps: StepUsage[] = [];
-  const got = new Map<string, { short: string; long: string }>();
+  const got = new Map<string, { short: string; long: string; question?: string; screen?: Screen }>();
+  const lang = examLanguage(ctx.subject);
   const ask = async (batch: { id: string; question: string }[], strict = true) => {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_ANSWERS,
       user: `<context>${sanitizeTagged(contextLine(ctx.subject, ctx.grade))}</context>\n<notes>\n${
         sanitizeTagged(ctx.notes || "(inga anteckningar)")
-      }\n</notes>\n<long_words>${ctx.longWords}</long_words>\n<questions>${sanitizeTagged(JSON.stringify(batch))}</questions>`,
+      }\n</notes>\n<long_words>${ctx.longWords}</long_words>${lang ? `\n<language>${lang}</language>` : ""}${
+        ctx.mayFix ? "\n<may_fix>yes</may_fix>" : ""
+      }\n<questions>${sanitizeTagged(JSON.stringify(batch))}</questions>`,
       maxTokens: Math.min(8000, 400 + batch.length * Math.round(ctx.longWords * 3.2)),
       cacheSystem: true,
       model: cfg.answerModel,
@@ -359,7 +432,14 @@ export async function answerItems(
       signal,
     }, cfg.answerPriceIn, cfg.answerPriceOut);
     steps.push(r.usage);
-    for (const [id, a] of parseAnswers(r.text, strict)) if (batch.some((b) => b.id === id)) got.set(id, a);
+    for (const [id, a] of parseAnswers(r.text, strict)) {
+      const b = batch.find((x) => x.id === id);
+      if (!b) continue;
+      // K66: a fixed question only where it may be fixed (generated questions, never the student's own)
+      const q = ctx.mayFix && a.question && a.question.toLowerCase() !== b.question.toLowerCase() ? a.question : b.question;
+      if (strict && isCircular(q, a.short)) continue; // K66 (O63 punkt 1): asked again; accepted on the last try
+      got.set(id, { ...a, question: q !== b.question ? q : undefined });
+    }
   };
   const batches: { id: string; question: string }[][] = [];
   for (let i = 0; i < items.length; i += DRILL_LIMITS.batch) batches.push(items.slice(i, i + DRILL_LIMITS.batch));
@@ -379,7 +459,16 @@ export async function answerItems(
   }
   return {
     // an answer that still could not be written says so (the app offers "Gör om"), never an empty answer
-    items: items.map((it) => got.has(it.id) ? { ...it, ...got.get(it.id)! } : { ...it, error: "Svaret kunde inte skrivas. Gör om frågan." }),
+    items: items.map((it) => {
+      const a = got.get(it.id);
+      if (!a) return { ...it, error: "Svaret kunde inte skrivas. Gör om frågan." };
+      const out: DrillItem = { ...it, question: a.question ?? it.question, short: a.short, long: a.long };
+      // the display question belongs to the question that was answered; dropped when it was fixed without one
+      const screen: Screen = { ...(a.screen ?? {}) };
+      if (a.question && screen.question && screen.question === it.question) delete screen.question;
+      if (Object.keys(screen).length) out.screen = screen;
+      return out;
+    }),
     usage: sumUsage(steps, cfg.answerModel),
   };
 }
@@ -673,7 +762,7 @@ export async function handleDrill(
     let items: DrillItem[] = base;
     let answers: StepUsage | null = null;
     if (b.answers !== false) {
-      const r = await answerItems(provider, cfg, base, { subject: summary.subject, grade: summary.grade, notes: p.notes, longWords }, signal);
+      const r = await answerItems(provider, cfg, base, { subject: summary.subject, grade: summary.grade, notes: p.notes, longWords, mayFix: true }, signal);
       items = r.items;
       answers = r.usage;
       steps.push(r.usage);

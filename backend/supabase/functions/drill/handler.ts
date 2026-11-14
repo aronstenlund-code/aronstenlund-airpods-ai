@@ -83,6 +83,8 @@ export interface ItemRow {
   long: string;
   question_hash: string;
   long_hash: string;
+  /** K66 (O63 punkt 4): what the app shows where it differs from the spoken text (1850, a² + b²); never voiced. */
+  screen?: { question?: string; short?: string; long?: string } | null;
   /** K61 (D176): question + long answer, characters sent to ElevenLabs, and the class */
   voice_chars?: number | null;
   length_class?: string | null;
@@ -227,6 +229,15 @@ export function voiceText(s: string): string {
   // a sentence end as the context: each text starts a sentence ("6 koldioxid" -> "Sex koldioxid")
   return pronounce(toSpeech(spokenText(s, 4000), "Start. "), "sv").replace(/\s+/g, " ").trim();
 }
+/** K66: the display text sent with save (only strings, the store's limits); null when there is none. */
+export function screenOf(v: unknown): { question?: string; short?: string; long?: string } | null {
+  if (!v || typeof v !== "object") return null;
+  const o = v as Record<string, unknown>;
+  const q = clean(o.question, DRILL_STORE_LIMITS.question), s = clean(o.short, DRILL_STORE_LIMITS.short), l = clean(o.long, DRILL_STORE_LIMITS.long);
+  const out = { ...(q ? { question: q } : {}), ...(s ? { short: s } : {}), ...(l ? { long: l } : {}) };
+  return Object.keys(out).length ? out : null;
+}
+
 /** D145: the long file is the short answer, then the rest; the boundary is known to the character. */
 export function longVoice(short: string, long: string): { text: string; shortChars: number } {
   const s = voiceText(short);
@@ -475,7 +486,7 @@ export function createDrillHandler(deps: DrillDeps) {
       },
       cue,
       items: items.map((i) => ({
-        id: i.id, position: i.position, question: i.question, short: i.short, long: i.long,
+        id: i.id, position: i.position, question: i.question, short: i.short, long: i.long, ...(i.screen ? { screen: i.screen } : {}),
         voice_chars: i.voice_chars ?? null, length_class: i.length_class ?? null,
         audio: { question: file(i.question_hash), long: file(i.long_hash) },
       })),
@@ -545,7 +556,7 @@ export function createDrillHandler(deps: DrillDeps) {
     const its = (await deps.db.items([src.id])).sort((a, b) => a.position - b.position);
     await deps.db.saveDrill(copy, true);
     await deps.db.replaceItems(copy.id, [], its.map((i) => ({
-      drill_id: copy.id, user_id: userId, position: i.position, question: i.question, short: i.short, long: i.long,
+      drill_id: copy.id, user_id: userId, position: i.position, question: i.question, short: i.short, long: i.long, screen: i.screen ?? null,
       question_hash: i.question_hash, long_hash: i.long_hash, voice_chars: i.voice_chars ?? null, length_class: i.length_class ?? null,
     })));
     return { ...(await view((await deps.db.drill(copy.id)) ?? copy)), new_chars: 0 };
@@ -863,7 +874,7 @@ export function createDrillHandler(deps: DrillDeps) {
         const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
         const chars = q.length + l.text.length; // D176: what ElevenLabs gets for this question
         rows.push({
-          ...(id ? { id } : {}), drill_id: drill.id, user_id: user.id, position: pos, question, short, long, question_hash: qh, long_hash: lh,
+          ...(id ? { id } : {}), drill_id: drill.id, user_id: user.id, position: pos, question, short, long, screen: screenOf(it?.screen), question_hash: qh, long_hash: lh,
           voice_chars: chars, length_class: lengthClass(chars, limits),
         });
       }

@@ -44,8 +44,8 @@ class ScriptLLM implements LLMProvider {
     }
     const answers = qs.map((q) => ({
       id: q.id,
-      short: `**Kort** svar på ${q.question.replace("?", "")}`,
-      rest: `Kort svar på ${q.question.replace("?", "")}. Sedan kommer förklaringen med begrepp och ett exempel.`,
+      short: `**Kort** svar på ${q.question.replace("?", "")}, förklarat utförligt`,
+      rest: `Kort svar på ${q.question.replace("?", "")}, förklarat utförligt. Sedan kommer förklaringen med begrepp och ett exempel.`,
     }));
     yield { type: "text", text: JSON.stringify({ answers }) };
     yield { type: "usage", inputTokens: 2_000, outputTokens: 900 };
@@ -256,7 +256,7 @@ class PlanLLM implements LLMProvider {
       return;
     }
     const qs = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(req.user)![1]) as { id: string; question: string }[];
-    yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short: "Kort svar.", rest: "Mer." })) }) };
+    yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short: "Ljusenergin driver fotosyntesen i bladen.", rest: "Mer." })) }) };
     yield { type: "usage", inputTokens: 1_000, outputTokens: 200 };
   }
 }
@@ -329,7 +329,7 @@ Deno.test("K52 an empty, one-word or cut-off answer is asked again, one by one; 
       yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short: ok(q.id) ? "Ett riktigt svar." : "", rest: "Mer om det." })) }) };
     },
   };
-  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "Varför A?" }, { id: "q2", question: "Vad är imperialism?" }], { subject: "", grade: "", notes: "", longWords: 90 });
+  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "Vad är A?" }, { id: "q2", question: "Vad är imperialism?" }], { subject: "", grade: "", notes: "", longWords: 90 });
   assertEquals(r.items.map((i) => i.short), ["Ett riktigt svar.", "Ett riktigt svar."]);
   assertEquals(n, 2, "the empty one is asked again (alone, as it is the only one missing)");
   const never: LLMProvider = { name: "f", model: "x", async *stream() { yield { type: "text", text: JSON.stringify({ answers: [{ id: "q2", short: "", rest: "" }, { id: "q1", short: "Ett svar här.", rest: "" }] }) }; } };
@@ -516,4 +516,41 @@ Deno.test("K61 D175: /exam drill never makes more questions than the month has l
   assertEquals(none.status, 402);
   assertEquals((await none.json()).error.code, "quota_exceeded");
   assertEquals(llm.calls.length, calls, "no model call when nothing is left");
+});
+
+Deno.test("K66 (Oscar O63): circular why-answers and 'materialet' are asked again; a contradicting question is fixed; display text; D182 language", async () => {
+  const { isCircular, mentionsMaterial, examLanguage, answerItems, parseAnswers, DEFAULT_DRILL_CONFIG, SYSTEM_PROMPT_DRILL_PLAN } = await import("./drill.ts");
+  assert(isCircular("Varför ville upplysningens tänkare att makten skulle komma från folket?", "De ansåg att makten skulle komma från folket."));
+  assert(isCircular("Varför gäller Pythagoras sats?", "Det beror på att en rätvinklig triangels sidor alltid har just det sambandet."));
+  assert(!isCircular("Varför behövs klorofyll?", "Klorofyll fångar ljusenergin som växten använder i fotosyntesen."));
+  assert(!isCircular("Vad är en atom?", "En atom."), "only why-questions");
+  assert(mentionsMaterial("De kallas i materialet den tredje statsmakten."));
+  assert(!mentionsMaterial("Materiel är utrustning."));
+  assertEquals([examLanguage("Engelska 6"), examLanguage("Spanska"), examLanguage("Svenska 1"), examLanguage("Historia")], ["English", "Spanish", "", ""]);
+  assert(SYSTEM_PROMPT_DRILL_PLAN.includes('asks "Varför ...?" only when the material gives the cause'));
+  // display text: kept only where it differs; long = short + rest on screen too
+  const d = parseAnswers(JSON.stringify({ answers: [{ id: "q1", short: "Det började ungefär arton hundrafemtio.", rest: "Pi är ungefär tre komma fjorton.",
+    display: { question: "Vad hände kring 1850?", short: "Det började ungefär 1850.", rest: "Pi är ungefär 3,14." } }] })).get("q1")!;
+  assertEquals(d.screen, { question: "Vad hände kring 1850?", short: "Det började ungefär 1850.", long: "Det började ungefär 1850. Pi är ungefär 3,14." });
+  const calls: LLMRequest[] = [];
+  const llm: LLMProvider = {
+    name: "f", model: "x",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      calls.push(req);
+      const qs = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(req.user)![1]) as { id: string }[];
+      const first = calls.length === 1;
+      yield { type: "text", text: JSON.stringify({ answers: qs.map((q) => q.id === "q1"
+        ? { id: "q1", question: "Varför kallas fria medier den tredje statsmakten?", short: "De granskar riksdagen, regeringen och domstolarna åt medborgarna.", rest: "Därför kallas de så." }
+        : first ? { id: q.id, short: "Det står i materialet att protonerna avgör.", rest: "" }
+        : { id: q.id, short: "Antalet protoner i kärnan anger grundämnets atomnummer.", rest: "" }) }) };
+    },
+  };
+  const items = [{ id: "q1", question: "Varför kallas fria medier den fjärde statsmakten?" }, { id: "q2", question: "Vad avgör vilket grundämne en atom är?" }];
+  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, items, { subject: "Engelska 6", grade: "åk 9", notes: "", longWords: 90, mayFix: true });
+  assertEquals(r.items[0].question, "Varför kallas fria medier den tredje statsmakten?");
+  assertEquals(r.items[1].short, "Antalet protoner i kärnan anger grundämnets atomnummer.", "'materialet' was asked again");
+  assert(calls[0].user.includes("<language>English</language>") && calls[0].user.includes("<may_fix>yes</may_fix>"));
+  // the student's own question is never changed
+  const own = await answerItems(llm, DEFAULT_DRILL_CONFIG, [items[0]], { subject: "", grade: "", notes: "", longWords: 90 });
+  assertEquals(own.items[0].question, items[0].question);
 });
