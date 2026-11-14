@@ -180,6 +180,7 @@ struct NewDrillView: View {
             if !isFirstStart {
                 Section {
                     TextField("Provets namn", text: $title)
+                        .accessibilityLabel("Provets namn") // A95: a name of its own, not only the placeholder
                 }
             }
 
@@ -251,6 +252,7 @@ struct NewDrillView: View {
                 // the material, so the material is the first thing on the screen.
                 Section {
                     TextField("Provets namn (valfritt)", text: $title)
+                        .accessibilityLabel("Provets namn, valfritt") // A95
                     Picker("Vilken årskurs?", selection: $grade) { // A88, as `GradeChoice`
                         Text("Hoppa över").tag(StudyProfile.Grade?.none)
                         ForEach(GradeChoice.choices, id: \.self) { choice in
@@ -581,6 +583,7 @@ struct NewDrillView: View {
 
                 Section {
                     TextField("Till exempel ”Det är åk 8” eller ”Ta inte med cellandning”", text: $correction, axis: .vertical)
+                        .accessibilityLabel("Rättelse") // A95
                     Button("Gör om med rättelsen") { create(correction: correction) }
                         .disabled(correction.trimmingCharacters(in: .whitespaces).isEmpty)
                 } header: {
