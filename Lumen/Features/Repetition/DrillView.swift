@@ -20,6 +20,7 @@ struct DrillView: View {
     @State private var isSharing = false
     @State private var confirmDelete = false
     @State private var publishing = false // A83
+    @State private var showsChatGPT = false // A93
     @State private var editMode: EditMode = .inactive
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @Environment(\.dismiss) private var dismiss
@@ -63,6 +64,13 @@ struct DrillView: View {
             }
         }
         .sheet(isPresented: $publishing) { if let drill { PublishSheet(model: model, drill: drill) } } // A83
+        .sheet(isPresented: $showsChatGPT) { // A93 (D169): the exam's questions go into the prompt, new ones are added
+            if let drill {
+                ChatGPTImportView(model: model, title: drill.title,
+                                  questions: max(model.newDrillSettings.questions, drill.items.count + 5),
+                                  drill: drill) { _ in }
+            }
+        }
         .sheet(isPresented: $showsShareSheet) {
             if let share, let drill {
                 ActivityView(text: "Plugga \(drill.title) med mig i Earmind", url: share.url)
@@ -116,6 +124,7 @@ struct DrillView: View {
                     Button("Ändra ordning", systemImage: "arrow.up.arrow.down") {
                         withAnimation { editMode = .active }
                     }
+                    Button("Gör med ChatGPT", systemImage: "doc.on.clipboard") { showsChatGPT = true } // A93
                     Divider()
                     Button("Ta bort provet", systemImage: "trash", role: .destructive) { confirmDelete = true }
                 } label: {

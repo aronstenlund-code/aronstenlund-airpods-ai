@@ -66,6 +66,13 @@ struct NewDrillView: View {
     @State private var showsHelp = false
     /// Ke50 §2: iOS has said no to the camera, so Fota sidor says what to do instead of opening a black camera.
     @State private var cameraDenied = false
+    /// A93 (D169): "Gör med ChatGPT", from its row (the three steps) or from an answer pasted under Skriv text.
+    @State private var chatGPT: ChatGPTStart?
+
+    private struct ChatGPTStart: Identifiable {
+        let id = UUID()
+        let stage: ChatGPTImportView.Stage
+    }
 
     private var isFirstStart: Bool { onLater != nil }
 
@@ -106,7 +113,14 @@ struct NewDrillView: View {
         }
         .sheet(isPresented: $showsHelp) { HelpChatView(model: model, suggestion: "Vad kan jag fota?") }
         .sheet(isPresented: $isTakingPhotos) { camera.ignoresSafeArea() }
-        .sheet(isPresented: $isAddingText) { textSheet }
+        .sheet(isPresented: $isAddingText, onDismiss: offerImport) { textSheet }
+        .sheet(item: $chatGPT) { start in
+            ChatGPTImportView(model: model, title: title, grade: grade, questions: settings.questions,
+                              start: start.stage) { drill in
+                onSaved(drill)
+                dismiss()
+            }
+        }
         .fileImporter(isPresented: $isImporting,
                       allowedContentTypes: [.pdf, .plainText, .text, UTType("org.openxmlformats.wordprocessingml.document") ?? .data],
                       allowsMultipleSelection: true) { result in
@@ -180,6 +194,24 @@ struct NewDrillView: View {
                 }
                 Button { isAddingText = true } label: { Self.materialRow("Skriv text", "text.alignleft", Color.orange, plain) }
                 Button { isImporting = true } label: { Self.materialRow("Lägg till dokument", "doc.fill", Color.gray, plain) }
+                if !isFirstStart { // A93 (Kelly Ke58): last, after the app's own ways; not in the first start (A94)
+                    Button { chatGPT = ChatGPTStart(stage: .steps) } label: {
+                        HStack(spacing: 12) {
+                            Self.materialIcon("doc.on.clipboard", Color.indigo)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Gör med ChatGPT")
+                                Text("Låt ChatGPT göra frågorna av dina filer")
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.secondary)
+                            }
+                            Spacer(minLength: 8)
+                            Image(systemName: "chevron.right")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(Color(.tertiaryLabel))
+                                .accessibilityHidden(true)
+                        }
+                    }
+                }
                 if !pages.isEmpty { thumbnails }
                 if !pasted.isEmpty {
                     added("Text", "\(pasted.split(whereSeparator: \.isWhitespace).count) ord") { pasted = "" }
@@ -285,17 +317,29 @@ struct NewDrillView: View {
     nonisolated private static func materialRow(_ title: String, _ symbol: String, _ color: Color,
                                                 _ strong: Bool? = nil) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: symbol)
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(Color.white)
-                .frame(width: 30, height: 30)
-                .background(color, in: RoundedRectangle(cornerRadius: 7))
+            materialIcon(symbol, color)
             if strong == false {
                 Text(title).foregroundStyle(Color.primary)
             } else {
                 Text(title).fontWeight(strong == true ? .semibold : .regular)
             }
         }
+    }
+
+    nonisolated private static func materialIcon(_ symbol: String, _ color: Color) -> some View {
+        Image(systemName: symbol)
+            .font(.system(size: 15, weight: .semibold))
+            .foregroundStyle(Color.white)
+            .frame(width: 30, height: 30)
+            .background(color, in: RoundedRectangle(cornerRadius: 7))
+            .accessibilityHidden(true)
+    }
+
+    /// A93 point 2: an answer from ChatGPT pasted under Skriv text is shown as "Hittade n frågor med svar" and saved
+    /// as it is, instead of being sent as material. The prompt itself (its example lines) is not an answer.
+    private func offerImport() {
+        guard !pasted.contains("<frågan>"), let found = ChatGPTImport.read(pasted) else { return }
+        chatGPT = ChatGPTStart(stage: .found(found))
     }
 
     private var thumbnails: some View {
