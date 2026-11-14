@@ -84,6 +84,10 @@ struct SettingsView: View {
                     model.isShowingSettings = false
                     model.isShowingExamSetup = true
                 }
+                if let repetition = model.repetition, repetition.help != nil {
+                    // A92 (D166): the help AI; "Öppna Inställningar" in an answer is where the user already is.
+                    NavigationLink("Fråga om Earmind") { HelpChatView(model: repetition) }
+                }
                 NavigationLink("Feedback och förslag") { FeedbackView(model: model) }
                 NavigationLink("Om appen") { AboutView() }
             }

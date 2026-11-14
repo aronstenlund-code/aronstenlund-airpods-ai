@@ -91,7 +91,7 @@ jobs:
           if [ "${{ inputs.text_size }}" != "default" ] && [ -n "${{ inputs.text_size }}" ]; then
             xcrun simctl ui "$UDID" content_size "${{ inputs.text_size }}"
           fi
-          ALL="intro first home empty addExam listening cannotAnswer switch pickMode myAnswers myAnswersEmpty myAnswerEdit canDo canDoIntro logoVote logoVoteDone errors settings voice practice practiceResult listeningProv addExamFirst flipCards flipCardsBack flipCardsDone readiness sleep sleepReport about interview live testModeSheet listeningTest homeTest repHome repHomeEmpty repMaterial repList repEdit repControls repControlsDone repControlsMissing repShareReady repMakeError repPlayFirst repPlayThink repPlayAnswer repPaused repWaiting repShare moreModes repPublish repSchools repSchoolsEmpty repPublication repVoice"
+          ALL="intro first home empty addExam listening cannotAnswer switch pickMode myAnswers myAnswersEmpty myAnswerEdit canDo canDoIntro logoVote logoVoteDone errors settings voice practice practiceResult listeningProv addExamFirst flipCards flipCardsBack flipCardsDone readiness sleep sleepReport about interview live testModeSheet listeningTest homeTest repHome repHomeEmpty repMaterial repList repEdit repControls repControlsDone repControlsMissing repShareReady repMakeError repPlayFirst repPlayThink repPlayAnswer repPaused repWaiting repShare moreModes repPublish repSchools repSchoolsEmpty repPublication repVoice repHelp repHelpAnswer repHelpTry"
           REQUESTED="${{ inputs.screens }}"
           if [ -z "$REQUESTED" ]; then
             SCREENS="$ALL"

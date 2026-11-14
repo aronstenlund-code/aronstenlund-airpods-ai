@@ -10,7 +10,9 @@ enum RepetitionDemo {
                                       "repPlayThink", "repPlayAnswer", "repPaused", "repWaiting",
                                       "repShare", "moreModes",
                                       // A83/A84 (Angela Fable's request): Publicera prov, Prov från din skola, the voice.
-                                      "repPublish", "repSchools", "repSchoolsEmpty", "repPublication", "repVoice"]
+                                      "repPublish", "repSchools", "repSchoolsEmpty", "repPublication", "repVoice",
+                                      // A92: the help AI (MockHelp in the screenshot mode)
+                                      "repHelp", "repHelpAnswer", "repHelpTry"]
 
     static let items: [DrillItem] = [
         ("Varför behövs klorofyll?", "Klorofyll fångar ljuset som fotosyntesen behöver.",
@@ -110,6 +112,9 @@ enum RepetitionDemo {
             case "repShare": NavigationStack { DrillView(model: model, drillID: history.id, showsShare: true) }
             case "repShareReady": NavigationStack { DrillView(model: model, drillID: drill.id, showsShare: true) }
             case "repEdit": DrillItemEditor(model: model, drill: drill, itemID: drill.items[0].id)
+            case "repHelp": HelpChatView(model: model)
+            case "repHelpAnswer": HelpChatView(model: model, suggestion: "Hur fungerar trycken?")
+            case "repHelpTry": HelpTryView(model: model) {}
             case "repPublish": PublishSheet(model: model, drill: drill)
             case "repSchools", "repSchoolsEmpty": NavigationStack { SchoolExamsView(model: model) }
             case "repPublication": PublicationView(model: model, publication: DemoPublishing.results[0])

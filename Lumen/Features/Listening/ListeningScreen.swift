@@ -428,9 +428,10 @@ struct ModeSwitchSheet: View {
     }
 
     private var footnote: String {
-        onPick == nil
+        // Ke53 point 11 (Kelly S1): one footnote for the section instead of a badge on every row.
+        "Alla lägen här lyssnar och är i BETA. " + (onPick == nil
             ? "Earmind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
-            : "Valet gäller Starta Earmind. Starta prov använder aldrig mikrofonen." // Kelly N4
+            : "Valet gäller Starta Earmind. Starta prov använder aldrig mikrofonen.") // Kelly N4
     }
 
     var body: some View {
@@ -457,10 +458,9 @@ struct ModeSwitchSheet: View {
                                     .frame(width: 44, height: 44)
                                     .background(mode == current ? LumenColor.soft : Color.clear, in: Circle())
                                 VStack(alignment: .leading, spacing: 2) {
-                                    HStack(spacing: 6) {
-                                        Text(mode.shortName).font(LumenFont.text(17, .semibold))
-                                        BetaBadge() // A80 (D142): every listening mode is BETA
-                                    }
+                                    // Kelly S1 / Ke53 point 11: BETA is said once in the footnote, not on every row
+                                    // (in the largest text the badge broke the names: "Stan/dardl/äge").
+                                    Text(mode.shortName).font(LumenFont.text(17, .semibold))
                                     Text(mode == .prov ? "Förhör med rösten" : mode.tagline) // Kelly N4
                                         .font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
                                 }
@@ -488,10 +488,7 @@ struct ModeSwitchSheet: View {
                                     .foregroundStyle(LumenColor.muted)
                                     .frame(width: 44, height: 44)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    HStack(spacing: 6) {
-                                        Text("Sov").font(LumenFont.text(17, .semibold))
-                                        BetaBadge()
-                                    }
+                                    Text("Sov").font(LumenFont.text(17, .semibold))
                                     Text("Prat i sömnen och snarkning, bara på telefonen").font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
                                 }
                                 Spacer()
