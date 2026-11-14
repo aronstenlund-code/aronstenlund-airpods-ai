@@ -1,0 +1,61 @@
+name: Apptest full repetition flow (T24)
+
+# Toby 2's T24: the whole repetition flow as a new user, on two Simulators (two accounts), fake audio only (D180:
+# x-earmind-test through LUMEN_TEST_HEADER). Publishes one test exam at "Central insamlingsenhet", Kiruna (an office,
+# no pupils) and removes it again in phase c. Manual, and on Toby's branch when the test changes. Simulator only.
+on:
+  workflow_dispatch:
+    inputs:
+      phases:
+        description: "Phases: 'a b c' (default) or a subset"
+        required: false
+        default: "a b c"
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Screens/FullFlowTests.swift"
+      - "scripts/apptest/fullflow.sh"
+      - ".github/workflows/apptest-fullflow.yml"
+
+concurrency:
+  group: apptest-fullflow-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fullflow:
+    name: T24 full flow (Simulator, fake audio)
+    runs-on: macos-26
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Full flow
+        env:
+          T24_PHASES: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.phases || 'a b c') || 'a b c' }}
+        run: |
+          bash scripts/apptest/fullflow.sh
+          STATUS=$?
+          cat apptest-out/fullflow/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-fullflow
+          path: |
+            apptest-out/fullflow
+            !apptest-out/fullflow/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
