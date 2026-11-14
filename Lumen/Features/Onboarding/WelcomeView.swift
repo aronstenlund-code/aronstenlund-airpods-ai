@@ -110,14 +110,14 @@ struct DataPrivacySheet: View {
                     Text("Använder du Gör med ChatGPT skickar du filerna till ChatGPT själv.")
                 }
                 Section("Det här sparas") {
-                    Text("Dina prov, med frågor, svar och ljud, sparas på ditt konto tills du tar bort dem.")
+                    Text("Dina prov, med frågor, svar och ljud, sparas hos Earmind tills du tar bort dem.")
                 }
                 Section {
                     Text("Starta prov använder aldrig mikrofonen. Lägena som lyssnar finns under Fler lägen och frågar först.")
                 } header: {
                     Text("Mikrofonen")
                 } footer: {
-                    Text("Inget konto behövs. Du kan ta bort allt under Inställningar.")
+                    Text("Du behöver inte skapa något konto. Du kan ta bort allt under Inställningar.")
                 }
             }
             .listStyle(.insetGrouped)

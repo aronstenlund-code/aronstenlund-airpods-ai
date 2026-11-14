@@ -160,7 +160,7 @@ struct ChatGPTImportView: View {
         // The prompt is still on the clipboard until the answer is copied, and its own example lines
         // ("Fråga: <frågan>") would be read as questions.
         guard !answer.contains("<frågan>") else {
-            note = "Det där är prompten. Kopiera svaret i ChatGPT först."
+            note = "Det här är prompten, inte svaret. Kopiera svaret i ChatGPT först."
             return
         }
         note = nil
@@ -192,7 +192,7 @@ struct ChatGPTImportView: View {
                 .accessibilityElement(children: .combine)
             }
 
-            Section("Frågor") {
+            Section {
                 ForEach(Array(found.items.prefix(4).enumerated()), id: \.element.id) { index, item in
                     VStack(alignment: .leading, spacing: 2) {
                         Text(verbatim: item.question).fontWeight(.semibold)
@@ -204,12 +204,18 @@ struct ChatGPTImportView: View {
                 if found.items.count > 4 {
                     Text("och \(DrillText.questions(found.items.count - 4)) till").foregroundStyle(.secondary)
                 }
+            } header: {
+                Text("Frågor")
+            } footer: {
+                // Kelly: the counter only while there are questions left (D155).
+                if let quota = model.quota, quota.left > 0 { Text(verbatim: quota.line + ".") }
             }
 
             if !found.unreadable.isEmpty { // A93: the lines that could not be read, closed until asked for
                 Section {
-                    DisclosureGroup(found.unreadable.count == 1 ? "1 rad gick inte att läsa"
-                                                                : "\(found.unreadable.count) rader gick inte att läsa",
+                    DisclosureGroup(found.unreadable.count == 1
+                                        ? "1 rad kunde inte läsas och togs inte med."
+                                        : "\(found.unreadable.count) rader kunde inte läsas och togs inte med.",
                                     isExpanded: $showsUnreadable) {
                         ForEach(Array(found.unreadable.prefix(20).enumerated()), id: \.offset) { _, line in
                             Text(verbatim: line).font(.subheadline).foregroundStyle(.secondary)
@@ -230,11 +236,19 @@ struct ChatGPTImportView: View {
 
     private func save(_ found: ChatGPTImport) {
         guard let saved = model.saveImport(found, title: title, grade: grade, into: drill) else {
-            note = "Månadens frågor är slut." + (model.quota.map { " \($0.line)." } ?? "") // D155
+            note = "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(Self.nextMonth())." // D155
             return
         }
         onSaved(saved)
         dismiss()
+    }
+
+    /// "december": the month after this one, in Swedish.
+    private static func nextMonth(after date: Date = Date()) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "sv_SE")
+        let month = calendar.component(.month, from: date) // 1...12
+        return calendar.monthSymbols[month % 12]
     }
 
     // MARK: Not recognised
