@@ -1,0 +1,170 @@
+[
+ {
+  "q": "hur får jag det långa svaret",
+  "run": 1,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag det korta svaret",
+  "run": 1,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag höra svaret på en fråga",
+  "run": 1,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "vad händer om någon ringer mig under provet",
+  "run": 1,
+  "answer": "Ett samtal pausar provet. Det fortsätter när du trycker på AirPods igen, inte av sig självt när samtalet är slut.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "kan appen påminna mig att plugga varje dag",
+  "run": 1,
+  "answer": "Nej, Earmind har inga egna påminnelser om att plugga. I Standardläget, som är i beta, kan du be Earmind lägga in en påminnelse i appen Påminnelser.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "vad gör ett tryck på airpods",
+  "run": 1,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "jag vill höra hela förklaringen",
+  "run": 1,
+  "answer": "Det vet jag inte. Skriv till oss under Inställningar › Om Earmind.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "vad är skillnaden på att trycka en och två gånger",
+  "run": 1,
+  "answer": "1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Trycken fungerar både medan frågan spelas och under betänketiden efter den.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag det långa svaret",
+  "run": 2,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag det korta svaret",
+  "run": 2,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag höra svaret på en fråga",
+  "run": 2,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "vad händer om någon ringer mig under provet",
+  "run": 2,
+  "answer": "Ett samtal pausar provet. Provet fortsätter inte av sig självt när samtalet är slut, utan när du trycker igen på AirPods.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "kan appen påminna mig att plugga varje dag",
+  "run": 2,
+  "answer": "Nej, Earmind har inga egna påminnelser om att plugga. I Standardläget, som är i beta, kan du be Earmind lägga in en påminnelse i appen Påminnelser.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "vad gör ett tryck på airpods",
+  "run": 2,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "jag vill höra hela förklaringen",
+  "run": 2,
+  "answer": "Det vet jag inte. Skriv till oss under Inställningar › Om Earmind.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "vad är skillnaden på att trycka en och två gånger",
+  "run": 2,
+  "answer": "1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Trycken fungerar både medan frågan spelas och under betänketiden efter den.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag det långa svaret",
+  "run": 3,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag det korta svaret",
+  "run": 3,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "hur får jag höra svaret på en fråga",
+  "run": 3,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "vad händer om någon ringer mig under provet",
+  "run": 3,
+  "answer": "Ett samtal pausar provet. Det fortsätter när du trycker igen på AirPods, du behöver inte röra telefonen.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "kan appen påminna mig att plugga varje dag",
+  "run": 3,
+  "answer": "Nej, Earmind har inga egna påminnelser om att plugga. I Standardläget, som är i beta, kan du be Earmind lägga in en påminnelse i appen Påminnelser.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "vad gör ett tryck på airpods",
+  "run": 3,
+  "answer": "Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta. Under paus fortsätter vilket tryck som helst från början av meningen där du slutade.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "jag vill höra hela förklaringen",
+  "run": 3,
+  "answer": "Det vet jag inte. Skriv till oss under Inställningar › Om Earmind.",
+  "in_scope": true,
+  "error": null
+ },
+ {
+  "q": "vad är skillnaden på att trycka en och två gånger",
+  "run": 3,
+  "answer": "1 tryck ger det långa A-svaret. 2 tryck ger det korta A-svaret, en till två meningar. 3 tryck gör en paus. Trycken fungerar både medan frågan spelas och under betänketiden efter den.",
+  "in_scope": true,
+  "error": null
+ }
+]

@@ -84,6 +84,18 @@ def variants():
     add("19 samma fråga två gånger", std(P + [P[0]]), 7, pairs=P + [P[0]], note="dubbletten: ska den varnas?")
     add("20 inget går att läsa (engelska etiketter och skräp)",
         "Sure! Here are your questions:\n\n" + std(P[:3], "Q: {q}", "A: {a}") + "\n\nSvar: ett svar utan fråga", 0, pairs=[], status=422)
+    # 21-26: nya efter K60, inte i Kevins och Angelas fixtur (testdata/import/o58-cases.json)
+    add("21 fråga och svar på samma rad", "\n\n".join(f"Fråga: {q} Svar: {a}" for q, a in P), 6)
+    add("22 1) Fråga och F:/S:", "\n\n".join((f"{i + 1}) Fråga: {q}\nSvar: {a}" if i % 2 else f"F: {q}\nS: {a}")
+                                            for i, (q, a) in enumerate(P)), 6)
+    add("23 avslutning direkt efter sista svaret", std(P) + "\nHoppas det hjälper! Säg till om du vill ha fler.", 6,
+        note="ingen tom rad före avslutningen")
+    lst = "Forskare varnar för utbrott genom att mäta tre saker:\n- jordskalv\n- att marken höjer sig\n- mer gas"
+    add("24 punktlista inne i svaret", std(P[:5] + [(P[5][0], lst)]), 6,
+        pairs=P[:5] + [(P[5][0], "Forskare varnar för utbrott genom att mäta tre saker: jordskalv att marken höjer sig mer gas")])
+    add("25 tankstreck i stället för kolon, fetstil runt allt", "\n\n".join(f"**Fråga – {q}**\n**Svar – {a}**" for q, a in P), 6,
+        note="ok med 6, eller ett tydligt 422")
+    add("26 frågan på två rader", "\n\n".join(f"Fråga: {q.split()[0]}\n{' '.join(q.split()[1:])}\nSvar: {a}" for q, a in P), 6)
     return v
 
 
