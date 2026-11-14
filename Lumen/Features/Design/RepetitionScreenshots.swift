@@ -21,7 +21,32 @@ enum RepetitionDemo {
                                       "repHomeNew", "repHomeStarted", "repSoundProblem", "repHomeSoundProblem",
                                       // A99 (D175, D176): no questions left this month; longer questions
                                       "repQuotaUsedUp", "repLength", "repLengthEdit", "repSoundProblemNone",
-                                      "repWaitingProblem"]
+                                      "repWaitingProblem",
+                                      // A102 (K66 point 4): numbers and formulas shown as in a textbook
+                                      "repNumbers", "repNumbersEdit"]
+
+    /// A102: Matteprovet, spoken with the numbers as words, shown with digits and formulas (`DrillItem.screen`).
+    static let maths: Drill = {
+        func item(_ q: String, _ s: String, _ l: String, shown: DrillScreenText) -> DrillItem {
+            var item = DrillItem(question: q, short: s, long: l)
+            item.screen = shown
+            return item
+        }
+        return Drill(title: "Matteprovet", summary: DrillSummary(subject: "Matematik", grade: "åk 9", covers: "Geometri och historia om talen."),
+                     items: [
+                        item("Vad säger Pythagoras sats?", "a i kvadrat plus b i kvadrat är c i kvadrat.",
+                             "a i kvadrat plus b i kvadrat är c i kvadrat. Det gäller i en rätvinklig triangel.",
+                             shown: DrillScreenText(question: nil, short: "a² + b² = c².",
+                                                    long: "a² + b² = c². Det gäller i en rätvinklig triangel.")),
+                        item("Hur räknar man ut arean av en cirkel?", "A är pi gånger r i kvadrat.",
+                             "A är pi gånger r i kvadrat. Pi är ungefär tre komma fjorton.",
+                             shown: DrillScreenText(question: nil, short: "A = π · r².",
+                                                    long: "A = π · r². π är ungefär 3,14.")),
+                        item("När fick Sverige sin första järnväg för persontrafik?", "Artonhundrafemtiosex.",
+                             "Artonhundrafemtiosex. Den gick mellan Örebro och Ervalla.",
+                             shown: DrillScreenText(question: nil, short: "1856.", long: "1856. Den gick mellan Örebro och Ervalla.")),
+                     ])
+    }()
 
     /// A100: an exam whose sound could not be made at all (the voice service is out): Starta prov is grey.
     static let chemistry = Drill(title: "Kemiprovet", summary: DrillSummary(subject: "Kemi", grade: "åk 9", covers: "Syror och baser."),
@@ -98,6 +123,7 @@ enum RepetitionDemo {
         // A99: the month's questions are used up (D175); the server's length classes (D176).
         if name == "repQuotaUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
         if name == "repLength" || name == "repLengthEdit" { model.store.save(drillWithLengths) }
+        if name == "repNumbers" || name == "repNumbersEdit" { model.store.save(maths) } // A102
         if name == "repSoundProblemNone", let audio = model.audio as? DeviceVoiceDrillAudio {
             model.store.save(chemistry) // no files at all
             audio.stagedProblems[chemistry.id] = CloudDrillAudio.unavailableLine
@@ -171,6 +197,8 @@ enum RepetitionDemo {
             case "repQuotaUsedUp": NewDrillView(model: model) { _ in }
             case "repLength": NavigationStack { DrillView(model: model, drillID: drill.id) }
             case "repLengthEdit": DrillItemEditor(model: model, drill: drillWithLengths, itemID: drill.items[2].id)
+            case "repNumbers": NavigationStack { DrillView(model: model, drillID: maths.id) }
+            case "repNumbersEdit": DrillItemEditor(model: model, drill: maths, itemID: maths.items[1].id)
             case "repMaterial": NewDrillView(model: model) { _ in }
             case "fsWelcome": WelcomeView {}
             case "fsReadMore": DataPrivacySheet()

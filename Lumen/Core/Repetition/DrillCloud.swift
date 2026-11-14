@@ -52,6 +52,8 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         /// K61 (D176): the question and the long answer, in characters to ElevenLabs, and its class.
         var voice_chars: Int?
         var length_class: String?
+        /// K66 point 4 (A102): the shown text, as it was saved.
+        var screen: DrillScreenText?
     }
 
     struct Totals: Decodable, Sendable, Equatable {
@@ -176,6 +178,14 @@ final class DrillCloudClient: DrillCloudSyncing {
         let items: [[String: Any]] = drill.items.map { item in
             var row: [String: Any] = ["question": item.question, "short": item.short, "long": item.long]
             if let id = item.serverID { row["id"] = id }
+            // A102 (K66 point 4): only the fields that differ; a field the user changed has none (`DrillItem.edited`).
+            if let screen = item.screen, !screen.isEmpty {
+                var shown: [String: String] = [:]
+                if let q = screen.question { shown["question"] = q }
+                if let s = screen.short { shown["short"] = s }
+                if let l = screen.long { shown["long"] = l }
+                row["screen"] = shown
+            }
             return row
         }
         return ["action": "save", "drill": info, "items": items]
@@ -289,6 +299,7 @@ extension Drill {
         let items = view.items.sorted { $0.position < $1.position }.enumerated().map { offset, remote in
             var item = DrillItem(question: remote.question, short: remote.short, long: remote.long, serverID: remote.id)
             item.lengthClass = remote.length_class.flatMap(DrillLengthClass.init(rawValue:)) // K61 (D176)
+            item.screen = remote.screen.flatMap { $0.isEmpty ? nil : $0 } // A102
             if let local, local.items.indices.contains(offset) {
                 let mine = local.items[offset]
                 item.id = mine.id

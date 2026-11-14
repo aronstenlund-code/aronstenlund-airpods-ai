@@ -61,7 +61,21 @@ final class DrillClient: DrillMaking {
 
     private struct Reply: Decodable {
         struct Summary: Decodable { var subject: String?; var grade: String?; var covers: String? }
-        struct Item: Decodable { var id: String?; var question: String; var short: String?; var long: String? }
+        struct Item: Decodable {
+            var id: String?
+            var question: String
+            var short: String?
+            var long: String?
+            /// K66 point 4 (A102): the shown text, only the fields that differ.
+            struct Screen: Decodable { var question: String?; var short: String?; var long: String? }
+            var screen: Screen?
+
+            func screenText(spokenShort: String, spokenLong: String) -> DrillScreenText? {
+                guard let screen else { return nil }
+                return DrillScreenText.made(question: screen.question, short: screen.short, long: screen.long,
+                                            spokenShort: spokenShort, spokenLong: spokenLong)
+            }
+        }
         var summary: Summary?
         var notes: String?
         var items: [Item]?
@@ -146,7 +160,9 @@ final class DrillClient: DrillMaking {
                                    covers: reply.summary?.covers ?? "")
         let items = (reply.items ?? []).map { item in
             let short = item.short ?? ""
-            return DrillItem(question: item.question, short: short, long: DrillItem.long(item.long ?? "", startingWith: short))
+            var made = DrillItem(question: item.question, short: short, long: DrillItem.long(item.long ?? "", startingWith: short))
+            made.screen = item.screenText(spokenShort: short, spokenLong: item.long ?? "") // A102
+            return made
         }
         guard !items.isEmpty else { throw .server("no questions") }
         let note = reply.note?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -167,6 +183,13 @@ final class DrillClient: DrillMaking {
             var item = item
             item.short = short
             item.long = DrillItem.long(made.long ?? "", startingWith: short)
+            // A102: the question's shown text from step 1 stays; the answers' come now.
+            let answers = made.screenText(spokenShort: short, spokenLong: made.long ?? "")
+            var screen = item.screen ?? DrillScreenText()
+            screen.short = answers?.short
+            screen.long = answers?.long
+            if screen.question == nil { screen.question = answers?.question }
+            item.screen = screen.isEmpty ? nil : screen
             return item
         }
         guard filled.contains(where: { !$0.short.isEmpty }) else { throw .server("no answers") }
@@ -179,8 +202,10 @@ final class DrillClient: DrillMaking {
         let reply = try await call(body, timeout: 60)
         guard let item = reply.item else { throw .server("no item") }
         let short = item.short ?? ""
-        return DrillItem(question: item.question.isEmpty ? question : item.question, short: short,
-                         long: DrillItem.long(item.long ?? "", startingWith: short))
+        var made = DrillItem(question: item.question.isEmpty ? question : item.question, short: short,
+                             long: DrillItem.long(item.long ?? "", startingWith: short))
+        made.screen = item.screenText(spokenShort: short, spokenLong: item.long ?? "") // A102
+        return made
     }
 
     func documentText(docx: Data) async throws(DrillMakingError) -> String {

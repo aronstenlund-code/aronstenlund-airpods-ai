@@ -82,6 +82,9 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
     /// K61 (D176): the server's length class (question + long answer in characters to ElevenLabs). Nil until the
     /// server has seen the item, and after the text is changed.
     var lengthClass: DrillLengthClass?
+    /// A102 (K66 point 4): the text to show where it differs from the spoken one (numbers and formulas as in a
+    /// textbook: "1850", "a² + b²"). The voice always reads `question`, `short` and `long`. Nil when they are the same.
+    var screen: DrillScreenText?
 
     init(id: UUID = UUID(), question: String, short: String, long: String, serverID: String? = nil) {
         self.id = id
@@ -89,6 +92,37 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
         self.short = short
         self.long = long
         self.serverID = serverID
+    }
+
+    /// A102: what the screen shows. Old exams without `screen` show the spoken text, as before.
+    var shownQuestion: String { screen?.question ?? question }
+    var shownShort: String { screen?.short ?? short }
+    var shownLong: String { screen?.long ?? long }
+    /// The whole answer as the editor shows it (the short answer first).
+    var shownAnswer: String { DrillItem.long(shownLong, startingWith: shownShort) }
+
+    /// A102: the item after the editor, which showed `shownQuestion` and `shownAnswer`. A field the user did not
+    /// change keeps its spoken and its shown text; a changed one is spoken and shown as written (its old screen text
+    /// would show the old words). Everything else (ids, sound) stays; `RepetitionModel.save` drops the sound of a
+    /// changed text.
+    func edited(question newQuestion: String, answer newAnswer: String) -> DrillItem {
+        var item = self
+        let q = newQuestion.trimmingCharacters(in: .whitespacesAndNewlines)
+        let a = newAnswer.trimmingCharacters(in: .whitespacesAndNewlines)
+        var screen = self.screen ?? DrillScreenText()
+        if q != shownQuestion.trimmingCharacters(in: .whitespacesAndNewlines) {
+            item.question = q
+            screen.question = nil
+        }
+        if a != shownAnswer.trimmingCharacters(in: .whitespacesAndNewlines) {
+            item.short = DrillItem.firstSentence(a)
+            item.long = a
+            screen.short = nil
+            screen.long = nil
+        }
+        item.screen = screen.isEmpty ? nil : screen
+        if !item.sameText(as: self) { item.lengthClass = nil }
+        return item
     }
 
     /// The same texts (an item whose texts did not change keeps its sound).
@@ -117,6 +151,36 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
         guard !s.isEmpty else { return l }
         if l.hasPrefix(s) { return l }
         return l.isEmpty ? s : s + " " + l
+    }
+}
+
+/// A102 (K66 point 4): the shown text of a question and its answers, only the fields that differ from the spoken one.
+struct DrillScreenText: Codable, Equatable, Sendable {
+    var question: String?
+    var short: String?
+    var long: String?
+
+    var isEmpty: Bool { question == nil && short == nil && long == nil }
+
+    /// From /exam (`drill`, `drill_answers`, `drill_one`): the long answer is shown like the spoken one, starting with
+    /// the short answer, so a shown short answer goes first in the shown long one too.
+    static func made(question: String?, short: String?, long: String?, spokenShort: String, spokenLong: String) -> DrillScreenText? {
+        func clean(_ s: String?) -> String? {
+            guard let t = s?.trimmingCharacters(in: .whitespacesAndNewlines), !t.isEmpty else { return nil }
+            return t
+        }
+        let q = clean(question), s = clean(short), l = clean(long)
+        var shownLong: String?
+        if l != nil || s != nil {
+            var rest = l ?? spokenLong.trimmingCharacters(in: .whitespacesAndNewlines)
+            let spoken = spokenShort.trimmingCharacters(in: .whitespacesAndNewlines)
+            if l == nil, !spoken.isEmpty, rest.hasPrefix(spoken) {
+                rest = String(rest.dropFirst(spoken.count)).trimmingCharacters(in: .whitespaces)
+            }
+            shownLong = DrillItem.long(rest, startingWith: s ?? spoken)
+        }
+        let text = DrillScreenText(question: q, short: s, long: shownLong)
+        return text.isEmpty ? nil : text
     }
 }
 
