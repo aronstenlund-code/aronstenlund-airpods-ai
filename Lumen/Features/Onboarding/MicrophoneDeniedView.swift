@@ -10,10 +10,10 @@ struct MicrophoneDeniedView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Earmind hör dig inte")
+                    Text("EarMind hör dig inte")
                         .font(LumenFont.text(36, .bold, relativeTo: .largeTitle))
                         .accessibilityAddTraits(.isHeader)
-                    Text("Mikrofonen är avstängd för Earmind. Slå på den, så kan du fråga direkt.")
+                    Text("Mikrofonen är avstängd för EarMind. Slå på den, så kan du fråga direkt.")
                         .font(LumenFont.text(17))
                         .foregroundStyle(LumenColor.muted)
                 }

@@ -16,9 +16,9 @@ struct TestModeSheet: View {
                     .font(LumenFont.text(26, .bold, relativeTo: .title))
                     .accessibilityAddTraits(.isHeader)
                 VStack(alignment: .leading, spacing: 14) {
-                    point("waveform", "Allt ljud medan Earmind lyssnar skickas till oss, också andras röster och bakgrundsljud. Det hjälper oss att höra om frågan uppfattades rätt.")
+                    point("waveform", "Allt ljud medan EarMind lyssnar skickas till oss, också andras röster och bakgrundsljud. Det hjälper oss att höra om frågan uppfattades rätt.")
                     point("calendar", "Ljudet sparas i 14 dagar och raderas sedan.")
-                    point("record.circle", "Så länge ljud skickas står det ”Testläge · ljud skickas” där Earmind visar att den lyssnar.")
+                    point("record.circle", "Så länge ljud skickas står det ”Testläge · ljud skickas” där EarMind visar att den lyssnar.")
                     point("person.2", "Slå bara på det där de som hörs vet om det.")
                     point("switch.2", "Du stänger av det när du vill i Inställningar › Testläge.")
                 }

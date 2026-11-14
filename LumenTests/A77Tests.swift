@@ -2,7 +2,7 @@ import Foundation
 import Testing
 @testable import Lumen
 
-/// A77 (K44, D118): "Vad kan Earmind?" reads the one list (`Shared/capabilities.json`, the server's too), and every
+/// A77 (K44, D118): "Vad kan EarMind?" reads the one list (`Shared/capabilities.json`, the server's too), and every
 /// /answer says which permissions are granted, so "kan du sätta en timer?" is answered like the screen.
 @MainActor
 @Suite struct A77Tests {

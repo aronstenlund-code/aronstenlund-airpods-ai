@@ -268,7 +268,7 @@ extension DrillMakingError {
         case .noMaterial: "Lägg till material först."
         case .offline: "Ingen internetanslutning. Frågorna görs när du är uppkopplad igen."
         case .server(let why) where why == "no questions":
-            "Earmind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text."
+            "EarMind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text."
         case .refused(let message): message
         case .server: "Det gick inte att skapa frågorna. Försök igen." // A85
         }

@@ -61,7 +61,7 @@ import Testing
     }
 
     @Test func theSoundSentenceIsReplacedNotAdded() {
-        // Ke46 T4: D138's "sparas inte av Earmind" is not true in the test mode; the note replaces it.
+        // Ke46 T4: D138's "sparas inte av EarMind" is not true in the test mode; the note replaces it.
         #expect(!TestModeSettings.soundNote.contains("sparas inte"))
         #expect(TestModeSettings.soundNote.contains("14 dagar"))
         #expect(TestModeSettings.soundNote.hasSuffix("Sömnläget sparar klippen bara på din telefon."))

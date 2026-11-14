@@ -174,7 +174,7 @@ final class LivePhoneTools: PhoneToolRunning {
 
     nonisolated private static func attributes(_ label: String?) -> AlarmAttributes<LumenAlarmMetadata> {
         let stop = AlarmButton(text: "Stopp", textColor: .white, systemImageName: "stop.fill")
-        let alert = AlarmPresentation.Alert(title: LocalizedStringResource(stringLiteral: label ?? "Earmind"), stopButton: stop)
+        let alert = AlarmPresentation.Alert(title: LocalizedStringResource(stringLiteral: label ?? "EarMind"), stopButton: stop)
         return AlarmAttributes(presentation: AlarmPresentation(alert: alert), tintColor: LumenColor.blue)
     }
 

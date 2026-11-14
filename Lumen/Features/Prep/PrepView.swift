@@ -24,7 +24,7 @@ struct PrepView: View {
                         LabeledContent("Provfrågor", value: materials.isReady ? "\(materials.paper.tasks.count) frågor" : "Lägg till")
                     }
                 } footer: {
-                    Text("Ett prov (PDF, foto eller text) som Earmind läser upp fråga för fråga i Provläge och rättar.")
+                    Text("Ett prov (PDF, foto eller text) som EarMind läser upp fråga för fråga i Provläge och rättar.")
                 }
             }
             Section {

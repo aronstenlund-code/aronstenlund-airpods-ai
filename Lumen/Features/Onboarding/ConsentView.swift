@@ -20,7 +20,7 @@ struct ConsentView: View {
                     Text("Innan du börjar")
                         .font(LumenFont.text(32, .bold, relativeTo: .largeTitle))
                         .accessibilityAddTraits(.isHeader)
-                    Text("Earmind är en pluggkompis som lyssnar genom dina AirPods och svarar på det du frågar. Så här gör den med ljud och text.")
+                    Text("EarMind är en pluggkompis som lyssnar genom dina AirPods och svarar på det du frågar. Så här gör den med ljud och text.")
                         .font(LumenFont.text(17))
                         .foregroundStyle(LumenColor.muted)
                 }
@@ -32,16 +32,16 @@ struct ConsentView: View {
                           text: "Du startar och stoppar själv. När mikrofonen är på syns en blå lyssnarbricka i appen, och iOS visar sin egen mikrofonsymbol.")
                     point(symbol: "waveform",
                           title: "Talet skrivs ut av ElevenLabs",
-                          text: "Medan Earmind lyssnar skickas ljudet till ElevenLabs, som skriver ut det. Svaren läses också upp med en röst från ElevenLabs. Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon.")
+                          text: "Medan EarMind lyssnar skickas ljudet till ElevenLabs, som skriver ut det. Svaren läses också upp med en röst från ElevenLabs. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon.")
                     point(symbol: "cloud",
                           title: "Svaren kommer från Claude",
-                          text: "Texten skickas via Earminds server till Claude från Anthropic, som tar fram svaret. Utan nät blir det inga svar.")
+                          text: "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Utan nät blir det inga svar.")
                     point(symbol: "paperplane",
                           title: "Frågor och svar skickas till oss",
-                          text: "Dina frågor och Earminds svar skickas till oss så att vi kan göra Earmind bättre. Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon. Texten raderas när vi har läst den.")
+                          text: "Dina frågor och EarMinds svar skickas till oss så att vi kan göra EarMind bättre. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon. Texten raderas när vi har läst den.")
                     point(symbol: "person.2",
                           title: "Andras ord kan också komma med",
-                          text: "I Standardläge svarar Earmind också på frågor som någon annan ställer, till exempel läraren. Då skrivs deras ord ut och skickas på samma sätt. Berätta för dem runt dig att du använder Lumen, och använd den inte där inspelning inte är tillåten, till exempel på prov.")
+                          text: "I Standardläge svarar EarMind också på frågor som någon annan ställer, till exempel läraren. Då skrivs deras ord ut och skickas på samma sätt. Berätta för dem runt dig att du använder Lumen, och använd den inte där inspelning inte är tillåten, till exempel på prov.")
                     point(symbol: "clock.arrow.circlepath",
                           title: "Historik på telefonen",
                           text: "Dina frågor och svar sparas också i Historik på den här telefonen i högst två år. Du kan radera dem i Inställningar när du vill.")
@@ -78,7 +78,7 @@ struct ConsentView: View {
         switch mode {
         case .onboarding(let onAccept):
             VStack(spacing: 8) {
-                Button("Jag förstår, starta Earmind", action: onAccept)
+                Button("Jag förstår, starta EarMind", action: onAccept)
                     .buttonStyle(LumenButtonStyle())
                 Text("Genom att fortsätta bekräftar du att du har läst punkterna ovan.")
                     .font(LumenFont.text(14, relativeTo: .footnote))

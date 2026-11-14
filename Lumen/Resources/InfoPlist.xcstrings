@@ -7,13 +7,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind"
+            "value": "EarMind"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind"
+            "value": "EarMind"
           }
         }
       }
@@ -24,13 +24,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When you ask, Earmind sets timers and alarms. It asks before it sets an alarm."
+            "value": "When you ask, EarMind sets timers and alarms. It asks before it sets an alarm."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "När du ber om det ställer Earmind timers och larm. Earmind frågar innan den ställer ett larm."
+            "value": "När du ber om det ställer EarMind timers och larm. EarMind frågar innan den ställer ett larm."
           }
         }
       }
@@ -41,13 +41,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When you ask, Earmind adds events to your calendar and tells you what is in it. It always asks before it adds something."
+            "value": "When you ask, EarMind adds events to your calendar and tells you what is in it. It always asks before it adds something."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "När du ber om det lägger Earmind in händelser i din kalender och berättar vad som finns i den. Earmind frågar alltid innan den lägger in något."
+            "value": "När du ber om det lägger EarMind in händelser i din kalender och berättar vad som finns i den. EarMind frågar alltid innan den lägger in något."
           }
         }
       }
@@ -58,13 +58,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Take a photo of the page you are studying, so Earmind can quiz you on it. The text is read on the iPhone; the photo is not saved."
+            "value": "Take a photo of the page you are studying, so EarMind can quiz you on it. The text is read on the iPhone; the photo is not saved."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fota sidan du pluggar på, så förhör Earmind dig på den. Texten läses på telefonen, och bilden sparas inte."
+            "value": "Fota sidan du pluggar på, så förhör EarMind dig på den. Texten läses på telefonen, och bilden sparas inte."
           }
         }
       }
@@ -75,13 +75,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When you say \"Lumen, call Mum\", Earmind looks the name up in your contacts to find the number. Nothing from your contacts is sent anywhere."
+            "value": "When you say \"Lumen, call Mum\", EarMind looks the name up in your contacts to find the number. Nothing from your contacts is sent anywhere."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "När du säger ”Lumen, ring mamma” letar Earmind upp namnet i dina kontakter för att hitta numret. Inget från kontakterna skickas någonstans."
+            "value": "När du säger ”Lumen, ring mamma” letar EarMind upp namnet i dina kontakter för att hitta numret. Inget från kontakterna skickas någonstans."
           }
         }
       }
@@ -92,13 +92,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio becomes text and is not saved by Earmind. Sleep mode keeps its clips only on your phone."
+            "value": "EarMind listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio becomes text and is not saved by EarMind. Sleep mode keeps its clips only on your phone."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind lyssnar genom mikrofonen för att skriva ut tal och svara på frågor i dina AirPods. Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon."
+            "value": "EarMind lyssnar genom mikrofonen för att skriva ut tal och svara på frågor i dina AirPods. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon."
           }
         }
       }
@@ -109,13 +109,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When you ask, Earmind adds reminders. It always asks before it adds one."
+            "value": "When you ask, EarMind adds reminders. It always asks before it adds one."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "När du ber om det lägger Earmind in påminnelser. Earmind frågar alltid innan den lägger in en."
+            "value": "När du ber om det lägger EarMind in påminnelser. EarMind frågar alltid innan den lägger in en."
           }
         }
       }
@@ -126,13 +126,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind can use the iPhone's own speech recognition, as a fallback or when you switch off cloud recognition in Settings."
+            "value": "EarMind can use the iPhone's own speech recognition, as a fallback or when you switch off cloud recognition in Settings."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind kan använda iPhonens egen taligenkänning, som reserv eller när du stänger av molnet i Inställningar."
+            "value": "EarMind kan använda iPhonens egen taligenkänning, som reserv eller när du stänger av molnet i Inställningar."
           }
         }
       }

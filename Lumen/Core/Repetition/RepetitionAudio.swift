@@ -30,8 +30,8 @@ extension RepetitionAudioPlayer {
     func seek(to time: TimeInterval) {}
 }
 
-/// A91 (D164): music while the repetition is paused, played by Earmind itself so the AirPods' presses still reach
-/// Earmind (Spotify would take them). Stopping it is quick, so the questions go on well within 10 s.
+/// A91 (D164): music while the repetition is paused, played by EarMind itself so the AirPods' presses still reach
+/// EarMind (Spotify would take them). Stopping it is quick, so the questions go on well within 10 s.
 @MainActor
 protocol RepetitionPauseMusic: AnyObject {
     var isAvailable: Bool { get }

@@ -10,14 +10,14 @@ struct AboutView: View {
         List {
             Section {
                 if testModeOn { // Ke46 T4: D138's sentence is replaced while the test mode is on
-                    Text("Earmind lyssnar bara när du har startat den, och du ser alltid när den lyssnar. " + TestModeSettings.soundNote)
+                    Text("EarMind lyssnar bara när du har startat den, och du ser alltid när den lyssnar. " + TestModeSettings.soundNote)
                 } else {
-                    Text("Earmind lyssnar bara när du har startat den, och du ser alltid när den lyssnar. Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon.") // A73 (D138)
+                    Text("EarMind lyssnar bara när du har startat den, och du ser alltid när den lyssnar. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon.") // A73 (D138)
                 }
-                Text("Frågor och svar går via Earminds server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen.")
+                Text("Frågor och svar går via EarMinds server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen.")
                     .foregroundStyle(.secondary)
                 // A27 (Oscar O24) and A39/A41 (D116): where the questions go and are kept, said plainly.
-                Text("Dina frågor och Earminds svar skickas till oss så att vi kan göra Earmind bättre. " + (testModeOn ? "" : "Ljudet blir text och sparas inte av Earmind. Sömnläget sparar klippen bara på din telefon. ") + "Texten raderas när vi har läst den. På telefonen sparas de i Historik i högst två år, och du kan radera dem där.")
+                Text("Dina frågor och EarMinds svar skickas till oss så att vi kan göra EarMind bättre. " + (testModeOn ? "" : "Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon. ") + "Texten raderas när vi har läst den. På telefonen sparas de i Historik i högst två år, och du kan radera dem där.")
                     .foregroundStyle(.secondary)
             }
             Section {

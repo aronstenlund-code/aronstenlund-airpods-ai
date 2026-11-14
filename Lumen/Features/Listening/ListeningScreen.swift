@@ -157,7 +157,7 @@ struct ListeningScreen: View {
         }
         return switch state {
         case .paused: "Tryck Lyssna igen eller säg ”Lumen, fortsätt”"
-        default: mode.isLive ? "Earmind ger ett förslag i pausen" : ""
+        default: mode.isLive ? "EarMind ger ett förslag i pausen" : ""
         }
     }
 
@@ -430,8 +430,8 @@ struct ModeSwitchSheet: View {
     private var footnote: String {
         // Ke53 point 11 (Kelly S1): one footnote for the section instead of a badge on every row.
         "Alla lägen här lyssnar och är i BETA. " + (onPick == nil
-            ? "Earmind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
-            : "Valet gäller Starta Earmind. Starta prov använder aldrig mikrofonen.") // Kelly N4
+            ? "EarMind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
+            : "Valet gäller Starta EarMind. Starta prov använder aldrig mikrofonen.") // Kelly N4
     }
 
     var body: some View {

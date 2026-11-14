@@ -86,7 +86,7 @@ struct SettingsView: View {
                 }
                 if let repetition = model.repetition, repetition.help != nil {
                     // A92 (D166): the help AI; "Öppna Inställningar" in an answer is where the user already is.
-                    NavigationLink("Fråga om Earmind") { HelpChatView(model: repetition) }
+                    NavigationLink("Fråga om EarMind") { HelpChatView(model: repetition) }
                 }
                 NavigationLink("Feedback och förslag") { FeedbackView(model: model) }
                 NavigationLink("Om appen") { AboutView() }
@@ -171,7 +171,7 @@ struct SettingsView: View {
         } header: {
             Text("Utseende")
         } footer: {
-            Text("Som standard följer Earmind iPhonens ljusa eller mörka läge.")
+            Text("Som standard följer EarMind iPhonens ljusa eller mörka läge.")
         }
     }
 
@@ -258,7 +258,7 @@ struct SettingsView: View {
                      ? "Servern tar inte emot testljud från det här kontot ännu. Inget ljud sparas eller skickas."
                      : settings.isEnabled
                      ? TestModeSettings.soundNote + " Brickan visar ”Testläge · ljud skickas” så länge ljud skickas."
-                     : "Av. Slå bara på det om du testar Earmind åt oss: då skickas allt ljud medan Earmind lyssnar, så att vi kan höra om frågan urskildes rätt.")
+                     : "Av. Slå bara på det om du testar EarMind åt oss: då skickas allt ljud medan EarMind lyssnar, så att vi kan höra om frågan urskildes rätt.")
             }
         }
     }
@@ -325,7 +325,7 @@ struct SettingsView: View {
             } header: {
                 Text("Mina svar")
             } footer: {
-                Text("När en fråga du har sparat kommer i Provläget säger Earmind ditt svar, ordagrant. Av betyder att Earmind svarar själv; inget raderas.")
+                Text("När en fråga du har sparat kommer i Provläget säger EarMind ditt svar, ordagrant. Av betyder att EarMind svarar själv; inget raderas.")
             }
         }
     }
@@ -400,10 +400,10 @@ struct SettingsView: View {
             Toggle("Ekoreducering i iPhonens högtalare", isOn: echoBinding)
             Toggle("Pausa när AirPods kopplas bort", isOn: Binding(get: { model.microphone.pauseWhenAirPodsLost },
                                                                   set: { model.microphone.pauseWhenAirPodsLost = $0 }))
-            Text("Av: Earmind lyssnar vidare och svaren hörs i telefonens högtalare.")
+            Text("Av: EarMind lyssnar vidare och svaren hörs i telefonens högtalare.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-            Text("När ljudet går ut i iPhonens egen högtalare hör mikrofonen annars Earmind. Med AirPods eller hörlurar används den aldrig, så mikrofonen behåller sin kvalitet.")
+            Text("När ljudet går ut i iPhonens egen högtalare hör mikrofonen annars EarMind. Med AirPods eller hörlurar används den aldrig, så mikrofonen behåller sin kvalitet.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -441,7 +441,7 @@ struct SettingsView: View {
                 Text("Medium").tag(GateSensitivity.medium)
                 Text("High").tag(GateSensitivity.high)
             }
-            Text("Every mode is hands-free: Earmind listens for questions in the room. Higher sensitivity answers more, and more often by mistake. The text field is the fallback.")
+            Text("Every mode is hands-free: EarMind listens for questions in the room. Higher sensitivity answers more, and more often by mistake. The text field is the fallback.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -477,9 +477,9 @@ struct SettingsView: View {
                 }
             }
         } header: {
-            Text("Paus innan Earmind svarar")
+            Text("Paus innan EarMind svarar")
         } footer: {
-            Text("Hur länge du ska vara tyst innan svaret läses upp. Earmind börjar arbeta på svaret redan när meningen är hörd, så kortare paus ger snabbare svar men fler avbrutna försök.")
+            Text("Hur länge du ska vara tyst innan svaret läses upp. EarMind börjar arbeta på svaret redan när meningen är hörd, så kortare paus ger snabbare svar men fler avbrutna försök.")
         }
         Section("Provläge") {
             Stepper(value: $study.autoEndMinutes, in: 0...60) {
@@ -503,7 +503,7 @@ struct SettingsView: View {
                     .font(.footnote.monospacedDigit())
                     .frame(width: 52, alignment: .trailing)
             }
-            Text("Earmind tells you from the other person by input level. Tuned on device.")
+            Text("EarMind tells you from the other person by input level. Tuned on device.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -531,7 +531,7 @@ struct SettingsView: View {
         } header: {
             Text("Kalibrering")
         } footer: {
-            Text("Under en session: säg \"\(WakeWord.name), lite mindre kaxig\" eller \"\(WakeWord.name), mer skämt\". Earmind kommer ihåg det här på telefonen och skickar det med varje förslag. \"\(WakeWord.name), ge mig tre\" ger fler förslag en gång.")
+            Text("Under en session: säg \"\(WakeWord.name), lite mindre kaxig\" eller \"\(WakeWord.name), mer skämt\". EarMind kommer ihåg det här på telefonen och skickar det med varje förslag. \"\(WakeWord.name), ge mig tre\" ger fler förslag en gång.")
         }
     }
 

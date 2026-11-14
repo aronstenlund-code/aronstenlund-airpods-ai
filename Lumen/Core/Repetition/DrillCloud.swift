@@ -139,7 +139,7 @@ enum DrillCloudError: Error, Equatable {
     var userMessage: String {
         switch self {
         case .refused(_, _, let message): message
-        case .offline: "Ingen kontakt med Earmind just nu. Försök igen om en stund."
+        case .offline: "Ingen kontakt med EarMind just nu. Försök igen om en stund."
         }
     }
 }
@@ -274,7 +274,7 @@ final class DrillCloudClient: DrillCloudSyncing {
             var error: Inner?
         }
         let inner = (try? JSONDecoder().decode(Body.self, from: data))?.error
-        let fallback = status == 404 ? "Provet finns inte." : "Earmind kunde inte spara just nu. Försök igen om en stund."
+        let fallback = status == 404 ? "Provet finns inte." : "EarMind kunde inte spara just nu. Försök igen om en stund."
         return .refused(status: status, code: inner?.code ?? "http_\(status)", message: inner?.message ?? fallback)
     }
 }
@@ -455,7 +455,7 @@ final class CloudDrillAudio: DrillAudioProviding {
                 let files = view.items.flatMap { [$0.audio.question, $0.audio.long] }
                 problems[drill.id] = files.contains { $0.isFailed && Self.isUnavailable($0.error) }
                     ? Self.unavailableLine // K62: the voice service is out, not this exam
-                    : "Ljudet för \(DrillText.questions(failed)) kunde inte göras. Earmind försöker igen av sig själv."
+                    : "Ljudet för \(DrillText.questions(failed)) kunde inte göras. EarMind försöker igen av sig själv."
                 return
             }
             polls += 1

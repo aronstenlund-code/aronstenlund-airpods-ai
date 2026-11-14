@@ -399,7 +399,7 @@ import Testing
         #expect(DrillShareClient.code(in: URL(string: "earmind://annat/xy12ab34")!) == nil)
         #expect(DrillShareClient.code(in: URL(string: "earmind://prov")!) == nil)
         #expect(DrillShareClient.code(in: URL(string: "https://example.com/p/xy12ab34")!) == nil)
-        #expect(DrillShareClient.code(inText: "Plugga Bio med Earmind: https://earmind.ai/p/xy12ab34 ") == "xy12ab34")
+        #expect(DrillShareClient.code(inText: "Plugga Bio med EarMind: https://earmind.ai/p/xy12ab34 ") == "xy12ab34")
         #expect(DrillShareClient.code(inText: " XY12AB34 ") == "xy12ab34")
         #expect(DrillShareClient.code(inText: "hej") == nil)
     }

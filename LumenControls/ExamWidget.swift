@@ -121,7 +121,7 @@ struct ExamWidgetView: View {
             LumenLogo(size: 22)
             Spacer(minLength: 0)
             Text("Har du prov snart?").font(LumenFont.text(17, .bold)).lineLimit(2)
-            Text("Lägg till det i Earmind.").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
+            Text("Lägg till det i EarMind.").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
             quizButton
         }
         .foregroundStyle(LumenColor.ink)

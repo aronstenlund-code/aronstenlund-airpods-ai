@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - A92 (D166, K57): "Fråga om Earmind", the help AI
+// MARK: - A92 (D166, K57): "Fråga om EarMind", the help AI
 
 /// One question and its answer, for the chat (the server answers each question on its own).
 struct HelpTurn: Equatable, Sendable {
@@ -40,7 +40,7 @@ struct HelpAnswer: Equatable, Sendable {
     /// Plain text; steps as "1. …" on their own lines.
     var text: String
     var place: HelpPlace?
-    /// K57: outside the app, "Jag svarar bara på hur Earmind fungerar, …" after the answer.
+    /// K57: outside the app, "Jag svarar bara på hur EarMind fungerar, …" after the answer.
     var hint: String?
     /// False when the question was not about the app.
     var inScope: Bool = true
@@ -165,9 +165,9 @@ final class MockHelp: HelpAnswering {
         }
         if q.contains("väd") || q.contains("fotboll") {
             return HelpAnswer(text: "Det kan jag inte svara på.", place: nil,
-                              hint: "Jag svarar bara på hur Earmind fungerar, till exempel hur du gör ett nytt prov.", inScope: false)
+                              hint: "Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov.", inScope: false)
         }
-        return HelpAnswer(text: "Det vet jag inte. Skriv till oss under Inställningar › Om Earmind.", place: .settings)
+        return HelpAnswer(text: "Det vet jag inte. Skriv till oss under Inställningar › Om EarMind.", place: .settings)
     }
 
     func tryText(_ text: String) async throws(HelpError) -> DrillDraft {

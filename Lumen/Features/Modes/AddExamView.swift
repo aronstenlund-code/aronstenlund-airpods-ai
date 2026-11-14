@@ -63,7 +63,7 @@ struct AddExamView: View {
                     Text(isFirstStart || forProvlage ? "Har du prov snart?" : "Lägg till prov")
                         .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
                         .accessibilityAddTraits(.isHeader)
-                    Text("Säg det, så förhör Earmind dig inför provet.")
+                    Text("Säg det, så förhör EarMind dig inför provet.")
                         .font(LumenFont.text(16))
                         .foregroundStyle(LumenColor.muted)
                 }
@@ -239,7 +239,7 @@ struct AddExamView: View {
                 Spacer()
                 IconButton(systemName: "xmark", label: "Stäng", action: onClose)
             }
-            Text("Då pratar Earmind på din nivå, hör dina ämnesord rätt och vet vad du ska öva på.")
+            Text("Då pratar EarMind på din nivå, hör dina ämnesord rätt och vet vad du ska öva på.")
                 .font(LumenFont.text(16))
                 .foregroundStyle(LumenColor.muted)
         }

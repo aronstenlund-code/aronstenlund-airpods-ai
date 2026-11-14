@@ -157,10 +157,10 @@ final class RepetitionSession {
     private func updateNowPlaying() {
         guard activatesAudioSession, let player, let drill else { return }
         let item = drill.items.indices.contains(player.index) ? drill.items[player.index] : nil
-        // Kelly Ke49 "Låsskärmen": title = the question, artist = "Earmind · <exam> · 7 av 20".
+        // Kelly Ke49 "Låsskärmen": title = the question, artist = "EarMind · <exam> · 7 av 20".
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [
             MPMediaItemPropertyTitle: item?.question ?? drill.title,
-            MPMediaItemPropertyArtist: "Earmind · \(drill.title) · \(player.index + 1) av \(player.count)",
+            MPMediaItemPropertyArtist: "EarMind · \(drill.title) · \(player.index + 1) av \(player.count)",
             MPMediaItemPropertyAlbumTitle: drill.title,
             MPNowPlayingInfoPropertyPlaybackRate: player.isPaused ? 0.0 : 1.0,
         ]

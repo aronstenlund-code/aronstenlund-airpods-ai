@@ -20,7 +20,7 @@ struct HomeView: View {
     /// A52: the sheet after the first answer, once.
     @State private var showsCapabilitiesIntro = false
     @AppStorage(CapabilitiesIntroSheet.shownKey) private var capabilitiesIntroShown = false
-    /// Ke35: "Här startar du Earmind" once, until the first Starta or ×.
+    /// Ke35: "Här startar du EarMind" once, until the first Starta or ×.
     @AppStorage("ke35.startHintShown") private var startHintShown = false
     /// Toby T8b finding 4: the last Starta did not start anything.
     @State private var startFailed = false
@@ -46,7 +46,7 @@ struct HomeView: View {
         Group {
             if let repetition = model.repetition {
                 // A80 (D142, Kelly B2): the first path is Nytt prov → Starta prov, without the microphone. The
-                // listening modes (Starta Earmind, Earmind kan allt, their exams) are behind one row.
+                // listening modes (Starta EarMind, EarMind kan allt, their exams) are behind one row.
                 // A87 (D160, Kelly Ke53): Start is the system's list with the navigation bar ("Prov", settings), not
                 // a scroll view of cards; the streak, the test mode, last night and Fler lägen are rows and bar items.
                 RepetitionHomeSection(model: repetition,
@@ -164,14 +164,14 @@ struct HomeView: View {
         HStack {
             HStack(spacing: 8) {
                 AppMark(size: logoSize + 4) // A71 (Ke40): the app icon; Ke37 §10.6: follows the text size
-                Text("Earmind").font(LumenFont.text(24, .bold, relativeTo: .title2))
+                Text("EarMind").font(LumenFont.text(24, .bold, relativeTo: .title2))
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
             Spacer()
             if model.streak.current > 0 { StreakBadge(streak: model.streak) }
             if let testMode = model.testMode, testMode.isEnabled, !testMode.serverRefused {
-                // A76 (Ke45/Ke46 T3): as long as the test mode is on, also when Earmind is not listening.
+                // A76 (Ke45/Ke46 T3): as long as the test mode is on, also when EarMind is not listening.
                 Button { model.isShowingSettings = true } label: {
                     Text("Testläge")
                         .font(LumenFont.text(13, .semibold, relativeTo: .footnote))
@@ -270,7 +270,7 @@ struct HomeView: View {
                 // Ke35 (before D142 only, Kelly B2): once, after the first start: where Lumen starts.
                 HStack(alignment: .top, spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Här startar du Earmind").font(LumenFont.text(17, .semibold))
+                        Text("Här startar du EarMind").font(LumenFont.text(17, .semibold))
                         Text("Sen lyssnar den tills du trycker Avsluta. Du ser alltid när den lyssnar.")
                             .font(LumenFont.text(15))
                             .foregroundStyle(LumenColor.muted)
@@ -303,7 +303,7 @@ struct HomeView: View {
                     }
                 }
             } label: {
-                Label(model.isActiveSession ? "Tillbaka till Earmind" : "Starta Earmind", systemImage: "waveform")
+                Label(model.isActiveSession ? "Tillbaka till EarMind" : "Starta EarMind", systemImage: "waveform")
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
             }
             // Kelly B2: on Start before D142, and behind "Fler lägen" after it; the main action of either page.
@@ -315,9 +315,9 @@ struct HomeView: View {
             }
             .accessibilityHint(model.isActiveSession
                 ? "Visar Lyssnar"
-                : "Earmind börjar lyssna i \(model.selectedMode.shortName.lowercased())")
+                : "EarMind börjar lyssna i \(model.selectedMode.shortName.lowercased())")
             if startFailed {
-                Text("Earmind kom inte igång. Tryck igen om en stund.")
+                Text("EarMind kom inte igång. Tryck igen om en stund.")
                     .font(LumenFont.text(15))
                     .foregroundStyle(LumenColor.red)
                     .frame(maxWidth: .infinity)
@@ -454,7 +454,7 @@ struct HomeView: View {
                 Button {
                     Task { await model.startQuiz(for: plan) }
                 } label: {
-                    TwoLineLabel(title: "Förhör med rösten (BETA)", detail: "Earmind frågar ut dig och svarar på dina frågor") // A80
+                    TwoLineLabel(title: "Förhör med rösten (BETA)", detail: "EarMind frågar ut dig och svarar på dina frågor") // A80
                 }
                 // A50 (D124): secondary, the Start button is the screen's one blue button. "Få A-svar till provet"
                 // moved into Provläge ("Mina svar", A53, D126).
@@ -487,7 +487,7 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(count == 0 ? "Mina svar, inga sparade" : "Mina svar, \(count) sparade")
-                    .accessibilityHint("Bestäm själv vad Earmind säger på provfrågor")
+                    .accessibilityHint("Bestäm själv vad EarMind säger på provfrågor")
                 }
                 // A36 (D115): photograph the page you study; Lumen quizzes on it.
                 if model.isReadingPage || model.pagePhotoStatus != nil {
@@ -509,7 +509,7 @@ struct HomeView: View {
                     .font(LumenFont.text(16, .semibold))
                     .foregroundStyle(LumenColor.blue)
                     .frame(minHeight: 44)
-                    .accessibilityHint("Earmind läser sidan och förhör dig på den")
+                    .accessibilityHint("EarMind läser sidan och förhör dig på den")
                 }
                 if let deck = model.flipDeck(for: plan) {
                     // A46 (N6): the cards on the screen, without the voice.
@@ -592,7 +592,7 @@ struct HomeView: View {
             Text("Har du prov snart?")
                 .font(LumenFont.text(28, .bold, relativeTo: .title))
                 .accessibilityAddTraits(.isHeader)
-            Text("Säg det, så förhör Earmind dig inför provet.")
+            Text("Säg det, så förhör EarMind dig inför provet.")
                 .font(LumenFont.text(16))
                 .foregroundStyle(LumenColor.muted)
             Button {
@@ -716,7 +716,7 @@ struct LumenCanDoAll: View {
             if let onShowAll {
                 Button(action: onShowAll) {
                     HStack(spacing: 4) {
-                        Text("Allt Earmind kan")
+                        Text("Allt EarMind kan")
                         Image(systemName: "chevron.right").font(.system(size: 13, weight: .semibold))
                     }
                     .font(LumenFont.text(16, .semibold))
@@ -745,7 +745,7 @@ struct LumenCanDoAll: View {
     private var examplesBox: some View {
         VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Earmind kan allt")
+                Text("EarMind kan allt")
                     .font(LumenFont.text(20, .bold, relativeTo: .title3))
                     .accessibilityAddTraits(.isHeader)
                 Text("Säg ”Lumen” och vad du vill.")
@@ -766,7 +766,7 @@ struct LumenCanDoAll: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Earmind kan allt. Säg Lumen och vad du vill, till exempel: "
+        .accessibilityLabel("EarMind kan allt. Säg Lumen och vad du vill, till exempel: "
             + Self.window(at: 0).map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "”")) }.joined(separator: ", "))
     }
 

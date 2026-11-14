@@ -2,7 +2,7 @@ import Foundation
 import Observation
 
 /// A98 (D173, Aron's phone test 12:29): "Spela in" in Mina svar in two steps. The recording used to start as soon as
-/// the sheet opened, so a typed question ended up in the recording and Klar said "Earmind kunde inte höra något svar".
+/// the sheet opened, so a typed question ended up in the recording and Klar said "EarMind kunde inte höra något svar".
 /// Now:
 /// 1. **Fråga:** chosen from the exam (`choices`), typed into `question`, or spoken (`recordQuestion` /
 ///    `finishQuestion`, written out on the phone like the answer, the audio deleted).
@@ -20,7 +20,7 @@ final class MyAnswerRecording {
     let questionRecorder = AnswerRecorder()
     let answerRecorder = AnswerRecorder()
     private(set) var isCompressing = false
-    /// What went wrong after Klar ("Earmind kunde inte göra ett svar just nu. Försök igen.").
+    /// What went wrong after Klar ("EarMind kunde inte göra ett svar just nu. Försök igen.").
     private(set) var problem: String?
 
     /// Shortest answer that counts as an answer (a tap on Spela in svaret and Stoppa at once is not one).
@@ -110,8 +110,8 @@ final class MyAnswerRecording {
         let reply = await compress(transcript, asked)
         isCompressing = false
         guard let reply, !reply.answer.isEmpty else {
-            problem = reply == nil ? "Earmind kunde inte göra ett svar just nu. Försök igen."
-                                   : "Earmind hörde inget svar i inspelningen."
+            problem = reply == nil ? "EarMind kunde inte göra ett svar just nu. Försök igen."
+                                   : "EarMind hörde inget svar i inspelningen."
             return nil
         }
         return MyAnswerDraft(question: reply.q.isEmpty ? asked : reply.q, answer: reply.answer,

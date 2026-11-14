@@ -16,10 +16,10 @@ enum LumenProblem: Equatable, Sendable {
 
     var title: String {
         switch self {
-        case .microphoneDenied: "Earmind hör dig inte"
+        case .microphoneDenied: "EarMind hör dig inte"
         case .offline: "Ingen internetanslutning"
         case .airPodsDisconnected: "AirPods kopplades bort"
-        case .overloaded: "Earmind kan inte svara just nu"
+        case .overloaded: "EarMind kan inte svara just nu"
         case .voiceUnavailable: "Rösten fungerar inte just nu"
         case .cannotHear: "Jag hör inte just nu"
         }
@@ -28,11 +28,11 @@ enum LumenProblem: Equatable, Sendable {
     var text: String {
         switch self {
         case .microphoneDenied: "Mikrofonen är avstängd. Slå på den i Inställningar för att fortsätta."
-        case .offline: "Earmind behöver internet för att svara. Den fortsätter lyssna och svarar igen när du är uppkopplad."
+        case .offline: "EarMind behöver internet för att svara. Den fortsätter lyssna och svarar igen när du är uppkopplad."
         case .airPodsDisconnected: "Svaren hörs nu i telefonens högtalare."
         case .overloaded: "Försök igen om en stund."
         case .voiceUnavailable: "Svaren läses med iPhonens röst tills den fungerar igen."
-        case .cannotHear: "Taligenkänningen gick ner. Earmind försöker igen av sig själv."
+        case .cannotHear: "Taligenkänningen gick ner. EarMind försöker igen av sig själv."
         }
     }
 

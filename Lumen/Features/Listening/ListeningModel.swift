@@ -445,7 +445,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         asksForListeningConsent = true
     }
 
-    /// "Jag förstår, starta Earmind" on the consent sheet: the consent, then the start that asked for it.
+    /// "Jag förstår, starta EarMind" on the consent sheet: the consent, then the start that asked for it.
     func listeningConsentGiven() {
         consent.grant()
         asksForListeningConsent = false
@@ -564,7 +564,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .interview: []
         }
         // A75: the name first, with the most weight Scribe and the phone's recogniser give (the first keyterms).
-        // A97 (D172): both names, "Lumen" and "Earmind".
+        // A97 (D172): both names, "Lumen" and "EarMind".
         transcription.setContextualStrings(ExamKeyterms.merged(exam: WakeWord.names + exam, rest: spoken + rest))
     }
 
@@ -848,7 +848,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// A66 (Toby T8c finding 1): at most one sheet each time the app is opened. The first start's share question is
-    /// that opening's sheet; "Earmind kan mer än svara" and the logo vote wait for later openings.
+    /// that opening's sheet; "EarMind kan mer än svara" and the logo vote wait for later openings.
     @ObservationIgnored var openingSheetShown = false
 
     /// Ke35: Provläge asked for the exam once in this run of the app.
@@ -1494,7 +1494,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .whisper, .louder:
             let settings = speaker.settings
             if action == .louder, settings.speechGain >= 1 {
-                confirm("Det är redan högsta volymen i Earmind. Höj på telefonen.")
+                confirm("Det är redan högsta volymen i EarMind. Höj på telefonen.")
                 return
             }
             settings.speechGain = action == .whisper ? settings.speechGain * 0.6 : settings.speechGain / 0.6
@@ -2664,7 +2664,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A45: "Lumen hör och pratar lite sämre just nu", once per session, while a stand-in engine is used.
     private(set) var fallbackNotice: String?
     @ObservationIgnored private var fallbackNotedThisSession = false
-    static let fallbackLine = "Earmind hör och pratar lite sämre just nu"
+    static let fallbackLine = "EarMind hör och pratar lite sämre just nu"
 
     private func noteFallback(what: String) {
         guard !fallbackNotedThisSession else { return }
@@ -2987,7 +2987,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             current.lastFeedback = graded.feedback
             current.lastFeedbackNo = task.no
             var spoken = graded.feedback
-            if task.isOwnAnswer, !right { spoken += " Provet hade inget facit, så det rätta svaret är Earminds eget." }
+            if task.isOwnAnswer, !right { spoken += " Provet hade inget facit, så det rätta svaret är EarMinds eget." }
             self.controller.log("Practice exam: question \(task.no) graded \(graded.points.total)/\(max)")
             if let next = current.nextOpenIndex {
                 current.move(to: next)

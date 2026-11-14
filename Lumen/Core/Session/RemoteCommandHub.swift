@@ -59,7 +59,7 @@ final class RemoteCommandHub {
     func show(listening: Bool, mode: String) {
         if targets.isEmpty { register() }
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [
-            MPMediaItemPropertyTitle: listening ? "Earmind lyssnar" : "Earmind är pausad",
+            MPMediaItemPropertyTitle: listening ? "EarMind lyssnar" : "EarMind är pausad",
             MPMediaItemPropertyArtist: mode,
             MPNowPlayingInfoPropertyPlaybackRate: listening ? 1.0 : 0.0,
         ]

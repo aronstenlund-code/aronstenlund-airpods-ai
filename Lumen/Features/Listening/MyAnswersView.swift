@@ -64,10 +64,10 @@ struct MyAnswersView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 examPicker
-                Text("Bestäm själv vad Earmind säger")
+                Text("Bestäm själv vad EarMind säger")
                     .font(LumenFont.text(28, .bold, relativeTo: .title))
                     .accessibilityAddTraits(.isHeader)
-                Text("Skriv en provfråga och hur du vill svara. När frågan kommer i Provläget säger Earmind ditt svar, ordagrant.")
+                Text("Skriv en provfråga och hur du vill svara. När frågan kommer i Provläget säger EarMind ditt svar, ordagrant.")
                     .font(LumenFont.text(17))
                     .foregroundStyle(LumenColor.muted)
                 Button {
@@ -126,7 +126,7 @@ struct MyAnswersView: View {
                     }
                 }
             } header: {
-                Text("När frågan kommer i Provläget säger Earmind ditt svar, ordagrant.")
+                Text("När frågan kommer i Provläget säger EarMind ditt svar, ordagrant.")
                     .textCase(nil)
                     .font(LumenFont.text(15))
                     .foregroundStyle(LumenColor.muted)
@@ -147,7 +147,7 @@ struct MyAnswersView: View {
                 .disabled(model.isActiveSession)
             } footer: {
                 if model.isActiveSession {
-                    Text("Avsluta Earmind för att spela in.")
+                    Text("Avsluta EarMind för att spela in.")
                 }
             }
         }
@@ -164,7 +164,7 @@ struct MyAnswersView: View {
             .buttonStyle(LumenButtonStyle(kind: .secondary, height: 54))
             .disabled(model.isActiveSession)
             if model.isActiveSession {
-                Text("Avsluta Earmind för att spela in.")
+                Text("Avsluta EarMind för att spela in.")
                     .font(LumenFont.text(13, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)
             }
@@ -172,7 +172,7 @@ struct MyAnswersView: View {
     }
 
     private var offLine: some View {
-        Text("”Säg mina svar” är av i Inställningar. Earmind svarar själv tills du sätter på det.")
+        Text("”Säg mina svar” är av i Inställningar. EarMind svarar själv tills du sätter på det.")
             .font(LumenFont.text(13, relativeTo: .footnote))
             .foregroundStyle(LumenColor.muted)
     }
@@ -270,7 +270,7 @@ struct MyAnswerEditor: View {
                             .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
                     }
                 } else if let suggestion, !suggestion.isEmpty {
-                    field("Earminds förslag") {
+                    field("EarMinds förslag") {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(suggestion)
                                 .font(LumenFont.text(15))
@@ -288,7 +288,7 @@ struct MyAnswerEditor: View {
                         .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
                     }
                 }
-                field("Ditt svar · det här säger Earmind") {
+                field("Ditt svar · det här säger EarMind") {
                     ZStack(alignment: .topLeading) {
                         TextEditor(text: $answer)
                             .font(LumenFont.text(17))
@@ -296,7 +296,7 @@ struct MyAnswerEditor: View {
                             .frame(minHeight: 160)
                             .focused($focus, equals: .answer)
                         if answer.isEmpty {
-                            Text(isSuggesting ? "Earmind skriver ett förslag …" : "Skriv hur du vill svara")
+                            Text(isSuggesting ? "EarMind skriver ett förslag …" : "Skriv hur du vill svara")
                                 .font(LumenFont.text(17))
                                 .foregroundStyle(LumenColor.muted)
                                 .padding(.top, 8)

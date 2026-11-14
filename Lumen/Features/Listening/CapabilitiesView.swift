@@ -223,7 +223,7 @@ struct CapabilitiesView: View {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
                     if typeSize.isAccessibilitySize {
-                        Text("Vad kan Earmind?")
+                        Text("Vad kan EarMind?")
                             .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityAddTraits(.isHeader)
@@ -246,7 +246,7 @@ struct CapabilitiesView: View {
             }
         }
         .lumenForm()
-        .navigationTitle("Vad kan Earmind?")
+        .navigationTitle("Vad kan EarMind?")
         .navigationBarTitleDisplayMode(typeSize.isAccessibilitySize ? .inline : .large)
         .toolbar(.visible, for: .navigationBar)
         .task { refresh() }
@@ -314,7 +314,7 @@ struct CapabilitiesIntroSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Earmind kan mer än svara")
+                        Text("EarMind kan mer än svara")
                             .font(LumenFont.text(28, .bold, relativeTo: .title))
                             .accessibilityAddTraits(.isHeader)
                             .accessibilityFocused($titleFocused)
@@ -341,7 +341,7 @@ struct CapabilitiesIntroSheet: View {
                     .padding(16)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 16))
-                    Button("Visa allt Earmind kan") { showsAll = true }
+                    Button("Visa allt EarMind kan") { showsAll = true }
                         .buttonStyle(LumenButtonStyle(height: 54))
                 }
                 .padding(20)

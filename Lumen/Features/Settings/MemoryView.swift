@@ -18,14 +18,14 @@ struct MemoryView: View {
         List {
             Section {
                 HStack {
-                    TextField("Något Earmind ska komma ihåg", text: $newMemory)
+                    TextField("Något EarMind ska komma ihåg", text: $newMemory)
                         .submitLabel(.done)
                         .onSubmit(add)
                     Button("Lägg till", action: add)
                         .disabled(newMemory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             } footer: {
-                Text("Säg ”Lumen, kom ihåg …”, ”Lumen, glöm …” eller ”Lumen, regel: …”. Efter varje tur sparar Earmind också viktiga saker du säger om dig själv, med datum. Känsliga uppgifter (hälsa, tro, politik och liknande) sparas aldrig av sig själva. Allt ligger på den här iPhonen, skickas med dina frågor och går ut efter 2 år.")
+                Text("Säg ”Lumen, kom ihåg …”, ”Lumen, glöm …” eller ”Lumen, regel: …”. Efter varje tur sparar EarMind också viktiga saker du säger om dig själv, med datum. Känsliga uppgifter (hälsa, tro, politik och liknande) sparas aldrig av sig själva. Allt ligger på den här iPhonen, skickas med dina frågor och går ut efter 2 år.")
             }
             if let preferences {
                 Section {
@@ -50,7 +50,7 @@ struct MemoryView: View {
                 } header: {
                     Text("Inlärda inställningar")
                 } footer: {
-                    Text("Earmind lär sig av dina rättelser och gäller dem där du gav dem. Svep för att ta bort eller låta en gälla överallt.")
+                    Text("EarMind lär sig av dina rättelser och gäller dem där du gav dem. Svep för att ta bort eller låta en gälla överallt.")
                 }
             }
             Section("Regler") {
@@ -128,7 +128,7 @@ struct MemoryView: View {
         let source = switch item.source {
         case .voice: "sagt"
         case .manual: "skrivet"
-        case .automatic: "hittat av Earmind"
+        case .automatic: "hittat av EarMind"
         }
         return "\(item.createdAt.formatted(date: .abbreviated, time: .omitted)), \(source)"
     }

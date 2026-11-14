@@ -11,7 +11,7 @@ import Testing
         #expect(HelpPlace.guess(question: "Kan jag dela med en kompis?", answer: "") == .share)
         #expect(HelpPlace.guess(question: "Vad kan jag fota?", answer: "") == .newDrill)
         #expect(HelpPlace.guess(question: "Hur ändrar jag tempot?", answer: "") == .settings)
-        #expect(HelpPlace.guess(question: "Vem är du?", answer: "Jag är Earminds hjälp.") == nil)
+        #expect(HelpPlace.guess(question: "Vem är du?", answer: "Jag är EarMinds hjälp.") == nil)
     }
 
     @Test func outsideTheAppIsSaidWithTheHint() async throws {

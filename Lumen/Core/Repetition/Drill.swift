@@ -60,7 +60,7 @@ enum DrillLengthClass: String, Codable, Sendable {
     }
 }
 
-/// What Earmind made of the material (K45 `summary`). The user may correct it with a line of text.
+/// What EarMind made of the material (K45 `summary`). The user may correct it with a line of text.
 struct DrillSummary: Codable, Equatable, Sendable {
     var subject: String
     var grade: String

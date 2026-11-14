@@ -33,14 +33,14 @@ struct VoiceProfileSection: View {
             if case .loading = speakers.loader.status {
                 Text("Röstmodellen laddas ner (en gång, cirka 30 MB).").font(.footnote).foregroundStyle(.secondary)
             } else if case .unavailable(let why) = speakers.loader.status {
-                Text("Röstmodellen kunde inte laddas: \(why). Earmind använder ljudnivån i stället.")
+                Text("Röstmodellen kunde inte laddas: \(why). EarMind använder ljudnivån i stället.")
                     .font(.footnote).foregroundStyle(.secondary)
             }
             if let notice { Text(notice).font(.footnote).foregroundStyle(.secondary) }
         } header: {
             Text("Din röst")
         } footer: {
-            Text("Röstprofilen är ett tal-avtryck av din röst, inte en inspelning. Den sparas bara på den här telefonen (inte i iCloud) och skickas aldrig. Med den svarar Intervjuläge bara intervjuaren, Rizzläge vet vem som pratar, minnet sparar bara det du själv sa, och bara din röst kan avbryta Earmind. Utan profil avgör ljudnivån som förut. Talare 1, 2 … är bara en etikett för sessionen; ingen identifieras. Licenser finns under Om appen.")
+            Text("Röstprofilen är ett tal-avtryck av din röst, inte en inspelning. Den sparas bara på den här telefonen (inte i iCloud) och skickas aldrig. Med den svarar Intervjuläge bara intervjuaren, Rizzläge vet vem som pratar, minnet sparar bara det du själv sa, och bara din röst kan avbryta EarMind. Utan profil avgör ljudnivån som förut. Talare 1, 2 … är bara en etikett för sessionen; ingen identifieras. Licenser finns under Om appen.")
         }
         .confirmationDialog("Radera röstprofilen?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Radera", role: .destructive) {
@@ -64,7 +64,7 @@ struct VoiceProfileSection: View {
         countdown.cancel()
         isEnrolling = false
         switch result {
-        case .saved(let seconds)?: notice = "Sparad (\(Int(seconds)) s tal). Earmind känner igen din röst nu."
+        case .saved(let seconds)?: notice = "Sparad (\(Int(seconds)) s tal). EarMind känner igen din röst nu."
         case .tooLittleSpeech?: notice = "För lite tal hördes. Försök igen och läs hela texten högt."
         case .modelsUnavailable?: notice = "Röstmodellen kunde inte laddas. Försök igen med internet."
         case nil: notice = "Mikrofonen kunde inte starta."

@@ -32,7 +32,7 @@ enum ListeningRemote {
 
 /// D86: "Avsluta" on the Live Activity: ends the mode and the microphone, like the button in the app.
 struct StopListeningIntent: LiveActivityIntent {
-    static let title: LocalizedStringResource = "Avsluta Earmind"
+    static let title: LocalizedStringResource = "Avsluta EarMind"
 
     init() {}
 
@@ -46,7 +46,7 @@ struct StopListeningIntent: LiveActivityIntent {
 /// "Starta Lumen" from Siri or a Control (D58). Runs with the app open: the microphone only starts from the app,
 /// after consent, and the listening state is on screen from the first second.
 struct StartListeningIntent: AppIntent {
-    static let title: LocalizedStringResource = "Start Earmind"
+    static let title: LocalizedStringResource = "Start EarMind"
     static let supportedModes: IntentModes = .foreground
 
     init() {}
@@ -74,7 +74,7 @@ struct NextSuggestionIntent: LiveActivityIntent {
 /// Pause/Resume from the Live Activity or a Control (D33). `LiveActivityIntent` runs in the app's process;
 /// `AudioRecordingIntent` is what lets a resume reach the microphone without opening the app.
 struct ToggleListeningIntent: LiveActivityIntent, AudioRecordingIntent {
-    static let title: LocalizedStringResource = "Pause or resume Earmind"
+    static let title: LocalizedStringResource = "Pause or resume EarMind"
 
     init() {}
 

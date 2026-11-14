@@ -72,7 +72,7 @@ private struct AllVoiceCommandsView: View {
                     .foregroundStyle(.secondary)
                 Toggle("Tips om kommandon (högst ett om dagen)", isOn: $tips.enabled)
                 Toggle("Ton när du kan säga \"ja\" för mer", isOn: $voice.moreTone)
-                Toggle("Ljud när Earmind börjar och slutar lyssna", isOn: $voice.listeningCues) // A34
+                Toggle("Ljud när EarMind börjar och slutar lyssna", isOn: $voice.listeningCues) // A34
                 Toggle("Korta ord utan ”Lumen” i Provläge och Standardläge", isOn: $voice.universalCommands)
                 Text("\"Upprepa\", \"viska\", \"högre\", \"kortare\", \"snabbare\" och \"utveckla\" som hela meningen.")
                     .font(.footnote)
@@ -131,7 +131,7 @@ private struct PhraseSection: View {
             }
         } footer: {
             if action == .backToLumen {
-                Text("När musiken spelar hör Earmind inget. Säg ”Hej Siri, starta Earmind” eller använd kontrollen på låsskärmen.")
+                Text("När musiken spelar hör EarMind inget. Säg ”Hej Siri, starta EarMind” eller använd kontrollen på låsskärmen.")
             }
         }
     }

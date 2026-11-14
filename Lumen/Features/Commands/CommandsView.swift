@@ -11,7 +11,7 @@ struct CommandsView: View {
             Section {
                 TextField("Ord (det du säger)", text: $keyword)
                     .textInputAutocapitalization(.never)
-                TextField("Instruktion (det Earmind ska göra)", text: $instruction, axis: .vertical)
+                TextField("Instruktion (det EarMind ska göra)", text: $instruction, axis: .vertical)
                     .lineLimit(2...5)
                 Button(editsExisting ? "Ersätt kommandot" : "Lägg till kommando") {
                     store.save(keyword: keyword, instruction: instruction)
@@ -23,7 +23,7 @@ struct CommandsView: View {
             } header: {
                 Text("Nytt kommando")
             } footer: {
-                Text("Säg ordet i en fråga, så följer Earmind instruktionen i det svaret. Du kan också säga: ”spara kommando fission: förklara fission och jämför med fusion”.")
+                Text("Säg ordet i en fråga, så följer EarMind instruktionen i det svaret. Du kan också säga: ”spara kommando fission: förklara fission och jämför med fusion”.")
             }
 
             Section("Sparade kommandon") {

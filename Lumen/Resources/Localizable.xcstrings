@@ -276,13 +276,13 @@
         }
       }
     },
-    "Ask Earmind": {
+    "Ask EarMind": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fråga Earmind"
+            "value": "Fråga EarMind"
           }
         }
       }
@@ -595,24 +595,24 @@
         }
       }
     },
-    "Earmind": {
+    "EarMind": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind"
+            "value": "EarMind"
           }
         }
       }
     },
-    "Earmind tells you from the other person by input level. Tuned on device.": {
+    "EarMind tells you from the other person by input level. Tuned on device.": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Earmind skiljer dig från den andra personen på ljudnivån. Justeras på telefonen."
+            "value": "EarMind skiljer dig från den andra personen på ljudnivån. Justeras på telefonen."
           }
         }
       }
@@ -672,13 +672,13 @@
         }
       }
     },
-    "Every mode is hands-free: Earmind listens for questions in the room. Higher sensitivity answers more, and more often by mistake. The text field is the fallback.": {
+    "Every mode is hands-free: EarMind listens for questions in the room. Higher sensitivity answers more, and more often by mistake. The text field is the fallback.": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alla lägen är handsfree: Earmind lyssnar efter frågor i rummet. Högre känslighet svarar oftare, och oftare fel. Skrivrutan finns som reserv."
+            "value": "Alla lägen är handsfree: EarMind lyssnar efter frågor i rummet. Högre känslighet svarar oftare, och oftare fel. Skrivrutan finns som reserv."
           }
         }
       }
@@ -705,13 +705,13 @@
         }
       }
     },
-    "Help improve Earmind?": {
+    "Help improve EarMind?": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vill du hjälpa till att förbättra Earmind?"
+            "value": "Vill du hjälpa till att förbättra EarMind?"
           }
         }
       }
@@ -1134,13 +1134,13 @@
         }
       }
     },
-    "No history yet. Your questions and Earmind's answers appear here.": {
+    "No history yet. Your questions and EarMind's answers appear here.": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ingen historik än. Dina frågor och Earminds svar visas här."
+            "value": "Ingen historik än. Dina frågor och EarMinds svar visas här."
           }
         }
       }
@@ -1244,13 +1244,13 @@
         }
       }
     },
-    "Off by default. When on, your own questions and Earmind's answers are uploaded without your name and kept for at most 12 months. Other people's speech is never sent. Turning it off deletes what was shared.": {
+    "Off by default. When on, your own questions and EarMind's answers are uploaded without your name and kept for at most 12 months. Other people's speech is never sent. Turning it off deletes what was shared.": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avstängt från början. När det är på laddas dina egna frågor och Earminds svar upp utan ditt namn och sparas högst 12 månader. Andra personers tal skickas aldrig. Stänger du av raderas det som delats."
+            "value": "Avstängt från början. När det är på laddas dina egna frågor och EarMinds svar upp utan ditt namn och sparas högst 12 månader. Andra personers tal skickas aldrig. Stänger du av raderas det som delats."
           }
         }
       }
@@ -1310,13 +1310,13 @@
         }
       }
     },
-    "Pause Earmind": {
+    "Pause EarMind": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pausa Earmind"
+            "value": "Pausa EarMind"
           }
         }
       }
@@ -1332,13 +1332,13 @@
         }
       }
     },
-    "Pause or resume Earmind": {
+    "Pause or resume EarMind": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pausa eller fortsätt Earmind"
+            "value": "Pausa eller fortsätt EarMind"
           }
         }
       }
@@ -2058,13 +2058,13 @@
         }
       }
     },
-    "Start Earmind": {
+    "Start EarMind": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Starta Earmind"
+            "value": "Starta EarMind"
           }
         }
       }
@@ -2550,13 +2550,13 @@
         }
       }
     },
-    "You can share your own questions and Earmind's answers with the developers, without your name, for at most 12 months. Other people's speech is never sent. You can change your mind at any time in Settings, and what was shared is then deleted.": {
+    "You can share your own questions and EarMind's answers with the developers, without your name, for at most 12 months. Other people's speech is never sent. You can change your mind at any time in Settings, and what was shared is then deleted.": {
       "extractionState": "manual",
       "localizations": {
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du kan dela dina egna frågor och Earminds svar med utvecklarna, utan ditt namn, i högst 12 månader. Andra personers tal skickas aldrig. Du kan ändra dig när som helst i Inställningar, och då raderas det som delats."
+            "value": "Du kan dela dina egna frågor och EarMinds svar med utvecklarna, utan ditt namn, i högst 12 månader. Andra personers tal skickas aldrig. Du kan ändra dig när som helst i Inställningar, och då raderas det som delats."
           }
         }
       }
