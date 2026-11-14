@@ -51,8 +51,12 @@ const handler = createTtsHandler({
 });
 
 // K62b (D180): test traffic gets one second of silence, never ElevenLabs
-const fake = (req: Request) =>
-  req.method === "POST"
+const fake = (req: Request, info: { mode?: string | null }) =>
+  req.method === "POST" && info.mode === "unavailable"
+    ? new Response(JSON.stringify({ error: { code: "tts_unavailable", message: "TTS credits exhausted (test: x-earmind-test: unavailable)", fallback: true } }), {
+      status: 503, headers: { "content-type": "application/json", "x-earmind-fake": "1", ...CORS_HEADERS },
+    })
+    : req.method === "POST"
     ? new Response(silentMp3(1), { status: 200, headers: { "content-type": "audio/mpeg", "cache-control": "no-store", "x-earmind-fake": "1", ...CORS_HEADERS } })
     : null;
 Deno.serve(withCors(withTestMode("tts", handler, { fake }), extraOriginsFromEnv()));

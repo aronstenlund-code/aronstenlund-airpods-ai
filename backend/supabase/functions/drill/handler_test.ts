@@ -45,6 +45,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       return Promise.resolve();
     },
     audio: (hs: string[]) => Promise.resolve(hs.map((h) => audio.get(h)).filter((a): a is AudioRow => !!a)),
+    referenced: (hs: string[]) => Promise.resolve(hs.filter((h) => [...items.values()].some((i) => i.question_hash === h || i.long_hash === h))),
     enqueue: (rows: AudioRow[]) => {
       const keys = new Set(rows.map((r) => Object.keys(r).sort().join(",")));
       if (keys.size > 1) throw new Error("bulk insert rows must have the same keys (PostgREST)");
@@ -410,7 +411,7 @@ Deno.test("K50 limit: 30 generated questions per account by default (402 with th
   const j = await r.json();
   assertEquals([j.error.code, j.used, j.limit, j.needed, j.per, j.resets], ["quota_exceeded", 2, 3, 2, "month", "2026-12-01"]);
   assert(j.error.message.includes("den här månaden"));
-  assert(j.error.message.includes("hämta andras prov"));
+  assert(j.error.message.includes("Andras prov är gratis") && j.error.message.includes("Nya frågor går att göra från den 1 ") && !j.error.message.includes("Köp"));
   assertEquals(w.drills.size, 1, "nothing saved");
   // the same questions again (audio exists): 0 generated, free
   assertEquals((await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json()).generated_questions, 0);
@@ -515,4 +516,38 @@ Deno.test("K62b (Oscar O61): a test request never makes other people's waiting f
   assertEquals(w.audio.get("realpending")!.status, "pending", "the real file waits for real traffic");
   assert(!w.spoken.includes("Någon annans fråga?"));
   assert([...w.audio.values()].filter((a) => a.voice_id === TEST_VOICE_ID).every((a) => a.status === "done"), "the test's own files are made");
+});
+
+Deno.test("K64 (Oscar O61 fynd 2): no credits for audio no question uses; a deleted drill's waiting files leave the queue", async () => {
+  const w = world({ noSynth: false });
+  const old = "2026-11-13T11:50:00Z"; // the world's clock is 2026-11-13 12:00
+  w.audio.set("orphan", { hash: "orphan", kind: "long", text: "Ett svar som ingen fråga använder längre.", model: "eleven_multilingual_v2", voice_id: "voice-1", status: "pending", attempts: 0, seq: 3, queued_at: old });
+  w.audio.set("young", { hash: "young", kind: "long", text: "Ett svar som sparas just nu.", model: "eleven_multilingual_v2", voice_id: "voice-1", status: "pending", attempts: 0, seq: 3, queued_at: "2026-11-13T11:59:30Z" });
+  const saved = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(w.audio.get("orphan")!.status, "failed");
+  assert(!w.spoken.includes("Ett svar som ingen fråga använder längre."), "never sent to ElevenLabs");
+  assert(!w.spoken.includes("Ett svar som sparas just nu."), "a file queued in the last 2 minutes is not made either");
+  assertEquals(w.audio.get("young")!.status, "pending", "but it waits (its drill may be saving)");
+  // a drill deleted while its files wait: they leave the queue
+  const w2 = world({ noSynth: true });
+  const d = await (await w2.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  await w2.h("u1")(post({ action: "delete", id: d.drill.id }));
+  assert([...w2.audio.values()].filter((a) => (a.seq ?? 0) >= 0).every((a) => a.status === "failed" && /unused/.test(a.error ?? "")));
+  assert(saved.drill.id);
+});
+
+Deno.test("K64 (Oscar O61): x-earmind-test unavailable and slow let tests see 'Ljudet kan inte göras' and waiting audio", async () => {
+  const w = world();
+  const un = await runWithTest({ test: true, reason: "header", userId: "u7", mode: "unavailable" }, async () => {
+    const j = await (await w.h("u7")(post({ action: "save", items: ITEMS }))).json();
+    return await (await w.h("u7")(post({ action: "status", id: j.drill.id }))).json();
+  });
+  const files = un.items.flatMap((i: { audio: { question: { status: string; error?: string }; long: { status: string; error?: string } } }) => [i.audio.question, i.audio.long]);
+  assert(files.every((f: { status: string; error?: string }) => f.status === "failed" && f.error === "audio_unavailable"), JSON.stringify(files));
+  const w3 = world();
+  const slow = await runWithTest({ test: true, reason: "header", userId: "u8", mode: "slow" }, async () => {
+    const j = await (await w3.h("u8")(post({ action: "save", items: [{ question: "Varför snöar det?", short: "Det är kallt.", long: "Det är kallt. Mer." }] }))).json();
+    return await (await w3.h("u8")(post({ action: "status", id: j.drill.id }))).json();
+  });
+  assertEquals([slow.audio.done, slow.audio.total], [0, 2]);
 });

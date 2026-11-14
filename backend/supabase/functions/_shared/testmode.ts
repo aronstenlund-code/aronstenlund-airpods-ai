@@ -15,7 +15,20 @@ import { AsyncLocalStorage } from "node:async_hooks";
  *                     eval and Toby's simulator runs
  * The owner (Aron, signed in by email) is never a test unless the header says so.
  */
-export interface TestInfo { test: boolean; reason: "header" | "account" | "script" | "ci" | null; userId: string | null }
+export interface TestInfo {
+  test: boolean;
+  reason: "header" | "account" | "script" | "ci" | null;
+  userId: string | null;
+  /**
+   * K64 (Oscar O61): `x-earmind-test: unavailable` = the fake audio behaves as if ElevenLabs had no credits
+   * (files fail with audio_unavailable, /tts answers 503); `x-earmind-test: slow` = drill files stay pending.
+   */
+  mode?: "unavailable" | "slow" | null;
+}
+export function testMode(v: string | null): "unavailable" | "slow" | null {
+  const t = (v ?? "").toLowerCase();
+  return /\bunavailable\b/.test(t) ? "unavailable" : /\bslow\b/.test(t) ? "slow" : null;
+}
 
 const als = new AsyncLocalStorage<TestInfo>();
 export const currentTest = (): TestInfo | undefined => als.getStore();
@@ -123,7 +136,7 @@ export function isOwnerClaims(c: Record<string, unknown> | null, ownerEmails: st
 export function detectTest(req: Request, ownerEmails: string[] = []): TestInfo {
   const c = jwtClaims(req);
   const userId = typeof c?.sub === "string" ? c.sub : null;
-  if (req.headers.has("x-earmind-test")) return { test: true, reason: "header", userId };
+  if (req.headers.has("x-earmind-test")) return { test: true, reason: "header", userId, mode: testMode(req.headers.get("x-earmind-test")) };
   if (isOwnerClaims(c, ownerEmails)) return { test: false, reason: null, userId };
   const meta = (k: string) => (c?.[k] as Record<string, unknown> | undefined)?.test === true;
   if (meta("app_metadata") || meta("user_metadata")) return { test: true, reason: "account", userId };

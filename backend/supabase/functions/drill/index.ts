@@ -149,6 +149,17 @@ Deno.serve(withCors(withTestMode("drill",
         const r = (await db.rpc("use_drill_quota", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[];
         return r[0] ?? { ok: false, used: 0, lim: 0 };
       },
+      // ---------- K64 ----------
+      referenced: async (hashes) => {
+        if (!hashes.length) return [];
+        const out = new Set<string>();
+        for (let i = 0; i < hashes.length; i += 50) {
+          const p = list(hashes.slice(i, i + 50));
+          const r = (await db.select("drill_items", `select=question_hash,long_hash&or=(question_hash.in.(${p}),long_hash.in.(${p}))&limit=1000`)) as { question_hash: string; long_hash: string }[];
+          for (const x of r) out.add(x.question_hash).add(x.long_hash);
+        }
+        return hashes.filter((h) => out.has(h));
+      },
       // ---------- K61 ----------
       settings: async () => Object.fromEntries(((await db.select("drill_settings", "select=key,value")) as { key: string; value: number }[]).map((r) => [r.key, Number(r.value)])),
       tryCredits: async (u, keys) => {

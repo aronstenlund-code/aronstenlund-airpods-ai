@@ -148,6 +148,8 @@ export interface DrillDb {
   requeue(hashes: string[]): Promise<void>;
   /** K50: adds n generated questions when within the limit (n = 0 only reads); atomic in the database. */
   useQuota(userId: string, n: number): Promise<{ ok: boolean; used: number; lim: number }>;
+  /** K64: which of these file hashes some question (drill_items) still uses. */
+  referenced?(hashes: string[]): Promise<string[]>;
   /** K61 (D176): drill_settings (length_normal_max, length_longer_max, ...). */
   settings?(): Promise<Record<string, number>>;
   /** K61 (D177): which of these question keys were already counted in /help try, and dropping them once used. */
@@ -272,6 +274,12 @@ export function voiceModel(v: unknown): string | null {
   return (VOICE_MODELS as readonly string[]).includes(k) ? k : alias[k] ?? null;
 }
 /** K52 (D155): the limit is per calendar month in Swedish time; the first day of the next month, "YYYY-MM-DD". */
+const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+/** K64 (Kelly, repetition-texter §6): "Nya frågor går att göra från den 1 december." (abonnemang kommer senare, HJALP.md) */
+export function newFrom(nowMs: number): string {
+  return `Nya frågor går att göra från den 1 ${MONTHS[Number(nextMonthStart(nowMs).slice(5, 7)) - 1]}.`;
+}
+
 export function nextMonthStart(nowMs: number): string {
   const ym = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Stockholm", year: "numeric", month: "2-digit" }).format(new Date(nowMs));
   const [y, m] = ym.split("-").map(Number);
@@ -323,7 +331,14 @@ export function createDrillHandler(deps: DrillDeps) {
   async function testPump(hashes: string[]): Promise<number> {
     if (!deps.synth || !hashes.length) return 0;
     let made = 0;
+    const mode = currentTest()?.mode ?? null;
+    if (mode === "slow") return 0; // K64: Oscar and Toby can test "Ljud: 0 av 6 klara" (the files stay pending)
     for (const j of (await deps.db.audio(hashes)).filter((a) => a.voice_id === TEST_VOICE_ID && a.status !== "done")) {
+      if (mode === "unavailable") {
+        // K64: as if ElevenLabs had no credits: the app's "Ljudet kan inte göras just nu" without a real call
+        await deps.db.finish(j.hash, { status: "failed", error: `${AUDIO_UNAVAILABLE}: test (x-earmind-test: unavailable)`, done_at: new Date(now()).toISOString() });
+        continue;
+      }
       try {
         const r = await deps.synth.speak(j.text, j.model, j.voice_id);
         await deps.storage.upload(audioPath(j.hash), r.audio);
@@ -351,6 +366,7 @@ export function createDrillHandler(deps: DrillDeps) {
     if (!deps.synth) return 0;
     const t0 = now();
     let made = 0;
+    const seenYoung = new Set<string>(); // K64: files put back because their drill may be saving
     const sleep = deps.sleep ?? ((ms: number) => new Promise<void>((r) => setTimeout(r, ms)));
     try {
       while (now() - t0 < budgetMs) {
@@ -361,7 +377,26 @@ export function createDrillHandler(deps: DrillDeps) {
           await sleep(1500); // others are making files: wait for a free slot instead of stopping
           continue;
         }
-        await Promise.all(jobs.map(async (j) => {
+        // K64 (Oscar O61 fynd 2): no credits for audio no question uses (a deleted drill). Cues (seq < 0) are
+        // always used; a file queued in the last 2 minutes may belong to a drill being saved right now.
+        const used = deps.db.referenced ? new Set(await deps.db.referenced(jobs.filter((j) => (j.seq ?? 0) >= 0).map((j) => j.hash)).catch(() => jobs.map((j) => j.hash))) : null;
+        const skip = new Set<string>();
+        let fresh = 0;
+        if (used) {
+          for (const j of jobs) {
+            if ((j.seq ?? 0) < 0 || used.has(j.hash)) continue;
+            skip.add(j.hash);
+            const young = now() - Date.parse(j.queued_at ?? "1970-01-01") < 120_000;
+            if (young && !seenYoung.has(j.hash)) fresh++;
+            if (young) seenYoung.add(j.hash);
+            await deps.db.finish(j.hash, young
+              ? { status: "pending", attempts: Math.max(0, (j.attempts ?? 1) - 1), error: null }
+              : { status: "failed", attempts: 3, error: "unused: no question uses this file (K64)" }).catch(() => {});
+          }
+        }
+        // only recent files already seen this round: stop (the next save or status picks them up)
+        if (skip.size === jobs.length && !fresh && jobs.every((j) => seenYoung.has(j.hash))) break;
+        await Promise.all(jobs.filter((j) => !skip.has(j.hash)).map(async (j) => {
           try {
             const r = await deps.synth!.speak(j.text, j.model, j.voice_id);
             await deps.storage.upload(audioPath(j.hash), r.audio);
@@ -737,7 +772,15 @@ export function createDrillHandler(deps: DrillDeps) {
       }
       if (action === "delete") {
         const d = await owned(user.id, b?.id);
+        const its = await deps.db.items([d.id]);
         await deps.db.deleteDrill(d.id); // the shared audio stays (other accounts may use it)
+        // K64: files of this drill that are still waiting and that no other question uses leave the queue
+        const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
+        if (hs.length && deps.db.referenced) {
+          const still = new Set(await deps.db.referenced(hs).catch(() => hs));
+          const waiting = (await deps.db.audio(hs)).filter((a) => (a.status === "pending" || a.status === "failed") && !still.has(a.hash));
+          for (const a of waiting) await deps.db.finish(a.hash, { status: "failed", attempts: 3, error: "unused: the drill was deleted (K64)" }).catch(() => {});
+        }
         return json({ deleted: true });
       }
       if (action !== "save") throw new HttpError(400, "invalid_request", "unknown action");
@@ -832,7 +875,7 @@ export function createDrillHandler(deps: DrillDeps) {
           return json({
             error: {
               code: "quota_exceeded",
-              message: `Du har gjort ${q.used} av ${q.lim} frågor med ljud den här månaden. Köp ett abonnemang eller hämta andras prov, de är gratis.`,
+              message: `Du har gjort ${q.used} av ${q.lim} frågor med ljud den här månaden. ${newFrom(now())} Andras prov är gratis.`,
               fallback: false,
             },
             used: q.used,

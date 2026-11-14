@@ -8,6 +8,7 @@ import { CAPS } from "../_shared/capabilities.ts";
 import { HJALP } from "../_shared/hjalp.ts";
 import { DEFAULT_DRILL_CONFIG, type DrillConfig, handleDrill } from "../exam/drill.ts";
 import { questionKey } from "../drill/length.ts";
+import { newFrom } from "../drill/handler.ts";
 
 /**
  * K57 (D166): `POST /help`, the help AI inside the app ("Fråga om EarMind").
@@ -105,7 +106,7 @@ export function createHelpHandler(deps: HelpDeps) {
         const q0 = await deps.useQuota(user.id, 0);
         if (q0.used + 3 > q0.lim) {
           return json({
-            error: { code: "quota_exceeded", message: "Du har inga frågor kvar den här månaden.", fallback: false },
+            error: { code: "quota_exceeded", message: `Du har inga frågor kvar den här månaden. ${newFrom(Date.now())} Andras prov är gratis.`, fallback: false },
             used: q0.used,
             limit: q0.lim,
             needed: 3,

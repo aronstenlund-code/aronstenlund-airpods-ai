@@ -105,6 +105,11 @@ export interface ExamDeps {
   quota?: (userId: string) => Promise<{ used: number; lim: number }>;
 }
 
+const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+/** K64 (Kelly, repetition-texter §6): "Nya frågor går att göra från den 1 december." */
+function newFrom(nowMs: number): string {
+  return `Nya frågor går att göra från den 1 ${MONTHS[Number(monthResets(nowMs).slice(5, 7)) - 1]}.`;
+}
 /** K61: the first day of next month in Stockholm time (when the month's questions start again). */
 function monthResets(nowMs: number): string {
   const ym = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Stockholm", year: "numeric", month: "2-digit" }).format(new Date(nowMs));
@@ -366,7 +371,7 @@ export function createExamHandler(deps: ExamDeps) {
           quota = { used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), per: "month", resets: monthResets(Date.now()) };
           if (quota.left <= 0) {
             return json({
-              error: { code: "quota_exceeded", message: "Du har inga frågor kvar den här månaden. Andras prov är gratis.", fallback: false },
+              error: { code: "quota_exceeded", message: `Du har inga frågor kvar den här månaden. ${newFrom(Date.now())} Andras prov är gratis.`, fallback: false },
               ...quota,
             }, 402);
           }

@@ -61,7 +61,7 @@ Deno.test("K57 try: three questions with answers from a short text, counted as 3
   assertEquals(j.quota, { used: 3, limit: 15 });
   const full = await mk(p, 13)(post({ action: "try", text }));
   assertEquals(full.status, 402);
-  assertEquals((await full.json()).error.message, "Du har inga frågor kvar den här månaden.");
+  assert(((await full.json()).error.message as string).startsWith("Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 "));
   assertEquals((await mk(p)(post({ action: "try", text: "kort" }))).status, 400);
 });
 
