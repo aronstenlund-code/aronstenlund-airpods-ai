@@ -28,7 +28,7 @@ export interface ImportResult {
 }
 
 // "Fråga 3:", "**Fråga:**", "1. Fråga:", "- Svar:", "F:" – markdown and numbering ChatGPT sometimes adds anyway
-const LABEL = /^\s*(?:[-*•>]\s*)?(?:\d+[.)]\s*)?(?:\*\*|__)?\s*(fråga|svar|f|s)(?:\s*\d+)?\s*(?:\*\*|__)?\s*[:：]\s*(?:\*\*|__)?\s*/iu;
+const LABEL = /^\s*(?:#{1,6}\s*)?(?:[-*•>]\s*)?(?:\d+[.)]\s*)?(?:\*\*|__)?\s*(fråga|svar|f|s)(?:\s*\d+)?\s*(?:\*\*|__)?\s*[:：]\s*(?:\*\*|__)?\s*/iu;
 const HEADING = /^\s*#|^\s*(?:\*\*|__)?\s*fråga\s*\d+\s*\.?\s*(?:\*\*|__)?\s*$/iu;
 const FENCE = /^\s*```/;
 const RULE = /^\s*([-*_=])(?:\s*\1){2,}\s*$/;
@@ -108,7 +108,8 @@ export function importText(raw: unknown): ImportResult {
   lines.forEach((line, i) => {
     const n = i + 1;
     const t = line.trim();
-    if (FENCE.test(line) || RULE.test(line) || HEADING.test(line)) {
+    // the label goes first (Angela A96): "### Fråga 1: Vad är magma?" is a question, "### Fråga 1" a heading
+    if (FENCE.test(line) || RULE.test(line) || (HEADING.test(line) && !LABEL.test(line))) {
       // rule 2: never answer text; ends the answer (kept open for the chatter check if it was the last one)
       if (mode === "a") mode = "closed";
       skipped.push({ line: n, text: t.slice(0, 160), reason: "Rubrik eller formatering, inte en del av svaret." });
