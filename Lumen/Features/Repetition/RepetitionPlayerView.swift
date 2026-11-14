@@ -57,7 +57,10 @@ struct RepetitionPlayerView: View {
                     Text(kind == .long ? "Långt svar" : "Kort svar").foregroundStyle(.secondary)
                 case .waitingForAudio:
                     if let soundProblem {
-                        Text(verbatim: soundProblem) // A100 (K62)
+                        // A100 (K62). Kelly: the question stays the biggest thing on the screen, so this long
+                        // sentence stops growing at the first accessibility size.
+                        Text(verbatim: soundProblem)
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     } else {
                         Text("Gör ljud …").foregroundStyle(.secondary)
                     }
