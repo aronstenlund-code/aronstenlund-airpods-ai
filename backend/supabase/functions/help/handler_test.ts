@@ -1,7 +1,7 @@
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import type { LLMChunk, LLMProvider, LLMRequest } from "../answer/llm/types.ts";
-import { createHelpHandler, isPressQuestion, OUT_OF_SCOPE, parseHelp, PRESSES, SYSTEM_PROMPT_HELP, UNKNOWN } from "./handler.ts";
+import { ANSWERS_DEF, createHelpHandler, isAnswersQuestion, isPressQuestion, OUT_OF_SCOPE, parseHelp, PRESSES, SYSTEM_PROMPT_HELP, UNKNOWN } from "./handler.ts";
 
 const post = (b: unknown) => new Request("http://x/help", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
 function llm(reply: (req: LLMRequest) => string): LLMProvider & { calls: LLMRequest[] } {
@@ -73,4 +73,11 @@ Deno.test("K57 the presses are always Aron's text word for word (Ke57 rule 3)", 
   for (const q of ["Vad gör jag om ett tryck inte kommer fram?", "Fungerar det med gamla AirPods?", "Hur delar jag ett prov?", "jag har gamla airpods, hur får jag det korta svaret", "vad är det korta svaret", "kan jag få längre svar"]) assert(!isPressQuestion(q), q);
   const p = llm(() => JSON.stringify({ in_scope: true, answer: "Under en fråga trycker du en gång ..." }));
   assertEquals((await (await mk(p)(post({ question: "Hur fungerar trycken?" }))).json()).answer, PRESSES);
+});
+
+Deno.test("K60 what the short and the long answer are is fixed text", async () => {
+  for (const q of ["vad är det korta svaret", "Vad är det långa svaret?", "Vad är skillnaden mellan kort och långt svar?"]) assert(isAnswersQuestion(q), q);
+  assert(!isAnswersQuestion("hur får jag det korta svaret"));
+  const p = llm(() => JSON.stringify({ in_scope: true, answer: "Det första svaret i en fråga." }));
+  assertEquals((await (await mk(p)(post({ question: "vad är det korta svaret" }))).json()).answer, ANSWERS_DEF);
 });

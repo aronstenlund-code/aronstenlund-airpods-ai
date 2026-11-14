@@ -26,6 +26,10 @@ export const PRESSES = `Medan frågan spelas: ${PRESS_LINE} Tryck igen för att 
 const PRESS_Q = /(?:hur fungerar|vad gör|vad betyder|förklara|hur styr|vilka)[^?]{0,25}(?:tryck|knapp|airpods)|tryck(?:er|a)?\s+(?:jag\s+)?(?:en|1|två|2|tre|3)\s+gång|hur\s+(?:pausar|fortsätter)(?!\p{L})|hela\s+(?:förklaringen|svaret|a-svaret)|(?:hur|när)\s+(?:får|hör|spelar|lyssnar)\s+(?:jag\s+)?(?:höra\s+|på\s+|fram\s+)?(?:det\s+|ett\s+)?(?:långa\s+|korta\s+)?(?:a-)?svar/iu;
 // troubleshooting ("kommer inte fram", "fungerar inte") is answered by the model from the help text instead
 const PRESS_TROUBLE = /inte (?:kommer|kom|fungerar|funkar|hörs)|kommer (?:inte )?fram|gamla|äldre/iu;
+/** K60 (Oscar O58b prio 3:1): what the short and the long answer are, fixed (it once said "the first answer"). */
+export const ANSWERS_DEF = "Det korta A-svaret är första meningen, eller de två första, i det långa A-svaret, och det är ett fullgott svar i sig. Det långa A-svaret förklarar mer. Du får det korta med 2 tryck och det långa med 1 tryck.";
+const DEF_Q = /^\s*(?:vad|vilket)\s+(?:är|betyder)\s+(?:det\s+)?(?:korta|långa)\s+(?:a-)?svaret\s*\??\s*$|skillnaden\s+(?:mellan|på)\s+(?:det\s+)?(?:kort|lång)/iu;
+export const isAnswersQuestion = (q: string) => DEF_Q.test(q);
 export const isPressQuestion = (q: string) => PRESS_Q.test(q) && !PRESS_TROUBLE.test(q);
 export const UNKNOWN = "Det vet jag inte. Skriv till oss under Inställningar › Om Earmind.";
 
@@ -126,6 +130,7 @@ export function createHelpHandler(deps: HelpDeps) {
       let r = parseHelp(text);
       // Kelly Ke57 rule 3: the presses are always explained with Aron's text, word for word (not left to the model)
       if (r.in_scope && isPressQuestion(question)) r = { in_scope: true, answer: PRESSES };
+      else if (r.in_scope && isAnswersQuestion(question)) r = { in_scope: true, answer: ANSWERS_DEF };
       const cost = (inTok * PRICE_IN + outTok * PRICE_OUT) / 1e6;
       await Promise.resolve(deps.recordUsage?.({ user_id: user.id, endpoint: "help", provider: deps.provider.name, model: deps.provider.model, input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost, status: "ok" })).catch(() => {});
       return json({ ...r, ...(r.in_scope ? {} : { hint: OUT_OF_SCOPE_HINT }), usage: { input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost } });
