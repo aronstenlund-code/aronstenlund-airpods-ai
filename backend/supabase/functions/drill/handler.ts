@@ -301,7 +301,10 @@ export function validDate(v: unknown, nowMs: number): string | null {
 export const daysBetween = (a: string, b: string) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 864e5);
 
 /** What anyone may see of a published drill: never the account, photos or documents (B4, D149/D150). */
-export function publicView(r: PublicationRow, school: SchoolRow, title: string, items: number) {
+/** K65 (Kelly P1, A87 punkt 5): what a publication shows before "Lägg till": the first questions and the first audio. */
+export interface PublicPreview { preview: { question: string; short: string }[]; first_audio_url: string | null }
+export const PREVIEW_QUESTIONS = 4;
+export function publicView(r: PublicationRow, school: SchoolRow, title: string, items: number, pv?: PublicPreview) {
   return {
     id: r.id,
     title,
@@ -310,6 +313,7 @@ export function publicView(r: PublicationRow, school: SchoolRow, title: string, 
     exam_date: r.exam_date,
     items,
     ...(r.display_name ? { display_name: r.display_name } : {}),
+    ...(pv ? { preview: pv.preview, first_audio_url: pv.first_audio_url } : {}),
   };
 }
 
@@ -708,7 +712,12 @@ export function createDrillHandler(deps: DrillDeps) {
           exam_date: date!, display_name: name || null,
         };
         await deps.db.savePublication(row);
-        return json({ publication: publicView(row, school!, d.title, v.items.length) });
+        return json({
+          publication: publicView(row, school!, d.title, v.items.length, {
+            preview: v.items.slice(0, PREVIEW_QUESTIONS).map((i) => ({ question: i.question, short: i.short })),
+            first_audio_url: (v.items[0]?.audio.question as { url?: string | null } | undefined)?.url ?? null,
+          }),
+        });
       }
       if (action === "unpublish") {
         const d = await owned(user.id, b?.id);
@@ -740,9 +749,22 @@ export function createDrillHandler(deps: DrillDeps) {
             Number(y.school_code === mine) - Number(x.school_code === mine) || Number(old(x)) - Number(old(y)) ||
             y.exam_date.localeCompare(x.exam_date)
           )
-          .slice(0, 50)
-          .map((r) => publicView(r, schools.get(r.school_code)!, drills.get(r.drill_id)!.title, its.filter((i) => i.drill_id === r.drill_id).length));
-        return json({ results });
+          .slice(0, 50);
+        // K65: the first questions and a short signed link to the first question's finished audio (no new audio, D180)
+        const firsts = new Map(results.map((r) => [r.drill_id, its.filter((i) => i.drill_id === r.drill_id).sort((a, b) => a.position - b.position)]));
+        const hs = [...firsts.values()].map((x) => x[0]?.question_hash).filter((h): h is string => !!h);
+        const done = new Set((hs.length ? await deps.db.audio(hs) : []).filter((a) => a.status === "done").map((a) => a.hash));
+        const urls = done.size ? await deps.storage.sign([...done].map(audioPath)).catch(() => ({} as Record<string, string>)) : {};
+        return json({
+          results: results.map((r) => {
+            const x = firsts.get(r.drill_id) ?? [];
+            const h = x[0]?.question_hash;
+            return publicView(r, schools.get(r.school_code)!, drills.get(r.drill_id)!.title, x.length, {
+              preview: x.slice(0, PREVIEW_QUESTIONS).map((i) => ({ question: i.question, short: i.short })),
+              first_audio_url: h && done.has(h) ? urls[audioPath(h)] ?? null : null,
+            });
+          }),
+        });
       }
       if (action === "report") {
         const pub = await publicationFor(b?.publication_id);

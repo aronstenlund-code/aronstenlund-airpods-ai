@@ -190,3 +190,12 @@ Deno.test("Toby T17b: two levels, a reply after the search that starts with [[ME
   assert(out.startsWith("Sverige har cirka tio komma sex miljoner"), out);
   assert(!out.includes("MER"), out);
 });
+
+Deno.test("Toby T17c w43: in Standardläge (auto) a question that names the assistant is answered, an overheard one is not", async () => {
+  const { provider } = scripted("Det beror på vem han är. Säg vem du menar.");
+  const named = await spoken(await handlerWith(provider)(ask({ fragment: "Lumen, hur länge har han funnits?", mode: "auto" })));
+  assert(named.startsWith("Det beror på vem han är"), named);
+  const b = scripted("Det beror på vem han är.");
+  const overheard = await spoken(await handlerWith(b.provider)(ask({ fragment: "hur länge har han funnits", mode: "auto" })));
+  assertEquals(overheard, "", "no name, no header: Standardläge stays quiet");
+});

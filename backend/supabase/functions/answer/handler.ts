@@ -1182,7 +1182,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const autoAction = !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" &&
         ((body.toolsAvailable?.length ?? 0) > 0 || (body.connections ?? []).includes("spotify")) &&
         (isAddressedAction(body.fragment, !!body.voiceInstruction) || capRequest);
-      const direct = !!funCmd || (cfg.directModes && (body.mode !== "auto" || autoAction)) || !!personaPlan(body);
+      // Toby T17c w43 ("Lumen, hur länge har han funnits?" = not a question, 2/2 live): in Standardläge a question that
+      // names the assistant is addressed to it, also when a word was misheard ("han" for "hajar"): answered directly
+      const named = new RegExp(`(?<![\\p{L}])(?:lumen|earmind|${(body.assistantName ?? "").replace(/[^\p{L} -]/gu, "").trim() || "earmind"})(?![\\p{L}])`, "iu");
+      const namedQuestion = !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" &&
+        named.test(body.fragment) && askLike(body.fragment.replace(named, " ").replace(/^[\s,.!]+/u, ""));
+      const direct = !!funCmd || (cfg.directModes && (body.mode !== "auto" || autoAction || namedQuestion)) || !!personaPlan(body);
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
       const plan = funCmd ? null : personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
       const continuation = !plan && body.context.recent_qa.length

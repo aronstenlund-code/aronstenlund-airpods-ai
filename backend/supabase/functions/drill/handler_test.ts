@@ -344,6 +344,9 @@ Deno.test("K49 search: own school first, old exams sink, hidden never; no accoun
   assertEquals(res[1].display_name, "Sara script");
   assertEquals("display_name" in res[0], false, "no name unless chosen (D150)");
   assertEquals(res[0].school, { code: "11111111", name: "Påhittade skolan", locality: "Nyköping" });
+  // K65: the first questions and the first question's finished audio, before "Lägg till"
+  assertEquals(res[0].preview, [{ question: "Varför egen?", short: "Därför egen." }]);
+  assert(String(res[0].first_audio_url).startsWith("https://signed/"), String(res[0].first_audio_url));
   const one = (await (await w.h("u9")(post({ action: "search", school_code: "22222222" }))).json()).results;
   assertEquals(one.length, 2);
   assertEquals((await (await w.h("u9")(post({ action: "schools", q: "påhitt" }))).json()).schools, [{ code: "11111111", name: "Påhittade skolan", locality: "Nyköping" }]);
