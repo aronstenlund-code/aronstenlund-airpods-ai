@@ -74,7 +74,7 @@ Deno.test("O51 after K42: more complaints, 'vad heter appen', 'utveckla det' and
   for (const q of ["varför sa du samma sak två gånger", "du är så dålig", "appen är buggig", "du missförstod mig", "sluta svara på allt jag säger", "varför svarade du på engelska", "Lumen, du förstår inte"]) assert(isComplaint(q), q);
   for (const q of ["varför sa du att Vänern är störst", "du är bäst", "appen för matte", "vad betyder missförstånd"]) assert(!isComplaint(q), q);
   const { selfAnswer } = await import("./self.ts");
-  assert(selfAnswer("Lumen, vad heter appen")!.startsWith("Jag heter EarMind"));
+  assert(selfAnswer("Lumen, vad heter appen")!.startsWith("Jag heter Earmind"));
   const { weakLoneCommand } = await import("./lonecmd.ts");
   assert(weakLoneCommand("utveckla det", { stt_confidence: 0.45, utterance_ms: 280, recent_qa: [{}] }));
   const { lengthCaps } = await import("./asklength.ts");
@@ -99,7 +99,7 @@ Deno.test("K42.3 the word cap passes whole sentences only and stops within it", 
   assert(/[.!?]\s*$/.test(said), said);
 });
 
-Deno.test("K44 'kan du …?', 'vad kan du göra?', 'vad är EarMind?' and help are answered from the list, without a model call", async () => {
+Deno.test("K44 'kan du …?', 'vad kan du göra?', 'vad är Earmind?' and help are answered from the list, without a model call", async () => {
   const ask = async (fragment: string, extra: Record<string, unknown> = {}) => {
     const { handler, seen } = setup();
     const t = await (await handler(new Request("http://x/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fragment, mode: "auto", language: "sv", context: {}, ...extra }) }))).text();
@@ -109,7 +109,7 @@ Deno.test("K44 'kan du …?', 'vad kan du göra?', 'vad är EarMind?' and help a
   assert((await ask("Kan du spela musik?")).said.startsWith("Ja"));
   assert((await ask("Kan du lägga in ett möte i min kalender?")).said.startsWith("Ja"));
   assert((await ask("Vad kan du göra?")).said.includes("AI-agent"));
-  assert(/AI-agent/.test((await ask("Vad är EarMind?")).said));
+  assert(/AI-agent/.test((await ask("Vad är Earmind?")).said));
   assert((await ask("Hur stänger jag av dig?")).said.includes("Stoppa"));
   assert((await ask("kan du skicka sms")).said.startsWith("Nej"));
   // with the wake word and the tool on the phone, a concrete request goes on to the model with the tool

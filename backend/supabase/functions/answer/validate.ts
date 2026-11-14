@@ -41,7 +41,7 @@ export interface AnswerRequest {
   persona: Persona;
   /** Role / pasted job ad / scenario for interview and social personas and interview_prep (user data). */
   personaSetup: string;
-  /** K42.1 (D128): the assistant's name, from the app (wake word); default EarMind. */
+  /** K42.1 (D128): the assistant's name, from the app (wake word); default Earmind. */
   assistantName?: string;
   /** K30/K42.4: the app logs this turn to qa_log (consent v5). */
   qaLog?: boolean;
@@ -262,7 +262,7 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
   }
   const personaSetup = str(o.persona_setup, "persona_setup", LIMITS.personaSetup);
   const rawName = typeof o.assistant_name === "string" ? o.assistant_name.trim() : "";
-  const assistantName = /^[\p{L}][\p{L} -]{0,19}$/u.test(rawName) ? rawName : "EarMind";
+  const assistantName = /^[\p{L}][\p{L} -]{0,19}$/u.test(rawName) ? rawName : "Earmind";
   if (mode === "interview_prep" && !personaSetup) {
     throw bad("persona_setup (the role or job ad) is required for interview_prep");
   }

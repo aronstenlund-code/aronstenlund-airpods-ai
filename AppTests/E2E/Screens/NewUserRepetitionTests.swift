@@ -68,9 +68,9 @@ final class NewUserRepetitionTests: XCTestCase {
         addTeardownBlock { @MainActor [weak self] in self?.finish() }
 
         // 1. Välkommen
-        guard wait(["Välkommen till Earmind"], 15) != nil else {
+        guard wait(["Välkommen till EarMind"], 15) != nil else {
             screen("forsta-skarmen", "First screen is not Välkommen")
-            fail("Välkommen till Earmind not shown at the first start")
+            fail("Välkommen till EarMind not shown at the first start")
             return
         }
         screen("valkommen", "Skärm 1: Välkommen")

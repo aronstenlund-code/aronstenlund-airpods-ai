@@ -112,7 +112,7 @@ export function askLike(text: string): boolean {
   if (/(?<![\p{L}])(?:förstår inte|fattar inte|hänger inte med|en gång till|igen|enklare|ett exempel|mer om)(?![\p{L}])/iu.test(text)) return true;
   return text.split(/[.!;:]+|\s[-–—]\s|-\s/u).map((x) => x.trim()).some((x) => ASK_START.test(x));
 }
-/** K44: "vad kan du (göra)?", "vad kan EarMind?", "vad mer kan du?" */
+/** K44: "vad kan du (göra)?", "vad kan Earmind?", "vad mer kan du?" */
 const WHAT_CAN = /^(?:(?:hej|okej|ok)\s+)?(?:(?:lumen|earmind),?\s+)?(?:vad (?:mer )?kan (?:du|earmind|lumen|appen)(?: göra| hjälpa (?:mig )?med)?(?: mer)?|vad (?:gör|är) du bra på|vad kan jag (?:be dig om|fråga dig om|använda dig till)|vilka funktioner (?:har|finns)\b.*)\s*[?.!]?$/iu;
 /** K44: a concrete request ("… en timer på tio minuter", "… ringa mamma") with the wake word and the tool on the phone. */
 function isCapRequest(c: Capability, text: string, tools: string[], voiceInstruction: boolean): boolean {
@@ -656,7 +656,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : helpAnswer(body.fragment);
       // Oscar O52 (prio 1): the local time is said by code (the model read "20:57" as "tjugo över åtta")
       const clockText = !demo ? localClockAnswer(body.fragment, (deps.clock ?? (() => new Date()))()) : null;
-      const selfText = clockText ? clockText : complaint ? complaintAnswer(body.qaLog === true) : capText ? capText : aboutMe ? selfAnswer(body.fragment, body.assistantName ?? "EarMind") : null;
+      const selfText = clockText ? clockText : complaint ? complaintAnswer(body.qaLog === true) : capText ? capText : aboutMe ? selfAnswer(body.fragment, body.assistantName ?? "Earmind") : null;
       if (selfText) {
         const totalMs = Math.round(now() - t0);
         const frames = [
@@ -1534,7 +1534,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "") +
         (!plan && (tutor || quiz) && !noSummary ? QUIZ_KEY_RULE : "") +
         // K42.1 (D128): the assistant has a name; it never says it has none
-        (!plan ? `\n- Your name is ${body.assistantName ?? "EarMind"}. Asked your name or who you are, say "Jag heter ${body.assistantName ?? "EarMind"}"; never say that you have no name or call yourself anything else.` + capabilitiesRule(body.assistantName ?? "EarMind", body.context.capabilities) : "");
+        (!plan ? `\n- Your name is ${body.assistantName ?? "Earmind"}. Asked your name or who you are, say "Jag heter ${body.assistantName ?? "Earmind"}"; never say that you have no name or call yourself anything else.` + capabilitiesRule(body.assistantName ?? "Earmind", body.context.capabilities) : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
         (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
       const maxTokens = demo

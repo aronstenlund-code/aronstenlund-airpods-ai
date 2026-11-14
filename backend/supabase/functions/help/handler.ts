@@ -10,16 +10,16 @@ import { DEFAULT_DRILL_CONFIG, type DrillConfig, handleDrill } from "../exam/dri
 import { questionKey } from "../drill/length.ts";
 
 /**
- * K57 (D166): `POST /help`, the help AI inside the app ("Fråga om EarMind").
+ * K57 (D166): `POST /help`, the help AI inside the app ("Fråga om Earmind").
  *  {"question": "Hur delar jag ett prov?"} -> {"answer", "in_scope": true}
- *     Only questions about EarMind, answered from docs/HJALP.md and Shared/capabilities.json (never an invented
+ *     Only questions about Earmind, answered from docs/HJALP.md and Shared/capabilities.json (never an invented
  *     feature). Anything else: {"answer": "Det kan jag inte svara på.", "in_scope": false, "hint": "Jag svarar bara …"}.
  *  {"action": "try", "text": "<a short text>"} -> {"items": [3 × {id, question, short, long}], "summary", "notes", "quota"}
  *     Three questions with answers from a short text; counts as 3 of the month's questions (D155); 402 when they are
  *     not left. "Spara som prov" in the app saves them through /drill like any drill.
  */
 export const OUT_OF_SCOPE = "Det kan jag inte svara på.";
-export const OUT_OF_SCOPE_HINT = "Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov.";
+export const OUT_OF_SCOPE_HINT = "Jag svarar bara på hur Earmind fungerar, till exempel hur du gör ett nytt prov.";
 /** K60 (Deangelo 12:15, Oscar O58 fynd 1) word for word, and D165 for the pause: questions on the presses and on how to
  * hear the long or short answer always get this. */
 export const PRESS_LINE = "1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus.";
@@ -32,21 +32,21 @@ export const ANSWERS_DEF = "Det korta A-svaret är första meningen, eller de tv
 const DEF_Q = /^\s*(?:vad|vilket)\s+(?:är|betyder)\s+(?:det\s+)?(?:korta|långa)\s+(?:a-)?svaret\s*\??\s*$|skillnaden\s+(?:mellan|på)\s+(?:det\s+)?(?:kort|lång)/iu;
 export const isAnswersQuestion = (q: string) => DEF_Q.test(q);
 export const isPressQuestion = (q: string) => PRESS_Q.test(q) && !PRESS_TROUBLE.test(q);
-export const UNKNOWN = "Det vet jag inte. Skriv till oss under Inställningar › Om EarMind.";
+export const UNKNOWN = "Det vet jag inte. Skriv till oss under Inställningar › Om Earmind.";
 
 const capsText = () =>
   CAPS.map((c) => `- ${c.name}: ${c.status === "finns" ? "finns" : "kommer snart"}${c.permission ? " (kräver att du tillåter det)" : ""}`).join("\n");
 
-export const SYSTEM_PROMPT_HELP = `You are the help inside the Swedish app EarMind. You answer ONLY questions about how EarMind works, using ONLY <hjalp> and <funktioner> below. Return ONLY a JSON object {"in_scope": true|false, "answer": "..."}.
-- in_scope is false for anything that is not about using EarMind (school subjects, homework, general knowledge, other apps, chat, jokes, personal questions, requests to do something outside the app). Then answer is "".
-- When it is about EarMind but <hjalp> and <funktioner> do not say, answer exactly: "${UNKNOWN}" Never invent a feature, a setting, a price, a number of seconds or a place in the app.
+export const SYSTEM_PROMPT_HELP = `You are the help inside the Swedish app Earmind. You answer ONLY questions about how Earmind works, using ONLY <hjalp> and <funktioner> below. Return ONLY a JSON object {"in_scope": true|false, "answer": "..."}.
+- in_scope is false for anything that is not about using Earmind (school subjects, homework, general knowledge, other apps, chat, jokes, personal questions, requests to do something outside the app). Then answer is "".
+- When it is about Earmind but <hjalp> and <funktioner> do not say, answer exactly: "${UNKNOWN}" Never invent a feature, a setting, a price, a number of seconds or a place in the app.
 - The answer: Swedish du-form, short sentences, at most 4 sentences or 5 numbered steps ("1. ..."), the answer first (no "Bra fråga", "Självklart", "Som en AI"). Button names exactly as in <hjalp> (Nytt prov, Fota sidor, Skapa frågor, Ser rätt ut, Starta prov, Avsluta, Fler lägen, Dela, Publicera prov). Never the words "övningsprov", "A+-svar", "drill", "TTS" or model or company names.
 - Questions about the presses: give the sentence in <hjalp> word for word. Never swap them: ${PRESS_LINE} "A-svaret" alone means the long answer.
 - Use only the button names, gestures and steps that are in <hjalp>; never add one (no "Spara", no swiping, no setting that is not named).
-- A question about doing something IN EarMind (language, question types, skipping or going back, exporting, accounts, reminders) is always in_scope true, also when EarMind cannot do it: then say plainly that it is not in EarMind (see "Det här finns inte i EarMind"), or answer exactly the "Det vet jag inte" sentence.
+- A question about doing something IN Earmind (language, question types, skipping or going back, exporting, accounts, reminders) is always in_scope true, also when Earmind cannot do it: then say plainly that it is not in Earmind (see "Det här finns inte i Earmind"), or answer exactly the "Det vet jag inte" sentence.
 - The short answer is the first sentence (or two) of the long answer, never "the first answer". Premium, subscriptions and prices: say what <hjalp> says (coming later, no prices yet), never "Det vet jag inte".
 - Answer only what was asked: no extra sentence about another topic, and never the same instruction twice.
-- Say only what <hjalp> says about calls and reminders: a call pauses the drill and it goes on when you press again; EarMind has no study reminders of its own.
+- Say only what <hjalp> says about calls and reminders: a call pauses the drill and it goes on when you press again; Earmind has no study reminders of its own.
 - Something "kommer snart" is said to be coming; beta modes are said to be in beta.
 - Never ask for personal information. No emoji.
 

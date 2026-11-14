@@ -1,4 +1,4 @@
-// POST /functions/v1/help - K57 (D166): the help AI ("Fråga om EarMind"). See handler.ts.
+// POST /functions/v1/help - K57 (D166): the help AI ("Fråga om Earmind"). See handler.ts.
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";

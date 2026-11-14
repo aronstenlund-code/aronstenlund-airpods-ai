@@ -1,5 +1,5 @@
 /**
- * K44 (Aron 21:16, D118): EarMind knows what it is called and what it can do, from ONE list that the app reads too:
+ * K44 (Aron 21:16, D118): Earmind knows what it is called and what it can do, from ONE list that the app reads too:
  * `Shared/capabilities.json` (repo root). The functions are deployed from backend/, so a copy lives next to this file
  * and `capabilities_test.ts` fails when the two differ.
  *
@@ -30,7 +30,7 @@ const NOT_YET = new RegExp(String.raw`(?<![\p{L}])(?:${LIST.not_yet.join("|")})(
 const HELP = LIST.help.map((h) => ({ id: h.id, re: new RegExp(String.raw`(?<![\p{L}])(?:${h.ask.join("|")})`, "iu"), answer: h.answer }));
 const CAP_RE = CAPS.map((c) => ({ c, re: new RegExp(String.raw`(?<![\p{L}])(?:${c.ask.join("|")})`, "iu") }));
 
-/** "kan du …", "går det att …", "kan EarMind …", "klarar du att …", "har du (en) …": a question about an ability. */
+/** "kan du …", "går det att …", "kan Earmind …", "klarar du att …", "har du (en) …": a question about an ability. */
 const ABILITY = /^(?:(?:hej|okej|ok)\s+)?(?:(?:lumen|earmind),?\s+)?(?:kan (?:du|earmind|lumen|appen|man)|går det att|klarar (?:du|earmind)|är det möjligt att|har (?:du|appen|earmind) (?:en |ett |någon |något )?|funkar det att|fungerar det att|vet du hur man|kan jag (?:be dig|få dig att))(?![\p{L}])/iu;
 const PERM_NAME: Record<string, string> = { calendar: "kalendern", reminders: "påminnelser", alarms: "larm och timer", contacts: "kontakterna" };
 

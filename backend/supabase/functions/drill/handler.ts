@@ -179,7 +179,7 @@ export interface ShareRow {
   user_id: string;
   revoked_at?: string | null;
 }
-/** K47: the link that opens EarMind (universal link once earmind.ai serves apple-app-site-association; scheme until then). */
+/** K47: the link that opens Earmind (universal link once earmind.ai serves apple-app-site-association; scheme until then). */
 export const SHARE_URL = (code: string) => `https://earmind.ai/p/${code}`;
 export const SHARE_APP_URL = (code: string) => `earmind://prov/${code}`;
 export function newShareCode(): string {
