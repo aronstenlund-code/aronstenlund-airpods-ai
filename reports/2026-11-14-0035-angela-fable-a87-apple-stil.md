@@ -93,3 +93,49 @@ Kontaktblad: `reports/2026-11-14-a87-bilder/`.
 Läs den här rapporten och Kellys `reports/2026-11-14-0010-kelly-granskning-a87.md` och
 `reports/2026-11-14-0033-kelly-granskning-a83-a84.md`. Kontrollera bygget och bilderna ovan, rätta det Kelly hittar i
 största text, och ta sedan A92.
+
+## Tillägg 2026-11-14 02:33: största text, A92 och bygget
+**Fortfarande inget provat på telefon.** Allt är Simulatorbilder från CI och kodläsning.
+
+### Största text (Kellys `reports/2026-11-14-0100-kelly-granskning-storsta-text.md`)
+| Fynd | Åtgärd | Läge |
+|---|---|---|
+| Egna (06dd6c7): knapptext bröts mitt i ordet, bottenraden tog halva skärmen, uppspelningen kapade texten, Nytt prov i tomläget under nedre raden, rubriker kapades | 76e293f, 84889b9 | Kelly: rubriker, avstavning, formulär och fasta huvudknappar håller (43528102988, 43528108671) |
+| S1 (hög): ord bryts utan bindestreck bredvid BETA i Välj läge | Angela Schrutes fil; hon har tagit bort märkena från raderna | inte sett på bild av mig |
+| S2 (hög): uppspelningen på iPhone SE kapade frågan och dolde "Tryck på AirPods för svaret" | bfed93d: egen layout utan rullning vid tillgänglighetsstorlekar. Första raden "Fråga 1 av 5 · 6 s" (eller "· Pausad"), frågan som krymper till platsen, en rad om vad man gör, Avsluta. Tryckprickarna och svarstexten visas inte där | **bekräftat av mig på bild** (43531494112, iPhone SE) |
+| S3 (medel): Hems nedre rad flöt över texten | `.toolbarBackground` hjälpte inte i iOS 26 (43531494112). 8684b6d: en fast rad med material och skiljelinje (`safeAreaInset`), Öppna länk i en ⋯-meny vid tillgänglighetsstorlekar | **inte bekräftat på bild** (43541166865 går) |
+| S4, S5 (låg): innehåll skymdes av den fasta knappraden utan att det syntes | bfed93d: material och skiljelinje på raden | bekräftat av mig på bild (43531494112) |
+| P3 (låg): Fler lägen halvt under nedre raden på SE | 3e8597e, ersatt av S3-lösningen i 8684b6d | inte bekräftat på bild |
+
+### A92: Fråga om Earmind (D166, Kellys Ke57)
+Ny fil `Lumen/Features/Repetition/HelpChatView.swift`: bladet med Klar, en rad om vad det är, tre förslag som rader,
+"Prova på en kort text", bubblor som i Meddelanden (frågan till höger i accentfärg, svaret till vänster, helt på en
+gång), inmatningsfält nederst. `HelpTryView`: en textruta, raden om kvoten, de tre frågorna med korta svar, **Gör
+frågor** och sedan **Spara som prov** fast nederst, Gör om som textknapp. ?-knappen (`questionmark.circle`) finns i
+Nytt prov ("Vad kan jag fota?") och på kontrollskärmen ("Hur fungerar trycken?"; kontrollen börjar om när hjälpen
+stängs). Logiken (`HelpAnswering`, `HelpClient`, `MockHelp`), raden i Inställningar och scenerna är Angela Schrutes.
+- **Kompilerar** i Simulatorbygget (43531494112, bfed93d) och i enhetsbygget (43531800983).
+- **Inte sett på bild** (scenerna `repHelp`, `repHelpAnswer`, `repHelpTry` kom efter bfed93d).
+- Länken i ett svar ("Öppna Styr med dina AirPods") visas bara när anroparen skickar `onOpen`. Från ?-knapparna gör
+  jag inte det än: navigeringen dit är Angela Schrutes.
+- **Otestat antagande:** att returtangenten skickar frågan från ett flerradigt fält, och hur fältet beter sig med
+  tangentbordet uppe.
+
+### Bygget
+| Körning | Commit | Resultat |
+|---|---|---|
+| 43524914328 | 3c0757e | Enhetsbygget gick igenom. Enhetstesterna föll i lyssnande kod (`ScribeRetryTests`, `CalibrationFlowTests`), rättat av Angela Schrute i 868a77d |
+| 43528101357 | 84889b9 | Samma två testsviter |
+| 43531800983 | 5623c65 | Enhetsbygget gick igenom. **Ett test rött:** `A92HelpTests.outsideTheAppIsSaidWithTheHint`. `MockHelp` letar efter "väder", testet frågar "Hur blir vädret?". Angela Schrutes fil; står i hennes kö (punkt 6) |
+| 43541165315 | 8684b6d | Går. Faller på samma test |
+| (nästa) | fdc5dea | Angela Schrute har rättat `MockHelp` ("väd"). Bygget på fdc5dea eller senare avgör |
+
+**Det finns alltså inget grönt iOS build med A87 än.** Testet är rättat av Angela Schrute i fdc5dea; nästa bygge
+visar om allt är grönt.
+
+### Kvar, uppdaterat
+1. Grönt iOS build (fdc5dea eller senare).
+2. Bekräfta S3 och A92 på bild (43541166865 SE största text, 43541171376 SE, 43541178241 17 Pro, alla 8684b6d), och Kellys granskning av dem.
+3. Kellys P1 (fält från K49) och P2 (röstnamn från Aron).
+4. Tobys förstagångstest.
+5. Kellys Ke55 (första starten) är inte tilldelad.
