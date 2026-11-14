@@ -1,3 +1,4 @@
+import AVFoundation
 import SwiftUI
 
 // A83 (D149, D150, Kelly Ke52): Publicera prov, Välj skola, Prov från din skola, Rapportera. System components
@@ -367,6 +368,8 @@ struct PublicationView: View {
     @State private var problem: String?
     @State private var reporting = false
     @State private var reported = false
+    @State private var sample: AVPlayer?
+    @State private var isPlayingSample = false
 
     var body: some View {
         NavigationStack {
@@ -381,6 +384,7 @@ struct PublicationView: View {
                     }
                     .padding(.vertical, 4)
                 }
+                preview
                 Section {
                     if reported {
                         Text("Tack. Vi tittar på det.").foregroundStyle(.secondary)
@@ -394,11 +398,56 @@ struct PublicationView: View {
             .safeAreaInset(edge: .bottom) { actionBar }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Stäng") { dismiss() } } }
+            .onDisappear { sample?.pause() }
             .sheet(isPresented: $reporting) {
                 ReportSheet(model: model, publication: publication) { reported = true }
                     .presentationDetents([.medium])
             }
         }
+    }
+
+    /// Kelly P1 (Ke52 `pub-forhand.png`, K65): what one gets before adding the exam: the first four questions with
+    /// their short answers, "och 16 frågor till", and the first question read aloud. Shown when the server sends it.
+    @ViewBuilder
+    private var preview: some View {
+        if let questions = publication.preview, !questions.isEmpty {
+            Section("Frågor") {
+                ForEach(Array(questions.enumerated()), id: \.offset) { index, item in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(verbatim: item.question).fontWeight(.semibold)
+                        Text(verbatim: item.short).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("Fråga \(index + 1). \(item.question) \(item.short)")
+                }
+                if publication.moreQuestions > 0 {
+                    Text("och \(DrillText.questions(publication.moreQuestions)) till").foregroundStyle(.secondary)
+                }
+                if let url = publication.firstAudioURL {
+                    Button {
+                        toggleSample(url)
+                    } label: {
+                        Label(isPlayingSample ? "Stoppa" : "Lyssna på första frågan",
+                              systemImage: isPlayingSample ? "stop.circle" : "play.circle")
+                    }
+                }
+            }
+        }
+    }
+
+    /// The exam's own sound for question 1, as it is on the server (nothing is made by listening).
+    private func toggleSample(_ url: URL) {
+        if isPlayingSample {
+            sample?.pause()
+            isPlayingSample = false
+            return
+        }
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
+        try? AVAudioSession.sharedInstance().setActive(true)
+        let player = AVPlayer(url: url)
+        sample = player
+        player.play()
+        isPlayingSample = true
     }
 
     /// The next step, always in view: Lägg till i mina prov, then Starta prov (Stäng is "Senare"), or Öppna when the
