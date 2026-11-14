@@ -87,7 +87,7 @@ Vinst: AirPods spelar då i A2DP med bättre ljud än samtalsläget som de lyssn
 |---|---|---|
 | R1 | **Tid till färdig lista:** 10 sidfoton + 1 PDF → sammanfattning och frågor på skärmen inom 30 s, alla svar inom 90 s, första ljudet spelbart inom 20 s efter Starta prov. | Oscar (server), Toby (enhet) |
 | R2 | **Analys:** på 10 testprov (egna, påhittade, aldrig elevtext i repot) täcker frågorna minst 90 % av lärandemålen enligt en facit-lista. 0 frågor utanför materialet. Ämne och årskurs rätt 10/10. | Oscar |
-| R3 | **Frågor:** minst 80 % har högst 5 ord och alla högst 8. Minst 70 % är förståelsefrågor (varför, hur, jämför), bedömt mot rubrik. | Oscar |
+| R3 | **Frågor:** ingen ordgräns (D176). Minst 70 % är förståelsefrågor (varför, hur, jämför), bedömt mot rubrik. Genererade frågor ska normalt hamna i längdklassen normal (D176): minst 90 % till och med 800 tecken för fråga plus långt svar. | Oscar |
 | R4 | **Svar:** långa svar bedöms A-nivå 18/20 och korta svar korrekta 20/20 (domare: Sonnet + Deangelos stickprov). 0 faktafel i stickprovet. | Oscar |
 | R5 | **Sparas rätt per användare:** redigera, ta bort, lägg till, ändra ordning, stäng appen, starta om, logga in på annan telefon → allt kvar 10/10. En annan användare kan aldrig läsa provet eller ljudet utan delning (RLS-test). | Toby, Oscar |
 | R5b | **Ljudfiler:** alla 3 × N filer finns och spelas, status stämmer, en ändrad fråga ger bara nya filer för den frågan, samma text genereras 0 gånger två gånger (räknas i jobbloggen). | Oscar |
