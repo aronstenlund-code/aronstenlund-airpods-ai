@@ -160,4 +160,4 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [x] klar 2026-11-13 23:48 → reports/2026-11-13-2348-kelly-ke57-hjalp.md (HJALP.md granskas när den finns) **Ke57 – Hjälp-AI:ns utseende och ton (D166)** (effort: low). Lagd av Deangelo 2026-11-13 23:50. En enkel Apple-lik chatt (som Meddelanden, utan dekor), tre förslag på frågor när den är tom ("Hur fungerar trycken?", "Hur delar jag ett prov?", "Varför blev det färre frågor?"), och knappen "Prova på en kort text". Granska också Kevins docs/HJALP.md för språk och ton.
 
-- [ ] **Ke58 – "Gör med ChatGPT" (D169)** (effort: low). Lagd av Deangelo 2026-11-14 09:55. Text och plats för knappen och de tre stegen (kopiera prompt, klistra in i ChatGPT med filer, klistra in svaret här). Kort och tydligt. Till Angela Fable.
+- [x] klar 2026-11-14 09:55 → reports/2026-11-14-0955-kelly-ke58-chatgpt.md **Ke58 – "Gör med ChatGPT" (D169)** (effort: low). Lagd av Deangelo 2026-11-14 09:55. Text och plats för knappen och de tre stegen (kopiera prompt, klistra in i ChatGPT med filer, klistra in svaret här). Kort och tydligt. Till Angela Fable.

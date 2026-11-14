@@ -305,6 +305,54 @@ add('hjalp-prova', 'Prova på en kort text', 'Ett vanligt formulär: en textruta
   <div class="sec">${[['Var sker fotosyntesen?', 'I kloroplasterna.'], ['Vad bygger växten av koldioxid och vatten?', 'Glukos, med hjälp av solljus.'], ['Varför bildas syre?', 'Syret blir över när vatten delas.']].map(([q, a]) => `<div class="row q"><div><div class="t">${q}</div><div class="sub">${a}</div></div></div>`).join('')}</div>
   </div><div class="bottom"><div class="btnp">Spara som prov</div><div class="btnt" style="font-size:15px">Gör om</div></div></div>`);
 
+
+// ===== Ke58: Gör med ChatGPT (D169). Tre steg, inget eget AI-pynt. =====
+const step = (n, t, s, btn, done = false) => `<div class="row" style="align-items:flex-start;gap:14px;padding:14px 16px">
+  <span style="width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:14px;font-weight:700;${done ? 'background:var(--green);color:#fff' : 'background:var(--tint);color:var(--ontint)'}">${done ? '✓' : n}</span>
+  <div style="flex:1;min-width:0"><div style="font-weight:600">${t}</div><div class="sub" style="line-height:1.35">${s}</div>${btn ? `<div style="margin-top:10px">${btn}</div>` : ''}</div></div>`;
+const smallBtn = (t, prominent = false) => `<span style="display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:17px;font-size:15px;font-weight:600;${prominent ? 'background:var(--tint);color:var(--ontint)' : 'background:var(--fill);color:var(--tint)'}">${t}</span>`;
+
+add('gpt-rad', 'Nytt prov: raden Gör med ChatGPT', 'En egen rad sist i Material, med en neutral symbol och en undertext som säger vad det är. Inga gnistor eller logotyper.',
+  () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Nytt prov</span><span style="width:50px"></span></div>
+  <div class="content" style="padding-top:8px">
+  <div class="sec"><div class="row" style="color:var(--ter)">Provets namn</div></div>
+  <div class="sh">Material</div>
+  <div class="sec"><div class="row ic"><span class="sym" style="background:#2346C8">${I('cam')}</span><span class="tintc">Fota sidor</span></div>
+    <div class="row ic"><span class="sym" style="background:#34C759">${I('photo')}</span><span class="tintc">Välj bilder</span></div>
+    <div class="row ic"><span class="sym" style="background:#FF9500">${I('txt')}</span><span class="tintc">Skriv text</span></div>
+    <div class="row ic"><span class="sym" style="background:#8E8E93">${I('doc')}</span><span class="tintc">Lägg till dokument</span></div>
+    <div class="row ic"><span class="sym" style="background:#5856D6">${I('txt')}</span><div><span class="tintc">Gör med ChatGPT</span><div class="sub">Låt ChatGPT göra frågorna av dina filer</div></div><span class="v">${chev}</span></div></div>
+  <div class="sf">Foton, dokument och text skickas en gång för att göra frågorna och sparas inte.</div>
+  </div><div class="bottom"><div class="btnp dis">Skapa frågor</div><div class="note">Lägg till minst en sida, bild eller text.</div></div></div>`);
+
+add('gpt-steg', 'Gör med ChatGPT: tre steg', 'Ett blad med tre numrerade steg, en knapp i varje. Steg 3 är systemets Klistra in-knapp (PasteButton), så iOS inte frågar om urklipp. Raden längst ner säger vem som hanterar filerna.',
+  () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Gör med ChatGPT</span><span style="width:50px"></span></div>
+  <div class="content" style="padding-top:8px">
+  <div style="font-size:15px;color:var(--sec);padding:4px 32px 10px;line-height:1.35">ChatGPT gör frågor och svar av dina filer. Sedan läser Earmind upp dem.</div>
+  <div class="sec">
+    ${step(1, 'Kopiera prompten', 'Den säger åt ChatGPT exakt vad som ska göras.', smallBtn('Kopiera prompten', true), true)}
+    ${step(2, 'Klistra in i ChatGPT', 'Bifoga dina filer, till exempel foton av sidorna eller en PDF, och skicka.', smallBtn('Öppna ChatGPT'))}
+    ${step(3, 'Klistra in svaret här', 'Kopiera hela svaret från ChatGPT.', smallBtn('Klistra in'))}
+  </div>
+  <div class="sf">Det du bifogar i ChatGPT hanteras av ChatGPT, inte av Earmind. ChatGPT är en tjänst från OpenAI.</div>
+  </div></div>`);
+
+add('gpt-klart', 'Gör med ChatGPT: svaret inklistrat', 'Earmind känner igen formatet och visar vad den hittade innan något sparas. Spara frågorna är den enda fyllda knappen.',
+  () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Gör med ChatGPT</span><span style="width:50px"></span></div>
+  <div class="content" style="padding-top:8px">
+  <div class="sec"><div class="row" style="gap:12px"><span class="check" style="width:26px;height:26px">✓</span><div><div style="font-weight:600">Hittade 20 frågor med svar</div><div class="sub">Det korta svaret är första meningen i varje svar.</div></div></div></div>
+  <div class="sh">Frågor</div>
+  <div class="sec">${QS.slice(0, 4).map(([q, a], i) => `<div class="row q" style="--inset:48px;align-items:flex-start"><span class="num">${i + 1}</span><div style="min-width:0"><div class="t">${q}</div><div class="sub">${a}</div></div></div>`).join('')}
+    <div class="row" style="--inset:48px;color:var(--sec);font-size:15px"><span class="num"></span>och 16 frågor till</div></div>
+  </div><div class="bottom"><div class="btnp">Spara frågorna</div><div class="note">Ljudet görs som vanligt när frågorna är sparade.</div></div></div>`);
+
+add('gpt-fel', 'Gör med ChatGPT: fel form', 'Känner Earmind inte igen svaret: en mening om vad som gick fel och vad man gör, och Klistra in igen. Inget rött.',
+  () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Gör med ChatGPT</span><span style="width:50px"></span></div>
+  <div class="content" style="padding-top:8px">
+  <div class="sec"><div class="row" style="flex-direction:column;align-items:flex-start;gap:6px;padding:14px 16px"><div style="font-weight:600">Svaret har inte rätt form</div><div class="sub" style="line-height:1.35">Kopiera hela svaret från ChatGPT, från första ”Fråga:” till sista svaret, och försök igen.</div><div style="margin-top:6px">${smallBtn('Klistra in igen', true)}</div></div></div>
+  <div class="sf">Du kan också klistra in texten under Skriv text i Nytt prov.</div>
+  </div></div>`);
+
 const root = document.getElementById('screens');
 for (const s of S) {
   const side = th => `<div class="side ${th}"><div class="tag">${s.tag}</div>${s.f(th === 'dark')}<div class="cap">${s.cap}</div></div>`;
