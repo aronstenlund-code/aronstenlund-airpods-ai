@@ -290,7 +290,7 @@ struct NewDrillView: View {
         .safeAreaInset(edge: .bottom) {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
             MainActionBar(title: "Skapa frågor",
-                          note: model.quotaUsedUp ? Self.usedUpLine
+                          note: model.quotaUsedUp ? "Inga frågor kvar den här månaden." // Kelly: the long line is at the top
                               : material.isEmpty ? "Lägg till minst en sida, bild eller text." : model.quota.map { $0.line + "." },
                           isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp) {
                 create(correction: nil)

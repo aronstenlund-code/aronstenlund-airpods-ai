@@ -282,12 +282,20 @@ struct RepetitionHomeSection: View {
     private func facts(_ drill: Drill, saved: Int?) -> String {
         if let saved { return "Du var på fråga \(saved + 1) av \(drill.items.count)" }
         // A100 (K62): when the sound cannot be made, say so instead of a counter that stands still.
-        if let problem = model.audio.problem(for: drill) { return "\(DrillText.questions(drill.items.count)) · \(problem)" }
+        if let problem = shortProblem(drill) { return "\(DrillText.questions(drill.items.count)) · \(problem)" }
         let p = model.progress(drill)
         if p.total > 0, p.ready == p.total {
             return "\(DrillText.questions(drill.items.count)) · cirka \(DrillText.minutesPerLap(drill)) min per varv"
         }
         return "\(DrillText.questions(drill.items.count)) · Ljud: \(p.ready) av \(p.total) klara"
+    }
+
+    /// Kelly (A100): on Start only the first sentence of the sound's problem, without the full stop ("Ljudet kan
+    /// inte göras just nu"); the exam's own page has the whole of it ("… Försök igen om en stund.").
+    private func shortProblem(_ drill: Drill) -> String? {
+        guard let problem = model.audio.problem(for: drill) else { return nil }
+        let first = problem.components(separatedBy: ". ").first ?? problem
+        return first.hasSuffix(".") ? String(first.dropLast()) : first
     }
 
     /// Through "Styr med dina AirPods" the first time; after that one tap, from the question the last run stopped at.
@@ -304,7 +312,7 @@ struct RepetitionHomeSection: View {
         let p = model.progress(drill)
         let ready = p.total > 0 && p.ready == p.total
         let detail = ready ? "\(DrillText.questions(drill.items.count)) · ljud klart"
-            : model.audio.problem(for: drill) ?? "Ljud: \(p.ready) av \(p.total) klara" // A100 (K62)
+            : shortProblem(drill) ?? "Ljud: \(p.ready) av \(p.total) klara" // A100 (K62)
         return HStack(spacing: 12) {
             Button {
                 opened = drill.id
