@@ -47,6 +47,9 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var short: String
         var long: String
         var audio: Audio
+        /// K61 (D176): the question and the long answer, in characters to ElevenLabs, and its class.
+        var voice_chars: Int?
+        var length_class: String?
     }
 
     struct Totals: Decodable, Sendable, Equatable {
@@ -72,8 +75,33 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     var limit: Int
     var per: String?
     var resets: String?
+    /// K61 (D175): what is left, and what Nytt prov should propose (min(left, 20)), from `/drill quota`.
+    var serverLeft: Int?
+    var suggest: Int?
 
-    var left: Int { max(0, limit - used) }
+    enum CodingKeys: String, CodingKey {
+        case used, limit, per, resets, suggest
+        case serverLeft = "left"
+    }
+
+    init(used: Int, limit: Int, per: String? = nil, resets: String? = nil, serverLeft: Int? = nil, suggest: Int? = nil) {
+        self.used = used
+        self.limit = limit
+        self.per = per
+        self.resets = resets
+        self.serverLeft = serverLeft
+        self.suggest = suggest
+    }
+
+    var left: Int { max(0, serverLeft ?? (limit - used)) }
+
+    /// D175: Nytt prov proposes at most what is left, never more than 20 (D146); at least 1 while any is left.
+    var suggestedQuestions: Int {
+        min(Drill.defaultQuestionCount, max(0, suggest ?? left))
+    }
+
+    /// D175: nothing left this month, said before the exam is made (not as a 402 afterwards).
+    var isUsedUp: Bool { left == 0 }
     /// "x av 15 frågor kvar den här månaden".
     var line: String { "\(left) av \(limit) frågor kvar den här månaden" }
 }
@@ -166,6 +194,14 @@ final class DrillCloudClient: DrillCloudSyncing {
         return reply.drills
     }
 
+    /// K61 (D175): `/drill quota` → used, limit, left, suggest.
+    @discardableResult
+    func quota() async throws(DrillCloudError) -> DrillQuota {
+        let quota: DrillQuota = try await call(["action": "quota"], timeout: 15)
+        lastQuota = quota
+        return quota
+    }
+
     /// A84 (D155): the month's limit from the last `list`.
     private(set) var lastQuota: DrillQuota?
 
@@ -249,6 +285,7 @@ extension Drill {
     static func from(_ view: DrillCloudView, merging local: Drill? = nil) -> Drill {
         let items = view.items.sorted { $0.position < $1.position }.enumerated().map { offset, remote in
             var item = DrillItem(question: remote.question, short: remote.short, long: remote.long, serverID: remote.id)
+            item.lengthClass = remote.length_class.flatMap(DrillLengthClass.init(rawValue:)) // K61 (D176)
             if let local, local.items.indices.contains(offset) {
                 let mine = local.items[offset]
                 item.id = mine.id

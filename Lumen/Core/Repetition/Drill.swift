@@ -34,6 +34,23 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     var audioFileCount: Int { items.count * 2 }
 }
 
+/// A99 (D176): how long a question is to listen to, from the server (≤ 800 characters normal, 801–1 600 a bit longer,
+/// over 1 600 too long; the limits are on the server). Nothing is charged yet (D157).
+enum DrillLengthClass: String, Codable, Sendable {
+    case normal
+    case longer
+    case tooLong = "too_long"
+
+    /// The quiet line on a question that is not normal (Kelly's words when Ke gives them); nil for a normal one.
+    var label: String? {
+        switch self {
+        case .normal: nil
+        case .longer: "Lite längre"
+        case .tooLong: "För lång"
+        }
+    }
+}
+
 /// What Earmind made of the material (K45 `summary`). The user may correct it with a line of text.
 struct DrillSummary: Codable, Equatable, Sendable {
     var subject: String
@@ -53,6 +70,9 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
     var questionAudio: String?
     var longAudio: String?
     var shortEndMs: Int?
+    /// K61 (D176): the server's length class (question + long answer in characters to ElevenLabs). Nil until the
+    /// server has seen the item, and after the text is changed.
+    var lengthClass: DrillLengthClass?
 
     init(id: UUID = UUID(), question: String, short: String, long: String, serverID: String? = nil) {
         self.id = id

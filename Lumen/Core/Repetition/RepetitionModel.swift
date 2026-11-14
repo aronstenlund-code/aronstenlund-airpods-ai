@@ -243,6 +243,7 @@ final class RepetitionModel {
         if let cloud {
             do throws(DrillCloudError) {
                 let remote = try await cloud.list()
+                if let client = cloud as? DrillCloudClient, let latest = client.lastQuota { quota = latest }
                 let ids = Set(remote.map(\.id))
                 for entry in remote where !store.drills.contains(where: { $0.serverID == entry.id }) {
                     if let view = try? await cloud.status(id: entry.id) { store.save(Drill.from(view)) }
@@ -330,7 +331,29 @@ final class RepetitionModel {
     var newDrillSettings: DrillSettings {
         var settings = DrillSettings()
         settings.length = longAnswerLength
+        // D175: at most what is left of the month's questions (never more than 20).
+        if let quota, !quota.isUsedUp { settings.questions = max(1, quota.suggestedQuestions) }
         return settings
+    }
+
+    /// D175: Antal frågor goes up to what is left this month (the server never makes more).
+    var newDrillQuestionRange: ClosedRange<Int> {
+        guard let quota, !quota.isUsedUp else { return DrillSettings.questionRange }
+        return 1...max(1, min(DrillSettings.questionRange.upperBound, quota.left))
+    }
+
+    /// D175: nothing left this month, shown in Nytt prov before Skapa frågor (the server's words, K61).
+    var quotaUsedUp: Bool { quota?.isUsedUp ?? false }
+    static let quotaUsedUpLine = "Du har inga frågor kvar den här månaden. Andras prov är gratis."
+
+    /// K61: the month's questions now (Nytt prov on opening, and after an exam is saved).
+    func refreshQuota() async {
+        guard let client = cloud as? DrillCloudClient else { return }
+        do throws(DrillCloudError) {
+            quota = try await client.quota()
+        } catch {
+            Log.repetition.info("Drill quota: \(error.userMessage, privacy: .public)")
+        }
     }
     /// D151: the tempos on offer; below 0.70 the voice stays at 0.70 and the rest is silence (D152).
     static let tempos: [Double] = [0.5, 0.65, 0.7, 0.75, 0.85, 0.9, 1.0, 1.5]
@@ -355,7 +378,9 @@ final class RepetitionModel {
     }
 
     /// D155: "x av 15 frågor kvar den här månaden", from the last `list`.
-    var quota: DrillQuota? { (cloud as? DrillCloudClient)?.lastQuota }
+    /// D155, K61: "x av 15 frågor kvar den här månaden", from `/drill quota` (and the last `list`). Observed, so Nytt
+    /// prov follows it.
+    var quota: DrillQuota?
 
     func quotaExceeded(_ drill: Drill) -> Bool {
         (audio as? CloudDrillAudio)?.quotaExceeded.contains(drill.id) ?? false
