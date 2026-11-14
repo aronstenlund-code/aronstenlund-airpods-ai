@@ -134,7 +134,7 @@ struct HelpChatView: View {
                     Button {
                         onOpen(place)
                     } label: {
-                        Text(verbatim: place.title)
+                        Text(verbatim: place.title).multilineTextAlignment(.leading)
                     }
                 }
             } else if let problem = message.problem {
@@ -172,7 +172,11 @@ struct HelpChatView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
-        .background(.bar)
+        // As `MainActionBar`: the field stops growing at the first accessibility size ("Fråga o…" with the largest
+        // text, CI 43541166865) and has a hairline above it.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+        .background(.regularMaterial)
+        .overlay(alignment: .top) { Divider() }
     }
 
     // MARK: Asking
