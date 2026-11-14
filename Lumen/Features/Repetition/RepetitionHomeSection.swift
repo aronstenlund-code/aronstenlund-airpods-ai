@@ -33,7 +33,7 @@ struct RepetitionHomeSection: View {
         }
         .navigationTitle("Prov")
         .navigationBarTitleDisplayMode(.large)
-        .toolbarBackground(.visible, for: .bottomBar) // Kelly S3: the bar does not float over the text
+        .safeAreaInset(edge: .bottom) { bottomRow } // Kelly S3: a fixed row, nothing floats over the text
         .toolbar { barItems }
         .sheet(isPresented: $isCreating) {
             NewDrillView(model: model) { drill in opened = drill.id }
@@ -86,7 +86,7 @@ struct RepetitionHomeSection: View {
             }
         }
         if typeSize.isAccessibilitySize, !model.drills.isEmpty {
-            // Kelly S3: with the accessibility sizes the bottom bar has room for Nytt prov only.
+            // Kelly S3: with the accessibility sizes the bottom row has room for Nytt prov only.
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Button("Öppna länk", systemImage: "link") { askingCode = true }
@@ -95,15 +95,21 @@ struct RepetitionHomeSection: View {
                 }
             }
         }
-        ToolbarItemGroup(placement: .bottomBar) {
+    }
+
+    /// The bottom row, as in Påminnelser: Nytt prov to the left with its text, Öppna länk to the right; without an
+    /// exam, Fler lägen. Kelly S3: a fixed row with the system's material and a hairline, not a floating toolbar
+    /// (in iOS 26 the toolbar's buttons lay over the text and over Starta prov, CI 43531494112).
+    private var bottomRow: some View {
+        HStack(spacing: 12) {
             if model.drills.isEmpty {
-                Spacer()
+                Spacer(minLength: 0)
                 Button(action: onMoreModes) {
                     Text("Fler lägen · Beta")
                 }
                 .accessibilityLabel("Fler lägen")
                 .accessibilityHint("Beta. Lägen som lyssnar på vad du säger")
-                Spacer()
+                Spacer(minLength: 0)
             } else {
                 Button {
                     isCreating = true
@@ -114,13 +120,20 @@ struct RepetitionHomeSection: View {
                     }
                     .fontWeight(.semibold)
                 }
-                Spacer()
+                Spacer(minLength: 0)
                 if !typeSize.isAccessibilitySize {
                     Button("Öppna länk") { askingCode = true }
                         .accessibilityHint("Öppnar ett prov som någon har delat med dig")
                 }
             }
         }
+        .frame(minHeight: 44)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 4)
+        .frame(maxWidth: .infinity)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as `MainActionBar`
+        .background(.regularMaterial)
+        .overlay(alignment: .top) { Divider() }
     }
 
     // MARK: Without an exam
