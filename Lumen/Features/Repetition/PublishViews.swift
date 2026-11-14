@@ -414,8 +414,8 @@ struct PublicationView: View {
             Section("Frågor") {
                 ForEach(Array(questions.enumerated()), id: \.offset) { index, item in
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(verbatim: item.question).fontWeight(.semibold)
-                        Text(verbatim: item.short).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
+                        Text(verbatim: item.shownQuestion).fontWeight(.semibold) // A102: numbers as written
+                        Text(verbatim: item.shownShort).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
                     }
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel("Fråga \(index + 1). \(item.question) \(item.short)")
