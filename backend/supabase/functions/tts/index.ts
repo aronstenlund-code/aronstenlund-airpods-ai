@@ -8,6 +8,8 @@ import { restDbFromEnv } from "../_shared/restdb.ts";
 import { envInt, supabaseUsageSink } from "../_shared/usage.ts";
 import { createTtsHandler, DEFAULT_TTS_CONFIG } from "./handler.ts";
 import { parseVoices } from "./voices.ts";
+import { CORS_HEADERS } from "../_shared/errors.ts";
+import { guardedFetch, silentMp3, withTestMode } from "../_shared/testmode.ts";
 
 const env = Deno.env;
 
@@ -32,6 +34,7 @@ const handler = createTtsHandler({
   apiKey: secret(env, "ELEVENLABS_API_KEY"),
   recordUsage: supabaseUsageSink(db),
   demo: demoCapsFromEnv(env),
+  fetchImpl: guardedFetch(fetch, "tts"), // K62b: a test request that gets this far throws
   config: {
     voiceId: env.get("ELEVENLABS_VOICE_ID") ?? null,
     voices,
@@ -47,4 +50,9 @@ const handler = createTtsHandler({
   },
 });
 
-Deno.serve(withCors(handler, extraOriginsFromEnv()));
+// K62b (D180): test traffic gets one second of silence, never ElevenLabs
+const fake = (req: Request) =>
+  req.method === "POST"
+    ? new Response(silentMp3(1), { status: 200, headers: { "content-type": "audio/mpeg", "cache-control": "no-store", "x-earmind-fake": "1", ...CORS_HEADERS } })
+    : null;
+Deno.serve(withCors(withTestMode("tts", handler, { fake }), extraOriginsFromEnv()));

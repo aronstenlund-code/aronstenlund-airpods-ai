@@ -2,6 +2,7 @@
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import { questionKey } from "./length.ts";
+import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
 function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: number; busy?: number } = {}) {
@@ -481,4 +482,15 @@ Deno.test("K61 D175: quota tells the app what is left and what to suggest (never
   const w = world({ freeQuestions: 15 });
   const q = await (await w.h("u1")(post({ action: "quota" }))).json();
   assertEquals([q.used, q.limit, q.left, q.suggest, q.per], [0, 15, 15, 15, "month"]);
+});
+
+Deno.test("K62b D180: a test account's drill uses the silent test voice, never the real files or voice", async () => {
+  const w = world();
+  const real = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  const test = await runWithTest({ test: true, reason: "script", userId: "u2" }, async () => await (await w.h("u2")(post({ action: "save", items: ITEMS }))).json());
+  const testFiles = [...w.audio.values()].filter((a) => a.voice_id === TEST_VOICE_ID);
+  assertEquals(testFiles.filter((a) => (a.seq ?? 0) >= 0).length, 4, "two questions = four silent files of its own (plus its cue)");
+  assertEquals(real.generated_questions, 2);
+  assertEquals(test.generated_questions, 2);
+  assert([...w.audio.values()].filter((a) => a.voice_id !== TEST_VOICE_ID).length >= 4, "the real files are untouched");
 });

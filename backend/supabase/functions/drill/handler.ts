@@ -7,6 +7,10 @@ import { pronounce } from "../tts/handler.ts";
 import { composeLong, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
 import { lengthClass, lengthLimits, questionKey } from "./length.ts";
+import { currentTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
+
+/** K62b (D180): test traffic never shares a file with real users and never reaches ElevenLabs (silent files). */
+const voiceFor = (real: string | null) => currentTest()?.test ? TEST_VOICE_ID : real;
 
 /**
  * K46 (D142, D143, D144, D145): Repetitionsläget, drills and their audio per account. `POST /drill` with an action:
@@ -407,16 +411,17 @@ export function createDrillHandler(deps: DrillDeps) {
 
   /** The cue files for a voice: {name: {status, url?, duration_ms?}}; missing ones are queued (tiny, free). */
   async function cueView(model: string) {
-    if (!deps.voiceId) return {};
+    const vid = voiceFor(deps.voiceId);
+    if (!vid) return {};
     const entries = await Promise.all(Object.entries(CUES).map(async ([name, text]) => {
       const t = voiceText(text);
-      return { name, text: t, hash: await audioHash(t, model, deps.voiceId!) };
+      return { name, text: t, hash: await audioHash(t, model, vid) };
     }));
     const have = new Map((await deps.db.audio(entries.map((e) => e.hash))).map((a) => [a.hash, a]));
     const missing = entries.filter((e) => !have.has(e.hash));
     if (missing.length) {
       await deps.db.enqueue(missing.map((e) => ({
-        hash: e.hash, kind: "question" as const, text: e.text, short_chars: null, model, voice_id: deps.voiceId!,
+        hash: e.hash, kind: "question" as const, text: e.text, short_chars: null, model, voice_id: vid,
         status: "pending" as const, seq: -1, queued_at: new Date(now()).toISOString(),
       }))).catch(() => {});
       deps.background ? deps.background(pump()) : await pump();
@@ -677,7 +682,8 @@ export function createDrillHandler(deps: DrillDeps) {
       const rawItems = Array.isArray(b?.items) ? b!.items as Record<string, unknown>[] : [];
       if (!rawItems.length) throw new HttpError(400, "invalid_request", "items: at least one question");
       if (rawItems.length > DRILL_STORE_LIMITS.items) throw new HttpError(400, "invalid_request", `items: at most ${DRILL_STORE_LIMITS.items}`);
-      if (!deps.voiceId) throw new HttpError(503, "provider_unconfigured", "No voice configured");
+      const vid = voiceFor(deps.voiceId);
+      if (!vid) throw new HttpError(503, "provider_unconfigured", "No voice configured");
       let existing: DrillRow | null = null;
       if (di.id !== undefined && di.id !== null) existing = await owned(user.id, di.id);
       else if ((await deps.db.drills(user.id)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
@@ -720,10 +726,10 @@ export function createDrillHandler(deps: DrillDeps) {
         if (!long.startsWith(short)) long = composeLong(short, long).slice(0, DRILL_STORE_LIMITS.long);
         const q = voiceText(question);
         const l = longVoice(short, long);
-        const qh = await audioHash(q, voice, deps.voiceId);
-        const lh = await audioHash(l.text, voice, deps.voiceId);
-        files.set(qh, files.get(qh) ?? { hash: qh, kind: "question", text: q, model: voice, voice_id: deps.voiceId, seq: pos * 2 });
-        files.set(lh, files.get(lh) ?? { hash: lh, kind: "long", text: l.text, short_chars: l.shortChars, model: voice, voice_id: deps.voiceId, seq: pos * 2 + 1 });
+        const qh = await audioHash(q, voice, vid);
+        const lh = await audioHash(l.text, voice, vid);
+        files.set(qh, files.get(qh) ?? { hash: qh, kind: "question", text: q, model: voice, voice_id: vid, seq: pos * 2 });
+        files.set(lh, files.get(lh) ?? { hash: lh, kind: "long", text: l.text, short_chars: l.shortChars, model: voice, voice_id: vid, seq: pos * 2 + 1 });
         const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
         const chars = q.length + l.text.length; // D176: what ElevenLabs gets for this question
         rows.push({

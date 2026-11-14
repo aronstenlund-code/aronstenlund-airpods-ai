@@ -14,6 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # K62b (D180, owner): testing never uses ElevenLabs credits. This workflow measured real ElevenLabs audio or
+      # Scribe; the server now gives CI fake audio and a fake transcript, so it is off. A run that needs real output
+      # requires Aron's yes in chat first, and then a session turns this step off for that one run.
+      - name: Off (D180, no ElevenLabs credits for tests)
+        run: |
+          echo "::error::Off since 2026-11-14 (D180): testing never uses ElevenLabs credits. Ask Aron first."
+          exit 1
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:

@@ -5,6 +5,7 @@ import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
+import { silentMp3, TEST_VOICE_ID, withTestMode } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type PublicationRow, type SchoolRow, type ShareRow } from "./handler.ts";
 
 const env = Deno.env;
@@ -49,7 +50,7 @@ async function chunked<T>(xs: string[], n: number, f: (part: string[]) => Promis
 
 const rt = (globalThis as { EdgeRuntime?: { waitUntil?: (p: Promise<unknown>) => void } }).EdgeRuntime;
 
-Deno.serve(withCors(
+Deno.serve(withCors(withTestMode("drill",
   createDrillHandler({
     authenticate: createJwtAuthenticator({ supabaseUrl: base, hs256Secret: env.get("SUPABASE_JWT_SECRET") }),
     rateLimiter: new SupabaseRateLimiter(db),
@@ -186,6 +187,14 @@ Deno.serve(withCors(
     synth: xi
       ? {
         speak: async (text, m, voice) => {
+          if (voice === TEST_VOICE_ID) {
+            // K62b (D180): a test account's file: silent audio with even timings, no ElevenLabs, no credits
+            const secs = Math.min(10, Math.max(1, text.length * 0.02));
+            const audio = silentMp3(secs);
+            const step = (audio.length / 417 * 0.026122) / Math.max(1, text.length);
+            return { audio, starts: [...text].map((_, i) => i * step), ends: [...text].map((_, i) => (i + 1) * step), credits: 0 };
+          }
+          if (!voice || voice.startsWith("earmind-test")) throw new Error("D180: a test file reached ElevenLabs");
           const r = await fetch(`${xiBase}/v1/text-to-speech/${voice}/with-timestamps?output_format=mp3_44100_64&enable_logging=false`, {
             method: "POST",
             headers: { "xi-api-key": xi, "content-type": "application/json" },
@@ -209,6 +218,6 @@ Deno.serve(withCors(
         },
       }
       : null,
-  }),
+  })),
   extraOriginsFromEnv(),
 ));
