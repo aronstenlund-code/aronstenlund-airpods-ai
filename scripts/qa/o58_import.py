@@ -53,8 +53,8 @@ def std(pairs, qf="Fråga: {q}", af="Svar: {a}", sep="\n\n", mid="\n"):
 
 def variants():
     v = []
-    add = lambda name, text, exp, pairs=P, status=200, note="": v.append(
-        {"name": name, "text": text, "count": exp, "pairs": pairs, "status": status, "note": note})
+    add = lambda name, text, exp, pairs=P, status=200, note="", either=False: v.append(
+        {"name": name, "text": text, "count": exp, "pairs": pairs, "status": status, "note": note, "either": either})
     add("01 ren", std(P), 6)
     add("02 inledning och avslutning", "Självklart! Här är 6 provfrågor om vulkaner med svar:\n\n" + std(P)
         + "\n\nLycka till på provet! Vill du att jag gör fler frågor?", 6)
@@ -96,6 +96,23 @@ def variants():
     add("25 tankstreck i stället för kolon, fetstil runt allt", "\n\n".join(f"**Fråga – {q}**\n**Svar – {a}**" for q, a in P), 6,
         note="ok med 6, eller ett tydligt 422")
     add("26 frågan på två rader", "\n\n".join(f"Fråga: {q.split()[0]}\n{' '.join(q.split()[1:])}\nSvar: {a}" for q, a in P), 6)
+    # 27-36: nya 2026-11-14 13:30, inte i fixturen. "either": ett tydligt 422 import_unreadable räknas också som ok
+    add("27 emoji-numrering", "\n\n".join(f"{i + 1}️⃣ Fråga: {q}\nSvar: {a}" for i, (q, a) in enumerate(P)), 6)
+    add("28 markdowntabell", "| Fråga | Svar |\n|---|---|\n" + "\n".join(f"| {q} | {a} |" for q, a in P), 6, either=True)
+    add("29 etiketten ensam på raden", "\n\n".join(f"Fråga:\n{q}\nSvar:\n{a}" for q, a in P), 6)
+    add("30 rubrik och --- mellan paren", "Vulkaner – provfrågor åk 8\n\n" + "\n\n---\n\n".join(f"Fråga: {q}\nSvar: {a}" for q, a in P), 6)
+    it = [(q, a.replace("smält berg", "*smält berg*").replace("eldringen", "”eldringen”").replace("Hawaii", "_Hawaii_")) for q, a in P]
+    add("31 kursiv och citattecken i svaret", std(it), 6, pairs=P)
+    add("32 punkt i stället för kolon", std(P, "Fråga {i}. {q}", "Svar. {a}"), 6, either=True)
+    add("33 mellanslag före kolon och efter raden", std(P, "Fråga : {q}   ", "Svar : {a}  "), 6)
+    num = "Forskare tittar på tre tecken före ett utbrott.\n1) Jordskalv blir fler.\n2) Marken höjer sig.\n3) Mer gas kommer ut."
+    add("34 numrerad lista inne i svaret", std(P[:5] + [(P[5][0], num)]), 6,
+        pairs=P[:5] + [(P[5][0], "Forskare tittar på tre tecken före ett utbrott. Jordskalv blir fler. Marken höjer sig. Mer gas kommer ut.")],
+        note="siffrorna 1) 2) 3) får försvinna, inget annat")
+    many = [(f"{q[:-1]} (del {k + 1})?", a) for k in range(5) for q, a in P][:25]
+    add("35 25 frågor", std(many), 25, pairs=many)
+    add("36 emoji-inledning och fråga som avslutning utan tom rad",
+        "Absolut! 😊 Här kommer frågorna:\n\n" + std(P) + "\nVill du att jag gör flashcards också?", 6)
     return v
 
 
@@ -161,6 +178,8 @@ def check(v, status, d):
                 "reasons_ok": all(p.get("reason") and isinstance(p.get("line"), int) for p in probs)})
     res["ok"] = (res["status_ok"] and res["count_ok"] and not missing and not not_full and not bad_short and not dirty
                  and res["reasons_ok"] and (status != 422 or (d.get("error") or {}).get("code") == "import_unreadable"))
+    if v.get("either") and status == 422 and (d.get("error") or {}).get("code") == "import_unreadable":
+        res["ok"] = res["either_422"] = True
     return res
 
 
