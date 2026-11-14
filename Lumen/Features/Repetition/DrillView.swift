@@ -222,8 +222,10 @@ struct DrillView: View {
                 Text(verbatim: "\(facts) · ljud klart")
             } else {
                 Text(verbatim: facts)
-                ProgressView(value: Double(p.ready), total: Double(max(p.total, 1)))
                 Text(verbatim: "Ljud: \(p.ready) av \(p.total) klara · Görs i spelordning").monospacedDigit()
+                // Kelly R1: the line under the text, with room (it was drawn across the text between the two lines).
+                ProgressView(value: Double(p.ready), total: Double(max(p.total, 1)))
+                    .padding(.top, 6)
             }
             if let problem = model.audio.problem(for: drill) {
                 Text(verbatim: problem).foregroundStyle(.primary)
@@ -231,6 +233,8 @@ struct DrillView: View {
         }
         .font(.footnote)
         .foregroundStyle(.secondary)
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
     }
 
