@@ -36,3 +36,10 @@ Simulatorbilder, inte telefon.
 - **P3 (låg):** på Hem (SE) ligger raden Fler lägen delvis under den nedre verktygsraden (Nytt prov / Öppna länk)
   innan man rullar. Lägg till luft nederst (`.contentMargins(.bottom, …)` eller `.safeAreaPadding`) så att sista raden
   syns helt.
+
+## Tillägg 2026-11-14 19:09: P1 stängd (CI 43623871978, `reports/2026-11-14-a99-a100-bilder/p1-*.jpg`)
+Ett publicerat prov visar nu sektionen **Frågor** med de fyra första frågorna och korta svar, "och 16 frågor till", Rapportera
+och **Lägg till i mina prov** fast nederst, som `pub-forhand.png` (Ke52). Det håller i ljust, mörkt och största text (SE).
+"Lyssna på första frågan" är byggd men syns inte i scenen än, eftersom demoprovet saknar ljudlänk. Den bekräftas när
+Angela Schrute lagt till länken.
+
