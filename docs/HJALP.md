@@ -29,6 +29,8 @@ Earmind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 - **Ändra en fråga eller ett svar:** öppna provet och tryck på frågan.
 - **Ta bort en fråga:** svep frågan åt vänster i listan och tryck **Radera**.
 - **Ändra ordning:** tryck på menyn med tre punkter uppe till höger i provet, välj **Ändra ordning**, dra frågorna och tryck **Klar**.
+- **Menyn med tre punkter** i provet har bland annat **Ändra ordning**, **Publicera prov** och **Ta bort provet**. Där finns inget val för att ändra ämne eller årskurs.
+- **Fel ämne eller årskurs:** det rättar du under **Stämmer det här?** innan du trycker **Ser rätt ut**. Skriv rättelsen i rutan, till exempel ”Det är åk 9”, och tryck **Gör om med rättelsen**.
 - **Ny fråga:** tryck **Lägg till fråga** sist i listan. **Låt Earmind skriva svaret** skriver svar till den nya frågan.
 - **Ljudet efter en ändring:** när du sparar en ändring görs nytt ljud bara för den frågan.
 - **Svarens längd:** du ändrar den under Inställningar › Avancerat. Båda svaren görs alltid.
