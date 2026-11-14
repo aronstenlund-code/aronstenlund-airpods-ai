@@ -50,7 +50,7 @@ export const DRILL_STORE_LIMITS = {
   items: 60,
   question: 300,
   short: 600,
-  long: 3000,
+  long: 4000, // K60: a pasted ChatGPT answer is kept whole up to 4 000 characters (import_text warns over 3 000)
   drillsPerUser: 200,
 };
 

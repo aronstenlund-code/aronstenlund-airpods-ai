@@ -49,3 +49,20 @@ Deno.test("K58 first sentence skips abbreviations and decimals", () => {
   assertEquals(firstSentence("pH 7.5 är svagt basiskt. Mer."), "pH 7.5 är svagt basiskt.");
   assertEquals(firstSentence("Inget slut"), "Inget slut");
 });
+
+Deno.test("K60 two paragraphs stay one answer; chatter after the last answer, headings and fences are skipped", () => {
+  const r = importText("```\n### Fråga 1\nFråga: Vad är lava?\nSvar: Lava är smält berg på ytan.\n\nDen stelnar till basalt.\n---\nFråga 2\nFråga: Vad är magma?\nSvar: Magma är smält berg under ytan.\n\nLycka till! Vill du ha fler?\n```");
+  assertEquals(r.items.map((i) => i.long), ["Lava är smält berg på ytan. Den stelnar till basalt.", "Magma är smält berg under ytan."]);
+  assert(r.skipped.some((s) => s.reason === "Avslutning, inte en del av svaret."));
+  assertEquals(r.skipped.filter((s) => s.reason.startsWith("Rubrik")).length, 5);
+});
+
+Deno.test("K60 an unlabelled question before Svar:, a duplicate, and a too long answer", () => {
+  const r = importText("**1. Vad är magma?**\nSvar: Magma är smält berg.\n\nFråga: Vad är magma?\nSvar: Smält berg.");
+  assertEquals(r.items.length, 2);
+  assertEquals(r.warnings.map((w) => w.reason), ["Frågan saknade Fråga:.", "Samma fråga som på rad 1."]);
+  const long = "Ord ".repeat(1100).trim() + ".";
+  const t = importText(`Fråga: Vad?\nSvar: Kort mening. ${long}`);
+  assertEquals([t.items.length, t.skipped[0].reason.startsWith("Svaret är för långt")], [0, true]);
+  assertEquals(importText(`Fråga: Vad?\nSvar: Kort mening. ${"Ord ".repeat(800).trim()}.`).warnings.some((w) => w.reason.includes("tecken")), true);
+});

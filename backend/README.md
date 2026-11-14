@@ -440,6 +440,12 @@ All calls are `POST` with the user's JWT, like `/answer`.
   - It accepts "Fråga:"/"Svar:" with ChatGPT's usual extras: an intro line, `**bold**`, "Fråga 1:", "1. Fråga:", an answer over several lines and CRLF.
   - Lines it cannot read are listed in `skipped` with line number and reason: "Raden börjar inte med Fråga: eller Svar:.", "Frågan har inget svar.", "Ett svar utan fråga före.". The app shows them.
   - `warnings` flags a first sentence over 25 words or a question over 8 words. The item is still kept.
+  - K60 rules (the same as the app's tolk, A96; shared fixture `testdata/import/o58-cases.json`, 20/20 on both sides):
+    1. A blank line does not end an answer: paragraphs are joined by a space up to the next question. A separate paragraph after the LAST answer ending in ? or ! is chatter: `skipped` "Avslutning, inte en del av svaret." plus a warning.
+    2. Headings ("# …", "Fråga 2" without a colon), ``` fences and rules (---, ***, ===) are never answer text: `skipped` with the line number.
+    3. An unlabelled line ending in ? directly before "Svar:" is the question (warning "Frågan saknade Fråga:.").
+    4. Nothing is cut: over 3,000 characters gives a warning, and over 4,000 the item goes to `skipped` ("Svaret är för långt"). `save` now accepts `long` up to 4,000.
+    5. A duplicate question is kept, with the warning "Samma fråga som på rad N.".
   - It returns 422 `import_unreadable` (with `skipped`) when no question could be read.
 - **Save:** the app saves `items` with `/drill save` like any drill. Only the ElevenLabs audio costs, and it counts towards the 15 per month (D155) as usual.
 - **Tested once** with Claude in ChatGPT's place on Oscar's test exam bio-ak8-fotosyntes: 10/10 questions read, 0 skipped, questions 3–5 words, first sentences 11–23 words, answers 70–78 words. After that the prompt was changed to say "minst 80" words.
