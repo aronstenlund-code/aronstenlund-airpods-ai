@@ -45,7 +45,7 @@ Earmind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 Tryck **Starta prov**. Earmind läser en fråga, väntar en stund så att du kan tänka efter, och går sedan till nästa. Väntetiden är cirka 6 sekunder, och kortare i långa prov. När listan är slut börjar den om i samma ordning.
 
 **Trycken** (ordagrant): ”Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta.”
-- **Långa och korta svaret:** det långa A-svaret får du med 1 tryck. Det korta A-svaret, en till två meningar, får du med 2 tryck. Svaren läses bara upp när du trycker, aldrig av sig själva. Trycker du inte går Earmind vidare till nästa fråga.
+- **Långa och korta svaret:** det långa A-svaret får du med 1 tryck. Det korta A-svaret, en till två meningar, får du med 2 tryck. Trycken fungerar både medan frågan spelas och under betänketiden efter den. Svaren läses bara upp när du trycker, aldrig av sig själva. Trycker du inte går Earmind vidare till nästa fråga.
 
 - **Under paus:** vilket tryck som helst fortsätter från början av meningen där du slutade. Du behöver inte telefonen.
 - **Avsluta:** provet tar slut först när du trycker **Avsluta** på telefonen. Annars börjar listan om.
