@@ -70,3 +70,20 @@ struct A102ScreenTextTests {
         #expect(remote.screen?.short == "Runt 1850." && remote.screen?.question == nil)
     }
 }
+
+/// K67 (O64): the answers step may swap only questions `drill` made that nobody changed.
+@MainActor
+struct K67MayFixTests {
+    @Test func onlyUnchangedGeneratedQuestions() {
+        let a = DrillItem(question: "Varför är himlen blå?", short: "", long: "")
+        let b = DrillItem(question: "Vad är ljus?", short: "", long: "")
+        let made = [a.id: a.question, b.id: b.question]
+        #expect(DrillClient.mayFix([a, b], generated: made))
+        var changed = b
+        changed.question = "Vad är ljus egentligen?"
+        #expect(!DrillClient.mayFix([a, changed], generated: made), "a changed question")
+        let own = DrillItem(question: "Min egen fråga?", short: "", long: "")
+        #expect(!DrillClient.mayFix([own], generated: made), "the student's own")
+        #expect(!DrillClient.mayFix([], generated: made))
+    }
+}

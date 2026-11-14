@@ -52,6 +52,8 @@ final class DrillClient: DrillMaking {
     private let config: BackendConfig
     private let auth: SupabaseAuth
     private let http: any HTTPStreaming
+    /// K67 (O64): the questions `drill` just made, by item id. Only those, unchanged, may be fixed by the answers step.
+    private var generated: [UUID: String] = [:]
 
     init(config: BackendConfig, auth: SupabaseAuth, http: any HTTPStreaming) {
         self.config = config
@@ -165,6 +167,7 @@ final class DrillClient: DrillMaking {
             return made
         }
         guard !items.isEmpty else { throw .server("no questions") }
+        generated = Dictionary(uniqueKeysWithValues: items.map { ($0.id, $0.question) })
         let note = reply.note?.trimmingCharacters(in: .whitespacesAndNewlines)
         return DrillDraft(summary: summary, items: items, notes: reply.notes ?? "", note: note?.isEmpty == false ? note : nil)
     }
@@ -172,15 +175,24 @@ final class DrillClient: DrillMaking {
     func answers(for items: [DrillItem], summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> [DrillItem] {
         let missing = items.filter { $0.short.isEmpty }
         guard !missing.isEmpty else { return items }
-        let body: [String: Any] = ["action": "drill_answers", "subject": summary.subject, "grade": summary.grade,
+        var body: [String: Any] = ["action": "drill_answers", "subject": summary.subject, "grade": summary.grade,
                                    "notes": String(notes.prefix(12_000)), "long_words": min(max(longWords, 40), 200),
                                    "items": missing.map { ["id": $0.id.uuidString, "question": $0.question] }]
+        // K67 (O64): the answers step may swap a bad question ("varför" the material does not explain, a premise
+        // against it), but only questions `drill` made that nobody changed; never the student's own.
+        let mayFix = Self.mayFix(missing, generated: generated)
+        if mayFix { body["may_fix"] = true }
         let reply = try await call(body, timeout: 150)
         var byID: [String: Reply.Item] = [:]
         for item in reply.items ?? [] { if let id = item.id { byID[id] = item } }
         let filled = items.map { item -> DrillItem in
             guard item.short.isEmpty, let made = byID[item.id.uuidString], let short = made.short, !short.isEmpty else { return item }
             var item = item
+            let fixed = made.question.trimmingCharacters(in: .whitespacesAndNewlines)
+            if mayFix, !fixed.isEmpty, fixed != item.question {
+                item.question = fixed // K67: the same id, a better question
+                item.screen?.question = nil // step 1's shown question was for the old one
+            }
             item.short = short
             item.long = DrillItem.long(made.long ?? "", startingWith: short)
             // A102: the question's shown text from step 1 stays; the answers' come now.
@@ -213,6 +225,11 @@ final class DrillClient: DrillMaking {
         let reply = try await call(["action": "doc_text", "data": docx.base64EncodedString()], timeout: 60)
         guard let text = reply.text, !text.isEmpty else { throw .server("no text") }
         return text
+    }
+
+    /// K67: true only when every question still is the one `drill` made for that id.
+    static func mayFix(_ items: [DrillItem], generated: [UUID: String]) -> Bool {
+        !items.isEmpty && items.allSatisfy { generated[$0.id] == $0.question }
     }
 
     /// A85: the real cause is logged (status or URLError code, bytes sent, time, network), a dropped connection is tried
