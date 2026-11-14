@@ -68,3 +68,18 @@ Gemensamma regler med Angela, som också står i `backend/README.md`:
 - **Angela:** Swift-sidan mot samma fixtur (A96).
 - **Riktiga ChatGPT:** ett svar är fortfarande inte provat.
 - **K6** väntar fortfarande på Till Aron #15.
+
+## Tillägg 13:35: Oscars omtest O58b (`reports/qa/2026-11-14-1304-oscar-o58-omtest-k60.md`)
+- **Importen, varianterna 21–26** (med samma regler som Angelas app, A96):
+  - **21:** "Fråga: … Svar: …" på samma rad delas upp i fråga och svar.
+  - **23:** en avslutning på sista raden i sista svaret tas bort, också utan tom rad före. Den känns igen på inledningsorden hoppas, lycka till, säg till, vill du, behöver du, om du vill, fråga gärna, hör av dig, jag kan också, har du fler och skriv om du. Ett eget stycke som börjar så räknas också som avslutning (fall 28).
+  - **25:** ett tankstreck (– eller —) efter Fråga eller Svar räknas som kolon.
+  - **Fixturen:** `testdata/import/o58-cases.json` har nu 28 fall och ger 28/28 i Deno. **Live:** Oscars 26 varianter ger 26/26 (`reports/qa/data/2026-11-14-132515-o58-import.json`).
+- **Hjälp-AI:n, prio 3 punkterna 1–5:**
+  - **Fast text i kod:** "vad är det korta eller långa svaret" och "skillnaden mellan kort och långt svar" får en fast text: första meningen i det långa svaret.
+  - **Indirekta frågor:** "jag vill höra hela förklaringen" får trycktexten. Tryckfrågor får den nu även när modellen trodde att frågan gällde något utanför appen.
+  - **Premium:** står i HJALP.md ("ett abonnemang kommer senare, det går inte att köpa något i dag").
+  - **Inga lösa meningar:** prompten förbjuder meningar om andra ämnen och samma instruktion två gånger.
+  - **Live:** 30/30 hur-gör-jag-frågor, 10/10 utanför appen och 4/4 knepiga (sista körningen, `reports/qa/data/2026-11-14-133515-o58-help.json`). Stickprov: "hela förklaringen", "korta svaret" och "skillnaden" ger den fasta texten.
+- **Tester:** 594 gröna.
+- **Kostnad:** Claude cirka 0,06 USD, ElevenLabs 0.
