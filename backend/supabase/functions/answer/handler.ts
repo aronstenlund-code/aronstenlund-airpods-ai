@@ -1864,7 +1864,13 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 pushMore(ev.text);
               } else {
                 markBuf += ev.text;
-                const i = markBuf.indexOf(MORE_MARK);
+                let i = markBuf.indexOf(MORE_MARK);
+                // Toby T17b (after a web search the reply started with [[MER]]: empty short answer, nothing said):
+                // a marker before any short text is dropped, and what follows is the short answer
+                if (i >= 0 && !markBuf.slice(0, i).trim() && post.chars.raw === 0 && ttftMs === null) {
+                  markBuf = markBuf.slice(i + MORE_MARK.length).replace(/^\s+/u, "");
+                  i = markBuf.indexOf(MORE_MARK);
+                }
                 if (i >= 0) {
                   // the short answer is complete: flush every held sentence now (a held last sentence came only at the end)
                   sayShort(post.push(markBuf.slice(0, i) + "\n"));
@@ -2070,6 +2076,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ...(careful ? { think: true } : {}),
                 signal: ac2.signal,
               })[Symbol.asyncIterator]();
+              // T17b: the two-level state belongs to one attempt (a retry's text went to "more" and was never said)
+              inMore = false;
+              markBuf = "";
+              shortFinished = false;
+              shortDone = false;
+              shortSentences = 0;
               post = new AnswerPost({
                 previousAnswers: [],
                 trimQuestion: false,

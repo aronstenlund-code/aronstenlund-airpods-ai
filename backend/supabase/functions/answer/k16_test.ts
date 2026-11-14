@@ -183,3 +183,10 @@ Deno.test("Toby T17 (hur många bor i Sverige): search, empty after the search, 
   assert(!seen[2].system.includes("WEB: you have web tools"), "the last try has no web prompt");
   assert(out.startsWith("Cirka tio komma sex miljoner"), out);
 });
+
+Deno.test("Toby T17b: two levels, a reply after the search that starts with [[MER]] is still spoken (empty short answer)", async () => {
+  const { provider } = scripted("[[SÖK]]", "[[MER]] Sverige har cirka tio komma sex miljoner invånare. Det visar SCB:s siffror. källa: scb.se");
+  const out = await spoken(await handlerWith(provider)(ask({ fragment: "hur många bor i Sverige", two_level: true })));
+  assert(out.startsWith("Sverige har cirka tio komma sex miljoner"), out);
+  assert(!out.includes("MER"), out);
+});
