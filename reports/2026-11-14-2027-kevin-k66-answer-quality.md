@@ -70,7 +70,7 @@ Alla fem punkterna är klara och driftsatta (071310e och a2eb799). Oscars sex pr
 - **Cirkelregeln är en ordräkning.** Ett riktigt men kort varför-svar med bara ett nytt långt ord frågas om en gång, vilket kostar några öre.
 - **Den talade texten kan ha siffror** ("Hur påverkade dåliga skördar 1788 folket?"). ElevenLabs läser årtal rätt på svenska enligt tidigare lyssning (**antagande** för den här frågan, inte lyssnat på grund av D180).
 - **Engelska frågor läses med den svenska rösten** (Multilingual v2 känner av språket). Hur det låter är **inte lyssnat**, eftersom D180 inte tillåter testljud. Bör höras på Arons telefon.
-- **Förhandsvisningen** i `search`/`publish` (K65) visar fortfarande talad text. Det går att lägga till om Angela vill.
+- **Förhandsvisningen** (K65): tillägg 20:45 på Angelas begäran (A102, 57343bd). `preview: [{question, short, screen?: {question?, short?}}]` i `publish` och `search`, **verifierat live** med testkonto, och provet togs bort.
 - **Importen** (`import_text`, ChatGPT) har ingen visningstext, eftersom texten som klistras in redan är det eleven läser.
 
 ## Nästa
