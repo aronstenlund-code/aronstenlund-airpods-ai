@@ -1,3 +1,4 @@
+import AVFoundation
 import PhotosUI
 import SwiftUI
 import UIKit
@@ -15,7 +16,24 @@ struct NewDrillView: View {
     let onSaved: (Drill) -> Void
     /// The screenshots (Kelly: repMakeError): the material form showing this problem.
     var stagedProblem: String? = nil
+    /// A94 (Kelly Ke55 `docs/design/forsta-starten.md`): set in the first start, where Nytt prov is the screen after
+    /// Välkommen. Then a line at the top says what to do, **Fota sidor** is the one bold row in the accent colour,
+    /// and "Senare" (not Avbryt) calls this instead of closing a sheet.
+    var onLater: (() -> Void)? = nil
     @Environment(\.dismiss) private var dismiss
+
+    init(model: RepetitionModel, onSaved: @escaping (Drill) -> Void, stagedProblem: String? = nil) {
+        self.model = model
+        self.onSaved = onSaved
+        self.stagedProblem = stagedProblem
+    }
+
+    /// The first start (A94): `NewDrillView(model: model, onLater: { … }) { drill in … }`.
+    init(model: RepetitionModel, onLater: @escaping () -> Void, onSaved: @escaping (Drill) -> Void) {
+        self.model = model
+        self.onSaved = onSaved
+        self.onLater = onLater
+    }
 
     private enum Stage: Equatable { case material, making, confirm }
 
@@ -46,6 +64,10 @@ struct NewDrillView: View {
     @State private var readingDocument = false
     /// A92 (D166): "Fråga om Earmind" from the toolbar.
     @State private var showsHelp = false
+    /// Ke50 §2: iOS has said no to the camera, so Fota sidor says what to do instead of opening a black camera.
+    @State private var cameraDenied = false
+
+    private var isFirstStart: Bool { onLater != nil }
 
     private var material: DrillMaterial {
         let text = ([pasted] + documents.map(\.text)).filter { !$0.isEmpty }.joined(separator: "\n\n")
@@ -65,7 +87,11 @@ struct NewDrillView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Avbryt") { making?.cancel(); answering?.cancel(); dismiss() }
+                    Button(isFirstStart ? "Senare" : "Avbryt") {
+                        making?.cancel()
+                        answering?.cancel()
+                        if let onLater { onLater() } else { dismiss() }
+                    }
                 }
                 if model.help != nil { // A92 (Kelly Ke57)
                     ToolbarItem(placement: .topBarTrailing) {
@@ -121,17 +147,39 @@ struct NewDrillView: View {
                 }
             }
 
-            Section {
-                TextField("Provets namn", text: $title)
+            if cameraDenied {
+                Section {
+                    Text("Earmind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket.")
+                    Button("Öppna Inställningar") {
+                        if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+                    }
+                }
+            }
+
+            if isFirstStart {
+                Section { // A94: one line of what to do, as text above the list and not a card
+                    Text("Börja med materialet till ditt nästa prov.")
+                        .foregroundStyle(.secondary)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                }
+                .listSectionSpacing(.compact)
+            } else {
+                Section {
+                    TextField("Provets namn", text: $title)
+                }
             }
 
             Section {
-                Button { isTakingPhotos = true } label: { Self.materialRow("Fota sidor", "camera.fill", Color.blue) }
+                // A94: in the first start Fota sidor is the only row in the accent colour, and bold.
+                let strong: Bool? = isFirstStart ? true : nil
+                let plain: Bool? = isFirstStart ? false : nil
+                Button { takePhotos() } label: { Self.materialRow("Fota sidor", "camera.fill", Color.blue, strong) }
                 PhotosPicker(selection: $photoItems, maxSelectionCount: 20, matching: .images) {
-                    Self.materialRow("Välj bilder", "photo.fill", Color.green)
+                    Self.materialRow("Välj bilder", "photo.fill", Color.green, plain)
                 }
-                Button { isAddingText = true } label: { Self.materialRow("Skriv text", "text.alignleft", Color.orange) }
-                Button { isImporting = true } label: { Self.materialRow("Lägg till dokument", "doc.fill", Color.gray) }
+                Button { isAddingText = true } label: { Self.materialRow("Skriv text", "text.alignleft", Color.orange, plain) }
+                Button { isImporting = true } label: { Self.materialRow("Lägg till dokument", "doc.fill", Color.gray, plain) }
                 if !pages.isEmpty { thumbnails }
                 if !pasted.isEmpty {
                     added("Text", "\(pasted.split(whereSeparator: \.isWhitespace).count) ord") { pasted = "" }
@@ -151,20 +199,38 @@ struct NewDrillView: View {
             } header: {
                 Text("Material")
             } footer: {
-                Text("Foton, dokument och text skickas en gång för att göra frågorna och sparas inte.")
+                Text(isFirstStart ? "iOS frågar om kameran första gången. Fotona sparas inte."
+                                  : "Foton, dokument och text skickas en gång för att göra frågorna och sparas inte.")
             }
 
-            Section {
-                Stepper(value: $settings.questions, in: DrillSettings.questionRange) {
-                    LabeledContent("Antal frågor", value: "\(settings.questions)").monospacedDigit()
+            if isFirstStart {
+                // A94 (Kelly `fs-2-nytt.png`): the name, the grade and the number of questions in one section under
+                // the material, so the material is the first thing on the screen.
+                Section {
+                    TextField("Provets namn (valfritt)", text: $title)
+                    Picker("Vilken årskurs?", selection: $grade) { // A88, as `GradeChoice`
+                        Text("Hoppa över").tag(StudyProfile.Grade?.none)
+                        ForEach(GradeChoice.choices, id: \.self) { choice in
+                            Text(GradeChoice.label(choice)).tag(StudyProfile.Grade?.some(choice))
+                        }
+                    }
+                    questionStepper
+                } header: {
+                    Text("Prov")
+                } footer: {
+                    Text("Varje fråga får ett kort och ett långt svar.")
                 }
-            } header: {
-                Text("Frågor")
-            } footer: {
-                Text("Varje fråga får ett kort och ett långt svar.") // D162: both answers are always made
-            }
+            } else {
+                Section {
+                    questionStepper
+                } header: {
+                    Text("Frågor")
+                } footer: {
+                    Text("Varje fråga får ett kort och ett långt svar.") // D162: both answers are always made
+                }
 
-            GradeChoice(grade: $grade) // A88
+                GradeChoice(grade: $grade) // A88
+            }
         }
         .safeAreaInset(edge: .bottom) {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
@@ -187,6 +253,20 @@ struct NewDrillView: View {
         }
     }
 
+    private var questionStepper: some View {
+        Stepper(value: $settings.questions, in: DrillSettings.questionRange) {
+            LabeledContent("Antal frågor", value: "\(settings.questions)").monospacedDigit()
+        }
+    }
+
+    /// Fota sidor. iOS asks about the camera the first time by itself; after a no the document camera would open
+    /// black, so the form says what to do (Kelly Ke50 §2).
+    private func takePhotos() {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        cameraDenied = status == .denied || status == .restricted
+        if !cameraDenied { isTakingPhotos = true }
+    }
+
     /// Ke50 §3: "{6 foton, 1 PDF och 1 text}."
     private var materialLine: String {
         var parts: [String] = []
@@ -200,14 +280,21 @@ struct NewDrillView: View {
 
     /// A row of the material list: the symbol on a coloured square, as in Inställningar (SYSTEM §0.4).
     /// nonisolated: PhotosPicker builds its label outside the main actor (CI 43493961075).
-    nonisolated private static func materialRow(_ title: String, _ symbol: String, _ color: Color) -> some View {
+    /// `strong`: nil = as the system's button rows (accent colour); true = bold in the accent colour; false = in the
+    /// text colour (A94: in the first start only Fota sidor stands out).
+    nonisolated private static func materialRow(_ title: String, _ symbol: String, _ color: Color,
+                                                _ strong: Bool? = nil) -> some View {
         HStack(spacing: 12) {
             Image(systemName: symbol)
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(Color.white)
                 .frame(width: 30, height: 30)
                 .background(color, in: RoundedRectangle(cornerRadius: 7))
-            Text(title)
+            if strong == false {
+                Text(title).foregroundStyle(Color.primary)
+            } else {
+                Text(title).fontWeight(strong == true ? .semibold : .regular)
+            }
         }
     }
 
