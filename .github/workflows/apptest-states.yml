@@ -1,0 +1,53 @@
+name: Apptest repetition states (T23)
+
+# Toby 2's T23: A99/A100 states through Angela's Debug scenes (no BETA line for a new user, the used-up month, the
+# length classes, "Ljudet kan inte göras just nu"). Free: no network, no ElevenLabs (D180). Simulator only.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Screens/RepetitionStatesTests.swift"
+      - "scripts/apptest/states.sh"
+      - ".github/workflows/apptest-states.yml"
+
+concurrency:
+  group: apptest-states-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  states:
+    name: T23 states (Simulator)
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: States
+        run: |
+          bash scripts/apptest/states.sh
+          STATUS=$?
+          cat apptest-out/states/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-states
+          path: |
+            apptest-out/states
+            !apptest-out/states/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
