@@ -1,0 +1,81 @@
+T21 ny användare (simulator, inte enhet)
+screens before the camera: 2 (krav högst 3)
+BETA in the first start: t21-07-fragelistan: Beta · använder mikrofonen; t21-08-styr: Beta · använder mikrofonen; t21-09-styr-klar: Beta · använder mikrofonen; t21-10-forsta-fragan: Beta · använder mikrofonen
+taps (a user's): 9, test taps (not a user's): 24, screens: 10
+
+Not obvious:
+(none)
+
+Milestones:
+  19.7 s,  0 tryck,  0 skärmar: app opened
+  32.3 s,  1 tryck,  2 skärmar: camera reached (Fota sidor on the screen)
+ 212.3 s,  6 tryck,  5 skärmar: Skapa frågor
+ 224.1 s,  6 tryck,  5 skärmar: Stämmer det här?
+ 233.7 s,  7 tryck,  7 skärmar: question list
+ 257.6 s,  7 tryck,  7 skärmar: sound ready
+ 279.4 s,  9 tryck,  9 skärmar: first question
+ 283.3 s,  9 tryck, 10 skärmar: done
+
+Log:
+MILESTONE   19.7 s,  0 tryck,  0 skärmar: app opened
+SCREEN t21-01-valkommen at   22.2 s — Skärm 1: Välkommen
+  texts (11): Välkommen till Earmind | Fota materialet, Earmind gör provfrågor med A-svar. | Fota materialet | Earmind gör provfrågor med A-svar. | Lyssna i dina AirPods, Frågorna läses upp. Tryck för svaret. | Lyssna i dina AirPods | Frågorna läses upp. Tryck för svaret. | Plugga utan mobilen, Telefonen kan ligga i fickan. | Plugga utan mobilen | Telefonen kan ligga i fickan. | Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen.
+  buttons (2): Läs mer | Fortsätt
+TEST TAP at   23.8 s: Läs mer (data och integritet)
+SCREEN t21-01-las-mer at   25.8 s — Läs mer: Data och integritet (looked at, not counted as a screen of the path)
+  texts (21): Välkommen till Earmind | Fota materialet, Earmind gör provfrågor med A-svar. | Fota materialet | Earmind gör provfrågor med A-svar. | Lyssna i dina AirPods, Frågorna läses upp. Tryck för svaret. | Lyssna i dina AirPods | Frågorna läses upp. Tryck för svaret. | Plugga utan mobilen, Telefonen kan ligga i fickan. | Plugga utan mobilen | Telefonen kan ligga i fickan. | Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen. | Data och integritet | Det här skickas | Foton, dokument och text du lägger till skickas en gång till vår server och vår AI-leverantör för att göra frågorna. De sparas inte. | Frågorna och svaren skickas till vår röstleverantör för att bli ljud. | Använder du Gör med ChatGPT skickar du filerna till ChatGPT själv. | Det här sparas | Dina prov, med frågor, svar och ljud, sparas hos Earmind tills du tar bort dem. | Mikrofonen | Starta prov använder aldrig mikrofonen. Lägena som lyssnar finns under Fler lägen och frågar först. | Du behöver inte skapa något konto. Du kan ta bort allt under Inställningar.
+  buttons (3): Läs mer | Fortsätt | Klar
+TEST TAP at   27.8 s: Klar on Läs mer
+TAP 1 at   29.6 s: Fortsätt on Välkommen
+SCREEN t21-02-nytt-prov at   31.7 s — Skärm 2: Nytt prov
+  texts (15): Nytt prov | Börja med materialet till ditt nästa prov. | Material | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | iOS frågar om kameran första gången. Fotona sparas inte. | Prov | Vilken årskurs? | Hoppa över | Antal frågor | Antal frågor, 20 | Varje fråga får ett kort och ett långt svar. | Lägg till minst en sida, bild eller text.
+  buttons (10): Senare | Fråga om Earmind | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Vilken årskurs?, Hoppa över | Antal frågor, 20, Minskning | Antal frågor, 20, Ökning | Skapa frågor
+MILESTONE   32.3 s,  1 tryck,  2 skärmar: camera reached (Fota sidor on the screen)
+order: photo
+TAP 2 at   33.4 s: Fota sidor
+SCREEN t21-03-kamera at   44.2 s — Skärm 3: Fota sidor (the Simulator has no document camera)
+  texts (18): Nytt prov | Börja med materialet till ditt nästa prov. | Material | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | iOS frågar om kameran första gången. Fotona sparas inte. | Prov | Vilken årskurs? | Hoppa över | Antal frågor | Antal frågor, 20 | Varje fråga får ett kort och ett långt svar. | Lägg till minst en sida, bild eller text. | Läs mer… | Läs mer… |  Platsen är inkluderad
+  buttons (19): Senare | Fråga om Earmind | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Vilken årskurs?, Hoppa över | Antal frågor, 20, Minskning | Antal frågor, 20, Ökning | Skapa frågor | Avbryt | Bilder | Samlingar | Stäng | Läs mer… | Stäng | Läs mer… | Sortera och filtrera | Sök
+Fota sidor opened the photo library in the Simulator (no document camera there)
+TEST TAP at   50.0 s: close the camera
+TAP 3 at   57.5 s: Välj bilder
+SCREEN t21-04-valj-bilder at   80.2 s — Välj bilder: the photo library
+  texts (24): Nytt prov | Börja med materialet till ditt nästa prov. | Material | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | iOS frågar om kameran första gången. Fotona sparas inte. | Prov | Vilken årskurs? | Hoppa över | Antal frågor | Antal frågor, 20 | Varje fråga får ett kort och ett långt svar. | Lägg till minst en sida, bild eller text. | Välj upp till 20 bilder. | Privat tillgång till bilder | Ditt bildbibliotek visas här men ”Earmind” har bara tillgång till de objekt du väljer. | Läs mer… | Privat tillgång till bilder | Ditt bildbibliotek visas här men ”Earmind” har bara tillgång till de objekt du väljer. | Läs mer… | Välj bilder |  Platsen är inkluderad
+  buttons (20): Senare | Fråga om Earmind | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Vilken årskurs?, Hoppa över | Antal frågor, 20, Minskning | Antal frågor, 20, Ökning | Skapa frågor | Avbryt | Bilder | Samlingar | Klar | Läs mer… | Stäng | Läs mer… | Stäng | Sortera och filtrera | Sök
+photo library: 6 pictures:  | Bild, August 08, 2012, 9:55 PM | Bild, August 08, 2012, 9:29 PM | Bild, August 08, 2012, 6:52 PM | Bild, March 13, 2011, 12:17 AM | Bild, October 09, 2009, 9:09 PM
+picked the first cell of the grid at (66, 412), cell 132 pt
+TAP 4 at  164.9 s: the picture of the material
+TAP 5 at  173.7 s: Lägg till in the photo library
+SCREEN t21-05-nytt-prov-material at  196.7 s — Nytt prov with the material
+  texts (14): Nytt prov | Börja med materialet till ditt nästa prov. | Material | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | iOS frågar om kameran första gången. Fotona sparas inte. | Prov | Vilken årskurs? | Hoppa över | Antal frågor | Antal frågor, 20 | Varje fråga får ett kort och ett långt svar.
+  buttons (11): Senare | Fråga om Earmind | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Ta bort sida 1 | Vilken årskurs?, Hoppa över | Antal frågor, 20, Minskning | Antal frågor, 20, Ökning | Skapa frågor
+Antal frågor 20 → 3 (20 test taps so far)
+TAP 6 at  212.3 s: Skapa frågor
+MILESTONE  212.3 s,  6 tryck,  5 skärmar: Skapa frågor
+MILESTONE  224.1 s,  6 tryck,  5 skärmar: Stämmer det här?
+SCREEN t21-06-stammer at  225.9 s — Stämmer det här?
+  texts (14): Stämmer det här? | Ämne | Ämne, Biologi | Provet handlar om | Fotosyntes: hur växter tillverkar socker med hjälp av koldioxid, vatten och solljus, samt vilken roll klorofyll och syre har och vad sockret används till. | Något fel? Skriv det | Frågor | Varför behövs klorofyll? | Vad bildas vid fotosyntesen? | Vad används sockret till? | 3 frågor. Du kan ändra, ta bort och lägga till efteråt. | Röst | Röst A | Skriver svar …
+  buttons (6): Senare | Fråga om Earmind | Gör om med rättelsen | Röst A | Lyssna på röst A | Skriver svar …
+TAP 7 at  232.0 s: Ser rätt ut
+SCREEN t21-07-fragelistan at  233.7 s — Frågelistan
+  texts (11): Prov | Nästa prov, Biologiprovet, 3 frågor · Ljud: 0 av 6 klara | Nästa prov | Biologiprovet | 3 frågor · Ljud: 0 av 6 klara | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Beta · använder mikrofonen | Nytt prov
+  buttons (7): Inställningar | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Nytt prov | Öppna länk
+MILESTONE  233.7 s,  7 tryck,  7 skärmar: question list
+MILESTONE  257.6 s,  7 tryck,  7 skärmar: sound ready
+TAP 8 at  258.7 s: Starta prov in the question list
+SCREEN t21-08-styr at  261.5 s — Styr med dina AirPods
+  texts (21): Prov | Nästa prov, Biologiprovet, 3 frågor · cirka 1 min per varv | Nästa prov | Biologiprovet | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Beta · använder mikrofonen | Nytt prov | Styr med dina AirPods | Tryck en gång nu | på skaftet, som när du pausar musik. Frågan spelas en gång så att trycken kommer fram. | Medan frågan spelas: | tryck 1 gång för frågans A-svar. | tryck 1 gång för frågans A-svar. | Tryck 2 gånger för ett kort A-svar på en till två meningar. | Tryck 2 gånger för ett kort A-svar på en till två meningar. | Tryck 3 gånger för att pausa. Tryck igen för att fortsätta. | Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.
+  buttons (11): Inställningar | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Nytt prov | Öppna länk | Avbryt | Fråga om Earmind | Starta prov | Hoppa över
+TEST TAP at  265.6 s: Hoppa över 1 (Simulator: no AirPods)
+TEST TAP at  270.5 s: Hoppa över 2 (Simulator: no AirPods)
+TEST TAP at  273.2 s: Hoppa över 3 (Simulator: no AirPods)
+SCREEN t21-09-styr-klar at  275.4 s — Styr med dina AirPods after the skips
+  texts (24): Prov | Nästa prov, Biologiprovet, 3 frågor · cirka 1 min per varv | Nästa prov | Biologiprovet | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Beta · använder mikrofonen | Nytt prov | Styr med dina AirPods | Dina AirPods har dubbeltryck per lur | Ställ in Vänster på Nästa spår och Höger på Spela/pausa, så fungerar alla tre. Inställningar › Bluetooth › ⓘ vid dina AirPods › Dubbeltryck. | Medan frågan spelas: | tryck 1 gång för frågans A-svar., Hoppades över | tryck 1 gång för frågans A-svar. | Hoppades över | Tryck 2 gånger för ett kort A-svar på en till två meningar., Hoppades över | Tryck 2 gånger för ett kort A-svar på en till två meningar. | Hoppades över | Tryck 3 gånger för att pausa. Tryck igen för att fortsätta., Hoppades över | Tryck 3 gånger för att pausa. Tryck igen för att fortsätta. | Hoppades över
+  buttons (12): Inställningar | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Nytt prov | Öppna länk | Avbryt | Fråga om Earmind | Öppna Inställningar | Starta ändå | Prova igen
+TAP 9 at  278.3 s: Starta on Styr med dina AirPods
+MILESTONE  279.4 s,  9 tryck,  9 skärmar: first question
+SCREEN t21-10-forsta-fragan at  281.0 s — The first question plays
+  texts (24): Prov | Nästa prov, Biologiprovet, 3 frågor · cirka 1 min per varv | Nästa prov | Biologiprovet | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Beta · använder mikrofonen | Nytt prov | Fråga 1 av 3, Biologiprovet | Fråga 1 av 3 | Biologiprovet | Varför behövs klorofyll? | 4 | Tryck på AirPods för svaret | Långt svar, 1 tryck på AirPods, Långt svar, 1 tryck på AirPods, Kort svar, 2 tryck på AirPods, Kort svar, 2 tryck på AirPods, Paus, 3 tryck på AirPods, Paus, 3 tryck på AirPods | Långt svar, 1 tryck på AirPods | Långt svar, 1 tryck på AirPods | Kort svar, 2 tryck på AirPods | Kort svar, 2 tryck på AirPods | Paus, 3 tryck på AirPods | Paus, 3 tryck på AirPods
+  buttons (8): Inställningar | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Nytt prov | Öppna länk | Avsluta
+TEST TAP at  282.0 s: Avsluta (end of the test)
+MILESTONE  283.3 s,  9 tryck, 10 skärmar: done
