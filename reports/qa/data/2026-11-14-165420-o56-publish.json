@@ -1,0 +1,221 @@
+{
+ "checks": [
+  {
+   "check": "A sparar (ljudet finns redan)",
+   "ok": true,
+   "detail": "new_chars 0"
+  },
+  {
+   "check": "schools ger träffar",
+   "ok": true,
+   "detail": "13 st, första [{'code': '56639389', 'name': 'Katedralskolan', 'locality': 'Lund'}]"
+  },
+  {
+   "check": "schools kräver minst 2 bokstäver",
+   "ok": true,
+   "detail": "200"
+  },
+  {
+   "check": "R12 nekas utan school",
+   "ok": true,
+   "detail": "409 ['school'] Saknas: skola"
+  },
+  {
+   "check": "R12 nekas med tom school",
+   "ok": true,
+   "detail": "409 ['school']"
+  },
+  {
+   "check": "R12 nekas utan subject",
+   "ok": false,
+   "detail": "200 None None"
+  },
+  {
+   "check": "R12 nekas med tom subject",
+   "ok": false,
+   "detail": "200 None"
+  },
+  {
+   "check": "R12 nekas utan date",
+   "ok": true,
+   "detail": "409 ['date'] Saknas: provdatum"
+  },
+  {
+   "check": "R12 nekas med tom date",
+   "ok": true,
+   "detail": "409 ['date']"
+  },
+  {
+   "check": "ogiltig skolkod nekas",
+   "ok": true,
+   "detail": "409 publish_incomplete"
+  },
+  {
+   "check": "ogiltigt datum nekas",
+   "ok": true,
+   "detail": "409 publish_incomplete"
+  },
+  {
+   "check": "R12 nekas när ljudet inte är klart",
+   "ok": false,
+   "detail": "200 None (new_chars 83)"
+  },
+  {
+   "check": "A publicerar",
+   "ok": true,
+   "detail": "{\"id\": \"91c57872-c1c9-414b-9bdc-adf1170ce2fb\", \"title\": \"O56 testprov (påhittat)\", \"subject\": \"Fysik\", \"school\": {\"code\": \"56639389\", \"name\": \"Katedralskolan\", \"locality\": \"Lund\"}, \"exam_date\": \"2026-"
+  },
+  {
+   "check": "R12 sök på skolan hittar provet inom 5 s",
+   "ok": true,
+   "detail": "0.4 s"
+  },
+  {
+   "check": "ämnesfilter utesluter Fysik",
+   "ok": true,
+   "detail": "0 träffar"
+  },
+  {
+   "check": "R12 inga konto-id eller kontaktfält i sökresultatet",
+   "ok": true,
+   "detail": "fält ['exam_date', 'id', 'items', 'school', 'subject', 'title']"
+  },
+  {
+   "check": "display_name saknas när show_name är av",
+   "ok": true,
+   "detail": "None"
+  },
+  {
+   "check": "display_name publiceras inte utan show_name",
+   "ok": true,
+   "detail": "None"
+  },
+  {
+   "check": "display_name visas med show_name",
+   "ok": true,
+   "detail": "Testnamn Oscar"
+  },
+  {
+   "check": "namnet försvinner när show_name stängs av",
+   "ok": true,
+   "detail": "None"
+  },
+  {
+   "check": "R12 hämta = 0 tecken, eget prov med ljud",
+   "ok": true,
+   "detail": "200 1.3 s new_chars 0 {'done': 4, 'total': 4, 'failed': 0, 'chars': 998, 'est_usd': 0.08, 'credits': 0, 'credits_chars': 998, 'bytes': 326094, 'model': 'eleven_multilingual_v2'}"
+  },
+  {
+   "check": "B:s ändring (tog bort en fråga) rör inte originalet",
+   "ok": true,
+   "detail": "2 frågor"
+  },
+  {
+   "check": "RLS B kan inte publicera A:s prov",
+   "ok": true,
+   "detail": "404 not_found"
+  },
+  {
+   "check": "RLS B kan inte avpublicera A:s prov",
+   "ok": true,
+   "detail": "404 not_found"
+  },
+  {
+   "check": "moderate nekas för andra än Aron",
+   "ok": true,
+   "detail": "403 forbidden"
+  },
+  {
+   "check": "RLS läsa drill_publications som B",
+   "ok": true,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "check": "RLS läsa drill_publications som anonym",
+   "ok": true,
+   "detail": "401 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "check": "RLS ändra drill_publications som B",
+   "ok": true,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "check": "RLS radera drill_publications som B",
+   "ok": true,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "check": "RLS skriva drill_reports som B",
+   "ok": true,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "check": "RLS läsa drill_reports som B",
+   "ok": true,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "check": "RLS läsa drill_reports som anonym",
+   "ok": true,
+   "detail": "401 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "check": "RLS läsa schools som B",
+   "ok": true,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "check": "RLS läsa schools som anonym",
+   "ok": true,
+   "detail": "401 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "check": "RLS rpc report_publication som B nekas",
+   "ok": true,
+   "detail": "404"
+  },
+  {
+   "check": "samma konto räknas en gång",
+   "ok": true,
+   "detail": "{'reports': 1, 'hidden': False} 200 {'reports': 1, 'hidden': False}"
+  },
+  {
+   "check": "ogiltig rapportorsak nekas",
+   "ok": false,
+   "detail": "200"
+  },
+  {
+   "check": "2 rapporter döljer inte",
+   "ok": true,
+   "detail": "{'reports': 2, 'hidden': False}"
+  },
+  {
+   "check": "R12 3 rapporter döljer provet",
+   "ok": true,
+   "detail": "{'reports': 3, 'hidden': True}"
+  },
+  {
+   "check": "dolt prov syns inte i sök",
+   "ok": true,
+   "detail": "1 träffar"
+  },
+  {
+   "check": "dolt prov går inte att hämta",
+   "ok": true,
+   "detail": "404 not_found"
+  },
+  {
+   "check": "A avpublicerar sitt prov",
+   "ok": true,
+   "detail": "200"
+  }
+ ],
+ "elevenlabs_chars": 83,
+ "school": {
+  "code": "56639389",
+  "name": "Katedralskolan",
+  "locality": "Lund"
+ },
+ "t_search_s": 0.38
+}

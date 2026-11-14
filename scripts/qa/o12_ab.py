@@ -3,6 +3,7 @@
 Aron to listen to. Runs in GitHub Actions (.github/workflows/oscar-ab-audio.yml) and is uploaded as an artifact,
 never committed (the repo is public). Standard library only. About 800 weighted ElevenLabs characters.
   python3 scripts/qa/o12_ab.py --out ab-audio"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, json, os, time, urllib.request, wave
 
 URL = "https://xjczbzfkmbjdebwlccki.supabase.co"

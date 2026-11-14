@@ -2,6 +2,7 @@
 """Oscar QA: is the app's voice alive? One anonymous signup (waits out the auth rate limit), one 4-character /tts
 call with the default model and one stt-token. Costs about 1 ElevenLabs credit.
   python -I scripts/qa/tts_alive.py"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import importlib.util, json, pathlib, sys, time
 
 sys.stdout.reconfigure(encoding="utf-8")

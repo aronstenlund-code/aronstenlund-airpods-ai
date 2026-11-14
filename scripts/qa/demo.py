@@ -8,6 +8,7 @@ are never tested, because they would shut the demo for real visitors; the TTS pe
 is not exhausted either, since it costs real ElevenLabs credits. Costs are computed from tokens (high side).
 Writes reports/qa/data/<stamp>-demo.json.
 """
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, datetime as dt, json, pathlib, sys, time, urllib.error, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]

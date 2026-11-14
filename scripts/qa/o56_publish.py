@@ -11,6 +11,7 @@ behövs för fallet "ljudet inte klart". Användarna återanvänds via refresh t
   6. rapporter: samma konto räknas en gång; 3 olika konton döljer; dolt prov syns inte i sök och går inte att hämta
   7. städning: A avpublicerar och raderar
   python -I -X utf8 scripts/qa/o56_publish.py"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import datetime as dt, json, os, pathlib, sys, time, urllib.error, urllib.request
 
 sys.stdout.reconfigure(encoding="utf-8")

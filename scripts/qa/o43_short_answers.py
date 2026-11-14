@@ -11,6 +11,7 @@ Pipeline per case and condition (quiet / classroom babble):
 Babble: four espeak-ng Swedish voices talking over each other (free), mixed at --snr dB (default 10: the AirPods mic is close to the mouth) under the answer.
   O6_LIB=<scipy+websockets> python -I scripts/qa/o43_short_answers.py --tag fore [--only geo] [--cond quiet,babble]
   -> reports/qa/data/<stamp>-o43-<tag>.json"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, asyncio, datetime as dt, importlib.util, json, os, pathlib, re, subprocess, sys, tempfile, time, unicodedata, urllib.request, wave
 
 sys.stdout.reconfigure(encoding="utf-8")

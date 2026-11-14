@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Oscar QA, O6: tables from reports/qa/data/<stamp>-o6-*.json (written by o6_audio.py).
   python -I scripts/qa/o6_report.py reports/qa/data/<file>.json > reports/qa/data/<file>-tables.md"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import json, statistics, sys, collections
 
 sys.stdout.reconfigure(encoding="utf-8")

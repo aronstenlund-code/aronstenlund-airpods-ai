@@ -5,6 +5,7 @@ POST /tts with that first sentence (pcm_24000, like the app) timed to the first 
 First audio (as the app does it) = time to the first full sentence + /tts time to first byte.
   python -I scripts/qa/o8_latency.py      -> reports/qa/data/<stamp>-o8.json
 Measured from this Windows machine in Sweden over the internet to eu-north-1. Budget 0,50 USD (stops at 0,45)."""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import datetime as dt, importlib.util, json, pathlib, random, re, sys, time, urllib.error, urllib.request
 
 sys.stdout.reconfigure(encoding="utf-8")

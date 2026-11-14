@@ -17,6 +17,7 @@ Hard rules enforced here (from the assignment):
 
 A web answer can use up to 3 searches on the server, so a web turn only starts when 3 searches are still
 left. Any turn the server would send to web search counts, also by accident (the trigger words are read
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 from backend/supabase/functions/answer/web.ts).
 """
 import argparse

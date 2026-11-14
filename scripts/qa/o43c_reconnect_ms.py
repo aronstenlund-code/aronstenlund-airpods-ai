@@ -4,6 +4,7 @@ websocket open -> session_started, with a keyterm set of 20 (the quiz answer + a
 (0 Scribe seconds billed for audio; the socket is closed right after session_started). 10.5 s between tries
 (stt-token allows 6 per user per minute).
   O6_LIB=<scipy+websockets> python -I scripts/qa/o43c_reconnect_ms.py [--n 10] -> reports/qa/data/<stamp>-o43c-reconnect.json"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, asyncio, datetime as dt, importlib.util, json, os, pathlib, statistics, sys, time, urllib.parse
 
 sys.stdout.reconfigure(encoding="utf-8")

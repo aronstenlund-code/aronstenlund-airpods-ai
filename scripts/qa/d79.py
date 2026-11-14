@@ -12,6 +12,7 @@ Design constraints (why the script looks like this):
   - Marking feedback rows `processed` needs the service role key, which QA does not have: not tested.
 Writes reports/qa/data/<stamp>-d79-d80.json.
 """
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import datetime as dt, importlib.util, json, pathlib, subprocess, sys, time, urllib.error, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]

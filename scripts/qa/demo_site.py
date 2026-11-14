@@ -7,6 +7,7 @@ Uses at most ~8 real demo questions (visitor cap 5 + 1 over the cap, network cap
 (oscar-qa-*@example.com, to be deleted by someone with database access) and 9 stt-token requests. Writes
 reports/qa/data/<stamp>-demo-site.json and screenshots to reports/qa/shots/ (JPEG, each <= 500 kB).
 """
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import datetime as dt, json, pathlib, sys, time
 from playwright.sync_api import sync_playwright
 

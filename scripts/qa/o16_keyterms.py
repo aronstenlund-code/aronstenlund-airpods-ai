@@ -4,6 +4,7 @@ Each probe opens a socket like the app (stt-token, Provläge VAD values) with ON
 of speech (a cached /tts clip from O12, scratch only; D120: 1.0 s by default, --secs) and records: session started, error messages, close code.
   O6_LIB=<scipy+websockets> python -I scripts/qa/o16_keyterms.py --clip <file.npy> [--probe]   -> reports/qa/data/<stamp>-o16.json
 --probe runs only the baseline (no keyterms) to see if Scribe works at all. Uses Scribe seconds only, no /answer."""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, asyncio, base64, datetime as dt, importlib.util, json, os, pathlib, sys, time, urllib.parse
 
 sys.stdout.reconfigure(encoding="utf-8")

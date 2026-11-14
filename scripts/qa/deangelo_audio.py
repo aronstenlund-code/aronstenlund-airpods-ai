@@ -4,6 +4,7 @@ Scribe v2 Realtime som appen (stt-token, VAD, keyterms i Provläge) -> /answer (
 Varje fall körs i ett bakgrundsljud (roterande); 16 fall körs i alla ljud för jämförelse.
   python -I scripts/qa/deangelo_audio.py --audio-dir <scratch>   -> reports/qa/data/2026-11-10-deangelo-audio.json
 Ljud sparas aldrig i git. Budget /answer 1,0 USD."""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, asyncio, importlib.util, json, os, pathlib, sys, time
 import numpy as np
 from scipy.signal import butter, sosfilt

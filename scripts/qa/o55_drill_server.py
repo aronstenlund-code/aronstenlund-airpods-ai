@@ -12,6 +12,7 @@ före varje sparning och stoppar annars.
   6. R5c: A delar -> kod; B share_info, import (tid <= 10 s, new_chars 0, alla filer klara); B ändrar sin kopia,
      A:s original oförändrat; B kan inte stänga A:s delning; A unshare -> import 404
   python -I -X utf8 scripts/qa/o55_drill_server.py"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import datetime as dt, json, pathlib, sys, time, urllib.error, urllib.request
 
 sys.stdout.reconfigure(encoding="utf-8")

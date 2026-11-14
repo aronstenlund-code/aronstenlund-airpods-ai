@@ -1,0 +1,128 @@
+{
+ "when": "2026-11-14T16:49:25",
+ "test": {
+  "user_id": "e4dce76b-908c-4de1-a5e5-257425bc7698",
+  "tts": {
+   "http": 200,
+   "content_type": "audio/mpeg",
+   "fake_header": "1",
+   "bytes": 15846
+  },
+  "stt_token": {
+   "http": 200,
+   "fake": true,
+   "ws_url": null,
+   "expires_in": 0,
+   "model_id": "fake",
+   "language_code": "swe",
+   "transcript": "Det här är en testtranskription.",
+   "reason": "D180: test accounts never use ElevenLabs"
+  },
+  "drill_save": {
+   "http": 200,
+   "generated_questions": 3,
+   "audio": {
+    "done": 0,
+    "total": 6,
+    "failed": 0,
+    "chars": 347,
+    "est_usd": 0.03,
+    "credits": null,
+    "credits_chars": null,
+    "bytes": 0,
+    "model": "eleven_multilingual_v2"
+   },
+   "items": [
+    {
+     "voice_chars": 118,
+     "length_class": "normal"
+    },
+    {
+     "voice_chars": 102,
+     "length_class": "normal"
+    },
+    {
+     "voice_chars": 127,
+     "length_class": "normal"
+    }
+   ],
+   "error": null
+  },
+  "drill_status": {
+   "done": 6,
+   "total": 6,
+   "failed": 0,
+   "chars": 347,
+   "est_usd": 0.03,
+   "credits": 0,
+   "credits_chars": 347,
+   "bytes": 138861,
+   "model": "eleven_multilingual_v2"
+  },
+  "voice_lab": {
+   "http": 200,
+   "fake": true,
+   "character_cost": 0,
+   "error": null
+  },
+  "provlage_transcribe": {
+   "http": 200,
+   "fake": true,
+   "text": "Det här är en testtranskription.",
+   "error": null
+  },
+  "quota_after_save": {
+   "used": 3,
+   "limit": 15,
+   "left": 12,
+   "suggest": 12,
+   "per": "month",
+   "resets": "2026-12-01"
+  }
+ },
+ "real": {
+  "user_id": "154e1e9d-8fda-4bf0-a816-8fff35a6274d",
+  "tts": {
+   "http": 503,
+   "content_type": "application/json; charset=utf-8",
+   "fake_header": null,
+   "bytes": 85,
+   "body": "{\"error\":{\"code\":\"provider_quota\",\"message\":\"TTS credits exhausted\",\"fallback\":true}}"
+  }
+ },
+ "d175": {
+  "user_id": "eb9aa4b6-b938-47e1-a890-7021bb71b7cd",
+  "save13": {
+   "http": 200,
+   "generated_questions": 13,
+   "error": null
+  },
+  "quota_before": {
+   "used": 13,
+   "limit": 15,
+   "left": 2,
+   "suggest": 2,
+   "per": "month",
+   "resets": "2026-12-01"
+  },
+  "exam": {
+   "http": 200,
+   "items": 2,
+   "questions_asked": 2,
+   "questions_possible": 2,
+   "quota": {
+    "used": 13,
+    "limit": 15,
+    "left": 2,
+    "per": "month",
+    "resets": "2026-12-01"
+   },
+   "note": null,
+   "error": null
+  },
+  "save3_over": {
+   "http": 200,
+   "body": null
+  }
+ }
+}

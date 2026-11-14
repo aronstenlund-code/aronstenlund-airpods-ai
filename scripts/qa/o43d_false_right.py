@@ -7,6 +7,7 @@ questions, with the A62 keyterms (answer + alternatives first) and quiz_key, lik
 Pass = Lumen never says "Rätt" (or "Rätt i så fall"). Optional --no-a62 for the same without the answer in keyterms.
   O6_LIB=<scipy+websockets> python -I scripts/qa/o43d_false_right.py [--cond silence,wrong] [--babble-only-wrong]
   -> reports/qa/data/<stamp>-o43d.json"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, asyncio, datetime as dt, importlib.util, json, pathlib, sys, time
 
 sys.stdout.reconfigure(encoding="utf-8")

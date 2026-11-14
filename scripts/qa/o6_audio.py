@@ -16,6 +16,7 @@ Differences from Kevin's scripts/audio-eval.py (reviewed first, see the report):
 Needs numpy + scipy + websockets: set O6_LIB to a folder holding scipy and websockets (pip install --target).
 Audio goes to --audio-dir (a scratch folder, never git; *.wav is also in .gitignore).
 """
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, asyncio, base64, collections, datetime, hashlib, importlib.util, json, os, re, sys, time, urllib.parse
 
 sys.stdout.reconfigure(encoding="utf-8")

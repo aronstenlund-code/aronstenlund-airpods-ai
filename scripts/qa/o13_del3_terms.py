@@ -8,6 +8,7 @@ contains it (letters only, case/space ignored) or an accepted spelling.
 provlage-eval "transcribe" rejects every body over 64 KB (~1.4 s of 24 kHz audio, O13 del 3 finding 19:41).
   python -I scripts/qa/o13_del3_terms.py [--no-scribe]                 -> reports/qa/data/<stamp>-o13d3.json
   O6_LIB=<scipy+websockets> python -I scripts/qa/o13_del3_terms.py --realtime"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, asyncio, base64, datetime as dt, importlib.util, io, json, os, pathlib, re, sys, time, unicodedata, wave
 
 sys.stdout.reconfigure(encoding="utf-8")

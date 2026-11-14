@@ -8,6 +8,7 @@
   (c) 15 new O7-type questions (lyrics, violent history, sex education, ANT, medicine at fact level); graded by hand.
   python -I scripts/qa/o10_live.py [a b c]   -> reports/qa/data/<stamp>-o10-live.json
 Budget 0,40 USD (stops at 0,38); costs from tokens (high side) via demo.py."""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import datetime as dt, importlib.util, json, pathlib, re, statistics, subprocess, sys
 
 sys.stdout.reconfigure(encoding="utf-8")

@@ -6,6 +6,7 @@ Realtime (the app's VAD values, no keyterms) word and character error against th
 400 ms beyond the sentence ends, a cut ending (energy in the last 30 ms), inserted/repeated words in Scribe's text.
 Audio stays in --audio-dir (scratch, never git). Budget: <= 20 000 weighted ElevenLabs characters (multilingual x2).
 Writes reports/qa/data/<stamp>-o12.json."""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import argparse, asyncio, datetime as dt, importlib.util, json, os, pathlib, random, re, sys, time, urllib.error, urllib.request
 
 sys.stdout.reconfigure(encoding="utf-8")
