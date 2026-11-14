@@ -103,6 +103,9 @@ struct ScreenshotStage: View {
                     MyAnswerEditor(model: model, examID: model.examPlans?.upcoming().first?.id,
                                    existing: model.myAnswers?.answers.first { $0.question == "Vad är fotosyntes?" }, draft: nil) {}
                 }
+            // A98 (D173): Spela in in two steps, the question first.
+            case "myRecordEmpty", "myRecordQuestion", "myRecording", "myRecorded":
+                NavigationStack { MyAnswerRecordView(model: model, staged: Self.stagedRecording(name)) }
             // A52 (Ke29): "Vad kan Lumen?" and the sheet after the first answer.
             case "canDo": NavigationStack { CapabilitiesView() }
             case "canDoIntro": CapabilitiesIntroSheet()
@@ -241,6 +244,19 @@ private enum PracticeDemo {
         guard var done = run else { return nil }
         done.graded(points: 0, max: 3)
         return done.summary
+    }
+}
+extension ScreenshotStage {
+    /// A98 scenes: no question, the question set, recording the answer, and the answer recorded.
+    @MainActor
+    static func stagedRecording(_ name: String) -> MyAnswerRecording {
+        let recording = MyAnswerRecording(choices: ["Vad är fotosyntes?", "Vad gör klorofyllet?", "Varför behöver växter ljus?",
+                                                    "Vad är cellandning?"])
+        guard name != "myRecordEmpty" else { return recording }
+        recording.question = "Vad är fotosyntes?"
+        if name == "myRecording" { recording.answerRecorder.stageForScreenshot(.recording, elapsed: 12, level: -18) }
+        if name == "myRecorded" { recording.answerRecorder.stageForScreenshot(.recorded, elapsed: 34) }
+        return recording
     }
 }
 #endif

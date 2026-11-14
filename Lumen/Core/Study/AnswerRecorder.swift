@@ -104,6 +104,15 @@ final class AnswerRecorder {
         return nil
     }
 
+    #if DEBUG
+    /// A98 scenes: the recording screen without a microphone.
+    func stageForScreenshot(_ state: State, elapsed: TimeInterval, level: Double? = nil) {
+        self.state = state
+        self.elapsed = elapsed
+        levelDBFS = level
+    }
+    #endif
+
     /// Avbryt: the audio is deleted, nothing is sent.
     func cancel() {
         ticker?.cancel()
