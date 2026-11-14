@@ -34,6 +34,62 @@ final class RepetitionStatesTests: XCTestCase {
         add(summary)
     }
 
+    /// T22 (D179): the name is EarMind wherever a user can see it. The icon's name on the home screen, then every Debug
+    /// scene of the first start and the repetition mode: any text with "Earmind" (that exact spelling) is a finding.
+    /// The wake word (A97) is spoken, not shown, and is not checked here.
+    func testNameIsEarMind() throws {
+        continueAfterFailure = true
+        guard ProcessInfo.processInfo.environment["LUMEN_T23_STATES"] != nil else {
+            throw XCTSkip("runs from scripts/apptest/states.sh")
+        }
+        var report: [String] = []
+        // The icon: install happened through xcodebuild; the home screen shows CFBundleDisplayName under it.
+        let app = XCUIApplication()
+        app.launch()
+        app.terminate()
+        XCUIDevice.shared.press(.home)
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let icons = springboard.icons.allElementsBoundByIndex.map(\.label)
+        let ours = icons.filter { $0.range(of: "earmind", options: .caseInsensitive) != nil || $0 == "Lumen" }
+        report.append("icon: \(ours.isEmpty ? "not found among \(icons.count) icons" : ours.joined(separator: ", "))")
+        if !ours.contains("EarMind") { XCTFail("[t22] the icon's name is \(ours) (D179: EarMind)") }
+        let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        shot.name = "t22-home-screen"
+        shot.lifetime = .keepAlways
+        add(shot)
+
+        let scenes = ["fsWelcome", "fsReadMore", "fsNewDrill", "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted",
+                      "repMaterial", "repMakeError", "repVoice", "repList", "repEdit", "repShare", "repShareReady",
+                      "repControls", "repControlsDone", "repControlsMissing", "repPlayFirst", "repPlayThink",
+                      "repPlayAnswer", "repPaused", "repWaiting", "repPublish", "repSchools", "repSchoolsEmpty",
+                      "repPublication", "repHelp", "repHelpAnswer", "repHelpTry", "repQuotaUsedUp", "repLength",
+                      "repLengthEdit", "repSoundProblem", "repHomeSoundProblem", "gptSteps", "gptFound", "gptWrong"]
+        var wrong = 0
+        for scene in scenes {
+            let app = XCUIApplication()
+            app.launchArguments = ["-LumenScreenshot", scene, "-AppleLanguages", "(sv)", "-AppleLocale", "sv_SE"]
+            app.launch()
+            RunLoop.current.run(until: Date().addingTimeInterval(2))
+            let texts = Set(Self.labels(in: app.debugDescription))
+            let bad = texts.filter { $0.contains("Earmind") }.sorted()
+            let good = texts.filter { $0.contains("EarMind") }.count
+            report.append("\(bad.isEmpty ? "OK " : "FEL") \(scene): \(good) texts with EarMind" + (bad.isEmpty ? "" : "; Earmind in: " + bad.joined(separator: " | ")))
+            if !bad.isEmpty {
+                wrong += 1
+                let shot = XCTAttachment(screenshot: app.screenshot())
+                shot.name = "t22-\(scene)"
+                shot.lifetime = .keepAlways
+                add(shot)
+            }
+            app.terminate()
+        }
+        if wrong > 0 { XCTFail("[t22] 'Earmind' on \(wrong) of \(scenes.count) scenes") }
+        let summary = XCTAttachment(string: (["T22 EarMind (Debug scenes, simulator, not a device)", ""] + report).joined(separator: "\n") + "\n")
+        summary.name = "t22-name-log"
+        summary.lifetime = .keepAlways
+        add(summary)
+    }
+
     /// Launches a scene and looks for texts. A pattern with * matches any text (as in a shell glob).
     private func check(_ scene: String, _ what: String, has: [String], hasNot: [String]) {
         let app = XCUIApplication()

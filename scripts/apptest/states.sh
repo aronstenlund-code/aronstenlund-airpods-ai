@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# T23 (Toby 2): A99/A100 states through Angela's Debug scenes (AppTests/E2E/Screens/RepetitionStatesTests.swift):
+# T23 and T22 (Toby 2): A99/A100 states, and EarMind on the icon and every scene (D179), through Angela's Debug scenes (AppTests/E2E/Screens/RepetitionStatesTests.swift):
 # no BETA line for a new user, the used-up month, the length classes, "Ljudet kan inte göras just nu".
 #
 #   scripts/apptest/states.sh
@@ -67,7 +67,9 @@ FENCE='```'
   echo "## T23 states (Debug scenes, simulator, inte enhet): $([ $STATUS -eq 0 ] && echo grön || echo röd)"
   echo
   echo "$FENCE"
-  grep -E "^(OK |FEL)" "$OUT"/t23-states-log*.txt 2>/dev/null || echo "no log (the test did not get that far)"
+  grep -E "^(OK |FEL)" "$OUT"/t23-states-log*.txt 2>/dev/null || echo "no T23 log"
+  echo
+  grep -E "^(icon|FEL)" "$OUT"/t22-name-log*.txt 2>/dev/null || echo "no T22 log"
   echo "$FENCE"
 } > "$OUT/summary.md"
 cat "$OUT/summary.md"
