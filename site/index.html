@@ -3,23 +3,23 @@
 <head>
 <script>
   // Byt namn här, och bara här. Sidan hämtar namnet från den här variabeln.
-  const APP_NAME = "Earmind"; // D128. Väckningsordet ”Lumen” står i citaten och byts bara om Aron säger det.
+  const APP_NAME = "EarMind"; // D128. Väckningsordet ”Lumen” står i citaten och byts bara om Aron säger det.
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
-<title>Earmind: fråga högt, få svaret i örat. AI i dina AirPods</title>
-<meta name="description" content="Starta Earmind en gång, sen finns AI:n i dina hörlurar. Fråga högt och hör svaret i örat, i vardagen, i skolan och på jobbet. Plugga inför prov och bli förhörd. Prova direkt här.">
+<title>EarMind: fråga högt, få svaret i örat. AI i dina AirPods</title>
+<meta name="description" content="Starta EarMind en gång, sen finns AI:n i dina hörlurar. Fråga högt och hör svaret i örat, i vardagen, i skolan och på jobbet. Plugga inför prov och bli förhörd. Prova direkt här.">
 <link rel="canonical" href="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="sv_SE">
-<meta property="og:site_name" content="Earmind">
+<meta property="og:site_name" content="EarMind">
 <meta property="og:url" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
 <meta property="og:title" content="Fråga högt. Få svaret i örat.">
 <meta property="og:description" content="AI:n i dina AirPods, för vardagen, skolan och jobbet. Prova här, svaret läses upp.">
-<meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og-earmind.png">
+<meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og-earmind-v2.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Earmind. Fråga högt. Få svaret i örat. Elias, en påhittad elev, med en hörlur i örat.">
+<meta property="og:image:alt" content="EarMind. Fråga högt. Få svaret i örat. Elias, en påhittad elev, med en hörlur i örat.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1218">
@@ -29,7 +29,7 @@
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Säg vilket prov du har och sedan ”Lumen, förhör mig”. Earmind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan."}}, {"@type": "Question", "name": "Kan jag bli förhörd inför ett prov?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Earmind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Säg vilket prov du har och sedan ”Lumen, förhör mig”. EarMind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan."}}, {"@type": "Question", "name": "Kan jag bli förhörd inför ett prov?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer EarMind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
 <style>
   /* Ke13: samma system som appen (docs/design/SYSTEM.md). Familjen Grotesk överallt, ingen handstil, inget rutpapper. */
   @font-face {
@@ -657,7 +657,7 @@
         Prova här. Svaret läses upp.
       </p>
       <!-- Ke29 (D124, D126): samma ord som appens Start. Standardläge är livedemon, Förhör mig är Provläget. -->
-      <div class="seg" role="group" aria-label="Två sätt att använda Earmind">
+      <div class="seg" role="group" aria-label="Två sätt att använda EarMind">
         <button class="seg-b" id="m-ask" type="button" aria-pressed="true">Standardläge</button>
         <button class="seg-b" id="m-quiz" type="button" aria-pressed="false">Förhör mig</button>
       </div>
@@ -760,7 +760,7 @@
     <h2 id="start-h">Så kommer du igång</h2>
     <p class="lead">Tre steg. Sedan ligger telefonen i fickan och du pluggar med rösten.</p>
     <ol class="steps">
-      <li class="paper"><h3>Tryck Testa nu och fråga högt</h3><p>Inget konto. Sätt i AirPods och fråga vad som helst. Svaret hörs i örat.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/fraga-dark.webp"><img class="shot" src="img/fraga-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Fråga vad som helst i appen: frågan Vad är fotosyntes? och svaret i ett kort, knappen Fortsätt och raden om att ljudet blir text och inte sparas av Earmind."></picture></li>
+      <li class="paper"><h3>Tryck Testa nu och fråga högt</h3><p>Inget konto. Sätt i AirPods och fråga vad som helst. Svaret hörs i örat.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/fraga-dark.webp"><img class="shot" src="img/fraga-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Fråga vad som helst i appen: frågan Vad är fotosyntes? och svaret i ett kort, knappen Fortsätt och raden om att ljudet blir text och inte sparas av EarMind."></picture></li>
       <li class="paper"><h3>Säg vilket prov du har</h3><p>Till exempel <span class="hand">”Jag har prov i biologi på fredag”</span>. Du kan också skriva det.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg1-dark.webp"><img class="shot" src="img/steg1-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Har du prov snart? i appen: säg till exempel Jag har prov i biologi på fredag, eller tryck Skriv i stället. Knappen Inte nu."></picture></li>
       <li class="paper"><h3>Säg ”Lumen, förhör mig”</h3><p><span data-app></span> ställer frågor om det du pluggar och svarar på dina. Vill du bara ha svar, starta <span data-app></span> och fråga.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget för Biologiprovet med brickan Lyssnar: frågan Vad är fotosyntes? och svaret, och knapparna Pausa och Avsluta."></picture></li>
     </ol>
@@ -819,8 +819,8 @@
       <details>
         <summary>Vanliga frågor</summary>
         <dl class="faq">
-          <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Säg vilket prov du har och sedan ”Lumen, förhör mig”. Earmind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan.</dd>
-          <dt>Kan jag bli förhörd inför ett prov?</dt><dd>Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Earmind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon.</dd>
+          <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Säg vilket prov du har och sedan ”Lumen, förhör mig”. EarMind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan.</dd>
+          <dt>Kan jag bli förhörd inför ett prov?</dt><dd>Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer EarMind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon.</dd>
           <dt>Funkar det för nationella provet och A-nivå?</dt><dd>Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok.</dd>
           <dt>Kan jag prova utan att ladda ner något?</dt><dd>Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns.</dd>
         </dl>
