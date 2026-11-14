@@ -122,6 +122,7 @@ final class VoiceCatalog {
             request.httpMethod = "GET"
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.timeoutInterval = 15
             let (response, data) = try await http.data(for: request)
             guard response.statusCode == 200 else {

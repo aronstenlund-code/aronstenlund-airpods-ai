@@ -270,6 +270,7 @@ final class StudyCardsClient {
             request.httpMethod = "POST"
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = 20
             request.httpBody = try JSONEncoder().encode(body)

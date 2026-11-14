@@ -246,6 +246,7 @@ final class DrillCloudClient: DrillCloudSyncing {
             request.httpMethod = "POST"
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = timeout
             request.httpBody = try JSONSerialization.data(withJSONObject: body)

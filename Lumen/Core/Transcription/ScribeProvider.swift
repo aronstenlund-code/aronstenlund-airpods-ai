@@ -360,6 +360,7 @@ final class ScribeProvider: STTProvider {
         var request = URLRequest(url: config.sttTokenURL)
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+        request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
         request.timeoutInterval = 8
         return request
     }

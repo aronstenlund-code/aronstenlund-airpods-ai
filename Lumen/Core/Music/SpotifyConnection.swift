@@ -127,6 +127,7 @@ final class ConnectClient {
             request.httpMethod = method
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             if let body {
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 request.httpBody = body

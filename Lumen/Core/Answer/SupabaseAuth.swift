@@ -134,6 +134,7 @@ final class SupabaseAuth {
         var request = URLRequest(url: config.signUpURL)
         request.httpMethod = "POST"
         request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+        request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = Data("{}".utf8)
         return try await perform(request)
@@ -143,6 +144,7 @@ final class SupabaseAuth {
         var request = URLRequest(url: config.refreshURL)
         request.httpMethod = "POST"
         request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+        request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONEncoder().encode(["refresh_token": old.refreshToken])
         return try await perform(request)

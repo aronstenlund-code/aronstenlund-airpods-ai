@@ -120,6 +120,7 @@ final class MemoryExtractor {
             request.httpMethod = "POST"
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = 15
             request.httpBody = try JSONEncoder().encode(Body(correction: .init(text: String(text.prefix(200)), context: context), settings: settings))
@@ -148,6 +149,7 @@ final class MemoryExtractor {
             request.httpMethod = "POST"
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = 15
             request.httpBody = try JSONEncoder().encode(Body(length_signal: .init(signal: yes ? "yes" : "no", context: context), settings: settings))
@@ -166,6 +168,7 @@ final class MemoryExtractor {
             request.httpMethod = "POST"
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = 15
             request.httpBody = try JSONEncoder().encode(body)

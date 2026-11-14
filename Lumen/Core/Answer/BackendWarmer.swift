@@ -23,6 +23,7 @@ final class BackendWarmer {
             request.httpMethod = "GET"
             request.setValue("1", forHTTPHeaderField: "x-warm")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.timeoutInterval = 10
             do {
                 let (response, _) = try await http.data(for: request)
