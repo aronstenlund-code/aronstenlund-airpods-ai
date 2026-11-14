@@ -219,6 +219,18 @@ enum VoiceChannel {
     /// only at the start of the utterance, after a sentence end ("Ja precis. Lumen, …") or after a greeting alone.
     private static let greetings: Set<String> = ["hej", "hallå", "okej", "ok", "ja", "nej", "du", "hörru", "hey", "hi", "okay"]
 
+    /// Toby 1 T17c finding 9 ("Hej, Lumen." and then the question as its own sentence went as an auto question): a
+    /// greeting and the name, nothing after it, is the name alone like "Lumen." (A75). Not "ja"/"nej": "Nej, Lumen."
+    /// is an answer, not a call.
+    private static let callingGreetings: Set<String> = ["hej", "hallå", "hejsan", "tjena", "hey", "hi", "hörru", "okej", "ok", "okay", "du"]
+
+    static func isGreetedNameAlone(_ text: String) -> Bool {
+        guard let name = wakeWord(in: text), WakeWord.isConfident(String(text[name])) else { return false }
+        let before = text[..<name.lowerBound].trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        let after = text[name.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        return after.isEmpty && callingGreetings.contains(normalized(before))
+    }
+
     static func isAddress(_ text: String, nameAt name: Range<String.Index>) -> Bool {
         guard isPlacedAddress(text, nameAt: name) else { return asksMidSentence(text, nameAt: name) }
         return WakeWord.isConfident(String(text[name])) || addressesAfterGuess(text, nameAt: name)

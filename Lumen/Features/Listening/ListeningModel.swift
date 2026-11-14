@@ -4140,7 +4140,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         // A14: Scribe sometimes puts "Lumen." in a segment of its own; the command is the next segment.
-        if WakeWord.matches(VoiceChannel.normalized(segment.text)), !segment.overlapsPlayback {
+        // Toby 1 T17c finding 9: "Hej, Lumen." alone is the name alone too.
+        if WakeWord.matches(VoiceChannel.normalized(segment.text)) || VoiceChannel.isGreetedNameAlone(segment.text),
+           !segment.overlapsPlayback {
             // A75 (Aron 20:41): the name alone (as heard: "Lumin.") always gets an answer: "Ja?", then 8 s for the question.
             loneNameAt = date
             controller.log("Name alone: \"Ja?\", waiting for the question (A75)")

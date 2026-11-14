@@ -69,3 +69,20 @@ struct A97EarmindTests {
         }
     }
 }
+
+/// Toby 1 T17c finding 9: "Hej, Lumen." alone waits for the question like "Lumen." (A75).
+struct T17cGreetedNameTests {
+    @Test func aGreetingAndTheNameAloneIsTheNameAlone() {
+        for heard in ["Hej, Lumen.", "Hej Lumen", "Hallå Lumen!", "Hörru, Lumen?", "Hej, EarMind.", "Okej Lumen."] {
+            #expect(VoiceChannel.isGreetedNameAlone(heard), "\(heard)")
+        }
+    }
+
+    @Test func otherSentencesAreNot() {
+        for heard in ["Lumen.", "Hej, Lumen, vad är klockan?", "Nej, Lumen.", "Ja Lumen", "Jag sa hej till Lumen.",
+                      "Hej, Lusen.", "Hej då"] {
+            #expect(!VoiceChannel.isGreetedNameAlone(heard), "\(heard)")
+        }
+    }
+}
+
