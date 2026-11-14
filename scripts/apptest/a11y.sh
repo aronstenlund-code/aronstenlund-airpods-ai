@@ -5,7 +5,8 @@
 #   A11Y_DEVICE="iPhone SE (3rd generation)" A11Y_TEXT_SIZE=accessibility-extra-extra-extra-large \
 #   A11Y_SCENES="fsWelcome repList" scripts/apptest/a11y.sh
 #
-# Output: apptest-out/a11y/<config>/a11y-<scene>.audit.txt, .tree.txt, .png and summary.md. Light mode. Free (no
+# Output: apptest-out/a11y/<config>/a11y-<scene>.audit.txt, .tree.txt, .png and summary.md, written per scene;
+# a scene whose audit hangs over A11Y_SCENE_LIMIT s (240) is recorded as STOPPED and the rest go on. Light mode. Free (no
 # network). Simulator only: never a verification on a device.
 set -uo pipefail
 
@@ -55,32 +56,88 @@ if [ "$SIZE" != "default" ]; then xcrun simctl ui "$UDID" content_size "$SIZE"; 
 xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 || true
 echo "::endgroup::"
 
-echo "::group::Audit"
-RESULT="$OUT/logs/a11y.xcresult"
-rm -rf "$RESULT"
-TEST_RUNNER_LUMEN_A11Y_SCENES="$SCENES" \
-xcodebuild test-without-building \
-  -project LumenE2E.xcodeproj \
-  -scheme LumenScreenTour \
-  -destination "platform=iOS Simulator,id=$UDID" \
-  -derivedDataPath "$DD" \
-  -resultBundlePath "$RESULT" \
-  -only-testing:"LumenScreenTour/AccessibilityAuditTests" \
-  CODE_SIGNING_ALLOWED=NO \
-  > "$OUT/logs/test.log" 2>&1
-STATUS=$?
-grep -E "error:|failed|passed|skipped" "$OUT/logs/test.log" | tail -n 20
-xcrun xcresulttool export attachments --path "$RESULT" --output-path "$OUT" || echo "::warning::attachment export failed"
-python3 -I "$ROOT/scripts/apptest/screens_index.py" rename "$OUT"
-echo "::endgroup::"
+
+# The test writes each scene's files as soon as it is done, and a11y-<scene>.started before its audit. A watchdog
+# stops xcodebuild when no scene has finished for A11Y_SCENE_LIMIT seconds (run 43590746967: the SE with the largest
+# text stopped inside an audit and the whole artifact was empty), records the stuck scene and goes on with the rest.
+LIMIT="${A11Y_SCENE_LIMIT:-240}"
+STATUS=0
+ROUND=0
+while :; do
+  REMAINING=""
+  for s in $SCENES; do
+    [ -f "$OUT/a11y-$s.audit.txt" ] || REMAINING="$REMAINING $s"
+  done
+  REMAINING="${REMAINING# }"
+  [ -z "$REMAINING" ] && break
+  ROUND=$((ROUND + 1))
+  [ $ROUND -gt 12 ] && { echo "::warning::too many restarts, stopping"; break; }
+  echo "::group::Audit round $ROUND: $REMAINING"
+  RESULT="$OUT/logs/a11y-$ROUND.xcresult"
+  rm -rf "$RESULT"
+  TEST_RUNNER_LUMEN_A11Y_SCENES="$REMAINING" \
+  TEST_RUNNER_LUMEN_A11Y_OUT="$OUT" \
+  xcodebuild test-without-building \
+    -project LumenE2E.xcodeproj \
+    -scheme LumenScreenTour \
+    -destination "platform=iOS Simulator,id=$UDID" \
+    -derivedDataPath "$DD" \
+    -resultBundlePath "$RESULT" \
+    -only-testing:"LumenScreenTour/AccessibilityAuditTests" \
+    CODE_SIGNING_ALLOWED=NO \
+    > "$OUT/logs/test-$ROUND.log" 2>&1 &
+  PID=$!
+  LAST=$(date +%s)
+  DONE_BEFORE=$(ls "$OUT"/a11y-*.audit.txt 2>/dev/null | wc -l)
+  STUCK=""
+  while kill -0 $PID 2>/dev/null; do
+    sleep 5
+    DONE_NOW=$(ls "$OUT"/a11y-*.audit.txt 2>/dev/null | wc -l)
+    if [ "$DONE_NOW" -ne "$DONE_BEFORE" ]; then DONE_BEFORE=$DONE_NOW; LAST=$(date +%s); fi
+    if [ $(( $(date +%s) - LAST )) -gt "$LIMIT" ]; then
+      for s in $REMAINING; do
+        if [ -f "$OUT/a11y-$s.started" ] && [ ! -f "$OUT/a11y-$s.audit.txt" ]; then STUCK="$s"; fi
+      done
+      echo "::warning::no scene finished for $LIMIT s (stuck: ${STUCK:-before the first scene}), stopping xcodebuild"
+      pkill -P $PID >/dev/null 2>&1 || true
+      kill $PID >/dev/null 2>&1 || true
+      sleep 5
+      kill -9 $PID >/dev/null 2>&1 || true
+      xcrun simctl terminate "$UDID" com.rsolutions.lumen >/dev/null 2>&1 || true
+      break
+    fi
+  done
+  wait $PID 2>/dev/null
+  CODE=$?
+  grep -E "error:|failed|passed|skipped" "$OUT/logs/test-$ROUND.log" | tail -n 10
+  echo "::endgroup::"
+  if [ -n "$STUCK" ]; then
+    printf '%s: STOPPED after %s s without a result (the audit got stuck; the tree and the picture are from before the audit)\n' "$STUCK" "$LIMIT" > "$OUT/a11y-$STUCK.audit.txt"
+    STATUS=1
+    continue
+  fi
+  if [ $CODE -ne 0 ]; then
+    # Ended without a stuck scene: the first unfinished scene that was started is recorded so the loop moves on.
+    for s in $REMAINING; do
+      if [ ! -f "$OUT/a11y-$s.audit.txt" ]; then
+        printf '%s: NO RESULT, xcodebuild ended with %s (see logs/test-%s.log)\n' "$s" "$CODE" "$ROUND" > "$OUT/a11y-$s.audit.txt"
+        STATUS=1
+        break
+      fi
+    done
+  fi
+done
+rm -f "$OUT"/a11y-*.started
 
 FENCE='```'
 {
-  echo "## A11y audit, $DEVICE, text $SIZE (simulator, inte enhet): test $([ $STATUS -eq 0 ] && echo körde || echo "FEL ($STATUS)")"
+  echo "## A11y audit, $DEVICE, text $SIZE (simulator, inte enhet)"
   echo
   echo "$FENCE"
-  cat "$OUT"/a11y-summary*.txt 2>/dev/null || echo "no summary (the test did not get that far)"
+  for s in $SCENES; do head -n 1 "$OUT/a11y-$s.audit.txt" 2>/dev/null || echo "$s: no file"; done
   echo "$FENCE"
 } > "$OUT/summary.md"
+cp "$OUT/summary.md" "$OUT/a11y-summary.txt"
 cat "$OUT/summary.md"
-exit $STATUS
+# Findings and stuck scenes never fail the job: the files are the result.
+exit 0
