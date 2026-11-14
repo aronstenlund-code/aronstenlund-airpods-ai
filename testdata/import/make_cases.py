@@ -17,7 +17,7 @@ def one_line(text):
 
 # A96/K60: cases beyond Oscar's 20, agreed by Kevin and Angela.
 EXTRA = [
-    {"name": "21 rubrik med etikett (### Fråga 1: …)", "text": o58.std(o58.P, "### Fråga {i}: {q}"), "count": 6,
+    {"name": "27 rubrik med etikett (### Fråga 1: …)", "text": o58.std(o58.P, "### Fråga {i}: {q}"), "count": 6,
      "pairs": o58.P, "status": 200, "note": "Angela A96 / Kevin K60: etiketten kollas före rubrikregeln"},
 ]
 
@@ -27,7 +27,12 @@ for v in o58.variants() + EXTRA:
     for q, a in v["pairs"]:
         q = one_line(q)
         a = one_line(a)
-        items.append({"question": q if q[-1] in "?.!" else q + "?", "short": o58.first_sentence(a), "long": a})
+        short = o58.first_sentence(a)
+        rest = a[len(short):].strip()
+        if short[-1] not in ".!?":
+            short += "."  # both readers end the short answer with a full stop
+        items.append({"question": q if q[-1] in "?.!" else q + "?", "short": short,
+                      "long": short + (" " + rest if rest else "")})
     cases.append({"name": v["name"], "note": v["note"], "text": v["text"], "status": v["status"], "items": items})
 
 out = pathlib.Path(__file__).with_name("o58-cases.json")
