@@ -9,48 +9,97 @@ import Foundation
 /// answer are listed in `unreadable`.
 struct ChatGPTImport: Equatable, Sendable {
     var items: [DrillItem]
-    /// "Rad 1: Här är dina frågor!" – lines that could not be read.
+    /// "Rad 1: Här är dina frågor! – skälet" – lines that could not be read.
     var unreadable: [String]
+    /// A96: read, but worth a look ("Rad 4: Frågan saknade Fråga:.", a long answer, a question asked twice).
+    var warnings: [String] = []
 
     static let maxItems = 60
     static let maxQuestionChars = 300
-    static let maxAnswerChars = 3_000
+    /// A96 (K60): an answer is never cut. Over 3 000 characters it gets a warning, over 4 000 it is left out
+    /// (every character costs voice credits, D120).
+    static let longAnswerChars = 3_000
+    static let maxAnswerChars = 4_000
+
+    /// One question being read: its answer as paragraphs (A96: a blank line no longer ends the answer).
+    private struct Reading {
+        var line: Int
+        var question: String
+        var paragraphs: [(line: Int, text: [String])] = []
+        var answerStarted = false
+        var afterBlankLine = false
+
+        mutating func add(_ text: String, at line: Int) {
+            if paragraphs.isEmpty || afterBlankLine {
+                paragraphs.append((line, [text]))
+            } else {
+                paragraphs[paragraphs.count - 1].text.append(text)
+            }
+            answerStarted = true
+            afterBlankLine = false
+        }
+    }
 
     /// Nil when the text is not K58's format (no "Fråga:" followed by a "Svar:"): then it is material as before.
+    /// A96 (Oscar O58, Kevin K60): the same rules and the same result as `drill/import_text.ts`, checked by both
+    /// sides against `testdata/import/o58-cases.json`.
     static func read(_ text: String) -> ChatGPTImport? {
         let lines = String(text.prefix(60_000)).replacingOccurrences(of: "\r\n", with: "\n")
             .replacingOccurrences(of: "\r", with: "\n").components(separatedBy: "\n")
         var items: [DrillItem] = []
         var unreadable: [String] = []
-        var question: (line: Int, text: String)?
-        var answer: [String] = []
-        var inAnswer = false
+        var warnings: [String] = []
+        var current: Reading?
 
-        func skip(_ line: Int, _ text: String) {
-            unreadable.append("Rad \(line): \(String(text.trimmingCharacters(in: .whitespaces).prefix(120)))")
+        func skip(_ line: Int, _ text: String, _ reason: String) {
+            unreadable.append("Rad \(line): \(String(text.trimmingCharacters(in: .whitespaces).prefix(120))) – \(reason)")
         }
-        func flush() {
-            defer { question = nil; answer = []; inAnswer = false }
-            guard let q = question else { return }
-            let questionText = clean(q.text, limit: maxQuestionChars)
-            let answerText = clean(answer.joined(separator: " "), limit: maxAnswerChars)
+        func warn(_ line: Int, _ reason: String) {
+            warnings.append("Rad \(line): \(reason)")
+        }
+        func flush(atEnd: Bool = false) {
+            guard var reading = current else { return }
+            current = nil
+            // Rule 1: after the last answer, a paragraph of its own that ends in "?" or "!" is ChatGPT's sign-off
+            // ("Lycka till på provet! Vill du att jag gör fler frågor?"), not part of the answer.
+            if atEnd {
+                while reading.paragraphs.count > 1, let last = reading.paragraphs.last {
+                    let text = last.text.joined(separator: " ").trimmingCharacters(in: .whitespaces)
+                    guard text.hasSuffix("?") || text.hasSuffix("!") else { break }
+                    skip(last.line, text, "Avslutning, inte en del av svaret.")
+                    reading.paragraphs.removeLast()
+                }
+            }
+            let questionText = clean(reading.question, limit: maxQuestionChars)
+            let answerText = clean(reading.paragraphs.map { $0.text.joined(separator: " ") }.joined(separator: " "),
+                                   limit: Int.max)
             // The prompt's own example ("Fråga: <frågan>") pasted instead of ChatGPT's answer is not a question.
             if questionText.hasPrefix("<") && questionText.hasSuffix(">") || answerText.hasPrefix("<") && answerText.hasSuffix(">") {
-                skip(q.line, "Fråga: \(questionText) (exemplet ur prompten)")
+                skip(reading.line, "Fråga: \(questionText)", "Exemplet ur prompten, inte ett svar.")
                 return
             }
             guard !questionText.isEmpty, !answerText.isEmpty else {
-                skip(q.line, "Fråga: \(questionText)" + (questionText.isEmpty ? "" : " (inget svar)"))
+                skip(reading.line, "Fråga: \(questionText)", "Frågan har inget svar.")
                 return
             }
             guard items.count < maxItems else {
-                skip(q.line, "Fråga: \(questionText) (högst \(maxItems) frågor)")
+                skip(reading.line, "Fråga: \(questionText)", "Högst \(maxItems) frågor.")
                 return
+            }
+            guard answerText.count <= maxAnswerChars else {
+                skip(reading.line, "Fråga: \(questionText)", "Svaret är för långt (högst 4 000 tecken).")
+                return
+            }
+            if answerText.count > longAnswerChars {
+                warn(reading.line, "Svaret har \(answerText.count) tecken, långt att lyssna på.")
             }
             var short = firstSentence(answerText)
             let rest = String(answerText.dropFirst(short.count)).trimmingCharacters(in: .whitespaces)
             if let last = short.last, !".!?".contains(last) { short += "." }
             let asked = questionText.last.map { "?.!".contains($0) } == true ? questionText : questionText + "?"
+            if items.contains(where: { $0.question.lowercased() == asked.lowercased() }) {
+                warn(reading.line, "Frågan finns redan.")
+            }
             items.append(DrillItem(question: asked, short: short, long: DrillItem.long(rest, startingWith: short)))
         }
 
@@ -60,30 +109,69 @@ struct ChatGPTImport: Equatable, Sendable {
                 let (kind, rest) = found
                 if kind == .question {
                     flush()
-                    question = (number, rest)
-                } else if question == nil {
-                    skip(number, line)
+                    current = Reading(line: number, question: rest)
+                } else if current != nil {
+                    current?.add(rest, at: number)
                 } else {
-                    answer.append(rest)
-                    inAnswer = true
+                    skip(number, line, "Ett svar utan fråga före.")
                 }
                 continue
             }
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             if trimmed.isEmpty {
-                if inAnswer { flush() } // an empty line ends the answer; a question may wrap before its answer
+                if current?.answerStarted == true { current?.afterBlankLine = true }
                 continue
             }
-            if inAnswer {
-                answer.append(trimmed) // the answer went on over more lines
-            } else if let q = question, answer.isEmpty {
-                question = (q.line, q.text + " " + trimmed)
+            // Rule 2: a heading, a code fence or a rule is never answer text, and it ends the answer.
+            if isFormatting(trimmed) {
+                skip(number, trimmed, "Rubrik eller formatering, inte en del av svaret.")
+                if current?.answerStarted == true { flush() }
+                continue
+            }
+            // Rule 3: a question without "Fråga:" ("**1. Vad är magma?**") right before a "Svar:" line.
+            if current == nil || current?.answerStarted == true, index + 1 < lines.count,
+               label(lines[index + 1])?.0 == .answer, let question = unlabelledQuestion(trimmed) {
+                flush()
+                current = Reading(line: number, question: question)
+                warn(number, "Frågan saknade Fråga:.")
+                continue
+            }
+            if current?.answerStarted == true {
+                current?.add(trimmed, at: number) // over more lines, and over a blank line (rule 1)
+            } else if current != nil {
+                current?.question += " " + trimmed // the question wrapped before its answer
             } else {
-                skip(number, trimmed)
+                skip(number, trimmed, "Raden börjar inte med Fråga: eller Svar:.")
             }
         }
-        flush()
-        return items.isEmpty ? nil : ChatGPTImport(items: items, unreadable: unreadable)
+        flush(atEnd: true)
+        return items.isEmpty ? nil : ChatGPTImport(items: items, unreadable: unreadable, warnings: warnings)
+    }
+
+    /// "### Fråga 2", "Fråga 2", "```", "---", "***".
+    private static func isFormatting(_ line: String) -> Bool {
+        if line.hasPrefix("#") || line.hasPrefix("```") { return true }
+        let compact = line.filter { !$0.isWhitespace }
+        if compact.count >= 3, compact.allSatisfy({ "-*_=".contains($0) }) { return true }
+        let plain = line.replacingOccurrences(of: "**", with: "").replacingOccurrences(of: "__", with: "")
+            .trimmingCharacters(in: .whitespaces).lowercased()
+        for word in ["fråga", "question"] where plain.hasPrefix(word) {
+            let rest = plain.dropFirst(word.count).drop { $0 == " " }
+            guard let first = rest.first, first.isNumber else { return false }
+            let tail = rest.drop { $0.isNumber }
+            return tail.isEmpty || tail == "." || tail == ")"
+        }
+        return false
+    }
+
+    /// "**1. Vad är magma?**" → "Vad är magma?"; nil unless it ends in "?".
+    private static func unlabelledQuestion(_ line: String) -> String? {
+        var text = Substring(clean(line, limit: maxQuestionChars))
+        let digits = text.prefix { $0.isNumber }
+        if !digits.isEmpty, let after = text.dropFirst(digits.count).first, ".)".contains(after) {
+            text = text.dropFirst(digits.count + 1).drop { $0 == " " }
+        }
+        return text.hasSuffix("?") && text.count > 1 ? String(text) : nil
     }
 
     /// Cheap check while typing: the text has a "Fråga:" line and a "Svar:" line.

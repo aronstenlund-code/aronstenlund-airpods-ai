@@ -101,6 +101,9 @@ targets:
     platform: iOS
     sources:
       - path: LumenTests
+      # A96/K60: the import cases Kevin's import_text test reads too.
+      - path: testdata/import/o58-cases.json
+        buildPhase: resources
     dependencies:
       - target: Lumen
     settings:

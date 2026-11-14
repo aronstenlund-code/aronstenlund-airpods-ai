@@ -40,8 +40,56 @@ struct A93ChatGPTImportTests {
         let found = try #require(ChatGPTImport.read(text))
         #expect(found.items.map(\.question) == ["Vad är fotosyntes?", "Vad är 3.5 gånger 2?"])
         #expect(found.items[1].short == "Det är 7.")
-        #expect(found.unreadable.contains("Rad 1: Här är dina frågor!"))
-        #expect(found.unreadable.contains { $0.hasPrefix("Rad 10:") }, "an answer with no question before it")
+        #expect(found.unreadable.contains { $0.hasPrefix("Rad 1: Här är dina frågor!") })
+        // A96: a blank line no longer ends the answer, so the last "Svar:" is the answer's next paragraph.
+        #expect(found.items[1].long.hasSuffix("Ett svar utan fråga."))
+        #expect(found.unreadable.count == 1)
+    }
+
+    @Test func anAnswerWithNoQuestionBeforeItIsListed() throws {
+        let found = try #require(ChatGPTImport.read("Svar: Ett svar utan fråga.\n\nFråga: Vad är DNA?\nSvar: DNA är arvsmassan."))
+        #expect(found.items.count == 1)
+        #expect(found.unreadable.first?.hasPrefix("Rad 1:") == true)
+    }
+
+    /// A96 (Oscar O58, Kevin K60): Oscar's 20 variants give exactly the expected questions, short and long answers,
+    /// the same file Kevin's `import_text` test reads (`testdata/import/o58-cases.json`).
+    @Test func oscarsTwentyVariantsAsTheServer() throws {
+        struct Case: Decodable {
+            struct Item: Decodable, Equatable { var question: String; var short: String; var long: String }
+            var name: String
+            var text: String
+            var status: Int
+            var items: [Item]
+        }
+        let url = try #require(Bundle(for: FixtureToken.self).url(forResource: "o58-cases", withExtension: "json"))
+        let cases = try JSONDecoder().decode([Case].self, from: Data(contentsOf: url))
+        #expect(cases.count == 20)
+        for c in cases {
+            let found = ChatGPTImport.read(c.text)
+            if c.status == 422 {
+                #expect(found == nil, "\(c.name): nothing to read")
+                continue
+            }
+            let got = (found?.items ?? []).map { Case.Item(question: $0.question, short: $0.short, long: $0.long) }
+            #expect(got == c.items, "\(c.name)")
+        }
+        let byName = Dictionary(uniqueKeysWithValues: cases.map { ($0.name.prefix(2), $0.text) })
+        let unlabelled = try #require(ChatGPTImport.read(byName["14"] ?? ""))
+        #expect(unlabelled.warnings.contains { $0.hasSuffix("Frågan saknade Fråga:.") })
+        let long = try #require(ChatGPTImport.read(byName["18"] ?? ""))
+        #expect(long.warnings.contains { $0.contains("långt att lyssna på") })
+        let twice = try #require(ChatGPTImport.read(byName["19"] ?? ""))
+        #expect(twice.warnings.contains { $0.hasSuffix("Frågan finns redan.") })
+        let signOff = try #require(ChatGPTImport.read(byName["02"] ?? ""))
+        #expect(signOff.unreadable.contains { $0.contains("Avslutning") })
+    }
+
+    @Test func overFourThousandIsLeftOutNotCut() throws {
+        let long = String(repeating: "Lava blir sten. ", count: 300)
+        let found = try #require(ChatGPTImport.read("Fråga: Kort?\nSvar: Ja.\n\nFråga: Lång?\nSvar: \(long)"))
+        #expect(found.items.count == 1)
+        #expect(found.unreadable.contains { $0.contains("för långt") })
     }
 
     @Test func answerOverSeveralLines() throws {
@@ -94,3 +142,6 @@ struct T15bFindingsTests {
         #expect(!gate.evaluate("Och sen gick vi hem.").fires)
     }
 }
+
+/// A96: finds the test bundle, where `o58-cases.json` is copied (project.yml).
+private final class FixtureToken {}
