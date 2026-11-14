@@ -229,6 +229,7 @@ struct ControlCheckView: View {
         .padding(.bottom, 8)
         .frame(maxWidth: .infinity)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as `MainActionBar`
-        .background(.bar)
+        .background(.regularMaterial)
+        .overlay(alignment: .top) { Divider() } // Kelly S4
     }
 }

@@ -33,6 +33,7 @@ struct RepetitionHomeSection: View {
         }
         .navigationTitle("Prov")
         .navigationBarTitleDisplayMode(.large)
+        .toolbarBackground(.visible, for: .bottomBar) // Kelly S3: the bar does not float over the text
         .toolbar { barItems }
         .sheet(isPresented: $isCreating) {
             NewDrillView(model: model) { drill in opened = drill.id }
@@ -84,8 +85,17 @@ struct RepetitionHomeSection: View {
                 Label("Inställningar", systemImage: "gearshape")
             }
         }
-        if !typeSize.isAccessibilitySize {
-          ToolbarItemGroup(placement: .bottomBar) {
+        if typeSize.isAccessibilitySize, !model.drills.isEmpty {
+            // Kelly S3: with the accessibility sizes the bottom bar has room for Nytt prov only.
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button("Öppna länk", systemImage: "link") { askingCode = true }
+                } label: {
+                    Label("Mer", systemImage: "ellipsis.circle")
+                }
+            }
+        }
+        ToolbarItemGroup(placement: .bottomBar) {
             if model.drills.isEmpty {
                 Spacer()
                 Button(action: onMoreModes) {
@@ -105,10 +115,11 @@ struct RepetitionHomeSection: View {
                     .fontWeight(.semibold)
                 }
                 Spacer()
-                Button("Öppna länk") { askingCode = true }
-                    .accessibilityHint("Öppnar ett prov som någon har delat med dig")
+                if !typeSize.isAccessibilitySize {
+                    Button("Öppna länk") { askingCode = true }
+                        .accessibilityHint("Öppnar ett prov som någon har delat med dig")
+                }
             }
-          }
         }
     }
 
@@ -143,11 +154,6 @@ struct RepetitionHomeSection: View {
             if let lastNight {
                 Button(action: onLastNight) { Text(verbatim: "I natt: \(lastNight)") }
             }
-            if typeSize.isAccessibilitySize { // the bottom bar's button, see `barItems`
-                Button(action: onMoreModes) { Text("Fler lägen · Beta") }
-                    .accessibilityLabel("Fler lägen")
-                    .accessibilityHint("Beta. Lägen som lyssnar på vad du säger")
-            }
         }
     }
 
@@ -173,17 +179,6 @@ struct RepetitionHomeSection: View {
             if model.drills.count > 1 {
                 Section("Andra prov") {
                     ForEach(model.drills.dropFirst()) { drill in otherExam(drill) }
-                }
-            }
-
-            if typeSize.isAccessibilitySize { // the bottom bar's buttons, see `barItems`
-                Section {
-                    Button {
-                        isCreating = true
-                    } label: {
-                        Label("Nytt prov", systemImage: "plus.circle.fill")
-                    }
-                    Button("Öppna länk") { askingCode = true }
                 }
             }
 

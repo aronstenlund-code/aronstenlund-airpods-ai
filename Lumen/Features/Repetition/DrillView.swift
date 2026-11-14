@@ -336,7 +336,8 @@ struct MainActionBar: View {
         // Like the system's bars, the bar stops growing at the first accessibility size: with the largest text it
         // took half the screen and the list above it could not be read (CI 43521643151, iPhone SE).
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-        .background(.bar)
+        .background(.regularMaterial)
+        .overlay(alignment: .top) { Divider() } // Kelly S4/S5
     }
 }
 

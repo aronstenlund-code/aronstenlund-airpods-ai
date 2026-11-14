@@ -12,15 +12,72 @@ struct RepetitionPlayerView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        // The question and what happens now scroll when they are taller than the screen (the largest text cut them
-        // off, CI 43521636730); the presses and Avsluta stay at the bottom.
+        Group {
+            if typeSize.isAccessibilitySize { compact } else { regular }
+        }
+        .safeAreaInset(edge: .bottom) { bottom }
+        .background(Color(.systemBackground))
+        .contentShape(Rectangle())
+        .onTapGesture {
+            // Kelly Ke49: while paused, a tap anywhere but Avsluta goes on.
+            if session.player?.isPaused == true { session.press(.long) }
+        }
+    }
+
+    /// Kelly S2 (the largest text, iPhone SE): nothing scrolls and nothing is hidden. The question, then the one line
+    /// that says what to do (N1, or how to go on from a pause), then Avsluta. The ring is the text "6 s" on the first
+    /// row, and the three presses are not shown here (they are on the control check and in VoiceOver's actions).
+    private var compact: some View {
+        VStack(spacing: 12) {
+            if let player = session.player, let drill = session.drill {
+                header(player, drill)
+                question(player, drill, compact: true)
+                compactLine(player)
+            } else {
+                Spacer()
+                Text(verbatim: endedLine).foregroundStyle(.secondary)
+                Spacer()
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder
+    private func compactLine(_ player: RepetitionPlayer) -> some View {
+        Group {
+            if player.isPaused {
+                Text("Tryck på AirPods för att fortsätta")
+            } else {
+                switch player.phase {
+                case .thinking:
+                    if player.isFirstLap, player.lap == 0 { Text("Tryck på AirPods för svaret") } // Kelly N1
+                case .answer(_, let kind):
+                    Text(kind == .long ? "Långt svar" : "Kort svar").foregroundStyle(.secondary)
+                case .waitingForAudio:
+                    Text("Gör ljud …").foregroundStyle(.secondary)
+                case .question, .idle:
+                    EmptyView()
+                }
+            }
+        }
+        .font(.headline)
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity)
+    }
+
+    /// The question and what happens now scroll when they are taller than the screen; the presses and Avsluta stay
+    /// at the bottom.
+    private var regular: some View {
         GeometryReader { proxy in
             ScrollView {
                 VStack(spacing: 20) {
                     if let player = session.player, let drill = session.drill {
                         header(player, drill)
                         Spacer(minLength: 0)
-                        question(player, drill)
+                        question(player, drill, compact: false)
                         status(player)
                         Spacer(minLength: 0)
                     } else {
@@ -35,19 +92,12 @@ struct RepetitionPlayerView: View {
             }
             .scrollBounceBehavior(.basedOnSize)
         }
-        .safeAreaInset(edge: .bottom) { bottom }
-        .background(Color(.systemBackground))
-        .contentShape(Rectangle())
-        .onTapGesture {
-            // Kelly Ke49: while paused, a tap anywhere but Avsluta goes on.
-            if session.player?.isPaused == true { session.press(.long) }
-        }
     }
 
     /// The three presses and Avsluta, fixed at the bottom and capped like the system's bars.
     private var bottom: some View {
         VStack(spacing: 16) {
-            if let player = session.player, session.drill != nil {
+            if !typeSize.isAccessibilitySize, let player = session.player, session.drill != nil {
                 PressesRow(paused: player.isPaused, lit: lit(player))
             }
             Button {
@@ -88,8 +138,20 @@ struct RepetitionPlayerView: View {
         return VStack(spacing: 8) {
             Group {
                 if typeSize.isAccessibilitySize {
-                    Text(verbatim: place).fontWeight(.semibold).monospacedDigit()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    // Kelly S2: the thinking time as "6 s" on this row, and "Pausad" while paused.
+                    Group {
+                        if player.isPaused {
+                            Text(verbatim: place + " · Pausad")
+                        } else if case .thinking = player.phase {
+                            ThinkingSeconds(prefix: place, started: player.thinkingStarted ?? Date(),
+                                            seconds: player.thinkingSeconds)
+                        } else {
+                            Text(verbatim: place)
+                        }
+                    }
+                    .fontWeight(.semibold)
+                    .monospacedDigit()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     HStack(alignment: .firstTextBaseline) {
                         Text(verbatim: place).fontWeight(.semibold).monospacedDigit()
@@ -107,21 +169,22 @@ struct RepetitionPlayerView: View {
         .accessibilityElement(children: .combine)
     }
 
-    private func question(_ player: RepetitionPlayer, _ drill: Drill) -> some View {
+    private func question(_ player: RepetitionPlayer, _ drill: Drill, compact: Bool) -> some View {
         let item = drill.items.indices.contains(player.index) ? drill.items[player.index] : nil
         return VStack(spacing: 14) {
             Text(verbatim: item?.question ?? "")
                 .font(.largeTitle.bold())
                 .foregroundStyle(player.isPaused ? Color.secondary : Color.primary)
                 .multilineTextAlignment(.center)
-                .minimumScaleFactor(0.7)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: .infinity)
+                // Compact: the question shrinks to the room it has; otherwise it keeps its size and the screen scrolls.
+                .minimumScaleFactor(compact ? 0.4 : 0.7)
+                .fixedSize(horizontal: false, vertical: !compact)
+                .frame(maxWidth: .infinity, maxHeight: compact ? .infinity : nil)
                 // Kelly R4: no answer buttons on the screen; VoiceOver still has the three as actions.
                 .accessibilityAction(named: "Långt svar") { session.press(.long) }
                 .accessibilityAction(named: "Kort svar") { session.press(.short) }
                 .accessibilityAction(named: player.isPaused ? "Fortsätt" : "Paus") { session.press(.pauseToggle) }
-            if case .answer(_, let kind) = player.phase, let item, !player.isPaused {
+            if !compact, case .answer(_, let kind) = player.phase, let item, !player.isPaused {
                 Text(verbatim: kind == .short ? item.short : item.long)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -171,6 +234,23 @@ struct RepetitionPlayerView: View {
             case .question, .idle:
                 Color.clear.frame(height: 1)
             }
+        }
+    }
+}
+
+/// The thinking time as text ("Fråga 1 av 5 · 6 s"), for the accessibility sizes where the ring has no room.
+private struct ThinkingSeconds: View {
+    let prefix: String
+    let started: Date
+    let seconds: Double
+
+    var body: some View {
+        let prefix = self.prefix
+        let started = self.started
+        let seconds = self.seconds
+        return TimelineView(.periodic(from: started, by: 0.5)) { context in
+            let left = min(seconds, max(0, seconds - context.date.timeIntervalSince(started)))
+            Text(verbatim: "\(prefix) · \(max(1, Int(left.rounded(.up)))) s")
         }
     }
 }
