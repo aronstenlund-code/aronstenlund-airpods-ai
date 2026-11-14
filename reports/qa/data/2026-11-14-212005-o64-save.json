@@ -1,0 +1,46 @@
+[
+ {
+  "exam": "o65-fast-sv",
+  "save": 200,
+  "get": 200,
+  "n": 4,
+  "length_class": [
+   "normal",
+   "normal",
+   "normal",
+   "normal"
+  ],
+  "voice_chars": [
+   205,
+   204,
+   183,
+   124
+  ],
+  "screen_sent": 0,
+  "screen_back": 0,
+  "screen_same": 4,
+  "credits": 716,
+  "delete": 200
+ },
+ {
+  "exam": "o65-fast-en",
+  "save": 200,
+  "get": 200,
+  "n": 3,
+  "length_class": [
+   "normal",
+   "normal",
+   "normal"
+  ],
+  "voice_chars": [
+   165,
+   189,
+   139
+  ],
+  "screen_sent": 0,
+  "screen_back": 0,
+  "screen_same": 3,
+  "credits": 493,
+  "delete": 200
+ }
+]

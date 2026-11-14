@@ -1,0 +1,59 @@
+{
+ "results": [
+  {
+   "list": {
+    "id": "o65-fast-sv",
+    "summary": {
+     "subject": "Matematik"
+    }
+   },
+   "items": [
+    {
+     "question": "Hur räknar man ut hastighet med formeln v = s / t?",
+     "short": "Man delar sträckan med tiden, v = s / t.",
+     "long": "Man delar sträckan med tiden, v = s / t. 18 km / 1,5 h = 12 km/h."
+    },
+    {
+     "question": "Vad är arean av en triangel?",
+     "short": "Arean är A = b · h / 2.",
+     "long": "Arean är A = b · h / 2. Med basen 10 cm och höjden 6 cm blir det 10 · 6 / 2 = 30 cm²."
+    },
+    {
+     "question": "Vad är 3/4 i decimalform?",
+     "short": "3/4 är 0,75.",
+     "long": "3/4 är 0,75, och 1/2 är 0,5. Tryck är p = F/A."
+    },
+    {
+     "question": "Kan man svara ja/nej och och/eller?",
+     "short": "Ja, och/eller fungerar.",
+     "long": "Ja, och/eller fungerar, och svaret är ja/nej."
+    }
+   ]
+  },
+  {
+   "list": {
+    "id": "o65-fast-en",
+    "summary": {
+     "subject": "Engelska"
+    }
+   },
+   "items": [
+    {
+     "question": "What happened in 1850?",
+     "short": "Since about 1850 the temperature has risen by roughly 1.2 degrees.",
+     "long": "Since about 1850 the temperature has risen by roughly 1.2 degrees. About 25 % of the ice is gone, and 3/4 of scientists agree."
+    },
+    {
+     "question": "What is the formula for speed?",
+     "short": "Speed is v = s / t.",
+     "long": "Speed is v = s / t, so 18 km in 1.5 hours is 12 km/h, and a² + b² = c²."
+    },
+    {
+     "question": "When was the Paris Agreement?",
+     "short": "The Paris Agreement is from 2015.",
+     "long": "The Paris Agreement is from 2015 and 195 countries signed it on 12 December."
+    }
+   ]
+  }
+ ]
+}
