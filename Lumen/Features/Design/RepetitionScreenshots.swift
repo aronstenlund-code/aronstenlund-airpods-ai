@@ -114,7 +114,12 @@ enum RepetitionDemo {
             case "repEdit": DrillItemEditor(model: model, drill: drill, itemID: drill.items[0].id)
             case "repHelp": HelpChatView(model: model)
             case "repHelpAnswer": HelpChatView(model: model, suggestion: "Hur fungerar trycken?", askNow: true, onOpen: { _ in })
-            case "repHelpTry": HelpTryView(model: model) {}
+            case "repHelpTry":
+                // Kelly H1: as in the app, pushed in the help sheet's stack (title and back button).
+                NavigationStack(path: .constant(["try"])) {
+                    HelpChatView(model: model)
+                        .navigationDestination(for: String.self) { _ in HelpTryView(model: model) {} }
+                }
             case "repPublish": PublishSheet(model: model, drill: drill)
             case "repSchools", "repSchoolsEmpty": NavigationStack { SchoolExamsView(model: model) }
             case "repPublication": PublicationView(model: model, publication: DemoPublishing.results[0])

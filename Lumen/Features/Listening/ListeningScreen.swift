@@ -461,6 +461,7 @@ struct ModeSwitchSheet: View {
                                     // Kelly S1 / Ke53 point 11: BETA is said once in the footnote, not on every row
                                     // (in the largest text the badge broke the names: "Stan/dardl/äge").
                                     Text(mode.shortName).font(LumenFont.text(17, .semibold))
+                                        .lineLimit(1).minimumScaleFactor(0.7) // Kelly S1b: never "Standard / läge"
                                     Text(mode == .prov ? "Förhör med rösten" : mode.tagline) // Kelly N4
                                         .font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
                                 }
@@ -488,7 +489,7 @@ struct ModeSwitchSheet: View {
                                     .foregroundStyle(LumenColor.muted)
                                     .frame(width: 44, height: 44)
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text("Sov").font(LumenFont.text(17, .semibold))
+                                    Text("Sov").font(LumenFont.text(17, .semibold)).lineLimit(1).minimumScaleFactor(0.7)
                                     Text("Prat i sömnen och snarkning, bara på telefonen").font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
                                 }
                                 Spacer()
