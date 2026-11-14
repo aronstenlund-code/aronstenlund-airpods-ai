@@ -91,6 +91,8 @@ struct ControlCheckView: View {
         // SYSTEM §0.6: haptics only when something really happened: a press arrived.
         .sensoryFeedback(.success, trigger: check.passed.count) { old, new in new > old }
         .onAppear { if beginsOnAppear { check.begin(sound: sound) } }
+        // A95: the instruction changes by itself when a press arrives; VoiceOver says the new one.
+        .onChange(of: title) { _, now in AccessibilityNotification.Announcement(now).post() }
         .onDisappear { check.end() }
     }
 
@@ -171,6 +173,7 @@ struct ControlCheckView: View {
             }
             .font(.title3)
             .frame(width: 28)
+            .accessibilityHidden(true) // A95: the state is read as words ("Kom fram", "Väntar på ditt tryck")
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: text)
                 if let result = outcome(step) {
@@ -184,6 +187,7 @@ struct ControlCheckView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .accessibilityElement(children: .combine)
+        .accessibilityValue(check.step == step ? "Väntar på ditt tryck" : "")
     }
 
     /// Kelly B4: "Kom inte fram" and "Hoppades över" only once the test is done; "Kom fram" as soon as it did.
@@ -203,9 +207,11 @@ struct ControlCheckView: View {
                 check.end()
                 onStart()
             } label: {
-                Text(verbatim: check.isDone && !check.allWork ? "Starta ändå" : "Starta prov")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
+                FilledButtonLabel { // A95
+                    Text(verbatim: check.isDone && !check.allWork ? "Starta ändå" : "Starta prov")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                }
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)

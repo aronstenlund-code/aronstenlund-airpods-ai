@@ -104,7 +104,7 @@ struct DrillView: View {
         } else {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 if isSharing {
-                    ProgressView()
+                    ProgressView().accessibilityLabel("Gör en länk")
                 } else {
                     Button {
                         shareTapped(drill)
@@ -160,6 +160,7 @@ struct DrillView: View {
                         HStack(alignment: .firstTextBaseline, spacing: 12) {
                             // In a button's label `.primary` is the tint: the rows are the label colour.
                             Text(verbatim: "\(number + 1)").monospacedDigit().foregroundStyle(Color.secondary)
+                                .accessibilityLabel("Fråga \(number + 1)") // A95: not a bare number
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(verbatim: item.question).fontWeight(.semibold).foregroundStyle(Color.primary)
                                 Text(verbatim: item.short).font(.subheadline).foregroundStyle(Color.secondary).lineLimit(1)
@@ -306,6 +307,22 @@ struct WrappingTitleRow: View {
 
 /// A87 (D160, SYSTEM §0.1): the screen's one filled button, fixed at the bottom (`.safeAreaInset(edge: .bottom)`) so
 /// the next step shows without scrolling, with at most one line under it.
+/// A95: the label of a filled (`.borderedProminent`) button. In light mode the accent is dark and the label white
+/// (7.6:1). In dark mode the accent is light (#7F9BFF) and the system's white label on it is 2.6:1, so the label is
+/// `LumenColor.onBlue` (dark, 6.9:1). A disabled button keeps the system's grey label.
+struct FilledButtonLabel<Content: View>: View {
+    @Environment(\.isEnabled) private var isEnabled
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        if isEnabled {
+            content.foregroundStyle(LumenColor.onBlue)
+        } else {
+            content
+        }
+    }
+}
+
 struct MainActionBar: View {
     let title: String
     var systemImage: String?
@@ -317,19 +334,22 @@ struct MainActionBar: View {
     var body: some View {
         VStack(spacing: 8) {
             Button(action: action) {
-                HStack(spacing: 8) {
-                    if isBusy {
-                        ProgressView()
-                    } else if let systemImage {
-                        Image(systemName: systemImage)
+                FilledButtonLabel {
+                    HStack(spacing: 8) {
+                        // A95: the symbol and the spinner only repeat the title; VoiceOver reads the title alone.
+                        if isBusy {
+                            ProgressView().accessibilityHidden(true)
+                        } else if let systemImage {
+                            Image(systemName: systemImage).accessibilityHidden(true)
+                        }
+                        Text(verbatim: title)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.7)
+                            .multilineTextAlignment(.center)
                     }
-                    Text(verbatim: title)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.7)
-                        .multilineTextAlignment(.center)
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
                 }
-                .font(.headline)
-                .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)

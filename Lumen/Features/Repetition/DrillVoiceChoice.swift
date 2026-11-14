@@ -16,11 +16,14 @@ struct DrillVoiceChoice: View {
                         HStack {
                             Text("Röst \(v)").foregroundStyle(.primary)
                             Spacer()
-                            if voice == v { Image(systemName: "checkmark").foregroundStyle(.tint) }
+                            if voice == v {
+                                Image(systemName: "checkmark").foregroundStyle(.tint).accessibilityHidden(true)
+                            }
                         }
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
+                    .accessibilityAddTraits(voice == v ? .isSelected : []) // A95: "vald"
                     Button { toggle(v) } label: {
                         // A87: the same ▶ as the exams on Start.
                         Image(systemName: playing == v ? "stop.circle.fill" : "play.circle.fill")

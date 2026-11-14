@@ -174,6 +174,7 @@ struct SchoolPicker: View {
                             }
                         }
                         .accessibilityLabel([school.name, school.locality].compactMap { $0 }.joined(separator: ", "))
+                        .accessibilityAddTraits(school == selected ? .isSelected : []) // A95
                     }
                 } footer: {
                     Text("Hittar du inte skolan? Sök på orten.")
@@ -370,7 +371,7 @@ struct PublicationView: View {
             List {
                 Section {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(publication.title).font(.title2.bold())
+                        Text(publication.title).font(.title2.bold()).accessibilityAddTraits(.isHeader) // A95
                         Text("\(publication.subject) · \(publication.examDate.map { DrillPublishing.shortDate($0) } ?? publication.exam_date) · \(publication.school.name)")
                             .foregroundStyle(.secondary)
                         Text(([DrillText.questions(publication.items)] + [publication.display_name].compactMap { $0 }).joined(separator: " · "))
@@ -464,9 +465,12 @@ struct ReportSheet: View {
                             HStack {
                                 Text(r.label).foregroundStyle(Color.primary)
                                 Spacer()
-                                if reason == r { Image(systemName: "checkmark").foregroundStyle(.tint) }
+                                if reason == r {
+                                    Image(systemName: "checkmark").foregroundStyle(.tint).accessibilityHidden(true)
+                                }
                             }
                         }
+                        .accessibilityAddTraits(reason == r ? .isSelected : []) // A95: "vald", not "bock"
                     }
                 }
                 if let problem { Section { Text(problem).foregroundStyle(.secondary) } }
@@ -513,7 +517,12 @@ struct PublishedRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Label("Publicerat", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
+            // A95: green text on white is 2.2:1; the mark is green, the word is the text colour.
+            Label {
+                Text("Publicerat")
+            } icon: {
+                Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+            }
             Text(DrillPublishing.line(publication)).font(.subheadline).foregroundStyle(.secondary)
             HStack(spacing: 20) {
                 Button("Ändra") { editing = true }

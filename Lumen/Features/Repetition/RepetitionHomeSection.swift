@@ -115,7 +115,7 @@ struct RepetitionHomeSection: View {
                     isCreating = true
                 } label: {
                     HStack(spacing: 6) {
-                        Image(systemName: "plus.circle.fill")
+                        Image(systemName: "plus.circle.fill").accessibilityHidden(true) // A95
                         Text("Nytt prov")
                     }
                     .fontWeight(.semibold)
@@ -156,7 +156,7 @@ struct RepetitionHomeSection: View {
             Button {
                 isCreating = true
             } label: {
-                Text("Nytt prov").font(.headline).frame(minWidth: 200)
+                FilledButtonLabel { Text("Nytt prov").font(.headline).frame(minWidth: 200) } // A95
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
@@ -228,6 +228,7 @@ struct RepetitionHomeSection: View {
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
             }
+            .accessibilityElement(children: .combine) // A95: "Nästa prov, Biologiprovet, Du var på fråga 3 av 5"
             if let saved {
                 ProgressView(value: Double(saved), total: Double(max(drill.items.count, 1)))
                     .accessibilityHidden(true)
@@ -235,15 +236,17 @@ struct RepetitionHomeSection: View {
             Button {
                 start(drill)
             } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "play.fill")
-                    Text(saved == nil ? "Starta prov" : "Fortsätt")
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.6)
-                        .multilineTextAlignment(.center)
+                FilledButtonLabel { // A95
+                    HStack(spacing: 8) {
+                        Image(systemName: "play.fill").accessibilityHidden(true)
+                        Text(saved == nil ? "Starta prov" : "Fortsätt")
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.6)
+                            .multilineTextAlignment(.center)
+                    }
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
                 }
-                .font(.headline)
-                .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)

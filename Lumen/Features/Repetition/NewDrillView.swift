@@ -129,6 +129,12 @@ struct NewDrillView: View {
         .onChange(of: photoItems) { _, items in
             Task { await addPhotos(items) }
         }
+        // A95: the screen changes by itself (Läser ditt material → Stämmer det här?), and a problem appears at the
+        // top of the form: VoiceOver is told.
+        .onChange(of: stage) { AccessibilityNotification.ScreenChanged().post() }
+        .onChange(of: problem) { _, now in
+            if let now { AccessibilityNotification.Announcement(now).post() }
+        }
     }
 
     @ViewBuilder
@@ -354,6 +360,7 @@ struct NewDrillView: View {
                         if let image = UIImage(data: pages[i]) {
                             Image(uiImage: image).resizable().scaledToFill()
                                 .frame(width: 64, height: 84).clipShape(RoundedRectangle(cornerRadius: 8))
+                                .accessibilityLabel("Sida \(i + 1)") // A95
                         }
                         Button { pages.remove(at: i) } label: {
                             Image(systemName: "xmark.circle.fill").font(.title3)
@@ -365,7 +372,6 @@ struct NewDrillView: View {
                 }
             }
         }
-        .accessibilityLabel("\(pages.count) sidor")
     }
 
     private func added(_ title: String, _ detail: String, remove: @escaping () -> Void) -> some View {
@@ -385,6 +391,7 @@ struct NewDrillView: View {
         NavigationStack {
             TextEditor(text: $pasted)
                 .padding(.horizontal, 12)
+                .accessibilityLabel("Text") // A95: the editor had no name
                 .navigationTitle("Skriv text")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -462,6 +469,7 @@ struct NewDrillView: View {
                         }
                         .font(.title3)
                         .frame(width: 28)
+                        .accessibilityHidden(true) // A95: "klart" and "pågår" are the row's value
                         Text(verbatim: Self.steps[i])
                             .foregroundStyle(i <= stepsDone ? Color.primary : Color.secondary)
                     }

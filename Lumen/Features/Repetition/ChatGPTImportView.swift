@@ -62,6 +62,11 @@ struct ChatGPTImportView: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Avbryt") { dismiss() } }
             }
         }
+        // A95: what a paste led to is said, not only shown.
+        .onChange(of: stage) { AccessibilityNotification.ScreenChanged().post() }
+        .onChange(of: note) { _, now in
+            if let now { AccessibilityNotification.Announcement(now).post() }
+        }
     }
 
     // MARK: The three steps
@@ -123,7 +128,8 @@ struct ChatGPTImportView: View {
     @ViewBuilder
     private func stepButton(_ title: String, prominent: Bool, action: @escaping () -> Void) -> some View {
         if prominent {
-            Button(title, action: action).buttonStyle(.borderedProminent).buttonBorderShape(.capsule)
+            Button(action: action) { FilledButtonLabel { Text(verbatim: title) } } // A95
+                .buttonStyle(.borderedProminent).buttonBorderShape(.capsule)
         } else {
             Button(title, action: action).buttonStyle(.bordered).buttonBorderShape(.capsule)
         }
@@ -137,8 +143,13 @@ struct ChatGPTImportView: View {
             Task { @MainActor in pasted(text) }
         }
         .buttonBorderShape(.capsule)
-        .tint(copied ? nil : Color(.systemGray))
+        .tint(copied ? Self.pasteBlue : Self.pasteGrey)
     }
+
+    /// A95: the system's paste button always has a white label. The accent in dark mode (#7F9BFF) is too light for
+    /// it (2.6:1), so the button has the light mode's accent in both (7.6:1), and a grey that carries white (5.7:1).
+    private static let pasteBlue = Color(red: 0x23 / 255, green: 0x46 / 255, blue: 0xC8 / 255)
+    private static let pasteGrey = Color(white: 0.42)
 
     private func copyPrompt() {
         UIPasteboard.general.string = model.chatGPTPrompt(title: title, grade: grade, questions: questions, drill: drill)
@@ -271,6 +282,7 @@ struct ChatGPTImportView: View {
                         Task { @MainActor in pasted(text) }
                     }
                     .buttonBorderShape(.capsule)
+                    .tint(Self.pasteBlue)
                     .padding(.top, 6)
                 }
                 .fixedSize(horizontal: false, vertical: true)

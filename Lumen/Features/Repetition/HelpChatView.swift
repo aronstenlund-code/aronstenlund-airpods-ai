@@ -78,7 +78,7 @@ struct HelpChatView: View {
                     showsTry = true
                 } label: {
                     HStack(spacing: 12) {
-                        Image(systemName: "text.badge.plus")
+                        Image(systemName: "text.badge.plus").accessibilityHidden(true) // A95
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Prova på en kort text").foregroundStyle(Color.primary)
                             Text("Earmind gör 3 frågor med svar. Räknas mot dina frågor.")
@@ -126,7 +126,7 @@ struct HelpChatView: View {
 
         VStack(alignment: .leading, spacing: 8) {
             if let answer = message.answer {
-                Text(verbatim: answer.text)
+                Text(verbatim: answer.text).accessibilityLabel("Earmind: \(answer.text)") // A95: who says it
                 if let hint = answer.hint, !hint.isEmpty {
                     Text(verbatim: hint)
                 }
@@ -141,7 +141,7 @@ struct HelpChatView: View {
                 Text(verbatim: problem)
                 Button("Försök igen") { retry(message) }
             } else {
-                ProgressView()
+                ProgressView().accessibilityLabel("Earmind skriver")
             }
         }
         .padding(.horizontal, 14)
@@ -196,8 +196,10 @@ struct HelpChatView: View {
             do throws(HelpError) {
                 let answer = try await help.answer(text, history: history)
                 update(message.id) { $0.answer = answer }
+                AccessibilityNotification.Announcement(answer.text).post() // A95: the answer is read when it comes
             } catch {
                 update(message.id) { $0.problem = error.userMessage }
+                AccessibilityNotification.Announcement(error.userMessage).post()
             }
             isAsking = false
         }

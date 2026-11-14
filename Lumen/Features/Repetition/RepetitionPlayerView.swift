@@ -180,6 +180,7 @@ struct RepetitionPlayerView: View {
                 .minimumScaleFactor(compact ? 0.4 : 0.7)
                 .fixedSize(horizontal: false, vertical: !compact)
                 .frame(maxWidth: .infinity, maxHeight: compact ? .infinity : nil)
+                .accessibilityAddTraits(.isHeader) // A95
                 // Kelly R4: no answer buttons on the screen; VoiceOver still has the three as actions.
                 .accessibilityAction(named: "Långt svar") { session.press(.long) }
                 .accessibilityAction(named: "Kort svar") { session.press(.short) }
@@ -198,6 +199,7 @@ struct RepetitionPlayerView: View {
         if player.isPaused {
             VStack(spacing: 8) {
                 Image(systemName: "pause.circle.fill").font(.system(size: 56)).foregroundStyle(.secondary)
+                    .accessibilityHidden(true) // A95: "Pausad" is the next line
                 Text("Pausad").font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
                 Text("Tryck på AirPods för att fortsätta")
                     .font(.title3.bold())
@@ -231,6 +233,7 @@ struct RepetitionPlayerView: View {
                     Text("Gör ljud …")
                 }
                 .foregroundStyle(.secondary)
+                .accessibilityElement(children: .combine)
             case .question, .idle:
                 Color.clear.frame(height: 1)
             }
@@ -279,7 +282,8 @@ private struct ThinkingRing: View {
             .frame(width: 88, height: 88)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Tänk")
+        .accessibilityLabel("Betänketid") // A95: the line under it says "Tänk" or what to press
+        .accessibilityAddTraits(.updatesFrequently)
     }
 }
 

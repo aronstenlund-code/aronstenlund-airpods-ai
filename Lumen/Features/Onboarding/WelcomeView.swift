@@ -80,9 +80,11 @@ struct WelcomeView: View {
                 .padding(.horizontal, 16)
                 .frame(minHeight: 44)
             Button(action: onContinue) {
-                Text("Fortsätt")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
+                FilledButtonLabel { // A95: dark label on the light accent in dark mode
+                    Text("Fortsätt")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                }
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
