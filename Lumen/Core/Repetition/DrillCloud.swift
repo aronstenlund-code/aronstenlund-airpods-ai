@@ -24,6 +24,8 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var duration_ms: Int?
         /// D145: the long file up to here is the short answer.
         var short_end_ms: Int?
+        /// K62: why a file failed (the voice service's credits ran out: `audio_unavailable`).
+        var error: String? = nil
 
         var isDone: Bool { status == "done" && url != nil }
         var isFailed: Bool { status == "failed" }
@@ -378,6 +380,18 @@ final class CloudDrillAudio: DrillAudioProviding {
 
     func problem(for drill: Drill) -> String? { problems[drill.id] }
 
+    /// K62 (Kelly): the voice service cannot make sound now (its credits ran out), said instead of a counter that
+    /// never moves.
+    static let unavailableLine = "Ljudet kan inte göras just nu. Försök igen om en stund."
+    /// The codes that mean the sound cannot be made now (K62; the app accepts these until Kevin's code is final).
+    static let unavailableCodes: Set<String> = ["audio_unavailable", "tts_unavailable", "voice_unavailable",
+                                                "tts_quota_exceeded", "voice_quota_exceeded"]
+
+    static func isUnavailable(_ code: String?) -> Bool {
+        guard let code else { return false }
+        return unavailableCodes.contains(code)
+    }
+
     /// Sends what changed, then follows the server's queue and downloads every done file. Safe to call again.
     func prepare(_ drill: Drill) async {
         guard !preparing.contains(drill.id) else { return }
@@ -401,7 +415,9 @@ final class CloudDrillAudio: DrillAudioProviding {
                 if case .refused(_, let code, _) = error, code == "quota_exceeded" {
                     quotaExceeded.insert(drill.id) // A84: the way to others' exams is shown
                 }
-                if case .refused(_, let code, _) = error, code == "rate_limited" {
+                if case .refused(let status, let code, _) = error, Self.isUnavailable(code) || status == 503 {
+                    problems[drill.id] = Self.unavailableLine // K62
+                } else if case .refused(_, let code, _) = error, code == "rate_limited" {
                     // Ke50 §13: K46's daily limit for new sound.
                     problems[drill.id] = "Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu."
                 } else {
@@ -436,7 +452,10 @@ final class CloudDrillAudio: DrillAudioProviding {
             if view.audio.done + (view.audio.failed ?? 0) >= view.audio.total, view.audio.done == p.ready {
                 // Nothing more will come: some files failed on the server; the next open asks again.
                 let failed = max(1, (p.total - p.ready + 1) / 2)
-                problems[drill.id] = "Ljudet för \(DrillText.questions(failed)) kunde inte göras. Earmind försöker igen av sig själv."
+                let files = view.items.flatMap { [$0.audio.question, $0.audio.long] }
+                problems[drill.id] = files.contains { $0.isFailed && Self.isUnavailable($0.error) }
+                    ? Self.unavailableLine // K62: the voice service is out, not this exam
+                    : "Ljudet för \(DrillText.questions(failed)) kunde inte göras. Earmind försöker igen av sig själv."
                 return
             }
             polls += 1

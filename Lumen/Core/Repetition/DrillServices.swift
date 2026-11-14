@@ -456,7 +456,10 @@ final class DeviceVoiceDrillAudio: DrillAudioProviding {
         return files.allSatisfy({ FileManager.default.fileExists(atPath: $0.path) }) ? track : nil
     }
 
-    func problem(for drill: Drill) -> String? { nil }
+    func problem(for drill: Drill) -> String? { stagedProblems[drill.id] }
+
+    /// A100 scenes: "Ljudet kan inte göras just nu" without a server.
+    var stagedProblems: [UUID: String] = [:]
 
     func cue(for drill: Drill) -> URL? { nil } // the mock has no fixed line
 

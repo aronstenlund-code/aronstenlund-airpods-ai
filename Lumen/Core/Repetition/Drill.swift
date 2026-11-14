@@ -41,12 +41,21 @@ enum DrillLengthClass: String, Codable, Sendable {
     case longer
     case tooLong = "too_long"
 
-    /// The quiet line on a question that is not normal (Kelly's words when Ke gives them); nil for a normal one.
+    /// Kelly (A99): the quiet line on the question's row; nil for a normal one.
     var label: String? {
         switch self {
         case .normal: nil
-        case .longer: "Lite längre"
-        case .tooLong: "För lång"
+        case .longer: "Lite längre än vanligt"
+        case .tooLong: "Mycket lång"
+        }
+    }
+
+    /// Kelly (A99): the editor's footer under the answer; nil for a normal one.
+    var editorNote: String? {
+        switch self {
+        case .normal: nil
+        case .longer: "Frågan och svaret är lite längre än vanligt."
+        case .tooLong: "Frågan och svaret är mycket långa. Korta svaret om du vill."
         }
     }
 }

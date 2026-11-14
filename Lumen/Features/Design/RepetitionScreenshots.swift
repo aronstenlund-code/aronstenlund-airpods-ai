@@ -16,7 +16,9 @@ enum RepetitionDemo {
                                       // A94 (Kelly Ke55): the first start
                                       "fsWelcome", "fsReadMore", "fsNewDrill",
                                       // A93 (Kelly Ke58): Gör med ChatGPT
-                                      "gptSteps", "gptFound", "gptWrong"]
+                                      "gptSteps", "gptFound", "gptWrong",
+                                      // A100: Fler lägen only after the first exam; the sound cannot be made (K62)
+                                      "repHomeNew", "repHomeStarted", "repSoundProblem", "repHomeSoundProblem"]
 
     /// A93: ChatGPT's answer for the found screen, 20 questions and one line that cannot be read.
     static let pastedAnswer: String = {
@@ -73,6 +75,15 @@ enum RepetitionDemo {
         // The newest is Start's "Nästa prov": Historia first, so Biologiprovet is on the card.
         model.store.save(history)
         model.store.save(drill)
+        // A100: Fler lägen shows only after the first exam was started (the control check).
+        if name == "repHomeNew" { UserDefaults.standard.set(false, forKey: "repetition.controlsChecked") }
+        if name == "repHomeStarted" || name == "repHomeSoundProblem" {
+            UserDefaults.standard.set(true, forKey: "repetition.controlsChecked")
+        }
+        if name == "repSoundProblem" || name == "repHomeSoundProblem", let audio = model.audio as? DeviceVoiceDrillAudio {
+            audio.stagedProblems[history.id] = CloudDrillAudio.unavailableLine
+            audio.stagedProblems[drill.id] = name == "repHomeSoundProblem" ? CloudDrillAudio.unavailableLine : nil
+        }
         // Biologiprovet's sound is ready (silent files). Historiaprovet's is not (Kelly K4: "Delas när ljudet är
         // klart (4 av 6)"): its first question has all its files, the second only its question.
         if let audio = model.audio as? DeviceVoiceDrillAudio {
@@ -122,7 +133,9 @@ enum RepetitionDemo {
     static func view(_ name: String, listening: ListeningModel) -> some View {
         if let model = listening.repetition {
             switch name {
-            case "repHome", "repHomeEmpty": NavigationStack { HomeView(model: listening) }
+            case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem":
+                NavigationStack { HomeView(model: listening) }
+            case "repSoundProblem": NavigationStack { DrillView(model: model, drillID: history.id) }
             case "repMaterial": NewDrillView(model: model) { _ in }
             case "fsWelcome": WelcomeView {}
             case "fsReadMore": DataPrivacySheet()

@@ -40,7 +40,7 @@ import Testing
         let view = try JSONDecoder().decode(DrillCloudView.self, from: Data(json.utf8))
         let drill = Drill.from(view)
         #expect(drill.items[0].lengthClass == .longer)
-        #expect(drill.items[0].lengthClass?.label == "Lite längre")
+        #expect(drill.items[0].lengthClass?.label == "Lite längre än vanligt")
         #expect(drill.items[1].lengthClass == nil)
         #expect(DrillLengthClass(rawValue: "too_long") == .tooLong)
         #expect(DrillLengthClass.normal.label == nil, "a normal question says nothing")
