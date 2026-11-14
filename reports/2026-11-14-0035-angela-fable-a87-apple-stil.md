@@ -163,3 +163,5 @@ visar om allt är grönt.
 5. Enhetstest: haptiken på kontrollskärmen, delningsbladet, bottenraden med tangentbordet uppe, uppspelningen i
    största text, och att uppspelningen öppnas direkt efter kontrollskärmen från Hem.
 6. Kellys Ke55 (första starten) är inte tilldelad.
+
+**2026-11-14 03:38: iOS build 43543518435 (662d863) är grönt**, med `Lumen-unsigned` uppladdad. Det innehåller allt i den här rapporten, också ab5f6de och 7e9b749 och Angela Schrutes H1 och S1b. Verifierat i CI, inte på enhet.
