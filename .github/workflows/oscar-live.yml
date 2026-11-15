@@ -15,13 +15,14 @@ on:
         options:
           - o66_nightly.py
           - o67_reading.py
+          - o68_voice.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false
         default: ""
 
 permissions:
-  contents: read
+  contents: write  # only the O68 step pushes its test data (no user data) to the branch oscar/qa-data
 
 concurrency:
   group: oscar-live
@@ -55,6 +56,20 @@ jobs:
             if ! grep -qx "$f" <<< "$before"; then echo "--- $f ($(wc -c < "reports/qa/data/$f") bytes)"; fi
           done
           exit $rc
+      - name: O68 analysis (server's own voiceText via esbuild) and data to oscar/qa-data
+        if: always() && inputs.script == 'o68_voice.py'
+        run: |
+          f=$(ls -t reports/qa/data/*-o68-items.json | head -1)
+          printf 'export { voiceText, longVoice } from "%s/backend/supabase/functions/drill/handler.ts";\nexport { examLanguage } from "%s/backend/supabase/functions/exam/drill.ts";\n' "$PWD" "$PWD" > /tmp/o68entry.ts
+          npx --yes esbuild@0.24.0 /tmp/o68entry.ts --bundle --format=esm --platform=node --external:'npm:*' --external:'jsr:*' --outfile=/tmp/o68voice.mjs --log-level=warning
+          node scripts/qa/o68_analyze.mjs /tmp/o68voice.mjs "$f"
+          git config user.name "oscar-qa-bot"
+          git config user.email "oscar-qa-bot@users.noreply.github.com"
+          mkdir -p /tmp/qa && cp reports/qa/data/*-o68-* /tmp/qa/
+          git fetch origin oscar/qa-data && git checkout -B oscar/qa-data origin/oscar/qa-data || git checkout --orphan oscar/qa-data
+          git rm -rq --cached . >/dev/null 2>&1 || true
+          mkdir -p o68 && cp /tmp/qa/* o68/
+          git add o68 && git commit -qm "O68 data $(basename "$f")" && git push -q origin HEAD:oscar/qa-data
       - uses: actions/upload-artifact@v4
         if: always()
         with:
