@@ -78,8 +78,13 @@ final class FullFlowTests: XCTestCase {
             section("Ta bort publiceringen och provet") { cleanUp() }
         default:
             section("Andra kontot: första starten utan prov") { firstStartLater() }
-            section("Prov från din skola") {
-                waitForFile("t24-published.txt", 1800) && findPublished()
+            // Phase b alone (workflow input phases: "b"): no phase a publishes, so the school step is skipped.
+            if env["LUMEN_T24_SOLO"] == "1" {
+                log.append("phase b alone: Prov från din skola skipped (no phase a)")
+            } else {
+                section("Prov från din skola") {
+                    waitForFile("t24-published.txt", 1800) && findPublished()
+                }
             }
             try? "done\n".write(to: out.appendingPathComponent("t24-found.txt"), atomically: true, encoding: .utf8)
             section("Läget slow (ljudet dröjer)") { soundMode("slow", title: "Långsamt prov") }
