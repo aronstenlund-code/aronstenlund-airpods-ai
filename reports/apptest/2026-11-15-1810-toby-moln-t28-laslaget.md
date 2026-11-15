@@ -49,3 +49,18 @@ Det går fort att köra om när Kevin har rättat:
 ## Om simulatorn
 Skriv text går inte att fylla i från XCUITest: fältet får inget fokus och inklistringen fastnar inte. Testet använder
 därför bilden. *Verifierat i simulatorn*, inte ett fel i appen på telefon (Aron skriver där).
+
+## Rättelse 2026-11-15 19:55: fyndet K-T28 var mitt testfel
+Alla T28-körningar skickade **527899 byte** till `/exam read`: 422-körningarna, 200-körningen och 422 i dag 18:37:18 UTC.
+Testet har hela tiden valt iOS exempelfoto med ett vattenfall, aldrig materialbilden. Den första 422 var alltså **rätt**
+svar på ett foto utan text.
+- Kevins reserv (6430d5d) gjorde att vattenfallet beskrevs i stället. Det blev hans T28b, rättat i 367eaf5, så ett
+  foto utan text ger åter 422 och räknas inte mot kvoten.
+- Kevin är meddelad.
+- Testet väljer nu rutan i rutnätet som inget exempelfoto täcker. Vår bild är inget `Image`-element (T24).
+
+Det som fungerade i 43740301853, då texten blev bildbeskrivningen på 2 meningar:
+- platsen på Start ("Du var på mening 2 av 2") efter Avsluta;
+- efter omstart utan nät finns platsen kvar, och Fortsätt läser från mening 2;
+- 1 tryck pausar;
+- i slutet stannar 3 tryck på sista meningen och 1 tryck blir Börja om (D188).
