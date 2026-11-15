@@ -50,3 +50,10 @@
 - **iOS build 43739959462 grön** (min gren, edf5d3a, med P3 och P4). *Verifierat i CI.*
 - A109 kom till main först 18:25 (37adcf4): den första pushen krockade i tavlan och kön, och Toby och Kelly fick
   beskedet för tidigt. Toby upptäckte det.
+
+## Tillägg 2026-11-15 19:20: grönt på main, Tobys T30 grön
+- **iOS build 43741552382 grön på main** (9792eba, A109 med Kellys P2–P4). *Verifierat i CI.*
+- **Tobys T30 är grön 5/5 utan fynd** (körning 43740073641, `reports/apptest/2026-11-15-1845-toby-moln-t30.md`):
+  streaken och frågan om påminnelse i simulatorn. Kelly har godkänt bilderna. *Simulatorn, inte enhet.*
+- Kvar: P1 (ett påminnelseavsnitt i Inställningar) hos Deangelo.
+
