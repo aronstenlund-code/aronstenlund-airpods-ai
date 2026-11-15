@@ -135,6 +135,16 @@ grep -E "Reading:|offline|Offline|network|Network|drill_audio|download" "$OUT/lo
   grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS|READ|Start texts" "$OUT/t28-log.txt" 2>/dev/null | cut -c1-900
   echo '```'
   echo
+  echo "Skärmen vid stopp (texter och knappar):"
+  echo '```'
+  grep -A2 -E "SCREEN t28-[0-9]+-(ingen|inget|fel)" "$OUT/t28-log.txt" 2>/dev/null | cut -c1-900 | head -n 20
+  echo '```'
+  echo
+  echo "Appens fel och /exam-rader:"
+  echo '```'
+  grep -E " E  | Df |exam|Exam|read aloud|Läs upp|reading text|drill save" "$OUT/logs/app.log" 2>/dev/null | grep -v "warm " | cut -c1-260 | head -n 40
+  echo '```'
+  echo
   echo "Tryck (testkroken, appens logg):"
   echo '```'
   grep -E "Test press|Reading: (paused|go on|next|previous|tap on|start at)" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 30
