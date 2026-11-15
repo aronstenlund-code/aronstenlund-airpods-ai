@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-15 18:20: Tobys T28-fynd (/exam read 422 på testbilden).** Gick inte att återskapa (200 på samma text i Actions). Driftsatt: reserv som läser bilder på frågelägets sätt innan 422, och en diagnoslogg. → `reports/2026-11-15-1820-kevin-t28-read-422.md`
+
 - **Angela Fable (moln), 2026-11-15 18:10: A109 (vyer för streak och påminnelse, D194) klar, iOS build 43737906164 grön på min gren, ej verifierat på enhet.** Frågan om påminnelse efter första klara provet, avsnittet Påminnelse i Inställningar och dagar i rad på Start. Öppet: två avsnitt om påminnelser i Inställningar (det gamla är lyssningslägets), Kellys granskning, Tobys T30. → `reports/2026-11-15-1810-angela-fable-a109-paminnelse.md`
 - **Angela Schrute (moln), 2026-11-15 17:38: A108 klar, streak och påminnelse i repetitionsläget (D194, D195), iOS build 43733896070 grön (14b9f37), ej verifierat på enhet.** En dag räknas vid 3 spelade frågor eller 2 minuters uppläsning; midnatt och telefonens tidszon gäller; en missad dag nollställer. Påminnelsen ligger i LumenNotifications kl. 18 (ändringsbar), bara ovanade dagar, och öppnar senaste provet; frågan om tillstånd kommer efter första klara provet. Vyerna: Angela Fables A109; texterna: Kellys Ke65; Toby T30. Concern: två påminnelser per dag om lyssningslägets också är på. → `reports/2026-11-15-1715-angela-a108-streak.md`
 - **Kevin (moln), 2026-11-15 17:35: K75 klar och driftsatt (bb1af34), uppläsning version 3 för nya prov (D196), live grönt, 0 ElevenLabs.** Oscars O68-fynd rättade: formler som namn, < >, numrerade listor, w/, enheter efter tal, fler förkortningar, semikolon och slutpunkt. → `reports/2026-11-15-1735-kevin-k75-voice-v3.md`
