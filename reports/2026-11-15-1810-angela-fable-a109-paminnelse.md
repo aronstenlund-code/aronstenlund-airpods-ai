@@ -36,7 +36,7 @@
 ## Kvar
 - Kelly: granska bilderna. Toby: T30.
 
-## Tillägg 2026-11-15 19:00: Kellys granskning (`reports/2026-11-15-1814-kelly-granskning-a109.md`)
+## Tillägg 2026-11-15 19:00: Kellys granskning (`reports/2026-11-15-1813-kelly-granskning-a109.md`)
 **Inte provat på telefon. Inga ElevenLabs-tester.** Kelly godkände A109; texterna stämmer ordagrant.
 | Fynd | Rättat | Sedd på bild |
 |---|---|---|
