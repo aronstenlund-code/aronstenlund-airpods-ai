@@ -151,6 +151,8 @@ SENT_EN = [
 
 
 def words(s):
+    # OCR-lagningen av "fotosyntcs" får bli "fotosyntes" eller "fotosyntesen" (båda rätt svenska, O67 omtest)
+    s = re.sub(r"\bfotosyntesen\b(?= den viktigaste)", "fotosyntes", s)
     return re.findall(r"[\w']+(?:[.,]\d+)?", s.lower().replace("’", "'"))
 
 
@@ -217,6 +219,7 @@ def part_text(area, lang, raw, expect, junk, sents, subject):
     check("E", f"{lang}: status kind text", (v.get("drill") or {}).get("kind") == "text", (v.get("drill") or {}).get("kind"))
     got_s = [norm(x) for it in items for x in (it.get("sentences") or [])]
     exp_s = [norm(x) for x in sents]
+    got_s = [g.replace("är fotosyntesen den", "är fotosyntes den") for g in got_s]
     wrong = [(e, g) for e, g in zip(exp_s, got_s) if e != g]
     check("B", f"{lang}: meningarna delas rätt ({len(exp_s)} väntade, {len(got_s)} fick)", got_s == exp_s,
           f"första skillnader: {wrong[:3]}" if wrong else f"längd {len(got_s)} mot {len(exp_s)}: {got_s[len(exp_s):][:2] or exp_s[len(got_s):][:2]}")
