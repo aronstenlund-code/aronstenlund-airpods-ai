@@ -113,8 +113,10 @@ kill "$WATCHER" 2>/dev/null; WATCHER=""
 net_on
 grep -E "error:|failed|passed|skipped" "$OUT/logs/offline-test.log" | tail -n 15
 kill "$LOGPID" 2>/dev/null; LOGPID=""
-xcrun xcresulttool export attachments --path "$RESULT" --output-path "$OUT" || echo "::warning::attachment export failed"
-python3 -I "$ROOT/scripts/apptest/screens_index.py" rename "$OUT"
+# (screens_index.py rename removes every folder it finds, so the pictures get a folder of their own, not $OUT/logs)
+mkdir -p "$OUT/screens"
+xcrun xcresulttool export attachments --path "$RESULT" --output-path "$OUT/screens" || echo "::warning::attachment export failed"
+python3 -I "$ROOT/scripts/apptest/screens_index.py" rename "$OUT/screens"
 echo "::endgroup::"
 
 # The app's own lines while the network was off: what the player played and any request that was tried.
@@ -124,6 +126,16 @@ grep -E "Repetition:|offline|Offline|network|Network|drill_audio|download" "$OUT
   echo
   echo '```'
   sed -n '1,/^Log:/p' "$OUT/t27-log.txt" 2>/dev/null || echo "no log"
+  echo '```'
+  echo
+  echo "Detaljer:"
+  echo '```'
+  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT" "$OUT/t27-log.txt" 2>/dev/null | cut -c1-400
+  echo '```'
+  echo
+  echo "Spelaren (appens logg, Repetition:):"
+  echo '```'
+  grep "Repetition:" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | tail -n 60
   echo '```'
   echo
   echo "Nätet (runner):"
