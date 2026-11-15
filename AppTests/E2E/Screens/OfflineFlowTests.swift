@@ -98,7 +98,9 @@ final class OfflineFlowTests: XCTestCase {
         if let allow = wait(["Tillåt klistra in", "Allow Paste"], 3) { tapElement(allow, "Tillåt klistra in") }
         guard wait(["Hittade*"], 15) != nil else { screen("chatgpt-fel", "No questions found"); return miss("Hittade n frågor not shown") }
         guard tap(["Spara frågorna"], "Spara frågorna") else { return false }
-        pause(3)
+        // Runs 43676559643, 43678562025, 43773402041: leaving 3 s after Spara frågorna gave two exams with the same name on
+        // Start, one of them only on the phone (finding to Angela Schrute). Wait as A107 does, so T27 tests the offline part.
+        pause(8)
         goToStart()
         guard waitEnabled(["Starta prov"], 240) else { screen("inget-ljud", "No Starta prov"); return miss("Starta prov not enabled in 240 s") }
         // A107 (D190, D193): the sound is made at Starta prov, and without a network an unstarted exam does not open
