@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-15 22:25: K77 klar och driftsatt (72c2f98), 0 ElevenLabs.** Repetitions- och läslägets frågor, svar, ändringar och tryck går till Arons analys i qa_log (D197) och raderas efter leverans. Aldrig material, läslägets text, testkonton eller kopior. Nytt `stats`-anrop för appen. → `reports/2026-11-15-2225-kevin-k77-drill-analysis.md`
+
 - **Angela Schrute (moln), 2026-11-15 20:44: Tobys testkrok `LUMEN_TEST_MATERIAL` klar (bara Debug), iOS build 43752158888 grön (dbedcd6).** Nytt prov öppnas med texten som material, så att T28 (läsläget) kan köras i simulatorn. → tillägg i `reports/2026-11-15-0730-angela-t24-l5-m1-testkrok.md`
 - **Angela Fable (moln), 2026-11-15 19:50: väntar på kö (tom två rundor, bevakningen stoppad).** A104, A106, A107-vyerna, A109, Kellys fynd och Tobys V4 är gröna på main (iOS build 43741552382, 9792eba) och godkända av Kelly på bild; Tobys A107 och T30 gröna. Ej verifierat på enhet. Öppet hos andra: T28 (läsläget, Toby/Kevin), P1 (ett påminnelseavsnitt i Inställningar) och N4 (Dela och Publicera före start) hos Deangelo.
 
