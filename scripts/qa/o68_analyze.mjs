@@ -10,7 +10,7 @@ const [voicePath, itemsPath] = process.argv.slice(2);
 const V = await import(new URL(voicePath, `file://${process.cwd()}/`).href);
 const data = JSON.parse(readFileSync(itemsPath, "utf8"));
 
-const ABBR = /(?<![\p{L}])(t\.ex\.?|bl\.a\.?|m\.m\.?|s\.k\.?|d\.v\.s\.?|dvs\.?|osv\.?|etc\.?|ca\.?|cirka\.(?=\s\p{Ll})|kap\.|nr\.?|jfr\.?|enl\.|fig\.|tab\.|resp\.|st\.|f\.d\.?|e\.Kr\.?|f\.Kr\.?|e\.g\.|i\.e\.|vs\.?|approx\.|p\.|pp\.|ex\.)(?![\p{L}])/giu;
+const ABBR = /(?<![\p{L}])(t\.ex\.?|bl\.a\.?|m\.m\.?|s\.k\.?|d\.v\.s\.?|dvs\.?|osv\.?|etc\.?|ca\.?|cirka\.(?=\s\p{Ll})|kap\.|nr\.?|jfr\.?|enl\.|fig\.|tab\.|resp\.|st\.|f\.d\.?|e\.Kr\.?|f\.Kr\.?|e\.g\.|i\.e\.|vs\.?|approx\.|p\.|pp\.|ex\.|ex:|milj\.|mdr\.|ggr|sthlm|gbg|ft|sec|yrs|w\/|a\.m\.|p\.m\.|kr\.?)(?![\p{L}])/giu;
 const DOT_LOWER = /(?<![\p{L}])\p{L}{1,4}\.(?=\s+\p{Ll})/gu; // "enl. boken": en punkt före liten bokstav = förkortning
 // en enhet räknas bara direkt efter ett tal (siffra eller räkneord), så variabler som "m gånger a" inte räknas
 const UNIT = /(?:\p{N}|noll|en|ett|två|tre|fyra|fem|sex|sju|åtta|nio|tio|elva|tolv|tton|tjugo|ttio|hundra|tusen|halv|miljon|miljoner)\s+(km|cm|mm|dm|kg|mg|ml|dl|cl|kWh|kW|MW|Wh|mph|kmh|m\/s|km\/h|Pa|kPa|hPa|mol|Hz|kHz|N|J|W|V|A|K|g|m|s|h|l)(?![\p{L}])/gu;
@@ -20,6 +20,8 @@ const LIST = /(^|\n)\s*([-•*–]|\d+[.)])\s|(?<![\p{L}\p{N}])[a-c1-9]\)\s|;\s/
 const DIGIT = /\p{N}/gu;
 const ACRONYM = /(?<![\p{L}])[A-ZÅÄÖ]{2,}(?![\p{L}])/gu;
 const LETTER_DIGIT = /(?<![\p{L}\p{N}])(?=[\p{L}\p{N}]*\p{L})(?=[\p{L}\p{N}]*\p{N})[\p{L}\p{N}]{2,}(?![\p{L}\p{N}])/gu;
+// en kemisk formel i det skrivna svaret (CO2, H2O, CH4): rösten säger "se o två"
+const CHEM = /(?<![\p{L}\p{N}])(?:[A-Z][a-z]?\d{0,2}){1,4}(?<=\d)(?![\p{L}\p{N}])/gu;
 const W = { abbr: 3, unit: 2, symbol: 3, paren: 2, list: 2, digit: 1, long_sentence: 2, pronounce: 2 };
 
 const sentences = (t) => t.split(/(?<=[.!?…])\s+(?=["“«(]?[\p{Lu}\p{N}])/u).filter(Boolean);
@@ -38,7 +40,7 @@ for (const it of data.items) {
     list: uniq((spoken.match(LIST) ?? []).map((x) => x.trim() || "radbrytning")),
     digit: sv ? uniq(spoken.match(/[\p{N}][\p{N},.]*/gu) ?? []) : [],
     long_sentence: sentences(spoken).filter((s) => s.split(/\s+/).length > 30).map((s) => `${s.split(/\s+/).length} ord: ${s.slice(0, 80)}…`),
-    pronounce: (() => { const ld = spoken.match(LETTER_DIGIT) ?? []; return uniq([...ld, ...(spoken.match(ACRONYM) ?? []).filter((a) => !ld.some((x) => x.includes(a)))]); })(),
+    pronounce: (() => { const ld = spoken.match(LETTER_DIGIT) ?? []; return uniq([...ld, ...(spoken.match(ACRONYM) ?? []).filter((a) => !ld.some((x) => x.includes(a))), ...(it.long.match(CHEM) ?? []).map((c) => `formel ${c}`)]); })(),
   };
   const score = Object.entries(hits).reduce((n, [k, v]) => n + W[k] * v.length, 0);
   rows.push({ eid: it.eid, subject: it.subject, lang: lang || "sv", question: it.question, long: it.long, spoken,
