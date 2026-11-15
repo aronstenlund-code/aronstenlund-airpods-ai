@@ -88,9 +88,10 @@ struct TranscriptE2ETests {
         let wake = result.cases.filter { $0.expect == "wake" }
         let nowake = result.cases.filter { $0.expect == "nowake" }
         let answered = wake.filter { !$0.answered.isEmpty }.count
-        let falseOnes = nowake.filter { !$0.verdict.hasPrefix("ok") }.count
+        let falseOnes = nowake.filter(Self.isFalse).count
+        let misheard = nowake.filter { $0.verdict == Self.misheard }.count
         let empty = result.cases.flatMap(\.failed).filter { $0.contains("empty_answer") }.count
-        print("T17c \(set): wake answered \(answered)/\(wake.count), false \(falseOnes)/\(nowake.count), empty_answer \(empty)")
+        print("T17c \(set): wake answered \(answered)/\(wake.count), false \(falseOnes)/\(nowake.count), misheard as a question \(misheard) (D184), empty_answer \(empty)")
         #expect(result.elevenLabs.isEmpty, "ElevenLabs/Scribe used: \(result.elevenLabs)")
         #expect(falseOnes <= 1, "\(set): false \(falseOnes)/50 (krav ≤ 1)")
         #expect(empty == 0, "\(set): empty_answer \(empty)")
@@ -137,10 +138,11 @@ struct TranscriptE2ETests {
         let wake = result.cases.filter { $0.expect == "wake" }
         let nowake = result.cases.filter { $0.expect == "nowake" }
         let answered = wake.filter { !$0.answered.isEmpty }.count
-        let falseOnes = nowake.filter { !$0.verdict.hasPrefix("ok") }.count
-        print("T17c \(set): wake answered \(answered)/\(wake.count), false \(falseOnes)/\(nowake.count)")
+        let falseOnes = nowake.filter(Self.isFalse).count
+        let misheard = nowake.filter { $0.verdict == Self.misheard }.count
+        print("T17c \(set): wake answered \(answered)/\(wake.count), false \(falseOnes)/\(nowake.count), misheard as a question \(misheard) (D184)")
         #expect(result.elevenLabs.isEmpty)
-        for item in result.cases where !item.verdict.hasPrefix("ok") {
+        for item in result.cases where !item.verdict.hasPrefix("ok") && item.verdict != Self.misheard {
             Issue.record("\(item.id) '\(item.text)': \(item.verdict), asked \(item.asked)")
         }
         if set == "fynd9" {
@@ -255,6 +257,25 @@ struct TranscriptE2ETests {
         return result
     }
 
+    /// D184: the verdict for a statement the speech recognition turned into a question. Not "ok", not false.
+    static let misheard = "misheard as a question (D184)"
+
+    /// D184: the transcript the app got is a question: a "?" and a question word (K68's clear question).
+    static func heardAsQuestion(_ fed: [String]) -> Bool {
+        let words: Set<String> = ["vad", "varför", "hur", "när", "var", "vem", "vilken", "vilket", "vilka", "vart",
+                                  "what", "why", "how", "when", "where", "who", "which"]
+        return fed.contains { line in
+            guard line.contains("?") else { return false }
+            let tokens = line.lowercased().split { !$0.isLetter }.map(String.init)
+            return tokens.contains { words.contains($0) }
+        }
+    }
+
+    /// False answers without the name (krav ≤ 1/50): every nowake verdict that is neither ok nor D184's misheard.
+    static func isFalse(_ item: CaseResult) -> Bool {
+        item.expect == "nowake" && !item.verdict.hasPrefix("ok") && item.verdict != misheard
+    }
+
     private static func judge(_ item: CaseResult) -> String {
         switch item.expect {
         case "wake", "pair":
@@ -271,6 +292,9 @@ struct TranscriptE2ETests {
                !item.activation.isEmpty, item.activation.allSatisfy({ $0.hasPrefix("Activation (auto)") }) {
                 return "ok (question, answered as auto)"
             }
+            // D184 (Deangelo 01:06, T26 n33 "Vad står på kartongen?", n41 "varför sur?"): when what the app got was a
+            // question, the answer follows K68 and is counted apart ("felhört som fråga"), not as a false answer.
+            if !item.answered.isEmpty, Self.heardAsQuestion(item.fed) { return Self.misheard }
             if !item.answered.isEmpty { return "answered without the name" }
             return "ok"
         }

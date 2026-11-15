@@ -19,12 +19,16 @@ for path in files:
     nowake = [c for c in cases if c["expect"] == "nowake"]
     answered = sum(1 for c in wake if c["answered"])
     unheard = sum(1 for c in wake if not c["fed"])
-    false = sum(1 for c in nowake if not c["verdict"].startswith("ok"))
+    # D184: a statement the speech recognition heard as a question is counted apart, not as false.
+    MISHEARD = "misheard as a question (D184)"
+    misheard = sum(1 for c in nowake if c["verdict"] == MISHEARD)
+    false = sum(1 for c in nowake if not c["verdict"].startswith("ok") and c["verdict"] != MISHEARD)
     empty = sum(1 for c in cases for x in c["failed"] if "empty_answer" in x)
     print(f'## {r["set"]}\n')
     print(f"- Besvarade: **{answered}/{len(wake)}** (varav {unheard} där Scribe inte hörde något i den inspelade körningen)")
     if nowake:
-        print(f"- Falska utan namnet: **{false}/{len(nowake)}**")
+        print(f"- Falska utan namnet: **{false}/{len(nowake)}** (krav ≤ 1)")
+        print(f"- Felhört som fråga (D184, räknas för sig): **{misheard}**")
     print(f"- empty_answer: **{empty}**")
     print(f'- ElevenLabs/Scribe-rader i loggen: **{len(r["elevenLabs"])}**')
     bad = [c for c in cases if not c["verdict"].startswith("ok")]
