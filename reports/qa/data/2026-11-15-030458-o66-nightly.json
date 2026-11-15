@@ -1,0 +1,731 @@
+{
+ "summary": {
+  "start": "2026-11-15T01:41:32+00:00",
+  "end": "2026-11-15T02:04:58+00:00",
+  "fast": false,
+  "checks": 93,
+  "ok": 84,
+  "known": 4,
+  "fail": 5,
+  "claude_usd": 0.089,
+  "by_area": {
+   "A": "6/8",
+   "B": "0/1",
+   "C": "0/1",
+   "D": "39/43",
+   "E": "6/6",
+   "F": "1/1",
+   "G": "5/6",
+   "H": "2/2",
+   "I": "3/3",
+   "J": "5/5",
+   "K": "12/12",
+   "L": "5/5"
+  }
+ },
+ "checks": [
+  {
+   "area": "A",
+   "check": "/help how 29/30",
+   "ok": false,
+   "known": false,
+   "detail": "2026-11-15-024157-o58-help.json"
+  },
+  {
+   "area": "A",
+   "check": "/help outside 10/10",
+   "ok": true,
+   "known": false,
+   "detail": "2026-11-15-024157-o58-help.json"
+  },
+  {
+   "area": "A",
+   "check": "/help tricky 4/4",
+   "ok": true,
+   "known": false,
+   "detail": "2026-11-15-024157-o58-help.json"
+  },
+  {
+   "area": "A",
+   "check": "/help trap_looks_like_steps = 0",
+   "ok": true,
+   "known": false,
+   "detail": "0"
+  },
+  {
+   "area": "A",
+   "check": "/help forbidden_words = 0",
+   "ok": true,
+   "known": false,
+   "detail": "0"
+  },
+  {
+   "area": "A",
+   "check": "/help over_length = 0",
+   "ok": false,
+   "known": false,
+   "detail": "1"
+  },
+  {
+   "area": "A",
+   "check": "/help errors = 0",
+   "ok": true,
+   "known": false,
+   "detail": "0"
+  },
+  {
+   "area": "A",
+   "check": "/help stavar EarMind (K63)",
+   "ok": true,
+   "known": false,
+   "detail": "0 svar med 'Earmind'"
+  },
+  {
+   "area": "B",
+   "check": "o58_import.py körde",
+   "ok": false,
+   "known": false,
+   "detail": "exit 1, ingen datafil; nto\n    return self.read(nbytes, buffer)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\rothm\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\ssl.py\", line 1138, in read\n    return self._sslobj.read(len, buffer)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\nTimeoutError: The read operation timed out\n"
+  },
+  {
+   "area": "C",
+   "check": "o55_drill_server.py körde",
+   "ok": false,
+   "known": false,
+   "detail": "exit 1, ingen datafil; llib\\request.py\", line 466, in _call_chain\n    result = func(*args)\n  File \"C:\\Users\\rothm\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\urllib\\request.py\", line 613, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 429: Too Many Requests\n"
+  },
+  {
+   "area": "D",
+   "check": "A sparar (ljudet finns redan)",
+   "ok": true,
+   "known": false,
+   "detail": "new_chars 0"
+  },
+  {
+   "area": "D",
+   "check": "schools ger träffar",
+   "ok": true,
+   "known": false,
+   "detail": "13 st, första [{'code': '56639389', 'name': 'Katedralskolan', 'locality': 'Lund'}]"
+  },
+  {
+   "area": "D",
+   "check": "schools kräver minst 2 bokstäver",
+   "ok": true,
+   "known": false,
+   "detail": "200"
+  },
+  {
+   "area": "D",
+   "check": "R12 nekas utan school",
+   "ok": true,
+   "known": false,
+   "detail": "409 ['school'] Saknas: skola"
+  },
+  {
+   "area": "D",
+   "check": "R12 nekas med tom school",
+   "ok": true,
+   "known": false,
+   "detail": "409 ['school']"
+  },
+  {
+   "area": "D",
+   "check": "R12 nekas utan subject",
+   "ok": false,
+   "known": true,
+   "detail": "200 None None"
+  },
+  {
+   "area": "D",
+   "check": "R12 nekas med tom subject",
+   "ok": false,
+   "known": true,
+   "detail": "200 None"
+  },
+  {
+   "area": "D",
+   "check": "R12 nekas utan date",
+   "ok": true,
+   "known": false,
+   "detail": "409 ['date'] Saknas: provdatum"
+  },
+  {
+   "area": "D",
+   "check": "R12 nekas med tom date",
+   "ok": true,
+   "known": false,
+   "detail": "409 ['date']"
+  },
+  {
+   "area": "D",
+   "check": "ogiltig skolkod nekas",
+   "ok": true,
+   "known": false,
+   "detail": "409 publish_incomplete"
+  },
+  {
+   "area": "D",
+   "check": "ogiltigt datum nekas",
+   "ok": true,
+   "known": false,
+   "detail": "409 publish_incomplete"
+  },
+  {
+   "area": "D",
+   "check": "R12 nekas när ljudet inte är klart",
+   "ok": false,
+   "known": true,
+   "detail": "200 None (new_chars 0)"
+  },
+  {
+   "area": "D",
+   "check": "A publicerar",
+   "ok": true,
+   "known": false,
+   "detail": "{\"id\": \"2e1e477f-8c6d-44b4-abe2-ad7bdf58d551\", \"title\": \"O56 testprov (påhittat)\", \"subject\": \"Fysik\", \"school\": {\"code\": \"56639389\", \"name\": \"Katedralskolan\", \"locality\": \"Lund\"}, \"exam_date\": \"2026-"
+  },
+  {
+   "area": "D",
+   "check": "R12 sök på skolan hittar provet inom 5 s",
+   "ok": true,
+   "known": false,
+   "detail": "0.4 s"
+  },
+  {
+   "area": "D",
+   "check": "ämnesfilter utesluter Fysik",
+   "ok": true,
+   "known": false,
+   "detail": "0 träffar"
+  },
+  {
+   "area": "D",
+   "check": "R12 inga konto-id eller kontaktfält i sökresultatet",
+   "ok": true,
+   "known": false,
+   "detail": "fält ['exam_date', 'first_audio_url', 'id', 'items', 'preview', 'school', 'subject', 'title']"
+  },
+  {
+   "area": "D",
+   "check": "display_name saknas när show_name är av",
+   "ok": true,
+   "known": false,
+   "detail": "None"
+  },
+  {
+   "area": "D",
+   "check": "display_name publiceras inte utan show_name",
+   "ok": true,
+   "known": false,
+   "detail": "None"
+  },
+  {
+   "area": "D",
+   "check": "display_name visas med show_name",
+   "ok": true,
+   "known": false,
+   "detail": "Testnamn Oscar"
+  },
+  {
+   "area": "D",
+   "check": "namnet försvinner när show_name stängs av",
+   "ok": true,
+   "known": false,
+   "detail": "None"
+  },
+  {
+   "area": "D",
+   "check": "R12 hämta = 0 tecken, eget prov med ljud",
+   "ok": true,
+   "known": false,
+   "detail": "200 1.4 s new_chars 0 {'done': 4, 'total': 4, 'failed': 0, 'chars': 998, 'est_usd': 0.08, 'credits': 0, 'credits_chars': 998, 'bytes': 326094, 'model': 'eleven_multilingual_v2'}"
+  },
+  {
+   "area": "D",
+   "check": "B:s ändring (tog bort en fråga) rör inte originalet",
+   "ok": true,
+   "known": false,
+   "detail": "2 frågor"
+  },
+  {
+   "area": "D",
+   "check": "RLS B kan inte publicera A:s prov",
+   "ok": true,
+   "known": false,
+   "detail": "404 not_found"
+  },
+  {
+   "area": "D",
+   "check": "RLS B kan inte avpublicera A:s prov",
+   "ok": true,
+   "known": false,
+   "detail": "404 not_found"
+  },
+  {
+   "area": "D",
+   "check": "moderate nekas för andra än Aron",
+   "ok": true,
+   "known": false,
+   "detail": "403 forbidden"
+  },
+  {
+   "area": "D",
+   "check": "RLS läsa drill_publications som B",
+   "ok": true,
+   "known": false,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "area": "D",
+   "check": "RLS läsa drill_publications som anonym",
+   "ok": true,
+   "known": false,
+   "detail": "401 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "area": "D",
+   "check": "RLS ändra drill_publications som B",
+   "ok": true,
+   "known": false,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "area": "D",
+   "check": "RLS radera drill_publications som B",
+   "ok": true,
+   "known": false,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "area": "D",
+   "check": "RLS skriva drill_reports som B",
+   "ok": true,
+   "known": false,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "area": "D",
+   "check": "RLS läsa drill_reports som B",
+   "ok": true,
+   "known": false,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "area": "D",
+   "check": "RLS läsa drill_reports som anonym",
+   "ok": true,
+   "known": false,
+   "detail": "401 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "area": "D",
+   "check": "RLS läsa schools som B",
+   "ok": true,
+   "known": false,
+   "detail": "403 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "area": "D",
+   "check": "RLS läsa schools som anonym",
+   "ok": true,
+   "known": false,
+   "detail": "401 {'code': '42501', 'details': None, 'hint': 'Grant the required privileges to the"
+  },
+  {
+   "area": "D",
+   "check": "RLS rpc report_publication som B nekas",
+   "ok": true,
+   "known": false,
+   "detail": "404"
+  },
+  {
+   "area": "D",
+   "check": "samma konto räknas en gång",
+   "ok": true,
+   "known": false,
+   "detail": "{'reports': 1, 'hidden': False} 200 {'reports': 1, 'hidden': False}"
+  },
+  {
+   "area": "D",
+   "check": "ogiltig rapportorsak nekas",
+   "ok": false,
+   "known": true,
+   "detail": "200"
+  },
+  {
+   "area": "D",
+   "check": "2 rapporter döljer inte",
+   "ok": true,
+   "known": false,
+   "detail": "{'reports': 2, 'hidden': False}"
+  },
+  {
+   "area": "D",
+   "check": "R12 3 rapporter döljer provet",
+   "ok": true,
+   "known": false,
+   "detail": "{'reports': 3, 'hidden': True}"
+  },
+  {
+   "area": "D",
+   "check": "dolt prov syns inte i sök",
+   "ok": true,
+   "known": false,
+   "detail": "1 träffar"
+  },
+  {
+   "area": "D",
+   "check": "dolt prov går inte att hämta",
+   "ok": true,
+   "known": false,
+   "detail": "404 not_found"
+  },
+  {
+   "area": "D",
+   "check": "A avpublicerar sitt prov",
+   "ok": true,
+   "known": false,
+   "detail": "200"
+  },
+  {
+   "area": "D",
+   "check": "o56_publish.py: ElevenLabs-tecken 0",
+   "ok": true,
+   "known": false,
+   "detail": "0"
+  },
+  {
+   "area": "E",
+   "check": "tts testkonto: falskt ljud",
+   "ok": true,
+   "known": false,
+   "detail": "200 fake=1"
+  },
+  {
+   "area": "E",
+   "check": "tts unavailable: 503 tts_unavailable",
+   "ok": true,
+   "known": false,
+   "detail": "503 tts_unavailable"
+  },
+  {
+   "area": "E",
+   "check": "stt-token testkonto: fake, ingen ws_url",
+   "ok": true,
+   "known": false,
+   "detail": "{'fake': True, 'ws_url': None, 'expires_in': 0, 'model_id': 'fake', 'language_code': 'swe', 'transcript': 'Det här är en testtranskription.', 'reason': 'D180: test accounts never use ElevenLabs'}"
+  },
+  {
+   "area": "E",
+   "check": "slow: filerna väntar efter spara",
+   "ok": true,
+   "known": false,
+   "detail": "200 {'done': 0, 'total': 4, 'failed': 0, 'chars': 598, 'est_usd': 0.05, 'credits': None, 'credits_chars': None, 'bytes': 0, 'model': 'eleven_multilingual_v2'}"
+  },
+  {
+   "area": "E",
+   "check": "slow: dela före klart ljud ger 409",
+   "ok": true,
+   "known": false,
+   "detail": "409 Delas när ljudet är klart (0 av 4)"
+  },
+  {
+   "area": "F",
+   "check": "K64: ta bort provet med väntande filer",
+   "ok": true,
+   "known": false,
+   "detail": "200"
+  },
+  {
+   "area": "E",
+   "check": "unavailable: filerna failed",
+   "ok": true,
+   "known": false,
+   "detail": "{'done': 0, 'total': 2, 'failed': 2, 'chars': 299, 'est_usd': 0.02, 'credits': None, 'credits_chars': None, 'bytes': 0, 'model': 'eleven_multilingual_v2'}"
+  },
+  {
+   "area": "G",
+   "check": "quota nytt konto: 15 kvar, suggest 15",
+   "ok": true,
+   "known": false,
+   "detail": "{'used': 0, 'limit': 15, 'left': 15, 'suggest': 15, 'per': 'month', 'resets': '2026-12-01'}"
+  },
+  {
+   "area": "G",
+   "check": "spara 13 frågor",
+   "ok": true,
+   "known": false,
+   "detail": "200 generated 13"
+  },
+  {
+   "area": "H",
+   "check": "D176: klassen följer voice_chars (800/1600)",
+   "ok": true,
+   "known": false,
+   "detail": "['normal', 'longer', 'too_long']"
+  },
+  {
+   "area": "H",
+   "check": "D176: normal, longer och too_long förekommer",
+   "ok": true,
+   "known": false,
+   "detail": "['normal', 'longer', 'too_long']"
+  },
+  {
+   "area": "G",
+   "check": "quota efter 13: 2 kvar",
+   "ok": true,
+   "known": false,
+   "detail": "{'used': 13, 'limit': 15, 'left': 2, 'suggest': 2, 'per': 'month', 'resets': '2026-12-01'}"
+  },
+  {
+   "area": "G",
+   "check": "D175: exam med 2 kvar ger högst 2 frågor",
+   "ok": true,
+   "known": false,
+   "detail": "200 2 frågor, quota {'used': 13, 'limit': 15, 'left': 2, 'per': 'month', 'resets': '2026-12-01'}"
+  },
+  {
+   "area": "G",
+   "check": "D175: spara över kvoten ger 402",
+   "ok": true,
+   "known": false,
+   "detail": "402 Du har gjort 13 av 15 frågor med ljud den här månaden. Nya frågor går att göra från den 1 december. Andras prov är grati"
+  },
+  {
+   "area": "G",
+   "check": "402-texten nämner 15 av 15 och inte 'Köp'",
+   "ok": false,
+   "known": false,
+   "detail": "Du har gjort 13 av 15 frågor med ljud den här månaden. Nya frågor går att göra från den 1 december. Andras prov är gratis."
+  },
+  {
+   "area": "I",
+   "check": "D177: try ger 3 frågor och räknar 3",
+   "ok": true,
+   "known": false,
+   "detail": "200 3 frågor, quota {'used': 3, 'limit': 15}"
+  },
+  {
+   "area": "I",
+   "check": "D177: spara try-frågorna räknas inte igen",
+   "ok": true,
+   "known": false,
+   "detail": "200 generated 0 already_counted 3"
+  },
+  {
+   "area": "I",
+   "check": "D177: kvoten fortfarande 3 använda",
+   "ok": true,
+   "known": false,
+   "detail": "{'used': 3, 'limit': 15, 'left': 12, 'suggest': 12, 'per': 'month', 'resets': '2026-12-01'}"
+  },
+  {
+   "area": "J",
+   "check": "K65: publish har preview med 4 frågor",
+   "ok": true,
+   "known": false,
+   "detail": "200 4 rader"
+  },
+  {
+   "area": "J",
+   "check": "K65: publish har first_audio_url",
+   "ok": true,
+   "known": false,
+   "detail": "https://xjczbzfkmbjdebwlccki.supabase.co/storage/v1/object/s"
+  },
+  {
+   "area": "J",
+   "check": "hitta via skolan (search)",
+   "ok": true,
+   "known": false,
+   "detail": "56639389"
+  },
+  {
+   "area": "J",
+   "check": "K65: search har preview och first_audio_url",
+   "ok": true,
+   "known": false,
+   "detail": "4 rader, länk True"
+  },
+  {
+   "area": "J",
+   "check": "K65: 'och N frågor till' = items - 4",
+   "ok": true,
+   "known": false,
+   "detail": "6"
+  },
+  {
+   "area": "K",
+   "check": "K67 fasta fall Matematik sparas",
+   "ok": true,
+   "known": false,
+   "detail": "200"
+  },
+  {
+   "area": "K",
+   "check": "K67 fasta fall Engelska sparas",
+   "ok": true,
+   "known": false,
+   "detail": "200"
+  },
+  {
+   "area": "K",
+   "check": "h4-fy-hastighet: ämne Fysik",
+   "ok": true,
+   "known": false,
+   "detail": "{'subject': 'Fysik', 'grade': 'åk 8', 'covers': 'Rörelse och hastighet, kraft och tyngdkraft på jorden och månen, friktion samt tryck och hur yta påverkar tryck.'}"
+  },
+  {
+   "area": "K",
+   "check": "h4-fy-hastighet: inga svar om 'materialet'/'the notes'",
+   "ok": true,
+   "known": false,
+   "detail": "[]"
+  },
+  {
+   "area": "K",
+   "check": "K66: svenska frågor utan siffror/formeltecken i uppläsningen",
+   "ok": true,
+   "known": false,
+   "detail": "[]"
+  },
+  {
+   "area": "K",
+   "check": "K66: visningstext finns för tal och formler",
+   "ok": true,
+   "known": false,
+   "detail": "4/6"
+  },
+  {
+   "area": "K",
+   "check": "K67: visningstexten behåller '/'",
+   "ok": true,
+   "known": false,
+   "detail": ""
+  },
+  {
+   "area": "K",
+   "check": "h4-fy-hastighet: screen sparas och kommer tillbaka",
+   "ok": true,
+   "known": false,
+   "detail": "4/4"
+  },
+  {
+   "area": "K",
+   "check": "h3-en-climate: ämne Engelska",
+   "ok": true,
+   "known": false,
+   "detail": "{'subject': 'Engelska', 'grade': 'åk 8', 'covers': 'Läsförståelse om en varmare värld: klimatförändringar, växthuseffekten, följder som smältande is och havsnivåhöjning, samt vad länder och människor kan göra åt det.'}"
+  },
+  {
+   "area": "K",
+   "check": "h3-en-climate: inga svar om 'materialet'/'the notes'",
+   "ok": true,
+   "known": false,
+   "detail": "[]"
+  },
+  {
+   "area": "K",
+   "check": "D182: engelskt prov på engelska",
+   "ok": true,
+   "known": false,
+   "detail": "[]"
+  },
+  {
+   "area": "K",
+   "check": "h3-en-climate: screen sparas och kommer tillbaka",
+   "ok": true,
+   "known": false,
+   "detail": "1/1"
+  },
+  {
+   "area": "L",
+   "check": "K68 auto: 'Hur länge har hallar funnits?' besvaras",
+   "ok": true,
+   "known": false,
+   "detail": "[(True, 'Hallon har odlats i tusentals år, och de vilda hal'), (True, 'Hallar har funnits i cirka ett komma två miljoner ')]"
+  },
+  {
+   "area": "L",
+   "check": "K68 auto: 'Vad betyder inflation?' besvaras",
+   "ok": true,
+   "known": false,
+   "detail": "[(True, 'Inflation är när priserna i allmänhet stiger över '), (True, 'Inflation betyder att priserna i allmänhet stiger ')]"
+  },
+  {
+   "area": "L",
+   "check": "K68 auto: 'Why is the sky blue?' besvaras",
+   "ok": true,
+   "known": false,
+   "detail": "[(True, 'Sunlight contains all colors, and air molecules sc'), (True, 'Sunlight contains all colors, but air molecules sc')]"
+  },
+  {
+   "area": "L",
+   "check": "K68 auto: 'hur länge har han funnits' tyst",
+   "ok": true,
+   "known": false,
+   "detail": "[(False, ''), (False, '')]"
+  },
+  {
+   "area": "L",
+   "check": "K68 auto: 'Jag tror det regnar i morgon.' tyst",
+   "ok": true,
+   "known": false,
+   "detail": "[(False, ''), (False, '')]"
+  }
+ ],
+ "sql": {
+  "elevenlabs": "select voice_id, count(*), sum(coalesce(credits,0)) from drill_audio_files where created_at between '2026-11-15T01:41:32.022924+00:00' and '2026-11-15T02:04:58.120158+00:00' group by 1;",
+  "k64_unused": "select status, left(error, 60), count(*) from drill_audio_files where created_at between '2026-11-15T01:41:32.022924+00:00' and '2026-11-15T02:04:58.120158+00:00' group by 1, 2;",
+  "k67_voice": "select kind, text from drill_audio_files where text ~ '(delat med|divided by|fjärdedel|percent|och/eller|1850)' and created_at between '2026-11-15T01:41:32.022924+00:00' and '2026-11-15T02:04:58.120158+00:00';",
+  "expect_voice": [
+   [
+    "v är lika med s delat med t",
+    true
+   ],
+   [
+    "b gånger h delat med två",
+    true
+   ],
+   [
+    "tre fjärdedelar",
+    true
+   ],
+   [
+    "F delat med A",
+    true
+   ],
+   [
+    "och/eller",
+    true
+   ],
+   [
+    "ja delat med nej",
+    false
+   ],
+   [
+    "artonhundrafemtio",
+    false
+   ],
+   [
+    "v equals s divided by t",
+    true
+   ],
+   [
+    "25 percent",
+    true
+   ],
+   [
+    "km divided by h",
+    false
+   ],
+   [
+    "3 divided by 4",
+    false
+   ]
+  ],
+  "logs": "select count(*), countIf(positionCaseInsensitive(event_message, 'elevenlabs') > 0) from logs where source = 'function_logs' -- iso_timestamp_start 2026-11-15T01:41:32.022924+00:00 end 2026-11-15T02:04:58.120158+00:00"
+ }
+}
