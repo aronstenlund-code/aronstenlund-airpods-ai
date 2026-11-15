@@ -420,7 +420,20 @@ final class FullFlowTests: XCTestCase {
         guard tap(["Spela in*"], "Spela in") else { return false }
         pause(2)
         screen("spela-in", "Spela in")
-        if tap(["Välj ur provet", "Fråga 1*"], "pick a question", quiet: true) { pause(1) }
+        if tap(["Välj ur provet", "Fråga 1*"], "pick a question", quiet: true) {
+            pause(1.5)
+            // Angela Fable 14:36: "Välj ur provet" opens a sheet with the exam's questions; without a question chosen the
+            // sheet covers "Spela in svaret" (and the button is grey). Choose the first question in the sheet.
+            let rows = app.buttons.allElementsBoundByIndex.filter { $0.exists && $0.isHittable && $0.label.contains("?") }
+                + app.cells.allElementsBoundByIndex.filter { $0.exists && $0.isHittable && $0.label.contains("?") }
+            if let first = rows.first {
+                tapElement(first, "the first question in the sheet (\(first.label.prefix(40)))")
+                pause(1.5)
+            } else {
+                screen("valj-ur-provet", "Välj ur provet: no question row found", counts: false)
+                note("Välj ur provet: no question row with '?' to choose in the sheet")
+            }
+        }
         if tap(["Spela in svaret"], "Spela in svaret", quiet: true) {
             systemAlerts()
             pause(4)
