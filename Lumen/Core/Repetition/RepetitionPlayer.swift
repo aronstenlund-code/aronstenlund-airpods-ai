@@ -64,6 +64,10 @@ final class RepetitionPlayer {
     var onProgress: (@MainActor (Int) -> Void)?
     /// Every step as one line, for the log and the Simulator tests.
     var onStep: (@MainActor (String) -> Void)?
+    /// A108 (D194): a question was played to its end (3 a day make the day count).
+    var onQuestionPlayed: (@MainActor (Int) -> Void)?
+    /// A108: the whole list was played through (the first time this is when D194 asks about reminders).
+    var onLapDone: (@MainActor (Int) -> Void)?
 
     static let audioRetrySeconds = 1.0
 
@@ -175,6 +179,7 @@ final class RepetitionPlayer {
 
     private func questionEnded(_ i: Int) {
         guard phase == .question(i) else { return }
+        onQuestionPlayed?(i)
         current = nil
         startThinking(i)
     }
@@ -225,7 +230,11 @@ final class RepetitionPlayer {
 
     private func next() {
         let following = (index + 1) % count
-        if following == 0 { lap += 1; step("lap \(lap) done, from question 1 again") }
+        if following == 0 {
+            lap += 1
+            step("lap \(lap) done, from question 1 again")
+            onLapDone?(lap)
+        }
         onProgress?(following)
         playQuestion(following)
     }

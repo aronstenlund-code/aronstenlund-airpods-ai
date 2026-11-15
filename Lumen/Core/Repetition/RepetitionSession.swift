@@ -27,6 +27,13 @@ final class RepetitionSession {
     private var observers: [NSObjectProtocol] = []
     /// A105: moves the reader's sentence with the sound (the highlight, the Lock Screen, the saved place).
     private var follow: Task<Void, Never>?
+    /// A108 (D194): a question played to its end, seconds read aloud, and an exam played through (any exam id).
+    @ObservationIgnored var onQuestionPlayed: (@MainActor (UUID) -> Void)?
+    @ObservationIgnored var onReadSeconds: (@MainActor (UUID, TimeInterval) -> Void)?
+    @ObservationIgnored var onFinished: (@MainActor (UUID) -> Void)?
+    /// A108: seconds read since they were last reported (reported every 10 s and at the end, not every tick).
+    @ObservationIgnored private var unreportedReading: TimeInterval = 0
+    @ObservationIgnored private var lastTick: Date?
     static let followInterval: Duration = .milliseconds(250)
 
     init(inputs: [any RepetitionInput],
@@ -66,6 +73,10 @@ final class RepetitionSession {
             self?.updateNowPlaying()
         }
         reader.onStep = { [weak self] line in self?.record(line) }
+        reader.onEnd = { [weak self] in
+            self?.reportReading()
+            self?.onFinished?(id)
+        }
         self.reader = reader
         self.drill = drill
         for input in inputs {
@@ -93,13 +104,30 @@ final class RepetitionSession {
 
     private func startFollowing() {
         follow?.cancel()
+        lastTick = Date()
         follow = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: Self.followInterval)
                 guard let self, !Task.isCancelled, let reader = self.reader else { return }
                 reader.followSound()
+                self.tick(reading: reader.phase == .reading && !reader.isPaused)
             }
         }
+    }
+
+    /// A108: counts the time the text is actually read aloud (not paused, not waiting for sound).
+    func tick(reading: Bool, now: Date = Date()) {
+        defer { lastTick = now }
+        guard reading, let lastTick else { return }
+        unreportedReading += min(max(now.timeIntervalSince(lastTick), 0), 5) // a long gap is a suspended app
+        if unreportedReading >= 10 { reportReading() }
+    }
+
+    private func reportReading() {
+        guard unreportedReading > 0, let id = drill?.id else { return }
+        let seconds = unreportedReading
+        unreportedReading = 0
+        onReadSeconds?(id, seconds)
     }
 
     /// "Fortsätt där du var?": the saved question for this exam, if the last run was this exam.
@@ -134,6 +162,8 @@ final class RepetitionSession {
         let id = drill.id
         player.onProgress = { next in RepetitionProgress(drillID: id, index: next, savedAt: Date()).save(defaults) }
         player.onStep = { [weak self] line in self?.record(line) }
+        player.onQuestionPlayed = { [weak self] _ in self?.onQuestionPlayed?(id) } // A108
+        player.onLapDone = { [weak self] _ in self?.onFinished?(id) }
         self.player = player
         self.drill = drill
         for input in inputs {
@@ -156,6 +186,7 @@ final class RepetitionSession {
     /// Avsluta.
     func stop() {
         guard player != nil || reader != nil else { return }
+        reportReading()
         player?.stop()
         player = nil
         follow?.cancel()

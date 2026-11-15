@@ -166,6 +166,9 @@ final class AppContainer {
             if listening?.isActiveSession == true { await listening?.endSession() }
         }
         listening.repetition = repetitionModel
+        // A108 (D194): a tap on the practice reminder opens the latest exam on Start.
+        LumenNotifications.openDrill = { [weak repetitionModel] id in repetitionModel?.openDrill = id }
+        repetitionModel.reminders = LivePracticeReminders() // also in the mock mode, for Toby's T30
         // T24-M1 (D189): one list of exams. Provläge and Mina svar see every repetition exam, also after a restart.
         if let plans = listening.examPlans {
             plans.sync(with: drillStore.drills)

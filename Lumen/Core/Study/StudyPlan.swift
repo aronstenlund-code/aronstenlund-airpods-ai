@@ -285,7 +285,13 @@ final class LumenNotifications: NSObject, UNUserNotificationCenterDelegate, Send
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        guard let text = response.notification.request.content.userInfo["url"] as? String, let url = URL(string: text) else { return }
+        let info = response.notification.request.content.userInfo
+        if let id = (info[Self.drillKey] as? String).flatMap(UUID.init(uuidString:)) {
+            // A108 (D194): the practice reminder opens the latest exam.
+            await MainActor.run { LumenNotifications.openDrill?(id) }
+            return
+        }
+        guard let text = info["url"] as? String, let url = URL(string: text) else { return }
         await MainActor.run { UIApplication.shared.open(url) }
     }
 
@@ -401,5 +407,80 @@ final class LumenNotifications: NSObject, UNUserNotificationCenterDelegate, Send
         content.userInfo = ["url": link.url.absoluteString]
         let request = UNNotificationRequest(identifier: "lumen.link." + UUID().uuidString, content: content, trigger: nil)
         try? await UNUserNotificationCenter.current().add(request)
+    }
+}
+
+// MARK: - A108 (D194): the repetition mode's practice reminder
+
+/// Kelly's texts come with Ke65; until then these. One place, so they are changed here only.
+enum PracticeReminderText {
+    static let title = "Dags att plugga"
+    static func body(examTitle: String?) -> String {
+        guard let examTitle = examTitle?.trimmingCharacters(in: .whitespacesAndNewlines), !examTitle.isEmpty else {
+            return "Ett varv tar bara några minuter."
+        }
+        return "\(examTitle) väntar. Ett varv tar bara några minuter."
+    }
+}
+
+extension LumenNotifications {
+    static let practicePrefix = "earmind.practice."
+    static let drillKey = "drillID"
+    /// D194: on by default, 18:00 by default; both changeable in Inställningar (Angela Fable's A109).
+    static let practiceEnabledKey = "reminders.practice"
+    static let practiceTimeKey = "reminders.practice.minutes"
+    static let practiceHour = 18
+
+    /// A108: the tap on a practice reminder (the app sets it: Start opens the exam).
+    @MainActor static var openDrill: (@MainActor (UUID) -> Void)?
+
+    static var practiceRemindersOn: Bool {
+        UserDefaults.standard.object(forKey: practiceEnabledKey) as? Bool ?? true
+    }
+
+    static var practiceMinutes: Int {
+        let value = UserDefaults.standard.object(forKey: practiceTimeKey) as? Int ?? practiceHour * 60
+        return min(max(value, 0), 24 * 60 - 1)
+    }
+
+    /// D194: the days to remind, "yyyy-MM-dd", the coming `count` days at `minutes`; today only when it is not
+    /// practised yet and the time has not passed. Rescheduled at every open and when today becomes practised.
+    static func practiceDays(today: Date, doneToday: Bool, minutes: Int = practiceMinutes, count: Int = 7,
+                             calendar: Calendar = .current) -> [String] {
+        (0..<count).compactMap { offset in
+            guard let date = calendar.date(byAdding: .day, value: offset, to: today) else { return nil }
+            let day = StudyHistory.day(date, calendar: calendar)
+            if offset == 0, doneToday { return nil }
+            return fireDate(day, now: today, minutes: minutes, calendar: calendar) == nil ? nil : day
+        }
+    }
+
+    /// A108: replaces the practice reminders. iOS's own question only when `ask` (after the first finished exam and the
+    /// app's own question, A109), never by itself.
+    static func schedulePractice(drillID: UUID?, examTitle: String?, doneToday: Bool, ask: Bool = false,
+                                 now: Date = Date()) async {
+        let center = UNUserNotificationCenter.current()
+        let pending = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix(practicePrefix) }
+        center.removePendingNotificationRequests(withIdentifiers: pending)
+        guard practiceRemindersOn, await allowed(ask: ask) else { return }
+        let minutes = practiceMinutes
+        for day in practiceDays(today: now, doneToday: doneToday, minutes: minutes) {
+            guard let fire = fireDate(day, now: now, minutes: minutes) else { continue }
+            let content = UNMutableNotificationContent()
+            content.title = PracticeReminderText.title
+            content.body = PracticeReminderText.body(examTitle: examTitle)
+            content.sound = .default
+            if let drillID { content.userInfo = [drillKey: drillID.uuidString] }
+            let parts = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: fire)
+            let request = UNNotificationRequest(identifier: practicePrefix + day, content: content,
+                                                trigger: UNCalendarNotificationTrigger(dateMatching: parts, repeats: false))
+            try? await center.add(request)
+        }
+    }
+
+    /// D194: today is practised, so today's reminder is not needed.
+    static func cancelPracticeToday(_ date: Date = Date()) {
+        UNUserNotificationCenter.current()
+            .removePendingNotificationRequests(withIdentifiers: [practicePrefix + StudyHistory.day(date)])
     }
 }
