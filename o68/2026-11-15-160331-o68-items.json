@@ -1,0 +1,776 @@
+{
+ "start": "2026-11-15T15:59:12.137503+00:00",
+ "end": "2026-11-15T16:03:31.164583+00:00",
+ "claude_usd": 0.4924,
+ "fixture": null,
+ "items": [
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Vad är en tes i en argumenterande text?",
+   "short": "Tesen är den åsikt som skribenten vill övertyga läsaren om, och den står tidigt i texten, ofta i inledningen.",
+   "long": "Tesen är den åsikt som skribenten vill övertyga läsaren om, och den står tidigt i texten, ofta i inledningen. Tesen är det som hela texten bygger på. Argumenten är skälen till att tesen stämmer, och de blir starkast när de stöds av fakta, exempel eller uttalanden från experter. Skribenten tar också upp motargument, alltså skäl som talar emot tesen, och bemöter dem för att visa att tesen ändå håller. Det gör texten mer trovärdig. I avslutningen upprepar skribenten tesen, så att läsaren minns vad texten ville övertyga om. Sambandsord som därför och dessutom visar hur argumenten hänger ihop med tesen.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Vad är ett argument?",
+   "short": "Ett argument är ett skäl som visar att tesen stämmer, och det är starkast när det bygger på fakta, exempel eller expertutlåtanden.",
+   "long": "Ett argument är ett skäl som visar att tesen stämmer, och det är starkast när det bygger på fakta, exempel eller expertutlåtanden. Ett argument räcker sällan som ett enkelt påstående, utan det behöver stödjas av något som läsaren kan lita på. En siffra, ett konkret exempel eller ett uttalande från en person som kan ämnet gör argumentet mer övertygande än bara en åsikt. En bra text har flera argument som hänger ihop med sambandsord som för det första och dessutom. Då förstår läsaren hur skälen bygger upp tesen steg för steg, och texten blir tydligare och mer övertygande.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Vad bygger starka argument på?",
+   "short": "Starka argument bygger på fakta, exempel eller expertutlåtanden, alltså sådant som läsaren kan lita på.",
+   "long": "Starka argument bygger på fakta, exempel eller expertutlåtanden, alltså sådant som läsaren kan lita på. Fakta, till exempel siffror från en undersökning, gör att argumentet inte bara är tyckande. Exempel gör argumentet konkret så att läsaren kan föreställa sig det. Expertutlåtanden från forskare eller andra som kan ämnet ger tyngd, eftersom läsaren litar på dem som vet mycket. Ett svagt argument bygger i stället bara på att skribenten tycker något. Ju starkare argumenten är, desto lättare blir det att övertyga läsaren.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Vad är ett motargument?",
+   "short": "Ett motargument är ett skäl som talar emot tesen, och skribenten tar upp det för att sedan bemöta det.",
+   "long": "Ett motargument är ett skäl som talar emot tesen, och skribenten tar upp det för att sedan bemöta det. Genom att bemöta motargumentet visar skribenten att tesen ändå håller. Det gör man ofta med ett sambandsord som å andra sidan, och sedan förklarar man varför motargumentet inte väger tillräckligt tungt. Att ta upp motargument gör texten mer trovärdig, eftersom läsaren ser att skribenten har tänkt igenom båda sidor och inte döljer något. En text som bara räknar upp argument för sin sak verkar ofta ensidig och är därför svårare att tro på.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Varför bemöter skribenten motargument, och vad gör det med texten?",
+   "short": "Skribenten bemöter motargument för att visa att tesen ändå håller, och det gör texten mer trovärdig.",
+   "long": "Skribenten bemöter motargument för att visa att tesen ändå håller, och det gör texten mer trovärdig. Om skribenten låtsas att det inte finns några skäl mot tesen, kan läsaren tycka att texten är ensidig eller orättvis. När skribenten i stället tar upp motargumentet och förklarar varför det inte väger lika tungt, visar hen att åsikten är genomtänkt. Det stärker ethos, alltså skribentens trovärdighet. Läsaren får också svar på de invändningar hen själv kanske tänkte på, och därför blir det lättare att övertyga läsaren.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Hur blir en text mer trovärdig när skribenten bemöter motargument?",
+   "short": "När skribenten bemöter ett motargument visar hon att hon har tänkt igenom saken och ändå kan hävda sin tes, och då litar läsaren mer på texten.",
+   "long": "När skribenten bemöter ett motargument visar hon att hon har tänkt igenom saken och ändå kan hävda sin tes, och då litar läsaren mer på texten. Ett motargument är ett skäl som talar emot tesen. Om skribenten låtsas att det inte finns, kan läsaren tycka att texten är ensidig eller oärlig. Tar skribenten i stället upp det och förklarar varför tesen ändå håller, blir hon mer rättvis och kunnig i läsarens ögon. Det stärker också tesen, eftersom den har klarat en granskning. Skribenten kan till exempel först erkänna att motståndaren har en poäng och sedan visa med fakta varför den inte väger tyngst.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Vilka delar brukar en argumenterande text ha?",
+   "short": "En argumenterande text har en inledning med tes, en huvuddel med argument och motargument, och en avslutning som upprepar tesen.",
+   "long": "En argumenterande text har en inledning med tes, en huvuddel med argument och motargument, och en avslutning som upprepar tesen. Inledningen presenterar ämnet och skribentens åsikt, alltså tesen, så att läsaren genast förstår vad texten vill övertyga om. I huvuddelen ger skribenten sina argument, helst starka sådana som bygger på fakta, exempel eller expertutlåtanden, och bemöter motargument. Avslutningen knyter ihop texten. Sambandsord som för det första och dessutom hjälper till att binda ihop delarna, så att texten får en tydlig röd tråd som är lätt att följa.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Varför upprepar avslutningen tesen?",
+   "short": "Avslutningen upprepar tesen för att påminna läsaren om vad texten vill övertyga om, så att huvudbudskapet är det sista som stannar kvar.",
+   "long": "Avslutningen upprepar tesen för att påminna läsaren om vad texten vill övertyga om, så att huvudbudskapet är det sista som stannar kvar. Efter alla argument och motargument kan läsaren ha tappat tråden lite. När tesen upprepas knyts texten ihop och läsaren ser att allt som har sagts leder fram till samma åsikt. Det ger texten en tydlig rundning, där början och slutet hör ihop. Skribenten kan gärna sammanfatta de viktigaste argumenten kort, men det viktiga är att tesen står klar och tydlig till sist.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Vad visar sambandsord som \"därför\" och \"å andra sidan\"?",
+   "short": "Sambandsord visar hur tankarna hänger ihop, till exempel att något är en följd av något annat eller att något står emot något annat.",
+   "long": "Sambandsord visar hur tankarna hänger ihop, till exempel att något är en följd av något annat eller att något står emot något annat. Ordet därför visar en orsak och följd: det som sägs efter ordet är en konsekvens av det som kom före. Å andra sidan visar en motsättning, att nu kommer en annan synvinkel eller ett motargument. Andra sambandsord är för det första och dessutom, som ordnar och lägger till argument. Sambandsorden gör att texten flyter och att läsaren lätt hänger med i resonemanget, och de visar att skribenten har byggt upp sin argumentation med eftertanke.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Vad betyder ethos och varför påverkar det läsaren?",
+   "short": "Ethos handlar om skribentens trovärdighet, och läsaren blir lättare övertygad om hen litar på den som skriver.",
+   "long": "Ethos handlar om skribentens trovärdighet, och läsaren blir lättare övertygad om hen litar på den som skriver. Trovärdigheten kan skapas på flera sätt, till exempel genom att skribenten visar kunskap, använder fakta och expertutlåtanden eller bemöter motargument på ett sakligt sätt. Det sista gör att texten känns rättvis och genomtänkt. Ethos är ett av retorikens tre medel, vid sidan av logos, som är förnuftsargument med fakta och logik, och pathos, som väcker känslor hos läsaren. En bra argumenterande text blandar alla tre, men utan ethos tar läsaren inte tesen på allvar.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Vad väcker pathos hos läsaren?",
+   "short": "Pathos väcker känslor hos läsaren, till exempel medkänsla, oro eller engagemang, så att hen tar till sig budskapet.",
+   "long": "Pathos väcker känslor hos läsaren, till exempel medkänsla, oro eller engagemang, så att hen tar till sig budskapet. Skribenten kan använda berättelser, målande bilder eller starka ord som gör att läsaren känner något för saken. Det är ett av retorikens tre medel, vid sidan av ethos, som handlar om skribentens trovärdighet, och logos, som bygger på fakta och logik. Känslor kan göra att läsaren bryr sig, men pathos ensamt räcker sällan för att övertyga, eftersom läsaren också vill se skäl som håller.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h2-sv-argumentera",
+   "subject": "Svenska",
+   "question": "Varför är det bra att en text blandar ethos, logos och pathos?",
+   "short": "En text som blandar alla tre når läsaren på flera sätt samtidigt: den är trovärdig, logisk och berör, och därför blir den mer övertygande.",
+   "long": "En text som blandar alla tre når läsaren på flera sätt samtidigt: den är trovärdig, logisk och berör, och därför blir den mer övertygande. Ethos gör att läsaren litar på den som skriver. Logos ger fakta och logik som visar att tesen stämmer. Pathos väcker känslor så att läsaren bryr sig om frågan. Om en text bara använder ett medel blir den svagare. Bara känslor kan upplevas som lösa och manipulerande, bara fakta kan bli torrt och oengagerande, och utan trovärdighet litar läsaren inte på något av det. När medlen samverkar förstärker de varandra, och det gör texten stark.",
+   "drill_id": "e92d1626-547e-4214-8a88-2ba33fa2cada"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "What is happening to the Earth's climate?",
+   "short": "The Earth's climate is getting warmer: since about eighteen fifty the average temperature has risen by roughly one point two degrees, and most scientists say humans are the main cause.",
+   "long": "The Earth's climate is getting warmer: since about eighteen fifty the average temperature has risen by roughly one point two degrees, and most scientists say humans are the main cause. This warming is not only a number on a thermometer. It leads to melting ice, rising sea levels and more heatwaves, droughts and heavy rain. Some animals, such as polar bears, are losing the places where they live. Because the cause is mainly human activity, people and countries can also act, for example through the Paris Agreement from twenty fifteen, where countries promised to cut their emissions.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "Why is the greenhouse effect described as being like a greenhouse roof?",
+   "short": "It is described that way because, just as the glass roof of a greenhouse lets sunlight in but keeps the heat inside, gases in the atmosphere trap heat around the Earth.",
+   "long": "It is described that way because, just as the glass roof of a greenhouse lets sunlight in but keeps the heat inside, gases in the atmosphere trap heat around the Earth. In a greenhouse the glass stops the warm air from escaping, so it stays warmer inside than outside. In the same way, gases such as carbon dioxide act like a blanket around the planet. Heat that would otherwise leave the atmosphere is held back, and this keeps the Earth warmer. The comparison helps us picture an invisible process using something familiar.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "How do gases like carbon dioxide make the Earth warmer?",
+   "short": "Gases such as carbon dioxide trap heat in the atmosphere instead of letting it escape into space, so the heat stays near the Earth and the temperature rises.",
+   "long": "Gases such as carbon dioxide trap heat in the atmosphere instead of letting it escape into space, so the heat stays near the Earth and the temperature rises. The more of these gases there are in the air, the more heat is trapped. This is called the greenhouse effect. Some of it is natural, but when humans add extra carbon dioxide, the effect becomes stronger, and that is why the average temperature of the whole planet has gone up over the last century and a half.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "Why does burning coal, oil and gas make the temperature rise more?",
+   "short": "Burning coal, oil and gas releases more carbon dioxide into the air, and since this gas traps heat, a larger amount of it means more heat is held in the atmosphere.",
+   "long": "Burning coal, oil and gas releases more carbon dioxide into the air, and since this gas traps heat, a larger amount of it means more heat is held in the atmosphere. So there is a clear chain of cause and effect: we burn fossil fuels for electricity, heating and transport, carbon dioxide is released, the greenhouse effect gets stronger, and the Earth becomes warmer. This is why cutting emissions, for example by travelling by train instead of flying, can help slow down the warming.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "What happens to sea levels when the ice in Greenland and Antarctica melts?",
+   "short": "When the ice in Greenland and Antarctica melts, the water flows into the oceans and sea levels rise, which threatens cities near the coast.",
+   "long": "When the ice in Greenland and Antarctica melts, the water flows into the oceans and sea levels rise, which threatens cities near the coast. Greenland and Antarctica hold huge amounts of ice on land, so when it melts the extra water ends up in the sea. Higher seas can flood low coastal areas and put the people who live there at risk. This is one of the most serious consequences of a warmer world, together with more heatwaves, droughts and heavy rain.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "Why are cities near the coast threatened?",
+   "short": "Cities near the coast are threatened because melting ice from Greenland and Antarctica makes the sea level rise, so the water can flood low land.",
+   "long": "Cities near the coast are threatened because melting ice from Greenland and Antarctica makes the sea level rise, so the water can flood low land. The warmer climate melts the huge ice sheets in Greenland and Antarctica, and all that extra water ends up in the oceans. As sea levels rise, the sea reaches further onto the land, which puts coastal cities at risk. Homes, roads and businesses close to the shore could be flooded, and people might have to move away. This is why the melting of ice is such a serious consequence of global warming.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "How are heatwaves, droughts and heavy rain changing?",
+   "short": "Heatwaves, droughts and heavy rain are all becoming more common as the Earth gets warmer.",
+   "long": "Heatwaves, droughts and heavy rain are all becoming more common as the Earth gets warmer. Extreme weather like this is one of the main consequences of climate change. Heatwaves mean long periods of dangerously high temperatures, droughts mean too little water for people, animals and crops, and heavy rain can cause floods. Together they make life harder for people around the world, and they are happening more often because the average temperature has risen by about one point two degrees since eighteen fifty.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "Why are polar bears losing their habitat?",
+   "short": "Polar bears are losing their habitat because the warmer climate is melting the ice they live on.",
+   "long": "Polar bears are losing their habitat because the warmer climate is melting the ice they live on. Polar bears depend on Arctic ice as the place where they live and travel. As the Earth warms, this ice melts, so the bears have less and less space left. This is one example of how global warming harms animals as well as people. When a habitat disappears, animals may struggle to find food and shelter, and some species can be threatened with dying out.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "What did countries promise in the Paris Agreement?",
+   "short": "In the Paris Agreement from two thousand fifteen, countries promised to cut their emissions of greenhouse gases.",
+   "long": "In the Paris Agreement from two thousand fifteen, countries promised to cut their emissions of greenhouse gases. The aim is to slow down global warming by releasing less carbon dioxide, which comes mainly from burning coal, oil and gas. Because carbon dioxide traps heat in the atmosphere like the glass roof of a greenhouse, lower emissions mean less heat is trapped. The agreement shows that countries can work together on a problem that affects the whole planet.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "How can people help reduce the warming?",
+   "short": "People can help by changing their habits, for example by taking the train instead of flying, eating less meat and wasting less food.",
+   "long": "People can help by changing their habits, for example by taking the train instead of flying, eating less meat and wasting less food. Everyday choices like these matter because they reduce the emissions that make the Earth warmer. Trains usually release less carbon dioxide than planes, and producing meat and food that is later thrown away also adds to the problem. When many people make these small changes together, they can support what countries have promised to do in the Paris Agreement, so that individuals and governments help each other.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "What is the difference between taking the train and flying in terms of the climate?",
+   "short": "Taking the train is a better choice for the climate, because flying releases more carbon dioxide, which traps more heat in the atmosphere.",
+   "long": "Taking the train is a better choice for the climate, because flying releases more carbon dioxide, which traps more heat in the atmosphere. The greenhouse effect gets stronger when we burn fossil fuels and release more carbon dioxide. Choosing the train instead of a plane is one way for people to help cut emissions, and this is why it is suggested as a climate-friendly habit. Countries have also promised to cut their emissions in the Paris Agreement, so personal choices and political decisions work together. Small changes, like travelling by train, eating less meat and wasting less food, can make a real difference if many people do them.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h3-en-climate",
+   "subject": "Engelska",
+   "question": "What does it mean that most scientists agree that humans are the main cause?",
+   "short": "It means that the large majority of researchers have concluded that human activity, not natural change, is the main reason the Earth is warming.",
+   "long": "It means that the large majority of researchers have concluded that human activity, not natural change, is the main reason the Earth is warming. The explanation is the greenhouse effect. When we burn coal, oil and gas, we release extra carbon dioxide, which traps heat in the atmosphere like the glass roof of a greenhouse. Since about eighteen fifty the average temperature has risen by roughly one point two degrees, and this fits with our growing emissions. Saying that most scientists agree does not mean that every single person agrees, but it shows that the evidence is strong enough to convince almost all experts. That is why countries have made promises to cut emissions.",
+   "drill_id": "7f4754e1-8f30-43fc-bc0a-6cc940aa1886"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "Where is the story set and what year does it take place?",
+   "short": "The story is set on a small island off the coast of Scotland in nineteen fifty-two.",
+   "long": "The story is set on a small island off the coast of Scotland in nineteen fifty-two. The island setting matters because it is isolated. Thomas and his grandfather live far from help, so when the storm comes and the light goes out, nobody else can step in, and Thomas has to deal with the danger himself.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "Why is Thomas afraid of the sea?",
+   "short": "Thomas is afraid of the sea because his parents died in a storm when he was six years old.",
+   "long": "Thomas is afraid of the sea because his parents died in a storm when he was six years old. That loss is the source of his fear, since the sea took the people he loved most. He has grown up in a lighthouse beside the water, so the fear is always close. This is why the storm in the story works as a symbol of his fear, and why saving the boat means he has to face it.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "Why does Thomas have to climb the steps and light the lamp himself?",
+   "short": "Thomas has to light the old oil lamp himself because his grandfather, the lighthouse keeper, has hurt his leg and cannot climb the steps.",
+   "long": "Thomas has to light the old oil lamp himself because his grandfather, the lighthouse keeper, has hurt his leg and cannot climb the steps. The electricity has failed in the storm, so the light is out and a fishing boat is heading for the rocks. There is nobody else on the island to help, so Thomas must climb the hundred and twenty steps alone. This is hard for him because he has been afraid of the sea since his parents died in a storm when he was six. The moment shows that he has to act in spite of his fear, which is the main theme of the chapter.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "What happens to the lighthouse when the electricity fails?",
+   "short": "When the electricity fails during the storm, the lighthouse light goes out, so the boat out at sea can no longer see where the dangerous rocks are.",
+   "long": "When the electricity fails during the storm, the lighthouse light goes out, so the boat out at sea can no longer see where the dangerous rocks are. The word fail means to stop working, and here it is the power supply that stops. Without the light, the fishing boat is heading straight for the rocks and its crew is in great danger. The only way to warn the boat is to light the old oil lamp by hand. The failing light creates the problem that drives the whole chapter, because it forces Thomas to take over from his injured grandfather.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "Why are the boat and its crew saved?",
+   "short": "The boat and its crew of four are saved because Thomas faces his fear, climbs the steps and lights the old oil lamp, so the crew can see the rocks and steer away.",
+   "long": "The boat and its crew of four are saved because Thomas faces his fear, climbs the steps and lights the old oil lamp, so the crew can see the rocks and steer away. Thomas shows real courage, since being brave does not mean having no fear but acting in spite of it. The storm works as a symbol of his fear, and by climbing the hundred and twenty steps through it he overcomes that fear. Because the story is told in the first person, we feel his fear and his determination from the inside. His brave action turns a possible disaster into a rescue.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "What does the storm symbolize in the story?",
+   "short": "The storm symbolizes Thomas's fear of the sea, which has haunted him since his parents died in a storm when he was six.",
+   "long": "The storm symbolizes Thomas's fear of the sea, which has haunted him since his parents died in a storm when he was six. Because the same kind of weather took his parents, the storm is not just a background event. It becomes a picture of the fear inside him, big, loud and impossible to ignore. When Thomas climbs the lighthouse during the storm, he is also facing his fear. The writer uses this symbol to show the outer danger to the fishing boat and the inner struggle in Thomas at the same time, so the reader feels both.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "What does the main theme of courage mean in the story?",
+   "short": "It means that being brave does not mean having no fear, but doing the right thing even though you are afraid.",
+   "long": "It means that being brave does not mean having no fear, but doing the right thing even though you are afraid. Thomas is terrified of the sea, yet he climbs the one hundred and twenty steps and lights the old oil lamp. He is not fearless, he is courageous because he acts anyway. The story teaches that courage is a choice made in a hard moment, not a feeling. His choice has a real result, because the boat and its crew of four are saved. The reader learns that ordinary people, even a fifteen-year-old, can show real courage.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "How does the first person narration affect what we know about the story?",
+   "short": "Because the story is told in the first person, we only know what Thomas himself thinks and feels.",
+   "long": "Because the story is told in the first person, we only know what Thomas himself thinks and feels. We see the storm, the steps and the lamp only through his eyes, so we cannot know what his grandfather or the crew are thinking. This brings the reader very close to Thomas and makes his fear feel real and personal. We share his doubts as he climbs. The limit is that the narrator may miss things, so the view is one-sided, but that also makes his final act of courage more powerful.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "What does it mean to act in spite of fear?",
+   "short": "To act in spite of fear means to do something even though you are afraid, instead of waiting until the fear disappears.",
+   "long": "To act in spite of fear means to do something even though you are afraid, instead of waiting until the fear disappears. The fear is still there, but you do not let it decide what you do. In the story, Thomas is afraid of the sea and the storm, but he still climbs the lighthouse because other people need help. This is the opposite of having no fear. A person who feels no fear is not really brave, since nothing is hard for them. Courage means feeling the fear and moving forward anyway, and that is what Thomas does.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "Why is the grandfather unable to climb the steps?",
+   "short": "The grandfather cannot climb the steps because he has hurt his leg.",
+   "long": "The grandfather cannot climb the steps because he has hurt his leg. This injury is important for the plot. The electricity has failed, the light has gone out and a fishing boat is heading for the rocks, so someone must climb the one hundred and twenty steps and light the old oil lamp quickly. Since the grandfather, who normally keeps the lighthouse, cannot do it, the responsibility falls on Thomas. His grandfather's injury forces Thomas to face his fear and take on an adult role, and that is what leads to the rescue.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "What does it mean that Thomas faces his fear?",
+   "short": "It means Thomas acts and does what is needed even though he is still afraid of the sea, instead of letting the fear stop him.",
+   "long": "It means Thomas acts and does what is needed even though he is still afraid of the sea, instead of letting the fear stop him. This is the main theme of the chapter: courage is not having no fear, but acting in spite of it. Because his grandfather has hurt his leg, Thomas has to climb the one hundred and twenty steps and light the old oil lamp during the storm. His parents died in a storm when he was six, so the storm stands as a symbol of his fear. By going up anyway, he saves the fishing boat and its crew of four.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "h4-en-lighthouse",
+   "subject": "Engelska",
+   "question": "How does a crew differ from a keeper?",
+   "short": "A keeper is one person who looks after something, like Thomas's grandfather looking after the lighthouse, while a crew is a group of people who work together on a boat.",
+   "long": "A keeper is one person who looks after something, like Thomas's grandfather looking after the lighthouse, while a crew is a group of people who work together on a boat. So the difference is both what they do and how many they are. The keeper stays in one place and takes care of the lighthouse and its light. The crew travels on a boat, and in the story the fishing boat has a crew of four. The two meet in the story, because the keeper's light, lit by Thomas, saves the crew from the rocks.",
+   "drill_id": "477fdf52-64a1-435d-adc8-c63a8ca111a8"
+  },
+  {
+   "eid": "o57-ma-procent",
+   "subject": "Matematik",
+   "question": "Vad betyder procent?",
+   "short": "Procent betyder hundradelar, så tjugofem procent är tjugofem hundradelar, alltså noll komma tjugofem eller en fjärdedel.",
+   "long": "Procent betyder hundradelar, så tjugofem procent är tjugofem hundradelar, alltså noll komma tjugofem eller en fjärdedel. Ordet procent kommer av att man delar upp en helhet i hundra lika stora delar. Därför kan man skriva samma tal som procent, som decimaltal eller som bråk. Tjugofem procent, noll komma tjugofem och en fjärdedel är alltså tre sätt att skriva exakt samma sak. Att kunna växla mellan formerna är nyckeln när man ska räkna med procent, eftersom man oftast räknar med decimalformen.",
+   "drill_id": "c8bc6b81-ba1e-419b-91b6-20b51bf292e3"
+  },
+  {
+   "eid": "o57-ma-procent",
+   "subject": "Matematik",
+   "question": "Hur räknar man ut 25 procent av 80 kronor?",
+   "short": "Man multiplicerar noll komma tjugofem med åttio, och då får man tjugo kronor.",
+   "long": "Man multiplicerar noll komma tjugofem med åttio, och då får man tjugo kronor. Först skriver man om tjugofem procent till decimalformen noll komma tjugofem, eftersom procent betyder hundradelar. Sedan tar man delen gånger helheten: noll komma tjugofem gånger åttio är tjugo. Man kan också tänka att tjugofem procent är en fjärdedel, och en fjärdedel av åttio kronor är tjugo kronor. Båda sätten ger samma svar, så man kan välja det som känns enklast.",
+   "drill_id": "c8bc6b81-ba1e-419b-91b6-20b51bf292e3"
+  },
+  {
+   "eid": "o57-ma-procent",
+   "subject": "Matematik",
+   "question": "Vad är skillnaden mellan procentenheter och procent?",
+   "short": "Procentenheter är skillnaden mellan två procenttal, medan procent anger den relativa förändringen jämfört med startvärdet.",
+   "long": "Procentenheter är skillnaden mellan två procenttal, medan procent anger den relativa förändringen jämfört med startvärdet. Går en ränta från två procent till tre procent har den ökat med en procentenhet, eftersom skillnaden mellan talen är ett. Samtidigt har den ökat med femtio procent, eftersom ökningen är hälften av det ursprungliga värdet. Man använder procentenheter när man jämför två procenttal direkt, och procent när man vill veta hur mycket något har förändrats i förhållande till vad det var från början. Att blanda ihop dem ger lätt felaktiga slutsatser.",
+   "drill_id": "c8bc6b81-ba1e-419b-91b6-20b51bf292e3"
+  },
+  {
+   "eid": "o57-ma-procent",
+   "subject": "Matematik",
+   "question": "Varför blir räntan från 2 procent till 3 procent en ökning med 50 procent?",
+   "short": "Ökningen är en procentenhet, och en procentenhet är hälften av startvärdet två procent, så den relativa ökningen blir femtio procent.",
+   "long": "Ökningen är en procentenhet, och en procentenhet är hälften av startvärdet två procent, så den relativa ökningen blir femtio procent. Procent som förändring räknas alltid i förhållande till det man startar från. Här är startvärdet två procent och ökningen är ett. Ett delat med två är noll komma fem, alltså femtio procent. Räntan har med andra ord blivit en och en halv gång så stor, trots att skillnaden i procentenheter bara är ett. Därför är det viktigt att säga vilket av begreppen man menar.",
+   "drill_id": "c8bc6b81-ba1e-419b-91b6-20b51bf292e3"
+  },
+  {
+   "eid": "o57-ma-procent",
+   "subject": "Matematik",
+   "question": "Vilken förändringsfaktor ger en ökning med 20 procent, och varför?",
+   "short": "En ökning med tjugo procent ger förändringsfaktorn en komma tjugo, eftersom det nya värdet är hundra procent plus tjugo procent av det gamla.",
+   "long": "En ökning med tjugo procent ger förändringsfaktorn en komma tjugo, eftersom det nya värdet är hundra procent plus tjugo procent av det gamla. Hundra procent är det man startar med, alltså faktorn ett. Lägger man till tjugo procent, noll komma tjugo, blir faktorn en komma tjugo. Det nya värdet får man sedan genom att multiplicera det gamla värdet med förändringsfaktorn. En minskning med tjugo procent ger på samma sätt faktorn noll komma åttio. Vid flera förändringar i rad multiplicerar man faktorerna med varandra.",
+   "drill_id": "c8bc6b81-ba1e-419b-91b6-20b51bf292e3"
+  },
+  {
+   "eid": "o57-ma-procent",
+   "subject": "Matematik",
+   "question": "Hur räknar man ut priset på en jacka på 500 kronor som sänks med 20 procent?",
+   "short": "Man multiplicerar det gamla priset med förändringsfaktorn nollkommaåtta, eftersom en sänkning med tjugo procent ger den faktorn, så jackan kostar fyrahundra kronor.",
+   "long": "Man multiplicerar det gamla priset med förändringsfaktorn nollkommaåtta, eftersom en sänkning med tjugo procent ger den faktorn, så jackan kostar fyrahundra kronor. Förändringsfaktorn får man genom att dra bort procentsatsen från ett, alltså ett minus nollkommatvå, vilket blir nollkommaåtta. Det nya priset är det gamla priset gånger faktorn, så femhundra gånger nollkommaåtta blir fyrahundra kronor. Man kan också räkna ut tjugo procent av femhundra, som är hundra kronor, och dra bort det från femhundra. Metoden med förändringsfaktor är smidig, eftersom man kommer fram till det nya värdet direkt i ett enda steg.",
+   "drill_id": "c8bc6b81-ba1e-419b-91b6-20b51bf292e3"
+  },
+  {
+   "eid": "o57-ma-procent",
+   "subject": "Matematik",
+   "question": "Varför blir inte priset detsamma om det först höjs med 10 procent och sedan sänks med 10 procent?",
+   "short": "Sänkningen på tio procent räknas på det redan höjda priset, som är större än ursprungspriset, så minskningen i kronor blir större än höjningen.",
+   "long": "Sänkningen på tio procent räknas på det redan höjda priset, som är större än ursprungspriset, så minskningen i kronor blir större än höjningen. Man kan inte bara lägga ihop och dra ifrån procenttalen, eftersom varje förändring räknas på det nya värdet. Man multiplicerar förändringsfaktorerna. Höjningen ger faktorn ett komma ett noll och sänkningen ger noll komma nio noll. Ett komma ett noll gånger noll komma nio noll blir noll komma nio nio. Priset är alltså bara nittionio procent av det ursprungliga, vilket är en minskning med en procent. Med ett pris på hundra kronor blir det först hundratio kronor och sedan nittionio kronor.",
+   "drill_id": "c8bc6b81-ba1e-419b-91b6-20b51bf292e3"
+  },
+  {
+   "eid": "o57-ma-procent",
+   "subject": "Matematik",
+   "question": "Hur räknar man ut den totala förändringen vid flera procentuella förändringar i följd?",
+   "short": "Man omvandlar varje förändring till en förändringsfaktor och multiplicerar faktorerna med varandra, så får man den totala förändringsfaktorn.",
+   "long": "Man omvandlar varje förändring till en förändringsfaktor och multiplicerar faktorerna med varandra, så får man den totala förändringsfaktorn. Det går inte att bara lägga ihop procentsatserna, eftersom varje ny förändring räknas på det värde som uppstod efter den förra. En ökning med tjugo procent ger faktorn ett komma tjugo, och en minskning med tjugo procent ger noll komma åttio. Det nya värdet blir det gamla värdet gånger alla faktorerna. Om ett pris först höjs med tio procent och sedan sänks med tio procent blir det ett komma tio gånger noll komma nio noll, alltså noll komma nio nio. Priset har därför minskat med en procent och är inte tillbaka där det började. Den totala förändringen får man sedan genom att jämföra den sammanlagda faktorn med ett.",
+   "drill_id": "c8bc6b81-ba1e-419b-91b6-20b51bf292e3"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Vad kallas den längsta sidan i en rätvinklig triangel, och var står den?",
+   "short": "Den längsta sidan kallas hypotenusa, och den står mitt emot den räta vinkeln.",
+   "long": "Den längsta sidan kallas hypotenusa, och den står mitt emot den räta vinkeln. De två andra sidorna är alltid kortare än hypotenusan. Det är därför man lätt hittar hypotenusan: man letar upp den räta vinkeln och tittar på sidan på andra sidan av triangeln. Hypotenusan har en särskild roll i Pythagoras sats, där den betecknas med bokstaven c.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Vad kallas de två andra sidorna i en rätvinklig triangel?",
+   "short": "De två andra sidorna kallas kateter, och det är de som bildar den räta vinkeln.",
+   "long": "De två andra sidorna kallas kateter, och det är de som bildar den räta vinkeln. Kateterna är kortare än hypotenusan. I Pythagoras sats brukar de kallas a och b, medan hypotenusan kallas c. Man kan alltså dela upp en rätvinklig triangel i två kateter, som möts i den räta vinkeln, och en hypotenusa, som står mitt emot den.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Vad säger Pythagoras sats?",
+   "short": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat, alltså a i kvadrat plus b i kvadrat är lika med c i kvadrat.",
+   "long": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat, alltså a i kvadrat plus b i kvadrat är lika med c i kvadrat. Här är a och b kateterna och c hypotenusan. Satsen gäller bara i rätvinkliga trianglar. Den kan också användas åt andra hållet: om a i kvadrat plus b i kvadrat är lika med c i kvadrat för en triangel, så vet man att triangeln är rätvinklig. Man kan även räkna ut en katet om man känner hypotenusan och den andra kateten, då är a i kvadrat lika med c i kvadrat minus b i kvadrat.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Varför kan man använda Pythagoras sats för att räkna ut hypotenusan?",
+   "short": "Enligt Pythagoras sats är summan av kateternas kvadrater alltid lika med hypotenusans kvadrat, så när man känner kateterna kan man räkna ut hypotenusan.",
+   "long": "Enligt Pythagoras sats är summan av kateternas kvadrater alltid lika med hypotenusans kvadrat, så när man känner kateterna kan man räkna ut hypotenusan. Man kvadrerar de två kateterna, lägger ihop resultaten och drar sedan roten ur summan. Då får man hypotenusans längd. Sambandet gäller i alla rätvinkliga trianglar, men bara i just dem. Därför måste man först vara säker på att triangeln har en rät vinkel innan man använder satsen.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Hur räknar man ut hypotenusan om kateterna är tre cm och fyra cm?",
+   "short": "Man kvadrerar kateterna, nio och sexton, adderar dem till tjugofem och drar roten ur, så hypotenusan blir fem centimeter.",
+   "long": "Man kvadrerar kateterna, nio och sexton, adderar dem till tjugofem och drar roten ur, så hypotenusan blir fem centimeter. Först sätter man in kateterna i Pythagoras sats: tre i kvadrat plus fyra i kvadrat är lika med c i kvadrat. Tre i kvadrat är nio och fyra i kvadrat är sexton, och tillsammans blir det tjugofem. Då är c i kvadrat lika med tjugofem, och eftersom fem gånger fem är tjugofem är c lika med fem. Hypotenusan är alltså fem centimeter lång.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Hur räknar man ut en katet när man vet hypotenusan och den andra kateten?",
+   "short": "Man använder Pythagoras sats baklänges: kvadraten på den okända kateten är hypotenusan i kvadrat minus den andra katetens kvadrat, och sedan tar man roten ur.",
+   "long": "Man använder Pythagoras sats baklänges: kvadraten på den okända kateten är hypotenusan i kvadrat minus den andra katetens kvadrat, och sedan tar man roten ur. Satsen säger att a i kvadrat plus b i kvadrat är lika med c i kvadrat, där c är hypotenusan. Löser man ut a får man a i kvadrat är lika med c i kvadrat minus b i kvadrat. Först kvadrerar du hypotenusan och den kända katetens längd. Sedan subtraherar du den lilla kvadraten från den stora. Till sist drar du roten ur svaret för att få själva längden. Om hypotenusan är fem centimeter och den ena kateten är tre centimeter blir a i kvadrat tjugofem minus nio, alltså sexton, och kateten är fyra centimeter. Metoden gäller bara i rätvinkliga trianglar.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Varför kan man inte använda Pythagoras sats i en triangel som inte är rätvinklig?",
+   "short": "Satsen är bara bevisad för rätvinkliga trianglar, eftersom sambandet mellan sidorna hänger på att den största vinkeln är exakt nittio grader.",
+   "long": "Satsen är bara bevisad för rätvinkliga trianglar, eftersom sambandet mellan sidorna hänger på att den största vinkeln är exakt nittio grader. I en triangel med en större vinkel än nittio grader blir hypotenusan längre, så a i kvadrat plus b i kvadrat blir mindre än c i kvadrat. Är vinkeln mindre än nittio grader blir c kortare, och summan av kvadraterna blir större än c i kvadrat. Sambandet stämmer alltså bara vid precis en rät vinkel. Därför kan man också använda satsen åt andra hållet: om a i kvadrat plus b i kvadrat är lika med c i kvadrat, då vet man att triangeln är rätvinklig.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Vad visar det om en triangel uppfyller a² + b² = c²?",
+   "short": "Om a² + b² = c² stämmer för triangelns sidor, så är triangeln rätvinklig, och c är då hypotenusan som står mitt emot den räta vinkeln.",
+   "long": "Om a² + b² = c² stämmer för triangelns sidor, så är triangeln rätvinklig, och c är då hypotenusan som står mitt emot den räta vinkeln. Det betyder att man kan använda Pythagoras sats åt andra hållet, för att kontrollera om en triangel har en rät vinkel. Man tar de två kortare sidorna, kvadrerar dem och lägger ihop dem, och jämför sedan med kvadraten på den längsta sidan. Är de lika stora är triangeln rätvinklig. Är de olika är den inte det. Tre, fyra och fem centimeter är ett exempel: nio plus sexton blir tjugofem, och det är lika med fem i kvadrat, så den triangeln har en rät vinkel. Satsen gäller alltså bara i rätvinkliga trianglar, och omvänt visar sambandet att en triangel är rätvinklig.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Hur räknar man ut arean av en triangel?",
+   "short": "Arean av en triangel är basen gånger höjden delat med två.",
+   "long": "Arean av en triangel är basen gånger höjden delat med två. Basen är en av triangelns sidor, och höjden är det vinkelräta avståndet från basen upp till den motsatta hörnpunkten. Man multiplicerar alltså basen med höjden och delar resultatet med två, eftersom en triangel upptar hälften av den rektangel som har samma bas och höjd. I en rätvinklig triangel kan de två kateterna fungera som bas och höjd. Är basen sex centimeter och höjden fyra centimeter blir arean sex gånger fyra delat med två, alltså tolv kvadratcentimeter. Kom ihåg att svaret alltid anges i kvadratenheter, som kvadratcentimeter.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "h3-ma-pythagoras",
+   "subject": "Matematik",
+   "question": "Vad är arean av en cirkel, och vad betyder r i formeln?",
+   "short": "Arean av en cirkel är pi gånger radien i kvadrat, och r är radien, alltså avståndet från cirkelns mittpunkt ut till kanten.",
+   "long": "Arean av en cirkel är pi gånger radien i kvadrat, och r är radien, alltså avståndet från cirkelns mittpunkt ut till kanten. Pi är ungefär tre komma fjorton, ett tal som är detsamma för alla cirklar. Eftersom radien multipliceras med sig själv, växer arean snabbt när cirkeln blir större. Dubblar du radien blir arean fyra gånger så stor. Ett exempel: om radien är tio centimeter blir arean pi gånger hundra, alltså ungefär tre hundra fjorton kvadratcentimeter. Radien är hälften så lång som diametern, så har du diametern får du först dela den med två innan du sätter in värdet i formeln.",
+   "drill_id": "12639896-38da-4a5c-984e-b259768aae76"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Vad är en kraft och vilka två egenskaper har den?",
+   "short": "En kraft är en påverkan på ett föremål som mäts i newton, och den är en vektor, så den har både storlek och riktning.",
+   "long": "En kraft är en påverkan på ett föremål som mäts i newton, och den är en vektor, så den har både storlek och riktning. Det betyder att det inte räcker att veta hur stor kraften är, man måste också veta åt vilket håll den verkar. Flera krafter på samma föremål kan läggas ihop till en resulterande kraft. Då tar man hänsyn till riktningarna, så krafter åt motsatta håll delvis tar ut varandra. Det är den resulterande kraften som avgör hur föremålet rör sig.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Vad händer med en resulterande kraft som är noll på ett föremål?",
+   "short": "Då fortsätter föremålet att ligga still eller röra sig med konstant fart rakt fram, så dess rörelse förändras inte.",
+   "long": "Då fortsätter föremålet att ligga still eller röra sig med konstant fart rakt fram, så dess rörelse förändras inte. Detta är Newtons första lag, som också kallas tröghetslagen. Den säger att ett föremål bara ändrar sin fart eller riktning om den resulterande kraften på det inte är noll. Ett föremål som redan rör sig behöver alltså ingen kraft för att fortsätta med samma fart, och ett föremål som ligger still stannar kvar tills en resulterande kraft sätter det i rörelse.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Varför kastas du framåt när en buss tvärbromsar?",
+   "short": "Din kropp vill fortsätta med samma fart som bussen hade, eftersom ingen resulterande kraft bromsar den.",
+   "long": "Din kropp vill fortsätta med samma fart som bussen hade, eftersom ingen resulterande kraft bromsar den. Det är tröghetslagen i praktiken. Bussen bromsas av en kraft från marken, men din kropp påverkas inte av den kraften på samma sätt. Därför fortsätter du framåt med konstant fart rakt fram medan bussen saktar ner, och det känns som att du kastas framåt. Du stoppas först när något, till exempel ett säkerhetsbälte eller sätet framför, ger dig en kraft bakåt.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Vad säger Newtons andra lag?",
+   "short": "Den säger att den resulterande kraften på ett föremål är lika med massan gånger accelerationen, F = m · a.",
+   "long": "Den säger att den resulterande kraften på ett föremål är lika med massan gånger accelerationen, F = m · a. Det innebär att en resulterande kraft ger föremålet en acceleration åt samma håll som kraften. Är massan större blir accelerationen mindre för samma kraft, så ett tyngre föremål är svårare att få att ändra sin rörelse. Samma kraft på två olika tunga föremål ger alltså olika stor acceleration. Lagen binder ihop kraft, massa och rörelseförändring och används för att räkna ut en av dem när man känner de två andra.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Hur stor blir accelerationen för en vagn på tjugo kilogram som påverkas av sextio newton?",
+   "short": "Accelerationen blir tre meter per sekund i kvadrat.",
+   "long": "Accelerationen blir tre meter per sekund i kvadrat. Man använder Newtons andra lag, F = m · a, och löser ut accelerationen: a = F delat med m. Med sextio newton delat med tjugo kilogram får man tre meter per sekund i kvadrat. Det betyder att vagnens fart ökar med tre meter per sekund varje sekund så länge den resulterande kraften är lika stor. Ett tyngre föremål skulle få mindre acceleration av samma kraft.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Vad händer med accelerationen om massan ökar men kraften är densamma?",
+   "short": "Accelerationen minskar, eftersom den är kraften delad med massan, så samma kraft på en större massa ger en mindre acceleration.",
+   "long": "Accelerationen minskar, eftersom den är kraften delad med massan, så samma kraft på en större massa ger en mindre acceleration. Det följer av Newtons andra lag, där resulterande kraft är massa gånger acceleration. Om massan blir dubbelt så stor och kraften är densamma, halveras accelerationen. Ett tungt föremål är alltså svårare att få att ändra sin rörelse än ett lätt. Det syns till exempel när du knuffar en tom och en full kundvagn med samma kraft: den fulla vagnen får en mycket lägre acceleration.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Vad säger Newtons tredje lag?",
+   "short": "När ett föremål påverkar ett annat med en kraft, påverkar det andra föremålet tillbaka med en lika stor kraft i motsatt riktning.",
+   "long": "När ett föremål påverkar ett annat med en kraft, påverkar det andra föremålet tillbaka med en lika stor kraft i motsatt riktning. Krafterna kommer alltså alltid i par, och de två krafterna i ett par är lika stora men har motsatta riktningar. De verkar på två olika föremål, inte på samma. Ett vanligt exempel är när du går: foten trycker bakåt mot marken, och marken trycker lika hårt framåt mot foten. Det är den kraft från marken som får dig att röra dig framåt.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Varför tar krafterna i Newtons tredje lag inte ut varandra?",
+   "short": "De tar inte ut varandra eftersom de verkar på två olika föremål, och krafter kan bara ta ut varandra när de verkar på samma föremål.",
+   "long": "De tar inte ut varandra eftersom de verkar på två olika föremål, och krafter kan bara ta ut varandra när de verkar på samma föremål. För att man ska kunna lägga ihop krafter till en resulterande kraft måste de verka på samma föremål. I kraftparet i Newtons tredje lag verkar den ena kraften på det ena föremålet och den andra kraften på det andra. Därför påverkar var och en bara sitt eget föremål. När du står på marken trycker du på marken, och marken trycker på dig. Den kraft som påverkar dig är markens kraft, och den som påverkar marken är din.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Hur kan marken trycka dig framåt när du går?",
+   "short": "När foten trycker bakåt mot marken, trycker marken enligt Newtons tredje lag lika hårt tillbaka på dig, framåt.",
+   "long": "När foten trycker bakåt mot marken, trycker marken enligt Newtons tredje lag lika hårt tillbaka på dig, framåt. Det är alltså inte din egen kraft som flyttar dig framåt, utan markens motkraft på din fot. Den kraften verkar på dig, och eftersom den pekar framåt kan du accelerera framåt. Din kraft bakåt verkar på marken, så de två krafterna tar inte ut varandra. Friktionen mellan skon och marken gör att foten inte glider bakåt, och därför fungerar det att gå. På hal is är friktionen liten, och då är det svårt att få någon framåtriktad kraft från marken.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Hur räknar man ut tyngdkraften på ett föremål?",
+   "short": "Man multiplicerar föremålets massa med tyngdfaktorn, ungefär nio komma åtta newton per kilogram på jorden, så tyngdkraften är massa gånger g.",
+   "long": "Man multiplicerar föremålets massa med tyngdfaktorn, ungefär nio komma åtta newton per kilogram på jorden, så tyngdkraften är massa gånger g. Formeln skrivs F lika med m gånger g, och kraften mäts i newton. Ett föremål på tio kilogram får alltså en tyngdkraft på ungefär nittioåtta newton. Tyngdkraften verkar nedåt mot jordens mitt och är en kraft, så den har både storlek och riktning. Den ska inte förväxlas med massan, som mäts i kilogram och är densamma var du än befinner dig.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Vad avgör hur stor friktionen mellan två ytor blir?",
+   "short": "Friktionen bestäms av vilka material ytorna är gjorda av och av hur hårt de trycks mot varandra, alltså normalkraften.",
+   "long": "Friktionen bestäms av vilka material ytorna är gjorda av och av hur hårt de trycks mot varandra, alltså normalkraften. Friktion är en kraft som motverkar rörelse mellan två ytor. En yta av gummi mot asfalt ger mer friktion än is mot stål, eftersom materialen påverkar hur mycket ytorna håller emot varandra. Ju hårdare ytorna pressas ihop, desto större blir normalkraften och desto större blir friktionen. Ett tyngre föremål på ett golv trycker hårdare mot underlaget och får därför mer friktion än ett lätt föremål av samma material. Friktionen är alltså en kraft som riktas mot rörelsen och kan bromsa föremålet.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "ho-fy1-newton",
+   "subject": "Fysik",
+   "question": "Hur kan flera krafter läggas ihop till en resulterande kraft?",
+   "short": "Eftersom kraft är en vektor med storlek och riktning läggs krafterna ihop med hänsyn till riktning, och summan blir den resulterande kraften.",
+   "long": "Eftersom kraft är en vektor med storlek och riktning läggs krafterna ihop med hänsyn till riktning, och summan blir den resulterande kraften. Verkar två krafter åt samma håll adderas deras storlekar. Verkar de åt motsatta håll subtraheras de, och den resulterande kraften pekar åt samma håll som den större kraften. Är krafterna lika stora och motriktade blir den resulterande kraften noll, och då gäller Newtons första lag: föremålet ligger still eller rör sig med konstant fart rakt fram. Är den resulterande kraften inte noll får föremålet en acceleration enligt Newtons andra lag, kraft är massa gånger acceleration. Det är alltså den resulterande kraften som bestämmer hur rörelsen förändras.",
+   "drill_id": "ddf994f6-d3de-4031-8ccf-d1552e0cefb5"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Vad är hastighet och hur räknar man ut den?",
+   "short": "Hastighet är hur lång sträcka något färdas per tidsenhet, och man räknar ut den genom att dela sträckan med tiden.",
+   "long": "Hastighet är hur lång sträcka något färdas per tidsenhet, och man räknar ut den genom att dela sträckan med tiden. Formeln är v lika med s delat med t, där v är hastigheten, s är sträckan och t är tiden. Sträckan mäts ofta i kilometer eller meter och tiden i timmar eller sekunder, så hastigheten får enheten kilometer per timme eller meter per sekund. Ju längre sträcka man hinner på en viss tid, desto högre är hastigheten.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Vilken medelhastighet får en cyklist som cyklar 18 kilometer på 1,5 timmar?",
+   "short": "Cyklisten får medelhastigheten tolv kilometer per timme.",
+   "long": "Cyklisten får medelhastigheten tolv kilometer per timme. Man räknar med formeln hastighet är sträcka delat med tid. Sträckan är arton kilometer och tiden är en och en halv timme, och arton delat med en och en halv blir tolv. Det är en medelhastighet, eftersom cyklisten säkert cyklar snabbare på vissa delar av sträckan och långsammare på andra.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Hur många kilometer per timme motsvarar 1 meter per sekund?",
+   "short": "En meter per sekund motsvarar tre komma sex kilometer per timme.",
+   "long": "En meter per sekund motsvarar tre komma sex kilometer per timme. Det betyder att man multiplicerar ett värde i meter per sekund med tre komma sex för att få kilometer per timme. Tio meter per sekund är alltså trettiosex kilometer per timme. Vill man gå åt andra hållet delar man i stället med tre komma sex.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Vad är tyngdkraft och vilken enhet mäts den i?",
+   "short": "Tyngdkraften är den kraft som drar ett föremål mot jorden, och den mäts i newton.",
+   "long": "Tyngdkraften är den kraft som drar ett föremål mot jorden, och den mäts i newton. Den räknas ut med formeln F lika med m gånger g, där m är massan i kilogram och g är tyngdfaktorn. På jorden är g nio komma åtta newton per kilogram. En väska på fem kilogram dras därför mot jorden med ungefär fyrtionio newton.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Varför väger en vaska på månen mindre än på jorden trots att massan är densamma?",
+   "short": "Tyngdkraften beror på både massan och tyngdfaktorn g, och på månen är g mycket mindre än på jorden, så väskan dras med en svagare kraft.",
+   "long": "Tyngdkraften beror på både massan och tyngdfaktorn g, och på månen är g mycket mindre än på jorden, så väskan dras med en svagare kraft. Massan är hur mycket materia föremålet innehåller och ändras aldrig, så väskan är fortfarande fem kilogram. Det som vi kallar vikt är tyngdkraften, och den räknas som massa gånger g. På jorden är g nio komma åtta newton per kilogram, men på månen bara en komma sex. Väskan dras därför med ungefär åtta newton på månen jämfört med fyrtionio newton på jorden, och den känns mycket lättare.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Hur beräknar man tyngdkraften på ett föremål?",
+   "short": "Man multiplicerar föremålets massa med tyngdaccelerationen, alltså F är lika med m gånger g, där g är nio komma åtta newton per kilogram på jorden.",
+   "long": "Man multiplicerar föremålets massa med tyngdaccelerationen, alltså F är lika med m gånger g, där g är nio komma åtta newton per kilogram på jorden. Resultatet får enheten newton. En väska på fem kilogram dras därför mot jorden med ungefär fyrtionio newton. Tyngdkraften beror alltså både på massan och på var man befinner sig, eftersom g skiljer sig mellan himlakroppar. På månen är g bara en komma sex newton per kilogram, så samma väska dras med mycket mindre kraft där. Massan är däremot densamma överallt, fem kilogram, och det är skillnaden mellan massa och tyngdkraft.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Varför är det lätt att halka när isen är blank?",
+   "short": "Blank is ger mycket liten friktion mellan skorna och underlaget, så ingenting bromsar fötterna när de glider och man tappar greppet.",
+   "long": "Blank is ger mycket liten friktion mellan skorna och underlaget, så ingenting bromsar fötterna när de glider och man tappar greppet. Friktion är den kraft som bromsar rörelse mellan två ytor. När friktionen är liten kan skon inte hålla emot när man tar ett steg, och foten glider iväg i stället för att få fäste. Därför halkar man lätt på is, medan en grövre yta som asfalt eller grus ger mer friktion och gör det lättare att gå säkert.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Varför har däck mönster?",
+   "short": "Mönstret på däcket ökar friktionen mellan däcket och vägen, särskilt när vägen är blöt, så att bilen får bättre grepp.",
+   "long": "Mönstret på däcket ökar friktionen mellan däcket och vägen, särskilt när vägen är blöt, så att bilen får bättre grepp. Friktion är en kraft som bromsar rörelse mellan två ytor, och den behövs för att bilen ska kunna accelerera, svänga och bromsa. På en blöt väg minskar friktionen, och då hjälper mönstret till att behålla greppet. Utan mönster skulle däcken glida lättare och bilen skulle vara svårare att styra och stanna.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Vad händer med friktionen mot vägen när det är blött?",
+   "short": "Friktionen mellan däcket och vägen blir mindre när det är blött, så greppet försämras och det blir lättare att glida.",
+   "long": "Friktionen mellan däcket och vägen blir mindre när det är blött, så greppet försämras och det blir lättare att glida. Vatten mellan två ytor gör att de glider lättare mot varandra, och därför bromsas rörelsen mindre. Det är just därför däck har mönster, som ska öka friktionen mot vägen när det är blött. Även med mönster är friktionen lägre på en blöt väg än på en torr, så bilen behöver längre sträcka för att stanna.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h4-fy-hastighet",
+   "subject": "Fysik",
+   "question": "Varför sjunker man ner i snön med vanliga skor men inte med snöskor?",
+   "short": "Snöskor har större yta, så samma kraft fördelas över mer area och trycket mot snön blir mindre, medan vanliga skor ger större tryck och sjunker ner.",
+   "long": "Snöskor har större yta, så samma kraft fördelas över mer area och trycket mot snön blir mindre, medan vanliga skor ger större tryck och sjunker ner. Tryck är kraft per area, alltså p är lika med F delat med A, och mäts i pascal. Din tyngd, som är kraften, är densamma oavsett vilka skor du har. Med vanliga skor är ytan liten, så trycket blir stort och snön ger vika. Snöskor har en mycket större yta, så trycket sjunker och snön bär dig.",
+   "drill_id": "5112e75b-3895-423e-9029-d9dc300d1db2"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Varför är en atom oladdad?",
+   "short": "En atom är oladdad eftersom den har lika många positivt laddade protoner som negativt laddade elektroner, så laddningarna tar ut varandra.",
+   "long": "En atom är oladdad eftersom den har lika många positivt laddade protoner som negativt laddade elektroner, så laddningarna tar ut varandra. Protonerna sitter i kärnan och elektronerna rör sig runt kärnan. Varje proton har en positiv laddning och varje elektron en lika stor negativ laddning. Neutronerna i kärnan har ingen laddning alls och påverkar därför inte saken. Om en atom förlorar eller får en elektron blir antalen olika, och då blir atomen laddad.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Vad består en atoms kärna av?",
+   "short": "Kärnan består av protoner, som är positivt laddade, och neutroner, som saknar laddning.",
+   "long": "Kärnan består av protoner, som är positivt laddade, och neutroner, som saknar laddning. Kärnan ligger i mitten av atomen och är positivt laddad, eftersom bara protonerna bidrar med laddning. Runt kärnan rör sig elektronerna, som är negativt laddade. Det är alltså inte elektronerna som ingår i kärnan, utan de finns utanför den. Antalet protoner i kärnan är det som kallas atomnumret.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Vad bestämmer vilket grundämne en atom är?",
+   "short": "Antalet protoner i kärnan, som kallas atomnumret, bestämmer vilket grundämne atomen är.",
+   "long": "Antalet protoner i kärnan, som kallas atomnumret, bestämmer vilket grundämne atomen är. Varje grundämne har sitt eget antal protoner. Väte har en proton, kol har sex och syre har åtta. Om antalet protoner ändras, blir det därför ett annat grundämne. Ett grundämne består av bara ett slags atomer, alltså atomer med samma antal protoner. Eftersom en atom har lika många elektroner som protoner, följer antalet elektroner också atomnumret.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Hur många protoner har kol, och vad innebär det?",
+   "short": "Kol har sex protoner, och det innebär att kol har atomnummer sex och att en atom med sex protoner alltid är kol.",
+   "long": "Kol har sex protoner, och det innebär att kol har atomnummer sex och att en atom med sex protoner alltid är kol. Antalet protoner är det som avgör vilket grundämne det är, så sex protoner betyder kol och inget annat. En kolatom är oladdad, och då har den också sex elektroner som rör sig runt kärnan. Kol står därför på plats sex i det periodiska systemet, mellan grundämnena med fem och sju protoner.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Varför står grundämnena i det periodiska systemet i ordning efter atomnummer?",
+   "short": "Grundämnena står i ordning efter atomnummer, alltså efter antalet protoner, och det gör att ämnen med liknande egenskaper hamnar i samma kolumn.",
+   "long": "Grundämnena står i ordning efter atomnummer, alltså efter antalet protoner, och det gör att ämnen med liknande egenskaper hamnar i samma kolumn. När ämnena ordnas så, får de som står i samma grupp, alltså samma kolumn, lika många elektroner i det yttersta skalet. Därför reagerar de på liknande sätt. Ädelgaserna längst till höger har fullt yttersta skal och reagerar nästan inte alls. Systemet är alltså en översikt som visar både ordningen på atomerna och hur ämnena beter sig.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Varför reagerar ämnen i samma grupp på liknande sätt?",
+   "short": "Ämnen i samma grupp har lika många elektroner i det yttersta skalet, och det är just de elektronerna som avgör hur en atom reagerar med andra atomer.",
+   "long": "Ämnen i samma grupp har lika många elektroner i det yttersta skalet, och det är just de elektronerna som avgör hur en atom reagerar med andra atomer. Eftersom det yttersta skalet ser likadant ut i hela gruppen beter sig atomerna på liknande sätt när de möter andra ämnen. Det är därför grundämnen i samma kolumn i periodiska systemet har ungefär samma egenskaper, även om de har olika atomnummer och olika många protoner i kärnan. Gruppen visar alltså vilka ämnen som är kemiskt släkt med varandra.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Varför reagerar ädelgaserna nästan inte alls?",
+   "short": "Ädelgaserna reagerar nästan inte alls eftersom deras yttersta elektronskal redan är fullt, så atomerna har ingen drivkraft att ta upp, lämna ifrån sig eller dela elektroner.",
+   "long": "Ädelgaserna reagerar nästan inte alls eftersom deras yttersta elektronskal redan är fullt, så atomerna har ingen drivkraft att ta upp, lämna ifrån sig eller dela elektroner. Andra atomer reagerar just för att deras yttersta skal inte är fullt. Ädelgaserna står längst till höger i periodiska systemet och är därför stabila och nöjda som de är. Det är skälet till att de oftast förekommer som enskilda atomer och sällan bildar föreningar med andra ämnen.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Vad händer när atomer binds ihop?",
+   "short": "När atomer binds ihop bildas molekyler, där två eller flera atomer sitter ihop och bildar en ny enhet.",
+   "long": "När atomer binds ihop bildas molekyler, där två eller flera atomer sitter ihop och bildar en ny enhet. Atomerna kan vara av samma grundämne eller av olika grundämnen. Om molekylen består av två eller flera olika grundämnen kallas den en kemisk förening. Vatten är ett exempel, där två väteatomer sitter ihop med en syreatom. Molekylen har då helt andra egenskaper än de ämnen den är byggd av var för sig.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Varför består vatten av två olika grundämnen?",
+   "short": "Vatten består av väte och syre, två olika grundämnen, och eftersom en kemisk förening är just ämnen med två eller flera olika grundämnen är vatten en kemisk förening.",
+   "long": "Vatten består av väte och syre, två olika grundämnen, och eftersom en kemisk förening är just ämnen med två eller flera olika grundämnen är vatten en kemisk förening. Väte har en proton och syre har åtta protoner, så atomerna är av olika slag. När två väteatomer binds ihop med en syreatom bildas en vattenmolekyl. Formeln skrivs H två O, där tvåan visar att det är två väteatomer. Vatten är alltså en molekyl och en förening på samma gång, eftersom den innehåller olika grundämnen.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "h3-ke-atomer",
+   "subject": "Kemi",
+   "question": "Hur är en vattenmolekyl uppbyggd?",
+   "short": "En vattenmolekyl består av två väteatomer som sitter ihop med en syreatom, och formeln skrivs H två O.",
+   "long": "En vattenmolekyl består av två väteatomer som sitter ihop med en syreatom, och formeln skrivs H två O. Tvåan i formeln visar att det är just två väteatomer och en syreatom. Väte har en proton och syre har åtta protoner i kärnan, och varje atom har lika många elektroner som protoner, så de är oladdade. När atomerna binds ihop bildas en molekyl, och eftersom den innehåller två olika grundämnen är vatten också en kemisk förening.",
+   "drill_id": "80b16a3d-21a6-4eaa-b6e4-ee191cde5ece"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Varför har hjärtat fyra rum?",
+   "short": "Hjärtat har två förmak som tar emot blod och två kammare som pumpar ut det, så att syrefattigt och syrerikt blod kan hållas isär.",
+   "long": "Hjärtat har två förmak som tar emot blod och två kammare som pumpar ut det, så att syrefattigt och syrerikt blod kan hållas isär. Höger sida av hjärtat tar emot syrefattigt blod från kroppen och pumpar det till lungorna. Vänster sida tar emot syrerikt blod från lungorna och pumpar det ut till hela kroppen. Eftersom hjärtat är uppdelat i fyra rum kan det alltså driva två kretslopp samtidigt med en enda muskel, och blodet blandas inte. Förmaken fungerar som mottagare och kamrarna som kraftfulla pumpar, vilket gör att blodet kan transporteras effektivt.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Varför kan blodet bara flyta åt ett håll i hjärtat?",
+   "short": "Klaffar i hjärtat fungerar som backventiler som öppnar sig när blodet pressas framåt och sluter sig så att blodet inte kan rinna bakåt.",
+   "long": "Klaffar i hjärtat fungerar som backventiler som öppnar sig när blodet pressas framåt och sluter sig så att blodet inte kan rinna bakåt. Klaffarna sitter mellan förmak och kammare samt vid utgångarna från kamrarna. När hjärtmuskeln drar ihop sig stängs klaffarna bakom blodet, så att trycket driver det i rätt riktning. Utan klaffar skulle en del av blodet flyta tillbaka vid varje hjärtslag, och hjärtat skulle pumpa mycket mindre effektivt. Därför kan blodet strömma i en jämn riktning genom hjärtat och vidare ut i kroppen.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Vad gör det lilla kretsloppet?",
+   "short": "Det lilla kretsloppet för syrefattigt blod från hjärtats högra kammare till lungorna, där blodet tar upp syre och lämnar ifrån sig koldioxid, och tillbaka till hjärtat.",
+   "long": "Det lilla kretsloppet för syrefattigt blod från hjärtats högra kammare till lungorna, där blodet tar upp syre och lämnar ifrån sig koldioxid, och tillbaka till hjärtat. Det är alltså det kretslopp som ser till att blodet fylls på med syre igen efter att cellerna i kroppen har förbrukat det. Det syrerika blodet återvänder sedan till hjärtats vänstra sida, och därifrån börjar det stora kretsloppet, som skickar ut blodet till hela kroppen. De två kretsloppen hänger ihop och bildar tillsammans en sluten cirkel, där blodet hela tiden pumpas runt mellan lungorna och kroppens celler.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Vad händer med blodet i lungorna?",
+   "short": "I lungorna tar blodet upp syre och lämnar ifrån sig koldioxid, så att det blir syrerikt innan det går tillbaka till hjärtat.",
+   "long": "I lungorna tar blodet upp syre och lämnar ifrån sig koldioxid, så att det blir syrerikt innan det går tillbaka till hjärtat. Syret kommer från den luft vi andas in, och koldioxiden andas vi ut. Utbytet sker i lungornas mycket tunna kapillärer, där gaserna kan passera mellan luften och blodet. Syret binds sedan till hemoglobinet i de röda blodkropparna. Det syrerika blodet går vidare till hjärtats vänstra sida och pumpas därifrån ut i det stora kretsloppet, där det levererar syre till kroppens celler.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Varför har vänster kammare tjockare vägg än höger kammare?",
+   "short": "Vänster kammare har tjockare vägg eftersom den måste pumpa blodet längre, ut till hela kroppen, medan höger kammare bara pumpar det till lungorna.",
+   "long": "Vänster kammare har tjockare vägg eftersom den måste pumpa blodet längre, ut till hela kroppen, medan höger kammare bara pumpar det till lungorna. För att blodet ska nå ända ut i kroppens alla delar krävs ett högre tryck och en kraftigare muskel. En tjock, stark vägg gör att vänster kammare kan trycka ut blodet med stor kraft i artärerna, som själva har tjocka, elastiska väggar för att klara det höga trycket. Höger kammare behöver inte lika mycket kraft, eftersom lungorna ligger nära hjärtat. Därför är dess vägg tunnare.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Hur skiljer sig det stora kretsloppet från det lilla?",
+   "short": "I det lilla kretsloppet pumpar höger kammare blodet till lungorna för att ta upp syre, medan vänster kammare i det stora kretsloppet pumpar syrerikt blod ut till hela kroppen.",
+   "long": "I det lilla kretsloppet pumpar höger kammare blodet till lungorna för att ta upp syre, medan vänster kammare i det stora kretsloppet pumpar syrerikt blod ut till hela kroppen. Skillnaden ligger alltså i vart blodet går och vad som sker. I det lilla kretsloppet lämnar blodet koldioxid i lungorna och får nytt syre. I det stora kretsloppet lämnar blodet syre och näring till cellerna ute i kroppen. Därför måste vänster kammare pumpa längre, och den har en tjockare vägg än den högra. Kretsloppen hänger ihop: blodet från lungorna går tillbaka till hjärtat och pumpas sedan ut i kroppen, och blodet från kroppen går tillbaka till hjärtat och pumpas sedan till lungorna.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Varför har artärerna tjocka, elastiska väggar?",
+   "short": "Artärerna för blodet bort från hjärtat under högt tryck, så de behöver tjocka, elastiska väggar som tål trycket och inte spricker.",
+   "long": "Artärerna för blodet bort från hjärtat under högt tryck, så de behöver tjocka, elastiska väggar som tål trycket och inte spricker. Varje gång hjärtat slår pressas blodet ut i artärerna med stor kraft. De elastiska väggarna gör att kärlen kan vidgas när trycket kommer och dra ihop sig igen efteråt, vilket hjälper till att hålla blodet i rörelse. Venerna har lägre tryck och behöver därför inte lika tjocka väggar. Det är ett exempel på hur ett kärls byggnad passar den uppgift det har. Högt blodtryck, till exempel av rökning och mycket salt, belastar artärernas väggar extra mycket.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Varför har venerna klaffar?",
+   "short": "Venerna har klaffar för att hindra blodet från att flyta bakåt, så att det bara kan röra sig åt ett håll, tillbaka mot hjärtat.",
+   "long": "Venerna har klaffar för att hindra blodet från att flyta bakåt, så att det bara kan röra sig åt ett håll, tillbaka mot hjärtat. Trycket i venerna är lågt, och det finns därför inget som skjuter blodet framåt med samma kraft som i artärerna. Utan klaffar skulle blodet kunna sjunka tillbaka, särskilt i benen där det ska ta sig uppåt mot hjärtat. Klaffarna fungerar som små backventiler: de öppnar sig när blodet rör sig mot hjärtat och sluter sig när det försöker vända. Muskelrörelser när vi går eller rör oss pressar på venerna och hjälper blodet framåt, medan klaffarna ser till att det inte åker tillbaka. På så sätt kommer blodet tillbaka till hjärtat.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Varför är kapillärerna så tunna?",
+   "short": "Kapillärerna är så tunna att syre och näring kan passera ut genom deras väggar till cellerna, och avfall kan tas upp från cellerna.",
+   "long": "Kapillärerna är så tunna att syre och näring kan passera ut genom deras väggar till cellerna, och avfall kan tas upp från cellerna. Kapillärerna är kroppens minsta blodkärl och finns ute bland cellerna i alla vävnader. Eftersom väggarna är så tunna är avståndet mycket kort, så ämnena kan lätt ta sig mellan blodet och cellerna. Det är här blodet gör sitt viktigaste jobb i det stora kretsloppet: det lämnar syre och näring och tar med sig koldioxid och andra avfallsämnen. Artärerna och venerna skulle inte kunna göra detta, eftersom deras väggar är för tjocka. Kapillärerna binder ihop artärerna med venerna.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  },
+  {
+   "eid": "ho-bio-ak9-blodet",
+   "subject": "Biologi",
+   "question": "Vad gör de röda blodkropparna?",
+   "short": "De röda blodkropparna innehåller hemoglobin som binder syre, och de transporterar syret från lungorna ut till kroppens celler.",
+   "long": "De röda blodkropparna innehåller hemoglobin som binder syre, och de transporterar syret från lungorna ut till kroppens celler. I lungorna tar hemoglobinet upp syre från luften, och när blodet kommer fram till cellerna i kroppen släpper det syret ifrån sig. Cellerna behöver syret för att kunna frigöra energi ur näringen. Utan röda blodkroppar skulle kroppens celler därför snabbt få syrebrist. De röda blodkropparna är en av flera delar i blodet: de vita blodkropparna försvarar kroppen mot bakterier och virus, blodplättarna hjälper blodet att levra sig, och blodplasman transporterar näring, hormoner och avfall.",
+   "drill_id": "db982bb0-5bfa-49b4-8a03-814f65fbc331"
+  }
+ ]
+}
