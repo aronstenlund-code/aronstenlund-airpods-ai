@@ -34,3 +34,4 @@
 - 19:50 Runda: veckogränsen är 81 %. Alla köer är tomma utom Tobys omtest av T28 efter Kevins T28b. Angela Fable har slutat (tom kö). Inga prompter. Föreslår Aron att de som står still väntar på hans telefontest.
 - 20:22 Runda: T28-felet var testets fel. Testet valde ett foto utan text, så 422 var rätt. Toby kör om med en textbild. Övriga har tomma köer. Uppskattad gräns: cirka 82 %.
 - 20:54 Runda: Angela Schrute har gjort Tobys testkrok LUMEN_TEST_MATERIAL (grön, 43752158888), så att T28 kan köras med text. Toby kör nu. Uppskattad gräns: cirka 83 %.
+- 21:26 Runda: Toby kör T28 på grenen toby/t28 (kontexten är på 80 %) och har nästa runda 21:33. Övriga har tomma köer. Uppskattad gräns: cirka 84 %.
