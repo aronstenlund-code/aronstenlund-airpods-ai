@@ -60,3 +60,15 @@ enhet.** Falskt ljud via `LUMEN_TEST_HEADER` (x-earmind-test, D180). **0 ElevenL
 ## Nästa
 - Kör `apptest-fullflow` igen efter A104 (V1–V4) och efter Angela Schrutes svar om L5. Testet är på main nu; en push till
   `toby/**` som rör de tre filerna startar det.
+
+## Tillägg 2026-11-15 09:05: omtest efter Angela Schrutes 60d83ce (L5, L6, M1)
+Körning 43687320010 (toby/t24b = main 71a610c + unik text i lägena slow och unavailable, som Angela Schrute föreslog):
+- **L5 rättad:** i läget `unavailable` gick provkortet på Start från "3 frågor · Ljud: 0 av 6 klara" till **"3 frågor ·
+  Ljudet kan inte göras just nu"** inom testets 40 s, för frågorna märkta "test 727778 unavailable". *Verifierat i simulatorn.*
+- **L6:** läget `slow` blev rött på testets sida ("Gör med ChatGPT" fanns inte efter Nytt prov en gång). Rättat i testet,
+  och fas b körs om ensam (workflow_dispatch, `phases: b`).
+- **M1 (D189) rättad:** Mina svar finns nu i Provläge efter ett prov i repetitionsflödet, och testet når Mina svar.
+- **Nytt, litet (till Angela Fable):** i Mina svar → Spela in ligger **"Spela in svaret" utanför skärmen**. Testet
+  svepte 6 gånger och knappen gick ändå inte att trycka. Samma sak med Avbryt i det bladet. iPhone 17 Pro, standardtext.
+  Kan vara testets svep i ett blad. *Untested assumption* att det är vyn.
+- Fas a grön (8/8), publiceringen borttagen. `drill_publications` har bara de två kända raderna. *Verifierat i databasen.*
