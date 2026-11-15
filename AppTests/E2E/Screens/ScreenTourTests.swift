@@ -339,13 +339,25 @@ final class ScreenTourTests: XCTestCase {
         let onPage = ["Starta EarMind", "Starta Earmind", "Starta Lumen", "Tillbaka till EarMind", "Tillbaka till Lumen"]
         if let start = find(onPage, buttonsOnly: true), start.isHittable { return }
         backToStart()
-        guard let row = scrollTo(["Fler lägen"]) else { miss("start → Fler lägen: row not found (A100: shown after the first started exam)"); return }
+        // Run 43701962069 ran over 2 h: a missing row cost 50 swipes each time. Look once per mode, 8 swipes down at most.
+        guard !modesPageMissing else { return }
+        var found: XCUIElement?
+        for _ in 0..<8 {
+            if let row = find(["Fler lägen"]), row.isHittable { found = row; break }
+            app.swipeUp()
+        }
+        guard let row = found else {
+            modesPageMissing = true
+            miss("start → Fler lägen: row not found (A100: shown after the first started exam)")
+            return
+        }
         row.tap()
         pause(1.5)
         if !shotModesPage { shoot("fler-lagen-sida", note: "Fler lägen page (A100)"); shotModesPage = true }
     }
 
     private var shotModesPage = false
+    private var modesPageMissing = false
 
     /// Back along the navigation stack until Start's gear ("Inställningar") is there.
     private func backToStart() {
