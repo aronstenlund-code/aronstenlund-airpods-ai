@@ -44,7 +44,7 @@ struct SettingsView: View {
             // the study plan's older one after it. Nothing is removed.
             if let repetition = model.repetition {
                 PracticeReminderSection(model: repetition,
-                                        otherFooter: "Studieplanen: en gång om dagen med dagar kvar till provet och 5 snabba frågor. Ingen påminnelse de dagar du redan har övat.") {
+                                        mergedFooter: "Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat.") {
                     studyReminderRows(merged: true)
                 }
             } else {
@@ -174,8 +174,9 @@ struct SettingsView: View {
         Toggle(isOn: $studyReminders) {
             if merged {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Påminn mig varje dag")
-                    Text("Studieplanen i Fler lägen").font(.subheadline).foregroundStyle(.secondary)
+                    // Kelly (Ke65 §14, after D198)
+                    Text("Studieplan i Fler lägen")
+                    Text("Dagar kvar till provet och 5 snabba frågor").font(.subheadline).foregroundStyle(.secondary)
                 }
             } else {
                 Text("Påminn mig varje dag")
@@ -183,7 +184,7 @@ struct SettingsView: View {
         }
         .onChange(of: studyReminders) { _, on in Task { await model.refreshStudyPlan(askForReminders: on) } }
         if studyReminders {
-            DatePicker(merged ? "Tid för studieplanen" : "Tid", selection: reminderTime, displayedComponents: .hourAndMinute)
+            DatePicker("Tid", selection: reminderTime, displayedComponents: .hourAndMinute)
         }
     }
 
