@@ -212,3 +212,54 @@ import Testing
         #expect(TestMaterial.text(environment: ["LUMEN_TEST_MATERIAL": String(repeating: "a", count: 50_000)])?.count == 40_000)
     }
 }
+
+/// Toby (moln) T27/T31, 2026-11-16: Start showed two exams after a ChatGPT import left ~3 s after Spara frågorna. The
+/// server had stored the exam, but its reply (the server id) had not reached the phone yet, so `refresh` took the
+/// server's exam for another phone's and added it a second time.
+@MainActor
+@Suite struct DuplicateAfterImportTests {
+    @Test func anExamWhoseSaveIsOnItsWayIsNotAddedTwice() async throws {
+        let folder = try A79A81RepetitionTests.folder("dup")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A79A81RepetitionTests.MockCloud()
+        var local = A79A81RepetitionTests.bio(3)
+        local.needsUpload = true // saved on the phone; the server's reply has not come back yet
+        store.save(local)
+        // The server already has it (the save request arrived) and lists it.
+        _ = try await cloud.save(local)
+        cloud.listed = [DrillCloudListEntry(id: "server-1", title: local.title, items: 3, updated_at: nil)]
+        cloud.views["server-1"] = cloud.view(id: "server-1")
+        let model = RepetitionModel(store: store,
+                                    session: RepetitionSession(inputs: [], activatesAudioSession: false),
+                                    maker: MockDrillMaker(),
+                                    audio: CloudDrillAudio(cloud: cloud, store: store, folder: folder,
+                                                           pollInterval: .milliseconds(1), maxPolls: 1),
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        await model.refresh()
+        #expect(store.drills.count == 1, "one exam on Start, not two")
+        #expect(store.drills.first?.id == local.id && store.drills.first?.serverID == "server-1",
+                "the phone's own exam is the server's (its edits and place are kept)")
+    }
+
+    @Test func anotherPhonesExamIsStillAdded() async throws {
+        let folder = try A79A81RepetitionTests.folder("dup2")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A79A81RepetitionTests.MockCloud()
+        var other = A79A81RepetitionTests.bio(2)
+        other.items[0].question = "En helt annan fråga?"
+        _ = try await cloud.save(other)
+        cloud.listed = [DrillCloudListEntry(id: "server-2", title: "Bio", items: 2, updated_at: nil)]
+        cloud.views["server-2"] = cloud.view(id: "server-2")
+        var mine = A79A81RepetitionTests.bio(2)
+        mine.needsUpload = true
+        store.save(mine)
+        let model = RepetitionModel(store: store,
+                                    session: RepetitionSession(inputs: [], activatesAudioSession: false),
+                                    maker: MockDrillMaker(),
+                                    audio: CloudDrillAudio(cloud: cloud, store: store, folder: folder,
+                                                           pollInterval: .milliseconds(1), maxPolls: 1),
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        await model.refresh()
+        #expect(store.drills.count == 2, "different questions: a different exam")
+    }
+}
