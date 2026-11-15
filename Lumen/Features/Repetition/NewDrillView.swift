@@ -176,6 +176,11 @@ struct NewDrillView: View {
 
             if model.quotaUsedUp { // A99 (D175, Kelly): said before anything is sent, not as an error afterwards
                 Section { Text(verbatim: Self.usedUpLine) }
+            } else if model.isOffline { // A104 (A103): said before the user has taken photos and waited
+                Section {
+                    Label("Ingen internetanslutning. Du kan lägga till material nu och skapa frågorna när du är uppkopplad.",
+                          systemImage: "wifi.slash")
+                }
             }
 
             if cameraDenied {
@@ -291,8 +296,9 @@ struct NewDrillView: View {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
             MainActionBar(title: "Skapa frågor",
                           note: model.quotaUsedUp ? "Inga frågor kvar den här månaden." // Kelly: the long line is at the top
+                              : model.isOffline ? "Skapa frågor kräver internet."
                               : material.isEmpty ? "Lägg till minst en sida, bild eller text." : model.quota.map { $0.line + "." },
-                          isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp) {
+                          isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp || model.isOffline) {
                 create(correction: nil)
             }
         }

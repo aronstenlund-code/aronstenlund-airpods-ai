@@ -119,7 +119,7 @@ struct PublishSheet: View {
                 dismiss()
             } catch {
                 if case .offline = error {
-                    problem = "Ingen internetanslutning. Försök igen när du är uppkopplad."
+                    problem = NetworkStatus.noNetworkLine // A104: one wording (A103)
                 } else if case .refused(let status, _, let message) = error, status == 409 || status == 400 {
                     problem = message
                 } else {
@@ -514,7 +514,7 @@ struct PublicationView: View {
                 if case .refused(let status, _, let message) = error {
                     problem = status == 404 ? "Provet finns inte längre." : message
                 } else {
-                    problem = "Ingen internetanslutning. Försök igen när du är uppkopplad."
+                    problem = NetworkStatus.noNetworkLine // A104: one wording (A103)
                 }
             }
             adding = false
