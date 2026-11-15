@@ -60,7 +60,7 @@ jobs:
         if: always() && inputs.script == 'o68_voice.py'
         run: |
           f=$(ls -t reports/qa/data/*-o68-items.json | head -1)
-          printf 'export { voiceText, longVoice } from "%s/backend/supabase/functions/drill/handler.ts";\nexport { examLanguage } from "%s/backend/supabase/functions/exam/drill.ts";\n' "$PWD" "$PWD" > /tmp/o68entry.ts
+          printf 'export { voiceText, longVoice } from "%s/backend/supabase/functions/drill/handler.ts";\nexport { VOICE_RULES_VERSION } from "%s/backend/supabase/functions/drill/voicerules.ts";\nexport { examLanguage } from "%s/backend/supabase/functions/exam/drill.ts";\n' "$PWD" "$PWD" "$PWD" > /tmp/o68entry.ts
           npx --yes esbuild@0.24.0 /tmp/o68entry.ts --bundle --format=esm --platform=node --external:'npm:*' --external:'jsr:*' --outfile=/tmp/o68voice.mjs --log-level=warning
           node scripts/qa/o68_analyze.mjs /tmp/o68voice.mjs "$f"
           git config user.name "oscar-qa-bot"

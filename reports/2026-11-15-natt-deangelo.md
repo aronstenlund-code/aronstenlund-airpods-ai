@@ -27,3 +27,4 @@
 - 16:36 Runda: inga nya commits sedan 15:40. Toby (T28) har inte pushat sedan 15:25. Hans sida laddade inte i webbläsaren, så jag kunde inte se om han jobbar. Uppskattad gräns: cirka 75 %.
 - 16:55 Aron: "prompta". Nya uppgifter: K74 (naturligare uppläsning, v4 bakom flagga, A/B-skript som väntar på Arons ja), O68, A108 och A109 (streak och påminnelse, D194), Ke65 (testlista för Arons telefontest) och T30.
 - 17:08 Runda: veckogränsen är 76 %. Kevin är klar med K74 (D196). Angela Schrute har A108 i CI. Oscar kör O68. Kelly är klar med Ke65. Toby gav grönt på T24 efter A107. Angela Fable väntar på A108. Inga prompter.
+- 17:40 Runda: veckogränsen är 77 %. Angela Schrute är klar med A108 (grönt bygge 43733896070). A109 (Angela Fable) och T30 (Toby) är nu fria att ta. Kevin är klar med K75 (uppläsning version 3), och Oscar kör O69. Sessionerna väcker sig själva, så inga prompter.

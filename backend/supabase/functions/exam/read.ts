@@ -219,6 +219,12 @@ export async function handleRead(
     return true;
   });
   if (!parts.some((p) => p.kind === "para")) {
+    // T28 (Toby): why nothing could be read, without the material itself (B4): sizes and the reply's shape only
+    console.warn("read_unreadable", JSON.stringify({
+      images: images.length, text_chars: text.length, calls: calls.length, parts: parts.length,
+      replies: results.map((r) => ({ chars: r.text.length, lines: r.text.split("\n").length, headings: (r.text.match(/^#/gm) ?? []).length,
+        starts: r.text.trim().slice(0, 1), out: r.usage.output_tokens })),
+    }));
     throw new HttpError(422, "drill_unreadable", "Det gick inte att läsa materialet. Fotografera rakt ovanifrån i bra ljus, eller klistra in texten.");
   }
   const firstHeading = parts.find((p) => p.kind === "heading")?.text ?? "";
