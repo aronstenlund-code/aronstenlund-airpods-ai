@@ -1,0 +1,8 @@
+{"read_ms": 4485, "read_status": 200,
+ "parts": [{"kind": "heading", "text": "Fotosyntesen"}, {"kind": "para", "text": "Växter bildar glukos av koldioxid och vatten med hjälp av ljus. Det sker i klorofyllkorn, som finns i bladens celler. Syre blir över och släpps ut."}, {"kind": "heading", "text": "Cellandning"}, {"kind": "para", "text": "Cellandningen är fotosyntesens motsats. Glukos och syre blir koldioxid, vatten och energi. Den sker i alla levande celler, till exempel i musklerna."}],
+ "checks": {"no_page_numbers": true, "no_running_head": true, "hyphen_mended": true, "headings": ["Fotosyntesen", "Cellandning"], "nothing_cut": true, "sentences_match_times": true, "list_kind": ["text"]},
+ "sentence_times": {"heading": [[0, 993]], "para1": [[0, 1265], [1285, 2349], [2369, 2952]], "para2": [[0, 778], [798, 1795], [1815, 2952]]},
+ "save": {"status": 200, "generated_questions": 1, "new_chars": 320, "counts_as": 1},
+ "audio": {"done": 4, "total": 4, "failed": 0, "chars": 320, "credits": 0, "bytes": 125934, "model": "eleven_multilingual_v2"},
+ "import": {"status": 200, "kind": "text", "new_chars": 0, "items": 4},
+ "source": "GitHub Actions kevin-live.yml run 43707573455 (test account, x-earmind-test, silent audio)"}

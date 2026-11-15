@@ -415,6 +415,14 @@ All calls are `POST` with the user's JWT, like `/answer`.
    - A photo that never arrived gives 422 `material_missing` ("2 av 30 bilder kom inte fram. Ladda upp dem igen."). Upload those again with new URLs.
 - More than 10 photos are written out as text in parallel batches before the questions are made. Measured live: 30 photos to questions in 22.5 s, answers 12 s more.
 
+### Ljud vid Starta prov (K71, D190)
+
+1. **Save without audio:** add `"defer_audio": true` to `save`. While the drill has not been started, nothing is voiced or counted: the reply has `drill.audio_started: false`, `new_chars: 0`, `generated_questions: 0` and `chars_on_start` (what start will make). Edit freely (questions, answers, text parts); every save is free.
+2. **Starta prov:** `POST /drill {"action":"start","id"}` -> the drill as `get` returns it, plus `new_chars` and `generated_questions`. Every missing file is queued in play order and the month's quota is counted now (402 `quota_exceeded` exactly as save had it; nothing is started then). Poll `status` for `audio.done / audio.total` ("Gör ljudet …"). Calling start again costs nothing.
+3. **After start:** a save (with or without `defer_audio`) makes only the files whose text changed (hash, D144) and counts only those questions.
+4. **Share and publish** of a drill never started make its audio first (counted as start would) and answer 409 `audio_not_ready` with `done`/`total`/`audio_started: true` until it is done (share answers 200 at once when every file already existed). An imported copy is started (its files are the original's).
+5. **Old apps** (no `defer_audio`): unchanged, the audio is made at save. `list` and `get` give `audio_started` per drill. Test accounts get silent audio at start (D180).
+
 ### Läsläget (K70, D185): a running text instead of questions
 
 1. **Read the material:** `POST /exam {"action":"read", "pages"?|"page_paths"?|"text"?, "subject"?, "grade"?, "title"?}` (the same inputs as `drill`) ->

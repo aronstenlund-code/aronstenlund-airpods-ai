@@ -301,7 +301,7 @@ Deno.test("K47 R5c: import copies questions, answers and audio with 0 new charac
   const orig = await (await w.h("u1")(post({ action: "get", id: a.drill.id }))).json();
   assertEquals(orig.items[0].question, ITEMS[0].question);
   // the photos and documents are never part of a drill, so nothing else can be shared
-  assertEquals(Object.keys(b.drill).sort(), ["covers", "created_at", "grade", "id", "kind", "long_words", "shared_from", "subject", "title", "updated_at", "voice_model"]);
+  assertEquals(Object.keys(b.drill).sort(), ["audio_started", "covers", "created_at", "grade", "id", "kind", "long_words", "shared_from", "subject", "title", "updated_at", "voice_model"]);
   assertEquals((await w.h("u3")(post({ action: "import", code: "nosuchcode1" }))).status, 404);
   assertEquals((await (await w.h("u2")(post({ action: "import", code: `earmind://prov/${code}` }))).json()).new_chars, 0);
 });
@@ -651,4 +651,60 @@ Deno.test("K70 a test account's text gets silent audio with sentence times (D180
   assertEquals(files.length, 3);
   assert(files.every((a) => a.voice_id === TEST_VOICE_ID));
   assertEquals(j.items[1].audio.text.sentences?.length ?? files[1].sentences?.length, 3);
+});
+
+// ---------- K71 (D190): the audio is made at Starta prov ----------
+Deno.test("K71 save with defer_audio: no audio, no count; start makes it all and counts; an edit after start makes only that question", async () => {
+  const w = world({ freeQuestions: 15 });
+  const s = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { title: "Bio" }, items: ITEMS }))).json();
+  assertEquals(s.drill.audio_started, false);
+  assertEquals(s.generated_questions, 0);
+  assertEquals(s.new_chars, 0);
+  assert(s.chars_on_start > 0);
+  assertEquals(w.spoken.filter((t) => t !== CUE).length, 0, "nothing voiced at save");
+  assertEquals(w.quota.get("u1") ?? 0, 0);
+  // edits before start are free
+  const edited = [{ ...ITEMS[0], short: "Klorofyll fångar ljus.", long: "Klorofyll fångar ljus. Det ger energi." }, ITEMS[1]];
+  const s2 = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { id: s.drill.id }, items: edited.map((x, i) => ({ ...x, id: s.items[i].id })) }))).json();
+  assertEquals(s2.generated_questions, 0);
+  assertEquals(w.spoken.filter((t) => t !== CUE).length, 0);
+  // the share before start starts the audio
+  const st = await (await w.h("u1")(post({ action: "start", id: s.drill.id }))).json();
+  assertEquals(st.drill.audio_started, true);
+  assertEquals(st.generated_questions, 2);
+  assertEquals(st.audio.done, st.audio.total);
+  assertEquals(w.spoken.filter((t) => t !== CUE).length, 4);
+  assert(w.spoken.some((t) => t.includes("Det ger energi")), "the edited answer is what was voiced");
+  // start again: nothing new
+  const again = await (await w.h("u1")(post({ action: "start", id: s.drill.id }))).json();
+  assertEquals(again.generated_questions, 0);
+  // an edit after start (even with defer_audio) makes only that question's long file
+  const n = w.spoken.length;
+  const after = [{ ...edited[0], id: st.items[0].id }, { ...ITEMS[1], long: ITEMS[1].long + " Ny mening.", id: st.items[1].id }];
+  const e = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { id: s.drill.id }, items: after }))).json();
+  assertEquals(w.spoken.length - n, 1, "one new file");
+  assertEquals(e.generated_questions, 1);
+});
+
+Deno.test("K71 share and publish of a drill never started make its audio first; an old app's save makes it at once", async () => {
+  const w = world();
+  const s = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { title: "Bio" }, items: ITEMS }))).json();
+  const sh = await w.h("u1")(post({ action: "share", id: s.drill.id }));
+  assertEquals(sh.status, 200, "the audio was made, then shared");
+  assert((await sh.json()).code);
+  assertEquals(w.quota.get("u1"), 2);
+  const old = await (await w.h("u2")(post({ action: "save", drill: { title: "Gammal app" }, items: [ITEMS[0]] }))).json();
+  assertEquals(old.drill.audio_started, true);
+  assertEquals(old.audio.done, old.audio.total);
+});
+
+Deno.test("K71 a text drill waits for start too; a test account's start gets silent audio (D180)", async () => {
+  const w = world();
+  const s = await runWithTest({ test: true, reason: "script", userId: "t1" }, async () =>
+    await (await w.h("t1")(post({ action: "save", defer_audio: true, drill: { kind: "text" }, items: TEXT }))).json());
+  assertEquals([...w.audio.values()].filter((a) => a.kind === "text").length, 0);
+  const st = await runWithTest({ test: true, reason: "script", userId: "t1" }, async () =>
+    await (await w.h("t1")(post({ action: "start", id: s.drill.id }))).json());
+  assertEquals(st.audio.done, 3);
+  assert([...w.audio.values()].filter((a) => a.kind === "text").every((a) => a.voice_id === TEST_VOICE_ID));
 });
