@@ -434,8 +434,16 @@ final class RepetitionModel {
     var quota: DrillQuota?
 
     func quotaExceeded(_ drill: Drill) -> Bool {
-        (audio as? CloudDrillAudio)?.quotaExceeded.contains(drill.id) ?? false
+        #if DEBUG
+        if stagedQuotaExceeded.contains(drill.id) { return true }
+        #endif
+        return (audio as? CloudDrillAudio)?.quotaExceeded.contains(drill.id) ?? false
     }
+
+    #if DEBUG
+    /// Screenshots (A104): an exam the month's questions ran out for.
+    @ObservationIgnored var stagedQuotaExceeded: Set<UUID> = []
+    #endif
 
     // MARK: Publicera prov (A83, D149, D150, K49)
 
