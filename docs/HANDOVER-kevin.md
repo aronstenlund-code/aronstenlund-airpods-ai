@@ -1,3 +1,44 @@
+# Överlämning: Kevin (backend), 2026-11-15 02:55, från den lokala sessionen till "Kevin (moln)"
+
+**Klart och driftsatt i dag** (rapporterna i `reports/2026-11-14-*-kevin-*` och `reports/2026-11-15-0255-kevin-k69-faster-create.md`):
+- K58–K68:
+  - ChatGPT-import, lagring
+  - hjälpen och trycken
+  - kvoten, längdklass och provkrediter
+  - testläge utan ElevenLabs (D180, `_shared/testmode.ts`, huvudet `x-earmind-test` med lägena `unavailable` och `slow`)
+  - kön för ljud som ingen fråga använder
+  - förhandsvisning av publicerade prov
+  - svarskvalitet (`screen` för visningstext, `may_fix`, D182 språkprov)
+  - "/" som "delat med" och engelsk uppläsning
+  - en tydlig fråga är alltid en fråga i Standardläget
+- K69, hastigheten:
+  - 15 frågor till "Stämmer det här?" på cirka 5,3 s i stället för cirka 10 s (server)
+  - anteckningarna skrivs i ett eget anrop samtidigt som frågorna
+  - commits d057284 och a3c2c5b, driftsatt i d77433d
+
+**Pågår: K69, kvalitetskontrollen**
+- O63/O64 är inte omtestat efter delningen.
+- Kör `scripts/k66-quality-check.py` och `scripts/k67-live-check.py`, med ett testkonto per prov. Supabase tillåter cirka 30 anonyma registreringar i timmen, och /exam begränsar anropen per konto.
+- Jämför med O64 (0 cirkulära varför-svar och 0 "materialet"). Säg sedan till Oscar, eller återställ d057284 om kvaliteten blivit sämre.
+
+**Grenar och körningar**
+- Inga egna grenar. Allt ligger på `main`.
+- Ingen bevakning eller körning igång från den här datorn.
+- Morgonrapporten `storage-report.yml` körs 05:30 UTC.
+
+**Väntar**
+- K6 väntar på Till Aron #15.
+- K64:s kostnadsförslag 1–3 väntar på Deangelos ja.
+- User Read på ElevenLabs-nyckeln läggs till av Aron.
+
+**Regler**
+- D180: 0 ElevenLabs i tester. Alla skript har `x-earmind-test` via `scripts/qa/qa_testaccount.py`.
+- Projekt-id i Supabase: `xjczbzfkmbjdebwlccki`.
+- Tester: `deno task test` och `deno task check` i `backend/`.
+- Python-patchar som innehåller ``, `\p` eller `\d` skrivs med Write, inte heredoc, eftersom `` annars blir ett backstegstecken.
+
+---
+
 # Överlämning: Kevin (backend), 2026-11-13 21:00 (lokal session, Windows)
 
 Sessionen gjorde stående omgång 21 och K45–K49 (repetitionsläget). Rapporter: `reports/2026-11-13-1750-kevin-standing21-interview-first-person.md`, `reports/2026-11-13-2035-kevin-k45-k48-repetition.md` och `reports/2026-11-13-2049-kevin-k49-publish.md`. Beslutet heter D153 (Deangelo numrerade om det). Nästa punkt är **K50** (röstval, gräns 30 frågor, kostnadskontroll, D151), sedan K6. Den hemlighet K6 väntade på finns nu.
