@@ -73,11 +73,11 @@ final class ReadingFlowTests: XCTestCase {
         // Runs 43719634329, 43724201975, 43726716738: Skriv text gets no keyboard focus in the Simulator and a paste did
         // not land either (T21 saw the same). The material is the picture the script adds to the photo library (the
         // way T24 makes its exam): Välj bilder → the picture.
+        // Run 43729359230: in the text mode the button is "Skapa uppläsning", so the check after the picture now waits for it
+        // too; a second try only when Välj bilder is still there (closing the sheet would close Nytt prov).
         if !pickPhoto() {
-            // One more try (43674425294: the library had not indexed the picture yet).
-            closeSheet()
             pause(10)
-            guard pickPhoto() else { return false }
+            if find(["Välj bilder"]) != nil { guard pickPhoto() else { return false } }
         }
         pause(1)
         guard waitEnabled(["Skapa uppläsning"], 15), tap(["Skapa uppläsning"], "Skapa uppläsning") else {
@@ -352,7 +352,7 @@ final class ReadingFlowTests: XCTestCase {
         app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: width / 2, dy: top + width / 2)).tap()
         taps += 1
         if let add = wait(["Lägg till", "Add", "Klar", "Done"], 3) { tapElement(add, "Lägg till in the photo library") }
-        return wait(["1 foto*"], 20) != nil || waitEnabled(["Skapa frågor"], 10) || miss("the picture did not get in")
+        return wait(["1 foto*"], 20) != nil || waitEnabled(["Skapa uppläsning", "Skapa frågor"], 10) || miss("the picture did not get in")
     }
 
     private func lowerQuestions(to target: Int) {
