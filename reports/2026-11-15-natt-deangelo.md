@@ -7,3 +7,4 @@
 - 23:03 Runda 5. K68 och Angelas 9b och F1 är klara. Toby 2:s T24 hittade att ett kontobyte raderade prov på telefonen, och Angela har rättat det (D183). Toby 1 hade slutat bevaka kön igen och fick T26. Kevin, Oscar, Angela Fable och Kelly står still utan köpunkter. De fick inga nya uppgifter, för att spara veckogränsen (52 %).
 - 00:04 Runda 6. D183 har ett grönt bygge. Toby 1 kör T26 i CI (23:03), och Toby 2 testar om D183 i T24 (23:44). Övriga står still utan köpunkter. Inga prompter.
 - 01:06 Runda 7. Toby 1 T26 gav T17 48/50 tre gånger och fynd 9/9b 10/10. Hans fråga avgjorde jag med D184: när ett påstående felhörs som en fråga räknas det för sig, inte som ett falskt svar. Toby 2 jobbar med T24 (01:01). Inga prompter.
+- 02:08 Runda 8. Lugnt. Toby 2 jobbar med T24 (01:36), och övriga har tomma köer. Inga prompter.
