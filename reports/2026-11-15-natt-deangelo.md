@@ -40,3 +40,4 @@
 - 22:25 Kevin (K77), Oscar (O70, väntar på K77) och Toby (T28, sedan T31) promptade och kör. Kellys frågor N4 och P1 besvarade i D198, A110 till Angela Fable.
 - 22:28 Veckogräns 84 %. K77 klar (Kevin), T28 klar och T31 nattflöde inlagt (Toby), O70 och A110 pågår. Ingen PAUS.
 - 22:59 Webbläsaren nås inte (datorn av), gränsen uppskattad till cirka 85 %. O70 klar (K77 håller live), A110 klar, T31 inlagt och väntar på avbockning. Kevins kö tom. Ingen PAUS.
+- 23:31 Sista rundan. Första nattkörningen (T31): T24, T28, T29, T30 gröna, T27 (utan nät) röd. T32 till Toby (grundorsak först). Kevin och Oscar slutat schemalägga (köer tomma). A110 godkänd av Kelly. Gränsen uppskattad till cirka 86 %, ingen PAUS. Inga fler Deangelo-rundor i kväll.
