@@ -65,21 +65,20 @@ final class ReadingFlowTests: XCTestCase {
         guard tap(["Fortsätt"], "Fortsätt") else { return false }
         guard tap(["Senare"], "Senare") else { return false }
         pause(2)
-        guard tap(["Nytt prov"], "Nytt prov") else { return false }
+        // Runs up to 43749392418: the Simulator's photo picker gave a sample photo and Skriv text takes no text from
+        // XCUITest. Angela Schrute's LUMEN_TEST_MATERIAL (dbedcd6) puts the material in Nytt prov: relaunch with it now
+        // that the first start is over (the choice Läs upp texten is not in the first start's Nytt prov).
+        launch(header, material: Self.material.replacingOccurrences(of: "\n", with: "\\n"))
+        // The hook fills the material in when Nytt prov opens (NewDrillView); it does not open Nytt prov by itself.
+        _ = wait(["Inställningar"], 20)
+        if find(["Läs upp texten"]) == nil { tap(["Nytt prov"], "Nytt prov (with LUMEN_TEST_MATERIAL)") }
+        guard wait(["Läs upp texten", "Skapa frågor", "Skapa uppläsning"], 20) != nil else {
+            screen("ingen-krok", "No Nytt prov with the material after the relaunch")
+            return miss("LUMEN_TEST_MATERIAL: Nytt prov did not open with the material")
+        }
         pause(1)
-        // A106: the choice is not in the first start; Senare made this the second visit.
         guard tap(["Läs upp texten"], "Gör: Läs upp texten") else { screen("ingen-las-upp", "No Läs upp texten"); return miss("no 'Läs upp texten' in Nytt prov") }
-        screen("nytt-prov-text", "Nytt prov with Läs upp texten")
-        // Runs 43719634329 … 43731914476: Skriv text gets no keyboard focus in the Simulator; the photo library had no grid
-        // once. Two ways, judged only by what the app does with them (Skapa uppläsning becomes tappable):
-        // (1) Skriv text, paste through the edit menu (the editor's value is not read: it may not be exposed);
-        // (2) Välj bilder, the first picture in the grid.
-        // Run 43740301853: the first picture was one of iOS's samples (a waterfall), not ours: the library had not taken in
-        // the material picture yet (T24 gives it more time). Skriv text never got the text in (no focus, no paste).
-        pause(30)
-        let gotMaterial = pickPhoto()
-        log.append("READ material from Välj bilder: \(gotMaterial ? "yes" : "no")")
-        guard gotMaterial else { screen("inget-material", "No material", counts: false); return miss("no material: neither Skriv text nor Välj bilder") }
+        screen("nytt-prov-text", "Nytt prov with the material and Läs upp texten")
         pause(1)
         guard waitEnabled(["Skapa uppläsning"], 15), tap(["Skapa uppläsning"], "Skapa uppläsning") else {
             screen("ingen-skapa-upplasning", "Skapa uppläsning not tappable")
@@ -409,9 +408,11 @@ final class ReadingFlowTests: XCTestCase {
 
     // MARK: Helpers
 
-    private func launch(_ value: String) {
+    private func launch(_ value: String, material: String? = nil) {
         app?.terminate()
         app = XCUIApplication()
+        // Angela Schrute's hook (dbedcd6, Debug only): Nytt prov opens with this text as its material.
+        if let material { app.launchEnvironment["LUMEN_TEST_MATERIAL"] = material }
         app.launchArguments += ["-AppleLanguages", "(sv)", "-AppleLocale", "sv_SE"]
         app.launchEnvironment["LUMEN_TEST_HEADER"] = value
         // Angela Schrute's hook (60d83ce, Debug only): 1, 2 and 3 presses as Darwin notifications.
