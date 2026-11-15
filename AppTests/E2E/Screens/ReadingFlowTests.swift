@@ -70,33 +70,15 @@ final class ReadingFlowTests: XCTestCase {
         // A106: the choice is not in the first start; Senare made this the second visit.
         guard tap(["Läs upp texten"], "Gör: Läs upp texten") else { screen("ingen-las-upp", "No Läs upp texten"); return miss("no 'Läs upp texten' in Nytt prov") }
         screen("nytt-prov-text", "Nytt prov with Läs upp texten")
-        guard tap(["Skriv text"], "Skriv text") else { return false }
-        let editor = app.textViews.firstMatch
-        guard editor.waitForExistence(timeout: 5) else { return miss("Skriv text: no editor") }
-        // Run 43719634329: the keyboard was up but the editor had no focus, and typeText stops the whole test (T21 saw the
-        // same). Paste instead: the material goes on the pasteboard (never read in the test), then a long press on the
-        // editor and the edit menu's Klistra in.
-        UIPasteboard.general.string = Self.material
-        editor.tap(); testTaps += 1
-        pause(1)
-        editor.press(forDuration: 1.2); testTaps += 1
-        // Run 43724201975: "Klistra In" was first found as an Image (the menu's icon), not hittable, and tapping it stops
-        // the test. Only a hittable menu item or button.
-        if let paste = pasteItem(4) {
-            tapElement(paste, "Klistra in (the material)")
-        } else {
-            editor.tap(); pause(1)
-            editor.press(forDuration: 1.2)
-            if let paste = pasteItem(3) { tapElement(paste, "Klistra in (second try)") }
+        // Runs 43719634329, 43724201975, 43726716738: Skriv text gets no keyboard focus in the Simulator and a paste did
+        // not land either (T21 saw the same). The material is the picture the script adds to the photo library (the
+        // way T24 makes its exam): Välj bilder → the picture.
+        if !pickPhoto() {
+            // One more try (43674425294: the library had not indexed the picture yet).
+            closeSheet()
+            pause(10)
+            guard pickPhoto() else { return false }
         }
-        systemAlerts()
-        if let allow = wait(["Tillåt klistra in", "Allow Paste"], 3) { tapElement(allow, "Tillåt klistra in") }
-        pause(1)
-        let typed = String(describing: editor.value ?? "")
-        log.append("READ editor after paste: \(typed.prefix(60))")
-        if !typed.contains("Fotosyntes") { screen("skriv-text-tom", "Skriv text still empty", counts: false); return miss("Skriv text: the material did not get in (no focus, no paste)") }
-        screen("skriv-text", "Skriv text with the material")
-        guard tap(["Klar"], "Klar (Skriv text)") else { return false }
         pause(1)
         guard waitEnabled(["Skapa uppläsning"], 15), tap(["Skapa uppläsning"], "Skapa uppläsning") else {
             screen("ingen-skapa-upplasning", "Skapa uppläsning not tappable")
