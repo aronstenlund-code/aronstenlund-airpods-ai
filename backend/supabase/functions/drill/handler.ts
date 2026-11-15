@@ -6,6 +6,7 @@ import { toSpeech } from "../answer/speech.ts";
 import { wordsToNumber } from "../answer/svnum.ts";
 import { pronounce } from "../tts/handler.ts";
 import { sentenceTimes, TEXT_LIMITS, voicedPart } from "./text.ts";
+import { polishVoice, V4_MODEL, VOICE_RULES_VERSION, withPauseTag } from "./voicerules.ts";
 import { countsAs, textLanguage } from "../exam/read.ts";
 import { composeLong, examLanguage, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
@@ -79,6 +80,8 @@ export interface DrillRow {
   audio_started_at?: string | null;
   /** K72: the language a text drill is read in ("" or null = by the subject, as before; "sv"; "English" ...). */
   language?: string | null;
+  /** K74: the voice text's rules version (1 = before K74, kept for old drills so their hashes stay; 2 = now). */
+  voice_rules?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -239,10 +242,16 @@ export interface DrillDeps {
 // ---------- text and hashes ----------
 
 /** Exactly what the voice reads: no markdown, numbers and symbols in words, measured spellings (K18). */
-export function voiceText(s: string, lang = ""): string {
-  if (lang) return foreignVoice(spokenText(s, 4000));
+export function voiceText(s: string, lang = "", rules = 1): string {
+  // K74: rules version 2 adds the table in voicerules.ts (abbreviations, brackets, slashes, symbols, quotes, long
+  // sentences); version 1 is exactly the text before K74 (drills made earlier keep their hashes)
+  if (lang) {
+    const f = foreignVoice(spokenText(s, 4000));
+    return rules >= 2 ? polishVoice(f, lang) : f;
+  }
   // a sentence end as the context: each text starts a sentence ("6 koldioxid" -> "Sex koldioxid")
-  return divided(pronounce(toSpeech(spokenText(s, 4000), "Start. "), "sv"), "delat med").replace(/\s+/g, " ").trim();
+  const t = divided(pronounce(toSpeech(spokenText(s, 4000), "Start. "), "sv"), "delat med").replace(/\s+/g, " ").trim();
+  return rules >= 2 ? polishVoice(t, "") : t;
 }
 
 /**
@@ -285,10 +294,10 @@ export function screenOf(v: unknown): { question?: string; short?: string; long?
 }
 
 /** D145: the long file is the short answer, then the rest; the boundary is known to the character. */
-export function longVoice(short: string, long: string, lang = ""): { text: string; shortChars: number } {
-  const s = voiceText(short, lang);
+export function longVoice(short: string, long: string, lang = "", rules = 1): { text: string; shortChars: number } {
+  const s = voiceText(short, lang, rules);
   const rest = long.startsWith(short) ? long.slice(short.length) : long;
-  const r = voiceText(rest, lang);
+  const r = voiceText(rest, lang, rules);
   return { text: r ? `${s} ${r}` : s, shortChars: s.length };
 }
 export async function audioHash(text: string, model: string, voiceId: string): Promise<string> {
@@ -323,7 +332,7 @@ export const CUES: Record<string, string> = { press_for_answer: "Tryck en gång 
 // ---------- K50 helpers ----------
 
 /** D151: A = Multilingual v2 (default), B = v3, C = Flash v2.5. Also accepted as "A"/"B"/"C" or "v2"/"v3"/"flash". */
-export const VOICE_MODELS = ["eleven_multilingual_v2", "eleven_v3", "eleven_flash_v2_5"] as const;
+export const VOICE_MODELS = ["eleven_multilingual_v2", "eleven_v3", "eleven_flash_v2_5", "eleven_v4"] as const;
 export function voiceModel(v: unknown): string | null {
   if (typeof v !== "string") return null;
   const k = v.trim().toLowerCase();
@@ -626,6 +635,7 @@ export function createDrillHandler(deps: DrillDeps) {
       covers: src.covers, long_words: src.long_words, shared_from: src.id, voice_model: src.voice_model ?? deps.model,
       kind: src.kind ?? "questions",
       language: src.language ?? null,
+      voice_rules: src.voice_rules ?? 1, // the copy has the original's files
       // the copy's files are the original's (finished: sharing and publishing need all of it)
       audio_started_at: new Date(now()).toISOString(),
     };
@@ -677,6 +687,11 @@ export function createDrillHandler(deps: DrillDeps) {
     if (di.voice_model !== undefined && di.voice_model !== null && !asked) {
       throw new HttpError(400, "invalid_request", "voice_model must be eleven_multilingual_v2, eleven_v3 or eleven_flash_v2_5 (A, B or C)");
     }
+    const settings0 = await deps.db.settings?.().catch(() => null) ?? null;
+    if (asked === V4_MODEL && Number(settings0?.allow_eleven_v4) !== 1 && !(existing && (existing.voice_model ?? deps.model) === V4_MODEL)) {
+      // K74 part 2: prepared, not on (no ElevenLabs v4 call until Aron says yes)
+      throw new HttpError(409, "voice_model_unavailable", "Den rösten går inte att välja än.");
+    }
     const lockedModel = existing ? existing.voice_model ?? deps.model : null;
     if (lockedModel && asked && asked !== lockedModel) {
       throw new HttpError(409, "voice_locked", "Rösten är redan vald för det här provet. Gör ett nytt prov för en annan röst.");
@@ -701,12 +716,14 @@ export function createDrillHandler(deps: DrillDeps) {
       voice_model: voice,
       kind,
       language: existing?.language ?? null,
+      voice_rules: existing ? existing.voice_rules ?? 1 : VOICE_RULES_VERSION,
     };
     const oldItems = existing ? await deps.db.items([existing.id]) : [];
     const oldIds = new Set(oldItems.map((i) => i.id));
     const rows: (ItemRow & { keep?: string })[] = [];
     const files = new Map<string, AudioRow>();
-    const limits = lengthLimits(await deps.db.settings?.().catch(() => null));
+    const limits = lengthLimits(settings0);
+    const pauseTag = drill.voice_model === V4_MODEL && Number(settings0?.v4_pause_tag) === 1;
     // K67 (D182): an English exam is read in English. K72 (O67): a text by its own language (asked, or detected)
     if (isText) {
       const asked = typeof di.language === "string" ? di.language.trim() : "";
@@ -723,7 +740,7 @@ export function createDrillHandler(deps: DrillDeps) {
       if (!text) throw new HttpError(400, "invalid_request", `items[${pos}].text is required`);
       textChars += text.length;
       if (textChars > TEXT_LIMITS.chars) throw new HttpError(400, "invalid_request", `the text is at most ${TEXT_LIMITS.chars} characters`);
-      const v = voicedPart(text, part, (x) => voiceText(x, lang));
+      const v = voicedPart(text, part, (x) => voiceText(x, lang, drill.voice_rules));
       if (!v.spoken) throw new HttpError(400, "invalid_request", `items[${pos}].text has nothing to read`);
       const h = await audioHash(v.spoken, voice, vid);
       files.set(h, files.get(h) ?? { hash: h, kind: "text", text: v.spoken, model: voice, voice_id: vid, seq: pos * 2, sentence_ends: v.ends });
@@ -741,8 +758,9 @@ export function createDrillHandler(deps: DrillDeps) {
       // D145: the long answer starts with the short one; an edited short answer is put in front again
       let long = clean(it?.long, DRILL_STORE_LIMITS.long) || short;
       if (!long.startsWith(short)) long = composeLong(short, long).slice(0, DRILL_STORE_LIMITS.long);
-      const q = voiceText(question, lang);
-      const l = longVoice(short, long, lang);
+      const q = voiceText(question, lang, drill.voice_rules);
+      const l0 = longVoice(short, long, lang, drill.voice_rules);
+      const l = pauseTag ? withPauseTag(l0.text, l0.shortChars) : l0;
       const qh = await audioHash(q, voice, vid);
       const lh = await audioHash(l.text, voice, vid);
       files.set(qh, files.get(qh) ?? { hash: qh, kind: "question", text: q, model: voice, voice_id: vid, seq: pos * 2 });

@@ -13,7 +13,8 @@ import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/
  *   -> the default voice (ELEVENLABS_VOICE_ID) reads the text with that model: {"audio_base_64", "media_type",
  *      "model", "chars", "character_cost"}. Same text, voice and format for every model, so only the model differs.
  */
-export const SAMPLE_MODELS = new Set(["eleven_multilingual_v2", "eleven_v3", "eleven_flash_v2_5"]);
+// K74: eleven_v4 for the A/B script only (service role, run after Aron's yes, D180)
+export const SAMPLE_MODELS = new Set(["eleven_multilingual_v2", "eleven_v3", "eleven_flash_v2_5", "eleven_v4"]);
 export const SAMPLE_MAX_CHARS = 1200;
 export interface VoiceLabDeps {
   serviceKey: string | null;
@@ -49,13 +50,13 @@ export function createVoiceLabHandler(deps: VoiceLabDeps) {
     const text = typeof b.text === "string" ? b.text.trim() : "";
     const model = typeof b.model === "string" ? b.model : "";
     if (!text || text.length > SAMPLE_MAX_CHARS) throw new HttpError(400, "invalid_request", `text: 1-${SAMPLE_MAX_CHARS} characters`);
-    if (!SAMPLE_MODELS.has(model)) throw new HttpError(400, "invalid_request", "model must be eleven_multilingual_v2, eleven_v3 or eleven_flash_v2_5");
+    if (!SAMPLE_MODELS.has(model)) throw new HttpError(400, "invalid_request", "model must be eleven_multilingual_v2, eleven_v3, eleven_flash_v2_5 or eleven_v4");
     const voice = deps.voiceId?.trim();
     if (!voice || !/^[A-Za-z0-9]{10,40}$/.test(voice)) throw new HttpError(503, "provider_unconfigured", "No default voice configured");
     const r = await doFetch(`${base}/v1/text-to-speech/${voice}?output_format=mp3_44100_128&enable_logging=false`, {
       method: "POST",
       headers: { "xi-api-key": deps.elevenLabsKey!, "content-type": "application/json", accept: "audio/mpeg" },
-      body: JSON.stringify({ text, model_id: model, ...(model === "eleven_v3" ? {} : { language_code: "sv" }) }),
+      body: JSON.stringify({ text, model_id: model, ...(model === "eleven_v3" || model === "eleven_v4" ? {} : { language_code: "sv" }) }),
     });
     if (!r.ok) {
       const t = await r.text().catch(() => "");

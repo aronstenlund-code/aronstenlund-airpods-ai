@@ -415,6 +415,10 @@ All calls are `POST` with the user's JWT, like `/answer`.
    - A photo that never arrived gives 422 `material_missing` ("2 av 30 bilder kom inte fram. Ladda upp dem igen."). Upload those again with new URLs.
 - More than 10 photos are written out as text in parallel batches before the questions are made. Measured live: 30 photos to questions in 22.5 s, answers 12 s more.
 
+### Uppläsningstexten (K74)
+
+Only what the voice reads changes; the stored question, answer and `screen` are never touched. New drills get `voice_rules: 2` (`drill/voicerules.ts`, a rule table): abbreviations (kap., fr.o.m., t.o.m., inkl., jfr, obs, ca, etc.; e.g., i.e., vs. in English), brackets as a short aside between commas, a slash between two words as "eller"/"or", list marks inside a line, symbols (~, %, °, °C, &; English → ± ≈), quotation marks removed, and a sentence over 30 words cut at a semicolon, colon, a conjunction after a comma, a comma or before "eftersom"/"because". Drills made before K74 keep `voice_rules: 1` (the same files, nothing made or counted again). `eleven_v4` is accepted as `voice_model` only when `drill_settings.allow_eleven_v4 = 1` (0 now, 409 `voice_model_unavailable`); with `v4_pause_tag = 1` a v4 drill's long answer starts with one `[short pause]` tag (spelling an untested assumption, checked by `scripts/k74-ab.py` after Aron's yes).
+
 ### Ljud vid Starta prov (K71, D190)
 
 1. **Save without audio:** add `"defer_audio": true` to `save`. While the drill has not been started, nothing is voiced or counted: the reply has `drill.audio_started: false`, `new_chars: 0`, `generated_questions: 0` and `chars_on_start` (what start will make). Edit freely (questions, answers, text parts); every save is free.

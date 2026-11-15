@@ -721,3 +721,26 @@ Deno.test("K72 an English text with the subject Historia is read in English; eve
   const t = [...w.audio.values()].find((a) => a.kind === "text" && a.text.includes("Nästa"))!.text;
   assert(/vidare\. Nästa/.test(t) || /osv\. Nästa/.test(t), t);
 });
+
+// ---------- K74: rules version per drill, eleven_v4 prepared but off ----------
+Deno.test("K74 a new drill gets voice rules 2; an old drill (version 1) keeps the text it had, so nothing is made again", async () => {
+  const w = world();
+  const its = [{ question: "Vad gör klorofyll (i bladen)?", short: "Det fångar ljus.", long: "Det fångar ljus." }];
+  const j = await (await w.h("u1")(post({ action: "save", items: its }))).json();
+  assertEquals(w.drills.get(j.drill.id)!.voice_rules, 2);
+  assert([...w.audio.values()].some((a) => a.text === "Vad gör klorofyll, i bladen?"));
+  // an old drill: version 1 and its version 1 files
+  const old = await (await w.h("u2")(post({ action: "save", defer_audio: true, items: its }))).json();
+  w.drills.get(old.drill.id)!.voice_rules = 1;
+  const st = await (await w.h("u2")(post({ action: "start", id: old.drill.id }))).json();
+  assertEquals(st.audio.done, st.audio.total);
+  assert([...w.audio.values()].some((a) => a.text === "Vad gör klorofyll (i bladen)?"), "version 1 text for the old drill");
+});
+
+Deno.test("K74 eleven_v4 cannot be chosen while drill_settings.allow_eleven_v4 is 0 (no call is ever made)", async () => {
+  const w = world();
+  const r = await w.h("u1")(post({ action: "save", drill: { voice_model: "eleven_v4" }, items: ITEMS }));
+  assertEquals(r.status, 409);
+  assertEquals((await r.json()).error.code, "voice_model_unavailable");
+  assertEquals(w.models.filter((m) => m === "eleven_v4").length, 0);
+});

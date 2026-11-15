@@ -220,7 +220,7 @@ Deno.serve(withCors(withTestMode("drill",
             method: "POST",
             headers: { "xi-api-key": xi, "content-type": "application/json" },
             // v3 takes no language_code (the blind test's voice-lab call sent none for it)
-            body: JSON.stringify({ text, model_id: m, ...(m === "eleven_v3" ? {} : { language_code: "sv" }) }),
+            body: JSON.stringify({ text, model_id: m, ...(m === "eleven_v3" || m === "eleven_v4" ? {} : { language_code: "sv" }) }),
             signal: AbortSignal.timeout(60_000),
           });
           if (!r.ok) {
