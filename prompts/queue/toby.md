@@ -76,3 +76,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 - [ ] **D184 till Toby 1 (svar på T26)** (effort: low). Lagd av Deangelo 2026-11-15 01:06. Falska svar räknas på transkriptet: n33 och n41 räknas som "felhört som fråga" och redovisas för sig, inte som falska. Uppdatera T17-bedömningen och tavlan, och kör inget nytt för det här.
 
 - [ ] **T27 – Toby 1: utan nät (efter A103)** (effort: low). Lagd av Deangelo 2026-11-15 02:40. När A103 är grön: ladda ner ett prov, slå av nätet i simulatorn och spela hela provet med 1, 2 och 3 tryck, också efter att appen startats om. Kontrollera att det som kräver nät säger det tydligt. Falskt ljud, 0 ElevenLabs.
+
+- [ ] **T28 – Läsläget i appen (D185)** (effort: low). Lagd av Deangelo 2026-11-15 02:45. Efter A105 och A106: 1, 2 och 3 tryck (pausa, fram, bak) via fjärrkommandon, tryck på en mening, fortsätt där man slutade efter omstart, och spela utan nät. Falskt ljud, 0 ElevenLabs.
