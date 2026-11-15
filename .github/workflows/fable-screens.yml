@@ -1,0 +1,144 @@
+name: Fable screens
+
+# Angela Fable (A104): the same pictures as "Simulator screenshots", but pushed as small PNG files to a branch of
+# their own (`fable/screens-…`), because the cloud sessions cannot download artifacts. Fetch them with git.
+# Started by hand (workflow_dispatch); the Simulator is no device verification. No ElevenLabs (D180): demo data only.
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch the pictures are pushed to (new for every run, e.g. fable/screens-a104-17pro)"
+        required: true
+      device:
+        description: "Simulator name ('iPhone 17 Pro' or 'iPhone SE (3rd generation)')"
+        required: false
+        default: "iPhone 17 Pro"
+      text_size:
+        description: "'default' or a simctl content size such as accessibility-extra-extra-extra-large"
+        required: false
+        default: "default"
+      screens:
+        description: "Screens to take, separated by spaces"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fable-screens-${{ inputs.branch }}
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - name: Generate project
+        run: |
+          set -euo pipefail
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Pick and boot an iOS 26 iPhone simulator
+        id: sim
+        run: |
+          set -euo pipefail
+          JSON="$(xcrun simctl list devices available -j)"
+          RUNTIME="$(echo "$JSON" | jq -r '.devices | keys[] | select(test("iOS-26"))' | sort -V | tail -n 1)"
+          WANT="${{ inputs.device || 'iPhone 17 Pro' }}"
+          UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" --arg want "$WANT" '.devices[$rt][] | select(.name == $want) | .udid' | head -n 1)"
+          if [ -z "$UDID" ]; then
+            # Not installed in this runtime: create it.
+            TYPE="$(xcrun simctl list devicetypes -j | jq -r --arg want "$WANT" '.devicetypes[] | select(.name == $want) | .identifier' | head -n 1)"
+            if [ -n "$TYPE" ]; then UDID="$(xcrun simctl create "$WANT" "$TYPE" "$RUNTIME")"; fi
+          fi
+          if [ -z "$UDID" ]; then
+            UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name | test("^iPhone 17$|^iPhone 17 Pro$|^iPhone Air$")) | .udid' | head -n 1)"
+          fi
+          if [ -z "$UDID" ]; then
+            UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name | test("^iPhone")) | .udid' | head -n 1)"
+          fi
+          test -n "$UDID"
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+
+      - name: Build for the Simulator
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project Lumen.xcodeproj \
+            -scheme Lumen \
+            -configuration Debug \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | xcbeautify --renderer github-actions
+
+      - name: Take the screenshots
+        run: |
+          set -euo pipefail
+          UDID="${{ steps.sim.outputs.udid }}"
+          APP="$(ls -d DerivedData/Build/Products/Debug-iphonesimulator/Lumen.app)"
+          xcrun simctl install "$UDID" "$APP"
+          # Clean status bar for the pictures.
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 || true
+          mkdir -p shots
+          # A87: the largest text sizes for Kelly (Ke53), and a chosen list of screens.
+          if [ "${{ inputs.text_size }}" != "default" ] && [ -n "${{ inputs.text_size }}" ]; then
+            xcrun simctl ui "$UDID" content_size "${{ inputs.text_size }}"
+          fi
+          SCREENS="${{ inputs.screens }}"
+          echo "Screens: $SCREENS"
+          for appearance in light dark; do
+            xcrun simctl ui "$UDID" appearance "$appearance"
+            for screen in $SCREENS; do
+              # Swedish, as on Aron's phone (the strings' Swedish translations).
+              xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" -AppleLanguages "(sv)" -AppleLocale sv_SE
+              sleep 9
+              if ! xcrun simctl spawn "$UDID" launchctl list | grep -q com.rsolutions.lumen; then
+                echo "::warning::$appearance $screen: the app is not running (crash?)"
+              fi
+              xcrun simctl io "$UDID" screenshot "shots/${appearance}-${screen}.png"
+            done
+          done
+          ls -la shots
+          # Crash reports, if any, go with the pictures.
+          mkdir -p shots/crashes
+          find ~/Library/Logs/DiagnosticReports -iname "*Lumen*" -newer DerivedData -exec cp {} shots/crashes/ \; 2>/dev/null || true
+          ls -la shots/crashes
+
+      - name: Push the pictures to their branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ inputs.branch }}
+        run: |
+          set -euo pipefail
+          brew install pngquant || true
+          cd shots
+          rmdir crashes 2>/dev/null || true
+          for f in *.png; do
+            sips -Z 1400 "$f" >/dev/null
+            pngquant --force --ext .png --quality 60-90 "$f" || true
+          done
+          {
+            echo "run: ${GITHUB_RUN_ID}"
+            echo "commit: ${GITHUB_SHA}"
+            echo "device: ${{ inputs.device }}"
+            echo "text_size: ${{ inputs.text_size }}"
+          } > RUN.txt
+          git init -q -b pictures
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Fable screens ${GITHUB_RUN_ID} (${GITHUB_SHA:0:7}) [skip eval]"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "pictures:refs/heads/${BRANCH}"

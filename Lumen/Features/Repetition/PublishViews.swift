@@ -120,7 +120,7 @@ struct PublishSheet: View {
         Task {
             do throws(DrillCloudError) {
                 try await model.publish(drill, school: school, subject: subject, examDate: date, displayName: shownName)
-                model.importMessage = "Publicerat."
+                // T24 V2: no alert; the row Publicerat on the exam says it.
                 dismiss()
             } catch {
                 if case .offline = error {
@@ -621,8 +621,7 @@ struct PublishedRow: View {
             Button("Ta bort publiceringen", role: .destructive) {
                 Task {
                     do throws(DrillCloudError) {
-                        try await model.unpublish(drill)
-                        model.importMessage = "Publiceringen är borttagen."
+                        try await model.unpublish(drill) // T24 V2b: no alert; the row Publicerat goes away
                     } catch {
                         problem = "Något gick fel. Försök igen."
                     }
