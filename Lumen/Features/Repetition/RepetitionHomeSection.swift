@@ -289,7 +289,10 @@ struct RepetitionHomeSection: View {
         if drill.isText { // A106 (Ke63): "Text · cirka 6 min"; the word says what it is, the card is the same
             if let saved { return "Du var på mening \(saved + 1) av \(drill.sentenceCount)" }
             if let problem = shortProblem(drill) { return "Text · \(problem)" }
-            if model.awaitsAudioStart(drill) { return "Text · Ljudet görs när du startar" }
+            if model.awaitsAudioStart(drill) {
+                if let quota = model.quota { return "Text · Räknas som \(startCount(drill)) av dina \(quota.left) när du startar" }
+                return "Text · Ljudet görs när du startar"
+            }
             let p = model.progress(drill)
             if p.total > 0, p.ready == p.total { return "Text · cirka \(ReadingText.minutes(drill)) min" }
             return "Text · Ljud: \(p.ready) av \(p.total) klara"
@@ -298,7 +301,13 @@ struct RepetitionHomeSection: View {
         // A100 (K62): when the sound cannot be made, say so instead of a counter that stands still.
         if let problem = shortProblem(drill) { return "\(DrillText.questions(drill.items.count)) · \(problem)" }
         // A107 (D190): not started yet, so no "Ljud: 0 av N".
-        if model.awaitsAudioStart(drill) { return "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar" }
+        if model.awaitsAudioStart(drill) {
+            // Kelly Ke64b N5: Starta prov on the card starts at once, so the card says what starting counts as.
+            if let quota = model.quota {
+                return "\(DrillText.questions(drill.items.count)) · Räknas som \(startCount(drill)) av dina \(quota.left) när du startar"
+            }
+            return "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar"
+        }
         let p = model.progress(drill)
         if p.total > 0, p.ready == p.total {
             return "\(DrillText.questions(drill.items.count)) · cirka \(DrillText.minutesPerLap(drill)) min per varv"
@@ -316,11 +325,22 @@ struct RepetitionHomeSection: View {
 
     /// Through "Styr med dina AirPods" the first time; after that one tap, from the question the last run stopped at.
     private func start(_ drill: Drill) {
+        // Kelly Ke64b N5: when the month does not cover an exam that is not started, the card opens the exam's
+        // screen, which says why, instead of starting.
+        if model.awaitsAudioStart(drill), let quota = model.quota, startCount(drill) > quota.left {
+            opened = drill.id
+            return
+        }
         if drill.isText ? textControlsChecked : controlsChecked {
             Task { await model.start(drill, at: place(drill) ?? 0) }
         } else {
             checking = drill
         }
+    }
+
+    /// A107 (D191): what starting an exam counts as of the month's questions (a text: every started 800 characters).
+    private func startCount(_ drill: Drill) -> Int {
+        drill.isText ? DrillTextDraft.countsAs(chars: drill.items.reduce(0) { $0 + $1.long.count }) : drill.items.count
     }
 
     /// Where the exam was left: the question, or for a text (A106) the sentence.
