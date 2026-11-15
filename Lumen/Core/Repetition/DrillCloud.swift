@@ -14,6 +14,8 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var long_words: Int?
         var shared_from: String?
         var voice_model: String? = nil
+        /// K70 (D185): "questions" or "text" (Läsläget); nil from a server before K70.
+        var kind: String? = nil
     }
 
     struct File: Decodable, Sendable, Equatable {
@@ -26,6 +28,8 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var short_end_ms: Int?
         /// K62: why a file failed (the voice service's credits ran out: `audio_unavailable`).
         var error: String? = nil
+        /// K70 (D185): a text part's file: [start_ms, end_ms] per sentence, in the order of the item's `sentences`.
+        var sentences: [[Int]]? = nil
 
         var isDone: Bool { status == "done" && url != nil }
         var isFailed: Bool { status == "failed" }
@@ -41,6 +45,8 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         struct Audio: Decodable, Sendable, Equatable {
             var question: File
             var long: File
+            /// K70 (D185): a text part has one file, `text`, and no question or long file.
+            var text: File? = nil
         }
 
         var id: String
@@ -54,6 +60,13 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var length_class: String?
         /// K66 point 4 (A102): the shown text, as it was saved.
         var screen: DrillScreenText?
+        /// K70 (D185): a text's part ("heading" or "para"), its text (also in `long`) and its displayed sentences.
+        var part: String? = nil
+        var sentences: [String]? = nil
+
+        enum CodingKeys: String, CodingKey {
+            case id, position, question, short, long, audio, voice_chars, length_class, screen, part, text, sentences
+        }
     }
 
     struct Totals: Decodable, Sendable, Equatable {
@@ -71,6 +84,44 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
     var audio: Totals
     /// K51: fixed lines in the exam's voice, free and outside the progress.
     var cue: Cue? = nil
+}
+
+extension DrillCloudView.Item {
+    /// K70 (D185): a text part has `part`, `text` and `sentences` instead of a question and answers; its text is kept
+    /// in `long`, where the server keeps it too.
+    init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        position = try c.decode(Int.self, forKey: .position)
+        part = try c.decodeIfPresent(String.self, forKey: .part)
+        let text = try c.decodeIfPresent(String.self, forKey: .text)
+        question = try c.decodeIfPresent(String.self, forKey: .question) ?? ""
+        short = try c.decodeIfPresent(String.self, forKey: .short) ?? ""
+        long = try c.decodeIfPresent(String.self, forKey: .long) ?? text ?? ""
+        audio = try c.decode(Audio.self, forKey: .audio)
+        voice_chars = try c.decodeIfPresent(Int.self, forKey: .voice_chars)
+        length_class = try c.decodeIfPresent(String.self, forKey: .length_class)
+        screen = try c.decodeIfPresent(DrillScreenText.self, forKey: .screen)
+        sentences = try c.decodeIfPresent([String].self, forKey: .sentences)
+    }
+
+    var isTextPart: Bool { part != nil }
+}
+
+extension DrillCloudView.Item.Audio {
+    enum CodingKeys: String, CodingKey { case question, long, text }
+
+    /// K70: a text part's audio is only `{"text": {…}}`; its question and long file read as missing.
+    init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        let missing = DrillCloudView.File(status: "missing", url: nil, duration_ms: nil, short_end_ms: nil)
+        text = try c.decodeIfPresent(DrillCloudView.File.self, forKey: .text)
+        question = try c.decodeIfPresent(DrillCloudView.File.self, forKey: .question) ?? missing
+        long = try c.decodeIfPresent(DrillCloudView.File.self, forKey: .long) ?? missing
+    }
+
+    /// The files the item has: the question and the long answer, or a text part's one file.
+    var files: [DrillCloudView.File] { text.map { [$0] } ?? [question, long] }
 }
 
 /// D155: generated questions this calendar month (`list` → `quota`).
@@ -186,6 +237,16 @@ final class DrillCloudClient: DrillCloudSyncing {
                                    "covers": String(drill.summary.covers.prefix(400)), "long_words": drill.longWords]
         if let id = drill.serverID { info["id"] = id }
         if drill.serverID == nil, let voice = drill.voiceModel { info["voice_model"] = voice } // K50: locked after
+        if drill.isText {
+            // K70 (D185): a text is saved as its parts in order; the kind is locked at the first save.
+            info["kind"] = DrillKind.text.rawValue
+            let parts: [[String: Any]] = drill.items.map { item in
+                var row: [String: Any] = ["kind": (item.part ?? .para).rawValue, "text": item.long]
+                if let id = item.serverID { row["id"] = id }
+                return row
+            }
+            return ["action": "save", "drill": info, "items": parts]
+        }
         let items: [[String: Any]] = drill.items.map { item in
             var row: [String: Any] = ["question": item.question, "short": item.short, "long": item.long]
             if let id = item.serverID { row["id"] = id }
@@ -309,6 +370,8 @@ extension Drill {
     static func from(_ view: DrillCloudView, merging local: Drill? = nil) -> Drill {
         let items = view.items.sorted { $0.position < $1.position }.enumerated().map { offset, remote in
             var item = DrillItem(question: remote.question, short: remote.short, long: remote.long, serverID: remote.id)
+            item.part = remote.part.flatMap(DrillPart.init(rawValue:)) ?? (remote.isTextPart ? .para : nil) // K70
+            item.sentences = remote.sentences
             item.lengthClass = remote.length_class.flatMap(DrillLengthClass.init(rawValue:)) // K61 (D176)
             item.screen = remote.screen.flatMap { $0.isEmpty ? nil : $0 } // A102
             if let local, local.items.indices.contains(offset) {
@@ -318,6 +381,7 @@ extension Drill {
                     item.questionAudio = mine.questionAudio
                     item.longAudio = mine.longAudio
                     item.shortEndMs = mine.shortEndMs
+                    item.sentenceTimesMs = mine.sentenceTimesMs
                 }
             }
             return item
@@ -331,6 +395,11 @@ extension Drill {
                                      covers: view.drill.covers ?? drill.summary.covers)
         if let words = view.drill.long_words { drill.longWords = words }
         if let voice = view.drill.voice_model { drill.voiceModel = voice }
+        if let kind = view.drill.kind.flatMap(DrillKind.init(rawValue:)) {
+            drill.kind = kind == .text ? .text : nil // K70; nil stays "questions" for old copies
+        } else if items.contains(where: { $0.part != nil }) {
+            drill.kind = .text
+        }
         drill.items = items
         drill.questionCount = items.count
         return drill
@@ -537,7 +606,7 @@ final class CloudDrillAudio: DrillAudioProviding {
             if view.audio.done + (view.audio.failed ?? 0) >= view.audio.total, view.audio.done == p.ready {
                 // Nothing more will come: some files failed on the server; the next open asks again.
                 let failed = max(1, (p.total - p.ready + 1) / 2)
-                let files = view.items.flatMap { [$0.audio.question, $0.audio.long] }
+                let files = view.items.flatMap(\.audio.files)
                 problems[drill.id] = files.contains { $0.isFailed && Self.isUnavailable($0.error) }
                     ? Self.unavailableLine // K62: the voice service is out, not this exam
                     : "Ljudet för \(DrillText.questions(failed)) kunde inte göras. EarMind försöker igen av sig själv."
@@ -554,6 +623,23 @@ final class CloudDrillAudio: DrillAudioProviding {
         var drill = drill
         let remote = view.items.sorted { $0.position < $1.position }
         for (i, item) in remote.enumerated() where drill.items.indices.contains(i) {
+            if let file = item.audio.text {
+                // K70 (D185): a text part's one file, kept as the long file, and its sentence times.
+                guard file.isDone, let name = file.fileName, let link = file.url, let url = URL(string: link) else { continue }
+                if !exists(name) {
+                    do throws(DrillCloudError) {
+                        let data = try await cloud.download(url)
+                        guard write(data, to: name, for: drill.id) else { continue }
+                        made += 1
+                    } catch {
+                        Log.repetition.error("Drill text audio download: \(error.userMessage, privacy: .public)")
+                        continue
+                    }
+                }
+                drill.items[i].longAudio = name
+                drill.items[i].sentenceTimesMs = file.sentences
+                continue
+            }
             for kind in [0, 1] {
                 let file = kind == 0 ? item.audio.question : item.audio.long
                 guard file.isDone, let name = file.fileName, let link = file.url, let url = URL(string: link) else { continue }
@@ -607,5 +693,15 @@ final class CloudDrillAudio: DrillAudioProviding {
     func cue(for drill: Drill) -> URL? {
         guard let name = drill.cueAudio, exists(name) else { return nil }
         return fileURL(name)
+    }
+
+    /// A105 (D185, K70): a text part's downloaded file and its sentence times. Without times (an older download, a
+    /// test account's sound) every sentence starts at 0, so pause and the presses replay the part, never skip.
+    func reading(for drill: Drill, part index: Int) -> ReadingAudio? {
+        _ = made
+        guard drill.items.indices.contains(index) else { return nil }
+        let item = drill.items[index]
+        guard let name = item.longAudio, exists(name) else { return nil }
+        return ReadingAudio(url: fileURL(name), times: item.sentenceTimes ?? [])
     }
 }
