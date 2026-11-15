@@ -10,6 +10,7 @@ För varje variant kollas:
   errors    skipped/warnings har en svensk orsak och ett radnummer; 422 import_unreadable när inget går att läsa
   python -I -X utf8 scripts/qa/o58_import.py
 Resultat: reports/qa/data/<tid>-o58-import.json"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import datetime as dt, json, pathlib, re, sys, time, urllib.error, urllib.request
 
 sys.stdout.reconfigure(encoding="utf-8")

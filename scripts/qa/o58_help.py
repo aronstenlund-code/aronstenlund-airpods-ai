@@ -9,6 +9,7 @@ Skrivet av Oscar (QA). Tre grupper:
 Varje svar kollas också mot förbjudna ord och längden (högst 4 meningar eller 5 steg).
   python -I -X utf8 scripts/qa/o58_help.py
 Resultat: reports/qa/data/<tid>-o58-help.json"""
+import sys as _d180s, pathlib as _d180p; _d180s.path.insert(0, str(_d180p.Path(__file__).resolve().parent)); import qa_testaccount; qa_testaccount.install()  # D180: bara testkonton, aldrig riktiga ElevenLabs
 import concurrent.futures as cf, datetime as dt, json, pathlib, re, sys, time, urllib.error, urllib.request
 
 sys.stdout.reconfigure(encoding="utf-8")

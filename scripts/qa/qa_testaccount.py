@@ -34,7 +34,8 @@ def install():
             raise RealElevenLabsBlocked(f"D180: direct ElevenLabs call refused ({u[:60]})")
         if isinstance(url, urllib.request.Request) and u.startswith(URL):
             for k, v in TEST_HEADERS.items():
-                url.add_header(k.capitalize(), v)  # urllib stores header names capitalized
+                if not url.has_header(k.capitalize()):  # O66: keep "x-earmind-test: oscar-qa slow|unavailable"
+                    url.add_header(k.capitalize(), v)  # urllib stores header names capitalized
         return real_urlopen(url, *a, **kw)
 
     urllib.request.urlopen = urlopen
