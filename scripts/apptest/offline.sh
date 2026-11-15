@@ -6,7 +6,7 @@
 #
 # The Simulator has no network switch of its own: it uses the Mac's. When the test writes t27-net-off.request this
 # script turns every network service of the runner off (networksetup), and on again at t27-net-on.request. A watchdog
-# turns them on after 9 minutes whatever happens, and the EXIT trap does too, so the runner is never left without one.
+# turns them on after 5 minutes whatever happens, and the EXIT trap does too, so the runner is never left without one.
 # Output: apptest-out/offline/*.png, t27-log.txt, logs/app.log (the app's own log), summary.md. Simulator only.
 set -uo pipefail
 
@@ -86,10 +86,12 @@ rm -f "$OUT"/t27-net-*
       echo "$(date -u +%H:%M:%S) network off" >> "$OUT/logs/net.log"
       net_off >> "$OUT/logs/net.log" 2>&1
       touch "$OUT/t27-net-off.done"
-      ( sleep 540; echo "$(date -u +%H:%M:%S) watchdog: network on" >> "$OUT/logs/net.log"; net_on ) &
+      ( sleep 300; echo "$(date -u +%H:%M:%S) watchdog: network on" >> "$OUT/logs/net.log"; net_on ) &
+      DOG=$!
     fi
     if [ -f "$OUT/t27-net-on.request" ]; then
       rm -f "$OUT/t27-net-on.request"
+      [ -n "${DOG:-}" ] && kill "$DOG" 2>/dev/null; DOG=""   # two offline windows: the first one's watchdog must not cut the second
       echo "$(date -u +%H:%M:%S) network on" >> "$OUT/logs/net.log"
       net_on >> "$OUT/logs/net.log" 2>&1
       touch "$OUT/t27-net-on.done"
@@ -138,11 +140,11 @@ grep -E "Repetition:|offline|Offline|network|Network|drill_audio|download" "$OUT
   grep "Repetition:" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | tail -n 60
   echo '```'
   echo
-  echo "Appen från omstarten utan nät till nätet på (alla kategorier):"
+  echo "Appen i det andra fönstret utan nät (omstarten) (alla kategorier):"
   echo '```'
   awk '/PLAY-END spela-1/{f=1} f' "$OUT/t27-log.txt" >/dev/null 2>&1
-  START="$(grep -o 'PLAY-END spela-1 at [0-9T:-]*' "$OUT/t27-log.txt" 2>/dev/null | head -n1 | sed 's/.* at //; s/T/ /')"
-  STOP="$(grep -o 'NET-ON request at [0-9T:-]*' "$OUT/t27-log.txt" 2>/dev/null | head -n1 | sed 's/.* at //; s/T/ /')"
+  START="$(grep -o 'NET-OFF request at [0-9T:-]*' "$OUT/t27-log.txt" 2>/dev/null | tail -n1 | sed 's/.* at //; s/T/ /')"
+  STOP="$(grep -o 'NET-ON request at [0-9T:-]*' "$OUT/t27-log.txt" 2>/dev/null | tail -n1 | sed 's/.* at //; s/T/ /')"
   if [ -n "$START" ] && [ -n "$STOP" ]; then
     awk -v a="$START" -v b="$STOP" 'substr($0,1,19) >= a && substr($0,1,19) <= b' "$OUT/logs/app.log" | grep -v "Repetition: \(question\|thinking\)" | cut -c1-260 | head -n 80
   fi

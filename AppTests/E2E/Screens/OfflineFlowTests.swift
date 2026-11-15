@@ -52,7 +52,11 @@ final class OfflineFlowTests: XCTestCase {
         section("Utan nät: Start och Nytt prov", { startAndNewExamOffline() })
         section("Utan nät: provets skärm (Dela, Publicera)", { examScreenOffline() })
         section("Utan nät: Prov från din skola", { schoolOffline() })
-        section("Utan nät: Starta prov", { play("spela-1", seconds: 70) })
+        section("Utan nät: Starta prov", { play("spela-1", seconds: 35) })
+        // Run 43672420846: GitHub cancelled the job when the runner had been offline about 4.5 min, so the network
+        // comes back between the two windows (each about 2 min). The relaunch is inside the second one.
+        guard section("Nätet på (mellan fönstren)", { network(on: true) }) else { return }
+        guard section("Nätet av igen", { network(on: false) }) else { return }
         section("Utan nät: omstart och Starta prov igen", { relaunchAndPlay() })
         section("Nätet på", { network(on: true) })
         section("Online igen: Dela går att trycka", { backOnline() })
@@ -149,7 +153,7 @@ final class OfflineFlowTests: XCTestCase {
     private func play(_ name: String, seconds: TimeInterval) -> Bool {
         goToStart()
         mark("PLAY-START \(name)")
-        guard waitEnabled(["Starta prov"], 45) else {
+        guard waitEnabled(["Starta prov"], 30) else {
             screen("\(name)-gra", "Starta prov grey")
             log.append("GREY texts: " + Self.labels(in: app.debugDescription, kind: "StaticText").prefix(40).joined(separator: " | "))
             log.append("GREY buttons: " + Self.labels(in: app.debugDescription, kind: "Button").prefix(30).joined(separator: " | "))
@@ -160,7 +164,7 @@ final class OfflineFlowTests: XCTestCase {
                 log.append("GREY exam texts: " + Self.labels(in: app.debugDescription, kind: "StaticText").prefix(40).joined(separator: " | "))
                 goToStart()
             }
-            return miss("Starta prov not tappable offline (45 s)")
+            return miss("Starta prov not tappable offline (30 s)")
         }
         tap(["Starta prov"], "Starta prov")
         if wait(["Styr med dina AirPods"], 8) != nil {
@@ -196,7 +200,7 @@ final class OfflineFlowTests: XCTestCase {
         pause(8)
         screen("utan-nat-omstart", "Start after relaunch without a network")
         if find(["Kom förberedd till provet"]) != nil { return miss("relaunch offline: Start is empty, the exam is gone") }
-        return play("spela-2", seconds: 45)
+        return play("spela-2", seconds: 25)
     }
 
     private func backOnline() -> Bool {
@@ -237,7 +241,7 @@ final class OfflineFlowTests: XCTestCase {
             if FileManager.default.fileExists(atPath: done.path) {
                 offline = !on
                 mark(on ? "NET-ON done" : "NET-OFF done")
-                pause(on ? 20 : 10) // NWPathMonitor and DHCP
+                pause(on ? 20 : 6) // NWPathMonitor and DHCP
                 return true
             }
             pause(2)
