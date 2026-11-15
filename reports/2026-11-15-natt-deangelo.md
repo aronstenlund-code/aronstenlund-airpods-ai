@@ -8,3 +8,4 @@
 - 00:04 Runda 6. D183 har ett grönt bygge. Toby 1 kör T26 i CI (23:03), och Toby 2 testar om D183 i T24 (23:44). Övriga står still utan köpunkter. Inga prompter.
 - 01:06 Runda 7. Toby 1 T26 gav T17 48/50 tre gånger och fynd 9/9b 10/10. Hans fråga avgjorde jag med D184: när ett påstående felhörs som en fråga räknas det för sig, inte som ett falskt svar. Toby 2 jobbar med T24 (01:01). Inga prompter.
 - 02:08 Runda 8. Lugnt. Toby 2 jobbar med T24 (01:36), och övriga har tomma köer. Inga prompter.
+- 02:40 Aron vaken, "prompta dem". Lagt i köerna och skickat: K69 (snabbare Skapa frågor), O66 (regressionsskript), A103 (spela utan nät), A104 (tomma lägen och fellägen), Ke62 (App Store-bilder och utkast), T27 (efter A103). Veckogränsen: 54 %.
