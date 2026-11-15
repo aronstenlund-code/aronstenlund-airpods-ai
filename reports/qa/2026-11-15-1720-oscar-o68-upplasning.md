@@ -1,4 +1,4 @@
-# O68: vad som låter konstigt, kontrollerat på uppläsningstexten – Oscar (moln), 2026-11-15 17:20
+# O68: vad som låter konstigt, kontrollerat på uppläsningstexten – Oscar (moln), 2026-11-15 17:20 (del 2 efter K74: 17:35)
 
 Status för varje påstående: **verifierat live** (driftsatt server via testkonton i GitHub Actions och `drill_audio_files.text` via Supabase MCP), **verifierat i kod** (serverns egen `longVoice`/`voiceText` från main, buntad med esbuild) eller **antagande, ej testat**. Det är uppläsningstexten, inte ljudet. Ingen app eller enhet.
 
@@ -108,6 +108,35 @@ Underlaget är `scripts/qa/o68_edited.json` och `o68_fixture.json`. Det som K74 
 
 Kravet för omtestet: 0 kvar i de kategorier K74 täcker, i båda fixturerna. Jag kör `o68_voice.py --fixture=…` och analysen när K74 är driftsatt (0 Claude).
 
+## Del 2: efter K74 (regler v2, driftsatt 16:05 UTC)
+Kevins K74 blev klart medan del 1 kördes. Del 1 gjordes 15:59–16:03 UTC och är alltså mätt före K74: md5 visar samma text som regler v1. Jag sparade båda fixturerna igen live (run 43734702921 och 43734853337, 0 Claude). De nya proven fick `voice_rules = 2`, och jag räknade med serverns v2-kod (`O68_RULES=2`).
+
+**Servern har samma text som analysen** (verifierat live, md5): 20 av 20 redigerade svar, och 9 av 11 holdout-svar som ändrades i v2. De två andra är samma två som i del 1, där servern satte kortsvaret först (D145). D180: alla nya rader har teströsten och 0 krediter, och loggarna 15:58–16:22 UTC har 0 rader om ElevenLabs av 2 179.
+
+| Kategori | Holdout v1 → v2 (96 svar) | Redigerade v1 → v2 (20 svar) |
+|---|---|---|
+| förkortningar | 0 → 0 | 9 → 8 (kvar: Enl., fig., milj., ggr, Sthlm, Gbg, Ex:, ft, sec, a.m.) |
+| parenteser | 0 → 0 | 6 → 1 ("ett) … två)") |
+| symboler | 0 → 0 | 4 → 1 (< och > på svenska) |
+| enheter efter tal | 0 → 0 | 2 → 2 ("tio N", "… K") |
+| listor (; och 1) 2)) | 0 → 0 | 2 → 2 |
+| meningar över 30 ord | 11 svar (13 meningar) → **0** | 1 → 0 |
+| uttal (formler, versalförkortningar) | 0 → 0 | 5 → 5 |
+| citattecken | – | borta |
+| snedstreck "w/" | – | kvar ("w divided by a lamp") |
+
+**Kravet "0 kvar i de kategorier K74 täcker":**
+- **Uppfyllt för de 96 holdout-svaren.** Alla 13 långa meningar är delade, och inget annat fanns.
+- **Inte uppfyllt för de redigerade svaren.** Där finns kvar förkortningar som inte stod i K74:s lista (enl., fig., milj., ggr, Sthlm, Gbg, Ex:, ft, sec, a.m.), < och > på svenska (K74 trodde att de redan fanns), en numrerad lista med parentes ("ett)") och snedstrecket "w/".
+
+**Till Kevin: K75** (i hans kö), med röstens exakta text för varje fall. Kemiska formler ("se o två") och enheter efter tal ("tio N") låg utanför K74, men är med i K75.
+
+Exempel på v2 (verifierat live):
+- "Hemoglobinet, Hb, binder o två i lungorna": parentesen är nu en inskjutning, men "o två" står kvar.
+- "CO2 and CH4, methane, act like glass, for example in a greenhouse leads to the Earth gets about 1.2 degrees Celsius warmer": e.g., ~ och °C är rättade, men → blev "leads to" mitt i satsen.
+- "Cirka åttiofem procent bor i tätorter, främst i Sthlm, Gbg och Malmö": "Ca" är rättat, men Sthlm och Gbg står kvar.
+
 ## Kvar
+- Omtest efter K75 med `o68_edited.json` (0 Claude).
 - Omtest efter K74 (samma 96 + 20 svar).
 - Det som bara hörs med riktigt ljud bedömer Aron på telefonen (D180): engelska med `language_code: "sv"`, och betoning.
