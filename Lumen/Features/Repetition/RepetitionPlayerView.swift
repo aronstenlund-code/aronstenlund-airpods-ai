@@ -12,6 +12,15 @@ struct RepetitionPlayerView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
+        // A106 (D185): a text read aloud has its own screen (the text with the sentence being read marked).
+        if let reader = session.reader, let drill = session.drill {
+            ReadingPlayerView(model: model, reader: reader, drill: drill)
+        } else {
+            questions
+        }
+    }
+
+    private var questions: some View {
         Group {
             if typeSize.isAccessibilitySize { compact } else { regular }
         }
@@ -321,15 +330,21 @@ private struct ThinkingRing: View {
 struct PressesRow: View {
     var paused = false
     var lit: RepetitionEvent?
+    /// A106 (Ke63): the presses of a text read aloud (Paus, Nästa mening, Förra meningen). Nil = the questions'.
+    var titles: [(event: RepetitionEvent, dots: Int, title: String)]? = nil
     @Environment(\.dynamicTypeSize) private var size
 
     var body: some View {
         let layout = size >= .accessibility1 ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
             : AnyLayout(HStackLayout(spacing: 16))
         layout {
-            item(.long, 1, "Långt svar")
-            item(.short, 2, "Kort svar")
-            item(.pauseToggle, 3, paused ? "Fortsätt" : "Paus")
+            if let titles {
+                ForEach(titles, id: \.dots) { item($0.event, $0.dots, $0.title) }
+            } else {
+                item(.long, 1, "Långt svar")
+                item(.short, 2, "Kort svar")
+                item(.pauseToggle, 3, paused ? "Fortsätt" : "Paus")
+            }
         }
         .frame(maxWidth: .infinity)
         .accessibilityElement(children: .combine)

@@ -25,12 +25,13 @@ struct RepetitionHomeSection: View {
     @State private var askingCode = false
     @State private var pastedCode = ""
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
+    @AppStorage("repetition.textControlsChecked") private var textControlsChecked = false // A106 (Ke63 §4.1)
     @Environment(\.dynamicTypeSize) private var typeSize
 
     /// A100 (Deangelo 2026-11-14, Toby T21 finding 2): "Fler lägen · Beta · använder mikrofonen" is shown only once
     /// the user has started a first exam (the control check before the first Starta prov sets `controlsChecked`).
     /// Before that a new user sees the exam and Starta prov, nothing about BETA or the microphone.
-    private var showsMoreModes: Bool { controlsChecked }
+    private var showsMoreModes: Bool { controlsChecked || textControlsChecked }
 
     var body: some View {
         Group {
@@ -47,10 +48,13 @@ struct RepetitionHomeSection: View {
             NewDrillView(model: model) { drill in opened = drill.id }
         }
         .sheet(item: $checking) { drill in
-            ControlCheckView(hub: model.remote, sound: model.audio.track(for: drill, at: 0)?.question, help: model) {
-                controlsChecked = true
+            ControlCheckView(hub: model.remote,
+                             sound: drill.isText ? model.audio.reading(for: drill, part: 0)?.url
+                                 : model.audio.track(for: drill, at: 0)?.question,
+                             forText: drill.isText, help: model) {
+                if drill.isText { textControlsChecked = true } else { controlsChecked = true }
                 checking = nil
-                Task { await model.start(drill, at: model.savedIndex(drill) ?? 0) }
+                Task { await model.start(drill, at: place(drill) ?? 0) }
             } onLater: {
                 checking = nil
             }
@@ -237,7 +241,7 @@ struct RepetitionHomeSection: View {
 
     /// "Nästa prov": the name, one line of facts and the screen's one filled button.
     private func nextExam(_ drill: Drill) -> some View {
-        let saved = model.savedIndex(drill)
+        let saved = place(drill)
         return VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Nästa prov").font(.footnote).foregroundStyle(.secondary)
@@ -251,7 +255,7 @@ struct RepetitionHomeSection: View {
             }
             .accessibilityElement(children: .combine) // A95: "Nästa prov, Biologiprovet, Du var på fråga 3 av 5"
             if let saved {
-                ProgressView(value: Double(saved), total: Double(max(drill.items.count, 1)))
+                ProgressView(value: Double(saved), total: Double(max(drill.isText ? drill.sentenceCount : drill.items.count, 1)))
                     .accessibilityHidden(true)
             }
             Button {
@@ -272,7 +276,8 @@ struct RepetitionHomeSection: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .disabled(!model.canStart(drill))
-            .accessibilityHint("Spelar frågorna i dina AirPods. EarMind använder inte mikrofonen.")
+            .accessibilityHint(drill.isText ? "Läser upp texten i dina AirPods. EarMind använder inte mikrofonen."
+                                   : "Spelar frågorna i dina AirPods. EarMind använder inte mikrofonen.")
         }
         .padding(.vertical, 6)
         .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
@@ -280,6 +285,13 @@ struct RepetitionHomeSection: View {
 
     /// "Du var på fråga 3 av 5", "5 frågor · cirka 1 min per varv" or the sound's progress.
     private func facts(_ drill: Drill, saved: Int?) -> String {
+        if drill.isText { // A106 (Ke63): "Text · cirka 6 min"; the word says what it is, the card is the same
+            if let saved { return "Du var på mening \(saved + 1) av \(drill.sentenceCount)" }
+            if let problem = shortProblem(drill) { return "Text · \(problem)" }
+            let p = model.progress(drill)
+            if p.total > 0, p.ready == p.total { return "Text · cirka \(ReadingText.minutes(drill)) min" }
+            return "Text · Ljud: \(p.ready) av \(p.total) klara"
+        }
         if let saved { return "Du var på fråga \(saved + 1) av \(drill.items.count)" }
         // A100 (K62): when the sound cannot be made, say so instead of a counter that stands still.
         if let problem = shortProblem(drill) { return "\(DrillText.questions(drill.items.count)) · \(problem)" }
@@ -300,18 +312,24 @@ struct RepetitionHomeSection: View {
 
     /// Through "Styr med dina AirPods" the first time; after that one tap, from the question the last run stopped at.
     private func start(_ drill: Drill) {
-        if controlsChecked {
-            Task { await model.start(drill, at: model.savedIndex(drill) ?? 0) }
+        if drill.isText ? textControlsChecked : controlsChecked {
+            Task { await model.start(drill, at: place(drill) ?? 0) }
         } else {
             checking = drill
         }
+    }
+
+    /// Where the exam was left: the question, or for a text (A106) the sentence.
+    private func place(_ drill: Drill) -> Int? {
+        drill.isText ? model.savedSentence(drill) : model.savedIndex(drill)
     }
 
     /// Kelly R7: the row opens the exam, ▶ starts it directly.
     private func otherExam(_ drill: Drill) -> some View {
         let p = model.progress(drill)
         let ready = p.total > 0 && p.ready == p.total
-        let detail = ready ? "\(DrillText.questions(drill.items.count)) · ljud klart"
+        let what = drill.isText ? "Text · cirka \(ReadingText.minutes(drill)) min" : DrillText.questions(drill.items.count)
+        let detail = ready ? "\(what) · ljud klart"
             : shortProblem(drill) ?? "Ljud: \(p.ready) av \(p.total) klara" // A100 (K62)
         return HStack(spacing: 12) {
             Button {
