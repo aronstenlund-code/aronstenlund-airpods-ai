@@ -185,6 +185,9 @@ def part_text(area, lang, raw, expect, junk, sents, subject):
     check("D", f"{lang}: counts_as = ceil(chars/800)", r.get("chars") == exp_chars and r.get("counts_as") == math.ceil(exp_chars / 800),
           f"chars {r.get('chars')} (delar {exp_chars}), counts_as {r.get('counts_as')}")
     check("A", f"{lang}: titeln", bool(r.get("title")), r.get("title"))
+    want = "English" if lang == "en" else "sv"
+    check("A", f"{lang}: K72 language från read = {want}", r.get("language") == want, r.get("language"))
+    check("A", f"{lang}: K72 usage i read", bool((r.get("usage") or {}).get("est_cost_usd") is not None), r.get("usage"))
 
     # spara som text (appens väg) och kvoten
     st, q0 = call("drill", {"action": "quota"}, tok)
