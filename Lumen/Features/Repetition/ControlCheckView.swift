@@ -15,8 +15,9 @@ struct ControlCheckView: View {
     /// False for a check set up by the screenshots (Kelly Ke49 §7): it is shown as it is, not started again.
     private let beginsOnAppear: Bool
 
-    init(hub: RemoteCommandHub, sound: URL?, waitSeconds: Double = 8, help: RepetitionModel? = nil,
+    init(hub: RemoteCommandHub, sound: URL?, waitSeconds: Double = 8, forText: Bool = false, help: RepetitionModel? = nil,
          onStart: @escaping () -> Void, onLater: @escaping () -> Void) {
+        self.forText = forText
         self.onStart = onStart
         self.onLater = onLater
         self.helpModel = help
@@ -26,6 +27,8 @@ struct ControlCheckView: View {
     }
 
     private let sound: URL?
+    /// A106 (Kelly Ke63 `lasa/kontroller-text.png`): the presses of a text read aloud (pause, next, previous sentence).
+    private var forText = false
     /// A92 (D166): the exam mode, for "Fråga om EarMind" in the toolbar. Nil = no ? button.
     private let helpModel: RepetitionModel?
     @State private var showsHelp = false
@@ -127,10 +130,14 @@ struct ControlCheckView: View {
     private var detail: String {
         if let step = check.step {
             // Kelly N2: say why a question starts playing.
-            return sound != nil && check.heard.isEmpty ? "\(step.hint). Frågan spelas en gång så att trycken kommer fram."
+            return sound != nil && check.heard.isEmpty
+                ? "\(step.hint). \(forText ? "Början av texten" : "Frågan") spelas en gång så att trycken kommer fram."
                 : "\(step.hint)."
         }
-        if check.allWork { return "Under paus fortsätter vilket tryck som helst. Knapparna på låsskärmen gör samma sak." }
+        if check.allWork {
+            return forText ? "Knapparna på skärmen och på låsskärmen gör samma sak."
+                : "Under paus fortsätter vilket tryck som helst. Knapparna på låsskärmen gör samma sak."
+        }
         if check.needsEarbudSettings {
             return "Ställ in Vänster på Nästa spår och Höger på Spela/pausa, så fungerar alla tre. "
                 + "Inställningar › Bluetooth › ⓘ vid dina AirPods › Dubbeltryck."
@@ -143,16 +150,17 @@ struct ControlCheckView: View {
     /// A90 (Aron 23:13): the controls in exactly these words, one sentence per row.
     private var steps: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Medan frågan spelas:")
+            Text(forText ? "Medan texten läses:" : "Medan frågan spelas:")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .padding(.leading, 12)
             VStack(spacing: 0) {
-                row(.one, "tryck 1 gång för frågans A-svar.") // Kelly K1: lower case after the colon, as Aron wrote it
+                // Kelly K1: lower case after the colon, as Aron wrote it
+                row(.one, forText ? "Tryck 1 gång för att pausa eller fortsätta." : "tryck 1 gång för frågans A-svar.")
                 Divider().padding(.leading, 52)
-                row(.two, "Tryck 2 gånger för ett kort A-svar på en till två meningar.")
+                row(.two, forText ? "Tryck 2 gånger för nästa mening." : "Tryck 2 gånger för ett kort A-svar på en till två meningar.")
                 Divider().padding(.leading, 52)
-                row(.three, "Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.")
+                row(.three, forText ? "Tryck 3 gånger för förra meningen." : "Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.")
             }
             .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
         }
@@ -220,7 +228,7 @@ struct ControlCheckView: View {
                 Button("Hoppa över") { check.skip() }
                     .frame(minHeight: 44)
             } else if check.allWork {
-                Text("Avsluta på telefonen. Annars börjar listan om.")
+                Text(forText ? "Avsluta på telefonen." : "Avsluta på telefonen. Annars börjar listan om.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)

@@ -25,7 +25,31 @@ enum RepetitionDemo {
                                       // A102 (K66 point 4): numbers and formulas shown as in a textbook
                                       "repNumbers", "repNumbersEdit",
                                       // A104 (Angela Fable): empty and error states; A103: no network
-                                      "repSchoolsOffline", "repSchoolsFailed", "repSchoolSearchNone", "repSchoolSearchFailed", "repPublishFailed", "repSoundMaking", "repQuotaExam", "repHelpTryUsedUp", "repNewOffline", "repExamOffline"]
+                                      "repSchoolsOffline", "repSchoolsFailed", "repSchoolSearchNone", "repSchoolSearchFailed", "repPublishFailed", "repSoundMaking", "repQuotaExam", "repHelpTryUsedUp", "repNewOffline", "repExamOffline",
+                                      // A106 (Angela Fable, Kelly Ke63): a text read aloud
+                                      "repTextNew", "repTextConfirm", "repText", "repTextMaking", "repTextPlay", "repTextPaused",
+                                      "repTextEnd", "repTextWaiting", "repHomeText", "repTextControls"]
+
+    /// A106 (Ke63): Biologiprovet as a text read aloud: two headings, nine sentences (made up, no student text).
+    static let reading: Drill = {
+        func part(_ sentences: [String], heading: Bool = false) -> DrillItem {
+            var item = DrillItem.textPart(sentences.joined(separator: " "), part: heading ? .heading : .para)
+            item.sentences = sentences
+            return item
+        }
+        return Drill.text(title: "Biologiprovet", summary: DrillSummary(subject: "Biologi", grade: "åk 9", covers: ""),
+                          parts: [
+                            part(["Fotosyntesen"], heading: true),
+                            part(["Växter tillverkar sin egen näring genom fotosyntes.", "Det sker i bladens gröna korn, kloroplasterna.",
+                                  "Där fångar klorofyllet energin i solljuset."]),
+                            part(["Växten tar upp koldioxid ur luften och vatten genom rötterna.",
+                                  "Med ljusets energi blir de till socker och syre.",
+                                  "Sockret är växtens mat, och syret släpps ut genom klyvöppningarna."]),
+                            part(["Cellandningen"], heading: true),
+                            part(["I cellandningen bryts sockret ner igen.", "Det sker i mitokondrierna, i alla levande celler.",
+                                  "Energin som frigörs använder cellen för att växa och röra sig."]),
+                          ])
+    }()
 
     /// A102: Matteprovet, spoken with the numbers as words, shown with digits and formulas (`DrillItem.screen`).
     static let maths: Drill = {
@@ -160,6 +184,26 @@ enum RepetitionDemo {
                 try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
             }
         }
+        if name.hasPrefix("repText") || name == "repHomeText" { // A106: the text is the newest exam, with its sound
+            model.store.save(reading)
+            if name != "repTextMaking", let audio = model.audio as? DeviceVoiceDrillAudio {
+                for item in reading.items {
+                    try? WAVWriter.write(samples: [Int16](repeating: 0, count: 1_600), sampleRate: 16_000, to: audio.url(text: item.long))
+                }
+            }
+            if name == "repHomeText" { UserDefaults.standard.set(true, forKey: "repetition.controlsChecked") }
+            let reader = ReadingPlayer(parts: reading.readingParts, audio: { _ in nil }, source: FileRepetitionAudioSource(),
+                                       timer: TaskRepetitionTimer())
+            switch name {
+            case "repTextPlay": reader.stageForScreenshot(.reading, sentence: 5)
+            case "repTextPaused": reader.stageForScreenshot(.reading, sentence: 5, paused: true)
+            case "repTextEnd": reader.stageForScreenshot(.atEnd, sentence: 10)
+            case "repTextWaiting": reader.stageForScreenshot(.waitingForAudio, sentence: 7)
+            default: return
+            }
+            model.session.stageForScreenshot(reading, reader: reader)
+            return
+        }
         let player = RepetitionPlayer(count: drill.items.count, track: { _ in nil }, source: FileRepetitionAudioSource(),
                                       timer: TaskRepetitionTimer(), thinkingSeconds: 6)
         switch name {
@@ -177,6 +221,13 @@ enum RepetitionDemo {
         default: return
         }
         model.session.stageForScreenshot(drill, player: player)
+    }
+
+    /// A106: Nytt prov with Läs upp texten chosen, or its "Stämmer det här?".
+    static func readingForm(_ model: RepetitionModel, _ staged: NewDrillView.StagedReading) -> NewDrillView {
+        var view = NewDrillView(model: model) { _ in }
+        view.stagedReading = staged
+        return view
     }
 
     /// The check after the three presses: all arrived, or AirPods 1/2 (two presses came as play/pause, three never).
@@ -199,8 +250,17 @@ enum RepetitionDemo {
     static func view(_ name: String, listening: ListeningModel) -> some View {
         if let model = listening.repetition {
             switch name {
-            case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem":
+            case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText":
                 NavigationStack { HomeView(model: listening) }
+            // A106 (Kelly Ke63): Läs upp texten
+            case "repTextNew": readingForm(model, .choice)
+            case "repTextConfirm":
+                readingForm(model, .confirm(DrillTextDraft(title: reading.title, summary: reading.summary, parts: reading.items,
+                                                           chars: 620, countsAs: 1)))
+            case "repText", "repTextMaking": NavigationStack { DrillView(model: model, drillID: reading.id) }
+            case "repTextPlay", "repTextPaused", "repTextEnd", "repTextWaiting": RepetitionPlayerView(model: model)
+            case "repTextControls":
+                ControlCheckView(hub: RemoteCommandHub(), sound: nil, waitSeconds: 3600, forText: true, onStart: {}, onLater: {})
             case "repSoundProblem": NavigationStack { DrillView(model: model, drillID: history.id) }
             case "repSoundProblemNone": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
             case "repQuotaUsedUp", "repNewOffline": NewDrillView(model: model) { _ in }

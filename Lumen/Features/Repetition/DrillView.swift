@@ -23,6 +23,8 @@ struct DrillView: View {
     @State private var showsChatGPT = false // A93
     @State private var editMode: EditMode = .inactive
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
+    /// A106 (Ke63 §4.1): a text's presses mean other things, so the check is shown the first time a text is started.
+    @AppStorage("repetition.textControlsChecked") private var textControlsChecked = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -36,7 +38,7 @@ struct DrillView: View {
     var body: some View {
         Group {
             if let drill {
-                content(drill)
+                if drill.isText { textContent(drill) } else { content(drill) } // A106 (D185)
             } else {
                 ContentUnavailableView("Provet finns inte längre", systemImage: "doc")
             }
@@ -53,8 +55,8 @@ struct DrillView: View {
         }
         .sheet(isPresented: $checkingControls) {
             if let drill {
-                ControlCheckView(hub: model.remote, sound: firstQuestionSound(drill), help: model) {
-                    controlsChecked = true
+                ControlCheckView(hub: model.remote, sound: firstQuestionSound(drill), forText: drill.isText, help: model) {
+                    if drill.isText { textControlsChecked = true } else { controlsChecked = true }
                     checkingControls = false
                     let index = pendingIndex
                     Task { await model.start(drill, at: index) }
@@ -90,7 +92,9 @@ struct DrillView: View {
             }
             Button("Avbryt", role: .cancel) {}
         } message: {
-            Text("Frågorna, svaren och ljudet försvinner från alla dina enheter. Kopior som du har delat finns kvar hos de andra.")
+            Text(drill?.isText == true
+                 ? "Texten och ljudet försvinner från alla dina enheter. Kopior som du har delat finns kvar hos de andra."
+                 : "Frågorna, svaren och ljudet försvinner från alla dina enheter. Kopior som du har delat finns kvar hos de andra.")
         }
         .task { if let drill, !model.isAudioReady(drill) || drill.needsUpload == true { model.prepareAudio(drill) } }
     }
@@ -115,17 +119,23 @@ struct DrillView: View {
                     .disabled(!model.isAudioReady(drill) || model.isOffline)
                 }
                 Menu {
-                    if model.savedIndex(drill) != nil {
+                    if drill.isText {
+                        if model.savedSentence(drill) != nil {
+                            Button("Börja om från början", systemImage: "arrow.counterclockwise") { begin(drill, at: 0) }
+                        }
+                    } else if model.savedIndex(drill) != nil {
                         Button("Börja om från fråga 1", systemImage: "arrow.counterclockwise") { begin(drill, at: 0) }
                     }
                     if model.canPublish, drill.publication == nil { // A83 (Ke52)
                         Button("Publicera prov", systemImage: "building.columns") { publishing = true }
                             .disabled(!model.isAudioReady(drill) || model.isOffline) // A104
                     }
-                    Button("Ändra ordning", systemImage: "arrow.up.arrow.down") {
-                        withAnimation { editMode = .active }
+                    if !drill.isText { // Ke63: a text has no order to change and no questions to add
+                        Button("Ändra ordning", systemImage: "arrow.up.arrow.down") {
+                            withAnimation { editMode = .active }
+                        }
+                        Button("Gör med ChatGPT", systemImage: "doc.on.clipboard") { showsChatGPT = true } // A93
                     }
-                    Button("Gör med ChatGPT", systemImage: "doc.on.clipboard") { showsChatGPT = true } // A93
                     Divider()
                     Button("Ta bort provet", systemImage: "trash", role: .destructive) { confirmDelete = true }
                 } label: {
@@ -246,6 +256,69 @@ struct DrillView: View {
         }
     }
 
+    /// A106 (D185, Kelly Ke63 `lasa/text.png`): a text read aloud. The whole text in one card, the headings bold; a
+    /// tap on a sentence starts the player there. Starta prov is fixed at the bottom, as for questions.
+    private func textContent(_ drill: Drill) -> some View {
+        let saved = model.savedSentence(drill)
+        let canStart = model.canStart(drill)
+        return List {
+            Section {
+                if typeSize.isAccessibilitySize { WrappingTitleRow(title: drill.title) }
+                statusLine(drill)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                    .listRowSeparator(.hidden)
+            }
+
+            if model.isOffline { // A104
+                Section {
+                    Label("Ingen internetanslutning. Dela och Publicera fungerar när du är uppkopplad.",
+                          systemImage: "wifi.slash")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            if model.quotaExceeded(drill) {
+                Section {
+                    Text(verbatim: Self.usedUpLine)
+                    if model.canPublish {
+                        NavigationLink("Hämta andras prov") { SchoolExamsView(model: model) }
+                    }
+                }
+            }
+
+            Section {
+                SentenceText(parts: drill.readingParts) { sentence in begin(drill, at: sentence) }
+                    .padding(.vertical, 6)
+                    .accessibilityLabel(drill.readingParts.map { $0.sentences.joined(separator: " ") }.joined(separator: "\n"))
+                    .accessibilityHint("Starta prov läser upp texten.")
+            } footer: {
+                Text("Tryck på en mening för att börja där.")
+            }
+
+            if model.canPublish, let publication = drill.publication {
+                Section {
+                    PublishedRow(model: model, drill: drill, publication: publication, editing: $publishing)
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .safeAreaInset(edge: .bottom) {
+            let soundProblem = canStart ? nil : model.audio.problem(for: drill)
+            MainActionBar(title: canStart ? (saved == nil ? "Starta prov" : "Fortsätt")
+                              : (soundProblem == nil ? "Gör ljud …" : "Starta prov"),
+                          systemImage: "play.fill",
+                          note: soundProblem ?? (canStart ? nil : "Ljudet görs. Du kan starta när första stycket är klart." as String?)
+                              ?? saved.map { "Du var på mening \($0 + 1) av \(drill.sentenceCount)." }
+                              ?? "Spelas i dina AirPods. Mikrofonen används inte.",
+                          isBusy: !canStart && soundProblem == nil,
+                          isDisabled: !canStart) {
+                begin(drill, at: saved ?? 0)
+            }
+        }
+    }
+
     /// Kelly (A99): "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 december."
     private static var usedUpLine: String {
         "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth())."
@@ -255,7 +328,10 @@ struct DrillView: View {
     private func statusLine(_ drill: Drill) -> some View {
         let p = model.progress(drill)
         let ready = p.total > 0 && p.ready == p.total
-        let facts = DrillText.questions(drill.items.count) + (drill.summary.grade.isEmpty ? "" : " · \(drill.summary.grade)")
+        // A106 (Ke63): "Text · 9 meningar · cirka 1 min · ljud klart".
+        let facts = drill.isText
+            ? "Text · \(ReadingText.sentences(drill.sentenceCount)) · cirka \(ReadingText.minutes(drill)) min"
+            : DrillText.questions(drill.items.count) + (drill.summary.grade.isEmpty ? "" : " · \(drill.summary.grade)")
         return VStack(alignment: .leading, spacing: 6) {
             if ready {
                 Text(verbatim: "\(facts) · ljud klart")
@@ -263,7 +339,7 @@ struct DrillView: View {
                 Text(verbatim: facts) // A100 (K62): no counter that stands still; the problem is the next line
             } else {
                 Text(verbatim: facts)
-                Text(verbatim: "Ljud: \(p.ready) av \(p.total) klara · Görs i spelordning").monospacedDigit()
+                Text(verbatim: "Ljud: \(p.ready) av \(p.total) klara" + (drill.isText ? "" : " · Görs i spelordning")).monospacedDigit()
                 // Kelly R1: the line under the text, with room (it was drawn across the text between the two lines).
                 ProgressView(value: Double(p.ready), total: Double(max(p.total, 1)))
                     .padding(.top, 6)
@@ -311,7 +387,7 @@ struct DrillView: View {
 
     /// Through "Styr med dina AirPods" the first time, else straight to the question.
     private func begin(_ drill: Drill, at index: Int) {
-        if controlsChecked {
+        if drill.isText ? textControlsChecked : controlsChecked {
             Task { await model.start(drill, at: index) }
         } else {
             pendingIndex = index
@@ -320,7 +396,8 @@ struct DrillView: View {
     }
 
     private func firstQuestionSound(_ drill: Drill) -> URL? {
-        model.audio.track(for: drill, at: 0)?.question
+        if drill.isText { return model.audio.reading(for: drill, part: 0)?.url } // A106: the first paragraph
+        return model.audio.track(for: drill, at: 0)?.question
     }
 }
 
