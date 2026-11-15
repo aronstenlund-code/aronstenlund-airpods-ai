@@ -132,7 +132,12 @@ grep -E "Repetition:|offline|Offline|network|Network|drill_audio|download" "$OUT
   echo
   echo "Detaljer:"
   echo '```'
-  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-" "$OUT/t27-log.txt" 2>/dev/null | cut -c1-900
+  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS" "$OUT/t27-log.txt" 2>/dev/null | cut -c1-900
+  echo '```'
+  echo
+  echo "Tryck (testkroken, appens logg):"
+  echo '```'
+  grep -E "Test press|answer [0-9]|pause|go on" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 30
   echo '```'
   echo
   echo "Spelaren (appens logg, Repetition:):"
