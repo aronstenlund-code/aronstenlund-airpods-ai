@@ -200,3 +200,15 @@ import Testing
         #expect(TestPresses.event(for: "earmind.test.press.1") == .long)
     }
 }
+
+/// Toby (moln) T28: the Debug hook for material in Nytt prov.
+@MainActor
+@Suite struct TestMaterialHookTests {
+    @Test func onlyWithTheLaunchEnvironment() {
+        #expect(TestMaterial.text(environment: [:]) == nil)
+        #expect(TestMaterial.text(environment: ["LUMEN_TEST_MATERIAL": "  "]) == nil)
+        #expect(TestMaterial.text(environment: ["LUMEN_TEST_MATERIAL": "Fotosyntes\\nVäxter gör socker."])
+                == "Fotosyntes\nVäxter gör socker.")
+        #expect(TestMaterial.text(environment: ["LUMEN_TEST_MATERIAL": String(repeating: "a", count: 50_000)])?.count == 40_000)
+    }
+}
