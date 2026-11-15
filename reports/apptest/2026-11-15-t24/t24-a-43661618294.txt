@@ -1,0 +1,151 @@
+T24 phase a (simulator, not a device), header x-earmind-test=1
+taps (a user's): 35, test taps: 20, screens: 20
+
+Sections:
+OK  Första starten till första frågan: 264 s, 10 tryck
+OK  Frågor och svar och en fråga: 16 s, 3 tryck
+OK  Gör med ChatGPT: 69 s, 5 tryck
+OK  Dela: 38 s, 2 tryck
+OK  Publicera prov: 90 s, 10 tryck
+FEL Mina svar: spela in eget svar: 49 s, 3 tryck
+OK  Väntar på att konto B hittar provet: 186 s, 0 tryck
+
+Not obvious:
+- Öppna ChatGPT leaves the app (Safari or the ChatGPT app): not tapped in the test
+- Dela: no share sheet with Kopiera seen
+- Provdatum: the day '22 november' was not found in the calendar
+- Mina svar is not on the first screen of Provläge
+
+Log:
+launched with LUMEN_TEST_HEADER=1
+=== Första starten till första frågan
+SCREEN t24a-01-valkommen at   25.0 s — Välkommen
+  texts: Välkommen till EarMind | Fota materialet, EarMind gör provfrågor med A-svar. | Fota materialet | EarMind gör provfrågor med A-svar. | Lyssna i dina AirPods, Frågorna läses upp. Tryck för svaret. | Lyssna i dina AirPods | Frågorna läses upp. Tryck för svaret. | Plugga utan mobilen, Telefonen kan ligga i fickan. | Plugga utan mobilen | Telefonen kan ligga i fickan. | Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen.
+  buttons: Läs mer | Fortsätt
+TAP 1 at   27.0 s: Fortsätt
+SCREEN t24a-02-nytt-prov at   31.8 s — Nytt prov, first time
+  texts: Nytt prov | Börja med materialet till ditt nästa prov. | Material | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | iOS frågar om kameran första gången. Fotona sparas inte. | Prov | Vilken årskurs? | Hoppa över | Antal frågor | Antal frågor, 20 | Varje fråga får ett kort och ett långt svar. | Lägg till minst en sida, bild eller text.
+  buttons: Senare | Fråga om EarMind | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Vilken årskurs?, Hoppa över | Antal frågor, 20, Minskning | Antal frågor, 20, Ökning | Skapa frågor
+TAP 2 at   39.2 s: Fota sidor
+SCREEN t24a-03-kamera at   50.1 s — Fota sidor (photo library in the Simulator)
+  texts: Nytt prov | Börja med materialet till ditt nästa prov. | Material | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | iOS frågar om kameran första gången. Fotona sparas inte. | Prov | Vilken årskurs? | Hoppa över | Antal frågor | Antal frågor, 15 | Varje fråga får ett kort och ett långt svar. | Lägg till minst en sida, bild eller text. | Privat tillgång till bilder | Ditt bildbibliotek visas här men ”EarMind” har bara tillgång till de objekt du väljer. | Läs mer… | Privat tillgång till bilder | Ditt bildbibliotek visas här men ”EarMind” har bara tillgång till de objekt du väljer. | Läs mer… |  Platsen är inkluderad
+  buttons: Senare | Fråga om EarMind | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Vilken årskurs?, Hoppa över | Antal frågor, 15, Minskning | Antal frågor, 15, Ökning | Skapa frågor | Avbryt | Bilder | Samlingar | Läs mer… | Stäng | Läs mer… | Stäng | Sortera och filtrera | Sök
+TEST TAP at   55.4 s: close the sheet
+TAP 3 at   58.8 s: Välj bilder
+SCREEN t24a-03-bildbiblioteket at   85.5 s — Välj bilder: the photo library
+  texts: Nytt prov | Börja med materialet till ditt nästa prov. | Material | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | iOS frågar om kameran första gången. Fotona sparas inte. | Prov | Vilken årskurs? | Hoppa över | Antal frågor | Antal frågor, 15 | Varje fråga får ett kort och ett långt svar. | Lägg till minst en sida, bild eller text. | Välj upp till 20 bilder. | Läs mer… | Läs mer… | Välj bilder |  Platsen är inkluderad
+  buttons: Senare | Fråga om EarMind | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Vilken årskurs?, Hoppa över | Antal frågor, 15, Minskning | Antal frågor, 15, Ökning | Skapa frågor | Avbryt | Bilder | Samlingar | Klar | Stäng | Läs mer… | Stäng | Läs mer… | Sortera och filtrera | Sök
+TAP 5 at  103.2 s: Lägg till in the photo library
+TAP 6 at  140.7 s: Skapa frågor
+SCREEN t24a-04-stammer at  158.1 s — Stämmer det här?
+  texts: Stämmer det här? | Ämne | Ämne, Biologi | Provet handlar om | Fotosyntes: hur växter tillverkar socker med hjälp av koldioxid, vatten och solljus, vilken roll klorofyll har, vad som bildas och vad sockret används till. | Något fel? Skriv det | Frågor | Varför behövs klorofyll i bladen? | Vad händer med syret under fotosyntesen? | Vad används sockret till i växten? | 3 frågor. Du kan ändra, ta bort och lägga till efteråt. | Röst | Röst A
+  buttons: Senare | Fråga om EarMind | Gör om med rättelsen | Röst A | Lyssna på röst A | Ser rätt ut
+TAP 7 at  161.5 s: Ser rätt ut
+SCREEN t24a-05-start-med-prov at  184.2 s — Start with the exam, sound ready
+  texts: Prov | Nästa prov, Biologiprovet, 3 frågor · cirka 1 min per varv | Nästa prov | Biologiprovet | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Prov från din skola | Nytt prov
+  buttons: Inställningar | Starta prov | Frågor och svar | Prov från din skola | Nytt prov | Öppna länk
+TAP 8 at  187.4 s: Starta prov
+SCREEN t24a-06-styr at  219.4 s — Styr med dina AirPods
+  texts: Prov | Nästa prov, Biologiprovet, 3 frågor · cirka 1 min per varv | Nästa prov | Biologiprovet | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Prov från din skola | Nytt prov | Styr med dina AirPods | Tryck tre gånger nu | på skaftet, som när du går tillbaka en låt. | Medan frågan spelas: | tryck 1 gång för frågans A-svar. | tryck 1 gång för frågans A-svar. | Tryck 2 gånger för ett kort A-svar på en till två meningar. | Tryck 2 gånger för ett kort A-svar på en till två meningar. | Tryck 3 gånger för att pausa. Tryck igen för att fortsätta. | Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.
+  buttons: Inställningar | Starta prov | Frågor och svar | Prov från din skola | Nytt prov | Öppna länk | Avbryt | Fråga om EarMind | Starta prov | Hoppa över
+TAP 9 at  268.6 s: Starta on the control check
+SCREEN t24a-07-forsta-fragan at  272.4 s — The first question
+  texts: Prov | Nästa prov, Biologiprovet, 3 frågor · cirka 1 min per varv | Nästa prov | Biologiprovet | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Beta · använder mikrofonen | Nytt prov | Fråga 1 av 3, Biologiprovet | Fråga 1 av 3 | Biologiprovet | Varför behövs klorofyll i bladen? | 5 | Tryck på AirPods för svaret | Långt svar, 1 tryck på AirPods, Långt svar, 1 tryck på AirPods, Kort svar, 2 tryck på AirPods, Kort svar, 2 tryck på AirPods, Paus, 3 tryck på AirPods, Paus, 3 tryck på AirPods | Långt svar, 1 tryck på AirPods | Långt svar, 1 tryck på AirPods | Kort svar, 2 tryck på AirPods | Kort svar, 2 tryck på AirPods | Paus, 3 tryck på AirPods | Paus, 3 tryck på AirPods
+  buttons: Inställningar | Starta prov | Frågor och svar | Prov från din skola | Fler lägen | Nytt prov | Öppna länk | Avsluta
+SCREEN t24a-08-efter-betanketid at  283.3 s — After the thinking time (no press)
+  texts: Prov | Nästa prov, Biologiprovet, Du var på fråga 2 av 3 | Nästa prov | Biologiprovet | Du var på fråga 2 av 3 | Fortsätt | Frågor och svar | Prov från din skola | Fler lägen | Beta · använder mikrofonen | Nytt prov | Fråga 2 av 3, Biologiprovet | Fråga 2 av 3 | Biologiprovet | Vad händer med syret under fotosyntesen? | 3 | Tryck på AirPods för svaret | Långt svar, 1 tryck på AirPods, Långt svar, 1 tryck på AirPods, Kort svar, 2 tryck på AirPods, Kort svar, 2 tryck på AirPods, Paus, 3 tryck på AirPods, Paus, 3 tryck på AirPods | Långt svar, 1 tryck på AirPods | Långt svar, 1 tryck på AirPods | Kort svar, 2 tryck på AirPods | Kort svar, 2 tryck på AirPods | Paus, 3 tryck på AirPods | Paus, 3 tryck på AirPods
+  buttons: Inställningar | Fortsätt | Frågor och svar | Prov från din skola | Fler lägen | Nytt prov | Öppna länk | Avsluta
+TAP 10 at  284.5 s: Avsluta
+OK  Första starten till första frågan: 264 s, 10 tryck
+=== Frågor och svar och en fråga
+TAP 11 at  287.5 s: Frågor och svar
+SCREEN t24a-09-fragelistan at  291.4 s — Frågor och svar
+  texts: Biologiprovet | 3 frågor · ljud klart | Frågor | Fråga 1 | Varför behövs klorofyll i bladen? | Klorofyllet fångar upp solljuset i bladen, och utan det ljuset kan växten inte driva fotosyntesen som tillverkar socker. | Fråga 2 | Vad händer med syret under fotosyntesen? | Syret bildas som en restprodukt när växten tillverkar socker, och det släpps sedan ut från växten till luften. | Fråga 3 | Vad används sockret till i växten? | Sockret ger växten energi och fungerar som byggmaterial, så att den kan växa och bygga upp sina delar. | Lägg till fråga | Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Sammanfattning | Fotosyntes: hur växter tillverkar socker med hjälp av koldioxid, vatten och solljus, vilken roll klorofyll har, vad som bildas och vad sockret används till. | Fortsätt | Du var på fråga 2 av 3.
+  buttons: Prov | Dela | Mer | Fråga 1, Varför behövs klorofyll i bladen?, Klorofyllet fångar upp solljuset i bladen, och utan det ljuset kan växten inte driva fotosyntesen som tillverkar socker. | Fråga 2, Vad händer med syret under fotosyntesen?, Syret bildas som en restprodukt när växten tillverkar socker, och det släpps sedan ut från växten till luften. | Fråga 3, Vad används sockret till i växten?, Sockret ger växten energi och fungerar som byggmaterial, så att den kan växa och bygga upp sina delar. | Lägg till fråga | Fortsätt
+TAP 12 at  294.6 s: the first question
+SCREEN t24a-10-fraga-1 at  298.3 s — Editing question 1
+  texts: Biologiprovet | 3 frågor · ljud klart | Frågor | Fråga 1 | Varför behövs klorofyll i bladen? | Klorofyllet fångar upp solljuset i bladen, och utan det ljuset kan växten inte driva fotosyntesen som tillverkar socker. | Fråga 2 | Vad händer med syret under fotosyntesen? | Syret bildas som en restprodukt när växten tillverkar socker, och det släpps sedan ut från växten till luften. | Fråga 3 | Vad används sockret till i växten? | Sockret ger växten energi och fungerar som byggmaterial, så att den kan växa och bygga upp sina delar. | Lägg till fråga | Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Sammanfattning | Fotosyntes: hur växter tillverkar socker med hjälp av koldioxid, vatten och solljus, vilken roll klorofyll har, vad som bildas och vad sockret används till. | Fortsätt | Du var på fråga 2 av 3. | Fråga 1 | Fråga · 5 ord | Svar · 97 ord | Kort svar (2 tryck): Klorofyllet fångar upp solljuset i bladen, och utan det ljuset kan växten inte driva fotosyntesen som tillverkar socker. | Sparar du en ändring görs nytt ljud bara för den här frågan.
+  buttons: Prov | Dela | Mer | Fråga 1, Varför behövs klorofyll i bladen?, Klorofyllet fångar upp solljuset i bladen, och utan det ljuset kan växten inte driva fotosyntesen som tillverkar socker. | Fråga 2, Vad händer med syret under fotosyntesen?, Syret bildas som en restprodukt när växten tillverkar socker, och det släpps sedan ut från växten till luften. | Fråga 3, Vad används sockret till i växten?, Sockret ger växten energi och fungerar som byggmaterial, så att den kan växa och bygga upp sina delar. | Lägg till fråga | Fortsätt | Avbryt | Spara | Nytt förslag
+TAP 13 at  301.5 s: Avbryt in the editor
+OK  Frågor och svar och en fråga: 16 s, 3 tryck
+=== Gör med ChatGPT
+TAP 14 at  316.9 s: Nytt prov
+TAP 15 at  331.4 s: Gör med ChatGPT
+SCREEN t24a-11-chatgpt-steg at  337.9 s — Gör med ChatGPT: the three steps
+  texts: Prov | Nästa prov, Biologiprovet, Du var på fråga 2 av 3 | Nästa prov | Biologiprovet | Du var på fråga 2 av 3 | Fortsätt | Frågor och svar | Prov från din skola | Fler lägen | Beta · använder mikrofonen | Nytt prov | Nytt prov | Material | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Gör med ChatGPT | Låt ChatGPT göra frågorna av dina filer | Foton, dokument och text skickas en gång för att göra frågorna och sparas inte. | Frågor | Antal frågor | Antal frågor, 12 | Varje fråga får ett kort och ett långt svar. | Vilken årskurs? | Hoppa över | EarMind läser nivån ur materialet. | Lägg till minst en sida, bild eller text. | Gör med ChatGPT | ChatGPT gör frågor och svar av dina filer. Sedan läser EarMind upp dem. | Kopiera prompten | Den säger åt ChatGPT exakt vad som ska göras. | Klistra in i ChatGPT | Bifoga dina filer, till exempel foton av sidorna eller en PDF, och skicka. | Klistra in svaret här | Kopiera hela svaret från ChatGPT. | Det du bifogar i ChatGPT hanteras av ChatGPT, inte av EarMind. ChatGPT är en tjänst från OpenAI.
+  buttons: Inställningar | Fortsätt | Frågor och svar | Prov från din skola | Fler lägen | Nytt prov | Öppna länk | Avbryt | Fråga om EarMind | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Gör med ChatGPT, Låt ChatGPT göra frågorna av dina filer | Antal frågor, 12, Minskning | Antal frågor, 12, Ökning | Vilken årskurs?, Hoppa över | Skapa frågor | Avbryt | Kopiera prompten | Öppna ChatGPT | Klistra in
+TAP 16 at  348.5 s: Kopiera prompten
+UNCLEAR: Öppna ChatGPT leaves the app (Safari or the ChatGPT app): not tapped in the test
+TAP 17 at  352.7 s: Klistra in (the answer from ChatGPT)
+SCREEN t24a-12-chatgpt-hittade at  363.1 s — Hittade n frågor med svar
+  texts: Prov | Nästa prov, Biologiprovet, Du var på fråga 2 av 3 | Nästa prov | Biologiprovet | Du var på fråga 2 av 3 | Fortsätt | Frågor och svar | Prov från din skola | Fler lägen | Beta · använder mikrofonen | Nytt prov | Nytt prov | Material | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Gör med ChatGPT | Låt ChatGPT göra frågorna av dina filer | Foton, dokument och text skickas en gång för att göra frågorna och sparas inte. | Frågor | Antal frågor | Antal frågor, 12 | Varje fråga får ett kort och ett långt svar. | Vilken årskurs? | Hoppa över | EarMind läser nivån ur materialet. | Lägg till minst en sida, bild eller text. | Gör med ChatGPT | Hittade 3 frågor med svar, Det korta svaret är första meningen i varje svar. | Hittade 3 frågor med svar | Det korta svaret är första meningen i varje svar. | Frågor | Fråga 1. Vad behöver växter för fotosyntesen? Koldioxid, vatten och solljus. | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2. Var i bladet sker fotosyntesen? I kloroplasterna. | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3. Vad används sockret till? Som energi och byggmaterial. | Vad används sockret till? | Som energi och byggmaterial. | 12 av 15 frågor kvar den här månaden. | 1 rad kunde inte läsas och togs inte med. | Röst | Röst A | Ljudet görs som vanligt när frågorna är sparade.
+  buttons: Inställningar | Fortsätt | Frågor och svar | Prov från din skola | Fler lägen | Nytt prov | Öppna länk | Avbryt | Fråga om EarMind | Fota sidor | Välj bilder | Skriv text | Lägg till dokument | Gör med ChatGPT, Låt ChatGPT göra frågorna av dina filer | Antal frågor, 12, Minskning | Antal frågor, 12, Ökning | Vilken årskurs?, Hoppa över | Skapa frågor | Avbryt | 1 rad kunde inte läsas och togs inte med. | Röst A | Lyssna på röst A | Röst B | Lyssna på röst B | Röst C | Lyssna på röst C | Spara frågorna
+TAP 18 at  366.0 s: Spara frågorna
+SCREEN t24a-13-chatgpt-sparat at  370.8 s — After Spara frågorna
+  texts: Nytt prov | 3 frågor | Ljud: 0 av 6 klara · Görs i spelordning | Frågor | Fråga 1 | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2 | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3 | Vad används sockret till? | Som energi och byggmaterial. | Lägg till fråga | Delas när ljudet är klart (0 av 6). | Gör ljud … | Spelas i dina AirPods. Mikrofonen används inte.
+  buttons: Prov | Dela | Mer | Fråga 1, Vad behöver växter för fotosyntesen?, Koldioxid, vatten och solljus. | Fråga 2, Var i bladet sker fotosyntesen?, I kloroplasterna. | Fråga 3, Vad används sockret till?, Som energi och byggmaterial. | Lägg till fråga | Gör ljud …
+OK  Gör med ChatGPT: 69 s, 5 tryck
+=== Dela
+TAP 19 at  383.2 s: Frågor och svar
+TAP 20 at  385.1 s: Dela
+SCREEN t24a-14-dela at  390.4 s — Dela
+  texts: Nytt prov | 3 frågor · ljud klart | Frågor | Fråga 1 | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2 | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3 | Vad används sockret till? | Som energi och byggmaterial. | Lägg till fråga | Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Starta prov | Spelas i dina AirPods. Mikrofonen används inte.
+  buttons: Prov | Dela | Mer | Fråga 1, Vad behöver växter för fotosyntesen?, Koldioxid, vatten och solljus. | Fråga 2, Var i bladet sker fotosyntesen?, I kloroplasterna. | Fråga 3, Vad används sockret till?, Som energi och byggmaterial. | Lägg till fråga | Starta prov
+UNCLEAR: Dela: no share sheet with Kopiera seen
+OK  Dela: 38 s, 2 tryck
+=== Publicera prov
+TAP 21 at  419.3 s: Frågor och svar
+TAP 22 at  422.7 s: Mer
+TAP 23 at  425.5 s: Publicera prov in Mer
+SCREEN t24a-15-publicera at  429.9 s — Publicera prov
+  texts: Nytt prov | 3 frågor · ljud klart | Frågor | Fråga 1 | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2 | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3 | Vad används sockret till? | Som energi och byggmaterial. | Lägg till fråga | Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Starta prov | Spelas i dina AirPods. Mikrofonen används inte. | Publicera prov | Skola | Skola, Välj skola | Ämne | Välj ämne | Provdatum | Provdatum, Välj datum | Alla som söker på skolan kan lägga till provet och plugga på det. Frågor, svar och ljud publiceras. Aldrig foton, dokument eller ditt namn. | Visa ett användarnamn | Av: provet visas utan namn. | Saknas: skola, ämne, provdatum
+  buttons: Prov | Dela | Mer | Fråga 1, Vad behöver växter för fotosyntesen?, Koldioxid, vatten och solljus. | Fråga 2, Var i bladet sker fotosyntesen?, I kloroplasterna. | Fråga 3, Vad används sockret till?, Som energi och byggmaterial. | Lägg till fråga | Starta prov | Avbryt | Skola, Välj skola | Ämne, Välj ämne | Provdatum, Välj datum | Publicera prov
+TAP 24 at  443.4 s: choose a school
+SCREEN t24a-15-skolsok at  458.4 s — School search: Kiruna
+  texts: Nytt prov | 3 frågor · ljud klart | Frågor | Fråga 1 | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2 | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3 | Vad används sockret till? | Som energi och byggmaterial. | Lägg till fråga | Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Starta prov | Spelas i dina AirPods. Mikrofonen används inte. | Publicera prov | Skola | Skola, Välj skola | Ämne | Välj ämne | Provdatum | Provdatum, Välj datum | Alla som söker på skolan kan lägga till provet och plugga på det. Frågor, svar och ljud publiceras. Aldrig foton, dokument eller ditt namn. | Visa ett användarnamn | Av: provet visas utan namn. | Saknas: skola, ämne, provdatum | Anpassad grundskola 1-6 Kiruna | Kiruna | Anpassad grundskola 7-9 Kiruna | Kiruna | Bergaskolan | Kiruna | Central insamlingsenhet | Kiruna | Högalidskolan 4-9 | Kiruna | Kiruna Lärcentra | Kiruna | Kiruna Lärcentra, SFI | Kiruna | Kiruna Lärcentra., anpassad utbildning | Kiruna | Lapplands Gymnasium Kiruna enh. 1 | Kiruna | Lapplands Gymnasium Kiruna enh. 2 | Kiruna
+  buttons: Prov | Dela | Mer | Fråga 1, Vad behöver växter för fotosyntesen?, Koldioxid, vatten och solljus. | Fråga 2, Var i bladet sker fotosyntesen?, I kloroplasterna. | Fråga 3, Vad används sockret till?, Som energi och byggmaterial. | Lägg till fråga | Starta prov | Avbryt | Skola, Välj skola | Ämne, Välj ämne | Provdatum, Välj datum | Publicera prov | Rensa text | Stäng | Anpassad grundskola 1-6 Kiruna, Kiruna | Anpassad grundskola 7-9 Kiruna, Kiruna | Bergaskolan, Kiruna | Central insamlingsenhet, Kiruna | Högalidskolan 4-9, Kiruna | Kiruna Lärcentra, Kiruna | Kiruna Lärcentra, SFI, Kiruna | Kiruna Lärcentra., anpassad utbildning, Kiruna | Lapplands Gymnasium Kiruna enh. 1, Kiruna | Lapplands Gymnasium Kiruna enh. 2, Kiruna | skift | sök | Emoji-symboler | Diktera | Diktera
+TAP 26 at  461.4 s: Central insamlingsenhet
+SCREEN t24a-16-publicera-skola at  465.1 s — Publicera prov with the school
+  texts: Nytt prov | 3 frågor · ljud klart | Frågor | Fråga 1 | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2 | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3 | Vad används sockret till? | Som energi och byggmaterial. | Lägg till fråga | Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Starta prov | Spelas i dina AirPods. Mikrofonen används inte. | Publicera prov | Skola | Skola, Central insamlingsenhet | Ämne | Välj ämne | Provdatum | Provdatum, Välj datum | Alla som söker på skolan kan lägga till provet och plugga på det. Frågor, svar och ljud publiceras. Aldrig foton, dokument eller ditt namn. | Visa ett användarnamn | Av: provet visas utan namn. | Saknas: ämne, provdatum
+  buttons: Prov | Dela | Mer | Fråga 1, Vad behöver växter för fotosyntesen?, Koldioxid, vatten och solljus. | Fråga 2, Var i bladet sker fotosyntesen?, I kloroplasterna. | Fråga 3, Vad används sockret till?, Som energi och byggmaterial. | Lägg till fråga | Starta prov | Avbryt | Skola, Central insamlingsenhet | Ämne, Välj ämne | Provdatum, Välj datum | Publicera prov
+TAP 27 at  466.8 s: Ämne
+TAP 28 at  471.1 s: Biologi
+TAP 29 at  473.3 s: Provdatum
+UNCLEAR: Provdatum: the day '22 november' was not found in the calendar
+SCREEN t24a-16-kalender at  480.3 s — Provdatum calendar
+  texts: Nytt prov | 3 frågor · ljud klart | Frågor | Fråga 1 | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2 | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3 | Vad används sockret till? | Som energi och byggmaterial. | Lägg till fråga | Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Starta prov | Spelas i dina AirPods. Mikrofonen används inte. | Publicera prov | Skola | Skola, Central insamlingsenhet | Ämne | Biologi | Provdatum | Alla som söker på skolan kan lägga till provet och plugga på det. Frågor, svar och ljud publiceras. Aldrig foton, dokument eller ditt namn. | Visa ett användarnamn | Av: provet visas utan namn.
+  buttons: Prov | Dela | Mer | Fråga 1, Vad behöver växter för fotosyntesen?, Koldioxid, vatten och solljus. | Fråga 2, Var i bladet sker fotosyntesen?, I kloroplasterna. | Fråga 3, Vad används sockret till?, Som energi och byggmaterial. | Lägg till fråga | Starta prov | Avbryt | Skola, Central insamlingsenhet | Ämne, Biologi | Datumväljare | Publicera prov
+SCREEN t24a-17-publicera-ifyllt at  489.2 s — Publicera prov filled in
+  texts: Nytt prov | 3 frågor · ljud klart | Frågor | Fråga 1 | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2 | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3 | Vad används sockret till? | Som energi och byggmaterial. | Lägg till fråga | Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Starta prov | Spelas i dina AirPods. Mikrofonen används inte. | Publicera prov | Skola | Skola, Central insamlingsenhet | Ämne | Biologi | Provdatum | Alla som söker på skolan kan lägga till provet och plugga på det. Frågor, svar och ljud publiceras. Aldrig foton, dokument eller ditt namn. | Visa ett användarnamn | Av: provet visas utan namn.
+  buttons: Prov | Dela | Mer | Fråga 1, Vad behöver växter för fotosyntesen?, Koldioxid, vatten och solljus. | Fråga 2, Var i bladet sker fotosyntesen?, I kloroplasterna. | Fråga 3, Vad används sockret till?, Som energi och byggmaterial. | Lägg till fråga | Starta prov | Avbryt | Skola, Central insamlingsenhet | Ämne, Biologi | Datumväljare | Publicera prov
+TAP 30 at  490.6 s: Publicera prov (the main button)
+SCREEN t24a-18-publicerat at  498.4 s — Publicerat
+  texts: Nytt prov | 3 frågor · ljud klart | Frågor | Fråga 1 | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2 | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3 | Vad används sockret till? | Som energi och byggmaterial. | Lägg till fråga | Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto. | Publicerat | Central insamlingsenhet · Biologi · sön 22 nov · utan namn | Starta prov | Spelas i dina AirPods. Mikrofonen används inte. | Publicerat.
+  buttons: Prov | Dela | Mer | Fråga 1, Vad behöver växter för fotosyntesen?, Koldioxid, vatten och solljus. | Fråga 2, Var i bladet sker fotosyntesen?, I kloroplasterna. | Fråga 3, Vad används sockret till?, Som energi och byggmaterial. | Lägg till fråga | Ändra | Ta bort publiceringen | Starta prov | Okej
+published: 'Nytt prov' at Central insamlingsenhet, Kiruna
+OK  Publicera prov: 90 s, 10 tryck
+=== Mina svar: spela in eget svar
+ALERT: Publicerat. — Okej
+TAP 31 at  513.8 s: Fler lägen
+SCREEN t24a-19-fler-lagen at  517.3 s — Fler lägen
+  texts: Fler lägen | FLER LÄGEN | Beta, under utveckling | De här lägena lyssnar på vad du säger. De är i BETA och blir bättre hela tiden. | Starta EarMind | Standardläge | · | Byt | EarMind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | EarMind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, kolla min kalender, vad har jag i dag?” | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, förhör mig på fotosyntes” | Allt EarMind kan | Har du prov snart? | Säg det, så förhör EarMind dig inför provet. | Lägg till prov | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Lyssnande lägen använder mikrofonen. Starta prov gör det aldrig.
+  buttons: Prov | Starta EarMind | Läge: Standardläge. Byt läge | Allt EarMind kan | Lägg till prov
+TAP 32 at  518.6 s: Byt läge
+SCREEN t24a-19-lagen at  522.6 s — Byt läge
+  texts: Fler lägen | FLER LÄGEN | Beta, under utveckling | De här lägena lyssnar på vad du säger. De är i BETA och blir bättre hela tiden. | Starta EarMind | Standardläge | · | Byt | EarMind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | EarMind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, vad är mitt favoritrecept för pannkakor?” | ”Lumen, förhör mig på fotosyntes” | ”Lumen, sätt en timer på 10 minuter” | Allt EarMind kan | Har du prov snart? | Säg det, så förhör EarMind dig inför provet. | Lägg till prov | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Lyssnande lägen använder mikrofonen. Starta prov gör det aldrig. | Välj läge | Standardläge | Svarar när någon frågar | Provläge | Förhör med rösten | FLER LÄGEN | Intervju | Färdiga svar på intervjufrågor | Socialt | Ett förslag i pausen | Rizz | Flörtig wingman | Sov | Prat i sömnen och snarkning, bara på telefonen | Alla lägen här lyssnar och är i BETA. Valet gäller Starta EarMind. Starta prov använder aldrig mikrofonen.
+  buttons: Prov | Starta EarMind | Läge: Standardläge. Byt läge | Allt EarMind kan | Lägg till prov | Klar | Standardläge, Svarar när någon frågar | Provläge, Förhör med rösten | Intervju, Färdiga svar på intervjufrågor | Socialt, Ett förslag i pausen | Rizz, Flörtig wingman | Sov, Prat i sömnen och snarkning, bara på telefonen
+TAP 33 at  525.2 s: Provläge
+SCREEN t24a-20-provlage at  528.6 s — Provläge
+  texts: Fler lägen | FLER LÄGEN | Beta, under utveckling | De här lägena lyssnar på vad du säger. De är i BETA och blir bättre hela tiden. | Starta EarMind | Provläge | · | Byt | EarMind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | EarMind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, sätt en timer på 10 minuter” | ”Lumen, påminn mig om träningen kl. 18” | ”Lumen, kolla min kalender, vad har jag i dag?” | Allt EarMind kan | Har du prov snart? | Säg det, så förhör EarMind dig inför provet. | Lägg till prov | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Lyssnande lägen använder mikrofonen. Starta prov gör det aldrig.
+  buttons: Prov | Starta EarMind | Läge: Provläge. Byt läge | Allt EarMind kan | Lägg till prov
+UNCLEAR: Mina svar is not on the first screen of Provläge
+MISS: Mina svar: 'Mina svar' not found
+FEL Mina svar: spela in eget svar: 49 s, 3 tryck
+SCREEN t24a-20-fel-6 at  548.9 s — Section failed: Mina svar: spela in eget svar
+  texts: Fler lägen | FLER LÄGEN | Beta, under utveckling | De här lägena lyssnar på vad du säger. De är i BETA och blir bättre hela tiden. | Starta EarMind | Provläge | · | Byt | EarMind kan allt. Säg Lumen och vad du vill, till exempel: Lumen, kolla min kalender, vad har jag i dag?, Lumen, vad är mitt favoritrecept för pannkakor?, Lumen, förhör mig på fotosyntes | EarMind kan allt | Säg ”Lumen” och vad du vill. | ”Lumen, sätt en timer på 10 minuter” | ”Lumen, påminn mig om träningen kl. 18” | ”Lumen, kolla min kalender, vad har jag i dag?” | Allt EarMind kan | Har du prov snart? | Säg det, så förhör EarMind dig inför provet. | Lägg till prov | Eller säg | ”Lumen, jag har prov i engelska på onsdag” | Lyssnande lägen använder mikrofonen. Starta prov gör det aldrig.
+  buttons: Prov | Starta EarMind | Läge: Provläge. Byt läge | Allt EarMind kan | Lägg till prov
+=== Väntar på att konto B hittar provet
+OK  Väntar på att konto B hittar provet: 186 s, 0 tryck
+=== Ta bort publiceringen och provet
+TAP 34 at  747.6 s: Frågor och svar
+TAP 35 at  756.6 s: Ta bort publiceringen
