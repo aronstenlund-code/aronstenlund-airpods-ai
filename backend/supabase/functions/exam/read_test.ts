@@ -70,3 +70,22 @@ Deno.test("K72 osv./etc./m.m. may end a sentence; t.ex. still does not; the lang
   assertEquals(textLanguage("Ångmaskinen förbättrades av James Watt och den var viktig för att fabrikerna kunde växa.", "Engelska"), "");
   assertEquals(textLanguage("kort", "Engelska"), "English", "too little text: the subject decides");
 });
+
+Deno.test("T28 (Toby): photos the read prompt calls unreadable are written out the drill way and then read", async () => {
+  const seen: string[] = [];
+  const provider: LLMProvider = {
+    name: "fake",
+    model: "haiku",
+    async *stream(req) {
+      seen.push(req.system.slice(0, 40));
+      // the read prompt says "[oläslig]", the transcription prompt writes the page out
+      yield { type: "text", text: /READ ALOUD/.test(req.system) ? "[oläslig]" : "Fotosyntes. Växter tillverkar socker av koldioxid och vatten." };
+      yield { type: "usage", inputTokens: 10, outputTokens: 5 };
+    },
+  };
+  const png = "iVBORw0KGgo" + "A".repeat(200);
+  const r = await handleRead({ pages: [{ media_type: "image/png", data: png }] }, provider, DEFAULT_DRILL_CONFIG);
+  assertEquals((r.body.parts as { kind: string }[]).filter((p) => p.kind === "para").length, 1);
+  assertEquals(seen.length, 2);
+  assertEquals(r.steps.length, 2);
+});

@@ -255,3 +255,37 @@ Raderna nedan med etiketterna Långt svar, Kort svar och Paus gäller bara teste
 | Dagens gräns för nytt ljud (K46) | Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu. | |
 | Inloggningen gick ut | Logga in igen för att spara provet. Ingenting har försvunnit. | Logga in |
 | Okänt fel | Något gick fel. Försök igen. | Försök igen |
+
+## 14. Påminnelse (D194, Ke65, till A109)
+**Ton:** en gång, kort, ingen skuld. Inga utropstecken, inga ord som "Glöm inte", "Missa inte" eller "Du har inte …".
+Påminnelsen säger vad det kostar i tid och öppnar senaste provet, inget mer. `{…}` är värden.
+
+**Frågan efter första klara provet** (ett blad i Apples stil, före iOS egen fråga; visas en gång)
+| Ställe | Text |
+|---|---|
+| Rubrik | Vill du ha en påminnelse? |
+| Rad | EarMind kan påminna dig klockan {18} de dagar du inte har pluggat. Högst en gång om dagen. |
+| Huvudknapp | Påminn mig *(sedan iOS fråga om notiser)* |
+| Textknapp | Inte nu *(frågar aldrig igen; finns i Inställningar)* |
+| Fotnot | Du kan ändra tiden eller stänga av det i Inställningar. |
+| iOS nekade notiser efteråt | *(ingen text i bladet; raden i Inställningar säger det)* |
+
+**Inställningar**
+| Ställe | Text |
+|---|---|
+| Avsnittets rubrik | PÅMINNELSE |
+| Reglage | Påminn mig att plugga |
+| Rad (när på) | Tid · {18:00} *(tidväljare, timmar och minuter)* |
+| Fotnot | Högst en gång om dagen, och bara de dagar du inte har pluggat. |
+| Fotnot när iOS notiser är av | Notiser är avstängda för EarMind. · knapp: Öppna Inställningar |
+
+**Påminnelsen själv** (en av tre, i den här ordningen; öppnar senaste provet)
+| Fall | Titel | Text |
+|---|---|---|
+| Provdatum i dag eller i morgon | {Biologiprovet} | Provet är {i morgon}. Ett varv tar cirka {4} min. |
+| Streak på 2 dagar eller mer | {Biologiprovet} | {3} dagar i rad. Ett varv i dag håller det igång. |
+| Annars | {Biologiprovet} | Ett varv tar cirka {4} min. Tryck för att börja. |
+| En text (läsläget) | {Biologiprovet} | Texten tar cirka {6} min att lyssna på. |
+
+Regler: titeln är alltid provets namn, aldrig "EarMind" (det står redan i notisen). Inget emoji. "Dagar i rad" är samma ord
+som raden på Start ("{3} dagar i rad").

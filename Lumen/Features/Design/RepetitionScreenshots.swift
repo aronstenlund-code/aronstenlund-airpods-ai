@@ -30,7 +30,9 @@ enum RepetitionDemo {
                                       "repTextNew", "repTextConfirm", "repText", "repTextMaking", "repTextPlay", "repTextPaused",
                                       "repTextEnd", "repTextWaiting", "repHomeText", "repTextControls",
                                       // A107 (D190): the sound is made at Starta prov
-                                      "repUnstarted", "repUnstartedEdit", "repHomeUnstarted", "repUnstartedTooMany"]
+                                      "repUnstarted", "repUnstartedEdit", "repHomeUnstarted", "repUnstartedTooMany",
+                                      // A109 (D194, Ke65): the practice reminder
+                                      "repReminderAsk", "repReminderSettings", "repReminderDenied"]
 
     /// A107: Fysikprovet is saved but not started: no sound is asked for yet.
     static let unstarted: Drill = {
@@ -272,6 +274,17 @@ enum RepetitionDemo {
     static func view(_ name: String, listening: ListeningModel) -> some View {
         if let model = listening.repetition {
             switch name {
+            case "repReminderAsk":
+                Color(.systemGroupedBackground).ignoresSafeArea()
+                    .sheet(isPresented: .constant(true)) {
+                        PracticeReminderQuestion(model: model)
+                    }
+            case "repReminderSettings", "repReminderDenied":
+                NavigationStack {
+                    Form { PracticeReminderSection(model: model, stagedDenied: name == "repReminderDenied") }
+                        .navigationTitle("Inställningar")
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
             case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted":

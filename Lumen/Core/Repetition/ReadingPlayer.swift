@@ -104,6 +104,8 @@ final class ReadingPlayer {
     var onProgress: (@MainActor (Int) -> Void)?
     /// Every step as one line, for the log and the Simulator tests.
     var onStep: (@MainActor (String) -> Void)?
+    /// A108 (D194): the text was read to its end.
+    var onEnd: (@MainActor () -> Void)?
 
     static let audioRetrySeconds = 1.0
 
@@ -347,6 +349,7 @@ final class ReadingPlayer {
         isPaused = false
         pausedBySystem = false
         step("end of the text")
+        onEnd?()
         // The next start begins from the beginning (Ke63: the text does not go round by itself).
         onProgress?(0)
     }

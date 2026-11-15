@@ -189,7 +189,9 @@ final class RepetitionModel {
         self.remote = remote
         self.cloud = cloud
         self.defaults = defaults
+        self.practice = PracticeTracker(defaults: defaults)
         watchNetwork()
+        wirePractice()
     }
 
     /// A103 (Angela Fable A104): no network now, observed, so the views say it before the user tries and grey only
@@ -304,6 +306,7 @@ final class RepetitionModel {
             }
         }
         for drill in store.drills where !audio.hasAllSound(drill) || drill.needsUpload == true { prepareAudio(drill) }
+        await reschedulePracticeReminders() // A108: the week ahead, today only if not practised
     }
 
     enum ListDecision: Equatable { case stamp(UUID), delete(UUID), keepOtherAccount(UUID) }
@@ -334,6 +337,55 @@ final class RepetitionModel {
     func isAudioReady(_ drill: Drill) -> Bool {
         let p = progress(drill)
         return p.total > 0 && p.ready == p.total
+    }
+
+    // MARK: Streak och påminnelse (A108, D194)
+
+    /// A108: the practised days and the streak ("3 dagar i rad"); observed, so the views follow it.
+    let practice: PracticeTracker
+
+    /// A108 (D194): the first exam was played through and iOS has not been asked yet: the moment for the app's own
+    /// short question about a reminder (Angela Fable's A109), never at the first start. Answer with
+    /// `allowPracticeReminders()` or `declinePracticeReminders()`.
+    var asksForReminders = false
+    static let reminderAskedKey = "reminders.practice.asked"
+    /// A108: iOS's notifications (`LivePracticeReminders`); set by the app, nil in tests and the mock mode.
+    @ObservationIgnored var reminders: (any PracticeReminding)?
+
+    private func wirePractice() {
+        session.onQuestionPlayed = { [weak self] id in self?.practice.questionPlayed(in: id) }
+        session.onReadSeconds = { [weak self] id, seconds in self?.practice.read(seconds: seconds, in: id) }
+        session.onFinished = { [weak self] _ in self?.examFinished() }
+        practice.onDayDone = { [weak self] in self?.reminders?.cancelToday() } // D194: only on days not practised
+    }
+
+    private func examFinished() {
+        practice.examFinished()
+        guard !defaults.bool(forKey: Self.reminderAskedKey), let reminders, reminders.isOn else { return }
+        Task {
+            if await reminders.notAskedYet() { asksForReminders = true }
+        }
+    }
+
+    /// A109's "Ja": iOS's own question now, then the reminders.
+    func allowPracticeReminders() async {
+        defaults.set(true, forKey: Self.reminderAskedKey)
+        asksForReminders = false
+        await reschedulePracticeReminders(ask: true)
+    }
+
+    /// A109's "Inte nu": not asked again by itself; Inställningar can turn reminders on later.
+    func declinePracticeReminders() {
+        defaults.set(true, forKey: Self.reminderAskedKey)
+        asksForReminders = false
+    }
+
+    /// A108: the reminders for the coming week, at the chosen time, for the latest exam. Called at every open, after
+    /// a change in Inställningar, and after the app's question. Never asks iOS unless `ask`.
+    func reschedulePracticeReminders(ask: Bool = false) async {
+        guard let reminders else { return }
+        let latest = practice.lastDrillID.flatMap { store.drill($0) } ?? store.drills.last
+        await reminders.schedule(drillID: latest?.id, examTitle: latest?.title, doneToday: practice.practisedToday, ask: ask)
     }
 
     // MARK: Ljud vid Starta prov (A107, D190, K71)

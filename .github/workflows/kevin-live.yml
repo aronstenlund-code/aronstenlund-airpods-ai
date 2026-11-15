@@ -19,6 +19,8 @@ on:
           - k69-measure.py
           - k71-live.py
           - k72-live.py
+          - k74-live.py
+          - k76-read-image.py
       args:
         description: "Arguments (optional)"
         required: false

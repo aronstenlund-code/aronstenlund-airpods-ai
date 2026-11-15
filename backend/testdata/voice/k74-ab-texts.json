@@ -1,0 +1,35 @@
+{
+ "pause_tag": "[short pause]",
+ "variants": [
+  "eleven_multilingual_v2",
+  "eleven_v4",
+  "eleven_v4+tag"
+ ],
+ "items": [
+  {
+   "subject": "Historia",
+   "plain": "Hur såg skattefördelningen ut mellan de tre stånden före revolutionen? Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter, medan prästerna och adeln betalade nästan ingenting.",
+   "tagged": "Hur såg skattefördelningen ut mellan de tre stånden före revolutionen? [short pause] Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter, medan prästerna och adeln betalade nästan ingenting."
+  },
+  {
+   "subject": "",
+   "plain": "Varför ville upplysningens tänkare att makten skulle komma från folket? De ansåg att makten inte kom från Gud eller kungen utan från folket, så att styret skulle vila på folkets vilja och gynna alla.",
+   "tagged": "Varför ville upplysningens tänkare att makten skulle komma från folket? [short pause] De ansåg att makten inte kom från Gud eller kungen utan från folket, så att styret skulle vila på folkets vilja och gynna alla."
+  },
+  {
+   "subject": "",
+   "plain": "Vad skiljer en molekyl från en kemisk förening? En molekyl är atomer som sitter ihop, medan en kemisk förening är ett ämne av minst två olika grundämnen, så en molekyl behöver inte vara en förening.",
+   "tagged": "Vad skiljer en molekyl från en kemisk förening? [short pause] En molekyl är atomer som sitter ihop, medan en kemisk förening är ett ämne av minst två olika grundämnen, så en molekyl behöver inte vara en förening."
+  },
+  {
+   "subject": "Kemi",
+   "plain": "Varför reagerar ädelgaserna nästan inte alls? Ädelgaserna har fullt yttersta elektronskal, och därför har deras atomer ingen anledning att ta upp, ge bort eller dela på elektroner med andra atomer.",
+   "tagged": "Varför reagerar ädelgaserna nästan inte alls? [short pause] Ädelgaserna har fullt yttersta elektronskal, och därför har deras atomer ingen anledning att ta upp, ge bort eller dela på elektroner med andra atomer."
+  },
+  {
+   "subject": "Samhällskunskap",
+   "plain": "Varför är det viktigt att domstolarna dömer självständigt? Domstolarna dömer självständigt för att makten ska vara delad, så att varken riksdagen eller regeringen kan styra utgången av rättegångar.",
+   "tagged": "Varför är det viktigt att domstolarna dömer självständigt? [short pause] Domstolarna dömer självständigt för att makten ska vara delad, så att varken riksdagen eller regeringen kan styra utgången av rättegångar."
+  }
+ ]
+}

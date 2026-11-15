@@ -12,6 +12,7 @@ import {
   materialImages,
   runLLM,
   type StepUsage,
+  transcribe,
   sumUsage,
 } from "./drill.ts";
 
@@ -207,6 +208,16 @@ export async function handleRead(
     }
   }));
   let parts = parseRead(results.map((r) => r.text.trim()).join("\n\n"));
+  const steps = results.map((r) => r.usage);
+  if (!parts.some((p) => p.kind === "para") && images.length) {
+    // T28 (Toby): the read prompt found nothing in photos that /exam drill reads. Read them once more the way drill
+    // does (write out everything), then clean that as text; the material is still not kept (B4)
+    console.warn("read_fallback_transcribe", JSON.stringify({ images: images.length, reply_chars: results.map((r) => r.text.length) }));
+    const t = await transcribe(provider, cfg, images, signal);
+    steps.push(...t.usage);
+    const plain = t.text.split("\n").filter((l) => !/^\[Sidor \d+-\d+\]$/.test(l.trim())).join("\n");
+    parts = parseRead(plain);
+  }
   // the cleaned text's cap (40 000 characters, 150 parts): whole parts only, the rest is said to be left out
   let total = 0, cut = false;
   parts = parts.filter((p) => {
@@ -219,6 +230,12 @@ export async function handleRead(
     return true;
   });
   if (!parts.some((p) => p.kind === "para")) {
+    // T28 (Toby): why nothing could be read, without the material itself (B4): sizes and the reply's shape only
+    console.warn("read_unreadable", JSON.stringify({
+      images: images.length, text_chars: text.length, calls: calls.length, parts: parts.length,
+      replies: results.map((r) => ({ chars: r.text.length, lines: r.text.split("\n").length, headings: (r.text.match(/^#/gm) ?? []).length,
+        starts: r.text.trim().slice(0, 1), out: r.usage.output_tokens })),
+    }));
     throw new HttpError(422, "drill_unreadable", "Det gick inte att läsa materialet. Fotografera rakt ovanifrån i bra ljus, eller klistra in texten.");
   }
   const firstHeading = parts.find((p) => p.kind === "heading")?.text ?? "";
@@ -233,9 +250,9 @@ export async function handleRead(
       chars: total,
       counts_as: countsAs(total, perQuestion),
       language: textLanguage(parts.map((p) => p.text).join(" "), clean(b.subject, 60)) || "sv",
-      usage: sumUsage(results.map((r) => r.usage), cfg.planModel ?? provider.model),
+      usage: sumUsage(steps, cfg.planModel ?? provider.model),
       ...(cut ? { truncated: true, warning: `Texten är lång. De första ${total} tecknen läses upp.` } : {}),
     },
-    steps: results.map((r) => r.usage),
+    steps,
   };
 }
