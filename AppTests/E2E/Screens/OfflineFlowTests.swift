@@ -101,6 +101,16 @@ final class OfflineFlowTests: XCTestCase {
         pause(3)
         goToStart()
         guard waitEnabled(["Starta prov"], 240) else { screen("inget-ljud", "No Starta prov"); return miss("Starta prov not enabled in 240 s") }
+        // A107 (D190, D193): the sound is made at Starta prov, and without a network an unstarted exam does not open
+        // (nightly 43762930539). A user starts it once online: start, let the sound come, close the player.
+        tap(["Starta prov"], "Starta prov (online, makes the sound, A107)")
+        if wait(["Styr med dina AirPods"], 8) != nil {
+            for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+            tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+        }
+        if wait(["Avsluta"], 20) != nil { pause(8); tap(["Avsluta"], "Avsluta (sound made)") }
+        pause(2)
+        goToStart()
         // Starta prov opens with the first question's sound (K46); the rest is still downloading. Wait until Start has no
         // line about the sound being made or downloaded, at most 180 s, so "downloaded" means the whole exam.
         let end = Date().addingTimeInterval(180)
@@ -351,6 +361,12 @@ final class OfflineFlowTests: XCTestCase {
 
     private func goToStart() {
         for _ in 0..<6 {
+            // A109: "Vill du ha en påminnelse?" after the first finished exam (T30 tests it).
+            if find(["Vill du ha en påminnelse?"]) != nil, let notNow = find(["Inte nu"]), notNow.isHittable {
+                tapElement(notNow, "Inte nu (reminder question)", counted: false)
+                pause(1)
+                continue
+            }
             if atStart() { return }
             if app.alerts.firstMatch.exists {
                 let alert = app.alerts.firstMatch
