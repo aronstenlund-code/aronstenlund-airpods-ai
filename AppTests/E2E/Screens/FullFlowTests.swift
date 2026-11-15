@@ -327,6 +327,23 @@ final class FullFlowTests: XCTestCase {
         guard wait(["Nytt prov"], 15) != nil else { return miss("Start not shown") }
         guard chatGPTImport(title: title, relaunch: false, mode: mode) else { return false }
         relaunchToStart(keepHeader: true)
+        // A107 (D190): no sound is made before Starta prov, so the modes show nothing until the exam is started. Start it
+        // (the player opens and waits for the sound), close it, and read Start as before.
+        if waitEnabled(["Starta prov"], 20) {
+            tap(["Starta prov"], "Starta prov (\(mode), A107)")
+            if wait(["Styr med dina AirPods"], 8) != nil {
+                for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+                tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+            }
+            pause(6)
+            let inPlayer = Self.labels(in: app.debugDescription, kind: "StaticText").filter { $0.contains("jud") || $0.contains("klara") }
+            log.append("mode \(mode): in the player after Starta prov: \(inPlayer.joined(separator: " | "))")
+            screen("lage-\(mode)-spelaren", "The player in the '\(mode)' mode")
+            tap(["Avsluta"], "Avsluta (\(mode))", quiet: true)
+            pause(2)
+        } else {
+            note("\(mode): Starta prov not tappable after the import")
+        }
         var seen: [String] = []
         let deadline = Date().addingTimeInterval(40)
         while Date() < deadline {
@@ -420,7 +437,20 @@ final class FullFlowTests: XCTestCase {
         guard tap(["Spela in*"], "Spela in") else { return false }
         pause(2)
         screen("spela-in", "Spela in")
-        if tap(["Välj ur provet", "Fråga 1*"], "pick a question", quiet: true) { pause(1) }
+        if tap(["Välj ur provet", "Fråga 1*"], "pick a question", quiet: true) {
+            pause(1.5)
+            // Angela Fable 14:36: "Välj ur provet" opens a sheet with the exam's questions; without a question chosen the
+            // sheet covers "Spela in svaret" (and the button is grey). Choose the first question in the sheet.
+            let rows = app.buttons.allElementsBoundByIndex.filter { $0.exists && $0.isHittable && $0.label.contains("?") }
+                + app.cells.allElementsBoundByIndex.filter { $0.exists && $0.isHittable && $0.label.contains("?") }
+            if let first = rows.first {
+                tapElement(first, "the first question in the sheet (\(first.label.prefix(40)))")
+                pause(1.5)
+            } else {
+                screen("valj-ur-provet", "Välj ur provet: no question row found", counts: false)
+                note("Välj ur provet: no question row with '?' to choose in the sheet")
+            }
+        }
         if tap(["Spela in svaret"], "Spela in svaret", quiet: true) {
             systemAlerts()
             pause(4)

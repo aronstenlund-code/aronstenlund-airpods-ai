@@ -81,3 +81,20 @@ Körd med `workflow_dispatch` och `phases: b` (fas b ensam hoppar nu över skola
 - **`unavailable`:** "0 av 6" → "3 av 6" → **"Ljudet kan inte göras just nu"** (L5, rättad).
 - D183: proven kvar efter två omstarter.
 - Testets ändringar (unik text, ny öppning av Nytt prov, fas b ensam) ligger på main.
+
+## Tillägg 2026-11-15 16:55: grön i båda faserna efter A107, Spela in svaret och L6 (43726770508)
+Grenen toby/t24c med main efter A106/A107 och Angela Fables V4.
+- **Fas a grön 8/8, 39 tryck.** Mina svar → Spela in → Välj ur provet → **första frågan** → Spela in svaret. iOS frågade
+  om mikrofonen och taligenkänningen, och inspelningen och Klar gick igenom (falskt transkript). Angela Fable hade rätt:
+  det var mitt test som inte valde någon fråga, så bladet täckte knappen. Publiceringen och provet borttagna. Inga nya
+  rader i `drill_publications`. *Verifierat i databasen.*
+- **Fas b grön 5/5.** Efter A107 görs inget ljud före Starta prov, så testet startar provet i lägena:
+  - `slow`: spelaren visar "Gör ljudet … 3 av 6 klara", och Start säger sedan **"3 frågor · Ljudet dröjer"**. L6 är
+    alltså sett.
+  - `unavailable`: spelaren visar **"Ljudet kan inte göras just nu. Försök igen om en stund."**, och kortet säger
+    detsamma (L5).
+- **Litet (till Angela Schrute, inte omtestat):** i körning 43719904826 stod det på kortet för ett ostartat prov
+  "3 frågor · Ljud: 0 av 6 klara" en kort stund, innan raden blev "Ljudet görs när du startar". Det syntes en gång,
+  inom 40 s efter omstarten.
+- Kvar som förut: Dela visar inget delningsblad med Kopiera i simulatorn. Dagen "22 november" hittas inte i
+  kalendern (testets sätt att leta).
