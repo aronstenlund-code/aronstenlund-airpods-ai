@@ -24,18 +24,24 @@ import Testing
 
     @Test func threeQuestionsMakeADay() {
         var days = PracticeDays()
-        #expect(!days.recordQuestion(at: Self.at(15, 9), calendar: Self.stockholm))
-        #expect(!days.recordQuestion(at: Self.at(15, 9, 1), calendar: Self.stockholm))
+        let made1 = days.recordQuestion(at: Self.at(15, 9), calendar: Self.stockholm)
+        #expect(!made1)
+        let made2 = days.recordQuestion(at: Self.at(15, 9, 1), calendar: Self.stockholm)
+        #expect(!made2)
         #expect(!days.isDone(Self.at(15, 9, 2), calendar: Self.stockholm))
-        #expect(days.recordQuestion(at: Self.at(15, 9, 2), calendar: Self.stockholm), "the third question makes the day")
+        let made3 = days.recordQuestion(at: Self.at(15, 9, 2), calendar: Self.stockholm)
+        #expect(made3, "the third question makes the day")
         #expect(days.isDone(Self.at(15, 22), calendar: Self.stockholm))
-        #expect(!days.recordQuestion(at: Self.at(15, 9, 3), calendar: Self.stockholm), "only once")
+        let made4 = days.recordQuestion(at: Self.at(15, 9, 3), calendar: Self.stockholm)
+        #expect(!made4, "only once")
     }
 
     @Test func twoMinutesReadAloudMakeADay() {
         var days = PracticeDays()
-        #expect(!days.recordReading(seconds: 70, at: Self.at(15, 10), calendar: Self.stockholm))
-        #expect(days.recordReading(seconds: 50, at: Self.at(15, 10, 2), calendar: Self.stockholm))
+        let made5 = days.recordReading(seconds: 70, at: Self.at(15, 10), calendar: Self.stockholm)
+        #expect(!made5)
+        let made6 = days.recordReading(seconds: 50, at: Self.at(15, 10, 2), calendar: Self.stockholm)
+        #expect(made6)
         #expect(days.isDone(Self.at(15, 10, 3), calendar: Self.stockholm))
     }
 
@@ -55,7 +61,8 @@ import Testing
         days.recordQuestion(at: Self.at(15, 23, 58), calendar: Self.stockholm)
         days.recordQuestion(at: Self.at(15, 23, 59), calendar: Self.stockholm)
         // The third question after midnight is the new day's first, not the old day's third.
-        #expect(!days.recordQuestion(at: Self.at(16, 0, 1), calendar: Self.stockholm))
+        let made7 = days.recordQuestion(at: Self.at(16, 0, 1), calendar: Self.stockholm)
+        #expect(!made7)
         #expect(!days.isDone(Self.at(15, 23, 59), calendar: Self.stockholm))
         #expect(!days.isDone(Self.at(16, 0, 2), calendar: Self.stockholm))
     }
