@@ -222,6 +222,13 @@ final class RepetitionModel {
                              questions: settings.questions, longWords: settings.length.words)
     }
 
+    /// A105 (D185, K70): Läs upp texten: the material cleaned for reading aloud. Nothing is stored or counted until
+    /// `save(draft.drill)`.
+    func readText(_ material: DrillMaterial, subject: String? = nil, grade: String? = nil,
+                  title: String? = nil) async throws(DrillMakingError) -> DrillTextDraft {
+        try await maker.readText(material, subject: subject, grade: grade, title: title)
+    }
+
     /// Saves on the phone at once, then on the server, which starts the sound in the background (D143: when the exam
     /// is saved). Items whose texts changed lose their old sound; the others keep it.
     @discardableResult
