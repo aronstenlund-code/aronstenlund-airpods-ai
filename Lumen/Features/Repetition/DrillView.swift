@@ -146,9 +146,12 @@ struct DrillView: View {
                     .listRowSeparator(.hidden)
             }
 
-            if model.quotaExceeded(drill), model.canPublish { // A84 (D155): the month's questions are used up
-                Section {
-                    NavigationLink("Hämta andras prov") { SchoolExamsView(model: model) }
+            if model.quotaExceeded(drill) { // A84 (D155): the month's questions are used up
+                Section { // A104: say what happened, then the way on
+                    Text(verbatim: Self.usedUpLine)
+                    if model.canPublish {
+                        NavigationLink("Hämta andras prov") { SchoolExamsView(model: model) }
+                    }
                 }
             }
 
@@ -222,13 +225,20 @@ struct DrillView: View {
             MainActionBar(title: canStart ? (saved == nil ? "Starta prov" : "Fortsätt")
                               : (soundProblem == nil ? "Gör ljud …" : "Starta prov"),
                           systemImage: "play.fill",
-                          note: soundProblem ?? saved.map { "Du var på fråga \($0 + 1) av \(drill.items.count)." }
+                          // A104: while the sound is being made, the line says why the button is grey.
+                          note: soundProblem ?? (canStart ? nil : "Ljudet görs. Du kan starta när första frågan är klar." as String?)
+                              ?? saved.map { "Du var på fråga \($0 + 1) av \(drill.items.count)." }
                               ?? "Spelas i dina AirPods. Mikrofonen används inte.",
                           isBusy: !canStart && soundProblem == nil,
                           isDisabled: !canStart) {
                 begin(drill, at: saved ?? 0)
             }
         }
+    }
+
+    /// Kelly (A99): "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 december."
+    private static var usedUpLine: String {
+        "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth())."
     }
 
     /// "5 frågor · åk 9 · ljud klart" under the title, or the sound's progress while it is made.

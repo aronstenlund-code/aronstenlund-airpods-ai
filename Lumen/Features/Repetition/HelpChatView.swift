@@ -258,7 +258,11 @@ struct HelpTryView: View {
         }
         .safeAreaInset(edge: .bottom) {
             if draft == nil {
-                MainActionBar(title: "Gör frågor", isBusy: isMaking, isDisabled: isMaking || isEmpty) { make() }
+                // A104 (D175): no questions left is said before anything is sent.
+                MainActionBar(title: "Gör frågor",
+                              note: model.quotaUsedUp ? "Inga frågor kvar den här månaden." : nil,
+                              isBusy: isMaking,
+                              isDisabled: isMaking || isEmpty || model.quotaUsedUp) { make() }
             } else {
                 MainActionBar(title: "Spara som prov", isBusy: isMaking, isDisabled: isMaking) { save() }
             }

@@ -59,12 +59,12 @@ struct PublishSheet: View {
                 } footer: {
                     Text(showsName ? "Syns för alla som hittar provet. Skriv inte ditt riktiga namn." : "Av: provet visas utan namn.")
                 }
-                if let problem { Section { Text(verbatim: problem) } }
             }
             .safeAreaInset(edge: .bottom) {
-                // Ke52: what is missing, under the button while it is grey.
+                // Ke52: what is missing, under the button while it is grey. A104: what went wrong stands there too,
+                // next to the button that tries again, not in a row further up the form.
                 MainActionBar(title: isSending ? "Publicerar …" : isUpdate ? "Spara ändringarna" : "Publicera prov",
-                              note: missingLine,
+                              note: problem ?? missingLine,
                               isBusy: isSending,
                               isDisabled: missingLine != nil || isSending) {
                     send()
@@ -157,9 +157,17 @@ struct SchoolPicker: View {
                     if query.trimmingCharacters(in: .whitespaces).count < 2 {
                         Text("Skriv minst två bokstäver.").foregroundStyle(.secondary)
                     } else if let problem {
-                        Text(problem).foregroundStyle(.secondary)
+                        // A104: what went wrong and the way on, in the system's own empty state.
+                        ContentUnavailableView {
+                            Label("Skolorna går inte att hämta", systemImage: "wifi.slash")
+                        } description: {
+                            Text(verbatim: problem)
+                        } actions: {
+                            Button("Försök igen") { search(query) }
+                        }
                     } else if results.isEmpty, searching == nil {
-                        Text("Ingen skola heter så. Sök på orten.").foregroundStyle(.secondary)
+                        ContentUnavailableView("Ingen skola heter så", systemImage: "magnifyingglass",
+                                               description: Text("Sök på orten i stället."))
                     }
                     ForEach(results) { school in
                         Button { onPick(school) } label: {
@@ -205,7 +213,11 @@ struct SchoolPicker: View {
                 guard !Task.isCancelled else { return }
                 results = found
             } catch {
-                problem = "Skolorna går inte att hämta just nu. Försök igen om en stund."
+                if case .offline = error {
+                    problem = "Anslut till internet och försök igen."
+                } else {
+                    problem = "Försök igen om en stund."
+                }
             }
             searching = nil
         }
@@ -219,6 +231,7 @@ struct SchoolExamsView: View {
     @State private var subject: String?
     @State private var results: [DrillPublicationView] = []
     @State private var problem: String?
+    @State private var isOffline = false
     @State private var loading = false
     @State private var choosingSchool = false
     @State private var askingMySchool = false
@@ -247,7 +260,17 @@ struct SchoolExamsView: View {
                 }
             }
             if let problem {
-                Section { Text(problem).foregroundStyle(.secondary) }
+                Section { // A104: the system's empty state with the way on, not a grey line
+                    ContentUnavailableView {
+                        Label(isOffline ? "Ingen internetanslutning" : "Proven går inte att hämta",
+                              systemImage: isOffline ? "wifi.slash" : "icloud.slash")
+                    } description: {
+                        Text(verbatim: problem)
+                    } actions: {
+                        Button("Försök igen") { Task { await load() } }
+                    }
+                }
+                .listRowBackground(Color.clear)
             } else if !loading, shown.isEmpty {
                 Section {
                     if let subject {
@@ -349,9 +372,11 @@ struct SchoolExamsView: View {
             results = try await model.searchPublications(school: school, subject: nil)
         } catch {
             if case .offline = error {
-                problem = "Ingen internetanslutning. Försök igen när du är uppkopplad."
+                isOffline = true
+                problem = "Proven från din skola hämtas när du är uppkopplad."
             } else {
-                problem = "Något gick fel. Försök igen."
+                isOffline = false
+                problem = "Försök igen om en stund."
             }
         }
         loading = false
