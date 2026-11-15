@@ -564,9 +564,17 @@ protocol DrillAudioProviding: AnyObject, Sendable {
     func cue(for drill: Drill) -> URL?
     /// A105 (D185): a text's part `index`: its file and sentence times, or nil while its sound is not here.
     func reading(for drill: Drill, part index: Int) -> ReadingAudio?
+    /// A107 (D190, K71): Starta prov asks the server for the sound. False = it could not start (said in `problem`).
+    func startAudio(_ drill: Drill) async -> Bool
+    /// A107: Starta prov is asking for the sound right now.
+    func isStarting(_ drill: Drill) -> Bool
 }
 
 extension DrillAudioProviding {
+    /// A107 (D190): the on-phone voice (mock mode) has nothing to start.
+    func startAudio(_ drill: Drill) async -> Bool { true }
+    func isStarting(_ drill: Drill) -> Bool { false }
+
     /// A105: all of an exam's sound is on the phone (a text has no tracks, so it is counted by its files).
     func hasAllSound(_ drill: Drill) -> Bool {
         if drill.isText {

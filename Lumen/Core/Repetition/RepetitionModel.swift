@@ -336,8 +336,29 @@ final class RepetitionModel {
         return p.total > 0 && p.ready == p.total
     }
 
+    // MARK: Ljud vid Starta prov (A107, D190, K71)
+
+    /// A107: the exam's sound is not asked for yet. Starta prov asks for it (`startAudio`), then plays as the sound
+    /// comes. Saving and editing until then cost nothing.
+    func awaitsAudioStart(_ drill: Drill) -> Bool { (store.drill(drill.id) ?? drill).awaitsAudioStart }
+
+    /// A107: Starta prov is asking the server for the sound now ("Gör ljudet …"); then `progress` counts the files.
+    func isStartingAudio(_ drill: Drill) -> Bool { audio.isStarting(drill) }
+
+    /// A107 (D190): asks for the exam's sound (the month's quota is counted now) without playing. False when it could
+    /// not start; `audio.problem(for:)` says why (no network, the month used up).
+    @discardableResult
+    func startAudio(_ drill: Drill) async -> Bool {
+        guard awaitsAudioStart(drill) else { return true }
+        let started = await audio.startAudio(store.drill(drill.id) ?? drill)
+        await refreshQuota()
+        return started
+    }
+
     /// Kelly Ke49: Starta prov works as soon as the first question has its sound; the player waits for the rest.
+    /// A107: an exam whose sound is not asked for yet can always be started (Starta prov asks for it).
     func canStart(_ drill: Drill) -> Bool {
+        if awaitsAudioStart(drill) { return true }
         if drill.isText { return audio.reading(for: drill, part: 0) != nil } // A105
         return audio.track(for: drill, at: 0) != nil
     }
@@ -351,8 +372,23 @@ final class RepetitionModel {
     func savedIndex(_ drill: Drill) -> Int? { session.savedIndex(for: drill) }
 
     func start(_ drill: Drill, at index: Int = 0) async {
+        // A107 (D190): Starta prov asks for the sound first; the player then waits for each question's sound.
+        if awaitsAudioStart(drill) {
+            guard await startAudio(drill) else { return }
+            let started = store.drill(drill.id) ?? drill
+            if started.isText { await read(started, at: index, waitingForSound: true) } else {
+                await play(started, at: index)
+            }
+            return
+        }
         if drill.isText { await read(drill, at: index); return }
         guard !drill.items.isEmpty, canStart(drill) || audio.track(for: drill, at: index) != nil else { return }
+        await play(drill, at: index)
+    }
+
+    /// The questions' player, whether the first question has its sound yet or not (it waits in silence, Ke49).
+    private func play(_ drill: Drill, at index: Int) async {
+        guard !drill.items.isEmpty else { return }
         await stopListening?()
         let audio = self.audio
         let store = self.store
@@ -383,10 +419,10 @@ final class RepetitionModel {
     /// A105 (D185): reads a text aloud from `sentence` (counted through the whole text). Plays without network once
     /// the sound is downloaded (A103); a part whose sound has not come is waited for. Starts when the sound of the
     /// part it starts in is here.
-    func read(_ drill: Drill, at sentence: Int = 0) async {
+    func read(_ drill: Drill, at sentence: Int = 0, waitingForSound: Bool = false) async {
         guard drill.isText, !drill.items.isEmpty else { return }
         let startPart = Self.part(of: sentence, in: drill)
-        guard audio.reading(for: drill, part: startPart) != nil || canStart(drill) else { return }
+        guard waitingForSound || audio.reading(for: drill, part: startPart) != nil || canStart(drill) else { return }
         await stopListening?()
         let audio = self.audio
         let store = self.store
@@ -548,8 +584,20 @@ final class RepetitionModel {
         guard let publishing, let id = drill.serverID else {
             throw .refused(status: 409, code: "publish_incomplete", message: "Publiceras när ljudet är klart.")
         }
-        let view = try await publishing.publish(drillID: id, school: school, subject: subject, examDate: examDate,
+        let view: DrillPublicationView
+        do throws(DrillCloudError) {
+            view = try await publishing.publish(drillID: id, school: school, subject: subject, examDate: examDate,
                                                 displayName: displayName)
+        } catch {
+            // A107 (D191): publishing an exam never started starts its sound on the server; follow it here.
+            if case .refused(_, let code, _) = error, code == "audio_not_ready", var latest = store.drill(drill.id),
+               latest.awaitsAudioStart {
+                latest.audioStarted = nil
+                store.save(latest)
+                prepareAudio(latest)
+            }
+            throw error
+        }
         guard var latest = store.drill(drill.id) else { return }
         latest.publication = DrillPublication(id: view.id, school: view.school, subject: view.subject,
                                               examDate: view.examDate ?? examDate, displayName: view.display_name)
@@ -601,6 +649,8 @@ final class RepetitionModel {
     // MARK: Sharing (A81)
 
     func shareLink(_ drill: Drill) async throws(DrillShareError) -> DrillShareResult {
+        // A107 (D191): an exam never started gets its sound first; it is shared when the sound is done.
+        if awaitsAudioStart(drill) { await startAudio(drill) }
         let p = progress(drill)
         guard p.total > 0, p.ready == p.total else { throw .audioNotReady(ready: p.ready, total: p.total) }
         return try await sharing.link(for: drill)

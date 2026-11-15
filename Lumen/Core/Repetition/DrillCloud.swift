@@ -16,6 +16,8 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var voice_model: String? = nil
         /// K70 (D185): "questions" or "text" (Läsläget); nil from a server before K70.
         var kind: String? = nil
+        /// K71 (D190, D191): false until `start`; nil from a server before K71 (always started then).
+        var audio_started: Bool? = nil
     }
 
     struct File: Decodable, Sendable, Equatable {
@@ -211,10 +213,14 @@ protocol DrillCloudSyncing: AnyObject, Sendable {
     func download(_ url: URL) async throws(DrillCloudError) -> Data
     /// Toby 2 T24: the account the list belongs to (nil when unknown).
     func accountID() async -> String?
+    /// K71 (D190): Starta prov: the server makes every missing file in play order and counts the month's quota now.
+    func start(id: String) async throws(DrillCloudError) -> DrillCloudView
 }
 
 extension DrillCloudSyncing {
     func accountID() async -> String? { nil }
+    /// Mocks written before K71: a started exam is what `status` says.
+    func start(id: String) async throws(DrillCloudError) -> DrillCloudView { try await status(id: id) }
 }
 
 @MainActor
@@ -237,6 +243,8 @@ final class DrillCloudClient: DrillCloudSyncing {
                                    "covers": String(drill.summary.covers.prefix(400)), "long_words": drill.longWords]
         if let id = drill.serverID { info["id"] = id }
         if drill.serverID == nil, let voice = drill.voiceModel { info["voice_model"] = voice } // K50: locked after
+        // A107 (D190, K71): saving never makes sound; Starta prov does. After the start the server makes only the
+        // changed files (D144), with or without the flag.
         if drill.isText {
             // K70 (D185): a text is saved as its parts in order; the kind is locked at the first save.
             info["kind"] = DrillKind.text.rawValue
@@ -245,7 +253,7 @@ final class DrillCloudClient: DrillCloudSyncing {
                 if let id = item.serverID { row["id"] = id }
                 return row
             }
-            return ["action": "save", "drill": info, "items": parts]
+            return ["action": "save", "drill": info, "items": parts, "defer_audio": true]
         }
         let items: [[String: Any]] = drill.items.map { item in
             var row: [String: Any] = ["question": item.question, "short": item.short, "long": item.long]
@@ -260,7 +268,7 @@ final class DrillCloudClient: DrillCloudSyncing {
             }
             return row
         }
-        return ["action": "save", "drill": info, "items": items]
+        return ["action": "save", "drill": info, "items": items, "defer_audio": true]
     }
 
     func save(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView {
@@ -269,6 +277,11 @@ final class DrillCloudClient: DrillCloudSyncing {
 
     func status(id: String) async throws(DrillCloudError) -> DrillCloudView {
         try await call(["action": "status", "id": id], timeout: 20)
+    }
+
+    /// K71: `{"action":"start","id"}` → the drill as `get` gives it (402 `quota_exceeded` as for save).
+    func start(id: String) async throws(DrillCloudError) -> DrillCloudView {
+        try await call(["action": "start", "id": id], timeout: 30)
     }
 
     func list() async throws(DrillCloudError) -> [DrillCloudListEntry] {
@@ -395,6 +408,7 @@ extension Drill {
                                      covers: view.drill.covers ?? drill.summary.covers)
         if let words = view.drill.long_words { drill.longWords = words }
         if let voice = view.drill.voice_model { drill.voiceModel = voice }
+        if let started = view.drill.audio_started { drill.audioStarted = started ? nil : false } // A107 (K71)
         if let kind = view.drill.kind.flatMap(DrillKind.init(rawValue:)) {
             drill.kind = kind == .text ? .text : nil // K70; nil stays "questions" for old copies
         } else if items.contains(where: { $0.part != nil }) {
@@ -609,6 +623,11 @@ final class CloudDrillAudio: DrillAudioProviding {
             latest.needsUpload = nil
             latest = await download(view, into: latest)
             store.save(latest)
+            if latest.awaitsAudioStart {
+                // A107 (D190): saved, and no sound is asked for until Starta prov. Nothing to wait for.
+                problems[drill.id] = nil
+                return
+            }
             if noSpace.remove(drill.id) != nil {
                 problems[drill.id] = Self.noSpaceLine // A103: said, not a counter that never moves
                 return
@@ -716,6 +735,48 @@ final class CloudDrillAudio: DrillAudioProviding {
     func cue(for drill: Drill) -> URL? {
         guard let name = drill.cueAudio, exists(name) else { return nil }
         return fileURL(name)
+    }
+
+    /// A107: exams whose Starta prov is asking the server for the sound right now ("Gör ljudet …").
+    private(set) var starting: Set<UUID> = []
+
+    func isStarting(_ drill: Drill) -> Bool { starting.contains(drill.id) }
+
+    /// A107 (D190, K71): Starta prov. Saves what the server has not seen, asks it to make every missing file (the
+    /// month's quota is counted now), then follows and downloads the sound as `prepare` does. True when the sound is
+    /// on its way (or already here); false when it could not start (no network, the month used up), said in
+    /// `problem(for:)`. Calling it again costs nothing.
+    @discardableResult
+    func startAudio(_ drill: Drill) async -> Bool {
+        guard store.drill(drill.id)?.awaitsAudioStart == true else { return true }
+        guard !starting.contains(drill.id) else { return true }
+        starting.insert(drill.id)
+        defer { starting.remove(drill.id) }
+        problems[drill.id] = nil
+        // A save that is still on its way first (it brings the server id).
+        for _ in 0..<100 where preparing.contains(drill.id) { try? await Task.sleep(for: .milliseconds(100)) }
+        guard var current = store.drill(drill.id) else { return false }
+        do throws(DrillCloudError) {
+            if current.serverID == nil || current.needsUpload == true {
+                current = Drill.from(try await cloud.save(current), merging: current)
+                current.needsUpload = nil
+                store.save(current)
+            }
+            guard let id = current.serverID else { return false }
+            let view = try await cloud.start(id: id)
+            guard var latest = store.drill(drill.id) else { return false }
+            latest = Drill.from(view, merging: latest)
+            latest.audioStarted = nil // started, whatever an older server says
+            store.save(latest)
+            Log.repetition.info("Drill audio started: \(view.audio.done, privacy: .public)/\(view.audio.total, privacy: .public)")
+        } catch {
+            if case .refused(_, let code, _) = error, code == "quota_exceeded" { quotaExceeded.insert(drill.id) }
+            problems[drill.id] = error.userMessage
+            return false
+        }
+        let started = store.drill(drill.id) ?? drill
+        Task { await self.prepare(started) } // follows "Gör ljudet …" and downloads
+        return true
     }
 
     /// A105 (D185, K70): a text part's downloaded file and its sentence times. Without times (an older download, a

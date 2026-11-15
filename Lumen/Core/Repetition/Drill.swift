@@ -33,6 +33,13 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     /// Locked at the first save (the server answers 409 `kind_locked`).
     var kind: DrillKind?
 
+    /// A107 (D190, K71): false while the server has made no sound for this exam (saved with `defer_audio`, never
+    /// started). Nil = started, or an exam from before K71. Starta prov starts it (`RepetitionModel.startAudio`).
+    var audioStarted: Bool?
+
+    /// A107: the sound is not asked for yet; Starta prov asks for it.
+    var awaitsAudioStart: Bool { audioStarted == false }
+
     /// A105: the items are the text's parts (headings and paragraphs), read in order.
     var isText: Bool { kind == .text }
 
