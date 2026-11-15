@@ -130,12 +130,22 @@ grep -E "Repetition:|offline|Offline|network|Network|drill_audio|download" "$OUT
   echo
   echo "Detaljer:"
   echo '```'
-  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT" "$OUT/t27-log.txt" 2>/dev/null | cut -c1-400
+  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY" "$OUT/t27-log.txt" 2>/dev/null | cut -c1-900
   echo '```'
   echo
   echo "Spelaren (appens logg, Repetition:):"
   echo '```'
   grep "Repetition:" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | tail -n 60
+  echo '```'
+  echo
+  echo "Appen från omstarten utan nät till nätet på (alla kategorier):"
+  echo '```'
+  awk '/PLAY-END spela-1/{f=1} f' "$OUT/t27-log.txt" >/dev/null 2>&1
+  START="$(grep -o 'PLAY-END spela-1 at [0-9T:-]*' "$OUT/t27-log.txt" 2>/dev/null | head -n1 | sed 's/.* at //; s/T/ /')"
+  STOP="$(grep -o 'NET-ON request at [0-9T:-]*' "$OUT/t27-log.txt" 2>/dev/null | head -n1 | sed 's/.* at //; s/T/ /')"
+  if [ -n "$START" ] && [ -n "$STOP" ]; then
+    awk -v a="$START" -v b="$STOP" 'substr($0,1,19) >= a && substr($0,1,19) <= b' "$OUT/logs/app.log" | grep -v "Repetition: \(question\|thinking\)" | cut -c1-260 | head -n 80
+  fi
   echo '```'
   echo
   echo "Nätet (runner):"

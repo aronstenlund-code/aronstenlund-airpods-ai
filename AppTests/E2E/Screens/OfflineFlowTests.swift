@@ -149,7 +149,19 @@ final class OfflineFlowTests: XCTestCase {
     private func play(_ name: String, seconds: TimeInterval) -> Bool {
         goToStart()
         mark("PLAY-START \(name)")
-        guard waitEnabled(["Starta prov"], 20) else { screen("\(name)-grå", "Starta prov grey"); return miss("Starta prov not tappable offline") }
+        guard waitEnabled(["Starta prov"], 45) else {
+            screen("\(name)-gra", "Starta prov grey")
+            log.append("GREY texts: " + Self.labels(in: app.debugDescription, kind: "StaticText").prefix(40).joined(separator: " | "))
+            log.append("GREY buttons: " + Self.labels(in: app.debugDescription, kind: "Button").prefix(30).joined(separator: " | "))
+            // The exam's own screen says why (status line), as a user would look.
+            if tap(["Frågor och svar"], "Frågor och svar (why grey)", quiet: true) {
+                pause(2)
+                screen("\(name)-gra-provet", "The exam's screen while Starta prov is grey")
+                log.append("GREY exam texts: " + Self.labels(in: app.debugDescription, kind: "StaticText").prefix(40).joined(separator: " | "))
+                goToStart()
+            }
+            return miss("Starta prov not tappable offline (45 s)")
+        }
         tap(["Starta prov"], "Starta prov")
         if wait(["Styr med dina AirPods"], 8) != nil {
             for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
