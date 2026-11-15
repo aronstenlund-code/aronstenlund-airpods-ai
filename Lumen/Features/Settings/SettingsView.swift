@@ -40,6 +40,8 @@ struct SettingsView: View {
             // Vanliga
             voiceSection
             answerSection
+            // A109 (D194, Kelly Ke65): the repetition flow's reminder (Angela Fable's section).
+            if let repetition = model.repetition { PracticeReminderSection(model: repetition) }
             Section {
                 Toggle("Påminn mig varje dag", isOn: $studyReminders)
                     .onChange(of: studyReminders) { _, on in Task { await model.refreshStudyPlan(askForReminders: on) } }

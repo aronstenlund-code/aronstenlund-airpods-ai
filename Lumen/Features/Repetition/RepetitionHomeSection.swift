@@ -23,6 +23,7 @@ struct RepetitionHomeSection: View {
     @State private var checking: Drill?
     @State private var showsSchool = false
     @State private var askingCode = false
+    @State private var askingReminder = false // A109
     @State private var pastedCode = ""
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @AppStorage("repetition.textControlsChecked") private var textControlsChecked = false // A106 (Ke63 §4.1)
@@ -80,6 +81,14 @@ struct RepetitionHomeSection: View {
         .onChange(of: model.openDrill) { _, id in
             if let id { opened = id; model.openDrill = nil }
         }
+        // A109 (D194, Ke65): the app's question about a reminder, after the first exam that was played through and
+        // once the player is closed (two covers cannot change places at once, so a short wait).
+        .sheet(isPresented: $askingReminder) {
+            PracticeReminderQuestion(model: model).presentationDetents([.medium, .large])
+        }
+        .onChange(of: model.showsPlayer) { offerReminder() }
+        .onChange(of: model.asksForReminders) { offerReminder() }
+        .onAppear { offerReminder() }
         .task { model.prepareAllAudio() }
     }
 
@@ -201,9 +210,12 @@ struct RepetitionHomeSection: View {
                     // Kelly Ke64 L2: a text has no questions.
                     navigationRow(next.isText ? "Texten" : "Frågor och svar", detail: nil) { opened = next.id }
                 } footer: {
-                    if streakDays > 0 {
+                    // A109 (D194): the days in a row of the repetition flow (3 questions or 2 minutes of a text a
+                    // day), or the listening modes' when that is longer.
+                    let days = max(streakDays, model.practice.streak.current)
+                    if days > 0 {
                         Label {
-                            Text(verbatim: streakDays == 1 ? "1 dag i rad" : "\(streakDays) dagar i rad")
+                            Text(verbatim: days == 1 ? "1 dag i rad" : "\(days) dagar i rad")
                         } icon: {
                             Image(systemName: "flame").accessibilityHidden(true) // A95 (Toby): not read as "Flamma"
                         }
@@ -341,6 +353,14 @@ struct RepetitionHomeSection: View {
     /// A107 (D191): what starting an exam counts as of the month's questions (a text: every started 800 characters).
     private func startCount(_ drill: Drill) -> Int {
         drill.isText ? DrillTextDraft.countsAs(chars: drill.items.reduce(0) { $0 + $1.long.count }) : drill.items.count
+    }
+
+    private func offerReminder() {
+        guard model.asksForReminders, !model.showsPlayer, !askingReminder else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(700))
+            if model.asksForReminders, !model.showsPlayer { askingReminder = true }
+        }
     }
 
     /// Where the exam was left: the question, or for a text (A106) the sentence.
