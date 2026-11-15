@@ -6,7 +6,7 @@ import { toSpeech } from "../answer/speech.ts";
 import { wordsToNumber } from "../answer/svnum.ts";
 import { pronounce } from "../tts/handler.ts";
 import { sentenceTimes, TEXT_LIMITS, voicedPart } from "./text.ts";
-import { polishVoice, V4_MODEL, VOICE_RULES_VERSION, withPauseTag } from "./voicerules.ts";
+import { polishVoice, preVoice, V4_MODEL, VOICE_RULES_VERSION, withPauseTag } from "./voicerules.ts";
 import { countsAs, textLanguage } from "../exam/read.ts";
 import { composeLong, examLanguage, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
@@ -246,12 +246,12 @@ export function voiceText(s: string, lang = "", rules = 1): string {
   // K74: rules version 2 adds the table in voicerules.ts (abbreviations, brackets, slashes, symbols, quotes, long
   // sentences); version 1 is exactly the text before K74 (drills made earlier keep their hashes)
   if (lang) {
-    const f = foreignVoice(spokenText(s, 4000));
-    return rules >= 2 ? polishVoice(f, lang) : f;
+    const f = foreignVoice(preVoice(spokenText(s, 4000), lang, rules));
+    return rules >= 2 ? polishVoice(f, lang, rules) : f;
   }
   // a sentence end as the context: each text starts a sentence ("6 koldioxid" -> "Sex koldioxid")
-  const t = divided(pronounce(toSpeech(spokenText(s, 4000), "Start. "), "sv"), "delat med").replace(/\s+/g, " ").trim();
-  return rules >= 2 ? polishVoice(t, "") : t;
+  const t = divided(pronounce(toSpeech(preVoice(spokenText(s, 4000), "", rules), "Start. "), "sv"), "delat med").replace(/\s+/g, " ").trim();
+  return rules >= 2 ? polishVoice(t, "", rules) : t;
 }
 
 /**

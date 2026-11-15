@@ -723,11 +723,11 @@ Deno.test("K72 an English text with the subject Historia is read in English; eve
 });
 
 // ---------- K74: rules version per drill, eleven_v4 prepared but off ----------
-Deno.test("K74 a new drill gets voice rules 2; an old drill (version 1) keeps the text it had, so nothing is made again", async () => {
+Deno.test("K74 a new drill gets the newest voice rules (3 since K75); an old drill (version 1) keeps the text it had, so nothing is made again", async () => {
   const w = world();
   const its = [{ question: "Vad gör klorofyll (i bladen)?", short: "Det fångar ljus.", long: "Det fångar ljus." }];
   const j = await (await w.h("u1")(post({ action: "save", items: its }))).json();
-  assertEquals(w.drills.get(j.drill.id)!.voice_rules, 2);
+  assertEquals(w.drills.get(j.drill.id)!.voice_rules, 3);
   assert([...w.audio.values()].some((a) => a.text === "Vad gör klorofyll, i bladen?"));
   // an old drill: version 1 and its version 1 files
   const old = await (await w.h("u2")(post({ action: "save", defer_audio: true, items: its }))).json();

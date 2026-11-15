@@ -97,3 +97,45 @@ Deno.test("K74 the A/B texts in testdata match the code (scripts/k74-ab-texts.ts
   const total = file.items.reduce((n: number, i: { plain: string; tagged: string }) => n + 2 * i.plain.length + i.tagged.length, 0);
   assert(total > 2500 && total <= 3200, String(total));
 });
+
+// ---------- K75 (Oscar O68): version 3 ----------
+Deno.test("K75 version 3: abbreviations, < >, numbered lists, w/, formulas, units, semicolons, a final stop", () => {
+  const SV3: [string, string][] = [
+    ["Enl. kap. 4 skrivs det så (se fig. 3).", "Enligt kapitel fyra skrivs det så, se figur tre."],
+    ["Det är 15 milj. grader och 4 ggr varmare.", "Det är femton miljoner grader och fyra gånger varmare."],
+    ["De bor i Sthlm, Gbg och Malmö.", "De bor i Stockholm, Göteborg och Malmö."],
+    ["pH < 7 är surt och pH > 7 basiskt.", "pH är mindre än sju är surt och pH är större än sju basiskt."],
+    ["Två argument: 1) tonåringar sover mer, 2) de lär sig bättre.", "Två argument: tonåringar sover mer, de lär sig bättre."],
+    ["CH4 + 2O2 → CO2 + 2H2O", "Metan plus två syre ger koldioxid plus två vatten."],
+    ["Hemoglobinet binder O2 i lungorna.", "Hemoglobinet binder syre i lungorna."],
+    ["Kraften är 10 N och temperaturen 5800 K.", "Kraften är tio newton och temperaturen femtusen åttahundra kelvin."],
+    ["Ett kylskåp drar 2 kWh/dag.", "Ett kylskåp drar två kilowattimmar per dag."],
+    ["Det är surt; det är basiskt", "Det är surt. Det är basiskt."],
+    ["Den upprepas i slutet m.m.", "Den upprepas i slutet med mera."],
+  ];
+  for (const [a, b] of SV3) assertEquals(voiceText(a, "", 3), b, a);
+  const EN3: [string, string][] = [
+    ["He climbed with a lamp w/ a friend at 3 a.m.", "He climbed with a lamp with a friend at 3 a m."],
+    ["It is 100 ft tall and flashes every 5 sec.", "It is 100 feet tall and flashes every 5 seconds."],
+    ["CO2 and CH4 trap heat.", "Carbon dioxide and methane trap heat."],
+    ["It can be seen 20+ km away.", "It can be seen more than 20 kilometres away."],
+    ["More gases → the Earth gets warmer.", "More gases, so the Earth gets warmer."],
+  ];
+  for (const [a, b] of EN3) assertEquals(voiceText(a, "English", 3), b, a);
+  // version 2 is unchanged by version 3 rules
+  assertEquals(voiceText("pH < 7 är surt.", "", 2), "pH < sju är surt.");
+});
+
+Deno.test("K75 Oscar's 20 edited answers (O68): none of his findings left in version 3", () => {
+  const d = JSON.parse(Deno.readTextFileSync(new URL("../../../testdata/voice/o68-edited.json", import.meta.url)));
+  const items = d.items as { subject: string; question: string; short: string; long: string }[];
+  assertEquals(items.length, 20);
+  const BAD = /(?<![\p{L}])(?:enl\.|fig\.|milj\.|ggr|Sthlm|Gbg|Ex:|ft|sec|se ha fyra|o två|ett\)|två\)|w divided by)(?![\p{L}])|[<>→;]|\b(?:CO2|CH4|O2|H2O)\b|(?:tio|hundra) [NK](?![\p{L}])|eller dag/u;
+  for (const it of items) {
+    const lang = examLanguage(it.subject);
+    for (const t of [voiceText(it.question, lang, 3), longVoice(it.short, it.long, lang, 3).text]) {
+      assert(!BAD.test(t), t);
+      assert(/[.!?:]$/.test(t), `ends with a stop: ${t}`);
+    }
+  }
+});
