@@ -100,6 +100,11 @@ for P in $PHASES; do
     sed -n '1,/^Log:/p' "$OUT/t24-$P-log.txt" 2>/dev/null || echo "no log"
     echo '```'
     echo
+    echo "Detaljer (MISS, UNCLEAR, larm):"
+    echo '```'
+    grep -E "MISS|UNCLEAR|ALERT|launched|goToStart" "$OUT/t24-$P-log.txt" 2>/dev/null | cut -c1-400 | head -n 60
+    echo '```'
+    echo
   } >> "$OUT/summary.md"
   [ "$STATUS" != 0 ] && FAILED=1
 done
