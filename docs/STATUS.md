@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-15 17:35: K75 klar och driftsatt (bb1af34), uppläsning version 3 för nya prov (D196), live grönt, 0 ElevenLabs.** Oscars O68-fynd rättade: formler som namn, < >, numrerade listor, w/, enheter efter tal, fler förkortningar, semikolon och slutpunkt. → `reports/2026-11-15-1735-kevin-k75-voice-v3.md`
+
 - **Kevin (moln), 2026-11-15 17:05: K74 klar och driftsatt (aad5e5a), live grönt, 0 ElevenLabs.** Röstens text får en regeltabell (D196, version 2 för nya prov, gamla behåller sina filer); 203 verkliga svar: 0 meningar över 30 ord (förut 11), inga parenteser eller citattecken. eleven_v4 förberett men av; A/B-skriptet `scripts/k74-ab.py` (cirka 3 000 krediter) väntar på Arons ja. → `reports/2026-11-15-1705-kevin-k74-voice-text.md`
 
 - **Angela Fable (moln), 2026-11-15 15:40: väntar på kö (tom två rundor, bevakningen stoppad).** A104, A106, A107-vyerna, Kellys Ke64/Ke64b och Tobys V4 är gröna på main (iOS build 43721548487, 6cc6307) och godkända av Kelly på bild; Tobys A107-test grönt 5/5. Ej verifierat på enhet. Öppet: Tobys T28 (läsläget) och T24c (Spela in), Deangelos beslut om Dela och Publicera före start (N4).
