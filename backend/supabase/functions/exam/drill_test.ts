@@ -581,3 +581,22 @@ Deno.test("K67 (live): a language exam's Swedish questions are translated in the
   const sv = await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, ["Varför blir klimatet varmare?"], { subject: "Geografi", grade: "", covers: "" });
   assertEquals(sv.questions, ["Varför blir klimatet varmare?"], "no translation outside language exams");
 });
+
+Deno.test("K69: an empty questions part (no questions, no reason) falls back to the one-call plan, never a false 422", async () => {
+  const { handleDrill, DEFAULT_DRILL_CONFIG } = await import("./drill.ts");
+  const calls: string[] = [];
+  const llm: LLMProvider = {
+    name: "f", model: "x",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      calls.push(req.user.includes("<part>questions</part>") ? "questions" : req.user.includes("<part>notes</part>") ? "notes" : req.system.includes("You check") ? "check" : "plan");
+      if (req.user.includes("<part>questions</part>")) yield { type: "text", text: JSON.stringify({ summary: { subject: "Biologi" } }) };
+      else if (req.user.includes("<part>notes</part>")) yield { type: "text", text: JSON.stringify({ notes: "Fotosyntes ger glukos." }) };
+      else if (req.system.includes("You check")) yield { type: "text", text: JSON.stringify({ questions: [] }) };
+      else yield { type: "text", text: JSON.stringify({ summary: { subject: "Biologi", grade: "", covers: "" }, notes: "x", questions: ["Hur bildas glukos?", "Varför behövs ljus?", "Vad gör klorofyll?"] }) };
+    },
+  };
+  const r = await handleDrill("drill", { text: "material", questions: 3, answers: false }, llm, DEFAULT_DRILL_CONFIG);
+  assertEquals((r.body.items as unknown[]).length, 3);
+  assert(calls.includes("plan"), calls.join(","));
+  assertEquals(r.body.notes, "Fotosyntes ger glukos.");
+});
