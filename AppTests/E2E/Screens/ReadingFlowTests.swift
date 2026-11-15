@@ -173,11 +173,16 @@ final class ReadingFlowTests: XCTestCase {
         // Run 43740301853: no UITextView in the tree; the text carries the current sentence as its label (A106).
         var text = app.textViews.firstMatch
         if !text.exists {
-            let current = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.count > 25 && !$0.hasPrefix("Mening ") && !$0.hasPrefix("Pausad") } ?? ""
+            // Run 43754170486: the first long label was Start's card under the player. The sentence is the text after
+            // "Mening n av m" and the heading: a sentence ending in "." that is not a status line.
+            let texts = Self.labels(in: app.debugDescription, kind: "StaticText")
+            let afterPlace = texts.drop { !$0.hasPrefix("Mening ") }
+            let current = afterPlace.first { $0.hasSuffix(".") && !$0.hasPrefix("Pausad") && !$0.hasPrefix("Mening ") } ?? ""
             let byLabel = app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", current)).allElementsBoundByIndex
-                .filter { $0.exists && $0.frame.height > 80 }
+                .filter { $0.exists && $0.isHittable }
             log.append("READ text element by its sentence: \(byLabel.count) (\(current.prefix(40)))")
-            guard let element = byLabel.max(by: { $0.frame.height < $1.frame.height }) else { return miss("the reading text is not in the tree") }
+            guard let element = byLabel.max(by: { $0.frame.height < $1.frame.height }) else { return miss("the reading text is not in the tree (\(current))") }
+            log.append("READ text element frame: \(Int(element.frame.minY))–\(Int(element.frame.maxY))")
             text = element
         }
         let before = place()
@@ -243,7 +248,8 @@ final class ReadingFlowTests: XCTestCase {
 
     private func cleanUp() -> Bool {
         goToStart()
-        guard tap(["Frågor och svar"], "Frågor och svar") else { return false }
+        // Kelly L2: a text's row is "Texten", not "Frågor och svar".
+        guard tap(["Texten", "Frågor och svar"], "Texten") else { return false }
         guard tap(["Mer"], "Mer") else { return false }
         guard tap(["Ta bort provet", "Ta bort texten"], "Ta bort provet") else { return false }
         pause(1)
