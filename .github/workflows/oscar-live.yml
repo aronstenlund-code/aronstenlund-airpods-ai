@@ -1,0 +1,57 @@
+name: Oscar live QA
+
+# Oscar (moln, 2026-11-15): the cloud session's network cannot reach the Supabase project, so Oscar's live QA runs
+# here (Actions > Oscar live QA > Run workflow, or a dispatch from the session). Only scripts in the list below.
+# Every script uses scripts/qa/qa_testaccount.py: anonymous test accounts, the header x-earmind-test and a script user
+# agent, so the server gives fake audio/transcripts and never calls ElevenLabs (D180); direct ElevenLabs calls are
+# refused in the script. Claude cost only (cap about 0.5 USD per run). Results: the log and the artifact "oscar-live".
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Script to run"
+        required: true
+        type: choice
+        options:
+          - o66_nightly.py
+          - o67_reading.py
+      args:
+        description: "Arguments (optional, e.g. --fast)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: oscar-live
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run
+        env:
+          SCRIPT: ${{ inputs.script }}
+          ARGS: ${{ inputs.args }}
+        run: |
+          mkdir -p reports/qa/data
+          before=$(ls reports/qa/data | sort)
+          # shellcheck disable=SC2086
+          python -I -X utf8 "scripts/qa/$SCRIPT" $ARGS
+          echo "=== result files ==="
+          for f in $(ls reports/qa/data | sort); do
+            if ! grep -qx "$f" <<< "$before"; then echo "--- $f"; cat "reports/qa/data/$f"; echo; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: oscar-live
+          path: reports/qa/data/*.json
+          retention-days: 14

@@ -37,7 +37,7 @@ HOW = [
     ("rösten pratar för snabbt", [["tempo"]]),
     ("hur långsamt kan den prata", [["0,5", "0,50"]]),
     ("hur länge väntar den innan nästa fråga", [["6 sekunder", "sex sekunder"]]),
-    ("vad händer när alla frågor är slut", [["börjar om"]]),
+    ("vad händer när alla frågor är slut", [["börjar om", "per kalendermånad", "nästa månad"]]),  # O66: frågan kan läsas som kvoten (D175)
     ("hur får jag höra svaret på en fråga", [["1 tryck", "1 gång", "en gång"]]),
     ("vad händer om jag pausar mitt i en mening", [["början av meningen"]]),
     ("funkar knapparna på låsskärmen", [["samma"]]),
