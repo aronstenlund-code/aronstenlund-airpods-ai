@@ -14,27 +14,27 @@ import Testing
     @Test func anExamThatIsNotStartedIsNotOfferedForSharing() {
         var drill = Self.exam()
         drill.audioStarted = false
-        #expect(!DrillSharing.isOffered(drill))
+        #expect(!DrillShareGate.isOffered(drill))
     }
 
     @Test func aStartedExamIsOffered() {
         var drill = Self.exam()
         drill.audioStarted = nil // started (every exam before K71, and after Starta prov)
-        #expect(DrillSharing.isOffered(drill))
+        #expect(DrillShareGate.isOffered(drill))
         drill.audioStarted = true
-        #expect(DrillSharing.isOffered(drill))
+        #expect(DrillShareGate.isOffered(drill))
     }
 
     @Test func aTextReadAloudFollowsTheSameRule() {
         var text = Drill.text(title: "Biologiprovet", summary: DrillSummary(subject: "Biologi", grade: "åk 9", covers: ""),
                               parts: [DrillItem.textPart("Växter gör socker av ljus.", part: .para)])
         text.audioStarted = false
-        #expect(!DrillSharing.isOffered(text))
+        #expect(!DrillShareGate.isOffered(text))
         text.audioStarted = nil
-        #expect(DrillSharing.isOffered(text))
+        #expect(DrillShareGate.isOffered(text))
     }
 
     @Test func theLineIsDeangelosWording() {
-        #expect(DrillSharing.startFirstLine == "Starta provet först så kan du dela det.")
+        #expect(DrillShareGate.startFirstLine == "Starta provet först så kan du dela det.")
     }
 }

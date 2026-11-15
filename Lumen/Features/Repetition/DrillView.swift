@@ -107,7 +107,7 @@ struct DrillView: View {
             }
         } else {
             ToolbarItemGroup(placement: .topBarTrailing) {
-                if !DrillSharing.isOffered(model.store.drill(drill.id) ?? drill) {
+                if !DrillShareGate.isOffered(model.store.drill(drill.id) ?? drill) {
                     // A110 (D198): hidden, not grey, until the exam has been started; the line under the list says why.
                 } else if isSharing {
                     ProgressView().accessibilityLabel("Gör en länk")
@@ -129,7 +129,7 @@ struct DrillView: View {
                         Button("Börja om från fråga 1", systemImage: "arrow.counterclockwise") { begin(drill, at: 0) }
                     }
                     if model.canPublish, drill.publication == nil, // A83 (Ke52)
-                       DrillSharing.isOffered(model.store.drill(drill.id) ?? drill) { // A110 (D198)
+                       DrillShareGate.isOffered(model.store.drill(drill.id) ?? drill) { // A110 (D198)
                         Button("Publicera prov", systemImage: "building.columns") { publishing = true }
                             .disabled(!model.isAudioReady(drill) || model.isOffline) // A104
                     }
@@ -227,7 +227,7 @@ struct DrillView: View {
             } footer: {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(verbatim: footnote(drill))
-                    if !DrillSharing.isOffered(drill) { Text(verbatim: DrillSharing.startFirstLine) } // A110 (D198)
+                    if !DrillShareGate.isOffered(drill) { Text(verbatim: DrillShareGate.startFirstLine) } // A110 (D198)
                 }
             }
 
@@ -303,7 +303,7 @@ struct DrillView: View {
             } footer: {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Tryck på en mening för att börja där.")
-                    if !DrillSharing.isOffered(drill) { Text(verbatim: DrillSharing.startFirstLine) } // A110 (D198)
+                    if !DrillShareGate.isOffered(drill) { Text(verbatim: DrillShareGate.startFirstLine) } // A110 (D198)
                 }
             }
 
@@ -440,7 +440,7 @@ struct DrillView: View {
 
 /// A110 (D198): Dela and Publicera are offered only once the exam has been started: the user has seen the answers and
 /// the sound exists (D190). Before that the buttons are not shown at all, and one line says what to do.
-enum DrillSharing {
+enum DrillShareGate {
     static let startFirstLine = "Starta provet först så kan du dela det."
 
     static func isOffered(_ drill: Drill) -> Bool { !drill.awaitsAudioStart }
