@@ -130,10 +130,15 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
     },
   };
   const limiter = new MemoryRateLimiter(); // one per world, like the real database
+  const logged: { mode: string; persona: string; question: string; answer: string }[] = []; // K77
   const h = (user: string, owner = false) =>
     createDrillHandler({
       authenticate: () => Promise.resolve(owner ? { id: user, isAnonymous: false, email: "owner@example.com", amr: ["otp"] } : { id: user, isAnonymous: true }),
       ownerEmails: ["owner@example.com"],
+      analysis: (r) => {
+        logged.push(...r);
+        return Promise.resolve();
+      },
       now: () => Date.parse("2026-11-13T12:00:00Z"),
       sleep: () => Promise.resolve(),
       rateLimiter: limiter,
@@ -168,7 +173,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, setBusy: (n: number) => (busy = n) };
+  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n) };
 }
 const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
@@ -743,4 +748,58 @@ Deno.test("K74 eleven_v4 cannot be chosen while drill_settings.allow_eleven_v4 i
   assertEquals(r.status, 409);
   assertEquals((await r.json()).error.code, "voice_model_unavailable");
   assertEquals(w.models.filter((m) => m === "eleven_v4").length, 0);
+});
+
+// ---------- K77 (D197, D116): Repetitionsläget in Aron's analysis ----------
+Deno.test("K77 a save logs new questions and answers; an edit logs before and after; an unchanged save logs nothing", async () => {
+  const w = world();
+  const j = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { subject: "Biologi" }, items: ITEMS }))).json();
+  assertEquals(w.logged.map((r) => [r.mode, r.persona, r.question]), [["repetition", "sparad", ITEMS[0].question], ["repetition", "sparad", ITEMS[1].question]]);
+  assertEquals(w.logged[0].answer, ITEMS[0].long);
+  const n = w.logged.length;
+  await w.h("u1")(post({ action: "save", defer_audio: true, drill: { id: j.drill.id }, items: ITEMS.map((x, i) => ({ ...x, id: j.items[i].id })) }));
+  assertEquals(w.logged.length, n, "nothing changed, nothing logged");
+  await w.h("u1")(post({ action: "start", id: j.drill.id }));
+  assertEquals(w.logged.length, n, "Starta prov logs nothing new");
+  const edited = [{ ...ITEMS[0], id: j.items[0].id, long: ITEMS[0].long + " Ny mening." }, { ...ITEMS[1], id: j.items[1].id }];
+  await w.h("u1")(post({ action: "save", drill: { id: j.drill.id }, items: edited }));
+  const e = w.logged.slice(n);
+  assertEquals(e.length, 1);
+  assertEquals(e[0].persona, "ändrad");
+  assert(e[0].answer.includes("Svar före: " + ITEMS[0].long) && e[0].answer.includes("Ny mening."), e[0].answer);
+});
+
+Deno.test("K77 a text drill's text is never logged (B4); press statistics are; test accounts and copies log nothing", async () => {
+  const w = world();
+  const t = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", subject: "Historia" }, items: TEXT }))).json();
+  assertEquals(w.logged.length, 0, "the text is the material");
+  const st = await (await w.h("u1")(post({ action: "stats", id: t.drill.id, presses: { "1": 4, "2": 7, "3": 1 }, minutes: 12 }))).json();
+  assertEquals(st.logged, true);
+  assertEquals(w.logged[0].mode, "read");
+  assertEquals(w.logged[0].persona, "tryck");
+  assertEquals(w.logged[0].question, "Historia");
+  assert(w.logged[0].answer.includes("1 tryck: 4, 2 tryck: 7, 3 tryck: 1") && w.logged[0].answer.includes("Minuter: 12"));
+  assert(!w.logged[0].answer.includes("Fotosyntes") && !w.logged[0].answer.includes("glukos"), "no text from the drill");
+  // per question for a question drill
+  const q = await (await w.h("u1")(post({ action: "save", drill: { subject: "Bio" }, items: ITEMS }))).json();
+  await w.h("u1")(post({ action: "stats", id: q.drill.id, presses: { "1": 2, "2": 1, "3": 0 }, per_question: [{ position: 1, presses: { "1": 2, "2": 1, "3": 0 } }] }));
+  assert(w.logged.at(-1)!.answer.includes(`${ITEMS[1].question}: 1 tryck: 2`));
+  assertEquals((await w.h("u1")(post({ action: "stats", id: q.drill.id, presses: { "1": -1 } }))).status, 400);
+  // a test account: nothing
+  const n = w.logged.length;
+  await runWithTest({ test: true, reason: "script", userId: "t9" }, async () => {
+    const x = await (await w.h("t9")(post({ action: "save", items: ITEMS }))).json();
+    await w.h("t9")(post({ action: "stats", id: x.drill.id, presses: { "1": 1, "2": 1, "3": 1 } }));
+  });
+  assertEquals(w.logged.length, n, "test accounts are never in the analysis");
+  // an imported copy: the original's questions are not the recipient's, nothing logged
+  const sh = await (await w.h("u1")(post({ action: "share", id: q.drill.id }))).json();
+  await w.h("u2")(post({ action: "import", code: sh.code }));
+  assertEquals(w.logged.length, n);
+});
+
+Deno.test("K77 numbers are masked as in qa-log", async () => {
+  const { saveRows } = await import("./analysis.ts");
+  const r = saveRows("questions", [], [{ question: "Vad är mitt personnummer?", short: "Det är 19990101-1234.", long: "Det är 19990101-1234." }]);
+  assert(r[0].answer.includes("[personnummer]") && !r[0].answer.includes("1234"));
 });

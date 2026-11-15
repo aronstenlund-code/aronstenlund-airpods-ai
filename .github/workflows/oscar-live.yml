@@ -16,6 +16,7 @@ on:
           - o66_nightly.py
           - o67_reading.py
           - o68_voice.py
+          - o70_k77_live.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false

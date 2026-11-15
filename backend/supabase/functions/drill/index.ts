@@ -74,6 +74,8 @@ Deno.serve(withCors(withTestMode("drill",
     },
     background: rt?.waitUntil ? (p) => rt.waitUntil!(p) : undefined,
     ownerEmails: (env.get("OWNER_EMAIL") ?? "").split(","),
+    // K77 (D197): Repetitionsläget in Aron's analysis, the same table as qa-log (deleted after delivery, 14 days at most)
+    analysis: (rows) => db.insertMany("qa_log", rows.map((r) => ({ mode: r.mode, persona: r.persona, question: r.question, answer: r.answer }))),
     db: {
       drill: async (id) => ((await db.select("drills", `select=*&id=eq.${encodeURIComponent(id)}&limit=1`)) as DrillRow[])[0] ?? null,
       drills: async (u) => (await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&order=updated_at.desc&limit=500`)) as DrillRow[],
