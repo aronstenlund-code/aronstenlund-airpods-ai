@@ -33,6 +33,8 @@ final class ScreenTourTests: XCTestCase {
         springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         // Swedish UI, as the users see it. Apple's recogniser instead of Scribe: no paid realtime session from CI.
         app.launchArguments += ["-AppleLanguages", "(sv)", "-AppleLocale", "sv_SE", "-stt.useCloud", "NO"]
+        // D180: fake audio from the server for anything the tour makes (Angela's test hook, 37ae1c1).
+        app.launchEnvironment["LUMEN_TEST_HEADER"] = "1"
         app.launch()
 
         firstStart(micDenied: micDenied)
@@ -54,75 +56,28 @@ final class ScreenTourTests: XCTestCase {
 
     // MARK: First start (sketches 1-3)
 
+    /// A94 (Angela 2026-11-14 10:08, D170): the first start is Välkommen (Fortsätt) → Nytt prov (Senare, Fota sidor).
+    /// The listening consent (`ConsentView`) comes as a sheet the first time a listening mode starts (handled where the
+    /// modes start), and then iOS asks for the microphone. The old intro ("Testa nu", "Fråga vad som helst", the
+    /// first start's "Har du prov snart?") is gone. Toby (moln) 2026-11-15: the nightly tour stopped at "Testa nu".
     private func firstStart(micDenied: Bool) {
-        if waitFor(["Testa nu"], timeout: 20) != nil {
-            shoot("intro", note: "Intro (sketch 1)")
+        if waitFor(["Välkommen till EarMind", "Fortsätt"], timeout: 20) != nil {
+            shoot("valkommen", note: "Välkommen (A94)")
             app.swipeUp()
-            shoot("intro-slut", note: "Intro, scrolled (the consent card)")
-            // A2: the short consent card in the intro has "Läs mer" with the full text.
-            if waitFor(["Läs mer"], timeout: 2) != nil {
-                tap(["Läs mer"], step: "intro → Läs mer")
-                if waitFor(["Klar"], timeout: 3) == nil {
-                    log.append("note: Läs mer did not open within 3 s, tapping again")
-                    tap(["Läs mer"], step: "intro → Läs mer (again)")
-                }
-                pause(1)
-                shoot("las-mer", note: "Läs mer (full consent)")
-                app.swipeUp()
-                shoot("las-mer-slut", note: "Läs mer, scrolled")
-                tap(["Klar"], step: "Läs mer → Klar")
-                pause(1)
-            } else {
-                log.append("note: no 'Läs mer' in the intro")
-            }
-            tap(["Testa nu"], step: "intro → Testa nu")
+            shoot("valkommen-slut", note: "Välkommen, scrolled")
+            tap(["Fortsätt"], step: "Välkommen → Fortsätt")
         } else {
-            miss("intro: 'Testa nu' not found (first start not shown?)")
+            miss("first start: 'Välkommen till EarMind' not shown")
         }
-
-        // Before A2 a separate consent screen came after the intro; since A2, "Testa nu" is the consent.
-        if waitFor(["Jag förstår*", "I understand*"], timeout: 4) != nil {
-            shoot("samtycke", note: "Consent, top")
-            app.swipeUp()
-            shoot("samtycke-slut", note: "Consent, scrolled")
-            tap(["Jag förstår*", "I understand*"], step: "consent → accept")
-        } else {
-            log.append("note: no separate consent screen (A2: Testa nu is the consent)")
-        }
-
-        dismissSystemAlerts()
-        // A18: with the microphone denied the whole screen is "Lumen hör dig inte" (Ke10), and before the first
-        // answer the button is "Hoppa över" (Fortsätt only after an answer, Ke9).
-        if waitFor(["Fråga vad som helst", "Lumen hör dig inte"], timeout: 10) != nil {
-            pause(3) // let "Startar …" become "Lyssnar" (or the microphone error card)
-            dismissSystemAlerts()
-            shoot(micDenied ? "forsta-fragan-mikrofon-nekad" : "forsta-fragan", note: "First question (sketch 2)")
-            if micDenied, waitFor(["Lumen hör dig inte"], timeout: 1) == nil {
-                miss("APP: microphone denied, the first question does not show 'Lumen hör dig inte'")
-            }
-            tap(["Fortsätt", "Hoppa över"], step: "first question → Fortsätt/Hoppa över")
+        if waitFor(["Senare", "Fota sidor"], timeout: 10) != nil {
+            pause(1)
+            shoot("nytt-prov-forsta", note: "Nytt prov at the first start (A94)")
+            tap(["Senare"], step: "Nytt prov → Senare")
             pause(1.5)
         } else {
-            miss("'Fråga vad som helst' not shown")
+            miss("first start: Nytt prov (Senare, Fota sidor) not shown after Fortsätt")
         }
-
-        // A22: the first start's exam step is "Har du prov snart?" with "Inte nu" (was "Hoppa över").
-        if waitFor(["Inte nu", "Hoppa över"], timeout: 8) != nil {
-            shoot("lagg-till-prov-forsta", note: "Add exam at first start (sketch 3)")
-            app.swipeUp()
-            shoot("lagg-till-prov-forsta-slut", note: "Add exam at first start, scrolled")
-            // A33: the form is behind "Skriv i stället" (Lumen asks aloud first).
-            if let write = find(["Skriv i stället"]) {
-                write.tap()
-                pause(1)
-                shoot("lagg-till-prov-forsta-formular", note: "Add exam at first start, the form (A33)")
-                app.swipeUp()
-                shoot("lagg-till-prov-forsta-formular-slut", note: "Add exam at first start, the form, scrolled")
-            }
-            tap(["Inte nu", "Hoppa över"], step: "add exam → Inte nu")
-        } else {
-            miss("add-exam step of the first start not shown")
-        }
+        dismissSystemAlerts()
     }
 
     private func sharePrompt() {
@@ -165,18 +120,18 @@ final class ScreenTourTests: XCTestCase {
 
     /// A50: "Starta Lumen" at the top, the mode under it ("Läge: Standardläge. Byt läge"), "Lumen kan allt" with
     /// examples, and the Byt sheet (Sov under the modes). "APP:" marks a finding about the app, not the tour.
-    private var a50: Bool { find(["Starta Lumen", "Starta Earmind", "Tillbaka till Lumen", "Tillbaka till Earmind"], buttonsOnly: true) != nil }
+    private var a50: Bool { find(["Starta Lumen", "Starta EarMind", "Starta Earmind", "Tillbaka till Lumen", "Tillbaka till EarMind", "Tillbaka till Earmind"], buttonsOnly: true) != nil }
 
     private func a50Start() {
-        guard waitFor(["Starta Lumen", "Starta Earmind", "Tillbaka till Lumen", "Tillbaka till Earmind"], timeout: 3) != nil else {
+        guard waitFor(["Starta Lumen", "Starta EarMind", "Starta Earmind", "Tillbaka till Lumen", "Tillbaka till EarMind", "Tillbaka till Earmind"], timeout: 3) != nil else {
             log.append("note: no 'Starta Lumen' on Start (a build before A50)")
             return
         }
-        if find(["Starta Lumen", "Starta Earmind"], buttonsOnly: true)?.isHittable != true {
+        if find(["Starta Lumen", "Starta EarMind", "Starta Earmind"], buttonsOnly: true)?.isHittable != true {
             miss("APP: A50 'Starta Lumen' is not on the first screen without scrolling")
         }
         if find(["Läge:*"]) == nil { miss("APP: A50 no mode line ('Läge: … Byt läge') under Starta Lumen") }
-        if find(["Lumen kan allt*", "Earmind kan allt*"]) == nil { miss("APP: A50 no 'Lumen kan allt' on Start") }
+        if find(["Lumen kan allt*", "EarMind kan allt*", "Earmind kan allt*"]) == nil { miss("APP: A50 no 'Lumen kan allt' on Start") }
         for gone in ["Få A-svar till provet", "Bara fråga", "Fler lägen"] where find([gone]) != nil {
             miss("APP: A50 '\(gone)' is still on Start")
         }
@@ -192,7 +147,7 @@ final class ScreenTourTests: XCTestCase {
 
     /// A52 (D125): "Allt Lumen kan ›" (Earmind after A55) at the end of the box pushes "Vad kan Lumen?".
     private func capabilities() {
-        let link = ["Allt Lumen kan*", "Allt Earmind kan*"]
+        let link = ["Allt Lumen kan*", "Allt EarMind kan*", "Allt Earmind kan*"]
         guard waitFor(link, timeout: 2) != nil else {
             log.append("note: no 'Allt Lumen kan' on Start (a build before A52)")
             return
@@ -343,7 +298,7 @@ final class ScreenTourTests: XCTestCase {
             for label in ["Klar", "Stäng"] where app.buttons[label].exists { app.buttons[label].tap(); pause(1); break }
         }
         // A50: one "Starta Lumen" starts the chosen mode (Standardläge after the first start).
-        if tap(["Starta Lumen", "Starta Earmind", "Bara fråga", "Frågor"], step: "start → Starta Lumen / Bara fråga") {
+        if tap(["Starta Lumen", "Starta EarMind", "Starta Earmind", "Bara fråga", "Frågor"], step: "start → Starta Lumen / Bara fråga") {
             dismissSystemAlerts()
             if waitFor(["Tillbaka till start"], timeout: 10) != nil {
                 pause(2)
@@ -396,8 +351,8 @@ final class ScreenTourTests: XCTestCase {
         guard tap(newStart ? labels.map { $0.hasSuffix("*") ? $0 : $0 + "*" } : labels, step: "start → \(labels[0])") else { return }
         pause(1)
         // A50: a tap in the sheet only chooses the mode; Starta Lumen starts it (unless the mode asked first).
-        if newStart, waitFor(close, timeout: 1) == nil, find(["Starta Lumen", "Starta Earmind"], buttonsOnly: true) != nil {
-            tap(["Starta Lumen", "Starta Earmind"], step: "start → Starta Lumen (\(labels[0]))")
+        if newStart, waitFor(close, timeout: 1) == nil, find(["Starta Lumen", "Starta EarMind", "Starta Earmind"], buttonsOnly: true) != nil {
+            tap(["Starta Lumen", "Starta EarMind", "Starta Earmind"], step: "start → Starta Lumen (\(labels[0]))")
         }
         pause(2)
         dismissSystemAlerts()
@@ -425,7 +380,7 @@ final class ScreenTourTests: XCTestCase {
             pause(1)
             if find(["Läge: Provläge*"]) == nil { miss("APP: A50 the mode line does not say Provläge after choosing it") }
             shoot("start-provlage-valt", note: "A50: Start with Provläge chosen")
-            guard tap(["Starta Lumen", "Starta Earmind"], step: "start → Starta Lumen (Provläge)") else { return }
+            guard tap(["Starta Lumen", "Starta EarMind", "Starta Earmind"], step: "start → Starta Lumen (Provläge)") else { return }
         } else {
             if find(["Få A-svar till provet"]) == nil { openMoreModes(for: ["Provläge"]) }
             guard tap(["Få A-svar till provet", "Provläge"], step: "start → Få A-svar till provet") else { return }
@@ -470,7 +425,7 @@ final class ScreenTourTests: XCTestCase {
         pause(2)
         dismissSystemAlerts()
         // Whatever follows the session (a summary, study cards) is a screen too.
-        if waitFor(["Starta Lumen", "Starta Earmind", "Lägg till prov", "Få A-svar till provet"], timeout: 3) == nil {
+        if waitFor(["Starta Lumen", "Starta EarMind", "Starta Earmind", "Lägg till prov", "Få A-svar till provet"], timeout: 3) == nil {
             shoot("efter-avsluta-\(shotNumber)", note: "After Avsluta")
             for label in ["Klar", "Stäng", "Done", "Close"] where app.buttons[label].exists {
                 app.buttons[label].tap()
