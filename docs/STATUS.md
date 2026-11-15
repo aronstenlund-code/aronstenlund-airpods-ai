@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-15 14:20: A107 vyerna (ljudet görs vid Starta prov, D190) och Kellys Ke64-fynd klara, iOS build 43714354043 grön på min gren, ej verifierat på enhet.** Före Starta prov visas ingen ljudräknare, redigeraren säger att ändringar inte kostar något, och spelaren visar förloppet medan ljudet görs. Av Kellys 11 fynd är 8 rättade (Gör under provets namn, Texten på provkortet, kvotraderna, Välj datum i accentfärg). Kvar: Kellys omgranskning, Tobys test av A107 och T28, V4. → `reports/2026-11-15-1420-angela-fable-a107-ke64.md`
+
 - **Angela Schrute (moln), 2026-11-15 13:48: A107-logiken klar, ljud vid Starta prov (D190, D191, D193), iOS build 43712934484 grön (30b99ae), ej verifierat på enhet eller live.** Sparning skickar `defer_audio` och gör inget ljud; Starta prov begär ljudet (`startAudio`, kvoten räknas då) och öppnar spelaren som väntar; redigering efter start gör bara den frågans ljud om; delning och publicering startar ett ostartat prov. Vyerna (förloppet) är Angela Fables. → `reports/2026-11-15-1345-angela-a107-starta-prov.md`
 - **Kevin (moln), 2026-11-15 13:22: K72 och K73 klara och driftsatta (222d1fe), live 6/6, 0 ElevenLabs.** Läsläget läses på textens språk (`drills.language`, `/exam read` `language`), "osv." avslutar en mening, `usage` i `/exam read`; importen läser nummer-emoji och enkel kursiv. → `reports/2026-11-15-1322-kevin-k72-k73.md`
 
