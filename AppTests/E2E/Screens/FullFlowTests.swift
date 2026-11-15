@@ -156,6 +156,12 @@ final class FullFlowTests: XCTestCase {
     /// Back to Start without relaunching (a relaunch is a new account in the Simulator, see above).
     private func goToStart() {
         for _ in 0..<6 {
+            // A109: "Vill du ha en påminnelse?" after the first finished exam (T30 tests it).
+            if find(["Vill du ha en påminnelse?"]) != nil, let notNow = find(["Inte nu"]), notNow.isHittable {
+                tapElement(notNow, "Inte nu (reminder question)", counted: false)
+                pause(1)
+                continue
+            }
             if atStart() { return }
             // Run 43656117870: after Publicera prov an alert "Publicerat." with Okej stays up and blocked everything.
             if app.alerts.firstMatch.exists {
@@ -221,7 +227,23 @@ final class FullFlowTests: XCTestCase {
         return true
     }
 
+    /// A110 (D198): Dela and Publicera prov are only there for a started exam. Start the next exam once and close the
+    /// player, as a user does before sharing it.
+    private func startOnce() {
+        goToStart()
+        guard waitEnabled(["Starta prov"], 20) else { return }
+        tap(["Starta prov"], "Starta prov (before Dela, A110)")
+        if wait(["Styr med dina AirPods"], 8) != nil {
+            for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+            tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+        }
+        if wait(["Avsluta"], 20) != nil { pause(4); tap(["Avsluta"], "Avsluta (after starting, A110)") }
+        pause(2)
+        goToStart()
+    }
+
     private func share() -> Bool {
+        startOnce()
         goToStart()
         guard tap(["Frågor och svar"], "Frågor och svar") else { return false }
         guard tap(["Dela"], "Dela") else { return false }
