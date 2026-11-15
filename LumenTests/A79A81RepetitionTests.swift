@@ -156,13 +156,19 @@ import Testing
         }
 
         func status(id: String) async throws(DrillCloudError) -> DrillCloudView {
+            if offline { throw .offline("no network") }
             if let v = views[id] { return v }
             statusCalls += 1
             done = min(done + donePerCall, items.count * 2)
             return view(id: id)
         }
 
-        func list() async throws(DrillCloudError) -> [DrillCloudListEntry] { listed }
+        /// A103: no network (the underground).
+        var offline = false
+        func list() async throws(DrillCloudError) -> [DrillCloudListEntry] {
+            if offline { throw .offline("no network") }
+            return listed
+        }
         func delete(id: String) async throws(DrillCloudError) { deleted.append(id) }
 
         func share(id: String) async throws(DrillCloudError) -> DrillShareLink {
@@ -288,6 +294,48 @@ import Testing
         cloud.listed = []
         await model.refresh()
         #expect(store.drills.isEmpty)
+    }
+
+    @Test func aDownloadedExamPlaysWithoutANetwork() async throws {
+        // A103: the sound is on the phone (Application Support); no network changes nothing for playing.
+        let folder = try Self.folder("a103")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = MockCloud()
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1))
+        var drill = Self.bio(1)
+        drill.needsUpload = true
+        store.save(drill)
+        await audio.prepare(drill)
+        let saved = try #require(store.drill(drill.id))
+        #expect(audio.tracks(for: saved) != nil)
+
+        cloud.offline = true
+        let model = RepetitionModel(store: store,
+                                    session: RepetitionSession(inputs: [], defaults: Self.defaults(), activatesAudioSession: false),
+                                    maker: MockDrillMaker(), audio: audio, sharing: DrillShareClient(cloud: cloud),
+                                    remote: RemoteCommandHub(), cloud: cloud)
+        await model.refresh()
+        #expect(store.drills.count == 1, "no network deletes nothing")
+        #expect(model.canStart(saved) && audio.tracks(for: saved) != nil, "the whole exam plays")
+        #expect(audio.problem(for: saved) == nil, "nothing to say: it is all on the phone")
+    }
+
+    @Test func soundNoExamUsesIsRemovedAtLaunch() throws {
+        // A103 (D186): files of deleted exams go; every file an exam uses stays; nothing else is touched.
+        let folder = try Self.folder("a103prune")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        var drill = Self.bio(1)
+        drill.items[0].questionAudio = "keep-q.mp3"
+        drill.items[0].longAudio = "keep-l.mp3"
+        drill.cueAudio = "cue.mp3"
+        store.save(drill)
+        for name in ["keep-q.mp3", "keep-l.mp3", "cue.mp3", "old.mp3", "notes.txt"] {
+            try Data("x".utf8).write(to: folder.appendingPathComponent(name))
+        }
+        _ = CloudDrillAudio(cloud: MockCloud(), store: store, folder: folder)
+        let left = Set(try FileManager.default.contentsOfDirectory(atPath: folder.path))
+        #expect(left.isSuperset(of: ["keep-q.mp3", "keep-l.mp3", "cue.mp3", "notes.txt", "drills.json"]))
+        #expect(!left.contains("old.mp3"))
     }
 
     @Test func anAccountChangeNeverDeletesTheExams() async throws {

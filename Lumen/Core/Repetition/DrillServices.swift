@@ -309,7 +309,7 @@ extension DrillMakingError {
     var userMessage: String {
         switch self {
         case .noMaterial: "Lägg till material först."
-        case .offline: "Ingen internetanslutning. Frågorna görs när du är uppkopplad igen."
+        case .offline: NetworkStatus.noNetworkLine // A103: nothing is queued, so "försök igen"
         case .server(let why) where why == "no questions":
             "EarMind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text."
         case .refused(let message): message

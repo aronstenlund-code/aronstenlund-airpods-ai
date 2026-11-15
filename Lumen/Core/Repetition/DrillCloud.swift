@@ -141,7 +141,10 @@ enum DrillCloudError: Error, Equatable {
     var userMessage: String {
         switch self {
         case .refused(_, _, let message): message
-        case .offline: "Ingen kontakt med EarMind just nu. Försök igen om en stund."
+        case .offline:
+            // A103: without a network, say so plainly (and that downloaded exams still play).
+            NetworkStatus.shared.isOnline ? "Ingen kontakt med EarMind just nu. Försök igen om en stund."
+                : NetworkStatus.noNetworkLine
         }
     }
 }
@@ -365,10 +368,55 @@ final class CloudDrillAudio: DrillAudioProviding {
                                                           appropriateFor: nil, create: true))?
             .appendingPathComponent("drill_audio", isDirectory: true) ?? FileManager.default.temporaryDirectory
         try? FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
+        // A103 (D186): Application Support, never Caches, so iOS does not empty it and an exam plays on the underground
+        // after a restart. Kept out of the iCloud backup: the server can always send the files again.
+        var folderURL = base
+        var values = URLResourceValues()
+        values.isExcludedFromBackup = true
+        try? folderURL.setResourceValues(values)
         self.folder = base
         self.pollInterval = pollInterval
         self.maxPolls = maxPolls
+        removeUnused()
     }
+
+    /// A103 (D186): the limit is the exams themselves. Files no saved exam uses (a deleted exam, a changed text) are
+    /// removed at launch; every file an exam here uses stays, however long since it was played.
+    @discardableResult
+    func removeUnused() -> Int {
+        // Only sound files, and never in the temporary folder (the fallback when Application Support is missing).
+        guard folder.standardizedFileURL != FileManager.default.temporaryDirectory.standardizedFileURL,
+              let names = try? FileManager.default.contentsOfDirectory(atPath: folder.path) else { return 0 }
+        let used = Self.usedFiles(store.drills)
+        let sound: Set<String> = ["mp3", "m4a", "aac", "wav", "caf"]
+        var removed = 0
+        for name in names where !used.contains(name) && sound.contains((name as NSString).pathExtension.lowercased()) {
+            if (try? FileManager.default.removeItem(at: fileURL(name))) != nil { removed += 1 }
+        }
+        if removed > 0 { Log.repetition.info("Drill audio: \(removed, privacy: .public) unused files removed") }
+        return removed
+    }
+
+    nonisolated static func usedFiles(_ drills: [Drill]) -> Set<String> {
+        var used = Set<String>()
+        for drill in drills {
+            if let cue = drill.cueAudio { used.insert(cue) }
+            for item in drill.items {
+                if let q = item.questionAudio { used.insert(q) }
+                if let l = item.longAudio { used.insert(l) }
+            }
+        }
+        return used
+    }
+
+    /// A103: a file could not be written (the phone is full).
+    static let noSpaceLine = "Telefonen har inte plats för ljudet. Frigör lite lagring, så laddas resten ner."
+    /// A103: no network while the sound is fetched; it goes on by itself when the phone is online again.
+    static let waitingForNetworkLine = "Ingen internetanslutning. Resten av ljudet laddas ner när du är uppkopplad igen."
+    /// How long `prepare` waits for the network to come back (A103), checked every `networkCheck`.
+    private let networkWait: Duration = .seconds(30 * 60)
+    private let networkCheck: Duration = .seconds(10)
+    @ObservationIgnored private var noSpace: Set<UUID> = []
 
     func fileURL(_ name: String) -> URL { folder.appendingPathComponent(name) }
 
@@ -432,6 +480,19 @@ final class CloudDrillAudio: DrillAudioProviding {
                     return
                 }
             } catch {
+                if case .offline = error, !NetworkStatus.shared.isOnline {
+                    // A103: on the underground. Say it, then go on by itself when the network is back.
+                    problems[drill.id] = Self.waitingForNetworkLine
+                    var waited: Duration = .zero
+                    while !NetworkStatus.shared.isOnline, waited < networkWait, !Task.isCancelled {
+                        try? await Task.sleep(for: networkCheck)
+                        waited += networkCheck
+                    }
+                    guard NetworkStatus.shared.isOnline, !Task.isCancelled else { return }
+                    problems[drill.id] = nil
+                    polls += 1
+                    continue
+                }
                 if case .refused(_, let code, _) = error, code == "quota_exceeded" {
                     quotaExceeded.insert(drill.id) // A84: the way to others' exams is shown
                 }
@@ -466,6 +527,10 @@ final class CloudDrillAudio: DrillAudioProviding {
             latest.needsUpload = nil
             latest = await download(view, into: latest)
             store.save(latest)
+            if noSpace.remove(drill.id) != nil {
+                problems[drill.id] = Self.noSpaceLine // A103: said, not a counter that never moves
+                return
+            }
             failedFiles[drill.id] = view.audio.failed ?? 0
             let p = progress(for: latest)
             if p.total > 0, p.ready == p.total { return }
@@ -495,7 +560,7 @@ final class CloudDrillAudio: DrillAudioProviding {
                 if !exists(name) {
                     do throws(DrillCloudError) {
                         let data = try await cloud.download(url)
-                        try? data.write(to: fileURL(name), options: .atomic)
+                        guard write(data, to: name, for: drill.id) else { continue }
                         made += 1
                     } catch {
                         Log.repetition.error("Drill audio download: \(error.userMessage, privacy: .public)")
@@ -516,7 +581,7 @@ final class CloudDrillAudio: DrillAudioProviding {
             if !exists(name) {
                 do throws(DrillCloudError) {
                     let data = try await cloud.download(url)
-                    try? data.write(to: fileURL(name), options: .atomic)
+                    write(data, to: name, for: drill.id)
                 } catch {
                     Log.repetition.error("Drill cue download: \(error.userMessage, privacy: .public)")
                 }
@@ -524,6 +589,19 @@ final class CloudDrillAudio: DrillAudioProviding {
             if exists(name) { drill.cueAudio = name }
         }
         return drill
+    }
+
+    /// A103: a failed write (a full phone) is logged and said, never taken for a downloaded file.
+    @discardableResult
+    private func write(_ data: Data, to name: String, for drillID: UUID) -> Bool {
+        do {
+            try data.write(to: fileURL(name), options: .atomic)
+            return true
+        } catch {
+            Log.repetition.error("Drill audio write: \(error.localizedDescription, privacy: .public)")
+            noSpace.insert(drillID)
+            return false
+        }
     }
 
     func cue(for drill: Drill) -> URL? {

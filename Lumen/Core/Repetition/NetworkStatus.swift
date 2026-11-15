@@ -20,12 +20,38 @@ final class NetworkStatus: @unchecked Sendable {
         monitor.start(queue: DispatchQueue(label: "earmind.network-status"))
     }
 
+    private var listeners: [UUID: AsyncStream<Bool>.Continuation] = [:]
+
     private func update(_ satisfied: Bool, kind: String) {
         lock.lock()
+        let changed = self.satisfied != satisfied
         self.satisfied = satisfied
         self.kind = kind
+        let targets = changed ? Array(listeners.values) : []
         lock.unlock()
+        for listener in targets { listener.yield(satisfied) }
     }
+
+    /// A103: online (true) or not, now and at every change, for a view that says it before the user tries.
+    func changes() -> AsyncStream<Bool> {
+        AsyncStream { continuation in
+            let id = UUID()
+            lock.lock()
+            listeners[id] = continuation
+            let now = satisfied
+            lock.unlock()
+            continuation.yield(now)
+            continuation.onTermination = { [weak self] _ in
+                guard let self else { return }
+                self.lock.lock()
+                self.listeners[id] = nil
+                self.lock.unlock()
+            }
+        }
+    }
+
+    /// A103 (Angela Fable A104, for Kelly): the one wording for "this needs the network and there is none".
+    static let noNetworkLine = "Ingen internetanslutning. Försök igen när du är uppkopplad."
 
     /// True until the monitor has said otherwise (a request is tried rather than refused on a guess).
     var isOnline: Bool {

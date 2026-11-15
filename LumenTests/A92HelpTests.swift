@@ -28,6 +28,6 @@ import Testing
         let body = Data(#"{"error":{"code":"quota_exceeded","message":"Du har inga frågor kvar den här månaden."}}"#.utf8)
         #expect(HelpClient.refusal(status: 402, data: body) == .refused("Du har inga frågor kvar den här månaden."))
         #expect(HelpClient.refusal(status: 500, data: Data()) == .failed)
-        #expect(HelpError.offline.userMessage == "Ingen internetanslutning.")
+        #expect(HelpError.offline.userMessage == NetworkStatus.noNetworkLine)
     }
 }

@@ -54,7 +54,7 @@ enum HelpError: Error, Equatable {
 
     var userMessage: String {
         switch self {
-        case .offline: "Ingen internetanslutning."
+        case .offline: NetworkStatus.noNetworkLine // A103: one wording
         case .failed: "Det gick inte att svara just nu. Försök igen."
         case .refused(let message): message
         }

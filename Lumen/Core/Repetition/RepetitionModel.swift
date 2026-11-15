@@ -189,6 +189,27 @@ final class RepetitionModel {
         self.remote = remote
         self.cloud = cloud
         self.defaults = defaults
+        watchNetwork()
+    }
+
+    /// A103 (Angela Fable A104): no network now, observed, so the views say it before the user tries and grey only
+    /// what needs it (Skapa frågor, Dela, Publicera, Prov från din skola). Downloaded exams play without it.
+    private(set) var isOffline = !NetworkStatus.shared.isOnline
+
+    #if DEBUG
+    /// Screenshots (A104): the offline rows without turning the network off.
+    func stageOffline(_ offline: Bool) { isOffline = offline }
+    #endif
+
+    private func watchNetwork() {
+        Task { [weak self] in
+            for await online in NetworkStatus.shared.changes() {
+                guard let self else { return }
+                let cameBack = online && self.isOffline
+                self.isOffline = !online
+                if cameBack { await self.refresh() } // the sound that was waiting goes on
+            }
+        }
     }
 
     var drills: [Drill] { store.drills }

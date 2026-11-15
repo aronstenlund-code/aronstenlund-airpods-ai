@@ -77,7 +77,7 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
     var long: String
     /// K46: the item's id on the server, kept so a saved list keeps its rows.
     var serverID: String?
-    /// K46: the downloaded files in the phone's cache (`<hash>.mp3`), and where the short answer ends in the long file
+    /// K46: the downloaded files (`<hash>.mp3` in Application Support, A103 D186), and where the short answer ends in the long file
     /// (D145, from ElevenLabs' character timestamps). Nil until downloaded; a changed text gets new ones.
     var questionAudio: String?
     var longAudio: String?
