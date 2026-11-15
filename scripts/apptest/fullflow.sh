@@ -105,6 +105,11 @@ for P in $PHASES; do
     grep -E "MISS|UNCLEAR|ALERT|launched|goToStart" "$OUT/t24-$P-log.txt" 2>/dev/null | cut -c1-400 | head -n 60
     echo '```'
     echo
+    echo "Skärmen vid fel (texter och knappar):"
+    echo '```'
+    grep -A2 -E "SCREEN t24$P-[0-9]+-fel-" "$OUT/t24-$P-log.txt" 2>/dev/null | cut -c1-700 | head -n 40
+    echo '```'
+    echo
   } >> "$OUT/summary.md"
   [ "$STATUS" != 0 ] && FAILED=1
 done
