@@ -78,9 +78,10 @@ Kolumnen **Text** kopieras rakt in, och `{…}` är värden. Pluralformer som i 
 | Utan rubriker i materialet | *(avsnittet visas inte)* |
 | Rad under | {9} meningar · cirka {1} min. Sidnummer och sidhuvuden är borttagna. |
 | Platshållare i rättelsen | Till exempel ”Ta inte med sista sidan” |
-| Under knappen | Texten räknas som {1} fråga. {11} kvar sedan. |
+| Under knappen (K70 `counts_as`) | Texten räknas som {1} fråga. {11} kvar sedan. |
 | … kvoten räcker inte | Texten räknas som {9} frågor, och du har {6} kvar den här månaden. Ta bort några sidor, eller vänta till den 1 {december}. *(Ser rätt ut grå)* |
-| Materialet hade ingen text | EarMind hittade ingen text att läsa upp. Fota sidorna igen eller klistra in texten. · knapp: Lägg till material |
+| … `truncated` (K70: högst 40 000 tecken) | Materialet var för långt. EarMind läser upp de första cirka {16} sidorna. Gör ett prov till av resten. |
+| Materialet hade ingen text (422 `drill_unreadable`) | EarMind hittade ingen text att läsa upp. Fota sidorna igen eller klistra in texten. · knapp: Lägg till material |
 
 **Provets skärm (text)**
 | Ställe | Text |
