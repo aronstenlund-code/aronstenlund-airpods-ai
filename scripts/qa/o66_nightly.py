@@ -154,7 +154,8 @@ def part_import():
     d, name = r
     for row in d["rows"]:
         check("B", f"import {row['name']}", row["ok"], "" if row["ok"] else
-              f"http {row.get('http')} antal {row.get('count')}/{row.get('expected')} saknas {row.get('missing')} smutsigt {row.get('dirty')}")
+              f"http {row.get('http')} antal {row.get('count')}/{row.get('expected')} saknas {row.get('missing')} smutsigt {row.get('dirty')} "
+              f"ej hela {row.get('not_full')} kort fel {row.get('bad_short')} fick {[(i.get('question'), i.get('short')) for i in (row.get('response') or {}).get('items', [])[:2]]}")
 
 
 def part_checks(area, script, pattern):
@@ -292,7 +293,8 @@ def part_preview():
         check("J", "K65: search har preview och first_audio_url", len(found.get("preview") or []) == 4 and found.get("first_audio_url"),
               f"{len(found.get('preview') or [])} rader, länk {bool(found.get('first_audio_url'))}")
         check("J", "K65: 'och N frågor till' = items - 4", found.get("items") == 6, found.get("items"))
-    drill(tok, {"action": "unpublish", "id": p.get("id")})
+    st, _, _ = drill(tok, {"action": "unpublish", "id": did})  # unpublish tar provets id (handler: owned(user, b.id))
+    check("J", "avpublicera", st == 200, st)
     drill(tok, {"action": "delete", "id": did})
 
 

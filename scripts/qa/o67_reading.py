@@ -68,7 +68,12 @@ def signup():
 
 def spend(j):
     u = (j or {}).get("usage") or {}
-    COST["claude"] += float(u.get("est_cost_usd") or 0)
+    c = u.get("est_cost_usd")
+    if c is None:  # /exam read: usage kan ligga per steg
+        c = sum(float((x or {}).get("est_cost_usd") or 0) for x in (u.get("steps") or j.get("steps") or []))
+    COST["claude"] += float(c or 0)
+    if not c:
+        print("  usage:", json.dumps(u, ensure_ascii=False)[:200], flush=True)
 
 
 # ---------- materialet: råtext (som en dålig inskanning) och vad som ska bli kvar ----------
@@ -271,9 +276,10 @@ def part_share_publish(t):
     if found:
         check("E", "search: kind text eller förhandsvisning av texten", found.get("kind") == "text" or bool(found.get("preview")),
               json.dumps(found, ensure_ascii=False)[:300], obs=True)
-    if pid:
-        st, u = call("drill", {"action": "unpublish", "id": pid}, tok)
-        check("E", "avpublicera", st == 200, st)
+    st, u = call("drill", {"action": "unpublish", "id": did}, tok)  # unpublish tar provets id, inte publiceringens
+    check("E", "avpublicera", st == 200, st)
+    st, s = call("drill", {"action": "search", "school_code": school}, tok2)
+    check("E", "avpublicerad text syns inte i sök", not any(x.get("id") == pid for x in s.get("results") or []), pid)
     st, d = call("drill", {"action": "delete", "id": did}, tok)
     check("E", "ta bort", st == 200, st)
     st, d = call("drill", {"action": "list"}, tok2)
