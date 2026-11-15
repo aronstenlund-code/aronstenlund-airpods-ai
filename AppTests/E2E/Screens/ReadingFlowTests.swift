@@ -70,15 +70,34 @@ final class ReadingFlowTests: XCTestCase {
         // A106: the choice is not in the first start; Senare made this the second visit.
         guard tap(["Läs upp texten"], "Gör: Läs upp texten") else { screen("ingen-las-upp", "No Läs upp texten"); return miss("no 'Läs upp texten' in Nytt prov") }
         screen("nytt-prov-text", "Nytt prov with Läs upp texten")
-        // Runs 43719634329, 43724201975, 43726716738: Skriv text gets no keyboard focus in the Simulator and a paste did
-        // not land either (T21 saw the same). The material is the picture the script adds to the photo library (the
-        // way T24 makes its exam): Välj bilder → the picture.
-        // Run 43729359230: in the text mode the button is "Skapa uppläsning", so the check after the picture now waits for it
-        // too; a second try only when Välj bilder is still there (closing the sheet would close Nytt prov).
-        if !pickPhoto() {
-            pause(10)
-            if find(["Välj bilder"]) != nil { guard pickPhoto() else { return false } }
+        // Runs 43719634329 … 43731914476: Skriv text gets no keyboard focus in the Simulator; the photo library had no grid
+        // once. Two ways, judged only by what the app does with them (Skapa uppläsning becomes tappable):
+        // (1) Skriv text, paste through the edit menu (the editor's value is not read: it may not be exposed);
+        // (2) Välj bilder, the first picture in the grid.
+        var gotMaterial = false
+        if tap(["Skriv text"], "Skriv text", quiet: true) {
+            UIPasteboard.general.string = Self.material
+            let editor = app.textViews.firstMatch
+            if editor.waitForExistence(timeout: 5) {
+                editor.tap(); testTaps += 1
+                pause(1)
+                editor.press(forDuration: 1.2); testTaps += 1
+                if let paste = pasteItem(4) { tapElement(paste, "Klistra in (the material)") }
+                systemAlerts()
+                if let allow = wait(["Tillåt klistra in", "Allow Paste"], 3) { tapElement(allow, "Tillåt klistra in") }
+                pause(1)
+                screen("skriv-text", "Skriv text after the paste")
+            }
+            tap(["Klar"], "Klar (Skriv text)", quiet: true)
+            pause(1.5)
+            gotMaterial = waitEnabled(["Skapa uppläsning"], 5)
+            log.append("READ material from Skriv text: \(gotMaterial ? "yes (Skapa uppläsning tappable)" : "no")")
         }
+        if !gotMaterial {
+            gotMaterial = pickPhoto()
+            log.append("READ material from Välj bilder: \(gotMaterial ? "yes" : "no")")
+        }
+        guard gotMaterial else { screen("inget-material", "No material", counts: false); return miss("no material: neither Skriv text nor Välj bilder") }
         pause(1)
         guard waitEnabled(["Skapa uppläsning"], 15), tap(["Skapa uppläsning"], "Skapa uppläsning") else {
             screen("ingen-skapa-upplasning", "Skapa uppläsning not tappable")
@@ -346,6 +365,11 @@ final class ReadingFlowTests: XCTestCase {
             }
         } while cells.isEmpty && Date() < end
         screen("bildbiblioteket", "Välj bilder: the photo library", counts: false)
+        if cells.isEmpty {
+            // No sample pictures by name: any small image in the grid (our picture is the newest, top left).
+            cells = app.images.allElementsBoundByIndex.filter { $0.exists && $0.frame.width > 40 && $0.frame.width < 250 && $0.frame.minY > 80 }
+            log.append("READ photo grid without sample names: \(cells.count) images")
+        }
         guard let width = cells.map(\.frame.width).max(), let top = cells.map(\.frame.minY).min() else {
             return miss("no grid of pictures")
         }
