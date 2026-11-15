@@ -13,15 +13,17 @@ känner redan igen det. Knapparna är systemets spelarknappar (Musik och Podcast
 ## 2. Skärmarna
 | Skärm | Bild | Det viktigaste |
 |---|---|---|
-| Nytt prov: Frågor | `nytt-fragor.png` | **Svar till A106: segmenterad kontroll**, inte två rader. Valet har två korta ord och byter vad resten av avsnittet visar, och det är just det segmenterade kontroller är till för i iOS. Den står i ett eget avsnitt **Gör**, direkt under materialet, med **Frågor** förvalt. Under kontrollen bara det som gäller valet: Antal frågor och Vilken årskurs?. |
+| Nytt prov: Frågor | `nytt-fragor.png` | **Ke64 L1: avsnittet Gör flyttas direkt under Provets namn, före Material, så att valet syns utan att skrolla.** | **Svar till A106: segmenterad kontroll**, inte två rader. Valet har två korta ord och byter vad resten av avsnittet visar, och det är just det segmenterade kontroller är till för i iOS. Den står i ett eget avsnitt **Gör**, direkt under materialet, med **Frågor** förvalt. Under kontrollen bara det som gäller valet: Antal frågor och Vilken årskurs?. |
 | Nytt prov: Läs upp texten | `nytt-las.png` | Antal frågor och årskurs försvinner. Två fotnoter: vad det blir och vad det kostar. Huvudknappen heter **Skapa uppläsning**. Raden under knappen är densamma som för frågor (kvoten). |
-| Stämmer det här? (text) | `las-stammer.png` | Ämne och årskurs som i dag. I stället för frågorna: **Rubriker** med antal meningar per rubrik, och en rad med längden. Kostnaden i siffror under knappen innan ljudet görs. Rättelsefältet som i dag. |
+| Stämmer det här? (text) | `las-stammer.png` | **Byggt (A106, godkänt Ke64): stycken i stället för meningar, ingen rättelse (K70 tar ingen), rösten visas.** Ämne och årskurs som i dag. I stället för frågorna: **Rubriker** med antal meningar per rubrik, och en rad med längden. Kostnaden i siffror under knappen innan ljudet görs. Rättelsefältet som i dag. |
 | Provets skärm: en text | `text.png` | I stället för frågelistan visas hela texten i ett kort, rubrikerna fetstilta. Tryck på en mening startar spelaren där. Starta prov ligger fast nederst, precis som för frågor. ⋯-menyn och Dela som för frågor (Ändra ordning finns inte för en text). |
 | Spelaren: läser | `spelare.png` | Överst: Avsluta (textknapp), provets namn, "Mening 5 av 9" och rubriken man är under, och en tunn förloppslinje. Texten: lästa meningar halvt fullfärgade, **meningen som läses fullfärgad, halvfet och med `tintsoft` bakom**, kommande grå. Texten skrollar så att meningen som läses står i övre tredjedelen. Nederst ⏮ ⏸ ⏭ och raden med trycken. |
 | Spelaren: pausad | `spelare-paus.png` | Markeringen blir grå (`fill`), ⏸ blir ▶ och raden "Pausad. Fortsätter från början av meningen." visas (D164). Första tryckgruppen heter nu Fortsätt. |
 | Spelaren: slut | `spelare-slut.png` | **Förslag:** texten börjar inte om av sig själv (D185 säger inget). Skärmen säger "Slut på texten" och har Börja om. 1 tryck på AirPods = Börja om, 3 tryck = förra meningen. Ändra det om Deangelo vill att texten går runt som frågelistan. |
 | Hem: en text | `hem-text.png` | Raden under namnet säger **Text · cirka {m} min** i stället för antal frågor. Ingen egen färg och ingen egen ikon: ordet räcker, och kortet och knappen är desamma. |
 | Styr med dina AirPods: en text | `kontroller-text.png` | Samma skärm och test som för frågor, men med textens tre tryck. Visas första gången man startar en text (se 4.1). |
+
+**Godtaget i A106 (Ke64):** rubrikerna räknas som meningar ("Mening 6 av 11"), lästa och kommande meningar har samma grå, markeringen har raka hörn, slutskärmen är systemets tomläge med `text.alignleft`, och provkortet på Hem har **Texten ›** i stället för Frågor och svar (L2).
 
 ## 3. Regler
 1. **Bara en sak lyser:** meningen som läses. Ingen ordmarkering inuti meningen (för plottrigt i löpande text).
