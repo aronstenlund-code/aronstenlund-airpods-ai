@@ -1,6 +1,7 @@
 // Only in the LumenScreenTour UI-test target (AppTests/E2E/project-e2e.yml sets the flag). Angela's LumenE2ETests
 // unit-test bundle compiles all of AppTests/E2E, and a UI test cannot run there.
 #if LUMEN_SCREEN_TOUR
+import UIKit
 import XCTest
 
 /// T3 (Toby): walks every screen of the app in the Simulator and attaches a screenshot of each, so CI shows what the
@@ -45,6 +46,7 @@ final class ScreenTourTests: XCTestCase {
             endSession()
         }
         shoot("start-utan-prov", note: "Start without an exam (sketch 7)")
+        firstExam()
         a50Start()
         addExamFromHome()
         settingsTour()
@@ -78,6 +80,45 @@ final class ScreenTourTests: XCTestCase {
             miss("first start: Nytt prov (Senare, Fota sidor) not shown after Fortsätt")
         }
         dismissSystemAlerts()
+    }
+
+    /// A100: Fler lägen (the listening modes, BETA) and the full settings come after the first started exam. The tour
+    /// does what a new user does first: Nytt prov → Gör med ChatGPT → Klistra in → Spara frågorna → Starta prov →
+    /// Avsluta (fake audio, D180). Toby (moln) 2026-11-15, nightly tour 43684803165: "Fler lägen not found" everywhere.
+    private func firstExam() {
+        guard tap(["Nytt prov"], step: "start → Nytt prov (first exam, A100)") else { return }
+        guard tap(["Gör med ChatGPT*"], step: "Nytt prov → Gör med ChatGPT") else { return }
+        // Never read the pasteboard in the test: iOS asks the runner for permission and the run hangs.
+        UIPasteboard.general.string = """
+        Fråga 1: Vad behöver växter för fotosyntesen?
+        Svar: Koldioxid, vatten och solljus.
+
+        Fråga 2: Var i bladet sker fotosyntesen?
+        Svar: I kloroplasterna.
+        """
+        guard tap(["Klistra in", "Paste"], step: "ChatGPT → Klistra in") else { return }
+        dismissSystemAlerts()
+        if waitFor(["Tillåt klistra in", "Allow Paste"], timeout: 3) != nil { tap(["Tillåt klistra in", "Allow Paste"], step: "Tillåt klistra in") }
+        guard waitFor(["Spara frågorna"], timeout: 15) != nil, tap(["Spara frågorna"], step: "ChatGPT → Spara frågorna") else {
+            miss("first exam: Spara frågorna not reached")
+            return
+        }
+        pause(3)
+        let end = Date().addingTimeInterval(180)
+        while Date() < end, find(["Starta prov"], buttonsOnly: true)?.isEnabled != true { pause(3) }
+        guard tap(["Starta prov"], step: "start → Starta prov (first exam)") else { miss("first exam: Starta prov not tappable in 180 s"); return }
+        if waitFor(["Styr med dina AirPods"], timeout: 8) != nil {
+            for _ in 1...3 { if waitFor(["Hoppa över"], timeout: 15) != nil { tap(["Hoppa över"], step: "control check → Hoppa över") } }
+            if waitFor(["Starta ändå", "Starta prov"], timeout: 3) != nil { tap(["Starta ändå", "Starta prov"], step: "control check → Starta") }
+        }
+        if waitFor(["Avsluta"], timeout: 20) != nil {
+            pause(4)
+            tap(["Avsluta"], step: "player → Avsluta")
+            pause(2)
+        } else {
+            miss("first exam: no player after Starta prov")
+        }
+        shoot("start-med-prov", note: "Start after the first exam (A100: Fler lägen now)")
     }
 
     private func sharePrompt() {
