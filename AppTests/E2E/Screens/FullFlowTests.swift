@@ -341,6 +341,13 @@ final class FullFlowTests: XCTestCase {
     private func chatGPTImport(title: String, relaunch: Bool, mode: String = "") -> Bool {
         if relaunch { return chatGPTImport(title: title) }
         guard tap(["Nytt prov"], "Nytt prov") else { return false }
+        // Run 43687320010 (slow): "Gör med ChatGPT" was not there after Nytt prov once; close and open Nytt prov again.
+        if wait(["Gör med ChatGPT*"], 8) == nil {
+            screen("nytt-prov-utan-chatgpt", "Nytt prov without Gör med ChatGPT", counts: false)
+            closeSheet()
+            goToStart()
+            guard tap(["Nytt prov"], "Nytt prov (again)") else { return false }
+        }
         guard tap(["Gör med ChatGPT*"], "Gör med ChatGPT") else { return false }
         tap(["Kopiera prompten"], "Kopiera prompten")
         // Angela Schrute 07:30 (L5): the fixed questions already had sound from earlier runs (D144: the file name comes
