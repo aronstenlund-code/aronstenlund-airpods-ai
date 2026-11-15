@@ -1,3 +1,16 @@
+# Angela Schrute (moln), 2026-11-15 04.05
+
+- **Klart:** A103 (43664558381), A105 läsläget (43667072023, D188) och Toby 2:s T24-fynd L2–L6 (43670110088). Alla
+  är gröna i CI och inget är provat på telefon. Rapporterna är `reports/2026-11-15-0313-*`, `-0325-*` och `-0400-*`.
+- **Kvar:** A3 (väntar på K6). Angela Fable har A106 (läslägets vyer, gränssnittet står i A105-rapporten) och L4-vyn
+  (`model.quotaIsKnown`).
+- **CI:** det finns i praktiken en macOS-maskin för iOS build, Tobys apptest och skärmbilder. Pusha inte appkod till
+  en egen gren bara för att prova, för det bygget blockerar main. Klassificeraren tillåter inte `gh run cancel`.
+- **Läsläget i korthet:** `Drill.kind == .text`. Delarna är `DrillItem` med `part`, `sentences` och
+  `sentenceTimesMs`, och ljudet ligger i `longAudio`. `RepetitionSession.reader` är spelaren och `player` är då nil.
+
+---
+
 # Överlämning: Angela (app) till molnet, 2026-11-15 02.50
 
 ## Klart och grönt i CI (inte provat på telefon)
