@@ -285,7 +285,8 @@ struct ReadingPlayerView: View {
     // MARK: The text
 
     private var text: some View {
-        SentenceText(parts: reader.parts, current: reader.sentenceIndex, paused: reader.isPaused, large: true,
+        SentenceText(parts: reader.parts, current: reader.sentenceIndex, paused: reader.isPaused,
+                     large: !typeSize.isAccessibilitySize, // the largest sizes: the body size is already big
                      scrolls: true, follows: $follows) { sentence in
             follows = true
             session.read(from: sentence)
@@ -364,7 +365,9 @@ struct ReadingPlayerView: View {
                 }
                 .foregroundStyle(Color.primary)
             }
-            PressesRow(titles: presses)
+            // As for the questions (Kelly S2): with the largest text the presses are on the control check and the
+            // buttons say the same, so the text gets the room.
+            if !typeSize.isAccessibilitySize || reader.isAtEnd { PressesRow(titles: presses) }
         }
         .padding(.horizontal, 20)
         .padding(.top, 12)
