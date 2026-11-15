@@ -85,10 +85,14 @@ struct PracticeReminderQuestion: View {
 
 /// Ke65: the section PÅMINNELSE in Inställningar: the switch, the time while it is on, and what to do when iOS's
 /// notifications are off for the app.
-struct PracticeReminderSection: View {
+struct PracticeReminderSection<Other: View>: View {
     let model: RepetitionModel
     /// The screenshots: iOS has said no to notifications.
     var stagedDenied: Bool? = nil
+    /// A110 (D198): one section "Påminnelser" in Inställningar. The listening modes' older reminder (the study plan)
+    /// is the rows after this one, with its own line in the footer; no setting is removed.
+    var otherFooter: String? = nil
+    @ViewBuilder var other: () -> Other
     @AppStorage(LumenNotifications.practiceEnabledKey) private var isOn = true
     @AppStorage(LumenNotifications.practiceTimeKey) private var minutes = LumenNotifications.practiceHour * 60
     @State private var isDenied = false
@@ -122,11 +126,15 @@ struct PracticeReminderSection: View {
                     }
                 }
             }
+            other()
         } header: {
-            Text("Påminnelse")
+            Text("Påminnelser")
         } footer: {
-            Text(isOn && isDenied ? "Notiser är avstängda för EarMind."
-                                  : "Högst en gång om dagen, och bara de dagar du inte har pluggat.")
+            VStack(alignment: .leading, spacing: 4) {
+                Text(isOn && isDenied ? "Notiser är avstängda för EarMind."
+                                      : "Högst en gång om dagen, och bara de dagar du inte har pluggat.")
+                if let otherFooter { Text(verbatim: otherFooter) }
+            }
         }
         .task { await readStatus() }
     }
@@ -134,5 +142,12 @@ struct PracticeReminderSection: View {
     private func readStatus() async {
         if let stagedDenied { isDenied = stagedDenied; return }
         isDenied = await LumenNotifications.status() == .denied
+    }
+}
+
+extension PracticeReminderSection where Other == EmptyView {
+    /// The practice reminder alone (the screenshots, and an app without the listening modes' reminder).
+    init(model: RepetitionModel, stagedDenied: Bool? = nil) {
+        self.init(model: model, stagedDenied: stagedDenied, otherFooter: nil) { EmptyView() }
     }
 }

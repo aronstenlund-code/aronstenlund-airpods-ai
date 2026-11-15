@@ -32,7 +32,9 @@ enum RepetitionDemo {
                                       // A107 (D190): the sound is made at Starta prov
                                       "repUnstarted", "repUnstartedEdit", "repHomeUnstarted", "repUnstartedTooMany",
                                       // A109 (D194, Ke65): the practice reminder
-                                      "repReminderAsk", "repReminderSettings", "repReminderDenied"]
+                                      "repReminderAsk", "repReminderSettings", "repReminderDenied",
+                                      // A110 (D198): the text exam before it is started (no Dela, the line under it)
+                                      "repUnstartedText"]
 
     /// A107: Fysikprovet is saved but not started: no sound is asked for yet.
     static let unstarted: Drill = {
@@ -203,6 +205,11 @@ enum RepetitionDemo {
         }
         if name.hasPrefix("repUnstarted") || name == "repHomeUnstarted" { // A107: the newest exam
             model.store.save(unstarted)
+            if name == "repUnstartedText" { // A110
+                var text = reading
+                text.audioStarted = false
+                model.store.save(text)
+            }
             // Kelly Ke64b N1: what starting counts as, and a month that does not cover it.
             let left = name == "repUnstartedTooMany" ? 1 : 12
             model.quota = DrillQuota(used: 15 - left, limit: 15, resets: "2026-12-01", serverLeft: left, suggest: left)
@@ -285,6 +292,7 @@ enum RepetitionDemo {
                         .navigationTitle("Inställningar")
                         .navigationBarTitleDisplayMode(.inline)
                 }
+            case "repUnstartedText": NavigationStack { DrillView(model: model, drillID: reading.id) }
             case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
             case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted":

@@ -107,7 +107,9 @@ struct DrillView: View {
             }
         } else {
             ToolbarItemGroup(placement: .topBarTrailing) {
-                if isSharing {
+                if !DrillSharing.isOffered(model.store.drill(drill.id) ?? drill) {
+                    // A110 (D198): hidden, not grey, until the exam has been started; the line under the list says why.
+                } else if isSharing {
                     ProgressView().accessibilityLabel("Gör en länk")
                 } else {
                     Button {
@@ -126,7 +128,8 @@ struct DrillView: View {
                     } else if model.savedIndex(drill) != nil {
                         Button("Börja om från fråga 1", systemImage: "arrow.counterclockwise") { begin(drill, at: 0) }
                     }
-                    if model.canPublish, drill.publication == nil { // A83 (Ke52)
+                    if model.canPublish, drill.publication == nil, // A83 (Ke52)
+                       DrillSharing.isOffered(model.store.drill(drill.id) ?? drill) { // A110 (D198)
                         Button("Publicera prov", systemImage: "building.columns") { publishing = true }
                             .disabled(!model.isAudioReady(drill) || model.isOffline) // A104
                     }
@@ -222,7 +225,10 @@ struct DrillView: View {
             } header: {
                 Text("Frågor")
             } footer: {
-                Text(verbatim: footnote(drill))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(verbatim: footnote(drill))
+                    if !DrillSharing.isOffered(drill) { Text(verbatim: DrillSharing.startFirstLine) } // A110 (D198)
+                }
             }
 
             if !drill.summary.covers.isEmpty {
@@ -295,7 +301,10 @@ struct DrillView: View {
                     .accessibilityLabel(drill.readingParts.map { $0.sentences.joined(separator: " ") }.joined(separator: "\n"))
                     .accessibilityHint("Starta prov läser upp texten.")
             } footer: {
-                Text("Tryck på en mening för att börja där.")
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Tryck på en mening för att börja där.")
+                    if !DrillSharing.isOffered(drill) { Text(verbatim: DrillSharing.startFirstLine) } // A110 (D198)
+                }
             }
 
             if model.canPublish, let publication = drill.publication {
@@ -427,6 +436,14 @@ struct DrillView: View {
         if drill.isText { return model.audio.reading(for: drill, part: 0)?.url } // A106: the first paragraph
         return model.audio.track(for: drill, at: 0)?.question
     }
+}
+
+/// A110 (D198): Dela and Publicera are offered only once the exam has been started: the user has seen the answers and
+/// the sound exists (D190). Before that the buttons are not shown at all, and one line says what to do.
+enum DrillSharing {
+    static let startFirstLine = "Starta provet först så kan du dela det."
+
+    static func isOffered(_ drill: Drill) -> Bool { !drill.awaitsAudioStart }
 }
 
 /// Kelly (SYSTEM §10 rule 4): a big title is never cut off. With the accessibility sizes the navigation title goes
