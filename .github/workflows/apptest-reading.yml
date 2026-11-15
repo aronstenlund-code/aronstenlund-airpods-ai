@@ -1,0 +1,55 @@
+name: Apptest reading mode (T28)
+
+# Toby (moln)'s T28: the reading mode (A105, A106) in the Simulator, presses through the Debug hook, fake audio (D180).
+# x-earmind-test through LUMEN_TEST_HEADER). The runner's network services are turned off for a few minutes while the
+# test plays (watchdog 9 min). Makes one test exam and removes it again. Manual, and on Toby's branch when the test
+# changes. Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - "AppTests/E2E/Screens/ReadingFlowTests.swift"
+      - "scripts/apptest/reading.sh"
+      - ".github/workflows/apptest-reading.yml"
+
+concurrency:
+  group: apptest-reading-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reading:
+    name: T28 reading (Simulator, fake audio)
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Reading
+        run: |
+          bash scripts/apptest/reading.sh
+          STATUS=$?
+          cat apptest-out/reading/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-reading
+          path: |
+            apptest-out/reading
+            !apptest-out/reading/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
