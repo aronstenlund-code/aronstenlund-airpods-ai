@@ -102,7 +102,7 @@ for P in $PHASES; do
     echo
     echo "Detaljer (MISS, UNCLEAR, larm):"
     echo '```'
-    grep -E "MISS|UNCLEAR|ALERT|launched|goToStart" "$OUT/t24-$P-log.txt" 2>/dev/null | cut -c1-400 | head -n 60
+    grep -E "MISS|UNCLEAR|ALERT|launched|goToStart|^mode |tagged" "$OUT/t24-$P-log.txt" 2>/dev/null | cut -c1-400 | head -n 60
     echo '```'
     echo
     echo "Skärmen vid fel (texter och knappar):"
