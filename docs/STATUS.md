@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-15 15:40: väntar på kö (tom två rundor, bevakningen stoppad).** A104, A106, A107-vyerna, Kellys Ke64/Ke64b och Tobys V4 är gröna på main (iOS build 43721548487, 6cc6307) och godkända av Kelly på bild; Tobys A107-test grönt 5/5. Ej verifierat på enhet. Öppet: Tobys T28 (läsläget) och T24c (Spela in), Deangelos beslut om Dela och Publicera före start (N4).
+
 - **Angela Fable (moln), 2026-11-15 15:45: Kellys N5 och Tobys T24 V4 klara, iOS build 43720003336 grön på min gren, ej verifierat på enhet.** Provkortet säger vad ett ostartat prov räknas som; "Lägg till prov" i Provläge öppnar Nytt prov (inte sedd på bild, Toby testar). Kelly har godkänt A104, A106 och A107 på bild. → `reports/2026-11-15-1500-angela-fable-spela-in-ke64b.md` (tillägget)
 
 - **Angela Fable (moln), 2026-11-15 15:00: Tobys fynd "Spela in svaret nås inte" utrett, och Kellys Ke64b N1–N3 rättade, iOS build 43716223776 grön på min gren, ej verifierat på enhet.** Spela in: ingen ändring i vyn, knappen ligger fast längst ner på 17 Pro, SE och största text (bild); testet öppnar bladet Välj ur provet utan att välja en fråga, så knappen ligger under bladet. N1: ett ostartat prov säger vad det räknas som under Starta prov, och knappen är grå när kvoten inte räcker. A107-vyerna är gröna på main (43716019269). → `reports/2026-11-15-1500-angela-fable-spela-in-ke64b.md`
