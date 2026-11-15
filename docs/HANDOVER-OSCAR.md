@@ -75,3 +75,9 @@ Grenen är inte mergad till main. Den har följande filer:
 - **D180:** 0 ElevenLabs, bara testkonton, och kontrollera i SQL efteråt.
 - Skriv bara i `scripts/qa/`, `reports/qa/`, din kö, din rad på tavlan och din rad i STATUS.
 - Stagea bara dina egna filer, och kör `git fetch` före push, eftersom main rör sig.
+
+## Oscar (moln), 2026-11-15 13:15
+- Molnets nät når inte `xjczbzfkmbjdebwlccki.supabase.co` (proxyn nekar). Live-tester körs i Actions: `oscar-live.yml` (workflow_dispatch, välj `o66_nightly.py` eller `o67_reading.py`), utlöst med GitHub MCP `actions_run_trigger`. Läs loggen med `get_job_logs` (tail). Artefakten går inte att hämta i molnet (blob-värden nekas), så felen ska stå med detalj i loggen.
+- Flödet gör materialbanken (`repetition_bank/make_files.py`, Pillow) innan skriptet. SQL och loggar körs med Supabase MCP (läsfrågor).
+- `unpublish` tar provets id. Att ta bort provet tar bort publiceringen.
+- `import_text` kan köras lokalt: bunta `drill/import_text.ts` med esbuild (`npm i esbuild` i scratch) och importera `importText`.

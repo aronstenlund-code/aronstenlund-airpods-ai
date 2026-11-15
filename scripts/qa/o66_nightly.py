@@ -347,8 +347,9 @@ def part_formulas():
             sv = [i["question"] for i in items if re.search(r"\b(och|är|det|som|vad|varför|hur)\b", i["question"] + " " + i.get("long", ""), re.I)]
             check("K", "D182: engelskt prov på engelska", not sv and items, sv[:3])
         else:
-            spoken_digits = [i["question"] for i in items if re.search(r"\d|[=/²·]", i["question"])]
-            check("K", "K66: svenska frågor utan siffror/formeltecken i uppläsningen", not spoken_digits, spoken_digits[:3])
+            # siffror i frågan är ok: K67 läser dem som ord ("12" -> "tolv", SQL k67_voice); formeltecken ska inte stå i frågan
+            spoken_digits = [i["question"] for i in items if re.search(r"[=/²·]", i["question"])]
+            check("K", "K66: svenska frågor utan formeltecken", not spoken_digits, spoken_digits[:3])
             sc = [i for i in items if i.get("screen")]
             check("K", "K66: visningstext finns för tal och formler", len(sc) >= 1, f"{len(sc)}/{len(items)}")
             slash = any("/" in json.dumps(i.get("screen"), ensure_ascii=False) for i in sc)
