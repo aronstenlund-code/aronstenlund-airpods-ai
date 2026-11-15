@@ -165,7 +165,7 @@ och `reports/2026-11-11-*-angela-a6*.md`.
   - Ordningen i röstningen sparas bara på telefonen. K39 har inget fält för den.
 - **Aron:** ska väckningsordet också bli Earmind? Prova i kväll Start, Mina svar, en timer och en kalenderfråga.
 
-## Angela Fable (repetitionsflödets vyer): överlämning till molnet, 2026-11-15 02:50
+## Angela Fable (repetitionsflödets vyer): överlämning till molnet, 2026-11-15 02:48
 Från den lokala sessionen till "Angela Fable (moln)". Den lokala sessionen tar inga fler punkter. Längre version
 (mina filer, arbetssätt, öppna trådar): `docs/HANDOVER-angela-fable.md`.
 
@@ -176,7 +176,7 @@ Kellys P1. Senaste gröna iOS build med mina ändringar: 43640280850 (71ef001).
 - Pushat: 3b4f33b (skollistan och skolsökningen som systemets tomläge med Försök igen, publiceringsfelet under
   knappen, "Ljudet görs. Du kan starta när första frågan är klar.", slut på frågor på provet och i Prova på en kort
   text), 3d76e71 (utan nät: `model.isOffline`, rad i Nytt prov och på provet, `NetworkStatus.noNetworkLine`),
-  e8d4f3d (`SchoolPicker.stagedQuery`, `PublishSheet.stagedProblem`).
+  9506c2e (`SchoolPicker.stagedQuery`, `PublishSheet.stagedProblem`).
 - **Inte verifierat: att det kompilerar.** Simulator screenshots 43664433881 (3d76e71) gick när detta skrevs; inget
   iOS build med A104 är klart (43664672940 på 2d1ec9e går, 43664558381 väntar). Börja med att läsa de körningarna.
 - Bilder: körningarna 43664669468 (17 Pro) och 43664675303 (SE, största text) är startade med Angela Schrutes tio

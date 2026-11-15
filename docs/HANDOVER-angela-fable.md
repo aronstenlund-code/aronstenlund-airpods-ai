@@ -13,7 +13,7 @@ PublishViews, RepetitionHomeSection, RepetitionPlayerView, ChatGPTImportView, Gr
 - Pushat: 3b4f33b (skollistan och skolsökningen som `ContentUnavailableView` med Försök igen, publiceringsfelet under
   knappen, "Ljudet görs. Du kan starta när första frågan är klar.", slut på frågor på provet och i Prova på en kort
   text), 3d76e71 (utan nät: rad överst i Nytt prov och på provet, Dela/Publicera/Skapa frågor avstängda,
-  `NetworkStatus.noNetworkLine`), e8d4f3d (`stagedQuery`, `stagedProblem` för scenerna).
+  `NetworkStatus.noNetworkLine`), 9506c2e (`stagedQuery`, `stagedProblem` för scenerna).
 - Redan på plats sedan tidigare: inga prov, ljudet kan inte göras (A100), kameran nekad (A94), tom import (A93),
   kvoten slut i Nytt prov (A99).
 - **Inte gjort:** kompileringen är inte bekräftad (Simulator screenshots 43664433881 och iOS build på 3d76e71 gick
