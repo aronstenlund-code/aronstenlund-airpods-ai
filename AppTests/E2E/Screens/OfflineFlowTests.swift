@@ -65,18 +65,40 @@ final class OfflineFlowTests: XCTestCase {
 
     // MARK: Steps
 
+    /// As ChatGPT answers the app's own prompt (the same text as T24's FullFlowTests).
+    static let chatGPTAnswer = """
+    Här är frågorna:
+
+    Fråga 1: Vad behöver växter för fotosyntesen?
+    Svar: Koldioxid, vatten och solljus. Med ljusets energi gör växten socker av koldioxid och vatten, och syre bildas.
+
+    Fråga 2: Var i bladet sker fotosyntesen?
+    Svar: I kloroplasterna. Där finns klorofyllet som fångar ljuset.
+
+    Fråga 3: Vad används sockret till?
+    Svar: Som energi och byggmaterial. Växten använder sockret för att växa och för att bygga cellväggar.
+    """
+
+    /// Run 43674425294: the photo library did not give the picture (the photo path is T24's), so T27 makes its exam
+    /// with Gör med ChatGPT (Fortsätt → Senare → Nytt prov → Gör med ChatGPT → Klistra in → Spara frågorna). The sound
+    /// is made by the server like any exam's (fake audio, D180).
     private func makeExam() -> Bool {
         guard wait(["Välkommen till EarMind"], 20) != nil else { return miss("Välkommen not shown") }
         guard tap(["Fortsätt"], "Fortsätt") else { return false }
-        guard tap(["Fota sidor"], "Fota sidor") else { return false }
-        systemAlerts()
+        guard tap(["Senare"], "Senare") else { return false }
         pause(2)
-        closeSheet()
-        guard pickPhoto() else { return false }
-        lowerQuestions(to: 4)
-        guard tap(["Skapa frågor"], "Skapa frågor") else { return false }
-        guard wait(["Ser rätt ut"], 180) != nil else { return miss("Stämmer det här? not shown in 180 s") }
-        guard waitEnabled(["Ser rätt ut"], 120), tap(["Ser rätt ut"], "Ser rätt ut") else { return miss("Ser rätt ut not tappable") }
+        guard tap(["Nytt prov"], "Nytt prov") else { return false }
+        guard tap(["Gör med ChatGPT*"], "Gör med ChatGPT") else { return false }
+        tap(["Kopiera prompten"], "Kopiera prompten", quiet: true)
+        // Never read the pasteboard here: iOS asks the test runner for permission and the run hangs (43632852744).
+        UIPasteboard.general.string = Self.chatGPTAnswer
+        guard tap(["Klistra in", "Paste"], "Klistra in") else { return false }
+        systemAlerts()
+        if let allow = wait(["Tillåt klistra in", "Allow Paste"], 3) { tapElement(allow, "Tillåt klistra in") }
+        guard wait(["Hittade*"], 15) != nil else { screen("chatgpt-fel", "No questions found"); return miss("Hittade n frågor not shown") }
+        guard tap(["Spara frågorna"], "Spara frågorna") else { return false }
+        pause(3)
+        goToStart()
         guard waitEnabled(["Starta prov"], 240) else { screen("inget-ljud", "No Starta prov"); return miss("Starta prov not enabled in 240 s") }
         // Starta prov opens with the first question's sound (K46); the rest is still downloading. Wait until Start has no
         // line about the sound being made or downloaded, at most 180 s, so "downloaded" means the whole exam.
