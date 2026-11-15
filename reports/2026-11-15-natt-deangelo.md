@@ -36,3 +36,4 @@
 - 20:54 Runda: Angela Schrute har gjort Tobys testkrok LUMEN_TEST_MATERIAL (grön, 43752158888), så att T28 kan köras med text. Toby kör nu. Uppskattad gräns: cirka 83 %.
 - 21:26 Runda: Toby kör T28 på grenen toby/t28 (kontexten är på 80 %) och har nästa runda 21:33. Övriga har tomma köer. Uppskattad gräns: cirka 84 %.
 - 21:57 Runda: inget nytt på main. Toby kör T28 på grenen. Uppskattad gräns: cirka 85 %.
+- 22:15 Aron stänger datorn och vill att sessionerna jobbar. Lagt i köerna: K77 (D197, repetitionsläget i analysen enligt D116), O70 och T31 (nattlig Actions-körning av alla appflöden). Kevin, Oscar och Toby promptas. Övriga vilar för att spara gränsen (cirka 85 %).
