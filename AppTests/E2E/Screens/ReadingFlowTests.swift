@@ -74,29 +74,11 @@ final class ReadingFlowTests: XCTestCase {
         // once. Two ways, judged only by what the app does with them (Skapa uppläsning becomes tappable):
         // (1) Skriv text, paste through the edit menu (the editor's value is not read: it may not be exposed);
         // (2) Välj bilder, the first picture in the grid.
-        var gotMaterial = false
-        if tap(["Skriv text"], "Skriv text", quiet: true) {
-            UIPasteboard.general.string = Self.material
-            let editor = app.textViews.firstMatch
-            if editor.waitForExistence(timeout: 5) {
-                editor.tap(); testTaps += 1
-                pause(1)
-                editor.press(forDuration: 1.2); testTaps += 1
-                if let paste = pasteItem(4) { tapElement(paste, "Klistra in (the material)") }
-                systemAlerts()
-                if let allow = wait(["Tillåt klistra in", "Allow Paste"], 3) { tapElement(allow, "Tillåt klistra in") }
-                pause(1)
-                screen("skriv-text", "Skriv text after the paste")
-            }
-            tap(["Klar"], "Klar (Skriv text)", quiet: true)
-            pause(1.5)
-            gotMaterial = waitEnabled(["Skapa uppläsning"], 5)
-            log.append("READ material from Skriv text: \(gotMaterial ? "yes (Skapa uppläsning tappable)" : "no")")
-        }
-        if !gotMaterial {
-            gotMaterial = pickPhoto()
-            log.append("READ material from Välj bilder: \(gotMaterial ? "yes" : "no")")
-        }
+        // Run 43740301853: the first picture was one of iOS's samples (a waterfall), not ours: the library had not taken in
+        // the material picture yet (T24 gives it more time). Skriv text never got the text in (no focus, no paste).
+        pause(30)
+        var gotMaterial = pickPhoto()
+        log.append("READ material from Välj bilder: \(gotMaterial ? "yes" : "no")")
         guard gotMaterial else { screen("inget-material", "No material", counts: false); return miss("no material: neither Skriv text nor Välj bilder") }
         pause(1)
         guard waitEnabled(["Skapa uppläsning"], 15), tap(["Skapa uppläsning"], "Skapa uppläsning") else {
@@ -189,8 +171,16 @@ final class ReadingFlowTests: XCTestCase {
 
     /// Ke63: a tap on a sentence reads from there. The text is one UITextView; tap low in it, then high.
     private func tapSentence() -> Bool {
-        let text = app.textViews.firstMatch
-        guard text.exists else { return miss("the reading text (UITextView) is not in the tree") }
+        // Run 43740301853: no UITextView in the tree; the text carries the current sentence as its label (A106).
+        var text = app.textViews.firstMatch
+        if !text.exists {
+            let current = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.count > 25 && !$0.hasPrefix("Mening ") && !$0.hasPrefix("Pausad") } ?? ""
+            let byLabel = app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", current)).allElementsBoundByIndex
+                .filter { $0.exists && $0.frame.height > 80 }
+            log.append("READ text element by its sentence: \(byLabel.count) (\(current.prefix(40)))")
+            guard let element = byLabel.max(by: { $0.frame.height < $1.frame.height }) else { return miss("the reading text is not in the tree") }
+            text = element
+        }
         let before = place()
         text.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.85)).tap()
         taps += 1
@@ -306,6 +296,12 @@ final class ReadingFlowTests: XCTestCase {
 
     private func goToStart() {
         for _ in 0..<6 {
+            // A109: "Vill du ha en påminnelse?" after the first finished exam (T30 tests the question itself).
+            if find(["Vill du ha en påminnelse?"]) != nil, let notNow = find(["Inte nu"]), notNow.isHittable {
+                tapElement(notNow, "Inte nu (reminder question)", counted: false)
+                pause(1)
+                continue
+            }
             if atStart() { return }
             if app.alerts.firstMatch.exists {
                 let alert = app.alerts.firstMatch
