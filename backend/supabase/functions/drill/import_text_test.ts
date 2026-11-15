@@ -1,5 +1,6 @@
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { firstSentence, importText } from "./import_text.ts";
+import { cleanLine } from "./import_text.ts";
 
 const T = `Fråga: Varför behöver växter ljus?
 Svar: Växter behöver ljus för att kunna göra fotosyntes och bilda glukos. I kloroplasterna fångar klorofyllet ljusenergin. Den används för att bygga glukos av koldioxid och vatten, och syre släpps ut.
@@ -65,4 +66,13 @@ Deno.test("K60 an unlabelled question before Svar:, a duplicate, and a too long 
   const t = importText(`Fråga: Vad?\nSvar: Kort mening. ${long}`);
   assertEquals([t.items.length, t.skipped[0].reason.startsWith("Svaret är för långt")], [0, true]);
   assertEquals(importText(`Fråga: Vad?\nSvar: Kort mening. ${"Ord ".repeat(800).trim()}.`).warnings.some((w) => w.reason.includes("tecken")), true);
+});
+
+Deno.test("K73 (O66): keycap emoji numbering is numbering; single italics lose their marks", () => {
+  const r = importText("1️⃣ Fråga: Vad är magma?\nSvar: Magma är *smält berg* under jorden. Det finns på _Hawaii_.\n\n🔟 Fråga: Vad är lava?\nSvar: Lava är magma ovan jord.");
+  assertEquals(r.items.map((i) => i.question), ["Vad är magma?", "Vad är lava?"]);
+  assertEquals(r.items[0].long, "Magma är smält berg under jorden. Det finns på Hawaii.");
+  // a bullet and a product a*b stay as they were
+  assertEquals(cleanLine("* punkt"), "* punkt");
+  assertEquals(cleanLine("a*b = c"), "a*b = c");
 });

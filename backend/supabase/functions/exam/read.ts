@@ -4,6 +4,7 @@ import type { LLMProvider } from "../answer/llm/types.ts";
 import {
   clean,
   type DrillConfig,
+  examLanguage,
   drillImages,
   gradeName,
   MATERIAL,
@@ -11,7 +12,26 @@ import {
   materialImages,
   runLLM,
   type StepUsage,
+  sumUsage,
 } from "./drill.ts";
+
+/**
+ * K72 (O67 fynd 1): the language a text is READ in, from the text itself (a history text in English is read in
+ * English), with the subject as the tie-break. "" = Swedish (as examLanguage), otherwise "English".
+ */
+export function textLanguage(text: string, subject = ""): string {
+  const w = text.toLowerCase().match(/\p{L}+/gu) ?? [];
+  const EN = new Set(["the", "and", "of", "to", "in", "is", "was", "that", "with", "for", "are", "were", "it", "this", "by", "from"]);
+  const SV = new Set(["och", "att", "det", "som", "en", "är", "på", "av", "för", "med", "till", "var", "den", "har", "inte", "om"]);
+  let en = 0, sv = 0;
+  for (const x of w) {
+    if (EN.has(x)) en++;
+    if (SV.has(x)) sv++;
+  }
+  if (en >= 5 && en > 2 * sv) return "English";
+  if (sv >= 5 && sv > 2 * en) return "";
+  return examLanguage(subject);
+}
 
 /**
  * K70 (D185): Läsläget. `POST /exam {"action":"read", "pages"?|"page_paths"?|"text"?, "subject"?, "grade"?, "title"?}`
@@ -55,7 +75,7 @@ export function sentences(text: string): string[] {
   if (!t) return [];
   const out: string[] = [];
   // not after common Swedish abbreviations or a single letter/number ("t.ex.", "bl.a.", "s. 4", "1. ")
-  const abbr = /(?:\b(?:t\.ex|bl\.a|m\.m|s\.k|d\.v\.s|dvs|osv|etc|ca|kap|nr|jfr|f\.d|e\.Kr|f\.Kr|t\.o\.m|fr\.o\.m|resp|vs|Dr|Mr|Mrs|St)\.|\b\p{L}\.|\b\d{1,3}\.)$/u;
+  const abbr = /(?:\b(?:t\.ex|bl\.a|m\.m|s\.k|d\.v\.s|dvs|ca|kap|nr|jfr|f\.d|e\.Kr|f\.Kr|t\.o\.m|fr\.o\.m|resp|vs|Dr|Mr|Mrs|St)\.|\b\p{L}\.|\b\d{1,3}\.)$/u;
   let start = 0;
   const re = /[.!?…]+["”»)]*(?=\s+["“«(]?[\p{Lu}\d])/gu;
   let m: RegExpExecArray | null;
@@ -212,6 +232,8 @@ export async function handleRead(
       parts,
       chars: total,
       counts_as: countsAs(total, perQuestion),
+      language: textLanguage(parts.map((p) => p.text).join(" "), clean(b.subject, 60)) || "sv",
+      usage: sumUsage(results.map((r) => r.usage), cfg.planModel ?? provider.model),
       ...(cut ? { truncated: true, warning: `Texten är lång. De första ${total} tecknen läses upp.` } : {}),
     },
     steps: results.map((r) => r.usage),

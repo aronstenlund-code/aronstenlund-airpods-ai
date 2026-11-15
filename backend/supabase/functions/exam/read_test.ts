@@ -60,3 +60,13 @@ Deno.test("K70 handleRead: chunks in parallel, in order, the model's text to par
   await handleRead({ text: "xx" }, none, DEFAULT_DRILL_CONFIG).catch((e) => (status = e.status));
   assertEquals(status, 422);
 });
+
+Deno.test("K72 osv./etc./m.m. may end a sentence; t.ex. still does not; the language comes from the text", async () => {
+  const { textLanguage } = await import("./read.ts");
+  assertEquals(sentences("Kroppen behöver kol, kväve osv. Nästa stycke handlar om energi."), ["Kroppen behöver kol, kväve osv.", "Nästa stycke handlar om energi."]);
+  assertEquals(sentences("Det finns järn, zink etc. Sedan kommer vatten."), ["Det finns järn, zink etc.", "Sedan kommer vatten."]);
+  assertEquals(sentences("Vi läser t.ex. Strindberg i år."), ["Vi läser t.ex. Strindberg i år."]);
+  assertEquals(textLanguage("In 1769 James Watt improved the steam engine, and it was used in the mills of the north. The workers were many.", "Historia"), "English");
+  assertEquals(textLanguage("Ångmaskinen förbättrades av James Watt och den var viktig för att fabrikerna kunde växa.", "Engelska"), "");
+  assertEquals(textLanguage("kort", "Engelska"), "English", "too little text: the subject decides");
+});

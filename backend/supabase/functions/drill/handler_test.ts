@@ -708,3 +708,16 @@ Deno.test("K71 a text drill waits for start too; a test account's start gets sil
   assertEquals(st.audio.done, 3);
   assert([...w.audio.values()].filter((a) => a.kind === "text").every((a) => a.voice_id === TEST_VOICE_ID));
 });
+
+Deno.test("K72 an English text with the subject Historia is read in English; every sentence ends with a stop", async () => {
+  const w = world();
+  const en = "In 1769 James Watt improved the steam engine, and it was used in the mills of the north. About 1.2 million people moved to the towns.";
+  const j = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", subject: "Historia" }, items: [{ kind: "para", text: en }] }))).json();
+  assertEquals(j.drill.language, "English");
+  const f = [...w.audio.values()].find((a) => a.kind === "text")!;
+  assert(f.text.includes("1769") && !/sjuttonhundra|komma/.test(f.text), f.text);
+  const sv = await (await w.h("u1")(post({ action: "save", drill: { kind: "text" }, items: [{ kind: "para", text: "Kroppen behöver kol, kväve osv. Nästa stycke handlar om energi." }] }))).json();
+  assertEquals(sv.items[0].sentences.length, 2);
+  const t = [...w.audio.values()].find((a) => a.kind === "text" && a.text.includes("Nästa"))!.text;
+  assert(/vidare\. Nästa/.test(t) || /osv\. Nästa/.test(t), t);
+});

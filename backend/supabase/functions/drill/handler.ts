@@ -6,7 +6,7 @@ import { toSpeech } from "../answer/speech.ts";
 import { wordsToNumber } from "../answer/svnum.ts";
 import { pronounce } from "../tts/handler.ts";
 import { sentenceTimes, TEXT_LIMITS, voicedPart } from "./text.ts";
-import { countsAs } from "../exam/read.ts";
+import { countsAs, textLanguage } from "../exam/read.ts";
 import { composeLong, examLanguage, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
 import { lengthClass, lengthLimits, questionKey } from "./length.ts";
@@ -77,6 +77,8 @@ export interface DrillRow {
   kind?: "questions" | "text";
   /** K71 (D190): when Starta prov (or an old app's save) queued the audio; null = text only, editable for free. */
   audio_started_at?: string | null;
+  /** K72: the language a text drill is read in ("" or null = by the subject, as before; "sv"; "English" ...). */
+  language?: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -544,7 +546,7 @@ export function createDrillHandler(deps: DrillDeps) {
       drill: {
         id: drill.id, title: drill.title, subject: drill.subject, grade: drill.grade, covers: drill.covers,
         long_words: drill.long_words, shared_from: drill.shared_from ?? null, voice_model: model, kind: drill.kind ?? "questions",
-        audio_started: !!drill.audio_started_at,
+        audio_started: !!drill.audio_started_at, ...(drill.kind === "text" ? { language: drill.language ?? null } : {}),
         created_at: drill.created_at, updated_at: drill.updated_at,
       },
       cue,
@@ -552,7 +554,7 @@ export function createDrillHandler(deps: DrillDeps) {
         ? {
           // K70 (D185): a text part; "sentences" are the displayed sentences, the audio's "sentences" their times
           id: i.id, position: i.position, part: i.part, text: i.long,
-          sentences: voicedPart(i.long, i.part, (x) => voiceText(x, examLanguage(drill.subject))).display,
+          sentences: voicedPart(i.long, i.part, (x) => voiceText(x, drill.language ? (drill.language === "sv" ? "" : drill.language) : examLanguage(drill.subject))).display,
           voice_chars: i.voice_chars ?? null, audio: { text: file(i.long_hash) },
         }
         : {
@@ -623,6 +625,7 @@ export function createDrillHandler(deps: DrillDeps) {
       id: crypto.randomUUID(), user_id: userId, title: src.title, subject: src.subject, grade: src.grade,
       covers: src.covers, long_words: src.long_words, shared_from: src.id, voice_model: src.voice_model ?? deps.model,
       kind: src.kind ?? "questions",
+      language: src.language ?? null,
       // the copy's files are the original's (finished: sharing and publishing need all of it)
       audio_started_at: new Date(now()).toISOString(),
     };
@@ -697,13 +700,21 @@ export function createDrillHandler(deps: DrillDeps) {
       shared_from: existing?.shared_from ?? null,
       voice_model: voice,
       kind,
+      language: existing?.language ?? null,
     };
     const oldItems = existing ? await deps.db.items([existing.id]) : [];
     const oldIds = new Set(oldItems.map((i) => i.id));
     const rows: (ItemRow & { keep?: string })[] = [];
     const files = new Map<string, AudioRow>();
     const limits = lengthLimits(await deps.db.settings?.().catch(() => null));
-    const lang = examLanguage(drill.subject); // K67 (D182): an English exam is read in English
+    // K67 (D182): an English exam is read in English. K72 (O67): a text by its own language (asked, or detected)
+    if (isText) {
+      const asked = typeof di.language === "string" ? di.language.trim() : "";
+      const known = asked === "sv" ? "sv" : examLanguage(asked) || null;
+      drill.language = known ?? drill.language ??
+        (textLanguage(rawItems.map((it) => String(it?.text ?? "")).join(" "), drill.subject) || "sv");
+    }
+    const lang = isText && drill.language ? (drill.language === "sv" ? "" : drill.language) : examLanguage(drill.subject);
     let textChars = 0;
     for (const [pos, it] of isText ? rawItems.entries() : []) {
       // K70 (D185): one file per part; question_hash = long_hash; the sentence ends are kept for the times

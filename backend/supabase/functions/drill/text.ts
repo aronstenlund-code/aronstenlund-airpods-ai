@@ -20,7 +20,8 @@ export function voicedPart(
     let v = voice(s);
     if (!v) continue;
     // a heading is said as a sentence of its own (a short pause after it)
-    if (kind === "heading" && !/[.!?…]$/.test(v)) v += ".";
+    // K72 (O67 fynd 2): every sentence ends with a stop, so the voice pauses ("och så vidare." before the next)
+    if (!/[.!?…]["”»)]*$/.test(v)) v += ".";
     spoken = spoken ? `${spoken} ${v}` : v;
     ends.push(spoken.length);
     shown.push(s);
