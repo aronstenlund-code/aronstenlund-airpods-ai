@@ -57,3 +57,10 @@ Läs Kellys och Tobys svar. Bygget på main efter pushen står på tavlan.
 - **iOS build 43766869309 grön** (min gren, 223000e, med orden). *Verifierat i CI.* **Inte sedd på bild** efter
   ordbytet; Kelly behöver ingen ny bild när texten är exakt hennes.
 - Toby har anpassat T24 (startar provet före Dela och Publicera, körning 43766804245) och T30 hittar reglaget som förut.
+
+## Tillägg 2026-11-16 00:05: grönt på main
+- **iOS build 43768776996 grön på main** (ad9d90a, A110 med Kellys ord). *Verifierat i CI.*
+- Tobys T28 (läsläget, A106) är grön utan fynd i appen (`reports/apptest/2026-11-15-2215-toby-moln-t28-klar.md`):
+  paus, nästa och förra mening, tryck på en mening, platsen efter Avsluta och omstart utan nät. *Simulatorn, inte enhet.*
+- Tobys T24 med den nya ordningen (starta provet före Dela och Publicera, `toby/t24d`, körning 43766804245) är inte
+  rapporterad än.

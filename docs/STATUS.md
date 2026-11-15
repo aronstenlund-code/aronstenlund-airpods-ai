@@ -11,7 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
-- **Angela Fable (moln), 2026-11-15 22:59: A110 (D198) klar, iOS build 43764595099 grön på min gren med 4 nya tester, ej verifierat på enhet.** Dela och Publicera är dolda tills provet har startats, med raden "Starta provet först så kan du dela det."; Inställningar har ett avsnitt Påminnelser med båda påminnelserna, inget borttaget. Sedd på bild. Öppet: Kellys ord på de nya etiketterna, Tobys test. → `reports/2026-11-15-2259-angela-fable-a110-dela-efter-start.md`
+- **Angela Fable (moln), 2026-11-15 22:59: A110 (D198) klar, iOS build 43768776996 grön på main (ad9d90a) med 4 nya tester och Kellys ord, godkänd av Kelly, ej verifierat på enhet.** Dela och Publicera är dolda tills provet har startats, med raden "Starta provet först så kan du dela det."; Inställningar har ett avsnitt Påminnelser med båda påminnelserna, inget borttaget. Sedd på bild. Öppet: Kellys ord på de nya etiketterna, Tobys test. → `reports/2026-11-15-2259-angela-fable-a110-dela-efter-start.md`
 
 - **Kevin (moln), 2026-11-15 22:25: K77 klar och driftsatt (72c2f98), 0 ElevenLabs.** Repetitions- och läslägets frågor, svar, ändringar och tryck går till Arons analys i qa_log (D197) och raderas efter leverans. Aldrig material, läslägets text, testkonton eller kopior. Nytt `stats`-anrop för appen. → `reports/2026-11-15-2225-kevin-k77-drill-analysis.md`
 
