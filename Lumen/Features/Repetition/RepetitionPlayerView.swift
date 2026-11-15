@@ -266,9 +266,19 @@ struct RepetitionPlayerView: View {
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                 } else {
-                    HStack(spacing: 8) {
-                        ProgressView()
-                        Text("Gör ljud …")
+                    // A107 (D190): the sound is made at Starta prov, so the wait shows how far it has come.
+                    let made = session.drill.map { model.progress($0) }
+                    VStack(spacing: 10) {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                            Text("Gör ljudet …")
+                        }
+                        if let made, made.total > 0, made.ready < made.total {
+                            ProgressView(value: Double(made.ready), total: Double(made.total))
+                                .frame(maxWidth: 220)
+                                .accessibilityHidden(true)
+                            Text(verbatim: "\(made.ready) av \(made.total) klara").font(.footnote).monospacedDigit()
+                        }
                     }
                     .foregroundStyle(.secondary)
                     .accessibilityElement(children: .combine)

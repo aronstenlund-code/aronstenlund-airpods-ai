@@ -249,8 +249,8 @@ struct DrillView: View {
                           note: soundProblem ?? (canStart ? nil : "Ljudet görs. Du kan starta när första frågan är klar." as String?)
                               ?? saved.map { "Du var på fråga \($0 + 1) av \(drill.items.count)." }
                               ?? "Spelas i dina AirPods. Mikrofonen används inte.",
-                          isBusy: !canStart && soundProblem == nil,
-                          isDisabled: !canStart) {
+                          isBusy: (!canStart && soundProblem == nil) || model.isStartingAudio(drill),
+                          isDisabled: !canStart || model.isStartingAudio(drill)) {
                 begin(drill, at: saved ?? 0)
             }
         }
@@ -335,6 +335,15 @@ struct DrillView: View {
         return VStack(alignment: .leading, spacing: 6) {
             if ready {
                 Text(verbatim: "\(facts) · ljud klart")
+            } else if model.awaitsAudioStart(drill) {
+                // A107 (D190): the sound is made at Starta prov; no "Ljud: 0 av N" that looks stuck.
+                Text(verbatim: facts)
+                Text(verbatim: model.isStartingAudio(drill) ? "Gör ljudet …" : "Ljudet görs när du startar provet.")
+            } else if model.quotaExceeded(drill) {
+                // Kelly Ke64 T1: nothing more is made this month, so no counter and no bar that seem to move.
+                Text(verbatim: facts)
+                Text(verbatim: "Ljud: \(p.ready) av \(p.total) klara. Resten görs den 1 \(ChatGPTImportView.nextMonth()), när du har frågor kvar.")
+                    .monospacedDigit()
             } else if model.audio.problem(for: drill) != nil {
                 Text(verbatim: facts) // A100 (K62): no counter that stands still; the problem is the next line
             } else {
@@ -358,6 +367,8 @@ struct DrillView: View {
     /// One line under the questions: how to reorder while reordering, else what Dela gives (or why it is off).
     private func footnote(_ drill: Drill) -> String {
         if editMode.isEditing { return "Dra för att ändra ordning. Ordningen är den du hör." }
+        // A107 (D190): until Starta prov nothing costs anything, so say that the answers can be changed.
+        if model.awaitsAudioStart(drill) { return "Tryck på en fråga för att ändra frågan eller svaret. Ljudet görs när du startar provet." }
         let p = model.progress(drill)
         if p.total == 0 || p.ready < p.total {
             // A100 (K62): no counter that stands still when the sound cannot be made.
@@ -558,7 +569,9 @@ struct DrillItemEditor: View {
                     }
                     .disabled(question.trimmingCharacters(in: .whitespaces).isEmpty || isWriting)
                 } footer: {
-                    Text("Sparar du en ändring görs nytt ljud bara för den här frågan.")
+                    // A107 (D190): before Starta prov there is no sound yet, so a change costs nothing.
+                    Text(model.awaitsAudioStart(drill) ? "Ljudet görs när du startar provet. Ändra så mycket du vill först."
+                                                       : "Sparar du en ändring görs nytt ljud bara för den här frågan.")
                 }
                 if let problem { Section { Text(verbatim: problem) } }
             }

@@ -127,6 +127,11 @@ struct SentenceText: UIViewRepresentable {
                 let style = NSMutableParagraphStyle()
                 style.lineSpacing = 3
                 style.paragraphSpacing = part.isHeading ? 4 : 14
+                if part.isHeading { // Kelly Ke64 L5: a heading is never broken in the middle of a word
+                    style.hyphenationFactor = 0
+                    style.lineBreakStrategy = []
+                    style.lineBreakMode = .byWordWrapping
+                }
                 if part.isHeading, p > 0 { style.paragraphSpacingBefore = 8 }
                 let font = part.isHeading ? headingFont : bodyFont
                 for (s, sentence) in part.sentences.enumerated() {
@@ -292,6 +297,13 @@ struct ReadingPlayerView: View {
             session.read(from: sentence)
         }
         .padding(.horizontal, 20)
+        // Kelly Ke64 L6: the row above the sentence fades out under the progress line instead of being cut off.
+        .mask {
+            VStack(spacing: 0) {
+                LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: 14)
+                Color.black
+            }
+        }
         .overlay(alignment: .bottomTrailing) {
             if !follows {
                 Button {

@@ -198,7 +198,8 @@ struct RepetitionHomeSection: View {
             if let next = model.drills.first {
                 Section {
                     nextExam(next)
-                    navigationRow("Frågor och svar", detail: nil) { opened = next.id }
+                    // Kelly Ke64 L2: a text has no questions.
+                    navigationRow(next.isText ? "Texten" : "Frågor och svar", detail: nil) { opened = next.id }
                 } footer: {
                     if streakDays > 0 {
                         Label {
@@ -288,6 +289,7 @@ struct RepetitionHomeSection: View {
         if drill.isText { // A106 (Ke63): "Text · cirka 6 min"; the word says what it is, the card is the same
             if let saved { return "Du var på mening \(saved + 1) av \(drill.sentenceCount)" }
             if let problem = shortProblem(drill) { return "Text · \(problem)" }
+            if model.awaitsAudioStart(drill) { return "Text · Ljudet görs när du startar" }
             let p = model.progress(drill)
             if p.total > 0, p.ready == p.total { return "Text · cirka \(ReadingText.minutes(drill)) min" }
             return "Text · Ljud: \(p.ready) av \(p.total) klara"
@@ -295,6 +297,8 @@ struct RepetitionHomeSection: View {
         if let saved { return "Du var på fråga \(saved + 1) av \(drill.items.count)" }
         // A100 (K62): when the sound cannot be made, say so instead of a counter that stands still.
         if let problem = shortProblem(drill) { return "\(DrillText.questions(drill.items.count)) · \(problem)" }
+        // A107 (D190): not started yet, so no "Ljud: 0 av N".
+        if model.awaitsAudioStart(drill) { return "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar" }
         let p = model.progress(drill)
         if p.total > 0, p.ready == p.total {
             return "\(DrillText.questions(drill.items.count)) · cirka \(DrillText.minutesPerLap(drill)) min per varv"
@@ -330,7 +334,8 @@ struct RepetitionHomeSection: View {
         let ready = p.total > 0 && p.ready == p.total
         let what = drill.isText ? "Text · cirka \(ReadingText.minutes(drill)) min" : DrillText.questions(drill.items.count)
         let detail = ready ? "\(what) · ljud klart"
-            : shortProblem(drill) ?? "Ljud: \(p.ready) av \(p.total) klara" // A100 (K62)
+            : shortProblem(drill) ?? (model.awaitsAudioStart(drill) ? what // A107: nothing to count before Starta prov
+                : "Ljud: \(p.ready) av \(p.total) klara") // A100 (K62)
         return HStack(spacing: 12) {
             Button {
                 opened = drill.id

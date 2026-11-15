@@ -24,6 +24,7 @@ struct NewDrillView: View {
     var stagedReading: StagedReading? = nil
     enum StagedReading { case choice, confirm(DrillTextDraft) }
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     init(model: RepetitionModel, onSaved: @escaping (Drill) -> Void, stagedProblem: String? = nil) {
         self.model = model
@@ -183,7 +184,11 @@ struct NewDrillView: View {
             }
 
             if model.quotaUsedUp { // A99 (D175, Kelly): said before anything is sent, not as an error afterwards
-                Section { Text(verbatim: Self.usedUpLine) }
+                // Kelly Ke64 T2: with the largest text the long line filled the screen.
+                Section {
+                    Text(verbatim: typeSize.isAccessibilitySize
+                         ? "Inga frågor kvar förrän den 1 \(ChatGPTImportView.nextMonth())." : Self.usedUpLine)
+                }
             } else if model.isOffline { // A104 (A103): said before the user has taken photos and waited
                 Section {
                     Label("Ingen internetanslutning. Du kan lägga till material nu och skapa frågorna när du är uppkopplad.",
@@ -204,6 +209,27 @@ struct NewDrillView: View {
                 Section {
                     TextField("Provets namn", text: $title)
                         .accessibilityLabel("Provets namn") // A95: a name of its own, not only the placeholder
+                }
+            }
+
+            if !isFirstStart { // A106 (Ke63 §4.4; Kelly Ke64 L1: under the name, so the choice shows without scrolling): a new user makes questions; the choice shows from the second exam
+                Section {
+                    Picker("Gör", selection: $make) {
+                        Text("Frågor").tag(Make.questions)
+                        Text("Läs upp texten").tag(Make.text)
+                    }
+                    .pickerStyle(.segmented)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                } header: {
+                    Text("Gör")
+                } footer: {
+                    if make == .text {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("EarMind läser upp materialet som en löpande text, utan frågor. Du pausar och hoppar mellan meningar med AirPods.")
+                            Text("Texten räknas som en fråga per påbörjade 800 tecken, ungefär en tredjedel av en boksida.")
+                        }
+                    }
                 }
             }
 
@@ -268,27 +294,6 @@ struct NewDrillView: View {
             } footer: {
                 Text(isFirstStart ? "iOS frågar om kameran första gången. Fotona sparas inte."
                                   : "Foton, dokument och text skickas en gång för att göra frågorna och sparas inte.")
-            }
-
-            if !isFirstStart { // A106 (Ke63 §4.4): a new user makes questions; the choice shows from the second exam
-                Section {
-                    Picker("Gör", selection: $make) {
-                        Text("Frågor").tag(Make.questions)
-                        Text("Läs upp texten").tag(Make.text)
-                    }
-                    .pickerStyle(.segmented)
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
-                } header: {
-                    Text("Gör")
-                } footer: {
-                    if make == .text {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("EarMind läser upp materialet som en löpande text, utan frågor. Du pausar och hoppar mellan meningar med AirPods.")
-                            Text("Texten räknas som en fråga per påbörjade 800 tecken, ungefär en tredjedel av en boksida.")
-                        }
-                    }
-                }
             }
 
             if isFirstStart {

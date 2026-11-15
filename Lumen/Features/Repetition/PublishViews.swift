@@ -44,9 +44,13 @@ struct PublishSheet: View {
                             .environment(\.locale, Locale(identifier: "sv_SE"))
                     } else {
                         Button { date = Calendar.current.date(byAdding: .day, value: 7, to: Date()) } label: {
-                            LabeledContent("Provdatum", value: "Välj datum")
+                            // Kelly Ke64 T3 (Toby V1): what is missing looks like something to tap.
+                            HStack {
+                                Text("Provdatum").foregroundStyle(Color.primary)
+                                Spacer()
+                                Text("Välj datum")
+                            }
                         }
-                        .foregroundStyle(.primary)
                     }
                 } footer: {
                     Text("Alla som söker på skolan kan lägga till provet och plugga på det. **Frågor, svar och ljud** publiceras. Aldrig foton, dokument eller ditt namn.")

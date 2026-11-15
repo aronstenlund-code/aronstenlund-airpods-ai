@@ -28,7 +28,22 @@ enum RepetitionDemo {
                                       "repSchoolsOffline", "repSchoolsFailed", "repSchoolSearchNone", "repSchoolSearchFailed", "repPublishFailed", "repSoundMaking", "repQuotaExam", "repHelpTryUsedUp", "repNewOffline", "repExamOffline",
                                       // A106 (Angela Fable, Kelly Ke63): a text read aloud
                                       "repTextNew", "repTextConfirm", "repText", "repTextMaking", "repTextPlay", "repTextPaused",
-                                      "repTextEnd", "repTextWaiting", "repHomeText", "repTextControls"]
+                                      "repTextEnd", "repTextWaiting", "repHomeText", "repTextControls",
+                                      // A107 (D190): the sound is made at Starta prov
+                                      "repUnstarted", "repUnstartedEdit", "repHomeUnstarted"]
+
+    /// A107: Fysikprovet is saved but not started: no sound is asked for yet.
+    static let unstarted: Drill = {
+        var made = Drill(title: "Fysikprovet", summary: DrillSummary(subject: "Fysik", grade: "åk 9", covers: "Kraft och rörelse."),
+                         items: [
+                            DrillItem(question: "Vad är en kraft?", short: "En kraft är något som kan ändra ett föremåls rörelse eller form.",
+                                      long: "En kraft är något som kan ändra ett föremåls rörelse eller form. Den mäts i newton."),
+                            DrillItem(question: "Vad säger Newtons första lag?", short: "Ett föremål fortsätter som förut om ingen kraft verkar på det.",
+                                      long: "Ett föremål fortsätter som förut om ingen kraft verkar på det. Det kallas tröghetslagen."),
+                         ])
+        made.audioStarted = false
+        return made
+    }()
 
     /// A106 (Ke63): Biologiprovet as a text read aloud: two headings, nine sentences (made up, no student text).
     static let reading: Drill = {
@@ -184,6 +199,10 @@ enum RepetitionDemo {
                 try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
             }
         }
+        if name == "repUnstarted" || name == "repUnstartedEdit" || name == "repHomeUnstarted" { // A107: the newest exam
+            model.store.save(unstarted)
+            return
+        }
         if name.hasPrefix("repText") || name == "repHomeText" { // A106: the text is the newest exam, with its sound
             model.store.save(reading)
             if name != "repTextMaking", let audio = model.audio as? DeviceVoiceDrillAudio {
@@ -250,7 +269,9 @@ enum RepetitionDemo {
     static func view(_ name: String, listening: ListeningModel) -> some View {
         if let model = listening.repetition {
             switch name {
-            case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText":
+            case "repUnstarted": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
+            case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
+            case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)
