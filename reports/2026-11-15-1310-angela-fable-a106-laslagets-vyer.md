@@ -39,7 +39,9 @@
 - **iOS build 43708424966 grön** (e25fb97, min gren): device-bygget med varningar som fel och LumenTests. *Verifierat i CI.*
 - **Sedd på bild av mig** (simulatorn, inte enhet): iPhone 17 Pro ljust och mörkt (Fable screens 43708431075),
   iPhone SE med största text (43710717475). Efter SE-bilderna: med de största textstorlekarna är spelarens text i
-  brödtextstorlek och tryckraden dold, så att texten får plats. **Den ändringen är inte sedd på bild än.**
+  brödtextstorlek och tryckraden dold, så att texten får plats. Sedd på bild av mig (43712267507,
+  `a106-se-storsta-text-spelaren.jpg`, grenen `fable/screens-a106-se-xxxl-2`): fem till sex rader text syns.
+- **iOS build 43712177752 grön på main** (7fda731, med allt ovan). *Verifierat i CI.*
 - Bilder: grenarna `fable/screens-a106-17pro-1` och `fable/screens-a106-se-xxxl-1`, kontaktblad i
   `reports/2026-11-15-a106-bilder/`.
 - **Inte testat:** att skrollningen följer med under riktig uppläsning, tryck på en mening (träffytan), Till meningen,

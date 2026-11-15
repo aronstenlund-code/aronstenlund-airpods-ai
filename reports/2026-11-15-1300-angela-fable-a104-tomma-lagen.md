@@ -55,7 +55,7 @@ Varje läge där något saknas eller går fel har en kort förklaring och en vä
 ## Testresultat
 - **Simulatorbygget kompilerar** (Fable screens 43707813309 och 43710715096). *Verifierat i CI.*
 - **iOS build 43708424966 grön** (e25fb97 på min gren: device-bygget, varningar som fel, LumenTests) med A104 fram
-  till V2b och A106. *Verifierat i CI.* Bygget på main efter 7028ac9: se STATUS.
+  till V2b och A106. **iOS build 43712177752 grön på main** (7fda731, med scenrättningarna). *Verifierat i CI.*
 - Sett på bild av mig: iPhone 17 Pro ljust och mörkt, iPhone SE med största text. Simulatorn, **inte enhet**.
 - **Kelly har inte granskat än.** Punkt i hennes kö (Ke64).
 
