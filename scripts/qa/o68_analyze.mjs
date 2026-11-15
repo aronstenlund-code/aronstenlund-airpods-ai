@@ -9,6 +9,8 @@ import { createHash } from "node:crypto";
 const [voicePath, itemsPath] = process.argv.slice(2);
 const V = await import(new URL(voicePath, `file://${process.cwd()}/`).href);
 const data = JSON.parse(readFileSync(itemsPath, "utf8"));
+// K74 (D196): regelversionen per prov; nya prov får 2. O68_RULES=1 ger texten från före K74.
+const RULES = Number(process.env.O68_RULES ?? 2);
 
 const ABBR = /(?<![\p{L}])(t\.ex\.?|bl\.a\.?|m\.m\.?|s\.k\.?|d\.v\.s\.?|dvs\.?|osv\.?|etc\.?|ca\.?|cirka\.(?=\s\p{Ll})|kap\.|nr\.?|jfr\.?|enl\.|fig\.|tab\.|resp\.|st\.|f\.d\.?|e\.Kr\.?|f\.Kr\.?|e\.g\.|i\.e\.|vs\.?|approx\.|p\.|pp\.|ex\.|ex:|milj\.|mdr\.|ggr|sthlm|gbg|ft|sec|yrs|w\/|a\.m\.|p\.m\.|kr\.?)(?![\p{L}])/giu;
 const DOT_LOWER = /(?<![\p{L}])\p{L}{1,4}\.(?=\s+\p{Ll})/gu; // "enl. boken": en punkt före liten bokstav = förkortning
@@ -30,7 +32,7 @@ const uniq = (a) => [...new Set(a)];
 const rows = [];
 for (const it of data.items) {
   const lang = V.examLanguage(it.subject);
-  const spoken = V.longVoice(it.short, it.long, lang).text;
+  const spoken = V.longVoice(it.short, it.long, lang, RULES).text;
   const sv = !lang;
   const hits = {
     abbr: (() => { const a = spoken.match(ABBR) ?? []; return uniq([...a, ...(spoken.match(DOT_LOWER) ?? []).filter((d) => !a.some((x) => x.endsWith(d)))]); })(),
@@ -54,7 +56,7 @@ for (const r of rows) bySubject[r.subject] = (bySubject[r.subject] ?? 0) + 1;
 const worst = [...rows].sort((a, b) => b.score - a.score).slice(0, 15);
 const summary = { answers: rows.length, by_subject: bySubject, answers_with: per, clean: rows.filter((r) => r.score === 0).length };
 writeFileSync(itemsPath.replace(/\.json$/, "-analysis.json"), JSON.stringify({ summary, worst, rows }, null, 1));
-console.log("=== O68 uppläsningstexten", JSON.stringify(summary));
+console.log(`=== O68 uppläsningstexten (regler v${RULES})`, JSON.stringify(summary));
 worst.forEach((r, i) => {
   const h = Object.entries(r.hits).filter(([, v]) => v.length).map(([k, v]) => `${k}: ${JSON.stringify(v)}`).join(" | ");
   console.log(`\n#${i + 1} poäng ${r.score} | ${r.eid} (${r.subject}) | ${r.question}\n  FYND ${h}\n  RÖSTEN ${JSON.stringify(r.spoken)}`);
