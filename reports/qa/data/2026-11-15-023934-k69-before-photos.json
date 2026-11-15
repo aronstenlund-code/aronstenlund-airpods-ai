@@ -1,0 +1,298 @@
+[
+ {
+  "key": "photo:bio-ak8-fotosyntes",
+  "n": 3,
+  "status": 200,
+  "wall_ms": 8534,
+  "server_ms": 7728,
+  "plan": {
+   "ms": 6282,
+   "input_tokens": 21902,
+   "output_tokens": 1620
+  },
+  "shorten": {
+   "ms": 1445,
+   "input_tokens": 1219,
+   "output_tokens": 113
+  },
+  "questions": 3,
+  "notes_chars": 2423,
+  "cost": 0.0031786,
+  "items": [
+   "Varför behövs klorofyll för fotosyntesen?",
+   "Vad behöver en växt för att kunna göra fotosyntes?",
+   "Vad händer med glukosen som växten tillverkar?"
+  ]
+ },
+ {
+  "key": "text:bio-ak8-fotosyntes",
+  "n": 3,
+  "status": 200,
+  "wall_ms": 8019,
+  "server_ms": 7204,
+  "plan": {
+   "ms": 5551,
+   "input_tokens": 2830,
+   "output_tokens": 1459
+  },
+  "shorten": {
+   "ms": 1652,
+   "input_tokens": 1107,
+   "output_tokens": 103
+  },
+  "questions": 3,
+  "notes_chars": 2177,
+  "cost": 0.0011746999999999999,
+  "items": [
+   "Varför behöver växterna klorofyll?",
+   "Vad händer med koldioxid, vatten och ljusenergi i fotosyntesen?",
+   "Varför finns det färre rovdjur än växtätare?"
+  ]
+ },
+ {
+  "key": "photo:h3-hi-franska-revolutionen",
+  "n": 3,
+  "status": 200,
+  "wall_ms": 6202,
+  "server_ms": 5333,
+  "plan": {
+   "ms": 4150,
+   "input_tokens": 11531,
+   "output_tokens": 1008
+  },
+  "shorten": {
+   "ms": 1180,
+   "input_tokens": 1133,
+   "output_tokens": 259
+  },
+  "questions": 3,
+  "notes_chars": 1211,
+  "cost": 0.0018999000000000002,
+  "items": [
+   "Varför betalade tredje ståndet nästan alla skatter?",
+   "Varför var staten nära konkurs före revolutionen?",
+   "Hur påverkade de dåliga skörderna 1788 folket?"
+  ]
+ },
+ {
+  "key": "photo:bio-ak8-fotosyntes",
+  "n": 15,
+  "status": 200,
+  "wall_ms": 10054,
+  "server_ms": 9210,
+  "plan": {
+   "ms": 6508,
+   "input_tokens": 21902,
+   "output_tokens": 1725
+  },
+  "shorten": {
+   "ms": 2702,
+   "input_tokens": 1404,
+   "output_tokens": 763
+  },
+  "questions": 15,
+  "notes_chars": 2394,
+  "cost": 0.0035746000000000003,
+  "items": [
+   "Vad är skillnaden mellan ett ekosystem och ett samhälle?",
+   "Vad är en population?",
+   "Varför behöver gröna växter klorofyll?",
+   "Vad händer med ljusenergin i bladets kloroplaster?",
+   "Varför släpper växten ut syre när den använder koldioxid och vatten?",
+   "Vad används glukosen till i växten?",
+   "Varför är rovdjur som äter växtätare andrahandskonsumenter?",
+   "Varför bildar näringskedjorna en näringsväv i naturen?",
+   "Varför försvinner så mycket energi i en näringskedja?",
+   "Varför finns det färre rovdjur än växtätare?",
+   "Varför är näringskedjor sällan längre än fyra eller fem led?",
+   "Vad skulle hända med näringsämnena om det inte fanns några nedbrytare?",
+   "Hur kommer koldioxid tillbaka till luften i kolets kretslopp?",
+   "Varför ökar halten koldioxid i luften när vi eldar fossila bränslen?",
+   "Hur leder för mycket kväve och fosfor till att fiskar dör i en sjö?"
+  ]
+ },
+ {
+  "key": "text:bio-ak8-fotosyntes",
+  "n": 15,
+  "status": 200,
+  "wall_ms": 8436,
+  "server_ms": 7970,
+  "plan": {
+   "ms": 6364,
+   "input_tokens": 2830,
+   "output_tokens": 1643
+  },
+  "shorten": {
+   "ms": 1605,
+   "input_tokens": 1359,
+   "output_tokens": 83
+  },
+  "questions": 15,
+  "notes_chars": 2284,
+  "cost": 0.0012819,
+  "items": [
+   "Vad är ett ekosystem?",
+   "Vad är skillnaden mellan en population och ett samhälle?",
+   "Varför behövs klorofyll för fotosyntesen?",
+   "Vilka ämnen tar växten upp för att göra fotosyntes?",
+   "Vad händer med koldioxid och vatten när fotosyntesen sker?",
+   "Vad släpps ut i luften vid fotosyntesen?",
+   "Varför finns det färre rovdjur än växtätare?",
+   "Varför är näringskedjor sällan längre än fyra eller fem led?",
+   "Vad händer med energin i varje steg i en näringskedja?",
+   "Vad händer med näringsämnena när döda växter bryts ner?",
+   "Hur går kolets kretslopp till?",
+   "Varför ökar halten koldioxid i luften när vi eldar fossila bränslen?",
+   "Hur uppstår övergödning i en sjö?",
+   "Varför dör fiskar när en sjö är övergödd?",
+   "Hur kan man motverka övergödning?"
+  ]
+ },
+ {
+  "key": "photo:h3-hi-franska-revolutionen",
+  "n": 15,
+  "status": 200,
+  "wall_ms": 8511,
+  "server_ms": 8030,
+  "plan": {
+   "ms": 5085,
+   "input_tokens": 11531,
+   "output_tokens": 1180
+  },
+  "shorten": {
+   "ms": 2944,
+   "input_tokens": 1412,
+   "output_tokens": 769
+  },
+  "questions": 15,
+  "notes_chars": 1207,
+  "cost": 0.0022688,
+  "items": [
+   "Varför var tredje ståndet missnöjt med skatterna?",
+   "Varför var statens ekonomi i dåligt skick före revolutionen?",
+   "Hur påverkade stödet till den amerikanska revolutionen Frankrikes ekonomi?",
+   "Varför blev brödet så dyrt 1788?",
+   "Vad menade upplysningens tänkare, som Rousseau, om makten?",
+   "Varför kallade kung Ludvig XVI in generalständerna 1789?",
+   "Vad hände när tredje ståndet bröt sig ut?",
+   "Vad blev nationalförsamlingen?",
+   "Varför stormade folket Bastiljen den fjortonde juli 1789?",
+   "Vad innebar deklarationen om människans och medborgarens rättigheter?",
+   "Vad hände med kungen 1793?",
+   "Varför avrättades så många människor under skräckväldet?",
+   "Hur kom Napoleon Bonaparte till makten 1799?",
+   "Vad hände 1804 med Napoleon?",
+   "Hur skiljde sig tredje ståndet från adeln och prästerna?"
+  ]
+ },
+ {
+  "key": "photo:bio-ak8-fotosyntes",
+  "n": 20,
+  "status": 200,
+  "wall_ms": 8752,
+  "server_ms": 8332,
+  "plan": {
+   "ms": 6510,
+   "input_tokens": 21902,
+   "output_tokens": 1771
+  },
+  "shorten": {
+   "ms": 1821,
+   "input_tokens": 1438,
+   "output_tokens": 9
+  },
+  "questions": 15,
+  "notes_chars": 2410,
+  "cost": 0.0032240000000000003,
+  "items": [
+   "Varför behövs klorofyll i bladen?",
+   "Vad behöver en växt för att kunna göra fotosyntes?",
+   "Vad händer med koldioxiden och vattnet under fotosyntesen?",
+   "Vad bildas vid fotosyntesen och vad används glukosen till?",
+   "Varför släpper växterna ut syre?",
+   "Vad skiljer en förstahandskonsument från en andrahandskonsument?",
+   "Varför kallas rovdjur högst upp i kedjan för toppkonsumenter?",
+   "Varför är en näringsväv mer verklig än en näringskedja?",
+   "Varför förloras så mycket energi mellan stegen i en näringskedja?",
+   "Varför finns det färre rovdjur än växtätare?",
+   "Varför blir näringskedjor sällan längre än fyra eller fem led?",
+   "Vad gör nedbrytarna med döda växter och djur?",
+   "Vad skulle hända med kretsloppet utan nedbrytare?",
+   "Hur kommer kolet tillbaka till luften i kretsloppet?",
+   "Vad händer med koldioxidhalten i luften när vi eldar fossila bränslen?"
+  ]
+ },
+ {
+  "key": "text:bio-ak8-fotosyntes",
+  "n": 20,
+  "status": 200,
+  "wall_ms": 8173,
+  "server_ms": 7800,
+  "plan": {
+   "ms": 6252,
+   "input_tokens": 2830,
+   "output_tokens": 1618
+  },
+  "shorten": {
+   "ms": 1548,
+   "input_tokens": 1408,
+   "output_tokens": 383
+  },
+  "questions": 15,
+  "notes_chars": 2098,
+  "cost": 0.0014243,
+  "items": [
+   "Vad skillnaden mellan en population och ett samhälle?",
+   "Varför behövs klorofyll för fotosyntesen?",
+   "Varför är fotosyntesen viktig för djuren?",
+   "Vad används glukosen till i växten?",
+   "Vad händer med syret som bildas vid fotosyntesen?",
+   "Vad skiljer en producent från en konsument?",
+   "Vad kännetecknar en förstahandskonsument?",
+   "Varför bildar näringskedjorna en näringsväv i naturen?",
+   "Varför försvinner så mycket energi mellan stegen i en näringskedja?",
+   "Varför finns det färre rovdjur än växtätare?",
+   "Varför är näringskedjor sällan längre än fyra eller fem led?",
+   "Vad gör nedbrytarna och varför är de viktiga?",
+   "Vad skulle hända med kretsloppet utan nedbrytare?",
+   "Hur kommer koldioxid tillbaka ut i luften i kolets kretslopp?",
+   "Vad händer med halten koldioxid när vi eldar fossila bränslen?"
+  ]
+ },
+ {
+  "key": "photo:h3-hi-franska-revolutionen",
+  "n": 20,
+  "status": 200,
+  "wall_ms": 5526,
+  "server_ms": 5145,
+  "plan": {
+   "ms": 4368,
+   "input_tokens": 11531,
+   "output_tokens": 1082
+  },
+  "shorten": {
+   "ms": 777,
+   "input_tokens": 1238,
+   "output_tokens": 79
+  },
+  "questions": 14,
+  "notes_chars": 1211,
+  "cost": 0.0018574,
+  "items": [
+   "Varför var tredje ståndet missnöjt med sin situation före revolutionen?",
+   "Vilka grupper ingick i tredje ståndet?",
+   "Hur var skatterna fördelade mellan de tre stånden?",
+   "Varför var staten nära konkurs före revolutionen?",
+   "Vilken roll spelade stödet till den amerikanska revolutionen för statens ekonomi?",
+   "Hur påverkade de dåliga skördarna 1788 folket?",
+   "Vad menade upplysningens tänkare, som Rousseau, om makten?",
+   "Varför kallade kung Ludvig XVI in generalständerna 1789?",
+   "Hur bröt sig tredje ståndet ut och vad bildade det?",
+   "Vad betydde stormningen av Bastiljen den 14 juli 1789?",
+   "Vad innebar deklarationen om människans och medborgarens rättigheter?",
+   "Varför avrättades kungen 1793?",
+   "Hur spreds revolutionens idéer i Europa?",
+   "Hur kom Napoleon Bonaparte till makten?"
+  ]
+ }
+]

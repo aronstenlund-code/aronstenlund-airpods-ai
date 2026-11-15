@@ -1,0 +1,273 @@
+[
+ {
+  "key": "h3-hi-franska-revolutionen",
+  "n": 3,
+  "status": 200,
+  "wall_ms": 7717,
+  "server_ms": 5563,
+  "plan": {
+   "ms": 4220,
+   "input_tokens": 2207,
+   "output_tokens": 970
+  },
+  "shorten": {
+   "ms": 1342,
+   "input_tokens": 1053,
+   "output_tokens": 9
+  },
+  "questions": 3,
+  "notes_chars": 1219,
+  "cost": 0.0008155,
+  "items": [
+   "Varför betalade tredje ståndet nästan alla skatter, och vad blev följden av det?",
+   "Varför var staten nära konkurs före revolutionen?",
+   "Hur bidrog dåliga skördar 1788 till revolutionen?"
+  ]
+ },
+ {
+  "key": "h3-sh-riksdagen",
+  "n": 3,
+  "status": 200,
+  "wall_ms": 5587,
+  "server_ms": 3997,
+  "plan": {
+   "ms": 3037,
+   "input_tokens": 2048,
+   "output_tokens": 700
+  },
+  "shorten": {
+   "ms": 958,
+   "input_tokens": 996,
+   "output_tokens": 82
+  },
+  "questions": 3,
+  "notes_chars": 850,
+  "cost": 0.0006954,
+  "items": [
+   "Vad innebär det att Sverige är en representativ demokrati?",
+   "Hur ofta hålls val till riksdagen, regionerna och kommunerna?",
+   "Vad gör riksdagen och vad är dess uppgifter?"
+  ]
+ },
+ {
+  "key": "h3-ma-pythagoras",
+  "n": 3,
+  "status": 200,
+  "wall_ms": 7717,
+  "server_ms": 5779,
+  "plan": {
+   "ms": 4394,
+   "input_tokens": 2001,
+   "output_tokens": 617
+  },
+  "shorten": {
+   "ms": 1384,
+   "input_tokens": 942,
+   "output_tokens": 309
+  },
+  "questions": 3,
+  "notes_chars": 618,
+  "cost": 0.0007573,
+  "items": [
+   "Varför gäller Pythagoras sats bara i rätvinkliga trianglar?",
+   "Hur räknar man ut hypotenusan om kateterna är tre cm och fyra cm?",
+   "Hur kan man räkna ut en katet om hypotenusan och den andra kateten är kända?"
+  ]
+ },
+ {
+  "key": "h3-hi-franska-revolutionen",
+  "n": 15,
+  "status": 200,
+  "wall_ms": 5067,
+  "server_ms": 4713,
+  "plan": {
+   "ms": 3987,
+   "input_tokens": 2207,
+   "output_tokens": 993
+  },
+  "shorten": {
+   "ms": 725,
+   "input_tokens": 1147,
+   "output_tokens": 71
+  },
+  "questions": 14,
+  "notes_chars": 1171,
+  "cost": 0.0008674,
+  "items": [
+   "Vilka var de tre stånden i Frankrike före revolutionen?",
+   "Varför betalade tredje ståndet nästan alla skatter?",
+   "Varför var staten nära konkurs före revolutionen?",
+   "Hur påverkade de dåliga skördarna 1788 folket?",
+   "Vad menade upplysningens tänkare, som Rousseau, om makten?",
+   "Varför kallade kung Ludvig XVI in generalständerna 1789?",
+   "Vad hände när tredje ståndet bröt sig ut?",
+   "Vad var Bastiljen en symbol för?",
+   "Vad sade deklarationen om människans och medborgarens rättigheter?",
+   "Varför avrättades många människor under skräckväldet?",
+   "Vad hände med kungen 1793?",
+   "Vilka idéer spreds i Europa genom revolutionen?",
+   "Hur kom Napoleon Bonaparte till makten?",
+   "Vad hände 1804?"
+  ]
+ },
+ {
+  "key": "h3-sh-riksdagen",
+  "n": 15,
+  "status": 200,
+  "wall_ms": 5179,
+  "server_ms": 4633,
+  "plan": {
+   "ms": 3344,
+   "input_tokens": 2048,
+   "output_tokens": 784
+  },
+  "shorten": {
+   "ms": 1287,
+   "input_tokens": 1089,
+   "output_tokens": 97
+  },
+  "questions": 10,
+  "notes_chars": 854,
+  "cost": 0.0007542,
+  "items": [
+   "Vad innebär det att Sverige är en representativ demokrati?",
+   "Hur ofta hålls val till riksdagen, regionerna och kommunerna?",
+   "Vad gör riksdagen?",
+   "Hur styr regeringen landet?",
+   "Hur kan riksdagen avsätta en minister?",
+   "Varför är makten delad mellan riksdag, regering och domstolar?",
+   "Vad är skillnaden mellan riksdagens och domstolarnas uppgifter?",
+   "Varför kallas de fria medierna för den tredje statsmakten?",
+   "Vad är fyraprocentsspärren?",
+   "Varför ska fyraprocentsspärren göra det lättare att bilda en stabil regering?"
+  ]
+ },
+ {
+  "key": "h3-ma-pythagoras",
+  "n": 15,
+  "status": 200,
+  "wall_ms": 4712,
+  "server_ms": 4118,
+  "plan": {
+   "ms": 3127,
+   "input_tokens": 2001,
+   "output_tokens": 733
+  },
+  "shorten": {
+   "ms": 989,
+   "input_tokens": 1052,
+   "output_tokens": 93
+  },
+  "questions": 7,
+  "notes_chars": 653,
+  "cost": 0.0007183000000000001,
+  "items": [
+   "Vad säger Pythagoras sats?",
+   "Hur räknar man ut hypotenusan om kateterna är 3 cm och 4 cm?",
+   "Hur kan man räkna ut en katet när hypotenusan och den andra kateten är kända?",
+   "Varför kan man inte använda Pythagoras sats på en triangel som inte är rätvinklig?",
+   "Hur kan man med Pythagoras sats avgöra om en triangel är rätvinklig?",
+   "Hur räknar man ut arean av en triangel?",
+   "Hur räknar man ut arean av en cirkel, och vad betyder r?"
+  ]
+ },
+ {
+  "key": "h3-hi-franska-revolutionen",
+  "n": 20,
+  "status": 200,
+  "wall_ms": 5970,
+  "server_ms": 5492,
+  "plan": {
+   "ms": 4248,
+   "input_tokens": 2207,
+   "output_tokens": 1062
+  },
+  "shorten": {
+   "ms": 1244,
+   "input_tokens": 1217,
+   "output_tokens": 101
+  },
+  "questions": 15,
+  "notes_chars": 1176,
+  "cost": 0.0009239,
+  "items": [
+   "Vad var det tredje ståndet?",
+   "Varför betalade tredje ståndet nästan alla skatter?",
+   "Varför var staten nära konkurs före revolutionen?",
+   "Vad hände med brödpriserna 1788 och varför?",
+   "Vad menade upplysningens tänkare, som Rousseau, om makten?",
+   "Varför kallade kung Ludvig XVI in generalständerna 1789?",
+   "Vad gjorde tredje ståndet när det bröt sig ut?",
+   "Varför stormade folket i Paris Bastiljen?",
+   "Vad innehöll deklarationen om människans och medborgarens rättigheter?",
+   "Varför avrättades kungen 1793?",
+   "Hur påverkade revolutionen idéerna i Europa?",
+   "Hur kom Napoleon Bonaparte till makten 1799?",
+   "Vad hände 1804 med Napoleon?",
+   "Vad berodde det dåliga läget för många fattiga på?",
+   "Hur skilde sig det andra ståndet från det tredje?"
+  ]
+ },
+ {
+  "key": "h3-sh-riksdagen",
+  "n": 20,
+  "status": 200,
+  "wall_ms": 4622,
+  "server_ms": 4277,
+  "plan": {
+   "ms": 2887,
+   "input_tokens": 2048,
+   "output_tokens": 707
+  },
+  "shorten": {
+   "ms": 1390,
+   "input_tokens": 1016,
+   "output_tokens": 77
+  },
+  "questions": 9,
+  "notes_chars": 832,
+  "cost": 0.0006984,
+  "items": [
+   "Vad betyder att Sverige är en representativ demokrati?",
+   "Varför väljer medborgarna politiker i stället för att fatta besluten själva?",
+   "Vad gör riksdagen?",
+   "Hur styr regeringen landet?",
+   "Hur kan riksdagen avsätta en minister?",
+   "Varför är makten delad mellan riksdag, regering och domstolar?",
+   "Vad händer om regeringen skulle få för mycket makt?",
+   "Varför kallas de fria medierna den tredje statsmakten?",
+   "Varför har fyraprocentsspärren införts?"
+  ]
+ },
+ {
+  "key": "h3-ma-pythagoras",
+  "n": 20,
+  "status": 200,
+  "wall_ms": 4443,
+  "server_ms": 4057,
+  "plan": {
+   "ms": 2834,
+   "input_tokens": 2001,
+   "output_tokens": 674
+  },
+  "shorten": {
+   "ms": 1223,
+   "input_tokens": 1013,
+   "output_tokens": 148
+  },
+  "questions": 9,
+  "notes_chars": 629,
+  "cost": 0.0007124,
+  "items": [
+   "Vad kallas den längsta sidan i en rätvinklig triangel, och var ligger den?",
+   "Vad kallas de två andra sidorna i en rätvinklig triangel?",
+   "Vad säger Pythagoras sats?",
+   "Varför kan man inte använda Pythagoras sats på en triangel som inte är rätvinklig?",
+   "Hur räknar man ut hypotenusan om kateterna är 3 cm och 4 cm?",
+   "Hur räknar man ut en katet när hypotenusan och den andra kateten är kända?",
+   "Vad innebär det om a² + b² = c² stämmer för en triangel?",
+   "Hur räknar man ut arean av en triangel?",
+   "Hur räknar man ut arean av en cirkel, och vad betyder r?"
+  ]
+ }
+]

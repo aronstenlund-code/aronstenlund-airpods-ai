@@ -90,6 +90,12 @@ export const SYSTEM_PROMPT_DRILL_ANSWERS =
 - "display" (K66): the student also sees the text on screen, where 1850, 3,14, a² + b², CO₂ and 25 % are easier to read than words. When the question, "short" or "rest" has a number, year, decimal, formula, unit or symbol written as words, also return "display": {"question": "...", "short": "...", "rest": "..."} with the same sentences written as a textbook prints them, and only the fields that differ. Every year, date, percent, decimal, measurement and number above twelve gets its digits there ("den fjortonde juli sjuttonhundraåttionio" -> "den 14 juli 1789", "fyra procent" -> "4 %", "eighteen fifty" -> "1850", "one point two degrees" -> "1.2 degrees"); only small counts in running text stay words ("två orsaker"). Division is "/" or a fraction on screen ("s / t") and "delat med" / "divided by" in the spoken text. No numbers or formulas: leave "display" out.
 No other text.`;
 
+/** K69: step 1 in two calls at the same time (one system prompt, cached): the questions, and the notes. */
+export const PART_QUESTIONS =
+  '<part>questions</part> Return the JSON object with "summary", "questions_possible" and "questions" (or "unreadable"), but WITHOUT "notes": another step writes the notes at the same time.';
+export const PART_NOTES =
+  '<part>notes</part> Return ONLY {"notes": "..."}: the notes exactly as described (every fact, concept, definition, formula, date, name, cause and example, in the material\'s order and the exam\'s language). Another step writes the summary and the questions at the same time. When the material cannot be read, return {"notes": ""}.';
+
 export interface DrillSummary {
   subject: string;
   grade: string;
@@ -739,22 +745,30 @@ export async function handleDrill(
     if (!images.length && !text) throw new HttpError(400, "invalid_request", "pages or text is required");
     const correction = oneLine(b.correction, DRILL_LIMITS.correction);
     const t0 = Date.now();
-    const plan = await runLLM(provider, {
+    // K69: the notes (most of step 1's output, about 2 400 characters) are written in a second call at the same time:
+    // the same model, the same system prompt (cached) and the same material, so the questions and the check no longer
+    // wait for them. Only the questions decide when "Stämmer det här?" can show.
+    const planUser = (part: string) => [
+      (subjectIn || gradeIn) && `<context>${sanitizeTagged(contextLine(subjectIn, gradeIn))}</context>`,
+      correction && `<correction>${sanitizeTagged(correction)}</correction>`,
+      `<count>${count + DRILL_LIMITS.extraQuestions}</count>`,
+      text && `<material>\n${sanitizeTagged(text)}\n</material>`,
+      images.length ? `Read the ${images.length} page images${text ? " and the material above" : ""}.` : "Read the material above.",
+      part,
+    ].filter(Boolean).join("\n");
+    const planReq = (part: string, maxTokens: number): LLMRequest => ({
       system: SYSTEM_PROMPT_DRILL_PLAN,
-      user: [
-        (subjectIn || gradeIn) && `<context>${sanitizeTagged(contextLine(subjectIn, gradeIn))}</context>`,
-        correction && `<correction>${sanitizeTagged(correction)}</correction>`,
-        `<count>${count + DRILL_LIMITS.extraQuestions}</count>`,
-        text && `<material>\n${sanitizeTagged(text)}\n</material>`,
-        images.length ? `Read the ${images.length} page images${text ? " and the material above" : ""}.` : "Read the material above.",
-      ].filter(Boolean).join("\n"),
+      user: planUser(part),
       ...(images.length ? { images } : {}),
-      maxTokens: 4000 + (count + DRILL_LIMITS.extraQuestions) * 40,
+      maxTokens,
       cacheSystem: true,
       model: cfg.planModel,
       timeoutMs: 120_000,
       signal,
-    }, cfg.planPriceIn, cfg.planPriceOut);
+    });
+    const notesCall = runLLM(provider, planReq(PART_NOTES, 3500), cfg.planPriceIn, cfg.planPriceOut);
+    notesCall.catch(() => {}); // awaited below; never an unhandled rejection while the questions run
+    const plan = await runLLM(provider, planReq(PART_QUESTIONS, 1500 + (count + DRILL_LIMITS.extraQuestions) * 60), cfg.planPriceIn, cfg.planPriceOut);
     const p = parsePlan(plan.text, Number.MAX_SAFE_INTEGER); // all candidates; trimmed after shortening
     if (!p.questions.length) {
       // K51 (Aron 22:12, two photos of a screen: 502 after 4 s): not a server error; say why, log only the reason
@@ -766,9 +780,14 @@ export async function handleDrill(
     // D159: never more questions than the material carries
     const possible = Math.max(1, Math.min(count, p.questionsPossible ?? count, p.questions.length));
     const summary = { subject: p.summary.subject || subjectIn, grade: gradeIn && !correction ? gradeIn : p.summary.grade || gradeIn, covers: p.summary.covers };
-    const sh = await shortenQuestions(provider, cfg, p.questions, summary, signal);
+    const [sh, notesRun] = await Promise.all([
+      shortenQuestions(provider, cfg, p.questions, summary, signal),
+      notesCall.catch(async () => await runLLM(provider, planReq(PART_NOTES, 3500), cfg.planPriceIn, cfg.planPriceOut)), // once more
+    ]);
+    // the notes call's reply; an old-style reply with notes in the questions call is kept (never both empty)
+    p.notes = clean(firstJson(notesRun.text)?.notes, DRILL_LIMITS.notes) || p.notes;
     const base = trimQuestions(sh.questions, possible).map((question, i) => ({ id: `q${i + 1}`, question }));
-    const steps = [...transcribed, plan.usage, ...(sh.usage ? [sh.usage] : [])];
+    const steps = [...transcribed, plan.usage, notesRun.usage, ...(sh.usage ? [sh.usage] : [])];
     let items: DrillItem[] = base;
     let answers: StepUsage | null = null;
     if (b.answers !== false) {
@@ -789,9 +808,10 @@ export async function handleDrill(
         usage: {
           ...(transcribed.length ? { transcribe: sumUsage(transcribed, cfg.planModel ?? "default") } : {}),
           plan: plan.usage,
+          notes: notesRun.usage,
           ...(sh.usage ? { shorten: sh.usage } : {}),
           ...(answers ? { answers } : {}),
-          est_cost_usd: transcribed.reduce((n, u) => n + u.est_cost_usd, 0) + plan.usage.est_cost_usd + (sh.usage?.est_cost_usd ?? 0) + (answers?.est_cost_usd ?? 0),
+          est_cost_usd: transcribed.reduce((n, u) => n + u.est_cost_usd, 0) + plan.usage.est_cost_usd + notesRun.usage.est_cost_usd + (sh.usage?.est_cost_usd ?? 0) + (answers?.est_cost_usd ?? 0),
           ms: Date.now() - t0,
         },
       },

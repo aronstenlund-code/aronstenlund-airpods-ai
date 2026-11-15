@@ -113,9 +113,14 @@ Deno.test("K45 drill: summary, notes, questions and both answers; Haiku plans, S
   assertEquals(answerCalls.map((c) => c.model), ["claude-sonnet-5-5"], "5 questions = one batch on Sonnet");
   assert(answerCalls[0].user.includes("<long_words>70</long_words>"));
   assert(answerCalls[0].user.includes("90 procent"), "the answers are written from the notes");
-  assert(llm.calls[1].system.includes("You check Swedish exam questions"), "K52: every question is checked by the cheap model");
+  assert(llm.calls[2].system.includes("You check Swedish exam questions"), "K52: every question is checked by the cheap model");
+  // K69: step 1 is two calls at the same time, the notes and the questions, on one system prompt
+  assert(llm.calls[0].user.includes("<part>notes</part>") && llm.calls[1].user.includes("<part>questions</part>"));
+  assertEquals(llm.calls[0].system, llm.calls[1].system);
+  assertEquals(j.notes, PLAN.notes);
   assertEquals(llm.calls[0].user.includes("<count>26</count>"), true, "20 questions by default (D146), 6 extra to drop recall and long ones");
   assertEquals(j.usage.plan.est_cost_usd, (10_000 * 0.10 + 1_500 * 0.50) / 1e6);
+  assertEquals(j.usage.notes.est_cost_usd, (10_000 * 0.10 + 1_500 * 0.50) / 1e6);
   assertEquals(j.usage.answers.est_cost_usd, (2_000 * 2 + 900 * 10) / 1e6);
 });
 
@@ -124,7 +129,7 @@ Deno.test("K45 drill: answers false = questions only; a batch that fails is aske
   const r = await h(post({ action: "drill", text: "material", answers: false, questions: 5 }));
   const j = await r.json();
   assertEquals(j.items[0], { id: "q1", question: "Varför behövs klorofyll?" });
-  assertEquals(llm.calls.length, 2, "the plan and the question check, no answers");
+  assertEquals(llm.calls.length, 3, "the notes, the questions and the question check (K69), no answers");
   assert(llm.calls[0].user.includes("<count>11</count>"));
   const m = mk();
   m.llm.failFirstAnswerBatch = true;
