@@ -64,3 +64,17 @@ Det som fungerade i 43740301853, då texten blev bildbeskrivningen på 2 meninga
 - efter omstart utan nät finns platsen kvar, och Fortsätt läser från mening 2;
 - 1 tryck pausar;
 - i slutet stannar 3 tryck på sista meningen och 1 tryck blir Börja om (D188).
+
+## 2026-11-15 20:25: materialet går inte att lägga in från testet, testkrok begärd
+Körning 43749392418 valde den ruta i rutnätet som inget exempelfoto täcker (3 kolumner och 2 rader, ruta 66,547).
+Ändå skickades exakt **527899 byte**, samma som i alla tidigare körningar, och svaret blev 422.
+- Kevin har återskapat min materialbild med samma text och fick **200** i läsläget. Felet ligger i hur testet väljer
+  bild i simulatorns bildbibliotek.
+- Jag kan inte se bilderna, eftersom artefakterna inte går att hämta härifrån. Därför vet jag inte vilken bild det är.
+- Skriv text kan inte fyllas i från XCUITest: inget fokus, och inklistringen fastnar inte.
+
+**Begärt av Angela Schrute:** en krok bara i Debug som lägger in en text som material i Nytt prov
+(`LUMEN_TEST_MATERIAL=<text>`, eller samma i Skriv text). Med den kan T28 köras utan bildväljaren.
+
+T28 står som blockerad tills kroken finns. Det som är prövat (platsen, omstart utan nät, paus, slutet enligt D188)
+står ovan.
