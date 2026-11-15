@@ -177,7 +177,9 @@ Kellys P1. Senaste gröna iOS build med mina ändringar: 43640280850 (71ef001).
   knappen, "Ljudet görs. Du kan starta när första frågan är klar.", slut på frågor på provet och i Prova på en kort
   text), 3d76e71 (utan nät: `model.isOffline`, rad i Nytt prov och på provet, `NetworkStatus.noNetworkLine`),
   9506c2e (`SchoolPicker.stagedQuery`, `PublishSheet.stagedProblem`).
-- **Inte verifierat: att det kompilerar.** Simulator screenshots 43664433881 (3d76e71) gick när detta skrevs; inget
+- **02:56: Simulator screenshots 43664433881 (3d76e71) blev grön**, så 3b4f33b och 3d76e71 kompilerar i
+  Simulatorbygget (9506c2e ingår inte i den körningen). Bilderna i den körningen är inte granskade.
+- Tidigare notering: Simulator screenshots 43664433881 (3d76e71) gick när detta skrevs; inget
   iOS build med A104 är klart (43664672940 på 2d1ec9e går, 43664558381 väntar). Börja med att läsa de körningarna.
 - Bilder: körningarna 43664669468 (17 Pro) och 43664675303 (SE, största text) är startade med Angela Schrutes tio
   scener (repSchoolsOffline, repSchoolsFailed, repSchoolSearchNone, repSchoolSearchFailed, repPublishFailed,
