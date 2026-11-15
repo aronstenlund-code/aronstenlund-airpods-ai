@@ -205,9 +205,10 @@ enum RepetitionDemo {
             case "repSoundProblemNone": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
             case "repQuotaUsedUp", "repNewOffline": NewDrillView(model: model) { _ in }
             case "repSchoolsOffline", "repSchoolsFailed": NavigationStack { SchoolExamsView(model: model) }
-            case "repSchoolSearchNone", "repSchoolSearchFailed": // Angela Fable: the query is staged in her view
-                SchoolPicker(model: model, title: "Välj skola", selected: nil, onSkip: nil, onPick: { _ in })
-            case "repPublishFailed": PublishSheet(model: model, drill: drill)
+            case "repSchoolSearchNone", "repSchoolSearchFailed":
+                SchoolPicker(model: model, title: "Välj skola", selected: nil, onSkip: nil, stagedQuery: "Kungsh", onPick: { _ in })
+            case "repPublishFailed":
+                PublishSheet(model: model, drill: drill, stagedProblem: "Det gick inte att publicera just nu. Försök igen om en stund.")
             case "repSoundMaking": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
             case "repQuotaExam": NavigationStack { DrillView(model: model, drillID: history.id) }
             case "repExamOffline": NavigationStack { DrillView(model: model, drillID: drill.id) }
