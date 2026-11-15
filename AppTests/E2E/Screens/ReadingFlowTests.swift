@@ -369,7 +369,22 @@ final class ReadingFlowTests: XCTestCase {
         guard let width = cells.map(\.frame.width).max(), let top = cells.map(\.frame.minY).min() else {
             return miss("no grid of pictures")
         }
-        app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: width / 2, dy: top + width / 2)).tap()
+        // Run 43746140315 (and every T28 run: 527899 bytes each time): top left was one of iOS's samples (a waterfall),
+        // not our picture. Our picture is not an Image element (T24 handover), so it is the grid slot that no sample
+        // covers: find the columns and rows of the samples and tap the first slot without one.
+        let xs = Array(Set(cells.map { Int($0.frame.minX.rounded()) })).sorted()
+        let ys = Array(Set(cells.map { Int($0.frame.minY.rounded()) })).sorted()
+        let step = ys.count > 1 ? ys[1] - ys[0] : Int(width) + 2
+        var slot: CGPoint?
+        search: for y in ys + [(ys.last ?? Int(top)) + step] {
+            for x in xs where !cells.contains(where: { abs(Int($0.frame.minX) - x) < 6 && abs(Int($0.frame.minY) - y) < 6 }) {
+                slot = CGPoint(x: CGFloat(x) + width / 2, y: CGFloat(y) + width / 2)
+                break search
+            }
+        }
+        log.append("READ photo grid: \(xs.count) columns, \(ys.count) rows, samples \(cells.count), free slot \(slot.map { "\(Int($0.x)),\(Int($0.y))" } ?? "none")")
+        let point = slot ?? CGPoint(x: width / 2, y: top + width / 2)
+        app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: point.x, dy: point.y)).tap()
         taps += 1
         if let add = wait(["Lägg till", "Add", "Klar", "Done"], 3) { tapElement(add, "Lägg till in the photo library") }
         return wait(["1 foto*"], 20) != nil || waitEnabled(["Skapa uppläsning", "Skapa frågor"], 10) || miss("the picture did not get in")
