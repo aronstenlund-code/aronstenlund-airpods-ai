@@ -215,7 +215,11 @@ export async function handleRead(
     console.warn("read_fallback_transcribe", JSON.stringify({ images: images.length, reply_chars: results.map((r) => r.text.length) }));
     const t = await transcribe(provider, cfg, images, signal);
     steps.push(...t.usage);
-    const plain = t.text.split("\n").filter((l) => !/^\[Sidor \d+-\d+\]$/.test(l.trim())).join("\n");
+    // T28 (Toby, a photo with no text): the transcription describes figures in [brackets]; a description is not
+    // the material's text and is never read aloud (nothing left = 422, nothing counted)
+    const plain = t.text.split("\n").filter((l) => !/^\[Sidor \d+-\d+\]$/.test(l.trim())).join("\n")
+      .replace(/\[[^\]\n]{0,600}\]?/g, (m) => (m.endsWith("]") || m.length > 3 ? "" : m))
+      .replace(/\]/g, "");
     parts = parseRead(plain);
   }
   // the cleaned text's cap (40 000 characters, 150 parts): whole parts only, the rest is said to be left out
