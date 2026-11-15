@@ -30,7 +30,7 @@ enum RepetitionDemo {
                                       "repTextNew", "repTextConfirm", "repText", "repTextMaking", "repTextPlay", "repTextPaused",
                                       "repTextEnd", "repTextWaiting", "repHomeText", "repTextControls",
                                       // A107 (D190): the sound is made at Starta prov
-                                      "repUnstarted", "repUnstartedEdit", "repHomeUnstarted"]
+                                      "repUnstarted", "repUnstartedEdit", "repHomeUnstarted", "repUnstartedTooMany"]
 
     /// A107: Fysikprovet is saved but not started: no sound is asked for yet.
     static let unstarted: Drill = {
@@ -199,8 +199,11 @@ enum RepetitionDemo {
                 try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
             }
         }
-        if name == "repUnstarted" || name == "repUnstartedEdit" || name == "repHomeUnstarted" { // A107: the newest exam
+        if name.hasPrefix("repUnstarted") || name == "repHomeUnstarted" { // A107: the newest exam
             model.store.save(unstarted)
+            // Kelly Ke64b N1: what starting counts as, and a month that does not cover it.
+            let left = name == "repUnstartedTooMany" ? 1 : 12
+            model.quota = DrillQuota(used: 15 - left, limit: 15, resets: "2026-12-01", serverLeft: left, suggest: left)
             return
         }
         if name.hasPrefix("repText") || name == "repHomeText" { // A106: the text is the newest exam, with its sound
@@ -269,7 +272,7 @@ enum RepetitionDemo {
     static func view(_ name: String, listening: ListeningModel) -> some View {
         if let model = listening.repetition {
             switch name {
-            case "repUnstarted": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
+            case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
             case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted":
                 NavigationStack { HomeView(model: listening) }

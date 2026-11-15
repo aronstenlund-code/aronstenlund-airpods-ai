@@ -243,14 +243,15 @@ struct DrillView: View {
             // A100 (K62): when the sound cannot be made the button is grey with the reason under it, no spinner.
             let soundProblem = canStart ? nil : model.audio.problem(for: drill)
             MainActionBar(title: canStart ? (saved == nil ? "Starta prov" : "Fortsätt")
-                              : (soundProblem == nil ? "Gör ljud …" : "Starta prov"),
+                              : (soundProblem == nil ? "Gör ljudet …" : "Starta prov"),
                           systemImage: "play.fill",
                           // A104: while the sound is being made, the line says why the button is grey.
                           note: soundProblem ?? (canStart ? nil : "Ljudet görs. Du kan starta när första frågan är klar." as String?)
+                              ?? startCost(drill)?.line
                               ?? saved.map { "Du var på fråga \($0 + 1) av \(drill.items.count)." }
                               ?? "Spelas i dina AirPods. Mikrofonen används inte.",
                           isBusy: (!canStart && soundProblem == nil) || model.isStartingAudio(drill),
-                          isDisabled: !canStart || model.isStartingAudio(drill)) {
+                          isDisabled: !canStart || model.isStartingAudio(drill) || startCost(drill)?.tooMany == true) {
                 begin(drill, at: saved ?? 0)
             }
         }
@@ -307,16 +308,32 @@ struct DrillView: View {
         .safeAreaInset(edge: .bottom) {
             let soundProblem = canStart ? nil : model.audio.problem(for: drill)
             MainActionBar(title: canStart ? (saved == nil ? "Starta prov" : "Fortsätt")
-                              : (soundProblem == nil ? "Gör ljud …" : "Starta prov"),
+                              : (soundProblem == nil ? "Gör ljudet …" : "Starta prov"),
                           systemImage: "play.fill",
                           note: soundProblem ?? (canStart ? nil : "Ljudet görs. Du kan starta när första stycket är klart." as String?)
+                              ?? startCost(drill)?.line
                               ?? saved.map { "Du var på mening \($0 + 1) av \(drill.sentenceCount)." }
                               ?? "Spelas i dina AirPods. Mikrofonen används inte.",
-                          isBusy: !canStart && soundProblem == nil,
-                          isDisabled: !canStart) {
+                          isBusy: (!canStart && soundProblem == nil) || model.isStartingAudio(drill),
+                          isDisabled: !canStart || model.isStartingAudio(drill) || startCost(drill)?.tooMany == true) {
                 begin(drill, at: saved ?? 0)
             }
         }
+    }
+
+    /// A107 (D191, Kelly Ke64b N1): the month's questions are counted at Starta prov, so an exam that is not started
+    /// says what it counts as before the button is pressed, and the button is grey when the month does not cover it.
+    /// Nil for a started exam and while the quota is not known.
+    private func startCost(_ drill: Drill) -> (line: String, tooMany: Bool)? {
+        guard model.awaitsAudioStart(drill), let quota = model.quota else { return nil }
+        let chars = drill.items.reduce(0) { $0 + $1.long.count }
+        let counts = drill.isText ? DrillTextDraft.countsAs(chars: chars) : drill.items.count
+        if counts > quota.left {
+            let what = drill.isText ? "Texten räknas som \(DrillText.questions(counts))" : "Provet har \(DrillText.questions(counts))"
+            return ("\(what) och du har \(quota.left) kvar den här månaden. "
+                    + "\(drill.isText ? "Vänta" : "Ta bort frågor eller vänta") till den 1 \(ChatGPTImportView.nextMonth()).", true)
+        }
+        return ("Räknas som \(counts) av dina \(quota.left) frågor kvar.", false)
     }
 
     /// Kelly (A99): "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 december."
@@ -368,7 +385,7 @@ struct DrillView: View {
     private func footnote(_ drill: Drill) -> String {
         if editMode.isEditing { return "Dra för att ändra ordning. Ordningen är den du hör." }
         // A107 (D190): until Starta prov nothing costs anything, so say that the answers can be changed.
-        if model.awaitsAudioStart(drill) { return "Tryck på en fråga för att ändra frågan eller svaret. Ljudet görs när du startar provet." }
+        if model.awaitsAudioStart(drill) { return "Tryck på en fråga för att ändra frågan eller svaret." } // Kelly N2
         let p = model.progress(drill)
         if p.total == 0 || p.ready < p.total {
             // A100 (K62): no counter that stands still when the sound cannot be made.

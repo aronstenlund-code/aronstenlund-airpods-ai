@@ -2,7 +2,7 @@ import SwiftUI
 
 /// A80 (D142), rebuilt in A87 (D160, Kelly Ke53 `apple/spelar.png`): the playing screen, like Spelas nu in Podcaster.
 /// "Fråga 2 av 5" and the exam's name on one line, a thin progress line, the question big, what happens now (a ring
-/// for the thinking time, "Långt svar"/"Kort svar", "Gör ljud …", "Pausad"), the three presses as a quiet row and
+/// for the thinking time, "Långt svar"/"Kort svar", "Gör ljudet …", "Pausad"), the three presses as a quiet row and
 /// Avsluta as an ordinary button: the only way to end. No buttons for the answers (rule 2): the AirPods steer, the
 /// phone ends. While paused the whole screen is a button that goes on.
 struct RepetitionPlayerView: View {
@@ -71,7 +71,7 @@ struct RepetitionPlayerView: View {
                         Text(verbatim: soundProblem)
                             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     } else {
-                        Text("Gör ljud …").foregroundStyle(.secondary)
+                        Text("Gör ljudet …").foregroundStyle(.secondary)
                     }
                 case .question, .idle:
                     EmptyView()

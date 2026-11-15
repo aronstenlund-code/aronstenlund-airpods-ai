@@ -352,7 +352,7 @@ struct ReadingPlayerView: View {
         if reader.isPaused { return "Pausad. Fortsätter från början av meningen." }
         if reader.phase == .waitingForAudio {
             if let problem = model.audio.problem(for: drill) { return problem }
-            return model.isOffline ? "Ingen internetanslutning. Resten av texten kommer när du är uppkopplad." : "Gör ljud …"
+            return model.isOffline ? "Ingen internetanslutning. Resten av texten kommer när du är uppkopplad." : "Gör ljudet …"
         }
         return nil
     }
