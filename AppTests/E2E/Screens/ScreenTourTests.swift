@@ -99,10 +99,13 @@ final class ScreenTourTests: XCTestCase {
         guard tap(["Klistra in", "Paste"], step: "ChatGPT → Klistra in") else { return }
         dismissSystemAlerts()
         if waitFor(["Tillåt klistra in", "Allow Paste"], timeout: 3) != nil { tap(["Tillåt klistra in", "Allow Paste"], step: "Tillåt klistra in") }
-        guard waitFor(["Spara frågorna"], timeout: 15) != nil, tap(["Spara frågorna"], step: "ChatGPT → Spara frågorna") else {
+        // At the largest text size the button is below the screen (43694679341): scroll to it.
+        _ = waitFor(["Hittade*", "Spara frågorna"], timeout: 15)
+        guard let save = scrollTo(["Spara frågorna"], buttonsOnly: true) else {
             miss("first exam: Spara frågorna not reached")
             return
         }
+        save.tap()
         pause(3)
         let end = Date().addingTimeInterval(180)
         while Date() < end, find(["Starta prov"], buttonsOnly: true)?.isEnabled != true { pause(3) }
@@ -134,6 +137,7 @@ final class ScreenTourTests: XCTestCase {
     // MARK: Start with an exam (sketch 4)
 
     private func addExamFromHome() {
+        ensureModesPage() // A100: what Start was before D142 is the Fler lägen page
         guard tap(["Lägg till prov"], step: "start → Lägg till prov") else { return }
         if waitFor(["Spara prov"], timeout: 5) != nil {
             shoot("lagg-till-prov", note: "Add exam sheet")
@@ -164,6 +168,7 @@ final class ScreenTourTests: XCTestCase {
     private var a50: Bool { find(["Starta Lumen", "Starta EarMind", "Starta Earmind", "Tillbaka till Lumen", "Tillbaka till EarMind", "Tillbaka till Earmind"], buttonsOnly: true) != nil }
 
     private func a50Start() {
+        ensureModesPage() // A100: what Start was before D142 is the Fler lägen page
         guard waitFor(["Starta Lumen", "Starta EarMind", "Starta Earmind", "Tillbaka till Lumen", "Tillbaka till EarMind", "Tillbaka till Earmind"], timeout: 3) != nil else {
             log.append("note: no 'Starta Lumen' on Start (a build before A50)")
             return
@@ -237,6 +242,7 @@ final class ScreenTourTests: XCTestCase {
     // MARK: Settings and everything under it
 
     private func settingsTour() {
+        backToStart() // the gear is on Start, not on the Fler lägen page
         guard tap(["Inställningar"], step: "start → Inställningar") else { return }
         guard waitFor(["Klar"], timeout: 5) != nil else { miss("settings sheet not shown"); return }
         pause(1)
@@ -327,7 +333,30 @@ final class ScreenTourTests: XCTestCase {
 
     // MARK: Modes (sketches 5 and 8)
 
+    /// A100 (D142): the listening modes are on the page behind "Fler lägen" (a row low on Start, so scroll to it).
+    /// Opens that page unless its Starta EarMind or mode line is already on screen. Toby (moln) 2026-11-15.
+    private func ensureModesPage() {
+        let onPage = ["Starta EarMind", "Starta Earmind", "Starta Lumen", "Tillbaka till EarMind", "Tillbaka till Lumen"]
+        if let start = find(onPage, buttonsOnly: true), start.isHittable { return }
+        backToStart()
+        guard let row = scrollTo(["Fler lägen"]) else { miss("start → Fler lägen: row not found (A100: shown after the first started exam)"); return }
+        row.tap()
+        pause(1.5)
+        if !shotModesPage { shoot("fler-lagen-sida", note: "Fler lägen page (A100)"); shotModesPage = true }
+    }
+
+    private var shotModesPage = false
+
+    /// Back along the navigation stack until Start's gear ("Inställningar") is there.
+    private func backToStart() {
+        for _ in 0..<4 where find(["Inställningar"], buttonsOnly: true)?.isHittable != true {
+            let back = app.navigationBars.buttons.element(boundBy: 0)
+            if back.exists, back.isHittable { back.tap(); pause(1) } else { break }
+        }
+    }
+
     private func modesTour() {
+        ensureModesPage()
         // A22: Start has "Bara fråga" (Frågor) and "Fler lägen" (Provläge, Intervju, Socialt, Rizz 18+).
         // A33: the first start's Frågor session can still be on behind Start ("Lyssnar … Avsluta" on top, seen in T8 on
         // the A33 build); a new mode does not open while it runs, so end it first.
@@ -386,6 +415,7 @@ final class ScreenTourTests: XCTestCase {
     private var shotMoreModes = false
 
     private func sheetFromMode(_ labels: [String], name: String, close: [String]) {
+        ensureModesPage()
         let newStart = a50
         openMoreModes(for: labels)
         // A50's sheet shows "Intervju, <tagline>": match the start of the label.
@@ -413,6 +443,7 @@ final class ScreenTourTests: XCTestCase {
     // MARK: Provläge
 
     private func provTour() {
+        ensureModesPage()
         // A22 (D97): with an exam, "Få A-svar till provet" on Start; Provläge also sits in "Fler lägen".
         if a50 {
             // A50: Byt → Provläge ("För dina prov"), then Starta Lumen.
