@@ -73,8 +73,25 @@ final class ReadingFlowTests: XCTestCase {
         guard tap(["Skriv text"], "Skriv text") else { return false }
         let editor = app.textViews.firstMatch
         guard editor.waitForExistence(timeout: 5) else { return miss("Skriv text: no editor") }
-        if !app.keyboards.firstMatch.waitForExistence(timeout: 3) { editor.tap(); testTaps += 1 }
-        editor.typeText(Self.material)
+        // Run 43719634329: the keyboard was up but the editor had no focus, and typeText stops the whole test (T21 saw the
+        // same). Paste instead: the material goes on the pasteboard (never read in the test), then a long press on the
+        // editor and the edit menu's Klistra in.
+        UIPasteboard.general.string = Self.material
+        editor.tap(); testTaps += 1
+        pause(1)
+        editor.press(forDuration: 1.2); testTaps += 1
+        if let paste = wait(["Klistra in", "Paste"], 4) {
+            tapElement(paste, "Klistra in (the material)")
+        } else {
+            editor.tap(); pause(1)
+            if let paste = wait(["Klistra in", "Paste"], 3) { tapElement(paste, "Klistra in (second try)") }
+        }
+        systemAlerts()
+        if let allow = wait(["Tillåt klistra in", "Allow Paste"], 3) { tapElement(allow, "Tillåt klistra in") }
+        pause(1)
+        let typed = String(describing: editor.value ?? "")
+        log.append("READ editor after paste: \(typed.prefix(60))")
+        if !typed.contains("Fotosyntes") { screen("skriv-text-tom", "Skriv text still empty", counts: false); return miss("Skriv text: the material did not get in (no focus, no paste)") }
         screen("skriv-text", "Skriv text with the material")
         guard tap(["Klar"], "Klar (Skriv text)") else { return false }
         pause(1)
