@@ -390,7 +390,7 @@ struct HomeView: View {
             header {
                 SectionLabel("Nästa prov")
                 if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
-                RedPenRing(text: ExamPlan.daysLeftText(plan.daysLeft()))
+                if plan.hasDate { RedPenRing(text: ExamPlan.daysLeftText(plan.daysLeft())) } // D189: no countdown without a date
             }
             HStack(alignment: .center, spacing: 12) {
                 Text(plan.name)

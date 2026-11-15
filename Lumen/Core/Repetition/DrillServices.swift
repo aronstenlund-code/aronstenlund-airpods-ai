@@ -518,7 +518,11 @@ final class DrillStore {
         write()
     }
 
+    /// T24-M1 (D189): told after every change, so Provläge's exams follow the repetition exams.
+    @ObservationIgnored var onChange: (@MainActor ([Drill]) -> Void)?
+
     private func write() {
+        onChange?(drills)
         do {
             try JSONEncoder().encode(drills).write(to: url, options: .atomic)
         } catch {

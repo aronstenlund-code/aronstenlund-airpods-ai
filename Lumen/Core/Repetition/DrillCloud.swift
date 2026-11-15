@@ -582,11 +582,16 @@ final class CloudDrillAudio: DrillAudioProviding {
                     problems[drill.id] = error.userMessage
                 }
                 if case .refused(let status, _, _) = error, status == 404, current.serverID != nil {
-                    // Gone on the server (deleted on another phone): keep the phone's copy, save it as new next time.
+                    // Not this account's on the server (a relaunch as a new anonymous account, D183, or deleted on
+                    // another phone): keep the phone's copy and save it as new at once (Toby T24 L5). Until then the
+                    // card on Start said "Provet finns inte" though the exam is here; now it says the sound's state.
                     var copy = current
                     copy.serverID = nil
                     copy.needsUpload = true
                     store.save(copy)
+                    problems[drill.id] = nil
+                    polls += 1
+                    continue
                 }
                 return
             }

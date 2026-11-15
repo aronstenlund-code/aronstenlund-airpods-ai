@@ -3082,7 +3082,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         #if DEBUG
         if ScreenshotStage.requested != nil { return } // A43: the staged plan, not the live one (the Simulator has network)
         #endif
-        let plans = examPlans?.upcoming() ?? []
+        let plans = examPlans?.upcomingDated() ?? [] // D189: a plan needs a real date
         guard let studyPlanClient, !plans.isEmpty || !quizDays.days.isEmpty else { return }
         let exams = plans.prefix(10).map { plan in
             StudyPlanAPI.ExamIn(name: plan.name, date: StudyHistory.day(plan.date),

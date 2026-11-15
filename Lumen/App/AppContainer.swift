@@ -30,6 +30,10 @@ final class AppContainer {
     let remote: RemoteCommandHub
     /// D142 (A78): the repetition mode (no microphone).
     let repetition: RepetitionSession
+    #if DEBUG
+    /// Toby T27/T28: AirPods presses from a UI test (`LUMEN_TEST_PRESSES=1`), Debug only.
+    var testPresses: TestPresses?
+    #endif
 
     init() {
         let graph = AudioGraph()
@@ -162,12 +166,18 @@ final class AppContainer {
             if listening?.isActiveSession == true { await listening?.endSession() }
         }
         listening.repetition = repetitionModel
+        // T24-M1 (D189): one list of exams. Provläge and Mina svar see every repetition exam, also after a restart.
+        if let plans = listening.examPlans {
+            plans.sync(with: drillStore.drills)
+            drillStore.onChange = { [weak plans] drills in plans?.sync(with: drills) }
+        }
         self.diagnostics = DiagnosticsModel(controller: controller)
         diagnostics.micComparison = MicComparisonModel(listening: listening)
         diagnostics.speechRecording = SpeechRecordingModel(listening: listening)
         diagnostics.studyRecording = StudyRecordingModel(listening: listening)
         #if DEBUG
         if let shot = ScreenshotStage.requested { ScreenshotStage.seed(self, for: shot) } // A2: demo data, Simulator only
+        testPresses = TestPresses(session: repetitionSession)
         #endif
     }
 }
