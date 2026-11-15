@@ -61,3 +61,19 @@ final class TestPresses {
     }
 }
 #endif
+
+#if DEBUG
+/// Toby (moln) T28: XCUITest cannot type or paste into Skriv text, and the photo picker gives an example photo without
+/// text. With the launch environment `LUMEN_TEST_MATERIAL=<text>` (Debug only) Nytt prov opens with that text as its
+/// material, as if it had been written under Skriv text. Up to 40 000 characters, as `/exam` takes.
+enum TestMaterial {
+    static let environmentKey = "LUMEN_TEST_MATERIAL"
+
+    static func text(environment: [String: String] = ProcessInfo.processInfo.environment) -> String? {
+        guard let raw = environment[environmentKey]?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !raw.isEmpty else { return nil }
+        // "\n" written in a launch environment arrives as two characters: a new line.
+        return String(raw.replacingOccurrences(of: "\\n", with: "\n").prefix(40_000))
+    }
+}
+#endif

@@ -30,7 +30,9 @@ struct PracticeReminderQuestion: View {
                     .padding(.top, 28)
                     .accessibilityHidden(true)
                 Text("Vill du ha en påminnelse?")
-                    .font(.title2.bold())
+                    // Kelly P3: with the largest text the "?" stood alone on a row of its own.
+                    .font(typeSize.isAccessibilitySize ? .title3.bold() : .title2.bold())
+                    .minimumScaleFactor(0.8)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
                 Text("EarMind kan påminna dig klockan \(ReminderText.clock(LumenNotifications.practiceMinutes)) de dagar du inte har pluggat. Högst en gång om dagen.")
@@ -75,7 +77,8 @@ struct PracticeReminderQuestion: View {
         }
         // Half a screen is enough for the question; with the largest text it needs the whole screen (SE: only the
         // heading showed in the half sheet).
-        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium, .large])
+        // Kelly P4: no taller than what it holds (half a screen left an empty band on iPhone 17 Pro).
+        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.height(390), .large])
         .interactiveDismissDisabled() // one of the two answers, so the question is not asked again by a swipe
     }
 }

@@ -144,6 +144,9 @@ struct NewDrillView: View {
         .onChange(of: stage) { AccessibilityNotification.ScreenChanged().post() }
         // A99 (D175): the month's questions now, from the server (no sound is made by asking).
         .task {
+            #if DEBUG
+            if pasted.isEmpty, let test = TestMaterial.text() { pasted = test } // Toby T28: LUMEN_TEST_MATERIAL
+            #endif
             await model.refreshQuota()
             capQuestions()
         }

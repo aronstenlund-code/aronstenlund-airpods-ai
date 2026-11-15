@@ -89,3 +89,17 @@ Deno.test("T28 (Toby): photos the read prompt calls unreadable are written out t
   assertEquals(seen.length, 2);
   assertEquals(r.steps.length, 2);
 });
+
+Deno.test("T28b (Toby): a photo with no text is 422, never a read-aloud description of the picture", async () => {
+  const provider: LLMProvider = {
+    name: "fake",
+    model: "haiku",
+    async *stream(req) {
+      yield { type: "text", text: /READ ALOUD/.test(req.system) ? "[oläslig]" : "[Ett vattenfall mellan klippor. Stenarna är täckta av grön och orangefärgad mossa.]" };
+      yield { type: "usage", inputTokens: 10, outputTokens: 5 };
+    },
+  };
+  let status = 0;
+  await handleRead({ pages: [{ media_type: "image/png", data: "iVBORw0KGgo" + "A".repeat(200) }] }, provider, DEFAULT_DRILL_CONFIG).catch((e) => (status = e.status));
+  assertEquals(status, 422);
+});

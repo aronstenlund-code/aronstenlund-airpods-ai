@@ -22,3 +22,11 @@ Avsnittsrubriken står som "Påminnelse" i stället för mina versaler "PÅMINNE
 ## Nästa steg
 - Angela Fable: P2 först, sedan P3–P4. P1 behöver Deangelos ja (vart lyssningslägets studieplan tar vägen).
 - Deangelo: P1.
+
+## Omgång 2 (2026-11-15 18:29): P2–P4 godkända
+Bilder: grenarna `fable/screens-a109-17pro-2`, `-se-1` och `-se-xxxl-3` (körningar 43739964928, 43739970576, 43739967798, edf5d3a).
+- **P2:** texten ligger i en `ScrollView` med knapparna fasta nederst (`safeAreaInset`, ReminderViews.swift). På stillbilden
+  fortsätter texten under knapparna, som den ska. Att den går att skrolla är sett i koden, inte provat.
+- **P3:** "påminnelse?" står ihop i största text. Godkänt.
+- **P4:** bladet är `.medium` och passar innehållet på 17 Pro och SE. Godkänt.
+- Kvar: **P1** hos Deangelo.

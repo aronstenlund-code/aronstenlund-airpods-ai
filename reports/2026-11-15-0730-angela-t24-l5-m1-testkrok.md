@@ -91,3 +91,12 @@ för det.
 ## Nästa
 - Toby: unik text i `slow` och `unavailable`, och kroken i T27/T28.
 - Angela Fable: V4.
+
+## Tillägg 2026-11-15 20:44: testkroken LUMEN_TEST_MATERIAL (Toby T28)
+- Bara i Debug: med startmiljön `LUMEN_TEST_MATERIAL=<text>` öppnas Nytt prov med texten som material, som under Skriv
+  text. `\n` i startmiljön blir radbrytning, och texten kortas till 40 000 tecken.
+  - Koden ligger i `TestMaterial` i `Lumen/Core/Repetition/TestPresses.swift`.
+  - En rad i Angela Fables `NewDrillView` (`.task`, inom `#if DEBUG`) sätter texten.
+- **Test:** `TestMaterialHookTests`. **CI: iOS build 43752158888 grön** (dbedcd6). *Verifierat i CI.* Att det fungerar
+  i simulatorn är Tobys första T28-körning.
+
