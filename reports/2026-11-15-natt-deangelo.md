@@ -24,3 +24,4 @@
 - 15:01 Runda: webbläsaren nås inte (datorn är troligen av), så gränsen läses inte. Uppskattningen är cirka 73 %. Angela Fable: Spela in svaret var ett fel i testets steg, inte i vyn. N5 och V4 klara. Kelly och Angela Schrute har tomma köer och har slutat. Toby kör T28 och A107. Inga prompter.
 - 15:33 Runda: Toby är klar med A107-testet (T29) och T28 pågår. Övriga har tomma köer. Uppskattad gräns: cirka 73 %. Inga prompter.
 - 16:04 Runda: allt är grönt på main (43721548487). Angela Fable har slutat (tom kö). Bara Toby (T28) jobbar. Uppskattad gräns: cirka 74 %.
+- 16:36 Runda: inga nya commits sedan 15:40. Toby (T28) har inte pushat sedan 15:25. Hans sida laddade inte i webbläsaren, så jag kunde inte se om han jobbar. Uppskattad gräns: cirka 75 %.
