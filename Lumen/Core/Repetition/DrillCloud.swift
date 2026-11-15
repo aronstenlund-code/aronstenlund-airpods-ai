@@ -480,6 +480,10 @@ final class CloudDrillAudio: DrillAudioProviding {
 
     /// A103: a file could not be written (the phone is full).
     static let noSpaceLine = "Telefonen har inte plats för ljudet. Frigör lite lagring, så laddas resten ner."
+    /// Toby 2 T24 L6: the server has made nothing for a while (`slowAfter`) and the first question has no sound yet.
+    static let slowLine = "Ljudet dröjer. Provet kan starta när första frågan är klar."
+    /// T24 L6: how long without a new file before `slowLine` is said (shorter in the tests).
+    @ObservationIgnored var slowAfter: Duration = .seconds(20)
     /// A103: no network while the sound is fetched; it goes on by itself when the phone is online again.
     static let waitingForNetworkLine = "Ingen internetanslutning. Resten av ljudet laddas ner när du är uppkopplad igen."
     /// How long `prepare` waits for the network to come back (A103), checked every `networkCheck`.
@@ -536,6 +540,10 @@ final class CloudDrillAudio: DrillAudioProviding {
         defer { preparing.remove(drill.id) }
         problems[drill.id] = nil
         var polls = 0
+        // T24 L6: polls in a row that brought no new file.
+        var stillPolls = 0
+        var lastReady = -1
+        let slowPolls = max(1, Int((slowAfter / pollInterval).rounded(.up)))
         while polls < maxPolls, !Task.isCancelled {
             guard let current = store.drill(drill.id) else { return } // deleted meanwhile
             let view: DrillCloudView
@@ -602,7 +610,17 @@ final class CloudDrillAudio: DrillAudioProviding {
             }
             failedFiles[drill.id] = view.audio.failed ?? 0
             let p = progress(for: latest)
-            if p.total > 0, p.ready == p.total { return }
+            if p.total > 0, p.ready == p.total { problems[drill.id] = nil; return }
+            if view.items.flatMap(\.audio.files).contains(where: { $0.isFailed && Self.isUnavailable($0.error) }) {
+                // T24 L5 (K62): the voice service cannot make sound now; said at the first such file, not after
+                // every file has failed. The files that are done stay; the next open asks again.
+                problems[drill.id] = Self.unavailableLine
+                return
+            }
+            if p.ready == lastReady { stillPolls += 1 } else { stillPolls = 0; lastReady = p.ready }
+            let firstMissing = latest.isText ? reading(for: latest, part: 0) == nil : track(for: latest, at: 0) == nil
+            // T24 L6: "Ljud: 0 av 6 klara" that never moves says why.
+            problems[drill.id] = stillPolls >= slowPolls && firstMissing ? Self.slowLine : nil
             if view.audio.done + (view.audio.failed ?? 0) >= view.audio.total, view.audio.done == p.ready {
                 // Nothing more will come: some files failed on the server; the next open asks again.
                 let failed = max(1, (p.total - p.ready + 1) / 2)

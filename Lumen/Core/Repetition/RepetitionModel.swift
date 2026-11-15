@@ -481,6 +481,10 @@ final class RepetitionModel {
     /// prov follows it.
     var quota: DrillQuota?
 
+    /// Toby 2 T24 L4: the month's questions are known (Nytt prov showed 20 and then jumped to 15). Until then the
+    /// view shows no number, or a grey one. Always known in the mock mode, which has no limit.
+    var quotaIsKnown: Bool { quota != nil || cloud == nil }
+
     func quotaExceeded(_ drill: Drill) -> Bool {
         #if DEBUG
         if stagedQuotaExceeded.contains(drill.id) { return true }

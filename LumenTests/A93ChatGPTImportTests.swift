@@ -40,10 +40,11 @@ struct A93ChatGPTImportTests {
         let found = try #require(ChatGPTImport.read(text))
         #expect(found.items.map(\.question) == ["Vad är fotosyntes?", "Vad är 3.5 gånger 2?"])
         #expect(found.items[1].short == "Det är 7.")
-        #expect(found.unreadable.contains { $0.hasPrefix("Rad 1: Här är dina frågor!") })
+        // T24 L3: ChatGPT's intro is left out quietly, not "1 rad kunde inte läsas".
+        #expect(found.leftOut.contains { $0.hasPrefix("Rad 1: Här är dina frågor!") })
         // A96: a blank line no longer ends the answer, so the last "Svar:" is the answer's next paragraph.
         #expect(found.items[1].long.hasSuffix("Ett svar utan fråga."))
-        #expect(found.unreadable.count == 1)
+        #expect(found.unreadable.isEmpty)
     }
 
     @Test func anAnswerWithNoQuestionBeforeItIsListed() throws {
@@ -82,9 +83,10 @@ struct A93ChatGPTImportTests {
         let twice = try #require(ChatGPTImport.read(byName["19"] ?? ""))
         #expect(twice.warnings.contains { $0.hasSuffix("Frågan finns redan.") })
         let lastLine = try #require(ChatGPTImport.read(byName["23"] ?? ""))
-        #expect(lastLine.unreadable.contains { $0.contains("Hoppas det hjälper") }, "the sign-off on the last line")
+        #expect(lastLine.leftOut.contains { $0.contains("Hoppas det hjälper") }, "the sign-off on the last line")
         let signOff = try #require(ChatGPTImport.read(byName["02"] ?? ""))
-        #expect(signOff.unreadable.contains { $0.contains("Avslutning") })
+        #expect(signOff.unreadable.isEmpty, "T24 L3: intro and sign-off are left out quietly")
+        #expect(signOff.leftOut.count >= 2)
     }
 
     @Test func overFourThousandIsLeftOutNotCut() throws {
@@ -154,7 +156,7 @@ struct A96ImportEdgeTests {
         let text = "Fråga: Vad är lava?\nSvar: Lava är smält berg på ytan.\n\nLycka till! Vill du ha fler?\n```"
         let found = try #require(ChatGPTImport.read(text))
         #expect(found.items.first?.long == "Lava är smält berg på ytan.")
-        #expect(found.unreadable.contains { $0.contains("Avslutning") })
+        #expect(found.leftOut.contains { $0.contains("Lycka till") })
     }
 
     @Test func listItemsInsideTheAnswerLoseTheirBullet() throws {
