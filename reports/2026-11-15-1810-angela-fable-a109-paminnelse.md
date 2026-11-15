@@ -35,3 +35,18 @@
 
 ## Kvar
 - Kelly: granska bilderna. Toby: T30.
+
+## Tillägg 2026-11-15 19:00: Kellys granskning (`reports/2026-11-15-1814-kelly-granskning-a109.md`)
+**Inte provat på telefon. Inga ElevenLabs-tester.** Kelly godkände A109; texterna stämmer ordagrant.
+| Fynd | Rättat | Sedd på bild |
+|---|---|---|
+| P1 (medel) bara ett påminnelseavsnitt i Inställningar | **Inte rättat.** Deangelo avgör; det gamla avsnittet är Angela Schrutes | – |
+| P2 (medel) frågebladet klipps i största text | Innehållet skrollar, knapparna ligger fast nederst, och bladet tar hela skärmen med de största storlekarna | ja |
+| P3 (låg) "?" ensamt på en rad | Mindre rubrikstil med de största storlekarna | ja |
+| P4 (låg) bladet för högt på 17 Pro | Bladet är så högt som innehållet (390 punkter), och går att dra upp | ja (17 Pro och SE) |
+
+- Bild: `reports/2026-11-15-a109-bilder/a109-fragan-p3-p4.jpg` (Fable screens 43739964928, 43739967798, 43739970576;
+  grenarna `fable/screens-a109-17pro-2`, `fable/screens-a109-se-1`, `fable/screens-a109-se-xxxl-3`).
+- **iOS build 43739959462 grön** (min gren, edf5d3a, med P3 och P4). *Verifierat i CI.*
+- A109 kom till main först 18:25 (37adcf4): den första pushen krockade i tavlan och kön, och Toby och Kelly fick
+  beskedet för tidigt. Toby upptäckte det.
