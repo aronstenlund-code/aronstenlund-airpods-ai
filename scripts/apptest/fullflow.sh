@@ -65,6 +65,7 @@ run_phase() {
   local RESULT="$OUT/logs/$P.xcresult"
   rm -rf "$RESULT"
   mkdir -p "$OUT/$P"
+  TEST_RUNNER_LUMEN_T24_SOLO="$([ "$(echo $PHASES | wc -w)" -eq 1 ] && echo 1 || echo 0)" \
   TEST_RUNNER_LUMEN_T24_PHASE="$P" \
   TEST_RUNNER_LUMEN_T24_HEADER="1" \
   TEST_RUNNER_LUMEN_T24_OUT="$OUT" \
@@ -102,7 +103,7 @@ for P in $PHASES; do
     echo
     echo "Detaljer (MISS, UNCLEAR, larm):"
     echo '```'
-    grep -E "MISS|UNCLEAR|ALERT|launched|goToStart" "$OUT/t24-$P-log.txt" 2>/dev/null | cut -c1-400 | head -n 60
+    grep -E "MISS|UNCLEAR|ALERT|launched|goToStart|^mode |tagged" "$OUT/t24-$P-log.txt" 2>/dev/null | cut -c1-400 | head -n 60
     echo '```'
     echo
     echo "Skärmen vid fel (texter och knappar):"

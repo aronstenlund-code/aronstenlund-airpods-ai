@@ -72,3 +72,12 @@ Körning 43687320010 (toby/t24b = main 71a610c + unik text i lägena slow och un
   svepte 6 gånger och knappen gick ändå inte att trycka. Samma sak med Avbryt i det bladet. iPhone 17 Pro, standardtext.
   Kan vara testets svep i ett blad. *Untested assumption* att det är vyn.
 - Fas a grön (8/8), publiceringen borttagen. `drill_publications` har bara de två kända raderna. *Verifierat i databasen.*
+
+## Tillägg 2026-11-15 10:05: fas b ensam (43692170302), grön 4/4
+Körd med `workflow_dispatch` och `phases: b` (fas b ensam hoppar nu över skolan, `LUMEN_T24_SOLO`). Unik text per läge.
+- **`slow`:** kortet gick från "3 frågor · Ljud: 0 av 6 klara" till "3 av 6 klara" inom 40 s. "Ljudet dröjer" kom
+  inte, vilket stämmer med L6: raden kommer först efter 20 s utan nytt ljud, och här kom ljudet hela tiden. Om raden
+  syns vid ett riktigt stopp är *inte prövat* (läget `slow` gör ljudet långsamt men stoppar inte).
+- **`unavailable`:** "0 av 6" → "3 av 6" → **"Ljudet kan inte göras just nu"** (L5, rättad).
+- D183: proven kvar efter två omstarter.
+- Testets ändringar (unik text, ny öppning av Nytt prov, fas b ensam) ligger på main.

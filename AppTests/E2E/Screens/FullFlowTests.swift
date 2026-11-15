@@ -78,8 +78,13 @@ final class FullFlowTests: XCTestCase {
             section("Ta bort publiceringen och provet") { cleanUp() }
         default:
             section("Andra kontot: första starten utan prov") { firstStartLater() }
-            section("Prov från din skola") {
-                waitForFile("t24-published.txt", 1800) && findPublished()
+            // Phase b alone (workflow input phases: "b"): no phase a publishes, so the school step is skipped.
+            if env["LUMEN_T24_SOLO"] == "1" {
+                log.append("phase b alone: Prov från din skola skipped (no phase a)")
+            } else {
+                section("Prov från din skola") {
+                    waitForFile("t24-published.txt", 1800) && findPublished()
+                }
             }
             try? "done\n".write(to: out.appendingPathComponent("t24-found.txt"), atomically: true, encoding: .utf8)
             section("Läget slow (ljudet dröjer)") { soundMode("slow", title: "Långsamt prov") }
@@ -320,7 +325,7 @@ final class FullFlowTests: XCTestCase {
     private func soundMode(_ mode: String, title: String) -> Bool {
         launch(mode)
         guard wait(["Nytt prov"], 15) != nil else { return miss("Start not shown") }
-        guard chatGPTImport(title: title, relaunch: false) else { return false }
+        guard chatGPTImport(title: title, relaunch: false, mode: mode) else { return false }
         relaunchToStart(keepHeader: true)
         var seen: [String] = []
         let deadline = Date().addingTimeInterval(40)
@@ -338,12 +343,25 @@ final class FullFlowTests: XCTestCase {
         return true
     }
 
-    private func chatGPTImport(title: String, relaunch: Bool) -> Bool {
+    private func chatGPTImport(title: String, relaunch: Bool, mode: String = "") -> Bool {
         if relaunch { return chatGPTImport(title: title) }
         guard tap(["Nytt prov"], "Nytt prov") else { return false }
+        // Run 43687320010 (slow): "Gör med ChatGPT" was not there after Nytt prov once; close and open Nytt prov again.
+        if wait(["Gör med ChatGPT*"], 8) == nil {
+            screen("nytt-prov-utan-chatgpt", "Nytt prov without Gör med ChatGPT", counts: false)
+            closeSheet()
+            goToStart()
+            guard tap(["Nytt prov"], "Nytt prov (again)") else { return false }
+        }
         guard tap(["Gör med ChatGPT*"], "Gör med ChatGPT") else { return false }
         tap(["Kopiera prompten"], "Kopiera prompten")
+        // Angela Schrute 07:30 (L5): the fixed questions already had sound from earlier runs (D144: the file name comes
+        // from the text and the test voice), so `slow` and `unavailable` had nothing to delay or refuse. A tag that is
+        // new in every run makes the server make the sound (fake audio, D180), so the modes are tried for real.
+        let tag = String(Int(Date().timeIntervalSince1970) % 1_000_000)
         UIPasteboard.general.string = Self.chatGPTAnswer.replacingOccurrences(of: "fotosyntesen", with: "fotosyntes")
+            .replacingOccurrences(of: "?\n", with: " (test \(tag) \(mode))?\n")
+        log.append("questions tagged 'test \(tag) \(mode)' so their sound is new")
         guard tap(["Klistra in", "Paste"], "Klistra in") else { return false }
         if let allow = wait(["Tillåt klistra in", "Allow Paste"], 3) { tapElement(allow, "Tillåt klistra in") }
         guard wait(["Hittade*"], 15) != nil else { return miss("Hittade not shown") }
