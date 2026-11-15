@@ -327,6 +327,23 @@ final class FullFlowTests: XCTestCase {
         guard wait(["Nytt prov"], 15) != nil else { return miss("Start not shown") }
         guard chatGPTImport(title: title, relaunch: false, mode: mode) else { return false }
         relaunchToStart(keepHeader: true)
+        // A107 (D190): no sound is made before Starta prov, so the modes show nothing until the exam is started. Start it
+        // (the player opens and waits for the sound), close it, and read Start as before.
+        if waitEnabled(["Starta prov"], 20) {
+            tap(["Starta prov"], "Starta prov (\(mode), A107)")
+            if wait(["Styr med dina AirPods"], 8) != nil {
+                for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+                tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+            }
+            pause(6)
+            let inPlayer = Self.labels(in: app.debugDescription, kind: "StaticText").filter { $0.contains("jud") || $0.contains("klara") }
+            log.append("mode \(mode): in the player after Starta prov: \(inPlayer.joined(separator: " | "))")
+            screen("lage-\(mode)-spelaren", "The player in the '\(mode)' mode")
+            tap(["Avsluta"], "Avsluta (\(mode))", quiet: true)
+            pause(2)
+        } else {
+            note("\(mode): Starta prov not tappable after the import")
+        }
         var seen: [String] = []
         let deadline = Date().addingTimeInterval(40)
         while Date() < deadline {
