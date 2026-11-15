@@ -35,7 +35,7 @@
 - D180: 0 ElevenLabs i tester. Alla skript har `x-earmind-test` via `scripts/qa/qa_testaccount.py`.
 - Projekt-id i Supabase: `xjczbzfkmbjdebwlccki`.
 - Tester: `deno task test` och `deno task check` i `backend/`.
-- Python-patchar som innehåller ``, `\p` eller `\d` skrivs med Write, inte heredoc, eftersom `` annars blir ett backstegstecken.
+- Python-patchar som innehåller `\b`, `\p` eller `\d` skrivs med Write, inte heredoc, eftersom `\b` annars blir ett backstegstecken.
 
 ---
 
