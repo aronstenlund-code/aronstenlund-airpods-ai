@@ -19,6 +19,7 @@ Kortast möjligt. Svara "ja"/"nej"/eget val i chatten med Deangelo.
 | 18 | **Demosidan med EarMind (Kelly Ke60).** Stavningen är ändrad på grenen `kelly/ke60-earmind-site` men inte publicerad. | "ja" om den ska läggas ut |
 | 19 | **ElevenLabs: köp krediter och ge nyckeln User Read.** Oscar har sagt JA (O62, 18:17): testerna gör inga riktiga anrop längre, så det är säkert att köpa. User Read låter servern läsa saldot och varna i tid (elevenlabs.io › Developers › API Keys › nyckeln › User Read). | Gör när du vill att ljudet ska fungera igen |
 | 20 | **Läsläget (D185): vad det ska kosta.** En löpande text kostar ElevenLabs-krediter efter längd. 2 000 ord är cirka 12 000 tecken, ungefär 4 800 krediter, och det är mer än ett helt prov med 15 frågor (cirka 3 200). Tills du säger annat räknas varje påbörjad 800 tecken som en fråga mot kvoten på 15 i månaden, så gratis räcker då till cirka 2 000 ord i månaden. Det kan ändras utan ny kod. | Ok, eller annan regel |
+| 21 | **Två testprov är publicerade på en riktig skola** (Toby T24, skola 35374123, "Nytt prov", Biologi, 22 nov; id finns i docs/HANDOVER-toby.md). Alla som söker på skolan kan se dem. Ska de tas bort ur databasen? | "ja" så tar Kevin (moln) bort just de två |
 
 ## Repetitionsläget, kostnad (D144, 2026-11-13 17:45)
 - ~~H1~~ **Ja (Aron 17:30):** det långa svaret börjar alltid med det korta svaret som första mening.
