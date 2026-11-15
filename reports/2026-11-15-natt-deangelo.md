@@ -25,3 +25,4 @@
 - 15:33 Runda: Toby är klar med A107-testet (T29) och T28 pågår. Övriga har tomma köer. Uppskattad gräns: cirka 73 %. Inga prompter.
 - 16:04 Runda: allt är grönt på main (43721548487). Angela Fable har slutat (tom kö). Bara Toby (T28) jobbar. Uppskattad gräns: cirka 74 %.
 - 16:36 Runda: inga nya commits sedan 15:40. Toby (T28) har inte pushat sedan 15:25. Hans sida laddade inte i webbläsaren, så jag kunde inte se om han jobbar. Uppskattad gräns: cirka 75 %.
+- 16:55 Aron: "prompta". Nya uppgifter: K74 (naturligare uppläsning, v4 bakom flagga, A/B-skript som väntar på Arons ja), O68, A108 och A109 (streak och påminnelse, D194), Ke65 (testlista för Arons telefontest) och T30.
