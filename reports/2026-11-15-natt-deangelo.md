@@ -10,3 +10,4 @@
 - 02:08 Runda 8. Lugnt. Toby 2 jobbar med T24 (01:36), och övriga har tomma köer. Inga prompter.
 - 02:40 Aron vaken, "prompta dem". Lagt i köerna och skickat: K69 (snabbare Skapa frågor), O66 (regressionsskript), A103 (spela utan nät), A104 (tomma lägen och fellägen), Ke62 (App Store-bilder och utkast), T27 (efter A103). Veckogränsen: 54 %.
 - 02:45 Aron: läsläge, en löpande text utan frågor där man kan pausa och hoppa fram och bak. Inskrivet som D185 med detaljerna: 1 tryck = paus, 2 = nästa mening, 3 = föregående mening. Lagt i köerna efter pågående uppgifter: K70, A105, A106, Ke63, O67 och T28. Kostnaden är Till Aron #20.
+- 02:50 Molnsessioner skapade i miljön AirPods: Kevin, Oscar, Angela Schrute (Opus 5.5 high), Angela Fable (Fable 5.2), Kelly och Toby (Toby 1 och 2 ihop). De lokala sessionerna har fått lämna över ("till molnet") och sluta. PAUS.md-regeln och Superpowers-regeln står i CLAUDE.md. Veckogränsen: 58 %.
