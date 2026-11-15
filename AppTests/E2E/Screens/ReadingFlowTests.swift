@@ -80,11 +80,14 @@ final class ReadingFlowTests: XCTestCase {
         editor.tap(); testTaps += 1
         pause(1)
         editor.press(forDuration: 1.2); testTaps += 1
-        if let paste = wait(["Klistra in", "Paste"], 4) {
+        // Run 43724201975: "Klistra In" was first found as an Image (the menu's icon), not hittable, and tapping it stops
+        // the test. Only a hittable menu item or button.
+        if let paste = pasteItem(4) {
             tapElement(paste, "Klistra in (the material)")
         } else {
             editor.tap(); pause(1)
-            if let paste = wait(["Klistra in", "Paste"], 3) { tapElement(paste, "Klistra in (second try)") }
+            editor.press(forDuration: 1.2)
+            if let paste = pasteItem(3) { tapElement(paste, "Klistra in (second try)") }
         }
         systemAlerts()
         if let allow = wait(["Tillåt klistra in", "Allow Paste"], 3) { tapElement(allow, "Tillåt klistra in") }
@@ -118,6 +121,19 @@ final class ReadingFlowTests: XCTestCase {
         screen("start-text", "Start with the text, sound ready")
         log.append("Start texts: " + Self.labels(in: app.debugDescription, kind: "StaticText").prefix(20).joined(separator: " | "))
         return true
+    }
+
+    /// The edit menu's paste item, only one that can be tapped.
+    private func pasteItem(_ timeout: TimeInterval) -> XCUIElement? {
+        let predicate = NSPredicate(format: "label ==[c] 'Klistra in' OR label ==[c] 'Paste'")
+        let end = Date().addingTimeInterval(timeout)
+        repeat {
+            for query in [app.menuItems, app.buttons] {
+                if let item = query.matching(predicate).allElementsBoundByIndex.first(where: { $0.exists && $0.isHittable }) { return item }
+            }
+            pause(0.3)
+        } while Date() < end
+        return nil
     }
 
     /// "Mening n av m" in the player.
