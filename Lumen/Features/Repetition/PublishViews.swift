@@ -149,6 +149,7 @@ struct SchoolPicker: View {
     @State private var query = ""
     @State private var results: [DrillSchool] = []
     @State private var problem: String?
+    @State private var isOffline = false
     @State private var searching: Task<Void, Never>?
     @Environment(\.dismiss) private var dismiss
 
@@ -166,7 +167,8 @@ struct SchoolPicker: View {
                     } else if let problem {
                         // A104: what went wrong and the way on, in the system's own empty state.
                         ContentUnavailableView {
-                            Label("Skolorna går inte att hämta", systemImage: "wifi.slash")
+                            Label(isOffline ? "Ingen internetanslutning" : "Skolorna går inte att hämta",
+                                  systemImage: isOffline ? "wifi.slash" : "icloud.slash")
                         } description: {
                             Text(verbatim: problem)
                         } actions: {
@@ -224,8 +226,10 @@ struct SchoolPicker: View {
                 results = found
             } catch {
                 if case .offline = error {
-                    problem = "Anslut till internet och försök igen."
+                    isOffline = true
+                    problem = "Skolorna går att söka när du är uppkopplad."
                 } else {
+                    isOffline = false
                     problem = "Försök igen om en stund."
                 }
             }

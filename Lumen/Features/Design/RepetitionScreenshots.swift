@@ -272,11 +272,8 @@ enum RepetitionDemo {
             case "repSoundMaking": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
             case "repQuotaExam": NavigationStack { DrillView(model: model, drillID: history.id) }
             case "repExamOffline": NavigationStack { DrillView(model: model, drillID: drill.id) }
-            case "repHelpTryUsedUp":
-                NavigationStack(path: .constant(["try"])) {
-                    HelpChatView(model: model)
-                        .navigationDestination(for: String.self) { _ in HelpTryView(model: model) {} }
-                }
+            case "repHelpTryUsedUp": // the pushed stack showed an empty page in the pictures (43707813309)
+                NavigationStack { HelpTryView(model: model) {} }
             case "repLength": NavigationStack { DrillView(model: model, drillID: drill.id) }
             case "repLengthEdit": DrillItemEditor(model: model, drill: drillWithLengths, itemID: drill.items[2].id)
             case "repNumbers": NavigationStack { DrillView(model: model, drillID: maths.id) }

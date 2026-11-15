@@ -198,13 +198,18 @@ final class RepetitionModel {
 
     #if DEBUG
     /// Screenshots (A104): the offline rows without turning the network off.
-    func stageOffline(_ offline: Bool) { isOffline = offline }
+    func stageOffline(_ offline: Bool) { isOffline = offline; isOfflineStaged = offline }
+    /// The staged state stays when the Simulator's own network reports in (the pictures showed no offline row).
+    private var isOfflineStaged = false
     #endif
 
     private func watchNetwork() {
         Task { [weak self] in
             for await online in NetworkStatus.shared.changes() {
                 guard let self else { return }
+                #if DEBUG
+                if self.isOfflineStaged { continue }
+                #endif
                 let cameBack = online && self.isOffline
                 self.isOffline = !online
                 if cameBack { await self.refresh() } // the sound that was waiting goes on
