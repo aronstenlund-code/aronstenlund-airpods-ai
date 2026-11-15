@@ -325,8 +325,15 @@ final class RepetitionModel {
     nonisolated static func unsavedTwin(of remote: Drill, in drills: [Drill]) -> Drill? {
         drills.first { local in
             local.serverID == nil && local.isText == remote.isText && local.items.count == remote.items.count
-                && !local.items.isEmpty && zip(local.items, remote.items).allSatisfy { $0.sameText(as: $1) }
+                && !local.items.isEmpty && zip(local.items, remote.items).allSatisfy { mine, theirs in
+                    // The server cleans whitespace; the words decide.
+                    plain(mine.question) == plain(theirs.question) && plain(mine.long) == plain(theirs.long)
+                }
         }
+    }
+
+    nonisolated private static func plain(_ text: String) -> String {
+        text.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")
     }
 
     enum ListDecision: Equatable { case stamp(UUID), delete(UUID), keepOtherAccount(UUID) }
