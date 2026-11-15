@@ -33,19 +33,22 @@ efter Arons ja (CLAUDE.md). Ersätter utkastet i `docs/marketing/appstore/` (Ke2
 "AirPods" står inte i namnet, underrubriken eller nyckelorden (D122, Apples riktlinjer för varumärken). Det används
 bara i beskrivningen och på bild 3, som "fungerar med" och "i dina AirPods".
 
-**Beskrivning** (1536 av 4 000 tecken):
+**Beskrivning** (2052 av 4 000 tecken, uppdaterad Ke62 2026-11-15):
 
-> Plugga med AirPods utan att röra mobilen. Fota materialet till ditt prov, så gör EarMind korta provfrågor med A-svar och läser upp dem i dina hörlurar. Du styr med tryck och kan ha telefonen i fickan.
+> Plugga med AirPods utan att röra mobilen. Fota materialet till ditt prov, så gör EarMind provfrågor med A-svar och läser upp dem i dina hörlurar. Du styr med tryck och kan ha telefonen i fickan.
 >
 > FOTA MATERIALET
 > • Fota sidor ur boken, välj bilder, lägg till en PDF eller Word-fil eller klistra in text.
-> • EarMind gör en sammanfattning av vad provet handlar om. Stämmer den inte, skriver du en rad så rättas den.
+> • Välj årskurs och antal frågor. EarMind visar vad provet handlar om, och stämmer det inte skriver du en rad så rättas det.
+> • Har du gjort frågor i ChatGPT kan du klistra in dem med Gör med ChatGPT.
+> • Språkprov får frågor och svar på språket du pluggar.
 > • Fotona och dokumenten används en gång för att göra frågorna och sparas inte.
 >
 > FRÅGOR MED A-SVAR
-> • Korta frågor som testar att du förstår, inte bara att du minns.
+> • Frågor som testar att du förstår, inte bara att du minns.
 > • Varje fråga får ett kort svar och ett långt A-svar.
 > • Ändra, ta bort eller lägg till egna frågor och svar.
+> • Välj bland tre röster och ställ in tempot.
 >
 > STARTA PROV
 > • Frågorna läses upp i dina hörlurar, med betänketid efter varje.
@@ -53,14 +56,21 @@ bara i beskrivningen och på bild 3, som "fungerar med" och "i dina AirPods".
 > • Listan börjar om i samma ordning tills du avslutar.
 > • Starta prov använder aldrig mikrofonen.
 >
-> DELA MED KLASSEN
-> • Dela provet med en länk. Kompisarna får samma frågor, svar och ljud.
-> • Fotona och dokumenten delas aldrig.
+> DELA OCH HITTA PROV
+> • Dela provet med en länk när ljudet är klart. Kompisarna får samma frågor, svar och ljud.
+> • Publicera prov för din skola, och lägg till prov som andra på skolan har gjort under Prov från din skola.
+> • Fotona och dokumenten delas aldrig, och ditt namn visas bara om du själv väljer det.
+>
+> FRÅGA OM EARMIND
+> Undrar du hur något fungerar frågar du hjälpen i appen.
+>
+> GRATIS ATT BÖRJA
+> 15 nya frågor med ljud per månad ingår. Prov som andra har delat eller publicerat räknas inte.
 >
 > FLER LÄGEN (BETA)
 > EarMind har också lägen som lyssnar på vad du säger och svarar i örat, till exempel förhör med rösten och intervjuträning. De är i beta och frågar om mikrofonen först när du startar dem.
 >
-> Fungerar med AirPods och andra Bluetooth-hörlurar. EarMind är inte gjord av eller kopplad till Apple. Svar från AI kan vara fel, så kontrollera mot din kursbok.
+> Fungerar med AirPods. EarMind är inte gjord av eller kopplad till Apple. Svar från AI kan vara fel, så kontrollera mot din kursbok.
 
 ## Måste stämma innan inskickning (kontrolleras på telefon)
 | Påstående | Kontroll |
@@ -69,9 +79,11 @@ bara i beskrivningen och på bild 3, som "fungerar med" och "i dina AirPods".
 | "Listan börjar om i samma ordning" | R5d |
 | Tryckens text | A90 på telefon, alla AirPods-modeller i beta (R11) |
 | "Dela provet med en länk" | A81/K47 på telefon. Universal links kräver domänen |
-| "Fungerar med … andra Bluetooth-hörlurar" | **Ej verifierat:** tryck på andra hörlurar. Stryk det om det inte är provat |
+| ~~"andra Bluetooth-hörlurar"~~ | Struket i Ke62 (inte provat) |
 | "Fotona … sparas inte" | B4, K53 (bucket `drill_material` ska tömmas efter att frågorna gjorts: Kevin bekräftar) |
 | Lägen i beta | Namnen följer `Shared/capabilities.json` |
+| "15 nya frågor med ljud per månad ingår" | D155. Ändras gränsen eller kommer abonnemanget (D157), ändras raden |
+| "Gör med ChatGPT", "Publicera prov", "Fråga om EarMind", röst och tempo | Byggda (A93, A83, A92, A84), provade i simulatorn men inte på telefon |
 
 ## Kvar
 Integritetspolicy (krävs, saknas sedan Ke25), åldersgräns (Ke25 föreslog 13+), integritetsetiketter efter D149 (publicerade

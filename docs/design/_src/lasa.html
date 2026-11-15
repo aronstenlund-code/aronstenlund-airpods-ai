@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<title>Ke63 Läsläge</title>
+<!-- Kelly (moln), Ke63 (D185), 2026-11-15. Läsläget i samma iOS-stil som Ke53 (apple.html): systemets listor, blad, knappar och färger.
+     Typsnittet här är datorns systemtypsnitt (på Windows Segoe UI); i appen är det SF Pro med Dynamic Type.
+     Rendera: node docs/design/_src/lasa-render.js  → docs/design/bilder/lasa/<id>.png (ljust | mörkt). -->
+<style>
+  /* iOS semantiska färger (UIKit), ljust och mörkt. Accent = appens AccentColor. */
+  .light { --bg:#FFFFFF; --gbg:#F2F2F7; --cell:#FFFFFF; --label:#000000; --sec:rgba(60,60,67,.6); --ter:rgba(60,60,67,.3);
+           --sep:rgba(60,60,67,.29); --fill:rgba(120,120,128,.12); --fill2:rgba(120,120,128,.16); --tint:#2346C8; --ontint:#FFFFFF;
+           --tintsoft:rgba(35,70,200,.12); --red:#FF3B30; --green:#34C759; --bar:rgba(249,249,249,.94); --stage:#E5E5EA; }
+  .dark  { --bg:#000000; --gbg:#000000; --cell:#1C1C1E; --label:#FFFFFF; --sec:rgba(235,235,245,.6); --ter:rgba(235,235,245,.3);
+           --sep:rgba(84,84,88,.6); --fill:rgba(118,118,128,.24); --fill2:rgba(118,118,128,.32); --tint:#7F9BFF; --ontint:#0B1230;
+           --tintsoft:rgba(127,155,255,.18); --red:#FF453A; --green:#30D158; --bar:rgba(22,22,24,.94); --stage:#1A1A1C; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: -apple-system, "SF Pro Text", system-ui, "Segoe UI", sans-serif; background: #ccc; -webkit-font-smoothing: antialiased; }
+  .pair { display: flex; width: 900px; }
+  .side { flex: 1; background: var(--stage); color: var(--label); padding: 24px 0 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .tag { font-weight: 700; font-size: 16px; color: var(--tint); }
+  .cap { font-size: 13px; color: var(--sec); max-width: 390px; text-align: center; line-height: 1.38; }
+  .phone { width: 375px; height: 812px; border-radius: 40px; overflow: hidden; background: var(--bg); position: relative; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,.2); }
+  .phone.g { background: var(--gbg); }
+  .status { height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 6px 32px 0; font-weight: 600; font-size: 16px; flex: none; }
+  .nav { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex: none; font-size: 17px; }
+  .nav .t { font-weight: 600; } .nav a { color: var(--tint); display: flex; align-items: center; gap: 2px; }
+  .nav a.b { font-weight: 600; }
+  .lt { font-size: 34px; font-weight: 700; letter-spacing: .01em; padding: 2px 16px 8px; flex: none; }
+  .content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  .sh { font-size: 13px; color: var(--sec); text-transform: uppercase; padding: 18px 32px 7px; }
+  .sh.big { text-transform: none; font-size: 20px; font-weight: 700; color: var(--label); padding: 20px 20px 8px; }
+  .sf { font-size: 13px; color: var(--sec); padding: 7px 32px 0; line-height: 1.35; }
+  .sec { margin: 0 16px; background: var(--cell); border-radius: 10px; overflow: hidden; }
+  .row { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 10px 16px; position: relative; font-size: 17px; }
+  .row + .row::before { content: ""; position: absolute; top: 0; right: 0; left: var(--inset, 16px); border-top: .5px solid var(--sep); }
+  .row.ic { --inset: 60px; }
+  .row .v { margin-left: auto; color: var(--sec); display: flex; align-items: center; gap: 6px; }
+  .row .sub { font-size: 15px; color: var(--sec); margin-top: 1px; }
+  .chev { width: 8px; height: 13px; flex: none; }
+  .sym { width: 29px; height: 29px; border-radius: 7px; display: grid; place-items: center; flex: none; color: #fff; }
+  .sym svg, .ico { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .tintc { color: var(--tint); }
+  .btnp { display: flex; align-items: center; justify-content: center; gap: 8px; height: 50px; border-radius: 25px; background: var(--tint); color: var(--ontint); font-size: 17px; font-weight: 600; }
+  .btnp.dis { background: var(--fill); color: var(--ter); }
+  .btns { display: flex; align-items: center; justify-content: center; gap: 8px; height: 50px; border-radius: 25px; background: var(--fill); color: var(--tint); font-size: 17px; font-weight: 600; }
+  .btnt { color: var(--tint); font-size: 17px; text-align: center; padding: 6px; }
+  .bottom { margin-top: auto; padding: 10px 16px 34px; display: flex; flex-direction: column; gap: 8px; background: var(--bar); border-top: .5px solid var(--sep); }
+  .g .bottom { background: color-mix(in srgb, var(--gbg) 94%, transparent); }
+  .note { font-size: 13px; color: var(--sec); text-align: center; }
+  .cu { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 40px 60px; gap: 8px; }
+  .cu .big { width: 64px; height: 64px; color: var(--sec); }
+  .cu h2 { font-size: 22px; font-weight: 700; margin-top: 6px; }
+  .cu p { font-size: 15px; color: var(--sec); line-height: 1.35; }
+  .tb { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 34px; font-size: 17px; color: var(--tint); background: var(--bar); border-top: .5px solid var(--sep); }
+  .tb span { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .seg { display: flex; background: var(--fill); border-radius: 9px; padding: 2px; width: 100%; }
+  .seg span { flex: 1; text-align: center; font-size: 13px; font-weight: 500; padding: 6px 0; border-radius: 7px; }
+  .seg .on { background: var(--cell); box-shadow: 0 3px 8px rgba(0,0,0,.12); font-weight: 600; }
+  .dark .seg .on { background: #636366; }
+  .stepper { display: flex; background: var(--fill); border-radius: 8px; }
+  .stepper span { width: 46px; height: 32px; display: grid; place-items: center; font-size: 22px; color: var(--label); }
+  .stepper span + span { border-left: .5px solid var(--sep); }
+  .thumbs { display: flex; gap: 8px; padding: 12px 16px; }
+  .th { width: 46px; height: 60px; border-radius: 6px; background: #EFEBE2; border: .5px solid var(--sep); }
+  .dark .th { background: #3A3A3C; }
+  .num { color: var(--sec); width: 18px; font-variant-numeric: tabular-nums; font-size: 15px; }
+  .q .t { font-weight: 600; } .q .sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+  .tbicons { display: flex; gap: 20px; color: var(--tint); }
+  .player { flex: 1; display: flex; flex-direction: column; padding: 0 24px; }
+  .pm { display: flex; justify-content: space-between; font-size: 15px; color: var(--sec); font-weight: 500; }
+  .pbar { height: 4px; border-radius: 2px; background: var(--fill2); margin-top: 8px; } .pbar i { display: block; width: 32%; height: 100%; border-radius: 2px; background: var(--label); }
+  .bq { font-size: 34px; font-weight: 700; text-align: center; line-height: 1.15; margin-top: 70px; letter-spacing: -.01em; }
+  .ring { width: 96px; height: 96px; margin: 32px auto 0; position: relative; }
+  .ring svg { width: 96px; height: 96px; transform: rotate(-90deg); }
+  .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 34px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .hintbig { text-align: center; font-size: 17px; font-weight: 600; margin-top: 26px; }
+  .taps { display: flex; justify-content: center; gap: 22px; font-size: 13px; color: var(--sec); margin-top: auto; padding-bottom: 14px; }
+  .end { margin: 0 24px 34px; }
+  .ctl-ill { width: 132px; height: 132px; border-radius: 50%; background: var(--tintsoft); display: grid; place-items: center; margin: 40px auto 0; color: var(--tint); }
+  .dots { display: flex; gap: 6px; } .dots i { width: 14px; height: 14px; border-radius: 50%; background: currentColor; }
+  .check { width: 22px; height: 22px; border-radius: 50%; background: var(--green); display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 700; flex: none; }
+  .ring0 { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--ter); flex: none; }
+  .spin { width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid var(--fill2); border-top-color: var(--sec); flex: none; }
+  .badge { font-size: 13px; color: var(--sec); }
+  /* Ke63: läsläget */
+  .reader { flex: 1; overflow: hidden; padding: 4px 24px 0; font-size: 20px; line-height: 1.42; color: var(--sec); }
+  .reader h3 { font-size: 22px; font-weight: 700; color: var(--sec); margin: 18px 0 6px; line-height: 1.2; }
+  .reader p { margin: 0 0 12px; }
+  .reader .now { color: var(--label); font-weight: 600; background: var(--tintsoft); border-radius: 6px; padding: 1px 3px; margin: 0 -3px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .reader .done { color: var(--label); opacity: .55; }
+  .reader.paused .now { background: var(--fill); }
+  .transport { display: flex; justify-content: center; align-items: center; gap: 46px; padding: 14px 0 4px; color: var(--label); }
+  .transport .big { width: 64px; height: 64px; }
+  .transport .sm { width: 34px; height: 34px; }
+  .rtaps { display: flex; justify-content: center; gap: 18px; font-size: 13px; color: var(--sec); padding: 6px 0 30px; }
+  .rbar { padding: 8px 24px 0; }
+  .body15 { font-size: 15px; line-height: 1.4; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="chev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5 1.5 11.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="back" viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="var(--bar)" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/></symbol>
+  <symbol id="playc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M9.5 7.5v9l7.5-4.5z" fill="var(--cell)"/></symbol>
+  <symbol id="share" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4M7 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="7.5" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="16.5" cy="12" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="cam" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+  <symbol id="photo" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></symbol>
+  <symbol id="txt" viewBox="0 0 24 24"><path d="M5 6h14M5 11h14M5 16h9"/></symbol>
+  <symbol id="doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></symbol>
+  <symbol id="book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7"/></symbol>
+  <symbol id="wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 10v4"/></symbol>
+  <symbol id="school" viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-5 7 5v11M10 21v-5h4v5"/></symbol>
+  <symbol id="pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/><rect x="14" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/></symbol>
+  <symbol id="prev" viewBox="0 0 24 24"><path d="M11.5 6v12L3 12zM21 6v12l-8.5-6z" fill="currentColor"/></symbol>
+  <symbol id="next" viewBox="0 0 24 24"><path d="M12.5 6v12L21 12zM3 6v12l8.5-6z" fill="currentColor"/></symbol>
+  <symbol id="textdoc" viewBox="0 0 24 24"><path d="M5 5h14M5 9.5h14M5 14h14M5 18.5h9"/></symbol>
+</svg>
+<div id="screens"></div>
+<script>
+const I = (id, cls = 'ico', st = '') => `<svg class="${cls}" style="${st}"><use href="#${id}"/></svg>`;
+const chev = `<svg class="chev" style="color:var(--ter)"><use href="#chev"/></svg>`;
+const status = `<div class="status"><span>9:41</span><span>●●●</span></div>`;
+const back = t => `<a>${I('back', 'ico', 'width:12px;height:20px;stroke:none')}${t}</a>`;
+const S = []; const add = (id, tag, cap, f) => S.push({ id, tag, cap, f });
+
+// Exempeltexten är påhittad (biologi åk 9), ingen elevtext.
+const TXT = [
+  ['h', 'Fotosyntesen'],
+  ['p', ['Växter tillverkar sin egen näring genom fotosyntes.', 'Det sker i bladens gröna korn, kloroplasterna.', 'Där fångar klorofyllet energin i solljuset.']],
+  ['p', ['Växten tar upp koldioxid ur luften och vatten genom rötterna.', 'Med ljusets energi blir de till socker och syre.', 'Sockret är växtens mat, och syret släpps ut genom klyvöppningarna.']],
+  ['h', 'Cellandningen'],
+  ['p', ['I cellandningen bryts sockret ner igen.', 'Det sker i mitokondrierna, i alla levande celler.', 'Energin som frigörs använder cellen för att växa och röra sig.']],
+];
+// Mening nummer n (räknat från 0) markeras. Lästa meningar blir halvt fullfärgade, kommande grå.
+const reader = (now, paused = false, scroll = 0) => {
+  let k = 0;
+  const out = TXT.map(([t, v]) => t === 'h' ? `<h3>${v}</h3>` : `<p>${v.map(x => { const i = k++; return `<span class="${i === now ? 'now' : i < now ? 'done' : ''}">${x}</span>`; }).join(' ')}</p>`).join('');
+  return `<div class="reader${paused ? ' paused' : ''}"><div style="margin-top:-${scroll}px">${out}</div></div>`;
+};
+const seg = on => `<div class="seg"><span class="${on === 0 ? 'on' : ''}">Frågor</span><span class="${on === 1 ? 'on' : ''}">Läs upp texten</span></div>`;
+const material = `<div class="sh">Material</div>
+  <div class="sec"><div class="row ic"><span class="sym" style="background:#2346C8">${I('cam')}</span><span class="tintc">Fota sidor</span></div>
+    <div class="row ic"><span class="sym" style="background:#34C759">${I('photo')}</span><span class="tintc">Välj bilder</span></div>
+    <div class="row ic"><span class="sym" style="background:#FF9500">${I('txt')}</span><span class="tintc">Skriv text</span></div>
+    <div class="row ic"><span class="sym" style="background:#8E8E93">${I('doc')}</span><span class="tintc">Lägg till dokument</span></div>
+    <div class="thumbs" style="padding-left:60px"><span class="th"></span><span class="th"></span><span class="th"></span></div></div>`;
+
+add('nytt-fragor', 'Nytt prov: Frågor (som i dag)', 'Valet är systemets segmenterade kontroll, överst i avsnittet Gör, direkt under materialet. Frågor är förvalt. Under kontrollen står bara det som gäller valet: antal frågor och årskurs.',
+  () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Nytt prov</span><span style="width:50px"></span></div>
+  <div class="content" style="padding-top:8px">
+  <div class="sec"><div class="row">Biologiprovet</div></div>
+  ${material}
+  <div class="sh">Gör</div>
+  <div style="margin:0 16px 10px">${seg(0)}</div>
+  <div class="sec"><div class="row">Antal frågor<span class="v" style="gap:12px;color:var(--label)">20<span class="stepper"><span>−</span><span>+</span></span></span></div>
+    <div class="row">Vilken årskurs?<span class="v" style="color:var(--label)">åk 9 ${chev}</span></div></div>
+  <div class="sf">Varje fråga får ett kort och ett långt svar.</div>
+  </div><div class="bottom"><div class="btnp">Skapa frågor</div><div class="note">12 av 15 frågor kvar den här månaden.</div></div></div>`);
+
+add('nytt-las', 'Nytt prov: Läs upp texten', 'Samma skärm. Antal frågor och årskurs försvinner, eftersom texten läses som den är. Fotnoten säger vad det blir och vad det kostar. Knappen byter namn till Skapa uppläsning.',
+  () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Nytt prov</span><span style="width:50px"></span></div>
+  <div class="content" style="padding-top:8px">
+  <div class="sec"><div class="row">Biologiprovet</div></div>
+  ${material}
+  <div class="sh">Gör</div>
+  <div style="margin:0 16px 0">${seg(1)}</div>
+  <div class="sf" style="padding-top:9px">EarMind läser upp materialet som en löpande text, utan frågor. Du pausar och hoppar mellan meningar med AirPods.</div>
+  <div class="sf">Texten räknas som en fråga per påbörjade 800 tecken, ungefär en tredjedel av en boksida.</div>
+  </div><div class="bottom"><div class="btnp">Skapa uppläsning</div><div class="note">12 av 15 frågor kvar den här månaden.</div></div></div>`);
+
+add('las-stammer', 'Stämmer det här? (text)', 'Samma skärm som för frågor, men i stället för frågorna visas rubrikerna och hur lång texten blev. Kostnaden står i siffror innan ljudet görs. Rättelsen fungerar som i dag.',
+  () => `<div class="phone g">${status}<div class="nav"><a>Avbryt</a><span class="t">Stämmer det här?</span><span style="width:50px"></span></div>
+  <div class="content" style="padding-top:8px">
+  <div class="sec"><div class="row">Ämne<span class="v">Biologi</span></div><div class="row">Årskurs<span class="v">åk 9</span></div></div>
+  <div class="sh">Rubriker</div>
+  <div class="sec"><div class="row">Fotosyntesen<span class="v">6 meningar</span></div><div class="row">Cellandningen<span class="v">3 meningar</span></div></div>
+  <div class="sf">9 meningar · cirka 1 min. Sidnummer och sidhuvuden är borttagna.</div>
+  <div class="sh">Något fel? Skriv det</div>
+  <div class="sec"><div class="row" style="color:var(--ter)">Till exempel ”Ta inte med sista sidan”</div></div>
+  </div><div class="bottom"><div class="btnp">Ser rätt ut</div><div class="note">Texten räknas som 1 fråga. 11 kvar sedan.</div></div></div>`);
+
+add('text', 'Provets skärm: en text', 'I stället för frågelistan visas hela texten, med rubrikerna fetstilta. Tryck på en mening för att börja där. Starta prov ligger fast nederst, som för frågor.',
+  () => `<div class="phone g">${status}<div class="nav">${back('Prov')}<span class="tbicons">${I('share', 'ico', 'width:22px;height:22px;stroke:none')}${I('more', 'ico', 'width:24px;height:24px;stroke:none')}</span></div>
+  <div class="lt">Biologiprovet</div><div class="sf" style="padding:0 16px 4px">Text · 9 meningar · cirka 1 min · ljud klart</div>
+  <div class="content"><div class="sec" style="margin-top:12px;padding:2px 16px 4px"><div class="reader" style="padding:0;font-size:17px;color:var(--label)">${TXT.map(([t, v]) => t === 'h' ? `<h3 style="color:var(--label);font-size:20px;margin-top:12px">${v}</h3>` : `<p>${v.join(' ')}</p>`).join('')}</div></div>
+  <div class="sf">Tryck på en mening för att börja där.</div></div>
+  <div class="bottom"><div class="btnp">${I('play', 'ico', 'width:16px;height:16px;stroke:none')}Starta prov</div><div class="note">Spelas i dina AirPods. Mikrofonen används inte.</div></div></div>`);
+
+const playerTop = (n) => `<div class="nav"><a>Avsluta</a><span class="t" style="font-size:15px;color:var(--sec);font-weight:500">Biologiprovet</span><span style="width:60px"></span></div>
+  <div class="rbar"><div class="pm"><span>Mening ${n} av 9</span><span>Fotosyntesen</span></div><div class="pbar"><i style="width:${Math.round(n / 9 * 100)}%"></i></div></div>`;
+const transport = paused => `<div class="transport">${I('prev', 'sm', 'stroke:none')}${I(paused ? 'play' : 'pause', 'big', 'stroke:none')}${I('next', 'sm', 'stroke:none')}</div>`;
+
+add('spelare', 'Spelaren: läser', 'Som texten i Musik som följer låten: meningen som läses är fullfärgad, halvfet och markerad, resten är grå och texten skrollar med. Knapparna är systemets bakåt, paus och framåt. Raden under säger vad trycken på AirPods gör.',
+  () => `<div class="phone">${status}${playerTop(5)}${reader(4, false, 0)}${transport(false)}
+  <div class="rtaps"><span>● Paus</span><span>●● Nästa mening</span><span>●●● Förra meningen</span></div></div>`);
+
+add('spelare-paus', 'Spelaren: pausad', 'Markeringen blir grå och knappen blir ▶. En rad säger var den fortsätter (D164). Ett tryck på en annan mening börjar där.',
+  () => `<div class="phone">${status}${playerTop(5)}${reader(4, true, 0)}
+  <div class="note" style="padding-top:8px">Pausad. Fortsätter från början av meningen.</div>${transport(true)}
+  <div class="rtaps"><span>● Fortsätt</span><span>●● Nästa mening</span><span>●●● Förra meningen</span></div></div>`);
+
+add('spelare-slut', 'Spelaren: texten är slut', 'Texten börjar inte om av sig själv, eftersom den inte är en frågelista. Skärmen säger att den är slut och erbjuder Börja om. Avsluta finns kvar uppe till vänster.',
+  () => `<div class="phone">${status}${playerTop(9)}<div class="cu" style="padding-bottom:20px">${I('textdoc', 'ico big', 'stroke-width:1.6;width:56px;height:56px')}<h2>Slut på texten</h2><p>Du har lyssnat igenom hela Biologiprovet.</p>
+  <div class="btnp" style="width:200px;margin-top:14px">Börja om</div></div>
+  <div class="rtaps"><span>● Börja om</span><span>●●● Förra meningen</span></div></div>`);
+
+add('hem-text', 'Hem: en text bland proven', 'En text ser ut som ett prov, men raden under namnet säger Text och tiden i stället för antal frågor. Ingen egen färg, bara ordet.',
+  () => `<div class="phone g">${status}<div class="nav"><span></span><span class="tbicons">${I('gear', 'ico', 'width:22px;height:22px;stroke:none')}</span></div>
+  <div class="lt">Prov</div><div class="content">
+  <div class="sec" style="padding:14px 16px 16px"><div class="badge">Nästa prov · om 5 dagar</div><div style="font-size:22px;font-weight:700;margin-top:2px">Biologiprovet</div>
+    <div class="sub" style="font-size:15px;color:var(--sec);margin-top:2px">Text · cirka 6 min</div>
+    <div class="btnp" style="margin-top:14px">${I('play', 'ico', 'width:16px;height:16px;stroke:none')}Starta prov</div></div>
+  <div class="sh">Andra prov</div>
+  <div class="sec"><div class="row"><div><div>Historiaprovet</div><div class="sub">12 frågor · ljud klart</div></div><span class="v tintc">${I('playc', 'ico', 'width:30px;height:30px;stroke:none')}</span></div>
+    <div class="row"><div><div>Kemi kapitel 3</div><div class="sub">Text · cirka 11 min · ljud klart</div></div><span class="v tintc">${I('playc', 'ico', 'width:30px;height:30px;stroke:none')}</span></div></div>
+  </div><div class="tb"><span>${I('plus', 'ico', 'width:24px;height:24px;stroke:none')}Nytt prov</span><span></span></div></div>`);
+
+add('kontroller-text', 'Styr med dina AirPods: en text', 'Trycken betyder något annat i en text än i ett prov med frågor. Därför visas kontrollskärmen första gången man startar en text, med textens tre tryck och samma test.',
+  () => `<div class="phone">${status}<div class="nav"><a>Avbryt</a><span></span><span></span></div>
+  <div class="content">
+  <div class="ctl-ill"><span class="dots"><i></i><i></i></span></div>
+  <div style="text-align:center;font-size:28px;font-weight:700;margin-top:24px">Tryck två gånger</div>
+  <div style="text-align:center;font-size:17px;color:var(--sec);margin-top:6px;padding:0 40px">på skaftet, som när du byter låt.</div>
+  <div style="margin:22px 32px 0;font-size:15px;line-height:1.45"><b>Medan texten läses:</b><br>Tryck 1 gång för att pausa eller fortsätta.<br>Tryck 2 gånger för nästa mening.<br>Tryck 3 gånger för förra meningen.</div>
+  <div class="sec" style="margin-top:18px;background:var(--gbg)">
+    <div class="row"><span class="check">✓</span><div>Paus<div class="sub">Tryck en gång</div></div></div>
+    <div class="row"><span class="spin"></span><div>Nästa mening<div class="sub">Tryck två gånger</div></div></div>
+    <div class="row"><span class="ring0"></span><div style="color:var(--sec)">Förra meningen<div class="sub">Tryck tre gånger</div></div></div></div>
+  </div><div class="bottom" style="background:var(--bg);border:0"><div class="btnp dis">Starta prov</div><div class="btnt">Hoppa över</div></div></div>`);
+
+const root = document.getElementById('screens');
+for (const s of S) {
+  const side = th => `<div class="side ${th}"><div class="tag">${s.tag}</div>${s.f(th === 'dark')}<div class="cap">${s.cap}</div></div>`;
+  root.insertAdjacentHTML('beforeend', `<section class="pair" id="${s.id}">${side('light')}${side('dark')}</section>`);
+}
+</script>
+</body>
+</html>

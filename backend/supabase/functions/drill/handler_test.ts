@@ -301,7 +301,7 @@ Deno.test("K47 R5c: import copies questions, answers and audio with 0 new charac
   const orig = await (await w.h("u1")(post({ action: "get", id: a.drill.id }))).json();
   assertEquals(orig.items[0].question, ITEMS[0].question);
   // the photos and documents are never part of a drill, so nothing else can be shared
-  assertEquals(Object.keys(b.drill).sort(), ["covers", "created_at", "grade", "id", "long_words", "shared_from", "subject", "title", "updated_at", "voice_model"]);
+  assertEquals(Object.keys(b.drill).sort(), ["covers", "created_at", "grade", "id", "kind", "long_words", "shared_from", "subject", "title", "updated_at", "voice_model"]);
   assertEquals((await w.h("u3")(post({ action: "import", code: "nosuchcode1" }))).status, 404);
   assertEquals((await (await w.h("u2")(post({ action: "import", code: `earmind://prov/${code}` }))).json()).new_chars, 0);
 });
@@ -592,4 +592,63 @@ Deno.test("K67 (Oscar O65): 'ja/nej' stays; English units and fractions are said
   assert(voiceText("p = F/A").includes("F delat med A"));
   const en = voiceText("At 12 km/h, 3/4 of scientists and 7/9 agree that v = s / t.", "English");
   assert(en.includes("12 kilometres per hour") && en.includes("three quarters") && en.includes("7 over 9") && en.includes("s divided by t"), en);
+});
+
+// ---------- K70 (D185): Läsläget, a text drill ----------
+const TEXT = [
+  { kind: "heading", text: "Fotosyntesen" },
+  { kind: "para", text: "Växter bildar glukos av koldioxid och vatten. Det kräver ljus! Syre blir över, t.ex. i bladen." },
+  { kind: "para", text: "Klorofyll fångar ljuset." },
+];
+
+Deno.test("K70 save a text: one file per part with times per sentence, counted per started 800 characters, shared by hash", async () => {
+  const w = world({ freeQuestions: 15 });
+  const r = await w.h("u1")(post({ action: "save", drill: { title: "Bio", kind: "text" }, items: TEXT }));
+  assertEquals(r.status, 200);
+  const j = await r.json();
+  assertEquals(j.drill.kind, "text");
+  assertEquals(j.audio.total, 3, "one file per part");
+  assertEquals(j.audio.done, 3);
+  assertEquals(j.items[0].part, "heading");
+  assertEquals(j.items[0].audio.text.sentences.length, 1);
+  const p = j.items[1];
+  assertEquals(p.text, TEXT[1].text);
+  assertEquals(p.sentences, ["Växter bildar glukos av koldioxid och vatten.", "Det kräver ljus!", "Syre blir över, t.ex. i bladen."]);
+  const times = p.audio.text.sentences as number[][];
+  assertEquals(times.length, 3, "a time for every displayed sentence");
+  assert(times[0][0] === 0 && times[0][1] < times[1][0] && times[1][1] < times[2][0], "in order, not overlapping");
+  assertEquals(times[2][1], p.audio.text.duration_ms, "the last sentence ends with the file");
+  assertEquals(j.generated_questions, 1, "under 800 characters = one question");
+  assertEquals(w.quota.get("u1"), 1);
+  // another account saving the same text: 0 new characters, nothing counted (D144)
+  const k = w.spoken.length;
+  const r2 = await (await w.h("u2")(post({ action: "save", drill: { kind: "text" }, items: TEXT }))).json();
+  assertEquals(r2.new_chars, 0);
+  assertEquals(w.spoken.length, k);
+  assertEquals(w.quota.get("u2") ?? 0, 0);
+  // the kind never changes
+  const bad = await w.h("u1")(post({ action: "save", drill: { id: j.drill.id, kind: "questions" }, items: ITEMS }));
+  assertEquals(bad.status, 409);
+  // list says the kind; a copy keeps it
+  const l = await (await w.h("u1")(post({ action: "list" }))).json();
+  assertEquals(l.drills[0].kind, "text");
+});
+
+Deno.test("K70 a long text counts every started 800 characters; a question drill is unchanged", async () => {
+  const w = world({ freeQuestions: 15 });
+  const para = "Det här är en mening om cellen och dess delar. ".repeat(40).trim(); // about 1 900 characters
+  const j = await (await w.h("u1")(post({ action: "save", drill: { kind: "text" }, items: [{ kind: "para", text: para.slice(0, 1500) }, { kind: "para", text: para.slice(0, 900) + " Slut." }] }))).json();
+  assertEquals(j.generated_questions, Math.ceil(j.new_chars / 800));
+  const q = await (await w.h("u3")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(q.drill.kind, "questions");
+  assertEquals(q.generated_questions, 2);
+});
+
+Deno.test("K70 a test account's text gets silent audio with sentence times (D180)", async () => {
+  const w = world();
+  const j = await runWithTest({ test: true, reason: "script", userId: "t1" }, async () => await (await w.h("t1")(post({ action: "save", drill: { kind: "text" }, items: TEXT }))).json());
+  const files = [...w.audio.values()].filter((a) => a.kind === "text");
+  assertEquals(files.length, 3);
+  assert(files.every((a) => a.voice_id === TEST_VOICE_ID));
+  assertEquals(j.items[1].audio.text.sentences?.length ?? files[1].sentences?.length, 3);
 });

@@ -415,6 +415,17 @@ All calls are `POST` with the user's JWT, like `/answer`.
    - A photo that never arrived gives 422 `material_missing` ("2 av 30 bilder kom inte fram. Ladda upp dem igen."). Upload those again with new URLs.
 - More than 10 photos are written out as text in parallel batches before the questions are made. Measured live: 30 photos to questions in 22.5 s, answers 12 s more.
 
+### Läsläget (K70, D185): a running text instead of questions
+
+1. **Read the material:** `POST /exam {"action":"read", "pages"?|"page_paths"?|"text"?, "subject"?, "grade"?, "title"?}` (the same inputs as `drill`) ->
+   `{"kind":"text", "title", "subject", "grade", "parts":[{"kind":"heading"|"para","text"}], "chars", "counts_as", "truncated"?, "warning"?, "quota", "usage"}`.
+   The material cleaned for reading aloud: headings kept, page numbers, running heads and footers removed, OCR and hyphenation errors mended, nothing shortened or added (Haiku, chunks of 6 000 characters / 4 photos in parallel). At most 40 000 characters and 150 parts; a paragraph over 1 500 characters is split at a sentence end. `counts_as` = what saving it will count (every started 800 characters). 402 `quota_exceeded` when the month has nothing left, 422 `drill_unreadable` when nothing could be read. Nothing is stored.
+2. **Save:** `POST /drill {"action":"save", "drill": {"kind":"text", "title", "subject", "grade", "voice_model"?}, "items": [{"id"?, "kind":"heading"|"para", "text"}]}`. One audio file per part, made at save in play order with the drill's voice and model (D151), shared by hash (D144: the same text costs nothing the second time). The kind is fixed at the first save (409 `kind_locked`).
+3. **Quota:** the new audio's characters, every started `drill_settings.text_chars_per_question` (800) = one question (`generated_questions` in the reply, 402 as for questions). Shared, imported and published texts cost nothing.
+4. **Get/status:** `drill.kind` is `"text"`; each item is `{"id","position","part":"heading"|"para","text","sentences":["…","…"],"voice_chars","audio":{"text":{"status","url","duration_ms","sentences":[[start_ms,end_ms],…]}}}`. `sentences` (the displayed sentences) and `audio.text.sentences` (their times in the file) always have the same length and order: pause = stop and resume from the current sentence's `start_ms` (D164); 2 presses = next sentence (the next part's first when it is the last); 3 presses = previous. A heading is one sentence.
+5. **List, share, import, publish, search:** as for questions; `list` gives `kind` per drill; a publication's `preview` rows for a text are `{"question": <the part's text>, "short": "", "part"}`; `first_audio_url` is the first part's file.
+6. **Test accounts (D180):** silent audio with even, fake character times, so the sentence times exist and never call ElevenLabs.
+
 ## Help AI: `POST /help` (K57, D166): contract for the app (A92)
 - `{"question": "Hur delar jag ett prov?"}` → `{"answer", "in_scope": true, "usage"}`.
   - The answer is short Swedish (at most 4 sentences or 5 numbered steps) and uses the app's own button names.

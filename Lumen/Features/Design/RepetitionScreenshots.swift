@@ -23,7 +23,9 @@ enum RepetitionDemo {
                                       "repQuotaUsedUp", "repLength", "repLengthEdit", "repSoundProblemNone",
                                       "repWaitingProblem",
                                       // A102 (K66 point 4): numbers and formulas shown as in a textbook
-                                      "repNumbers", "repNumbersEdit"]
+                                      "repNumbers", "repNumbersEdit",
+                                      // A104 (Angela Fable): empty and error states; A103: no network
+                                      "repSchoolsOffline", "repSchoolsFailed", "repSchoolSearchNone", "repSchoolSearchFailed", "repPublishFailed", "repSoundMaking", "repQuotaExam", "repHelpTryUsedUp", "repNewOffline", "repExamOffline"]
 
     /// A102: Matteprovet, spoken with the numbers as words, shown with digits and formulas (`DrillItem.screen`).
     static let maths: Drill = {
@@ -111,7 +113,10 @@ enum RepetitionDemo {
     static func seed(_ model: RepetitionModel, for name: String) {
         for old in model.store.drills { model.store.delete(old.id) } // left by an earlier screen
         // A83: demo schools and publications instead of the server; my school is set except for the empty list.
-        model.publishing = DemoPublishing(empty: name == "repSchoolsEmpty")
+        model.publishing = DemoPublishing(empty: name == "repSchoolsEmpty", failure: DemoPublishing.failure(for: name),
+                                          noSchools: name == "repSchoolSearchNone")
+        // A103/A104: no network, said before the user tries.
+        if ["repSchoolsOffline", "repNewOffline", "repExamOffline"].contains(name) { model.stageOffline(true) }
         model.mySchool = name == "repSchoolsEmpty" ? nil : DemoPublishing.school
         if name == "repSchoolsEmpty" { model.mySchoolAsked = true }
         // A100: a new user without exams has not started one, so no Fler lägen row (set here, scenes share defaults).
@@ -123,6 +128,10 @@ enum RepetitionDemo {
         // A99: the month's questions are used up (D175); the server's length classes (D176).
         if name == "repQuotaUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
         if name == "repLength" || name == "repLengthEdit" { model.store.save(drillWithLengths) }
+        // A104: the sound is being made (no file yet, nothing wrong); the month's questions ran out for an exam.
+        if name == "repSoundMaking" { model.store.save(chemistry) }
+        if name == "repQuotaExam" { model.stagedQuotaExceeded.insert(history.id) }
+        if name == "repHelpTryUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
         if name == "repNumbers" || name == "repNumbersEdit" { model.store.save(maths) } // A102
         if name == "repSoundProblemNone", let audio = model.audio as? DeviceVoiceDrillAudio {
             model.store.save(chemistry) // no files at all
@@ -194,7 +203,20 @@ enum RepetitionDemo {
                 NavigationStack { HomeView(model: listening) }
             case "repSoundProblem": NavigationStack { DrillView(model: model, drillID: history.id) }
             case "repSoundProblemNone": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
-            case "repQuotaUsedUp": NewDrillView(model: model) { _ in }
+            case "repQuotaUsedUp", "repNewOffline": NewDrillView(model: model) { _ in }
+            case "repSchoolsOffline", "repSchoolsFailed": NavigationStack { SchoolExamsView(model: model) }
+            case "repSchoolSearchNone", "repSchoolSearchFailed":
+                SchoolPicker(model: model, title: "Välj skola", selected: nil, onSkip: nil, stagedQuery: "Kungsh", onPick: { _ in })
+            case "repPublishFailed":
+                PublishSheet(model: model, drill: drill, stagedProblem: "Det gick inte att publicera just nu. Försök igen om en stund.")
+            case "repSoundMaking": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
+            case "repQuotaExam": NavigationStack { DrillView(model: model, drillID: history.id) }
+            case "repExamOffline": NavigationStack { DrillView(model: model, drillID: drill.id) }
+            case "repHelpTryUsedUp":
+                NavigationStack(path: .constant(["try"])) {
+                    HelpChatView(model: model)
+                        .navigationDestination(for: String.self) { _ in HelpTryView(model: model) {} }
+                }
             case "repLength": NavigationStack { DrillView(model: model, drillID: drill.id) }
             case "repLengthEdit": DrillItemEditor(model: model, drill: drillWithLengths, itemID: drill.items[2].id)
             case "repNumbers": NavigationStack { DrillView(model: model, drillID: maths.id) }
@@ -269,15 +291,39 @@ final class DemoPublishing: DrillPublishingService {
                              display_name: nil),
     ]
     let empty: Bool
+    /// A104: every call fails with this (no network, the server down).
+    let failure: DrillCloudError?
+    /// A104: the school search finds nothing.
+    let noSchools: Bool
 
-    init(empty: Bool) { self.empty = empty }
+    init(empty: Bool, failure: DrillCloudError? = nil, noSchools: Bool = false) {
+        self.empty = empty
+        self.failure = failure
+        self.noSchools = noSchools
+    }
 
-    func schools(matching query: String) async throws(DrillCloudError) -> [DrillSchool] { [Self.school] }
+    static func failure(for scene: String) -> DrillCloudError? {
+        switch scene {
+        case "repSchoolsOffline": .offline("screenshots")
+        case "repSchoolsFailed", "repSchoolSearchFailed", "repPublishFailed":
+            .refused(status: 503, code: "unavailable", message: "Ingen kontakt med EarMind just nu. Försök igen om en stund.")
+        default: nil
+        }
+    }
+
+    func schools(matching query: String) async throws(DrillCloudError) -> [DrillSchool] {
+        if let failure { throw failure }
+        return noSchools ? [] : [Self.school]
+    }
     func publish(drillID: String, school: DrillSchool, subject: String, examDate: Date,
-                 displayName: String?) async throws(DrillCloudError) -> DrillPublicationView { Self.results[0] }
+                 displayName: String?) async throws(DrillCloudError) -> DrillPublicationView {
+        if let failure { throw failure }
+        return Self.results[0]
+    }
     func unpublish(drillID: String) async throws(DrillCloudError) {}
     func search(school: DrillSchool?, subject: String?, mySchool: DrillSchool?) async throws(DrillCloudError) -> [DrillPublicationView] {
-        empty ? [] : Self.results
+        if let failure { throw failure }
+        return empty ? [] : Self.results
     }
     func importPublication(id: String) async throws(DrillCloudError) -> DrillCloudView {
         throw .offline("screenshots")

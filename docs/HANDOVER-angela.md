@@ -1,3 +1,94 @@
+# Angela Schrute (moln), 2026-11-15 04.05
+
+- **Klart:** A103 (43664558381), A105 läsläget (43667072023, D188) och Toby 2:s T24-fynd L2–L6 (43670110088). Alla
+  är gröna i CI och inget är provat på telefon. Rapporterna är `reports/2026-11-15-0313-*`, `-0325-*` och `-0400-*`.
+- **Kvar:** A3 (väntar på K6). Angela Fable har A106 (läslägets vyer, gränssnittet står i A105-rapporten) och L4-vyn
+  (`model.quotaIsKnown`).
+- **CI:** det finns i praktiken en macOS-maskin för iOS build, Tobys apptest och skärmbilder. Pusha inte appkod till
+  en egen gren bara för att prova, för det bygget blockerar main. Klassificeraren tillåter inte `gh run cancel`.
+- **Läsläget i korthet:** `Drill.kind == .text`. Delarna är `DrillItem` med `part`, `sentences` och
+  `sentenceTimesMs`, och ljudet ligger i `longAudio`. `RepetitionSession.reader` är spelaren och `player` är då nil.
+
+---
+
+# Överlämning: Angela (app) till molnet, 2026-11-15 02.50
+
+## Klart och grönt i CI (inte provat på telefon)
+Allt nedan har en rapport i `reports/2026-11-14-*-angela-*.md` och en grön iOS build.
+
+| Punkt | Commit | Grön iOS build |
+|---|---|---|
+| A99 (frågor kvar, längdklass) |se rapporten | 43617962807 |
+| T17-fynd 8 (namnet mitt i en mening) |se rapporten | 43617962807 |
+| A97 (Earmind väcker) |se rapporten | 43617962807 |
+| A101 (EarMind med stort M) | 9079dae | 43617962807 |
+| A87-punkten: systemets stil i hela appen (D181) och förhandsvisningens fält | c7742f0 | 43624998385 |
+| Testkrok `LUMEN_TEST_HEADER` för `x-earmind-test` i Debug | 37ae1c1 | 43624998385 |
+| T17c-fynd 9 ("Hej, Lumen." ensamt) | 3c4db96 | 43627707528 |
+| A102 (visningstext `DrillItem.screen`) | b793ea6 | 43632730806 |
+| may_fix (K67) | c0eaaee | 43640375259 |
+| Kellys Ke61 F1 (tal utan punkt) | b4e1217 | 43640375259 |
+| T25-fynd 9b (frågan efter "Ja?" går som tilltal) | 96e59ab | 43640375259 |
+| T24 kontobyte raderar aldrig prov (D183, `Drill.ownerID`) | 09885ad | 43645181127 |
+
+Toby 2:s omtest av D183 är grönt.
+
+## Pågår: A103 (molnet tar den) – pushad på main, CI inte grön än
+- **Commits:** 629b15c, D186 i DECISIONS.
+- **Ljudet:** ljudet låg redan i Application Support (`drill_audio`); det var bara kommentaren i `Drill.swift` som sa
+  "cache". Nu gäller också:
+  - mappen ligger utanför iCloud-säkerhetskopian;
+  - `CloudDrillAudio.removeUnused()` tar bort ljudfiler som inget sparat prov använder, vid start och bara
+    `.mp3/.m4a/.aac/.wav/.caf`;
+  - utan nät väntar `prepare` (högst 30 min) och fortsätter själv, med texten `waitingForNetworkLine`;
+  - en fil som inte kan skrivas för att telefonen är full ger `noSpaceLine` och räknas aldrig som nedladdad.
+- **Nätet i vyerna:**
+  - `NetworkStatus.changes()` (AsyncStream) och `RepetitionModel.isOffline` är observerade. Modellen kör `refresh()`
+    när nätet kommer tillbaka.
+  - En text för inget nät: `NetworkStatus.noNetworkLine` ("Ingen internetanslutning. Försök igen när du är
+    uppkopplad."), som används av DrillMakingError, HelpError och DrillCloudError utan nät.
+- **Scener för Angela Fables A104 och A103 (a37826a, 982a976):**
+  - repSchoolsOffline, repSchoolsFailed, repSchoolSearchNone, repSchoolSearchFailed och repPublishFailed;
+  - repSoundMaking, repQuotaExam och repHelpTryUsedUp;
+  - repNewOffline och repExamOffline.
+
+  De använder `stageOffline`, `stagedQuotaExceeded`, `DemoPublishing(failure:noSchools:)` och Fables `stagedQuery` och
+  `stagedProblem`.
+- **Tester:** `aDownloadedExamPlaysWithoutANetwork` och `soundNoExamUsesIsRemovedAtLaunch` i
+  `A79A81RepetitionTests`. `A92HelpTests` läser `noNetworkLine`.
+- **CI:** byggena för 629b15c och a37826a avbröts av nyare pushar. Det som gäller är iOS build 43664558381 (982a976 på
+  main), som var `pending` 02.47. **Inte verifierat:**
+  - läs sviterna i det bygget, och rätta om det är rött;
+  - skriv rapporten `reports/…-angela-a103-utan-nat.md`;
+  - stäng A103 i kön och säg till Toby 1 (T27: simulatorn med nätet av);
+  - säg till Angela Fable när bygget är grönt, så att hon kan köra skärmbilderna för A104.
+
+## Nästa för molnet
+- **Toby 2:s T24-fynd** (`reports/apptest/2026-11-15-0250-toby2-t24-hela-flodet.md`), min logik:
+  - **L2:** ett importerat prov heter "Nytt prov". Ta namnet från ämnet eller första frågan (`saveImport`).
+  - **L3:** "Här är frågorna:" blir "1 rad kunde inte läsas". Importregeln delas med Kevins `import_text` via
+    `testdata/import/o58-cases.json`, så ändra den tillsammans med Kevin och lägg till ett fall.
+  - **L4:** Nytt prov visar 20 innan kvoten har kommit.
+  - **L5:** `unavailable` sades först efter mer än 40 s.
+  - **L6:** `slow` visar "0 av 6" utan tecken på att något händer.
+- **Öppet till Architect (D183):** ska ett prov som behållits efter ett kontobyte laddas upp igen under det nya kontot?
+  Det kostar nytt ljud.
+- **A3** väntar på K6.
+
+## Bra att veta
+- **Delad utcheckning:**
+  - Andra sessioner gör merge-commits och autostash på main. Committa alltid med sökväg (`-- <filer>`) och kör
+    `git pull --rebase --autostash` före push.
+  - Leta efter konfliktmarkörer.
+  - Låt andras `stash@{n}` vara.
+- **Beslutsnummer krockar:** Deangelo tog D184 medan jag skrev, och mitt blev D186. Läs sista raden i DECISIONS precis
+  före commit.
+- **Bash-heredoc i det här verktyget** förstör ibland Python-strängar med `$0` eller `\(`. Skriv patchskript med
+  Write och kör dem som fil.
+- **ElevenLabs (D180):** inga tester som gör ljud. /exam kostar bara Claude.
+
+---
+
 # Överlämning: Angela (app), 2026-11-11, uppdaterad kl. 23.40
 
 Sessionen 2026-11-11 gjorde A50–A69:
@@ -86,3 +177,32 @@ och `reports/2026-11-11-*-angela-a6*.md`.
     Earmind?, och "kör spellistan" ska tillbaka i exemplen när de fungerar.
   - Ordningen i röstningen sparas bara på telefonen. K39 har inget fält för den.
 - **Aron:** ska väckningsordet också bli Earmind? Prova i kväll Start, Mina svar, en timer och en kalenderfråga.
+
+## Angela Fable (repetitionsflödets vyer): överlämning till molnet, 2026-11-15 02:48
+Från den lokala sessionen till "Angela Fable (moln)". Den lokala sessionen tar inga fler punkter. Längre version
+(mina filer, arbetssätt, öppna trådar): `docs/HANDOVER-angela-fable.md`.
+
+**Klart och grönt (rapporter i `reports/2026-11-14-*-angela-fable-*.md`):** A87, A90, A92–A95, A98–A102 i mina vyer,
+Kellys P1. Senaste gröna iOS build med mina ändringar: 43640280850 (71ef001).
+
+**Pågår: A104 (tomma lägen och fellägen). Inte klar.** Allt ligger på `main`, ingen egen gren.
+- Pushat: 3b4f33b (skollistan och skolsökningen som systemets tomläge med Försök igen, publiceringsfelet under
+  knappen, "Ljudet görs. Du kan starta när första frågan är klar.", slut på frågor på provet och i Prova på en kort
+  text), 3d76e71 (utan nät: `model.isOffline`, rad i Nytt prov och på provet, `NetworkStatus.noNetworkLine`),
+  9506c2e (`SchoolPicker.stagedQuery`, `PublishSheet.stagedProblem`).
+- **02:56: Simulator screenshots 43664433881 (3d76e71) blev grön**, så 3b4f33b och 3d76e71 kompilerar i
+  Simulatorbygget (9506c2e ingår inte i den körningen). Bilderna i den körningen är inte granskade.
+- Tidigare notering: Simulator screenshots 43664433881 (3d76e71) gick när detta skrevs; inget
+  iOS build med A104 är klart (43664672940 på 2d1ec9e går, 43664558381 väntar). Börja med att läsa de körningarna.
+- Bilder: körningarna 43664669468 (17 Pro) och 43664675303 (SE, största text) är startade med Angela Schrutes tio
+  scener (repSchoolsOffline, repSchoolsFailed, repSchoolSearchNone, repSchoolSearchFailed, repPublishFailed,
+  repSoundMaking, repQuotaExam, repHelpTryUsedUp, repNewOffline, repExamOffline). Ingen bild är sedd, Kelly har
+  inget fått.
+- Kvar: titta på bilderna, kontaktblad i `reports/2026-11-15-a104-bilder/`, till Kelly med en lista över varje läge
+  och text, rätta, rapport `reports/<datum-tid>-angela-fable-a104.md` med en tabell över alla nio lägen, STATUS,
+  kö (raden står "pågår"), tavla.
+- Tobys T24-fynd i mina vyer (`reports/apptest/2026-11-15-0250-toby2-t24-hela-flodet.md`), inte påbörjade: V1
+  Publicera prov ser tryckbar ut medan "Saknas: …" står under (ska vara grå); V2 varningen "Publicerat." behövs inte
+  när raden Publicerat syns. V3 ("Lumen" i Fler lägen) och V4 (kortet Har du prov snart?) är Angela Schrutes filer.
+
+**Därefter:** A106 (läslägets vyer, D185) efter A105, K70 och Kellys Ke63. **0 ElevenLabs (D180).**

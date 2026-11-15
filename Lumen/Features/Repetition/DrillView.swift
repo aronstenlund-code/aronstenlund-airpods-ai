@@ -111,7 +111,8 @@ struct DrillView: View {
                     } label: {
                         Label("Dela", systemImage: "square.and.arrow.up")
                     }
-                    .disabled(!model.isAudioReady(drill)) // D143: otherwise the receiver would make the same sound again
+                    // D143: otherwise the receiver would make the same sound again. A104: a link needs the network.
+                    .disabled(!model.isAudioReady(drill) || model.isOffline)
                 }
                 Menu {
                     if model.savedIndex(drill) != nil {
@@ -119,7 +120,7 @@ struct DrillView: View {
                     }
                     if model.canPublish, drill.publication == nil { // A83 (Ke52)
                         Button("Publicera prov", systemImage: "building.columns") { publishing = true }
-                            .disabled(!model.isAudioReady(drill))
+                            .disabled(!model.isAudioReady(drill) || model.isOffline) // A104
                     }
                     Button("Ändra ordning", systemImage: "arrow.up.arrow.down") {
                         withAnimation { editMode = .active }
@@ -144,6 +145,15 @@ struct DrillView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
                     .listRowSeparator(.hidden)
+            }
+
+            if model.isOffline { // A104 (A103): said once, quietly; playing works, Dela and Publicera wait
+                Section {
+                    Label("Ingen internetanslutning. Dela och Publicera fungerar när du är uppkopplad.",
+                          systemImage: "wifi.slash")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             if model.quotaExceeded(drill) { // A84 (D155): the month's questions are used up

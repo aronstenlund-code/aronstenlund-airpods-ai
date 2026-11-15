@@ -11,6 +11,8 @@ import SwiftUI
 struct PublishSheet: View {
     let model: RepetitionModel
     let drill: Drill
+    /// The screenshots (A104): the sheet as it is after a failed Publicera.
+    var stagedProblem: String? = nil
     @Environment(\.dismiss) private var dismiss
     @State private var school: DrillSchool?
     @State private var subject: String?
@@ -79,7 +81,10 @@ struct PublishSheet: View {
                     choosingSchool = false
                 }
             }
-            .onAppear(perform: load)
+            .onAppear {
+                load()
+                if let stagedProblem, problem == nil { problem = stagedProblem }
+            }
         }
     }
 
@@ -119,7 +124,7 @@ struct PublishSheet: View {
                 dismiss()
             } catch {
                 if case .offline = error {
-                    problem = "Ingen internetanslutning. Försök igen när du är uppkopplad."
+                    problem = NetworkStatus.noNetworkLine // A104: one wording (A103)
                 } else if case .refused(let status, _, let message) = error, status == 409 || status == 400 {
                     problem = message
                 } else {
@@ -138,6 +143,8 @@ struct SchoolPicker: View {
     var selected: DrillSchool?
     /// "Vilken skola går du på?" the first time: with Hoppa över.
     var onSkip: (() -> Void)?
+    /// The screenshots (A104): a search already typed, so the empty and the failed search can be shown.
+    var stagedQuery: String? = nil
     let onPick: (DrillSchool) -> Void
     @State private var query = ""
     @State private var results: [DrillSchool] = []
@@ -191,6 +198,9 @@ struct SchoolPicker: View {
             }
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "Sök skola eller ort")
             .onChange(of: query) { _, q in search(q) }
+            .onAppear {
+                if let stagedQuery, query.isEmpty { query = stagedQuery }
+            }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -514,7 +524,7 @@ struct PublicationView: View {
                 if case .refused(let status, _, let message) = error {
                     problem = status == 404 ? "Provet finns inte längre." : message
                 } else {
-                    problem = "Ingen internetanslutning. Försök igen när du är uppkopplad."
+                    problem = NetworkStatus.noNetworkLine // A104: one wording (A103)
                 }
             }
             adding = false

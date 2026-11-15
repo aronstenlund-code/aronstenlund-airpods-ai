@@ -222,6 +222,13 @@ final class RepetitionModel {
                              questions: settings.questions, longWords: settings.length.words)
     }
 
+    /// A105 (D185, K70): Läs upp texten: the material cleaned for reading aloud. Nothing is stored or counted until
+    /// `save(draft.drill)`.
+    func readText(_ material: DrillMaterial, subject: String? = nil, grade: String? = nil,
+                  title: String? = nil) async throws(DrillMakingError) -> DrillTextDraft {
+        try await maker.readText(material, subject: subject, grade: grade, title: title)
+    }
+
     /// Saves on the phone at once, then on the server, which starts the sound in the background (D143: when the exam
     /// is saved). Items whose texts changed lose their old sound; the others keep it.
     @discardableResult
@@ -230,11 +237,14 @@ final class RepetitionModel {
         let before = store.drill(drill.id)
         drill.items = drill.items.map { item in
             var item = item
-            item.long = DrillItem.long(item.long, startingWith: item.short) // D145
+            if item.part == nil { item.long = DrillItem.long(item.long, startingWith: item.short) } // D145
             if let old = before?.items.first(where: { $0.id == item.id }), !old.sameText(as: item) {
                 item.questionAudio = old.question == item.question ? old.questionAudio : nil
                 item.longAudio = nil
                 item.shortEndMs = nil
+                // A105: a changed text part is split and timed again by the server.
+                item.sentenceTimesMs = nil
+                if item.part != nil { item.sentences = nil }
             }
             return item
         }
@@ -288,7 +298,7 @@ final class RepetitionModel {
                 Log.repetition.info("Drill list: \(error.userMessage, privacy: .public)")
             }
         }
-        for drill in store.drills where audio.tracks(for: drill) == nil || drill.needsUpload == true { prepareAudio(drill) }
+        for drill in store.drills where !audio.hasAllSound(drill) || drill.needsUpload == true { prepareAudio(drill) }
     }
 
     enum ListDecision: Equatable { case stamp(UUID), delete(UUID), keepOtherAccount(UUID) }
@@ -323,7 +333,8 @@ final class RepetitionModel {
 
     /// Kelly Ke49: Starta prov works as soon as the first question has its sound; the player waits for the rest.
     func canStart(_ drill: Drill) -> Bool {
-        audio.track(for: drill, at: 0) != nil
+        if drill.isText { return audio.reading(for: drill, part: 0) != nil } // A105
+        return audio.track(for: drill, at: 0) != nil
     }
 
     func newAnswer(for question: String, in drill: Drill) async throws(DrillMakingError) -> DrillItem {
@@ -335,6 +346,7 @@ final class RepetitionModel {
     func savedIndex(_ drill: Drill) -> Int? { session.savedIndex(for: drill) }
 
     func start(_ drill: Drill, at index: Int = 0) async {
+        if drill.isText { await read(drill, at: index); return }
         guard !drill.items.isEmpty, canStart(drill) || audio.track(for: drill, at: index) != nil else { return }
         await stopListening?()
         let audio = self.audio
@@ -357,6 +369,42 @@ final class RepetitionModel {
     }
 
     static let playedKey = "repetition.hasPlayed"
+
+    // MARK: Läsläget (A105, D185)
+
+    /// A105 (Ke63 §5): the sentence a text was left at ("Fortsätt"), nil for the start.
+    func savedSentence(_ drill: Drill) -> Int? { session.savedSentence(for: drill) }
+
+    /// A105 (D185): reads a text aloud from `sentence` (counted through the whole text). Plays without network once
+    /// the sound is downloaded (A103); a part whose sound has not come is waited for. Starts when the sound of the
+    /// part it starts in is here.
+    func read(_ drill: Drill, at sentence: Int = 0) async {
+        guard drill.isText, !drill.items.isEmpty else { return }
+        let startPart = Self.part(of: sentence, in: drill)
+        guard audio.reading(for: drill, part: startPart) != nil || canStart(drill) else { return }
+        await stopListening?()
+        let audio = self.audio
+        let store = self.store
+        let id = drill.id
+        if let publishing, drill.fromPublication != nil, let serverID = drill.serverID {
+            Task { await publishing.played(drillID: serverID) }
+        }
+        session.startReading(drill, at: sentence, tempo: tempo) { part in
+            audio.reading(for: store.drill(id) ?? drill, part: part)
+        }
+        showsPlayer = true
+    }
+
+    /// The part sentence number `sentence` is in.
+    static func part(of sentence: Int, in drill: Drill) -> Int {
+        var left = max(sentence, 0)
+        for (i, item) in drill.items.enumerated() {
+            let n = item.readingSentences.count
+            if left < n { return i }
+            left -= n
+        }
+        return max(drill.items.count - 1, 0)
+    }
 
     // MARK: Voice, tempo and the limit (A84, D151, D152, D155)
 
@@ -433,9 +481,21 @@ final class RepetitionModel {
     /// prov follows it.
     var quota: DrillQuota?
 
+    /// Toby 2 T24 L4: the month's questions are known (Nytt prov showed 20 and then jumped to 15). Until then the
+    /// view shows no number, or a grey one. Always known in the mock mode, which has no limit.
+    var quotaIsKnown: Bool { quota != nil || cloud == nil }
+
     func quotaExceeded(_ drill: Drill) -> Bool {
-        (audio as? CloudDrillAudio)?.quotaExceeded.contains(drill.id) ?? false
+        #if DEBUG
+        if stagedQuotaExceeded.contains(drill.id) { return true }
+        #endif
+        return (audio as? CloudDrillAudio)?.quotaExceeded.contains(drill.id) ?? false
     }
+
+    #if DEBUG
+    /// Screenshots (A104): an exam the month's questions ran out for.
+    @ObservationIgnored var stagedQuotaExceeded: Set<UUID> = []
+    #endif
 
     // MARK: Publicera prov (A83, D149, D150, K49)
 
