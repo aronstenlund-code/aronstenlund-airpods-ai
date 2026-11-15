@@ -1,0 +1,168 @@
+{
+ "start": "2026-11-15T16:18:27.463893+00:00",
+ "end": "2026-11-15T16:19:41.821981+00:00",
+ "claude_usd": 0.0,
+ "fixture": "scripts/qa/o68_edited.json",
+ "items": [
+  {
+   "eid": "edit-01",
+   "subject": "Fysik",
+   "question": "Vad säger Newtons andra lag?",
+   "short": "Kraften är massan gånger accelerationen.",
+   "long": "Kraften är massan gånger accelerationen. Enl. kap. 4 skrivs det F = m · a, t.ex. ger 5 kg och 2 m/s² en kraft på 10 N (se fig. 3).",
+   "drill_id": "fd14ec05-1580-4619-be95-91fc386589bc"
+  },
+  {
+   "eid": "edit-02",
+   "subject": "Fysik",
+   "question": "Hur snabbt går ljudet?",
+   "short": "Ljudet går ca 340 m/s i luft.",
+   "long": "Ljudet går ca 340 m/s i luft. I vatten går det ungefär 4 ggr snabbare, dvs. ca 1 500 m/s.",
+   "drill_id": "9d14f8e7-effb-45ce-bf24-0f95a8d159de"
+  },
+  {
+   "eid": "edit-03",
+   "subject": "Kemi",
+   "question": "Vad bildas när metan brinner?",
+   "short": "Det bildas koldioxid och vatten.",
+   "long": "Det bildas koldioxid och vatten. Formeln är CH4 + 2 O2 → CO2 + 2 H2O, och reaktionen avger energi (exoterm).",
+   "drill_id": "2554e034-9290-41a1-af30-582321633697"
+  },
+  {
+   "eid": "edit-04",
+   "subject": "Kemi",
+   "question": "Vad är pH?",
+   "short": "pH är ett mått på hur surt något är.",
+   "long": "pH är ett mått på hur surt något är. Skalan går från 0–14; pH < 7 är surt, pH = 7 neutralt och pH > 7 basiskt.",
+   "drill_id": "43e017e3-6953-40f9-8914-dc4b432c9c37"
+  },
+  {
+   "eid": "edit-05",
+   "subject": "Biologi",
+   "question": "Vad gör de röda blodkropparna?",
+   "short": "De transporterar syre.",
+   "long": "De transporterar syre. Hemoglobinet (Hb) binder O2 i lungorna och lämnar det i vävnaderna, bl.a. i musklerna.",
+   "drill_id": "f417cecc-9ee7-4c2d-ab15-c9e5ad59e6a8"
+  },
+  {
+   "eid": "edit-06",
+   "subject": "Biologi",
+   "question": "Hur många kromosomer har människan?",
+   "short": "Människan har 46 kromosomer.",
+   "long": "Människan har 46 kromosomer. Det är 23 par, dvs. ett från varje förälder. DNA:t finns i cellkärnan, och ca 2 % av det är gener.",
+   "drill_id": "99fd0ac6-b099-4602-a697-cfc4e5db8bd1"
+  },
+  {
+   "eid": "edit-07",
+   "subject": "Matematik",
+   "question": "Vad är 25 % av 80?",
+   "short": "Det är 20.",
+   "long": "Det är 20. Man räknar 0,25 · 80 = 20, eller 80/4 = 20.",
+   "drill_id": "d55b276c-33bc-4241-b170-e7ee30c85f34"
+  },
+  {
+   "eid": "edit-08",
+   "subject": "Matematik",
+   "question": "Vad är arean av en cirkel?",
+   "short": "Arean är pi gånger radien i kvadrat.",
+   "long": "Arean är pi gånger radien i kvadrat. A = π · r², så med r = 3 cm blir A ≈ 28,3 cm².",
+   "drill_id": "b1f7904d-8dd7-4019-930f-7e9ed549ace2"
+  },
+  {
+   "eid": "edit-09",
+   "subject": "Matematik",
+   "question": "Hur löser man 2x + 3 = 11?",
+   "short": "Man får x = 4.",
+   "long": "Man får x = 4. Först drar man bort 3: 2x = 8. Sedan delar man med 2: x = 8/2 = 4.",
+   "drill_id": "8dea0c41-2332-4299-a909-e62816fdc640"
+  },
+  {
+   "eid": "edit-10",
+   "subject": "Fysik",
+   "question": "Vad är temperaturen på solens yta?",
+   "short": "Den är ungefär 5 500 °C.",
+   "long": "Den är ungefär 5 500 °C. Det motsvarar ca 5 800 K, och i kärnan är det ~15 milj. °C.",
+   "drill_id": "5a0d8793-3eae-40cb-81f2-a241b9734516"
+  },
+  {
+   "eid": "edit-11",
+   "subject": "Geografi",
+   "question": "Hur stor är Sveriges befolkning?",
+   "short": "Sverige har drygt 10,5 miljoner invånare.",
+   "long": "Sverige har drygt 10,5 miljoner invånare. Ca 85 % bor i tätorter, främst i Sthlm, Gbg och Malmö.",
+   "drill_id": "2cb5159c-1169-44ce-8f0f-64fcdf481a69"
+  },
+  {
+   "eid": "edit-12",
+   "subject": "Historia",
+   "question": "När var franska revolutionen?",
+   "short": "Den började 1789.",
+   "long": "Den började 1789. Kungen Ludvig XVI avrättades 1793, och Napoleon tog makten 1799.",
+   "drill_id": "933bea6f-794d-41ee-9f46-82d59a0cf75c"
+  },
+  {
+   "eid": "edit-13",
+   "subject": "Historia",
+   "question": "Vad hände 1914–1918?",
+   "short": "Då pågick första världskriget.",
+   "long": "Då pågick första världskriget. Det började efter mordet i Sarajevo 28/6 1914, och ca 17 milj. människor dog.",
+   "drill_id": "07034935-7883-46ce-86e0-5a245bed5b3a"
+  },
+  {
+   "eid": "edit-14",
+   "subject": "Samhällskunskap",
+   "question": "Hur många ledamöter har riksdagen?",
+   "short": "Riksdagen har 349 ledamöter.",
+   "long": "Riksdagen har 349 ledamöter. Partierna måste få minst 4 % av rösterna; S, M och SD är störst (2022).",
+   "drill_id": "3aebbfb0-3961-4b10-9290-90624360a026"
+  },
+  {
+   "eid": "edit-15",
+   "subject": "Svenska",
+   "question": "Vad är ett argument?",
+   "short": "Ett argument är ett skäl för en åsikt.",
+   "long": "Ett argument är ett skäl för en åsikt. Ex: \"Skolan borde börja senare\" – argument: 1) tonåringar sover mer, 2) de lär sig bättre.",
+   "drill_id": "ad75dcd0-d873-4d55-937e-8831e69923ec"
+  },
+  {
+   "eid": "edit-16",
+   "subject": "Svenska",
+   "question": "Vad är en tes?",
+   "short": "En tes är textens huvudåsikt.",
+   "long": "En tes är textens huvudåsikt. Den står ofta i inledningen, s. 2 i boken, och upprepas i avslutningen m.m.",
+   "drill_id": "9a26d850-7702-4774-a4c5-9dca869e8fa8"
+  },
+  {
+   "eid": "edit-17",
+   "subject": "Engelska",
+   "question": "What does the greenhouse effect mean?",
+   "short": "It means that gases trap heat.",
+   "long": "It means that gases trap heat. CO2 and CH4 (methane) act like glass, e.g. in a greenhouse → the Earth gets ~1.2 °C warmer.",
+   "drill_id": "1fdef263-1f47-47a4-a29d-56e2924cf293"
+  },
+  {
+   "eid": "edit-18",
+   "subject": "Engelska",
+   "question": "How tall is the lighthouse?",
+   "short": "It is about 30 m tall.",
+   "long": "It is about 30 m tall. That is roughly 100 ft, i.e. a ten-storey building, and the light can be seen 20+ km away & it flashes every 5 sec.",
+   "drill_id": "3f92bd42-3e14-48b2-b194-a441efc184df"
+  },
+  {
+   "eid": "edit-19",
+   "subject": "Engelska",
+   "question": "Who was Thomas?",
+   "short": "Thomas was the keeper's grandson.",
+   "long": "Thomas was the keeper's grandson. He climbed the 154 steps w/ a lamp at 3 a.m.",
+   "drill_id": "6aeac6e6-c974-4fab-b0af-40032a3799bc"
+  },
+  {
+   "eid": "edit-20",
+   "subject": "Teknik",
+   "question": "Vad är en kraftverk?",
+   "short": "Ett kraftverk gör el.",
+   "long": "Ett kraftverk gör el. Ett vattenkraftverk ger ca 1 000 MW, och el mäts i kWh, t.ex. 2 kWh/dag för ett kylskåp.",
+   "drill_id": "90ca4ac4-6040-4a9f-a1b9-8a44d0783753"
+  }
+ ]
+}

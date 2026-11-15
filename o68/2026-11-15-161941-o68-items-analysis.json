@@ -1,0 +1,878 @@
+{
+ "summary": {
+  "answers": 20,
+  "by_subject": {
+   "Fysik": 3,
+   "Kemi": 2,
+   "Biologi": 2,
+   "Matematik": 3,
+   "Geografi": 1,
+   "Historia": 2,
+   "Samhällskunskap": 1,
+   "Svenska": 2,
+   "Engelska": 3,
+   "Teknik": 1
+  },
+  "answers_with": {
+   "abbr": 9,
+   "unit": 2,
+   "symbol": 4,
+   "paren": 6,
+   "list": 2,
+   "digit": 0,
+   "long_sentence": 1,
+   "pronounce": 5
+  },
+  "clean": 6
+ },
+ "worst": [
+  {
+   "eid": "edit-17",
+   "subject": "Engelska",
+   "lang": "English",
+   "question": "What does the greenhouse effect mean?",
+   "long": "It means that gases trap heat. CO2 and CH4 (methane) act like glass, e.g. in a greenhouse → the Earth gets ~1.2 °C warmer.",
+   "spoken": "It means that gases trap heat. CO2 and CH4 (methane) act like glass, e.g. in a greenhouse → the Earth gets ~1.2 °C warmer.",
+   "md5": "0e627964e27171238c8b9af9054b5bc0",
+   "score": 22,
+   "hits": {
+    "abbr": [
+     "e.g."
+    ],
+    "unit": [],
+    "symbol": [
+     "→",
+     "~",
+     "°"
+    ],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "CO2",
+     "CH4",
+     "formel CO2",
+     "formel CH4"
+    ]
+   }
+  },
+  {
+   "eid": "edit-01",
+   "subject": "Fysik",
+   "lang": "sv",
+   "question": "Vad säger Newtons andra lag?",
+   "long": "Kraften är massan gånger accelerationen. Enl. kap. 4 skrivs det F = m · a, t.ex. ger 5 kg och 2 m/s² en kraft på 10 N (se fig. 3).",
+   "spoken": "Kraften är massan gånger accelerationen. Enl. kap. fyra skrivs det F är lika med m gånger a, till exempel ger fem kilogram och två meter per sekund i kvadrat en kraft på tio N (se fig. tre).",
+   "md5": "87eef25b0f8e2192aeb93f2583747756",
+   "score": 15,
+   "hits": {
+    "abbr": [
+     "Enl.",
+     "kap.",
+     "fig."
+    ],
+    "unit": [
+     "N"
+    ],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [
+     "32 ord: Enl. kap. fyra skrivs det F är lika med m gånger a, till exempel ger fem kilogra…"
+    ],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-18",
+   "subject": "Engelska",
+   "lang": "English",
+   "question": "How tall is the lighthouse?",
+   "long": "It is about 30 m tall. That is roughly 100 ft, i.e. a ten-storey building, and the light can be seen 20+ km away & it flashes every 5 sec.",
+   "spoken": "It is about 30 m tall. That is roughly 100 ft, i.e. a ten-storey building, and the light can be seen 20+ km away & it flashes every 5 sec.",
+   "md5": "a108d6761dbd95290e90644662d47d1c",
+   "score": 12,
+   "hits": {
+    "abbr": [
+     "ft",
+     "i.e.",
+     "sec"
+    ],
+    "unit": [],
+    "symbol": [
+     "&"
+    ],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-10",
+   "subject": "Fysik",
+   "lang": "sv",
+   "question": "Vad är temperaturen på solens yta?",
+   "long": "Den är ungefär 5 500 °C. Det motsvarar ca 5 800 K, och i kärnan är det ~15 milj. °C.",
+   "spoken": "Den är ungefär femtusen femhundra grader celsius. Det motsvarar cirka femtusen åttahundra K, och i kärnan är det ~femton milj. °C.",
+   "md5": "67f29a66562c5b5a553a9a4e5286867e",
+   "score": 11,
+   "hits": {
+    "abbr": [
+     "milj."
+    ],
+    "unit": [
+     "K"
+    ],
+    "symbol": [
+     "~",
+     "°"
+    ],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-11",
+   "subject": "Geografi",
+   "lang": "sv",
+   "question": "Hur stor är Sveriges befolkning?",
+   "long": "Sverige har drygt 10,5 miljoner invånare. Ca 85 % bor i tätorter, främst i Sthlm, Gbg och Malmö.",
+   "spoken": "Sverige har drygt tio komma fem miljoner invånare. Ca åttiofem procent bor i tätorter, främst i Sthlm, Gbg och Malmö.",
+   "md5": "7a816dbf658fa06d5907708cec2bd826",
+   "score": 9,
+   "hits": {
+    "abbr": [
+     "Ca",
+     "Sthlm",
+     "Gbg"
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-03",
+   "subject": "Kemi",
+   "lang": "sv",
+   "question": "Vad bildas när metan brinner?",
+   "long": "Det bildas koldioxid och vatten. Formeln är CH4 + 2 O2 → CO2 + 2 H2O, och reaktionen avger energi (exoterm).",
+   "spoken": "Det bildas koldioxid och vatten. Formeln är se ha fyra plus två o två ger se o två plus två ha två o, och reaktionen avger energi (exoterm).",
+   "md5": "b8af872b86583019b372e6b0f2c49888",
+   "score": 8,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "formel CH4",
+     "formel O2",
+     "formel CO2"
+    ]
+   }
+  },
+  {
+   "eid": "edit-04",
+   "subject": "Kemi",
+   "lang": "sv",
+   "question": "Vad är pH?",
+   "long": "pH är ett mått på hur surt något är. Skalan går från 0–14; pH < 7 är surt, pH = 7 neutralt och pH > 7 basiskt.",
+   "spoken": "pH är ett mått på hur surt något är. Skalan går från noll till fjorton; pH < sju är surt, pH är lika med sju neutralt och pH > sju basiskt.",
+   "md5": "48a3d3be979e0694b96c194bd7643c87",
+   "score": 8,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [
+     "<",
+     ">"
+    ],
+    "paren": [],
+    "list": [
+     ";"
+    ],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-14",
+   "subject": "Samhällskunskap",
+   "lang": "sv",
+   "question": "Hur många ledamöter har riksdagen?",
+   "long": "Riksdagen har 349 ledamöter. Partierna måste få minst 4 % av rösterna; S, M och SD är störst (2022).",
+   "spoken": "Riksdagen har trehundrafyrtionio ledamöter. Partierna måste få minst fyra procent av rösterna; S, M och SD är störst (tvåtusen tjugotvå).",
+   "md5": "9bedfe89481fba78d7241e5a004e71d7",
+   "score": 6,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [
+     ";"
+    ],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "SD"
+    ]
+   }
+  },
+  {
+   "eid": "edit-15",
+   "subject": "Svenska",
+   "lang": "sv",
+   "question": "Vad är ett argument?",
+   "long": "Ett argument är ett skäl för en åsikt. Ex: \"Skolan borde börja senare\" – argument: 1) tonåringar sover mer, 2) de lär sig bättre.",
+   "spoken": "Ett argument är ett skäl för en åsikt. Ex: \"Skolan borde börja senare\" – argument: ett) tonåringar sover mer, två) de lär sig bättre.",
+   "md5": "c9d4d3d7b32172ba7f2a5e1ea1c2bd14",
+   "score": 5,
+   "hits": {
+    "abbr": [
+     "Ex:"
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-05",
+   "subject": "Biologi",
+   "lang": "sv",
+   "question": "Vad gör de röda blodkropparna?",
+   "long": "De transporterar syre. Hemoglobinet (Hb) binder O2 i lungorna och lämnar det i vävnaderna, bl.a. i musklerna.",
+   "spoken": "De transporterar syre. Hemoglobinet (Hb) binder o två i lungorna och lämnar det i vävnaderna, bland annat i musklerna.",
+   "md5": "7fdb06808d4c1b76b098efbfc981144e",
+   "score": 4,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "formel O2"
+    ]
+   }
+  },
+  {
+   "eid": "edit-02",
+   "subject": "Fysik",
+   "lang": "sv",
+   "question": "Hur snabbt går ljudet?",
+   "long": "Ljudet går ca 340 m/s i luft. I vatten går det ungefär 4 ggr snabbare, dvs. ca 1 500 m/s.",
+   "spoken": "Ljudet går cirka trehundrafyrtio meter per sekund i luft. I vatten går det ungefär fyra ggr snabbare, det vill säga cirka femtonhundra meter per sekund.",
+   "md5": "9b088e317fa980651c7ad88e2603fe0b",
+   "score": 3,
+   "hits": {
+    "abbr": [
+     "ggr"
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-13",
+   "subject": "Historia",
+   "lang": "sv",
+   "question": "Vad hände 1914–1918?",
+   "long": "Då pågick första världskriget. Det började efter mordet i Sarajevo 28/6 1914, och ca 17 milj. människor dog.",
+   "spoken": "Då pågick första världskriget. Det började efter mordet i Sarajevo tjugoåttonde juni nittonhundrafjorton, och cirka sjutton milj. människor dog.",
+   "md5": "8fd3382e1010fbb0bcc0c4fe9d02278a",
+   "score": 3,
+   "hits": {
+    "abbr": [
+     "milj."
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-19",
+   "subject": "Engelska",
+   "lang": "English",
+   "question": "Who was Thomas?",
+   "long": "Thomas was the keeper's grandson. He climbed the 154 steps w/ a lamp at 3 a.m.",
+   "spoken": "Thomas was the keeper's grandson. He climbed the 154 steps w divided by a lamp at 3 a.m.",
+   "md5": "241d7b84fc4d374bcb9d75a737033a62",
+   "score": 3,
+   "hits": {
+    "abbr": [
+     "a.m."
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-06",
+   "subject": "Biologi",
+   "lang": "sv",
+   "question": "Hur många kromosomer har människan?",
+   "long": "Människan har 46 kromosomer. Det är 23 par, dvs. ett från varje förälder. DNA:t finns i cellkärnan, och ca 2 % av det är gener.",
+   "spoken": "Människan har fyrtiosex kromosomer. Det är tjugotre par, det vill säga ett från varje förälder. DNA:t finns i cellkärnan, och cirka två procent av det är gener.",
+   "md5": "0741315466a1725d1307ca33efc36add",
+   "score": 2,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "DNA"
+    ]
+   }
+  },
+  {
+   "eid": "edit-07",
+   "subject": "Matematik",
+   "lang": "sv",
+   "question": "Vad är 25 % av 80?",
+   "long": "Det är 20. Man räknar 0,25 · 80 = 20, eller 80/4 = 20.",
+   "spoken": "Det är tjugo. Man räknar noll komma två fem gånger åttio är lika med tjugo, eller åttio delat med fyra är lika med tjugo.",
+   "md5": "c26aa7f73b4f4ce926d211bcb572165c",
+   "score": 0,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  }
+ ],
+ "rows": [
+  {
+   "eid": "edit-01",
+   "subject": "Fysik",
+   "lang": "sv",
+   "question": "Vad säger Newtons andra lag?",
+   "long": "Kraften är massan gånger accelerationen. Enl. kap. 4 skrivs det F = m · a, t.ex. ger 5 kg och 2 m/s² en kraft på 10 N (se fig. 3).",
+   "spoken": "Kraften är massan gånger accelerationen. Enl. kap. fyra skrivs det F är lika med m gånger a, till exempel ger fem kilogram och två meter per sekund i kvadrat en kraft på tio N (se fig. tre).",
+   "md5": "87eef25b0f8e2192aeb93f2583747756",
+   "score": 15,
+   "hits": {
+    "abbr": [
+     "Enl.",
+     "kap.",
+     "fig."
+    ],
+    "unit": [
+     "N"
+    ],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [
+     "32 ord: Enl. kap. fyra skrivs det F är lika med m gånger a, till exempel ger fem kilogra…"
+    ],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-02",
+   "subject": "Fysik",
+   "lang": "sv",
+   "question": "Hur snabbt går ljudet?",
+   "long": "Ljudet går ca 340 m/s i luft. I vatten går det ungefär 4 ggr snabbare, dvs. ca 1 500 m/s.",
+   "spoken": "Ljudet går cirka trehundrafyrtio meter per sekund i luft. I vatten går det ungefär fyra ggr snabbare, det vill säga cirka femtonhundra meter per sekund.",
+   "md5": "9b088e317fa980651c7ad88e2603fe0b",
+   "score": 3,
+   "hits": {
+    "abbr": [
+     "ggr"
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-03",
+   "subject": "Kemi",
+   "lang": "sv",
+   "question": "Vad bildas när metan brinner?",
+   "long": "Det bildas koldioxid och vatten. Formeln är CH4 + 2 O2 → CO2 + 2 H2O, och reaktionen avger energi (exoterm).",
+   "spoken": "Det bildas koldioxid och vatten. Formeln är se ha fyra plus två o två ger se o två plus två ha två o, och reaktionen avger energi (exoterm).",
+   "md5": "b8af872b86583019b372e6b0f2c49888",
+   "score": 8,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "formel CH4",
+     "formel O2",
+     "formel CO2"
+    ]
+   }
+  },
+  {
+   "eid": "edit-04",
+   "subject": "Kemi",
+   "lang": "sv",
+   "question": "Vad är pH?",
+   "long": "pH är ett mått på hur surt något är. Skalan går från 0–14; pH < 7 är surt, pH = 7 neutralt och pH > 7 basiskt.",
+   "spoken": "pH är ett mått på hur surt något är. Skalan går från noll till fjorton; pH < sju är surt, pH är lika med sju neutralt och pH > sju basiskt.",
+   "md5": "48a3d3be979e0694b96c194bd7643c87",
+   "score": 8,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [
+     "<",
+     ">"
+    ],
+    "paren": [],
+    "list": [
+     ";"
+    ],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-05",
+   "subject": "Biologi",
+   "lang": "sv",
+   "question": "Vad gör de röda blodkropparna?",
+   "long": "De transporterar syre. Hemoglobinet (Hb) binder O2 i lungorna och lämnar det i vävnaderna, bl.a. i musklerna.",
+   "spoken": "De transporterar syre. Hemoglobinet (Hb) binder o två i lungorna och lämnar det i vävnaderna, bland annat i musklerna.",
+   "md5": "7fdb06808d4c1b76b098efbfc981144e",
+   "score": 4,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "formel O2"
+    ]
+   }
+  },
+  {
+   "eid": "edit-06",
+   "subject": "Biologi",
+   "lang": "sv",
+   "question": "Hur många kromosomer har människan?",
+   "long": "Människan har 46 kromosomer. Det är 23 par, dvs. ett från varje förälder. DNA:t finns i cellkärnan, och ca 2 % av det är gener.",
+   "spoken": "Människan har fyrtiosex kromosomer. Det är tjugotre par, det vill säga ett från varje förälder. DNA:t finns i cellkärnan, och cirka två procent av det är gener.",
+   "md5": "0741315466a1725d1307ca33efc36add",
+   "score": 2,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "DNA"
+    ]
+   }
+  },
+  {
+   "eid": "edit-07",
+   "subject": "Matematik",
+   "lang": "sv",
+   "question": "Vad är 25 % av 80?",
+   "long": "Det är 20. Man räknar 0,25 · 80 = 20, eller 80/4 = 20.",
+   "spoken": "Det är tjugo. Man räknar noll komma två fem gånger åttio är lika med tjugo, eller åttio delat med fyra är lika med tjugo.",
+   "md5": "c26aa7f73b4f4ce926d211bcb572165c",
+   "score": 0,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-08",
+   "subject": "Matematik",
+   "lang": "sv",
+   "question": "Vad är arean av en cirkel?",
+   "long": "Arean är pi gånger radien i kvadrat. A = π · r², så med r = 3 cm blir A ≈ 28,3 cm².",
+   "spoken": "Arean är pi gånger radien i kvadrat. A är lika med pi gånger r i kvadrat, så med r är lika med tre centimeter blir A är ungefär lika med tjugoåtta komma tre kvadratcentimeter.",
+   "md5": "b2ab16e82a5f30a74d62b411b2d88c6b",
+   "score": 0,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-09",
+   "subject": "Matematik",
+   "lang": "sv",
+   "question": "Hur löser man 2x + 3 = 11?",
+   "long": "Man får x = 4. Först drar man bort 3: 2x = 8. Sedan delar man med 2: x = 8/2 = 4.",
+   "spoken": "Man får x är lika med fyra. Först drar man bort tre: två x är lika med åtta. Sedan delar man med två: x är lika med åtta delat med två är lika med fyra.",
+   "md5": "0d47ece43074ae71b632c44bfeea58db",
+   "score": 0,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-10",
+   "subject": "Fysik",
+   "lang": "sv",
+   "question": "Vad är temperaturen på solens yta?",
+   "long": "Den är ungefär 5 500 °C. Det motsvarar ca 5 800 K, och i kärnan är det ~15 milj. °C.",
+   "spoken": "Den är ungefär femtusen femhundra grader celsius. Det motsvarar cirka femtusen åttahundra K, och i kärnan är det ~femton milj. °C.",
+   "md5": "67f29a66562c5b5a553a9a4e5286867e",
+   "score": 11,
+   "hits": {
+    "abbr": [
+     "milj."
+    ],
+    "unit": [
+     "K"
+    ],
+    "symbol": [
+     "~",
+     "°"
+    ],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-11",
+   "subject": "Geografi",
+   "lang": "sv",
+   "question": "Hur stor är Sveriges befolkning?",
+   "long": "Sverige har drygt 10,5 miljoner invånare. Ca 85 % bor i tätorter, främst i Sthlm, Gbg och Malmö.",
+   "spoken": "Sverige har drygt tio komma fem miljoner invånare. Ca åttiofem procent bor i tätorter, främst i Sthlm, Gbg och Malmö.",
+   "md5": "7a816dbf658fa06d5907708cec2bd826",
+   "score": 9,
+   "hits": {
+    "abbr": [
+     "Ca",
+     "Sthlm",
+     "Gbg"
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-12",
+   "subject": "Historia",
+   "lang": "sv",
+   "question": "När var franska revolutionen?",
+   "long": "Den började 1789. Kungen Ludvig XVI avrättades 1793, och Napoleon tog makten 1799.",
+   "spoken": "Den började sjuttonhundraåttionio. Kungen Ludvig den sextonde avrättades sjuttonhundranittiotre, och Napoleon tog makten sjuttonhundranittionio.",
+   "md5": "7cfffe911e3fdd82dbdb037f3c8e50f6",
+   "score": 0,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-13",
+   "subject": "Historia",
+   "lang": "sv",
+   "question": "Vad hände 1914–1918?",
+   "long": "Då pågick första världskriget. Det började efter mordet i Sarajevo 28/6 1914, och ca 17 milj. människor dog.",
+   "spoken": "Då pågick första världskriget. Det började efter mordet i Sarajevo tjugoåttonde juni nittonhundrafjorton, och cirka sjutton milj. människor dog.",
+   "md5": "8fd3382e1010fbb0bcc0c4fe9d02278a",
+   "score": 3,
+   "hits": {
+    "abbr": [
+     "milj."
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-14",
+   "subject": "Samhällskunskap",
+   "lang": "sv",
+   "question": "Hur många ledamöter har riksdagen?",
+   "long": "Riksdagen har 349 ledamöter. Partierna måste få minst 4 % av rösterna; S, M och SD är störst (2022).",
+   "spoken": "Riksdagen har trehundrafyrtionio ledamöter. Partierna måste få minst fyra procent av rösterna; S, M och SD är störst (tvåtusen tjugotvå).",
+   "md5": "9bedfe89481fba78d7241e5a004e71d7",
+   "score": 6,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [
+     ";"
+    ],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "SD"
+    ]
+   }
+  },
+  {
+   "eid": "edit-15",
+   "subject": "Svenska",
+   "lang": "sv",
+   "question": "Vad är ett argument?",
+   "long": "Ett argument är ett skäl för en åsikt. Ex: \"Skolan borde börja senare\" – argument: 1) tonåringar sover mer, 2) de lär sig bättre.",
+   "spoken": "Ett argument är ett skäl för en åsikt. Ex: \"Skolan borde börja senare\" – argument: ett) tonåringar sover mer, två) de lär sig bättre.",
+   "md5": "c9d4d3d7b32172ba7f2a5e1ea1c2bd14",
+   "score": 5,
+   "hits": {
+    "abbr": [
+     "Ex:"
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-16",
+   "subject": "Svenska",
+   "lang": "sv",
+   "question": "Vad är en tes?",
+   "long": "En tes är textens huvudåsikt. Den står ofta i inledningen, s. 2 i boken, och upprepas i avslutningen m.m.",
+   "spoken": "En tes är textens huvudåsikt. Den står ofta i inledningen, sidan två i boken, och upprepas i avslutningen med mera",
+   "md5": "ed004e5fcaa55cfbec8f11951d735346",
+   "score": 0,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-17",
+   "subject": "Engelska",
+   "lang": "English",
+   "question": "What does the greenhouse effect mean?",
+   "long": "It means that gases trap heat. CO2 and CH4 (methane) act like glass, e.g. in a greenhouse → the Earth gets ~1.2 °C warmer.",
+   "spoken": "It means that gases trap heat. CO2 and CH4 (methane) act like glass, e.g. in a greenhouse → the Earth gets ~1.2 °C warmer.",
+   "md5": "0e627964e27171238c8b9af9054b5bc0",
+   "score": 22,
+   "hits": {
+    "abbr": [
+     "e.g."
+    ],
+    "unit": [],
+    "symbol": [
+     "→",
+     "~",
+     "°"
+    ],
+    "paren": [
+     "( )"
+    ],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": [
+     "CO2",
+     "CH4",
+     "formel CO2",
+     "formel CH4"
+    ]
+   }
+  },
+  {
+   "eid": "edit-18",
+   "subject": "Engelska",
+   "lang": "English",
+   "question": "How tall is the lighthouse?",
+   "long": "It is about 30 m tall. That is roughly 100 ft, i.e. a ten-storey building, and the light can be seen 20+ km away & it flashes every 5 sec.",
+   "spoken": "It is about 30 m tall. That is roughly 100 ft, i.e. a ten-storey building, and the light can be seen 20+ km away & it flashes every 5 sec.",
+   "md5": "a108d6761dbd95290e90644662d47d1c",
+   "score": 12,
+   "hits": {
+    "abbr": [
+     "ft",
+     "i.e.",
+     "sec"
+    ],
+    "unit": [],
+    "symbol": [
+     "&"
+    ],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-19",
+   "subject": "Engelska",
+   "lang": "English",
+   "question": "Who was Thomas?",
+   "long": "Thomas was the keeper's grandson. He climbed the 154 steps w/ a lamp at 3 a.m.",
+   "spoken": "Thomas was the keeper's grandson. He climbed the 154 steps w divided by a lamp at 3 a.m.",
+   "md5": "241d7b84fc4d374bcb9d75a737033a62",
+   "score": 3,
+   "hits": {
+    "abbr": [
+     "a.m."
+    ],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  },
+  {
+   "eid": "edit-20",
+   "subject": "Teknik",
+   "lang": "sv",
+   "question": "Vad är en kraftverk?",
+   "long": "Ett kraftverk gör el. Ett vattenkraftverk ger ca 1 000 MW, och el mäts i kWh, t.ex. 2 kWh/dag för ett kylskåp.",
+   "spoken": "Ett kraftverk gör el. Ett vattenkraftverk ger cirka tusen megawatt, och el mäts i kWh, till exempel två kilowattimmar/dag för ett kylskåp.",
+   "md5": "ada4241d521e0cb44af5d4d509963810",
+   "score": 0,
+   "hits": {
+    "abbr": [],
+    "unit": [],
+    "symbol": [],
+    "paren": [],
+    "list": [],
+    "digit": [],
+    "long_sentence": [],
+    "pronounce": []
+   }
+  }
+ ]
+}
