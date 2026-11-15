@@ -77,7 +77,7 @@ final class ReadingFlowTests: XCTestCase {
         // Run 43740301853: the first picture was one of iOS's samples (a waterfall), not ours: the library had not taken in
         // the material picture yet (T24 gives it more time). Skriv text never got the text in (no focus, no paste).
         pause(30)
-        var gotMaterial = pickPhoto()
+        let gotMaterial = pickPhoto()
         log.append("READ material from Välj bilder: \(gotMaterial ? "yes" : "no")")
         guard gotMaterial else { screen("inget-material", "No material", counts: false); return miss("no material: neither Skriv text nor Välj bilder") }
         pause(1)
