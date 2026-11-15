@@ -109,8 +109,14 @@ final class A107FlowTests: XCTestCase {
         let footnotes = Self.labels(in: app.debugDescription, kind: "StaticText").filter { $0.contains("Ljudet") || $0.contains("ljud") }
         log.append("A107 editor \(when) start, sound lines: " + footnotes.joined(separator: " | "))
         screen("redigera-\(n)-\(when)", "Editing question \(n) \(when) start")
-        let field = app.textFields["Svar"].exists ? app.textFields["Svar"] : app.textViews["Svar"]
-        guard field.waitForExistence(timeout: 5) else { return miss("editor: no 'Svar' field") }
+        // Run 43719792040: the fields have no identifier "Svar" (a vertical TextField). The editor has Fråga, then Svar:
+        // take the second text input, whichever kind it is.
+        pause(1)
+        let inputs = app.textFields.allElementsBoundByIndex.filter(\.exists) + app.textViews.allElementsBoundByIndex.filter(\.exists)
+        log.append("A107 editor inputs: " + inputs.map { "\($0.elementType.rawValue):\(String(describing: $0.value ?? "").prefix(30))" }.joined(separator: " | "))
+        let sorted = inputs.sorted { $0.frame.minY < $1.frame.minY }
+        guard sorted.count >= 2 else { return miss("editor: fewer than two text inputs (\(sorted.count))") }
+        let field = sorted[1]
         field.coordinate(withNormalizedOffset: CGVector(dx: 0.98, dy: 0.9)).tap()
         taps += 1
         if !app.keyboards.firstMatch.waitForExistence(timeout: 3) { field.tap(); testTaps += 1 }
