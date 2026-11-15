@@ -57,6 +57,7 @@ final class OfflineFlowTests: XCTestCase {
         // comes back between the two windows (each about 2 min). The relaunch is inside the second one.
         guard section("Nätet på (mellan fönstren)", { network(on: true) }) else { return }
         guard section("Nätet av igen", { network(on: false) }) else { return }
+        section("Utan nät: 1, 2 och 3 tryck", { presses() })
         section("Utan nät: omstart och Starta prov igen", { relaunchAndPlay() })
         section("Nätet på", { network(on: true) })
         section("Online igen: Dela går att trycka", { backOnline() })
@@ -226,13 +227,60 @@ final class OfflineFlowTests: XCTestCase {
         return questions.count >= 2 && waiting == 0 || miss("\(name): \(questions.count) questions, \(waiting) samples waiting for sound")
     }
 
+    /// T27 with Angela Schrute's press hook (`LUMEN_TEST_PRESSES`, 60d83ce): 1 press = long answer, 2 = short answer,
+    /// 3 = pause, and while paused any press goes on (D143). Offline, from the downloaded files. Seen on the screen
+    /// (the player's labels) and in the app log ("Test press …", "long answer n", "short answer n").
+    private func presses() -> Bool {
+        goToStart()
+        guard waitEnabled(["Starta prov", "Fortsätt"], 20) else { return miss("no Starta prov / Fortsätt for the presses") }
+        mark("PRESSES-START")
+        tap(["Starta prov", "Fortsätt"], "Starta prov (presses)")
+        if wait(["Styr med dina AirPods"], 8) != nil {
+            for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+            tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+        }
+        guard wait(["Tryck på AirPods för svaret", "Tänk", "Avsluta"], 20) != nil else { return miss("no player for the presses") }
+        pause(2)
+        var ok = true
+        func check(_ press: Int, _ labels: [String], _ what: String) {
+            Self.press(press)
+            log.append("PRESS \(press) sent (\(what))")
+            if wait(labels, 4) != nil {
+                log.append("PRESS \(press): '\(labels[0])' shown")
+            } else {
+                ok = false
+                log.append("MISS: press \(press): '\(labels[0])' not shown in 4 s")
+            }
+            screen("tryck-\(press)-\(what)", "After \(press) press(es) without a network")
+        }
+        check(1, ["Långt svar"], "langt")
+        pause(2)
+        check(2, ["Kort svar"], "kort")
+        pause(2)
+        check(3, ["Pausad*"], "paus")
+        Self.press(1)
+        log.append("PRESS 1 sent (go on from the pause)")
+        if gone(["Pausad*"], 4) { log.append("PRESS 1: 'Pausad' gone") } else { ok = false; log.append("MISS: press 1 did not end the pause") }
+        pause(3)
+        tap(["Avsluta"], "Avsluta (presses)")
+        if !gone(["Avsluta"], 6) { tap(["Avsluta"], "Avsluta again", quiet: true) }
+        mark("PRESSES-END")
+        return ok
+    }
+
+    /// One AirPods press through the app's Debug hook: a Darwin notification inside the Simulator.
+    private static func press(_ n: Int) {
+        let center = CFNotificationCenterGetDarwinNotifyCenter()
+        CFNotificationCenterPostNotification(center, CFNotificationName("earmind.test.press.\(n)" as CFString), nil, nil, true)
+    }
+
     private func relaunchAndPlay() -> Bool {
         launch(header)
         guard wait(["Inställningar"], 30) != nil else { screen("omstart-ingen-start", "No Start after relaunch"); return miss("Start not shown after relaunch offline") }
         pause(8)
         screen("utan-nat-omstart", "Start after relaunch without a network")
         if find(["Kom förberedd till provet"]) != nil { return miss("relaunch offline: Start is empty, the exam is gone") }
-        return play("spela-2", seconds: 25)
+        return play("spela-2", seconds: 20)
     }
 
     private func backOnline() -> Bool {
@@ -395,6 +443,8 @@ final class OfflineFlowTests: XCTestCase {
         app = XCUIApplication()
         app.launchArguments += ["-AppleLanguages", "(sv)", "-AppleLocale", "sv_SE"]
         app.launchEnvironment["LUMEN_TEST_HEADER"] = value
+        // Angela Schrute's hook (60d83ce, Debug only): 1, 2 and 3 presses as Darwin notifications.
+        app.launchEnvironment["LUMEN_TEST_PRESSES"] = "1"
         app.launch()
         log.append("launched with LUMEN_TEST_HEADER=\(value)")
     }

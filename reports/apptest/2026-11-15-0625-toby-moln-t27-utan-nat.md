@@ -57,3 +57,19 @@ Det behövs för T27:s tryck och för hela T28 (paus, fram och bak i läsläget)
 ## Nästa
 - T28 när A106 (Angela Fables vyer för läsläget) är grön, helst med tryckkroken ovan.
 - Kör `apptest-offline` igen efter ändringar i nedladdningen eller i `NetworkStatus`.
+
+## Tillägg 2026-11-15 08:25: 1, 2 och 3 tryck utan nät (Angela Schrutes krok 60d83ce)
+Körning 43687277086 (toby/t27b): **grön 13/13.** Testet startar appen med `LUMEN_TEST_PRESSES=1` och skickar trycken
+som Darwin-notiser (`earmind.test.press.N`) från testprocessen i simulatorn. Kroken når appen, så `notifyutil` från runnern behövs inte. Det sker i det andra fönstret utan nät, före omstarten.
+
+| Tryck | På skärmen | Appens logg |
+|---|---|---|
+| 1 | "Långt svar" | `Test press …1 → long`, `Repetition: long answer 1` |
+| 2 | "Kort svar" | `Test press …2 → short`, `Repetition: short answer 2` |
+| 3 | "Pausad" | `Test press …3 → pauseToggle`, `Repetition: paused` |
+| 1 (pausat) | "Pausad" borta | `Repetition: go on (press long)` |
+
+- Svaren spelas från de nedladdade filerna utan nät. *Verifierat i simulatorn, inte på enhet.*
+- Det andra trycket kom 3,6 s efter det första. Det långa svaret till fråga 1 var då slut och fråga 2 hade börjat, så
+  "short answer 2" stämmer med D142.
+- Riktiga AirPods-tryck (fjärrkommandon från lurarna) är fortfarande bara på Arons telefon.
