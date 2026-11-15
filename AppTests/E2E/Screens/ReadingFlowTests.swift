@@ -185,14 +185,19 @@ final class ReadingFlowTests: XCTestCase {
             log.append("READ text element frame: \(Int(element.frame.minY))–\(Int(element.frame.maxY))")
             text = element
         }
+        // Run 43756705421: after the first tap the current sentence changed, so the element (found by that sentence's
+        // label) was gone and the second tap stopped the test. Keep the frame and tap screen coordinates.
+        let frame = text.frame
+        func tapAt(_ y: CGFloat) {
+            app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: frame.minX + frame.width * 0.3, dy: frame.minY + frame.height * y)).tap()
+            taps += 1
+        }
         let before = place()
-        text.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.85)).tap()
-        taps += 1
+        tapAt(0.85)
         pause(3)
         let low = place()
         log.append("READ tap low in the text: \(before ?? "-") → \(low ?? "-")")
-        text.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.08)).tap()
-        taps += 1
+        tapAt(0.08)
         pause(3)
         let high = place()
         log.append("READ tap high in the text: \(low ?? "-") → \(high ?? "-")")
