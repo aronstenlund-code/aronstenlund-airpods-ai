@@ -1,0 +1,7 @@
+{"save": {"status": 200, "audio_started": false, "generated": 0, "chars_on_start": 329, "audio": {"done": 0, "total": 4, "failed": 0, "chars": 0}},
+ "start": {"status": 200, "generated": 2, "new_chars": 321},
+ "after_start": {"done": 4, "total": 4, "failed": 0, "chars": 321, "credits": 0, "bytes": 102165, "model": "eleven_multilingual_v2"},
+ "edit_after_start": {"status": 200, "generated": 1, "new_chars": 39},
+ "share_unstarted": {"status": 200, "code": true},
+ "checks": {"save_no_audio": true, "edit_free": true, "start_all": true, "edit_after_start_one": true, "share_makes_audio": true},
+ "source": "GitHub Actions kevin-live.yml run 43708214327 (test account, x-earmind-test, silent audio)"}
