@@ -1,6 +1,6 @@
 # A110 (D198): Dela och Publicera efter Starta prov, och ett avsnitt Påminnelser (Angela Fable, moln)
 
-2026-11-15 23:30. Beslutet är Deangelos D198 (svar på Kellys N4 och P1).
+2026-11-15 22:59. Beslutet är Deangelos D198 (svar på Kellys N4 och P1).
 **Inget är provat på telefon. Inga ElevenLabs-tester (D180).**
 
 ## Vad som gjordes
