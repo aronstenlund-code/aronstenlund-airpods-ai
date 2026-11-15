@@ -12,6 +12,7 @@ import { composeLong, examLanguage, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
 import { lengthClass, lengthLimits, questionKey } from "./length.ts";
 import { currentTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
+import { type AnalysisRow, pressStats, saveRows, statsRow } from "./analysis.ts";
 
 /** K62b (D180): test traffic never shares a file with real users and never reaches ElevenLabs (silent files). */
 const voiceFor = (real: string | null) => currentTest()?.test ? TEST_VOICE_ID : real;
@@ -219,6 +220,8 @@ export interface Synth {
 
 export interface DrillDeps {
   authenticate: Authenticator;
+  /** K77 (D197, D116): rows for Aron's analysis (table qa_log); never for test accounts. */
+  analysis?: (rows: AnalysisRow[]) => Promise<void>;
   rateLimiter: RateLimiter;
   db: DrillDb;
   storage: AudioStorage;
@@ -787,6 +790,7 @@ export function createDrillHandler(deps: DrillDeps) {
       // K71 (D190): saved as text only; the audio (and the count) waits for Starta prov
       await deps.db.saveDrill(drill, !existing);
       await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
+      await analyse(saveRows(kind, oldItems, rows));
       const saved = await deps.db.drill(drill.id);
       return json({ ...(await view(saved ?? drill)), new_chars: 0, chars_on_start: newChars, generated_questions: 0 });
     }
@@ -837,9 +841,16 @@ export function createDrillHandler(deps: DrillDeps) {
     if (credited.size) await deps.db.dropTryCredits?.(user.id, [...credited]).catch(() => {});
     await deps.db.saveDrill(drill, !existing);
     await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
+    await analyse(saveRows(kind, oldItems, rows));
     if (fresh.length || failed.length) await kick([...files.keys()]);
     const saved = await deps.db.drill(drill.id);
     return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, ...(credited.size ? { already_counted: credited.size } : {}) });
+  }
+
+  /** K77: to Aron's analysis (D197); a test account never, and a failure never stops the save. */
+  async function analyse(rows: AnalysisRow[]) {
+    if (!rows.length || !deps.analysis || currentTest()?.test) return;
+    await deps.analysis(rows).catch((e) => console.error("analysis_log_failed", e instanceof Error ? e.message.slice(0, 120) : String(e)));
   }
 
   async function share(d: DrillRow, userId: string): Promise<Response> {
@@ -1075,6 +1086,25 @@ export function createDrillHandler(deps: DrillDeps) {
         const rl = await enforceLimits(deps.rateLimiter, "drill_report", user.id, { perMinute: 10, perDay: 30, globalPerDay: 20_000 }, 1);
         if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många rapporter på kort tid.", { retryAfterSec: rl.retryAfterSec });
         return json(await deps.db.report(pub.id, user.id, reason));
+      }
+      if (action === "stats") {
+        // K77 (D197): which presses were used (1, 2, 3), in total and per question; logged for Aron's analysis only
+        const d = await owned(user.id, b?.id);
+        const total = pressStats(b?.presses);
+        if (!total) throw new HttpError(400, "invalid_request", 'presses must be {"1": n, "2": n, "3": n}');
+        const rl = await enforceLimits(deps.rateLimiter, "drill_stats", user.id, { perMinute: 6, perDay: 100, globalPerDay: 500_000 }, 1);
+        if (!rl.allowed) return json({ logged: false });
+        const its = (await deps.db.items([d.id])).sort((x, y) => x.position - y.position);
+        const per = (Array.isArray(b?.per_question) ? b!.per_question as Record<string, unknown>[] : []).flatMap((q) => {
+          const it = its.find((i) => i.position === Number(q?.position));
+          const p = pressStats(q?.presses);
+          return it && p && !it.part ? [{ question: it.question, presses: p }] : [];
+        });
+        const m = Number(b?.minutes);
+        const row = statsRow(d.kind ?? "questions", d.subject, total, per, Number.isFinite(m) && m >= 0 && m < 10_000 ? Math.round(m) : null);
+        const logged = !currentTest()?.test && !!deps.analysis;
+        await analyse([row]);
+        return json({ logged });
       }
       if (action === "played") {
         const d = await owned(user.id, b?.id);
