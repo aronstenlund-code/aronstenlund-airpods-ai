@@ -27,6 +27,7 @@ final class ReadingFlowTests: XCTestCase {
     private var out: URL!
     private var offline = false
     private var savedPlace: String?
+    private var atEnd = false
 
     static let material = """
     Fotosyntes
@@ -219,6 +220,16 @@ final class ReadingFlowTests: XCTestCase {
         savedPlace = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Du var på mening") }
         screen("start-platsen", "Start after Avsluta")
         log.append("READ Start after Avsluta: \(savedPlace ?? "(no 'Du var på mening')")")
+        // D188: at the end of the text the saved place becomes 0, so Start says nothing (run 43758889302). The fake sound
+        // has no sentence times and plays fast, so where the test stands at Avsluta varies between runs.
+        if let p = inPlayer, let m = p.range(of: #"Mening (\d+) av (\d+)"#, options: .regularExpression) {
+            let nums = p[m].split(separator: " ").compactMap { Int($0) }
+            if nums.count == 2, nums[0] == nums[1] {
+                atEnd = true
+                log.append("READ Avsluta at the last sentence: no saved place is D188 (the place becomes 0 at the end)")
+                return savedPlace == nil || miss("at the end Start still says '\(savedPlace!)' (D188: the place becomes 0)")
+            }
+        }
         return savedPlace != nil || miss("Start does not say 'Du var på mening n av m' after Avsluta")
     }
 
@@ -230,7 +241,7 @@ final class ReadingFlowTests: XCTestCase {
         screen("utan-nat-omstart", "Start after relaunch without a network")
         log.append("READ Start after relaunch offline: \(again ?? "(none)") (before: \(savedPlace ?? "-"))")
         var ok = true
-        if again == nil { ok = false; log.append("MISS: the place is gone after the relaunch") }
+        if again == nil, !atEnd { ok = false; log.append("MISS: the place is gone after the relaunch") }
         guard openPlayer(["Fortsätt", "Starta prov"]) else { return false }
         pause(4)
         let resumed = place()
