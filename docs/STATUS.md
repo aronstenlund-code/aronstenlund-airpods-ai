@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-15 19:50: väntar på kö (tom två rundor, bevakningen stoppad).** A104, A106, A107-vyerna, A109, Kellys fynd och Tobys V4 är gröna på main (iOS build 43741552382, 9792eba) och godkända av Kelly på bild; Tobys A107 och T30 gröna. Ej verifierat på enhet. Öppet hos andra: T28 (läsläget, Toby/Kevin), P1 (ett påminnelseavsnitt i Inställningar) och N4 (Dela och Publicera före start) hos Deangelo.
+
 - **Kevin (moln), 2026-11-15 18:20: Tobys T28-fynd (/exam read 422 på testbilden).** Gick inte att återskapa (200 på samma text i Actions). Driftsatt: reserv som läser bilder på frågelägets sätt innan 422, och en diagnoslogg. → `reports/2026-11-15-1820-kevin-t28-read-422.md`
 
 - **Angela Fable (moln), 2026-11-15 18:10: A109 (vyer för streak och påminnelse, D194) klar, iOS build 43741552382 grön på main (9792eba), Kelly har godkänt bilderna och Tobys T30 är grön 5/5, ej verifierat på enhet.** Frågan om påminnelse efter första klara provet, avsnittet Påminnelse i Inställningar och dagar i rad på Start. Öppet: två avsnitt om påminnelser i Inställningar (det gamla är lyssningslägets), Kellys granskning, Tobys T30. → `reports/2026-11-15-1810-angela-fable-a109-paminnelse.md`
