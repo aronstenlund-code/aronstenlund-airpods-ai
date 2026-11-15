@@ -107,7 +107,8 @@ final class OfflineFlowTests: XCTestCase {
         repeat {
             pause(5)
             last = Self.labels(in: app.debugDescription, kind: "StaticText").filter {
-                $0.localizedCaseInsensitiveContains("ljud") || $0.localizedCaseInsensitiveContains("laddas")
+                ($0.localizedCaseInsensitiveContains("ljud") || $0.localizedCaseInsensitiveContains("laddas"))
+                    && !$0.localizedCaseInsensitiveContains("ljud klart") // "3 frågor · ljud klart" is the ready line
             }
         } while !last.isEmpty && Date() < end
         log.append("sound lines on Start before the network goes: \(last.isEmpty ? "(none)" : last.joined(separator: " | "))")
@@ -175,7 +176,10 @@ final class OfflineFlowTests: XCTestCase {
     private func play(_ name: String, seconds: TimeInterval) -> Bool {
         goToStart()
         mark("PLAY-START \(name)")
-        guard waitEnabled(["Starta prov"], 30) else {
+        // Run 43676559643: after an exam that was ended mid-way, Start offers "Fortsätt" ("Du var på fråga n av m")
+        // in place of Starta prov. Either one starts the player; Fortsätt is what a user sees after a relaunch.
+        let startLabels = ["Starta prov", "Fortsätt"]
+        guard waitEnabled(startLabels, 30) else {
             screen("\(name)-gra", "Starta prov grey")
             log.append("GREY texts: " + Self.labels(in: app.debugDescription, kind: "StaticText").prefix(40).joined(separator: " | "))
             log.append("GREY buttons: " + Self.labels(in: app.debugDescription, kind: "Button").prefix(30).joined(separator: " | "))
@@ -186,15 +190,20 @@ final class OfflineFlowTests: XCTestCase {
                 log.append("GREY exam texts: " + Self.labels(in: app.debugDescription, kind: "StaticText").prefix(40).joined(separator: " | "))
                 goToStart()
             }
-            return miss("Starta prov not tappable offline (30 s)")
+            return miss("neither Starta prov nor Fortsätt tappable offline (30 s)")
         }
-        tap(["Starta prov"], "Starta prov")
+        let resumed = find(["Starta prov"])?.isEnabled != true
+        if let line = Self.labels(in: app.debugDescription, kind: "StaticText").first(where: { $0.hasPrefix("Du var på fråga") }) {
+            log.append("\(name): Start says '\(line)'")
+        }
+        tap(startLabels, resumed ? "Fortsätt (where the user stopped)" : "Starta prov")
         if wait(["Styr med dina AirPods"], 8) != nil {
             for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
             tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
         }
         guard wait(["Tryck på AirPods för svaret", "Tänk", "Avsluta"], 20) != nil else { return miss("no player") }
         screen("\(name)-fraga", "The player without a network")
+        let firstQuestion = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasSuffix("?") }
         var questions: [String] = []
         var waiting = 0
         var problems: [String] = []
@@ -207,6 +216,7 @@ final class OfflineFlowTests: XCTestCase {
             pause(3)
         }
         screen("\(name)-efter", "The player after \(Int(seconds)) s without a network")
+        log.append("\(name): \(resumed ? "resumed with Fortsätt" : "Starta prov"), first question on screen: \(firstQuestion ?? "-")")
         log.append("\(name): questions seen \(questions.count): \(questions.joined(separator: " | ")); samples waiting for sound \(waiting); problem lines: \(problems.joined(separator: " | "))")
         tap(["Avsluta"], "Avsluta")
         if !gone(["Avsluta"], 6) { tap(["Avsluta"], "Avsluta again", quiet: true) }
