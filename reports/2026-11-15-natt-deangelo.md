@@ -32,3 +32,4 @@
 - 18:46 Runda: veckogränsen är 79 %. Kevin har rättat T28-felet (läsläget läser om oläsliga bilder innan 422). A109 och Kellys P2–P4 är klara, och Toby kör T30. Oscar och Angela Schrute har tomma köer. Inga prompter.
 - 19:19 Runda: veckogränsen är 80 %. A109 är grön på main (43741552382), och T30 (streak och påminnelse) är grön. Kevin har rättat T28b: en bild utan text ger 422 i stället för en bildbeskrivning. Toby kör om T28. Övriga har tomma köer. Inga prompter.
 - 19:50 Runda: veckogränsen är 81 %. Alla köer är tomma utom Tobys omtest av T28 efter Kevins T28b. Angela Fable har slutat (tom kö). Inga prompter. Föreslår Aron att de som står still väntar på hans telefontest.
+- 20:22 Runda: T28-felet var testets fel. Testet valde ett foto utan text, så 422 var rätt. Toby kör om med en textbild. Övriga har tomma köer. Uppskattad gräns: cirka 82 %.
