@@ -19,7 +19,7 @@ This repo is the single source of truth for the Lumen (codename) iOS app: an AI 
 ## While working
 - **ElevenLabs credits are never used for testing (owner rule, D180).** No session, test, CI workflow, nightly eval or test account may call ElevenLabs (TTS, Scribe/STT, voice-lab). Tests use the fake voice/transcript paths. Only real users and the owner's own use on his phone may spend credits. A test that needs real ElevenLabs output requires an explicit yes from Aron in chat first.
 - **Paus för Arons veckogräns.** Om filen `prompts/queue/PAUS.md` finns: gör klart och pusha den punkt du håller på med, ta inga nya punkter, schemalägg inga fler rundor och skriv "pausad (PAUS.md)" på tavlan. Kontrollera filen efter `git pull` varje gång du vaknar. Deangelo lägger dit och tar bort filen.
-- **Superpowers.** Använd Superpowers-skills: brainstorming före en ny funktion, test-driven-development och systematic-debugging när du kodar, och verification-before-completion innan du säger att något är klart.
+- **Superpowers används inte i sessionerna** (kostar mycket av Arons veckogräns). Deangelo planerar uppgifterna i köerna; följ dem och verifiera med tester innan du säger att något är klart.
 - Swift 6, strict concurrency, iOS 26 minimum, SwiftUI + Observation.
 - No third-party runtime dependencies without an entry in `docs/DECISIONS.md`.
 - Never put API keys, tokens or secrets in the app or in the repo.
