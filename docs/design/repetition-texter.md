@@ -186,7 +186,7 @@ Raderna nedan med etiketterna Långt svar, Kort svar och Paus gäller bara teste
 | Överst | Fråga {7} av {20} · Varv {2} | |
 | Bricka | {Biologiprovet} · Frågan · Tänk · Långt svar · Kort svar · Pausad | |
 | Under ringen | Tänk | |
-| Väntar på ljud | Gör ljud … | |
+| Väntar på ljud | Gör ljudet … *(D190, Ke64)* | |
 | Pausad, stort | Tryck på AirPods för att fortsätta | Pausad. Tryck på AirPods för att fortsätta. Fortsätter från samma ord. |
 | Pausad, litet | Fortsätter från början av meningen *(D164)* | Fortsätter från samma ord |
 | Tryckraden | ● Långt svar · ●● Kort svar · ●●● Paus *(Fortsätt när pausat)* | Långt / 1 tryck … |
