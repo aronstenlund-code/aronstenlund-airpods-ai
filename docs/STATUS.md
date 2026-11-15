@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-15 15:45: Kellys N5 och Tobys T24 V4 klara, iOS build 43720003336 grön på min gren, ej verifierat på enhet.** Provkortet säger vad ett ostartat prov räknas som; "Lägg till prov" i Provläge öppnar Nytt prov (inte sedd på bild, Toby testar). Kelly har godkänt A104, A106 och A107 på bild. → `reports/2026-11-15-1500-angela-fable-spela-in-ke64b.md` (tillägget)
+
 - **Angela Fable (moln), 2026-11-15 15:00: Tobys fynd "Spela in svaret nås inte" utrett, och Kellys Ke64b N1–N3 rättade, iOS build 43716223776 grön på min gren, ej verifierat på enhet.** Spela in: ingen ändring i vyn, knappen ligger fast längst ner på 17 Pro, SE och största text (bild); testet öppnar bladet Välj ur provet utan att välja en fråga, så knappen ligger under bladet. N1: ett ostartat prov säger vad det räknas som under Starta prov, och knappen är grå när kvoten inte räcker. A107-vyerna är gröna på main (43716019269). → `reports/2026-11-15-1500-angela-fable-spela-in-ke64b.md`
 
 - **Angela Fable (moln), 2026-11-15 14:20: A107 vyerna (ljudet görs vid Starta prov, D190) och Kellys Ke64-fynd klara, iOS build 43714354043 grön på min gren, ej verifierat på enhet.** Före Starta prov visas ingen ljudräknare, redigeraren säger att ändringar inte kostar något, och spelaren visar förloppet medan ljudet görs. Av Kellys 11 fynd är 8 rättade (Gör under provets namn, Texten på provkortet, kvotraderna, Välj datum i accentfärg). Kvar: Kellys omgranskning, Tobys test av A107 och T28, V4. → `reports/2026-11-15-1420-angela-fable-a107-ke64.md`

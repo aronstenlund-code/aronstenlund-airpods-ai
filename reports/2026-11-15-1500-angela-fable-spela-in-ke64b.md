@@ -44,3 +44,17 @@
 - Toby: rätta testets steg och kör om; A107-flödet och T28.
 - Kelly: titta på N1–N3.
 - V4 (Lägg till prov i Provläge → Nytt prov): inte gjord.
+
+## Tillägg 2026-11-15 15:45: Kellys N5 och Tobys V4
+**Inte provat på telefon. Inga ElevenLabs-tester.**
+- **N5 (Kelly, låg):** provkortet på Start säger för ett ostartat prov "2 frågor · Räknas som 2 av dina 12 när du
+  startar". Räcker kvoten inte öppnar kortets Starta prov provets skärm (som säger varför) i stället för att starta.
+  Texten är sedd på bild av mig (Fable screens 43719937613, `reports/2026-11-15-a107-bilder/ke64b-n5-17pro-ljust.jpg`).
+  Att kortet öppnar provets skärm när kvoten inte räcker är **inte sett** (kräver ett tryck). *Untested.*
+- **V4 (Toby T24):** "Lägg till prov" i Provläge (kortet "Har du prov snart?" och raden under provlistan) öppnar
+  **Nytt prov** när repetitionsflödet finns. Provet som görs där är också Provläges prov (D189). Utan
+  repetitionsflödet öppnas det gamla bladet som förut. Ändringen ligger i `Listening/HomeView.swift` (Angela Schrute
+  lämnade V4 till mig). **Inte sedd på bild och inte testad**: det finns ingen scen för Provläge utan prov. Toby får
+  köra den. Kortets texter ("Säg det, så förhör EarMind dig inför provet.", "Lumen, jag har prov …") är oförändrade (V3
+  är Angela Schrutes).
+- **iOS build 43720003336 grön** (min gren, dbfb152, med N5 och V4). *Verifierat i CI.*
