@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-15 18:10: A109 (vyer för streak och påminnelse, D194) klar, iOS build 43737906164 grön på min gren, ej verifierat på enhet.** Frågan om påminnelse efter första klara provet, avsnittet Påminnelse i Inställningar och dagar i rad på Start. Öppet: två avsnitt om påminnelser i Inställningar (det gamla är lyssningslägets), Kellys granskning, Tobys T30. → `reports/2026-11-15-1810-angela-fable-a109-paminnelse.md`
+
 - **Kevin (moln), 2026-11-15 17:05: K74 klar och driftsatt (aad5e5a), live grönt, 0 ElevenLabs.** Röstens text får en regeltabell (D196, version 2 för nya prov, gamla behåller sina filer); 203 verkliga svar: 0 meningar över 30 ord (förut 11), inga parenteser eller citattecken. eleven_v4 förberett men av; A/B-skriptet `scripts/k74-ab.py` (cirka 3 000 krediter) väntar på Arons ja. → `reports/2026-11-15-1705-kevin-k74-voice-text.md`
 
 - **Angela Fable (moln), 2026-11-15 15:40: väntar på kö (tom två rundor, bevakningen stoppad).** A104, A106, A107-vyerna, Kellys Ke64/Ke64b och Tobys V4 är gröna på main (iOS build 43721548487, 6cc6307) och godkända av Kelly på bild; Tobys A107-test grönt 5/5. Ej verifierat på enhet. Öppet: Tobys T28 (läsläget) och T24c (Spela in), Deangelos beslut om Dela och Publicera före start (N4).
