@@ -277,7 +277,7 @@ enum RepetitionDemo {
             case "repReminderAsk":
                 Color(.systemGroupedBackground).ignoresSafeArea()
                     .sheet(isPresented: .constant(true)) {
-                        PracticeReminderQuestion(model: model).presentationDetents([.medium, .large])
+                        PracticeReminderQuestion(model: model)
                     }
             case "repReminderSettings", "repReminderDenied":
                 NavigationStack {

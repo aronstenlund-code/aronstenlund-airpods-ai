@@ -19,6 +19,7 @@ struct PracticeReminderQuestion: View {
     let model: RepetitionModel
     @Environment(\.dismiss) private var dismiss
     @State private var isAsking = false
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         ScrollView {
@@ -72,6 +73,9 @@ struct PracticeReminderQuestion: View {
             .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as `MainActionBar`
             .background(.regularMaterial)
         }
+        // Half a screen is enough for the question; with the largest text it needs the whole screen (SE: only the
+        // heading showed in the half sheet).
+        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium, .large])
         .interactiveDismissDisabled() // one of the two answers, so the question is not asked again by a swipe
     }
 }

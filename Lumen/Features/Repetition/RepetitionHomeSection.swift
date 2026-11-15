@@ -84,7 +84,7 @@ struct RepetitionHomeSection: View {
         // A109 (D194, Ke65): the app's question about a reminder, after the first exam that was played through and
         // once the player is closed (two covers cannot change places at once, so a short wait).
         .sheet(isPresented: $askingReminder) {
-            PracticeReminderQuestion(model: model).presentationDetents([.medium, .large])
+            PracticeReminderQuestion(model: model)
         }
         .onChange(of: model.showsPlayer) { offerReminder() }
         .onChange(of: model.asksForReminders) { offerReminder() }
