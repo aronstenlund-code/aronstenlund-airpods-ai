@@ -383,7 +383,9 @@ final class FullFlowTests: XCTestCase {
                 log.append("mode unavailable: line \(line ? "shown" : "missing"), player \(player ? "opened" : "not opened")")
                 if !line { note("unavailable: 'Uppläsningen är tillfälligt avstängd' not shown after Starta prov (A112)") }
                 if player { note("unavailable: Starta prov opened the player (A112/K78 says it should not)"); tap(["Avsluta"], "Avsluta (unavailable)", quiet: true) }
-                if find(["Starta prov"]) == nil { note("unavailable: Starta prov is gone, the exam may have been started (A112: stays unstarted)") }
+                // Kelly U1 (Angela Fable, A112): after a failed Starta prov the button is hidden (not grey) until the screen
+                // opens again; on main 2803bf5 it still shows. Either is fine; only log it.
+                log.append("mode unavailable: Starta prov after the failed start: \(find(["Starta prov"]) == nil ? "hidden (U1)" : "shown")")
                 if tap(["Frågor och svar"], "Frågor och svar (unavailable)", quiet: true) {
                     pause(2)
                     screen("lage-unavailable-fragor", "unavailable: the question list (A112: whole answer under each question)")
