@@ -178,6 +178,8 @@ final class FullFlowTests: XCTestCase {
                 back.tap(); testTaps += 1; pause(1); continue
             }
             if tap(["Avbryt", "Stäng", "Klar", "Cancel", "Done", "Prov"], "back to Start", counted: false, quiet: true) { pause(1); continue }
+            // Run 43782880704: Start had been paged sideways to Fler lägen.
+            if find(["FLER LÄGEN"]) != nil { app.swipeRight(); pause(1) }
             app.swipeDown(velocity: .fast)
             pause(1)
         }
@@ -526,7 +528,15 @@ final class FullFlowTests: XCTestCase {
 
     private func cleanUp() -> Bool {
         goToStart()
-        guard tap(["Frågor och svar"], "Frågor och svar") else { return false }
+        // Run 43782880704: once the exam has a date the Start card is NÄSTA PROV with "Ändra <title>", no Frågor och svar.
+        if !tap(["Frågor och svar"], "Frågor och svar", quiet: true) {
+            var edit = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Ändra '")).firstMatch
+            for _ in 0..<4 where edit.exists && !edit.isHittable { app.swipeUp(); edit = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Ändra '")).firstMatch }
+            guard edit.exists, edit.isHittable else { return miss("Frågor och svar: neither it nor 'Ändra …' found on Start") }
+            tapElement(edit, "\(edit.label) (NÄSTA PROV card)")
+            pause(2)
+            if find(["Ta bort publiceringen", "Mer"]) == nil { _ = tap(["Frågor och svar"], "Frågor och svar (after Ändra)", quiet: true) }
+        }
         if tap(["Ta bort publiceringen"], "Ta bort publiceringen", quiet: true) || (tap(["Mer"], "Mer", quiet: true) && tap(["Ta bort publiceringen"], "Ta bort publiceringen", quiet: true)) {
             pause(1)
             if !confirmDestructive("Ta bort publiceringen") { note("Ta bort publiceringen: no confirmation button to tap") }
