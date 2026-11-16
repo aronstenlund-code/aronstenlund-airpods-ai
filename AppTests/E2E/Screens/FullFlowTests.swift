@@ -373,7 +373,24 @@ final class FullFlowTests: XCTestCase {
         // (the player opens and waits for the sound), close it, and read Start as before.
         if waitEnabled(["Starta prov"], 20) {
             tap(["Starta prov"], "Starta prov (\(mode), A107)")
-            if wait(["Styr med dina AirPods"], 8) != nil {
+            // A112/K78 (D200): in `unavailable` Starta prov does not open the player; the exam stays unstarted and the
+            // line "Uppläsningen är tillfälligt avstängd …" stands under the button.
+            if mode == "unavailable" {
+                let line = wait(["Uppläsningen är tillfälligt avstängd*"], 20) != nil
+                pause(2)
+                let player = find(["Avsluta"]) != nil || find(["Styr med dina AirPods"]) != nil
+                screen("lage-unavailable-starta", "unavailable after Starta prov (A112)")
+                log.append("mode unavailable: line \(line ? "shown" : "missing"), player \(player ? "opened" : "not opened")")
+                if !line { note("unavailable: 'Uppläsningen är tillfälligt avstängd' not shown after Starta prov (A112)") }
+                if player { note("unavailable: Starta prov opened the player (A112/K78 says it should not)"); tap(["Avsluta"], "Avsluta (unavailable)", quiet: true) }
+                if find(["Starta prov"]) == nil { note("unavailable: Starta prov is gone, the exam may have been started (A112: stays unstarted)") }
+                if tap(["Frågor och svar"], "Frågor och svar (unavailable)", quiet: true) {
+                    pause(2)
+                    screen("lage-unavailable-fragor", "unavailable: the question list (A112: whole answer under each question)")
+                    goToStart()
+                }
+                if !line || player { return miss("unavailable: A112/K78 behaviour not seen (line \(line), player \(player))") }
+            } else if wait(["Styr med dina AirPods"], 8) != nil {
                 for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
                 tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
             }
@@ -395,9 +412,12 @@ final class FullFlowTests: XCTestCase {
         }
         screen("lage-\(mode)", "Start in the server's '\(mode)' mode after 40 s")
         log.append("mode \(mode): sound lines seen on Start: \(seen.joined(separator: " | "))")
-        if mode == "unavailable", !seen.contains(where: { $0.contains("Ljudet kan inte göras just nu") }) {
-            note("unavailable: 'Ljudet kan inte göras just nu' never shown on Start in 40 s")
+        // A112 (D200): the old "Ljudet kan inte göras just nu" is gone; Start says "… · Uppläsningen är tillfälligt avstängd".
+        let offLine = Self.labels(in: app.debugDescription, kind: "StaticText").contains { $0.contains("Uppläsningen är tillfälligt avstängd") }
+        if mode == "unavailable", !offLine, !seen.contains(where: { $0.contains("Uppläsningen är tillfälligt avstängd") }) {
+            note("unavailable: 'Uppläsningen är tillfälligt avstängd' never shown on Start in 40 s (A112)")
         }
+        if seen.contains(where: { $0.contains("Ljudet kan inte göras just nu") }) { note("the old line 'Ljudet kan inte göras just nu' is still shown (A112 removed it)") }
         if mode == "slow", seen.isEmpty { note("slow: no line about the sound on Start") }
         return true
     }
