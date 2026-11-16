@@ -177,7 +177,11 @@ final class FullFlowTests: XCTestCase {
             if back.exists, back.isHittable, ["Prov", "Tillbaka", "Back"].contains(back.label) || back.label.isEmpty {
                 back.tap(); testTaps += 1; pause(1); continue
             }
-            if tap(["Avbryt", "Stäng", "Klar", "Cancel", "Done", "Prov"], "back to Start", counted: false, quiet: true) { pause(1); continue }
+            if let hit = ["Close", "Avbryt", "Stäng", "Klar", "Cancel", "Done", "Prov"].lazy.compactMap({ label in
+                self.app.buttons.matching(NSPredicate(format: "label ==[c] %@", label)).allElementsBoundByIndex.first { $0.exists && $0.isHittable }
+            }).first {
+                tapElement(hit, "\(hit.label) (back to Start)", counted: false); pause(1); continue
+            }
             // Run 43782880704: Start had been paged sideways to Fler lägen.
             if find(["FLER LÄGEN"]) != nil { app.swipeRight(); pause(1) }
             app.swipeDown(velocity: .fast)
@@ -665,10 +669,14 @@ final class FullFlowTests: XCTestCase {
         if find(pickerSigns) != nil { note("the photo library from Fota sidor did not close") }
     }
 
+    /// Run 43945192998: the share sheet's own button is "Close" while a hidden "Avbryt" elsewhere made `tap` scroll for
+    /// it and give up, so the sheet stayed. Only a hittable button is tapped; otherwise the sheet is dragged down.
     private func closeSheet() {
-        if !tap(["Avbryt", "Cancel", "Stäng", "Close", "Klar", "Done"], "close the sheet", counted: false, quiet: true) {
-            app.swipeDown(velocity: .fast)
+        for label in ["Close", "Stäng", "Avbryt", "Cancel", "Klar", "Done"] {
+            let hit = app.buttons.matching(NSPredicate(format: "label ==[c] %@", label)).allElementsBoundByIndex.first { $0.exists && $0.isHittable }
+            if let hit { tapElement(hit, "\(label) (close the sheet)", counted: false); pause(1); return }
         }
+        app.swipeDown(velocity: .fast)
         pause(1)
     }
 
