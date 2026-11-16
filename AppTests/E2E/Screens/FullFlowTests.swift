@@ -565,6 +565,8 @@ final class FullFlowTests: XCTestCase {
 
     // MARK: Shared steps
 
+    private var retriedLibrary = false
+
     private func pickPhoto() -> Bool {
         closePicker()
         guard tap(["Välj bilder"], "Välj bilder") else { return false }
@@ -579,6 +581,13 @@ final class FullFlowTests: XCTestCase {
                 image.exists && samples.contains { image.label.contains($0) } && image.frame.width < 250
             }
         } while cells.isEmpty && Date() < end
+        // Nightly 43900691284: the library stayed empty for 60 s. Close it and open it once more before giving up.
+        if cells.isEmpty, !retriedLibrary {
+            retriedLibrary = true
+            note("Välj bilder: no pictures in 60 s, the library was opened again")
+            closePicker()
+            return pickPhoto()
+        }
         screen("bildbiblioteket", "Välj bilder: the photo library", counts: false)
         guard let width = cells.map(\.frame.width).max(), let top = cells.map(\.frame.minY).min() else {
             return miss("no grid of pictures")
