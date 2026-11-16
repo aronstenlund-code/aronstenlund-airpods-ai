@@ -89,6 +89,11 @@ export function coverage(questions: string[], parts: string[]): Coverage {
  * list in the material's order (by part, the old order within a part).
  */
 export function mergeCoverage(questions: string[], placed: number[], extra: { part: number; question: string }[], max: number): string[] {
+  return mergeCoverageParts(questions, placed, extra, max).questions;
+}
+
+/** As mergeCoverage, with the part of each question: an added question belongs to the part it was written from. */
+export function mergeCoverageParts(questions: string[], placed: number[], extra: { part: number; question: string }[], max: number): { questions: string[]; parts: number[] } {
   const list = questions.map((q, i) => ({ q, part: placed[i] }));
   for (const e of extra) {
     if (list.some((x) => x.q.toLowerCase() === e.question.toLowerCase())) continue;
@@ -106,5 +111,6 @@ export function mergeCoverage(questions: string[], placed: number[], extra: { pa
     }
     list.push({ q: e.question, part: e.part });
   }
-  return list.map((x, i) => ({ ...x, i })).sort((a, b) => (a.part < 0 ? 1e9 : a.part) - (b.part < 0 ? 1e9 : b.part) || a.i - b.i).map((x) => x.q);
+  const sorted = list.map((x, i) => ({ ...x, i })).sort((a, b) => (a.part < 0 ? 1e9 : a.part) - (b.part < 0 ? 1e9 : b.part) || a.i - b.i);
+  return { questions: sorted.map((x) => x.q), parts: sorted.map((x) => x.part) };
 }

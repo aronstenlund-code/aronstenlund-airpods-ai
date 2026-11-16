@@ -1,6 +1,6 @@
 import { HttpError } from "../_shared/errors.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
-import { coverage, mergeCoverage, partCount, splitParts } from "./coverage.ts";
+import { coverage, mergeCoverageParts, partCount, splitParts } from "./coverage.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
 /**
@@ -827,9 +827,10 @@ export async function handleDrill(
           return q ? { part: i, question: q } : null;
         }))).filter((x): x is { part: number; question: string } => !!x);
         if (extra.length) {
-          qs = mergeCoverage(qs, c.placed, extra, Math.max(qs.length, possible));
-          const after = coverage(qs, parts);
-          cov = { parts: c.parts, before: c.covered, after: after.covered, added: extra.length };
+          const m = mergeCoverageParts(qs, c.placed, extra, Math.max(qs.length, possible));
+          qs = m.questions;
+          // a question written from a part covers that part, even if its words also match a neighbour
+          cov = { parts: c.parts, before: c.covered, after: new Set(m.parts.filter((x) => x >= 0)).size, added: extra.length };
         }
       }
     }

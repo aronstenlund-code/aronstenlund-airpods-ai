@@ -1,0 +1,230 @@
+{
+ "bio-fotosyntes": {
+  "chars": 2657,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 6135,
+    "coverage": {
+     "parts": 2,
+     "before": 2,
+     "after": 2,
+     "added": 0
+    },
+    "cost": 0.0016279,
+    "questions": [
+     "Vad skiljer en population från ett samhälle?",
+     "Varför behöver växter klorofyll?",
+     "Vad händer med koldioxid och vatten vid fotosyntesen?",
+     "Varför är glukos viktigt för en växt?",
+     "Vad frigörs vid fotosyntesen och varför är det viktigt för oss?",
+     "Vad skiljer en producent från en konsument?",
+     "Varför kallas djur som äter växter för förstahandskonsumenter?",
+     "Varför bildar näringskedjor ofta en näringsväv i naturen?",
+     "Varför finns det färre rovdjur än växtätare?",
+     "Varför är näringskedjor sällan längre än fyra eller fem led?",
+     "Vad händer med energin i en näringskedja vid varje steg?",
+     "Vad gör nedbrytare i ett ekosystem?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 8204,
+    "coverage": {
+     "parts": 2,
+     "before": 1,
+     "after": 2,
+     "added": 1
+    },
+    "cost": 0.0020746,
+    "questions": [
+     "Vad ingår i ett ekosystem utöver de levande organismerna?",
+     "Varför behöver växter ljusenergi för fotosyntesen?",
+     "Vad tar växten upp från luften och vad tar den upp genom rötterna vid fotosyntesen?",
+     "Vad blir det av glukosen som växten tillverkar?",
+     "Varför släpps syre ut i luften vid fotosyntesen?",
+     "Vad skiljer en producent från en konsument?",
+     "Varför kallas en växtätare för en förstahandskonsument?",
+     "Varför är rovdjur högst upp i näringskedjan toppkonsumenter?",
+     "Varför bildar näringskedjor en näringsväv i naturen?",
+     "Varför förloras så mycket energi när den går från ett steg i näringskedjan till nästa?",
+     "Varför finns det färre rovdjur än växtätare?",
+     "Vad händer med näringsämnena när nedbrytare bryter ner döda växter och djur?"
+    ]
+   }
+  ]
+ },
+ "so-tre-delar": {
+  "chars": 3449,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 7932,
+    "coverage": {
+     "parts": 3,
+     "before": 2,
+     "after": 3,
+     "added": 1
+    },
+    "cost": 0.0023462,
+    "questions": [
+     "Varför konkurrerade Europas stormakter om kolonier och handel?",
+     "Hur bidrog militarism och nationalism till att första världskriget bröt ut?",
+     "Varför ledde mordet i Sarajevo till ett världskrig?",
+     "Varför kunde Tyskland inte snabbt besegra Frankrike?",
+     "Varför blev kriget på västfronten så långvarigt?",
+     "Hur gjorde kulsprutor, taggtråd och giftgas anfallen så dödliga?",
+     "Vad gjorde kriget till ett totalt krig?",
+     "Vad innebar bolsjevikernas maktövertagande för kriget?",
+     "Varför kände många tyskar sig förödmjukade efter kriget?",
+     "Varför bildades Nationernas förbund?",
+     "Varför är domstolarna självständiga i Sverige?",
+     "Vad är skillnaden mellan väder och klimat?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 8836,
+    "coverage": {
+     "parts": 3,
+     "before": 2,
+     "after": 3,
+     "added": 1
+    },
+    "cost": 0.0026611,
+    "questions": [
+     "Varför kallas imperialism och militarism orsaker till första världskriget?",
+     "Hur ledde alliansernas löften till att fler stormakter drogs in i kriget?",
+     "Varför kunde ingen av sidorna vinna snabbt på västfronten?",
+     "Varför var skyttegravskriget så dödligt?",
+     "Vad menas med att första världskriget var ett totalt krig?",
+     "Varför gick USA med i kriget 1917?",
+     "Vad hände när bolsjevikerna tog makten i Ryssland?",
+     "Varför fick Tyskland så hårda villkor i Versaillesfreden?",
+     "Varför kände många tyskar sig förödmjukade efter freden?",
+     "Hur går det till att ett parti kommer in i riksdagen?",
+     "Vad har riksdagen för uppgifter i maktdelningen?",
+     "Varför är det kallare vid polerna än vid ekvatorn?"
+    ]
+   }
+  ]
+ },
+ "no-tre-delar": {
+  "chars": 4829,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 9951,
+    "coverage": {
+     "parts": 4,
+     "before": 3,
+     "after": 4,
+     "added": 1
+    },
+    "cost": 0.0027700000000000003,
+    "questions": [
+     "Varför behövs balansering av en reaktionsformel?",
+     "Hur räknar man ut molmassan för vatten?",
+     "Hur kan man räkna ut substansmängden i åttioåtta gram koldioxid?",
+     "Hur går man till väga vid en stökiometrisk beräkning?",
+     "Vad händer med strömmen i en seriekoppling om en lampa går sönder?",
+     "Varför är hemmets eluttag parallellkopplade?",
+     "Hur kan man beräkna strömmen genom en lampa med given spänning och resistans?",
+     "Varför bryter en jordfelsbrytare strömmen?",
+     "Hur fungerar fotosyntesen?",
+     "Varför minskar energin i en näringskedja för varje steg?",
+     "Vad skiljer en producent från en konsument?",
+     "Vad händer med näringsämnena när nedbrytare bryter ner döda växter och djur?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 10789,
+    "coverage": {
+     "parts": 4,
+     "before": 2,
+     "after": 4,
+     "added": 2
+    },
+    "cost": 0.0034345,
+    "questions": [
+     "Hur räknar man ut molmassan för vatten?",
+     "Varför måste en reaktionsformel balanseras?",
+     "Varför ändrar man bara koefficienterna och aldrig indexen när man balanserar?",
+     "Hur räknar man ut koncentrationen när man löser 0,50 mol natriumklorid i 0,250 kubikdecimeter?",
+     "Vad händer med substansmängden vid spädning?",
+     "Varför går samma ström genom alla komponenter i en seriekoppling?",
+     "Varför slutar hela kretsen fungera när en lampa i en seriekoppling går sönder?",
+     "Vad skiljer en parallellkoppling från en seriekoppling när en lampa går sönder?",
+     "Hur beräknar man strömmen genom en lampa på 6 ohm vid 12 volt?",
+     "Hur räknar man ut energin som en vattenkokare på 2 000 watt använder under en månad?",
+     "Varför behöver gröna växter klorofyll?",
+     "Varför skulle kretsloppet stanna utan nedbrytare?"
+    ]
+   }
+  ]
+ },
+ "wikipedia-fotosyntes": {
+  "chars": 15498,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 13032,
+    "coverage": {
+     "parts": 6,
+     "before": 4,
+     "after": 5,
+     "added": 2
+    },
+    "cost": 0.0043465000000000005,
+    "questions": [
+     "Varför behövs klorofyll för fotosyntesen?",
+     "Vad händer med koldioxid och vatten under fotosyntesen?",
+     "Varför är kloroplasterna viktiga för växternas fotosyntes?",
+     "Varför använder vissa bakterier svavelväte istället för vatten vid fotosyntes?",
+     "Vad händer i ljusreaktionerna i tylakoidens membran?",
+     "Vad händer med elektronerna i ljusreaktionerna?",
+     "Hur kan kloroplasterna ha bildats från självständiga organismer?",
+     "Varför ser vi växtbladen som gröna?",
+     "Varför ser löven gula ut på hösten?",
+     "Hur bildas ATP och NADPH under ljusreaktionerna?",
+     "Varför pumpar cytokromkomplexet protoner till tylakoidens inre?",
+     "Hur påverkas fotosyntesen av ljusets våglängd?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 13771,
+    "coverage": {
+     "parts": 6,
+     "before": 5,
+     "after": 5,
+     "added": 1
+    },
+    "cost": 0.004583,
+    "questions": [
+     "Varför kallas fotosyntes en process där energi lagras i kemiska bindningar?",
+     "Varför behöver växter koldioxid och vatten för att fotosyntesen ska kunna ske?",
+     "Varför finns klorofyll på tylakoidernas membran i kloroplasten?",
+     "Varför är kloroplasterna troligen en gång i tiden självständiga organismer?",
+     "Hur förs energin vidare från en klorofyllmolekyl till reaktionscentret?",
+     "Varför ser vi bladen som gröna?",
+     "Varför blir löven gula eller orangea på hösten?",
+     "Vad händer med ljusets energi när en elektron i klorofyll exciteras?",
+     "Hur bildas ATP i ljusreaktionerna?",
+     "Vad händer med syret som bildas när vatten spjälkas i fotosyntesen?",
+     "Vad gör enzymet rubisco i Calvin-cykeln?",
+     "Vad är fotosyntes?"
+    ]
+   }
+  ]
+ },
+ "summary": {
+  "runs_with_parts": 8,
+  "parts": 30,
+  "covered_before": 21,
+  "covered_after": 28,
+  "added": 9,
+  "cost_usd": 0.0238
+ }
+}
