@@ -73,3 +73,9 @@ som Darwin-notiser (`earmind.test.press.N`) från testprocessen i simulatorn. Kr
 - Det andra trycket kom 3,6 s efter det första. Det långa svaret till fråga 1 var då slut och fråga 2 hade börjat, så
   "short answer 2" stämmer med D142.
 - Riktiga AirPods-tryck (fjärrkommandon från lurarna) är fortfarande bara på Arons telefon.
+
+## Tillägg 2026-11-16 01:20: anpassat till A107 (grön igen, 43776390542)
+Sedan A107 görs ljudet först vid Starta prov, och ett ostartat prov öppnas inte utan nät (D193). Nattkörningen
+43762930539 var därför röd. Testet startar nu provet en gång medan nätet finns, väntar 8 s efter Spara frågorna och
+svarar Inte nu på påminnelsefrågan (A109).
+- Fynd till Angela Schrute: två prov efter en ChatGPT-import om man lämnar importen inom cirka 3 s (se kön).

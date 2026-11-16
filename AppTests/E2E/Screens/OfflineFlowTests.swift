@@ -98,9 +98,21 @@ final class OfflineFlowTests: XCTestCase {
         if let allow = wait(["Tillåt klistra in", "Allow Paste"], 3) { tapElement(allow, "Tillåt klistra in") }
         guard wait(["Hittade*"], 15) != nil else { screen("chatgpt-fel", "No questions found"); return miss("Hittade n frågor not shown") }
         guard tap(["Spara frågorna"], "Spara frågorna") else { return false }
-        pause(3)
+        // Runs 43676559643, 43678562025, 43773402041: leaving 3 s after Spara frågorna gave two exams with the same name on
+        // Start, one of them only on the phone (finding to Angela Schrute). Wait as A107 does, so T27 tests the offline part.
+        pause(8)
         goToStart()
         guard waitEnabled(["Starta prov"], 240) else { screen("inget-ljud", "No Starta prov"); return miss("Starta prov not enabled in 240 s") }
+        // A107 (D190, D193): the sound is made at Starta prov, and without a network an unstarted exam does not open
+        // (nightly 43762930539). A user starts it once online: start, let the sound come, close the player.
+        tap(["Starta prov"], "Starta prov (online, makes the sound, A107)")
+        if wait(["Styr med dina AirPods"], 8) != nil {
+            for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+            tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+        }
+        if wait(["Avsluta"], 20) != nil { pause(8); tap(["Avsluta"], "Avsluta (sound made)") }
+        pause(2)
+        goToStart()
         // Starta prov opens with the first question's sound (K46); the rest is still downloading. Wait until Start has no
         // line about the sound being made or downloaded, at most 180 s, so "downloaded" means the whole exam.
         let end = Date().addingTimeInterval(180)
@@ -224,7 +236,10 @@ final class OfflineFlowTests: XCTestCase {
         mark("PLAY-END \(name)")
         if waiting > 0 { note("\(name): the player waited for sound in \(waiting) samples without a network") }
         if !problems.isEmpty { note("\(name): the player said: \(problems[0])") }
-        return questions.count >= 2 && waiting == 0 || miss("\(name): \(questions.count) questions, \(waiting) samples waiting for sound")
+        // Run 43770386855: resumed at question 2 of 3, the app log played 2 and 3, but the screen sampling saw one. After
+        // Fortsätt near the end of a lap one question on the screen is enough; the app log (summary) shows the rest.
+        let needed = resumed ? 1 : 2
+        return questions.count >= needed && waiting == 0 || miss("\(name): \(questions.count) questions, \(waiting) samples waiting for sound")
     }
 
     /// T27 with Angela Schrute's press hook (`LUMEN_TEST_PRESSES`, 60d83ce): 1 press = long answer, 2 = short answer,
@@ -351,6 +366,12 @@ final class OfflineFlowTests: XCTestCase {
 
     private func goToStart() {
         for _ in 0..<6 {
+            // A109: "Vill du ha en påminnelse?" after the first finished exam (T30 tests it).
+            if find(["Vill du ha en påminnelse?"]) != nil, let notNow = find(["Inte nu"]), notNow.isHittable {
+                tapElement(notNow, "Inte nu (reminder question)", counted: false)
+                pause(1)
+                continue
+            }
             if atStart() { return }
             if app.alerts.firstMatch.exists {
                 let alert = app.alerts.firstMatch
