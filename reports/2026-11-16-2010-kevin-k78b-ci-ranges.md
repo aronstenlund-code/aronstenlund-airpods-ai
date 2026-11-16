@@ -12,3 +12,5 @@
 **Inte gjort:** ett dagligt GitHub Actions-flöde som hämtar listan med GitHubs egen token och skriver den i tabellen med service-nyckeln. Det automatiska läget nekade att skapa det. Reservlistan bygger därför bara på att funktionerna själva lyckas någon gång. **untested assumption** att det räcker. Vill Deangelo ha flödet behöver det godkännas.
 
 **Kvar att kontrollera:** att `ci_ranges` får en rad efter nästa kalla start. Kontrolleras med SQL i nästa runda.
+
+**Tillägg 21:35 (verified live, SQL):** `ci_ranges` har en rad, `source = function`, med 8 358 adressintervall, uppdaterad 20:31:58 UTC. En funktion fick alltså svar från GitHub och sparade listan, och reserven finns nu till nästa gång GitHub svarar 403.
