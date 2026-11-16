@@ -628,7 +628,7 @@ final class RepetitionModel {
         }
     }
     /// D151: the tempos on offer; below 0.70 the voice stays at 0.70 and the rest is silence (D152).
-    static let tempos: [Double] = [0.5, 0.65, 0.7, 0.75, 0.85, 0.9, 1.0, 1.25, 1.5] // A115 (Ke69): 1,25× too
+    static let tempos: [Double] = [0.5, 0.65, 0.7, 0.75, 0.85, 0.9, 1.0, 1.5]
     /// D151: the three voices (the blind test's A, B and C, the model names never shown).
     static let voices = ["A", "B", "C"]
 

@@ -31,7 +31,9 @@ enum SayText {
         return text.replacingOccurrences(of: ".", with: ",") + "×"
     }
 
-    static let tempos: [Double] = [0.5, 0.75, 1.0, 1.25, 1.5]
+    /// Ke69 asks for 0,5 · 0,75 · 1,0 · 1,25 · 1,5. The tempos the player takes are decided in D151 (and pinned by
+    /// `A84VoiceTempoTests`), and 1,25 is not one of them, so it is left out until that is decided.
+    static let tempos: [Double] = [0.5, 0.75, 1.0, 1.5]
 
     /// "7:12".
     static func clock(_ seconds: TimeInterval) -> String {
@@ -87,7 +89,7 @@ struct SayInAirPodsField: View {
                     Text("\(chars) tecken").font(.caption.monospaced()).opacity(0.55)
                 }
             }
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
+            HStack(alignment: .top, spacing: 8) { // the empty field keeps three rows: the mark stands at the first
                 Text(verbatim: "›").foregroundStyle(SayText.accent).accessibilityHidden(true)
                 TextField("", text: $text, prompt: Text("Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
                           axis: .vertical)

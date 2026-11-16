@@ -45,7 +45,7 @@ import Testing
         #expect(SayText.howLong(0) == "En gång")
         #expect(SayText.howLong(10) == "10 min")
         #expect(SayText.tempo(1) == "1,0×")
-        #expect(SayText.tempo(1.25) == "1,25×")
+        #expect(SayText.tempo(0.75) == "0,75×")
         #expect(SayText.tempo(0.5) == "0,5×")
         #expect(SayText.clock(432) == "7:12")
         #expect(SayText.tempos.allSatisfy { RepetitionModel.tempos.contains($0) }, "every tempo on offer is one the player takes")
