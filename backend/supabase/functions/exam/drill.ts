@@ -1,5 +1,6 @@
 import { HttpError } from "../_shared/errors.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
+import { coverage, mergeCoverage, partCount, splitParts } from "./coverage.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
 /**
@@ -792,8 +793,47 @@ export async function handleDrill(
     ]);
     // the notes call's reply; an old-style reply with notes in the questions call is kept (never both empty)
     p.notes = clean(firstJson(notesRun.text)?.notes, DRILL_LIMITS.notes) || p.notes;
-    const base = trimQuestions(sh.questions, possible).map((question, i) => ({ id: `q${i + 1}`, question }));
+    let qs = trimQuestions(sh.questions, possible);
     const steps = [...transcribed, plan.usage, notesRun.usage, ...(sh.usage ? [sh.usage] : [])];
+    // K83 (D206): every part of the material gets a question, checked in code (the material's own text when there
+    // is one, else the notes, which follow the material's order); a part without one gets a call of its own
+    const material = (text || p.notes || "").trim();
+    let cov: { parts: number; before: number; after: number; added: number } | null = null;
+    const k = partCount(material.length, qs.length);
+    if (k > 1) {
+      const parts = splitParts(material, k);
+      const c = coverage(qs, parts);
+      cov = { parts: c.parts, before: c.covered, after: c.covered, added: 0 };
+      if (c.missing.length) {
+        const extra = (await Promise.all(c.missing.map(async (i) => {
+          const r = await runLLM(provider, {
+            system: SYSTEM_PROMPT_DRILL_PLAN,
+            user: [
+              (summary.subject || summary.grade) && `<context>${sanitizeTagged(contextLine(summary.subject, summary.grade))}</context>`,
+              `<count>2</count>`,
+              `<material>\n${sanitizeTagged(parts[i])}\n</material>`,
+              "Read the material above (one part of a longer material: ask only about this part).",
+              PART_QUESTIONS,
+            ].filter(Boolean).join("\n"),
+            maxTokens: 600,
+            cacheSystem: true,
+            model: cfg.planModel,
+            timeoutMs: 60_000,
+            signal,
+          }, cfg.planPriceIn, cfg.planPriceOut).catch(() => null);
+          if (!r) return null;
+          steps.push(r.usage);
+          const q = parsePlan(r.text, 4).questions.find((x) => !qs.some((y) => y.toLowerCase() === x.toLowerCase()));
+          return q ? { part: i, question: q } : null;
+        }))).filter((x): x is { part: number; question: string } => !!x);
+        if (extra.length) {
+          qs = mergeCoverage(qs, c.placed, extra, Math.max(qs.length, possible));
+          const after = coverage(qs, parts);
+          cov = { parts: c.parts, before: c.covered, after: after.covered, added: extra.length };
+        }
+      }
+    }
+    const base = qs.map((question, i) => ({ id: `q${i + 1}`, question }));
     let items: DrillItem[] = base;
     let answers: StepUsage | null = null;
     if (b.answers !== false) {
@@ -817,7 +857,8 @@ export async function handleDrill(
           notes: notesRun.usage,
           ...(sh.usage ? { shorten: sh.usage } : {}),
           ...(answers ? { answers } : {}),
-          est_cost_usd: transcribed.reduce((n, u) => n + u.est_cost_usd, 0) + plan.usage.est_cost_usd + notesRun.usage.est_cost_usd + (sh.usage?.est_cost_usd ?? 0) + (answers?.est_cost_usd ?? 0),
+          ...(cov ? { coverage: cov } : {}),
+          est_cost_usd: steps.reduce((n, u) => n + u.est_cost_usd, 0), // K83: the coverage calls included
           ms: Date.now() - t0,
         },
       },
