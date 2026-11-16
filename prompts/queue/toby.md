@@ -101,3 +101,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
   - **Appen:** grenen skiljer sig från main bara med A111 (Intervjuläget). Inget av testerna rör intervjuläget, och varje rött test är grönt i en annan körning med samma app.
   - **Mitt förslag:** slå ihop nu. Vill du ha en körning där alla fem är gröna samtidigt, kör om en gång, så väntar jag.
 
+
+- [ ] **T34 – Vakt för G7 steg 2 (A113)** (effort: medium). Lagd av Deangelo 2026-11-16 20:50. När Angela Schrute säger till om A113-grenen: kör nattflödet med grenens app och jämför med main som i T33. Allt som skiljer är ett fynd till henne. 0 ElevenLabs.
