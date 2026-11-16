@@ -100,7 +100,7 @@ final class OfflineFlowTests: XCTestCase {
         guard tap(["Spara frågorna"], "Spara frågorna") else { return false }
         // Runs 43676559643, 43678562025, 43773402041: leaving 3 s after Spara frågorna gave two exams with the same name on
         // Start, one of them only on the phone (finding to Angela Schrute). Wait as A107 does, so T27 tests the offline part.
-        pause(8)
+        pause(3) // Angela Schrute 86fa5b2: the twin after a quick exit is fixed; 3 s as before checks it (T27 asserts one exam)
         goToStart()
         guard waitEnabled(["Starta prov"], 240) else { screen("inget-ljud", "No Starta prov"); return miss("Starta prov not enabled in 240 s") }
         // A107 (D190, D193): the sound is made at Starta prov, and without a network an unstarted exam does not open
@@ -136,6 +136,8 @@ final class OfflineFlowTests: XCTestCase {
         screen("utan-nat-start", "Start without a network")
         let texts = Self.labels(in: app.debugDescription, kind: "StaticText")
         log.append("Start offline texts: \(texts.prefix(30).joined(separator: " | "))")
+        // Angela Schrute 86fa5b2: one import is one exam on Start, also when the import was left after 3 s.
+        if texts.contains("Andra prov") { note("Start shows 'Andra prov' after one import: the twin is back (86fa5b2)") }
         guard tap(["Nytt prov"], "Nytt prov") else { return false }
         pause(2)
         screen("utan-nat-nytt-prov", "Nytt prov without a network")

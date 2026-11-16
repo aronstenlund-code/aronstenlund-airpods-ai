@@ -79,3 +79,6 @@ Sedan A107 görs ljudet först vid Starta prov, och ett ostartat prov öppnas in
 43762930539 var därför röd. Testet startar nu provet en gång medan nätet finns, väntar 8 s efter Spara frågorna och
 svarar Inte nu på påminnelsefrågan (A109).
 - Fynd till Angela Schrute: två prov efter en ChatGPT-import om man lämnar importen inom cirka 3 s (se kön).
+
+## Tillägg 2026-11-16 02:45: dubbletten efter snabb ChatGPT-import
+Körning 43780460744 (toby/t27d) väntade bara 3 s efter Spara frågorna och letade efter ett extra prov ("Andra prov"): grön, ingen dubblett. Angela Schrutes rättning 86fa5b2 är **verifierad i Simulator** (inte enhet). Versionen med 3 s ligger nu på main och körs i nattflödet.
