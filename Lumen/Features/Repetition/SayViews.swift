@@ -111,6 +111,8 @@ struct SayInAirPodsField: View {
         .padding(16)
         .foregroundStyle(SayText.ink)
         .background(scheme == .dark ? SayText.fieldDark : SayText.field, in: RoundedRectangle(cornerRadius: 16))
+        // Kelly S3: in dark mode the field is almost the colour of the screen, so a hairline shows where it ends.
+        .overlay { if scheme == .dark { RoundedRectangle(cornerRadius: 16).strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5) } }
         .environment(\.colorScheme, .dark) // the system's controls are dark inside the field, in light mode too
         #if DEBUG
         .onAppear { if let staged = SayText.stagedForScreenshots, text.isEmpty { text = staged } }

@@ -266,7 +266,8 @@ struct ReadingPlayerView: View {
     private var sayingIndicator: some View {
         let plays = reader.phase == .reading && !reader.isPaused
         HStack(spacing: 6) {
-            Circle().fill(plays ? Color.red : Color.secondary).frame(width: 8, height: 8).accessibilityHidden(true)
+            // Kelly S1: not red (red is recording in iOS, and the microphone is not used): the accent colour.
+            Circle().fill(plays ? Color.accentColor : Color.secondary).frame(width: 8, height: 8).accessibilityHidden(true)
             Text(plays ? "Spelar i AirPods" : reader.isAtEnd ? "Klart" : reader.isPaused ? "Pausad" : "Spelar inte")
                 .font(.subheadline.weight(.semibold))
         }
