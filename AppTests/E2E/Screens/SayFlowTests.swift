@@ -22,7 +22,6 @@ final class SayFlowTests: XCTestCase {
     private var sections: [String] = []
     private var unclear: [String] = []
     private var out: URL!
-    private var offline = false
 
     static let text = "Klorofyllet i bladen fångar ljuset. Växten gör socker av vatten och koldioxid."
 
@@ -35,7 +34,6 @@ final class SayFlowTests: XCTestCase {
         try? FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
         springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         addTeardownBlock { @MainActor [weak self] in
-            if self?.offline == true { _ = self?.network(on: true) }
             self?.finish()
         }
         launch(header)
