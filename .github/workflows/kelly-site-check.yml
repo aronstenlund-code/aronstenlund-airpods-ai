@@ -27,7 +27,7 @@ jobs:
           URL: ${{ inputs.url }}
           WAITLIST: ${{ inputs.waitlist }}
         run: |
-          set -u
+          set +e
           SB="https://xjczbzfkmbjdebwlccki.supabase.co"
           ORIGIN="${URL%/}"
           out=results.txt
@@ -70,10 +70,13 @@ jobs:
               echo "body: $(cat post.json)"
             fi
           } > "$out" 2>&1
-          cat "$out" | tee -a "$GITHUB_STEP_SUMMARY"
+          cat "$out" >> "$GITHUB_STEP_SUMMARY"
+          exit 0
 
       - name: Publish the result to the branch kelly/site-check
+        if: always()
         run: |
+          [ -f results.txt ] || echo "no results (the check step failed early)" > results.txt
           set -eu
           mkdir pub && cp results.txt pub/ && cd pub
           git init -q -b kelly/site-check
