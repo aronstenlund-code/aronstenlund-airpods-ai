@@ -23,6 +23,7 @@ on:
           - k76-read-image.py
           - k77-live.py
           - k78-live.py
+          - k80-cors.py
       args:
         description: "Arguments (optional)"
         required: false

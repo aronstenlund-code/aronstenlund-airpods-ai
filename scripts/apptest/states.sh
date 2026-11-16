@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # T23 and T22 (Toby 2): A99/A100 states, and EarMind on the icon and every scene (D179), through Angela's Debug scenes (AppTests/E2E/Screens/RepetitionStatesTests.swift):
-# no BETA line for a new user, the used-up month, the length classes, "Ljudet kan inte göras just nu".
+# no BETA line for a new user, the used-up month, the length classes, "Uppläsningen är tillfälligt avstängd" (A112).
 #
 #   scripts/apptest/states.sh
 #
