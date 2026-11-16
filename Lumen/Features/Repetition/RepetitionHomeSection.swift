@@ -163,7 +163,10 @@ struct RepetitionHomeSection: View {
     private var emptyState: some View {
         GeometryReader { proxy in
             ScrollView {
-                emptyContent.frame(maxWidth: .infinity, minHeight: proxy.size.height)
+                VStack(spacing: 0) {
+                    sayField.padding(.horizontal, 16).padding(.top, 8)
+                    emptyContent.frame(maxWidth: .infinity, minHeight: max(0, proxy.size.height - 220))
+                }
             }
             .scrollBounceBehavior(.basedOnSize)
         }
@@ -203,8 +206,18 @@ struct RepetitionHomeSection: View {
 
     // MARK: With exams
 
+    /// A115 (D203, Ke69): "Säg i AirPods" is the first thing on Start, above Nästa prov.
+    private var sayField: some View {
+        SayInAirPodsField(model: model)
+    }
+
     private var examList: some View {
         List {
+            Section {
+                sayField
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+            }
             if let next = model.drills.first {
                 Section {
                     nextExam(next)

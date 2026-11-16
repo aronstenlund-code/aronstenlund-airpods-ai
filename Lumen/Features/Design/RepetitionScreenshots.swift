@@ -36,7 +36,13 @@ enum RepetitionDemo {
                                       // A110 (D198): the text exam before it is started (no Dela, the line under it)
                                       "repUnstartedText",
                                       // A112 (D200): reading aloud is off for now, the text works as usual
-                                      "repOffUnstarted", "repOffText", "repOffTextPlay"]
+                                      "repOffUnstarted", "repOffText", "repOffTextPlay",
+                                      // A115 (D203, Ke69): Säg i AirPods
+                                      "repSayText", "repSayPlay", "repSayPlayOnce"]
+
+    /// A115: a text someone might want to hear over and over before an exam (made up).
+    static let said = "Fotosyntes: koldioxid + vatten + ljus blir socker och syre.\nCellandning: socker + syre blir energi, koldioxid och vatten."
+
 
     /// A107: Fysikprovet is saved but not started: no sound is asked for yet.
     static let unstarted: Drill = {
@@ -205,6 +211,20 @@ enum RepetitionDemo {
                 try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
             }
         }
+        if name.hasPrefix("repSay") { // A115 (D203)
+            model.store.save(history)
+            model.store.save(drill)
+            model.quota = DrillQuota(used: 3, limit: 15, resets: "2026-12-01", serverLeft: 12, suggest: 12)
+            SayText.stagedForScreenshots = name == "repSayText" ? said : nil
+            guard name != "repSayText" else { return }
+            let text = Drill.text(title: SaidText.title(said), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                                  parts: SaidText.parts(said).map { DrillItem.textPart($0, part: .para) })
+            let reader = ReadingPlayer(parts: text.readingParts, audio: { _ in nil }, source: FileRepetitionAudioSource(),
+                                       timer: TaskRepetitionTimer())
+            reader.stageForScreenshot(.reading, sentence: 1)
+            model.session.stageSaying(text, reader: reader, minutes: name == "repSayPlay" ? 10 : nil, lap: name == "repSayPlay" ? 3 : 1)
+            return
+        }
         if name.hasPrefix("repOff") { // A112 (D200): the voice service is out
             let staged = model.audio as? DeviceVoiceDrillAudio
             if name == "repOffUnstarted" {
@@ -315,7 +335,9 @@ enum RepetitionDemo {
             case "repOffTextPlay": RepetitionPlayerView(model: model)
             case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
             case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
-            case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted":
+            case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
+            case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
+                 "repSayText":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

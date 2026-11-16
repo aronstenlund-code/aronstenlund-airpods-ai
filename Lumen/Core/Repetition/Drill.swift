@@ -353,3 +353,30 @@ enum DrillText {
         return max(1, Int((seconds / 60).rounded(.up)))
     }
 }
+
+/// A115 (D203): the free text of "Säg i AirPods" as a text read aloud: exactly what was written, one part per
+/// paragraph, named after its first words.
+enum SaidText {
+    /// The server reads at most this much (K70).
+    static let maxChars = 40_000
+
+    static func parts(_ text: String) -> [String] {
+        text.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+    }
+
+    /// The characters that are read (what the month's questions are counted on).
+    static func chars(_ text: String) -> Int { parts(text).reduce(0) { $0 + $1.count } }
+
+    /// D185: one question per started 800 characters.
+    static func countsAs(_ text: String) -> Int { DrillTextDraft.countsAs(chars: chars(text)) }
+
+    static func title(_ text: String) -> String {
+        guard let first = parts(text).first else { return "Text" }
+        let words = first.split(separator: " ").prefix(5).joined(separator: " ")
+        let cut = words.count > 32 ? String(words.prefix(31)) + "…" : words
+        return cut.count < first.count && !cut.hasSuffix("…") ? cut + " …" : cut
+    }
+}
+

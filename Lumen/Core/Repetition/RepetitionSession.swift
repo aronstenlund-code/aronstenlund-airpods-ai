@@ -58,9 +58,14 @@ final class RepetitionSession {
 
     /// A105 (D185): reads `drill` (a text) from `sentence`. `audio` is asked at every part, so sound that arrives while
     /// it reads is used; a part without sound yet is waited for.
-    func startReading(_ drill: Drill, at sentence: Int = 0, tempo: Double = 1,
+    func startReading(_ drill: Drill, at sentence: Int = 0, tempo: Double = 1, saying: SayOptions? = nil,
                       audio: @escaping @MainActor (Int) -> ReadingAudio?) {
         stop()
+        // A115 (D203): "Säg i AirPods". The text goes round until the time is out; nothing is scheduled, and it only
+        // ever plays with the player on the screen.
+        self.saying = saying
+        readingLap = 1
+        repeatStarted = saying?.repeatMinutes == nil ? nil : now()
         let parts = drill.readingParts
         guard parts.contains(where: { !$0.sentences.isEmpty }) else { return }
         if activatesAudioSession { activatePlayback() }
@@ -73,9 +78,16 @@ final class RepetitionSession {
             self?.updateNowPlaying()
         }
         reader.onStep = { [weak self] line in self?.record(line) }
-        reader.onEnd = { [weak self] in
+        reader.onEnd = { [weak self, weak reader] in
             self?.reportReading()
             self?.onFinished?(id)
+            // A115 (D203): "Upprepa i 10 min": the text starts over while time is left. The lap that is being read
+            // when the time runs out is read to its end, and then it stops.
+            if let self, let reader, self.repeatSecondsLeft > 0 {
+                self.readingLap += 1
+                self.record("Saying: lap \(self.readingLap)")
+                reader.startOver()
+            }
         }
         self.reader = reader
         self.drill = drill
@@ -190,8 +202,30 @@ final class RepetitionSession {
     }
 
     /// Avsluta.
+    /// A115 (D203): how "Säg i AirPods" reads: once, or round and round for some minutes.
+    struct SayOptions: Equatable, Sendable {
+        /// Nil = once ("En gång"); else "Upprepa i 5, 10, 20 min".
+        var repeatMinutes: Int?
+    }
+
+    /// A115: set while a text from "Säg i AirPods" is read (the player then says "Spelar i AirPods" and shows the lap).
+    private(set) var saying: SayOptions?
+    private(set) var readingLap = 1
+    private var repeatStarted: Date?
+    /// The clock (tests set it).
+    @ObservationIgnored var now: @MainActor () -> Date = { Date() }
+
+    /// A115: seconds left of the repetition; 0 when it reads once or the time is out.
+    var repeatSecondsLeft: TimeInterval {
+        guard let minutes = saying?.repeatMinutes, let repeatStarted else { return 0 }
+        return max(0, Double(minutes) * 60 - now().timeIntervalSince(repeatStarted))
+    }
+
     func stop() {
         guard player != nil || reader != nil else { return }
+        saying = nil
+        repeatStarted = nil
+        readingLap = 1
         reportReading()
         player?.stop()
         player = nil
@@ -306,6 +340,15 @@ extension RepetitionSession {
     func stageForScreenshot(_ drill: Drill, player: RepetitionPlayer) {
         self.player = player
         self.drill = drill
+    }
+
+    /// A115's screenshots: a text from "Säg i AirPods" on its third lap of ten minutes.
+    func stageSaying(_ drill: Drill, reader: ReadingPlayer, minutes: Int?, lap: Int) {
+        self.reader = reader
+        self.drill = drill
+        saying = SayOptions(repeatMinutes: minutes)
+        readingLap = lap
+        repeatStarted = minutes == nil ? nil : now().addingTimeInterval(-168) // 7:12 left of 10 min
     }
 
     /// A106's screenshots: a text being read, without sound, Now Playing or the AirPods.
