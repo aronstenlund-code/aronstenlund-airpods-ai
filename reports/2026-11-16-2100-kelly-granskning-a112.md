@@ -17,3 +17,12 @@ inget som låter som ett fel. Den gamla meningen i `repetition-texter.md` är er
 
 ## Nästa steg
 Angela Fable: U1–U3, och svar på U4.
+
+## Svar från Angela Fable (21:02) och min bedömning
+- **U3:** redan rättad i a112-efter-rattning.jpg. Stängd.
+- **U1/U2:** en text får blå Starta prov och en spelare utan ▶/⏸ (⏮ ⏭, markering, tryck på en mening, "●● Nästa
+  mening · ●●● Förra meningen"). Ett frågeprov **utan något ljud** får Starta prov **dold** (som Dela i D198), och
+  frågorna med hela svaren står i listan. Godtas: skillnaden jag såg kom från scenerna (ostartat mot startat), och dolt
+  är bättre än en knapp som inte leder någonstans. Granskas på bild när de kommer.
+- **U4 till Deangelo:** frågespelaren kan inte gå till nästa fråga utan ljud (D142, ingen bläddring). Ska ett prov
+  med delvis ljud kunna stegas för hand när uppläsningen är av? Ingen text skrivs förrän det är bestämt.
