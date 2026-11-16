@@ -70,6 +70,9 @@ struct NewDrillView: View {
     @State private var isAnswering = false
     @State private var stepsDone = 0
     @State private var readingDocument = false
+    /// A116 (D204): "Klistra in länk".
+    @State private var askingLink = false
+    @State private var link = ""
     /// A92 (D166): "Fråga om EarMind" from the toolbar.
     @State private var showsHelp = false
     /// Ke50 §2: iOS has said no to the camera, so Fota sidor says what to do instead of opening a black camera.
@@ -138,6 +141,19 @@ struct NewDrillView: View {
         }
         .onChange(of: photoItems) { _, items in
             Task { await addPhotos(items) }
+        }
+        .alert("Klistra in länk", isPresented: $askingLink) {
+            TextField("https://", text: $link)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .keyboardType(.URL)
+            Button("Lägg till") {
+                let pasted = link
+                Task { await addLink(pasted) }
+            }
+            Button("Avbryt", role: .cancel) {}
+        } message: {
+            Text("EarMind läser sidans text. Den skickas en gång och sparas inte.")
         }
         // A95: the screen changes by itself (Läser ditt material → Stämmer det här?), and a problem appears at the
         // top of the form: VoiceOver is told.
@@ -246,6 +262,15 @@ struct NewDrillView: View {
                 }
                 Button { isAddingText = true } label: { Self.materialRow("Skriv text", "text.alignleft", Color.orange, plain) }
                 Button { isImporting = true } label: { Self.materialRow("Lägg till dokument", "doc.fill", Color.gray, plain) }
+                if !isFirstStart { // A116 (D204, K81): a web page's text, read by the server
+                    Button {
+                        link = ""
+                        askingLink = true
+                    } label: {
+                        Self.materialRow("Klistra in länk", "link", Color.teal, plain)
+                    }
+                    .disabled(readingDocument)
+                }
                 if !isFirstStart { // A93 (Kelly Ke58): last, after the app's own ways; not in the first start (A94)
                     Button { chatGPT = ChatGPTStart(stage: .steps) } label: {
                         HStack(spacing: 12) {
@@ -500,6 +525,33 @@ struct NewDrillView: View {
             }
         }
         photoItems = []
+    }
+
+    /// A116 (D204, Kevin's K81): the page's readable text becomes material like a document's text. What it costs is
+    /// counted on the text, as for everything else.
+    private func addLink(_ pasted: String) async {
+        guard let address = FetchedPage.address(pasted) else {
+            problem = "Det ser inte ut som en länk."
+            return
+        }
+        readingDocument = true
+        defer { readingDocument = false }
+        do throws(DrillMakingError) {
+            let page = try await model.maker.fetchPage(address)
+            guard !page.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                problem = FetchedPage.unreadableLine
+                return
+            }
+            let name = page.title?.trimmingCharacters(in: .whitespacesAndNewlines)
+            documents.append((name?.isEmpty == false ? name! : (URL(string: page.url ?? address)?.host ?? "Länk"), page.text))
+            if title.trimmingCharacters(in: .whitespaces).isEmpty, let name, !name.isEmpty { title = String(name.prefix(60)) }
+        } catch {
+            switch error {
+            case .refused(let message): problem = message
+            case .offline: problem = NetworkStatus.noNetworkLine
+            case .noMaterial, .server: problem = FetchedPage.unreadableLine
+            }
+        }
     }
 
     private func addDocuments(_ urls: [URL]) async {
