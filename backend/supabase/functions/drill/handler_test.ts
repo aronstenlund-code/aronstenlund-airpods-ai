@@ -879,3 +879,13 @@ Deno.test("K78 get on a drill kept as text while credits are out says audio_unav
   assertEquals(g.audio_unavailable, true);
   assertEquals(g.notice.code, "audio_unavailable");
 });
+
+Deno.test("K82 (D205): quota gives what is left, the limit, when it fills up and the prices per class in one call", async () => {
+  const w = world({ freeQuestions: 15 });
+  await w.h("u1")(post({ action: "save", items: ITEMS }));
+  const q = await (await w.h("u1")(post({ action: "quota" }))).json();
+  assertEquals([q.used, q.limit, q.left, q.per, q.resets], [2, 15, 13, "month", "2026-12-01"]);
+  assertEquals(q.prices.classes.map((c: { class: string; max_chars: number; tokens: number }) => [c.class, c.max_chars, c.tokens]),
+    [["normal", 100, 40], ["longer", 200, 60], ["too_long", 4000, 80]]);
+  assertEquals(q.prices.read.chars_per_question, 800);
+});

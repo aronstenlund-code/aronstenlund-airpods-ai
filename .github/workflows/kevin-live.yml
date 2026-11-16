@@ -24,6 +24,7 @@ on:
           - k77-live.py
           - k78-live.py
           - k80-cors.py
+          - k81-live.py
       args:
         description: "Arguments (optional)"
         required: false

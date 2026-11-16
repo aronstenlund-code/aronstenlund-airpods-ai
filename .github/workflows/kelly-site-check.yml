@@ -1,0 +1,88 @@
+name: Kelly site check (live)
+
+# Kelly Ke68 (D202): kontrollerar demosidan live från GitHub Actions, eftersom molnsessionernas nät inte når
+# earmind.vercel.app. Körs bara för hand. Resultatet skrivs till grenen kelly/site-check (results.txt), så att
+# molnsessioner kan läsa det med git i stället för att ladda ner loggar.
+# Väntelisteanropet använder en testadress (example.com, source "ke68-check") och sparar en rad som kan tas bort.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Sidans adress"
+        default: "https://earmind.vercel.app"
+      waitlist:
+        description: "Skicka ett väntelisteanrop med testadress (yes/no)"
+        default: "yes"
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check the live site
+        env:
+          URL: ${{ inputs.url }}
+          WAITLIST: ${{ inputs.waitlist }}
+        run: |
+          set +e
+          SB="https://xjczbzfkmbjdebwlccki.supabase.co"
+          ORIGIN="${URL%/}"
+          out=results.txt
+          {
+            echo "run: ${GITHUB_RUN_ID}  time: $(date -u +%FT%TZ)  url: $URL"
+            echo "== page"
+            curl -sS -o page.html -w "status=%{http_code} bytes=%{size_download} type=%{content_type} time=%{time_total}\n" "$ORIGIN/"
+            echo "body (first 300 bytes): $(head -c 300 page.html | tr '\n' ' ')"
+            curl -sSI "$ORIGIN/" | grep -i -E '^(HTTP|x-vercel-error|x-vercel-id|server)' || true
+            echo "title: $(grep -o '<title>[^<]*' page.html | sed 's/<title>//')"
+            echo "h1: $(grep -o '<h1[^>]*>[^<]*' page.html | sed 's/<h1[^>]*>//')"
+            echo "canonical: $(grep -o '<link rel="canonical" href="[^"]*' page.html | sed 's/.*href="//')"
+            echo "og:image: $(grep -o 'property="og:image" content="[^"]*' page.html | sed 's/.*content="//')"
+            echo "Earmind (litet m) i sidan: $(grep -c 'Earmind' page.html || true)"
+            echo "== og image"
+            img=$(grep -o 'property="og:image" content="[^"]*' page.html | sed 's/.*content="//')
+            curl -sS -o og.png -w "status=%{http_code} bytes=%{size_download} type=%{content_type}\n" "$img"
+            file og.png || true
+            echo "== total size of local files the page loads"
+            total=$(wc -c < page.html)
+            for ref in $(grep -oE '(src|srcset|href)="[^"#:]+"' page.html | sed -E 's/^[a-z]+="//; s/"$//' | sort -u); do
+              n=$(curl -sS -o /dev/null -w "%{size_download}" "$ORIGIN/$ref"); code=$(curl -sS -o /dev/null -w "%{http_code}" "$ORIGIN/$ref")
+              [ "$code" = "200" ] || echo "MISSING $code $ref"
+              total=$((total + n))
+            done
+            echo "all local refs (incl. lazy images): ${total} bytes"
+            echo "== cache header on an image"
+            curl -sSI "$ORIGIN/img/rep-nytt-light.webp" | grep -i -E '^(HTTP|cache-control)' || true
+            echo "== sitemap and robots"
+            curl -sS -o /dev/null -w "sitemap status=%{http_code}\n" "$ORIGIN/sitemap.xml"
+            curl -sS -o /dev/null -w "robots status=%{http_code}\n" "$ORIGIN/robots.txt"
+            echo "== waitlist CORS preflight (Origin: $ORIGIN)"
+            curl -sS -o /dev/null -D pre.txt -X OPTIONS "$SB/functions/v1/waitlist" -H "Origin: $ORIGIN" \
+              -H "Access-Control-Request-Method: POST" -H "Access-Control-Request-Headers: content-type"
+            grep -i -E '^(HTTP|access-control-allow-origin)' pre.txt || true
+            if [ "$WAITLIST" = "yes" ]; then
+              echo "== waitlist POST with a test address"
+              curl -sS -D post.txt -o post.json -X POST "$SB/functions/v1/waitlist" -H "Origin: $ORIGIN" \
+                -H "content-type: application/json" \
+                -d '{"email":"test+ke68@example.com","consent":true,"consent_version":"2026-11-06","source":"ke68-check","website":""}'
+              grep -i -E '^(HTTP|access-control-allow-origin)' post.txt || true
+              echo "body: $(cat post.json)"
+            fi
+          } > "$out" 2>&1
+          cat "$out" >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+
+      - name: Publish the result to the branch kelly/site-check
+        if: always()
+        run: |
+          [ -f results.txt ] || echo "no results (the check step failed early)" > results.txt
+          set -eu
+          mkdir pub && cp results.txt pub/ && cd pub
+          git init -q -b kelly/site-check
+          git config user.name "kelly-site-check"
+          git config user.email "actions@users.noreply.github.com"
+          git add results.txt && git commit -qm "site check ${GITHUB_RUN_ID}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" kelly/site-check

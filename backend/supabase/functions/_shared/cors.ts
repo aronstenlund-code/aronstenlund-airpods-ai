@@ -2,10 +2,13 @@
  * D62: browsers may call the functions from the GitHub Pages demo and from localhost (for development) only.
  * Native apps send no Origin header and are unaffected. Extra origins go in the secret/env `CORS_ORIGINS` (comma
  * separated, exact origins such as `https://earmind-xxx.vercel.app`, never a pattern): D202 moves the demo page and
- * the waitlist to Vercel, and that address is added there (K80); GitHub Pages stays allowed until Vercel is live. The functions' own responses carry `*`; this wrapper
+ * the waitlist to Vercel (https://earmind.vercel.app, in DEFAULT_ORIGINS since it is public, K80); GitHub Pages stays
+ * allowed until Vercel is live. The functions' own responses carry `*`; this wrapper
  * replaces it with the caller's origin when allowed and removes it otherwise (the browser then blocks).
  */
-export const DEFAULT_ORIGINS = ["https://aronstenlund-code.github.io"];
+// K80 (D202): the demo page and waitlist on Vercel. A public address, so it is in code next to GitHub Pages (which
+// stays until Vercel is verified); other or private origins still go in the CORS_ORIGINS secret.
+export const DEFAULT_ORIGINS = ["https://aronstenlund-code.github.io", "https://earmind.vercel.app"];
 const LOCAL = /^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d{1,5})?$/;
 
 export function originAllowed(origin: string, extra: string[] = []): boolean {
